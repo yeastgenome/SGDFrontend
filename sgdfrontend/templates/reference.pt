@@ -1,0 +1,249 @@
+<div metal:use-macro="layout">
+  <div metal:fill-slot="content">
+
+
+<body>
+
+<!-- Subhead
+================================================== -->
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h2><span tal:content="ref['citation']"></h2>
+	</div>
+</header>
+
+
+<div class="container-fluid">
+
+<!-- Docs nav
+================================================== -->
+<div class="row-fluid">
+	<div class="span3 bs-docs-sidebar">
+		<ul class="nav nav-list bs-docs-sidenav affix-top" id='navbar' name='navbar'>
+			<li><h3><span tal:content="ref.display_name"></h3></li>
+			<li><a href="#abstract"><i class="icon-chevron-right"></i> Abstract</a></li>
+			<li><a href="#cited_for_annotations"><i class="icon-chevron-right"></i> Cited For Annotations</a></li>
+		</ul>
+	</div>
+	
+	<div class="span9">  
+
+<!-- Abstract
+================================================== -->
+<section id="abstract">
+	<div class="page-header">
+		<h1>Abstract</h1>
+		<div>
+			<p tal:condition="python: ref['abstract']" tal:content="structure ref['abstract']"></p>
+			<p tal:condition="python: ref['reftypes'] != ''"><strong>Reference Type: </strong><span tal:content="ref['reftypes']"></span></p>
+			<p tal:condition="python: ref['authors'] != ''"><strong>Authors: </strong><span tal:content="structure ref['authors']"></span></p>
+			<p tal:condition="python: ref['pubmed_id'] != ''"><strong>Pubmed ID: </strong><span tal:content="structure ref['pubmed_id']"></span></p>
+			<p tal:condition="python: ref['related_references'] != ''"><strong>Related References: </strong><span tal:content="structure ref['related_references']"></span></p>
+			<p tal:condition="python: ref['urls'] != ''"><strong>External Links: </strong><span tal:content="structure ref['urls']"></span></p>
+		</div>
+	</div>
+</section>
+
+
+<section id="cited_for_annotations">
+	<div class="page-header">
+		<h1>Cited for Annotations</h1>
+		<!-- GO
+================================================== -->
+		<div id='go_wrapper'>
+		<h3>Gene Ontology <span id='go_header'></h3>
+		<p id='go_message' style="display:none;">No gene ontology information curated from this reference.</p>		
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='go_table' width="100%">
+			<thead>
+  			<tr>
+    			<th>GO Term</th>
+    			<th>Gene</th>
+    			<th>Gene Descripion</th>
+    			<th>Evidence Codes</th>
+  			</tr>
+  			</thead>
+			</table>
+		</div>
+		<br></br>
+
+<!-- Phenotypes
+================================================== -->
+		<div id='all_phenotype_wrapper'>
+		<h3>Phenotype <span id='phenotype_header'></h3>
+		
+		<!-- General Phenotypes
+		========================================== -->
+		<div id='phenotype_wrapper'>
+		<h4>Cellular Phenotype <span id='cellular_phenotype_header'></h4>
+		<p id='phenotype_message' style="display:none;">No general phenotype information curated from this reference.</p>
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='phenotype_table' width="100%">
+			<thead>
+  			<tr>
+    			<th>Phenotype</th>
+    			<th>Gene</th>
+    			<th>Qualifier</th>
+    			<th>Mutant Type</th>
+  			</tr>
+  			</thead>
+			</table>
+			<br></br>
+		</div>
+				
+
+		<!-- Chemical Phenotypes
+		========================================== -->
+		<div id='chemical_phenotype_wrapper'>
+		<h4>Chemical Phenotype <span id='chemical_phenotype_header'></h4>
+		<p id='chemical_phenotype_message' style="display:none;">No chemical phenotype information curated from this reference.</p>
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='chemical_phenotype_table' width="100%">
+			<thead>
+  			<tr>
+    			<th>Phenotype</th>
+    			<th>Gene</th>
+  				<th>Chemical</th>
+    			<th>Qualifier</th>
+    			<th>Mutant Type</th>
+   			</tr>
+  			</thead>
+			</table>
+			<br></br>
+		</div>
+				
+
+		<!-- Protein Peptide and RNA Phenotypes
+		========================================== -->
+		<div id='pp_rna_phenotype_wrapper'>
+		<h4>Protein/Peptide and RNA Phenotype <span id='pp_rna_phenotype_header'></h4>
+		<p id='pp_rna_phenotype_message' style="display:none;">No protein/peptide and RNA phenotype information curated from this reference.</p>
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='pp_rna_phenotype_table' width="100%">
+			<thead>
+  			<tr>
+    			<th>Phenotype</th>
+    			<th>Gene</th>
+    			<th>Reporter</th>
+    			<th>Qualifier</th>
+    			<th>Mutant Type</th>
+  			</tr>
+  			</thead>
+			</table>
+			<br></br>
+		</div>
+		</div>
+
+<!-- Interactions
+================================================== -->
+		<div id='interaction_wrapper'>
+		<h3>Interaction <span id='interaction_header'></h3>
+		<p id='interaction_message' style="display:none;">No interaction information curated from this reference.</p>
+		
+		<!-- Brief
+		========================================== -->
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='interaction_table' width="100%">
+			<thead>
+  			<tr>
+    			<th>Interactor</th>
+    			<th>Interactor</th>
+    			<th>Genetic Evidence from this Reference</th>
+    			<th>Physical Evidence from this Reference</th>
+    			<th>Total Evidence from this Reference</th>
+  			</tr>
+  			</thead>
+			</table>
+		</div>
+	
+	<!-- Litguide
+================================================== -->
+		<div id='litguide_wrapper'>
+		<h3>Lit-Guide <span id='litguide_header'></h3>
+		<p id='litguide_message' style="display:none;">No litguide information curated from this reference.</p>
+		
+		<!-- Brief
+		========================================== -->
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='litguide_table' width="100%">
+			<thead>
+  			<tr>
+    			<th>Topic</th>
+    			<th>Gene</th>
+    			<th>Reference</th>
+  			</tr>
+  			</thead>
+			</table>
+		</div>
+	</div>
+	
+</section>
+
+
+<script>
+$(document).ready(function() {
+
+		//Set up go table
+		var options = basic_datatable_options("go_header", '${go_filename}', "go_wrapper", "go_message");
+		options["aaSorting"] = [[0, "asc"]];
+		options["bProcessing"] = true
+		options["sAjaxSource"] = '${go_overview_table_link}';
+		options["aoColumns"] = [null, null, {"bSearchable":false, "bVisible":false}, null]
+		options["bPaginate"] = true;
+		$('#go_table').dataTable(options);
+
+  		//Set up interaction table
+		var options = basic_datatable_options("interaction_header", '${interaction_filename}', "interaction_wrapper", "interaction_message");
+		options["aaSorting"] = [[0, "asc"]];
+		options["bProcessing"] = true
+		options["sAjaxSource"] = '${interaction_overview_table_link}';
+		options["bPaginate"] = true;
+		$('#interaction_table').dataTable(options);
+			
+  		//Get phenoevidence data
+  		$.getJSON('${phenotype_overview_table_link}', function(data) {
+  			var phenotype_table = data['cellular_pheno'];
+  			var chemical_phenotype_table = data['chemical_pheno'];
+  			var pp_rna_phenotype_table = data['pp_rna_pheno'];
+			
+			//Set total phenotype count
+			var num_rows = phenotype_table.length + chemical_phenotype_table.length + pp_rna_phenotype_table.length;
+			document.getElementById("phenotype_header").innerHTML = '(' + num_rows + ')';
+			if(num_rows == 0) {
+				document.getElementById('all_phenotype_wrapper').style.display = 'none';
+			}
+			
+  			//Set up phenotype table
+			var options = basic_datatable_options("cellular_phenotype_header", '${cellular_phenotype_filename}', "phenotype_wrapper", "phenotype_message");
+			options["aaSorting"] = [[0, "asc"]];
+			options["aaData"] = phenotype_table;
+			options["bPaginate"] = true;
+			$('#phenotype_table').dataTable(options);
+		
+			//Set up chemical phenotype table
+			var options = basic_datatable_options("chemical_phenotype_header", '${chemical_phenotype_filename}', "chemical_phenotype_wrapper", "chemical_phenotype_message");
+			options["aaSorting"] = [[1, "asc"]];
+			options["aaData"] = chemical_phenotype_table;
+			options["bPaginate"] = true;
+			$('#chemical_phenotype_table').dataTable(options);
+		
+			//Set up pp-rna phenotype table
+			var options = basic_datatable_options("pp_rna_phenotype_header", '${pp_rna_phenotype_filename}', "pp_rna_phenotype_wrapper", "pp_rna_phenotype_message");
+			options["aaSorting"] = [[1, "asc"]];
+			options["aaData"] = pp_rna_phenotype_table;
+			options["bPaginate"] = true;
+			$('#pp_rna_phenotype_table').dataTable(options);
+			
+  		});
+  		
+  		//Set up litguide table
+		var options = basic_datatable_options("litguide_header", '${bioent_filename}', "litguide_wrapper", "litguide_message");
+		options["aaSorting"] = [[0, "asc"]];
+		options["bProcessing"] = true
+		options["sAjaxSource"] = '${bioent_overview_table_link}';
+		options["aoColumns"] = [null, null, {"bSearchable":false, "bVisible":false}]
+		options["bPaginate"] = true;
+		$('#litguide_table').dataTable(options);
+	} );
+</script>
+
+</div>
+
+</body>
+</div>
+</div>
+

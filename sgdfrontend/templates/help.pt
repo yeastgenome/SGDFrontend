@@ -1,0 +1,13 @@
+<div metal:use-macro="layout">
+    <div metal:fill-slot="content">
+        <header class="jumbotron subhead" id="overview">
+			<div class="container">
+				<h1>Help</h1>
+				<p class="lead">
+					This will be the SGD2.0 Help page. It still needs to be implemented.
+				</p>
+			</div>
+		</header>
+    </div>
+</div>
+

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html 
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:define-macro="layout">
+        
+<head metal:define-macro="head">
+	<meta charset="utf-8">
+	<title>${page_title}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+		
+
+
+	<link href="../static/css/bootstrap.css" rel="stylesheet">
+	<link href="../static/css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="../static/css/docs.css" rel="stylesheet">
+	<link href="../static/css/DT_bootstrap.css" rel="stylesheet">
+	<link href="../static/css/datatable.css" rel="stylesheet">
+	<link href="../static/css/jquery-ui-1.10.1.custom.css" rel="stylesheet">
+
+	<script src="../static/js/jquery-1.9.1.js"></script>
+	<script src="../static/js/jquery-ui-1.10.1.custom.js"></script>
+	<script src="../static/js/jquery.dataTables.js"></script>
+	<script src="../static/js/datatable.js"></script>
+	<script src="../static/js/TableTools.js"></script>
+	<script src="../static/js/ZeroClipboard.js"></script>
+	<script src="../static/js/DT_bootstrap.js"></script>
+	<script src="../static/js/local.js"></script>
+	<script src="../static/js/kinetic-v4.3.3.min.js"></script>
+	<script src="../static/js/seqVis.js"></script>
+
+	<script>
+		jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    	"num-html-pre": function ( a ) {
+        	var x = String(a).replace( /<[\s\S]*?>/g, "" );
+        	return parseFloat( x );
+    	},
+ 
+    	"num-html-asc": function ( a, b ) {
+        	return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    	},
+ 
+    	"num-html-desc": function ( a, b ) {
+        	return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+    	}
+	} );
+	</script>
+
+
+</head>
+
+<body>
+
+<!-- Navbar
+================================================== -->
+<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="brand" href="/">SGD Next Gen.</a>
+			<div class="nav-collapse collapse">
+				<ul class="nav">
+					<li class="">
+						<a href="/">Home</a>
+					</li>
+					<li class="">
+						<a href="/my_sgd">My SGD</a>
+					</li>
+					<li class="">
+						<a href="/help">Help</a>
+					</li>
+					<li class="">
+						<a href="/about">About</a>
+					</li>
+				</ul>
+				<form action="/search" autocomplete="off" class='text-center' style='padding-top:10px;'>
+					<input id="searchfield" name="keyword" type="text" class="search-query" style='width:50%;' placeholder="Search">
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div metal:define-slot="content">
+</div>
+ 
+
+
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+	<script src="../static/js/cytoscapeweb.min.js"></script>
+	
+<script src="../static/js/bootstrap.js"></script>
+<script src="../static/js/bootstrap-typeahead.js"></script>
+<script src="../static/js/application.js"></script>
+<script src="../static/js/AC_OETags.min.js"></script>
+
+
+
+</body>
+</html>

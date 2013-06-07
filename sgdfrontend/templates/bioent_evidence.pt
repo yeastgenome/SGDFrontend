@@ -1,0 +1,169 @@
+<div metal:use-macro="layout">
+  <div metal:fill-slot="content">
+
+
+<body>
+	
+<!-- Subhead
+================================================== -->
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<br></br>
+		<h1><span tal:content="structure display_name"></h1>
+	</div>
+</header>
+
+<div class="container-fluid">
+
+
+<!-- Docs nav
+================================================== -->
+<div class="row-fluid">
+	<div class="span3 bs-docs-sidebar">
+		<ul class="nav nav-list bs-docs-sidenav" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
+			<li><h4><span tal:content="structure name_with_link"></h4></li>
+			<li><a href="#primary"><i class="icon-chevron-right"></i> Primary Literature</a></li>
+          	<li><a href="#additional"><i class="icon-chevron-right"></i> Additional Literature</a></li>
+          	<li><a href="#reviews"><i class="icon-chevron-right"></i> Reviews</a></li>
+          	<li><a href="#go"><i class="icon-chevron-right"></i> Gene Ontology Literature</a></li>
+          	<li><a href="#phenotype"><i class="icon-chevron-right"></i> Phenotype Literature</a></li>
+		</ul>
+	</div>
+	
+	<div class="span9">  
+
+
+<!-- Primary
+================================================== -->
+<section id="primary">
+	<div class="page-header">
+		<h1>Primary Literature <span id='primary_header'></span></h1>
+		<span id='primary_message' class="hide">No primary literature curated.</span>
+		<div id='primary_wrapper'>					
+			<ul id='primary_list'>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<!-- Additional
+================================================== -->
+<section id="additional">
+	<div class="page-header">
+		<h1>Additional Literature <span id='additional_header'></span></h1>
+		<span id='additional_message' class="hide">No additional literature curated.</span>
+		<div id='additional_wrapper'>					
+			<ul id='additional_list'>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<!-- Review
+================================================== -->
+<section id="reviews">
+	<div class="page-header">
+		<h1>Reviews <span id='review_header'></span></h1>
+		<span id='review_message' class="hide">No reviews curated.</span>
+		<div id='review_wrapper'>					
+			<ul id='review_list'>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<!-- GO
+================================================== -->
+<section id="go">
+	<div class="page-header">
+		<h1>Gene Ontology Literature <span id='go_header'></span></h1>
+		<span id='go_message' class="hide">No gene ontology literature curated.</span>
+		<div id='go_wrapper'>					
+			<ul id='go_list'>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<!-- Phenotype
+================================================== -->
+<section id="phenotype">
+	<div class="page-header">
+		<h1>Phenotype Literature <span id='phemotype_header'></span></h1>
+		<span id='phenotype_message' class="hide">No phenotype literature curated.</span>
+		<div id='phenotype_wrapper'>					
+			<ul id='phenotype_list'>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<script>
+	$(document).ready(function() {
+		
+		//Get bioentevidence data
+  		$.getJSON("${bioent_evidence_table_link}", function(data) {
+  			var primary = data['primary']
+  			var additional = data['additional']
+  			var reviews = data['reviews']
+
+			//Set up primary references
+			primary_list = document.getElementById("primary_list");
+			for (var i=0; i < primary.length; i++) {
+				var citation = primary[i];
+				var p=document.createElement('p');
+				p.innerHTML = citation;
+				primary_list.appendChild(p);
+			}
+			
+			//Set up additional references
+			additional_list = document.getElementById("additional_list");
+			for (var i=0; i < additional.length; i++) {
+				var citation = additional[i];
+				var p=document.createElement('p');
+				p.innerHTML = citation;
+				additional_list.appendChild(p);
+			}
+			
+			//Set up review references
+			review_list = document.getElementById("review_list");
+			for (var i=0; i < reviews.length; i++) {
+				var citation = reviews[i];
+				var p=document.createElement('p');
+				p.innerHTML = citation;
+				review_list.appendChild(p);
+			}
+  		});
+  		
+  		//Get go reference data
+  		$.getJSON("${go_evidence_table_link}", function(data) {
+  			var references = data['reference']
+  			go_list = document.getElementById("go_list");
+			for (var i=0; i < references.length; i++) {
+				var citation = references[i];
+				var p=document.createElement('p');
+				p.innerHTML = citation;
+				go_list.appendChild(p);
+			}
+  		});
+  		
+  		//Get phenotype reference data
+  		$.getJSON("${phenotype_evidence_table_link}", function(data) {
+  			var references = data['reference']
+  			phenotype_list = document.getElementById("phenotype_list");
+			for (var i=0; i < references.length; i++) {
+				var citation = references[i];
+				var p=document.createElement('p');
+				p.innerHTML = citation;
+				phenotype_list.appendChild(p);
+			}
+  		});
+	} );
+</script>
+
+</div>
+
+</body>
+</div>
+</div>
+

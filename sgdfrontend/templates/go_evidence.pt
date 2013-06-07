@@ -1,0 +1,238 @@
+<div metal:use-macro="layout">
+  <div metal:fill-slot="content">
+
+
+<body>
+	
+<!-- Subhead
+================================================== -->
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<br></br>
+		<h1><span tal:content="structure display_name"></h1>
+	</div>
+</header>
+
+<div class="container-fluid">
+
+
+<!-- Docs nav
+================================================== -->
+<div class="row-fluid">
+	<div class="span3 bs-docs-sidebar">
+		<ul class="nav nav-list bs-docs-sidenav" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
+			<li><h4><span tal:content="structure name_with_link"></h4></li>
+			<li><a href="#evidence"><i class="icon-chevron-right"></i> Evidence</a></li>
+          	<li><a href="#literature"><i class="icon-chevron-right"></i> References</a></li>
+		</ul>
+	</div>
+	
+	<div class="span9">  
+
+
+<!-- Evidence
+================================================== -->
+<section id="evidence">
+	<div class="page-header">
+		<h1>Evidence <span id='evidence_header'></span></h1>
+		<div tal:condition="python: not split" id='combined_evidence'>
+		<span id='evidence_message' class="hide">No evidence curated.</span>
+		<div id='evidence_wrapper'>		
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='evidence_table' width="100%">
+			<thead>
+  			<tr>
+  				<th>GO Term</th>
+  				<th>Gene</th>
+    			<th>GO Evidence</th>
+    			<th>Annotation Type</th>
+    			<th>Qualifier</th>
+    			<th>Source</th>
+    			<th>Reference</th>
+  			</tr>
+  			</thead>
+			</table>
+        </div>
+		</div>
+		
+		<div tal:condition="python: split" id='split_evidence'>
+		<h3>Molecular Function Evidence <span id='evidence_f_header'></span></h3>
+		<span id='evidence_f_message' class="hide">No molecular function evidence curated.</span>
+		<div id='evidence_f_wrapper'>		
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='evidence_f_table' width="100%">
+			<thead>
+  			<tr>
+  				<th>GO Term</th>
+  				<th>Gene</th>
+    			<th>GO Evidence</th>
+    			<th>Annotation Type</th>
+    			<th>Qualifier</th>
+    			<th>Source</th>
+    			<th>Reference</th>
+  			</tr>
+  			</thead>
+			</table>
+        </div>
+		<br></br>
+		
+		<h3>Biological Process Evidence <span id='evidence_p_header'></span></h3>
+		<span id='evidence_p_message' class="hide">No biological process evidence curated.</span>
+		<div id='evidence_p_wrapper'>		
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='evidence_p_table' width="100%">
+			<thead>
+  			<tr>
+  				<th>GO Term</th>
+  				<th>Gene</th>
+    			<th>GO Evidence</th>
+    			<th>Annotation Type</th>
+    			<th>Qualifier</th>
+    			<th>Source</th>
+    			<th>Reference</th>
+  			</tr>
+  			</thead>
+			</table>
+        </div>
+        <br></br>
+        
+        <h3>Cellular Component Evidence <span id='evidence_c_header'></span></h3>
+		<span id='evidence_c_message' class="hide">No cellular component evidence curated.</span>
+		<div id='evidence_c_wrapper'>		
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='evidence_c_table' width="100%">
+			<thead>
+  			<tr>
+  				<th>GO Term</th>
+  				<th>Gene</th>
+    			<th>GO Evidence</th>
+    			<th>Annotation Type</th>
+    			<th>Qualifier</th>
+    			<th>Source</th>
+    			<th>Reference</th>
+  			</tr>
+  			</thead>
+			</table>
+        </div>
+        <br></br>
+        </div>
+        
+        <div tal:condition="python: split" id="cytoscape_vis">
+		<h3>Cytoscape Visualization</h3>
+			<label class="checkbox">
+      			<input id="f_check" type="checkbox" checked="true" name="categories"> Molecular Function
+    		</label>
+    		<label class="checkbox">
+      			<input id="p_check" type="checkbox" checked="true" name="categories"> Biological Process
+    		</label>
+    		<label class="checkbox">
+      			<input id="c_check" type="checkbox" name="categories"> Cellular Component
+    		</label>
+		<div id="cytoscapeweb">
+            Cytoscape visualization is loading...
+        </div>
+        <span>Export:</span>
+        <div class="btn-group">
+        	<a class="btn" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a>
+        	<a class="btn" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a>
+        	<a class="btn" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a>
+        	<a class="btn" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a>
+        	<a class="btn" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a>
+        	<a class="btn" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
+
+        </div>
+        </div>
+	</div>
+</section>
+
+<!-- References
+================================================== -->
+<section id="literature">
+	<div class="page-header">
+		<h1>References</h1>
+		<ul id='reference_list'>
+		</ul>
+	</div>
+</section>
+
+<script>
+	$(document).ready(function() {
+		
+		//Get evidence data
+  		$.getJSON('${go_evidence_table_link}', function(data) {
+  			var references = data['reference']
+
+  			if('go_c' in data) {
+				var go_c = data['go_c'];
+	  			var go_p = data['go_p'];
+	  			var go_f = data['go_f'];
+	  			
+				//Set total go count
+				var num_rows = go_c.length + go_p.length + go_f.length;
+				document.getElementById("evidence_header").innerHTML = '(' + num_rows + ')';
+				
+	  			//Set up function table
+				var options = basic_datatable_options("evidence_f_header", '${go_f_evidence_filename}', "evidence_f_wrapper", "evidence_f_message");
+				options["aaSorting"] = [[0, "asc"]];
+				options["aaData"] = go_f;
+				options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
+				$('#evidence_f_table').dataTable(options);
+				
+				//Set up process table
+				var options = basic_datatable_options("evidence_p_header", '${go_p_evidence_filename}', "evidence_p_wrapper", "evidence_p_message");
+				options["aaSorting"] = [[0, "asc"]];
+				options["aaData"] = go_p;
+				options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
+				$('#evidence_p_table').dataTable(options);
+			
+				//Set up component table
+				var options = basic_datatable_options("evidence_c_header", '${go_c_evidence_filename}', "evidence_c_wrapper", "evidence_c_message");
+				options["aaSorting"] = [[0, "asc"]];
+				options["aaData"] = go_c;
+				options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
+				$('#evidence_c_table').dataTable(options);
+			}
+			else {
+				var go = data['aaData'];
+
+				//Set total evidence count
+				var num_rows = go.length;
+				document.getElementById("evidence_header").innerHTML = '(' + num_rows + ')';
+				
+	  			//Set up evidence table
+				var options = basic_datatable_options("evidence_header", '${go_evidence_filename}', "evidence_wrapper", "evidence_message");
+				options["aaSorting"] = [[0, "asc"]];
+				options["aaData"] = go;
+				options['bPaginate'] = true;
+				options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, null, null, null]
+				$('#evidence_table').dataTable(options);
+			}
+			
+			//Set up references
+			ref_list = document.getElementById("reference_list");
+			for (var i=0; i < references.length; i++) {
+				var citation = references[i];
+				var p=document.createElement('p');
+				p.innerHTML = citation;
+				ref_list.appendChild(p);
+			}
+  		});
+	} );
+</script>
+
+<script type="text/javascript">
+	var vis = null;
+window.onload=function() {
+	vis = setup_go_cytoscape_vis("${go_graph_link}");  
+};           
+
+</script>
+        
+<style>
+	/* The Cytoscape Web container must have its dimensions set. */
+	html, body { height: 80%; width: 100%; padding: 0; margin: 0; }
+	#cytoscapeweb { width: 100%; height: 100%; }
+</style>
+
+</div>
+
+</body>
+</div>
+</div>
+

@@ -1,0 +1,154 @@
+<div metal:use-macro="layout">
+  <div metal:fill-slot="content">
+
+
+<body>
+	
+<!-- Subhead
+================================================== -->
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1><span tal:content="display_name"></h1>
+		<p class="lead">
+			<span tal:content="structure description"></span>
+		</p>
+	</div>
+</header>
+
+<div class="container-fluid">
+
+
+<!-- Docs nav
+================================================== -->
+<div class="row-fluid">
+	<div class="span3 bs-docs-sidebar">
+		<ul class="nav nav-list bs-docs-sidenav" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
+			<li><h4><span tal:content="structure name_with_link"></h4></li>
+			<li><a href="#genetic_evidence"><i class="icon-chevron-right"></i> Genetic Evidence</a></li>
+			<li><a href="#physical_evidence"><i class="icon-chevron-right"></i> Physical Evidence</a></li>
+          	<li><a href="#literature"><i class="icon-chevron-right"></i> References</a></li>
+		</ul>
+	</div>
+	
+	<div class="span9">  
+
+
+<!-- Genetic Evidence
+================================================== -->
+<section id="genetic_evidence">
+	<div class="page-header">
+		<h1>Evidence <span id='evidence_header'></h1>
+		<span>Source: BioGRID</span>
+		
+		<h3>Genetic Evidence <span id='genetic_evidence_header'></h3>
+		<span id='genetic_evidence_message'></span>
+		<div id='genetic_evidence_wrapper'>
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='genetic_evidence_table' width="100%">
+			<thead>
+  			<tr>
+  				<th>Interactor</th>
+  				<th>Interactor</th>
+    			<th>Experiment</th>
+    			<th>Annotation</th>
+    			<th>Direction</th>
+    			<th>Phenotype</th>
+    			<th>Modification</th>
+    			<th>Source</th>
+    			<th>Reference</th>
+  			</tr>
+  			</thead>
+			</table>
+        </div>
+        <br></br>
+		
+		<h3>Physical Evidence <span id='physical_evidence_header'></h3>
+
+		<span id='physical_evidence_message'></span>
+		<div id='physical_evidence_wrapper'>
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='physical_evidence_table' width="100%">
+			<thead>
+  			<tr>
+  				<th>Interactor</th>
+  				<th>Interactor</th>
+    			<th>Experiment</th>
+    			<th>Annotation</th>
+    			<th>Direction</th>
+    			<th>Phenotype</th>
+    			<th>Modification</th>
+    			<th>Source</th>
+    			<th>Reference</th>
+  			</tr>
+  			</thead>
+			</table>
+        </div>
+		
+	</div>
+</section>
+
+<!-- References
+================================================== -->
+<section id="literature">
+	<div class="page-header">
+		<h1>References</h1>
+		<ul id='reference_list'>
+		</ul>
+	</div>
+</section>
+
+<script>
+	$(document).ready(function() {
+		//Get evidence data
+		
+  		$.getJSON("${interaction_evidence_table_link}", function(data) {
+			var genetic_evidence_table = data['genetic'];
+  			var physical_evidence_table = data['physical'];
+  			var references = data['reference'];
+  			
+  			//Set total evidence count
+			var num_rows = genetic_evidence_table.length + physical_evidence_table.length;
+			document.getElementById("evidence_header").innerHTML = '(' + num_rows + ')';
+			
+  			//Set up genetic evidence table
+			var options = basic_datatable_options("genetic_evidence_header", 
+				'${genetic_interaction_evidence_filename}', "genetic_evidence_wrapper", "genetic_evidence_message");
+			options["bPaginate"] = true;
+			options["aaData"] = genetic_evidence_table;
+			options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null]
+  			if('${hide_interactor}') {
+  			  	options["aoColumns"][1] = {"bSearchable":false, "bVisible":false}
+    		}
+  			$('#genetic_evidence_table').dataTable(options);
+  			
+  			//Set up physical evidence data
+			var options = basic_datatable_options("physical_evidence_header", 
+				'${physical_interaction_evidence_filename}', "physical_evidence_wrapper", "physical_evidence_message");
+			options["bPaginate"] = true;
+			options["aaData"] = physical_evidence_table;
+			options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null]
+  			if('${hide_interactor}') {
+  			  	options["aoColumns"][1] = {"bSearchable":false, "bVisible":false}
+    		}
+  			$('#physical_evidence_table').dataTable(options);
+  			
+  			if('${hide_interactor}') {
+  			  		
+    		} 
+			
+			//Set up references
+			ref_list = document.getElementById("reference_list");
+			for (var i=0; i < references.length; i++) {
+				var citation = references[i];
+				var p=document.createElement('p');
+				p.innerHTML = citation;
+				ref_list.appendChild(p);
+			}
+  		});
+	} );
+</script>
+
+</div>
+
+</body>
+</div>
+</div>
+

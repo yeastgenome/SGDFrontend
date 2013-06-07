@@ -1,0 +1,388 @@
+<div metal:use-macro="layout">
+  <div metal:fill-slot="content">
+
+
+<body>
+	
+<!-- Subhead
+================================================== -->
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1><span tal:content="structure display_name"></h1>
+	</div>
+</header>
+
+<div class="container-fluid">
+
+
+<!-- Docs nav
+================================================== -->
+<div class="row-fluid">
+	<div class="span3 bs-docs-sidebar">
+		<ul class="nav nav-list bs-docs-sidenav" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
+			<li><h4><span tal:content="structure name_with_link"></h4></li>
+			<li><a href="#evidence"><i class="icon-chevron-right"></i> Evidence</a></li>
+          	<li><a href="#literature"><i class="icon-chevron-right"></i> References</a></li>
+		</ul>
+	</div>
+	
+	<div class="span9">  
+
+
+<!-- Evidence
+================================================== -->
+<section id="evidence">
+	<div class="page-header">
+		<h1>Evidence <span id='evidence_header'></span></h1>
+		<span>Source: SGD</span>
+		
+		<div id='undivided' tal:condition='python: not split'>
+		<span id='evidence_message' class="hide">No evidence curated.</span>
+		<div id='evidence_wrapper'>		
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='evidence_table' width="100%">
+			<thead>
+  			<tr>
+  				<th>Phenotype</th>
+  				<th>Gene</th>
+    			<th>Qualifier</th>
+    			<th>Experiment</th>
+    			<th>Mutant</th>
+    			<th>Allele</th>
+    			<th>Reporter</th>
+    			<th>Chemical</th>
+    			<th>Experiment Details</th>
+    			<th>Condition</th>
+    			<th>Details</th>
+    			<th>Strain</th>
+    			<th>Source</th>
+    			<th>Reference</th>
+  			</tr>
+  			</thead>
+  			</table>
+        </div>
+       </div>
+		<div id='divided' tal:condition='python: split'>
+		<h3>Cellular Phenotype Evidence <span id='cellular_evidence_header'></span></h3>
+		<span id='cellular_evidence_message' class="hide">No cellular phenotypes curated.</span>
+		<div id='evidence_wrapper'>		
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='cellular_evidence_table' width="100%">
+			<thead>
+  			<tr>
+  				<th>Phenotype</th>
+  				<th>Gene</th>
+    			<th>Qualifier</th>
+    			<th>Experiment</th>
+    			<th>Mutant</th>
+    			<th>Allele</th>
+    			<th>Reporter</th>
+    			<th>Chemical</th>
+    			<th>Experiment Details</th>
+    			<th>Condition</th>
+    			<th>Details</th>
+    			<th>Strain</th>
+    			<th>Source</th>
+    			<th>Reference</th>
+  			</tr>
+  			</thead>
+  			</table>
+        </div>
+		<br></br>
+		
+		<h3>Chemical Phenotype Evidence <span id='chemical_evidence_header'></span></h3>
+		<span id='chemical_evidence_message' class="hide">No chemical phenotypes curated.</span>
+		<div id='chemical_evidence_wrapper'>		
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='chemical_evidence_table' width="100%">
+			<thead>
+  			<tr>
+  				<th>Phenotype</th>
+  				<th>Gene</th>
+    			<th>Qualifier</th>
+    			<th>Experiment</th>
+    			<th>Mutant</th>
+    			<th>Allele</th>
+    			<th>Reporter</th>
+    			<th>Chemical</th>
+    			<th>Experiment Details</th>
+    			<th>Condition</th>
+    			<th>Details</th>  	
+    			<th>Strain</th>
+    			<th>Source</th>
+    			<th>Reference</th>		
+    		</tr>
+  			</thead>
+  			</table>
+        </div>
+		<br></br>
+		
+		<h3>Protein/Peptide and RNA Phenotype Evidence <span id='pp_rna_evidence_header'></span></h3>
+		<span id='pp_rna_evidence_message' class="hide">No protein/peptide and RNA phenotypes curated.</span>
+		<div id='pp_rna_evidence_wrapper'>		
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='pp_rna_evidence_table' width="100%">
+			<thead>
+  			<tr>
+  				<th>Phenotype</th>
+  				<th>Gene</th>
+    			<th>Qualifier</th>
+    			<th>Experiment Type</th>
+    			<th>Mutant</th>
+    			<th>Allele</th>
+    			<th>Reporter</th>
+    			<th>Chemical</th>
+    			<th>Experiment Details</th>
+    			<th>Condition</th>
+    			<th>Details</th>
+    			<th>Strain</th>
+    			<th>Source</th>
+    			<th>Reference</th>
+  			</tr>
+  			</thead>
+  			</table>
+        </div>
+		<br></br>
+	</div>
+		
+	</div>
+</section>
+
+<!-- References
+================================================== -->
+<section id="literature">
+	<div class="page-header">
+		<h1>References</h1>
+		<ul id='reference_list'>
+		</ul>
+	</div>
+</section>
+
+<script>
+	$(document).ready(function() {
+		//Set up evidence table and reference list
+  		$.getJSON('${phenotype_evidence_table_link}', function(data) {
+			var references = data['reference'];
+			
+			if('cellular_pheno' in data) {
+  				var cellular_evidence = data['cellular_pheno'];
+  				var chemical_evidence = data['chemical_pheno'];
+  				var pp_rna_evidence = data['pp_rna_pheno'];
+  			
+  				//Set total evidence count
+				var num_rows = cellular_evidence.length + chemical_evidence.length + pp_rna_evidence.length;
+				document.getElementById("evidence_header").innerHTML = '(' + num_rows + ')';
+			
+  				//Set up cellular evidence table
+				var options = basic_datatable_options("cellular_evidence_header", 
+					'${cellular_phenotype_evidence_filename}', "cellular_evidence_wrapper", "cellular_evidence_message");
+				options["aaData"] = cellular_evidence;
+				options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null]
+				options["aaSorting"] = [[0, "asc"]];
+				var cellTable = $('#cellular_evidence_table').dataTable(options);
+			
+				//Set up chemical evidence table
+				var options = basic_datatable_options("chemical_evidence_header", 
+					'${chemical_phenotype_evidence_filename}', "chemical_evidence_wrapper", "chemical_evidence_message");
+				options["aaData"] = chemical_evidence;
+				options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null]
+				options["aaSorting"] = [[7, "asc"]];
+				var chemTable = $('#chemical_evidence_table').dataTable(options);
+			
+				//Set up pp_rna evidence table
+				var options = basic_datatable_options("pp_rna_evidence_header", 
+					'${pp_rna_phenotype_evidence_filename}', "pp_rna_evidence_wrapper", "pp_rna_evidence_message");
+				options["aaData"] = pp_rna_evidence;
+				options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null]
+				options["aaSorting"] = [[6, "asc"]];
+				var ppRnaTable = $('#pp_rna_evidence_table').dataTable(options);
+			}
+			else {
+				var phenotype = data['aaData'];
+				
+				//Set total evidence count
+				var num_rows = phenotype.length;
+				document.getElementById("evidence_header").innerHTML = '(' + num_rows + ')';
+				
+				//Set up cellular evidence table
+				var options = basic_datatable_options("evidence_header", 
+					'${phenotype_evidence_filename}', "evidence_wrapper", "evidence_message");
+				options["aaData"] = phenotype;
+				options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null]
+				options["aaSorting"] = [[0, "asc"]];
+				options['bPaginate'] = true;
+				var cellTable = $('#evidence_table').dataTable(options);
+			
+			}
+			
+			//Set up references
+			var ref_list = document.getElementById("reference_list");
+			for (var i=0; i < references.length; i++) {
+				
+				var citation = references[i];
+				var p=document.createElement('p');
+				p.innerHTML = citation;
+				ref_list.appendChild(p);
+			}
+			
+			//Insert a 'details' column to the table
+    		var nCloneTh = document.createElement( 'th' );
+   			var nCloneTd = document.createElement( 'td' );
+    		nCloneTd.className = "center";
+    		var b = document.createElement('button');
+    		b.className = 'btn btn-link';
+    		b.innerHTML = '<i class="icon-plus-sign"></i>';
+         	nCloneTd.appendChild(b);
+
+    		$('#cellular_evidence_table thead tr').each( function () {
+       	 		this.insertBefore( nCloneTh.cloneNode(true), this.childNodes[0] );
+     
+    		} );
+     
+    		$('#cellular_evidence_table tbody tr').each( function () {
+    		    if(cellTable.fnGetData(this)[6] != null || 
+    		    	cellTable.fnGetData(this)[7] != null ||
+    		    	cellTable.fnGetData(this)[8] != null ||
+    		    	cellTable.fnGetData(this)[9] != null ||
+    		    	cellTable.fnGetData(this)[10] != null) {
+					this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
+				}
+				else {
+					this.insertBefore(nCloneTh.cloneNode(true), this.childNodes[0]);
+				}
+   			} );
+   			
+			
+   			$('#cellular_evidence_table tbody tr td button').click(function() {
+   				var nTr = $(this).parents('tr')[0];
+
+        		if ( cellTable.fnIsOpen(nTr) ) {
+            		// This row is already open - close it
+            	 	this.innerHTML = '<i class="icon-plus-sign"></i>';
+            		cellTable.fnClose( nTr );
+        		}
+        		else {
+            		// Open this row
+            		this.innerHTML = '<i class="icon-minus-sign"></i>';
+            		var description = '';
+            		if(cellTable.fnGetData(nTr)[6] != null) {
+            			description = description + '<strong>Reporter:</strong> ' + cellTable.fnGetData(nTr)[6] + '<br>';
+            		}
+            		if(cellTable.fnGetData(nTr)[7] != null) {
+            			description = description + '<strong>Chemical:</strong> ' + cellTable.fnGetData(nTr)[7] + '<br>';
+            		}
+            		if(cellTable.fnGetData(nTr)[8] != null) {
+            			description = description + '<strong>Experiment Details:</strong> ' + cellTable.fnGetData(nTr)[8] + '<br>';
+            		}
+            		if(cellTable.fnGetData(nTr)[9] != null) {
+            			description = description + '<strong>Condition:</strong> ' + cellTable.fnGetData(nTr)[9] + '<br>';
+            		}
+            		if(cellTable.fnGetData(nTr)[10] != null) {
+            			description = description + '<strong>Details:</strong> ' + cellTable.fnGetData(nTr)[10] + '<br>';
+            		}
+            		
+            		cellTable.fnOpen( nTr, description, 'details' );
+        		}
+   			});
+   			
+   			$('#chemical_evidence_table thead tr').each( function () {
+       	 		this.insertBefore( nCloneTh.cloneNode(true), this.childNodes[0] );
+     
+    		} );
+     
+    		$('#chemical_evidence_table tbody tr').each( function () {
+				if(chemTable.fnGetData(this)[6] != null || 
+    		    	chemTable.fnGetData(this)[8] != null ||
+    		    	chemTable.fnGetData(this)[9] != null ||
+    		    	chemTable.fnGetData(this)[10] != null) {
+   					this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
+				}
+				else {
+					this.insertBefore(nCloneTh.cloneNode(true), this.childNodes[0]);
+				}
+   			} );
+   			
+
+   			$('#chemical_evidence_table tbody tr td button').click(function() {
+   				var nTr = $(this).parents('tr')[0];
+        		if ( chemTable.fnIsOpen(nTr) ) {
+            		// This row is already open - close it
+            	 	this.innerHTML = '<i class="icon-plus-sign"></i>';
+            		chemTable.fnClose( nTr );
+        		}
+        		else {
+            		// Open this row
+            		this.innerHTML = '<i class="icon-minus-sign"></i>';
+            		var description = '';
+            		if(chemTable.fnGetData(nTr)[6] != null) {
+            			description = description + '<strong>Reporter:</strong> ' + chemTable.fnGetData(nTr)[6] + '<br>';
+            		}
+            		if(chemTable.fnGetData(nTr)[8] != null) {
+            			description = description + '<strong>Experiment Details:</strong> ' + chemTable.fnGetData(nTr)[8] + '<br>';
+            		}
+            		if(chemTable.fnGetData(nTr)[9] != null) {
+            			description = description + '<strong>Condition:</strong> ' + chemTable.fnGetData(nTr)[9] + '<br>';
+            		}
+            		if(chemTable.fnGetData(nTr)[10] != null) {
+            			description = description + '<strong>Details:</strong> ' + chemTable.fnGetData(nTr)[10] + '<br>';
+            		}
+            		
+            		chemTable.fnOpen( nTr, description, 'details' );
+        		}
+   			});
+   			
+   			$('#pp_rna_evidence_table thead tr').each( function () {
+       	 		this.insertBefore( nCloneTh.cloneNode(true), this.childNodes[0] );
+     
+    		} );
+     
+    		$('#pp_rna_evidence_table tbody tr').each( function () {
+    		    if(ppRnaTable.fnGetData(this)[7] != null ||
+    		    	ppRnaTable.fnGetData(this)[8] != null ||
+    		    	ppRnaTable.fnGetData(this)[9] != null ||
+    		    	ppRnaTable.fnGetData(this)[10] != null) {
+					this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
+				}
+				else {
+					this.insertBefore(nCloneTh.cloneNode(true), this.childNodes[0]);
+				}
+   			} );
+   			
+
+   			$('#pp_rna_evidence_table tbody tr td button').click(function() {
+   				var nTr = $(this).parents('tr')[0];
+        		if ( ppRnaTable.fnIsOpen(nTr) ) {
+            		// This row is already open - close it
+            	 	this.innerHTML = '<i class="icon-plus-sign"></i>';
+            		ppRnaTable.fnClose( nTr );
+        		}
+        		else {
+            		// Open this row
+            		this.innerHTML = '<i class="icon-minus-sign"></i>';
+            		var description = '';
+            		if(ppRnaTable.fnGetData(nTr)[7] != null) {
+            			description = description + '<strong>Chemical:</strong> ' + ppRnaTable.fnGetData(nTr)[7] + '<br>';
+            		}
+            		if(ppRnaTable.fnGetData(nTr)[8] != null) {
+            			description = description + '<strong>Experiment Details:</strong> ' + ppRnaTable.fnGetData(nTr)[8] + '<br>';
+            		}
+            		if(ppRnaTable.fnGetData(nTr)[9] != null) {
+            			description = description + '<strong>Condition:</strong> ' + ppRnaTable.fnGetData(nTr)[9] + '<br>';
+            		}
+            		if(ppRnaTable.fnGetData(nTr)[10] != null) {
+            			description = description + '<strong>Details:</strong> ' + ppRnaTable.fnGetData(nTr)[10] + '<br>';
+            		}
+            		
+            		ppRnaTable.fnOpen( nTr, description, 'details' );
+        		}
+   			});
+			
+  		});
+  		
+  		
+	} );
+</script>
+
+
+</div>
+
+</body>
+</div>
+</div>
+

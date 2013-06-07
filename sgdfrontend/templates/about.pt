@@ -1,0 +1,12 @@
+<div metal:use-macro="layout">
+    <div metal:fill-slot="content">
+        <header class="jumbotron subhead" id="overview">
+			<div class="container">
+				<h1>About SGD</h1>
+				<p class="lead">
+					This will be the About SGD2.0 page. It still needs to be implemented.
+				</p>
+			</div>
+		</header>
+    </div>
+</div>
