@@ -1,0 +1,5 @@
+*.pyc
+*.DS_Store
+.sass-cache/
+src/encoded/static/css/normalize.css
+src/encoded/static/css/app.css
