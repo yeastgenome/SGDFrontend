@@ -8,7 +8,7 @@
 ================================================== -->
 <header class="jumbotron subhead" id="overview">
 	<div class="row">
-		<h1><span tal:content="bioent['full_name']"></h1>
+		<h1 class="head-alt"><span tal:content="bioent['full_name']"></h1>
 		<p class="lead">
 			<span tal:content="bioent['description']"></span>
 		</p>
@@ -42,7 +42,7 @@
 			<ul class="unstyled">
 				<li><strong>Standard Name: </strong><span tal:content="bioent['display_name']"></li>
 				<li><strong>Systematic Name: </strong><span tal:content="bioent['format_name']"></li>
-				<br></br>
+				<br>
 				<li tal:condition="python: bioent['aliases'] != ''"><strong>Aliases: </strong><span tal:content="bioent['aliases']"></li>
 				<li><strong>Type: </strong><span tal:content="bioent['bioent_type']"></li>
 				<li tal:condition="python: bioent['qualifier']"><strong>Qualifier: </strong><span tal:content="bioent['qualifier']"></li>
@@ -60,7 +60,7 @@
 <section id="go">
 	<div class="page-header">
 		<h1>Gene Ontology <span id='go_header'></span></h1>
-		<a tal:attributes="href go_evidence_link"><button class="btn btn-large btn-warning">All Gene Ontology Evidence <i class="icon-chevron-right icon-white"></i></button></a>
+		<a tal:attributes="href go_evidence_link"><button class="radius">All Gene Ontology Evidence <i class="icon-chevron-right icon-white"></i></button></a>
 		<br></br>
 		<p>* There are <span id='go_comp_message'></span> computational go terms curated for <span tal:content="bioent['display_name']"></span>.</p>
 		
@@ -127,7 +127,7 @@
 <section id="phenotype">
 	<div class="page-header">
 		<h1>Phenotype <span id='phenotype_header'></span></h1> 
-		<a tal:attributes="href phenotype_evidence_link"><button class="btn btn-large btn-warning">All Phenotype Evidence <i class="icon-chevron-right icon-white"></i></button></a>
+		<a tal:attributes="href phenotype_evidence_link"><button class="radius">All Phenotype Evidence <i class="icon-chevron-right icon-white"></i></button></a>
 		<br></br>
 		<!-- Phenotype Table
 		========================================== -->
@@ -197,7 +197,7 @@
 <section id="interactions">
 	<div class="page-header">
 		<h1>Interaction <span id='interaction_header'></span></h1>
-		<a tal:attributes="href interaction_evidence_link"><button class="btn btn-large btn-warning">All Interaction Evidence <i class="icon-chevron-right icon-white"></i></button></a>
+		<a tal:attributes="href interaction_evidence_link"><button class="radius">All Interaction Evidence <i class="icon-chevron-right icon-white"></i></button></a>
 		<br></br>
 		
 		<div>
@@ -256,7 +256,7 @@
 <section id="litguide">
 	<div class="page-header">
 		<h1>References <span id='litguide_header'></span></h1>
-		<a tal:attributes="href bioent_evidence_link"><button class="btn btn-large btn-warning">All References (Lit-guide) <i class="icon-chevron-right icon-white"></i></button></a>
+		<a tal:attributes="href bioent_evidence_link"><button class="radius">All References (Lit-guide) <i class="icon-chevron-right icon-white"></i></button></a>
 		<br></br>
 				
 		<span id='litguide_message' class="hide">No litguide information curated.</span>

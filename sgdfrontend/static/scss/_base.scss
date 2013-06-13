@@ -3,3 +3,12 @@ Base rules - SMACSS
 http://smacss.com/book/type-base
 ************************************************/
 
+/* head-alt used temporarily to mimick bootstrap-ish style */
+.head-alt {
+	color: #fff;
+}
+
+ul.unstyled, ol.unstyled {
+    list-style: none outside none;
+    margin-left: 0;
+}

@@ -7,29 +7,21 @@
 <!-- Subhead
 ================================================== -->
 <header class="jumbotron subhead" id="overview">
-	<div class="container">
-		<br></br>
-		<h1><span tal:content="structure display_name"></h1>
-	</div>
+		<h1 class="head-alt"><span tal:content="structure display_name"></span></h1>
 </header>
-
-<div class="container-fluid">
-
 
 <!-- Docs nav
 ================================================== -->
-<div class="row-fluid">
-	<div class="span3 bs-docs-sidebar">
-		<ul class="nav nav-list bs-docs-sidenav" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
+<div class="row">
+	<div class="small-3 columns">
+		<ul class="side-nav" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
 			<li><h4><span tal:content="structure name_with_link"></h4></li>
 			<li><a href="#evidence"><i class="icon-chevron-right"></i> Evidence</a></li>
           	<li><a href="#literature"><i class="icon-chevron-right"></i> References</a></li>
 		</ul>
 	</div>
 	
-	<div class="span9">  
-
-
+	<div class="small-9 columns">  
 <!-- Evidence
 ================================================== -->
 <section id="evidence">
