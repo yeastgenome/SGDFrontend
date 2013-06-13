@@ -77,15 +77,15 @@
             Cytoscape visualization is loading...
         </div>
         <span>Export:</span>
-        <div class="btn-group">
-        	<a class="btn" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a>
-        	<a class="btn" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a>
-        	<a class="btn" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a>
-        	<a class="btn" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a>
-        	<a class="btn" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a>
-        	<a class="btn" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
-
-        </div>
+        <ul class="button-group">
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a></li>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a></li>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a></li>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a></li>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a></li>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a></li>
+        </ul>
+        
     </div>
 </section>
 
@@ -94,7 +94,7 @@
 <section id="genes">
 	<div class="page-header">
 		<h1>Genes with GO Term <span id='genes_header'></span></h1> 
-		<a tal:attributes="href go_evidence_link"><button class="btn btn-large btn-warning">All Gene Ontology Evidence <i class="icon-chevron-right icon-white"></i></button></a>
+		<a tal:attributes="href go_evidence_link"><button class="button">All Gene Ontology Evidence <i class="icon-chevron-right icon-white"></i></button></a>
 		<br></br>
 		<span id='genes_message'></span>
 		<div id='genes_wrapper'>

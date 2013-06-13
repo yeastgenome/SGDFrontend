@@ -120,15 +120,14 @@
             Cytoscape visualization is loading...
         </div>
         <span>Export:</span>
-        <div class="btn-group">
-        	<a class="btn" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a>
-        	<a class="btn" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a>
-        	<a class="btn" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a>
-        	<a class="btn" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a>
-        	<a class="btn" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a>
-        	<a class="btn" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
-
-        </div>
+        <ul class="button-group">
+        	<a class="small button secondary" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a>
+        	<a class="small button secondary" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a>
+        	<a class="small button secondary" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a>
+        	<a class="small button secondary" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a>
+        	<a class="small button secondary" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a>
+        	<a class="small button secondary" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
+        </ul>
         </div>
 	</div>
 </section>
