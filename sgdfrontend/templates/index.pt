@@ -3,7 +3,9 @@
         <header class="jumbotron masthead" id="overview">
 			<div class="container">
 				<h1>SGD Next Gen.</h1>
-				<p>A new interface for the Saccharomyces Genome Database.</p>
+				<form action="/search" autocomplete="off">
+					<input id="searchfield2" name="keyword" type="text" class="search-query big-search" placeholder="Search">
+				</form>
 			</div>
 		</header>
 	

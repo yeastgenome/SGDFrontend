@@ -7,8 +7,7 @@
 <!-- Subhead
 ================================================== -->
 <header class="jumbotron subhead" id="overview">
-	<div class="container">
-		<br></br>
+	<div class="row">
 		<h1><span tal:content="bioent['full_name']"></h1>
 		<p class="lead">
 			<span tal:content="bioent['description']"></span>
@@ -16,14 +15,12 @@
 	</div>
 </header>
 
-
-<div class="container-fluid">
-
 <!-- Docs nav
 ================================================== -->
-<div class="row-fluid">
-	<div id='sidebar' class="span3 bs-docs-sidebar">
-		<ul class="nav nav-list bs-docs-sidenav affix-top" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
+<div class="row">
+
+	<div id="sidebar" class="large-3 columns">
+		<ul class="side-nav" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
 			<li><h3><span tal:content="bioent['full_name']"></h3></li>
 			<li><a href="#summary"><i class="icon-chevron-right"></i> Summary</a></li>
           	<li><a href="#go"><i class="icon-chevron-right"></i> Gene Ontology</a></li>
@@ -34,7 +31,7 @@
 		</ul>
 	</div>
 	
-	<div class="span9">  
+	<div class="large-9 columns">  
 
 <!-- Summary
 ================================================== -->
@@ -42,7 +39,7 @@
 	<div class="page-header">
 		<h1>Summary</h1>
 		<div>
-			<ul class='unstyled'>
+			<ul class="unstyled">
 				<li><strong>Standard Name: </strong><span tal:content="bioent['display_name']"></li>
 				<li><strong>Systematic Name: </strong><span tal:content="bioent['format_name']"></li>
 				<br></br>

@@ -3,6 +3,16 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       metal:define-macro="layout">
+      
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"
+							xmlns:metal="http://xml.zope.org/namespaces/metal"
+    					    xmlns:tal="http://xml.zope.org/namespaces/tal"
+      						metal:define-macro="layout"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"
+							xmlns:metal="http://xml.zope.org/namespaces/metal"
+      						xmlns:tal="http://xml.zope.org/namespaces/tal"
+      						metal:define-macro="layout"> <!--<![endif]-->
+
         
 <head metal:define-macro="head">
 	<meta charset="utf-8">
@@ -13,12 +23,15 @@
 		
 
 
-	<link href="../static/css/bootstrap.css" rel="stylesheet">
+<!--	<link href="../static/css/bootstrap.css" rel="stylesheet">
 	<link href="../static/css/bootstrap-responsive.css" rel="stylesheet">
 	<link href="../static/css/docs.css" rel="stylesheet">
-	<link href="../static/css/DT_bootstrap.css" rel="stylesheet">
+	<link href="../static/css/DT_bootstrap.css" rel="stylesheet"> 
 	<link href="../static/css/datatable.css" rel="stylesheet">
-	<link href="../static/css/jquery-ui-1.10.1.custom.css" rel="stylesheet">
+	<link href="../static/css/jquery-ui-1.10.1.custom.css" rel="stylesheet"> -->
+	
+	<link href="../static/css/normalize.css" rel="stylesheet">
+	<link href="../static/css/style.css" rel="stylesheet">
 
 	<script src="../static/js/jquery-1.9.1.js"></script>
 	<script src="../static/js/jquery-ui-1.10.1.custom.js"></script>
@@ -47,6 +60,8 @@
     	}
 	} );
 	</script>
+	
+	<script src="../static/js/vendor/custom.modernizr.js"></script>
 
 
 </head>
@@ -55,53 +70,61 @@
 
 <!-- Navbar
 ================================================== -->
-<div class="navbar navbar-inverse navbar-fixed-top">
-	<div class="navbar-inner">
-		<div class="container">
-			<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</button>
-			<a class="brand" href="/">SGD Next Gen.</a>
-			<div class="nav-collapse collapse">
-				<ul class="nav">
-					<li class="">
-						<a href="/">Home</a>
-					</li>
-					<li class="">
-						<a href="/my_sgd">My SGD</a>
-					</li>
-					<li class="">
-						<a href="/help">Help</a>
-					</li>
-					<li class="">
-						<a href="/about">About</a>
-					</li>
-				</ul>
-				<form action="/search" autocomplete="off" class='text-center' style='padding-top:10px;'>
-					<input id="searchfield" name="keyword" type="text" class="search-query" style='width:50%;' placeholder="Search">
+<nav class="top-bar contain-to-grid sticky">
+	<ul class="title-area">
+		<!-- Title Area -->
+		<li class="name">
+		  <h1><a href="#">SGD </a></h1>
+		</li>
+		<!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+		<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+	</ul>
+	<section class="top-bar-section">
+    	<!-- Left Nav Section -->
+    	<ul class="left">
+        	<li class="divider"></li>
+			<li class="">
+				<a href="/">Home</a>
+			</li>
+			<li class="">
+				<a href="/my_sgd">My SGD</a>
+			</li>
+			<li class="">
+				<a href="/help">Help</a>
+			</li>
+			<li class="">
+				<a href="/about">About</a>
+			</li>
+		</ul>
+		<!-- Right Nav Section -->
+    	<ul class="right">
+    		<li>
+    			<form action="/search" autocomplete="off" id="top-bar-search">
+					<input id="searchfield" name="keyword" type="text" class="search-query" placeholder="Search">
 				</form>
-			</div>
-		</div>
-	</div>
-</div>
+    		</li>
+    	</ul>
+	</section>
+</nav>
 
 
 
 <div metal:define-slot="content">
 </div>
  
+<footer class="row">
 
+</footer>
 
 
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-	<script src="../static/js/cytoscapeweb.min.js"></script>
-	
+<script src="../static/js/cytoscapeweb.min.js"></script>	
 <script src="../static/js/bootstrap.js"></script>
 <script src="../static/js/bootstrap-typeahead.js"></script>
+<script src="../static/js/foundation/foundation.js"></script>
+<script src="../static/js/foundation/foundation.topbar.js"></script>
 <script src="../static/js/application.js"></script>
 <script src="../static/js/AC_OETags.min.js"></script>
 

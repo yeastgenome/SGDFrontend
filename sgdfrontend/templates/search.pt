@@ -3,48 +3,42 @@
 
 <!-- Subhead
 ================================================== -->
-<body>
-	<br></br>
-	<div class="container-fluid">
-		<div class="row-fluid">
-			<div class="span3">
-				<h4 id="category_header">Categories</h4>
-				<ul class="unstyled">
-					<li id="gene_entry" tal:condition="python: category == 'all'"><a tal:attributes="href '?keyword=' + keyword + '&category=genes'">Genes</a> <span id='gene_count' class='muted'></span></li>
-          			<li id="go_entry" tal:condition="python: category == 'all'"><a tal:attributes="href '?keyword=' + keyword + '&category=goterms'">Gene Ontology Terms</a> <span id='go_count' class='muted'></span></li>
-          			<li id="phenotype_entry" tal:condition="python: category == 'all'"><a tal:attributes="href '?keyword=' + keyword + '&category=phenotypes'">Phenotypes</a> <span id='phenotype_count' class='muted'></span></li>
-          			<li id="reference_entry" tal:condition="python: category == 'all'"><a tal:attributes="href '?keyword=' + keyword + '&category=references'">References</a> <span id='reference_count' class='muted'></span></li>
+	<div class="row">
+		<div class="large-3 columns">
+			<h4 id="category_header">Categories</h4>
+			<ul class="unstyled">
+				<li id="gene_entry" tal:condition="python: category == 'all'"><a tal:attributes="href '?keyword=' + keyword + '&category=genes'">Genes</a> <span id='gene_count' class='muted'></span></li>
+				<li id="go_entry" tal:condition="python: category == 'all'"><a tal:attributes="href '?keyword=' + keyword + '&category=goterms'">Gene Ontology Terms</a> <span id='go_count' class='muted'></span></li>
+				<li id="phenotype_entry" tal:condition="python: category == 'all'"><a tal:attributes="href '?keyword=' + keyword + '&category=phenotypes'">Phenotypes</a> <span id='phenotype_count' class='muted'></span></li>
+				<li id="reference_entry" tal:condition="python: category == 'all'"><a tal:attributes="href '?keyword=' + keyword + '&category=references'">References</a> <span id='reference_count' class='muted'></span></li>
 
-					<li tal:condition="python: category in {'genes', 'goterms', 'phenotypes', 'references'}"><a tal:attributes="href '?keyword=' + keyword"> &lt; All Results</a></li>
-					<li tal:condition="python: category == 'genes'"><strong>&nbsp;&nbsp;Genes</strong></li>
-					<li tal:condition="python: category == 'goterms'"><strong>&nbsp;&nbsp;GO Terms</strong></li>
-					<li tal:condition="python: category == 'phenotypes'"><strong>&nbsp;&nbsp;Phenotypes</strong></li>
-					<li tal:condition="python: category == 'references'"><strong>&nbsp;&nbsp;References</strong></li>
+				<li tal:condition="python: category in {'genes', 'goterms', 'phenotypes', 'references'}"><a tal:attributes="href '?keyword=' + keyword"> &lt; All Results</a></li>
+				<li tal:condition="python: category == 'genes'"><strong>&nbsp;&nbsp;Genes</strong></li>
+				<li tal:condition="python: category == 'goterms'"><strong>&nbsp;&nbsp;GO Terms</strong></li>
+				<li tal:condition="python: category == 'phenotypes'"><strong>&nbsp;&nbsp;Phenotypes</strong></li>
+				<li tal:condition="python: category == 'references'"><strong>&nbsp;&nbsp;References</strong></li>
 
-				</ul>
-			</div>
-			
-			<div class="span9">
-				<ul tal:condition="python: category != 'all'" class="breadcrumb">
-					<li><a tal:attributes="href '?keyword=' + keyword">All Results</a> <span class="divider">/</span></li>
-  					
-  					<li tal:condition="python: category == 'genes'" class="active">Genes</li>
-  					<li tal:condition="python: category == 'goterms'" class="active">GO Terms</li>
-  					<li tal:condition="python: category == 'phenotypes'" class="active">Phenotypes</li>
-  					<li tal:condition="python: category == 'references'" class="active">References</li>
-
-				</ul>
+			</ul>
+		</div>
+		
+		<div class="large-9 columns">
+			<ul tal:condition="python: category != 'all'" class="breadcrumb">
+				<li><a tal:attributes="href '?keyword=' + keyword">All Results</a> <span class="divider">/</span></li>
 				
-				<div id='page_count' class='muted'>Page <span id='page_num'></span> of <span id='num_results'></span> results.</div>
-				<div class="lead" id="no_documents" style="display:none">Your search - <strong tal:content='keyword'></strong> - did not match any documents.</div>
-			    <br></br>
-				<div id='search_results'></div>
-				<div class="pagination pagination-right" id="pagination">
-				</div>
+				<li tal:condition="python: category == 'genes'" class="active">Genes</li>
+				<li tal:condition="python: category == 'goterms'" class="active">GO Terms</li>
+				<li tal:condition="python: category == 'phenotypes'" class="active">Phenotypes</li>
+				<li tal:condition="python: category == 'references'" class="active">References</li>
+
+			</ul>
+			
+			<div id="page_count" class="muted">Page <span id="page_num"></span> of <span id="num_results"></span> results.</div>
+			<div class="lead" id="no_documents" style="display:none">Your search - <strong tal:content='keyword'></strong> - did not match any documents.</div>
+			<div id="search_results"></div>
+			<div class="pagination pagination-right" id="pagination">
 			</div>
 		</div>
 	</div> 
-</body>
 
 <script>
 		 	
