@@ -45,8 +45,8 @@
   				<th>Phenotype</th>
   				<th>Gene</th>
     			<th>Qualifier</th>
-    			<th>Experiment</th>
     			<th>Mutant</th>
+    			<th>Experiment</th>
     			<th>Allele</th>
     			<th>Reporter</th>
     			<th>Chemical</th>
@@ -71,8 +71,8 @@
   				<th>Phenotype</th>
   				<th>Gene</th>
     			<th>Qualifier</th>
-    			<th>Experiment</th>
     			<th>Mutant</th>
+    			<th>Experiment</th>
     			<th>Allele</th>
     			<th>Reporter</th>
     			<th>Chemical</th>
@@ -97,8 +97,8 @@
   				<th>Phenotype</th>
   				<th>Gene</th>
     			<th>Qualifier</th>
-    			<th>Experiment</th>
     			<th>Mutant</th>
+    			<th>Experiment</th>
     			<th>Allele</th>
     			<th>Reporter</th>
     			<th>Chemical</th>
@@ -123,8 +123,8 @@
   				<th>Phenotype</th>
   				<th>Gene</th>
     			<th>Qualifier</th>
-    			<th>Experiment Type</th>
     			<th>Mutant</th>
+    			<th>Experiment Type</th>
     			<th>Allele</th>
     			<th>Reporter</th>
     			<th>Chemical</th>
