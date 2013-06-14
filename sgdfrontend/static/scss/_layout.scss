@@ -19,4 +19,4 @@ http://smacss.com/book/type-layout
 	height: 45px;
 }
 
-$topbar-height:                        50px !default;
+@include sticky-footer(90px, "#layout-document", "#layout-document-footer", "#layout-page-footer");

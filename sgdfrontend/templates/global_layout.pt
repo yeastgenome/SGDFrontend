@@ -67,17 +67,17 @@
 </head>
 
 <body>
-
+<div id="layout-document">
 <header id="layout-page-header">
 	<div id="layout-page-header-content" class="row">
 		<section class="logo">
 			<span class="logo-label">Saccharomyces Genome Database</span>
 		</section>
 		<section class="header-tools">
-		
+		 Tools
 		</section>
 	</div>
-	<div id="layout-page-header-nav" class="contain-to-grid sticky">
+	<div id="layout-page-header-nav" class="contain-to-grid">
 <!-- Navbar
 ================================================== -->
 		<div class="row">
@@ -170,9 +170,13 @@
 
 <div metal:define-slot="content">
 </div>
- 
-<footer class="row">
 
+</div><!-- #layout-document -->
+<div id="layout-document-footer"></div>
+<footer id="layout-page-footer" class="page-footer">
+	<div class="row">
+		This is footer
+	</div>
 </footer>
 
 

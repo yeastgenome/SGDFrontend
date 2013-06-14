@@ -42,6 +42,12 @@
   "foundation/components/tooltips",
   "foundation/components/dropdown";
 
+// Compass mixins
+@import 
+		"compass/layout/sticky-footer",
+		"compass/css3/images";
+
+
 // SGD Styles
 
 @import 
