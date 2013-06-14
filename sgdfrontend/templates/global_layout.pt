@@ -175,7 +175,22 @@
 <div id="layout-document-footer"></div>
 <footer id="layout-page-footer" class="page-footer">
 	<div class="row">
-		This is footer
+		<div id="footertext">
+			<a href="http://www.stanford.edu"><img src="http://www.yeastgenome.org/wp-content/uploads/2012/12/footer-stanford-logo.png" id="stanford-logo"></a>
+
+<!--
+			<p><a href="http://www.yeastgenome.org">SGD Home</a>
+			<a href="http://www.yeastgenome.org/about"><span>About</span></a>
+			<a href="http://www.yeastgenome.org/blog"><span>Blog</span></a>
+			<a href="http://www.yeastgenome.org/site-map"><span>Site Map</span></a>
+			<a href="http://www.yeastgenome.org/help"><span>Help</span></a>
+			<a href="http://www.stanford.edu/site/terms.html"><span>Terms of Use</span></a><br>
+		<span id="copyright">&copy; Stanford University, Stanford, CA 94305.</span></p>
+		<div id="logos"><a href="http://genetics.stanford.edu"><img src="http://www.yeastgenome.org/wp-content/uploads/2012/05/Stanford_Dept_of_Genetics_l.png" id="genetics-logo"></a><a href="http://med.stanford.edu">
+		<img src="http://www.yeastgenome.org/wp-content/uploads/2012/05/Standford_SOM_logo_only_large.png" id="som-logo"></a>
+		
+			</div> -->
+  		</div>
 	</div>
 </footer>
 
