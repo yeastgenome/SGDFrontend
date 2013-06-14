@@ -1202,11 +1202,11 @@ $row-width: emCalc(1170px); //default is 1000
 
 // Background color for the top bar
 
-$topbar-bg:                            #222 !default;
+$topbar-bg:	#696599 !default;// @include background(linear-gradient(top left, #333, #0c0));
 
 // Height and margin
 
-// $topbar-height:                        45px;
+$topbar-height:                        	  45px;
 // $topbar-margin-bottom:                 emCalc(30px);
 
 // Control Input height for top bar
@@ -1220,7 +1220,7 @@ $topbar-bg:                            #222 !default;
 
 // Style the top bar dropdown elements
 
-// $topbar-dropdown-bg:                   #222;
+$topbar-dropdown-bg:                      #696599;
 // $topbar-dropdown-link-color:           #fff;
 // $topbar-dropdown-link-bg:              lighten($topbar-bg, 5%);
 // $topbar-dropdown-toggle-size:          5px;

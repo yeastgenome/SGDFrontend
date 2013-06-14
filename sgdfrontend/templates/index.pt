@@ -2,7 +2,7 @@
     <div metal:fill-slot="content">
         <header class="jumbotron masthead" id="overview">
 			<div class="container">
-				<h1 class="head-alt">SGD Next Gen.</h1>
+				<h1 class="head-alt">Search SGD</h1>
 				<form action="/search" autocomplete="off">
 					<input id="searchfield2" name="keyword" type="text" class="search-query big-search" placeholder="Search">
 				</form>
