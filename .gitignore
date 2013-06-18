@@ -2,4 +2,4 @@
 *.DS_Store
 .sass-cache/
 sgdfrontend/static/css/normalize.css
-sgdfrontend/static/css/app.css
+sgdfrontend/static/css/style.css
