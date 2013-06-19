@@ -174,9 +174,6 @@ function setup_go_cytoscape_vis(graph_link) {
 		// visual style we will use
 		var visual_style = {
 			nodes: {
-				color: {
-					customMapper: {functionName: "customColor"}
-				},
 				shape: {
 					discreteMapper: {
 						attrName: "bio_type",
@@ -188,10 +185,15 @@ function setup_go_cytoscape_vis(graph_link) {
 						]
 					}
 				},
-				size: { defaultValue: 12, 
+				size: { 
+					defaultValue: 12, 
                     continuousMapper: { attrName: "weight", 
                                         minValue: 12, 
-                                        maxValue: 100 } },
+                                        maxValue: 100 } 
+                },
+                color: {
+					customMapper: {functionName: "customColor"}
+				},
 				labelHorizontalAnchor: "center"
 			},
 		};
@@ -226,7 +228,7 @@ function setup_go_cytoscape_vis(graph_link) {
 					return item.data.highlight || item.data.bio_type != 'GO' || 
 					(f_checked && item.data.sub_type == 'molecular function') ||
 					(p_checked && item.data.sub_type == 'biological process') ||
-					(c_checked && item.data.c_include == 'cellular component');
+					(c_checked && item.data.sub_type == 'cellular component');
 				});
 				vis.layout('ForceDirected');
 			}
