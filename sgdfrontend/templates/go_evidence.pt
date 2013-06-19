@@ -113,7 +113,7 @@
         <br></br>
         </div>
         
-        <div tal:condition="python: split" id="cytoscape_vis">
+        <div id="cytoscape_vis">
 		<h3>Cytoscape Visualization</h3>
 			<label class="checkbox">
       			<input id="f_check" type="checkbox" checked="true" name="categories"> Molecular Function

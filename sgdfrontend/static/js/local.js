@@ -136,40 +136,7 @@ function setup_slider(vis, min_evidence_cutoff, max_evidence_cutoff) {
 function setup_go_cytoscape_vis(graph_link) {
 		// id of Cytoscape Web container div
 		var div_id = "cytoscapeweb";
-                                
-		// visual style we will use
-		var visual_style = {
-			nodes: {
-				color: {
-					discreteMapper: {
-						attrName: "sub_type",
-						entries: [
-							{attrValue: 'FOCUS', value: "#fade71" },
-							{attrValue: 'CELLULAR COMPONENT', value: '#E2A9F3'},
-							{attrValue: 'MOLECULAR FUNCTION', value: '#81F781'},
-							{attrValue: 'BIOLOGICAL PROCESS', value: '#5CB3FF'},
-							{attrValue: 'NORMAL', value: '#5CB3FF'},
-							{attrValue: 'NO_GENES', value: 'white'},
-						]
-					}
-				},
-				shape: {
-					discreteMapper: {
-						attrName: "bio_type",
-						entries: [
-							{attrValue: 'GENE', value: 'ELLIPSE',
-							attrValue: 'GO', value: 'RECTANGLE'}
-						]
-					}
-				},
-				size: { defaultValue: 12, 
-                    continuousMapper: { attrName: "direct_gene_count", 
-                                        minValue: 12, 
-                                        maxValue: 100 } },
-				labelHorizontalAnchor: "center"
-			},
-		};
-                
+		
 		// initialization options
 		var options = {
 			swfPath: "../static/js/CytoscapeWeb",
@@ -178,6 +145,56 @@ function setup_go_cytoscape_vis(graph_link) {
                 
 		// init and draw
 		var vis = new org.cytoscapeweb.Visualization(div_id, options);
+		
+		vis["customColor"] = function (data) {
+			if(data['highlight']) {
+				return "#fade71";
+			}
+			if(data['bio_type'] == 'LOCUS') {
+				return '#5CB3FF';
+			}
+			else if(data['bio_type'] == 'PHENOTYPE') {
+				return '#81F781';
+			}
+			if(data['sub_type'] != null) {
+				if(data['sub_type'] == 'cellular component') {
+					return '#E2A9F3';
+				}
+				else if(data['sub_type'] == 'molecular function') {
+					return '#81F781';
+				}
+				else if(data['sub_type'] == 'biological process') {
+					return '#F7819F';
+				}
+			}
+
+			return 'white'
+   		};
+                                
+		// visual style we will use
+		var visual_style = {
+			nodes: {
+				color: {
+					customMapper: {functionName: "customColor"}
+				},
+				shape: {
+					discreteMapper: {
+						attrName: "bio_type",
+						entries: [
+							{attrValue: 'LOCUS', value: 'ELLIPSE',
+							attrValue: 'GO', value: 'RECTANGLE',
+							attrValue: 'PHENOTYPE', value: 'RECTANGLE',
+							attrValue: 'REFERENCE', value: 'DIAMOND'}
+						]
+					}
+				},
+				size: { defaultValue: 12, 
+                    continuousMapper: { attrName: "weight", 
+                                        minValue: 12, 
+                                        maxValue: 100 } },
+				labelHorizontalAnchor: "center"
+			},
+		};
 		
 		// callback when Cytoscape Web has finished drawing
     	vis.ready(function() {
@@ -206,9 +223,10 @@ function setup_go_cytoscape_vis(graph_link) {
 				var c_checked = $('#c_check').is(':checked');
 
     			vis.filter('nodes', function(item) {
-					return item.data.sub_type == 'FOCUS' || (f_checked && item.data.f_include) ||
-					(p_checked && item.data.p_include) ||
-					(c_checked && item.data.c_include);
+					return item.data.highlight || item.data.bio_type != 'GO' || 
+					(f_checked && item.data.sub_type == 'molecular function') ||
+					(p_checked && item.data.sub_type == 'biological process') ||
+					(c_checked && item.data.c_include == 'cellular component');
 				});
 				vis.layout('ForceDirected');
 			}

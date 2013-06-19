@@ -65,6 +65,8 @@ def phenotype_evidence_table_link(bioent_key=None, biocon_key=None):
     return add_format_name_params('/phenotype_evidence_table?', True, {'bioent':bioent_key, 'biocon': biocon_key})
 def phenotype_ontology_graph_link(biocon_key=None):
     return add_format_name_params('/phenotype_ontology_graph?', True, {'biocon': biocon_key})
+def phenotype_graph_link(bioent_key=None, biocon_key=None):
+    return add_format_name_params('/phenotype_graph?', True, {'biocon': biocon_key, 'bioent':bioent_key})
 
 def cellular_phenotype_filename(bioent_key=None, reference_key=None):
     return create_filename([bioent_key, reference_key], '_cellular_phenotypes')
@@ -139,7 +141,8 @@ def chemical_link(chemical_name):
 #Reference links
 def reference_link(reference_name):
     return backend_start + '/reference/' + reference_name
-
+def reference_graph_link(reference_key=None):
+    return add_format_name_params('/reference_graph?', True, {'reference': reference_key})
 def author_link(author_name):
     return backend_start + '/author/' + author_name
 def assoc_reference_link(author_key):
