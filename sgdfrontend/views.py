@@ -6,7 +6,8 @@ from sgdfrontend.link_maker import chemical_link, phenotype_overview_table_link,
     phenotype_filename, reference_link, go_overview_table_link, \
     interaction_overview_table_link, bioent_overview_table_link, go_filename, \
     interaction_filename, cellular_phenotype_filename, chemical_phenotype_filename, \
-    pp_rna_phenotype_filename, bioent_filename, author_link, assoc_reference_link
+    pp_rna_phenotype_filename, bioent_filename, author_link, assoc_reference_link, \
+    reference_graph_link
  
 def site_layout():
     renderer = get_renderer("templates/global_layout.pt")
@@ -60,6 +61,7 @@ def reference_view(request):
                 'interaction_overview_table_link': interaction_overview_table_link(reference_key=format_name),
                 'phenotype_overview_table_link': phenotype_overview_table_link(reference_key=format_name),
                 'bioent_overview_table_link': bioent_overview_table_link(reference_key=format_name),
+                'reference_graph_link': reference_graph_link(reference_key=format_name),
             
                 'go_filename': go_filename(reference_key=format_name),
                 'interaction_filename': interaction_filename(reference_key=format_name),

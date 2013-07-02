@@ -10,7 +10,7 @@ from sgdfrontend.link_maker import phenotype_link, phenotype_evidence_link, \
     phenotype_filename, phenotype_ontology_graph_link, phenotype_overview_table_link, \
     bioent_link, phenotype_evidence_table_link, cellular_phenotype_evidence_filename, \
     chemical_phenotype_evidence_filename, pp_rna_phenotype_evidence_filename, \
-    phenotype_evidence_filename, biocon_link
+    phenotype_evidence_filename, biocon_link, phenotype_graph_link
 from sgdfrontend.views import site_layout
 
 @view_config(route_name='phenotype', renderer='templates/phenotype.pt')
@@ -50,6 +50,7 @@ def phenotype_evidence(request):
                 'chemical_phenotype_evidence_filename': chemical_phenotype_evidence_filename(bioent_key=format_name),
                 'pp_rna_phenotype_evidence_filename': pp_rna_phenotype_evidence_filename(bioent_key=format_name),
                 'phenotype_evidence_filename': phenotype_evidence_filename(bioent_key=format_name),
+                'phenotype_graph_link': phenotype_graph_link(bioent_key=format_name),
                                
                 'layout': site_layout(),
                 'page_title': 'Phenotype Evidence for ' + bioent['display_name'],
@@ -73,6 +74,7 @@ def phenotype_evidence(request):
                 'chemical_phenotype_evidence_filename': chemical_phenotype_evidence_filename(biocon_key=format_name),
                 'pp_rna_phenotype_evidence_filename': pp_rna_phenotype_evidence_filename(biocon_key=format_name),
                 'phenotype_evidence_filename': phenotype_evidence_filename(biocon_key=format_name),
+                'phenotype_graph_link': phenotype_graph_link(biocon_key=format_name),
                 
                 'layout': site_layout(),
                 'page_title': 'GO Evidence for ' + biocon['display_name'],

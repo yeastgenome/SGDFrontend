@@ -39,6 +39,10 @@
 			<p tal:condition="python: ref['authors'] != ''"><strong>Authors: </strong><span tal:content="structure ref['authors']"></span></p>
 			<p tal:condition="python: ref['pubmed_id'] != ''"><strong>Pubmed ID: </strong><span tal:content="structure ref['pubmed_id']"></span></p>
 			<p tal:condition="python: ref['related_references'] != ''"><strong>Related References: </strong><span tal:content="structure ref['related_references']"></span></p>
+			<p id='primary_wrapper'><strong>Primary Literature For: </strong><span id="primary"></span></p>
+			<p id='additional_wrapper'><strong>Additional Literature For: </strong><span id="additional"></span></p>
+			<p id='review_wrapper'><strong>Review For: </strong><span id="review"></span></p>
+
 			<p tal:condition="python: ref['urls'] != ''"><strong>External Links: </strong><span tal:content="structure ref['urls']"></span></p>
 		</div>
 	</div>
@@ -150,27 +154,22 @@
   			</thead>
 			</table>
 		</div>
-	
-	<!-- Litguide
-================================================== -->
-		<div id='litguide_wrapper'>
-		<h3>Lit-Guide <span id='litguide_header'></h3>
-		<p id='litguide_message' style="display:none;">No litguide information curated from this reference.</p>
 		
-		<!-- Brief
-		========================================== -->
-			<table class='table table-striped table-bordered table-condensed tablesorter' id='litguide_table' width="100%">
-			<thead>
-  			<tr>
-    			<th>Topic</th>
-    			<th>Gene</th>
-    			<th>Reference</th>
-  			</tr>
-  			</thead>
-			</table>
-		</div>
-	</div>
-	
+		<h3>Cytoscape Visualization</h3>		
+		<div id="cytoscapeweb">
+            Cytoscape visualization is loading...
+        </div>
+        <span>Export:</span>
+        <div class="btn-group">
+        	<a class="btn" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a>
+        	<a class="btn" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a>
+        	<a class="btn" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a>
+        	<a class="btn" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a>
+        	<a class="btn" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a>
+        	<a class="btn" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
+
+        </div>
+        </div>
 </section>
 
 
@@ -230,16 +229,50 @@ $(document).ready(function() {
 			
   		});
   		
-  		//Set up litguide table
-		var options = basic_datatable_options("litguide_header", '${bioent_filename}', "litguide_wrapper", "litguide_message");
-		options["aaSorting"] = [[0, "asc"]];
-		options["bProcessing"] = true
-		options["sAjaxSource"] = '${bioent_overview_table_link}';
-		options["aoColumns"] = [null, null, {"bSearchable":false, "bVisible":false}]
-		options["bPaginate"] = true;
-		$('#litguide_table').dataTable(options);
+  		//Set up litguide data
+  		$.getJSON('${bioent_overview_table_link}', function(data) {
+  			var primary = data['primary'];
+  			var additional = data['additional'];
+  			var review = data['review'];
+  			  			
+  			if(primary != '') {
+  				document.getElementById("primary").innerHTML = primary;
+  			}
+  			else {
+  				document.getElementById("primary_wrapper").style.display = 'none';
+  			}
+  			
+  			if(additional != '') {
+  				document.getElementById("additional").innerHTML = additional;
+  			}
+  			else {
+  				document.getElementById("additional_wrapper").style.display = 'none';
+  			}
+  			
+  			if(review != '') {
+  				document.getElementById("review").innerHTML = review;
+  			}
+  			else {
+  				document.getElementById("review_wrapper").style.display = 'none';
+  			}
+
+  		});
 	} );
 </script>
+
+<script type="text/javascript">
+	var vis = null;
+	window.onload=function() {
+	vis = setup_go_cytoscape_vis("${reference_graph_link}");  
+};           
+
+</script>
+        
+<style>
+	/* The Cytoscape Web container must have its dimensions set. */
+	html, body { height: 80%; width: 100%; padding: 0; margin: 0; }
+	#cytoscapeweb { width: 100%; height: 100%; }
+</style>
 
 </div>
 
