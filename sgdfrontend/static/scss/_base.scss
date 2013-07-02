@@ -13,3 +13,7 @@ ul.unstyled, ol.unstyled {
     margin-left: 0;
 }
 /* End of temp styles; remove once off Bootstrap "look" */
+
+input[type="text"] {
+	@include border-radius($global-radius);
+}

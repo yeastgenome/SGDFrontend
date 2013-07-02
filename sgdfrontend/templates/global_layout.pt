@@ -33,6 +33,7 @@
 	<link href="../static/css/normalize.css" rel="stylesheet">
 	<link href="../static/css/style.css" rel="stylesheet">
 
+	<script src="../static/js/vendor/custom.modernizr.js"></script>
 	<script src="../static/js/jquery-1.9.1.js"></script>
 	<script src="../static/js/jquery-ui-1.10.1.custom.js"></script>
 	<script src="../static/js/jquery.dataTables.js"></script>
@@ -60,19 +61,22 @@
     	}
 	} );
 	</script>
-	
-	<script src="../static/js/vendor/custom.modernizr.js"></script>
-
 
 </head>
 
 <body>
+
+
+
 <div id="layout-document">
+
 <header id="layout-page-header">
 	<div id="layout-page-header-content" class="row">
-		<section class="logo">
-			<span class="logo-label">Saccharomyces Genome Database</span>
-		</section>
+		<a href="/">
+			<section class="logo">
+				<span class="logo-label">Saccharomyces Genome Database</span>
+			</section>
+		</a>
 		<section class="header-tools">
 		 Tools
 		</section>
@@ -80,7 +84,7 @@
 	<div id="layout-page-header-nav" class="contain-to-grid">
 <!-- Navbar
 ================================================== -->
-		<div class="row">
+		<div class="contain-to-grid">
 		<nav class="top-bar">
 			<ul class="title-area">
 				<!-- Title Area -->
@@ -96,12 +100,14 @@
 					<li class="divider"></li>
 					<li class="has-dropdown"><a href="#">Analyze</a>
 						<ul class="dropdown">
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
+							<li><a href="#">Gene Lists</a></li>
+							<li><a href="#">BLAST</a></li>
+							<li><a href="#">Fungal BLAST</a></li>
+							<li><a href="#">GO Term Finder</a></li>
+							<li><a href="#">GO Slim Mapper</a></li>
+							<li><a href="#">Pattern Matching</a></li>
+							<li><a href="#">Design Patterns</a></li>
+							<li><a href="#">Restriction Mapper</a></li>
 						</ul>
 					</li>
 					<li class="has-dropdown"><a href="#">Sequence</a>
@@ -154,7 +160,7 @@
 							  <input id="searchfield" name="keyword" type="text" class="search-query radius" placeholder="Search">
 							</div>
 							<div class="small-4 columns">
-							  <a href="#" class="secondary button">Search</a>
+							  <a href="#" class="secondary button"><i class="icon-search"></i></a>
 							</div>
 						  </div>
 						</form>
@@ -199,15 +205,16 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="../static/js/cytoscapeweb.min.js"></script>	
-<script src="../static/js/bootstrap.js"></script>
-<script src="../static/js/bootstrap-typeahead.js"></script>
+<!--<script src="../static/js/bootstrap.js"></script>
+<script src="../static/js/bootstrap-typeahead.js"></script> -->
 <script src="../static/js/foundation/foundation.js"></script>
 <script src="../static/js/foundation/foundation.topbar.js"></script>
-<script src="../static/js/foundation/foundation.dropdown.js"></script>
-<script src="../static/js/application.js"></script>
+<!-- <script src="../static/js/application.js"></script> -->
 <script src="../static/js/AC_OETags.min.js"></script>
 
-
+<script>
+  $(document).foundation();
+</script>
 
 </body>
 </html>
