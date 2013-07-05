@@ -46,15 +46,17 @@
 			<table class='table table-striped table-bordered table-condensed tablesorter' id='genetic_evidence_table' width="100%">
 			<thead>
   			<tr>
+  				<th></th>
   				<th>Interactor</th>
   				<th>Interactor</th>
     			<th>Experiment</th>
     			<th>Annotation</th>
-    			<th>Direction</th>
+    			<th>Action</th>
     			<th>Phenotype</th>
     			<th>Modification</th>
     			<th>Source</th>
     			<th>Reference</th>
+    			<th>Note</th>
   			</tr>
   			</thead>
 			</table>
@@ -68,15 +70,17 @@
 			<table class='table table-striped table-bordered table-condensed tablesorter' id='physical_evidence_table' width="100%">
 			<thead>
   			<tr>
+  				<th></th>
   				<th>Interactor</th>
   				<th>Interactor</th>
     			<th>Experiment</th>
     			<th>Annotation</th>
-    			<th>Direction</th>
+    			<th>Action</th>
     			<th>Phenotype</th>
     			<th>Modification</th>
     			<th>Source</th>
     			<th>Reference</th>
+    			<th>Note</th>
   			</tr>
   			</thead>
 			</table>
@@ -108,14 +112,60 @@
 			var num_rows = genetic_evidence_table.length + physical_evidence_table.length;
 			document.getElementById("evidence_header").innerHTML = '(' + num_rows + ')';
 			
+			//Insert a 'details' column to the table
+			var nCloneTh = document.createElement( 'th' );
+   			var nCloneTd = document.createElement( 'td' );
+    		nCloneTd.className = "center";
+    		var b = document.createElement('button');
+    		b.className = 'btn btn-link';
+    		b.innerHTML = '<i class="icon-plus-sign"></i>';
+         	nCloneTd.appendChild(b);
+			
+
+    		
+    		$('#genetic_evidence_table tbody tr').each( function () {
+    		   this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
+				
+   			} );
+    		
+      		$('#physical_evidence_table tbody tr').each( function () {
+       	 		this.insertBefore( nCloneTh.cloneNode(true), this.childNodes[0] );
+     
+    		} );
+			
   			//Set up genetic evidence table
 			var options = basic_datatable_options("genetic_evidence_header", 
 				'${genetic_interaction_evidence_filename}', "genetic_evidence_wrapper", "genetic_evidence_message");
 			options["bPaginate"] = true;
 			options["aaData"] = genetic_evidence_table;
-			options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null]
+			options["aaSorting"] = [[2, "asc"]];
+			options["aoColumns"] = [{"bSortable":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]
+  			options["fnDrawCallback"] = function(oSettings) {
+  				var table = this;
+  				this.$('tr').each( function () {
+  					if(table.fnGetData(this)[10] != null) {
+    		    		this.removeChild(this.childNodes[0]);
+    		    		this.insertBefore(nCloneTd.cloneNode( true ), this.childNodes[0]);
+    		    	}
+   				});
+   				this.$('button').click( function () {
+  					var nTr = $(this).parents('tr')[0];
+
+        			if ( table.fnIsOpen(nTr) ) {
+            			// This row is already open - close it
+            	 		this.innerHTML = '<i class="icon-plus-sign"></i>';
+            			table.fnClose( nTr );
+        			}
+        			else {
+            			// Open this row
+            			this.innerHTML = '<i class="icon-minus-sign"></i>';
+            			var description = '<strong>Note:</strong> ' + table.fnGetData(nTr)[10] + '<br>';
+            			table.fnOpen( nTr, description, 'details' );
+        			}
+   				});
+  			};
   			if('${hide_interactor}') {
-  			  	options["aoColumns"][1] = {"bSearchable":false, "bVisible":false}
+  			  	options["aoColumns"][2] = {"bSearchable":false, "bVisible":false}
     		}
   			$('#genetic_evidence_table').dataTable(options);
   			
@@ -124,15 +174,37 @@
 				'${physical_interaction_evidence_filename}', "physical_evidence_wrapper", "physical_evidence_message");
 			options["bPaginate"] = true;
 			options["aaData"] = physical_evidence_table;
-			options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null]
+			options["aaSorting"] = [[2, "asc"]];
+			options["aoColumns"] = [{"bSortable":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]
+  			options["fnDrawCallback"] = function(oSettings) {
+  				var table = this;
+  				this.$('tr').each( function () {
+  					if(table.fnGetData(this)[10] != null) {
+    		    		this.removeChild(this.childNodes[0]);
+    		    		this.insertBefore(nCloneTd.cloneNode( true ), this.childNodes[0]);
+    		    	}
+   				});
+   				this.$('button').click( function () {
+  					var nTr = $(this).parents('tr')[0];
+
+        			if ( table.fnIsOpen(nTr) ) {
+            			// This row is already open - close it
+            	 		this.innerHTML = '<i class="icon-plus-sign"></i>';
+            			table.fnClose( nTr );
+        			}
+        			else {
+            			// Open this row
+            			this.innerHTML = '<i class="icon-minus-sign"></i>';
+            			var description = '<strong>Note:</strong> ' + table.fnGetData(nTr)[10] + '<br>';
+            			table.fnOpen( nTr, description, 'details' );
+        			}
+   				});
+  			};
   			if('${hide_interactor}') {
-  			  	options["aoColumns"][1] = {"bSearchable":false, "bVisible":false}
+  			  	options["aoColumns"][2] = {"bSearchable":false, "bVisible":false}
     		}
   			$('#physical_evidence_table').dataTable(options);
   			
-  			if('${hide_interactor}') {
-  			  		
-    		} 
 			
 			//Set up references
 			ref_list = document.getElementById("reference_list");
@@ -142,6 +214,7 @@
 				p.innerHTML = citation;
 				ref_list.appendChild(p);
 			}
+ 
   		});
 	} );
 </script>
