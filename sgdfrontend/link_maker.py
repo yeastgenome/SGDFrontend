@@ -98,6 +98,8 @@ def interaction_graph_link(bioent_key=None):
     return add_format_name_params('/interaction_graph?', True, {'bioent':bioent_key})
 def interaction_filename(bioent_key=None, reference_key=None):
     return create_filename([bioent_key, reference_key], '_interactions')
+def interaction_evidence_resource_link(bioent_key=None):
+    return add_format_name_params('/interaction_evidence_resources?', True, {'bioent':bioent_key})
 
 def physical_interaction_evidence_filename(bioent_key=None, biorel_key=None):
     return create_filename([bioent_key, biorel_key], '_physical_interaction_evidence')
