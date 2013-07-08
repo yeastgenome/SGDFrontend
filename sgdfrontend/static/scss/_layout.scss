@@ -3,6 +3,10 @@ Layout rules - SMACSS
 http://smacss.com/book/type-layout
 ************************************************/
 
+#layout-document {
+	overflow: hidden;
+}
+
 /* Main page header, with global navigation */
 #layout-page-header {
 	width: 100%;
@@ -21,55 +25,4 @@ http://smacss.com/book/type-layout
 
 
 /* PAGE FOOTER */
-@include sticky-footer(90px, "#layout-document", "#layout-document-footer", "#layout-page-footer");
-
-#footer #footertext {
-    padding-left: 25px;
-    padding-top: 8px;
-    vertical-align: middle;
-}
-#footer #footertext p {
-    color: #FFFFFF;
-    float: left;
-    font-size: 12px;
-    padding-left: 40px;
-    padding-top: 23px;
-    text-align: left;
-}
-#footer #footertext p a {
-    color: #FFFFFF;
-    padding-left: 5px;
-    padding-right: 5px;
-}
-#footer #footertext #copyright {
-    font-size: 10px;
-    padding-left: 5px;
-}
-#footertext a {
-    text-decoration: none;
-}
-#footertext img {
-    background: none repeat scroll 0 0 transparent;
-    float: left;
-    height: auto;
-    vertical-align: middle;
-    width: 100%;
-}
-#stanford-logo {
-    max-width: 100px;
-    padding-left: 20px;
-    padding-top: 14px;
-}
-#genetics-logo {
-    max-width: 80px;
-    padding-right: 10px;
-    padding-top: 14px;
-}
-#som-logo {
-    max-width: 35px;
-    padding-top: 17px;
-}
-#logos {
-    float: right;
-    padding-right: 20px;
-}
+@include sticky-footer(90px, "#layout-document", "#layout-document-footer-pusher", "#layout-document-footer");

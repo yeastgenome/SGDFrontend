@@ -3,10 +3,23 @@ Module rules - SMACSS
 http://smacss.com/book/type-module
 *********************************************/
 
+/* Footer Stylings */
+#layout-document-footer {
+	background: #615F8F;
+	@include background-image(linear-gradient(center top , #9190B7 0%, #615F8F 100%));
+}
+
+.header-tools {
+	display: inline-block;
+	float: right;
+}
+
+
 .logo {
 	background: url("../img/logo.gif") no-repeat;
 	height: 80px;
 	width: 400px;
+	display: inline-block;
 	.logo-label {
 		display: inline-block;
 		text-indent: -9999px;

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<!--[if IE 8]> 				 <html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<title>SGD2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Sacc Genome Database">
+	
+	<link href="../static/css/normalize.css" rel="stylesheet">
+	<link href="../static/css/style.css" rel="stylesheet">
+	
+	<script src="../static/js/vendor/respond.min.js"></script>
+	<script src="../static/js/vendor/custom.modernizr.js"></script>
+</head>
+
+<body>
+
+
+
+<div id="layout-document">
+
+<header id="layout-page-header">
+	<div id="layout-page-header-content" class="row">
+		<a href="/">
+			<section class="logo">
+				<span class="logo-label">Saccharomyces Genome Database</span>
+			</section>
+		</a>
+		<section class="header-tools">
+		 Tools
+		</section>
+	</div>
+	<div id="layout-page-header-nav" class="contain-to-grid">
+<!-- Navbar ================================================== -->
+		<div class="contain-to-grid">
+		<nav class="top-bar">
+			<ul class="title-area">
+				<!-- Title Area -->
+				<li class="name">
+				  <h1><a href="/">SGD</a></h1>
+				</li> 
+				<!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+				<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+			</ul>
+			<section class="top-bar-section">
+				<!-- Left Nav Section -->
+				<ul class="left">
+					<li class="divider"></li>
+					<li class="has-dropdown"><a href="#">Analyze</a>
+						<ul class="dropdown">
+							<li><a href="#">Gene Lists</a></li>
+							<li><a href="#">BLAST</a></li>
+							<li><a href="#">Fungal BLAST</a></li>
+							<li><a href="#">GO Term Finder</a></li>
+							<li><a href="#">GO Slim Mapper</a></li>
+							<li><a href="#">Pattern Matching</a></li>
+							<li><a href="#">Design Patterns</a></li>
+							<li><a href="#">Restriction Mapper</a></li>
+						</ul>
+					</li>
+					<li class="has-dropdown"><a href="#">Sequence</a>
+						<ul class="dropdown">
+							<li><a href="#">Download</a></li>
+							<li><a href="#">Genome Browser</a></li>
+							<li><a href="#">BLAST</a></li>
+							<li><a href="#">Fungal BLAST</a></li>
+							<li><a href="#">Gene/Sequence Resources</a></li>
+							<li><a href="#">Reference Genome</a></li>
+							<li><a href="#">Strains and Species</a></li>
+							<li><a href="#">Homology</a></li>
+							<li><a href="#">Resources</a></li>
+						</ul>
+					</li>
+					<li class="has-dropdown"><a href="">Function</a>
+						<ul class="dropdown">
+							<li><a href="#">GO</a></li>
+							<li><a href="#">Expression</a></li>
+							<li><a href="#">Biochemical Pathways</a></li>
+							<li><a href="#">Phenotypes</a></li>
+							<li><a href="#">Interactions</a></li>
+							<li><a href="#">YeastGFP</a></li>
+							<li><a href="#">Resources</a></li>
+						</ul>
+					</li>
+					<li class="has-dropdown"><a href="/my_sgd">Literature</a>
+						<ul class="dropdown">
+							<li><a href="#">Full-text search</a></li>
+							<li><a href="#">New Yeast Papers</a></li>
+							<li><a href="#">YeastBook</a></li>
+							<li><a href="#">Genome-wide Analysis Papers</a></li>
+							<li><a href="#">Resources</a></li>
+						</ul>
+					</li>
+					<li class="has-dropdown"><a href="/my_sgd">Community</a>
+						<ul class="dropdown">
+							<li><a href="#">Colleague Information</a></li>
+							<li><a href="#">Career Resources</a></li>
+							<li><a href="#">Meetings</a></li>
+							<li><a href="#">Nomenclature</a></li>
+							<li><a href="#">Methods and Reagents</a></li>
+							<li><a href="#">Historical Data</a></li>
+							<li><a href="#">Wiki</a></li>
+							<li><a href="#">Resources</a></li>
+						</ul>
+					</li>
+				</ul>
+				<!-- Right Nav Section -->
+				<ul class="right">
+					<li class="has-form">
+						<form action="/search" autocomplete="off" id="top-bar-search">
+						  <div class="row collapse">
+							<div class="small-8 columns">
+							  <input id="searchfield" name="keyword" type="text" class="search-query radius" placeholder="Search">
+							</div>
+							<div class="small-4 columns">
+							  <a href="#" class="secondary button"><i class="icon-search"></i></a>
+							</div>
+						  </div>
+						</form>
+					</li>
+				</ul>
+			</section>
+		</nav>
+		</div>
+	</div>
+</header>
+
+
+
+<div>
+        <header class="jumbotron masthead" id="overview">
+			<div class="container">
+				<h1 class="head-alt">Search SGD</h1>
+				<form action="/search" autocomplete="off">
+					<input id="searchfield2" name="keyword" type="text" class="search-query big-search" placeholder="Search">
+				</form>
+			</div>
+		</header>
+	
+    </div>
+
+</div><!-- #layout-document -->
+<div id="layout-document-footer"></div>
+<footer id="layout-page-footer" class="page-footer">
+	<div class="row">
+		<div id="footertext">
+			<a href="http://www.stanford.edu"><img src="http://www.yeastgenome.org/wp-content/uploads/2012/12/footer-stanford-logo.png" id="stanford-logo"></a>
+
+<!--
+			<p><a href="http://www.yeastgenome.org">SGD Home</a>
+			<a href="http://www.yeastgenome.org/about"><span>About</span></a>
+			<a href="http://www.yeastgenome.org/blog"><span>Blog</span></a>
+			<a href="http://www.yeastgenome.org/site-map"><span>Site Map</span></a>
+			<a href="http://www.yeastgenome.org/help"><span>Help</span></a>
+			<a href="http://www.stanford.edu/site/terms.html"><span>Terms of Use</span></a><br>
+		<span id="copyright">&copy; Stanford University, Stanford, CA 94305.</span></p>
+		<div id="logos"><a href="http://genetics.stanford.edu"><img src="http://www.yeastgenome.org/wp-content/uploads/2012/05/Stanford_Dept_of_Genetics_l.png" id="genetics-logo"></a><a href="http://med.stanford.edu">
+		<img src="http://www.yeastgenome.org/wp-content/uploads/2012/05/Standford_SOM_logo_only_large.png" id="som-logo"></a>
+		
+			</div> -->
+  		</div>
+	</div>
+</footer>
+
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+<script src="../static/js/foundation/foundation.js"></script>
+<script src="../static/js/foundation/foundation.topbar.js"></script>
+<!--
+<script>
+  $(document).foundation();
+</script>
+-->
+</body>
+</html>

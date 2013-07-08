@@ -2,3 +2,8 @@
 State rules - SMACSS 
 http://smacss.com/book/type-base
 *********************************************/
+
+// lte IE8
+.lt-ie9 .top-bar-section .has-dropdown > a:after {
+	display: none;
+}

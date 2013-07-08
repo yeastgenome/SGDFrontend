@@ -17,12 +17,12 @@
   "foundation/components/button-groups",
   "foundation/components/dropdown-buttons",
   "foundation/components/split-buttons",
-  "foundation/components/flex-video",
+  //"foundation/components/flex-video",
   "foundation/components/section",
   "foundation/components/top-bar",
-  "foundation/components/orbit",
-  "foundation/components/reveal",
-  "foundation/components/joyride",
+  //"foundation/components/orbit",
+  //"foundation/components/reveal",
+  //"foundation/components/joyride",
   "foundation/components/clearing",
   "foundation/components/alert-boxes",
   "foundation/components/breadcrumbs",
@@ -36,14 +36,16 @@
   "foundation/components/side-nav",
   "foundation/components/sub-nav",
   "foundation/components/switch",
-  "foundation/components/magellan",
+  //"foundation/components/magellan",
   "foundation/components/tables",
   "foundation/components/thumbs",
   "foundation/components/tooltips",
   "foundation/components/dropdown";
 
 // Compass mixins
-@import 
+@import
+	//"compass",
+	"compass/support",
 	"compass/layout/sticky-footer",
 	"compass/css3/images",
 	"compass/css3/border-radius";
