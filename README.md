@@ -59,11 +59,3 @@ Also see the [Compass Command Line Documentation](http://compass-style.org/help/
 And of course:
 
     $ compass help
-<<<<<<< HEAD
-=======
-    $ pserve development.ini
-
-To run off of a different backend:
-Set the backend_url parameter in the config file to the URL of the new backend.
-=======
->>>>>>> origin/master
