@@ -17,9 +17,13 @@ Dependencies:
 * simplejson
 (The above are all python packages.)
 
+To build the application:
+
+    $ python setup.py develop
+    
 To start the application:
 
-	$ pserve development.ini
+    $ pserve development.ini
 
 To run off of a different backend:
 Set the backend_url parameter in the config file to the URL of the new backend.
