@@ -88,7 +88,7 @@ def phenotype_evidence_filename(bioent_key=None, biocon_key=None):
 
 #Interaction Links
 def interaction_evidence_link(bioent_key=None, biocon_key=None):
-    return add_format_name_params('/interaction_evidence?', False, {'bioent':bioent_key, 'biocon': bioent_key})
+    return add_format_name_params('/interaction_evidence?', False, {'bioent':bioent_key, 'biocon': biocon_key})
 
 def interaction_overview_table_link(bioent_key=None, reference_key=None):
     return add_format_name_params('/interaction_overview_table?', True, {'bioent':bioent_key, 'reference':reference_key})
@@ -98,6 +98,8 @@ def interaction_graph_link(bioent_key=None):
     return add_format_name_params('/interaction_graph?', True, {'bioent':bioent_key})
 def interaction_filename(bioent_key=None, reference_key=None):
     return create_filename([bioent_key, reference_key], '_interactions')
+def interaction_evidence_resource_link(bioent_key=None):
+    return add_format_name_params('/interaction_evidence_resources?', True, {'bioent':bioent_key})
 
 def physical_interaction_evidence_filename(bioent_key=None, biorel_key=None):
     return create_filename([bioent_key, biorel_key], '_physical_interaction_evidence')
