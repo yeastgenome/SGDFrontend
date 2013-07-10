@@ -3,17 +3,63 @@ Module rules - SMACSS
 http://smacss.com/book/type-module
 *********************************************/
 
-/* Footer Stylings */
-#layout-document-footer {
-	background: #615F8F;
-	@include background-image(linear-gradient(center top , #9190B7 0%, #615F8F 100%));
+// Foundation overwrites
+.inline-list {
+	overflow: visible;
 }
 
-.header-tools {
+.small-input {
+	font-size: emCalc(12px);
+}
+
+/* Footer Stylings */
+#layout-document-footer {
+	background: #696599;  //615F8F
+	// @include background-image(linear-gradient(center top , #9190B7 0%, #615F8F 100%));
+}
+
+#header-tools {
 	display: inline-block;
+	float: right;
+	height: 80px;
+	.header-links {
+		height: 25px;
+		margin-top: 3px;
+		font-size: emCalc(13px);
+		font-weight: bold;
+		a {color: rgb(0,0,0);}
+		a:hover {text-decoration: underline;}
+	}
+	.header-search {
+		height: 50px;
+		overflow: none;
+	}
+}
+
+#adv-search-links {
+	font-size: emCalc(11px);
+}
+
+.social-links, .site-links {
+	$inline-list-overflow: visible;
+	@include inline-list;
+	margin: 0;
 	float: right;
 }
 
+.site-links {
+	$inline-list-margin: 0;
+}
+
+.social-links {
+	$inline-list-margin: 0;
+	li {margin-left: emCalc(5px);}
+}
+
+
+#logo-section {
+	height: 80px;
+}
 
 .logo {
 	background: url("../img/logo.gif") no-repeat;
