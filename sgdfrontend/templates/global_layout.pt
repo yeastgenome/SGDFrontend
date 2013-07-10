@@ -71,106 +71,238 @@
 <div id="layout-document">
 
 <header id="layout-page-header">
-	<div id="layout-page-header-content" class="row">
-		<a href="/">
-			<section class="logo">
-				<span class="logo-label">Saccharomyces Genome Database</span>
+		<div class="row" id="layout-page-header-content">
+			<section class="small-4 columns" id="logo-section">
+				<a href="/">
+				<div class="logo">
+					<span class="logo-label">Saccharomyces Genome Database</span>
+				</div>
+				</a>
+			</section><!-- #logo-section -->
+			<section class="small-7 small-offset-1 columns" id="header-tools">
+			 	<div class="row header-links">
+			 		<div class="small-9 columns">
+						<ul class="site-links">
+							<li><a href="http://www.yeastgenome.org/about">About</a></li>
+							<li><a href="http://www.yeastgenome.org/blog">Blog</a></li>
+							<li><a href="http://www.yeastgenome.org/download-data">Download</a></li>
+							<li><a href="http://www.yeastgenome.org/site-map">Site Map</a></li>
+							<li><a href="http://www.yeastgenome.org/help">Help</a></li>
+						</ul>
+					</div>
+					<div class="small-3 columns">
+						<ul class="social-links">
+							<li><a href="/cgi-bin/suggestion" target="_blank" id="email" class="webicon mail small">Email Us</a></li>
+							<li><a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter" class="webicon twitter small">Twitter</a></li>
+							<li><a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" class="webicon facebook small" id="facebook">Facebook</a></li>
+							<li><a href="/feed" target="_blank" id="rss" class="webicon rss small">RSS</a></li>
+						</ul>
+					</div>	
+			 	</div><!-- .header-links -->
+			 	<div class="row header-search">
+			 		<form action="/search" autocomplete="off" id="header-search">
+					  <div class="row collapse">
+						<div class="small-8 small-offset-2 columns">
+						  <input id="searchfield-1" name="keyword" type="text" class="search-query radius" placeholder="Search">
+						</div>
+						<div class="small-2 columns">
+						  <a href="#" class="secondary button postfix radius"><i class="icon-search"></i></a>
+						</div>
+					  </div>
+					</form>
+					<div id="adv-search-links">YeastMine: <a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Batch Analysis</a> or <a target="_blank" href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Advanced Search</a>
+					</div>
+			 	</div><!-- .header-search -->
 			</section>
-		</a>
-		<section class="header-tools">
-		 Tools
-		</section>
-	</div>
-	<div id="layout-page-header-nav" class="contain-to-grid">
-<!-- Navbar
-================================================== -->
-		<div class="contain-to-grid">
-		<nav class="top-bar">
-			<ul class="title-area">
-				<!-- Title Area -->
-				<li class="name">
-				  <h1><a href="/">SGD</a></h1>
-				</li> 
-				<!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
-				<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-			</ul>
-			<section class="top-bar-section">
-				<!-- Left Nav Section -->
-				<ul class="left">
-					<li class="divider"></li>
-					<li class="has-dropdown"><a href="#">Analyze</a>
-						<ul class="dropdown">
-							<li><a href="#">Gene Lists</a></li>
-							<li><a href="#">BLAST</a></li>
-							<li><a href="#">Fungal BLAST</a></li>
-							<li><a href="#">GO Term Finder</a></li>
-							<li><a href="#">GO Slim Mapper</a></li>
-							<li><a href="#">Pattern Matching</a></li>
-							<li><a href="#">Design Patterns</a></li>
-							<li><a href="#">Restriction Mapper</a></li>
-						</ul>
-					</li>
-					<li class="has-dropdown"><a href="#">Sequence</a>
-						<ul class="dropdown">
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-						</ul>
-					</li>
-					<li class="has-dropdown"><a href="">Function</a>
-						<ul class="dropdown">
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-						</ul>
-					</li>
-					<li class="has-dropdown"><a href="/my_sgd">Literature</a>
-						<ul class="dropdown">
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-						</ul>
-					</li>
-					<li class="has-dropdown"><a href="/my_sgd">Community</a>
-						<ul class="dropdown">
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-							<li><a href="#"></a></li>
-						</ul>
-					</li>
-				</ul>
-				<!-- Right Nav Section -->
-				<ul class="right">
-					<li class="has-form">
-						<form action="/search" autocomplete="off" id="top-bar-search">
-						  <div class="row collapse">
-							<div class="small-8 columns">
-							  <input id="searchfield" name="keyword" type="text" class="search-query radius" placeholder="Search">
-							</div>
-							<div class="small-4 columns">
-							  <a href="#" class="secondary button"><i class="icon-search"></i></a>
-							</div>
-						  </div>
-						</form>
-					</li>
-				</ul>
-			</section>
-		</nav>
 		</div>
-	</div>
-</header>
+		<div id="layout-page-header-nav">
+			<div class="contain-to-grid">
+				<nav class="top-bar">
+					<ul class="title-area">
+				<!-- Title Area -->
+						<li class="name">
+						  <h1><a href="/">SGD</a></h1>
+						</li> 
+						<!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+						<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+					</ul>
+					<section class="top-bar-section">
+						<!-- Left Nav Section -->
+						<ul class="left">
+							<li class="divider"></li>
+							<li class="has-dropdown"><a href="#">Analyze</a>
+								<ul class="dropdown">
+									<li><a href="#">Gene Lists</a></li>
+									<li><a href="#">BLAST</a></li>
+									<li><a href="#">Fungal BLAST</a></li>
+									<li><a href="#">GO Term Finder</a></li>
+									<li><a href="#">GO Slim Mapper</a></li>
+									<li><a href="#">Pattern Matching</a></li>
+									<li><a href="#">Design Patterns</a></li>
+									<li><a href="#">Restriction Mapper</a></li>
+								</ul>
+							</li>
+							<li class="has-dropdown"><a href="#">Sequence</a>
+								<ul class="dropdown">
+									<li><a href="#">Download</a></li>
+									<li><a href="#">Genome Browser</a></li>
+									<li><a href="#">BLAST</a></li>
+									<li><a href="#">Fungal BLAST</a></li>
+									<li><a href="#">Gene/Sequence Resources</a></li>
+									<li class="has-dropdown">
+										<a href="#">Reference Genome</a>
+										<ul class="dropdown">
+											<li><a href="#">Download Genome</a></li>
+											<li><a href="#">Genome Snapshot</a></li>
+											<li><a href="#">Chromosome History</a></li>
+											<li><a href="#">Systematic Sequencing Table</a></li>
+											<li><a href="#">Original Sequence Papers</a></li>
+										</ul>
+									</li>
+									<li class="has-dropdown">
+										<a href="#">Strains and Species</a>
+										<ul class="dropdown">
+											<li><a href="#">Align Strain Sequences</a></li>
+											<li><a href="#">Synteny Viewer</a></li>
+										</ul>
+									</li>
+									<li class="has-dropdown">
+										<a href="#">Homology</a>
+										<ul class="dropdown">
+											<li><a href="#">Fungal Alignment</a></li>
+											<li><a href="#">PDB Search</a></li>
+										</ul>
+									</li>
+									<li class="has-dropdown">
+										<a href="#">Resources</a>
+										<ul class="dropdown">
+											<li><a href="#">UnikProtKB (EBI)</a></li>
+											<li><a href="#">InterPro (EBI)</a></li>
+											<li><a href="#">HomoloGene (NCBI)</a></li>
+											<li><a href="#">YGOB (Trinity College)</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="has-dropdown"><a href="">Function</a>
+								<ul class="dropdown">
+									<li class="has-dropdown">
+										<a href="#">GO</a>
+										<ul class="dropdown">
+											<li><a href="#">GO Term Finder</a></li>
+											<li><a href="#">GO Slim Mapper</a></li>
+											<li><a href="#">GO Slim Mapping File</a></li>
+										</ul>
+									</li>
+									<li><a href="#">Expression</a></li>
+									<li><a href="#">Biochemical Pathways</a></li>
+									<li class="has-dropdown">
+										<a href="#">Phenotypes</a>
+										<ul class="dropdown">
+											<li><a href="#">Search for Phenotypes</a></li>
+											<li><a href="#">Browse All Phenotypes</a></li>
+										</ul>
+									</li>
+									<li><a href="#">Interactions</a></li>
+									<li><a href="#">YeastGFP</a></li>
+									<li class="has-dropdown">
+										<a href="#">Resources</a>
+										<ul class="dropdown">
+											<li><a href="#">GO Consortium</a></li>
+											<li><a href="#">BioGRID (U. Toronto)</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="has-dropdown"><a href="/my_sgd">Literature</a>
+								<ul class="dropdown">
+									<li><a href="#">Full-text search</a></li>
+									<li><a href="#">New Yeast Papers</a></li>
+									<li><a href="#">YeastBook</a></li>
+									<li><a href="#">Genome-wide Analysis Papers</a></li>
+									<li class="has-dropdown">
+										<a href="#">Resources</a>
+										<ul class="dropdown">
+											<li><a href="#">PubMed (NCBI)</a></li>
+											<li><a href="#">PubMed Central (NCBI)</a></li>
+											<li><a href="#">Google Scholar</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="has-dropdown"><a href="/my_sgd">Community</a>
+								<ul class="dropdown">
+									<li class="has-dropdown">
+										<a href="#">Colleague Information</a>
+										<ul class="dropdown">
+											<li><a href="#">Find a Colleague</a></li>
+											<li><a href="#">Add or Update Info</a></li>
+											<li><a href="#">Find a Yeast Lab</a></li>
+										</ul>
+									</li>
+									<li><a href="#">Career Resources</a></li>
+									<li class="has-dropdown">
+										<a href="#">Meetings</a>
+										<ul class="dropdown">
+											<li><a href="#">Future</a></li>
+											<li><a href="#">Yeast Genetics</a></li>
+										</ul>
+									</li>
+									<li class="has-dropdown">
+										<a href="#">Nomenclature</a>
+										<ul class="dropdown">
+											<li><a href="#">Submit a Gene Registration</a></li>
+											<li><a href="#">Gene Registry</a></li>
+											<li><a href="#">Nomenclature Conventions</a></li>
+											<li><a href="#">Global Gene Hunter</a></li>
+										</ul>
+									</li>
+									<li class="has-dropdown">
+										<a href="#">Methods and Reagents</a>
+										<ul class="dropdown">
+											<li><a href="#">Strains and Constructs</a></li>
+											<li><a href="#">Reagents</a></li>
+											<li><a href="#">Protocols and Methods</a></li>
+											<li><a href="#">Find a Clone</a></li>
+										</ul>
+									</li>
+									<li class="has-dropdown">
+										<a href="#">Historical Data</a>
+										<ul class="dropdown">
+											<li><a href="#">Physical &amp; Genetic Maps</a></li>
+											<li><a href="#">Genetic Maps</a></li>
+											<li><a href="#">Sequence</a></li>
+											<li><a href="#">Gene Summary Paragraphs</a></li>
+										</ul>
+									</li>
+									<li><a href="#">Wiki</a></li>
+									<li><a href="#">Resources</a></li>
+								</ul>
+							</li>
+						</ul>
+						<!-- Right Nav Section -->
+						<!--
+						<ul class="right">
+				
+							<li class="has-form">
+								<form action="/search" autocomplete="off" id="top-bar-search">
+								  <div class="row collapse">
+									<div class="small-10 columns">
+									  <input id="searchfield" name="keyword" type="text" class="search-query radius" placeholder="Search">
+									</div>
+									<div class="small-2 columns">
+									  <a href="#" class="secondary button postfix"><i class="icon-search"></i></a>
+									</div>
+								  </div>
+								</form>
+							</li>
+						</ul>
+						-->
+					</section>
+		    	</nav>
+		    </div>
+		</div>
+	</header>
 
 
 
