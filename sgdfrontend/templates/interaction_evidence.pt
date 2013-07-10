@@ -21,16 +21,8 @@
 <!-- Docs nav
 ================================================== -->
 <div class="row-fluid">
-	<div class="span3 bs-docs-sidebar">
-		<ul class="nav nav-list bs-docs-sidenav" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
-			<li><h4><span tal:content="structure name_with_link"></h4></li>
-			<li><a href="#evidence"><i class="icon-chevron-right"></i> Interactions</a></li>
-			<li><a href="#resources"><i class="icon-chevron-right"></i> Resources</a></li>
-          	<li><a href="#references"><i class="icon-chevron-right"></i> References</a></li>
-		</ul>
-	</div>
 	
-	<div class="span9">  
+	<div class="span12">  
 
 
 <!-- Genetic Evidence
@@ -87,6 +79,30 @@
         </div>
 		
 	</div>
+</section>
+
+<!-- Network Visualization
+================================================== -->
+<section id='network'>
+	<div class="page-header">
+		<h1>Network Visualization</h1>
+		<strong>Filter Interactions by # Total Evidence:</strong>
+		<br></br>
+		<div id="slider-range-min"></div>
+		<br></br>
+		<div id="cytoscapeweb">
+            Network visualization is loading...
+        </div>
+        <span>Export:</span>
+        <div class="btn-group">
+        	<a class="btn" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a>
+        	<a class="btn" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a>
+        	<a class="btn" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a>
+        	<a class="btn" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a>
+        	<a class="btn" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a>
+        	<a class="btn" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
+        </div>
+    </div>
 </section>
 
 <!-- Resources
@@ -239,6 +255,19 @@
   		});
 	} );
 </script>
+
+<script>
+	var vis = null;
+	window.onload=function() {
+		vis = setup_interaction_cytoscape_vis("${interaction_graph_link}");   
+	};           
+</script>
+        
+<style>
+	/* The Cytoscape Web container must have its dimensions set. */
+	html, body { height: 80%; width: 100%; padding: 0; margin: 0; }
+	#cytoscapeweb { width: 100%; height: 100%; }
+</style>
 
 </div>
 
