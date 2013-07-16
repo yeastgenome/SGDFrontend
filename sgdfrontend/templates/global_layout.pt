@@ -103,7 +103,7 @@
 			 		<form action="/search" autocomplete="off" id="header-search">
 					  <div class="row collapse">
 						<div class="small-8 small-offset-2 columns">
-						  <input id="searchfield-1" name="keyword" type="text" class="search-query radius" placeholder="Search">
+						  <input id="searchfield-1" name="keyword" type="text" class="search-query radius prefix-input" placeholder="Search">
 						</div>
 						<div class="small-2 columns">
 						  <a href="#" class="secondary button postfix radius"><i class="icon-search"></i></a>
@@ -310,8 +310,8 @@
 </div>
 
 </div><!-- #layout-document -->
-<div id="layout-document-footer"></div>
-<footer id="layout-page-footer" class="page-footer">
+<div id="layout-document-footer-pusher"></div>
+<footer id="layout-document-footer" class="page-footer">
 	<div class="row">
 		<div id="footertext">
 			<a href="http://www.stanford.edu"><img src="http://www.yeastgenome.org/wp-content/uploads/2012/12/footer-stanford-logo.png" id="stanford-logo"></a>

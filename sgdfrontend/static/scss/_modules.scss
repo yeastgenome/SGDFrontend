@@ -80,12 +80,18 @@ http://smacss.com/book/type-module
 	margin-right: 0.8em;
 }
 
+
+// Forms
 input[type="text"].big-search {
 	margin: 0 auto;
 	width: 30%;
 	height: 2em;
 	font-size: 2em;
 }
+.prefix-input {@include border-right-radius(0 !important);}
+.postfix-input {@include border-left-radius(0 !important);}
+
+
 
 // temporarily reimplement Bootstrap's jumbotron and masthead
 .jumbotron {
