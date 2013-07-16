@@ -102,10 +102,10 @@
 			 	<div class="row header-search">
 			 		<form action="/search" autocomplete="off" id="header-search">
 					  <div class="row collapse">
-						<div class="small-8 small-offset-2 columns">
+						<div class="small-6 small-offset-5 columns">
 						  <input id="searchfield-1" name="keyword" type="text" class="search-query radius prefix-input" placeholder="Search">
 						</div>
-						<div class="small-2 columns">
+						<div class="small-1 columns">
 						  <a href="#" class="secondary button postfix radius"><i class="icon-search"></i></a>
 						</div>
 					  </div>
