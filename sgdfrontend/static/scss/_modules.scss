@@ -80,6 +80,38 @@ http://smacss.com/book/type-module
 	margin-right: 0.8em;
 }
 
+// Footer
+footer { // should be in states
+	color: #fff;
+	a, a:hover, a:active { 
+		color: #fff;
+		font-size: emCalc(14px);
+	}
+	a:hover { text-decoration: underline; }
+}
+
+#footer-links {
+	display: block;
+	list-style: none;
+	overflow: hidden;
+	margin-bottom: 5px;
+	li { 
+		float: left;
+		margin-right: emCalc(20px);
+	}
+}
+
+.logo-list {
+	list-style: none;
+	float: right;
+	li {
+		float: left;
+		margin-left: 15px;
+	}
+}
+
+#copyright { font-size: emCalc(13px);}
+
 
 // Forms
 input[type="text"].big-search {

@@ -303,32 +303,40 @@
 		    </div>
 		</div>
 	</header>
-
-
-
+	
 <div metal:define-slot="content">
 </div>
 
 </div><!-- #layout-document -->
-<div id="layout-document-footer-pusher"></div>
+
+<div id="layout-document-footer-pusher"><!-- keep empty --></div>
+
 <footer id="layout-document-footer" class="page-footer">
 	<div class="row">
-		<div id="footertext">
-			<a href="http://www.stanford.edu"><img src="http://www.yeastgenome.org/wp-content/uploads/2012/12/footer-stanford-logo.png" id="stanford-logo"></a>
-
-<!--
-			<p><a href="http://www.yeastgenome.org">SGD Home</a>
-			<a href="http://www.yeastgenome.org/about"><span>About</span></a>
-			<a href="http://www.yeastgenome.org/blog"><span>Blog</span></a>
-			<a href="http://www.yeastgenome.org/site-map"><span>Site Map</span></a>
-			<a href="http://www.yeastgenome.org/help"><span>Help</span></a>
-			<a href="http://www.stanford.edu/site/terms.html"><span>Terms of Use</span></a><br>
-		<span id="copyright">&copy; Stanford University, Stanford, CA 94305.</span></p>
-		<div id="logos"><a href="http://genetics.stanford.edu"><img src="http://www.yeastgenome.org/wp-content/uploads/2012/05/Stanford_Dept_of_Genetics_l.png" id="genetics-logo"></a><a href="http://med.stanford.edu">
-		<img src="http://www.yeastgenome.org/wp-content/uploads/2012/05/Standford_SOM_logo_only_large.png" id="som-logo"></a>
-		
-			</div> -->
-  		</div>
+		<div class="small-2 columns">
+			<a href="http://www.stanford.edu"><img src="../static/img/footer-stanford-logo.png" id="stanford-logo"></a>
+		</div>
+		<div class="small-7 columns">
+			<ul id="footer-links">
+				<li><a href="http://www.yeastgenome.org">SGD Home</a></li>
+				<li><a href="http://www.yeastgenome.org/about"><span>About</span></a></li>
+				<li><a href="http://www.yeastgenome.org/blog"><span>Blog</span></a></li>
+				<li><a href="http://www.yeastgenome.org/site-map"><span>Site Map</span></a></li>
+				<li><a href="http://www.yeastgenome.org/help"><span>Help</span></a></li>
+				<li><a href="http://www.stanford.edu/site/terms.html"><span>Terms of Use</span></a></li>
+			</ul>
+			<div id="copyright">&copy; Stanford University, Stanford, CA 94305.</div>
+		</div>
+		<div class="small-3 columns" id="">
+			<ul class="logo-list">
+				<li><a href="http://genetics.stanford.edu">
+					<img src="../static/img/stanford-genetics-logo-sm.png" id="genetics-logo">
+				</a></li>
+				<li><a href="http://med.stanford.edu">
+					<img src="../static/img/stanford-som-logo-sm.png" id="som-logo">
+				</a></li>
+			</ul>
+		</div>
 	</div>
 </footer>
 

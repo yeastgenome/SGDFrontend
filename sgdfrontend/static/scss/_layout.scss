@@ -25,3 +25,7 @@ http://smacss.com/book/type-layout
 
 /* PAGE FOOTER - sticky! */
 @include sticky-footer(90px, "#layout-document", "#layout-document-footer-pusher", "#layout-document-footer");
+
+#layout-document-footer {
+	padding: 22px 0 10px;
+}
