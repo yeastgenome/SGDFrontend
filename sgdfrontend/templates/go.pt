@@ -130,8 +130,7 @@
 	function set_up_go_table() {
 		var options = {};
 		options["bPaginate"] = true;
-		options["sPaginationType"] = "bootstrap";
-        options["oTableTools"] = table_tool_option('${go_filename}', false);
+        options["oTableTools"] = table_tool_option('${go_filename}', true, 0, 1);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[1, "asc"]];
         options["fnInitComplete"] = set_up_message_and_count("genes_header", "genes_message", "genes_wrapper");

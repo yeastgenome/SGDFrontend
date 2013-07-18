@@ -29,9 +29,8 @@ function add_analyze_tabletool(table_index, name_with_link_index) {
 	
 	TableTools.BUTTONS.analyze = $.extend( true, TableTools.buttonBase, {
 		"sNewLine": "<br>",
-		"sButtonText": "Analyze",
+		"sButtonText": "Analyze List",
 		"sUrl": "/analyze",
-		"sButtonClass": "btn btn-info",
 		"fnClick": function( nButton, oConfig ) {
 			var path = oConfig.sUrl;
 			var table = $.fn.dataTable.fnTables(true)[table_index];

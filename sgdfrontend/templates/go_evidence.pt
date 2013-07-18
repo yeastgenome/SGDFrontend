@@ -156,7 +156,6 @@
 	function set_up_c_table(data) {		
 		var options = {};
 		options["bPaginate"] = true;
-		options["sPaginationType"] = "bootstrap";
         options["oTableTools"] = table_tool_option('${go_c_evidence_filename}', true, 0, 1);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[0, "asc"]];
@@ -169,8 +168,7 @@
 	function set_up_p_table(data) {		
 		var options = {};
 		options["bPaginate"] = true;
-		options["sPaginationType"] = "bootstrap";
-        options["oTableTools"] = table_tool_option('${go_p_evidence_filename}', true, 0, 1);
+        options["oTableTools"] = table_tool_option('${go_p_evidence_filename}', true, 1, 1);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[0, "asc"]];
         options["fnInitComplete"] = set_up_message_and_count("evidence_p_header", "evidence_p_message", "evidence_p_wrapper");
@@ -183,8 +181,7 @@
 		//Set up function table
 		var options = {};
 		options["bPaginate"] = true;
-		options["sPaginationType"] = "bootstrap";
-        options["oTableTools"] = table_tool_option('${go_f_evidence_filename}', true, 0, 1);
+        options["oTableTools"] = table_tool_option('${go_f_evidence_filename}', true, 2, 1);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[0, "asc"]];
         options["fnInitComplete"] = set_up_message_and_count("evidence_f_header", "evidence_f_message", "evidence_f_wrapper");
@@ -197,8 +194,7 @@
 	  	//Set up evidence table
 	  	var options = {};
 		options["bPaginate"] = true;
-		options["sPaginationType"] = "bootstrap";
-        options["oTableTools"] = table_tool_option('${go_evidence_filename}', true, 0, 1);
+        options["oTableTools"] = table_tool_option('${go_evidence_filename}', true, 3, 1);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[0, "asc"]];
         options["fnInitComplete"] = set_up_message_and_count("evidence_header", "evidence_message", "evidence_wrapper");

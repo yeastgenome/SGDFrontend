@@ -21,40 +21,18 @@
 	<div id='sidebar' class="span3 bs-docs-sidebar">
 		<ul class="nav nav-list bs-docs-sidenav affix-top" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
 			<li><h3><span> Analyze Gene List</h3></li>
+			<li><a href="#analyze"><i class="icon-chevron-right"></i> Tools</a></li>
           	<li><a href="#gene_list"><i class="icon-chevron-right"></i>Genes</a></li>
-			<li><a href="#analyze"><i class="icon-chevron-right"></i> Analyses</a></li>
 		</ul>
 	</div>
 	
 	<div class="span9"> 
 
-
-<!-- Gene List
-================================================== -->
-<section id="gene_list">
-	<div class="page-header">
-		<h1>Genes <span id='gene_list_header'></h1>
-		<table class='table table-striped table-bordered table-condensed tablesorter' id='gene_list_table' width="100%">
-		<thead>
-  		<tr>
-  			<th>Gene Name</th>
-  			<th>Description</th>
-  		</tr>
-  		</thead>
-  		<tr tal:repeat="bioent python: bioents">
-  			<td tal:content="structure bioent['name_with_link']"></td>
-  			<td tal:content="bioent['description']"></td>
-  		</tr>
-		</table>
-		
-	</div>
-</section>
-
 <!-- Analyze
 ================================================== -->
 <section id="analyze">
 	<div class="page-header">
-		<h1>Analyses</h1>
+		<h1>Tools</h1>
 		
 		<ul class="thumbnails">
   			<li class="span3">
@@ -117,11 +95,31 @@
 	</div>
 </section>
 
+<!-- Gene List
+================================================== -->
+<section id="gene_list">
+	<div class="page-header">
+		<h1>Genes <span id='gene_list_header'></h1>
+		<table class='table table-striped table-bordered table-condensed tablesorter' id='gene_list_table' width="100%">
+		<thead>
+  		<tr>
+  			<th>Gene Name</th>
+  			<th>Description</th>
+  		</tr>
+  		</thead>
+  		<tr tal:repeat="bioent python: bioents">
+  			<td tal:content="structure bioent['name_with_link']"></td>
+  			<td tal:content="bioent['description']"></td>
+  		</tr>
+		</table>
+		
+	</div>
+</section>
+
 <script>
 	function set_up_gene_table() {
 		var options = {};
 		options["bPaginate"] = true;
-		options["sPaginationType"] = "bootstrap";
 		options["aaSorting"] = [[0, "asc"]];
         options["oTableTools"] = table_tool_option("gene_list", false);
 		options["sDom"] = '<"clear">lfrtipT';
@@ -133,7 +131,6 @@
 	function set_up_go_enrichment_table(data) {
 		var options = {};
 		options["bPaginate"] = true;
-		options["sPaginationType"] = "bootstrap";
 		options["aaSorting"] = [[5, "asc"]];
         options["oTableTools"] = table_tool_option('${enrichment_header_filename}', false);
 		options["sDom"] = '<"clear">lfrtipT';

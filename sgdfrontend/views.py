@@ -8,7 +8,6 @@ from sgdfrontend.link_maker import chemical_link, phenotype_overview_table_link,
     interaction_filename, cellular_phenotype_filename, chemical_phenotype_filename, \
     pp_rna_phenotype_filename, bioent_filename, author_link, assoc_reference_link, \
     reference_graph_link, list_link, go_enrichment_link, enrichment_header_filename
-import json
  
 def site_layout():
     renderer = get_renderer("templates/global_layout.pt")

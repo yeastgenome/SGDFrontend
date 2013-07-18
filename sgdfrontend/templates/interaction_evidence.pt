@@ -24,8 +24,9 @@
 	<div id='sidebar' class="span3 bs-docs-sidebar">
 		<ul class="nav nav-list bs-docs-sidenav affix-top" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
 			<li><h3><span tal:content="structure name_with_link"></h3></li>
-          	<li><a href="#interactors"><i class="icon-chevron-right"></i>Interactors</a></li>
-			<li><a href="#evidence"><i class="icon-chevron-right"></i> Evidence</a></li>
+          	<li><a href="#interactors"><i class="icon-chevron-right"></i>Interactors Summary</a></li>
+			<li><a href="#genetic_interactions"><i class="icon-chevron-right"></i> Genetic Interactions</a></li>
+			<li><a href="#physical_interactions"><i class="icon-chevron-right"></i> Physical Interactions</a></li>
 			<li><a href="#network"><i class="icon-chevron-right"></i> Network Visualization</a></li>
 			<li><a href="#resources"><i class="icon-chevron-right"></i> Resources</a></li>
 			<li><a href="#references"><i class="icon-chevron-right"></i> References</a></li>
@@ -38,35 +39,19 @@
 ================================================== -->
 <section id="interactors">
 	<div class="page-header">
-		<h1>Interactors <span id='interaction_header'></h1>
+		<h1>Interactors Summary</h1>
 		
-		<span id='interaction_message'></span>
-		<div id='interaction_wrapper'>
-			<table class='table table-striped table-bordered table-condensed tablesorter' id='interactor_table' width="100%">
-			<thead>
-  			<tr>
-  				<th>Interactor</th>
-  				<th>Interactor</th>
-    			<th>Genetic Evidence</th>
-    			<th>Physical Evidence</th>
-    			<th>Total Evidence</th>
-  			</tr>
-  			</thead>
-			</table>
-        </div>
-        <br></br>
 	</div>
 </section>
 
 
 <!-- Genetic Evidence
 ================================================== -->
-<section id="evidence">
+<section id="genetic_interactions">
 	<div class="page-header">
-		<h1>Evidence <span id='evidence_header'></h1>
+		<h1>Genetic Evidence <span id='genetic_evidence_header'></h1>
 		<span>Source: <a href="http://thebiogrid.org/" target="_blank">BioGRID</a></span>
 		
-		<h3>Genetic Evidence <span id='genetic_evidence_header'></h3>
 		<span id='genetic_evidence_message'></span>
 		<div id='genetic_evidence_wrapper'>
 			<table class='table table-striped table-bordered table-condensed tablesorter' id='genetic_evidence_table' width="100%">
@@ -87,8 +72,15 @@
 			</table>
         </div>
         <br></br>
-		
-		<h3>Physical Evidence <span id='physical_evidence_header'></h3>
+   </div>
+</section>
+
+<!-- Physical Evidence
+================================================== -->
+<section id="physical_interactions">
+	<div class="page-header">		
+		<h1>Physical Interactions <span id='physical_evidence_header'></h1>
+		<span>Source: <a href="http://thebiogrid.org/" target="_blank">BioGRID</a></span>
 
 		<span id='physical_evidence_message'></span>
 		<div id='physical_evidence_wrapper'>
@@ -178,20 +170,6 @@
   	    }
   	}
   	
-  	function set_up_interaction_table() {
-		var options = {};
-		options["bPaginate"] = true;
-		options["sPaginationType"] = "bootstrap";
-        options["oTableTools"] = table_tool_option('${interactor_filename}', true, 0, 1);
-		options["sDom"] = '<"clear">lfrtipT';
-		options["aaSorting"] = [[4, "desc"]];
-        options["fnInitComplete"] = set_up_message_and_count("interaction_header", "interaction_message", "interaction_wrapper");
-		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, {"sType":"num-html"}];
-		options["bProcessing"] = true;
-		options["sAjaxSource"] = "${interaction_overview_table_link}";
-		$('#interactor_table').dataTable(options);
-	}
-  	
   	function set_up_genetic_table(data) {  		
   		//Insert a 'details' column to the table  		
   		add_detail_column('genetic_evidence_table');
@@ -199,7 +177,6 @@
 		//Set up genetic evidence table
 		var options = {};
 		options["bPaginate"] = true;
-		options["sPaginationType"] = "bootstrap";
         options["oTableTools"] = table_tool_option('${genetic_interaction_evidence_filename}', true, 1, 2);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[2, "asc"]];
@@ -218,7 +195,6 @@
 		//Set up physical evidence data
 		var options = {};
 		options["bPaginate"] = true;
-		options["sPaginationType"] = "bootstrap";
         options["oTableTools"] = table_tool_option('${physical_interaction_evidence_filename}', true, 2, 2);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[2, "asc"]];
@@ -232,15 +208,12 @@
 
 	
 	$(document).ready(function() {
-		//Set up interaction table
-  		set_up_interaction_table();
 	
 		//Get resources
 	  	$.getJSON("${resource_link}", set_up_resources);
 	
 		//Get evidence data
   		$.getJSON("${interaction_evidence_table_link}", function(data) {
-  			set_up_count(data['genetic'].length + data['physical'].length, "evidence_header");
 			set_up_genetic_table(data['genetic']);
 			set_up_physical_table(data['physical']);
 			set_up_references(data['reference'], 'reference_list');

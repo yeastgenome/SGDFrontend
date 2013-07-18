@@ -154,79 +154,93 @@
   			</thead>
 			</table>
 		</div>
-		
-		<h3>Cytoscape Visualization</h3>		
-		<div id="cytoscapeweb">
-            Cytoscape visualization is loading...
-        </div>
-        <span>Export:</span>
-        <div class="btn-group">
-        	<a class="btn" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a>
-        	<a class="btn" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a>
-        	<a class="btn" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a>
-        	<a class="btn" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a>
-        	<a class="btn" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a>
-        	<a class="btn" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
-
-        </div>
-        </div>
 </section>
 
 
 <script>
-$(document).ready(function() {
-
-		//Set up go table
-		var options = basic_datatable_options("go_header", '${go_filename}', "go_wrapper", "go_message");
+	
+	function set_up_go_table() {
+		var options = {};
+		options["bPaginate"] = true;
+        options["oTableTools"] = table_tool_option('${go_filename}', true, 0, 1);
+		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[0, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("go_header", "go_message", "go_wrapper");
+		options["aoColumns"] = [null, null, {"bSearchable":false, "bVisible":false}, null]
 		options["bProcessing"] = true
 		options["sAjaxSource"] = '${go_overview_table_link}';
-		options["aoColumns"] = [null, null, {"bSearchable":false, "bVisible":false}, null]
+		
+  		$('#go_table').dataTable(options);
+	}
+	
+	function set_up_interaction_table() {
+		var options = {};
 		options["bPaginate"] = true;
-		$('#go_table').dataTable(options);
-
-  		//Set up interaction table
-		var options = basic_datatable_options("interaction_header", '${interaction_filename}', "interaction_wrapper", "interaction_message");
+        options["oTableTools"] = table_tool_option('${interaction_filename}', true, 0, 1);
+		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[0, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("interaction_header", "interaction_message", "interaction_wrapper");
+		options["aoColumns"] = [null, null, {"bSearchable":false, "bVisible":false}, null]
 		options["bProcessing"] = true
 		options["sAjaxSource"] = '${interaction_overview_table_link}';
+		
+  		$('#interaction_table').dataTable(options);
+	}
+	
+	function set_up_pheno_cell_table(data) {
+		var options = {};
 		options["bPaginate"] = true;
-		$('#interaction_table').dataTable(options);
+        options["oTableTools"] = table_tool_option('${cellular_phenotype_filename}', true, 0, 1);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[0, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("cellular_phenotype_header", "phenotype_message", "phenotype_wrapper");
+		options["aaData"] = data;
+		
+  		$('#phenotype_table').dataTable(options);
+	}
+	
+	function set_up_pheno_chem_table(data) {
+		var options = {};
+		options["bPaginate"] = true;
+        options["oTableTools"] = table_tool_option('${chemical_phenotype_filename}', true, 0, 1);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[1, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("chemical_phenotype_header", "chemical_phenotype_message", "chemical_phenotype_wrapper");
+		options["aaData"] = data;
+		
+  		$('#chemical_phenotype_table').dataTable(options);
+	}
+	
+	function set_up_pheno_pp_table(data) {
+		var options = {};
+		options["bPaginate"] = true;
+        options["oTableTools"] = table_tool_option('${pp_rna_phenotype_filename}', true, 0, 1);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[1, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("pp_rna_phenotype_header", "pp_rna_phenotype_message", "pp_rna_phenotype_wrapper");
+		options["aaData"] = data;
+		
+  		$('#pp_rna_phenotype_table').dataTable(options);
+	}
+	
+	$(document).ready(function() {
+
+		set_up_go_table();
+  		set_up_interaction_table();
 			
   		//Get phenoevidence data
   		$.getJSON('${phenotype_overview_table_link}', function(data) {
-  			var phenotype_table = data['cellular_pheno'];
-  			var chemical_phenotype_table = data['chemical_pheno'];
-  			var pp_rna_phenotype_table = data['pp_rna_pheno'];
+  			set_up_pheno_cell_table(data['cellular_pheno']);
+  			set_up_pheno_chem_table(data['chemical_pheno']);
+  			set_up_pheno_pp_table(data['pp_rna_pheno']);
 			
 			//Set total phenotype count
-			var num_rows = phenotype_table.length + chemical_phenotype_table.length + pp_rna_phenotype_table.length;
-			document.getElementById("phenotype_header").innerHTML = '(' + num_rows + ')';
+			var num_rows = data['cellular_pheno'].length + data['chemical_pheno'].length + data['pp_rna_pheno'].length;
+			set_up_count(num_rows, "phenotype_header");
+			
 			if(num_rows == 0) {
 				document.getElementById('all_phenotype_wrapper').style.display = 'none';
 			}
-			
-  			//Set up phenotype table
-			var options = basic_datatable_options("cellular_phenotype_header", '${cellular_phenotype_filename}', "phenotype_wrapper", "phenotype_message");
-			options["aaSorting"] = [[0, "asc"]];
-			options["aaData"] = phenotype_table;
-			options["bPaginate"] = true;
-			$('#phenotype_table').dataTable(options);
-		
-			//Set up chemical phenotype table
-			var options = basic_datatable_options("chemical_phenotype_header", '${chemical_phenotype_filename}', "chemical_phenotype_wrapper", "chemical_phenotype_message");
-			options["aaSorting"] = [[1, "asc"]];
-			options["aaData"] = chemical_phenotype_table;
-			options["bPaginate"] = true;
-			$('#chemical_phenotype_table').dataTable(options);
-		
-			//Set up pp-rna phenotype table
-			var options = basic_datatable_options("pp_rna_phenotype_header", '${pp_rna_phenotype_filename}', "pp_rna_phenotype_wrapper", "pp_rna_phenotype_message");
-			options["aaSorting"] = [[1, "asc"]];
-			options["aaData"] = pp_rna_phenotype_table;
-			options["bPaginate"] = true;
-			$('#pp_rna_phenotype_table').dataTable(options);
-			
   		});
   		
   		//Set up litguide data
@@ -260,19 +274,6 @@ $(document).ready(function() {
 	} );
 </script>
 
-<script type="text/javascript">
-	var vis = null;
-	window.onload=function() {
-	vis = setup_go_cytoscape_vis("${reference_graph_link}");  
-};           
-
-</script>
-        
-<style>
-	/* The Cytoscape Web container must have its dimensions set. */
-	html, body { height: 80%; width: 100%; padding: 0; margin: 0; }
-	#cytoscapeweb { width: 100%; height: 100%; }
-</style>
 
 </div>
 
