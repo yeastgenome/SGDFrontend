@@ -115,9 +115,9 @@
 
 <script type="text/javascript">
 	var vis = null;
-window.onload=function() {
-	vis = setup_ontology_cytoscape_vis("${go_ontology_graph_link}");   
-};           
+	window.onload=function() {
+		vis = setup_ontology_cytoscape_vis("${go_ontology_graph_link}");   
+	};           
 </script>
         
 <style>
@@ -127,18 +127,24 @@ window.onload=function() {
 </style>
 
 <script>
-	$(document).ready(function() {
-		//Set up gene table
-		var options = basic_datatable_options("genes_header", 
-				'${go_filename}', "genes_wrapper", "genes_message");
+	function set_up_go_table() {
+		var options = {};
+		options["bPaginate"] = true;
+		options["sPaginationType"] = "bootstrap";
+        options["oTableTools"] = table_tool_option('${go_filename}', false);
+		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[1, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("genes_header", "genes_message", "genes_wrapper");
 		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null]
 		options["bProcessing"] = true;
 		options["sAjaxSource"] = '${go_overview_table_link}';
-		options["bPaginate"] = true;
   		$('#genes_table').dataTable(options);	
-  		
-	} );
+
+	}
+	
+	$(document).ready(function() {
+		set_up_go_table();
+	});
 </script>
 
 

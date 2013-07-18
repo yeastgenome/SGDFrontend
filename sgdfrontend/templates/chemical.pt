@@ -65,17 +65,24 @@
 
 
 <script>
-$(document).ready(function() {
-		alert('${phenotype_overview_table_link}');
-		//Set up phenotype table
-		var options = basic_datatable_options("phenotype_header", '${phenotype_filename}', "phenotype_wrapper", "phenotype_message");
-		options["aaSorting"] = [[0, "asc"]];
-		options["bProcessing"] = true
-		options["sAjaxSource"] = '${phenotype_overview_table_link}';
-		options["aoColumns"] = [null, null, null, null]
+	
+	function set_up_phenotype_table() {
+		var options = {};
 		options["bPaginate"] = true;
-		$('#phenotype_table').dataTable(options);
-	} );
+		options["sPaginationType"] = "bootstrap";
+		options["bProcessing"] = true
+        options["oTableTools"] = table_tool_option('${phenotype_filename}', false);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[0, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("phenotype_header", "phenotype_message", "phenotype_wrapper");
+		options["fnDrawCallback"] = set_up_details(get_details);
+		options["aoColumns"] = [null, null, null, null]
+		options["sAjaxSource"] = '${phenotype_overview_table_link}';
+	}
+	
+	$(document).ready(function() {
+		set_up_phenotype_table();
+	});
 </script>
 
 </div>

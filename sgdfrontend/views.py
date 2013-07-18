@@ -7,7 +7,8 @@ from sgdfrontend.link_maker import chemical_link, phenotype_overview_table_link,
     interaction_overview_table_link, bioent_overview_table_link, go_filename, \
     interaction_filename, cellular_phenotype_filename, chemical_phenotype_filename, \
     pp_rna_phenotype_filename, bioent_filename, author_link, assoc_reference_link, \
-    reference_graph_link
+    reference_graph_link, list_link, go_enrichment_link, enrichment_header_filename
+import json
  
 def site_layout():
     renderer = get_renderer("templates/global_layout.pt")
@@ -114,5 +115,24 @@ def download_graph_view(request):
     headers['Content-Description'] = 'File Transfer'
     return request.response
 
+
+@view_config(route_name='analyze', renderer='templates/analyze.pt')
+def analyze_view(request):
+    locus_format_names = request.GET['locus']
+    bioents = get_json(list_link(), data={'locus': locus_format_names})
+    if bioents is None:
+        return Response(status_int=500, body='Bioents could not be found.') 
+    page = {    'bioents': bioents,
+                'bioent_ids': [bioent['id'] for bioent in bioents], 
+                'gene_list_filename': 'gene_list',
+                'go_enrichment_link': go_enrichment_link(),
+                'enrichment_header_filename': enrichment_header_filename(),
+                #'send_to_yeastmine_link': send_to_yeastmine_link(),
+                #'send_to_go_slim_link': send_to_go_slim_link(),
+                #'send_to_goterm_finder': send_to_goterm_finder(),
+                'layout': site_layout(),
+                'page_title': 'Analyze Gene List'
+            }
+    return page
 
 

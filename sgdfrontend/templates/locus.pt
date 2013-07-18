@@ -273,97 +273,127 @@
 
 
 <script>
-
+	
+	function set_up_go_f(data) {		
+		//Set up function table
+		var options = {};
+  		options["bPaginate"] = false;
+        options["oTableTools"] = table_tool_option('${go_f_filename}', false);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[0, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("go_f_header", "go_f_message", "go_f_wrapper");
+		options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null]
+		options["aaData"] = data;
+  		$('#go_f_table').dataTable(options);
+	}
+	
+	function set_up_go_c(data) {
+		//Set up component table
+		var options = {};
+		options["bPaginate"] = false;
+        options["oTableTools"] = table_tool_option('${go_c_filename}', false);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[0, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("go_c_header", "go_c_message", "go_c_wrapper");
+		options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null]
+		options["aaData"] = data;
+		$('#go_c_table').dataTable(options);	
+	}
+	
+	function set_up_go_p(data) {
+		//Set up process table
+		var options = {};
+		options["bPaginate"] = false;
+        options["oTableTools"] = table_tool_option('${go_p_filename}', false);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[0, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("go_p_header", "go_p_message", "go_p_wrapper");
+		options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null]
+		options["aaData"] = data;
+		$('#go_p_table').dataTable(options);
+	}
+	
+	function set_up_pheno_cell(data) {
+		var options = {};
+		options["bPaginate"] = false;
+        options["oTableTools"] = table_tool_option('${cellular_phenotype_filename}', false);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[0, "asc"], [1, 'asc']];
+        options["fnInitComplete"] = set_up_message_and_count("cellular_phenotype_header", "phenotype_message", "phenotype_wrapper");
+		options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null];
+		options["aaData"] = data;
+		$('#phenotype_table').dataTable(options);
+	}
+	
+	function set_up_pheno_chem(data) {
+		var options = {};
+		options["bPaginate"] = false;
+        options["oTableTools"] = table_tool_option('${chemical_phenotype_filename}', false);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[1, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("chemical_phenotype_header", "chemical_phenotype_message", "chemical_phenotype_wrapper");
+		options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null];
+		options["aaData"] = data;
+		$('#chemical_phenotype_table').dataTable(options);
+	}
+	
+	function set_up_pheno_pp(data) {
+		var options = {};
+		options["bPaginate"] = false;
+        options["oTableTools"] = table_tool_option('${pp_rna_phenotype_filename}', false);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[1, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("pp_rna_phenotype_header", "pp_rna_phenotype_message", "pp_rna_phenotype_wrapper");
+		options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null];
+		options["aaData"] = data;
+		$('#pp_rna_phenotype_table').dataTable(options);
+	}
+	
+	function set_up_interaction_table() {
+		var options = {};
+		options["bPaginate"] = true;
+		options["sPaginationType"] = "bootstrap";
+        options["oTableTools"] = table_tool_option('${interaction_filename}', false);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[4, "desc"]];
+        options["fnInitComplete"] = set_up_message_and_count("interaction_header", "interaction_message", "interaction_wrapper");
+		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, {"sType":"num-html"}];
+		options["bProcessing"] = true;
+		options["sAjaxSource"] = "${interaction_overview_table_link}";
+		$('#interaction_table').dataTable(options);
+	}
+	
 	$(document).ready(function() {
 
 		//Get go data
 
   		$.getJSON("${go_overview_table_link}", function(data) {
-			var go_c = data['go_c'];
-  			var go_p = data['go_p'];
-  			var go_f = data['go_f'];
-  			var comp_count = data['computational'];
+  			set_up_go_p(data['go_p']);
+  			set_up_go_f(data['go_f']);
+  			set_up_go_c(data['go_c']);
   			
-			//Set total go count
-			var num_rows = go_c.length + go_p.length + go_f.length;
-			document.getElementById("go_header").innerHTML = '(' + num_rows + ')';
-			
-  			//Set up function table
-			var options = basic_datatable_options("go_f_header", "${go_f_filename}", "go_f_wrapper", "go_f_message");
-			options["aaSorting"] = [[0, "asc"]];
-			options["aaData"] = go_f;
-			options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null]
-			$('#go_f_table').dataTable(options);
-			
-			//Set up process table
-			var options = basic_datatable_options("go_p_header", "${go_p_filename}", "go_p_wrapper", "go_p_message");
-			options["aaSorting"] = [[0, "asc"]];
-			options["aaData"] = go_p;
-			options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null]
-			$('#go_p_table').dataTable(options);
-		
-			//Set up component table
-			var options = basic_datatable_options("go_c_header", "${go_c_filename}", "go_c_wrapper", "go_c_message");
-			options["aaSorting"] = [[0, "asc"]];
-			options["aaData"] = go_c;
-			options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null]
-			$('#go_c_table').dataTable(options);
-			
-			//Set up computational message
-			document.getElementById("go_comp_message").innerHTML = comp_count;
+  			var num_rows = go_c.length + go_p.length + go_f.length;
+			set_up_count(num_rows, "go_header");
+			document.getElementById("go_comp_message").innerHTML = data['computational'];
   		});
 			
   		//Get phenotype data
   		$.getJSON("${phenotype_overview_table_link}", function(data) {
-  			var phenotype_table = data['cellular_pheno'];
-  			var chemical_phenotype_table = data['chemical_pheno'];
-  			var pp_rna_phenotype_table = data['pp_rna_pheno'];
+  			set_up_pheno_cell(data['cellular_pheno']);
+  			set_up_pheno_chem(data['chemical_pheno']);
+  			set_up_pheno_pp(data['pp_rna_pheno']);
   			
 			//Set total phenotype count
 			var num_rows = phenotype_table.length + chemical_phenotype_table.length + pp_rna_phenotype_table.length;
-			document.getElementById("phenotype_header").innerHTML = '(' + num_rows + ')';
-			
-  			//Set up cellular phenotype table
-			var options = basic_datatable_options("cellular_phenotype_header", "${cellular_phenotype_filename}", "phenotype_wrapper", "phenotype_message");
-			options["aaSorting"] = [[0, "asc"], [1, 'asc']];
-			options["aaData"] = phenotype_table;
-			options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null];
-			$('#phenotype_table').dataTable(options);
-		
-			//Set up chemical phenotype table
-			var options = basic_datatable_options("chemical_phenotype_header", "${chemical_phenotype_filename}", "chemical_phenotype_wrapper", "chemical_phenotype_message");
-			options["aaSorting"] = [[1, "asc"]];
-			options["aaData"] = chemical_phenotype_table;
-			options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null];
-			$('#chemical_phenotype_table').dataTable(options);
-		
-			//Set up pp-rna phenotype table
-			var options = basic_datatable_options("pp_rna_phenotype_header", "${pp_rna_phenotype_filename}", "pp_rna_phenotype_wrapper", "pp_rna_phenotype_message");
-			options["aaSorting"] = [[1, "asc"]];
-			options["aaData"] = pp_rna_phenotype_table;
-			options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null];
-			$('#pp_rna_phenotype_table').dataTable(options);
+			set_up_count(num_rows, "phenotype_header");
   		});
   		
   		//Set up interaction table
-		var options = basic_datatable_options("interaction_header", "${interaction_filename}", "interaction_wrapper", "interaction_message");
-		options["aaSorting"] = [[4, "desc"]];
-		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, {"sType":"num-html"}];
-		options["bProcessing"] = true;
-		options["sAjaxSource"] = "${interaction_overview_table_link}";
-		options["bPaginate"] = true;
-		$('#interaction_table').dataTable(options);
+  		set_up_interaction_table();
 		
 		//Set up litguide
 		$.getJSON("${bioent_overview_table_link}", function(data) {
-  			var references = data;
-			var ref_list = document.getElementById("reference_list");
-			for (var i=0; i < references.length; i++) {
-				var citation = references[i];
-				var p=document.createElement('p');
-				p.innerHTML = citation;
-				ref_list.appendChild(p);
-			}
+			set_up_references(data, "reference_list");
 		});
 		
 	} );

@@ -1,37 +1,162 @@
+//http://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit
+function add_params_to_form(params) {
 
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
 
-function basic_datatable_options(header_id, save_name, wrapper_id, message_id) {
-	TableTools.DEFAULTS.sSwfPath = "../static/js/copy_csv_xls_pdf.swf";
-	var options = {
-		"bPaginate":false,
-		"sPaginationType": "bootstrap",
-		"fnInitComplete": function() {
-			this.fnAdjustColumnSizing(true);
-			var num_rows = this.fnSettings().fnRecordsTotal();
-			document.getElementById(header_id).innerHTML = '(' + num_rows + ')';
-			if(num_rows == 0) {
-    			 document.getElementById(message_id).style.display = 'block';
-    			 document.getElementById(wrapper_id).style.display = 'none';
-			}
-		},	
-		"sDom": '<"clear">lfrtipT',
-        "oTableTools": {
-        	"aButtons": [
-				"copy",
-				"print",
-				{
-					"sExtends": "csv",
-					"sTitle": save_name + '.csv'
-				},
-				{
-					"sExtends": "xls",
-					"sTitle": save_name + '.xls'
-				}	
-			],
-		}
-	};
-	return options;
+    for(var key in params) {
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+         }
+    }
+
+    document.body.appendChild(form);
+    return form;
 }
+
+function add_tabletools() {
+	TableTools.DEFAULTS.sSwfPath = "../static/js/copy_csv_xls_pdf.swf";
+}
+
+function add_analyze_tabletool(table_index, name_with_link_index) {
+	add_tabletools();
+	
+	TableTools.BUTTONS.analyze = $.extend( true, TableTools.buttonBase, {
+		"sNewLine": "<br>",
+		"sButtonText": "Analyze",
+		"sUrl": "/analyze",
+		"sButtonClass": "btn btn-info",
+		"fnClick": function( nButton, oConfig ) {
+			var path = oConfig.sUrl;
+			var table = $.fn.dataTable.fnTables(true)[table_index];
+			var data = $(table).dataTable().fnGetData();
+			var bioents = [];
+			for (var i=0,len=data.length; i<len; i++) { 
+				var name_with_link = data[i][name_with_link_index];
+				var name_with_link = name_with_link.substring(0, name_with_link.lastIndexOf('"'))
+				var name = name_with_link.substring(name_with_link.lastIndexOf('/')+1, name_with_link.length);
+				bioents.push(name);
+			}	
+			var form = add_params_to_form({"locus": bioents})
+			form.setAttribute("method", 'get');
+    		form.setAttribute("action", path);
+			form.submit();
+		}
+	} );
+}
+
+function table_tool_option(save_name, use_analyze, table_index, name_with_link_index) {
+	var buttons = [
+			"copy",
+			"print",
+			{
+				"sExtends": "csv",
+				"sTitle": save_name + '.csv'
+			},
+			{
+				"sExtends": "xls",
+				"sTitle": save_name + '.xls'
+			}
+		];
+	if(use_analyze) {
+		add_analyze_tabletool(table_index, name_with_link_index);
+		buttons.push('analyze');
+	}
+	else {
+		add_tabletools();
+	}
+	return {"aButtons": buttons}
+}
+
+function set_up_count(num_rows, header_id) {
+	document.getElementById(header_id).innerHTML = '(' + num_rows + ')';
+}
+
+function set_up_count_no_message(header_id) {
+	return function() {
+		this.fnAdjustColumnSizing(true);
+		var num_rows = this.fnSettings().fnRecordsTotal();
+		set_up_count(num_rows, header_id);
+	}
+}
+
+function set_up_message_and_count(header_id, message_id, wrapper_id) {
+	return function() {
+		this.fnAdjustColumnSizing(true);
+		var num_rows = this.fnSettings().fnRecordsTotal();
+		set_up_count(num_rows, header_id);
+		if(num_rows == 0) {
+    		document.getElementById(message_id).style.display = 'block';
+			document.getElementById(wrapper_id).style.display = 'none';
+		}
+	}
+}
+
+function create_nCloneTd() {
+   	var nCloneTd = document.createElement( 'td' );
+    nCloneTd.className = "center";
+    var b = document.createElement('button');
+    b.className = 'btn btn-link';
+    b.innerHTML = '<i class="icon-plus-sign"></i>';
+    nCloneTd.appendChild(b);
+    return nCloneTd;
+}
+
+function add_detail_column(table_id) {
+	var nCloneTd = create_nCloneTd();
+	$('#' + table_id + ' tbody tr').each( function () {
+		this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
+	});
+}
+
+function set_up_details(get_details) {
+	var nCloneTd = create_nCloneTd();
+	return function(oSettings) {
+		var table = this;
+  		this.$('tr').each( function () {
+  			var details = get_details(table.fnGetData(this));
+  			if(details != null) {
+    			this.removeChild(this.childNodes[0]);
+    			this.insertBefore(nCloneTd.cloneNode( true ), this.childNodes[0]);
+   			}
+   		});
+   		this.$('button').click( function () {
+  			var nTr = $(this).parents('tr')[0];
+
+        	if ( table.fnIsOpen(nTr) ) {
+           	 	// This row is already open - close it
+           	 	this.innerHTML = '<i class="icon-plus-sign"></i>';
+            	table.fnClose( nTr );
+        	}
+        	else {
+            	// Open this row
+            	this.innerHTML = '<i class="icon-minus-sign"></i>';
+  				var details = get_details(table.fnGetData(nTr));
+            	table.fnOpen( nTr, details, 'details' );
+        	}
+   		});
+   }
+}
+
+function set_up_references(references, ref_list_id) {
+  	//Set up references
+	ref_list = document.getElementById(ref_list_id);
+	for (var i=0; i < references.length; i++) {
+		var citation = references[i];
+		var p=document.createElement('p');
+		p.innerHTML = citation;
+		ref_list.appendChild(p);
+	}
+}
+
+
+
 
 function setup_interaction_cytoscape_vis(graph_link) {
 	// id of Cytoscape Web container div
