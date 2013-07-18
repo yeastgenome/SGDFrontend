@@ -21,18 +21,52 @@
 <!-- Docs nav
 ================================================== -->
 <div class="row-fluid">
+	<div id='sidebar' class="span3 bs-docs-sidebar">
+		<ul class="nav nav-list bs-docs-sidenav affix-top" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
+			<li><h3><span tal:content="structure name_with_link"></h3></li>
+          	<li><a href="#interactors"><i class="icon-chevron-right"></i>Interactors</a></li>
+			<li><a href="#evidence"><i class="icon-chevron-right"></i> Evidence</a></li>
+			<li><a href="#network"><i class="icon-chevron-right"></i> Network Visualization</a></li>
+			<li><a href="#resources"><i class="icon-chevron-right"></i> Resources</a></li>
+			<li><a href="#references"><i class="icon-chevron-right"></i> References</a></li>
+		</ul>
+	</div>
 	
-	<div class="span12">  
+	<div class="span9">  
+		
+<!-- Interactors
+================================================== -->
+<section id="interactors">
+	<div class="page-header">
+		<h1>Interactors <span id='interaction_header'></h1>
+		
+		<span id='interaction_message'></span>
+		<div id='interaction_wrapper'>
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='interactor_table' width="100%">
+			<thead>
+  			<tr>
+  				<th>Interactor</th>
+  				<th>Interactor</th>
+    			<th>Genetic Evidence</th>
+    			<th>Physical Evidence</th>
+    			<th>Total Evidence</th>
+  			</tr>
+  			</thead>
+			</table>
+        </div>
+        <br></br>
+	</div>
+</section>
 
 
 <!-- Genetic Evidence
 ================================================== -->
 <section id="evidence">
 	<div class="page-header">
-		<h1>Interactions <span id='evidence_header'></h1>
+		<h1>Evidence <span id='evidence_header'></h1>
 		<span>Source: <a href="http://thebiogrid.org/" target="_blank">BioGRID</a></span>
 		
-		<h3>Genetic Interactions <span id='genetic_evidence_header'></h3>
+		<h3>Genetic Evidence <span id='genetic_evidence_header'></h3>
 		<span id='genetic_evidence_message'></span>
 		<div id='genetic_evidence_wrapper'>
 			<table class='table table-striped table-bordered table-condensed tablesorter' id='genetic_evidence_table' width="100%">
@@ -45,7 +79,6 @@
     			<th>Annotation</th>
     			<th>Action</th>
     			<th>Phenotype</th>
-    			<th>Modification</th>
     			<th>Source</th>
     			<th>Reference</th>
     			<th>Note</th>
@@ -55,7 +88,7 @@
         </div>
         <br></br>
 		
-		<h3>Physical Interactions <span id='physical_evidence_header'></h3>
+		<h3>Physical Evidence <span id='physical_evidence_header'></h3>
 
 		<span id='physical_evidence_message'></span>
 		<div id='physical_evidence_wrapper'>
@@ -68,7 +101,6 @@
     			<th>Experiment</th>
     			<th>Annotation</th>
     			<th>Action</th>
-    			<th>Phenotype</th>
     			<th>Modification</th>
     			<th>Source</th>
     			<th>Reference</th>
@@ -126,134 +158,94 @@
 </section>
 
 <script>
+	function set_up_resources(data) {
+		resource_list = document.getElementById("resource_list");
+		for (var i=0; i < data.length; i++) {
+			var r = data[i];
+			var span=document.createElement('span');
+			span.innerHTML = r + ' | ';
+			resource_list.appendChild(span);
+		}
+  	}
+  	
+  	function get_details(row) {
+  		var details = row[9];
+  		if(details != null) {
+  			return '<strong>Note:</strong> ' + details + '<br>';
+  	    }
+  	    else {
+  	    	return null;
+  	    }
+  	}
+  	
+  	function set_up_interaction_table() {
+		var options = {};
+		options["bPaginate"] = true;
+		options["sPaginationType"] = "bootstrap";
+        options["oTableTools"] = table_tool_option('${interactor_filename}', true, 0, 1);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[4, "desc"]];
+        options["fnInitComplete"] = set_up_message_and_count("interaction_header", "interaction_message", "interaction_wrapper");
+		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, {"sType":"num-html"}];
+		options["bProcessing"] = true;
+		options["sAjaxSource"] = "${interaction_overview_table_link}";
+		$('#interactor_table').dataTable(options);
+	}
+  	
+  	function set_up_genetic_table(data) {  		
+  		//Insert a 'details' column to the table  		
+  		add_detail_column('genetic_evidence_table');
+         
+		//Set up genetic evidence table
+		var options = {};
+		options["bPaginate"] = true;
+		options["sPaginationType"] = "bootstrap";
+        options["oTableTools"] = table_tool_option('${genetic_interaction_evidence_filename}', true, 1, 2);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[2, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("genetic_evidence_header", "genetic_evidence_message", "genetic_evidence_wrapper");
+		options["fnDrawCallback"] = set_up_details(get_details);
+		options["aoColumns"] = [{"bSortable":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]		
+		options["aaData"] = data;
+  				
+  		genetic_table = $('#genetic_evidence_table').dataTable(options);
+  	}
+  	
+  	function set_up_physical_table(data) {  		
+  		//Insert a 'details' column to the table
+		add_detail_column('physical_evidence_table');
+		
+		//Set up physical evidence data
+		var options = {};
+		options["bPaginate"] = true;
+		options["sPaginationType"] = "bootstrap";
+        options["oTableTools"] = table_tool_option('${physical_interaction_evidence_filename}', true, 2, 2);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[2, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("physical_evidence_header", "physical_evidence_message", "physical_evidence_wrapper");
+		options["fnDrawCallback"] = set_up_details(get_details);
+		options["aoColumns"] = [{"bSortable":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]		
+		options["aaData"] = data;
+		
+  		$('#physical_evidence_table').dataTable(options);
+  	}
+
+	
 	$(document).ready(function() {
+		//Set up interaction table
+  		set_up_interaction_table();
+	
 		//Get resources
-	  	$.getJSON("${resource_link}", function(data) {
-			resource_list = document.getElementById("resource_list");
-			for (var i=0; i < data.length; i++) {
-				var r = data[i];
-				var span=document.createElement('span');
-				span.innerHTML = r + ' | ';
-				resource_list.appendChild(span);
-			}
-  		});
+	  	$.getJSON("${resource_link}", set_up_resources);
 	
 		//Get evidence data
-		
   		$.getJSON("${interaction_evidence_table_link}", function(data) {
-			var genetic_evidence_table = data['genetic'];
-  			var physical_evidence_table = data['physical'];
-  			var references = data['reference'];
-  			
-  			//Set total evidence count
-			var num_rows = genetic_evidence_table.length + physical_evidence_table.length;
-			document.getElementById("evidence_header").innerHTML = '(' + num_rows + ')';
-			
-			//Insert a 'details' column to the table
-			var nCloneTh = document.createElement( 'th' );
-   			var nCloneTd = document.createElement( 'td' );
-    		nCloneTd.className = "center";
-    		var b = document.createElement('button');
-    		b.className = 'btn btn-link';
-    		b.innerHTML = '<i class="icon-plus-sign"></i>';
-         	nCloneTd.appendChild(b);
-			
-
-    		
-    		$('#genetic_evidence_table tbody tr').each( function () {
-    		   this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
-				
-   			} );
-    		
-      		$('#physical_evidence_table tbody tr').each( function () {
-       	 		this.insertBefore( nCloneTh.cloneNode(true), this.childNodes[0] );
-     
-    		} );
-			
-  			//Set up genetic evidence table
-			var options = basic_datatable_options("genetic_evidence_header", 
-				'${genetic_interaction_evidence_filename}', "genetic_evidence_wrapper", "genetic_evidence_message");
-			options["bPaginate"] = true;
-			options["aaData"] = genetic_evidence_table;
-			options["aaSorting"] = [[2, "asc"]];
-			options["aoColumns"] = [{"bSortable":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]
-  			options["fnDrawCallback"] = function(oSettings) {
-  				var table = this;
-  				this.$('tr').each( function () {
-  					if(table.fnGetData(this)[10] != null) {
-    		    		this.removeChild(this.childNodes[0]);
-    		    		this.insertBefore(nCloneTd.cloneNode( true ), this.childNodes[0]);
-    		    	}
-   				});
-   				this.$('button').click( function () {
-  					var nTr = $(this).parents('tr')[0];
-
-        			if ( table.fnIsOpen(nTr) ) {
-            			// This row is already open - close it
-            	 		this.innerHTML = '<i class="icon-plus-sign"></i>';
-            			table.fnClose( nTr );
-        			}
-        			else {
-            			// Open this row
-            			this.innerHTML = '<i class="icon-minus-sign"></i>';
-            			var description = '<strong>Note:</strong> ' + table.fnGetData(nTr)[10] + '<br>';
-            			table.fnOpen( nTr, description, 'details' );
-        			}
-   				});
-  			};
-  			if('${hide_interactor}') {
-  			  	options["aoColumns"][2] = {"bSearchable":false, "bVisible":false}
-    		}
-  			$('#genetic_evidence_table').dataTable(options);
-  			
-  			//Set up physical evidence data
-			var options = basic_datatable_options("physical_evidence_header", 
-				'${physical_interaction_evidence_filename}', "physical_evidence_wrapper", "physical_evidence_message");
-			options["bPaginate"] = true;
-			options["aaData"] = physical_evidence_table;
-			options["aaSorting"] = [[2, "asc"]];
-			options["aoColumns"] = [{"bSortable":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]
-  			options["fnDrawCallback"] = function(oSettings) {
-  				var table = this;
-  				this.$('tr').each( function () {
-  					if(table.fnGetData(this)[10] != null) {
-    		    		this.removeChild(this.childNodes[0]);
-    		    		this.insertBefore(nCloneTd.cloneNode( true ), this.childNodes[0]);
-    		    	}
-   				});
-   				this.$('button').click( function () {
-  					var nTr = $(this).parents('tr')[0];
-
-        			if ( table.fnIsOpen(nTr) ) {
-            			// This row is already open - close it
-            	 		this.innerHTML = '<i class="icon-plus-sign"></i>';
-            			table.fnClose( nTr );
-        			}
-        			else {
-            			// Open this row
-            			this.innerHTML = '<i class="icon-minus-sign"></i>';
-            			var description = '<strong>Note:</strong> ' + table.fnGetData(nTr)[10] + '<br>';
-            			table.fnOpen( nTr, description, 'details' );
-        			}
-   				});
-  			};
-  			if('${hide_interactor}') {
-  			  	options["aoColumns"][2] = {"bSearchable":false, "bVisible":false}
-    		}
-  			$('#physical_evidence_table').dataTable(options);
-  			
-			
-			//Set up references
-			ref_list = document.getElementById("reference_list");
-			for (var i=0; i < references.length; i++) {
-				var citation = references[i];
-				var p=document.createElement('p');
-				p.innerHTML = citation;
-				ref_list.appendChild(p);
-			}
- 
-  		});
-	} );
+  			set_up_count(data['genetic'].length + data['physical'].length, "evidence_header");
+			set_up_genetic_table(data['genetic']);
+			set_up_physical_table(data['physical']);
+			set_up_references(data['reference'], 'reference_list');
+    	});
+	});
 </script>
 
 <script>

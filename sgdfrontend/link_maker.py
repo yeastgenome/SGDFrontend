@@ -150,6 +150,13 @@ def author_link(author_name):
 def assoc_reference_link(author_key):
     return add_format_name_params('/assoc_references?', True, {'author':author_key})
 
+def list_link():
+    return backend_start + '/list'
+def go_enrichment_link():
+    return add_format_name_params('/go_enrichment?', True, {})
+def enrichment_header_filename():
+    return 'go_enrichment'
+
 #Search links
 def search_results_link(search_str, biotype, page):
     return backend_start + '/search_results?keyword=' + search_str + '&bio_type=' + biotype + '&page=' + page + '&callback=?'

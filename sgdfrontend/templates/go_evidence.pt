@@ -143,68 +143,86 @@
 </section>
 
 <script>
+	
+	function set_up_c_table(data) {		
+		var options = {};
+		options["bPaginate"] = true;
+		options["sPaginationType"] = "bootstrap";
+        options["oTableTools"] = table_tool_option('${go_c_evidence_filename}', true, 0, 1);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[0, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("evidence_c_header", "evidence_c_message", "evidence_c_wrapper");
+		options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
+		options["aaData"] = data;
+		$('#evidence_c_table').dataTable(options);
+	}
+	
+	function set_up_p_table(data) {		
+		var options = {};
+		options["bPaginate"] = true;
+		options["sPaginationType"] = "bootstrap";
+        options["oTableTools"] = table_tool_option('${go_p_evidence_filename}', true, 0, 1);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[0, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("evidence_p_header", "evidence_p_message", "evidence_p_wrapper");
+		options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
+		options["aaData"] = data;
+		$('#evidence_p_table').dataTable(options);
+	}
+	
+	function set_up_f_table(data) {		
+		//Set up function table
+		var options = {};
+		options["bPaginate"] = true;
+		options["sPaginationType"] = "bootstrap";
+        options["oTableTools"] = table_tool_option('${go_f_evidence_filename}', true, 0, 1);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[0, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("evidence_f_header", "evidence_f_message", "evidence_f_wrapper");
+		options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
+		options["aaData"] = data;
+		$('#evidence_f_table').dataTable(options);
+	}
+	
+	function set_up_single_evidence_table(data) {						
+	  	//Set up evidence table
+	  	var options = {};
+		options["bPaginate"] = true;
+		options["sPaginationType"] = "bootstrap";
+        options["oTableTools"] = table_tool_option('${go_evidence_filename}', true, 0, 1);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[0, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("evidence_header", "evidence_message", "evidence_wrapper");
+		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, null, null, null]
+		options["aaData"] = data;
+		$('#evidence_table').dataTable(options);
+	}
+	
+	function set_up_evidence_table(data) {
+		if('go_c' in data) {
+			set_up_f_table(data['go_f']);
+			set_up_p_table(data['go_p']);
+			set_up_c_table(data['go_c']);
+	  			
+			//Set total go count
+			set_up_count(data['go_c'].length + data['go_p'].length + data['go_f'].length, "evidence_header");
+		}
+		else {
+			set_up_single_evidence_table(data['aaData']);
+			
+			//Set total go count
+			set_up_count(data['aaData'].length, "evidence_header");
+		}
+	}
+	
 	$(document).ready(function() {
 		
 		//Get evidence data
   		$.getJSON('${go_evidence_table_link}', function(data) {
-  			var references = data['reference']
-
-  			if('go_c' in data) {
-				var go_c = data['go_c'];
-	  			var go_p = data['go_p'];
-	  			var go_f = data['go_f'];
-	  			
-				//Set total go count
-				var num_rows = go_c.length + go_p.length + go_f.length;
-				document.getElementById("evidence_header").innerHTML = '(' + num_rows + ')';
-				
-	  			//Set up function table
-				var options = basic_datatable_options("evidence_f_header", '${go_f_evidence_filename}', "evidence_f_wrapper", "evidence_f_message");
-				options["aaSorting"] = [[0, "asc"]];
-				options["aaData"] = go_f;
-				options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
-				$('#evidence_f_table').dataTable(options);
-				
-				//Set up process table
-				var options = basic_datatable_options("evidence_p_header", '${go_p_evidence_filename}', "evidence_p_wrapper", "evidence_p_message");
-				options["aaSorting"] = [[0, "asc"]];
-				options["aaData"] = go_p;
-				options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
-				$('#evidence_p_table').dataTable(options);
-			
-				//Set up component table
-				var options = basic_datatable_options("evidence_c_header", '${go_c_evidence_filename}', "evidence_c_wrapper", "evidence_c_message");
-				options["aaSorting"] = [[0, "asc"]];
-				options["aaData"] = go_c;
-				options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
-				$('#evidence_c_table').dataTable(options);
-			}
-			else {
-				var go = data['aaData'];
-
-				//Set total evidence count
-				var num_rows = go.length;
-				document.getElementById("evidence_header").innerHTML = '(' + num_rows + ')';
-				
-	  			//Set up evidence table
-				var options = basic_datatable_options("evidence_header", '${go_evidence_filename}', "evidence_wrapper", "evidence_message");
-				options["aaSorting"] = [[0, "asc"]];
-				options["aaData"] = go;
-				options['bPaginate'] = true;
-				options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, null, null, null]
-				$('#evidence_table').dataTable(options);
-			}
-			
-			//Set up references
-			ref_list = document.getElementById("reference_list");
-			for (var i=0; i < references.length; i++) {
-				var citation = references[i];
-				var p=document.createElement('p');
-				p.innerHTML = citation;
-				ref_list.appendChild(p);
-			}
+  			set_up_evidence_table(data);
+			set_up_references(data['reference'], 'reference_list');
   		});
-	} );
+	});
 </script>
 
 <script type="text/javascript">

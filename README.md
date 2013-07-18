@@ -15,6 +15,7 @@ Dependencies:
 * Pyramid
 * Waitress
 * simplejson
+* requests
 (The above are all python packages.)
 
 To build the application:

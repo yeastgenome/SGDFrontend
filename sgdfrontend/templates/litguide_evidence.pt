@@ -99,66 +99,47 @@
 </section>
 
 <script>
-	$(document).ready(function() {
+	function set_up_primary_list(data) {	
+		set_up_count(primary.length, "primary_header");
+  		set_up_references(data, "primary_list");
+	}
+	
+	function set_up_additional_list(data) {
+		set_up_count(additional.length, "additional_header");
+  		set_up_references(data, "additional_list");
+	}
+	
+	function set_up_review_list(data) {		
+		set_up_count(reviews.length, "review_header");
+  		set_up_references(data, "review_list");
+	}
 		
+	function set_up_go_list(data) {
+		var go = data['reference'];
+		set_up_count(go.length, "go_header");
+  		set_up_references(go, "go_list");
+	}
+		
+	function set_up_phenotype_list(data) {
+		var phenotype = data['reference'];
+		set_up_count(phenotype.length, "phenotype_header");
+  		set_up_references(phenotype, "phenotype_list");
+	}
+	
+	$(document).ready(function() {
 		//Get bioentevidence data
   		$.getJSON("${bioent_evidence_table_link}", function(data) {
-  			var primary = data['primary']
-  			var additional = data['additional']
-  			var reviews = data['reviews']
-
-			//Set up primary references
-			primary_list = document.getElementById("primary_list");
-			for (var i=0; i < primary.length; i++) {
-				var citation = primary[i];
-				var p=document.createElement('p');
-				p.innerHTML = citation;
-				primary_list.appendChild(p);
-			}
-			
-			//Set up additional references
-			additional_list = document.getElementById("additional_list");
-			for (var i=0; i < additional.length; i++) {
-				var citation = additional[i];
-				var p=document.createElement('p');
-				p.innerHTML = citation;
-				additional_list.appendChild(p);
-			}
-			
-			//Set up review references
-			review_list = document.getElementById("review_list");
-			for (var i=0; i < reviews.length; i++) {
-				var citation = reviews[i];
-				var p=document.createElement('p');
-				p.innerHTML = citation;
-				review_list.appendChild(p);
-			}
+  			set_up_primary_list(data['primary']);
+  			set_up_additional_list(data['additional']);
+  			set_up_review_list(data['reviews']);
   		});
   		
   		//Get go reference data
-  		$.getJSON("${go_evidence_table_link}", function(data) {
-  			var references = data['reference']
-  			go_list = document.getElementById("go_list");
-			for (var i=0; i < references.length; i++) {
-				var citation = references[i];
-				var p=document.createElement('p');
-				p.innerHTML = citation;
-				go_list.appendChild(p);
-			}
-  		});
+  		$.getJSON("${go_evidence_table_link}", set_up_go_list);
   		
   		//Get phenotype reference data
-  		$.getJSON("${phenotype_evidence_table_link}", function(data) {
-  			var references = data['reference']
-  			phenotype_list = document.getElementById("phenotype_list");
-			for (var i=0; i < references.length; i++) {
-				var citation = references[i];
-				var p=document.createElement('p');
-				p.innerHTML = citation;
-				phenotype_list.appendChild(p);
-			}
-  		});
-	} );
+  		$.getJSON("${phenotype_evidence_table_link}", set_up_phenotype_list);
+	});
 </script>
 
 </div>

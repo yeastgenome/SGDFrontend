@@ -50,27 +50,3 @@ def locus(request):
                 'bioent': locus
                    }
     return page
-  
-@view_config(route_name='bioent_evidence', renderer='templates/bioent_evidence.pt')
-def bioent_evidence(request):
-    if 'bioent' in request.GET:
-        #Need a bioent evidence table based on a bioent
-        bioent_name = request.GET['bioent']
-        bioent = get_json(bioent_link(bioent_name, 'locus'))
-        if bioent is None:
-            return Response(status_int=500, body='Bioent could not be found.')
-        
-        format_name = bioent['format_name']
-        page = {
-                'bioent_evidence_table_link': bioent_evidence_table_link(bioent_key=format_name),
-                'go_evidence_table_link': go_evidence_table_link(bioent_key=format_name),
-                'phenotype_evidence_table_link': phenotype_evidence_table_link(bioent_key=format_name),
-                   
-                'layout': site_layout(),
-                'page_title': 'Litguide for ' + bioent['display_name'],
-                'display_name': 'Litguide for ' + bioent['display_name'],
-                'name_with_link': 'Litguide for ' + bioent['name_with_link']
-                }
-        return page
-    else:
-        return Response(status_int=500, body='No Bioent specified.')

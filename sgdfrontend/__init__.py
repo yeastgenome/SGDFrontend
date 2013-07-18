@@ -1,15 +1,14 @@
 from pyramid.config import Configurator
+import requests
 import simplejson
-import urllib2
 
-opener = urllib2.build_opener()
-
-def get_json(url):
-    req = urllib2.Request(url)
-
-    f = opener.open(req)
-    obj = simplejson.load(f)
-    return obj
+def get_json(url, data=None):
+    if data is not None:
+        r = requests.post(url, data=data)
+    else:
+        r = requests.get(url)
+        print r.url
+    return r.json()
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -31,7 +30,6 @@ def main(global_config, **settings):
    
     #Bioent views
     config.add_route('locus', '/locus/{bioent}')
-    config.add_route('bioent_evidence', '/bioent_evidence')
 
     #GO views
     config.add_route('go', '/go/{biocon}')
@@ -43,6 +41,9 @@ def main(global_config, **settings):
             
     #Interaction views
     config.add_route('interaction_evidence', '/interaction_evidence')
+    
+    #Litguide views
+    config.add_route('litguide_evidence', '/litguide_evidence')
        
     #Reference views
     config.add_route('reference', '/reference/{reference}')
@@ -54,6 +55,7 @@ def main(global_config, **settings):
     
     #Misc views
     config.add_route('download_graph', '/download_graph/{file_type}')
+    config.add_route('analyze', '/analyze')
 
     config.scan()
     return config.make_wsgi_app()

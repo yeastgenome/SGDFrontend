@@ -6,10 +6,10 @@ Created on Mar 15, 2013
 from pyramid.response import Response
 from pyramid.view import view_config
 from sgdfrontend import get_json
-from sgdfrontend.link_maker import bioent_link, \
-    interaction_evidence_table_link, genetic_interaction_evidence_filename, \
-    physical_interaction_evidence_filename, interaction_evidence_resource_link, \
-    interaction_graph_link
+from sgdfrontend.link_maker import bioent_link, interaction_evidence_table_link, \
+    genetic_interaction_evidence_filename, physical_interaction_evidence_filename, \
+    interaction_graph_link, interaction_evidence_resource_link, interaction_filename, \
+    interaction_overview_table_link
 from sgdfrontend.views import site_layout
 
 
@@ -28,18 +28,19 @@ def interaction_evidence(request):
         format_name = bioent['format_name']
         page = {
                 'interaction_evidence_table_link': interaction_evidence_table_link(bioent_key=format_name),
+                'interaction_overview_table_link': interaction_overview_table_link(bioent_key=format_name),
                 'interaction_graph_link': interaction_graph_link(bioent_key=format_name),
                 'resource_link': interaction_evidence_resource_link(bioent_key=format_name),
 
                 'genetic_interaction_evidence_filename': genetic_interaction_evidence_filename(bioent_key=format_name),
                 'physical_interaction_evidence_filename': physical_interaction_evidence_filename(bioent_key=format_name),
+                'interactor_filename': interaction_filename(bioent_key=format_name),
                 
                 'layout': site_layout(),
                 'page_title': bioent['display_name'] + ' Interactions',
                 'display_name': bioent['display_name'] + ' Interactions',
                 'name_with_link': bioent['name_with_link'] + ' Interactions',
-                'description': 'All interactions associated with ' +  bioent['display_name'] + '.',
-                'hide_interactor':False
+                'description': 'All interactions associated with ' +  bioent['display_name'] + '.'
                 }
         return page
 
