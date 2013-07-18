@@ -10,12 +10,12 @@ http://smacss.com/book/type-layout
 /* Main page header, with global navigation */
 #layout-page-header {
 	width: 100%;
-	height: 125px;
+	height: 130px;
 }
 
 #layout-page-header-content {
 	width: 100%;
-	height: 80px;
+	height: 85px;
 }
 
 #layout-page-header-nav {
@@ -27,5 +27,5 @@ http://smacss.com/book/type-layout
 @include sticky-footer(90px, "#layout-document", "#layout-document-footer-pusher", "#layout-document-footer");
 
 #layout-document-footer {
-	padding: 22px 0 10px;
+	padding: 22px 0 22px;
 }

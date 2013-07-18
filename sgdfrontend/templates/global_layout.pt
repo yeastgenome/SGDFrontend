@@ -81,7 +81,7 @@
 			</section><!-- #logo-section -->
 			<section class="small-7 small-offset-1 columns" id="header-tools">
 			 	<div class="row header-links">
-			 		<div class="small-9 columns">
+			 		
 						<ul class="site-links">
 							<li><a href="http://www.yeastgenome.org/about">About</a></li>
 							<li><a href="http://www.yeastgenome.org/blog">Blog</a></li>
@@ -89,29 +89,29 @@
 							<li><a href="http://www.yeastgenome.org/site-map">Site Map</a></li>
 							<li><a href="http://www.yeastgenome.org/help">Help</a></li>
 						</ul>
-					</div>
-					<div class="small-3 columns">
+					
 						<ul class="social-links">
 							<li><a href="/cgi-bin/suggestion" target="_blank" id="email" class="webicon mail small">Email Us</a></li>
 							<li><a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter" class="webicon twitter small">Twitter</a></li>
 							<li><a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" class="webicon facebook small" id="facebook">Facebook</a></li>
 							<li><a href="/feed" target="_blank" id="rss" class="webicon rss small">RSS</a></li>
 						</ul>
-					</div>	
+					
 			 	</div><!-- .header-links -->
 			 	<div class="row header-search">
-			 		<form action="/search" autocomplete="off" id="header-search">
+			 		<form action="/search" autocomplete="off" id="header-search" class="no-margins">
 					  <div class="row collapse">
 						<div class="small-6 small-offset-5 columns">
-						  <input id="searchfield-1" name="keyword" type="text" class="search-query radius prefix-input" placeholder="Search">
+						  <input id="searchfield-1" name="keyword" type="text" class="search-query radius prefix-input no-margins" placeholder="Search">
+						  <div id="adv-search-links">
+						  	YeastMine: <a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Batch Analysis</a> or <a target="_blank" href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Advanced Search</a>
+						  </div>
 						</div>
 						<div class="small-1 columns">
-						  <a href="#" class="secondary button postfix radius"><i class="icon-search"></i></a>
+						  <a href="#" class="secondary button no-margins postfix radius"><i class="icon-search"></i></a>
 						</div>
 					  </div>
 					</form>
-					<div id="adv-search-links">YeastMine: <a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Batch Analysis</a> or <a target="_blank" href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Advanced Search</a>
-					</div>
 			 	</div><!-- .header-search -->
 			</section>
 		</div>

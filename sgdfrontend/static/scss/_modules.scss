@@ -21,12 +21,16 @@ http://smacss.com/book/type-module
 #header-tools {
 	display: inline-block;
 	float: right;
-	height: 80px;
+	height: 85px;
 	.header-links {
+		display: inline-block;
+		overflow: hidden;
+		float: right;
 		height: 25px;
 		margin-top: 3px;
 		font-size: emCalc(13px);
 		font-weight: bold;
+		text-align: right;
 		a {color: rgb(0,0,0);}
 		a:hover {text-decoration: underline;}
 	}
@@ -41,29 +45,36 @@ http://smacss.com/book/type-module
 }
 
 .social-links, .site-links {
-	$inline-list-overflow: visible;
+	overflow: visible;
 	@include inline-list;
-	margin: 0;
-	float: right;
+	$inline-list-display: inline;
+	display: inline;
 }
 
 .site-links {
-	$inline-list-margin: 0;
+	margin: 0;
+	position: absolute;
+    right: 115px;
 }
 
 .social-links {
-	$inline-list-margin: 0;
+	margin: 0;
 	li {margin-left: emCalc(5px);}
 }
 
+#adv-search-links {
+	font-size: emCalc(12px);
+	margin-top: 4px;
+}	
+
 
 #logo-section {
-	height: 80px;
+	height: 85px;
 }
 
 .logo {
 	background: url("../img/logo.gif") no-repeat;
-	height: 80px;
+	height: 85px;
 	width: 400px;
 	display: inline-block;
 	.logo-label {
@@ -106,7 +117,7 @@ footer { // should be in states
 	float: right;
 	li {
 		float: left;
-		margin-left: 15px;
+		margin-left: 20px;
 	}
 }
 
