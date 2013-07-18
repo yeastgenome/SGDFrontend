@@ -2,5 +2,5 @@
 *.DS_Store
 *.egg-info
 .sass-cache/
-src/encoded/static/css/normalize.css
-src/encoded/static/css/app.css
+sgdfrontend/static/css/normalize.css
+sgdfrontend/static/css/style.css
