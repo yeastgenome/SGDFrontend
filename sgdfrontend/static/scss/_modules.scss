@@ -21,13 +21,13 @@ http://smacss.com/book/type-module
 #header-tools {
 	display: inline-block;
 	float: right;
-	height: 85px;
+	height: 90px;
 	.header-links {
 		display: inline-block;
 		overflow: hidden;
 		float: right;
 		height: 25px;
-		margin-top: 3px;
+		margin-top: 7px;
 		font-size: emCalc(13px);
 		font-weight: bold;
 		text-align: right;
@@ -72,6 +72,11 @@ http://smacss.com/book/type-module
     width: 16px;
 }
 
+.header-search {
+	position: relative;
+	top: 5px;
+}
+
 #adv-search-links {
 	font-size: emCalc(12px);
 	margin-top: 4px;
@@ -79,12 +84,12 @@ http://smacss.com/book/type-module
 
 
 #logo-section {
-	height: 85px;
+	height: 90px;
 }
 
 .logo {
 	background: url("../img/logo.gif") no-repeat;
-	height: 85px;
+	height: 90px;
 	width: 400px;
 	display: inline-block;
 	.logo-label {
