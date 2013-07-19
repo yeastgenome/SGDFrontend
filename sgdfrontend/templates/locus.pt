@@ -348,8 +348,7 @@
 	function set_up_interaction_table() {
 		var options = {};
 		options["bPaginate"] = true;
-		options["sPaginationType"] = "bootstrap";
-        options["oTableTools"] = table_tool_option('${interaction_filename}', false);
+        options["oTableTools"] = table_tool_option('${interaction_filename}', true, 0, 1);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[4, "desc"]];
         options["fnInitComplete"] = set_up_message_and_count("interaction_header", "interaction_message", "interaction_wrapper");

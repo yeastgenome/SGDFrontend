@@ -69,9 +69,8 @@
 	function set_up_phenotype_table() {
 		var options = {};
 		options["bPaginate"] = true;
-		options["sPaginationType"] = "bootstrap";
 		options["bProcessing"] = true
-        options["oTableTools"] = table_tool_option('${phenotype_filename}', false);
+        options["oTableTools"] = table_tool_option('${phenotype_filename}', true, 0, 1);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[0, "asc"]];
         options["fnInitComplete"] = set_up_message_and_count("phenotype_header", "phenotype_message", "phenotype_wrapper");

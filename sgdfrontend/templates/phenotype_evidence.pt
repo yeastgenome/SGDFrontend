@@ -42,6 +42,7 @@
 			<table class='table table-striped table-bordered table-condensed tablesorter' id='evidence_table' width="100%">
 			<thead>
   			<tr>
+  				<th></th>
   				<th>Phenotype</th>
   				<th>Gene</th>
     			<th>Qualifier</th>
@@ -68,6 +69,7 @@
 			<table class='table table-striped table-bordered table-condensed tablesorter' id='cellular_evidence_table' width="100%">
 			<thead>
   			<tr>
+  				<th></th>
   				<th>Phenotype</th>
   				<th>Gene</th>
     			<th>Qualifier</th>
@@ -94,6 +96,7 @@
 			<table class='table table-striped table-bordered table-condensed tablesorter' id='chemical_evidence_table' width="100%">
 			<thead>
   			<tr>
+  				<th></th>
   				<th>Phenotype</th>
   				<th>Gene</th>
     			<th>Qualifier</th>
@@ -120,6 +123,7 @@
 			<table class='table table-striped table-bordered table-condensed tablesorter' id='pp_rna_evidence_table' width="100%">
 			<thead>
   			<tr>
+  				<th></th>
   				<th>Phenotype</th>
   				<th>Gene</th>
     			<th>Qualifier</th>
@@ -172,228 +176,164 @@
 </section>
 
 <script>
+	function get_cell_details(row) {
+		var description = '';
+		if(row[7] != null) {
+            description = description + '<strong>Reporter:</strong> ' + row[7] + '<br>';
+        }
+        if(row[8] != null) {
+            description = description + '<strong>Chemical:</strong> ' + row[8] + '<br>';
+        }
+        if(row[9] != null) {
+        	description = description + '<strong>Experiment Details:</strong> ' + row[9] + '<br>';
+        }
+        if(row[10] != null) {
+            description = description + '<strong>Condition:</strong> ' + row[10] + '<br>';
+        }
+        if(row[11] != null) {
+            description = description + '<strong>Details:</strong> ' + row[11] + '<br>';
+        }
+	
+  		if(description == '') {
+  			description = null;
+  	    }
+  	    return description;
+  	}
+  	
+  	function get_chem_details(row) {
+  		var description = '';
+  	
+  		if(row[7] != null) {
+            description = description + '<strong>Reporter:</strong> ' + row[7] + '<br>';
+        }
+        if(row[9] != null) {
+            description = description + '<strong>Experiment Details:</strong> ' + row[9] + '<br>';
+        }
+        if(row[10] != null) {
+            description = description + '<strong>Condition:</strong> ' + row[10] + '<br>';
+        }
+        if(row[11] != null) {
+            description = description + '<strong>Details:</strong> ' + row[11] + '<br>';
+        }
+  	
+  		if(description == '') {
+  			description = null;
+  	    }
+  	    return description;
+  	}
+  	
+  	function get_pp_details(row) {
+  		var description = '';
+  		if(row[8] != null) {
+			description = description + '<strong>Chemical:</strong> ' + row[8] + '<br>';
+		}
+		if(row[9] != null) {
+			description = description + '<strong>Experiment Details:</strong> ' + row[9] + '<br>';
+		}
+		if(row[10] != null) {
+			description = description + '<strong>Condition:</strong> ' + row[10] + '<br>';
+		}
+		if(row[11] != null) {
+			description = description + '<strong>Details:</strong> ' + row[11] + '<br>';
+		}
+		
+		if(description == '') {
+  			description = null;
+  	    }
+  	    return description;
+  	}
+	
+	function set_up_cell_table(data) {
+		//Insert a 'details' column to the table  		
+  		add_detail_column('cellular_evidence_table');
+	
+		//Set up cellular evidence table
+		var options = {};
+		options["bPaginate"] = false;
+        options["oTableTools"] = table_tool_option('${cellular_phenotype_evidence_filename}', true, 0, 2);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[0, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("cellular_evidence_header", "cellular_evidence_message", "cellular_evidence_wrapper");
+		options["fnDrawCallback"] = set_up_details(get_cell_details);
+		options["aoColumns"] = [{"bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null]
+		options["aaData"] = data;
+		$('#cellular_evidence_table').dataTable(options);
+	}
+	
+	function set_up_chem_table(data) {
+		//Insert a 'details' column to the table  		
+  		add_detail_column('chemical_evidence_table');
+	
+		//Set up cellular evidence table
+		var options = {};
+		options["bPaginate"] = false;
+        options["oTableTools"] = table_tool_option('${chemical_phenotype_evidence_filename}', true, 1, 2);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[7, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("chemical_evidence_header", "chemical_evidence_message", "chemical_evidence_wrapper");
+		options["fnDrawCallback"] = set_up_details(get_chem_details);
+		options["aoColumns"] = [{"bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null]
+		options["aaData"] = data;
+		$('#chemical_evidence_table').dataTable(options);
+	} 
+	
+	function set_up_pp_table(data) {
+		//Insert a 'details' column to the table  		
+  		add_detail_column('pp_rna_evidence_table');
+	
+		//Set up cellular evidence table
+		var options = {};
+		options["bPaginate"] = false;
+        options["oTableTools"] = table_tool_option('${pp_rna_phenotype_evidence_filename}', true, 2, 2);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[6, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("pp_rna_evidence_header", "pp_rna_evidence_message", "pp_rna_evidence_wrapper");
+		options["fnDrawCallback"] = set_up_details(get_pp_details);
+		options["aoColumns"] = [{"bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null]
+		options["aaData"] = data;
+		$('#pp_rna_evidence_table').dataTable(options);
+	} 
+	
+	function set_up_single_table(data) {
+		//Insert a 'details' column to the table  		
+  		add_detail_column('evidence_table');
+	
+		//Set up cellular evidence table
+		var options = {};
+		options["bPaginate"] = true;
+        options["oTableTools"] = table_tool_option('${phenotype_evidence_filename}', true, 3, 2);
+		options["sDom"] = '<"clear">lfrtipT';
+		options["aaSorting"] = [[0, "asc"]];
+        options["fnInitComplete"] = set_up_message_and_count("evidence_header", "evidence_message", "evidence_wrapper");
+		options["fnDrawCallback"] = set_up_details(get_pp_details);
+		options["aoColumns"] = [{"bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null]
+		options["aaData"] = data;
+		$('#evidence_table').dataTable(options);
+	} 
+	
 	$(document).ready(function() {
+	
 		//Set up evidence table and reference list
   		$.getJSON('${phenotype_evidence_table_link}', function(data) {
-			var references = data['reference'];
-			
 			if('cellular_pheno' in data) {
-  				var cellular_evidence = data['cellular_pheno'];
-  				var chemical_evidence = data['chemical_pheno'];
-  				var pp_rna_evidence = data['pp_rna_pheno'];
-  			
+				set_up_cell_table(data['cellular_pheno']);
+				set_up_chem_table(data['chemical_pheno']);
+				set_up_pp_table(data['pp_rna_pheno']);
+  				
   				//Set total evidence count
-				var num_rows = cellular_evidence.length + chemical_evidence.length + pp_rna_evidence.length;
-				document.getElementById("evidence_header").innerHTML = '(' + num_rows + ')';
-			
-  				//Set up cellular evidence table
-				var options = basic_datatable_options("cellular_evidence_header", 
-					'${cellular_phenotype_evidence_filename}', "cellular_evidence_wrapper", "cellular_evidence_message");
-				options["aaData"] = cellular_evidence;
-				options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null]
-				options["aaSorting"] = [[0, "asc"]];
-				var cellTable = $('#cellular_evidence_table').dataTable(options);
-			
-				//Set up chemical evidence table
-				var options = basic_datatable_options("chemical_evidence_header", 
-					'${chemical_phenotype_evidence_filename}', "chemical_evidence_wrapper", "chemical_evidence_message");
-				options["aaData"] = chemical_evidence;
-				options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null]
-				options["aaSorting"] = [[7, "asc"]];
-				var chemTable = $('#chemical_evidence_table').dataTable(options);
-			
-				//Set up pp_rna evidence table
-				var options = basic_datatable_options("pp_rna_evidence_header", 
-					'${pp_rna_phenotype_evidence_filename}', "pp_rna_evidence_wrapper", "pp_rna_evidence_message");
-				options["aaData"] = pp_rna_evidence;
-				options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null]
-				options["aaSorting"] = [[6, "asc"]];
-				var ppRnaTable = $('#pp_rna_evidence_table').dataTable(options);
+				set_up_count(data['cellular_pheno'].length + data['chemical_pheno'].length + data['pp_rna_pheno'].length, "evidence_header");
 			}
 			else {
-				var phenotype = data['aaData'];
+				set_up_single_table(data['aaData']);
 				
 				//Set total evidence count
-				var num_rows = phenotype.length;
-				document.getElementById("evidence_header").innerHTML = '(' + num_rows + ')';
-				
-				//Set up cellular evidence table
-				var options = basic_datatable_options("evidence_header", 
-					'${phenotype_evidence_filename}', "evidence_wrapper", "evidence_message");
-				options["aaData"] = phenotype;
-				options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null]
-				options["aaSorting"] = [[0, "asc"]];
-				options['bPaginate'] = true;
-				var cellTable = $('#evidence_table').dataTable(options);
-			
+				set_up_count(data['aaData'].length, "evidence_header");	
 			}
 			
 			//Set up references
-			var ref_list = document.getElementById("reference_list");
-			for (var i=0; i < references.length; i++) {
-				
-				var citation = references[i];
-				var p=document.createElement('p');
-				p.innerHTML = citation;
-				ref_list.appendChild(p);
-			}
-			
-			//Insert a 'details' column to the table
-    		var nCloneTh = document.createElement( 'th' );
-   			var nCloneTd = document.createElement( 'td' );
-    		nCloneTd.className = "center";
-    		var b = document.createElement('button');
-    		b.className = 'btn btn-link';
-    		b.innerHTML = '<i class="icon-plus-sign"></i>';
-         	nCloneTd.appendChild(b);
-
-    		$('#cellular_evidence_table thead tr').each( function () {
-       	 		this.insertBefore( nCloneTh.cloneNode(true), this.childNodes[0] );
-     
-    		} );
-     
-    		$('#cellular_evidence_table tbody tr').each( function () {
-    		    if(cellTable.fnGetData(this)[6] != null || 
-    		    	cellTable.fnGetData(this)[7] != null ||
-    		    	cellTable.fnGetData(this)[8] != null ||
-    		    	cellTable.fnGetData(this)[9] != null ||
-    		    	cellTable.fnGetData(this)[10] != null) {
-					this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
-				}
-				else {
-					this.insertBefore(nCloneTh.cloneNode(true), this.childNodes[0]);
-				}
-   			} );
-   			
-			
-   			$('#cellular_evidence_table tbody tr td button').click(function() {
-   				var nTr = $(this).parents('tr')[0];
-
-        		if ( cellTable.fnIsOpen(nTr) ) {
-            		// This row is already open - close it
-            	 	this.innerHTML = '<i class="icon-plus-sign"></i>';
-            		cellTable.fnClose( nTr );
-        		}
-        		else {
-            		// Open this row
-            		this.innerHTML = '<i class="icon-minus-sign"></i>';
-            		var description = '';
-            		if(cellTable.fnGetData(nTr)[6] != null) {
-            			description = description + '<strong>Reporter:</strong> ' + cellTable.fnGetData(nTr)[6] + '<br>';
-            		}
-            		if(cellTable.fnGetData(nTr)[7] != null) {
-            			description = description + '<strong>Chemical:</strong> ' + cellTable.fnGetData(nTr)[7] + '<br>';
-            		}
-            		if(cellTable.fnGetData(nTr)[8] != null) {
-            			description = description + '<strong>Experiment Details:</strong> ' + cellTable.fnGetData(nTr)[8] + '<br>';
-            		}
-            		if(cellTable.fnGetData(nTr)[9] != null) {
-            			description = description + '<strong>Condition:</strong> ' + cellTable.fnGetData(nTr)[9] + '<br>';
-            		}
-            		if(cellTable.fnGetData(nTr)[10] != null) {
-            			description = description + '<strong>Details:</strong> ' + cellTable.fnGetData(nTr)[10] + '<br>';
-            		}
-            		
-            		cellTable.fnOpen( nTr, description, 'details' );
-        		}
-   			});
-   			
-   			$('#chemical_evidence_table thead tr').each( function () {
-       	 		this.insertBefore( nCloneTh.cloneNode(true), this.childNodes[0] );
-     
-    		} );
-     
-    		$('#chemical_evidence_table tbody tr').each( function () {
-				if(chemTable.fnGetData(this)[6] != null || 
-    		    	chemTable.fnGetData(this)[8] != null ||
-    		    	chemTable.fnGetData(this)[9] != null ||
-    		    	chemTable.fnGetData(this)[10] != null) {
-   					this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
-				}
-				else {
-					this.insertBefore(nCloneTh.cloneNode(true), this.childNodes[0]);
-				}
-   			} );
-   			
-
-   			$('#chemical_evidence_table tbody tr td button').click(function() {
-   				var nTr = $(this).parents('tr')[0];
-        		if ( chemTable.fnIsOpen(nTr) ) {
-            		// This row is already open - close it
-            	 	this.innerHTML = '<i class="icon-plus-sign"></i>';
-            		chemTable.fnClose( nTr );
-        		}
-        		else {
-            		// Open this row
-            		this.innerHTML = '<i class="icon-minus-sign"></i>';
-            		var description = '';
-            		if(chemTable.fnGetData(nTr)[6] != null) {
-            			description = description + '<strong>Reporter:</strong> ' + chemTable.fnGetData(nTr)[6] + '<br>';
-            		}
-            		if(chemTable.fnGetData(nTr)[8] != null) {
-            			description = description + '<strong>Experiment Details:</strong> ' + chemTable.fnGetData(nTr)[8] + '<br>';
-            		}
-            		if(chemTable.fnGetData(nTr)[9] != null) {
-            			description = description + '<strong>Condition:</strong> ' + chemTable.fnGetData(nTr)[9] + '<br>';
-            		}
-            		if(chemTable.fnGetData(nTr)[10] != null) {
-            			description = description + '<strong>Details:</strong> ' + chemTable.fnGetData(nTr)[10] + '<br>';
-            		}
-            		
-            		chemTable.fnOpen( nTr, description, 'details' );
-        		}
-   			});
-   			
-   			$('#pp_rna_evidence_table thead tr').each( function () {
-       	 		this.insertBefore( nCloneTh.cloneNode(true), this.childNodes[0] );
-     
-    		} );
-     
-    		$('#pp_rna_evidence_table tbody tr').each( function () {
-    		    if(ppRnaTable.fnGetData(this)[7] != null ||
-    		    	ppRnaTable.fnGetData(this)[8] != null ||
-    		    	ppRnaTable.fnGetData(this)[9] != null ||
-    		    	ppRnaTable.fnGetData(this)[10] != null) {
-					this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
-				}
-				else {
-					this.insertBefore(nCloneTh.cloneNode(true), this.childNodes[0]);
-				}
-   			} );
-   			
-
-   			$('#pp_rna_evidence_table tbody tr td button').click(function() {
-   				var nTr = $(this).parents('tr')[0];
-        		if ( ppRnaTable.fnIsOpen(nTr) ) {
-            		// This row is already open - close it
-            	 	this.innerHTML = '<i class="icon-plus-sign"></i>';
-            		ppRnaTable.fnClose( nTr );
-        		}
-        		else {
-            		// Open this row
-            		this.innerHTML = '<i class="icon-minus-sign"></i>';
-            		var description = '';
-            		if(ppRnaTable.fnGetData(nTr)[7] != null) {
-            			description = description + '<strong>Chemical:</strong> ' + ppRnaTable.fnGetData(nTr)[7] + '<br>';
-            		}
-            		if(ppRnaTable.fnGetData(nTr)[8] != null) {
-            			description = description + '<strong>Experiment Details:</strong> ' + ppRnaTable.fnGetData(nTr)[8] + '<br>';
-            		}
-            		if(ppRnaTable.fnGetData(nTr)[9] != null) {
-            			description = description + '<strong>Condition:</strong> ' + ppRnaTable.fnGetData(nTr)[9] + '<br>';
-            		}
-            		if(ppRnaTable.fnGetData(nTr)[10] != null) {
-            			description = description + '<strong>Details:</strong> ' + ppRnaTable.fnGetData(nTr)[10] + '<br>';
-            		}
-            		
-            		ppRnaTable.fnOpen( nTr, description, 'details' );
-        		}
-   			});
-			
+			set_up_references(data['reference'], 'reference_list');
   		});
-  		
-  		
-	} );
+	});
 </script>
 
 <script type="text/javascript">

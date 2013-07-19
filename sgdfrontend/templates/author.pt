@@ -42,16 +42,7 @@
 	$(document).ready(function() {
 		//Get references
   		$.getJSON("${assoc_reference_link}", function(data) {
-  			var references = data
-  		
-  			//Set up references
-			ref_list = document.getElementById("reference_list");
-			for (var i=0; i < references.length; i++) {
-				var citation = references[i];
-				var p=document.createElement('p');
-				p.innerHTML = citation;
-				ref_list.appendChild(p);
-			}
+  			set_up_references(data, 'reference_list');
   		});
   	});
 </script>
