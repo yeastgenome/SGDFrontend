@@ -42,6 +42,7 @@ http://smacss.com/book/type-module
 
 #adv-search-links {
 	font-size: emCalc(11px);
+	float: right;
 }
 
 .social-links, .site-links {
@@ -59,7 +60,16 @@ http://smacss.com/book/type-module
 
 .social-links {
 	margin: 0;
-	li {margin-left: emCalc(5px);}
+	li {
+		margin-left: emCalc(8px);
+		margin-top: emCalc(2px);
+	}
+}
+
+.webicon.x-small {
+    border-radius: 2px;
+    height: 16px;
+    width: 16px;
 }
 
 #adv-search-links {

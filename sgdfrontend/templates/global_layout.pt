@@ -91,10 +91,10 @@
 						</ul>
 					
 						<ul class="social-links">
-							<li><a href="/cgi-bin/suggestion" target="_blank" id="email" class="webicon mail small">Email Us</a></li>
-							<li><a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter" class="webicon twitter small">Twitter</a></li>
-							<li><a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" class="webicon facebook small" id="facebook">Facebook</a></li>
-							<li><a href="/feed" target="_blank" id="rss" class="webicon rss small">RSS</a></li>
+							<li><a href="/cgi-bin/suggestion" target="_blank" id="email" class="webicon mail x-small">Email Us</a></li>
+							<li><a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter" class="webicon twitter x-small">Twitter</a></li>
+							<li><a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" class="webicon facebook x-small" id="facebook">Facebook</a></li>
+							<li><a href="/feed" target="_blank" id="rss" class="webicon rss x-small">RSS</a></li>
 						</ul>
 					
 			 	</div><!-- .header-links -->
@@ -103,13 +103,13 @@
 					  <div class="row collapse">
 						<div class="small-6 small-offset-5 columns">
 						  <input id="searchfield-1" name="keyword" type="text" class="search-query radius prefix-input no-margins" placeholder="Search">
-						  <div id="adv-search-links">
-						  	YeastMine: <a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Batch Analysis</a> or <a target="_blank" href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Advanced Search</a>
-						  </div>
 						</div>
 						<div class="small-1 columns">
 						  <a href="#" class="secondary button no-margins postfix radius"><i class="icon-search"></i></a>
 						</div>
+					  </div>
+					  <div id="adv-search-links">
+						  	YeastMine: <a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Batch Analysis</a> or <a target="_blank" href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Advanced Search</a>
 					  </div>
 					</form>
 			 	</div><!-- .header-search -->
