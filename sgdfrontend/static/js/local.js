@@ -24,28 +24,36 @@ function add_tabletools() {
 	TableTools.DEFAULTS.sSwfPath = "../static/js/copy_csv_xls_pdf.swf";
 }
 
+function analyze(bioents) {
+	var path = "/analyze";
+	var form = add_params_to_form({"locus": bioents})
+	form.setAttribute("method", 'get');
+    form.setAttribute("action", path);
+	form.submit();
+}
+
+function name_from_link(name_with_link) {
+	name_with_link = name_with_link.substring(0, name_with_link.lastIndexOf('"'))
+	var name = name_with_link.substring(name_with_link.lastIndexOf('/')+1, name_with_link.length);
+	return name;
+}
+
 function add_analyze_tabletool(table_index, name_with_link_index) {
 	add_tabletools();
 	
 	TableTools.BUTTONS.analyze = $.extend( true, TableTools.buttonBase, {
 		"sNewLine": "<br>",
 		"sButtonText": "Analyze List",
-		"sUrl": "/analyze",
 		"fnClick": function( nButton, oConfig ) {
-			var path = oConfig.sUrl;
 			var table = $.fn.dataTable.fnTables(true)[table_index];
-			var data = $(table).dataTable().fnGetData();
+			var data = $(table).dataTable()._('tr', {"filter": "applied"});
 			var bioents = [];
 			for (var i=0,len=data.length; i<len; i++) { 
 				var name_with_link = data[i][name_with_link_index];
-				var name_with_link = name_with_link.substring(0, name_with_link.lastIndexOf('"'))
-				var name = name_with_link.substring(name_with_link.lastIndexOf('/')+1, name_with_link.length);
+				var name = name_from_link(name_with_link);
 				bioents.push(name);
 			}	
-			var form = add_params_to_form({"locus": bioents})
-			form.setAttribute("method", 'get');
-    		form.setAttribute("action", path);
-			form.submit();
+			analyze(bioents);
 		}
 	} );
 }

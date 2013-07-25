@@ -10,7 +10,15 @@ requires = [
     'pyramid',
     'pyramid_debugtoolbar',
     'waitress',
+    'simplejson',
+    'requests'
     ]
+
+tests_require = [
+    'behave',
+    'behaving',
+    'pytest',
+]
 
 setup(name='SGDFrontend',
       version='0.0',
@@ -22,8 +30,8 @@ setup(name='SGDFrontend',
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         ],
-      author='',
-      author_email='',
+      author='Kelley Paskov',
+      author_email='kpaskov@stanford.edu',
       url='',
       keywords='web pyramid pylons',
       packages=find_packages(),
@@ -32,6 +40,9 @@ setup(name='SGDFrontend',
       install_requires=requires,
       tests_require=requires,
       test_suite="sgdfrontend",
+      extras_require={
+        'test': tests_require,
+      },
       entry_points="""\
       [paste.app_factory]
       main = sgdfrontend:main

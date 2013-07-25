@@ -40,40 +40,42 @@
 <section id="interactors">
 	<div class="page-header">
 		<h1>Interactors Summary</h1>
-		
+		<div id="venn_diagram"></div>
+		<br></br>
+		<span>Analyze:</span>
+		<div class="btn-group">
+  			<button id="phys_and_gen" class="btn" onclick="analyze(get_phys_and_gen())">Physical and Genetic</button>
+  			<button id="phys" class="btn" onclick="analyze(get_phys())">Physical</button>
+  			<button id="gen" class="btn" onclick="analyze(get_gen())">Genetic</button>
+  			<button id="phys_or_gen" class="btn" onclick="analyze(get_phys_or_gen())">All</button>
+		</div>
 	</div>
 </section>
 
-
-<!-- Genetic Evidence
+<!-- Network Visualization
 ================================================== -->
-<section id="genetic_interactions">
+<section id='network'>
 	<div class="page-header">
-		<h1>Genetic Evidence <span id='genetic_evidence_header'></h1>
-		<span>Source: <a href="http://thebiogrid.org/" target="_blank">BioGRID</a></span>
-		
-		<span id='genetic_evidence_message'></span>
-		<div id='genetic_evidence_wrapper'>
-			<table class='table table-striped table-bordered table-condensed tablesorter' id='genetic_evidence_table' width="100%">
-			<thead>
-  			<tr>
-  				<th></th>
-  				<th>Interactor</th>
-  				<th>Interactor</th>
-    			<th>Experiment</th>
-    			<th>Annotation</th>
-    			<th>Action</th>
-    			<th>Phenotype</th>
-    			<th>Source</th>
-    			<th>Reference</th>
-    			<th>Note</th>
-  			</tr>
-  			</thead>
-			</table>
+		<h1>Network Visualization</h1>
+		<strong>Filter Interactions by # Total Evidence:</strong>
+		<br></br>
+		<div id="slider-range-min"></div>
+		<br></br>
+		<div id="cytoscapeweb">
+            Network visualization is loading...
         </div>
-        <br></br>
-   </div>
+        <span>Export:</span>
+        <div class="btn-group">
+        	<a class="btn" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a>
+        	<a class="btn" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a>
+        	<a class="btn" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a>
+        	<a class="btn" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a>
+        	<a class="btn" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a>
+        	<a class="btn" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
+        </div>
+    </div>
 </section>
+
 
 <!-- Physical Evidence
 ================================================== -->
@@ -105,28 +107,34 @@
 	</div>
 </section>
 
-<!-- Network Visualization
+<!-- Genetic Evidence
 ================================================== -->
-<section id='network'>
+<section id="genetic_interactions">
 	<div class="page-header">
-		<h1>Network Visualization</h1>
-		<strong>Filter Interactions by # Total Evidence:</strong>
-		<br></br>
-		<div id="slider-range-min"></div>
-		<br></br>
-		<div id="cytoscapeweb">
-            Network visualization is loading...
+		<h1>Genetic Interactions <span id='genetic_evidence_header'></h1>
+		<span>Source: <a href="http://thebiogrid.org/" target="_blank">BioGRID</a></span>
+		
+		<span id='genetic_evidence_message'></span>
+		<div id='genetic_evidence_wrapper'>
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='genetic_evidence_table' width="100%">
+			<thead>
+  			<tr>
+  				<th></th>
+  				<th>Interactor</th>
+  				<th>Interactor</th>
+    			<th>Experiment</th>
+    			<th>Annotation</th>
+    			<th>Action</th>
+    			<th>Phenotype</th>
+    			<th>Source</th>
+    			<th>Reference</th>
+    			<th>Note</th>
+  			</tr>
+  			</thead>
+			</table>
         </div>
-        <span>Export:</span>
-        <div class="btn-group">
-        	<a class="btn" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a>
-        	<a class="btn" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a>
-        	<a class="btn" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a>
-        	<a class="btn" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a>
-        	<a class="btn" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a>
-        	<a class="btn" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
-        </div>
-    </div>
+        <br></br>
+   </div>
 </section>
 
 <!-- Resources
@@ -177,7 +185,7 @@
 		//Set up genetic evidence table
 		var options = {};
 		options["bPaginate"] = true;
-        options["oTableTools"] = table_tool_option('${genetic_interaction_evidence_filename}', true, 1, 2);
+        options["oTableTools"] = table_tool_option('${genetic_interaction_evidence_filename}', true, 0, 2);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[2, "asc"]];
         options["fnInitComplete"] = set_up_message_and_count("genetic_evidence_header", "genetic_evidence_message", "genetic_evidence_wrapper");
@@ -185,7 +193,7 @@
 		options["aoColumns"] = [{"bSortable":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]		
 		options["aaData"] = data;
   				
-  		genetic_table = $('#genetic_evidence_table').dataTable(options);
+  		var genetic_table = $('#genetic_evidence_table').dataTable(options);
   	}
   	
   	function set_up_physical_table(data) {  		
@@ -195,7 +203,7 @@
 		//Set up physical evidence data
 		var options = {};
 		options["bPaginate"] = true;
-        options["oTableTools"] = table_tool_option('${physical_interaction_evidence_filename}', true, 2, 2);
+        options["oTableTools"] = table_tool_option('${physical_interaction_evidence_filename}', true, 1, 2);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[2, "asc"]];
         options["fnInitComplete"] = set_up_message_and_count("physical_evidence_header", "physical_evidence_message", "physical_evidence_wrapper");
@@ -203,7 +211,7 @@
 		options["aoColumns"] = [{"bSortable":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]		
 		options["aaData"] = data;
 		
-  		$('#physical_evidence_table').dataTable(options);
+  		var physical_table = $('#physical_evidence_table').dataTable(options);
   	}
 
 	
@@ -218,7 +226,102 @@
 			set_up_physical_table(data['physical']);
 			set_up_references(data['reference'], 'reference_list');
     	});
+    	
+    	//Get evidence data
+  		$.getJSON("${interaction_overview_table_link}", function(data) {
+  			var r = data['venn'][0];
+  			var s = data['venn'][1];
+  			var x = data['venn'][2];
+  			
+			draw_venn_diagram("venn_diagram", r, s, x);
+    		if(r == 0) {
+    			document.getElementById("phys_and_gen").disabled = true; 
+    			document.getElementById("phys").disabled = true; 
+    		}
+    		if(s == 0) {
+    			document.getElementById("phys_and_gen").disabled = true; 
+    			document.getElementById("gen").disabled = true; 
+    		}
+    		if(x == r+s+1) {
+    			document.getElementById("phys_and_gen").disabled = true; 
+    		}
+    	});
 	});
+</script>
+
+<script>
+	function get_phys_and_gen() {
+		var bioents = [];
+		
+		var gen_bioents = {};
+		var gen_table = $.fn.dataTable.fnTables(true)[0];
+		var data = $(gen_table).dataTable().fnGetData();
+		for (var i=0,len=data.length; i<len; i++) { 
+			var name_with_link = data[i][2];
+			var name = name_from_link(name_with_link);
+			gen_bioents[name] = true;
+		}	
+		
+		var phs_table = $.fn.dataTable.fnTables(true)[1];
+		var data = $(phs_table).dataTable().fnGetData();
+		for (var i=0,len=data.length; i<len; i++) { 
+			var name_with_link = data[i][2];
+			var name = name_from_link(name_with_link);
+			if(name in gen_bioents) {
+				bioents.push(name);
+			}
+			
+		}	
+		return bioents;
+	}
+	
+	function get_phys() {
+		var bioents = [];
+
+		var phs_table = $.fn.dataTable.fnTables(true)[1];
+		var data = $(phs_table).dataTable().fnGetData();
+		for (var i=0,len=data.length; i<len; i++) { 
+			var name_with_link = data[i][2];
+			var name = name_from_link(name_with_link);
+			bioents.push(name);
+		}	
+		return bioents;
+	}
+	
+	function get_gen() {
+		var bioents = [];
+
+		var gen_table = $.fn.dataTable.fnTables(true)[0];
+		var data = $(gen_table).dataTable().fnGetData();
+		for (var i=0,len=data.length; i<len; i++) { 
+			var name_with_link = data[i][2];
+			var name = name_from_link(name_with_link);
+			bioents.push(name);
+		}	
+		return bioents;
+	}
+	
+	function get_phys_or_gen() {
+		var bioents = [];
+
+		var gen_table = $.fn.dataTable.fnTables(true)[0];
+		var data = $(gen_table).dataTable().fnGetData();
+		for (var i=0,len=data.length; i<len; i++) { 
+			var name_with_link = data[i][2];
+			var name = name_from_link(name_with_link);
+			bioents.push(name);
+		}	
+		
+		var phys_table = $.fn.dataTable.fnTables(true)[1];
+		var data = $(phys_table).dataTable().fnGetData();
+		for (var i=0,len=data.length; i<len; i++) { 
+			var name_with_link = data[i][2];
+			var name = name_from_link(name_with_link);
+			bioents.push(name);
+		}	
+		return bioents;
+	}
+	
 </script>
 
 <script>

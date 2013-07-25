@@ -30,6 +30,7 @@
 	<script src="../static/js/local.js"></script>
 	<script src="../static/js/kinetic-v4.3.3.min.js"></script>
 	<script src="../static/js/seqVis.js"></script>
+	<script src="../static/js/venn.js"></script>
 
 	<script>
 		jQuery.extend( jQuery.fn.dataTableExt.oSort, {
