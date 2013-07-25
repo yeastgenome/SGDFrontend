@@ -24,9 +24,9 @@ function add_tabletools() {
 	TableTools.DEFAULTS.sSwfPath = "../static/js/copy_csv_xls_pdf.swf";
 }
 
-function analyze(bioents) {
+function analyze(list_name, bioents) {
 	var path = "/analyze";
-	var form = add_params_to_form({"locus": bioents})
+	var form = add_params_to_form({"display_name":list_name, "locus": bioents})
 	form.setAttribute("method", 'get');
     form.setAttribute("action", path);
 	form.submit();
@@ -38,12 +38,12 @@ function name_from_link(name_with_link) {
 	return name;
 }
 
-function add_analyze_tabletool(table_index, name_with_link_index) {
+function add_analyze_tabletool(list_name, table_index, name_with_link_index) {
 	add_tabletools();
 	
 	TableTools.BUTTONS.analyze = $.extend( true, TableTools.buttonBase, {
 		"sNewLine": "<br>",
-		"sButtonText": "Analyze List",
+		"sButtonText": "<i class='icon-briefcase'></i> Analyze",
 		"fnClick": function( nButton, oConfig ) {
 			var table = $.fn.dataTable.fnTables(true)[table_index];
 			var data = $(table).dataTable()._('tr', {"filter": "applied"});
@@ -53,12 +53,17 @@ function add_analyze_tabletool(table_index, name_with_link_index) {
 				var name = name_from_link(name_with_link);
 				bioents.push(name);
 			}	
-			analyze(bioents);
+
+			var search_term = $(table).dataTable().fnSettings().oPreviousSearch.sSearch
+			if(search_term != '') {
+				list_name = list_name + ' filtered by "' + search_term + '"'
+			}			
+			analyze(list_name, bioents);
 		}
 	} );
 }
 
-function table_tool_option(save_name, use_analyze, table_index, name_with_link_index) {
+function table_tool_option(save_name, use_analyze, list_name, table_index, name_with_link_index) {
 	var buttons = [
 			"copy",
 			"print",
@@ -72,7 +77,7 @@ function table_tool_option(save_name, use_analyze, table_index, name_with_link_i
 			}
 		];
 	if(use_analyze) {
-		add_analyze_tabletool(table_index, name_with_link_index);
+		add_analyze_tabletool(list_name, table_index, name_with_link_index);
 		buttons.push('analyze');
 	}
 	else {

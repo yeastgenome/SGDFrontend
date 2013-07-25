@@ -8,7 +8,10 @@
 ================================================== -->
 <header class="jumbotron subhead" id="overview">
 	<div class="container">
-		<h1><span tal:content="page_title"></h1>
+		<h1><span tal:content="display_name"></h1>
+		<p class="lead">
+			<span tal:content="description"></span>
+		</p>
 	</div>
 </header>
 
@@ -20,7 +23,7 @@
 <div class="row-fluid">
 	<div id='sidebar' class="span3 bs-docs-sidebar">
 		<ul class="nav nav-list bs-docs-sidenav affix-top" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
-			<li><h3><span> Analyze Gene List</h3></li>
+			<li><h3><span tal:content="display_name"></span></h3></li>
 			<li><a href="#analyze"><i class="icon-chevron-right"></i> Tools</a></li>
           	<li><a href="#gene_list"><i class="icon-chevron-right"></i>Genes</a></li>
 		</ul>

@@ -9,7 +9,8 @@ from sgdfrontend import get_json
 from sgdfrontend.link_maker import bioent_link, interaction_evidence_table_link, \
     genetic_interaction_evidence_filename, physical_interaction_evidence_filename, \
     interaction_graph_link, interaction_evidence_resource_link, interaction_filename, \
-    interaction_overview_table_link
+    interaction_overview_table_link, genetic_interactor_listname, \
+    physical_interactor_listname, all_interactor_listname, both_interactor_listname
 from sgdfrontend.views import site_layout
 
 
@@ -35,6 +36,11 @@ def interaction_evidence(request):
                 'genetic_interaction_evidence_filename': genetic_interaction_evidence_filename(bioent_key=format_name),
                 'physical_interaction_evidence_filename': physical_interaction_evidence_filename(bioent_key=format_name),
                 'interactor_filename': interaction_filename(bioent_key=format_name),
+                
+                'genetic_listname': genetic_interactor_listname(bioent_key=format_name),
+                'physical_listname': physical_interactor_listname(bioent_key=format_name),
+                'all_listname': all_interactor_listname(bioent_key=format_name),
+                'both_listname': both_interactor_listname(bioent_key=format_name),
                 
                 'layout': site_layout(),
                 'page_title': bioent['display_name'] + ' Interactions',

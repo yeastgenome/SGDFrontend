@@ -8,7 +8,7 @@
 ================================================== -->
 <header class="jumbotron subhead" id="overview">
 	<div class="container">
-		<h1><span tal:content="display_name"></h1>
+		<h1><span tal:content="display_name"></span></h1>
 		<p class="lead">
 			<span tal:content="structure description"></span>
 		</p>
@@ -23,11 +23,12 @@
 <div class="row-fluid">
 	<div id='sidebar' class="span3 bs-docs-sidebar">
 		<ul class="nav nav-list bs-docs-sidenav affix-top" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
-			<li><h3><span tal:content="structure name_with_link"></h3></li>
+			<li><h3><span tal:content="structure name_with_link"></span></h3></li>
           	<li><a href="#interactors"><i class="icon-chevron-right"></i>Interactors Summary</a></li>
-			<li><a href="#genetic_interactions"><i class="icon-chevron-right"></i> Genetic Interactions</a></li>
-			<li><a href="#physical_interactions"><i class="icon-chevron-right"></i> Physical Interactions</a></li>
 			<li><a href="#network"><i class="icon-chevron-right"></i> Network Visualization</a></li>
+			<li><a href="#physical_interactions"><i class="icon-chevron-right"></i> Physical Interactions</a></li>
+
+			<li><a href="#genetic_interactions"><i class="icon-chevron-right"></i> Genetic Interactions</a></li>
 			<li><a href="#resources"><i class="icon-chevron-right"></i> Resources</a></li>
 			<li><a href="#references"><i class="icon-chevron-right"></i> References</a></li>
 		</ul>
@@ -42,13 +43,19 @@
 		<h1>Interactors Summary</h1>
 		<div id="venn_diagram"></div>
 		<br></br>
-		<span>Analyze:</span>
-		<div class="btn-group">
-  			<button id="phys_and_gen" class="btn" onclick="analyze(get_phys_and_gen())">Physical and Genetic</button>
-  			<button id="phys" class="btn" onclick="analyze(get_phys())">Physical</button>
-  			<button id="gen" class="btn" onclick="analyze(get_gen())">Genetic</button>
-  			<button id="phys_or_gen" class="btn" onclick="analyze(get_phys_or_gen())">All</button>
+		<div>
+			
 		</div>
+
+		<span>Export:</span>
+		<div class="btn-group">
+			<a id="save" class="btn" target="_blank">png</a>
+  			<button id="phys_and_gen" class="btn" onclick="analyze_phys_and_gen()"><i class='icon-briefcase'></i> Analyze Physical and Genetic</button>
+  			<button id="phys" class="btn" onclick="analyze_phys()"><i class='icon-briefcase'></i> Analyze Physical</button>
+  			<button id="gen" class="btn" onclick="analyze_gen()"><i class='icon-briefcase'></i> Analyze Genetic</button>
+  			<button id="phys_or_gen" class="btn" onclick="analyze_phys_or_gen()"><i class='icon-briefcase'></i> Analyze All</button>
+		</div>
+		
 	</div>
 </section>
 
@@ -185,7 +192,7 @@
 		//Set up genetic evidence table
 		var options = {};
 		options["bPaginate"] = true;
-        options["oTableTools"] = table_tool_option('${genetic_interaction_evidence_filename}', true, 0, 2);
+        options["oTableTools"] = table_tool_option('${genetic_interaction_evidence_filename}', true, '${genetic_listname}', 0, 2);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[2, "asc"]];
         options["fnInitComplete"] = set_up_message_and_count("genetic_evidence_header", "genetic_evidence_message", "genetic_evidence_wrapper");
@@ -194,6 +201,16 @@
 		options["aaData"] = data;
   				
   		var genetic_table = $('#genetic_evidence_table').dataTable(options);
+  		genetic_table.on('filter', function(){
+  			var visible_rows = genetic_table._('tr', {"filter": "applied"}).length;
+  			if(visible_rows == 0) {
+  				document.getElementById("ToolTables_genetic_evidence_table_0").className += " disabled";
+  				document.getElementById("ToolTables_genetic_evidence_table_1").className += " disabled";
+  				document.getElementById("ToolTables_genetic_evidence_table_2").className += " disabled";
+  				document.getElementById("ToolTables_genetic_evidence_table_3").className += " disabled";
+  				document.getElementById("ToolTables_genetic_evidence_table_4").className += " disabled";
+  			}
+  		});
   	}
   	
   	function set_up_physical_table(data) {  		
@@ -203,7 +220,7 @@
 		//Set up physical evidence data
 		var options = {};
 		options["bPaginate"] = true;
-        options["oTableTools"] = table_tool_option('${physical_interaction_evidence_filename}', true, 1, 2);
+        options["oTableTools"] = table_tool_option('${physical_interaction_evidence_filename}', true, '${physical_listname}', 1, 2);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[2, "asc"]];
         options["fnInitComplete"] = set_up_message_and_count("physical_evidence_header", "physical_evidence_message", "physical_evidence_wrapper");
@@ -212,6 +229,16 @@
 		options["aaData"] = data;
 		
   		var physical_table = $('#physical_evidence_table').dataTable(options);
+  		physical_table.on('filter', function(){
+  			var visible_rows = physical_table._('tr', {"filter": "applied"}).length;
+  			if(visible_rows == 0) {
+  				document.getElementById("ToolTables_physical_evidence_table_0").className += " disabled";
+  				document.getElementById("ToolTables_physical_evidence_table_1").className += " disabled";
+  				document.getElementById("ToolTables_physical_evidence_table_2").className += " disabled";
+  				document.getElementById("ToolTables_physical_evidence_table_3").className += " disabled";
+  				document.getElementById("ToolTables_physical_evidence_table_4").className += " disabled";
+  			}
+  		});
   	}
 
 	
@@ -233,7 +260,15 @@
   			var s = data['venn'][1];
   			var x = data['venn'][2];
   			
-			draw_venn_diagram("venn_diagram", r, s, x);
+			var stage = draw_venn_diagram("venn_diagram", r, s, x);
+			stage.toDataURL({
+       		 	width: 350,
+        		height: 350,
+        		callback: function(dataUrl) {
+          			document.getElementById("save").href = dataUrl.replace("image/png", "image/octet-stream");
+        		}
+          	});
+			
     		if(r == 0) {
     			document.getElementById("phys_and_gen").disabled = true; 
     			document.getElementById("phys").disabled = true; 
@@ -250,7 +285,8 @@
 </script>
 
 <script>
-	function get_phys_and_gen() {
+	function analyze_phys_and_gen() {
+		var list_name = '${both_listname}';
 		var bioents = [];
 		
 		var gen_bioents = {};
@@ -272,10 +308,11 @@
 			}
 			
 		}	
-		return bioents;
+		analyze(list_name, bioents);
 	}
 	
-	function get_phys() {
+	function analyze_phys() {
+		var list_name = '${physical_listname}';
 		var bioents = [];
 
 		var phs_table = $.fn.dataTable.fnTables(true)[1];
@@ -285,10 +322,11 @@
 			var name = name_from_link(name_with_link);
 			bioents.push(name);
 		}	
-		return bioents;
+		analyze(list_name, bioents);
 	}
 	
-	function get_gen() {
+	function analyze_gen() {
+		var list_name = '${genetic_listname}';
 		var bioents = [];
 
 		var gen_table = $.fn.dataTable.fnTables(true)[0];
@@ -298,10 +336,11 @@
 			var name = name_from_link(name_with_link);
 			bioents.push(name);
 		}	
-		return bioents;
+		analyze(list_name, bioents);
 	}
 	
-	function get_phys_or_gen() {
+	function analyze_phys_or_gen() {
+		var list_name = '${all_listname}';
 		var bioents = [];
 
 		var gen_table = $.fn.dataTable.fnTables(true)[0];
@@ -319,7 +358,7 @@
 			var name = name_from_link(name_with_link);
 			bioents.push(name);
 		}	
-		return bioents;
+		analyze(list_name, bioents);
 	}
 	
 </script>

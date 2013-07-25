@@ -56,7 +56,7 @@ function draw_venn_diagram(container_name, r, s, x) {
     layer.add(genetic_label);
         
     stage.add(layer);
-
+    
 	return stage;
 }
 
