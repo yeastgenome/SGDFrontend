@@ -96,15 +96,24 @@ def interaction_evidence_table_link(bioent_key=None, biorel_key=None):
     return add_format_name_params('/interaction_evidence_table?', True, {'bioent':bioent_key, 'biorel': biorel_key})
 def interaction_graph_link(bioent_key=None):
     return add_format_name_params('/interaction_graph?', True, {'bioent':bioent_key})
-def interaction_filename(bioent_key=None, reference_key=None):
-    return create_filename([bioent_key, reference_key], '_interactions')
 def interaction_evidence_resource_link(bioent_key=None):
     return add_format_name_params('/interaction_evidence_resources?', True, {'bioent':bioent_key})
 
+def interaction_filename(bioent_key=None, reference_key=None):
+    return create_filename([bioent_key, reference_key], '_interactions')
 def physical_interaction_evidence_filename(bioent_key=None, biorel_key=None):
     return create_filename([bioent_key, biorel_key], '_physical_interaction_evidence')
 def genetic_interaction_evidence_filename(bioent_key=None, biorel_key=None):
     return create_filename([bioent_key, biorel_key], '_genetic_interaction_evidence')
+
+def genetic_interactor_listname(bioent_key=None):
+    return bioent_key + ' Genetic Interactors'
+def physical_interactor_listname(bioent_key=None):
+    return bioent_key + ' Physical Interactors'
+def all_interactor_listname(bioent_key=None):
+    return bioent_key + ' All Interactors'
+def both_interactor_listname(bioent_key=None):
+    return bioent_key + ' Both Genetic and Physical Interactors'
 
 #Bioent-Evidence Links
 def bioent_evidence_link(bioent_key=None):

@@ -118,6 +118,7 @@ def download_graph_view(request):
 @view_config(route_name='analyze', renderer='templates/analyze.pt')
 def analyze_view(request):
     locus_format_names = request.GET['locus']
+    display_name = request.GET['display_name']
     bioents = get_json(list_link(), data={'locus': locus_format_names})
     if bioents is None:
         return Response(status_int=500, body='Bioents could not be found.') 
@@ -130,7 +131,9 @@ def analyze_view(request):
                 #'send_to_go_slim_link': send_to_go_slim_link(),
                 #'send_to_goterm_finder': send_to_goterm_finder(),
                 'layout': site_layout(),
-                'page_title': 'Analyze Gene List'
+                'page_title': 'Analyze List',
+                'display_name': 'Analyze List',
+                'description': display_name
             }
     return page
 
