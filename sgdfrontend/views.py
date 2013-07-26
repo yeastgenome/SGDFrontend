@@ -120,9 +120,7 @@ def analyze_view(request):
                 #'send_to_yeastmine_link': send_to_yeastmine_link(),
                 #'send_to_go_slim_link': send_to_go_slim_link(),
                 #'send_to_goterm_finder': send_to_goterm_finder(),
-                'page_title': 'Analyze List',
-                'display_name': 'Analyze List',
-                'description': display_name
+                'display_name': display_name,
             }
     return page
 

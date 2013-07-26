@@ -1,21 +1,29 @@
 <!DOCTYPE html>
-<title>New Literature Review</title>
+
+<title>{{display_name}} Interactions</title>
 
 {% extends "templates/global_layout.jinja2" %}
+
+
 {% block body %}
+
+<h1 style="text-align:center;">{{display_name}}/{{format_name}} Physical and Genetic Interactions</h1>
+
+<!-- Includes tabs.html into template -->
+{% include "templates/tabs.jinja2" %}
 	
+<p>This page lists all genes/proteins that interact with {{display_name}}. See help for information about interaction data.</p>
+
 
 <!-- Docs nav
 ================================================== -->
 <div class="row">
 	<div id='sidebar' class="small-3 columns bs-docs-sidebar">
 		<ul class="nav nav-list bs-docs-sidenav affix-top" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
-			<li><h3 tal:content="structure name_with_link"></h3></li>
+			<li><h3><a href="{{link}}">{{display_name}}/{{format_name}}</a> Interactions</h3></li>
           	<li><a href="#interactors"><i class="icon-chevron-right"></i>Interactors Summary</a></li>
+			<li><a href="#interactions"><i class="icon-chevron-right"></i> Interactions</a></li>
 			<li><a href="#network"><i class="icon-chevron-right"></i> Network Visualization</a></li>
-			<li><a href="#physical_interactions"><i class="icon-chevron-right"></i> Physical Interactions</a></li>
-
-			<li><a href="#genetic_interactions"><i class="icon-chevron-right"></i> Genetic Interactions</a></li>
 			<li><a href="#resources"><i class="icon-chevron-right"></i> Resources</a></li>
 			<li><a href="#references"><i class="icon-chevron-right"></i> References</a></li>
 		</ul>
@@ -37,7 +45,7 @@
 		<span>Export:</span>
 		<div class="btn-group">
 			<button id="save" class="btn" target="_blank">png</button>
-  			<button id="phys_and_gen" class="btn" onclick="analyze_phys_and_gen()"><i class='icon-briefcase'></i> Analyze Physical and Genetic</button>
+  			<button id="phys_and_gen" class="btn" onclick="analyze_phys_and_gen()"><i class='icon-briefcase'></i> Analyze Intersection</button>
   			<button id="phys" class="btn" onclick="analyze_phys()"><i class='icon-briefcase'></i> Analyze Physical</button>
   			<button id="gen" class="btn" onclick="analyze_gen()"><i class='icon-briefcase'></i> Analyze Genetic</button>
   			<button id="phys_or_gen" class="btn" onclick="analyze_phys_or_gen()"><i class='icon-briefcase'></i> Analyze All</button>
@@ -46,12 +54,44 @@
 	</div>
 </section>
 
+<!-- Evidence
+================================================== -->
+<section id="interactions">
+	<div class="page-header">
+		<h1>Interactions <span id='evidence_header'></h1>
+		<span>Source: <a href="http://thebiogrid.org/" target="_blank">BioGRID</a></span>
+		
+		<span id='evidence_message'></span>
+		<div id='evidence_wrapper'>
+			<table class='table table-striped table-bordered table-condensed tablesorter' id='evidence_table' width="100%">
+			<thead>
+  			<tr>
+  				<th></th>
+  				<th>Interactor</th>
+  				<th>Interactor</th>
+  				<th>Type</th>
+    			<th>Assay</th>
+    			<th>Annotation</th>
+    			<th>Action</th>
+    			<th>Modification</th>
+    			<th>Phenotype</th>
+    			<th>Source</th>
+    			<th>Reference</th>
+    			<th>Note</th>
+  			</tr>
+  			</thead>
+			</table>
+        </div>
+        <br>
+   </div>
+</section>
+
 <!-- Network Visualization
 ================================================== -->
 <section id='network'>
 	<div class="page-header">
 		<h1>Network Visualization</h1>
-		<strong>Filter Interactions by # Total Evidence:</strong>
+		<strong>Filter Interactions by # of Experiments:</strong>
 		<br></br>
 		<div id="slider-range-min"></div>
 		<br>
@@ -68,67 +108,6 @@
         	<a class="btn" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
         </div>
     </div>
-</section>
-
-
-<!-- Physical Evidence
-================================================== -->
-<section id="physical_interactions">
-	<div class="page-header">		
-		<h1>Physical Interactions <span id='physical_evidence_header'></h1>
-		<span>Source: <a href="http://thebiogrid.org/" target="_blank">BioGRID</a></span>
-
-		<span id='physical_evidence_message'></span>
-		<div id='physical_evidence_wrapper'>
-			<table class='table table-striped table-bordered table-condensed tablesorter' id='physical_evidence_table' width="100%">
-			<thead>
-  			<tr>
-  				<th></th>
-  				<th>Interactor</th>
-  				<th>Interactor</th>
-    			<th>Experiment</th>
-    			<th>Annotation</th>
-    			<th>Action</th>
-    			<th>Modification</th>
-    			<th>Source</th>
-    			<th>Reference</th>
-    			<th>Note</th>
-  			</tr>
-  			</thead>
-			</table>
-        </div>
-		
-	</div>
-</section>
-
-<!-- Genetic Evidence
-================================================== -->
-<section id="genetic_interactions">
-	<div class="page-header">
-		<h1>Genetic Interactions <span id='genetic_evidence_header'></h1>
-		<span>Source: <a href="http://thebiogrid.org/" target="_blank">BioGRID</a></span>
-		
-		<span id='genetic_evidence_message'></span>
-		<div id='genetic_evidence_wrapper'>
-			<table class='table table-striped table-bordered table-condensed tablesorter' id='genetic_evidence_table' width="100%">
-			<thead>
-  			<tr>
-  				<th></th>
-  				<th>Interactor</th>
-  				<th>Interactor</th>
-    			<th>Experiment</th>
-    			<th>Annotation</th>
-    			<th>Action</th>
-    			<th>Phenotype</th>
-    			<th>Source</th>
-    			<th>Reference</th>
-    			<th>Note</th>
-  			</tr>
-  			</thead>
-			</table>
-        </div>
-        <br></br>
-   </div>
 </section>
 
 <!-- Resources
@@ -175,62 +154,33 @@
   	    }
   	}
   	
-  	function set_up_genetic_table(data) {  		
+  	function set_up_evidence_table(data) {  		
   		//Insert a 'details' column to the table  		
   		add_detail_column('genetic_evidence_table');
          
 		//Set up genetic evidence table
 		var options = {};
 		options["bPaginate"] = true;
-        options["oTableTools"] = table_tool_option('{{genetic_interaction_evidence_filename}}', true, '{{genetic_listname}}', 0, 2);
+        options["oTableTools"] = table_tool_option('{{interaction_evidence_filename}}', true, '{{genetic_listname}}', 0, 2);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[2, "asc"]];
-        options["fnInitComplete"] = set_up_message_and_count("genetic_evidence_header", "genetic_evidence_message", "genetic_evidence_wrapper");
+        options["fnInitComplete"] = set_up_message_and_count("evidence_header", "evidence_message", "evidence_wrapper");
 		options["fnDrawCallback"] = set_up_details(get_details);
-		options["aoColumns"] = [{"bSortable":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]		
+		options["aoColumns"] = [{"bSortable":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]		
 		options["aaData"] = data;
   				
-  		var genetic_table = $('#genetic_evidence_table').dataTable(options);
+  		var genetic_table = $('#evidence_table').dataTable(options);
   		genetic_table.on('filter', function(){
   			var visible_rows = genetic_table._('tr', {"filter": "applied"}).length;
   			if(visible_rows == 0) {
-  				document.getElementById("ToolTables_genetic_evidence_table_0").className += " disabled";
-  				document.getElementById("ToolTables_genetic_evidence_table_1").className += " disabled";
-  				document.getElementById("ToolTables_genetic_evidence_table_2").className += " disabled";
-  				document.getElementById("ToolTables_genetic_evidence_table_3").className += " disabled";
-  				document.getElementById("ToolTables_genetic_evidence_table_4").className += " disabled";
+  				document.getElementById("ToolTables_evidence_table_0").className += " disabled";
+  				document.getElementById("ToolTables_evidence_table_1").className += " disabled";
+  				document.getElementById("ToolTables_evidence_table_2").className += " disabled";
+  				document.getElementById("ToolTables_evidence_table_3").className += " disabled";
+  				document.getElementById("ToolTables_evidence_table_4").className += " disabled";
   			}
   		});
   	}
-  	
-  	function set_up_physical_table(data) {  		
-  		//Insert a 'details' column to the table
-		add_detail_column('physical_evidence_table');
-		
-		//Set up physical evidence data
-		var options = {};
-		options["bPaginate"] = true;
-        options["oTableTools"] = table_tool_option('{{physical_interaction_evidence_filename}}', true, '{{physical_listname}}', 1, 2);
-		options["sDom"] = '<"clear">lfrtipT';
-		options["aaSorting"] = [[2, "asc"]];
-        options["fnInitComplete"] = set_up_message_and_count("physical_evidence_header", "physical_evidence_message", "physical_evidence_wrapper");
-		options["fnDrawCallback"] = set_up_details(get_details);
-		options["aoColumns"] = [{"bSortable":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]		
-		options["aaData"] = data;
-		
-  		var physical_table = $('#physical_evidence_table').dataTable(options);
-  		physical_table.on('filter', function(){
-  			var visible_rows = physical_table._('tr', {"filter": "applied"}).length;
-  			if(visible_rows == 0) {
-  				document.getElementById("ToolTables_physical_evidence_table_0").className += " disabled";
-  				document.getElementById("ToolTables_physical_evidence_table_1").className += " disabled";
-  				document.getElementById("ToolTables_physical_evidence_table_2").className += " disabled";
-  				document.getElementById("ToolTables_physical_evidence_table_3").className += " disabled";
-  				document.getElementById("ToolTables_physical_evidence_table_4").className += " disabled";
-  			}
-  		});
-  	}
-
 	
 	$(document).ready(function() {
 	
@@ -239,8 +189,7 @@
 	
 		//Get evidence data
   		$.getJSON("{{interaction_evidence_table_link}}", function(data) {
-			set_up_genetic_table(data['genetic']);
-			set_up_physical_table(data['physical']);
+			set_up_evidence_table(data['aaData']);
 			set_up_references(data['reference'], 'reference_list');
     	});
     	

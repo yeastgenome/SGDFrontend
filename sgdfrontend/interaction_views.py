@@ -42,9 +42,9 @@ def interaction_evidence(request):
                 'both_listname': both_interactor_listname(bioent_key=format_name),
                 
                 'page_title': bioent['display_name'] + ' Interactions',
-                'display_name': bioent['display_name'] + ' Interactions',
-                'name_with_link': bioent['name_with_link'] + ' Interactions',
-                'description': 'All interactions associated with ' +  bioent['display_name'] + '.'
+                'display_name': bioent['display_name'],
+                'link': bioent['link'] + ' Interactions',
+                'format_name': bioent['format_name']
                 }
         return page
 
