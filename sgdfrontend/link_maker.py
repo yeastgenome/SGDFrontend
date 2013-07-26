@@ -101,10 +101,8 @@ def interaction_evidence_resource_link(bioent_key=None):
 
 def interaction_filename(bioent_key=None, reference_key=None):
     return create_filename([bioent_key, reference_key], '_interactions')
-def physical_interaction_evidence_filename(bioent_key=None, biorel_key=None):
-    return create_filename([bioent_key, biorel_key], '_physical_interaction_evidence')
-def genetic_interaction_evidence_filename(bioent_key=None, biorel_key=None):
-    return create_filename([bioent_key, biorel_key], '_genetic_interaction_evidence')
+def interaction_evidence_filename(bioent_key=None, biorel_key=None):
+    return create_filename([bioent_key, biorel_key], '_interaction_evidence')
 
 def genetic_interactor_listname(bioent_key=None):
     return bioent_key + ' Genetic Interactors'

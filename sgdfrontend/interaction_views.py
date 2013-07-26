@@ -7,7 +7,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from sgdfrontend import get_json
 from sgdfrontend.link_maker import bioent_link, interaction_evidence_table_link, \
-    genetic_interaction_evidence_filename, physical_interaction_evidence_filename, \
+    interaction_evidence_filename, \
     interaction_graph_link, interaction_evidence_resource_link, interaction_filename, \
     interaction_overview_table_link, genetic_interactor_listname, \
     physical_interactor_listname, all_interactor_listname, both_interactor_listname
@@ -32,8 +32,7 @@ def interaction_evidence(request):
                 'interaction_graph_link': interaction_graph_link(bioent_key=format_name),
                 'resource_link': interaction_evidence_resource_link(bioent_key=format_name),
 
-                'genetic_interaction_evidence_filename': genetic_interaction_evidence_filename(bioent_key=format_name),
-                'physical_interaction_evidence_filename': physical_interaction_evidence_filename(bioent_key=format_name),
+                'interaction_evidence_filename': interaction_evidence_filename(bioent_key=format_name),
                 'interactor_filename': interaction_filename(bioent_key=format_name),
                 
                 'genetic_listname': genetic_interactor_listname(bioent_key=format_name),

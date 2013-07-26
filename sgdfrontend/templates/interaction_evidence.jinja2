@@ -95,17 +95,15 @@
 		<br></br>
 		<div id="slider-range-min"></div>
 		<br>
-		<div id="cytoscapeweb">
-            Network visualization is loading...
-        </div>
+		<div id="cy" name="cy" style="width:100%;height:700px"></div>
         <span>Export:</span>
-        <div class="btn-group">
-        	<a class="btn" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a>
-        	<a class="btn" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a>
-        	<a class="btn" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a>
-        	<a class="btn" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a>
-        	<a class="btn" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a>
-        	<a class="btn" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
+        <div class="button-group">
+        	<a class="button" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a>
+        	<a class="button" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a>
+        	<a class="button" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a>
+        	<a class="button" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a>
+        	<a class="button" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a>
+        	<a class="button" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
         </div>
     </div>
 </section>
@@ -161,7 +159,7 @@
 		//Set up genetic evidence table
 		var options = {};
 		options["bPaginate"] = true;
-        options["oTableTools"] = table_tool_option('{{interaction_evidence_filename}}', true, '{{genetic_listname}}', 0, 2);
+        options["oTableTools"] = table_tool_option('{{interaction_evidence_filename}}', true, '{{all_listname}}', 0, 2);
 		options["sDom"] = '<"clear">lfrtipT';
 		options["aaSorting"] = [[2, "asc"]];
         options["fnInitComplete"] = set_up_message_and_count("evidence_header", "evidence_message", "evidence_wrapper");
@@ -302,18 +300,45 @@
 	
 </script>
 
+<script src="../static/js/cytoscape/cytoscape.min.js"></script>	
+<script src="../static/js/cytoscape/arbor.js"></script>	
+
 <script>
-	var vis = null;
-	window.onload=function() {
-		vis = setup_interaction_cytoscape_vis("{{interaction_graph_link}}");   
-	};           
+var style = cytoscape.stylesheet()
+	.selector('node')
+	.css({
+		'content': 'data(name)',
+		'font-family': 'helvetica',
+		'font-size': 14,
+		'text-outline-width': 3,
+		'text-outline-color': '#888',
+		'text-valign': 'center',
+		'color': '#fff',
+		'width': 30,
+		'height': 30,
+		'border-color': '#fff'
+	})
+	.selector('edge')
+	.css({
+		'width': 2,
+	})
+	.selector("node[sub_type='FOCUS']")
+	.css({
+		'background-color': "#fade71",
+		'text-outline-color': '#fff',
+		'color': '#888',
+	});
+setup_cytoscape_vis('cy', "{{interaction_graph_link}}", style);
 </script>
         
-<style>
-	/* The Cytoscape Web container must have its dimensions set. */
-	html, body { height: 80%; width: 100%; padding: 0; margin: 0; }
-	#cytoscapeweb { width: 100%; height: 100%; }
-</style>
 
 {% endblock body %}
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../static/js/cytoscape/cxtmenu.js"></script>	
+<script src="../static/js/cytoscape/cytoscape-edgehandles.min.js"></script>	
+<script src="../static/js/cytoscape/cytoscape-panzoom.min.js"></script>	
+<script src="../static/js/cytoscape/cytoscape-panzoom.css"></script>	
 
