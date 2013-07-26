@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<title>New Literature Review</title>
+
+{% extends "templates/global_layout.jinja2" %}
+{% block body %}
+
+
+<!-- Docs nav
+================================================== -->
+<div class="row-fluid">
+	<div id='sidebar' class="span3 bs-docs-sidebar">
+		<ul class="nav nav-list bs-docs-sidenav affix-top" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
+			<li><h3><span tal:content="display_name"></span></h3></li>
+			<li><a href="#analyze"><i class="icon-chevron-right"></i> Tools</a></li>
+          	<li><a href="#gene_list"><i class="icon-chevron-right"></i>Genes</a></li>
+		</ul>
+	</div>
+	
+	<div class="span9"> 
+
+<!-- Analyze
+================================================== -->
+<section id="analyze">
+	<div class="page-header">
+		<h1>Tools</h1>
+		
+		<ul class="button-group even-4">
+  			<li class="span3">
+  				<a href="" class="large button expand">
+    				<div class="caption">
+      					<h3>GO Term Finder</h3>
+      					<p>Find common features between genes.</p>
+    				</div>
+    			</a>
+  			</li>
+  			
+  			<li class="span3">
+  				<a href="" class="large button expand">
+    				<div class="caption">
+      					<h3>GO Slim Mapper</h3>
+      					<p>Sort genes into broad categories.</p>
+    				</div>
+    			</a>
+  			</li>
+  			
+  			<li class="span3">
+  				<a href="" class="large button expand">
+    				<div class="caption">
+      					<h3>SPELL</h3>
+      					<p>View expression data.</p>
+    				</div>
+    			</a>
+  			</li>
+  			
+  			<li class="span3">
+  				<a href="" class="large button expand">
+    				<div class="caption">
+      					<h3>YeastMine</h3>
+      					<p>Conduct advanced analysis.</p>
+    				</div>
+    			</a>
+  			</li>
+		</ul>
+		
+		<!--
+		<h3>Gene Ontology Term Enrichment Analysis <span id='enrichment_header'></span></h3>
+		<span id='enrichment_message'></span>
+		<div id='enrichment_wrapper'>
+		<table class='table table-striped table-bordered table-condensed tablesorter' id='enrichment_table' width="100%">
+		<thead>
+  		<tr>
+  			<th>Gene Ontology Term</th>
+  			<th>Gene List Overlap</th>
+  			<th>Genes Annotated to Gene Ontology Term</th>
+  			<th>Gene List Size</th>
+  			<th>Genome Size</th>
+  			<th>P-Value</th>
+  		</tr>
+  		</thead>
+		</table>
+		</div>
+		<ul id='analyze_list'>
+		</ul>
+		-->
+	</div>
+</section>
+
+<!-- Gene List
+================================================== -->
+<section id="gene_list">
+	<div class="page-header">
+		<h1>Genes <span id='gene_list_header'></h1>
+		<table class='table table-striped table-bordered table-condensed tablesorter' id='gene_list_table' width="100%">
+		<thead>
+  		<tr>
+  			<th>Gene Name</th>
+  			<th>Description</th>
+  		</tr>
+  		</thead>
+  		<tr tal:repeat="bioent python: bioents">
+  			<td tal:content="structure bioent['name_with_link']"></td>
+  			<td tal:content="bioent['description']"></td>
+  		</tr>
+		</table>
+		
+	</div>
+</section>
+
+</div>
+</div>
+
+<script>
+	function set_up_gene_table() {
+		var options = {};
+		options["bPaginate"] = true;
+		options["aaSorting"] = [[0, "asc"]];
+        options["oTableTools"] = table_tool_option("gene_list", false);
+		options["sDom"] = '<"clear">lfrtipT';
+        options["fnInitComplete"] = set_up_count_no_message("gene_list_header");
+		options["aoColumns"] = [null, null];
+        $('#gene_list_table').dataTable(options);
+	}
+	
+	function set_up_go_enrichment_table(data) {
+		var options = {};
+		options["bPaginate"] = true;
+		options["aaSorting"] = [[5, "asc"]];
+        options["oTableTools"] = table_tool_option('{{enrichment_header_filename}}', false);
+		options["sDom"] = '<"clear">lfrtipT';
+        options["fnInitComplete"] = set_up_message_and_count("enrichment_header", "enrichment_message", "enrichment_wrapper");
+		options['aaData'] = data;
+		
+		$('#enrichment_table').dataTable(options);
+	}
+	
+	$(document).ready(function() {
+		//Set up gene table
+		set_up_gene_table();
+		
+		//Get go enrichment data
+  		//$.getJSON("{{go_enrichment_link}}", {'bioent_ids':"{{bioent_ids}}"},  set_up_go_enrichment_table);
+    	
+  	});
+</script>
+
+
+{% endblock body %}
+

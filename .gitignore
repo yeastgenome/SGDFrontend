@@ -3,4 +3,9 @@
 *.egg-info
 .sass-cache/
 sgdfrontend/static/css/normalize.css
-sgdfrontend/static/css/style.css
+sgdfrontend/static/css/style.cssbin
+develop-eggs
+eggs
+parts
+SGDFrontend.egg-info
+bin

@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>{{page_title}}</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+	<meta name="keywords" content="python web application" />
+	<meta name="description" content="pyramid web application" />
+	<meta name="author" content="">
+	<!--[if !IE 7]>
+	<style type="text/css">
+		#wrap {display:table;height:100%}
+    </style>
+	<![endif]-->
+    <style type="text/css">
+        .locale { text-align: center; }
+        .locale-name { font-weight: bold; }
+    </style>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<link href="../static/css/normalize.css" rel="stylesheet">
+	<link href="../static/css/style.css" rel="stylesheet">
+	
+	<script src="../static/js/vendor/custom.modernizr.js"></script>
+	<script src="../static/js/jquery-1.9.1.js"></script>
+	<script src="../static/js/jquery-ui-1.10.1.custom.js"></script>
+	<script src="../static/js/jquery.dataTables.js"></script>
+	<script src="../static/js/datatable.js"></script>
+	<script src="../static/js/TableTools.js"></script>
+	<script src="../static/js/ZeroClipboard.js"></script>
+	<script src="../static/js/DT_bootstrap.js"></script>
+	<script src="../static/js/local.js"></script>
+	<script src="../static/js/kinetic-v4.3.3.min.js"></script>
+	<script src="../static/js/seqVis.js"></script>
+	<script src="../static/js/venn.js"></script>
+</head>
+<body>
+	<!-- Includes header.html into template -->
+	{% include "templates/header.jinja2" %}
+
+	<div class="container" id="layout-document">
+    	{% block body %}{% endblock %}
+    </div>
+    
+    <div id="layout-document-footer-pusher"><!-- keep empty --></div>
+    
+	<!-- Includes footer.html into template -->
+	{% include "templates/footer.jinja2" %}
+</body>
+
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../static/js/cytoscapeweb.min.js"></script>	
+<script src="../static/js/foundation/foundation.js"></script>
+<script src="../static/js/foundation/foundation.topbar.js"></script>
+<script src="../static/js/AC_OETags.min.js"></script>
+
+<script>
+  $(document).foundation();
+</script>
+</html>

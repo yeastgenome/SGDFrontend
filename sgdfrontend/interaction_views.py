@@ -11,13 +11,12 @@ from sgdfrontend.link_maker import bioent_link, interaction_evidence_table_link,
     interaction_graph_link, interaction_evidence_resource_link, interaction_filename, \
     interaction_overview_table_link, genetic_interactor_listname, \
     physical_interactor_listname, all_interactor_listname, both_interactor_listname
-from sgdfrontend.views import site_layout
 
 
 '''
 -------------------------------Views---------------------------------------
 '''
-@view_config(route_name='interaction_evidence', renderer='templates/interaction_evidence.pt')
+@view_config(route_name='interaction_evidence', renderer='templates/interaction_evidence.jinja2')
 def interaction_evidence(request):
     if 'bioent' in request.GET:
         #Need an interaction evidence page based on a bioent
@@ -42,7 +41,6 @@ def interaction_evidence(request):
                 'all_listname': all_interactor_listname(bioent_key=format_name),
                 'both_listname': both_interactor_listname(bioent_key=format_name),
                 
-                'layout': site_layout(),
                 'page_title': bioent['display_name'] + ' Interactions',
                 'display_name': bioent['display_name'] + ' Interactions',
                 'name_with_link': bioent['name_with_link'] + ' Interactions',
