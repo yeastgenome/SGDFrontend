@@ -24,8 +24,8 @@ function add_tabletools() {
 	TableTools.DEFAULTS.sSwfPath = "../static/js/copy_csv_xls_pdf.swf";
 }
 
-function analyze(list_name, bioents) {
-	var path = "/analyze";
+function analyze(analyze_link, list_name, bioents) {
+	var path = analyze_link;
 	var form = add_params_to_form({"display_name":list_name, "locus": bioents})
 	form.setAttribute("method", 'get');
     form.setAttribute("action", path);
@@ -38,7 +38,7 @@ function name_from_link(name_with_link) {
 	return name;
 }
 
-function add_analyze_tabletool(list_name, table_index, name_with_link_index) {
+function add_analyze_tabletool(analyze_link, list_name, table_index, name_with_link_index) {
 	add_tabletools();
 	
 	TableTools.BUTTONS.analyze = $.extend( true, TableTools.buttonBase, {
@@ -58,12 +58,12 @@ function add_analyze_tabletool(list_name, table_index, name_with_link_index) {
 			if(search_term != '') {
 				list_name = list_name + ' filtered by "' + search_term + '"'
 			}			
-			analyze(list_name, bioents);
+			analyze(analyze_link, list_name, bioents);
 		}
 	} );
 }
 
-function table_tool_option(save_name, use_analyze, list_name, table_index, name_with_link_index) {
+function table_tool_option(save_name, use_analyze, analyze_link, list_name, table_index, name_with_link_index) {
 	var buttons = [
 			"copy",
 			"print",
@@ -77,7 +77,7 @@ function table_tool_option(save_name, use_analyze, list_name, table_index, name_
 			}
 		];
 	if(use_analyze) {
-		add_analyze_tabletool(list_name, table_index, name_with_link_index);
+		add_analyze_tabletool(analyze_link, list_name, table_index, name_with_link_index);
 		buttons.push('analyze');
 	}
 	else {
@@ -169,36 +169,59 @@ function set_up_references(references, ref_list_id) {
 
 
 
-function setup_cytoscape_vis(div_id, link, style) {
-	$.getJSON(link, function(data) {
-		$(loadCy = function(){
-			options = {
-				showOverlay: false,
-				layout: {"name": "arbor", "liveUpdate": true, "nodeMass":function(data) {
-					if(data.sub_type == 'FOCUS') {
-						return 10;
-					}
-					else {
-						return 1;
-					}
-				}},
-		    	minZoom: 0.5,
-		    	maxZoom: 2,
-		    	style: style,
+function setup_cytoscape_vis(div_id, style, data) {
+	$(loadCy = function(){
+		options = {
+			showOverlay: false,
+			layout: {"name": "arbor", "liveUpdate": true, "nodeMass":function(data) {
+				if(data.sub_type == 'FOCUS') {
+					return 10;
+				}
+				else {
+					return 1;
+				}
+			}},
+		    minZoom: 0.5,
+		    maxZoom: 2,
+		    style: style,
 		
-		    	elements: {
-		      		nodes: data['nodes'],
-		      		edges: data['edges'],
-		    	},
+		    elements: {
+		     	nodes: data['nodes'],
+		     	edges: data['edges'],
+		    },
 		
-		    	ready: function(){
-		      		cy = this;
-		    	}
-		  	};
+		    ready: function(){
+		      	cy = this;
+		    }
+		  };
 	
-			$('#' + div_id).cytoscape(options);
-		});
+		$('#' + div_id).cytoscape(options);
 	});
+}
+
+function setup_slider(div_id, min, max, current, slide_f) {
+	var slider = $("#" + div_id).noUiSlider({
+		range: [min, max]
+		,start: current
+		,step: 1
+		,handles: 1
+		,connect: "lower"
+		,slide: slide_f
+	});
+	
+	var spacing =  100 / (max - min);
+    for (var i = min-1; i < max ; i=i+1) {
+    	var value = i+1;
+    	if(value >= 10) {
+    		var left = ((spacing * (i-min+1))-1)
+        	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+    	}
+    	else {
+    		var left = ((spacing * (i-min+1))-.5)
+			$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+    	}
+	}
+	return slider;
 }
 
 

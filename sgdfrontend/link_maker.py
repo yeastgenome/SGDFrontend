@@ -3,7 +3,7 @@ Created on Mar 6, 2013
 
 @author: kpaskov
 '''
-from sgdfrontend.config import backend_url
+from sgdfrontend.config import backend_url, on_the_fly_url
 
 backend_start = backend_url
 frontend_start = ''
@@ -90,14 +90,14 @@ def phenotype_evidence_filename(bioent_key=None, biocon_key=None):
 def interaction_evidence_link(bioent_key=None, biocon_key=None):
     return add_format_name_params('/interaction_evidence?', False, {'bioent':bioent_key, 'biocon': biocon_key})
 
-def interaction_overview_table_link(bioent_key=None, reference_key=None):
-    return add_format_name_params('/interaction_overview_table?', True, {'bioent':bioent_key, 'reference':reference_key})
-def interaction_evidence_table_link(bioent_key=None, biorel_key=None):
-    return add_format_name_params('/interaction_evidence_table?', True, {'bioent':bioent_key, 'biorel': biorel_key})
-def interaction_graph_link(bioent_key=None):
-    return add_format_name_params('/interaction_graph?', True, {'bioent':bioent_key})
-def interaction_evidence_resource_link(bioent_key=None):
-    return add_format_name_params('/interaction_evidence_resources?', True, {'bioent':bioent_key})
+def interaction_overview_table_link(bioent_key=None, bioent_type='LOCUS', reference_key=None):
+    return add_format_name_params('/interaction_overview_table?', True, {'bioent':bioent_key, 'bioent_type':bioent_type, 'reference':reference_key})
+def interaction_evidence_table_link(bioent_key=None, bioent_type='LOCUS', biorel_key=None):
+    return add_format_name_params('/interaction_evidence_table?', True, {'bioent':bioent_key, 'bioent_type':bioent_type, 'biorel': biorel_key})
+def interaction_graph_link(bioent_key=None, bioent_type='LOCUS'):
+    return add_format_name_params('/interaction_graph?', True, {'bioent':bioent_key, 'bioent_type':bioent_type})
+def interaction_evidence_resource_link(bioent_key=None, bioent_type='LOCUS'):
+    return add_format_name_params('/interaction_evidence_resources?', True, {'bioent':bioent_key, 'bioent_type':bioent_type})
 
 def interaction_filename(bioent_key=None, reference_key=None):
     return create_filename([bioent_key, reference_key], '_interactions')
@@ -112,6 +112,10 @@ def all_interactor_listname(bioent_key=None):
     return bioent_key + ' All Interactors'
 def both_interactor_listname(bioent_key=None):
     return bioent_key + ' Both Genetic and Physical Interactors'
+
+#On the fly links
+def analyze_link():
+    return frontend_start + '/analyze'
 
 #Bioent-Evidence Links
 def bioent_evidence_link(bioent_key=None):
@@ -158,7 +162,7 @@ def assoc_reference_link(author_key):
     return add_format_name_params('/assoc_references?', True, {'author':author_key})
 
 def list_link():
-    return backend_start + '/list'
+    return on_the_fly_url + '/list'
 def go_enrichment_link():
     return add_format_name_params('/go_enrichment?', True, {})
 def enrichment_header_filename():
