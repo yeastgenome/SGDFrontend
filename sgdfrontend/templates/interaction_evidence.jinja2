@@ -21,11 +21,11 @@
 	<nav id="sidebar" class="small-3 columns">
 		<ul data-magellan-expedition="fixed" class="side-nav" id="navbar">
 			<li id="nav-title"><h5><a href="{{link}}">{{display_name}}/{{format_name}}</a> Interactions</h5></li>
-          	<li><a href="#summary"></i> Interactors Summary</a></li>
-			<li><a href="#interactions"></i> Interactions</a></li>
-			<li><a href="#network"></i> Network Visualization</a></li>
-			<li><a href="#resources"></i> Resources</a></li>
-			<li><a href="#references"></i> References</a></li>
+          	<li><a href="#summary">Interactors Summary</a></li>
+			<li><a href="#interactions">Interactions</a></li>
+			<li><a href="#network">Network Visualization</a></li>
+			<li><a href="#resources">Resources</a></li>
+			<li><a href="#references">References</a></li>
 		</ul>
 	</nav>
 	
@@ -97,12 +97,12 @@
 		<div id="cy" name="cy" style="width:100%;height:700px"></div>
         <span>Export:</span>
         <ul class="button-group radius">
-        	<li><a class="small button secondary" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a>
-        	<li><a class="small button secondary" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a>
-        	<li><a class="small button secondary" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a>
-        	<li><a class="small button secondary" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a>
-        	<li><a class="small button secondary" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a>
-        	<li><a class="small button secondary" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a></li>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a></li>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a></li>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a></li>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a></li>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a></li>
         </ul>
     </div>
 </section>
