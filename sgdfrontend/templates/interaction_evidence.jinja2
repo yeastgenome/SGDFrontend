@@ -7,54 +7,56 @@
 
 {% block body %}
 
-<h1 style="text-align:center;">{{display_name}}/{{format_name}} Physical and Genetic Interactions</h1>
+<div id="center_title" class="row">
+	<h2><span class="gene_name">{{display_name}}/{{format_name}}</span> Physical and Genetic Interactions  <a href="http://www.yeastgenome.org/help/interaction.html" name="top" class="help"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+</div>
+
 
 <!-- Includes tabs.html into template -->
 {% include "templates/tabs.jinja2" %}
-	
-<p>This page lists all genes/proteins that interact with {{display_name}}. See help for information about interaction data.</p>
-
 
 <!-- Docs nav
 ================================================== -->
 <div class="row">
-	<div id='sidebar' class="small-3 columns bs-docs-sidebar">
-		<ul class="nav nav-list bs-docs-sidenav affix-top" id='navbar' name='navbar' style="margin-left:auto; margin-right:auto">
-			<li><h3><a href="{{link}}">{{display_name}}/{{format_name}}</a> Interactions</h3></li>
-          	<li><a href="#interactors"><i class="icon-chevron-right"></i>Interactors Summary</a></li>
-			<li><a href="#interactions"><i class="icon-chevron-right"></i> Interactions</a></li>
-			<li><a href="#network"><i class="icon-chevron-right"></i> Network Visualization</a></li>
-			<li><a href="#resources"><i class="icon-chevron-right"></i> Resources</a></li>
-			<li><a href="#references"><i class="icon-chevron-right"></i> References</a></li>
+	<nav id="sidebar" class="small-3 columns">
+		<ul data-magellan-expedition="fixed" class="side-nav" id="navbar">
+			<li id="nav-title"><h5><a href="{{link}}">{{display_name}}/{{format_name}}</a> Interactions</h5></li>
+          	<li><a href="#summary"></i> Interactors Summary</a></li>
+			<li><a href="#interactions"></i> Interactions</a></li>
+			<li><a href="#network"></i> Network Visualization</a></li>
+			<li><a href="#resources"></i> Resources</a></li>
+			<li><a href="#references"></i> References</a></li>
 		</ul>
-	</div>
+	</nav>
 	
 	<div class="small-9 columns">  
 		
-<!-- Interactors
+<!-- Summary
 ================================================== -->
-<section id="interactors">
+<section id="summary">
 	<div class="page-header">
+		<p>This page lists all genes/proteins that interact with {{display_name}}. See help for information about interaction data.</p>
 		<h1>Interactors Summary</h1>
 		<div id="venn_diagram"></div>
-		<br>
-		<div>
-			
+	
+		<div class="button-bar">
+			<h5>Analyze</h5>
+			<ul class="button-group radius">
+				<li><a href="" class="small button secondary">
+					</i> Physical</a>
+				</li>
+				<li><a href="" class="small button secondary"></i> Genetic</a></li>
+				<li><a href="" class="small button secondary"></i> Intersection</a></li>
+				<li><a href="" class="small button secondary"></i> All</a></li>
+			</ul>
+			<ul class="button-group radius">
+				<li><a href="" class="small button secondary radius"><i class="icon-picture"></i> PNG</a></li>
+			</ul>
 		</div>
-
-		<span>Export:</span>
-		<div class="btn-group">
-			<button id="save" class="btn" target="_blank">png</button>
-  			<button id="phys_and_gen" class="btn" onclick="analyze_phys_and_gen()"><i class='icon-briefcase'></i> Analyze Intersection</button>
-  			<button id="phys" class="btn" onclick="analyze_phys()"><i class='icon-briefcase'></i> Analyze Physical</button>
-  			<button id="gen" class="btn" onclick="analyze_gen()"><i class='icon-briefcase'></i> Analyze Genetic</button>
-  			<button id="phys_or_gen" class="btn" onclick="analyze_phys_or_gen()"><i class='icon-briefcase'></i> Analyze All</button>
-		</div>
-		
 	</div>
 </section>
 
-<!-- Evidence
+<!-- Interactions
 ================================================== -->
 <section id="interactions">
 	<div class="page-header">
@@ -82,13 +84,12 @@
   			</thead>
 			</table>
         </div>
-        <br>
    </div>
 </section>
 
 <!-- Network Visualization
 ================================================== -->
-<section id='network'>
+<section id="network">
 	<div class="page-header">
 		<h1>Network Visualization</h1>
 		<strong>Filter Interactions by # of Experiments:</strong>
@@ -97,14 +98,14 @@
 		<br>
 		<div id="cy" name="cy" style="width:100%;height:700px"></div>
         <span>Export:</span>
-        <div class="button-group">
-        	<a class="button" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a>
-        	<a class="button" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a>
-        	<a class="button" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a>
-        	<a class="button" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a>
-        	<a class="button" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a>
-        	<a class="button" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
-        </div>
+        <ul class="button-group radius">
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a>
+        	<li><a class="small button secondary" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a>
+        </ul>
     </div>
 </section>
 
