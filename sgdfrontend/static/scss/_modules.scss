@@ -149,6 +149,9 @@ input[type="text"].big-search {
 .prefix-input {@include border-right-radius(0 !important);}
 .postfix-input {@include border-left-radius(0 !important);}
 
+#side-nav-sticky {
+	max-width: 263px;
+}
 
 .side-nav { //extending Foundation
 	border: 1px #ccc solid;
@@ -200,4 +203,12 @@ input[type="text"].big-search {
 }
 .side-nav > li > a {
     display: block;
+}
+
+// Overwrite a couple magellan settings - need to make these case specific though
+[data-magellan-expedition] {
+	min-width: 0;
+}
+.fixed {
+	left: inherit !important;
 }
