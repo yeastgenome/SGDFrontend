@@ -19,13 +19,13 @@
 ================================================== -->
 <div class="row">
 	<nav id="sidebar" class="small-3 columns">
-		<ul data-magellan-expedition="fixed" class="side-nav" id="navbar">
+		<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky">
 			<li id="nav-title"><h5><a href="{{link}}">{{display_name}}/{{format_name}}</a> Interactions</h5></li>
-          	<li><a href="#summary">Interactors Summary</a></li>
-			<li><a href="#interactions">Interactions</a></li>
-			<li><a href="#network">Network Visualization</a></li>
-			<li><a href="#resources">Resources</a></li>
-			<li><a href="#references">References</a></li>
+          	<li data-magellan-arrival="summary"><a href="#summary">Interactors Summary</a></li>
+			<li data-magellan-arrival="interactions"><a href="#interactions">Interactions</a></li>
+			<li data-magellan-arrival="network"><a href="#network">Network Visualization</a></li>
+			<li data-magellan-arrival="resources"><a href="#resources">Resources</a></li>
+			<li data-magellan-arrival="references"><a href="#references">References</a></li>
 		</ul>
 	</nav>
 	
@@ -33,7 +33,7 @@
 		
 <!-- Summary
 ================================================== -->
-<section id="summary">
+<section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
 		<p>This page lists all genes/proteins that interact with {{display_name}}. See help for information about interaction data.</p>
 		<h1>Interactors Summary</h1>
@@ -56,7 +56,7 @@
 
 <!-- Interactions
 ================================================== -->
-<section id="interactions">
+<section id="interactions" data-magellan-destination="interactions">
 	<div class="page-header">
 		<h1>Interactions <span id='evidence_header'></h1>
 		<span>Source: <a href="http://thebiogrid.org/" target="_blank">BioGRID</a></span>
@@ -87,7 +87,7 @@
 
 <!-- Network Visualization
 ================================================== -->
-<section id="network">
+<section id="network" data-magellan-destination="network">
 	<div class="page-header">
 		<h1>Network Visualization</h1>
 		<input id="all_radio" type="radio" name="group1" onclick="change_scale(); filter_cy()" checked> All<br>
@@ -118,7 +118,7 @@
 
 <!-- Resources
 ================================================== -->
-<section id="resources">
+<section id="resources" data-magellan-destination="resources">
 	<div class="page-header">
 		<h1>Resources</h1>
 		<ul id='resource_list'>
@@ -128,7 +128,7 @@
 
 <!-- References
 ================================================== -->
-<section id="references">
+<section id="references" data-magellan-destination="references">
 	<div class="page-header">
 		<h1>References</h1>
 		<ul id='reference_list'>

@@ -150,6 +150,11 @@ input[type="text"].big-search {
 .postfix-input {@include border-left-radius(0 !important);}
 
 
+// Sticky Side navigation
+#side-nav-sticky {
+	max-width: 263px;
+}
+
 .side-nav { //extending Foundation
 	border: 1px #ccc solid;
 	@include border-radius(4px);
@@ -169,8 +174,8 @@ input[type="text"].big-search {
 }
 
 .side-nav li.active a {
-    background-color: #615F8F;
-    color: #FFFFFF;
+    background-color: #615f8f;
+    color: #fff;
 }
 .side-nav > li > a {
     border: 1px solid #ccc;
@@ -179,7 +184,7 @@ input[type="text"].big-search {
     border-color: #ddd;
     border-style: solid;
     border-width: 1px;
-    color: #555555;
+    color: #fff;
     cursor: default;
 }
 .side-nav > li > a {
@@ -200,4 +205,13 @@ input[type="text"].big-search {
 }
 .side-nav > li > a {
     display: block;
+}
+
+// Overwrite a couple magellan settings - need to make these case specific though
+[data-magellan-expedition] {
+	min-width: 0;
+	padding: 0 !important;
+}
+.fixed {
+	left: inherit !important;
 }
