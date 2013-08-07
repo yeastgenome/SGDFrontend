@@ -2,14 +2,12 @@ from pyramid.config import Configurator
 from pyramid_jinja2 import renderer_factory
 from sgdfrontend.models import get_root
 import requests
-import simplejson
 
 def get_json(url, data=None):
     if data is not None:
         r = requests.post(url, data=data)
     else:
         r = requests.get(url)
-        print r.url
     return r.json()
 
 

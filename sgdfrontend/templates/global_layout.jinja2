@@ -20,6 +20,7 @@
 	
 	<link href="../static/css/normalize.css" rel="stylesheet">
 	<link href="../static/css/style.css" rel="stylesheet">
+
 	
 	<!--[if lt IE 9]>
 	<script src="../static/js/vendor/respond.min.js"></script>
@@ -27,16 +28,15 @@
 	
 	<script src="../static/js/vendor/custom.modernizr.js"></script>
 	<script src="../static/js/jquery-1.9.1.js"></script>
-	<script src="../static/js/jquery-ui-1.10.1.custom.js"></script>
 	<script src="../static/js/jquery.dataTables.js"></script>
 	<script src="../static/js/datatable.js"></script>
 	<script src="../static/js/TableTools.js"></script>
 	<script src="../static/js/ZeroClipboard.js"></script>
-	<script src="../static/js/DT_bootstrap.js"></script>
 	<script src="../static/js/local.js"></script>
 	<script src="../static/js/kinetic-v4.3.3.min.js"></script>
 	<script src="../static/js/seqVis.js"></script>
 	<script src="../static/js/venn.js"></script>
+	
 </head>
 <body>
 	<!-- Includes header.html into template -->
@@ -61,10 +61,15 @@
 <script src="../static/js/foundation/foundation.topbar.js"></script>
 <script src="../static/js/foundation/foundation.magellan.js"></script>
 
+
 <script>
   $(document).foundation();
   
   $(".side-nav").foundation("magellan", {threshold: 50});
-  
+
+  $(document).ready(function(){          // does the following only after DOM completely loads
+   var anchor = window.location.hash;
+   window.location.hash = anchor;
+});
 </script>
 </html>
