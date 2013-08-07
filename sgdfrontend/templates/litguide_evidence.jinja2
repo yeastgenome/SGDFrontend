@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<title>{{display_name}} Literature</title>
+
+{% extends "templates/global_layout.jinja2" %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2><span class="gene_name">{{display_name}}/{{format_name}}</span> Literature</h2>
+</div>
+
+
+<!-- Includes tabs.html into template -->
+{% include "templates/tabs.jinja2" %}
+
+
+<!-- Docs nav
+================================================== -->
+<div class="row">
+	<nav id="sidebar" class="small-3 columns">
+		<ul data-magellan-expedition="fixed" class="side-nav" id="navbar">
+			<li id="nav-title"><h5><a href="{{link}}">{{display_name}}/{{format_name}}</a> Literature</h5></li>
+			<li><a href="#primary">Primary Literature</a></li>
+          	<li><a href="#additional">Additional Literature</a></li>
+          	<li><a href="#reviews">Reviews</a></li>
+          	<li><a href="#go">Gene Ontology Literature</a></li>
+          	<li><a href="#phenotype">Phenotype Literature</a></li>
+		</ul>
+	</nav>
+	
+	<div class="small-9 columns">  
+
+
+<!-- Primary
+================================================== -->
+<section id="primary">
+	<div class="page-header">
+		<h1>Primary Literature <span id='primary_header'></span></h1>
+		<span id='primary_message' class="hide">No primary literature curated.</span>
+		<div id='primary_wrapper'>	
+			<a href="" class="small button secondary">Export to EndNote</a>	
+			<ul id='primary_list'>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<!-- Additional
+================================================== -->
+<section id="additional">
+	<div class="page-header">
+		<h1>Additional Literature <span id='additional_header'></span></h1>
+		<span id='additional_message' class="hide">No additional literature curated.</span>
+		<div id='additional_wrapper'>
+			<a href="" class="small button secondary">Export to EndNote</a>						
+			<ul id='additional_list'>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<!-- Review
+================================================== -->
+<section id="reviews">
+	<div class="page-header">
+		<h1>Reviews <span id='review_header'></span></h1>
+		<span id='review_message' class="hide">No reviews curated.</span>
+		<div id='review_wrapper'>
+			<a href="" class="small button secondary">Export to EndNote</a>						
+			<ul id='review_list'>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<!-- GO
+================================================== -->
+<section id="go">
+	<div class="page-header">
+		<h1>Gene Ontology Literature <span id='go_header'></span></h1>
+		<span id='go_message' class="hide">No gene ontology literature curated.</span>
+		<div id='go_wrapper'>
+			<a href="" class="small button secondary">Export to EndNote</a>						
+			<ul id='go_list'>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<!-- Phenotype
+================================================== -->
+<section id="phenotype">
+	<div class="page-header">
+		<h1>Phenotype Literature <span id='phenotype_header'></span></h1>
+		<span id='phenotype_message' class="hide">No phenotype literature curated.</span>
+		<div id='phenotype_wrapper'>	
+			<a href="" class="small button secondary">Export to EndNote</a>					
+			<ul id='phenotype_list'>
+			</ul>
+		</div>
+	</div>
+</section>
+<br>
+
+</div>
+
+<script>
+	function set_up_primary_list(data) {	
+		set_up_count(data.length, "primary_header");
+  		set_up_references(data, "primary_list");
+	}
+	
+	function set_up_additional_list(data) {
+		set_up_count(data.length, "additional_header");
+  		set_up_references(data, "additional_list");
+	}
+	
+	function set_up_review_list(data) {		
+		set_up_count(data.length, "review_header");
+  		set_up_references(data, "review_list");
+	}
+		
+	function set_up_go_list(data) {
+		var go = data['reference'];
+		set_up_count(go.length, "go_header");
+  		set_up_references(go, "go_list");
+	}
+		
+	function set_up_phenotype_list(data) {
+		var phenotype = data['reference'];
+		set_up_count(phenotype.length, "phenotype_header");
+  		set_up_references(phenotype, "phenotype_list");
+	}
+	
+	$(document).ready(function() {
+		//Get bioentevidence data
+  		$.getJSON("{{bioent_evidence_table_link}}", function(data) {
+  			set_up_primary_list(data['primary']);
+  			set_up_additional_list(data['additional']);
+  			set_up_review_list(data['reviews']);
+  		});
+  		
+  		//Get go reference data
+  		$.getJSON("{{go_evidence_table_link}}", set_up_go_list);
+  		
+  		//Get phenotype reference data
+  		$.getJSON("{{phenotype_evidence_table_link}}", set_up_phenotype_list);
+	});
+</script>
+
+{% endblock body %}
+

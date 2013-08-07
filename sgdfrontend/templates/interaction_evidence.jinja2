@@ -48,7 +48,7 @@
 				<li><a href="" class="small button secondary">All</a></li>
 			</ul>
 			<ul class="button-group radius">
-				<li><a href="" class="small button secondary radius"><i class="icon-picture"></i> PNG</a></li>
+				<li><a href="" class="small button secondary radius" id="save"><i class="icon-picture"></i> PNG</a></li>
 			</ul>
 		</div>
 	</div>
@@ -135,6 +135,7 @@
 		</ul>
 	</div>
 </section>
+<br>
 
 </div>
 </div>
@@ -155,7 +156,7 @@
   	}
   	
   	function get_details(row) {
-  		var details = row[9];
+  		var details = row[11];
   		if(details != null) {
   			return '<strong>Note:</strong> ' + details + '<br>';
   	    }
@@ -368,13 +369,24 @@ $.getJSON("{{interaction_graph_link}}", function(data) {
 	window.min_phys_cutoff = 1;
 	window.max_phys_cutoff = 5;
 	
-	setup_slider("allSlider", data['min_evidence_cutoff'], Math.min(data['max_evidence_cutoff'], 10), 3, filter_cy);
-	setup_slider("physSlider", data['min_evidence_cutoff'], Math.min(data['max_phys_cutoff'], 10), 3, filter_cy);
-	setup_slider("genSlider", data['min_evidence_cutoff'], Math.min(data['max_gen_cutoff'], 10), 3, filter_cy);
-	setup_slider("bothSlider", data['min_evidence_cutoff'], Math.min(data['max_both_cutoff'], 10), 3, filter_cy);
+	setup_slider("allSlider", data['min_evidence_cutoff'], Math.min(data['max_evidence_cutoff'], 10), Math.min(data['max_evidence_cutoff'], 3), filter_cy);
+	setup_slider("physSlider", data['min_evidence_cutoff'], Math.min(data['max_phys_cutoff'], 10), Math.min(data['max_phys_cutoff'], 3), filter_cy);
+	setup_slider("genSlider", data['min_evidence_cutoff'], Math.min(data['max_gen_cutoff'], 10), Math.min(data['max_gen_cutoff'], 3), filter_cy);
+	setup_slider("bothSlider", data['min_evidence_cutoff'], Math.min(data['max_both_cutoff'], 10), Math.min(data['max_both_cutoff'], 3), filter_cy);
+	
 	document.getElementById("physSlider").style.display = 'none';
 	document.getElementById("genSlider").style.display = 'none';
 	document.getElementById("bothSlider").style.display = 'none';
+	
+	if(data['max_phys_cutoff'] == 0) {
+		document.getElementById("physical_radio").disabled = true;
+	}
+	if(data['max_gen_cutoff'] == 0) {
+		document.getElementById("genetic_radio").disabled = true;
+	}
+	if(data['max_both_cutoff'] == 0) {
+		document.getElementById("both_radio").disabled = true;
+	}
 });
 
 function change_scale() {

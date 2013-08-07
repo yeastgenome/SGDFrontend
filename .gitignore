@@ -9,3 +9,4 @@ eggs
 parts
 SGDFrontend.egg-info
 bin
+sgdfrontend/config.py

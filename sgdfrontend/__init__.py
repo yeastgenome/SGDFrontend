@@ -29,6 +29,9 @@ def main(global_config, **settings):
     
     #Interaction views
     config.add_route('interaction_evidence', '/interaction_evidence')
+    
+    #Litguide views
+    config.add_route('litguide_evidence', '/litguide_evidence')
 
     #Misc views
     config.add_route('download_graph', '/download_graph/{file_type}')
