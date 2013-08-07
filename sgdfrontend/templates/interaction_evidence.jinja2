@@ -364,11 +364,6 @@ var style = cytoscape.stylesheet()
 $.getJSON("{{interaction_graph_link}}", function(data) {
 	var cy = setup_cytoscape_vis('cy', style, data);
 	
-	window.min_all_cutoff = data['min_evidence_cutoff'];
-	window.max_all_cutoff = Math.min(data['max_evidence_cutoff'], 10);
-	window.min_phys_cutoff = 1;
-	window.max_phys_cutoff = 5;
-	
 	setup_slider("allSlider", data['min_evidence_cutoff'], Math.min(data['max_evidence_cutoff'], 10), Math.min(data['max_evidence_cutoff'], 3), filter_cy);
 	setup_slider("physSlider", data['min_evidence_cutoff'], Math.min(data['max_phys_cutoff'], 10), Math.min(data['max_phys_cutoff'], 3), filter_cy);
 	setup_slider("genSlider", data['min_evidence_cutoff'], Math.min(data['max_gen_cutoff'], 10), Math.min(data['max_gen_cutoff'], 3), filter_cy);

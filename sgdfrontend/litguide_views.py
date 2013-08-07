@@ -7,7 +7,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from sgdfrontend import get_json
 from sgdfrontend.link_maker import bioent_link, bioent_evidence_table_link, \
-    go_evidence_table_link, phenotype_evidence_table_link
+    go_evidence_table_link, phenotype_evidence_table_link, litguide_graph_link
 
 @view_config(route_name='litguide_evidence', renderer='templates/litguide_evidence.jinja2')
 def litguide_evidence(request):
@@ -23,6 +23,7 @@ def litguide_evidence(request):
                 'bioent_evidence_table_link': bioent_evidence_table_link(bioent_key=format_name),
                 'go_evidence_table_link': go_evidence_table_link(bioent_key=format_name),
                 'phenotype_evidence_table_link': phenotype_evidence_table_link(bioent_key=format_name),
+                'litguide_graph_link': litguide_graph_link(bioent_key=format_name),
                    
                 'display_name': bioent['display_name'],
                 'format_name': bioent['format_name'],

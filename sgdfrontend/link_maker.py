@@ -125,9 +125,12 @@ def bioent_overview_table_link(bioent_key=None, reference_key=None):
     return add_format_name_params('/bioent_overview_table?', True, {'bioent':bioent_key, 'reference': reference_key})
 def bioent_evidence_table_link(bioent_key):
     return add_format_name_params('/bioent_evidence_table?', True, {'bioent':bioent_key})
+def litguide_graph_link(bioent_key):
+    return add_format_name_params('/litguide_graph?', True, {'bioent':bioent_key})
 
 def bioent_filename(reference_key=None):
     return create_filename([reference_key], '_litguide')
+
 
 #Biocon links
 def biocon_link(biocon_name, biocon_type):
