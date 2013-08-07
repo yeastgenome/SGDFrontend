@@ -67,9 +67,11 @@
   
   $(".side-nav").foundation("magellan", {threshold: 50});
 
-  $(document).ready(function(){          // does the following only after DOM completely loads
-   var anchor = window.location.hash;
-   window.location.hash = anchor;
-});
+	$(document).ready(function(){          // does the following only after DOM completely loads
+		if (window.location.hash) {         // if the url contains an anchor
+			var anchor = window.location.hash;
+			window.location.hash = anchor;
+		}
+	});
 </script>
 </html>
