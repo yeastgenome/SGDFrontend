@@ -3,7 +3,7 @@
 *.egg-info
 .sass-cache/
 sgdfrontend/static/css/normalize.css
-sgdfrontend/static/css/style.cssbin
+sgdfrontend/static/css/style.css
 develop-eggs
 eggs
 parts
