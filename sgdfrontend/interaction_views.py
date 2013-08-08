@@ -11,7 +11,8 @@ from sgdfrontend.link_maker import bioent_link, interaction_evidence_table_link,
     interaction_evidence_resource_link, interaction_filename, \
     interaction_overview_table_link, genetic_interactor_listname, \
     physical_interactor_listname, all_interactor_listname, both_interactor_listname, \
-    analyze_link
+    analyze_link, download_reference_link
+from sgdfrontend.views import download_citations
 
 
 '''
@@ -33,6 +34,7 @@ def interaction_evidence(request):
                 'interaction_overview_table_link': interaction_overview_table_link(bioent_key=bioent_id),
                 'interaction_graph_link': interaction_graph_link(bioent_key=bioent_id),
                 'resource_link': interaction_evidence_resource_link(bioent_key=bioent_id),
+                'download_citations_link': download_reference_link(),
 
                 'interaction_evidence_filename': interaction_evidence_filename(bioent_key=display_name),
                 'interactor_filename': interaction_filename(bioent_key=display_name),

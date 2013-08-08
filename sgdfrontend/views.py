@@ -1,8 +1,8 @@
-from pyramid.renderers import get_renderer
 from pyramid.response import Response
 from pyramid.view import view_config
 from sgdfrontend import get_json
-from sgdfrontend.link_maker import list_link, go_enrichment_link, enrichment_header_filename
+from sgdfrontend.link_maker import go_enrichment_link, \
+    enrichment_header_filename, citation_list_link, bioent_list_link
  
 #def home_view(request):
 #    return {'page_title': 'SGD2.0'}
@@ -104,12 +104,74 @@ def download_graph_view(request):
     headers['Content-Description'] = 'File Transfer'
     return request.response
 
+@view_config(route_name='download_citations')
+def download_citations(request):
+    reference_ids = request.GET['reference_ids']
+    display_name = request.GET['display_name']
+    references = get_json(citation_list_link(), data={'reference_ids': reference_ids})
+    
+    headers = request.response.headers
+    
+    request.response.text = '\n' + '\n\n'.join([pubmed_format(reference) for reference in references])
+    
+    headers['Content-Type'] = 'text/plain'        
+    headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.nbib')
+    headers['Content-Description'] = 'File Transfer'
+    return request.response
+
+def pubmed_format(reference_json):
+    entries = []
+    if 'pubmed_id' in reference_json:
+        if reference_json['pubmed_id'] is not None:
+            entries.append('PMID- ' + str(reference_json['pubmed_id'])) 
+        if reference_json['status'] is not None:
+            entries.append('STAT- ' + reference_json['status'])
+        if reference_json['issn'] is not None:
+            entries.append('IS  - ' + str(reference_json['issn'])) 
+        if reference_json['date_published'] is not None:
+            entries.append('DP  - ' + str(reference_json['date_published'])) 
+        if reference_json['title'] is not None:
+            entries.append('TI  - ' + reference_json['title'])
+        if reference_json['abstract'] is not None:
+            entries.append('AB  - ' + reference_json['abstract'])
+        
+        
+        for author in reference_json['authors']:
+            entries.append('AU  - ' + author)
+        for reftype in reference_json['reftypes']:
+            entries.append('PT  - ' + reftype)
+        if reference_json['journal_name_abbrev'] is not None:
+            entries.append('TA  - ' + str(reference_json['journal_name_abbrev'])) 
+        if reference_json['journal_name'] is not None:
+            entries.append('JT  - ' + str(reference_json['journal_name'])) 
+        if reference_json['source'] is not None:
+            entries.append('SO  - ' + str(reference_json['source'])) 
+        
+        if reference_json['date_revised'] is not None:        
+            entries.append('LR  - ' + str(reference_json['date_revised'])) 
+        if reference_json['issue'] is not None: 
+            entries.append('IP  - ' + str(reference_json['issue'])) 
+        if reference_json['page'] is not None:
+            entries.append('PG  - ' + str(reference_json['page'])) 
+        if reference_json['volume'] is not None:
+            entries.append('VI  - ' + str(reference_json['volume'])) 
+        if reference_json['publisher_location'] is not None:
+            entries.append('PL  - ' + str(reference_json['publisher_location'])) 
+        if reference_json['book_title'] is not None:
+            entries.append('BTI - ' + str(reference_json['book_title']))
+        if reference_json['volume_title'] is not None:    
+            entries.append('VTI - ' + str(reference_json['volume_title'])) 
+        if reference_json['isbn'] is not None:
+            entries.append('ISBN- ' + str(reference_json['isbn'])) 
+    
+    return '\n'.join(entries)
+
 
 @view_config(route_name='analyze', renderer='templates/analyze.jinja2')
 def analyze_view(request):
-    locus_format_names = request.GET['locus']
+    bioent_ids = request.GET['bioent_ids']
     display_name = request.GET['display_name']
-    bioents = get_json(list_link(), data={'locus': locus_format_names})
+    bioents = get_json(bioent_list_link(), data={'bioent_ids': bioent_ids})
     if bioents is None:
         return Response(status_int=500, body='Bioents could not be found.') 
     page = {    'bioents': bioents,

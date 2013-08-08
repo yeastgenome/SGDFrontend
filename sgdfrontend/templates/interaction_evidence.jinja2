@@ -15,6 +15,11 @@
 <!-- Includes tabs.html into template -->
 {% include "templates/tabs.jinja2" %}
 
+<script>
+	var int_tab = document.getElementById('interaction_tab');
+	int_tab.id = 'current';
+</script>
+
 <!-- Docs nav
 ================================================== -->
 <div class="row">
@@ -131,6 +136,7 @@
 <section id="references" data-magellan-destination="references">
 	<div class="page-header">
 		<h1>References</h1>
+		<a class="small button secondary" onclick="download_citations('reference_list', '{{download_citations_link}}', '{{display_name}}_interaction_citations')">Export to EndNote</a>
 		<ul id='reference_list'>
 		</ul>
 	</div>

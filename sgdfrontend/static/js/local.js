@@ -32,6 +32,20 @@ function analyze(analyze_link, list_name, bioents) {
 	form.submit();
 }
 
+function download_citations(citation_div, download_link, list_name) {
+	var reference_ids = [];
+	var entries = document.getElementById(citation_div).children;
+	for(var i=0,len=entries.length; i<len; i++) {
+		reference_ids.push(entries[i].id)
+	}
+	
+	var path = download_link;
+	var form = add_params_to_form({"display_name":list_name, "reference_ids": reference_ids})
+	form.setAttribute("method", 'get');
+    form.setAttribute("action", path);
+	form.submit();
+}
+
 function name_from_link(name_with_link) {
 	name_with_link = name_with_link.substring(0, name_with_link.lastIndexOf('"'))
 	var name = name_with_link.substring(name_with_link.lastIndexOf('/')+1, name_with_link.length);
@@ -160,8 +174,9 @@ function set_up_references(references, ref_list_id) {
   	//Set up references
 	ref_list = document.getElementById(ref_list_id);
 	for (var i=0; i < references.length; i++) {
-		var citation = references[i];
+		var citation = references[i][1];
 		var p=document.createElement('p');
+		p.id = references[i][0]
 		p.innerHTML = citation;
 		ref_list.appendChild(p);
 	}

@@ -15,6 +15,11 @@
 <!-- Includes tabs.html into template -->
 {% include "templates/tabs.jinja2" %}
 
+<script>
+	var lit_tab = document.getElementById('literature_tab');
+	lit_tab.id = 'current';
+</script>
+
 
 <!-- Docs nav
 ================================================== -->
@@ -59,7 +64,7 @@
 		<h1>Primary Literature <span id='primary_header'></span></h1>
 		<span id='primary_message' class="hide">No primary literature curated.</span>
 		<div id='primary_wrapper'>	
-			<a href="" class="small button secondary">Export to EndNote</a>	
+			<a class="small button secondary" onclick="download_citations('primary_list', '{{download_link}}', '{{display_name}}_primary_citations')" >Export to EndNote</a>	
 			<ul id='primary_list'>
 			</ul>
 		</div>
@@ -73,7 +78,7 @@
 		<h1>Additional Literature <span id='additional_header'></span></h1>
 		<span id='additional_message' class="hide">No additional literature curated.</span>
 		<div id='additional_wrapper'>
-			<a href="" class="small button secondary">Export to EndNote</a>						
+			<a class="small button secondary" onclick="download_citations('additional_list', '{{download_link}}', '{{display_name}}_additional_citations')">Export to EndNote</a>						
 			<ul id='additional_list'>
 			</ul>
 		</div>
@@ -87,7 +92,7 @@
 		<h1>Reviews <span id='review_header'></span></h1>
 		<span id='review_message' class="hide">No reviews curated.</span>
 		<div id='review_wrapper'>
-			<a href="" class="small button secondary">Export to EndNote</a>						
+			<a class="small button secondary" onclick="download_citations('review_list', '{{download_link}}', '{{display_name}}_review_citations')">Export to EndNote</a>						
 			<ul id='review_list'>
 			</ul>
 		</div>
@@ -101,7 +106,7 @@
 		<h1>Gene Ontology Literature <span id='go_header'></span></h1>
 		<span id='go_message' class="hide">No gene ontology literature curated.</span>
 		<div id='go_wrapper'>
-			<a href="" class="small button secondary">Export to EndNote</a>						
+			<a class="small button secondary" onclick="download_citations('go_list', '{{download_link}}', '{{display_name}}_go_citations')">Export to EndNote</a>						
 			<ul id='go_list'>
 			</ul>
 		</div>
@@ -115,7 +120,7 @@
 		<h1>Phenotype Literature <span id='phenotype_header'></span></h1>
 		<span id='phenotype_message' class="hide">No phenotype literature curated.</span>
 		<div id='phenotype_wrapper'>	
-			<a href="" class="small button secondary">Export to EndNote</a>					
+			<a class="small button secondary" onclick="download_citations('phenotype_list', '{{download_link}}', '{{display_name}}_phenotype_citations')">Export to EndNote</a>					
 			<ul id='phenotype_list'>
 			</ul>
 		</div>

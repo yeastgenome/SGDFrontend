@@ -116,6 +116,8 @@ def both_interactor_listname(bioent_key=None):
 #On the fly links
 def analyze_link():
     return frontend_start + '/analyze'
+def download_reference_link():
+    return frontend_start + '/download_citations'
 
 #Bioent-Evidence Links
 def bioent_evidence_link(bioent_key=None):
@@ -164,8 +166,11 @@ def author_link(author_name):
 def assoc_reference_link(author_key):
     return add_format_name_params('/assoc_references?', True, {'author':author_key})
 
-def list_link():
-    return on_the_fly_url + '/list'
+def bioent_list_link():
+    return on_the_fly_url + '/bioent_list'
+def citation_list_link():
+    return on_the_fly_url + '/reference_list'
+    
 def go_enrichment_link():
     return add_format_name_params('/go_enrichment?', True, {})
 def enrichment_header_filename():
