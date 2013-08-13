@@ -28,10 +28,10 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static')
     
     #Interaction views
-    config.add_route('interaction_evidence', '/interaction_evidence')
+    config.add_route('interactions', '/{type}/{identifier}/interactions')
     
-    #Litguide views
-    config.add_route('litguide_evidence', '/litguide_evidence')
+    #Literature views
+    config.add_route('literature', '/{type}/{identifier}/literature')
 
     #Misc views
     config.add_route('download_graph', '/download_graph/{file_type}')

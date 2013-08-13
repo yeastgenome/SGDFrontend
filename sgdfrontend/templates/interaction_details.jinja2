@@ -30,7 +30,6 @@
 			<li data-magellan-arrival="interactions"><a href="#interactions">Interactions</a></li>
 			<li data-magellan-arrival="network"><a href="#network">Network Visualization</a></li>
 			<li data-magellan-arrival="resources"><a href="#resources">Resources</a></li>
-			<li data-magellan-arrival="references"><a href="#references">References</a></li>
 		</ul>
 	</nav>
 	
@@ -130,36 +129,19 @@
 		</ul>
 	</div>
 </section>
-
-<!-- References
-================================================== -->
-<section id="references" data-magellan-destination="references">
-	<div class="page-header">
-		<h1>References</h1>
-		<a class="small button secondary" onclick="download_citations('reference_list', '{{download_citations_link}}', '{{display_name}}_interaction_citations')">Export to EndNote</a>
-		<ul id='reference_list'>
-		</ul>
-	</div>
-</section>
 <br>
-
+<br>
+<br>
+<br>
+<br>
+<br>
 </div>
 </div>
 
-<script src="../static/js/jquery.nouislider.min.js"></script>
-<link href="../static/css/nouislider.fox.css" rel="stylesheet">
+<script src="../../static/js/jquery.nouislider.min.js"></script>
+<link href="../../static/css/nouislider.fox.css" rel="stylesheet">
 
 <script>
-
-	function set_up_resources(data) {
-		resource_list = document.getElementById("resource_list");
-		for (var i=0; i < data.length; i++) {
-			var r = data[i];
-			var span=document.createElement('span');
-			span.innerHTML = r + ' | ';
-			resource_list.appendChild(span);
-		}
-  	}
   	
   	function get_details(row) {
   		var details = row[11];
@@ -171,7 +153,32 @@
   	    }
   	}
   	
-  	function set_up_evidence_table(data) {  		
+  	function set_up_evidence_table(data) { 
+  		var datatable = [];
+  		for (var i=0; i < data.length; i++) {
+  			var evidence = data[i];
+  			
+  			var bioent1 = create_link(evidence['bioent1']['display_name'], evidence['bioent1']['link'])
+			var bioent2 = create_link(evidence['bioent2']['display_name'], evidence['bioent2']['link'])
+			
+			var experiment = '';
+			if(evidence['experiment'] != null) {
+  				//experiment = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);
+  				experiment = evidence['experiment']['display_name'];
+  			}
+  			var phenotype = '';
+  			if(evidence['phenotype'] != null) {
+  				//phenotype = create_link(evidence['phenotype']['display_name'], evidence['phenotype']['link']);
+  				phenotype = evidence['phenotype']['display_name'];
+  			}
+  			var modification = '';
+  			if(evidence['modification'] != null) {
+  				modification = evidence['modification'];
+  			}
+  			var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
+  			datatable.push([null, bioent1, bioent2, evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']])
+  		}
+  		 		
   		//Insert a 'details' column to the table  		
   		add_detail_column('genetic_evidence_table');
          
@@ -184,7 +191,7 @@
         options["fnInitComplete"] = set_up_message_and_count("evidence_header", "evidence_message", "evidence_wrapper");
 		options["fnDrawCallback"] = set_up_details(get_details);
 		options["aoColumns"] = [{"bSortable":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]		
-		options["aaData"] = data;
+		options["aaData"] = datatable;
   				
   		var ev_table = $('#evidence_table').dataTable(options);
   		ev_table.on('filter', function(){
@@ -198,48 +205,46 @@
   			}
   		});
   	}
+  	
+  	function set_up_overview_table(data) {
+  		var r = data['gen_circle_size'];
+  		var s = data['phys_circle_size'];
+  		var x = data['circle_distance'];
+  		var A = data['num_gen_interactors'];
+  		var B = data['num_phys_interactors'];
+  		var C = data['num_both_interactors'];
+  			
+		var stage = draw_venn_diagram("venn_diagram", r, s, x, A, B, C);
+		stage.toDataURL({
+       		width: 350,
+        	height: 350,
+        	callback: function(dataUrl) {
+          		document.getElementById("save").href = dataUrl.replace("image/png", "image/octet-stream");
+        	}
+          });
+			
+    	if(r == 0) {
+    		document.getElementById("phys_and_gen").disabled = true; 
+    		document.getElementById("phys").disabled = true; 
+    	}
+    	if(s == 0) {
+    		document.getElementById("phys_and_gen").disabled = true; 
+    		document.getElementById("gen").disabled = true; 
+    	}
+    	if(x == r+s+1) {
+    		document.getElementById("phys_and_gen").disabled = true; 
+    	}
+  	}
 	
 	$(document).ready(function() {
-	
-		//Get resources
-	  	$.getJSON("{{resource_link}}", set_up_resources);
+    	//Get overview data
+  		$.getJSON("{{interaction_overview_link}}", set_up_overview_table);
 	
 		//Get evidence data
-  		$.getJSON("{{interaction_evidence_table_link}}", function(data) {
-			set_up_evidence_table(data['aaData']);
-			set_up_references(data['reference'], 'reference_list');
-    	});
+  		$.getJSON("{{interaction_details_link}}", set_up_evidence_table);
     	
-    	//Get evidence data
-  		$.getJSON("{{interaction_overview_table_link}}", function(data) {
-  			var r = data['venn'][0];
-  			var s = data['venn'][1];
-  			var x = data['venn'][2];
-  			var A = data['venn'][3];
-  			var B = data['venn'][4];
-  			var C = data['venn'][5];
-  			
-			var stage = draw_venn_diagram("venn_diagram", r, s, x, A, B, C);
-			stage.toDataURL({
-       		 	width: 350,
-        		height: 350,
-        		callback: function(dataUrl) {
-          			document.getElementById("save").href = dataUrl.replace("image/png", "image/octet-stream");
-        		}
-          	});
-			
-    		if(r == 0) {
-    			document.getElementById("phys_and_gen").disabled = true; 
-    			document.getElementById("phys").disabled = true; 
-    		}
-    		if(s == 0) {
-    			document.getElementById("phys_and_gen").disabled = true; 
-    			document.getElementById("gen").disabled = true; 
-    		}
-    		if(x == r+s+1) {
-    			document.getElementById("phys_and_gen").disabled = true; 
-    		}
-    	});
+    	//Get resources
+	  	$.getJSON("{{interaction_resources_link}}", set_up_resources);
 	});
 </script>
 
@@ -325,8 +330,8 @@
 	
 </script>
 
-<script src="../static/js/cytoscape/cytoscape.min.js"></script>	
-<script src="../static/js/cytoscape/arbor.js"></script>	
+<script src="../../static/js/cytoscape/cytoscape.min.js"></script>	
+<script src="../../static/js/cytoscape/arbor.js"></script>	
 
 <script>
 var style = cytoscape.stylesheet()
@@ -490,8 +495,8 @@ function filter_cy() {
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="../static/js/cytoscape/cxtmenu.js"></script>	
-<script src="../static/js/cytoscape/cytoscape-edgehandles.min.js"></script>	
-<script src="../static/js/cytoscape/cytoscape-panzoom.min.js"></script>	
-<script src="../static/js/cytoscape/cytoscape-panzoom.css"></script>	
+<script src="../../static/js/cytoscape/cxtmenu.js"></script>	
+<script src="../../static/js/cytoscape/cytoscape-edgehandles.min.js"></script>	
+<script src="../../static/js/cytoscape/cytoscape-panzoom.min.js"></script>	
+<script src="../../static/js/cytoscape/cytoscape-panzoom.css"></script>	
 

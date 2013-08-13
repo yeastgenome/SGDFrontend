@@ -1,8 +1,7 @@
 from pyramid.response import Response
 from pyramid.view import view_config
 from sgdfrontend import get_json
-from sgdfrontend.link_maker import go_enrichment_link, \
-    enrichment_header_filename, citation_list_link, bioent_list_link
+from sgdfrontend.link_maker import citation_list_link, bioent_list_link
  
 #def home_view(request):
 #    return {'page_title': 'SGD2.0'}
@@ -177,8 +176,6 @@ def analyze_view(request):
     page = {    'bioents': bioents,
                 'bioent_ids': [bioent['id'] for bioent in bioents], 
                 'gene_list_filename': 'gene_list',
-                'go_enrichment_link': go_enrichment_link(),
-                'enrichment_header_filename': enrichment_header_filename(),
                 #'send_to_yeastmine_link': send_to_yeastmine_link(),
                 #'send_to_go_slim_link': send_to_go_slim_link(),
                 #'send_to_goterm_finder': send_to_goterm_finder(),

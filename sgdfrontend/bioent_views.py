@@ -3,16 +3,16 @@ Created on May 31, 2013
 
 @author: kpaskov
 '''
-from pyramid.response import Response
-from pyramid.view import view_config
-from sgdfrontend import get_json
-from sgdfrontend.link_maker import go_overview_table_link, go_f_filename, \
-    go_p_filename, go_c_filename, go_evidence_link, phenotype_overview_table_link, \
-    phenotype_evidence_link, cellular_phenotype_filename, \
-    chemical_phenotype_filename, pp_rna_phenotype_filename, \
-    interaction_overview_table_link, interaction_filename, interaction_evidence_link, \
-    interaction_graph_link, bioent_overview_table_link, bioent_evidence_link, \
-    locus_link
+#from pyramid.response import Response
+#from pyramid.view import view_config
+#from sgdfrontend import get_json
+#from sgdfrontend.link_maker import go_overview_table_link, go_f_filename, \
+#    go_p_filename, go_c_filename, go_evidence_link, phenotype_overview_table_link, \
+#    phenotype_evidence_link, cellular_phenotype_filename, \
+#    chemical_phenotype_filename, pp_rna_phenotype_filename, \
+#    interaction_overview_table_link, interaction_filename, interaction_evidence_link, \
+#    interaction_graph_link, bioent_overview_table_link, bioent_evidence_link, \
+#    locus_link
 
 #@view_config(route_name='locus', renderer='templates/locus.pt')
 #def locus(request):

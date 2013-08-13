@@ -27,8 +27,8 @@
 	<nav id="sidebar" class="small-3 columns">
 		<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky">
 			<li id="nav-title"><h5><a href="{{link}}">{{display_name}}/{{format_name}}</a> Literature</h5></li>
-			<li data-magellan-arrival="network"><a href="#network">Network Visualization</a></li>
 			<li data-magellan-arrival="primary"><a href="#primary">Primary Literature</a></li>
+			<li data-magellan-arrival="network"><a href="#network">Network Visualization</a></li>
           	<li data-magellan-arrival="additional"><a href="#additional">Additional Literature</a></li>
           	<li data-magellan-arrival="reviews"><a href="#reviews">Reviews</a></li>
           	<li data-magellan-arrival="go"><a href="#go">Gene Ontology Literature</a></li>
@@ -37,6 +37,20 @@
 	</nav>
 	
 	<div class="small-9 columns">  
+
+<!-- Primary
+================================================== -->
+<section id="primary" data-magellan-destination="primary">
+	<div class="page-header">
+		<h1>Primary Literature <span id='primary_header'></span></h1>
+		<span id='primary_message' class="hide">No primary literature curated.</span>
+		<div id='primary_wrapper'>	
+			<a class="small button secondary" onclick="download_citations('primary_list', '{{download_link}}', '{{display_name}}_primary_citations')" >Export</a>	
+			<ul id='primary_list'>
+			</ul>
+		</div>
+	</div>
+</section>
 
 <!-- Network Visualization
 ================================================== -->
@@ -57,20 +71,6 @@
     </div>
 </section>
 
-<!-- Primary
-================================================== -->
-<section id="primary" data-magellan-destination="primary">
-	<div class="page-header">
-		<h1>Primary Literature <span id='primary_header'></span></h1>
-		<span id='primary_message' class="hide">No primary literature curated.</span>
-		<div id='primary_wrapper'>	
-			<a class="small button secondary" onclick="download_citations('primary_list', '{{download_link}}', '{{display_name}}_primary_citations')" >Export to EndNote</a>	
-			<ul id='primary_list'>
-			</ul>
-		</div>
-	</div>
-</section>
-
 <!-- Additional
 ================================================== -->
 <section id="additional" data-magellan-destination="additional">
@@ -78,7 +78,7 @@
 		<h1>Additional Literature <span id='additional_header'></span></h1>
 		<span id='additional_message' class="hide">No additional literature curated.</span>
 		<div id='additional_wrapper'>
-			<a class="small button secondary" onclick="download_citations('additional_list', '{{download_link}}', '{{display_name}}_additional_citations')">Export to EndNote</a>						
+			<a class="small button secondary" onclick="download_citations('additional_list', '{{download_link}}', '{{display_name}}_additional_citations')">Export</a>						
 			<ul id='additional_list'>
 			</ul>
 		</div>
@@ -92,7 +92,7 @@
 		<h1>Reviews <span id='review_header'></span></h1>
 		<span id='review_message' class="hide">No reviews curated.</span>
 		<div id='review_wrapper'>
-			<a class="small button secondary" onclick="download_citations('review_list', '{{download_link}}', '{{display_name}}_review_citations')">Export to EndNote</a>						
+			<a class="small button secondary" onclick="download_citations('review_list', '{{download_link}}', '{{display_name}}_review_citations')">Export</a>						
 			<ul id='review_list'>
 			</ul>
 		</div>
@@ -106,7 +106,7 @@
 		<h1>Gene Ontology Literature <span id='go_header'></span></h1>
 		<span id='go_message' class="hide">No gene ontology literature curated.</span>
 		<div id='go_wrapper'>
-			<a class="small button secondary" onclick="download_citations('go_list', '{{download_link}}', '{{display_name}}_go_citations')">Export to EndNote</a>						
+			<a class="small button secondary" onclick="download_citations('go_list', '{{download_link}}', '{{display_name}}_go_citations')">Export</a>						
 			<ul id='go_list'>
 			</ul>
 		</div>
@@ -120,14 +120,18 @@
 		<h1>Phenotype Literature <span id='phenotype_header'></span></h1>
 		<span id='phenotype_message' class="hide">No phenotype literature curated.</span>
 		<div id='phenotype_wrapper'>	
-			<a class="small button secondary" onclick="download_citations('phenotype_list', '{{download_link}}', '{{display_name}}_phenotype_citations')">Export to EndNote</a>					
+			<a class="small button secondary" onclick="download_citations('phenotype_list', '{{download_link}}', '{{display_name}}_phenotype_citations')">Export</a>					
 			<ul id='phenotype_list'>
 			</ul>
 		</div>
 	</div>
 </section>
 <br>
-
+<br>
+<br>
+<br>
+<br>
+<br>
 </div>
 </div>
 
@@ -148,15 +152,13 @@
 	}
 		
 	function set_up_go_list(data) {
-		var go = data['reference'];
-		set_up_count(go.length, "go_header");
-  		set_up_references(go, "go_list");
+		set_up_count(data.length, "go_header");
+  		set_up_references(data, "go_list");
 	}
 		
 	function set_up_phenotype_list(data) {
-		var phenotype = data['reference'];
-		set_up_count(phenotype.length, "phenotype_header");
-  		set_up_references(phenotype, "phenotype_list");
+		set_up_count(data.length, "phenotype_header");
+  		set_up_references(data, "phenotype_list");
 	}
 	
 	$(document).ready(function() {
@@ -168,15 +170,15 @@
   		});
   		
   		//Get go reference data
-  		$.getJSON("{{go_evidence_table_link}}", set_up_go_list);
+  		$.getJSON("{{go_references_link}}", set_up_go_list);
   		
   		//Get phenotype reference data
-  		$.getJSON("{{phenotype_evidence_table_link}}", set_up_phenotype_list);
+  		$.getJSON("{{phenotype_references_link}}", set_up_phenotype_list);
 	});
 </script>
 
-<script src="../static/js/cytoscape/cytoscape.min.js"></script>	
-<script src="../static/js/cytoscape/arbor.js"></script>	
+<script src="../../static/js/cytoscape/cytoscape.min.js"></script>	
+<script src="../../static/js/cytoscape/arbor.js"></script>	
 
 <script>
 var style = cytoscape.stylesheet()
@@ -212,7 +214,7 @@ var style = cytoscape.stylesheet()
 	});
 
 
-$.getJSON("{{litguide_graph_link}}", function(data) {
+$.getJSON("{{literature_graph_link}}", function(data) {
 	var cy = setup_cytoscape_vis('cy', style, data);
 });
 </script>

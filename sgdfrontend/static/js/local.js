@@ -174,15 +174,50 @@ function set_up_references(references, ref_list_id) {
   	//Set up references
 	ref_list = document.getElementById(ref_list_id);
 	for (var i=0; i < references.length; i++) {
-		var citation = references[i][1];
+		var reference = references[i];
+
 		var p=document.createElement('p');
-		p.id = references[i][0]
-		p.innerHTML = citation;
+		p.id = references[i]['id']
+		
+		var a = document.createElement('a');
+		var linkText = document.createTextNode(reference['display_name']);
+		a.appendChild(linkText);
+		a.href = reference['link'];
+		p.appendChild(a);
+		
+		var span = document.createElement('span');
+		var citation = reference['citation'];
+		span.innerHTML = citation.substring(citation.indexOf(')')+1, citation.length) + ' ';
+		p.appendChild(span);
+		
+		var pmid = document.createElement('small');
+		pmid.innerHTML = 'PMID:' + reference['pubmed_id'];
+		p.appendChild(pmid);
+		
 		ref_list.appendChild(p);
 	}
 }
 
+function set_up_resources(data) {
+	resource_list = document.getElementById("resource_list");
+	for (var i=0; i < data.length; i++) {
+		var a = document.createElement('a');
+		var linkText = document.createTextNode(data[i]['display_name']);
+		a.appendChild(linkText);
+		a.href = data[i]['link'];
+		a.target = '_blank';
+		resource_list.appendChild(a);
+		
+		var r = data[i];
+		var span=document.createElement('span');
+		span.innerHTML = ' | ';
+		resource_list.appendChild(span);
+	}
+}
 
+function create_link(display_name, link) {
+	return '<a href="' + link + '">' + display_name + '</a>'
+}
 
 function setup_cytoscape_vis(div_id, style, data) {
 	$(loadCy = function(){
