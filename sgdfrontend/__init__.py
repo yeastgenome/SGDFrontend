@@ -25,7 +25,7 @@ def main(global_config, **settings):
     config.add_translation_dirs('locale/')
     config.include('pyramid_jinja2')
 
-    config.add_static_view('static', 'static')
+    config.add_static_view('static', 'sgdfrontend:static')
     
     #Interaction views
     config.add_route('interactions', '/{type}/{identifier}/interactions')

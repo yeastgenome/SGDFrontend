@@ -21,7 +21,7 @@ function add_params_to_form(params) {
 }
 
 function add_tabletools() {
-	TableTools.DEFAULTS.sSwfPath = "../static/js/copy_csv_xls_pdf.swf";
+	TableTools.DEFAULTS.sSwfPath = "/static/js/copy_csv_xls_pdf.swf";
 }
 
 function analyze(analyze_link, list_name, bioents) {
