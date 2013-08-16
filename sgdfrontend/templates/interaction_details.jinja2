@@ -78,11 +78,11 @@
 					</select>
 				</div>
 				<div class="large-4 columns" >
-					<input id="evidence_table_search"type="text" placeholder="Search">
+					<input id="evidence_table_search" type="text" class="f_txt" placeholder="Search">
 				</div>
 			</div>
 			
-			<table class='table table-striped table-bordered table-condensed tablesorter' id='evidence_table' width="100%">
+			<table class='table table-striped table-bordered table-condensed f_tbl' id='evidence_table' width="100%">
 			<thead>
   			<tr>
   				<th>Interactor</th>
@@ -100,7 +100,7 @@
   			</thead>
 			</table>
 			<div class="row">
-				<div class="large-9 columns">
+				<div class="large-7 columns">
 					<div class="button-bar">
 						<ul class="button-group radius">
 							<li><a class="small button secondary">Copy</a></li>
@@ -115,7 +115,7 @@
 					</div>
 				</div>
 			
-				<div class="large-3 columns" >
+				<div class="large-5 columns" >
 					<ul id="evidence_pagination_buttons" class="pagination"></ul>
 				</div>
 			</div>
@@ -171,10 +171,15 @@
 <br>
 </div>
 </div>
+{% endblock body %}
 
+{% block scripts %}
+<script src="/static/js/kinetic-v4.3.3.min.js"></script>	
+<script src="/static/js/venn.js"></script>
 <script src="/static/js/jquery.nouislider.min.js"></script>
-<link href="/static/css/nouislider.fox.css" rel="stylesheet">
-
+<script src="/static/js/cytoscape/cytoscape.min.js"></script>	
+<script src="/static/js/cytoscape/arbor.js"></script>	
+	
 <script>
   	
   	function get_details(row) {
@@ -212,17 +217,27 @@
   			var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
   			datatable.push([bioent1, bioent2, evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']])
   		}
-  		 		
-  		//Insert a 'details' column to the table  		
-  		add_detail_column('evidence_table');
+  		
+  		//basic initialisation
+    	$(function(){ 
+      	  	$(".f_txt").table_filter({'table':'.f_tbl', 'enable_space':true, 'no_result': 'No match found.'});
+    	});
          
         set_up_count(data.length, "evidence_header");
 		put_json_in_table(datatable, 'evidence_table');
 		hide_column(0, 'evidence_table');
 		hide_column(8, 'evidence_table');
 		hide_column(10, 'evidence_table');
-		set_up_pagination('evidence_pagination_select', 'evidence_pagination_buttons', 'evidence_table');
-
+		
+		var button_ul_id = 'evidence_pagination_buttons';
+		var selector_id = 'evidence_pagination_select';
+		var table_id = 'evidence_table';
+		paginate(10, 1, table_id);
+		create_pagination_buttons(10, 997, button_ul_id);
+		select_pagination_button(3, selector_id, button_ul_id, table_id);
+		adjust_visibility_of_pagination_buttons(button_ul_id);
+		set_up_pagination_selector(selector_id, button_ul_id, table_id);
+		set_up_pagination_buttons(selector_id, button_ul_id, table_id);
   	}
   	
   	function set_up_overview_table(data) {
@@ -348,9 +363,6 @@
 	}
 	
 </script>
-
-<script src="/static/js/cytoscape/cytoscape.min.js"></script>	
-<script src="/static/js/cytoscape/arbor.js"></script>	
 
 <script>
 var style = cytoscape.stylesheet()
@@ -509,13 +521,4 @@ function filter_cy() {
 </script>
         
 
-{% endblock body %}
-
-<!-- Le javascript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="/static/js/cytoscape/cxtmenu.js"></script>	
-<script src="/static/js/cytoscape/cytoscape-edgehandles.min.js"></script>	
-<script src="/static/js/cytoscape/cytoscape-panzoom.min.js"></script>	
-<script src="/static/js/cytoscape/cytoscape-panzoom.css"></script>	
-
+{% endblock scripts %}

@@ -18,15 +18,16 @@
     <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
+
 	<link href="/static/css/normalize.css" rel="stylesheet">
 	<link href="/static/css/style.css" rel="stylesheet">
 
-	
 	<!--[if lt IE 9]>
 	<script src="../static/js/vendor/respond.min.js"></script>
 	<![endif]-->
-	
+
 	<script src="/static/js/vendor/custom.modernizr.js"></script>
+
 	
 </head>
 <body>
@@ -48,22 +49,19 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 
-<!-- try to load jquery from google, with fallback to local copy -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="/static/js/jquery-1.9.1.js"><\/script>')</script>
+<!-- load jquery from google, with fallback to local copy -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="/static/js/jquery-1.9.1.js"><\/script>')</script>
 
-<script src="/static/js/TableTools.js"></script>
-<script src="/static/js/ZeroClipboard.js"></script>
-<script src="/static/js/local.js"></script>
-<script src="/static/js/kinetic-v4.3.3.min.js"></script>
-<script src="/static/js/seqVis.js"></script>
-<script src="/static/js/venn.js"></script>
-<script src="/static/js/my_table.js"></script>
-<script src="/static/js/foundation/foundation.js"></script>
-<script src="/static/js/foundation/foundation.topbar.js"></script>
-<script src="/static/js/foundation/foundation.magellan.js"></script>
-<script src="/static/js/foundation/foundation.dropdown.js"></script>
+	<script src="/static/js/local.js"></script>
+	<script src="/static/js/my_table.js"></script>
+	<script src="/static/js/jquery-table-filter.js"></script>
+	<script src="/static/js/foundation/foundation.js"></script>
+	<script src="/static/js/foundation/foundation.topbar.js"></script>
+	<script src="/static/js/foundation/foundation.magellan.js"></script>
+	<script src="/static/js/foundation/foundation.dropdown.js"></script>
 
+		
 <script>
   $(document).foundation();
   
@@ -76,4 +74,6 @@
 		}
 	});
 </script>
+
+{% block scripts %}{% endblock %}
 </html>

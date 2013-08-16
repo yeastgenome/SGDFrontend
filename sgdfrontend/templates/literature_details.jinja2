@@ -135,6 +135,13 @@
 </div>
 </div>
 
+{% endblock body %}
+
+{% block scripts %}
+
+<script src="/static/js/cytoscape/cytoscape.min.js"></script>	
+<script src="/static/js/cytoscape/arbor.js"></script>	
+
 <script>
 	function set_up_primary_list(data) {	
 		set_up_count(data.length, "primary_header");
@@ -177,9 +184,6 @@
 	});
 </script>
 
-<script src="/static/js/cytoscape/cytoscape.min.js"></script>	
-<script src="/static/js/cytoscape/arbor.js"></script>	
-
 <script>
 var style = cytoscape.stylesheet()
 	.selector('node')
@@ -219,5 +223,5 @@ $.getJSON("{{literature_graph_link}}", function(data) {
 });
 </script>
 
-{% endblock body %}
+{% endblock scripts %}
 

@@ -20,10 +20,6 @@ function add_params_to_form(params) {
     return form;
 }
 
-function add_tabletools() {
-	TableTools.DEFAULTS.sSwfPath = "/static/js/copy_csv_xls_pdf.swf";
-}
-
 function analyze(analyze_link, list_name, bioents) {
 	var path = analyze_link;
 	var form = add_params_to_form({"display_name":list_name, "locus": bioents})
@@ -52,122 +48,8 @@ function name_from_link(name_with_link) {
 	return name;
 }
 
-function add_analyze_tabletool(analyze_link, list_name, table_index, name_with_link_index) {
-	add_tabletools();
-	
-	TableTools.BUTTONS.analyze = $.extend( true, TableTools.buttonBase, {
-		"sNewLine": "<br>",
-		"sButtonText": "<i class='icon-briefcase'></i> Analyze",
-		"fnClick": function( nButton, oConfig ) {
-			var table = $.fn.dataTable.fnTables(true)[table_index];
-			var data = $(table).dataTable()._('tr', {"filter": "applied"});
-			var bioents = [];
-			for (var i=0,len=data.length; i<len; i++) { 
-				var name_with_link = data[i][name_with_link_index];
-				var name = name_from_link(name_with_link);
-				bioents.push(name);
-			}	
-
-			var search_term = $(table).dataTable().fnSettings().oPreviousSearch.sSearch
-			if(search_term != '') {
-				list_name = list_name + ' filtered by "' + search_term + '"'
-			}			
-			analyze(analyze_link, list_name, bioents);
-		}
-	} );
-}
-
-function table_tool_option(save_name, use_analyze, analyze_link, list_name, table_index, name_with_link_index) {
-	var buttons = [
-			"copy",
-			"print",
-			{
-				"sExtends": "csv",
-				"sTitle": save_name + '.csv'
-			},
-			{
-				"sExtends": "xls",
-				"sTitle": save_name + '.xls'
-			}
-		];
-	if(use_analyze) {
-		add_analyze_tabletool(analyze_link, list_name, table_index, name_with_link_index);
-		buttons.push('analyze');
-	}
-	else {
-		add_tabletools();
-	}
-	return {"aButtons": buttons}
-}
-
 function set_up_count(num_rows, header_id) {
 	document.getElementById(header_id).innerHTML = '(' + num_rows + ')';
-}
-
-function set_up_count_no_message(header_id) {
-	return function() {
-		this.fnAdjustColumnSizing(true);
-		var num_rows = this.fnSettings().fnRecordsTotal();
-		set_up_count(num_rows, header_id);
-	}
-}
-
-function set_up_message_and_count(header_id, message_id, wrapper_id) {
-	return function() {
-		this.fnAdjustColumnSizing(true);
-		var num_rows = this.fnSettings().fnRecordsTotal();
-		set_up_count(num_rows, header_id);
-		if(num_rows == 0) {
-    		document.getElementById(message_id).style.display = 'block';
-			document.getElementById(wrapper_id).style.display = 'none';
-		}
-	}
-}
-
-function create_nCloneTd() {
-   	var nCloneTd = document.createElement( 'td' );
-    nCloneTd.className = "center";
-    var b = document.createElement('button');
-    b.className = 'btn btn-link';
-    b.innerHTML = '<i class="icon-plus-sign"></i>';
-    nCloneTd.appendChild(b);
-    return nCloneTd;
-}
-
-function add_detail_column(table_id) {
-	var nCloneTd = create_nCloneTd();
-	$('#' + table_id + ' tbody tr').each( function () {
-		this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
-	});
-}
-
-function set_up_details(get_details) {
-	var nCloneTd = create_nCloneTd();
-	return function(oSettings) {
-		var table = this;
-  		this.$('tr').each( function () {
-  			var details = get_details(table.fnGetData(this));
-  			if(details != null) {
-    			this.removeChild(this.childNodes[0]);
-    			this.insertBefore(nCloneTd.cloneNode( true ), this.childNodes[0]);
-   			}
-   		});
-   		this.$('button').click( function () {
-  			var nTr = $(this).parents('tr')[0];
-
-        	if ( table.fnIsOpen(nTr) ) {
-           	 	// This row is already open - close it
-           	 	this.innerHTML = '<i class="icon-plus-sign"></i>';
-            	table.fnClose( nTr );
-        	}
-        	else {
-            	// Open this row
-            	this.innerHTML = '<i class="icon-minus-sign"></i>';
-  				var details = get_details(table.fnGetData(nTr));
-            	table.fnOpen( nTr, details, 'details' );
-        	}
-   		});
-   }
 }
 
 function set_up_references(references, ref_list_id) {
