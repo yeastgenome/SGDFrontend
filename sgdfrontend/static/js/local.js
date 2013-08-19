@@ -42,12 +42,6 @@ function download_citations(citation_div, download_link, list_name) {
 	form.submit();
 }
 
-function name_from_link(name_with_link) {
-	name_with_link = name_with_link.substring(0, name_with_link.lastIndexOf('"'))
-	var name = name_with_link.substring(name_with_link.lastIndexOf('/')+1, name_with_link.length);
-	return name;
-}
-
 function set_up_count(num_rows, header_id) {
 	document.getElementById(header_id).innerHTML = '(' + num_rows + ')';
 }
@@ -105,14 +99,19 @@ function setup_cytoscape_vis(div_id, style, data) {
 	$(loadCy = function(){
 		options = {
 			showOverlay: false,
-			layout: {"name": "arbor", "liveUpdate": true, "nodeMass":function(data) {
-				if(data.sub_type == 'FOCUS') {
-					return 10;
-				}
-				else {
-					return 1;
-				}
-			}},
+			layout: {
+						"name": "arbor", 
+						"liveUpdate": true,
+						"ungrabifyWhileSimulating": true, 
+						"nodeMass":function(data) {
+							if(data.sub_type == 'FOCUS') {
+								return 10;
+							}
+							else {
+								return 1;
+							}
+						}
+					},
 		    minZoom: 0.5,
 		    maxZoom: 2,
 		    style: style,
@@ -124,10 +123,28 @@ function setup_cytoscape_vis(div_id, style, data) {
 		
 		    ready: function(){
 		      	cy = this;
+		      	setup_cytoscape_downloads(cy, 'save_graph_png', '/download_graph_png', 'save_graph_txt', '/download_graph_txt');
 		    }
 		  };
 	
 		$('#' + div_id).cytoscape(options);
+	});
+}
+
+function setup_cytoscape_downloads(cy, png_button_id, png_url, txt_button_id, txt_url) {
+	$('#' + png_button_id).click(function() {
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST", png_url + '/network', true);
+		xhr.overrideMimeType('text/plain; charset=x-user-defined')
+		xhr.setRequestHeader("Content-Type", "image/png");
+		xhr.send(cy.png());
+	});
+	
+	$('#' + txt_button_id).click(function() {
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST", txt_url, true);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+		xhr.send('');
 	});
 }
 
@@ -156,55 +173,6 @@ function setup_slider(div_id, min, max, current, slide_f) {
 	return slider;
 }
 
-
-
-function highlightSearchTerms(searchText, highlightableArea, treatAsPhrase, warnOnFailure, highlightStartTag, highlightEndTag) {
-  // if the treatAsPhrase parameter is true, then we should search for 
-  // the entire phrase that was entered; otherwise, we will split the
-  // search string so that each word is searched for and highlighted
-  // individually
-  if (treatAsPhrase) {
-    searchArray = [searchText];
-  } else {
-    searchArray = searchText.split(" ");
-  }
-  
-  if (highlightableArea == null) {
-  	if (!document.body || typeof(document.body.innerHTML) == "undefined") {
-    	if (warnOnFailure) {
-      		alert("Sorry, for some reason the text of this page is unavailable. Searching will not work.");
-   	 	}
-    	return false;
-  	}
-  	highlightableArea=document.body;
-  }
-  
-  var bodyText = highlightableArea.innerHTML;
-  for (var i = 0; i < searchArray.length; i++) {
-    bodyText = simpleHighlight(bodyText, searchArray[i], highlightStartTag, highlightEndTag);
-  }
-  
-  highlightableArea.innerHTML = bodyText;
-
-  return true;
-}
-function simpleHighlight(bodyText, searchTerm, highlightStartTag, highlightEndTag) {
-	  // the highlightStartTag and highlightEndTag parameters are optional
-  if ((!highlightStartTag) || (!highlightEndTag)) {
-    highlightStartTag = "<font style='color:blue; background-color:yellow;'>";
-    highlightEndTag = "</font>";
-  }
-  
-	re = new RegExp(searchTerm, "gi");
-
-	func = function(match) {
-        return [highlightStartTag, match, highlightEndTag].join("");
-    };
-
-	bodyText = bodyText.replace(re, func);
-
-	return bodyText;
-}
 
 
 

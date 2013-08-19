@@ -34,7 +34,7 @@ def main(global_config, **settings):
     config.add_route('literature', '/{type}/{identifier}/literature')
 
     #Misc views
-    config.add_route('download_graph', '/download_graph/{file_type}')
+    config.add_route('download_graph_png', '/download_graph_png/{display_name}')
     config.add_route('download_citations', '/download_citations')
     config.add_route('analyze', '/analyze')
 
