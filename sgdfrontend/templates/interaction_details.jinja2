@@ -39,22 +39,24 @@
 ================================================== -->
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
-		<p>This page lists all genes/proteins that interact with {{display_name}}. See help for information about interaction data.</p>
+		<p>Genes and proteins that interact with {{display_name}}. See help for information about interaction data.</p>
 		<h1>Interactors Summary</h1>
-		<div id="venn_diagram"></div>
+		<div class="panel">
+			<div id="venn_diagram"></div>
 	
-		<div class="button-bar">
-			<h5>Analyze</h5>
-			<ul class="button-group radius">
-				<li><a id="phys" class="small button secondary" onclick="analyze_phys()">Physical</a></li>
-				<li><a id="gen" class="small button secondary" onclick="analyze_gen()">Genetic</a></li>
-				<li><a id="phys_and_gen" class="small button secondary" onclick="analyze_phys_and_gen()">Intersection</a></li>
-				<li><a class="small button secondary" onclick="analyze_phys_or_gen()">All</a></li>
-			</ul>
-			<ul class="button-group radius">
-				<li><a class="small button secondary radius" id="save" download="interaction_venn.png"><i class="icon-picture"></i> PNG</a></li>
-			</ul>
-		</div>
+			<div class="button-bar">
+				<h5>Analyze</h5>
+				<ul class="button-group radius">
+					<li><a id="phys" class="small button secondary" onclick="analyze_phys()">Physical</a></li>
+					<li><a id="gen" class="small button secondary" onclick="analyze_gen()">Genetic</a></li>
+					<li><a id="phys_and_gen" class="small button secondary" onclick="analyze_phys_and_gen()">Intersection</a></li>
+					<li><a class="small button secondary" onclick="analyze_phys_or_gen()">All</a></li>
+				</ul>
+				<ul class="button-group radius">
+					<li><a class="small button secondary radius" id="save" download="interaction_venn.png"><i class="icon-picture"></i> PNG</a></li>
+				</ul>
+			</div>
+		</div> <!-- .panel -->
 	</div>
 </section>
 
@@ -105,25 +107,35 @@
 <section id="network" data-magellan-destination="network">
 	<div class="page-header">
 		<h1>Network Visualization</h1>
-		<input id="all_radio" type="radio" name="group1" onclick="change_scale(); filter_cy()" checked> All<br>
-		<input id="physical_radio" type="radio" name="group1" onclick="change_scale(); filter_cy()"> Physical<br>
-		<input id="genetic_radio" type="radio" name="group1" onclick="change_scale(); filter_cy()"> Genetic<br>
-		<input id="both_radio" type="radio" name="group1" onclick="change_scale(); filter_cy()"> Both Physical and Genetic<br>
-		<br> 
-		<div id="cy" name="cy" style="width:100%;height:700px"></div>
-		<br>
-		<h5>Filter Interactions by # of Experiments:</h5>
-		<div id='allSlider' class='noUiSlider' style="width:100%"></div>
-		<div id='physSlider' class='noUiSlider' style="width:100%"></div>
-		<div id='genSlider' class='noUiSlider' style="width:100%"></div>
-		<div id='bothSlider' class='noUiSlider' style="width:100%"></div>
-		<br>
-		<br>
-        <h5>Download:</h5>
-        <ul class="button-group radius">
-			<li><a class="small button secondary" id="save_graph_txt">TXT</a></li>
-        	<li><a class="small button secondary" id="save_graph_png" download="interaction_network.png"><i class="icon-picture"></i> PNG</a></li>
-		</ul>
+		<div class="panel">
+			<label for="all_radio">
+				<input id="all_radio" type="radio" name="group1" onclick="change_scale(); filter_cy()" checked> All
+				</label>
+			<label for="physical_radio">
+				<input id="physical_radio" type="radio" name="group1" onclick="change_scale(); filter_cy()"> Physical
+			</label>
+			<label for="genetic_radio">
+				<input id="genetic_radio" type="radio" name="group1" onclick="change_scale(); filter_cy()"> Genetic
+				</label>
+			<label for="both_radio">
+				<input id="both_radio" type="radio" name="group1" onclick="change_scale(); filter_cy()"> Both Physical and Genetic
+			</label>
+
+			<div id="cy" name="cy" style="width:100%;height:700px"></div>
+			<br>
+			<h5>Filter Interactions by # of Experiments:</h5>
+			<div id='allSlider' class='noUiSlider' style="width:100%"></div>
+			<div id='physSlider' class='noUiSlider' style="width:100%"></div>
+			<div id='genSlider' class='noUiSlider' style="width:100%"></div>
+			<div id='bothSlider' class='noUiSlider' style="width:100%"></div>
+			<br>
+			<br>
+			<h5>Download:</h5>
+			<ul class="button-group radius">
+				<li><a class="small button secondary" id="save_graph_txt">TXT</a></li>
+				<li><a class="small button secondary" id="save_graph_png" download="interaction_network.png"><i class="icon-picture"></i> PNG</a></li>
+			</ul>
+		</div><!-- .panel -->
     </div>
 </section>
 
