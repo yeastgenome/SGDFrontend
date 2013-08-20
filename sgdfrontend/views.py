@@ -161,18 +161,25 @@ def pubmed_format(reference_json):
 
 @view_config(route_name='analyze', renderer='templates/analyze.jinja2')
 def analyze_view(request):
-    bioent_ids = request.GET['bioent_ids']
-    display_name = request.GET['display_name']
+    list_type = request.POST['list_type']
+    bioent_display_name = request.POST['bioent_display_name']
+    bioent_format_name = request.POST['bioent_format_name']
+    bioent_link = request.POST['bioent_link']
+    bioent_ids = list(set(request.POST['bioent_ids'].split(',')))
+    
     bioents = get_json(bioent_list_link(), data={'bioent_ids': bioent_ids})
     if bioents is None:
         return Response(status_int=500, body='Bioents could not be found.') 
-    page = {    'bioents': bioents,
+    page = {    'bioent_display_name': bioent_display_name,
+                'bioent_format_name': bioent_format_name,
+                'bioent_link': bioent_link,
+                'bioents': bioents,
                 'bioent_ids': [bioent['id'] for bioent in bioents], 
                 'gene_list_filename': 'gene_list',
                 #'send_to_yeastmine_link': send_to_yeastmine_link(),
                 #'send_to_go_slim_link': send_to_go_slim_link(),
                 #'send_to_goterm_finder': send_to_goterm_finder(),
-                'display_name': display_name,
+                'list_type': list_type,
             }
     return page
 

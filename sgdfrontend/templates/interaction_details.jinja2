@@ -52,7 +52,7 @@
 				<li><a class="small button secondary" onclick="analyze_phys_or_gen()">All</a></li>
 			</ul>
 			<ul class="button-group radius">
-				<li><a href="" class="small button secondary radius" id="save"><i class="icon-picture"></i> PNG</a></li>
+				<li><a class="small button secondary radius" id="save" download="interaction_venn.png"><i class="icon-picture"></i> PNG</a></li>
 			</ul>
 		</div>
 	</div>
@@ -67,41 +67,35 @@
 		<span id='evidence_message'></span>
 		<br><br>
 		<div id='evidence_wrapper'>
+			<div class="button-bar">
+				<ul class="button-group radius">
+					<li><a class="small button secondary">Download</a></li>
+				</ul>
+						
+				<ul class="button-group radius">
+					<li><a class="small button secondary" onclick="analyze_table()"><i class='icon-briefcase'></i> Analyze</a></li>
+				</ul>
+			</div>
+			
 			<table class='table table-striped table-bordered table-condensed' id='evidence_table' width="100%">
 			<thead>
   			<tr>
-  				<th data-sort="string">Interactor</th>
-  				<th data-sort="string">Interactor</th>
-  				<th data-sort="string">Type</th>
-    			<th data-sort="string">Assay</th>
-    			<th data-sort="string">Annotation</th>
-    			<th data-sort="string">Action</th>
-    			<th data-sort="string">Modification</th>
-    			<th data-sort="string">Phenotype</th>
-    			<th data-sort="string">Source</th>
-    			<th data-sort="string">Reference</th>
-    			<th data-sort="string">Note</th>
+  				<th>Interactor</th>
+  				<th>Interactor Systematic Name</th>
+  				<th>Interactor</th>
+   				<th>Interactor Systematic Name</th>
+  				<th>Type</th>
+    			<th>Assay</th>
+    			<th>Annotation</th>
+    			<th>Action</th>
+    			<th>Modification</th>
+    			<th>Phenotype</th>
+    			<th>Source</th>
+    			<th>Reference</th>
+    			<th>Note</th>
   			</tr>
   			</thead>
 			</table>
-			
-			<div class="row">
-				<div class="large-7 columns">
-					<div class="button-bar">
-						<ul class="button-group radius">
-							<li><a class="small button secondary">Download</a></li>
-						</ul>
-						
-						<ul class="button-group radius">
-							<li><a class="small button secondary"><i class='icon-briefcase'></i> Analyze</a></li>
-						</ul>
-					</div>
-				</div>
-			
-				<div class="large-5 columns" >
-					<ul id="evidence_pagination_buttons" class="pagination"></ul>
-				</div>
-			</div>
         </div>
    </div>
 </section>
@@ -128,7 +122,7 @@
         <h5>Download:</h5>
         <ul class="button-group radius">
 			<li><a class="small button secondary" id="save_graph_txt">TXT</a></li>
-        	<li><a class="small button secondary" id="save_graph_png"><i class="icon-picture"></i> PNG</a></li>
+        	<li><a class="small button secondary" id="save_graph_png" download="interaction_network.png"><i class="icon-picture"></i> PNG</a></li>
 		</ul>
     </div>
 </section>
@@ -171,6 +165,8 @@
   	    }
   	}
   	
+  	var ev_table;
+  	
   	function set_up_evidence_table(data) { 
   		var datatable = [];
   		for (var i=0; i < data.length; i++) {
@@ -194,17 +190,17 @@
   				modification = evidence['modification'];
   			}
   			var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
-  			datatable.push([bioent1, bioent2, evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']])
+  			datatable.push([bioent1, evidence['bioent1']['format_name'], bioent2, evidence['bioent2']['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']])
   		}
+  		set_up_count(data.length, "evidence_header");
   		         
         var options = {};
 		options["bPaginate"] = true;
-		options["sDom"] = '<"clear">lfrtipT';
-		options["aaSorting"] = [[2, "asc"]];
-		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]		
+		options["aaSorting"] = [[1, "asc"]];
+		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]		
 		options["aaData"] = datatable;
   				
-  		$('#evidence_table').dataTable(options);
+  		ev_table = $('#evidence_table').dataTable(options);
   	}
   	
   	function set_up_overview_table(data) {
@@ -220,9 +216,10 @@
        		width: 350,
         	height: 350,
         	callback: function(dataUrl) {
+        		alert(dataUrl.replace("image/png", "image/octet-stream"));
           		document.getElementById("save").href = dataUrl.replace("image/png", "image/octet-stream");
         	}
-          });
+        });
 			
     	if(r == 0) {
     		document.getElementById("phys_and_gen").disabled = true; 
@@ -247,86 +244,93 @@
     	//Get resources
 	  	$.getJSON("{{interaction_resources_link}}", set_up_resources);
 	});
-</script>
 
-
-<script>
 	function analyze_phys_and_gen() {
-		var list_name = '{{both_listname}}';
-		var bioents = [];
+		var bioent_sys_names = [];
 
-		var gen_bioents = {};
-		var ev_table = $.fn.dataTable.fnTables(true)[0];
-		var data = $(ev_table).dataTable().fnGetData();
+		var gen_bioent_sys_names = {};
+		var data = ev_table.fnGetData();
 		for (var i=0,len=data.length; i<len; i++) { 
-			var ev_type = data[i][3];
+			var ev_type = data[i][4];
 			if(ev_type == 'Genetic') {
-				var name_with_link = data[i][2];
-				var name = name_from_link(name_with_link);
-				gen_bioents[name] = true;
+				var sys_name = data[i][3];
+				gen_bioent_sys_names[sys_name] = true;
 			}
 		}	
 
 		for (var i=0,len=data.length; i<len; i++) { 
-			var ev_type = data[i][3];
+			var ev_type = data[i][4];
 			if(ev_type == 'Physical') {
-				var name_with_link = data[i][2];
-				var name = name_from_link(name_with_link);
-				if(name in gen_bioents) {
-					bioents.push(name);
+				var sys_name = data[i][3];
+				if(sys_name in gen_bioent_sys_names) {
+					bioent_sys_names.push(sys_name);
 				}
 			}
 
 		}	
-		analyze('{{analyze_link}}', list_name, bioents);
+		post_to_url('{{analyze_link}}', {'bioent_display_name': '{{display_name}}', 'bioent_format_name': '{{format_name}}', 'bioent_link': '{{link}}', 
+										'bioent_ids': bioent_sys_names, 'list_type': 'Intersection Interactors'});
 	}
 	
 	function analyze_phys() {
-		var list_name = '{{physical_listname}}';
-		var bioents = [];
+		var bioent_sys_names = [];
 
-		var ev_table = $.fn.dataTable.fnTables(true)[0];
-		var data = $(ev_table).dataTable().fnGetData();
+		var data = ev_table.fnGetData();
 		for (var i=0,len=data.length; i<len; i++) { 
-			var ev_type = data[i][3];
+			var ev_type = data[i][4];
 			if(ev_type == 'Physical') {
-				var name_with_link = data[i][2];
-				var name = name_from_link(name_with_link);
-				bioents.push(name);
+				var sys_name = data[i][3];
+				bioent_sys_names.push(sys_name);
 			}
 		}	
-		analyze('{{analyze_link}}', list_name, bioents);
+		post_to_url('{{analyze_link}}', {'bioent_display_name': '{{display_name}}', 'bioent_format_name': '{{format_name}}', 'bioent_link': '{{link}}', 
+										'bioent_ids': bioent_sys_names, 'list_type': 'Physical Interactors'});
 	}
 	
 	function analyze_gen() {
-		var list_name = '{{genetic_listname}}';
-		var bioents = [];
+		var bioent_sys_names = [];
 
-		var ev_table = $.fn.dataTable.fnTables(true)[0];
-		var data = $(ev_table).dataTable().fnGetData();
+		var data = ev_table.fnGetData();
 		for (var i=0,len=data.length; i<len; i++) { 
-			var ev_type = data[i][3];
+			var ev_type = data[i][4];
 			if(ev_type == 'Genetic') {
-				var name_with_link = data[i][2];
-				var name = name_from_link(name_with_link);
-				bioents.push(name);
+				var sys_name = data[i][3];
+				bioent_sys_names.push(sys_name);
 			}
 		}	
-		analyze('{{analyze_link}}', list_name, bioents);
+		post_to_url('{{analyze_link}}', {'bioent_display_name': '{{display_name}}', 'bioent_format_name': '{{format_name}}', 'bioent_link': '{{link}}',
+										 'bioent_ids': bioent_sys_names, 'list_type': 'Genetic Interactors'});
 	}
 	
 	function analyze_phys_or_gen() {
-		var list_name = '{{all_listname}}';
-		var bioents = [];
+		var bioent_sys_names = [];
 
-		var ev_table = $.fn.dataTable.fnTables(true)[0];
-		var data = $(ev_table).dataTable().fnGetData();
+		var data = ev_table.fnGetData();
 		for (var i=0,len=data.length; i<len; i++) { 
-			var name_with_link = data[i][2];
-			var name = name_from_link(name_with_link);
-			bioents.push(name);
+			var sys_name = data[i][3];
+			bioent_sys_names.push(sys_name);
 		}	
-		analyze('{{analyze_link}}', list_name, bioents);
+		post_to_url('{{analyze_link}}', {'bioent_display_name': '{{display_name}}', 'bioent_format_name': '{{format_name}}', 'bioent_link': '{{link}}',
+										 'bioent_ids': bioent_sys_names, 'list_type': 'Interactors'});
+	}
+	
+	function analyze_table() {
+		var bioent_sys_names = [];
+
+		var data = ev_table._('tr', {"filter": "applied"});
+		for (var i=0,len=data.length; i<len; i++) { 
+			var sys_name = data[i][3];
+			bioent_sys_names.push(sys_name);
+		}	
+		
+		var list_type = 'Interactors'
+		var search_term = ev_table.fnSettings().oPreviousSearch.sSearch
+		if(search_term != '') {
+			list_type = list_type + ' filtered by "' + search_term + '"'
+		}
+			
+		post_to_url('{{analyze_link}}', {'bioent_display_name': '{{display_name}}', 'bioent_format_name': '{{format_name}}', 'bioent_link': '{{link}}',
+										 'bioent_ids': bioent_sys_names, 'list_type': list_type});
 	}
 	
 </script>

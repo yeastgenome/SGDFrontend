@@ -1,9 +1,11 @@
-//http://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit
-function add_params_to_form(params) {
 
+http://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit
+function post_to_url(path, params) {
     // The rest of this code assumes you are not using a library.
     // It can be made less wordy if you use one.
     var form = document.createElement("form");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", path);
 
     for(var key in params) {
         if(params.hasOwnProperty(key)) {
@@ -17,15 +19,7 @@ function add_params_to_form(params) {
     }
 
     document.body.appendChild(form);
-    return form;
-}
-
-function analyze(analyze_link, list_name, bioents) {
-	var path = analyze_link;
-	var form = add_params_to_form({"display_name":list_name, "locus": bioents})
-	form.setAttribute("method", 'get');
-    form.setAttribute("action", path);
-	form.submit();
+    form.submit();
 }
 
 function download_citations(citation_div, download_link, list_name) {
@@ -123,8 +117,11 @@ function setup_cytoscape_vis(div_id, style, data) {
 		
 		    ready: function(){
 		      	cy = this;
-		      	setup_cytoscape_downloads(cy, 'save_graph_png', '/download_graph_png', 'save_graph_txt', '/download_graph_txt');
-		    }
+		      	cy.one("layoutstop", function() {
+		      		document.getElementById("save_graph_png").href = cy.png().replace("image/png", "image/octet-stream");
+		   		});
+		      	
+		    }, 
 		  };
 	
 		$('#' + div_id).cytoscape(options);

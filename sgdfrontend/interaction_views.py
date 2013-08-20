@@ -34,11 +34,6 @@ def interactions(request):
 
                 'interaction_details_filename': display_name + '_interactions',
                 
-                'genetic_listname': display_name + '_genetic_interactors',
-                'physical_listname': display_name + '_physical_interactors',
-                'all_listname': display_name + '_all_interactors',
-                'both_listname': display_name + '_genetic_physical_intersection_interactors',
-                
                 'analyze_link': analyze_link(),
                 
                 'display_name': bioent['display_name'],
