@@ -117,9 +117,6 @@ function setup_cytoscape_vis(div_id, style, data) {
 		
 		    ready: function(){
 		      	cy = this;
-		      	cy.one("layoutstop", function() {
-		      		document.getElementById("save_graph_png").href = cy.png().replace("image/png", "image/octet-stream");
-		   		});
 		      	
 		    }, 
 		  };

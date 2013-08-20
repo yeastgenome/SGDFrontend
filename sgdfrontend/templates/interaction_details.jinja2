@@ -228,7 +228,6 @@
        		width: 350,
         	height: 350,
         	callback: function(dataUrl) {
-        		alert(dataUrl.replace("image/png", "image/octet-stream"));
           		document.getElementById("save").href = dataUrl.replace("image/png", "image/octet-stream");
         	}
         });
