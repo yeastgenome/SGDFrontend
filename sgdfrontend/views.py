@@ -82,24 +82,26 @@ from sgdfrontend.link_maker import citation_list_link, bioent_list_link
 #            }
 #    return page
 
-@view_config(route_name='download_graph_png')
-def download_graph_png(request):
-    display_name = request.matchdict['display_name']
-    print display_name
+@view_config(route_name='download_table')
+def download_table(request):
+    description = request.POST['description']
+    header_info = request.POST['headers']
+    data = request.POST['data']
+    display_name = request.POST['display_name']
+    
     headers = request.response.headers
-    headers['Content-Type'] = "image/png"
     
-    request.response.body = request.body
-        
-    headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.png')
+    request.response.text = description + '\n\n' + header_info + '\n' + data
+    
+    headers['Content-Type'] = 'text/plain'        
+    headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.csv')
     headers['Content-Description'] = 'File Transfer'
-    
     return request.response
 
 @view_config(route_name='download_citations')
 def download_citations(request):
-    reference_ids = request.GET['reference_ids']
-    display_name = request.GET['display_name']
+    reference_ids = request.POST['reference_ids']
+    display_name = request.POST['display_name']
     references = get_json(citation_list_link(), data={'reference_ids': reference_ids})
     
     headers = request.response.headers

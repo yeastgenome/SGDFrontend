@@ -33,6 +33,7 @@
           	<li data-magellan-arrival="reviews"><a href="#reviews">Reviews</a></li>
           	<li data-magellan-arrival="go"><a href="#go">Gene Ontology Literature</a></li>
           	<li data-magellan-arrival="phenotype"><a href="#phenotype">Phenotype Literature</a></li>
+          	<li data-magellan-arrival="interaction"><a href="#interaction">Interaction Literature</a></li>
 		</ul>
 	</nav>
 	
@@ -45,7 +46,7 @@
 		<h1>Primary Literature <span id='primary_header'></span></h1>
 		<span id='primary_message' class="hide">No primary literature curated.</span>
 		<div id='primary_wrapper'>	
-			<a class="small button secondary" onclick="download_citations('primary_list', '{{download_link}}', '{{display_name}}_primary_citations')" >Export</a>	
+			<a id = "export_primary" class="small button secondary">Export</a>	
 			<ul id='primary_list'>
 			</ul>
 		</div>
@@ -61,12 +62,8 @@
 		<br>
         <span>Export:</span>
         <ul class="button-group radius">
-        	<li><a class="small button secondary" onclick="vis.exportNetwork('png', '/download_graph/png')">png</a></li>
-        	<li><a class="small button secondary" onclick="vis.exportNetwork('svg', '/download_graph/svg')">svg</a></li>
-        	<li><a class="small button secondary" onclick="vis.exportNetwork('pdf', '/download_graph/pdf')">pdf</a></li>
-        	<li><a class="small button secondary" onclick="vis.exportNetwork('xgmml', '/download_graph/xml')">xgmml</a></li>
-        	<li><a class="small button secondary" onclick="vis.exportNetwork('graphml', '/download_graph/txt')">graphml</a></li>
-        	<li><a class="small button secondary" onclick="vis.exportNetwork('sif', '/download_graph/txt', options={nodeAttr:'label', interactionAttr:'label'})">txt</a></li>
+        	<li><a class="small button secondary">TXT</a></li>
+        	<li><a class="small button secondary">PNG</a></li>
         </ul>
     </div>
 </section>
@@ -78,7 +75,7 @@
 		<h1>Additional Literature <span id='additional_header'></span></h1>
 		<span id='additional_message' class="hide">No additional literature curated.</span>
 		<div id='additional_wrapper'>
-			<a class="small button secondary" onclick="download_citations('additional_list', '{{download_link}}', '{{display_name}}_additional_citations')">Export</a>						
+			<a id="export_additional" class="small button secondary">Export</a>						
 			<ul id='additional_list'>
 			</ul>
 		</div>
@@ -92,7 +89,7 @@
 		<h1>Reviews <span id='review_header'></span></h1>
 		<span id='review_message' class="hide">No reviews curated.</span>
 		<div id='review_wrapper'>
-			<a class="small button secondary" onclick="download_citations('review_list', '{{download_link}}', '{{display_name}}_review_citations')">Export</a>						
+			<a id="export_review" class="small button secondary">Export</a>						
 			<ul id='review_list'>
 			</ul>
 		</div>
@@ -106,7 +103,7 @@
 		<h1>Gene Ontology Literature <span id='go_header'></span></h1>
 		<span id='go_message' class="hide">No gene ontology literature curated.</span>
 		<div id='go_wrapper'>
-			<a class="small button secondary" onclick="download_citations('go_list', '{{download_link}}', '{{display_name}}_go_citations')">Export</a>						
+			<a id="export_go" class="small button secondary">Export</a>						
 			<ul id='go_list'>
 			</ul>
 		</div>
@@ -120,8 +117,22 @@
 		<h1>Phenotype Literature <span id='phenotype_header'></span></h1>
 		<span id='phenotype_message' class="hide">No phenotype literature curated.</span>
 		<div id='phenotype_wrapper'>	
-			<a class="small button secondary" onclick="download_citations('phenotype_list', '{{download_link}}', '{{display_name}}_phenotype_citations')">Export</a>					
+			<a id="export_phenotype" class="small button secondary">Export</a>					
 			<ul id='phenotype_list'>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<!-- Interaction
+================================================== -->
+<section id="interaction" data-magellan-destination="interaction">
+	<div class="page-header">
+		<h1>Interaction Literature <span id='interaction_header'></span></h1>
+		<span id='interaction_message' class="hide">No interaction literature curated.</span>
+		<div id='interaction_wrapper'>	
+			<a id="export_interaction" class="small button secondary">Export</a>					
+			<ul id='interaction_list'>
 			</ul>
 		</div>
 	</div>
@@ -144,28 +155,63 @@
 
 <script>
 	function set_up_primary_list(data) {	
-		set_up_count(data.length, "primary_header");
+  		document.getElementById("primary_header").innerHTML = '(' + data.length + ')';
   		set_up_references(data, "primary_list");
+  		if(data.length == 0) {
+  			$("#primary_message").removeClass("hide");
+  			$("#primary_wrapper").addClass("hide");
+  		}
+  		document.getElementById("export_primary").onclick = function f() {download_citations('primary_list', '{{download_link}}', '{{display_name}}_primary_citations')};
 	}
 	
 	function set_up_additional_list(data) {
-		set_up_count(data.length, "additional_header");
+  		document.getElementById("additional_header").innerHTML = '(' + data.length + ')';
   		set_up_references(data, "additional_list");
+  		if(data.length == 0) {
+  			$("#additional_message").removeClass("hide");
+  			$("#additional_wrapper").addClass("hide");
+  		}
+  		document.getElementById("export_additional").onclick = function f() {download_citations('additional_list', '{{download_link}}', '{{display_name}}_additional_citations')};
 	}
 	
-	function set_up_review_list(data) {		
-		set_up_count(data.length, "review_header");
+	function set_up_review_list(data) {	
+  		document.getElementById("review_header").innerHTML = '(' + data.length + ')';
   		set_up_references(data, "review_list");
+  		if(data.length == 0) {
+  			$("#review_message").removeClass("hide");
+  			$("#review_wrapper").addClass("hide");
+  		}
+  		document.getElementById("export_review").onclick = function f() {download_citations('review_list', '{{download_link}}', '{{display_name}}_review_citations')};
 	}
 		
 	function set_up_go_list(data) {
-		set_up_count(data.length, "go_header");
+  		document.getElementById("go_header").innerHTML = '(' + data.length + ')';
   		set_up_references(data, "go_list");
+  		if(data.length == 0) {
+  			$("#go_message").removeClass("hide");
+  			$("#go_wrapper").addClass("hide");
+  		}
+  		document.getElementById("export_go").onclick = function f() {download_citations('go_list', '{{download_link}}', '{{display_name}}_go_citations')};
 	}
 		
 	function set_up_phenotype_list(data) {
-		set_up_count(data.length, "phenotype_header");
+		document.getElementById("phenotype_header").innerHTML = '(' + data.length + ')';
   		set_up_references(data, "phenotype_list");
+  		if(data.length == 0) {
+  			$("#phenotype_message").removeClass("hide");
+  			$("#phenotype_wrapper").addClass("hide");
+  		}
+  		document.getElementById("export_phenotype").onclick = function f() {download_citations('phenotype_list', '{{download_link}}', '{{display_name}}_phenotype_citations')};
+	}
+		
+	function set_up_interaction_list(data) {
+		document.getElementById("interaction_header").innerHTML = '(' + data.length + ')';
+  		set_up_references(data, "interaction_list");
+  		if(data.length == 0) {
+  			$("#interaction_message").removeClass("hide");
+  			$("#interaction_wrapper").addClass("hide");
+  		}
+  		document.getElementById("export_interaction").onclick = function f() {download_citations('interaction_list', '{{download_link}}', '{{display_name}}_interaction_citations')};
 	}
 	
 	$(document).ready(function() {
@@ -181,6 +227,9 @@
   		
   		//Get phenotype reference data
   		$.getJSON("{{phenotype_references_link}}", set_up_phenotype_list);
+  		
+  		//Get interaction reference data
+  		$.getJSON("{{interaction_references_link}}", set_up_interaction_list);
 	});
 </script>
 

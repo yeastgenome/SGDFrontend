@@ -29,15 +29,22 @@ function download_citations(citation_div, download_link, list_name) {
 		reference_ids.push(entries[i].id)
 	}
 	
-	var path = download_link;
-	var form = add_params_to_form({"display_name":list_name, "reference_ids": reference_ids})
-	form.setAttribute("method", 'get');
-    form.setAttribute("action", path);
-	form.submit();
+	post_to_url(download_link, {"display_name":list_name, "reference_ids": reference_ids});
 }
 
-function set_up_count(num_rows, header_id) {
-	document.getElementById(header_id).innerHTML = '(' + num_rows + ')';
+function download_table(table, download_link, table_name, description) {
+	var data = table._('tr', {"filter": "applied"});
+	var table_data = [];
+	for(var i=0,len=data.length; i<len; i++) {
+		var row = data[i];
+		row.push('\n');
+		table_data.push(row);
+	}
+	
+	var headers = table._('thead tr', {"filter": "applied"});
+	alert(headers);
+
+	post_to_url(download_link, {"display_name":table_name, "description": description, 'headers': headers, 'data': data});
 }
 
 function set_up_references(references, ref_list_id) {
@@ -117,7 +124,6 @@ function setup_cytoscape_vis(div_id, style, data) {
 		
 		    ready: function(){
 		      	cy = this;
-		      	
 		    }, 
 		  };
 	
@@ -125,22 +131,6 @@ function setup_cytoscape_vis(div_id, style, data) {
 	});
 }
 
-function setup_cytoscape_downloads(cy, png_button_id, png_url, txt_button_id, txt_url) {
-	$('#' + png_button_id).click(function() {
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", png_url + '/network', true);
-		xhr.overrideMimeType('text/plain; charset=x-user-defined')
-		xhr.setRequestHeader("Content-Type", "image/png");
-		xhr.send(cy.png());
-	});
-	
-	$('#' + txt_button_id).click(function() {
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", txt_url, true);
-		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-		xhr.send('');
-	});
-}
 
 function setup_slider(div_id, min, max, current, slide_f) {
 	var slider = $("#" + div_id).noUiSlider({
