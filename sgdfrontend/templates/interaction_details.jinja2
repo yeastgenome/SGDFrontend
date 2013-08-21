@@ -128,12 +128,6 @@
 			<div id='genSlider' class='noUiSlider' style="width:100%"></div>
 			<div id='bothSlider' class='noUiSlider' style="width:100%"></div>
 			<br>
-			<br>
-			<h5>Download:</h5>
-			<ul class="button-group radius">
-				<li><a class="small button secondary" id="save_graph_txt"><i class="icon-file"></i> TXT</a></li>
-				<li><a class="small button secondary" id="save_graph_png" download="interaction_network.png"><i class="icon-picture"></i> PNG</a></li>
-			</ul>
 		</div><!-- .panel -->
     </div>
 </section>
@@ -213,7 +207,7 @@
   				
   		ev_table = $('#evidence_table').dataTable(options);
   		
-  		document.getElementById("evidence_table_download").onclick = function f() {download_table(ev_table, '/download_table', 'interaction_details', 'description')};
+  		document.getElementById("evidence_table_download").onclick = function f() {download_table(ev_table, '/download_table', '{{display_name}}_interaction_details')};
   		document.getElementById("evidence_table_analyze").onclick = analyze_table;
   	}
   	

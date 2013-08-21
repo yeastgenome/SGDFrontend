@@ -32,19 +32,15 @@ function download_citations(citation_div, download_link, list_name) {
 	post_to_url(download_link, {"display_name":list_name, "reference_ids": reference_ids});
 }
 
-function download_table(table, download_link, table_name, description) {
+function download_table(table, download_link, table_name) {
 	var data = table._('tr', {"filter": "applied"});
-	var table_data = [];
-	for(var i=0,len=data.length; i<len; i++) {
-		var row = data[i];
-		row.push('\n');
-		table_data.push(row);
-	}
 	
-	var headers = table._('thead tr', {"filter": "applied"});
-	alert(headers);
-
-	post_to_url(download_link, {"display_name":table_name, "description": description, 'headers': headers, 'data': data});
+	var table_headers = table.fnSettings().aoColumns;
+	var headers = [];
+	for(var i=0,len=table_headers.length; i<len; i++) {
+		headers.push(table_headers[i].nTh.innerHTML);
+	}
+	post_to_url(download_link, {"display_name":table_name, 'headers': JSON.stringify(headers), 'data': JSON.stringify(data)});
 }
 
 function set_up_references(references, ref_list_id) {
