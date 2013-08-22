@@ -5,6 +5,7 @@ import json
 import requests
 
 def get_json(url, data=None):
+    print url
     if data is not None:
         headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
         r = requests.post(url, data=json.dumps(data), headers=headers)

@@ -6,7 +6,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{bioent_display_name}}/{{bioent_format_name}}</span> {{list_type}}</h2>
+	<h2>Analyze <span class="gene_name">{{bioent_display_name}}/{{bioent_format_name}}</span> {{list_type}}</h2>
 </div>
 
 
@@ -15,7 +15,7 @@
 <div class="row-fluid">
 	<div id='sidebar' class="small-3 columns">
 		<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky">
-			<li id="nav-title"><h5><a href="{{bioent_link}}">{{bioent_display_name}}/{{bioent_format_name}}</a> {{list_type}}</h5></li>
+			<li id="nav-title"><h5>Analyze <a href="{{bioent_link}}">{{bioent_display_name}}/{{bioent_format_name}}</a> {{list_type}}</h5></li>
 			<li data-magellan-arrival="analyze"><a href="#analyze">Tools</a></li>
           	<li data-magellan-arrival="gene_list"><a href="#gene_list">Genes</a></li>
 		</ul>
@@ -31,7 +31,7 @@
 		
 		<ul class="button-group even-4">
   			<li class="span3">
-  				<a href="" class="large button expand">
+  				<a id="go_term_finder" class="large button expand">
     				<div class="caption">
       					<h3>GO Term Finder</h3>
       					<p>Find common features between genes.</p>
@@ -40,7 +40,7 @@
   			</li>
   			
   			<li class="span3">
-  				<a href="" class="large button expand">
+  				<a id="go_slim_mapper" class="large button expand">
     				<div class="caption">
       					<h3>GO Slim Mapper</h3>
       					<p>Sort genes into broad categories.</p>
@@ -49,7 +49,7 @@
   			</li>
   			
   			<li class="span3">
-  				<a href="" class="large button expand">
+  				<a id="spell" class="large button expand">
     				<div class="caption">
       					<h3>SPELL</h3>
       					<p>View expression data.</p>
@@ -58,7 +58,7 @@
   			</li>
   			
   			<li class="span3">
-  				<a href="" class="large button expand">
+  				<a id="yeastmine" class="large button expand">
     				<div class="caption">
       					<h3>YeastMine</h3>
       					<p>Conduct advanced analysis.</p>
@@ -120,10 +120,25 @@
         $('#gene_list_table').dataTable(options);
 	}
 	
+	function set_up_tools() {
+		document.getElementById("go_term_finder").onclick = function f() {
+			post_to_url("http://yeastgenome.org/cgi-bin/GO/goTermFinder.pl", {"loci": "{{bioent_ids}}"});
+		};
+		document.getElementById("go_slim_mapper").onclick = function f() {
+			post_to_url("http://yeastgenome.org/cgi-bin/GO/goSlimMapper.pl", {"loci": "{{bioent_ids}}"});
+		};
+		document.getElementById("spell").onclick = function f() {
+			post_to_url("http://spell.yeastgenome.org/search/show_results", {"search_string": "{{bioent_ids}}"});
+		};
+		document.getElementById("yeastmine").onclick = function f() {
+			post_to_url("http://yeastmine/yeastgenome.org/yeastmine/portal.do", {"externalids": "{{bioent_ids}}"});
+		};
+	}
 	
 	$(document).ready(function() {
 		//Set up gene table
 		set_up_gene_table();
+		set_up_tools();
 		
   	});
 </script>

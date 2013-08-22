@@ -192,7 +192,7 @@ def analyze_view(request):
                 'bioent_format_name': bioent_format_name,
                 'bioent_link': bioent_link,
                 'bioents': bioents,
-                'bioent_ids': [bioent['id'] for bioent in bioents], 
+                'bioent_ids': " ".join([bioent['format_name'] for bioent in bioents]), 
                 'gene_list_filename': 'gene_list',
                 #'send_to_yeastmine_link': send_to_yeastmine_link(),
                 #'send_to_go_slim_link': send_to_go_slim_link(),

@@ -219,7 +219,8 @@
   		var B = data['num_phys_interactors'];
   		var C = data['num_both_interactors'];
   			
-		var stage = draw_venn_diagram("venn_diagram", r, s, x, A, B, C);
+  		//Colors chosen as colorblind safe from http://colorbrewer2.org/.
+		var stage = draw_venn_diagram("venn_diagram", r, s, x, A, B, C, "762A83", "1B7837");
 		stage.toDataURL({
        		width: 350,
         	height: 350,
@@ -375,15 +376,15 @@ var style = cytoscape.stylesheet()
 	})
 	.selector("edge[genetic > 0][physical = 0]")
 	.css({
-		'line-color': "#8181F7",
+		'line-color': "#7FBF7B",
 	})
 	.selector("edge[physical > 0][genetic = 0]")
 	.css({
-		'line-color': "#F78181",
+		'line-color': "#AF8DC3",
 	})
 	.selector("edge[genetic > 0][physical > 0]")
 	.css({
-		'line-color': "#240B3B",
+		'line-color': "black",
 	});
 
 
