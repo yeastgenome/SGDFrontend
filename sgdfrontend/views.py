@@ -2,6 +2,8 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from sgdfrontend import get_json
 from sgdfrontend.link_maker import citation_list_link, bioent_list_link
+import datetime
+import json
  
 #def home_view(request):
 #    return {'page_title': 'SGD2.0'}
@@ -82,24 +84,40 @@ from sgdfrontend.link_maker import citation_list_link, bioent_list_link
 #            }
 #    return page
 
-@view_config(route_name='download_graph_png')
-def download_graph_png(request):
-    display_name = request.matchdict['display_name']
-    print display_name
-    headers = request.response.headers
-    headers['Content-Type'] = "image/png"
-    
-    request.response.body = request.body
+def clean_cell(cell):
+    if cell is None:
+        return ''
+    elif cell.startswith('<a href='):
+        cell = cell[cell.index('>')+1:]
+        cell = cell[:cell.index('<')]
+        return cell
+    else:
+        return cell
+
+@view_config(route_name='download_table')
+def download_table(request):
+    header_info = json.loads(request.POST['headers'])
+    data = json.loads(request.POST['data'])
+    display_name = request.POST['display_name']
         
-    headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.png')
-    headers['Content-Description'] = 'File Transfer'
+    headers = request.response.headers
     
+    date = datetime.datetime.now().strftime("%m/%d/%Y")
+    description = "!\n!Date: " + date + '\n' + "!From: Saccharomyces Genome Database (SGD) \n!URL: http://www.yeastgenome.org/ \n!Contact Email: sgd-helpdesk@lists.stanford.edu \n!Funding: NHGRI at US NIH, grant number 5-P41-HG001315 \n!"
+    
+    table_header = description + '\n\n' + '\t'.join(header_info)
+    
+    request.response.text = table_header + '\n' + '\n'.join(['\t'.join([clean_cell(cell) for cell in row]) for row in data])
+    
+    headers['Content-Type'] = 'text/plain'        
+    headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.txt')
+    headers['Content-Description'] = 'File Transfer'
     return request.response
 
 @view_config(route_name='download_citations')
 def download_citations(request):
-    reference_ids = request.GET['reference_ids']
-    display_name = request.GET['display_name']
+    reference_ids = request.POST['reference_ids']
+    display_name = request.POST['display_name']
     references = get_json(citation_list_link(), data={'reference_ids': reference_ids})
     
     headers = request.response.headers
@@ -174,7 +192,7 @@ def analyze_view(request):
                 'bioent_format_name': bioent_format_name,
                 'bioent_link': bioent_link,
                 'bioents': bioents,
-                'bioent_ids': [bioent['id'] for bioent in bioents], 
+                'bioent_ids': " ".join([bioent['format_name'] for bioent in bioents]), 
                 'gene_list_filename': 'gene_list',
                 #'send_to_yeastmine_link': send_to_yeastmine_link(),
                 #'send_to_go_slim_link': send_to_go_slim_link(),

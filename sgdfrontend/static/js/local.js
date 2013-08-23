@@ -1,4 +1,3 @@
-
 http://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit
 function post_to_url(path, params) {
     // The rest of this code assumes you are not using a library.
@@ -29,15 +28,18 @@ function download_citations(citation_div, download_link, list_name) {
 		reference_ids.push(entries[i].id)
 	}
 	
-	var path = download_link;
-	var form = add_params_to_form({"display_name":list_name, "reference_ids": reference_ids})
-	form.setAttribute("method", 'get');
-    form.setAttribute("action", path);
-	form.submit();
+	post_to_url(download_link, {"display_name":list_name, "reference_ids": reference_ids});
 }
 
-function set_up_count(num_rows, header_id) {
-	document.getElementById(header_id).innerHTML = num_rows;
+function download_table(table, download_link, table_name) {
+	var data = table._('tr', {"filter": "applied"});
+	
+	var table_headers = table.fnSettings().aoColumns;
+	var headers = [];
+	for(var i=0,len=table_headers.length; i<len; i++) {
+		headers.push(table_headers[i].nTh.innerHTML);
+	}
+	post_to_url(download_link, {"display_name":table_name, 'headers': JSON.stringify(headers), 'data': JSON.stringify(data)});
 }
 
 function set_up_references(references, ref_list_id) {
@@ -117,7 +119,6 @@ function setup_cytoscape_vis(div_id, style, data) {
 		
 		    ready: function(){
 		      	cy = this;
-		      	
 		    }, 
 		  };
 	
@@ -125,22 +126,6 @@ function setup_cytoscape_vis(div_id, style, data) {
 	});
 }
 
-function setup_cytoscape_downloads(cy, png_button_id, png_url, txt_button_id, txt_url) {
-	$('#' + png_button_id).click(function() {
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", png_url + '/network', true);
-		xhr.overrideMimeType('text/plain; charset=x-user-defined')
-		xhr.setRequestHeader("Content-Type", "image/png");
-		xhr.send(cy.png());
-	});
-	
-	$('#' + txt_button_id).click(function() {
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", txt_url, true);
-		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-		xhr.send('');
-	});
-}
 
 function setup_slider(div_id, min, max, current, slide_f) {
 	var slider = $("#" + div_id).noUiSlider({
@@ -166,7 +151,3 @@ function setup_slider(div_id, min, max, current, slide_f) {
 	}
 	return slider;
 }
-
-
-
-

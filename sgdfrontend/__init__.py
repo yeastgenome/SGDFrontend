@@ -5,6 +5,7 @@ import json
 import requests
 
 def get_json(url, data=None):
+    print url
     if data is not None:
         headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
         r = requests.post(url, data=json.dumps(data), headers=headers)
@@ -36,8 +37,8 @@ def main(global_config, **settings):
     config.add_route('literature', '/{type}/{identifier}/literature')
 
     #Misc views
-    config.add_route('download_graph_png', '/download_graph_png/{display_name}')
     config.add_route('download_citations', '/download_citations')
+    config.add_route('download_table', '/download_table')
     config.add_route('analyze', '/analyze')
 
     config.scan()

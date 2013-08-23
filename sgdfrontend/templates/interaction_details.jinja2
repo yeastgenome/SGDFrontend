@@ -44,19 +44,18 @@
 		<div class="panel">
 			<div id="venn_diagram"></div>
 	
-			<div class="button-bar">
-				<h5>Analyze</h5>
-				<ul class="button-group radius">
-					<li><a id="phys" class="small button secondary sgd-icon-venn-physical" onclick="analyze_phys()">Physical</a></li>
-					<li><a id="gen" class="small button secondary sgd-icon-venn-genetic" onclick="analyze_gen()">Genetic</a></li>
-					<li><a id="phys_and_gen" class="small button secondary sgd-icon-venn-intersection" onclick="analyze_phys_and_gen()">Intersection</a></li>
-					<li><a class="small button secondary sgd-icon-venn-all" onclick="analyze_phys_or_gen()">All</a></li>
-				</ul>
-				<ul class="button-group radius">
-					<li><a class="small button secondary radius" id="save" download="interaction_venn.png"><i class="icon-picture"></i> PNG</a></li>
-				</ul>
-			</div>
-		</div> <!-- .panel -->
+		<div class="button-bar">
+			<h5>Analyze</h5>
+			<ul class="button-group radius">
+				<li><a id="phys" class="small button secondary sgd-icon-venn-physical">Physical</a></li>
+				<li><a id="gen" class="small button secondary sgd-icon-venn-genetic">Genetic</a></li>
+				<li><a id="phys_gen_intersect" class="small button secondary sgd-icon-venn-intersection">Intersection</a></li>
+				<li><a id="phys_gen_union" class="small button secondary sgd-icon-venn-all">All</a></li>
+			</ul>
+			<ul class="button-group radius">
+				<li><a class="small button secondary radius" id="save" download="interaction_venn.png"><i class="icon-picture"></i> PNG</a></li>
+			</ul>
+		</div>
 	</div>
 </section>
 
@@ -71,11 +70,11 @@
 		<div id='evidence_wrapper'>
 			<div class="button-bar">
 				<ul class="button-group radius">
-					<li><a class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
+					<li><a id="evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
 				</ul>
 						
 				<ul class="button-group radius">
-					<li><a class="small button secondary" onclick="analyze_table()"><i class='icon-briefcase'></i> Analyze</a></li>
+					<li><a id="evidence_table_analyze" class="small button secondary"><i class='icon-briefcase'></i> Analyze</a></li>
 				</ul>
 			</div>
 			
@@ -109,16 +108,16 @@
 		<h1>Network Visualization</h1>
 		<div class="panel">
 			<label for="all_radio">
-				<input id="all_radio" type="radio" name="group1" onclick="change_scale(); filter_cy()" checked> All
+				<input id="union_radio" type="radio" name="group1" checked> All
 				</label>
 			<label for="physical_radio">
-				<input id="physical_radio" type="radio" name="group1" onclick="change_scale(); filter_cy()"> Physical
+				<input id="physical_radio" type="radio" name="group1"> Physical
 			</label>
 			<label for="genetic_radio">
-				<input id="genetic_radio" type="radio" name="group1" onclick="change_scale(); filter_cy()"> Genetic
+				<input id="genetic_radio" type="radio" name="group1"> Genetic
 				</label>
 			<label for="both_radio">
-				<input id="both_radio" type="radio" name="group1" onclick="change_scale(); filter_cy()"> Both Physical and Genetic
+				<input id="intersect_radio" type="radio" name="group1"> Intersection
 			</label>
 
 			<div id="cy" name="cy" style="width:100%;height:700px"></div>
@@ -129,12 +128,6 @@
 			<div id='genSlider' class='noUiSlider' style="width:100%"></div>
 			<div id='bothSlider' class='noUiSlider' style="width:100%"></div>
 			<br>
-			<br>
-			<h5>Download:</h5>
-			<ul class="button-group radius">
-				<li><a class="small button secondary" id="save_graph_txt"><i class="icon-file"></i> TXT</a></li>
-				<li><a class="small button secondary" id="save_graph_png" download="interaction_network.png"><i class="icon-picture"></i> PNG</a></li>
-			</ul>
 		</div><!-- .panel -->
     </div>
 </section>
@@ -204,7 +197,7 @@
   			var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
   			datatable.push([bioent1, evidence['bioent1']['format_name'], bioent2, evidence['bioent2']['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']])
   		}
-  		set_up_count(data.length, "evidence_header");
+  		document.getElementById("evidence_header").innerHTML = data.length;
   		         
         var options = {};
 		options["bPaginate"] = true;
@@ -213,6 +206,9 @@
 		options["aaData"] = datatable;
   				
   		ev_table = $('#evidence_table').dataTable(options);
+  		
+  		document.getElementById("evidence_table_download").onclick = function f() {download_table(ev_table, '/download_table', '{{display_name}}_interaction_details')};
+  		document.getElementById("evidence_table_analyze").onclick = analyze_table;
   	}
   	
   	function set_up_overview_table(data) {
@@ -223,7 +219,8 @@
   		var B = data['num_phys_interactors'];
   		var C = data['num_both_interactors'];
   			
-		var stage = draw_venn_diagram("venn_diagram", r, s, x, A, B, C);
+  		//Colors chosen as colorblind safe from http://colorbrewer2.org/.
+		var stage = draw_venn_diagram("venn_diagram", r, s, x, A, B, C, "762A83", "1B7837");
 		stage.toDataURL({
        		width: 350,
         	height: 350,
@@ -243,6 +240,12 @@
     	if(x == r+s+1) {
     		document.getElementById("phys_and_gen").disabled = true; 
     	}
+    	
+    	//set up Analyze buttons
+    	document.getElementById("phys").onclick = analyze_phys;
+    	document.getElementById("gen").onclick = analyze_gen;
+    	document.getElementById("phys_gen_intersect").onclick = analyze_phys_gen_intersect;
+    	document.getElementById("phys_gen_union").onclick = analyze_phys_gen_union;
   	}
 	
 	$(document).ready(function() {
@@ -256,7 +259,7 @@
 	  	$.getJSON("{{interaction_resources_link}}", set_up_resources);
 	});
 
-	function analyze_phys_and_gen() {
+	function analyze_phys_gen_intersect() {
 		var bioent_sys_names = [];
 
 		var gen_bioent_sys_names = {};
@@ -313,7 +316,7 @@
 										 'bioent_ids': bioent_sys_names, 'list_type': 'Genetic Interactors'});
 	}
 	
-	function analyze_phys_or_gen() {
+	function analyze_phys_gen_union() {
 		var bioent_sys_names = [];
 
 		var data = ev_table.fnGetData();
@@ -373,15 +376,15 @@ var style = cytoscape.stylesheet()
 	})
 	.selector("edge[genetic > 0][physical = 0]")
 	.css({
-		'line-color': "#8181F7",
+		'line-color': "#7FBF7B",
 	})
 	.selector("edge[physical > 0][genetic = 0]")
 	.css({
-		'line-color': "#F78181",
+		'line-color': "#AF8DC3",
 	})
 	.selector("edge[genetic > 0][physical > 0]")
 	.css({
-		'line-color': "#240B3B",
+		'line-color': "black",
 	});
 
 
@@ -405,15 +408,20 @@ $.getJSON("{{interaction_graph_link}}", function(data) {
 		document.getElementById("genetic_radio").disabled = true;
 	}
 	if(data['max_both_cutoff'] == 0) {
-		document.getElementById("both_radio").disabled = true;
+		document.getElementById("intersect_radio").disabled = true;
 	}
+	
+	document.getElementById('physical_radio').onclick = function f() {change_scale(); filter_cy()}
+	document.getElementById('genetic_radio').onclick = function f() {change_scale(); filter_cy()}
+	document.getElementById('intersect_radio').onclick = function f() {change_scale(); filter_cy()}
+	document.getElementById('union_radio').onclick = function f() {change_scale(); filter_cy()}
 });
 
 function change_scale() {
-	var all = document.getElementById('all_radio').checked;
+	var all = document.getElementById('union_radio').checked;
 	var phys = document.getElementById('physical_radio').checked;
 	var gen = document.getElementById('genetic_radio').checked;
-	var both = document.getElementById('both_radio').checked;
+	var both = document.getElementById('intersect_radio').checked;
 	
 	var prev_value;
 	if(document.getElementById("allSlider").style.display == 'block') {
@@ -460,10 +468,10 @@ function change_scale() {
 }
 
 function filter_cy() {
-	var all = document.getElementById('all_radio').checked;
+	var all = document.getElementById('union_radio').checked;
 	var phys = document.getElementById('physical_radio').checked;
 	var gen = document.getElementById('genetic_radio').checked;
-	var both = document.getElementById('both_radio').checked;
+	var both = document.getElementById('intersect_radio').checked;
 	
     if(all) {
     	var cutoff = $("#allSlider").val();

@@ -1,5 +1,5 @@
 
-function draw_venn_diagram(container_name, r, s, x, A, B, C) {
+function draw_venn_diagram(container_name, r, s, x, A, B, C, color1, color2) {
 	var zoom = 1;
 	if(r > s) {
 		zoom = 1.0/r;
@@ -21,8 +21,8 @@ function draw_venn_diagram(container_name, r, s, x, A, B, C) {
 		x: 100,
 		y: 150,
 		radius: 100*s*zoom,
-        fill: "red",
-        opacity: 0.5
+        fill: color1,
+        opacity: 0.6
 	});
     layer.add(physical_circle);
     
@@ -30,8 +30,8 @@ function draw_venn_diagram(container_name, r, s, x, A, B, C) {
 		x: 100+100*x*zoom,
 		y: 150,
 		radius: 100*r*zoom,
-        fill: "blue",
-        opacity: 0.5
+        fill: color2,
+        opacity: 0.6
 	});
     layer.add(genetic_circle);
     
