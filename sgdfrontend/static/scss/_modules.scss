@@ -258,3 +258,10 @@ h1 .label, h2 .label, h3 .label {
     background-color: #aeabd3;
     color: #fff;
 }
+
+// Giant Button Group
+.giant.button-group {
+	h3 { color: #fff; }
+	.subheader { color: rgb(230,230,230); }
+	li a { height: 155px; }
+}
