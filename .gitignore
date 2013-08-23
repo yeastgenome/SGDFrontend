@@ -10,3 +10,5 @@ parts
 SGDFrontend.egg-info
 bin
 sgdfrontend/config.py
+.installed.cfg
+.mr.developer.cfg
