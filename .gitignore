@@ -12,3 +12,4 @@ bin
 sgdfrontend/config.py
 .installed.cfg
 .mr.developer.cfg
+src/*
