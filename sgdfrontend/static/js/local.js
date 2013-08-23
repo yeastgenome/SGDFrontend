@@ -37,7 +37,7 @@ function download_citations(citation_div, download_link, list_name) {
 }
 
 function set_up_count(num_rows, header_id) {
-	document.getElementById(header_id).innerHTML = '(' + num_rows + ')';
+	document.getElementById(header_id).innerHTML = num_rows;
 }
 
 function set_up_references(references, ref_list_id) {
