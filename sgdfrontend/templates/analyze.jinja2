@@ -77,9 +77,7 @@
 		
 		<div class="row">
 			<div class="button-bar">
-				<ul class="button-group radius">
-					<li><a class="small button secondary">Download</a></li>
-				</ul>
+				<a id="export" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
 			</div>
 		</div>
 		
@@ -111,34 +109,27 @@
 {% endblock body %}
 
 {% block scripts %}
+<script src="/static/js/analyze.js"></script>
 <script>
-	function set_up_gene_table() {		
-		var options = {};
-		options["bPaginate"] = false;
-		options["aaSorting"] = [[0, "asc"]];
-		options["aoColumns"] = [null, null];
-        $('#gene_list_table').dataTable(options);
-	}
+	//Links and filenames from template
+	var bioent_ids = "{{bioent_ids}}";
+	var download_link = "{{download_table_link}}";
+	var bioent_display_name = "{{bioent_display_name}}";
+	var download_table_filename = bioent_display_name + " {{list_type}}";
 	
-	function set_up_tools() {
-		document.getElementById("go_term_finder").onclick = function f() {
-			post_to_url("http://yeastgenome.org/cgi-bin/GO/goTermFinder.pl", {"loci": "{{bioent_ids}}"});
-		};
-		document.getElementById("go_slim_mapper").onclick = function f() {
-			post_to_url("http://yeastgenome.org/cgi-bin/GO/goSlimMapper.pl", {"loci": "{{bioent_ids}}"});
-		};
-		document.getElementById("spell").onclick = function f() {
-			post_to_url("http://spell.yeastgenome.org/search/show_results", {"search_string": "{{bioent_ids}}"});
-		};
-		document.getElementById("yeastmine").onclick = function f() {
-			post_to_yeastmine("{{bioent_ids}}".split(' '));
-		};
-	}
 	
 	$(document).ready(function() {
 		//Set up gene table
-		set_up_gene_table();
-		set_up_tools();
+		var table_id = "gene_list_table";
+		var download_button_id = "export";
+		set_up_gene_table(table_id, download_button_id, download_link, download_table_filename);
+		
+		//Set up tools
+		var go_term_finder_id = "go_term_finder";
+		var go_slim_mapper_id = "go_slim_mapper";
+		var spell_id = "spell";
+		var yeastmine_id = "yeastmine";
+		set_up_tools(go_term_finder_id, go_slim_mapper_id, spell_id, yeastmine_id, bioent_ids);
 		
   	});
 </script>
