@@ -65,7 +65,7 @@ function set_up_evidence_table(header_id, table_id, download_button_id, analyze_
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
   		datatable.push([bioent1, evidence['bioent1']['format_name'], bioent2, evidence['bioent2']['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']])
   	}
-  	document.getElementById(header_id).innerHTML = '(' + data.length + ')';
+  	document.getElementById(header_id).innerHTML = data.length;
   		         
     var options = {};
 	options["bPaginate"] = true;
