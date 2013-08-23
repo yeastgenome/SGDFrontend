@@ -116,8 +116,9 @@ def download_table(request):
 
 @view_config(route_name='download_citations')
 def download_citations(request):
-    reference_ids = request.POST['reference_ids']
+    reference_ids = list(set(request.POST['reference_ids'].split(',')))
     display_name = request.POST['display_name']
+    print reference_ids
     references = get_json(citation_list_link(), data={'reference_ids': reference_ids})
     
     headers = request.response.headers

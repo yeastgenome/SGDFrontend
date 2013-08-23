@@ -21,6 +21,30 @@ function post_to_url(path, params) {
     form.submit();
 }
 
+function post_to_yeastmine(bioent_ids) {
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "http://yeastmine.yeastgenome.org/yeastmine/portal.do");
+    
+    var cinp = document.createElement("input");
+    cinp.setAttribute("type", "hidden");
+    cinp.setAttribute("name", "class");
+    cinp.setAttribute("value", "ORF");
+    form.appendChild(cinp);
+
+    var hiddenField = document.createElement("input");
+    hiddenField.setAttribute("type", "hidden");
+    hiddenField.setAttribute("name", "externalids");
+    hiddenField.setAttribute("value", bioent_ids);
+	hiddenField.id = "data";
+    form.appendChild(hiddenField);
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
 function download_citations(citation_div, download_link, list_name) {
 	var reference_ids = [];
 	var entries = document.getElementById(citation_div).children;
@@ -70,8 +94,8 @@ function set_up_references(references, ref_list_id) {
 	}
 }
 
-function set_up_resources(data) {
-	resource_list = document.getElementById("resource_list");
+function set_up_resources(resource_id, data) {
+	resource_list = document.getElementById(resource_id);
 	for (var i=0; i < data.length; i++) {
 		var a = document.createElement('a');
 		var linkText = document.createTextNode(data[i]['display_name']);
@@ -124,30 +148,4 @@ function setup_cytoscape_vis(div_id, style, data) {
 	
 		$('#' + div_id).cytoscape(options);
 	});
-}
-
-
-function setup_slider(div_id, min, max, current, slide_f) {
-	var slider = $("#" + div_id).noUiSlider({
-		range: [min, max]
-		,start: current
-		,step: 1
-		,handles: 1
-		,connect: "lower"
-		,slide: slide_f
-	});
-	
-	var spacing =  100 / (max - min);
-    for (var i = min-1; i < max ; i=i+1) {
-    	var value = i+1;
-    	if(value >= 10) {
-    		var left = ((spacing * (i-min+1))-1)
-        	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
-    	}
-    	else {
-    		var left = ((spacing * (i-min+1))-.5)
-			$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
-    	}
-	}
-	return slider;
 }

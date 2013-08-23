@@ -142,101 +142,33 @@
 
 <script src="/static/js/cytoscape/cytoscape.min.js"></script>	
 <script src="/static/js/cytoscape/arbor.js"></script>	
+<script src="/static/js/literature_details.js"></script>
 
 <script>
-	function set_up_primary_list(data) {	
-  		document.getElementById("primary_header").innerHTML = data.length;
-  		set_up_references(data, "primary_list");
-  		if(data.length == 0) {
-  			$("#primary_message").removeClass("hide");
-  			$("#primary_wrapper").addClass("hide");
-  		}
-  		document.getElementById("export_primary").onclick = function f() {download_citations('primary_list', '{{download_link}}', '{{display_name}}_primary_citations')};
-	}
+	//Template links and filenames
+	var literature_details_link = "{{literature_details_link}}";
+	var literature_graph_link = "{{literature_graph_link}}";
+	var go_references_link = "{{go_references_link}}";
+	var phenotype_references_link = "{{phenotype_references_link}}";
+	var interaction_references_link = "{{interaction_references_link}}";
+  	var download_link = "{{download_link}}";
+	var bioent_display_name = "{{display_name}}";
 	
-	function set_up_additional_list(data) {
-  		document.getElementById("additional_header").innerHTML = data.length;
-  		set_up_references(data, "additional_list");
-  		if(data.length == 0) {
-  			$("#additional_message").removeClass("hide");
-  			$("#additional_wrapper").addClass("hide");
-  		}
-  		document.getElementById("export_additional").onclick = function f() {download_citations('additional_list', '{{download_link}}', '{{display_name}}_additional_citations')};
-	}
-	
-	function set_up_review_list(data) {	
-  		document.getElementById("review_header").innerHTML = data.length;
-  		set_up_references(data, "review_list");
-  		if(data.length == 0) {
-  			$("#review_message").removeClass("hide");
-  			$("#review_wrapper").addClass("hide");
-  		}
-  		document.getElementById("export_review").onclick = function f() {download_citations('review_list', '{{download_link}}', '{{display_name}}_review_citations')};
-	}
-		
-	function set_up_go_list(data) {
-  		document.getElementById("go_header").innerHTML = data.length;
-  		set_up_references(data, "go_list");
-  		if(data.length == 0) {
-  			$("#go_message").removeClass("hide");
-  			$("#go_wrapper").addClass("hide");
-  		}
-  		document.getElementById("export_go").onclick = function f() {download_citations('go_list', '{{download_link}}', '{{display_name}}_go_citations')};
-	}
-		
-	function set_up_phenotype_list(data) {
-		document.getElementById("phenotype_header").innerHTML = data.length;
-  		set_up_references(data, "phenotype_list");
-  		if(data.length == 0) {
-  			$("#phenotype_message").removeClass("hide");
-  			$("#phenotype_wrapper").addClass("hide");
-  		}
-  		document.getElementById("export_phenotype").onclick = function f() {download_citations('phenotype_list', '{{download_link}}', '{{display_name}}_phenotype_citations')};
-	}
-		
-	function set_up_interaction_list(data) {
-		document.getElementById("interaction_header").innerHTML = data.length;
-  		set_up_references(data, "interaction_list");
-  		if(data.length == 0) {
-  			$("#interaction_message").removeClass("hide");
-  			$("#interaction_wrapper").addClass("hide");
-  		}
-  		document.getElementById("export_interaction").onclick = function f() {download_citations('interaction_list', '{{download_link}}', '{{display_name}}_interaction_citations')};
-	}
-	
-	$(document).ready(function() {
-		//Get bioentevidence data
-  		$.getJSON("{{bioent_evidence_table_link}}", function(data) {
-  			set_up_primary_list(data['primary']);
-  			set_up_additional_list(data['additional']);
-  			set_up_review_list(data['reviews']);
-  		});
-  		
-  		//Get go reference data
-  		$.getJSON("{{go_references_link}}", set_up_go_list);
-  		
-  		//Get phenotype reference data
-  		$.getJSON("{{phenotype_references_link}}", set_up_phenotype_list);
-  		
-  		//Get interaction reference data
-  		$.getJSON("{{interaction_references_link}}", set_up_interaction_list);
-	});
-</script>
-
-<script>
-var style = cytoscape.stylesheet()
+	//Graph style
+	var graph_style = cytoscape.stylesheet()
 	.selector('node')
 	.css({
 		'content': 'data(name)',
 		'font-family': 'helvetica',
 		'font-size': 14,
 		'text-outline-width': 3,
-		'text-outline-color': '#888',
 		'text-valign': 'center',
-		'color': '#fff',
-		'width': 30,
-		'height': 30,
-		'border-color': '#fff'
+		'width': 10,
+		'height': 10,
+		'border-color': '#fff',
+		'background-color': "#D0A9F5",
+		'text-outline-color': '#fff',
+		'color': '#888',
 	})
 	.selector('edge')
 	.css({
@@ -250,16 +182,85 @@ var style = cytoscape.stylesheet()
 	})
 	.selector("node[type='REFERENCE']")
 	.css({
-		'background-color': "#D0A9F5",
 		'shape': 'rectangle',
-		'text-outline-color': '#fff',
-		'color': '#888',
+		'text-outline-color': '#888',
+		'color': '#fff',
+
+		'width': 30,
+		'height': 30,
 	});
 
 
-$.getJSON("{{literature_graph_link}}", function(data) {
-	var cy = setup_cytoscape_vis('cy', style, data);
-});
+	$(document).ready(function() {
+		//Get literature
+  		$.getJSON(literature_details_link, function(data) {
+  			var primary_header_id = "primary_header";
+  			var primary_list_id = "primary_list";
+  			var primary_message_id = "primary_message";
+  			var primary_wrapper_id = "primary_wrapper";
+  			var primary_download_button_id = "export_primary";
+  			var primary_download_filename = bioent_display_name + "_primary_citations"
+  			var primary_data = data['primary'];
+  			set_up_reference_list(primary_header_id, primary_list_id, primary_message_id, primary_wrapper_id, primary_download_button_id, download_link, primary_download_filename, primary_data)
+  			
+  			var additional_header_id = "additional_header";
+  			var additional_list_id = "additional_list";
+  			var additional_message_id = "additional_message";
+  			var additional_wrapper_id = "additional_wrapper";
+  			var additional_download_button_id = "export_additional";
+  			var additional_download_filename = bioent_display_name + "_additional_citations"
+  			var additional_data = data['additional'];
+  			set_up_reference_list(additional_header_id, additional_list_id, additional_message_id, additional_wrapper_id, additional_download_button_id, download_link, additional_download_filename, additional_data);
+  			
+  			var review_header_id = "review_header";
+  			var review_list_id = "review_list";
+  			var review_message_id = "review_message";
+  			var review_wrapper_id = "review_wrapper";
+  			var review_download_button_id = "export_review";
+  			var review_download_filename = bioent_display_name + "_review_citations"
+  			var review_data = data['reviews'];
+  			set_up_reference_list(review_header_id, review_list_id, review_message_id, review_wrapper_id, review_download_button_id, download_link, review_download_filename, review_data);
+  		});
+  		
+  		//Get graph
+  		$.getJSON(literature_graph_link, function(data) {
+  			var graph_id = "cy";
+			var cy = setup_cytoscape_vis(graph_id, graph_style, data);
+		});
+  		
+  		//Get go reference data
+  		$.getJSON(go_references_link, function(data) {
+  			var header_id = "go_header";
+  			var list_id = "go_list";
+  			var message_id = "go_message";
+  			var wrapper_id = "go_wrapper";
+  			var download_button_id = "export_go";
+  			var download_filename = bioent_display_name + "_go_citations"
+  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data);
+  		});
+  		
+  		//Get phenotype reference data
+  		$.getJSON(phenotype_references_link, function(data) {
+  			var header_id = "phenotype_header";
+  			var list_id = "phenotype_list";
+  			var message_id = "phenotype_message";
+  			var wrapper_id = "phenotype_wrapper";
+  			var download_button_id = "export_phenotype";
+  			var download_filename = bioent_display_name + "_phenotype_citations"
+  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data);
+  		});
+  		
+  		//Get interaction reference data
+  		$.getJSON(interaction_references_link, function(data) {
+  			var header_id = "interaction_header";
+  			var list_id = "interaction_list";
+  			var message_id = "interaction_message";
+  			var wrapper_id = "interaction_wrapper";
+  			var download_button_id = "export_interaction";
+  			var download_filename = bioent_display_name + "_interaction_citations"
+  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data);
+  		});
+	});
 </script>
 
 {% endblock scripts %}

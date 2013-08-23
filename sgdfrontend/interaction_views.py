@@ -7,8 +7,8 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from sgdfrontend import get_json
 from sgdfrontend.link_maker import interaction_graph_link, analyze_link, \
-    bioentity_overview_link, interaction_overview_link, \
-    interaction_details_link, interaction_resources_link, download_citations_link
+    bioentity_overview_link, interaction_overview_link, interaction_details_link, \
+    interaction_resources_link, download_table_link
 
 
 '''
@@ -30,7 +30,8 @@ def interactions(request):
                 'interaction_details_link': interaction_details_link(bioent_id, bioent_type),
                 'interaction_graph_link': interaction_graph_link(bioent_id, bioent_type),
                 'interaction_resources_link': interaction_resources_link(bioent_id, bioent_type),
-                'download_citations_link': download_citations_link(),
+
+                'download_table_link': download_table_link(),
 
                 'interaction_details_filename': display_name + '_interactions',
                 

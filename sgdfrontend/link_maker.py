@@ -60,5 +60,8 @@ def citation_list_link():
 
 def download_citations_link():
     return frontend_start + '/download_citations'
+
+def download_table_link():
+    return frontend_start + '/download_table'
     
 

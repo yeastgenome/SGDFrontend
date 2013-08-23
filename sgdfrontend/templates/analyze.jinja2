@@ -131,7 +131,7 @@
 			post_to_url("http://spell.yeastgenome.org/search/show_results", {"search_string": "{{bioent_ids}}"});
 		};
 		document.getElementById("yeastmine").onclick = function f() {
-			post_to_url("http://yeastmine/yeastgenome.org/yeastmine/portal.do", {"externalids": "{{bioent_ids}}"});
+			post_to_yeastmine("{{bioent_ids}}".split(' '));
 		};
 	}
 	

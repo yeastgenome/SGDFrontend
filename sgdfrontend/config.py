@@ -9,3 +9,6 @@ on_the_fly_url = 'http://sgd-ng1.stanford.edu/webservice'
 
 #backend_url = 'http://localhost:6543'
 #on_the_fly_url = 'http://localhost:6543'
+
+#backend_url = 'http://localhost:6541'
+#on_the_fly_url = 'http://localhost:6543'

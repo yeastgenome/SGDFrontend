@@ -22,7 +22,7 @@ def literature(request):
         
     bioent_id = str(bioent['id'])
     page = {
-                'bioent_evidence_table_link': literature_details_link(bioent_id, bioent_type),
+                'literature_details_link': literature_details_link(bioent_id, bioent_type),
                 'go_references_link': go_references_link(bioent_id, bioent_type),
                 'phenotype_references_link': phenotype_references_link(bioent_id, bioent_type),
                 'interaction_references_link': interaction_references_link(bioent_id, bioent_type),

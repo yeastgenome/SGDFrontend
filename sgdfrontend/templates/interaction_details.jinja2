@@ -107,7 +107,7 @@
 	<div class="page-header">
 		<h1>Network Visualization</h1>
 		<div class="panel">
-			<label for="all_radio">
+			<label for="union_radio">
 				<input id="union_radio" type="radio" name="group1" checked> All
 				</label>
 			<label for="physical_radio">
@@ -116,7 +116,7 @@
 			<label for="genetic_radio">
 				<input id="genetic_radio" type="radio" name="group1"> Genetic
 				</label>
-			<label for="both_radio">
+			<label for="intersect_radio">
 				<input id="intersect_radio" type="radio" name="group1"> Intersection
 			</label>
 
@@ -157,200 +157,23 @@
 <script src="/static/js/jquery.nouislider.min.js"></script>
 <script src="/static/js/cytoscape/cytoscape.min.js"></script>	
 <script src="/static/js/cytoscape/arbor.js"></script>	
-	
-<script>
-  	
-  	function get_details(row) {
-  		var details = row[11];
-  		if(details != null) {
-  			return '<strong>Note:</strong> ' + details + '<br>';
-  	    }
-  	    else {
-  	    	return null;
-  	    }
-  	}
-  	
-  	var ev_table;
-  	
-  	function set_up_evidence_table(data) { 
-  		var datatable = [];
-  		for (var i=0; i < data.length; i++) {
-  			var evidence = data[i];
-  			
-  			var bioent1 = create_link(evidence['bioent1']['display_name'], evidence['bioent1']['link'])
-			var bioent2 = create_link(evidence['bioent2']['display_name'], evidence['bioent2']['link'])
-			
-			var experiment = '';
-			if(evidence['experiment'] != null) {
-  				//experiment = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);
-  				experiment = evidence['experiment']['display_name'];
-  			}
-  			var phenotype = '';
-  			if(evidence['phenotype'] != null) {
-  				//phenotype = create_link(evidence['phenotype']['display_name'], evidence['phenotype']['link']);
-  				phenotype = evidence['phenotype']['display_name'];
-  			}
-  			var modification = '';
-  			if(evidence['modification'] != null) {
-  				modification = evidence['modification'];
-  			}
-  			var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
-  			datatable.push([bioent1, evidence['bioent1']['format_name'], bioent2, evidence['bioent2']['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']])
-  		}
-  		document.getElementById("evidence_header").innerHTML = data.length;
-  		         
-        var options = {};
-		options["bPaginate"] = true;
-		options["aaSorting"] = [[1, "asc"]];
-		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]		
-		options["aaData"] = datatable;
-  				
-  		ev_table = $('#evidence_table').dataTable(options);
-  		
-  		document.getElementById("evidence_table_download").onclick = function f() {download_table(ev_table, '/download_table', '{{display_name}}_interaction_details')};
-  		document.getElementById("evidence_table_analyze").onclick = analyze_table;
-  	}
-  	
-  	function set_up_overview_table(data) {
-  		var r = data['gen_circle_size'];
-  		var s = data['phys_circle_size'];
-  		var x = data['circle_distance'];
-  		var A = data['num_gen_interactors'];
-  		var B = data['num_phys_interactors'];
-  		var C = data['num_both_interactors'];
-  			
-  		//Colors chosen as colorblind safe from http://colorbrewer2.org/.
-		var stage = draw_venn_diagram("venn_diagram", r, s, x, A, B, C, "762A83", "1B7837");
-		stage.toDataURL({
-       		width: 350,
-        	height: 350,
-        	callback: function(dataUrl) {
-          		document.getElementById("save").href = dataUrl.replace("image/png", "image/octet-stream");
-        	}
-        });
-			
-    	if(r == 0) {
-    		document.getElementById("phys_and_gen").disabled = true; 
-    		document.getElementById("phys").disabled = true; 
-    	}
-    	if(s == 0) {
-    		document.getElementById("phys_and_gen").disabled = true; 
-    		document.getElementById("gen").disabled = true; 
-    	}
-    	if(x == r+s+1) {
-    		document.getElementById("phys_and_gen").disabled = true; 
-    	}
-    	
-    	//set up Analyze buttons
-    	document.getElementById("phys").onclick = analyze_phys;
-    	document.getElementById("gen").onclick = analyze_gen;
-    	document.getElementById("phys_gen_intersect").onclick = analyze_phys_gen_intersect;
-    	document.getElementById("phys_gen_union").onclick = analyze_phys_gen_union;
-  	}
-	
-	$(document).ready(function() {
-    	//Get overview data
-  		$.getJSON("{{interaction_overview_link}}", set_up_overview_table);
-	
-		//Get evidence data
-  		$.getJSON("{{interaction_details_link}}", set_up_evidence_table);
-    	
-    	//Get resources
-	  	$.getJSON("{{interaction_resources_link}}", set_up_resources);
-	});
-
-	function analyze_phys_gen_intersect() {
-		var bioent_sys_names = [];
-
-		var gen_bioent_sys_names = {};
-		var data = ev_table.fnGetData();
-		for (var i=0,len=data.length; i<len; i++) { 
-			var ev_type = data[i][4];
-			if(ev_type == 'Genetic') {
-				var sys_name = data[i][3];
-				gen_bioent_sys_names[sys_name] = true;
-			}
-		}	
-
-		for (var i=0,len=data.length; i<len; i++) { 
-			var ev_type = data[i][4];
-			if(ev_type == 'Physical') {
-				var sys_name = data[i][3];
-				if(sys_name in gen_bioent_sys_names) {
-					bioent_sys_names.push(sys_name);
-				}
-			}
-
-		}	
-		post_to_url('{{analyze_link}}', {'bioent_display_name': '{{display_name}}', 'bioent_format_name': '{{format_name}}', 'bioent_link': '{{link}}', 
-										'bioent_ids': bioent_sys_names, 'list_type': 'Intersection Interactors'});
-	}
-	
-	function analyze_phys() {
-		var bioent_sys_names = [];
-
-		var data = ev_table.fnGetData();
-		for (var i=0,len=data.length; i<len; i++) { 
-			var ev_type = data[i][4];
-			if(ev_type == 'Physical') {
-				var sys_name = data[i][3];
-				bioent_sys_names.push(sys_name);
-			}
-		}	
-		post_to_url('{{analyze_link}}', {'bioent_display_name': '{{display_name}}', 'bioent_format_name': '{{format_name}}', 'bioent_link': '{{link}}', 
-										'bioent_ids': bioent_sys_names, 'list_type': 'Physical Interactors'});
-	}
-	
-	function analyze_gen() {
-		var bioent_sys_names = [];
-
-		var data = ev_table.fnGetData();
-		for (var i=0,len=data.length; i<len; i++) { 
-			var ev_type = data[i][4];
-			if(ev_type == 'Genetic') {
-				var sys_name = data[i][3];
-				bioent_sys_names.push(sys_name);
-			}
-		}	
-		post_to_url('{{analyze_link}}', {'bioent_display_name': '{{display_name}}', 'bioent_format_name': '{{format_name}}', 'bioent_link': '{{link}}',
-										 'bioent_ids': bioent_sys_names, 'list_type': 'Genetic Interactors'});
-	}
-	
-	function analyze_phys_gen_union() {
-		var bioent_sys_names = [];
-
-		var data = ev_table.fnGetData();
-		for (var i=0,len=data.length; i<len; i++) { 
-			var sys_name = data[i][3];
-			bioent_sys_names.push(sys_name);
-		}	
-		post_to_url('{{analyze_link}}', {'bioent_display_name': '{{display_name}}', 'bioent_format_name': '{{format_name}}', 'bioent_link': '{{link}}',
-										 'bioent_ids': bioent_sys_names, 'list_type': 'Interactors'});
-	}
-	
-	function analyze_table() {
-		var bioent_sys_names = [];
-
-		var data = ev_table._('tr', {"filter": "applied"});
-		for (var i=0,len=data.length; i<len; i++) { 
-			var sys_name = data[i][3];
-			bioent_sys_names.push(sys_name);
-		}	
-		
-		var list_type = 'Interactors'
-		var search_term = ev_table.fnSettings().oPreviousSearch.sSearch
-		if(search_term != '') {
-			list_type = list_type + ' filtered by "' + search_term + '"'
-		}
-			
-		post_to_url('{{analyze_link}}', {'bioent_display_name': '{{display_name}}', 'bioent_format_name': '{{format_name}}', 'bioent_link': '{{link}}',
-										 'bioent_ids': bioent_sys_names, 'list_type': list_type});
-	}
-	
-</script>
+<script src="/static/js/interaction_details.js"></script>
 
 <script>
-var style = cytoscape.stylesheet()
+	//Template links and filenames
+	var interaction_overview_link = "{{interaction_overview_link}}";
+	var interaction_details_link = "{{interaction_details_link}}";
+	var interaction_graph_link = "{{interaction_graph_link}}";
+	var interaction_resources_link = "{{interaction_resources_link}}";	
+	var download_table_link = "{{download_table_link}}";
+	var download_table_filename = "{{interaction_details_filename}}";
+	var analyze_link = "{{analyze_link}}";
+	var bioent_display_name = "{{display_name}}";
+	var bioent_format_name = "{{format_name}}";
+	var bioent_link = "{{link}}";
+	
+	//Graph style
+	var graph_style = cytoscape.stylesheet()
 	.selector('node')
 	.css({
 		'content': 'data(name)',
@@ -386,129 +209,58 @@ var style = cytoscape.stylesheet()
 	.css({
 		'line-color': "black",
 	});
-
-
-$.getJSON("{{interaction_graph_link}}", function(data) {
-	setup_cytoscape_vis('cy', style, data);
 	
+	//Venn style
+	var venn_style = {"left_color": "762A83", "right_color": "1B7837"};
 	
-	setup_slider("allSlider", data['min_evidence_cutoff'], Math.min(data['max_evidence_cutoff'], 10), Math.min(data['max_evidence_cutoff'], 3), filter_cy);
-	setup_slider("physSlider", data['min_evidence_cutoff'], Math.min(data['max_phys_cutoff'], 10), Math.min(data['max_phys_cutoff'], 3), filter_cy);
-	setup_slider("genSlider", data['min_evidence_cutoff'], Math.min(data['max_gen_cutoff'], 10), Math.min(data['max_gen_cutoff'], 3), filter_cy);
-	setup_slider("bothSlider", data['min_evidence_cutoff'], Math.min(data['max_both_cutoff'], 10), Math.min(data['max_both_cutoff'], 3), filter_cy);
+	$(document).ready(function() {
+    	//Get overview data
+  		$.getJSON(interaction_overview_link, function(data) {
+  			var venn_id = "venn_diagram";
+  			var save_button_id = "save";
+  			var phys_button_id = "phys";
+  			var gen_button_id = "gen";
+  			var intersect_button_id = "phys_gen_intersect";
+  			var union_button_id = "phys_gen_union";
+  			
+  			set_up_overview_table(venn_id, save_button_id, phys_button_id, gen_button_id, intersect_button_id, union_button_id, 
+  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, venn_style, data);
+		});
 	
-	document.getElementById("physSlider").style.display = 'none';
-	document.getElementById("genSlider").style.display = 'none';
-	document.getElementById("bothSlider").style.display = 'none';
-	
-	if(data['max_phys_cutoff'] == 0) {
-		document.getElementById("physical_radio").disabled = true;
-	}
-	if(data['max_gen_cutoff'] == 0) {
-		document.getElementById("genetic_radio").disabled = true;
-	}
-	if(data['max_both_cutoff'] == 0) {
-		document.getElementById("intersect_radio").disabled = true;
-	}
-	
-	document.getElementById('physical_radio').onclick = function f() {change_scale(); filter_cy()}
-	document.getElementById('genetic_radio').onclick = function f() {change_scale(); filter_cy()}
-	document.getElementById('intersect_radio').onclick = function f() {change_scale(); filter_cy()}
-	document.getElementById('union_radio').onclick = function f() {change_scale(); filter_cy()}
-});
-
-function change_scale() {
-	var all = document.getElementById('union_radio').checked;
-	var phys = document.getElementById('physical_radio').checked;
-	var gen = document.getElementById('genetic_radio').checked;
-	var both = document.getElementById('intersect_radio').checked;
-	
-	var prev_value;
-	if(document.getElementById("allSlider").style.display == 'block') {
-		prev_value = $("#allSlider").val();
-	}
-	else if(document.getElementById("physSlider").style.display == 'block') {
-		prev_value = $("#physSlider").val();
-	}
-	else if(document.getElementById("genSlider").style.display == 'block') {
-		prev_value = $("#genSlider").val();
-	}
-	else if(document.getElementById("bothSlider").style.display == 'block') {
-		prev_value = $("#bothSlider").val();
-	}
-	
-	if(all) {
-		$("#allSlider").val(prev_value);
-		document.getElementById("allSlider").style.display = 'block';
-		document.getElementById("physSlider").style.display = 'none';
-		document.getElementById("genSlider").style.display = 'none';
-		document.getElementById("bothSlider").style.display = 'none';
-	}
-	else if(phys) {
-		$("#physSlider").val(prev_value);
-		document.getElementById("allSlider").style.display = 'none';
-		document.getElementById("physSlider").style.display = 'block';
-		document.getElementById("genSlider").style.display = 'none';
-		document.getElementById("bothSlider").style.display = 'none';
-	}
-	else if(gen) {
-		$("#genSlider").val(prev_value);
-		document.getElementById("allSlider").style.display = 'none';
-		document.getElementById("physSlider").style.display = 'none';
-		document.getElementById("genSlider").style.display = 'block';
-		document.getElementById("bothSlider").style.display = 'none';
-	}
-	else if(both) {
-		$("#bothSlider").val(prev_value);
-		document.getElementById("allSlider").style.display = 'none';
-		document.getElementById("physSlider").style.display = 'none';
-		document.getElementById("genSlider").style.display = 'none';
-		document.getElementById("bothSlider").style.display = 'block';
-	}
-}
-
-function filter_cy() {
-	var all = document.getElementById('union_radio').checked;
-	var phys = document.getElementById('physical_radio').checked;
-	var gen = document.getElementById('genetic_radio').checked;
-	var both = document.getElementById('intersect_radio').checked;
-	
-    if(all) {
-    	var cutoff = $("#allSlider").val();
-        cy.elements("node[evidence >= " + cutoff + "]").css({'visibility': 'visible',});
-        cy.elements("edge[evidence >= " + cutoff + "]").css({'visibility': 'visible',});
-        
-        cy.elements("node[evidence < " + cutoff + "]").css({'visibility': 'hidden',});
-        cy.elements("edge[evidence < " + cutoff + "]").css({'visibility': 'hidden',});
-    }
-    else if(phys) {
-        var cutoff = $("#physSlider").val();
-        cy.elements("node[physical >=  " + cutoff + "]").css({'visibility': 'visible',});
-        cy.elements("edge[physical >=  " + cutoff + "]").css({'visibility': 'visible',});
-        
-        cy.elements("node[physical < " + cutoff + "]").css({'visibility': 'hidden',});
-        cy.elements("edge[physical < " + cutoff + "]").css({'visibility': 'hidden',});
-    }
-    else if(gen) {
-    	var cutoff = $("#genSlider").val();
-        cy.elements("node[genetic >= " + cutoff + "]").css({'visibility': 'visible',});
-        cy.elements("edge[genetic >= " + cutoff + "]").css({'visibility': 'visible',});
-        
-        cy.elements("node[genetic < " + cutoff + "]").css({'visibility': 'hidden',});
-        cy.elements("edge[genetic < " + cutoff + "]").css({'visibility': 'hidden',});
-    }
-    else if(both) {
-    	var cutoff = $("#bothSlider").val();
-        cy.elements("node[physical >= " + cutoff + "][genetic >= " + cutoff + "]").css({'visibility': 'visible',});
-        cy.elements("edge[physical >= " + cutoff + "][genetic >= " + cutoff + "]").css({'visibility': 'visible',});
-        
-        cy.elements("node[physical < " + cutoff + "]").css({'visibility': 'hidden',});
-        cy.elements("edge[physical < " + cutoff + "]").css({'visibility': 'hidden',});
-        
-        cy.elements("node[genetic < " + cutoff + "]").css({'visibility': 'hidden',});
-        cy.elements("edge[genetic < " + cutoff + "]").css({'visibility': 'hidden',});
-    }
-}
+		//Get evidence data
+  		$.getJSON(interaction_details_link, function(data) {
+  			var header_id = "evidence_header";
+  			var table_id = "evidence_table";
+  			var download_button_id = "evidence_table_download";
+  			var analyze_button_id = "evidence_table_analyze";
+  			set_up_evidence_table(header_id, table_id, download_button_id, analyze_button_id, 
+  				download_table_link, download_table_filename, 
+  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, data);
+  		});
+  		
+  		//Get graph
+  		$.getJSON(interaction_graph_link, function(data) {
+  			var graph_id = "cy";
+  			var union_slider_id = "allSlider";
+  			var phys_slider_id = "physSlider";
+  			var gen_slider_id = "genSlider";
+  			var intersect_slider_id = "bothSlider";
+  			
+  			var phys_radio_id = "physical_radio";
+  			var gen_radio_id = "genetic_radio";
+  			var intersect_radio_id = "intersect_radio";
+  			var union_radio_id = "union_radio";
+			cy = setup_interaction_cytoscape_vis(graph_id, 
+				phys_slider_id, gen_slider_id, intersect_slider_id, union_slider_id, 
+				phys_radio_id, gen_radio_id, intersect_radio_id, union_radio_id,
+				graph_style, data);
+		});
+    	
+    	//Get resources
+	  	$.getJSON(interaction_resources_link, function(data) {
+	  		set_up_resources("resource_list", data);
+	  	});
+	});
 </script>
         
 
