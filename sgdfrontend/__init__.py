@@ -1,5 +1,6 @@
 from pyramid.config import Configurator
 from pyramid_jinja2 import renderer_factory
+from sgdfrontend.link_maker import bioentity_overview_link
 from sgdfrontend.models import get_root
 import json
 import requests
@@ -11,9 +12,16 @@ def get_json(url, data=None):
         r = requests.post(url, data=json.dumps(data), headers=headers)
     else:
         r = requests.get(url)
-    return r.json()
+    try:
+        return r.json()
+    except:
+        return None
 
-
+def evaluate_url(request):
+    bioent_repr = request.matchdict['identifier']
+    bioent_type = request.matchdict['type']
+    bioent = get_json(bioentity_overview_link(bioent_repr, bioent_type))
+    return bioent
 
 def main(global_config, **settings):
     """ This function returns a WSGI application.

@@ -5,10 +5,10 @@ Created on Mar 15, 2013
 '''
 from pyramid.response import Response
 from pyramid.view import view_config
-from sgdfrontend import get_json
+from sgdfrontend import evaluate_url
 from sgdfrontend.link_maker import interaction_graph_link, analyze_link, \
-    bioentity_overview_link, interaction_overview_link, interaction_details_link, \
-    interaction_resources_link, download_table_link
+    interaction_overview_link, interaction_details_link, interaction_resources_link, \
+    download_table_link
 
 
 '''
@@ -17,11 +17,12 @@ from sgdfrontend.link_maker import interaction_graph_link, analyze_link, \
 @view_config(route_name='interactions', renderer='templates/interaction_details.jinja2')
 def interactions(request):
     #Need an interaction evidence page based on a bioent
-    bioent_repr = request.matchdict['identifier']
-    bioent_type = request.matchdict['type']
-    bioent = get_json(bioentity_overview_link(bioent_repr, bioent_type))
+    bioent = evaluate_url(request)
+    
     if bioent is None:
         return Response(status_int=500, body='Bioent could not be found.')
+    
+    bioent_type = bioent['bioent_type']
         
     bioent_id = str(bioent['id'])
     display_name = bioent['display_name']

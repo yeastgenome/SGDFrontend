@@ -5,22 +5,22 @@ Created on Jul 11, 2013
 '''
 from pyramid.response import Response
 from pyramid.view import view_config
-from sgdfrontend import get_json
-from sgdfrontend.link_maker import bioentity_overview_link, \
-    literature_details_link, go_references_link, phenotype_references_link, \
-    literature_graph_link, download_citations_link, interaction_references_link
+from sgdfrontend import evaluate_url
+from sgdfrontend.link_maker import literature_details_link, go_references_link, \
+    phenotype_references_link, literature_graph_link, download_citations_link, \
+    interaction_references_link
 
 
 @view_config(route_name='literature', renderer='templates/literature_details.jinja2')
 def literature(request):
-    #Need a bioent evidence table based on a bioent
-    bioent_repr = request.matchdict['identifier']
-    bioent_type = request.matchdict['type']
-    bioent = get_json(bioentity_overview_link(bioent_repr, bioent_type))
+    bioent = evaluate_url(request)
+    
     if bioent is None:
         return Response(status_int=500, body='Bioent could not be found.')
-        
+    
+    bioent_type = bioent['bioent_type']
     bioent_id = str(bioent['id'])
+    
     page = {
                 'literature_details_link': literature_details_link(bioent_id, bioent_type),
                 'go_references_link': go_references_link(bioent_id, bioent_type),

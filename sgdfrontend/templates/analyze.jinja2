@@ -90,7 +90,7 @@
   			</thead>
   			{% for bioent in bioents %}
   				<tr>
-    				<td><a href="{{link}}">{{bioent['display_name']}}</a></td>
+    				<td><a href="{{bioent['link']}}">{{bioent['display_name']}}</a></td>
     				<td>{{bioent['description']}}</td>
 				</tr>
 			{% endfor %}
