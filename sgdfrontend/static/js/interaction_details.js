@@ -320,13 +320,10 @@ function filter_cy(phys_slider_id, gen_slider_id, intersect_slider_id, union_sli
     }
     else if(both) {
     	var cutoff = $("#" + intersect_slider_id).val();
-        cy.elements("node[physical >= " + cutoff + "][genetic >= " + cutoff + "]").css({'visibility': 'visible',});
-        cy.elements("edge[physical >= " + cutoff + "][genetic >= " + cutoff + "]").css({'visibility': 'visible',});
+        cy.elements("node[evidence >= " + cutoff + "][physical > 0][genetic > 0]").css({'visibility': 'visible',});
+        cy.elements("edge[evidence >= " + cutoff + "][physical > 0][genetic > 0]").css({'visibility': 'visible',});
         
-        cy.elements("node[physical < " + cutoff + "]").css({'visibility': 'hidden',});
-        cy.elements("edge[physical < " + cutoff + "]").css({'visibility': 'hidden',});
-        
-        cy.elements("node[genetic < " + cutoff + "]").css({'visibility': 'hidden',});
-        cy.elements("edge[genetic < " + cutoff + "]").css({'visibility': 'hidden',});
+        cy.elements("node[evidence < " + cutoff + "], node[physical = 0], node[genetic = 0]").css({'visibility': 'hidden',});
+        cy.elements("edge[evidence < " + cutoff + "], edge[physical = 0], edge[genetic = 0]").css({'visibility': 'hidden',});
     }
 }
