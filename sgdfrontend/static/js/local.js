@@ -42,9 +42,56 @@ function download_table(table, download_link, table_name) {
 	post_to_url(download_link, {"display_name":table_name, 'headers': JSON.stringify(headers), 'data': JSON.stringify(data)});
 }
 
+function paginate_list(list_id, num_per_page) {
+	var ref_list = document.getElementById(list_id);
+	var num_children = ref_list.children.length;
+
+	if(num_children > num_per_page) {
+		for (var i=0; i < ref_list.children.length; i++) {
+			if(i > num_per_page) {
+				ref_list.children[i].className = "hide";
+			}
+		}
+		
+		//Create pagination buttons
+		var div = document.createElement('div');
+		div.className = "pagination";
+		var ul = document.createElement('ul');
+		
+		var a_prev = document.createElement('a');
+		a_prev.href = '#';
+		a_prev.innerHTML = "Prev";
+		var prev_arrow = document.createElement('li');
+		prev_arrow.appendChild(a_prev);
+		ul.appendChild(prev_arrow);
+		
+		
+		var num_pages = Math.ceil(1.0*num_children/num_per_page);
+		for (var i=0; i < num_pages; i++) {
+			var a = document.createElement('a');
+			a.href = '#';
+			a.innerHTML = i+1;
+			var li = document.createElement("li");
+			li.appendChild(a);
+			ul.appendChild(li)
+		}
+		var a_next = document.createElement('a');
+		a_next.href = '#';
+		a_next.innerHTML = "Next";
+		var next_arrow = document.createElement('li');
+		next_arrow.appendChild(a_next);
+		ul.appendChild(next_arrow);
+		
+		div.appendChild(ul);
+		ref_list.parentElement.appendChild(div);
+	}
+	
+}
+
+
 function set_up_references(references, ref_list_id) {
   	//Set up references
-	ref_list = document.getElementById(ref_list_id);
+	var ref_list = document.getElementById(ref_list_id);
 	for (var i=0; i < references.length; i++) {
 		var reference = references[i];
 
