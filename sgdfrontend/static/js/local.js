@@ -95,7 +95,7 @@ function set_up_references(references, ref_list_id) {
 	for (var i=0; i < references.length; i++) {
 		var reference = references[i];
 
-		var li=document.createElement('li');
+		var li = document.createElement('li');
 		li.id = references[i]['id']
 		
 		var a = document.createElement('a');
@@ -112,6 +112,12 @@ function set_up_references(references, ref_list_id) {
 		var pmid = document.createElement('small');
 		pmid.innerHTML = 'PMID:' + reference['pubmed_id'];
 		li.appendChild(pmid);
+		
+		var refLinks = document.createElement("ul");
+		refLinks.className = "ref-links";
+		refLinks.innerHTML = "<li><a href=''>SGD Paper</a></li><li><a href=''>PubMed</a></li><li><a href=''>PMC</a></li><li><a href=''>Full-Text</a></li>";
+		li.appendChild(refLinks);
+		
 		
 		ref_list.appendChild(li);
 	}
