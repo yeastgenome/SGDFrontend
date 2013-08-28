@@ -265,3 +265,10 @@ h1 .label, h2 .label, h3 .label {
 	.subheader { color: rgb(230,230,230); }
 	li a { height: 155px; }
 }
+
+.literature-list {
+	list-style: none;
+	li {
+		margin-bottom: 15px;
+	}
+}

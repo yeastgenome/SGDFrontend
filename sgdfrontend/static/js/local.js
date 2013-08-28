@@ -95,25 +95,25 @@ function set_up_references(references, ref_list_id) {
 	for (var i=0; i < references.length; i++) {
 		var reference = references[i];
 
-		var p=document.createElement('p');
-		p.id = references[i]['id']
+		var li=document.createElement('li');
+		li.id = references[i]['id']
 		
 		var a = document.createElement('a');
 		var linkText = document.createTextNode(reference['display_name']);
 		a.appendChild(linkText);
 		a.href = reference['link'];
-		p.appendChild(a);
+		li.appendChild(a);
 		
 		var span = document.createElement('span');
 		var citation = reference['citation'];
 		span.innerHTML = citation.substring(citation.indexOf(')')+1, citation.length) + ' ';
-		p.appendChild(span);
+		li.appendChild(span);
 		
 		var pmid = document.createElement('small');
 		pmid.innerHTML = 'PMID:' + reference['pubmed_id'];
-		p.appendChild(pmid);
+		li.appendChild(pmid);
 		
-		ref_list.appendChild(p);
+		ref_list.appendChild(li);
 	}
 }
 
