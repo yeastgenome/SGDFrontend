@@ -76,7 +76,7 @@ function set_up_evidence_table(header_id, table_id, download_button_id, analyze_
   	ev_table = $('#' + table_id).dataTable(options);
   		
   	document.getElementById(download_button_id).onclick = function() {download_table(ev_table, download_link, download_table_filename)};
-  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link)};
+  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Interactions', ev_table, 3)};
 }
   		
 function analyze_phys_gen_intersect(analyze_link, bioent_display_name, bioent_format_name, bioent_link) {
@@ -145,25 +145,6 @@ function analyze_phys_gen_union(analyze_link, bioent_display_name, bioent_format
 	}	
 	post_to_url(analyze_link, {'bioent_display_name': bioent_display_name, 'bioent_format_name': bioent_format_name, 'bioent_link': bioent_link,
 										 'bioent_ids': bioent_sys_names, 'list_type': 'Interactors'});
-}
-	
-function analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link) {
-	var bioent_sys_names = [];
-
-	var data = ev_table._('tr', {"filter": "applied"});
-	for (var i=0,len=data.length; i<len; i++) { 
-		var sys_name = data[i][3];
-		bioent_sys_names.push(sys_name);
-	}	
-		
-	var list_type = 'Interactors'
-	var search_term = ev_table.fnSettings().oPreviousSearch.sSearch
-	if(search_term != '') {
-		list_type = list_type + ' filtered by "' + search_term + '"'
-	}
-			
-	post_to_url(analyze_link, {'bioent_display_name': bioent_display_name, 'bioent_format_name': bioent_format_name, 'bioent_link': bioent_link,
-										 'bioent_ids': bioent_sys_names, 'list_type': list_type});
 }
 
 function setup_slider(div_id, min, max, current, slide_f) {
