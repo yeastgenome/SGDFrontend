@@ -42,6 +42,12 @@ def regulation_details_link(bioent, bioent_type):
 def regulation_graph_link(bioent, bioent_type):
     return backend_start + '/' + bioent_type + '/' + str(bioent) + '/regulation_graph?callback=?'
 
+#Protein Links
+def protein_domain_details_link(bioent, bioent_type):
+    return backend_start + '/' + bioent_type + '/' + str(bioent) + '/protein_domain_details?callback=?'
+def binding_site_details_link(bioent, bioent_type):
+    return backend_start + '/' + bioent_type + '/' + str(bioent) + '/binding_site_details?callback=?'
+
 #On the fly links
 def analyze_link():
     return frontend_start + '/analyze'

@@ -21,15 +21,15 @@ function set_up_overview_table(venn_id, save_button_id, phys_button_id, gen_butt
      });
 			
     if(r == 0) {
-    	document.getElementById(intersect_button_id).disabled = true; 
-    	document.getElementById(phys_button_id).disabled = true; 
+    	document.getElementById(intersect_button_id).setAttribute('disabled', 'disabled'); 
+    	document.getElementById(phys_button_id).setAttribute('disabled', 'disabled');  
     }
     if(s == 0) {
-    	document.getElementById(intersect_button_id).disabled = true; 
-    	document.getElementById(gen_button_id).disabled = true; 
+    	document.getElementById(intersect_button_id).setAttribute('disabled', 'disabled'); 
+    	document.getElementById(gen_button_id).setAttribute('disabled', 'disabled'); 
     }
     if(x == r+s+1) {
-    	document.getElementById(intersect_button_id).disabled = true; 
+    	document.getElementById(intersect_button_id).setAttribute('disabled', 'disabled'); 
     }
     	
     //set up Analyze buttons

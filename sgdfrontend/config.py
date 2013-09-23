@@ -3,12 +3,11 @@ Created on Oct 18, 2012
 
 @author: kpaskov
 '''
-#Backend Config
+#Production config
 backend_url = 'http://sgd-ng1.stanford.edu/webservice'
-on_the_fly_url = 'http://sgd-ng1.stanford.edu/webservice'
 
+#Local SGDBackend config
 #backend_url = 'http://localhost:6543'
-#on_the_fly_url = 'http://localhost:6543'
 
+#Local PerfBackend config
 #backend_url = 'http://localhost:6541'
-#on_the_fly_url = 'http://localhost:6543'

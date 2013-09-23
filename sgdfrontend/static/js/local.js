@@ -152,8 +152,13 @@ function set_up_resources(resource_id, data) {
 	}
 }
 
-function create_link(display_name, link) {
-	return '<a href="' + link + '">' + display_name + '</a>'
+function create_link(display_name, link, new_window) {
+	if(new_window) {
+		return '<a href="' + link + '" target="_blank">' + display_name + '</a>'
+	}
+	else {
+		return '<a href="' + link + '">' + display_name + '</a>'
+	}
 }
 
 function setup_cytoscape_vis(div_id, style, data) {
