@@ -161,7 +161,7 @@ function create_link(display_name, link, new_window) {
 	}
 }
 
-function setup_cytoscape_vis(div_id, style, data) {
+function setup_cytoscape_vis(div_id, style, data, f) {
 	$(loadCy = function(){
 		options = {
 			showOverlay: false,
@@ -189,6 +189,7 @@ function setup_cytoscape_vis(div_id, style, data) {
 		
 		    ready: function(){
 		      	cy = this;
+		      	f();
 		    }, 
 		  };
 	

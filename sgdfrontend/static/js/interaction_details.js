@@ -148,46 +148,81 @@ function analyze_phys_gen_union(analyze_link, bioent_display_name, bioent_format
 }
 
 function setup_slider(div_id, min, max, current, slide_f) {
-	var slider = $("#" + div_id).noUiSlider({
-		range: [min, max]
-		,start: current
-		,step: 1
-		,handles: 1
-		,connect: "lower"
-		,slide: slide_f
-	});
-	
-	var spacing =  100 / (max - min);
-    for (var i = min-1; i < max ; i=i+1) {
-    	var value = i+1;
-    	if(value >= 10) {
-    		var left = ((spacing * (i-min+1))-1)
-        	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
-    	}
-    	else {
-    		var left = ((spacing * (i-min+1))-.5)
+	if(max==min) {
+		var slider = $("#" + div_id).noUiSlider({
+			range: [min, min+1]
+			,start: current
+			,step: 1
+			,handles: 1
+			,connect: "lower"
+			,slide: slide_f
+		});
+		slider.noUiSlider('disabled', true);
+		var spacing =  100;
+	    i = min-1
+	    var value = i+1;
+	    if(value >= 10) {
+	    	var left = ((spacing * (i-min+1))-1)
+	       	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+	    }
+	    else {
+	    	var left = ((spacing * (i-min+1))-.5)
 			$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
-    	}
+		}
 	}
-	return slider;
+	else {
+		var slider = $("#" + div_id).noUiSlider({
+			range: [min, max]
+			,start: current
+			,step: 1
+			,handles: 1
+			,connect: "lower"
+			,slide: slide_f
+		});
+		
+		var spacing =  100 / (max - min);
+	    for (var i = min-1; i < max ; i=i+1) {
+	    	var value = i+1;
+	    	if(value >= 10) {
+	    		var left = ((spacing * (i-min+1))-1)
+	        	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+	    	}
+	    	else {
+	    		var left = ((spacing * (i-min+1))-.5)
+				$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+	    	}
+		}
+	}
 }
+
+var union_max;
+var phys_max;
+var gen_max;
+var intersect_max;
+var evidence_min;
 
 function setup_interaction_cytoscape_vis(graph_id, 
 				phys_slider_id, gen_slider_id, intersect_slider_id, union_slider_id,  
 				phys_radio_id, gen_radio_id, intersect_radio_id, union_radio_id,
 				style, data) {
-					
-	cy = setup_cytoscape_vis(graph_id, style, data);
 	
 	function f() {
 		filter_cy(phys_slider_id, gen_slider_id, intersect_slider_id, union_slider_id,  
 				phys_radio_id, gen_radio_id, intersect_radio_id, union_radio_id);
 	}
+	
+	cy = setup_cytoscape_vis(graph_id, style, data, f);
 			
-	setup_slider(union_slider_id, data['min_evidence_cutoff'], Math.min(data['max_evidence_cutoff'], 10), Math.min(data['max_evidence_cutoff'], 3), f);
-	setup_slider(phys_slider_id, data['min_evidence_cutoff'], Math.min(data['max_phys_cutoff'], 10), Math.min(data['max_phys_cutoff'], 3), f);
-	setup_slider(gen_slider_id, data['min_evidence_cutoff'], Math.min(data['max_gen_cutoff'], 10), Math.min(data['max_gen_cutoff'], 3), f);
-	setup_slider(intersect_slider_id, data['min_evidence_cutoff'], Math.min(data['max_both_cutoff'], 10), Math.min(data['max_both_cutoff'], 3), f);
+	union_max = data['max_evidence_cutoff'];
+	phys_max = data['max_phys_cutoff'];
+	gen_max = data['max_gen_cutoff'];
+	intersect_max = data['max_both_cutoff'];
+	evidence_min = data['min_evidence_cutoff'];
+	
+	setup_slider(union_slider_id, evidence_min, Math.min(union_max, 10), Math.min(union_max, 3), f);
+	setup_slider(phys_slider_id, evidence_min, Math.min(phys_max, 10), Math.min(phys_max, 3), f);
+	setup_slider(gen_slider_id, evidence_min, Math.min(gen_max, 10), Math.min(gen_max, 3), f);
+	setup_slider(intersect_slider_id, evidence_min, Math.min(intersect_max, 10), Math.min(intersect_max, 3), f);
 	
 	document.getElementById(phys_slider_id).style.display = 'none';
 	document.getElementById(gen_slider_id).style.display = 'none';
@@ -276,7 +311,13 @@ function filter_cy(phys_slider_id, gen_slider_id, intersect_slider_id, union_sli
 	var both = document.getElementById(intersect_radio_id).checked;
 	
     if(all) {
-    	var cutoff = $("#" + union_slider_id).val();
+    	var cutoff;
+    	if(union_max == evidence_min) {
+    		cutoff = union_max;
+    	}
+    	else {
+    		cutoff = $("#" + union_slider_id).val();
+    	}
         cy.elements("node[evidence >= " + cutoff + "]").css({'visibility': 'visible',});
         cy.elements("edge[evidence >= " + cutoff + "]").css({'visibility': 'visible',});
         
@@ -284,7 +325,13 @@ function filter_cy(phys_slider_id, gen_slider_id, intersect_slider_id, union_sli
         cy.elements("edge[evidence < " + cutoff + "]").css({'visibility': 'hidden',});
     }
     else if(phys) {
-        var cutoff = $("#" + phys_slider_id).val();
+        var cutoff;
+    	if(phys_max == evidence_min) {
+    		cutoff = phys_max;
+    	}
+    	else {
+    		cutoff = $("#" + phys_slider_id).val();
+    	}
         cy.elements("node[physical >=  " + cutoff + "]").css({'visibility': 'visible',});
         cy.elements("edge[physical >=  " + cutoff + "]").css({'visibility': 'visible',});
         
@@ -292,7 +339,13 @@ function filter_cy(phys_slider_id, gen_slider_id, intersect_slider_id, union_sli
         cy.elements("edge[physical < " + cutoff + "]").css({'visibility': 'hidden',});
     }
     else if(gen) {
-    	var cutoff = $("#" + gen_slider_id).val();
+    	var cutoff;
+    	if(gen_max == evidence_min) {
+    		cutoff = gen_max;
+    	}
+    	else {
+    		cutoff = $("#" + gen_slider_id).val();
+    	}
         cy.elements("node[genetic >= " + cutoff + "]").css({'visibility': 'visible',});
         cy.elements("edge[genetic >= " + cutoff + "]").css({'visibility': 'visible',});
         
@@ -300,7 +353,13 @@ function filter_cy(phys_slider_id, gen_slider_id, intersect_slider_id, union_sli
         cy.elements("edge[genetic < " + cutoff + "]").css({'visibility': 'hidden',});
     }
     else if(both) {
-    	var cutoff = $("#" + intersect_slider_id).val();
+    	var cutoff;
+    	if(intersect_max == evidence_min) {
+    		cutoff = intersect_max;
+    	}
+    	else {
+    		cutoff = $("#" + intersect_slider_id).val();
+    	}
         cy.elements("node[evidence >= " + cutoff + "][physical > 0][genetic > 0]").css({'visibility': 'visible',});
         cy.elements("edge[evidence >= " + cutoff + "][physical > 0][genetic > 0]").css({'visibility': 'visible',});
         
