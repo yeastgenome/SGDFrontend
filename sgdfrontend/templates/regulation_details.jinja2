@@ -40,22 +40,24 @@
 ================================================== -->
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
-		<h1>Summary</h1>
+		<h1>Regulation Summary</h1>
 		<p id="summary_paragraph"></p>
 		
 		<ul id="summary_paragraph_reference_list" class="literature-list"></ul>
 		
-		<div id="summary_diagram"></div>
+		<div class="panel">
+			<div id="summary_diagram"></div>
 		
-		<div class="button-bar">
-			<h5>Analyze</h5>
-			<ul class="button-group radius">
-				<li><a id="targ" class="small button secondary">Targets</a></li>
-				<li><a id="reg" class="small button secondary">Regulators</a></li>
-			</ul>
-			<ul class="button-group radius">
-				<li><a class="small button secondary radius" id="save" download="{{display_name}}_regulation_bar.png"><i class="icon-picture"></i> PNG</a></li>
-			</ul>
+			<div class="button-bar">
+				<h5>Analyze</h5>
+				<ul class="button-group radius">
+					<li><a id="targ" class="small button secondary">Targets</a></li>
+					<li><a id="reg" class="small button secondary">Regulators</a></li>
+				</ul>
+				<ul class="button-group radius">
+					<li><a class="small button secondary radius" id="save" download="{{display_name}}_regulation_bar.png"><i class="icon-picture"></i> PNG</a></li>
+				</ul>
+			</div>
 		</div>
 	</div>
 </section>
@@ -66,7 +68,6 @@
 	<div class="page-header">
 		<h1>Domains and Classification <span id="domains_header" class="round secondary label"></span></h1>
 		<span id='domains_message'></span>
-		<br><br>
 		<div id='domains_wrapper'>
 			<div class="button-bar">
 				<ul class="button-group radius">
@@ -109,7 +110,6 @@
 	<div class="page-header">
 		<h1>Targets <span id="targets_header" class="round secondary label"></span></h1>
 		<span id='targets_message' style="display:none">{{display_name}} has no known targets.</span>
-		<br><br>
 		<div id='targets_wrapper'>
 			<div class="button-bar">
 				<ul class="button-group radius">
@@ -145,7 +145,6 @@
 	<div class="page-header">
 		<h1>Regulators <span id="regulators_header" class="round secondary label"></span></h1>
 		<span id='regulators_message' style="display:none">{{display_name}} has no known regulators.</span>
-		<br><br>
 		<div id='regulators_wrapper'>
 			<div class="button-bar">
 				<ul class="button-group radius">

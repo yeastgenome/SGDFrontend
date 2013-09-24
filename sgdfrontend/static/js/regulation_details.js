@@ -85,8 +85,8 @@ function set_up_target_table(header_id, table_id, wrapper_id, message_id, downlo
   				
   		target_table = $('#' + table_id).dataTable(options);
   		
-  		document.getElementById(download_button_id).onclick = function() {download_table(ev_table, download_link, download_table_filename)};
-  		document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Targets', ev_table, 3)};
+  		document.getElementById(download_button_id).onclick = function() {download_table(target_table, download_link, download_table_filename)};
+  		document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Targets', target_table, 3)};
     }
 }
 
@@ -123,8 +123,8 @@ function set_up_regulator_table(header_id, table_id, wrapper_id, message_id, dow
   				
   		regulator_table = $('#' + table_id).dataTable(options);
   		
-  		document.getElementById(download_button_id).onclick = function() {download_table(ev_table, download_link, download_table_filename)};
-  		document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', ev_table, 3)};
+  		document.getElementById(download_button_id).onclick = function() {download_table(regulator_table, download_link, download_table_filename)};
+  		document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3)};
     }
 }
 

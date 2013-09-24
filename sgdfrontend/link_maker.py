@@ -41,6 +41,8 @@ def regulation_details_link(bioent, bioent_type):
     return backend_start + '/' + bioent_type + '/' + str(bioent) + '/regulation_details?callback=?'
 def regulation_graph_link(bioent, bioent_type):
     return backend_start + '/' + bioent_type + '/' + str(bioent) + '/regulation_graph?callback=?'
+def regulation_references_link(bioent, bioent_type):
+    return backend_start + '/' + bioent_type + '/' + str(bioent) + '/regulation_references?callback=?'
 
 #Protein Links
 def protein_domain_details_link(bioent, bioent_type):
