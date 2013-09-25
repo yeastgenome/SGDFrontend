@@ -66,8 +66,13 @@ function set_up_target_table(header_id, table_id, wrapper_id, message_id, downlo
 			//experiment = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);
 			experiment = evidence['experiment']['display_name'];
 		}
+		var strain = '';
+		if(evidence['stain'] != null) {
+			//strain = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
+			strain = evidence['strain']['display_name'];
+		}
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
-  		datatable.push([bioent1, evidence['bioent1']['format_name'], bioent2, evidence['bioent2']['format_name'], experiment, evidence['conditions'], evidence['source'], reference])
+  		datatable.push([bioent1, evidence['bioent1']['format_name'], bioent2, evidence['bioent2']['format_name'], experiment, evidence['conditions'], strain, evidence['source'], reference])
   	}
   	
   	document.getElementById(header_id).innerHTML = data.length;
@@ -80,7 +85,7 @@ function set_up_target_table(header_id, table_id, wrapper_id, message_id, downlo
     	var options = {};
 		options["bPaginate"] = true;
 		options["aaSorting"] = [[2, "asc"]];
-		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null]		
+		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]		
 		options["aaData"] = datatable;
   				
   		target_table = $('#' + table_id).dataTable(options);
@@ -104,8 +109,13 @@ function set_up_regulator_table(header_id, table_id, wrapper_id, message_id, dow
 			//experiment = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);
 			experiment = evidence['experiment']['display_name'];
 		}
+		var strain = '';
+		if(evidence['stain'] != null) {
+			//strain = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
+			strain = evidence['strain']['display_name'];
+		}
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
-  		datatable.push([bioent1, evidence['bioent1']['format_name'], bioent2, evidence['bioent2']['format_name'], experiment, evidence['conditions'], evidence['source'], reference])
+  		datatable.push([bioent1, evidence['bioent1']['format_name'], bioent2, evidence['bioent2']['format_name'], experiment, evidence['conditions'], strain, evidence['source'], reference])
   	}
   	
   	document.getElementById(header_id).innerHTML = data.length;
@@ -118,7 +128,7 @@ function set_up_regulator_table(header_id, table_id, wrapper_id, message_id, dow
     	var options = {};
 		options["bPaginate"] = true;
 		options["aaSorting"] = [[2, "asc"]];
-		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null]		
+		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]		
 		options["aaData"] = datatable;
   				
   		regulator_table = $('#' + table_id).dataTable(options);

@@ -8,7 +8,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{display_name}}/{{format_name}}</span> Regulation  <a href="http://www.yeastgenome.org/help/function-help/regulation" name="top" class="help"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+	<h2><span class="gene_name">{{display_name}}/{{format_name}}</span> Transcriptional Regulation  <a href="http://www.yeastgenome.org/help/function-help/regulation" name="top" class="help"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png" alt="Help"></a></h2>
 </div>
 
 
@@ -25,9 +25,9 @@
 <div class="row">
 	<nav id="sidebar" class="small-3 columns">
 		<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky">
-			<li id="nav-title"><h5><a href="{{link}}">{{display_name}}/{{format_name}}</a> Regulation</h5></li>
+			<li id="nav-title"><h5><a href="{{link}}">{{display_name}}/{{format_name}}</a> Transcriptional Regulation</h5></li>
           	<li data-magellan-arrival="summary"><a href="#summary">Summary</a></li>
-			<li data-magellan-arrival="domains"><a href="#domains">Domains and Classification</a></li>
+			<li data-magellan-arrival="domains" id="domains_entry"><a href="#domains">Domains and Classification</a></li>
 			<li data-magellan-arrival="binding"><a href="#binding">Binding Site Motifs</a></li>
 			<li data-magellan-arrival="targets"><a href="#targets">Targets</a></li>
 			<li data-magellan-arrival="regulators"><a href="#regulators">Regulators</a></li>
@@ -130,6 +130,7 @@
   				<th>Target Systematic Name</th>
   				<th>Experiment</th>
   				<th>Conditions</th>
+  				<th>Strain</th>
   				<th>Source</th>
    				<th>Reference</th>
   			</tr>
@@ -165,6 +166,7 @@
   				<th>Regulator Systematic Name</th>
   				<th>Experiment</th>
   				<th>Conditions</th>
+  				<th>Strain</th>
   				<th>Source</th>
    				<th>Reference</th>
   			</tr>
@@ -255,6 +257,13 @@
   				targets_download_button_id, targets_analyze_button_id, 
   				download_table_link, targets_table_filename, 
   				analyze_link, bioent_display_name, bioent_format_name, bioent_link, target_data);
+  				
+  			var domain_section_id = "domains";
+  			var domain_navbar_id = "domains_entry";
+  			if(target_data.length == 0) {
+  				document.getElementById(domain_section_id).style.display = "none";
+  				document.getElementById(domain_navbar_id).style.display = "none";
+  			}
   				
   			var regulator_data = data["regulators"];
   			var regulators_header_id = "regulators_header";
