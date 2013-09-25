@@ -42,6 +42,24 @@ function download_table(table, download_link, table_name) {
 	post_to_url(download_link, {"display_name":table_name, 'headers': JSON.stringify(headers), 'data': JSON.stringify(data)});
 }
 
+function analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, list_type, ev_table, index) {
+	var bioent_sys_names = [];
+
+	var data = ev_table._('tr', {"filter": "applied"});
+	for (var i=0,len=data.length; i<len; i++) { 
+		var sys_name = data[i][index];
+		bioent_sys_names.push(sys_name);
+	}	
+		
+	var search_term = ev_table.fnSettings().oPreviousSearch.sSearch
+	if(search_term != '') {
+		list_type = list_type + ' filtered by "' + search_term + '"'
+	}
+			
+	post_to_url(analyze_link, {'bioent_display_name': bioent_display_name, 'bioent_format_name': bioent_format_name, 'bioent_link': bioent_link,
+										 'bioent_ids': bioent_sys_names, 'list_type': list_type});
+}
+
 function paginate_list(list_id, num_per_page) {
 	var ref_list = document.getElementById(list_id);
 	var num_children = ref_list.children.length;
@@ -140,11 +158,16 @@ function set_up_resources(resource_id, data) {
 	}
 }
 
-function create_link(display_name, link) {
-	return '<a href="' + link + '">' + display_name + '</a>'
+function create_link(display_name, link, new_window) {
+	if(new_window) {
+		return '<a href="' + link + '" target="_blank">' + display_name + '</a>'
+	}
+	else {
+		return '<a href="' + link + '">' + display_name + '</a>'
+	}
 }
 
-function setup_cytoscape_vis(div_id, style, data) {
+function setup_cytoscape_vis(div_id, style, data, f) {
 	$(loadCy = function(){
 		options = {
 			showOverlay: false,
@@ -172,6 +195,7 @@ function setup_cytoscape_vis(div_id, style, data) {
 		
 		    ready: function(){
 		      	cy = this;
+		      	f();
 		    }, 
 		  };
 	

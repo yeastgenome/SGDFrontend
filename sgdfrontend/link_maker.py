@@ -3,7 +3,7 @@ Created on Mar 6, 2013
 
 @author: kpaskov
 '''
-from sgdfrontend.config import backend_url, on_the_fly_url
+from sgdfrontend.config import backend_url
 
 backend_start = backend_url
 frontend_start = ''
@@ -31,6 +31,25 @@ def interaction_resources_link(bioent, bioent_type):
 def interaction_references_link(bioent, bioent_type):
     return backend_start + '/' + bioent_type + '/' + str(bioent) + '/interaction_references?callback=?'
 
+#Regulation Links
+def regulation_page_link(bioent, bioent_type):
+    return frontend_start + '/' + bioent_type + '/' + str(bioent) + '/regulation'
+
+def regulation_overview_link(bioent, bioent_type):
+    return backend_start + '/' + bioent_type + '/' + str(bioent) + '/regulation_overview?callback=?'
+def regulation_details_link(bioent, bioent_type):
+    return backend_start + '/' + bioent_type + '/' + str(bioent) + '/regulation_details?callback=?'
+def regulation_graph_link(bioent, bioent_type):
+    return backend_start + '/' + bioent_type + '/' + str(bioent) + '/regulation_graph?callback=?'
+def regulation_references_link(bioent, bioent_type):
+    return backend_start + '/' + bioent_type + '/' + str(bioent) + '/regulation_references?callback=?'
+
+#Protein Links
+def protein_domain_details_link(bioent, bioent_type):
+    return backend_start + '/' + bioent_type + '/' + str(bioent) + '/protein_domain_details?callback=?'
+def binding_site_details_link(bioent, bioent_type):
+    return backend_start + '/' + bioent_type + '/' + str(bioent) + '/binding_site_details?callback=?'
+
 #On the fly links
 def analyze_link():
     return frontend_start + '/analyze'
@@ -50,13 +69,13 @@ def literature_graph_link(bioent, bioent_type):
     
 #Bioentity links
 def bioentity_overview_link(bioent, bioent_type):
-    return backend_start + '/' + bioent_type + '/' + str(bioent) + '/overview?callback=?'
+    return backend_start + '/' + bioent_type + '/' + bioent + '/overview?callback=?'
 
 #List links
 def bioent_list_link():
-    return on_the_fly_url + '/bioent_list'
+    return backend_start + '/bioent_list'
 def citation_list_link():
-    return on_the_fly_url + '/reference_list'
+    return backend_start + '/reference_list'
 
 def download_citations_link():
     return frontend_start + '/download_citations'

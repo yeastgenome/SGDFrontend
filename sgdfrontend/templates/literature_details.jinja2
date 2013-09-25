@@ -34,6 +34,7 @@
           	<li data-magellan-arrival="go"><a href="#go">Gene Ontology Literature</a></li>
           	<li data-magellan-arrival="phenotype"><a href="#phenotype">Phenotype Literature</a></li>
           	<li data-magellan-arrival="interaction"><a href="#interaction">Interaction Literature</a></li>
+          	<li data-magellan-arrival="regulation"><a href="#regulation">Regulation Literature</a></li>
 		</ul>
 	</nav>
 	
@@ -133,6 +134,26 @@
 		</div>
 	</div>
 </section>
+
+<!-- Regulation
+================================================== -->
+<section id="regulation" data-magellan-destination="regulation">
+	<div class="page-header">
+		<h1>Regulation Literature <span id="regulation_header" class="label secondary round"></span></h1>
+		<span id='regulation_message' class="hide">No regulation literature curated.</span>
+		<div id='regulation_wrapper'>	
+			<a id="export_regulation" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
+			<ul id="regulation_list" class="literature-list">
+			</ul>
+		</div>
+	</div>
+</section>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 </div>
 </div>
 
@@ -151,6 +172,7 @@
 	var go_references_link = "{{go_references_link}}";
 	var phenotype_references_link = "{{phenotype_references_link}}";
 	var interaction_references_link = "{{interaction_references_link}}";
+	var regulation_references_link = "{{regulation_references_link}}";
   	var download_link = "{{download_link}}";
 	var bioent_display_name = "{{display_name}}";
 	
@@ -260,6 +282,17 @@
   			var wrapper_id = "interaction_wrapper";
   			var download_button_id = "export_interaction";
   			var download_filename = bioent_display_name + "_interaction_citations"
+  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data);
+  		});
+  		
+  		//Get regulation reference data
+  		$.getJSON(regulation_references_link, function(data) {
+  			var header_id = "regulation_header";
+  			var list_id = "regulation_list";
+  			var message_id = "regulation_message";
+  			var wrapper_id = "regulation_wrapper";
+  			var download_button_id = "export_regulation";
+  			var download_filename = bioent_display_name + "_regulation_citations"
   			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data);
   		});
 	});

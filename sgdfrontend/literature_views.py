@@ -8,7 +8,7 @@ from pyramid.view import view_config
 from sgdfrontend import evaluate_url
 from sgdfrontend.link_maker import literature_details_link, go_references_link, \
     phenotype_references_link, literature_graph_link, download_citations_link, \
-    interaction_references_link
+    interaction_references_link, regulation_references_link
 
 
 @view_config(route_name='literature', renderer='templates/literature_details.jinja2')
@@ -26,6 +26,7 @@ def literature(request):
                 'go_references_link': go_references_link(bioent_id, bioent_type),
                 'phenotype_references_link': phenotype_references_link(bioent_id, bioent_type),
                 'interaction_references_link': interaction_references_link(bioent_id, bioent_type),
+                'regulation_references_link': regulation_references_link(bioent_id, bioent_type),
                 'literature_graph_link': literature_graph_link(bioent_id, bioent_type),
                 'download_link': download_citations_link(),
                 

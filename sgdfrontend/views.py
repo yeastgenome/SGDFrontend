@@ -84,7 +84,7 @@ import json
 #                'author': author
 #            }
 #    return page
-
+ 
 def clean_cell(cell):
     if cell is None:
         return ''

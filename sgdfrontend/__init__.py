@@ -18,8 +18,8 @@ def get_json(url, data=None):
         return None
 
 def evaluate_url(request):
-    bioent_repr = request.matchdict['identifier']
-    bioent_type = request.matchdict['type']
+    bioent_repr = request.matchdict['identifier'].upper()
+    bioent_type = request.matchdict['type'].lower()
     bioent = get_json(bioentity_overview_link(bioent_repr, bioent_type))
     return bioent
 
@@ -43,6 +43,9 @@ def main(global_config, **settings):
     
     #Literature views
     config.add_route('literature', '/{type}/{identifier}/literature')
+    
+    #Regulation views
+    config.add_route('regulations', '/{type}/{identifier}/regulation')
 
     #Misc views
     config.add_route('download_citations', '/download_citations')
