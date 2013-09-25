@@ -42,6 +42,7 @@ function set_up_binding_site(wrapper_id, message_id, list_id, data) {
 		a.target = "_blank";
 		var img = document.createElement('img');
 		img.src = evidence['img_url'];
+		img.className = "yetfasco";
 		a.appendChild(img);
 		list.appendChild(a);
 	}
