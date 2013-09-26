@@ -133,9 +133,28 @@ function set_up_references(references, ref_list_id) {
 		
 		var refLinks = document.createElement("ul");
 		refLinks.className = "ref-links";
-		refLinks.innerHTML = "<li><a href=''>SGD Paper</a></li><li><a href=''>PubMed</a></li><li><a href=''>PMC</a></li><li><a href=''>Full-Text</a></li>";
-		li.appendChild(refLinks);
 		
+		var reflink_li = document.createElement('li');
+		var a = document.createElement('a');
+		var linkText = document.createTextNode('SGD Paper');
+		a.appendChild(linkText);
+		a.href = reference['link'];
+		reflink_li.appendChild(a);
+		refLinks.appendChild(reflink_li);
+		
+		for (var j=0; j < reference['urls'].length; j++) {
+			var url = reference['urls']
+			var reflink_li = document.createElement('li');
+			var a = document.createElement('a');
+			var linkText = document.createTextNode(url['display_name']);
+			a.appendChild(linkText);
+			a.href = url['link'];
+			a.target = '_blank';
+			reflink_li.appendChild(a);
+			refLinks.appendChild(reflink_li);
+		}
+
+		li.appendChild(refLinks);
 		
 		ref_list.appendChild(li);
 	}

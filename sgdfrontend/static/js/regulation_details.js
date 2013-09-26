@@ -141,6 +141,9 @@ function set_up_regulator_table(header_id, table_id, wrapper_id, message_id, dow
 
 function set_up_domains_table(header_id, table_id, wrapper_id, message_id, download_button_id, download_link, download_table_filename, data) { 
 	var datatable = [];
+	if(data == null) {
+		data = [];
+	}
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
   			
