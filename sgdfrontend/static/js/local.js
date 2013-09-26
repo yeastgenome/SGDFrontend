@@ -143,7 +143,7 @@ function set_up_references(references, ref_list_id) {
 		refLinks.appendChild(reflink_li);
 		
 		for (var j=0; j < reference['urls'].length; j++) {
-			var url = reference['urls']
+			var url = reference['urls'][j]
 			var reflink_li = document.createElement('li');
 			var a = document.createElement('a');
 			var linkText = document.createTextNode(url['display_name']);
