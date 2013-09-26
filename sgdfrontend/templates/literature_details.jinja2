@@ -28,7 +28,7 @@
 		<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky">
 			<li id="nav-title"><h5><a href="{{link}}">{{display_name}}/{{format_name}}</a> Literature</h5></li>
 			<li data-magellan-arrival="primary"><a href="#primary">Primary Literature</a></li>
-			<li data-magellan-arrival="network"><a href="#network">Network Visualization</a></li>
+			<li data-magellan-arrival="network" id="navbar_network"><a href="#network">Network Visualization</a></li>
           	<li data-magellan-arrival="additional"><a href="#additional">Additional Literature</a></li>
           	<li data-magellan-arrival="reviews"><a href="#reviews">Reviews</a></li>
           	<li data-magellan-arrival="go"><a href="#go">Gene Ontology Literature</a></li>
@@ -249,7 +249,16 @@
   		//Get graph
   		$.getJSON(literature_graph_link, function(data) {
   			var graph_id = "cy";
-			var cy = setup_cytoscape_vis(graph_id, graph_style, data);
+  			var section_id = "network";
+  			var section_navbar_id = "navbar_network";
+  			if(data['nodes'].length > 1) {
+  				var cy = setup_cytoscape_vis(graph_id, graph_style, data);
+  			}
+			else {
+				document.getElementById(section_id).style.display = "none";
+				document.getElementById(section_navbar_id).style.display = "none";
+			}
+			
 		});
   		
   		//Get go reference data

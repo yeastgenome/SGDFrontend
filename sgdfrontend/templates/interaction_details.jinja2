@@ -28,7 +28,7 @@
 			<li id="nav-title"><h5><a href="{{link}}">{{display_name}}/{{format_name}}</a> Interactions</h5></li>
           	<li data-magellan-arrival="summary"><a href="#summary">Interactors Summary</a></li>
 			<li data-magellan-arrival="interactions"><a href="#interactions">Interactions</a></li>
-			<li data-magellan-arrival="network"><a href="#network">Network Visualization</a></li>
+			<li data-magellan-arrival="network" id="navbar_network"><a href="#network">Network Visualization</a></li>
 			<li data-magellan-arrival="resources"><a href="#resources">Resources</a></li>
 		</ul>
 	</nav>
@@ -251,10 +251,21 @@
   			var gen_radio_id = "genetic_radio";
   			var intersect_radio_id = "intersect_radio";
   			var union_radio_id = "union_radio";
-			cy = setup_interaction_cytoscape_vis(graph_id, 
+  			
+  			var section_id = "network";
+  			var section_navbar_id = "navbar_network";
+  			
+  			if(data["nodes"].length > 1) {
+  				cy = setup_interaction_cytoscape_vis(graph_id, 
 				phys_slider_id, gen_slider_id, intersect_slider_id, union_slider_id, 
 				phys_radio_id, gen_radio_id, intersect_radio_id, union_radio_id,
 				graph_style, data);
+  			}
+  			else {
+  				document.getElementById(section_id).style.display = "none";
+				document.getElementById(section_navbar_id).style.display = "none";
+  			}
+			
 		});
     	
     	//Get resources
