@@ -27,10 +27,10 @@
 		<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky">
 			<li id="nav-title"><h5><a href="{{link}}">{{display_name}}/{{format_name}}</a> Transcriptional Regulation</h5></li>
           	<li data-magellan-arrival="summary"><a href="#summary">Summary</a></li>
-			<li data-magellan-arrival="domains" id="domains_entry"><a href="#domains">Domains and Classification</a></li>
-			<li data-magellan-arrival="binding"><a href="#binding">Binding Site Motifs</a></li>
-			<li data-magellan-arrival="targets"><a href="#targets">Targets</a></li>
-			<li data-magellan-arrival="regulators"><a href="#regulators">Regulators</a></li>
+			<li data-magellan-arrival="domains" id="navbar_domains"><a href="#domains">Domains and Classification</a></li>
+			<li data-magellan-arrival="binding" id="navbar_binding"><a href="#binding">Binding Site Motifs</a></li>
+			<li data-magellan-arrival="targets" id="navbar_targets"><a href="#targets">Target Relationships</a></li>
+			<li data-magellan-arrival="regulators" id="navbar_regulators"><a href="#regulators">Regulator Relationships</a></li>
 		</ul>
 	</nav>
 	
@@ -67,8 +67,7 @@
 <section id="domains" data-magellan-destination="domains">
 	<div class="page-header">
 		<h1>Domains and Classification <span id="domains_header" class="round secondary label"></span></h1>
-		<span id='domains_message'></span>
-		<div id='domains_wrapper'>
+		<div>
 			<div class="button-bar">
 				<ul class="button-group radius">
 					<li><a id="domains_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
@@ -95,8 +94,7 @@
 <section id="binding" data-magellan-destination="binding">
 	<div class="page-header">
 		<h1>Binding Site Motifs</h1>
-		<span id='binding_message' style="display:none">{{display_name}} has no known binding site motifs.</span>
-		<div id='binding_wrapper'>
+		<div>
 			Click on a motif to view <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a> record.
 			<ul id="binding_motifs"></ul>
         	<h3>View predicted binding sites in the <a href="http://browse.yeastgenome.org/cgi-bin/gbrowse/scgenome/?name={{display_name}}_*&enable=SGD%20PMW%20motifs">Genome Browser</a></h3>
@@ -108,9 +106,8 @@
 ================================================== -->
 <section id="targets" data-magellan-destination="targets">
 	<div class="page-header">
-		<h1>Targets <span id="targets_header" class="round secondary label"></span></h1>
-		<span id='targets_message' style="display:none">{{display_name}} has no known targets.</span>
-		<div id='targets_wrapper'>
+		<h1>Target Relationships <span id="targets_header" class="round secondary label"></span></h1>
+		<div>
 			<div class="button-bar">
 				<ul class="button-group radius">
 					<li><a id="targets_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
@@ -144,9 +141,8 @@
 ================================================== -->
 <section id="regulators" data-magellan-destination="regulators">
 	<div class="page-header">
-		<h1>Regulators <span id="regulators_header" class="round secondary label"></span></h1>
-		<span id='regulators_message' style="display:none">{{display_name}} has no known regulators.</span>
-		<div id='regulators_wrapper'>
+		<h1>Regulator Relationships <span id="regulators_header" class="round secondary label"></span></h1>
+		<div>
 			<div class="button-bar">
 				<ul class="button-group radius">
 					<li><a id="regulators_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
@@ -228,19 +224,37 @@
   		$.getJSON(protein_domains_link, function(data) {
    			var header_id = "domains_header";
   			var table_id = "domains_table";
-  			var wrapper_id = "domains_wrapper";
-  			var message_id = "domains_message"
   			var download_button_id = "domains_table_download";
-  			set_up_domains_table(header_id, table_id, wrapper_id, message_id, download_button_id, 
+  			
+  			var section_id = "domains";
+  			var navbar_id = "navbar_domains";
+  			
+  			if(data != null && data.length > 0) {
+  				set_up_domains_table(header_id, table_id, download_button_id, 
   				download_table_link, domains_table_filename, data);
+  			}
+  			else {
+  				document.getElementById(section_id).style.display = "none";
+  				document.getElementById(navbar_id).style.display = "none";
+  			}
+  			
   		});
   		
   		//Get binding site data
   		$.getJSON(binding_site_details_link, function(data) {
-  			var wrapper_id = "binding_wrapper";
   			var list_id = "binding_motifs";
-  			var message_id = "binding_message";
-  			set_up_binding_site(wrapper_id, message_id, list_id, data);
+  			
+  			var section_id = "binding";
+  			var navbar_id = "navbar_binding"
+  			
+  			if(data.length > 0) {
+  				set_up_binding_site(list_id, data);
+  			}
+  			else {
+  				document.getElementById(section_id).style.display = "none";
+  				document.getElementById(navbar_id).style.display = "none";
+  			}
+  			
   		});
 	
 		//Get evidence data
@@ -249,18 +263,23 @@
   			var target_data = data["targets"];
   			var targets_header_id = "targets_header";
   			var targets_table_id = "targets_table";
-  			var targets_wrapper_id = "targets_wrapper";
-  			var targets_message_id = "targets_message"
   			var targets_download_button_id = "targets_table_download";
   			var targets_analyze_button_id = "targets_table_analyze";
-  			set_up_target_table(targets_header_id, targets_table_id, targets_wrapper_id, targets_message_id,
+  			
+  			var target_section_id = "targets";
+  			var target_navbar_id = "navbar_targets";
+  			var domain_section_id = "domains";
+  			var domain_navbar_id = "navbar_domains";
+  			
+  			if(target_data.length > 0) {
+  				set_up_target_table(targets_header_id, targets_table_id,
   				targets_download_button_id, targets_analyze_button_id, 
   				download_table_link, targets_table_filename, 
   				analyze_link, bioent_display_name, bioent_format_name, bioent_link, target_data);
-  				
-  			var domain_section_id = "domains";
-  			var domain_navbar_id = "domains_entry";
-  			if(target_data.length == 0) {
+  			}
+  			else {
+  				document.getElementById(target_section_id).style.display = "none";
+  				document.getElementById(target_navbar_id).style.display = "none";
   				document.getElementById(domain_section_id).style.display = "none";
   				document.getElementById(domain_navbar_id).style.display = "none";
   			}
@@ -268,14 +287,23 @@
   			var regulator_data = data["regulators"];
   			var regulators_header_id = "regulators_header";
   			var regulators_table_id = "regulators_table";
-  			var regulators_wrapper_id = "regulators_wrapper";
-  			var regulators_message_id = "regulators_message"
   			var regulators_download_button_id = "regulators_table_download";
   			var regulators_analyze_button_id = "regulators_table_analyze";
-  			set_up_regulator_table(regulators_header_id, regulators_table_id, regulators_wrapper_id, regulators_message_id,
+  			
+  			var regulator_section_id = "regulators";
+  			var regulator_navbar_id = "navbar_regulators";
+  			
+  			if(regulator_data.length > 0) {
+  				set_up_regulator_table(regulators_header_id, regulators_table_id,
   				regulators_download_button_id, regulators_analyze_button_id, 
   				download_table_link, regulators_table_filename, 
   				analyze_link, bioent_display_name, bioent_format_name, bioent_link, regulator_data);
+  			}
+  			else {
+  				document.getElementById(regulator_section_id).style.display = "none";
+  				document.getElementById(regulator_navbar_id).style.display = "none";
+  			}
+  			
   		});
   		
   		

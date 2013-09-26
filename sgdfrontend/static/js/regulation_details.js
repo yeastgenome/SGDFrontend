@@ -32,7 +32,7 @@ function set_up_overview(summary_paragraph_id, reference_list_id, diagram_id, sa
 	document.getElementById(analyze_regulator_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3)};
 }
 
-function set_up_binding_site(wrapper_id, message_id, list_id, data) {
+function set_up_binding_site(list_id, data) {
 	var list = document.getElementById(list_id);
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
@@ -46,14 +46,9 @@ function set_up_binding_site(wrapper_id, message_id, list_id, data) {
 		a.appendChild(img);
 		list.appendChild(a);
 	}
-	
-	if(data.length == 0) {
-		document.getElementById(wrapper_id).style.display = "none";
-		document.getElementById(message_id).style.display = "block";
-	}
 }
 
-function set_up_target_table(header_id, table_id, wrapper_id, message_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
+function set_up_target_table(header_id, table_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
 	analyze_link, bioent_display_name, bioent_format_name, bioent_link, data) { 
 	var datatable = [];
 	for (var i=0; i < data.length; i++) {
@@ -68,7 +63,7 @@ function set_up_target_table(header_id, table_id, wrapper_id, message_id, downlo
 			experiment = evidence['experiment']['display_name'];
 		}
 		var strain = '';
-		if(evidence['stain'] != null) {
+		if(evidence['strain'] != null) {
 			//strain = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
 			strain = evidence['strain']['display_name'];
 		}
@@ -96,7 +91,7 @@ function set_up_target_table(header_id, table_id, wrapper_id, message_id, downlo
     }
 }
 
-function set_up_regulator_table(header_id, table_id, wrapper_id, message_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
+function set_up_regulator_table(header_id, table_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
 	analyze_link, bioent_display_name, bioent_format_name, bioent_link, data) { 
 	var datatable = [];
 	for (var i=0; i < data.length; i++) {
@@ -111,7 +106,7 @@ function set_up_regulator_table(header_id, table_id, wrapper_id, message_id, dow
 			experiment = evidence['experiment']['display_name'];
 		}
 		var strain = '';
-		if(evidence['stain'] != null) {
+		if(evidence['strain'] != null) {
 			//strain = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
 			strain = evidence['strain']['display_name'];
 		}
@@ -139,11 +134,9 @@ function set_up_regulator_table(header_id, table_id, wrapper_id, message_id, dow
     }
 }
 
-function set_up_domains_table(header_id, table_id, wrapper_id, message_id, download_button_id, download_link, download_table_filename, data) { 
+function set_up_domains_table(header_id, table_id, download_button_id, download_link, download_table_filename, data) { 
 	var datatable = [];
-	if(data == null) {
-		data = [];
-	}
+
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
   			
@@ -170,19 +163,14 @@ function set_up_domains_table(header_id, table_id, wrapper_id, message_id, downl
   	
   	document.getElementById(header_id).innerHTML = data.length;
   	
-  	if (data.length == 0) {
-  		document.getElementById(wrapper_id).style.display = "none";
-  		document.getElementById(message_id).style.display = "block";
-  	}
-  	else {
-    	var options = {};
-		options["bPaginate"] = false;
-		options["aaSorting"] = [[1, "asc"]];
-		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, null]		
-		options["aaData"] = datatable;
+  	var options = {};
+	options["bPaginate"] = false;
+	options["aaSorting"] = [[1, "asc"]];
+	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, null]		
+	options["aaData"] = datatable;
   				
-  		var domain_table = $('#' + table_id).dataTable(options);
+  	var domain_table = $('#' + table_id).dataTable(options);
   		
-  		document.getElementById(download_button_id).onclick = function() {download_table(domain_table, download_link, download_table_filename)};
-    }
+  	document.getElementById(download_button_id).onclick = function() {download_table(domain_table, download_link, download_table_filename)};
+  
 }

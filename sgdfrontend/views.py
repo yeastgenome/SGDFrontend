@@ -74,11 +74,3 @@ def analyze_view(request):
             }
     return page
 
-@view_config(route_name='header', renderer='templates/header.jinja2')
-def header_view(request):
-    return {}
-
-@view_config(route_name='footer', renderer='templates/footer.jinja2')
-def footer_view(request):
-    return {}
-

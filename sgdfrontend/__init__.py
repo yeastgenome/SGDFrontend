@@ -37,8 +37,7 @@ def main(global_config, **settings):
     config.include('pyramid_jinja2')
 
     config.add_static_view('static', 'sgdfrontend:static')
-    config.add_route('header', '/header')
-    config.add_route('footer', '/footer')
+    config.add_static_view('templates', 'sgdfrontend:templates')
     
     #Interaction views
     config.add_route('interactions', '/{type}/{identifier}/interactions')
