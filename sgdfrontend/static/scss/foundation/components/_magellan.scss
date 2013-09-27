@@ -11,7 +11,7 @@ $magellan-padding: 10px !default;
   [data-magellan-expedition] {
     background: $magellan-bg;
     z-index: 50;
-    min-width: auto;
+    min-width: 100%;
     padding: $magellan-padding;
 
     .sub-nav {
