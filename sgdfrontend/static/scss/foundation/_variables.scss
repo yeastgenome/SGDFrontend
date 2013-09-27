@@ -1250,8 +1250,8 @@ $topbar-dropdown-bg:                      #696599;
 // $topbar-menu-link-weight:              bold;
 // $topbar-menu-link-color:               #fff;
 // $topbar-menu-icon-color:               #fff;
-// $topbar-menu-link-color-toggled:       #888;
-// $topbar-menu-icon-color-toggled:       #888;
+$topbar-menu-link-color-toggled:          lighten($topbar-bg, 35%);
+$topbar-menu-icon-color-toggled:          lighten($topbar-bg, 35%);
 
 // Transitions and breakpoint styles
 
