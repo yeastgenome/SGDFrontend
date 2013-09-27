@@ -12,4 +12,5 @@ bin
 sgdfrontend/config.py
 .installed.cfg
 .mr.developer.cfg
-src/*sgdfrontend/static/img/yetfasco
+src/
+*sgdfrontend/static/img/yetfasco
