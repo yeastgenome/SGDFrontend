@@ -291,3 +291,22 @@ img.yetfasco {
 	height: 100px;
 	margin: 20px 0;
 }
+
+// Cytoscape Legends
+.legend-label:after {
+	content: "";
+	display: inline-block;
+	height: 4px;
+	width: 30px;
+	position: relative;
+	top: -2px;
+}
+.legend-label.physical:after {
+	background-color: #AF8DC3;
+}
+.legend-label.genetic:after {
+	background-color: #7FBF7B;
+}
+.legend-label.intersection:after {
+	background-color: #000;
+}
