@@ -121,19 +121,10 @@ footer { // should be in states
 	list-style: none;
 	overflow: hidden;
 	margin-bottom: 5px;
-	li { 
-		float: left;
-		margin-right: emCalc(20px);
-	}
 }
 
 .logo-list {
 	list-style: none;
-	float: right;
-	li {
-		float: left;
-		margin-left: 20px;
-	}
 }
 
 #copyright { font-size: emCalc(13px);}

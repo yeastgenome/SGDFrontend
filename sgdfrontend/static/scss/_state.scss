@@ -7,3 +7,34 @@ http://smacss.com/book/type-state
 .lt-ie9 .top-bar-section .has-dropdown > a:after {
 	display: none;
 }
+
+// Show left side menu on 
+
+// Header
+
+
+// Footer
+@media only screen and (min-width: 1000px) {
+	// Sticky footer on large screens
+	@include sticky-footer(90px, "#layout-document", "#layout-document-footer-pusher", "#layout-document-footer");
+
+	#footer-links {
+	display: block;
+	list-style: none;
+	overflow: hidden;
+	margin-bottom: 5px;
+	li { 
+		float: left;
+		margin-right: emCalc(20px);
+		}
+	}
+
+	.logo-list {
+		list-style: none;
+		float: right;
+		li {
+			float: left;
+			margin-left: 20px;
+		}
+	}
+}
