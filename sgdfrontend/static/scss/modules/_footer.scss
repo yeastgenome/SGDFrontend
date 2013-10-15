@@ -27,6 +27,15 @@ footer { // should be in states
 
 .logo-list {
 	list-style: none;
+	li {
+		text-align: right;
+		margin-bottom: 15px;
+		display: block;
+	}
+}
+
+#stanford-logo {
+	min-width: 90px;
 }
 
 #copyright { font-size: emCalc(13px);}
