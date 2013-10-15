@@ -1,0 +1,13 @@
+/********************************************
+Module rules - SMACSS 
+http://smacss.com/book/type-module
+*********************************************/
+
+// Foundation overwrites
+.inline-list {
+	overflow: visible;
+}
+
+.small-input {
+	font-size: emCalc(12px);
+}

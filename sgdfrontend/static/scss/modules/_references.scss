@@ -1,0 +1,23 @@
+/********************************************
+Module rules - SMACSS 
+http://smacss.com/book/type-module
+*********************************************/
+
+// Literature and Reference Styling
+.literature-list {
+	list-style: none;
+	li {
+		margin-bottom: 20px;
+	}
+}
+.ref-links {
+	list-style: none;
+	margin: 0;
+	li {
+		display: inline-block;
+		margin: 0 20px 0 0;
+		font-size: 0.75em;
+		position: relative;
+		top: -2px;
+	}
+}

@@ -1,0 +1,32 @@
+/********************************************
+Module rules - SMACSS 
+http://smacss.com/book/type-module
+*********************************************/
+
+/* Footer Stylings */
+#layout-document-footer {
+	background: #696599;  //615F8F
+	// @include background-image(linear-gradient(center top , #9190B7 0%, #615F8F 100%));
+}
+
+footer { // should be in states
+	color: #fff;
+	a, a:hover, a:active { 
+		color: #fff;
+		font-size: emCalc(14px);
+	}
+	a:hover { text-decoration: underline; }
+}
+
+#footer-links {
+	display: block;
+	list-style: none;
+	overflow: hidden;
+	margin-bottom: 5px;
+}
+
+.logo-list {
+	list-style: none;
+}
+
+#copyright { font-size: emCalc(13px);}

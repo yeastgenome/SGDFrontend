@@ -1,0 +1,70 @@
+/********************************************
+Module rules - SMACSS 
+http://smacss.com/book/type-module
+*********************************************/
+
+// Sticky Side navigation
+#side-nav-sticky {
+	max-width: 263px;
+}
+
+.side-nav { //extending Foundation
+	border: 1px #ccc solid;
+	@include border-radius(4px);
+	margin-top: 15px;
+	box-shadow: 0 0 0 4px #F0F0F0;
+}
+
+#nav-title {
+    padding-left: 10px;
+    margin: 10px 0;
+    a { color: #980d0d; }
+}
+
+.side-nav > li {
+    margin-bottom: -1px;
+    line-height: 20px;
+}
+
+.side-nav li.active a {
+    background-color: #615f8f;
+    color: #fff;
+}
+.side-nav > li > a {
+    border: 1px solid #ccc;
+}
+.side-nav > .active > a, .side-nav > .active > a:hover {
+    border-color: #ddd;
+    border-style: solid;
+    border-width: 1px;
+    color: #fff;
+    cursor: default;
+}
+.side-nav > li > a {
+    margin-right: 0;
+}
+.side-nav > li > a {
+    //border: 1px solid transparent;
+    // border-radius: 4px 4px 0 0;
+    line-height: 20px;
+    padding-bottom: 8px;
+    padding-top: 8px;
+}
+.side-nav > li > a {
+    //line-height: 14px;
+    //margin-right: 2px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+.side-nav > li > a {
+    display: block;
+}
+
+// Overwrite a couple magellan settings - need to make these case specific though
+[data-magellan-expedition] {
+	min-width: 0;
+	padding: 0 !important;
+}
+.fixed {
+	left: inherit !important;
+}

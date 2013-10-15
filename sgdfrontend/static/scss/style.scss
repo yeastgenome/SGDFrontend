@@ -66,11 +66,19 @@
 	"vendor/nouislider.fox";
 	
 // SGD Styles
-
 @import 
 	"base",
 	"layout",
-	"modules",
+	"modules/header",
+	"modules/footer",
+	"modules/side-nav",
+	"modules/forms",
+	"modules/icons",
+	"modules/labels",
+	"modules/references",
+	"modules/legends",
+	"modules/yetfasco",
+	"modules/foundation-overwrites",
 	"state",
 	"theme",
 	"legacy";

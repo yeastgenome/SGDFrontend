@@ -1,0 +1,23 @@
+/********************************************
+Module rules - SMACSS 
+http://smacss.com/book/type-module
+*********************************************/
+
+// Legends - like used for Cytoscape
+.legend-label:after {
+	content: "";
+	display: inline-block;
+	height: 4px;
+	width: 30px;
+	position: relative;
+	top: -2px;
+}
+.legend-label.physical:after {
+	background-color: #AF8DC3;
+}
+.legend-label.genetic:after {
+	background-color: #7FBF7B;
+}
+.legend-label.intersection:after {
+	background-color: #000;
+}
