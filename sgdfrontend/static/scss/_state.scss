@@ -10,13 +10,21 @@ http://smacss.com/book/type-state
 
 // Show left side menu on 
 
-// Header
+// Header and global nav / top bar
 #layout-page-header-content {
 	@extend .show-for-medium-up;
 }
 
 .menu-search {
 	@extend .hide-for-medium-up;
+}
+
+#info-menu {
+	@extend .hide-for-medium-up;
+}
+
+#sidebar {
+	@extend .hide-for-small;
 }
 
 // Sidebar
