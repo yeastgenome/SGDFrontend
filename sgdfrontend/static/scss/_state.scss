@@ -60,3 +60,7 @@ http://smacss.com/book/type-state
 		}
 	}
 }
+
+#social-footer {
+	@extend .hide-for-medium-up;
+}

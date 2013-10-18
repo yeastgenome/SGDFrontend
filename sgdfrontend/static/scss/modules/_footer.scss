@@ -34,6 +34,18 @@ footer { // should be in states
 	}
 }
 
+footer .social-links {
+	margin: 0;
+	li:first-child {
+		margin-left: 0;
+	}
+	li {
+		margin-left: emCalc(8px);
+		margin-top: emCalc(2px);
+	}
+}
+
+
 #stanford-logo {
 	min-width: 90px;
 }
