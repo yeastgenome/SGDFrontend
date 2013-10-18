@@ -34,3 +34,8 @@ $tertiary-color: #aeabd3 !default;
 $warning-color: #e6df67 !default;
 
 .fixed { width: auto; }
+
+// adjust font size in labels
+.label small {
+	font-size: emCalc(14);
+}
