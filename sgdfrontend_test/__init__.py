@@ -6,12 +6,9 @@ import pytest
 
 browser = webdriver.Firefox()
 
-def create_url(bioent_type, identifier, page):
-    return "http://sgd-ng1.stanford.edu/" + bioent_type + '/' + identifier + '/' + page
-    
 def find_element(element_id, message):
     try:
-        browser.find_element_by_id(element_id)
+        return browser.find_element_by_id(element_id)
     except NoSuchElementException:
         assert 0, message
         

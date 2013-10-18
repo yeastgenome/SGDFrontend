@@ -1,98 +1,130 @@
 
-function draw_side_bar_diagram(container_name, a, b, color1, color2) {
-	var zoom = 1;
-	if(a > b) {
-		zoom = 1.0/a;
+function draw_bar(x, y, height, color, label_text, count_text, vertical, layer) {
+	
+	if(vertical) {
+		var start_bar = new Kinetic.Rect({
+			x: y - 13,
+			y: 9 + x,
+			width: 50,
+			height: 1,
+	        fill: 'black'
+		});
+	    layer.add(start_bar);
+	    
+	    var bar = new Kinetic.Rect({
+			x: y - 13,
+			y: 10 + x-height,
+			width: 50,
+			height: height,
+	        fill: color
+		});
+	    layer.add(bar);
+	    
+	    var label = new Kinetic.Text({
+	        x: y - 18,
+	        y: x + 15,
+	        text: label_text,
+	        fontSize: 15,
+	        fontFamily: 'Calibri',
+	        fill: 'black',
+	        width: 60,
+	        align: 'center'
+	        });
+	    layer.add(label);
+	    
+	    
+	    var count = new Kinetic.Text({
+	        x: y - 18,
+	        y: x-height-5,
+	        text: count_text,
+	        fontSize: 14,
+	        fontFamily: 'Calibri',
+	        fill: 'black',
+	        width: 60,
+	        align: 'center'
+	        });
+	    layer.add(count);
 	}
 	else {
-		zoom = 1.0/b;
+		var start_bar = new Kinetic.Rect({
+			x: x,
+			y: y,
+			width: 1,
+			height: 25,
+	        fill: 'black'
+		});
+	    layer.add(start_bar);
+	    
+	    var bar = new Kinetic.Rect({
+			x: x,
+			y: y,
+			width: height,
+			height: 25,
+	        fill: color
+		});
+	    layer.add(bar);
+	    
+	    var label = new Kinetic.Text({
+	        x: x - 140,
+	        y: y - 5,
+	        text: label_text,
+	        fontSize: 16,
+	        fontFamily: 'Calibri',
+	        fill: 'black'
+	        });
+	    layer.add(label);
+	    
+	    var count = new Kinetic.Text({
+	        x: x + 5 + height,
+	        y: y + 5,
+	        text: count_text,
+	        fontSize: 14,
+	        fontFamily: 'Calibri',
+	        fill: 'black'
+	        });
+	    layer.add(count);
 	}
+}
+
+function draw_side_bar_diagram(container_name, values, labels, colors, vertical) {
+	var zoom = 1.0/Math.max.apply(Math, values);;
 	
+	var width;
+	var height;
+	var spacer;
+	var max_height;
+	if(vertical) {
+		width = 100*values.length;
+		height = 210;
+		spacer = 80;
+		max_height = 130;
+	}
+	else {
+		width = 500;
+		height = 20 + 50*values.length;
+		spacer = 50;
+		max_height = 300;
+	}
 	var stage = new Kinetic.Stage({
 		container: container_name,
 		draggable: false,
-		width:500,
-		height:120
+		width:width,
+		height: height
 	});	
-	
+
 	var layer = new Kinetic.Layer();
 	
-	var target_start_bar = new Kinetic.Rect({
-		x: 140,
-		y: 20,
-		width: 1,
-		height: 25,
-        fill: 'black'
-	});
-    layer.add(target_start_bar);
+	var x =  140
+	var y = 20
+	for (var i=0; i < values.length; i++) {
+		var value = values[i];
+		var height = max_height*value*zoom;
+		var color = colors[i];
+		var label = labels[i];
+		draw_bar(x, y, height, color, label, value, vertical, layer);
+		y = y + spacer;
+	}
     
-    var regulator_start_bar = new Kinetic.Rect({
-		x: 140,
-		y: 75,
-		width: 1,
-		height: 25,
-        fill: 'black'
-	});
-    layer.add(regulator_start_bar);
-	
-	var target_bar = new Kinetic.Rect({
-		x: 140,
-		y: 20,
-		width: 300*a*zoom,
-		height: 25,
-        fill: color1
-	});
-    layer.add(target_bar);
-    
-    var regulator_bar = new Kinetic.Rect({
-		x: 140,
-		y: 75,
-		width: 300*b*zoom,
-		height: 25,
-        fill: color2,
-	});
-    layer.add(regulator_bar);
-    
-    var target_label = new Kinetic.Text({
-        x: 0,
-        y: 10,
-        text: 'Transcriptional\nTargets',
-        fontSize: 20,
-        fontFamily: 'Calibri',
-        fill: 'black'
-        });
-    layer.add(target_label);
-        
-    var regulators_label = new Kinetic.Text({
-        x: 0,
-        y: 65,
-        text: 'Transcriptional\nRegulators',
-        fontSize: 20,
-        fontFamily: 'Calibri',
-        fill: 'black'
-        });
-    layer.add(regulators_label);
-    
-    var target_count = new Kinetic.Text({
-        x: 145 + 300*a*zoom,
-        y: 25,
-        text: a,
-        fontSize: 14,
-        fontFamily: 'Calibri',
-        fill: 'black'
-        });
-    layer.add(target_count);
-    
-    var regulators_count = new Kinetic.Text({
-        x: 145 + 300*b*zoom,
-        y: 80,
-        text: b,
-        fontSize: 14,
-        fontFamily: 'Calibri',
-        fill: 'black'
-        });
-    layer.add(regulators_count);
-        
     stage.add(layer);
     
 	return stage;

@@ -1,14 +1,19 @@
 var ev_table;
 var cy;
-  	
+var format_name_to_id = new Object();
+
 function set_up_overview_table(venn_id, save_button_id, phys_button_id, gen_button_id, intersect_button_id, union_button_id, 
-	analyze_link, bioent_display_name, bioent_format_name, bioent_link, style, data) {
+	analyze_link, bioent_display_name, bioent_format_name, bioent_link, 
+	interactors_gene_header_id, style, data) {
+		
 	var r = data['gen_circle_size'];
   	var s = data['phys_circle_size'];
   	var x = data['circle_distance'];
   	var A = data['num_gen_interactors'];
   	var B = data['num_phys_interactors'];
   	var C = data['num_both_interactors'];
+
+	document.getElementById(interactors_gene_header_id).innerHTML = A + B - C; 
   			
   	//Colors chosen as colorblind safe from http://colorbrewer2.org/.
 	var stage = draw_venn_diagram(venn_id, r, s, x, A, B, C, style['left_color'], style['right_color']);
@@ -17,26 +22,26 @@ function set_up_overview_table(venn_id, save_button_id, phys_button_id, gen_butt
        	height: 350,
        	callback: function(dataUrl) {
        		document.getElementById(save_button_id).href = dataUrl.replace("image/png", "image/octet-stream");
+        	$('#' + save_button_id).removeAttr('disabled'); 
         }
      });
-			
-    if(r == 0) {
-    	document.getElementById(intersect_button_id).setAttribute('disabled', 'disabled'); 
-    	document.getElementById(phys_button_id).setAttribute('disabled', 'disabled');  
-    }
-    if(s == 0) {
-    	document.getElementById(intersect_button_id).setAttribute('disabled', 'disabled'); 
-    	document.getElementById(gen_button_id).setAttribute('disabled', 'disabled'); 
-    }
-    if(x == r+s+1) {
-    	document.getElementById(intersect_button_id).setAttribute('disabled', 'disabled'); 
-    }
     	
     //set up Analyze buttons
     document.getElementById(phys_button_id).onclick = function() {analyze_phys(analyze_link, bioent_display_name, bioent_format_name, bioent_link)};
     document.getElementById(gen_button_id).onclick = function() {analyze_gen(analyze_link, bioent_display_name, bioent_format_name, bioent_link)};
     document.getElementById(intersect_button_id).onclick = function() {analyze_phys_gen_intersect(analyze_link, bioent_display_name, bioent_format_name, bioent_link)};
     document.getElementById(union_button_id).onclick = function() {analyze_phys_gen_union(analyze_link, bioent_display_name, bioent_format_name, bioent_link)};
+
+	$('#' + union_button_id).removeAttr('disabled'); 
+	if(r > 0) {
+		$('#' + phys_button_id).removeAttr('disabled'); 
+	}	
+	if(s > 0) {
+		$('#' + gen_button_id).removeAttr('disabled'); 	
+	}
+	if(r > 0 && s > 0 && x != r+s+1) {
+		$('#' + intersect_button_id).removeAttr('disabled'); 
+	}
 }
 
 function set_up_evidence_table(header_id, table_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
@@ -44,7 +49,18 @@ function set_up_evidence_table(header_id, table_id, download_button_id, analyze_
 	var datatable = [];
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
-  			
+		
+		format_name_to_id[evidence['bioent1']['format_name']] = evidence['bioent1']['id']
+		format_name_to_id[evidence['bioent2']['format_name']] = evidence['bioent2']['id']
+		
+		var icon;
+		if(evidence['note'] != null) {
+			icon = "<a href='#' data-dropdown='drop" + i + "'>+</a><div id='drop" + i + "' class='f-dropdown content medium' data-dropdown-content><p>" + evidence['note'] + "</p></div>"
+		}
+		else {
+			icon = null;
+		}
+		
 		var bioent1 = create_link(evidence['bioent1']['display_name'], evidence['bioent1']['link'])
 		var bioent2 = create_link(evidence['bioent2']['display_name'], evidence['bioent2']['link'])
 			
@@ -63,20 +79,25 @@ function set_up_evidence_table(header_id, table_id, download_button_id, analyze_
 			modification = evidence['modification'];
   		}
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
-  		datatable.push([bioent1, evidence['bioent1']['format_name'], bioent2, evidence['bioent2']['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']])
+  		datatable.push([icon, bioent1, evidence['bioent1']['format_name'], bioent2, evidence['bioent2']['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']])
   	}
   	document.getElementById(header_id).innerHTML = data.length;
   		         
     var options = {};
 	options["bPaginate"] = true;
-	options["aaSorting"] = [[2, "asc"]];
-	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]		
+	options["aaSorting"] = [[3, "asc"]];
+	options["aoColumns"] = [{"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]		
 	options["aaData"] = datatable;
-  				
+  
+   	setup_datatable_highlight();				
   	ev_table = $('#' + table_id).dataTable(options);
-  		
+  	ev_table.fnSearchHighlighting();
+  	  		
   	document.getElementById(download_button_id).onclick = function() {download_table(ev_table, download_link, download_table_filename)};
-  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Interactions', ev_table, 3)};
+  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Interactions', ev_table, 4, format_name_to_id)};
+
+	$('#' + download_button_id).removeAttr('disabled'); 
+	$('#' + analyze_button_id).removeAttr('disabled'); 
 }
   		
 function analyze_phys_gen_intersect(analyze_link, bioent_display_name, bioent_format_name, bioent_link) {
@@ -85,24 +106,24 @@ function analyze_phys_gen_intersect(analyze_link, bioent_display_name, bioent_fo
 	var gen_bioent_sys_names = {};
 	var data = ev_table.fnGetData();
 	for (var i=0,len=data.length; i<len; i++) { 
-		var ev_type = data[i][4];
+		var ev_type = data[i][5];
 		if(ev_type == 'Genetic') {
-			var sys_name = data[i][3];
-			gen_bioent_sys_names[sys_name] = true;
+			var sys_name = data[i][4];
+			gen_bioent_sys_names[format_name_to_id[sys_name]] = true;
 		}
 	}	
 
 	for (var i=0,len=data.length; i<len; i++) { 
-		var ev_type = data[i][4];
+		var ev_type = data[i][5];
 		if(ev_type == 'Physical') {
-			var sys_name = data[i][3];
+			var sys_name = data[i][4];
 			if(sys_name in gen_bioent_sys_names) {
 				bioent_sys_names.push(sys_name);
 			}
 		}
 	}	
 	post_to_url(analyze_link, {'bioent_display_name': bioent_display_name, 'bioent_format_name': bioent_format_name, 'bioent_link': bioent_link, 
-										'bioent_ids': bioent_sys_names, 'list_type': 'Intersection Interactors'});
+										'bioent_ids': JSON.stringify(bioent_sys_names), 'list_name': 'Intersection Interactors'});
 }
 	
 function analyze_phys(analyze_link, bioent_display_name, bioent_format_name, bioent_link) {
@@ -110,14 +131,14 @@ function analyze_phys(analyze_link, bioent_display_name, bioent_format_name, bio
 
 	var data = ev_table.fnGetData();
 	for (var i=0,len=data.length; i<len; i++) { 
-		var ev_type = data[i][4];
+		var ev_type = data[i][5];
 		if(ev_type == 'Physical') {
-			var sys_name = data[i][3];
-			bioent_sys_names.push(sys_name);
+			var sys_name = data[i][4];
+			bioent_sys_names.push(format_name_to_id[sys_name]);
 		}
 	}	
 	post_to_url(analyze_link, {'bioent_display_name': bioent_display_name, 'bioent_format_name': bioent_format_name, 'bioent_link': bioent_link, 
-										'bioent_ids': bioent_sys_names, 'list_type': 'Physical Interactors'});
+										'bioent_ids': JSON.stringify(bioent_sys_names), 'list_name': 'Physical Interactors'});
 }
 	
 function analyze_gen(analyze_link, bioent_display_name, bioent_format_name, bioent_link) {
@@ -125,14 +146,14 @@ function analyze_gen(analyze_link, bioent_display_name, bioent_format_name, bioe
 
 	var data = ev_table.fnGetData();
 	for (var i=0,len=data.length; i<len; i++) { 
-		var ev_type = data[i][4];
+		var ev_type = data[i][5];
 		if(ev_type == 'Genetic') {
-			var sys_name = data[i][3];
-			bioent_sys_names.push(sys_name);
+			var sys_name = data[i][4];
+			bioent_sys_names.push(format_name_to_id[sys_name]);
 		}
 	}	
 	post_to_url(analyze_link, {'bioent_display_name': bioent_display_name, 'bioent_format_name': bioent_format_name, 'bioent_link': bioent_link,
-										 'bioent_ids': bioent_sys_names, 'list_type': 'Genetic Interactors'});
+										 'bioent_ids': JSON.stringify(bioent_sys_names), 'list_name': 'Genetic Interactors'});
 }
 	
 function analyze_phys_gen_union(analyze_link, bioent_display_name, bioent_format_name, bioent_link) {
@@ -140,11 +161,11 @@ function analyze_phys_gen_union(analyze_link, bioent_display_name, bioent_format
 
 	var data = ev_table.fnGetData();
 	for (var i=0,len=data.length; i<len; i++) { 
-		var sys_name = data[i][3];
-		bioent_sys_names.push(sys_name);
+		var sys_name = data[i][4];
+		bioent_sys_names.push(format_name_to_id[sys_name]);
 	}	
 	post_to_url(analyze_link, {'bioent_display_name': bioent_display_name, 'bioent_format_name': bioent_format_name, 'bioent_link': bioent_link,
-										 'bioent_ids': bioent_sys_names, 'list_type': 'Interactors'});
+										 'bioent_ids': JSON.stringify(bioent_sys_names), 'list_name': 'Interactors'});
 }
 
 function setup_slider(div_id, min, max, current, slide_f) {
@@ -201,7 +222,7 @@ var gen_max;
 var intersect_max;
 var evidence_min;
 
-function setup_interaction_cytoscape_vis(graph_id, 
+function setup_interaction_cytoscape_vis(graph_id,
 				phys_slider_id, gen_slider_id, intersect_slider_id, union_slider_id,  
 				phys_radio_id, gen_radio_id, intersect_radio_id, union_radio_id,
 				style, data) {
@@ -212,6 +233,7 @@ function setup_interaction_cytoscape_vis(graph_id,
 	}
 	
 	cy = setup_cytoscape_vis(graph_id, style, data, f);
+
 			
 	union_max = data['max_evidence_cutoff'];
 	phys_max = data['max_phys_cutoff'];
@@ -219,10 +241,10 @@ function setup_interaction_cytoscape_vis(graph_id,
 	intersect_max = data['max_both_cutoff'];
 	evidence_min = data['min_evidence_cutoff'];
 	
-	setup_slider(union_slider_id, evidence_min, Math.min(union_max, 10), Math.min(union_max, 3), f);
-	setup_slider(phys_slider_id, evidence_min, Math.min(phys_max, 10), Math.min(phys_max, 3), f);
-	setup_slider(gen_slider_id, evidence_min, Math.min(gen_max, 10), Math.min(gen_max, 3), f);
-	setup_slider(intersect_slider_id, evidence_min, Math.min(intersect_max, 10), Math.min(intersect_max, 3), f);
+	setup_slider(union_slider_id, evidence_min, Math.min(union_max, 10), Math.max(Math.min(union_max, 3), evidence_min), f);
+	setup_slider(phys_slider_id, evidence_min, Math.min(phys_max, 10), Math.max(Math.min(phys_max, 3), evidence_min), f);
+	setup_slider(gen_slider_id, evidence_min, Math.min(gen_max, 10), Math.max(Math.min(gen_max, 3), evidence_min), f);
+	setup_slider(intersect_slider_id, evidence_min, Math.min(intersect_max, 10), Math.max(Math.min(intersect_max, 3), evidence_min), f);
 	
 	document.getElementById(phys_slider_id).style.display = 'none';
 	document.getElementById(gen_slider_id).style.display = 'none';
@@ -259,7 +281,7 @@ function change_scale(phys_slider_id, gen_slider_id, intersect_slider_id, union_
 	var gen = document.getElementById(gen_radio_id).checked;
 	var both = document.getElementById(intersect_radio_id).checked;
 	
-	var prev_value;
+	var prev_value = 3;
 	if(document.getElementById(union_slider_id).style.display == 'block') {
 		prev_value = $("#" + union_slider_id).val();
 	}
@@ -274,28 +296,28 @@ function change_scale(phys_slider_id, gen_slider_id, intersect_slider_id, union_
 	}
 	
 	if(all) {
-		$("#" + union_slider_id).val(prev_value);
+		$("#" + union_slider_id).val(Math.min(union_max, prev_value));
 		document.getElementById(union_slider_id).style.display = 'block';
 		document.getElementById(phys_slider_id).style.display = 'none';
 		document.getElementById(gen_slider_id).style.display = 'none';
 		document.getElementById(intersect_slider_id).style.display = 'none';
 	}
 	else if(phys) {
-		$("#" + phys_slider_id).val(prev_value);
+		$("#" + phys_slider_id).val(Math.min(phys_max, prev_value));
 		document.getElementById(union_slider_id).style.display = 'none';
 		document.getElementById(phys_slider_id).style.display = 'block';
 		document.getElementById(gen_slider_id).style.display = 'none';
 		document.getElementById(intersect_slider_id).style.display = 'none';
 	}
 	else if(gen) {
-		$("#" + gen_slider_id).val(prev_value);
+		$("#" + gen_slider_id).val(Math.min(gen_max, prev_value));
 		document.getElementById(union_slider_id).style.display = 'none';
 		document.getElementById(phys_slider_id).style.display = 'none';
 		document.getElementById(gen_slider_id).style.display = 'block';
 		document.getElementById(intersect_slider_id).style.display = 'none';
 	}
 	else if(both) {
-		$("#" + intersect_slider_id).val(prev_value);
+		$("#" + intersect_slider_id).val(Math.min(intersect_max, prev_value));
 		document.getElementById(union_slider_id).style.display = 'none';
 		document.getElementById(phys_slider_id).style.display = 'none';
 		document.getElementById(gen_slider_id).style.display = 'none';

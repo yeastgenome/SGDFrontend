@@ -6,22 +6,17 @@ import json
 import requests
 
 def get_json(url, data=None):
-    print url
     if data is not None:
         headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
         r = requests.post(url, data=json.dumps(data), headers=headers)
     else:
         r = requests.get(url)
-    try:
-        return r.json()
-    except:
-        return None
+    return r.json()
 
 def evaluate_url(request):
     bioent_repr = request.matchdict['identifier'].upper()
-    bioent_type = request.matchdict['type'].lower()
-    bioent = get_json(bioentity_overview_link(bioent_repr, bioent_type))
-    return bioent
+    bioent = get_json(bioentity_overview_link(bioent_repr))
+    return bioent        
 
 def main(global_config, **settings):
     """ This function returns a WSGI application.
@@ -52,6 +47,8 @@ def main(global_config, **settings):
     config.add_route('download_citations', '/download_citations')
     config.add_route('download_table', '/download_table')
     config.add_route('analyze', '/analyze')
+    config.add_route('enrichment', '/enrichment')
+    config.add_route('redirect', '/redirect/{page}')
 
     config.scan()
 

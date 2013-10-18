@@ -27,6 +27,7 @@
 	<nav id="sidebar" class="small-3 columns">
 		<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky">
 			<li id="nav-title"><h5><a href="{{link}}">{{display_name}}/{{format_name}}</a> Literature</h5></li>
+          	<li data-magellan-arrival="summary"><a href="#summary">Summary</a></li>
 			<li data-magellan-arrival="primary"><a href="#primary">Primary Literature</a></li>
 			<li data-magellan-arrival="network" id="navbar_network"><a href="#network">Network Visualization</a></li>
           	<li data-magellan-arrival="additional"><a href="#additional">Additional Literature</a></li>
@@ -39,6 +40,15 @@
 	</nav>
 	
 	<div class="small-9 columns">  
+		
+<!-- Summary
+================================================== -->
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Literature Summary</h1>
+		<p><span id="summary_count">-</span> unique references.</p>
+	</div>
+</section>
 
 <!-- Primary
 ================================================== -->
@@ -167,6 +177,7 @@
 
 <script>
 	//Template links and filenames
+	var literature_overview_link = "{{literature_overview_link}}";
 	var literature_details_link = "{{literature_details_link}}";
 	var literature_graph_link = "{{literature_graph_link}}";
 	var go_references_link = "{{go_references_link}}";
@@ -213,9 +224,18 @@
 		'width': 100,
 		'height': 30,
 	});
-
-
+	
+	
 	$(document).ready(function() {
+		
+		//Get overview data
+  		$.getJSON(literature_overview_link, function(data) {
+  			var count_id = "summary_count";
+  			
+  			set_up_overview(count_id, data);
+		});
+		
+		
 		//Get literature
   		$.getJSON(literature_details_link, function(data) {
   			var primary_header_id = "primary_header";

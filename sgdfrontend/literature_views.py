@@ -8,7 +8,8 @@ from pyramid.view import view_config
 from sgdfrontend import evaluate_url
 from sgdfrontend.link_maker import literature_details_link, go_references_link, \
     phenotype_references_link, literature_graph_link, download_citations_link, \
-    interaction_references_link, regulation_references_link
+    interaction_references_link, regulation_references_link, tab_link, \
+    literature_overview_link
 
 
 @view_config(route_name='literature', renderer='templates/literature_details.jinja2')
@@ -18,19 +19,19 @@ def literature(request):
     if bioent is None:
         return Response(status_int=500, body='Bioent could not be found.')
     
-    bioent_type = bioent['bioent_type']
     bioent_id = str(bioent['id'])
     
     page = {
-                'literature_details_link': literature_details_link(bioent_id, bioent_type),
-                'go_references_link': go_references_link(bioent_id, bioent_type),
-                'phenotype_references_link': phenotype_references_link(bioent_id, bioent_type),
-                'interaction_references_link': interaction_references_link(bioent_id, bioent_type),
-                'regulation_references_link': regulation_references_link(bioent_id, bioent_type),
-                'literature_graph_link': literature_graph_link(bioent_id, bioent_type),
+                'literature_details_link': literature_details_link(bioent_id),
+                'go_references_link': go_references_link(bioent_id),
+                'phenotype_references_link': phenotype_references_link(bioent_id),
+                'interaction_references_link': interaction_references_link(bioent_id),
+                'regulation_references_link': regulation_references_link(bioent_id),
+                'literature_graph_link': literature_graph_link(bioent_id),
                 'download_link': download_citations_link(),
-                
-                
+                'tab_link': tab_link(bioent_id),
+                'literature_overview_link': literature_overview_link(bioent_id),
+                'literature_overview_filename': bioent['display_name'] + '_literature_overview.png',
                    
                 'display_name': bioent['display_name'],
                 'format_name': bioent['format_name'],

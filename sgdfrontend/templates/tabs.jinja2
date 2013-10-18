@@ -1,14 +1,16 @@
 <div class="row">
 	<nav id="tab" class="small-12 columns">
 		<ul>
-			<li id="summary_tab"><a href="#"><span>Summary</span></a></li>
-			<li id="history_tab"><a href="#"><span>Locus History</span></a></li>
-			<li id="literature_tab"><a href="#"><span>Literature</span></a></li>
-			<li id="go_tab"><a href="#"><span>Gene Ontology</span></a></li>
-			<li id="interaction_tab"><a href="#"><span>Interactions</span></a></li>
-			<li id="phenotype_tab"><a href="#"><span>Phenotype</span></a></li>
-			<li id="regulation_tab"><a href="#"><span>Regulation</span></a></li>
-			<li id="wiki_tab"><a href="#"><span>Wiki</span></a></li>   
+			<li id="summary_tab"><a href="/cgi-bin/locus.fpl?locus={{display_name}}"><span>Summary</span></a></li>
+			<li id="history_tab"><a href="/cgi-bin/locusHistory.pl?locus={{display_name}}"><span>Locus History</span></a></li>
+			<li id="literature_tab"><a href="/locus/{{display_name}}/literature"><span>Literature</span></a></li>
+			<li id="go_tab"><a href="/cgi-bin/GO/goAnnotation.pl?locus={{display_name}}"><span>Gene Ontology</span></a></li>
+			<li id="phenotype_tab"><a href="/cgi-bin/phenotype/phenotype.fpl?locus={{display_name}}"><span>Phenotype</span></a></li>
+			<li id="interaction_tab"><a href="/locus/{{display_name}}/interactions"><span>Interactions</span></a></li>
+			<li id="expression_tab"><a href="/cgi-bin/expression/expressionConnection.pl?type=summary&locus={{display_name}}"><span>Expression</span></a></li>
+			<li id="regulation_tab"><a href="/locus/{{display_name}}/regulation"><span>Regulation</span></a></li>
+			<li id="protein_tab"><a href="/cgi-bin/protein/proteinPage.pl?locus={{display_name}}"><span>Protein</span></a></li>
+			<li id="wiki_tab"><a href="/cgi-bin/locusWiki.pl?locus={{display_name}}"><span>Wiki</span></a></li>   
 		</ul>
 	</nav>
 </div>
@@ -16,4 +18,3 @@
 <div id="shaded_line">
 	<!-- empty -->
 </div>
-

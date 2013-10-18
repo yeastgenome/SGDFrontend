@@ -28,9 +28,12 @@
 			<li id="nav-title"><h5><a href="{{link}}">{{display_name}}/{{format_name}}</a> Transcriptional Regulation</h5></li>
           	<li data-magellan-arrival="summary"><a href="#summary">Summary</a></li>
 			<li data-magellan-arrival="domains" id="navbar_domains"><a href="#domains">Domains and Classification</a></li>
-			<li data-magellan-arrival="binding" id="navbar_binding"><a href="#binding">Binding Site Motifs</a></li>
-			<li data-magellan-arrival="targets" id="navbar_targets"><a href="#targets">Target Relationships</a></li>
-			<li data-magellan-arrival="regulators" id="navbar_regulators"><a href="#regulators">Regulator Relationships</a></li>
+			<li data-magellan-arrival="binding" id="navbar_binding"><a href="#binding">DNA Binding Site Motifs</a></li>
+			<li data-magellan-arrival="targets" id="navbar_targets"><a href="#targets">Targets</a></li>
+			<li data-magellan-arrival="enrichment" id="navbar_enrichment"><a href="#enrichment">Shared GO Processes Among Targets</a></li>
+			<li data-magellan-arrival="regulators" id="navbar_regulators"><a href="#regulators">Regulators</a></li>
+			<li data-magellan-arrival="network" id="navbar_network"><a href="#network">Network Visualization</a></li>
+
 		</ul>
 	</nav>
 	
@@ -45,7 +48,8 @@
 		
 		<ul id="summary_paragraph_reference_list" class="literature-list"></ul>
 		
-		<div class="panel">
+		<p id="summary_message" style="display:none">0 Targets and 0 Regulators curated.</p>
+		<div class="panel" id="summary_wrapper">
 			<div id="summary_diagram"></div>
 		
 			<div class="button-bar">
@@ -55,7 +59,7 @@
 					<li><a id="reg" class="small button secondary">Regulators</a></li>
 				</ul>
 				<ul class="button-group radius">
-					<li><a class="small button secondary radius" id="save" download="{{display_name}}_regulation_bar.png"><i class="icon-picture"></i> PNG</a></li>
+					<li><a class="small button secondary radius" id="save" download="{{regulation_overview_filename}}"><i class="icon-picture"></i> PNG</a></li>
 				</ul>
 			</div>
 		</div>
@@ -93,7 +97,7 @@
 ================================================== -->
 <section id="binding" data-magellan-destination="binding">
 	<div class="page-header">
-		<h1>Binding Site Motifs</h1>
+		<h1>DNA Binding Site Motifs</h1>
 		<div>
 			Click on a motif to view <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a> record.
 			<ul id="binding_motifs"></ul>
@@ -106,7 +110,7 @@
 ================================================== -->
 <section id="targets" data-magellan-destination="targets">
 	<div class="page-header">
-		<h1>Target Relationships <span id="targets_header" class="round secondary label"></span></h1>
+		<h1>Targets <span class="round secondary label"><span id="targets_header"></span> <small>entries for</small> <span id="targets_gene_header"></span> <small>genes</small></span></h1>
 		<div>
 			<div class="button-bar">
 				<ul class="button-group radius">
@@ -137,11 +141,39 @@
    </div>
 </section>
 
+<!-- Enrichment
+================================================== -->
+<section id="enrichment" data-magellan-destination="enrichment">
+	<div class="page-header">
+		<h1>Shared GO Processes Among Targets <span id="enrichment_header" class="round secondary label"></span></h1>
+		<div>
+			<div class="button-bar">
+				<ul class="button-group radius">
+					<li><a id="enrichment_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
+				</ul>
+				<ul class="button-group radius">
+					<li style="display:none" id="filter_message"><a id="enrichment_recalc" class="small button secondary">Recalculate With New Filter</a></li>
+				</ul>
+			</div>
+			
+			<table class='table table-striped table-bordered table-condensed' id='enrichment_table' width="100%">
+			<thead>
+  			<tr>
+  				<th>GO Term</th>
+  				<th>Number of genes</th>
+  				<th>P-Value</th>
+  			</tr>
+  			</thead>
+			</table>
+        </div>
+   </div>
+</section>
+
 <!-- Regulators
 ================================================== -->
 <section id="regulators" data-magellan-destination="regulators">
 	<div class="page-header">
-		<h1>Regulator Relationships <span id="regulators_header" class="round secondary label"></span></h1>
+		<h1>Regulators <span class="round secondary label"><span id="regulators_header"></span> <small>entries for</small> <span id="regulators_gene_header"></span> <small>genes</small></span></h1>
 		<div>
 			<div class="button-bar">
 				<ul class="button-group radius">
@@ -172,6 +204,33 @@
    </div>
 </section>
 
+<!-- Network Visualization
+================================================== -->
+<section id="network" data-magellan-destination="network">
+	<div class="page-header">
+		<h1>Network Visualization</h1>
+		<div class="panel">
+			<label for="all_radio">
+				<input id="all_radio" type="radio" name="group1" checked> All
+			</label>
+			<label for="targets_radio">
+				<input id="targets_radio" type="radio" name="group1"> Targets
+			</label>
+			<label for="regulators_radio">
+				<input id="regulators_radio" type="radio" name="group1"> Regulators
+			</label>
+			
+			<div id="cy" name="cy" style="width:100%;height:700px"></div>
+			<br>
+			<h5>Filter Regulation Relationships by # of Experiments:</h5>
+			<div id='all_slider' class='noUiSlider' style="width:100%"></div>
+			<div id='targets_slider' class='noUiSlider' style="width:100%"></div>
+			<div id='regulators_slider' class='noUiSlider' style="width:100%"></div>
+			<br>
+		</div><!-- .panel -->
+    </div>
+</section>
+
 <br>
 <br>
 <br>
@@ -185,6 +244,9 @@
 {% block scripts %}
 <script src="/static/js/kinetic-v4.3.3.min.js"></script>
 <script src="/static/js/side_bar.js"></script>	
+<script src="/static/js/jquery.nouislider.min.js"></script>
+<script src="/static/js/cytoscape/cytoscape.min.js"></script>	
+<script src="/static/js/cytoscape/arbor.js"></script>	
 <script src="/static/js/regulation_details.js"></script>
 
 <script>
@@ -197,11 +259,52 @@
 	var download_table_link = "{{download_table_link}}";
 	var domains_table_filename = "{{domains_filename}}";
 	var targets_table_filename = "{{targets_filename}}";
+	var enrichment_table_filename = "{{enrichment_filename}}"
 	var regulators_table_filename = "{{regulators_filename}}";
 	var analyze_link = "{{analyze_link}}";
+	var go_enrichment_link = "{{go_enrichment_link}}";
 	var bioent_display_name = "{{display_name}}";
 	var bioent_format_name = "{{format_name}}";
 	var bioent_link = "{{link}}";
+	
+	//Graph style
+	var graph_style = cytoscape.stylesheet()
+	.selector('node')
+	.css({
+		'content': 'data(name)',
+		'font-family': 'helvetica',
+		'font-size': 14,
+		'text-outline-width': 3,
+		'text-outline-color': '#888',
+		'text-valign': 'center',
+		'color': '#fff',
+		'width': 30,
+		'height': 30,
+		'border-color': '#fff'
+	})
+	.selector('edge')
+	.css({
+		'width': 2,
+		'target-arrow-shape': 'triangle'
+	})
+	.selector("node[sub_type='FOCUS']")
+	.css({
+		'background-color': "#fade71",
+		'text-outline-color': '#fff',
+		'color': '#888',
+	})
+	.selector("node[class_type='TARGET'][sub_type!='FOCUS']")
+	.css({
+		'background-color': "#AF8DC3",
+		'text-outline-color': '#888',
+		'color': '#fff',
+	})
+	.selector("node[class_type='REGULATOR'][sub_type!='FOCUS']")
+	.css({
+		'background-color': "#7FBF7B",
+		'text-outline-color': '#888',
+		'color': '#fff',
+	});
 	
 	//Side-bar style
 	var side_bar_style = {"left_color": "#AF8DC3", "right_color": "#7FBF7B"};
@@ -211,13 +314,25 @@
   		$.getJSON(regulation_overview_link, function(data) {
   			var summary_paragraph_id = "summary_paragraph";
   			var reference_list_id = "summary_paragraph_reference_list";
+  			var targets_gene_header_id = "targets_gene_header";
+  			var regulators_gene_header_id = "regulators_gene_header";
   			var diagram_id = "summary_diagram";
   			var save_button_id = "save";
   			var analyze_target_id = "targ";
   			var analyze_regulator_id = "reg";
+  			
+  			var message_id = "summary_message";
+  			var wrapper_id = "summary_wrapper";
+  			
+  			
   			set_up_overview(summary_paragraph_id, reference_list_id, diagram_id, save_button_id, 
-  				analyze_target_id, analyze_regulator_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, 
-  				side_bar_style, data);
+  			analyze_target_id, analyze_regulator_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, 
+  			targets_gene_header_id, regulators_gene_header_id, side_bar_style, data);
+  			
+  			if(data['target_count'] + data['regulator_count'] == 0) {
+  				document.getElementById(message_id).style.display = "block";
+  				document.getElementById(wrapper_id).style.display = "none";
+  			}
 		});
 		
 		//Get domain data
@@ -256,7 +371,7 @@
   			}
   			
   		});
-	
+  		
 		//Get evidence data
   		$.getJSON(regulation_details_link, function(data) {
   			
@@ -270,18 +385,31 @@
   			var target_navbar_id = "navbar_targets";
   			var domain_section_id = "domains";
   			var domain_navbar_id = "navbar_domains";
+  			var enrichment_section_id = "enrichment";
+  			var enrichment_navbar_id = "navbar_enrichment";
+  			var filter_message_id = "filter_message";
   			
   			if(target_data.length > 0) {
-  				set_up_target_table(targets_header_id, targets_table_id,
+  				set_up_target_table(targets_header_id, targets_table_id, filter_message_id,
   				targets_download_button_id, targets_analyze_button_id, 
   				download_table_link, targets_table_filename, 
   				analyze_link, bioent_display_name, bioent_format_name, bioent_link, target_data);
+
+  				//Set up go enrichment				
+				var enrich_header_id = "enrichment_header";
+				var enrich_table_id = "enrichment_table";
+				var enrich_download_button_id = "enrichment_table_download";
+				var enrich_recalc_button_id = "enrichment_recalc";
+				go_enrichment(go_enrichment_link, target_table, format_name_to_id, 3, enrich_header_id, enrich_table_id, enrich_recalc_button_id,
+					enrich_download_button_id, download_table_link, enrichment_table_filename);
   			}
   			else {
   				document.getElementById(target_section_id).style.display = "none";
   				document.getElementById(target_navbar_id).style.display = "none";
   				document.getElementById(domain_section_id).style.display = "none";
   				document.getElementById(domain_navbar_id).style.display = "none";
+  				document.getElementById(enrichment_section_id).style.display = "none";
+  				document.getElementById(enrichment_navbar_id).style.display = "none";
   			}
   				
   			var regulator_data = data["regulators"];
@@ -293,7 +421,7 @@
   			var regulator_section_id = "regulators";
   			var regulator_navbar_id = "navbar_regulators";
   			
-  			if(regulator_data.length > 0) {
+  			if(regulator_data.length > 0) {		
   				set_up_regulator_table(regulators_header_id, regulators_table_id,
   				regulators_download_button_id, regulators_analyze_button_id, 
   				download_table_link, regulators_table_filename, 
@@ -306,7 +434,32 @@
   			
   		});
   		
-  		
+  		//Get graph
+  		$.getJSON(regulation_graph_link, function(data) {
+  			var graph_id = "cy";
+  			var all_slider_id = "all_slider";
+  			var target_slider_id = "targets_slider";
+  			var regulator_slider_id = "regulators_slider";
+  			
+  			var all_radio_id = "all_radio";
+  			var target_radio_id = "targets_radio";
+  			var regulator_radio_id = "regulators_radio";
+  			
+  			var section_id = "network";
+  			var section_navbar_id = "navbar_network";
+  			
+  			if(data["nodes"].length > 1) {
+  				cy = setup_regulation_cytoscape_vis(graph_id, 
+				all_slider_id, target_slider_id, regulator_slider_id, 
+				all_radio_id, target_radio_id, regulator_radio_id,
+				graph_style, data);
+  			}
+  			else {
+  				document.getElementById(section_id).style.display = "none";
+				document.getElementById(section_navbar_id).style.display = "none";
+  			}
+			
+		});
     
 	});
 </script>

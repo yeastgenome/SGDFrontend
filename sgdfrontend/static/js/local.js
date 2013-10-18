@@ -21,6 +21,18 @@ function post_to_url(path, params) {
     form.submit();
 }
 
+function post_json_to_url(link, data, onSuccess, onFailure) {
+	$.ajax({url: link,
+  		type: 'post',
+  		data: JSON.stringify(data),
+  		contentType: 'application/json',
+  		processData: false,
+  		dataType: "json",
+  		success: onSuccess
+ 	}).fail(onFailure);
+}
+
+
 function download_citations(citation_div, download_link, list_name) {
 	var reference_ids = [];
 	var entries = document.getElementById(citation_div).children;
@@ -42,22 +54,23 @@ function download_table(table, download_link, table_name) {
 	post_to_url(download_link, {"display_name":table_name, 'headers': JSON.stringify(headers), 'data': JSON.stringify(data)});
 }
 
-function analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, list_type, ev_table, index) {
-	var bioent_sys_names = [];
-
+function analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, list_type, ev_table, index, format_name_to_id) {
+	var bioent_ids = [];
+	
 	var data = ev_table._('tr', {"filter": "applied"});
 	for (var i=0,len=data.length; i<len; i++) { 
 		var sys_name = data[i][index];
-		bioent_sys_names.push(sys_name);
+		bioent_ids.push(format_name_to_id[sys_name])
 	}	
 		
 	var search_term = ev_table.fnSettings().oPreviousSearch.sSearch
+	
 	if(search_term != '') {
 		list_type = list_type + ' filtered by "' + search_term + '"'
 	}
-			
+	
 	post_to_url(analyze_link, {'bioent_display_name': bioent_display_name, 'bioent_format_name': bioent_format_name, 'bioent_link': bioent_link,
-										 'bioent_ids': bioent_sys_names, 'list_type': list_type});
+										 'list_name': list_type, 'bioent_ids': JSON.stringify(bioent_ids)});
 }
 
 function paginate_list(list_id, num_per_page) {
@@ -201,7 +214,7 @@ function setup_cytoscape_vis(div_id, style, data, f) {
 							else {
 								return 1;
 							}
-						}
+						},
 					},
 		    minZoom: 0.5,
 		    maxZoom: 2,
@@ -214,10 +227,216 @@ function setup_cytoscape_vis(div_id, style, data, f) {
 		
 		    ready: function(){
 		      	cy = this;
-		      	f();
+		      	cy.zoomingEnabled(false);
+		      	if(f != null) {
+		      		f();
+		      	}
+		      	cy.on('tap', 'node', function(evt){
+  					var node = evt.cyTarget;
+  					window.location.href = node.data().link;
+				});
+				cy.on('layoutstop', function(evt){
+					$('#cy_recenter').removeAttr('disabled'); 
+				});
+				cy.on('tap', function (evt) {
+					this.zoomingEnabled(true);
+				});
+				cy.on('mouseout', function(evt) {
+					this.zoomingEnabled(false);
+				});
 		    }, 
 		  };
 	
 		$('#' + div_id).cytoscape(options);
 	});
+	var cytoscape_div = document.getElementById(div_id);
+	var recenter_button = document.createElement('a');
+	recenter_button.id = "cy_recenter";
+	recenter_button.className = "small button secondary";
+	recenter_button.innerHTML = "Recenter";
+	recenter_button.onclick = function() {
+		var old_zoom_value = cy.zoomingEnabled();
+		cy.zoomingEnabled(true);
+		cy.fit();
+		cy.zoominEnabled(old_zoom_value);
+	};
+	cytoscape_div.parentNode.insertBefore(recenter_button, cytoscape_div);
+	recenter_button.setAttribute('disabled', 'disabled'); 
+}
+
+//http://datatables.net/forums/discussion/2123/filter-post-processing-and-highlighting/p1
+function setup_datatable_highlight() {
+	// HIGHLIGHT FCT
+jQuery.fn.dataTableExt.oApi.fnSearchHighlighting = function(oSettings) {
+    // Initialize regex cache
+    oSettings.oPreviousSearch.oSearchCaches = {};
+       
+    oSettings.oApi._fnCallbackReg( oSettings, 'aoRowCallback', function( nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        // Initialize search string array
+        var searchStrings = [];
+        var oApi = this.oApi;
+        var cache = oSettings.oPreviousSearch.oSearchCaches;
+        // Global search string
+        // If there is a global search string, add it to the search string array
+        if (oSettings.oPreviousSearch.sSearch) {
+            searchStrings.push(oSettings.oPreviousSearch.sSearch);
+        }
+        // Individual column search option object
+        // If there are individual column search strings, add them to the search string array
+        if ((oSettings.aoPreSearchCols) && (oSettings.aoPreSearchCols.length > 0)) {
+            for (var i in oSettings.aoPreSearchCols) {
+                if (oSettings.aoPreSearchCols[i].sSearch) {
+                searchStrings.push(oSettings.aoPreSearchCols[i].sSearch);
+                }
+            }
+        }
+        // Create the regex built from one or more search string and cache as necessary
+        if (searchStrings.length > 0) {
+            var sSregex = searchStrings.join("|");
+            if (!cache[sSregex]) {
+                var regRules = "("
+                ,   regRulesSplit = sSregex.split(' ');
+                 
+                regRules += "("+ sSregex +")";
+                for(var i=0; i<regRulesSplit.length; i++) {
+                  regRules += "|("+ regRulesSplit[i] +")";
+                }
+                regRules += ")";
+             
+                // This regex will avoid in HTML matches
+                cache[sSregex] = new RegExp(regRules+"(?!([^<]+)?>)", 'ig');
+            }
+            var regex = cache[sSregex];
+        }
+        // Loop through the rows/fields for matches
+        jQuery('td', nRow).each( function(i) {
+            // Take into account that ColVis may be in use
+            var j = oApi._fnVisibleToColumnIndex( oSettings,i);
+            // Only try to highlight if the cell is not empty or null
+            if (aData[j]) {         
+                // If there is a search string try to match
+                if ((typeof sSregex !== 'undefined') && (sSregex)) {
+                    this.innerHTML = aData[j].replace( regex, function(matched) {
+                        return "<span class='filterMatches'>"+matched+"</span>";
+                    });
+                }
+                // Otherwise reset to a clean string
+                else {
+                    this.innerHTML = aData[j];
+                }
+            }
+        });
+        return nRow;
+    }, 'row-highlight');
+    return this;
+};
+}
+
+function set_up_scientific_notation_sorting() {
+	/* new sorting functions */
+	jQuery.fn.dataTableExt.oSort['scinote-asc']  = function(a,b) {
+          var x = parseFloat(a);
+          var y = parseFloat(b);
+          return ((x < y) ? -1 : ((x > y) ?  1 : 0));
+        };
+ 
+	jQuery.fn.dataTableExt.oSort['scinote-desc']  = function(a,b) {
+          var x = parseFloat(a);
+          var y = parseFloat(b);
+          return ((x < y) ? 1 : ((x > y) ?  -1 : 0));
+        };
+ 
+	/* pick the column to give the datatype 'allnumeric' too */
+	$('#example').dataTable({
+          "aoColumnDefs": [{ "sType": "scinote", "aTargets": [ 3 ] } ]
+	} );
+}
+
+function go_enrichment(go_enrichment_link, table, format_name_to_id, index, header_id, table_id, enrich_recalc_button_id,
+	download_button_id, download_link, enrichment_table_filename) {
+
+	function f() {
+		document.getElementById(enrich_recalc_button_id).setAttribute('disabled', 'disabled');
+		set_table_message(table_id, '<center><img src="/static/img/dark-slow-wheel.gif"></center>')	
+		
+		var bioent_ids = [];
+		//Get bioent_ids	
+		var data = table._('tr', {"filter": "applied"});
+		for (var i=0,len=data.length; i<len; i++) { 
+			var sys_name = data[i][index];
+			bioent_ids.push(format_name_to_id[sys_name])
+		}	
+	
+		post_json_to_url(go_enrichment_link, {'bioent_ids': bioent_ids}, 
+		function(data) {  		
+  			set_up_enrichment_table(header_id, table_id, download_button_id, download_link, enrichment_table_filename, data)
+  			$('#' + enrich_recalc_button_id).removeAttr('disabled');
+  			update_filter_used();
+  		},
+  		function() {
+    		document.getElementById(spinner_id).innerHTML = 'Error calculating go enrichment.'
+    		$('#' + enrich_recalc_button_id).removeAttr('disabled');
+  		}
+  		);
+  	}
+  	
+  	document.getElementById(enrich_recalc_button_id).onclick = f;
+  	f();
+}
+
+function set_table_message(table_id, message) {
+	var options = {};
+	options["bPaginate"] = true;
+	options["aoColumns"] = [null, null, null]
+	options["bDestroy"] = true;
+	options['oLanguage'] = {'sEmptyTable': message}
+	options["aaData"] = [];
+  				
+  	var enrichment_table = $('#' + table_id).dataTable(options);
+}
+
+function set_up_enrichment_table(header_id, table_id, download_button_id, download_link, download_table_filename, data) { 
+	var datatable = [];
+	for (var i=0; i < data.length; i++) {
+		var evidence = data[i];	
+		var go = '';
+		if(evidence['go'] != null) {
+			go = create_link(evidence['go']['display_name'], evidence['go']['link']);
+		}
+	
+  		datatable.push([go, evidence['match_count'], evidence['pvalue']])
+  	}
+  	
+  	document.getElementById(header_id).innerHTML = data.length;
+  	
+  	var element = document.getElementById("temp_spinner");
+  	if(element != null) {
+  		element.parentNode.removeChild(element);
+  	}
+	
+	set_up_scientific_notation_sorting();
+	
+  	if (data == null) {
+  		set_table_message(table_id, 'Error calculating shared GO processes.');
+  		document.getElementById(download_button_id).setAttribute('disabled', 'disabled'); 
+  	}
+  	else if (data.length == 0) {
+  		set_table_message(table_id, 'No significant shared GO processes found.');
+  		document.getElementById(download_button_id).setAttribute('disabled', 'disabled'); 
+  	}
+  	else {
+    	var options = {};
+		options["bPaginate"] = true;
+		options["aaSorting"] = [[2, "asc"]];
+		options["aoColumns"] = [null, null, { "sType": "scinote" }]
+		options["bDestroy"] = true;
+		options["aaData"] = datatable;
+  				
+  		setup_datatable_highlight();
+  		var enrichment_table = $('#' + table_id).dataTable(options);
+  		enrichment_table.fnSearchHighlighting();
+  		
+  		document.getElementById(download_button_id).onclick = function() {download_table(enrichment_table, download_link, download_table_filename)};
+    	$('#' + download_button_id).removeAttr('disabled');
+    }
 }

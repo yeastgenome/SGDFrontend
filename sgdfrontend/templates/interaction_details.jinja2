@@ -29,7 +29,7 @@
           	<li data-magellan-arrival="summary"><a href="#summary">Interactors Summary</a></li>
 			<li data-magellan-arrival="interactions"><a href="#interactions">Interactions</a></li>
 			<li data-magellan-arrival="network" id="navbar_network"><a href="#network">Network Visualization</a></li>
-			<li data-magellan-arrival="resources"><a href="#resources">Resources</a></li>
+			<li data-magellan-arrival="resources" id="navbar_resources"><a href="#resources">Resources</a></li>
 		</ul>
 	</nav>
 	
@@ -41,19 +41,20 @@
 	<div class="page-header">
 		<p>Genes and proteins that interact with {{display_name}}. See help for information about interaction data.</p>
 		<h1>Interactors Summary</h1>
-		<div class="panel">
+		<p id='summary_message' style='display:none'>0 Genetic and 0 Physical Interactors curated.</p>
+		<div class="panel" id="summary_wrapper">
 			<div id="venn_diagram"></div>
 	
 			<div class="button-bar">
 				<h5>Analyze</h5>
 				<ul class="button-group radius">
-					<li><a id="phys" class="small button secondary sgd-icon-venn-physical">Physical</a></li>
-					<li><a id="gen" class="small button secondary sgd-icon-venn-genetic">Genetic</a></li>
-					<li><a id="phys_gen_intersect" class="small button secondary sgd-icon-venn-intersection">Intersection</a></li>
-					<li><a id="phys_gen_union" class="small button secondary sgd-icon-venn-all">All</a></li>
+					<li><a disabled="true" id="phys" class="small button secondary sgd-icon-venn-physical">Physical</a></li>
+					<li><a disabled="true" id="gen" class="small button secondary sgd-icon-venn-genetic">Genetic</a></li>
+					<li><a disabled="true" id="phys_gen_intersect" class="small button secondary sgd-icon-venn-intersection">Intersection</a></li>
+					<li><a disabled="true" id="phys_gen_union" class="small button secondary sgd-icon-venn-all">All</a></li>
 				</ul>
 				<ul class="button-group radius">
-					<li><a class="small button secondary radius" id="save" download="{{display_name}}_interaction_venn.png"><i class="icon-picture"></i> PNG</a></li>
+					<li><a disabled="true" class="small button secondary radius" id="save" download="{{interaction_overview_filename}}"><i class="icon-picture"></i> PNG</a></li>
 				</ul>
 			</div>
 		</div>
@@ -64,24 +65,24 @@
 ================================================== -->
 <section id="interactions" data-magellan-destination="interactions">
 	<div class="page-header">
-		<h1>Interactions <span id="evidence_header" class="round secondary label"></span></h1>
-		<span>Source: <a href="http://thebiogrid.org/" target="_blank">BioGRID</a></span>
-		<span id='evidence_message'></span>
-		<br><br>
+		<h1>Interactions <span class="round secondary label"><span id="evidence_header"></span> <small>entries for</small> <span id="evidence_gene_header"></span> <small>genes</small></span></h1>
+		<span>Source: <a href="http://thebiogrid.org/" target="_blank" id="biogrid_link">BioGRID</a></span>
+		<p id='evidence_message' style='display:none'>No interactions curated.</p>
 		<div id='evidence_wrapper'>
 			<div class="button-bar">
 				<ul class="button-group radius">
-					<li><a id="evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
+					<li><a disabled="true" id="evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
 				</ul>
 						
 				<ul class="button-group radius">
-					<li><a id="evidence_table_analyze" class="small button secondary"><i class='icon-briefcase'></i> Analyze</a></li>
+					<li><a disabled="true" id="evidence_table_analyze" class="small button secondary"><i class='icon-briefcase'></i> Analyze</a></li>
 				</ul>
 			</div>
 			
 			<table class='table table-striped table-bordered table-condensed' id='evidence_table' width="100%">
 			<thead>
   			<tr>
+  				<th></th>
   				<th>Interactor</th>
   				<th>Interactor Systematic Name</th>
   				<th>Interactor</th>
@@ -122,7 +123,6 @@
 			</label>
 
 			<div id="cy" name="cy" style="width:100%;height:700px"></div>
-			<br>
 			<h5>Filter Interactions by # of Experiments:</h5>
 			<div id='allSlider' class='noUiSlider' style="width:100%"></div>
 			<div id='physSlider' class='noUiSlider' style="width:100%"></div>
@@ -158,6 +158,7 @@
 <script src="/static/js/jquery.nouislider.min.js"></script>
 <script src="/static/js/cytoscape/cytoscape.min.js"></script>	
 <script src="/static/js/cytoscape/arbor.js"></script>	
+<script src="/static/js/local.js"></script>
 <script src="/static/js/interaction_details.js"></script>
 
 <script>
@@ -213,7 +214,7 @@
 	
 	//Venn style
 	var venn_style = {"left_color": "#762A83", "right_color": "#1B7837"};
-	
+		
 	$(document).ready(function() {
     	//Get overview data
   		$.getJSON(interaction_overview_link, function(data) {
@@ -223,9 +224,20 @@
   			var gen_button_id = "gen";
   			var intersect_button_id = "phys_gen_intersect";
   			var union_button_id = "phys_gen_union";
+  			var evidence_gene_header_id = "evidence_gene_header";
   			
-  			set_up_overview_table(venn_id, save_button_id, phys_button_id, gen_button_id, intersect_button_id, union_button_id, 
-  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, venn_style, data);
+  			var message_id = "summary_message";
+  			var wrapper_id = "summary_wrapper";
+  			
+  			if(data['num_gen_interactors'] + data['num_phys_interactors'] > 0){
+  				set_up_overview_table(venn_id, save_button_id, phys_button_id, gen_button_id, intersect_button_id, union_button_id, 
+  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, evidence_gene_header_id, venn_style, data);
+  			}
+  			else {
+  				document.getElementById(message_id).style.display = "block";
+  				document.getElementById(wrapper_id).style.display = "none";
+  				document.getElementById(evidence_gene_header_id).innerHTML = 0;
+  			}
 		});
 	
 		//Get evidence data
@@ -234,9 +246,21 @@
   			var table_id = "evidence_table";
   			var download_button_id = "evidence_table_download";
   			var analyze_button_id = "evidence_table_analyze";
-  			set_up_evidence_table(header_id, table_id, download_button_id, analyze_button_id, 
+  			
+  			var message_id = "evidence_message";
+  			var wrapper_id = "evidence_wrapper";
+  			
+  			if(data.length > 0) {
+  				set_up_evidence_table(header_id, table_id, download_button_id, analyze_button_id, 
   				download_table_link, download_table_filename, 
   				analyze_link, bioent_display_name, bioent_format_name, bioent_link, data);
+  			}
+  			else {
+  				document.getElementById(message_id).style.display = "block";
+  				document.getElementById(wrapper_id).style.display = "none";
+  				document.getElementById(header_id).innerHTML = 0;
+  			}
+  			
   		});
   		
   		//Get graph
@@ -251,12 +275,12 @@
   			var gen_radio_id = "genetic_radio";
   			var intersect_radio_id = "intersect_radio";
   			var union_radio_id = "union_radio";
-  			
+  			  			
   			var section_id = "network";
   			var section_navbar_id = "navbar_network";
   			
   			if(data["nodes"].length > 1) {
-  				cy = setup_interaction_cytoscape_vis(graph_id, 
+  				cy = setup_interaction_cytoscape_vis(graph_id,
 				phys_slider_id, gen_slider_id, intersect_slider_id, union_slider_id, 
 				phys_radio_id, gen_radio_id, intersect_radio_id, union_radio_id,
 				graph_style, data);
@@ -270,7 +294,25 @@
     	
     	//Get resources
 	  	$.getJSON(interaction_resources_link, function(data) {
-	  		set_up_resources("resource_list", data);
+	  		var biogrid_link_id = "biogrid_link";
+	  		var resource_list_id = "resource_list";
+	  		
+	  		var section_id = "resources";
+	  		var section_navbar_id = "navbar_resources";
+	  		
+	  		if(data.length > 0) {
+	  			set_up_resources(resource_list_id, data);
+	  			for (var i=0; i < data.length; i++) {
+	  				if(data[i]['display_name'] == 'BioGRID') {
+	  					document.getElementById(biogrid_link_id).href = data[i]['link'];
+	  				}
+				}
+	  		}
+	  		else {
+	  			document.getElementById(section_id).style.display = "none";
+				document.getElementById(section_navbar_id).style.display = "none";
+	  		}
+	  		
 	  	});
 	});
 </script>

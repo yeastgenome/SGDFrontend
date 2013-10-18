@@ -1,8 +1,9 @@
+from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from pyramid.view import view_config
 from sgdfrontend import get_json
 from sgdfrontend.link_maker import citation_list_link, bioent_list_link, \
-    download_table_link
+    download_table_link, go_enrichment_link, enrichment_link
 import datetime
 import json
  
@@ -15,6 +16,15 @@ def clean_cell(cell):
         return cell
     else:
         return cell
+    
+@view_config(route_name='redirect')
+def redirect(request):
+    page = request.matchdict['page']
+    if len(request.GET) == 1:
+        bioent_repr = request.GET.values()[0]
+        return HTTPFound('/locus/' + bioent_repr + '/' + page)
+    else:
+        return Response(status_int=500, body='Invalid URL.')
 
 @view_config(route_name='download_table')
 def download_table(request):
@@ -40,12 +50,12 @@ def download_table(request):
 def download_citations(request):
     reference_ids = list(set(request.POST['reference_ids'].split(',')))
     display_name = request.POST['display_name']
-    print reference_ids
     references = get_json(citation_list_link(), data={'reference_ids': reference_ids})
     
     headers = request.response.headers
     
-    request.response.text = '\n' + '\n\n'.join(references)
+    print references
+    request.response.text = '\n' + '\n\n'.join([ref['text'] for ref in references])
     
     headers['Content-Type'] = 'text/plain'        
     headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.nbib')
@@ -54,23 +64,34 @@ def download_citations(request):
 
 @view_config(route_name='analyze', renderer='templates/analyze.jinja2')
 def analyze_view(request):
-    list_type = request.POST['list_type']
+    list_name = request.POST['list_name']
     bioent_display_name = request.POST['bioent_display_name']
     bioent_format_name = request.POST['bioent_format_name']
     bioent_link = request.POST['bioent_link']
-    bioent_ids = list(set(request.POST['bioent_ids'].split(',')))
-    
+    bioent_ids = list(set([int(x) for x in json.loads(request.POST['bioent_ids'])]))
+        
     bioents = get_json(bioent_list_link(), data={'bioent_ids': bioent_ids})
+
     if bioents is None:
         return Response(status_int=500, body='Bioents could not be found.') 
+    
     page = {    'bioent_display_name': bioent_display_name,
                 'bioent_format_name': bioent_format_name,
                 'bioent_link': bioent_link,
-                'bioents': bioents,
-                'bioent_ids': " ".join([bioent['format_name'] for bioent in bioents]), 
+                'go_enrichment_link': enrichment_link(),
+                'bioents': json.dumps(bioents),
+                'bioent_format_names': " ".join([bioent['format_name'] for bioent in bioents]), 
                 'gene_list_filename': 'gene_list',
-                'list_type': list_type,
+                'list_type': list_name,
                 'download_table_link': download_table_link(),
             }
     return page
+
+
+@view_config(route_name='enrichment', renderer='json')
+def enrichment(request):
+    bioent_ids = request.json_body['bioent_ids']
+    enrichment_results = get_json(go_enrichment_link(), data={'bioent_ids': bioent_ids})
+    print enrichment_results
+    return enrichment_results
 

@@ -1,4 +1,7 @@
 
+function set_up_overview(count_id, data) {
+	document.getElementById(count_id).innerHTML = data['Total']
+}
 
 function set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data) {
 	document.getElementById(header_id).innerHTML = data.length;

@@ -1,16 +1,32 @@
 var cy;
 var target_table;
 var regulator_table;
+var format_name_to_id = new Object();
+var filter_used_for_go = '';
+var filter_message;
+function update_filter_used() {
+	filter_used_for_go = target_table.fnSettings().oPreviousSearch.sSearch;
+	filter_message.style.display = "none";
+}
 
 function set_up_overview(summary_paragraph_id, reference_list_id, diagram_id, save_button_id, 
-	analyze_target_id, analyze_regulator_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, style, data) {
+	analyze_target_id, analyze_regulator_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, 
+	targets_gene_header_id, regulators_gene_header_id,
+	style, data) {
+	
+	document.getElementById(targets_gene_header_id).innerHTML = data['target_count']; 
+	document.getElementById(regulators_gene_header_id).innerHTML = data['regulator_count']; 
+		
 	if('paragraph' in data) {
 		document.getElementById(summary_paragraph_id).innerHTML = data['paragraph']['text'];
 		references = data['paragraph']['references'];
 		set_up_references(references, reference_list_id);
 	}
 	
-	var stage = draw_side_bar_diagram(diagram_id, data['target_count'], data['regulator_count'], style['left_color'], style['right_color']);
+	var values = [data['target_count'], data['regulator_count']];
+	var labels = ['Transcriptional\nTargets', 'Transcriptional\nRegulators'];
+	var colors = [style['left_color'], style['right_color']];
+	var stage = draw_side_bar_diagram(diagram_id, values, labels, colors, false);
 	stage.toDataURL({
        	width: 500,
        	height: 120,
@@ -28,8 +44,8 @@ function set_up_overview(summary_paragraph_id, reference_list_id, diagram_id, sa
     }
 
     //set up Analyze buttons
-	document.getElementById(analyze_target_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Targets', target_table, 3)};
-	document.getElementById(analyze_regulator_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3)};
+	document.getElementById(analyze_target_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Targets', target_table, 3, format_name_to_id)};
+	document.getElementById(analyze_regulator_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3, format_name_to_id)};
 }
 
 function set_up_binding_site(list_id, data) {
@@ -48,14 +64,18 @@ function set_up_binding_site(list_id, data) {
 	}
 }
 
-function set_up_target_table(header_id, table_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
+function set_up_target_table(header_id, table_id, filter_message_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
 	analyze_link, bioent_display_name, bioent_format_name, bioent_link, data) { 
+
 	var datatable = [];
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
   			
 		var bioent1 = create_link(evidence['bioent1']['display_name'], evidence['bioent1']['link'])
 		var bioent2 = create_link(evidence['bioent2']['display_name'], evidence['bioent2']['link'])
+		
+		format_name_to_id[evidence['bioent1']['format_name']] = evidence['bioent1']['id']
+		format_name_to_id[evidence['bioent2']['format_name']] = evidence['bioent2']['id']
 			
 		var experiment = '';
 		if(evidence['experiment'] != null) {
@@ -70,7 +90,7 @@ function set_up_target_table(header_id, table_id, download_button_id, analyze_bu
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
   		datatable.push([bioent1, evidence['bioent1']['format_name'], bioent2, evidence['bioent2']['format_name'], experiment, evidence['conditions'], strain, evidence['source'], reference])
   	}
-  	
+  	  	
   	document.getElementById(header_id).innerHTML = data.length;
   	
   	if (data.length == 0) {
@@ -84,10 +104,23 @@ function set_up_target_table(header_id, table_id, download_button_id, analyze_bu
 		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]		
 		options["aaData"] = datatable;
   				
+  		setup_datatable_highlight();
   		target_table = $('#' + table_id).dataTable(options);
+  		target_table.fnSearchHighlighting();
+  		
+  		filter_message = document.getElementById(filter_message_id);
+		target_table.bind("filter", function() {
+			var search = target_table.fnSettings().oPreviousSearch.sSearch;
+			if(search != filter_used_for_go) {
+				filter_message.style.display = "block";
+			}
+			else {
+				filter_message.style.display = "none";
+			}
+		});
   		
   		document.getElementById(download_button_id).onclick = function() {download_table(target_table, download_link, download_table_filename)};
-  		document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Targets', target_table, 3)};
+  		document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Targets', target_table, 3, format_name_to_id)};
     }
 }
 
@@ -99,6 +132,9 @@ function set_up_regulator_table(header_id, table_id, download_button_id, analyze
   			
 		var bioent1 = create_link(evidence['bioent1']['display_name'], evidence['bioent1']['link'])
 		var bioent2 = create_link(evidence['bioent2']['display_name'], evidence['bioent2']['link'])
+		
+		format_name_to_id[evidence['bioent1']['format_name']] = evidence['bioent1']['id']
+		format_name_to_id[evidence['bioent2']['format_name']] = evidence['bioent2']['id']
 			
 		var experiment = '';
 		if(evidence['experiment'] != null) {
@@ -127,11 +163,38 @@ function set_up_regulator_table(header_id, table_id, download_button_id, analyze
 		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]		
 		options["aaData"] = datatable;
   				
+  		setup_datatable_highlight();
   		regulator_table = $('#' + table_id).dataTable(options);
+  		regulator_table.fnSearchHighlighting();
   		
   		document.getElementById(download_button_id).onclick = function() {download_table(regulator_table, download_link, download_table_filename)};
-  		document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3)};
+  		document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3, format_name_to_id)};
     }
+}
+
+function set_up_range_sort() {
+	jQuery.fn.dataTableExt.oSort['range-desc'] = function(x,y) {
+		x = x.split("-");
+		y = y.split("-");
+		
+		x0 = parseInt(x[0]);
+		y0 = parseInt(y[0]);
+		
+		return (x0 > y0) ? -1 : ((x0 < y0) ? 1 : 0);
+		
+	};
+		
+	jQuery.fn.dataTableExt.oSort['range-asc'] = function(x,y) {
+		
+		x = x.split("-");
+		y = y.split("-");
+		
+		x0 = parseInt(x[0]);
+		y0 = parseInt(y[0]);
+		
+		return (x0 < y0) ? -1 : ((x0 > y0) ? 1 : 0);
+		
+	};
 }
 
 function set_up_domains_table(header_id, table_id, download_button_id, download_link, download_table_filename, data) { 
@@ -163,14 +226,208 @@ function set_up_domains_table(header_id, table_id, download_button_id, download_
   	
   	document.getElementById(header_id).innerHTML = data.length;
   	
+  	set_up_range_sort();
+  	
   	var options = {};
 	options["bPaginate"] = false;
 	options["aaSorting"] = [[1, "asc"]];
-	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, null, null]		
+	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, { "sType": "range" }, null, null, null]		
 	options["aaData"] = datatable;
   				
+  	setup_datatable_highlight();
   	var domain_table = $('#' + table_id).dataTable(options);
+  	domain_table.fnSearchHighlighting();
   		
   	document.getElementById(download_button_id).onclick = function() {download_table(domain_table, download_link, download_table_filename)};
   
+}
+
+function setup_slider(div_id, min, max, current, slide_f) {
+	if(max==min) {
+		var slider = $("#" + div_id).noUiSlider({
+			range: [min, min+1]
+			,start: current
+			,step: 1
+			,handles: 1
+			,connect: "lower"
+			,slide: slide_f
+		});
+		slider.noUiSlider('disabled', true);
+		var spacing =  100;
+	    i = min-1
+	    var value = i+1;
+	    if(value >= 10) {
+	    	var left = ((spacing * (i-min+1))-1)
+	       	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+	    }
+	    else {
+	    	var left = ((spacing * (i-min+1))-.5)
+			$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+		}
+	}
+	else {
+		var slider = $("#" + div_id).noUiSlider({
+			range: [min, max]
+			,start: current
+			,step: 1
+			,handles: 1
+			,connect: "lower"
+			,slide: slide_f
+		});
+		
+		var spacing =  100 / (max - min);
+	    for (var i = min-1; i < max ; i=i+1) {
+	    	var value = i+1;
+	    	if(value >= 10) {
+	    		var left = ((spacing * (i-min+1))-1)
+	        	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+	    	}
+	    	else {
+	    		var left = ((spacing * (i-min+1))-.5)
+				$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+	    	}
+		}
+	}
+}
+
+var evidence_max;
+var evidence_min;
+var target_max;
+var regulator_max;
+
+function setup_regulation_cytoscape_vis(graph_id, 
+				all_slider_id, target_slider_id, regulator_slider_id,  
+				all_radio_id, target_radio_id, regulator_radio_id,
+				style, data) {
+	function f() {
+		filter_cy(all_slider_id, target_slider_id, regulator_slider_id,
+			all_radio_id, target_radio_id, regulator_radio_id);
+	}
+	
+	cy = setup_cytoscape_vis(graph_id, style, data, f);
+			
+	evidence_max = data['max_evidence_cutoff'];
+	evidence_min = data['min_evidence_cutoff'];
+	target_max = data['max_target_cutoff'];
+	regulator_max = data['max_regulator_cutoff'];
+	
+	function g() {
+		change_scale(all_slider_id, target_slider_id, regulator_slider_id,
+			all_radio_id, target_radio_id, regulator_radio_id);
+		filter_cy(all_slider_id, target_slider_id, regulator_slider_id,
+			all_radio_id, target_radio_id, regulator_radio_id);
+	}
+	
+	setup_slider(all_slider_id, evidence_min, Math.min(evidence_max, 10), Math.max(Math.min(evidence_max, 3), evidence_min), f);
+	setup_slider(target_slider_id, evidence_min, Math.min(target_max, 10), Math.max(Math.min(target_max, 3), evidence_min), f);
+	setup_slider(regulator_slider_id, evidence_min, Math.min(regulator_max, 10), Math.max(Math.min(regulator_max, 3), evidence_min), f);
+	
+	document.getElementById(target_slider_id).style.display = 'none';
+	document.getElementById(regulator_slider_id).style.display = 'none';
+	
+	if(data['max_target_cutoff'] == 0) {
+		document.getElementById(target_radio_id).disabled = true;
+	}
+	if(data['max_regulator_cutoff'] == 0) {
+		document.getElementById(regulator_radio_id).disabled = true;
+	}
+	
+	document.getElementById(all_radio_id).onclick = g;
+	document.getElementById(target_radio_id).onclick = g;
+	document.getElementById(regulator_radio_id).onclick = g;
+}
+
+function change_scale(all_slider_id, target_slider_id, regulator_slider_id,  
+				all_radio_id, target_radio_id, regulator_radio_id) {
+					
+	var all = document.getElementById(all_radio_id).checked;
+	var targ = document.getElementById(target_radio_id).checked;
+	var reg = document.getElementById(regulator_radio_id).checked;
+	
+	var prev_value = 3;
+	if(document.getElementById(all_slider_id).style.display == 'block') {
+		prev_value = $("#" + all_slider_id).val();
+	}
+	else if(document.getElementById(target_slider_id).style.display == 'block') {
+		prev_value = $("#" + target_slider_id).val();
+	}
+	else if(document.getElementById(regulator_slider_id).style.display == 'block') {
+		prev_value = $("#" + regulator_slider_id).val();
+	}
+	
+	if(all) {
+		$("#" + all_slider_id).val(Math.min(evidence_max, prev_value));
+		document.getElementById(all_slider_id).style.display = 'block';
+		document.getElementById(target_slider_id).style.display = 'none';
+		document.getElementById(regulator_slider_id).style.display = 'none';
+	}
+	else if(targ) {
+		$("#" + target_slider_id).val(Math.min(target_max, prev_value));
+		document.getElementById(all_slider_id).style.display = 'none';
+		document.getElementById(target_slider_id).style.display = 'block';
+		document.getElementById(regulator_slider_id).style.display = 'none';
+	}
+	else if(reg) {
+		$("#" + regulator_slider_id).val(Math.min(regulator_max, prev_value));
+		document.getElementById(all_slider_id).style.display = 'none';
+		document.getElementById(target_slider_id).style.display = 'none';
+		document.getElementById(regulator_slider_id).style.display = 'block';
+	}
+}
+
+function filter_cy(all_slider_id, target_slider_id, regulator_slider_id,
+					all_radio_id, target_radio_id, regulator_radio_id) {
+						
+	var all = document.getElementById(all_radio_id).checked;
+	var targ = document.getElementById(target_radio_id).checked;
+	var reg = document.getElementById(regulator_radio_id).checked;
+		
+    if(all) {
+    	var cutoff;
+    	if(evidence_max == evidence_min) {
+    		cutoff = evidence_max;
+    	}
+    	else {
+    		cutoff = $("#" + all_slider_id).val();
+    	}
+    	
+        cy.elements("node[evidence >= " + cutoff + "]").css({'visibility': 'visible',});        
+        cy.elements("node[evidence < " + cutoff + "]").css({'visibility': 'hidden',});
+        
+        cy.elements("edge[evidence >= " + cutoff + "]").css({'visibility': 'visible',});
+        cy.elements("edge[evidence < " + cutoff + "]").css({'visibility': 'hidden',});
+    }
+    else if(targ) {
+    	var cutoff;
+    	if(target_max == evidence_min) {
+    		cutoff = target_max;
+    	}
+    	else {
+    		cutoff = $("#" + target_slider_id).val();
+    	}
+    	
+        cy.elements("node[class_type = 'TARGET'][evidence >= " + cutoff + "]").css({'visibility': 'visible',});
+        cy.elements("node[class_type != 'TARGET'][sub_type != 'FOCUS']").css({'visibility': 'hidden',});
+        cy.elements("node[evidence < " + cutoff + "]").css({'visibility': 'hidden',});
+        
+        cy.elements("edge[evidence >= " + cutoff + "]").css({'visibility': 'visible',});
+        cy.elements("edge[evidence < " + cutoff + "]").css({'visibility': 'hidden',});
+    }
+    else if(reg) {
+		var cutoff;
+    	if(regulator_max == evidence_min) {
+    		cutoff = regulator_max;
+    	}
+    	else {
+    		cutoff = $("#" + regulator_slider_id).val();
+    	}
+    	
+    	cy.elements("node[class_type = 'REGULATOR'][evidence >= " + cutoff + "]").css({'visibility': 'visible',});
+        cy.elements("node[class_type != 'REGULATOR'][sub_type != 'FOCUS']").css({'visibility': 'hidden',});
+        cy.elements("node[evidence < " + cutoff + "]").css({'visibility': 'hidden',});
+        
+        cy.elements("edge[evidence >= " + cutoff + "]").css({'visibility': 'visible',});
+        cy.elements("edge[evidence < " + cutoff + "]").css({'visibility': 'hidden',});
+    }
+
 }

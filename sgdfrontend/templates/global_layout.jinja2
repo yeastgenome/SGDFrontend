@@ -21,6 +21,13 @@
 
 	<link href="/static/css/normalize.css" rel="stylesheet">
 	<link href="/static/css/style.css" rel="stylesheet">
+	
+	<style>
+		.filterMatches
+		{
+    		background-color: #fade71;
+		}
+	</style>
 
 	<!--[if lt IE 9]>
 	<script src="../static/js/vendor/respond.min.js"></script>
@@ -61,6 +68,21 @@
 	<script src="/static/js/foundation/foundation.topbar.js"></script>
 	<script src="/static/js/foundation/foundation.magellan.js"></script>
 	<script src="/static/js/foundation/foundation.dropdown.js"></script>
+	
+	<script>
+		//Get resources
+		var tab_link = "{{tab_link}}";
+		$.getJSON(tab_link, function(data) {
+			for(var key in data) {
+				if(!data[key]) {
+					var element = document.getElementById(key);
+					if(element != null) {
+						element.style.display = "none";
+					}
+				}
+			}
+		});
+	</script>
 
 		
 <script>
