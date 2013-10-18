@@ -11,6 +11,19 @@ http://smacss.com/book/type-state
 // Show left side menu on 
 
 // Header
+#layout-page-header-content {
+	@extend .show-for-medium-up;
+}
+
+.menu-search {
+	@extend .hide-for-medium-up;
+}
+
+// Sidebar
+// hide on small screens
+#sidebar {
+	@extend .hide-for-small;
+}
 
 
 // Footer
