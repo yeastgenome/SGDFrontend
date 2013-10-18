@@ -55,7 +55,7 @@ function set_up_evidence_table(header_id, table_id, download_button_id, analyze_
 		
 		var icon;
 		if(evidence['note'] != null) {
-			icon = "<a href='#' data-dropdown='drop" + i + "'>+</a><div id='drop" + i + "' class='f-dropdown content medium' data-dropdown-content><p>" + evidence['note'] + "</p></div>"
+			icon = "<a href='#' data-dropdown='drop" + i + "'><i class='icon-info-sign'></i></a><div id='drop" + i + "' class='f-dropdown content medium' data-dropdown-content><p>" + evidence['note'] + "</p></div>"
 		}
 		else {
 			icon = null;
