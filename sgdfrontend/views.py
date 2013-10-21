@@ -58,7 +58,6 @@ def download_citations(request):
     
     headers = request.response.headers
     
-    print references
     request.response.text = '\n' + '\n\n'.join([ref['text'] for ref in references])
     
     headers['Content-Type'] = 'text/plain'        
