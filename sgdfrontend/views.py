@@ -6,7 +6,6 @@ from sgdfrontend.link_maker import citation_list_link, bioent_list_link, \
     download_table_link, go_enrichment_link, enrichment_link
 import datetime
 import json
-import os
  
 def clean_cell(cell):
     if cell is None:
@@ -34,21 +33,19 @@ def home(request):
 header_str = None
 footer_str = None
 
-@view_config(route_name='header', renderer='string')
-def header(request):
+@view_config(route_name='header_footer', renderer='jsonp')
+def header_footer(request):
     global header_str
     if header_str is None:
         f = open('sgdfrontend/templates/header.jinja2', 'r')
         header_str = f.read()
-    return header_str
-
-@view_config(route_name='footer', renderer='string')
-def footer(request):
+        
     global footer_str
     if footer_str is None:
         f = open('sgdfrontend/templates/footer.jinja2', 'r')
         footer_str = f.read()
-    return footer_str
+    
+    return {'header': header_str, 'footer': footer_str}
 
 @view_config(route_name='download_table')
 def download_table(request):
