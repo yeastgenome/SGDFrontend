@@ -34,6 +34,8 @@ def main(global_config, **settings):
     config.add_static_view('static', 'sgdfrontend:static')
     config.add_static_view('templates', 'sgdfrontend:templates')
     
+    config.add_route('home', '/')
+    
     #Interaction views
     config.add_route('interactions', '/{type}/{identifier}/interactions')
     

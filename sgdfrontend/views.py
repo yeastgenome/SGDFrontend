@@ -25,6 +25,10 @@ def redirect(request):
         return HTTPFound('/locus/' + bioent_repr + '/' + page)
     else:
         return Response(status_int=500, body='Invalid URL.')
+    
+@view_config(route_name='home')
+def home(request):
+    return Response(status_int=200, body='In progress.')
 
 @view_config(route_name='download_table')
 def download_table(request):
