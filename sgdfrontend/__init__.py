@@ -1,4 +1,5 @@
 from pyramid.config import Configurator
+from pyramid.renderers import JSONP
 from pyramid_jinja2 import renderer_factory
 from sgdfrontend.link_maker import bioentity_overview_link
 from sgdfrontend.models import get_root
@@ -32,8 +33,13 @@ def main(global_config, **settings):
     config.include('pyramid_jinja2')
 
     config.add_static_view('static', 'sgdfrontend:static')
-    config.add_static_view('templates', 'sgdfrontend:templates')
     
+    config.add_route('home', '/')
+    
+    config.add_renderer('jsonp', JSONP(param_name='callback'))
+    config.add_route('header', '/header')
+    config.add_route('footer', '/footer')
+   
     #Interaction views
     config.add_route('interactions', '/{type}/{identifier}/interactions')
     

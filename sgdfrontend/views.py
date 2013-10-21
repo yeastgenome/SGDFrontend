@@ -25,6 +25,23 @@ def redirect(request):
         return HTTPFound('/locus/' + bioent_repr + '/' + page)
     else:
         return Response(status_int=500, body='Invalid URL.')
+    
+@view_config(route_name='home')
+def home(request):
+    return Response(status_int=200, body='In progress.')
+
+header_str = None
+footer_str = None
+
+@view_config(route_name='header', renderer='templates/header.jinja2')
+def header(request):
+    request.response.headers['Content-Type'] = 'text/plain; charset=utf8'
+    return {}
+
+@view_config(route_name='footer', renderer='templates/footer.jinja2')
+def footer(request):
+    request.response.headers['Content-Type'] = 'text/plain; charset=utf8'
+    return {}
 
 @view_config(route_name='download_table')
 def download_table(request):
@@ -41,7 +58,7 @@ def download_table(request):
     
     request.response.text = table_header + '\n' + '\n'.join(['\t'.join([clean_cell(cell) for cell in row]) for row in data])
     
-    headers['Content-Type'] = 'text/plain'        
+    headers['Content-Type'] = 'text/plain'      
     headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.txt')
     headers['Content-Description'] = 'File Transfer'
     return request.response
@@ -54,7 +71,6 @@ def download_citations(request):
     
     headers = request.response.headers
     
-    print references
     request.response.text = '\n' + '\n\n'.join([ref['text'] for ref in references])
     
     headers['Content-Type'] = 'text/plain'        
@@ -92,6 +108,5 @@ def analyze_view(request):
 def enrichment(request):
     bioent_ids = request.json_body['bioent_ids']
     enrichment_results = get_json(go_enrichment_link(), data={'bioent_ids': bioent_ids})
-    print enrichment_results
     return enrichment_results
 
