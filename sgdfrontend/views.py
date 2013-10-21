@@ -1,4 +1,5 @@
 from pyramid.httpexceptions import HTTPFound
+from pyramid.renderers import get_renderer, render
 from pyramid.response import Response
 from pyramid.view import view_config
 from sgdfrontend import get_json
@@ -33,15 +34,15 @@ def home(request):
 header_str = None
 footer_str = None
 
-@view_config(route_name='header', renderer='templates/header.jinja2')
+@view_config(route_name='header', renderer='jsonp')
 def header(request):
-    request.response.headers['Content-Type'] = 'text/plain; charset=utf8'
-    return {}
+    header_str = render('templates/header.jinja2', {})
+    return {'header': header_str}
 
-@view_config(route_name='footer', renderer='templates/footer.jinja2')
+@view_config(route_name='footer', renderer='jsonp')
 def footer(request):
-    request.response.headers['Content-Type'] = 'text/plain; charset=utf8'
-    return {}
+    footer_str = render('templates/footer.jinja2', {})
+    return {'footer': footer_str}
 
 @view_config(route_name='download_table')
 def download_table(request):
