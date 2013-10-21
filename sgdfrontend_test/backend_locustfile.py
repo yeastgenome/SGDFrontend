@@ -81,4 +81,4 @@ class WebsiteUser(Locust):
     task_set = WebsiteTasks
     min_wait = 5000
     max_wait = 15000
-    host = "http://sgd-ng1.stanford.edu/sgdbackend"
+    host = "http://sgd-ng1.stanford.edu/webservice"
