@@ -3,7 +3,7 @@ Created on Aug 20, 2013
 
 @author: kpaskov
 '''
-from sgdfrontend_test import browser, create_url, find_element, basic_page_tests, close_browser
+from sgdfrontend_test import browser, find_element, basic_page_tests
     
 browser = browser
 
