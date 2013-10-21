@@ -37,8 +37,9 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     
     config.add_renderer('jsonp', JSONP(param_name='callback'))
-    config.add_route('header_footer', '/header_footer')
-    
+    config.add_route('header', '/header')
+    config.add_route('footer', '/footer')
+   
     #Interaction views
     config.add_route('interactions', '/{type}/{identifier}/interactions')
     

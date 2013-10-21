@@ -33,19 +33,15 @@ def home(request):
 header_str = None
 footer_str = None
 
-@view_config(route_name='header_footer', renderer='jsonp')
-def header_footer(request):
-    global header_str
-    if header_str is None:
-        f = open('sgdfrontend/templates/header.jinja2', 'r')
-        header_str = f.read()
-        
-    global footer_str
-    if footer_str is None:
-        f = open('sgdfrontend/templates/footer.jinja2', 'r')
-        footer_str = f.read()
-    
-    return {'header': header_str, 'footer': footer_str}
+@view_config(route_name='header', renderer='templates/header.jinja2')
+def header(request):
+    request.response.headers['Content-Type'] = 'text/plain; charset=utf8'
+    return {}
+
+@view_config(route_name='footer', renderer='templates/footer.jinja2')
+def footer(request):
+    request.response.headers['Content-Type'] = 'text/plain; charset=utf8'
+    return {}
 
 @view_config(route_name='download_table')
 def download_table(request):
@@ -62,7 +58,7 @@ def download_table(request):
     
     request.response.text = table_header + '\n' + '\n'.join(['\t'.join([clean_cell(cell) for cell in row]) for row in data])
     
-    headers['Content-Type'] = 'text/plain'        
+    headers['Content-Type'] = 'text/plain'      
     headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.txt')
     headers['Content-Description'] = 'File Transfer'
     return request.response
@@ -112,6 +108,5 @@ def analyze_view(request):
 def enrichment(request):
     bioent_ids = request.json_body['bioent_ids']
     enrichment_results = get_json(go_enrichment_link(), data={'bioent_ids': bioent_ids})
-    print enrichment_results
     return enrichment_results
 
