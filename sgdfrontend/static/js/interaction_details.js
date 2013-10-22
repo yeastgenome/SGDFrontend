@@ -109,7 +109,7 @@ function analyze_phys_gen_intersect(analyze_link, bioent_display_name, bioent_fo
 		var ev_type = data[i][5];
 		if(ev_type == 'Genetic') {
 			var sys_name = data[i][4];
-			gen_bioent_sys_names[format_name_to_id[sys_name]] = true;
+			gen_bioent_sys_names[sys_name] = true;
 		}
 	}	
 
@@ -118,7 +118,7 @@ function analyze_phys_gen_intersect(analyze_link, bioent_display_name, bioent_fo
 		if(ev_type == 'Physical') {
 			var sys_name = data[i][4];
 			if(sys_name in gen_bioent_sys_names) {
-				bioent_sys_names.push(sys_name);
+				bioent_sys_names.push(format_name_to_id[sys_name]);
 			}
 		}
 	}	
