@@ -27,3 +27,12 @@ http://smacss.com/book/type-layout
 #layout-document-footer {
 	padding: 22px 0 22px;
 }
+
+.content-column section {
+	border-bottom: 1px #ddd solid;
+	margin-bottom: 10px;
+}
+
+.content-column section:last-child {
+	border-bottom: none;
+}
