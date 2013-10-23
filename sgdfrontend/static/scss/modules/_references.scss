@@ -7,17 +7,19 @@ http://smacss.com/book/type-module
 .literature-list {
 	list-style: none;
 	li {
-		margin-bottom: 20px;
+		margin-bottom: 10px;
+		font-size: 0.95em;
+		line-height: 1.4em;
 	}
 }
 .ref-links {
 	list-style: none;
 	margin: 0;
+	position: relative;
+	top: -5px;
 	li {
 		display: inline-block;
 		margin: 0 20px 0 0;
-		font-size: 0.75em;
-		position: relative;
-		top: -2px;
+		font-size: 0.8em;
 	}
 }
