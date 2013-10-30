@@ -71,11 +71,11 @@ function set_up_target_table(header_id, table_id, filter_message_id, download_bu
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
   			
-		var bioent1 = create_link(evidence['bioent1']['display_name'], evidence['bioent1']['link'])
-		var bioent2 = create_link(evidence['bioent2']['display_name'], evidence['bioent2']['link'])
+		var bioent1 = create_link(evidence['bioentity1']['display_name'], evidence['bioentity1']['link'])
+		var bioent2 = create_link(evidence['bioentity2']['display_name'], evidence['bioentity2']['link'])
 		
-		format_name_to_id[evidence['bioent1']['format_name']] = evidence['bioent1']['id']
-		format_name_to_id[evidence['bioent2']['format_name']] = evidence['bioent2']['id']
+		format_name_to_id[evidence['bioentity1']['format_name']] = evidence['bioentity1']['id']
+		format_name_to_id[evidence['bioentity2']['format_name']] = evidence['bioentity2']['id']
 			
 		var experiment = '';
 		if(evidence['experiment'] != null) {
@@ -87,8 +87,12 @@ function set_up_target_table(header_id, table_id, filter_message_id, download_bu
 			//strain = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
 			strain = evidence['strain']['display_name'];
 		}
+		var conditions = '';
+		if(evidence['conditions'].length> 0) {
+			conditions = evidence['conditions'][0];
+		}
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
-  		datatable.push([bioent1, evidence['bioent1']['format_name'], bioent2, evidence['bioent2']['format_name'], experiment, evidence['conditions'], strain, evidence['source'], reference])
+  		datatable.push([bioent1, evidence['bioentity1']['format_name'], bioent2, evidence['bioentity2']['format_name'], experiment, conditions, strain, evidence['source'], reference])
   	}
   	  	
   	document.getElementById(header_id).innerHTML = data.length;
@@ -130,11 +134,11 @@ function set_up_regulator_table(header_id, table_id, download_button_id, analyze
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
   			
-		var bioent1 = create_link(evidence['bioent1']['display_name'], evidence['bioent1']['link'])
-		var bioent2 = create_link(evidence['bioent2']['display_name'], evidence['bioent2']['link'])
+		var bioent1 = create_link(evidence['bioentity1']['display_name'], evidence['bioentity1']['link'])
+		var bioent2 = create_link(evidence['bioentity2']['display_name'], evidence['bioentity2']['link'])
 		
-		format_name_to_id[evidence['bioent1']['format_name']] = evidence['bioent1']['id']
-		format_name_to_id[evidence['bioent2']['format_name']] = evidence['bioent2']['id']
+		format_name_to_id[evidence['bioentity1']['format_name']] = evidence['bioentity1']['id']
+		format_name_to_id[evidence['bioentity2']['format_name']] = evidence['bioentity2']['id']
 			
 		var experiment = '';
 		if(evidence['experiment'] != null) {
@@ -146,8 +150,12 @@ function set_up_regulator_table(header_id, table_id, download_button_id, analyze
 			//strain = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
 			strain = evidence['strain']['display_name'];
 		}
-  		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
-  		datatable.push([bioent1, evidence['bioent1']['format_name'], bioent2, evidence['bioent2']['format_name'], experiment, evidence['conditions'], strain, evidence['source'], reference])
+  		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+  		var conditions = '';
+		if(evidence['conditions'].length> 0) {
+			conditions = evidence['conditions'][0];
+		}
+  		datatable.push([bioent2, evidence['bioentity2']['format_name'], bioent1, evidence['bioentity1']['format_name'], experiment, conditions, strain, evidence['source'], reference])
   	}
   	
   	document.getElementById(header_id).innerHTML = data.length;
@@ -214,13 +222,7 @@ function set_up_domains_table(header_id, table_id, download_button_id, download_
 			
 		var coord_range = evidence['start'] + '-' + evidence['end'];
 			
-		var description = null;
-		if(evidence['domain']['interpro_description'] != null) {
-			description = evidence['domain']['interpro_description'];
-		}
-		else if(evidence['domain']['description'] != null) {
-			description = evidence['domain']['description'];
-		}
+		var description = evidence['domain_description'];
   		datatable.push([bioent, coord_range, domain, description, evidence['source']]);
   	}
   	
@@ -406,12 +408,12 @@ function filter_cy(all_slider_id, target_slider_id, regulator_slider_id,
     		cutoff = $("#" + target_slider_id).val();
     	}
     	
-        cy.elements("node[class_type = 'TARGET'][evidence >= " + cutoff + "]").css({'visibility': 'visible',});
-        cy.elements("node[class_type != 'TARGET'][sub_type != 'FOCUS']").css({'visibility': 'hidden',});
-        cy.elements("node[evidence < " + cutoff + "]").css({'visibility': 'hidden',});
+        cy.elements("node[targ_evidence >= " + cutoff + "]").css({'visibility': 'visible',});
+        cy.elements("node[targ_evidence < " + cutoff + "]").css({'visibility': 'hidden',});
         
-        cy.elements("edge[evidence >= " + cutoff + "]").css({'visibility': 'visible',});
+        cy.elements("edge[class_type = 'TARGET'][evidence >= " + cutoff + "]").css({'visibility': 'visible',});
         cy.elements("edge[evidence < " + cutoff + "]").css({'visibility': 'hidden',});
+        cy.elements("edge[class_type = 'REGULATOR']").css({'visibility': 'hidden',});
     }
     else if(reg) {
 		var cutoff;
@@ -422,12 +424,12 @@ function filter_cy(all_slider_id, target_slider_id, regulator_slider_id,
     		cutoff = $("#" + regulator_slider_id).val();
     	}
     	
-    	cy.elements("node[class_type = 'REGULATOR'][evidence >= " + cutoff + "]").css({'visibility': 'visible',});
-        cy.elements("node[class_type != 'REGULATOR'][sub_type != 'FOCUS']").css({'visibility': 'hidden',});
-        cy.elements("node[evidence < " + cutoff + "]").css({'visibility': 'hidden',});
+    	cy.elements("node[reg_evidence >= " + cutoff + "]").css({'visibility': 'visible',});
+        cy.elements("node[reg_evidence < " + cutoff + "]").css({'visibility': 'hidden',});
         
-        cy.elements("edge[evidence >= " + cutoff + "]").css({'visibility': 'visible',});
+        cy.elements("edge[class_type = 'REGULATOR'][evidence >= " + cutoff + "]").css({'visibility': 'visible',});
         cy.elements("edge[evidence < " + cutoff + "]").css({'visibility': 'hidden',});
+        cy.elements("edge[class_type ='TARGET']").css({'visibility': 'hidden',});
     }
 
 }

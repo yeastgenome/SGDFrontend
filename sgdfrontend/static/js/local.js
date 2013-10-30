@@ -352,7 +352,7 @@ function set_up_scientific_notation_sorting() {
 	} );
 }
 
-function go_enrichment(go_enrichment_link, table, format_name_to_id, index, header_id, table_id, enrich_recalc_button_id,
+function go_enrichment(go_enrichment_link, table, format_name_to_id, index, header_id, gene_header_id, table_id, enrich_recalc_button_id,
 	download_button_id, download_link, enrichment_table_filename) {
 
 	function f() {
@@ -366,7 +366,9 @@ function go_enrichment(go_enrichment_link, table, format_name_to_id, index, head
 			var sys_name = data[i][index];
 			bioent_ids.push(format_name_to_id[sys_name])
 		}	
-	
+		
+		document.getElementById(gene_header_id).innerHTML = bioent_ids.length;
+		document.getElementById(header_id).innerHTML = '_';
 		post_json_to_url(go_enrichment_link, {'bioent_ids': bioent_ids}, 
 		function(data) {  		
   			set_up_enrichment_table(header_id, table_id, download_button_id, download_link, enrichment_table_filename, data)
@@ -374,14 +376,13 @@ function go_enrichment(go_enrichment_link, table, format_name_to_id, index, head
   			update_filter_used();
   		},
   		function() {
-    		document.getElementById(spinner_id).innerHTML = 'Error calculating go enrichment.'
     		$('#' + enrich_recalc_button_id).removeAttr('disabled');
   		}
   		);
   	}
   	
   	document.getElementById(enrich_recalc_button_id).onclick = f;
-  	f();
+  	return f;
 }
 
 function set_table_message(table_id, message) {
@@ -403,8 +404,7 @@ function set_up_enrichment_table(header_id, table_id, download_button_id, downlo
 		if(evidence['go'] != null) {
 			go = create_link(evidence['go']['display_name'], evidence['go']['link']);
 		}
-	
-  		datatable.push([go, evidence['match_count'], evidence['pvalue']])
+  		datatable.push([go, evidence['match_count'].toString(), evidence['pvalue']])
   	}
   	
   	document.getElementById(header_id).innerHTML = data.length;
@@ -431,9 +431,10 @@ function set_up_enrichment_table(header_id, table_id, download_button_id, downlo
 		options["aoColumns"] = [null, null, { "sType": "scinote" }]
 		options["bDestroy"] = true;
 		options["aaData"] = datatable;
-  				
+  		
   		setup_datatable_highlight();
   		var enrichment_table = $('#' + table_id).dataTable(options);
+  		setup_datatable_highlight();
   		enrichment_table.fnSearchHighlighting();
   		
   		document.getElementById(download_button_id).onclick = function() {download_table(enrichment_table, download_link, download_table_filename)};

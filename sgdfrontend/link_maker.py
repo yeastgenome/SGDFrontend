@@ -40,6 +40,8 @@ def regulation_overview_link(bioent):
     return backend_start + '/locus/' + str(bioent) + '/regulation_overview?callback=?'
 def regulation_details_link(bioent):
     return backend_start + '/locus/' + str(bioent) + '/regulation_details?callback=?'
+def regulation_target_enrichment_link(bioent):
+    return backend_start + '/locus/' + str(bioent) + '/regulation_target_enrichment?callback=?'
 def regulation_graph_link(bioent):
     return backend_start + '/locus/' + str(bioent) + '/regulation_graph?callback=?'
 def regulation_references_link(bioent):

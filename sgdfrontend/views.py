@@ -1,5 +1,5 @@
 from pyramid.httpexceptions import HTTPFound
-from pyramid.renderers import get_renderer, render
+from pyramid.renderers import render
 from pyramid.response import Response
 from pyramid.view import view_config
 from sgdfrontend import get_json
