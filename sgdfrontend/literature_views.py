@@ -6,10 +6,8 @@ Created on Jul 11, 2013
 from pyramid.response import Response
 from pyramid.view import view_config
 from sgdfrontend import evaluate_url
-from sgdfrontend.link_maker import literature_details_link, go_references_link, \
-    phenotype_references_link, literature_graph_link, download_citations_link, \
-    interaction_references_link, regulation_references_link, tab_link, \
-    literature_overview_link
+from sgdfrontend.link_maker import literature_details_link, download_citations_link, \
+    tab_link, literature_overview_link
 
 
 @view_config(route_name='literature', renderer='templates/literature_details.jinja2')
@@ -23,11 +21,6 @@ def literature(request):
     
     page = {
                 'literature_details_link': literature_details_link(bioent_id),
-                'go_references_link': go_references_link(bioent_id),
-                'phenotype_references_link': phenotype_references_link(bioent_id),
-                'interaction_references_link': interaction_references_link(bioent_id),
-                'regulation_references_link': regulation_references_link(bioent_id),
-                'literature_graph_link': literature_graph_link(bioent_id),
                 'download_link': download_citations_link(),
                 'tab_link': tab_link(bioent_id),
                 'literature_overview_link': literature_overview_link(bioent_id),

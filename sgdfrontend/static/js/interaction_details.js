@@ -123,7 +123,7 @@ function analyze_phys_gen_intersect(analyze_link, bioent_display_name, bioent_fo
 		}
 	}	
 	post_to_url(analyze_link, {'bioent_display_name': bioent_display_name, 'bioent_format_name': bioent_format_name, 'bioent_link': bioent_link, 
-										'bioent_ids': JSON.stringify(bioent_sys_names), 'list_name': 'Intersection Interactors'});
+										'bioent_ids': JSON.stringify(bioent_sys_names), 'list_name': 'Physical and Genetic Interactors'});
 }
 	
 function analyze_phys(analyze_link, bioent_display_name, bioent_format_name, bioent_link) {

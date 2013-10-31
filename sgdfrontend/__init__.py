@@ -41,13 +41,13 @@ def main(global_config, **settings):
     config.add_route('footer', '/footer')
    
     #Interaction views
-    config.add_route('interactions', '/{type}/{identifier}/interactions')
+    config.add_route('interactions', '/locus/{identifier}/interactions')
     
     #Literature views
-    config.add_route('literature', '/{type}/{identifier}/literature')
+    config.add_route('literature', '/locus/{identifier}/literature')
     
     #Regulation views
-    config.add_route('regulations', '/{type}/{identifier}/regulation')
+    config.add_route('regulations', '/locus/{identifier}/regulation')
 
     #Misc views
     config.add_route('download_citations', '/download_citations')
