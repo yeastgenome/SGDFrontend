@@ -265,6 +265,38 @@
   			var review_download_filename = bioent_display_name + "_review_citations"
   			var review_data = data['reviews'];
   			set_up_reference_list(review_header_id, review_list_id, review_message_id, review_wrapper_id, review_download_button_id, download_link, review_download_filename, review_data);
+  		
+  			var header_id = "go_header";
+  			var list_id = "go_list";
+  			var message_id = "go_message";
+  			var wrapper_id = "go_wrapper";
+  			var download_button_id = "export_go";
+  			var download_filename = bioent_display_name + "_go_citations"
+  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data['go']);
+  			
+  			var header_id = "phenotype_header";
+  			var list_id = "phenotype_list";
+  			var message_id = "phenotype_message";
+  			var wrapper_id = "phenotype_wrapper";
+  			var download_button_id = "export_phenotype";
+  			var download_filename = bioent_display_name + "_phenotype_citations"
+  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data['phenotype']);
+  			
+  			var header_id = "interaction_header";
+  			var list_id = "interaction_list";
+  			var message_id = "interaction_message";
+  			var wrapper_id = "interaction_wrapper";
+  			var download_button_id = "export_interaction";
+  			var download_filename = bioent_display_name + "_interaction_citations"
+  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data['interaction']);
+  			
+  			var header_id = "regulation_header";
+  			var list_id = "regulation_list";
+  			var message_id = "regulation_message";
+  			var wrapper_id = "regulation_wrapper";
+  			var download_button_id = "export_regulation";
+  			var download_filename = bioent_display_name + "_regulation_citations"
+  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data['regulation']);
   		});
   		
   		//Get graph
@@ -281,50 +313,7 @@
 			}
 			
 		});
-  		
-  		//Get go reference data
-  		$.getJSON(go_references_link, function(data) {
-  			var header_id = "go_header";
-  			var list_id = "go_list";
-  			var message_id = "go_message";
-  			var wrapper_id = "go_wrapper";
-  			var download_button_id = "export_go";
-  			var download_filename = bioent_display_name + "_go_citations"
-  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data);
-  		});
-  		
-  		//Get phenotype reference data
-  		$.getJSON(phenotype_references_link, function(data) {
-  			var header_id = "phenotype_header";
-  			var list_id = "phenotype_list";
-  			var message_id = "phenotype_message";
-  			var wrapper_id = "phenotype_wrapper";
-  			var download_button_id = "export_phenotype";
-  			var download_filename = bioent_display_name + "_phenotype_citations"
-  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data);
-  		});
-  		
-  		//Get interaction reference data
-  		$.getJSON(interaction_references_link, function(data) {
-  			var header_id = "interaction_header";
-  			var list_id = "interaction_list";
-  			var message_id = "interaction_message";
-  			var wrapper_id = "interaction_wrapper";
-  			var download_button_id = "export_interaction";
-  			var download_filename = bioent_display_name + "_interaction_citations"
-  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data);
-  		});
-  		
-  		//Get regulation reference data
-  		$.getJSON(regulation_references_link, function(data) {
-  			var header_id = "regulation_header";
-  			var list_id = "regulation_list";
-  			var message_id = "regulation_message";
-  			var wrapper_id = "regulation_wrapper";
-  			var download_button_id = "export_regulation";
-  			var download_filename = bioent_display_name + "_regulation_citations"
-  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data);
-  		});
+
 	});
 </script>
 
