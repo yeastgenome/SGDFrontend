@@ -3,7 +3,7 @@ Created on Mar 6, 2013
 
 @author: kpaskov
 '''
-from sgdfrontend.config import backend_url#, dev_url
+from sgdfrontend.config import backend_url, dev_url
 
 backend_start = backend_url
 frontend_start = ''
@@ -14,12 +14,12 @@ def go_page_link(bioent):
 def go_biocon_page_link(biocon):
     return frontend_start + '/go/' + str(biocon)
 
-#def go_overview_link(bioent):
-#    return dev_url + '/locus/' + str(bioent) + '/go_overview?callback=?'
-#def go_details_link(bioent):
-#    return dev_url + '/locus/' + str(bioent) + '/go_details?callback=?'
-#def go_details_biocon_link(biocon):
-#    return dev_url + '/go/' + str(biocon) + '/locus_details?callback=?'
+def go_overview_link(bioent):
+    return dev_url + '/locus/' + str(bioent) + '/go_overview?callback=?'
+def go_details_link(bioent):
+    return dev_url + '/locus/' + str(bioent) + '/go_details?callback=?'
+def go_details_biocon_link(biocon):
+    return dev_url + '/go/' + str(biocon) + '/locus_details?callback=?'
 
 #Phenotype Links
 def phenotype_page_link(bioent):
@@ -27,12 +27,14 @@ def phenotype_page_link(bioent):
 def phenotyp_biocon_page_link(biocon):
     return frontend_start + '/go/' + str(biocon)
 
-#def phenotype_overview_link(bioent):
-#    return dev_url + '/locus/' + str(bioent) + '/phenotype_overview?callback=?'
-#def phenotype_details_link(bioent):
-#    return dev_url + '/locus/' + str(bioent) + '/phenotype_details?callback=?'
-#def phenotype_details_biocon_link(biocon):
-#    return dev_url + '/phenotype/' + str(biocon) + '/locus_details?callback=?'
+def phenotype_overview_link(bioent):
+    return dev_url + '/locus/' + str(bioent) + '/phenotype_overview?callback=?'
+def phenotype_details_link(bioent):
+    return dev_url + '/locus/' + str(bioent) + '/phenotype_details?callback=?'
+def phenotype_resources_link(bioent):
+    return dev_url + '/locus/' + str(bioent) + '/phenotype_resources?callback=?'
+def phenotype_details_biocon_link(biocon):
+    return dev_url + '/phenotype/' + str(biocon) + '/locus_details?callback=?'
 
 #Interaction Links
 def interaction_page_link(bioent):

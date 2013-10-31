@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<title>{{display_name}} Interactions</title>
+<title>{{display_name}} Phenotypes</title>
 
 {% extends "templates/global_layout.jinja2" %}
 
@@ -8,7 +8,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{display_name}}/{{format_name}}</span> Physical and Genetic Interactions  <a href="http://www.yeastgenome.org/help/interaction.html" name="top" class="help"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+	<h2><span class="gene_name">{{display_name}}/{{format_name}}</span> Phenotypes  <a href="http://www.yeastgenome.org/help/PhenoHelp.html" name="top" class="help"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png" alt="Help"></a></h2>
 </div>
 
 
@@ -16,7 +16,7 @@
 {% include "templates/tabs.jinja2" %}
 
 <script>
-	var int_tab = document.getElementById('interaction_tab');
+	var int_tab = document.getElementById('phenotype_tab');
 	int_tab.id = 'current';
 </script>
 
@@ -25,10 +25,9 @@
 <div class="row">
 	<nav id="sidebar" class="small-0 large-3 columns">
 		<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky">
-			<li id="nav-title"><h4><a href="{{link}}">{{display_name}}/{{format_name}}</a> Interactions</h4></li>
-          	<li data-magellan-arrival="summary"><a href="#summary">Interactors Summary</a></li>
-			<li data-magellan-arrival="interactions"><a href="#interactions">Interactions</a></li>
-			<li data-magellan-arrival="network" id="navbar_network"><a href="#network">Network Visualization</a></li>
+			<li id="nav-title"><h4><a href="{{link}}">{{display_name}}/{{format_name}}</a> Phenotypes</h4></li>
+          	<li data-magellan-arrival="summary"><a href="#summary">Phenotypes Summary</a></li>
+			<li data-magellan-arrival="phenotypes"><a href="#phenotypes">Phenotypes</a></li>
 			<li data-magellan-arrival="resources" id="navbar_resources"><a href="#resources">Resources</a></li>
 		</ul>
 	</nav>
@@ -39,43 +38,23 @@
 ================================================== -->
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
-		<p>Genes and proteins that interact with {{display_name}}. See help for information about interaction data.</p>
-		<h1>Interactors Summary</h1>
-		<p id='summary_message' style='display:none'>0 Genetic and 0 Physical Interactors curated.</p>
-		<div class="panel" id="summary_wrapper">
-			<div id="venn_diagram"></div>
-	
-			<div class="button-bar">
-				<h5>Analyze</h5>
-				<ul class="button-group radius">
-					<li><a disabled="true" id="phys" class="small button secondary sgd-icon-venn-physical">Physical</a></li>
-					<li><a disabled="true" id="gen" class="small button secondary sgd-icon-venn-genetic">Genetic</a></li>
-					<li><a disabled="true" id="phys_gen_intersect" class="small button secondary sgd-icon-venn-intersection">Intersection</a></li>
-					<li><a disabled="true" id="phys_gen_union" class="small button secondary sgd-icon-venn-all">All</a></li>
-				</ul>
-				<ul class="button-group radius">
-					<li><a disabled="true" class="small button secondary radius" id="save" download="{{interaction_overview_filename}}"><i class="icon-picture"></i> PNG</a></li>
-				</ul>
-			</div>
-		</div>
+		<p>This page lists all curated single mutant phenotypes associated with {{display_name}}. <a href='http://www.yeastgenome.org/cache/PhenotypeTree.html'>Browse</a> phenotype terms.</p>
+		<h1>Phenotypes Summary</h1>
+		<p id='summary_message' style='display:none'>0 Phenotypes curated.</p>
+		<p><span id="pheno_count">_</span> phenotypes curated for {{display_name}}.</p>
 	</div>
 </section>
 
 <!-- Interactions
 ================================================== -->
-<section id="interactions" data-magellan-destination="interactions">
+<section id="phenotypes" data-magellan-destination="phenotypes">
 	<div class="page-header">
-		<h1>Interactions <span class="round secondary label"><span id="evidence_header"></span> <small>entries for</small> <span id="evidence_gene_header"></span> <small>genes</small></span></h1>
-		<span>Source: <a href="http://thebiogrid.org/" target="_blank" id="biogrid_link">BioGRID</a></span>
-		<p id='evidence_message' style='display:none'>No interactions curated.</p>
+		<h1>Phentypes <span class="round secondary label"><span id="evidence_header"></span> <small>entries for</small> <span id="evidence_pheno_header"></span> <small>phenotypes</small></span></h1>
+		<p id='evidence_message' style='display:none'>No phenotypes curated.</p>
 		<div id='evidence_wrapper'>
 			<div class="button-bar">
 				<ul class="button-group radius">
 					<li><a disabled="true" id="evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
-				</ul>
-						
-				<ul class="button-group radius">
-					<li><a disabled="true" id="evidence_table_analyze" class="small button secondary"><i class='icon-briefcase'></i> Analyze</a></li>
 				</ul>
 			</div>
 			
@@ -83,17 +62,16 @@
 			<thead>
   			<tr>
   				<th></th>
-  				<th>Interactor</th>
-  				<th>Interactor Systematic Name</th>
-  				<th>Interactor</th>
-   				<th>Interactor Systematic Name</th>
-  				<th>Type</th>
-    			<th>Assay</th>
-    			<th>Annotation</th>
-    			<th>Action</th>
-    			<th>Modification</th>
-    			<th>Phenotype</th>
-    			<th>Source</th>
+  				<th>Gene</th>
+  				<th>Gene Format Name</th>
+  				<th>Phenotype</th>
+   				<th>Qualifier</th>
+  				<th>Experiment Type</th>
+  				<th>Mutant</th>
+  				<th>Strain</th>
+  				<th>Chemical</th>
+  				<th>Allele</th>
+  				<th>Reporter</th>
     			<th>Reference</th>
     			<th>Note</th>
   			</tr>
@@ -103,32 +81,6 @@
    </div>
 </section>
 
-<!-- Network Visualization
-================================================== -->
-<section id="network" data-magellan-destination="network">
-	<div class="page-header">
-		<h1>Network Visualization</h1>
-		<div class="panel">
-			<label for="union_radio">
-				<input id="union_radio" type="radio" name="group1" checked> All
-				</label>
-			<label for="physical_radio" class="legend-label physical">
-				<input id="physical_radio" type="radio" name="group1"> Physical
-			</label>
-			<label for="genetic_radio" class="legend-label genetic">
-				<input id="genetic_radio" type="radio" name="group1"> Genetic
-			</label>
-
-			<div id="cy" name="cy" style="width:100%;height:700px"></div>
-			<h5>Filter Interactions by # of Experiments:</h5>
-			<div id='allSlider' class='noUiSlider' style="width:100%"></div>
-			<div id='physSlider' class='noUiSlider' style="width:100%"></div>
-			<div id='genSlider' class='noUiSlider' style="width:100%"></div>
-			<br>
-		</div><!-- .panel -->
-    </div>
-</section>
-
 <!-- Resources
 ================================================== -->
 <section id="resources" data-magellan-destination="resources">
@@ -136,6 +88,7 @@
 		<h1>Resources</h1>
 		<ul id='resource_list'>
 		</ul>
+		<p>Curation of mutant phenotypes is an ongoing project at SGD. Please contact SGD curators to let us know of additional phenotype information that should be incorporated.</p>
 	</div>
 	<br>
 	<br>
@@ -150,103 +103,48 @@
 {% endblock body %}
 
 {% block scripts %}
-<script src="/static/js/kinetic-v4.3.3.min.js"></script>	
-<script src="/static/js/venn.js"></script>
-<script src="/static/js/jquery.nouislider.min.js"></script>
-<script src="/static/js/cytoscape/cytoscape.min.js"></script>	
-<script src="/static/js/cytoscape/arbor.js"></script>	
 <script src="/static/js/local.js"></script>
-<script src="/static/js/interaction_details.js"></script>
+<script src="/static/js/phenotype_details.js"></script>
 
 <script>
 	//Template links and filenames
-	var interaction_overview_link = "{{interaction_overview_link}}";
-	var interaction_details_link = "{{interaction_details_link}}";
-	var interaction_graph_link = "{{interaction_graph_link}}";
-	var interaction_resources_link = "{{interaction_resources_link}}";	
+	var phenotype_overview_link = "{{phenotype_overview_link}}";
+	var phenotype_details_link = "{{phenotype_details_link}}";
+	var phenotype_resources_link = "{{phenotype_resources_link}}";	
 	var download_table_link = "{{download_table_link}}";
-	var download_table_filename = "{{interaction_details_filename}}";
-	var analyze_link = "{{analyze_link}}";
-	var bioent_display_name = "{{display_name}}";
-	var bioent_format_name = "{{format_name}}";
-	var bioent_link = "{{link}}";
-	
-	//Graph style
-	var graph_style = cytoscape.stylesheet()
-	.selector('node')
-	.css({
-		'content': 'data(name)',
-		'font-family': 'helvetica',
-		'font-size': 14,
-		'text-outline-width': 3,
-		'text-outline-color': '#888',
-		'text-valign': 'center',
-		'color': '#fff',
-		'width': 30,
-		'height': 30,
-		'border-color': '#fff'
-	})
-	.selector('edge')
-	.css({
-		'width': 2,
-	})
-	.selector("node[sub_type='FOCUS']")
-	.css({
-		'background-color': "#fade71",
-		'text-outline-color': '#fff',
-		'color': '#888',
-	})
-	.selector("edge[class_type = 'GENETIC']")
-	.css({
-		'line-color': "#7FBF7B",
-	})
-	.selector("edge[class_type = 'PHYSICAL']")
-	.css({
-		'line-color': "#AF8DC3",
-	});
-	
-	//Venn style
-	var venn_style = {"left_color": "#762A83", "right_color": "#1B7837"};
+	var download_table_filename = "{{phenotype_details_filename}}";
 		
 	$(document).ready(function() {
     	//Get overview data
-  		$.getJSON(interaction_overview_link, function(data) {
-  			var venn_id = "venn_diagram";
-  			var save_button_id = "save";
-  			var phys_button_id = "phys";
-  			var gen_button_id = "gen";
-  			var intersect_button_id = "phys_gen_intersect";
-  			var union_button_id = "phys_gen_union";
-  			var evidence_gene_header_id = "evidence_gene_header";
-  			
+  		$.getJSON(phenotype_overview_link, function(data) {  	
+  			var evidence_gene_header_id = "evidence_pheno_header";
+  			var pheno_count_id = "pheno_count";
   			var message_id = "summary_message";
   			var wrapper_id = "summary_wrapper";
   			
-  			if(data['num_gen_interactors'] + data['num_phys_interactors'] > 0){
-  				set_up_overview_table(venn_id, save_button_id, phys_button_id, gen_button_id, intersect_button_id, union_button_id, 
-  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, evidence_gene_header_id, venn_style, data);
+  			if(data['count'] > 0){
+  				document.getElementById(pheno_count_id).innerHTML = data['count'];
   			}
   			else {
   				document.getElementById(message_id).style.display = "block";
   				document.getElementById(wrapper_id).style.display = "none";
-  				document.getElementById(evidence_gene_header_id).innerHTML = 0;
   			}
+  			document.getElementById(evidence_gene_header_id).innerHTML = data['count'];
 		});
 	
 		//Get evidence data
-  		$.getJSON(interaction_details_link, function(data) {
+  		$.getJSON(phenotype_details_link, function(data) {
   			var header_id = "evidence_header";
   			var table_id = "evidence_table";
   			var download_button_id = "evidence_table_download";
-  			var analyze_button_id = "evidence_table_analyze";
   			
   			var message_id = "evidence_message";
   			var wrapper_id = "evidence_wrapper";
   			
   			if(data.length > 0) {
-  				set_up_evidence_table(header_id, table_id, download_button_id, analyze_button_id, 
-  				download_table_link, download_table_filename, 
-  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, data);
+  				document.getElementById()
+  				set_up_evidence_table(header_id, table_id, download_button_id, 
+  				download_table_link, download_table_filename, data);
   			}
   			else {
   				document.getElementById(message_id).style.display = "block";
@@ -255,37 +153,10 @@
   			}
   			
   		});
-  		
-  		//Get graph
-  		$.getJSON(interaction_graph_link, function(data) {
-  			var graph_id = "cy";
-  			var union_slider_id = "allSlider";
-  			var phys_slider_id = "physSlider";
-  			var gen_slider_id = "genSlider";
-  			
-  			var phys_radio_id = "physical_radio";
-  			var gen_radio_id = "genetic_radio";
-  			var union_radio_id = "union_radio";
-  			  			
-  			var section_id = "network";
-  			var section_navbar_id = "navbar_network";
-  			
-  			if(data["nodes"].length > 1) {
-  				cy = setup_interaction_cytoscape_vis(graph_id,
-				phys_slider_id, gen_slider_id, union_slider_id, 
-				phys_radio_id, gen_radio_id, union_radio_id,
-				graph_style, data);
-  			}
-  			else {
-  				document.getElementById(section_id).style.display = "none";
-				document.getElementById(section_navbar_id).style.display = "none";
-  			}
-			
-		});
+ 
     	
     	//Get resources
-	  	$.getJSON(interaction_resources_link, function(data) {
-	  		var biogrid_link_id = "biogrid_link";
+	  	$.getJSON(phenotype_resources_link, function(data) {
 	  		var resource_list_id = "resource_list";
 	  		
 	  		var section_id = "resources";
@@ -293,11 +164,6 @@
 	  		
 	  		if(data.length > 0) {
 	  			set_up_resources(resource_list_id, data);
-	  			for (var i=0; i < data.length; i++) {
-	  				if(data[i]['display_name'] == 'BioGRID') {
-	  					document.getElementById(biogrid_link_id).href = data[i]['link'];
-	  				}
-				}
 	  		}
 	  		else {
 	  			document.getElementById(section_id).style.display = "none";
