@@ -8,8 +8,8 @@ from pyramid.view import view_config
 from sgdfrontend import evaluate_url
 from sgdfrontend.link_maker import regulation_graph_link, analyze_link, \
     regulation_overview_link, regulation_details_link, download_table_link, \
-    protein_domain_details_link, binding_site_details_link, \
-    tab_link, enrichment_link
+    protein_domain_details_link, binding_site_details_link, tab_link, \
+    enrichment_link, regulation_target_enrichment_link
 
 
 '''
@@ -29,6 +29,7 @@ def regulations(request):
                 'regulation_overview_link': regulation_overview_link(bioent_id),
                 'regulation_details_link': regulation_details_link(bioent_id),
                 'regulation_graph_link': regulation_graph_link(bioent_id),
+                'regulation_target_enrichment_link': regulation_target_enrichment_link(bioent_id),
                 'protein_domain_details_link': protein_domain_details_link(bioent_id),
                 'binding_site_details_link': binding_site_details_link(bioent_id),
                 'tab_link': tab_link(bioent_id),

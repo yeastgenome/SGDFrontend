@@ -75,23 +75,23 @@ function post_to_yeastmine(bioent_ids) {
 
 function set_up_tools(go_term_finder_id, go_slim_mapper_id, spell_id, yeastmine_id) {
 	document.getElementById(go_term_finder_id).onclick = function f() {
-		var bioent_format_names = [];
+		var bioent_format_names = '';
 
 		var data = table._('tr', {"filter": "applied"});
 		for (var i=0,len=data.length; i<len; i++) { 
 			var sys_name = data[i][0];
-			bioent_format_names.push(sys_name);
+			bioent_format_names = bioent_format_names + sys_name + ' ';
 		}
 		post_to_url("http://yeastgenome.org/cgi-bin/GO/goTermFinder.pl", {
 			"loci" : bioent_format_names
 		});
 	};
 	document.getElementById(go_slim_mapper_id).onclick = function f() {
-		var bioent_format_names = [];
+		var bioent_format_names = '';
 		var data = table._('tr', {"filter": "applied"});
 		for (var i=0,len=data.length; i<len; i++) { 
 			var sys_name = data[i][0];
-			bioent_format_names.push(sys_name);
+			bioent_format_names = bioent_format_names + sys_name + ' ';
 		}
 		post_to_url("http://yeastgenome.org/cgi-bin/GO/goSlimMapper.pl", {
 			"loci" : bioent_format_names
