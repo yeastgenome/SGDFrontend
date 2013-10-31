@@ -48,6 +48,12 @@ def main(global_config, **settings):
     
     #Regulation views
     config.add_route('regulations', '/locus/{identifier}/regulation')
+#
+#    #Phenotype views
+#    config.add_route('phenotype_details', '/locus/{identifier}/phenotype')
+#    
+#    #Go views
+#    config.add_route('go_details', '/locus/{identifier}/go')
 
     #Misc views
     config.add_route('download_citations', '/download_citations')
