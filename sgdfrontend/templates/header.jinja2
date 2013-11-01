@@ -27,10 +27,10 @@
 					
 			 	</div><!-- .header-links -->
 			 	<div class="row header-search">
-			 		<form action="/search" autocomplete="off" id="header-search" class="no-margins">
+			 		<form action="/cgi-bin/search/luceneQS.fpl" autocomplete="off" id="header-search" class="no-margins" method="get">
 					  <div id="top-search-input-container" class="row collapse">
 						<div class="small-6 small-offset-5 columns">
-						  <input id="searchfield-1" name="keyword" type="text" class="search-query radius prefix-input no-margins" placeholder="Search">
+						  <input id="txt_search" name="query" type="text" class="search-query radius prefix-input no-margins ui-autocomplete-input" placeholder="Search" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
 						</div>
 						<div class="small-1 columns">
 						  <a href="#" class="secondary button no-margins postfix radius"><i class="icon-search"></i></a>
