@@ -428,7 +428,7 @@ function set_up_enrichment_table(header_id, table_id, download_button_id, downlo
     	var options = {};
 		options["bPaginate"] = true;
 		options["aaSorting"] = [[2, "asc"]];
-		options["aoColumns"] = [null, null, { "sType": "scinote" }]
+		options["aoColumns"] = [null, {'sWidth': '100px'}, { "sType": "scinote", 'sWidth': '100px'}]
 		options["bDestroy"] = true;
 		options["aaData"] = datatable;
   		
