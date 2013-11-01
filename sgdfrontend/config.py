@@ -4,6 +4,7 @@ Created on Oct 18, 2012
 @author: kpaskov
 '''
 #Production config
+heritage_url = 'http://www.yeastgenome.org'
 backend_url = 'http://sgd-ng2.stanford.edu/webservice'
 #backend_url = 'http://sgd-ng1.stanford.edu/sgdbackend'
 

@@ -29,7 +29,8 @@ def redirect(request):
     
 @view_config(route_name='home')
 def home(request):
-    return Response(status_int=200, body='In progress.')
+    page = urllib.urlopen(heritage_url).read()
+    return Response(page)
 
 header_str = None
 footer_str = None
