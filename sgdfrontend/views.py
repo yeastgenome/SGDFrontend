@@ -5,9 +5,11 @@ from pyramid.view import view_config
 from sgdfrontend import get_json
 from sgdfrontend.link_maker import citation_list_link, bioent_list_link, \
     download_table_link, go_enrichment_link, enrichment_link
+from config import heritage_url
 import datetime
 import json
- 
+import urllib
+
 def clean_cell(cell):
     if cell is None:
         return ''
