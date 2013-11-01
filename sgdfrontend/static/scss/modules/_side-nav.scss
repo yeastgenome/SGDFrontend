@@ -5,7 +5,8 @@ http://smacss.com/book/type-module
 
 // Sticky Side navigation
 #side-nav-sticky {
-	max-width: 263px;
+	//max-width: 263px;
+	width: 180px;
 }
 
 .side-nav { //extending Foundation
@@ -16,7 +17,8 @@ http://smacss.com/book/type-module
 }
 
 #side-nav-sticky.fixed {
-	max-width: 180px;
+	//max-width: 180px;
+	width: 180px;
 }
 
 #nav-title {
