@@ -375,11 +375,16 @@ function go_enrichment(go_enrichment_link, table, format_name_to_id, index, head
 		set_table_message(table_id, '<center><img src="/static/img/dark-slow-wheel.gif"></center>')	
 		
 		var bioent_ids = [];
+		var already_used = {};
 		//Get bioent_ids	
 		var data = table._('tr', {"filter": "applied"});
 		for (var i=0,len=data.length; i<len; i++) { 
 			var sys_name = data[i][index];
-			bioent_ids.push(format_name_to_id[sys_name])
+			if(!already_used[sys_name]) {
+				bioent_ids.push(format_name_to_id[sys_name])
+				already_used[sys_name] = true;
+			}
+			
 		}	
 		
 		document.getElementById(gene_header_id).innerHTML = bioent_ids.length;

@@ -14,3 +14,4 @@ sgdfrontend/config.py
 .mr.developer.cfg
 src/
 *sgdfrontend/static/img/yetfasco
+sgdfrontend_logs/*
