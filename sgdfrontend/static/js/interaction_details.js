@@ -18,10 +18,10 @@ function set_up_overview_table(venn_id, save_button_id, phys_button_id, gen_butt
   	//Colors chosen as colorblind safe from http://colorbrewer2.org/.
 	var stage = draw_venn_diagram(venn_id, r, s, x, A, B, C, style['left_color'], style['right_color']);
 	stage.toDataURL({
-       	width: 350,
-       	height: 350,
+       	width: 450,
+       	height: 300,
        	callback: function(dataUrl) {
-       		document.getElementById(save_button_id).href = dataUrl.replace("image/png", "image/octet-stream");
+       		document.getElementById(save_button_id).href = dataUrl.replace("image/png", "application/png");
         	$('#' + save_button_id).removeAttr('disabled'); 
         }
      });

@@ -47,6 +47,6 @@ setup(name='SGDFrontend',
       },
       entry_points="""\
       [paste.app_factory]
-      main = sgdfrontend:main
+      sgdfrontend = frontend:sgdfrontend
       """,
       )
