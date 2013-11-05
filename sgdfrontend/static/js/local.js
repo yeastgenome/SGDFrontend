@@ -200,6 +200,9 @@ function create_link(display_name, link, new_window) {
 }
 
 function setup_cytoscape_vis(div_id, style, data, f) {
+	var height = .5*$(window).height();
+	var width = $('#' + div_id).width();
+	document.getElementById(div_id).style.height = height + 'px';
 	$(loadCy = function(){
 		options = {
 			showOverlay: false,
@@ -233,7 +236,9 @@ function setup_cytoscape_vis(div_id, style, data, f) {
 		      	}
 		      	cy.on('tap', 'node', function(evt){
   					var node = evt.cyTarget;
-  					window.location.href = node.data().link;
+  					var zoom = cy.zoom();
+  					alert(node.position('x') + ' ' + node.renderedPosition('x') + ' ' + (50-.5*(1-zoom)*(width-100)));
+  					//window.location.href = node.data().link;
 				});
 				cy.on('layoutstop', function(evt){
 					$('#cy_recenter').removeAttr('disabled'); 
@@ -243,6 +248,16 @@ function setup_cytoscape_vis(div_id, style, data, f) {
 				});
 				cy.on('mouseout', function(evt) {
 					this.zoomingEnabled(false);
+				});
+				cy.on('position', 'node', function(evt) {
+					var node = evt.cyTarget;
+					var x = node.renderedPosition('x');
+					var y = node.renderedPosition('y');
+					var zoom = cy.zoom();
+					if(x < 0 ) {
+						//alert((zoom-1)*height + ' ' + node.position('x'));
+						node.position('x', 50-.5*(1-zoom)*(width-100));
+					}
 				});
 		    }, 
 		  };
@@ -257,8 +272,8 @@ function setup_cytoscape_vis(div_id, style, data, f) {
 	recenter_button.onclick = function() {
 		var old_zoom_value = cy.zoomingEnabled();
 		cy.zoomingEnabled(true);
-		cy.fit();
-		cy.zoominEnabled(old_zoom_value);
+		cy.reset();
+		cy.zoomingEnabled(old_zoom_value);
 	};
 	cytoscape_div.parentNode.insertBefore(recenter_button, cytoscape_div);
 	recenter_button.setAttribute('disabled', 'disabled'); 

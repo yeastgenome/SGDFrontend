@@ -91,7 +91,10 @@ function set_up_target_table(header_id, table_id, filter_message_id, download_bu
 		if(evidence['conditions'].length> 0) {
 			conditions = evidence['conditions'][0];
 		}
-  		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
+		var reference = '';
+		if(evidence['reference'] != null) {
+			reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
+		}
   		datatable.push([bioent1, evidence['bioentity1']['format_name'], bioent2, evidence['bioentity2']['format_name'], experiment, conditions, strain, evidence['source'], reference])
   	}
   	  	
@@ -150,7 +153,10 @@ function set_up_regulator_table(header_id, table_id, download_button_id, analyze
 			//strain = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
 			strain = evidence['strain']['display_name'];
 		}
-  		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+  		var reference = '';
+		if(evidence['reference'] != null) {
+			reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+		}
   		var conditions = '';
 		if(evidence['conditions'].length> 0) {
 			conditions = evidence['conditions'][0];
@@ -233,7 +239,7 @@ function set_up_domains_table(header_id, table_id, download_button_id, download_
   	var options = {};
 	options["bPaginate"] = false;
 	options["aaSorting"] = [[1, "asc"]];
-	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, { "sType": "range" }, null, null, null]		
+	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null]		
 	options["aaData"] = datatable;
   				
   	setup_datatable_highlight();
