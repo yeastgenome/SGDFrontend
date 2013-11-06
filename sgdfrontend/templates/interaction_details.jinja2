@@ -14,52 +14,17 @@
 
 <!-- Includes tabs.html into template -->
 {% include "templates/tabs.jinja2" %}
+<script>document.getElementById('interaction_tab').id = 'current';</script>
 
-<script>
-	var int_tab = document.getElementById('interaction_tab');
-	int_tab.id = 'current';
-</script>
-
-<!-- Docs nav
-================================================== -->
 <div class="row">
-	<nav id="sidebar" class="small-0 large-3 columns">
-		<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky">
-			<li id="nav-title"><h4><a href="{{link}}">{{display_name}}/{{format_name}}</a> Interactions</h4></li>
-          	<li data-magellan-arrival="summary"><a href="#summary">Interactors Summary</a></li>
-			<li data-magellan-arrival="interactions"><a href="#interactions">Interactions</a></li>
-			<li data-magellan-arrival="network" id="navbar_network"><a href="#network">Network Visualization</a></li>
-			<li data-magellan-arrival="resources" id="navbar_resources"><a href="#resources">Resources</a></li>
-		</ul>
-	</nav>
 	
-	<div class="small-12 large-9 columns content-column">  
-		
-<!-- Summary
-================================================== -->
-<section id="summary" data-magellan-destination="summary">
-	<div class="page-header">
-		<p>Genes and proteins that interact with {{display_name}}. See help for information about interaction data.</p>
-		<h1>Interactors Summary</h1>
-		<p id='summary_message' style='display:none'>0 Genetic and 0 Physical Interactors curated.</p>
-		<div class="panel" id="summary_wrapper">
-			<div id="venn_diagram"></div>
+<!-- Includes navbar.html into template -->
+{% include "templates/navbar.jinja2" %}
+
+<div class="small-12 large-9 columns content-column"> 
 	
-			<div class="button-bar">
-				<h5>Analyze</h5>
-				<ul class="button-group radius">
-					<li><a disabled="true" id="phys" class="small button secondary sgd-icon-venn-physical">Physical</a></li>
-					<li><a disabled="true" id="gen" class="small button secondary sgd-icon-venn-genetic">Genetic</a></li>
-					<li><a disabled="true" id="phys_gen_intersect" class="small button secondary sgd-icon-venn-intersection">Intersection</a></li>
-					<li><a disabled="true" id="phys_gen_union" class="small button secondary sgd-icon-venn-all">All</a></li>
-				</ul>
-				<ul class="button-group radius">
-					<li><a disabled="true" class="small button secondary radius" id="save" download="{{interaction_overview_filename}}"><i class="icon-picture"></i> PNG</a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-</section>
+<!-- Includes interaction_overview.html into template -->
+{% include "templates/interaction_overview.jinja2" %}
 
 <!-- Interactions
 ================================================== -->
@@ -150,8 +115,6 @@
 {% endblock body %}
 
 {% block scripts %}
-<script src="/static/js/kinetic-v4.3.3.min.js"></script>	
-<script src="/static/js/venn.js"></script>
 <script src="/static/js/jquery.nouislider.min.js"></script>
 <script src="/static/js/cytoscape/cytoscape.min.js"></script>	
 <script src="/static/js/cytoscape/arbor.js"></script>	
@@ -160,7 +123,6 @@
 
 <script>
 	//Template links and filenames
-	var interaction_overview_link = "{{interaction_overview_link}}";
 	var interaction_details_link = "{{interaction_details_link}}";
 	var interaction_graph_link = "{{interaction_graph_link}}";
 	var interaction_resources_link = "{{interaction_resources_link}}";	
@@ -205,48 +167,28 @@
 		'line-color': "#AF8DC3",
 	});
 	
-	//Venn style
-	var venn_style = {"left_color": "#762A83", "right_color": "#1B7837"};
-		
 	$(document).ready(function() {
-    	//Get overview data
-  		$.getJSON(interaction_overview_link, function(data) {
-  			var venn_id = "venn_diagram";
-  			var save_button_id = "save";
+		//Get evidence data
+  		$.getJSON(interaction_details_link, function(data) {
+  			var header_id = "evidence_header";
+  			var evidence_gene_header_id = "evidence_gene_header";
+  			var table_id = "evidence_table";
+  			var download_button_id = "evidence_table_download";
+  			var analyze_button_id = "evidence_table_analyze";
+  			
   			var phys_button_id = "phys";
   			var gen_button_id = "gen";
   			var intersect_button_id = "phys_gen_intersect";
   			var union_button_id = "phys_gen_union";
-  			var evidence_gene_header_id = "evidence_gene_header";
-  			
-  			var message_id = "summary_message";
-  			var wrapper_id = "summary_wrapper";
-  			
-  			if(data['num_gen_interactors'] + data['num_phys_interactors'] > 0){
-  				set_up_overview_table(venn_id, save_button_id, phys_button_id, gen_button_id, intersect_button_id, union_button_id, 
-  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, evidence_gene_header_id, venn_style, data);
-  			}
-  			else {
-  				document.getElementById(message_id).style.display = "block";
-  				document.getElementById(wrapper_id).style.display = "none";
-  				document.getElementById(evidence_gene_header_id).innerHTML = 0;
-  			}
-		});
-	
-		//Get evidence data
-  		$.getJSON(interaction_details_link, function(data) {
-  			var header_id = "evidence_header";
-  			var table_id = "evidence_table";
-  			var download_button_id = "evidence_table_download";
-  			var analyze_button_id = "evidence_table_analyze";
   			
   			var message_id = "evidence_message";
   			var wrapper_id = "evidence_wrapper";
   			
   			if(data.length > 0) {
-  				set_up_evidence_table(header_id, table_id, download_button_id, analyze_button_id, 
+  				set_up_evidence_table(header_id, evidence_gene_header_id, table_id, download_button_id, analyze_button_id, 
   				download_table_link, download_table_filename, 
-  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, data);
+  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, 
+  				phys_button_id, gen_button_id, union_button_id, intersect_button_id, data);
   			}
   			else {
   				document.getElementById(message_id).style.display = "block";
@@ -280,7 +222,6 @@
   				document.getElementById(section_id).style.display = "none";
 				document.getElementById(section_navbar_id).style.display = "none";
   			}
-			
 		});
     	
     	//Get resources

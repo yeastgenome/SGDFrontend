@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+		
+<!-- Summary
+================================================== -->
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Literature Summary</h1>
+		<p><span>{{summary_count}}</span> unique references.</p>
+	</div>
+</section>
+
+<!-- Primary
+================================================== -->
+<section id="primary" data-magellan-destination="primary">
+	<div class="page-header">
+		<h1>Primary Literature <span id="primary_header" class="label secondary round"></span></h1>
+		<span id='primary_message' class="hide">No primary literature curated.</span>
+		<div id='primary_wrapper'>	
+			<a id="export_primary" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
+			<ul id="primary_list" class="literature-list">
+			</ul>
+		</div>
+	</div>
+</section>
+
+<script src="/static/js/local.js"></script>
+
+<script>
+	var data = {{overview | safe}};
+	var download_link = "{{download_link}}";
+	var primary_header_id = "primary_header";
+  	var primary_list_id = "primary_list";
+  	var primary_message_id = "primary_message";
+  	var primary_wrapper_id = "primary_wrapper";
+  	var primary_download_button_id = "export_primary";
+  	var primary_download_filename = "{{display_name}}_primary_citations"
+  	var primary_data = data['primary'];
+  	
+  	document.getElementById(primary_header_id).innerHTML = primary_data.length;
+	set_up_references(primary_data, primary_list_id);
+	if (primary_data.length == 0) {
+		$("#" + primary_message_id).removeClass("hide");
+		$("#" + primary_wrapper_id).addClass("hide");
+	}
+	document.getElementById(primary_download_button_id).onclick = function f() {
+		download_citations(primary_list_id, download_link, primary_download_filename)
+	};
+  			
+  	//Set up navbar
+  	add_navbar_element('Primary Literature', 'primary');
+  	add_navbar_element('Network Visualization', 'network');
+  	add_navbar_element('Additional Literature', 'additional');
+  	add_navbar_element('Reviews', 'reviews');
+  	add_navbar_element('Gene Ontology Literature', 'go');
+  	add_navbar_element('Phenotype Literature', 'phenotype');
+  	add_navbar_element('Interaction Literature', 'interaction');
+  	add_navbar_element('Regulation Literature', 'regulation');
+		
+</script>
+        

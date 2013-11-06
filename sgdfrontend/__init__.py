@@ -34,46 +34,63 @@ class SGDFrontend():
         return f
     
     def interaction_details(self, bioent_repr):
-        print bioent_repr
         bioent = get_bioent(bioent_repr)
         bioent_id = str(bioent['id'])
         display_name = bioent['display_name']
+        overview = get_json(link_maker.interaction_overview_link(bioent_id))
         
         page = {
-                    'interaction_overview_link': link_maker.interaction_overview_link(bioent_id),
+                    #Basic info
+                    'display_name': bioent['display_name'],
+                    'link': bioent['link'],
+                    'format_name': bioent['format_name'],
+                    
+                    #Navbar stuff
+                    'navbar_title': 'Interactions',
+                    'navbar_summary_title': 'Interactors Summary',
+                    
+                    #Overview
+                    'overview': json.dumps(overview),
+                    
+                    #Links
                     'interaction_details_link': link_maker.interaction_details_link(bioent_id),
                     'interaction_graph_link': link_maker.interaction_graph_link(bioent_id),
                     'interaction_resources_link': link_maker.interaction_resources_link(bioent_id),
                     'tab_link': link_maker.tab_link(bioent_id),
-    
                     'download_table_link': link_maker.download_table_link(),
+                    'analyze_link': link_maker.analyze_link(),
     
+                    #Filenames
                     'interaction_details_filename': display_name + '_interactions',
                     'interaction_overview_filename': display_name + '_interactors.png',
-                    
-                    'analyze_link': link_maker.analyze_link(),
-                    
-                    'display_name': bioent['display_name'],
-                    'link': bioent['link'],
-                    'format_name': bioent['format_name']
                     }
         return page
     
     def literature_details(self, bioent_repr):
         bioent = get_bioent(bioent_repr)
         bioent_id = str(bioent['id'])
+        overview = get_json(link_maker.literature_overview_link(bioent_id))
         
         page = {
+                    #Basic info
+                    'display_name': bioent['display_name'],
+                    'format_name': bioent['format_name'],
+                    'link': bioent['link'],
+                    
+                    #Navbar stuff
+                    'navbar_title': 'Literature',
+                    'navbar_summary_title': 'Literature Summary',
+                    
+                    #Overview
+                    'overview': json.dumps(overview),
+                    'summary_count': overview['total_count'],
+                    
+                    #Links
                     'literature_details_link': link_maker.literature_details_link(bioent_id),
                     'download_link': link_maker.download_citations_link(),
                     'tab_link': link_maker.tab_link(bioent_id),
-                    'literature_overview_link': link_maker.literature_overview_link(bioent_id),
                     'literature_graph_link': link_maker.literature_graph_link(bioent_id),
-                    'literature_overview_filename': bioent['display_name'] + '_literature_overview.png',
-                       
-                    'display_name': bioent['display_name'],
-                    'format_name': bioent['format_name'],
-                    'link': bioent['link']
+                    
                 }
         return page
     
@@ -81,29 +98,38 @@ class SGDFrontend():
         bioent = get_bioent(bioent_repr)
         bioent_id = str(bioent['id'])
         display_name = bioent['display_name']
+        overview = get_json(link_maker.regulation_overview_link(bioent_id))
+        
         page = {
-                    'regulation_overview_link': link_maker.regulation_overview_link(bioent_id),
+                    #Basic info
+                    'display_name': bioent['display_name'],
+                    'link': bioent['link'],
+                    'format_name': bioent['format_name'],
+                    
+                    #Navbar stuff
+                    'navbar_title': 'Regulation',
+                    'navbar_summary_title': 'Regulation Summary',
+                    
+                    #Overview
+                    'overview': json.dumps(overview),
+                    
+                    #Links
                     'regulation_details_link': link_maker.regulation_details_link(bioent_id),
                     'regulation_graph_link': link_maker.regulation_graph_link(bioent_id),
                     'regulation_target_enrichment_link': link_maker.regulation_target_enrichment_link(bioent_id),
                     'protein_domain_details_link': link_maker.protein_domain_details_link(bioent_id),
                     'binding_site_details_link': link_maker.binding_site_details_link(bioent_id),
                     'tab_link': link_maker.tab_link(bioent_id),
-        
                     'download_table_link': link_maker.download_table_link(),
-    
+                    'analyze_link': link_maker.analyze_link(),
+                    'go_enrichment_link': link_maker.enrichment_link(),
+                    
+                    #Filenames
                     'targets_filename': display_name + '_targets',
                     'regulators_filename': display_name + '_regulators',
                     'domains_filename': display_name + '_domains',
                     'enrichment_filename': display_name + '_targets_go_process_enrichment',
                     'regulation_overview_filename': display_name + '_transcriptional_targets_and_regulators.png',
-                    
-                    'analyze_link': link_maker.analyze_link(),
-                    'go_enrichment_link': link_maker.enrichment_link(),
-                    
-                    'display_name': bioent['display_name'],
-                    'link': bioent['link'],
-                    'format_name': bioent['format_name']
                     }
         return page
     
@@ -155,15 +181,25 @@ class SGDFrontend():
         if bioents is None:
             return Response(status_int=500, body='Bioents could not be found.') 
         
-        page = {    'bioent_display_name': bioent_display_name,
-                    'bioent_format_name': bioent_format_name,
-                    'bioent_link': bioent_link,
+        page = {    
+                    #Basic Info
+                    'display_name': bioent_display_name,
+                    'format_name': bioent_format_name,
+                    'link': bioent_link,
+                    
+                    #Navbar stuff
+                    'navbar_pre': 'Analyze ',
+                    'navbar_title': list_name,
+                    'navbar_summary_title': 'Tools',
+                    
+                    #Links
                     'go_enrichment_link': link_maker.enrichment_link(),
+                    'download_table_link': link_maker.download_table_link(),
+                    
                     'bioents': json.dumps(bioents),
                     'bioent_format_names': " ".join([bioent['format_name'] for bioent in bioents]), 
                     'gene_list_filename': 'gene_list',
                     'list_type': list_name,
-                    'download_table_link': link_maker.download_table_link(),
                 }
         return page
     

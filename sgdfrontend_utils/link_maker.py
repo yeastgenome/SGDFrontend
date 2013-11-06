@@ -39,7 +39,7 @@ def interaction_page_link(bioent):
     return frontend_start + '/locus/' + str(bioent) + '/interactions'
 
 def interaction_overview_link(bioent):
-    return backend_start + '/locus/' + str(bioent) + '/interaction_overview?callback=?'
+    return backend_start + '/locus/' + str(bioent) + '/interaction_overview'
 def interaction_details_link(bioent):
     return backend_start + '/locus/' + str(bioent) + '/interaction_details?callback=?'
 def interaction_graph_link(bioent):
@@ -52,7 +52,7 @@ def regulation_page_link(bioent):
     return frontend_start + '/locus/' + str(bioent) + '/regulation'
 
 def regulation_overview_link(bioent):
-    return backend_start + '/locus/' + str(bioent) + '/regulation_overview?callback=?'
+    return backend_start + '/locus/' + str(bioent) + '/regulation_overview'
 def regulation_details_link(bioent):
     return backend_start + '/locus/' + str(bioent) + '/regulation_details?callback=?'
 def regulation_target_enrichment_link(bioent):
@@ -81,7 +81,7 @@ def literature_page_link(bioent):
     return frontend_start + '/locus/' + str(bioent) + '/literature'
 
 def literature_overview_link(bioent):
-    return backend_start + '/locus/' + str(bioent) + '/literature_overview?callback=?'
+    return backend_start + '/locus/' + str(bioent) + '/literature_overview'
 def literature_details_link(bioent):
     return backend_start + '/locus/' + str(bioent) + '/literature_details?callback=?'
 def literature_graph_link(bioent):

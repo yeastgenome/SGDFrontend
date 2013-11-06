@@ -1,0 +1,22 @@
+<!-- Docs nav
+================================================== -->
+<nav id="sidebar" class="small-0 large-3 columns">
+	<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky">
+		<li id="nav-title"><h4>{{navbar_pre}}<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}</h4></li>
+        <li data-magellan-arrival="summary"><a href="#summary">{{navbar_summary_title}}</a></li>
+	</ul>
+	
+	<script>
+	var navbar = document.getElementById("side-nav-sticky");
+	function add_navbar_element(entry_name, section_name) {
+		var li = document.createElement('li');
+	  	li.setAttribute('data-magellan-arrival', section_name)
+	  	var a = document.createElement('a');
+	  	a.href = "#" + section_name;
+	  	a.innerHTML = entry_name;
+	  	li.appendChild(a);
+	  	navbar.appendChild(li);
+	}
+	</script>
+</nav>
+
