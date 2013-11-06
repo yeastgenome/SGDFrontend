@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+		
+<!-- Summary
+================================================== -->
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Regulation Summary</h1>
+		<p id="summary_paragraph"></p>
+		
+		<ul id="summary_paragraph_reference_list" class="literature-list"></ul>
+		
+		<p id="summary_message" style="display:none">0 Targets and 0 Regulators curated.</p>
+		<div class="panel" id="summary_wrapper">
+			<div id="summary_diagram"></div>
+		
+			<div class="button-bar">
+				<h5>Analyze</h5>
+				<ul class="button-group radius">
+					<li><a id="targ" class="small button secondary">Targets</a></li>
+					<li><a id="reg" class="small button secondary">Regulators</a></li>
+				</ul>
+				<ul class="button-group radius">
+					<li><a class="small button secondary radius" id="save" download="{{regulation_overview_filename}}"><i class="icon-picture"></i> PNG</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	//Set up navbar
+  	if(target_count > 0) {
+     	add_navbar_element('Domains and Classification', 'domains');
+  		add_navbar_element('DNA Binding Site Motifs', 'binding');
+  		add_navbar_element('Targets', 'targets');
+  		add_navbar_element('Shared GO Processes Among Targets', 'enrichment');
+     }
+     if(regulator_count > 0) {
+     	add_navbar_element('Regulators', 'regulators');
+     }
+     if(target_count + regulator_count > 0) {
+     	add_navbar_element('Network Visualization', 'network');
+     }
+</script>
+
+<script src="/static/js/kinetic-v4.3.3.min.js"></script>	
+<script src="/static/js/side_bar.js"></script>	
+<script src="/static/js/local.js"></script>
+<script>
+	//Side-bar style
+	var side_bar_style = {"left_color": "#AF8DC3", "right_color": "#7FBF7B"};
+	
+	//Set up overview data
+    var data = {{overview | safe}};
+  	var summary_paragraph_id = "summary_paragraph";
+  	var reference_list_id = "summary_paragraph_reference_list";
+  	var diagram_id = "summary_diagram";
+  	var save_button_id = "save";
+  			
+  	var message_id = "summary_message";
+  	var wrapper_id = "summary_wrapper";
+  	
+  	var target_count = data['target_count'];
+  	var regulator_count = data['regulator_count'];
+  	 	
+  	if(target_count + regulator_count > 0){
+  		if('paragraph' in data) {
+			document.getElementById(summary_paragraph_id).innerHTML = data['paragraph']['text'];
+			references = data['paragraph']['references'];
+			set_up_references(references, reference_list_id);
+		}
+		
+		var values = [target_count, regulator_count];
+		var labels = ['Transcriptional\nTargets', 'Transcriptional\nRegulators'];
+		var colors = [side_bar_style['left_color'], side_bar_style['right_color']];
+		var stage = draw_side_bar_diagram(diagram_id, values, labels, colors, false);
+		stage.toDataURL({
+      	 	width: 500,
+       		height: 120,
+       		callback: function(dataUrl) {
+       			document.getElementById(save_button_id).href = dataUrl.replace("image/png", "image/octet-stream");
+        	}
+     	});
+  	}
+  	else {
+  		document.getElementById(message_id).style.display = "block";
+  		document.getElementById(wrapper_id).style.display = "none";
+  	}
+		
+</script>

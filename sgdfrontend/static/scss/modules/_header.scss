@@ -3,9 +3,9 @@ Module rules - SMACSS
 http://smacss.com/book/type-module
 *********************************************/
 
-#layout-page-header-content {
+/* #layout-page-header-content {
 	background: url("../img/demo-watermark.png") repeat-x;
-}
+} */
 
 #header-tools {
 	display: inline-block;
@@ -25,8 +25,13 @@ http://smacss.com/book/type-module
 	}
 	.header-search {
 		height: 50px;
+		top: 30px;
 		overflow: none;
 	}
+}
+
+#top-search-input-container div {
+	top: -30px;
 }
 
 #sgd-mini-logo {
@@ -36,6 +41,8 @@ http://smacss.com/book/type-module
 #adv-search-links {
 	font-size: emCalc(11px);
 	float: right;
+	position: relative;
+	top: -30px;
 }
 
 .social-links, .site-links {

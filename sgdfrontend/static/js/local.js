@@ -200,6 +200,9 @@ function create_link(display_name, link, new_window) {
 }
 
 function setup_cytoscape_vis(div_id, style, data, f) {
+	var height = .5*$(window).height();
+	var width = $('#' + div_id).width();
+	document.getElementById(div_id).style.height = height + 'px';
 	$(loadCy = function(){
 		options = {
 			showOverlay: false,
@@ -233,7 +236,9 @@ function setup_cytoscape_vis(div_id, style, data, f) {
 		      	}
 		      	cy.on('tap', 'node', function(evt){
   					var node = evt.cyTarget;
-  					window.location.href = node.data().link;
+  					var zoom = cy.zoom();
+  					alert(node.position('x') + ' ' + node.renderedPosition('x') + ' ' + (50-.5*(1-zoom)*(width-100)));
+  					//window.location.href = node.data().link;
 				});
 				cy.on('layoutstop', function(evt){
 					$('#cy_recenter').removeAttr('disabled'); 
@@ -243,6 +248,16 @@ function setup_cytoscape_vis(div_id, style, data, f) {
 				});
 				cy.on('mouseout', function(evt) {
 					this.zoomingEnabled(false);
+				});
+				cy.on('position', 'node', function(evt) {
+					var node = evt.cyTarget;
+					var x = node.renderedPosition('x');
+					var y = node.renderedPosition('y');
+					var zoom = cy.zoom();
+					if(x < 0 ) {
+						//alert((zoom-1)*height + ' ' + node.position('x'));
+						node.position('x', 50-.5*(1-zoom)*(width-100));
+					}
 				});
 		    }, 
 		  };
@@ -257,8 +272,8 @@ function setup_cytoscape_vis(div_id, style, data, f) {
 	recenter_button.onclick = function() {
 		var old_zoom_value = cy.zoomingEnabled();
 		cy.zoomingEnabled(true);
-		cy.fit();
-		cy.zoominEnabled(old_zoom_value);
+		cy.reset();
+		cy.zoomingEnabled(old_zoom_value);
 	};
 	cytoscape_div.parentNode.insertBefore(recenter_button, cytoscape_div);
 	recenter_button.setAttribute('disabled', 'disabled'); 
@@ -360,11 +375,16 @@ function go_enrichment(go_enrichment_link, table, format_name_to_id, index, head
 		set_table_message(table_id, '<center><img src="/static/img/dark-slow-wheel.gif"></center>')	
 		
 		var bioent_ids = [];
+		var already_used = {};
 		//Get bioent_ids	
 		var data = table._('tr', {"filter": "applied"});
 		for (var i=0,len=data.length; i<len; i++) { 
 			var sys_name = data[i][index];
-			bioent_ids.push(format_name_to_id[sys_name])
+			if(!already_used[sys_name]) {
+				bioent_ids.push(format_name_to_id[sys_name])
+				already_used[sys_name] = true;
+			}
+			
 		}	
 		
 		document.getElementById(gene_header_id).innerHTML = bioent_ids.length;
@@ -428,7 +448,7 @@ function set_up_enrichment_table(header_id, table_id, download_button_id, downlo
     	var options = {};
 		options["bPaginate"] = true;
 		options["aaSorting"] = [[2, "asc"]];
-		options["aoColumns"] = [null, null, { "sType": "scinote" }]
+		options["aoColumns"] = [null, {'sWidth': '100px'}, { "sType": "scinote", 'sWidth': '100px'}]
 		options["bDestroy"] = true;
 		options["aaData"] = datatable;
   		
@@ -440,4 +460,15 @@ function set_up_enrichment_table(header_id, table_id, download_button_id, downlo
   		document.getElementById(download_button_id).onclick = function() {download_table(enrichment_table, download_link, download_table_filename)};
     	$('#' + download_button_id).removeAttr('disabled');
     }
+}
+
+var navbar = document.getElementById("side-nav-sticky");
+function add_navbar_element(entry_name, section_name) {
+	var li = document.createElement('li');
+	li.setAttribute('data-magellan-arrival', section_name)
+	var a = document.createElement('a');
+	a.href = "#" + section_name;
+	a.innerHTML = entry_name;
+	li.appendChild(a);
+	navbar.appendChild(li);
 }

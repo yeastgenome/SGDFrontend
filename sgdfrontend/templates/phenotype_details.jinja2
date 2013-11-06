@@ -14,38 +14,19 @@
 
 <!-- Includes tabs.html into template -->
 {% include "templates/tabs.jinja2" %}
+<script>document.getElementById('phenotype_tab').id = 'current';</script>
 
-<script>
-	var int_tab = document.getElementById('phenotype_tab');
-	int_tab.id = 'current';
-</script>
-
-<!-- Docs nav
-================================================== -->
 <div class="row">
-	<nav id="sidebar" class="small-0 large-3 columns">
-		<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky">
-			<li id="nav-title"><h4><a href="{{link}}">{{display_name}}/{{format_name}}</a> Phenotypes</h4></li>
-          	<li data-magellan-arrival="summary"><a href="#summary">Phenotypes Summary</a></li>
-			<li data-magellan-arrival="phenotypes"><a href="#phenotypes">Phenotypes</a></li>
-			<li data-magellan-arrival="resources" id="navbar_resources"><a href="#resources">Resources</a></li>
-		</ul>
-	</nav>
 	
-	<div class="small-12 large-9 columns content-column">  
-		
-<!-- Summary
-================================================== -->
-<section id="summary" data-magellan-destination="summary">
-	<div class="page-header">
-		<p>This page lists all curated single mutant phenotypes associated with {{display_name}}. <a href='http://www.yeastgenome.org/cache/PhenotypeTree.html'>Browse</a> phenotype terms.</p>
-		<h1>Phenotypes Summary</h1>
-		<p id='summary_message' style='display:none'>0 Phenotypes curated.</p>
-		<p><span id="pheno_count">_</span> phenotypes curated for {{display_name}}.</p>
-	</div>
-</section>
+<!-- Includes navbar.html into template -->
+{% include "templates/navbar.jinja2" %}
 
-<!-- Interactions
+<div class="small-12 large-9 columns content-column"> 
+	
+<!-- Includes phenotype_overview.html into template -->
+{% include "templates/phenotype_overview.jinja2" %}
+
+<!-- Phenotypes
 ================================================== -->
 <section id="phenotypes" data-magellan-destination="phenotypes">
 	<div class="page-header">

@@ -6,27 +6,22 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>Analyze <span class="gene_name">{{bioent_display_name}}/{{bioent_format_name}}</span> {{list_type}}</h2>
+	<h2>Analyze <span class="gene_name">{{display_name}}/{{format_name}}</span> {{list_type}}</h2>
 </div>
 
 
 <!-- Docs nav
 ================================================== -->
-<div class="row-fluid">
-	<div id="sidebar" class="small-0 large-3 columns content-column">
-		<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky">
-			<li id="nav-title"><h4>Analyze <a href="{{bioent_link}}">{{bioent_display_name}}/{{bioent_format_name}}</a> {{list_type}}</h4></li>
-			<li data-magellan-arrival="analyze"><a href="#analyze">Tools</a></li>
-          	<li data-magellan-arrival="gene_list"><a href="#gene_list">Genes</a></li>
-          	<li data-magellan-arrival="enrichment"><a href="#enrichment">GO Process Enrichment</a></li>
-		</ul>
-	</div>
+<div class="row">
+
+<!-- Includes navbar.html into template -->
+{% include "templates/navbar.jinja2" %}
 	
-	<div class="small-12 large-9 columns"> 
+<div class="small-12 large-9 columns"> 
 
 <!-- Analyze
 ================================================== -->
-<section id="analyze" data-magellan-destination="analyze">
+<section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
 		<h1>Tools</h1>
 		
@@ -140,7 +135,7 @@
 <script>
 	//Links and filenames from template
 	var download_link = "{{download_table_link}}";
-	var bioent_display_name = "{{bioent_display_name}}";
+	var bioent_display_name = "{{display_name}}";
 	var download_table_filename = bioent_display_name + "_{{list_type}}";
 	var enrichment_table_filename = bioent_display_name + "_{{list_type}}_go_enrichment"
 	var go_enrichment_link = "{{go_enrichment_link}}"
@@ -148,6 +143,9 @@
 	var bioentity_list_link = "{{bioentity_list_link}}"
 	
 	$(document).ready(function() {
+		add_navbar_element('Genes', 'gene_list');
+  		add_navbar_element('GO Process Enrichment', 'enrichment');
+  		
 		//Set up gene table
 		var table_id = "gene_list_table";
 		var download_button_id = "export";

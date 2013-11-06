@@ -4,7 +4,8 @@ Created on Oct 18, 2012
 @author: kpaskov
 '''
 #Production config
-backend_url = 'http://sgd-ng2.stanford.edu/webservice'
+heritage_url = 'http://www.yeastgenome.org'
+#backend_url = 'http://sgd-ng2.stanford.edu/webservice'
 #backend_url = 'http://sgd-ng1.stanford.edu/sgdbackend'
 
 #Local SGDBackend config
@@ -13,4 +14,8 @@ backend_url = 'http://sgd-ng2.stanford.edu/webservice'
 #Local PerfBackend config
 #backend_url = 'http://localhost:6541'
 
-dev_url = 'http://sgd-ng1.stanford.edu/sgdbackend'
+backend_url = 'http://sgd-ng1.stanford.edu/sgdbackend'
+#Local TestBackend config
+#backend_url = 'http://localhost:6547'
+
+#dev_url = 'http://sgd-ng2.stanford.edu/sgdbackend'

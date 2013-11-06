@@ -11,11 +11,11 @@
 			 	<div class="row header-links">
 			 		
 						<ul class="site-links">
-							<li><a href="http://www.yeastgenome.org/about">About</a></li>
-							<li><a href="http://www.yeastgenome.org/blog">Blog</a></li>
-							<li><a href="http://www.yeastgenome.org/download-data">Download</a></li>
-							<li><a href="http://www.yeastgenome.org/site-map">Site Map</a></li>
-							<li><a href="http://www.yeastgenome.org/help">Help</a></li>
+							<li><a href="/about">About</a></li>
+							<li><a href="/blog">Blog</a></li>
+							<li><a href="/download-data">Download</a></li>
+							<li><a href="/site-map">Site Map</a></li>
+							<li><a href="/help">Help</a></li>
 						</ul>
 					
 						<ul class="social-links">
@@ -27,10 +27,10 @@
 					
 			 	</div><!-- .header-links -->
 			 	<div class="row header-search">
-			 		<form action="/search" autocomplete="off" id="header-search" class="no-margins">
-					  <div class="row collapse">
+			 		<form action="/cgi-bin/search/luceneQS.fpl" autocomplete="off" id="header-search" class="no-margins" method="get">
+					  <div id="top-search-input-container" class="row collapse">
 						<div class="small-6 small-offset-5 columns">
-						  <input id="searchfield-1" name="keyword" type="text" class="search-query radius prefix-input no-margins" placeholder="Search">
+						  <input id="txt_search" name="query" type="text" class="search-query radius prefix-input no-margins ui-autocomplete-input" placeholder="Search" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
 						</div>
 						<div class="small-1 columns">
 						  <a href="#" class="secondary button no-margins postfix radius"><i class="icon-search"></i></a>
@@ -134,7 +134,6 @@
 											<li><a href="/cache/PhenotypeTree.html">Browse All Phenotypes</a></li>
 										</ul>
 									</li>
-									<li><a href="/cgi-bin/interactions.pl">Interactions</a></li>
 									<li><a href="http://yeastgfp.yeastgenome.org/">YeastGFP</a></li>
 									<li class="has-dropdown">
 										<a href="#">Resources</a>
@@ -145,7 +144,7 @@
 									</li>
 								</ul>
 							</li>
-							<li class="has-dropdown"><a href="/my_sgd">Literature</a>
+							<li class="has-dropdown"><a href="">Literature</a>
 								<ul class="dropdown">
 									<li><a href="http://textpresso.yeastgenome.org/">Full-text Search</a></li>
 									<li><a href="/cache/NewPapersThisWeek.html">New Yeast Papers</a></li>
@@ -194,7 +193,6 @@
 											<li><a href="http://wiki.yeastgenome.org/index.php/Strains">Strains and Constructs</a></li>
 											<li><a href="http://wiki.yeastgenome.org/index.php/Reagents">Reagents</a></li>
 											<li><a href="http://wiki.yeastgenome.org/index.php/Methods">Protocols and Methods</a></li>
-											<li><a href="/cgi-bin/clone.pl">Find a Clone</a></li>
 										</ul>
 									</li>
 									<li class="has-dropdown">

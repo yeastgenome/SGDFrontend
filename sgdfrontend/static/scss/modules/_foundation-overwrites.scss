@@ -11,3 +11,11 @@ http://smacss.com/book/type-module
 .small-input {
 	font-size: emCalc(12px);
 }
+
+div.orbit-wrapper {
+      width: 500px !important;
+      height: 250px !important;
+}
+orbit-slide-number {
+	display: none;
+}

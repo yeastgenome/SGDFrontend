@@ -14,61 +14,21 @@
 
 <!-- Includes tabs.html into template -->
 {% include "templates/tabs.jinja2" %}
+<script>document.getElementById('regulation_tab').id = 'current';</script>
 
-<script>
-	var int_tab = document.getElementById('regulation_tab');
-	int_tab.id = 'current';
-</script>
-
-<!-- Docs nav
-================================================== -->
 <div class="row">
-	<nav id="sidebar" class="small-0 large-3 columns">
-		<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky">
-			<li id="nav-title"><h4><a href="{{link}}">{{display_name}}/{{format_name}}</a> Transcriptional Regulation</h4></li>
-          	<li data-magellan-arrival="summary"><a href="#summary">Summary</a></li>
-			<li data-magellan-arrival="domains" id="navbar_domains"><a href="#domains">Domains and Classification</a></li>
-			<li data-magellan-arrival="binding" id="navbar_binding"><a href="#binding">DNA Binding Site Motifs</a></li>
-			<li data-magellan-arrival="targets" id="navbar_targets"><a href="#targets">Targets</a></li>
-			<li data-magellan-arrival="enrichment" id="navbar_enrichment"><a href="#enrichment">Shared GO Processes Among Targets</a></li>
-			<li data-magellan-arrival="regulators" id="navbar_regulators"><a href="#regulators">Regulators</a></li>
-			<li data-magellan-arrival="network" id="navbar_network"><a href="#network">Network Visualization</a></li>
-
-		</ul>
-	</nav>
 	
-	<div class="small-12 large-9 columns content-column">  
-		
-<!-- Summary
-================================================== -->
-<section id="summary" data-magellan-destination="summary">
-	<div class="page-header">
-		<h1>Regulation Summary</h1>
-		<p id="summary_paragraph"></p>
-		
-		<ul id="summary_paragraph_reference_list" class="literature-list"></ul>
-		
-		<p id="summary_message" style="display:none">0 Targets and 0 Regulators curated.</p>
-		<div class="panel" id="summary_wrapper">
-			<div id="summary_diagram"></div>
-		
-			<div class="button-bar">
-				<h5>Analyze</h5>
-				<ul class="button-group radius">
-					<li><a id="targ" class="small button secondary">Targets</a></li>
-					<li><a id="reg" class="small button secondary">Regulators</a></li>
-				</ul>
-				<ul class="button-group radius">
-					<li><a class="small button secondary radius" id="save" download="{{regulation_overview_filename}}"><i class="icon-picture"></i> PNG</a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-</section>
+<!-- Includes navbar.html into template -->
+{% include "templates/navbar.jinja2" %}
+
+<div class="small-12 large-9 columns content-column"> 
+	
+<!-- Includes regulation_overview.html into template -->
+{% include "templates/regulation_overview.jinja2" %}
 
 <!-- Domains
 ================================================== -->
-<section id="domains" data-magellan-destination="domains">
+<section id="domains" data-magellan-destination="domains" style="display:none">
 	<div class="page-header">
 		<h1>Domains and Classification <span id="domains_header" class="round secondary label"></span></h1>
 		<div>
@@ -95,7 +55,7 @@
 
 <!-- Binding Sites
 ================================================== -->
-<section id="binding" data-magellan-destination="binding">
+<section id="binding" data-magellan-destination="binding" style="display:none">
 	<div class="page-header">
 		<h1>DNA Binding Site Motifs</h1>
 		<div>
@@ -108,7 +68,7 @@
 
 <!-- Targets
 ================================================== -->
-<section id="targets" data-magellan-destination="targets">
+<section id="targets" data-magellan-destination="targets" style="display:none">
 	<div class="page-header">
 		<h1>Targets <span class="round secondary label"><span id="targets_header"></span> <small>entries for</small> <span id="targets_gene_header"></span> <small>genes</small></span></h1>
 		<div>
@@ -143,7 +103,7 @@
 
 <!-- Enrichment
 ================================================== -->
-<section id="enrichment" data-magellan-destination="enrichment">
+<section id="enrichment" data-magellan-destination="enrichment" style="display:none">
 	<div class="page-header">
 		<h1>Shared GO Processes Among Targets <span class="round secondary label"><span id="enrichment_header"></span> <small>entries for</small> <span id="enrichment_gene_header"></span> <small>genes</small></span></h1>
 		<div>
@@ -243,8 +203,6 @@
 {% endblock body %}
 
 {% block scripts %}
-<script src="/static/js/kinetic-v4.3.3.min.js"></script>
-<script src="/static/js/side_bar.js"></script>	
 <script src="/static/js/jquery.nouislider.min.js"></script>
 <script src="/static/js/cytoscape/cytoscape.min.js"></script>	
 <script src="/static/js/cytoscape/arbor.js"></script>	
@@ -287,7 +245,9 @@
 	.selector('edge')
 	.css({
 		'width': 2,
-		'target-arrow-shape': 'triangle'
+		'target-arrow-shape': 'triangle',
+		'line-color': '#848484',
+		'target-arrow-color': '#848484',
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({
@@ -308,146 +268,109 @@
 		'color': '#fff',
 	});
 	
-	//Side-bar style
-	var side_bar_style = {"left_color": "#AF8DC3", "right_color": "#7FBF7B"};
+	var overview_json = {{overview | safe}};
 	
 	$(document).ready(function() {
-		
-  		var enrich_gene_header_id = "enrichment_gene_header";
 
-    	//Get overview data
-  		$.getJSON(regulation_overview_link, function(data) {
-  			var summary_paragraph_id = "summary_paragraph";
-  			var reference_list_id = "summary_paragraph_reference_list";
-  			var targets_gene_header_id = "targets_gene_header";
-  			var regulators_gene_header_id = "regulators_gene_header";
-  			var diagram_id = "summary_diagram";
-  			var save_button_id = "save";
-  			var analyze_target_id = "targ";
-  			var analyze_regulator_id = "reg";
-  			
-  			var message_id = "summary_message";
-  			var wrapper_id = "summary_wrapper";
-  			
-  			
-  			set_up_overview(summary_paragraph_id, reference_list_id, diagram_id, save_button_id, 
-  			analyze_target_id, analyze_regulator_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, 
-  			targets_gene_header_id, regulators_gene_header_id, side_bar_style, data);
-  			
-  			if(data['target_count'] + data['regulator_count'] == 0) {
-  				document.getElementById(message_id).style.display = "block";
-  				document.getElementById(wrapper_id).style.display = "none";
-  			}
-  			
-			document.getElementById(enrich_gene_header_id).innerHTML = data['target_count']
-		});
-		
 		//Get domain data
-  		$.getJSON(protein_domains_link, function(data) {
-   			var header_id = "domains_header";
-  			var table_id = "domains_table";
-  			var download_button_id = "domains_table_download";
-  			
-  			var section_id = "domains";
-  			var navbar_id = "navbar_domains";
-  			
-  			if(data != null && data.length > 0) {
-  				set_up_domains_table(header_id, table_id, download_button_id, 
-  				download_table_link, domains_table_filename, data);
-  			}
-  			else {
-  				document.getElementById(section_id).style.display = "none";
-  				document.getElementById(navbar_id).style.display = "none";
-  			}
-  			
-  		});
+		if(overview_json['target_count'] > 0) {
+			$.getJSON(protein_domains_link, function(data) {
+	   			var header_id = "domains_header";
+	  			var table_id = "domains_table";
+	  			var download_button_id = "domains_table_download";
+	  			var section_id = "domains";
+	  			
+	  			if(data != null && data.length > 0) {
+	  				document.getElementById(section_id).style.display = "block";
+	  				set_up_domains_table(header_id, table_id, download_button_id, 
+	  				download_table_link, domains_table_filename, data);
+	  			}
+  			});
+		}
   		
   		//Get binding site data
-  		$.getJSON(binding_site_details_link, function(data) {
-  			var list_id = "binding_motifs";
-  			
-  			var section_id = "binding";
-  			var navbar_id = "navbar_binding"
-  			
-  			if(data.length > 0) {
-  				set_up_binding_site(list_id, data);
-  			}
-  			else {
-  				document.getElementById(section_id).style.display = "none";
-  				document.getElementById(navbar_id).style.display = "none";
-  			}
-  			
-  		});
-  		
-  		var enrich_header_id = "enrichment_header";
-		var enrich_table_id = "enrichment_table";
-		var enrich_download_button_id = "enrichment_table_download";
-		var enrich_recalc_button_id = "enrichment_recalc";
+  		if(overview_json['target_count'] > 0) {
+	  		$.getJSON(binding_site_details_link, function(data) {
+	  			var list_id = "binding_motifs";
+	  			var section_id = "binding";
+	  			var navbar_id = "navbar_binding"
+	  			
+	  			if(data.length > 0) {
+	  				document.getElementById(section_id).style.display = "block";
+	  				set_up_binding_site(list_id, data);
+	  			}  			
+	  		});
+	  	}
   		
 		//Get evidence data
   		$.getJSON(regulation_details_link, function(data) {
-  			
-  			var target_data = data["targets"];
-  			var targets_header_id = "targets_header";
-  			var targets_table_id = "targets_table";
-  			var targets_download_button_id = "targets_table_download";
-  			var targets_analyze_button_id = "targets_table_analyze";
-  			
-  			var target_section_id = "targets";
-  			var target_navbar_id = "navbar_targets";
-  			var domain_section_id = "domains";
-  			var domain_navbar_id = "navbar_domains";
-  			var enrichment_section_id = "enrichment";
-  			var enrichment_navbar_id = "navbar_enrichment";
-  			var filter_message_id = "filter_message";
-  			
-  			if(target_data.length > 0) {
-  				set_up_target_table(targets_header_id, targets_table_id, filter_message_id,
-  				targets_download_button_id, targets_analyze_button_id, 
-  				download_table_link, targets_table_filename, 
-  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, target_data);
-
-  				//Set up go enrichment				
-				go_enrichment(go_enrichment_link, target_table, format_name_to_id, 3, enrich_header_id, enrich_gene_header_id, enrich_table_id, enrich_recalc_button_id,
-					enrich_download_button_id, download_table_link, enrichment_table_filename);
+  			if(overview_json['target_count'] > 0) {
+	  			var target_data = data["targets"];
+	  			var targets_header_id = "targets_header";
+	  			var targets_gene_header = "targets_gene_header";
+	  			var targets_table_id = "targets_table";
+	  			var targets_download_button_id = "targets_table_download";
+	  			var targets_analyze_button_id = "targets_table_analyze";
+	  			
+	  			var target_section_id = "targets";
+	  			var target_navbar_id = "navbar_targets";
+	  			var domain_section_id = "domains";
+	  			var domain_navbar_id = "navbar_domains";
+	  			var enrichment_section_id = "enrichment";
+	  			var enrichment_navbar_id = "navbar_enrichment";
+	  			var filter_message_id = "filter_message";
+	  			
+	  			if(target_data.length > 0) {
+	  				document.getElementById(target_section_id).style.display = "block";
+	  				set_up_target_table(targets_header_id, targets_gene_header, targets_table_id, filter_message_id,
+	  				targets_download_button_id, targets_analyze_button_id, 
+	  				download_table_link, targets_table_filename, 
+	  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, target_data);
+	
+	  				//Set up go enrichment				
+					go_enrichment(go_enrichment_link, target_table, format_name_to_id, 3, enrich_header_id, enrich_gene_header_id, enrich_table_id, enrich_recalc_button_id,
+						enrich_download_button_id, download_table_link, enrichment_table_filename);
+	  			}
   			}
-  			else {
-  				document.getElementById(target_section_id).style.display = "none";
-  				document.getElementById(target_navbar_id).style.display = "none";
-  				document.getElementById(domain_section_id).style.display = "none";
-  				document.getElementById(domain_navbar_id).style.display = "none";
-  				document.getElementById(enrichment_section_id).style.display = "none";
-  				document.getElementById(enrichment_navbar_id).style.display = "none";
-  			}
-  				
-  			var regulator_data = data["regulators"];
-  			var regulators_header_id = "regulators_header";
-  			var regulators_table_id = "regulators_table";
-  			var regulators_download_button_id = "regulators_table_download";
-  			var regulators_analyze_button_id = "regulators_table_analyze";
   			
-  			var regulator_section_id = "regulators";
-  			var regulator_navbar_id = "navbar_regulators";
-  			
-  			if(regulator_data.length > 0) {		
-  				set_up_regulator_table(regulators_header_id, regulators_table_id,
-  				regulators_download_button_id, regulators_analyze_button_id, 
-  				download_table_link, regulators_table_filename, 
-  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, regulator_data);
-  			}
-  			else {
-  				document.getElementById(regulator_section_id).style.display = "none";
-  				document.getElementById(regulator_navbar_id).style.display = "none";
-  			}
+  			if(overview_json['regulator_count'] > 0) {
+	  			var regulator_data = data["regulators"];
+	  			var regulators_header_id = "regulators_header";
+	  			var regulators_gene_header = "regulators_gene_header";
+	  			var regulators_table_id = "regulators_table";
+	  			var regulators_download_button_id = "regulators_table_download";
+	  			var regulators_analyze_button_id = "regulators_table_analyze";
+	  			
+	  			var regulator_section_id = "regulators";
+	  			var regulator_navbar_id = "navbar_regulators";
+	  			
+	  			if(regulator_data.length > 0) {	
+	  				document.getElementById(regulator_section_id).style.display = "block";	
+	  				set_up_regulator_table(regulators_header_id, regulators_gene_header, regulators_table_id,
+	  				regulators_download_button_id, regulators_analyze_button_id, 
+	  				download_table_link, regulators_table_filename, 
+	  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, regulator_data);
+	  			}
+	  		}
   			
   		});
   		
+  		var enrich_gene_header_id = "enrichment_gene_header";
+  		var enrich_header_id = "enrichment_header";
+  		var enrich_section_id = "enrichment";
+		var enrich_table_id = "enrichment_table";
+		var enrich_download_button_id = "enrichment_table_download";
+		var enrich_recalc_button_id = "enrichment_recalc";
+		
   		//Get target enrichment
-  		set_table_message(enrich_table_id, '<center><img src="/static/img/dark-slow-wheel.gif"></center>')	
-  		$.getJSON(regulation_target_enrichment_link, function(data) {
-  			set_up_enrichment_table(enrich_header_id, enrich_table_id, enrich_download_button_id, download_table_link, enrichment_table_filename, data)
-  			$('#' + enrich_recalc_button_id).removeAttr('disabled');
-  		});
+  		if(overview_json['target_count'] > 0) {
+  			document.getElementById(enrich_section_id).style.display = "block";	
+	  		set_table_message(enrich_table_id, '<center><img src="/static/img/dark-slow-wheel.gif"></center>')	
+	  		$.getJSON(regulation_target_enrichment_link, function(data) {
+	  			set_up_enrichment_table(enrich_header_id, enrich_table_id, enrich_download_button_id, download_table_link, enrichment_table_filename, data)
+	  			$('#' + enrich_recalc_button_id).removeAttr('disabled');
+	  		});
+	  	}
   		
   		//Get graph
   		$.getJSON(regulation_graph_link, function(data) {
