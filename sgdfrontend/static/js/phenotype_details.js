@@ -1,9 +1,12 @@
 var ev_table;
+var format_name_to_id = new Object();
 
-function set_up_evidence_table(header_id, table_id, download_button_id, download_link, download_table_filename, data) { 
+function set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, download_link, download_table_filename, data) { 
 	var datatable = [];
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
+		
+		format_name_to_id[evidence['bioconcept']['format_name']] = evidence['bioconcept']['id']
 		
 		var icon;
 		if(evidence['note'] != null) {
@@ -27,7 +30,7 @@ function set_up_evidence_table(header_id, table_id, download_button_id, download
 		}
 		
 		var chemical = '';
-		if(evidence['chemical'] != '') {
+		if(evidence['chemical'] != null) {
 			if(evidence['chemical']['amount'] != null) {
 				chemical = evidence['chemical']['amount'] + ' ' + evidence['chemical']['display_name'];
 			}
@@ -53,11 +56,13 @@ function set_up_evidence_table(header_id, table_id, download_button_id, download
   		datatable.push([icon, bioent, evidence['bioentity']['format_name'], biocon, evidence['bioconcept']['qualifier'], experiment, evidence['bioconcept']['mutant_type'], strain, chemical, allele, reporter, reference, evidence['note']]);
   	}
   	document.getElementById(header_id).innerHTML = data.length;
+  	var total_interactors = Object.keys(format_name_to_id).length;
+  	document.getElementById(phenotype_header_id).innerHTML = total_interactors;
   		         
     var options = {};
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[3, "asc"]];
-	options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}]		
+	options["aoColumns"] = [{"bSearchable":false, 'bSortable': false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
 	options["aaData"] = datatable;
   
    	setup_datatable_highlight();				

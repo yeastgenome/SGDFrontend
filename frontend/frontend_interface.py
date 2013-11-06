@@ -35,6 +35,10 @@ class FrontendInterface:
         return None
     
     @abstractmethod
+    def phenotype(self, biocon_repr):
+        return None
+    
+    @abstractmethod
     def home(self):
         return None
     

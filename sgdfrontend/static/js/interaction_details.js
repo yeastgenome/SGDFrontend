@@ -46,7 +46,6 @@ function set_up_evidence_table(header_id, interactors_gene_header_id, table_id, 
   		datatable.push([icon, bioent1, evidence['bioentity1']['format_name'], bioent2, evidence['bioentity2']['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']])
   	}
   	document.getElementById(header_id).innerHTML = data.length;
-  	
   	var total_interactors = Object.keys(format_name_to_id).length;
   	if(!self_interacts){
   		total_interactors = total_interactors - 1;

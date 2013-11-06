@@ -9,12 +9,12 @@ heritage_url = 'http://www.yeastgenome.org'
 #backend_url = 'http://sgd-ng1.stanford.edu/sgdbackend'
 
 #Local SGDBackend config
-#backend_url = 'http://localhost:6543'
+backend_url = 'http://localhost:6543'
 
 #Local PerfBackend config
 #backend_url = 'http://localhost:6541'
 
-backend_url = 'http://sgd-ng1.stanford.edu/sgdbackend'
+#backend_url = 'http://sgd-ng1.stanford.edu/sgdbackend'
 #Local TestBackend config
 #backend_url = 'http://localhost:6547'
 

@@ -1,7 +1,7 @@
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
 from pyramid_jinja2 import renderer_factory
-from sgdfrontend.link_maker import bioentity_overview_link
+from link_maker import bioentity_overview_link, phenotype_overview_link, go_overview_link
 from sgdfrontend.models import get_root
 from datetime import datetime
 import logging
@@ -20,7 +20,19 @@ def get_bioent(bioent_repr):
     bioent = get_json(bioentity_overview_link(bioent_repr))
     if bioent is None:
         raise Exception('Bioentity not found.')
-    return bioent        
+    return bioent   
+
+def get_phenotype(biocon_repr):
+    biocon = get_json(phenotype_overview_link(biocon_repr))
+    if biocon is None:
+        raise Exception('Bioconcept not found.')
+    return biocon   
+
+def get_go(biocon_repr):
+    biocon = get_json(go_overview_link(biocon_repr))
+    if biocon is None:
+        raise Exception('Bioconcept not found.')
+    return biocon      
 
 def set_up_logging(label):
     logging.basicConfig(format='%(asctime)s %(name)s: %(message)s', level=logging.INFO)
