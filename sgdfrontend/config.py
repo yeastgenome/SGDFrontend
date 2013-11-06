@@ -14,4 +14,7 @@ backend_url = 'http://sgd-ng2.stanford.edu/webservice'
 #Local PerfBackend config
 #backend_url = 'http://localhost:6541'
 
+#Local TestBackend config
+#backend_url = 'http://localhost:6547'
+
 #dev_url = 'http://sgd-ng2.stanford.edu/sgdbackend'

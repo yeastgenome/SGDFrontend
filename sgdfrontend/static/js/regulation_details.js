@@ -9,45 +9,6 @@ function update_filter_used() {
 	filter_message.style.display = "none";
 }
 
-function set_up_overview(summary_paragraph_id, reference_list_id, diagram_id, save_button_id, 
-	analyze_target_id, analyze_regulator_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, 
-	targets_gene_header_id, regulators_gene_header_id,
-	style, data) {
-	
-	document.getElementById(targets_gene_header_id).innerHTML = data['target_count']; 
-	document.getElementById(regulators_gene_header_id).innerHTML = data['regulator_count']; 
-		
-	if('paragraph' in data) {
-		document.getElementById(summary_paragraph_id).innerHTML = data['paragraph']['text'];
-		references = data['paragraph']['references'];
-		set_up_references(references, reference_list_id);
-	}
-	
-	var values = [data['target_count'], data['regulator_count']];
-	var labels = ['Transcriptional\nTargets', 'Transcriptional\nRegulators'];
-	var colors = [style['left_color'], style['right_color']];
-	var stage = draw_side_bar_diagram(diagram_id, values, labels, colors, false);
-	stage.toDataURL({
-       	width: 500,
-       	height: 120,
-       	callback: function(dataUrl) {
-       		document.getElementById(save_button_id).href = dataUrl.replace("image/png", "image/octet-stream");
-        }
-     });
-     
-     
-    if(data['target_count'] == 0) {
-    	document.getElementById(analyze_target_id).setAttribute('disabled', 'disabled'); 
-    }
-    if(data['regulator_count'] == 0) {
-    	document.getElementById(analyze_regulator_id).setAttribute('disabled', 'disabled');  
-    }
-
-    //set up Analyze buttons
-	document.getElementById(analyze_target_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Targets', target_table, 3, format_name_to_id)};
-	document.getElementById(analyze_regulator_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3, format_name_to_id)};
-}
-
 function set_up_binding_site(list_id, data) {
 	var list = document.getElementById(list_id);
 	for (var i=0; i < data.length; i++) {
@@ -64,10 +25,11 @@ function set_up_binding_site(list_id, data) {
 	}
 }
 
-function set_up_target_table(header_id, table_id, filter_message_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
+function set_up_target_table(header_id, regulators_gene_header, table_id, filter_message_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
 	analyze_link, bioent_display_name, bioent_format_name, bioent_link, data) { 
 
 	var datatable = [];
+	var self_interacts = false;
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
   			
@@ -99,6 +61,12 @@ function set_up_target_table(header_id, table_id, filter_message_id, download_bu
   	}
   	  	
   	document.getElementById(header_id).innerHTML = data.length;
+  	document.getElementById(header_id).innerHTML = data.length;
+  	var total_interactors = Object.keys(format_name_to_id).length;
+  	if(!self_interacts){
+  		total_interactors = total_interactors - 1;
+  	}
+  	document.getElementById(regulators_gene_header).innerHTML = total_interactors;
   	
   	if (data.length == 0) {
   		document.getElementById(wrapper_id).style.display = "none";
@@ -131,9 +99,10 @@ function set_up_target_table(header_id, table_id, filter_message_id, download_bu
     }
 }
 
-function set_up_regulator_table(header_id, table_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
+function set_up_regulator_table(header_id, targets_gene_header, table_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
 	analyze_link, bioent_display_name, bioent_format_name, bioent_link, data) { 
 	var datatable = [];
+	var self_interacts = false;
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
   			
@@ -142,6 +111,10 @@ function set_up_regulator_table(header_id, table_id, download_button_id, analyze
 		
 		format_name_to_id[evidence['bioentity1']['format_name']] = evidence['bioentity1']['id']
 		format_name_to_id[evidence['bioentity2']['format_name']] = evidence['bioentity2']['id']
+		
+		if(evidence['bioentity1']['id'] == evidence['bioentity2']['id']) {
+			self_interacts = true;
+		}
 			
 		var experiment = '';
 		if(evidence['experiment'] != null) {
@@ -165,25 +138,24 @@ function set_up_regulator_table(header_id, table_id, download_button_id, analyze
   	}
   	
   	document.getElementById(header_id).innerHTML = data.length;
-  	
-  	if (data.length == 0) {
-  		document.getElementById(wrapper_id).style.display = "none";
-  		document.getElementById(message_id).style.display = "block";
+  	var total_interactors = Object.keys(format_name_to_id).length;
+  	if(!self_interacts){
+  		total_interactors = total_interactors - 1;
   	}
-  	else {
-    	var options = {};
-		options["bPaginate"] = true;
-		options["aaSorting"] = [[2, "asc"]];
-		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]		
-		options["aaData"] = datatable;
+  	document.getElementById(targets_gene_header).innerHTML = total_interactors;
+  	
+  	var options = {};
+	options["bPaginate"] = true;
+	options["aaSorting"] = [[2, "asc"]];
+	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]		
+	options["aaData"] = datatable;
   				
-  		setup_datatable_highlight();
-  		regulator_table = $('#' + table_id).dataTable(options);
-  		regulator_table.fnSearchHighlighting();
+  	setup_datatable_highlight();
+  	regulator_table = $('#' + table_id).dataTable(options);
+  	regulator_table.fnSearchHighlighting();
   		
-  		document.getElementById(download_button_id).onclick = function() {download_table(regulator_table, download_link, download_table_filename)};
-  		document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3, format_name_to_id)};
-    }
+  	document.getElementById(download_button_id).onclick = function() {download_table(regulator_table, download_link, download_table_filename)};
+  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3, format_name_to_id)};
 }
 
 function set_up_range_sort() {
@@ -333,10 +305,10 @@ function setup_regulation_cytoscape_vis(graph_id,
 	document.getElementById(target_slider_id).style.display = 'none';
 	document.getElementById(regulator_slider_id).style.display = 'none';
 	
-	if(data['max_target_cutoff'] == 0) {
+	if(data['max_target_cutoff'] < evidence_min) {
 		document.getElementById(target_radio_id).disabled = true;
 	}
-	if(data['max_regulator_cutoff'] == 0) {
+	if(data['max_regulator_cutoff'] < evidence_min) {
 		document.getElementById(regulator_radio_id).disabled = true;
 	}
 	

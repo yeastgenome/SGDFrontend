@@ -461,3 +461,14 @@ function set_up_enrichment_table(header_id, table_id, download_button_id, downlo
     	$('#' + download_button_id).removeAttr('disabled');
     }
 }
+
+var navbar = document.getElementById("side-nav-sticky");
+function add_navbar_element(entry_name, section_name) {
+	var li = document.createElement('li');
+	li.setAttribute('data-magellan-arrival', section_name)
+	var a = document.createElement('a');
+	a.href = "#" + section_name;
+	a.innerHTML = entry_name;
+	li.appendChild(a);
+	navbar.appendChild(li);
+}
