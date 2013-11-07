@@ -115,6 +115,12 @@ def prep_views(chosen_frontend, config):
                                 getattr(chosen_frontend, 'phenotype')(
                                         biocon_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].lower())),
                      renderer=chosen_frontend.get_renderer('phenotype'))
+    config.add_route('chemical',
+                     '/chemical/{identifier}/overview',
+                     view=lambda request: chosen_frontend.response_wrapper('chemical', request)(
+                                getattr(chosen_frontend, 'chemical')(
+                                        chemical_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].lower())),
+                     renderer=chosen_frontend.get_renderer('chemical'))
     
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'sgdfrontend':

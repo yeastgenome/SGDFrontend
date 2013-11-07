@@ -111,6 +111,14 @@ def phenotype_ontology_graph_link(phenotype):
 def phenotype_ontology_link():
     return frontend_start + '/phenotype/apo_ontology/overview'
 
+#Chemical links
+def chemical_link(chemical):
+    return backend_start + '/chemical/' + chemical + '/overview'
+def chemical_locus_details_link(chemical):
+    return backend_start + '/chemical/' + chemical + '/locus_details?callback=?'
+def chemical_ontology_graph_link(chemical):
+    return backend_start + '/chemical/' + chemical + '/ontology_graph?callback=?'
+
 #List links
 def bioent_list_link():
     return backend_start + '/bioentity_list'

@@ -1,7 +1,7 @@
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
 from pyramid_jinja2 import renderer_factory
-from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype
+from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical
 from sgdfrontend_utils import link_maker
 from sgdfrontend.models import get_root
 from config import heritage_url
@@ -188,7 +188,33 @@ class SGDFrontend(FrontendInterface):
                     'ontology_graph_link': link_maker.phenotype_ontology_graph_link(biocon_id),
                     
                     #Filenames
-                    'phenotype_details_filename': display_name + '_phenotypes',
+                    'phenotype_details_filename': display_name + '_genes',
+                    }
+        return page
+    
+    def chemical(self, chemical_repr):
+        chemical = get_chemical(chemical_repr)
+        chemical_id = str(chemical['id'])
+        display_name = chemical['display_name']
+                
+        page = {
+                    #Basic info
+                    'display_name': chemical['display_name'],
+                    'link': chemical['link'],
+                    'format_name': chemical['format_name'],
+                    
+                    #Navbar stuff
+                    'navbar_title': '',
+                    'navbar_summary_title': 'Summary',
+                    
+                    #Links
+                    'chemical_details_link': link_maker.chemical_locus_details_link(chemical_id),
+                    'download_table_link': link_maker.download_table_link(),
+                    'analyze_link': link_maker.analyze_link(),
+                    'ontology_graph_link': link_maker.chemical_ontology_graph_link(chemical_id),
+                    
+                    #Filenames
+                    'chemical_details_filename': display_name + '_genes',
                     }
         return page
     

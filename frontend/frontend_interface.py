@@ -39,6 +39,10 @@ class FrontendInterface:
         return None
     
     @abstractmethod
+    def chemical(self, chemical_repr):
+        return None
+    
+    @abstractmethod
     def home(self):
         return None
     
