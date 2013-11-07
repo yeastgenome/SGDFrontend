@@ -49,7 +49,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 			reporter = evidence['reporter']['display_name'];
 		}
 		
-		var biocon = create_link(evidence['bioconcept']['observable'], 'http://www.yeastgenome.org/cgi-bin/phenotype/phenotype.fpl?observable=' + evidence['bioconcept']['observable']);
+		var biocon = create_link(evidence['bioconcept']['observable'], evidence['bioconcept']['link']);
 		
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
   		

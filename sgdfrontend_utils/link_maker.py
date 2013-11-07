@@ -108,6 +108,8 @@ def go_locus_details_link(go):
     return backend_start + '/go/' + go + '/locus_details?callback=?'
 def phenotype_ontology_graph_link(phenotype):
     return backend_start + '/phenotype/' + phenotype + '/ontology_graph?callback=?'
+def phenotype_ontology_link():
+    return frontend_start + '/phenotype/apo_ontology/overview'
 
 #List links
 def bioent_list_link():

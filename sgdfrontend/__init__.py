@@ -158,6 +158,7 @@ class SGDFrontend(FrontendInterface):
                     'phenotype_resources_link': link_maker.phenotype_resources_link(bioent_id),
                     'tab_link': link_maker.tab_link(bioent_id),
                     'download_table_link': link_maker.download_table_link(),
+                    'ontology_link': link_maker.phenotype_ontology_link(),
                     
                     #Filenames
                     'phenotype_details_filename': display_name + '_phenotypes',
