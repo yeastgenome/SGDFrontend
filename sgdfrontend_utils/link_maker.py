@@ -96,14 +96,18 @@ def tab_link(bioent):
     return backend_start + '/locus/' + bioent + '/tabs?callback=?'
 
 #Bioconcept links
-def phenotype_overview_link(phenotype):
+def phenotype_link(phenotype):
     return backend_start + '/phenotype/' + phenotype + '/overview'
+def phenotype_overview_link(bioent):
+    return backend_start + '/locus/' + bioent + '/phenotype_overview'
 def go_overview_link(go):
     return backend_start + '/go/' + go + '/overview'
 def phenotype_locus_details_link(phenotype):
-    return backend_start + '/phenotype/' + phenotype + '/locus_details'
+    return backend_start + '/phenotype/' + phenotype + '/locus_details?callback=?'
 def go_locus_details_link(go):
-    return backend_start + '/go/' + go + '/locus_details'
+    return backend_start + '/go/' + go + '/locus_details?callback=?'
+def phenotype_ontology_graph_link(phenotype):
+    return backend_start + '/phenotype/' + phenotype + '/ontology_graph?callback=?'
 
 #List links
 def bioent_list_link():

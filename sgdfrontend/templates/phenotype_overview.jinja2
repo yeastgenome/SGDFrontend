@@ -11,6 +11,7 @@
 
 <script>
 	//Set up navbar
+	document.getElementById('navbar_title').innerHTML = '<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}'
   	add_navbar_element('Phenotypes', 'phenotypes');
   	add_navbar_element('Resources', 'resources');
 </script>

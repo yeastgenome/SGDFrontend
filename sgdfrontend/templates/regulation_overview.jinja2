@@ -29,6 +29,10 @@
 
 <script>
 	//Set up navbar
+	var overview_json = {{overview | safe}};
+	var target_count = overview_json['target_count'];
+	var regulator_count = overview_json['regulator_count']
+	document.getElementById('navbar_title').innerHTML = '<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}'
   	if(target_count > 0) {
      	add_navbar_element('Domains and Classification', 'domains');
   		add_navbar_element('DNA Binding Site Motifs', 'binding');

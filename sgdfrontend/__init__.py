@@ -165,30 +165,26 @@ class SGDFrontend(FrontendInterface):
         return page
     
     def phenotype(self, biocon_repr):
-        print link_maker.phenotype_overview_link(biocon_repr)
         biocon = get_phenotype(biocon_repr)
         biocon_id = str(biocon['id'])
         display_name = biocon['display_name']
-        
-        overview = get_json(link_maker.phenotype_overview_link(biocon_id))
-        
+                
         page = {
                     #Basic info
                     'display_name': biocon['display_name'],
                     'link': biocon['link'],
                     'format_name': biocon['format_name'],
+                    'count': biocon['count'],
                     
                     #Navbar stuff
                     'navbar_title': '',
                     'navbar_summary_title': 'Summary',
                     
-                    #Overview
-                    'overview': json.dumps(overview),
-                    'summary_count': overview['count'],
-                    
                     #Links
-                    'phenotype_details_link': link_maker.phenotype_locus_details_link(bioent_id),
+                    'phenotype_details_link': link_maker.phenotype_locus_details_link(biocon_id),
                     'download_table_link': link_maker.download_table_link(),
+                    'analyze_link': link_maker.analyze_link(),
+                    'ontology_graph_link': link_maker.phenotype_ontology_graph_link(biocon_id),
                     
                     #Filenames
                     'phenotype_details_filename': display_name + '_phenotypes',
