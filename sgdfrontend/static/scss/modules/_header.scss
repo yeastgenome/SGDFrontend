@@ -17,7 +17,7 @@ http://smacss.com/book/type-module
 		float: right;
 		height: 25px;
 		margin-top: 7px;
-		font-size: emCalc(13px);
+		font-size: em-calc(13);
 		font-weight: bold;
 		text-align: right;
 		a {color: rgb(0,0,0);}
@@ -39,7 +39,7 @@ http://smacss.com/book/type-module
 }	
 
 #adv-search-links {
-	font-size: emCalc(11px);
+	font-size: em-calc(11);
 	float: right;
 	position: relative;
 	top: -30px;
@@ -61,8 +61,8 @@ http://smacss.com/book/type-module
 .social-links {
 	margin: 0;
 	li {
-		margin-left: emCalc(8px);
-		margin-top: emCalc(2px);
+		margin-left: em-calc(8);
+		margin-top: em-calc(2);
 	}
 }
 
@@ -92,7 +92,7 @@ form#header-search {
 }
 
 #adv-search-links {
-	font-size: emCalc(12px);
+	font-size: em-calc(12);
 	margin-top: 4px;
 }	
 
