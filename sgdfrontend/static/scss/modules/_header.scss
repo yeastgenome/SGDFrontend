@@ -116,6 +116,15 @@ form#header-search {
 	margin-bottom: 0;
 }
 
+/* back styling for mobile menus */
+.back h5 {
+     font-size: 1.0em;
+     font-weight: bold !important;
+}
+.back h5 a:before {
+     content: "\00AB\ ";
+}
+
 #top-bar-search {
 	margin-right: 0.8em;
 }
