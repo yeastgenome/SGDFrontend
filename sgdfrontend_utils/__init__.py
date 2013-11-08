@@ -1,11 +1,12 @@
+from datetime import datetime
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
 from pyramid_jinja2 import renderer_factory
 from sgdfrontend.link_maker import bioentity_overview_link
 from sgdfrontend.models import get_root
-from datetime import datetime
-import logging
+from sgdfrontend.config import log_directory
 import json
+import logging
 import requests
 
 def get_json(url, data=None):
