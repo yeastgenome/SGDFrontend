@@ -1,7 +1,6 @@
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
 from pyramid_jinja2 import renderer_factory
-from sgdfrontend.link_maker import bioentity_overview_link
 from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell
 from sgdfrontend_utils import link_maker
 from sgdfrontend.models import get_root
