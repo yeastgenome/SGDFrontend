@@ -18,3 +18,5 @@ backend_url = 'http://sgd-ng2.stanford.edu/webservice'
 #backend_url = 'http://localhost:6547'
 
 #dev_url = 'http://sgd-ng2.stanford.edu/sgdbackend'
+
+log_directory = 'sgdfrontend_logs'
