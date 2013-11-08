@@ -13,7 +13,7 @@ def get_json(url, data=None):
     return r.json()
 
 def get_bioent(bioent_repr):
-    from sgdfrontend_utils import bioentity_overview_link
+    from sgdfrontend_utils.link_maker import bioentity_overview_link
     bioent = get_json(bioentity_overview_link(bioent_repr))
     if bioent is None:
         raise Exception('Bioentity not found.')
