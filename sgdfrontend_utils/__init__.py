@@ -1,8 +1,4 @@
 from datetime import datetime
-from pyramid.config import Configurator
-from pyramid.renderers import JSONP
-from pyramid_jinja2 import renderer_factory
-from sgdfrontend.models import get_root
 from sgdfrontend.config import log_directory
 import json
 import logging
