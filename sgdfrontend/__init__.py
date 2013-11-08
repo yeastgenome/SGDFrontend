@@ -1,9 +1,7 @@
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
-from pyramid_jinja2 import renderer_factory
 from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical
 from sgdfrontend_utils import link_maker
-from sgdfrontend.models import get_root
 from config import heritage_url
 from pyramid.response import Response
 from frontend.frontend_interface import FrontendInterface
