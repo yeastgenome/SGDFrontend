@@ -187,13 +187,13 @@
   			var graph_id = "cy";
   			var section_id = "network";
   			var section_navbar_id = "navbar_network";
-  			if(data['nodes'].length > 1) {
+  			//if(data['nodes'].length > 1) {
   				var cy = setup_cytoscape_vis(graph_id, graph_style, data);
-  			}
-			else {
-				document.getElementById(section_id).style.display = "none";
-				document.getElementById(section_navbar_id).style.display = "none";
-			}
+  			//}
+			//else {
+			//	document.getElementById(section_id).style.display = "none";
+			//	document.getElementById(section_navbar_id).style.display = "none";
+			//}
 			
 		});
 	});
