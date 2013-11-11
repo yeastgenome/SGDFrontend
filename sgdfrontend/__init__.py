@@ -226,6 +226,7 @@ def prepare_sgdfrontend(**configs):
     config.include('pyramid_jinja2')
     
     config.add_static_view('static', 'sgdfrontend:static')
+    config.add_static_view('img-domain', 'sgdfrontend:img-domain')
     config.add_renderer('jsonp', JSONP(param_name='callback'))
     
     return chosen_frontend, config
