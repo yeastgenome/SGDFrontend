@@ -1,10 +1,7 @@
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
-from pyramid_jinja2 import renderer_factory
-from sgdfrontend.link_maker import bioentity_overview_link
 from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell
 from sgdfrontend_utils import link_maker
-from sgdfrontend.models import get_root
 from config import heritage_url
 from pyramid.response import Response
 import datetime
@@ -12,6 +9,7 @@ import json
 import requests
 import uuid
 import urllib
+import base64
 
 class SGDFrontend():
     def __init__(self):
@@ -58,11 +56,12 @@ class SGDFrontend():
                     'interaction_resources_link': link_maker.interaction_resources_link(bioent_id),
                     'tab_link': link_maker.tab_link(bioent_id),
                     'download_table_link': link_maker.download_table_link(),
+                    'download_image_link': link_maker.download_image_link(),
                     'analyze_link': link_maker.analyze_link(),
     
                     #Filenames
                     'interaction_details_filename': display_name + '_interactions',
-                    'interaction_overview_filename': display_name + '_interactors.png',
+                    'interaction_overview_filename': display_name + '_interactors',
                     }
         return page
     
@@ -121,6 +120,7 @@ class SGDFrontend():
                     'binding_site_details_link': link_maker.binding_site_details_link(bioent_id),
                     'tab_link': link_maker.tab_link(bioent_id),
                     'download_table_link': link_maker.download_table_link(),
+                    'download_image_link': link_maker.download_image_link(),
                     'analyze_link': link_maker.analyze_link(),
                     'go_enrichment_link': link_maker.enrichment_link(),
                     
@@ -129,7 +129,7 @@ class SGDFrontend():
                     'regulators_filename': display_name + '_regulators',
                     'domains_filename': display_name + '_domains',
                     'enrichment_filename': display_name + '_targets_go_process_enrichment',
-                    'regulation_overview_filename': display_name + '_transcriptional_targets_and_regulators.png',
+                    'regulation_overview_filename': display_name + '_transcriptional_targets_and_regulators',
                     }
         return page
     
@@ -157,6 +157,15 @@ class SGDFrontend():
         
         headers['Content-Type'] = 'text/plain'      
         headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.txt')
+        headers['Content-Description'] = 'File Transfer'
+        return response
+    
+    def download_image(self, response, data, display_name):
+        headers = response.headers
+        response.body = base64.b64decode(data[22:])
+        
+        headers['Content-Type'] = 'image/png;'      
+        headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.png')
         headers['Content-Description'] = 'File Transfer'
         return response
     

@@ -54,6 +54,16 @@ function download_table(table, download_link, table_name) {
 	post_to_url(download_link, {"display_name":table_name, 'headers': JSON.stringify(headers), 'data': JSON.stringify(data)});
 }
 
+function download_image(stage, width, height, download_link, image_name) {
+	stage.toDataURL({
+		width: width,
+		height: height,
+		callback: function(dataUrl) {
+			post_to_url(download_link, {"display_name":image_name, 'data': dataUrl});
+		}
+	});
+}
+
 function analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, list_type, ev_table, index, format_name_to_id) {
 	var bioent_ids = [];
 	
@@ -236,9 +246,7 @@ function setup_cytoscape_vis(div_id, style, data, f) {
 		      	}
 		      	cy.on('tap', 'node', function(evt){
   					var node = evt.cyTarget;
-  					var zoom = cy.zoom();
-  					alert(node.position('x') + ' ' + node.renderedPosition('x') + ' ' + (50-.5*(1-zoom)*(width-100)));
-  					//window.location.href = node.data().link;
+  					window.location.href = node.data().link;
 				});
 				cy.on('layoutstop', function(evt){
 					$('#cy_recenter').removeAttr('disabled'); 
@@ -249,16 +257,6 @@ function setup_cytoscape_vis(div_id, style, data, f) {
 				cy.on('mouseout', function(evt) {
 					this.zoomingEnabled(false);
 				});
-				cy.on('position', 'node', function(evt) {
-					var node = evt.cyTarget;
-					var x = node.renderedPosition('x');
-					var y = node.renderedPosition('y');
-					var zoom = cy.zoom();
-					if(x < 0 ) {
-						//alert((zoom-1)*height + ' ' + node.position('x'));
-						node.position('x', 50-.5*(1-zoom)*(width-100));
-					}
-				});
 		    }, 
 		  };
 	
@@ -268,7 +266,7 @@ function setup_cytoscape_vis(div_id, style, data, f) {
 	var recenter_button = document.createElement('a');
 	recenter_button.id = "cy_recenter";
 	recenter_button.className = "small button secondary";
-	recenter_button.innerHTML = "Recenter";
+	recenter_button.innerHTML = "Reset";
 	recenter_button.onclick = function() {
 		var old_zoom_value = cy.zoomingEnabled();
 		cy.zoomingEnabled(true);

@@ -54,6 +54,15 @@ def prep_views(chosen_frontend, config):
                                         display_name = None if 'display_name' not in request.POST else request.POST['display_name'])),
                      renderer=chosen_frontend.get_renderer('download_table'))
     
+    config.add_route('download_image',
+                     '/download_image',
+                     view=lambda request: chosen_frontend.response_wrapper('download_image', request)(
+                                getattr(chosen_frontend, 'download_image')(
+                                        response = request.response,
+                                        data = None if 'data' not in request.POST else request.POST['data'],
+                                        display_name = None if 'display_name' not in request.POST else request.POST['display_name'])),
+                     renderer=chosen_frontend.get_renderer('download_image'))
+    
     config.add_route('download_citations',
                      '/download_citations',
                      view=lambda request: chosen_frontend.response_wrapper('download_citations', request)(
@@ -82,7 +91,7 @@ def prep_views(chosen_frontend, config):
                      renderer=chosen_frontend.get_renderer('enrichment'))
     
     config.add_route('interaction_details',
-                     '/locus/{identifier}/interactions',
+                     '/locus/{identifier}/interaction',
                      view=lambda request: chosen_frontend.response_wrapper('interaction_details', request)(
                                 getattr(chosen_frontend, 'interaction_details')(
                                         bioent_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].upper())),
