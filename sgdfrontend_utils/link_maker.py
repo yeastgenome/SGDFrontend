@@ -36,7 +36,7 @@ def phenotyp_biocon_page_link(biocon):
 
 #Interaction Links
 def interaction_page_link(bioent):
-    return frontend_start + '/locus/' + str(bioent) + '/interactions'
+    return frontend_start + '/locus/' + str(bioent) + '/interaction'
 
 def interaction_overview_link(bioent):
     return backend_start + '/locus/' + str(bioent) + '/interaction_overview'
@@ -104,5 +104,7 @@ def download_citations_link():
 
 def download_table_link():
     return frontend_start + '/download_table'
+def download_image_link():
+    return frontend_start + '/download_image'
     
 
