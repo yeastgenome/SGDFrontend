@@ -1,0 +1,34 @@
+/* based on jquery ui theme */
+.ui-helper-hidden-accessible {
+	display: none !important;
+}
+.ui-autocomplete {
+    cursor: default;
+    position: absolute;
+    background: #fff;
+    @include border-radius(3px);
+} 
+.ui-menu {
+    display: block;
+    float: left;
+    list-style: none outside none;
+    margin: 0;
+    padding: 2px;
+}
+.ui-menu .ui-menu-item a {
+    display: block;
+    line-height: 0.8;
+    padding: 0.4em 0.4em;
+    text-decoration: none;
+}
+.ui-menu .ui-menu-item a:hover {
+    background: #eee;
+}
+.ui-widget {
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 0.8em;
+}
+.ui-widget-content {
+    border: 1px solid #AAAAAA;
+    color: #222222;
+}
