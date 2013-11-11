@@ -183,12 +183,12 @@ $row-width: em-calc(1170); // default is 1000
 
 // Control header font sizes
 
-// $h1-font-size: emCalc(32);
-$h1-font-size: emCalc(29px);
-$h2-font-size: emCalc(24px);
-$h3-font-size: emCalc(18px);
-$h4-font-size: emCalc(15px);
-$h5-font-size: emCalc(13px);
+// $h1-font-size: em-calc(32);
+$h1-font-size: em-calc(29);
+$h2-font-size: em-calc(24);
+$h3-font-size: em-calc(18);
+$h4-font-size: em-calc(15);
+$h5-font-size: em-calc(13);
 $h6-font-size: 1em;
 
 // Control how subheaders are styled.
