@@ -19,7 +19,7 @@ def get_bioent(backend_url, bioent_repr):
     return bioent        
 
 def set_up_logging(log_directory, label):
-    logging.basicConfig(format='%(asctime)s %(name)s: %(message)s', level=logging.INFO)
+    logging.basicConfig(format='%(asctime)s %(name)s: %(message)s', level=logging.ERROR)
     log = logging.getLogger(label)
     
     if log_directory is not None:
@@ -30,6 +30,7 @@ def set_up_logging(log_directory, label):
         hdlr = logging.NullHandler()
     log.addHandler(hdlr) 
     log.setLevel(logging.INFO)
+    log.propagate = False
     return log
 
 def clean_cell(cell):
