@@ -13,7 +13,7 @@ footer { // should be in states
 	color: #fff;
 	a, a:hover, a:active { 
 		color: #fff;
-		font-size: emCalc(14px);
+		font-size: em-calc(14);
 	}
 	a:hover { text-decoration: underline; }
 }
@@ -40,8 +40,8 @@ footer .social-links {
 		margin-left: 0;
 	}
 	li {
-		margin-left: emCalc(8px);
-		margin-top: emCalc(2px);
+		margin-left: em-calc(8);
+		margin-top: em-calc(2);
 	}
 }
 
@@ -50,4 +50,4 @@ footer .social-links {
 	min-width: 90px;
 }
 
-#copyright { font-size: emCalc(13px);}
+#copyright { font-size: em-calc(13); }

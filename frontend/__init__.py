@@ -54,6 +54,15 @@ def prep_views(chosen_frontend, config):
                                         display_name = None if 'display_name' not in request.POST else request.POST['display_name'])),
                      renderer=chosen_frontend.get_renderer('download_table'))
     
+    config.add_route('download_image',
+                     '/download_image',
+                     view=lambda request: chosen_frontend.response_wrapper('download_image', request)(
+                                getattr(chosen_frontend, 'download_image')(
+                                        response = request.response,
+                                        data = None if 'data' not in request.POST else request.POST['data'],
+                                        display_name = None if 'display_name' not in request.POST else request.POST['display_name'])),
+                     renderer=chosen_frontend.get_renderer('download_image'))
+    
     config.add_route('download_citations',
                      '/download_citations',
                      view=lambda request: chosen_frontend.response_wrapper('download_citations', request)(
@@ -125,10 +134,11 @@ def prep_views(chosen_frontend, config):
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'sgdfrontend':
         from sgdfrontend import prepare_sgdfrontend
-        chosen_frontend, config = prepare_sgdfrontend(**configs)
+        import config
+        chosen_frontend, configuration = prepare_sgdfrontend(config.backend_url, config.heritage_url, config.log_directory, **configs)
         
-        prep_views(chosen_frontend, config)
-        return config
+        prep_views(chosen_frontend, configuration)
+        return configuration
 
 def sgdfrontend(global_config, **configs):
     """ This function returns a Pyramid WSGI application.

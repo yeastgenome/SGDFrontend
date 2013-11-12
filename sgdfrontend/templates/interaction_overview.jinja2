@@ -34,9 +34,14 @@
   	add_navbar_element('Resources', 'resources');
 </script>
 
+<script src="/static/js/local.js"></script>	
 <script src="/static/js/kinetic-v4.3.3.min.js"></script>	
 <script src="/static/js/venn.js"></script>	
 <script>
+	//Links
+	var filename = "{{interaction_overview_filename}}";
+	var download_image_link = "{{download_image_link}}";
+
 	//Venn style
 	var venn_style = {"left_color": "#762A83", "right_color": "#1B7837"};
 	
@@ -58,14 +63,11 @@
 	  			
 	  	//Colors chosen as colorblind safe from http://colorbrewer2.org/.
 		var stage = draw_venn_diagram(venn_id, r, s, x, A, B, C, venn_style['left_color'], venn_style['right_color']);
-		stage.toDataURL({
-	       	width: 450,
-	       	height: 300,
-	       	callback: function(dataUrl) {
-	       		document.getElementById(save_button_id).href = dataUrl.replace("image/png", "application/png");
-	        	document.getElementById(save_button_id).removeAttribute('disabled');
-	        }
-	     });
+		document.getElementById(save_button_id).onclick = function() {
+			download_image(stage, 450, 300, download_image_link, filename);
+		};
+		document.getElementById(save_button_id).removeAttribute('disabled');
+		
   	}
   	else {
   		document.getElementById(message_id).style.display = "block";

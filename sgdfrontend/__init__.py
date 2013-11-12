@@ -2,7 +2,6 @@ from pyramid.config import Configurator
 from pyramid.renderers import JSONP
 from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical
 from sgdfrontend_utils import link_maker
-from config import heritage_url
 from pyramid.response import Response
 from frontend.frontend_interface import FrontendInterface
 import datetime
@@ -10,10 +9,13 @@ import json
 import requests
 import uuid
 import urllib
+import base64
 
 class SGDFrontend(FrontendInterface):
-    def __init__(self):
-        self.log = set_up_logging('sgdfrontend')
+    def __init__(self, backend_url, heritage_url, log_directory):
+        self.backend_url = backend_url
+        self.heritage_url = heritage_url
+        self.log = set_up_logging(log_directory, 'sgdfrontend')
         
     def get_renderer(self, method_name):
         if method_name in set(['home', 'download_table', 'download_citations']):
@@ -32,10 +34,10 @@ class SGDFrontend(FrontendInterface):
         return f
     
     def interaction_details(self, bioent_repr):
-        bioent = get_bioent(bioent_repr)
+        bioent = get_bioent(self.backend_url, bioent_repr)
         bioent_id = str(bioent['id'])
         display_name = bioent['display_name']
-        overview = get_json(link_maker.interaction_overview_link(bioent_id))
+        overview = get_json(link_maker.interaction_overview_link(self.backend_url, bioent_id))
         
         page = {
                     #Basic info
@@ -51,23 +53,24 @@ class SGDFrontend(FrontendInterface):
                     'overview': json.dumps(overview),
                     
                     #Links
-                    'interaction_details_link': link_maker.interaction_details_link(bioent_id),
-                    'interaction_graph_link': link_maker.interaction_graph_link(bioent_id),
-                    'interaction_resources_link': link_maker.interaction_resources_link(bioent_id),
-                    'tab_link': link_maker.tab_link(bioent_id),
+                    'interaction_details_link': link_maker.interaction_details_link(self.backend_url, bioent_id),
+                    'interaction_graph_link': link_maker.interaction_graph_link(self.backend_url, bioent_id),
+                    'interaction_resources_link': link_maker.interaction_resources_link(self.backend_url, bioent_id),
+                    'tab_link': link_maker.tab_link(self.backend_url, bioent_id),
                     'download_table_link': link_maker.download_table_link(),
+                    'download_image_link': link_maker.download_image_link(),
                     'analyze_link': link_maker.analyze_link(),
     
                     #Filenames
                     'interaction_details_filename': display_name + '_interactions',
-                    'interaction_overview_filename': display_name + '_interactors.png',
+                    'interaction_overview_filename': display_name + '_interactors',
                     }
         return page
     
     def literature_details(self, bioent_repr):
-        bioent = get_bioent(bioent_repr)
+        bioent = get_bioent(self.backend_url, bioent_repr)
         bioent_id = str(bioent['id'])
-        overview = get_json(link_maker.literature_overview_link(bioent_id))
+        overview = get_json(link_maker.literature_overview_link(self.backend_url, bioent_id))
         
         page = {
                     #Basic info
@@ -84,19 +87,19 @@ class SGDFrontend(FrontendInterface):
                     'summary_count': overview['total_count'],
                     
                     #Links
-                    'literature_details_link': link_maker.literature_details_link(bioent_id),
+                    'literature_details_link': link_maker.literature_details_link(self.backend_url, bioent_id),
                     'download_link': link_maker.download_citations_link(),
-                    'tab_link': link_maker.tab_link(bioent_id),
-                    'literature_graph_link': link_maker.literature_graph_link(bioent_id),
+                    'tab_link': link_maker.tab_link(self.backend_url, bioent_id),
+                    'literature_graph_link': link_maker.literature_graph_link(self.backend_url, bioent_id),
                     
                 }
         return page
     
     def regulation_details(self, bioent_repr):
-        bioent = get_bioent(bioent_repr)
+        bioent = get_bioent(self.backend_url, bioent_repr)
         bioent_id = str(bioent['id'])
         display_name = bioent['display_name']
-        overview = get_json(link_maker.regulation_overview_link(bioent_id))
+        overview = get_json(link_maker.regulation_overview_link(self.backend_url, bioent_id))
         
         page = {
                     #Basic info
@@ -112,13 +115,14 @@ class SGDFrontend(FrontendInterface):
                     'overview': json.dumps(overview),
                     
                     #Links
-                    'regulation_details_link': link_maker.regulation_details_link(bioent_id),
-                    'regulation_graph_link': link_maker.regulation_graph_link(bioent_id),
-                    'regulation_target_enrichment_link': link_maker.regulation_target_enrichment_link(bioent_id),
-                    'protein_domain_details_link': link_maker.protein_domain_details_link(bioent_id),
-                    'binding_site_details_link': link_maker.binding_site_details_link(bioent_id),
-                    'tab_link': link_maker.tab_link(bioent_id),
+                    'regulation_details_link': link_maker.regulation_details_link(self.backend_url, bioent_id),
+                    'regulation_graph_link': link_maker.regulation_graph_link(self.backend_url, bioent_id),
+                    'regulation_target_enrichment_link': link_maker.regulation_target_enrichment_link(self.backend_url, bioent_id),
+                    'protein_domain_details_link': link_maker.protein_domain_details_link(self.backend_url, bioent_id),
+                    'binding_site_details_link': link_maker.binding_site_details_link(self.backend_url, bioent_id),
+                    'tab_link': link_maker.tab_link(self.backend_url, bioent_id),
                     'download_table_link': link_maker.download_table_link(),
+                    'download_image_link': link_maker.download_image_link(),
                     'analyze_link': link_maker.analyze_link(),
                     'go_enrichment_link': link_maker.enrichment_link(),
                     
@@ -127,7 +131,7 @@ class SGDFrontend(FrontendInterface):
                     'regulators_filename': display_name + '_regulators',
                     'domains_filename': display_name + '_domains',
                     'enrichment_filename': display_name + '_targets_go_process_enrichment',
-                    'regulation_overview_filename': display_name + '_transcriptional_targets_and_regulators.png',
+                    'regulation_overview_filename': display_name + '_transcriptional_targets_and_regulators',
                     }
         return page
     
@@ -135,7 +139,7 @@ class SGDFrontend(FrontendInterface):
         bioent = get_bioent(bioent_repr)
         bioent_id = str(bioent['id'])
         display_name = bioent['display_name']
-        overview = get_json(link_maker.phenotype_overview_link(bioent_id))
+        overview = get_json(link_maker.phenotype_overview_link(self.backend_url, bioent_id))
         
         page = {
                     #Basic info
@@ -152,9 +156,9 @@ class SGDFrontend(FrontendInterface):
                     'summary_count': overview['count'],
                     
                     #Links
-                    'phenotype_details_link': link_maker.phenotype_details_link(bioent_id),
-                    'phenotype_resources_link': link_maker.phenotype_resources_link(bioent_id),
-                    'tab_link': link_maker.tab_link(bioent_id),
+                    'phenotype_details_link': link_maker.phenotype_details_link(self.backend_url, bioent_id),
+                    'phenotype_resources_link': link_maker.phenotype_resources_link(self.backend_url, bioent_id),
+                    'tab_link': link_maker.tab_link(self.backend_url, bioent_id),
                     'download_table_link': link_maker.download_table_link(),
                     'ontology_link': link_maker.phenotype_ontology_link(),
                     
@@ -164,7 +168,7 @@ class SGDFrontend(FrontendInterface):
         return page
     
     def phenotype(self, biocon_repr):
-        biocon = get_phenotype(biocon_repr)
+        biocon = get_phenotype(self.backend_url, biocon_repr)
         biocon_id = str(biocon['id'])
         display_name = biocon['display_name']
                 
@@ -180,10 +184,10 @@ class SGDFrontend(FrontendInterface):
                     'navbar_summary_title': 'Summary',
                     
                     #Links
-                    'phenotype_details_link': link_maker.phenotype_locus_details_link(biocon_id),
+                    'phenotype_details_link': link_maker.phenotype_locus_details_link(self.backend_url, biocon_id),
                     'download_table_link': link_maker.download_table_link(),
                     'analyze_link': link_maker.analyze_link(),
-                    'ontology_graph_link': link_maker.phenotype_ontology_graph_link(biocon_id),
+                    'ontology_graph_link': link_maker.phenotype_ontology_graph_link(self.backend_url, biocon_id),
                     
                     #Filenames
                     'phenotype_details_filename': display_name + '_genes',
@@ -217,8 +221,11 @@ class SGDFrontend(FrontendInterface):
         return page
     
     def home(self):
-        page = urllib.urlopen(heritage_url).read()
-        return Response(page)
+        if self.heritage_url is None:
+            return Response('Temporary.')
+        else:
+            page = urllib.urlopen(self.heritage_url).read()
+            return Response(page)
     
     def header(self):
         header_str = render('templates/header.jinja2', {})
@@ -243,9 +250,18 @@ class SGDFrontend(FrontendInterface):
         headers['Content-Description'] = 'File Transfer'
         return response
     
+    def download_image(self, response, data, display_name):
+        headers = response.headers
+        response.body = base64.b64decode(data[22:])
+        
+        headers['Content-Type'] = 'image/png;'      
+        headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.png')
+        headers['Content-Description'] = 'File Transfer'
+        return response
+    
     def download_citations(self, response, reference_ids, display_name):
         reference_ids = list(set(reference_ids))
-        references = get_json(link_maker.citation_list_link(), data={'reference_ids': reference_ids})
+        references = get_json(link_maker.citation_list_link(self.backend_url), data={'reference_ids': reference_ids})
         
         headers = response.headers
         
@@ -259,7 +275,7 @@ class SGDFrontend(FrontendInterface):
     def analyze(self, list_name, bioent_display_name, bioent_format_name, bioent_link, bioent_ids):
         bioent_ids = list(set([int(x) for x in bioent_ids]))
             
-        bioents = get_json(link_maker.bioent_list_link(), data={'bioent_ids': bioent_ids})
+        bioents = get_json(link_maker.bioent_list_link(self.backend_url), data={'bioent_ids': bioent_ids})
     
         if bioents is None:
             return Response(status_int=500, body='Bioents could not be found.') 
@@ -287,11 +303,11 @@ class SGDFrontend(FrontendInterface):
         return page
     
     def enrichment(self, bioent_ids):
-        enrichment_results = get_json(link_maker.go_enrichment_link(), data={'bioent_ids': bioent_ids})
+        enrichment_results = get_json(link_maker.go_enrichment_link(self.backend_url), data={'bioent_ids': bioent_ids})
         return enrichment_results
     
-def prepare_sgdfrontend(**configs):  
-    chosen_frontend = SGDFrontend()
+def prepare_sgdfrontend(backend_url, heritage_url, log_directory, **configs):  
+    chosen_frontend = SGDFrontend(backend_url, heritage_url, log_directory)
     
     settings = dict(configs)
     settings.setdefault('jinja2.i18n.domain', 'myproject')
@@ -300,6 +316,7 @@ def prepare_sgdfrontend(**configs):
     config.include('pyramid_jinja2')
     
     config.add_static_view('static', 'sgdfrontend:static')
+    config.add_static_view('img-domain', 'sgdfrontend:img-domain')
     config.add_renderer('jsonp', JSONP(param_name='callback'))
 
     return chosen_frontend, config

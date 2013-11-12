@@ -3,22 +3,44 @@ Created on Mar 6, 2013
 
 @author: kpaskov
 '''
-from sgdfrontend.config import backend_url
 
-backend_start = backend_url
-frontend_start = ''
+#Interaction Links
+def interaction_page_link(bioent):
+    return '/locus/' + str(bioent) + '/interaction'
+
+def interaction_overview_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/interaction_overview'
+def interaction_details_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/interaction_details?callback=?'
+def interaction_graph_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/interaction_graph?callback=?'
+def interaction_resources_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/interaction_resources?callback=?'
+
+#Regulation Links
+def regulation_page_link(bioent):
+    return '/locus/' + str(bioent) + '/regulation'
+
+def regulation_overview_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/regulation_overview'
+def regulation_details_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/regulation_details?callback=?'
+def regulation_target_enrichment_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/regulation_target_enrichment?callback=?'
+def regulation_graph_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/regulation_graph?callback=?'
 
 #GO Links
 def go_page_link(bioent):
-    return frontend_start + '/locus/' + str(bioent) + '/go'
+    return '/locus/' + str(bioent) + '/go'
 def go_biocon_page_link(biocon):
-    return frontend_start + '/go/' + str(biocon)
+    return '/go/' + str(biocon)
 
-def go_overview_link(bioent):
+def go_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/go_overview?callback=?'
-def go_details_link(bioent):
+def go_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/go_details?callback=?'
-def go_details_biocon_link(biocon):
+def go_details_biocon_link(backend_start, biocon):
     return backend_start + '/go/' + str(biocon) + '/locus_details?callback=?'
 
 #Phenotype Links
@@ -36,63 +58,43 @@ def phenotype_resources_link(bioent):
 def phenotype_details_biocon_link(biocon):
     return backend_start + '/phenotype/' + str(biocon) + '/locus_details?callback=?'
 
-#Interaction Links
-def interaction_page_link(bioent):
-    return frontend_start + '/locus/' + str(bioent) + '/interactions'
-
-def interaction_overview_link(bioent):
-    return backend_start + '/locus/' + str(bioent) + '/interaction_overview'
-def interaction_details_link(bioent):
-    return backend_start + '/locus/' + str(bioent) + '/interaction_details?callback=?'
-def interaction_graph_link(bioent):
-    return backend_start + '/locus/' + str(bioent) + '/interaction_graph?callback=?'
-def interaction_resources_link(bioent):
-    return backend_start + '/locus/' + str(bioent) + '/interaction_resources?callback=?'
-
-#Regulation Links
-def regulation_page_link(bioent):
-    return frontend_start + '/locus/' + str(bioent) + '/regulation'
-
-def regulation_overview_link(bioent):
-    return backend_start + '/locus/' + str(bioent) + '/regulation_overview'
-def regulation_details_link(bioent):
-    return backend_start + '/locus/' + str(bioent) + '/regulation_details?callback=?'
-def regulation_target_enrichment_link(bioent):
-    return backend_start + '/locus/' + str(bioent) + '/regulation_target_enrichment?callback=?'
-def regulation_graph_link(bioent):
-    return backend_start + '/locus/' + str(bioent) + '/regulation_graph?callback=?'
-
 #Protein Links
-def protein_domain_details_link(bioent):
+def protein_domain_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/protein_domain_details?callback=?'
-def binding_site_details_link(bioent):
+def binding_site_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/binding_site_details?callback=?'
 
 #On the fly links
 def analyze_link():
-    return frontend_start + '/analyze'
+    return '/analyze'
 def download_reference_link():
-    return frontend_start + '/download_citations'
-def go_enrichment_link():
+    return '/download_citations'
+def go_enrichment_link(backend_start):
     return backend_start + '/go_enrichment'
 def enrichment_link():
-    return frontend_start + '/enrichment'
+    return '/enrichment'
+def download_citations_link():
+    return '/download_citations'
+def download_table_link():
+    return '/download_table'
+def download_image_link():
+    return '/download_image'
 
 #Literature Links
 def literature_page_link(bioent):
-    return frontend_start + '/locus/' + str(bioent) + '/literature'
+    return '/locus/' + str(bioent) + '/literature'
 
-def literature_overview_link(bioent):
+def literature_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/literature_overview'
-def literature_details_link(bioent):
+def literature_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/literature_details?callback=?'
-def literature_graph_link(bioent):
+def literature_graph_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/literature_graph?callback=?'
     
 #Bioentity links
-def bioentity_overview_link(bioent):
+def bioentity_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + bioent + '/overview'
-def tab_link(bioent):
+def tab_link(backend_start, bioent):
     return backend_start + '/locus/' + bioent + '/tabs?callback=?'
 
 #Bioconcept links
@@ -120,15 +122,11 @@ def chemical_ontology_graph_link(chemical):
     return backend_start + '/chemical/' + chemical + '/ontology_graph?callback=?'
 
 #List links
-def bioent_list_link():
+def bioent_list_link(backend_start):
     return backend_start + '/bioentity_list'
-def citation_list_link():
+def citation_list_link(backend_start):
     return backend_start + '/reference_list'
 
-def download_citations_link():
-    return frontend_start + '/download_citations'
 
-def download_table_link():
-    return frontend_start + '/download_table'
     
 
