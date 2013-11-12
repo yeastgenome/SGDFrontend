@@ -68,7 +68,7 @@ def literature_graph_link(backend_start, bioent):
 def bioentity_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + bioent + '/overview'
 def tab_link(backend_start, bioent):
-    return backend_start + '/locus/' + bioent + '/tabs?callback=?'
+    return backend_start + '/locus/' + bioent + '/tabs'
 
 #List links
 def bioent_list_link(backend_start):
