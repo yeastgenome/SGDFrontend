@@ -294,11 +294,16 @@
 	  		$.getJSON(binding_site_details_link, function(data) {
 	  			var list_id = "binding_motifs";
 	  			var section_id = "binding";
+	  			var section_navbar_id = "navbar_binding";
 	  			
 	  			if(data.length > 0) {
 	  				document.getElementById(section_id).style.display = "block";
 	  				set_up_binding_site(list_id, data);
 	  			}  			
+	  			else {
+	  				document.getElementById(section_navbar_id).style.display = "none";
+					document.getElementById(section_navbar_id).removeAttribute('data-magellan-arrival')
+	  			}
 	  		});
 	  	}
   		
@@ -394,6 +399,8 @@
   				document.getElementById(section_id).style.display = "none";
 				document.getElementById(section_navbar_id).style.display = "none";
 				document.getElementById(section_navbar_id).removeAttribute('data-magellan-arrival')
+				
+				//Hack because footer overlaps - need to fix this.
 				next_section = document.getElementById("regulators");
 				next_section.appendChild(document.createElement("br"))
 				next_section.appendChild(document.createElement("br"))
