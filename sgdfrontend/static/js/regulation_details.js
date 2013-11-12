@@ -38,6 +38,10 @@ function set_up_target_table(header_id, regulators_gene_header, table_id, filter
 		
 		format_name_to_id[evidence['bioentity1']['format_name']] = evidence['bioentity1']['id']
 		format_name_to_id[evidence['bioentity2']['format_name']] = evidence['bioentity2']['id']
+		
+		if(evidence['bioentity1']['id'] == evidence['bioentity2']['id']) {
+			self_interacts = true;
+		}
 			
 		var experiment = '';
 		if(evidence['experiment'] != null) {

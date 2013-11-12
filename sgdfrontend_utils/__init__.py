@@ -1,5 +1,4 @@
 from datetime import datetime
-from sgdfrontend.config import log_directory
 import json
 import logging
 import requests
@@ -12,14 +11,14 @@ def get_json(url, data=None):
         r = requests.get(url)
     return r.json()
 
-def get_bioent(bioent_repr):
+def get_bioent(backend_url, bioent_repr):
     from sgdfrontend_utils.link_maker import bioentity_overview_link
-    bioent = get_json(bioentity_overview_link(bioent_repr))
+    bioent = get_json(bioentity_overview_link(backend_url, bioent_repr))
     if bioent is None:
         raise Exception('Bioentity not found.')
     return bioent        
 
-def set_up_logging(label):
+def set_up_logging(log_directory, label):
     logging.basicConfig(format='%(asctime)s %(name)s: %(message)s', level=logging.INFO)
     log = logging.getLogger(label)
     

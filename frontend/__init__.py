@@ -114,10 +114,11 @@ def prep_views(chosen_frontend, config):
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'sgdfrontend':
         from sgdfrontend import prepare_sgdfrontend
-        chosen_frontend, config = prepare_sgdfrontend(**configs)
+        import config
+        chosen_frontend, configuration = prepare_sgdfrontend(config.backend_url, config.heritage_url, config.log_directory, **configs)
         
-        prep_views(chosen_frontend, config)
-        return config
+        prep_views(chosen_frontend, configuration)
+        return configuration
 
 def sgdfrontend(global_config, **configs):
     """ This function returns a Pyramid WSGI application.
