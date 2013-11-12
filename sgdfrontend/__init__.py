@@ -135,8 +135,11 @@ class SGDFrontend():
         return page
     
     def home(self):
-        page = urllib.urlopen(heritage_url).read()
-        return Response(page)
+        if self.heritage_url is None:
+            return Response('Temporary.')
+        else:
+            page = urllib.urlopen(self.heritage_url).read()
+            return Response(page)
     
     def header(self):
         header_str = render('templates/header.jinja2', {})
