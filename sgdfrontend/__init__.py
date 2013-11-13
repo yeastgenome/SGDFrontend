@@ -143,6 +143,15 @@ class SGDFrontend():
         else:
             page = urllib.urlopen(self.heritage_url).read()
             return Response(page)
+        
+    def redirect(self, page, bioent_repr):
+        if bioent_repr is not None:
+            return HTTPFound('/locus/' + bioent_repr + '/' + page)
+        elif page == 'interaction':
+            page = urllib.urlopen(self.heritage_url + '/cgi-bin/interaction_search').read()
+            return Response(page)
+        else:
+            return Response(status_int=500, body='Invalid URL.')
     
     def header(self):
         header_str = render('templates/header.jinja2', {})

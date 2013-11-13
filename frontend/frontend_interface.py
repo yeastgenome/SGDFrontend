@@ -18,6 +18,11 @@ class FrontendInterface:
     def response_wrapper(self, method_name):
         return None
     
+    #Redirect
+    @abstractmethod
+    def redirect(self, page):
+        return None
+    
     #Disambigs
     @abstractmethod
     def all_disambigs(self, min_id, max_id):
