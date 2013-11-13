@@ -372,6 +372,7 @@
 	  		$.getJSON(regulation_target_enrichment_link, function(data) {
 	  			set_up_enrichment_table(enrich_header_id, enrich_table_id, enrich_download_button_id, download_table_link, enrichment_table_filename, data)
 	  			$('#' + enrich_recalc_button_id).removeAttr('disabled');
+	  			document.getElementById(enrich_gene_header_id).innerHTML = overview_json['target_count']
 	  		});
 	  	}
   		
