@@ -1,5 +1,4 @@
 from pyramid.config import Configurator
-from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import JSONP, render
 from pyramid.response import Response
 from pyramid_jinja2 import renderer_factory

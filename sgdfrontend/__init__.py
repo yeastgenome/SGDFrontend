@@ -3,6 +3,7 @@ from pyramid.renderers import JSONP
 from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell
 from sgdfrontend_utils import link_maker
 from pyramid.response import Response
+from pyramid.httpexceptions import HTTPFound
 import datetime
 import json
 import requests
