@@ -45,18 +45,24 @@ def go_details_biocon_link(backend_start, biocon):
 
 #Phenotype Links
 def phenotype_page_link(bioent):
-    return frontend_start + '/locus/' + str(bioent) + '/go'
-def phenotyp_biocon_page_link(biocon):
-    return frontend_start + '/go/' + str(biocon)
+    return '/locus/' + str(bioent) + '/go'
+def phenotype_link(biocon):
+    return '/phenotype/' + str(biocon)
+def phenotype_ontology_link():
+    return '/phenotype/apo_ontology/overview'
 
-def phenotype_overview_link(bioent):
+def phenotype_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/phenotype_overview'
-def phenotype_details_link(bioent):
+def phenotype_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/phenotype_details?callback=?'
-def phenotype_resources_link(bioent):
+def phenotype_resources_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/phenotype_resources?callback=?'
-def phenotype_details_biocon_link(biocon):
+def phenotype_details_biocon_link(backend_start, biocon):
     return backend_start + '/phenotype/' + str(biocon) + '/locus_details?callback=?'
+def phenotype_link(backend_start, phenotype):
+    return backend_start + '/phenotype/' + phenotype + '/overview'
+def phenotype_ontology_graph_link(backend_start, phenotype):
+    return backend_start + '/phenotype/' + phenotype + '/ontology_graph?callback=?'
 
 #Protein Links
 def protein_domain_details_link(backend_start, bioent):
@@ -95,23 +101,15 @@ def literature_graph_link(backend_start, bioent):
 def bioentity_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + bioent + '/overview'
 def tab_link(backend_start, bioent):
-    return backend_start + '/locus/' + bioent + '/tabs?callback=?'
+    return backend_start + '/locus/' + bioent + '/tabs'
 
 #Bioconcept links
-def phenotype_link(phenotype):
-    return backend_start + '/phenotype/' + phenotype + '/overview'
-def phenotype_overview_link(bioent):
-    return backend_start + '/locus/' + bioent + '/phenotype_overview'
+
 def go_overview_link(go):
     return backend_start + '/go/' + go + '/overview'
-def phenotype_locus_details_link(phenotype):
-    return backend_start + '/phenotype/' + phenotype + '/locus_details?callback=?'
 def go_locus_details_link(go):
     return backend_start + '/go/' + go + '/locus_details?callback=?'
-def phenotype_ontology_graph_link(phenotype):
-    return backend_start + '/phenotype/' + phenotype + '/ontology_graph?callback=?'
-def phenotype_ontology_link():
-    return frontend_start + '/phenotype/apo_ontology/overview'
+
 
 #Chemical links
 def chemical_link(chemical):

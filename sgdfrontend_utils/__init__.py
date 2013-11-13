@@ -1,4 +1,5 @@
 from datetime import datetime
+from sgdfrontend_utils import link_maker
 import json
 import logging
 import requests
@@ -12,32 +13,31 @@ def get_json(url, data=None):
     return r.json()
 
 def get_bioent(backend_url, bioent_repr):
-    from sgdfrontend_utils.link_maker import bioentity_overview_link
-    bioent = get_json(bioentity_overview_link(backend_url, bioent_repr))
+    bioent = get_json(link_maker.bioentity_overview_link(backend_url, bioent_repr))
     if bioent is None:
         raise Exception('Bioentity not found.')
     return bioent   
 
-def get_phenotype(biocon_repr):
-    biocon = get_json(phenotype_link(biocon_repr))
+def get_phenotype(backend_url, biocon_repr):
+    biocon = get_json(link_maker.phenotype_link(backend_url, biocon_repr))
     if biocon is None:
         raise Exception('Bioconcept not found.')
     return biocon   
 
-def get_chemical(chem_repr):
-    chem = get_json(chemical_link(chem_repr))
+def get_chemical(backend_url, chem_repr):
+    chem = get_json(link_maker.chemical_link(backend_url, chem_repr))
     if chem is None:
         raise Exception('Bioconcept not found.')
     return chem   
 
-def get_go(biocon_repr):
-    biocon = get_json(go_overview_link(biocon_repr))
+def get_go(backend_url, biocon_repr):
+    biocon = get_json(go_overview_link(backend_url, biocon_repr))
     if biocon is None:
         raise Exception('Bioconcept not found.')
     return biocon      
 
 def set_up_logging(log_directory, label):
-    logging.basicConfig(format='%(asctime)s %(name)s: %(message)s', level=logging.INFO)
+    logging.basicConfig(format='%(asctime)s %(name)s: %(message)s', level=logging.ERROR)
     log = logging.getLogger(label)
     
     if log_directory is not None:
@@ -48,6 +48,7 @@ def set_up_logging(log_directory, label):
         hdlr = logging.NullHandler()
     log.addHandler(hdlr) 
     log.setLevel(logging.INFO)
+    log.propagate = False
     return log
 
 def clean_cell(cell):

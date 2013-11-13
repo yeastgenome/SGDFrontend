@@ -10,6 +10,7 @@
 	var navbar = document.getElementById("side-nav-sticky");
 	function add_navbar_element(entry_name, section_name) {
 		var li = document.createElement('li');
+		li.setAttribute('id', 'navbar_' + section_name);
 	  	li.setAttribute('data-magellan-arrival', section_name)
 	  	var a = document.createElement('a');
 	  	a.href = "#" + section_name;

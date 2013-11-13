@@ -1,16 +1,16 @@
 <div class="row">
 	<nav id="tab" class="small-12 columns">
 		<ul>
-			<li id="summary_tab"><a href="/cgi-bin/locus.fpl?locus={{display_name}}"><span>Summary</span></a></li>
-			<li id="history_tab"><a href="/cgi-bin/locusHistory.pl?locus={{display_name}}"><span>Locus History</span></a></li>
-			<li id="literature_tab"><a href="/locus/{{display_name}}/literature"><span>Literature</span></a></li>
-			<li id="go_tab"><a href="/cgi-bin/GO/goAnnotation.pl?locus={{display_name}}"><span>Gene Ontology</span></a></li>
-			<li id="phenotype_tab"><a href="/cgi-bin/phenotype/phenotype.fpl?locus={{display_name}}"><span>Phenotype</span></a></li>
-			<li id="interaction_tab"><a href="/locus/{{display_name}}/interactions"><span>Interactions</span></a></li>
-			<li id="expression_tab"><a href="/cgi-bin/expression/expressionConnection.pl?type=summary&locus={{display_name}}"><span>Expression</span></a></li>
-			<li id="regulation_tab"><a href="/locus/{{display_name}}/regulation"><span>Regulation</span></a></li>
-			<li id="protein_tab"><a href="/cgi-bin/protein/proteinPage.pl?locus={{display_name}}"><span>Protein</span></a></li>
-			<li id="wiki_tab"><a href="/cgi-bin/locusWiki.pl?locus={{display_name}}"><span>Wiki</span></a></li>   
+			<li id="summary_tab" {% if not tabs['summary_tab'] %} style="display:none" {% endif %}><a href="/cgi-bin/locus.fpl?locus={{display_name}}"><span>Summary</span></a></li>
+			<li id="history_tab" {% if not tabs['history_tab'] %} style="display:none" {% endif %}><a href="/cgi-bin/locusHistory.pl?locus={{display_name}}"><span>Locus History</span></a></li>
+			<li id="literature_tab" {% if not tabs['literature_tab'] %} style="display:none" {% endif %}><a href="/locus/{{display_name}}/literature"><span>Literature</span></a></li>
+			<li id="go_tab" {% if not tabs['go_tab'] %} style="display:none" {% endif %}><a href="/cgi-bin/GO/goAnnotation.pl?locus={{display_name}}"><span>Gene Ontology</span></a></li>
+			<li id="phenotype_tab" {% if not tabs['phenotype_tab'] %} style="display:none" {% endif %}><a href="/cgi-bin/phenotype/phenotype.fpl?locus={{display_name}}"><span>Phenotype</span></a></li>
+			<li id="interaction_tab" {% if not tabs['interaction_tab'] %} style="display:none" {% endif %}><a href="/locus/{{display_name}}/interaction"><span>Interactions</span></a></li>
+			<li id="expression_tab" {% if not tabs['expression_tab'] %} style="display:none" {% endif %}><a href="/cgi-bin/expression/expressionConnection.pl?type=summary&locus={{display_name}}"><span>Expression</span></a></li>
+			<li id="regulation_tab" {% if not tabs['regulation_tab'] %} style="display:none" {% endif %}><a href="/locus/{{display_name}}/regulation"><span>Regulation</span></a></li>
+			<li id="protein_tab" {% if not tabs['protein_tab'] %} style="display:none" {% endif %}><a href="/cgi-bin/protein/proteinPage.pl?locus={{display_name}}"><span>Protein</span></a></li>
+			<li id="wiki_tab" {% if not tabs['wiki_tab'] %} style="display:none" {% endif %}><a href="/cgi-bin/locusWiki.pl?locus={{display_name}}"><span>Wiki</span></a></li>   
 		</ul>
 	</nav>
 </div>

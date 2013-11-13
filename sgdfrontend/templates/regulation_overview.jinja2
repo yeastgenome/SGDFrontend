@@ -70,13 +70,14 @@
   	
   	var target_count = data['target_count'];
   	var regulator_count = data['regulator_count'];
+     
+    if('paragraph' in data) {
+		document.getElementById(summary_paragraph_id).innerHTML = data['paragraph']['text'];
+		references = data['paragraph']['references'];
+		set_up_references(references, reference_list_id);
+	}
   	 	
   	if(target_count + regulator_count > 0){
-  		if('paragraph' in data) {
-			document.getElementById(summary_paragraph_id).innerHTML = data['paragraph']['text'];
-			references = data['paragraph']['references'];
-			set_up_references(references, reference_list_id);
-		}
 		
 		var values = [target_count, regulator_count];
 		var labels = ['Transcriptional\nTargets', 'Transcriptional\nRegulators'];

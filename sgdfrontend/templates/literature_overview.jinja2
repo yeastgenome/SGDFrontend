@@ -14,7 +14,7 @@
 <section id="primary" data-magellan-destination="primary">
 	<div class="page-header">
 		<h1>Primary Literature <span id="primary_header" class="label secondary round"></span></h1>
-		<span id='primary_message' class="hide">No primary literature curated.</span>
+		<p id='primary_message' style='display:none'>No primary literature curated.<br></p>
 		<div id='primary_wrapper'>	
 			<a id="export_primary" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
 			<ul id="primary_list" class="literature-list">
@@ -42,8 +42,8 @@
 	var download_link = "{{download_link}}";
 	var primary_header_id = "primary_header";
   	var primary_list_id = "primary_list";
-  	var primary_message_id = "primary_message";
-  	var primary_wrapper_id = "primary_wrapper";
+  	var message_id = "primary_message";
+  	var wrapper_id = "primary_wrapper";
   	var primary_download_button_id = "export_primary";
   	var primary_download_filename = "{{display_name}}_primary_citations"
   	var primary_data = data['primary'];
@@ -51,8 +51,8 @@
   	document.getElementById(primary_header_id).innerHTML = primary_data.length;
 	set_up_references(primary_data, primary_list_id);
 	if (primary_data.length == 0) {
-		$("#" + primary_message_id).removeClass("hide");
-		$("#" + primary_wrapper_id).addClass("hide");
+		document.getElementById(message_id).style.display = "block";
+  		document.getElementById(wrapper_id).style.display = "none";
 	}
 	document.getElementById(primary_download_button_id).onclick = function f() {
 		download_citations(primary_list_id, download_link, primary_download_filename)

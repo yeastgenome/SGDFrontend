@@ -38,6 +38,7 @@ class SGDFrontend(FrontendInterface):
         bioent_id = str(bioent['id'])
         display_name = bioent['display_name']
         overview = get_json(link_maker.interaction_overview_link(self.backend_url, bioent_id))
+        tabs = get_json(link_maker.tab_link(self.backend_url, bioent_id))
         
         page = {
                     #Basic info
@@ -51,12 +52,12 @@ class SGDFrontend(FrontendInterface):
                     
                     #Overview
                     'overview': json.dumps(overview),
+                    'tabs': tabs,
                     
                     #Links
                     'interaction_details_link': link_maker.interaction_details_link(self.backend_url, bioent_id),
                     'interaction_graph_link': link_maker.interaction_graph_link(self.backend_url, bioent_id),
                     'interaction_resources_link': link_maker.interaction_resources_link(self.backend_url, bioent_id),
-                    'tab_link': link_maker.tab_link(self.backend_url, bioent_id),
                     'download_table_link': link_maker.download_table_link(),
                     'download_image_link': link_maker.download_image_link(),
                     'analyze_link': link_maker.analyze_link(),
@@ -71,6 +72,7 @@ class SGDFrontend(FrontendInterface):
         bioent = get_bioent(self.backend_url, bioent_repr)
         bioent_id = str(bioent['id'])
         overview = get_json(link_maker.literature_overview_link(self.backend_url, bioent_id))
+        tabs = get_json(link_maker.tab_link(self.backend_url, bioent_id))
         
         page = {
                     #Basic info
@@ -85,11 +87,11 @@ class SGDFrontend(FrontendInterface):
                     #Overview
                     'overview': json.dumps(overview),
                     'summary_count': overview['total_count'],
+                    'tabs': tabs,
                     
                     #Links
                     'literature_details_link': link_maker.literature_details_link(self.backend_url, bioent_id),
                     'download_link': link_maker.download_citations_link(),
-                    'tab_link': link_maker.tab_link(self.backend_url, bioent_id),
                     'literature_graph_link': link_maker.literature_graph_link(self.backend_url, bioent_id),
                     
                 }
@@ -100,6 +102,7 @@ class SGDFrontend(FrontendInterface):
         bioent_id = str(bioent['id'])
         display_name = bioent['display_name']
         overview = get_json(link_maker.regulation_overview_link(self.backend_url, bioent_id))
+        tabs = get_json(link_maker.tab_link(self.backend_url, bioent_id))
         
         page = {
                     #Basic info
@@ -113,6 +116,7 @@ class SGDFrontend(FrontendInterface):
                     
                     #Overview
                     'overview': json.dumps(overview),
+                    'tabs': tabs,
                     
                     #Links
                     'regulation_details_link': link_maker.regulation_details_link(self.backend_url, bioent_id),
@@ -120,7 +124,6 @@ class SGDFrontend(FrontendInterface):
                     'regulation_target_enrichment_link': link_maker.regulation_target_enrichment_link(self.backend_url, bioent_id),
                     'protein_domain_details_link': link_maker.protein_domain_details_link(self.backend_url, bioent_id),
                     'binding_site_details_link': link_maker.binding_site_details_link(self.backend_url, bioent_id),
-                    'tab_link': link_maker.tab_link(self.backend_url, bioent_id),
                     'download_table_link': link_maker.download_table_link(),
                     'download_image_link': link_maker.download_image_link(),
                     'analyze_link': link_maker.analyze_link(),
@@ -136,10 +139,11 @@ class SGDFrontend(FrontendInterface):
         return page
     
     def phenotype_details(self, bioent_repr):
-        bioent = get_bioent(bioent_repr)
+        bioent = get_bioent(self.backend_url, bioent_repr)
         bioent_id = str(bioent['id'])
         display_name = bioent['display_name']
         overview = get_json(link_maker.phenotype_overview_link(self.backend_url, bioent_id))
+        tabs = get_json(link_maker.tab_link(self.backend_url, bioent_id))
         
         page = {
                     #Basic info
@@ -154,11 +158,11 @@ class SGDFrontend(FrontendInterface):
                     #Overview
                     'overview': json.dumps(overview),
                     'summary_count': overview['count'],
+                    'tabs': tabs,
                     
                     #Links
                     'phenotype_details_link': link_maker.phenotype_details_link(self.backend_url, bioent_id),
                     'phenotype_resources_link': link_maker.phenotype_resources_link(self.backend_url, bioent_id),
-                    'tab_link': link_maker.tab_link(self.backend_url, bioent_id),
                     'download_table_link': link_maker.download_table_link(),
                     'ontology_link': link_maker.phenotype_ontology_link(),
                     
