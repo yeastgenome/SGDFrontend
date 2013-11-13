@@ -1,9 +1,10 @@
 var cy;
 var target_table;
 var regulator_table;
-var format_name_to_id = new Object();
 var filter_used_for_go = '';
 var filter_message;
+var target_format_name_to_id = Object();
+
 function update_filter_used() {
 	filter_used_for_go = target_table.fnSettings().oPreviousSearch.sSearch;
 	filter_message.style.display = "none";
@@ -36,8 +37,8 @@ function set_up_target_table(header_id, regulators_gene_header, table_id, filter
 		var bioent1 = create_link(evidence['bioentity1']['display_name'], evidence['bioentity1']['link'])
 		var bioent2 = create_link(evidence['bioentity2']['display_name'], evidence['bioentity2']['link'])
 		
-		format_name_to_id[evidence['bioentity1']['format_name']] = evidence['bioentity1']['id']
-		format_name_to_id[evidence['bioentity2']['format_name']] = evidence['bioentity2']['id']
+		target_format_name_to_id[evidence['bioentity1']['format_name']] = evidence['bioentity1']['id']
+		target_format_name_to_id[evidence['bioentity2']['format_name']] = evidence['bioentity2']['id']
 		
 		if(evidence['bioentity1']['id'] == evidence['bioentity2']['id']) {
 			self_interacts = true;
@@ -66,7 +67,7 @@ function set_up_target_table(header_id, regulators_gene_header, table_id, filter
   	  	
   	document.getElementById(header_id).innerHTML = data.length;
   	document.getElementById(header_id).innerHTML = data.length;
-  	var total_interactors = Object.keys(format_name_to_id).length;
+  	var total_interactors = Object.keys(target_format_name_to_id).length;
   	if(!self_interacts){
   		total_interactors = total_interactors - 1;
   	}
@@ -99,8 +100,8 @@ function set_up_target_table(header_id, regulators_gene_header, table_id, filter
 		});
   		
   		document.getElementById(download_button_id).onclick = function() {download_table(target_table, download_link, download_table_filename)};
-  		document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Targets', target_table, 3, format_name_to_id)};
-		document.getElementById(target_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Targets', target_table, 3, format_name_to_id)};
+  		document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Targets', target_table, 3, target_format_name_to_id)};
+		document.getElementById(target_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Targets', target_table, 3, target_format_name_to_id)};
     	document.getElementById(target_button_id).removeAttribute('disabled');
     }
 }
@@ -109,14 +110,15 @@ function set_up_regulator_table(header_id, targets_gene_header, table_id, downlo
 	analyze_link, bioent_display_name, bioent_format_name, bioent_link, regulator_button_id, data) { 
 	var datatable = [];
 	var self_interacts = false;
+	var regulator_format_name_to_id = Object();
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
   			
 		var bioent1 = create_link(evidence['bioentity1']['display_name'], evidence['bioentity1']['link'])
 		var bioent2 = create_link(evidence['bioentity2']['display_name'], evidence['bioentity2']['link'])
 		
-		format_name_to_id[evidence['bioentity1']['format_name']] = evidence['bioentity1']['id']
-		format_name_to_id[evidence['bioentity2']['format_name']] = evidence['bioentity2']['id']
+		regulator_format_name_to_id[evidence['bioentity1']['format_name']] = evidence['bioentity1']['id']
+		regulator_format_name_to_id[evidence['bioentity2']['format_name']] = evidence['bioentity2']['id']
 		
 		if(evidence['bioentity1']['id'] == evidence['bioentity2']['id']) {
 			self_interacts = true;
@@ -144,7 +146,7 @@ function set_up_regulator_table(header_id, targets_gene_header, table_id, downlo
   	}
   	
   	document.getElementById(header_id).innerHTML = data.length;
-  	var total_interactors = Object.keys(format_name_to_id).length;
+  	var total_interactors = Object.keys(regulator_format_name_to_id).length;
   	if(!self_interacts){
   		total_interactors = total_interactors - 1;
   	}
@@ -161,8 +163,8 @@ function set_up_regulator_table(header_id, targets_gene_header, table_id, downlo
   	regulator_table.fnSearchHighlighting();
   		
   	document.getElementById(download_button_id).onclick = function() {download_table(regulator_table, download_link, download_table_filename)};
-  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3, format_name_to_id)};
-	document.getElementById(regulator_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3, format_name_to_id)};
+  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3, regulator_format_name_to_id)};
+	document.getElementById(regulator_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3, regulator_format_name_to_id)};
 	document.getElementById(regulator_button_id).removeAttribute('disabled');
 }
 
