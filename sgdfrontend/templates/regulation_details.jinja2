@@ -269,6 +269,20 @@
 		'color': '#fff',
 	});
 	
+	var layout = {
+				"name": "arbor", 
+				"liveUpdate": true,
+				"ungrabifyWhileSimulating": true, 
+				"nodeMass":function(data) {
+					if(data.sub_type == 'FOCUS') {
+						return 10;
+					}
+					else {
+						return 1;
+					}
+				},
+			};
+	
 	var overview_json = {{overview | safe}};
 	
 	$(document).ready(function() {
@@ -393,7 +407,7 @@
   				cy = setup_regulation_cytoscape_vis(graph_id, 
 				all_slider_id, target_slider_id, regulator_slider_id, 
 				all_radio_id, target_radio_id, regulator_radio_id,
-				graph_style, data);
+				layout, graph_style, data);
   			}
   			else {
   				document.getElementById(section_id).style.display = "none";

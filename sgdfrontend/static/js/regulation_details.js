@@ -286,13 +286,13 @@ var regulator_max;
 function setup_regulation_cytoscape_vis(graph_id, 
 				all_slider_id, target_slider_id, regulator_slider_id,  
 				all_radio_id, target_radio_id, regulator_radio_id,
-				style, data) {
+				layout, style, data) {
 	function f() {
 		filter_cy(all_slider_id, target_slider_id, regulator_slider_id,
 			all_radio_id, target_radio_id, regulator_radio_id);
 	}
 	
-	cy = setup_cytoscape_vis(graph_id, style, data, f);
+	cy = setup_cytoscape_vis(graph_id, layout, style, data, f);
 			
 	evidence_max = data['max_evidence_cutoff'];
 	evidence_min = data['min_evidence_cutoff'];

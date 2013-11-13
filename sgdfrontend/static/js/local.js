@@ -209,26 +209,14 @@ function create_link(display_name, link, new_window) {
 	}
 }
 
-function setup_cytoscape_vis(div_id, style, data, f) {
+function setup_cytoscape_vis(div_id, layout, style, data, f) {
 	var height = .5*$(window).height();
 	var width = $('#' + div_id).width();
 	document.getElementById(div_id).style.height = height + 'px';
 	$(loadCy = function(){
 		options = {
 			showOverlay: false,
-			layout: {
-						"name": "arbor", 
-						"liveUpdate": true,
-						"ungrabifyWhileSimulating": true, 
-						"nodeMass":function(data) {
-							if(data.sub_type == 'FOCUS') {
-								return 10;
-							}
-							else {
-								return 1;
-							}
-						},
-					},
+			layout: layout,
 		    minZoom: 0.5,
 		    maxZoom: 2,
 		    style: style,

@@ -211,14 +211,14 @@ var evidence_min;
 function setup_interaction_cytoscape_vis(graph_id,
 				phys_slider_id, gen_slider_id, union_slider_id,  
 				phys_radio_id, gen_radio_id, union_radio_id,
-				style, data) {
+				layout, style, data) {
 	
 	function f() {
 		filter_cy(phys_slider_id, gen_slider_id, union_slider_id,  
 				phys_radio_id, gen_radio_id, union_radio_id);
 	}
 	
-	cy = setup_cytoscape_vis(graph_id, style, data, f);
+	cy = setup_cytoscape_vis(graph_id, layout, style, data, f);
 
 			
 	union_max = data['max_evidence_cutoff'];

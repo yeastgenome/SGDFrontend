@@ -188,7 +188,7 @@ class SGDFrontend(FrontendInterface):
                     'navbar_summary_title': 'Summary',
                     
                     #Links
-                    'phenotype_details_link': link_maker.phenotype_locus_details_link(self.backend_url, biocon_id),
+                    'phenotype_details_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id),
                     'download_table_link': link_maker.download_table_link(),
                     'analyze_link': link_maker.analyze_link(),
                     'ontology_graph_link': link_maker.phenotype_ontology_graph_link(self.backend_url, biocon_id),
