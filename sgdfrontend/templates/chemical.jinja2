@@ -26,22 +26,11 @@
 	</div>
 </section>
 
-<!-- Network Visualization
-================================================== -->
-<section id="network" data-magellan-destination="network">
-	<div class="page-header">
-		<h1>Ontology</h1>
-		<div class="panel">
-			<div id="cy" name="cy" style="width:100%;height:700px"></div>
-		</div>
-    </div>
-</section>
-
 <!-- Genes
 ================================================== -->
 <section id="genes" data-magellan-destination="genes">
 	<div class="page-header">
-		<h1>Phenotypes <span class="round secondary label"><span id="evidence_header"></span> <small>entries for</small> <span id="gene_header_id"></span> <small>genes</small></span></h1>
+		<h1>Genes <span class="round secondary label"><span id="evidence_header"></span> <small>entries for</small> <span id="gene_header_id"></span> <small>genes</small></span></h1>
 		<p id='evidence_message' style='display:none'>No genes curated.</p>
 		<div id='evidence_wrapper'>
 			<div class="button-bar">
@@ -75,6 +64,17 @@
 			</table>
         </div>
    </div>
+</section>
+
+<!-- Network Visualization
+================================================== -->
+<section id="network" data-magellan-destination="network">
+	<div class="page-header">
+		<h1>Ontology</h1>
+		<div class="panel">
+			<div id="cy" name="cy" style="width:100%;height:700px"></div>
+		</div>
+    </div>
    <br>
 	<br>
 	<br>
@@ -97,10 +97,10 @@
 <script>
 	//Set up navbar
 	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br>Chemical'
-	add_navbar_element('Ontology', 'network');
-	if("{{format_name}}" != 'apo_ontology') {
-		add_navbar_element('Phenotypes', 'genes');
+	if("{{format_name}}" != 'chebi_ontology') {
+		add_navbar_element('Genes', 'genes');
 	}
+	add_navbar_element('Ontology', 'network');
 	
 </script>
 
@@ -148,9 +148,33 @@
 	.css(
 		{'background-color': "#7FBF7B"
 	})
+	
+	var layout = null;
+	if(bioent_display_name == 'CHEBI Ontology') {
+		layout = {
+				"name": "arbor", 
+				"liveUpdate": true,
+				"ungrabifyWhileSimulating": true, 
+				"nodeMass":function(data) {
+					if(data.sub_type == 'FOCUS') {
+						return 10;
+					}
+					else {
+						return 1;
+					}
+				},
+			};
+	}
+	else {
+		layout = {
+				"name": "breadthfirst", 
+				"fit": false,
+				"maximalAdjustments": 5
+			};
+	}
 		
 	$(document).ready(function() {
-		if("{{format_name}}" != 'apo_ontology') {
+		if("{{format_name}}" != 'chebi_ontology') {
 			//Get evidence data
 	  		$.getJSON(chemical_details_link, function(data) {
 	  			var header_id = "evidence_header";
@@ -187,13 +211,13 @@
   			var graph_id = "cy";
   			var section_id = "network";
   			var section_navbar_id = "navbar_network";
-  			//if(data['nodes'].length > 1) {
-  				var cy = setup_cytoscape_vis(graph_id, graph_style, data);
-  			//}
-			//else {
-			//	document.getElementById(section_id).style.display = "none";
-			//	document.getElementById(section_navbar_id).style.display = "none";
-			//}
+  			if(data['nodes'].length > 1) {
+  				var cy = setup_cytoscape_vis(graph_id, layout, graph_style, data);
+  			}
+			else {
+				document.getElementById(section_id).style.display = "none";
+				document.getElementById(section_navbar_id).style.display = "none";
+			}
 			
 		});
 	});

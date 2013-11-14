@@ -18,6 +18,12 @@ class FrontendInterface:
     def response_wrapper(self, method_name, request):
         return None
     
+    #Redirect
+    @abstractmethod
+    def redirect(self, page):
+        return None
+    
+    #Tabs
     @abstractmethod
     def interaction_details(self, bioent_repr):
         return None

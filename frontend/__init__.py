@@ -1,5 +1,4 @@
 from pyramid.config import Configurator
-from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import JSONP, render
 from pyramid.response import Response
 from pyramid_jinja2 import renderer_factory
@@ -15,18 +14,13 @@ def prep_views(chosen_frontend, config):
                                 getattr(chosen_frontend, 'reference')(
                                         None if 'identifier' not in request.matchdict else request.matchdict['identifier'])), 
                      renderer=chosen_frontend.get_renderer('reference'))
-    
-    def redirect(request):
-        page = request.matchdict['page']
-        if len(request.GET) == 1:
-            bioent_repr = request.GET.values()[0]
-            return HTTPFound('/locus/' + bioent_repr + '/' + page)
-        else:
-            return Response(status_int=500, body='Invalid URL.')
-    
+        
     config.add_route('redirect',
                      '/redirect/{page}',
-                     view=redirect)
+                     view=lambda request: getattr(chosen_frontend, 'redirect')(
+                                        page = request.matchdict['page'],
+                                        bioent_repr = None if len(request.GET) == 0 else request.GET.values()[0]),
+                     renderer=chosen_frontend.get_renderer('home'))
     
     config.add_route('home',
                      '/',

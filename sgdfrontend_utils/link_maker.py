@@ -5,9 +5,6 @@ Created on Mar 6, 2013
 '''
 
 #Interaction Links
-def interaction_page_link(bioent):
-    return '/locus/' + str(bioent) + '/interaction'
-
 def interaction_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/interaction_overview'
 def interaction_details_link(backend_start, bioent):
@@ -18,9 +15,6 @@ def interaction_resources_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/interaction_resources?callback=?'
 
 #Regulation Links
-def regulation_page_link(bioent):
-    return '/locus/' + str(bioent) + '/regulation'
-
 def regulation_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/regulation_overview'
 def regulation_details_link(backend_start, bioent):
@@ -31,11 +25,6 @@ def regulation_graph_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/regulation_graph?callback=?'
 
 #GO Links
-def go_page_link(bioent):
-    return '/locus/' + str(bioent) + '/go'
-def go_biocon_page_link(biocon):
-    return '/go/' + str(biocon)
-
 def go_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/go_overview?callback=?'
 def go_details_link(backend_start, bioent):
@@ -44,10 +33,6 @@ def go_details_biocon_link(backend_start, biocon):
     return backend_start + '/go/' + str(biocon) + '/locus_details?callback=?'
 
 #Phenotype Links
-def phenotype_page_link(bioent):
-    return '/locus/' + str(bioent) + '/go'
-def phenotype_link(biocon):
-    return '/phenotype/' + str(biocon)
 def phenotype_ontology_link():
     return '/phenotype/apo_ontology/overview'
 
@@ -87,9 +72,6 @@ def download_image_link():
     return '/download_image'
 
 #Literature Links
-def literature_page_link(bioent):
-    return '/locus/' + str(bioent) + '/literature'
-
 def literature_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/literature_overview'
 def literature_details_link(backend_start, bioent):
@@ -103,20 +85,16 @@ def bioentity_overview_link(backend_start, bioent):
 def tab_link(backend_start, bioent):
     return backend_start + '/locus/' + bioent + '/tabs'
 
-#Bioconcept links
+#Chemical Links
 
-def go_overview_link(go):
-    return backend_start + '/go/' + go + '/overview'
-def go_locus_details_link(go):
-    return backend_start + '/go/' + go + '/locus_details?callback=?'
+def chemical_ontology_link():
+    return '/chemical/chebi_ontology/overview'
 
-
-#Chemical links
-def chemical_link(chemical):
+def chemical_details_chem_link(backend_start, chemical):
+    return backend_start + '/chemical/' + str(chemical) + '/locus_details?callback=?'
+def chemical_link(backend_start, chemical):
     return backend_start + '/chemical/' + chemical + '/overview'
-def chemical_locus_details_link(chemical):
-    return backend_start + '/chemical/' + chemical + '/locus_details?callback=?'
-def chemical_ontology_graph_link(chemical):
+def chemical_ontology_graph_link(backend_start, chemical):
     return backend_start + '/chemical/' + chemical + '/ontology_graph?callback=?'
 
 #List links

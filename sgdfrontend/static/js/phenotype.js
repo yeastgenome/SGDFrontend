@@ -50,7 +50,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 			reporter = evidence['reporter']['display_name'];
 		}
 		
-		var biocon = create_link(evidence['bioconcept']['observable'], 'http://www.yeastgenome.org/cgi-bin/phenotype/phenotype.fpl?observable=' + evidence['bioconcept']['observable']);
+		var biocon = create_link(evidence['bioconcept']['observable'], evidence['bioconcept']['link']);
 		
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
   		
@@ -63,7 +63,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
     var options = {};
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[3, "asc"]];
-	options["aoColumns"] = [{"bSearchable":false, 'bSortable': false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
+	options["aoColumns"] = [{"bSearchable":false, 'bSortable': false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
 	options["aaData"] = datatable;
   
    	setup_datatable_highlight();				

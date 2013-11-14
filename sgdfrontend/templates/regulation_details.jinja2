@@ -345,7 +345,7 @@
 	  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, target_button_id, target_data);
 	
 	  				//Set up go enrichment				
-					go_enrichment(go_enrichment_link, target_table, format_name_to_id, 3, enrich_header_id, enrich_gene_header_id, enrich_table_id, enrich_recalc_button_id,
+					go_enrichment(go_enrichment_link, target_table, target_format_name_to_id, 3, enrich_header_id, enrich_gene_header_id, enrich_table_id, enrich_recalc_button_id,
 						enrich_download_button_id, download_table_link, enrichment_table_filename);
 	  			}
   			}
@@ -386,6 +386,7 @@
 	  		$.getJSON(regulation_target_enrichment_link, function(data) {
 	  			set_up_enrichment_table(enrich_header_id, enrich_table_id, enrich_download_button_id, download_table_link, enrichment_table_filename, data)
 	  			$('#' + enrich_recalc_button_id).removeAttr('disabled');
+	  			document.getElementById(enrich_gene_header_id).innerHTML = overview_json['target_count']
 	  		});
 	  	}
   		

@@ -23,6 +23,7 @@
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
 		<h1>Summary</h1>
+		<p>{{description}}</p>
 	</div>
 </section>
 
@@ -97,10 +98,10 @@
 <script>
 	//Set up navbar
 	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br>Phenotype'
-	add_navbar_element('Ontology', 'network');
 	if("{{format_name}}" != 'apo_ontology') {
 		add_navbar_element('Genes', 'genes');
 	}
+	add_navbar_element('Ontology', 'network');
 	
 </script>
 
@@ -170,7 +171,7 @@
 	})
 	.selector("node[sub_type='development']")
 	.css(
-		{'background-color': "#FFFF33"
+		{'background-color': "#BF5B17"
 	})
 	
 	var layout = null;

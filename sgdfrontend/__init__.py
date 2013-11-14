@@ -4,6 +4,7 @@ from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, 
 from sgdfrontend_utils import link_maker
 from pyramid.response import Response
 from frontend.frontend_interface import FrontendInterface
+from pyramid.httpexceptions import HTTPFound
 import datetime
 import json
 import requests
@@ -182,6 +183,7 @@ class SGDFrontend(FrontendInterface):
                     'link': biocon['link'],
                     'format_name': biocon['format_name'],
                     'count': biocon['count'],
+                    'description': biocon['description'],
                     
                     #Navbar stuff
                     'navbar_title': '',
@@ -199,7 +201,7 @@ class SGDFrontend(FrontendInterface):
         return page
     
     def chemical(self, chemical_repr):
-        chemical = get_chemical(chemical_repr)
+        chemical = get_chemical(self.backend_url, chemical_repr)
         chemical_id = str(chemical['id'])
         display_name = chemical['display_name']
                 
@@ -214,10 +216,10 @@ class SGDFrontend(FrontendInterface):
                     'navbar_summary_title': 'Summary',
                     
                     #Links
-                    'chemical_details_link': link_maker.chemical_locus_details_link(chemical_id),
+                    'chemical_details_link': link_maker.chemical_details_chem_link(self.backend_url, chemical_id),
                     'download_table_link': link_maker.download_table_link(),
                     'analyze_link': link_maker.analyze_link(),
-                    'ontology_graph_link': link_maker.chemical_ontology_graph_link(chemical_id),
+                    'ontology_graph_link': link_maker.chemical_ontology_graph_link(self.backend_url, chemical_id),
                     
                     #Filenames
                     'chemical_details_filename': display_name + '_genes',
@@ -230,6 +232,15 @@ class SGDFrontend(FrontendInterface):
         else:
             page = urllib.urlopen(self.heritage_url).read()
             return Response(page)
+        
+    def redirect(self, page, bioent_repr):
+        if bioent_repr is not None:
+            return HTTPFound('/locus/' + bioent_repr + '/' + page)
+        elif page == 'interaction':
+            page = urllib.urlopen(self.heritage_url + '/cgi-bin/interaction_search').read()
+            return Response(page)
+        else:
+            return Response(status_int=500, body='Invalid URL.')
     
     def header(self):
         header_str = render('templates/header.jinja2', {})
