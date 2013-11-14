@@ -41,6 +41,14 @@ class FrontendInterface:
         return None
     
     @abstractmethod
+    def go_details(self, bioent_repr):
+        return None
+    
+    @abstractmethod
+    def go(self, biocon_repr):
+        return None
+    
+    @abstractmethod
     def phenotype(self, biocon_repr):
         return None
     

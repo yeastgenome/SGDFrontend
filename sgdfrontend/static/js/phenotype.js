@@ -86,7 +86,6 @@ function set_up_full_ontology(ontology_list_id, data) {
 		li.id = data['elements'][i]['id'];
 		list.appendChild(li);
 	}
-	alert(data['child_to_parent'])
 	for (var key in data['child_to_parent']) {
 		var child_id = key;
 		var parent_id = data['child_to_parent'][child_id];

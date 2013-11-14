@@ -1,0 +1,16 @@
+<!-- Summary
+================================================== -->
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Gene Ontology Summary</h1>
+		<p>This page displays GO annotations in different sections according to the <a href='http://www.yeastgenome.org/help/glossary.html#type'>annotation method</a> used to add that annotation to SGD.</p>
+		<p id='summary_message' style='display:none'>0 GO Terms curated.</p>
+		<p>{{summary_count}} go terms curated for {{display_name}}.</p>
+	</div>
+</section>
+
+<script>
+	//Set up navbar
+	document.getElementById('navbar_title').innerHTML = '<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}'
+  	add_navbar_element('Go Terms', 'go');
+</script>

@@ -31,7 +31,7 @@ def get_chemical(backend_url, chem_repr):
     return chem   
 
 def get_go(backend_url, biocon_repr):
-    biocon = get_json(go_overview_link(backend_url, biocon_repr))
+    biocon = get_json(link_maker.go_link(backend_url, biocon_repr))
     if biocon is None:
         raise Exception('Bioconcept not found.')
     return biocon      

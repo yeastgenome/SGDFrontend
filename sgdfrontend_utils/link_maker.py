@@ -26,11 +26,15 @@ def regulation_graph_link(backend_start, bioent):
 
 #GO Links
 def go_overview_link(backend_start, bioent):
-    return backend_start + '/locus/' + str(bioent) + '/go_overview?callback=?'
+    return backend_start + '/locus/' + str(bioent) + '/go_overview'
 def go_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/go_details?callback=?'
 def go_details_biocon_link(backend_start, biocon):
     return backend_start + '/go/' + str(biocon) + '/locus_details?callback=?'
+def go_link(backend_start, go):
+    return backend_start + '/go/' + go + '/overview'
+def go_ontology_graph_link(backend_start, go):
+    return backend_start + '/go/' + go + '/ontology_graph?callback=?'
 
 #Phenotype Links
 def phenotype_ontology_link():

@@ -172,6 +172,37 @@ class SGDFrontend(FrontendInterface):
                     }
         return page
     
+    def go_details(self, bioent_repr):
+        bioent = get_bioent(self.backend_url, bioent_repr)
+        bioent_id = str(bioent['id'])
+        display_name = bioent['display_name']
+        overview = get_json(link_maker.go_overview_link(self.backend_url, bioent_id))
+        tabs = get_json(link_maker.tab_link(self.backend_url, bioent_id))
+        
+        page = {
+                    #Basic info
+                    'display_name': bioent['display_name'],
+                    'link': bioent['link'],
+                    'format_name': bioent['format_name'],
+                    
+                    #Navbar stuff
+                    'navbar_title': 'GO Terms',
+                    'navbar_summary_title': 'Go Summary',
+                    
+                    #Overview
+                    'overview': json.dumps(overview),
+                    'tabs': tabs,
+                    
+                    #Links
+                    'go_details_link': link_maker.go_details_link(self.backend_url, bioent_id),
+                    'download_table_link': link_maker.download_table_link(),
+                    'ontology_link': link_maker.phenotype_ontology_link(),
+                    
+                    #Filenames
+                    'go_details_filename': display_name + '_go',
+                    }
+        return page
+    
     def phenotype(self, biocon_repr):
         biocon = get_phenotype(self.backend_url, biocon_repr)
         biocon_id = str(biocon['id'])
@@ -197,6 +228,34 @@ class SGDFrontend(FrontendInterface):
                     
                     #Filenames
                     'phenotype_details_filename': display_name + '_genes',
+                    }
+        return page
+    
+    def go(self, biocon_repr):
+        biocon = get_go(self.backend_url, biocon_repr)
+        biocon_id = str(biocon['id'])
+        display_name = biocon['display_name']
+                
+        page = {
+                    #Basic info
+                    'display_name': biocon['display_name'],
+                    'link': biocon['link'],
+                    'format_name': biocon['format_name'],
+                    'count': biocon['count'],
+                    'description': biocon['description'],
+                    
+                    #Navbar stuff
+                    'navbar_title': '',
+                    'navbar_summary_title': 'Summary',
+                    
+                    #Links
+                    'go_details_link': link_maker.go_details_biocon_link(self.backend_url, biocon_id),
+                    'download_table_link': link_maker.download_table_link(),
+                    'analyze_link': link_maker.analyze_link(),
+                    'ontology_graph_link': link_maker.go_ontology_graph_link(self.backend_url, biocon_id),
+                    
+                    #Filenames
+                    'go_details_filename': display_name + '_genes',
                     }
         return page
     
