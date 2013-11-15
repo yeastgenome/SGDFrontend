@@ -37,23 +37,35 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 			else {
 				chemical = evidence['chemical']['display_name'];
 			}
+			var chemical_icon = create_note_icon('chemical_icon', evidence['chemical']['note']);
+			if(chemical_icon != '') {
+				chemical = chemical + ' ' + chemical_icon;
+			}
 		}
 		
 		var allele = '';
 		if(evidence['allele'] != null) {
 			allele = evidence['allele']['display_name'];
+			var allele_icon = create_note_icon('allele_icon', evidence['allele']['note']);
+			if(allele_icon != '') {
+				allele = allele + ' ' + allele_icon;
+			}
 		}
 		
 		var reporter = '';
 		if(evidence['reporter'] != null) {
 			reporter = evidence['reporter']['display_name'];
+			var reporter_icon = create_note_icon('reporter_icon', evidence['reporter']['note']);
+			if(reporter_icon != '') {
+				reporter = reporter + ' ' + reporter_icon;
+			}
 		}
 		
 		var biocon = create_link(evidence['bioconcept']['observable'], evidence['bioconcept']['link']);
 		
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
   		
-  		datatable.push([icon, bioent, evidence['bioentity']['format_name'], biocon, evidence['bioconcept']['qualifier'], experiment, evidence['bioconcept']['mutant_type'], strain, chemical, allele, reporter, reference, evidence['note']]);
+  		datatable.push([icon, bioent, evidence['bioentity']['format_name'], biocon, evidence['bioconcept']['qualifier'], experiment, evidence['mutant_type'], strain, chemical, allele, reporter, reference, evidence['note']]);
   	}
   	document.getElementById(header_id).innerHTML = data.length;
   	var total_interactors = Object.keys(format_name_to_id).length;

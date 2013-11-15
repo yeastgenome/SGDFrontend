@@ -209,6 +209,17 @@ function create_link(display_name, link, new_window) {
 	}
 }
 
+function create_note_icon(drop_id_num, text) {
+	var icon;
+	if(text != null && text != '') {
+		icon = "<a href='#' data-dropdown='drop" + drop_id_num + "'><i class='icon-info-sign'></i></a><div id='drop" + drop_id_num + "' class='f-dropdown content medium' data-dropdown-content><p>" + text + "</p></div>"
+	}
+	else {
+		icon = '';
+	}
+	return icon;
+}
+
 function setup_cytoscape_vis(div_id, layout, style, data, f) {
 	var height = .5*$(window).height();
 	var width = $('#' + div_id).width();
