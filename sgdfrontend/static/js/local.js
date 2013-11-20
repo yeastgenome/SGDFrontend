@@ -406,7 +406,6 @@ function go_enrichment(go_enrichment_link, table, format_name_to_id, index, head
 function set_table_message(table_id, message) {
 	var options = {};
 	options["bPaginate"] = true;
-	options["aoColumns"] = [null, null, null]
 	options["bDestroy"] = true;
 	options['oLanguage'] = {'sEmptyTable': message}
 	options["aaData"] = [];

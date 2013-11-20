@@ -242,6 +242,7 @@ class SGDFrontend(FrontendInterface):
                     'link': biocon['link'],
                     'format_name': biocon['format_name'],
                     'count': biocon['count'],
+                    'child_count': biocon['child_count'],
                     'description': biocon['description'],
                     
                     #Navbar stuff
@@ -250,6 +251,7 @@ class SGDFrontend(FrontendInterface):
                     
                     #Links
                     'go_details_link': link_maker.go_details_biocon_link(self.backend_url, biocon_id),
+                    'go_details_all_link': link_maker.go_details_biocon_link(self.backend_url, biocon_id, with_children=True),
                     'download_table_link': link_maker.download_table_link(),
                     'analyze_link': link_maker.analyze_link(),
                     'ontology_graph_link': link_maker.go_ontology_graph_link(self.backend_url, biocon_id),

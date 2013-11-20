@@ -1,8 +1,9 @@
 var ev_table;
-var format_name_to_id = new Object();
 
 function set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, download_link, download_table_filename, data) { 
 	var datatable = [];
+	var format_name_to_id = new Object();
+
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
 		
@@ -61,7 +62,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 			}
 		}
 		
-		var biocon = create_link(evidence['bioconcept']['observable'], evidence['bioconcept']['link']);
+		var biocon = create_link(evidence['bioconcept']['display_name'], evidence['bioconcept']['link']);
 		
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
   		

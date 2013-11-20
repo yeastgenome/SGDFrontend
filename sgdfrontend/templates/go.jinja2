@@ -27,12 +27,26 @@
 	</div>
 </section>
 
+<!-- Network Visualization
+================================================== -->
+<section id="network" data-magellan-destination="network">
+	<div class="page-header">
+		<h1>Ontology</h1>
+		<div class="panel">
+			<div id="cy" name="cy" style="width:100%;height:700px"></div>
+		</div>
+    </div>
+</section>
+
 <!-- Genes
 ================================================== -->
 <section id="genes" data-magellan-destination="genes">
 	<div class="page-header">
 		<h1>Genes <span class="round secondary label"><span id="evidence_header"></span> <small>entries for</small> <span id="gene_header_id"></span> <small>genes</small></span></h1>
-		<p id='evidence_message' style='display:none'>No genes curated.</p>
+		<p id='evidence_message' style='display:none'>No genes curated directly to this term.</p>
+		<ul {% if child_count > 1000 or child_count == 0 or count == child_count %} style='display:none' {% endif %} class="button-group radius">
+			<li><a disabled="true" id="more_genes_button" class="small button secondary">Show Genes Associated With Child Terms</a></li>
+		</ul>
 		<div id='evidence_wrapper'>
 			<div class="button-bar">
 				<ul class="button-group radius">
@@ -47,32 +61,23 @@
 			<table class='table table-striped table-bordered table-condensed' id='evidence_table' width="100%">
 			<thead>
   			<tr>
+  				<th></th>
   				<th>Gene</th>
   				<th>Gene Format Name</th>
   				<th>Gene Ontology Term</th>
-  				<th>Aspect</th>
+  				<th>Qualifier</th>
    				<th>Method</th>
   				<th>Evidence</th>
-  				<th>Relationships</th>
   				<th>Source</th>
+  				<th>Assigned On</th>
     			<th>Reference</th>
+  				<th>Relationships</th>
   			</tr>
   			</thead>
 			</table>
         </div>
    </div>
-</section>
-
-<!-- Network Visualization
-================================================== -->
-<section id="network" data-magellan-destination="network">
-	<div class="page-header">
-		<h1>Ontology</h1>
-		<div class="panel">
-			<div id="cy" name="cy" style="width:100%;height:700px"></div>
-		</div>
-    </div>
-    <br>
+      <br>
 	<br>
 	<br>
 	<br>
@@ -94,16 +99,15 @@
 <script>
 	//Set up navbar
 	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br>GO'
-	if("{{format_name}}" != 'apo_ontology') {
-		add_navbar_element('Genes', 'genes');
-	}
 	add_navbar_element('Ontology', 'network');
+	add_navbar_element('Genes', 'genes');
 	
 </script>
 
 <script>
 	//Template links and filenames
 	var go_details_link = "{{go_details_link}}";
+	var go_details_all_link = "{{go_details_all_link}}"
 	var ontology_graph_link = "{{ontology_graph_link}}";	
 	var download_table_link = "{{download_table_link}}";
 	var download_table_filename = "{{go_details_filename}}";
@@ -194,7 +198,7 @@
 	  				document.getElementById()
 	  				set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, 
 	  				download_table_link, download_table_filename, 
-	  				analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, data);
+	  				analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, false, data);
 	  			}
 	  			else {
 	  				document.getElementById(message_id).style.display = "block";
@@ -202,6 +206,53 @@
 	  				document.getElementById(header_id).innerHTML = 0;
 	  				document.getElementById(phenotype_header_id).innerHTML = 0;
 	  			}
+	  			
+	  			var child_button_id = "more_genes_button";
+	  			var child_button = document.getElementById(child_button_id);
+	  			child_button.onclick = function() {
+	  				child_button.setAttribute('disabled', 'disabled'); 
+	  				set_table_message(table_id, '<center><img src="/static/img/dark-slow-wheel.gif"></center>');
+	  				document.getElementById(phenotype_header_id).innerHTML = '_';
+					document.getElementById(header_id).innerHTML = '_';
+					
+					var show_biocon_col = null;
+					var data_link = null; 
+					var new_message = null;
+					
+					if(child_button.innerHTML == 'Hide Genes Associated With Child Terms') {
+						show_biocon_col = false;
+						data_link = go_details_link;
+						new_message = 'Show Genes Associated With Child Terms';
+					}
+					else {
+						show_biocon_col = true;
+						data_link = go_details_all_link;
+						new_message = 'Hide Genes Associated With Child Terms';
+					}
+					
+					post_json_to_url(data_link, {}, 
+						function(data) {  		
+  							set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, 
+	  							download_table_link, download_table_filename, 
+	  							analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, show_biocon_col, data);
+  							if(data.length > 0) {
+  								document.getElementById(message_id).style.display = "none";
+	  							document.getElementById(wrapper_id).style.display = "block";
+	  						}
+	  						else {
+	  							document.getElementById(message_id).style.display = "block";
+	  							document.getElementById(wrapper_id).style.display = "none";
+	  						}
+  							child_button.innerHTML = new_message;
+  							$('#' + child_button_id).removeAttr('disabled');
+  						},
+  						function() {
+    						$('#' + child_button_id).removeAttr('disabled');
+  						}
+  					);
+	  				
+	  			};
+	  			$('#' + child_button_id).removeAttr('disabled');
 	  			
 	  		});
 		}

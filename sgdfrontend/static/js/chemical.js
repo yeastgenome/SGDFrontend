@@ -1,8 +1,8 @@
 var ev_table;
-var format_name_to_id = new Object();
 
 function set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, download_link, download_table_filename, 
 	analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, data) { 
+	var format_name_to_id = new Object();
 	var datatable = [];
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];

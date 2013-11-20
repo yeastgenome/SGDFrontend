@@ -1,9 +1,10 @@
 var ev_table;
-var format_name_to_id = new Object();
 
 function set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, download_link, download_table_filename, 
-	analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, data) { 
+	analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, show_biocon_col, data) { 
 	var datatable = [];
+	var format_name_to_id = new Object();
+
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
 		
@@ -14,35 +15,38 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
   		
   		var with_entry = null;
-  		for(var j=0; j < evidence['with'].length; j++) {
-  			var entry = evidence['with'][j];
-  			if(with_entry == null) {
-  				with_entry = create_link(entry['obj']['display_name'], entry['obj']['link']) 
-  			}
-  			else {
-  				with_entry = with_entry + ', ' + create_link(entry['obj']['display_name'], entry['obj']['link']) 
-  			}
+		var relationship_entry = null;
+
+  		for(var j=0; j < evidence['conditions'].length; j++) {
+  			var condition = evidence['conditions'][j];
+  			if(condition['role'] == 'With' || condition['role'] == 'From') {
+  				var new_with_entry = create_link(condition['obj']['display_name'], condition['obj']['link']);
+	  			if(with_entry == null) {
+	  				with_entry = new_with_entry
+	  			}
+	  			else {
+	  				with_entry = with_entry + ', ' + new_with_entry
+	  			}
+	  		}
+	  		else if(condition['obj'] != null) {
+	  			var new_rel_entry = condition['role'] + ' ' + create_link(condition['obj']['display_name'], condition['obj']['link']);
+	  			if(relationship_entry == null) {
+  					relationship_entry = new_rel_entry
+  				}
+  				else {
+  					relationship_entry = relationship_entry + ', ' + new_rel_entry
+  				}
+	  		}
   			
   		}
-		var from_entry = null;
-  		for(var j=0; j < evidence['from'].length; j++) {
-  			var entry = evidence['from'][j];
-  			if(from_entry == null) {
-  				from_entry = create_link(entry['obj']['display_name'], entry['obj']['link']) 
-  			}
-  			else {
-  				from_entry = from_entry + ', ' + create_link(entry['obj']['display_name'], entry['obj']['link']) 
-  			}
-  		}
+		var icon = create_note_icon(i, relationship_entry);
+		
   		var evidence_code = evidence['code'];
   		if(with_entry != null) {
   			evidence_code = evidence_code + ' with ' + with_entry;
   		}
-  		if(from_entry != null) {
-  			evidence_code = evidence_code + ' from ' + from_entry;
-  		}
   		
-  		datatable.push([bioent, evidence['bioentity']['format_name'], biocon, evidence['go_aspect'], evidence['method'], evidence_code, null, evidence['source'], reference]);
+  		datatable.push([icon, bioent, evidence['bioentity']['format_name'], biocon, evidence['qualifier'], evidence['method'], evidence_code, evidence['source'], evidence['date_created'], reference, relationship_entry]);
   	}
   	document.getElementById(header_id).innerHTML = data.length;
   	var total_interactors = Object.keys(format_name_to_id).length;
@@ -50,8 +54,9 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
   		         
     var options = {};
 	options["bPaginate"] = true;
-	options["aaSorting"] = [[0, "asc"]];
-	options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, reference];
+	options["aaSorting"] = [[1, "asc"]];
+	options["bDestroy"] = true;
+	options["aoColumns"] = [{"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":show_biocon_col, "bVisible":show_biocon_col}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
 	options["aaData"] = datatable;
   
    	setup_datatable_highlight();				

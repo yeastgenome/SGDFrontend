@@ -1,10 +1,10 @@
 var ev_table;
 var cy;
-var format_name_to_id = new Object();
 
 function set_up_evidence_table(header_id, interactors_gene_header_id, table_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
 	analyze_link, bioent_display_name, bioent_format_name, bioent_link, 
 	phys_button_id, gen_button_id, union_button_id, intersect_button_id, data) { 
+	var format_name_to_id = new Object();
 	var datatable = [];
 	var self_interacts = false;
 	for (var i=0; i < data.length; i++) {

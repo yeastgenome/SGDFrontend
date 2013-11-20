@@ -29,8 +29,11 @@ def go_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/go_overview'
 def go_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/go_details?callback=?'
-def go_details_biocon_link(backend_start, biocon):
-    return backend_start + '/go/' + str(biocon) + '/locus_details?callback=?'
+def go_details_biocon_link(backend_start, biocon, with_children=False):
+    if with_children:
+        return backend_start + '/go/' + str(biocon) + '/locus_details_all?callback=?'
+    else:
+        return backend_start + '/go/' + str(biocon) + '/locus_details?callback=?'
 def go_link(backend_start, go):
     return backend_start + '/go/' + go + '/overview'
 def go_ontology_graph_link(backend_start, go):
