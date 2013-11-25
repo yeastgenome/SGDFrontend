@@ -52,8 +52,11 @@ def phenotype_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/phenotype_details?callback=?'
 def phenotype_resources_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/phenotype_resources?callback=?'
-def phenotype_details_biocon_link(backend_start, biocon):
-    return backend_start + '/phenotype/' + str(biocon) + '/locus_details?callback=?'
+def phenotype_details_biocon_link(backend_start, biocon, with_children=False):
+    if with_children:
+        return backend_start + '/phenotype/' + str(biocon) + '/locus_details_all?callback=?'
+    else:
+        return backend_start + '/phenotype/' + str(biocon) + '/locus_details?callback=?'
 def phenotype_link(backend_start, phenotype):
     return backend_start + '/phenotype/' + phenotype + '/overview'
 def phenotype_ontology_graph_link(backend_start, phenotype):

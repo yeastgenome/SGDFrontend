@@ -147,7 +147,9 @@
 	var go_overview_link = "{{go_overview_link}}";
 	var go_details_link = "{{go_details_link}}";
 	var download_table_link = "{{download_table_link}}";
-	var download_table_filename = "{{go_details_filename}}";
+	var bp_download_table_filename = "{{bp_go_details_filename}}";
+	var mf_download_table_filename = "{{mf_go_details_filename}}";
+	var cc_download_table_filename = "{{cc_go_details_filename}}";
 		
 	$(document).ready(function() {
 		//Get evidence data
@@ -164,7 +166,7 @@
   			if(bpData.length > 0) {
   				document.getElementById()
   				set_up_evidence_table(bp_header_id, bp_go_header_id, bp_table_id, bp_download_button_id, 
-  				download_table_link, download_table_filename, bpData);
+  				download_table_link, bp_download_table_filename, bpData);
   			}
   			else {
   				document.getElementById(bp_message_id).style.display = "block";
@@ -185,7 +187,7 @@
   			if(mfData.length > 0) {
   				document.getElementById()
   				set_up_evidence_table(mf_header_id, mf_go_header_id, mf_table_id, mf_download_button_id, 
-  				download_table_link, download_table_filename, mfData);
+  				download_table_link, mf_download_table_filename, mfData);
   			}
   			else {
   				document.getElementById(mf_message_id).style.display = "block";
@@ -206,7 +208,7 @@
   			if(ccData.length > 0) {
   				document.getElementById()
   				set_up_evidence_table(cc_header_id, cc_go_header_id, cc_table_id, cc_download_button_id, 
-  				download_table_link, download_table_filename, ccData);
+  				download_table_link, cc_download_table_filename, ccData);
   			}
   			else {
   				document.getElementById(cc_message_id).style.display = "block";

@@ -2,6 +2,9 @@ var ev_table;
 
 function set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, download_link, download_table_filename, 
 	analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, data) { 
+	var has_chemical = false;
+	var has_allele = false;
+	var has_reporter = false;
 	var format_name_to_id = new Object();
 	var datatable = [];
 	for (var i=0; i < data.length; i++) {
@@ -9,13 +12,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 		
 		format_name_to_id[evidence['bioentity']['format_name']] = evidence['bioentity']['id']
 		
-		var icon;
-		if(evidence['note'] != null) {
-			icon = "<a href='#' data-dropdown='drop" + i + "'><i class='icon-info-sign'></i></a><div id='drop" + i + "' class='f-dropdown content medium' data-dropdown-content><p>" + evidence['note'] + "</p></div>"
-		}
-		else {
-			icon = null;
-		}
+		var icon = create_note_icon(i, evidence['note']);
 		
 		var bioent = create_link(evidence['bioentity']['display_name'], evidence['bioentity']['link'])
 			
@@ -32,29 +29,44 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 		
 		var chemical = '';
 		if(evidence['chemical'] != null) {
+			has_chemical = true;
 			if(evidence['chemical']['amount'] != null) {
 				chemical = evidence['chemical']['amount'] + ' ' + evidence['chemical']['display_name'];
 			}
 			else {
 				chemical = evidence['chemical']['display_name'];
 			}
+			var chemical_icon = create_note_icon('chemical_icon', evidence['chemical']['note']);
+			if(chemical_icon != '') {
+				chemical = chemical + ' ' + chemical_icon;
+			}
 		}
 		
 		var allele = '';
 		if(evidence['allele'] != null) {
+			has_allele = true;
 			allele = evidence['allele']['display_name'];
+			var allele_icon = create_note_icon('allele_icon', evidence['allele']['note']);
+			if(allele_icon != '') {
+				allele = allele + ' ' + allele_icon;
+			}
 		}
 		
 		var reporter = '';
 		if(evidence['reporter'] != null) {
+			has_reporter = true;
 			reporter = evidence['reporter']['display_name'];
+			var reporter_icon = create_note_icon('reporter_icon', evidence['reporter']['note']);
+			if(reporter_icon != '') {
+				reporter = reporter + ' ' + reporter_icon;
+			}
 		}
 		
-		var biocon = create_link(evidence['bioconcept']['observable'], 'http://www.yeastgenome.org/cgi-bin/phenotype/phenotype.fpl?observable=' + evidence['bioconcept']['observable']);
+		var biocon = create_link(evidence['bioconcept']['display_name'], evidence['bioconcept']['link']);
 		
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
   		
-  		datatable.push([icon, bioent, evidence['bioentity']['format_name'], biocon, evidence['bioconcept']['qualifier'], experiment, evidence['bioconcept']['mutant_type'], strain, chemical, allele, reporter, reference, evidence['note']]);
+  		datatable.push([icon, bioent, evidence['bioentity']['format_name'], biocon, experiment, evidence['mutant_type'], strain, chemical, allele, reporter, reference, evidence['note']]);
   	}
   	document.getElementById(header_id).innerHTML = data.length;
   	var total_interactors = Object.keys(format_name_to_id).length;
@@ -63,7 +75,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
     var options = {};
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[3, "asc"]];
-	options["aoColumns"] = [{"bSearchable":false, 'bSortable': false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
+	options["aoColumns"] = [{"bSearchable":false, 'bSortable': false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":has_chemical, "bVisible":has_chemical}, {"bSearchable":has_allele, "bVisible":has_allele}, {"bSearchable":has_reporter, "bVisible":has_reporter}, null, {"bSearchable":false, "bVisible":false}];
 	options["aaData"] = datatable;
   
    	setup_datatable_highlight();				

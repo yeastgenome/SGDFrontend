@@ -199,7 +199,9 @@ class SGDFrontend(FrontendInterface):
                     'ontology_link': link_maker.phenotype_ontology_link(),
                     
                     #Filenames
-                    'go_details_filename': display_name + '_go',
+                    'bp_go_details_filename': display_name + '_bp_go',
+                    'mf_go_details_filename': display_name + '_mf_go',
+                    'cc_go_details_filename': display_name + '_cc_go',
                     }
         return page
     
@@ -221,7 +223,6 @@ class SGDFrontend(FrontendInterface):
                     #Navbar stuff
                     'navbar_title': '',
                     'navbar_summary_title': 'Summary',
-                    'object_type': 'Phenotype' if biocon['qualifier'] is not None else 'Observable' if biocon['format_name'] != 'apo_ontology' else '',
                     
                     #Links
                     'phenotype_details_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id),
@@ -245,15 +246,16 @@ class SGDFrontend(FrontendInterface):
                     'link': biocon['link'],
                     'format_name': biocon['format_name'],
                     'count': biocon['count'],
+                    'child_count': biocon['child_count'],
                     'description': biocon['description'],
                     
                     #Navbar stuff
                     'navbar_title': '',
                     'navbar_summary_title': 'Summary',
-                    'object_type': 'Phenotype' if biocon['qualifier'] is not None else 'Observable' if biocon['format_name'] != 'apo_ontology' else '',
                     
                     #Links
                     'phenotype_details_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id),
+                    'phenotype_details_all_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id, with_children=True),
                     'download_table_link': link_maker.download_table_link(),
                     'analyze_link': link_maker.analyze_link(),
                     'ontology_graph_link': link_maker.phenotype_ontology_graph_link(self.backend_url, biocon_id),
