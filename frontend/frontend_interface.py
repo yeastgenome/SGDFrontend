@@ -53,6 +53,14 @@ class FrontendInterface:
         return None
     
     @abstractmethod
+    def observable(self, biocon_repr):
+        return None
+    
+    @abstractmethod
+    def apo_ontology(self):
+        return None
+    
+    @abstractmethod
     def chemical(self, chemical_repr):
         return None
     

@@ -214,11 +214,14 @@ class SGDFrontend(FrontendInterface):
                     'link': biocon['link'],
                     'format_name': biocon['format_name'],
                     'count': biocon['count'],
-                    'description': biocon['description'],
+                    'qualifier': biocon['qualifier'],
+                    'observable': biocon['observable'],
+                    'observable_link': link_maker.observable_link(biocon['observable']),
                     
                     #Navbar stuff
                     'navbar_title': '',
                     'navbar_summary_title': 'Summary',
+                    'object_type': 'Phenotype' if biocon['qualifier'] is not None else 'Observable' if biocon['format_name'] != 'apo_ontology' else '',
                     
                     #Links
                     'phenotype_details_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id),
@@ -228,6 +231,58 @@ class SGDFrontend(FrontendInterface):
                     
                     #Filenames
                     'phenotype_details_filename': display_name + '_genes',
+                    }
+        return page
+    
+    def observable(self, biocon_repr):
+        biocon = get_phenotype(self.backend_url, biocon_repr)
+        biocon_id = str(biocon['id'])
+        display_name = biocon['display_name']
+                
+        page = {
+                    #Basic info
+                    'display_name': biocon['display_name'],
+                    'link': biocon['link'],
+                    'format_name': biocon['format_name'],
+                    'count': biocon['count'],
+                    'description': biocon['description'],
+                    
+                    #Navbar stuff
+                    'navbar_title': '',
+                    'navbar_summary_title': 'Summary',
+                    'object_type': 'Phenotype' if biocon['qualifier'] is not None else 'Observable' if biocon['format_name'] != 'apo_ontology' else '',
+                    
+                    #Links
+                    'phenotype_details_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id),
+                    'download_table_link': link_maker.download_table_link(),
+                    'analyze_link': link_maker.analyze_link(),
+                    'ontology_graph_link': link_maker.phenotype_ontology_graph_link(self.backend_url, biocon_id),
+                    
+                    #Filenames
+                    'phenotype_details_filename': display_name + '_genes',
+                    }
+        return page
+    
+    def apo_ontology(self):
+        biocon = get_phenotype(self.backend_url, 'apo_ontology')
+        biocon_id = str(biocon['id'])
+        display_name = biocon['display_name']
+                
+        page = {
+                    #Basic info
+                    'display_name': biocon['display_name'],
+                    'link': biocon['link'],
+                    'format_name': biocon['format_name'],
+                    'count': biocon['count'],
+                    'description': biocon['description'],
+                    
+                    #Navbar stuff
+                    'navbar_title': '',
+                    'navbar_summary_title': 'Summary',
+                    
+                    #Links
+                    'ontology_graph_link': link_maker.phenotype_ontology_graph_link(self.backend_url, biocon_id),
+                    'apo_ontology_link': link_maker.apo_ontology_link(self.backend_url),
                     }
         return page
     
