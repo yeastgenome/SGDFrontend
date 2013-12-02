@@ -75,7 +75,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
     var options = {};
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[1, "asc"]];
-	options["aoColumns"] = [{"bSearchable":false, 'bSortable': false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, {"bSearchable":has_chemical, "bVisible":has_chemical}, {"bSearchable":has_allele, "bVisible":has_allele}, {"bSearchable":has_reporter, "bVisible":has_reporter}, null, {"bSearchable":false, "bVisible":false}];
+	options["aoColumns"] = [{"bSearchable":false, 'bSortable': false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":has_chemical, "bVisible":has_chemical}, {"bSearchable":has_allele, "bVisible":has_allele}, {"bSearchable":has_reporter, "bVisible":has_reporter}, null, {"bSearchable":false, "bVisible":false}];
 	options["aaData"] = datatable;
   
    	setup_datatable_highlight();				

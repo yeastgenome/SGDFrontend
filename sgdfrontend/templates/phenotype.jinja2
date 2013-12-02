@@ -23,8 +23,10 @@
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
 		<h1>Summary</h1>
-		<p><strong>Qualifier:</strong> {{qualifier}}<br>
+		<p>
 			<strong>Observable:</strong> <a href="{{observable_link}}">{{observable}}</a>
+			<br>
+			<strong>Qualifier:</strong> {{qualifier}}
 		</p>
 		
 	</div>
@@ -32,9 +34,9 @@
 
 <!-- Genes
 ================================================== -->
-<section id="genes" data-magellan-destination="genes">
+<section id="annotations" data-magellan-destination="annotations">
 	<div class="page-header">
-		<h1>Genes <span class="round secondary label"><span id="evidence_header"></span> <small>entries for</small> <span id="gene_header_id"></span> <small>genes</small></span></h1>
+		<h1>Annotations <span class="round secondary label"><span id="evidence_header"></span> <small>entries for</small> <span id="gene_header_id"></span> <small>genes</small></span></h1>
 		<p id='evidence_message' style='display:none'>No genes curated.</p>
 		<div id='evidence_wrapper'>
 			<div class="button-bar">
@@ -55,7 +57,7 @@
   				<th>Gene Format Name</th>
   				<th>Phenotype</th>
   				<th>Experiment Type</th>
-  				<th>Mutant</th>
+  				<th>Mutant Type</th>
   				<th>Strain</th>
   				<th>Chemical</th>
   				<th>Allele</th>
@@ -89,7 +91,7 @@
 <script>
 	//Set up navbar
 	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br> Phenotype'
-	add_navbar_element('Genes', 'genes');
+	add_navbar_element('Annotations', 'annotations');
 	
 </script>
 

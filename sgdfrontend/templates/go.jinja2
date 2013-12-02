@@ -193,11 +193,11 @@
 	  		var message_id = "evidence_message";
 	  		var wrapper_id = "evidence_wrapper";
 	  			
-	  		function set_up_table_f(show_biocon_col, data) {
+	  		function set_up_table_f(data) {
 	  			if(data.length > 0) {
 	  				set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, 
 	  					download_table_link, download_table_filename, 
-	  					analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, show_biocon_col, data);
+	  					analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, data);
 	  				document.getElementById(message_id).style.display = "none";
 	  				document.getElementById(wrapper_id).style.display = "block";
 	  			}
@@ -208,7 +208,7 @@
 	  				document.getElementById(phenotype_header_id).innerHTML = 0;
 	  			}
 	  		}
-	  		set_up_table_f(false, data);
+	  		set_up_table_f(data);
 	  		var child_button_id = "more_genes_button";
 	  		set_up_show_child_button(child_button_id, phenotype_header_id, header_id, go_details_link, go_details_all_link, table_id, set_up_table_f);
 	  	});

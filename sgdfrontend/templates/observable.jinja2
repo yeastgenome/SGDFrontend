@@ -41,43 +41,40 @@
 
 <!-- Genes
 ================================================== -->
-<section id="genes" data-magellan-destination="genes">
+<section id="annotations" data-magellan-destination="annotations">
 	<div class="page-header">
-		<h1>Genes <span class="round secondary label"><span id="evidence_header"></span> <small>entries for</small> <span id="gene_header_id"></span> <small>genes</small></span></h1>
-		<p id='evidence_message' style='display:none'>No genes curated.</p>
-		<ul {% if child_count > 1000 or child_count == 0 or count == child_count %} style='display:none' {% endif %} class="button-group radius">
-			<li><a disabled="true" id="more_genes_button" class="small button secondary">Show Genes Associated With Child Terms</a></li>
+		<h1>Annotations <span class="round secondary label"><span id="evidence_header"></span> <small>entries for</small> <span id="gene_header_id"></span> <small>genes</small></span></h1>
+		<ul {% if child_count == 0 or count == child_count %} style='display:none' {% endif %} class="button-group radius">
+			<li><a disabled="true" id="more_genes_button" class="small button secondary">Add Genes Associated With Child Terms</a></li>
 		</ul>
-		<div id='evidence_wrapper'>
-			<div class="button-bar">
-				<ul class="button-group radius">
-					<li><a disabled="true" id="evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
-				</ul>
+		<div class="button-bar">
+			<ul class="button-group radius">
+				<li><a disabled="true" id="evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
+			</ul>
 						
-				<ul class="button-group radius">
-					<li><a disabled="true" id="evidence_table_analyze" class="small button secondary"><i class='icon-briefcase'></i> Analyze</a></li>
-				</ul>
-			</div>
+			<ul class="button-group radius">
+				<li><a disabled="true" id="evidence_table_analyze" class="small button secondary"><i class='icon-briefcase'></i> Analyze</a></li>
+			</ul>
+		</div>
 			
-			<table class='table table-striped table-bordered table-condensed' id='evidence_table' width="100%">
-			<thead>
-  			<tr>
-  				<th></th>
-  				<th>Gene</th>
-  				<th>Gene Format Name</th>
-  				<th>Phenotype</th>
-  				<th>Experiment Type</th>
-  				<th>Mutant</th>
-  				<th>Strain</th>
-  				<th>Chemical</th>
-  				<th>Allele</th>
-  				<th>Reporter</th>
-    			<th>Reference</th>
-    			<th>Note</th>
-  			</tr>
-  			</thead>
-			</table>
-        </div>
+		<table class='table table-striped table-bordered table-condensed' id='evidence_table' width="100%">
+		<thead>
+  		<tr>
+  			<th></th>
+  			<th>Gene</th>
+  			<th>Gene Format Name</th>
+  			<th>Phenotype</th>
+  			<th>Experiment Type</th>
+  			<th>Mutant Type</th>
+  			<th>Strain</th>
+  			<th>Chemical</th>
+  			<th>Allele</th>
+  			<th>Reporter</th>
+    		<th>Reference</th>
+    		<th>Note</th>
+  		</tr>
+  		</thead>
+		</table>
    </div>
     <br>
 	<br>
@@ -102,7 +99,7 @@
 	//Set up navbar
 	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br>Observable'
 	add_navbar_element('Ontology', 'network');
-	add_navbar_element('Genes', 'genes');
+	add_navbar_element('Annotations', 'annotations');
 
 	
 </script>
@@ -194,24 +191,28 @@
 	  		var message_id = "evidence_message";
 	  		var wrapper_id = "evidence_wrapper";
 	  			
-	  		function set_up_table_f(show_biocon_col, data) {
-	  			if(data.length > 0) {
-	  				set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, 
-	  					download_table_link, download_table_filename, 
-	  					analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, show_biocon_col, data);
-	  				document.getElementById(message_id).style.display = "none";
-	  				document.getElementById(wrapper_id).style.display = "block";
-	  			}
-	  			else {
-	  				document.getElementById(message_id).style.display = "block";
-	  				document.getElementById(wrapper_id).style.display = "none";
-	  				document.getElementById(header_id).innerHTML = 0;
-	  				document.getElementById(phenotype_header_id).innerHTML = 0;
-	  			}
+	  		function set_up_table_f(data) {
+	  			set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, 
+	  				download_table_link, download_table_filename, 
+	  				analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, data);
+	  			document.getElementById(header_id).innerHTML = 0;
+	  			document.getElementById(phenotype_header_id).innerHTML = 0;
 	  		}
-	  		set_up_table_f(false, data);
+	  			     
+	  		set_up_table_f(data);
 	  		var child_button_id = "more_genes_button";
-	  		set_up_show_child_button(child_button_id, phenotype_header_id, header_id, phenotype_details_link, phenotype_details_all_link, table_id, set_up_table_f);
+	  		function new_filter_f(oSettings, aData, iDataIndex) {
+		        var phenotype = aData[1];
+				phenotype = phenotype.substring(phenotype.indexOf('>')+1, phenotype.length);	
+	  			phenotype = phenotype.substring(0, phenotype.indexOf('<'));
+	  			var colon_index = phenotype.indexOf(':');
+	  			if(colon_index >= 0) {
+	  				phenotype = phenotype.substring(0, colon_index);
+	  			}	        
+		        return phenotype == '{{display_name}}';
+		    }
+	  		
+	  		set_up_show_child_button(child_button_id, phenotype_header_id, header_id, phenotype_details_link, phenotype_details_all_link, table_id, set_up_table_f, new_filter_f);
 	  	});
   		
   		//Get graph

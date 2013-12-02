@@ -1,7 +1,7 @@
 var ev_table;
 
 function set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, download_link, download_table_filename, 
-	analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, show_biocon_col, data) { 
+	analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, data) { 
 	var datatable = [];
 	var format_name_to_id = new Object();
 
@@ -56,7 +56,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[1, "asc"]];
 	options["bDestroy"] = true;
-	options["aoColumns"] = [{"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":show_biocon_col, "bVisible":show_biocon_col}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
+	options["aoColumns"] = [{"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
 	options["aaData"] = datatable;
   
    	setup_datatable_highlight();				

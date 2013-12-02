@@ -459,40 +459,43 @@ function set_up_enrichment_table(header_id, table_id, download_button_id, downlo
     }
 }
 
-function set_up_show_child_button(child_button_id, phenotype_header_id, header_id, details_link, details_all_link, table_id, set_up_table_f) {
+function set_up_show_child_button(child_button_id, phenotype_header_id, header_id, details_link, details_all_link, table_id, set_up_table_f, new_filter_f) {
 	var child_button = document.getElementById(child_button_id);
+	var has_all_data = false;
 	  
 	child_button.onclick = function() {
 	  	child_button.setAttribute('disabled', 'disabled'); 
-	  	set_table_message(table_id, '<center><img src="/static/img/dark-slow-wheel.gif"></center>');
-	  	document.getElementById(phenotype_header_id).innerHTML = '_';
-		document.getElementById(header_id).innerHTML = '_';
 					
-		var show_biocon_col = null;
-		var data_link = null; 
 		var new_message = null;
-					
 		if(child_button.innerHTML == 'Hide Genes Associated With Child Terms') {
-			show_biocon_col = false;
-			data_link = details_link;
-			new_message = 'Show Genes Associated With Child Terms';
+			new_message = 'Add Genes Associated With Child Terms';
+			$.fn.dataTableExt.afnFiltering.push(new_filter_f);
 		}
 		else {
-			show_biocon_col = true;
-			data_link = details_all_link;
 			new_message = 'Hide Genes Associated With Child Terms';
+			$.fn.dataTableExt.afnFiltering.splice(0, 1);
 		}
-					
-		post_json_to_url(data_link, {}, 
-			function(data) {  
-				set_up_table_f(show_biocon_col, data);		
-  				child_button.innerHTML = new_message;
-  				$('#' + child_button_id).removeAttr('disabled');
-  			},
-  			function() {
-    			$('#' + child_button_id).removeAttr('disabled');
-  			}
-  		);
+		if(!has_all_data) {	
+			set_table_message(table_id, '<center><img src="/static/img/dark-slow-wheel.gif"></center>');
+	  		document.getElementById(phenotype_header_id).innerHTML = '_';
+			document.getElementById(header_id).innerHTML = '_';
+			post_json_to_url(details_all_link, {}, 
+				function(data) {  
+					set_up_table_f(data);		
+  					child_button.innerHTML = new_message;
+  					$('#' + child_button_id).removeAttr('disabled');
+  				},
+  				function() {
+    				$('#' + child_button_id).removeAttr('disabled');
+  				}
+  			);
+  			has_all_data = true;
+  		}
+  		else {
+  			child_button.innerHTML = new_message;
+  			$('#' + child_button_id).removeAttr('disabled');
+  			ev_table.fnDraw();
+  		}
 	  				
 	};
 	$('#' + child_button_id).removeAttr('disabled');
