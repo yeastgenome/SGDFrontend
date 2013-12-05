@@ -51,12 +51,44 @@ def set_up_logging(log_directory, label):
     log.propagate = False
     return log
 
+def remove_html(html):
+    start_tag_start = None
+    start_tag_end = None
+    end_tag_start = None
+    end_tag_end = None
+    state = 'beginning'
+    key = None
+    i = 0
+    for letter in html:
+        if state == 'beginning' and letter == '<':
+            start_tag_start = i
+            state = 'in_key'
+        elif state == 'in_key' and letter == ' ':
+            key = html[start_tag_start+1:i]
+            state = 'in_start_tag'
+        elif state == 'in_key' and letter == '>':
+            key = html[start_tag_start+1:i]
+            start_tag_end = i+1
+            state = 'middle'
+        elif state == 'in_start_tag' and letter == '>':
+            start_tag_end = i+1
+            state = 'middle'
+        elif state == 'middle' and letter == '<' and html[i:].startswith('</' + key + '>'):
+            end_tag_start = i
+            end_tag_end = i + 2 + len(key) + 1
+            state = 'done'
+        i = i+1
+    if state == 'done':
+        return html[0:start_tag_start] + html[start_tag_end:end_tag_start] + html[end_tag_end:]
+    else:
+        return None
+
 def clean_cell(cell):
     if cell is None:
         return ''
-    elif cell.startswith('<a href='):
-        cell = cell[cell.index('>')+1:]
-        cell = cell[:cell.index('<')]
-        return cell
     else:
+        result = remove_html(cell)
+        while result is not None:
+            cell = result
+            result = remove_html(cell)
         return cell

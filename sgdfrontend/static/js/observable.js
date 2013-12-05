@@ -12,7 +12,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 		
 		format_name_to_id[evidence['bioentity']['format_name']] = evidence['bioentity']['id']
 		
-		var icon = create_note_icon(i, evidence['note']);
+		var icon = create_note_icon('note' + i, evidence['note']);
 		
 		var bioent = create_link(evidence['bioentity']['display_name'], evidence['bioentity']['link'])
 			
@@ -36,7 +36,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 			else {
 				chemical = evidence['chemical']['display_name'];
 			}
-			var chemical_icon = create_note_icon('chemical_icon', evidence['chemical']['note']);
+			var chemical_icon = create_note_icon('chemical_icon' + i, evidence['chemical']['note']);
 			if(chemical_icon != '') {
 				chemical = chemical + ' ' + chemical_icon;
 			}
@@ -46,7 +46,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 		if(evidence['allele'] != null) {
 			has_allele = true;
 			allele = evidence['allele']['display_name'];
-			var allele_icon = create_note_icon('allele_icon', evidence['allele']['note']);
+			var allele_icon = create_note_icon('allele_icon' + i, evidence['allele']['note']);
 			if(allele_icon != '') {
 				allele = allele + ' ' + allele_icon;
 			}
@@ -56,7 +56,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 		if(evidence['reporter'] != null) {
 			has_reporter = true;
 			reporter = evidence['reporter']['display_name'];
-			var reporter_icon = create_note_icon('reporter_icon', evidence['reporter']['note']);
+			var reporter_icon = create_note_icon('reporter_icon' + i, evidence['reporter']['note']);
 			if(reporter_icon != '') {
 				reporter = reporter + ' ' + reporter_icon;
 			}
