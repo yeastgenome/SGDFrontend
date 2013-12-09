@@ -2,16 +2,14 @@ var ev_table;
 
 function set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, download_link, download_table_filename, 
 	analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, data) {
-	var format_name_to_id = new Object();
+	var format_name_to_id = {};
 	var datatable = [];
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
 		
-		format_name_to_id[evidence['bioentity']['format_name']] = evidence['bioentity']['id']
-		
-		var icon = create_note_icon('note' + i, evidence['note']);
-		
-		var bioent = create_link(evidence['bioentity']['display_name'], evidence['bioentity']['link'])
+		format_name_to_id[evidence['bioentity']['format_name']] = evidence['bioentity']['id'];
+
+		var bioent = create_link(evidence['bioentity']['display_name'], evidence['bioentity']['link']);
 			
 		var experiment = '';
 		if(evidence['experiment'] != null) {
@@ -72,14 +70,13 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
   		datatable.push([bioent, evidence['bioentity']['format_name'], biocon, experiment, 'Description: ' + evidence['mutant_type'] + allele, strain, chemical, note, reference]);
   	}
   	document.getElementById(header_id).innerHTML = data.length;
-  	var total_interactors = Object.keys(format_name_to_id).length;
-  	document.getElementById(phenotype_header_id).innerHTML = total_interactors;
+  	document.getElementById(phenotype_header_id).innerHTML = Object.keys(format_name_to_id).length;
   		         
     var options = {};
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[0, "asc"]];
 	options["bDestroy"] = true;
-	options['oLanguage'] = {'sEmptyTable': 'No genes annotated directly to this term.'}
+	options['oLanguage'] = {'sEmptyTable': 'No genes annotated directly to this term.'};
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null];
 	options["aaData"] = datatable;
   

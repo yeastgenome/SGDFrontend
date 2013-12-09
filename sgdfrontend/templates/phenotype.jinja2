@@ -117,12 +117,12 @@
 		'border-color': '#fff',
 		'background-color': "grey",
 		'text-outline-color': '#fff',
-		'color': '#888',
+		'color': '#888'
 	})
 	.selector('edge')
 	.css({
 		'width': 2,
-		'target-arrow-shape': 'triangle',
+		'target-arrow-shape': 'triangle'
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({
@@ -130,7 +130,7 @@
 		'height': 30,
 		'background-color': "#fade71",
 		'text-outline-color': '#fff',
-		'color': '#888',
+		'color': '#888'
 	})
 	.selector("node[sub_type='morphology']")
 	.css(
@@ -159,11 +159,11 @@
 	.selector("node[sub_type='development']")
 	.css(
 		{'background-color': "#BF5B17"
-	})
+	});
 	
 	var layout = {
 				"name": "breadthfirst", 
-				"fit": false,
+				"fit": false
 			};
 		
 	$(document).ready(function() {
@@ -179,8 +179,7 @@
 	  		var wrapper_id = "evidence_wrapper";
 	  			
 	  		if(data.length > 0) {
-	  			document.getElementById()
-	  			set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, 
+	  			set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id,
 	  			download_table_link, download_table_filename, 
 	  			analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, data);
 	  		}
