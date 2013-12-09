@@ -27,13 +27,13 @@
 					
 			 	</div><!-- .header-links -->
 			 	<div class="row header-search">
-			 		<form action="/cgi-bin/search/luceneQS.fpl" autocomplete="off" id="header-search" class="no-margins" method="get">
+			 		<form action="/cgi-bin/search/luceneQS.fpl" autocomplete="off" id="searchform" class="no-margins" method="get">
 					  <div id="top-search-input-container" class="row collapse">
 						<div class="small-6 small-offset-5 columns">
 						  <input id="txt_search" name="query" type="text" class="search-query radius prefix-input no-margins ui-autocomplete-input" placeholder="Search" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
 						</div>
 						<div class="small-1 columns">
-						  <a href="#" class="secondary button no-margins postfix radius"><i class="icon-search"></i></a>
+						  <a href="#" class="secondary button no-margins postfix radius" onclick="document.getElementById('searchform').submit();"><i class="icon-search"></i></a>
 						</div>
 					  </div>
 					  <div id="adv-search-links">
@@ -64,44 +64,44 @@
 							<li class="has-dropdown"><a href="#">Analyze</a>
 								<ul class="dropdown">
 									<li><a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Gene Lists</a></li>
-									<li><a href="/cgi-bin/blast-sgd.pl">BLAST</a></li>
-									<li><a href="/cgi-bin/blast-fungal.pl">Fungal BLAST</a></li>
-									<li><a href="/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
-									<li><a href="/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a></li>
-									<li><a href="/cgi-bin/PATMATCH/nph-patmatch">Pattern Matching</a></li>
-									<li><a href="/cgi-bin/web-primer">Design Primers</a></li>
-									<li><a href="/cgi-bin/PATMATCH/RestrictionMapper">Restriction Mapper</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/blast-sgd.pl">BLAST</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/blast-fungal.pl">Fungal BLAST</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/PATMATCH/nph-patmatch">Pattern Matching</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/web-primer">Design Primers</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper">Restriction Mapper</a></li>
 								</ul>
 							</li>
 							<li class="has-dropdown"><a href="#">Sequence</a>
 								<ul class="dropdown">
-									<li><a href="/download-data/sequence">Download</a></li>
+									<li><a href="http://www.yeastgenome.org/download-data/sequence">Download</a></li>
 									<li><a href="http://browse.yeastgenome.org/fgb2/gbrowse/scgenome/">Genome Browser</a></li>
-									<li><a href="/cgi-bin/blast-sgd.pl">BLAST</a></li>
-									<li><a href="/cgi-bin/blast-fungal.pl">Fungal BLAST</a></li>
-									<li><a href="/cgi-bin/seqTools">Gene/Sequence Resources</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/blast-sgd.pl">BLAST</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/blast-fungal.pl">Fungal BLAST</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/seqTools">Gene/Sequence Resources</a></li>
 									<li class="has-dropdown">
 										<a href="#">Reference Genome</a>
 										<ul class="dropdown">
 											<li><a href="http://downloads.yeastgenome.org/sequence/S288C_reference/genome_releases/">Download Genome</a></li>
-											<li><a href="/cache/genomeSnapshot.html">Genome Snapshot</a></li>
-											<li><a href="/cgi-bin/chromosomeHistory.pl">Chromosome History</a></li>
-											<li><a href="/cache/chromosomes.shtml">Systematic Sequencing Table</a></li>
-											<li><a href="/community/nature_genome_dir_pdf/">Original Sequence Papers</a></li>
+											<li><a href="http://www.yeastgenome.org/cache/genomeSnapshot.html">Genome Snapshot</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/chromosomeHistory.pl">Chromosome History</a></li>
+											<li><a href="http://www.yeastgenome.org/cache/chromosomes.shtml">Systematic Sequencing Table</a></li>
+											<li><a href="http://www.yeastgenome.org/community/nature_genome_dir_pdf/">Original Sequence Papers</a></li>
 										</ul>
 									</li>
 									<li class="has-dropdown">
 										<a href="#">Strains and Species</a>
 										<ul class="dropdown">
-											<li><a href="/cgi-bin/FUNGI/alignment.pl">Align Strain Sequences</a></li>
-											<li><a href="/cgi-bin/FUNGI/FungiMap">Synteny Viewer</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/FUNGI/alignment.pl">Align Strain Sequences</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/FUNGI/FungiMap">Synteny Viewer</a></li>
 										</ul>
 									</li>
 									<li class="has-dropdown">
 										<a href="#">Homology</a>
 										<ul class="dropdown">
-											<li><a href="/cgi-bin/FUNGI/showAlign">Fungal Alignment</a></li>
-											<li><a href="/cgi-bin/protein/get3d">PDB Search</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/FUNGI/showAlign">Fungal Alignment</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/protein/get3d">PDB Search</a></li>
 										</ul>
 									</li>
 									<li class="has-dropdown">
@@ -120,8 +120,8 @@
 									<li class="has-dropdown">
 										<a href="#">GO</a>
 										<ul class="dropdown">
-											<li><a href="/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
-											<li><a href="/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a></li>
 											<li><a href="http://downloads.yeastgenome.org/curation/literature/go_slim_mapping.tab">GO Slim Mapping File</a></li>
 										</ul>
 									</li>
@@ -130,8 +130,8 @@
 									<li class="has-dropdown">
 										<a href="#">Phenotypes</a>
 										<ul class="dropdown">
-											<li><a href="/cgi-bin/phenotype/phenotype.fpl">Search for Phenotypes</a></li>
-											<li><a href="/cache/PhenotypeTree.html">Browse All Phenotypes</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/phenotype/phenotype.fpl">Search for Phenotypes</a></li>
+											<li><a href="http://www.yeastgenome.org/cache/PhenotypeTree.html">Browse All Phenotypes</a></li>
 										</ul>
 									</li>
 									<li><a href="http://www.yeastgenome.org/cgi-bin/interaction_search">Interactions</a></li>
@@ -148,9 +148,9 @@
 							<li class="has-dropdown"><a href="">Literature</a>
 								<ul class="dropdown">
 									<li><a href="http://textpresso.yeastgenome.org/">Full-text Search</a></li>
-									<li><a href="/cache/NewPapersThisWeek.html">New Yeast Papers</a></li>
+									<li><a href="http://www.yeastgenome.org/cache/NewPapersThisWeek.html">New Yeast Papers</a></li>
 									<li><a href="http://www.genetics.org/site/misc/yeastbook.xhtml">YeastBook</a></li>
-									<li><a href="/cache/genome-wide-analysis.html">Genome-wide Analysis Papers</a></li>
+									<li><a href="http://www.yeastgenome.org/cache/genome-wide-analysis.html">Genome-wide Analysis Papers</a></li>
 									<li class="has-dropdown">
 										<a href="#">Resources</a>
 										<ul class="dropdown">
@@ -166,9 +166,9 @@
 									<li class="has-dropdown">
 										<a href="#">Colleague Information</a>
 										<ul class="dropdown">
-											<li><a href="/cgi-bin/colleague/colleagueInfoSearch">Find a Colleague</a></li>
-											<li><a href="/cgi-bin/colleague/colleagueSearch">Add or Update Info</a></li>
-											<li><a href="/cache/yeastLabs.html">Find a Yeast Lab</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/colleague/colleagueInfoSearch">Find a Colleague</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/colleague/colleagueSearch">Add or Update Info</a></li>
+											<li><a href="http://www.yeastgenome.org/cache/yeastLabs.html">Find a Yeast Lab</a></li>
 										</ul>
 									</li>
 									<li><a href="http://wiki.yeastgenome.org/index.php/Career_Resources">Career Resources</a></li>
@@ -182,10 +182,10 @@
 									<li class="has-dropdown">
 										<a href="#">Nomenclature</a>
 										<ul class="dropdown">
-											<li><a href="/cgi-bin/registry/geneRegistry">Submit a Gene Registration</a></li>
-											<li><a href="/help/community/gene-registry">Gene Registry</a></li>
-											<li><a href="/help/community/nomenclature-conventions">Nomenclature Conventions</a></li>
-											<li><a href="/cgi-bin/geneHunter">Global Gene Hunter</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/registry/geneRegistry">Submit a Gene Registration</a></li>
+											<li><a href="http://www.yeastgenome.org/help/community/gene-registry">Gene Registry</a></li>
+											<li><a href="http://www.yeastgenome.org/help/community/nomenclature-conventions">Nomenclature Conventions</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/geneHunter">Global Gene Hunter</a></li>
 										</ul>
 									</li>
 									<li class="has-dropdown">
@@ -199,10 +199,10 @@
 									<li class="has-dropdown">
 										<a href="#">Historical Data</a>
 										<ul class="dropdown">
-											<li><a href="/pgMaps/pgMap.shtml">Physical &amp; Genetic Maps</a></li>
-											<li><a href="/community/mortimer_maps/edition12.shtml">Genetic Maps</a></li>
+											<li><a href="http://www.yeastgenome.org/pgMaps/pgMap.shtml">Physical &amp; Genetic Maps</a></li>
+											<li><a href="http://www.yeastgenome.org/yeast-mortimer-maps-edition-12">Genetic Maps</a></li>
 											<li><a href="http://wiki.yeastgenome.org/index.php/Historical_Systematic_Sequence_Information">Sequence</a></li>
-											<li><a href="/cache/geneSummarytable.html">Gene Summary Paragraphs</a></li>
+											<li><a href="http://www.yeastgenome.org/cache/geneSummarytable.html">Gene Summary Paragraphs</a></li>
 										</ul>
 									</li>
 									<li><a href="http://wiki.yeastgenome.org/index.php/Main_Page">Wiki</a></li>
@@ -211,11 +211,11 @@
 							</li>
 							<li class="has-dropdown" id="info-menu"><a href="#">Info &amp; Downloads</a>
 								<ul class="dropdown">
-									<li><a href="/about">About</a></li>
-									<li><a href="/blog">Blog</a></li>
-									<li><a href="/download-data">Downloads</a></li>
-									<li><a href="/site-map">Site Map</a></li>
-									<li><a href="/help">Help</a></li>
+									<li><a href="http://www.yeastgenome.org/about">About</a></li>
+									<li><a href="http://www.yeastgenome.org/blog">Blog</a></li>
+									<li><a href="http://www.yeastgenome.org/download-data">Downloads</a></li>
+									<li><a href="http://www.yeastgenome.org/site-map">Site Map</a></li>
+									<li><a href="http://www.yeastgenome.org/help">Help</a></li>
 								</ul>
 							</li>
 						</ul>
@@ -241,4 +241,6 @@
 		    	</nav>
 		    </div>
 		</div>
+		
+     	<script>initialize_sgd_search();</script>
 	</header>
