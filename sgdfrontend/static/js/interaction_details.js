@@ -1,10 +1,10 @@
 var ev_table;
 var cy;
-var format_name_to_id = new Object();
 
 function set_up_evidence_table(header_id, interactors_gene_header_id, table_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
 	analyze_link, bioent_display_name, bioent_format_name, bioent_link, 
 	phys_button_id, gen_button_id, union_button_id, intersect_button_id, data) { 
+	var format_name_to_id = new Object();
 	var datatable = [];
 	var self_interacts = false;
 	for (var i=0; i < data.length; i++) {
@@ -46,7 +46,6 @@ function set_up_evidence_table(header_id, interactors_gene_header_id, table_id, 
   		datatable.push([icon, bioent1, evidence['bioentity1']['format_name'], bioent2, evidence['bioentity2']['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']])
   	}
   	document.getElementById(header_id).innerHTML = data.length;
-  	
   	var total_interactors = Object.keys(format_name_to_id).length;
   	if(!self_interacts){
   		total_interactors = total_interactors - 1;
@@ -212,14 +211,14 @@ var evidence_min;
 function setup_interaction_cytoscape_vis(graph_id,
 				phys_slider_id, gen_slider_id, union_slider_id,  
 				phys_radio_id, gen_radio_id, union_radio_id,
-				style, data) {
+				layout, style, data) {
 	
 	function f() {
 		filter_cy(phys_slider_id, gen_slider_id, union_slider_id,  
 				phys_radio_id, gen_radio_id, union_radio_id);
 	}
 	
-	cy = setup_cytoscape_vis(graph_id, style, data, f);
+	cy = setup_cytoscape_vis(graph_id, layout, style, data, f);
 
 			
 	union_max = data['max_evidence_cutoff'];

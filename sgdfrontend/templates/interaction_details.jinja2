@@ -8,7 +8,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{display_name}}/{{format_name}}</span> Physical and Genetic Interactions  <a href="http://www.yeastgenome.org/help/interaction.html" name="top" class="help"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+	<h2><span class="gene_name">{{display_name}}/{{format_name}}</span> Physical and Genetic Interactions</h2>
 </div>
 
 
@@ -128,7 +128,7 @@
 	var download_table_link = "{{download_table_link}}";
 	var download_table_filename = "{{interaction_details_filename}}";
 	var analyze_link = "{{analyze_link}}";
-	var bioent_display_name = "{{display_name}}";
+	var bioent_display_name = "{{display_name}}/{{format_name}}";
 	var bioent_format_name = "{{format_name}}";
 	var bioent_link = "{{link}}";
 	
@@ -165,6 +165,20 @@
 	.css({
 		'line-color': "#AF8DC3",
 	});
+	
+	var layout = {
+				"name": "arbor", 
+				"liveUpdate": true,
+				"ungrabifyWhileSimulating": true, 
+				"nodeMass":function(data) {
+					if(data.sub_type == 'FOCUS') {
+						return 10;
+					}
+					else {
+						return 1;
+					}
+				},
+			};
 	
 	$(document).ready(function() {
 		//Get evidence data
@@ -216,7 +230,7 @@
   				cy = setup_interaction_cytoscape_vis(graph_id,
 				phys_slider_id, gen_slider_id, union_slider_id, 
 				phys_radio_id, gen_radio_id, union_radio_id,
-				graph_style, data);
+				layout, graph_style, data);
   			}
   			else {
   				document.getElementById(section_id).style.display = "none";

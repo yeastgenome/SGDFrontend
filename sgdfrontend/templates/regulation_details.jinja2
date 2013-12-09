@@ -224,7 +224,7 @@
 	var regulators_table_filename = "{{regulators_filename}}";
 	var analyze_link = "{{analyze_link}}";
 	var go_enrichment_link = "{{go_enrichment_link}}";
-	var bioent_display_name = "{{display_name}}";
+	var bioent_display_name = "{{display_name}}/{{format_name}}";
 	var bioent_format_name = "{{format_name}}";
 	var bioent_link = "{{link}}";
 	
@@ -268,6 +268,20 @@
 		'text-outline-color': '#888',
 		'color': '#fff',
 	});
+	
+	var layout = {
+				"name": "arbor", 
+				"liveUpdate": true,
+				"ungrabifyWhileSimulating": true, 
+				"nodeMass":function(data) {
+					if(data.sub_type == 'FOCUS') {
+						return 10;
+					}
+					else {
+						return 1;
+					}
+				},
+			};
 	
 	var overview_json = {{overview | safe}};
 	
@@ -394,7 +408,7 @@
   				cy = setup_regulation_cytoscape_vis(graph_id, 
 				all_slider_id, target_slider_id, regulator_slider_id, 
 				all_radio_id, target_radio_id, regulator_radio_id,
-				graph_style, data);
+				layout, graph_style, data);
   			}
   			else {
   				document.getElementById(section_id).style.display = "none";

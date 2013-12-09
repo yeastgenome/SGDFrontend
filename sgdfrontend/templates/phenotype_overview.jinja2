@@ -1,0 +1,17 @@
+<!-- Summary
+================================================== -->
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Phenotypes Summary</h1>
+		<p>This page lists all curated single mutant phenotypes associated with {{display_name}}. <a href="{{ontology_link}}">Browse</a> phenotype terms.</p>
+		<p id='summary_message' style='display:none'>0 Phenotypes curated.</p>
+		<p>{{summary_count}} phenotypes curated for {{display_name}}.</p>
+	</div>
+</section>
+
+<script>
+	//Set up navbar
+	document.getElementById('navbar_title').innerHTML = '<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}'
+  	add_navbar_element('Phenotypes', 'phenotypes');
+  	add_navbar_element('Resources', 'resources');
+</script>

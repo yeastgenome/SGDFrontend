@@ -15,7 +15,7 @@ class FrontendInterface:
     
     #Response
     @abstractmethod
-    def response_wrapper(self, method_name):
+    def response_wrapper(self, method_name, request):
         return None
     
     #Redirect
@@ -23,153 +23,73 @@ class FrontendInterface:
     def redirect(self, page):
         return None
     
-    #Disambigs
+    #Tabs
     @abstractmethod
-    def all_disambigs(self, min_id, max_id):
-        return None
-    
-    #Reference
-    @abstractmethod
-    def reference(self, identifier):
+    def interaction_details(self, bioent_repr):
         return None
     
     @abstractmethod
-    def all_references(self, min_id, max_id):
+    def literature_details(self, bioent_repr):
         return None
     
     @abstractmethod
-    def all_bibentries(self, min_id, max_id):
+    def regulation_details(self, bioent_repr):
         return None
     
     @abstractmethod
-    def reference_list(self, reference_ids):
-        return None
-    
-    #Bioent
-    @abstractmethod
-    def all_bioentities(self, min_id, max_id):
+    def phenotype_details(self, bioent_repr):
         return None
     
     @abstractmethod
-    def bioentity_list(self, bioent_ids):
-        return None
-    
-    #Locus
-    @abstractmethod
-    def locus(self, identifier):
+    def go_details(self, bioent_repr):
         return None
     
     @abstractmethod
-    def locustabs(self, identifier):
+    def go(self, biocon_repr):
         return None
     
     @abstractmethod
-    def all_locustabs(self, min_id, max_id):
-        return None
-    
-    #Biocon
-    @abstractmethod
-    def all_bioconcepts(self, min_id, max_id):
+    def phenotype(self, biocon_repr):
         return None
     
     @abstractmethod
-    def bioconcept_list(self, biocon_ids):
-        return None
-    
-    #Go
-    @abstractmethod
-    def go(self, identifier):
+    def observable(self, biocon_repr):
         return None
     
     @abstractmethod
-    def go_ontology_graph(self, identifier):
+    def apo_ontology(self):
         return None
     
     @abstractmethod
-    def go_overview(self, identifier):
+    def chemical(self, chemical_repr):
         return None
     
     @abstractmethod
-    def go_details(self, locus_identifier=None, go_identifier=None):
+    def home(self):
         return None
     
     @abstractmethod
-    def go_enrichment(self, identifier):
+    def header(self):
         return None
     
-    #Interaction
-    @abstractmethod
-    def interaction_overview(self, identifier):
-        return None
+    @abstractmethod    
+    def footer(self):  
+        return None  
     
-    @abstractmethod
-    def interaction_details(self, identifier):
+    @abstractmethod    
+    def download_table(self, response, header_info, data, display_name):
         return None
-    
-    @abstractmethod
-    def interaction_graph(self, identifier):
+     
+    @abstractmethod   
+    def download_citations(self, response, reference_ids, display_name):
         return None
-    
-    @abstractmethod
-    def interaction_resources(self, identifier):
+      
+    @abstractmethod  
+    def analyze(self, list_name, bioent_display_name, bioent_format_name, bioent_link, bioent_ids):
         return None
-    
-    #Literature
-    @abstractmethod
-    def literature_overview(self, identifier):
+       
+    @abstractmethod 
+    def enrichment(self, bioent_ids):
         return None
-    
-    @abstractmethod
-    def literature_details(self, identifier):
-        return None
-    
-    @abstractmethod
-    def literature_graph(self, identifier):
-        return None
-    
-    #Phenotype
-    @abstractmethod
-    def phenotype(self, identifier):
-        return None
-    
-    @abstractmethod
-    def phenotype_ontology_graph(self, identifier):
-        return None
-    
-    @abstractmethod
-    def phenotype_overview(self, identifier):
-        return None
-    
-    @abstractmethod
-    def phenotype_details(self, locus_identifier=None, phenotype_identifier=None):
-        return None
-    
-    #Protein
-    @abstractmethod
-    def protein_domain_details(self, identifier):
-        return None
-    
-    #Regulation
-    @abstractmethod
-    def regulation_overview(self, identifier):
-        return None
-    
-    @abstractmethod
-    def regulation_details(self, identifier):
-        return None
-    
-    @abstractmethod
-    def regulation_graph(self, identifier):
-        return None
-    
-    @abstractmethod
-    def regulation_target_enrichment(self, identifier):
-        return None
-    
-    #Sequence
-    @abstractmethod
-    def binding_site_details(self, identifier):
-        return None
-
     
     

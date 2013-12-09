@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<title>{{display_name}} Phenotypes</title>
+
+{% extends "templates/global_layout.jinja2" %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2><span class="gene_name">{{display_name}}</span></h2>
+</div>
+
+<div class="row">
+	
+<!-- Includes navbar.html into template -->
+{% include "templates/navbar.jinja2" %}
+
+<div class="small-12 large-9 columns content-column"> 
+
+<!-- Summary
+================================================== -->	
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Summary</h1>
+		<p>{{description}}</p>
+	</div>
+</section>
+
+<!-- Network Visualization
+================================================== -->
+<section id="network" data-magellan-destination="network">
+	<div class="page-header">
+		<h1>Ontology</h1>
+		<div class="panel">
+			<div id="cy" name="cy" style="width:100%;height:700px"></div>
+		</div>
+    </div>
+</section>
+
+<!-- Ontology
+================================================== -->
+<section id="ontology" data-magellan-destination="ontology" style="display: none">
+	<div class="page-header">
+		<h1>Full Ontology</h1>
+		<ul id='full_ontology'></ul>
+    </div>
+    <br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+</section>
+
+</div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/cytoscape/cytoscape.min.js"></script>	
+<script src="/static/js/cytoscape/arbor.js"></script>
+<script src="/static/js/local.js"></script>
+<script src="/static/js/apo_ontology.js"></script>
+
+
+<script>
+	//Set up navbar
+	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br>'
+	add_navbar_element('Ontology', 'network');
+	add_navbar_element('Full Ontology', 'ontology');
+	
+</script>
+
+<script>
+	//Template links and filenames
+	var apo_ontology_link = "{{apo_ontology_link}}";
+	var ontology_graph_link = "{{ontology_graph_link}}";	
+	
+	//Graph style
+	var graph_style = cytoscape.stylesheet()
+	.selector('node')
+	.css({
+		'content': 'data(name)',
+		'font-family': 'helvetica',
+		'font-size': 14,
+		'text-outline-width': 3,
+		'text-valign': 'center',
+		'width': 30,
+		'height': 30,
+		'border-color': '#fff',
+		'background-color': "grey",
+		'text-outline-color': '#fff',
+		'color': '#888',
+	})
+	.selector('edge')
+	.css({
+		'width': 2,
+		'target-arrow-shape': 'triangle',
+	})
+	.selector("node[sub_type='FOCUS']")
+	.css({
+		'width': 30,
+		'height': 30,
+		'background-color': "#fade71",
+		'text-outline-color': '#fff',
+		'color': '#888',
+	})
+	.selector("node[sub_type='morphology']")
+	.css(
+		{'background-color': "#7FBF7B"
+	})
+	.selector("node[sub_type='fitness']")
+	.css(
+		{'background-color': "#AF8DC3"
+	})
+	.selector("node[sub_type='essentiality']")
+	.css(
+		{'background-color': "#1F78B4"
+	})
+	.selector("node[sub_type='interaction with host/environment']")
+	.css(
+		{'background-color': "#FB9A99"
+	})
+	.selector("node[sub_type='metabolism and growth']")
+	.css(
+		{'background-color': "#E31A1C"
+	})
+	.selector("node[sub_type='cellular processes']")
+	.css(
+		{'background-color': "#FF7F00"
+	})
+	.selector("node[sub_type='development']")
+	.css(
+		{'background-color': "#BF5B17"
+	})
+	
+	var layout = {
+				"name": "arbor", 
+				"liveUpdate": true,
+				"ungrabifyWhileSimulating": true, 
+				"nodeMass":function(data) {
+					if(data.sub_type == 'FOCUS') {
+						return 10;
+					}
+					else {
+						return 1;
+					}
+				},
+			};
+		
+	$(document).ready(function() {
+		$.getJSON(apo_ontology_link, function(data) {
+			var section_id = 'ontology';
+			var ontology_list_id = 'full_ontology';
+			document.getElementById(section_id).style.display = "block";
+			set_up_full_ontology(ontology_list_id, data);
+		});
+		
+  		//Get graph
+  		$.getJSON(ontology_graph_link, function(data) {
+  			var graph_id = "cy";
+  			var section_id = "network";
+  			var section_navbar_id = "navbar_network";
+  			if(data['nodes'].length > 1) {
+  				var cy = setup_cytoscape_vis(graph_id, layout, graph_style, data);
+  			}
+			else {
+				document.getElementById(section_id).style.display = "none";
+				document.getElementById(section_navbar_id).style.display = "none";
+			}
+			
+		});
+	});
+</script>
+        
+
+{% endblock scripts %}

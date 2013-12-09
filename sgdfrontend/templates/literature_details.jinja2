@@ -182,6 +182,20 @@
 		'height': 30,
 	});
 	
+	var layout = {
+				"name": "arbor", 
+				"liveUpdate": true,
+				"ungrabifyWhileSimulating": true, 
+				"nodeMass":function(data) {
+					if(data.sub_type == 'FOCUS') {
+						return 10;
+					}
+					else {
+						return 1;
+					}
+				},
+			};
+	
 	
 	$(document).ready(function() {
 		
@@ -244,7 +258,7 @@
   			var section_id = "network";
   			var section_navbar_id = "navbar_network";
   			if(data['nodes'].length > 1) {
-  				var cy = setup_cytoscape_vis(graph_id, graph_style, data);
+  				var cy = setup_cytoscape_vis(graph_id, layout, graph_style, data);
   			}
 			else {
 				document.getElementById(section_id).style.display = "none";

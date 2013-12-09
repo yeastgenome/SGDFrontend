@@ -209,26 +209,25 @@ function create_link(display_name, link, new_window) {
 	}
 }
 
-function setup_cytoscape_vis(div_id, style, data, f) {
+function create_note_icon(drop_id_num, text) {
+	var icon;
+	if(text != null && text != '') {
+		icon = "<a href='#' data-dropdown='drop" + drop_id_num + "'><i class='icon-info-sign'></i></a><div id='drop" + drop_id_num + "' class='f-dropdown content medium' data-dropdown-content><p>" + text + "</p></div>"
+	}
+	else {
+		icon = '';
+	}
+	return icon;
+}
+
+function setup_cytoscape_vis(div_id, layout, style, data, f) {
 	var height = .5*$(window).height();
 	var width = $('#' + div_id).width();
 	document.getElementById(div_id).style.height = height + 'px';
 	$(loadCy = function(){
 		options = {
 			showOverlay: false,
-			layout: {
-						"name": "arbor", 
-						"liveUpdate": true,
-						"ungrabifyWhileSimulating": true, 
-						"nodeMass":function(data) {
-							if(data.sub_type == 'FOCUS') {
-								return 10;
-							}
-							else {
-								return 1;
-							}
-						},
-					},
+			layout: layout,
 		    minZoom: 0.5,
 		    maxZoom: 2,
 		    style: style,
@@ -407,7 +406,6 @@ function go_enrichment(go_enrichment_link, table, format_name_to_id, index, head
 function set_table_message(table_id, message) {
 	var options = {};
 	options["bPaginate"] = true;
-	options["aoColumns"] = [null, null, null]
 	options["bDestroy"] = true;
 	options['oLanguage'] = {'sEmptyTable': message}
 	options["aaData"] = [];
@@ -459,4 +457,46 @@ function set_up_enrichment_table(header_id, table_id, download_button_id, downlo
   		document.getElementById(download_button_id).onclick = function() {download_table(enrichment_table, download_link, download_table_filename)};
     	$('#' + download_button_id).removeAttr('disabled');
     }
+}
+
+function set_up_show_child_button(child_button_id, phenotype_header_id, header_id, details_link, details_all_link, table_id, set_up_table_f, new_filter_f) {
+	var child_button = document.getElementById(child_button_id);
+	var has_all_data = false;
+	  
+	child_button.onclick = function() {
+	  	child_button.setAttribute('disabled', 'disabled'); 
+					
+		var new_message = null;
+		if(child_button.innerHTML == 'Hide Genes Associated With Child Terms') {
+			new_message = 'Add Genes Associated With Child Terms';
+			$.fn.dataTableExt.afnFiltering.push(new_filter_f);
+		}
+		else {
+			new_message = 'Hide Genes Associated With Child Terms';
+			$.fn.dataTableExt.afnFiltering.splice(0, 1);
+		}
+		if(!has_all_data) {	
+			set_table_message(table_id, '<center><img src="/static/img/dark-slow-wheel.gif"></center>');
+	  		document.getElementById(phenotype_header_id).innerHTML = '_';
+			document.getElementById(header_id).innerHTML = '_';
+			post_json_to_url(details_all_link, {}, 
+				function(data) {  
+					set_up_table_f(data);		
+  					child_button.innerHTML = new_message;
+  					$('#' + child_button_id).removeAttr('disabled');
+  				},
+  				function() {
+    				$('#' + child_button_id).removeAttr('disabled');
+  				}
+  			);
+  			has_all_data = true;
+  		}
+  		else {
+  			child_button.innerHTML = new_message;
+  			$('#' + child_button_id).removeAttr('disabled');
+  			ev_table.fnDraw();
+  		}
+	  				
+	};
+	$('#' + child_button_id).removeAttr('disabled');
 }

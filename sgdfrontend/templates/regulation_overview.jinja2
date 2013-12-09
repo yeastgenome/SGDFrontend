@@ -27,10 +27,29 @@
 	</div>
 </section>
 
+<script>
+	//Set up navbar
+	var overview_json = {{overview | safe}};
+	var target_count = overview_json['target_count'];
+	var regulator_count = overview_json['regulator_count']
+	document.getElementById('navbar_title').innerHTML = '<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}'
+  	if(target_count > 0) {
+     	add_navbar_element('Domains and Classification', 'domains');
+  		add_navbar_element('DNA Binding Site Motifs', 'binding');
+  		add_navbar_element('Targets', 'targets');
+  		add_navbar_element('Shared GO Processes Among Targets', 'enrichment');
+     }
+     if(regulator_count > 0) {
+     	add_navbar_element('Regulators', 'regulators');
+     }
+     if(target_count + regulator_count > 0) {
+     	add_navbar_element('Network Visualization', 'network');
+     }
+</script>
+
 <script src="/static/js/kinetic-v4.3.3.min.js"></script>	
 <script src="/static/js/side_bar.js"></script>	
 <script src="/static/js/local.js"></script>
-
 <script>
 
 	var filename = "{{regulation_overview_filename}}";
@@ -51,20 +70,6 @@
   	
   	var target_count = data['target_count'];
   	var regulator_count = data['regulator_count'];
-  	
-  	//Set up navbar
-  	if(target_count > 0) {
-     	add_navbar_element('Domains and Classification', 'domains');
-  		add_navbar_element('DNA Binding Site Motifs', 'binding');
-  		add_navbar_element('Targets', 'targets');
-  		add_navbar_element('Shared GO Processes Among Targets', 'enrichment');
-     }
-     if(regulator_count > 0) {
-     	add_navbar_element('Regulators', 'regulators');
-     }
-     if(target_count + regulator_count > 0) {
-     	add_navbar_element('Network Visualization', 'network');
-     }
      
     if('paragraph' in data) {
 		document.getElementById(summary_paragraph_id).innerHTML = data['paragraph']['text'];

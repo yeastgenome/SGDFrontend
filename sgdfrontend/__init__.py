@@ -1,8 +1,9 @@
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
-from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell
+from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical
 from sgdfrontend_utils import link_maker
 from pyramid.response import Response
+from frontend.frontend_interface import FrontendInterface
 from pyramid.httpexceptions import HTTPFound
 import datetime
 import json
@@ -11,7 +12,7 @@ import uuid
 import urllib
 import base64
 
-class SGDFrontend():
+class SGDFrontend(FrontendInterface):
     def __init__(self, backend_url, heritage_url, log_directory):
         self.backend_url = backend_url
         self.heritage_url = heritage_url
@@ -138,6 +139,211 @@ class SGDFrontend():
                     }
         return page
     
+    def phenotype_details(self, bioent_repr):
+        bioent = get_bioent(self.backend_url, bioent_repr)
+        bioent_id = str(bioent['id'])
+        display_name = bioent['display_name']
+        overview = get_json(link_maker.phenotype_overview_link(self.backend_url, bioent_id))
+        tabs = get_json(link_maker.tab_link(self.backend_url, bioent_id))
+        
+        page = {
+                    #Basic info
+                    'display_name': bioent['display_name'],
+                    'link': bioent['link'],
+                    'format_name': bioent['format_name'],
+                    
+                    #Navbar stuff
+                    'navbar_title': 'Phenotypes',
+                    'navbar_summary_title': 'Phenotype Summary',
+                    
+                    #Overview
+                    'overview': json.dumps(overview),
+                    'summary_count': overview['count'],
+                    'tabs': tabs,
+                    
+                    #Links
+                    'phenotype_details_link': link_maker.phenotype_details_link(self.backend_url, bioent_id),
+                    'phenotype_resources_link': link_maker.phenotype_resources_link(self.backend_url, bioent_id),
+                    'download_table_link': link_maker.download_table_link(),
+                    'ontology_link': link_maker.phenotype_ontology_link(),
+                    
+                    #Filenames
+                    'phenotype_details_filename': display_name + '_phenotypes',
+                    }
+        return page
+    
+    def go_details(self, bioent_repr):
+        bioent = get_bioent(self.backend_url, bioent_repr)
+        bioent_id = str(bioent['id'])
+        display_name = bioent['display_name']
+        overview = get_json(link_maker.go_overview_link(self.backend_url, bioent_id))
+        tabs = get_json(link_maker.tab_link(self.backend_url, bioent_id))
+        
+        page = {
+                    #Basic info
+                    'display_name': bioent['display_name'],
+                    'link': bioent['link'],
+                    'format_name': bioent['format_name'],
+                    
+                    #Navbar stuff
+                    'navbar_title': 'GO Terms',
+                    'navbar_summary_title': 'Go Summary',
+                    
+                    #Overview
+                    'overview': json.dumps(overview),
+                    'tabs': tabs,
+                    
+                    #Links
+                    'go_details_link': link_maker.go_details_link(self.backend_url, bioent_id),
+                    'download_table_link': link_maker.download_table_link(),
+                    'ontology_link': link_maker.phenotype_ontology_link(),
+                    
+                    #Filenames
+                    'bp_go_details_filename': display_name + '_bp_go',
+                    'mf_go_details_filename': display_name + '_mf_go',
+                    'cc_go_details_filename': display_name + '_cc_go',
+                    }
+        return page
+    
+    def phenotype(self, biocon_repr):
+        biocon = get_phenotype(self.backend_url, biocon_repr)
+        biocon_id = str(biocon['id'])
+        display_name = biocon['display_name']
+                
+        page = {
+                    #Basic info
+                    'display_name': biocon['display_name'],
+                    'link': biocon['link'],
+                    'format_name': biocon['format_name'],
+                    'count': biocon['count'],
+                    'qualifier': biocon['qualifier'],
+                    'observable': biocon['observable'],
+                    'observable_link': link_maker.observable_link(biocon['observable']),
+                    
+                    #Navbar stuff
+                    'navbar_title': '',
+                    'navbar_summary_title': 'Summary',
+                    
+                    #Links
+                    'phenotype_details_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id),
+                    'download_table_link': link_maker.download_table_link(),
+                    'analyze_link': link_maker.analyze_link(),
+                    'ontology_graph_link': link_maker.phenotype_ontology_graph_link(self.backend_url, biocon_id),
+                    
+                    #Filenames
+                    'phenotype_details_filename': display_name + '_genes',
+                    }
+        return page
+    
+    def observable(self, biocon_repr):
+        biocon = get_phenotype(self.backend_url, biocon_repr)
+        biocon_id = str(biocon['id'])
+        display_name = biocon['display_name']
+                
+        page = {
+                    #Basic info
+                    'display_name': biocon['display_name'],
+                    'link': biocon['link'],
+                    'format_name': biocon['format_name'],
+                    'count': biocon['count'],
+                    'child_count': biocon['child_count'],
+                    'description': biocon['description'],
+                    
+                    #Navbar stuff
+                    'navbar_title': '',
+                    'navbar_summary_title': 'Summary',
+                    
+                    #Links
+                    'phenotype_details_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id),
+                    'phenotype_details_all_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id, with_children=True),
+                    'download_table_link': link_maker.download_table_link(),
+                    'analyze_link': link_maker.analyze_link(),
+                    'ontology_graph_link': link_maker.phenotype_ontology_graph_link(self.backend_url, biocon_id),
+                    
+                    #Filenames
+                    'phenotype_details_filename': display_name + '_genes',
+                    }
+        return page
+    
+    def apo_ontology(self):
+        biocon = get_phenotype(self.backend_url, 'apo_ontology')
+        biocon_id = str(biocon['id'])
+        display_name = biocon['display_name']
+                
+        page = {
+                    #Basic info
+                    'display_name': biocon['display_name'],
+                    'link': biocon['link'],
+                    'format_name': biocon['format_name'],
+                    'count': biocon['count'],
+                    'description': biocon['description'],
+                    
+                    #Navbar stuff
+                    'navbar_title': '',
+                    'navbar_summary_title': 'Summary',
+                    
+                    #Links
+                    'ontology_graph_link': link_maker.phenotype_ontology_graph_link(self.backend_url, biocon_id),
+                    'apo_ontology_link': link_maker.apo_ontology_link(self.backend_url),
+                    }
+        return page
+    
+    def go(self, biocon_repr):
+        biocon = get_go(self.backend_url, biocon_repr)
+        biocon_id = str(biocon['id'])
+        display_name = biocon['display_name']
+                
+        page = {
+                    #Basic info
+                    'display_name': biocon['display_name'],
+                    'link': biocon['link'],
+                    'format_name': biocon['format_name'],
+                    'count': biocon['count'],
+                    'child_count': biocon['child_count'],
+                    'description': biocon['description'],
+                    
+                    #Navbar stuff
+                    'navbar_title': '',
+                    'navbar_summary_title': 'Summary',
+                    
+                    #Links
+                    'go_details_link': link_maker.go_details_biocon_link(self.backend_url, biocon_id),
+                    'go_details_all_link': link_maker.go_details_biocon_link(self.backend_url, biocon_id, with_children=True),
+                    'download_table_link': link_maker.download_table_link(),
+                    'analyze_link': link_maker.analyze_link(),
+                    'ontology_graph_link': link_maker.go_ontology_graph_link(self.backend_url, biocon_id),
+                    
+                    #Filenames
+                    'go_details_filename': display_name + '_genes',
+                    }
+        return page
+    
+    def chemical(self, chemical_repr):
+        chemical = get_chemical(self.backend_url, chemical_repr)
+        chemical_id = str(chemical['id'])
+        display_name = chemical['display_name']
+                
+        page = {
+                    #Basic info
+                    'display_name': chemical['display_name'],
+                    'link': chemical['link'],
+                    'format_name': chemical['format_name'],
+                    
+                    #Navbar stuff
+                    'navbar_title': '',
+                    'navbar_summary_title': 'Summary',
+                    
+                    #Links
+                    'chemical_details_link': link_maker.chemical_details_chem_link(self.backend_url, chemical_id),
+                    'download_table_link': link_maker.download_table_link(),
+                    'analyze_link': link_maker.analyze_link(),
+                    'ontology_graph_link': link_maker.chemical_ontology_graph_link(self.backend_url, chemical_id),
+                    
+                    #Filenames
+                    'chemical_details_filename': display_name + '_genes',
+                    }
+        return page
+    
     def home(self):
         if self.heritage_url is None:
             return Response('Temporary.')
@@ -245,5 +451,5 @@ def prepare_sgdfrontend(backend_url, heritage_url, log_directory, **configs):
     config.add_static_view('static', 'sgdfrontend:static')
     config.add_static_view('img-domain', 'sgdfrontend:img-domain')
     config.add_renderer('jsonp', JSONP(param_name='callback'))
-    
+
     return chosen_frontend, config

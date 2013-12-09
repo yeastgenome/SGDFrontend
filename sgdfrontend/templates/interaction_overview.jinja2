@@ -5,6 +5,7 @@
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
 		<h1>Interactors Summary</h1>
+		<p>This page lists all genes/proteins that interact with ACT1. See help for information about <a href="http://www.yeastgenome.org/help/function-help/interactions">interaction data</a>.</p>
 		<p id='summary_message' style='display:none'>0 Genetic and 0 Physical Interactors curated.</p>
 		<div class="panel" id="summary_wrapper">
 			<div id="venn_diagram"></div>
@@ -25,10 +26,17 @@
 	</div>
 </section>
 
+<script>
+	//Set up navbar
+	document.getElementById('navbar_title').innerHTML = '<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}'
+  	add_navbar_element('Interactions', 'interactions');
+  	add_navbar_element('Network Visualization', 'network');
+  	add_navbar_element('Resources', 'resources');
+</script>
+
 <script src="/static/js/local.js"></script>	
 <script src="/static/js/kinetic-v4.3.3.min.js"></script>	
 <script src="/static/js/venn.js"></script>	
-
 <script>
 	//Links
 	var filename = "{{interaction_overview_filename}}";
@@ -44,12 +52,7 @@
   	  			
   	var message_id = "summary_message";
   	var wrapper_id = "summary_wrapper";
-  	
-  	//Set up navbar
-  	add_navbar_element('Interactions', 'interactions');
-  	add_navbar_element('Network Visualization', 'network');
-  	add_navbar_element('Resources', 'resources');
-  			
+  		
   	if(data['num_gen_interactors'] + data['num_phys_interactors'] > 0){
   		var r = data['gen_circle_size'];
 	  	var s = data['phys_circle_size'];
