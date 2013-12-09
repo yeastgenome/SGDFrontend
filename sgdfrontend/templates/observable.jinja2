@@ -34,7 +34,7 @@
 	<div class="page-header">
 		<h1>Ontology</h1>
 		<div class="panel">
-			<div id="cy" name="cy" style="width:100%;height:700px"></div>
+			<div id="cy" style="width:100%;height:700px"></div>
 		</div>
     </div>
 </section>
@@ -60,18 +60,15 @@
 		<table class='table table-striped table-bordered table-condensed' id='evidence_table' width="100%">
 		<thead>
   		<tr>
-  			<th></th>
   			<th>Gene</th>
-  			<th>Gene Format Name</th>
-  			<th>Phenotype</th>
-  			<th>Experiment Type</th>
-  			<th>Mutant Type</th>
-  			<th>Strain</th>
-  			<th>Chemical</th>
-  			<th>Allele</th>
-  			<th>Reporter</th>
-    		<th>Reference</th>
-    		<th>Note</th>
+  				<th>Gene Format Name</th>
+  				<th>Phenotype</th>
+  				<th>Experiment Type</th>
+  				<th>Mutant Information</th>
+  				<th>Strain Background</th>
+  				<th>Chemical</th>
+    			<th>Details</th>
+          		<th>Reference</th>
   		</tr>
   		</thead>
 		</table>
@@ -97,7 +94,7 @@
 
 <script>
 	//Set up navbar
-	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br>Observable'
+	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br>Observable';
 	add_navbar_element('Ontology', 'network');
 	add_navbar_element('Annotations', 'annotations');
 
@@ -107,8 +104,8 @@
 <script>
 	//Template links and filenames
 	var phenotype_details_link = "{{phenotype_details_link}}";
-	var phenotype_details_all_link = "{{phenotype_details_all_link}}"
-	var ontology_graph_link = "{{ontology_graph_link}}";	
+	var phenotype_details_all_link = "{{phenotype_details_all_link}}";
+	var ontology_graph_link = "{{ontology_graph_link}}";
 	var download_table_link = "{{download_table_link}}";
 	var download_table_filename = "{{phenotype_details_filename}}";
 	var analyze_link = "{{analyze_link}}";
@@ -130,12 +127,12 @@
 		'border-color': '#fff',
 		'background-color': "grey",
 		'text-outline-color': '#fff',
-		'color': '#888',
+		'color': '#888'
 	})
 	.selector('edge')
 	.css({
 		'width': 2,
-		'target-arrow-shape': 'triangle',
+		'target-arrow-shape': 'triangle'
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({
@@ -143,7 +140,7 @@
 		'height': 30,
 		'background-color': "#fade71",
 		'text-outline-color': '#fff',
-		'color': '#888',
+		'color': '#888'
 	})
 	.selector("node[sub_type='morphology']")
 	.css(
@@ -172,11 +169,11 @@
 	.selector("node[sub_type='development']")
 	.css(
 		{'background-color': "#BF5B17"
-	})
+	});
 	
 	var layout = {
 				"name": "breadthfirst", 
-				"fit": false,
+				"fit": false
 			};
 		
 	$(document).ready(function() {
@@ -187,9 +184,6 @@
 	  		var table_id = "evidence_table";
 	  		var download_button_id = "evidence_table_download";
 	  		var analyze_button_id = "evidence_table_analyze";
-	  			
-	  		var message_id = "evidence_message";
-	  		var wrapper_id = "evidence_wrapper";
 	  			
 	  		function set_up_table_f(data) {
 	  			set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, 

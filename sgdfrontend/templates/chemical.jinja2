@@ -32,7 +32,7 @@
 	<div class="page-header">
 		<h1>Ontology</h1>
 		<div class="panel">
-			<div id="cy" name="cy" style="width:100%;height:700px"></div>
+			<div id="cy" style="width:100%;height:700px"></div>
 		</div>
     </div>
 </section>
@@ -57,18 +57,15 @@
 			<table class='table table-striped table-bordered table-condensed' id='evidence_table' width="100%">
 			<thead>
   			<tr>
-  				<th></th>
-  				<th>Gene</th>
+                <th>Gene</th>
   				<th>Gene Format Name</th>
   				<th>Phenotype</th>
   				<th>Experiment Type</th>
-  				<th>Mutant Type</th>
-  				<th>Strain</th>
+  				<th>Mutant Information</th>
+  				<th>Strain Background</th>
   				<th>Chemical</th>
-  				<th>Allele</th>
-  				<th>Reporter</th>
-    			<th>Reference</th>
-    			<th>Note</th>
+    			<th>Details</th>
+          		<th>Reference</th>
   			</tr>
   			</thead>
 			</table>
@@ -95,7 +92,7 @@
 
 <script>
 	//Set up navbar
-	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br>Chemical'
+	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br>Chemical';
 	add_navbar_element('Ontology', 'network');
 	add_navbar_element('Annotations', 'annotations');
 	
@@ -126,12 +123,12 @@
 		'border-color': '#fff',
 		'background-color': "#AF8DC3",
 		'text-outline-color': '#fff',
-		'color': '#888',
+		'color': '#888'
 	})
 	.selector('edge')
 	.css({
 		'width': 2,
-		'target-arrow-shape': 'triangle',
+		'target-arrow-shape': 'triangle'
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({
@@ -139,12 +136,12 @@
 		'height': 30,
 		'background-color': "#fade71",
 		'text-outline-color': '#fff',
-		'color': '#888',
+		'color': '#888'
 	})
 	.selector("node[is_child=1][sub_type!='FOCUS']")
 	.css(
 		{'background-color': "#7FBF7B"
-	})
+	});
 	
 	var layout = null;
 	if(bioent_display_name == 'CHEBI Ontology') {
@@ -159,7 +156,7 @@
 					else {
 						return 1;
 					}
-				},
+				}
 			};
 	}
 	else {
@@ -184,8 +181,7 @@
 	  			var wrapper_id = "evidence_wrapper";
 	  			
 	  			if(data.length > 0) {
-	  				document.getElementById()
-	  				set_up_evidence_table(header_id, chemical_header_id, table_id, download_button_id, 
+	  				set_up_evidence_table(header_id, chemical_header_id, table_id, download_button_id,
 	  				download_table_link, download_table_filename, 
 	  				analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, data);
 	  			}
