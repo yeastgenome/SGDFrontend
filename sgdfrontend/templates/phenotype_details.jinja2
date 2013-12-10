@@ -63,7 +63,11 @@
 <section id="resources" data-magellan-destination="resources">
 	<div class="page-header">
 		<h1>Resources</h1>
-		<ul id='resource_list'>
+        <h3>Mutant Strains</h3>
+		<ul id='mutant_resource_list'>
+		</ul>
+        <h3>Phenotype Resources</h3>
+		<ul id='phenotype_resource_list'>
 		</ul>
 	</div>
 	<br>
@@ -117,19 +121,11 @@
     	
     	//Get resources
 	  	$.getJSON(phenotype_resources_link, function(data) {
-	  		var resource_list_id = "resource_list";
-	  		
-	  		var section_id = "resources";
-	  		var section_navbar_id = "navbar_resources";
-	  		
-	  		if(data.length > 0) {
-	  			set_up_resources(resource_list_id, data);
-	  		}
-	  		else {
-	  			document.getElementById(section_id).style.display = "none";
-				document.getElementById(section_navbar_id).style.display = "none";
-	  		}
-	  		
+	  		var mutant_resource_list_id = "mutant_resource_list";
+            var phenotype_resource_list_id = "phenotype_resource_list";
+
+	  		set_up_resources(mutant_resource_list_id, data['Mutant Resources']);
+	  		set_up_resources(phenotype_resource_list_id, data['Phenotype Resources']);
 	  	});
 	});
 </script>
