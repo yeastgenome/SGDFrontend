@@ -38,7 +38,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 		
 		var allele = '';
 		if(evidence['allele'] != null) {
-			allele = '<br>Allele: ' + evidence['allele']['display_name'];
+			allele = '<br><strong>Allele: </strong>' + evidence['allele']['display_name'];
 			var allele_icon = create_note_icon('allele_icon' + i, evidence['allele']['note']);
 			if(allele_icon != '') {
 				allele = allele + ' ' + allele_icon;
@@ -47,7 +47,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 
 		var reporter = '';
 		if(evidence['reporter'] != null) {
-			reporter = 'Reporter: ' + evidence['reporter']['display_name'];
+			reporter = '<strong>Reporter: </strong>' + evidence['reporter']['display_name'];
 			var reporter_icon = create_note_icon('reporter_icon' + i, evidence['reporter']['note']);
 			if(reporter_icon != '') {
 				reporter = reporter + ' ' + reporter_icon;
@@ -56,10 +56,10 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 
         var note = '';
         for (var j=0; j < evidence['condition'].length; j++) {
-            note = note + 'Condition: ' + evidence['condition'][j] + '<br>';
+            note = note + '<strong>Condition: </strong>' + evidence['condition'][j] + '<br>';
         }
         if(evidence['note'] != null) {
-            note = note + 'Details: ' + evidence['note'] + '<br>';
+            note = note + '<strong>Details: </strong>' + evidence['note'] + '<br>';
         }
         note = note + reporter;
 
@@ -67,7 +67,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
 
-  		datatable.push([bioent, evidence['bioentity']['format_name'], biocon, experiment, 'Description: ' + evidence['mutant_type'] + allele, strain, chemical, note, reference]);
+  		datatable.push([bioent, evidence['bioentity']['format_name'], biocon, experiment, '<strong>Description: </strong>' + evidence['mutant_type'] + allele, strain, chemical, note, reference]);
   	}
   	document.getElementById(header_id).innerHTML = data.length;
   	document.getElementById(phenotype_header_id).innerHTML = Object.keys(format_name_to_id).length;
