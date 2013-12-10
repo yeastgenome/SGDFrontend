@@ -158,7 +158,6 @@ class SGDFrontend(FrontendInterface):
                     
                     #Overview
                     'overview': json.dumps(overview),
-                    'summary_count': overview['count'],
                     'tabs': tabs,
                     
                     #Links

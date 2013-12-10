@@ -5,7 +5,9 @@
 		<h1>Phenotypes Summary</h1>
 		<p>This page lists all curated single mutant phenotypes associated with {{display_name}}. <a href="{{ontology_link}}">Browse</a> phenotype terms.</p>
 		<p id='summary_message' style='display:none'>0 Phenotypes curated.</p>
-		<p>{{summary_count}} phenotypes curated for {{display_name}}.</p>
+		<canvas id="myChart" width="450" height="250"></canvas>
+        <div id="legend"></div>
+        <br>
 	</div>
 </section>
 
@@ -14,4 +16,37 @@
 	document.getElementById('navbar_title').innerHTML = '<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}'
   	add_navbar_element('Phenotypes', 'phenotypes');
   	add_navbar_element('Resources', 'resources');
+</script>
+
+<script src="/static/js/chart/chart.js"></script>
+<script>
+    var legend = document.getElementById('legend');
+    var overview_data = {{overview | safe}};
+    var colors = [[127,191,123], [175,141,195], [31,120,180], [251,154,153], [227,26,28], [255,127,0], [191,91,23]];
+    var colors_html = ["#7FBF7B", "#AF8DC3", "#1F78B4", "#FB9A99", "#E31A1C", "#FF7F00", "#BF5B17"];
+
+    var all_data = [];
+    var maximum = 0;
+    for(var j=0; j < overview_data['mutant_types'].length; j++) {
+        var mutant = overview_data['mutant_types'][j];
+        var fill_color = "rgba(" + colors[j][0] + "," + colors[j][1] + "," + colors[j][2] + ",0.5)";
+        all_data.push({
+            fillColor : fill_color,
+            strokeColor : "rgba(" + colors[j][0] + "," + colors[j][1] + "," + colors[j][2] + ",1)",
+            data : overview_data['mutant_to_count'][mutant]
+        });
+        var this_max = Math.max.apply(null, overview_data['mutant_to_count'][mutant]);
+        if(this_max > maximum) {
+            maximum = this_max
+        }
+
+        //Add entry to legend
+        var legend_entry = document.createElement('span');
+        legend_entry.style.backgroundColor = fill_color;
+        legend_entry.style.borderWidth = 'thick';
+        legend_entry.innerHTML = mutant;
+		legend.appendChild(legend_entry);
+    };
+    var ctx = document.getElementById("myChart").getContext("2d");
+    new Chart(ctx).Bar({labels : overview_data['experiment_types'], datasets : all_data},{scaleOverride : true, scaleSteps : maximum, scaleStepWidth : 1, scaleStartValue : 0, barValueSpacing:10});
 </script>
