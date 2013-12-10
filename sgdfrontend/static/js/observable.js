@@ -86,7 +86,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
   	
   	//set up Analyze buttons
   	document.getElementById(download_button_id).onclick = function() {download_table(ev_table, download_link, download_table_filename)};
-  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Genes', ev_table, 2, format_name_to_id)};
+  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Genes', ev_table, 1, format_name_to_id)};
 
 	$('#' + download_button_id).removeAttr('disabled'); 
 	$('#' + analyze_button_id).removeAttr('disabled'); 
