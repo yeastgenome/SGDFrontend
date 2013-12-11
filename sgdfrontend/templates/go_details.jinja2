@@ -8,7 +8,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{display_name}}/{{format_name}}</span> Gene Ontology Annotations  <a href="http://www.yeastgenome.org/help/GO.html" name="top" class="help"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+	<h2><span class="gene_name">{{display_name}}/{{format_name}}</span> Gene Ontology Annotations  <a href="/help/GO.html" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
 </div>
 
 
@@ -26,113 +26,279 @@
 <!-- Includes go_overview.html into template -->
 {% include "templates/go_overview.jinja2" %}
 
-<!-- BP
+<!-- Manually Curated
 ================================================== -->
-<section id="bp_gos" data-magellan-destination="bp_gos">
-	<div class="page-header">
-		<h1>Biological Process Gene Ontology Terms <span class="round secondary label"><span id="bp_evidence_header"></span> <small>entries for</small> <span id="bp_go_header_id"></span> <small>gene ontology terms</small></span></h1>
-		<p id='bp_evidence_message' style='display:none'>No biological process gene ontology terms curated.</p>
-		<div id='bp_evidence_wrapper'>
-			<div class="button-bar">
-				<ul class="button-group radius">
-					<li><a disabled="true" id="bp_evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
-				</ul>
-			</div>
-			
-			<table class='table table-striped table-bordered table-condensed' id='bp_evidence_table' width="100%">
-			<thead>
-  			<tr>
-  				<th></th>
-  				<th>Gene</th>
-  				<th>Gene Format Name</th>
-  				<th>Gene Ontology Term</th>
-  				<th>Qualifier</th>
-   				<th>Method</th>
-  				<th>Evidence</th>
-  				<th>Source</th>
-  				<th>Assigned On</th>
-    			<th>Reference</th>
-  				<th>Relationships</th>
-  			</tr>
-  			</thead>
-			</table>
+<section id="manual" data-magellan-destination="manual">
+    <div class="page-header">
+        <h1>Manually Curated</h1>
+        <p><a href="/help/glossary.html#manual">Manually curated</a> GO annotations reflect our best understanding of the basic <a href="/help/glossary.html#molecfunction">molecular function</a>, <a href="/help/glossary.html#biolprocess">biological process</a>, and <a href="/help/glossary.html#cellcomp">cellular component</a> for this gene product. Manually curated annotations are assigned by SGD curators based on published papers when available, or by curatorial statements if necessary. Curators periodically review all Manually curated GO annotations for accuracy and completeness. The "Last Reviewed on" date indicates when these annotations were last reviewed.</p>
+        <h2>Biological Process <span class="round secondary label"><span id="bp_evidence_header"></span> <small>entries for</small> <span id="bp_go_header_id"></span> <small>gene ontology terms</small></span></h2>
+        <p id='bp_evidence_message' style='display:none'>No manually curated biological process gene ontology terms for this gene.</p>
+        <div id='bp_evidence_wrapper'>
+            <div class="button-bar">
+                <ul class="button-group radius">
+                    <li><a disabled="true" id="bp_evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
+                </ul>
+            </div>
+
+            <table class='table table-striped table-bordered table-condensed' id='bp_evidence_table' width="100%">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Gene</th>
+                    <th>Gene Format Name</th>
+                    <th>Gene Ontology Term</th>
+                    <th>Qualifier</th>
+                    <th>Evidence</th>
+                    <th>Source</th>
+                    <th>Assigned On</th>
+                    <th>Reference</th>
+                    <th>Relationships</th>
+                </tr>
+                </thead>
+            </table>
         </div>
-   </div>
+
+        <h2>Molecular Function <span class="round secondary label"><span id="mf_evidence_header"></span> <small>entries for</small> <span id="mf_go_header_id"></span> <small>gene ontology terms</small></span></h2>
+        <p id='mf_evidence_message' style='display:none'>No manually curated molecular function gene ontology terms for this gene.</p>
+        <div id='mf_evidence_wrapper'>
+            <div class="button-bar">
+                <ul class="button-group radius">
+                    <li><a disabled="true" id="mf_evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
+                </ul>
+            </div>
+
+            <table class='table table-striped table-bordered table-condensed' id='mf_evidence_table' width="100%">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Gene</th>
+                    <th>Gene Format Name</th>
+                    <th>Gene Ontology Term</th>
+                    <th>Qualifier</th>
+                    <th>Evidence</th>
+                    <th>Source</th>
+                    <th>Assigned On</th>
+                    <th>Reference</th>
+                    <th>Relationships</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+
+        <h2>Cellular Component <span class="round secondary label"><span id="cc_evidence_header"></span> <small>entries for</small> <span id="cc_go_header_id"></span> <small>gene ontology terms</small></span></h2>
+        <p id='cc_evidence_message' style='display:none'>No manually curated cellular component gene ontology terms for this gene.</p>
+        <div id='cc_evidence_wrapper'>
+            <div class="button-bar">
+                <ul class="button-group radius">
+                    <li><a disabled="true" id="cc_evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
+                </ul>
+            </div>
+
+            <table class='table table-striped table-bordered table-condensed' id='cc_evidence_table' width="100%">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Gene</th>
+                    <th>Gene Format Name</th>
+                    <th>Gene Ontology Term</th>
+                    <th>Qualifier</th>
+                    <th>Evidence</th>
+                    <th>Source</th>
+                    <th>Assigned On</th>
+                    <th>Reference</th>
+                    <th>Relationships</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
 </section>
 
-<!-- MF
+<!-- High-throughput
 ================================================== -->
-<section id="mf_gos" data-magellan-destination="mf_gos">
-	<div class="page-header">
-		<h1>Molecular Function Gene Ontology Terms <span class="round secondary label"><span id="mf_evidence_header"></span> <small>entries for</small> <span id="mf_go_header_id"></span> <small>gene ontology terms</small></span></h1>
-		<p id='mf_evidence_message' style='display:none'>No molecular function gene ontology terms curated.</p>
-		<div id='mf_evidence_wrapper'>
-			<div class="button-bar">
-				<ul class="button-group radius">
-					<li><a disabled="true" id="mf_evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
-				</ul>
-			</div>
-			
-			<table class='table table-striped table-bordered table-condensed' id='mf_evidence_table' width="100%">
-			<thead>
-  			<tr>
-  				<th></th>
-  				<th>Gene</th>
-  				<th>Gene Format Name</th>
-  				<th>Gene Ontology Term</th>
-  				<th>Qualifier</th>
-   				<th>Method</th>
-  				<th>Evidence</th>
-  				<th>Source</th>
-  				<th>Assigned On</th>
-    			<th>Reference</th>
-  				<th>Relationships</th>
-  			</tr>
-  			</thead>
-			</table>
+<section id="htp" data-magellan-destination="htp">
+    <div class="page-header">
+        <h1>High-throughput</h1>
+        <p>GO annotations from <a href="/help/glossary.html#htp">High-throughput</a> experiments are made based on a variety of large scale high-throughput experiments, including genome-wide experiments. Many of these annotations are made based on GO annotations (or mappings to GO annotations) assigned by the authors, rather than SGD curators. While SGD curators read these publications and often work closely with authors to incorporate the information, each individual annotation may not necessarily be reviewed by a curator. GO Annotations from high-throughput experiments will be assigned only when this type of data is available, and thus may not be assigned in all three aspects of the Gene Ontologies.</p>
+        <h2>Biological Process <span class="round secondary label"><span id="htp_bp_evidence_header"></span> <small>entries for</small> <span id="htp_bp_go_header_id"></span> <small>gene ontology terms</small></span></h2>
+        <p id='htp_bp_evidence_message' style='display:none'>No high-throughput biological process gene ontology terms for this gene.</p>
+        <div id='htp_bp_evidence_wrapper'>
+            <div class="button-bar">
+                <ul class="button-group radius">
+                    <li><a disabled="true" id="htp_bp_evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
+                </ul>
+            </div>
+
+            <table class='table table-striped table-bordered table-condensed' id='htp_bp_evidence_table' width="100%">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Gene</th>
+                    <th>Gene Format Name</th>
+                    <th>Gene Ontology Term</th>
+                    <th>Qualifier</th>
+                    <th>Evidence</th>
+                    <th>Source</th>
+                    <th>Assigned On</th>
+                    <th>Reference</th>
+                    <th>Relationships</th>
+                </tr>
+                </thead>
+            </table>
         </div>
-   </div>
+
+        <h2>Molecular Function <span class="round secondary label"><span id="htp_mf_evidence_header"></span> <small>entries for</small> <span id="htp_mf_go_header_id"></span> <small>gene ontology terms</small></span></h2>
+        <p id='htp_mf_evidence_message' style='display:none'>No high-throughput molecular function gene ontology terms for this gene.</p>
+        <div id='htp_mf_evidence_wrapper'>
+            <div class="button-bar">
+                <ul class="button-group radius">
+                    <li><a disabled="true" id="htp_mf_evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
+                </ul>
+            </div>
+
+            <table class='table table-striped table-bordered table-condensed' id='htp_mf_evidence_table' width="100%">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Gene</th>
+                    <th>Gene Format Name</th>
+                    <th>Gene Ontology Term</th>
+                    <th>Qualifier</th>
+                    <th>Evidence</th>
+                    <th>Source</th>
+                    <th>Assigned On</th>
+                    <th>Reference</th>
+                    <th>Relationships</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+
+        <h2>Cellular Component <span class="round secondary label"><span id="htp_cc_evidence_header"></span> <small>entries for</small> <span id="htp_cc_go_header_id"></span> <small>gene ontology terms</small></span></h2>
+        <p id='htp_cc_evidence_message' style='display:none'>No high-throughput cellular component gene ontology terms for this gene.</p>
+        <div id='htp_cc_evidence_wrapper'>
+            <div class="button-bar">
+                <ul class="button-group radius">
+                    <li><a disabled="true" id="htp_cc_evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
+                </ul>
+            </div>
+
+            <table class='table table-striped table-bordered table-condensed' id='htp_cc_evidence_table' width="100%">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Gene</th>
+                    <th>Gene Format Name</th>
+                    <th>Gene Ontology Term</th>
+                    <th>Qualifier</th>
+                    <th>Evidence</th>
+                    <th>Source</th>
+                    <th>Assigned On</th>
+                    <th>Reference</th>
+                    <th>Relationships</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
 </section>
 
-<!-- CC
+<!-- Computational
 ================================================== -->
-<section id="cc_gos" data-magellan-destination="cc_gos">
-	<div class="page-header">
-		<h1>Cellular Compartment Gene Ontology Terms <span class="round secondary label"><span id="cc_evidence_header"></span> <small>entries for</small> <span id="cc_go_header_id"></span> <small>gene ontology terms</small></span></h1>
-		<p id='cc_evidence_message' style='display:none'>No cellular compartment gene ontology terms curated.</p>
-		<div id='cc_evidence_wrapper'>
-			<div class="button-bar">
-				<ul class="button-group radius">
-					<li><a disabled="true" id="cc_evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
-				</ul>
-			</div>
-			
-			<table class='table table-striped table-bordered table-condensed' id='cc_evidence_table' width="100%">
-			<thead>
-  			<tr>
-  				<th></th>
-  				<th>Gene</th>
-  				<th>Gene Format Name</th>
-  				<th>Gene Ontology Term</th>
-  				<th>Qualifier</th>
-   				<th>Method</th>
-  				<th>Evidence</th>
-  				<th>Source</th>
-  				<th>Assigned On</th>
-    			<th>Reference</th>
-  				<th>Relationships</th>
-  			</tr>
-  			</thead>
-			</table>
+<section id="comp" data-magellan-destination="comp">
+    <div class="page-header">
+        <h1>Computational</h1>
+        <p><a href="/help/glossary.html#computational">Computational</a> GO Annotations are predictions. These annotations are NOT reviewed by a curator. Currently, all computational GO annotations for <em>S. cerevisiae</em> are assigned by an external source (for example, the <a href="http://www.ebi.ac.uk/GOA">Gene Ontology Annotation (GOA)</a> project of the <a href="http://www.ebi.ac.uk/">European Bioinformatics Institute (EBI)</a>).</p>
+        <h2>Biological Process <span class="round secondary label"><span id="comp_bp_evidence_header"></span> <small>entries for</small> <span id="comp_bp_go_header_id"></span> <small>gene ontology terms</small></span></h2>
+        <p id='comp_bp_evidence_message' style='display:none'>No computational biological process gene ontology terms for this gene.</p>
+        <div id='comp_bp_evidence_wrapper'>
+            <div class="button-bar">
+                <ul class="button-group radius">
+                    <li><a disabled="true" id="comp_bp_evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
+                </ul>
+            </div>
+
+            <table class='table table-striped table-bordered table-condensed' id='comp_bp_evidence_table' width="100%">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Gene</th>
+                    <th>Gene Format Name</th>
+                    <th>Gene Ontology Term</th>
+                    <th>Qualifier</th>
+                    <th>Evidence</th>
+                    <th>Source</th>
+                    <th>Assigned On</th>
+                    <th>Reference</th>
+                    <th>Relationships</th>
+                </tr>
+                </thead>
+            </table>
         </div>
-   </div>
-   <br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
+
+        <h2>Molecular Function <span class="round secondary label"><span id="comp_mf_evidence_header"></span> <small>entries for</small> <span id="comp_mf_go_header_id"></span> <small>gene ontology terms</small></span></h2>
+        <p id='comp_mf_evidence_message' style='display:none'>No computational molecular function gene ontology terms for this gene.</p>
+        <div id='comp_mf_evidence_wrapper'>
+            <div class="button-bar">
+                <ul class="button-group radius">
+                    <li><a disabled="true" id="comp_mf_evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
+                </ul>
+            </div>
+
+            <table class='table table-striped table-bordered table-condensed' id='comp_mf_evidence_table' width="100%">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Gene</th>
+                    <th>Gene Format Name</th>
+                    <th>Gene Ontology Term</th>
+                    <th>Qualifier</th>
+                    <th>Evidence</th>
+                    <th>Source</th>
+                    <th>Assigned On</th>
+                    <th>Reference</th>
+                    <th>Relationships</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+
+        <h2>Cellular Component <span class="round secondary label"><span id="comp_cc_evidence_header"></span> <small>entries for</small> <span id="comp_cc_go_header_id"></span> <small>gene ontology terms</small></span></h2>
+        <p id='comp_cc_evidence_message' style='display:none'>No computational cellular component gene ontology terms for this gene.</p>
+        <div id='comp_cc_evidence_wrapper'>
+            <div class="button-bar">
+                <ul class="button-group radius">
+                    <li><a disabled="true" id="comp_cc_evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
+                </ul>
+            </div>
+
+            <table class='table table-striped table-bordered table-condensed' id='comp_cc_evidence_table' width="100%">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Gene</th>
+                    <th>Gene Format Name</th>
+                    <th>Gene Ontology Term</th>
+                    <th>Qualifier</th>
+                    <th>Evidence</th>
+                    <th>Source</th>
+                    <th>Assigned On</th>
+                    <th>Reference</th>
+                    <th>Relationships</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 </section>
+
 
 </div>
 </div>
@@ -150,6 +316,12 @@
 	var bp_download_table_filename = "{{bp_go_details_filename}}";
 	var mf_download_table_filename = "{{mf_go_details_filename}}";
 	var cc_download_table_filename = "{{cc_go_details_filename}}";
+    var htp_bp_download_table_filename = "{{htp_bp_go_details_filename}}";
+	var htp_mf_download_table_filename = "{{htp_mf_go_details_filename}}";
+	var htp_cc_download_table_filename = "{{htp_cc_go_details_filename}}";
+    var comp_bp_download_table_filename = "{{comp_bp_go_details_filename}}";
+	var comp_mf_download_table_filename = "{{comp_mf_go_details_filename}}";
+	var comp_cc_download_table_filename = "{{comp_cc_go_details_filename}}";
 		
 	$(document).ready(function() {
 		//Get evidence data
@@ -158,64 +330,94 @@
   			var bp_go_header_id = "bp_go_header_id";
   			var bp_table_id = "bp_evidence_table";
   			var bp_download_button_id = "bp_evidence_table_download";
-  			
   			var bp_message_id = "bp_evidence_message";
   			var bp_wrapper_id = "bp_evidence_wrapper";
-  			
+
+            var htp_bp_header_id = "htp_bp_evidence_header";
+  			var htp_bp_go_header_id = "htp_bp_go_header_id";
+  			var htp_bp_table_id = "htp_bp_evidence_table";
+  			var htp_bp_download_button_id = "htp_bp_evidence_table_download";
+  			var htp_bp_message_id = "htp_bp_evidence_message";
+  			var htp_bp_wrapper_id = "htp_bp_evidence_wrapper";
+
+            var comp_bp_header_id = "comp_bp_evidence_header";
+  			var comp_bp_go_header_id = "comp_bp_go_header_id";
+  			var comp_bp_table_id = "comp_bp_evidence_table";
+  			var comp_bp_download_button_id = "comp_bp_evidence_table_download";
+  			var comp_bp_message_id = "comp_bp_evidence_message";
+  			var comp_bp_wrapper_id = "comp_bp_evidence_wrapper";
+
   			var bpData = data['biological_process'];
-  			if(bpData.length > 0) {
-  				document.getElementById()
-  				set_up_evidence_table(bp_header_id, bp_go_header_id, bp_table_id, bp_download_button_id, 
-  				download_table_link, bp_download_table_filename, bpData);
-  			}
-  			else {
-  				document.getElementById(bp_message_id).style.display = "block";
-  				document.getElementById(bp_wrapper_id).style.display = "none";
-  				document.getElementById(bp_header_id).innerHTML = 0;
-  				document.getElementById(bp_go_header_id).innerHTML = 0;
-  			}
-  			
+  			set_up_evidence_table(bp_header_id, bp_go_header_id, bp_table_id, bp_message_id, bp_wrapper_id, bp_download_button_id, bp_download_table_filename, 'manually curated',
+                    download_table_link, bpData);
+
+            set_up_evidence_table(htp_bp_header_id, htp_bp_go_header_id, htp_bp_table_id, htp_bp_message_id, htp_bp_wrapper_id, htp_bp_download_button_id, htp_bp_download_table_filename, 'high-throughput',
+                    download_table_link, bpData);
+
+            set_up_evidence_table(comp_bp_header_id, comp_bp_go_header_id, comp_bp_table_id, comp_bp_message_id, comp_bp_wrapper_id, comp_bp_download_button_id, comp_bp_download_table_filename, 'computational',
+  				    download_table_link, bpData);
+
   			var mf_header_id = "mf_evidence_header";
   			var mf_go_header_id = "mf_go_header_id";
   			var mf_table_id = "mf_evidence_table";
   			var mf_download_button_id = "mf_evidence_table_download";
-  			
   			var mf_message_id = "mf_evidence_message";
   			var mf_wrapper_id = "mf_evidence_wrapper";
+
+            var htp_mf_header_id = "htp_mf_evidence_header";
+  			var htp_mf_go_header_id = "htp_mf_go_header_id";
+  			var htp_mf_table_id = "htp_mf_evidence_table";
+  			var htp_mf_download_button_id = "htp_mf_evidence_table_download";
+  			var htp_mf_message_id = "htp_mf_evidence_message";
+  			var htp_mf_wrapper_id = "htp_mf_evidence_wrapper";
+
+            var comp_mf_header_id = "comp_mf_evidence_header";
+  			var comp_mf_go_header_id = "comp_mf_go_header_id";
+  			var comp_mf_table_id = "comp_mf_evidence_table";
+  			var comp_mf_download_button_id = "comp_mf_evidence_table_download";
+  			var comp_mf_message_id = "comp_mf_evidence_message";
+  			var comp_mf_wrapper_id = "comp_mf_evidence_wrapper";
   			
   			var mfData = data['molecular_function'];
-  			if(mfData.length > 0) {
-  				document.getElementById()
-  				set_up_evidence_table(mf_header_id, mf_go_header_id, mf_table_id, mf_download_button_id, 
-  				download_table_link, mf_download_table_filename, mfData);
-  			}
-  			else {
-  				document.getElementById(mf_message_id).style.display = "block";
-  				document.getElementById(mf_wrapper_id).style.display = "none";
-  				document.getElementById(mf_header_id).innerHTML = 0;
-  				document.getElementById(mf_go_header_id).innerHTML = 0;
-  			}
+  			set_up_evidence_table(mf_header_id, mf_go_header_id, mf_table_id, mf_message_id, mf_wrapper_id, mf_download_button_id, mf_download_table_filename, 'manually curated',
+  				    download_table_link, mfData);
+
+            set_up_evidence_table(htp_mf_header_id, htp_mf_go_header_id, htp_mf_table_id, htp_mf_message_id, htp_mf_wrapper_id, htp_mf_download_button_id, htp_mf_download_table_filename, 'high-throughput',
+  				    download_table_link, mfData);
+
+            set_up_evidence_table(comp_mf_header_id, comp_mf_go_header_id, comp_mf_table_id, comp_mf_message_id, comp_mf_wrapper_id, comp_mf_download_button_id, comp_mf_download_table_filename, 'computational',
+  				    download_table_link, mfData);
   			
   			var cc_header_id = "cc_evidence_header";
   			var cc_go_header_id = "cc_go_header_id";
   			var cc_table_id = "cc_evidence_table";
   			var cc_download_button_id = "cc_evidence_table_download";
-  			
   			var cc_message_id = "cc_evidence_message";
   			var cc_wrapper_id = "cc_evidence_wrapper";
+
+            var htp_cc_header_id = "htp_cc_evidence_header";
+  			var htp_cc_go_header_id = "htp_cc_go_header_id";
+  			var htp_cc_table_id = "htp_cc_evidence_table";
+  			var htp_cc_download_button_id = "htp_cc_evidence_table_download";
+  			var htp_cc_message_id = "htp_cc_evidence_message";
+  			var htp_cc_wrapper_id = "htp_cc_evidence_wrapper";
+
+            var comp_cc_header_id = "comp_cc_evidence_header";
+  			var comp_cc_go_header_id = "comp_cc_go_header_id";
+  			var comp_cc_table_id = "comp_cc_evidence_table";
+  			var comp_cc_download_button_id = "comp_cc_evidence_table_download";
+  			var comp_cc_message_id = "comp_cc_evidence_message";
+  			var comp_cc_wrapper_id = "comp_cc_evidence_wrapper";
   			
   			var ccData = data['cellular_component'];
-  			if(ccData.length > 0) {
-  				document.getElementById()
-  				set_up_evidence_table(cc_header_id, cc_go_header_id, cc_table_id, cc_download_button_id, 
-  				download_table_link, cc_download_table_filename, ccData);
-  			}
-  			else {
-  				document.getElementById(cc_message_id).style.display = "block";
-  				document.getElementById(cc_wrapper_id).style.display = "none";
-  				document.getElementById(cc_header_id).innerHTML = 0;
-  				document.getElementById(cc_go_header_id).innerHTML = 0;
-  			}
+  			set_up_evidence_table(cc_header_id, cc_go_header_id, cc_table_id, cc_message_id, cc_wrapper_id, cc_download_button_id, cc_download_table_filename, 'manually curated',
+  				    download_table_link, ccData);
+
+            set_up_evidence_table(htp_cc_header_id, htp_cc_go_header_id, htp_cc_table_id, htp_cc_message_id, htp_cc_wrapper_id, htp_cc_download_button_id, htp_cc_download_table_filename, 'high-throughput',
+  				    download_table_link, ccData);
+
+            set_up_evidence_table(comp_cc_header_id, comp_cc_go_header_id, comp_cc_table_id, comp_cc_message_id, comp_cc_wrapper_id, comp_cc_download_button_id, comp_cc_download_table_filename, 'computational',
+  				    download_table_link, ccData);
   			
   		});
 	});
