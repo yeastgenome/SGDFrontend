@@ -271,8 +271,8 @@ class SGDFrontend(FrontendInterface):
                     }
         return page
     
-    def apo_ontology(self):
-        biocon = get_phenotype(self.backend_url, 'apo_ontology')
+    def ypo_ontology(self):
+        biocon = get_phenotype(self.backend_url, 'ypo_ontology')
         biocon_id = str(biocon['id'])
         display_name = biocon['display_name']
                 
@@ -290,7 +290,7 @@ class SGDFrontend(FrontendInterface):
                     
                     #Links
                     'ontology_graph_link': link_maker.phenotype_ontology_graph_link(self.backend_url, biocon_id),
-                    'apo_ontology_link': link_maker.apo_ontology_link(self.backend_url),
+                    'ontology_link': link_maker.ypo_ontology_link(self.backend_url),
                     }
         return page
     

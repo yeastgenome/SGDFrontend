@@ -41,7 +41,7 @@ def go_ontology_graph_link(backend_start, go):
 
 #Phenotype Links
 def phenotype_ontology_link():
-    return '/ontology/apo_ontology/overview'
+    return '/ontology/ypo/overview'
 def observable_link(observable):
     observable = observable.replace(' ', '_')
     return '/observable/' + observable + '/overview'
@@ -61,7 +61,7 @@ def phenotype_link(backend_start, phenotype):
     return backend_start + '/phenotype/' + phenotype + '/overview'
 def phenotype_ontology_graph_link(backend_start, phenotype):
     return backend_start + '/phenotype/' + phenotype + '/ontology_graph?callback=?'
-def apo_ontology_link(backend_start):
+def ypo_ontology_link(backend_start):
     return backend_start + '/phenotype/ontology?callback=?'
 
 #Protein Links
