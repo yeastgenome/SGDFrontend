@@ -3,7 +3,7 @@
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
 		<h1>Gene Ontology Summary</h1>
-		<p>This page displays GO annotations in different sections according to the <a href='http://www.yeastgenome.org/help/glossary.html#type'>annotation method</a> used to add that annotation to SGD.</p>
+		<p>This page displays GO annotations in different sections according to the <a href='/help/glossary.html#type'>annotation method</a> used to add that annotation to SGD.</p>
 		<p id='summary_message' style='display:none'>0 GO Terms curated.</p>
 		<canvas id="myChart" width="450" height="250"></canvas>
         <div id="legend"></div>
@@ -14,9 +14,9 @@
 <script>
 	//Set up navbar
 	document.getElementById('navbar_title').innerHTML = '<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}'
-  	add_navbar_element('Biological Process', 'bp_go');
-  	add_navbar_element('Molecular Function', 'mf_go');
-  	add_navbar_element('Cellular Compartment', 'cc_go');
+    add_navbar_element('Manual', 'manual');
+    add_navbar_element('High-throughput', 'htp');
+    add_navbar_element('Computational', 'comp');
 </script>
 
 <script src="/static/js/chart/chart.js"></script>

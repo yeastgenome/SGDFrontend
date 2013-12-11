@@ -198,9 +198,15 @@ class SGDFrontend(FrontendInterface):
                     'ontology_link': link_maker.phenotype_ontology_link(),
                     
                     #Filenames
-                    'bp_go_details_filename': display_name + '_bp_go',
-                    'mf_go_details_filename': display_name + '_mf_go',
-                    'cc_go_details_filename': display_name + '_cc_go',
+                    'bp_go_details_filename': display_name + '_man_bp_go',
+                    'mf_go_details_filename': display_name + '_man_mf_go',
+                    'cc_go_details_filename': display_name + '_man_cc_go',
+                    'htp_bp_go_details_filename': display_name + '_htp_bp_go',
+                    'htp_mf_go_details_filename': display_name + '_htp_mf_go',
+                    'htp_cc_go_details_filename': display_name + '_htp_cc_go',
+                    'comp_bp_go_details_filename': display_name + '_bp_go',
+                    'comp_mf_go_details_filename': display_name + '_comp_mf_go',
+                    'comp_cc_go_details_filename': display_name + '_comp_cc_go',
                     }
         return page
     
