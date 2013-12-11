@@ -44,9 +44,6 @@
 <section id="annotations" data-magellan-destination="annotations">
 	<div class="page-header">
 		<h1>Annotations <span class="round secondary label"><span id="evidence_header"></span> <small>entries for</small> <span id="gene_header_id"></span> <small>genes</small></span></h1>
-		<ul {% if child_count == 0 or count == child_count %} style='display:none' {% endif %} class="button-group radius">
-			<li><a disabled="true" id="more_genes_button" class="small button secondary">Add Genes Associated With Child Terms</a></li>
-		</ul>
 		<div class="button-bar">
 			<ul class="button-group radius">
 				<li><a disabled="true" id="evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
@@ -55,6 +52,10 @@
 			<ul class="button-group radius">
 				<li><a disabled="true" id="evidence_table_analyze" class="small button secondary"><i class='icon-briefcase'></i> Analyze</a></li>
 			</ul>
+
+            <ul {% if child_count == 0 or count == child_count %} style='display:none' {% endif %} class="button-group radius">
+			    <li><a disabled="true" id="more_genes_button" class="small button secondary">Add Genes Associated With Child Terms</a></li>
+		    </ul>
 		</div>
 			
 		<table class='table table-striped table-bordered table-condensed' id='evidence_table' width="100%">
