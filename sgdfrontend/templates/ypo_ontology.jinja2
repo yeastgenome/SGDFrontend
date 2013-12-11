@@ -33,7 +33,7 @@
 	<div class="page-header">
 		<h1>Ontology</h1>
 		<div class="panel">
-			<div id="cy" name="cy" style="width:100%;height:700px"></div>
+			<div id="cy" style="width:100%;height:700px"></div>
 		</div>
     </div>
 </section>
@@ -61,12 +61,12 @@
 <script src="/static/js/cytoscape/cytoscape.min.js"></script>	
 <script src="/static/js/cytoscape/arbor.js"></script>
 <script src="/static/js/local.js"></script>
-<script src="/static/js/apo_ontology.js"></script>
+<script src="/static/js/ypo_ontology.js"></script>
 
 
 <script>
 	//Set up navbar
-	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br>'
+	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br>';
 	add_navbar_element('Ontology', 'network');
 	add_navbar_element('Full Ontology', 'ontology');
 	
@@ -74,7 +74,7 @@
 
 <script>
 	//Template links and filenames
-	var apo_ontology_link = "{{apo_ontology_link}}";
+	var ypo_ontology_link = "{{ontology_link}}";
 	var ontology_graph_link = "{{ontology_graph_link}}";	
 	
 	//Graph style
@@ -91,12 +91,12 @@
 		'border-color': '#fff',
 		'background-color': "grey",
 		'text-outline-color': '#fff',
-		'color': '#888',
+		'color': '#888'
 	})
 	.selector('edge')
 	.css({
 		'width': 2,
-		'target-arrow-shape': 'triangle',
+		'target-arrow-shape': 'triangle'
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({
@@ -104,7 +104,7 @@
 		'height': 30,
 		'background-color': "#fade71",
 		'text-outline-color': '#fff',
-		'color': '#888',
+		'color': '#888'
 	})
 	.selector("node[sub_type='morphology']")
 	.css(
@@ -133,7 +133,7 @@
 	.selector("node[sub_type='development']")
 	.css(
 		{'background-color': "#BF5B17"
-	})
+	});
 	
 	var layout = {
 				"name": "arbor", 
@@ -147,10 +147,11 @@
 						return 1;
 					}
 				},
+                "maxSimulationTime": 5000
 			};
 		
 	$(document).ready(function() {
-		$.getJSON(apo_ontology_link, function(data) {
+		$.getJSON(ypo_ontology_link, function(data) {
 			var section_id = 'ontology';
 			var ontology_list_id = 'full_ontology';
 			document.getElementById(section_id).style.display = "block";
@@ -162,14 +163,7 @@
   			var graph_id = "cy";
   			var section_id = "network";
   			var section_navbar_id = "navbar_network";
-  			if(data['nodes'].length > 1) {
-  				var cy = setup_cytoscape_vis(graph_id, layout, graph_style, data);
-  			}
-			else {
-				document.getElementById(section_id).style.display = "none";
-				document.getElementById(section_navbar_id).style.display = "none";
-			}
-			
+  			var cy = setup_cytoscape_vis(graph_id, layout, graph_style, data);
 		});
 	});
 </script>

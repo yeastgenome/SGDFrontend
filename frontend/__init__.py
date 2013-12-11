@@ -133,11 +133,11 @@ def prep_views(chosen_frontend, config):
                                         biocon_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].lower())),
                      renderer=chosen_frontend.get_renderer('observable'))
     
-    config.add_route('apo_ontology',
-                     '/ontology/apo_ontology/overview',
-                     view=lambda request: chosen_frontend.response_wrapper('apo_ontology', request)(
-                                getattr(chosen_frontend, 'apo_ontology')()),
-                     renderer=chosen_frontend.get_renderer('apo_ontology'))
+    config.add_route('ypo_ontology',
+                     '/ontology/ypo/overview',
+                     view=lambda request: chosen_frontend.response_wrapper('ypo_ontology', request)(
+                                getattr(chosen_frontend, 'ypo_ontology')()),
+                     renderer=chosen_frontend.get_renderer('ypo_ontology'))
     
     config.add_route('go',
                      '/go/{identifier}/overview',

@@ -57,7 +57,7 @@ class FrontendInterface:
         return None
     
     @abstractmethod
-    def apo_ontology(self):
+    def ypo_ontology(self):
         return None
     
     @abstractmethod
