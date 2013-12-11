@@ -186,7 +186,7 @@ class SGDFrontend(FrontendInterface):
                     
                     #Navbar stuff
                     'navbar_title': 'GO Terms',
-                    'navbar_summary_title': 'Go Summary',
+                    'navbar_summary_title': 'GO Summary',
                     
                     #Overview
                     'overview': json.dumps(overview),

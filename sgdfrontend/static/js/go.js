@@ -45,8 +45,13 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
   		if(with_entry != null) {
   			evidence_code = evidence_code + ' with ' + with_entry;
   		}
+
+        var qualifier = evidence['qualifier'];
+        if(qualifier == 'involved in' || qualifier == 'enables' || qualifier == 'part of') {
+            qualifier = '';
+        }
   		
-  		datatable.push([icon, bioent, evidence['bioentity']['format_name'], biocon, evidence['qualifier'], evidence['method'], evidence_code, evidence['source'], evidence['date_created'], reference, relationship_entry]);
+  		datatable.push([icon, bioent, evidence['bioentity']['format_name'], biocon, qualifier, evidence['method'], evidence_code, evidence['source'], evidence['date_created'], reference, relationship_entry]);
   	}
   	document.getElementById(header_id).innerHTML = data.length;
   	var total_interactors = Object.keys(format_name_to_id).length;
