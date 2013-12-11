@@ -14,7 +14,7 @@
 
 <script>
 	//Set up navbar
-	document.getElementById('navbar_title').innerHTML = '<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}'
+	document.getElementById('navbar_title').innerHTML = '<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}';
     add_navbar_element('Manual', 'manual');
     add_navbar_element('High-throughput', 'htp');
     add_navbar_element('Computational', 'comp');
@@ -48,7 +48,7 @@
         legend_entry.style.borderWidth = 'thick';
         legend_entry.innerHTML = aspect;
 		legend.appendChild(legend_entry);
-    };
+    }
     var ctx = document.getElementById("myChart").getContext("2d");
     new Chart(ctx).Bar({labels : overview_data['annotation_types'], datasets : all_data},{scaleOverride : true, scaleSteps : maximum, scaleStepWidth : 1, scaleStartValue : 0, barValueSpacing:10});
 </script>

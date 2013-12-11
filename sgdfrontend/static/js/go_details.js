@@ -1,15 +1,15 @@
 function set_up_evidence_table(header_id, go_header_id, table_id, message_id, wrapper_id, download_button_id, download_table_filename, method,
                                download_link, data) {
 	var datatable = [];
-	var format_name_to_id = new Object();
+	var format_name_to_id = {};
 
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
 
         if(evidence['method'] == method) {
-            format_name_to_id[evidence['bioconcept']['display_name']] = evidence['bioconcept']['id']
+            format_name_to_id[evidence['bioconcept']['display_name']] = evidence['bioconcept']['id'];
 
-            var bioent = create_link(evidence['bioentity']['display_name'], evidence['bioentity']['link'])
+            var bioent = create_link(evidence['bioentity']['display_name'], evidence['bioentity']['link']);
             var biocon = create_link(evidence['bioconcept']['display_name'], evidence['bioconcept']['link']);
             var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
 
@@ -62,8 +62,7 @@ function set_up_evidence_table(header_id, go_header_id, table_id, message_id, wr
     }
     else {
         document.getElementById(header_id).innerHTML = datatable.length;
-        var total_interactors = Object.keys(format_name_to_id).length;
-        document.getElementById(go_header_id).innerHTML = total_interactors;
+        document.getElementById(go_header_id).innerHTML = Object.keys(format_name_to_id).length;
 
         var options = {};
         options["bPaginate"] = true;
