@@ -190,6 +190,7 @@ class SGDFrontend(FrontendInterface):
                     
                     #Overview
                     'overview': json.dumps(overview),
+                    'date_last_reviewed': None if 'date_last_reviewed' not in overview else overview['date_last_reviewed'],
                     'tabs': tabs,
                     
                     #Links
