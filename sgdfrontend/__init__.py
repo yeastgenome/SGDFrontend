@@ -323,6 +323,27 @@ class SGDFrontend(FrontendInterface):
                     'go_details_filename': display_name + '_genes',
                     }
         return page
+
+    def go_ontology(self, biocon_repr):
+        biocon = get_go(self.backend_url, biocon_repr)
+        biocon_id = str(biocon['id'])
+
+        page = {
+                    #Basic info
+                    'display_name': biocon['display_name'],
+                    'link': biocon['link'],
+                    'format_name': biocon['format_name'],
+                    'count': biocon['count'],
+                    'description': biocon['description'],
+
+                    #Navbar stuff
+                    'navbar_title': '',
+                    'navbar_summary_title': 'Summary',
+
+                    #Links
+                    'ontology_graph_link': link_maker.go_ontology_graph_link(self.backend_url, biocon_id),
+                    }
+        return page
     
     def chemical(self, chemical_repr):
         chemical = get_chemical(self.backend_url, chemical_repr)
