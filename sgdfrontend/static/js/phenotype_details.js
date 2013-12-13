@@ -67,7 +67,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 		
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
   		
-  		datatable.push([bioent, evidence['bioentity']['format_name'], biocon, experiment, '<strong>Description: </strong>' + evidence['mutant_type'] + allele, strain, chemical, note, reference]);
+  		datatable.push([bioent, evidence['bioentity']['format_name'], biocon, experiment, evidence['mutant_type'] + allele, strain, chemical, note, reference]);
   	}
   	document.getElementById(header_id).innerHTML = data.length;
   	document.getElementById(phenotype_header_id).innerHTML = Object.keys(format_name_to_id).length;
