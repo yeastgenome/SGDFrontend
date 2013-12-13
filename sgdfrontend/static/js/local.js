@@ -192,11 +192,12 @@ function set_up_resources(resource_id, data) {
 		a.href = data[i]['link'];
 		a.target = '_blank';
 		resource_list.appendChild(a);
-		
-		var r = data[i];
-		var span=document.createElement('span');
-		span.innerHTML = ' | ';
-		resource_list.appendChild(span);
+
+        if(i != data.length-1) {
+            var span=document.createElement('span');
+		    span.innerHTML = ' | ';
+		    resource_list.appendChild(span);
+        }
 	}
 }
 
