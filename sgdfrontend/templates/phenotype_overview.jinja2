@@ -5,13 +5,10 @@
 		<h1>Phenotypes Summary</h1>
 		<p>This page lists all curated single mutant phenotypes associated with {{display_name}}. Browse <a href="{{ontology_link}}">yeast phenotype ontology</a>.</p>
         <div class="panel" id="summary_wrapper">
-			<div id="mutant_experiment_chart" style="width: 100%; height: 300px;"></div>
-
-			<div class="button-bar">
-				<ul class="button-group radius">
-					<li><a disabled="true" class="small button secondary radius" id="save" download="{{regulation_overview_filename}}"><i class="icon-picture"></i> PNG</a></li>
-				</ul>
-			</div>
+            <div class="row">
+                <div class="large-6 columns" id="mutant_experiment_chart"></div>
+                <div class="large-6 columns" id="strain_chart" ></div>
+            </div>
 		</div>
         <br>
 	</div>
@@ -55,5 +52,26 @@
 
         var chart = new google.visualization.BarChart(document.getElementById('mutant_experiment_chart'));
         chart.draw(data, options);
+
+        //Strain Chart
+        var strain_all_data = [['Strain', 'Phenotypes']];
+        //Prepare Data
+        for(var j=0; j < overview_data['strain_list'].length; j++) {
+            var strain = overview_data['strain_list'][j];
+            var new_row = [strain, overview_data['strain_to_count'][strain]];
+            strain_all_data.push(new_row);
+        };
+
+        var strain_data = google.visualization.arrayToDataTable(strain_all_data);
+        var strain_options = {
+            'legend': {'position': 'none'},
+            'title': 'Strains',
+            'dataOpacity':.75,
+            'colors': ["#1F78B4"],
+            'backgroundColor': 'transparent'
+        };
+
+        var strain_chart = new google.visualization.ColumnChart(document.getElementById('strain_chart'));
+        strain_chart.draw(strain_data, strain_options);
       }
 </script>
