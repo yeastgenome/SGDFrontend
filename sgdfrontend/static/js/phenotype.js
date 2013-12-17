@@ -25,10 +25,10 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 		var chemical = '';
 		if(evidence['chemical'] != null) {
 			if(evidence['chemical']['amount'] != null) {
-				chemical = evidence['chemical']['amount'] + ' ' + evidence['chemical']['display_name'];
+				chemical = evidence['chemical']['amount'] + ' ' + create_link(evidence['chemical']['display_name'], evidence['chemical']['link']);
 			}
 			else {
-				chemical = evidence['chemical']['display_name'];
+				chemical = create_link(evidence['chemical']['display_name'], evidence['chemical']['link']);
 			}
 			var chemical_icon = create_note_icon('chemical_icon' + i, evidence['chemical']['note']);
 			if(chemical_icon != '') {
