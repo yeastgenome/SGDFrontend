@@ -74,7 +74,8 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
     var options = {};
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[0, "asc"]];
-    options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null];
+    options["bAutoWidth"] = false;
+    options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {'sWidth': '250px'}, null];
 	options["aaData"] = datatable;
   
    	setup_datatable_highlight();				

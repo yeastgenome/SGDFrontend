@@ -77,7 +77,7 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
 	options["aaSorting"] = [[0, "asc"]];
 	options["bDestroy"] = true;
 	options['oLanguage'] = {'sEmptyTable': 'No genes annotated directly to this term.'};
-    options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null];
+    options["aoColumns"] = [null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {'sWidth': '250px'}, null];
 	options["aaData"] = datatable;
   
    	setup_datatable_highlight();				
