@@ -44,8 +44,10 @@
 
         var data = google.visualization.arrayToDataTable(all_data);
         var options = {
-            'legend': {'position': 'bottom'},
-            'title': 'Mutant Information vs. Experiment Type',
+            'legend': {'position': 'bottom', title: 'Experiment Type'},
+            'title': 'Phenotypes by mutant type and experiment type',
+            'vAxis': {title: 'Mutant Type'},
+            'hAxis': {title: '# of Phenotypes'},
             'dataOpacity':.75,
             'colors': ["#7FBF7B", "#AF8DC3", "#1F78B4"],
             'backgroundColor': 'transparent'
@@ -66,7 +68,9 @@
         var strain_data = google.visualization.arrayToDataTable(strain_all_data);
         var strain_options = {
             'legend': {'position': 'none'},
-            'title': 'Strains',
+            'title': 'Phenotypes in different strain backgrounds',
+            'vAxis': {title: '# of Phenotypes'},
+            'hAxis': {title: 'Strain'},
             'dataOpacity':.75,
             'colors': ["#1F78B4"],
             'backgroundColor': 'transparent'
