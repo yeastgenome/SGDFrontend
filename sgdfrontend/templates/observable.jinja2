@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<title>{{display_name}} Phenotypes</title>
+<title>{{ observable.display_name }} Observable</title>
 
 {% extends "templates/global_layout.jinja2" %}
 
@@ -8,7 +8,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{display_name}}</span> Observable</h2>
+	<h2><span class="gene_name">{{ observable.display_name }}</span> Observable</h2>
 </div>
 
 <div class="row">
@@ -23,14 +23,14 @@
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
 		<h1>Summary</h1>
-		<p>{{description}}</p>
+		<p>{{ observable.description }}</p>
 	</div>
 </section>
 
 
 <!-- Network Visualization
 ================================================== -->
-<section id="network" data-magellan-destination="network">
+<section id="ontology" data-magellan-destination="ontology">
 	<div class="page-header">
 		<h1>Ontology</h1>
 		<div class="panel">
@@ -95,25 +95,14 @@
 
 <script>
 	//Set up navbar
-	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br>Observable';
-	add_navbar_element('Ontology', 'network');
+	add_navbar_title('<span class="gene_name">{{ observable.display_name }}</span><br>Observable')
+    add_navbar_element('Summary', 'summary');
+    add_navbar_element('Ontology', 'ontology');
 	add_navbar_element('Annotations', 'annotations');
-
-	
 </script>
 
 <script>
-	//Template links and filenames
-	var phenotype_details_link = "{{phenotype_details_link}}";
-	var phenotype_details_all_link = "{{phenotype_details_all_link}}";
-	var ontology_graph_link = "{{ontology_graph_link}}";
-	var download_table_link = "{{download_table_link}}";
-	var download_table_filename = "{{phenotype_details_filename}}";
-	var analyze_link = "{{analyze_link}}";
-	var bioent_display_name = "{{display_name}}";
-	var bioent_format_name = "Phenotype";
-	var bioent_link = "{{link}}";
-	
+
 	//Graph style
 	var graph_style = cytoscape.stylesheet()
 	.selector('node')
@@ -173,9 +162,21 @@
 	});
 	
 	var layout = {
-				"name": "breadthfirst", 
-				"fit": false
-			};
+		"name": "breadthfirst",
+		"fit": false
+	};
+
+    //Template links and filenames
+	var phenotype_details_link = "{{phenotype_details_link}}";
+	var phenotype_details_all_link = "{{phenotype_details_all_link}}";
+	var ontology_graph_link = "{{ontology_graph_link}}";
+
+    var download_table_link = "{{download_table_link}}";
+	var analyze_table_link = "{{analyze_table_link}}";
+
+	var annotation_download_filename = "{{ observable.display_name }}_annotations";
+    var annotation_analyze_filename = "<a href='{{ observable.link }}' class='gene_name'>{{ observable.display_name }}</a> genes";
+
 		
 	$(document).ready(function() {
 		//Get evidence data
@@ -188,8 +189,8 @@
 	  			
 	  		function set_up_table_f(data) {
 	  			set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, 
-	  				download_table_link, download_table_filename, 
-	  				analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, data);
+	  				download_table_link, annotation_download_filename,
+	  				analyze_button_id, analyze_table_link, annotation_analyze_filename, data);
 	  			//document.getElementById(header_id).innerHTML = 0;
 	  			//document.getElementById(phenotype_header_id).innerHTML = 0;
 	  		}

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<title>{{display_name}} Chemical</title>
+<title>{{ chemical.display_name }} Chemical</title>
 
 {% extends "templates/global_layout.jinja2" %}
 
@@ -8,7 +8,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{display_name}}</span> Chemical</h2>
+	<h2><span class="gene_name">{{ chemical.display_name }}</span> Chemical</h2>
 </div>
 
 <div class="row">
@@ -81,7 +81,8 @@
 
 <script>
 	//Set up navbar
-	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br>Chemical';
+    add_navbar_title('<span class="gene_name">{{ chemical.display_name }}</span><br>Chemical')
+    add_navbar_element('Summary', 'summary');
 	add_navbar_element('Annotations', 'annotations');
 	
 </script>
@@ -89,14 +90,12 @@
 <script>
 	//Template links and filenames
 	var chemical_details_link = "{{chemical_details_link}}";
-	var ontology_graph_link = "{{ontology_graph_link}}";	
 	var download_table_link = "{{download_table_link}}";
-	var download_table_filename = "{{chemical_details_filename}}";
-	var analyze_link = "{{analyze_link}}";
-	var bioent_display_name = "{{display_name}}";
-	var bioent_format_name = "Chemical";
-	var bioent_link = "{{link}}";
-		
+	var analyze_table_link = "{{analyze_table_link}}";
+
+	var annotations_download_filename = "{{ chemical.display_name }}_annotations";
+    var annotations_analyze_filename = "<a href='{{ chemical.link }}' class='gene_name'>{{ chemical.display_name }}</a> Genes";
+
 	$(document).ready(function() {
 		//Get evidence data
 	  	$.getJSON(chemical_details_link, function(data) {
@@ -108,11 +107,12 @@
 	  			
 	  		var message_id = "evidence_message";
 	  		var wrapper_id = "evidence_wrapper";
-	  			
+
+
 	  		if(data.length > 0) {
 	  			set_up_evidence_table(header_id, chemical_header_id, table_id, download_button_id,
-	  			download_table_link, download_table_filename,
-	  			analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, data);
+	  			download_table_link, annotations_download_filename,
+	  			analyze_button_id, analyze_table_link, annotations_analyze_filename, data);
 	  		}
 	  		else {
 	  			document.getElementById(message_id).style.display = "block";

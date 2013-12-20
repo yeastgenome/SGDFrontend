@@ -32,7 +32,8 @@
 	var overview_json = {{overview | safe}};
 	var target_count = overview_json['target_count'];
 	var regulator_count = overview_json['regulator_count']
-	document.getElementById('navbar_title').innerHTML = '<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}'
+    add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Regulation');
+    add_navbar_element('Regulation Summary', 'summary');
   	if(target_count > 0) {
      	add_navbar_element('Domains and Classification', 'domains');
   		add_navbar_element('DNA Binding Site Motifs', 'binding');
@@ -52,7 +53,7 @@
 <script src="/static/js/local.js"></script>
 <script>
 
-	var filename = "{{regulation_overview_filename}}";
+	var filename = "{{ locus.display_name}}_targets_and_regulators";
 	var download_image_link = "{{download_image_link}}";
 	
 	//Side-bar style

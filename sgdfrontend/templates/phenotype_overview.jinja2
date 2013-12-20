@@ -2,7 +2,7 @@
 ================================================== -->
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
-		<h1>Phenotypes Summary</h1>
+		<h1>Phenotype Summary</h1>
 		<p>This page lists all curated single mutant phenotypes associated with {{display_name}}. Browse <a href="{{ontology_link}}">yeast phenotype ontology</a>.</p>
         <div class="panel" id="summary_wrapper">
             <div class="row">
@@ -16,7 +16,8 @@
 
 <script>
 	//Set up navbar
-	document.getElementById('navbar_title').innerHTML = '<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}'
+    add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Phenotypes');
+    add_navbar_element('Phenotype Summary', 'summary');
   	add_navbar_element('Phenotypes', 'phenotypes');
   	add_navbar_element('Resources', 'resources');
 </script>

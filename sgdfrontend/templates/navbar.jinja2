@@ -1,10 +1,7 @@
 <!-- Docs nav
 ================================================== -->
 <nav id="sidebar" class="small-0 large-3 columns">
-	<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky">
-		<li id="nav-title"><h4 id='navbar_title'></h4></li>
-        <li data-magellan-arrival="summary"><a href="#summary">{{navbar_summary_title}}</a></li>
-	</ul>
+	<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky"></ul>
 	
 	<script>
 	var navbar = document.getElementById("side-nav-sticky");
@@ -18,6 +15,19 @@
 	  	li.appendChild(a);
 	  	navbar.appendChild(li);
 	}
+    function add_navbar_title(title) {
+        var li = document.createElement('li');
+		li.setAttribute('id', 'nav-title');
+	  	var h4 = document.createElement('h4');
+        h4.innerHTML = title;
+        li.appendChild(h4);
+        if(navbar.childElementCount > 0){
+            navbar.insertBefore(li, navbar.firstChild);
+        }
+        else {
+            navbar.appendChild(li)
+        }
+    }
 	</script>
 </nav>
 

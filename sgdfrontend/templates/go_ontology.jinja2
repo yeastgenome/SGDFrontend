@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<title>{{display_name}}</title>
+<title>{{ ontology.display_name }}</title>
 
 {% extends "templates/global_layout.jinja2" %}
 
@@ -8,7 +8,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{display_name}}</span></h2>
+	<h2><span class="gene_name">{{ ontology.display_name }}</span> Ontology</h2>
 </div>
 
 <div class="row">
@@ -23,13 +23,13 @@
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
 		<h1>Summary</h1>
-		<p>{{description}}</p>
+		<p>{{ ontology.description }}</p>
 	</div>
 </section>
 
 <!-- Network Visualization
 ================================================== -->
-<section id="network" data-magellan-destination="network">
+<section id="ontology" data-magellan-destination="ontology">
 	<div class="page-header">
 		<h1>Ontology</h1>
 		<div class="panel">
@@ -51,14 +51,13 @@
 
 <script>
 	//Set up navbar
-	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br>';
-	add_navbar_element('Ontology', 'network');
+    add_navbar_title('<span class="gene_name">{{ ontology.display_name }}</span> Ontology<br>');
+    add_navbar_element('Summary', 'summary');
+	add_navbar_element('Ontology', 'ontology');
 
 </script>
 
 <script>
-	//Template links and filenames
-	var ontology_graph_link = "{{ontology_graph_link}}";
 
 	//Graph style
 	var graph_style = cytoscape.stylesheet()
@@ -115,15 +114,18 @@
 					}
 				},
                 "maxSimulationTime": 5000
-			};
+	};
 
-  		//Get graph
-  		$.getJSON(ontology_graph_link, function(data) {
-  			var graph_id = "cy";
-  			var section_id = "network";
-  			var section_navbar_id = "navbar_network";
-  			var cy = setup_cytoscape_vis(graph_id, layout, graph_style, data);
-		});
+    //Template links and filenames
+	var ontology_graph_link = "{{ontology_graph_link}}";
+
+  	//Get graph
+  	$.getJSON(ontology_graph_link, function(data) {
+  		var graph_id = "cy";
+  		var section_id = "network";
+  		var section_navbar_id = "navbar_network";
+  		var cy = setup_cytoscape_vis(graph_id, layout, graph_style, data);
+	});
 
 </script>
         

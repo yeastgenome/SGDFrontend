@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<title>{{display_name}} Phenotypes</title>
+<title>{{ phenotype.display_name }} Phenotype</title>
 
 {% extends "templates/global_layout.jinja2" %}
 
@@ -8,7 +8,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{display_name}}</span> Phenotype</h2>
+	<h2><span class="gene_name">{{ phenotype.display_name }}</span> Phenotype</h2>
 </div>
 
 <div class="row">
@@ -24,9 +24,9 @@
 	<div class="page-header">
 		<h1>Summary</h1>
 		<p>
-			<strong>Observable:</strong> <a href="{{observable_link}}">{{observable}}</a>
+			<strong>Observable:</strong> <a href="{{ observable.link }}">{{ observable.display_name }}</a>
 			<br>
-			<strong>Qualifier:</strong> {{qualifier}}
+			<strong>Qualifier:</strong> {{ phenotype.qualifier }}
 		</p>
 		
 	</div>
@@ -87,22 +87,14 @@
 
 <script>
 	//Set up navbar
-	document.getElementById('navbar_title').innerHTML = '<span class="gene_name">{{display_name}}</span><br> Phenotype'
+    add_navbar_title('<span class="gene_name">{{ phenotype.display_name }}</span><br>Phenotype')
+    add_navbar_element('Summary', 'summary');
 	add_navbar_element('Annotations', 'annotations');
 	
 </script>
 
 <script>
-	//Template links and filenames
-	var phenotype_details_link = "{{phenotype_details_link}}";
-	var ontology_graph_link = "{{ontology_graph_link}}";	
-	var download_table_link = "{{download_table_link}}";
-	var download_table_filename = "{{phenotype_details_filename}}";
-	var analyze_link = "{{analyze_link}}";
-	var bioent_display_name = "{{display_name}}";
-	var bioent_format_name = "Phenotype";
-	var bioent_link = "{{link}}";
-	
+
 	//Graph style
 	var graph_style = cytoscape.stylesheet()
 	.selector('node')
@@ -164,8 +156,17 @@
 	var layout = {
 				"name": "breadthfirst", 
 				"fit": false
-			};
-		
+	};
+
+    //Template links and filenames
+	var phenotype_details_link = "{{phenotype_details_link}}";
+	var ontology_graph_link = "{{ontology_graph_link}}";
+	var download_table_link = "{{download_table_link}}";
+	var analyze_table_link = "{{analyze_table_link}}";
+
+    var annotation_download_filename = "{{ phenotype.display_name }}_annotations";
+    var annotation_analyze_filename = "<a href='{{ phenotype.link }}' class='gene_name'>{{ phenotype.display_name }}</a> genes";
+
 	$(document).ready(function() {
 		//Get evidence data
 	  	$.getJSON(phenotype_details_link, function(data) {
@@ -180,8 +181,8 @@
 	  			
 	  		if(data.length > 0) {
 	  			set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id,
-	  			download_table_link, download_table_filename, 
-	  			analyze_button_id, analyze_link, bioent_display_name, bioent_format_name, bioent_link, data);
+	  			download_table_link, annotation_download_filename,
+	  			analyze_button_id, analyze_table_link, annotation_analyze_filename, data);
 	  		}
 	  		else {
 	  			document.getElementById(message_id).style.display = "block";

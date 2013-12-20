@@ -29,11 +29,11 @@ function set_up_gene_table(table_id, header_id, filter_message_id, download_butt
 	options["aaData"] = datatable;
   				
 	setup_datatable_highlight();	
-	table = $("#" + table_id).dataTable(options);
-	table.fnSearchHighlighting();
+	ev_table = $("#" + table_id).dataTable(options);
+	ev_table.fnSearchHighlighting();
 	
 	filter_message = document.getElementById(filter_message_id);
-	table.bind("filter", function() {
+	ev_table.bind("filter", function() {
 		var search = table.fnSettings().oPreviousSearch.sSearch;
 		if(search != filter_used_for_go) {
 			filter_message.style.display = "block";
@@ -44,7 +44,7 @@ function set_up_gene_table(table_id, header_id, filter_message_id, download_butt
 	})
 
 	document.getElementById(download_button_id).onclick = function() {
-		download_table(table, download_link, download_table_filename)
+		download_table(ev_table, download_link, download_table_filename)
 	};
 	return table;
 }
