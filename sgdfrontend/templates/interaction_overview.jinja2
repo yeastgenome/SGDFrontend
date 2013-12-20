@@ -28,7 +28,8 @@
 
 <script>
 	//Set up navbar
-	document.getElementById('navbar_title').innerHTML = '<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}'
+    add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Interactions');
+    add_navbar_element('Interactors Summary', 'summary');
   	add_navbar_element('Interactions', 'interactions');
   	add_navbar_element('Network Visualization', 'network');
   	add_navbar_element('Resources', 'resources');
@@ -39,7 +40,8 @@
 <script src="/static/js/venn.js"></script>	
 <script>
 	//Links
-	var filename = "{{interaction_overview_filename}}";
+	var summary_download_filename = "{{ locus.display_name}}_interactor_summary";
+    var annotation_analyze_filename = "{{ locus.display_name}}_interactors";
 	var download_image_link = "{{download_image_link}}";
 
 	//Venn style
@@ -64,7 +66,7 @@
 	  	//Colors chosen as colorblind safe from http://colorbrewer2.org/.
 		var stage = draw_venn_diagram(venn_id, r, s, x, A, B, C, venn_style['left_color'], venn_style['right_color']);
 		document.getElementById(save_button_id).onclick = function() {
-			download_image(stage, 450, 300, download_image_link, filename);
+			download_image(stage, 450, 300, download_image_link, summary_download_filename);
 		};
 		document.getElementById(save_button_id).removeAttribute('disabled');
 		

@@ -27,7 +27,7 @@ function set_up_binding_site(list_id, data) {
 }
 
 function set_up_target_table(header_id, regulators_gene_header, table_id, filter_message_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
-	analyze_link, bioent_display_name, bioent_format_name, bioent_link, target_button_id, data) { 
+	analyze_link, analyze_filename, target_button_id, data) {
 
 	var datatable = [];
 	var self_interacts = false;
@@ -100,14 +100,14 @@ function set_up_target_table(header_id, regulators_gene_header, table_id, filter
 		});
   		
   		document.getElementById(download_button_id).onclick = function() {download_table(target_table, download_link, download_table_filename)};
-  		document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Targets', target_table, 3, target_format_name_to_id)};
-		document.getElementById(target_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Targets', target_table, 3, target_format_name_to_id)};
+  		document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, analyze_filename + ' targets', target_table, 3, target_format_name_to_id)};
+		document.getElementById(target_button_id).onclick = function() {analyze_table(analyze_link, analyze_filename + ' targets', target_table, 3, target_format_name_to_id)};
     	document.getElementById(target_button_id).removeAttribute('disabled');
     }
 }
 
 function set_up_regulator_table(header_id, targets_gene_header, table_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
-	analyze_link, bioent_display_name, bioent_format_name, bioent_link, regulator_button_id, data) { 
+	analyze_link, analyze_filename, regulator_button_id, data) {
 	var datatable = [];
 	var self_interacts = false;
 	var regulator_format_name_to_id = Object();
@@ -163,8 +163,8 @@ function set_up_regulator_table(header_id, targets_gene_header, table_id, downlo
   	regulator_table.fnSearchHighlighting();
   		
   	document.getElementById(download_button_id).onclick = function() {download_table(regulator_table, download_link, download_table_filename)};
-  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3, regulator_format_name_to_id)};
-	document.getElementById(regulator_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Regulators', regulator_table, 3, regulator_format_name_to_id)};
+  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, analyze_filename + ' regulators', regulator_table, 3, regulator_format_name_to_id)};
+	document.getElementById(regulator_button_id).onclick = function() {analyze_table(analyze_link, analyze_filename + ' regulators', regulator_table, 3, regulator_format_name_to_id)};
 	document.getElementById(regulator_button_id).removeAttribute('disabled');
 }
 

@@ -32,7 +32,6 @@ function post_json_to_url(link, data, onSuccess, onFailure) {
  	}).fail(onFailure);
 }
 
-
 function download_citations(citation_div, download_link, list_name) {
 	var reference_ids = [];
 	var entries = document.getElementById(citation_div).children;
@@ -51,6 +50,12 @@ function download_table(table, download_link, table_name) {
 	for(var i=0,len=table_headers.length; i<len; i++) {
 		headers.push(table_headers[i].nTh.innerHTML);
 	}
+
+    var search_term = table.fnSettings().oPreviousSearch.sSearch
+	if(search_term != '') {
+		table_name = table_name + '_filtered_by_-' + search_term + '-'
+	}
+
 	post_to_url(download_link, {"display_name":table_name, 'headers': JSON.stringify(headers), 'data': JSON.stringify(data)});
 }
 
@@ -64,7 +69,7 @@ function download_image(stage, width, height, download_link, image_name) {
 	});
 }
 
-function analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, list_type, ev_table, index, format_name_to_id) {
+function analyze_table(analyze_link, list_name, ev_table, index, format_name_to_id) {
 	var bioent_ids = [];
 	
 	var data = ev_table._('tr', {"filter": "applied"});
@@ -74,61 +79,13 @@ function analyze_table(analyze_link, bioent_display_name, bioent_format_name, bi
 	}	
 		
 	var search_term = ev_table.fnSettings().oPreviousSearch.sSearch
-	
+
 	if(search_term != '') {
-		list_type = list_type + ' filtered by "' + search_term + '"'
+		list_name = list_name + ' filtered by -' + search_term + '-'
 	}
 	
-	post_to_url(analyze_link, {'bioent_display_name': bioent_display_name, 'bioent_format_name': bioent_format_name, 'bioent_link': bioent_link,
-										 'list_name': list_type, 'bioent_ids': JSON.stringify(bioent_ids)});
+	post_to_url(analyze_link, {'list_name': list_name, 'bioent_ids': JSON.stringify(bioent_ids)});
 }
-
-function paginate_list(list_id, num_per_page) {
-	var ref_list = document.getElementById(list_id);
-	var num_children = ref_list.children.length;
-
-	if(num_children > num_per_page) {
-		for (var i=0; i < ref_list.children.length; i++) {
-			if(i > num_per_page) {
-				ref_list.children[i].className = "hide";
-			}
-		}
-		
-		//Create pagination buttons
-		var div = document.createElement('div');
-		div.className = "pagination";
-		var ul = document.createElement('ul');
-		
-		var a_prev = document.createElement('a');
-		a_prev.href = '#';
-		a_prev.innerHTML = "Prev";
-		var prev_arrow = document.createElement('li');
-		prev_arrow.appendChild(a_prev);
-		ul.appendChild(prev_arrow);
-		
-		
-		var num_pages = Math.ceil(1.0*num_children/num_per_page);
-		for (var i=0; i < num_pages; i++) {
-			var a = document.createElement('a');
-			a.href = '#';
-			a.innerHTML = i+1;
-			var li = document.createElement("li");
-			li.appendChild(a);
-			ul.appendChild(li)
-		}
-		var a_next = document.createElement('a');
-		a_next.href = '#';
-		a_next.innerHTML = "Next";
-		var next_arrow = document.createElement('li');
-		next_arrow.appendChild(a_next);
-		ul.appendChild(next_arrow);
-		
-		div.appendChild(ul);
-		ref_list.parentElement.appendChild(div);
-	}
-	
-}
-
 
 function set_up_references(references, ref_list_id) {
   	//Set up references

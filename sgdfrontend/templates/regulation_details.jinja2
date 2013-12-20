@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<title>{{display_name}} Regulation</title>
+<title>{{ locus.display_name }} Regulation</title>
 
 {% extends "templates/global_layout.jinja2" %}
 
@@ -8,7 +8,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{display_name}}/{{format_name}}</span> Transcriptional Regulation  <a href="/help/function-help/regulation" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Transcriptional Regulation  <a href="/help/function-help/regulation" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
 </div>
 
 
@@ -61,7 +61,7 @@
 		<div>
 			Click on a motif to view <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a> record.
 			<ul id="binding_motifs"></ul>
-        	<h3>View predicted binding sites in the <a href="http://browse.yeastgenome.org/cgi-bin/gbrowse/scgenome/?name={{display_name}}_*&enable=SGD%20PMW%20motifs">Genome Browser</a></h3>
+        	<h3>View predicted binding sites in the <a href="http://browse.yeastgenome.org/cgi-bin/gbrowse/scgenome/?name={{ locus.display_name }}_*&enable=SGD%20PMW%20motifs">Genome Browser</a></h3>
    	    </div>
    </div>
 </section>
@@ -209,24 +209,6 @@
 <script src="/static/js/regulation_details.js"></script>
 
 <script>
-
-	//Template links and filenames
-	var regulation_overview_link = "{{regulation_overview_link}}";
-	var regulation_details_link = "{{regulation_details_link}}";
-	var protein_domains_link = "{{protein_domain_details_link}}"
-	var binding_site_details_link = "{{binding_site_details_link}}"
-	var regulation_target_enrichment_link = "{{regulation_target_enrichment_link}}"
-	var regulation_graph_link = "{{regulation_graph_link}}";
-	var download_table_link = "{{download_table_link}}";
-	var domains_table_filename = "{{domains_filename}}";
-	var targets_table_filename = "{{targets_filename}}";
-	var enrichment_table_filename = "{{enrichment_filename}}"
-	var regulators_table_filename = "{{regulators_filename}}";
-	var analyze_link = "{{analyze_link}}";
-	var go_enrichment_link = "{{go_enrichment_link}}";
-	var bioent_display_name = "{{display_name}}/{{format_name}}";
-	var bioent_format_name = "{{format_name}}";
-	var bioent_link = "{{link}}";
 	
 	//Graph style
 	var graph_style = cytoscape.stylesheet()
@@ -248,40 +230,59 @@
 		'width': 2,
 		'target-arrow-shape': 'triangle',
 		'line-color': '#848484',
-		'target-arrow-color': '#848484',
+		'target-arrow-color': '#848484'
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({
 		'background-color': "#fade71",
 		'text-outline-color': '#fff',
-		'color': '#888',
+		'color': '#888'
 	})
 	.selector("node[class_type='TARGET'][sub_type!='FOCUS']")
 	.css({
 		'background-color': "#AF8DC3",
 		'text-outline-color': '#888',
-		'color': '#fff',
+		'color': '#fff'
 	})
 	.selector("node[class_type='REGULATOR'][sub_type!='FOCUS']")
 	.css({
 		'background-color': "#7FBF7B",
 		'text-outline-color': '#888',
-		'color': '#fff',
+		'color': '#fff'
 	});
 	
 	var layout = {
-				"name": "arbor", 
-				"liveUpdate": true,
-				"ungrabifyWhileSimulating": true, 
-				"nodeMass":function(data) {
-					if(data.sub_type == 'FOCUS') {
-						return 10;
-					}
-					else {
-						return 1;
-					}
-				},
-			};
+		"name": "arbor",
+		"liveUpdate": true,
+		"ungrabifyWhileSimulating": true,
+		"nodeMass":function(data) {
+			if(data.sub_type == 'FOCUS') {
+				return 10;
+			}
+			else {
+				return 1;
+			}
+		}
+	};
+
+    //Template links and filenames
+	var regulation_overview_link = "{{regulation_overview_link}}";
+	var regulation_details_link = "{{regulation_details_link}}";
+	var protein_domains_link = "{{protein_domain_details_link}}"
+	var binding_site_details_link = "{{binding_site_details_link}}"
+	var regulation_target_enrichment_link = "{{regulation_target_enrichment_link}}"
+	var regulation_graph_link = "{{regulation_graph_link}}";
+
+	var download_table_link = "{{download_table_link}}";
+	var analyze_link = "{{analyze_link}}";
+	var go_enrichment_link = "{{go_enrichment_link}}";
+
+    var domains_table_filename = "{{ locus.display_name }}_domains";
+	var targets_table_filename = "{{ locus.display_name }}_targets";
+	var enrichment_table_filename = "{{ locus.display_name }}_targets_go_process_enrichment"
+	var regulators_table_filename = "{{ locus.display_name }}_regulators";
+    var analyze_filename = "<a href='{{ locus.link }}' class='gene_name'>{{ locus.display_name }}</a>";
+
 	
 	var overview_json = {{overview | safe}};
 	
@@ -342,7 +343,7 @@
 	  				set_up_target_table(targets_header_id, targets_gene_header, targets_table_id, filter_message_id,
 	  				targets_download_button_id, targets_analyze_button_id, 
 	  				download_table_link, targets_table_filename, 
-	  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, target_button_id, target_data);
+	  				analyze_link, analyze_filename, target_button_id, target_data);
 	
 	  				//Set up go enrichment				
 					go_enrichment(go_enrichment_link, target_table, target_format_name_to_id, 3, enrich_header_id, enrich_gene_header_id, enrich_table_id, enrich_recalc_button_id,
@@ -366,7 +367,7 @@
 	  				set_up_regulator_table(regulators_header_id, regulators_gene_header, regulators_table_id,
 	  				regulators_download_button_id, regulators_analyze_button_id, 
 	  				download_table_link, regulators_table_filename, 
-	  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, regulation_button_id, regulator_data);
+	  				analyze_link, analyze_filename, regulation_button_id, regulator_data);
 	  			}
 	  		}
   			

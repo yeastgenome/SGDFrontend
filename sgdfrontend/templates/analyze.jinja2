@@ -6,7 +6,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>Analyze <span class="gene_name">{{display_name}}</span> {{list_type}}</h2>
+	<h2>Analyze {{ list_name_html | safe }}</h2>
 </div>
 
 
@@ -21,7 +21,7 @@
 
 <!-- Analyze
 ================================================== -->
-<section id="summary" data-magellan-destination="summary">
+<section id="tools" data-magellan-destination="tools">
 	<div class="page-header">
 		<h1>Tools</h1>
 		
@@ -134,16 +134,15 @@
 <script src="/static/js/analyze.js"></script>
 <script>
 	//Links and filenames from template
-	var download_link = "{{download_table_link}}";
-	var bioent_display_name = "{{display_name}}";
-	var download_table_filename = bioent_display_name + "_{{list_type}}";
-	var enrichment_table_filename = bioent_display_name + "_{{list_type}}_go_enrichment"
-	var go_enrichment_link = "{{go_enrichment_link}}"
+	var download_link = "{{ download_table_link }}";
+	var go_enrichment_link = "{{ go_enrichment_link }}"
+    var download_table_filename = "{{ list_name }}_genes";
+	var enrichment_table_filename = "{{ list_name }}_go_enrichment";
 	var bioents = {{bioents | safe}};
-	var bioentity_list_link = "{{bioentity_list_link}}"
-	
+
 	$(document).ready(function() {
-		document.getElementById('navbar_title').innerHTML = '{{navbar_pre}}<a href="{{link}}">{{display_name}}</a> {{navbar_title}}'
+        add_navbar_title("Analyze {{ list_name_html | safe }}")
+        add_navbar_element('Tools', 'tools');
 		add_navbar_element('Genes', 'gene_list');
   		add_navbar_element('GO Process Enrichment', 'enrichment');
   		

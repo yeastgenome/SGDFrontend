@@ -2,14 +2,14 @@ var ev_table;
 var cy;
 
 function set_up_evidence_table(header_id, interactors_gene_header_id, table_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
-	analyze_link, bioent_display_name, bioent_format_name, bioent_link, 
-	phys_button_id, gen_button_id, union_button_id, intersect_button_id, data) { 
+	analyze_link, analyze_filename,
+    phys_button_id, gen_button_id, union_button_id, intersect_button_id, data) {
 	var format_name_to_id = new Object();
 	var datatable = [];
 	var self_interacts = false;
 	for (var i=0; i < data.length; i++) {
 		var evidence = data[i];
-		
+
 		format_name_to_id[evidence['bioentity1']['format_name']] = evidence['bioentity1']['id']
 		format_name_to_id[evidence['bioentity2']['format_name']] = evidence['bioentity2']['id']
 		
@@ -42,7 +42,7 @@ function set_up_evidence_table(header_id, interactors_gene_header_id, table_id, 
 		if(evidence['modification'] != null) {
 			modification = evidence['modification'];
   		}
-  		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
+  		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
   		datatable.push([icon, bioent1, evidence['bioentity1']['format_name'], bioent2, evidence['bioentity2']['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']])
   	}
   	document.getElementById(header_id).innerHTML = data.length;
@@ -63,10 +63,10 @@ function set_up_evidence_table(header_id, interactors_gene_header_id, table_id, 
   	ev_table.fnSearchHighlighting();
   	
   	//set up Analyze buttons
-	document.getElementById(phys_button_id).onclick = function() {analyze_phys(analyze_link, bioent_display_name, bioent_format_name, bioent_link)};
-	document.getElementById(gen_button_id).onclick = function() {analyze_gen(analyze_link, bioent_display_name, bioent_format_name, bioent_link)};
-	document.getElementById(intersect_button_id).onclick = function() {analyze_phys_gen_intersect(analyze_link, bioent_display_name, bioent_format_name, bioent_link)};
-	document.getElementById(union_button_id).onclick = function() {analyze_phys_gen_union(analyze_link, bioent_display_name, bioent_format_name, bioent_link)};
+	document.getElementById(phys_button_id).onclick = function() {analyze_phys(analyze_link, analyze_filename + ' physical interactors', format_name_to_id)};
+	document.getElementById(gen_button_id).onclick = function() {analyze_gen(analyze_link, analyze_filename + ' genetic interactors', format_name_to_id)};
+	document.getElementById(intersect_button_id).onclick = function() {analyze_phys_gen_intersect(analyze_link, analyze_filename + ' both genetic and physical interactors', format_name_to_id)};
+	document.getElementById(union_button_id).onclick = function() {analyze_phys_gen_union(analyze_link, analyze_filename + ' interactors', format_name_to_id)};
 	
 	document.getElementById(union_button_id).removeAttribute('disabled');
 	if(r > 0) {
@@ -80,13 +80,13 @@ function set_up_evidence_table(header_id, interactors_gene_header_id, table_id, 
 	}
   	  		
   	document.getElementById(download_button_id).onclick = function() {download_table(ev_table, download_link, download_table_filename)};
-  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, bioent_display_name, bioent_format_name, bioent_link, 'Interactions', ev_table, 4, format_name_to_id)};
+  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, analyze_filename + ' interactors', ev_table, 4, format_name_to_id)};
 
 	document.getElementById(download_button_id).removeAttribute('disabled');
 	document.getElementById(analyze_button_id).removeAttribute('disabled');
 }
   		
-function analyze_phys_gen_intersect(analyze_link, bioent_display_name, bioent_format_name, bioent_link) {
+function analyze_phys_gen_intersect(analyze_link, analyze_filename, format_name_to_id) {
 	var bioent_sys_names = [];
 
 	var gen_bioent_sys_names = {};
@@ -108,11 +108,10 @@ function analyze_phys_gen_intersect(analyze_link, bioent_display_name, bioent_fo
 			}
 		}
 	}	
-	post_to_url(analyze_link, {'bioent_display_name': bioent_display_name, 'bioent_format_name': bioent_format_name, 'bioent_link': bioent_link, 
-										'bioent_ids': JSON.stringify(bioent_sys_names), 'list_name': 'Physical and Genetic Interactors'});
+	post_to_url(analyze_link, {'bioent_ids': JSON.stringify(bioent_sys_names), 'list_name': analyze_filename});
 }
 	
-function analyze_phys(analyze_link, bioent_display_name, bioent_format_name, bioent_link) {
+function analyze_phys(analyze_link, analyze_filename, format_name_to_id) {
 	var bioent_sys_names = [];
 
 	var data = ev_table.fnGetData();
@@ -123,11 +122,10 @@ function analyze_phys(analyze_link, bioent_display_name, bioent_format_name, bio
 			bioent_sys_names.push(format_name_to_id[sys_name]);
 		}
 	}	
-	post_to_url(analyze_link, {'bioent_display_name': bioent_display_name, 'bioent_format_name': bioent_format_name, 'bioent_link': bioent_link, 
-										'bioent_ids': JSON.stringify(bioent_sys_names), 'list_name': 'Physical Interactors'});
+	post_to_url(analyze_link, {'bioent_ids': JSON.stringify(bioent_sys_names), 'list_name': analyze_filename});
 }
 	
-function analyze_gen(analyze_link, bioent_display_name, bioent_format_name, bioent_link) {
+function analyze_gen(analyze_link, analyze_filename, format_name_to_id) {
 	var bioent_sys_names = [];
 
 	var data = ev_table.fnGetData();
@@ -138,11 +136,10 @@ function analyze_gen(analyze_link, bioent_display_name, bioent_format_name, bioe
 			bioent_sys_names.push(format_name_to_id[sys_name]);
 		}
 	}	
-	post_to_url(analyze_link, {'bioent_display_name': bioent_display_name, 'bioent_format_name': bioent_format_name, 'bioent_link': bioent_link,
-										 'bioent_ids': JSON.stringify(bioent_sys_names), 'list_name': 'Genetic Interactors'});
+	post_to_url(analyze_link, {'bioent_ids': JSON.stringify(bioent_sys_names), 'list_name': analyze_filename});
 }
 	
-function analyze_phys_gen_union(analyze_link, bioent_display_name, bioent_format_name, bioent_link) {
+function analyze_phys_gen_union(analyze_link, analyze_filename, format_name_to_id) {
 	var bioent_sys_names = [];
 
 	var data = ev_table.fnGetData();
@@ -150,8 +147,7 @@ function analyze_phys_gen_union(analyze_link, bioent_display_name, bioent_format
 		var sys_name = data[i][4];
 		bioent_sys_names.push(format_name_to_id[sys_name]);
 	}	
-	post_to_url(analyze_link, {'bioent_display_name': bioent_display_name, 'bioent_format_name': bioent_format_name, 'bioent_link': bioent_link,
-										 'bioent_ids': JSON.stringify(bioent_sys_names), 'list_name': 'Interactors'});
+	post_to_url(analyze_link, {'bioent_ids': JSON.stringify(bioent_sys_names), 'list_name': analyze_filename});
 }
 
 function setup_slider(div_id, min, max, current, slide_f) {

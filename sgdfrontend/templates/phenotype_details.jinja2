@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<title>{{display_name}} Phenotypes</title>
+<title>{{ locus.display_name }} Phenotypes</title>
 
 {% extends "templates/global_layout.jinja2" %}
 
@@ -8,7 +8,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{display_name}}/{{format_name}}</span> Phenotypes  <a href="/help/PhenoHelp.html" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Phenotypes  <a href="/help/PhenoHelp.html" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
 </div>
 
 
@@ -92,7 +92,8 @@
 	var phenotype_details_link = "{{phenotype_details_link}}";
 	var phenotype_resources_link = "{{phenotype_resources_link}}";	
 	var download_table_link = "{{download_table_link}}";
-	var download_table_filename = "{{phenotype_details_filename}}";
+
+	var download_table_filename = "{{ locus.display_name}}_phenotypes";
 		
 	$(document).ready(function() {
 		//Get evidence data

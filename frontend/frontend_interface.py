@@ -89,7 +89,7 @@ class FrontendInterface:
         return None
       
     @abstractmethod  
-    def analyze(self, list_name, bioent_display_name, bioent_format_name, bioent_link, bioent_ids):
+    def analyze(self, list_name, bioent_ids):
         return None
        
     @abstractmethod 

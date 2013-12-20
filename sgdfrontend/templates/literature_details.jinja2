@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<title>{{display_name}} Literature</title>
+<title>{{ locus.display_name }} Literature</title>
 
 {% extends "templates/global_layout.jinja2" %}
 
@@ -8,7 +8,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{display_name}}/{{format_name}}</span> Literature</h2>
+	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Literature</h2>
 </div>
 
 
@@ -138,12 +138,7 @@
 <script src="/static/js/literature_details.js"></script>	
 
 <script>
-	//Template links and filenames
-	var literature_details_link = "{{literature_details_link}}";
-	var literature_graph_link = "{{literature_graph_link}}";
-  	var download_link = "{{download_link}}";
-	var bioent_display_name = "{{display_name}}";
-	
+
 	//Graph style
 	var graph_style = cytoscape.stylesheet()
 	.selector('node')
@@ -193,9 +188,13 @@
 					else {
 						return 1;
 					}
-				},
-			};
-	
+				}
+	};
+
+    //Template links and filenames
+	var literature_details_link = "{{literature_details_link}}";
+	var literature_graph_link = "{{literature_graph_link}}";
+  	var download_link = "{{download_link}}";
 	
 	$(document).ready(function() {
 		
@@ -206,7 +205,7 @@
   			var additional_message_id = "additional_message";
   			var additional_wrapper_id = "additional_wrapper";
   			var additional_download_button_id = "export_additional";
-  			var additional_download_filename = bioent_display_name + "_additional_citations"
+  			var additional_download_filename = "{{ locus.display_name }}_additional_citations"
   			var additional_data = data['additional'];
   			set_up_reference_list(additional_header_id, additional_list_id, additional_message_id, additional_wrapper_id, additional_download_button_id, download_link, additional_download_filename, additional_data);
   			
@@ -215,7 +214,7 @@
   			var review_message_id = "review_message";
   			var review_wrapper_id = "review_wrapper";
   			var review_download_button_id = "export_review";
-  			var review_download_filename = bioent_display_name + "_review_citations"
+  			var review_download_filename = "{{ locus.display_name }}_review_citations"
   			var review_data = data['reviews'];
   			set_up_reference_list(review_header_id, review_list_id, review_message_id, review_wrapper_id, review_download_button_id, download_link, review_download_filename, review_data);
   		
@@ -224,7 +223,7 @@
   			var message_id = "go_message";
   			var wrapper_id = "go_wrapper";
   			var download_button_id = "export_go";
-  			var download_filename = bioent_display_name + "_go_citations"
+  			var download_filename = "{{ locus.display_name }}_go_citations"
   			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data['go']);
   			
   			var header_id = "phenotype_header";
@@ -232,7 +231,7 @@
   			var message_id = "phenotype_message";
   			var wrapper_id = "phenotype_wrapper";
   			var download_button_id = "export_phenotype";
-  			var download_filename = bioent_display_name + "_phenotype_citations"
+  			var download_filename = "{{ locus.display_name }}_phenotype_citations"
   			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data['phenotype']);
   			
   			var header_id = "interaction_header";
@@ -240,7 +239,7 @@
   			var message_id = "interaction_message";
   			var wrapper_id = "interaction_wrapper";
   			var download_button_id = "export_interaction";
-  			var download_filename = bioent_display_name + "_interaction_citations"
+  			var download_filename = "{{ locus.display_name }}_interaction_citations"
   			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data['interaction']);
   			
   			var header_id = "regulation_header";
@@ -248,7 +247,7 @@
   			var message_id = "regulation_message";
   			var wrapper_id = "regulation_wrapper";
   			var download_button_id = "export_regulation";
-  			var download_filename = bioent_display_name + "_regulation_citations"
+  			var download_filename = "{{ locus.display_name }}_regulation_citations"
   			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data['regulation']);
   		});
   		

@@ -25,7 +25,8 @@
 
 <script>
 	//Set up navbar
-	document.getElementById('navbar_title').innerHTML = '<a href="{{link}}">{{display_name}}/{{format_name}}</a> {{navbar_title}}'
+    add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Literature');
+    add_navbar_element('Literature Summary', 'summary');
   	add_navbar_element('Primary Literature', 'primary');
   	add_navbar_element('Network Visualization', 'network');
   	add_navbar_element('Additional Literature', 'additional');

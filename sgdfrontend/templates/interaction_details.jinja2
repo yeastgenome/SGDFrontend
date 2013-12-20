@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<title>{{display_name}} Interactions</title>
+<title>{{ locus.display_name }} Interactions</title>
 
 {% extends "templates/global_layout.jinja2" %}
 
@@ -8,7 +8,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{display_name}}/{{format_name}}</span> Physical and Genetic Interactions</h2>
+	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Physical and Genetic Interactions</h2>
 </div>
 
 
@@ -121,16 +121,6 @@
 <script src="/static/js/interaction_details.js"></script>
 
 <script>
-	//Template links and filenames
-	var interaction_details_link = "{{interaction_details_link}}";
-	var interaction_graph_link = "{{interaction_graph_link}}";
-	var interaction_resources_link = "{{interaction_resources_link}}";	
-	var download_table_link = "{{download_table_link}}";
-	var download_table_filename = "{{interaction_details_filename}}";
-	var analyze_link = "{{analyze_link}}";
-	var bioent_display_name = "{{display_name}}/{{format_name}}";
-	var bioent_format_name = "{{format_name}}";
-	var bioent_link = "{{link}}";
 	
 	//Graph style
 	var graph_style = cytoscape.stylesheet()
@@ -149,21 +139,21 @@
 	})
 	.selector('edge')
 	.css({
-		'width': 2,
+		'width': 2
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({
 		'background-color': "#fade71",
 		'text-outline-color': '#fff',
-		'color': '#888',
+		'color': '#888'
 	})
 	.selector("edge[class_type = 'GENETIC']")
 	.css({
-		'line-color': "#7FBF7B",
+		'line-color': "#7FBF7B"
 	})
 	.selector("edge[class_type = 'PHYSICAL']")
 	.css({
-		'line-color': "#AF8DC3",
+		'line-color': "#AF8DC3"
 	});
 	
 	var layout = {
@@ -177,8 +167,18 @@
 					else {
 						return 1;
 					}
-				},
-			};
+				}
+	};
+
+    //Template links and filenames
+	var interaction_details_link = "{{interaction_details_link}}";
+	var interaction_graph_link = "{{interaction_graph_link}}";
+	var interaction_resources_link = "{{interaction_resources_link}}";
+	var download_table_link = "{{download_table_link}}";
+	var analyze_table_link = "{{analyze_table_link}}";
+
+    var annotation_download_filename = "{{ locus.display_name}}_interactions";
+    var annotation_analyze_filename = "<a href='{{ locus.link }}' class='gene_name'>{{ locus.display_name }}</a>";
 	
 	$(document).ready(function() {
 		//Get evidence data
@@ -199,8 +199,8 @@
   			
   			if(data.length > 0) {
   				set_up_evidence_table(header_id, evidence_gene_header_id, table_id, download_button_id, analyze_button_id, 
-  				download_table_link, download_table_filename, 
-  				analyze_link, bioent_display_name, bioent_format_name, bioent_link, 
+  				download_table_link, annotation_download_filename,
+  				analyze_table_link,  annotation_analyze_filename,
   				phys_button_id, gen_button_id, union_button_id, intersect_button_id, data);
   			}
   			else {

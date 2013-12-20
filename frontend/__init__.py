@@ -71,10 +71,7 @@ def prep_views(chosen_frontend, config):
                      view=lambda request: chosen_frontend.response_wrapper('analyze', request)(
                                 getattr(chosen_frontend, 'analyze')(
                                         bioent_ids = None if 'bioent_ids' not in request.POST else json.loads(request.POST['bioent_ids']),
-                                        list_name = None if 'list_name' not in request.POST else request.POST['list_name'],
-                                        bioent_display_name = None if 'bioent_display_name' not in request.POST else request.POST['bioent_display_name'],
-                                        bioent_format_name = None if 'bioent_format_name' not in request.POST else request.POST['bioent_format_name'],
-                                        bioent_link = None if 'bioent_link' not in request.POST else request.POST['bioent_link'])),
+                                        list_name = None if 'list_name' not in request.POST else request.POST['list_name'])),
                      renderer=chosen_frontend.get_renderer('analyze'))
     
     config.add_route('enrichment',
