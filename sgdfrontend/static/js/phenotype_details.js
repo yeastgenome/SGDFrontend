@@ -61,10 +61,10 @@ function set_up_evidence_table(header_id, phenotype_header_id, table_id, downloa
         if(evidence['note'] != null) {
             note = note + '<strong>Details: </strong>' + evidence['note'] + '<br>';
         }
-        note = note + reporter;
-		
+
 		var biocon = create_link(evidence['bioconcept']['display_name'], evidence['bioconcept']['link']);
-		
+		biocon = biocon + '<br>' + reporter;
+
   		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
   		
   		datatable.push([bioent, evidence['bioentity']['format_name'], biocon, experiment, evidence['mutant_type'] + allele, strain, chemical, note, reference]);
