@@ -44,6 +44,7 @@ def phenotype_ontology_link():
     return '/ontology/ypo/overview'
 def observable_link(observable):
     observable = observable.replace(' ', '_')
+    observable = observable.replace('/', '-')
     return '/observable/' + observable + '/overview'
 
 def phenotype_overview_link(backend_start, bioent):
