@@ -20,6 +20,7 @@ tests_require = [
     'behave',
     'behaving',
     'pytest',
+    'selenium'
 ]
 
 setup(name='SGDFrontend',

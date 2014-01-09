@@ -11,8 +11,8 @@ class WebsiteTasks(TaskSet):
         pass
 
     @task
-    def interactions(self):
-        self.client.get("/locus/ABF1/interactions")
+    def interaction(self):
+        self.client.get("/locus/ABF1/interaction")
 
     @task
     def regulation(self):
@@ -22,8 +22,16 @@ class WebsiteTasks(TaskSet):
     def literature(self):
         self.client.get("/locus/ABF1/literature")
 
+    @task
+    def go(self):
+        self.client.get("/locus/ABF1/go")
+
+    @task
+    def phenotype(self):
+        self.client.get("/locus/ABF1/phenotype")
+
 class WebsiteUser(Locust):
     task_set = WebsiteTasks
     min_wait = 5000
     max_wait = 15000
-    host = "http://sgd-ng1.stanford.edu"
+    host = "http://sgd-qa.stanford.edu"
