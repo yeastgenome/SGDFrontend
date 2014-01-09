@@ -63,19 +63,19 @@ function set_up_evidence_table(header_id, interactors_gene_header_id, table_id, 
   	ev_table.fnSearchHighlighting();
   	
   	//set up Analyze buttons
-	document.getElementById(phys_button_id).onclick = function() {analyze_phys(analyze_link, analyze_filename + ' physical interactors', format_name_to_id)};
-	document.getElementById(gen_button_id).onclick = function() {analyze_gen(analyze_link, analyze_filename + ' genetic interactors', format_name_to_id)};
-	document.getElementById(intersect_button_id).onclick = function() {analyze_phys_gen_intersect(analyze_link, analyze_filename + ' both genetic and physical interactors', format_name_to_id)};
 	document.getElementById(union_button_id).onclick = function() {analyze_phys_gen_union(analyze_link, analyze_filename + ' interactors', format_name_to_id)};
 	
 	document.getElementById(union_button_id).removeAttribute('disabled');
-	if(r > 0) {
-		document.getElementById(phys_button_id).removeAttribute('disabled');
-	}	
 	if(s > 0) {
+		document.getElementById(phys_button_id).onclick = function() {analyze_phys(analyze_link, analyze_filename + ' physical interactors', format_name_to_id)};
+		document.getElementById(phys_button_id).removeAttribute('disabled');
+	}
+	if(r > 0) {
+		document.getElementById(gen_button_id).onclick = function() {analyze_gen(analyze_link, analyze_filename + ' genetic interactors', format_name_to_id)};
 		document.getElementById(gen_button_id).removeAttribute('disabled');
 	}
 	if(r > 0 && s > 0 && x != r+s+1) {
+		document.getElementById(intersect_button_id).onclick = function() {analyze_phys_gen_intersect(analyze_link, analyze_filename + ' both genetic and physical interactors', format_name_to_id)};
 		document.getElementById(intersect_button_id).removeAttribute('disabled');
 	}
   	  		

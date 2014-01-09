@@ -1,8 +1,8 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
-import conftest
 import pytest
+from tests.sgdfrontend import conftest
 
 browser = webdriver.Firefox()
 
