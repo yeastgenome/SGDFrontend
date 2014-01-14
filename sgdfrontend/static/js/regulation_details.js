@@ -1,236 +1,240 @@
-var cy;
-var target_table;
-var regulator_table;
-var filter_used_for_go = '';
-var filter_message;
-var target_format_name_to_id = Object();
 
-function update_filter_used() {
-	filter_used_for_go = target_table.fnSettings().oPreviousSearch.sSearch;
-	filter_message.style.display = "none";
+$(document).ready(function() {
+
+    if(target_count > 0) {
+		$.getJSON(protein_domains_link, function(data) {
+            var domain_table = create_domain_table(data);
+            create_download_button("domains_table_download", domain_table, download_table_link, domains_table_filename);
+		});
+    }
+
+    if(target_count > 0) {
+	  	$.getJSON(binding_site_details_link, function(data) {
+	        create_binding_site_table(data);
+	    });
+	}
+
+	$.getJSON(regulation_details_link, function(data) {
+  		if(target_count > 0) {
+  		    var target_table = create_target_table(data["targets"]);
+  		    create_analyze_button("targets_table_analyze", target_table, analyze_link, analyze_filename + ' targets', true);
+  	        create_analyze_button("analyze_targets", target_table, analyze_link, analyze_filename + ' targets', false);
+  	        create_download_button("targets_table_download", target_table, download_table_link, targets_table_filename);
+
+  	        $.getJSON(regulation_target_enrichment_link, function(enrichment_data) {
+                var enrichment_table = create_enrichment_table("enrichment_table", target_table, enrichment_data);
+                create_download_button("enrichment_table_download", enrichment_table, download_table_link, enrichment_table_filename);
+  	        });
+  		}
+
+  		if(regulator_count > 0) {
+  		    var regulator_table = create_regulator_table(data["regulators"]);
+  		    create_analyze_button("regulator_table_analyze", regulator_table, analyze_link, analyze_filename + ' targets', true);
+  	        create_analyze_button("analyze_regulators", regulator_table, analyze_link, analyze_filename + ' targets', false);
+  	        create_download_button("regulators_table_download", regulator_table, download_table_link, regulators_table_filename);
+  		}
+  	});
+
+    $.getJSON(regulation_graph_link, function(data) {
+        var graph = create_cytoscape_vis("cy", layout, graph_style, data);
+        var set_max = create_slider('slider', graph);
+    });
+
+});
+
+function create_domain_table(data) {
+    var domain_table = null;
+    if(data != null && data.length > 0) {
+	    document.getElementById("domains").style.display = "block";
+
+	    var datatable = [];
+
+        for (var i=0; i < data.length; i++) {
+            var evidence = data[i];
+
+            var bioent = create_link(evidence['protein']['display_name'], evidence['protein']['link'], false);
+            var domain;
+            if(evidence['domain']['link'] != null) {
+                domain = create_link(evidence['domain']['display_name'], evidence['domain']['link'], true);
+            }
+            else {
+                domain = evidence['domain']['display_name']
+            }
+
+            var coord_range = evidence['start'] + '-' + evidence['end'];
+
+            var description = evidence['domain_description'];
+            datatable.push([evidence['id'], bioent, coord_range, domain, description, evidence['source']]);
+        }
+
+        document.getElementById("domains_header").innerHTML = data.length;
+
+        set_up_range_sort();
+
+        var options = {};
+        options["bPaginate"] = false;
+        options["aaSorting"] = [[2, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null]
+        options["aaData"] = datatable;
+
+        domain_table = create_table("domains_table", options);
+	}
+	return domain_table;
 }
 
-function set_up_binding_site(list_id, data) {
-	var list = document.getElementById(list_id);
-	for (var i=0; i < data.length; i++) {
-		var evidence = data[i];
-		
-		var a = document.createElement('a');
-		a.href = "http://yetfasco.ccbr.utoronto.ca/MotViewLong.php?PME_sys_qf2=" + evidence['motif_id']
-		a.target = "_blank";
-		var img = document.createElement('img');
-		img.src = evidence['img_url'];
-		img.className = "yetfasco";
-		a.appendChild(img);
-		list.appendChild(a);
+function create_binding_site_table(data) {
+    if(data.length > 0) {
+        document.getElementById("binding").style.display = "block";
+	  	var list = document.getElementById("binding_motifs");
+	    for (var i=0; i < data.length; i++) {
+		    var evidence = data[i];
+
+		    var a = document.createElement('a');
+		    a.href = "http://yetfasco.ccbr.utoronto.ca/MotViewLong.php?PME_sys_qf2=" + evidence['motif_id']
+		    a.target = "_blank";
+		    var img = document.createElement('img');
+		    img.src = evidence['img_url'];
+		    img.className = "yetfasco";
+		    a.appendChild(img);
+		    list.appendChild(a);
+	    }
+	}
+	else {
+	  	document.getElementById("navbar_binding").style.display = "none";
+		document.getElementById("navbar_binding").removeAttribute('data-magellan-arrival')
 	}
 }
 
-function set_up_target_table(header_id, regulators_gene_header, table_id, filter_message_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
-	analyze_link, analyze_filename, target_button_id, data) {
+function create_target_table(data) {
+    var target_table = null;
 
-	var datatable = [];
-	var self_interacts = false;
-	for (var i=0; i < data.length; i++) {
-		var evidence = data[i];
-  			
-		var bioent1 = create_link(evidence['bioentity1']['display_name'], evidence['bioentity1']['link'])
-		var bioent2 = create_link(evidence['bioentity2']['display_name'], evidence['bioentity2']['link'])
-		
-		target_format_name_to_id[evidence['bioentity1']['format_name']] = evidence['bioentity1']['id']
-		target_format_name_to_id[evidence['bioentity2']['format_name']] = evidence['bioentity2']['id']
-		
-		if(evidence['bioentity1']['id'] == evidence['bioentity2']['id']) {
-			self_interacts = true;
-		}
-			
-		var experiment = '';
-		if(evidence['experiment'] != null) {
-			//experiment = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);
-			experiment = evidence['experiment']['display_name'];
-		}
-		var strain = '';
-		if(evidence['strain'] != null) {
-			//strain = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
-			strain = evidence['strain']['display_name'];
-		}
-		var conditions = '';
-		if(evidence['conditions'].length> 0) {
-			conditions = evidence['conditions'][0];
-		}
-		var reference = '';
-		if(evidence['reference'] != null) {
-			reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
-		}
-  		datatable.push([bioent1, evidence['bioentity1']['format_name'], bioent2, evidence['bioentity2']['format_name'], experiment, conditions, strain, evidence['source'], reference])
+	if(data.length > 0) {
+	    document.getElementById("targets").style.display = "block";
+	  	var datatable = [];
+	  	var targets = {};
+	    for (var i=0; i < data.length; i++) {
+		    var evidence = data[i];
+		    var bioent1 = create_link(evidence['bioentity1']['display_name'], evidence['bioentity1']['link'])
+		    var bioent2 = create_link(evidence['bioentity2']['display_name'], evidence['bioentity2']['link'])
+
+		    targets[evidence['bioentity2']['id']] = true;
+
+		    var experiment = '';
+		    if(evidence['experiment'] != null) {
+			    experiment = evidence['experiment']['display_name'];
+		    }
+		    var strain = '';
+		    if(evidence['strain'] != null) {
+			    strain = evidence['strain']['display_name'];
+		    }
+		    var conditions = '';
+		    if(evidence['conditions'].length> 0) {
+			    conditions = evidence['conditions'][0];
+		    }
+		    var reference = '';
+		    if(evidence['reference'] != null) {
+			    reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
+		    }
+  		    datatable.push([evidence['id'], evidence['bioentity2']['id'], bioent1, evidence['bioentity1']['format_name'], bioent2, evidence['bioentity2']['format_name'], experiment, conditions, strain, evidence['source'], reference])
+  	    }
+
+  	    document.getElementById("targets_header").innerHTML = data.length;
+  	    document.getElementById("targets_gene_header").innerHTML = Object.keys(targets).length;
+
+  	    var options = {};
+		options["bPaginate"] = true;
+		options["aaSorting"] = [[4, "asc"]];
+		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
+		options["aaData"] = datatable;
+
+		target_table = create_table("targets_table", options);
   	}
-  	  	
-  	document.getElementById(header_id).innerHTML = data.length;
-  	document.getElementById(header_id).innerHTML = data.length;
-  	var total_interactors = Object.keys(target_format_name_to_id).length;
-  	if(!self_interacts){
-  		total_interactors = total_interactors - 1;
-  	}
-  	document.getElementById(regulators_gene_header).innerHTML = total_interactors;
-  	
-  	if (data.length == 0) {
-  		document.getElementById(wrapper_id).style.display = "none";
-  		document.getElementById(message_id).style.display = "block";
-  	}
-  	else {
-    	var options = {};
+    return target_table;
+}
+
+function create_regulator_table(data) {
+    var regulator_table = null;
+
+	if(data.length > 0) {
+	    document.getElementById("regulators").style.display = "block";
+	  	var datatable = [];
+	  	var regulators = {};
+	    for (var i=0; i < data.length; i++) {
+		    var evidence = data[i];
+		    var bioent1 = create_link(evidence['bioentity1']['display_name'], evidence['bioentity1']['link'])
+		    var bioent2 = create_link(evidence['bioentity2']['display_name'], evidence['bioentity2']['link'])
+
+		    regulators[evidence['bioentity1']['id']] = true;
+
+		    var experiment = '';
+		    if(evidence['experiment'] != null) {
+			    experiment = evidence['experiment']['display_name'];
+		    }
+		    var strain = '';
+		    if(evidence['strain'] != null) {
+			    strain = evidence['strain']['display_name'];
+		    }
+		    var conditions = '';
+		    if(evidence['conditions'].length> 0) {
+			    conditions = evidence['conditions'][0];
+		    }
+		    var reference = '';
+		    if(evidence['reference'] != null) {
+			    reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
+		    }
+  		    datatable.push([evidence['id'], evidence['bioentity1']['id'], bioent1, evidence['bioentity1']['format_name'], bioent2, evidence['bioentity2']['format_name'], experiment, conditions, strain, evidence['source'], reference])
+  	    }
+
+  	    document.getElementById("regulators_header").innerHTML = data.length;
+  	    document.getElementById("regulators_gene_header").innerHTML = Object.keys(regulators).length;
+
+  	    var options = {};
 		options["bPaginate"] = true;
 		options["aaSorting"] = [[2, "asc"]];
-		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]		
+		options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
 		options["aaData"] = datatable;
-  				
-  		setup_datatable_highlight();
-  		target_table = $('#' + table_id).dataTable(options);
-  		target_table.fnSearchHighlighting();
-  		
-  		filter_message = document.getElementById(filter_message_id);
-		target_table.bind("filter", function() {
-			var search = target_table.fnSettings().oPreviousSearch.sSearch;
-			if(search != filter_used_for_go) {
-				filter_message.style.display = "block";
-			}
-			else {
-				filter_message.style.display = "none";
-			}
-		});
-  		
-  		document.getElementById(download_button_id).onclick = function() {download_table(target_table, download_link, download_table_filename)};
-  		document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, analyze_filename + ' targets', target_table, 3, target_format_name_to_id)};
-		document.getElementById(target_button_id).onclick = function() {analyze_table(analyze_link, analyze_filename + ' targets', target_table, 3, target_format_name_to_id)};
-    	document.getElementById(target_button_id).removeAttribute('disabled');
-    }
-}
 
-function set_up_regulator_table(header_id, targets_gene_header, table_id, download_button_id, analyze_button_id, download_link, download_table_filename, 
-	analyze_link, analyze_filename, regulator_button_id, data) {
-	var datatable = [];
-	var self_interacts = false;
-	var regulator_format_name_to_id = Object();
-	for (var i=0; i < data.length; i++) {
-		var evidence = data[i];
-  			
-		var bioent1 = create_link(evidence['bioentity1']['display_name'], evidence['bioentity1']['link'])
-		var bioent2 = create_link(evidence['bioentity2']['display_name'], evidence['bioentity2']['link'])
-		
-		regulator_format_name_to_id[evidence['bioentity1']['format_name']] = evidence['bioentity1']['id']
-		regulator_format_name_to_id[evidence['bioentity2']['format_name']] = evidence['bioentity2']['id']
-		
-		if(evidence['bioentity1']['id'] == evidence['bioentity2']['id']) {
-			self_interacts = true;
-		}
-			
-		var experiment = '';
-		if(evidence['experiment'] != null) {
-			//experiment = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);
-			experiment = evidence['experiment']['display_name'];
-		}
-		var strain = '';
-		if(evidence['strain'] != null) {
-			//strain = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
-			strain = evidence['strain']['display_name'];
-		}
-  		var reference = '';
-		if(evidence['reference'] != null) {
-			reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
-		}
-  		var conditions = '';
-		if(evidence['conditions'].length> 0) {
-			conditions = evidence['conditions'][0];
-		}
-  		datatable.push([bioent2, evidence['bioentity2']['format_name'], bioent1, evidence['bioentity1']['format_name'], experiment, conditions, strain, evidence['source'], reference])
+		regulator_table = create_table("regulators_table", options);
   	}
-  	
-  	document.getElementById(header_id).innerHTML = data.length;
-  	var total_interactors = Object.keys(regulator_format_name_to_id).length;
-  	if(!self_interacts){
-  		total_interactors = total_interactors - 1;
-  	}
-  	document.getElementById(targets_gene_header).innerHTML = total_interactors;
-  	
-  	var options = {};
-	options["bPaginate"] = true;
-	options["aaSorting"] = [[2, "asc"]];
-	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]		
-	options["aaData"] = datatable;
-  				
-  	setup_datatable_highlight();
-  	regulator_table = $('#' + table_id).dataTable(options);
-  	regulator_table.fnSearchHighlighting();
-  		
-  	document.getElementById(download_button_id).onclick = function() {download_table(regulator_table, download_link, download_table_filename)};
-  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, analyze_filename + ' regulators', regulator_table, 3, regulator_format_name_to_id)};
-	document.getElementById(regulator_button_id).onclick = function() {analyze_table(analyze_link, analyze_filename + ' regulators', regulator_table, 3, regulator_format_name_to_id)};
-	document.getElementById(regulator_button_id).removeAttribute('disabled');
+    return regulator_table;
 }
 
-function set_up_range_sort() {
-	jQuery.fn.dataTableExt.oSort['range-desc'] = function(x,y) {
-		x = x.split("-");
-		y = y.split("-");
-		
-		x0 = parseInt(x[0]);
-		y0 = parseInt(y[0]);
-		
-		return (x0 > y0) ? -1 : ((x0 < y0) ? 1 : 0);
-		
-	};
-		
-	jQuery.fn.dataTableExt.oSort['range-asc'] = function(x,y) {
-		
-		x = x.split("-");
-		y = y.split("-");
-		
-		x0 = parseInt(x[0]);
-		y0 = parseInt(y[0]);
-		
-		return (x0 < y0) ? -1 : ((x0 > y0) ? 1 : 0);
-		
-	};
+function create_regulation_graph(data) {
+    var graph_id = "cy";
+  			var all_slider_id = "all_slider";
+  			var target_slider_id = "targets_slider";
+  			var regulator_slider_id = "regulators_slider";
+
+  			var all_radio_id = "all_radio";
+  			var target_radio_id = "targets_radio";
+  			var regulator_radio_id = "regulators_radio";
+
+  			var section_id = "network";
+  			var section_navbar_id = "navbar_network";
+
+  			if(data["nodes"].length > 1) {
+  				cy = setup_regulation_cytoscape_vis(graph_id,
+				all_slider_id, target_slider_id, regulator_slider_id,
+				all_radio_id, target_radio_id, regulator_radio_id,
+				layout, graph_style, data);
+  			}
+  			else {
+  				document.getElementById(section_id).style.display = "none";
+				document.getElementById(section_navbar_id).style.display = "none";
+				document.getElementById(section_navbar_id).removeAttribute('data-magellan-arrival')
+
+				//Hack because footer overlaps - need to fix this.
+				next_section = document.getElementById("regulators");
+				next_section.appendChild(document.createElement("br"))
+				next_section.appendChild(document.createElement("br"))
+				next_section.appendChild(document.createElement("br"))
+				next_section.appendChild(document.createElement("br"))
+				next_section.appendChild(document.createElement("br"))
+				next_section.appendChild(document.createElement("br"))
+  			}
 }
 
-function set_up_domains_table(header_id, table_id, download_button_id, download_link, download_table_filename, data) { 
-	var datatable = [];
 
-	for (var i=0; i < data.length; i++) {
-		var evidence = data[i];
-  			
-		var bioent = create_link(evidence['protein']['display_name'], evidence['protein']['link'], false);
-		var domain;
-		if(evidence['domain']['link'] != null) {
-			domain = create_link(evidence['domain']['display_name'], evidence['domain']['link'], true);
-		}
-		else {
-			domain = evidence['domain']['display_name']
-		}
-			
-		var coord_range = evidence['start'] + '-' + evidence['end'];
-			
-		var description = evidence['domain_description'];
-  		datatable.push([bioent, coord_range, domain, description, evidence['source']]);
-  	}
-  	
-  	document.getElementById(header_id).innerHTML = data.length;
-  	
-  	set_up_range_sort();
-  	
-  	var options = {};
-	options["bPaginate"] = false;
-	options["aaSorting"] = [[1, "asc"]];
-	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null]		
-	options["aaData"] = datatable;
-  				
-  	setup_datatable_highlight();
-  	var domain_table = $('#' + table_id).dataTable(options);
-  	domain_table.fnSearchHighlighting();
-  		
-  	document.getElementById(download_button_id).onclick = function() {download_table(domain_table, download_link, download_table_filename)};
-  
-}
 
 function setup_slider(div_id, min, max, current, slide_f) {
 	if(max==min) {
@@ -280,10 +284,67 @@ function setup_slider(div_id, min, max, current, slide_f) {
 	}
 }
 
+//Graph style
+var graph_style = cytoscape.stylesheet()
+	.selector('node')
+	.css({
+		'content': 'data(name)',
+		'font-family': 'helvetica',
+		'font-size': 14,
+		'text-outline-width': 3,
+		'text-outline-color': '#888',
+		'text-valign': 'center',
+		'color': '#fff',
+		'width': 30,
+		'height': 30,
+		'border-color': '#fff'
+	})
+	.selector('edge')
+	.css({
+		'width': 2,
+		'target-arrow-shape': 'triangle',
+		'line-color': '#848484',
+		'target-arrow-color': '#848484'
+	})
+	.selector("node[sub_type='FOCUS']")
+	.css({
+		'background-color': "#fade71",
+		'text-outline-color': '#fff',
+		'color': '#888'
+	})
+	.selector("node[class_type='TARGET'][sub_type!='FOCUS']")
+	.css({
+		'background-color': "#AF8DC3",
+		'text-outline-color': '#888',
+		'color': '#fff'
+	})
+	.selector("node[class_type='REGULATOR'][sub_type!='FOCUS']")
+	.css({
+		'background-color': "#7FBF7B",
+		'text-outline-color': '#888',
+		'color': '#fff'
+	});
+
+	var layout = {
+		"name": "arbor",
+		"liveUpdate": true,
+		"ungrabifyWhileSimulating": true,
+		"nodeMass":function(data) {
+			if(data.sub_type == 'FOCUS') {
+				return 10;
+			}
+			else {
+				return 1;
+			}
+		}
+	};
+
 var evidence_max;
 var evidence_min;
 var target_max;
 var regulator_max;
+
+
 
 function setup_regulation_cytoscape_vis(graph_id, 
 				all_slider_id, target_slider_id, regulator_slider_id,  
