@@ -27,8 +27,14 @@ def get_phenotype(backend_url, biocon_repr):
 def get_chemical(backend_url, chem_repr):
     chem = get_json(link_maker.chemical_link(backend_url, chem_repr))
     if chem is None:
-        raise Exception('Bioconcept not found.')
-    return chem   
+        raise Exception('Chemical not found.')
+    return chem
+
+def get_reference(backend_url, ref_repr):
+    ref = get_json(link_maker.reference_link(backend_url, ref_repr))
+    if ref is None:
+        raise Exception('Reference not found.')
+    return ref
 
 def get_go(backend_url, biocon_repr):
     biocon = get_json(link_maker.go_link(backend_url, biocon_repr))
