@@ -37,7 +37,7 @@ $(document).ready(function() {
 
     $.getJSON(regulation_graph_link, function(data) {
         var graph = create_cytoscape_vis("cy", layout, graph_style, data);
-        var multimax_slider = create_multimax_slider('slider', graph, data['min_evidence_cutoff'], data['max_evidence_cutoff'], slider_filter);
+        var multimax_slider = create_slider('slider', graph, data['min_evidence_cutoff'], data['max_evidence_cutoff'], slider_filter);
         create_discrete_filter('all_radio', graph, multimax_slider, all_filter, data['max_evidence_cutoff']);
         create_discrete_filter('targets_radio', graph, multimax_slider, target_filter, data['max_target_cutoff']);
         create_discrete_filter('regulators_radio', graph, multimax_slider, regulator_filter, data['max_regulator_cutoff']);
