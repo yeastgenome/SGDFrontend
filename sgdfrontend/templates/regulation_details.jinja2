@@ -115,7 +115,7 @@
 					<li><a id="enrichment_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
 				</ul>
 				<ul class="button-group radius">
-					<li><a id="enrichment_recalc" class="small button secondary" style="display:none">Recalculate With New Filter</a></li>
+					<li><a id="enrichment_table_recalculate" class="small button secondary" style="display:none">Recalculate With New Filter</a></li>
 				</ul>
 			</div>
 			
@@ -189,7 +189,7 @@
 			<div id="cy" name="cy" style="width:100%;height:700px"></div>
 			<br>
 			<h5>Filter Regulation Relationships by # of Experiments:</h5>
-			<div id="slider"></div>
+			<div id="slider" class="noUiSlider" style="width:100%"></div>
 			<br>
 		</div><!-- .panel -->
     </div>
@@ -212,17 +212,19 @@
 <script src="/static/js/cytoscape/arbor.js"></script>	
 <script src="/static/js/cytoscape.js"></script>
 
+<script src="/static/js/evidence.js"></script>
+
 <script>
     //Template links and filenames
-	var regulation_details_link = "{{regulation_details_link}}";
-	var protein_domains_link = "{{protein_domain_details_link}}"
-	var binding_site_details_link = "{{binding_site_details_link}}"
-	var regulation_target_enrichment_link = "{{regulation_target_enrichment_link}}"
-	var regulation_graph_link = "{{regulation_graph_link}}";
+	var regulation_details_link = "{{ regulation_details_link }}";
+	var protein_domains_link = "{{ protein_domain_details_link }}"
+	var binding_site_details_link = "{{ binding_site_details_link }}"
+	var regulation_target_enrichment_link = "{{ regulation_target_enrichment_link }}"
+	var regulation_graph_link = "{{ regulation_graph_link }}";
 
-	var download_table_link = "{{download_table_link}}";
-	var analyze_link = "{{analyze_link}}";
-	var go_enrichment_link = "{{go_enrichment_link}}";
+	var download_table_link = "{{ download_table_link }}";
+	var analyze_link = "{{ analyze_link }}";
+	var go_enrichment_link = "{{ go_enrichment_link }}";
 
     var domains_table_filename = "{{ locus.display_name }}_domains";
 	var targets_table_filename = "{{ locus.display_name }}_targets";
@@ -230,7 +232,6 @@
 	var regulators_table_filename = "{{ locus.display_name }}_regulators";
     var analyze_filename = "<a href='{{ locus.link }}' class='gene_name'>{{ locus.display_name }}</a>";
 </script>
+
 <script src="/static/js/regulation_details.js"></script>
-
-
 {% endblock scripts %}

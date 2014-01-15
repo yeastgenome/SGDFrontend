@@ -21,15 +21,15 @@ $(document).ready(function() {
   	        create_analyze_button("analyze_targets", target_table, analyze_link, analyze_filename + ' targets', false);
   	        create_download_button("targets_table_download", target_table, download_table_link, targets_table_filename);
 
-  	        $.getJSON(regulation_target_enrichment_link, function(enrichment_data) {
-                var enrichment_table = create_enrichment_table("enrichment_table", target_table, enrichment_data);
-                create_download_button("enrichment_table_download", enrichment_table, download_table_link, enrichment_table_filename);
-  	        });
+  	        //$.getJSON(regulation_target_enrichment_link, function(enrichment_data) {
+            //    var enrichment_table = create_enrichment_table("enrichment_table", target_table, enrichment_data);
+            //    create_download_button("enrichment_table_download", enrichment_table, download_table_link, enrichment_table_filename);
+  	        //});
   		}
 
   		if(regulator_count > 0) {
   		    var regulator_table = create_regulator_table(data["regulators"]);
-  		    create_analyze_button("regulator_table_analyze", regulator_table, analyze_link, analyze_filename + ' targets', true);
+  		    create_analyze_button("regulators_table_analyze", regulator_table, analyze_link, analyze_filename + ' targets', true);
   	        create_analyze_button("analyze_regulators", regulator_table, analyze_link, analyze_filename + ' targets', false);
   	        create_download_button("regulators_table_download", regulator_table, download_table_link, regulators_table_filename);
   		}
@@ -37,7 +37,10 @@ $(document).ready(function() {
 
     $.getJSON(regulation_graph_link, function(data) {
         var graph = create_cytoscape_vis("cy", layout, graph_style, data);
-        var set_max = create_slider('slider', graph);
+        var multimax_slider = create_multimax_slider('slider', graph, data['min_evidence_cutoff'], data['max_evidence_cutoff'], slider_filter);
+        create_discrete_filter('all_radio', graph, multimax_slider, all_filter, data['max_evidence_cutoff']);
+        create_discrete_filter('targets_radio', graph, multimax_slider, target_filter, data['max_target_cutoff']);
+        create_discrete_filter('regulators_radio', graph, multimax_slider, regulator_filter, data['max_regulator_cutoff']);
     });
 
 });
@@ -45,29 +48,15 @@ $(document).ready(function() {
 function create_domain_table(data) {
     var domain_table = null;
     if(data != null && data.length > 0) {
-	    document.getElementById("domains").style.display = "block";
+        $("#domains").show();
 
 	    var datatable = [];
 
         for (var i=0; i < data.length; i++) {
-            var evidence = data[i];
-
-            var bioent = create_link(evidence['protein']['display_name'], evidence['protein']['link'], false);
-            var domain;
-            if(evidence['domain']['link'] != null) {
-                domain = create_link(evidence['domain']['display_name'], evidence['domain']['link'], true);
-            }
-            else {
-                domain = evidence['domain']['display_name']
-            }
-
-            var coord_range = evidence['start'] + '-' + evidence['end'];
-
-            var description = evidence['domain_description'];
-            datatable.push([evidence['id'], bioent, coord_range, domain, description, evidence['source']]);
+            datatable.push(domain_data_to_table(data[i]));
         }
 
-        document.getElementById("domains_header").innerHTML = data.length;
+        $("#domains_header").html(data.length);
 
         set_up_range_sort();
 
@@ -84,8 +73,8 @@ function create_domain_table(data) {
 
 function create_binding_site_table(data) {
     if(data.length > 0) {
-        document.getElementById("binding").style.display = "block";
-	  	var list = document.getElementById("binding_motifs");
+        $("#binding").show();
+	  	var list = $("#binding_motifs");
 	    for (var i=0; i < data.length; i++) {
 		    var evidence = data[i];
 
@@ -95,13 +84,14 @@ function create_binding_site_table(data) {
 		    var img = document.createElement('img');
 		    img.src = evidence['img_url'];
 		    img.className = "yetfasco";
+
 		    a.appendChild(img);
-		    list.appendChild(a);
+		    list.append(a);
 	    }
 	}
 	else {
-	  	document.getElementById("navbar_binding").style.display = "none";
-		document.getElementById("navbar_binding").removeAttribute('data-magellan-arrival')
+	  	$("#navbar_binding").hide();
+		$("#navbar_binding").removeAttr('data-magellan-arrival')
 	}
 }
 
@@ -109,37 +99,16 @@ function create_target_table(data) {
     var target_table = null;
 
 	if(data.length > 0) {
-	    document.getElementById("targets").style.display = "block";
+	    $("#targets").show();
 	  	var datatable = [];
-	  	var targets = {};
+	  	var genes = {};
 	    for (var i=0; i < data.length; i++) {
-		    var evidence = data[i];
-		    var bioent1 = create_link(evidence['bioentity1']['display_name'], evidence['bioentity1']['link'])
-		    var bioent2 = create_link(evidence['bioentity2']['display_name'], evidence['bioentity2']['link'])
+		    datatable.push(regulation_data_to_table(data[i], false));
+		    genes[data[i]['bioentity2']['id']] = true;
+		}
 
-		    targets[evidence['bioentity2']['id']] = true;
-
-		    var experiment = '';
-		    if(evidence['experiment'] != null) {
-			    experiment = evidence['experiment']['display_name'];
-		    }
-		    var strain = '';
-		    if(evidence['strain'] != null) {
-			    strain = evidence['strain']['display_name'];
-		    }
-		    var conditions = '';
-		    if(evidence['conditions'].length> 0) {
-			    conditions = evidence['conditions'][0];
-		    }
-		    var reference = '';
-		    if(evidence['reference'] != null) {
-			    reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
-		    }
-  		    datatable.push([evidence['id'], evidence['bioentity2']['id'], bioent1, evidence['bioentity1']['format_name'], bioent2, evidence['bioentity2']['format_name'], experiment, conditions, strain, evidence['source'], reference])
-  	    }
-
-  	    document.getElementById("targets_header").innerHTML = data.length;
-  	    document.getElementById("targets_gene_header").innerHTML = Object.keys(targets).length;
+  	    $("#targets_header").html(data.length);
+  	    $("#targets_gene_header").html(Object.keys(genes).length);
 
   	    var options = {};
 		options["bPaginate"] = true;
@@ -156,37 +125,16 @@ function create_regulator_table(data) {
     var regulator_table = null;
 
 	if(data.length > 0) {
-	    document.getElementById("regulators").style.display = "block";
+	    $("#regulators").show();
 	  	var datatable = [];
-	  	var regulators = {};
+	  	var genes = {};
 	    for (var i=0; i < data.length; i++) {
-		    var evidence = data[i];
-		    var bioent1 = create_link(evidence['bioentity1']['display_name'], evidence['bioentity1']['link'])
-		    var bioent2 = create_link(evidence['bioentity2']['display_name'], evidence['bioentity2']['link'])
-
-		    regulators[evidence['bioentity1']['id']] = true;
-
-		    var experiment = '';
-		    if(evidence['experiment'] != null) {
-			    experiment = evidence['experiment']['display_name'];
-		    }
-		    var strain = '';
-		    if(evidence['strain'] != null) {
-			    strain = evidence['strain']['display_name'];
-		    }
-		    var conditions = '';
-		    if(evidence['conditions'].length> 0) {
-			    conditions = evidence['conditions'][0];
-		    }
-		    var reference = '';
-		    if(evidence['reference'] != null) {
-			    reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
-		    }
-  		    datatable.push([evidence['id'], evidence['bioentity1']['id'], bioent1, evidence['bioentity1']['format_name'], bioent2, evidence['bioentity2']['format_name'], experiment, conditions, strain, evidence['source'], reference])
+		    datatable.push(regulation_data_to_table(data[i], true));
+		    genes[data[i]['bioentity1']['id']] = true;
   	    }
 
-  	    document.getElementById("regulators_header").innerHTML = data.length;
-  	    document.getElementById("regulators_gene_header").innerHTML = Object.keys(regulators).length;
+  	    $("#regulators_header").html(data.length);
+  	    $("#regulators_gene_header").html(Object.keys(genes).length);
 
   	    var options = {};
 		options["bPaginate"] = true;
@@ -201,87 +149,53 @@ function create_regulator_table(data) {
 
 function create_regulation_graph(data) {
     var graph_id = "cy";
-  			var all_slider_id = "all_slider";
-  			var target_slider_id = "targets_slider";
-  			var regulator_slider_id = "regulators_slider";
+  	var all_slider_id = "all_slider";
+  	var target_slider_id = "targets_slider";
+  	var regulator_slider_id = "regulators_slider";
 
-  			var all_radio_id = "all_radio";
-  			var target_radio_id = "targets_radio";
-  			var regulator_radio_id = "regulators_radio";
+  	var all_radio_id = "all_radio";
+  	var target_radio_id = "targets_radio";
+  	var regulator_radio_id = "regulators_radio";
 
-  			var section_id = "network";
-  			var section_navbar_id = "navbar_network";
+  	var section_id = "network";
+  	var section_navbar_id = "navbar_network";
 
-  			if(data["nodes"].length > 1) {
-  				cy = setup_regulation_cytoscape_vis(graph_id,
-				all_slider_id, target_slider_id, regulator_slider_id,
-				all_radio_id, target_radio_id, regulator_radio_id,
-				layout, graph_style, data);
-  			}
-  			else {
-  				document.getElementById(section_id).style.display = "none";
-				document.getElementById(section_navbar_id).style.display = "none";
-				document.getElementById(section_navbar_id).removeAttribute('data-magellan-arrival')
+  	if(data["nodes"].length > 1) {
+  		cy = setup_regulation_cytoscape_vis(graph_id,
+		all_slider_id, target_slider_id, regulator_slider_id,
+		all_radio_id, target_radio_id, regulator_radio_id,
+		layout, graph_style, data);
+  	}
+  	else {
+  		$("#" + section_id).hide();
+		$("#" + section_navbar_id).hide();
+		$("#" + section_navbar_id).removeAtt('data-magellan-arrival')
 
-				//Hack because footer overlaps - need to fix this.
-				next_section = document.getElementById("regulators");
-				next_section.appendChild(document.createElement("br"))
-				next_section.appendChild(document.createElement("br"))
-				next_section.appendChild(document.createElement("br"))
-				next_section.appendChild(document.createElement("br"))
-				next_section.appendChild(document.createElement("br"))
-				next_section.appendChild(document.createElement("br"))
-  			}
+		//Hack because footer overlaps - need to fix this.
+		next_section = $("#regulators");
+		next_section.append(document.createElement("br"));
+		next_section.append(document.createElement("br"));
+		next_section.append(document.createElement("br"));
+		next_section.append(document.createElement("br"));
+		next_section.append(document.createElement("br"));
+		next_section.append(document.createElement("br"));
+  	}
 }
 
+function slider_filter(new_cutoff) {
+    return "node, edge[evidence >= " + new_cutoff + "]";
+}
 
+function all_filter() {
+    return "node, edge";
+}
 
-function setup_slider(div_id, min, max, current, slide_f) {
-	if(max==min) {
-		var slider = $("#" + div_id).noUiSlider({
-			range: [min, min+1]
-			,start: current
-			,step: 1
-			,handles: 1
-			,connect: "lower"
-			,slide: slide_f
-		});
-		slider.noUiSlider('disabled', true);
-		var spacing =  100;
-	    i = min-1
-	    var value = i+1;
-	    if(value >= 10) {
-	    	var left = ((spacing * (i-min+1))-1)
-	       	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
-	    }
-	    else {
-	    	var left = ((spacing * (i-min+1))-.5)
-			$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
-		}
-	}
-	else {
-		var slider = $("#" + div_id).noUiSlider({
-			range: [min, max]
-			,start: current
-			,step: 1
-			,handles: 1
-			,connect: "lower"
-			,slide: slide_f
-		});
-		
-		var spacing =  100 / (max - min);
-	    for (var i = min-1; i < max ; i=i+1) {
-	    	var value = i+1;
-	    	if(value >= 10) {
-	    		var left = ((spacing * (i-min+1))-1)
-	        	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
-	    	}
-	    	else {
-	    		var left = ((spacing * (i-min+1))-.5)
-				$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
-	    	}
-		}
-	}
+function target_filter() {
+    return "node, edge[class_type = 'TARGET']";
+}
+
+function regulator_filter() {
+    return "node, edge[class_type = 'REGULATOR']";
 }
 
 //Graph style
@@ -344,8 +258,6 @@ var evidence_min;
 var target_max;
 var regulator_max;
 
-
-
 function setup_regulation_cytoscape_vis(graph_id, 
 				all_slider_id, target_slider_id, regulator_slider_id,  
 				all_radio_id, target_radio_id, regulator_radio_id,
@@ -373,14 +285,14 @@ function setup_regulation_cytoscape_vis(graph_id,
 	setup_slider(target_slider_id, evidence_min, Math.min(target_max, 10), Math.max(Math.min(target_max, 3), evidence_min), f);
 	setup_slider(regulator_slider_id, evidence_min, Math.min(regulator_max, 10), Math.max(Math.min(regulator_max, 3), evidence_min), f);
 	
-	document.getElementById(target_slider_id).style.display = 'none';
-	document.getElementById(regulator_slider_id).style.display = 'none';
+	$("#" + target_slider_id).hide();
+	$("#" + regulator_slider_id).show();
 	
 	if(data['max_target_cutoff'] < evidence_min) {
-		document.getElementById(target_radio_id).disabled = true;
+		$("#" + target_radio_id).attr('disabled', true);
 	}
 	if(data['max_regulator_cutoff'] < evidence_min) {
-		document.getElementById(regulator_radio_id).disabled = true;
+	    $("#" + regulator_radio_id).attr('disabled', true)
 	}
 	
 	document.getElementById(all_radio_id).onclick = g;
@@ -425,6 +337,8 @@ function change_scale(all_slider_id, target_slider_id, regulator_slider_id,
 		document.getElementById(regulator_slider_id).style.display = 'block';
 	}
 }
+
+
 
 function filter_cy(all_slider_id, target_slider_id, regulator_slider_id,
 					all_radio_id, target_radio_id, regulator_radio_id) {
