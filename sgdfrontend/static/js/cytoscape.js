@@ -77,15 +77,18 @@ function create_cytoscape_vis(div_id, layout, style, data, f) {
 
 function create_slider(slider_id, graph, min, max, slide_f) {
     var range;
+    var start;
 	if(max==min) {
 		range = [min, min+1];
+		start = min;
 	}
 	else {
 		range = [min, max];
+		start = Math.max(3, min);
 	}
 	var slider = $("#" + slider_id).noUiSlider({
 		range: range
-		,start: Math.max(3, min)
+		,start: start
 		,step: 1
 		,handles: 1
 		,connect: "lower"
@@ -145,10 +148,10 @@ function create_slider_ticks(slider_tick_id, min, max) {
 	}
 }
 
-function create_discrete_filter(radio_id, graph, multimax_slider, target_filter, max_value) {
+function create_discrete_filter(radio_id, graph, slider, target_filter, max_value) {
     var radio = $("#" + radio_id);
     radio.click(function() {
-        multimax_slider.update_new_max(max_value);
+        slider.update_new_max(max_value);
         graph.filters['discrete'] = target_filter();
         graph.applyFilters();
     });

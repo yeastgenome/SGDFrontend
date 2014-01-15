@@ -305,13 +305,13 @@ function create_table(table_id, options) {
   	return table;
 }
 
-function create_analyze_button(analyze_button_id, table, analyze_link, filename, apply_filter) {
+function create_analyze_button(analyze_button_id, table, analyze_link, name, apply_filter) {
     //When button is clicked, collect bioent_ids and send them to Analyze page.
 
     var analyze_button = $("#" + analyze_button_id);
     var analyze_function = function() {
         var bioent_ids = [];
-
+        var filename = name;
         var data;
         if(apply_filter) {
             data = table._('tr', {"filter": "applied"});
@@ -352,11 +352,12 @@ function create_analyze_button(analyze_button_id, table, analyze_link, filename,
     analyze_button.attr('disabled', false);
 }
 
-function create_download_button(download_button_id, table, download_link, filename) {
+function create_download_button(download_button_id, table, download_link, name) {
 
     var download_button = $("#" + download_button_id);
     var download_function = function() {
         var data = table._('tr', {"filter": "applied"});
+        var filename = name;
 
         var table_headers = table.fnSettings().aoColumns;
         var headers = [];

@@ -28,7 +28,7 @@
 
 <!-- Domains
 ================================================== -->
-<section id="domains" data-magellan-destination="domains" style="display:none">
+<section id="domains" data-magellan-destination="domains" hidden>
 	<div class="page-header">
 		<h1>Domains and Classification <span id="domains_header" class="round secondary label"></span></h1>
 		<div>
@@ -56,7 +56,7 @@
 
 <!-- Binding Sites
 ================================================== -->
-<section id="binding" data-magellan-destination="binding" style="display:none">
+<section id="binding" data-magellan-destination="binding" hidden>
 	<div class="page-header">
 		<h1>DNA Binding Site Motifs</h1>
 		<div>
@@ -69,7 +69,7 @@
 
 <!-- Targets
 ================================================== -->
-<section id="targets" data-magellan-destination="targets" style="display:none">
+<section id="targets" data-magellan-destination="targets" hidden>
 	<div class="page-header">
 		<h1>Targets <span class="round secondary label"><span id="targets_header"></span> <small>entries for</small> <span id="targets_gene_header"></span> <small>genes</small></span></h1>
 		<div>
@@ -106,7 +106,7 @@
 
 <!-- Enrichment
 ================================================== -->
-<section id="enrichment" data-magellan-destination="enrichment" style="display:none">
+<section id="enrichment" data-magellan-destination="enrichment" hidden>
 	<div class="page-header">
 		<h1>Shared GO Processes Among Targets <span class="round secondary label"><span id="enrichment_header"></span> <small>entries for</small> <span id="enrichment_gene_header"></span> <small>genes</small></span></h1>
 		<div>
@@ -115,7 +115,7 @@
 					<li><a id="enrichment_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
 				</ul>
 				<ul class="button-group radius">
-					<li><a id="enrichment_table_recalculate" class="small button secondary" style="display:none">Recalculate With New Filter</a></li>
+					<li><a id="enrichment_table_recalculate" class="small button secondary" hidden>Recalculate With New Filter</a></li>
 				</ul>
 			</div>
 			
@@ -135,7 +135,7 @@
 
 <!-- Regulators
 ================================================== -->
-<section id="regulators" data-magellan-destination="regulators" style="display:none">
+<section id="regulators" data-magellan-destination="regulators" hidden>
 	<div class="page-header">
 		<h1>Regulators <span class="round secondary label"><span id="regulators_header"></span> <small>entries for</small> <span id="regulators_gene_header"></span> <small>genes</small></span></h1>
 		<div>
@@ -176,15 +176,17 @@
 	<div class="page-header">
 		<h1>Network Visualization</h1>
 		<div class="panel">
-			<label for="all_radio">
-				<input id="all_radio" type="radio" name="group1" checked> All
-			</label>
-			<label for="targets_radio">
-				<input id="targets_radio" type="radio" name="group1"> Targets
-			</label>
-			<label for="regulators_radio">
-				<input id="regulators_radio" type="radio" name="group1"> Regulators
-			</label>
+		    <div id="discrete_filter" hidden>
+                <label for="all_radio">
+                    <input id="all_radio" type="radio" name="group1" checked> All
+                </label>
+                <label for="targets_radio">
+                    <input id="targets_radio" type="radio" name="group1"> Targets
+                </label>
+                <label for="regulators_radio">
+                    <input id="regulators_radio" type="radio" name="group1"> Regulators
+                </label>
+            </div>
 			
 			<div id="cy" name="cy" style="width:100%;height:700px"></div>
 			<br>

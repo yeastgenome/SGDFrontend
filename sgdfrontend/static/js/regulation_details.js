@@ -21,10 +21,10 @@ $(document).ready(function() {
   	        create_analyze_button("analyze_targets", target_table, analyze_link, analyze_filename + ' targets', false);
   	        create_download_button("targets_table_download", target_table, download_table_link, targets_table_filename);
 
-  	        //$.getJSON(regulation_target_enrichment_link, function(enrichment_data) {
-            //    var enrichment_table = create_enrichment_table("enrichment_table", target_table, enrichment_data);
-            //    create_download_button("enrichment_table_download", enrichment_table, download_table_link, enrichment_table_filename);
-  	        //});
+  	        $.getJSON(regulation_target_enrichment_link, function(enrichment_data) {
+                var enrichment_table = create_enrichment_table("enrichment_table", target_table, enrichment_data);
+                create_download_button("enrichment_table_download", enrichment_table, download_table_link, enrichment_table_filename);
+  	        });
   		}
 
   		if(regulator_count > 0) {
@@ -37,12 +37,18 @@ $(document).ready(function() {
 
     $.getJSON(regulation_graph_link, function(data) {
         var graph = create_cytoscape_vis("cy", layout, graph_style, data);
-        var multimax_slider = create_slider('slider', graph, data['min_evidence_cutoff'], data['max_evidence_cutoff'], slider_filter);
-        create_discrete_filter('all_radio', graph, multimax_slider, all_filter, data['max_evidence_cutoff']);
-        create_discrete_filter('targets_radio', graph, multimax_slider, target_filter, data['max_target_cutoff']);
-        create_discrete_filter('regulators_radio', graph, multimax_slider, regulator_filter, data['max_regulator_cutoff']);
-    });
+        var slider = create_slider('slider', graph, data['min_evidence_cutoff'], data['max_evidence_cutoff'], slider_filter);
 
+        if(data['max_target_cutoff'] >= data['min_evidence_cutoff'] && data['max_regulator_cutoff'] >= data['min_evidence_cutoff']) {
+            create_discrete_filter('all_radio', graph, slider, all_filter, data['max_evidence_cutoff']);
+            create_discrete_filter('targets_radio', graph, slider, target_filter, data['max_target_cutoff']);
+            create_discrete_filter('regulators_radio', graph, slider, regulator_filter, data['max_regulator_cutoff']);
+            $("#discrete_filter").show();
+        }
+        else {
+            $("#discrete_filter").hide();
+        }
+    });
 });
 
 function create_domain_table(data) {
