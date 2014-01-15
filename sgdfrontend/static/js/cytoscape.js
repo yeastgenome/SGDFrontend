@@ -119,23 +119,22 @@ function setup_new_slider(div_id, min, max, current, slide_f) {
 	if(max==min) {
 		var slider = $("#" + div_id).noUiSlider({
 			range: [min, min+1]
-			,start: current
+			,start: min
 			,step: 1
 			,handles: 1
-			,connect: "lower"
 			,slide: slide_f
 		});
-		slider.noUiSlider('disabled', true);
-		var spacing =  100;
+		slider.attr('disabled', 'disabled');
+		var spacing =  92;
 	    i = min-1
 	    var value = i+1;
 	    if(value >= 10) {
-	    	var left = ((spacing * (i-min+1))-1)
-	       	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+	    	var left = (spacing * (i-min+1))+2
+	       	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo(slider);
 	    }
 	    else {
-	    	var left = ((spacing * (i-min+1))-.5)
-			$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+	    	var left = (spacing * (i-min+1))+3.5
+			$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo(slider);
 		}
 	}
 	else {
@@ -148,16 +147,16 @@ function setup_new_slider(div_id, min, max, current, slide_f) {
 			,slide: slide_f
 		});
 
-		var spacing =  100 / (max - min);
+		var spacing =  92 / (max - min);
 	    for (var i = min-1; i < max ; i=i+1) {
 	    	var value = i+1;
 	    	if(value >= 10) {
-	    		var left = ((spacing * (i-min+1))-1)
-	        	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+	    		var left = (spacing * (i-min+1))+2
+	        	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo(slider);
 	    	}
 	    	else {
-	    		var left = ((spacing * (i-min+1))-.5)
-				$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+	    		var left = (spacing * (i-min+1))+3.5
+				$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo(slider);
 	    	}
 		}
 	}
