@@ -72,3 +72,8 @@ function interaction_data_to_table(evidence, index) {
   	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
     return [evidence['id'], evidence['bioentity2']['id'], icon, bioent1, evidence['bioentity1']['format_name'], bioent2, evidence['bioentity2']['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']]
 }
+
+function gene_data_to_table(bioent) {
+	var bioent_name = create_link(bioent['display_name'], bioent['link'])
+  	return [bioent['id'], bioent['id'], bioent['format_name'], bioent_name, bioent['description']]
+}

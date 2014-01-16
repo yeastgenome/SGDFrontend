@@ -1,52 +1,40 @@
+add_navbar_title(list_name_html);
+add_navbar_element('Tools', 'tools');
+add_navbar_element('Genes', 'gene_list');
+add_navbar_element('GO Process Enrichment', 'enrichment');
 
-var table;
-var format_name_to_id = new Object();
-var filter_used_for_go = '';
-var filter_message;
-function update_filter_used() {
-	filter_used_for_go = table.fnSettings().oPreviousSearch.sSearch;
-	filter_message.style.display = "none";
-}
+$(document).ready(function() {
 
-function set_up_gene_table(table_id, header_id, filter_message_id, download_button_id, download_link, download_table_filename, data) {
-	var datatable = [];
-	for (var i=0; i < data.length; i++) {
-		var bioent = data[i];
-  			
-		var bioent_name = create_link(bioent['display_name'], bioent['link'])
-		
-		format_name_to_id[bioent['format_name']] = bioent['id']
-		
-  		datatable.push([bioent['format_name'], bioent_name, bioent['description']])
-  	}
-  	  	
-  	document.getElementById(header_id).innerHTML = data.length;
-  	
-  	var options = {};
-	options["bPaginate"] = false;
-	options["aaSorting"] = [[1, "asc"]];
-	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null];	
-	options["aaData"] = datatable;
-  				
-	setup_datatable_highlight();	
-	ev_table = $("#" + table_id).dataTable(options);
-	ev_table.fnSearchHighlighting();
-	
-	filter_message = document.getElementById(filter_message_id);
-	ev_table.bind("filter", function() {
-		var search = table.fnSettings().oPreviousSearch.sSearch;
-		if(search != filter_used_for_go) {
-			filter_message.style.display = "block";
-		}
-		else {
-			filter_message.style.display = "none";
-		}
-	})
+    var gene_table = create_gene_table(bioents);
+    create_download_button("gene_list_table_download", gene_table, download_table_link, list_name);
 
-	document.getElementById(download_button_id).onclick = function() {
-		download_table(ev_table, download_link, download_table_filename)
-	};
-	return table;
+    var enrichment_table = create_enrichment_table("enrichment_table", gene_table, null);
+    create_download_button("enrichment_table_download", enrichment_table, download_table_link, list_name + "_go_enrichment");
+
+    set_up_tools("go_term_finder", "go_slim_mapper", "spell", "yeastmine");
+
+});
+
+function create_gene_table(data) {
+    var gene_table = null;
+    if(data != null && data.length > 0) {
+	    var datatable = [];
+
+        for (var i=0; i < data.length; i++) {
+            datatable.push(gene_data_to_table(data[i]));
+        }
+
+        $("#gene_list_header").html(data.length);
+
+        var options = {};
+	    options["bPaginate"] = false;
+	    options["aaSorting"] = [[3, "asc"]];
+	    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null];
+	    options["aaData"] = datatable;
+
+        gene_table = create_table("gene_list_table", options);
+	}
+	return gene_table;
 }
 
 function post_to_yeastmine(bioent_ids) {

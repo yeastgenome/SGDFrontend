@@ -145,8 +145,8 @@ function create_note_icon(drop_id_num, text) {
 
 function hide_section(section_id) {
     $("#" + section_id).hide();
-    $("#navbar_" + section_id).hide();
-    $("#navbar_" + section_id).removeAttr('data-magellan-arrival')
+    $("#navbar_network").hide();
+    $("#navbar_network").removeAttr('data-magellan-arrival')
 }
 
 //http://datatables.net/forums/discussion/2123/filter-post-processing-and-highlighting/p1
@@ -438,6 +438,7 @@ function set_up_enrichment_table(data) {
 function create_enrichment_table(table_id, target_table, init_data) {
     var enrichment_recalc = $("#enrichment_table_recalculate");
     var filter_used = '';
+    var enrichment_table = null;
 
     var get_filter_bioent_ids = function() {
         var bioent_ids = [];
@@ -466,18 +467,18 @@ function create_enrichment_table(table_id, target_table, init_data) {
 		$("#enrichment_header").html('_');
 		post_json_to_url(go_enrichment_link, {'bioent_ids': bioent_ids},
 		    function(data) {
-  			    var enrichment_table = set_up_enrichment_table(data)
+  			    set_up_enrichment_table(data)
   			    filter_used = target_table.fnSettings().oPreviousSearch.sSearch;
   			    enrichment_recalc.attr('disabled', false);
   			    enrichment_recalc.hide();
   		    }
   		);
-  		return enrichment_table;
     };
 
     target_table.bind("filter", function() {
 	    var search = target_table.fnSettings().oPreviousSearch.sSearch;
-		if(search != filter_used) {
+	    var data = target_table._('tr', {"filter": "applied"});
+		if(search != filter_used && data.length > 0) {
 		    enrichment_recalc.show();
 		}
 		else {
@@ -487,13 +488,14 @@ function create_enrichment_table(table_id, target_table, init_data) {
 
 	enrichment_recalc.click(update_enrichment);
 
-    var enrichment_table = null;
     if(init_data != null) {
         enrichment_table = set_up_enrichment_table(init_data);
 		$("#enrichment_gene_header").html(get_filter_bioent_ids().length);
     }
     else {
-        enrichment_table = update_enrichment();
+        var options = {"bPaginate": true, "bDestroy": true, "oLanguage": {'sEmptyTable': '<center><img src="/static/img/dark-slow-wheel.gif"></center>'}, "aaData": []};
+        enrichment_table = create_table("enrichment_table", options);
+        update_enrichment();
     }
 
     $("#enrichment").show();
