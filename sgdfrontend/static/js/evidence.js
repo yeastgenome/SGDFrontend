@@ -43,3 +43,32 @@ function regulation_data_to_table(evidence, is_regulator) {
 	}
   	return [evidence['id'], analyze_value, bioent1, evidence['bioentity1']['format_name'], bioent2, evidence['bioentity2']['format_name'], experiment, conditions, strain, evidence['source'], reference];
 }
+
+function interaction_data_to_table(evidence, index) {
+	var icon;
+	if(evidence['note'] != null) {
+		icon = create_note_icon(index, evidence['note']);
+	}
+	else {
+		icon = null;
+	}
+
+	var bioent1 = create_link(evidence['bioentity1']['display_name'], evidence['bioentity1']['link'])
+	var bioent2 = create_link(evidence['bioentity2']['display_name'], evidence['bioentity2']['link'])
+
+	var experiment = '';
+	if(evidence['experiment'] != null) {
+		experiment = evidence['experiment']['display_name'];
+	}
+	var phenotype = '';
+	if(evidence['phenotype'] != null) {
+	    phenotype = evidence['phenotype']['display_name'];
+		//phenotype = create_link(evidence['phenotype']['display_name'], evidence['phenotype']['link']);
+	}
+	var modification = '';
+	if(evidence['modification'] != null) {
+		modification = evidence['modification'];
+  	}
+  	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+    return [evidence['id'], evidence['bioentity2']['id'], icon, bioent1, evidence['bioentity1']['format_name'], bioent2, evidence['bioentity2']['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']]
+}

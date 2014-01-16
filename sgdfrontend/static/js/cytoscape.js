@@ -53,8 +53,9 @@ function create_cytoscape_vis(div_id, layout, style, data, f) {
 	    notElements.hide();
 
 	    //Hide singleton nodes
+	    var centerNode = cy.elements("node[sub_type = 'FOCUS']")[0].id();
 	    var singletons = cy.elements("node:visible");
-	    var connectedNodes = cy.elements("edge:visible").connectedNodes();
+	    var connectedNodes = cy.elements("edge[target = '" + centerNode + "']:visible").connectedNodes();
 	    singletons = singletons.not(connectedNodes);
         singletons.hide();
 	};
@@ -114,6 +115,11 @@ function create_slider(slider_id, graph, min, max, slide_f) {
         graph.filters['slider'] = slide_f(cutoff);
         graph.applyFilters();
 	};
+
+	var cutoff = slider.val();
+    graph.filters['slider'] = slide_f(cutoff);
+    graph.applyFilters();
+
 	return slider;
 }
 

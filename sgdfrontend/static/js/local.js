@@ -305,6 +305,18 @@ function create_table(table_id, options) {
   	return table;
 }
 
+function create_analyze_button_with_list(analyze_button_id, bioent_ids, analyze_link, filename) {
+    //When button is clicked, send bioent_ids to Analyze page.
+
+    var analyze_button = $("#" + analyze_button_id);
+    var analyze_function = function() {
+        post_to_url(analyze_link, {'list_name': filename, 'bioent_ids': JSON.stringify(bioent_ids)});
+    };
+    analyze_button.click(analyze_function);
+
+    analyze_button.attr('disabled', false);
+}
+
 function create_analyze_button(analyze_button_id, table, analyze_link, name, apply_filter) {
     //When button is clicked, collect bioent_ids and send them to Analyze page.
 
@@ -340,7 +352,7 @@ function create_analyze_button(analyze_button_id, table, analyze_link, name, app
   	        var data = table._('tr', {"filter": "applied"});
   	        if(data.length == 0) {
   	            analyze_button.attr('disabled', true);
-  	            analyze_button.click(null);
+  	            analyze_button.off('click');
   	        }
   	        else {
   	            analyze_button.attr('disabled', false);
@@ -379,7 +391,7 @@ function create_download_button(download_button_id, table, download_link, name) 
   	    var data = table._('tr', {"filter": "applied"});
   	    if(data.length == 0) {
   	        download_button.attr('disabled', true);
-  	        download_button.click(null);
+  	        download_button.off('click');
   	    }
   	    else {
   	        download_button.attr('disabled', false);
