@@ -1,11 +1,97 @@
+
+//Set up navbar
+add_navbar_title('<a href="' + link + '">' + display_name + '/' + format_name + '</a> Literature');
+add_navbar_element('Literature Summary', 'summary');
+add_navbar_element('Primary Literature', 'primary');
+add_navbar_element('Network Visualization', 'network');
+add_navbar_element('Additional Literature', 'additional');
+add_navbar_element('Reviews', 'reviews');
+add_navbar_element('Gene Ontology Literature', 'go');
+add_navbar_element('Phenotype Literature', 'phenotype');
+add_navbar_element('Interaction Literature', 'interaction');
+add_navbar_element('Regulation Literature', 'regulation');
+
+$(document).ready(function() {
+
+  	$.getJSON(literature_details_link, function(data) {
+        set_up_reference_list("additional_header", "additional_list", "additional_message", "additional_wrapper", "export_additional", download_link, display_name + "_additional_citations", data['additional']);
+  		set_up_reference_list("review_header", "review_list", "review_message", "review_wrapper", "export_review", download_link, display_name + "_review_citations", data['reviews']);
+  		set_up_reference_list("go_header", "go_list", "go_message", "go_wrapper", "export_go", download_link, display_name + "_go_citations", data['go']);
+  		set_up_reference_list("phenotype_header", "phenotype_list", "phenotype_message", "phenotype_wrapper", "export_phenotype", download_link, display_name + "_phenotype_citations", data['phenotype']);
+  		set_up_reference_list("interaction_header", "interaction_list", "interaction_message", "interaction_wrapper", "export_interaction", download_link, display_name + "_interaction_citations", data['interaction']);
+  		set_up_reference_list("regulation_header", "regulation_list", "regulation_message", "regulation_wrapper", "export_regulation", download_link, display_name + "_regulation_citations", data['regulation']);
+    });
+
+  	$.getJSON(literature_graph_link, function(data) {
+  		if(data['nodes'].length > 1) {
+  			create_cytoscape_vis("cy", layout, graph_style, data);
+  		}
+		else {
+			hide_section("network");
+		}
+	});
+
+});
+
 function set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data) {
-	document.getElementById(header_id).innerHTML = data.length;
+	$("#" + header_id).html(data.length);
 	set_up_references(data, list_id);
 	if (data.length == 0) {
-		$("#" + message_id).removeClass("hide");
-		$("#" + wrapper_id).addClass("hide");
+		$("#" + message_id).show();
+		$("#" + wrapper_id).hide();
 	}
-	document.getElementById(download_button_id).onclick = function f() {
-		download_citations(list_id, download_link, download_filename)
-	};
+	$("#" + download_button_id).click(function f() {
+		download_citations(list_id, download_link, download_filename);
+	});
 }
+
+var graph_style = cytoscape.stylesheet()
+	.selector('node')
+	.css({
+		'content': 'data(name)',
+		'font-family': 'helvetica',
+		'font-size': 14,
+		'text-outline-width': 3,
+		'text-valign': 'center',
+		'width': 10,
+		'height': 10,
+		'border-color': '#fff',
+		'background-color': "#D0A9F5",
+		'text-outline-color': '#fff',
+		'color': '#888',
+	})
+	.selector('edge')
+	.css({
+		'width': 2,
+	})
+	.selector("node[sub_type='FOCUS']")
+	.css({
+		'width': 30,
+		'height': 30,
+		'background-color': "#fade71",
+		'text-outline-color': '#fff',
+		'color': '#888',
+	})
+	.selector("node[type='REFERENCE']")
+	.css({
+		'shape': 'oval',
+		'text-outline-color': '#888',
+		'color': '#fff',
+
+		'width': 100,
+		'height': 30,
+});
+
+var layout = {
+	"name": "arbor",
+	"liveUpdate": true,
+	"ungrabifyWhileSimulating": true,
+	"nodeMass":function(data) {
+		if(data.sub_type == 'FOCUS') {
+			return 10;
+		}
+		else {
+			return 1;
+		}
+	}
+};

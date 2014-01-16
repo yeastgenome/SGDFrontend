@@ -1,4 +1,20 @@
 
+//Set up navbar
+add_navbar_title('<a href="' + link + '">' + display_name + '/' + format_name + '</a> Regulation');
+add_navbar_element('Regulation Summary', 'summary');
+if(target_count > 0) {
+    add_navbar_element('Domains and Classification', 'domains');
+    add_navbar_element('DNA Binding Site Motifs', 'binding');
+  	add_navbar_element('Targets', 'targets');
+  	add_navbar_element('Shared GO Processes Among Targets', 'enrichment');
+}
+if(regulator_count > 0) {
+    add_navbar_element('Regulators', 'regulators');
+}
+if(target_count + regulator_count > 0) {
+    add_navbar_element('Network Visualization', 'network');
+}
+
 $(document).ready(function() {
 
     if(target_count > 0) {
@@ -51,9 +67,7 @@ $(document).ready(function() {
             }
         }
         else {
-            $("#network").hide();
-            $("#navbar_network").hide();
-            $("#navbar_network").removeAttr('data-magellan-arrival')
+            hide_section("network");
 
             //Hack because footer overlaps - need to fix this.
             next_section = $("#regulators");
@@ -112,8 +126,7 @@ function create_binding_site_table(data) {
 	    }
 	}
 	else {
-	  	$("#navbar_binding").hide();
-		$("#navbar_binding").removeAttr('data-magellan-arrival')
+	    hide_section("binding");
 	}
 }
 

@@ -143,6 +143,12 @@ function create_note_icon(drop_id_num, text) {
 	return icon;
 }
 
+function hide_section(section_id) {
+    $("#" + section_id).hide();
+    $("#navbar_" + section_id).hide();
+    $("#navbar_" + section_id).removeAttr('data-magellan-arrival')
+}
+
 //http://datatables.net/forums/discussion/2123/filter-post-processing-and-highlighting/p1
 function setup_datatable_highlight() {
 	// HIGHLIGHT FCT

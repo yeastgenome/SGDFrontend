@@ -1,4 +1,11 @@
 
+//Set up navbar
+add_navbar_title('<a href="' + link + '">' + display_name + '/' + format_name + '</a> Interactions');
+add_navbar_element('Interactors Summary', 'summary');
+add_navbar_element('Interactions', 'interactions');
+add_navbar_element('Network Visualization', 'network');
+add_navbar_element('Resources', 'resources');
+
 $(document).ready(function() {
 
     $.getJSON(interaction_details_link, function(data) {
@@ -34,9 +41,7 @@ $(document).ready(function() {
             }
         }
         else {
-            $("#network").hide();
-            $("#navbar_network").hide();
-            $("#navbar_network").removeAttr('data-magellan-arrival')
+            hide_section("network");
         }
     });
 
@@ -50,9 +55,7 @@ $(document).ready(function() {
 			}
 	  	}
 	  	else {
-	  		$("#resources").style.display = "none";
-			$("#navbar_resources").style.display = "none";
-			$("#navbar_resources").removeAttr('data-magellan-arrival')
+	  	    hide_section("resources");
 	  	}
 	});
 
