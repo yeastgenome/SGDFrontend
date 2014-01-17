@@ -26,25 +26,7 @@
 	</div>
 </section>
 
-<script src="/static/js/local.js"></script>	
-<script src="/static/js/kinetic-v4.3.3.min.js"></script>	
-<script src="/static/js/venn.js"></script>	
-<script>
-    var data = {{overview | safe}};
-
-	var summary_download_filename = "{{ locus.display_name}}_interaction_summary";
-    var annotation_analyze_filename = "{{ locus.display_name}}_interactors";
-	var download_image_link = "{{download_image_link}}";
-
-	var A = data['num_gen_interactors'];
-	var B = data['num_phys_interactors'];
-	var C = data['num_both_interactors'];
-
-    var link = "{{ locus.link }}";
-	var display_name = "{{ locus.display_name }}";
-	var format_name = "{{ locus.format_name }}";
-		
-</script>
-
+<script src="/static/js/kinetic-v4.3.3.min.js"></script>
+<script src="/static/js/venn.js"></script>
 <script src="/static/js/interaction_overview.js"></script>
 

@@ -1,7 +1,3 @@
-add_navbar_title(list_name_html);
-add_navbar_element('Tools', 'tools');
-add_navbar_element('Genes', 'gene_list');
-add_navbar_element('GO Process Enrichment', 'enrichment');
 
 $(document).ready(function() {
 
@@ -13,6 +9,8 @@ $(document).ready(function() {
 
     set_up_tools("go_term_finder", "go_slim_mapper", "spell", "yeastmine");
 
+    //Hack because footer overlaps - need to fix this.
+	add_footer_space("enrichment");
 });
 
 function create_gene_table(data) {

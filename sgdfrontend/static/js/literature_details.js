@@ -1,16 +1,4 @@
 
-//Set up navbar
-add_navbar_title('<a href="' + link + '">' + display_name + '/' + format_name + '</a> Literature');
-add_navbar_element('Literature Summary', 'summary');
-add_navbar_element('Primary Literature', 'primary');
-add_navbar_element('Network Visualization', 'network');
-add_navbar_element('Additional Literature', 'additional');
-add_navbar_element('Reviews', 'reviews');
-add_navbar_element('Gene Ontology Literature', 'go');
-add_navbar_element('Phenotype Literature', 'phenotype');
-add_navbar_element('Interaction Literature', 'interaction');
-add_navbar_element('Regulation Literature', 'regulation');
-
 $(document).ready(function() {
 
   	$.getJSON(literature_details_link, function(data) {
@@ -30,6 +18,9 @@ $(document).ready(function() {
 			hide_section("network");
 		}
 	});
+
+	//Hack because footer overlaps - need to fix this.
+	add_footer_space("regulation");
 
 });
 

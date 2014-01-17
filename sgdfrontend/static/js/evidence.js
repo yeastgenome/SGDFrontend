@@ -77,3 +77,64 @@ function gene_data_to_table(bioent) {
 	var bioent_name = create_link(bioent['display_name'], bioent['link'])
   	return [bioent['id'], bioent['id'], bioent['format_name'], bioent_name, bioent['description']]
 }
+
+function phenotype_data_to_table(evidence, index) {
+	var bioent = create_link(evidence['bioentity']['display_name'], evidence['bioentity']['link']);
+
+	var experiment = '';
+	if(evidence['experiment'] != null) {
+		experiment = evidence['experiment']['display_name'];
+	}
+
+	var strain = '';
+	if(evidence['strain'] != null) {
+		strain = evidence['strain']['display_name'];
+	}
+
+	var chemical = '';
+	if(evidence['chemical'] != null) {
+		if(evidence['chemical']['amount'] != null) {
+			chemical = evidence['chemical']['amount'] + ' ' + create_link(evidence['chemical']['display_name'], evidence['chemical']['link']);
+		}
+		else {
+			chemical = create_link(evidence['chemical']['display_name'], evidence['chemical']['link']);
+		}
+		var chemical_icon = create_note_icon('chemical_icon' + index, evidence['chemical']['note']);
+		if(chemical_icon != '') {
+			chemical = chemical + ' ' + chemical_icon;
+		}
+	}
+
+	var allele = '';
+	if(evidence['allele'] != null) {
+		allele = '<br><strong>Allele: </strong>' + evidence['allele']['display_name'];
+		var allele_icon = create_note_icon('allele_icon' + index, evidence['allele']['note']);
+		if(allele_icon != '') {
+			allele = allele + ' ' + allele_icon;
+		}
+	}
+
+	var reporter = '';
+	if(evidence['reporter'] != null) {
+		reporter = '<strong>Reporter: </strong>' + evidence['reporter']['display_name'];
+		var reporter_icon = create_note_icon('reporter_icon' + index, evidence['reporter']['note']);
+		if(reporter_icon != '') {
+			reporter = reporter + ' ' + reporter_icon;
+		}
+	}
+
+    var note = '';
+    for (var j=0; j < evidence['condition'].length; j++) {
+        note = note + '<strong>Condition: </strong>' + evidence['condition'][j] + '<br>';
+    }
+    if(evidence['note'] != null) {
+        note = note + '<strong>Details: </strong>' + evidence['note'] + '<br>';
+    }
+
+	var biocon = create_link(evidence['bioconcept']['display_name'], evidence['bioconcept']['link']);
+	biocon = biocon + '<br>' + reporter;
+
+  	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+
+  	return [evidence['id'], evidence['bioentity']['id'], bioent, evidence['bioentity']['format_name'], biocon, experiment, evidence['mutant_type'] + allele, strain, chemical, note, reference];
+}

@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+
+<script>
+	var download_table_link = "{{ download_table_link }}";
+	var go_enrichment_link = "{{ go_enrichment_link }}"
+	var bioents = {{bioents | safe}};
+    var list_name = "{{ list_name }}";
+    var list_name_html = "Analyze {{ list_name_html | safe }}";
+</script>
+
 <title>Analyze</title>
 
 {% extends "templates/global_layout.jinja2" %}
@@ -10,14 +19,21 @@
 </div>
 
 
-<!-- Docs nav
+<!-- Navbar
 ================================================== -->
 <div class="row">
 
 <!-- Includes navbar.html into template -->
 {% include "templates/navbar.jinja2" %}
 	
-<div class="small-12 large-9 columns"> 
+<div class="small-12 large-9 columns">
+
+<script>
+    add_navbar_title(list_name_html);
+    add_navbar_element('Tools', 'tools');
+    add_navbar_element('Genes', 'gene_list');
+    add_navbar_element('GO Process Enrichment', 'enrichment');
+</script>
 
 <!-- Analyze
 ================================================== -->
@@ -118,12 +134,6 @@
 			</table>
         </div>
    </div>
-   <br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
 </section>
 
 </div>
@@ -132,18 +142,7 @@
 {% endblock body %}
 
 {% block scripts %}
-<script>
-	var download_table_link = "{{ download_table_link }}";
-	var go_enrichment_link = "{{ go_enrichment_link }}"
-
-	var bioents = {{bioents | safe}};
-
-    var list_name = "{{ list_name }}";
-    var list_name_html = "Analyze {{ list_name_html | safe }}";
-</script>
 <script src="/static/js/evidence.js"></script>
 <script src="/static/js/analyze.js"></script>
-
-
 {% endblock scripts %}
 

@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 
+<script>
+	var literature_details_link = "{{literature_details_link}}";
+	var literature_graph_link = "{{literature_graph_link}}";
+	var display_name = "{{ locus.display_name }}";
+  	var download_link = "{{download_link}}";
+  	var data = {{overview | safe}};
+</script>
+
 <title>{{ locus.display_name }} Literature</title>
 
 {% extends "templates/global_layout.jinja2" %}
@@ -11,17 +19,33 @@
 	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Literature</h2>
 </div>
 
-
+<!-- Tabs
+================================================== -->
 <!-- Includes tabs.html into template -->
 {% include "templates/tabs.jinja2" %}
 <script>document.getElementById('literature_tab').id = 'current';</script>
 
+<!-- Navbar
+================================================== -->
 <div class="row">
 	
 <!-- Includes navbar.html into template -->
 {% include "templates/navbar.jinja2" %}
 
-<div class="small-12 large-9 columns content-column"> 
+<div class="small-12 large-9 columns content-column">
+
+<script>
+    add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Literature');
+    add_navbar_element('Literature Summary', 'summary');
+    add_navbar_element('Primary Literature', 'primary');
+    add_navbar_element('Network Visualization', 'network');
+    add_navbar_element('Additional Literature', 'additional');
+    add_navbar_element('Reviews', 'reviews');
+    add_navbar_element('Gene Ontology Literature', 'go');
+    add_navbar_element('Phenotype Literature', 'phenotype');
+    add_navbar_element('Interaction Literature', 'interaction');
+    add_navbar_element('Regulation Literature', 'regulation');
+</script>
 	
 <!-- Includes literature_overview.html into template -->
 {% include "templates/literature_overview.jinja2" %}
@@ -119,12 +143,6 @@
 			</ul>
 		</div>
 	</div>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
 </section>
 
 </div>
@@ -136,14 +154,5 @@
 <script src="/static/js/cytoscape/cytoscape.min.js"></script>	
 <script src="/static/js/cytoscape/arbor.js"></script>
 <script src="/static/js/cytoscape.js"></script>
-
-<script>
-	var literature_details_link = "{{literature_details_link}}";
-	var literature_graph_link = "{{literature_graph_link}}";
-  	var download_link = "{{download_link}}";
-</script>
-
 <script src="/static/js/literature_details.js"></script>
-
-
 {% endblock scripts %}

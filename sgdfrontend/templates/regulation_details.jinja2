@@ -1,5 +1,29 @@
 <!DOCTYPE html>
 
+<script>
+    var overview_json = {{ overview | safe }};
+	var target_count = overview_json['target_count'];
+	var regulator_count = overview_json['regulator_count']
+	var display_name = "{{ locus.display_name }}";
+	var download_image_link = "{{ download_image_link }}";
+
+	var regulation_details_link = "{{ regulation_details_link }}";
+	var protein_domains_link = "{{ protein_domain_details_link }}"
+	var binding_site_details_link = "{{ binding_site_details_link }}"
+	var regulation_target_enrichment_link = "{{ regulation_target_enrichment_link }}"
+	var regulation_graph_link = "{{ regulation_graph_link }}";
+
+	var download_table_link = "{{ download_table_link }}";
+	var analyze_link = "{{ analyze_link }}";
+	var go_enrichment_link = "{{ go_enrichment_link }}";
+
+    var domains_table_filename = "{{ locus.display_name }}_domains";
+	var targets_table_filename = "{{ locus.display_name }}_targets";
+	var enrichment_table_filename = "{{ locus.display_name }}_targets_go_process_enrichment"
+	var regulators_table_filename = "{{ locus.display_name }}_regulators";
+    var analyze_filename = "<a href='{{ locus.link }}' class='gene_name'>{{ locus.display_name }}</a>";
+</script>
+
 <title>{{ locus.display_name }} Regulation</title>
 
 {% extends "templates/global_layout.jinja2" %}
@@ -11,18 +35,40 @@
 	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Transcriptional Regulation  <a href="/help/function-help/regulation" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
 </div>
 
-
+<!-- Tabs
+================================================== -->
 <!-- Includes tabs.html into template -->
 {% include "templates/tabs.jinja2" %}
 <script>document.getElementById('regulation_tab').id = 'current';</script>
 
 <div class="row">
-	
+
+<!-- Navbar
+================================================== -->
 <!-- Includes navbar.html into template -->
 {% include "templates/navbar.jinja2" %}
 
-<div class="small-12 large-9 columns content-column"> 
-	
+<div class="small-12 large-9 columns content-column">
+<script>
+    add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Regulation');
+    add_navbar_element('Regulation Summary', 'summary');
+
+    if(target_count > 0) {
+        add_navbar_element('Domains and Classification', 'domains');
+        add_navbar_element('DNA Binding Site Motifs', 'binding');
+        add_navbar_element('Targets', 'targets_regulation');
+        add_navbar_element('Shared GO Processes Among Targets', 'enrichment');
+    }
+
+    if(regulator_count > 0) {
+        add_navbar_element('Regulators', 'regulators_regulation');
+    }
+
+    if(target_count + regulator_count > 0) {
+        add_navbar_element('Network Visualization', 'network');
+    }
+</script>
+
 <!-- Includes regulation_overview.html into template -->
 {% include "templates/regulation_overview.jinja2" %}
 
@@ -69,40 +115,9 @@
 
 <!-- Targets
 ================================================== -->
-<section id="targets" data-magellan-destination="targets" hidden>
-	<div class="page-header">
-		<h1>Targets <span class="round secondary label"><span id="targets_header"></span> <small>entries for</small> <span id="targets_gene_header"></span> <small>genes</small></span></h1>
-		<div>
-			<div class="button-bar">
-				<ul class="button-group radius">
-					<li><a id="targets_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
-				</ul>
-						
-				<ul class="button-group radius">
-					<li><a id="targets_table_analyze" class="small button secondary"><i class='icon-briefcase'></i> Analyze</a></li>
-				</ul>
-			</div>
-			
-			<table class='table table-striped table-bordered table-condensed' id='targets_table' width="100%">
-			<thead>
-  			<tr>
-  			    <th>Evidence ID</th>
-  			    <th>Analyze ID</th>
-  				<th>Regulator</th>
-  				<th>Regulator Systematic Name</th>
-  				<th>Target</th>
-  				<th>Target Systematic Name</th>
-  				<th>Experiment</th>
-  				<th>Conditions</th>
-  				<th>Strain</th>
-  				<th>Source</th>
-   				<th>Reference</th>
-  			</tr>
-  			</thead>
-			</table>
-        </div>
-   </div>
-</section>
+<!-- Includes regulation_table into template -->
+{% set table_type = 'targets' %}
+{% include "templates/regulation_table.jinja2" %}
 
 <!-- Enrichment
 ================================================== -->
@@ -135,40 +150,9 @@
 
 <!-- Regulators
 ================================================== -->
-<section id="regulators" data-magellan-destination="regulators" hidden>
-	<div class="page-header">
-		<h1>Regulators <span class="round secondary label"><span id="regulators_header"></span> <small>entries for</small> <span id="regulators_gene_header"></span> <small>genes</small></span></h1>
-		<div>
-			<div class="button-bar">
-				<ul class="button-group radius">
-					<li><a id="regulators_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
-				</ul>
-						
-				<ul class="button-group radius">
-					<li><a id="regulators_table_analyze" class="small button secondary"><i class='icon-briefcase'></i> Analyze</a></li>
-				</ul>
-			</div>
-			
-			<table class='table table-striped table-bordered table-condensed' id='regulators_table' width="100%">
-			<thead>
-  			<tr>
-  			    <th>Evidence ID</th>
-  			    <th>Analyze ID</th>
-  			    <th>Regulator</th>
-  				<th>Regulator Systematic Name</th>
-  				<th>Target</th>
-  				<th>Target Systematic Name</th>
-  				<th>Experiment</th>
-  				<th>Conditions</th>
-  				<th>Strain</th>
-  				<th>Source</th>
-   				<th>Reference</th>
-  			</tr>
-  			</thead>
-			</table>
-        </div>
-   </div>
-</section>
+<!-- Includes regulation_table into template -->
+{% set table_type = 'regulators' %}
+{% include "templates/regulation_table.jinja2" %}
 
 <!-- Network Visualization
 ================================================== -->
@@ -196,12 +180,6 @@
 			<br>
 		</div><!-- .panel -->
     </div>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
 </section>
 
 
@@ -214,27 +192,6 @@
 <script src="/static/js/cytoscape/cytoscape.min.js"></script>	
 <script src="/static/js/cytoscape/arbor.js"></script>	
 <script src="/static/js/cytoscape.js"></script>
-
 <script src="/static/js/evidence.js"></script>
-
-<script>
-    //Template links and filenames
-	var regulation_details_link = "{{ regulation_details_link }}";
-	var protein_domains_link = "{{ protein_domain_details_link }}"
-	var binding_site_details_link = "{{ binding_site_details_link }}"
-	var regulation_target_enrichment_link = "{{ regulation_target_enrichment_link }}"
-	var regulation_graph_link = "{{ regulation_graph_link }}";
-
-	var download_table_link = "{{ download_table_link }}";
-	var analyze_link = "{{ analyze_link }}";
-	var go_enrichment_link = "{{ go_enrichment_link }}";
-
-    var domains_table_filename = "{{ locus.display_name }}_domains";
-	var targets_table_filename = "{{ locus.display_name }}_targets";
-	var enrichment_table_filename = "{{ locus.display_name }}_targets_go_process_enrichment"
-	var regulators_table_filename = "{{ locus.display_name }}_regulators";
-    var analyze_filename = "<a href='{{ locus.link }}' class='gene_name'>{{ locus.display_name }}</a>";
-</script>
-
 <script src="/static/js/regulation_details.js"></script>
 {% endblock scripts %}

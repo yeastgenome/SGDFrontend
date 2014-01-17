@@ -27,18 +27,6 @@
 	</div>
 </section>
 
-<script>
-	var overview_json = {{overview | safe}};
-	var target_count = overview_json['target_count'];
-	var regulator_count = overview_json['regulator_count']
-
-	var link = "{{ locus.link }}";
-	var display_name = "{{ locus.display_name }}";
-	var format_name = "{{ locus.format_name }}";
-
-	var download_image_link = "{{ download_image_link }}";
-</script>
-
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script src="/static/js/local.js"></script>
 <script src="/static/js/regulation_overview.js"></script>

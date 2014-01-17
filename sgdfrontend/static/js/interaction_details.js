@@ -1,11 +1,4 @@
 
-//Set up navbar
-add_navbar_title('<a href="' + link + '">' + display_name + '/' + format_name + '</a> Interactions');
-add_navbar_element('Interactors Summary', 'summary');
-add_navbar_element('Interactions', 'interactions');
-add_navbar_element('Network Visualization', 'network');
-add_navbar_element('Resources', 'resources');
-
 $(document).ready(function() {
 
     $.getJSON(interaction_details_link, function(data) {
@@ -46,18 +39,16 @@ $(document).ready(function() {
     });
 
 	$.getJSON(interaction_resources_link, function(data) {
-	  	if(data.length > 0) {
-	  		set_up_resources("resource_list", data);
-	  		for (var i=0; i < data.length; i++) {
-	  			if(data[i]['display_name'] == 'BioGRID') {
-	  				$("#biogrid_link").href = data[i]['link'];
-	  			}
-			}
-	  	}
-	  	else {
-	  	    hide_section("resources");
-	  	}
+	  	set_up_resources("resource_list", data);
+	  	for (var i=0; i < data.length; i++) {
+	  		if(data[i]['display_name'] == 'BioGRID') {
+	  			$("#biogrid_link").href = data[i]['link'];
+	  		}
+		}
 	});
+
+	//Hack because footer overlaps - need to fix this.
+	add_footer_space("resources");
 
 });
 
@@ -81,12 +72,6 @@ function create_interaction_table(data) {
 	    options["aaData"] = datatable;
 
         interaction_table = create_table("evidence_table", options);
-	}
-	else {
-	    $("#evidence_message").show();
-	    $("#evidence_wrapper").hide();
-	    $("#evidence_header").html(0);
-	    $("#evidence_gene_header").html(0);
 	}
 	return interaction_table;
 }

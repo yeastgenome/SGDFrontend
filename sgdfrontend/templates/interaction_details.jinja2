@@ -1,5 +1,24 @@
 <!DOCTYPE html>
 
+<script>
+	var interaction_details_link = "{{interaction_details_link}}";
+	var interaction_graph_link = "{{interaction_graph_link}}";
+	var interaction_resources_link = "{{interaction_resources_link}}";
+	var download_table_link = "{{download_table_link}}";
+	var analyze_link = "{{analyze_table_link}}";
+    var evidence_table_filename = "{{ locus.display_name}}_interactions";
+    var analyze_filename = "<a href='{{ locus.link }}' class='gene_name'>{{ locus.display_name }}</a>";
+    var data = {{overview | safe}};
+
+	var summary_download_filename = "{{ locus.display_name}}_interaction_summary";
+    var annotation_analyze_filename = "{{ locus.display_name}}_interactors";
+	var download_image_link = "{{download_image_link}}";
+
+	var A = data['num_gen_interactors'];
+	var B = data['num_phys_interactors'];
+	var C = data['num_both_interactors'];
+</script>
+
 <title>{{ locus.display_name }} Interactions</title>
 
 {% extends "templates/global_layout.jinja2" %}
@@ -11,64 +30,37 @@
 	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Physical and Genetic Interactions</h2>
 </div>
 
-
+<!-- Tabs
+================================================== -->
 <!-- Includes tabs.html into template -->
 {% include "templates/tabs.jinja2" %}
 <script>document.getElementById('interaction_tab').id = 'current';</script>
 
+<!-- Navbar
+================================================== -->
 <div class="row">
 	
 <!-- Includes navbar.html into template -->
 {% include "templates/navbar.jinja2" %}
 
-<div class="small-12 large-9 columns content-column"> 
+<div class="small-12 large-9 columns content-column">
+
+<script>
+//Set up navbar
+    add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Interactions');
+    add_navbar_element('Interactors Summary', 'summary');
+    add_navbar_element('Interactions', 'interactions');
+    add_navbar_element('Network Visualization', 'network');
+    add_navbar_element('Resources', 'resources');
+</script>
 	
 <!-- Includes interaction_overview.html into template -->
 {% include "templates/interaction_overview.jinja2" %}
 
-<!-- Interactions
+<!-- Annotations
 ================================================== -->
-<section id="interactions" data-magellan-destination="interactions">
-	<div class="page-header">
-		<h1>Interactions <span class="round secondary label"><span id="evidence_header"></span> <small>entries for</small> <span id="evidence_gene_header"></span> <small>genes</small></span></h1>
-		<span>Source: <a href="http://thebiogrid.org/" target="_blank" id="biogrid_link">BioGRID</a></span>
-		<p id='evidence_message' hidden>No interactions curated.</p>
-		<div id='evidence_wrapper'>
-			<div class="button-bar">
-				<ul class="button-group radius">
-					<li><a id="evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
-				</ul>
-						
-				<ul class="button-group radius">
-					<li><a id="evidence_table_analyze" class="small button secondary"><i class='icon-briefcase'></i> Analyze</a></li>
-				</ul>
-			</div>
-			
-			<table class='table table-striped table-bordered table-condensed' id='evidence_table' width="100%">
-			<thead>
-  			<tr>
-  			    <th>Evidence ID</th>
-  			    <th>Analyze ID</th>
-  				<th></th>
-  				<th>Interactor</th>
-  				<th>Interactor Systematic Name</th>
-  				<th>Interactor</th>
-   				<th>Interactor Systematic Name</th>
-  				<th>Type</th>
-    			<th>Assay</th>
-    			<th>Annotation</th>
-    			<th>Action</th>
-    			<th>Modification</th>
-    			<th>Phenotype</th>
-    			<th>Source</th>
-    			<th>Reference</th>
-    			<th>Note</th>
-  			</tr>
-  			</thead>
-			</table>
-        </div>
-   </div>
-</section>
+<!-- Includes phenotype_table into template -->
+{% include "templates/interaction_table.jinja2" %}
 
 <!-- Network Visualization
 ================================================== -->
@@ -105,12 +97,6 @@
 		<ul id='resource_list'>
 		</ul>
 	</div>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
 </section>
 
 </div>
@@ -121,22 +107,8 @@
 <script src="/static/js/jquery.nouislider.min.js"></script>
 <script src="/static/js/cytoscape/cytoscape.min.js"></script>
 <script src="/static/js/cytoscape/arbor.js"></script>
+<script src="/static/js/local.js"></script>
 <script src="/static/js/cytoscape.js"></script>
-
 <script src="/static/js/evidence.js"></script>
-
-<script>
-    //Template links and filenames
-	var interaction_details_link = "{{interaction_details_link}}";
-	var interaction_graph_link = "{{interaction_graph_link}}";
-	var interaction_resources_link = "{{interaction_resources_link}}";
-	var download_table_link = "{{download_table_link}}";
-	var analyze_link = "{{analyze_table_link}}";
-
-    var evidence_table_filename = "{{ locus.display_name}}_interactions";
-    var analyze_filename = "<a href='{{ locus.link }}' class='gene_name'>{{ locus.display_name }}</a>";
-</script>
-
 <script src="/static/js/interaction_details.js"></script>
-
 {% endblock scripts %}
