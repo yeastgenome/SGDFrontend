@@ -1,46 +1,65 @@
 
 function create_cytoscape_vis(div_id, layout, style, data, f) {
+	var cytoscape_div = $("#" + div_id);
+
 	var height = .5*$(window).height();
 	var width = $('#' + div_id).width();
-	document.getElementById(div_id).style.height = height + 'px';
-	$(loadCy = function(){
-		options = {
-			showOverlay: false,
-			layout: layout,
-		    minZoom: 0.5,
-		    maxZoom: 2,
-		    style: style,
+	cytoscape_div.height(height);
 
-		    elements: {
-		     	nodes: data['nodes'],
-		     	edges: data['edges'],
-		    },
+	options = {
+		showOverlay: false,
+		layout: layout,
+		minZoom: 0.5,
+		maxZoom: 2,
+		style: style,
 
-		    ready: function(){
-		      	cy = this;
-		      	cy.zoomingEnabled(false);
-		      	if(f != null) {
-		      		f();
-		      	}
-		      	cy.on('tap', 'node', function(evt){
-  					var node = evt.cyTarget;
-  					window.location.href = node.data().link;
-				});
-				cy.on('layoutstop', function(evt){
-					$('#cy_recenter').removeAttr('disabled');
-				});
-				cy.on('tap', function (evt) {
-					this.zoomingEnabled(true);
-				});
-				cy.on('mouseout', function(evt) {
-					this.zoomingEnabled(false);
-				});
-		    },
-		  };
+		elements: {
+		    nodes: data['nodes'],
+		    edges: data['edges'],
+		},
+    };
 
-		$('#' + div_id).cytoscape(options);
+	$('#' + div_id).cytoscape(options);
+    var cy = $('#' + div_id).cytoscape("get");
+
+    cy.zoomingEnabled(false);
+    if(f != null) {
+        f();
+	}
+	cy.on('tap', 'node', function(evt){
+  		var node = evt.cyTarget;
+  		window.location.href = node.data().link;
 	});
-	var cytoscape_div = document.getElementById(div_id);
+	cy.on('layoutstop', function(evt){
+		$('#cy_recenter').removeAttr('disabled');
+	});
+	cy.on('tap', function (evt) {
+		this.zoomingEnabled(true);
+	});
+	cy.on('mouseout', function(evt) {
+		this.zoomingEnabled(false);
+	});
+
+	cy.filters = {};
+	cy.applyFilters = function() {
+        var elements = cy.elements("*");
+	    for(var filterKey in cy.filters) {
+            elements = elements.intersect(cy.filters[filterKey]);
+	    }
+	    elements.show();
+
+	    var notElements = cy.elements("*");
+	    notElements = notElements.not(elements);
+	    notElements.hide();
+
+	    //Hide singleton nodes
+	    var centerNode = cy.elements("node[sub_type = 'FOCUS']")[0].id();
+	    var singletons = cy.elements("node:visible");
+	    var connectedNodes = cy.elements("edge[target = '" + centerNode + "']:visible").connectedNodes();
+	    singletons = singletons.not(connectedNodes);
+        singletons.hide();
+	};
+
 	var recenter_button = document.createElement('a');
 	recenter_button.id = "cy_recenter";
 	recenter_button.className = "small button secondary";
@@ -52,93 +71,94 @@ function create_cytoscape_vis(div_id, layout, style, data, f) {
 		cy.layout().run();
 		cy.zoomingEnabled(old_zoom_value);
 	};
-	cytoscape_div.parentNode.insertBefore(recenter_button, cytoscape_div);
+	cytoscape_div.before(recenter_button, cytoscape_div);
 	recenter_button.setAttribute('disabled', 'disabled');
 	return cy;
 }
 
-function setup_slider(div_id, min, max, current, slide_f) {
+function create_slider(slider_id, graph, min, max, slide_f) {
+    var range;
+    var start;
 	if(max==min) {
-		var slider = $("#" + div_id).noUiSlider({
-			range: [min, min+1]
-			,start: current
-			,step: 1
-			,handles: 1
-			,connect: "lower"
-			,slide: slide_f
-		});
-		slider.noUiSlider('disabled', true);
-		var spacing =  100;
+		range = [min, min+1];
+		start = min;
+	}
+	else {
+		range = [min, max];
+		start = Math.max(3, min);
+	}
+	var slider = $("#" + slider_id).noUiSlider({
+		range: range
+		,start: start
+		,step: 1
+		,handles: 1
+		,connect: "lower"
+		,slide: function() {
+            var cutoff = slider.val();
+            graph.filters['slider'] = slide_f(cutoff);
+            graph.applyFilters();
+        }
+	});
+
+	if(max==min) {
+	    slider.attr('disabled', 'disabled');
+	}
+
+	create_slider_ticks("slider_ticks", min, max)
+
+	slider.update_new_max = function(smax) {
+        $("#" + slider_id).noUiSlider({
+            range: [min, smax]
+        }, true);
+        create_slider_ticks("slider_ticks", min, smax);
+        var cutoff = slider.val();
+        graph.filters['slider'] = slide_f(cutoff);
+        graph.applyFilters();
+	};
+
+	var cutoff = slider.val();
+    graph.filters['slider'] = slide_f(cutoff);
+    graph.applyFilters();
+
+	return slider;
+}
+
+function create_slider_ticks(slider_tick_id, min, max) {
+    $("#" + slider_tick_id).empty();
+    if(max==min) {
+		var spacing =  92;
 	    i = min-1
 	    var value = i+1;
 	    if(value >= 10) {
-	    	var left = ((spacing * (i-min+1))-1)
-	       	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+	    	var left = (spacing * (i-min+1))+2
+	       	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
 	    }
 	    else {
-	    	var left = ((spacing * (i-min+1))-.5)
-			$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+	    	var left = (spacing * (i-min+1))+3.5
+			$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
 		}
 	}
 	else {
-		var slider = $("#" + div_id).noUiSlider({
-			range: [min, max]
-			,start: current
-			,step: 1
-			,handles: 1
-			,connect: "lower"
-			,slide: slide_f
-		});
-
-		var spacing =  100 / (max - min);
+		var spacing =  92 / (max - min);
 	    for (var i = min-1; i < max ; i=i+1) {
 	    	var value = i+1;
 	    	if(value >= 10) {
-	    		var left = ((spacing * (i-min+1))-1)
-	        	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+	    		var left = (spacing * (i-min+1))+2
+	        	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
 	    	}
 	    	else {
-	    		var left = ((spacing * (i-min+1))-.5)
-				$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('top', '15px').appendTo(slider);
+	    		var left = (spacing * (i-min+1))+3.5
+				$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
 	    	}
 		}
 	}
 }
 
-function create_slider(slider_id, graph) {
-    var slider = document.getElementById(slider_id);
-    var max_to_slider = {};
-    var current_slider = null;
-    var update_new_max = function(smax) {
-        if(current_slider != null) {
-            current_slider.style.display = 'none';
-        }
-        if(smax in max_to_slider) {
-            current_slider = max_to_slider[smax];
-        }
-        else {
-            var new_slider = document.createElement('div');
-            new_slider.class = 'noUiSlider';
-            new_slider.style.width = '100%';
-            new_slider.id = 'slider' + smax;
-            slider.appendChild(new_slider);
-            max_to_slider[smax] = new_slider;
-            current_slider = new_slider;
-            setup_slider();
-        }
-        current_slider.style.display = 'block';
-    };
-
-			<div id='all_slider' class='noUiSlider' style="width:100%"></div>
-			<div id='targets_slider' class='noUiSlider' style="width:100%"></div>
-			<div id='regulators_slider' class='noUiSlider' style="width:100%"></div>
-
-    var li = document.createElement('li');
-		li.id = references[i]['id']
-
-		var a = document.createElement('a');
-		var linkText = document.createTextNode(reference['display_name']);
-		a.appendChild(linkText);
-		a.href = reference['link'];
-		li.appendChild(a);
+function create_discrete_filter(radio_id, graph, slider, target_filter, max_value) {
+    var radio = $("#" + radio_id);
+    radio.click(function() {
+        slider.update_new_max(max_value);
+        graph.filters['discrete'] = target_filter();
+        graph.applyFilters();
+    });
 }

@@ -18,63 +18,15 @@
 					<li><a disabled="true" id="phys_gen_intersect" class="small button secondary sgd-icon-venn-intersection">Intersection</a></li>
 					<li><a disabled="true" id="phys_gen_union" class="small button secondary sgd-icon-venn-all">All</a></li>
 				</ul>
-				<ul class="button-group radius">
-					<li><a disabled="true" class="small button secondary radius" id="save"><i class="icon-picture"></i> PNG</a></li>
+				<ul class="button-group radius" hidden>
+					<li><a disabled="true" class="small button secondary radius" id="download_overview"><i class="icon-picture"></i> PNG</a></li>
 				</ul>
 			</div>
 		</div>
 	</div>
 </section>
 
-<script>
-	//Set up navbar
-    add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Interactions');
-    add_navbar_element('Interactors Summary', 'summary');
-  	add_navbar_element('Interactions', 'interactions');
-  	add_navbar_element('Network Visualization', 'network');
-  	add_navbar_element('Resources', 'resources');
-</script>
+<script src="/static/js/kinetic-v4.3.3.min.js"></script>
+<script src="/static/js/venn.js"></script>
+<script src="/static/js/interaction_overview.js"></script>
 
-<script src="/static/js/local.js"></script>	
-<script src="/static/js/kinetic-v4.3.3.min.js"></script>	
-<script src="/static/js/venn.js"></script>	
-<script>
-	//Links
-	var summary_download_filename = "{{ locus.display_name}}_interaction_summary";
-    var annotation_analyze_filename = "{{ locus.display_name}}_interactors";
-	var download_image_link = "{{download_image_link}}";
-
-	//Venn style
-	var venn_style = {"left_color": "#762A83", "right_color": "#1B7837"};
-	
-	//Set up overview data
-    var data = {{overview | safe}};
-  	var venn_id = "venn_diagram";
-  	var save_button_id = "save";
-  	  			
-  	var message_id = "summary_message";
-  	var wrapper_id = "summary_wrapper";
-  		
-  	if(data['num_gen_interactors'] + data['num_phys_interactors'] > 0){
-  		var r = data['gen_circle_size'];
-	  	var s = data['phys_circle_size'];
-	  	var x = data['circle_distance'];
-	  	var A = data['num_gen_interactors'];
-	  	var B = data['num_phys_interactors'];
-	  	var C = data['num_both_interactors'];
-	  			
-	  	//Colors chosen as colorblind safe from http://colorbrewer2.org/.
-		var stage = draw_venn_diagram(venn_id, r, s, x, A, B, C, venn_style['left_color'], venn_style['right_color']);
-		document.getElementById(save_button_id).onclick = function() {
-			download_image(stage, 450, 300, download_image_link, summary_download_filename);
-		};
-		document.getElementById(save_button_id).removeAttribute('disabled');
-		
-  	}
-  	else {
-  		document.getElementById(message_id).style.display = "block";
-  		document.getElementById(wrapper_id).style.display = "none";
-  	}
-		
-</script>
-        

@@ -196,7 +196,7 @@ class SGDFrontend(FrontendInterface):
                     }
         return page
     
-    def ypo_ontology(self):
+    def phenotype_ontology(self):
         biocon = get_phenotype(self.backend_url, 'ypo')
         biocon_id = str(biocon['id'])
 

@@ -52,6 +52,16 @@ function download_image(stage, width, height, download_link, image_name) {
 	});
 }
 
+function add_footer_space(section_id) {
+    next_section = $("#" + section_id);
+    next_section.append(document.createElement("br"));
+    next_section.append(document.createElement("br"));
+    next_section.append(document.createElement("br"));
+    next_section.append(document.createElement("br"));
+            next_section.append(document.createElement("br"));
+            next_section.append(document.createElement("br"));
+}
+
 function set_up_references(references, ref_list_id) {
   	//Set up references
 	var ref_list = document.getElementById(ref_list_id);
@@ -141,6 +151,12 @@ function create_note_icon(drop_id_num, text) {
 		icon = '';
 	}
 	return icon;
+}
+
+function hide_section(section_id) {
+    $("#" + section_id).hide();
+    $("#navbar_network").hide();
+    $("#navbar_network").removeAttr('data-magellan-arrival')
 }
 
 //http://datatables.net/forums/discussion/2123/filter-post-processing-and-highlighting/p1
@@ -257,11 +273,11 @@ function set_up_range_sort() {
 }
 
 function set_up_show_child_button(child_button_id, phenotype_header_id, header_id, details_link, details_all_link, table_id, set_up_table_f, new_filter_f) {
-	var child_button = document.getElementById(child_button_id);
+	var child_button = $("#" + child_button_id);
 	var has_all_data = false;
 	  
-	child_button.onclick = function() {
-	  	child_button.setAttribute('disabled', 'disabled'); 
+	child_button.click(function() {
+	  	child_button.attr('disabled', true);
 					
 		var new_message = null;
 		if(child_button.innerHTML == 'Hide Genes Associated With Child Terms') {
@@ -274,8 +290,8 @@ function set_up_show_child_button(child_button_id, phenotype_header_id, header_i
 		}
 		if(!has_all_data) {	
 			set_table_message(table_id, '<center><img src="/static/img/dark-slow-wheel.gif"></center>');
-	  		document.getElementById(phenotype_header_id).innerHTML = '_';
-			document.getElementById(header_id).innerHTML = '_';
+	  		$("#" + phenotype_header_id).html('_');
+			$("#" + header_id).html('_');
 			post_json_to_url(details_all_link, {}, 
 				function(data) {  
 					set_up_table_f(data);		
@@ -293,9 +309,8 @@ function set_up_show_child_button(child_button_id, phenotype_header_id, header_i
   			$('#' + child_button_id).removeAttr('disabled');
   			ev_table.fnDraw();
   		}
-	  				
-	};
-	$('#' + child_button_id).removeAttr('disabled');
+	});
+	child_button.attr('disabled', false);
 }
 
 function create_table(table_id, options) {
@@ -306,13 +321,25 @@ function create_table(table_id, options) {
   	return table;
 }
 
-function create_analyze_button(analyze_button_id, table, analyze_link, filename, apply_filter) {
+function create_analyze_button_with_list(analyze_button_id, bioent_ids, analyze_link, filename) {
+    //When button is clicked, send bioent_ids to Analyze page.
+
+    var analyze_button = $("#" + analyze_button_id);
+    var analyze_function = function() {
+        post_to_url(analyze_link, {'list_name': filename, 'bioent_ids': JSON.stringify(bioent_ids)});
+    };
+    analyze_button.click(analyze_function);
+
+    analyze_button.attr('disabled', false);
+}
+
+function create_analyze_button(analyze_button_id, table, analyze_link, name, apply_filter) {
     //When button is clicked, collect bioent_ids and send them to Analyze page.
 
-    var analyze_button = document.getElementById(analyze_button_id);
+    var analyze_button = $("#" + analyze_button_id);
     var analyze_function = function() {
         var bioent_ids = [];
-
+        var filename = name;
         var data;
         if(apply_filter) {
             data = table._('tr', {"filter": "applied"});
@@ -333,31 +360,32 @@ function create_analyze_button(analyze_button_id, table, analyze_link, filename,
 
         post_to_url(analyze_link, {'list_name': filename, 'bioent_ids': JSON.stringify(bioent_ids)});
     };
-    analyze_button.onclick = analyze_function;
+    analyze_button.click(analyze_function);
 
     //When the associated table is filtered so that no genes are being displayed, disable button.
     if(apply_filter) {
         table.bind('filter', function() {
   	        var data = table._('tr', {"filter": "applied"});
   	        if(data.length == 0) {
-  	            analyze_button.setAttribute('disabled', true);
-  	            analyze_button.onclick = null;
+  	            analyze_button.attr('disabled', true);
+  	            analyze_button.off('click');
   	        }
   	        else {
-  	            analyze_button.removeAttribute('disabled');
-  	            analyze_button.onclick = analyze_function;
+  	            analyze_button.attr('disabled', false);
+  	            analyze_button.click(analyze_function);
   	        }
   	    });
     }
 
-    analyze_button.removeAttribute('disabled');
+    analyze_button.attr('disabled', false);
 }
 
-function create_download_button(download_button_id, table, download_link, filename) {
+function create_download_button(download_button_id, table, download_link, name) {
 
-    var download_button = document.getElementById(download_button_id);
+    var download_button = $("#" + download_button_id);
     var download_function = function() {
         var data = table._('tr', {"filter": "applied"});
+        var filename = name;
 
         var table_headers = table.fnSettings().aoColumns;
         var headers = [];
@@ -372,22 +400,22 @@ function create_download_button(download_button_id, table, download_link, filena
 
         post_to_url(download_link, {"display_name":filename, 'headers': JSON.stringify(headers), 'data': JSON.stringify(data)});
     };
-    download_button.onclick = download_function;
+    download_button.click(download_function);
 
     //When the associated table is filtered so that no genes are being displayed, disable button.
     table.bind('filter', function() {
   	    var data = table._('tr', {"filter": "applied"});
   	    if(data.length == 0) {
-  	        download_button.setAttribute('disabled', true);
-  	        download_button.onclick = null;
+  	        download_button.attr('disabled', true);
+  	        download_button.off('click');
   	    }
   	    else {
-  	        download_button.removeAttribute('disabled');
-  	        download_button.onclick = download_function;
+  	        download_button.attr('disabled', false);
+  	        download_button.click(download_function);
   	    }
   	});
 
-    download_button.removeAttribute('disabled');
+    download_button.attr('disabled', false);
 }
 
 function set_up_enrichment_table(data) {
@@ -404,7 +432,7 @@ function set_up_enrichment_table(data) {
   		    datatable.push([evidence['go']['id'], go, evidence['match_count'].toString(), evidence['pvalue']])
     	}
 
-  	    document.getElementById("enrichment_header").innerHTML = data.length;
+  	    $("#enrichment_header").html(data.length);
 
 	    set_up_scientific_notation_sorting();
 
@@ -418,8 +446,9 @@ function set_up_enrichment_table(data) {
 }
 
 function create_enrichment_table(table_id, target_table, init_data) {
-    var enrichment_recalc = document.getElementById('enrichment_recalc');
+    var enrichment_recalc = $("#enrichment_table_recalculate");
     var filter_used = '';
+    var enrichment_table = null;
 
     var get_filter_bioent_ids = function() {
         var bioent_ids = [];
@@ -437,47 +466,48 @@ function create_enrichment_table(table_id, target_table, init_data) {
     };
 
     var update_enrichment = function() {
-        enrichment_recalc.setAttribute('disabled', true);
+        enrichment_recalc.attr('disabled', true);
 
         var options = {"bPaginate": true, "bDestroy": true, "oLanguage": {'sEmptyTable': '<center><img src="/static/img/dark-slow-wheel.gif"></center>'}, "aaData": []};
         create_table("enrichment_table", options);
 
         var bioent_ids = get_filter_bioent_ids();
 
-		document.getElementById("enrichment_gene_header").innerHTML = bioent_ids.length;
-		document.getElementById("enrichment_header").innerHTML = '_';
+		$("#enrichment_gene_header").html(bioent_ids.length);
+		$("#enrichment_header").html('_');
 		post_json_to_url(go_enrichment_link, {'bioent_ids': bioent_ids},
 		    function(data) {
-  			    var enrichment_table = set_up_enrichment_table(data)
+  			    set_up_enrichment_table(data)
   			    filter_used = target_table.fnSettings().oPreviousSearch.sSearch;
-  			    enrichment_recalc.removeAttribute('disabled');
-  			    enrichment_recalc.style.display = 'none';
+  			    enrichment_recalc.attr('disabled', false);
+  			    enrichment_recalc.hide();
   		    }
   		);
-  		return enrichment_table;
     };
 
     target_table.bind("filter", function() {
 	    var search = target_table.fnSettings().oPreviousSearch.sSearch;
-		if(search != filter_used) {
-		    enrichment_recalc.style.display = 'block';
+	    var data = target_table._('tr', {"filter": "applied"});
+		if(search != filter_used && data.length > 0) {
+		    enrichment_recalc.show();
 		}
 		else {
-		    enrichment_recalc.style.display = 'none';
+		    enrichment_recalc.hide();
 		}
 	});
 
-	enrichment_recalc.onclick = update_enrichment;
+	enrichment_recalc.click(update_enrichment);
 
-    var enrichment_table = null;
     if(init_data != null) {
         enrichment_table = set_up_enrichment_table(init_data);
-		document.getElementById("enrichment_gene_header").innerHTML = get_filter_bioent_ids().length;
+		$("#enrichment_gene_header").html(get_filter_bioent_ids().length);
     }
     else {
-        enrichment_table = update_enrichment();
+        var options = {"bPaginate": true, "bDestroy": true, "oLanguage": {'sEmptyTable': '<center><img src="/static/img/dark-slow-wheel.gif"></center>'}, "aaData": []};
+        enrichment_table = create_table("enrichment_table", options);
+        update_enrichment();
     }
 
-    document.getElementById("enrichment").style.display = "block";
+    $("#enrichment").show();
     return enrichment_table;
 }

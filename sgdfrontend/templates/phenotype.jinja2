@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 
+<script>
+	var phenotype_details_link = "{{phenotype_details_link}}";
+	var ontology_graph_link = "{{ontology_graph_link}}";
+	var download_table_link = "{{download_table_link}}";
+	var analyze_link = "{{analyze_table_link}}";
+
+    var download_filename = "{{ phenotype.display_name }}_annotations";
+    var analyze_filename = "<a href='{{ phenotype.link }}' class='gene_name'>{{ phenotype.display_name }}</a> genes";
+
+    var display_name = "{{ phenotype.display_name }}";
+</script>
+
 <title>{{ phenotype.display_name }} Phenotype</title>
 
 {% extends "templates/global_layout.jinja2" %}
@@ -12,11 +24,19 @@
 </div>
 
 <div class="row">
-	
+
+<!-- Navbar
+================================================== -->
 <!-- Includes navbar.html into template -->
 {% include "templates/navbar.jinja2" %}
 
 <div class="small-12 large-9 columns content-column"> 
+
+<script>
+    add_navbar_title('<span class="gene_name">{{ phenotype.display_name }}</span><br>Phenotype')
+    add_navbar_element('Summary', 'summary');
+    add_navbar_element('Annotations', 'phenotype');
+</script>
 
 <!-- Summary
 ================================================== -->	
@@ -32,168 +52,19 @@
 	</div>
 </section>
 
-<!-- Genes
+<!-- Annotations
 ================================================== -->
-<section id="annotations" data-magellan-destination="annotations">
-	<div class="page-header">
-		<h1>Annotations <span class="round secondary label"><span id="evidence_header"></span> <small>entries for</small> <span id="gene_header_id"></span> <small>genes</small></span></h1>
-		<p id='evidence_message' style='display:none'>No genes curated.</p>
-		<div id='evidence_wrapper'>
-			<div class="button-bar">
-				<ul class="button-group radius">
-					<li><a disabled="true" id="evidence_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
-				</ul>
-						
-				<ul class="button-group radius">
-					<li><a disabled="true" id="evidence_table_analyze" class="small button secondary"><i class='icon-briefcase'></i> Analyze</a></li>
-				</ul>
-			</div>
-			
-			<table class='table table-striped table-bordered table-condensed' id='evidence_table' width="100%">
-			<thead>
-  			<tr>
-  				<th>Gene</th>
-  				<th>Gene Format Name</th>
-  				<th>Phenotype</th>
-  				<th>Experiment Type</th>
-  				<th>Mutant Information</th>
-  				<th>Strain Background</th>
-  				<th>Chemical</th>
-    			<th>Details</th>
-          		<th>Reference</th>
-  			</tr>
-  			</thead>
-			</table>
-        </div>
-   </div>
-   <br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-</section>
+<!-- Includes phenotype_table into template -->
+{% include "templates/phenotype_table.jinja2" %}
 
 </div>
 </div>
 {% endblock body %}
 
 {% block scripts %}
-<script src="/static/js/cytoscape/cytoscape.min.js"></script>	
+<script src="/static/js/cytoscape/cytoscape.min.js"></script>
 <script src="/static/js/cytoscape/arbor.js"></script>
 <script src="/static/js/local.js"></script>
+<script src="/static/js/evidence.js"></script>
 <script src="/static/js/phenotype.js"></script>
-
-
-<script>
-	//Set up navbar
-    add_navbar_title('<span class="gene_name">{{ phenotype.display_name }}</span><br>Phenotype')
-    add_navbar_element('Summary', 'summary');
-	add_navbar_element('Annotations', 'annotations');
-	
-</script>
-
-<script>
-
-	//Graph style
-	var graph_style = cytoscape.stylesheet()
-	.selector('node')
-	.css({
-		'content': 'data(name)',
-		'font-family': 'helvetica',
-		'font-size': 14,
-		'text-outline-width': 3,
-		'text-valign': 'center',
-		'width': 30,
-		'height': 30,
-		'border-color': '#fff',
-		'background-color': "grey",
-		'text-outline-color': '#fff',
-		'color': '#888'
-	})
-	.selector('edge')
-	.css({
-		'width': 2,
-		'target-arrow-shape': 'triangle'
-	})
-	.selector("node[sub_type='FOCUS']")
-	.css({
-		'width': 30,
-		'height': 30,
-		'background-color': "#fade71",
-		'text-outline-color': '#fff',
-		'color': '#888'
-	})
-	.selector("node[sub_type='morphology']")
-	.css(
-		{'background-color': "#7FBF7B"
-	})
-	.selector("node[sub_type='fitness']")
-	.css(
-		{'background-color': "#AF8DC3"
-	})
-	.selector("node[sub_type='essentiality']")
-	.css(
-		{'background-color': "#1F78B4"
-	})
-	.selector("node[sub_type='interaction with host/environment']")
-	.css(
-		{'background-color': "#FB9A99"
-	})
-	.selector("node[sub_type='metabolism and growth']")
-	.css(
-		{'background-color': "#E31A1C"
-	})
-	.selector("node[sub_type='cellular processes']")
-	.css(
-		{'background-color': "#FF7F00"
-	})
-	.selector("node[sub_type='development']")
-	.css(
-		{'background-color': "#BF5B17"
-	});
-	
-	var layout = {
-				"name": "breadthfirst", 
-				"fit": false
-	};
-
-    //Template links and filenames
-	var phenotype_details_link = "{{phenotype_details_link}}";
-	var ontology_graph_link = "{{ontology_graph_link}}";
-	var download_table_link = "{{download_table_link}}";
-	var analyze_table_link = "{{analyze_table_link}}";
-
-    var annotation_download_filename = "{{ phenotype.display_name }}_annotations";
-    var annotation_analyze_filename = "<a href='{{ phenotype.link }}' class='gene_name'>{{ phenotype.display_name }}</a> genes";
-
-	$(document).ready(function() {
-		//Get evidence data
-	  	$.getJSON(phenotype_details_link, function(data) {
-	  		var header_id = "evidence_header";
-	  		var phenotype_header_id = "gene_header_id";
-	  		var table_id = "evidence_table";
-	  		var download_button_id = "evidence_table_download";
-	  		var analyze_button_id = "evidence_table_analyze";
-	  			
-	  		var message_id = "evidence_message";
-	  		var wrapper_id = "evidence_wrapper";
-	  			
-	  		if(data.length > 0) {
-	  			set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id,
-	  			download_table_link, annotation_download_filename,
-	  			analyze_button_id, analyze_table_link, annotation_analyze_filename, data);
-	  		}
-	  		else {
-	  			document.getElementById(message_id).style.display = "block";
-	  			document.getElementById(wrapper_id).style.display = "none";
-	  			document.getElementById(header_id).innerHTML = 0;
-	  			document.getElementById(phenotype_header_id).innerHTML = 0;
-	  		}
-	  			
-	  	});
-	});
-</script>
-        
-
 {% endblock scripts %}

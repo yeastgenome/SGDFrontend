@@ -130,11 +130,11 @@ def prep_views(chosen_frontend, config):
                                         biocon_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].lower())),
                      renderer=chosen_frontend.get_renderer('observable'))
     
-    config.add_route('ypo_ontology',
-                     '/ontology/ypo/overview',
-                     view=lambda request: chosen_frontend.response_wrapper('ypo_ontology', request)(
-                                getattr(chosen_frontend, 'ypo_ontology')()),
-                     renderer=chosen_frontend.get_renderer('ypo_ontology'))
+    config.add_route('phenotype_ontology',
+                     '/ontology/phenotype/ypo/overview',
+                     view=lambda request: chosen_frontend.response_wrapper('phenotype_ontology', request)(
+                                getattr(chosen_frontend, 'phenotype_ontology')()),
+                     renderer=chosen_frontend.get_renderer('phenotype_ontology'))
     
     config.add_route('go',
                      '/go/{identifier}/overview',
@@ -145,7 +145,7 @@ def prep_views(chosen_frontend, config):
 
     config.add_route('go_ontology',
                      '/ontology/go/{identifier}/overview',
-                     view=lambda request: chosen_frontend.response_wrapper('ypo_ontology', request)(
+                     view=lambda request: chosen_frontend.response_wrapper('go_ontology', request)(
                                 getattr(chosen_frontend, 'go_ontology')(
                                         biocon_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].lower())),
                      renderer=chosen_frontend.get_renderer('go_ontology'))

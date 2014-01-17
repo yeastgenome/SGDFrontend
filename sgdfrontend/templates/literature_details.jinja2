@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 
+<script>
+	var literature_details_link = "{{literature_details_link}}";
+	var literature_graph_link = "{{literature_graph_link}}";
+	var display_name = "{{ locus.display_name }}";
+  	var download_link = "{{download_link}}";
+  	var data = {{overview | safe}};
+</script>
+
 <title>{{ locus.display_name }} Literature</title>
 
 {% extends "templates/global_layout.jinja2" %}
@@ -11,123 +19,133 @@
 	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Literature</h2>
 </div>
 
-
+<!-- Tabs
+================================================== -->
 <!-- Includes tabs.html into template -->
 {% include "templates/tabs.jinja2" %}
 <script>document.getElementById('literature_tab').id = 'current';</script>
 
+<!-- Navbar
+================================================== -->
 <div class="row">
 	
-<!-- Includes navbar.html into template -->
-{% include "templates/navbar.jinja2" %}
+    <!-- Includes navbar.html into template -->
+    {% include "templates/navbar.jinja2" %}
 
-<div class="small-12 large-9 columns content-column"> 
-	
-<!-- Includes literature_overview.html into template -->
-{% include "templates/literature_overview.jinja2" %}
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Literature');
+            add_navbar_element('Literature Summary', 'summary');
+            add_navbar_element('Primary Literature', 'primary');
+            add_navbar_element('Network Visualization', 'network');
+            add_navbar_element('Additional Literature', 'additional');
+            add_navbar_element('Reviews', 'reviews');
+            add_navbar_element('Gene Ontology Literature', 'go');
+            add_navbar_element('Phenotype Literature', 'phenotype');
+            add_navbar_element('Interaction Literature', 'interaction');
+            add_navbar_element('Regulation Literature', 'regulation');
+        </script>
+
+        <!-- Includes literature_overview.html into template -->
+        {% include "templates/literature_overview.jinja2" %}
 
 <!-- Network Visualization
 ================================================== -->
-<section id="network" data-magellan-destination="network">
-	<div class="page-header">
-		<h1>Network Visualization</h1>
-		<div class="panel">
-			<div id="cy" name="cy" style="width:100%;height:700px"></div>
-		</div>
-    </div>
-</section>
+        <section id="network" data-magellan-destination="network">
+            <div class="page-header">
+                <h1>Network Visualization</h1>
+                <div class="panel">
+                    <div id="cy" name="cy" style="width:100%;height:700px"></div>
+                </div>
+            </div>
+        </section>
 
 <!-- Additional
 ================================================== -->
-<section id="additional" data-magellan-destination="additional">
-	<div class="page-header">
-		<h1>Additional Literature <span id="additional_header" class="label secondary round"></span></h1>
-		<p id="additional_message" class="hide">No additional literature curated.</p>
-		<div id="additional_wrapper">
-			<a id="export_additional" class="small button secondary"><i class="icon-download-alt"></i> Download</a>
-			<ul id="additional_list" class="literature-list">
-			</ul>
-		</div>
-	</div>
-</section>
+        <section id="additional" data-magellan-destination="additional">
+            <div class="page-header">
+                <h1>Additional Literature <span id="additional_header" class="label secondary round"></span></h1>
+                <p id="additional_message" hidden>No additional literature curated.</p>
+                <div id="additional_wrapper">
+                    <a id="export_additional" class="small button secondary"><i class="icon-download-alt"></i> Download</a>
+                    <ul id="additional_list" class="literature-list">
+                    </ul>
+                </div>
+            </div>
+        </section>
 
 <!-- Review
 ================================================== -->
-<section id="reviews" data-magellan-destination="reviews">
-	<div class="page-header">
-		<h1>Reviews <span id="review_header" class="label secondary round"></span></h1>
-		<p id='review_message' class="hide">No reviews curated.</p>
-		<div id='review_wrapper'>
-			<a id="export_review" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
-			<ul id="review_list" class="literature-list">
-			</ul>
-		</div>
-	</div>
-</section>
+        <section id="reviews" data-magellan-destination="reviews">
+            <div class="page-header">
+                <h1>Reviews <span id="review_header" class="label secondary round"></span></h1>
+                <p id='review_message' hidden>No reviews curated.</p>
+                <div id='review_wrapper'>
+                    <a id="export_review" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
+                    <ul id="review_list" class="literature-list">
+                    </ul>
+                </div>
+            </div>
+        </section>
 
 <!-- GO
 ================================================== -->
-<section id="go" data-magellan-destination="go">
-	<div class="page-header">
-		<h1>Gene Ontology Literature <span id="go_header" class="label secondary round"></span></h1>
-		<p id='go_message' class="hide">No gene ontology literature curated.</p>
-		<div id='go_wrapper'>
-			<a id="export_go" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
-			<ul id="go_list" class="literature-list">
-			</ul>
-		</div>
-	</div>
-</section>
+        <section id="go" data-magellan-destination="go">
+            <div class="page-header">
+                <h1>Gene Ontology Literature <span id="go_header" class="label secondary round"></span></h1>
+                <p id='go_message' hidden>No gene ontology literature curated.</p>
+                <div id='go_wrapper'>
+                    <a id="export_go" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
+                    <ul id="go_list" class="literature-list">
+                    </ul>
+                </div>
+            </div>
+        </section>
 
 <!-- Phenotype
 ================================================== -->
-<section id="phenotype" data-magellan-destination="phenotype">
-	<div class="page-header">
-		<h1>Phenotype Literature <span id="phenotype_header" class="label secondary round"></span></h1>
-		<p id='phenotype_message' class="hide">No phenotype literature curated.</p>
-		<div id='phenotype_wrapper'>	
-			<a id="export_phenotype" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
-			<ul id="phenotype_list" class="literature-list">
-			</ul>
-		</div>
-	</div>
-</section>
+        <section id="phenotype" data-magellan-destination="phenotype">
+            <div class="page-header">
+                <h1>Phenotype Literature <span id="phenotype_header" class="label secondary round"></span></h1>
+                <p id='phenotype_message' hidden>No phenotype literature curated.</p>
+                <div id='phenotype_wrapper'>
+                    <a id="export_phenotype" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
+                    <ul id="phenotype_list" class="literature-list">
+                    </ul>
+                </div>
+            </div>
+        </section>
 
 <!-- Interaction
 ================================================== -->
-<section id="interaction" data-magellan-destination="interaction">
-	<div class="page-header">
-		<h1>Interaction Literature <span id="interaction_header" class="label secondary round"></span></h1>
-		<p id='interaction_message' class="hide">No interaction literature curated.</p>
-		<div id='interaction_wrapper'>	
-			<a id="export_interaction" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
-			<ul id="interaction_list" class="literature-list">
-			</ul>
-		</div>
-	</div>
-</section>
+        <section id="interaction" data-magellan-destination="interaction">
+            <div class="page-header">
+                <h1>Interaction Literature <span id="interaction_header" class="label secondary round"></span></h1>
+                <p id='interaction_message' hidden>No interaction literature curated.</p>
+                <div id='interaction_wrapper'>
+                    <a id="export_interaction" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
+                    <ul id="interaction_list" class="literature-list">
+                    </ul>
+                </div>
+            </div>
+        </section>
 
 <!-- Regulation
 ================================================== -->
-<section id="regulation" data-magellan-destination="regulation">
-	<div class="page-header">
-		<h1>Regulation Literature <span id="regulation_header" class="label secondary round"></span></h1>
-		<p id='regulation_message' class="hide">No regulation literature curated.</p>
-		<div id='regulation_wrapper'>	
-			<a id="export_regulation" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
-			<ul id="regulation_list" class="literature-list">
-			</ul>
-		</div>
-	</div>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-</section>
+        <section id="regulation" data-magellan-destination="regulation">
+            <div class="page-header">
+                <h1>Regulation Literature <span id="regulation_header" class="label secondary round"></span></h1>
+                <p id='regulation_message' hidden>No regulation literature curated.</p>
+                <div id='regulation_wrapper'>
+                    <a id="export_regulation" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
+                    <ul id="regulation_list" class="literature-list">
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-</div>
+    </div>
 </div>
 
 {% endblock body %}
@@ -135,138 +153,6 @@
 {% block scripts %}
 <script src="/static/js/cytoscape/cytoscape.min.js"></script>	
 <script src="/static/js/cytoscape/arbor.js"></script>
-<script src="/static/js/literature_details.js"></script>	
-
-<script>
-
-	//Graph style
-	var graph_style = cytoscape.stylesheet()
-	.selector('node')
-	.css({
-		'content': 'data(name)',
-		'font-family': 'helvetica',
-		'font-size': 14,
-		'text-outline-width': 3,
-		'text-valign': 'center',
-		'width': 10,
-		'height': 10,
-		'border-color': '#fff',
-		'background-color': "#D0A9F5",
-		'text-outline-color': '#fff',
-		'color': '#888',
-	})
-	.selector('edge')
-	.css({
-		'width': 2,
-	})
-	.selector("node[sub_type='FOCUS']")
-	.css({
-		'width': 30,
-		'height': 30,
-		'background-color': "#fade71",
-		'text-outline-color': '#fff',
-		'color': '#888',
-	})
-	.selector("node[type='REFERENCE']")
-	.css({
-		'shape': 'oval',
-		'text-outline-color': '#888',
-		'color': '#fff',
-
-		'width': 100,
-		'height': 30,
-	});
-	
-	var layout = {
-				"name": "arbor", 
-				"liveUpdate": true,
-				"ungrabifyWhileSimulating": true, 
-				"nodeMass":function(data) {
-					if(data.sub_type == 'FOCUS') {
-						return 10;
-					}
-					else {
-						return 1;
-					}
-				}
-	};
-
-    //Template links and filenames
-	var literature_details_link = "{{literature_details_link}}";
-	var literature_graph_link = "{{literature_graph_link}}";
-  	var download_link = "{{download_link}}";
-	
-	$(document).ready(function() {
-		
-		//Get literature
-  		$.getJSON(literature_details_link, function(data) {
-  			var additional_header_id = "additional_header";
-  			var additional_list_id = "additional_list";
-  			var additional_message_id = "additional_message";
-  			var additional_wrapper_id = "additional_wrapper";
-  			var additional_download_button_id = "export_additional";
-  			var additional_download_filename = "{{ locus.display_name }}_additional_citations"
-  			var additional_data = data['additional'];
-  			set_up_reference_list(additional_header_id, additional_list_id, additional_message_id, additional_wrapper_id, additional_download_button_id, download_link, additional_download_filename, additional_data);
-  			
-  			var review_header_id = "review_header";
-  			var review_list_id = "review_list";
-  			var review_message_id = "review_message";
-  			var review_wrapper_id = "review_wrapper";
-  			var review_download_button_id = "export_review";
-  			var review_download_filename = "{{ locus.display_name }}_review_citations"
-  			var review_data = data['reviews'];
-  			set_up_reference_list(review_header_id, review_list_id, review_message_id, review_wrapper_id, review_download_button_id, download_link, review_download_filename, review_data);
-  		
-  			var header_id = "go_header";
-  			var list_id = "go_list";
-  			var message_id = "go_message";
-  			var wrapper_id = "go_wrapper";
-  			var download_button_id = "export_go";
-  			var download_filename = "{{ locus.display_name }}_go_citations"
-  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data['go']);
-  			
-  			var header_id = "phenotype_header";
-  			var list_id = "phenotype_list";
-  			var message_id = "phenotype_message";
-  			var wrapper_id = "phenotype_wrapper";
-  			var download_button_id = "export_phenotype";
-  			var download_filename = "{{ locus.display_name }}_phenotype_citations"
-  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data['phenotype']);
-  			
-  			var header_id = "interaction_header";
-  			var list_id = "interaction_list";
-  			var message_id = "interaction_message";
-  			var wrapper_id = "interaction_wrapper";
-  			var download_button_id = "export_interaction";
-  			var download_filename = "{{ locus.display_name }}_interaction_citations"
-  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data['interaction']);
-  			
-  			var header_id = "regulation_header";
-  			var list_id = "regulation_list";
-  			var message_id = "regulation_message";
-  			var wrapper_id = "regulation_wrapper";
-  			var download_button_id = "export_regulation";
-  			var download_filename = "{{ locus.display_name }}_regulation_citations"
-  			set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data['regulation']);
-  		});
-  		
-  		//Get graph
-  		$.getJSON(literature_graph_link, function(data) {
-  			var graph_id = "cy";
-  			var section_id = "network";
-  			var section_navbar_id = "navbar_network";
-  			if(data['nodes'].length > 1) {
-  				var cy = setup_cytoscape_vis(graph_id, layout, graph_style, data);
-  			}
-			else {
-				document.getElementById(section_id).style.display = "none";
-				document.getElementById(section_navbar_id).style.display = "none";
-			}
-			
-		});
-
-	});
-</script>
-
+<script src="/static/js/cytoscape.js"></script>
+<script src="/static/js/literature_details.js"></script>
 {% endblock scripts %}

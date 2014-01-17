@@ -41,7 +41,7 @@ def go_ontology_graph_link(backend_start, go):
 
 #Phenotype Links
 def phenotype_ontology_link():
-    return '/ontology/ypo/overview'
+    return '/ontology/phenotype/ypo/overview'
 def observable_link(observable):
     observable = observable.replace(' ', '_')
     observable = observable.replace('/', '-')

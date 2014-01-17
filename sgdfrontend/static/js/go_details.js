@@ -1,82 +1,60 @@
-function set_up_evidence_table(header_id, go_header_id, table_id, message_id, wrapper_id, download_button_id, download_table_filename, method,
-                               download_link, data) {
+$(document).ready(function() {
+
+  	$.getJSON(go_details_link, function(data) {
+  	    var mc_bp_go_table = create_go_table("mc_bp", "No manually curated biological process terms for " + display_name, function(x) {return x["method"] == "manually curated"}, data['biological_process']);
+        create_download_button("mc_bp_go_table_download", mc_bp_go_table, download_table_link, mc_bp_download_table_filename);
+
+        var mc_mf_go_table = create_go_table("mc_mf", "No manually curated molecular function terms for " + display_name, function(x) {return x["method"] == "manually curated"}, data['molecular_function']);
+        create_download_button("mc_mf_go_table_download", mc_mf_go_table, download_table_link, mc_mf_download_table_filename);
+
+        var mc_cc_go_table = create_go_table("mc_cc", "No manually curated cellular component terms for " + display_name, function(x) {return x["method"] == "manually curated"}, data['cellular_component']);
+        create_download_button("mc_cc_go_table_download", mc_cc_go_table, download_table_link, mc_cc_download_table_filename);
+
+        var htp_bp_go_table = create_go_table("htp_bp", "No high-throughput biological process terms for " + display_name, function(x) {return x["method"] == "high-throughput"}, data['biological_process']);
+        create_download_button("htp_bp_go_table_download", htp_bp_go_table, download_table_link, htp_bp_download_table_filename);
+
+        var htp_mf_go_table = create_go_table("htp_mf", "No high-throughput molecular function terms for " + display_name, function(x) {return x["method"] == "high-throughput"}, data['molecular_function']);
+        create_download_button("htp_mf_go_table_download", htp_mf_go_table, download_table_link, htp_mf_download_table_filename);
+
+        var htp_cc_go_table = create_go_table("htp_cc", "No high-throughput cellular component terms for " + display_name, function(x) {return x["method"] == "high-throughput"}, data['cellular_component']);
+        create_download_button("htp_cc_go_table_download", htp_cc_go_table, download_table_link, htp_cc_download_table_filename);
+
+        var comp_bp_go_table = create_go_table("comp_bp", "No computational biological process terms for " + display_name, function(x) {return x["method"] == "computational"}, data['biological_process']);
+        create_download_button("comp_bp_go_table_download", comp_bp_go_table, download_table_link, comp_bp_download_table_filename);
+
+        var comp_mf_go_table = create_go_table("comp_mf", "No computational molecular function terms for " + display_name, function(x) {return x["method"] == "computational"}, data['molecular_function']);
+        create_download_button("comp_mf_go_table_download", comp_mf_go_table, download_table_link, comp_mf_download_table_filename);
+
+        var comp_cc_go_table = create_go_table("comp_cc", "No computational cellular component terms for " + display_name, function(x) {return x["method"] == "computational"}, data['cellular_component']);
+        create_download_button("comp_cc_go_table_download", comp_cc_go_table, download_table_link, comp_cc_download_table_filename);
+  	});
+
+	//Hack because footer overlaps - need to fix this.
+	add_footer_space("comp");
+});
+
+function create_go_table(prefix, message, filter, data) {
 	var datatable = [];
-	var format_name_to_id = {};
-
+	var gos = {};
 	for (var i=0; i < data.length; i++) {
-		var evidence = data[i];
+	    if(filter(data[i])) {
+	        datatable.push(go_data_to_table(data[i], i));
+		    gos[data[i]['bioconcept']['id']] = true;
+	    }
+	}
 
-        if(evidence['method'] == method) {
-            format_name_to_id[evidence['bioconcept']['display_name']] = evidence['bioconcept']['id'];
+  	$("#" + prefix + "_go_header").html(datatable.length);
+  	$("#" + prefix + "_go_subheader").html(Object.keys(gos).length);
+  	$("#" + prefix + "_go_subheader_type").html('gene ontology terms');
 
-            var bioent = create_link(evidence['bioentity']['display_name'], evidence['bioentity']['link']);
-            var biocon = create_link(evidence['bioconcept']['display_name'], evidence['bioconcept']['link']);
-            var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+  	var options = {};
+	options["bPaginate"] = true;
+	options["aaSorting"] = [[5, "asc"]];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
+	options["oLanguage"] = {"sEmptyTable": message};
+	options["aaData"] = datatable;
 
-            var with_entry = null;
-            var relationship_entry = null;
+	$("#" + prefix + "_go_table_analyze").hide();
 
-            for(var j=0; j < evidence['conditions'].length; j++) {
-                var condition = evidence['conditions'][j];
-                if(condition['role'] == 'With' || condition['role'] == 'From') {
-                    var new_with_entry = create_link(condition['obj']['display_name'], condition['obj']['link']);
-                    if(with_entry == null) {
-                        with_entry = new_with_entry
-                    }
-                    else {
-                        with_entry = with_entry + ', ' + new_with_entry
-                    }
-                }
-                else if(condition['obj'] != null) {
-                    var new_rel_entry = condition['role'] + ' ' + create_link(condition['obj']['display_name'], condition['obj']['link']);
-                    if(relationship_entry == null) {
-                        relationship_entry = new_rel_entry
-                    }
-                    else {
-                        relationship_entry = relationship_entry + ', ' + new_rel_entry
-                    }
-                }
-
-            }
-            var icon = create_note_icon(i, relationship_entry);
-
-            var evidence_code = evidence['code'];
-            if(with_entry != null) {
-                evidence_code = evidence_code + ' with ' + with_entry;
-            }
-
-            var qualifier = evidence['qualifier'];
-            if(qualifier == 'involved in' || qualifier == 'enables' || qualifier == 'part of') {
-                qualifier = '';
-            }
-
-            datatable.push([icon, bioent, evidence['bioentity']['format_name'], biocon, qualifier, evidence_code, evidence['source'], evidence['date_created'], reference, relationship_entry]);
-        }
-  	}
-
-    if(datatable.length == 0) {
-        document.getElementById(message_id).style.display = "block";
-  		document.getElementById(wrapper_id).style.display = "none";
-  		document.getElementById(header_id).innerHTML = 0;
-  		document.getElementById(go_header_id).innerHTML = 0;
-    }
-    else {
-        document.getElementById(header_id).innerHTML = datatable.length;
-        document.getElementById(go_header_id).innerHTML = Object.keys(format_name_to_id).length;
-
-        var options = {};
-        options["bPaginate"] = true;
-        options["aaSorting"] = [[3, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
-        options["aaData"] = datatable;
-
-        setup_datatable_highlight();
-        ev_table = $('#' + table_id).dataTable(options);
-        ev_table.fnSearchHighlighting();
-
-        document.getElementById(download_button_id).onclick = function() {download_table(ev_table, download_link, download_table_filename)};
-
-        $('#' + download_button_id).removeAttr('disabled');
-    }
+    return create_table(prefix + "_go_table", options);
 }
-  		
