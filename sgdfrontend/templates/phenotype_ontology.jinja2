@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<script>
+	var ypo_ontology_link = "{{ontology_link}}";
+	var ontology_graph_link = "{{ontology_graph_link}}";
+</script>
+
+<title>{{ ontology.display_name}} Ontology</title>
+
+{% extends "templates/global_layout.jinja2" %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2><span class="gene_name">{{ ontology.display_name }}</span></h2>
+</div>
+
+<div class="row">
+
+<!-- Navbar
+================================================== -->
+<!-- Includes navbar.html into template -->
+{% include "templates/navbar.jinja2" %}
+
+<div class="small-12 large-9 columns content-column">
+
+<script>
+    add_navbar_title('<span class="gene_name">{{ ontology.display_name }}</span><br>Ontology')
+    add_navbar_element('Summary', 'summary');
+	add_navbar_element('Ontology', 'network');
+	add_navbar_element('Full Ontology', 'ontology');
+</script>
+
+<!-- Summary
+================================================== -->	
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Summary</h1>
+		<p>{{ ontology.description }}</p>
+	</div>
+</section>
+
+<!-- Network Visualization
+================================================== -->
+<section id="network" data-magellan-destination="network">
+	<div class="page-header">
+		<h1>Ontology</h1>
+		<div class="panel">
+			<div id="cy" style="width:100%;height:700px"></div>
+		</div>
+    </div>
+</section>
+
+<!-- Ontology
+================================================== -->
+<section id="ontology" data-magellan-destination="ontology" style="display: none">
+	<div class="page-header">
+		<h1>Full Ontology</h1>
+		<ul id='full_ontology'></ul>
+    </div>
+    <br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+</section>
+
+</div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/cytoscape/cytoscape.min.js"></script>	
+<script src="/static/js/cytoscape/arbor.js"></script>
+<script src="/static/js/CollapsibleLists.js"></script>
+<script src="/static/js/local.js"></script>
+<script src="/static/js/cytoscape.js"></script>
+<script src="/static/js/phenotype_ontology.js"></script>
+{% endblock scripts %}

@@ -196,7 +196,7 @@ class SGDFrontend(FrontendInterface):
                     }
         return page
     
-    def ypo_ontology(self):
+    def phenotype_ontology(self):
         biocon = get_phenotype(self.backend_url, 'ypo')
         biocon_id = str(biocon['id'])
 
@@ -286,10 +286,14 @@ class SGDFrontend(FrontendInterface):
         
         date = datetime.datetime.now().strftime("%m/%d/%Y")
         description = "!\n!Date: " + date + '\n' + "!From: Saccharomyces Genome Database (SGD) \n!URL: http://www.yeastgenome.org/ \n!Contact Email: sgd-helpdesk@lists.stanford.edu \n!Funding: NHGRI at US NIH, grant number 5-P41-HG001315 \n!"
+
+        cutoff = 1;
+        if header_info[1] == 'Analyze ID':
+            cutoff = 2;
+
+        table_header = description + '\n\n' + '\t'.join(header_info[cutoff:])
         
-        table_header = description + '\n\n' + '\t'.join(header_info)
-        
-        response.text = table_header + '\n' + '\n'.join(['\t'.join([clean_cell(cell) for cell in row]) for row in data])
+        response.text = table_header + '\n' + '\n'.join(['\t'.join([clean_cell(str(cell)) for cell in row[cutoff:]]) for row in data])
         
         headers['Content-Type'] = 'text/plain'      
         headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.txt')

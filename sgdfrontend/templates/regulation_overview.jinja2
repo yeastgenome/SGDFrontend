@@ -9,89 +9,24 @@
 		
 		<ul id="summary_paragraph_reference_list" class="literature-list"></ul>
 		
-		<p id="summary_message" style="display:none">0 Targets and 0 Regulators curated.</p>
+		<p id="summary_message" hidden>0 Targets and 0 Regulators curated.</p>
 		<div class="panel" id="summary_wrapper">
 			<div id="summary_diagram"></div>
 		
 			<div class="button-bar">
 				<h5>Analyze</h5>
 				<ul class="button-group radius">
-					<li><a disabled="true" id="targ" class="small button secondary">Targets</a></li>
-					<li><a disabled="true" id="reg" class="small button secondary">Regulators</a></li>
+					<li><a disabled="true" id="analyze_targets" class="small button secondary">Targets</a></li>
+					<li><a disabled="true" id="analyze_regulators" class="small button secondary">Regulators</a></li>
 				</ul>
-				<ul class="button-group radius">
-					<li><a disabled="true" class="small button secondary radius" id="save"><i class="icon-picture"></i> PNG</a></li>
+				<ul class="button-group radius" hidden>
+					<li><a disabled="true" class="small button secondary radius" id="download_overview"><i class="icon-picture"></i> PNG</a></li>
 				</ul>
 			</div>
 		</div>
 	</div>
 </section>
 
-<script>
-	//Set up navbar
-	var overview_json = {{overview | safe}};
-	var target_count = overview_json['target_count'];
-	var regulator_count = overview_json['regulator_count']
-    add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Regulation');
-    add_navbar_element('Regulation Summary', 'summary');
-  	if(target_count > 0) {
-     	add_navbar_element('Domains and Classification', 'domains');
-  		add_navbar_element('DNA Binding Site Motifs', 'binding');
-  		add_navbar_element('Targets', 'targets');
-  		add_navbar_element('Shared GO Processes Among Targets', 'enrichment');
-     }
-     if(regulator_count > 0) {
-     	add_navbar_element('Regulators', 'regulators');
-     }
-     if(target_count + regulator_count > 0) {
-     	add_navbar_element('Network Visualization', 'network');
-     }
-</script>
-
-<script src="/static/js/kinetic-v4.3.3.min.js"></script>
-<script src="/static/js/side_bar.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script src="/static/js/local.js"></script>
-<script>
-
-	var filename = "{{ locus.display_name}}_targets_and_regulators";
-	var download_image_link = "{{download_image_link}}";
-	
-	//Side-bar style
-	var side_bar_style = {"left_color": "#AF8DC3", "right_color": "#7FBF7B"};
-	
-	//Set up overview data
-    var data = {{overview | safe}};
-  	var summary_paragraph_id = "summary_paragraph";
-  	var reference_list_id = "summary_paragraph_reference_list";
-  	var diagram_id = "summary_diagram";
-  	var save_button_id = "save";
-  			
-  	var message_id = "summary_message";
-  	var wrapper_id = "summary_wrapper";
-  	
-  	var target_count = data['target_count'];
-  	var regulator_count = data['regulator_count'];
-     
-    if('paragraph' in data) {
-		document.getElementById(summary_paragraph_id).innerHTML = data['paragraph']['text'];
-		references = data['paragraph']['references'];
-		set_up_references(references, reference_list_id);
-	}
-  	 	
-  	if(target_count + regulator_count > 0){
-
-		var values = [target_count, regulator_count];
-		var labels = ['Transcriptional\nTargets', 'Transcriptional\nRegulators'];
-		var colors = [side_bar_style['left_color'], side_bar_style['right_color']];
-		var stage = draw_side_bar_diagram(diagram_id, values, labels, colors, false);
-     	document.getElementById(save_button_id).onclick = function() {
-			download_image(stage, 500, 120, download_image_link, filename);
-		};
-		document.getElementById(save_button_id).removeAttribute('disabled');
-  	}
-  	else {
-  		document.getElementById(message_id).style.display = "block";
-  		document.getElementById(wrapper_id).style.display = "none";
-  	}
-		
-</script>
+<script src="/static/js/regulation_overview.js"></script>

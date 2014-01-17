@@ -42,23 +42,6 @@ function download_citations(citation_div, download_link, list_name) {
 	post_to_url(download_link, {"display_name":list_name, "reference_ids": reference_ids});
 }
 
-function download_table(table, download_link, table_name) {
-	var data = table._('tr', {"filter": "applied"});
-	
-	var table_headers = table.fnSettings().aoColumns;
-	var headers = [];
-	for(var i=0,len=table_headers.length; i<len; i++) {
-		headers.push(table_headers[i].nTh.innerHTML);
-	}
-
-    var search_term = table.fnSettings().oPreviousSearch.sSearch
-	if(search_term != '') {
-		table_name = table_name + '_filtered_by_-' + search_term + '-'
-	}
-
-	post_to_url(download_link, {"display_name":table_name, 'headers': JSON.stringify(headers), 'data': JSON.stringify(data)});
-}
-
 function download_image(stage, width, height, download_link, image_name) {
 	stage.toDataURL({
 		width: width,
@@ -69,22 +52,14 @@ function download_image(stage, width, height, download_link, image_name) {
 	});
 }
 
-function analyze_table(analyze_link, list_name, ev_table, index, format_name_to_id) {
-	var bioent_ids = [];
-	
-	var data = ev_table._('tr', {"filter": "applied"});
-	for (var i=0,len=data.length; i<len; i++) { 
-		var sys_name = data[i][index];
-		bioent_ids.push(format_name_to_id[sys_name])
-	}	
-		
-	var search_term = ev_table.fnSettings().oPreviousSearch.sSearch
-
-	if(search_term != '') {
-		list_name = list_name + ' filtered by -' + search_term + '-'
-	}
-	
-	post_to_url(analyze_link, {'list_name': list_name, 'bioent_ids': JSON.stringify(bioent_ids)});
+function add_footer_space(section_id) {
+    next_section = $("#" + section_id);
+    next_section.append(document.createElement("br"));
+    next_section.append(document.createElement("br"));
+    next_section.append(document.createElement("br"));
+    next_section.append(document.createElement("br"));
+            next_section.append(document.createElement("br"));
+            next_section.append(document.createElement("br"));
 }
 
 function set_up_references(references, ref_list_id) {
@@ -178,61 +153,10 @@ function create_note_icon(drop_id_num, text) {
 	return icon;
 }
 
-function setup_cytoscape_vis(div_id, layout, style, data, f) {
-	var height = .5*$(window).height();
-	var width = $('#' + div_id).width();
-	document.getElementById(div_id).style.height = height + 'px';
-	$(loadCy = function(){
-		options = {
-			showOverlay: false,
-			layout: layout,
-		    minZoom: 0.5,
-		    maxZoom: 2,
-		    style: style,
-		
-		    elements: {
-		     	nodes: data['nodes'],
-		     	edges: data['edges'],
-		    },
-		
-		    ready: function(){
-		      	cy = this;
-		      	cy.zoomingEnabled(false);
-		      	if(f != null) {
-		      		f();
-		      	}
-		      	cy.on('tap', 'node', function(evt){
-  					var node = evt.cyTarget;
-  					window.location.href = node.data().link;
-				});
-				cy.on('layoutstop', function(evt){
-					$('#cy_recenter').removeAttr('disabled'); 
-				});
-				cy.on('tap', function (evt) {
-					this.zoomingEnabled(true);
-				});
-				cy.on('mouseout', function(evt) {
-					this.zoomingEnabled(false);
-				});
-		    }, 
-		  };
-	
-		$('#' + div_id).cytoscape(options);
-	});
-	var cytoscape_div = document.getElementById(div_id);
-	var recenter_button = document.createElement('a');
-	recenter_button.id = "cy_recenter";
-	recenter_button.className = "small button secondary";
-	recenter_button.innerHTML = "Reset";
-	recenter_button.onclick = function() {
-		var old_zoom_value = cy.zoomingEnabled();
-		cy.zoomingEnabled(true);
-		cy.reset();
-		cy.layout().run();
-		cy.zoomingEnabled(old_zoom_value);
-	};
-	cytoscape_div.parentNode.insertBefore(recenter_button, cytoscape_div);
-	recenter_button.setAttribute('disabled', 'disabled'); 
+function hide_section(section_id) {
+    $("#" + section_id).hide();
+    $("#navbar_network").hide();
+    $("#navbar_network").removeAttr('data-magellan-arrival')
 }
 
 //http://datatables.net/forums/discussion/2123/filter-post-processing-and-highlighting/p1
@@ -323,106 +247,37 @@ function set_up_scientific_notation_sorting() {
 	} );
 }
 
-function go_enrichment(go_enrichment_link, table, format_name_to_id, index, header_id, gene_header_id, table_id, enrich_recalc_button_id,
-	download_button_id, download_link, enrichment_table_filename) {
+function set_up_range_sort() {
+	jQuery.fn.dataTableExt.oSort['range-desc'] = function(x,y) {
+		x = x.split("-");
+		y = y.split("-");
 
-	function f() {
-		document.getElementById(enrich_recalc_button_id).setAttribute('disabled', 'disabled');
-		set_table_message(table_id, '<center><img src="/static/img/dark-slow-wheel.gif"></center>')	
-		
-		var bioent_ids = [];
-		var already_used = {};
-		//Get bioent_ids	
-		var data = table._('tr', {"filter": "applied"});
-		for (var i=0,len=data.length; i<len; i++) { 
-			var sys_name = data[i][index];
-			if(!already_used[sys_name]) {
-				bioent_ids.push(format_name_to_id[sys_name])
-				already_used[sys_name] = true;
-			}
-			
-		}	
-		
-		document.getElementById(gene_header_id).innerHTML = bioent_ids.length;
-		document.getElementById(header_id).innerHTML = '_';
-		post_json_to_url(go_enrichment_link, {'bioent_ids': bioent_ids}, 
-		function(data) {  		
-  			set_up_enrichment_table(header_id, table_id, download_button_id, download_link, enrichment_table_filename, data)
-  			$('#' + enrich_recalc_button_id).removeAttr('disabled');
-  			update_filter_used();
-  		},
-  		function() {
-    		$('#' + enrich_recalc_button_id).removeAttr('disabled');
-  		}
-  		);
-  	}
-  	
-  	document.getElementById(enrich_recalc_button_id).onclick = f;
-  	return f;
-}
+		x0 = parseInt(x[0]);
+		y0 = parseInt(y[0]);
 
-function set_table_message(table_id, message) {
-	var options = {};
-	options["bPaginate"] = true;
-	options["bDestroy"] = true;
-	options['oLanguage'] = {'sEmptyTable': message}
-	options["aaData"] = [];
-  				
-  	var enrichment_table = $('#' + table_id).dataTable(options);
-}
+		return (x0 > y0) ? -1 : ((x0 < y0) ? 1 : 0);
 
-function set_up_enrichment_table(header_id, table_id, download_button_id, download_link, download_table_filename, data) { 
-	var datatable = [];
-	for (var i=0; i < data.length; i++) {
-		var evidence = data[i];	
-		var go = '';
-		if(evidence['go'] != null) {
-			go = create_link(evidence['go']['display_name'], evidence['go']['link']);
-		}
-  		datatable.push([go, evidence['match_count'].toString(), evidence['pvalue']])
-  	}
-  	
-  	document.getElementById(header_id).innerHTML = data.length;
-  	
-  	var element = document.getElementById("temp_spinner");
-  	if(element != null) {
-  		element.parentNode.removeChild(element);
-  	}
-	
-	set_up_scientific_notation_sorting();
-	
-  	if (data == null) {
-  		set_table_message(table_id, 'Error calculating shared GO processes.');
-  		document.getElementById(download_button_id).setAttribute('disabled', 'disabled'); 
-  	}
-  	else if (data.length == 0) {
-  		set_table_message(table_id, 'No significant shared GO processes found.');
-  		document.getElementById(download_button_id).setAttribute('disabled', 'disabled'); 
-  	}
-  	else {
-    	var options = {};
-		options["bPaginate"] = true;
-		options["aaSorting"] = [[2, "asc"]];
-		options["aoColumns"] = [null, {'sWidth': '100px'}, { "sType": "scinote", 'sWidth': '100px'}]
-		options["bDestroy"] = true;
-		options["aaData"] = datatable;
-  		
-  		setup_datatable_highlight();
-  		var enrichment_table = $('#' + table_id).dataTable(options);
-  		setup_datatable_highlight();
-  		enrichment_table.fnSearchHighlighting();
-  		
-  		document.getElementById(download_button_id).onclick = function() {download_table(enrichment_table, download_link, download_table_filename)};
-    	$('#' + download_button_id).removeAttr('disabled');
-    }
+	};
+
+	jQuery.fn.dataTableExt.oSort['range-asc'] = function(x,y) {
+
+		x = x.split("-");
+		y = y.split("-");
+
+		x0 = parseInt(x[0]);
+		y0 = parseInt(y[0]);
+
+		return (x0 < y0) ? -1 : ((x0 > y0) ? 1 : 0);
+
+	};
 }
 
 function set_up_show_child_button(child_button_id, phenotype_header_id, header_id, details_link, details_all_link, table_id, set_up_table_f, new_filter_f) {
-	var child_button = document.getElementById(child_button_id);
+	var child_button = $("#" + child_button_id);
 	var has_all_data = false;
 	  
-	child_button.onclick = function() {
-	  	child_button.setAttribute('disabled', 'disabled'); 
+	child_button.click(function() {
+	  	child_button.attr('disabled', true);
 					
 		var new_message = null;
 		if(child_button.innerHTML == 'Hide Genes Associated With Child Terms') {
@@ -435,8 +290,8 @@ function set_up_show_child_button(child_button_id, phenotype_header_id, header_i
 		}
 		if(!has_all_data) {	
 			set_table_message(table_id, '<center><img src="/static/img/dark-slow-wheel.gif"></center>');
-	  		document.getElementById(phenotype_header_id).innerHTML = '_';
-			document.getElementById(header_id).innerHTML = '_';
+	  		$("#" + phenotype_header_id).html('_');
+			$("#" + header_id).html('_');
 			post_json_to_url(details_all_link, {}, 
 				function(data) {  
 					set_up_table_f(data);		
@@ -454,7 +309,205 @@ function set_up_show_child_button(child_button_id, phenotype_header_id, header_i
   			$('#' + child_button_id).removeAttr('disabled');
   			ev_table.fnDraw();
   		}
-	  				
-	};
-	$('#' + child_button_id).removeAttr('disabled');
+	});
+	child_button.attr('disabled', false);
+}
+
+function create_table(table_id, options) {
+    setup_datatable_highlight();
+  	table = $('#' + table_id).dataTable(options);
+  	setup_datatable_highlight();
+  	table.fnSearchHighlighting();
+  	return table;
+}
+
+function create_analyze_button_with_list(analyze_button_id, bioent_ids, analyze_link, filename) {
+    //When button is clicked, send bioent_ids to Analyze page.
+
+    var analyze_button = $("#" + analyze_button_id);
+    var analyze_function = function() {
+        post_to_url(analyze_link, {'list_name': filename, 'bioent_ids': JSON.stringify(bioent_ids)});
+    };
+    analyze_button.click(analyze_function);
+
+    analyze_button.attr('disabled', false);
+}
+
+function create_analyze_button(analyze_button_id, table, analyze_link, name, apply_filter) {
+    //When button is clicked, collect bioent_ids and send them to Analyze page.
+
+    var analyze_button = $("#" + analyze_button_id);
+    var analyze_function = function() {
+        var bioent_ids = [];
+        var filename = name;
+        var data;
+        if(apply_filter) {
+            data = table._('tr', {"filter": "applied"});
+
+            //Set filename to include search term.
+            var search_term = table.fnSettings().oPreviousSearch.sSearch
+            if(search_term != '') {
+                filename = filename + ' filtered by -' + search_term + '-'
+            }
+        }
+        else {
+            data = table._('tr', {});
+        }
+
+        for (var i=0,len=data.length; i<len; i++) {
+            bioent_ids.push(data[i][1]);
+        }
+
+        post_to_url(analyze_link, {'list_name': filename, 'bioent_ids': JSON.stringify(bioent_ids)});
+    };
+    analyze_button.click(analyze_function);
+
+    //When the associated table is filtered so that no genes are being displayed, disable button.
+    if(apply_filter) {
+        table.bind('filter', function() {
+  	        var data = table._('tr', {"filter": "applied"});
+  	        if(data.length == 0) {
+  	            analyze_button.attr('disabled', true);
+  	            analyze_button.off('click');
+  	        }
+  	        else {
+  	            analyze_button.attr('disabled', false);
+  	            analyze_button.click(analyze_function);
+  	        }
+  	    });
+    }
+
+    analyze_button.attr('disabled', false);
+}
+
+function create_download_button(download_button_id, table, download_link, name) {
+
+    var download_button = $("#" + download_button_id);
+    var download_function = function() {
+        var data = table._('tr', {"filter": "applied"});
+        var filename = name;
+
+        var table_headers = table.fnSettings().aoColumns;
+        var headers = [];
+        for(var i=0,len=table_headers.length; i<len; i++) {
+            headers.push(table_headers[i].nTh.innerHTML);
+        }
+
+        var search_term = table.fnSettings().oPreviousSearch.sSearch
+        if(search_term != '') {
+            filename = filename + '_filtered_by_-' + search_term + '-'
+        }
+
+        post_to_url(download_link, {"display_name":filename, 'headers': JSON.stringify(headers), 'data': JSON.stringify(data)});
+    };
+    download_button.click(download_function);
+
+    //When the associated table is filtered so that no genes are being displayed, disable button.
+    table.bind('filter', function() {
+  	    var data = table._('tr', {"filter": "applied"});
+  	    if(data.length == 0) {
+  	        download_button.attr('disabled', true);
+  	        download_button.off('click');
+  	    }
+  	    else {
+  	        download_button.attr('disabled', false);
+  	        download_button.click(download_function);
+  	    }
+  	});
+
+    download_button.attr('disabled', false);
+}
+
+function set_up_enrichment_table(data) {
+    var options = {"bPaginate": true, "bDestroy": true, "oLanguage": {'sEmptyTable': 'Error calculating shared GO processes.'}, "aaData": []};
+
+    if(data != null) {
+	    var datatable = [];
+	    for (var i=0; i < data.length; i++) {
+		    var evidence = data[i];
+		    var go = '';
+		    if(evidence['go'] != null) {
+			    go = create_link(evidence['go']['display_name'], evidence['go']['link']);
+		    }
+  		    datatable.push([evidence['go']['id'], go, evidence['match_count'].toString(), evidence['pvalue']])
+    	}
+
+  	    $("#enrichment_header").html(data.length);
+
+	    set_up_scientific_notation_sorting();
+
+        options["aaSorting"] = [[3, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, {'sWidth': '100px'}, { "sType": "scinote", 'sWidth': '100px'}]
+        options["aaData"] = datatable;
+        options["oLanguage"] = {'sEmptyTable': 'No significant shared GO processes found.'}
+    }
+
+    return create_table("enrichment_table", options);
+}
+
+function create_enrichment_table(table_id, target_table, init_data) {
+    var enrichment_recalc = $("#enrichment_table_recalculate");
+    var filter_used = '';
+    var enrichment_table = null;
+
+    var get_filter_bioent_ids = function() {
+        var bioent_ids = [];
+		var already_used = {};
+		//Get bioent_ids
+		var data = target_table._('tr', {"filter": "applied"});
+		for (var i=0,len=data.length; i<len; i++) {
+			var bioent_id = data[i][1];
+			if(!already_used[bioent_id]) {
+				bioent_ids.push(bioent_id)
+				already_used[bioent_id] = true;
+			}
+		}
+		return bioent_ids;
+    };
+
+    var update_enrichment = function() {
+        enrichment_recalc.attr('disabled', true);
+
+        var options = {"bPaginate": true, "bDestroy": true, "oLanguage": {'sEmptyTable': '<center><img src="/static/img/dark-slow-wheel.gif"></center>'}, "aaData": []};
+        create_table("enrichment_table", options);
+
+        var bioent_ids = get_filter_bioent_ids();
+
+		$("#enrichment_gene_header").html(bioent_ids.length);
+		$("#enrichment_header").html('_');
+		post_json_to_url(go_enrichment_link, {'bioent_ids': bioent_ids},
+		    function(data) {
+  			    set_up_enrichment_table(data)
+  			    filter_used = target_table.fnSettings().oPreviousSearch.sSearch;
+  			    enrichment_recalc.attr('disabled', false);
+  			    enrichment_recalc.hide();
+  		    }
+  		);
+    };
+
+    target_table.bind("filter", function() {
+	    var search = target_table.fnSettings().oPreviousSearch.sSearch;
+	    var data = target_table._('tr', {"filter": "applied"});
+		if(search != filter_used && data.length > 0) {
+		    enrichment_recalc.show();
+		}
+		else {
+		    enrichment_recalc.hide();
+		}
+	});
+
+	enrichment_recalc.click(update_enrichment);
+
+    if(init_data != null) {
+        enrichment_table = set_up_enrichment_table(init_data);
+		$("#enrichment_gene_header").html(get_filter_bioent_ids().length);
+    }
+    else {
+        var options = {"bPaginate": true, "bDestroy": true, "oLanguage": {'sEmptyTable': '<center><img src="/static/img/dark-slow-wheel.gif"></center>'}, "aaData": []};
+        enrichment_table = create_table("enrichment_table", options);
+        update_enrichment();
+    }
+
+    $("#enrichment").show();
+    return enrichment_table;
 }

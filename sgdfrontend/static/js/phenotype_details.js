@@ -1,89 +1,39 @@
-var ev_table;
 
-function set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, download_link, download_table_filename, data) { 
+$(document).ready(function() {
+  	$.getJSON(phenotype_details_link, function(data) {
+  	    var phenotype_table = create_phenotype_table(data);
+        create_download_button("phenotype_table_download", phenotype_table, download_table_link, download_table_filename);
+        $("#phenotype_table_analyze").hide();
+  	});
+
+    //Get resources
+	$.getJSON(phenotype_resources_link, function(data) {
+	  	set_up_resources("mutant_resource_list", data['Mutant Resources']);
+	  	set_up_resources("phenotype_resource_list", data['Phenotype Resources']);
+	});
+
+	//Hack because footer overlaps - need to fix this.
+	add_footer_space("resources");
+});
+
+function create_phenotype_table(data) {
 	var datatable = [];
-	var format_name_to_id = {};
-
+	var phenotypes = {};
 	for (var i=0; i < data.length; i++) {
-		var evidence = data[i];
-		
-		format_name_to_id[evidence['bioconcept']['format_name']] = evidence['bioconcept']['id'];
+        datatable.push(phenotype_data_to_table(data[i], i));
+		phenotypes[data[i]['bioconcept']['id']] = true;
+	}
 
-		var bioent = create_link(evidence['bioentity']['display_name'], evidence['bioentity']['link']);
-			
-		var experiment = '';
-		if(evidence['experiment'] != null) {
-			//experiment = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);
-			experiment = evidence['experiment']['display_name'];
-		}
-		
-		var strain = '';
-		if(evidence['strain'] != null) {
-			strain = evidence['strain']['display_name'];
-		}
-		
-		var chemical = '';
-		if(evidence['chemical'] != null) {
-			if(evidence['chemical']['amount'] != null) {
-				chemical = evidence['chemical']['amount'] + ' ' + create_link(evidence['chemical']['display_name'], evidence['chemical']['link']);
-			}
-			else {
-				chemical = create_link(evidence['chemical']['display_name'], evidence['chemical']['link']);
-			}
-			var chemical_icon = create_note_icon('chemical_icon' + i, evidence['chemical']['note']);
-			if(chemical_icon != '') {
-				chemical = chemical + ' ' + chemical_icon;
-			}
-		}
-		
-		var allele = '';
-		if(evidence['allele'] != null) {
-			allele = '<br><strong>Allele: </strong>' + evidence['allele']['display_name'];
-			var allele_icon = create_note_icon('allele_icon' + i, evidence['allele']['note']);
-			if(allele_icon != '') {
-				allele = allele + ' ' + allele_icon;
-			}
-		}
+  	$("#phenotype_header").html(data.length);
+  	$("#phenotype_subheader").html(Object.keys(phenotypes).length);
+  	$("#phenotype_subheader_type").html('phenotypes');
 
-		var reporter = '';
-		if(evidence['reporter'] != null) {
-			reporter = '<strong>Reporter: </strong>' + evidence['reporter']['display_name'];
-			var reporter_icon = create_note_icon('reporter_icon' + i, evidence['reporter']['note']);
-			if(reporter_icon != '') {
-				reporter = reporter + ' ' + reporter_icon;
-			}
-		}
-
-        var note = '';
-        for (var j=0; j < evidence['condition'].length; j++) {
-            note = note + '<strong>Condition: </strong>' + evidence['condition'][j] + '<br>';
-        }
-        if(evidence['note'] != null) {
-            note = note + '<strong>Details: </strong>' + evidence['note'] + '<br>';
-        }
-
-		var biocon = create_link(evidence['bioconcept']['display_name'], evidence['bioconcept']['link']);
-		biocon = biocon + '<br>' + reporter;
-
-  		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
-  		
-  		datatable.push([bioent, evidence['bioentity']['format_name'], biocon, experiment, evidence['mutant_type'] + allele, strain, chemical, note, reference]);
-  	}
-  	document.getElementById(header_id).innerHTML = data.length;
-  	document.getElementById(phenotype_header_id).innerHTML = Object.keys(format_name_to_id).length;
-  		         
-    var options = {};
+  	var options = {};
 	options["bPaginate"] = true;
-	options["aaSorting"] = [[2, "asc"]];
-	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {'sWidth': '250px'}, null];
+	options["aaSorting"] = [[4, "asc"]];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {'sWidth': '250px'}, null];
+	options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + display_name};
 	options["aaData"] = datatable;
-  
-   	setup_datatable_highlight();				
-  	ev_table = $('#' + table_id).dataTable(options);
-  	ev_table.fnSearchHighlighting();
-  	  		
-  	document.getElementById(download_button_id).onclick = function() {download_table(ev_table, download_link, download_table_filename)};
 
-	$('#' + download_button_id).removeAttr('disabled'); 
+    return create_table("phenotype_table", options);
 }
-  		
