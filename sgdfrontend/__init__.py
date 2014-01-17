@@ -260,7 +260,6 @@ class SGDFrontend(FrontendInterface):
     def reference(self, reference_repr):
         reference = get_reference(self.backend_url, reference_repr)
         reference_id = str(reference['id'])
-        print link_maker.literature_details_ref_link(self.backend_url, reference_id)
         overview = get_json(link_maker.literature_details_ref_link(self.backend_url, reference_id))
         page = {
                     #Basic info

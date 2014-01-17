@@ -1,93 +1,122 @@
+
 $(document).ready(function() {
-	//Get evidence data
+
   	$.getJSON(interaction_details_link, function(data) {
-  		var header_id = "interaction_header";
-  		var evidence_gene_header_id = "interaction_gene_header";
-  		var table_id = "interaction_table";
-  		var download_button_id = "interaction_table_download";
-  		var analyze_button_id = "interaction_table_analyze";
-
-  		var message_id = "interaction_message";
-  		var wrapper_id = "interaction_wrapper";
-
-  		if(data.length > 0) {
-  			set_up_interaction_table(header_id, evidence_gene_header_id, table_id, download_button_id, analyze_button_id,
-  			download_table_link, annotation_download_filename,
-  			analyze_table_link,  annotation_analyze_filename, data);
-  		}
-  		else {
-  			document.getElementById(message_id).style.display = "block";
-  			document.getElementById(wrapper_id).style.display = "none";
-  			document.getElementById(header_id).innerHTML = 0;
-  			document.getElementById(evidence_gene_header_id).innerHTML = 0;
-  		}
-
+  	    var interaction_table = create_interaction_table(data);
+        create_download_button("interaction_table_download", interaction_table, download_table_link, interaction_download_filename);
+        create_analyze_button("interaction_table_analyze", interaction_table, analyze_link, interaction_analyze_filename, true);
   	});
+
+  	$.getJSON(go_details_link, function(data) {
+  		var go_table = create_go_table(data);
+  		create_download_button("all_go_table_download", go_table, download_table_link, go_download_filename);
+	  	create_analyze_button("all_go_table_analyze", go_table, analyze_link, go_analyze_filename, true);
+  	});
+
+  	$.getJSON(phenotype_details_link, function(data) {
+  		var phenotype_table = create_phenotype_table(data);
+        create_download_button("phenotype_table_download", phenotype_table, download_table_link, phenotype_download_filename);
+        create_analyze_button("phenotype_table_analyze", phenotype_table, analyze_link, phenotype_analyze_filename, true);
+  	});
+
+  	$.getJSON(regulation_details_link, function(data) {
+  		var regulation_table = create_regulation_table(data);
+  	    create_download_button("all_regulation_table_download", regulation_table, download_table_link, regulation_download_filename);
+  		create_analyze_button("all_regulation_table_analyze", regulation_table, analyze_link, regulation_analyze_filename, true);
+  	});
+
+  	//Hack because footer overlaps - need to fix this.
+	add_footer_space("all_regulation");
+
 });
 
-function set_up_interaction_table(header_id, interactors_gene_header_id, table_id, download_button_id, analyze_button_id, download_link, download_table_filename,
-	analyze_link, analyze_filename, data) {
-	var format_name_to_id = new Object();
-	var datatable = [];
-	var self_interacts = false;
-	for (var i=0; i < data.length; i++) {
-		var evidence = data[i];
+function create_interaction_table(data) {
+    var datatable = [];
+    var genes = {};
+    for (var i=0; i < data.length; i++) {
+        datatable.push(interaction_data_to_table(data[i], i));
+        genes[data[i]["bioentity2"]["id"]] = true;
+    }
 
-		format_name_to_id[evidence['bioentity1']['format_name']] = evidence['bioentity1']['id']
-		format_name_to_id[evidence['bioentity2']['format_name']] = evidence['bioentity2']['id']
-
-		if(evidence['bioentity1']['id'] == evidence['bioentity2']['id']) {
-			self_interacts = true;
-		}
-
-		var icon;
-		if(evidence['note'] != null) {
-			icon = "<a href='#' data-dropdown='drop" + i + "'><i class='icon-info-sign'></i></a><div id='drop" + i + "' class='f-dropdown content medium' data-dropdown-content><p>" + evidence['note'] + "</p></div>"
-		}
-		else {
-			icon = null;
-		}
-
-		var bioent1 = create_link(evidence['bioentity1']['display_name'], evidence['bioentity1']['link'])
-		var bioent2 = create_link(evidence['bioentity2']['display_name'], evidence['bioentity2']['link'])
-
-		var experiment = '';
-		if(evidence['experiment'] != null) {
-			//experiment = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);
-			experiment = evidence['experiment']['display_name'];
-		}
-		var phenotype = '';
-		if(evidence['phenotype'] != null) {
-			//phenotype = create_link(evidence['phenotype']['display_name'], evidence['phenotype']['link']);
-			phenotype = evidence['phenotype']['display_name'];
-		}
-		var modification = '';
-		if(evidence['modification'] != null) {
-			modification = evidence['modification'];
-  		}
-  		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
-  		datatable.push([icon, bioent1, evidence['bioentity1']['format_name'], bioent2, evidence['bioentity2']['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], evidence['direction'], modification, phenotype, evidence['source'], reference, evidence['note']])
-  	}
-  	document.getElementById(header_id).innerHTML = data.length;
-  	var total_interactors = Object.keys(format_name_to_id).length;
-  	if(!self_interacts){
-  		total_interactors = total_interactors - 1;
-  	}
-  	document.getElementById(interactors_gene_header_id).innerHTML = total_interactors;
+    $("#interaction_header").html(data.length);
+  	$("#interaction_subheader").html(Object.keys(genes).length);
+  	$("#interaction_subheader_type").html("genes");
 
     var options = {};
 	options["bPaginate"] = true;
-	options["aaSorting"] = [[1, "asc"]];
-	options["aoColumns"] = [{"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}]
+	options["aaSorting"] = [[3, "asc"]];
+	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}]
+	options["oLanguage"] = {"sEmptyTable": "No interaction data for " + display_name};
 	options["aaData"] = datatable;
 
-   	setup_datatable_highlight();
-  	ev_table = $('#' + table_id).dataTable(options);
-  	ev_table.fnSearchHighlighting();
+    return create_table("interaction_table", options);
+}
 
-  	document.getElementById(download_button_id).onclick = function() {download_table(ev_table, download_link, download_table_filename)};
-  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, analyze_filename + ' interactors', ev_table, 4, format_name_to_id)};
+function create_go_table(data) {
+	var datatable = [];
+	var genes = {};
+	for (var i=0; i < data.length; i++) {
+        datatable.push(go_data_to_table(data[i], i));
+		genes[data[i]["bioentity"]["id"]] = true;
+	}
 
-	document.getElementById(download_button_id).removeAttribute('disabled');
-	document.getElementById(analyze_button_id).removeAttribute('disabled');
+  	$("#all_go_header").html(data.length);
+  	$("#all_go_subheader").html(Object.keys(genes).length);
+  	$("#all_go_subheader_type").html("genes");
+
+	var options = {};
+	options["bPaginate"] = true;
+	options["aaSorting"] = [[3, "asc"]];
+	options["bDestroy"] = true;
+	options["oLanguage"] = {"sEmptyTable": "No gene ontology data for " + display_name};
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}];
+	options["aaData"] = datatable;
+
+    return create_table("all_go_table", options);
+}
+
+function create_phenotype_table(data) {
+	var datatable = [];
+	var phenotypes = {};
+	for (var i=0; i < data.length; i++) {
+        datatable.push(phenotype_data_to_table(data[i], i));
+		phenotypes[data[i]['bioconcept']['id']] = true;
+	}
+
+  	$("#phenotype_header").html(data.length);
+  	$("#phenotype_subheader").html(Object.keys(phenotypes).length);
+  	$("#phenotype_subheader_type").html('phenotypes');
+
+  	var options = {};
+	options["bPaginate"] = true;
+	options["aaSorting"] = [[4, "asc"]];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {'sWidth': '250px'}, {"bSearchable":false, "bVisible":false}];
+	options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + display_name};
+	options["aaData"] = datatable;
+
+    return create_table("phenotype_table", options);
+}
+
+function create_regulation_table(data) {
+    var target_table = null;
+
+	var datatable = [];
+	var genes = {};
+	for (var i=0; i < data.length; i++) {
+        datatable.push(regulation_data_to_table(data[i], false));
+		genes[data[i]["bioentity2"]["id"]] = true;
+    }
+
+  	$("#all_regulation_header").html(data.length);
+  	$("#all_regulation_subheader").html(Object.keys(genes).length);
+    $("#all_regulation_subheader_type").html("genes");
+
+  	var options = {};
+  	options["bPaginate"] = true;
+    options["aaSorting"] = [[4, "asc"]];
+	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}]
+	options["oLanguage"] = {"sEmptyTable": "No regulation data for " + display_name};
+	options["aaData"] = datatable;
+
+	return create_table("all_regulation_table", options);
 }
