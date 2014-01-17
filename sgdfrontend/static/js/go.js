@@ -1,76 +1,90 @@
-var ev_table;
 
-function set_up_evidence_table(header_id, phenotype_header_id, table_id, download_button_id, download_link, download_table_filename, 
-	analyze_button_id, analyze_link, list_name, data) {
+$(document).ready(function() {
+
+	$.getJSON(go_details_link, function(data) {
+	  	var go_table = create_go_table(data);
+	  	create_analyze_button("all_go_table_analyze", go_table, analyze_link, analyze_filename, true);
+  	    create_download_button("all_go_table_download", go_table, download_table_link, download_filename);
+	});
+
+	$.getJSON(ontology_graph_link, function(data) {
+  		create_cytoscape_vis("cy", layout, graph_style, data);
+	});
+
+	//Hack because footer overlaps - need to fix this.
+	add_footer_space("all_go");
+
+});
+
+function create_go_table(data) {
 	var datatable = [];
-	var format_name_to_id = {};
-
+	var genes = {};
 	for (var i=0; i < data.length; i++) {
-		var evidence = data[i];
-		
-		format_name_to_id[evidence['bioentity']['format_name']] = evidence['bioentity']['id'];
+        datatable.push(go_data_to_table(data[i], i));
+		genes[data[i]["bioentity"]["id"]] = true;
+	}
 
-		var bioent = create_link(evidence['bioentity']['display_name'], evidence['bioentity']['link']);
-		var biocon = create_link(evidence['bioconcept']['display_name'], evidence['bioconcept']['link']);
-  		var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
-  		
-  		var with_entry = null;
-		var relationship_entry = null;
+  	$("#all_go_header").html(data.length);
+  	$("#all_go_subheader").html(Object.keys(genes).length);
+  	$("#all_go_subheader_type").html("genes");
 
-  		for(var j=0; j < evidence['conditions'].length; j++) {
-  			var condition = evidence['conditions'][j];
-  			if(condition['role'] == 'With' || condition['role'] == 'From') {
-  				var new_with_entry = create_link(condition['obj']['display_name'], condition['obj']['link']);
-	  			if(with_entry == null) {
-	  				with_entry = new_with_entry
-	  			}
-	  			else {
-	  				with_entry = with_entry + ', ' + new_with_entry
-	  			}
-	  		}
-	  		else if(condition['obj'] != null) {
-	  			var new_rel_entry = condition['role'] + ' ' + create_link(condition['obj']['display_name'], condition['obj']['link']);
-	  			if(relationship_entry == null) {
-  					relationship_entry = new_rel_entry
-  				}
-  				else {
-  					relationship_entry = relationship_entry + ', ' + new_rel_entry
-  				}
-	  		}
-  			
-  		}
-		var icon = create_note_icon(i, relationship_entry);
-		
-  		var evidence_code = evidence['code'];
-  		if(with_entry != null) {
-  			evidence_code = evidence_code + ' with ' + with_entry;
-  		}
-
-        var qualifier = evidence['qualifier'];
-        if(qualifier == 'involved in' || qualifier == 'enables' || qualifier == 'part of') {
-            qualifier = '';
-        }
-  		
-  		datatable.push([icon, bioent, evidence['bioentity']['format_name'], biocon, qualifier, evidence['method'], evidence_code, evidence['source'], evidence['date_created'], reference, relationship_entry]);
-  	}
-  	document.getElementById(header_id).innerHTML = data.length;
-  	document.getElementById(phenotype_header_id).innerHTML = Object.keys(format_name_to_id).length;
-  		         
-    var options = {};
+	var options = {};
 	options["bPaginate"] = true;
-	options["aaSorting"] = [[1, "asc"]];
+	options["aaSorting"] = [[3, "asc"]];
 	options["bDestroy"] = true;
-	options["aoColumns"] = [{"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
+	options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + display_name};
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
 	options["aaData"] = datatable;
-  
-   	setup_datatable_highlight();				
-  	ev_table = $('#' + table_id).dataTable(options);
-  	ev_table.fnSearchHighlighting();
-  	
-  	//set up Analyze buttons
-  	document.getElementById(download_button_id).onclick = function() {download_table(ev_table, download_link, download_table_filename)};
-  	document.getElementById(analyze_button_id).onclick = function() {analyze_table(analyze_link, list_name, ev_table, 2, format_name_to_id)};
 
-	$('#' + download_button_id).removeAttr('disabled'); 
-	$('#' + analyze_button_id).removeAttr('disabled'); 
+    return create_table("all_go_table", options);
 }
+
+var graph_style = cytoscape.stylesheet()
+	.selector('node')
+	.css({
+		'content': 'data(name)',
+		'font-family': 'helvetica',
+		'font-size': 14,
+		'text-outline-width': 3,
+		'text-valign': 'center',
+		'width': 30,
+		'height': 30,
+		'border-color': '#fff',
+		'background-color': "grey",
+		'text-outline-color': '#fff',
+		'color': '#888'
+	})
+	.selector('edge')
+	.css({
+        'content': 'data(name)',
+		'font-family': 'helvetica',
+		'font-size': 12,
+        'color': 'grey',
+		'width': 2,
+		'target-arrow-shape': 'triangle'
+	})
+	.selector("node[sub_type='FOCUS']")
+	.css({
+		'width': 30,
+		'height': 30,
+		'background-color': "#fade71",
+		'text-outline-color': '#fff',
+		'color': '#888'
+	})
+	.selector("node[sub_type='molecular function']")
+	.css(
+		{'background-color': "#7FBF7B"
+	})
+	.selector("node[sub_type='biological process']")
+	.css(
+		{'background-color': "#AF8DC3"
+	})
+	.selector("node[sub_type='cellular component']")
+	.css(
+		{'background-color': "#1F78B4"
+	});
+
+var layout = {
+    "name": "breadthfirst",
+	"fit": false
+};

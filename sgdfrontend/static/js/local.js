@@ -58,8 +58,8 @@ function add_footer_space(section_id) {
     next_section.append(document.createElement("br"));
     next_section.append(document.createElement("br"));
     next_section.append(document.createElement("br"));
-    next_section.append(document.createElement("br"));
-    next_section.append(document.createElement("br"));
+            next_section.append(document.createElement("br"));
+            next_section.append(document.createElement("br"));
 }
 
 function set_up_references(references, ref_list_id) {

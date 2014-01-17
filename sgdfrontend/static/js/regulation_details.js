@@ -17,8 +17,8 @@ $(document).ready(function() {
 	$.getJSON(regulation_details_link, function(data) {
   		if(target_count > 0) {
   		    var target_table = create_target_table(data["targets"]);
-  		    create_analyze_button("targets_regulation_table_analyze", target_table, analyze_link, analyze_filename + ' targets', true);
-  	        create_analyze_button("analyze_targets", target_table, analyze_link, analyze_filename + ' targets', false);
+  		    create_analyze_button("targets_regulation_table_analyze", target_table, analyze_link, analyze_filename + " targets", true);
+  	        create_analyze_button("analyze_targets", target_table, analyze_link, analyze_filename + " targets", false);
   	        create_download_button("targets_regulation_table_download", target_table, download_table_link, targets_table_filename);
 
   	        $.getJSON(regulation_target_enrichment_link, function(enrichment_data) {
@@ -30,26 +30,21 @@ $(document).ready(function() {
   	        $("#targets_regulation").hide();
   		}
 
-  		if(regulator_count > 0) {
-  		    var regulator_table = create_regulator_table(data["regulators"]);
-  		    create_analyze_button("regulators_regulation_table_analyze", regulator_table, analyze_link, analyze_filename + ' targets', true);
-  	        create_analyze_button("analyze_regulators", regulator_table, analyze_link, analyze_filename + ' targets', false);
-  	        create_download_button("regulators_regulation_table_download", regulator_table, download_table_link, regulators_table_filename);
-  		}
-  		else {
-  	        $("#regulators_regulation").hide();
-  		}
+  		var regulator_table = create_regulator_table(data["regulators"]);
+  		create_analyze_button("regulators_regulation_table_analyze", regulator_table, analyze_link, analyze_filename + " targets", true);
+  	    create_analyze_button("analyze_regulators", regulator_table, analyze_link, analyze_filename + " targets", false);
+  	    create_download_button("regulators_regulation_table_download", regulator_table, download_table_link, regulators_table_filename);
   	});
 
     $.getJSON(regulation_graph_link, function(data) {
         if(data != null && data["nodes"].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data);
-            var slider = create_slider('slider', graph, data['min_evidence_cutoff'], data['max_evidence_cutoff'], slider_filter);
+            var slider = create_slider("slider", graph, data["min_evidence_cutoff"], data["max_evidence_cutoff"], slider_filter);
 
-            if(data['max_target_cutoff'] >= data['min_evidence_cutoff'] && data['max_regulator_cutoff'] >= data['min_evidence_cutoff']) {
-                create_discrete_filter('all_radio', graph, slider, all_filter, data['max_evidence_cutoff']);
-                create_discrete_filter('targets_radio', graph, slider, target_filter, data['max_target_cutoff']);
-                create_discrete_filter('regulators_radio', graph, slider, regulator_filter, data['max_regulator_cutoff']);
+            if(data["max_target_cutoff"] >= data["min_evidence_cutoff"] && data["max_regulator_cutoff"] >= data["min_evidence_cutoff"]) {
+                create_discrete_filter("all_radio", graph, slider, all_filter, data["max_evidence_cutoff"]);
+                create_discrete_filter("targets_radio", graph, slider, target_filter, data["max_target_cutoff"]);
+                create_discrete_filter("regulators_radio", graph, slider, regulator_filter, data["max_regulator_cutoff"]);
                 $("#discrete_filter").show();
             }
             else {
@@ -100,11 +95,11 @@ function create_binding_site_table(data) {
 	    for (var i=0; i < data.length; i++) {
 		    var evidence = data[i];
 
-		    var a = document.createElement('a');
-		    a.href = "http://yetfasco.ccbr.utoronto.ca/MotViewLong.php?PME_sys_qf2=" + evidence['motif_id']
+		    var a = document.createElement("a");
+		    a.href = "http://yetfasco.ccbr.utoronto.ca/MotViewLong.php?PME_sys_qf2=" + evidence["motif_id"];
 		    a.target = "_blank";
-		    var img = document.createElement('img');
-		    img.src = evidence['img_url'];
+		    var img = document.createElement("img");
+		    img.src = evidence["img_url"];
 		    img.className = "yetfasco";
 
 		    a.appendChild(img);
@@ -123,11 +118,12 @@ function create_target_table(data) {
 	var genes = {};
 	for (var i=0; i < data.length; i++) {
         datatable.push(regulation_data_to_table(data[i], false));
-		genes[data[i]['bioentity2']['id']] = true;
+		genes[data[i]["bioentity2"]["id"]] = true;
     }
 
   	$("#targets_regulation_header").html(data.length);
-  	$("#targets_regulation_gene_header").html(Object.keys(genes).length);
+  	$("#targets_regulation_subheader").html(Object.keys(genes).length);
+    $("#targets_regulation_subheader_type").html("genes");
 
   	var options = {};
   	options["bPaginate"] = true;
@@ -143,16 +139,18 @@ function create_regulator_table(data) {
 	var genes = {};
 	for (var i=0; i < data.length; i++) {
         datatable.push(regulation_data_to_table(data[i], true));
-		genes[data[i]['bioentity1']['id']] = true;
+		genes[data[i]["bioentity1"]["id"]] = true;
   	}
 
   	$("#regulators_regulation_header").html(data.length);
-  	$("#regulators_regulation_gene_header").html(Object.keys(genes).length);
+  	$("#regulators_regulation_subheader").html(Object.keys(genes).length);
+  	$("#regulators_regulation_subheader_type").html("genes");
 
   	var options = {};
     options["bPaginate"] = true;
 	options["aaSorting"] = [[2, "asc"]];
 	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
+	options["oLanguage"] = {"sEmptyTable": "No regulation data for " + display_name};
 	options["aaData"] = datatable;
 
     return create_table("regulators_regulation_table", options);

@@ -138,3 +138,48 @@ function phenotype_data_to_table(evidence, index) {
 
   	return [evidence['id'], evidence['bioentity']['id'], bioent, evidence['bioentity']['format_name'], biocon, experiment, evidence['mutant_type'] + allele, strain, chemical, note, reference];
 }
+
+function go_data_to_table(evidence, index) {
+	var bioent = create_link(evidence['bioentity']['display_name'], evidence['bioentity']['link']);
+	var biocon = create_link(evidence['bioconcept']['display_name'], evidence['bioconcept']['link']);
+  	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+
+  	var with_entry = null;
+	var relationship_entry = null;
+
+  	for(var j=0; j < evidence['conditions'].length; j++) {
+  		var condition = evidence['conditions'][j];
+  		if(condition['role'] == 'With' || condition['role'] == 'From') {
+  			var new_with_entry = create_link(condition['obj']['display_name'], condition['obj']['link']);
+	  		if(with_entry == null) {
+	  			with_entry = new_with_entry
+	  		}
+	  		else {
+	  			with_entry = with_entry + ', ' + new_with_entry
+	  		}
+	  	}
+	  	else if(condition['obj'] != null) {
+	  		var new_rel_entry = condition['role'] + ' ' + create_link(condition['obj']['display_name'], condition['obj']['link']);
+	  		if(relationship_entry == null) {
+  				relationship_entry = new_rel_entry
+  			}
+  			else {
+  				relationship_entry = relationship_entry + ', ' + new_rel_entry
+  			}
+	  	}
+
+  	}
+	var icon = create_note_icon(index, relationship_entry);
+
+  	var evidence_code = evidence['code'];
+  	if(with_entry != null) {
+  		evidence_code = evidence_code + ' with ' + with_entry;
+  	}
+
+    var qualifier = evidence['qualifier'];
+    if(qualifier == 'involved in' || qualifier == 'enables' || qualifier == 'part of') {
+        qualifier = '';
+    }
+
+  	return [evidence['id'], evidence['bioentity']['id'], icon, bioent, evidence['bioentity']['format_name'], biocon, qualifier, evidence['method'], evidence_code, evidence['source'], evidence['date_created'], reference, relationship_entry];
+}

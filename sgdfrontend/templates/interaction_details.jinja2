@@ -14,6 +14,8 @@
     var annotation_analyze_filename = "{{ locus.display_name}}_interactors";
 	var download_image_link = "{{download_image_link}}";
 
+	var display_name = "{{ locus.display_name }}";
+
 	var A = data['num_gen_interactors'];
 	var B = data['num_phys_interactors'];
 	var C = data['num_both_interactors'];
@@ -22,7 +24,6 @@
 <title>{{ locus.display_name }} Interactions</title>
 
 {% extends "templates/global_layout.jinja2" %}
-
 
 {% block body %}
 
@@ -40,66 +41,66 @@
 ================================================== -->
 <div class="row">
 	
-<!-- Includes navbar.html into template -->
-{% include "templates/navbar.jinja2" %}
+    <!-- Includes navbar.html into template -->
+    {% include "templates/navbar.jinja2" %}
 
-<div class="small-12 large-9 columns content-column">
+    <div class="small-12 large-9 columns content-column">
 
-<script>
-//Set up navbar
-    add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Interactions');
-    add_navbar_element('Interactors Summary', 'summary');
-    add_navbar_element('Interactions', 'interactions');
-    add_navbar_element('Network Visualization', 'network');
-    add_navbar_element('Resources', 'resources');
-</script>
-	
-<!-- Includes interaction_overview.html into template -->
-{% include "templates/interaction_overview.jinja2" %}
+        <script>
+        //Set up navbar
+            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Interactions');
+            add_navbar_element('Interactors Summary', 'summary');
+            add_navbar_element('Interaction', 'interaction');
+            add_navbar_element('Network Visualization', 'network');
+            add_navbar_element('Resources', 'resources');
+        </script>
+
+        <!-- Includes interaction_overview.html into template -->
+        {% include "templates/interaction_overview.jinja2" %}
 
 <!-- Annotations
 ================================================== -->
-<!-- Includes phenotype_table into template -->
-{% include "templates/interaction_table.jinja2" %}
+        <!-- Includes phenotype_table into template -->
+        {% include "templates/interaction_table.jinja2" %}
 
 <!-- Network Visualization
 ================================================== -->
-<section id="network" data-magellan-destination="network">
-	<div class="page-header">
-		<h1>Network Visualization</h1>
-		<div class="panel">
-		    <div id="discrete_filter" hidden>
-			    <label for="union_radio">
-				    <input id="union_radio" type="radio" name="group1" checked> All
-				    </label>
-			    <label for="physical_radio" class="legend-label physical">
-				    <input id="physical_radio" type="radio" name="group1"> Physical
-			    </label>
-			    <label for="genetic_radio" class="legend-label genetic">
-				    <input id="genetic_radio" type="radio" name="group1"> Genetic
-			    </label>
-			</div>
+        <section id="network" data-magellan-destination="network">
+            <div class="page-header">
+                <h1>Network Visualization</h1>
+                <div class="panel">
+                    <div id="discrete_filter" hidden>
+                        <label for="union_radio">
+                            <input id="union_radio" type="radio" name="group1" checked> All
+                            </label>
+                        <label for="physical_radio" class="legend-label physical">
+                            <input id="physical_radio" type="radio" name="group1"> Physical
+                        </label>
+                        <label for="genetic_radio" class="legend-label genetic">
+                            <input id="genetic_radio" type="radio" name="group1"> Genetic
+                        </label>
+                    </div>
 
-			<div id="cy" name="cy" style="width:100%;height:500px"></div>
-			<h5>Filter Interactions by # of Experiments:</h5>
-			<div id="slider" class="noUiSlider" style="width:100%"></div>
-			<div id="slider_ticks"></div>
-			<br>
-		</div><!-- .panel -->
-    </div>
-</section>
+                    <div id="cy" name="cy" style="width:100%;height:500px"></div>
+                    <h5>Filter Interactions by # of Experiments:</h5>
+                    <div id="slider" class="noUiSlider" style="width:100%"></div>
+                    <div id="slider_ticks"></div>
+                    <br>
+                </div><!-- .panel -->
+            </div>
+        </section>
 
 <!-- Resources
 ================================================== -->
-<section id="resources" data-magellan-destination="resources">
-	<div class="page-header">
-		<h1>Resources</h1>
-		<ul id='resource_list'>
-		</ul>
-	</div>
-</section>
+        <section id="resources" data-magellan-destination="resources">
+            <div class="page-header">
+                <h1>Resources</h1>
+                <ul id='resource_list'>
+                </ul>
+            </div>
+        </section>
 
-</div>
+    </div>
 </div>
 {% endblock body %}
 

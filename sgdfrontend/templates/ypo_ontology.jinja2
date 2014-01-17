@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 
+<script>
+	var ypo_ontology_link = "{{ontology_link}}";
+	var ontology_graph_link = "{{ontology_graph_link}}";
+</script>
+
 <title>{{ ontology.display_name}} Ontology</title>
 
 {% extends "templates/global_layout.jinja2" %}
@@ -12,11 +17,20 @@
 </div>
 
 <div class="row">
-	
+
+<!-- Navbar
+================================================== -->
 <!-- Includes navbar.html into template -->
 {% include "templates/navbar.jinja2" %}
 
-<div class="small-12 large-9 columns content-column"> 
+<div class="small-12 large-9 columns content-column">
+
+<script>
+    add_navbar_title('<span class="gene_name">{{ ontology.display_name }}</span><br>Ontology')
+    add_navbar_element('Summary', 'summary');
+	add_navbar_element('Ontology', 'network');
+	add_navbar_element('Full Ontology', 'ontology');
+</script>
 
 <!-- Summary
 ================================================== -->	
@@ -62,114 +76,6 @@
 <script src="/static/js/cytoscape/arbor.js"></script>
 <script src="/static/js/CollapsibleLists.js"></script>
 <script src="/static/js/local.js"></script>
+<script src="/static/js/cytoscape.js"></script>
 <script src="/static/js/ypo_ontology.js"></script>
-
-
-<script>
-	//Set up navbar
-    add_navbar_title('<span class="gene_name">{{ ontology.display_name }}</span><br>Ontology')
-    add_navbar_element('Summary', 'summary');
-	add_navbar_element('Ontology', 'network');
-	add_navbar_element('Full Ontology', 'ontology');
-	
-</script>
-
-<script>
-	
-	//Graph style
-	var graph_style = cytoscape.stylesheet()
-	.selector('node')
-	.css({
-		'content': 'data(name)',
-		'font-family': 'helvetica',
-		'font-size': 14,
-		'text-outline-width': 3,
-		'text-valign': 'center',
-		'width': 30,
-		'height': 30,
-		'border-color': '#fff',
-		'background-color': "grey",
-		'text-outline-color': '#fff',
-		'color': '#888'
-	})
-	.selector('edge')
-	.css({
-		'width': 2,
-		'target-arrow-shape': 'triangle'
-	})
-	.selector("node[sub_type='FOCUS']")
-	.css({
-		'width': 30,
-		'height': 30,
-		'background-color': "#fade71",
-		'text-outline-color': '#fff',
-		'color': '#888'
-	})
-	.selector("node[sub_type='morphology']")
-	.css(
-		{'background-color': "#7FBF7B"
-	})
-	.selector("node[sub_type='fitness']")
-	.css(
-		{'background-color': "#AF8DC3"
-	})
-	.selector("node[sub_type='essentiality']")
-	.css(
-		{'background-color': "#1F78B4"
-	})
-	.selector("node[sub_type='interaction with host/environment']")
-	.css(
-		{'background-color': "#FB9A99"
-	})
-	.selector("node[sub_type='metabolism and growth']")
-	.css(
-		{'background-color': "#E31A1C"
-	})
-	.selector("node[sub_type='cellular processes']")
-	.css(
-		{'background-color': "#FF7F00"
-	})
-	.selector("node[sub_type='development']")
-	.css(
-		{'background-color': "#BF5B17"
-	});
-	
-	var layout = {
-		"name": "arbor",
-		"liveUpdate": true,
-		"ungrabifyWhileSimulating": true,
-		"nodeMass":function(data) {
-			if(data.sub_type == 'FOCUS') {
-				return 10;
-			}
-			else {
-				return 1;
-			}
-		},
-        "maxSimulationTime": 5000
-	};
-
-    //Template links and filenames
-	var ypo_ontology_link = "{{ontology_link}}";
-	var ontology_graph_link = "{{ontology_graph_link}}";
-		
-	$(document).ready(function() {
-		$.getJSON(ypo_ontology_link, function(data) {
-			var section_id = 'ontology';
-			var ontology_list_id = 'full_ontology';
-			document.getElementById(section_id).style.display = "block";
-			set_up_full_ontology(ontology_list_id, data);
-		});
-		
-  		//Get graph
-  		$.getJSON(ontology_graph_link, function(data) {
-  			var graph_id = "cy";
-  			var section_id = "network";
-  			var section_navbar_id = "navbar_network";
-  			var cy = setup_cytoscape_vis(graph_id, layout, graph_style, data);
-		});
-	});
-</script>
-        
-
 {% endblock scripts %}

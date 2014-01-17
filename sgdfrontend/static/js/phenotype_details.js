@@ -2,7 +2,8 @@
 $(document).ready(function() {
   	$.getJSON(phenotype_details_link, function(data) {
   	    var phenotype_table = create_phenotype_table(data);
-        create_download_button("evidence_table_download", phenotype_table, download_table_link, download_table_filename);
+        create_download_button("phenotype_table_download", phenotype_table, download_table_link, download_table_filename);
+        $("#phenotype_table_analyze").hide();
   	});
 
     //Get resources
@@ -16,8 +17,6 @@ $(document).ready(function() {
 });
 
 function create_phenotype_table(data) {
-    var phenotype_table = null;
-
 	var datatable = [];
 	var phenotypes = {};
 	for (var i=0; i < data.length; i++) {
@@ -25,14 +24,16 @@ function create_phenotype_table(data) {
 		phenotypes[data[i]['bioconcept']['id']] = true;
 	}
 
-  	$("#evidence_header").html(data.length);
-  	$("#phenotype_header").html(Object.keys(phenotypes).length);
+  	$("#phenotype_header").html(data.length);
+  	$("#phenotype_subheader").html(Object.keys(phenotypes).length);
+  	$("#phenotype_subheader_type").html('phenotypes');
 
   	var options = {};
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[4, "asc"]];
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {'sWidth': '250px'}, null];
+	options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + display_name};
 	options["aaData"] = datatable;
 
-    return create_table("evidence_table", options);
+    return create_table("phenotype_table", options);
 }
