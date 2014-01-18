@@ -34,25 +34,35 @@ $(document).ready(function() {
 });
 
 function create_go_table(prefix, message, filter, data) {
-	var datatable = [];
-	var gos = {};
-	for (var i=0; i < data.length; i++) {
-	    if(filter(data[i])) {
-	        datatable.push(go_data_to_table(data[i], i));
-		    gos[data[i]['bioconcept']['id']] = true;
-	    }
-	}
+    if("Error" in data) {
+        var options = {};
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[5, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
+        options["oLanguage"] = {"sEmptyTable": data["Error"]};
+        options["aaData"] = [];
+    }
+    else {
+        var datatable = [];
+        var gos = {};
+        for (var i=0; i < data.length; i++) {
+            if(filter(data[i])) {
+                datatable.push(go_data_to_table(data[i], i));
+                gos[data[i]['bioconcept']['id']] = true;
+            }
+        }
 
-  	$("#" + prefix + "_go_header").html(datatable.length);
-  	$("#" + prefix + "_go_subheader").html(Object.keys(gos).length);
-  	$("#" + prefix + "_go_subheader_type").html('gene ontology terms');
+        $("#" + prefix + "_go_header").html(datatable.length);
+        $("#" + prefix + "_go_subheader").html(Object.keys(gos).length);
+        $("#" + prefix + "_go_subheader_type").html('gene ontology terms');
 
-  	var options = {};
-	options["bPaginate"] = true;
-	options["aaSorting"] = [[5, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
-	options["oLanguage"] = {"sEmptyTable": message};
-	options["aaData"] = datatable;
+        var options = {};
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[5, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
+        options["oLanguage"] = {"sEmptyTable": message};
+        options["aaData"] = datatable;
+    }
 
 	$("#" + prefix + "_go_table_analyze").hide();
 

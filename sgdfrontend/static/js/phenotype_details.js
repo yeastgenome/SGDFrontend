@@ -17,23 +17,33 @@ $(document).ready(function() {
 });
 
 function create_phenotype_table(data) {
-	var datatable = [];
-	var phenotypes = {};
-	for (var i=0; i < data.length; i++) {
-        datatable.push(phenotype_data_to_table(data[i], i));
-		phenotypes[data[i]['bioconcept']['id']] = true;
-	}
+    if("Error" in data) {
+        var options = {};
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[4, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {'sWidth': '250px'}, null];
+        options["oLanguage"] = {"sEmptyTable": data["Error"]};
+        options["aaData"] = [];
+    }
+    else {
+        var datatable = [];
+        var phenotypes = {};
+        for (var i=0; i < data.length; i++) {
+            datatable.push(phenotype_data_to_table(data[i], i));
+            phenotypes[data[i]['bioconcept']['id']] = true;
+        }
 
-  	$("#phenotype_header").html(data.length);
-  	$("#phenotype_subheader").html(Object.keys(phenotypes).length);
-  	$("#phenotype_subheader_type").html('phenotypes');
+        $("#phenotype_header").html(data.length);
+        $("#phenotype_subheader").html(Object.keys(phenotypes).length);
+        $("#phenotype_subheader_type").html('phenotypes');
 
-  	var options = {};
-	options["bPaginate"] = true;
-	options["aaSorting"] = [[4, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {'sWidth': '250px'}, null];
-	options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + display_name};
-	options["aaData"] = datatable;
+        var options = {};
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[4, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {'sWidth': '250px'}, null];
+        options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + display_name};
+        options["aaData"] = datatable;
+    }
 
     return create_table("phenotype_table", options);
 }
