@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+		
+<!-- Summary
+================================================== -->
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Summary</h1>
+		<p>{{ reference.abstract|safe}}</p>
+        <ul id="ref_links" class="ref-links">
+            <li>PMID: {{ reference.pubmed_id }}</li>
+            {% for url in reference.urls %}
+                <li><a href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+            {% endfor %}
+        </ul>
+
+        <ul>
+            <li><strong>Authors:</strong>
+                {% for author in reference.authors %}
+                    <span><a href="{{ author.link|e }}">{{ author.display_name|e }}</a></span>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </li>
+
+            {% if overview.primary|length  > 0 %}
+                <li><strong>Primary Literature For:</strong>
+                    {% for evidence in overview.primary %}
+                        <span><a href="{{ evidence.bioentity.link|e }}">{{ evidence.bioentity.display_name|e }}</a></span>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </li>
+            {% endif %}
+
+            {% if overview.additional|length > 0 %}
+                <li><strong>Additional Literature For:</strong>
+                    {% for evidence in overview.additional %}
+                        <span><a href="{{ evidence.bioentity.link|e }}">{{ evidence.bioentity.display_name|e }}</a></span>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </li>
+            {% endif %}
+
+            {% if overview.reviews|length  > 0 %}
+                <li><strong>Review For:</strong>
+                    {% for evidence in overview.reviews %}
+                        <span><a href="{{ evidence.bioentity.link|e }}">{{ evidence.bioentity.display_name|e }}</a></span>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </li>
+            {% endif %}
+        </ul>
+	</div>
+</section>

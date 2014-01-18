@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<script>
+    var interaction_details_link = "{{ interaction_details_link }}";
+    var regulation_details_link = "{{ regulation_details_link }}";
+    var phenotype_details_link = "{{ phenotype_details_link }}";
+    var go_details_link = "{{ go_details_link }}";
+
+    var download_table_link = "{{ download_table_link }}";
+    var analyze_link = "{{ analyze_table_link }}";
+
+    var interaction_download_filename = "{{ reference.display_name }}_interactions";
+    var interaction_analyze_filename = "{{ reference.display_name }} interaction genes";
+    var regulation_download_filename = "{{ reference.display_name }}_regulation";
+    var regulation_analyze_filename = "{{ reference.display_name }} regulation genes";
+    var phenotype_download_filename = "{{ reference.display_name }}_phenotypes";
+    var phenotype_analyze_filename = "{{ reference.display_name }} phenotype genes";
+    var go_download_filename = "{{ reference.display_name }}_go_terms";
+    var go_analyze_filename = "{{ reference.display_name }} gene ontology terms";
+
+    var display_name = "{{ reference.display_name }}";
+</script>
+
+<title>{{ reference.display_name }}</title>
+
+{% extends "templates/global_layout.jinja2" %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2><span class="gene_name"> {{ reference.display_name }}</span><br>{{ reference.citation }}</h2>
+</div>
+
+<div class="row">
+
+<!-- Navbar
+================================================== -->
+    <!-- Includes navbar.html into template -->
+    {% include "templates/navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            add_navbar_title('<span class="gene_name">{{ reference.display_name }}</span>')
+            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Interaction Annotations', 'interaction');
+            add_navbar_element('Gene Ontology Annotations', 'all_go');
+            add_navbar_element('Phenotype Annotations', 'phenotype');
+            add_navbar_element('Regulation Annotations', 'all_regulation');
+        </script>
+
+        <!-- Includes reference_overview.html into template -->
+        {% include "templates/reference_overview.jinja2" %}
+
+<!-- Interaction
+================================================== -->
+        <!-- Includes interaction_table into template -->
+        {% set table_name = "Interaction Annotations" %}
+        {% include "templates/interaction_table.jinja2" %}
+
+<!-- GO
+================================================== -->
+        <!-- Includes go_table into template -->
+        {% set table_name = "Gene Ontology Annotations" %}
+        {% set table_type = "all" %}
+        {% include "templates/go_table.jinja2" %}
+
+<!-- Phenotype
+================================================== -->
+        <!-- Includes phenotype_table into template -->
+        {% include "templates/phenotype_table.jinja2" %}
+
+<!-- Regulation
+================================================== -->
+        <!-- Includes regulation_table into template -->
+        {% set table_name = "Regulation Annotations" %}
+        {% set table_type = "all" %}
+        {% include "templates/regulation_table.jinja2" %}
+
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+
+<script src="/static/js/local.js"></script>
+<script src="/static/js/evidence.js"></script>
+<script src="/static/js/reference.js"></script>
+
+{% endblock scripts %}

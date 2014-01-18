@@ -112,24 +112,32 @@ function create_binding_site_table(data) {
 }
 
 function create_target_table(data) {
-    var target_table = null;
-
-	var datatable = [];
-	var genes = {};
-	for (var i=0; i < data.length; i++) {
-        datatable.push(regulation_data_to_table(data[i], false));
-		genes[data[i]["bioentity2"]["id"]] = true;
+    if("Error" in data) {
+        var options = {};
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[4, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
+        options["oLanguage"] = {"sEmptyTable": data["Error"]};
+        options["aaData"] = [];
     }
+    else {
+        var datatable = [];
+        var genes = {};
+        for (var i=0; i < data.length; i++) {
+            datatable.push(regulation_data_to_table(data[i], false));
+            genes[data[i]["bioentity2"]["id"]] = true;
+        }
 
-  	$("#targets_regulation_header").html(data.length);
-  	$("#targets_regulation_subheader").html(Object.keys(genes).length);
-    $("#targets_regulation_subheader_type").html("genes");
+        $("#targets_regulation_header").html(data.length);
+        $("#targets_regulation_subheader").html(Object.keys(genes).length);
+        $("#targets_regulation_subheader_type").html("genes");
 
-  	var options = {};
-  	options["bPaginate"] = true;
-    options["aaSorting"] = [[4, "asc"]];
-	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
-	options["aaData"] = datatable;
+        var options = {};
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[4, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null]
+        options["aaData"] = datatable;
+    }
 
 	return create_table("targets_regulation_table", options);
 }

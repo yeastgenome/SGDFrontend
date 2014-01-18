@@ -119,6 +119,23 @@ def bioent_list_link(backend_start):
 def citation_list_link(backend_start):
     return backend_start + '/reference_list'
 
+#Reference Links
+def reference_link(backend_start, chemical):
+    return backend_start + '/reference/' + chemical + '/overview'
+
+def go_details_ref_link(backend_start, reference):
+    return backend_start + '/reference/' + str(reference) + '/go_details?callback=?'
+def phenotype_details_ref_link(backend_start, reference):
+    return backend_start + '/reference/' + str(reference) + '/phenotype_details?callback=?'
+def interaction_details_ref_link(backend_start, reference):
+    return backend_start + '/reference/' + str(reference) + '/interaction_details?callback=?'
+def regulation_details_ref_link(backend_start, reference):
+    return backend_start + '/reference/' + str(reference) + '/regulation_details?callback=?'
+def binding_details_ref_link(backend_start, reference):
+    return backend_start + '/reference/' + str(reference) + '/binding_details?callback=?'
+def literature_details_ref_link(backend_start, reference):
+    return backend_start + '/reference/' + str(reference) + '/literature_details'
+
 
     
 

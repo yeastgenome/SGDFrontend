@@ -16,7 +16,6 @@ function post_to_url(path, params) {
             form.appendChild(hiddenField);
          }
     }
-
     document.body.appendChild(form);
     form.submit();
 }

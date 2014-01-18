@@ -1,6 +1,6 @@
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
-from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical
+from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical, get_reference
 from sgdfrontend_utils import link_maker
 from pyramid.response import Response
 from frontend.frontend_interface import FrontendInterface
@@ -254,6 +254,26 @@ class SGDFrontend(FrontendInterface):
                     'analyze_table_link': link_maker.analyze_link(),
                     'chemical_details_link': link_maker.chemical_details_chem_link(self.backend_url, chemical_id),
 
+                    }
+        return page
+
+    def reference(self, reference_repr):
+        reference = get_reference(self.backend_url, reference_repr)
+        reference_id = str(reference['id'])
+        overview = get_json(link_maker.literature_details_ref_link(self.backend_url, reference_id))
+        page = {
+                    #Basic info
+                    'reference': reference,
+                    'overview': overview,
+
+                    #Links
+                    'download_table_link': link_maker.download_table_link(),
+                    'analyze_table_link': link_maker.analyze_link(),
+                    'go_details_link': link_maker.go_details_ref_link(self.backend_url, reference_id),
+                    'phenotype_details_link': link_maker.phenotype_details_ref_link(self.backend_url, reference_id),
+                    'interaction_details_link': link_maker.interaction_details_ref_link(self.backend_url, reference_id),
+                    'regulation_details_link': link_maker.regulation_details_ref_link(self.backend_url, reference_id),
+                    'binding_details_link': link_maker.binding_details_ref_link(self.backend_url, reference_id),
                     }
         return page
     

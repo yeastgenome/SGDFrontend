@@ -53,23 +53,33 @@ $(document).ready(function() {
 });
 
 function create_interaction_table(data) {
-    var datatable = [];
-    var genes = {};
-    for (var i=0; i < data.length; i++) {
-        datatable.push(interaction_data_to_table(data[i], i));
-        genes[data[i]["bioentity2"]["id"]] = true;
+    if("Error" in data) {
+        var options = {};
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[5, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]
+        options["oLanguage"] = {"sEmptyTable": data["Error"]};
+        options["aaData"] = [];
     }
+    else {
+        var datatable = [];
+        var genes = {};
+        for (var i=0; i < data.length; i++) {
+            datatable.push(interaction_data_to_table(data[i], i));
+            genes[data[i]["bioentity2"]["id"]] = true;
+        }
 
-    $("#interaction_header").html(data.length);
-  	$("#interaction_subheader").html(Object.keys(genes).length);
-  	$("#interaction_subheader_type").html("genes");
+        $("#interaction_header").html(data.length);
+        $("#interaction_subheader").html(Object.keys(genes).length);
+        $("#interaction_subheader_type").html("genes");
 
-    var options = {};
-	options["bPaginate"] = true;
-	options["aaSorting"] = [[5, "asc"]];
-	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]
-	options["oLanguage"] = {"sEmptyTable": "No interaction data for " + display_name};
-	options["aaData"] = datatable;
+        var options = {};
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[5, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]
+        options["oLanguage"] = {"sEmptyTable": "No interaction data for " + display_name};
+        options["aaData"] = datatable;
+    }
 
     return create_table("interaction_table", options);
 }

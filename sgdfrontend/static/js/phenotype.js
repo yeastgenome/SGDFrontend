@@ -13,23 +13,33 @@ $(document).ready(function() {
 });
 
 function create_phenotype_table(data) {
-	var datatable = [];
-	var genes = {};
-	for (var i=0; i < data.length; i++) {
-        datatable.push(phenotype_data_to_table(data[i], i));
-		genes[data[i]["bioentity"]["id"]] = true;
-	}
+    if("Error" in data) {
+        var options = {};
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[3, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"sWidth": "250px"}, null];
+        options["oLanguage"] = {"sEmptyTable": data["Error"]};
+        options["aaData"] = [];
+    }
+    else {
+        var datatable = [];
+        var genes = {};
+        for (var i=0; i < data.length; i++) {
+            datatable.push(phenotype_data_to_table(data[i], i));
+            genes[data[i]["bioentity"]["id"]] = true;
+        }
 
-  	$("#phenotype_header").html(data.length);
-  	$("#phenotype_subheader").html(Object.keys(genes).length);
-  	$("#phenotype_subheader_type").html("genes");
+        $("#phenotype_header").html(data.length);
+        $("#phenotype_subheader").html(Object.keys(genes).length);
+        $("#phenotype_subheader_type").html("genes");
 
-  	var options = {};
-	options["bPaginate"] = true;
-	options["aaSorting"] = [[3, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"sWidth": "250px"}, null];
-	options["oLanguage"] = {"sEmptyTable": "No annotations for " + display_name};
-	options["aaData"] = datatable;
+        var options = {};
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[3, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"sWidth": "250px"}, null];
+        options["oLanguage"] = {"sEmptyTable": "No annotations for " + display_name};
+        options["aaData"] = datatable;
+    }
 
     return create_table("phenotype_table", options);
 }
