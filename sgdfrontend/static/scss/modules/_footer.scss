@@ -27,6 +27,7 @@ footer { // should be in states
 
 .logo-list {
 	list-style: none;
+	margin: 0;
 	li {
 		text-align: right;
 		margin-bottom: 15px;
@@ -34,14 +35,17 @@ footer { // should be in states
 	}
 }
 
+#social-footer {
+	margin-top: 8px;
+}
+
 footer .social-links {
-	margin: 0;
+	margin: 10px 0;
 	li:first-child {
 		margin-left: 0;
 	}
 	li {
 		margin-left: em-calc(8);
-		margin-top: em-calc(2);
 	}
 }
 
