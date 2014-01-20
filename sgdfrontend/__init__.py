@@ -168,6 +168,7 @@ class SGDFrontend(FrontendInterface):
                     #Basic info
                     'phenotype': biocon,
                     'observable': {'link':link_maker.observable_link(biocon['observable']), 'display_name':biocon['observable']},
+                    'overview': json.dumps(biocon['summary']),
                     
                     #Links
                     'phenotype_details_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id),
@@ -185,6 +186,7 @@ class SGDFrontend(FrontendInterface):
         page = {
                     #Basic info
                     'observable': biocon,
+                    'overview': json.dumps(biocon['summary']),
                     
                     #Links
                     'phenotype_details_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id),

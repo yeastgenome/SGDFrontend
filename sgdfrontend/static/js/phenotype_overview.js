@@ -12,12 +12,23 @@ function drawChart() {
         all_data.push(new_row);
     };
 
+    var title;
+    var hAxis;
+    if(class_type == 'PHENOTYPE') {
+        title = 'Genes by mutant type and experiment type';
+        hAxis = '# of Genes';
+    }
+    else if(class_type == 'LOCUS') {
+        title = 'Phenotypes by mutant type and experiment type';
+        hAxis = '# of Phenotypes';
+    }
     var data = google.visualization.arrayToDataTable(all_data);
     var options = {
-        'legend': {'position': 'bottom', title: 'Experiment Type'},
-        'title': 'Phenotypes by mutant type and experiment type',
+        'legend': {'position': 'top', title: 'Experiment Type'},
+        'title': title,
         'vAxis': {title: 'Mutant Type'},
-        'hAxis': {title: '# of Phenotypes'},
+        'hAxis': {title: hAxis},
+        'chartArea': {left:110,top:50,width:"60%",height:"75%"},
         'dataOpacity':.75,
         'colors': ["#7FBF7B", "#AF8DC3", "#1F78B4"],
         'backgroundColor': 'transparent'
@@ -39,10 +50,11 @@ function drawChart() {
     var strain_options = {
         'legend': {'position': 'none'},
         'title': 'Phenotypes in different strain backgrounds',
-        'vAxis': {title: '# of Phenotypes'},
+        'vAxis': {title: hAxis},
         'hAxis': {title: 'Strain'},
         'dataOpacity':.75,
         'colors': ["#1F78B4"],
+        'chartArea': {left:50,top:50,width:"80%",height:"50%"},
         'backgroundColor': 'transparent'
     };
 
