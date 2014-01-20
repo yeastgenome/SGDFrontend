@@ -48,7 +48,13 @@
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
 		<h1>Summary</h1>
-		<p>{{ observable.description }}</p>
+		<p>{{ observable.description }}<br>
+            <strong>Qualifiers:</strong>
+            {% for qualifier in observable.qualifiers %}
+                <span><a href="{{ qualifier.link|e }}">{{ qualifier.qualifier|e }}</a></span>{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+
 		<div class="panel" id="summary_wrapper">
             <div class="row">
                 <div class="large-6 columns" id="mutant_experiment_chart"></div>
