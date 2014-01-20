@@ -12,22 +12,21 @@ function drawChart() {
         all_data.push(new_row);
     };
 
+    var label;
     var title;
     var hAxis;
     if(class_type == 'PHENOTYPE') {
-        title = 'Genes by mutant type and experiment type';
-        hAxis = '# of Genes';
+        label = 'Genes';
     }
     else if(class_type == 'LOCUS') {
-        title = 'Phenotypes by mutant type and experiment type';
-        hAxis = '# of Phenotypes';
+        label = 'Phenotypes';
     }
     var data = google.visualization.arrayToDataTable(all_data);
     var options = {
         'legend': {'position': 'top', title: 'Experiment Type'},
-        'title': title,
+        'title': label + ' by mutant type and experiment type',
         'vAxis': {title: 'Mutant Type'},
-        'hAxis': {title: hAxis},
+        'hAxis': {title: '# of ' + label},
         'chartArea': {left:110,top:50,width:"60%",height:"75%"},
         'dataOpacity':.75,
         'colors': ["#7FBF7B", "#AF8DC3", "#1F78B4"],
@@ -38,7 +37,7 @@ function drawChart() {
     chart.draw(data, options);
 
     //Strain Chart
-    var strain_all_data = [['Strain', 'Phenotypes']];
+    var strain_all_data = [['Strain', label]];
     //Prepare Data
     for(var j=0; j < overview_data['strain_list'].length; j++) {
         var strain = overview_data['strain_list'][j];
@@ -49,8 +48,8 @@ function drawChart() {
     var strain_data = google.visualization.arrayToDataTable(strain_all_data);
     var strain_options = {
         'legend': {'position': 'none'},
-        'title': 'Phenotypes in different strain backgrounds',
-        'vAxis': {title: hAxis},
+        'title': label + ' in different strain backgrounds',
+        'vAxis': {title: '# of ' + label},
         'hAxis': {title: 'Strain'},
         'dataOpacity':.75,
         'colors': ["#1F78B4"],
