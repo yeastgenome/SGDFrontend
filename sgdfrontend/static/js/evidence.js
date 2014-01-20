@@ -66,8 +66,7 @@ function interaction_data_to_table(evidence, index) {
 	}
 	var phenotype = '';
 	if(evidence['phenotype'] != null) {
-	    phenotype = evidence['phenotype']['display_name'];
-		//phenotype = create_link(evidence['phenotype']['display_name'], evidence['phenotype']['link']);
+		phenotype = create_link(evidence['phenotype']['display_name'], evidence['phenotype']['link']) + '<br><strong>Mutant Type:</strong> ' + evidence['mutant_type'];
 	}
 	var modification = '';
 	if(evidence['modification'] != null) {
