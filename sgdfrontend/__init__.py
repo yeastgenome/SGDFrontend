@@ -115,7 +115,6 @@ class SGDFrontend(FrontendInterface):
     def phenotype_details(self, bioent_repr):
         bioent = get_bioent(self.backend_url, bioent_repr)
         bioent_id = str(bioent['id'])
-        display_name = bioent['display_name']
         overview = get_json(link_maker.phenotype_overview_link(self.backend_url, bioent_id))
         tabs = get_json(link_maker.tab_link(self.backend_url, bioent_id))
         
@@ -130,6 +129,7 @@ class SGDFrontend(FrontendInterface):
                     #Links
                     'phenotype_details_link': link_maker.phenotype_details_link(self.backend_url, bioent_id),
                     'phenotype_resources_link': link_maker.phenotype_resources_link(self.backend_url, bioent_id),
+                    'phenotype_graph_link': link_maker.phenotype_graph_link(self.backend_url, bioent_id),
                     'download_table_link': link_maker.download_table_link(),
                     'ontology_link': link_maker.phenotype_ontology_link(),
 
@@ -154,6 +154,7 @@ class SGDFrontend(FrontendInterface):
                     
                     #Links
                     'go_details_link': link_maker.go_details_link(self.backend_url, bioent_id),
+                    'go_graph_link': link_maker.go_graph_link(self.backend_url, bioent_id),
                     'download_table_link': link_maker.download_table_link(),
                     'ontology_link': link_maker.phenotype_ontology_link(),
 

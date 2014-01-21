@@ -1,5 +1,5 @@
 
-function create_cytoscape_vis(div_id, layout, style, data, f) {
+function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 	var cytoscape_div = $("#" + div_id);
 
 	var height = .5*$(window).height();
@@ -53,11 +53,13 @@ function create_cytoscape_vis(div_id, layout, style, data, f) {
 	    notElements.hide();
 
 	    //Hide singleton nodes
-	    var centerNode = cy.elements("node[sub_type = 'FOCUS']")[0].id();
-	    var singletons = cy.elements("node:visible");
-	    var connectedNodes = cy.elements("edge[target = '" + centerNode + "']:visible").connectedNodes();
-	    singletons = singletons.not(connectedNodes);
-        singletons.hide();
+	    if(hide_singletons) {
+            var centerNode = cy.elements("node[sub_type = 'FOCUS']")[0].id();
+            var singletons = cy.elements("node:visible");
+            var connectedNodes = cy.elements("edge[target = '" + centerNode + "']:visible, edge[source = '" + centerNode + "']:visible").connectedNodes();
+            singletons = singletons.not(connectedNodes);
+            singletons.hide();
+        }
 	};
 
 	var recenter_button = document.createElement('a');
@@ -76,7 +78,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f) {
 	return cy;
 }
 
-function create_slider(slider_id, graph, min, max, slide_f) {
+function create_slider(slider_id, graph, min, max, slide_f, stop) {
     var range;
     var start;
 	if(max==min) {
@@ -104,13 +106,13 @@ function create_slider(slider_id, graph, min, max, slide_f) {
 	    slider.attr('disabled', 'disabled');
 	}
 
-	create_slider_ticks("slider_ticks", min, max)
+	create_slider_ticks("slider_ticks", min, max, stop)
 
 	slider.update_new_max = function(smax) {
         $("#" + slider_id).noUiSlider({
             range: [min, smax]
         }, true);
-        create_slider_ticks("slider_ticks", min, smax);
+        create_slider_ticks("slider_ticks", min, smax, stop);
         var cutoff = slider.val();
         graph.filters['slider'] = slide_f(cutoff);
         graph.applyFilters();
@@ -123,15 +125,18 @@ function create_slider(slider_id, graph, min, max, slide_f) {
 	return slider;
 }
 
-function create_slider_ticks(slider_tick_id, min, max) {
+function create_slider_ticks(slider_tick_id, min, max, stop) {
+    if(stop == null) {
+        stop = 10;
+    }
     $("#" + slider_tick_id).empty();
     if(max==min) {
 		var spacing =  92;
 	    i = min-1
 	    var value = i+1;
-	    if(value >= 10) {
+	    if(value >= stop) {
 	    	var left = (spacing * (i-min+1))+2
-	       	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
+	       	$('<span class="ui-slider-tick-mark muted">' +stop+ '+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
 	    }
 	    else {
 	    	var left = (spacing * (i-min+1))+3.5
@@ -142,9 +147,9 @@ function create_slider_ticks(slider_tick_id, min, max) {
 		var spacing =  92 / (max - min);
 	    for (var i = min-1; i < max ; i=i+1) {
 	    	var value = i+1;
-	    	if(value >= 10) {
+	    	if(value >= stop) {
 	    		var left = (spacing * (i-min+1))+2
-	        	$('<span class="ui-slider-tick-mark muted">10+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
+	        	$('<span class="ui-slider-tick-mark muted">' +stop+ '+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
 	    	}
 	    	else {
 	    		var left = (spacing * (i-min+1))+3.5

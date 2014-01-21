@@ -29,6 +29,8 @@ def go_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/go_overview'
 def go_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/go_details?callback=?'
+def go_graph_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/go_graph?callback=?'
 def go_details_biocon_link(backend_start, biocon, with_children=False):
     if with_children:
         return backend_start + '/go/' + str(biocon) + '/locus_details_all?callback=?'
@@ -53,6 +55,8 @@ def phenotype_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/phenotype_details?callback=?'
 def phenotype_resources_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/phenotype_resources?callback=?'
+def phenotype_graph_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/phenotype_graph?callback=?'
 def phenotype_details_biocon_link(backend_start, biocon, with_children=False):
     if with_children:
         return backend_start + '/phenotype/' + str(biocon) + '/locus_details_all?callback=?'

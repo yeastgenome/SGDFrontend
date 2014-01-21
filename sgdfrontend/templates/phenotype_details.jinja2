@@ -2,6 +2,7 @@
 
 <script>
 	var phenotype_details_link = "{{phenotype_details_link}}";
+	var phenotype_graph_link = "{{phenotype_graph_link}}";
 	var phenotype_resources_link = "{{phenotype_resources_link}}";
 	var download_table_link = "{{download_table_link}}";
 	var download_table_filename = "{{ locus.display_name}}_phenotypes";
@@ -40,6 +41,7 @@
             add_navbar_title("<a href='{{ locus.link }}'>{{ locus.display_name }}/{{ locus.format_name }}</a> Phenotypes");
             add_navbar_element("Phenotype Summary", "summary");
             add_navbar_element("Phenotypes", "phenotype");
+            add_navbar_element("Network Visualization", "network");
             add_navbar_element("Resources", "resources");
         </script>
 
@@ -50,6 +52,21 @@
 ================================================== -->
         <!-- Includes phenotype_table into template -->
         {% include "templates/phenotype_table.jinja2" %}
+
+<!-- Network Visualization
+================================================== -->
+        <section id="network" data-magellan-destination="network">
+            <div class="page-header">
+                <h1>Network Visualization</h1>
+                <div class="panel">
+                    <div id="cy" name="cy" style="width:100%;height:700px"></div>
+                    <h5>Filter Genes by # of Phenotypes Shared With {{ locus.display_name }}:</h5>
+                    <div id="slider" class="noUiSlider" style="width:100%"></div>
+                    <div id="slider_ticks"></div>
+                    <br>
+                </div>
+            </div>
+        </section>
 
 <!-- Resources
 ================================================== -->
@@ -69,6 +86,10 @@
 {% endblock body %}
 
 {% block scripts %}
+<script src="/static/js/jquery.nouislider.min.js"></script>
+<script src="/static/js/cytoscape/cytoscape.min.js"></script>
+<script src="/static/js/cytoscape/arbor.js"></script>
+<script src="/static/js/cytoscape.js"></script>
 <script src="/static/js/local.js"></script>
 <script src="/static/js/evidence.js"></script>
 <script src="/static/js/phenotype_details.js"></script>
