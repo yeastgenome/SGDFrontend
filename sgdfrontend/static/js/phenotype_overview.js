@@ -27,7 +27,7 @@ function drawChart() {
         'title': label + ' by mutant type and experiment type',
         'vAxis': {title: 'Mutant Type'},
         'hAxis': {title: '# of ' + label},
-        'chartArea': {left:110,top:50,width:"60%",height:"75%"},
+        'chartArea': {left:110,top:50,width:"60%",height:"60%"},
         'dataOpacity':.75,
         'colors': ["#7FBF7B", "#AF8DC3", "#1F78B4"],
         'backgroundColor': 'transparent'
