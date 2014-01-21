@@ -19,6 +19,7 @@
     var go_analyze_filename = "{{ reference.display_name }} gene ontology terms";
 
     var display_name = "{{ reference.display_name }}";
+    var counts = {{counts|safe}};
 </script>
 
 <title>{{ reference.display_name }}</title>
@@ -28,8 +29,8 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
-	<h2><span class="gene_name"> {{ reference.display_name }}</span><br>{{ reference.citation }}</h2>
+<div class="row">
+	<h2>{{ reference.citation }}</h2>
 </div>
 
 <div class="row">
@@ -43,7 +44,7 @@
 
         <script>
             add_navbar_title('<span class="gene_name">{{ reference.display_name }}</span>')
-            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Abstract', 'summary');
             add_navbar_element('Interaction Annotations', 'interaction');
             add_navbar_element('Gene Ontology Annotations', 'all_go');
             add_navbar_element('Phenotype Annotations', 'phenotype');
