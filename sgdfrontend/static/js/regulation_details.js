@@ -38,7 +38,7 @@ $(document).ready(function() {
 
     $.getJSON(regulation_graph_link, function(data) {
         if(data != null && data["nodes"].length > 1) {
-            var graph = create_cytoscape_vis("cy", layout, graph_style, data);
+            var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
             var slider = create_slider("slider", graph, data["min_evidence_cutoff"], data["max_evidence_cutoff"], slider_filter);
 
             if(data["max_target_cutoff"] >= data["min_evidence_cutoff"] && data["max_regulator_cutoff"] >= data["min_evidence_cutoff"]) {

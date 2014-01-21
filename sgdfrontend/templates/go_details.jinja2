@@ -3,6 +3,7 @@
 <script>
 	var go_overview_link = "{{go_overview_link}}";
 	var go_details_link = "{{go_details_link}}";
+	var go_graph_link = "{{go_graph_link}}";
 	var download_table_link = "{{download_table_link}}";
 
 	var mc_bp_download_table_filename = "{{ locus.display_name }}_manual_bp_go";
@@ -50,6 +51,7 @@
             add_navbar_element("Manually Curated", "manual");
             add_navbar_element("High-throughput", "htp");
             add_navbar_element("Computational", "comp");
+            add_navbar_element("Network Visualization", "network");
         </script>
 
         <!-- Includes go_overview.html into template -->
@@ -143,11 +145,31 @@
 
             </div>
         </section>
+
+<!-- Network Visualization
+================================================== -->
+        <section id="network" data-magellan-destination="network">
+            <div class="page-header">
+                <h1>Network Visualization</h1>
+                <div class="panel">
+                    <div id="cy" name="cy" style="width:100%;height:700px"></div>
+                    <h5>Filter Genes by # of GO Terms Shared With {{ locus.display_name }}:</h5>
+                    <div id="slider" class="noUiSlider" style="width:100%"></div>
+                    <div id="slider_ticks"></div>
+                    <br>
+                </div>
+            </div>
+        </section>
+
     </div>
 </div>
 {% endblock body %}
 
 {% block scripts %}
+<script src="/static/js/jquery.nouislider.min.js"></script>
+<script src="/static/js/cytoscape/cytoscape.min.js"></script>
+<script src="/static/js/cytoscape/arbor.js"></script>
+<script src="/static/js/cytoscape.js"></script>
 <script src="/static/js/local.js"></script>
 <script src="/static/js/evidence.js"></script>
 <script src="/static/js/go_details.js"></script>
