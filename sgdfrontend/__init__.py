@@ -268,6 +268,7 @@ class SGDFrontend(FrontendInterface):
                     #Basic info
                     'reference': reference,
                     'overview': overview,
+                    'counts': json.dumps(reference['counts']),
 
                     #Links
                     'download_table_link': link_maker.download_table_link(),
