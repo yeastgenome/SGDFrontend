@@ -31,39 +31,42 @@ function set_up_full_ontology(ontology_list_id, data) {
 		li.id = data['elements'][i]['id'];
 		list.appendChild(li);
 	}
-	for (var child_id in data['child_to_parent']) {
-		var parent_id = data['child_to_parent'][child_id];
-		
-		var parent = document.getElementById(parent_id);
-		var ul = null;
-		if(parent.children.length <= 2) {
-			ul = document.createElement('ul');
-			ul.id = 'expand' + parent_id;
+	for (var i=0; i < data['elements'].length; i++) {
+	    var child_id = data['elements'][i]['id'];
+	    if(child_id in data['child_to_parent']) {
+            var parent_id = data['child_to_parent'][child_id];
 
-			var expand_a = document.createElement('a');
-            expand_a.innerHTML = minus;
-            expand_a.onclick = function() {
-                var expand_id = 'expand' + this.parentNode.id;
-                if(this.innerHTML == minus) {
-                    $("#" + expand_id).children().hide();
-                    this.innerHTML = plus;
-                }
-                else {
-                    $("#" + expand_id).children().show();
-                    this.innerHTML = minus;
-                }
-            };
-            parent.insertBefore(expand_a, parent.firstChild);
+            var parent = document.getElementById(parent_id);
+            var ul = null;
+            if(parent.children.length <= 2) {
+                ul = document.createElement('ul');
+                ul.id = 'expand' + parent_id;
 
-			parent.appendChild(ul);
-		}
-		else {
-			ul = parent.children[2];
-		}
-		var child = document.getElementById(child_id);
-		list.removeChild(child);
+                var expand_a = document.createElement('a');
+                expand_a.innerHTML = minus;
+                expand_a.onclick = function() {
+                    var expand_id = 'expand' + this.parentNode.id;
+                    if(this.innerHTML == minus) {
+                        $("#" + expand_id).children().hide();
+                        this.innerHTML = plus;
+                    }
+                    else {
+                        $("#" + expand_id).children().show();
+                        this.innerHTML = minus;
+                    }
+                };
+                parent.insertBefore(expand_a, parent.firstChild);
 
-        ul.appendChild(child);
+                parent.appendChild(ul);
+            }
+            else {
+                ul = parent.children[2];
+            }
+            var child = document.getElementById(child_id);
+            list.removeChild(child);
+
+            ul.appendChild(child);
+        }
     }
 }
 

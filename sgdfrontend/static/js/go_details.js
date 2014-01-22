@@ -117,14 +117,14 @@ var graph_style = cytoscape.stylesheet()
 		'shape': 'rectangle',
 		'text-outline-color': '#888',
 		'color': '#fff',
-		'background-color': "#AF8DC3",
+		'background-color': "#7FBF7B",
 	})
 	.selector("node[type='BIOCONCEPT'][sub_type='molecular function']")
 	.css({
 		'shape': 'rectangle',
 		'text-outline-color': '#888',
 		'color': '#fff',
-		'background-color': "#7FBF7B",
+		'background-color': "#AF8DC3",
 	})
 	.selector("node[type='BIOCONCEPT'][sub_type='cellular component']")
 	.css({
