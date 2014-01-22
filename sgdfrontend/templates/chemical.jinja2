@@ -11,7 +11,7 @@
     var display_name = "{{ chemical.display_name }}";
 </script>
 
-<title>{{ chemical.display_name }} Chemical</title>
+<title>{{ chemical.display_name }}</title>
 
 {% extends "templates/global_layout.jinja2" %}
 
@@ -19,7 +19,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{ chemical.display_name }}</span> Chemical</h2>
+	<h2>Chemical: <span class="gene_name">{{ chemical.display_name }}</span></h2>
 </div>
 
 <!-- Navbar
@@ -32,7 +32,7 @@
 <div class="small-12 large-9 columns content-column">
 
 <script>
-    add_navbar_title('<span class="gene_name">{{ chemical.display_name }}</span><br>Chemical')
+    add_navbar_title('Chemical:<br><span class="gene_name">{{ chemical.display_name }}</span>')
     add_navbar_element('Summary', 'summary');
     add_navbar_element('Annotations', 'annotations');
 </script>
@@ -42,6 +42,8 @@
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
 		<h1>Summary</h1>
+		<p><strong>Chemical Name: </strong>{{ chemical.display_name }}</p>
+		<p {% if chemical.chebi_id == none %}style="display:none"{% endif %}><strong>Chebi ID: </strong><a href="http://www.ebi.ac.uk/chebi/searchId.do?chebiId={{ chemical.chebi_id }}" target="_blank">{{ chemical.chebi_id }}</a></p>
 	</div>
 </section>
 
