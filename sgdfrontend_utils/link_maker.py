@@ -134,8 +134,10 @@ def citation_list_link(backend_start):
     return backend_start + '/reference_list'
 
 #Reference Links
-def reference_link(backend_start, chemical):
-    return backend_start + '/reference/' + chemical + '/overview'
+def reference_link(backend_start, reference):
+    return backend_start + '/reference/' + reference + '/overview'
+def author_link(backend_start, author):
+    return backend_start + '/author/' + author + '/overview'
 
 def go_details_ref_link(backend_start, reference):
     return backend_start + '/reference/' + str(reference) + '/go_details?callback=?'
@@ -149,6 +151,8 @@ def binding_details_ref_link(backend_start, reference):
     return backend_start + '/reference/' + str(reference) + '/binding_details?callback=?'
 def literature_details_ref_link(backend_start, reference):
     return backend_start + '/reference/' + str(reference) + '/literature_details'
+def author_references_link(backend_start, author):
+    return backend_start + '/author/' + str(author) + '/references?callback=?'
 
 
     

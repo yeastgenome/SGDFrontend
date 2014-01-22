@@ -14,6 +14,13 @@ def prep_views(chosen_frontend, config):
                                 getattr(chosen_frontend, 'reference')(
                                         None if 'identifier' not in request.matchdict else request.matchdict['identifier'])), 
                      renderer=chosen_frontend.get_renderer('reference'))
+
+    config.add_route('author',
+                     '/author/{identifier}/overview',
+                     view=lambda request: chosen_frontend.response_wrapper('author', request)(
+                                getattr(chosen_frontend, 'author')(
+                                        None if 'identifier' not in request.matchdict else request.matchdict['identifier'])),
+                     renderer=chosen_frontend.get_renderer('author'))
         
     config.add_route('redirect',
                      '/redirect/{page}',

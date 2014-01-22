@@ -1,6 +1,6 @@
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
-from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical, get_reference
+from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical, get_reference, get_author
 from sgdfrontend_utils import link_maker
 from pyramid.response import Response
 from frontend.frontend_interface import FrontendInterface
@@ -278,6 +278,19 @@ class SGDFrontend(FrontendInterface):
                     'interaction_details_link': link_maker.interaction_details_ref_link(self.backend_url, reference_id),
                     'regulation_details_link': link_maker.regulation_details_ref_link(self.backend_url, reference_id),
                     'binding_details_link': link_maker.binding_details_ref_link(self.backend_url, reference_id),
+                    }
+        return page
+
+    def author(self, author_repr):
+        author = get_author(self.backend_url, author_repr)
+        author_id = str(author['id'])
+        page = {
+                    #Basic info
+                    'author': author,
+
+                    #Links
+                    'references_link': link_maker.author_references_link(self.backend_url, author_id),
+                    'download_link': link_maker.download_citations_link(),
                     }
         return page
 

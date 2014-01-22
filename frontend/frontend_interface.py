@@ -73,6 +73,10 @@ class FrontendInterface:
         return None
 
     @abstractmethod
+    def author(self, author_repr):
+        return None
+
+    @abstractmethod
     def interaction_snapshot(self):
         return None
 
