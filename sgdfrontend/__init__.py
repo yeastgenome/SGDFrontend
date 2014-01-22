@@ -289,6 +289,42 @@ class SGDFrontend(FrontendInterface):
                     'overview': json.dumps(overview),
                 }
         return page
+
+    def regulation_snapshot(self):
+        overview = get_json(link_maker.regulation_snapshot_link(self.backend_url))
+
+        page = {
+                    #Overview
+                    'overview': json.dumps(overview),
+                }
+        return page
+
+    def literature_snapshot(self):
+        overview = get_json(link_maker.literature_snapshot_link(self.backend_url))
+
+        page = {
+                    #Overview
+                    'overview': json.dumps(overview),
+                }
+        return page
+
+    def phenotype_snapshot(self):
+        overview = get_json(link_maker.phenotype_snapshot_link(self.backend_url))
+
+        page = {
+                    #Overview
+                    'overview': json.dumps(overview),
+                }
+        return page
+
+    def go_snapshot(self):
+        overview = get_json(link_maker.go_snapshot_link(self.backend_url))
+
+        page = {
+                    #Overview
+                    'overview': json.dumps(overview),
+                }
+        return page
     
     def home(self):
         if self.heritage_url is None:

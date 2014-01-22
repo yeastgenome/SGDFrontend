@@ -4,7 +4,7 @@
     var overview_json = {{ overview | safe }};
 </script>
 
-<title>Interaction Snapshot</title>
+<title>Phenotype Snapshot</title>
 
 {% extends "templates/global_layout.jinja2" %}
 
@@ -12,7 +12,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>Interaction Snapshot</h2>
+	<h2>Phenotype Snapshot</h2>
 </div>
 
 <div class="row">
@@ -24,10 +24,11 @@
 
     <div class="small-12 large-9 columns content-column">
         <script>
-            add_navbar_title('Interaction Snapshot');
+            add_navbar_title('Phenotype Snapshot');
             add_navbar_element("Data Overview", "summary");
+            add_navbar_element("Annotations Over Time", "over_time");
             add_navbar_element("Histograms", "histograms");
-            add_navbar_element("Get Interaction Data", "data");
+            add_navbar_element("Get Phenotype Data", "data");
             add_navbar_element("Download Links", "download");
 
         </script>
@@ -37,13 +38,22 @@
         <section id="summary" data-magellan-destination="summary">
             <div class="page-header">
                 <h1>Data Overview</h1>
-                <p>SGD uses <a href="http://thebiogrid.org/">BioGRID</a> interaction data. We store both physical and genetic interactions.</p>
+                <p>SGD manually annotates phenotypes...</p>
                 <div class="panel">
                     <div class="row">
-                        <div class="large-4 columns" id="interaction_type_diagram"></div>
-                        <div class="large-4 columns" id="annotation_type_diagram"></div>
-                        <div class="large-4 columns" id="modification_diagram"></div>
+                        <div class="large-4 columns" id="experiment_type_diagram"></div>
+                        <div class="large-4 columns" id="mutant_type_diagram"></div>
+                        <div class="large-4 columns" id="strain_diagram"></div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="over_time" data-magellan-destination="over_time">
+	        <div class="page-header">
+                <h1>Annotations Over Time</h1>
+                <div class="panel">
+                    <div id="over_time_diagram"></div>
                 </div>
             </div>
         </section>
@@ -52,16 +62,16 @@
 	        <div class="page-header">
                 <h1>Histograms</h1>
                 <div class="panel">
-                    <div id="annotation_histogram_diagram"></div>
-                    <div id="interactor_histogram_diagram"></div>
+                    <div id="phenotype_histogram_diagram"></div>
+                    <div id="gene_histogram_diagram"></div>
                 </div>
             </div>
         </section>
 
         <section id="data" data-magellan-destination="data">
 	        <div class="page-header">
-		        <h1>Get Interaction Data</h1>
-		        Get interaction data for <input placeholder="Gene name, systematic ORF name, or SGDID" style="width:350px"></input><a class="secondary button"><i class="icon-search"></i></a>
+		        <h1>Get Phenotype Data</h1>
+		        Get phenotype data for <input placeholder="Gene name, systematic ORF name, or SGDID" style="width:350px"></input><a class="secondary button"><i class="icon-search"></i></a>
 		        <br><br>
 		    </div>
         </section>
@@ -69,7 +79,7 @@
         <section id="download" data-magellan-destination="download">
 	        <div class="page-header">
 		        <h1>Download Links</h1>
-		        <a href="http://downloads.yeastgenome.org/curation/literature/interaction_data.tab">All Interaction Data</a>
+		        <a href="http://downloads.yeastgenome.org/curation/literature/phenotype_data.tab">All Phenotype Data</a>
 		    </div>
         </section>
 
@@ -79,7 +89,6 @@
 
 {% block scripts %}
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script src="/static/js/interaction_snapshot.js"></script>
 {% endblock scripts %}
 
 
