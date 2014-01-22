@@ -14,6 +14,9 @@ $(document).ready(function() {
 
 });
 
+var minus = "- ";
+var plus = "+ ";
+
 function set_up_full_ontology(ontology_list_id, data) {
 	var list = document.getElementById(ontology_list_id);
 	for (var i=0; i < data['elements'].length; i++) {
@@ -35,6 +38,23 @@ function set_up_full_ontology(ontology_list_id, data) {
 		var ul = null;
 		if(parent.children.length <= 2) {
 			ul = document.createElement('ul');
+			ul.id = 'expand' + parent_id;
+
+			var expand_a = document.createElement('a');
+            expand_a.innerHTML = minus;
+            expand_a.onclick = function() {
+                var expand_id = 'expand' + this.parentNode.id;
+                if(this.innerHTML == minus) {
+                    $("#" + expand_id).children().hide();
+                    this.innerHTML = plus;
+                }
+                else {
+                    $("#" + expand_id).children().show();
+                    this.innerHTML = minus;
+                }
+            };
+            parent.insertBefore(expand_a, parent.firstChild);
+
 			parent.appendChild(ul);
 		}
 		else {
