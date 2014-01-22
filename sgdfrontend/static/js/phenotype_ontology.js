@@ -10,6 +10,8 @@ $(document).ready(function() {
   		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
 	});
 
+	add_footer_space("ontology");
+
 });
 
 function set_up_full_ontology(ontology_list_id, data) {
