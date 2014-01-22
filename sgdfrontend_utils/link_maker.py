@@ -13,6 +13,8 @@ def interaction_graph_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/interaction_graph?callback=?'
 def interaction_resources_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/interaction_resources?callback=?'
+def interaction_snapshot_link(backend_start):
+    return backend_start + '/snapshot/interaction'
 
 #Regulation Links
 def regulation_overview_link(backend_start, bioent):

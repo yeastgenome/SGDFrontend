@@ -71,6 +71,10 @@ class FrontendInterface:
     @abstractmethod
     def reference(self, reference_repr):
         return None
+
+    @abstractmethod
+    def interaction_snapshot(self):
+        return None
     
     @abstractmethod
     def home(self):

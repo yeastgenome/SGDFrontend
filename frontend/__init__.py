@@ -156,6 +156,12 @@ def prep_views(chosen_frontend, config):
                                 getattr(chosen_frontend, 'chemical')(
                                         chemical_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].lower())),
                      renderer=chosen_frontend.get_renderer('chemical'))
+
+    config.add_route('interaction_snapshot',
+                     '/snapshot/interaction',
+                     view=lambda request: chosen_frontend.response_wrapper('interaction_snapshot', request)(
+                                getattr(chosen_frontend, 'interaction_snapshot')()),
+                     renderer=chosen_frontend.get_renderer('interaction_snapshot'))
     
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'sgdfrontend':

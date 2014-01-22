@@ -280,6 +280,15 @@ class SGDFrontend(FrontendInterface):
                     'binding_details_link': link_maker.binding_details_ref_link(self.backend_url, reference_id),
                     }
         return page
+
+    def interaction_snapshot(self):
+        overview = get_json(link_maker.interaction_snapshot_link(self.backend_url))
+
+        page = {
+                    #Overview
+                    'overview': json.dumps(overview),
+                }
+        return page
     
     def home(self):
         if self.heritage_url is None:
@@ -291,9 +300,6 @@ class SGDFrontend(FrontendInterface):
     def redirect(self, page, bioent_repr):
         if bioent_repr is not None:
             return HTTPFound('/locus/' + bioent_repr + '/' + page)
-        elif page == 'interaction':
-            page = urllib.urlopen(self.heritage_url + '/cgi-bin/interaction_search').read()
-            return Response(page)
         else:
             return Response(status_int=500, body='Invalid URL.')
     
