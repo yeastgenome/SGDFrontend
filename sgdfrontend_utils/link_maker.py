@@ -25,6 +25,8 @@ def regulation_target_enrichment_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/regulation_target_enrichment?callback=?'
 def regulation_graph_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/regulation_graph?callback=?'
+def regulation_snapshot_link(backend_start):
+    return backend_start + '/snapshot/regulation'
 
 #GO Links
 def go_overview_link(backend_start, bioent):
@@ -42,6 +44,8 @@ def go_link(backend_start, go):
     return backend_start + '/go/' + go + '/overview'
 def go_ontology_graph_link(backend_start, go):
     return backend_start + '/go/' + go + '/ontology_graph?callback=?'
+def go_snapshot_link(backend_start):
+    return backend_start + '/snapshot/go'
 
 #Phenotype Links
 def phenotype_ontology_link():
@@ -70,6 +74,8 @@ def phenotype_ontology_graph_link(backend_start, phenotype):
     return backend_start + '/phenotype/' + phenotype + '/ontology_graph?callback=?'
 def ypo_ontology_link(backend_start):
     return backend_start + '/phenotype/ontology?callback=?'
+def phenotype_snapshot_link(backend_start):
+    return backend_start + '/snapshot/phenotype'
 
 #Protein Links
 def protein_domain_details_link(backend_start, bioent):
@@ -100,6 +106,8 @@ def literature_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/literature_details?callback=?'
 def literature_graph_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/literature_graph?callback=?'
+def literature_snapshot_link(backend_start):
+    return backend_start + '/snapshot/literature'
     
 #Bioentity links
 def bioentity_overview_link(backend_start, bioent):

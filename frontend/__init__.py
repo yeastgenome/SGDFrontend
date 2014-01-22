@@ -162,6 +162,30 @@ def prep_views(chosen_frontend, config):
                      view=lambda request: chosen_frontend.response_wrapper('interaction_snapshot', request)(
                                 getattr(chosen_frontend, 'interaction_snapshot')()),
                      renderer=chosen_frontend.get_renderer('interaction_snapshot'))
+
+    config.add_route('regulation_snapshot',
+                     '/snapshot/regulation',
+                     view=lambda request: chosen_frontend.response_wrapper('regulation_snapshot', request)(
+                                getattr(chosen_frontend, 'regulation_snapshot')()),
+                     renderer=chosen_frontend.get_renderer('regulation_snapshot'))
+
+    config.add_route('literature_snapshot',
+                     '/snapshot/literature',
+                     view=lambda request: chosen_frontend.response_wrapper('literature_snapshot', request)(
+                                getattr(chosen_frontend, 'literature_snapshot')()),
+                     renderer=chosen_frontend.get_renderer('literature_snapshot'))
+
+    config.add_route('go_snapshot',
+                     '/snapshot/go',
+                     view=lambda request: chosen_frontend.response_wrapper('go_snapshot', request)(
+                                getattr(chosen_frontend, 'go_snapshot')()),
+                     renderer=chosen_frontend.get_renderer('go_snapshot'))
+
+    config.add_route('phenotype_snapshot',
+                     '/snapshot/phenotype',
+                     view=lambda request: chosen_frontend.response_wrapper('phenotype_snapshot', request)(
+                                getattr(chosen_frontend, 'phenotype_snapshot')()),
+                     renderer=chosen_frontend.get_renderer('phenotype_snapshot'))
     
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'sgdfrontend':

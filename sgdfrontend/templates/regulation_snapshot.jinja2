@@ -4,7 +4,7 @@
     var overview_json = {{ overview | safe }};
 </script>
 
-<title>Interaction Snapshot</title>
+<title>Regulation Snapshot</title>
 
 {% extends "templates/global_layout.jinja2" %}
 
@@ -12,7 +12,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>Interaction Snapshot</h2>
+	<h2>Regulation Snapshot</h2>
 </div>
 
 <div class="row">
@@ -24,11 +24,10 @@
 
     <div class="small-12 large-9 columns content-column">
         <script>
-            add_navbar_title('Interaction Snapshot');
+            add_navbar_title('Regulation Snapshot');
             add_navbar_element("Data Overview", "summary");
             add_navbar_element("Histograms", "histograms");
-            add_navbar_element("Get Interaction Data", "data");
-            add_navbar_element("Download Links", "download");
+            add_navbar_element("Get Regulation Data", "data");
 
         </script>
 
@@ -37,12 +36,10 @@
         <section id="summary" data-magellan-destination="summary">
             <div class="page-header">
                 <h1>Data Overview</h1>
-                <p>SGD uses <a href="http://thebiogrid.org/">BioGRID</a> interaction data. We store both physical and genetic interactions.</p>
+                <p>SGD uses a variety of data...</p>
                 <div class="panel">
                     <div class="row">
-                        <div class="large-4 columns" id="interaction_type_diagram"></div>
-                        <div class="large-4 columns" id="annotation_type_diagram"></div>
-                        <div class="large-4 columns" id="modification_diagram"></div>
+                        <div class="large-4 columns" id="experiment_diagram"></div>
                     </div>
                 </div>
             </div>
@@ -53,23 +50,17 @@
                 <h1>Histograms</h1>
                 <div class="panel">
                     <div id="annotation_histogram_diagram"></div>
-                    <div id="interactor_histogram_diagram"></div>
+                    <div id="regulator_histogram_diagram"></div>
+                    <div id="target_histogram_diagram"></div>
                 </div>
             </div>
         </section>
 
         <section id="data" data-magellan-destination="data">
 	        <div class="page-header">
-		        <h1>Get Interaction Data</h1>
-		        Get interaction data for <input placeholder="Gene name, systematic ORF name, or SGDID" style="width:350px"></input><a class="secondary button"><i class="icon-search"></i></a>
+		        <h1>Get Regulation Data</h1>
+		        Get regulation data for <input placeholder="Gene name, systematic ORF name, or SGDID" style="width:350px"></input><a class="secondary button"><i class="icon-search"></i></a>
 		        <br><br>
-		    </div>
-        </section>
-
-        <section id="download" data-magellan-destination="download">
-	        <div class="page-header">
-		        <h1>Download Links</h1>
-		        <a href="http://downloads.yeastgenome.org/curation/literature/interaction_data.tab">All Interaction Data</a>
 		    </div>
         </section>
 
