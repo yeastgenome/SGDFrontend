@@ -87,6 +87,9 @@ function phenotype_data_to_table(evidence, index) {
 	var experiment = '';
 	if(evidence['experiment'] != null) {
 		experiment = evidence['experiment']['display_name'];
+		if(evidence['experiment']['details'] != null) {
+			experiment = experiment + ' ' + create_note_icon('experiment_icon' + index, evidence['experiment']['details']);
+		}
 	}
 
 	var strain = '';
