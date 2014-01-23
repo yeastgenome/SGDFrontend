@@ -28,19 +28,32 @@ $(document).ready(function() {
         var comp_cc_go_table = create_go_table("comp_cc", "No computational cellular component terms for " + display_name, function(x) {return x["method"] == "computational"}, data['cellular_component']);
         create_download_button("comp_cc_go_table_download", comp_cc_go_table, download_table_link, comp_cc_download_table_filename);
 
-        $.getJSON(go_graph_link, function(data) {
-  		    if(data['nodes'].length > 1) {
-  			    var graph = create_cytoscape_vis("cy", layout, graph_style, data);
-                var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);
-  		    }
-		    else {
-			    hide_section("network");
-
-			    //Hack because footer overlaps - need to fix this.
-	            add_footer_space("comp");
-		    }
-	    });
+        var transformed_data = [];
+        for (var i=0; i < data['biological_process'].length; i++) {
+            transformed_data.push(go_data_to_table(data['biological_process'][i], i));
+        }
+        for (var i=0; i < data['molecular_function'].length; i++) {
+            transformed_data.push(go_data_to_table(data['molecular_function'][i], i));
+        }
+        for (var i=0; i < data['cellular_component'].length; i++) {
+            transformed_data.push(go_data_to_table(data['cellular_component'][i], i));
+        }
+        var headers = ["Evidence ID", "Analyze ID", "", "Gene", "Gene Format Name", "Gene Ontology Term", "Qualifier", "Aspect", "Method", "Evidence", "Source", "Assigned On", "Reference", "Relationships"];
+        create_download_button_no_table("go_download_all", headers, transformed_data, download_table_link, display_name + "_go_annotations")
   	});
+
+  	$.getJSON(go_graph_link, function(data) {
+        if(data['nodes'].length > 1) {
+            var graph = create_cytoscape_vis("cy", layout, graph_style, data);
+            var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);
+  		}
+		else {
+			hide_section("network");
+
+			//Hack because footer overlaps - need to fix this.
+	        add_footer_space("comp");
+		}
+	});
 
 	//Hack because footer overlaps - need to fix this.
 	add_footer_space("network");
@@ -51,7 +64,7 @@ function create_go_table(prefix, message, filter, data) {
         var options = {};
         options["bPaginate"] = true;
         options["aaSorting"] = [[5, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}];
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
         options["aaData"] = [];
     }
@@ -72,7 +85,7 @@ function create_go_table(prefix, message, filter, data) {
         var options = {};
         options["bPaginate"] = true;
         options["aaSorting"] = [[5, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
         options["oLanguage"] = {"sEmptyTable": message};
         options["aaData"] = datatable;
     }

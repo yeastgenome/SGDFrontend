@@ -432,6 +432,14 @@ function create_download_button(download_button_id, table, download_link, name) 
     download_button.attr('disabled', false);
 }
 
+function create_download_button_no_table(download_button_id, headers, data, download_link, filename) {
+    var download_button = $("#" + download_button_id);
+    var download_function = function() {
+        post_to_url(download_link, {"display_name":filename, 'headers': JSON.stringify(headers), 'data': JSON.stringify(data)});
+    };
+    download_button.click(download_function);
+}
+
 function set_up_enrichment_table(data) {
     var options = {"bPaginate": true, "bDestroy": true, "oLanguage": {'sEmptyTable': 'Error calculating shared GO processes.'}, "aaData": []};
 
