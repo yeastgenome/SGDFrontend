@@ -346,9 +346,34 @@ class SGDFrontend(FrontendInterface):
             page = urllib.urlopen(self.heritage_url).read()
             return Response(page)
         
-    def redirect(self, page, bioent_repr):
-        if bioent_repr is not None:
-            return HTTPFound('/locus/' + bioent_repr + '/' + page)
+    def redirect(self, page, params):
+        if page == 'interaction':
+            if len(params) > 0:
+                return HTTPFound('/locus/' + params.values()[0] + '/interaction')
+            else:
+                page = urllib.urlopen(self.heritage_url + '/cgi-bin/interaction_search').read()
+                return Response(page)
+        elif page == 'literature':
+            if len(params) > 0:
+                return HTTPFound('/locus/' + params.values()[0] + '/literature')
+        elif page == 'phenotype':
+            if 'phenotype' in params:
+                old_phenotype = params['phenotype'].split(':')
+                new_phenotype = (old_phenotype[1] + ' ' + old_phenotype[0]).replace(' ', '_')
+                return HTTPFound('/phenotype/' + new_phenotype + '/overview')
+            elif 'dbid' in params:
+                return HTTPFound('/locus/' + params['dbid'] + '/phenotype')
+            elif 'observable' in params:
+                return HTTPFound('/observable/' + params['observable'].replace(' ', '_') + '/overview')
+        elif page == 'go':
+            if len(params) > 0:
+                return HTTPFound('/locus/' + params.values()[0] + '/go')
+        elif page == 'go_term':
+            if len(params) > 0:
+                return HTTPFound('/go/GO:' + params.values()[0] + '/overview')
+        elif page == 'reference':
+            if len(params) > 0:
+                return HTTPFound('/reference/' + params.values()[0] + '/overview')
         else:
             return Response(status_int=500, body='Invalid URL.')
     

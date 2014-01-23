@@ -26,7 +26,8 @@ def prep_views(chosen_frontend, config):
                      '/redirect/{page}',
                      view=lambda request: getattr(chosen_frontend, 'redirect')(
                                         page = request.matchdict['page'],
-                                        bioent_repr = None if len(request.GET) == 0 else request.GET.values()[0]),
+                                        params = request.GET),
+
                      renderer=chosen_frontend.get_renderer('home'))
     
     config.add_route('home',
