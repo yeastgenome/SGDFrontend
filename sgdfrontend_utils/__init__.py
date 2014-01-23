@@ -91,7 +91,9 @@ def remove_html(html):
             state = 'done'
         i = i+1
     if state == 'done':
-        return html[0:start_tag_start] + html[start_tag_end:end_tag_start] + html[end_tag_end:]
+        no_html = html[0:start_tag_start] + html[start_tag_end:end_tag_start] + html[end_tag_end:]
+        no_html = no_html.replace('<br>', '')
+        return no_html
     else:
         return None
 

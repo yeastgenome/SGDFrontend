@@ -2,9 +2,21 @@
 $(document).ready(function() {
 
 	$.getJSON(phenotype_details_link, function(data) {
-	  	var phenotype_table = create_phenotype_table(data);
-	  	create_analyze_button("phenotype_table_analyze", phenotype_table, analyze_link, analyze_filename, true);
-  	    create_download_button("phenotype_table_download", phenotype_table, download_table_link, download_filename);
+        var phenotype_table = create_phenotype_table(data);
+        create_analyze_button("phenotype_table_analyze", phenotype_table, analyze_link, analyze_filename, true);
+        create_download_button("phenotype_table_download", phenotype_table, download_table_link, download_filename);
+
+        if(child_count > count) {
+            create_show_child_button("phenotype_table_show_children", phenotype_table, data, phenotype_details_all_link, phenotype_data_to_table, function(table_data) {
+                $("#phenotype_header").html(table_data.length);
+
+                var genes = {};
+                for (var i=0; i < table_data.length; i++) {
+                    genes[table_data[i][1]] = true;
+                }
+                $("#phenotype_subheader").html(Object.keys(genes).length);
+            });
+        }
 	});
 
 	$.getJSON(ontology_graph_link, function(data) {
