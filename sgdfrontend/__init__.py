@@ -365,6 +365,8 @@ class SGDFrontend(FrontendInterface):
                 return HTTPFound('/locus/' + params['dbid'] + '/phenotype')
             elif 'observable' in params:
                 return HTTPFound('/observable/' + params['observable'].replace(' ', '_') + '/overview')
+            elif 'property_value' in params:
+                return HTTPFound('/chemical/' + params['property_value'].replace(' ', '_') + '/overview')
         elif page == 'go':
             if len(params) > 0:
                 return HTTPFound('/locus/' + params.values()[0] + '/go')
