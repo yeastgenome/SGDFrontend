@@ -271,45 +271,60 @@ function set_up_range_sort() {
 	};
 }
 
-function set_up_show_child_button(child_button_id, phenotype_header_id, header_id, details_link, details_all_link, table_id, set_up_table_f, new_filter_f) {
+function create_show_child_button(child_button_id, table, data, details_all_link, data_to_table, set_up_table_f) {
+    var direct_data = [];
+    var indirect_data = null;
+
+    for (var i=0; i < data.length; i++) {
+        direct_data.push(data_to_table(data[i], i));
+    }
+
 	var child_button = $("#" + child_button_id);
-	var has_all_data = false;
-	  
+
 	child_button.click(function() {
 	  	child_button.attr('disabled', true);
-					
-		var new_message = null;
-		if(child_button.innerHTML == 'Hide Genes Associated With Child Terms') {
-			new_message = 'Add Genes Associated With Child Terms';
-			$.fn.dataTableExt.afnFiltering.push(new_filter_f);
-		}
-		else {
-			new_message = 'Hide Genes Associated With Child Terms';
-			$.fn.dataTableExt.afnFiltering.splice(0, 1);
-		}
-		if(!has_all_data) {	
-			set_table_message(table_id, '<center><img src="/static/img/dark-slow-wheel.gif"></center>');
-	  		$("#" + phenotype_header_id).html('_');
-			$("#" + header_id).html('_');
-			post_json_to_url(details_all_link, {}, 
-				function(data) {  
-					set_up_table_f(data);		
-  					child_button.innerHTML = new_message;
-  					$('#' + child_button_id).removeAttr('disabled');
-  				},
-  				function() {
-    				$('#' + child_button_id).removeAttr('disabled');
-  				}
-  			);
-  			has_all_data = true;
-  		}
-  		else {
-  			child_button.innerHTML = new_message;
-  			$('#' + child_button_id).removeAttr('disabled');
-  			ev_table.fnDraw();
-  		}
-	});
-	child_button.attr('disabled', false);
+
+
+        if(child_button.html() == 'Hide Genes Associated With Child Terms') {
+            table.fnClearTable();
+            table.fnAddData(direct_data);
+            set_up_table_f(direct_data);
+
+            child_button.html('Add Genes Associated With Child Terms');
+            child_button.removeAttr('disabled');
+        }
+        else {
+            if(indirect_data == null) {
+                var original_empty_message = table.fnSettings().oLanguage.sEmptyTable;
+                table.fnSettings().oLanguage.sEmptyTable = '<center><img src="/static/img/dark-slow-wheel.gif"></center>';
+                table.fnClearTable();
+
+                post_json_to_url(details_all_link, {},
+                    function(data) {
+                        indirect_data = []
+                        for (var i=0; i < data.length; i++) {
+                            indirect_data.push(data_to_table(data[i], i));
+                        }
+                        table.fnAddData(indirect_data);
+                        set_up_table_f(indirect_data);
+                        table.fnSettings().oLanguage.sEmptyTable = original_empty_message;
+                        child_button.html('Hide Genes Associated With Child Terms');
+                        child_button.removeAttr('disabled');
+                    }
+                );
+            }
+            else {
+                table.fnClearTable();
+                table.fnAddData(indirect_data);
+                set_up_table_f(indirect_data);
+                child_button.html('Hide Genes Associated With Child Terms');
+                child_button.removeAttr('disabled');
+            }
+        }
+    });
+
+    child_button.removeAttr('disabled');
+    child_button.show();
 }
 
 function create_table(table_id, options) {
