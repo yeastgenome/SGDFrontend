@@ -359,14 +359,17 @@ class SGDFrontend(FrontendInterface):
         elif page == 'phenotype':
             if 'phenotype' in params:
                 old_phenotype = params['phenotype'].split(':')
-                new_phenotype = (old_phenotype[1] + ' ' + old_phenotype[0]).strip().replace(' ', '_')
+                if len(old_phenotype) > 1:
+                    new_phenotype = (old_phenotype[1] + ' ' + old_phenotype[0]).strip().replace(' ', '_')
+                else:
+                    new_phenotype = old_phenotype[0]
                 return HTTPFound('/phenotype/' + new_phenotype + '/overview')
             elif 'dbid' in params:
                 return HTTPFound('/locus/' + params['dbid'] + '/phenotype')
             elif 'observable' in params:
-                return HTTPFound('/observable/' + params['observable'].strip().replace(' ', '_') + '/overview')
+                return HTTPFound('/observable/' + params['observable'].replace(' ', '_') + '/overview')
             elif 'property_value' in params:
-                return HTTPFound('/chemical/' + params['property_value'].strip().replace(' ', '_') + '/overview')
+                return HTTPFound('/chemical/' + params['property_value'].replace(' ', '_') + '/overview')
         elif page == 'go':
             if len(params) > 0:
                 return HTTPFound('/locus/' + params.values()[0] + '/go')
@@ -374,8 +377,10 @@ class SGDFrontend(FrontendInterface):
             if len(params) > 0:
                 return HTTPFound('/go/GO:' + params.values()[0] + '/overview')
         elif page == 'reference':
-            if len(params) > 0:
-                return HTTPFound('/reference/' + params.values()[0] + '/overview')
+            if 'author' in params:
+                return HTTPFound('/author/' + params.values()[0].replace(' ', '_') + '/overview')
+            elif len(params) > 0:
+                return HTTPFound('/reference/' + params.values()[0].replace(' ', '_') + '/overview')
         else:
             return Response(status_int=500, body='Invalid URL.')
     
