@@ -2,6 +2,7 @@
 $(document).ready(function() {
 
   	$.getJSON(literature_details_link, function(data) {
+  	    set_up_reference_list("primary_header", "primary_list", "primary_message", "primary_wrapper", "export_primary", download_link, display_name + "_primary_citations", data['primary']);
         set_up_reference_list("additional_header", "additional_list", "additional_message", "additional_wrapper", "export_additional", download_link, display_name + "_additional_citations", data['additional']);
   		set_up_reference_list("review_header", "review_list", "review_message", "review_wrapper", "export_review", download_link, display_name + "_review_citations", data['reviews']);
   		set_up_reference_list("go_header", "go_list", "go_message", "go_wrapper", "export_go", download_link, display_name + "_go_citations", data['go']);

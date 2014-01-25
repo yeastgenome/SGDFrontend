@@ -1,6 +1,12 @@
 
 $(document).ready(function() {
 
+    $.getJSON(regulation_paragraph_link, function(data) {
+        document.getElementById("summary_paragraph").innerHTML = data['text'];
+        references = data['references'];
+        set_up_references(references, "summary_paragraph_reference_list");
+    });
+
     if(target_count > 0) {
 		$.getJSON(protein_domains_link, function(data) {
             var domain_table = create_domain_table(data);
