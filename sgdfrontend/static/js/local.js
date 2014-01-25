@@ -398,7 +398,7 @@ function create_analyze_button(analyze_button_id, table, analyze_link, name, app
   	}
   	else {
   	    analyze_button.attr('disabled', false);
-  	    analyze_button.click(download_function);
+  	    analyze_button.click(analyze_function);
   	}
 }
 

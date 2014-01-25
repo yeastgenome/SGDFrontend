@@ -2,9 +2,11 @@
 $(document).ready(function() {
 
     $.getJSON(regulation_paragraph_link, function(data) {
-        document.getElementById("summary_paragraph").innerHTML = data['text'];
-        references = data['references'];
-        set_up_references(references, "summary_paragraph_reference_list");
+        if(data != null) {
+            document.getElementById("summary_paragraph").innerHTML = data['text'];
+            references = data['references'];
+            set_up_references(references, "summary_paragraph_reference_list");
+        }
     });
 
     if(target_count > 0) {
@@ -22,7 +24,7 @@ $(document).ready(function() {
 
 	$.getJSON(regulation_details_link, function(data) {
   		if(target_count > 0) {
-  		    var target_table = create_target_table(data["targets"]);
+  		    var target_table = create_target_table(data);
   		    create_analyze_button("targets_regulation_table_analyze", target_table, analyze_link, analyze_filename + " targets", true);
   	        create_analyze_button("analyze_targets", target_table, analyze_link, analyze_filename + " targets", false);
   	        create_download_button("targets_regulation_table_download", target_table, download_table_link, targets_table_filename);
@@ -36,7 +38,7 @@ $(document).ready(function() {
   	        $("#targets_regulation").hide();
   		}
 
-  		var regulator_table = create_regulator_table(data["regulators"]);
+  		var regulator_table = create_regulator_table(data);
   		create_analyze_button("regulators_regulation_table_analyze", regulator_table, analyze_link, analyze_filename + " targets", true);
   	    create_analyze_button("analyze_regulators", regulator_table, analyze_link, analyze_filename + " targets", false);
   	    create_download_button("regulators_regulation_table_download", regulator_table, download_table_link, regulators_table_filename);
@@ -130,8 +132,10 @@ function create_target_table(data) {
         var datatable = [];
         var genes = {};
         for (var i=0; i < data.length; i++) {
-            datatable.push(regulation_data_to_table(data[i], false));
-            genes[data[i]["bioentity2"]["id"]] = true;
+            if(data[i]["bioentity1"]["id"] == locus_id) {
+                datatable.push(regulation_data_to_table(data[i], false));
+                genes[data[i]["bioentity2"]["id"]] = true;
+            }
         }
 
         $("#targets_regulation_header").html(data.length);
@@ -152,8 +156,10 @@ function create_regulator_table(data) {
     var datatable = [];
 	var genes = {};
 	for (var i=0; i < data.length; i++) {
-        datatable.push(regulation_data_to_table(data[i], true));
-		genes[data[i]["bioentity1"]["id"]] = true;
+	    if(data[i]["bioentity2"]["id"] == locus_id) {
+            datatable.push(regulation_data_to_table(data[i], true));
+		    genes[data[i]["bioentity1"]["id"]] = true;
+		}
   	}
 
   	$("#regulators_regulation_header").html(data.length);
