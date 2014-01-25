@@ -122,22 +122,22 @@ var graph_style = cytoscape.stylesheet()
 	.selector("node[type='BIOCONCEPT'][sub_type='biological process']")
 	.css({
 		'shape': 'rectangle',
-		'text-outline-color': '#888',
-		'color': '#fff',
+		'text-outline-color': '#fff',
+		'color': '#888',
 		'background-color': "#7FBF7B",
 	})
 	.selector("node[type='BIOCONCEPT'][sub_type='molecular function']")
 	.css({
 		'shape': 'rectangle',
-		'text-outline-color': '#888',
-		'color': '#fff',
+		'text-outline-color': '#fff',
+		'color': '#888',
 		'background-color': "#AF8DC3",
 	})
 	.selector("node[type='BIOCONCEPT'][sub_type='cellular component']")
 	.css({
 		'shape': 'rectangle',
-		'text-outline-color': '#888',
-		'color': '#fff',
+		'text-outline-color': '#fff',
+		'color': '#888',
 		'background-color': "#819FF7",
     });
 

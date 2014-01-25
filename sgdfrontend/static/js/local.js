@@ -285,12 +285,12 @@ function create_show_child_button(child_button_id, table, data, details_all_link
 	  	child_button.attr('disabled', true);
 
 
-        if(child_button.html() == 'Hide Genes Associated With Child Terms') {
+        if(child_button.html() == 'Hide Annotations to Child Terms') {
             table.fnClearTable();
             table.fnAddData(direct_data);
             set_up_table_f(direct_data);
 
-            child_button.html('Add Genes Associated With Child Terms');
+            child_button.html('Add Annotations to Child Terms');
             child_button.removeAttr('disabled');
         }
         else {
@@ -308,7 +308,7 @@ function create_show_child_button(child_button_id, table, data, details_all_link
                         table.fnAddData(indirect_data);
                         set_up_table_f(indirect_data);
                         table.fnSettings().oLanguage.sEmptyTable = original_empty_message;
-                        child_button.html('Hide Genes Associated With Child Terms');
+                        child_button.html('Hide Annotations to Child Terms');
                         child_button.removeAttr('disabled');
                     }
                 );
@@ -317,7 +317,7 @@ function create_show_child_button(child_button_id, table, data, details_all_link
                 table.fnClearTable();
                 table.fnAddData(indirect_data);
                 set_up_table_f(indirect_data);
-                child_button.html('Hide Genes Associated With Child Terms');
+                child_button.html('Hide Annotations to Child Terms');
                 child_button.removeAttr('disabled');
             }
         }

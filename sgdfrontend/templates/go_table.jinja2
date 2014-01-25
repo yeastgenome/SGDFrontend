@@ -13,7 +13,7 @@
 
 		<div class="button-bar">
 		    <ul class="button-group radius">
-				<li><a disabled="true" id="go_table_show_children" class="small button secondary" style="display:none"> Add Genes Associated With Child Terms</a></li>
+				<li><a disabled="true" id="go_table_show_children" class="small button secondary" style="display:none">Add Annotations to Child Terms</a></li>
 			</ul>
 
 			<ul class="button-group radius">
@@ -23,10 +23,6 @@
 			<ul class="button-group radius">
 				<li><a disabled="true" id="{{table_type}}_go_table_analyze" class="small button secondary"><i class="icon-briefcase"></i> Analyze</a></li>
 			</ul>
-
-            <ul {% if child_count == 0 or count == child_count %} style="display:none" {% endif %} class="button-group radius">
-			    <li><a disabled="true" id="more_genes_button" class="small button secondary">Add Genes Associated With Child Terms</a></li>
-		    </ul>
 		</div>
 
 		<table class="table table-striped table-bordered table-condensed" id="{{table_type}}_go_table" width="100%">
