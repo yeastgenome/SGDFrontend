@@ -166,12 +166,13 @@ class SGDFrontend(FrontendInterface):
     def phenotype(self, biocon_repr):
         biocon = get_phenotype(self.backend_url, biocon_repr)
         biocon_id = str(biocon['id'])
+        overview = get_json(link_maker.phenotype_overview_biocon_link(self.backend_url, biocon_id))
 
         page = {
                     #Basic info
                     'phenotype': biocon,
                     'observable': {'link':link_maker.observable_link(biocon['observable']), 'display_name':biocon['observable']},
-                    'overview': json.dumps(biocon['summary']),
+                    'overview': json.dumps(overview),
                     
                     #Links
                     'phenotype_details_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id),
@@ -185,11 +186,12 @@ class SGDFrontend(FrontendInterface):
     def observable(self, biocon_repr):
         biocon = get_phenotype(self.backend_url, biocon_repr)
         biocon_id = str(biocon['id'])
+        overview = get_json(link_maker.phenotype_overview_biocon_link(self.backend_url, biocon_id))
 
         page = {
                     #Basic info
                     'observable': biocon,
-                    'overview': json.dumps(biocon['summary']),
+                    'overview': json.dumps(overview),
                     
                     #Links
                     'phenotype_details_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id),

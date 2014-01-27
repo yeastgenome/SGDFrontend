@@ -51,9 +51,9 @@
 	<div class="page-header">
 		<h1>Summary</h1>
 		<p><strong>Description: </strong>{{ observable.description }}<br>
-		    {% if observable.qualifiers|length > 0 %}
+		    {% if overview.qualifiers|safe|length > 0 %}
                 <strong>Qualifiers:</strong>
-                {% for qualifier in observable.qualifiers %}
+                {% for qualifier in overview.qualifiers|safe %}
                     <span><a href="{{ qualifier.link|e }}">{{ qualifier.qualifier|e }}</a></span>{% if not loop.last %}, {% endif %}
                 {% endfor %}
             {% endif %}

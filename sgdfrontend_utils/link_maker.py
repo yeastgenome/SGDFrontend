@@ -59,6 +59,8 @@ def observable_link(observable):
 
 def phenotype_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/phenotype_overview'
+def phenotype_overview_biocon_link(backend_start, biocon):
+    return backend_start + '/phenotype/' + str(biocon) + '/phenotype_overview'
 def phenotype_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/phenotype_details?callback=?'
 def phenotype_resources_link(backend_start, bioent):
