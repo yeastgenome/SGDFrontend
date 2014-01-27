@@ -2,7 +2,7 @@
 function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 	var cytoscape_div = $("#" + div_id);
 
-	var height = .5*$(window).height();
+	var height = Math.min(.75*$(window).height(), 600);
 	var width = $('#' + div_id).width();
 	cytoscape_div.height(height);
 
@@ -15,8 +15,8 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 
 		elements: {
 		    nodes: data['nodes'],
-		    edges: data['edges'],
-		},
+		    edges: data['edges']
+		}
     };
 
 	$('#' + div_id).cytoscape(options);

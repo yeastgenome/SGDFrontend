@@ -1,10 +1,4 @@
 
-if('paragraph' in overview_json) {
-    document.getElementById("summary_paragraph").innerHTML = overview_json['paragraph']['text'];
-	references = overview_json['paragraph']['references'];
-	set_up_references(references, "summary_paragraph_reference_list");
-}
-
 if(target_count + regulator_count > 0){
     google.load("visualization", "1", {packages:["corechart"]});
     google.setOnLoadCallback(drawChart);

@@ -42,7 +42,7 @@
 <script>
     add_navbar_title('<span class="gene_name">{{ observable.display_name }}</span><br>Observable')
     add_navbar_element('Summary', 'summary');
-    add_navbar_element('Ontology', 'ontology');
+    add_navbar_element('Ontology Diagram', 'ontology');
     add_navbar_element('Annotations', 'phenotype');
 </script>
 <!-- Summary
@@ -50,10 +50,10 @@
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
 		<h1>Summary</h1>
-		<p>{{ observable.description }}<br>
-		    {% if observable.qualifiers|length > 0 %}
+		<p><strong>Description: </strong>{{ observable.description }}<br>
+		    {% if overview.qualifiers|safe|length > 0 %}
                 <strong>Qualifiers:</strong>
-                {% for qualifier in observable.qualifiers %}
+                {% for qualifier in overview.qualifiers|safe %}
                     <span><a href="{{ qualifier.link|e }}">{{ qualifier.qualifier|e }}</a></span>{% if not loop.last %}, {% endif %}
                 {% endfor %}
             {% endif %}
@@ -73,7 +73,7 @@
 ================================================== -->
 <section id="ontology" data-magellan-destination="ontology">
 	<div class="page-header">
-		<h1>Ontology</h1>
+		<h1>Ontology Diagram</h1>
 		<div class="panel">
 			<div id="cy" style="width:100%;height:700px"></div>
 		</div>

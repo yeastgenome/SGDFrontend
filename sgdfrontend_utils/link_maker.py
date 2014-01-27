@@ -27,6 +27,8 @@ def regulation_graph_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/regulation_graph?callback=?'
 def regulation_snapshot_link(backend_start):
     return backend_start + '/snapshot/regulation'
+def regulation_paragraph_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/regulation_paragraph?callback=?'
 
 #GO Links
 def go_overview_link(backend_start, bioent):
@@ -57,6 +59,8 @@ def observable_link(observable):
 
 def phenotype_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/phenotype_overview'
+def phenotype_overview_biocon_link(backend_start, biocon):
+    return backend_start + '/phenotype/' + str(biocon) + '/phenotype_overview'
 def phenotype_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/phenotype_details?callback=?'
 def phenotype_resources_link(backend_start, bioent):

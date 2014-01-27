@@ -66,7 +66,12 @@ function create_interaction_table(data) {
         var genes = {};
         for (var i=0; i < data.length; i++) {
             datatable.push(interaction_data_to_table(data[i], i));
-            genes[data[i]["bioentity2"]["id"]] = true;
+            if(genes[data[i]["bioentity1"]["id"]] == locus_id) {
+                genes[data[i]["bioentity2"]["id"]] = true;
+            }
+            else {
+                genes[data[i]["bioentity1"]["id"]] = true;
+            }
         }
 
         $("#interaction_header").html(data.length);

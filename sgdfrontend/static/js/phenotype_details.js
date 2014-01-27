@@ -91,8 +91,8 @@ var graph_style = cytoscape.stylesheet()
 	.selector("node[type='BIOCONCEPT']")
 	.css({
 		'shape': 'rectangle',
-		'text-outline-color': '#888',
-		'color': '#fff',
+		'text-outline-color': '#fff',
+		'color': '#888',
 		'background-color': "#D0A9F5",
 });
 

@@ -104,6 +104,8 @@ class SGDFrontend(FrontendInterface):
                     'regulation_target_enrichment_link': link_maker.regulation_target_enrichment_link(self.backend_url, bioent_id),
                     'protein_domain_details_link': link_maker.protein_domain_details_link(self.backend_url, bioent_id),
                     'binding_site_details_link': link_maker.binding_site_details_link(self.backend_url, bioent_id),
+                    'regulation_paragraph_link': link_maker.regulation_paragraph_link(self.backend_url, bioent_id),
+
                     'download_table_link': link_maker.download_table_link(),
                     'download_image_link': link_maker.download_image_link(),
                     'analyze_link': link_maker.analyze_link(),
@@ -164,12 +166,13 @@ class SGDFrontend(FrontendInterface):
     def phenotype(self, biocon_repr):
         biocon = get_phenotype(self.backend_url, biocon_repr)
         biocon_id = str(biocon['id'])
+        overview = get_json(link_maker.phenotype_overview_biocon_link(self.backend_url, biocon_id))
 
         page = {
                     #Basic info
                     'phenotype': biocon,
                     'observable': {'link':link_maker.observable_link(biocon['observable']), 'display_name':biocon['observable']},
-                    'overview': json.dumps(biocon['summary']),
+                    'overview': json.dumps(overview),
                     
                     #Links
                     'phenotype_details_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id),
@@ -183,11 +186,12 @@ class SGDFrontend(FrontendInterface):
     def observable(self, biocon_repr):
         biocon = get_phenotype(self.backend_url, biocon_repr)
         biocon_id = str(biocon['id'])
+        overview = get_json(link_maker.phenotype_overview_biocon_link(self.backend_url, biocon_id))
 
         page = {
                     #Basic info
                     'observable': biocon,
-                    'overview': json.dumps(biocon['summary']),
+                    'overview': json.dumps(overview),
                     
                     #Links
                     'phenotype_details_link': link_maker.phenotype_details_biocon_link(self.backend_url, biocon_id),
@@ -292,51 +296,6 @@ class SGDFrontend(FrontendInterface):
                     'references_link': link_maker.author_references_link(self.backend_url, author_id),
                     'download_link': link_maker.download_citations_link(),
                     }
-        return page
-
-    def interaction_snapshot(self):
-        overview = get_json(link_maker.interaction_snapshot_link(self.backend_url))
-
-        page = {
-                    #Overview
-                    'overview': json.dumps(overview),
-                }
-        return page
-
-    def regulation_snapshot(self):
-        overview = get_json(link_maker.regulation_snapshot_link(self.backend_url))
-
-        page = {
-                    #Overview
-                    'overview': json.dumps(overview),
-                }
-        return page
-
-    def literature_snapshot(self):
-        overview = get_json(link_maker.literature_snapshot_link(self.backend_url))
-
-        page = {
-                    #Overview
-                    'overview': json.dumps(overview),
-                }
-        return page
-
-    def phenotype_snapshot(self):
-        overview = get_json(link_maker.phenotype_snapshot_link(self.backend_url))
-
-        page = {
-                    #Overview
-                    'overview': json.dumps(overview),
-                }
-        return page
-
-    def go_snapshot(self):
-        overview = get_json(link_maker.go_snapshot_link(self.backend_url))
-
-        page = {
-                    #Overview
-                    'overview': json.dumps(overview),
-                }
         return page
     
     def home(self):

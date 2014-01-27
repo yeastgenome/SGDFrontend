@@ -75,26 +75,6 @@ class FrontendInterface:
     @abstractmethod
     def author(self, author_repr):
         return None
-
-    @abstractmethod
-    def interaction_snapshot(self):
-        return None
-
-    @abstractmethod
-    def regulation_snapshot(self):
-        return None
-
-    @abstractmethod
-    def literature_snapshot(self):
-        return None
-
-    @abstractmethod
-    def go_snapshot(self):
-        return None
-
-    @abstractmethod
-    def phenotype_snapshot(self):
-        return None
     
     @abstractmethod
     def home(self):
