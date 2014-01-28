@@ -23,7 +23,7 @@ function set_up_full_ontology(ontology_list_id, data) {
 		var li = document.createElement('li');
 
         var link_a = document.createElement('a');
-        link_a.innerText = data['elements'][i]['display_name'];
+        link_a.innerHTML = data['elements'][i]['display_name'];
         link_a.href = data['elements'][i]['link'];
 
         li.appendChild(link_a);
