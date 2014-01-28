@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 
 <script>
+    var go_details_link = "{{go_details_link}}";
     var ontology_graph_link = "{{ontology_graph_link}}";
+    var display_name = "{{ ontology.display_name }}";
 </script>
 
 <title>{{ ontology.display_name }}</title>
@@ -11,7 +13,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{ ontology.display_name }}</span> Ontology</h2>
+	<h2><span class="gene_name">{{ ontology.display_name }}</span></h2>
 </div>
 
 <div class="row">
@@ -24,9 +26,10 @@
     <div class="small-12 large-9 columns content-column">
 
     <script>
-        add_navbar_title('<span class="gene_name">{{ ontology.display_name }}</span> Ontology<br>');
+        add_navbar_title('<span class="gene_name">{{ ontology.display_name }}</span>');
         add_navbar_element('Summary', 'summary');
         add_navbar_element('Ontology Diagram', 'ontology');
+        add_navbar_element('Gene Ontology Annotations', 'all_go');
     </script>
 
 <!-- Summary
@@ -48,8 +51,17 @@
                 </div>
             </div>
         </section>
+
+<!-- Annotations
+================================================== -->
+        <!-- Includes go_table into template -->
+        {% set table_name = "Gene Ontology Annotations" %}
+        {% set table_type = "all" %}
+        {% include "templates/go_table.jinja2" %}
+
     </div>
 </div>
+
 {% endblock body %}
 
 {% block scripts %}
@@ -57,5 +69,6 @@
 <script src="/static/js/cytoscape/arbor.js"></script>
 <script src="/static/js/local.js"></script>
 <script src="/static/js/cytoscape.js"></script>
+<script src="/static/js/evidence.js"></script>
 <script src="/static/js/go_ontology.js"></script>
 {% endblock scripts %}

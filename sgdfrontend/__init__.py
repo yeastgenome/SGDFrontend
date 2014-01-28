@@ -241,6 +241,7 @@ class SGDFrontend(FrontendInterface):
         page = {
                     #Basic info
                     'ontology': biocon,
+                    'go_details_link': link_maker.go_details_biocon_link(self.backend_url, biocon_id),
 
                     #Links
                     'ontology_graph_link': link_maker.go_ontology_graph_link(self.backend_url, biocon_id),
