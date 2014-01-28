@@ -141,16 +141,15 @@ class SGDFrontend(FrontendInterface):
     def go_details(self, bioent_repr):
         bioent = get_bioent(self.backend_url, bioent_repr)
         bioent_id = str(bioent['id'])
-        display_name = bioent['display_name']
         overview = get_json(link_maker.go_overview_link(self.backend_url, bioent_id))
         tabs = get_json(link_maker.tab_link(self.backend_url, bioent_id))
-        
+
         page = {
                     #Basic info
                     'locus': bioent,
 
                     #Overview
-                    'overview': json.dumps(overview),
+                    'overview': overview,
                     'date_last_reviewed': None if 'date_last_reviewed' not in overview else overview['date_last_reviewed'],
                     'tabs': tabs,
                     
@@ -242,6 +241,7 @@ class SGDFrontend(FrontendInterface):
         page = {
                     #Basic info
                     'ontology': biocon,
+                    'go_details_link': link_maker.go_details_biocon_link(self.backend_url, biocon_id),
 
                     #Links
                     'ontology_graph_link': link_maker.go_ontology_graph_link(self.backend_url, biocon_id),
