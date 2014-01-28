@@ -21,6 +21,21 @@ $(document).ready(function() {
 
 	$.getJSON(ontology_graph_link, function(data) {
   		create_cytoscape_vis("cy", layout, graph_style, data);
+        if(data['all_children'] != null) {
+            var children_div = document.getElementById("children");
+            for(var i=0; i < data['all_children'].length; i++) {
+                var a = document.createElement('a');
+                a.innerHTML = data['all_children'][i]['display_name'];
+                a.href = data['all_children'][i]['link']
+                children_div.appendChild(a);
+
+                if(i != data['all_children'].length-1) {
+                    var comma = document.createElement('span');
+                    comma.innerHTML = ', ';
+                    children_div.appendChild(comma);
+                }
+            }
+        }
 	});
 
 	//Hack because footer overlaps - need to fix this.
@@ -90,6 +105,12 @@ var graph_style = cytoscape.stylesheet()
 		'background-color': "#fade71",
 		'text-outline-color': '#fff',
 		'color': '#888'
+	})
+    .selector("node[id='NodeMoreChildren']")
+	.css({
+		'width': 30,
+		'height': 30,
+        'shape': 'rectangle'
 	})
 	.selector("node[sub_type='morphology']")
 	.css(
