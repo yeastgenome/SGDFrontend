@@ -140,7 +140,19 @@ function create_target_table(data) {
 
         $("#targets_regulation_header").html(data.length);
         $("#targets_regulation_subheader").html(Object.keys(genes).length);
-        $("#targets_regulation_subheader_type").html("genes");
+
+        if(Object.keys(genes).length == 1) {
+            $("#targets_regulation_subheader_type").html('gene');
+        }
+        else {
+            $("#targets_regulation_subheader_type").html('genes');
+        }
+        if(datatable.length == 1) {
+            $("#targets_regulation_header_type").html("entry for ");
+        }
+        else {
+            $("#targets_regulation_header_type").html("entries for ");
+        }
 
         var options = {};
         options["bPaginate"] = true;
@@ -164,7 +176,19 @@ function create_regulator_table(data) {
 
   	$("#regulators_regulation_header").html(data.length);
   	$("#regulators_regulation_subheader").html(Object.keys(genes).length);
-  	$("#regulators_regulation_subheader_type").html("genes");
+
+    if(Object.keys(genes).length == 1) {
+        $("#regulators_regulation_subheader_type").html('gene');
+    }
+    else {
+        $("#regulators_regulation_subheader_type").html('genes');
+    }
+    if(datatable.length == 1) {
+        $("#regulators_regulation_header_type").html("entry for ");
+    }
+    else {
+        $("#regulators_regulation_header_type").html("entries for ");
+    }
 
   	var options = {};
     options["bPaginate"] = true;

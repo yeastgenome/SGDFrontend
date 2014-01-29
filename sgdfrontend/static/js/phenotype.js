@@ -31,7 +31,19 @@ function create_phenotype_table(data) {
 
         $("#phenotype_header").html(data.length);
         $("#phenotype_subheader").html(Object.keys(genes).length);
-        $("#phenotype_subheader_type").html("genes");
+
+        if(Object.keys(genes).length == 1) {
+            $("#phenotype_subheader_type").html('gene');
+        }
+        else {
+            $("#phenotype_subheader_type").html('genes');
+        }
+        if(datatable.length == 1) {
+            $("#phenotype_header_type").html("entry for ");
+        }
+        else {
+            $("#phenotype_header_type").html("entries for ");
+        }
 
         var options = {};
         options["bPaginate"] = true;

@@ -145,7 +145,19 @@ function create_interaction_table(data) {
 
         $("#interaction_header").html(data.length);
         $("#interaction_subheader").html(Object.keys(genes).length);
-        $("#interaction_subheader_type").html("genes");
+
+        if(Object.keys(genes).length == 1) {
+            $("#interaction_subheader_type").html('gene');
+        }
+        else {
+            $("#interaction_subheader_type").html('genes');
+        }
+        if(datatable.length == 1) {
+            $("#interaction_header_type").html("entry for ");
+        }
+        else {
+            $("#interaction_header_type").html("entries for ");
+        }
 
         var options = {};
         options["bPaginate"] = true;
@@ -178,7 +190,19 @@ function create_go_table(data) {
 
         $("#all_go_header").html(data.length);
         $("#all_go_subheader").html(Object.keys(genes).length);
-        $("#all_go_subheader_type").html("genes");
+
+        if(Object.keys(genes).length == 1) {
+            $("#all_go_subheader_type").html('gene');
+        }
+        else {
+            $("#all_go_subheader_type").html('genes');
+        }
+        if(datatable.length == 1) {
+            $("#all_go_header_type").html("entry for ");
+        }
+        else {
+            $("#all_go_header_type").html("entries for ");
+        }
 
         var options = {};
         options["bPaginate"] = true;
@@ -203,15 +227,27 @@ function create_phenotype_table(data) {
     }
     else {
         var datatable = [];
-        var phenotypes = {};
+        var genes = {};
         for (var i=0; i < data.length; i++) {
             datatable.push(phenotype_data_to_table(data[i], i));
-            phenotypes[data[i]['bioconcept']['id']] = true;
+            genes[data[i]['bioentity']['id']] = true;
         }
 
         $("#phenotype_header").html(data.length);
-        $("#phenotype_subheader").html(Object.keys(phenotypes).length);
-        $("#phenotype_subheader_type").html('phenotypes');
+        $("#phenotype_subheader").html(Object.keys(genes).length);
+
+        if(Object.keys(genes).length == 1) {
+            $("#phenotype_subheader_type").html('gene');
+        }
+        else {
+            $("#phenotype_subheader_type").html('genes');
+        }
+        if(datatable.length == 1) {
+            $("#phenotype_header_type").html("entry for ");
+        }
+        else {
+            $("#phenotype_header_type").html("entries for ");
+        }
 
         var options = {};
         options["bPaginate"] = true;
@@ -243,7 +279,19 @@ function create_regulation_table(data) {
 
         $("#all_regulation_header").html(data.length);
         $("#all_regulation_subheader").html(Object.keys(genes).length);
-        $("#all_regulation_subheader_type").html("genes");
+
+        if(Object.keys(genes).length == 1) {
+            $("#all_regulation_subheader_type").html('gene');
+        }
+        else {
+            $("#all_regulation_subheader_type").html('genes');
+        }
+        if(datatable.length == 1) {
+            $("#all_regulation_header_type").html("entry for ");
+        }
+        else {
+            $("#all_regulation_header_type").html("entries for ");
+        }
 
         var options = {};
         options["bPaginate"] = true;

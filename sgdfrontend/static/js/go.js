@@ -57,7 +57,18 @@ function create_go_table(data) {
 
   	$("#all_go_header").html(data.length);
   	$("#all_go_subheader").html(Object.keys(genes).length);
-  	$("#all_go_subheader_type").html("genes");
+    if(Object.keys(genes).length == 1) {
+        $("#all_go_subheader_type").html("gene");
+    }
+    else {
+        $("#all_go_subheader_type").html("genes");
+    }
+    if(datatable.length == 1) {
+        $("#all_go_header_type").html("entry for ");
+    }
+    else {
+        $("#all_go_header_type").html("entries for ");
+    }
 
 	var options = {};
 	options["bPaginate"] = true;
@@ -101,6 +112,12 @@ var graph_style = cytoscape.stylesheet()
 		'background-color': "#fade71",
 		'text-outline-color': '#fff',
 		'color': '#888'
+	})
+    .selector("node[id='NodeMoreChildren']")
+	.css({
+		'width': 30,
+		'height': 30,
+        'shape': 'rectangle'
 	})
 	.selector("node[sub_type='molecular function']")
 	.css(

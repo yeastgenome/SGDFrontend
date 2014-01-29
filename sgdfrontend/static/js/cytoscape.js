@@ -28,7 +28,9 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 	}
 	cy.on('tap', 'node', function(evt){
   		var node = evt.cyTarget;
-  		window.location.href = node.data().link;
+        if(node.data().link != null) {
+  		    window.location.href = node.data().link;
+        }
 	});
 	cy.on('layoutstop', function(evt){
 		$('#cy_recenter').removeAttr('disabled');

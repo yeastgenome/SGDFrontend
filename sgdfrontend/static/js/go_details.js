@@ -74,7 +74,19 @@ function create_go_table(prefix, message, filter, data) {
 
         $("#" + prefix + "_go_header").html(datatable.length);
         $("#" + prefix + "_go_subheader").html(Object.keys(gos).length);
-        $("#" + prefix + "_go_subheader_type").html('gene ontology terms');
+
+        if(Object.keys(gos).length == 1) {
+            $("#" + prefix + "_go_subheader_type").html('Gene Ontology term');
+        }
+        else {
+            $("#" + prefix + "_go_subheader_type").html('Gene Ontology terms');
+        }
+        if(datatable.length == 1) {
+            $("#" + prefix + "_go_header_type").html("entry for ");
+        }
+        else {
+            $("#" + prefix + "_go_header_type").html("entries for ");
+        }
 
         var options = {};
         options["bPaginate"] = true;

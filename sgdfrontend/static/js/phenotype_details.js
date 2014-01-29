@@ -45,7 +45,19 @@ function create_phenotype_table(data) {
 
         $("#phenotype_header").html(data.length);
         $("#phenotype_subheader").html(Object.keys(phenotypes).length);
-        $("#phenotype_subheader_type").html('phenotypes');
+
+        if(Object.keys(phenotypes).length == 1) {
+            $("#phenotype_subheader_type").html('phenotype');
+        }
+        else {
+            $("#phenotype_subheader_type").html('phenotypes');
+        }
+        if(datatable.length == 1) {
+            $("#phenotype_header_type").html("entry for ");
+        }
+        else {
+            $("#phenotype_header_type").html("entries for ");
+        }
 
         var options = {};
         options["bPaginate"] = true;

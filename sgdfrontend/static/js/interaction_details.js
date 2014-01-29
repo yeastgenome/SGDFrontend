@@ -76,7 +76,19 @@ function create_interaction_table(data) {
 
         $("#interaction_header").html(data.length);
         $("#interaction_subheader").html(Object.keys(genes).length);
-        $("#interaction_subheader_type").html("genes");
+
+        if(Object.keys(genes).length == 1) {
+            $("#interaction_subheader_type").html('gene');
+        }
+        else {
+            $("#interaction_subheader_type").html('genes');
+        }
+        if(datatable.length == 1) {
+            $("#interaction_header_type").html("entry for ");
+        }
+        else {
+            $("#interaction_header_type").html("entries for ");
+        }
 
         var options = {};
         options["bPaginate"] = true;
