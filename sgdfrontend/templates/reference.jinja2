@@ -64,7 +64,7 @@
                     {% endfor %}
                 </ul>
 
-                <ul>
+                <ul class="unstyled">
                     <li><strong>Authors:</strong>
                         {% for author in reference.authors %}
                             {% if loop.index < 11 %}<span><a href="{{ author.link|e }}">{{ author.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}

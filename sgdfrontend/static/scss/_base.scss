@@ -11,7 +11,11 @@ http://smacss.com/book/type-base
 ul.unstyled, ol.unstyled {
     list-style: none outside none;
     margin-left: 0;
+    ul {
+    	list-style: none outside none;
+    }
 }
+
 /* End of temp styles; remove once off Bootstrap "look" */
 
 // Variables
