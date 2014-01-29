@@ -32,7 +32,8 @@ function drawChart() {
             'chartArea': {left:110,top:50,width:"60%",height:"60%"},
             'dataOpacity':.75,
             'colors': ["#7FBF7B", "#AF8DC3", "#1F78B4"],
-            'backgroundColor': 'transparent'
+            'backgroundColor': 'transparent',
+            'height':300
         };
 
         var chart = new google.visualization.BarChart(document.getElementById('mutant_experiment_chart'));
@@ -58,7 +59,8 @@ function drawChart() {
             'dataOpacity':.75,
             'colors': ["#1F78B4"],
             'chartArea': {left:50,top:50,width:"80%",height:"50%"},
-            'backgroundColor': 'transparent'
+            'backgroundColor': 'transparent',
+            'height':300
         };
 
         var strain_chart = new google.visualization.ColumnChart(document.getElementById('strain_chart'));
