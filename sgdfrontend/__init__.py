@@ -1,5 +1,6 @@
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
+import string
 from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical, get_reference, get_author
 from sgdfrontend_utils import link_maker
 from pyramid.response import Response
@@ -352,7 +353,7 @@ class SGDFrontend(FrontendInterface):
     
     def download_table(self, response, header_info, data, display_name):
         headers = response.headers
-        
+
         date = datetime.datetime.now().strftime("%m/%d/%Y")
         description = "!\n!Date: " + date + '\n' + "!From: Saccharomyces Genome Database (SGD) \n!URL: http://www.yeastgenome.org/ \n!Contact Email: sgd-helpdesk@lists.stanford.edu \n!Funding: NHGRI at US NIH, grant number 5-P41-HG001315 \n!"
 
@@ -363,9 +364,12 @@ class SGDFrontend(FrontendInterface):
         table_header = description + '\n\n' + '\t'.join(header_info[cutoff:])
         
         response.text = table_header + '\n' + '\n'.join(['\t'.join([clean_cell(str(cell)) for cell in row[cutoff:]]) for row in data])
-        
-        headers['Content-Type'] = 'text/plain'      
-        headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.txt')
+
+        exclude = set([x for x in string.punctuation if x != ' ' and x != '_'])
+        display_name = ''.join(ch for ch in display_name if ch not in exclude).replace(' ', '_')
+
+        headers['Content-Type'] = 'text/plain; charset=utf-8'
+        headers['Content-Disposition'] = str('attachment; filename=' + display_name.replace(' ', '_').replace('(', '').replace(')', '') + '.txt')
         headers['Content-Description'] = 'File Transfer'
         return response
     
