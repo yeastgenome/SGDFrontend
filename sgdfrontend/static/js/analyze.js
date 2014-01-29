@@ -7,7 +7,7 @@ $(document).ready(function() {
     var enrichment_table = create_enrichment_table("enrichment_table", gene_table, null);
     create_download_button("enrichment_table_download", enrichment_table, download_table_link, list_name + "_go_enrichment");
 
-    set_up_tools("go_term_finder", "go_slim_mapper", "spell", "yeastmine");
+    set_up_tools(gene_table, "go_term_finder", "go_slim_mapper", "spell", "yeastmine");
 
     //Hack because footer overlaps - need to fix this.
 	add_footer_space("enrichment");
@@ -59,13 +59,13 @@ function post_to_yeastmine(bioent_ids) {
     form.submit();
 }
 
-function set_up_tools(go_term_finder_id, go_slim_mapper_id, spell_id, yeastmine_id) {
+function set_up_tools(table, go_term_finder_id, go_slim_mapper_id, spell_id, yeastmine_id) {
 	document.getElementById(go_term_finder_id).onclick = function f() {
 		var bioent_format_names = '';
 
 		var data = table._('tr', {"filter": "applied"});
 		for (var i=0,len=data.length; i<len; i++) { 
-			var sys_name = data[i][0];
+			var sys_name = data[i][2];
 			bioent_format_names = bioent_format_names + sys_name + ' ';
 		}
 		post_to_url("http://yeastgenome.org/cgi-bin/GO/goTermFinder.pl", {
@@ -76,7 +76,7 @@ function set_up_tools(go_term_finder_id, go_slim_mapper_id, spell_id, yeastmine_
 		var bioent_format_names = '';
 		var data = table._('tr', {"filter": "applied"});
 		for (var i=0,len=data.length; i<len; i++) { 
-			var sys_name = data[i][0];
+			var sys_name = data[i][2];
 			bioent_format_names = bioent_format_names + sys_name + ' ';
 		}
 		post_to_url("http://yeastgenome.org/cgi-bin/GO/goSlimMapper.pl", {
@@ -87,7 +87,7 @@ function set_up_tools(go_term_finder_id, go_slim_mapper_id, spell_id, yeastmine_
 		var bioent_format_names = [];
 		var data = table._('tr', {"filter": "applied"});
 		for (var i=0,len=data.length; i<len; i++) { 
-			var sys_name = data[i][0];
+			var sys_name = data[i][2];
 			bioent_format_names.push(sys_name);
 		}
 		post_to_url("http://spell.yeastgenome.org/search/show_results", {
@@ -98,7 +98,7 @@ function set_up_tools(go_term_finder_id, go_slim_mapper_id, spell_id, yeastmine_
 		var bioent_format_names = [];
 		var data = table._('tr', {"filter": "applied"});
 		for (var i=0,len=data.length; i<len; i++) { 
-			var sys_name = data[i][0];
+			var sys_name = data[i][2];
 			bioent_format_names.push(sys_name);
 		}
 		post_to_yeastmine(bioent_format_names);
