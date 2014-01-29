@@ -23,7 +23,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{ phenotype.display_name }}</span> Phenotype</h2>
+	<h2>Phenotype: <span class="gene_name">{{ phenotype.display_name }}</span></h2>
 </div>
 
 <div class="row">
@@ -36,7 +36,7 @@
 <div class="small-12 large-9 columns content-column"> 
 
 <script>
-    add_navbar_title('<span class="gene_name">{{ phenotype.display_name }}</span><br>Phenotype')
+    add_navbar_title('Phenotype: <span class="gene_name">{{ phenotype.display_name }}</span>')
     add_navbar_element('Summary', 'summary');
     add_navbar_element('Annotations', 'phenotype');
 </script>

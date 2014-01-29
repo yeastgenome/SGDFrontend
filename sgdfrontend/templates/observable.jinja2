@@ -27,7 +27,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{ observable.display_name }}</span> Observable</h2>
+	<h2>Observable: <span class="gene_name">{{ observable.display_name }}</span></h2>
 </div>
 
 <div class="row">
@@ -40,7 +40,7 @@
 <div class="small-12 large-9 columns content-column"> 
 
 <script>
-    add_navbar_title('<span class="gene_name">{{ observable.display_name }}</span><br>Observable')
+    add_navbar_title('Observable: <span class="gene_name">{{ observable.display_name }}</span>')
     add_navbar_element('Summary', 'summary');
     add_navbar_element('Ontology Diagram', 'ontology');
     add_navbar_element('Annotations', 'phenotype');

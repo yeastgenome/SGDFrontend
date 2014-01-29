@@ -25,7 +25,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{ go_term.display_name }}</span> Gene Ontology Term</h2>
+	<h2>Gene Ontology Term: <span class="gene_name">{{ go_term.display_name }}</span></h2>
 </div>
 
 <div class="row">
@@ -36,7 +36,7 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title('<span class="gene_name">{{ go_term.display_name }}</span><br>Gene Ontology Term')
+            add_navbar_title('Gene Ontology Term: <span class="gene_name">{{ go_term.display_name }}</span>')
             add_navbar_element('Summary', 'summary');
             add_navbar_element('Ontology Diagram', 'ontology');
             add_navbar_element('Annotations', 'annotations');
