@@ -267,11 +267,9 @@ class SGDFrontend(FrontendInterface):
     def reference(self, reference_repr):
         reference = get_reference(self.backend_url, reference_repr)
         reference_id = str(reference['id'])
-        overview = get_json(link_maker.literature_details_ref_link(self.backend_url, reference_id))
         page = {
                     #Basic info
                     'reference': reference,
-                    'overview': overview,
                     'counts': json.dumps(reference['counts']),
 
                     #Links
@@ -282,6 +280,7 @@ class SGDFrontend(FrontendInterface):
                     'interaction_details_link': link_maker.interaction_details_ref_link(self.backend_url, reference_id),
                     'regulation_details_link': link_maker.regulation_details_ref_link(self.backend_url, reference_id),
                     'binding_details_link': link_maker.binding_details_ref_link(self.backend_url, reference_id),
+                    'literature_details_link': link_maker.literature_details_ref_link(self.backend_url, reference_id)
                     }
         return page
 

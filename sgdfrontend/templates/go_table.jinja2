@@ -11,39 +11,41 @@
             </span>
 		</{% if small %}h2{% else %}h1{% endif %}>
 
-		<div class="button-bar">
-		    <ul class="button-group radius">
-				<li><a disabled="true" id="go_table_show_children" class="small button secondary" style="display:none">Add Annotations to Child Terms</a></li>
-			</ul>
+        <div id="{{table_type}}_go_table_wrapper">
+            <div class="button-bar">
+                <ul class="button-group radius">
+                    <li><a disabled="true" id="go_table_show_children" class="small button secondary" style="display:none">Add Annotations to Child Terms</a></li>
+                </ul>
 
-			<ul class="button-group radius">
-				<li><a disabled="true" id="{{table_type}}_go_table_download" class="small button secondary"><i class="icon-download-alt"></i> Download</a></li>
-			</ul>
+                <ul class="button-group radius">
+                    <li><a disabled="true" id="{{table_type}}_go_table_download" class="small button secondary"><i class="icon-download-alt"></i> Download</a></li>
+                </ul>
 
-			<ul class="button-group radius">
-				<li><a disabled="true" id="{{table_type}}_go_table_analyze" class="small button secondary"><i class="icon-briefcase"></i> Analyze</a></li>
-			</ul>
-		</div>
+                <ul class="button-group radius">
+                    <li><a disabled="true" id="{{table_type}}_go_table_analyze" class="small button secondary"><i class="icon-briefcase"></i> Analyze</a></li>
+                </ul>
+            </div>
 
-		<table class="table table-striped table-bordered table-condensed" id="{{table_type}}_go_table" width="100%">
-			<thead>
-                <tr>
-                    <th>Evidence ID</th>
-                    <th>Analyze ID</th>
-                    <th></th>
-                    <th>Gene</th>
-                    <th>Gene Format Name</th>
-                    <th>Gene Ontology Term</th>
-                    <th>Qualifier</th>
-                    <th>Aspect</th>
-                    <th>Method</th>
-                    <th>Evidence</th>
-                    <th>Source</th>
-                    <th>Assigned On</th>
-                    <th>Reference</th>
-                    <th>Relationships</th>
-                </tr>
-  			</thead>
-		</table>
+            <table class="table table-striped table-bordered table-condensed" id="{{table_type}}_go_table" width="100%">
+                <thead>
+                    <tr>
+                        <th>Evidence ID</th>
+                        <th>Analyze ID</th>
+                        <th></th>
+                        <th>Gene</th>
+                        <th>Gene Format Name</th>
+                        <th>Gene Ontology Term</th>
+                        <th>Qualifier</th>
+                        <th>Aspect</th>
+                        <th>Method</th>
+                        <th>Evidence</th>
+                        <th>Source</th>
+                        <th>Assigned On</th>
+                        <th>Reference</th>
+                        <th>Relationships</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 </section>

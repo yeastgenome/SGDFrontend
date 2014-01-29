@@ -21,7 +21,7 @@ $(document).ready(function() {
 
 	$.getJSON(ontology_graph_link, function(data) {
   		create_cytoscape_vis("cy", layout, graph_style, data);
-        if(data['all_children'] != null) {
+        if(data['all_children'] != null && data['all_children'].length > 0) {
             var children_div = document.getElementById("children");
             for(var i=0; i < data['all_children'].length; i++) {
                 var a = document.createElement('a');
@@ -35,6 +35,9 @@ $(document).ready(function() {
                     children_div.appendChild(comma);
                 }
             }
+        }
+        else {
+            $("#children_wrapper").hide();
         }
 	});
 

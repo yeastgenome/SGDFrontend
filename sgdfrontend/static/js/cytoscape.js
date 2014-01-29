@@ -109,8 +109,12 @@ function create_slider(slider_id, graph, min, max, slide_f, stop) {
 	create_slider_ticks("slider_ticks", min, max, stop)
 
 	slider.update_new_max = function(smax) {
+        var slider_max = smax;
+        if(slider_max == min) {
+            slider_max = min+1;
+        }
         $("#" + slider_id).noUiSlider({
-            range: [min, smax]
+            range: [min, slider_max]
         }, true);
         create_slider_ticks("slider_ticks", min, smax, stop);
         var cutoff = slider.val();

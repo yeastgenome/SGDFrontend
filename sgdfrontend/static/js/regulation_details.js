@@ -62,7 +62,7 @@ $(document).ready(function() {
         else {
             hide_section("network");
             //Hack because footer overlaps - need to fix this.
-	        add_footer_space("regulators");
+	        add_footer_space("regulators_regulation");
         }
     });
 

@@ -5,6 +5,7 @@
     var regulation_details_link = "{{ regulation_details_link }}";
     var phenotype_details_link = "{{ phenotype_details_link }}";
     var go_details_link = "{{ go_details_link }}";
+    var literature_details_link = "{{ literature_details_link }}";
 
     var download_table_link = "{{ download_table_link }}";
     var analyze_link = "{{ analyze_table_link }}";
@@ -29,11 +30,9 @@
 
 {% block body %}
 
-<div class="row">
-	<h2>{{ reference.citation }}</h2>
-</div>
 
 <div class="row">
+
 
 <!-- Navbar
 ================================================== -->
@@ -41,6 +40,7 @@
     {% include "templates/navbar.jinja2" %}
 
     <div class="small-12 large-9 columns content-column">
+        <h2>{{ reference.citation }}</h2>
 
         <script>
             add_navbar_title('<span class="gene_name">{{ reference.display_name }}</span>')
@@ -79,53 +79,9 @@
                         <a id="author_see_less_button" onclick="$('#author_see_more').hide();$('#author_see_more_button').show();$('#author_see_less_button').hide();" hidden> << See less</a>
                     </li>
 
-                    {% if overview.primary|length  > 0 %}
-                        <li><strong>Primary Literature For:</strong>
-                            {% for evidence in overview.primary %}
-                                {% if loop.index < 11 %}<span><a href="{{ evidence.bioentity.link|e }}">{{ evidence.bioentity.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
-                            {% endfor %}
-
-                            <a id="primary_see_more_button" onclick="$('#primary_see_more').show();$('#primary_see_more_button').hide();$('#primary_see_less_button').show();" {% if overview.primary|length <= 10 %}hidden{% endif %}>... See more >></a>
-                            <span id="primary_see_more" hidden>
-                                {% for evidence in overview.primary %}
-                                    {% if loop.index >= 11 %}<span><a href="{{ evidence.bioentity.link|e }}">{{ evidence.bioentity.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
-                                {% endfor %}
-                            </span>
-                            <a id="primary_see_less_button" onclick="$('#primary_see_more').hide();$('#primary_see_more_button').show();$('#primary_see_less_button').hide();" hidden> << See less</a>
-                        </li>
-                    {% endif %}
-
-                    {% if overview.additional|length > 0 %}
-                        <li><strong>Additional Literature For:</strong>
-                            {% for evidence in overview.additional %}
-                                {% if loop.index < 11 %}<span><a href="{{ evidence.bioentity.link|e }}">{{ evidence.bioentity.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
-                            {% endfor %}
-
-                            <a id="additional_see_more_button" onclick="$('#additional_see_more').show();$('#additional_see_more_button').hide();$('#additional_see_less_button').show();" {% if overview.additional|length <= 10 %}hidden{% endif %}>... See more >></a>
-                            <span id="additional_see_more" hidden>
-                                {% for evidence in overview.additional %}
-                                    {% if loop.index >= 11 %}<span><a href="{{ evidence.bioentity.link|e }}">{{ evidence.bioentity.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
-                                {% endfor %}
-                            </span>
-                            <a id="additional_see_less_button" onclick="$('#additional_see_more').hide();$('#additional_see_more_button').show();$('#additional_see_less_button').hide();" hidden> << See less</a>
-                        </li>
-                    {% endif %}
-
-                    {% if overview.reviews|length  > 0 %}
-                        <li><strong>Review For:</strong>
-                            {% for evidence in overview.reviews %}
-                                {% if loop.index < 11 %}<span><a href="{{ evidence.bioentity.link|e }}">{{ evidence.bioentity.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
-                            {% endfor %}
-
-                            <a id="review_see_more_button" onclick="$('#review_see_more').show();$('#review_see_more_button').hide();$('#review_see_less_button').show();" {% if overview.reviews|length <= 10 %}hidden{% endif %}>... See more >></a>
-                            <span id="review_see_more" hidden>
-                                {% for evidence in overview.reviews %}
-                                    {% if loop.index >= 11 %}<span><a href="{{ evidence.bioentity.link|e }}">{{ evidence.bioentity.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
-                                {% endfor %}
-                            </span>
-                            <a id="review_see_less_button" onclick="$('#review_see_more').hide();$('#review_see_more_button').show();$('#review_see_less_button').hide();" hidden> << See less</a>
-                        </li>
-                    {% endif %}
+                    <li id="primary_list"><strong>Primary Literature For: </strong></li>
+                    <li id="additional_list"><strong>Additional Literature For: </strong></li>
+                    <li id="review_list"><strong>Review For: </strong></li>
                 </ul>
             </div>
         </section>

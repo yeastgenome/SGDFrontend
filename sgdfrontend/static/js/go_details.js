@@ -82,6 +82,10 @@ function create_go_table(prefix, message, filter, data) {
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
         options["oLanguage"] = {"sEmptyTable": message};
         options["aaData"] = datatable;
+
+        if(Object.keys(gos).length == 0) {
+            $("#" + prefix + "_go_table_wrapper").hide();
+        }
     }
 
 	$("#" + prefix + "_go_table_analyze").hide();

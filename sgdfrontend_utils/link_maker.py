@@ -154,7 +154,7 @@ def regulation_details_ref_link(backend_start, reference):
 def binding_details_ref_link(backend_start, reference):
     return backend_start + '/reference/' + str(reference) + '/binding_details?callback=?'
 def literature_details_ref_link(backend_start, reference):
-    return backend_start + '/reference/' + str(reference) + '/literature_details'
+    return backend_start + '/reference/' + str(reference) + '/literature_details?callback=?'
 def author_references_link(backend_start, author):
     return backend_start + '/author/' + str(author) + '/references?callback=?'
 

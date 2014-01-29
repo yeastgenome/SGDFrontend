@@ -7,6 +7,9 @@ $(document).ready(function() {
   	    create_download_button("phenotype_table_download", phenotype_table, download_table_link, download_filename);
 	});
 
+    //Hack because footer overlaps - need to fix this.
+	add_footer_space("phenotype");
+
 });
 
 function create_phenotype_table(data) {

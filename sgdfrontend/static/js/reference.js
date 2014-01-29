@@ -1,6 +1,12 @@
 
 $(document).ready(function() {
 
+    $.getJSON(literature_details_link, function(data) {
+        create_literature_list('primary', data['primary'])
+        create_literature_list('additional', data['additional'])
+        create_literature_list('review', data['reviews'])
+    });
+
   	$.getJSON(interaction_details_link, function(data) {
   	    if(data.length > 0) {
             var interaction_table = create_interaction_table(data);
@@ -62,6 +68,63 @@ $(document).ready(function() {
   	    add_footer_space("summary");
   	}
 });
+
+function create_literature_list(list_id, data) {
+    var primary_list = $("#" + list_id + "_list");
+    var see_more_list = document.createElement('span');
+    see_more_list.id = list_id + '_see_more'
+    if(data.length > 0) {
+        for(var i=0; i < data.length; i++) {
+            var a = document.createElement('a');
+            a.href = data[i]['bioentity']['link'];
+            a.innerHTML = data[i]['bioentity']['display_name'];
+            if(i > 10) {
+                see_more_list.appendChild(a);
+            }
+            else {
+                primary_list.append(a);
+            }
+            if(i != data.length-1) {
+                var comma = document.createElement('span');
+                comma.innerHTML = ', ';
+                if(i > 10) {
+                    see_more_list.appendChild(comma);
+                }
+                else {
+                    primary_list.append(comma);
+                }
+            }
+            else {
+                if(data.length > 10) {
+                    var see_less = document.createElement('a');
+                    see_less.innerHTML = " << See less";
+                    see_less.id = list_id + '_see_less_button';
+                    see_less.onclick = function() {
+                         $('#' + list_id + '_see_more').hide();
+                         $('#' + list_id + '_see_more_button').show();
+                    };
+                    see_more_list.appendChild(see_less);
+                }
+            }
+            if(i==10) {
+                var see_more = document.createElement('a');
+                see_more.innerHTML = '... See more >>';
+                see_more.id = list_id + '_see_more_button';
+                see_more.onclick = function() {
+                    $('#' + list_id + '_see_more').show();
+                    $('#' + list_id + '_see_more_button').hide();
+                };
+
+                primary_list.append(see_more);
+                primary_list.append(see_more_list);
+            }
+        }
+        $('#' + list_id + '_see_more').hide();
+    }
+    else {
+        primary_list.hide();
+    }
+}
 
 function create_interaction_table(data) {
     if("Error" in data) {

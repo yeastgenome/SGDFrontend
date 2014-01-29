@@ -5,21 +5,24 @@ $(document).ready(function() {
 	  	var go_table = create_go_table(data);
 	  	create_analyze_button("all_go_table_analyze", go_table, analyze_link, analyze_filename, true);
   	    create_download_button("all_go_table_download", go_table, download_table_link, download_filename);
-  	    create_show_child_button("go_table_show_children", go_table, data, go_details_all_link, go_data_to_table, function(table_data) {
-            $("#all_go_header").html(table_data.length);
 
-            var genes = {};
-            for (var i=0; i < table_data.length; i++) {
-                genes[table_data[i][1]] = true;
-            }
-            $("#all_go_subheader").html(Object.keys(genes).length);
-  	    });
+        if(child_count > count) {
+            create_show_child_button("go_table_show_children", go_table, data, go_details_all_link, go_data_to_table, function(table_data) {
+                $("#all_go_header").html(table_data.length);
+
+                var genes = {};
+                for (var i=0; i < table_data.length; i++) {
+                    genes[table_data[i][1]] = true;
+                }
+                $("#all_go_subheader").html(Object.keys(genes).length);
+            });
+        }
 	});
 
 	$.getJSON(ontology_graph_link, function(data) {
   		create_cytoscape_vis("cy", layout, graph_style, data);
 
-        if(data['all_children'] != null) {
+        if(data['all_children'] != null && data['all_children'].length > 0) {
             var children_div = document.getElementById("children");
             for(var i=0; i < data['all_children'].length; i++) {
                 var a = document.createElement('a');
@@ -33,6 +36,9 @@ $(document).ready(function() {
                     children_div.appendChild(comma);
                 }
             }
+        }
+        else {
+            $("#children_wrapper").hide()
         }
 	});
 
