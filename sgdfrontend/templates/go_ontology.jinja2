@@ -4,6 +4,12 @@
     var go_details_link = "{{go_details_link}}";
     var ontology_graph_link = "{{ontology_graph_link}}";
     var display_name = "{{ ontology.display_name }}";
+
+    var download_filename = "{{ ontology.display_name }}_annotations";
+    var analyze_filename = "<a href='{{ ontology.link }}' class='gene_name'>{{ ontology.display_name }}</a> genes";
+
+    var download_table_link = "{{download_table_link}}";
+    var analyze_link = "{{analyze_table_link}}";
 </script>
 
 <title>{{ ontology.display_name }}</title>
@@ -13,7 +19,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>Gene Ontology: <span class="gene_name">{{ ontology.display_name }}</span></h2>
+	<h2>Gene Ontology: <span class="gene_name">{{ ontology.display_name|title }}</span></h2>
 </div>
 
 <div class="row">
@@ -26,7 +32,7 @@
     <div class="small-12 large-9 columns content-column">
 
     <script>
-        add_navbar_title('Gene Ontology: <span class="gene_name">{{ ontology.display_name }}</span>');
+        add_navbar_title('Gene Ontology: <span class="gene_name">{{ ontology.display_name|title }}</span>');
         add_navbar_element('Summary', 'summary');
         add_navbar_element('Ontology Diagram', 'ontology');
         add_navbar_element('Gene Ontology Annotations', 'all_go');

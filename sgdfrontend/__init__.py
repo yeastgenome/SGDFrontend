@@ -246,6 +246,8 @@ class SGDFrontend(FrontendInterface):
 
                     #Links
                     'ontology_graph_link': link_maker.go_ontology_graph_link(self.backend_url, biocon_id),
+                    'download_table_link': link_maker.download_table_link(),
+                    'analyze_table_link': link_maker.analyze_link(),
                     }
         return page
     

@@ -93,16 +93,6 @@ var graph_style = cytoscape.stylesheet()
 });
 
 var layout = {
-    "name": "arbor",
-	"liveUpdate": true,
-	"ungrabifyWhileSimulating": true,
-	"nodeMass":function(data) {
-	    if(data.sub_type == 'FOCUS') {
-		    return 10;
-		}
-		else {
-			return 1;
-		}
-	},
-    "maxSimulationTime": 5000
+    "name": "breadthfirst",
+	"circle": true
 };

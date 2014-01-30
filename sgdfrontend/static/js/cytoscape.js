@@ -72,7 +72,9 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 		var old_zoom_value = cy.zoomingEnabled();
 		cy.zoomingEnabled(true);
 		cy.reset();
-		cy.layout().run();
+        if(typeof cy.layout().run === 'function') {
+		    cy.layout().run();
+        }
 		cy.zoomingEnabled(old_zoom_value);
 	};
 	cytoscape_div.before(recenter_button, cytoscape_div);
