@@ -14,6 +14,9 @@ if(target_count + regulator_count > 0){
             'dataOpacity':1,
             'backgroundColor': 'transparent'
         };
+        if(Math.max(target_count, regulator_count) == 1) {
+            options['hAxis']['gridlines'] = {count:"2"}
+        }
 
         var chart = new google.visualization.BarChart(document.getElementById('summary_diagram'));
         chart.draw(data_table, graph_options);
