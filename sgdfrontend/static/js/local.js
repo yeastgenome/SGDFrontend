@@ -80,10 +80,12 @@ function set_up_references(references, ref_list_id) {
 		var citation = reference['citation'];
 		span.innerHTML = citation.substring(citation.indexOf(')')+1, citation.length) + ' ';
 		li.appendChild(span);
-		
-		var pmid = document.createElement('small');
-		pmid.innerHTML = 'PMID:' + reference['pubmed_id'];
-		li.appendChild(pmid);
+
+        if(reference['pubmed_id'] != null) {
+		    var pmid = document.createElement('small');
+		    pmid.innerHTML = 'PMID:' + reference['pubmed_id'];
+		    li.appendChild(pmid);
+        }
 		
 		var refLinks = document.createElement("ul");
 		refLinks.className = "ref-links";

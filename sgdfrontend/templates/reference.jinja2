@@ -58,9 +58,14 @@
         <section id="summary" data-magellan-destination="summary">
             <div class="page-header">
                 <h1>Abstract</h1>
-                <p>{{ reference.abstract|safe}}</p>
+                {%  if reference.abstract != none %}
+                    <p>{{ reference.abstract|safe}}</p>
+                {% else %}
+                    <p>SGD does not have an abstract for this paper.</p>
+                {% endif %}
+
                 <ul id="ref_links" class="ref-links">
-                    <li>PMID: {{ reference.pubmed_id }}</li>
+                    {%  if reference.pubmed_id != none %}<li>PMID: {{ reference.pubmed_id }}</li>{% endif %}
                     {% for url in reference.urls %}
                         <li><a href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
                     {% endfor %}
