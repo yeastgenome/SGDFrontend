@@ -194,6 +194,13 @@ def prep_views(chosen_frontend, config):
                      view=lambda request: chosen_frontend.response_wrapper('phenotype_snapshot', request)(
                                 getattr(chosen_frontend, 'phenotype_snapshot')()),
                      renderer=chosen_frontend.get_renderer('phenotype_snapshot'))
+
+    config.add_route('protein',
+                     '/locus/{identifier}/protein',
+                     view=lambda request: chosen_frontend.response_wrapper('protein', request)(
+                                getattr(chosen_frontend, 'protein')(
+                                        bioent_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].upper())),
+                     renderer=chosen_frontend.get_renderer('protein'))
     
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'sgdfrontend':

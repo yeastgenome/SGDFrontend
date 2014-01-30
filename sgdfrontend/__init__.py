@@ -299,6 +299,26 @@ class SGDFrontend(FrontendInterface):
                     'download_link': link_maker.download_citations_link(),
                     }
         return page
+
+    def protein(self, bioent_repr):
+        bioent = get_bioent(self.backend_url, bioent_repr)
+        bioent_id = str(bioent['id'])
+        tabs = get_json(link_maker.tab_link(self.backend_url, bioent_id))
+
+        page = {
+                    #Basic info
+                    'locus': bioent,
+
+                    #Overview
+                    'tabs': tabs,
+
+                    #Links
+                    'download_table_link': link_maker.download_table_link(),
+                    'analyze_table_link': link_maker.analyze_link(),
+
+                    'protein_domain_details_link': link_maker.protein_domain_details_link(self.backend_url, bioent_id),
+                    }
+        return page
     
     def home(self):
         if self.heritage_url is None:

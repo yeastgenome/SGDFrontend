@@ -43,6 +43,10 @@ class FrontendInterface:
     @abstractmethod
     def go_details(self, bioent_repr):
         return None
+
+    @abstractmethod
+    def protein(self, bioent_repr):
+        return None
     
     @abstractmethod
     def go(self, biocon_repr):
