@@ -190,7 +190,7 @@ function go_data_to_table(evidence, index) {
                 new_with_entry = condition['obj']['display_name'];
             }
             else {
-                new_with_entry = create_link(condition['obj']['display_name'], condition['obj']['link']);
+                new_with_entry = create_link(condition['obj']['display_name'], condition['obj']['link'], condition['obj']['class_type'] != 'GO' && condition['obj']['class_type'] != 'LOCUS');
             }
 	  		if(with_entry == null) {
 	  			with_entry = new_with_entry
