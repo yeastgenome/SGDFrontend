@@ -12,7 +12,9 @@ $(document).ready(function() {
     if(target_count > 0) {
 		$.getJSON(protein_domains_link, function(data) {
             var domain_table = create_domain_table(data);
-            create_download_button("domains_table_download", domain_table, download_table_link, domains_table_filename);
+            if(domain_table != null) {
+                create_download_button("domains_table_download", domain_table, download_table_link, domains_table_filename);
+            }
 		});
     }
 
@@ -36,6 +38,7 @@ $(document).ready(function() {
   		}
   		else {
   	        $("#targets_regulation").hide();
+            $("domains").hide();
   		}
 
   		var regulator_table = create_regulator_table(data);
@@ -73,8 +76,6 @@ $(document).ready(function() {
 function create_domain_table(data) {
     var domain_table = null;
     if(data != null && data.length > 0) {
-        $("#domains").show();
-
 	    var datatable = [];
 
         for (var i=0; i < data.length; i++) {

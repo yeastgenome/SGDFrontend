@@ -76,30 +76,12 @@
 
 <!-- Domains
 ================================================== -->
-        <section id="domains" data-magellan-destination="domains" hidden>
+        <section id="domains" data-magellan-destination="domains">
             <div class="page-header">
                 <h1>Domains and Classification <span id="domains_header" class="round secondary label"></span></h1>
-                <div>
-                    <div class="button-bar">
-                        <ul class="button-group radius">
-                            <li><a id="domains_table_download" class="small button secondary"><i class="icon-download-alt"></i> Download</a></li>
-                        </ul>
-                    </div>
-
-                    <table class="table table-striped table-bordered table-condensed" id="domains_table" width="100%">
-                    <thead>
-                    <tr>
-                        <th>Evidence ID</th>
-                        <th>Protein</th>
-                        <th>Protein Coordinates</th>
-                        <th>Accession ID</th>
-                        <th>Description</th>
-                        <th>Source</th>
-                    </tr>
-                    </thead>
-                    </table>
-                </div>
-           </div>
+                <!-- Includes domain_table into template -->
+                {% include "templates/domain_table.jinja2" %}
+            </div>
         </section>
 
 <!-- Binding Sites
