@@ -4,6 +4,14 @@ $(document).ready(function() {
 	$.getJSON(ypo_ontology_link, function(data) {
 		$("#ontology").show();
 		set_up_full_ontology("full_ontology", data);
+		$('i.fa').click(function(e) {
+			if ($(this).parent().has('ul')) {
+				$(this).parent().children('ul').toggle();
+			}
+			$(this).toggleClass('fa-minus-circle fa-plus-circle');
+	
+			e.stopPropagation();
+		});
 	});
 
   	$.getJSON(ontology_graph_link, function(data) {
@@ -13,9 +21,6 @@ $(document).ready(function() {
 	add_footer_space("ontology");
 
 });
-
-var minus = "- ";
-var plus = "+ ";
 
 function set_up_full_ontology(ontology_list_id, data) {
 	var list = document.getElementById(ontology_list_id);
@@ -42,20 +47,9 @@ function set_up_full_ontology(ontology_list_id, data) {
                 ul = document.createElement('ul');
                 ul.id = 'expand' + parent_id;
 
-                var expand_a = document.createElement('a');
-                expand_a.innerHTML = minus;
-                expand_a.onclick = function() {
-                    var expand_id = 'expand' + this.parentNode.id;
-                    if(this.innerHTML == minus) {
-                        $("#" + expand_id).children().hide();
-                        this.innerHTML = plus;
-                    }
-                    else {
-                        $("#" + expand_id).children().show();
-                        this.innerHTML = minus;
-                    }
-                };
-                parent.insertBefore(expand_a, parent.firstChild);
+				var minus = document.createElement('i');
+				minus.className = minus.className + ' fa icon-minus-sign';
+                parent.insertBefore(minus, parent.firstChild);
 
                 parent.appendChild(ul);
             }
