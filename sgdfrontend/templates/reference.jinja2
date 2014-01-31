@@ -43,8 +43,11 @@
 
     <div class="small-12 large-9 columns content-column">
         <br>
-        <h3>Reference: <span class="gene_name">{{ reference.citation }}</span></h3>
-
+        {%  if 'journal' in reference and reference.journal != none %}
+            <h2>Reference: <span class="gene_name">{{ (reference.citation|replace(reference.journal, "<em>" + reference.journal + "</em>")|replace(reference.display_name, reference.display_name + "<span class='subheader'>") + "</span>")|safe }}</span></h2>
+        {% else %}
+            <h2>Reference: <span class="gene_name">{{ (reference.citation|replace(reference.display_name, reference.display_name + "<span class='subheader'>") + "</span>")|safe }}</span></h2>
+        {% endif %}
         <script>
             add_navbar_title('Reference: <span class="gene_name">{{ reference.display_name }}</span>')
             add_navbar_element('Abstract', 'summary');

@@ -303,13 +303,19 @@ function create_show_child_button(child_button_id, table, data, details_all_link
 
                 post_json_to_url(details_all_link, {},
                     function(data) {
-                        indirect_data = []
-                        for (var i=0; i < data.length; i++) {
-                            indirect_data.push(data_to_table(data[i], i));
-                        }
-                        table.fnAddData(indirect_data);
-                        set_up_table_f(indirect_data);
                         table.fnSettings().oLanguage.sEmptyTable = original_empty_message;
+                        indirect_data = []
+                        if("Error" in data) {
+                            table.fnAddData(indirect_data);
+                        }
+                        else {
+                            for (var i=0; i < data.length; i++) {
+                                indirect_data.push(data_to_table(data[i], i));
+                            }
+                            table.fnAddData(indirect_data);
+                            set_up_table_f(indirect_data);
+
+                        }
                         child_button.html('Hide Annotations to Child Terms');
                         child_button.removeAttr('disabled');
                     }

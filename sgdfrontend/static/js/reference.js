@@ -7,49 +7,49 @@ $(document).ready(function() {
         create_literature_list('review', data['reviews'])
     });
 
-  	$.getJSON(interaction_details_link, function(data) {
-  	    if(data.length > 0) {
+    if(counts['interaction'] > 0) {
+        $.getJSON(interaction_details_link, function(data) {
             var interaction_table = create_interaction_table(data);
             create_download_button("interaction_table_download", interaction_table, download_table_link, interaction_download_filename);
             create_analyze_button("interaction_table_analyze", interaction_table, analyze_link, interaction_analyze_filename, true);
-        }
-        else {
-            hide_section("interaction");
-        }
-  	});
+        });
+    }
+    else {
+        hide_section("interaction");
+    }
 
-  	$.getJSON(go_details_link, function(data) {
-  	    if(data.length > 0) {
-  		    var go_table = create_go_table(data);
-  		    create_download_button("all_go_table_download", go_table, download_table_link, go_download_filename);
-	  	    create_analyze_button("all_go_table_analyze", go_table, analyze_link, go_analyze_filename, true);
-	  	}
-        else {
-            hide_section("all_go");
-        }
-  	});
+    if(counts['go'] > 0) {
+        $.getJSON(go_details_link, function(data) {
+            var go_table = create_go_table(data);
+            create_download_button("all_go_table_download", go_table, download_table_link, go_download_filename);
+            create_analyze_button("all_go_table_analyze", go_table, analyze_link, go_analyze_filename, true);
+        });
+    }
+    else {
+        hide_section("all_go");
+    }
 
-  	$.getJSON(phenotype_details_link, function(data) {
-  	    if(data.length > 0) {
-  		    var phenotype_table = create_phenotype_table(data);
+    if(counts['phenotype'] > 0) {
+        $.getJSON(phenotype_details_link, function(data) {
+            var phenotype_table = create_phenotype_table(data);
             create_download_button("phenotype_table_download", phenotype_table, download_table_link, phenotype_download_filename);
             create_analyze_button("phenotype_table_analyze", phenotype_table, analyze_link, phenotype_analyze_filename, true);
-        }
-        else {
-            hide_section("phenotype");
-        }
-  	});
+        });
+    }
+    else {
+        hide_section("phenotype");
+    }
 
-  	$.getJSON(regulation_details_link, function(data) {
-  	    if(data.length > 0) {
-  		    var regulation_table = create_regulation_table(data);
-  	        create_download_button("all_regulation_table_download", regulation_table, download_table_link, regulation_download_filename);
-  		    create_analyze_button("all_regulation_table_analyze", regulation_table, analyze_link, regulation_analyze_filename, true);
-  		}
-        else {
-            hide_section("all_regulation");
-        }
-  	});
+    if(counts["regulation"] > 0) {
+        $.getJSON(regulation_details_link, function(data) {
+            var regulation_table = create_regulation_table(data);
+            create_download_button("all_regulation_table_download", regulation_table, download_table_link, regulation_download_filename);
+            create_analyze_button("all_regulation_table_analyze", regulation_table, analyze_link, regulation_analyze_filename, true);
+        });
+    }
+    else {
+        hide_section("all_regulation");
+    }
 
   	//Hack because footer overlaps - need to fix this.
   	if(counts["regulation"] > 0) {
@@ -67,6 +67,7 @@ $(document).ready(function() {
   	else {
   	    add_footer_space("summary");
   	}
+
 });
 
 function create_literature_list(list_id, data) {
