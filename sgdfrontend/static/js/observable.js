@@ -111,7 +111,7 @@ var graph_style = cytoscape.stylesheet()
 	.selector('edge')
 	.css({
 		'width': 2,
-		'target-arrow-shape': 'triangle'
+		'source-arrow-shape': 'triangle'
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({
