@@ -185,7 +185,13 @@ function go_data_to_table(evidence, index) {
   	for(var j=0; j < evidence['conditions'].length; j++) {
   		var condition = evidence['conditions'][j];
   		if(condition['role'] == 'With' || condition['role'] == 'From') {
-  			var new_with_entry = create_link(condition['obj']['display_name'], condition['obj']['link']);
+  			var new_with_entry;
+            if(condition['obj']['link'] == null) {
+                new_with_entry = condition['obj']['display_name'];
+            }
+            else {
+                new_with_entry = create_link(condition['obj']['display_name'], condition['obj']['link']);
+            }
 	  		if(with_entry == null) {
 	  			with_entry = new_with_entry
 	  		}
@@ -194,7 +200,13 @@ function go_data_to_table(evidence, index) {
 	  		}
 	  	}
 	  	else if(condition['obj'] != null) {
-	  		var new_rel_entry = condition['role'] + ' ' + create_link(condition['obj']['display_name'], condition['obj']['link']);
+	  		var new_rel_entry = condition['role'] + ' '
+            if(condition['obj']['link'] == null) {
+                new_rel_entry = new_rel_entry + condition['obj']['display_name'];
+            }
+            else {
+                new_rel_entry = new_rel_entry + create_link(condition['obj']['display_name'], condition['obj']['link']);
+            }
 	  		if(relationship_entry == null) {
   				relationship_entry = new_rel_entry
   			}
