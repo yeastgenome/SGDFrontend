@@ -171,7 +171,12 @@ function phenotype_data_to_table(evidence, index) {
 
   	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
 
-  	return [evidence['id'], evidence['bioentity']['id'], bioent, evidence['bioentity']['format_name'], biocon, experiment, evidence['mutant_type'] + allele, strain, chemical, note, reference];
+    var experiment_category = evidence['experiment']['display_name'];
+    if('experiment_type_category' in evidence) {
+        experiment_category = evidence['experiment_type_category'];
+    }
+
+  	return [evidence['id'], evidence['bioentity']['id'], bioent, evidence['bioentity']['format_name'], biocon, experiment, experiment_category, evidence['mutant_type'] + allele, strain, chemical, note, reference];
 }
 
 function go_data_to_table(evidence, index) {

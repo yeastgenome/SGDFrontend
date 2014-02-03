@@ -53,7 +53,7 @@ function create_phenotype_table(data) {
         options["aaSorting"] = [[2, "asc"]];
         options["bDestroy"] = true;
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"sWidth": "250px"}, null];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bVisible":false}, null, null, null, {"sWidth": "250px"}, null];
         options["aaData"] = [];
     }
     else {
@@ -85,7 +85,7 @@ function create_phenotype_table(data) {
         options["aaSorting"] = [[2, "asc"]];
         options["bDestroy"] = true;
         options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + display_name};
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"sWidth": "250px"}, null];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bVisible":false}, null, null, null, {"sWidth": "250px"}, null];
         options["aaData"] = datatable;
     }
 

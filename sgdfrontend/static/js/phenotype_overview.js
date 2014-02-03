@@ -44,6 +44,24 @@ function drawChart() {
         }
 
         var chart = new google.visualization.BarChart(document.getElementById('mutant_experiment_chart'));
+
+        // The select handler. Call the chart's getSelection() method
+        function barSelectHandler() {
+            var selectedItem = chart.getSelection()[0];
+            if (selectedItem) {
+                var mutant_type = overview_data['mutant_types'][selectedItem.row];
+                var experiment_type = overview_data['experiment_types'][selectedItem.column]
+                var phenotype_table = $($.fn.dataTable.fnTables(true)).dataTable();
+                phenotype_table.fnFilter( mutant_type + ' ' + experiment_type );
+                window.location.hash = "";
+                window.location.hash = "phenotype";
+            }
+        }
+
+        // Listen for the 'select' event, and call my function selectHandler() when
+        // the user selects something on the chart.
+        google.visualization.events.addListener(chart, 'select', barSelectHandler);
+
         chart.draw(data, options);
     }
 
@@ -76,6 +94,24 @@ function drawChart() {
         }
 
         var strain_chart = new google.visualization.ColumnChart(document.getElementById('strain_chart'));
+
+        // The select handler. Call the chart's getSelection() method
+        function selectHandler() {
+            var selectedItem = strain_chart.getSelection()[0];
+            if (selectedItem) {
+                //var value = strain_data.getValue(selectedItem.row, selectedItem.column);
+                var strain = overview_data['strain_list'][selectedItem.row];
+                var phenotype_table = $($.fn.dataTable.fnTables(true)).dataTable();
+                phenotype_table.fnFilter( strain );
+                window.location.hash = "";
+                window.location.hash = "phenotype";
+            }
+        }
+
+        // Listen for the 'select' event, and call my function selectHandler() when
+        // the user selects something on the chart.
+        google.visualization.events.addListener(strain_chart, 'select', selectHandler);
+
         strain_chart.draw(strain_data, strain_options);
     }
 
