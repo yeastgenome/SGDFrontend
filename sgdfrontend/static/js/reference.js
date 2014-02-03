@@ -7,6 +7,8 @@ $(document).ready(function() {
         create_literature_list('review', data['reviews'])
     });
 
+    $("#download_citation").click(function() {post_to_url(download_link, {"display_name":display_name + '_citation', "reference_ids": [reference_id]});})
+
     if(counts['interaction'] > 0) {
         $.getJSON(interaction_details_link, function(data) {
             var interaction_table = create_interaction_table(data);

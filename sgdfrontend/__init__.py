@@ -277,6 +277,7 @@ class SGDFrontend(FrontendInterface):
 
                     #Links
                     'download_table_link': link_maker.download_table_link(),
+                    'download_link': link_maker.download_citations_link(),
                     'analyze_table_link': link_maker.analyze_link(),
                     'go_details_link': link_maker.go_details_ref_link(self.backend_url, reference_id),
                     'phenotype_details_link': link_maker.phenotype_details_ref_link(self.backend_url, reference_id),
@@ -378,6 +379,9 @@ class SGDFrontend(FrontendInterface):
     def download_image(self, response, data, display_name):
         headers = response.headers
         response.body = base64.b64decode(data[22:])
+
+        exclude = set([x for x in string.punctuation if x != ' ' and x != '_'])
+        display_name = ''.join(ch for ch in display_name if ch not in exclude).replace(' ', '_')
         
         headers['Content-Type'] = 'image/png;'      
         headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.png')
@@ -389,6 +393,9 @@ class SGDFrontend(FrontendInterface):
         references = get_json(link_maker.citation_list_link(self.backend_url), data={'reference_ids': reference_ids})
         
         headers = response.headers
+
+        exclude = set([x for x in string.punctuation if x != ' ' and x != '_'])
+        display_name = ''.join(ch for ch in display_name if ch not in exclude).replace(' ', '_')
         
         response.text = '\n' + '\n\n'.join([ref['text'] for ref in references])
         
