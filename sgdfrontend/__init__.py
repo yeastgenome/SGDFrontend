@@ -317,6 +317,7 @@ class SGDFrontend(FrontendInterface):
                     'analyze_table_link': link_maker.analyze_link(),
 
                     'protein_domain_details_link': link_maker.protein_domain_details_link(self.backend_url, bioent_id),
+                    'protein_domain_graph_link': link_maker.protein_domain_graph_link(self.backend_url, bioent_id)
                     }
         return page
     

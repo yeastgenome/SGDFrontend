@@ -84,6 +84,8 @@ def phenotype_snapshot_link(backend_start):
 #Protein Links
 def protein_domain_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/protein_domain_details?callback=?'
+def protein_domain_graph_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/protein_graph?callback=?'
 def binding_site_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/binding_site_details?callback=?'
 
