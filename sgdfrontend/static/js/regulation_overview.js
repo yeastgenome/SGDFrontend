@@ -10,7 +10,7 @@ if(target_count + regulator_count > 0){
         var graph_options = {
             'title': 'Transcriptional Targets and Regulators for ' + display_name,
             'legend': {'position': 'none'},
-            'hAxis': {title: 'Genes'},
+            'hAxis': {title: 'Genes', minValue: 0},
             'dataOpacity':1,
             'backgroundColor': 'transparent'
         };

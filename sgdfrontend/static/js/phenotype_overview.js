@@ -32,7 +32,7 @@ function drawChart() {
             'legend': {'position': 'top', title: 'Experiment Type'},
             'title': label + ' by mutant type and experiment type',
             'vAxis': {title: 'Mutant Type'},
-            'hAxis': {title: '# of ' + label},
+            'hAxis': {title: '# of ' + label, minValue: 0},
             'chartArea': {left:110,top:50,width:"60%",height:"60%"},
             'dataOpacity':.75,
             'colors': ["#7FBF7B", "#AF8DC3", "#1F78B4"],
@@ -54,7 +54,7 @@ function drawChart() {
         var max = 0;
         for(var j=0; j < overview_data['strain_list'].length; j++) {
             var strain = overview_data['strain_list'][j];
-            var new_row = [strain, overview_data['strain_to_count'][strain]];
+            var new_row = [strain, parseInt(overview_data['strain_to_count'][strain])];
             strain_all_data.push(new_row);
             max = Math.max(max, overview_data['strain_to_count'][strain]);
         };
@@ -63,7 +63,7 @@ function drawChart() {
         var strain_options = {
             'legend': {'position': 'none'},
             'title': label + ' in different strain backgrounds',
-            'vAxis': {title: '# of ' + label},
+            'vAxis': {title: '# of ' + label, minValue: 0},
             'hAxis': {title: 'Strain'},
             'dataOpacity':.75,
             'colors': ["#1F78B4"],
