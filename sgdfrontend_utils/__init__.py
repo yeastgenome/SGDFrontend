@@ -101,7 +101,7 @@ def clean_cell(cell):
     if cell is None:
         return ''
     else:
-        cell = cell.replace('<br>', '')
+        cell = cell.replace('<br>', ' ')
         result = remove_html(cell)
         while result is not None:
             cell = result
