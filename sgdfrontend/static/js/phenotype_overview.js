@@ -18,15 +18,7 @@ function drawChart() {
             }
         };
 
-        var label;
-        var title;
-        var hAxis;
-        if(class_type == 'PHENOTYPE') {
-            label = 'Genes';
-        }
-        else if(class_type == 'LOCUS') {
-            label = 'Phenotypes';
-        }
+        var label = 'Annotations'
         var data = google.visualization.arrayToDataTable(all_data);
         var options = {
             'legend': {'position': 'top', title: 'Experiment Type'},
