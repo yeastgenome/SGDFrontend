@@ -32,7 +32,10 @@ function regulation_data_to_table(evidence, is_regulator) {
 	}
 	var reference = '';
 	if(evidence['reference'] != null) {
-	    reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
+	    reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+        if(evidence['reference']['pubmed_id'] != null) {
+            reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+        }
 	}
 	var analyze_value = '';
 	if(is_regulator) {
@@ -102,6 +105,10 @@ function interaction_data_to_table(evidence, index) {
 	 bioent2 = create_link(evidence[bioent2_key]['display_name'], evidence[bioent2_key]['link']);
 
   	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+    if(evidence['reference']['pubmed_id'] != null) {
+        reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+    }
+
     return [evidence['id'], evidence[bioent2_key]['id'], icon, bioent1, evidence[bioent1_key]['format_name'], bioent2, evidence[bioent2_key]['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], direction, modification, phenotype, evidence['source'], reference, evidence['note']]
 }
 
@@ -170,6 +177,9 @@ function phenotype_data_to_table(evidence, index) {
 	biocon = biocon + '<br>' + reporter;
 
   	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+    if(evidence['reference']['pubmed_id'] != null) {
+        reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+    }
 
     var experiment_category = evidence['experiment']['display_name'];
     if('experiment_type_category' in evidence) {
@@ -183,6 +193,9 @@ function go_data_to_table(evidence, index) {
 	var bioent = create_link(evidence['bioentity']['display_name'], evidence['bioentity']['link']);
 	var biocon = create_link(evidence['bioconcept']['display_name'], evidence['bioconcept']['link']);
   	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+    if(evidence['reference']['pubmed_id'] != null) {
+        reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+    }
 
   	var with_entry = null;
 	var relationship_entry = null;
@@ -233,5 +246,5 @@ function go_data_to_table(evidence, index) {
         qualifier = '';
     }
 
-  	return [evidence['id'], evidence['bioentity']['id'], icon, bioent, evidence['bioentity']['format_name'], biocon, qualifier, evidence['bioconcept']['aspect'], evidence['method'], evidence_code, evidence['source'], evidence['date_created'], reference, relationship_entry];
+  	return [evidence['id'], evidence['bioentity']['id'], icon, bioent, evidence['bioentity']['format_name'], biocon, evidence['bioconcept']['go_id'], qualifier, evidence['bioconcept']['aspect'], evidence['method'], evidence_code, evidence['source'], evidence['date_created'], reference, relationship_entry];
 }

@@ -362,7 +362,10 @@ class SGDFrontend(FrontendInterface):
 
         cutoff = 1;
         if header_info[1] == 'Analyze ID':
-            cutoff = 2;
+            if header_info[2] == '':
+                cutoff = 3
+            else:
+                cutoff = 2;
 
         table_header = description + '\n\n' + '\t'.join(header_info[cutoff:])
         

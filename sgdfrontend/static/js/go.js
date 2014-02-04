@@ -75,7 +75,7 @@ function create_go_table(data) {
 	options["aaSorting"] = [[3, "asc"]];
 	options["bDestroy"] = true;
 	options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + display_name};
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
 	options["aaData"] = datatable;
 
     return create_table("all_go_table", options);
