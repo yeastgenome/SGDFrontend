@@ -32,7 +32,7 @@ $(document).ready(function() {
         for (var i=0; i < data.length; i++) {
             transformed_data.push(go_data_to_table(data[i], i));
         }
-        var headers = ["Evidence ID", "Analyze ID", "", "Gene", "Gene Format Name", "Gene Ontology Term", "Qualifier", "Aspect", "Method", "Evidence", "Source", "Assigned On", "Reference", "Relationships"];
+        var headers = ["Evidence ID", "Analyze ID", "", "Gene", "Gene Format Name", "Gene Ontology Term", "Gene Ontology Term ID", "Qualifier", "Aspect", "Method", "Evidence", "Source", "Assigned On", "Reference", "Relationships"];
         create_download_button_no_table("go_download_all", headers, transformed_data, download_table_link, display_name + "_go_annotations")
   	});
 
