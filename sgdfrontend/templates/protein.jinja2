@@ -74,32 +74,6 @@
         <section id="sequence" data-magellan-destination="sequence">
             <div class="page-header">
                 <h1>Sequence</h1>
-                <h3>S288C</h3>
-                <p>
-                   1  MKLLSSIEQA CDICRLKKLK CSKEKPKCAK CLKNNWECRY SPKTKRSPLT
-                  51  RAHLTEVESR LERLEQLFLL IFPREDLDMI LKMDSLQDIK ALLTGLFVQD
-                 101  NVNKDAVTDR LASVETDMPL TLRQHRISAT SSSEESSNKG QRQLTVSIDS
-                 151  AAHHDNSTIP LDFMPRDALH GFDWSEEDDM SDGLPFLKTD PNNNGFFGDG
-                 201  SLLCILRSIG FKPENYTNSN VNRLPTMITD RYTLASRSTT SRLLQSYLNN
-                 251  FHPYCPIVHS PTLMMLYNNQ IEIASKDQWQ ILFNCILAIG AWCIEGESTD
-                 301  IDVFYYQNAK SHLTSKVFES GSIILVTALH LLSRYTQWRQ KTNTSYNFHS
-                 351  FSIRMAISLG LNRDLPSSFS DSSILEQRRR IWWSVYSWEI QLSLLYGRSI
-                 401  QLSQNTISFP SSVDDVQRTT TGPTIYHGII ETARLLQVFT KIYELDKTVT
-                 451  AEKSPICAKK CLMICNEIEE VSRQAPKFLQ MDISTTALTN LLKEHPWLSF
-                 501  TRFELKWKQL SLIIYVLRDF FTNFTQKKSQ LEQDQNDHQS YEVKRCSIML
-                 551  SDAAQRTVMS VSSYMDNHNV TPYFAWNCSY YLFNAVLVPI KTLLSNSKSN
-                 601  AENNETAQLL QQINTVLMLL KKLATFKIQT CEKYIQVLEE VCAPFLLSQC
-                 651  AIPLPHISYN NSNGSAIKNI VGSATIAQYP TLPEENVNNI SVKYVSPGSV
-                 701  GPSPVPLKSG ASFSDLVKLL SNRPPSRNSP VTIPRSTPSH RSVTPFLGQQ
-                 751  QQLQSLVPLT PSALFGGANF NQSGNIADSS LSFTFTNSSN GPNLITTQTN
-                 801  SQALSQPIAS SNVHDNFMNN EITASKIDDG NNSKPLSPGW TDQTAYNAFG
-                 851  ITTGMFNTTT MDDVYNYLFD DEDTPPNPKK E*
-                </p>
-                <div class="button-bar">
-                    <ul class="button-group radius">
-                        <li><a id="interaction_table_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a></li>
-                    </ul>
-                </div>
             </div>
         </section>
 
@@ -114,16 +88,12 @@
                 <!-- Includes domain_table into template -->
                 {% include "templates/domain_table.jinja2" %}
 
-                <h2>Shared Domains</h2>
+                <h2 class="subheader">Shared Domains</h2>
                 <div class="panel">
                     <div id="cy" name="cy" style="width:100%;height:500px"></div>
                 </div><!-- .panel -->
 
-                <h2>Unique Domains</h2>
-
-                <h2>Transmembrane Domains</h2>
-
-                <h2>Signal Peptides</h2>
+                <h2 class="subheader">Unique Domains</h2>
             </div>
         </section>
 
