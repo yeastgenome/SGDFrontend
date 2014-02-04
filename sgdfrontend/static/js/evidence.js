@@ -37,8 +37,11 @@ function regulation_data_to_table(evidence, is_regulator) {
             reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
         }
 	}
-	var analyze_value = '';
-	if(is_regulator) {
+	var analyze_value;
+    if(is_regulator == null) {
+        analyze_value = evidence['bioentity1']['id'] + ',' + evidence['bioentity2']['id'];
+    }
+	else if(is_regulator) {
 	    analyze_value = evidence['bioentity1']['id'];
 	}
 	else {
@@ -63,6 +66,7 @@ function interaction_data_to_table(evidence, index) {
 	var bioent1_key = 'bioentity1';
 	var bioent2_key = 'bioentity2';
 	var direction = evidence['bait_hit'];
+    var analyze_key;
 
 	if(locus_id != null) {
 	    if(locus_id == evidence['bioentity1']['id']) {
@@ -83,9 +87,10 @@ function interaction_data_to_table(evidence, index) {
                 direction = 'Hit';
             }
         }
+        analyze_key = evidence[bioent2_key]['id']
 	}
     else {
-
+        analyze_key = evidence[bioent1_key]['id'] + ',' + evidence[bioent2_key]['id'];
     }
 
 	var experiment = '';
@@ -109,7 +114,7 @@ function interaction_data_to_table(evidence, index) {
         reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
     }
 
-    return [evidence['id'], evidence[bioent2_key]['id'], icon, bioent1, evidence[bioent1_key]['format_name'], bioent2, evidence[bioent2_key]['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], direction, modification, phenotype, evidence['source'], reference, evidence['note']]
+    return [evidence['id'], analyze_key, icon, bioent1, evidence[bioent1_key]['format_name'], bioent2, evidence[bioent2_key]['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], direction, modification, phenotype, evidence['source'], reference, evidence['note']]
 }
 
 function gene_data_to_table(bioent) {

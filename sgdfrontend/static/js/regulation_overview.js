@@ -19,6 +19,26 @@ if(target_count + regulator_count > 0){
         }
 
         var chart = new google.visualization.BarChart(document.getElementById('summary_diagram'));
+
+        // The select handler. Call the chart's getSelection() method
+        function barSelectHandler() {
+            var selectedItem = chart.getSelection()[0];
+            if (selectedItem) {
+                if(selectedItem.row == 1) {
+                    window.location.hash = "";
+                    window.location.hash = "regulators_regulation";
+                }
+                else {
+                    window.location.hash = "";
+                    window.location.hash = "targets_regulation";
+                }
+            }
+        }
+
+        // Listen for the 'select' event, and call my function selectHandler() when
+        // the user selects something on the chart.
+        google.visualization.events.addListener(chart, 'select', barSelectHandler);
+
         chart.draw(data_table, graph_options);
     }
 }

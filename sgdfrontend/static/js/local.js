@@ -376,13 +376,23 @@ function create_analyze_button(analyze_button_id, table, analyze_link, name, app
             data = table._('tr', {});
         }
 
-        for (var i=0,len=data.length; i<len; i++) {
-            bioent_ids.push(data[i][1]);
+        for (var i=0; i<data.length; i++) {
+            if(data[i]) {
+                if(typeof data[i][1] == 'string') {
+                    var cur_bioent_ids = String(data[i][1]).split(",");
+                    for(var j=0; j<cur_bioent_ids.length; j++) {
+                        bioent_ids.push(cur_bioent_ids[j]);
+                    }
+                }
+                else {
+                    bioent_ids.push(data[i][1]);
+                }
+            }
+
         }
 
         post_to_url(analyze_link, {'list_name': filename, 'bioent_ids': JSON.stringify(bioent_ids)});
     };
-    analyze_button.click(analyze_function);
 
     //When the associated table is filtered so that no genes are being displayed, disable button.
     if(apply_filter) {
@@ -390,7 +400,7 @@ function create_analyze_button(analyze_button_id, table, analyze_link, name, app
   	        var data = table._('tr', {"filter": "applied"});
   	        if(data.length == 0) {
   	            analyze_button.attr('disabled', true);
-  	            analyze_button.off('click');
+  	            analyze_button.click(function(){});
   	        }
   	        else {
   	            analyze_button.attr('disabled', false);
@@ -402,7 +412,7 @@ function create_analyze_button(analyze_button_id, table, analyze_link, name, app
     var data = table._('tr', {"filter": "applied"});
   	if(data.length == 0) {
   	    analyze_button.attr('disabled', true);
-  	    analyze_button.off('click');
+  	    analyze_button.click(function(){});
   	}
   	else {
   	    analyze_button.attr('disabled', false);

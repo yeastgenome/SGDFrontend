@@ -7,7 +7,7 @@ $(document).ready(function() {
         create_literature_list('review', data['reviews'])
     });
 
-    $("#download_citation").click(function() {post_to_url(download_link, {"display_name":display_name + '_citation', "reference_ids": [reference_id]});})
+    $("#download_citation").click(function() {post_to_url(download_link, {"display_name":display_name.replace(' ', '_') + '_citation.nbib', "reference_ids": [reference_id]});})
 
     if(counts['interaction'] > 0) {
         $.getJSON(interaction_details_link, function(data) {
@@ -143,6 +143,7 @@ function create_interaction_table(data) {
         var genes = {};
         for (var i=0; i < data.length; i++) {
             datatable.push(interaction_data_to_table(data[i], i));
+            genes[data[i]["bioentity1"]["id"]] = true;
             genes[data[i]["bioentity2"]["id"]] = true;
         }
 
@@ -180,7 +181,7 @@ function create_go_table(data) {
         options["aaSorting"] = [[3, "asc"]];
         options["bDestroy"] = true;
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}];
         options["aaData"] = [];
     }
     else {
@@ -212,7 +213,7 @@ function create_go_table(data) {
         options["aaSorting"] = [[3, "asc"]];
         options["bDestroy"] = true;
         options["oLanguage"] = {"sEmptyTable": "No gene ontology data for " + display_name};
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}];
         options["aaData"] = datatable;
     }
 
@@ -276,7 +277,8 @@ function create_regulation_table(data) {
         var datatable = [];
         var genes = {};
         for (var i=0; i < data.length; i++) {
-            datatable.push(regulation_data_to_table(data[i], false));
+            datatable.push(regulation_data_to_table(data[i], null));
+            genes[data[i]["bioentity1"]["id"]] = true;
             genes[data[i]["bioentity2"]["id"]] = true;
         }
 
