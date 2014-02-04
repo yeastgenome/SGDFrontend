@@ -32,10 +32,16 @@ function regulation_data_to_table(evidence, is_regulator) {
 	}
 	var reference = '';
 	if(evidence['reference'] != null) {
-	    reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);;
+	    reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+        if(evidence['reference']['pubmed_id'] != null) {
+            reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+        }
 	}
-	var analyze_value = '';
-	if(is_regulator) {
+	var analyze_value;
+    if(is_regulator == null) {
+        analyze_value = evidence['bioentity1']['id'] + ',' + evidence['bioentity2']['id'];
+    }
+	else if(is_regulator) {
 	    analyze_value = evidence['bioentity1']['id'];
 	}
 	else {
@@ -60,6 +66,7 @@ function interaction_data_to_table(evidence, index) {
 	var bioent1_key = 'bioentity1';
 	var bioent2_key = 'bioentity2';
 	var direction = evidence['bait_hit'];
+    var analyze_key;
 
 	if(locus_id != null) {
 	    if(locus_id == evidence['bioentity1']['id']) {
@@ -80,9 +87,10 @@ function interaction_data_to_table(evidence, index) {
                 direction = 'Hit';
             }
         }
+        analyze_key = evidence[bioent2_key]['id']
 	}
     else {
-
+        analyze_key = evidence[bioent1_key]['id'] + ',' + evidence[bioent2_key]['id'];
     }
 
 	var experiment = '';
@@ -102,7 +110,11 @@ function interaction_data_to_table(evidence, index) {
 	 bioent2 = create_link(evidence[bioent2_key]['display_name'], evidence[bioent2_key]['link']);
 
   	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
-    return [evidence['id'], evidence[bioent2_key]['id'], icon, bioent1, evidence[bioent1_key]['format_name'], bioent2, evidence[bioent2_key]['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], direction, modification, phenotype, evidence['source'], reference, evidence['note']]
+    if(evidence['reference']['pubmed_id'] != null) {
+        reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+    }
+
+    return [evidence['id'], analyze_key, icon, bioent1, evidence[bioent1_key]['format_name'], bioent2, evidence[bioent2_key]['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], direction, modification, phenotype, evidence['source'], reference, evidence['note']]
 }
 
 function gene_data_to_table(bioent) {
@@ -170,14 +182,25 @@ function phenotype_data_to_table(evidence, index) {
 	biocon = biocon + '<br>' + reporter;
 
   	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+    if(evidence['reference']['pubmed_id'] != null) {
+        reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+    }
 
-  	return [evidence['id'], evidence['bioentity']['id'], bioent, evidence['bioentity']['format_name'], biocon, experiment, evidence['mutant_type'] + allele, strain, chemical, note, reference];
+    var experiment_category = evidence['experiment']['display_name'];
+    if('experiment_type_category' in evidence) {
+        experiment_category = evidence['experiment_type_category'];
+    }
+
+  	return [evidence['id'], evidence['bioentity']['id'], bioent, evidence['bioentity']['format_name'], biocon, experiment, experiment_category, evidence['mutant_type'] + allele, strain, chemical, note, reference];
 }
 
 function go_data_to_table(evidence, index) {
 	var bioent = create_link(evidence['bioentity']['display_name'], evidence['bioentity']['link']);
 	var biocon = create_link(evidence['bioconcept']['display_name'], evidence['bioconcept']['link']);
   	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+    if(evidence['reference']['pubmed_id'] != null) {
+        reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+    }
 
   	var with_entry = null;
 	var relationship_entry = null;
@@ -228,5 +251,5 @@ function go_data_to_table(evidence, index) {
         qualifier = '';
     }
 
-  	return [evidence['id'], evidence['bioentity']['id'], icon, bioent, evidence['bioentity']['format_name'], biocon, qualifier, evidence['bioconcept']['aspect'], evidence['method'], evidence_code, evidence['source'], evidence['date_created'], reference, relationship_entry];
+  	return [evidence['id'], evidence['bioentity']['id'], icon, bioent, evidence['bioentity']['format_name'], biocon, evidence['bioconcept']['go_id'], qualifier, evidence['bioconcept']['aspect'], evidence['method'], evidence_code, evidence['source'], evidence['date_created'], reference, relationship_entry];
 }

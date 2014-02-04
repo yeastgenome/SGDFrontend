@@ -2,7 +2,7 @@
 ================================================== -->
 <section id="{{table_type}}_go" data-magellan-destination="{{table_type}}_go">
 	<div class="page-header">
-		<{% if small %}h2{% else %}h1{% endif %}>{{table_name}}
+		<{% if small %}h2 class="subheader"{% else %}h1{% endif %}>{{table_name}}
             <span class="round secondary label">
                 <span id="{{table_type}}_go_header"></span>
                 <small id="{{table_type}}_go_header_type"></small>
@@ -29,12 +29,13 @@
             <table class="table table-striped table-bordered table-condensed" id="{{table_type}}_go_table" width="100%">
                 <thead>
                     <tr>
-                        <th>Evidence ID</th>
-                        <th>Analyze ID</th>
+                        <th hidden>Evidence ID</th>
+                        <th hidden>Analyze ID</th>
                         <th></th>
                         <th>Gene</th>
-                        <th>Gene Systematic Name</th>
+                        <th hidden>Gene Systematic Name</th>
                         <th>Gene Ontology Term</th>
+                        <th hidden>Gene Ontology Term ID</th>
                         <th>Qualifier</th>
                         <th>Aspect</th>
                         <th>Method</th>
@@ -42,7 +43,7 @@
                         <th>Source</th>
                         <th>Assigned On</th>
                         <th>Reference</th>
-                        <th>Annotation Extension</th>
+                        <th hidden>Annotation Extension</th>
                     </tr>
                 </thead>
             </table>

@@ -8,7 +8,7 @@
 		<p><span>{{summary_count}}</span> unique references.</p>
 
         {% if locus.aliases|length > 0 %}
-            <p><strong>Locus Aliases: </strong>
+            <p><strong>Aliases: </strong>
             {% for alias in locus.aliases %}
                 <span>{{ alias }}</span>{% if not loop.last %}, {% endif %}
             {% endfor %}

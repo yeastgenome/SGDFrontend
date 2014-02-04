@@ -9,6 +9,7 @@
 
     var download_table_link = "{{ download_table_link }}";
     var analyze_link = "{{ analyze_table_link }}";
+    var download_link = "{{ download_link }}";
 
     var interaction_download_filename = "{{ reference.display_name }}_interactions";
     var interaction_analyze_filename = "{{ reference.display_name }} interaction genes";
@@ -23,6 +24,7 @@
     var counts = {{counts|safe}};
 
     var locus_id = null;
+    var reference_id =  {{ reference.id }};
 </script>
 
 <title>{{ reference.display_name }}</title>
@@ -75,6 +77,12 @@
                     {% endfor %}
                 </ul>
 
+                <div class="button-bar">
+                    <ul class="button-group radius">
+                        <li><a id="download_citation" class="small button secondary">Download Citation</a></li>
+                    </ul>
+                </div>
+
                 <ul class="unstyled">
                     <li><strong>Authors:</strong>
                         {% for author in reference.authors %}
@@ -93,6 +101,7 @@
                     <li id="primary_list"><strong>Primary Literature For: </strong></li>
                     <li id="additional_list"><strong>Additional Literature For: </strong></li>
                     <li id="review_list"><strong>Review For: </strong></li>
+
                 </ul>
             </div>
         </section>
