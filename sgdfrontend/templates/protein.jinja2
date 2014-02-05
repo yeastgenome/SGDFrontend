@@ -7,6 +7,7 @@
 	var analyze_link = "{{analyze_table_link}}";
 
     var domains_table_filename = "{{ locus.display_name }}_domains";
+    var unique_domains_table_filename = "{{ locus.display_name }}_unique_domains";
 
 	var display_name = "{{ locus.display_name }}";
 	var locus_id = "{{ locus.id }}";
@@ -83,17 +84,24 @@
             <div class="page-header">
                 <h1>Domains and Classification <span id="domains_header" class="round secondary label"></span></h1>
 
-                <div id="domain_chart"></div>
-
+                <h2 class="subheader">All Domains</h2>
                 <!-- Includes domain_table into template -->
+                {% set table_type = "" %}
                 {% include "templates/domain_table.jinja2" %}
+
+                <h2 class="subheader">Domain Locations</h2>
+                <div id="domain_chart"></div>
 
                 <h2 class="subheader">Shared Domains</h2>
                 <div class="panel">
                     <div id="cy" name="cy" style="width:100%;height:500px"></div>
                 </div><!-- .panel -->
 
-                <h2 class="subheader">Unique Domains</h2>
+                <h2 class="subheader">Unique Domains <span id="unique_domains_header" class="round secondary label"></span></h2>
+                <!-- Includes domain_table into template -->
+                {% set table_type = "unique_" %}
+                {% include "templates/domain_table.jinja2" %}
+
             </div>
         </section>
 

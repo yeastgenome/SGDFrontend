@@ -3,7 +3,7 @@ google.load("visualization", "1", {packages:["corechart"]});
 $(document).ready(function() {
 
     $.getJSON(protein_domains_link, function(data) {
-        var domain_table = create_domain_table(data);
+        var domain_table = create_domain_table("domains_table", "domains_header", data);
         if(domain_table != null) {
             create_download_button("domains_table_download", domain_table, download_table_link, domains_table_filename);
             draw_domain_chart("domain_chart", data);
@@ -17,13 +17,18 @@ $(document).ready(function() {
 		else {
 			hide_section("network");
 		}
+
+        var unique_domain_table = create_domain_table("unique_domains_table", "unique_domains_header", data['unique_domains']);
+        if(unique_domain_table != null) {
+            create_download_button("unique_domains_table_download", unique_domain_table, download_table_link, unique_domains_table_filename);
+        }
 	});
 
     //Hack because footer overlaps - need to fix this.
 	add_footer_space("resources");
 });
 
-function create_domain_table(data) {
+function create_domain_table(div_id, header_id, data) {
     var domain_table = null;
     if(data != null && data.length > 0) {
 	    var datatable = [];
@@ -32,7 +37,7 @@ function create_domain_table(data) {
             datatable.push(domain_data_to_table(data[i]));
         }
 
-        $("#domains_header").html(data.length);
+        $("#" + header_id).html(data.length);
 
         set_up_range_sort();
 
@@ -42,7 +47,7 @@ function create_domain_table(data) {
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null]
         options["aaData"] = datatable;
 
-        domain_table = create_table("domains_table", options);
+        domain_table = create_table(div_id, options);
 	}
 	return domain_table;
 }
@@ -60,13 +65,16 @@ function draw_domain_chart(chart_id, data) {
     dataTable.addColumn({ type: 'number', id: 'End' });
 
     var data_array = [];
+    var domains = {};
+
     for (var i=0; i < data.length; i++) {
-        data_array.push([data[i]['domain']['display_name'], data[i]['domain']['display_name'], data[i]['start'], data[i]['end'], 'Testing 123']);
+        data_array.push([data[i]['domain']['display_name'], data[i]['domain']['display_name'], data[i]['start'], data[i]['end']]);
+        domains[data[i]['domain']['id']] = true;
     }
     dataTable.addRows(data_array);
 
     var options = {
-        'height': 47*data.length,
+        'height': 50*Object.keys(domains).length + 35,
         'timeline': {'showRowLabels': false,
                         'hAxis': {'position': 'none'}},
     };

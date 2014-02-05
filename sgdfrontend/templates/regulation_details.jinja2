@@ -80,6 +80,7 @@
             <div class="page-header">
                 <h1>Domains and Classification <span id="domains_header" class="round secondary label"></span></h1>
                 <!-- Includes domain_table into template -->
+                {% set table_type = "" %}
                 {% include "templates/domain_table.jinja2" %}
             </div>
         </section>
