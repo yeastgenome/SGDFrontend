@@ -341,6 +341,10 @@ class SGDFrontend(FrontendInterface):
         elif page == 'reference':
             if 'author' in params:
                 return HTTPFound('/author/' + params.values()[0].replace(' ', '_') + '/overview')
+            elif 'topic' in params:
+                topic = params.values()[0]
+                page = urllib.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?topic=' + topic + '&rm=multi_ref_result').read()
+                return Response(page)
             elif len(params) > 0:
                 return HTTPFound('/reference/' + params.values()[0].replace(' ', '_') + '/overview')
         else:
