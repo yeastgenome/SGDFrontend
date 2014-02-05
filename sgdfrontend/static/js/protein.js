@@ -3,53 +3,46 @@ google.load("visualization", "1", {packages:["corechart"]});
 $(document).ready(function() {
 
     $.getJSON(protein_domains_link, function(data) {
-        var domain_table = create_domain_table("domains_table", "domains_header", data);
-        if(domain_table != null) {
-            create_download_button("domains_table_download", domain_table, download_table_link, domains_table_filename);
-            draw_domain_chart("domain_chart", data);
-        }
+        var domain_table = create_domain_table("domains_table", "domains_header", "No known domains for " + display_name + ".", data);
+        create_download_button("domains_table_download", domain_table, download_table_link, domains_table_filename);
+        draw_domain_chart("domain_chart", data);
 	});
 
     $.getJSON(protein_domain_graph_link, function(data) {
   		if(data['nodes'].length > 1) {
-  			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
+  			var graph = create_cytoscape_vis("cy", layout, graph_style, "No unique domains for " + display_name + ".", data);
   		}
 		else {
 			hide_section("network");
 		}
 
         var unique_domain_table = create_domain_table("unique_domains_table", "unique_domains_header", data['unique_domains']);
-        if(unique_domain_table != null) {
-            create_download_button("unique_domains_table_download", unique_domain_table, download_table_link, unique_domains_table_filename);
-        }
+        create_download_button("unique_domains_table_download", unique_domain_table, download_table_link, unique_domains_table_filename);
 	});
 
     //Hack because footer overlaps - need to fix this.
 	add_footer_space("resources");
 });
 
-function create_domain_table(div_id, header_id, data) {
-    var domain_table = null;
-    if(data != null && data.length > 0) {
-	    var datatable = [];
+function create_domain_table(div_id, header_id, message, data) {
+	var datatable = [];
 
-        for (var i=0; i < data.length; i++) {
-            datatable.push(domain_data_to_table(data[i]));
-        }
+    for (var i=0; i < data.length; i++) {
+        datatable.push(domain_data_to_table(data[i]));
+    }
 
-        $("#" + header_id).html(data.length);
+    $("#" + header_id).html(data.length);
 
-        set_up_range_sort();
+    set_up_range_sort();
 
-        var options = {};
-        options["bPaginate"] = false;
-        options["aaSorting"] = [[2, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null]
-        options["aaData"] = datatable;
+    var options = {};
+    options["bPaginate"] = false;
+    options["aaSorting"] = [[2, "asc"]];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null]
+    options["aaData"] = datatable;
+    options["oLanguage"] = {"sEmptyTable": message};
 
-        domain_table = create_table(div_id, options);
-	}
-	return domain_table;
+    return create_table(div_id, options);
 }
 
 function draw_domain_chart(chart_id, data) {

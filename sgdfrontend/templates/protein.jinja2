@@ -92,12 +92,12 @@
                 <h2 class="subheader">Domain Locations</h2>
                 <div id="domain_chart"></div>
 
-                <h2 class="subheader">Shared Domains</h2>
+                <h2 id="network" class="subheader">Shared Domains</h2>
                 <div class="panel">
                     <div id="cy" name="cy" style="width:100%;height:500px"></div>
                 </div><!-- .panel -->
 
-                <h2 class="subheader">Unique Domains <span id="unique_domains_header" class="round secondary label"></span></h2>
+                <h2 id="unique_domains" class="subheader">Unique Domains <span id="unique_domains_header" class="round secondary label"></span></h2>
                 <!-- Includes domain_table into template -->
                 {% set table_type = "unique_" %}
                 {% include "templates/domain_table.jinja2" %}
