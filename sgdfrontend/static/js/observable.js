@@ -1,6 +1,8 @@
 
 $(document).ready(function() {
 
+    create_qualifiers(overview_data);
+
 	$.getJSON(phenotype_details_link, function(data) {
         var phenotype_table = create_phenotype_table(data);
         create_analyze_button("phenotype_table_analyze", phenotype_table, analyze_link, analyze_filename, true);
@@ -45,6 +47,28 @@ $(document).ready(function() {
 	add_footer_space("phenotype");
 
 });
+
+function create_qualifiers(overview_data) {
+    var qualifiers = $("#qualifiers");
+
+    if(overview_data['qualifiers'].length > 0) {
+        var label = document.createElement('strong');
+        label.innerHTML = 'Qualifiers: ';
+        qualifiers.append(label);
+
+        for(var i=0; i < overview_data['qualifiers'].length; i++) {
+            var qualifier = document.createElement('a');
+            qualifier.innerHTML = overview_data['qualifiers'][i]['qualifier'];
+            qualifier.href = overview_data['qualifiers'][i]['link'];
+            qualifiers.append(qualifier);
+            if(i != overview_data['qualifiers'].length - 1) {
+                var comma = document.createElement('span');
+                comma.innerHTML = ', ';
+                qualifiers.append(comma);
+            }
+        }
+    }
+}
 
 function create_phenotype_table(data) {
     if("Error" in data) {
