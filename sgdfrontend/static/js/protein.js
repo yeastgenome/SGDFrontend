@@ -10,13 +10,13 @@ $(document).ready(function() {
 
     $.getJSON(protein_domain_graph_link, function(data) {
   		if(data['nodes'].length > 1) {
-  			var graph = create_cytoscape_vis("cy", layout, graph_style, "No unique domains for " + display_name + ".", data);
+  			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
   		}
 		else {
 			hide_section("network");
 		}
 
-        var unique_domain_table = create_domain_table("unique_domains_table", "unique_domains_header", data['unique_domains']);
+        var unique_domain_table = create_domain_table("unique_domains_table", "unique_domains_header", "No unique domains for " + display_name + ".", data['unique_domains']);
         create_download_button("unique_domains_table_download", unique_domain_table, download_table_link, unique_domains_table_filename);
 	});
 
