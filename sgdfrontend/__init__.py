@@ -372,8 +372,14 @@ class SGDFrontend(FrontendInterface):
                 cutoff = 2;
 
         table_header = description + '\n\n' + '\t'.join(header_info[cutoff:])
-        
-        response.text = table_header + '\n' + '\n'.join(['\t'.join([clean_cell(str(cell)) for cell in row[cutoff:]]) for row in data])
+
+        for row in data:
+            try:
+                [clean_cell(cell) for cell in row[cutoff:]]
+            except:
+                print row
+
+        response.text = table_header + '\n' + '\n'.join(['\t'.join([clean_cell(cell) for cell in row[cutoff:]]) for row in data])
 
         exclude = set([x for x in string.punctuation if x != ' ' and x != '_'])
         display_name = ''.join(ch for ch in display_name if ch not in exclude).replace(' ', '_')
