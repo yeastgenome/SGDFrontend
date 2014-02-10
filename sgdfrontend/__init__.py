@@ -337,7 +337,10 @@ class SGDFrontend(FrontendInterface):
                 return HTTPFound('/locus/' + params.values()[0] + '/go')
         elif page == 'go_term':
             if len(params) > 0:
-                return HTTPFound('/go/GO:' + str(int(params.values()[0])).zfill(7) + '/overview')
+                if params.values()[0].startswith('GO:'):
+                    return HTTPFound('/go/' + params.values()[0] + '/overview')
+                else:
+                    return HTTPFound('/go/GO:' + str(int(params.values()[0])).zfill(7) + '/overview')
         elif page == 'reference':
             if 'author' in params:
                 return HTTPFound('/author/' + params.values()[0].replace(' ', '_') + '/overview')
