@@ -122,16 +122,22 @@ def tab_link(backend_start, bioent):
     return backend_start + '/locus/' + bioent + '/tabs'
 
 #Chemical Links
-
-def chemical_ontology_link():
-    return '/chemical/chebi_ontology/overview'
-
 def chemical_details_chem_link(backend_start, chemical):
     return backend_start + '/chemical/' + str(chemical) + '/locus_details?callback=?'
 def chemical_link(backend_start, chemical):
     return backend_start + '/chemical/' + chemical + '/overview'
 def chemical_ontology_graph_link(backend_start, chemical):
     return backend_start + '/chemical/' + chemical + '/ontology_graph?callback=?'
+
+#Complex Links
+def complex_link(backend_start, complex):
+    return backend_start + '/complex/' + complex + '/overview'
+def complex_details_link(backend_start, complex):
+    return backend_start + '/complex/' + str(complex) + '/locus_details?callback=?'
+def complex_graph_link(backend_start, complex):
+    return backend_start + '/complex/' + complex + '/graph?callback=?'
+def complex_genes_link(backend_start, complex):
+    return backend_start + '/complex/' + complex + '/genes?callback=?'
 
 #List links
 def bioent_list_link(backend_start):

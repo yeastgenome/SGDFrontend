@@ -30,6 +30,13 @@ def get_chemical(backend_url, chem_repr):
         raise Exception('Chemical not found.')
     return chem
 
+def get_complex(backend_url, complex_repr):
+    print link_maker.complex_link(backend_url, complex_repr)
+    comp = get_json(link_maker.complex_link(backend_url, complex_repr))
+    if comp is None:
+        raise Exception('Complex not found.')
+    return comp
+
 def get_reference(backend_url, ref_repr):
     ref = get_json(link_maker.reference_link(backend_url, ref_repr))
     if ref is None:

@@ -172,6 +172,13 @@ def prep_views(chosen_frontend, config):
                                         chemical_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].lower())),
                      renderer=chosen_frontend.get_renderer('chemical'))
 
+    config.add_route('complex',
+                     '/complex/{identifier}/overview',
+                     view=lambda request: chosen_frontend.response_wrapper('complex', request)(
+                                getattr(chosen_frontend, 'complex')(
+                                        complex_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].lower())),
+                     renderer=chosen_frontend.get_renderer('complex'))
+
 
     
 def prepare_frontend(frontend_type, **configs):

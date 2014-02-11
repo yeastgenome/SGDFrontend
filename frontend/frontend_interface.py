@@ -73,6 +73,10 @@ class FrontendInterface:
         return None
 
     @abstractmethod
+    def complex(self, complex_repr):
+        return None
+
+    @abstractmethod
     def reference(self, reference_repr):
         return None
 
