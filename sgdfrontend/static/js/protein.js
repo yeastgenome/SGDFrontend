@@ -54,14 +54,18 @@ function draw_domain_chart(chart_id, data) {
 
     dataTable.addColumn({ type: 'string', id: 'Domain' });
     dataTable.addColumn({ type: 'string', id: 'Name' });
-    dataTable.addColumn({ type: 'number', id: 'Start' });
-    dataTable.addColumn({ type: 'number', id: 'End' });
+    dataTable.addColumn({ type: 'date', id: 'Start' });
+    dataTable.addColumn({ type: 'date', id: 'End' });
 
     var data_array = [];
     var domains = {};
 
     for (var i=0; i < data.length; i++) {
-        data_array.push([data[i]['domain']['display_name'], data[i]['domain']['display_name'], data[i]['start'], data[i]['end']]);
+        var start = new Date()
+        start.setFullYear(data[i]['start'])
+        var end = new Date()
+        end.setFullYear(data[i]['end'])
+        data_array.push([data[i]['domain']['display_name'], data[i]['domain']['display_name'], start, end]);
         domains[data[i]['domain']['id']] = true;
     }
     dataTable.addRows(data_array);
@@ -69,7 +73,9 @@ function draw_domain_chart(chart_id, data) {
     var options = {
         'height': 50*Object.keys(domains).length + 35,
         'timeline': {'showRowLabels': false,
-                        'hAxis': {'position': 'none'}},
+                        'hAxis': {'position': 'none'},
+                        'enableInteractivity': false
+        },
     };
     chart.draw(dataTable, options);
 }

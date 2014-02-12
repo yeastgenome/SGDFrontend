@@ -12,6 +12,7 @@ $(document).ready(function() {
 
     $.getJSON(complex_graph_link, function(data) {
 	    var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, false);
+        //var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);
     });
 
     //Hack because footer overlaps - need to fix this.
@@ -75,6 +76,11 @@ function create_gene_table(data) {
 	return gene_table;
 }
 
+function slider_filter(new_cutoff) {
+    var filter = "node[gene_count >= " + new_cutoff + "], edge";
+    return filter;
+}
+
 var graph_style = cytoscape.stylesheet()
 	.selector('node')
 	.css({
@@ -92,6 +98,13 @@ var graph_style = cytoscape.stylesheet()
 	.selector('edge')
 	.css({
 		'width': 2
+	})
+    .selector("node[type='BIOCONCEPT']")
+	.css({
+		'shape': 'rectangle',
+		'text-outline-color': '#fff',
+		'color': '#888',
+		'background-color': "#7FBF7B",
 	});
 
 var layout = {
