@@ -348,6 +348,9 @@ class SGDFrontend(FrontendInterface):
                 topic = params.values()[0]
                 page = urllib.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?topic=' + topic + '&rm=multi_ref_result').read()
                 return Response(page)
+            elif 'rm' in params and 'date' in params and 'page' in params:
+                page = urllib.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?rm=' + params['rm'] + '&data=' + params['date'] + '&page=' + params['page']).read()
+                return Response(page)
             elif len(params) > 0:
                 return HTTPFound('/reference/' + params.values()[0].replace(' ', '_') + '/overview')
         else:
