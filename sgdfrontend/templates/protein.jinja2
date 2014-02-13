@@ -42,13 +42,47 @@
         //Set up navbar
             add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Protein');
             add_navbar_element('Summary', 'summary');
-            add_navbar_element('Sequence', 'sequence');
             add_navbar_element('Domains and Classification', 'domains');
+            add_navbar_element('Experimental Data', 'experiment');
+            add_navbar_element('Sequence', 'sequence');
             add_navbar_element('Resources', 'resources');
         </script>
 
         <!-- Includes protein_overview.html into template -->
         {% include "templates/protein_overview.jinja2" %}
+
+<!-- Domains
+================================================== -->
+        <section id="domains" data-magellan-destination="domains">
+            <div class="page-header">
+                <h1>Domains and Classification <span id="domains_header" class="round secondary label"></span></h1>
+
+                <h2 class="subheader">All Domains</h2>
+                <!-- Includes domain_table into template -->
+                {% set table_type = "" %}
+                {% include "templates/domain_table.jinja2" %}
+
+                <h2 class="subheader">Domain Locations</h2>
+                <div id="domain_chart"></div>
+
+                <h2 id="network" class="subheader">Shared Domains</h2>
+                <div class="panel">
+                    <div id="cy" name="cy" style="width:100%;height:500px"></div>
+                </div><!-- .panel -->
+
+            </div>
+        </section>
+
+        <!-- Experimental Data
+================================================== -->
+        <section id="experiment" data-magellan-destination="experiment">
+            <div class="page-header">
+                <h1>Experimental Data</h1>
+                <ul class="unstyled">
+                    <li><strong>Molecules/cell: </strong></li>
+                </ul>
+            </div>
+        </section>
 
 <!-- Sequence
 ================================================== -->
@@ -74,18 +108,16 @@
 351  TFQQMWISKQ EYDESGPSIV HHKCF*</pre>
                 </blockquote>
 
-                <h2 class="subheader">Physico-chemical Properties</h2>
-
-                <div class="row">
-                    <div class="large-6 columns" id="amino_acid_composition"></div>
-                    <div class="large-6 columns" id="atomic_composition"></div>
-                </div>
+                <h2 class="subheader">Sequence-Based Physico-chemical Properties</h2>
 
                 <h3>Physical Details</h3>
                 <ul class="unstyled">
                     <li>Length (a.a): </li>
                     <li>Molecular Weight (Da): </li>
                     <li>Isoelectric Point (pl): </li>
+                    <li>Formula: </li>
+                    <li>Aliphatic Index: </li>
+                    <li>Instability Index: </li>
                 </ul>
                 <h3>Coding Region Translation Calculations</h3>
                 <ul class="unstyled">
@@ -95,52 +127,6 @@
                     <li>Hydropathicity of Protein: </li>
                     <li>Aromaticity Score: </li>
                 </ul>
-                <h3>Estimated Half-Life</h3>
-                <ul class="unstyled">
-                    <li>Escherichia coli (in vivo): </li>
-                    <li>mammalian reticulocytes (in vitro): </li>
-                    <li>yeast (in vivo): </li>
-                </ul>
-                <h3>Extinction Coefficients at 280nm</h3>
-                <ul class="unstyled">
-                    <li>assuming ALL Cys residues appear as half cystines: </li>
-                    <li>assuming NO Cys residues appear as half cystines: </li>
-                    <li>assuming all Cys residues are reduced: </li>
-                    <li>assuming all pairs of Cys residues form cystines: </li>
-                </ul>
-                <h3>Misc</h3>
-                <ul class="unstyled">
-                    <li>Formula: </li>
-                    <li>Aliphatic Index: </li>
-                    <li>Instability Index: </li>
-                </ul>
-
-                <h2 class="subheader">Experimental Data</h2>
-                <ul class="unstyled">
-                    <li><strong>Molecules/cell: </strong></li>
-                </ul>
-            </div>
-        </section>
-
-<!-- Domains
-================================================== -->
-        <section id="domains" data-magellan-destination="domains">
-            <div class="page-header">
-                <h1>Domains and Classification <span id="domains_header" class="round secondary label"></span></h1>
-
-                <h2 class="subheader">All Domains</h2>
-                <!-- Includes domain_table into template -->
-                {% set table_type = "" %}
-                {% include "templates/domain_table.jinja2" %}
-
-                <h2 class="subheader">Domain Locations</h2>
-                <div id="domain_chart"></div>
-
-                <h2 id="network" class="subheader">Shared Domains</h2>
-                <div class="panel">
-                    <div id="cy" name="cy" style="width:100%;height:500px"></div>
-                </div><!-- .panel -->
-
             </div>
         </section>
 

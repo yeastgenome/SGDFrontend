@@ -10,6 +10,7 @@ $(document).ready(function() {
     });
 
     if(target_count > 0) {
+        $("#domains_table_analyze").hide();
 		$.getJSON(protein_domains_link, function(data) {
             var domain_table = create_domain_table(data);
             if(domain_table != null) {
@@ -89,7 +90,7 @@ function create_domain_table(data) {
         var options = {};
         options["bPaginate"] = false;
         options["aaSorting"] = [[2, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null]
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null]
         options["aaData"] = datatable;
 
         domain_table = create_table("domains_table", options);
