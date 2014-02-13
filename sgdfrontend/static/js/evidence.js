@@ -1,5 +1,5 @@
 function domain_data_to_table(evidence) {
-    var bioent = create_link(evidence['protein']['display_name'], evidence['protein']['link'], false);
+    var bioent = create_link(evidence['protein']['locus']['display_name'], evidence['protein']['locus']['link'], false);
     var domain;
     if(evidence['domain']['link'] != null) {
         domain = create_link(evidence['domain']['display_name'], evidence['domain']['link'], true);
@@ -10,8 +10,12 @@ function domain_data_to_table(evidence) {
 
     var coord_range = evidence['start'] + '-' + evidence['end'];
 
-    var description = evidence['domain_description'];
-    return [evidence['id'], bioent, coord_range, domain, description, evidence['source']];
+    var description = '';
+    if (evidence['domain']['description'] != null) {
+        description = evidence['domain']['description'];
+    }
+
+    return [evidence['id'], evidence['protein']['locus']['id'], bioent, evidence['protein']['locus']['format_name'], coord_range, domain, description, evidence['source']];
 }
 
 function regulation_data_to_table(evidence, is_regulator) {

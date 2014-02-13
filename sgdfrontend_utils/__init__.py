@@ -30,6 +30,12 @@ def get_chemical(backend_url, chem_repr):
         raise Exception('Chemical not found.')
     return chem
 
+def get_domain(backend_url, dom_repr):
+    dom = get_json(link_maker.domain_link(backend_url, dom_repr))
+    if dom is None:
+        raise Exception('Domain not found.')
+    return dom
+
 def get_complex(backend_url, complex_repr):
     print link_maker.complex_link(backend_url, complex_repr)
     comp = get_json(link_maker.complex_link(backend_url, complex_repr))

@@ -179,6 +179,13 @@ def prep_views(chosen_frontend, config):
                                         complex_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].lower())),
                      renderer=chosen_frontend.get_renderer('complex'))
 
+    config.add_route('domain',
+                     '/domain/{identifier}/overview',
+                     view=lambda request: chosen_frontend.response_wrapper('domain', request)(
+                                getattr(chosen_frontend, 'domain')(
+                                        domain_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].lower())),
+                     renderer=chosen_frontend.get_renderer('domain'))
+
 
     
 def prepare_frontend(frontend_type, **configs):

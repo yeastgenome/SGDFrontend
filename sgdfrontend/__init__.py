@@ -1,7 +1,7 @@
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
 import string
-from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical, get_reference, get_author, get_complex
+from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical, get_reference, get_author, get_complex, get_domain
 from sgdfrontend_utils import link_maker
 from pyramid.response import Response
 from frontend.frontend_interface import FrontendInterface
@@ -263,6 +263,22 @@ class SGDFrontend(FrontendInterface):
                     'download_table_link': link_maker.download_table_link(),
                     'analyze_table_link': link_maker.analyze_link(),
                     'chemical_details_link': link_maker.chemical_details_chem_link(self.backend_url, chemical_id),
+
+                    }
+        return page
+
+    def domain(self, domain_repr):
+        domain = get_domain(self.backend_url, domain_repr)
+        domain_id = str(domain['id'])
+
+        page = {
+                    #Basic info
+                    'domain': domain,
+
+                    #Links
+                    'download_table_link': link_maker.download_table_link(),
+                    'analyze_table_link': link_maker.analyze_link(),
+                    'domain_details_link': link_maker.protein_domain_details_domain_link(self.backend_url, domain_id),
 
                     }
         return page

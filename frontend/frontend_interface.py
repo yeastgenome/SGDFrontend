@@ -73,6 +73,10 @@ class FrontendInterface:
         return None
 
     @abstractmethod
+    def domain(self, domain_repr):
+        return None
+
+    @abstractmethod
     def complex(self, complex_repr):
         return None
 
