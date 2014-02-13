@@ -12,7 +12,7 @@ $(document).ready(function() {
 
     $.getJSON(complex_graph_link, function(data) {
 	    var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, false);
-        //var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);
+        var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);
     });
 
     //Hack because footer overlaps - need to fix this.
@@ -98,6 +98,12 @@ var graph_style = cytoscape.stylesheet()
 	.selector('edge')
 	.css({
 		'width': 2
+	})
+    .selector("node[sub_type='FOCUS']")
+	.css({
+		'background-color': "#fade71",
+		'text-outline-color': '#fff',
+		'color': '#888',
 	})
     .selector("node[type='BIOCONCEPT']")
 	.css({
