@@ -9,7 +9,7 @@
 			<li id="interaction_tab" {% if not tabs['interaction_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/interaction"><span>Interactions</span></a></li>
 			<li id="expression_tab" {% if not tabs['expression_tab'] %} style="display:none" {% endif %}><a href="/cgi-bin/expression/expressionConnection.pl?type=summary&locus={{ locus.sgdid }}"><span>Expression</span></a></li>
 			<li id="regulation_tab" {% if not tabs['regulation_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/regulation"><span>Regulation</span></a></li>
-			<li id="protein_tab" {% if not tabs['protein_tab'] %} style="display:none" {% endif %}><a href="/cgi-bin/protein/proteinPage.pl?locus={{ locus.sgdid }}"><span>Protein</span></a></li>
+			<li id="protein_tab" {% if not tabs['protein_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/protein"><span>Protein</span></a></li>
 			<li id="wiki_tab" {% if not tabs['wiki_tab'] %} style="display:none" {% endif %}><a href="/cgi-bin/locusWiki.pl?locus={{ locus.sgdid }}"><span>Wiki</span></a></li>
 		</ul>
 	</nav>

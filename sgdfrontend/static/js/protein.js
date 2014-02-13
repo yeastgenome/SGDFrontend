@@ -15,14 +15,75 @@ $(document).ready(function() {
 		else {
 			hide_section("network");
 		}
-
-        var unique_domain_table = create_domain_table("unique_domains_table", "unique_domains_header", "No unique domains for " + display_name + ".", data['unique_domains']);
-        create_download_button("unique_domains_table_download", unique_domain_table, download_table_link, unique_domains_table_filename);
 	});
+
+    draw_chart()
 
     //Hack because footer overlaps - need to fix this.
 	add_footer_space("resources");
 });
+
+function draw_chart() {
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Amino Acid', 'Count'],
+          ['Ala',   26],
+          ['Arg',   18],
+          ['Asn',   9],
+          ['Asp',   20],
+          ['Cys',   4],
+          ['Gln',   14],
+          ['Glu',   27],
+          ['Gly',   29],
+          ['His',   10],
+          ['Ile',   30],
+          ['Leu',   25],
+          ['Lys',   18],
+          ['Met',   16],
+          ['Phe',   14],
+          ['Pro',   19],
+          ['Ser',   31],
+          ['Thr',   21],
+          ['Trp',   4],
+          ['Tyr',   14],
+          ['Val',   26],
+        ]);
+
+        var options = {
+          title: 'Amino Acid Composition',
+          legend: 'none',
+          pieSliceText: 'label',
+          width:500,
+          height:500
+
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('amino_acid_composition'));
+        chart.draw(data, options);
+
+        var data = google.visualization.arrayToDataTable([
+          ['Atom', 'Count'],
+          ['Carbon',     1853],
+          ['Hydrogen',   2906],
+          ['Nitrogen',   494],
+          ['Oxygen',     559],
+          ['Sulfur',     20]
+        ]);
+
+        var options = {
+          title: 'Atomic Composition',
+          legend: 'none',
+          pieSliceText: 'label',
+          width:500,
+          height:500
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('atomic_composition'));
+        chart.draw(data, options);
+    }
+}
 
 function create_domain_table(div_id, header_id, message, data) {
 	var datatable = [];

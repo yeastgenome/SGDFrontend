@@ -42,39 +42,83 @@
         //Set up navbar
             add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Protein');
             add_navbar_element('Summary', 'summary');
-            add_navbar_element('Physical Details', 'physical_details');
             add_navbar_element('Sequence', 'sequence');
             add_navbar_element('Domains and Classification', 'domains');
-            add_navbar_element('Physico-chemical Properties', 'physico_chemical_properties');
             add_navbar_element('Resources', 'resources');
         </script>
 
         <!-- Includes protein_overview.html into template -->
         {% include "templates/protein_overview.jinja2" %}
 
-<!-- Physical Details
-================================================== -->
-        <section id="physical_details" data-magellan-destination="physical_details">
-            <div class="page-header">
-                <h1>Physical Details</h1>
-                <h3>Experimental Data</h3>
-                    <ul class="unstyled">
-                        <li><strong>Molecules/cell: </strong></li>
-                    </ul>
-                <h3>Predicted Sequence</h3>
-                    <ul class="unstyled">
-                        <li><strong>Length (a.a): </strong></li>
-                        <li><strong>Molecular Weight (Da): </strong></li>
-                        <li><strong>Isoelectric Point (pl): </strong></li>
-                    </ul>
-            </div>
-        </section>
-
 <!-- Sequence
 ================================================== -->
         <section id="sequence" data-magellan-destination="sequence">
             <div class="page-header">
                 <h1>Sequence</h1>
+                <label><h3>Strain</h3>
+                    <select>
+                        <option value="s288c">S288C</option>
+                        <option value="w303">W303</option>
+                        <option value="cenpk">CEN.PK</option>
+                    </select>
+                </label>
+
+                <blockquote>
+<pre>  1  MDSEVAALVI DNGSGMCKAG FAGDDAPRAV FPSIVGRPRH QGIMVGMGQK
+ 51  DSYVGDEAQS KRGILTLRYP IEHGIVTNWD DMEKIWHHTF YNELRVAPEE
+101  HPVLLTEAPM NPKSNREKMT QIMFETFNVP AFYVSIQAVL SLYSSGRTTG
+151  IVLDSGDGVT HVVPIYAGFS LPHAILRIDL AGRDLTDYLM KILSERGYSF
+201  STTAEREIVR DIKEKLCYVA LDFEQEMQTA AQSSSIEKSY ELPDGQVITI
+251  GNERFRAPEA LFHPSVLGLE SAGIDQTTYN SIMKCDVDVR KELYGNIVMS
+301  GGTTMFPGIA ERMQKEITAL APSSMKVKII APPERKYSVW IGGSILASLT
+351  TFQQMWISKQ EYDESGPSIV HHKCF*</pre>
+                </blockquote>
+
+                <h2 class="subheader">Physico-chemical Properties</h2>
+
+                <div class="row">
+                    <div class="large-6 columns" id="amino_acid_composition"></div>
+                    <div class="large-6 columns" id="atomic_composition"></div>
+                </div>
+
+                <h3>Physical Details</h3>
+                <ul class="unstyled">
+                    <li>Length (a.a): </li>
+                    <li>Molecular Weight (Da): </li>
+                    <li>Isoelectric Point (pl): </li>
+                </ul>
+                <h3>Coding Region Translation Calculations</h3>
+                <ul class="unstyled">
+                    <li>Codon Bias: </li>
+                    <li>Codon Adaptation Index: </li>
+                    <li>Frequence of Optimal Codons: </li>
+                    <li>Hydropathicity of Protein: </li>
+                    <li>Aromaticity Score: </li>
+                </ul>
+                <h3>Estimated Half-Life</h3>
+                <ul class="unstyled">
+                    <li>Escherichia coli (in vivo): </li>
+                    <li>mammalian reticulocytes (in vitro): </li>
+                    <li>yeast (in vivo): </li>
+                </ul>
+                <h3>Extinction Coefficients at 280nm</h3>
+                <ul class="unstyled">
+                    <li>assuming ALL Cys residues appear as half cystines: </li>
+                    <li>assuming NO Cys residues appear as half cystines: </li>
+                    <li>assuming all Cys residues are reduced: </li>
+                    <li>assuming all pairs of Cys residues form cystines: </li>
+                </ul>
+                <h3>Misc</h3>
+                <ul class="unstyled">
+                    <li>Formula: </li>
+                    <li>Aliphatic Index: </li>
+                    <li>Instability Index: </li>
+                </ul>
+
+                <h2 class="subheader">Experimental Data</h2>
+                <ul class="unstyled">
+                    <li><strong>Molecules/cell: </strong></li>
+                </ul>
             </div>
         </section>
 
@@ -97,24 +141,6 @@
                     <div id="cy" name="cy" style="width:100%;height:500px"></div>
                 </div><!-- .panel -->
 
-                <h2 id="unique_domains" class="subheader">Unique Domains <span id="unique_domains_header" class="round secondary label"></span></h2>
-                <!-- Includes domain_table into template -->
-                {% set table_type = "unique_" %}
-                {% include "templates/domain_table.jinja2" %}
-
-            </div>
-        </section>
-
-<!-- Physico-Chemical Properties
-================================================== -->
-        <section id="physico_chemical_properties" data-magellan-destination="physico_chemical_properties">
-            <div class="page-header">
-                <h1>Physico-chemical Properties</h1>
-                <div id="aa_composition">Amino Acid Composition</div>
-                <div id="atomic_composition">Atomic Composition</div>
-                <strong>Formula: </strong>
-                <div>Estimated half-life</div>
-                <div>Extinction coefficients at 280nm</div>
             </div>
         </section>
 
