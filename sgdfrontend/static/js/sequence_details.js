@@ -22,12 +22,12 @@ var colors = ["#2E2EFE", "#FA5858", "#088A08", "#F3F781", "#9F81F7"];
 var color_index = 0;
 
 function set_up_strain(data) {
-    var strain_name = data['strain']['display_name'];
+    var strain_name = data['strain']['format_name'];
     var strains = $("#strains");
 
     var header = document.createElement('h2');
     header.className = "subheader";
-    header.innerHTML = strain_name;
+    header.innerHTML = data['strain']['display_name'];
     if(data['strain']['description'] != null) {
         header.innerHTML = header.innerHTML + ' <small>(' + data['strain']['description'] + ')</small>'
     }
@@ -211,9 +211,8 @@ function draw_label_chart(chart_id, data) {
     var tickmarks = tickmark_holder.childNodes;
     min_tick = Math.floor(1.0*min_tick/1000)*1000;
     for (var i=0; i < tickmarks.length; i++) {
-        tickmarks[i].innerHTML = min_tick + 1000*i;
+       tickmarks[i].innerHTML = min_tick + 1000*i;
     }
-
 
     // Listen for the 'select' event, and call my function selectHandler() when
     // the user selects something on the chart.
