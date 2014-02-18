@@ -107,6 +107,9 @@ function draw_label_chart(chart_id, data) {
 
     var has_five_prime = false;
     var has_three_prime = false;
+    var min_tick = data['start'];
+    var max_tick = data['end'];
+
     if(data['strand'] == "+") {
         has_five_prime = true;
     }
@@ -152,6 +155,13 @@ function draw_label_chart(chart_id, data) {
             }
             has_three_prime = true;
         }
+
+        if(start < min_tick) {
+            min_tick = start;
+        }
+        if(end > max_tick) {
+            max_tick = end;
+        }
     }
 
     if(!has_five_prime) {
@@ -179,11 +189,33 @@ function draw_label_chart(chart_id, data) {
 
     var options = {
         'height': 135,
-        'timeline': {'hAxis': {'position': 'none'},
-                        'enableInteractivity': false,
-                    },
-        'colors': myColors
-    };
+        'timeline': {'hAxis': {'position': 'none'}},
+        'colors': myColors,
+        //'enableInteractivity': false,
+        'tooltip': {'isHTML': true}
+    }
+
+
 
     chart.draw(dataTable, options);
+
+    function tooltipHandler(e) {
+        var datarow = data_array[e.row];
+        var spans = $(".google-visualization-tooltip-action > span");
+        spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
+        spans[2].innerHTML = 'Length:';
+        spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
+    }
+
+    var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
+    var tickmarks = tickmark_holder.childNodes;
+    min_tick = Math.floor(1.0*min_tick/1000)*1000;
+    for (var i=0; i < tickmarks.length; i++) {
+        tickmarks[i].innerHTML = min_tick + 1000*i;
+    }
+
+
+    // Listen for the 'select' event, and call my function selectHandler() when
+    // the user selects something on the chart.
+    google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
 }

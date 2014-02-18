@@ -36,7 +36,7 @@ function create_domain_table(div_id, header_id, message, data) {
     var options = {};
     options["bPaginate"] = false;
     options["aaSorting"] = [[2, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null]
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": message};
 
@@ -52,19 +52,24 @@ function draw_domain_chart(chart_id, data) {
 
     dataTable.addColumn({ type: 'string', id: 'Domain' });
     dataTable.addColumn({ type: 'string', id: 'Name' });
-    dataTable.addColumn({ type: 'date', id: 'Start' });
-    dataTable.addColumn({ type: 'date', id: 'End' });
+    dataTable.addColumn({ type: 'number', id: 'Start' });
+    dataTable.addColumn({ type: 'number', id: 'End' });
 
     var data_array = [];
+    var descriptions = [];
     var domains = {};
 
+    var max_tick = 0;
+
     for (var i=0; i < data.length; i++) {
-        var start = new Date()
-        start.setFullYear(data[i]['start'])
-        var end = new Date()
-        end.setFullYear(data[i]['end'])
+        var start = data[i]['start']*10;
+        var end = data[i]['end']*10;
         data_array.push([data[i]['domain']['display_name'], data[i]['domain']['display_name'], start, end]);
+        descriptions.push(data[i]['domain']['description']);
         domains[data[i]['domain']['id']] = true;
+        if(end > max_tick) {
+            max_tick = end;
+        }
     }
     dataTable.addRows(data_array);
 
@@ -72,10 +77,33 @@ function draw_domain_chart(chart_id, data) {
         'height': 50*Object.keys(domains).length + 35,
         'timeline': {'showRowLabels': false,
                         'hAxis': {'position': 'none'},
-                        'enableInteractivity': false
-        },
+        }
     };
     chart.draw(dataTable, options);
+
+    function tooltipHandler(e) {
+        var datarow = data_array[e.row];
+        var spans = $(".google-visualization-tooltip-action > span");
+        spans[0].innerHTML = 'Relative Coordinates:'
+        spans[1].innerHTML = ' ' + datarow[2]/10 + '-' + datarow[3]/10;
+        spans[2].innerHTML = 'Description: ';
+        if(descriptions[e.row] != null) {
+            spans[3].innerHTML = '<span>' + descriptions[e.row] + '</span>';
+        }
+        else {
+            spans[3].innerHTML = 'Not available.';
+        }
+    }
+
+    var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
+    var tickmarks = tickmark_holder.childNodes;
+    for (var i=0; i < tickmarks.length; i++) {
+        tickmarks[i].innerHTML = 100*i;
+    }
+
+    // Listen for the 'select' event, and call my function selectHandler() when
+    // the user selects something on the chart.
+    google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
 }
 
 var graph_style = cytoscape.stylesheet()
