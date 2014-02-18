@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+
+<script>
+	var sequence_details_link = "{{sequence_details_link}}";
+	var download_table_link = "{{download_table_link}}";
+	var analyze_link = "{{analyze_table_link}}";
+
+	var display_name = "{{ locus.display_name }}";
+	var locus_id = "{{ locus.id }}";
+
+</script>
+
+<title>{{ locus.display_name }} Sequence</title>
+
+{% extends "templates/global_layout.jinja2" %}
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Sequence</h2>
+</div>
+
+<!-- Tabs
+================================================== -->
+<!-- Includes tabs.html into template -->
+{% include "templates/tabs.jinja2" %}
+<script>document.getElementById('sequence_tab').id = 'current';</script>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+	
+    <!-- Includes navbar.html into template -->
+    {% include "templates/navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+        //Set up navbar
+            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Sequence');
+            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Sequence', 'sequence');
+            add_navbar_element('Resources', 'resources');
+        </script>
+
+        <section id="summary" data-magellan-destination="summary">
+            <div class="page-header">
+                <h1>Summary</h1>
+            </div>
+        </section>
+
+        <!-- Sequence
+================================================== -->
+        <section id="sequence" data-magellan-destination="sequence">
+            <div class="page-header">
+                <h1>Sequence</h1>
+                <div id="strains"></div>
+            </div>
+        </section>
+
+        <!-- Resources
+================================================== -->
+        <section id="resources" data-magellan-destination="resources">
+            <div class="page-header">
+                <h1>Resources</h1>
+                <ul id='resource_list' class="unstyled">
+                    <a href="/cgi-bin/seqTools?back=1&seqname={{ locus.format_name }}">Gene/Sequence Resources</a> |
+                    <a href="/cgi-bin/ORFMAP/ORFmap?locus={{ locus.format_name }}">ORF Map</a> |
+                    <a href="http://browse.yeastgenome.org/fgb2/gbrowse/scgenome/?name={{ locus.format_name }}" target="_blank">GBrowse</a>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
+       'version':'1','packages':['timeline']}]}"></script>
+<script src="/static/js/sequence_details.js"></script>
+{% endblock scripts %}

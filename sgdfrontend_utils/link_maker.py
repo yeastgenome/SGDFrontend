@@ -92,6 +92,8 @@ def binding_site_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/binding_site_details?callback=?'
 def domain_link(backend_start, domain):
     return backend_start + '/domain/' + domain + '/overview'
+def sequence_details_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/sequence_details?callback=?'
 
 #On the fly links
 def analyze_link():
