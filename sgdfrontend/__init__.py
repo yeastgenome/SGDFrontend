@@ -323,6 +323,11 @@ class SGDFrontend(FrontendInterface):
                 old_phenotype = params['phenotype'].split(':')
                 if len(old_phenotype) > 1:
                     new_phenotype = (old_phenotype[1] + ' ' + old_phenotype[0]).strip().replace(' ', '_')
+                    if 'property_value' in params:
+                        if 'chemicals' in new_phenotype:
+                            new_phenotype = new_phenotype.replace('chemicals', params['property_value'].replace(' ', '_'))
+                        elif 'chemical' in new_phenotype:
+                            new_phenotype = new_phenotype.replace('chemical', params['property_value'].replace(' ', '_'))
                 else:
                     new_phenotype = old_phenotype[0]
                 return HTTPFound('/phenotype/' + new_phenotype + '/overview')
