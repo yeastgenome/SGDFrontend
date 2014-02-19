@@ -322,7 +322,7 @@ class SGDFrontend(FrontendInterface):
             if 'phenotype' in params:
                 old_phenotype = params['phenotype'].split(':')
                 if len(old_phenotype) > 1:
-                    new_phenotype = (old_phenotype[1] + ' ' + old_phenotype[0]).strip().replace(' ', '_')
+                    new_phenotype = (old_phenotype[1] + ' ' + old_phenotype[0]).strip().replace(' ', '_').replace('/', '-')
                     if 'property_value' in params:
                         if 'chemicals' in new_phenotype:
                             new_phenotype = new_phenotype.replace('chemicals', params['property_value'].replace(' ', '_').replace('|', '_and_'))
