@@ -2,7 +2,7 @@ function domain_data_to_table(evidence) {
     var bioent = create_link(evidence['protein']['locus']['display_name'], evidence['protein']['locus']['link'], false);
     var domain;
     if(evidence['domain']['link'] != null) {
-        domain = create_link(evidence['domain']['display_name'], evidence['domain']['link'], true);
+        domain = create_link(evidence['domain']['display_name'], evidence['domain']['link']);
     }
     else {
         domain = evidence['domain']['display_name']
