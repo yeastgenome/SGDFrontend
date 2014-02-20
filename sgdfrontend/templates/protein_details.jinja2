@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 
 <script>
-	var protein_domains_link = "{{ protein_domain_details_link }}"
-    var protein_domain_graph_link = "{{ protein_domain_graph_link }}"
+	var protein_domains_link = "{{ protein_domain_details_link }}";
+    var protein_domain_graph_link = "{{ protein_domain_graph_link }}";
+    var protein_sequence_details_link = "{{ protein_sequence_details_link }}";
+    var protein_phosphorylation_details_link = "{{ protein_phosphorylation_details_link }}";
+
 	var download_table_link = "{{download_table_link}}";
 	var analyze_link = "{{analyze_table_link}}";
 
@@ -56,10 +59,7 @@
         <section id="domains" data-magellan-destination="domains">
             <div class="page-header">
                 <h1>Domains and Classification <span id="domains_header" class="round secondary label"></span></h1>
-
-                <h2 class="subheader">All Domains</h2>
                 <!-- Includes domain_table into template -->
-                {% set table_type = "" %}
                 {% include "templates/domain_table.jinja2" %}
 
                 <h2 class="subheader">Domain Locations</h2>
@@ -90,29 +90,20 @@
             <div class="page-header">
                 <h1>Sequence</h1>
                 <label><h3>Strain</h3>
-                    <select>
-                        <option value="s288c">S288C</option>
-                        <option value="w303">W303</option>
-                        <option value="cenpk">CEN.PK</option>
-                    </select>
+                    <select id="strain_selection"></select>
                 </label>
 
-                <blockquote>
-<pre>  1  MDSEVAALVI DNGSGMCKAG FAGDDAPRAV FPSIVGRPRH QGIMVGMGQK
- 51  DSYVGDEAQS KRGILTLRYP IEHGIVTNWD DMEKIWHHTF YNELRVAPEE
-101  HPVLLTEAPM NPKSNREKMT QIMFETFNVP AFYVSIQAVL SLYSSGRTTG
-151  IVLDSGDGVT HVVPIYAGFS LPHAILRIDL AGRDLTDYLM KILSERGYSF
-201  STTAEREIVR DIKEKLCYVA LDFEQEMQTA AQSSSIEKSY ELPDGQVITI
-251  GNERFRAPEA LFHPSVLGLE SAGIDQTTYN SIMKCDVDVR KELYGNIVMS
-301  GGTTMFPGIA ERMQKEITAL APSSMKVKII APPERKYSVW IGGSILASLT
-351  TFQQMWISKQ EYDESGPSIV HHKCF*</pre>
-                </blockquote>
+                <blockquote id="sequence_residues" style="font-family:Monospace"></blockquote>
+
+                <h2 class="subheader">Phosphorylation Sites <span id="phosphorylation_header" class="round secondary label"></span></h2>
+                <!-- Includes phosphorylation_table into template -->
+                {% include "templates/phosphorylation_table.jinja2" %}
 
                 <h2 class="subheader">Sequence-Based Physico-chemical Properties</h2>
 
                 <h3>Physical Details</h3>
                 <ul class="unstyled">
-                    <li>Length (a.a): </li>
+                    <li>Length (a.a): <span id="length"></span></li>
                     <li>Molecular Weight (Da): </li>
                     <li>Isoelectric Point (pl): </li>
                     <li>Formula: </li>
@@ -167,5 +158,5 @@
 <script src="/static/js/local.js"></script>
 <script src="/static/js/cytoscape.js"></script>
 <script src="/static/js/evidence.js"></script>
-<script src="/static/js/protein.js"></script>
+<script src="/static/js/protein_details.js"></script>
 {% endblock scripts %}

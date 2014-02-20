@@ -49,7 +49,7 @@ class FrontendInterface:
         return None
 
     @abstractmethod
-    def protein(self, bioent_repr):
+    def protein_details(self, bioent_repr):
         return None
     
     @abstractmethod

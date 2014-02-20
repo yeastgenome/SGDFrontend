@@ -94,6 +94,10 @@ def domain_link(backend_start, domain):
     return backend_start + '/domain/' + domain + '/overview'
 def sequence_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/sequence_details?callback=?'
+def protein_sequence_details_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/protein_sequence_details?callback=?'
+def protein_phosphorylation_details_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/protein_phosphorylation_details?callback=?'
 
 #On the fly links
 def analyze_link():

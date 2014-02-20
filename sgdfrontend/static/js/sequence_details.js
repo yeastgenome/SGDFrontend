@@ -10,14 +10,6 @@ $(document).ready(function() {
 	add_footer_space("resources");
 });
 
-String.prototype.chunk = function(n) {
-    var ret = [];
-    for(var i=0, len=this.length; i < len; i += n) {
-       ret.push(this.substr(i, n))
-    }
-    return ret
-};
-
 var colors = ["#2E2EFE", "#FA5858", "#088A08", "#F3F781", "#9F81F7"];
 var color_index = 0;
 

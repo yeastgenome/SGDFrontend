@@ -18,6 +18,15 @@ function domain_data_to_table(evidence) {
     return [evidence['id'], evidence['protein']['locus']['id'], bioent, evidence['protein']['locus']['format_name'], coord_range, domain, description, evidence['source']];
 }
 
+function phosphorylation_data_to_table(evidence) {
+    var bioent = create_link(evidence['protein']['locus']['display_name'], evidence['protein']['locus']['link'], false);
+
+    var site_index = evidence['site_index'];
+    var site_residue = evidence['site_residue'];
+
+    return [evidence['id'], evidence['protein']['locus']['id'], bioent, evidence['protein']['locus']['format_name'], site_index, site_residue, evidence['source']];
+}
+
 function regulation_data_to_table(evidence, is_regulator) {
     var bioent1 = create_link(evidence['bioentity1']['display_name'], evidence['bioentity1']['link'])
 	var bioent2 = create_link(evidence['bioentity2']['display_name'], evidence['bioentity2']['link'])

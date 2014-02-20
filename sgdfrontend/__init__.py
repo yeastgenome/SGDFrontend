@@ -335,7 +335,7 @@ class SGDFrontend(FrontendInterface):
                     }
         return page
 
-    def protein(self, bioent_repr):
+    def protein_details(self, bioent_repr):
         bioent = get_bioent(self.backend_url, bioent_repr)
         bioent_id = str(bioent['id'])
         tabs = get_json(link_maker.tab_link(self.backend_url, bioent_id))
@@ -352,7 +352,9 @@ class SGDFrontend(FrontendInterface):
                     'analyze_table_link': link_maker.analyze_link(),
 
                     'protein_domain_details_link': link_maker.protein_domain_details_link(self.backend_url, bioent_id),
-                    'protein_domain_graph_link': link_maker.protein_domain_graph_link(self.backend_url, bioent_id)
+                    'protein_domain_graph_link': link_maker.protein_domain_graph_link(self.backend_url, bioent_id),
+                    'protein_sequence_details_link': link_maker.protein_sequence_details_link(self.backend_url, bioent_id),
+                    'protein_phosphorylation_details_link': link_maker.protein_phosphorylation_details_link(self.backend_url, bioent_id)
                     }
         return page
 

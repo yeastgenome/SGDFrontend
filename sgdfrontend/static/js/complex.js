@@ -3,11 +3,15 @@ $(document).ready(function() {
 
 	$.getJSON(complex_details_link, function(data) {
 	  	var go_table = create_go_table(data);
+        create_download_button("all_go_table_download", go_table, download_table_link, display_name + '_go_annotations');
+        create_analyze_button("all_go_table_analyze", go_table, analyze_link, analyze_filename, true);
 	});
 
     $.getJSON(complex_genes_link, function(data) {
         var gene_table = create_gene_table(data);
+        create_download_button("gene_list_table_download", gene_table, download_table_link, display_name + '_genes');
         var enrichment_table = create_enrichment_table("enrichment_table", gene_table, null);
+        create_download_button("enrichment_table_download", enrichment_table, download_table_link, display_name + "_go_enrichment");
     });
 
     $.getJSON(complex_graph_link, function(data) {

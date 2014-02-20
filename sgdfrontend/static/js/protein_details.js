@@ -1,5 +1,7 @@
 google.load("visualization", "1", {packages:["corechart"]});
 
+var phosphodata = null;
+
 $(document).ready(function() {
 
     $.getJSON(protein_domains_link, function(data) {
@@ -18,9 +20,69 @@ $(document).ready(function() {
 		}
 	});
 
+    $.getJSON(protein_sequence_details_link, function(data) {
+        var strain_selection = $("#strain_selection");
+        for (var i=0; i < data.length; i++) {
+            var option = document.createElement("option");
+            option.setAttribute("value", data[i]['strain']['format_name']);
+            option.innerHTML = data[i]['strain']['display_name'];
+            strain_selection.append(option);
+
+        }
+
+        function on_change(index) {
+            $("#sequence_residues").html(data[index]['sequence']['residues'].chunk(10).join(' '));
+            $("#length").html(data[index]['sequence']['length']);
+            draw_phosphodata();
+        }
+
+        strain_selection.change(function() {on_change(this.selectedIndex)});
+        on_change(0);
+	});
+
+    $.getJSON(protein_phosphorylation_details_link, function(data) {
+        phosphodata = data;
+        create_phosphorylation_table(data);
+        draw_phosphodata();
+	});
+
     //Hack because footer overlaps - need to fix this.
 	add_footer_space("resources");
 });
+
+function draw_phosphodata() {
+    if(phosphodata != null) {
+        var additional = 0;
+        for (var i=0; i < phosphodata.length; i++) {
+            var index = phosphodata[i]['site_index'] + Math.floor(1.0*(phosphodata[i]['site_index']-1)/10) - 1 + additional;
+            var residues = $("#sequence_residues");
+            var old_residues = residues.html();
+            if(phosphodata[i]['site_residue'] == old_residues.substring(index, index+1)) {
+                residues.html(old_residues.substring(0, index) + "<span style='color:red'>" + old_residues.substring(index, index+1) + "</span>" + old_residues.substring(index+1, old_residues.length));
+                additional = additional + 31;
+            }
+        }
+    }
+}
+
+function create_phosphorylation_table(data) {
+	var datatable = [];
+
+    for (var i=0; i < data.length; i++) {
+        datatable.push(phosphorylation_data_to_table(data[i]));
+    }
+
+    $("#phosphorylation_header").html(data.length);
+
+    var options = {};
+    options["bPaginate"] = false;
+    options["aaSorting"] = [[4, "asc"]];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null]
+    options["aaData"] = datatable;
+    options["oLanguage"] = {"sEmptyTable": 'No phosphorylation data for ' + display_name + '.'};
+
+    return create_table("phosphorylation_table", options);
+}
 
 function create_domain_table(div_id, header_id, message, data) {
 	var datatable = [];

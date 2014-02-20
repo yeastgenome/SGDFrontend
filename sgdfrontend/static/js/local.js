@@ -116,6 +116,14 @@ function set_up_references(references, ref_list_id) {
 	}
 }
 
+String.prototype.chunk = function(n) {
+    var ret = [];
+    for(var i=0, len=this.length; i < len; i += n) {
+       ret.push(this.substr(i, n))
+    }
+    return ret
+};
+
 function set_up_resources(resource_id, data) {
 	resource_list = document.getElementById(resource_id);
 	for (var i=0; i < data.length; i++) {
