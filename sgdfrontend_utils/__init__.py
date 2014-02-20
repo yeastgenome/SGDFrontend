@@ -55,6 +55,12 @@ def get_author(backend_url, author_repr):
         raise Exception('Author not found.')
     return author
 
+def get_references_this_week(backend_url):
+    references_this_week = get_json(link_maker.references_this_week_link(backend_url))
+    if references_this_week is None:
+        raise Exception('References not found.')
+    return references_this_week
+
 def get_go(backend_url, biocon_repr):
     biocon = get_json(link_maker.go_link(backend_url, biocon_repr))
     if biocon is None:

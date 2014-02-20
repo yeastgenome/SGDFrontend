@@ -160,6 +160,8 @@ def reference_link(backend_start, reference):
     return backend_start + '/reference/' + reference + '/overview'
 def author_link(backend_start, author):
     return backend_start + '/author/' + author + '/overview'
+def references_this_week_link(backend_start):
+    return backend_start + '/new/references?callback=?'
 
 def go_details_ref_link(backend_start, reference):
     return backend_start + '/reference/' + str(reference) + '/go_details?callback=?'

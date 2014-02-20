@@ -91,6 +91,10 @@ class FrontendInterface:
     @abstractmethod
     def author(self, author_repr):
         return None
+
+    @abstractmethod
+    def references_this_week(self):
+        return None
     
     @abstractmethod
     def home(self):

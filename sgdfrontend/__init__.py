@@ -1,7 +1,7 @@
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
 import string
-from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical, get_reference, get_author, get_complex, get_domain
+from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical, get_reference, get_author, get_complex, get_domain, get_references_this_week
 from sgdfrontend_utils import link_maker
 from pyramid.response import Response
 from frontend.frontend_interface import FrontendInterface
@@ -332,6 +332,15 @@ class SGDFrontend(FrontendInterface):
                     #Links
                     'references_link': link_maker.author_references_link(self.backend_url, author_id),
                     'download_link': link_maker.download_citations_link(),
+                    }
+        return page
+
+    def references_this_week(self):
+        page = {
+                    #Basic info
+                    'references_this_week_link': link_maker.references_this_week_link(self.backend_url),
+                    'download_link': link_maker.download_citations_link(),
+                    'a_week_ago': str(datetime.date.today() - datetime.timedelta(days=7)).replace('-', '_')
                     }
         return page
 

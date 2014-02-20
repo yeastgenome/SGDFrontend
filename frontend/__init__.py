@@ -21,6 +21,12 @@ def prep_views(chosen_frontend, config):
                                 getattr(chosen_frontend, 'author')(
                                         None if 'identifier' not in request.matchdict else request.matchdict['identifier'])),
                      renderer=chosen_frontend.get_renderer('author'))
+
+    config.add_route('references_this_week',
+                     '/references/this_week',
+                     view=lambda request: chosen_frontend.response_wrapper('references_this_week', request)(
+                                getattr(chosen_frontend, 'references_this_week')()),
+                     renderer=chosen_frontend.get_renderer('references_this_week'))
         
     config.add_route('redirect',
                      '/redirect/{page}',
