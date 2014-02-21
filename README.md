@@ -24,7 +24,7 @@ To build the application:
     
 To start the application:
 
-    $ pserve development.ini
+    $ pserve sgdfrontend_development.ini
 
 To run off of a different backend:
 Set the backend_url parameter in the config file to the URL of the new backend.
