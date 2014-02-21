@@ -1,7 +1,7 @@
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
 import string
-from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical, get_reference, get_author, get_complex, get_domain, get_references_this_week
+from sgdfrontend_utils import set_up_logging, get_bioent, get_json, clean_cell, get_go, get_phenotype, get_chemical, get_reference, get_author, get_complex, get_domain, get_references_this_week, get_contig
 from sgdfrontend_utils import link_maker
 from pyramid.response import Response
 from frontend.frontend_interface import FrontendInterface
@@ -384,6 +384,22 @@ class SGDFrontend(FrontendInterface):
                     'analyze_table_link': link_maker.analyze_link(),
 
                     'sequence_details_link': link_maker.sequence_details_link(self.backend_url, bioent_id),
+                    }
+        return page
+
+    def contig(self, contig_repr):
+        contig = get_contig(self.backend_url, contig_repr)
+        contig_id = str(contig['id'])
+
+        page = {
+                    #Basic info
+                    'contig': contig,
+
+                    #Links
+                    'download_table_link': link_maker.download_table_link(),
+                    'analyze_table_link': link_maker.analyze_link(),
+
+                    'sequence_details_link': link_maker.sequence_details_link_contig(self.backend_url, contig_id),
                     }
         return page
     

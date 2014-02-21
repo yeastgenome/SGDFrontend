@@ -81,6 +81,10 @@ class FrontendInterface:
         return None
 
     @abstractmethod
+    def contig(self, contig_repr):
+        return None
+
+    @abstractmethod
     def complex(self, complex_repr):
         return None
 

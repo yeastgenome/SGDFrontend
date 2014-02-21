@@ -1,9 +1,12 @@
 
 $(document).ready(function() {
+
+
   	$.getJSON(sequence_details_link, function(data) {
         for (var i=0; i < data.length; i++) {
             set_up_strain(data[i]);
         }
+        //set_up_sankey(data);
   	});
 
 	//Hack because footer overlaps - need to fix this.
@@ -31,7 +34,7 @@ function set_up_strain(data) {
 
     if(data['contig'] != null) {
         var chromosome = document.createElement('div');
-        chromosome.innerHTML = data['contig']['display_name'] + ': ' + data['start'] + ' - ' + data['end'];
+        chromosome.innerHTML = '<a href="' + data['contig']['link'] + '">' + data['contig']['display_name'] + '</a>: ' + data['start'] + ' - ' + data['end'];
         strains.append(chromosome);
     }
 
@@ -209,4 +212,47 @@ function draw_label_chart(chart_id, data) {
     // Listen for the 'select' event, and call my function selectHandler() when
     // the user selects something on the chart.
     google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
+}
+
+function set_up_sankey(data) {
+    var row_length = 10;
+    var char_length = 10;
+    for(var k=0; k < data[0]['sequence']['residues'].length; k=k+row_length*char_length) {
+        var datatable = new google.visualization.DataTable();
+        datatable.addColumn('string', 'From');
+        datatable.addColumn('string', 'To');
+        datatable.addColumn('number', 'Weight');
+
+        var rows = [];
+        for(var i=0; i < row_length*char_length; i=i+char_length) {
+             var transitions = {};
+             for(var j=0; j < data.length; j++) {
+                 var transition = data[j]['sequence']['residues'].substring(k+i, k+i+(2*char_length));
+                 if(transition in transitions) {
+                    transitions[transition] = transitions[transition] + 1;
+                 }
+                 else {
+                    transitions[transition] = 1;
+                 }
+             }
+
+             var transition_keys = Object.keys(transitions)
+             for(var j=0; j < transition_keys.length; j++) {
+                var transition_key = transition_keys[j];
+                rows.push([transition_key.substring(0, char_length) + (k+i), transition_key.substring(char_length, 2*char_length) + (k+i+char_length), transitions[transition_key]]);
+             }
+
+        }
+        $("#output").html(rows);
+
+        datatable.addRows(rows);
+
+        var parent_div = $("#sankey_multiple");
+        var child_div = document.createElement('div');
+        child_div.id = 'sankey_multiple' + k;
+        parent_div.append(child_div);
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.Sankey(document.getElementById('sankey_multiple' + k));
+        chart.draw(datatable, {height: 100});
+    }
 }

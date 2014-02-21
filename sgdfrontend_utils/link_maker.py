@@ -94,6 +94,8 @@ def domain_link(backend_start, domain):
     return backend_start + '/domain/' + domain + '/overview'
 def sequence_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/sequence_details?callback=?'
+def sequence_details_link_contig(backend_start, contig):
+    return backend_start + '/contig/' + str(contig) + '/sequence_details?callback=?'
 def protein_sequence_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/protein_sequence_details?callback=?'
 def protein_phosphorylation_details_link(backend_start, bioent):
@@ -130,6 +132,9 @@ def bioentity_overview_link(backend_start, bioent):
     return backend_start + '/locus/' + bioent + '/overview'
 def tab_link(backend_start, bioent):
     return backend_start + '/locus/' + bioent + '/tabs'
+
+def contig_link(backend_start, contig):
+    return backend_start + '/contig/' + contig + '/overview'
 
 #Chemical Links
 def chemical_details_chem_link(backend_start, chemical):

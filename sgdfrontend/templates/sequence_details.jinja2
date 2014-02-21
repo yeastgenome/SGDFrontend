@@ -46,6 +46,8 @@
         <section id="summary" data-magellan-destination="summary">
             <div class="page-header">
                 <h1>Summary</h1>
+                <div id="sankey_multiple"></div>
+                <div id="output"></div>
             </div>
         </section>
 
@@ -79,5 +81,8 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
        'version':'1','packages':['timeline']}]}"></script>
+<script type="text/javascript"
+           src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['sankey']}]}">
+</script>
 <script src="/static/js/sequence_details.js"></script>
 {% endblock scripts %}

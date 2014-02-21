@@ -199,6 +199,13 @@ def prep_views(chosen_frontend, config):
                                         domain_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].lower())),
                      renderer=chosen_frontend.get_renderer('domain'))
 
+    config.add_route('contig',
+                     '/contig/{identifier}/overview',
+                     view=lambda request: chosen_frontend.response_wrapper('contig', request)(
+                                getattr(chosen_frontend, 'contig')(
+                                        contig_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].lower())),
+                     renderer=chosen_frontend.get_renderer('contig'))
+
 
     
 def prepare_frontend(frontend_type, **configs):

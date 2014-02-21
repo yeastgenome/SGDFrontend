@@ -16,7 +16,13 @@ def get_bioent(backend_url, bioent_repr):
     bioent = get_json(link_maker.bioentity_overview_link(backend_url, bioent_repr))
     if bioent is None:
         raise Exception('Bioentity not found.')
-    return bioent   
+    return bioent
+
+def get_contig(backend_url, contig_repr):
+    contig = get_json(link_maker.contig_link(backend_url, contig_repr))
+    if contig is None:
+        raise Exception('Contig not found.')
+    return contig
 
 def get_phenotype(backend_url, biocon_repr):
     biocon = get_json(link_maker.phenotype_link(backend_url, biocon_repr))
