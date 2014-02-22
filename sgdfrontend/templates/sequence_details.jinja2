@@ -36,10 +36,12 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-        //Set up navbar
+            //Set up navbar
             add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Sequence');
             add_navbar_element('Summary', 'summary');
-            add_navbar_element('Sequence', 'sequence');
+            add_navbar_element('Reference Strain - S288C', 'reference');
+            add_navbar_element('Alternative Reference Strains', 'alternative');
+            add_navbar_element('Other Strains', 'other');
             add_navbar_element('Resources', 'resources');
         </script>
 
@@ -51,12 +53,42 @@
             </div>
         </section>
 
-        <!-- Sequence
+        <!-- S288C
 ================================================== -->
-        <section id="sequence" data-magellan-destination="sequence">
+        <section id="reference" data-magellan-destination="reference">
             <div class="page-header">
-                <h1>Sequence</h1>
-                <div id="strains"></div>
+                <h1>S288C</h1>
+                <div id="reference_label_chart"></div>
+                <div id="reference_contig"></div>
+                <blockquote id="reference_sequence" style="font-family:Monospace"></blockquote>
+            </div>
+        </section>
+
+        <!-- Alternative Reference
+================================================== -->
+        <section id="alternative" data-magellan-destination="alternative">
+            <div class="page-header">
+                <h1>Alternative Reference Strains</h1>
+                <label><h3>Strain</h3>
+                    <select id="alternative_strain_selection" class="big-input"></select>
+                </label>
+                <div id="alternative_label_chart"></div>
+                <div id="alternative_contig"></div>
+                <blockquote id="alternative_sequence" style="font-family:Monospace"></blockquote>
+            </div>
+        </section>
+
+        <!-- Other
+================================================== -->
+        <section id="other" data-magellan-destination="other">
+            <div class="page-header">
+                <h1>Other Strains</h1>
+                <label><h3>Strain</h3>
+                    <select id="other_strain_selection" class="big-input"></select>
+                </label>
+                <div id="other_label_chart"></div>
+                <div id="other_contig"></div>
+                <blockquote id="other_sequence" style="font-family:Monospace"></blockquote>
             </div>
         </section>
 

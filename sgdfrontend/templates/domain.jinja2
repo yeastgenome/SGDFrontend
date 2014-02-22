@@ -43,10 +43,11 @@
             <div class="page-header">
                 <h1>Summary</h1>
                 <ul class="unstyled">
-                    <li><strong>Accession ID: </strong><a href="{{ domain.external_link }}" target="_blank">{{ domain.display_name }}</a></li>
-                    {%  if domain.interpro_id != none %}
-                        <li><strong>Interpro ID: </strong><a href="http://www.ebi.ac.uk/interpro/entry/{{ domain.interpro_id }}" target="_blank">{{ domain.interpro_id }}</a></li>
-                    {%  endif %}
+                    <li><strong>Accession ID: </strong><a href="{{ domain.external_link }}" target="_blank">{{ domain.display_name }}</a>
+                        {%  if domain.interpro_id != none %}
+                            , <a href="http://www.ebi.ac.uk/interpro/entry/{{ domain.interpro_id }}" target="_blank">{{ domain.interpro_id }}</a>
+                        {%  endif %}
+                    </li>
                     <li><strong>Source: </strong>{{ domain.source }}</li>
                     {%  if domain.description != none %}
                         <li><strong>Description: </strong>{{ domain.description }}</li>

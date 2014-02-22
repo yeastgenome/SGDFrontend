@@ -24,7 +24,12 @@ function phosphorylation_data_to_table(evidence) {
     var site_index = evidence['site_index'];
     var site_residue = evidence['site_residue'];
 
-    return [evidence['id'], evidence['protein']['locus']['id'], bioent, evidence['protein']['locus']['format_name'], site_index, site_residue, evidence['source']];
+    var reference = '';
+    if(evidence['reference'] != null) {
+        reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+    }
+
+    return [evidence['id'], evidence['protein']['locus']['id'], bioent, evidence['protein']['locus']['format_name'], site_index, site_residue, evidence['source'], reference];
 }
 
 function regulation_data_to_table(evidence, is_regulator) {

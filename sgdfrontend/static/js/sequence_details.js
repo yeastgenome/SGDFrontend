@@ -3,10 +3,49 @@ $(document).ready(function() {
 
 
   	$.getJSON(sequence_details_link, function(data) {
+        var alternative_selection = $("#alternative_strain_selection");
+        var other_selection = $("#other_strain_selection");
+        var strain_to_data = {};
         for (var i=0; i < data.length; i++) {
-            set_up_strain(data[i]);
+            if(data[i]['strain']['display_name'] == 'S288C') {
+                $("#reference_sequence").html(data[i]['sequence']['residues'].chunk(10).join(' '));
+                $("#reference_contig").html('<a href="' + data[i]['contig']['link'] + '">' + data[i]['contig']['display_name'] + '</a>: ' + data[i]['start'] + ' - ' + data[i]['end']);
+                draw_label_chart('reference_label_chart', data[i]);
+            }
+            else {
+                var option = document.createElement("option");
+                option.value = data[i]['strain']['display_name'];
+                option.innerHTML = data[i]['strain']['display_name'];
+                strain_to_data[data[i]['strain']['display_name']] = data[i];
+
+                if(data[i]['strain']['is_alternative_reference'] == 1) {
+                    alternative_selection.append(option);
+                }
+                else {
+                    other_selection.append(option);
+                }
+            }
         }
-        //set_up_sankey(data);
+
+        function alternative_on_change() {
+            var strain_data = strain_to_data[alternative_selection.val()];
+            $("#alternative_sequence").html(strain_data['sequence']['residues'].chunk(10).join(' '));
+            $("#navbar_alternative").children()[0].innerHTML = 'Alternative Reference Strains <span class="subheader">' + '- ' + alternative_selection.val() + '</span>';
+            $("#alternative_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
+            draw_label_chart('alternative_label_chart', strain_data);
+        }
+        alternative_selection.change(function() {alternative_on_change()});
+        alternative_on_change();
+
+        function other_on_change() {
+            var strain_data = strain_to_data[other_selection.val()];
+            $("#other_sequence").html(strain_data['sequence']['residues'].chunk(10).join(' '));
+            $("#navbar_other").children()[0].innerHTML = 'Other Strains <span class="subheader">' + '- ' + other_selection.val() + '</span>';
+            $("#other_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
+            draw_label_chart('other_label_chart', strain_data);
+        }
+        other_selection.change(function() {other_on_change()});
+        other_on_change();
   	});
 
 	//Hack because footer overlaps - need to fix this.

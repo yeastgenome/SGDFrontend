@@ -407,3 +407,9 @@ $glowing-effect-color: $input-focus-border-color !default;
   label.error { @include form-label-error-color; }
 
 }
+
+.big-input {
+    width: auto;
+    padding: 0.2em;
+    font-size: 1.1em;
+}

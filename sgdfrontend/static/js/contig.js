@@ -82,8 +82,6 @@ function set_up_sequence(chart_id, data) {
         'tooltip': {'isHTML': true}
     }
 
-
-
     chart.draw(dataTable, options);
 
     function tooltipHandler(e) {
@@ -96,13 +94,11 @@ function set_up_sequence(chart_id, data) {
 
     var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
     var tickmarks = tickmark_holder.childNodes;
-    var space = 1000;
-    if(max_tick > 30000) {
-        space = 30000;
+    var space = 1000*Math.round(1.0*max_tick/tickmarks.length/1000);
+    if(space/10000 > 1) {
+        space = 10000*Math.round(1.0*space/10000);
     }
-    if(max_tick > 60000) {
-        space = 60000;
-    }
+
     for (var i=0; i < tickmarks.length; i++) {
         if(i==0) {
             tickmarks[i].innerHTML = 1;

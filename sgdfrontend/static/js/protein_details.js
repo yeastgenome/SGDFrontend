@@ -32,6 +32,7 @@ $(document).ready(function() {
 
         function on_change(index) {
             $("#sequence_residues").html(data[index]['sequence']['residues'].chunk(10).join(' '));
+            $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span class="subheader">' + '- ' + data[index]['strain']['display_name'] + '</span>';
             $("#length").html(data[index]['sequence']['length']);
             draw_phosphodata();
         }
@@ -68,16 +69,32 @@ function draw_phosphodata() {
 function create_phosphorylation_table(data) {
 	var datatable = [];
 
+    var sites = {};
     for (var i=0; i < data.length; i++) {
         datatable.push(phosphorylation_data_to_table(data[i]));
+        sites[data[i]['site_residue'] + data[i]['site_index']] = true;
     }
 
     $("#phosphorylation_header").html(data.length);
+    $("#phosphorylation_subheader").html(Object.keys(sites).length);
+
+    if(Object.keys(sites).length == 1) {
+        $("#phosphorylation_subheader_type").html('site');
+    }
+    else {
+        $("#phosphorylation_subheader_type").html('sites');
+    }
+    if(datatable.length == 1) {
+        $("#phosphorylation_header_type").html("entry for ");
+    }
+    else {
+        $("#phosphorylation_header_type").html("entries for ");
+    }
 
     var options = {};
     options["bPaginate"] = false;
     options["aaSorting"] = [[4, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null]
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": 'No phosphorylation data for ' + display_name + '.'};
 

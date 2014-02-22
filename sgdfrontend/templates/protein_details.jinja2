@@ -90,12 +90,19 @@
             <div class="page-header">
                 <h1>Sequence</h1>
                 <label><h3>Strain</h3>
-                    <select id="strain_selection"></select>
+                    <select id="strain_selection" class="big-input"></select>
                 </label>
 
                 <blockquote id="sequence_residues" style="font-family:Monospace"></blockquote>
 
-                <h2 class="subheader">Phosphorylation Sites <span id="phosphorylation_header" class="round secondary label"></span></h2>
+                <h2 class="subheader">Phosphorylation Sites
+                    <span class="round secondary label">
+                        <span id="phosphorylation_header"></span>
+                        <small id="phosphorylation_header_type"></small>
+                        <span id="phosphorylation_subheader"></span>
+                        <small id="phosphorylation_subheader_type"></small>
+                    </span>
+                </h2>
                 <!-- Includes phosphorylation_table into template -->
                 {% include "templates/phosphorylation_table.jinja2" %}
 
