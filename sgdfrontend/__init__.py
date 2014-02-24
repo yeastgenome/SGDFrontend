@@ -356,8 +356,10 @@ class SGDFrontend(FrontendInterface):
             elif 'rm' in params and 'date' in params and 'page' in params:
                 page = urllib.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?rm=' + params['rm'] + '&date=' + params['date'] + '&page=' + params['page']).read()
                 return Response(page)
+            elif 'doi' in params:
+                return HTTPFound('/reference/doi:' + params.values()[0].replace(' ', '_').replace('/', '-') + '/overview')
             elif len(params) > 0:
-                return HTTPFound('/reference/' + params.values()[0].replace(' ', '_') + '/overview')
+                return HTTPFound('/reference/' + params.values()[0].replace(' ', '_').replace('/', '-') + '/overview')
         else:
             return Response(status_int=500, body='Invalid URL.')
     
