@@ -101,8 +101,33 @@
                     <li id="primary_list"><strong>Primary Literature For: </strong></li>
                     <li id="additional_list"><strong>Additional Literature For: </strong></li>
                     <li id="review_list"><strong>Review For: </strong></li>
-
                 </ul>
+
+                {% if reference.related_references|length > 0 %}
+                    <h2 class="subheader">Related References</h2>
+                    <ul class="unstyled">
+                        {% for relref in reference.related_references %}
+                            <li>
+                                <a href="{{ relref.link|e }}">{{ relref.display_name|e }}</a>
+                                <span>{{ relref.citation|e|replace(relref.display_name, '') }}</span>
+                                {% if relref.pubmed_id != none %}
+                                    <small>PMID: {{ relref.pubmed_id|e }}</small>
+                                {% endif %}
+                                <ul class="ref-links">
+                                    <li><a href="{{ relref.link|e }}">SGD Paper</a></li>
+                                    {% for url in relref.urls %}
+                                        <li><a target="_blank" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                                {% if relref.abstract != none %}
+                                    <blockquote>{{ relref.abstract }}</blockquote>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+
             </div>
         </section>
 
