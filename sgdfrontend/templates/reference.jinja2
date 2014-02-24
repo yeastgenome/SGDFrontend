@@ -84,6 +84,12 @@
                 </div>
 
                 <ul class="unstyled">
+                    <li><strong>Reference Type:</strong>
+                        {% for reftype in reference.reftypes %}
+                            <span>{{ reftype }}</span>{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </li>
+
                     <li><strong>Authors:</strong>
                         {% for author in reference.authors %}
                             {% if loop.index < 11 %}<span><a href="{{ author.link|e }}">{{ author.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
@@ -108,6 +114,11 @@
                     <ul class="unstyled">
                         {% for relref in reference.related_references %}
                             <li>
+                                <strong>
+                                    {% for reftype in relref.reftypes %}
+                                        <span>{{ reftype }}</span>{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                </strong><br>
                                 <a href="{{ relref.link|e }}">{{ relref.display_name|e }}</a>
                                 <span>{{ relref.citation|e|replace(relref.display_name, '') }}</span>
                                 {% if relref.pubmed_id != none %}
