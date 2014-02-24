@@ -1,3 +1,4 @@
+# -*- coding:latin -*-
 from datetime import datetime
 from sgdfrontend_utils import link_maker
 import json

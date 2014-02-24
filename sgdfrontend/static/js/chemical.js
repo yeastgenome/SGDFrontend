@@ -39,7 +39,7 @@ function create_phenotype_table(data) {
 	var options = {};
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[4, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"sWidth": "250px"}, null];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, {"sWidth": "250px"}, null];
     options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + display_name};
 	options["aaData"] = datatable;
 

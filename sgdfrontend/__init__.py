@@ -424,7 +424,12 @@ class SGDFrontend(FrontendInterface):
             if 'phenotype' in params:
                 old_phenotype = params['phenotype'].split(':')
                 if len(old_phenotype) > 1:
-                    new_phenotype = (old_phenotype[1] + ' ' + old_phenotype[0]).strip().replace(' ', '_')
+                    new_phenotype = (old_phenotype[1] + ' ' + old_phenotype[0]).strip().replace(' ', '_').replace('/', '-')
+                    if 'property_value' in params:
+                        if 'chemicals' in new_phenotype:
+                            new_phenotype = new_phenotype.replace('chemicals', params['property_value'].replace(' ', '_').replace('|', '_and_'))
+                        elif 'chemical' in new_phenotype:
+                            new_phenotype = new_phenotype.replace('chemical', params['property_value'].replace(' ', '_'))
                 else:
                     new_phenotype = old_phenotype[0]
                 return HTTPFound('/phenotype/' + new_phenotype + '/overview')
@@ -439,10 +444,20 @@ class SGDFrontend(FrontendInterface):
                 return HTTPFound('/locus/' + params.values()[0] + '/go')
         elif page == 'go_term':
             if len(params) > 0:
-                return HTTPFound('/go/GO:' + str(int(params.values()[0])).zfill(7) + '/overview')
+                if params.values()[0].startswith('GO:'):
+                    return HTTPFound('/go/' + params.values()[0] + '/overview')
+                else:
+                    return HTTPFound('/go/GO:' + str(int(params.values()[0])).zfill(7) + '/overview')
         elif page == 'reference':
             if 'author' in params:
                 return HTTPFound('/author/' + params.values()[0].replace(' ', '_') + '/overview')
+            elif 'topic' in params:
+                topic = params.values()[0]
+                page = urllib.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?topic=' + topic + '&rm=multi_ref_result').read()
+                return Response(page)
+            elif 'rm' in params and 'date' in params and 'page' in params:
+                page = urllib.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?rm=' + params['rm'] + '&date=' + params['date'] + '&page=' + params['page']).read()
+                return Response(page)
             elif len(params) > 0:
                 return HTTPFound('/reference/' + params.values()[0].replace(' ', '_') + '/overview')
         else:
@@ -470,8 +485,14 @@ class SGDFrontend(FrontendInterface):
                 cutoff = 2;
 
         table_header = description + '\n\n' + '\t'.join(header_info[cutoff:])
-        
-        response.text = table_header + '\n' + '\n'.join(['\t'.join([clean_cell(str(cell)) for cell in row[cutoff:]]) for row in data])
+
+        for row in data:
+            try:
+                [clean_cell(cell) for cell in row[cutoff:]]
+            except:
+                print row
+
+        response.text = table_header + '\n' + '\n'.join(['\t'.join([clean_cell(cell) for cell in row[cutoff:]]) for row in data])
 
         exclude = set([x for x in string.punctuation if x != ' ' and x != '_'])
         display_name = ''.join(ch for ch in display_name if ch not in exclude).replace(' ', '_')
