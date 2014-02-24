@@ -357,7 +357,7 @@ class SGDFrontend(FrontendInterface):
                 page = urllib.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?rm=' + params['rm'] + '&date=' + params['date'] + '&page=' + params['page']).read()
                 return Response(page)
             elif 'doi' in params:
-                return HTTPFound('/reference/doi:' + params.values()[0].replace(' ', '_').replace('/', '-') + '/overview')
+                return HTTPFound('/reference/doi:' + params.values()[0].replace(' ', '_').replace('/', '-').lower() + '/overview')
             elif len(params) > 0:
                 return HTTPFound('/reference/' + params.values()[0].replace(' ', '_').replace('/', '-') + '/overview')
         else:
