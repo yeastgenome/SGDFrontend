@@ -1,4 +1,6 @@
 
+var label_to_color = {};
+
 $(document).ready(function() {
 
 
@@ -6,11 +8,16 @@ $(document).ready(function() {
         var alternative_selection = $("#alternative_strain_selection");
         var other_selection = $("#other_strain_selection");
         var strain_to_data = {};
+        var strain_to_description = {};
         for (var i=0; i < data.length; i++) {
             if(data[i]['strain']['display_name'] == 'S288C') {
                 $("#reference_sequence").html(data[i]['sequence']['residues'].chunk(10).join(' '));
                 $("#reference_contig").html('<a href="' + data[i]['contig']['link'] + '">' + data[i]['contig']['display_name'] + '</a>: ' + data[i]['start'] + ' - ' + data[i]['end']);
                 draw_label_chart('reference_label_chart', data[i]);
+                draw_sublabel_chart('reference_sublabel_chart', data[i]);
+                color_sequence("reference_sequence", data[i]);
+                var subfeature_table = create_subfeature_table(data[i]);
+                create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
             }
             else {
                 var option = document.createElement("option");
@@ -30,6 +37,7 @@ $(document).ready(function() {
         function alternative_on_change() {
             var strain_data = strain_to_data[alternative_selection.val()];
             $("#alternative_sequence").html(strain_data['sequence']['residues'].chunk(10).join(' '));
+            $("#alternative_strain_description").html(strain_data['strain']['description']);
             $("#navbar_alternative").children()[0].innerHTML = 'Alternative Reference Strains <span class="subheader">' + '- ' + alternative_selection.val() + '</span>';
             $("#alternative_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
             draw_label_chart('alternative_label_chart', strain_data);
@@ -40,6 +48,7 @@ $(document).ready(function() {
         function other_on_change() {
             var strain_data = strain_to_data[other_selection.val()];
             $("#other_sequence").html(strain_data['sequence']['residues'].chunk(10).join(' '));
+            $("#other_strain_description").html(strain_data['strain']['description']);
             $("#navbar_other").children()[0].innerHTML = 'Other Strains <span class="subheader">' + '- ' + other_selection.val() + '</span>';
             $("#other_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
             draw_label_chart('other_label_chart', strain_data);
@@ -52,41 +61,325 @@ $(document).ready(function() {
 	add_footer_space("resources");
 });
 
-var colors = ["#2E2EFE", "#FA5858", "#088A08", "#F3F781", "#9F81F7"];
-var color_index = 0;
-
-function set_up_strain(data) {
-    var strain_name = data['strain']['format_name'];
-    var strains = $("#strains");
-
-    var header = document.createElement('h2');
-    header.className = "subheader";
-    header.innerHTML = data['strain']['display_name'];
-    if(data['strain']['description'] != null) {
-        header.innerHTML = header.innerHTML + ' <small>(' + data['strain']['description'] + ')</small>'
+function strand_to_direction(strand) {
+    if(strand == '+') {
+        return "5'";
     }
-    strains.append(header);
+    else {
+        return "3'";
+    }
+}
+function draw_label_chart(chart_id, data) {
+    var container = document.getElementById(chart_id);
 
-    var sequence_labels = document.createElement('div');
-    sequence_labels.id = strain_name + '_labels';
-    strains.append(sequence_labels);
+    var chart = new google.visualization.Timeline(container);
 
-    if(data['contig'] != null) {
-        var chromosome = document.createElement('div');
-        chromosome.innerHTML = '<a href="' + data['contig']['link'] + '">' + data['contig']['display_name'] + '</a>: ' + data['start'] + ' - ' + data['end'];
-        strains.append(chromosome);
+    var dataTable = new google.visualization.DataTable();
+
+    dataTable.addColumn({ type: 'string', id: 'Strand' });
+    dataTable.addColumn({ type: 'string', id: 'Feature' });
+    dataTable.addColumn({ type: 'number', id: 'Start' });
+    dataTable.addColumn({ type: 'number', id: 'End' });
+
+    var data_array = [];
+    var labels = {};
+
+    var has_five_prime = false;
+    var has_three_prime = false;
+    var min_tick = data['start'];
+    var max_tick = data['end'];
+
+    if(data['strand'] == "+") {
+        has_five_prime = true;
+    }
+    else {
+        has_three_prime = true;
     }
 
-    var sequence = document.createElement('blockquote');
-    sequence.innerHTML = data['sequence']['residues'].chunk(10).join(' ');
-    sequence.style.fontFamily = "Monospace";
-    strains.append(sequence);
+    var start = data['start'];
+    var end = data['end'];
+    data_array.push([strand_to_direction(data['strand']), display_name, start, end]);
+    labels[display_name] = true;
 
-    draw_label_chart(strain_name + '_labels', data);
+    for (var i=0; i < data['neighbors'].length; i++) {
+        var start = data['neighbors'][i]['start'];
+        var end = data['neighbors'][i]['end'];
+        var direction = strand_to_direction(data['neighbors'][i]['strand']);
+        if(direction == "5'") {
+            data_array.unshift([direction, data['neighbors'][i]['display_name'], start, end]);
+            has_five_prime = true;
+        }
+        else {
+            data_array.push([direction, data['neighbors'][i]['display_name'], start, end]);
+            has_three_prime = true;
+        }
 
-    var label_to_color = {};
+        if(start < min_tick) {
+            min_tick = start;
+        }
+        if(end > max_tick) {
+            max_tick = end;
+        }
+    }
+
+    if(!has_five_prime) {
+        data_array.push(["5'", '', null, null]);
+    }
+    if(!has_three_prime) {
+        data_array.push(["3'", '', null, null]);
+    }
+
+    dataTable.addRows(data_array);
+
+    var options = {
+        'height': 1,
+        'timeline': {'hAxis': {'position': 'none'},
+                    'singleColor': '#A4A4A4'},
+        'tooltip': {'isHTML': true},
+
+    }
+
+    chart.draw(dataTable, options);
+
+    var height = $("#" + chart_id + " > div > div > div > svg").height() + 50;
+    options['height'] = height;
+    chart.draw(dataTable, options);
+
+    var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
+    var rectangles = rectangle_holder.childNodes;
+    var ordered_colors = [];
+    for (var i=0; i < rectangles.length; i++) {
+        if(rectangles[i].nodeName == 'text' && rectangles[i].innerHTML == display_name) {
+            rectangles[i].setAttribute('fill', 'white');
+            rectangles[i-1].setAttribute('fill', "#3366cc");
+        }
+    }
+
+    function tooltipHandler(e) {
+        var datarow = data_array[e.row];
+        var spans = $(".google-visualization-tooltip-action > span");
+        if(spans.length > 3) {
+            spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
+            spans[2].innerHTML = 'Length:';
+            spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
+        }
+    }
+
+    var divider_height = Math.round($("#" + chart_id + " > div > div > svg > g")[0].childNodes[0].getAttribute('height'));
+
+    var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
+    var rectangles = rectangle_holder.childNodes;
+    var y_one = data['neighbors'][0]['start'];
+    var y_two = data['neighbors'][data['neighbors'].length-1]['end'];
+
+    var x_one = null;
+    var x_two = null;
+    var x_two_start = null;
+
+    for (var i=0; i < rectangles.length; i++) {
+        if(rectangles[i].nodeName == 'rect') {
+            var x = Math.round(rectangles[i].getAttribute('x'));
+            var y = Math.round(rectangles[i].getAttribute('y'));
+            if((y > divider_height && has_three_prime) || (y < divider_height && has_five_prime)) {
+                if(x_one == null || x < x_one) {
+                    x_one = x;
+                }
+                if(x_two == null || x > x_two_start) {
+                    x_two = x + Math.round(rectangles[i].getAttribute('width'));
+                    x_two_start = x;
+                }
+            }
+        }
+    }
+
+    var m = (y_two - y_one)/(x_two - x_one);
+    var b = y_two - m*x_two;
+
+    var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
+    var tickmarks = tickmark_holder.childNodes;
+    var tickmark_space;
+    if(tickmarks.length > 1) {
+        tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
+    }
+    else {
+        tickmark_space = Math.round($("#" + chart_id).getAttribute('width'));
+    }
+    for (var i=0; i < tickmarks.length; i++) {
+        var x_new = Math.round(tickmarks[i].getAttribute('x'));
+        var y_new = Math.round(m*x_new + b);
+        if(m*tickmark_space > 10000) {
+            y_new = 10000*Math.round(y_new/10000);
+        }
+        else if(m*tickmark_space > 1000) {
+            y_new = 1000*Math.round(y_new/1000);
+        }
+        else if(m*tickmark_space > 100) {
+            y_new = 100*Math.round(y_new/100);
+        }
+        else if(m*tickmark_space > 10) {
+            y_new = 10*Math.round(y_new/10)
+        }
+        if(y_new <= 0) {
+            y_new = 1;
+        }
+        tickmarks[i].innerHTML = y_new;
+    }
+
+    // Listen for the 'select' event, and call my function selectHandler() when
+    // the user selects something on the chart.
+    google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
+}
+
+function draw_sublabel_chart(chart_id, data) {
+    var container = document.getElementById(chart_id);
+
+    var chart = new google.visualization.Timeline(container);
+
+    var dataTable = new google.visualization.DataTable();
+
+    dataTable.addColumn({ type: 'string', id: 'Subfeature' });
+    dataTable.addColumn({ type: 'number', id: 'Start' });
+    dataTable.addColumn({ type: 'number', id: 'End' });
+
+    var data_array = [];
+    var labels = {};
+
+    var min_tick = null;
+
+    if(data['sequence_labels'].length > 0) {
+        for (var i=0; i < data['sequence_labels'].length; i++) {
+            var start = data['sequence_labels'][i]['relative_start'];
+            var end = data['sequence_labels'][i]['relative_end'];
+            var name = data['sequence_labels'][i]['display_name'];
+            data_array.push([name, start, end]);
+            labels[name] = true;
+
+            if(min_tick == null || min_tick < start) {
+                min_tick = start;
+            }
+        }
+    }
+    else {
+        var start = data['start'];
+        var end = data['end'];
+        data_array.push([display_name, start, end]);
+        labels[display_name] = true;
+    }
+
+    dataTable.addRows(data_array);
+
+    var options = {
+        'height': 1,
+        'timeline': {'hAxis': {'position': 'none'}},
+        'tooltip': {'isHTML': true}
+    }
+
+    chart.draw(dataTable, options);
+
+    var height = $("#" + chart_id + " > div > div > div > svg").height() + 50;
+    options['height'] = height;
+
+
+    chart.draw(dataTable, options);
+
+    function tooltipHandler(e) {
+        var datarow = data_array[e.row];
+        var spans = $(".google-visualization-tooltip-action > span");
+        if(spans.length > 2) {
+            spans[0].innerHTML = ' ' + datarow[1] + '-' + datarow[2];
+            spans[1].innerHTML = 'Length:';
+            spans[2].innerHTML = ' ' + datarow[2] - datarow[1] + 1;
+        }
+    }
+
+    var divider_height = Math.round($("#" + chart_id + " > div > div > svg > g")[0].childNodes[0].getAttribute('height'));
+
+    var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
+    var rectangles = rectangle_holder.childNodes;
+    var y_one = data['sequence_labels'][0]['relative_start'];
+    var y_two = data['sequence_labels'][data['sequence_labels'].length-1]['relative_end'];
+
+    var x_one = null;
+    var x_two = null;
+    var x_two_start = null;
+
+    for (var i=0; i < rectangles.length; i++) {
+        if(rectangles[i].nodeName == 'rect') {
+            var x = Math.round(rectangles[i].getAttribute('x'));
+            var y = Math.round(rectangles[i].getAttribute('y'));
+            if(x_one == null || x < x_one) {
+                x_one = x;
+            }
+            if(x_two == null || x > x_two_start) {
+                x_two = x + Math.round(rectangles[i].getAttribute('width'));
+                x_two_start = x;
+            }
+        }
+    }
+
+    var m = (y_two - y_one)/(x_two - x_one);
+    var b = y_two - m*x_two;
+
+    var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
+    var tickmarks = tickmark_holder.childNodes;
+    var tickmark_space;
+    if(tickmarks.length > 1) {
+        tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
+    }
+    else {
+        tickmark_space = Math.round($("#" + chart_id).getAttribute('width'));
+    }
+    for (var i=0; i < tickmarks.length; i++) {
+        var x_new = Math.round(tickmarks[i].getAttribute('x'));
+        var y_new = Math.round(m*x_new + b);
+        if(m*tickmark_space > 10000) {
+            y_new = 10000*Math.round(y_new/10000);
+        }
+        else if(m*tickmark_space > 1000) {
+            y_new = 1000*Math.round(y_new/1000);
+        }
+        else if(m*tickmark_space > 100) {
+            y_new = 100*Math.round(y_new/100);
+        }
+        else if(m*tickmark_space > 10) {
+            y_new = 10*Math.round(y_new/10)
+        }
+        if(y_new <= 0) {
+            y_new = 1;
+        }
+        tickmarks[i].innerHTML = y_new;
+    }
+
+    // Listen for the 'select' event, and call my function selectHandler() when
+    // the user selects something on the chart.
+    google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
+
+    var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
+    var rectangles = rectangle_holder.childNodes;
+    var ordered_colors = [];
+    for (var i=0; i < rectangles.length; i++) {
+        if(rectangles[i].nodeName == 'rect') {
+            var color = rectangles[i].getAttribute('fill');
+            if(ordered_colors[ordered_colors.length - 1] != color) {
+                ordered_colors.push(color);
+            }
+        }
+    }
+
+    var label_holder = $("#" + chart_id + " > div > div > svg > g")[0];
+    var labels = label_holder.childNodes;
+    var color_index = 0;
+    for (var i=0; i < labels.length; i++) {
+        if(labels[i].nodeName == 'text') {
+            label_to_color[labels[i].innerHTML] = ordered_colors[color_index];
+            color_index = color_index + 1;
+        }
+    }
+}
+
+function color_sequence(seq_id, data) {
     if(data['sequence_labels'].length > 1) {
-        var seq = sequence.innerHTML;
+        var seq = $("#" + seq_id).html();
         var new_seq = '';
         var start = 0;
         for (var i=0; i < data['sequence_labels'].length; i++) {
@@ -109,189 +402,38 @@ function set_up_strain(data) {
             start = end_index;
         }
         new_seq = new_seq + seq.substr(start, seq.length)
-        sequence.innerHTML = new_seq;
+        $("#" + seq_id).html(new_seq);
     }
 }
 
-function strand_to_direction(strand) {
-    if(strand == '+') {
-        return "5'";
+function create_subfeature_table(data) {
+	var datatable = [];
+
+    for (var i=0; i < data['sequence_labels'].length; i++) {
+        datatable.push([null,
+                        data['sequence_labels'][i]['display_name'],
+                        data['sequence_labels'][i]['relative_start'] + '-' + data['sequence_labels'][i]['relative_end'],
+                        data['sequence_labels'][i]['chromosomal_start'] + '-' + data['sequence_labels'][i]['chromosomal_end'],
+                        ]);
+    }
+
+    $("#subfeature_header").html(data['sequence_labels'].length);
+
+    if(datatable.length == 1) {
+        $("#subfeature_header_type").html("entry");
     }
     else {
-        return "3'";
-    }
-}
-function draw_label_chart(chart_id, data) {
-    var container = document.getElementById(chart_id);
-
-    var chart = new google.visualization.Timeline(container);
-
-    var dataTable = new google.visualization.DataTable();
-
-    dataTable.addColumn({ type: 'string', id: 'Domain' });
-    dataTable.addColumn({ type: 'string', id: 'Name' });
-    dataTable.addColumn({ type: 'number', id: 'Start' });
-    dataTable.addColumn({ type: 'number', id: 'End' });
-
-    var data_array = [];
-    var labels = {};
-
-    var start = new Date()
-    var end = new Date()
-
-    var has_five_prime = false;
-    var has_three_prime = false;
-    var min_tick = data['start'];
-    var max_tick = data['end'];
-
-    if(data['strand'] == "+") {
-        has_five_prime = true;
-    }
-    else {
-        has_three_prime = true;
+        $("#subfeature_header_type").html("entries");
     }
 
-    if(data['sequence_labels'].length > 0) {
-        for (var i=0; i < data['sequence_labels'].length; i++) {
-            var start = data['sequence_labels'][i]['relative_start'] + data['start'];
-            var end = data['sequence_labels'][i]['relative_end'] + data['start'];
-            var name = data['sequence_labels'][i]['display_name'];
-            if(name == 'CDS') {
-                name = display_name;
-            }
-            data_array.push([strand_to_direction(data['strand']), name, start, end]);
-            labels[name] = true;
-        }
-    }
-    else {
-        var start = data['start'];
-        var end = data['end'];
-        data_array.push([strand_to_direction(data['strand']), display_name, start, end]);
-        labels[display_name] = true;
-    }
+    set_up_range_sort();
 
-    var before_count = 0;
-    for (var i=0; i < data['neighbors'].length; i++) {
-        var start = data['neighbors'][i]['start'];
-        var end = data['neighbors'][i]['end'];
-        var direction = strand_to_direction(data['neighbors'][i]['strand']);
-        if(direction == "5'") {
-            data_array.unshift([direction, data['neighbors'][i]['display_name'], start, end]);
-            if(data['neighbors'][i]['start'] < data['start'] || data['strand'] != '+') {
-                before_count = before_count + 1;
-            }
-            has_five_prime = true;
-        }
-        else {
-            data_array.push([direction, data['neighbors'][i]['display_name'], start, end]);
-            if(data['neighbors'][i]['start'] < data['start'] && data['strand'] != '+') {
-                before_count = before_count + 1;
-            }
-            has_three_prime = true;
-        }
+    var options = {};
+    options["bPaginate"] = false;
+    options["aaSorting"] = [[1, "asc"]];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, { "sType": "range" }, { "sType": "range" }]
+    options["aaData"] = datatable;
+    options["oLanguage"] = {"sEmptyTable": "No subfeatures for " + display_name + '.'};
 
-        if(start < min_tick) {
-            min_tick = start;
-        }
-        if(end > max_tick) {
-            max_tick = end;
-        }
-    }
-
-    if(!has_five_prime) {
-        data_array.unshift(["5'", '', null, null]);
-        before_count = before_count + 1
-    }
-    if(!has_three_prime) {
-        data_array.push(["3'", '', null, null]);
-    }
-
-    dataTable.addRows(data_array);
-    var myColors = [];
-    for(var i=0; i < before_count; i++) {
-        myColors.push('#A4A4A4');
-    }
-    for(var i=0; i < Object.keys(labels).length; i++) {
-        myColors.push(colors[i]);
-    }
-    for(var i=0; i < data['neighbors'].length - before_count; i++) {
-        myColors.push('#A4A4A4');
-    }
-    if(!has_five_prime || !has_three_prime) {
-        myColors.push('#A4A4A4');
-    }
-
-    var options = {
-        'height': 135,
-        'timeline': {'hAxis': {'position': 'none'}},
-        'colors': myColors,
-        //'enableInteractivity': false,
-        'tooltip': {'isHTML': true}
-    }
-
-
-
-    chart.draw(dataTable, options);
-
-    function tooltipHandler(e) {
-        var datarow = data_array[e.row];
-        var spans = $(".google-visualization-tooltip-action > span");
-        spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
-        spans[2].innerHTML = 'Length:';
-        spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
-    }
-
-    var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
-    var tickmarks = tickmark_holder.childNodes;
-    min_tick = Math.floor(1.0*min_tick/1000)*1000;
-    for (var i=0; i < tickmarks.length; i++) {
-       tickmarks[i].innerHTML = min_tick + 1000*i;
-    }
-
-    // Listen for the 'select' event, and call my function selectHandler() when
-    // the user selects something on the chart.
-    google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
-}
-
-function set_up_sankey(data) {
-    var row_length = 10;
-    var char_length = 10;
-    for(var k=0; k < data[0]['sequence']['residues'].length; k=k+row_length*char_length) {
-        var datatable = new google.visualization.DataTable();
-        datatable.addColumn('string', 'From');
-        datatable.addColumn('string', 'To');
-        datatable.addColumn('number', 'Weight');
-
-        var rows = [];
-        for(var i=0; i < row_length*char_length; i=i+char_length) {
-             var transitions = {};
-             for(var j=0; j < data.length; j++) {
-                 var transition = data[j]['sequence']['residues'].substring(k+i, k+i+(2*char_length));
-                 if(transition in transitions) {
-                    transitions[transition] = transitions[transition] + 1;
-                 }
-                 else {
-                    transitions[transition] = 1;
-                 }
-             }
-
-             var transition_keys = Object.keys(transitions)
-             for(var j=0; j < transition_keys.length; j++) {
-                var transition_key = transition_keys[j];
-                rows.push([transition_key.substring(0, char_length) + (k+i), transition_key.substring(char_length, 2*char_length) + (k+i+char_length), transitions[transition_key]]);
-             }
-
-        }
-        $("#output").html(rows);
-
-        datatable.addRows(rows);
-
-        var parent_div = $("#sankey_multiple");
-        var child_div = document.createElement('div');
-        child_div.id = 'sankey_multiple' + k;
-        parent_div.append(child_div);
-        // Instantiate and draw our chart, passing in some options.
-        var chart = new google.visualization.Sankey(document.getElementById('sankey_multiple' + k));
-        chart.draw(datatable, {height: 100});
-    }
+    return create_table("subfeature_table", options);
 }

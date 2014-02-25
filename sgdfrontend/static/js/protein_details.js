@@ -146,13 +146,11 @@ function draw_domain_chart(chart_id, data) {
     var min_start = null;
     var max_end = null;
 
-    var sources = {};
     for (var i=0; i < data.length; i++) {
         var start = data[i]['start']*10;
         var end = data[i]['end']*10;
         data_array.push([data[i]['domain']['source'], data[i]['domain']['display_name'], start, end]);
         descriptions.push(data[i]['domain']['description']);
-        sources[data[i]['domain']['source']] = true;
         if(min_start == null || start < min_start) {
             min_start = start;
         }
@@ -163,34 +161,88 @@ function draw_domain_chart(chart_id, data) {
     dataTable.addRows(data_array);
 
     var options = {
-        'height': 70*Object.keys(sources).length + 35,
+        'height': 1,
         'timeline': {'colorByRowLabel': true,
             'hAxis': {'position': 'none'},
         }
     };
+
+    chart.draw(dataTable, options);
+
+    var height = $("#" + chart_id + " > div > div > div > svg").height() + 50;
+    options['height'] = height;
     chart.draw(dataTable, options);
 
     function tooltipHandler(e) {
         var datarow = data_array[e.row];
         var spans = $(".google-visualization-tooltip-action > span");
-        spans[0].innerHTML = 'Coords:'
-        spans[1].innerHTML = ' ' + datarow[2]/10 + '-' + datarow[3]/10;
-        spans[2].innerHTML = 'Descr: ';
-        if(descriptions[e.row] != null) {
-            spans[3].innerHTML = '<span>' + descriptions[e.row] + '</span>';
-        }
-        else {
-            spans[3].innerHTML = 'Not available.';
+        if(spans.length > 3) {
+            spans[0].innerHTML = 'Coords:'
+            spans[1].innerHTML = ' ' + datarow[2]/10 + '-' + datarow[3]/10;
+            spans[2].innerHTML = 'Descr: ';
+            if(descriptions[e.row] != null) {
+                spans[3].innerHTML = '<span>' + descriptions[e.row] + '</span>';
+            }
+            else {
+                spans[3].innerHTML = 'Not available.';
+            }
         }
     }
 
+    var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
+    var rectangles = rectangle_holder.childNodes;
+    var y_one = data[0]['start'];
+    var y_two = data[data.length-1]['end'];
+
+    var x_one = null;
+    var x_two = null;
+    var x_two_start = null;
+
+    for (var i=0; i < rectangles.length; i++) {
+        if(rectangles[i].nodeName == 'rect') {
+            var x = Math.round(rectangles[i].getAttribute('x'));
+            var y = Math.round(rectangles[i].getAttribute('y'));
+            if(x_one == null || x < x_one) {
+                x_one = x;
+            }
+            if(x_two == null || x > x_two_start) {
+                x_two = x + Math.round(rectangles[i].getAttribute('width'));
+                x_two_start = x;
+            }
+        }
+    }
+
+    var m = (y_two - y_one)/(x_two - x_one);
+    var b = y_two - m*x_two;
+
     var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
     var tickmarks = tickmark_holder.childNodes;
-    var tick_length = 1.0*(max_end - min_start)/tickmarks.length;
-    tick_length =Math.ceil(1.0*tick_length/1000)*1000;
-    var min_tick = Math.floor(1.0*min_start/tick_length)
+    var tickmark_space;
+    if(tickmarks.length > 1) {
+        tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
+    }
+    else {
+        tickmark_space = Math.round($("#" + chart_id).getAttribute('width'));
+    }
     for (var i=0; i < tickmarks.length; i++) {
-        tickmarks[i].innerHTML = tick_length*(i + min_tick)/10;
+        var x_new = Math.round(tickmarks[i].getAttribute('x'));
+        var y_new = Math.round(m*x_new + b);
+        if(m*tickmark_space > 10000) {
+            y_new = 10000*Math.round(y_new/10000);
+        }
+        else if(m*tickmark_space > 1000) {
+            y_new = 1000*Math.round(y_new/1000);
+        }
+        else if(m*tickmark_space > 100) {
+            y_new = 100*Math.round(y_new/100);
+        }
+        else if(m*tickmark_space > 10) {
+            y_new = 10*Math.round(y_new/10)
+        }
+        if(y_new <= 0) {
+            y_new = 1;
+        }
+        tickmarks[i].innerHTML = y_new;
     }
 
     var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];

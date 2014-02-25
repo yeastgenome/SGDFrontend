@@ -41,8 +41,8 @@ function set_up_sequence(chart_id, data) {
 
     var has_five_prime = false;
     var has_three_prime = false;
-    var min_tick = 0;
-    var max_tick = length;
+    var min_tick = null;
+    var max_tick = null;
 
     for (var i=0; i < data.length; i++) {
         var start = data[i]['start'];
@@ -57,10 +57,10 @@ function set_up_sequence(chart_id, data) {
             has_three_prime = true;
         }
 
-        if(start < min_tick) {
+        if(min_tick == null || start < min_tick) {
             min_tick = start;
         }
-        if(end > max_tick) {
+        if(max_tick == null || end > max_tick) {
             max_tick = end;
         }
     }
@@ -75,7 +75,7 @@ function set_up_sequence(chart_id, data) {
     var myColors = ['#A4A4A4'];
 
     var options = {
-        'height': 200,
+        'height': 1,
         'timeline': {'hAxis': {'position': 'none'}},
         'colors': myColors,
         //'enableInteractivity': false,
@@ -84,29 +84,78 @@ function set_up_sequence(chart_id, data) {
 
     chart.draw(dataTable, options);
 
+    var height = $("#" + chart_id + " > div > div > div > svg").height() + 50;
+    options['height'] = height;
+    chart.draw(dataTable, options);
+
     function tooltipHandler(e) {
         var datarow = data_array[e.row];
         var spans = $(".google-visualization-tooltip-action > span");
-        spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
-        spans[2].innerHTML = 'Length:';
-        spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
+        if(spans.length > 3) {
+            spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
+            spans[2].innerHTML = 'Length:';
+            spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
+        }
     }
+
+    var divider_height = Math.round($("#" + chart_id + " > div > div > svg > g")[0].childNodes[0].getAttribute('height'));
+
+    var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
+    var rectangles = rectangle_holder.childNodes;
+    var y_one = data[0]['start'];
+    var y_two = data[data.length-1]['end'];
+
+    var x_one = null;
+    var x_two = null;
+    var x_two_start = null;
+
+    for (var i=0; i < rectangles.length; i++) {
+        if(rectangles[i].nodeName == 'rect') {
+            var x = Math.round(rectangles[i].getAttribute('x'));
+            var y = Math.round(rectangles[i].getAttribute('y'));
+            if((y > divider_height && has_three_prime) || (y < divider_height && has_five_prime)) {
+                if(x_one == null || x < x_one) {
+                    x_one = x;
+                }
+                if(x_two == null || x > x_two_start) {
+                    x_two = x + Math.round(rectangles[i].getAttribute('width'));
+                    x_two_start = x;
+                }
+            }
+        }
+    }
+
+    var m = (y_two - y_one)/(x_two - x_one);
+    var b = y_two - m*x_two;
 
     var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
     var tickmarks = tickmark_holder.childNodes;
-    var space = 1000*Math.round(1.0*max_tick/tickmarks.length/1000);
-    if(space/10000 > 1) {
-        space = 10000*Math.round(1.0*space/10000);
+    var tickmark_space;
+    if(tickmarks.length > 1) {
+        tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
     }
-
+    else {
+        tickmark_space = Math.round($("#" + chart_id).getAttribute('width'));
+    }
     for (var i=0; i < tickmarks.length; i++) {
-        if(i==0) {
-            tickmarks[i].innerHTML = 1;
+        var x_new = Math.round(tickmarks[i].getAttribute('x'));
+        var y_new = Math.round(m*x_new + b);
+        if(m*tickmark_space > 10000) {
+            y_new = 10000*Math.round(y_new/10000);
         }
-        else {
-            tickmarks[i].innerHTML = min_tick + space*i;
+        else if(m*tickmark_space > 1000) {
+            y_new = 1000*Math.round(y_new/1000);
         }
-
+        else if(m*tickmark_space > 100) {
+            y_new = 100*Math.round(y_new/100);
+        }
+        else if(m*tickmark_space > 10) {
+            y_new = 10*Math.round(y_new/10)
+        }
+        if(y_new <= 0) {
+            y_new = 1;
+        }
+        tickmarks[i].innerHTML = y_new;
     }
 
     // Listen for the 'select' event, and call my function selectHandler() when
