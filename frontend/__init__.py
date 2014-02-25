@@ -131,14 +131,14 @@ def prep_views(chosen_frontend, config):
                      renderer=chosen_frontend.get_renderer('go_details'))
 
     config.add_route('protein_details',
-                     '/locus/{identifier}/protein_details',
+                     '/locus/{identifier}/protein',
                      view=lambda request: chosen_frontend.response_wrapper('protein_details', request)(
                                 getattr(chosen_frontend, 'protein_details')(
                                         bioent_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].upper())),
                      renderer=chosen_frontend.get_renderer('protein_details'))
 
     config.add_route('sequence_details',
-                     '/locus/{identifier}/sequence_details',
+                     '/locus/{identifier}/sequence',
                      view=lambda request: chosen_frontend.response_wrapper('sequence_details', request)(
                                 getattr(chosen_frontend, 'sequence_details')(
                                         bioent_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].upper())),

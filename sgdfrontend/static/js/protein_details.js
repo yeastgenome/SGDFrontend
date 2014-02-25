@@ -2,23 +2,29 @@ google.load("visualization", "1", {packages:["corechart"]});
 
 var phosphodata = null;
 
+var source_to_color = {};
+
+
 $(document).ready(function() {
 
     $.getJSON(protein_domains_link, function(data) {
         var domain_table = create_domain_table("domains_table", "domains_header", "No known domains for " + display_name + ".", data);
         create_download_button("domains_table_download", domain_table, download_table_link, domains_table_filename);
         draw_domain_chart("domain_chart", data);
+
+        $.getJSON(protein_domain_graph_link, function(data) {
+            if(data['nodes'].length > 1) {
+                var graph_style = prep_style();
+                var graph = create_cytoscape_vis("cy", layout, graph_style, data);
+            }
+            else {
+                hide_section("network");
+            }
+        });
 	});
 
     $("#domains_table_analyze").hide();
-    $.getJSON(protein_domain_graph_link, function(data) {
-  		if(data['nodes'].length > 1) {
-  			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
-  		}
-		else {
-			hide_section("network");
-		}
-	});
+
 
     $.getJSON(protein_sequence_details_link, function(data) {
         var strain_selection = $("#strain_selection");
@@ -113,7 +119,7 @@ function create_domain_table(div_id, header_id, message, data) {
     set_up_range_sort();
 
     var options = {};
-    options["bPaginate"] = false;
+    options["bPaginate"] = true;
     options["aaSorting"] = [[2, "asc"]];
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null]
     options["aaData"] = datatable;
@@ -129,33 +135,37 @@ function draw_domain_chart(chart_id, data) {
 
     var dataTable = new google.visualization.DataTable();
 
-    dataTable.addColumn({ type: 'string', id: 'Domain' });
+    dataTable.addColumn({ type: 'string', id: 'Source' });
     dataTable.addColumn({ type: 'string', id: 'Name' });
     dataTable.addColumn({ type: 'number', id: 'Start' });
     dataTable.addColumn({ type: 'number', id: 'End' });
 
     var data_array = [];
     var descriptions = [];
-    var domains = {};
 
-    var max_tick = 0;
+    var min_start = null;
+    var max_end = null;
 
+    var sources = {};
     for (var i=0; i < data.length; i++) {
         var start = data[i]['start']*10;
         var end = data[i]['end']*10;
-        data_array.push([data[i]['domain']['display_name'], data[i]['domain']['display_name'], start, end]);
+        data_array.push([data[i]['domain']['source'], data[i]['domain']['display_name'], start, end]);
         descriptions.push(data[i]['domain']['description']);
-        domains[data[i]['domain']['id']] = true;
-        if(end > max_tick) {
-            max_tick = end;
+        sources[data[i]['domain']['source']] = true;
+        if(min_start == null || start < min_start) {
+            min_start = start;
+        }
+        if(max_end == null || end > max_end) {
+            max_end = end;
         }
     }
     dataTable.addRows(data_array);
 
     var options = {
-        'height': 50*Object.keys(domains).length + 35,
-        'timeline': {'showRowLabels': false,
-                        'hAxis': {'position': 'none'},
+        'height': 70*Object.keys(sources).length + 35,
+        'timeline': {'colorByRowLabel': true,
+            'hAxis': {'position': 'none'},
         }
     };
     chart.draw(dataTable, options);
@@ -163,9 +173,9 @@ function draw_domain_chart(chart_id, data) {
     function tooltipHandler(e) {
         var datarow = data_array[e.row];
         var spans = $(".google-visualization-tooltip-action > span");
-        spans[0].innerHTML = 'Relative Coordinates:'
+        spans[0].innerHTML = 'Coords:'
         spans[1].innerHTML = ' ' + datarow[2]/10 + '-' + datarow[3]/10;
-        spans[2].innerHTML = 'Description: ';
+        spans[2].innerHTML = 'Descr: ';
         if(descriptions[e.row] != null) {
             spans[3].innerHTML = '<span>' + descriptions[e.row] + '</span>';
         }
@@ -176,8 +186,34 @@ function draw_domain_chart(chart_id, data) {
 
     var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
     var tickmarks = tickmark_holder.childNodes;
+    var tick_length = 1.0*(max_end - min_start)/tickmarks.length;
+    tick_length =Math.ceil(1.0*tick_length/1000)*1000;
+    var min_tick = Math.floor(1.0*min_start/tick_length)
     for (var i=0; i < tickmarks.length; i++) {
-        tickmarks[i].innerHTML = 100*i;
+        tickmarks[i].innerHTML = tick_length*(i + min_tick)/10;
+    }
+
+    var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
+    var rectangles = rectangle_holder.childNodes;
+    var ordered_colors = [];
+    for (var i=0; i < rectangles.length; i++) {
+        if(rectangles[i].nodeName == 'rect') {
+            var color = rectangles[i].getAttribute('fill');
+            if(ordered_colors[ordered_colors.length - 1] != color) {
+                ordered_colors.push(color);
+            }
+
+        }
+    }
+
+    var label_holder = $("#" + chart_id + " > div > div > svg > g")[0];
+    var labels = label_holder.childNodes;
+    var color_index = 0;
+    for (var i=0; i < labels.length; i++) {
+        if(labels[i].nodeName == 'text') {
+            source_to_color[labels[i].innerHTML] = ordered_colors[color_index];
+            color_index = color_index + 1;
+        }
     }
 
     // Listen for the 'select' event, and call my function selectHandler() when
@@ -185,7 +221,8 @@ function draw_domain_chart(chart_id, data) {
     google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
 }
 
-var graph_style = cytoscape.stylesheet()
+function prep_style() {
+    return cytoscape.stylesheet()
 	.selector('node')
 	.css({
 		'content': 'data(name)',
@@ -214,8 +251,66 @@ var graph_style = cytoscape.stylesheet()
 		'shape': 'rectangle',
 		'text-outline-color': '#fff',
 		'color': '#888',
-		'background-color': "#D0A9F5",
-});
+    })
+    .selector("node[type='BIOITEM'][source='-']")
+	.css({
+		'background-color': source_to_color['-'],
+    })
+    .selector("node[type='BIOITEM'][source='Gene3D']")
+	.css({
+		'background-color': source_to_color['Gene3D'],
+    })
+    .selector("node[type='BIOITEM'][source='JASPAR']")
+	.css({
+		'background-color': source_to_color['JASPAR'],
+    })
+    .selector("node[type='BIOITEM'][source='PANTHER']")
+	.css({
+		'background-color': source_to_color['PANTHER'],
+    })
+    .selector("node[type='BIOITEM'][source='Pfam']")
+	.css({
+		'background-color': source_to_color['Pfam'],
+    })
+    .selector("node[type='BIOITEM'][source='PIR superfamily']")
+	.css({
+		'background-color': source_to_color['PIR superfamily'],
+    })
+    .selector("node[type='BIOITEM'][source='PRINTS']")
+	.css({
+		'background-color': source_to_color['PRINTS'],
+    })
+    .selector("node[type='BIOITEM'][source='ProDom']")
+	.css({
+		'background-color': source_to_color['ProDom'],
+    })
+    .selector("node[type='BIOITEM'][source='PROSITE']")
+	.css({
+		'background-color': source_to_color['PROSITE'],
+    })
+    .selector("node[type='BIOITEM'][source='SignalP']")
+	.css({
+		'background-color': source_to_color['SignalP'],
+    })
+    .selector("node[type='BIOITEM'][source='SMART']")
+	.css({
+		'background-color': source_to_color['SMART'],
+    })
+    .selector("node[type='BIOITEM'][source='SUPERFAMILY']")
+	.css({
+		'background-color': source_to_color['SUPERFAMILY'],
+    })
+    .selector("node[type='BIOITEM'][source='TIGRFAMs']")
+	.css({
+		'background-color': source_to_color['TIGRFAMs'],
+    })
+    .selector("node[type='BIOITEM'][source='TMHMM']")
+	.css({
+		'background-color': source_to_color['TMHMM'],
+    })
+
+;
+}
 
 var layout = {
 	"name": "arbor",
