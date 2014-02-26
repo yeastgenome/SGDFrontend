@@ -114,6 +114,8 @@ def download_citations_link():
     return '/download_citations'
 def download_table_link():
     return '/download_table'
+def download_sequence_link():
+    return '/download_sequence'
 def download_image_link():
     return '/download_image'
 

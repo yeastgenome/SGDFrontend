@@ -37,8 +37,12 @@ function download_citations(citation_div, download_link, list_name) {
 	for(var i=0,len=entries.length; i<len; i++) {
 		reference_ids.push(entries[i].id)
 	}
-	
+
 	post_to_url(download_link, {"display_name":list_name, "reference_ids": reference_ids});
+}
+
+function download_sequence(sequence, download_link, list_name, contig_name) {
+	post_to_url(download_link, {"display_name":list_name, "sequence": sequence, 'contig_name': contig_name});
 }
 
 function download_image(stage, width, height, download_link, image_name) {

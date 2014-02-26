@@ -41,6 +41,9 @@ $(document).ready(function() {
             $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span class="subheader">' + '- ' + data[index]['strain']['display_name'] + '</span>';
             $("#length").html(data[index]['sequence']['length']);
             draw_phosphodata();
+            $("#sequence_download").click(function f() {
+                download_sequence(data[index]['sequence']['residues'], download_sequence_link, display_name, '');
+            });
         }
 
         strain_selection.change(function() {on_change(this.selectedIndex)});

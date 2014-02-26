@@ -119,6 +119,10 @@ class FrontendInterface:
     @abstractmethod   
     def download_citations(self, response, reference_ids, display_name):
         return None
+
+    @abstractmethod
+    def download_sequence(self, response, sequence, display_name, contig_name):
+        return None
       
     @abstractmethod  
     def analyze(self, list_name, bioent_ids):

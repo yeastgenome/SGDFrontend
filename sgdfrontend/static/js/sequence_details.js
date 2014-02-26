@@ -8,16 +8,20 @@ $(document).ready(function() {
         var alternative_selection = $("#alternative_strain_selection");
         var other_selection = $("#other_strain_selection");
         var strain_to_data = {};
-        var strain_to_description = {};
         for (var i=0; i < data.length; i++) {
             if(data[i]['strain']['display_name'] == 'S288C') {
-                $("#reference_sequence").html(data[i]['sequence']['residues'].chunk(10).join(' '));
+                var residues = data[i]['sequence']['residues'];
+                $("#reference_sequence").html(residues.chunk(10).join(' '));
                 $("#reference_contig").html('<a href="' + data[i]['contig']['link'] + '">' + data[i]['contig']['display_name'] + '</a>: ' + data[i]['start'] + ' - ' + data[i]['end']);
                 draw_label_chart('reference_label_chart', data[i]);
                 draw_sublabel_chart('reference_sublabel_chart', data[i]);
                 color_sequence("reference_sequence", data[i]);
                 var subfeature_table = create_subfeature_table(data[i]);
                 create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
+                var contig = data[i]['contig']['format_name'];
+                $("#reference_download").click(function f() {
+                    download_sequence(residues, download_sequence_link, display_name, contig);
+                });
             }
             else {
                 var option = document.createElement("option");
@@ -41,6 +45,9 @@ $(document).ready(function() {
             $("#navbar_alternative").children()[0].innerHTML = 'Alternative Reference Strains <span class="subheader">' + '- ' + alternative_selection.val() + '</span>';
             $("#alternative_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
             draw_label_chart('alternative_label_chart', strain_data);
+            $("#alternative_download").click(function f() {
+                download_sequence(strain_data['sequence']['residues'], download_sequence_link, display_name, strain_data['contig']['format_name']);
+            });
         }
         alternative_selection.change(function() {alternative_on_change()});
         alternative_on_change();
@@ -52,6 +59,9 @@ $(document).ready(function() {
             $("#navbar_other").children()[0].innerHTML = 'Other Strains <span class="subheader">' + '- ' + other_selection.val() + '</span>';
             $("#other_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
             draw_label_chart('other_label_chart', strain_data);
+            $("#other_download").click(function f() {
+                download_sequence(strain_data['sequence']['residues'], download_sequence_link, display_name, strain_data['contig']['format_name']);
+            });
         }
         other_selection.change(function() {other_on_change()});
         other_on_change();
@@ -123,7 +133,7 @@ function draw_label_chart(chart_id, data) {
     }
 
     if(!has_five_prime) {
-        data_array.push(["5'", '', null, null]);
+        data_array.unshift(["5'", '', null, null]);
     }
     if(!has_three_prime) {
         data_array.push(["3'", '', null, null]);
@@ -147,7 +157,6 @@ function draw_label_chart(chart_id, data) {
 
     var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
     var rectangles = rectangle_holder.childNodes;
-    var ordered_colors = [];
     for (var i=0; i < rectangles.length; i++) {
         if(rectangles[i].nodeName == 'text' && rectangles[i].innerHTML == display_name) {
             rectangles[i].setAttribute('fill', 'white');
@@ -169,24 +178,22 @@ function draw_label_chart(chart_id, data) {
 
     var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
     var rectangles = rectangle_holder.childNodes;
-    var y_one = data['neighbors'][0]['start'];
-    var y_two = data['neighbors'][data['neighbors'].length-1]['end'];
+    var y_one = min_tick;
+    var y_two = max_tick;
 
     var x_one = null;
     var x_two = null;
-    var x_two_start = null;
 
     for (var i=0; i < rectangles.length; i++) {
         if(rectangles[i].nodeName == 'rect') {
             var x = Math.round(rectangles[i].getAttribute('x'));
             var y = Math.round(rectangles[i].getAttribute('y'));
-            if((y > divider_height && has_three_prime) || (y < divider_height && has_five_prime)) {
+            if(x > 0 && (y > divider_height && has_three_prime) || (y < divider_height && has_five_prime)) {
                 if(x_one == null || x < x_one) {
                     x_one = x;
                 }
-                if(x_two == null || x > x_two_start) {
+                if(x_two == null || x > x_two) {
                     x_two = x + Math.round(rectangles[i].getAttribute('width'));
-                    x_two_start = x;
                 }
             }
         }
@@ -291,8 +298,6 @@ function draw_sublabel_chart(chart_id, data) {
             spans[2].innerHTML = ' ' + datarow[2] - datarow[1] + 1;
         }
     }
-
-    var divider_height = Math.round($("#" + chart_id + " > div > div > svg > g")[0].childNodes[0].getAttribute('height'));
 
     var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
     var rectangles = rectangle_holder.childNodes;

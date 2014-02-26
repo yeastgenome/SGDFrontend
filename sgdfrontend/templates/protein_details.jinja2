@@ -7,6 +7,7 @@
     var protein_phosphorylation_details_link = "{{ protein_phosphorylation_details_link }}";
 
 	var download_table_link = "{{download_table_link}}";
+    var download_sequence_link = "{{download_sequence_link}}";
 	var analyze_link = "{{analyze_table_link}}";
 
     var domains_table_filename = "{{ locus.display_name }}_domains";
@@ -93,6 +94,11 @@
                     <select id="strain_selection" class="big-input"></select>
                 </label>
 
+                <div class="button-bar">
+                    <ul class="button-group radius">
+                        <li><a id="sequence_download" class="small button secondary"><i class="icon-download-alt"></i> Download</a></li>
+                    </ul>
+                </div>
                 <blockquote id="sequence_residues" style="font-family:Monospace"></blockquote>
 
                 <h2 class="subheader">Phosphorylation Sites

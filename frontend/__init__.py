@@ -79,6 +79,16 @@ def prep_views(chosen_frontend, config):
                                         reference_ids = [] if 'reference_ids' not in request.POST else request.POST['reference_ids'].split(','),
                                         display_name = None if 'display_name' not in request.POST else request.POST['display_name'])),
                      renderer=chosen_frontend.get_renderer('download_citations'))
+
+    config.add_route('download_sequence',
+                     '/download_sequence',
+                     view=lambda request: chosen_frontend.response_wrapper('download_sequence', request)(
+                                getattr(chosen_frontend, 'download_sequence')(
+                                        response = request.response,
+                                        sequence = None if 'sequence' not in request.POST else request.POST['sequence'],
+                                        display_name = None if 'display_name' not in request.POST else request.POST['display_name'],
+                                        contig_name = None if 'contig_name' not in request.POST else request.POST['contig_name'])),
+                     renderer=chosen_frontend.get_renderer('download_sequence'))
     
     config.add_route('analyze',
                      '/analyze',

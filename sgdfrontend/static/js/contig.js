@@ -1,9 +1,16 @@
 
 $(document).ready(function() {
 
+    $("#sequence_div").html(residues.chunk(10).join(' '));
+    $("#sequence_download").click(function f() {
+		download_sequence(residues, download_sequence_link, format_name, format_name);
+	});
 
   	$.getJSON(sequence_details_link, function(data) {
-        set_up_sequence("sequence_div", data);
+        set_up_sequence("feature_div", data);
+
+        var feature_table = create_feature_table(data);
+        create_download_button("feature_table_download", feature_table, download_table_link, display_name + '_features');
   	});
 
 	//Hack because footer overlaps - need to fix this.
@@ -161,4 +168,36 @@ function set_up_sequence(chart_id, data) {
     // Listen for the 'select' event, and call my function selectHandler() when
     // the user selects something on the chart.
     google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
+}
+
+function create_feature_table(data) {
+	var datatable = [];
+
+    for (var i=0; i < data.length; i++) {
+        datatable.push([null,
+                        data[i]['bioentity']['display_name'],
+                        data[i]['bioentity']['locus_type'],
+                        data[i]['start'] + '-' + data[i]['end'],
+                        ]);
+    }
+
+    $("#feature_header").html(data.length);
+
+    if(datatable.length == 1) {
+        $("#feature_header_type").html("entry");
+    }
+    else {
+        $("#feature_header_type").html("entries");
+    }
+
+    set_up_range_sort();
+
+    var options = {};
+    options["bPaginate"] = true;
+    options["aaSorting"] = [[1, "asc"]];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null, { "sType": "range" }]
+    options["aaData"] = datatable;
+    options["oLanguage"] = {"sEmptyTable": "No features for " + display_name + '.'};
+
+    return create_table("feature_table", options);
 }

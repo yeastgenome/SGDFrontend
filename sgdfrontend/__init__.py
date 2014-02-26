@@ -358,6 +358,7 @@ class SGDFrontend(FrontendInterface):
 
                     #Links
                     'download_table_link': link_maker.download_table_link(),
+                    'download_sequence_link': link_maker.download_sequence_link(),
                     'analyze_table_link': link_maker.analyze_link(),
 
                     'protein_domain_details_link': link_maker.protein_domain_details_link(self.backend_url, bioent_id),
@@ -381,6 +382,7 @@ class SGDFrontend(FrontendInterface):
 
                     #Links
                     'download_table_link': link_maker.download_table_link(),
+                    'download_sequence_link': link_maker.download_sequence_link(),
                     'analyze_table_link': link_maker.analyze_link(),
 
                     'sequence_details_link': link_maker.sequence_details_link(self.backend_url, bioent_id),
@@ -397,6 +399,7 @@ class SGDFrontend(FrontendInterface):
 
                     #Links
                     'download_table_link': link_maker.download_table_link(),
+                    'download_sequence_link': link_maker.download_sequence_link(),
                     'analyze_table_link': link_maker.analyze_link(),
 
                     'sequence_details_link': link_maker.sequence_details_link_contig(self.backend_url, contig_id),
@@ -529,6 +532,18 @@ class SGDFrontend(FrontendInterface):
         
         headers['Content-Type'] = 'text/plain'        
         headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.nbib')
+        headers['Content-Description'] = 'File Transfer'
+        return response
+
+    def download_sequence(self, response, sequence, display_name, contig_name):
+        headers = response.headers
+
+        exclude = set([x for x in string.punctuation if x != ' ' and x != '_'])
+        display_name = ''.join(ch for ch in display_name if ch not in exclude).replace(' ', '_')
+
+        response.text = '>' + display_name + '  ' + contig_name + '\n' + clean_cell(sequence.replace(' ', ''))
+        headers['Content-Type'] = 'text/plain'
+        headers['Content-Disposition'] = str('attachment; filename=' + display_name + '_' + contig_name + '_sequence.txt')
         headers['Content-Description'] = 'File Transfer'
         return response
     
