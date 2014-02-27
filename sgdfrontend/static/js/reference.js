@@ -44,28 +44,9 @@ $(document).ready(function() {
 
     if(counts["regulation"] > 0) {
         $.getJSON(regulation_details_link, function(data) {
-            var regulation_table = create_regulation_table(data['evidence']);
+            var regulation_table = create_regulation_table(data);
             create_download_button("all_regulation_table_download", regulation_table, download_table_link, regulation_download_filename);
             create_analyze_button("all_regulation_table_analyze", regulation_table, analyze_link, regulation_analyze_filename, true);
-
-            var paragraph_bioentities = $("#paragraph_bioentities");
-            if(data['paragraph_bioentities'].length > 0) {
-                var header = document.createElement("span");
-                header.innerHTML = 'Paragraph Reference For: ';
-                paragraph_bioentities.append(header);
-                for(var i=0; i < data['paragraph_bioentities'].length; i++) {
-                    var a = document.createElement("a");
-                    a.href = data['paragraph_bioentities'][i]["link"];
-                    a.innerHTML = data['paragraph_bioentities'][i]["display_name"];
-                    paragraph_bioentities.append(a);
-
-                    if(i != data['paragraph_bioentities'].length-1) {
-                        var comma = document.createElement("span");
-                        comma.innerHTML = ", ";
-                        paragraph_bioentities.append(comma);
-                    }
-                }
-            }
         });
     }
     else {
@@ -319,7 +300,7 @@ function create_regulation_table(data) {
 
         var options = {};
         options["bPaginate"] = true;
-        options["aaSorting"] = [[4, "asc"]];
+        options["aaSorting"] = [[3, "asc"]];
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}]
         options["oLanguage"] = {"sEmptyTable": "No regulation data for " + display_name};
         options["aaData"] = datatable;

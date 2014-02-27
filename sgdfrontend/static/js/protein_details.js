@@ -61,6 +61,7 @@ $(document).ready(function() {
 });
 
 function draw_phosphodata() {
+    var data = [];
     if(phosphodata != null) {
         var additional = 0;
         for (var i=0; i < phosphodata.length; i++) {
@@ -70,8 +71,10 @@ function draw_phosphodata() {
             if(phosphodata[i]['site_residue'] == old_residues.substring(index, index+1)) {
                 residues.html(old_residues.substring(0, index) + "<span style='color:red'>" + old_residues.substring(index, index+1) + "</span>" + old_residues.substring(index+1, old_residues.length));
                 additional = additional + 31;
+                data.push(phosphodata[i]);
             }
         }
+        create_phosphorylation_table(data);
     }
 }
 
@@ -103,6 +106,7 @@ function create_phosphorylation_table(data) {
     var options = {};
     options["bPaginate"] = false;
     options["aaSorting"] = [[4, "asc"]];
+    options["bDestroy"] = true;
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": 'No phosphorylation data for ' + display_name + '.'};
@@ -123,8 +127,8 @@ function create_domain_table(div_id, header_id, message, data) {
 
     var options = {};
     options["bPaginate"] = true;
-    options["aaSorting"] = [[2, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null]
+    options["aaSorting"] = [[4, "asc"]];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null, null]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": message};
 

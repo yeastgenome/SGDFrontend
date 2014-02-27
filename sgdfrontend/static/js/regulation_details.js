@@ -89,8 +89,8 @@ function create_domain_table(data) {
 
         var options = {};
         options["bPaginate"] = false;
-        options["aaSorting"] = [[2, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null]
+        options["aaSorting"] = [[4, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null, {"bSearchable":false, "bVisible":false}]
         options["aaData"] = datatable;
 
         domain_table = create_table("domains_table", options);
