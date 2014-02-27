@@ -38,6 +38,7 @@ $(document).ready(function() {
 
         function on_change(index) {
             $("#sequence_residues").html(data[index]['sequence']['residues'].chunk(10).join(' '));
+            $("#strain_description").html(data[index]['strain']['description']);
             $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span class="subheader">' + '- ' + data[index]['strain']['display_name'] + '</span>';
             $("#length").html(data[index]['sequence']['length']);
             draw_phosphodata();

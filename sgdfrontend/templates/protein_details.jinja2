@@ -91,7 +91,7 @@
             <div class="page-header">
                 <h1>Sequence</h1>
                 <label><h3>Strain</h3>
-                    <select id="strain_selection" class="big-input"></select>
+                    <select id="strain_selection" class="big-input"></select> - <span id="strain_description"></span>
                 </label>
 
                 <div class="button-bar">
@@ -114,23 +114,29 @@
 
                 <h2 class="subheader">Sequence-Based Physico-chemical Properties</h2>
 
-                <h3>Physical Details</h3>
-                <ul class="unstyled">
-                    <li>Length (a.a): <span id="length"></span></li>
-                    <li>Molecular Weight (Da): </li>
-                    <li>Isoelectric Point (pl): </li>
-                    <li>Formula: </li>
-                    <li>Aliphatic Index: </li>
-                    <li>Instability Index: </li>
-                </ul>
-                <h3>Coding Region Translation Calculations</h3>
-                <ul class="unstyled">
-                    <li>Codon Bias: </li>
-                    <li>Codon Adaptation Index: </li>
-                    <li>Frequence of Optimal Codons: </li>
-                    <li>Hydropathicity of Protein: </li>
-                    <li>Aromaticity Score: </li>
-                </ul>
+                <div class="row">
+                    <div class="small-12 large-6 columns content-column">
+                        <h3>Physical Details</h3>
+                        <ul class="unstyled">
+                            <li>Length (a.a): <span id="length"></span></li>
+                            <li>Molecular Weight (Da): </li>
+                            <li>Isoelectric Point (pl): </li>
+                            <li>Formula: </li>
+                            <li>Aliphatic Index: </li>
+                            <li>Instability Index: </li>
+                        </ul>
+                    </div>
+                    <div class="small-12 large-6 columns content-column">
+                        <h3>Coding Region Translation Calculations</h3>
+                        <ul class="unstyled">
+                            <li>Codon Bias: </li>
+                            <li>Codon Adaptation Index: </li>
+                            <li>Frequence of Optimal Codons: </li>
+                            <li>Hydropathicity of Protein: </li>
+                            <li>Aromaticity Score: </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </section>
 
