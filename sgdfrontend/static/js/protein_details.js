@@ -194,12 +194,11 @@ function draw_domain_chart(chart_id, data) {
 
     var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
     var rectangles = rectangle_holder.childNodes;
-    var y_one = data[0]['start'];
-    var y_two = data[data.length-1]['end'];
+    var y_one = min_start/10;
+    var y_two = max_end/10;
 
     var x_one = null;
     var x_two = null;
-    var x_two_start = null;
 
     for (var i=0; i < rectangles.length; i++) {
         if(rectangles[i].nodeName == 'rect') {
@@ -208,9 +207,8 @@ function draw_domain_chart(chart_id, data) {
             if(x_one == null || x < x_one) {
                 x_one = x;
             }
-            if(x_two == null || x > x_two_start) {
+            if(x_two == null || x > x_two) {
                 x_two = x + Math.round(rectangles[i].getAttribute('width'));
-                x_two_start = x;
             }
         }
     }

@@ -109,24 +109,22 @@ function set_up_sequence(chart_id, data) {
 
     var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
     var rectangles = rectangle_holder.childNodes;
-    var y_one = data[0]['start'];
-    var y_two = data[data.length-1]['end'];
+    var y_one = min_tick;
+    var y_two = max_tick;
 
     var x_one = null;
     var x_two = null;
-    var x_two_start = null;
 
     for (var i=0; i < rectangles.length; i++) {
         if(rectangles[i].nodeName == 'rect') {
             var x = Math.round(rectangles[i].getAttribute('x'));
             var y = Math.round(rectangles[i].getAttribute('y'));
-            if((y > divider_height && has_three_prime) || (y < divider_height && has_five_prime)) {
+            if(x > 0 && (y > divider_height && has_three_prime) || (y < divider_height && has_five_prime)) {
                 if(x_one == null || x < x_one) {
                     x_one = x;
                 }
-                if(x_two == null || x > x_two_start) {
+                if(x_two == null || x > x_two) {
                     x_two = x + Math.round(rectangles[i].getAttribute('width'));
-                    x_two_start = x;
                 }
             }
         }
@@ -175,7 +173,7 @@ function create_feature_table(data) {
 
     for (var i=0; i < data.length; i++) {
         datatable.push([null,
-                        data[i]['bioentity']['display_name'],
+                        create_link(data[i]['bioentity']['display_name'], data[i]['bioentity']['link']),
                         data[i]['bioentity']['locus_type'],
                         data[i]['start'] + '-' + data[i]['end'],
                         ]);

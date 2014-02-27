@@ -435,7 +435,7 @@ function create_subfeature_table(data) {
 
     var options = {};
     options["bPaginate"] = false;
-    options["aaSorting"] = [[1, "asc"]];
+    options["aaSorting"] = [[2, "asc"]];
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, { "sType": "range" }, { "sType": "range" }]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": "No subfeatures for " + display_name + '.'};
