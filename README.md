@@ -20,11 +20,12 @@ Dependencies:
 
 To build the application:
 
-    $ python setup.py develop
+    $ python bootstrap.py
+    $ bin/buildout
     
 To start the application:
 
-    $ pserve sgdfrontend_development.ini
+    $ bin/pserve sgdfrontend_development.ini
 
 To run off of a different backend:
 Set the backend_url parameter in the config file to the URL of the new backend.
