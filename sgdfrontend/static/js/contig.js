@@ -1,20 +1,19 @@
 
 $(document).ready(function() {
 
-    $("#sequence_div").html(residues.chunk(10).join(' '));
     $("#sequence_download").click(function f() {
 		download_sequence(residues, download_sequence_link, format_name, format_name);
 	});
 
   	$.getJSON(sequence_details_link, function(data) {
-        set_up_sequence("feature_div", data);
+        set_up_sequence("feature_div", data['dna']);
 
-        var feature_table = create_feature_table(data);
+        var feature_table = create_feature_table(data['dna']);
         create_download_button("feature_table_download", feature_table, download_table_link, display_name + '_features');
   	});
 
 	//Hack because footer overlaps - need to fix this.
-	add_footer_space("sequence");
+	add_footer_space("feature");
 });
 
 var colors = ["#2E2EFE", "#FA5858", "#088A08", "#F3F781", "#9F81F7"];
@@ -140,7 +139,7 @@ function set_up_sequence(chart_id, data) {
         tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
     }
     else {
-        tickmark_space = Math.round($("#" + chart_id).getAttribute('width'));
+        tickmark_space = 100;
     }
     for (var i=0; i < tickmarks.length; i++) {
         var x_new = Math.round(tickmarks[i].getAttribute('x'));

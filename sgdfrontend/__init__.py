@@ -38,7 +38,6 @@ class SGDFrontend(FrontendInterface):
     def interaction_details(self, bioent_repr):
         bioent = get_bioent(self.backend_url, bioent_repr)
         bioent_id = str(bioent['id'])
-        display_name = bioent['display_name']
         overview = get_json(link_maker.interaction_overview_link(self.backend_url, bioent_id))
         tabs = get_json(link_maker.tab_link(self.backend_url, bioent_id))
         
@@ -87,7 +86,6 @@ class SGDFrontend(FrontendInterface):
     def regulation_details(self, bioent_repr):
         bioent = get_bioent(self.backend_url, bioent_repr)
         bioent_id = str(bioent['id'])
-        display_name = bioent['display_name']
         overview = get_json(link_maker.regulation_overview_link(self.backend_url, bioent_id))
         tabs = get_json(link_maker.tab_link(self.backend_url, bioent_id))
         
@@ -363,7 +361,7 @@ class SGDFrontend(FrontendInterface):
 
                     'protein_domain_details_link': link_maker.protein_domain_details_link(self.backend_url, bioent_id),
                     'protein_domain_graph_link': link_maker.protein_domain_graph_link(self.backend_url, bioent_id),
-                    'protein_sequence_details_link': link_maker.protein_sequence_details_link(self.backend_url, bioent_id),
+                    'sequence_details_link': link_maker.sequence_details_link(self.backend_url, bioent_id),
                     'protein_phosphorylation_details_link': link_maker.protein_phosphorylation_details_link(self.backend_url, bioent_id)
                     }
         return page

@@ -47,6 +47,13 @@
                 <ul class="unstyled">
                     <li><strong>Strain: </strong>{{ contig.format_name }}</li>
                     <li><strong>Length: </strong>{{ contig.length }}</li>
+                    <li>
+                        <div class="button-bar">
+                            <ul class="button-group radius">
+                                <li><a id="sequence_download" class="small button secondary"><i class="icon-download-alt"></i> Download Sequence</a></li>
+                            </ul>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </section>
@@ -77,20 +84,6 @@
                         </tr>
                     </thead>
                 </table>
-            </div>
-        </section>
-
-        <!-- Sequence
-================================================== -->
-        <section id="sequence" data-magellan-destination="sequence">
-            <div class="page-header">
-                <h1>Sequence</h1>
-                <div class="button-bar">
-                    <ul class="button-group radius">
-                        <li><a id="sequence_download" class="small button secondary"><i class="icon-download-alt"></i> Download</a></li>
-                    </ul>
-                </div>
-                <blockquote id="sequence_div" style="font-family:Monospace"></blockquote>
             </div>
         </section>
 

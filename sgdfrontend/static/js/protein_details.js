@@ -26,24 +26,25 @@ $(document).ready(function() {
     $("#domains_table_analyze").hide();
 
 
-    $.getJSON(protein_sequence_details_link, function(data) {
+    $.getJSON(sequence_details_link, function(data) {
+        var protein_data = data['protein'];
         var strain_selection = $("#strain_selection");
-        for (var i=0; i < data.length; i++) {
+        for (var i=0; i < protein_data.length; i++) {
             var option = document.createElement("option");
-            option.setAttribute("value", data[i]['strain']['format_name']);
-            option.innerHTML = data[i]['strain']['display_name'];
+            option.setAttribute("value", protein_data[i]['strain']['format_name']);
+            option.innerHTML = protein_data[i]['strain']['display_name'];
             strain_selection.append(option);
 
         }
 
         function on_change(index) {
-            $("#sequence_residues").html(data[index]['sequence']['residues'].chunk(10).join(' '));
-            $("#strain_description").html(data[index]['strain']['description']);
-            $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span class="subheader">' + '- ' + data[index]['strain']['display_name'] + '</span>';
-            $("#length").html(data[index]['sequence']['length']);
+            $("#sequence_residues").html(protein_data[index]['sequence']['residues'].chunk(10).join(' '));
+            $("#strain_description").html(protein_data[index]['strain']['description']);
+            $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span class="subheader">' + '- ' + protein_data[index]['strain']['display_name'] + '</span>';
+            $("#length").html(protein_data[index]['sequence']['length']);
             draw_phosphodata();
             $("#sequence_download").click(function f() {
-                download_sequence(data[index]['sequence']['residues'], download_sequence_link, display_name, '');
+                download_sequence(protein_data[index]['sequence']['residues'], download_sequence_link, display_name, '');
             });
         }
 
@@ -228,7 +229,7 @@ function draw_domain_chart(chart_id, data) {
         tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
     }
     else {
-        tickmark_space = Math.round($("#" + chart_id).getAttribute('width'));
+        tickmark_space = 100;
     }
     for (var i=0; i < tickmarks.length; i++) {
         var x_new = Math.round(tickmarks[i].getAttribute('x'));
