@@ -18,7 +18,7 @@ $(document).ready(function() {
                 var graph = create_cytoscape_vis("cy", layout, graph_style, data);
             }
             else {
-                hide_section("network");
+                $("#shared_domains").hide();
             }
         });
 	});
@@ -41,7 +41,7 @@ $(document).ready(function() {
             $("#sequence_residues").html(protein_data[index]['sequence']['residues'].chunk(10).join(' '));
             $("#strain_description").html(protein_data[index]['strain']['description']);
             $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span class="subheader">' + '- ' + protein_data[index]['strain']['display_name'] + '</span>';
-            $("#length").html(protein_data[index]['sequence']['length']);
+            set_up_properties(protein_data[index]['sequence'])
             draw_phosphodata();
             $("#sequence_download").click(function f() {
                 download_sequence(protein_data[index]['sequence']['residues'], download_sequence_link, display_name, '');
@@ -61,6 +61,39 @@ $(document).ready(function() {
     //Hack because footer overlaps - need to fix this.
 	add_footer_space("resources");
 });
+
+function update_property(prop_id, prop_string, prop_value) {
+    if(prop_value != null) {
+        $("#" + prop_id).html(prop_string + prop_value);
+        $("#" + prop_id).show();
+    }
+    else {
+        $("#" + prop_id).hide();
+    }
+}
+
+function set_up_properties(data) {
+    update_property('length', 'Length (a.a.): ', data['length']);
+    update_property('molecular_weight', 'Molecular Weight (Da): ', data['molecular_weight']);
+    update_property('formula', 'Formula: ', data['carbon']);
+    update_property('aliphatic_index', 'Aliphatic Index: ', data['aliphatic_index']);
+    update_property('instability_index', 'Instability Index: ', data['instability_index']);
+
+    update_property('codon_bias', 'Codon Bias: ', data['codon_bias']);
+    update_property('cai', 'Codon Adaptation Index: ', data['cai']);
+    update_property('fop_score', 'Frequence of Optimal Codons: ', data['fop_score']);
+    update_property('gravy_score', 'Hydropathicity of Protein: ', data['gravy_score']);
+    update_property('aromaticity_score', 'Aromaticity Score: ', data['aromaticity_score']);
+
+    update_property('ecoli_half_life', 'Escherichia coli (in vivo): ', data['ecoli_half_life']);
+    update_property('mammal_half_life', 'mammalian reticulocytes (in vitro): ', data['mammal_half_life']);
+    update_property('yeast_half_life', 'yeast (in vivo): ', data['yeast_half_life']);
+
+    update_property('all_half_cys_ext_coeff', 'assuming ALL Cys residues appear as half cystines: ', data['all_half_cys_ext_coeff']);
+    update_property('no_cys_ext_coeff', 'assuming NO Cys residues appear as half cystines: ', data['no_cys_ext_coeff']);
+    update_property('all_cys_ext_coeff', 'assuming all Cys residues are reduced: ', data['all_cys_ext_coeff']);
+    update_property('all_pairs_cys_ext_coeff', 'assuming all pairs of Cys residues form cystines: ', data['all_pairs_cys_ext_coeff']);
+}
 
 function draw_phosphodata() {
     var data = [];

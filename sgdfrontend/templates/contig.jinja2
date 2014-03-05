@@ -12,14 +12,14 @@
 
 </script>
 
-<title>{{ contig.display_name }} Contig</title>
+<title>{{ contig.display_name }} Map</title>
 
 {% extends "templates/global_layout.jinja2" %}
 
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>Contig: <span class="gene_name">{{ contig.display_name }}</span></h2>
+	<h2>Map: <span class="gene_name">{{ contig.display_name }}</span></h2>
 </div>
 
 <!-- Navbar
@@ -33,7 +33,7 @@
 
         <script>
         //Set up navbar
-            add_navbar_title('Contig: <span class="gene_name">{{ contig.display_name }}</span>');
+            add_navbar_title('Map: <span class="gene_name">{{ contig.display_name }}</span>');
             add_navbar_element('Summary', 'summary');
             add_navbar_element('Features', 'feature');
             add_navbar_element('Sequence', 'sequence');

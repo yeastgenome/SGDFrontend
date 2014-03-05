@@ -278,7 +278,8 @@ function draw_label_chart(chart_id, data) {
     var options = {
         'height': 1,
         'timeline': {'hAxis': {'position': 'none'},
-                    'singleColor': '#A4A4A4'},
+                    //'singleColor': '#A4A4A4'
+        },
         'tooltip': {'isHTML': true}
 
     }
@@ -289,14 +290,18 @@ function draw_label_chart(chart_id, data) {
     options['height'] = height;
     chart.draw(dataTable, options);
 
+    options['colors'] = [];
     var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
     var rectangles = rectangle_holder.childNodes;
     for (var i=0; i < rectangles.length; i++) {
-        if(rectangles[i].nodeName == 'text' && rectangles[i].innerHTML == display_name) {
-            rectangles[i].setAttribute('fill', 'white');
-            rectangles[i-1].setAttribute('fill', "#3366cc");
+        if(rectangles[i].nodeName == 'rect' && i+1 < rectangles.length && rectangles[i+1].nodeName == 'text' && rectangles[i+1].innerHTML == display_name) {
+            options['colors'].push("#3366cc");
+        }
+        else if(rectangles[i].nodeName == 'rect'){
+            options['colors'].push('#A4A4A4');
         }
     }
+    chart.draw(dataTable, options);
 
     function tooltipHandler(e) {
         var datarow = data_array[e.row];
