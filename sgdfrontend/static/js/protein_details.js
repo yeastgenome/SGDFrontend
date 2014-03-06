@@ -63,21 +63,31 @@ $(document).ready(function() {
 });
 
 function update_property(prop_id, prop_string, prop_value) {
-    if(prop_value != null) {
-        $("#" + prop_id).html(prop_string + prop_value);
-        $("#" + prop_id).show();
+    if(prop_value != null && prop_value != 'None') {
+        $("#" + prop_id).html(prop_value);
+        //$("#" + prop_id).show();
     }
     else {
-        $("#" + prop_id).hide();
+        $("#" + prop_id).html('-');
+        //$("#" + prop_id).hide();
     }
 }
 
+function get_perc(top, bottom) {
+    return (100.0*top/bottom).toFixed(2);
+}
+
 function set_up_properties(data) {
-    update_property('length', 'Length (a.a.): ', data['length']);
+    update_property('length', 'Length (a.a.): ', data['length']-1);
     update_property('molecular_weight', 'Molecular Weight (Da): ', data['molecular_weight']);
-    update_property('formula', 'Formula: ', data['carbon']);
+    update_property('pi', 'Molecular Weight (Da): ', data['pi']);
     update_property('aliphatic_index', 'Aliphatic Index: ', data['aliphatic_index']);
     update_property('instability_index', 'Instability Index: ', data['instability_index']);
+    var formula = '-';
+    if(data['carbon'] != null) {
+        formula = 'C<sub>' + data['carbon'] + '</sub>H<sub>' + data['hydrogen'] + '</sub>N<sub>' + data['nitrogen'] + '</sub>O<sub>' + data['oxygen'] + '</sub>S<sub>' + data['sulfur'] + '</sub>';
+    }
+    update_property('formula', 'Formula: ', formula);
 
     update_property('codon_bias', 'Codon Bias: ', data['codon_bias']);
     update_property('cai', 'Codon Adaptation Index: ', data['cai']);
@@ -93,11 +103,42 @@ function set_up_properties(data) {
     update_property('no_cys_ext_coeff', 'assuming NO Cys residues appear as half cystines: ', data['no_cys_ext_coeff']);
     update_property('all_cys_ext_coeff', 'assuming all Cys residues are reduced: ', data['all_cys_ext_coeff']);
     update_property('all_pairs_cys_ext_coeff', 'assuming all pairs of Cys residues form cystines: ', data['all_pairs_cys_ext_coeff']);
+
+    var options = {};
+    options["bPaginate"] = false;
+    options["aaSorting"] = [[0, "asc"]];
+    options["bFilter"] = false;
+    options["bDestroy"] = true;
+    var total = data['ala'] + data['arg'] + data['asn'] + data['asp'] + data['cys'] + data['gln'] + data['glu'] + data['gly'] + data['his'] + data['ile'] + data['leu'] + data['lys'] + data['met'] + data['phe'] + data['pro'] + data['ser'] + data['thr'] + data['trp'] + data['tyr'] + data['val'];
+    options["aaData"] = [['A', data['ala'], get_perc(data['ala'], total)], ['R', data['arg'], get_perc(data['arg'], total)], ['N', data['asn'], get_perc(data['asn'], total)], ['D', data['asp'], get_perc(data['asp'], total)],
+                         ['C', data['cys'], get_perc(data['cys'], total)], ['Q', data['gln'], get_perc(data['gln'], total)], ['E', data['glu'], get_perc(data['glu'], total)], ['G', data['gly'], get_perc(data['gly'], total)],
+                         ['H', data['his'], get_perc(data['his'], total)], ['I', data['ile'], get_perc(data['ile'], total)], ['L', data['leu'], get_perc(data['leu'], total)], ['K', data['lys'], get_perc(data['lys'], total)],
+                         ['M', data['met'], get_perc(data['met'], total)], ['F', data['phe'], get_perc(data['phe'], total)], ['P', data['pro'], get_perc(data['pro'], total)], ['S', data['ser'], get_perc(data['ser'], total)],
+                         ['T', data['thr'], get_perc(data['thr'], total)], ['W', data['trp'], get_perc(data['trp'], total)], ['Y', data['tyr'], get_perc(data['tyr'], total)], ['V', data['val'], get_perc(data['val'], total)]];
+
+    create_table("amino_acid_table", options);
+
+    var options = {};
+    options["bPaginate"] = false;
+    options["aaSorting"] = [[0, "asc"]];
+    options["bFilter"] = false;
+    options["bDestroy"] = true;
+
+    if(data['carbon'] != null) {
+        var total = data['carbon'] + data['hydrogen'] + data['nitrogen'] + data['oxygen'] + data['sulfur'];
+        options["aaData"] = [['Carbon', data['carbon'], get_perc(data['carbon'], total)], ['Hydrogen', data['hydrogen'], get_perc(data['hydrogen'], total)], ['Nitrogen', data['nitrogen'], get_perc(data['nitrogen'], total)],
+                         ['Oxygen', data['oxygen'], get_perc(data['oxygen'], total)], ['Sulfur', data['sulfur'], get_perc(data['sulfur'], total)]];
+    }
+    else {
+        options["aaData"] = [['Carbon', '-', '-'], ['Hydrogen', '-', '-'], ['Nitrogen', '-', '-'], ['Oxygen', '-', '-'], ['Sulfur', '-', '-']];
+    }
+
+    create_table("atomic_table", options);
 }
 
 function draw_phosphodata() {
     var data = [];
-    if(phosphodata != null) {
+    if(phosphodata != null && phosphodata.length > 0) {
         var additional = 0;
         for (var i=0; i < phosphodata.length; i++) {
             var index = phosphodata[i]['site_index'] + Math.floor(1.0*(phosphodata[i]['site_index']-1)/10) - 1 + additional;
@@ -110,6 +151,10 @@ function draw_phosphodata() {
             }
         }
         create_phosphorylation_table(data);
+        $("#phosphorylation_sites_wrapper").show();
+    }
+    else {
+        $("#phosphorylation_sites_wrapper").hide();
     }
 }
 
@@ -205,7 +250,7 @@ function draw_domain_chart(chart_id, data) {
     var options = {
         'height': 1,
         'timeline': {'colorByRowLabel': true,
-            'hAxis': {'position': 'none'},
+            'hAxis': {'position': 'none'}
         }
     };
 
@@ -330,75 +375,75 @@ function prep_style() {
 	})
 	.selector('edge')
 	.css({
-		'width': 2,
+		'width': 2
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({
 		'background-color': "#fade71",
 		'text-outline-color': '#fff',
-		'color': '#888',
+		'color': '#888'
 	})
 	.selector("node[type='BIOITEM']")
 	.css({
 		'shape': 'rectangle',
 		'text-outline-color': '#fff',
-		'color': '#888',
+		'color': '#888'
     })
     .selector("node[type='BIOITEM'][source='-']")
 	.css({
-		'background-color': source_to_color['-'],
+		'background-color': source_to_color['-']
     })
     .selector("node[type='BIOITEM'][source='Gene3D']")
 	.css({
-		'background-color': source_to_color['Gene3D'],
+		'background-color': source_to_color['Gene3D']
     })
     .selector("node[type='BIOITEM'][source='JASPAR']")
 	.css({
-		'background-color': source_to_color['JASPAR'],
+		'background-color': source_to_color['JASPAR']
     })
     .selector("node[type='BIOITEM'][source='PANTHER']")
 	.css({
-		'background-color': source_to_color['PANTHER'],
+		'background-color': source_to_color['PANTHER']
     })
     .selector("node[type='BIOITEM'][source='Pfam']")
 	.css({
-		'background-color': source_to_color['Pfam'],
+		'background-color': source_to_color['Pfam']
     })
     .selector("node[type='BIOITEM'][source='PIR superfamily']")
 	.css({
-		'background-color': source_to_color['PIR superfamily'],
+		'background-color': source_to_color['PIR superfamily']
     })
     .selector("node[type='BIOITEM'][source='PRINTS']")
 	.css({
-		'background-color': source_to_color['PRINTS'],
+		'background-color': source_to_color['PRINTS']
     })
     .selector("node[type='BIOITEM'][source='ProDom']")
 	.css({
-		'background-color': source_to_color['ProDom'],
+		'background-color': source_to_color['ProDom']
     })
     .selector("node[type='BIOITEM'][source='PROSITE']")
 	.css({
-		'background-color': source_to_color['PROSITE'],
+		'background-color': source_to_color['PROSITE']
     })
     .selector("node[type='BIOITEM'][source='SignalP']")
 	.css({
-		'background-color': source_to_color['SignalP'],
+		'background-color': source_to_color['SignalP']
     })
     .selector("node[type='BIOITEM'][source='SMART']")
 	.css({
-		'background-color': source_to_color['SMART'],
+		'background-color': source_to_color['SMART']
     })
     .selector("node[type='BIOITEM'][source='SUPERFAMILY']")
 	.css({
-		'background-color': source_to_color['SUPERFAMILY'],
+		'background-color': source_to_color['SUPERFAMILY']
     })
     .selector("node[type='BIOITEM'][source='TIGRFAMs']")
 	.css({
-		'background-color': source_to_color['TIGRFAMs'],
+		'background-color': source_to_color['TIGRFAMs']
     })
     .selector("node[type='BIOITEM'][source='TMHMM']")
 	.css({
-		'background-color': source_to_color['TMHMM'],
+		'background-color': source_to_color['TMHMM']
     })
 
 ;
