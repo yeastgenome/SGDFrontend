@@ -362,7 +362,9 @@ class SGDFrontend(FrontendInterface):
                     'protein_domain_details_link': link_maker.protein_domain_details_link(self.backend_url, bioent_id),
                     'protein_domain_graph_link': link_maker.protein_domain_graph_link(self.backend_url, bioent_id),
                     'sequence_details_link': link_maker.sequence_details_link(self.backend_url, bioent_id),
-                    'protein_phosphorylation_details_link': link_maker.protein_phosphorylation_details_link(self.backend_url, bioent_id)
+                    'protein_phosphorylation_details_link': link_maker.protein_phosphorylation_details_link(self.backend_url, bioent_id),
+                    'protein_resources_link': link_maker.protein_resources_link(self.backend_url, bioent_id),
+                    'alias_link': link_maker.alias_link(self.backend_url, bioent_id)
                     }
         return page
 

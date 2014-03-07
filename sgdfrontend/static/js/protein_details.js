@@ -58,6 +58,20 @@ $(document).ready(function() {
         draw_phosphodata();
 	});
 
+    $.getJSON(alias_link, function(data) {
+        var alias_table = create_alias_table(data);
+        create_download_button("alias_table_download", alias_table, download_table_link, alias_table_filename);
+	});
+
+    //Get resources
+	$.getJSON(protein_resources_link, function(data) {
+	  	set_up_resources("homologs_resource_list", data['Homologs']);
+	  	set_up_resources("protein_databases_resource_list", data['Protein Databases']);
+        set_up_resources("localization_resource_list", data['Localization']);
+        set_up_resources("domain_resource_list", data['Domain']);
+        set_up_resources("other_resource_list", data['Other']);
+	});
+
     //Hack because footer overlaps - need to fix this.
 	add_footer_space("resources");
 });
@@ -192,6 +206,42 @@ function create_phosphorylation_table(data) {
     options["oLanguage"] = {"sEmptyTable": 'No phosphorylation data for ' + display_name + '.'};
 
     return create_table("phosphorylation_table", options);
+}
+
+function create_alias_table(data) {
+	var datatable = [];
+
+    var sources = {};
+    for (var i=0; i < data.length; i++) {
+        if(data[i]['link'] != null) {
+            datatable.push([data[i]['id'], create_link(data[i]['display_name'], data[i]['link'], true), data[i]['source']]);
+            sources[data[i]['source']] = true;
+        }
+    }
+
+    $("#alias_header").html(data.length);
+    $("#alias_subheader").html(Object.keys(sources).length);
+
+    if(Object.keys(sources).length == 1) {
+        $("#alias_subheader_type").html('source');
+    }
+    else {
+        $("#alias_subheader_type").html('sources');
+    }
+    if(datatable.length == 1) {
+        $("#alias_header_type").html("entry from ");
+    }
+    else {
+        $("#alias_header_type").html("entries from ");
+    }
+
+    var options = {};
+    options["aaSorting"] = [[2, "asc"]];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null]
+    options["aaData"] = datatable;
+    options["oLanguage"] = {"sEmptyTable": 'No external identifiers for ' + display_name + '.'};
+
+    return create_table("alias_table", options);
 }
 
 function create_domain_table(div_id, header_id, message, data) {

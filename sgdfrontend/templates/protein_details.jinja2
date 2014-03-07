@@ -5,13 +5,15 @@
     var protein_domain_graph_link = "{{ protein_domain_graph_link }}";
     var sequence_details_link = "{{ sequence_details_link }}";
     var protein_phosphorylation_details_link = "{{ protein_phosphorylation_details_link }}";
+    var protein_resources_link = "{{ protein_resources_link }}";
+    var alias_link = "{{ alias_link }}";
 
 	var download_table_link = "{{download_table_link}}";
     var download_sequence_link = "{{download_sequence_link}}";
 	var analyze_link = "{{analyze_table_link}}";
 
     var domains_table_filename = "{{ locus.display_name }}_domains";
-    var unique_domains_table_filename = "{{ locus.display_name }}_unique_domains";
+    var alias_table_filename = "{{ locus.display_name }}_aliases";
 
 	var display_name = "{{ locus.display_name }}";
 	var locus_id = "{{ locus.id }}";
@@ -49,6 +51,7 @@
             add_navbar_element('Domains and Classification', 'domains');
             add_navbar_element('Experimental Data', 'experiment');
             add_navbar_element('Sequence', 'sequence');
+            add_navbar_element('External Identifiers', 'external_ids');
             add_navbar_element('Resources', 'resources');
         </script>
 
@@ -190,25 +193,42 @@
             </div>
         </section>
 
+<!-- External IDs
+================================================== -->
+        <section id="external_ids" data-magellan-destination="external_ids">
+            <div class="page-header">
+                <h1>External Identifiers
+                    <span class="round secondary label">
+                        <span id="alias_header"></span>
+                        <small id="alias_header_type"></small>
+                        <span id="alias_subheader"></span>
+                        <small id="alias_subheader_type"></small>
+                    </span>
+                </h1>
+                <!-- Includes domain_table into template -->
+                {% include "templates/alias_table.jinja2" %}
+            </div>
+        </section>
+
 <!-- Resources
 ================================================== -->
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
                 <h1>Resources</h1>
                 <h3>Homologs</h3>
-                    <ul id='resource_list'>
+                    <ul id='homologs_resource_list'>
                     </ul>
                 <h3>Protein Databases</h3>
-                    <ul id='resource_list'>
+                    <ul id='protein_databases_resource_list'>
                     </ul>
                 <h3>Localization</h3>
-                    <ul id='resource_list'>
+                    <ul id='localization_resource_list'>
                     </ul>
-                <h3>Sequence</h3>
-                    <ul id='resource_list'>
+                <h3>Domains</h3>
+                    <ul id='domain_resource_list'>
                     </ul>
-                <h3>Other</h3>
-                    <ul id='resource_list'>
+                <h3>Post-translational Modifications</h3>
+                    <ul id='other_resource_list'>
                     </ul>
             </div>
         </section>
