@@ -91,7 +91,12 @@ function get_physical_interactors(data) {
     var bioent_ids = {};
     for(var i=0; i < data.length; i++) {
         if(data[i]["interaction_type"] == "Physical") {
-            bioent_ids[data[i]["bioentity2"]["id"]] = true;
+            if(data[i]["bioentity1"]["id"] == locus_id) {
+                bioent_ids[data[i]["bioentity2"]["id"]] = true;
+            }
+            else {
+                bioent_ids[data[i]["bioentity1"]["id"]] = true;
+            }
         }
     }
     return Object.keys(bioent_ids);
@@ -101,7 +106,12 @@ function get_genetic_interactors(data) {
     var bioent_ids = {};
     for(var i=0; i < data.length; i++) {
         if(data[i]["interaction_type"] == "Genetic") {
-            bioent_ids[data[i]["bioentity2"]["id"]] = true;
+            if(data[i]["bioentity1"]["id"] == locus_id) {
+                bioent_ids[data[i]["bioentity2"]["id"]] = true;
+            }
+            else {
+                bioent_ids[data[i]["bioentity1"]["id"]] = true;
+            }
         }
     }
     return Object.keys(bioent_ids);
