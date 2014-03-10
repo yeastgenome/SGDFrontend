@@ -1,9 +1,0 @@
-/********************************************
-Theme rules - SMACSS 
-http://smacss.com/book/type-theme
-*********************************************/
-
-.page-footer {
-	color: #fff;
-	@include background(linear-gradient(center top , #9190B7 0%, #615F8F 100%));
-}
