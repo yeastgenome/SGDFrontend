@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+		
+<!-- Summary
+================================================== -->
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Protein Summary</h1>
+		<ul class="unstyled">
+            {% if locus.aliases|length > 0 %}
+                <li>
+                    <strong>Aliases: </strong>
+                    {% for alias in locus.aliases %}
+                        <span>{{ alias }}</span>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </li>
+            {% endif %}
+            <li><strong>Gene Product: </strong></li>
+            <li><strong>Description: </strong>{{ locus.description }}</li>
+
+        </ul>
+	</div>
+</section>
+

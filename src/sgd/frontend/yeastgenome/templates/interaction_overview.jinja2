@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+		
+<!-- Summary
+================================================== -->
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Interactors Summary</h1>
+		<p>This page lists all genes/proteins that interact with {{ locus.display_name }}. See help for information about <a href="/help/function-help/interactions">interaction data</a>.</p>
+		<p id='summary_message' style='display:none'>0 Genetic and 0 Physical Interactors curated.</p>
+		<div class="panel" id="summary_wrapper">
+			<div id="venn_diagram"></div>
+	
+			<div class="button-bar">
+				<h5>Analyze</h5>
+				<ul class="button-group radius">
+					<li><a disabled="true" id="phys" class="small button secondary sgd-icon-venn-physical">Physical</a></li>
+					<li><a disabled="true" id="gen" class="small button secondary sgd-icon-venn-genetic">Genetic</a></li>
+					<li><a disabled="true" id="phys_gen_intersect" class="small button secondary sgd-icon-venn-intersection">Intersection</a></li>
+					<li><a disabled="true" id="phys_gen_union" class="small button secondary sgd-icon-venn-all">All</a></li>
+				</ul>
+				<ul class="button-group radius" hidden>
+					<li><a disabled="true" class="small button secondary radius" id="download_overview"><i class="icon-picture"></i> PNG</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script src="/static/js/kinetic-v4.3.3.min.js"></script>
+<script src="/static/js/venn.js"></script>
+<script src="/static/js/interaction_overview.js"></script>
+

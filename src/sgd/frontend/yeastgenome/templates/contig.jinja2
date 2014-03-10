@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<script>
+	var sequence_details_link = "{{sequence_details_link}}";
+    var download_table_link = "{{download_table_link}}";
+    var download_sequence_link = "{{download_sequence_link}}";
+    var analyze_link = "{{analyze_table_link}}";
+
+	var display_name = "{{ contig.display_name }}";
+    var link = "{{ contig.link }}";
+    var format_name = "{{ contig.format_name }}";
+    var length = "{{ contig.length }}";
+    var residues = "{{ contig.residues }}";
+
+</script>
+
+<title>{{ contig.display_name }}</title>
+
+{% extends "templates/global_layout.jinja2" %}
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2>Map: <span class="gene_name">{{ contig.display_name }}</span></h2>
+</div>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+	
+    <!-- Includes navbar.html into template -->
+    {% include "templates/navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+        //Set up navbar
+            add_navbar_title('Map: <span class="gene_name">{{ contig.display_name }}</span>');
+            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Features', 'feature');
+        </script>
+
+        <!-- Summary
+================================================== -->
+        <section id="summary" data-magellan-destination="summary">
+            <div class="page-header">
+                <h1>Summary</h1>
+                <ul class="unstyled">
+                    <li><strong>Strain: </strong></li>
+                    <li><strong>Length: </strong>{{ contig.length }}</li>
+                    <li>
+                        <div class="button-bar">
+                            <ul class="button-group radius">
+                                <li><a id="sequence_download" class="small button secondary"><i class="icon-download-alt"></i> Download Sequence</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Features
+================================================== -->
+        <section id="feature" data-magellan-destination="feature">
+            <div class="page-header">
+                <h1>Features <span id="chromosomal_coord_table_header" class="round secondary label"></span></h1>
+                <div id="feature_div"></div>
+
+                <!-- Includes chromosomal_coord_table into template -->
+                {% set table_id = "chromosomal_coord_table" %}
+                {% include "templates/chromosomal_coord_table.jinja2" %}
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
+       'version':'1','packages':['timeline']}]}"></script>
+<script src="/static/js/contig.js"></script>
+{% endblock scripts %}

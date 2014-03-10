@@ -1,0 +1,21 @@
+/********************************************
+Module rules - SMACSS 
+http://smacss.com/book/type-module
+*********************************************/
+
+// Forms
+input[type="text"].big-search {
+	margin: 0 auto;
+	width: 30%;
+	height: 2em;
+	font-size: 2em;
+}
+.prefix-input {@include border-right-radius(0 !important);}
+.postfix-input {@include border-left-radius(0 !important);}
+
+// Giant Button Group
+.giant.button-group {
+	h3 { color: #fff; }
+	.subheader { color: rgb(230,230,230); }
+	li a { height: 155px; }
+}

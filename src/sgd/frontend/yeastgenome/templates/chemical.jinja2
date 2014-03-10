@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<script>
+	var chemical_details_link = "{{chemical_details_link}}";
+	var download_table_link = "{{download_table_link}}";
+	var analyze_link = "{{analyze_table_link}}";
+
+	var download_filename = "{{ chemical.display_name }}_annotations";
+    var analyze_filename = "<a href='{{ chemical.link }}' class='gene_name'>{{ chemical.display_name }}</a> Genes";
+
+    var display_name = "{{ chemical.display_name }}";
+</script>
+
+<title>{{ chemical.display_name }}</title>
+
+{% extends "templates/global_layout.jinja2" %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2>Chemical: <span class="gene_name">{{ chemical.display_name }}</span></h2>
+</div>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+	
+    <!-- Includes navbar.html into template -->
+    {% include "templates/navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            add_navbar_title('Chemical: <span class="gene_name">{{ chemical.display_name }}</span>')
+            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Phenotype Annotations', 'phenotype');
+        </script>
+
+        <!-- Summary
+        ================================================== -->
+        <section id="summary" data-magellan-destination="summary">
+            <div class="page-header">
+                <h1>Summary</h1>
+                <p><strong>Chemical Name: </strong>{{ chemical.display_name }}</p>
+                <p {% if chemical.chebi_id == none %}style="display:none"{% endif %}><strong>Chebi ID: </strong><a href="http://www.ebi.ac.uk/chebi/searchId.do?chebiId={{ chemical.chebi_id }}" target="_blank">{{ chemical.chebi_id }}</a></p>
+            </div>
+        </section>
+
+        <!-- Phenotype
+        ================================================== -->
+        <section id="phenotype" data-magellan-destination="phenotype">
+            <div class="page-header">
+                <h1>Phenotype Annotations
+                    <span id="phenotype_table_header" class="round secondary label"></span>
+                </h1>
+                <!-- Includes phenotype_table into template -->
+                {% set table_id = "phenotype_table" %}
+                {% include "templates/phenotype_table.jinja2" %}
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/cytoscape/cytoscape.min.js"></script>
+<script src="/static/js/cytoscape/arbor.js"></script>
+<script src="/static/js/local.js"></script>
+<script src="/static/js/evidence.js"></script>
+<script src="/static/js/chemical.js"></script>
+{% endblock scripts %}
