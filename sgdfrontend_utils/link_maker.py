@@ -98,6 +98,10 @@ def sequence_details_link_contig(backend_start, contig):
     return backend_start + '/contig/' + str(contig) + '/sequence_details?callback=?'
 def protein_phosphorylation_details_link(backend_start, bioent):
     return backend_start + '/locus/' + str(bioent) + '/protein_phosphorylation_details?callback=?'
+def protein_resources_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/protein_resources?callback=?'
+def alias_link(backend_start, bioent):
+    return backend_start + '/locus/' + str(bioent) + '/alias?callback=?'
 
 #On the fly links
 def analyze_link():
