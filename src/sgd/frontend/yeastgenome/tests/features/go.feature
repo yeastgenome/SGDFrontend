@@ -39,10 +39,10 @@ Feature: Go
     Scenario Outline: Click child terms button
         When I visit "/go/?/overview" for <go>
         And I click the button with id <button>
-        Then the title should be "cytokinesis"
+        Then the title should be <title>
         And the limited table with id "go_table" should have <num_rows> rows
         And I should see an element "go_table_header" with text <header_text>
 
     Examples:
-        | go            | button                             | num_rows                         | header_text                   |
-        | "GO:0000910"  | "go_table_show_children"           | 151                              | "151 entries for 103 genes"   |
+        | go            | button                             | title                            | num_rows  | header_text                   |
+        | "GO:0000910"  | "go_table_show_children"           | "cytokinesis"                    | 151       | "151 entries for 103 genes"   |

@@ -486,7 +486,7 @@ function create_download_button_no_table(download_button_id, headers, data, down
     download_button.click(download_function);
 }
 
-function set_up_enrichment_table(data) {
+function set_up_enrichment_table(data, gene_count) {
     var options = {"bPaginate": true, "bDestroy": true, "oLanguage": {'sEmptyTable': 'Error calculating shared GO processes.'}, "aaData": []};
 
     if(data != null) {
@@ -500,7 +500,7 @@ function set_up_enrichment_table(data) {
   		    datatable.push([evidence['go']['id'], go, evidence['match_count'].toString(), evidence['pvalue']])
     	}
 
-  	    set_up_header('enrichment_table_header', datatable.length, 'entry', 'entries', null, null, null);
+  	    set_up_header('enrichment_table', datatable.length, 'entry', 'entries', gene_count, 'gene', 'genes');
 
 	    set_up_scientific_notation_sorting();
 
@@ -541,10 +541,10 @@ function create_enrichment_table(table_id, target_table, init_data) {
 
         var bioent_ids = get_filter_bioent_ids();
 
-        set_up_header('enrichment_table_header', '_', 'entry', 'entries', bioent_ids.length, 'gene', 'genes');
+        set_up_header('enrichment_table', '_', 'entry', 'entries', bioent_ids.length, 'gene', 'genes');
 		post_json_to_url(go_enrichment_link, {'bioent_ids': bioent_ids},
 		    function(data) {
-  			    set_up_enrichment_table(data)
+  			    set_up_enrichment_table(data, bioent_ids.length)
   			    filter_used = target_table.fnSettings().oPreviousSearch.sSearch;
   			    enrichment_recalc.attr('disabled', false);
   			    enrichment_recalc.hide();
@@ -566,8 +566,9 @@ function create_enrichment_table(table_id, target_table, init_data) {
 	enrichment_recalc.click(update_enrichment);
 
     if(init_data != null) {
-        enrichment_table = set_up_enrichment_table(init_data);
-        set_up_header('enrichment_table_header', init_data.length, 'entry', 'entries', Object.keys(get_filter_bioent_ids()).length, 'gene', 'genes');
+        var gene_count = get_filter_bioent_ids().length;
+        enrichment_table = set_up_enrichment_table(init_data, gene_count);
+        set_up_header('enrichment_table', init_data.length, 'entry', 'entries', gene_count, 'gene', 'genes');
     }
     else {
         var options = {"bPaginate": true, "bDestroy": true, "oLanguage": {'sEmptyTable': '<center><img src="/static/img/dark-slow-wheel.gif"></center>'}, "aaData": []};

@@ -15,7 +15,7 @@ $(document).ready(function() {
         $.getJSON(protein_domain_graph_link, function(data) {
             if(data['nodes'].length > 1) {
                 var graph_style = prep_style();
-                var graph = create_cytoscape_vis("cy", layout, graph_style, data);
+                create_cytoscape_vis("cy", layout, graph_style, data);
             }
             else {
                 $("#shared_domains").hide();
@@ -23,7 +23,7 @@ $(document).ready(function() {
         });
 	});
 
-    $("#domains_table_analyze").hide();
+    $("#domain_table_analyze").hide();
 
 
     $.getJSON(sequence_details_link, function(data) {
@@ -164,7 +164,9 @@ function draw_phosphodata() {
                 data.push(phosphodata[i]);
             }
         }
-        create_phosphorylation_table(data);
+        var phospho_table = create_phosphorylation_table(data);
+        create_download_button("phosphorylation_table_download", phospho_table, download_table_link, display_name + '_phosphorylation');
+
         $("#phosphorylation_sites_wrapper").show();
     }
     else {
@@ -181,21 +183,7 @@ function create_phosphorylation_table(data) {
         sites[data[i]['site_residue'] + data[i]['site_index']] = true;
     }
 
-    $("#phosphorylation_header").html(data.length);
-    $("#phosphorylation_subheader").html(Object.keys(sites).length);
-
-    if(Object.keys(sites).length == 1) {
-        $("#phosphorylation_subheader_type").html('site');
-    }
-    else {
-        $("#phosphorylation_subheader_type").html('sites');
-    }
-    if(datatable.length == 1) {
-        $("#phosphorylation_header_type").html("entry for ");
-    }
-    else {
-        $("#phosphorylation_header_type").html("entries for ");
-    }
+    set_up_header('phosphorylation_table', datatable.length, 'entry', 'entries', Object.keys(sites).length, 'site', 'sites');
 
     var options = {};
     options["bPaginate"] = false;
@@ -203,7 +191,7 @@ function create_phosphorylation_table(data) {
     options["bDestroy"] = true;
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null]
     options["aaData"] = datatable;
-    options["oLanguage"] = {"sEmptyTable": 'No phosphorylation data for ' + display_name + '.'};
+    options["oLanguage"] = {"sEmptyTable": 'No phosphorylation data for this strain.'};
 
     return create_table("phosphorylation_table", options);
 }
@@ -219,21 +207,7 @@ function create_alias_table(data) {
         }
     }
 
-    $("#alias_header").html(data.length);
-    $("#alias_subheader").html(Object.keys(sources).length);
-
-    if(Object.keys(sources).length == 1) {
-        $("#alias_subheader_type").html('source');
-    }
-    else {
-        $("#alias_subheader_type").html('sources');
-    }
-    if(datatable.length == 1) {
-        $("#alias_header_type").html("entry from ");
-    }
-    else {
-        $("#alias_header_type").html("entries from ");
-    }
+    set_up_header('alias_table', datatable.length, 'entry', 'entries', Object.keys(sources).length, 'source', 'sources');
 
     var options = {};
     options["aaSorting"] = [[2, "asc"]];
@@ -247,10 +221,14 @@ function create_alias_table(data) {
 function create_domain_table(data) {
 	var datatable = [];
 
+    var domains = {};
     for (var i=0; i < data.length; i++) {
         datatable.push(domain_data_to_table(data[i]));
+        domains[data[i]['domain']['id']] = true;
     }
     $("#domain_header").html(data.length);
+
+    set_up_header('domain_table', datatable.length, 'entry', 'entries', Object.keys(domains).length, 'domain', 'domains');
 
     set_up_range_sort();
 

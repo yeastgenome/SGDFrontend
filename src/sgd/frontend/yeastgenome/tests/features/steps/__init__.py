@@ -26,7 +26,7 @@ def should_see_element_with_id(context, element_id):
 def should_see_element_with_id_with_text(context, element_id, text):
     try:
         element = context.browser.find_element_by_id(element_id)
-        assert element.text == text, 'Text does not match.'
+        assert element.text == text, 'Text does not match: ' + element.text
     except NoSuchElementException:
         assert 0, 'No element with id ' + element_id
 

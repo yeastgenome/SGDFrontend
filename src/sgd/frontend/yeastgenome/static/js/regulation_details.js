@@ -14,7 +14,7 @@ $(document).ready(function() {
 		$.getJSON(protein_domains_link, function(data) {
             var domain_table = create_domain_table(data);
             if(domain_table != null) {
-                create_download_button("domains_table_download", domain_table, download_table_link, domains_table_filename);
+                create_download_button("domain_table_download", domain_table, download_table_link, domains_table_filename);
             }
 		});
     }
@@ -28,9 +28,9 @@ $(document).ready(function() {
 	$.getJSON(regulation_details_link, function(data) {
   		if(target_count > 0) {
   		    var target_table = create_target_table(data);
-  		    create_analyze_button("targets_regulation_table_analyze", target_table, analyze_link, analyze_filename + " targets", true);
+  		    create_analyze_button("target_table_analyze", target_table, analyze_link, analyze_filename + " targets", true);
   	        create_analyze_button("analyze_targets", target_table, analyze_link, analyze_filename + " targets", false);
-  	        create_download_button("targets_regulation_table_download", target_table, download_table_link, targets_table_filename);
+  	        create_download_button("target_table_download", target_table, download_table_link, targets_table_filename);
 
   	        $.getJSON(regulation_target_enrichment_link, function(enrichment_data) {
                 var enrichment_table = create_enrichment_table("enrichment_table", target_table, enrichment_data);
@@ -38,14 +38,15 @@ $(document).ready(function() {
   	        });
   		}
   		else {
-  	        $("#targets_regulation").hide();
-            $("domains").hide();
+  	        $("#targets").hide();
+            $("#domain").hide();
+            $("#enrichment").hide();
   		}
 
   		var regulator_table = create_regulator_table(data);
-  		create_analyze_button("regulators_regulation_table_analyze", regulator_table, analyze_link, analyze_filename + " targets", true);
+  		create_analyze_button("regulator_table_analyze", regulator_table, analyze_link, analyze_filename + " targets", true);
   	    create_analyze_button("analyze_regulators", regulator_table, analyze_link, analyze_filename + " targets", false);
-  	    create_download_button("regulators_regulation_table_download", regulator_table, download_table_link, regulators_table_filename);
+  	    create_download_button("regulator_table_download", regulator_table, download_table_link, regulators_table_filename);
   	});
 
     $.getJSON(regulation_graph_link, function(data) {
@@ -66,7 +67,7 @@ $(document).ready(function() {
         else {
             hide_section("network");
             //Hack because footer overlaps - need to fix this.
-	        add_footer_space("regulators_regulation");
+	        add_footer_space("regulators");
         }
     });
 
@@ -78,19 +79,20 @@ function create_domain_table(data) {
     var domain_table = null;
     if(data != null && data.length > 0) {
 	    var datatable = [];
-
+        var domains = {};
         for (var i=0; i < data.length; i++) {
             datatable.push(domain_data_to_table(data[i]));
+            domains[data[i]['domain']['id']] = true;
         }
 
-        $("#domain_header").html(data.length);
+        set_up_header('domain_table', datatable.length, 'entry', 'entries', Object.keys(domains).length, 'domain', 'domains');
 
         set_up_range_sort();
 
         var options = {};
         options["bPaginate"] = false;
         options["aaSorting"] = [[4, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null, {"bSearchable":false, "bVisible":false}]
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null, null]
         options["aaData"] = datatable;
 
         domain_table = create_table("domain_table", options);
@@ -141,22 +143,7 @@ function create_target_table(data) {
                 target_entry_count = target_entry_count + 1;
             }
         }
-
-        $("#targets_regulation_header").html(target_entry_count);
-        $("#targets_regulation_subheader").html(Object.keys(genes).length);
-
-        if(Object.keys(genes).length == 1) {
-            $("#targets_regulation_subheader_type").html('gene');
-        }
-        else {
-            $("#targets_regulation_subheader_type").html('genes');
-        }
-        if(datatable.length == 1) {
-            $("#targets_regulation_header_type").html("entry for ");
-        }
-        else {
-            $("#targets_regulation_header_type").html("entries for ");
-        }
+        set_up_header('target_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
         var options = {};
         options["bPaginate"] = true;
@@ -165,7 +152,7 @@ function create_target_table(data) {
         options["aaData"] = datatable;
     }
 
-	return create_table("targets_regulation_table", options);
+	return create_table("target_table", options);
 }
 
 function create_regulator_table(data) {
@@ -179,22 +166,7 @@ function create_regulator_table(data) {
             regulation_entry_count = regulation_entry_count+1;
 		}
   	}
-
-  	$("#regulators_regulation_header").html(regulation_entry_count);
-  	$("#regulators_regulation_subheader").html(Object.keys(genes).length);
-
-    if(Object.keys(genes).length == 1) {
-        $("#regulators_regulation_subheader_type").html('gene');
-    }
-    else {
-        $("#regulators_regulation_subheader_type").html('genes');
-    }
-    if(datatable.length == 1) {
-        $("#regulators_regulation_header_type").html("entry for ");
-    }
-    else {
-        $("#regulators_regulation_header_type").html("entries for ");
-    }
+    set_up_header('regulator_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
   	var options = {};
     options["bPaginate"] = true;
@@ -203,7 +175,7 @@ function create_regulator_table(data) {
 	options["oLanguage"] = {"sEmptyTable": "No regulation data for " + display_name};
 	options["aaData"] = datatable;
 
-    return create_table("regulators_regulation_table", options);
+    return create_table("regulator_table", options);
 }
 
 function slider_filter(new_cutoff) {

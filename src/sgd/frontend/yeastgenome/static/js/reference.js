@@ -23,12 +23,12 @@ $(document).ready(function() {
     if(counts['go'] > 0) {
         $.getJSON(go_details_link, function(data) {
             var go_table = create_go_table(data);
-            create_download_button("all_go_table_download", go_table, download_table_link, go_download_filename);
-            create_analyze_button("all_go_table_analyze", go_table, analyze_link, go_analyze_filename, true);
+            create_download_button("go_table_download", go_table, download_table_link, go_download_filename);
+            create_analyze_button("go_table_analyze", go_table, analyze_link, go_analyze_filename, true);
         });
     }
     else {
-        hide_section("all_go");
+        hide_section("go");
     }
 
     if(counts['phenotype'] > 0) {
@@ -45,23 +45,23 @@ $(document).ready(function() {
     if(counts["regulation"] > 0) {
         $.getJSON(regulation_details_link, function(data) {
             var regulation_table = create_regulation_table(data);
-            create_download_button("all_regulation_table_download", regulation_table, download_table_link, regulation_download_filename);
-            create_analyze_button("all_regulation_table_analyze", regulation_table, analyze_link, regulation_analyze_filename, true);
+            create_download_button("regulation_table_download", regulation_table, download_table_link, regulation_download_filename);
+            create_analyze_button("regulation_table_analyze", regulation_table, analyze_link, regulation_analyze_filename, true);
         });
     }
     else {
-        hide_section("all_regulation");
+        hide_section("regulation");
     }
 
   	//Hack because footer overlaps - need to fix this.
   	if(counts["regulation"] > 0) {
-        add_footer_space("all_regulation");
+        add_footer_space("regulation");
   	}
   	else if(counts["phenotype"] > 0) {
   	    add_footer_space("phenotype");
   	}
   	else if(counts["go"] > 0) {
-  	    add_footer_space("all_go");
+  	    add_footer_space("go");
   	}
   	else if(counts["interaction"] > 0) {
   	    add_footer_space("interaction");
@@ -147,21 +147,7 @@ function create_interaction_table(data) {
             genes[data[i]["bioentity2"]["id"]] = true;
         }
 
-        $("#interaction_header").html(data.length);
-        $("#interaction_subheader").html(Object.keys(genes).length);
-
-        if(Object.keys(genes).length == 1) {
-            $("#interaction_subheader_type").html('gene');
-        }
-        else {
-            $("#interaction_subheader_type").html('genes');
-        }
-        if(datatable.length == 1) {
-            $("#interaction_header_type").html("entry for ");
-        }
-        else {
-            $("#interaction_header_type").html("entries for ");
-        }
+        set_up_header('interaction_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
         var options = {};
         options["bPaginate"] = true;
@@ -192,21 +178,7 @@ function create_go_table(data) {
             genes[data[i]["bioentity"]["id"]] = true;
         }
 
-        $("#all_go_header").html(data.length);
-        $("#all_go_subheader").html(Object.keys(genes).length);
-
-        if(Object.keys(genes).length == 1) {
-            $("#all_go_subheader_type").html('gene');
-        }
-        else {
-            $("#all_go_subheader_type").html('genes');
-        }
-        if(datatable.length == 1) {
-            $("#all_go_header_type").html("entry for ");
-        }
-        else {
-            $("#all_go_header_type").html("entries for ");
-        }
+        set_up_header('go_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
         var options = {};
         options["bPaginate"] = true;
@@ -217,7 +189,7 @@ function create_go_table(data) {
         options["aaData"] = datatable;
     }
 
-    return create_table("all_go_table", options);
+    return create_table("go_table", options);
 }
 
 function create_phenotype_table(data) {
@@ -237,21 +209,7 @@ function create_phenotype_table(data) {
             genes[data[i]['bioentity']['id']] = true;
         }
 
-        $("#phenotype_header").html(data.length);
-        $("#phenotype_subheader").html(Object.keys(genes).length);
-
-        if(Object.keys(genes).length == 1) {
-            $("#phenotype_subheader_type").html('gene');
-        }
-        else {
-            $("#phenotype_subheader_type").html('genes');
-        }
-        if(datatable.length == 1) {
-            $("#phenotype_header_type").html("entry for ");
-        }
-        else {
-            $("#phenotype_header_type").html("entries for ");
-        }
+        set_up_header('phenotype_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
         var options = {};
         options["bPaginate"] = true;
@@ -282,21 +240,7 @@ function create_regulation_table(data) {
             genes[data[i]["bioentity2"]["id"]] = true;
         }
 
-        $("#all_regulation_header").html(data.length);
-        $("#all_regulation_subheader").html(Object.keys(genes).length);
-
-        if(Object.keys(genes).length == 1) {
-            $("#all_regulation_subheader_type").html('gene');
-        }
-        else {
-            $("#all_regulation_subheader_type").html('genes');
-        }
-        if(datatable.length == 1) {
-            $("#all_regulation_header_type").html("entry for ");
-        }
-        else {
-            $("#all_regulation_header_type").html("entries for ");
-        }
+        set_up_header('regulation_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
         var options = {};
         options["bPaginate"] = true;
@@ -306,9 +250,5 @@ function create_regulation_table(data) {
         options["aaData"] = datatable;
     }
 
-    if(data.length == 0) {
-        $("#all_regulation").hide();
-    }
-
-	return create_table("all_regulation_table", options);
+	return create_table("regulation_table", options);
 }

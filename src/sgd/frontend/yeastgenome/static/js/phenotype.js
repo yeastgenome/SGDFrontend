@@ -8,7 +8,7 @@ $(document).ready(function() {
 	});
 
 	//Hack because footer overlaps - need to fix this.
-	add_footer_space("phenotype");
+	add_footer_space("annotations");
 
 });
 
@@ -29,21 +29,7 @@ function create_phenotype_table(data) {
             genes[data[i]["bioentity"]["id"]] = true;
         }
 
-        $("#phenotype_header").html(data.length);
-        $("#phenotype_subheader").html(Object.keys(genes).length);
-
-        if(Object.keys(genes).length == 1) {
-            $("#phenotype_subheader_type").html('gene');
-        }
-        else {
-            $("#phenotype_subheader_type").html('genes');
-        }
-        if(datatable.length == 1) {
-            $("#phenotype_header_type").html("entry for ");
-        }
-        else {
-            $("#phenotype_header_type").html("entries for ");
-        }
+        set_up_header('phenotype_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
         var options = {};
         options["bPaginate"] = true;

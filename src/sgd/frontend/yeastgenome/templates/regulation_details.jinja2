@@ -55,14 +55,14 @@
             add_navbar_element("Regulation Summary", "summary");
 
             if(target_count > 0) {
-                add_navbar_element("Domains and Classification", "domains");
+                add_navbar_element("Domains and Classification", "domain");
                 add_navbar_element("DNA Binding Site Motifs", "binding");
-                add_navbar_element("Targets", "targets_regulation");
+                add_navbar_element("Targets", "targets");
                 add_navbar_element("Shared GO Processes Among Targets", "enrichment");
             }
 
             if(regulator_count > 0) {
-                add_navbar_element("Regulators", "regulators_regulation");
+                add_navbar_element("Regulators", "regulators");
             }
 
             if(target_count + regulator_count > 0) {
@@ -77,7 +77,7 @@
 ================================================== -->
         <section id="domain" data-magellan-destination="domain">
             <div class="page-header">
-                <h1>Domains and Classification <span id="domain_header" class="round secondary label"></span></h1>
+                <h1>Domains and Classification <span id="domain_table_header" class="round secondary label"></span></h1>
                 <!-- Includes domain_table into template -->
                 {% set table_id = "domain_table" %}
                 {% include "templates/domain_table.jinja2" %}
@@ -99,7 +99,7 @@
 
 <!-- Targets
 ================================================== -->
-        <section id="targets_regulation" data-magellan-destination="targets_regulation">
+        <section id="targets" data-magellan-destination="targets">
             <div class="page-header">
                 <h1>Targets <span id="target_table_header" class="round secondary label"></span></h1>
                 <!-- Includes regulation_table into template -->
@@ -121,7 +121,7 @@
 
 <!-- Regulators
 ================================================== -->
-        <section id="regulators_regulation" data-magellan-destination="regulators_regulation">
+        <section id="regulators" data-magellan-destination="regulators">
             <div class="page-header">
                 <h1>Regulators
                     <span id="regulator_table_header" class="round secondary label"></span>

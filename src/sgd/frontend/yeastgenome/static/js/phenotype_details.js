@@ -43,21 +43,7 @@ function create_phenotype_table(data) {
             phenotypes[data[i]['bioconcept']['id']] = true;
         }
 
-        $("#phenotype_header").html(data.length);
-        $("#phenotype_subheader").html(Object.keys(phenotypes).length);
-
-        if(Object.keys(phenotypes).length == 1) {
-            $("#phenotype_subheader_type").html('phenotype');
-        }
-        else {
-            $("#phenotype_subheader_type").html('phenotypes');
-        }
-        if(datatable.length == 1) {
-            $("#phenotype_header_type").html("entry for ");
-        }
-        else {
-            $("#phenotype_header_type").html("entries for ");
-        }
+        set_up_header('phenotype_table', datatable.length, 'entry', 'entries', Object.keys(phenotypes).length, 'phenotype', 'phenotypes');
 
         var options = {};
         options["bPaginate"] = true;
@@ -92,20 +78,20 @@ var graph_style = cytoscape.stylesheet()
 	})
 	.selector('edge')
 	.css({
-		'width': 2,
+		'width': 2
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({
 		'background-color': "#fade71",
 		'text-outline-color': '#fff',
-		'color': '#888',
+		'color': '#888'
 	})
 	.selector("node[type='BIOCONCEPT']")
 	.css({
 		'shape': 'rectangle',
 		'text-outline-color': '#fff',
 		'color': '#888',
-		'background-color': "#D0A9F5",
+		'background-color': "#D0A9F5"
 });
 
 var layout = {

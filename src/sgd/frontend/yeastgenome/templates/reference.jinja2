@@ -44,19 +44,20 @@
     {% include "templates/navbar.jinja2" %}
 
     <div class="small-12 large-9 columns content-column">
-        <br>
-        {%  if 'journal' in reference and reference.journal != none %}
-            <h2>Reference: <span class="gene_name">{{ (reference.citation|replace(reference.journal, "<em>" + reference.journal + "</em>")|replace(reference.display_name, reference.display_name + "<span class='subheader'>") + "</span>")|safe }}</span></h2>
-        {% else %}
-            <h2>Reference: <span class="gene_name">{{ (reference.citation|replace(reference.display_name, reference.display_name + "<span class='subheader'>") + "</span>")|safe }}</span></h2>
-        {% endif %}
+        <div id="title">
+            {%  if 'journal' in reference and reference.journal != none %}
+                <h2>Reference: <span class="gene_name">{{ (reference.citation|replace(reference.journal, "<em>" + reference.journal + "</em>")|replace(reference.display_name, reference.display_name + "<span class='subheader'>") + "</span>")|safe }}</span></h2>
+            {% else %}
+                <h2>Reference: <span class="gene_name">{{ (reference.citation|replace(reference.display_name, reference.display_name + "<span class='subheader'>") + "</span>")|safe }}</span></h2>
+            {% endif %}
+        </div>
         <script>
             add_navbar_title('Reference: <span class="gene_name">{{ reference.display_name }}</span>');
             add_navbar_element('Abstract', 'summary');
             add_navbar_element('Interaction Annotations', 'interaction');
-            add_navbar_element('Gene Ontology Annotations', 'all_go');
+            add_navbar_element('Gene Ontology Annotations', 'go');
             add_navbar_element('Phenotype Annotations', 'phenotype');
-            add_navbar_element('Regulation Annotations', 'all_regulation');
+            add_navbar_element('Regulation Annotations', 'regulation');
         </script>
 
 <!-- Summary
@@ -155,7 +156,7 @@
 
 <!-- GO
 ================================================== -->
-        <section id="all_go" data-magellan-destination="all_go">
+        <section id="go" data-magellan-destination="go">
             <div class="page-header">
                 <h1>Gene Ontology Annotations <span id="go_table_header" class="round secondary label"></span></h1>
                 <!-- Includes go_table into template -->
@@ -177,7 +178,7 @@
 
 <!-- Regulation
 ================================================== -->
-        <section id="all_regulation" data-magellan-destination="all_regulation">
+        <section id="regulation" data-magellan-destination="regulation">
             <div class="page-header">
                 <h1>Regulation Annotations <span id="regulation_table_header" class="round secondary label"></span></h1>
                 <!-- Includes regulation_table into template -->

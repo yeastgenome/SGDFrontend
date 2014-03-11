@@ -40,7 +40,7 @@
         <script>
             add_navbar_title("<a href='{{ locus.link }}'>{{ locus.display_name }}/{{ locus.format_name }}</a> Phenotypes");
             add_navbar_element("Summary", "summary");
-            add_navbar_element("Phenotype Annotations", "annotations");
+            add_navbar_element("Annotations", "annotations");
             add_navbar_element("Network Visualization", "network");
             add_navbar_element("Resources", "resources");
         </script>
@@ -52,7 +52,7 @@
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Phenotype Annotations <span id="phenotype_table" class="round secondary label"></span></h1>
+                <h1>Phenotype Annotations <span id="phenotype_table_header" class="round secondary label"></span></h1>
                 <!-- Includes phenotype_table into template -->
                 {% set table_id = "phenotype_table" %}
                 {% include "templates/phenotype_table.jinja2" %}

@@ -19,7 +19,7 @@
     var overview_data = {{overview|safe}};
 </script>
 
-<title>{{ observable.display_name }} Observable</title>
+<title>{{ observable.display_name }}</title>
 
 {% extends "templates/global_layout.jinja2" %}
 
@@ -43,7 +43,7 @@
             add_navbar_title('Observable: <span class="gene_name">{{ observable.display_name }}</span>')
             add_navbar_element('Summary', 'summary');
             add_navbar_element('Ontology Diagram', 'ontology');
-            add_navbar_element('Annotations', 'phenotype');
+            add_navbar_element('Annotations', 'annotations');
         </script>
 <!-- Summary
 ================================================== -->
@@ -80,7 +80,7 @@
 
 <!-- Annotations
 ================================================== -->
-        <section id="phenotype" data-magellan-destination="phenotype">
+        <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
                 <h1>Phenotype Annotations <span id="phenotype_table_header" class="round secondary label"></span></h1>
                 <!-- Includes phenotype_table into template -->

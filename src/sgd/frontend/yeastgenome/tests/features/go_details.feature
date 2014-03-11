@@ -7,6 +7,7 @@ Feature: GoDetails
         And I should see an element with id "center_title"
         And I should see an element with id "sidebar"
 
+        And I should see an element with id "summary"
         And I should see an element with id "manual"
         And I should see an element with id "htp"
         And I should see an element with id "comp"

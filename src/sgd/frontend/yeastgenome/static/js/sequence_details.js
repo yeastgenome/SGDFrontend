@@ -3,7 +3,7 @@ var label_to_color = {};
 
 $(document).ready(function() {
 
-
+    $("#subfeature_table_analyze").hide();
   	$.getJSON(sequence_details_link, function(data) {
         var dna_data = data['genomic_dna'];
         var alternative_selection = $("#alternative_strain_selection");
@@ -556,28 +556,21 @@ function create_subfeature_table(data) {
 	var datatable = [];
 
     for (var i=0; i < data['sequence_labels'].length; i++) {
-        datatable.push([null,
+        datatable.push([null, null, display_name,
                         data['sequence_labels'][i]['display_name'],
                         data['sequence_labels'][i]['relative_start'] + '-' + data['sequence_labels'][i]['relative_end'],
                         data['sequence_labels'][i]['chromosomal_start'] + '-' + data['sequence_labels'][i]['chromosomal_end']
                         ]);
     }
 
-    $("#subfeature_header").html(data['sequence_labels'].length);
-
-    if(datatable.length == 1) {
-        $("#subfeature_header_type").html("entry");
-    }
-    else {
-        $("#subfeature_header_type").html("entries");
-    }
+    set_up_header('subfeature_table', datatable.length, 'entry', 'entries', null, null, null);
 
     set_up_range_sort();
 
     var options = {};
     options["bPaginate"] = false;
-    options["aaSorting"] = [[2, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, { "sType": "range" }, { "sType": "range" }]
+    options["aaSorting"] = [[4, "asc"]];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, { "sType": "range" }, { "sType": "range" }]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": "No subfeatures for " + display_name + '.'};
 
