@@ -13,7 +13,7 @@
 
 <title>{{ domain.display_name }}</title>
 
-{% extends "templates/global_layout.jinja2" %}
+{% extends "static/templates/global_layout.jinja2" %}
 
 
 {% block body %}
@@ -27,7 +27,7 @@
 <div class="row">
 	
 <!-- Includes navbar.html into template -->
-    {% include "templates/navbar.jinja2" %}
+    {% include "static/templates/navbar.jinja2" %}
 
     <div class="small-12 large-9 columns content-column">
 
@@ -63,7 +63,7 @@
                 <h1>Annotations <span id="domain_table_header" class="round secondary label"></span></h1>
                 <!-- Includes domain_table into template -->
                 {% set table_id = "domain_table" %}
-                {% include "templates/domain_table.jinja2" %}
+                {% include "static/templates/domain_table.jinja2" %}
             </div>
         </section>
 

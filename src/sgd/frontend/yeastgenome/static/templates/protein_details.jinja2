@@ -21,7 +21,7 @@
 
 <title>{{ locus.display_name }} Protein</title>
 
-{% extends "templates/global_layout.jinja2" %}
+{% extends "static/templates/global_layout.jinja2" %}
 
 {% block body %}
 
@@ -32,7 +32,7 @@
 <!-- Tabs
 ================================================== -->
 <!-- Includes tabs.html into template -->
-{% include "templates/tabs.jinja2" %}
+{% include "static/templates/tabs.jinja2" %}
 <script>document.getElementById('protein_tab').id = 'current';</script>
 
 <!-- Navbar
@@ -40,7 +40,7 @@
 <div class="row">
 	
     <!-- Includes navbar.html into template -->
-    {% include "templates/navbar.jinja2" %}
+    {% include "static/templates/navbar.jinja2" %}
 
     <div class="small-12 large-9 columns content-column">
 
@@ -56,7 +56,7 @@
         </script>
 
         <!-- Includes protein_overview.html into template -->
-        {% include "templates/protein_overview.jinja2" %}
+        {% include "static/templates/protein_overview.jinja2" %}
 
 <!-- Domains
 ================================================== -->
@@ -65,7 +65,7 @@
                 <h1>Domains and Classification <span id="domain_table_header" class="round secondary label"></span></h1>
                 <!-- Includes domain_table into template -->
                 {% set table_id = "domain_table" %}
-                {% include "templates/domain_table.jinja2" %}
+                {% include "static/templates/domain_table.jinja2" %}
 
                 <h2 class="subheader">Domain Locations</h2>
                 <div id="domain_chart"></div>
@@ -109,7 +109,7 @@
                 <div id="phosphorylation_sites_wrapper">
                     <h2 class="subheader">Phosphorylation Sites <span id="phosphorylation_table_header" class="round secondary label"></span></h2>
                     <!-- Includes phosphorylation_table into template -->
-                    {% include "templates/phosphorylation_table.jinja2" %}
+                    {% include "static/templates/phosphorylation_table.jinja2" %}
                 </div>
 
                 <div id="physicochemical_props">
@@ -194,7 +194,7 @@
                 <h1>External Identifiers <span id="alias_table_header" class="round secondary label"></span></h1>
                 <!-- Includes alias_table into template -->
                 {% set table_id = "alias_table" %}
-                {% include "templates/alias_table.jinja2" %}
+                {% include "static/templates/alias_table.jinja2" %}
             </div>
         </section>
 

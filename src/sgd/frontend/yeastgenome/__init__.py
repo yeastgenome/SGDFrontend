@@ -25,7 +25,7 @@ class YeastgenomeFrontend(FrontendInterface):
         elif method_name in set(['header', 'footer', 'enrichment']):
             return 'jsonp'
         else:
-            return 'templates/' + method_name + '.jinja2'
+            return 'src:sgd/frontend/yeastgenome/static/templates/' + method_name + '.jinja2'
     
     def response_wrapper(self, method_name, request):
         request_id = str(uuid.uuid4())
@@ -296,7 +296,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'chemical': chemical,
                     
                     #Links
-                    'chemical_details_link': self.backend_url + '/chemical/' + chemical_id + '/locus_details?callback=?',
+                    'chemical_details_link': self.backend_url + '/chemical/' + chemical_id + '/phenotype_details?callback=?',
                     'download_table_link': '/download_table',
                     'analyze_table_link': '/analyze'
                     }

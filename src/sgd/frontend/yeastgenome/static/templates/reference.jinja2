@@ -29,7 +29,7 @@
 
 <title>{{ reference.display_name }}</title>
 
-{% extends "templates/global_layout.jinja2" %}
+{% extends "static/templates/global_layout.jinja2" %}
 
 
 {% block body %}
@@ -41,7 +41,7 @@
 <!-- Navbar
 ================================================== -->
     <!-- Includes navbar.html into template -->
-    {% include "templates/navbar.jinja2" %}
+    {% include "static/templates/navbar.jinja2" %}
 
     <div class="small-12 large-9 columns content-column">
         <div id="title">
@@ -150,7 +150,7 @@
                 <h1>Interaction Annotations <span id="interaction_table_header" class="round secondary label"></span></h1>
                 <!-- Includes interaction_table into template -->
                 {% set table_id = "interaction_table" %}
-                {% include "templates/interaction_table.jinja2" %}
+                {% include "static/templates/interaction_table.jinja2" %}
             </div>
         </section>
 
@@ -161,7 +161,7 @@
                 <h1>Gene Ontology Annotations <span id="go_table_header" class="round secondary label"></span></h1>
                 <!-- Includes go_table into template -->
                 {% set table_id = "go_table" %}
-                {% include "templates/go_table.jinja2" %}
+                {% include "static/templates/go_table.jinja2" %}
             </div>
         </section>
 
@@ -172,7 +172,7 @@
                 <h1>Phenotype Annotations <span id="phenotype_table_header" class="round secondary label"></span></h1>
                 <!-- Includes phenotype_table into template -->
                 {% set table_id = "phenotype_table" %}
-                {% include "templates/phenotype_table.jinja2" %}
+                {% include "static/templates/phenotype_table.jinja2" %}
             </div>
         </section>
 
@@ -183,7 +183,7 @@
                 <h1>Regulation Annotations <span id="regulation_table_header" class="round secondary label"></span></h1>
                 <!-- Includes regulation_table into template -->
                 {% set table_id = "regulation_table" %}
-                {% include "templates/regulation_table.jinja2" %}
+                {% include "static/templates/regulation_table.jinja2" %}
             </div>
         </section>
     </div>

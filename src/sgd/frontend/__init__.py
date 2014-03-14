@@ -47,12 +47,12 @@ def prep_views(chosen_frontend, config):
     
     config.add_route('header',
                      '/header',
-                     view=lambda request: {'header': render('templates/header.jinja2', {})},
+                     view=lambda request: {'header': render('static/templates/header.jinja2', {})},
                      renderer=chosen_frontend.get_renderer('header'))
     
     config.add_route('footer',
                      '/footer',
-                     view=lambda request: {'footer': render('templates/footer.jinja2', {})},
+                     view=lambda request: {'footer': render('static/templates/footer.jinja2', {})},
                      renderer=chosen_frontend.get_renderer('footer'))
     
     config.add_route('download_table',
