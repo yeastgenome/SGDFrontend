@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 
 <script>
-	var domain_details_link = "{{domain_details_link}}";
+	var ec_number_details_link = "{{ec_number_details_link}}";
 	var download_table_link = "{{download_table_link}}";
 	var analyze_link = "{{analyze_table_link}}";
 
-	var download_filename = "{{ domain.display_name }}_annotations";
-    var analyze_filename = "<a href='{{ domain.link }}' class='gene_name'>{{ domain.display_name }}</a> Genes";
+	var download_filename = "{{ ec_number.display_name }}_annotations";
+    var analyze_filename = "<a href='{{ ec_number.link }}' class='gene_name'>{{ ec_number.display_name }}</a> Genes";
 
-    var display_name = "{{ domain.display_name }}";
+    var display_name = "{{ ec_number.display_name }}";
 </script>
 
-<title>{{ domain.display_name }}</title>
+<title>{{ ec_number.display_name }}</title>
 
 {% extends "static/templates/global_layout.jinja2" %}
 
@@ -19,7 +19,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>Domain: <span class="gene_name">{{ domain.display_name }}</span></h2>
+	<h2>EC Number: <span class="gene_name">{{ ec_number.display_name }}</span></h2>
 </div>
 
 <!-- Navbar
@@ -32,7 +32,7 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title('Domain: <span class="gene_name">{{ domain.display_name }}</span>')
+            add_navbar_title('EC Number: <span class="gene_name">{{ ec_number.display_name }}</span>')
             add_navbar_element('Summary', 'summary');
             add_navbar_element('Annotations', 'annotations');
         </script>
@@ -43,14 +43,9 @@
             <div class="page-header">
                 <h1>Summary</h1>
                 <ul class="unstyled">
-                    <li><strong>Accession ID: </strong><a href="{{ domain.external_link }}" target="_blank">{{ domain.display_name }}</a>
-                        {%  if domain.interpro_id != none %}
-                            , <a href="http://www.ebi.ac.uk/interpro/entry/{{ domain.interpro_id }}" target="_blank">{{ domain.interpro_id }}</a>
-                        {%  endif %}
-                    </li>
-                    <li><strong>Source: </strong>{{ domain.source }}</li>
-                    {%  if domain.description != none %}
-                        <li><strong>Description: </strong>{{ domain.description }}</li>
+                    <li><strong>EC Number: </strong><a href="http://enzyme.expasy.org/EC/{{ ec_number.display_name }}" target="_blank">{{ ec_number.display_name }}</a></li>
+                    {%  if ec_number.description != none %}
+                        <li><strong>Description: </strong>{{ ec_number.description }}</li>
                     {%  endif %}
                 </ul>
             </div>
@@ -60,10 +55,10 @@
         ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Annotations <span id="domain_table_header" class="round secondary label"></span></h1>
+                <h1>Annotations <span id="gene_list_table_header" class="round secondary label"></span></h1>
                 <!-- Includes domain_table into template -->
-                {% set table_id = "domain_table" %}
-                {% include "static/templates/domain_table.jinja2" %}
+                {% set table_id = "gene_list_table" %}
+                {% include "static/templates/gene_list_table.jinja2" %}
             </div>
         </section>
 
@@ -72,7 +67,9 @@
 {% endblock body %}
 
 {% block scripts %}
+<script src="/static/js/cytoscape/cytoscape.min.js"></script>
+<script src="/static/js/cytoscape/arbor.js"></script>
 <script src="/static/js/local.js"></script>
 <script src="/static/js/evidence.js"></script>
-<script src="/static/js/domain.js"></script>
+<script src="/static/js/ec_number.js"></script>
 {% endblock scripts %}

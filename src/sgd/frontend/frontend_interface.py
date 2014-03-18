@@ -20,7 +20,7 @@ class FrontendInterface:
     
     #Redirect
     @abstractmethod
-    def redirect(self, page):
+    def redirect(self, page, params):
         return None
     
     #Tabs
@@ -89,6 +89,10 @@ class FrontendInterface:
         return None
 
     @abstractmethod
+    def ec_number(self, ec_repr):
+        return None
+
+    @abstractmethod
     def reference(self, reference_repr):
         return None
 
@@ -131,5 +135,3 @@ class FrontendInterface:
     @abstractmethod 
     def enrichment(self, bioent_ids):
         return None
-    
-    

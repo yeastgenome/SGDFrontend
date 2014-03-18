@@ -58,6 +58,19 @@ $(document).ready(function() {
         draw_phosphodata();
 	});
 
+    $.getJSON(ec_number_details_link, function(data) {
+        if(data.length > 0) {
+            var ec_number_html = "<strong>EC Number: </strong> ";
+            for (var i=0; i < data.length; i++) {
+                ec_number_html = ec_number_html + "<a href='" + data[i]['bioconcept']['link'] + "'>" + data[i]['bioconcept']['display_name'] + "</a>";
+                if(i != data.length-1) {
+                    ec_number_html = ec_number_html + ', ';
+                }
+            }
+            $("#ec_number").html(ec_number_html)
+        }
+	});
+
     $.getJSON(alias_link, function(data) {
         var alias_table = create_alias_table(data);
         create_download_button("alias_table_download", alias_table, download_table_link, alias_table_filename);

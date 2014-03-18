@@ -7,11 +7,10 @@ import urllib
 import base64
 import requests
 from pyramid.config import Configurator
-from pyramid.renderers import JSONP
+from pyramid.renderers import JSONP, render
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound
 from src.sgd.frontend.frontend_interface import FrontendInterface
-
 
 class YeastgenomeFrontend(FrontendInterface):
     def __init__(self, backend_url, heritage_url, log_directory):
@@ -20,9 +19,9 @@ class YeastgenomeFrontend(FrontendInterface):
         self.log = set_up_logging(log_directory, 'yeastgenome')
         
     def get_renderer(self, method_name):
-        if method_name in set(['home', 'download_table', 'download_citations']):
+        if method_name in {'home', 'download_table', 'download_citations'}:
             return None
-        elif method_name in set(['header', 'footer', 'enrichment']):
+        elif method_name in {'header', 'footer', 'enrichment'}:
             return 'jsonp'
         else:
             return 'src:sgd/frontend/yeastgenome/static/templates/' + method_name + '.jinja2'
@@ -173,6 +172,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'protein_domain_graph_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_graph?callback=?',
                     'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
                     'protein_phosphorylation_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_phosphorylation_details?callback=?',
+                    'ec_number_details_link': self.backend_url + '/locus/' + bioent_id + '/ec_number_details?callback=?',
                     'protein_resources_link': self.backend_url + '/locus/' + bioent_id + '/protein_resources?callback=?',
                     'alias_link': self.backend_url + '/locus/' + bioent_id + '/alias?callback=?',
                     'download_table_link': '/download_table',
@@ -335,6 +335,21 @@ class YeastgenomeFrontend(FrontendInterface):
                     }
         return page
 
+    def ec_number(self, ec_repr):
+        ec_number = get_json(self.backend_url + '/ec_number/' + ec_repr + '/overview')
+        ec_number_id = str(ec_number['id'])
+
+        page = {
+                    #Basic info
+                    'ec_number': ec_number,
+
+                    #Links
+                    'ec_number_details_link': self.backend_url + '/ec_number/' + ec_number_id + '/locus_details?callback=?',
+                    'download_table_link': '/download_table',
+                    'analyze_table_link': '/analyze'
+                    }
+        return page
+
     def reference(self, reference_repr):
         reference = get_json(self.backend_url + '/reference/' + reference_repr + '/overview')
         reference_id = str(reference['id'])
@@ -472,12 +487,12 @@ class YeastgenomeFrontend(FrontendInterface):
         date = datetime.datetime.now().strftime("%m/%d/%Y")
         description = "!\n!Date: " + date + '\n' + "!From: Saccharomyces Genome Database (SGD) \n!URL: http://www.yeastgenome.org/ \n!Contact Email: sgd-helpdesk@lists.stanford.edu \n!Funding: NHGRI at US NIH, grant number 5-P41-HG001315 \n!"
 
-        cutoff = 1;
+        cutoff = 1
         if header_info[1] == 'Analyze ID':
             if header_info[2] == '':
                 cutoff = 3
             else:
-                cutoff = 2;
+                cutoff = 2
 
         table_header = description + '\n\n' + '\t'.join(header_info[cutoff:])
 
@@ -589,7 +604,7 @@ def set_up_logging(log_directory, label):
     log = logging.getLogger(label)
 
     if log_directory is not None:
-        hdlr = logging.FileHandler(log_directory + '/' + label + '.' + str(datetime.now().date()) + '.txt')
+        hdlr = logging.FileHandler(log_directory + '/' + label + '.' + str(datetime.datetime.now().date()) + '.txt')
         formatter = logging.Formatter('%(asctime)s %(name)s: %(message)s')
         hdlr.setFormatter(formatter)
     else:

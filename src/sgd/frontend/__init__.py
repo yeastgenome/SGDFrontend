@@ -1,12 +1,6 @@
 import json
-
-from pyramid.config import Configurator
-from pyramid.renderers import JSONP, render
-from pyramid.response import Response
-from pyramid_jinja2 import renderer_factory
-import requests
+from pyramid.renderers import render
 from src.sgd.frontend import config
-
 
 def prep_views(chosen_frontend, config):  
     
@@ -219,6 +213,12 @@ def prep_views(chosen_frontend, config):
                                         contig_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].lower())),
                      renderer=chosen_frontend.get_renderer('contig'))
 
+    config.add_route('ec_number',
+                     '/ec_number/{identifier}/overview',
+                     view=lambda request: chosen_frontend.response_wrapper('ec_number', request)(
+                                getattr(chosen_frontend, 'ec_number')(
+                                        ec_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].lower())),
+                     renderer=chosen_frontend.get_renderer('ec_number'))
 
     
 def prepare_frontend(frontend_type, **configs):
