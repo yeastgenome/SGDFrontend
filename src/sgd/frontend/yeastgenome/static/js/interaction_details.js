@@ -53,11 +53,11 @@ $(document).ready(function() {
 });
 
 function create_interaction_table(data) {
+    var options = {};
     if("Error" in data) {
-        var options = {};
         options["bPaginate"] = true;
         options["aaSorting"] = [[5, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}];
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
         options["aaData"] = [];
     }
@@ -66,20 +66,19 @@ function create_interaction_table(data) {
         var genes = {};
         for (var i=0; i < data.length; i++) {
             datatable.push(interaction_data_to_table(data[i], i));
-            if(data[i]["bioentity1"]["id"] == locus_id) {
-                genes[data[i]["bioentity2"]["id"]] = true;
+            if(data[i]["locus1"]["id"] == locus_id) {
+                genes[data[i]["locus2"]["id"]] = true;
             }
             else {
-                genes[data[i]["bioentity1"]["id"]] = true;
+                genes[data[i]["locus1"]["id"]] = true;
             }
         }
 
         set_up_header('interaction_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
-        var options = {};
         options["bPaginate"] = true;
         options["aaSorting"] = [[5, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}]
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}];
         options["oLanguage"] = {"sEmptyTable": "No interaction data for " + display_name};
         options["aaData"] = datatable;
     }
@@ -91,11 +90,11 @@ function get_physical_interactors(data) {
     var bioent_ids = {};
     for(var i=0; i < data.length; i++) {
         if(data[i]["interaction_type"] == "Physical") {
-            if(data[i]["bioentity1"]["id"] == locus_id) {
-                bioent_ids[data[i]["bioentity2"]["id"]] = true;
+            if(data[i]["locus1"]["id"] == locus_id) {
+                bioent_ids[data[i]["locus2"]["id"]] = true;
             }
             else {
-                bioent_ids[data[i]["bioentity1"]["id"]] = true;
+                bioent_ids[data[i]["locus1"]["id"]] = true;
             }
         }
     }
@@ -106,11 +105,11 @@ function get_genetic_interactors(data) {
     var bioent_ids = {};
     for(var i=0; i < data.length; i++) {
         if(data[i]["interaction_type"] == "Genetic") {
-            if(data[i]["bioentity1"]["id"] == locus_id) {
-                bioent_ids[data[i]["bioentity2"]["id"]] = true;
+            if(data[i]["locus1"]["id"] == locus_id) {
+                bioent_ids[data[i]["locus2"]["id"]] = true;
             }
             else {
-                bioent_ids[data[i]["bioentity1"]["id"]] = true;
+                bioent_ids[data[i]["locus1"]["id"]] = true;
             }
         }
     }
@@ -127,7 +126,7 @@ function get_physical_and_genetic_interactors(data) {
     }
 
     var intersect_ids = [];
-    for(var i=0; i < physical_ids.length; i++) {
+    for(i=0; i < physical_ids.length; i++) {
         if(physical_ids[i] in genetic_dict) {
             intersect_ids.push(physical_ids[i]);
         }

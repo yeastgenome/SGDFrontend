@@ -41,7 +41,7 @@ $(document).ready(function() {
             $("#sequence_residues").html(protein_data[index]['sequence']['residues'].chunk(10).join(' '));
             $("#strain_description").html(protein_data[index]['strain']['description']);
             $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span class="subheader">' + '- ' + protein_data[index]['strain']['display_name'] + '</span>';
-            set_up_properties(protein_data[index]['sequence'])
+            set_up_properties(protein_data[index]['sequence']);
             draw_phosphodata();
             $("#sequence_download").click(function f() {
                 download_sequence(protein_data[index]['sequence']['residues'], download_sequence_link, display_name, '');
@@ -71,6 +71,11 @@ $(document).ready(function() {
         }
 	});
 
+    $.getJSON(protein_experiment_details_link, function(data) {
+        var protein_experiment_table = create_protein_experiment_table(data);
+        create_download_button("protein_experiment_table_download", protein_experiment_table, download_table_link, protein_experiment_table_filename);
+	});
+
     $.getJSON(alias_link, function(data) {
         var alias_table = create_alias_table(data);
         create_download_button("alias_table_download", alias_table, download_table_link, alias_table_filename);
@@ -89,14 +94,12 @@ $(document).ready(function() {
 	add_footer_space("resources");
 });
 
-function update_property(prop_id, prop_string, prop_value) {
+function update_property(prop_id, prop_value) {
     if(prop_value != null && prop_value != 'None') {
         $("#" + prop_id).html(prop_value);
-        //$("#" + prop_id).show();
     }
     else {
         $("#" + prop_id).html('-');
-        //$("#" + prop_id).hide();
     }
 }
 
@@ -105,31 +108,31 @@ function get_perc(top, bottom) {
 }
 
 function set_up_properties(data) {
-    update_property('length', 'Length (a.a.): ', data['length']-1);
-    update_property('molecular_weight', 'Molecular Weight (Da): ', data['molecular_weight']);
-    update_property('pi', 'Molecular Weight (Da): ', data['pi']);
-    update_property('aliphatic_index', 'Aliphatic Index: ', data['aliphatic_index']);
-    update_property('instability_index', 'Instability Index: ', data['instability_index']);
+    update_property('length', data['length']-1);
+    update_property('molecular_weight', data['molecular_weight']);
+    update_property('pi', data['pi']);
+    update_property('aliphatic_index', data['aliphatic_index']);
+    update_property('instability_index', data['instability_index']);
     var formula = '-';
     if(data['carbon'] != null) {
         formula = 'C<sub>' + data['carbon'] + '</sub>H<sub>' + data['hydrogen'] + '</sub>N<sub>' + data['nitrogen'] + '</sub>O<sub>' + data['oxygen'] + '</sub>S<sub>' + data['sulfur'] + '</sub>';
     }
-    update_property('formula', 'Formula: ', formula);
+    update_property('formula', formula);
 
-    update_property('codon_bias', 'Codon Bias: ', data['codon_bias']);
-    update_property('cai', 'Codon Adaptation Index: ', data['cai']);
-    update_property('fop_score', 'Frequence of Optimal Codons: ', data['fop_score']);
-    update_property('gravy_score', 'Hydropathicity of Protein: ', data['gravy_score']);
-    update_property('aromaticity_score', 'Aromaticity Score: ', data['aromaticity_score']);
+    update_property('codon_bias', data['codon_bias']);
+    update_property('cai', data['cai']);
+    update_property('fop_score', data['fop_score']);
+    update_property('gravy_score', data['gravy_score']);
+    update_property('aromaticity_score', data['aromaticity_score']);
 
-    update_property('ecoli_half_life', 'Escherichia coli (in vivo): ', data['ecoli_half_life']);
-    update_property('mammal_half_life', 'mammalian reticulocytes (in vitro): ', data['mammal_half_life']);
-    update_property('yeast_half_life', 'yeast (in vivo): ', data['yeast_half_life']);
+    update_property('ecoli_half_life', data['ecoli_half_life']);
+    update_property('mammal_half_life', data['mammal_half_life']);
+    update_property('yeast_half_life', data['yeast_half_life']);
 
-    update_property('all_half_cys_ext_coeff', 'assuming ALL Cys residues appear as half cystines: ', data['all_half_cys_ext_coeff']);
-    update_property('no_cys_ext_coeff', 'assuming NO Cys residues appear as half cystines: ', data['no_cys_ext_coeff']);
-    update_property('all_cys_ext_coeff', 'assuming all Cys residues are reduced: ', data['all_cys_ext_coeff']);
-    update_property('all_pairs_cys_ext_coeff', 'assuming all pairs of Cys residues form cystines: ', data['all_pairs_cys_ext_coeff']);
+    update_property('all_half_cys_ext_coeff', data['all_half_cys_ext_coeff']);
+    update_property('no_cys_ext_coeff', data['no_cys_ext_coeff']);
+    update_property('all_cys_ext_coeff', data['all_cys_ext_coeff']);
+    update_property('all_pairs_cys_ext_coeff', data['all_pairs_cys_ext_coeff']);
 
     var options = {};
     options["bPaginate"] = false;
@@ -145,14 +148,14 @@ function set_up_properties(data) {
 
     create_table("amino_acid_table", options);
 
-    var options = {};
+    options = {};
     options["bPaginate"] = false;
     options["aaSorting"] = [[0, "asc"]];
     options["bFilter"] = false;
     options["bDestroy"] = true;
 
     if(data['carbon'] != null) {
-        var total = data['carbon'] + data['hydrogen'] + data['nitrogen'] + data['oxygen'] + data['sulfur'];
+        total = data['carbon'] + data['hydrogen'] + data['nitrogen'] + data['oxygen'] + data['sulfur'];
         options["aaData"] = [['Carbon', data['carbon'], get_perc(data['carbon'], total)], ['Hydrogen', data['hydrogen'], get_perc(data['hydrogen'], total)], ['Nitrogen', data['nitrogen'], get_perc(data['nitrogen'], total)],
                          ['Oxygen', data['oxygen'], get_perc(data['oxygen'], total)], ['Sulfur', data['sulfur'], get_perc(data['sulfur'], total)]];
     }
@@ -168,7 +171,7 @@ function draw_phosphodata() {
     if(phosphodata != null && phosphodata.length > 0) {
         var additional = 0;
         for (var i=0; i < phosphodata.length; i++) {
-            var index = phosphodata[i]['site_index'] + Math.floor(1.0*(phosphodata[i]['site_index']-1)/10) - 1 + additional;
+            var index = phosphodata[i]['site_index'] + Math.floor((phosphodata[i]['site_index'] - 1)/10) - 1 + additional;
             var residues = $("#sequence_residues");
             var old_residues = residues.html();
             if(phosphodata[i]['site_residue'] == old_residues.substring(index, index+1)) {
@@ -178,7 +181,7 @@ function draw_phosphodata() {
             }
         }
         var phospho_table = create_phosphorylation_table(data);
-        create_download_button("phosphorylation_table_download", phospho_table, download_table_link, display_name + '_phosphorylation');
+        create_download_button("phosphorylation_table_download", phospho_table, download_table_link, phosphorylation_table_filename);
 
         $("#phosphorylation_sites_wrapper").show();
     }
@@ -202,11 +205,33 @@ function create_phosphorylation_table(data) {
     options["bPaginate"] = false;
     options["aaSorting"] = [[4, "asc"]];
     options["bDestroy"] = true;
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null]
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null];
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": 'No phosphorylation data for this strain.'};
 
     return create_table("phosphorylation_table", options);
+}
+
+function create_protein_experiment_table(data) {
+	var datatable = [];
+
+    var experiment_types = {};
+    for (var i=0; i < data.length; i++) {
+        datatable.push(protein_experiment_data_to_table(data[i]));
+        experiment_types[data[i]['data_type']] = true;
+    }
+
+    set_up_header('protein_experiment_table', datatable.length, 'entry', 'entries', Object.keys(experiment_types).length, 'experiment', 'experiments');
+
+    var options = {};
+    options["bPaginate"] = false;
+    options["aaSorting"] = [[4, "asc"]];
+    options["bDestroy"] = true;
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null];
+    options["aaData"] = datatable;
+    options["oLanguage"] = {"sEmptyTable": 'No protein experiment data for this protein.'};
+
+    return create_table("protein_experiment_table", options);
 }
 
 function create_alias_table(data) {
@@ -224,7 +249,7 @@ function create_alias_table(data) {
 
     var options = {};
     options["aaSorting"] = [[2, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null]
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, null];
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": 'No external identifiers for ' + display_name + '.'};
 
@@ -248,7 +273,7 @@ function create_domain_table(data) {
     var options = {};
     options["bPaginate"] = true;
     options["aaSorting"] = [[4, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null, null]
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null, null];
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": "No known domains for " + display_name + "."};
 
@@ -296,15 +321,14 @@ function draw_domain_chart(chart_id, data) {
 
     chart.draw(dataTable, options);
 
-    var height = $("#" + chart_id + " > div > div > div > svg").height() + 50;
-    options['height'] = height;
+    options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 50;
     chart.draw(dataTable, options);
 
     function tooltipHandler(e) {
         var datarow = data_array[e.row];
         var spans = $(".google-visualization-tooltip-action > span");
         if(spans.length > 3) {
-            spans[0].innerHTML = 'Coords:'
+            spans[0].innerHTML = 'Coords:';
             spans[1].innerHTML = ' ' + datarow[2]/10 + '-' + datarow[3]/10;
             spans[2].innerHTML = 'Descr: ';
             if(descriptions[e.row] != null) {
@@ -316,15 +340,17 @@ function draw_domain_chart(chart_id, data) {
         }
     }
 
-    var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
-    var rectangles = rectangle_holder.childNodes;
+    var svg_gs = $("#" + chart_id + " > div > div > svg > g");
+
+    var rectangle_holder = svg_gs[3];
+    rectangles = rectangle_holder.childNodes;
     var y_one = min_start/10;
     var y_two = max_end/10;
 
     var x_one = null;
     var x_two = null;
 
-    for (var i=0; i < rectangles.length; i++) {
+    for (i=0; i < rectangles.length; i++) {
         if(rectangles[i].nodeName == 'rect') {
             var x = Math.round(rectangles[i].getAttribute('x'));
             var y = Math.round(rectangles[i].getAttribute('y'));
@@ -340,7 +366,7 @@ function draw_domain_chart(chart_id, data) {
     var m = (y_two - y_one)/(x_two - x_one);
     var b = y_two - m*x_two;
 
-    var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
+    var tickmark_holder = svg_gs[1];
     var tickmarks = tickmark_holder.childNodes;
     var tickmark_space;
     if(tickmarks.length > 1) {
@@ -349,7 +375,7 @@ function draw_domain_chart(chart_id, data) {
     else {
         tickmark_space = 100;
     }
-    for (var i=0; i < tickmarks.length; i++) {
+    for (i=0; i < tickmarks.length; i++) {
         var x_new = Math.round(tickmarks[i].getAttribute('x'));
         var y_new = Math.round(m*x_new + b);
         if(m*tickmark_space > 10000) {
@@ -370,10 +396,10 @@ function draw_domain_chart(chart_id, data) {
         tickmarks[i].innerHTML = y_new;
     }
 
-    var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
+    rectangle_holder = svg_gs[3];
     var rectangles = rectangle_holder.childNodes;
     var ordered_colors = [];
-    for (var i=0; i < rectangles.length; i++) {
+    for (i=0; i < rectangles.length; i++) {
         if(rectangles[i].nodeName == 'rect') {
             var color = rectangles[i].getAttribute('fill');
             if(ordered_colors[ordered_colors.length - 1] != color) {
@@ -383,10 +409,10 @@ function draw_domain_chart(chart_id, data) {
         }
     }
 
-    var label_holder = $("#" + chart_id + " > div > div > svg > g")[0];
+    var label_holder = svg_gs[0];
     var labels = label_holder.childNodes;
     var color_index = 0;
-    for (var i=0; i < labels.length; i++) {
+    for (i=0; i < labels.length; i++) {
         if(labels[i].nodeName == 'text') {
             source_to_color[labels[i].innerHTML] = ordered_colors[color_index];
             color_index = color_index + 1;

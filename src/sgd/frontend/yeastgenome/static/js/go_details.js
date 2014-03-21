@@ -1,31 +1,31 @@
 $(document).ready(function() {
 
   	$.getJSON(go_details_link, function(data) {
-  	    var mc_bp_go_table = create_go_table("mc_bp", "No manually curated biological process terms for " + display_name, function(x) {return x["method"] == "manually curated" && x["bioconcept"]["aspect"] == "biological process"}, data);
+  	    var mc_bp_go_table = create_go_table("mc_bp", "No manually curated biological process terms for " + display_name, function(x) {return x["method"] == "manually curated" && x["go"]["aspect"] == "biological process"}, data);
         create_download_button("mc_bp_go_table_download", mc_bp_go_table, download_table_link, mc_bp_download_table_filename);
 
-        var mc_mf_go_table = create_go_table("mc_mf", "No manually curated molecular function terms for " + display_name, function(x) {return x["method"] == "manually curated" && x["bioconcept"]["aspect"] == "molecular function"}, data);
+        var mc_mf_go_table = create_go_table("mc_mf", "No manually curated molecular function terms for " + display_name, function(x) {return x["method"] == "manually curated" && x["go"]["aspect"] == "molecular function"}, data);
         create_download_button("mc_mf_go_table_download", mc_mf_go_table, download_table_link, mc_mf_download_table_filename);
 
-        var mc_cc_go_table = create_go_table("mc_cc", "No manually curated cellular component terms for " + display_name, function(x) {return x["method"] == "manually curated" && x["bioconcept"]["aspect"] == "cellular component"}, data);
+        var mc_cc_go_table = create_go_table("mc_cc", "No manually curated cellular component terms for " + display_name, function(x) {return x["method"] == "manually curated" && x["go"]["aspect"] == "cellular component"}, data);
         create_download_button("mc_cc_go_table_download", mc_cc_go_table, download_table_link, mc_cc_download_table_filename);
 
-        var htp_bp_go_table = create_go_table("htp_bp", "No high-throughput biological process terms for " + display_name, function(x) {return x["method"] == "high-throughput" && x["bioconcept"]["aspect"] == "biological process"}, data);
+        var htp_bp_go_table = create_go_table("htp_bp", "No high-throughput biological process terms for " + display_name, function(x) {return x["method"] == "high-throughput" && x["go"]["aspect"] == "biological process"}, data);
         create_download_button("htp_bp_go_table_download", htp_bp_go_table, download_table_link, htp_bp_download_table_filename);
 
-        var htp_mf_go_table = create_go_table("htp_mf", "No high-throughput molecular function terms for " + display_name, function(x) {return x["method"] == "high-throughput" && x["bioconcept"]["aspect"] == "molecular function"}, data);
+        var htp_mf_go_table = create_go_table("htp_mf", "No high-throughput molecular function terms for " + display_name, function(x) {return x["method"] == "high-throughput" && x["go"]["aspect"] == "molecular function"}, data);
         create_download_button("htp_mf_go_table_download", htp_mf_go_table, download_table_link, htp_mf_download_table_filename);
 
-        var htp_cc_go_table = create_go_table("htp_cc", "No high-throughput cellular component terms for " + display_name, function(x) {return x["method"] == "high-throughput" && x["bioconcept"]["aspect"] == "cellular component"}, data);
+        var htp_cc_go_table = create_go_table("htp_cc", "No high-throughput cellular component terms for " + display_name, function(x) {return x["method"] == "high-throughput" && x["go"]["aspect"] == "cellular component"}, data);
         create_download_button("htp_cc_go_table_download", htp_cc_go_table, download_table_link, htp_cc_download_table_filename);
 
-        var comp_bp_go_table = create_go_table("comp_bp", "No computational biological process terms for " + display_name, function(x) {return x["method"] == "computational" && x["bioconcept"]["aspect"] == "biological process"}, data);
+        var comp_bp_go_table = create_go_table("comp_bp", "No computational biological process terms for " + display_name, function(x) {return x["method"] == "computational" && x["go"]["aspect"] == "biological process"}, data);
         create_download_button("comp_bp_go_table_download", comp_bp_go_table, download_table_link, comp_bp_download_table_filename);
 
-        var comp_mf_go_table = create_go_table("comp_mf", "No computational molecular function terms for " + display_name, function(x) {return x["method"] == "computational" && x["bioconcept"]["aspect"] == "molecular function"}, data);
+        var comp_mf_go_table = create_go_table("comp_mf", "No computational molecular function terms for " + display_name, function(x) {return x["method"] == "computational" && x["go"]["aspect"] == "molecular function"}, data);
         create_download_button("comp_mf_go_table_download", comp_mf_go_table, download_table_link, comp_mf_download_table_filename);
 
-        var comp_cc_go_table = create_go_table("comp_cc", "No computational cellular component terms for " + display_name, function(x) {return x["method"] == "computational" && x["bioconcept"]["aspect"] == "cellular component"}, data);
+        var comp_cc_go_table = create_go_table("comp_cc", "No computational cellular component terms for " + display_name, function(x) {return x["method"] == "computational" && x["go"]["aspect"] == "cellular component"}, data);
         create_download_button("comp_cc_go_table_download", comp_cc_go_table, download_table_link, comp_cc_download_table_filename);
 
         var transformed_data = [];
@@ -54,8 +54,8 @@ $(document).ready(function() {
 });
 
 function create_go_table(prefix, message, filter, data) {
+    var options = {};
     if("Error" in data) {
-        var options = {};
         options["bPaginate"] = true;
         options["aaSorting"] = [[5, "asc"]];
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, {"bSearchable":false, "bVisible":false}];
@@ -68,12 +68,11 @@ function create_go_table(prefix, message, filter, data) {
         for (var i=0; i < data.length; i++) {
             if(filter(data[i])) {
                 datatable.push(go_data_to_table(data[i], i));
-                gos[data[i]['bioconcept']['id']] = true;
+                gos[data[i]['go']['id']] = true;
             }
         }
         set_up_header(prefix + '_go_table', datatable.length, 'entry', 'entries', Object.keys(gos).length, 'Gene Ontology term', 'Gene Ontology terms');
 
-        var options = {};
         options["bPaginate"] = true;
         options["aaSorting"] = [[5, "asc"]];
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}];
@@ -91,8 +90,7 @@ function create_go_table(prefix, message, filter, data) {
 }
 
 function slider_filter(new_cutoff) {
-    var filter = "node[gene_count >= " + new_cutoff + "], edge";
-    return filter;
+    return "node[gene_count >= " + new_cutoff + "], edge";
 }
 
 
@@ -112,34 +110,34 @@ var graph_style = cytoscape.stylesheet()
 	})
 	.selector('edge')
 	.css({
-		'width': 2,
+		'width': 2
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({
 		'background-color': "#fade71",
 		'text-outline-color': '#fff',
-		'color': '#888',
+		'color': '#888'
 	})
 	.selector("node[type='BIOCONCEPT'][sub_type='biological process']")
 	.css({
 		'shape': 'rectangle',
 		'text-outline-color': '#fff',
 		'color': '#888',
-		'background-color': "#7FBF7B",
+		'background-color': "#7FBF7B"
 	})
 	.selector("node[type='BIOCONCEPT'][sub_type='molecular function']")
 	.css({
 		'shape': 'rectangle',
 		'text-outline-color': '#fff',
 		'color': '#888',
-		'background-color': "#AF8DC3",
+		'background-color': "#AF8DC3"
 	})
 	.selector("node[type='BIOCONCEPT'][sub_type='cellular component']")
 	.css({
 		'shape': 'rectangle',
 		'text-outline-color': '#fff',
 		'color': '#888',
-		'background-color': "#819FF7",
+		'background-color': "#819FF7"
     });
 
 var layout = {

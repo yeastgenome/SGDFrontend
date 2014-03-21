@@ -11,7 +11,7 @@
     var display_name = "{{ ec_number.display_name }}";
 </script>
 
-<title>{{ ec_number.display_name }}</title>
+<title>{{ ec_number.format_name }}</title>
 
 {% extends "static/templates/global_layout.jinja2" %}
 
@@ -19,7 +19,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>EC Number: <span class="gene_name">{{ ec_number.display_name }}</span></h2>
+	<h2>EC Number: <span class="gene_name">{{ ec_number.format_name }}</span></h2>
 </div>
 
 <!-- Navbar
@@ -32,7 +32,7 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title('EC Number: <span class="gene_name">{{ ec_number.display_name }}</span>')
+            add_navbar_title('EC Number: <span class="gene_name">{{ ec_number.format_name }}</span>');
             add_navbar_element('Summary', 'summary');
             add_navbar_element('Annotations', 'annotations');
         </script>
@@ -43,9 +43,9 @@
             <div class="page-header">
                 <h1>Summary</h1>
                 <ul class="unstyled">
-                    <li><strong>EC Number: </strong><a href="http://enzyme.expasy.org/EC/{{ ec_number.display_name }}" target="_blank">{{ ec_number.display_name }}</a></li>
+                    <li><strong>EC Number: </strong><a href="http://enzyme.expasy.org/EC/{{ ec_number.format_name }}" target="_blank">{{ ec_number.format_name }}</a></li>
                     {%  if ec_number.description != none %}
-                        <li><strong>Description: </strong>{{ ec_number.description }}</li>
+                        <li><strong>Name: </strong>{{ ec_number.description }}</li>
                     {%  endif %}
                 </ul>
             </div>

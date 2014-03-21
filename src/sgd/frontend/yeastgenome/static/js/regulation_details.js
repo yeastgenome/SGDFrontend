@@ -137,9 +137,9 @@ function create_target_table(data) {
         var genes = {};
         var target_entry_count = 0;
         for (var i=0; i < data.length; i++) {
-            if(data[i]["bioentity1"]["id"] == locus_id) {
+            if(data[i]["locus1"]["id"] == locus_id) {
                 datatable.push(regulation_data_to_table(data[i], false));
-                genes[data[i]["bioentity2"]["id"]] = true;
+                genes[data[i]["locus2"]["id"]] = true;
                 target_entry_count = target_entry_count + 1;
             }
         }
@@ -160,9 +160,9 @@ function create_regulator_table(data) {
 	var genes = {};
     var regulation_entry_count = 0;
 	for (var i=0; i < data.length; i++) {
-	    if(data[i]["bioentity2"]["id"] == locus_id) {
+	    if(data[i]["locus2"]["id"] == locus_id) {
             datatable.push(regulation_data_to_table(data[i], true));
-		    genes[data[i]["bioentity1"]["id"]] = true;
+		    genes[data[i]["locus1"]["id"]] = true;
             regulation_entry_count = regulation_entry_count+1;
 		}
   	}

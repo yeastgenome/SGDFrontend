@@ -173,6 +173,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
                     'protein_phosphorylation_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_phosphorylation_details?callback=?',
                     'ec_number_details_link': self.backend_url + '/locus/' + bioent_id + '/ec_number_details?callback=?',
+                    'protein_experiment_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_experiment_details?callback=?',
                     'protein_resources_link': self.backend_url + '/locus/' + bioent_id + '/protein_resources?callback=?',
                     'alias_link': self.backend_url + '/locus/' + bioent_id + '/alias?callback=?',
                     'download_table_link': '/download_table',

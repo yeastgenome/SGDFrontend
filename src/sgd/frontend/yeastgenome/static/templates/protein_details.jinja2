@@ -6,6 +6,7 @@
     var sequence_details_link = "{{ sequence_details_link }}";
     var protein_phosphorylation_details_link = "{{ protein_phosphorylation_details_link }}";
     var ec_number_details_link = "{{ ec_number_details_link }}";
+    var protein_experiment_details_link = "{{ protein_experiment_details_link }}";
     var protein_resources_link = "{{ protein_resources_link }}";
     var alias_link = "{{ alias_link }}";
 
@@ -15,6 +16,8 @@
 
     var domains_table_filename = "{{ locus.display_name }}_domains";
     var alias_table_filename = "{{ locus.display_name }}_external_ids";
+    var protein_experiment_table_filename = "{{ locus.display_name }}_experimental_data";
+    var phosphorylation_table_filename = "{{ locus.display_name }}_phosphorylation";
 
 	var display_name = "{{ locus.display_name }}";
 	var locus_id = "{{ locus.id }}";
@@ -85,9 +88,9 @@
         <section id="experiment" data-magellan-destination="experiment">
             <div class="page-header">
                 <h1>Experimental Data</h1>
-                <ul class="unstyled">
-                    <li><strong>Molecules/cell: </strong></li>
-                </ul>
+                <!-- Includes domain_table into template -->
+                {% set table_id = "protein_experiment_table" %}
+                {% include "static/templates/protein_experiment_table.jinja2" %}
             </div>
         </section>
 
