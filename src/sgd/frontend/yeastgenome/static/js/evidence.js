@@ -172,12 +172,12 @@ function phenotype_data_to_table(evidence, index) {
 	var reporter = '';
     var note = '';
     for (var j=0; j < evidence['conditions'].length; j++) {
-        if('chemical' in evidence['conditions'][j]) {
+        if(evidence['conditions'][j]['class_type'] == 'CHEMICAL') {
             if(evidence['conditions'][j]['amount'] != null) {
-                chemical = evidence['conditions'][j]['amount'] + ' ' + create_link(evidence['conditions'][j]['chemical']['display_name'], evidence['conditions'][j]['chemical']['link']);
+                chemical = evidence['conditions'][j]['amount'] + ' ' + create_link(evidence['conditions'][j]['obj']['display_name'], evidence['conditions'][j]['obj']['link']);
             }
             else {
-                chemical = create_link(evidence['conditions'][j]['chemical']['display_name'], evidence['conditions'][j]['chemical']['link']);
+                chemical = create_link(evidence['conditions'][j]['obj']['display_name'], evidence['conditions'][j]['obj']['link']);
             }
             var chemical_icon = create_note_icon('chemical_icon' + index, evidence['conditions'][j]['note']);
             if(chemical_icon != '') {

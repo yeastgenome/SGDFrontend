@@ -17,7 +17,7 @@ function create_phenotype_table(data) {
 	var phenotypes = {};
 	for (var i=0; i < data.length; i++) {
         datatable.push(phenotype_data_to_table(data[i], i));
-		phenotypes[data[i]["bioconcept"]["id"]] = true;
+		phenotypes[data[i]["phenotype"]["id"]] = true;
 	}
 
     set_up_header('phenotype_table', datatable.length, 'entry', 'entries', Object.keys(phenotypes).length, 'phenotype', 'phenotypes');
