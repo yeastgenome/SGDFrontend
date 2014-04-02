@@ -15,7 +15,7 @@ function domain_data_to_table(evidence) {
         description = evidence['domain']['description'];
     }
 
-    return [evidence['id'], evidence['protein']['locus']['id'], bioent, evidence['protein']['locus']['format_name'], coord_range, domain, description, evidence['source'], evidence['domain']['count']];
+    return [evidence['id'], evidence['protein']['locus']['id'], bioent, evidence['protein']['locus']['format_name'], coord_range, domain, description, evidence['source']['display_name'], evidence['domain']['count']];
 }
 
 function phosphorylation_data_to_table(evidence) {
@@ -29,7 +29,7 @@ function phosphorylation_data_to_table(evidence) {
         reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
     }
 
-    return [evidence['id'], evidence['protein']['locus']['id'], bioent, evidence['protein']['locus']['format_name'], site_index, site_residue, evidence['source'], reference];
+    return [evidence['id'], evidence['protein']['locus']['id'], bioent, evidence['protein']['locus']['format_name'], site_index, site_residue, evidence['source']['display_name'], reference];
 }
 
 function protein_experiment_data_to_table(evidence) {
@@ -76,7 +76,7 @@ function regulation_data_to_table(evidence, is_regulator) {
 	else {
 	    analyze_value = evidence['locus2']['id'];
 	}
-	var source = evidence['source'];
+	var source = evidence['source']['display_name'];
 	if(source == "YEASTRACT") {
 	    source = create_link(source, "http://yeastract.com/view.php?existing=regulation&proteinname=" + evidence["locus1"]["display_name"] + "p&orfname=" + evidence["locus2"]["display_name"], true);
 	}
@@ -143,7 +143,7 @@ function interaction_data_to_table(evidence, index) {
         reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
     }
 
-    return [evidence['id'], analyze_key, icon, bioent1, evidence[bioent1_key]['format_name'], bioent2, evidence[bioent2_key]['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], direction, modification, phenotype, evidence['source'], reference, evidence['note']]
+    return [evidence['id'], analyze_key, icon, bioent1, evidence[bioent1_key]['format_name'], bioent2, evidence[bioent2_key]['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], direction, modification, phenotype, evidence['source']['display_name'], reference, evidence['note']]
 }
 
 function gene_data_to_table(bioent) {
@@ -279,5 +279,5 @@ function go_data_to_table(evidence, index) {
         qualifier = '';
     }
 
-  	return [evidence['id'], evidence['bioentity']['id'], icon, bioent, evidence['bioentity']['format_name'], biocon, evidence['go']['go_id'], qualifier, evidence['go']['aspect'], evidence['method'], evidence_code, evidence['source'], evidence['date_created'], reference, relationship_entry];
+  	return [evidence['id'], evidence['bioentity']['id'], icon, bioent, evidence['bioentity']['format_name'], biocon, evidence['go']['go_id'], qualifier, evidence['go']['aspect'], evidence['method'], evidence_code, evidence['source']['display_name'], evidence['date_created'], reference, relationship_entry];
 }

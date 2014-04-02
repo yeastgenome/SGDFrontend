@@ -185,7 +185,7 @@ function create_feature_table(data) {
 
     var options = {};
     options["bPaginate"] = true;
-    options["aaSorting"] = [[1, "asc"]];
+    options["aaSorting"] = [[2, "asc"]];
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, { "sType": "range" }]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": "No features for " + display_name + '.'};

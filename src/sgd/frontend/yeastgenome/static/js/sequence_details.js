@@ -17,10 +17,10 @@ $(document).ready(function() {
 
             if(dna_data[i]['strain']['display_name'] == 'S288C') {
                 $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['start'] + ' - ' + dna_data[i]['end']);
-                draw_label_chart('reference_label_chart', dna_data[i]);
-                draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
-                var subfeature_table = create_subfeature_table(dna_data[i]);
-                create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
+                //draw_label_chart('reference_label_chart', 'S288C');
+                //draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
+                //var subfeature_table = create_subfeature_table(dna_data[i]);
+                //create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
             }
             else {
                 var option = document.createElement("option");
@@ -37,33 +37,34 @@ $(document).ready(function() {
         }
 
         var protein_data = data['protein'];
-        for (var i=0; i < protein_data.length; i++) {
+        for (i=0; i < protein_data.length; i++) {
             strain_to_protein_data[protein_data[i]['strain']['display_name']] = protein_data[i];
         }
 
         var coding_data = data['coding_dna'];
-        for (var i=0; i < coding_data.length; i++) {
+        for (i=0; i < coding_data.length; i++) {
             strain_to_coding_data[coding_data[i]['strain']['display_name']] = coding_data[i];
         }
 
         function reference_on_change() {
-            var mode = $("#reference_chooser").val();
+            var mode = $("#reference_chooser");
+            var reference_download = $("#reference_download");
             var residues;
-            if(mode == 'genomic_dna') {
-                residues = strain_to_genomic_data['S288C']['sequence']['residues'];
-                $("#reference_download").click(function f() {
+            if(mode.val() == 'genomic_dna') {
+                residues = strain_to_genomic_data['S288C']['residues'];
+                reference_download.click(function f() {
                     download_sequence(residues, download_sequence_link, display_name, strain_to_genomic_data['S288C']['contig']['format_name']);
                 });
             }
-            else if(mode == 'coding_dna') {
-                residues = strain_to_coding_data['S288C']['sequence']['residues'];
-                $("#reference_download").click(function f() {
+            else if(mode.val() == 'coding_dna') {
+                residues = strain_to_coding_data['S288C']['residues'];
+                reference_download.click(function f() {
                     download_sequence(residues, download_sequence_link, display_name, 'coding_dna');
                 });
             }
-            else if(mode == 'protein') {
-                residues = strain_to_protein_data['S288C']['sequence']['residues'];
-                $("#reference_download").click(function f() {
+            else if(mode.val() == 'protein') {
+                residues = strain_to_protein_data['S288C']['residues'];
+                reference_download.click(function f() {
                     download_sequence(residues, download_sequence_link, display_name, 'protein');
                 });
             }
@@ -72,18 +73,15 @@ $(document).ready(function() {
             }
             $("#reference_sequence").html(residues.chunk(10).join(' '));
 
-            $("#reference_chooser")
-                .children('option[value=genomic_dna]')
+            mode.children('option[value=genomic_dna]')
                 .attr('disabled', !('S288C' in strain_to_genomic_data));
-            $("#reference_chooser")
-                .children('option[value=coding_dna]')
+            mode.children('option[value=coding_dna]')
                 .attr('disabled', !('S288C' in strain_to_coding_data));
-            $("#reference_chooser")
-                .children('option[value=protein]')
+            mode.children('option[value=protein]')
                 .attr('disabled', !('S288C' in strain_to_protein_data));
 
-            if(mode == 'genomic_dna') {
-                color_sequence("reference_sequence", dna_data[i]);
+            if(mode.val() == 'genomic_dna') {
+                //color_sequence("reference_sequence", dna_data[i]);
             }
         }
         $("#reference_chooser").change(reference_on_change);
@@ -94,25 +92,26 @@ $(document).ready(function() {
             $("#alternative_strain_description").html(strain_data['strain']['description']);
             $("#navbar_alternative").children()[0].innerHTML = 'Alternative Reference Strains <span class="subheader">' + '- ' + alternative_selection.val() + '</span>';
             $("#alternative_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
-            draw_label_chart('alternative_label_chart', strain_data);
+            draw_label_chart('alternative_label_chart', strain_data['strain']['display_name']);
 
-            var mode = $("#alternative_chooser").val();
+            var mode = $("#alternative_chooser");
+            var download = $("#alternative_download");
             var residues;
-            if(mode == 'genomic_dna') {
-                residues = strain_to_genomic_data[alternative_selection.val()]['sequence']['residues'];
-                $("#reference_download").click(function f() {
+            if(mode.val() == 'genomic_dna') {
+                residues = strain_to_genomic_data[alternative_selection.val()]['residues'];
+                download.click(function f() {
                     download_sequence(residues, download_sequence_link, display_name, strain_to_genomic_data[alternative_selection.val()]['contig']['format_name']);
                 });
             }
-            else if(mode == 'coding_dna') {
-                residues = strain_to_coding_data[alternative_selection.val()]['sequence']['residues'];
-                $("#reference_download").click(function f() {
+            else if(mode.val() == 'coding_dna') {
+                residues = strain_to_coding_data[alternative_selection.val()]['residues'];
+                download.click(function f() {
                     download_sequence(residues, download_sequence_link, display_name, 'coding_dna');
                 });
             }
-            else if(mode == 'protein') {
-                residues = strain_to_protein_data[alternative_selection.val()]['sequence']['residues'];
-                $("#reference_download").click(function f() {
+            else if(mode.val() == 'protein') {
+                residues = strain_to_protein_data[alternative_selection.val()]['residues'];
+                download.click(function f() {
                     download_sequence(residues, download_sequence_link, display_name, 'protein');
                 });
             }
@@ -121,22 +120,19 @@ $(document).ready(function() {
             }
             $("#alternative_sequence").html(residues.chunk(10).join(' '));
 
-            $("#alternative_chooser")
-                .children('option[value=genomic_dna]')
+            mode.children('option[value=genomic_dna]')
                 .attr('disabled', !(alternative_selection.val() in strain_to_genomic_data));
-            $("#alternative_chooser")
-                .children('option[value=coding_dna]')
+            mode.children('option[value=coding_dna]')
                 .attr('disabled', !(alternative_selection.val() in strain_to_coding_data));
-            $("#alternative_chooser")
-                .children('option[value=protein]')
+            mode.children('option[value=protein]')
                 .attr('disabled', !(alternative_selection.val() in strain_to_protein_data));
 
-            if(mode == 'protein' && !(alternative_selection.val() in strain_to_protein_data)) {
-                $("#alternative_chooser").children('option[value=genomic_dna]').attr('selected', true);
+            if(mode.val() == 'protein' && !(alternative_selection.val() in strain_to_protein_data)) {
+                mode.children('option[value=genomic_dna]').attr('selected', true);
                 other_on_change();
             }
-            if(mode == 'coding_dna' && !(alternative_selection.val() in strain_to_coding_data)) {
-                $("#alternative_chooser").children('option[value=genomic_dna]').attr('selected', true);
+            if(mode.val() == 'coding_dna' && !(alternative_selection.val() in strain_to_coding_data)) {
+                mode.children('option[value=genomic_dna]').attr('selected', true);
                 other_on_change();
             }
         }
@@ -149,25 +145,26 @@ $(document).ready(function() {
             $("#other_strain_description").html(strain_data['strain']['description']);
             $("#navbar_other").children()[0].innerHTML = 'Other Strains <span class="subheader">' + '- ' + other_selection.val() + '</span>';
             $("#other_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
-            draw_label_chart('other_label_chart', strain_data);
+            draw_label_chart('other_label_chart', strain_data['strain']['display_name']);
 
-            var mode = $("#other_chooser").val();
+            var mode = $("#other_chooser");
+            var download = $("#other_download");
             var residues;
-            if(mode == 'genomic_dna' && other_selection.val() in strain_to_genomic_data) {
-                residues = strain_to_genomic_data[other_selection.val()]['sequence']['residues'];
-                $("#reference_download").click(function f() {
+            if(mode.val() == 'genomic_dna' && other_selection.val() in strain_to_genomic_data) {
+                residues = strain_to_genomic_data[other_selection.val()]['residues'];
+                download.click(function f() {
                     download_sequence(residues, download_sequence_link, display_name, strain_to_genomic_data[other_selection.val()]['contig']['format_name']);
                 });
             }
-            else if(mode == 'coding_dna' && other_selection.val() in strain_to_coding_data) {
-                residues = strain_to_coding_data[other_selection.val()]['sequence']['residues'];
-                $("#reference_download").click(function f() {
+            else if(mode.val() == 'coding_dna' && other_selection.val() in strain_to_coding_data) {
+                residues = strain_to_coding_data[other_selection.val()]['residues'];
+                download.click(function f() {
                     download_sequence(residues, download_sequence_link, display_name, 'coding_dna');
                 });
             }
-            else if(mode == 'protein' && other_selection.val() in strain_to_protein_data) {
-                residues = strain_to_protein_data[other_selection.val()]['sequence']['residues'];
-                $("#reference_download").click(function f() {
+            else if(mode.val() == 'protein' && other_selection.val() in strain_to_protein_data) {
+                residues = strain_to_protein_data[other_selection.val()]['residues'];
+                download.click(function f() {
                     download_sequence(residues, download_sequence_link, display_name, 'protein');
                 });
             }
@@ -176,22 +173,19 @@ $(document).ready(function() {
             }
             $("#other_sequence").html(residues.chunk(10).join(' '));
 
-            $("#other_chooser")
-                .children('option[value=genomic_dna]')
+            mode.children('option[value=genomic_dna]')
                 .attr('disabled', !(other_selection.val() in strain_to_genomic_data));
-            $("#other_chooser")
-                .children('option[value=coding_dna]')
+            mode.children('option[value=coding_dna]')
                 .attr('disabled', !(other_selection.val() in strain_to_coding_data));
-            $("#other_chooser")
-                .children('option[value=protein]')
+            mode.children('option[value=protein]')
                 .attr('disabled', !(other_selection.val() in strain_to_protein_data));
 
-            if(mode == 'protein' && !(other_selection.val() in strain_to_protein_data)) {
-                $("#other_chooser").children('option[value=genomic_dna]').attr('selected', true);
+            if(mode.val() == 'protein' && !(other_selection.val() in strain_to_protein_data)) {
+                mode.children('option[value=genomic_dna]').attr('selected', true);
                 other_on_change();
             }
-            if(mode == 'coding_dna' && !(other_selection.val() in strain_to_coding_data)) {
-                $("#other_chooser").children('option[value=genomic_dna]').attr('selected', true);
+            if(mode.val() == 'coding_dna' && !(other_selection.val() in strain_to_coding_data)) {
+                mode.children('option[value=genomic_dna]').attr('selected', true);
                 other_on_change();
             }
         }
@@ -199,6 +193,13 @@ $(document).ready(function() {
         $("#other_chooser").change(other_on_change);
         other_on_change();
   	});
+
+    $.getJSON(neighbor_sequence_details_link, function(data) {
+        strain_to_neighbors = data;
+        draw_label_chart('reference_label_chart', 'S288C');
+        draw_label_chart('alternative_label_chart', $("#alternative_strain_selection").val());
+        draw_label_chart('other_label_chart', $("#other_strain_selection").val());
+    });
 
 	//Hack because footer overlaps - need to fix this.
 	add_footer_space("resources");
@@ -212,168 +213,156 @@ function strand_to_direction(strand) {
         return "3'";
     }
 }
-function draw_label_chart(chart_id, data) {
 
-    var container = document.getElementById(chart_id);
+var strain_to_neighbors = {};
 
-    var chart = new google.visualization.Timeline(container);
+function draw_label_chart(chart_id, strain_name) {
+    if(strain_name in strain_to_neighbors) {
+        var data = strain_to_neighbors[strain_name];
 
-    var dataTable = new google.visualization.DataTable();
+        var container = document.getElementById(chart_id);
 
-    dataTable.addColumn({ type: 'string', id: 'Strand' });
-    dataTable.addColumn({ type: 'string', id: 'Feature' });
-    dataTable.addColumn({ type: 'number', id: 'Start' });
-    dataTable.addColumn({ type: 'number', id: 'End' });
+        var chart = new google.visualization.Timeline(container);
 
-    var data_array = [];
-    var labels = {};
+        var dataTable = new google.visualization.DataTable();
 
-    var has_five_prime = false;
-    var has_three_prime = false;
-    var min_tick = data['start'];
-    var max_tick = data['end'];
+        dataTable.addColumn({ type: 'string', id: 'Strand' });
+        dataTable.addColumn({ type: 'string', id: 'Feature' });
+        dataTable.addColumn({ type: 'number', id: 'Start' });
+        dataTable.addColumn({ type: 'number', id: 'End' });
 
-    if(data['strand'] == "+") {
-        has_five_prime = true;
-    }
-    else {
-        has_three_prime = true;
-    }
+        var data_array = [];
 
-    var start = data['start'];
-    var end = data['end'];
-    data_array.push([strand_to_direction(data['strand']), display_name, start, end]);
-    labels[display_name] = true;
+        var has_five_prime = false;
+        var has_three_prime = false;
+        var min_tick = null;
+        var max_tick = null;
 
-    for (var i=0; i < data['neighbors'].length; i++) {
-        var start = data['neighbors'][i]['start'];
-        var end = data['neighbors'][i]['end'];
-        var direction = strand_to_direction(data['neighbors'][i]['strand']);
-        if(direction == "5'") {
-            data_array.unshift([direction, data['neighbors'][i]['display_name'], start, end]);
-            has_five_prime = true;
+        var colors = []
+
+        for (i=0; i < data.length; i++) {
+            var start = data[i]['start'];
+            var end = data[i]['end'];
+            var direction = strand_to_direction(data[i]['strand']);
+            if(direction == "5'") {
+                data_array.unshift([direction, data[i]['bioentity']['display_name'], start, end]);
+                has_five_prime = true;
+            }
+            else {
+                data_array.push([direction, data[i]['bioentity']['display_name'], start, end]);
+                has_three_prime = true;
+            }
+
+            if(min_tick == null || start < min_tick) {
+                min_tick = start;
+            }
+            if(max_tick == null || end > max_tick) {
+                max_tick = end;
+            }
+            if(data[i]['bioentity']['display_name'] == display_name) {
+                colors.push("#3366cc");
+            }
+            else {
+                colors.push('#A4A4A4');
+            }
         }
-        else {
-            data_array.push([direction, data['neighbors'][i]['display_name'], start, end]);
-            has_three_prime = true;
+
+        if(!has_five_prime) {
+            data_array.unshift(["5'", '', null, null]);
+            colors.unshift('#A4A4A4');
+        }
+        if(!has_three_prime) {
+            data_array.push(["3'", '', null, null]);
+            colors.push('#A4A4A4');
         }
 
-        if(start < min_tick) {
-            min_tick = start;
+        dataTable.addRows(data_array);
+
+        var options = {
+            'height': 1,
+            'timeline': {'hAxis': {'position': 'none'}},
+            'tooltip': {'isHTML': true},
+            'colors': colors
+        };
+
+        chart.draw(dataTable, options);
+
+        options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 50;
+        chart.draw(dataTable, options);
+
+        var svg_gs = $("#" + chart_id + " > div > div > svg > g");
+        var rectangle_holder = svg_gs[3];
+        var rectangles = rectangle_holder.childNodes;
+
+        function tooltipHandler(e) {
+            var datarow = data_array[e.row];
+            var spans = $(".google-visualization-tooltip-action > span");
+            if(spans.length > 3) {
+                spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
+                spans[2].innerHTML = 'Length:';
+                spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
+            }
         }
-        if(end > max_tick) {
-            max_tick = end;
-        }
-    }
 
-    if(!has_five_prime) {
-        data_array.unshift(["5'", '', null, null]);
-    }
-    if(!has_three_prime) {
-        data_array.push(["3'", '', null, null]);
-    }
+        var divider_height = Math.round(svg_gs[0].childNodes[0].getAttribute('height'));
+        var y_one = min_tick;
+        var y_two = max_tick;
 
-    dataTable.addRows(data_array);
+        var x_one = null;
+        var x_two = null;
 
-    var options = {
-        'height': 1,
-        'timeline': {'hAxis': {'position': 'none'},
-                    //'singleColor': '#A4A4A4'
-        },
-        'tooltip': {'isHTML': true}
-
-    }
-
-    chart.draw(dataTable, options);
-
-    var height = $("#" + chart_id + " > div > div > div > svg").height() + 50;
-    options['height'] = height;
-    chart.draw(dataTable, options);
-
-    options['colors'] = [];
-    var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
-    var rectangles = rectangle_holder.childNodes;
-    for (var i=0; i < rectangles.length; i++) {
-        if(rectangles[i].nodeName == 'rect' && i+1 < rectangles.length && rectangles[i+1].nodeName == 'text' && rectangles[i+1].innerHTML == display_name) {
-            options['colors'].push("#3366cc");
-        }
-        else if(rectangles[i].nodeName == 'rect'){
-            options['colors'].push('#A4A4A4');
-        }
-    }
-    chart.draw(dataTable, options);
-
-    function tooltipHandler(e) {
-        var datarow = data_array[e.row];
-        var spans = $(".google-visualization-tooltip-action > span");
-        if(spans.length > 3) {
-            spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
-            spans[2].innerHTML = 'Length:';
-            spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
-        }
-    }
-
-    var divider_height = Math.round($("#" + chart_id + " > div > div > svg > g")[0].childNodes[0].getAttribute('height'));
-
-    var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
-    var rectangles = rectangle_holder.childNodes;
-    var y_one = min_tick;
-    var y_two = max_tick;
-
-    var x_one = null;
-    var x_two = null;
-
-    for (var i=0; i < rectangles.length; i++) {
-        if(rectangles[i].nodeName == 'rect') {
-            var x = Math.round(rectangles[i].getAttribute('x'));
-            var y = Math.round(rectangles[i].getAttribute('y'));
-            if(x > 0 && (y > divider_height && has_three_prime) || (y < divider_height && has_five_prime)) {
-                if(x_one == null || x < x_one) {
-                    x_one = x;
-                }
-                if(x_two == null || x > x_two) {
-                    x_two = x + Math.round(rectangles[i].getAttribute('width'));
+        for (i=0; i < rectangles.length; i++) {
+            if(rectangles[i].nodeName == 'rect') {
+                var x = Math.round(rectangles[i].getAttribute('x'));
+                var y = Math.round(rectangles[i].getAttribute('y'));
+                if(x > 0 && (y > divider_height && has_three_prime) || (y < divider_height && has_five_prime)) {
+                    if(x_one == null || x < x_one) {
+                        x_one = x;
+                    }
+                    if(x_two == null || x > x_two) {
+                        x_two = x + Math.round(rectangles[i].getAttribute('width'));
+                    }
                 }
             }
         }
-    }
 
-    var m = (y_two - y_one)/(x_two - x_one);
-    var b = y_two - m*x_two;
+        var m = (y_two - y_one)/(x_two - x_one);
+        var b = y_two - m*x_two;
 
-    var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
-    var tickmarks = tickmark_holder.childNodes;
-    var tickmark_space;
-    if(tickmarks.length > 1) {
-        tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
-    }
-    else {
-        tickmark_space = 100;
-    }
-    for (var i=0; i < tickmarks.length; i++) {
-        var x_new = Math.round(tickmarks[i].getAttribute('x'));
-        var y_new = Math.round(m*x_new + b);
-        if(m*tickmark_space > 10000) {
-            y_new = 10000*Math.round(y_new/10000);
+        var tickmark_holder = svg_gs[1];
+        var tickmarks = tickmark_holder.childNodes;
+        var tickmark_space;
+        if(tickmarks.length > 1) {
+            tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
         }
-        else if(m*tickmark_space > 1000) {
-            y_new = 1000*Math.round(y_new/1000);
+        else {
+            tickmark_space = 100;
         }
-        else if(m*tickmark_space > 100) {
-            y_new = 100*Math.round(y_new/100);
+        for (var i=0; i < tickmarks.length; i++) {
+            var x_new = Math.round(tickmarks[i].getAttribute('x'));
+            var y_new = Math.round(m*x_new + b);
+            if(m*tickmark_space > 10000) {
+                y_new = 10000*Math.round(y_new/10000);
+            }
+            else if(m*tickmark_space > 1000) {
+                y_new = 1000*Math.round(y_new/1000);
+            }
+            else if(m*tickmark_space > 100) {
+                y_new = 100*Math.round(y_new/100);
+            }
+            else if(m*tickmark_space > 10) {
+                y_new = 10*Math.round(y_new/10)
+            }
+            if(y_new <= 0) {
+                y_new = 1;
+            }
+            tickmarks[i].innerHTML = y_new;
         }
-        else if(m*tickmark_space > 10) {
-            y_new = 10*Math.round(y_new/10)
-        }
-        if(y_new <= 0) {
-            y_new = 1;
-        }
-        tickmarks[i].innerHTML = y_new;
-    }
 
-    // Listen for the 'select' event, and call my function selectHandler() when
-    // the user selects something on the chart.
-    google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
+        // Listen for the 'select' event, and call my function selectHandler() when
+        // the user selects something on the chart.
+        google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
+    }
 }
 
 function draw_sublabel_chart(chart_id, data) {

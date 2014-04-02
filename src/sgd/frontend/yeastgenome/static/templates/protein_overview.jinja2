@@ -9,8 +9,8 @@
             {% if locus.aliases|length > 0 %}
                 <li>
                     <strong>Aliases: </strong>
-                    {% for alias in locus.aliases %}
-                        <span>{{ alias }}</span>{% if not loop.last %}, {% endif %}
+                    {% for alias in locus.aliases if alias.category == 'Uniform' %}
+                        <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
                     {% endfor %}
                 </li>
             {% endif %}

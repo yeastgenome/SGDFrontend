@@ -46,8 +46,8 @@
             <div class="page-header">
                 <h1>Summary</h1>
                 <ul class="unstyled">
-                    <li><strong>Strain: </strong></li>
-                    <li><strong>Length: </strong>{{ contig.length }}</li>
+                    <li><strong>Strain: </strong>{{ contig.strain.display_name }}</li>
+                    <li><strong>Length: </strong>{{ contig.residues|length }}</li>
                     <li>
                         <div class="button-bar">
                             <ul class="button-group radius">

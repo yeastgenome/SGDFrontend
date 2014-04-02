@@ -172,7 +172,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'protein_domain_graph_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_graph?callback=?',
                     'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
                     'protein_phosphorylation_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_phosphorylation_details?callback=?',
-                    'ec_number_details_link': self.backend_url + '/locus/' + bioent_id + '/ec_number_details?callback=?',
+                    'ec_number_details_link': self.backend_url + '/locus/' + bioent_id + '/ecnumber_details?callback=?',
                     'protein_experiment_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_experiment_details?callback=?',
                     'protein_resources_link': self.backend_url + '/locus/' + bioent_id + '/protein_resources?callback=?',
                     'alias_link': self.backend_url + '/locus/' + bioent_id + '/alias?callback=?',
@@ -198,6 +198,7 @@ class YeastgenomeFrontend(FrontendInterface):
 
                     #Links
                     'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
+                    'neighbor_sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/neighbor_sequence_details?callback=?',
                     'download_table_link': '/download_table',
                     'download_sequence_link': '/download_sequence',
                     'analyze_table_link': '/analyze'
@@ -337,7 +338,7 @@ class YeastgenomeFrontend(FrontendInterface):
         return page
 
     def ec_number(self, ec_repr):
-        ec_number = get_json(self.backend_url + '/ec_number/' + ec_repr + '/overview')
+        ec_number = get_json(self.backend_url + '/ecnumber/' + ec_repr + '/overview')
         ec_number_id = str(ec_number['id'])
 
         page = {
@@ -345,7 +346,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'ec_number': ec_number,
 
                     #Links
-                    'ec_number_details_link': self.backend_url + '/ec_number/' + ec_number_id + '/locus_details?callback=?',
+                    'ec_number_details_link': self.backend_url + '/ecnumber/' + ec_number_id + '/locus_details?callback=?',
                     'download_table_link': '/download_table',
                     'analyze_table_link': '/analyze'
                     }
