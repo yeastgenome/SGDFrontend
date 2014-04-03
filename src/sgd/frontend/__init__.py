@@ -117,10 +117,11 @@ def prep_views(chosen_frontend, config):
                      renderer=chosen_frontend.get_renderer('literature_details'))
     
     config.add_route('regulation_details',
-                     '/locus/{identifier}/regulation',
+                     '/locus/{identifier}/regulation/{filter}',
                      view=lambda request: chosen_frontend.response_wrapper('regulation_details', request)(
                                 getattr(chosen_frontend, 'regulation_details')(
-                                        bioent_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].upper())),
+                                        bioent_repr = None if 'identifier' not in request.matchdict else request.matchdict['identifier'].upper(),
+                                        filter = None if 'filter' not in request.matchdict else request.matchdict['filter'])),
                      renderer=chosen_frontend.get_renderer('regulation_details'))
     
     config.add_route('phenotype_details',

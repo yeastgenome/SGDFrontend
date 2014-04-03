@@ -81,10 +81,10 @@ class YeastgenomeFrontend(FrontendInterface):
                 }
         return page
     
-    def regulation_details(self, bioent_repr):
+    def regulation_details(self, bioent_repr, filter):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
         bioent_id = str(bioent['id'])
-        overview = get_json(self.backend_url + '/locus/' + bioent_id + '/regulation_overview')
+        overview = get_json(self.backend_url + '/locus/' + bioent_id + '/regulation_overview/' + filter)
         tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
         
         page = {
@@ -96,8 +96,8 @@ class YeastgenomeFrontend(FrontendInterface):
                     'tabs': tabs,
                     
                     #Links
-                    'regulation_details_link': self.backend_url + '/locus/' + bioent_id + '/regulation_details?callback=?',
-                    'regulation_graph_link': self.backend_url + '/locus/' + bioent_id + '/regulation_graph?callback=?',
+                    'regulation_details_link': self.backend_url + '/locus/' + bioent_id + '/regulation_details/' + filter + '?callback=?',
+                    'regulation_graph_link': self.backend_url + '/locus/' + bioent_id + '/regulation_graph/' + filter + '?callback=?',
                     'regulation_target_enrichment_link': self.backend_url + '/locus/' + bioent_id + '/regulation_target_enrichment?callback=?',
                     'protein_domain_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_details?callback=?',
                     'binding_site_details_link': self.backend_url + '/locus/' + bioent_id + '/binding_site_details?callback=?',

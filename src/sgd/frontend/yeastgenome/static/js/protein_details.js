@@ -240,8 +240,8 @@ function create_alias_table(data) {
     var sources = {};
     for (var i=0; i < data.length; i++) {
         if(data[i]['link'] != null) {
-            datatable.push([data[i]['id'], create_link(data[i]['display_name'], data[i]['link'], true), data[i]['source']]);
-            sources[data[i]['source']] = true;
+            datatable.push([data[i]['id'], create_link(data[i]['display_name'], data[i]['link'], true), data[i]['source']['display_name']]);
+            sources[data[i]['source']['display_name']] = true;
         }
     }
 
