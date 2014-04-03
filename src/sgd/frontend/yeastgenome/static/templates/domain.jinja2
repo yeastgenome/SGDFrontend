@@ -48,7 +48,7 @@
                             , <a href="http://www.ebi.ac.uk/interpro/entry/{{ domain.interpro_id }}" target="_blank">{{ domain.interpro_id }}</a>
                         {%  endif %}
                     </li>
-                    <li><strong>Source: </strong>{{ domain.source }}</li>
+                    <li><strong>Source: </strong>{{ domain.source.display_name }}</li>
                     {%  if domain.description != none %}
                         <li><strong>Description: </strong>{{ domain.description }}</li>
                     {%  endif %}

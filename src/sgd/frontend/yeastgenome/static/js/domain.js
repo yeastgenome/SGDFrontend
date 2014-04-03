@@ -18,7 +18,7 @@ function create_domain_table(data) {
     var bioents = {};
     for (var i=0; i < data.length; i++) {
         datatable.push(domain_data_to_table(data[i]));
-        bioents[data[i]['protein']['id']] = true;
+        bioents[data[i]['locus']['id']] = true;
     }
 
     set_up_header('domain_table', datatable.length, 'entry', 'entries', Object.keys(bioents).length, 'gene', 'genes');

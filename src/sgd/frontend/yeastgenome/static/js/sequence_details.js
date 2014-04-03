@@ -13,7 +13,7 @@ $(document).ready(function() {
         var strain_to_coding_data = {};
 
         for (var i=0; i < dna_data.length; i++) {
-            strain_to_genomic_data[dna_data[i]['strain']['display_name']] = dna_data[i];
+            strain_to_genomic_data[dna_data[i]['strain']['format_name']] = dna_data[i];
 
             if(dna_data[i]['strain']['display_name'] == 'S288C') {
                 $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['start'] + ' - ' + dna_data[i]['end']);
@@ -24,7 +24,7 @@ $(document).ready(function() {
             }
             else {
                 var option = document.createElement("option");
-                option.value = dna_data[i]['strain']['display_name'];
+                option.value = dna_data[i]['strain']['format_name'];
                 option.innerHTML = dna_data[i]['strain']['display_name'];
 
                 if(dna_data[i]['strain']['is_alternative_reference'] == 1) {
@@ -38,12 +38,12 @@ $(document).ready(function() {
 
         var protein_data = data['protein'];
         for (i=0; i < protein_data.length; i++) {
-            strain_to_protein_data[protein_data[i]['strain']['display_name']] = protein_data[i];
+            strain_to_protein_data[protein_data[i]['strain']['format_name']] = protein_data[i];
         }
 
         var coding_data = data['coding_dna'];
         for (i=0; i < coding_data.length; i++) {
-            strain_to_coding_data[coding_data[i]['strain']['display_name']] = coding_data[i];
+            strain_to_coding_data[coding_data[i]['strain']['format_name']] = coding_data[i];
         }
 
         function reference_on_change() {
@@ -92,7 +92,7 @@ $(document).ready(function() {
             $("#alternative_strain_description").html(strain_data['strain']['description']);
             $("#navbar_alternative").children()[0].innerHTML = 'Alternative Reference Strains <span class="subheader">' + '- ' + alternative_selection.val() + '</span>';
             $("#alternative_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
-            draw_label_chart('alternative_label_chart', strain_data['strain']['display_name']);
+            draw_label_chart('alternative_label_chart', strain_data['strain']['format_name']);
 
             var mode = $("#alternative_chooser");
             var download = $("#alternative_download");
@@ -413,9 +413,7 @@ function draw_sublabel_chart(chart_id, data) {
 
     chart.draw(dataTable, options);
 
-    var height = $("#" + chart_id + " > div > div > div > svg").height() + 50;
-    options['height'] = height;
-
+    options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 50;
 
     chart.draw(dataTable, options);
 
@@ -428,8 +426,8 @@ function draw_sublabel_chart(chart_id, data) {
             spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
         }
     }
-
-    var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
+    var svg_gs = $("#" + chart_id + " > div > div > svg > g");
+    var rectangle_holder = svg_gs[3];
     var rectangles = rectangle_holder.childNodes;
     var y_one = data['sequence_labels'][0]['relative_start'];
     var y_two = data['sequence_labels'][data['sequence_labels'].length-1]['relative_end'];
@@ -455,7 +453,7 @@ function draw_sublabel_chart(chart_id, data) {
     var m = (y_two - y_one)/(x_two - x_one);
     var b = y_two - m*x_two;
 
-    var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
+    var tickmark_holder = svg_gs[1];
     var tickmarks = tickmark_holder.childNodes;
     var tickmark_space;
     if(tickmarks.length > 1) {
@@ -489,7 +487,7 @@ function draw_sublabel_chart(chart_id, data) {
     // the user selects something on the chart.
     google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
 
-    var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
+    var rectangle_holder = svg_gs[3];
     var rectangles = rectangle_holder.childNodes;
     var ordered_colors = [];
     for (var i=0; i < rectangles.length; i++) {
@@ -501,7 +499,7 @@ function draw_sublabel_chart(chart_id, data) {
         }
     }
 
-    var label_holder = $("#" + chart_id + " > div > div > svg > g")[0];
+    var label_holder = svg_gs[0];
     var labels = label_holder.childNodes;
     var color_index = 0;
     for (var i=0; i < data['sequence_labels'].length; i++) {
