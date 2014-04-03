@@ -168,6 +168,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'tabs': tabs,
 
                     #Links
+                    'bioentity_details_link': self.backend_url + '/locus/' + bioent_id + '/bioentity_details?callback=?',
                     'protein_domain_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_details?callback=?',
                     'protein_domain_graph_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_graph?callback=?',
                     'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',

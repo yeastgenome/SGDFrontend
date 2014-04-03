@@ -81,6 +81,18 @@ $(document).ready(function() {
         create_download_button("alias_table_download", alias_table, download_table_link, alias_table_filename);
 	});
 
+    $.getJSON(bioentity_details_link, function(data) {
+        var description_references = '';
+        for (var i=0; i < data.length; i++) {
+            if(data[i]['info_key'] == 'Description') {
+                description_references = description_references + '<a href="' + data[i]['reference']['link'] + '">' + data[i]['reference']['display_name'] + '</a>';
+            }
+        }
+        if(description_references != '') {
+            $('#description').html($('#description').html() + ' (' + description_references + ')');
+        }
+	});
+
     //Get resources
 	$.getJSON(protein_resources_link, function(data) {
 	  	set_up_resources("homologs_resource_list", data['Homologs']);
@@ -108,7 +120,7 @@ function get_perc(top, bottom) {
 }
 
 function set_up_properties(data) {
-    update_property('length', data['length']-1);
+    update_property('length', data['residues'].length-1);
     update_property('molecular_weight', data['molecular_weight']);
     update_property('pi', data['pi']);
     update_property('aliphatic_index', data['aliphatic_index']);
@@ -301,7 +313,7 @@ function draw_domain_chart(chart_id, data) {
     for (var i=0; i < data.length; i++) {
         var start = data[i]['start']*10;
         var end = data[i]['end']*10;
-        data_array.push([data[i]['domain']['source'], data[i]['domain']['display_name'], start, end]);
+        data_array.push([data[i]['domain']['source']['display_name'], data[i]['domain']['display_name'], start, end]);
         descriptions.push(data[i]['domain']['description']);
         if(min_start == null || start < min_start) {
             min_start = start;

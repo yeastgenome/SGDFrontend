@@ -19,7 +19,7 @@ function domain_data_to_table(evidence) {
 }
 
 function phosphorylation_data_to_table(evidence) {
-    var bioent = create_link(evidence['protein']['locus']['display_name'], evidence['protein']['locus']['link'], false);
+    var bioent = create_link(evidence['locus']['display_name'], evidence['locus']['link'], false);
 
     var site_index = evidence['site_index'];
     var site_residue = evidence['site_residue'];
@@ -29,7 +29,24 @@ function phosphorylation_data_to_table(evidence) {
         reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
     }
 
-    return [evidence['id'], evidence['protein']['locus']['id'], bioent, evidence['protein']['locus']['format_name'], site_index, site_residue, evidence['source']['display_name'], reference];
+    var site_functions = '';
+    var kinases = '';
+    for(var j=0; j < evidence['conditions'].length; j++) {
+        if(evidence['conditions'][j]['role'] == 'Kinase') {
+            if(kinases.length > 0) {
+                kinases = kinases + ', ';
+            }
+            kinases = kinases + '<a href="' + evidence['conditions'][j]['obj']['link'] + '">' + evidence['conditions'][j]['obj']['display_name'] + '</a>';
+        }
+        else {
+            if(site_functions.length > 0) {
+                site_functions = site_functions + ', ';
+            }
+            site_functions = site_functions + evidence['conditions'][j]['note'];
+        }
+    }
+
+    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], site_residue + site_index, evidence['source']['display_name'], site_functions, kinases];
 }
 
 function protein_experiment_data_to_table(evidence) {
