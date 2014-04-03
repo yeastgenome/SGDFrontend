@@ -13,9 +13,14 @@
                         <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
                     {% endfor %}
                 </li>
+                <li><strong>Gene Product: </strong>
+                    {% for alias in locus.aliases if alias.category == 'Gene product' %}
+                        <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </li>
             {% endif %}
-            <li><strong>Gene Product: </strong></li>
-            <li id="description"><strong>Description: </strong>{{ locus.description }}</li>
+            <li><strong>Description: </strong>{{ locus.description }}</li>
+            <li id="description_references"></li>
             <li id="ec_number"></li>
         </ul>
 	</div>

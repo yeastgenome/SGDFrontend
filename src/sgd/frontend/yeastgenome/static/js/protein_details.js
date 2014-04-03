@@ -89,7 +89,7 @@ $(document).ready(function() {
             }
         }
         if(description_references != '') {
-            $('#description').html($('#description').html() + ' (' + description_references + ')');
+            $('#description_references').html(description_references);
         }
 	});
 
