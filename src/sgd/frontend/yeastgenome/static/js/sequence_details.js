@@ -17,10 +17,9 @@ $(document).ready(function() {
 
             if(dna_data[i]['strain']['display_name'] == 'S288C') {
                 $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['start'] + ' - ' + dna_data[i]['end']);
-                //draw_label_chart('reference_label_chart', 'S288C');
-                //draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
-                //var subfeature_table = create_subfeature_table(dna_data[i]);
-                //create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
+                draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
+                var subfeature_table = create_subfeature_table(dna_data[i]);
+                create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
             }
             else {
                 var option = document.createElement("option");
@@ -81,7 +80,7 @@ $(document).ready(function() {
                 .attr('disabled', !('S288C' in strain_to_protein_data));
 
             if(mode.val() == 'genomic_dna') {
-                //color_sequence("reference_sequence", dna_data[i]);
+                color_sequence("reference_sequence", strain_to_genomic_data['S288C']);
             }
         }
         $("#reference_chooser").change(reference_on_change);
@@ -382,11 +381,11 @@ function draw_sublabel_chart(chart_id, data) {
 
     var min_tick = null;
 
-    if(data['sequence_labels'].length > 0) {
-        for (var i=0; i < data['sequence_labels'].length; i++) {
-            var start = data['sequence_labels'][i]['relative_start'];
-            var end = data['sequence_labels'][i]['relative_end'];
-            var name = data['sequence_labels'][i]['display_name'];
+    if(data['sequence_tags'].length > 0) {
+        for (var i=0; i < data['sequence_tags'].length; i++) {
+            var start = data['sequence_tags'][i]['relative_start'];
+            var end = data['sequence_tags'][i]['relative_end'];
+            var name = data['sequence_tags'][i]['display_name'];
             data_array.push([display_name, name, start, end]);
             labels[name] = true;
 
@@ -429,8 +428,8 @@ function draw_sublabel_chart(chart_id, data) {
     var svg_gs = $("#" + chart_id + " > div > div > svg > g");
     var rectangle_holder = svg_gs[3];
     var rectangles = rectangle_holder.childNodes;
-    var y_one = data['sequence_labels'][0]['relative_start'];
-    var y_two = data['sequence_labels'][data['sequence_labels'].length-1]['relative_end'];
+    var y_one = data['sequence_tags'][0]['relative_start'];
+    var y_two = data['sequence_tags'][data['sequence_tags'].length-1]['relative_end'];
 
     var x_one = null;
     var x_two = null;
@@ -502,31 +501,31 @@ function draw_sublabel_chart(chart_id, data) {
     var label_holder = svg_gs[0];
     var labels = label_holder.childNodes;
     var color_index = 0;
-    for (var i=0; i < data['sequence_labels'].length; i++) {
-        if(!(data['sequence_labels'][i]['display_name'] in label_to_color)) {
-            label_to_color[data['sequence_labels'][i]['display_name']] = ordered_colors[color_index];
+    for (var i=0; i < data['sequence_tags'].length; i++) {
+        if(!(data['sequence_tags'][i]['display_name'] in label_to_color)) {
+            label_to_color[data['sequence_tags'][i]['display_name']] = ordered_colors[color_index];
             color_index = color_index + 1;
         }
     }
 }
 
 function color_sequence(seq_id, data) {
-    if(data['sequence_labels'].length > 1) {
+    if(data['sequence_tags'].length > 1) {
         var seq = $("#" + seq_id).html();
         var new_seq = '';
         var start = 0;
-        for (var i=0; i < data['sequence_labels'].length; i++) {
+        for (var i=0; i < data['sequence_tags'].length; i++) {
             var color;
-            if(data['sequence_labels'][i]['display_name'] in label_to_color) {
-                color = label_to_color[data['sequence_labels'][i]['display_name']];
+            if(data['sequence_tags'][i]['display_name'] in label_to_color) {
+                color = label_to_color[data['sequence_tags'][i]['display_name']];
             }
             else {
                 color = colors[color_index];
-                label_to_color[data['sequence_labels'][i]['display_name']] = color;
+                label_to_color[data['sequence_tags'][i]['display_name']] = color;
                 color_index = color_index + 1;
             }
-            var start_index = data['sequence_labels'][i]['relative_start'] + Math.floor(1.0*(data['sequence_labels'][i]['relative_start']-1)/10) - 1;
-            var end_index = data['sequence_labels'][i]['relative_end'] + Math.floor(1.0*(data['sequence_labels'][i]['relative_end'])/10);
+            var start_index = data['sequence_tags'][i]['relative_start'] + Math.floor(1.0*(data['sequence_tags'][i]['relative_start']-1)/10) - 1;
+            var end_index = data['sequence_tags'][i]['relative_end'] + Math.floor(1.0*(data['sequence_tags'][i]['relative_end'])/10);
             new_seq = new_seq +
                     seq.substring(start, start_index) +
                     "<span style='color:" + color + "'>" +
@@ -542,11 +541,11 @@ function color_sequence(seq_id, data) {
 function create_subfeature_table(data) {
 	var datatable = [];
 
-    for (var i=0; i < data['sequence_labels'].length; i++) {
+    for (var i=0; i < data['sequence_tags'].length; i++) {
         datatable.push([null, null, display_name,
-                        data['sequence_labels'][i]['display_name'],
-                        data['sequence_labels'][i]['relative_start'] + '-' + data['sequence_labels'][i]['relative_end'],
-                        data['sequence_labels'][i]['chromosomal_start'] + '-' + data['sequence_labels'][i]['chromosomal_end']
+                        data['sequence_tags'][i]['display_name'],
+                        data['sequence_tags'][i]['relative_start'] + '-' + data['sequence_tags'][i]['relative_end'],
+                        data['sequence_tags'][i]['chromosomal_start'] + '-' + data['sequence_tags'][i]['chromosomal_end']
                         ]);
     }
 

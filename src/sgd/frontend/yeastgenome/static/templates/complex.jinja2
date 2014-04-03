@@ -2,6 +2,7 @@
 
 <script>
 	var complex_details_link = "{{complex_details_link}}";
+    var go_details_link = "{{go_details_link}}";
     var complex_genes_link = "{{complex_genes_link}}";
     var complex_graph_link = "{{complex_graph_link}}";
 	var download_table_link = "{{download_table_link}}";
@@ -36,6 +37,9 @@
             add_navbar_title('Complex: <span class="gene_name">{{ complex.display_name }}</span>')
             add_navbar_element('Summary', 'summary');
             add_navbar_element('Genes', 'gene_list');
+            {% if complex.subcomplexes|length > 0 %}
+                add_navbar_element('Subcomplexes', 'subcomplexes');
+            {% endif %}
             add_navbar_element('Enrichment', 'enrichment');
             add_navbar_element('Network', 'network');
             add_navbar_element('Annotations', 'annotations');
@@ -65,6 +69,16 @@
             </div>
         </section>
 
+<!-- Subcomplexes
+================================================== -->
+        {% if complex.subcomplexes|length > 0 %}
+            <section id="subcomplexes" data-magellan-destination="subcomplexes">
+                <div class="page-header">
+                    <h1>Subcomplexes  <span id="subcomplexes_header" class="round secondary label"></span></h1>
+                </div>
+            </section>
+        {% endif %}
+
 <!-- Enrichment
 ================================================== -->
         <section id="enrichment" data-magellan-destination="enrichment">
@@ -83,10 +97,6 @@
                 <h1>Network Visualization</h1>
                 <div class="panel">
                     <div id="cy" name="cy" style="width:100%;height:500px"></div>
-                    <h5>Filter Genes by # of Biological Process GO Terms Shared With {{ complex.display_name }}:</h5>
-                    <div id="slider" class="noUiSlider" style="width:100%"></div>
-                    <div id="slider_ticks"></div>
-                    <br>
                 </div><!-- .panel -->
             </div>
         </section>

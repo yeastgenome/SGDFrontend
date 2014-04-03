@@ -98,7 +98,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     #Links
                     'regulation_details_link': self.backend_url + '/locus/' + bioent_id + '/regulation_details/' + filter + '?callback=?',
                     'regulation_graph_link': self.backend_url + '/locus/' + bioent_id + '/regulation_graph/' + filter + '?callback=?',
-                    'regulation_target_enrichment_link': self.backend_url + '/locus/' + bioent_id + '/regulation_target_enrichment?callback=?',
+                    'regulation_target_enrichment_link': self.backend_url + '/locus/' + bioent_id + '/regulation_target_enrichment/' + filter + '?callback=?',
                     'protein_domain_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_details?callback=?',
                     'binding_site_details_link': self.backend_url + '/locus/' + bioent_id + '/binding_site_details?callback=?',
                     'regulation_paragraph_link': self.backend_url + '/locus/' + bioent_id + '/regulation_paragraph?callback=?',
@@ -330,6 +330,7 @@ class YeastgenomeFrontend(FrontendInterface):
 
                     #Links
                     'complex_details_link': self.backend_url + '/complex/' + complex_id + '/locus_details?callback=?',
+                    'go_details_link': self.backend_url + '/go/' + str(complex['go']['id']) + '/locus_details?callback=?',
                     'complex_genes_link': self.backend_url + '/complex/' + complex_id + '/genes?callback=?',
                     'complex_graph_link': self.backend_url + '/complex/' + complex_id + '/graph?callback=?',
                     'go_enrichment_link': '/enrichment',

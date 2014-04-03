@@ -296,5 +296,5 @@ function go_data_to_table(evidence, index) {
         qualifier = '';
     }
 
-  	return [evidence['id'], evidence['bioentity']['id'], icon, bioent, evidence['bioentity']['format_name'], biocon, evidence['go']['go_id'], qualifier, evidence['go']['aspect'], evidence['method'], evidence_code, evidence['source']['display_name'], evidence['date_created'], reference, relationship_entry];
+  	return [evidence['id'], evidence['bioentity']['id'], icon, bioent, evidence['bioentity']['format_name'], biocon, evidence['go']['go_id'], qualifier, evidence['go']['go_aspect'], evidence['method'], evidence_code, evidence['source']['display_name'], evidence['date_created'], reference, relationship_entry];
 }
