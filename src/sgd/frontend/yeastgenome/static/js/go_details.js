@@ -1,31 +1,31 @@
 $(document).ready(function() {
 
   	$.getJSON(go_details_link, function(data) {
-  	    var mc_bp_go_table = create_go_table("mc_bp", "No manually curated biological process terms for " + display_name, function(x) {return x["method"] == "manually curated" && x["go"]["go_aspect"] == "biological process"}, data);
+  	    var mc_bp_go_table = create_go_table("mc_bp", "No manually curated biological process terms for " + display_name, function(x) {return x["annotation_type"] == "manually curated" && x["go"]["go_aspect"] == "biological process"}, data);
         create_download_button("mc_bp_go_table_download", mc_bp_go_table, download_table_link, mc_bp_download_table_filename);
 
-        var mc_mf_go_table = create_go_table("mc_mf", "No manually curated molecular function terms for " + display_name, function(x) {return x["method"] == "manually curated" && x["go"]["go_aspect"] == "molecular function"}, data);
+        var mc_mf_go_table = create_go_table("mc_mf", "No manually curated molecular function terms for " + display_name, function(x) {return x["annotation_type"] == "manually curated" && x["go"]["go_aspect"] == "molecular function"}, data);
         create_download_button("mc_mf_go_table_download", mc_mf_go_table, download_table_link, mc_mf_download_table_filename);
 
-        var mc_cc_go_table = create_go_table("mc_cc", "No manually curated cellular component terms for " + display_name, function(x) {return x["method"] == "manually curated" && x["go"]["go_aspect"] == "cellular component"}, data);
+        var mc_cc_go_table = create_go_table("mc_cc", "No manually curated cellular component terms for " + display_name, function(x) {return x["annotation_type"] == "manually curated" && x["go"]["go_aspect"] == "cellular component"}, data);
         create_download_button("mc_cc_go_table_download", mc_cc_go_table, download_table_link, mc_cc_download_table_filename);
 
-        var htp_bp_go_table = create_go_table("htp_bp", "No high-throughput biological process terms for " + display_name, function(x) {return x["method"] == "high-throughput" && x["go"]["go_aspect"] == "biological process"}, data);
+        var htp_bp_go_table = create_go_table("htp_bp", "No high-throughput biological process terms for " + display_name, function(x) {return x["annotation_type"] == "high-throughput" && x["go"]["go_aspect"] == "biological process"}, data);
         create_download_button("htp_bp_go_table_download", htp_bp_go_table, download_table_link, htp_bp_download_table_filename);
 
-        var htp_mf_go_table = create_go_table("htp_mf", "No high-throughput molecular function terms for " + display_name, function(x) {return x["method"] == "high-throughput" && x["go"]["go_aspect"] == "molecular function"}, data);
+        var htp_mf_go_table = create_go_table("htp_mf", "No high-throughput molecular function terms for " + display_name, function(x) {return x["annotation_type"] == "high-throughput" && x["go"]["go_aspect"] == "molecular function"}, data);
         create_download_button("htp_mf_go_table_download", htp_mf_go_table, download_table_link, htp_mf_download_table_filename);
 
-        var htp_cc_go_table = create_go_table("htp_cc", "No high-throughput cellular component terms for " + display_name, function(x) {return x["method"] == "high-throughput" && x["go"]["go_aspect"] == "cellular component"}, data);
+        var htp_cc_go_table = create_go_table("htp_cc", "No high-throughput cellular component terms for " + display_name, function(x) {return x["annotation_type"] == "high-throughput" && x["go"]["go_aspect"] == "cellular component"}, data);
         create_download_button("htp_cc_go_table_download", htp_cc_go_table, download_table_link, htp_cc_download_table_filename);
 
-        var comp_bp_go_table = create_go_table("comp_bp", "No computational biological process terms for " + display_name, function(x) {return x["method"] == "computational" && x["go"]["go_aspect"] == "biological process"}, data);
+        var comp_bp_go_table = create_go_table("comp_bp", "No computational biological process terms for " + display_name, function(x) {return x["annotation_type"] == "computational" && x["go"]["go_aspect"] == "biological process"}, data);
         create_download_button("comp_bp_go_table_download", comp_bp_go_table, download_table_link, comp_bp_download_table_filename);
 
-        var comp_mf_go_table = create_go_table("comp_mf", "No computational molecular function terms for " + display_name, function(x) {return x["method"] == "computational" && x["go"]["go_aspect"] == "molecular function"}, data);
+        var comp_mf_go_table = create_go_table("comp_mf", "No computational molecular function terms for " + display_name, function(x) {return x["annotation_type"] == "computational" && x["go"]["go_aspect"] == "molecular function"}, data);
         create_download_button("comp_mf_go_table_download", comp_mf_go_table, download_table_link, comp_mf_download_table_filename);
 
-        var comp_cc_go_table = create_go_table("comp_cc", "No computational cellular component terms for " + display_name, function(x) {return x["method"] == "computational" && x["go"]["go_aspect"] == "cellular component"}, data);
+        var comp_cc_go_table = create_go_table("comp_cc", "No computational cellular component terms for " + display_name, function(x) {return x["annotation_type"] == "computational" && x["go"]["go_aspect"] == "cellular component"}, data);
         create_download_button("comp_cc_go_table_download", comp_cc_go_table, download_table_link, comp_cc_download_table_filename);
 
         var transformed_data = [];

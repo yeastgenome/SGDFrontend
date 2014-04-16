@@ -82,14 +82,14 @@ $(document).ready(function() {
 	});
 
     $.getJSON(bioentity_details_link, function(data) {
-        var description_references = '';
+        var description_references = [];
         for (var i=0; i < data.length; i++) {
             if(data[i]['info_key'] == 'Description') {
-                description_references = description_references + '<a href="' + data[i]['reference']['link'] + '">' + data[i]['reference']['display_name'] + '</a>';
+                description_references.push('<a href="' + data[i]['reference']['link'] + '">' + data[i]['reference']['display_name'] + '</a>');
             }
         }
         if(description_references != '') {
-            $('#description_references').html(description_references);
+            $('#description_references').html(description_references.join(', '));
         }
 	});
 
@@ -214,7 +214,7 @@ function create_phosphorylation_table(data) {
     set_up_header('phosphorylation_table', datatable.length, 'entry', 'entries', Object.keys(sites).length, 'site', 'sites');
 
     var options = {};
-    options["bPaginate"] = false;
+    options["bPaginate"] = true;
     options["aaSorting"] = [[4, "asc"]];
     options["bDestroy"] = true;
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null];

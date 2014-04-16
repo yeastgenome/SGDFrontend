@@ -174,8 +174,8 @@ function phenotype_data_to_table(evidence, index) {
 	var experiment = '';
 	if(evidence['experiment'] != null) {
 		experiment = evidence['experiment']['display_name'];
-		if(evidence['experiment']['details'] != null) {
-			experiment = experiment + ' ' + create_note_icon('experiment_icon' + index, evidence['experiment']['details']);
+		if(evidence['experiment_details'] != null) {
+			experiment = experiment + ' ' + create_note_icon('experiment_icon' + index, evidence['experiment_details']);
 		}
 	}
 
@@ -191,10 +191,10 @@ function phenotype_data_to_table(evidence, index) {
     for (var j=0; j < evidence['conditions'].length; j++) {
         if(evidence['conditions'][j]['class_type'] == 'CHEMICAL') {
             if(evidence['conditions'][j]['amount'] != null) {
-                chemical = evidence['conditions'][j]['amount'] + ' ' + create_link(evidence['conditions'][j]['obj']['display_name'], evidence['conditions'][j]['obj']['link']);
+                chemical = evidence['conditions'][j]['amount'] + ' ' + create_link(evidence['conditions'][j]['bioitem']['display_name'], evidence['conditions'][j]['bioitem']['link']);
             }
             else {
-                chemical = create_link(evidence['conditions'][j]['obj']['display_name'], evidence['conditions'][j]['obj']['link']);
+                chemical = create_link(evidence['conditions'][j]['bioitem']['display_name'], evidence['conditions'][j]['bioitem']['link']);
             }
             var chemical_icon = create_note_icon('chemical_icon' + index, evidence['conditions'][j]['note']);
             if(chemical_icon != '') {
@@ -202,14 +202,14 @@ function phenotype_data_to_table(evidence, index) {
             }
         }
         else if(evidence['conditions'][j]['role'] == 'Allele') {
-            allele = '<br><strong>Allele: </strong>' + evidence['conditions'][j]['obj']['display_name'];
+            allele = '<br><strong>Allele: </strong>' + evidence['conditions'][j]['bioitem']['display_name'];
             var allele_icon = create_note_icon('allele_icon' + index, evidence['conditions'][j]['note']);
             if(allele_icon != '') {
                 allele = allele + ' ' + allele_icon;
             }
         }
-        else if(evidence['conditions'][j]['role'] == 'Allele') {
-            reporter = '<strong>Reporter: </strong>' + evidence['conditions'][j]['obj']['display_name'];
+        else if(evidence['conditions'][j]['role'] == 'Reporter') {
+            reporter = '<strong>Reporter: </strong>' + evidence['conditions'][j]['bioitem']['display_name'];
             var reporter_icon = create_note_icon('reporter_icon' + index, evidence['conditions'][j]['note']);
             if(reporter_icon != '') {
                 reporter = reporter + ' ' + reporter_icon;
@@ -240,7 +240,7 @@ function phenotype_data_to_table(evidence, index) {
 }
 
 function go_data_to_table(evidence, index) {
-	var bioent = create_link(evidence['bioentity']['display_name'], evidence['bioentity']['link']);
+	var bioent = create_link(evidence['locus']['display_name'], evidence['locus']['link']);
 	var biocon = create_link(evidence['go']['display_name'], evidence['go']['link']);
   	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
     if(evidence['reference']['pubmed_id'] != null) {
@@ -252,13 +252,24 @@ function go_data_to_table(evidence, index) {
 
   	for(var j=0; j < evidence['conditions'].length; j++) {
   		var condition = evidence['conditions'][j];
+        var obj = null;
+        if('bioitem' in condition) {
+            obj = condition['bioitem'];
+        }
+        else if('bioentity' in condition) {
+            obj = condition['bioentity'];
+        }
+        else if('bioconcept' in condition) {
+            obj = condition['bioconcept'];
+        }
+
   		if(condition['role'] == 'With' || condition['role'] == 'From') {
   			var new_with_entry;
-            if(condition['obj']['link'] == null) {
-                new_with_entry = condition['obj']['display_name'];
+            if(obj['link'] == null) {
+                new_with_entry = obj['display_name'];
             }
             else {
-                new_with_entry = create_link(condition['obj']['display_name'], condition['obj']['link'], condition['obj']['class_type'] != 'GO' && condition['obj']['class_type'] != 'LOCUS');
+                new_with_entry = create_link(obj['display_name'], obj['link'], obj['class_type'] != 'GO' && obj['class_type'] != 'LOCUS');
             }
 	  		if(with_entry == null) {
 	  			with_entry = new_with_entry
@@ -267,13 +278,13 @@ function go_data_to_table(evidence, index) {
 	  			with_entry = with_entry + ', ' + new_with_entry
 	  		}
 	  	}
-	  	else if(condition['obj'] != null) {
+	  	else if(obj != null) {
 	  		var new_rel_entry = condition['role'] + ' ';
-            if(condition['obj']['link'] == null) {
-                new_rel_entry = new_rel_entry + condition['obj']['display_name'];
+            if(obj['link'] == null) {
+                new_rel_entry = new_rel_entry + obj['display_name'];
             }
             else {
-                new_rel_entry = new_rel_entry + create_link(condition['obj']['display_name'], condition['obj']['link']);
+                new_rel_entry = new_rel_entry + create_link(obj['display_name'], obj['link']);
             }
 	  		if(relationship_entry == null) {
   				relationship_entry = new_rel_entry
@@ -286,7 +297,7 @@ function go_data_to_table(evidence, index) {
   	}
 	var icon = create_note_icon(index, relationship_entry);
 
-  	var evidence_code = evidence['code'];
+  	var evidence_code = evidence['go_evidence'];
   	if(with_entry != null) {
   		evidence_code = evidence_code + ' with ' + with_entry;
   	}
@@ -296,5 +307,5 @@ function go_data_to_table(evidence, index) {
         qualifier = '';
     }
 
-  	return [evidence['id'], evidence['bioentity']['id'], icon, bioent, evidence['bioentity']['format_name'], biocon, evidence['go']['go_id'], qualifier, evidence['go']['go_aspect'], evidence['method'], evidence_code, evidence['source']['display_name'], evidence['date_created'], reference, relationship_entry];
+  	return [evidence['id'], evidence['locus']['id'], icon, bioent, evidence['locus']['format_name'], biocon, evidence['go']['go_id'], qualifier, evidence['go']['go_aspect'], evidence['annotation_type'], evidence_code, evidence['source']['display_name'], evidence['date_created'], reference, relationship_entry];
 }

@@ -89,10 +89,6 @@ class FrontendInterface:
         return None
 
     @abstractmethod
-    def ec_number(self, ec_repr):
-        return None
-
-    @abstractmethod
     def reference(self, reference_repr):
         return None
 
