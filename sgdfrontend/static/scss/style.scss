@@ -49,14 +49,20 @@
 	"compass/css3/images",
 	"compass/css3/border-radius";
 
-// Font Awesome
+// Font Awesome 4.0.3
 @import 
-	"font-awesome/variables",
-	"font-awesome/mixins",
-	"font-awesome/path",
-	"font-awesome/core",
-	"font-awesome/extras",
-	"font-awesome/icons";
+	"vendor/font-awesome/variables",
+    "vendor/font-awesome/mixins",
+    "vendor/font-awesome/path",
+    "vendor/font-awesome/core",
+    "vendor/font-awesome/larger",
+    "vendor/font-awesome/fixed-width",
+    "vendor/font-awesome/list",
+    "vendor/font-awesome/bordered-pulled",
+    "vendor/font-awesome/spinning",
+    "vendor/font-awesome/rotated-flipped",
+    "vendor/font-awesome/stacked",
+    "vendor/font-awesome/icons";
 
 // other vendor styles
 @import
