@@ -81,10 +81,10 @@ class YeastgenomeFrontend(FrontendInterface):
                 }
         return page
     
-    def regulation_details(self, bioent_repr, filter):
+    def regulation_details(self, bioent_repr):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
         bioent_id = str(bioent['id'])
-        overview = get_json(self.backend_url + '/locus/' + bioent_id + '/regulation_overview/' + filter)
+        overview = bioent['regulation_overview']
         tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
         
         page = {
@@ -96,9 +96,9 @@ class YeastgenomeFrontend(FrontendInterface):
                     'tabs': tabs,
                     
                     #Links
-                    'regulation_details_link': self.backend_url + '/locus/' + bioent_id + '/regulation_details/' + filter + '?callback=?',
-                    'regulation_graph_link': self.backend_url + '/locus/' + bioent_id + '/regulation_graph/' + filter + '?callback=?',
-                    'regulation_target_enrichment_link': self.backend_url + '/locus/' + bioent_id + '/regulation_target_enrichment/' + filter + '?callback=?',
+                    'regulation_details_link': self.backend_url + '/locus/' + bioent_id + '/regulation_details?callback=?',
+                    'regulation_graph_link': self.backend_url + '/locus/' + bioent_id + '/regulation_graph?callback=?',
+                    'regulation_target_enrichment_link': self.backend_url + '/locus/' + bioent_id + '/regulation_target_enrichment?callback=?',
                     'protein_domain_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_details?callback=?',
                     'binding_site_details_link': self.backend_url + '/locus/' + bioent_id + '/binding_site_details?callback=?',
                     'regulation_paragraph_link': self.backend_url + '/locus/' + bioent_id + '/regulation_paragraph?callback=?',
@@ -156,15 +156,14 @@ class YeastgenomeFrontend(FrontendInterface):
     def protein_details(self, bioent_repr):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
         bioent_id = str(bioent['id'])
-        overview = get_json(self.backend_url + '/locus/' + bioent_id + '/protein_overview')
         tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
 
         page = {
                     #Basic info
                     'locus': bioent,
+                    'aliases': json.dumps(bioent['aliases']),
 
                     #Overview
-                    'overview': overview,
                     'tabs': tabs,
 
                     #Links
@@ -176,7 +175,6 @@ class YeastgenomeFrontend(FrontendInterface):
                     'ec_number_details_link': self.backend_url + '/locus/' + bioent_id + '/ecnumber_details?callback=?',
                     'protein_experiment_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_experiment_details?callback=?',
                     'protein_resources_link': self.backend_url + '/locus/' + bioent_id + '/protein_resources?callback=?',
-                    'alias_link': self.backend_url + '/locus/' + bioent_id + '/alias?callback=?',
                     'download_table_link': '/download_table',
                     'download_sequence_link': '/download_sequence',
                     'analyze_table_link': '/analyze'
@@ -186,7 +184,6 @@ class YeastgenomeFrontend(FrontendInterface):
     def sequence_details(self, bioent_repr):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
         bioent_id = str(bioent['id'])
-        overview = get_json(self.backend_url + '/locus/' + bioent_id + '/sequence_overview')
         tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
 
         page = {
@@ -194,7 +191,6 @@ class YeastgenomeFrontend(FrontendInterface):
                     'locus': bioent,
 
                     #Overview
-                    'overview': overview,
                     'tabs': tabs,
 
                     #Links
@@ -214,7 +210,6 @@ class YeastgenomeFrontend(FrontendInterface):
         page = {
                     #Basic info
                     'phenotype': biocon,
-                    'observable': {'link': '/observable/' + biocon['observable'].replace(' ', '_').replace('/', '-') + '/overview', 'display_name':biocon['observable']},
                     'overview': json.dumps(overview),
                     
                     #Links
@@ -225,7 +220,7 @@ class YeastgenomeFrontend(FrontendInterface):
         return page
     
     def observable(self, biocon_repr):
-        biocon = get_json(self.backend_url + '/phenotype/' + biocon_repr + '/overview')
+        biocon = get_json(self.backend_url + '/observable/' + biocon_repr + '/overview')
         biocon_id = str(biocon['id'])
         overview = biocon['overview']
 
@@ -235,16 +230,16 @@ class YeastgenomeFrontend(FrontendInterface):
                     'overview': json.dumps(overview),
                     
                     #Links
-                    'phenotype_details_link': self.backend_url + '/phenotype/' + biocon_id + '/locus_details?callback=?',
-                    'phenotype_details_all_link': self.backend_url + '/phenotype/' + biocon_id + '/locus_details_all?callback=?',
-                    'ontology_graph_link': self.backend_url + '/phenotype/' + biocon_id + '/ontology_graph?callback=?',
+                    'phenotype_details_link': self.backend_url + '/observable/' + biocon_id + '/locus_details?callback=?',
+                    'phenotype_details_all_link': self.backend_url + '/observable/' + biocon_id + '/locus_details_all?callback=?',
+                    'ontology_graph_link': self.backend_url + '/observable/' + biocon_id + '/ontology_graph?callback=?',
                     'download_table_link': '/download_table',
                     'analyze_table_link': '/analyze'
                     }
         return page
     
     def phenotype_ontology(self):
-        biocon = get_json(self.backend_url + '/phenotype/ypo/overview')
+        biocon = get_json(self.backend_url + '/observable/ypo/overview')
         biocon_id = str(biocon['id'])
 
         page = {
@@ -252,8 +247,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'ontology': biocon,
 
                     #Links
-                    'ontology_graph_link': self.backend_url + '/phenotype/' + biocon_id + '/ontology_graph?callback=?',
-                    'ontology_link': self.backend_url + '/phenotype/ontology?callback=?'
+                    'ontology_graph_link': self.backend_url + '/observable/' + biocon_id + '/ontology_graph?callback=?',
                     }
         return page
     

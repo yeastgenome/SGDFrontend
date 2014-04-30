@@ -26,7 +26,7 @@ function create_phenotype_table(data) {
         var genes = {};
         for (var i=0; i < data.length; i++) {
             datatable.push(phenotype_data_to_table(data[i], i));
-            genes[data[i]["bioentity"]["id"]] = true;
+            genes[data[i]["locus"]["id"]] = true;
         }
 
         set_up_header('phenotype_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');

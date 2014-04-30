@@ -36,7 +36,7 @@ function phosphorylation_data_to_table(evidence) {
             if(kinases.length > 0) {
                 kinases = kinases + ', ';
             }
-            kinases = kinases + '<a href="' + evidence['properties'][j]['obj']['link'] + '">' + evidence['properties'][j]['obj']['display_name'] + '</a>';
+            kinases = kinases + '<a href="' + evidence['properties'][j]['bioentity']['link'] + '">' + evidence['properties'][j]['bioentity']['display_name'] + '</a>';
         }
         else {
             if(site_functions.length > 0) {
@@ -46,7 +46,7 @@ function phosphorylation_data_to_table(evidence) {
         }
     }
 
-    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], site_residue + site_index, evidence['source']['display_name'], site_functions, kinases];
+    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], site_residue + site_index, site_functions, kinases, evidence['source']['display_name']];
 }
 
 function protein_experiment_data_to_table(evidence) {
@@ -57,7 +57,7 @@ function protein_experiment_data_to_table(evidence) {
         reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
     }
 
-    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], evidence['data_type'], evidence['data_value'], reference];
+    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], evidence['experiment']['display_name'], evidence['data_value'], reference];
 }
 
 function regulation_data_to_table(evidence, is_regulator) {
@@ -231,12 +231,7 @@ function phenotype_data_to_table(evidence, index) {
         reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
     }
 
-    var experiment_category = evidence['experiment']['display_name'];
-    if('experiment_type_category' in evidence) {
-        experiment_category = evidence['experiment_type_category'];
-    }
-
-  	return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], biocon, experiment, experiment_category, evidence['mutant_type'] + allele, strain, chemical, note, reference];
+  	return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], biocon, experiment, evidence['experiment']['category'], evidence['mutant_type'] + allele, strain, chemical, note, reference];
 }
 
 function go_data_to_table(evidence, index) {

@@ -74,7 +74,7 @@ function drawChart() {
         strain_chart.draw(strain_data, strain_options);
     }
 
-    if(overview_data['mutant_types'].length == 0 && overview_data['strain_list'].length == 0) {
+    if(overview_data['experiment_categories'].length == 1 && overview_data['strains'].length == 1) {
         $("#summary_wrapper").hide()
     }
 }

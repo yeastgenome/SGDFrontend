@@ -17,9 +17,9 @@ $(document).ready(function() {
 
             if(dna_data[i]['strain']['display_name'] == 'S288C') {
                 $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['start'] + ' - ' + dna_data[i]['end']);
-                draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
-                var subfeature_table = create_subfeature_table(dna_data[i]);
-                create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
+                //draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
+                //var subfeature_table = create_subfeature_table(dna_data[i]);
+                //create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
             }
             else {
                 var option = document.createElement("option");
@@ -80,7 +80,7 @@ $(document).ready(function() {
                 .attr('disabled', !('S288C' in strain_to_protein_data));
 
             if(mode.val() == 'genomic_dna') {
-                color_sequence("reference_sequence", strain_to_genomic_data['S288C']);
+                //color_sequence("reference_sequence", strain_to_genomic_data['S288C']);
             }
         }
         $("#reference_chooser").change(reference_on_change);
@@ -244,11 +244,11 @@ function draw_label_chart(chart_id, strain_name) {
             var end = data[i]['end'];
             var direction = strand_to_direction(data[i]['strand']);
             if(direction == "5'") {
-                data_array.unshift([direction, data[i]['bioentity']['display_name'], start, end]);
+                data_array.unshift([direction, data[i]['locus']['display_name'], start, end]);
                 has_five_prime = true;
             }
             else {
-                data_array.push([direction, data[i]['bioentity']['display_name'], start, end]);
+                data_array.push([direction, data[i]['locus']['display_name'], start, end]);
                 has_three_prime = true;
             }
 
@@ -258,7 +258,7 @@ function draw_label_chart(chart_id, strain_name) {
             if(max_tick == null || end > max_tick) {
                 max_tick = end;
             }
-            if(data[i]['bioentity']['display_name'] == display_name) {
+            if(data[i]['locus']['display_name'] == display_name) {
                 colors.push("#3366cc");
             }
             else {

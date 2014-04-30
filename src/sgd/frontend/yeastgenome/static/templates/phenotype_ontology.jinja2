@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 
 <script>
-	var ypo_ontology_link = "{{ontology_link}}";
 	var ontology_graph_link = "{{ontology_graph_link}}";
 </script>
 
 <title>{{ ontology.display_name}}</title>
 
-{% extends "static/templates/global_layout.jinja2" %}
+{% extends "global_layout.jinja2" %}
 
 
 {% block body %}
@@ -21,7 +20,7 @@
 <!-- Navbar
 ================================================== -->
     <!-- Includes navbar.html into template -->
-    {% include "static/templates/navbar.jinja2" %}
+    {% include "navbar.jinja2" %}
 
     <div class="small-12 large-9 columns content-column">
 

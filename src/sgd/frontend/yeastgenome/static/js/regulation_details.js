@@ -111,7 +111,7 @@ function create_binding_site_table(data) {
 		    a.href = "http://yetfasco.ccbr.utoronto.ca/MotViewLong.php?PME_sys_qf2=" + evidence["motif_id"];
 		    a.target = "_blank";
 		    var img = document.createElement("img");
-		    img.src = evidence["img_url"];
+		    img.src = evidence["link"];
 		    img.className = "yetfasco";
 
 		    a.appendChild(img);

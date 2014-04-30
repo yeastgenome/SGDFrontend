@@ -1,21 +1,19 @@
 
 $(document).ready(function() {
 
-	$.getJSON(ypo_ontology_link, function(data) {
-		$("#ontology").show();
-		set_up_full_ontology("full_ontology", data);
+  	$.getJSON(ontology_graph_link, function(data) {
+  		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
+
+        $("#ontology").show();
+		set_up_full_ontology("full_ontology", data['full_ontology']);
 		$('i.fa').click(function(e) {
 			if ($(this).parent().has('ul')) {
 				$(this).parent().children('ul').toggle();
 			}
 			$(this).toggleClass('fa-minus-circle fa-plus-circle');
-	
+
 			e.stopPropagation();
 		});
-	});
-
-  	$.getJSON(ontology_graph_link, function(data) {
-  		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
 	});
 
 	add_footer_space("ontology");

@@ -76,11 +76,6 @@ $(document).ready(function() {
         create_download_button("protein_experiment_table_download", protein_experiment_table, download_table_link, protein_experiment_table_filename);
 	});
 
-    $.getJSON(alias_link, function(data) {
-        var alias_table = create_alias_table(data);
-        create_download_button("alias_table_download", alias_table, download_table_link, alias_table_filename);
-	});
-
     $.getJSON(bioentity_details_link, function(data) {
         var description_references = [];
         for (var i=0; i < data.length; i++) {
@@ -101,6 +96,9 @@ $(document).ready(function() {
         set_up_resources("domain_resource_list", data['Domain']);
         set_up_resources("other_resource_list", data['Other']);
 	});
+
+    var alias_table = create_alias_table(aliases);
+    create_download_button("alias_table_download", alias_table, download_table_link, alias_table_filename);
 
     //Hack because footer overlaps - need to fix this.
 	add_footer_space("resources");
@@ -251,7 +249,7 @@ function create_alias_table(data) {
 
     var sources = {};
     for (var i=0; i < data.length; i++) {
-        if(data[i]['link'] != null) {
+        if(data[i]['protein']) {
             datatable.push([data[i]['id'], create_link(data[i]['display_name'], data[i]['link'], true), data[i]['source']['display_name']]);
             sources[data[i]['source']['display_name']] = true;
         }
@@ -313,7 +311,11 @@ function draw_domain_chart(chart_id, data) {
     for (var i=0; i < data.length; i++) {
         var start = data[i]['start']*10;
         var end = data[i]['end']*10;
-        data_array.push([data[i]['domain']['source']['display_name'], data[i]['domain']['display_name'], start, end]);
+        var source = '';
+        if(data[i]['domain']['source'] != null) {
+            source = data[i]['domain']['source']['display_name'];
+        }
+        data_array.push([source, data[i]['domain']['display_name'], start, end]);
         descriptions.push(data[i]['domain']['description']);
         if(min_start == null || start < min_start) {
             min_start = start;

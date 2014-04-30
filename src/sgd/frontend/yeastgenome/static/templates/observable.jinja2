@@ -50,9 +50,14 @@
         <section id="summary" data-magellan-destination="summary">
             <div class="page-header">
                 <h1>Summary</h1>
-                <p><strong>Description: </strong>{{ observable.description }}<br>
-                    <span id="qualifiers"></span>
-                </p>
+                <ul class="unstyled">
+                    <li><strong>Description</strong>{{ observable.description }}</li>
+                    <li><strong>Qualifiers:</strong>
+                        {% for phenotype in observable.phenotypes %}
+                            <span><a href="{{ phenotype.link|e }}">{{ phenotype.qualifier|e }}</a></span>{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </li>
+                </ul>
 
                 <div class="panel" id="summary_wrapper">
                     <div class="row">
