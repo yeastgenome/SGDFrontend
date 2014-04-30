@@ -118,27 +118,27 @@ var graph_style = cytoscape.stylesheet()
 		'text-outline-color': '#fff',
 		'color': '#888'
 	})
-	.selector("node[type='BIOCONCEPT'][sub_type='biological process']")
+    .selector("node[type='INTERACTOR']")
 	.css({
 		'shape': 'rectangle',
 		'text-outline-color': '#fff',
 		'color': '#888',
 		'background-color': "#7FBF7B"
 	})
-	.selector("node[type='BIOCONCEPT'][sub_type='molecular function']")
+	.selector("node[sub_type='biological process']")
 	.css({
-		'shape': 'rectangle',
-		'text-outline-color': '#fff',
 		'color': '#888',
+		'background-color': "#7FBF7B"
+	})
+	.selector("node[sub_type='molecular function']")
+	.css({
 		'background-color': "#AF8DC3"
 	})
-	.selector("node[type='BIOCONCEPT'][sub_type='cellular component']")
+	.selector("node[sub_type='cellular component']")
 	.css({
-		'shape': 'rectangle',
-		'text-outline-color': '#fff',
-		'color': '#888',
 		'background-color': "#819FF7"
-    });
+    })
+    ;
 
 var layout = {
 	"name": "arbor",

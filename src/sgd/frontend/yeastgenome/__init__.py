@@ -38,7 +38,7 @@ class YeastgenomeFrontend(FrontendInterface):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
         if bioent is not None:
             bioent_id = str(bioent['id'])
-            overview = get_json(self.backend_url + '/locus/' + bioent_id + '/interaction_overview')
+            overview = bioent['interaction_overview']
             tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
 
             page = {
@@ -62,7 +62,7 @@ class YeastgenomeFrontend(FrontendInterface):
     def literature_details(self, bioent_repr):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
         bioent_id = str(bioent['id'])
-        overview = get_json(self.backend_url + '/locus/' + bioent_id + '/literature_overview')
+        overview = bioent['literature_overview']
         tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
         
         page = {
@@ -111,7 +111,7 @@ class YeastgenomeFrontend(FrontendInterface):
     def phenotype_details(self, bioent_repr):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
         bioent_id = str(bioent['id'])
-        overview = get_json(self.backend_url + '/locus/' + bioent_id + '/phenotype_overview')
+        overview = bioent['phenotype_overview']
         tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
         
         page = {
@@ -134,7 +134,7 @@ class YeastgenomeFrontend(FrontendInterface):
     def go_details(self, bioent_repr):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
         bioent_id = str(bioent['id'])
-        overview = get_json(self.backend_url + '/locus/' + bioent_id + '/go_overview')
+        overview = bioent['go_overview']
         tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
 
         page = {
@@ -209,7 +209,7 @@ class YeastgenomeFrontend(FrontendInterface):
     def phenotype(self, biocon_repr):
         biocon = get_json(self.backend_url + '/phenotype/' + biocon_repr + '/overview')
         biocon_id = str(biocon['id'])
-        overview = get_json(self.backend_url + '/phenotype/' + biocon_id + '/phenotype_overview')
+        overview = biocon['overview']
 
         page = {
                     #Basic info
@@ -227,7 +227,7 @@ class YeastgenomeFrontend(FrontendInterface):
     def observable(self, biocon_repr):
         biocon = get_json(self.backend_url + '/phenotype/' + biocon_repr + '/overview')
         biocon_id = str(biocon['id'])
-        overview = get_json(self.backend_url + '/phenotype/' + biocon_id + '/phenotype_overview')
+        overview = biocon['overview']
 
         page = {
                     #Basic info
@@ -327,11 +327,11 @@ class YeastgenomeFrontend(FrontendInterface):
         page = {
                     #Basic info
                     'complex': complex,
+                    'subcomplexes': json.dumps(complex['subcomplexes']),
+                    'complex_evidences': json.dumps(complex['complex_evidences']),
 
                     #Links
-                    'complex_details_link': self.backend_url + '/complex/' + complex_id + '/locus_details?callback=?',
                     'go_details_link': self.backend_url + '/go/' + str(complex['go']['id']) + '/locus_details?callback=?',
-                    'complex_genes_link': self.backend_url + '/complex/' + complex_id + '/genes?callback=?',
                     'complex_graph_link': self.backend_url + '/complex/' + complex_id + '/graph?callback=?',
                     'go_enrichment_link': '/enrichment',
                     'download_table_link': '/download_table',
@@ -383,9 +383,9 @@ class YeastgenomeFrontend(FrontendInterface):
         page = {
                     #Basic info
                     'author': author,
+                    'references': json.dumps(author['references']),
 
                     #Links
-                    'references_link': self.backend_url + '/author/' + author_id + '/references?callback=?',
                     'download_citations_link': '/download_citations'
                     }
         return page
@@ -393,7 +393,7 @@ class YeastgenomeFrontend(FrontendInterface):
     def references_this_week(self):
         page = {
                     #Basic info
-                    'references_this_week_link': self.backend_url + '/new/references?callback=?',
+                    'references_this_week_link': self.backend_url + '/references/this_week?callback=?',
                     'download_citations_link': '/download_citations',
                     'a_week_ago': str(datetime.date.today() - datetime.timedelta(days=7)).replace('-', '_')
                     }

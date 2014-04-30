@@ -31,18 +31,18 @@ function phosphorylation_data_to_table(evidence) {
 
     var site_functions = '';
     var kinases = '';
-    for(var j=0; j < evidence['conditions'].length; j++) {
-        if(evidence['conditions'][j]['role'] == 'Kinase') {
+    for(var j=0; j < evidence['properties'].length; j++) {
+        if(evidence['properties'][j]['role'] == 'Kinase') {
             if(kinases.length > 0) {
                 kinases = kinases + ', ';
             }
-            kinases = kinases + '<a href="' + evidence['conditions'][j]['obj']['link'] + '">' + evidence['conditions'][j]['obj']['display_name'] + '</a>';
+            kinases = kinases + '<a href="' + evidence['properties'][j]['obj']['link'] + '">' + evidence['properties'][j]['obj']['display_name'] + '</a>';
         }
         else {
             if(site_functions.length > 0) {
                 site_functions = site_functions + ', ';
             }
-            site_functions = site_functions + evidence['conditions'][j]['note'];
+            site_functions = site_functions + evidence['properties'][j]['note'];
         }
     }
 
@@ -73,8 +73,8 @@ function regulation_data_to_table(evidence, is_regulator) {
 	    strain = evidence['strain']['display_name'];
 	}
 	var conditions = '';
-	if(evidence['conditions'].length> 0) {
-	    conditions = evidence['conditions'][0]['note'];
+	if(evidence['properties'].length> 0) {
+	    conditions = evidence['properties'][0]['note'];
 	}
 	var reference = '';
 	if(evidence['reference'] != null) {
@@ -188,35 +188,35 @@ function phenotype_data_to_table(evidence, index) {
     var chemical = '';
 	var reporter = '';
     var note = '';
-    for (var j=0; j < evidence['conditions'].length; j++) {
-        if(evidence['conditions'][j]['class_type'] == 'CHEMICAL') {
-            if(evidence['conditions'][j]['amount'] != null) {
-                chemical = evidence['conditions'][j]['amount'] + ' ' + create_link(evidence['conditions'][j]['bioitem']['display_name'], evidence['conditions'][j]['bioitem']['link']);
+    for (var j=0; j < evidence['properties'].length; j++) {
+        if(evidence['properties'][j]['class_type'] == 'CHEMICAL') {
+            if(evidence['properties'][j]['amount'] != null) {
+                chemical = evidence['properties'][j]['amount'] + ' ' + create_link(evidence['properties'][j]['bioitem']['display_name'], evidence['properties'][j]['bioitem']['link']);
             }
             else {
-                chemical = create_link(evidence['conditions'][j]['bioitem']['display_name'], evidence['conditions'][j]['bioitem']['link']);
+                chemical = create_link(evidence['properties'][j]['bioitem']['display_name'], evidence['properties'][j]['bioitem']['link']);
             }
-            var chemical_icon = create_note_icon('chemical_icon' + index, evidence['conditions'][j]['note']);
+            var chemical_icon = create_note_icon('chemical_icon' + index, evidence['properties'][j]['note']);
             if(chemical_icon != '') {
                 chemical = chemical + ' ' + chemical_icon;
             }
         }
-        else if(evidence['conditions'][j]['role'] == 'Allele') {
-            allele = '<br><strong>Allele: </strong>' + evidence['conditions'][j]['bioitem']['display_name'];
-            var allele_icon = create_note_icon('allele_icon' + index, evidence['conditions'][j]['note']);
+        else if(evidence['properties'][j]['role'] == 'Allele') {
+            allele = '<br><strong>Allele: </strong>' + evidence['properties'][j]['bioitem']['display_name'];
+            var allele_icon = create_note_icon('allele_icon' + index, evidence['properties'][j]['note']);
             if(allele_icon != '') {
                 allele = allele + ' ' + allele_icon;
             }
         }
-        else if(evidence['conditions'][j]['role'] == 'Reporter') {
-            reporter = '<strong>Reporter: </strong>' + evidence['conditions'][j]['bioitem']['display_name'];
-            var reporter_icon = create_note_icon('reporter_icon' + index, evidence['conditions'][j]['note']);
+        else if(evidence['properties'][j]['role'] == 'Reporter') {
+            reporter = '<strong>Reporter: </strong>' + evidence['properties'][j]['bioitem']['display_name'];
+            var reporter_icon = create_note_icon('reporter_icon' + index, evidence['properties'][j]['note']);
             if(reporter_icon != '') {
                 reporter = reporter + ' ' + reporter_icon;
             }
         }
         else {
-            note = note + '<strong>Condition: </strong>' + evidence['conditions'][j]['note'] + '<br>';
+            note = note + '<strong>Condition: </strong>' + evidence['properties'][j]['note'] + '<br>';
         }
     }
     if(evidence['note'] != null) {
@@ -250,8 +250,8 @@ function go_data_to_table(evidence, index) {
   	var with_entry = null;
 	var relationship_entry = null;
 
-  	for(var j=0; j < evidence['conditions'].length; j++) {
-  		var condition = evidence['conditions'][j];
+  	for(var j=0; j < evidence['properties'].length; j++) {
+  		var condition = evidence['properties'][j];
         var obj = null;
         if('bioitem' in condition) {
             obj = condition['bioitem'];

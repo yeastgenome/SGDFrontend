@@ -6,15 +6,15 @@ $(document).ready(function() {
         $("#phenotype_table_analyze").hide();
   	});
 
-  	$.getJSON(phenotype_graph_link, function(data) {
-  		if(data['nodes'].length > 1) {
-  			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
-  			var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);
-  		}
-		else {
-			hide_section("network");
-		}
-	});
+//  	$.getJSON(phenotype_graph_link, function(data) {
+//  		if(data['nodes'].length > 1) {
+//  			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
+//  			var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);
+//  		}
+//		else {
+//			hide_section("network");
+//		}
+//	});
 
     //Get resources
 	$.getJSON(phenotype_resources_link, function(data) {

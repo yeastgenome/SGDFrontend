@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 
 <script>
-	var go_overview_link = "{{go_overview_link}}";
 	var go_details_link = "{{go_details_link}}";
 	var go_graph_link = "{{go_graph_link}}";
 	var download_table_link = "{{download_table_link}}";
@@ -21,7 +20,7 @@
 
 <title>{{ locus.display_name }} Gene Ontology</title>
 
-{% extends "static/templates/global_layout.jinja2" %}
+{% extends "global_layout.jinja2" %}
 
 
 {% block body %}
@@ -33,7 +32,7 @@
 <!-- Tabs
 ================================================== -->
 <!-- Includes tabs.html into template -->
-{% include "static/templates/tabs.jinja2" %}
+{% include "tabs.jinja2" %}
 <script>document.getElementById("go_tab").id = "current";</script>
 
 <div class="row">
@@ -41,7 +40,7 @@
 <!-- Navbar
 ================================================== -->
     <!-- Includes navbar.html into template -->
-    {% include "static/templates/navbar.jinja2" %}
+    {% include "navbar.jinja2" %}
 
     <div class="small-12 large-9 columns content-column">
 
@@ -55,7 +54,7 @@
         </script>
 
         <!-- Includes go_overview.html into template -->
-        {% include "static/templates/go_overview.jinja2" %}
+        {% include "go_overview.jinja2" %}
 
 <!-- Manually Curated
 ================================================== -->
@@ -67,27 +66,27 @@
                         <p><a href="/help/glossary.html#manual">Manually curated</a> GO annotations reflect our best understanding of the basic <a href="/help/glossary.html#molecfunction">molecular function</a>, <a href="/help/glossary.html#biolprocess">biological process</a>, and <a href="/help/glossary.html#cellcomp">cellular component</a> for this gene product. Manually curated annotations are assigned by SGD curators based on published papers when available, or by curatorial statements if necessary. Curators periodically review all Manually curated GO annotations for accuracy and completeness. The "Date Last Reviewed" indicates when these annotations were last reviewed.</p>
                     </div>
                 </h1>
-                <p><strong>Date Last Reviewed:</strong> {{date_last_reviewed}}</p>
+                <p><strong>Date Last Reviewed:</strong> {{date_last_reviewed.text}}</p>
 
                 <h2 class="subheader">Biological Process <span id="mc_bp_go_table_header" class="round secondary label"></span></h2>
                 <div id="mc_bp_go">
                     <!-- Includes go_table into template -->
                     {% set table_id = "mc_bp_go_table" %}
-                    {% include "static/templates/go_table.jinja2" %}
+                    {% include "go_table.jinja2" %}
                 </div>
 
                 <h2 class="subheader">Molecular Function <span id="mc_mf_go_table_header" class="round secondary label"></span></h2>
                 <div id="mc_mf_go">
                     <!-- Includes go_table into template -->
                     {% set table_id = "mc_mf_go_table" %}
-                    {% include "static/templates/go_table.jinja2" %}
+                    {% include "go_table.jinja2" %}
                 </div>
 
                 <h2 class="subheader">Cellular Component <span id="mc_cc_go_table_header" class="round secondary label"></span></h2>
                 <div id="mc_cc_go">
                     <!-- Includes go_table into template -->
                     {% set table_id = "mc_cc_go_table" %}
-                    {% include "static/templates/go_table.jinja2" %}
+                    {% include "go_table.jinja2" %}
                 </div>
             </div>
         </section>
@@ -107,21 +106,21 @@
                 <div id="htp_bp_go">
                     <!-- Includes go_table into template -->
                     {% set table_id = "htp_bp_go_table" %}
-                    {% include "static/templates/go_table.jinja2" %}
+                    {% include "go_table.jinja2" %}
                 </div>
 
                 <h2 class="subheader">Molecular Function <span id="htp_mf_go_table_header" class="round secondary label"></span></h2>
                 <div id="htp_mf_go">
                     <!-- Includes go_table into template -->
                     {% set table_id = "htp_mf_go_table" %}
-                    {% include "static/templates/go_table.jinja2" %}
+                    {% include "go_table.jinja2" %}
                 </div>
 
                 <h2 class="subheader">Cellular Component <span id="htp_cc_go_table_header" class="round secondary label"></span></h2>
                 <div id="htp_cc_go">
                     <!-- Includes go_table into template -->
                     {% set table_id = "htp_cc_go_table" %}
-                    {% include "static/templates/go_table.jinja2" %}
+                    {% include "go_table.jinja2" %}
                 </div>
             </div>
         </section>
@@ -141,21 +140,21 @@
                 <div id="comp_bp_go">
                     <!-- Includes go_table into template -->
                     {% set table_id = "comp_bp_go_table" %}
-                    {% include "static/templates/go_table.jinja2" %}
+                    {% include "go_table.jinja2" %}
                 </div>
 
                 <h2 class="subheader">Molecular Function <span id="comp_mf_go_table_header" class="round secondary label"></span></h2>
                 <div id="comp_mf_go">
                     <!-- Includes go_table into template -->
                     {% set table_id = "comp_mf_go_table" %}
-                    {% include "static/templates/go_table.jinja2" %}
+                    {% include "go_table.jinja2" %}
                 </div>
 
                 <h2 class="subheader">Cellular Component <span id="comp_cc_go_table_header" class="round secondary label"></span></h2>
                 <div id="comp_cc_go">
                     <!-- Includes go_table into template -->
                     {% set table_id = "comp_cc_go_table" %}
-                    {% include "static/templates/go_table.jinja2" %}
+                    {% include "go_table.jinja2" %}
                 </div>
             </div>
         </section>
@@ -182,8 +181,8 @@
 
 {% block scripts %}
 <script src="/static/js/jquery.nouislider.min.js"></script>
-<script src="/static/js/cytoscape/cytoscape.min.js"></script>
 <script src="/static/js/cytoscape/arbor.js"></script>
+<script src="/static/js/cytoscape/cytoscape.min.js"></script>
 <script src="/static/js/cytoscape.js"></script>
 <script src="/static/js/local.js"></script>
 <script src="/static/js/evidence.js"></script>

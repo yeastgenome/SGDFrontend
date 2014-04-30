@@ -23,7 +23,7 @@
 
 <title>{{ locus.display_name }} Interactions</title>
 
-{% extends "static/templates/global_layout.jinja2" %}
+{% extends "global_layout.jinja2" %}
 
 {% block body %}
 
@@ -34,7 +34,7 @@
 <!-- Tabs
 ================================================== -->
 <!-- Includes tabs.html into template -->
-{% include "static/templates/tabs.jinja2" %}
+{% include "tabs.jinja2" %}
 <script>document.getElementById('interaction_tab').id = 'current';</script>
 
 <!-- Navbar
@@ -42,7 +42,7 @@
 <div class="row">
 	
     <!-- Includes navbar.html into template -->
-    {% include "static/templates/navbar.jinja2" %}
+    {% include "navbar.jinja2" %}
 
     <div class="small-12 large-9 columns content-column">
 
@@ -56,7 +56,7 @@
         </script>
 
         <!-- Includes interaction_overview.html into template -->
-        {% include "static/templates/interaction_overview.jinja2" %}
+        {% include "interaction_overview.jinja2" %}
 
 <!-- Annotations
 ================================================== -->
@@ -65,7 +65,7 @@
                 <h1>Interactions <span id="interaction_table_header" class="round secondary label"></span></h1>
                 <!-- Includes interaction_table into template -->
                 {% set table_id = "interaction_table" %}
-                {% include "static/templates/interaction_table.jinja2" %}
+                {% include "interaction_table.jinja2" %}
             </div>
         </section>
 

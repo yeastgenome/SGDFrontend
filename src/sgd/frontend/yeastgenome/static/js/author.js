@@ -1,9 +1,7 @@
 
 $(document).ready(function() {
 
-  	$.getJSON(author_details_link, function(data) {
-        set_up_reference_list("references_header", "references_list", "references_message", "references_wrapper", "export_references", download_link, display_name + "_citations", data);
-    });
+  	set_up_reference_list("references_header", "references_list", "references_message", "references_wrapper", "export_references", download_link, display_name + "_citations", reference_data);
 
 	//Hack because footer overlaps - need to fix this.
 	add_footer_space("references");

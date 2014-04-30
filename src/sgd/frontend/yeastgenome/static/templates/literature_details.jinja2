@@ -11,7 +11,7 @@
 
 <title>{{ locus.display_name }} Literature</title>
 
-{% extends "static/templates/global_layout.jinja2" %}
+{% extends "global_layout.jinja2" %}
 
 
 {% block body %}
@@ -23,7 +23,7 @@
 <!-- Tabs
 ================================================== -->
 <!-- Includes tabs.html into template -->
-{% include "static/templates/tabs.jinja2" %}
+{% include "tabs.jinja2" %}
 <script>document.getElementById('literature_tab').id = 'current';</script>
 
 <!-- Navbar
@@ -31,7 +31,7 @@
 <div class="row">
 	
     <!-- Includes navbar.html into template -->
-    {% include "static/templates/navbar.jinja2" %}
+    {% include "navbar.jinja2" %}
 
     <div class="small-12 large-9 columns content-column">
 
@@ -49,7 +49,7 @@
         </script>
 
         <!-- Includes literature_overview.html into template -->
-        {% include "static/templates/literature_overview.jinja2" %}
+        {% include "literature_overview.jinja2" %}
 
 <!-- Network Visualization
 ================================================== -->

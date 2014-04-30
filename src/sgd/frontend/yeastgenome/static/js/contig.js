@@ -56,11 +56,11 @@ function set_up_sequence(chart_id, data) {
         var end = data[i]['end'];
         var direction = strand_to_direction(data[i]['strand']);
         if(direction == "5'") {
-            data_array.unshift([direction, data[i]['bioentity']['display_name'], start, end]);
+            data_array.unshift([direction, data[i]['locus']['display_name'], start, end]);
             has_five_prime = true;
         }
         else {
-            data_array.push([direction, data[i]['bioentity']['display_name'], start, end]);
+            data_array.push([direction, data[i]['locus']['display_name'], start, end]);
             has_three_prime = true;
         }
 
@@ -172,9 +172,9 @@ function create_feature_table(data) {
 	var datatable = [];
 
     for (var i=0; i < data.length; i++) {
-        datatable.push([null, data[i]['bioentity']['id'],
-                        create_link(data[i]['bioentity']['display_name'], data[i]['bioentity']['link']),
-                        data[i]['bioentity']['locus_type'], '',
+        datatable.push([null, data[i]['locus']['id'],
+                        create_link(data[i]['locus']['display_name'], data[i]['locus']['link']),
+                        data[i]['locus']['locus_type'], '',
                         data[i]['start'] + '-' + data[i]['end']
                         ]);
     }
