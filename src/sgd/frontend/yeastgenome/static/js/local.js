@@ -147,6 +147,9 @@ function set_up_resources(resource_id, data) {
 }
 
 function create_link(display_name, link, new_window) {
+    if(link == null) {
+        return display_name
+    }
 	if(new_window) {
 		return '<a href="' + link + '" target="_blank">' + display_name + '</a>'
 	}

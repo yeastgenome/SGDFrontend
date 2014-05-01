@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<script>
+    var display_name = "{{ strain.display_name }}";
+</script>
+
+<title>{{ strain.display_name }}</title>
+
+{% extends "global_layout.jinja2" %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2>Strain: <span class="gene_name">{{ strain.display_name }}</span></h2>
+</div>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+	
+<!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            add_navbar_title('Strain: <span class="gene_name">{{ strain.display_name }}</span>');
+            add_navbar_element('Summary', 'summary');
+        </script>
+
+        <!-- Summary
+        ================================================== -->
+        <section id="summary" data-magellan-destination="summary">
+            <div class="page-header">
+                <h1>Summary</h1>
+                <ul class="unstyled">
+                    S288C is a widely used laboratory strain, designed by Robert Mortimer for biochemical studies, and specifically selected to be non-flocculent with a minimal set of nutritional requirements.  S288C is the strain used in the systematic sequencing project, the reference sequence stored in SGD. S288C does not form pseudohyphae. In addition, since it has a mutated copy of HAP1, it is not a good strain for mitochondrial studies. It has an allelic variant of MIP1 which increases petite frequency. S288C is gal2- and does not use galactose anaerobically.
+                    <li><strong>Status: </strong>Reference Strain</li>
+                    <li><strong>Description: </strong>{{ strain.description }}</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+{% endblock scripts %}

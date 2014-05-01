@@ -191,6 +191,7 @@ class YeastgenomeFrontend(FrontendInterface):
 
                     #Overview
                     'tabs': tabs,
+                    'sequence_overview': bioent['sequence_overview'],
 
                     #Links
                     'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
@@ -214,6 +215,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'phenotype_overview': json.dumps(bioent['phenotype_overview']),
                     'regulation_overview': json.dumps(bioent['regulation_overview']),
                     'interaction_overview': json.dumps(bioent['interaction_overview']),
+                    'sequence_overview': bioent['sequence_overview'],
 
                     #Overview
                     'tabs': tabs,
@@ -222,6 +224,16 @@ class YeastgenomeFrontend(FrontendInterface):
                     'locus_graph_link': self.backend_url + '/locus/' + bioent_id + '/locus_graph?callback=?',
                     'download_table_link': '/download_table',
                     'analyze_table_link': '/analyze'
+                    }
+        return page
+
+    def strain(self, strain_repr):
+        strain = get_json(self.backend_url + '/strain/' + strain_repr + '/overview')
+        strain_id = str(strain['id'])
+
+        page = {
+                    #Basic info
+                    'strain': strain,
                     }
         return page
     

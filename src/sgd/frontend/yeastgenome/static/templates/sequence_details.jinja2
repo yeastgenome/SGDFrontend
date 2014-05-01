@@ -47,9 +47,13 @@
             add_navbar_element('Resources', 'resources');
         </script>
 
+        <!-- Summary
+================================================== -->
         <section id="summary" data-magellan-destination="summary">
             <div class="page-header">
                 <h1>Summary</h1>
+                <!-- Includes sequence_overview into template -->
+                {% include "sequence_overview.jinja2" %}
             </div>
         </section>
 

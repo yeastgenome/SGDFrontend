@@ -83,7 +83,7 @@ function regulation_data_to_table(evidence, is_regulator) {
 	}
 	var strain = '';
 	if(evidence['strain'] != null) {
-	    strain = evidence['strain']['display_name'];
+	    strain = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
 	}
 	var conditions = '';
 	if(evidence['properties'].length> 0) {
@@ -194,7 +194,7 @@ function phenotype_data_to_table(evidence, index) {
 
 	var strain = '';
 	if(evidence['strain'] != null) {
-		strain = evidence['strain']['display_name'];
+		strain = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
 	}
 
     var allele = '';

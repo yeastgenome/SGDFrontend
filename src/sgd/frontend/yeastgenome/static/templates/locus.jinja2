@@ -70,6 +70,8 @@
         <section id="sequence" data-magellan-destination="sequence">
             <div class="page-header">
                 <h1>Sequence</h1>
+                <!-- Includes sequence_overview into template -->
+                {% include "sequence_overview.jinja2" %}
                 <a href="/locus/{{ locus.sgdid }}/sequence" class="button">See More Sequence Information -></a>
             </div>
         </section>
@@ -190,6 +192,5 @@
     <script src="/static/js/evidence.js"></script>
     <script src="/static/js/phenotype_overview.js"></script>
     <script src="/static/js/regulation_overview.js"></script>
-    <script src="/static/js/interaction_overview.js"></script>
     <script src="/static/js/locus.js"></script>
 {% endblock scripts %}

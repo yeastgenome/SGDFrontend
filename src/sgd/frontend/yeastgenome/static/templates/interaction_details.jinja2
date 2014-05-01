@@ -60,6 +60,19 @@
 
         <!-- Includes interaction_overview.html into template -->
         {% include "interaction_overview.jinja2" %}
+
+        <div class="button-bar">
+            <h5>Analyze</h5>
+            <ul class="button-group radius">
+                <li><a disabled="true" id="phys" class="small button secondary sgd-icon-venn-physical">Physical</a></li>
+                <li><a disabled="true" id="gen" class="small button secondary sgd-icon-venn-genetic">Genetic</a></li>
+                <li><a disabled="true" id="phys_gen_intersect" class="small button secondary sgd-icon-venn-intersection">Intersection</a></li>
+                <li><a disabled="true" id="phys_gen_union" class="small button secondary sgd-icon-venn-all">All</a></li>
+            </ul>
+            <ul class="button-group radius" hidden>
+                <li><a disabled="true" class="small button secondary radius" id="download_overview"><i class="icon-picture"></i> PNG</a></li>
+            </ul>
+        </div>
 	</div>
 </section>
 <!-- Annotations
