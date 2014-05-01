@@ -46,7 +46,7 @@ class YeastgenomeFrontend(FrontendInterface):
                         'locus': bioent,
 
                         #Overview
-                        'overview': json.dumps(overview),
+                        'interaction_overview': json.dumps(overview),
                         'tabs': tabs,
 
                         #Links
@@ -70,8 +70,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'locus': bioent,
                     
                     #Overview
-                    'overview': json.dumps(overview),
-                    'summary_count': overview['total_count'],
+                    'literature_overview': overview,
                     'tabs': tabs,
                     
                     #Links
@@ -92,7 +91,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'locus': bioent,
                     
                     #Overview
-                    'overview': json.dumps(overview),
+                    'regulation_overview': json.dumps(overview),
                     'tabs': tabs,
                     
                     #Links
@@ -119,7 +118,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'locus': bioent,
 
                     #Overview
-                    'overview': json.dumps(overview),
+                    'phenotype_overview': json.dumps(overview),
                     'tabs': tabs,
                     
                     #Links
@@ -142,7 +141,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'locus': bioent,
 
                     #Overview
-                    'overview': overview,
+                    'go_overview': overview,
                     'date_last_reviewed': None if 'date_last_reviewed' not in overview else overview['date_last_reviewed'],
                     'tabs': tabs,
                     
@@ -198,6 +197,30 @@ class YeastgenomeFrontend(FrontendInterface):
                     'neighbor_sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/neighbor_sequence_details?callback=?',
                     'download_table_link': '/download_table',
                     'download_sequence_link': '/download_sequence',
+                    'analyze_table_link': '/analyze'
+                    }
+        return page
+
+    def locus(self, locus_repr):
+        bioent = get_json(self.backend_url + '/locus/' + locus_repr + '/overview')
+        bioent_id = str(bioent['id'])
+        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
+
+        page = {
+                    #Basic info
+                    'locus': bioent,
+                    'go_overview': bioent['go_overview'],
+                    'literature_overview': bioent['literature_overview'],
+                    'phenotype_overview': json.dumps(bioent['phenotype_overview']),
+                    'regulation_overview': json.dumps(bioent['regulation_overview']),
+                    'interaction_overview': json.dumps(bioent['interaction_overview']),
+
+                    #Overview
+                    'tabs': tabs,
+
+                    #Links
+                    'locus_graph_link': self.backend_url + '/locus/' + bioent_id + '/locus_graph?callback=?',
+                    'download_table_link': '/download_table',
                     'analyze_table_link': '/analyze'
                     }
         return page

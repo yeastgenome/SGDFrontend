@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
 <script>
-    var overview_json = {{ overview | safe }};
-	var target_count = overview_json["target_count"];
-	var regulator_count = overview_json["regulator_count"];
+    var regulation_overview = {{ regulation_overview | safe }};
+	var target_count = regulation_overview["target_count"];
+	var regulator_count = regulation_overview["regulator_count"];
 	var display_name = "{{ locus.display_name }}";
 	var locus_id = "{{ locus.id }}";
 
@@ -70,8 +70,31 @@
             }
         </script>
 
-        <!-- Includes regulation_overview.html into template -->
-        {% include "regulation_overview.jinja2" %}
+<!-- Summary
+================================================== -->
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Regulation Summary</h1>
+        <div class="panel" id="summary_wrapper">
+            <p id="summary_paragraph"></p>
+            <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
+
+            <!-- Includes regulation_overview.html into template -->
+            {% include "regulation_overview.jinja2" %}
+
+            <div class="button-bar">
+				<h5>Analyze</h5>
+				<ul class="button-group radius">
+					<li><a disabled="true" id="analyze_targets" class="small button secondary">Targets</a></li>
+					<li><a disabled="true" id="analyze_regulators" class="small button secondary">Regulators</a></li>
+				</ul>
+				<ul class="button-group radius" hidden>
+					<li><a disabled="true" class="small button secondary radius" id="download_overview"><i class="icon-picture"></i> PNG</a></li>
+				</ul>
+			</div>
+        </div>
+	</div>
+</section>
 
 <!-- Domains
 ================================================== -->

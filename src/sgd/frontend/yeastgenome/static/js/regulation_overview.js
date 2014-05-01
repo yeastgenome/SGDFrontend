@@ -1,11 +1,11 @@
 
-if(target_count + regulator_count > 0){
+if(regulation_overview['target_count'] + regulation_overview['regulator_count'] > 0){
     google.load("visualization", "1", {packages:["corechart"]});
     google.setOnLoadCallback(drawChart);
     function drawChart() {
         var data_table = google.visualization.arrayToDataTable([['Category', 'Genes', { role: 'style' }, { role: 'annotation' }],
-                                                                ['Targets', target_count, '#AF8DC3', target_count],
-                                                                ['Regulators', regulator_count, '#7FBF7B', regulator_count]]);
+                                                                ['Targets', regulation_overview['target_count'], '#AF8DC3', regulation_overview['target_count']],
+                                                                ['Regulators', regulation_overview['regulator_count'], '#7FBF7B', regulation_overview['regulator_count']]]);
 
         var graph_options = {
             'title': 'Transcriptional Targets and Regulators for ' + display_name,
@@ -14,7 +14,7 @@ if(target_count + regulator_count > 0){
             'dataOpacity':1,
             'backgroundColor': 'transparent'
         };
-        if(Math.max(target_count, regulator_count) == 1) {
+        if(Math.max(regulation_overview['target_count'], regulation_overview['regulator_count']) == 1) {
             options['hAxis']['gridlines'] = {count:"2"}
         }
 

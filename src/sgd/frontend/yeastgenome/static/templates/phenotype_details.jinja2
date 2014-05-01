@@ -6,7 +6,7 @@
 	var phenotype_resources_link = "{{phenotype_resources_link}}";
 	var download_table_link = "{{download_table_link}}";
 	var download_table_filename = "{{ locus.display_name}}_phenotypes";
-	var overview_data = {{overview | safe}};
+	var phenotype_overview = {{phenotype_overview | safe}};
 	var display_name = "{{ locus.display_name }}";
 	var class_type = "{{ locus.class_type }}";
 </script>
@@ -45,9 +45,17 @@
             add_navbar_element("Resources", "resources");
         </script>
 
+<!-- Summary
+================================================== -->
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Summary</h1>
+		<p>This page lists all curated single mutant phenotypes associated with {{ locus.display_name }}.</p>
+
         <!-- Includes phenotype_overview.html into template -->
         {% include "phenotype_overview.jinja2" %}
-
+	</div>
+</section>
 <!-- Annotations
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">

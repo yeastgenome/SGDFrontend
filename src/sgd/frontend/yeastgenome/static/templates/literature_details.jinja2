@@ -6,7 +6,7 @@
 	var literature_graph_link = "{{literature_graph_link}}";
 	var display_name = "{{ locus.display_name }}";
   	var download_link = "{{download_citations_link}}";
-  	var data = {{overview | safe}};
+  	var literature_overview = {{literature_overview | safe}};
 </script>
 
 <title>{{ locus.display_name }} Literature</title>
@@ -48,8 +48,36 @@
             add_navbar_element('Regulation Literature', 'regulation');
         </script>
 
-        <!-- Includes literature_overview.html into template -->
+<!-- Summary
+================================================== -->
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Literature Summary</h1>
+		<!-- Includes literature_overview.html into template -->
         {% include "literature_overview.jinja2" %}
+        {% if locus.aliases|length > 0 %}
+            <p><strong>Aliases: </strong>
+                {% for alias in locus.aliases if alias.category == 'Uniform' %}
+                    <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+	</div>
+</section>
+
+<!-- Primary
+================================================== -->
+<section id="primary" data-magellan-destination="primary">
+	<div class="page-header">
+		<h1>Primary Literature <span id="primary_header" class="label secondary round"></span></h1>
+		<p id='primary_message' hidden>No primary literature curated.<br></p>
+		<div id='primary_wrapper'>
+			<a id="export_primary" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
+			<ul id="primary_list" class="literature-list">
+			</ul>
+		</div>
+	</div>
+</section>
 
 <!-- Network Visualization
 ================================================== -->

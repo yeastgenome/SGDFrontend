@@ -46,7 +46,20 @@ function phosphorylation_data_to_table(evidence) {
         }
     }
 
-    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], site_residue + site_index, site_functions, kinases, evidence['source']['display_name']];
+    var source = evidence['source']['display_name'];
+    if(source == "PhosphoGRID") {
+        var gene_id = null;
+        for(var j=0; j < aliases.length; j++) {
+            if(aliases[j]['category'] == 'Gene ID' && aliases[j]['source']['display_name'] == 'BioGRID') {
+                gene_id = aliases[j]['display_name'];
+            }
+        }
+        if(gene_id != null) {
+	        source = create_link(source, "http://www.phosphogrid.org/sites/" + gene_id + "/" + evidence['locus']['format_name'] + ".phospho", true);
+        }
+	}
+
+    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], site_residue + site_index, site_functions, kinases, source];
 }
 
 function protein_experiment_data_to_table(evidence) {

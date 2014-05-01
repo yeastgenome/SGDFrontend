@@ -8,17 +8,13 @@
 	var analyze_link = "{{analyze_table_link}}";
     var evidence_table_filename = "{{ locus.display_name}}_interactions";
     var analyze_filename = "<a href='{{ locus.link }}' class='gene_name'>{{ locus.display_name }}</a>";
-    var data = {{overview | safe}};
+    var interaction_overview = {{interaction_overview | safe}};
 
 	var summary_download_filename = "{{ locus.display_name}}_interaction_summary";
     var annotation_analyze_filename = "{{ locus.display_name}}_interactors";
 
 	var display_name = "{{ locus.display_name }}";
 	var locus_id = "{{ locus.id }}";
-
-	var A = data['num_gen_interactors'];
-	var B = data['num_phys_interactors'];
-	var C = data['num_both_interactors'];
 </script>
 
 <title>{{ locus.display_name }} Interactions</title>
@@ -55,9 +51,17 @@
             add_navbar_element('Resources', 'resources');
         </script>
 
+<!-- Summary
+================================================== -->
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Interactors Summary</h1>
+		<p>This page lists all genes/proteins that interact with {{ locus.display_name }}. See help for information about <a href="/help/function-help/interactions">interaction data</a>.</p>
+
         <!-- Includes interaction_overview.html into template -->
         {% include "interaction_overview.jinja2" %}
-
+	</div>
+</section>
 <!-- Annotations
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">

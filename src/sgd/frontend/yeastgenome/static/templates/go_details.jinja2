@@ -53,9 +53,21 @@
             add_navbar_element("Network Visualization", "network");
         </script>
 
+<!-- Summary
+================================================== -->
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Summary</h1>
+		<p>This page displays GO annotations in different sections according to the <a href='/help/glossary.html#type'>annotation method</a> used to add that annotation to SGD.</p>
+
         <!-- Includes go_overview.html into template -->
         {% include "go_overview.jinja2" %}
 
+		<ul class="button-group radius">
+			<li><a id="go_download_all" class="small button secondary"><i class="icon-download-alt"></i> Download All Annotations</a></li>
+		</ul>
+	</div>
+</section>
 <!-- Manually Curated
 ================================================== -->
         <section id="manual" data-magellan-destination="manual">

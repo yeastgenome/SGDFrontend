@@ -2,9 +2,9 @@ google.load("visualization", "1", {packages:["corechart"]});
 google.setOnLoadCallback(drawChart);
 function drawChart() {
 
-    if(overview_data['experiment_categories'].length > 1) {
+    if(phenotype_overview['experiment_categories'].length > 1) {
         var label = 'Annotations';
-        var data = google.visualization.arrayToDataTable(overview_data['experiment_categories']);
+        var data = google.visualization.arrayToDataTable(phenotype_overview['experiment_categories']);
         var options = {
             'legend': {'position': 'top', title: 'Experiment Type'},
             'title': label + ' by mutant type and experiment type',
@@ -23,8 +23,8 @@ function drawChart() {
         function barSelectHandler() {
             var selectedItem = chart.getSelection()[0];
             if (selectedItem) {
-                var mutant_type = overview_data['experiment_categories'][selectedItem.row+1][0];
-                var experiment_type = overview_data['experiment_categories'][0][selectedItem.column];
+                var mutant_type = phenotype_overview['experiment_categories'][selectedItem.row+1][0];
+                var experiment_type = phenotype_overview['experiment_categories'][0][selectedItem.column];
                 var phenotype_table = $($.fn.dataTable.fnTables(true)).dataTable();
                 phenotype_table.fnFilter( mutant_type + ' ' + experiment_type );
                 window.location.hash = "";
@@ -39,8 +39,8 @@ function drawChart() {
         chart.draw(data, options);
     }
 
-    if(overview_data['strains'].length > 1) {
-        var strain_data = google.visualization.arrayToDataTable(overview_data['strains']);
+    if(phenotype_overview['strains'].length > 1) {
+        var strain_data = google.visualization.arrayToDataTable(phenotype_overview['strains']);
         var strain_options = {
             'legend': {'position': 'none'},
             'title': label + ' in different strain backgrounds',
@@ -59,7 +59,7 @@ function drawChart() {
             var selectedItem = strain_chart.getSelection()[0];
             if (selectedItem) {
                 //var value = strain_data.getValue(selectedItem.row, selectedItem.column);
-                var strain = overview_data['strains'][selectedItem.row+1][0];
+                var strain = phenotype_overview['strains'][selectedItem.row+1][0];
                 var phenotype_table = $($.fn.dataTable.fnTables(true)).dataTable();
                 phenotype_table.fnFilter( strain );
                 window.location.hash = "";
@@ -74,7 +74,7 @@ function drawChart() {
         strain_chart.draw(strain_data, strain_options);
     }
 
-    if(overview_data['experiment_categories'].length == 1 && overview_data['strains'].length == 1) {
+    if(phenotype_overview['experiment_categories'].length == 1 && phenotype_overview['strains'].length == 1) {
         $("#summary_wrapper").hide()
     }
 }
