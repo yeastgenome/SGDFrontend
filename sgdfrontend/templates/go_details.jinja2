@@ -21,7 +21,7 @@
 
 <title>{{ locus.display_name }} Gene Ontology</title>
 
-{% extends "templates/global_layout.jinja2" %}
+{% extends "global_layout.jinja2" %}
 
 
 {% block body %}
@@ -33,7 +33,7 @@
 <!-- Tabs
 ================================================== -->
 <!-- Includes tabs.html into template -->
-{% include "templates/tabs.jinja2" %}
+{% include "tabs.jinja2" %}
 <script>document.getElementById("go_tab").id = "current";</script>
 
 <div class="row">
@@ -41,7 +41,7 @@
 <!-- Navbar
 ================================================== -->
     <!-- Includes navbar.html into template -->
-    {% include "templates/navbar.jinja2" %}
+    {% include "navbar.jinja2" %}
 
     <div class="small-12 large-9 columns content-column">
 
@@ -55,7 +55,7 @@
         </script>
 
         <!-- Includes go_overview.html into template -->
-        {% include "templates/go_overview.jinja2" %}
+        {% include "go_overview.jinja2" %}
 
 <!-- Manually Curated
 ================================================== -->
@@ -73,17 +73,17 @@
                 {% set table_name = "Biological Process" %}
                 {% set table_type = "mc_bp" %}
                 {% set small = true %}
-                {% include "templates/go_table.jinja2" %}
+                {% include "go_table.jinja2" %}
 
                 <!-- Includes go_table into template -->
                 {% set table_name = "Molecular Function" %}
                 {% set table_type = "mc_mf" %}
-                {% include "templates/go_table.jinja2" %}
+                {% include "go_table.jinja2" %}
 
                 <!-- Includes go_table into template -->
                 {% set table_name = "Cellular Component" %}
                 {% set table_type = "mc_cc" %}
-                {% include "templates/go_table.jinja2" %}
+                {% include "go_table.jinja2" %}
 
             </div>
         </section>
@@ -102,17 +102,17 @@
                 <!-- Includes go_table into template -->
                 {% set table_name = "Biological Process" %}
                 {% set table_type = "htp_bp" %}
-                {% include "templates/go_table.jinja2" %}
+                {% include "go_table.jinja2" %}
 
                 <!-- Includes go_table into template -->
                 {% set table_name = "Molecular Function" %}
                 {% set table_type = "htp_mf" %}
-                {% include "templates/go_table.jinja2" %}
+                {% include "go_table.jinja2" %}
 
                 <!-- Includes go_table into template -->
                 {% set table_name = "Cellular Component" %}
                 {% set table_type = "htp_cc" %}
-                {% include "templates/go_table.jinja2" %}
+                {% include "go_table.jinja2" %}
 
             </div>
         </section>
@@ -131,17 +131,17 @@
                 <!-- Includes go_table into template -->
                 {% set table_name = "Biological Process" %}
                 {% set table_type = "comp_bp" %}
-                {% include "templates/go_table.jinja2" %}
+                {% include "go_table.jinja2" %}
 
                 <!-- Includes go_table into template -->
                 {% set table_name = "Molecular Function" %}
                 {% set table_type = "comp_mf" %}
-                {% include "templates/go_table.jinja2" %}
+                {% include "go_table.jinja2" %}
 
                 <!-- Includes go_table into template -->
                 {% set table_name = "Cellular Component" %}
                 {% set table_type = "comp_cc" %}
-                {% include "templates/go_table.jinja2" %}
+                {% include "go_table.jinja2" %}
 
             </div>
         </section>

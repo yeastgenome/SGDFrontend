@@ -28,7 +28,7 @@
 
 <title>{{ locus.display_name }} Regulation</title>
 
-{% extends "templates/global_layout.jinja2" %}
+{% extends "global_layout.jinja2" %}
 
 
 {% block body %}
@@ -40,7 +40,7 @@
 <!-- Tabs
 ================================================== -->
 <!-- Includes tabs.html into template -->
-{% include "templates/tabs.jinja2" %}
+{% include "tabs.jinja2" %}
 <script>document.getElementById("regulation_tab").id = "current";</script>
 
 <div class="row">
@@ -48,7 +48,7 @@
     <!-- Navbar
     ================================================== -->
     <!-- Includes navbar.html into template -->
-    {% include "templates/navbar.jinja2" %}
+    {% include "navbar.jinja2" %}
 
     <div class="small-12 large-9 columns content-column">
         <script>
@@ -72,7 +72,7 @@
         </script>
 
         <!-- Includes regulation_overview.html into template -->
-        {% include "templates/regulation_overview.jinja2" %}
+        {% include "regulation_overview.jinja2" %}
 
 <!-- Domains
 ================================================== -->
@@ -120,7 +120,7 @@
         <!-- Includes regulation_table into template -->
         {% set table_name = "Targets" %}
         {% set table_type = "targets" %}
-        {% include "templates/regulation_table.jinja2" %}
+        {% include "regulation_table.jinja2" %}
 
 <!-- Enrichment
 ================================================== -->
@@ -156,7 +156,7 @@
         <!-- Includes regulation_table into template -->
         {% set table_name = "Regulators" %}
         {% set table_type = "regulators" %}
-        {% include "templates/regulation_table.jinja2" %}
+        {% include "regulation_table.jinja2" %}
 
 <!-- Network Visualization
 ================================================== -->
