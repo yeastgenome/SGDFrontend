@@ -14,7 +14,7 @@
 
 <title>{{ ontology.display_name }}</title>
 
-{% extends "templates/global_layout.jinja2" %}
+{% extends "global_layout.jinja2" %}
 
 {% block body %}
 
@@ -27,7 +27,7 @@
 <!-- Navbar
 ================================================== -->
     <!-- Includes navbar.html into template -->
-    {% include "templates/navbar.jinja2" %}
+    {% include "navbar.jinja2" %}
 
     <div class="small-12 large-9 columns content-column">
 
@@ -63,7 +63,7 @@
         <!-- Includes go_table into template -->
         {% set table_name = "Gene Ontology Annotations" %}
         {% set table_type = "all" %}
-        {% include "templates/go_table.jinja2" %}
+        {% include "go_table.jinja2" %}
 
     </div>
 </div>

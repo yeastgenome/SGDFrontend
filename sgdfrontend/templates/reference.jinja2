@@ -29,7 +29,7 @@
 
 <title>{{ reference.display_name }}</title>
 
-{% extends "templates/global_layout.jinja2" %}
+{% extends "global_layout.jinja2" %}
 
 
 {% block body %}
@@ -41,7 +41,7 @@
 <!-- Navbar
 ================================================== -->
     <!-- Includes navbar.html into template -->
-    {% include "templates/navbar.jinja2" %}
+    {% include "navbar.jinja2" %}
 
     <div class="small-12 large-9 columns content-column">
         <br>
@@ -110,26 +110,26 @@
 ================================================== -->
         <!-- Includes interaction_table into template -->
         {% set table_name = "Interaction Annotations" %}
-        {% include "templates/interaction_table.jinja2" %}
+        {% include "interaction_table.jinja2" %}
 
 <!-- GO
 ================================================== -->
         <!-- Includes go_table into template -->
         {% set table_name = "Gene Ontology Annotations" %}
         {% set table_type = "all" %}
-        {% include "templates/go_table.jinja2" %}
+        {% include "go_table.jinja2" %}
 
 <!-- Phenotype
 ================================================== -->
         <!-- Includes phenotype_table into template -->
-        {% include "templates/phenotype_table.jinja2" %}
+        {% include "phenotype_table.jinja2" %}
 
 <!-- Regulation
 ================================================== -->
         <!-- Includes regulation_table into template -->
         {% set table_name = "Regulation Annotations" %}
         {% set table_type = "all" %}
-        {% include "templates/regulation_table.jinja2" %}
+        {% include "regulation_table.jinja2" %}
 
     </div>
 </div>
