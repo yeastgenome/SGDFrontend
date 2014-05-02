@@ -229,11 +229,27 @@ class YeastgenomeFrontend(FrontendInterface):
 
     def strain(self, strain_repr):
         strain = get_json(self.backend_url + '/strain/' + strain_repr + '/overview')
-        strain_id = str(strain['id'])
 
         page = {
                     #Basic info
                     'strain': strain,
+                    'paragraph': json.dumps(strain['paragraph']),
+                    'resources': json.dumps(strain['urls'])
+                    }
+        return page
+
+    def ecnumber(self, biocon_repr):
+        biocon = get_json(self.backend_url + '/ecnumber/' + biocon_repr + '/overview')
+        biocon_id = str(biocon['id'])
+
+        page = {
+                    #Basic info
+                    'ecnumber': biocon,
+
+                    #Links
+                    'ecnumber_details_link': self.backend_url + '/ecnumber/' + biocon_id + '/locus_details?callback=?',
+                    'download_table_link': '/download_table',
+                    'analyze_table_link': '/analyze'
                     }
         return page
     
@@ -363,21 +379,6 @@ class YeastgenomeFrontend(FrontendInterface):
                     'go_details_link': self.backend_url + '/go/' + str(complex['go']['id']) + '/locus_details?callback=?',
                     'complex_graph_link': self.backend_url + '/complex/' + complex_id + '/graph?callback=?',
                     'go_enrichment_link': '/enrichment',
-                    'download_table_link': '/download_table',
-                    'analyze_table_link': '/analyze'
-                    }
-        return page
-
-    def ec_number(self, ec_repr):
-        ec_number = get_json(self.backend_url + '/ecnumber/' + ec_repr + '/overview')
-        ec_number_id = str(ec_number['id'])
-
-        page = {
-                    #Basic info
-                    'ec_number': ec_number,
-
-                    #Links
-                    'ec_number_details_link': self.backend_url + '/ecnumber/' + ec_number_id + '/locus_details?callback=?',
                     'download_table_link': '/download_table',
                     'analyze_table_link': '/analyze'
                     }

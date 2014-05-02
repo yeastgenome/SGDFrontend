@@ -26,7 +26,7 @@ $(document).ready(function() {
                 option.value = dna_data[i]['strain']['format_name'];
                 option.innerHTML = dna_data[i]['strain']['display_name'];
 
-                if(dna_data[i]['strain']['is_alternative_reference'] == 1) {
+                if(dna_data[i]['strain']['status'] == 'Alternative Reference') {
                     alternative_selection.append(option);
                 }
                 else {

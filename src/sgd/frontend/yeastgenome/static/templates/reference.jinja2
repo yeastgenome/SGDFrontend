@@ -29,7 +29,7 @@
 
 <title>{{ reference.display_name }}</title>
 
-{% extends "static/templates/global_layout.jinja2" %}
+{% extends "global_layout.jinja2" %}
 
 
 {% block body %}
@@ -41,12 +41,12 @@
 <!-- Navbar
 ================================================== -->
     <!-- Includes navbar.html into template -->
-    {% include "static/templates/navbar.jinja2" %}
+    {% include "navbar.jinja2" %}
 
     <div class="small-12 large-9 columns content-column">
         <div id="title">
             {%  if 'journal' in reference and reference.journal != none %}
-                <h2>Reference: <span class="gene_name">{{ (reference.citation|replace(reference.journal, "<em>" + reference.journal + "</em>")|replace(reference.display_name, reference.display_name + "<span class='subheader'>") + "</span>")|safe }}</span></h2>
+                <h2>Reference: <span class="gene_name">{{ (reference.citation|replace(reference.journal.display_name, "<em>" + reference.journal.display_name + "</em>")|replace(reference.display_name, reference.display_name + "<span class='subheader'>") + "</span>")|safe }}</span></h2>
             {% else %}
                 <h2>Reference: <span class="gene_name">{{ (reference.citation|replace(reference.display_name, reference.display_name + "<span class='subheader'>") + "</span>")|safe }}</span></h2>
             {% endif %}
@@ -66,7 +66,7 @@
             <div class="page-header">
                 <h1>Abstract</h1>
                 {%  if reference.abstract != none %}
-                    <p>{{ reference.abstract|safe}}</p>
+                    <p>{{ reference.abstract.text|safe}}</p>
                 {% else %}
                     <p>SGD does not have an abstract for this paper.</p>
                 {% endif %}
@@ -87,7 +87,7 @@
                 <ul class="unstyled">
                     <li><strong>Reference Type:</strong>
                         {% for reftype in reference.reftypes %}
-                            <span>{{ reftype }}</span>{% if not loop.last %}, {% endif %}
+                            <span>{{ reftype.display_name }}</span>{% if not loop.last %}, {% endif %}
                         {% endfor %}
                     </li>
 
@@ -117,7 +117,7 @@
                             <li>
                                 <strong>
                                     {% for reftype in relref.reftypes %}
-                                        <span>{{ reftype }}</span>{% if not loop.last %}, {% endif %}
+                                        <span>{{ reftype.display_name }}</span>{% if not loop.last %}, {% endif %}
                                     {% endfor %}
                                 </strong><br>
                                 <a href="{{ relref.link|e }}">{{ relref.display_name|e }}</a>
@@ -132,7 +132,7 @@
                                     {% endfor %}
                                 </ul>
                                 {% if relref.abstract != none %}
-                                    <blockquote>{{ relref.abstract }}</blockquote>
+                                    <blockquote>{{ relref.abstract.text }}</blockquote>
                                 {% endif %}
                             </li>
                         {% endfor %}
@@ -150,7 +150,7 @@
                 <h1>Interaction Annotations <span id="interaction_table_header" class="round secondary label"></span></h1>
                 <!-- Includes interaction_table into template -->
                 {% set table_id = "interaction_table" %}
-                {% include "static/templates/interaction_table.jinja2" %}
+                {% include "interaction_table.jinja2" %}
             </div>
         </section>
 
@@ -161,7 +161,7 @@
                 <h1>Gene Ontology Annotations <span id="go_table_header" class="round secondary label"></span></h1>
                 <!-- Includes go_table into template -->
                 {% set table_id = "go_table" %}
-                {% include "static/templates/go_table.jinja2" %}
+                {% include "go_table.jinja2" %}
             </div>
         </section>
 
@@ -172,7 +172,7 @@
                 <h1>Phenotype Annotations <span id="phenotype_table_header" class="round secondary label"></span></h1>
                 <!-- Includes phenotype_table into template -->
                 {% set table_id = "phenotype_table" %}
-                {% include "static/templates/phenotype_table.jinja2" %}
+                {% include "phenotype_table.jinja2" %}
             </div>
         </section>
 
@@ -183,7 +183,7 @@
                 <h1>Regulation Annotations <span id="regulation_table_header" class="round secondary label"></span></h1>
                 <!-- Includes regulation_table into template -->
                 {% set table_id = "regulation_table" %}
-                {% include "static/templates/regulation_table.jinja2" %}
+                {% include "regulation_table.jinja2" %}
             </div>
         </section>
     </div>

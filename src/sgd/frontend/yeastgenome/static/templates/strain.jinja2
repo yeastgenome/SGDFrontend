@@ -2,6 +2,7 @@
 
 <script>
     var display_name = "{{ strain.display_name }}";
+    var paragraph = {{ paragraph| safe }};
 </script>
 
 <title>{{ strain.display_name }}</title>
@@ -34,10 +35,24 @@
         <section id="summary" data-magellan-destination="summary">
             <div class="page-header">
                 <h1>Summary</h1>
+                <p id="summary_paragraph"></p>
+                <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
                 <ul class="unstyled">
-                    S288C is a widely used laboratory strain, designed by Robert Mortimer for biochemical studies, and specifically selected to be non-flocculent with a minimal set of nutritional requirements.  S288C is the strain used in the systematic sequencing project, the reference sequence stored in SGD. S288C does not form pseudohyphae. In addition, since it has a mutated copy of HAP1, it is not a good strain for mitochondrial studies. It has an allelic variant of MIP1 which increases petite frequency. S288C is gal2- and does not use galactose anaerobically.
-                    <li><strong>Status: </strong>Reference Strain</li>
+                    <li><strong>Status: </strong> {{ strain.status }}</li>
                     <li><strong>Description: </strong>{{ strain.description }}</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Resources
+================================================== -->
+        <section id="resources" data-magellan-destination="resources">
+            <div class="page-header">
+                <h1>Resources</h1>
+                <ul id="resource_list">
+                    {% for resource in strain.urls %}
+                        <a href="{{ resource.link }}">{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
                 </ul>
             </div>
         </section>
@@ -46,4 +61,10 @@
 {% endblock body %}
 
 {% block scripts %}
+<script src="/static/js/local.js"></script>
+    <script>
+        document.getElementById("summary_paragraph").innerHTML = paragraph['text'];
+        references = paragraph['references'];
+        set_up_references(references, "summary_paragraph_reference_list");
+    </script>
 {% endblock scripts %}

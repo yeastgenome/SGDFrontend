@@ -2,9 +2,9 @@
 $(document).ready(function() {
 
     $.getJSON(literature_details_link, function(data) {
-        create_literature_list('primary', data['primary'])
-        create_literature_list('additional', data['additional'])
-        create_literature_list('review', data['reviews'])
+        create_literature_list('primary', data, 'Primary Literature')
+        create_literature_list('additional', data, 'Additional Literature')
+        create_literature_list('review', data, 'Reviews')
     });
 
     $("#download_citation").click(function() {post_to_url(download_link, {"display_name":display_name.replace(' ', '_') + '_citation.nbib', "reference_ids": [reference_id]});})
@@ -72,15 +72,18 @@ $(document).ready(function() {
 
 });
 
-function create_literature_list(list_id, data) {
+function create_literature_list(list_id, data, topic) {
     var primary_list = $("#" + list_id + "_list");
     var see_more_list = document.createElement('span');
     see_more_list.id = list_id + '_see_more'
-    if(data.length > 0) {
-        for(var i=0; i < data.length; i++) {
+
+    var count = 0;
+    for(var i=0; i < data.length; i++) {
+        if(data[i]['topic'] == topic) {
+            count = count + 1;
             var a = document.createElement('a');
-            a.href = data[i]['bioentity']['link'];
-            a.innerHTML = data[i]['bioentity']['display_name'];
+            a.href = data[i]['locus']['link'];
+            a.innerHTML = data[i]['locus']['display_name'];
             if(i > 10) {
                 see_more_list.appendChild(a);
             }
@@ -94,7 +97,7 @@ function create_literature_list(list_id, data) {
                     see_more_list.appendChild(comma);
                 }
                 else {
-                    primary_list.append(comma);
+                   primary_list.append(comma);
                 }
             }
             else {
@@ -103,8 +106,8 @@ function create_literature_list(list_id, data) {
                     see_less.innerHTML = " << See less";
                     see_less.id = list_id + '_see_less_button';
                     see_less.onclick = function() {
-                         $('#' + list_id + '_see_more').hide();
-                         $('#' + list_id + '_see_more_button').show();
+                        $('#' + list_id + '_see_more').hide();
+                        $('#' + list_id + '_see_more_button').show();
                     };
                     see_more_list.appendChild(see_less);
                 }
@@ -121,10 +124,11 @@ function create_literature_list(list_id, data) {
                 primary_list.append(see_more);
                 primary_list.append(see_more_list);
             }
+            $('#' + list_id + '_see_more').hide();
         }
-        $('#' + list_id + '_see_more').hide();
     }
-    else {
+
+    if(count == 0) {
         primary_list.hide();
     }
 }
@@ -143,8 +147,8 @@ function create_interaction_table(data) {
         var genes = {};
         for (var i=0; i < data.length; i++) {
             datatable.push(interaction_data_to_table(data[i], i));
-            genes[data[i]["bioentity1"]["id"]] = true;
-            genes[data[i]["bioentity2"]["id"]] = true;
+            genes[data[i]["locus1"]["id"]] = true;
+            genes[data[i]["locus2"]["id"]] = true;
         }
 
         set_up_header('interaction_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
@@ -175,7 +179,7 @@ function create_go_table(data) {
         var genes = {};
         for (var i=0; i < data.length; i++) {
             datatable.push(go_data_to_table(data[i], i));
-            genes[data[i]["bioentity"]["id"]] = true;
+            genes[data[i]["locus"]["id"]] = true;
         }
 
         set_up_header('go_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
@@ -206,7 +210,7 @@ function create_phenotype_table(data) {
         var genes = {};
         for (var i=0; i < data.length; i++) {
             datatable.push(phenotype_data_to_table(data[i], i));
-            genes[data[i]['bioentity']['id']] = true;
+            genes[data[i]['locus']['id']] = true;
         }
 
         set_up_header('phenotype_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
@@ -236,8 +240,8 @@ function create_regulation_table(data) {
         var genes = {};
         for (var i=0; i < data.length; i++) {
             datatable.push(regulation_data_to_table(data[i], null));
-            genes[data[i]["bioentity1"]["id"]] = true;
-            genes[data[i]["bioentity2"]["id"]] = true;
+            genes[data[i]["locus1"]["id"]] = true;
+            genes[data[i]["locus2"]["id"]] = true;
         }
 
         set_up_header('regulation_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');

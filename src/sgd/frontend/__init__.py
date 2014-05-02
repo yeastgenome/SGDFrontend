@@ -152,6 +152,11 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: chosen_frontend.response_wrapper('phenotype_ontology', request)(getattr(chosen_frontend, 'phenotype_ontology')()),
                     renderer=chosen_frontend.get_renderer('phenotype_ontology'),
                     route_name='phenotype_ontology')
+
+    config.add_route('ecnumber', '/ecnumber/{identifier}/overview')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('ecnumber', request)(getattr(chosen_frontend, 'ecnumber')(biocon_repr=request.matchdict['identifier'].lower())),
+                    renderer=chosen_frontend.get_renderer('ecnumber'),
+                    route_name='ecnumber')
     
     config.add_route('go', '/go/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('go', request)(getattr(chosen_frontend, 'go')(biocon_repr=request.matchdict['identifier'].lower())),
@@ -182,11 +187,6 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: chosen_frontend.response_wrapper('contig', request)(getattr(chosen_frontend, 'contig')(contig_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('contig'),
                     route_name='contig')
-
-    config.add_route('ec_number', '/ec_number/{identifier}/overview')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('ec_number', request)(getattr(chosen_frontend, 'ec_number')(ec_repr= request.matchdict['identifier'].lower())),
-                    renderer=chosen_frontend.get_renderer('ec_number'),
-                    route_name='ec_number')
     
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':

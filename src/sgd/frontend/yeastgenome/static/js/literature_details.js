@@ -5,10 +5,10 @@ $(document).ready(function() {
   	    set_up_reference_list("primary_header", "primary_list", "primary_message", "primary_wrapper", "export_primary", download_link, display_name + "_primary_citations", data, 'Primary Literature');
         set_up_reference_list("additional_header", "additional_list", "additional_message", "additional_wrapper", "export_additional", download_link, display_name + "_additional_citations", data, 'Additional Literature');
   		set_up_reference_list("review_header", "review_list", "review_message", "review_wrapper", "export_review", download_link, display_name + "_review_citations", data, 'Reviews');
-  		set_up_reference_list("go_header", "go_list", "go_message", "go_wrapper", "export_go", download_link, display_name + "_go_citations", data, 'GO');
-  		set_up_reference_list("phenotype_header", "phenotype_list", "phenotype_message", "phenotype_wrapper", "export_phenotype", download_link, display_name + "_phenotype_citations", data, 'Phenotype');
-  		set_up_reference_list("interaction_header", "interaction_list", "interaction_message", "interaction_wrapper", "export_interaction", download_link, display_name + "_interaction_citations", data, 'Interaction');
-  		set_up_reference_list("regulation_header", "regulation_list", "regulation_message", "regulation_wrapper", "export_regulation", download_link, display_name + "_regulation_citations", data, 'Regulation');
+  		//set_up_reference_list("go_header", "go_list", "go_message", "go_wrapper", "export_go", download_link, display_name + "_go_citations", data, 'GO');
+  		//set_up_reference_list("phenotype_header", "phenotype_list", "phenotype_message", "phenotype_wrapper", "export_phenotype", download_link, display_name + "_phenotype_citations", data, 'Phenotype');
+  		//set_up_reference_list("interaction_header", "interaction_list", "interaction_message", "interaction_wrapper", "export_interaction", download_link, display_name + "_interaction_citations", data, 'Interaction');
+  		//set_up_reference_list("regulation_header", "regulation_list", "regulation_message", "regulation_wrapper", "export_regulation", download_link, display_name + "_regulation_citations", data, 'Regulation');
     });
 
   	$.getJSON(literature_graph_link, function(data) {

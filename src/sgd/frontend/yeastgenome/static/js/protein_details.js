@@ -62,7 +62,7 @@ $(document).ready(function() {
         if(data.length > 0) {
             var ec_number_html = "<strong>EC Number: </strong> ";
             for (var i=0; i < data.length; i++) {
-                ec_number_html = ec_number_html + "<a href='" + data[i]['bioconcept']['link'] + "'>" + data[i]['bioconcept']['display_name'] + "</a>";
+                ec_number_html = ec_number_html + "<a href='" + data[i]['ecnumber']['link'] + "'>" + data[i]['ecnumber']['display_name'] + "</a>";
                 if(i != data.length-1) {
                     ec_number_html = ec_number_html + ', ';
                 }
