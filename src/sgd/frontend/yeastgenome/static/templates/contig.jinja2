@@ -11,6 +11,7 @@
     var format_name = "{{ contig.format_name }}";
     var length = "{{ contig.length }}";
     var residues = "{{ contig.residues }}";
+    var overview = {{ overview|safe }};
 
 </script>
 
@@ -45,6 +46,7 @@
         <section id="summary" data-magellan-destination="summary">
             <div class="page-header">
                 <h1>Summary</h1>
+                <div id="piechart" style="width: 600px; height: 300px;"></div>
                 <ul class="unstyled">
                     <li><strong>Strain: </strong>{{ contig.strain.display_name }}</li>
                     <li><strong>Length: </strong>{{ contig.residues|length }}</li>

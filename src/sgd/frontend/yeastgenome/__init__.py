@@ -436,6 +436,7 @@ class YeastgenomeFrontend(FrontendInterface):
         page = {
                     #Basic info
                     'contig': contig,
+                    'overview': json.dumps(contig['overview']),
 
                     #Links
                     'sequence_details_link': self.backend_url + '/contig/' + contig_id + '/sequence_details?callback=?',

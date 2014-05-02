@@ -1,3 +1,4 @@
+draw_overview(overview);
 
 $(document).ready(function() {
 
@@ -193,4 +194,20 @@ function create_feature_table(data) {
     options["oLanguage"] = {"sEmptyTable": "No features for " + display_name + '.'};
 
     return create_table("chromosomal_coord_table", options);
+}
+
+function draw_overview(data) {
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+        var dataTable = google.visualization.arrayToDataTable(data);
+
+        var options = {
+          title: 'Feature Types',
+          pieSliceText: 'none',
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(dataTable, options);
+    }
 }
