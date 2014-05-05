@@ -53,7 +53,11 @@ var graph_style = cytoscape.stylesheet()
 		'color': '#888'
 	})
 	.selector('edge')
-	.css({
+    .css({
+        'content': 'data(name)',
+		'font-family': 'helvetica',
+		'font-size': 12,
+        'color': 'grey',
 		'width': 2,
 		'source-arrow-shape': 'triangle'
 	})
