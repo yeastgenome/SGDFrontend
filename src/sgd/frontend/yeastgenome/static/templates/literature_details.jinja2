@@ -54,13 +54,11 @@
 		<h1>Literature Summary</h1>
 		<!-- Includes literature_overview.html into template -->
         {% include "literature_overview.jinja2" %}
-        {% if locus.aliases|length > 0 %}
-            <p><strong>Aliases: </strong>
-                {% for alias in locus.aliases if alias.category == 'Uniform' %}
-                    <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
-                {% endfor %}
-            </p>
-        {% endif %}
+        {% for alias in locus.aliases if alias.category == 'Uniform' %}
+            {% if loop.first %}<p><strong>Aliases: </strong>{% endif %}
+            <span>{{ alias.display_name }}</span>
+            {% if not loop.last %}, {% else %}</p>{% endif %}
+        {% endfor %}
 	</div>
 </section>
 
