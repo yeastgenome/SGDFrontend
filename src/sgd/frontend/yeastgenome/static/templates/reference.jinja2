@@ -87,7 +87,7 @@
                 <ul class="unstyled">
                     <li><strong>Reference Type:</strong>
                         {% for reftype in reference.reftypes %}
-                            <span>{{ reftype.display_name }}</span>{% if not loop.last %}; {% endif %}
+                            <span>{{ reftype.display_name }}</span>{% if not loop.last %}| {% endif %}
                         {% endfor %}
                     </li>
 
@@ -117,7 +117,7 @@
                             <li>
                                 <strong>
                                     {% for reftype in relref.reftypes %}
-                                        <span>{{ reftype.display_name }}</span>{% if not loop.last %}; {% endif %}
+                                        <span>{{ reftype.display_name }}</span>{% if not loop.last %}| {% endif %}
                                     {% endfor %}
                                 </strong><br>
                                 <a href="{{ relref.link|e }}">{{ relref.display_name|e }}</a>
