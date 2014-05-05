@@ -40,7 +40,7 @@ $(document).ready(function() {
         function on_change(index) {
             $("#sequence_residues").html(protein_data[index]['residues'].chunk(10).join(' '));
             $("#strain_description").html(protein_data[index]['strain']['description']);
-            $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span class="subheader">' + '- ' + protein_data[index]['strain']['display_name'] + '</span>';
+            $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span>' + '- ' + protein_data[index]['strain']['display_name'] + '</span>';
             set_up_properties(protein_data[index]);
             draw_phosphodata();
             $("#sequence_download").click(function f() {

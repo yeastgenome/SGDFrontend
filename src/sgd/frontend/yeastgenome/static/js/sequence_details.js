@@ -89,7 +89,7 @@ $(document).ready(function() {
         function alternative_on_change() {
             var strain_data = strain_to_genomic_data[alternative_selection.val()];
             $("#alternative_strain_description").html(strain_data['strain']['description']);
-            $("#navbar_alternative").children()[0].innerHTML = 'Alternative Reference Strains <span class="subheader">' + '- ' + strain_to_genomic_data[alternative_selection.val()]['strain']['display_name'] + '</span>';
+            $("#navbar_alternative").children()[0].innerHTML = 'Alternative Reference Strains <span>' + '- ' + strain_to_genomic_data[alternative_selection.val()]['strain']['display_name'] + '</span>';
             $("#alternative_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
             draw_label_chart('alternative_label_chart', strain_data['strain']['format_name']);
 
@@ -142,7 +142,7 @@ $(document).ready(function() {
         function other_on_change() {
             var strain_data = strain_to_genomic_data[other_selection.val()];
             $("#other_strain_description").html(strain_data['strain']['description']);
-            $("#navbar_other").children()[0].innerHTML = 'Other Strains <span class="subheader">' + '- ' + other_selection.val() + '</span>';
+            $("#navbar_other").children()[0].innerHTML = 'Other Strains <span>' + '- ' + other_selection.val() + '</span>';
             $("#other_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
             draw_label_chart('other_label_chart', strain_data['strain']['display_name']);
 
