@@ -4,14 +4,13 @@
 	var phenotype_details_link = "{{phenotype_details_link}}";
 	var download_table_link = "{{download_table_link}}";
 	var analyze_link = "{{analyze_table_link}}";
-
     var download_filename = "{{ phenotype.display_name }}_annotations";
     var analyze_filename = "<a href='{{ phenotype.link }}' class='gene_name'>{{ phenotype.display_name }}</a> genes";
 
     var display_name = "{{ phenotype.display_name }}";
     var class_type = "{{ phenotype.class_type }}";
 
-    var overview_data = {{overview|safe}};
+    var phenotype_overview = {{overview|safe}};
 </script>
 
 <title>{{ phenotype.display_name }}</title>
