@@ -72,8 +72,13 @@ $(document).ready(function() {
 	});
 
     $.getJSON(protein_experiment_details_link, function(data) {
-        var protein_experiment_table = create_protein_experiment_table(data);
-        create_download_button("protein_experiment_table_download", protein_experiment_table, download_table_link, protein_experiment_table_filename);
+        if(data.length > 0) {
+            var protein_experiment_table = create_protein_experiment_table(data);
+            create_download_button("protein_experiment_table_download", protein_experiment_table, download_table_link, protein_experiment_table_filename);
+        }
+        else {
+            hide_section('experiment');
+        }
 	});
 
     $.getJSON(bioentity_details_link, function(data) {

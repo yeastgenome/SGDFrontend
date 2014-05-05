@@ -7,11 +7,11 @@ $(document).ready(function() {
 	});
 
   	$.getJSON(sequence_details_link, function(data) {
-        set_up_sequence("feature_div", data['genomic_dna']);
-
         var feature_table = create_feature_table(data['genomic_dna']);
         create_download_button("chromosomal_coord_table_download", feature_table, download_table_link, display_name + '_features');
         create_analyze_button("chromosomal_coord_table_analyze", feature_table, analyze_link, "<a href='" + link + "' class='gene_name'>" + display_name + "</a> genes", true);
+
+        set_up_sequence("feature_div", data['genomic_dna']);
   	});
 
 	//Hack because footer overlaps - need to fix this.
@@ -92,7 +92,7 @@ function set_up_sequence(chart_id, data) {
 
     chart.draw(dataTable, options);
 
-    var height = $("#" + chart_id + " > div > div > div > svg").height() + 50;
+    var height = $("#" + chart_id + " > div > div > div > svg").height() + 60;
     options['height'] = height;
     chart.draw(dataTable, options);
 
@@ -134,35 +134,42 @@ function set_up_sequence(chart_id, data) {
     var m = (y_two - y_one)/(x_two - x_one);
     var b = y_two - m*x_two;
 
-    var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
-    var tickmarks = tickmark_holder.childNodes;
-    var tickmark_space;
-    if(tickmarks.length > 1) {
-        tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
+    function tickmarkHandler(e) {
+        window.setTimeout(function() {
+            var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
+            var tickmarks = tickmark_holder.children();
+            var tickmark_space;
+            if(tickmarks.length > 1) {
+                tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
+            }
+            else {
+                tickmark_space = 100;
+            }
+            for (var i=0; i < tickmarks.length; i++) {
+                var x_new = Math.round(tickmarks[i].getAttribute('x'));
+                var y_new = Math.round(m*x_new + b);
+                if(m*tickmark_space > 10000) {
+                    y_new = 10000*Math.round(y_new/10000);
+                }
+                else if(m*tickmark_space > 1000) {
+                    y_new = 1000*Math.round(y_new/1000);
+                }
+                else if(m*tickmark_space > 100) {
+                    y_new = 100*Math.round(y_new/100);
+                }
+                else if(m*tickmark_space > 10) {
+                    y_new = 10*Math.round(y_new/10)
+                }
+                if(y_new <= 0) {
+                    y_new = 1;
+                }
+                tickmarks[i].html(y_new);
+            }
+        }, 1000);
     }
-    else {
-        tickmark_space = 100;
-    }
-    for (var i=0; i < tickmarks.length; i++) {
-        var x_new = Math.round(tickmarks[i].getAttribute('x'));
-        var y_new = Math.round(m*x_new + b);
-        if(m*tickmark_space > 10000) {
-            y_new = 10000*Math.round(y_new/10000);
-        }
-        else if(m*tickmark_space > 1000) {
-            y_new = 1000*Math.round(y_new/1000);
-        }
-        else if(m*tickmark_space > 100) {
-            y_new = 100*Math.round(y_new/100);
-        }
-        else if(m*tickmark_space > 10) {
-            y_new = 10*Math.round(y_new/10)
-        }
-        if(y_new <= 0) {
-            y_new = 1;
-        }
-        tickmarks[i].innerHTML = y_new;
-    }
+    google.visualization.events.addListener(chart, 'ready', tickmarkHandler);
+
+    chart.draw(dataTable, options);
 
     // Listen for the 'select' event, and call my function selectHandler() when
     // the user selects something on the chart.
@@ -204,7 +211,7 @@ function draw_overview(data) {
 
         var options = {
           title: 'Feature Types',
-          pieSliceText: 'none',
+          pieSliceText: 'none'
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
