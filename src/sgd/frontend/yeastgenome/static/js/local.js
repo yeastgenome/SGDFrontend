@@ -351,6 +351,7 @@ function create_show_child_button(child_button_id, table, data, details_all_link
 }
 
 function create_table(table_id, options) {
+    options['oLanguage']['sSearch'] = '<a href="#" data-dropdown="drop_search"><i class="icon-info-sign"></i></a><div id="drop_search" class="f-dropdown content medium" data-dropdown-content>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both \'BAS1\' and \'37\’.</div> Search:';
     setup_datatable_highlight();
   	table = $('#' + table_id).dataTable(options);
   	setup_datatable_highlight();
