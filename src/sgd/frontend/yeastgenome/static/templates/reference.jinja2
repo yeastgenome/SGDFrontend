@@ -45,7 +45,7 @@
 
     <div class="small-12 large-9 columns content-column">
         <div id="title">
-            {%  if 'journal' in reference and reference.journal != none %}
+            {%  if reference.journal != none %}
                 <h2>Reference: <span class="gene_name">{{ (reference.citation|replace(reference.journal.display_name, "<em>" + reference.journal.display_name + "</em>")|replace(reference.display_name, reference.display_name + "<span class='subheader'>") + "</span>")|safe }}</span></h2>
             {% else %}
                 <h2>Reference: <span class="gene_name">{{ (reference.citation|replace(reference.display_name, reference.display_name + "<span class='subheader'>") + "</span>")|safe }}</span></h2>
