@@ -340,7 +340,7 @@ function draw_domain_chart(chart_id, data) {
 
     chart.draw(dataTable, options);
 
-    options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 50;
+    options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
     chart.draw(dataTable, options);
 
     function tooltipHandler(e) {
