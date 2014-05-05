@@ -132,7 +132,7 @@
                                     {% endfor %}
                                 </ul>
                                 {% if relref.abstract != none %}
-                                    <blockquote>{{ relref.abstract.text }}</blockquote>
+                                    <blockquote>{{ relref.abstract.text|safe }}</blockquote>
                                 {% endif %}
                             </li>
                         {% endfor %}
