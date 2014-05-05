@@ -28,7 +28,7 @@ function drawChart() {
                 var phenotype_table = $($.fn.dataTable.fnTables(true)).dataTable();
                 phenotype_table.fnFilter( mutant_type + ' ' + experiment_type );
                 window.location.hash = "";
-                window.location.hash = "phenotype";
+                window.location.hash = "annotations";
             }
         }
 
@@ -63,7 +63,7 @@ function drawChart() {
                 var phenotype_table = $($.fn.dataTable.fnTables(true)).dataTable();
                 phenotype_table.fnFilter( strain );
                 window.location.hash = "";
-                window.location.hash = "phenotype";
+                window.location.hash = "annotations";
             }
         }
 
