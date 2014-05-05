@@ -239,10 +239,13 @@ function draw_label_chart(chart_id, strain_name) {
 
         var colors = []
 
+        var display_name_to_format_name = {};
+
         for (i=0; i < data.length; i++) {
             var start = data[i]['start'];
             var end = data[i]['end'];
             var direction = strand_to_direction(data[i]['strand']);
+            display_name_to_format_name[data[i]['locus']['display_name']] = data[i]['locus']['format_name'];
             if(direction == "5'") {
                 data_array.unshift([direction, data[i]['locus']['display_name'], start, end]);
                 has_five_prime = true;
@@ -295,6 +298,9 @@ function draw_label_chart(chart_id, strain_name) {
 
         function tooltipHandler(e) {
             var datarow = data_array[e.row];
+            var title_spans = $(".google-visualization-tooltip-item > span");
+            title_spans[0].innerHTML = title_spans[0].innerHTML + ' (' + display_name_to_format_name[title_spans[0].innerHTML] + ')';
+
             var spans = $(".google-visualization-tooltip-action > span");
             if(spans.length > 3) {
                 spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
