@@ -46,7 +46,14 @@
                     <li><strong>Chemical Name: </strong>{{ chemical.display_name }}</li>
                     {% if chemical.chebi_id != none %}
                         <li>
-                            <strong>Chebi ID: </strong><a href="{{ chemical.urls[0].link }}" target="_blank">{{ chemical.urls[0].display_name }}</a>
+                            <strong>Chebi ID: </strong>
+                            {% if chemical.urls|length > 0 %}
+                                <a href="{{ chemical.urls[0].link }}" target="_blank">
+                            {% endif %}
+                            {{ chemical.chebi_id }}
+                            {% if chemical.urls|length > 0 %}
+                                </a>
+                            {% endif %}
                         </li>
                     {% endif %}
                 </ul>

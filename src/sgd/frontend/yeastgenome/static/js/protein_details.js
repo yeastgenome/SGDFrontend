@@ -60,7 +60,7 @@ $(document).ready(function() {
 
     $.getJSON(ec_number_details_link, function(data) {
         if(data.length > 0) {
-            var ec_number_html = "<strong>EC Number: </strong> ";
+            var ec_number_html = "<strong>Enzyme Commission (EC) Number:</strong> ";
             for (var i=0; i < data.length; i++) {
                 ec_number_html = ec_number_html + "<a href='" + data[i]['ecnumber']['link'] + "'>" + data[i]['ecnumber']['display_name'] + "</a>";
                 if(i != data.length-1) {
@@ -207,11 +207,13 @@ function create_phosphorylation_table(data) {
 
     set_up_header('phosphorylation_table', datatable.length, 'entry', 'entries', Object.keys(sites).length, 'site', 'sites');
 
+    set_up_phospho_sort();
+
     var options = {};
     options["bPaginate"] = true;
     options["aaSorting"] = [[4, "asc"]];
     options["bDestroy"] = true;
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "phospho" }, null, null, null];
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": 'No phosphorylation data for this strain.'};
 

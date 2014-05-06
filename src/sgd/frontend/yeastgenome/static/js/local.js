@@ -288,6 +288,24 @@ function set_up_range_sort() {
 	};
 }
 
+function set_up_phospho_sort() {
+	jQuery.fn.dataTableExt.oSort['phospho-desc'] = function(x,y) {
+		x0 = parseInt(x.slice(1,x.length));
+		y0 = parseInt(y.slice(1,y.length));
+
+		return (x0 > y0) ? -1 : ((x0 < y0) ? 1 : 0);
+
+	};
+
+	jQuery.fn.dataTableExt.oSort['phospho-asc'] = function(x,y) {
+		x0 = parseInt(x.slice(1,x.length));
+		y0 = parseInt(y.slice(1,y.length));
+
+		return (x0 < y0) ? -1 : ((x0 > y0) ? 1 : 0);
+
+	};
+}
+
 function create_show_child_button(child_button_id, table, data, details_all_link, data_to_table, set_up_table_f) {
     var direct_data = [];
     var indirect_data = null;
