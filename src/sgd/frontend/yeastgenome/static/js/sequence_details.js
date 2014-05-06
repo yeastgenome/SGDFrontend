@@ -237,7 +237,8 @@ function draw_label_chart(chart_id, strain_name) {
         var min_tick = null;
         var max_tick = null;
 
-        var colors = []
+        var five_prime_colors = [];
+        var three_prime_colors = [];
 
         var display_name_to_format_name = {};
 
@@ -247,12 +248,26 @@ function draw_label_chart(chart_id, strain_name) {
             var direction = strand_to_direction(data[i]['strand']);
             display_name_to_format_name[data[i]['locus']['display_name']] = data[i]['locus']['format_name'];
             if(direction == "5'") {
-                data_array.unshift([direction, data[i]['locus']['display_name'], start, end]);
+                data_array.push([direction, data[i]['locus']['display_name'], start, end]);
                 has_five_prime = true;
+
+                if(data[i]['locus']['display_name'] == display_name) {
+                    five_prime_colors.push("#3366cc");
+                }
+                else {
+                    five_prime_colors.push('#A4A4A4');
+                }
             }
             else {
                 data_array.push([direction, data[i]['locus']['display_name'], end, start]);
                 has_three_prime = true;
+
+                if(data[i]['locus']['display_name'] == display_name) {
+                    three_prime_colors.push("#3366cc");
+                }
+                else {
+                    three_prime_colors.push('#A4A4A4');
+                }
             }
 
             if(min_tick == null || start < min_tick) {
@@ -261,21 +276,23 @@ function draw_label_chart(chart_id, strain_name) {
             if(max_tick == null || end > max_tick) {
                 max_tick = end;
             }
-            if(data[i]['locus']['display_name'] == display_name) {
-                colors.push("#3366cc");
-            }
-            else {
-                colors.push('#A4A4A4');
-            }
         }
 
         if(!has_five_prime) {
             data_array.unshift(["5'", '', null, null]);
-            colors.unshift('#A4A4A4');
+            five_prime_colors.push('#A4A4A4');
         }
         if(!has_three_prime) {
             data_array.push(["3'", '', null, null]);
-            colors.push('#A4A4A4');
+            three_prime_colors.push('#A4A4A4');
+        }
+
+        var colors = [];
+        for (i=0; i < five_prime_colors.length; i++) {
+            colors.push(five_prime_colors[i]);
+        }
+        for (i=0; i < three_prime_colors.length; i++) {
+            colors.push(three_prime_colors[i]);
         }
 
         dataTable.addRows(data_array);
