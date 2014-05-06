@@ -125,7 +125,7 @@
                     <ul class="unstyled">
                         {% for relref in reference.related_references %}
                             <li>
-                                <strong>
+                                <strong>Reference Type:
                                     {% for reftype in relref.reftypes %}
                                         <span>{{ reftype.display_name }}</span>{% if not loop.last %} | {% endif %}
                                     {% endfor %}
