@@ -43,7 +43,19 @@
         <section id="summary" data-magellan-destination="summary">
             <div class="page-header">
                 <h1>Summary</h1>
-                <p><strong>Description: </strong>{{ ontology.description }}</p>
+                <ul class="unstyled">
+                    <li><strong>GO ID: </strong><a href="http://amigo.geneontology.org/cgi-bin/amigo/term_details?term={{ ontology.go_id }}" target="_blank">{{ ontology.go_id }}</a></li>
+                    <li><strong>Aspect: </strong>{{ ontology.go_aspect|title }}</li>
+                    <li><strong>Description: </strong>{{ ontology.description }}</li>
+                    {% if ontology.aliases|length > 0 %}
+                        <li><strong>Synonyms:</strong>
+                            {% for alias in ontology.aliases %}
+                                <span>{{ alias|e }}</span>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </li>
+                    {% endif %}
+                    <li><a href="http://amigo.geneontology.org/cgi-bin/amigo/term-assoc.cgi?term={{ ontology.go_id }}&taxid=all" target="_blank">See annotations in AmiGO</a></li>
+                </ul>
             </div>
         </section>
 
