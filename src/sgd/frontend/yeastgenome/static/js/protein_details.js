@@ -93,15 +93,6 @@ $(document).ready(function() {
         }
 	});
 
-    //Get resources
-	$.getJSON(protein_resources_link, function(data) {
-	  	set_up_resources("homologs_resource_list", data['Homologs']);
-	  	set_up_resources("protein_databases_resource_list", data['Protein Databases']);
-        set_up_resources("localization_resource_list", data['Localization']);
-        set_up_resources("domain_resource_list", data['Domain']);
-        set_up_resources("other_resource_list", data['Other']);
-	});
-
     var alias_table = create_alias_table(aliases);
     create_download_button("alias_table_download", alias_table, download_table_link, alias_table_filename);
 

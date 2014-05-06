@@ -3,7 +3,6 @@
 <script>
 	var phenotype_details_link = "{{phenotype_details_link}}";
 	var phenotype_graph_link = "{{phenotype_graph_link}}";
-	var phenotype_resources_link = "{{phenotype_resources_link}}";
 	var download_table_link = "{{download_table_link}}";
 	var download_table_filename = "{{ locus.display_name}}_phenotypes";
 	var phenotype_overview = {{phenotype_overview | safe}};
@@ -88,9 +87,17 @@
             <div class="page-header">
                 <h1>Resources</h1>
                 <h3>Mutant Strains</h3>
-                <ul id="mutant_resource_list"></ul>
+                    <p>
+                        {% for url in locus.urls if url.category == 'Mutant Strains'%}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
                 <h3>Phenotype Resources</h3>
-                <ul id="phenotype_resource_list"></ul>
+                    <p>
+                        {% for url in locus.urls if url.category == 'Phenotype Resources'%}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
                 <h3>Ontology</h3>
                 <ul><a href="{{ontology_link}}">Yeast Phenotype Ontology</a></ul>
             </div>

@@ -17,9 +17,9 @@ $(document).ready(function() {
 
             if(dna_data[i]['strain']['display_name'] == 'S288C') {
                 $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['start'] + ' - ' + dna_data[i]['end']);
-                //draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
-                //var subfeature_table = create_subfeature_table(dna_data[i]);
-                //create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
+                draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
+                var subfeature_table = create_subfeature_table(dna_data[i]);
+                create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
             }
             else {
                 var option = document.createElement("option");
@@ -80,7 +80,7 @@ $(document).ready(function() {
                 .attr('disabled', !('S288C' in strain_to_protein_data));
 
             if(mode.val() == 'genomic_dna') {
-                //color_sequence("reference_sequence", strain_to_genomic_data['S288C']);
+                color_sequence("reference_sequence", strain_to_genomic_data['S288C']);
             }
         }
         $("#reference_chooser").change(reference_on_change);
@@ -251,7 +251,7 @@ function draw_label_chart(chart_id, strain_name) {
                 has_five_prime = true;
             }
             else {
-                data_array.push([direction, data[i]['locus']['display_name'], start, end]);
+                data_array.push([direction, data[i]['locus']['display_name'], end, start]);
                 has_three_prime = true;
             }
 
@@ -387,11 +387,11 @@ function draw_sublabel_chart(chart_id, data) {
 
     var min_tick = null;
 
-    if(data['sequence_tags'].length > 0) {
-        for (var i=0; i < data['sequence_tags'].length; i++) {
-            var start = data['sequence_tags'][i]['relative_start'];
-            var end = data['sequence_tags'][i]['relative_end'];
-            var name = data['sequence_tags'][i]['display_name'];
+    if(data['tags'].length > 0) {
+        for (var i=0; i < data['tags'].length; i++) {
+            var start = data['tags'][i]['relative_start'];
+            var end = data['tags'][i]['relative_end'];
+            var name = data['tags'][i]['display_name'];
             data_array.push([display_name, name, start, end]);
             labels[name] = true;
 
@@ -434,8 +434,8 @@ function draw_sublabel_chart(chart_id, data) {
     var svg_gs = $("#" + chart_id + " > div > div > svg > g");
     var rectangle_holder = svg_gs[3];
     var rectangles = rectangle_holder.childNodes;
-    var y_one = data['sequence_tags'][0]['relative_start'];
-    var y_two = data['sequence_tags'][data['sequence_tags'].length-1]['relative_end'];
+    var y_one = data['tags'][0]['relative_start'];
+    var y_two = data['tags'][data['tags'].length-1]['relative_end'];
 
     var x_one = null;
     var x_two = null;
@@ -507,31 +507,31 @@ function draw_sublabel_chart(chart_id, data) {
     var label_holder = svg_gs[0];
     var labels = label_holder.childNodes;
     var color_index = 0;
-    for (var i=0; i < data['sequence_tags'].length; i++) {
-        if(!(data['sequence_tags'][i]['display_name'] in label_to_color)) {
-            label_to_color[data['sequence_tags'][i]['display_name']] = ordered_colors[color_index];
+    for (var i=0; i < data['tags'].length; i++) {
+        if(!(data['tags'][i]['display_name'] in label_to_color)) {
+            label_to_color[data['tags'][i]['display_name']] = ordered_colors[color_index];
             color_index = color_index + 1;
         }
     }
 }
 
 function color_sequence(seq_id, data) {
-    if(data['sequence_tags'].length > 1) {
+    if(data['tags'].length > 1) {
         var seq = $("#" + seq_id).html();
         var new_seq = '';
         var start = 0;
-        for (var i=0; i < data['sequence_tags'].length; i++) {
+        for (var i=0; i < data['tags'].length; i++) {
             var color;
-            if(data['sequence_tags'][i]['display_name'] in label_to_color) {
-                color = label_to_color[data['sequence_tags'][i]['display_name']];
+            if(data['tags'][i]['display_name'] in label_to_color) {
+                color = label_to_color[data['tags'][i]['display_name']];
             }
             else {
                 color = colors[color_index];
-                label_to_color[data['sequence_tags'][i]['display_name']] = color;
+                label_to_color[data['tags'][i]['display_name']] = color;
                 color_index = color_index + 1;
             }
-            var start_index = data['sequence_tags'][i]['relative_start'] + Math.floor(1.0*(data['sequence_tags'][i]['relative_start']-1)/10) - 1;
-            var end_index = data['sequence_tags'][i]['relative_end'] + Math.floor(1.0*(data['sequence_tags'][i]['relative_end'])/10);
+            var start_index = data['tags'][i]['relative_start'] + Math.floor(1.0*(data['tags'][i]['relative_start']-1)/10) - 1;
+            var end_index = data['tags'][i]['relative_end'] + Math.floor(1.0*(data['tags'][i]['relative_end'])/10);
             new_seq = new_seq +
                     seq.substring(start, start_index) +
                     "<span style='color:" + color + "'>" +
@@ -547,11 +547,11 @@ function color_sequence(seq_id, data) {
 function create_subfeature_table(data) {
 	var datatable = [];
 
-    for (var i=0; i < data['sequence_tags'].length; i++) {
-        datatable.push([null, null, display_name,
-                        data['sequence_tags'][i]['display_name'],
-                        data['sequence_tags'][i]['relative_start'] + '-' + data['sequence_tags'][i]['relative_end'],
-                        data['sequence_tags'][i]['chromosomal_start'] + '-' + data['sequence_tags'][i]['chromosomal_end']
+    for (var i=0; i < data['tags'].length; i++) {
+        datatable.push([data['id'], data['locus']['id'], data['locus']['display_name'], data['locus']['format_name'],
+                        data['tags'][i]['display_name'],
+                        data['tags'][i]['relative_start'] + '-' + data['tags'][i]['relative_end'],
+                        data['tags'][i]['chromosomal_start'] + '-' + data['tags'][i]['chromosomal_end'], data['strand']
                         ]);
     }
 
@@ -561,8 +561,8 @@ function create_subfeature_table(data) {
 
     var options = {};
     options["bPaginate"] = false;
-    options["aaSorting"] = [[4, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, { "sType": "range" }, { "sType": "range" }]
+    options["aaSorting"] = [[5, "asc"]];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, { "sType": "range" }, { "sType": "range" }, {"bSearchable":false, "bVisible":false}]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": "No subfeatures for " + display_name + '.'};
 

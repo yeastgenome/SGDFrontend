@@ -64,7 +64,7 @@ function set_up_sequence(chart_id, data) {
             has_five_prime = true;
         }
         else {
-            data_array.push([direction, data[i]['locus']['display_name'], start, end]);
+            data_array.push([direction, data[i]['locus']['display_name'], end, start]);
             has_three_prime = true;
         }
 

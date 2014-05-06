@@ -7,7 +7,6 @@
     var protein_phosphorylation_details_link = "{{ protein_phosphorylation_details_link }}";
     var ec_number_details_link = "{{ ec_number_details_link }}";
     var protein_experiment_details_link = "{{ protein_experiment_details_link }}";
-    var protein_resources_link = "{{ protein_resources_link }}";
     var bioentity_details_link = "{{ bioentity_details_link }}";
     var aliases = {{ aliases|safe }};
 
@@ -198,20 +197,35 @@
             <div class="page-header">
                 <h1>Resources</h1>
                 <h3>Homologs</h3>
-                    <ul id='homologs_resource_list'>
-                    </ul>
+                    <p>
+                        {% for url in locus.urls if url.category == 'Protein Information Homologs' or url.category == 'Analyze Sequence S288C vs. other species'%}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
                 <h3>Protein Databases</h3>
-                    <ul id='protein_databases_resource_list'>
-                    </ul>
+                    <p>
+                        {% for url in locus.urls if url.category == 'Protein databases/Other'%}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
                 <h3>Localization</h3>
-                    <ul id='localization_resource_list'>
-                    </ul>
+                    <p>
+                        {% for url in locus.urls if url.category == 'Localization Resources'%}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
                 <h3>Domains</h3>
-                    <ul id='domain_resource_list'>
-                    </ul>
+                    <p>
+                        {% for url in locus.urls if url.category == 'Domain'%}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
                 <h3>Post-translational Modifications</h3>
-                    <ul id='other_resource_list'>
-                    </ul>
+                    <p>
+                        {% for url in locus.urls if url.category == 'Post-translational modifications'%}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
             </div>
         </section>
 

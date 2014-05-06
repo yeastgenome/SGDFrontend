@@ -52,7 +52,6 @@ class YeastgenomeFrontend(FrontendInterface):
                         #Links
                         'interaction_details_link': self.backend_url + '/locus/' + bioent_id + '/interaction_details?callback=?',
                         'interaction_graph_link': self.backend_url + '/locus/' + bioent_id + '/interaction_graph?callback=?',
-                        'interaction_resources_link': self.backend_url + '/locus/' + bioent_id + '/interaction_resources?callback=?',
                         'download_table_link': '/download_table',
                         'analyze_table_link': '/analyze'
                     }
@@ -123,7 +122,6 @@ class YeastgenomeFrontend(FrontendInterface):
                     
                     #Links
                     'phenotype_details_link': self.backend_url + '/locus/' + bioent_id + '/phenotype_details?callback=?',
-                    'phenotype_resources_link': self.backend_url + '/locus/' + bioent_id + '/phenotype_resources?callback=?',
                     'phenotype_graph_link': self.backend_url + '/locus/' + bioent_id + '/phenotype_graph?callback=?',
                     'download_table_link': '/download_table',
                     'ontology_link': '/ontology/phenotype/ypo/overview'
@@ -173,7 +171,6 @@ class YeastgenomeFrontend(FrontendInterface):
                     'protein_phosphorylation_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_phosphorylation_details?callback=?',
                     'ec_number_details_link': self.backend_url + '/locus/' + bioent_id + '/ecnumber_details?callback=?',
                     'protein_experiment_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_experiment_details?callback=?',
-                    'protein_resources_link': self.backend_url + '/locus/' + bioent_id + '/protein_resources?callback=?',
                     'download_table_link': '/download_table',
                     'download_sequence_link': '/download_sequence',
                     'analyze_table_link': '/analyze'

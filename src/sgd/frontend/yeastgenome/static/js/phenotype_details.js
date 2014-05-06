@@ -16,12 +16,6 @@ $(document).ready(function() {
 		}
 	});
 
-    //Get resources
-	$.getJSON(phenotype_resources_link, function(data) {
-	  	set_up_resources("mutant_resource_list", data['Mutant Resources']);
-	  	set_up_resources("phenotype_resource_list", data['Phenotype Resources']);
-	});
-
 	//Hack because footer overlaps - need to fix this.
 	add_footer_space("resources");
 });

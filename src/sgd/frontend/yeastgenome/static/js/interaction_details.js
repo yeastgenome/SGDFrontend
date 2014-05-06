@@ -38,15 +38,6 @@ $(document).ready(function() {
         }
     });
 
-	$.getJSON(interaction_resources_link, function(data) {
-	  	set_up_resources("resource_list", data);
-	  	for (var i=0; i < data.length; i++) {
-	  		if(data[i]["display_name"] == "BioGRID") {
-	  			$("#biogrid_link").href = data[i]["link"];
-	  		}
-		}
-	});
-
 	//Hack because footer overlaps - need to fix this.
 	add_footer_space("resources");
 
