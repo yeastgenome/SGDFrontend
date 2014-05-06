@@ -16,7 +16,13 @@ $(document).ready(function() {
             strain_to_genomic_data[dna_data[i]['strain']['format_name']] = dna_data[i];
 
             if(dna_data[i]['strain']['display_name'] == 'S288C') {
-                $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['start'] + ' - ' + dna_data[i]['end']);
+                if(dna_data[i]['strand'] == '-') {
+                    $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['end'] + ' - ' + dna_data[i]['start']);
+                }
+                else {
+                    $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['start'] + ' - ' + dna_data[i]['end']);
+                }
+
                 draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
                 var subfeature_table = create_subfeature_table(dna_data[i]);
                 create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
@@ -90,7 +96,12 @@ $(document).ready(function() {
             var strain_data = strain_to_genomic_data[alternative_selection.val()];
             $("#alternative_strain_description").html(strain_data['strain']['description']);
             $("#navbar_alternative").children()[0].innerHTML = 'Alternative Reference Strains <span>' + '- ' + strain_to_genomic_data[alternative_selection.val()]['strain']['display_name'] + '</span>';
-            $("#alternative_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
+            if(strain_data['strand'] == '-') {
+                $("#alternative_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['end'] + ' - ' + strain_data['start']);
+            }
+            else {
+                $("#alternative_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
+            }
             draw_label_chart('alternative_label_chart', strain_data['strain']['format_name']);
 
             var mode = $("#alternative_chooser");
@@ -143,7 +154,13 @@ $(document).ready(function() {
             var strain_data = strain_to_genomic_data[other_selection.val()];
             $("#other_strain_description").html(strain_data['strain']['description']);
             $("#navbar_other").children()[0].innerHTML = 'Other Strains <span>' + '- ' + other_selection.val() + '</span>';
-            $("#other_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
+            if(strain_data['strand'] == '-') {
+                $("#other_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['end'] + ' - ' + strain_data['start']);
+            }
+            else {
+                $("#other_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
+            }
+
             draw_label_chart('other_label_chart', strain_data['strain']['display_name']);
 
             var mode = $("#other_chooser");
@@ -259,7 +276,7 @@ function draw_label_chart(chart_id, strain_name) {
                 }
             }
             else {
-                data_array.push([direction, data[i]['locus']['display_name'], end, start]);
+                data_array.push([direction, data[i]['locus']['display_name'], start, end]);
                 has_three_prime = true;
 
                 if(data[i]['locus']['display_name'] == display_name) {

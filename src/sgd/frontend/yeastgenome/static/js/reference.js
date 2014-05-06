@@ -66,9 +66,12 @@ $(document).ready(function() {
   	else if(counts["interaction"] > 0) {
   	    add_footer_space("interaction");
   	}
-  	else {
-  	    add_footer_space("summary");
+  	else if(related_reference_count > 0){
+  	    add_footer_space("related");
   	}
+    else {
+        add_footer_space("summary");
+    }
 
 });
 

@@ -21,6 +21,7 @@
     var go_analyze_filename = "{{ reference.display_name }} Gene Ontology terms";
 
     var display_name = "{{ reference.display_name }}";
+    var related_reference_count = {{ reference.related_references|length }};
     var counts = {{counts|safe}};
 
     var locus_id = null;
@@ -54,6 +55,9 @@
         <script>
             add_navbar_title('Reference: <span class="gene_name">{{ reference.display_name }}</span>');
             add_navbar_element('Abstract', 'summary');
+            {% if reference.related_references|length > 0 %}
+                add_navbar_element('Related References', 'related');
+            {% endif %}
             add_navbar_element('Interaction Annotations', 'interaction');
             add_navbar_element('Gene Ontology Annotations', 'go');
             add_navbar_element('Phenotype Annotations', 'phenotype');
@@ -109,9 +113,15 @@
                     <li id="additional_list"><strong>Additional Literature For: </strong></li>
                     <li id="review_list"><strong>Review For: </strong></li>
                 </ul>
+            </div>
+        </section>
 
-                {% if reference.related_references|length > 0 %}
-                    <h2 class="subheader">Related References</h2>
+<!-- Related References
+================================================== -->
+        {% if reference.related_references|length > 0 %}
+            <section id="related" data-magellan-destination="related">
+                <div class="page-header">
+                    <h1>Related References</h1>
                     <ul class="unstyled">
                         {% for relref in reference.related_references %}
                             <li>
@@ -137,11 +147,9 @@
                             </li>
                         {% endfor %}
                     </ul>
-                {% endif %}
-
-
-            </div>
-        </section>
+                </div>
+            </section>
+        {% endif %}
 
 <!-- Interaction
 ================================================== -->
