@@ -1,13 +1,10 @@
 
 $(document).ready(function() {
 
-    $.getJSON(regulation_paragraph_link, function(data) {
-        if(data != null) {
-            document.getElementById("summary_paragraph").innerHTML = data['text'];
-            references = data['references'];
-            set_up_references(references, "summary_paragraph_reference_list");
-        }
-    });
+    if(regulation_overview['paragraph'] != null) {
+        document.getElementById("summary_paragraph").innerHTML = regulation_overview['paragraph']['text'];
+        set_up_references(regulation_overview['paragraph']['references'], "summary_paragraph_reference_list");
+    }
 
     if(target_count > 0) {
         $("#domain_table_analyze").hide();

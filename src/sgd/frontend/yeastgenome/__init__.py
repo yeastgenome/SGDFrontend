@@ -99,7 +99,6 @@ class YeastgenomeFrontend(FrontendInterface):
                     'regulation_target_enrichment_link': self.backend_url + '/locus/' + bioent_id + '/regulation_target_enrichment?callback=?',
                     'protein_domain_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_details?callback=?',
                     'binding_site_details_link': self.backend_url + '/locus/' + bioent_id + '/binding_site_details?callback=?',
-                    'regulation_paragraph_link': self.backend_url + '/locus/' + bioent_id + '/regulation_paragraph?callback=?',
                     'go_enrichment_link': '/enrichment',
                     'download_table_link': '/download_table',
                     'analyze_link': '/analyze',

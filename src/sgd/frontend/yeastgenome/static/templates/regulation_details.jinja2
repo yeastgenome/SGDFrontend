@@ -12,7 +12,6 @@
 	var binding_site_details_link = "{{ binding_site_details_link }}"
 	var regulation_target_enrichment_link = "{{ regulation_target_enrichment_link }}"
 	var regulation_graph_link = "{{ regulation_graph_link }}";
-	var regulation_paragraph_link = "{{ regulation_paragraph_link }}";
 
 	var download_table_link = "{{ download_table_link }}";
 	var analyze_link = "{{ analyze_link }}";
@@ -75,10 +74,9 @@
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
 		<h1>Regulation Summary</h1>
+        <p id="summary_paragraph"></p>
+        <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
         <div class="panel" id="summary_wrapper">
-            <p id="summary_paragraph"></p>
-            <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
-
             <!-- Includes regulation_overview.html into template -->
             {% include "regulation_overview.jinja2" %}
 
