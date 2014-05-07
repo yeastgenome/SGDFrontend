@@ -15,7 +15,7 @@ function domain_data_to_table(evidence) {
         description = evidence['domain']['description'];
     }
 
-    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], coord_range, domain, description, evidence['source']['display_name'], evidence['domain']['count']];
+    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], coord_range, domain, description, evidence['source']['display_name'], '' + evidence['domain']['count']]
 }
 
 function phosphorylation_data_to_table(evidence) {

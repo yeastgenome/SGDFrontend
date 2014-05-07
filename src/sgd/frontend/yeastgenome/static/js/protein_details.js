@@ -281,7 +281,7 @@ function create_domain_table(data) {
     var options = {};
     options["bPaginate"] = true;
     options["aaSorting"] = [[4, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null, null];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, null, null, null, null];
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": "No known domains for " + display_name + "."};
 
