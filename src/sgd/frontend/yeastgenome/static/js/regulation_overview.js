@@ -26,11 +26,11 @@ if(regulation_overview['target_count'] + regulation_overview['regulator_count'] 
             if (selectedItem) {
                 if(selectedItem.row == 1) {
                     window.location.hash = "";
-                    window.location.hash = "regulators_regulation";
+                    window.location.hash = "regulators";
                 }
                 else {
                     window.location.hash = "";
-                    window.location.hash = "targets_regulation";
+                    window.location.hash = "targets";
                 }
             }
         }
