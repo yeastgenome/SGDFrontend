@@ -8,7 +8,7 @@ if(regulation_overview['target_count'] + regulation_overview['regulator_count'] 
                                                                 ['Regulators', regulation_overview['regulator_count'], '#7FBF7B', regulation_overview['regulator_count']]]);
 
         var graph_options = {
-            'title': 'Transcriptional Targets and Regulators for ' + display_name + '(includes high-throughput predictions)',
+            'title': 'Transcriptional Targets and Regulators for ' + display_name + ' (includes high-throughput predictions)',
             'legend': {'position': 'none'},
             'hAxis': {title: 'Genes', minValue: 0},
             'dataOpacity':1,
