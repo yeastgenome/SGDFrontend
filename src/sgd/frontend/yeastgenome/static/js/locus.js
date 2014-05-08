@@ -3,6 +3,7 @@ $(document).ready(function() {
   	$.getJSON(locus_graph_link, function(data) {
   		if(data['nodes'].length > 1) {
   			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
+            var slider = create_slider("slider", graph, 0, 30, function (new_cutoff) {return "node[score >= " + new_cutoff + "], edge";}, 30);
   		}
 		else {
 			hide_section("network");
@@ -37,13 +38,35 @@ var graph_style = cytoscape.stylesheet()
 		'text-outline-color': '#fff',
 		'color': '#888'
 	})
-	.selector("node[type='INTERACTOR']")
+    .selector("node[type='REFERENCE']")
+	.css({
+		'shape': 'oval',
+		'text-outline-color': '#888',
+		'color': '#fff',
+		'width': 100,
+		'height': 30
+    })
+    .selector("node[type='GO']")
+	.css({
+		'shape': 'rectangle',
+		'text-outline-color': '#fff',
+		'color': '#888',
+		'background-color': "#7FBF7B"
+	})
+    .selector("node[type='OBSERVABLE']")
 	.css({
 		'shape': 'rectangle',
 		'text-outline-color': '#fff',
 		'color': '#888',
 		'background-color': "#D0A9F5"
-});
+    })
+    .selector("node[type='DOMAIN']")
+	.css({
+		'shape': 'rectangle',
+		'text-outline-color': '#fff',
+		'color': '#888',
+        'background-color': "#819FF7"
+    });
 
 var layout = {
 	"name": "arbor",

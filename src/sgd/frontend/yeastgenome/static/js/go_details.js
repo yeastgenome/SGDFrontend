@@ -118,7 +118,7 @@ var graph_style = cytoscape.stylesheet()
 		'text-outline-color': '#fff',
 		'color': '#888'
 	})
-    .selector("node[type='INTERACTOR']")
+    .selector("node[type='GO']")
 	.css({
 		'shape': 'rectangle',
 		'text-outline-color': '#fff',

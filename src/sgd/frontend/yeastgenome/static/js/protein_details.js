@@ -461,65 +461,65 @@ function prep_style() {
 		'text-outline-color': '#fff',
 		'color': '#888'
 	})
-	.selector("node[type='BIOITEM']")
+	.selector("node[type='DOMAIN']")
 	.css({
 		'shape': 'rectangle',
 		'text-outline-color': '#fff',
 		'color': '#888'
     })
-    .selector("node[type='BIOITEM'][source='-']")
+    .selector("node[type='DOMAIN'][source='-']")
 	.css({
 		'background-color': source_to_color['-']
     })
-    .selector("node[type='BIOITEM'][source='Gene3D']")
+    .selector("node[type='DOMAIN'][source='Gene3D']")
 	.css({
 		'background-color': source_to_color['Gene3D']
     })
-    .selector("node[type='BIOITEM'][source='JASPAR']")
+    .selector("node[type='DOMAIN'][source='JASPAR']")
 	.css({
 		'background-color': source_to_color['JASPAR']
     })
-    .selector("node[type='BIOITEM'][source='PANTHER']")
+    .selector("node[type='DOMAIN'][source='PANTHER']")
 	.css({
 		'background-color': source_to_color['PANTHER']
     })
-    .selector("node[type='BIOITEM'][source='Pfam']")
+    .selector("node[type='DOMAIN'][source='Pfam']")
 	.css({
 		'background-color': source_to_color['Pfam']
     })
-    .selector("node[type='BIOITEM'][source='PIR superfamily']")
+    .selector("node[type='DOMAIN'][source='PIR superfamily']")
 	.css({
 		'background-color': source_to_color['PIR superfamily']
     })
-    .selector("node[type='BIOITEM'][source='PRINTS']")
+    .selector("node[type='DOMAIN'][source='PRINTS']")
 	.css({
 		'background-color': source_to_color['PRINTS']
     })
-    .selector("node[type='BIOITEM'][source='ProDom']")
+    .selector("node[type='DOMAIN'][source='ProDom']")
 	.css({
 		'background-color': source_to_color['ProDom']
     })
-    .selector("node[type='BIOITEM'][source='PROSITE']")
+    .selector("node[type='DOMAIN'][source='PROSITE']")
 	.css({
 		'background-color': source_to_color['PROSITE']
     })
-    .selector("node[type='BIOITEM'][source='SignalP']")
+    .selector("node[type='DOMAIN'][source='SignalP']")
 	.css({
 		'background-color': source_to_color['SignalP']
     })
-    .selector("node[type='BIOITEM'][source='SMART']")
+    .selector("node[type='DOMAIN'][source='SMART']")
 	.css({
 		'background-color': source_to_color['SMART']
     })
-    .selector("node[type='BIOITEM'][source='SUPERFAMILY']")
+    .selector("node[type='DOMAIN'][source='SUPERFAMILY']")
 	.css({
 		'background-color': source_to_color['SUPERFAMILY']
     })
-    .selector("node[type='BIOITEM'][source='TIGRFAMs']")
+    .selector("node[type='DOMAIN'][source='TIGRFAMs']")
 	.css({
 		'background-color': source_to_color['TIGRFAMs']
     })
-    .selector("node[type='BIOITEM'][source='TMHMM']")
+    .selector("node[type='DOMAIN'][source='TMHMM']")
 	.css({
 		'background-color': source_to_color['TMHMM']
     })
