@@ -3,7 +3,7 @@ $(document).ready(function() {
   	$.getJSON(locus_graph_link, function(data) {
   		if(data['nodes'].length > 1) {
   			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
-            var slider = create_slider("slider", graph, 0, 30, function (new_cutoff) {return "node[score >= " + new_cutoff + "], edge";}, 30);
+            var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], function (new_cutoff) {return "node[gene_count >= " + new_cutoff + "], edge";}, 10);
   		}
 		else {
 			hide_section("network");
@@ -38,34 +38,29 @@ var graph_style = cytoscape.stylesheet()
 		'text-outline-color': '#fff',
 		'color': '#888'
 	})
-    .selector("node[type='REFERENCE']")
+    .selector("edge[type='GO']")
 	.css({
-		'shape': 'oval',
-		'text-outline-color': '#888',
-		'color': '#fff',
-		'width': 100,
-		'height': 30
-    })
-    .selector("node[type='GO']")
-	.css({
-		'shape': 'rectangle',
-		'text-outline-color': '#fff',
-		'color': '#888',
-		'background-color': "#7FBF7B"
+		'line-color': "#4daf4a"
 	})
-    .selector("node[type='OBSERVABLE']")
+    .selector("edge[type='PHENOTYPE']")
 	.css({
-		'shape': 'rectangle',
-		'text-outline-color': '#fff',
-		'color': '#888',
-		'background-color': "#D0A9F5"
+		'line-color': "#984ea3"
     })
-    .selector("node[type='DOMAIN']")
+    .selector("edge[type='DOMAIN']")
 	.css({
-		'shape': 'rectangle',
-		'text-outline-color': '#fff',
-		'color': '#888',
-        'background-color': "#819FF7"
+        'line-color': "#377eb8"
+    })
+    .selector("edge[type='PHYSINTERACTION']")
+	.css({
+        'line-color': "#ff7f00"
+    })
+    .selector("edge[type='GENINTERACTION']")
+	.css({
+        'line-color': "#fb9a99"
+    })
+    .selector("edge[type='REGULATION']")
+	.css({
+        'line-color': "#a65628"
     });
 
 var layout = {
