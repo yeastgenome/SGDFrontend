@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<script>
+	var ontology_graph_link = "{{ontology_graph_link}}";
+</script>
+
+<title>{{ ontology.display_name}}</title>
+
+{% extends "global_layout.jinja2" %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2><span class="gene_name">{{ ontology.display_name }}</span></h2>
+</div>
+
+<div class="row">
+
+<!-- Navbar
+================================================== -->
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            add_navbar_title('<span class="gene_name">{{ ontology.display_name }}</span>')
+            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Ontology Diagram', 'network');
+        </script>
+
+<!-- Summary
+================================================== -->
+        <section id="summary" data-magellan-destination="summary">
+            <div class="page-header">
+                <h1>Summary</h1>
+                <p><strong>Description: </strong>{{ ontology.description|replace("Saccharomyces cerevisiae", "<em>Saccharomyces cerevisiae</em>")|safe }}</p>
+            </div>
+        </section>
+
+<!-- Network Visualization
+================================================== -->
+        <section id="network" data-magellan-destination="network">
+            <div class="page-header">
+                <h1>Ontology Diagram</h1>
+                <div class="panel">
+                    <div id="cy" style="width:100%;height:700px"></div>
+                </div>
+                <ul id='full_ontology' class='unstyled nested-lists'></ul>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/cytoscape/cytoscape.min.js"></script>	
+<script src="/static/js/cytoscape/arbor.js"></script>
+<script src="/static/js/local.js"></script>
+<script src="/static/js/cytoscape.js"></script>
+<script src="/static/js/phenotype_ontology.js"></script>
+{% endblock scripts %}

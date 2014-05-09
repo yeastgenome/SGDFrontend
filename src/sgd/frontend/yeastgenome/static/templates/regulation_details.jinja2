@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<script>
+    var regulation_overview = {{ regulation_overview | safe }};
+	var target_count = regulation_overview["target_count"];
+	var regulator_count = regulation_overview["regulator_count"];
+	var display_name = "{{ locus.display_name }}";
+	var locus_id = "{{ locus.id }}";
+
+	var regulation_details_link = "{{ regulation_details_link }}";
+	var protein_domains_link = "{{ protein_domain_details_link }}"
+	var binding_site_details_link = "{{ binding_site_details_link }}"
+	var regulation_target_enrichment_link = "{{ regulation_target_enrichment_link }}"
+	var regulation_graph_link = "{{ regulation_graph_link }}";
+
+	var download_table_link = "{{ download_table_link }}";
+	var analyze_link = "{{ analyze_link }}";
+	var go_enrichment_link = "{{ go_enrichment_link }}";
+
+    var domains_table_filename = "{{ locus.display_name }}_domains";
+	var targets_table_filename = "{{ locus.display_name }}_targets";
+	var enrichment_table_filename = "{{ locus.display_name }}_targets_go_process_enrichment"
+	var regulators_table_filename = "{{ locus.display_name }}_regulators";
+    var analyze_filename = "<a href='{{ locus.link }}' class='gene_name'>{{ locus.display_name }}</a>";
+</script>
+
+<title>{{ locus.display_name }} Regulation</title>
+
+{% extends "global_layout.jinja2" %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Transcriptional Regulation  <a href="/help/function-help/regulation" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+</div>
+
+<!-- Tabs
+================================================== -->
+<!-- Includes tabs.html into template -->
+{% include "tabs.jinja2" %}
+<script>document.getElementById("regulation_tab").id = "current";</script>
+
+<div class="row">
+
+    <!-- Navbar
+    ================================================== -->
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+        <script>
+            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Regulation');
+            add_navbar_element("Regulation Summary", "summary");
+
+            if(target_count > 0) {
+                add_navbar_element("Domains and Classification", "domain");
+                add_navbar_element("DNA Binding Site Motifs", "binding");
+                add_navbar_element("Targets", "targets");
+                add_navbar_element("Shared GO Processes Among Targets", "enrichment");
+            }
+
+            if(regulator_count > 0) {
+                add_navbar_element("Regulators", "regulators");
+            }
+
+            if(target_count + regulator_count > 0) {
+                add_navbar_element("Network Visualization", "network");
+            }
+        </script>
+
+<!-- Summary
+================================================== -->
+<section id="summary" data-magellan-destination="summary">
+	<div class="page-header">
+		<h1>Regulation Summary</h1>
+        <p id="summary_paragraph"></p>
+        <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
+        <div class="panel" id="summary_wrapper">
+            <!-- Includes regulation_overview.html into template -->
+            {% include "regulation_overview.jinja2" %}
+
+            <div class="button-bar">
+				<h5>Analyze</h5>
+				<ul class="button-group radius">
+					<li><a disabled="true" id="analyze_targets" class="small button secondary">Targets</a></li>
+					<li><a disabled="true" id="analyze_regulators" class="small button secondary">Regulators</a></li>
+				</ul>
+				<ul class="button-group radius" hidden>
+					<li><a disabled="true" class="small button secondary radius" id="download_overview"><i class="icon-picture"></i> PNG</a></li>
+				</ul>
+			</div>
+        </div>
+	</div>
+</section>
+
+<!-- Domains
+================================================== -->
+        <section id="domain" data-magellan-destination="domain">
+            <div class="page-header">
+                <h1>Domains and Classification <span id="domain_table_header" class="round secondary label"></span></h1>
+                <!-- Includes domain_table into template -->
+                {% set table_id = "domain_table" %}
+                {% include "domain_table.jinja2" %}
+            </div>
+        </section>
+
+<!-- Binding Sites
+================================================== -->
+        <section id="binding" data-magellan-destination="binding" hidden>
+            <div class="page-header">
+                <h1>DNA Binding Site Motifs</h1>
+                <div>
+                    Click on a motif to view <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a> record.
+                    <ul id="binding_motifs"></ul>
+                    <h3>View predicted binding sites in the <a href="http://browse.yeastgenome.org/cgi-bin/gbrowse/scgenome/?name={{ locus.display_name }}_*&enable=SGD%20PMW%20motifs">Genome Browser</a></h3>
+                </div>
+           </div>
+        </section>
+
+<!-- Targets
+================================================== -->
+        <section id="targets" data-magellan-destination="targets">
+            <div class="page-header">
+                <h1>Targets <span id="target_table_header" class="round secondary label"></span></h1>
+                <p>Genes with {{ locus.display_name }}-dependent expression and/or {{ locus.display_name }}p binding data
+                    <a href="#" data-dropdown="drop_targets"><i class="icon-info-sign"></i></a>
+                    <div id="drop_targets" class="f-dropdown content medium" data-dropdown-content>
+                        <p>This table lists putative regulatory targets for the central gene represented on this page. These targets were identified based on the presence of predicted regulator binding sites or experimental regulator binding in the target promoter, and/or changes in the target gene’s transcript levels in regulator mutant strains. Data includes high-throughput techniques such as microarray, RNA-seq, and ChIP assays.  To filter the table by a specific experiment type, type a keyword into the Filter box (for example, “microarray”).</p>
+                    </div>
+                </p>
+
+                <!-- Includes regulation_table into template -->
+                {% set table_id = "target_table" %}
+                {% include "regulation_table.jinja2" %}
+            </div>
+        </section>
+
+<!-- Enrichment
+================================================== -->
+        <section id="enrichment" data-magellan-destination="enrichment">
+            <div class="page-header">
+                <h1>Shared GO Processes Among Targets <span id="enrichment_table_header" class="round secondary label"></span></h1>
+                <p>Based on data presented in the Targets table
+                    <a href="#" data-dropdown="drop_enrichment"><i class="icon-info-sign"></i></a>
+                    <div id="drop_enrichment" class="f-dropdown content medium" data-dropdown-content>
+                        <p>The shared GO processes listed in this table are based on the the data presented in the Targets table, which includes high-throughput data.  You can filter the targets in the Target table and recalculate the shared GO processes in this table by typing any keyword into the Filter box of the Target table (e.g. "micorarray", "Yeastract", "author name",  "gene name").  After filtering the Targets table, the option to ”Recalculate With New Filter” will appear next to the Download button in this Shared GO Processes table.</p>
+                    </div>
+                </p>
+                <!-- Includes gene_list_table into template -->
+                {% set table_id = "enrichment_table" %}
+                {% include "enrichment_table.jinja2" %}
+           </div>
+        </section>
+
+<!-- Regulators
+================================================== -->
+        <section id="regulators" data-magellan-destination="regulators">
+            <div class="page-header">
+                <h1>Regulators <span id="regulator_table_header" class="round secondary label"></span></h1>
+                <p>Genes implicated in regulating {{ locus.display_name }} through DNA-binding and/or expression data
+                    <a href="#" data-dropdown="drop_regulators"><i class="icon-info-sign"></i></a>
+                    <div id="drop_regulators" class="f-dropdown content medium" data-dropdown-content>
+                        <p>This table lists genes that are putative regulators of the central gene represented on this page, based primarily on experiments showing that a regulator binds to the gene’s promoter or affects the gene’s transcription when the regulator is mutated. This includes data generated by high-throughput techniques such as microarray, RNA-seq, and ChIP assays.  To filter the table by a specific experiment type, type a keyword into the Filter box (for example, “microarray”). </p>
+                    </div>
+                </p>
+                <!-- Includes regulation_table into template -->
+                {% set table_id = "regulator_table" %}
+                {% include "regulation_table.jinja2" %}
+            </div>
+        </section>
+
+<!-- Network Visualization
+================================================== -->
+        <section id="network" data-magellan-destination="network">
+            <div class="page-header">
+                <h1>Network Visualization</h1>
+                <p>Based on data presented in the Targets and Regulators tables
+                    <a href="#" data-dropdown="drop_network"><i class="icon-info-sign"></i></a>
+                    <div id="drop_network" class="f-dropdown content medium" data-dropdown-content>
+                        <p>This diagram displays targets (purple) and regulators (green) of the given gene (yellow) based on the minimum number of pieces of evidence supporting these relationships (adjustable using the slider at the bottom). It is based on the data presented in the Targets and Regulators tables and includes high-throughput data generated by techniques such as microarray, RNA-seq, and ChIP assays.  The network visualization is limited to 100 genes and 250 regulatory relationships.</p>
+                    </div>
+                </p>
+                <div class="panel">
+                    <div id="discrete_filter" hidden>
+                        <label for="all_radio">
+                            <input id="all_radio" type="radio" name="group1" checked> All
+                        </label>
+                        <label for="targets_radio">
+                            <input id="targets_radio" type="radio" name="group1"> Targets
+                        </label>
+                        <label for="regulators_radio">
+                            <input id="regulators_radio" type="radio" name="group1"> Regulators
+                        </label>
+                    </div>
+
+                    <div id="cy" name="cy" style="width:100%;height:700px"></div>
+                    <br>
+                    <h5>Filter Regulation Relationships by # of Experiments:</h5>
+                    <div id="slider" class="noUiSlider" style="width:100%"></div>
+                    <div id="slider_ticks"></div>
+                    <br>
+                </div><!-- .panel -->
+            </div>
+        </section>
+    </div><!-- .tab-content -->
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/jquery.nouislider.min.js"></script>
+<script src="/static/js/cytoscape/cytoscape.min.js"></script>	
+<script src="/static/js/cytoscape/arbor.js"></script>	
+<script src="/static/js/cytoscape.js"></script>
+<script src="/static/js/evidence.js"></script>
+<script src="/static/js/regulation_details.js"></script>
+{% endblock scripts %}

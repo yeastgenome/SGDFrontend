@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<script>
+	var display_name = "{{ author.display_name }}";
+  	var download_link = "{{download_citations_link}}";
+    var reference_data = {{references | safe}};
+</script>
+
+<title>{{ author.display_name }}</title>
+
+{% extends "global_layout.jinja2" %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2>Author: <span class="gene_name">{{ author.display_name }}</span></h2>
+</div>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+	
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            add_navbar_title("Author: <span class='gene_name'>{{ author.display_name }}</span>");
+            add_navbar_element('References', 'references');
+        </script>
+
+<!-- References
+================================================== -->
+        <section id="references" data-magellan-destination="references">
+            <div class="page-header">
+                <h1>References <span id="references_header" class="label secondary round"></span></h1>
+                <p id="references_message" hidden>No citations for this author.</p>
+                <div id="references_wrapper">
+                    <a id="export_references" class="small button secondary"><i class="fa fa-arrow-circle-down"></i> Download</a>
+                    <ul id="references_list" class="literature-list">
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/author.js"></script>
+{% endblock scripts %}

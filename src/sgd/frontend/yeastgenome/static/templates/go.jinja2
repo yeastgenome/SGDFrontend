@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<script>
+	//Template links and filenames
+	var go_details_link = "{{go_details_link}}";
+	var go_details_all_link = "{{go_details_all_link}}";
+	var ontology_graph_link = "{{ontology_graph_link}}";
+
+	var download_table_link = "{{download_table_link}}";
+    var analyze_link = "{{analyze_table_link}}";
+
+	var download_filename = "{{ go_term.display_name }}_annotations";
+    var analyze_filename = "<a href='{{ go_term.link }}' class='gene_name'>{{ go_term.display_name }}</a> genes";
+
+    var display_name = "{{ go_term.display_name }}";
+    var count = "{{ go_term.count }}";
+    var child_count = "{{ go_term.child_count }}";
+</script>
+
+<title>{{ go_term.display_name }}</title>
+
+{% extends "global_layout.jinja2" %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2>Gene Ontology Term: <span class="gene_name">{{ go_term.display_name }}</span></h2>
+</div>
+
+<div class="row">
+	
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            add_navbar_title('Gene Ontology Term: <span class="gene_name">{{ go_term.display_name }}</span>')
+            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Ontology Diagram', 'ontology');
+            add_navbar_element('Annotations', 'annotations');
+        </script>
+
+<!-- Summary
+================================================== -->
+        <section id="summary" data-magellan-destination="summary">
+            <div class="page-header">
+                <h1>Summary</h1>
+                <ul class="unstyled">
+                    <li><strong>GO ID: </strong><a href="http://amigo.geneontology.org/cgi-bin/amigo/term_details?term={{ go_term.go_id }}" target="_blank">{{ go_term.go_id }}</a></li>
+                    <li><strong>Aspect: </strong>{{ go_term.go_aspect|title }}</li>
+                    <li><strong>Description: </strong>{{ go_term.description }}</li>
+                    {% if go_term.aliases|length > 0 %}
+                        <li><strong>Synonyms:</strong>
+                            {% for alias in go_term.aliases %}
+                                <span>{{ alias|e }}</span>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </li>
+                    {% endif %}
+                    <li><a href="http://amigo.geneontology.org/cgi-bin/amigo/term-assoc.cgi?term={{ go_term.go_id }}&taxid=all" target="_blank">See annotations in AmiGO</a></li>
+                </ul>
+            </div>
+        </section>
+
+<!-- Network Visualization
+================================================== -->
+        <section id="ontology" data-magellan-destination="ontology">
+            <div class="page-header">
+                <h1>Ontology Diagram</h1>
+                <div class="panel">
+                    <div id="cy" name="cy" style="width:100%;height:700px"></div>
+                </div>
+                <div id="children_wrapper">
+                    <strong>All Child Terms: </strong><div id="children"></div>
+                </div>
+                <br>
+            </div>
+        </section>
+
+<!-- Annotations
+================================================== -->
+        <section id="annotations" data-magellan-destination="annotations">
+            <div class="page-header">
+                <h1>Gene Ontology Annotations <span id="go_table_header" class="round secondary label"></span></h1>
+                <!-- Includes go_table into template -->
+                {% set table_id = "go_table" %}
+                {% include "go_table.jinja2" %}
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/cytoscape/cytoscape.min.js"></script>	
+<script src="/static/js/cytoscape/arbor.js"></script>
+<script src="/static/js/local.js"></script>
+<script src="/static/js/cytoscape.js"></script>
+<script src="/static/js/evidence.js"></script>
+<script src="/static/js/go.js"></script>
+
+{% endblock scripts %}

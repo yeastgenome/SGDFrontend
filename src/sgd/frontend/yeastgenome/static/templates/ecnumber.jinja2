@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<script>
+	var ecnumber_details_link = "{{ecnumber_details_link}}";
+	var download_table_link = "{{download_table_link}}";
+	var analyze_link = "{{analyze_table_link}}";
+
+	var download_filename = "{{ ecnumber.format_name|replace(".", "_") }}_annotations";
+    var analyze_filename = "<a href='{{ ecnumber.link }}' class='gene_name'>{{ ecnumber.display_name }}</a> Genes";
+
+    var display_name = "{{ ecnumber.display_name }}";
+</script>
+
+<title>{{ ecnumber.display_name }}</title>
+
+{% extends "global_layout.jinja2" %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2>EC Number: <span class="gene_name">{{ ecnumber.display_name }}</span></h2>
+</div>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+	
+<!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            add_navbar_title('EC Number: <span class="gene_name">{{ ecnumber.display_name }}</span>');
+            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Annotations', 'annotations');
+        </script>
+
+        <!-- Summary
+        ================================================== -->
+        <section id="summary" data-magellan-destination="summary">
+            <div class="page-header">
+                <h1>Summary</h1>
+                <ul class="unstyled">
+                    <li><strong>Description: </strong>{{ ecnumber.description }}</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Annotations
+        ================================================== -->
+        <section id="annotations" data-magellan-destination="annotations">
+            <div class="page-header">
+                <h1>Annotations <span id="gene_list_table_header" class="round secondary label"></span></h1>
+                <!-- Includes domain_table into template -->
+                {% set table_id = "gene_list_table" %}
+                {% include "gene_list_table.jinja2" %}
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/local.js"></script>
+<script src="/static/js/evidence.js"></script>
+<script src="/static/js/ecnumber.js"></script>
+{% endblock scripts %}

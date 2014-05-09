@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<script>
+    var display_name = "{{ strain.display_name }}";
+    var paragraph = {{ paragraph| safe }};
+</script>
+
+<title>{{ strain.display_name }}</title>
+
+{% extends "global_layout.jinja2" %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2>Strain: <span class="gene_name">{{ strain.display_name }}</span></h2>
+</div>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+	
+<!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            add_navbar_title('Strain: <span class="gene_name">{{ strain.display_name }}</span>');
+            add_navbar_element('Summary', 'summary');
+            {% if strain.urls|length > 0 %}
+                add_navbar_element('Resources', 'resources');
+            {% endif %}
+        </script>
+
+        <!-- Summary
+        ================================================== -->
+        <section id="summary" data-magellan-destination="summary">
+            <div class="page-header">
+                <h1>Summary</h1>
+                <p id="summary_paragraph"></p>
+                <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
+                <ul class="unstyled">
+                    <li><strong>Status: </strong> {{ strain.status }}</li>
+                    <li><strong>Description: </strong>{{ strain.description }}</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Resources
+================================================== -->
+        {% if strain.urls|length > 0 %}
+            <section id="resources" data-magellan-destination="resources">
+                <div class="page-header">
+                    <h1>Resources</h1>
+                    <ul id="resource_list">
+                        {% for resource in strain.urls %}
+                            <a href="{{ resource.link }}">{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </section>
+        {% endif %}
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/local.js"></script>
+    <script>
+        document.getElementById("summary_paragraph").innerHTML = paragraph['text'];
+        references = paragraph['references'];
+        set_up_references(references, "summary_paragraph_reference_list");
+    </script>
+{% endblock scripts %}

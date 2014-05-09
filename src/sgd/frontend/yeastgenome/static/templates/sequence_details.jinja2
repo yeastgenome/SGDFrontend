@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<script>
+	var sequence_details_link = "{{sequence_details_link}}";
+    var neighbor_sequence_details_link = "{{neighbor_sequence_details_link}}";
+	var download_table_link = "{{download_table_link}}";
+    var download_sequence_link = "{{download_sequence_link}}";
+	var analyze_link = "{{analyze_table_link}}";
+
+	var display_name = "{{ locus.display_name }}";
+	var locus_id = "{{ locus.id }}";
+
+</script>
+
+<title>{{ locus.display_name }} Sequence</title>
+
+{% extends "global_layout.jinja2" %}
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Sequence</h2>
+</div>
+
+<!-- Tabs
+================================================== -->
+<!-- Includes tabs.html into template -->
+{% include "tabs.jinja2" %}
+<script>document.getElementById('sequence_tab').id = 'current';</script>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+	
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            //Set up navbar
+            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Sequence');
+            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Reference Strain - S288C', 'reference');
+            add_navbar_element('Alternative Reference Strains', 'alternative');
+            add_navbar_element('Other Strains', 'other');
+            add_navbar_element('Resources', 'resources');
+        </script>
+
+        <!-- Summary
+================================================== -->
+        <section id="summary" data-magellan-destination="summary">
+            <div class="page-header">
+                <h1>Summary</h1>
+                <!-- Includes sequence_overview into template -->
+                {% include "sequence_overview.jinja2" %}
+            </div>
+        </section>
+
+        <!-- S288C
+================================================== -->
+        <section id="reference" data-magellan-destination="reference">
+            <div class="page-header">
+                <h1>S288C</h1>
+                <h2 class="subheader">Location</h2>
+                <div id="reference_contig"></div>
+                <div id="reference_label_chart"></div>
+                <h2 class="subheader">Subfeatures <span id="subfeature_table_header" class="round secondary label"></span></h2>
+                <div id="reference_sublabel_chart"></div>
+
+                <!-- Includes chromosomal_coord_table into template -->
+                {% set table_id = "subfeature_table" %}
+                {% include "chromosomal_coord_table.jinja2" %}
+
+                <h2 class="subheader">Sequence</h2>
+                <div class="button-bar">
+                    <ul class="button-group radius">
+                        <li><a id="reference_download" class="small button secondary"><i class="icon-download-alt"></i> Download</a></li>
+                    </ul>
+                </div>
+                <select id="reference_chooser">
+                    <option value="genomic_dna">Genomic DNA</option>
+                    <option value="coding_dna">Coding DNA</option>
+                    <option value="protein">Protein</option>
+                </select>
+                <blockquote id="reference_sequence" style="font-family:Monospace"></blockquote>
+            </div>
+        </section>
+
+        <!-- Alternative Reference
+================================================== -->
+        <section id="alternative" data-magellan-destination="alternative">
+            <div class="page-header">
+                <h1>Alternative Reference Strains</h1>
+                <label><h3>Strain</h3>
+                    <select id="alternative_strain_selection" class="big-input"></select> - <span id="alternative_strain_description"></span>
+                </label>
+                <h2 class="subheader">Location</h2>
+                <div id="alternative_contig"></div>
+                <div id="alternative_label_chart"></div>
+                <h2 class="subheader">Sequence</h2>
+                <div class="button-bar">
+                    <ul class="button-group radius">
+                        <li><a id="alternative_download" class="small button secondary"><i class="icon-download-alt"></i> Download</a></li>
+                    </ul>
+                </div>
+                <select id="alternative_chooser">
+                    <option value="genomic_dna">Genomic DNA</option>
+                    <option value="coding_dna">Coding DNA</option>
+                    <option value="protein">Protein</option>
+                </select>
+                <blockquote id="alternative_sequence" style="font-family:Monospace"></blockquote>
+            </div>
+        </section>
+
+        <!-- Other
+================================================== -->
+        <section id="other" data-magellan-destination="other">
+            <div class="page-header">
+                <h1>Other Strains</h1>
+                <label><h3>Strain</h3>
+                    <select id="other_strain_selection" class="big-input"></select> - <span id="other_strain_description"></span>
+                </label>
+                <h2 class="subheader">Location</h2>
+                <div id="other_contig"></div>
+                <div id="other_label_chart"></div>
+                <h2 class="subheader">Sequence</h2>
+                <div class="button-bar">
+                    <ul class="button-group radius">
+                        <li><a id="other_download" class="small button secondary"><i class="icon-download-alt"></i> Download</a></li>
+                    </ul>
+                </div>
+                <select id="other_chooser">
+                    <option value="genomic_dna">Genomic DNA</option>
+                    <option value="coding_dna">Coding DNA</option>
+                    <option value="protein">Protein</option>
+                </select>
+                <blockquote id="other_sequence" style="font-family:Monospace"></blockquote>
+            </div>
+        </section>
+
+        <!-- Resources
+================================================== -->
+        <section id="resources" data-magellan-destination="resources">
+            <div class="page-header">
+                <h1>Resources</h1>
+                <ul id='resource_list' class="unstyled">
+                    <a href="/cgi-bin/seqTools?back=1&seqname={{ locus.format_name }}">Gene/Sequence Resources</a> |
+                    <a href="/cgi-bin/ORFMAP/ORFmap?dbid={{ locus.sgdid }}">ORF Map</a> |
+                    <a href="http://browse.yeastgenome.org/fgb2/gbrowse/scgenome/?name={{ locus.format_name }}">GBrowse</a>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
+       'version':'1','packages':['timeline']}]}"></script>
+<script src="/static/js/sequence_details.js"></script>
+{% endblock scripts %}
