@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<script>
+  	var download_link = "{{download_citations_link}}";
+    var references_this_week_link = "{{references_this_week_link}}";
+    var a_week_ago = "{{ a_week_ago }}"
+</script>
+
+<title>Literature Recently Added to SGD</title>
+
+{% extends "global_layout.jinja2" %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2>Literature Recently Added to SGD</h2>
+</div>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+	
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            add_navbar_title("Literature Recently Added to SGD");
+            add_navbar_element('References', 'references');
+        </script>
+
+<!-- References
+================================================== -->
+        <section id="references" data-magellan-destination="references">
+            <div class="page-header">
+                <h1>References <span id="references_header" class="label secondary round"></span></h1>
+                <p id="references_message" hidden>No literature added recently.</p>
+                <div id="references_wrapper">
+                    <a id="export_references" class="small button secondary"><i class="icon-download-alt"></i> Download</a>
+                    <ul id="references_list" class="literature-list"></ul>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/references_this_week.js"></script>
+{% endblock scripts %}

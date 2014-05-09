@@ -1,0 +1,33 @@
+<!-- Docs nav
+================================================== -->
+<nav id="sidebar" class="small-0 large-3 columns">
+	<ul data-magellan-expedition="fixed" class="side-nav" id="side-nav-sticky"></ul>
+	
+	<script>
+	var navbar = document.getElementById("side-nav-sticky");
+	function add_navbar_element(entry_name, section_name) {
+		var li = document.createElement('li');
+		li.setAttribute('id', 'navbar_' + section_name);
+	  	li.setAttribute('data-magellan-arrival', section_name)
+	  	var a = document.createElement('a');
+	  	a.href = "#" + section_name;
+	  	a.innerHTML = entry_name;
+	  	li.appendChild(a);
+	  	navbar.appendChild(li);
+	}
+    function add_navbar_title(title) {
+        var li = document.createElement('li');
+		li.setAttribute('id', 'nav-title');
+	  	var h4 = document.createElement('h4');
+        h4.innerHTML = title;
+        li.appendChild(h4);
+        if(navbar.childElementCount > 0){
+            navbar.insertBefore(li, navbar.firstChild);
+        }
+        else {
+            navbar.appendChild(li)
+        }
+    }
+	</script>
+</nav>
+

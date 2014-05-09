@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<script>
+	var download_table_link = "{{ download_table_link }}";
+	var go_enrichment_link = "{{ go_enrichment_link }}"
+	var bioents = {{bioents | safe}};
+    var list_name = "{{ list_name }}";
+    var list_name_html = "Analyze {{ list_name_html | safe }}";
+</script>
+
+<title>Analyze</title>
+
+{% extends "global_layout.jinja2" %}
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2>Analyze {{ list_name_html | safe }}</h2>
+</div>
+
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns">
+
+        <script>
+            add_navbar_title(list_name_html);
+            add_navbar_element('Tools', 'tools');
+            add_navbar_element('Genes', 'gene_list');
+            add_navbar_element('GO Process Enrichment', 'enrichment');
+        </script>
+
+<!-- Analyze
+================================================== -->
+        <section id="tools" data-magellan-destination="tools">
+            <div class="page-header">
+                <h1>Tools</h1>
+
+                <ul class="giant button-group radius even-4 secondary">
+                    <li class="span3">
+                        <a id="go_term_finder" class="large button expand">
+                            <div class="caption">
+                                <h3>GO Term Finder</h3>
+                                <h4 class="subheader">Find common features between genes.</h4>
+                            </div>
+                        </a>
+                    </li>
+
+                    <li class="span3">
+                        <a id="go_slim_mapper" class="large button expand">
+                            <div class="caption">
+                                <h3>GO Slim Mapper</h3>
+                                <h4 class="subheader">Sort genes into broad categories.</h4>
+                            </div>
+                        </a>
+                    </li>
+
+                    <li class="span3">
+                        <a id="spell" class="large button expand">
+                            <div class="caption">
+                                <h3>SPELL</h3>
+                                <h4 class="subheader">View expression data.</h4>
+                            </div>
+                        </a>
+                    </li>
+
+                    <li class="span3">
+                        <a id="yeastmine" class="large button expand">
+                            <div class="caption">
+                                <h3>YeastMine</h3>
+                                <h4 class="subheader">Conduct advanced analysis.</h4>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+<!-- Gene List
+================================================== -->
+        <section id="gene_list" data-magellan-destination="gene_list">
+            <div class="page-header">
+                <h1>Genes  <span id="gene_list_table_header" class="round secondary label"></span></h1>
+                <!-- Includes gene_list_table into template -->
+                {% set table_id = "gene_list_table" %}
+                {% include "gene_list_table.jinja2" %}
+            </div>
+        </section>
+
+<!-- Enrichment
+================================================== -->
+        <section id="enrichment" data-magellan-destination="enrichment">
+            <div class="page-header">
+                <h1>Shared GO Processes <span id="enrichment_table_header" class="round secondary label"></span></h1>
+                <!-- Includes gene_list_table into template -->
+                {% set table_id = "enrichment_table" %}
+                {% include "enrichment_table.jinja2" %}
+           </div>
+        </section>
+
+    </div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/evidence.js"></script>
+<script src="/static/js/analyze.js"></script>
+{% endblock scripts %}
+

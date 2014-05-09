@@ -1,0 +1,22 @@
+
+<div class="button-bar">
+    <ul class="button-group radius">
+        <li><a id="{{ table_id }}_download" class="small button secondary"><i class='icon-download-alt'></i> Download</a>
+        </li>
+    </ul>
+    <ul class="button-group radius">
+        <li><a id="{{ table_id }}_recalculate" class="small button secondary" style="display:none">Recalculate With
+            New Filter</a></li>
+    </ul>
+</div>
+
+<table class='table table-striped table-bordered table-condensed' id='{{ table_id }}' width="100%">
+    <thead>
+    <tr>
+        <th>GO Term ID</th>
+        <th>GO Term</th>
+        <th>Number of genes</th>
+        <th>P-Value</th>
+    </tr>
+    </thead>
+</table>

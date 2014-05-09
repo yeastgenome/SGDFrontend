@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html style="" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients no-cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths" lang="en"><head><script src="SGD-f5-template-files/analytics.js" async=""></script><script>
+    var overview_json = {"regulator_count": 128, "target_count": 0};
+	var target_count = overview_json["target_count"];
+	var regulator_count = overview_json["regulator_count"];
+	var display_name = "ACT1";
+	var locus_id = "4430";
+	var download_image_link = "/download_image";
+
+	var regulation_details_link = "http://www.yeastgenome.org/webservice/locus/4430/regulation_details?callback=?";
+	var protein_domains_link = "http://www.yeastgenome.org/webservice/locus/4430/protein_domain_details?callback=?"
+	var binding_site_details_link = "http://www.yeastgenome.org/webservice/locus/4430/binding_site_details?callback=?"
+	var regulation_target_enrichment_link = "http://www.yeastgenome.org/webservice/locus/4430/regulation_target_enrichment?callback=?"
+	var regulation_graph_link = "http://www.yeastgenome.org/webservice/locus/4430/regulation_graph?callback=?";
+	var regulation_paragraph_link = "http://www.yeastgenome.org/webservice/locus/4430/regulation_paragraph?callback=?";
+
+	var download_table_link = "/download_table";
+	var analyze_link = "/analyze";
+	var go_enrichment_link = "/enrichment";
+
+    var domains_table_filename = "ACT1_domains";
+	var targets_table_filename = "ACT1_targets";
+	var enrichment_table_filename = "ACT1_targets_go_process_enrichment"
+	var regulators_table_filename = "ACT1_regulators";
+    var analyze_filename = "<a href='/cgi-bin/locus.fpl?locus=S000001855' class='gene_name'>ACT1</a>";
+</script>
+
+<title>Page Title - SGD</title>
+
+
+<!--[if IE 8]> <html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->  <!--<![endif]-->
+
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="keywords" content="python web application">
+	<meta name="description" content="pyramid web application">
+	<meta name="author" content="">
+	<!--[if !IE 7]>
+	<style type="text/css">
+		#wrap {display:table;height:100%}
+    </style>
+	<![endif]-->
+    <style type="text/css">
+        .locale { text-align: center; }
+        .locale-name { font-weight: bold; }
+    </style>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+
+	<link href="SGD-f5-template-files/normalize.css" rel="stylesheet">
+	<link href="SGD-f5-template-files/style.css" rel="stylesheet">
+	
+	<style>
+		.filterMatches
+		{
+    		background-color: #fade71;
+		}
+	</style>
+
+	<!--[if lt IE 9]>
+	    <script src="/static/js/vendor/respond.min.js"></script>
+	<![endif]-->
+
+	<script src="SGD-f5-template-files/modernizr.js"></script>
+
+	
+<meta class="foundation-data-attribute-namespace"><meta class="foundation-mq-xxlarge"><meta class="foundation-mq-xlarge"><meta class="foundation-mq-large"><meta class="foundation-mq-medium"><meta class="foundation-mq-small"><style></style><meta class="foundation-mq-topbar"><script src="SGD-f5-template-files/js.js" async="" type="text/javascript"></script><script src="SGD-f5-template-files/in_002.js" async="" type="text/javascript"></script><script src="SGD-f5-template-files/in.js" async="" type="text/javascript"></script></head>
+<body>
+	<!-- Includes header.html into template -->
+	<header id="layout-page-header">
+		<div class="row" id="layout-page-header-content">
+			<section class="small-4 columns" id="logo-section">
+				<a href="http://0.0.0.0:6545/">
+				<div class="logo">
+					<span class="logo-label">Saccharomyces Genome Database</span>
+				</div>
+				</a>
+			</section><!-- #logo-section -->
+			<section class="small-7 small-offset-1 columns" id="header-tools">
+			 	<div class="row header-links">
+			 		
+						<ul class="site-links">
+							<li><a href="http://0.0.0.0:6545/about">About</a></li>
+							<li><a href="http://0.0.0.0:6545/blog">Blog</a></li>
+							<li><a href="http://0.0.0.0:6545/download-data">Download</a></li>
+							<li><a href="http://0.0.0.0:6545/site-map">Site Map</a></li>
+							<li><a href="http://0.0.0.0:6545/help">Help</a></li>
+						</ul>
+					
+						<ul class="social-links">
+							<li><a href="http://0.0.0.0:6545/cgi-bin/suggestion" target="_blank" id="email" class="webicon mail x-small">Email Us</a></li>
+							<li><a href="http://twitter.com/#%21/yeastgenome" target="_blank" id="twitter" class="webicon twitter x-small">Twitter</a></li>
+							<li><a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" class="webicon facebook x-small" id="facebook">Facebook</a></li>
+							<li><a href="http://0.0.0.0:6545/feed" target="_blank" id="rss" class="webicon rss x-small">RSS</a></li>
+						</ul>
+					
+			 	</div><!-- .header-links -->
+			 	<div class="row header-search">
+			 		<form action="/cgi-bin/search/luceneQS.fpl" autocomplete="off" id="searchform" class="no-margins" method="get">
+					  <div id="top-search-input-container" class="row collapse">
+						<div class="small-6 small-offset-5 columns">
+						  <input id="txt_search" name="query" class="search-query radius prefix-input no-margins ui-autocomplete-input" placeholder="Search" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" type="text">
+						</div>
+						<div class="small-1 columns">
+						  <a href="#" class="secondary button no-margins postfix radius" onclick="document.getElementById('searchform').submit();"><i class="fa fa-search"></i></a>
+						</div>
+					  </div>
+					  <div id="adv-search-links">
+						  	YeastMine: <a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Batch Analysis</a> or <a target="_blank" href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Advanced Search</a>
+					  </div>
+					</form>
+			 	</div><!-- .header-search -->
+			</section>
+		</div><!-- #layout-page-header-content -->
+		<div id="layout-page-header-nav">
+			<div class="contain-to-grid">
+				<nav class="top-bar" data-topbar="">
+					<ul class="title-area">
+				<!-- Title Area -->
+						<li class="name">
+						  <h1>
+						  	<span class="hide-for-small"><a href="http://0.0.0.0:6545/">SGD</a></span>
+						  	<span class="show-for-small"><a href="http://0.0.0.0:6545/"><img id="sgd-mini-logo" src="SGD-f5-template-files/sgd-logo-sm-hi-res-v2.png" alt="SGD Logo"></a></span>
+						  </h1>
+						</li> 
+						<!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+						<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+					</ul>
+					
+		    	<section class="top-bar-section">
+						<!-- Left Nav Section -->
+						<ul class="left">
+							<li class="divider"></li>
+						    <li class="menu-search">
+							    <form action="/cgi-bin/search/luceneQS.fpl" autocomplete="off" id="searchform-mobile" class="no-margins" method="get">
+							        <input id="text_search-mobile" name="query" class="search-query radius no-margins" placeholder="Search" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" type="text">
+							    </form>
+							</li>
+							<li class="has-dropdown not-click"><a href="#">Analyze</a>
+								<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+									<li><a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Gene Lists</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/blast-sgd.pl">BLAST</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/blast-fungal.pl">Fungal BLAST</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/PATMATCH/nph-patmatch">Pattern Matching</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/web-primer">Design Primers</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper">Restriction Mapper</a></li>
+								</ul>
+							</li>
+							<li class="has-dropdown not-click"><a href="#">Sequence</a>
+								<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+									<li><a href="http://www.yeastgenome.org/download-data/sequence">Download</a></li>
+									<li><a href="http://browse.yeastgenome.org/fgb2/gbrowse/scgenome/">Genome Browser</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/blast-sgd.pl">BLAST</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/blast-fungal.pl">Fungal BLAST</a></li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/seqTools">Gene/Sequence Resources</a></li>
+									<li class="has-dropdown not-click">
+										<a href="#">Reference Genome</a>
+										<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+											<li><a href="http://downloads.yeastgenome.org/sequence/S288C_reference/genome_releases/">Download Genome</a></li>
+											<li><a href="http://www.yeastgenome.org/cache/genomeSnapshot.html">Genome Snapshot</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/chromosomeHistory.pl">Chromosome History</a></li>
+											<li><a href="http://www.yeastgenome.org/cache/chromosomes.shtml">Systematic Sequencing Table</a></li>
+											<li><a href="http://wiki.yeastgenome.org/index.php/Original_Sequence_Papers">Original Sequence Papers</a></li>
+										</ul>
+									</li>
+									<li class="has-dropdown not-click">
+										<a href="#">Strains and Species</a>
+										<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/FUNGI/alignment.pl">Align Strain Sequences</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/FUNGI/FungiMap">Synteny Viewer</a></li>
+										</ul>
+									</li>
+									<li class="has-dropdown not-click">
+										<a href="#">Homology</a>
+										<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/FUNGI/showAlign">Fungal Alignment</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/protein/get3d">PDB Search</a></li>
+										</ul>
+									</li>
+									<li class="has-dropdown not-click">
+										<a href="#">Resources</a>
+										<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+											<li><a href="http://www.uniprot.org/">UnikProtKB (EBI)</a></li>
+											<li><a href="http://www.ebi.ac.uk/interpro/">InterPro (EBI)</a></li>
+											<li><a href="http://www.ncbi.nlm.nih.gov/homologene">HomoloGene (NCBI)</a></li>
+											<li><a href="http://wolfe.gen.tcd.ie/ygob/">YGOB (Trinity College)</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="has-dropdown not-click"><a href="">Function</a>
+								<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+									<li class="has-dropdown not-click">
+										<a href="#">GO</a>
+										<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a></li>
+											<li><a href="http://downloads.yeastgenome.org/curation/literature/go_slim_mapping.tab">GO Slim Mapping File</a></li>
+										</ul>
+									</li>
+									<li><a href="http://spell.yeastgenome.org/">Expression</a></li>
+									<li><a href="http://pathway.yeastgenome.org/">Biochemical Pathways</a></li>
+									<li class="has-dropdown not-click">
+										<a href="#">Phenotypes</a>
+										<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+											<li><a href="http://0.0.0.0:6545/ontology/phenotype/ypo/overview">Browse All Phenotypes</a></li>
+										</ul>
+									</li>
+									<li><a href="http://www.yeastgenome.org/cgi-bin/interaction_search">Interactions</a></li>
+									<li><a href="http://yeastgfp.yeastgenome.org/">YeastGFP</a></li>
+									<li class="has-dropdown not-click">
+										<a href="#">Resources</a>
+										<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+											<li><a href="http://www.geneontology.org/">GO Consortium</a></li>
+											<li><a href="http://thebiogrid.org/">BioGRID (U. Toronto)</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="has-dropdown not-click"><a href="">Literature</a>
+								<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+									<li><a href="http://textpresso.yeastgenome.org/">Full-text Search</a></li>
+									<li><a href="http://www.yeastgenome.org/cache/NewPapersThisWeek.html">New Yeast Papers</a></li>
+									<li><a href="http://www.genetics.org/site/misc/yeastbook.xhtml">YeastBook</a></li>
+									<li><a href="http://www.yeastgenome.org/cache/genome-wide-analysis.html">Genome-wide Analysis Papers</a></li>
+									<li class="has-dropdown not-click">
+										<a href="#">Resources</a>
+										<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+											<li><a href="http://www.ncbi.nlm.nih.gov/pubmed/">PubMed (NCBI)</a></li>
+											<li><a href="http://www.ncbi.nlm.nih.gov/pmc/">PubMed Central (NCBI)</a></li>
+											<li><a href="http://scholar.google.com/">Google Scholar</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="has-dropdown not-click"><a href="#">Community</a>
+								<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+									<li class="has-dropdown not-click">
+										<a href="#">Colleague Information</a>
+										<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/colleague/colleagueInfoSearch">Find a Colleague</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/colleague/colleagueSearch">Add or Update Info</a></li>
+											<li><a href="http://www.yeastgenome.org/cache/yeastLabs.html">Find a Yeast Lab</a></li>
+										</ul>
+									</li>
+									<li><a href="http://wiki.yeastgenome.org/index.php/Career_Resources">Career Resources</a></li>
+									<li class="has-dropdown not-click">
+										<a href="#">Meetings</a>
+										<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+											<li><a href="http://wiki.yeastgenome.org/index.php/Meetings#Upcoming_Conferences_.26_Courses">Future</a></li>
+											<li><a href="http://wiki.yeastgenome.org/index.php/Meetings#Past_Yeast_Meetings">Yeast Genetics</a></li>
+										</ul>
+									</li>
+									<li class="has-dropdown not-click">
+										<a href="#">Nomenclature</a>
+										<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/registry/geneRegistry">Submit a Gene Registration</a></li>
+											<li><a href="http://www.yeastgenome.org/help/community/gene-registry">Gene Registry</a></li>
+											<li><a href="http://www.yeastgenome.org/help/community/nomenclature-conventions">Nomenclature Conventions</a></li>
+											<li><a href="http://www.yeastgenome.org/cgi-bin/geneHunter">Global Gene Hunter</a></li>
+										</ul>
+									</li>
+									<li class="has-dropdown not-click">
+										<a href="#">Methods and Reagents</a>
+										<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+											<li><a href="http://wiki.yeastgenome.org/index.php/Strains">Strains and Constructs</a></li>
+											<li><a href="http://wiki.yeastgenome.org/index.php/Reagents">Reagents</a></li>
+											<li><a href="http://wiki.yeastgenome.org/index.php/Methods">Protocols and Methods</a></li>
+										</ul>
+									</li>
+									<li class="has-dropdown not-click">
+										<a href="#">Historical Data</a>
+										<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+											<li><a href="http://wiki.yeastgenome.org/index.php/Combined_Physical_and_Genetic_Maps_of_S._cerevisiae">Physical &amp; Genetic Maps</a></li>
+											<li><a href="http://wiki.yeastgenome.org/index.php/Yeast_Mortimer_Maps_-_Edition_12">Genetic Maps</a></li>
+											<li><a href="http://wiki.yeastgenome.org/index.php/Historical_Systematic_Sequence_Information">Sequence</a></li>
+											<li><a href="http://www.yeastgenome.org/cache/geneSummarytable.html">Gene Summary Paragraphs</a></li>
+										</ul>
+									</li>
+									<li><a href="http://wiki.yeastgenome.org/index.php/Main_Page">Wiki</a></li>
+									<li><a href="http://wiki.yeastgenome.org/index.php/External_Links">Resources</a></li>
+								</ul>
+							</li>
+							<li class="has-dropdown not-click" id="info-menu"><a href="#">Info &amp; Downloads</a>
+								<ul class="dropdown"><li class="title back js-generated"><h5><a href="javascript:void(0)">Back</a></h5></li>
+									<li><a href="http://www.yeastgenome.org/about">About</a></li>
+									<li><a href="http://www.yeastgenome.org/blog">Blog</a></li>
+									<li><a href="http://www.yeastgenome.org/download-data">Downloads</a></li>
+									<li><a href="http://www.yeastgenome.org/site-map">Site Map</a></li>
+									<li><a href="http://www.yeastgenome.org/help">Help</a></li>
+								</ul>
+							</li>
+						</ul>
+						<!-- Right Nav Section -->
+						<!--
+						<ul class="right">
+				
+							<li class="has-form">
+								<form action="/search" autocomplete="off" id="top-bar-search">
+								  <div class="row collapse">
+									<div class="small-10 columns">
+									  <input id="searchfield" name="keyword" type="text" class="search-query radius" placeholder="Search">
+									</div>
+									<div class="small-2 columns">
+									  <a href="#" class="secondary button postfix"><i class="fa fa-search"></i></a>
+									</div>
+								  </div>
+								</form>
+							</li>
+						</ul>
+						-->
+					</section></nav>
+		    </div>
+		</div><!-- #layout-page-header-nav -->
+		
+     	<script>initialize_sgd_search();</script>
+	</header>
+
+<div class="container" id="layout-document">
+    	
+
+<!-- main content -->
+
+<!-- PAGE CONTENT GOES BELOW HERE -->
+<!-- Sample Two-column layout (with two rows) shown below -->
+
+
+<section id="page-title-section">
+    <div class="row">
+        <div class="large-12 columns">
+        
+            <h1>Page Title</h1>
+        
+            <p class="new-lead">Some lead text can go here.</p>
+        
+            <hr class="dotted">
+        </div><!-- columns -->
+    </div>
+</section>
+
+<section id="main-content-section">
+    <div class="row">
+        <div class="large-2 columns">
+            
+            <!-- narrow column -->
+            <p>Small column, left</p>
+            
+        </div>
+        <div class="large-10 columns">
+            
+            <!-- wide column -->
+            <p>Large column, right</p>
+            
+        </div>
+    </div>
+</section><!-- #position-form -->
+
+</div><!-- #layout-document -->
+
+
+    <!-- END Content - DO NOT edit below here -->
+    
+    
+    <div id="layout-document-footer-pusher"><!-- keep empty --></div>
+    
+	<!-- Includes footer.html into template -->
+	<footer id="layout-document-footer" class="page-footer">
+	<div class="row">
+		<div class="small-7 large-7 columns">
+			<ul id="footer-links">
+				<li class="sgd-link"><a href="http://www.yeastgenome.org/">SGD</a></li>
+				<li><a href="http://www.yeastgenome.org/about"><span>About</span></a></li>
+				<li><a href="http://www.yeastgenome.org/blog"><span>Blog</span></a></li>
+				<li><a href="http://www.yeastgenome.org/site-map"><span>Site Map</span></a></li>
+				<li><a href="http://www.yeastgenome.org/help"><span>Help</span></a></li>
+				<li><a href="http://www.stanford.edu/site/terms.html"><span>Terms of Use</span></a></li>
+				<li id="social-footer">
+					<ul class="social-links">
+						<li><a href="http://0.0.0.0:6545/cgi-bin/suggestion" target="_blank" id="email" class="webicon mail medium">Email Us</a></li>
+						<li><a href="http://twitter.com/#%21/yeastgenome" target="_blank" id="twitter" class="webicon twitter medium">Twitter</a></li>
+						<li><a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" class="webicon facebook medium" id="facebook">Facebook</a></li>
+						<li><a href="http://0.0.0.0:6545/feed" target="_blank" id="rss" class="webicon rss medium">RSS</a></li>
+					</ul>
+				</li>
+			</ul>
+			<div id="copyright">© Stanford University, Stanford, CA 94305.</div>
+		</div>
+		<div class="small-5 large-5 columns">
+			<ul class="logo-list">
+				<li><a href="http://genetics.stanford.edu/">
+					<img src="SGD-f5-template-files/genetics-logo2x.png" id="genetics-logo" height="45" width="102">
+				</a></li>
+				<li><a href="http://med.stanford.edu/">
+					<img src="SGD-f5-template-files/som-logo2x.png" id="som-logo" height="45" width="39">
+				</a></li>
+				<li><a href="http://www.stanford.edu/"><img src="SGD-f5-template-files/footer-stanford-logo2x.png" id="stanford-logo" height="49" width="105"></a></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+
+
+
+
+
+
+
+	<script src="SGD-f5-template-files/jquery.js"></script>
+	<script>window.jQuery || document.write('<script src="/static/js/vendor/jquery.min.js"><\/script>')</script>
+
+	<script src="SGD-f5-template-files/local.js"></script>
+	<script src="SGD-f5-template-files/dataTables.js"></script>
+	<script src="SGD-f5-template-files/dataTables_002.js"></script>
+	
+	<script src="SGD-f5-template-files/foundation.js"></script>
+
+	<script src="SGD-f5-template-files/jquery-ui.js"></script>
+	<script src="SGD-f5-template-files/search.html"></script>
+	
+	<!--[if lt IE 9]>
+        <script src="/static/js/vendor/rem.min.js" type="text/javascript"></script>
+    <![endif]-->
+
+	<script>
+	    //initialize search
+	    initialize_sgd_search();
+
+		//Get resources
+		var tab_link = "";
+		$.getJSON(tab_link, function(data) {
+			for(var key in data) {
+				if(!data[key]) {
+					var element = document.getElementById(key);
+					if(element != null) {
+						element.style.display = "none";
+					}
+				}
+			}
+		});
+	</script>
+
+
+<script src="SGD-f5-template-files/nouislider.js"></script>
+<script src="SGD-f5-template-files/cytoscape.js"></script>	
+<script src="SGD-f5-template-files/arbor.js"></script>	
+<script src="SGD-f5-template-files/cytoscape_002.js"></script>
+<script src="SGD-f5-template-files/evidence.js"></script>
+<script src="SGD-f5-template-files/regulation_details.js"></script>
+
+		
+<script>
+  $(document).foundation();
+  
+  $(".side-nav").foundation("magellan", {threshold: 50});
+
+	$(document).ready(function(){          // does the following only after DOM completely loads
+		if (window.location.hash) {         // if the url contains an anchor
+			var anchor = window.location.hash;
+			window.location.hash = anchor;
+		}
+	});
+</script>
+
+<script>
+ (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+ })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ ga('create', 'UA-440742-1', 'yeastgenome.org');
+ ga('send', 'pageview');
+
+</script>
+
+
+<script type="text/javascript">
+var clicky_site_ids = clicky_site_ids || [];
+clicky_site_ids.push(66351112);
+(function() {
+ var s = document.createElement('script');
+ s.type = 'text/javascript';
+ s.async = true;
+ s.src = '//static.getclicky.com/js';
+ ( document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0] ).appendChild( s );
+})();
+</script>
+
+
+
+<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/66351112ns.gif" /></p></noscript>
+
+<div style="font-family: helvetica; font-style: normal; font-size: 14px; font-variant: normal; font-weight: normal; position: absolute; left: -9999px; top: -9999px; z-index: -1; visibility: hidden; padding: 0px; line-height: 1;"></div></body><!-- Le javascript
+================================================== --><!-- Placed at the end of the document so the pages load faster --><!-- load jquery from google, with fallback to local copy --></html>

@@ -9,7 +9,6 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 requires = [
     'markupsafe<0.16',
     'pyramid',
-    'pyramid_debugtoolbar',
     'pyramid_jinja2',
     'waitress',
     'simplejson',
@@ -20,6 +19,7 @@ tests_require = [
     'behave',
     'behaving',
     'pytest',
+    'selenium'
 ]
 
 setup(name='SGDFrontend',
@@ -41,12 +41,12 @@ setup(name='SGDFrontend',
       zip_safe=False,
       install_requires=requires,
       tests_require=requires,
-      test_suite="sgdfrontend",
+      test_suite="yeastgenome",
       extras_require={
         'test': tests_require,
       },
       entry_points="""\
       [paste.app_factory]
-      sgdfrontend = frontend:sgdfrontend
+      yeastgenome = src:yeastgenome
       """,
       )
