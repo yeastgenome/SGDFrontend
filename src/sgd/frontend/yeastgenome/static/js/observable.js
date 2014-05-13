@@ -143,6 +143,7 @@ var graph_style = cytoscape.stylesheet()
 
 var layout = {
 	"name": "breadthfirst",
-	"fit": false
+	"fit": true,
+    "directed": true
 };
 
