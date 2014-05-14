@@ -44,7 +44,7 @@ module.exports = function(grunt) {
             },
             font: {
                 files: {
-                    "src/sgd/frontend/yeastgenome/static/font": "font-awesome/font"
+                    "src/sgd/frontend/yeastgenome/static/fonts": "font-awesome/font"
                 }
             }
         }
