@@ -7,16 +7,6 @@ if(regulation_overview['target_count'] + regulation_overview['regulator_count'] 
                                                                 ['Targets', regulation_overview['target_count'], '#AF8DC3', regulation_overview['target_count']],
                                                                 ['Regulators', regulation_overview['regulator_count'], '#7FBF7B', regulation_overview['regulator_count']]]);
 
-        var graph_options = {
-            'title': 'Transcriptional Targets and Regulators for ' + display_name + ' (includes high-throughput predictions)',
-            'legend': {'position': 'none'},
-            'hAxis': {title: 'Genes', minValue: 0},
-            'dataOpacity':1,
-            'backgroundColor': 'transparent'
-        };
-        if(Math.max(regulation_overview['target_count'], regulation_overview['regulator_count']) == 1) {
-            options['hAxis']['gridlines'] = {count:"2"}
-        }
 
         var chart = new google.visualization.BarChart(document.getElementById('summary_diagram'));
 
@@ -39,7 +29,14 @@ if(regulation_overview['target_count'] + regulation_overview['regulator_count'] 
         // the user selects something on the chart.
         google.visualization.events.addListener(chart, 'select', barSelectHandler);
 
-        chart.draw(data_table, graph_options);
+        chart.draw(data_table, {
+            'title': 'Transcriptional Targets and Regulators for ' + display_name + ' (includes high-throughput predictions)',
+            'legend': {'position': 'none'},
+            'hAxis': {title: 'Genes', minValue: 0},
+            'vAxis': {minValue:0, maxValue:5, gridlines:{count:6}},
+            'dataOpacity':1,
+            'backgroundColor': 'transparent'
+        });
     }
 }
 else {
