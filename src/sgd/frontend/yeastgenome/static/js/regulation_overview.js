@@ -32,8 +32,7 @@ if(regulation_overview['target_count'] + regulation_overview['regulator_count'] 
         chart.draw(data_table, {
             'title': 'Transcriptional Targets and Regulators for ' + display_name + ' (includes high-throughput predictions)',
             'legend': {'position': 'none'},
-            'hAxis': {title: 'Genes', minValue: 0},
-            'vAxis': {minValue:0, maxValue:5, gridlines:{count:6}},
+            'hAxis': {title: 'Genes', minValue:0, maxValue:5, gridlines:{count:6}},
             'dataOpacity':1,
             'backgroundColor': 'transparent'
         });
