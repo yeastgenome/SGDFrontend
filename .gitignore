@@ -13,5 +13,7 @@ src/sgd/frontend/config.py
 src/sgd/frontend/yeastgenome/static/img/yetfasco
 src/sgd/frontend/yeastgenome/static/css/normalize.css
 src/sgd/frontend/yeastgenome/static/css/style.css
+src/sgd/frontend/yeastgenome/static/js/vendor/
+src/sgd/frontend/yeastgenome/static/scss/vendor/
 bower_components/
 node_modules/

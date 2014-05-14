@@ -4,33 +4,33 @@ module.exports = function(grunt) {
         uglify: {
             modernizr: {
                 files: {
-                    "src/sgd/frontend/yeastgenome/static/js/vendor/modernizr.min.js": ["bower_components/modernizr/modernizr.js"]
+                    "src/sgd/frontend/yeastgenome/static/js/build/modernizr.min.js": ["bower_components/modernizr/modernizr.js"]
                 }
             },
             datatables: {
                 files: {
-                    "src/sgd/frontend/yeastgenome/static/js/vendor/datatables/datatables.min.js": ["bower_components/datatables/media/js/jquery.datatables.js"]
+                    "src/sgd/frontend/yeastgenome/static/js/build/datatables/datatables.min.js": ["bower_components/datatables/media/js/jquery.datatables.js"]
                 }
             },
             nouislider: {
                 files: {
-                    "src/sgd/frontend/yeastgenome/static/js/vendor/nouislider.min.js": ["bower_components/nouislider/jquery.nouislider.js"]
+                    "src/sgd/frontend/yeastgenome/static/js/build/nouislider.min.js": ["bower_components/nouislider/jquery.nouislider.js"]
                 }
             }
         },
         bowercopy: {
             js: {
                 options: {
-                    destPrefix: "src/sgd/frontend/yeastgenome/static/js"
+                    destPrefix: "src/sgd/frontend/yeastgenome/static/js/build"
                 },
                 files: {
-                    "vendor/cytoscape.min.js": "cytoscape/documentation/js/cytoscape.min.js",
-                    "vendor/arbor.js": "cytoscape/documentation/js/arbor.js",
-                    "vendor/foundation.min.js": "foundation/js/foundation.min.js",
-                    "vendor/jquery.min.js": "jquery-legacy/dist/jquery.min.js",
-                    "vendor/kinetic.min.js": "kineticjs/kinetic.min.js",
-                    "vendor/respond.min.js": "respond/dest/respond.min.js",
-                    "vendor/rem.min.js": "rem-unit-polyfill/js/rem.min.js"
+                    "cytoscape.min.js": "cytoscape/documentation/js/cytoscape.min.js",
+                    "arbor.js": "cytoscape/documentation/js/arbor.js",
+                    "foundation.min.js": "foundation/js/foundation.min.js",
+                    "jquery.min.js": "jquery-legacy/dist/jquery.min.js",
+                    "kinetic.min.js": "kineticjs/kinetic.min.js",
+                    "respond.min.js": "respond/dest/respond.min.js",
+                    "rem.min.js": "rem-unit-polyfill/js/rem.min.js"
                 }
             },
             scss: {
@@ -39,10 +39,10 @@ module.exports = function(grunt) {
                 },
                 files: {
                     "normalize.scss": "foundation/scss/normalize.scss",
-                    "vendor/_nouislider.scss": "nouislider/jquery.nouislider.css"
+                    "build/_nouislider.scss": "nouislider/jquery.nouislider.css"
                 }
             },
-            font: {
+            fonts: {
                 files: {
                     "src/sgd/frontend/yeastgenome/static/fonts": "font-awesome/font"
                 }
