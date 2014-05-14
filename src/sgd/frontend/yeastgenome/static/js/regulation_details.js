@@ -218,13 +218,13 @@ var graph_style = cytoscape.stylesheet()
 		'text-outline-color': '#fff',
 		'color': '#888'
 	})
-	.selector("node[class_type='TARGET'][sub_type!='FOCUS']")
+	.selector("node[targ_evidence>0][sub_type!='FOCUS']")
 	.css({
 		'background-color': "#AF8DC3",
 		'text-outline-color': '#888',
 		'color': '#fff'
 	})
-	.selector("node[class_type='REGULATOR'][sub_type!='FOCUS']")
+	.selector("node[reg_evidence>0][sub_type!='FOCUS']")
 	.css({
 		'background-color': "#7FBF7B",
 		'text-outline-color': '#888',
