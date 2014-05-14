@@ -1,14 +1,17 @@
 # require 'zurb-foundation'
-# Require any additional compass plugins here.
+
+add_import_path "bower_components/foundation/scss"
+# font-awesome 
+add_import_path "bower_components/font-awesome/scss"
 
 
 # Set this to the root of your project when deployed:
 http_path = "/"
-css_dir = "src/sgd/frontend/yeastgenome/static/css"
-sass_dir = "src/sgd/frontend/yeastgenome/static/scss"
-images_dir = "src/sgd/frontend/yeastgenome/static/img"
-javascripts_dir = "src/sgd/frontend/yeastgenome/static/js"
-fonts_dir = "src/sgd/frontend/yeastgenome/static/fonts"
+css_dir = "sgdfrontend/static/css"
+sass_dir = "sgdfrontend/static/scss"
+images_dir = "sgdfrontend/static/img"
+javascripts_dir = "sgdfrontend/static/js"
+fonts_dir = "sgdfrontend/static/fonts"
 
 # You can select your preferred output style here (can be overridden via the command line):
 # output_style = :expanded or :nested or :compact or :compressed
