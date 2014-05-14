@@ -15,5 +15,6 @@ src/sgd/frontend/yeastgenome/static/css/normalize.css
 src/sgd/frontend/yeastgenome/static/css/style.css
 src/sgd/frontend/yeastgenome/static/js/vendor/
 src/sgd/frontend/yeastgenome/static/scss/vendor/
+src/sgd/frontend/yeastgenome/static/fonts/
 bower_components/
 node_modules/
