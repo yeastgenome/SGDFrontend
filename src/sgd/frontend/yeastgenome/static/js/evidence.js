@@ -18,6 +18,13 @@ function domain_data_to_table(evidence) {
     return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], coord_range, domain, description, evidence['source']['display_name'], '' + evidence['domain']['count']]
 }
 
+function expression_data_to_table(evidence) {
+    var locus = create_link(evidence['locus']['display_name'], evidence['locus']['link'], false);
+    var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link'], false);
+
+    return [evidence['id'], evidence['locus']['id'], locus, evidence['locus']['format_name'], evidence['condition'], evidence['value'], evidence['geo_id'], reference]
+}
+
 function phosphorylation_data_to_table(evidence) {
     var bioent = create_link(evidence['locus']['display_name'], evidence['locus']['link'], false);
 

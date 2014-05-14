@@ -122,6 +122,11 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: chosen_frontend.response_wrapper('phenotype_details', request)(getattr(chosen_frontend, 'phenotype_details')(bioent_repr=request.matchdict['identifier'].upper())),
                     renderer=chosen_frontend.get_renderer('phenotype_details'),
                     route_name='phenotype_details')
+
+    config.add_route('expression_details', '/locus/{identifier}/expression')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('expression_details', request)(getattr(chosen_frontend, 'expression_details')(bioent_repr=request.matchdict['identifier'].upper())),
+                    renderer=chosen_frontend.get_renderer('expression_details'),
+                    route_name='expression_details')
     
     config.add_route('go_details', '/locus/{identifier}/go')
     config.add_view(lambda request: chosen_frontend.response_wrapper('go_details', request)(getattr(chosen_frontend, 'go_details')(bioent_repr=request.matchdict['identifier'].upper())),
