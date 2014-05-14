@@ -86,11 +86,13 @@ function create_slider(slider_id, graph, min, max, slide_f, stop) {
     var range;
     var start;
 	if(max==min) {
-		range = [min, min+1];
+		range = {'min': [min],
+                'max': [min+1]};
 		start = min;
 	}
 	else {
-		range = [min, max];
+		range = {'min': [min],
+                'max': [max]};
 		start = Math.max(3, min);
 	}
 	var slider = $("#" + slider_id).noUiSlider({
@@ -99,12 +101,12 @@ function create_slider(slider_id, graph, min, max, slide_f, stop) {
 		,step: 1
 		,handles: 1
 		,connect: "lower"
-		,slide: function() {
+	});
+    slider.change(function() {
             var cutoff = slider.val();
             graph.filters['slider'] = slide_f(cutoff);
             graph.applyFilters();
-        }
-	});
+    });
 
 	if(max==min) {
 	    slider.attr('disabled', 'disabled');
@@ -118,7 +120,8 @@ function create_slider(slider_id, graph, min, max, slide_f, stop) {
             slider_max = min+1;
         }
         $("#" + slider_id).noUiSlider({
-            range: [min, slider_max]
+            range: {'min': [min],
+                    'max': [slider_max]}
         }, true);
         create_slider_ticks("slider_ticks", min, smax, stop);
         var cutoff = slider.val();
