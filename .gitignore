@@ -13,3 +13,5 @@ src/sgd/frontend/config.py
 src/sgd/frontend/yeastgenome/static/img/yetfasco
 src/sgd/frontend/yeastgenome/static/css/normalize.css
 src/sgd/frontend/yeastgenome/static/css/style.css
+bower_components/
+node_modules/
