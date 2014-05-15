@@ -56,7 +56,9 @@ function create_expression_chart(data) {
     function drawChart() {
         var datatable = [['Name', 'Number']];
         for (var i=0; i < data.length; i++) {
-            datatable.push([data[i]['condition'], data[i]['value']]);
+            if(data[i]['value'] >= -2.5 && data[i]['value'] <= 2.5) {
+                datatable.push([data[i]['condition'], data[i]['value']]);
+            }
         }
         var chartdata = google.visualization.arrayToDataTable(datatable);
 
