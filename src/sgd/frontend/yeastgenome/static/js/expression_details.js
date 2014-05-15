@@ -50,9 +50,9 @@ function create_expression_table(data) {
     return create_table("expression_table", options);
 }
 google.load("visualization", "1", {packages:["corechart"]});
+google.setOnLoadCallback(drawChart);
 
 function create_expression_chart(data) {
-    google.setOnLoadCallback(drawChart);
     function drawChart() {
         var datatable = [['Name', 'Number']];
         for (var i=0; i < data.length; i++) {
