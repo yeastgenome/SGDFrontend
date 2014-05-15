@@ -16,11 +16,6 @@ module.exports = function(grunt) {
                 files: {
                     "src/sgd/frontend/yeastgenome/static/js/build/fastclick.min.js": ["bower_components/fastclick/lib/fastclick.js"]
                 }
-            },
-            nouislider: {
-                files: {
-                    "src/sgd/frontend/yeastgenome/static/js/build/nouislider.min.js": ["bower_components/nouislider/jquery.nouislider.js"]
-                }
             }
         },
         bowercopy: {
@@ -35,7 +30,8 @@ module.exports = function(grunt) {
                     "jquery.min.js": "jquery/dist/jquery.min.js",
                     "kinetic.min.js": "kineticjs/kinetic.min.js",
                     "respond.min.js": "respond/dest/respond.min.js",
-                    "rem.min.js": "rem-unit-polyfill/js/rem.min.js"
+                    "rem.min.js": "rem-unit-polyfill/js/rem.min.js",
+                    "nouislider.min.js": "nouislider/jquery.nouislider.min.js"
                 }
             },
             scss: {
