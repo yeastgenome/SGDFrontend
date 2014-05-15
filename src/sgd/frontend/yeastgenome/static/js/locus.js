@@ -4,6 +4,12 @@ $(document).ready(function() {
   		if(data['nodes'].length > 1) {
   			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
             var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], function (new_cutoff) {return "node[gene_count >= " + new_cutoff + "], edge";}, 10);
+            create_discrete_filter("union_radio", graph, slider, function(){return "node, edge";}, data["max_cutoff"]);
+            create_discrete_filter("go_radio", graph, slider, function(){return "node, edge[type = 'GO']";}, data["max_cutoff"]);
+            create_discrete_filter("phenotype_radio", graph, slider, function(){return "node, edge[type = 'PHENOTYPE']";}, data["max_cutoff"]);
+            create_discrete_filter("domain_radio", graph, slider, function(){return "node, edge[type = 'DOMAIN']";}, data["max_cutoff"]);
+            create_discrete_filter("genetic_radio", graph, slider, function(){return "node, edge[type = 'GENINTERACTION']";}, data["max_cutoff"]);
+            create_discrete_filter("physical_radio", graph, slider, function(){return "node, edge[type = 'PHYSINTERACTION']";}, data["max_cutoff"]);
   		}
 		else {
 			hide_section("network");

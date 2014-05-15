@@ -52,10 +52,8 @@ function create_expression_table(data) {
 google.load("visualization", "1", {packages:["corechart"]});
 
 function create_expression_chart(data) {
-    google.setOnLoadCallback(drawChart);
-    function drawChart() {
-        var datatable = [['Name', 'Number']];
-        for (var i=0; i < data.length; i++) {
+    var datatable = [['Name', 'Number']];
+    for (var i=0; i < data.length; i++) {
             if(data[i]['value'] >= -2.5 && data[i]['value'] <= 2.5) {
                 datatable.push([data[i]['condition'], data[i]['value']]);
             }
@@ -70,7 +68,6 @@ function create_expression_chart(data) {
 
         var chart = new google.visualization.Histogram(document.getElementById('expression_chart'));
         chart.draw(chartdata, options);
-    }
 }
 
 var graph_style = cytoscape.stylesheet()
