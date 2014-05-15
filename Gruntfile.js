@@ -27,7 +27,7 @@ module.exports = function(grunt) {
                     "cytoscape.min.js": "cytoscape/documentation/js/cytoscape.min.js",
                     "arbor.js": "cytoscape/documentation/js/arbor.js",
                     "foundation.min.js": "foundation/js/foundation.min.js",
-                    "jquery.min.js": "jquery-legacy/dist/jquery.min.js",
+                    "jquery.min.js": "jquery/dist/jquery.min.js",
                     "kinetic.min.js": "kineticjs/kinetic.min.js",
                     "respond.min.js": "respond/dest/respond.min.js",
                     "rem.min.js": "rem-unit-polyfill/js/rem.min.js"
@@ -44,7 +44,7 @@ module.exports = function(grunt) {
             },
             fonts: {
                 files: {
-                    "src/sgd/frontend/yeastgenome/static/fonts": "font-awesome/font"
+                    "src/sgd/frontend/yeastgenome/static/fonts": "font-awesome/fonts"
                 }
             }
         }

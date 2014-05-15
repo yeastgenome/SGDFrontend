@@ -6,10 +6,13 @@
     "datatables": "1.9.4",
     "font-awesome": "4.0.3",
     "foundation": "5.2.2",
-    "jquery-legacy": "jquery#1.11.0",
+    "jquery": "^1.11.1",
     "kineticjs": "5.1.0",
     "nouislider": "6.2.0",
     "rem-unit-polyfill": "1.2.4",
     "respond": ">=1.4.2"
+  },
+  "resolutions": {
+    "jquery": "^1.11.1"
   }
 }
