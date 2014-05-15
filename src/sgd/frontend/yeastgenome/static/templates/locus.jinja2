@@ -158,13 +158,31 @@
             <div class="page-header">
                 <h1>Network Visualization</h1>
                 <div class="panel">
+                    <div id="discrete_filter">
+                        <label for="union_radio">
+                            <input id="union_radio" type="radio" name="group1" checked> All
+                            </label>
+                        <label for="go_radio" class="legend-label">
+                            <input id="go_radio" type="radio" name="group1"> <span style="color:#4daf4a">GO</span>
+                        </label>
+                        <label for="phenotype_radio" class="legend-label">
+                            <input id="phenotype_radio" type="radio" name="group1"> <span style="color:#984ea3">Phenotype</span>
+                        </label>
+                        <label for="domain_radio" class="legend-label">
+                            <input id="domain_radio" type="radio" name="group1"> <span style="color:#377eb8">Domain</span>
+                        </label>
+                        <label for="physical_radio" class="legend-label">
+                            <input id="physical_radio" type="radio" name="group1"> <span style="color:#ff7f00">Physical Interaction</span>
+                        </label>
+                        <label for="genetic_radio" class="legend-label">
+                            <input id="genetic_radio" type="radio" name="group1"> <span style="color:#fb9a99">Genetic Interaction</span>
+                        </label>
+                    </div>
                     <div id="cy" name="cy" style="width:100%;height:700px"></div>
                     <h5>Filter genes by # of connections with {{ locus.display_name }}:</h5>
                     <div id="slider" class="noUiSlider" style="width:100%"></div>
                     <div id="slider_ticks"></div>
                     <br>
-                    <span style="color:#4daf4a">GO</span>, <span style="color:#984ea3">Phenotype</span>, <span style="color:#377eb8">Domain</span>,
-                    <span style="color:#ff7f00">Physical Interaction</span>, <span style="color:#fb9a99">Genetic Interaction</span>, <span style="color:#a65628">Regulation</span>
                 </div>
             </div>
         </section>
