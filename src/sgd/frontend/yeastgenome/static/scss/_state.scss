@@ -23,14 +23,10 @@ http://smacss.com/book/type-state
 	@extend .hide-for-medium-up;
 }
 
-#sidebar {
-	@extend .hide-for-small;
-}
-
 // Sidebar
 // hide on small screens
 #sidebar {
-	@extend .hide-for-small;
+	@extend .show-for-large-up;
 }
 
 

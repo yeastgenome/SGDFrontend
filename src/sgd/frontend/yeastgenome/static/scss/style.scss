@@ -1,62 +1,75 @@
 // Make sure the charset is set appropriately
 @charset "UTF-8";
 
-// This includes all of the foundation global elements that are needed to work with any of the other files.
-@import "foundation/variables";
+// Customized Foundation settings file 
+@import "vendor/foundation/settings";
 
-// Foundation Components
+// Foundation
 @import
-  "foundation/components/global",
-  "foundation/components/grid",
-  "foundation/components/visibility",
-  "foundation/components/block-grid",
-  "foundation/components/type",
-  "foundation/components/buttons",
-  "foundation/components/forms",
-  "foundation/components/button-groups",
-  "foundation/components/dropdown-buttons",
-  "foundation/components/split-buttons",
-  "foundation/components/flex-video",
-  "foundation/components/section",
-  "foundation/components/top-bar",
-  "foundation/components/orbit",
-  "foundation/components/reveal",
-  "foundation/components/joyride",
-  "foundation/components/clearing",
-  "foundation/components/alert-boxes",
-  "foundation/components/breadcrumbs",
-  "foundation/components/keystrokes",
-  "foundation/components/labels",
-  "foundation/components/inline-lists",
-  "foundation/components/pagination",
-  "foundation/components/panels",
-  "foundation/components/pricing-tables",
-  "foundation/components/progress-bars",
-  "foundation/components/side-nav",
-  "foundation/components/sub-nav",
-  "foundation/components/switch",
-  "foundation/components/magellan",
-  "foundation/components/tables",
-  "foundation/components/thumbs",
-  "foundation/components/tooltips",
-  "foundation/components/dropdown";
+    "../../../../../../bower_components/foundation/scss/foundation/components/grid",
+    "../../../../../../bower_components/foundation/scss/foundation/components/accordion",
+    "../../../../../../bower_components/foundation/scss/foundation/components/alert-boxes",
+    "../../../../../../bower_components/foundation/scss/foundation/components/block-grid",
+    "../../../../../../bower_components/foundation/scss/foundation/components/breadcrumbs",
+    "../../../../../../bower_components/foundation/scss/foundation/components/button-groups",
+    "../../../../../../bower_components/foundation/scss/foundation/components/buttons",
+    "../../../../../../bower_components/foundation/scss/foundation/components/clearing",
+    "../../../../../../bower_components/foundation/scss/foundation/components/dropdown",
+    "../../../../../../bower_components/foundation/scss/foundation/components/dropdown-buttons",
+    "../../../../../../bower_components/foundation/scss/foundation/components/forms",
+    "../../../../../../bower_components/foundation/scss/foundation/components/inline-lists",
+    "../../../../../../bower_components/foundation/scss/foundation/components/keystrokes",
+    "../../../../../../bower_components/foundation/scss/foundation/components/labels",
+    "../../../../../../bower_components/foundation/scss/foundation/components/magellan",
+    "../../../../../../bower_components/foundation/scss/foundation/components/orbit",
+    "../../../../../../bower_components/foundation/scss/foundation/components/pagination",
+    "../../../../../../bower_components/foundation/scss/foundation/components/panels",
+    "../../../../../../bower_components/foundation/scss/foundation/components/range-slider",
+    "../../../../../../bower_components/foundation/scss/foundation/components/reveal",
+    "../../../../../../bower_components/foundation/scss/foundation/components/side-nav",
+    "../../../../../../bower_components/foundation/scss/foundation/components/split-buttons",
+    "../../../../../../bower_components/foundation/scss/foundation/components/sub-nav",
+    "../../../../../../bower_components/foundation/scss/foundation/components/tables",
+    "../../../../../../bower_components/foundation/scss/foundation/components/tabs",
+    "../../../../../../bower_components/foundation/scss/foundation/components/thumbs",
+    "../../../../../../bower_components/foundation/scss/foundation/components/tooltips",
+    "../../../../../../bower_components/foundation/scss/foundation/components/top-bar",
+    "../../../../../../bower_components/foundation/scss/foundation/components/type",
+    "../../../../../../bower_components/foundation/scss/foundation/components/visibility";
+     //"../../../../../../bower_components/foundation/scss/foundation/components/flex-video",
+     //"../../../../../../bower_components/foundation/scss/foundation/components/joyride",
+     //"../../../../../../bower_components/foundation/scss/foundation/components/pricing-tables",
+    //"../../../../../../bower_components/foundation/scss/foundation/components/progress-bars",
+     //"../../../../../../bower_components/foundation/scss/foundation/components/switch",
+     //"../../../../../../bower_components/foundation/scss/foundation/components/offcanvas",
 
 // Compass mixins
 @import
-	//"compass",
 	"compass/support",
 	"compass/layout/sticky-footer",
 	"compass/css3/images",
 	"compass/css3/border-radius";
 
-// Font Awesome 4.0.3
-@import "vendor/font-awesome/variables", "vendor/font-awesome/mixins", "vendor/font-awesome/path", "vendor/font-awesome/core", "vendor/font-awesome/larger", "vendor/font-awesome/fixed-width", "vendor/font-awesome/list", "vendor/font-awesome/bordered-pulled", "vendor/font-awesome/spinning", "vendor/font-awesome/rotated-flipped", "vendor/font-awesome/stacked", "vendor/font-awesome/icons";
+// Font Awesome (check bower.json for version)
+@import 
+	"../../../../../../bower_components/font-awesome/scss/variables",
+    "../../../../../../bower_components/font-awesome/scss/mixins",
+    "../../../../../../bower_components/font-awesome/scss/path",
+    "../../../../../../bower_components/font-awesome/scss/core",
+    "../../../../../../bower_components/font-awesome/scss/larger",
+    "../../../../../../bower_components/font-awesome/scss/fixed-width",
+    "../../../../../../bower_components/font-awesome/scss/list",
+    "../../../../../../bower_components/font-awesome/scss/bordered-pulled",
+    "../../../../../../bower_components/font-awesome/scss/spinning",
+    "../../../../../../bower_components/font-awesome/scss/rotated-flipped",
+    "../../../../../../bower_components/font-awesome/scss/stacked",
+    "../../../../../../bower_components/font-awesome/scss/icons";
 
 // other vendor styles
 @import
-	"vendor/dataTables",
+	"vendor/dataTables.foundation",
 	"vendor/webicons",
-	"vendor/nouislider.fox";
+	"build/nouislider";
 	
 // SGD Styles
 @import 
@@ -68,11 +81,13 @@
 	"modules/side-nav",
 	"modules/forms",
 	"modules/icons",
-	"modules/labels", "modules/nested-lists",
+	"modules/labels",
+	"modules/nested-lists",
 	"modules/references",
 	"modules/legends",
 	"modules/yetfasco",
 	"modules/foundation-overwrites",
 	"state",
 	"theme",
-	"legacy", "modules/print";
+	"legacy",
+	"modules/print";

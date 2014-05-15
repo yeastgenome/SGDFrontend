@@ -56,6 +56,10 @@ http://smacss.com/book/type-module
 	margin: 0;
 	position: absolute;
     right: 115px;
+    font-size: em-calc(13);
+    li {
+        margin-left: em-calc(18);
+    }
 }
 
 .social-links {
@@ -115,6 +119,10 @@ form#searchform {
 .top-bar {
 	margin-bottom: 0;
 }
+
+.top-bar-section ul li > a {
+    font-weight: bold;
+}   
 
 /* back styling for mobile menus */
 .back h5 {

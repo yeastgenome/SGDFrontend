@@ -66,7 +66,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 
 	var recenter_button = document.createElement('a');
 	recenter_button.id = "cy_recenter";
-	recenter_button.className = "small button secondary";
+	recenter_button.className = "small button secondary radius";
 	recenter_button.innerHTML = "Reset";
 	recenter_button.onclick = function() {
 		var old_zoom_value = cy.zoomingEnabled();
