@@ -12,6 +12,11 @@ module.exports = function(grunt) {
                     "src/sgd/frontend/yeastgenome/static/js/build/datatables/datatables.min.js": ["bower_components/datatables/media/js/jquery.datatables.js"]
                 }
             },
+            fastclick: {
+                files: {
+                    "src/sgd/frontend/yeastgenome/static/js/build/fastclick.min.js": ["bower_components/fastclick/lib/fastclick.js"]
+                }
+            },
             nouislider: {
                 files: {
                     "src/sgd/frontend/yeastgenome/static/js/build/nouislider.min.js": ["bower_components/nouislider/jquery.nouislider.js"]
