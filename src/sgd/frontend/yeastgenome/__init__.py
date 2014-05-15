@@ -126,6 +126,25 @@ class YeastgenomeFrontend(FrontendInterface):
                     'ontology_link': '/ontology/phenotype/ypo/overview'
                     }
         return page
+
+    def expression_details(self, bioent_repr):
+        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
+        bioent_id = str(bioent['id'])
+        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
+
+        page = {
+                    #Basic info
+                    'locus': bioent,
+
+                    #Overview
+                    'tabs': tabs,
+
+                    #Links
+                    'expression_details_link': self.backend_url + '/locus/' + bioent_id + '/expression_details?callback=?',
+                    'expression_graph_link': self.backend_url + '/locus/' + bioent_id + '/expression_graph?callback=?',
+                    'download_table_link': '/download_table',
+                    }
+        return page
     
     def go_details(self, bioent_repr):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
