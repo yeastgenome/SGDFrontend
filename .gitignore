@@ -8,6 +8,7 @@ develop-eggs
 eggs
 parts
 bin
+gbi
 src/sgd/SGDFrontend.egg-info
 src/sgd/frontend/yeastgenome/static/img/yetfasco
 src/sgd/frontend/yeastgenome/static/css/normalize.css
