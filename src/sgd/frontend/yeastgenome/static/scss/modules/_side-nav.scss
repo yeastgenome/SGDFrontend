@@ -42,8 +42,13 @@ http://smacss.com/book/type-module
     color: #fff;
 }
 .side-nav > li > a {
-    border: 1px solid #ccc;
+    display: block;
+    border-top: 1px solid #ccc;
+    padding: 8px 12px 10px 12px;
+    margin-right: 0;
+    line-height: 20px;
 }
+
 .side-nav > .active > a, .side-nav > .active > a:hover {
     border-color: #ddd;
     border-style: solid;
@@ -51,25 +56,7 @@ http://smacss.com/book/type-module
     color: #fff;
     cursor: default;
 }
-.side-nav > li > a {
-    margin-right: 0;
-}
-.side-nav > li > a {
-    //border: 1px solid transparent;
-    // border-radius: 4px 4px 0 0;
-    line-height: 20px;
-    padding-bottom: 8px;
-    padding-top: 8px;
-}
-.side-nav > li > a {
-    //line-height: 14px;
-    //margin-right: 2px;
-    padding-left: 12px;
-    padding-right: 12px;
-}
-.side-nav > li > a {
-    display: block;
-}
+
 
 // Overwrite a couple magellan settings - need to make these case specific though
 
