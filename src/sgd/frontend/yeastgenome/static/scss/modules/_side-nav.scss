@@ -5,8 +5,8 @@ http://smacss.com/book/type-module
 
 // Sticky Side navigation
 #side-nav-sticky {
-	//max-width: 263px;
 	width: 180px;
+	padding: 0;
 }
 
 .side-nav { //extending Foundation
@@ -19,8 +19,10 @@ http://smacss.com/book/type-module
 	overflow: hidden;
 }
 
+
+
 #side-nav-sticky.fixed {
-	//max-width: 180px;
+	max-width: 180px;
 	width: 180px;
 }
 
@@ -70,10 +72,8 @@ http://smacss.com/book/type-module
 }
 
 // Overwrite a couple magellan settings - need to make these case specific though
-[data-magellan-expedition] {
-	min-width: 0;
-	padding: 0 !important;
-}
-.fixed {
-	left: inherit !important;
+
+
+[data-magellan-expedition], [data-magellan-expedition-clone] {
+    min-width: 0;
 }
