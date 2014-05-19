@@ -4,6 +4,7 @@
 .sass-cache/
 .installed.cfg
 .mr.developer.cfg
+npm-debug.log
 develop-eggs
 eggs
 parts

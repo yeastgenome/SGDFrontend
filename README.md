@@ -9,14 +9,32 @@ There is only one package in this project...
 
  This package contains the templates and code for the SGDNextGen site.
  
-Instructions
+##Dependencies
 
-Dependencies:
+###Python
+
 * Pyramid
 * Waitress
 * simplejson
 * requests
-(The above are all python packages.)
+
+
+###Node
+
+You must install node (preferably via homebrew) before building the app
+
+    $ brew install node
+
+The build installs the following node packages:
+
+* bower
+* grunt
+* grunt-contrib-uglify
+* grunt-bowercopy
+
+For details, see files: package.json, Gruntfile.js, bower.json
+
+##Building the app
 
 To build the application:
 
