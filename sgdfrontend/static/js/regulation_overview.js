@@ -10,13 +10,10 @@ if(target_count + regulator_count > 0){
         var graph_options = {
             'title': 'Transcriptional Targets and Regulators for ' + display_name,
             'legend': {'position': 'none'},
-            'hAxis': {title: 'Genes', minValue: 0},
+            'hAxis': {title: 'Genes', minValue:0, maxValue:5, gridlines:{count:6}},
             'dataOpacity':1,
             'backgroundColor': 'transparent'
         };
-        if(Math.max(target_count, regulator_count) == 1) {
-            options['hAxis']['gridlines'] = {count:"2"}
-        }
 
         var chart = new google.visualization.BarChart(document.getElementById('summary_diagram'));
 
