@@ -1,13 +1,7 @@
 
 $(document).ready(function() {
   	$.getJSON(locus_graph_link, function(data) {
-  		if(data['nodes'].length > 1) {
-  			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
-            var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], function (new_cutoff) {return "node[gene_count >= " + new_cutoff + "], edge";}, 10);
-  		}
-		else {
-			hide_section("network");
-		}
+  		create_cytoscape_vis("cy", layout, graph_style, data);
 	});
 
 	//Hack because footer overlaps - need to fix this.
@@ -30,7 +24,8 @@ var graph_style = cytoscape.stylesheet()
 	})
 	.selector('edge')
 	.css({
-		'width': 2
+		'width': 'data(count)',
+        'opacity':.6
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({
