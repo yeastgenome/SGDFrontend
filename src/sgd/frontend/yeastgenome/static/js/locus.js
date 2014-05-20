@@ -1,7 +1,47 @@
 
 $(document).ready(function() {
   	$.getJSON(locus_graph_link, function(data) {
-  		create_cytoscape_vis("cy", layout, graph_style, data);
+  		var graph = create_cytoscape_vis("cy", layout, graph_style, data);
+        $('#go_checkbox').click(function(){
+            if($(this).is(':checked')){
+                graph.filters['go'] = "node, edge";
+            } else {
+                graph.filters['go'] = "node, edge[type != 'GO']";
+            }
+            graph.applyFilters();
+        });
+        $('#phenotype_checkbox').click(function(){
+            if($(this).is(':checked')){
+                graph.filters['phenotype'] = "node, edge";
+            } else {
+                graph.filters['phenotype'] = "node, edge[type != 'PHENOTYPE']";
+            }
+            graph.applyFilters();
+        });
+        $('#domain_checkbox').click(function(){
+            if($(this).is(':checked')){
+                graph.filters['domain'] = "node, edge";
+            } else {
+                graph.filters['domain'] = "node, edge[type != 'DOMAIN']";
+            }
+            graph.applyFilters();
+        });
+        $('#physical_checkbox').click(function(){
+            if($(this).is(':checked')){
+                graph.filters['physical'] = "node, edge";
+            } else {
+                graph.filters['physical'] = "node, edge[type != 'PHYSINTERACTION']";
+            }
+            graph.applyFilters();
+        });
+        $('#genetic_checkbox').click(function(){
+            if($(this).is(':checked')){
+                graph.filters['genetic'] = "node, edge";
+            } else {
+                graph.filters['genetic'] = "node, edge[type != 'GENINTERACTION']";
+            }
+            graph.applyFilters();
+        });
 	});
 
 	//Hack because footer overlaps - need to fix this.
