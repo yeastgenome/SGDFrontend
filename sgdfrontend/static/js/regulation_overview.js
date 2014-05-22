@@ -1,8 +1,6 @@
-
-if(target_count + regulator_count > 0){
-    google.load("visualization", "1", {packages:["corechart"]});
-    google.setOnLoadCallback(drawChart);
-    function drawChart() {
+google.load("visualization", "1", {packages:["corechart"]});
+function drawChart() {
+    if(target_count + regulator_count > 0){
         var data_table = google.visualization.arrayToDataTable([['Category', 'Genes', { role: 'style' }, { role: 'annotation' }],
                                                                 ['Targets', target_count, '#AF8DC3', target_count],
                                                                 ['Regulators', regulator_count, '#7FBF7B', regulator_count]]);
@@ -37,9 +35,11 @@ if(target_count + regulator_count > 0){
         google.visualization.events.addListener(chart, 'select', barSelectHandler);
 
         chart.draw(data_table, graph_options);
+
+    }
+    else {
+        document.getElementById("summary_message").style.display = "block";
+        document.getElementById("summary_wrapper").style.display = "none";
     }
 }
-else {
-  	document.getElementById("summary_message").style.display = "block";
-  	document.getElementById("summary_wrapper").style.display = "none";
-}
+google.setOnLoadCallback(drawChart);
