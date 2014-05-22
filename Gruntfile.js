@@ -12,6 +12,11 @@ module.exports = function(grunt) {
                     "src/sgd/frontend/yeastgenome/static/js/build/datatables/datatables.min.js": ["bower_components/datatables/media/js/jquery.datatables.js"]
                 }
             },
+            datatablesplugins: {
+                files: {
+                    "src/sgd/frontend/yeastgenome/static/js/build/datatables/datatables.foundation.min.js": ["bower_components/datatables-plugins/integration/foundation/datatables.foundation.js"]
+                }
+            },
             fastclick: {
                 files: {
                     "src/sgd/frontend/yeastgenome/static/js/build/fastclick.min.js": ["bower_components/fastclick/lib/fastclick.js"]
@@ -40,7 +45,8 @@ module.exports = function(grunt) {
                 },
                 files: {
                     "normalize.scss": "foundation/scss/normalize.scss",
-                    "build/_nouislider.scss": "nouislider/jquery.nouislider.css"
+                    "build/_nouislider.scss": "nouislider/jquery.nouislider.css",
+                    "build/_dataTables.foundation.scss": "datatables-plugins/integration/foundation/dataTables.foundation.css"
                 }
             },
             fonts: {
