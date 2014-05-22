@@ -1,5 +1,8 @@
-<!DOCTYPE html>
+{% extends "global_layout.jinja2" %}
 
+{% block title %}{{ locus.display_name }} Summary{% endblock %}
+
+{% block head %}
 <script>
     var regulation_overview = {{ regulation_overview | safe }};
     var phenotype_overview = {{ phenotype_overview | safe }};
@@ -11,11 +14,7 @@
 	var class_type = "{{ locus.class_type }}";
     var sgdid = "{{ locus.sgdid }}";
 </script>
-
-<title>{{ locus.display_name }} Summary</title>
-
-{% extends "global_layout.jinja2" %}
-
+{% endblock %}
 
 {% block body %}
 
@@ -186,7 +185,6 @@
         </section>
     </div>
 </div>
-{% endblock body %}
 
 {% block scripts %}
     <script src="/static/js/build/nouislider.min.js"></script>
@@ -199,3 +197,5 @@
     <script src="/static/js/regulation_overview.js"></script>
     <script src="/static/js/locus.js"></script>
 {% endblock scripts %}
+
+{% endblock body %}
