@@ -1,3 +1,8 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ locus.display_name }} Phenotypes{% endblock %}
+
+{% block head %}
 <script>
 	var phenotype_details_link = "{{phenotype_details_link}}";
 	var phenotype_graph_link = "{{phenotype_graph_link}}";
@@ -7,11 +12,7 @@
 	var display_name = "{{ locus.display_name }}";
 	var class_type = "{{ locus.class_type }}";
 </script>
-
-<title>{{ locus.display_name }} Phenotypes</title>
-
-{% extends "global_layout.jinja2" %}
-
+{% endblock %}
 
 {% block body %}
 
@@ -102,7 +103,6 @@
         </section>
     </div>
 </div>
-{% endblock body %}
 
 {% block scripts %}
 <script src="/static/js/build/nouislider.min.js"></script>
@@ -113,3 +113,5 @@
 <script src="/static/js/evidence.js"></script>
 <script src="/static/js/phenotype_details.js"></script>
 {% endblock scripts %}
+
+{% endblock body %}

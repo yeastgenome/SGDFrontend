@@ -1,3 +1,8 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ locus.display_name }} Regulation{% endblock %}
+
+{% block head %}
 <script>
     var regulation_overview = {{ regulation_overview | safe }};
 	var target_count = regulation_overview["target_count"];
@@ -21,11 +26,7 @@
 	var regulators_table_filename = "{{ locus.display_name }}_regulators";
     var analyze_filename = "<a href='{{ locus.link }}' class='gene_name'>{{ locus.display_name }}</a>";
 </script>
-
-<title>{{ locus.display_name }} Regulation</title>
-
-{% extends "global_layout.jinja2" %}
-
+{% endblock %}
 
 {% block body %}
 
@@ -203,7 +204,6 @@
         </section>
     </div><!-- .tab-content -->
 </div>
-{% endblock body %}
 
 {% block scripts %}
 <script src="/static/js/build/nouislider.min.js"></script>
@@ -213,3 +213,5 @@
 <script src="/static/js/evidence.js"></script>
 <script src="/static/js/regulation_details.js"></script>
 {% endblock scripts %}
+
+{% endblock body %}

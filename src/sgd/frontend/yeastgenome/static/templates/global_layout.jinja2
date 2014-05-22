@@ -2,6 +2,7 @@
 <!--[if IE 8]> <html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
+    {% block head %}{% endblock %}
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
 	<meta name="keywords" content="python web application" />
 	<meta name="description" content="pyramid web application" />
@@ -17,6 +18,8 @@
     </style>
     <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}{% endblock %} | SGD</title>
 
 	<link href="/static/css/normalize.css" rel="stylesheet">
 	<link href="/static/css/style.css" rel="stylesheet">
@@ -35,7 +38,6 @@
 	<script src="/static/js/build/modernizr.min.js"></script>
 	<script src="/static/js/build/fastclick.min.js"></script>
 
-	
 </head>
 <body>
 	<!-- Includes header.html into template -->
@@ -49,7 +51,6 @@
     
 	<!-- Includes footer.html into template -->
 	{% include "footer.jinja2" %}
-</body>
 
 
 <!-- Le javascript
@@ -131,4 +132,5 @@ clicky_site_ids.push(66351112);
 </script>
 <noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/66351112ns.gif" /></p></noscript>
 
+</body>
 </html>

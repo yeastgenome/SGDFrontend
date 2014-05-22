@@ -1,3 +1,8 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ reference.display_name }}{% endblock %}
+
+{% block head %}
 <script>
     var interaction_details_link = "{{ interaction_details_link }}";
     var regulation_details_link = "{{ regulation_details_link }}";
@@ -25,11 +30,7 @@
     var locus_id = null;
     var reference_id = {{ reference.id }};
 </script>
-
-<title>{{ reference.display_name }}</title>
-
-{% extends "global_layout.jinja2" %}
-
+{% endblock %}
 
 {% block body %}
 
@@ -194,12 +195,11 @@
         </section>
     </div>
 </div>
-{% endblock body %}
 
 {% block scripts %}
-
 <script src="/static/js/local.js"></script>
 <script src="/static/js/evidence.js"></script>
 <script src="/static/js/reference.js"></script>
-
 {% endblock scripts %}
+
+{% endblock body %}
