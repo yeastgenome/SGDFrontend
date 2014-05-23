@@ -1,6 +1,16 @@
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
+        replace: {
+            datatables_images: {
+                src: ["bower_components/datatables-plugins/integration/foundation/dataTables.foundation.css"],
+                overwrite: true,
+                replacements: [{
+                    from: "images/",
+                    to: "../img/"
+                }]
+            }
+        },
         uglify: {
             modernizr: {
                 files: {
@@ -53,12 +63,19 @@ module.exports = function(grunt) {
                 files: {
                     "src/sgd/frontend/yeastgenome/static/fonts": "font-awesome/fonts"
                 }
+            },
+            images: {
+                files: {
+                    "src/sgd/frontend/yeastgenome/static/img": "datatables-plugins/integration/foundation/images"
+                }
             }
+            
         }
     });
     
+    grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks("grunt-bowercopy");
     
-    grunt.registerTask('default', ['uglify', 'bowercopy']);
+    grunt.registerTask('default', ['replace','uglify', 'bowercopy']);
 };
