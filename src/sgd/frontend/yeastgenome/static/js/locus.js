@@ -42,6 +42,18 @@ $(document).ready(function() {
             }
             graph.applyFilters();
         });
+        var top_list = $("#top_interactors");
+        for(var i=0; i < data['top_bioconcepts'].length; i++) {
+            var bioconcept = data['top_bioconcepts'][i];
+            var child = document.createElement('li');
+            var link = document.createElement('a');
+            link.innerHTML = bioconcept['display_name'];
+            link.href = bioconcept['link'];
+            var bioconcept_id = bioconcept['id'];
+            link.onmouseover = function() {graph.style().selector("node[BIOCONCEPT" + bioconcept_id + "]").css('background-color', 'blue')};
+            child.appendChild(link);
+            top_list.append(child);
+        }
 	});
 
 	//Hack because footer overlaps - need to fix this.

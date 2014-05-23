@@ -1,8 +1,6 @@
-
-if(regulation_overview['target_count'] + regulation_overview['regulator_count'] > 0){
-    google.load("visualization", "1", {packages:["corechart"]});
-    google.setOnLoadCallback(drawChart);
-    function drawChart() {
+google.load("visualization", "1", {packages:["corechart"]});
+function drawChart() {
+    if(regulation_overview['target_count'] + regulation_overview['regulator_count'] > 0){
         var data_table = google.visualization.arrayToDataTable([['Category', 'Genes', { role: 'style' }, { role: 'annotation' }],
                                                                 ['Targets', regulation_overview['target_count'], '#AF8DC3', regulation_overview['target_count']],
                                                                 ['Regulators', regulation_overview['regulator_count'], '#7FBF7B', regulation_overview['regulator_count']]]);
@@ -37,8 +35,9 @@ if(regulation_overview['target_count'] + regulation_overview['regulator_count'] 
             'backgroundColor': 'transparent'
         });
     }
+    else {
+        document.getElementById("summary_message").style.display = "block";
+        document.getElementById("summary_wrapper").style.display = "none";
+    }
 }
-else {
-  	document.getElementById("summary_message").style.display = "block";
-  	document.getElementById("summary_wrapper").style.display = "none";
-}
+google.setOnLoadCallback(drawChart);
