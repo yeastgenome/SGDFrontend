@@ -22,7 +22,7 @@ function expression_data_to_table(evidence) {
     var locus = create_link(evidence['locus']['display_name'], evidence['locus']['link'], false);
     var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link'], false);
 
-    return [evidence['id'], evidence['locus']['id'], locus, evidence['locus']['format_name'], evidence['condition'], evidence['value'], evidence['geo_id'], reference]
+    return [evidence['id'], evidence['locus']['id'], locus, evidence['locus']['format_name'], evidence['condition'], evidence['tags'], evidence['value'], evidence['geo_id'], evidence['channel_count'], reference]
 }
 
 function phosphorylation_data_to_table(evidence) {
