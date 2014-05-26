@@ -1,5 +1,8 @@
-<!DOCTYPE html>
+{% extends "global_layout.jinja2" %}
 
+{% block title %}{{ ontology.display_name }}{% endblock %}
+
+{% block head %}
 <script>
     var go_details_link = "{{go_details_link}}";
     var ontology_graph_link = "{{ontology_graph_link}}";
@@ -11,10 +14,8 @@
     var download_table_link = "{{download_table_link}}";
     var analyze_link = "{{analyze_table_link}}";
 </script>
+{% endblock %}
 
-<title>{{ ontology.display_name }}</title>
-
-{% extends "global_layout.jinja2" %}
 
 {% block body %}
 
@@ -83,13 +84,13 @@
     </div>
 </div>
 
-{% endblock body %}
-
 {% block scripts %}
-<script src="/static/js/cytoscape/cytoscape.min.js"></script>	
-<script src="/static/js/cytoscape/arbor.js"></script>
+<script src="/static/js/build/cytoscape.min.js"></script>	
+<script src="/static/js/build/arbor.js"></script>
 <script src="/static/js/local.js"></script>
 <script src="/static/js/cytoscape.js"></script>
 <script src="/static/js/evidence.js"></script>
 <script src="/static/js/go_ontology.js"></script>
 {% endblock scripts %}
+
+{% endblock body %}

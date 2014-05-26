@@ -92,12 +92,9 @@ function regulation_data_to_table(evidence, is_regulator) {
 	if(evidence['strain'] != null) {
 	    strain = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
 	}
-	var conditions = ['', '', '', ''];
-    var conditions2 = '';
-    var conditions3 = '';
-    var conditions4 = '';
+	var conditions = '';
 	if(evidence['properties'].length> 0) {
-	    conditions = evidence['properties'][0]['note'].split(';');
+	    conditions = evidence['properties'][0]['note'];
 	}
 	var reference = '';
 	if(evidence['reference'] != null) {
@@ -116,7 +113,7 @@ function regulation_data_to_table(evidence, is_regulator) {
 	else {
 	    analyze_value = evidence['locus2']['id'];
 	}
-  	return [evidence['id'], analyze_value, bioent1, evidence['locus1']['format_name'], bioent2, evidence['locus2']['format_name'], experiment, conditions[1], conditions[2], conditions[0] + '; ' + conditions[3], strain, reference];
+  	return [evidence['id'], analyze_value, bioent1, evidence['locus1']['format_name'], bioent2, evidence['locus2']['format_name'], experiment, evidence['assay'], evidence['construct'], conditions, strain, reference];
 }
 
 function interaction_data_to_table(evidence, index) {

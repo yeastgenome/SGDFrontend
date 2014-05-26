@@ -1,5 +1,8 @@
-<!DOCTYPE html>
+{% extends "global_layout.jinja2" %}
 
+{% block title %}{{ chemical.display_name }}{% endblock %}
+
+{% block head %}
 <script>
 	var chemical_details_link = "{{chemical_details_link}}";
 	var download_table_link = "{{download_table_link}}";
@@ -10,10 +13,7 @@
 
     var display_name = "{{ chemical.display_name }}";
 </script>
-
-<title>{{ chemical.display_name }}</title>
-
-{% extends "global_layout.jinja2" %}
+{% endblock %}
 
 
 {% block body %}
@@ -74,12 +74,13 @@
         </section>
     </div>
 </div>
-{% endblock body %}
 
 {% block scripts %}
-<script src="/static/js/cytoscape/cytoscape.min.js"></script>
-<script src="/static/js/cytoscape/arbor.js"></script>
+<script src="/static/js/build/cytoscape.min.js"></script>
+<script src="/static/js/build/arbor.js"></script>
 <script src="/static/js/local.js"></script>
 <script src="/static/js/evidence.js"></script>
 <script src="/static/js/chemical.js"></script>
 {% endblock scripts %}
+
+{% endblock body %}
