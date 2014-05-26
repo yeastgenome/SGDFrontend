@@ -375,7 +375,8 @@ function create_table(table_id, options) {
     else {
         options['oLanguage'] = {'sSearch': '<a href="#" data-dropdown="drop_search"><i class="fa fa-info-circle"></i></a><div id="drop_search" class="f-dropdown content medium" data-dropdown-content>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both \'BAS1\' and \'37\’.</div> Filter:'};
     }
-       setup_datatable_highlight();
+    options["lengthMenu"] = [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]];
+    setup_datatable_highlight();
   	table = $('#' + table_id).dataTable(options);
   	setup_datatable_highlight();
   	table.fnSearchHighlighting();

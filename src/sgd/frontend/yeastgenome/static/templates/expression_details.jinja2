@@ -48,7 +48,9 @@
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
 		<h1>Summary</h1>
-        <div id="expression_chart"></div>
+
+        <!-- Includes go_overview.html into template -->
+        {% include "expression_overview.jinja2" %}
 	</div>
 </section>
 
@@ -69,7 +71,10 @@
             <div class="page-header">
                 <h1>Network Visualization</h1>
                 <div class="panel">
-                    <div id="cy" name="cy" style="width:100%;height:700px"></div>
+                    <div id="cy" name="cy" style="width:100%;height:500px"></div>
+                    <h5>Filter By Correlation Coefficient:</h5>
+                    <div id="slider" class="noUiSlider" style="width:100%"></div>
+                    <div id="slider_ticks"></div>
                     <br>
                 </div>
             </div>
