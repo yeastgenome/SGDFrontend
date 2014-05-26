@@ -1,18 +1,17 @@
-<!DOCTYPE html>
+{% extends "global_layout.jinja2" %}
 
+{% block title %}{{ locus.display_name }} Expression{% endblock %}
+
+{% block head %}
 <script>
-	var expression_details_link = "{{expression_details_link}}";
+    var expression_details_link = "{{expression_details_link}}";
 	var expression_graph_link = "{{expression_graph_link}}";
 	var download_table_link = "{{download_table_link}}";
 	var download_table_filename = "{{ locus.display_name}}_expression";
 	var display_name = "{{ locus.display_name }}";
 	var class_type = "{{ locus.class_type }}";
 </script>
-
-<title>{{ locus.display_name }} Expression</title>
-
-{% extends "global_layout.jinja2" %}
-
+{% endblock %}
 
 {% block body %}
 
@@ -90,7 +89,6 @@
         </section>
     </div>
 </div>
-{% endblock body %}
 
 {% block scripts %}
 <script src="/static/js/build/nouislider.min.js"></script>
@@ -102,3 +100,5 @@
 <script src="/static/js/evidence.js"></script>
 <script src="/static/js/expression_details.js"></script>
 {% endblock scripts %}
+
+{% endblock body %}
