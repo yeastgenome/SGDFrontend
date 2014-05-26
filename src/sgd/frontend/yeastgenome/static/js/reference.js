@@ -236,7 +236,7 @@ function create_regulation_table(data) {
         var options = {};
         options["bPaginate"] = true;
         options["aaSorting"] = [[4, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}]
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}]
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
         options["aaData"] = [];
     }
@@ -254,7 +254,7 @@ function create_regulation_table(data) {
         var options = {};
         options["bPaginate"] = true;
         options["aaSorting"] = [[3, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}]
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}]
         options["oLanguage"] = {"sEmptyTable": "No regulation data for " + display_name};
         options["aaData"] = datatable;
     }

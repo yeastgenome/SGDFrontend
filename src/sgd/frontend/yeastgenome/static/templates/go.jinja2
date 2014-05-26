@@ -1,5 +1,8 @@
-<!DOCTYPE html>
+{% extends "global_layout.jinja2" %}
 
+{% block title %}{{ go_term.display_name }}{% endblock %}
+
+{% block head %}
 <script>
 	//Template links and filenames
 	var go_details_link = "{{go_details_link}}";
@@ -16,11 +19,7 @@
     var count = "{{ go_term.count }}";
     var child_count = "{{ go_term.child_count }}";
 </script>
-
-<title>{{ go_term.display_name }}</title>
-
-{% extends "global_layout.jinja2" %}
-
+{% endblock %}
 
 {% block body %}
 
@@ -90,14 +89,15 @@
         </section>
     </div>
 </div>
-{% endblock body %}
 
 {% block scripts %}
-<script src="/static/js/cytoscape/cytoscape.min.js"></script>	
-<script src="/static/js/cytoscape/arbor.js"></script>
+<script src="/static/js/build/cytoscape.min.js"></script>	
+<script src="/static/js/build/arbor.js"></script>
 <script src="/static/js/local.js"></script>
 <script src="/static/js/cytoscape.js"></script>
 <script src="/static/js/evidence.js"></script>
 <script src="/static/js/go.js"></script>
 
 {% endblock scripts %}
+
+{% endblock body %}
