@@ -41,6 +41,7 @@
                 <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
                 <ul class="unstyled">
                     <li><strong>Status: </strong> {{ strain.status }}</li>
+                    <li><strong>Genotype: </strong> {{ strain.genotype|safe }}</li>
                     <li><strong>Description: </strong>{{ strain.description }}</li>
                 </ul>
             </div>
@@ -53,10 +54,15 @@
                 <div class="page-header">
                     <h1>Resources</h1>
                     <ul id="resource_list">
-                        {% for resource in strain.urls %}
+                        {% for resource in strain.urls if resource.category != 'source' %}
                             <a href="{{ resource.link }}">{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </ul>
+
+                    {% for resource in strain.urls if resource.category == 'source' %}
+                        {% if loop.first %}<h3>Sources</h3>{% endif %}
+                        <a href="{{ resource.link }}">{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
                 </div>
             </section>
         {% endif %}
