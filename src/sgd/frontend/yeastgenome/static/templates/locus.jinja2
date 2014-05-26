@@ -44,22 +44,18 @@
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
                 <h1>Network Visualization</h1>
-                    <div class="panel">
-                        <div class="row">
-                        <div class="small-12 large-10 columns content-column">
-                            <div id="cy" name="cy" style="width:100%;height:700px"></div>
-                            <div id="discrete_filter">
-                                <input id="go_checkbox" type="checkbox" checked><label for="go_checkbox"><span style="color:#4daf4a">GO</span></label>
-                                <input id="phenotype_checkbox" type="checkbox" checked><label for="phenotype_checkbox"><span style="color:#984ea3">Phenotype</span></label>
-                                <input id="domain_checkbox" type="checkbox" checked><label for="domain_checkbox"><span style="color:#377eb8">Domain</span></label>
-                                <input id="physical_checkbox" type="checkbox" checked><label for="physical_checkbox"><span style="color:#ff7f00">Physical Interaction</span></label>
-                                <input id="genetic_checkbox" type="checkbox" checked><label for="genetic_checkbox"><span style="color:#fb9a99">Genetic Interaction</span></label>
-                            </div>
-                        </div>
-                        <div class="small-12 large-2 columns content-column panel">
-                            <ul id="top_interactors">
-                            </ul>
-                        </div>
+                <div class="panel">
+                    <div id="cy" name="cy" style="width:100%;height:700px"></div>
+                    <div id="discrete_filter">
+                        <input id="go_checkbox" type="checkbox" checked><label for="go_checkbox"><span style="color:#4daf4a">GO</span></label> <span id="top_go"></span>
+                        <br>
+                        <input id="phenotype_checkbox" type="checkbox" checked><label for="phenotype_checkbox"><span style="color:#984ea3">Phenotype</span></label> <span id="top_phenotype"></span>
+                        <br>
+                        <input id="domain_checkbox" type="checkbox" checked><label for="domain_checkbox"><span style="color:#377eb8">Domain</span></label> <span id="top_domain"></span>
+                        <br>
+                        <input id="physical_checkbox" type="checkbox" checked><label for="physical_checkbox"><span style="color:#ff7f00">Physical Interaction</span></label>
+                        <input id="genetic_checkbox" type="checkbox" checked><label for="genetic_checkbox"><span style="color:#fb9a99">Genetic Interaction</span></label>
+                        <input id="expression_checkbox" type="checkbox" checked><label for="expression_checkbox"><span style="color:#a65628">Expression</span></label>
                     </div>
                 </div>
             </div>

@@ -42,7 +42,17 @@ $(document).ready(function() {
             }
             graph.applyFilters();
         });
-        var top_list = $("#top_interactors");
+        $('#expression_checkbox').click(function(){
+            if($(this).is(':checked')){
+                graph.filters['expression'] = "node, edge";
+            } else {
+                graph.filters['expression'] = "node, edge[type != 'EXPRESSION']";
+            }
+            graph.applyFilters();
+        });
+        var top_go = $("#top_go");
+        var top_phenotype = $("#top_phenotype");
+        var top_domain = $("#top_domain");
         for(var i=0; i < data['top_bioconcepts'].length; i++) {
             var bioconcept = data['top_bioconcepts'][i];
             var child = document.createElement('li');
@@ -52,7 +62,25 @@ $(document).ready(function() {
             var bioconcept_id = bioconcept['id'];
             link.onmouseover = function() {graph.style().selector("node[BIOCONCEPT" + bioconcept_id + "]").css('background-color', 'blue')};
             child.appendChild(link);
-            top_list.append(child);
+            if(bioconcept['link'].startswith('/go')) {
+                top_go.append(child);
+            }
+            else if(bioconcept['link'].startswith('/observable')) {
+                top_phenotype.append(child);
+            }
+        }
+        for(var i=0; i < data['top_bioitems'].length; i++) {
+            var bioconcept = data['top_bioitems'][i];
+            var child = document.createElement('li');
+            var link = document.createElement('a');
+            link.innerHTML = bioconcept['display_name'];
+            link.href = bioconcept['link'];
+            var bioconcept_id = bioconcept['id'];
+            link.onmouseover = function() {graph.style().selector("node[BIOITEM" + bioconcept_id + "]").css('background-color', 'blue')};
+            child.appendChild(link);
+            if(bioconcept['link'].startswith('/domain')) {
+                top_domain.append(child);
+            }
         }
 	});
 
@@ -105,7 +133,7 @@ var graph_style = cytoscape.stylesheet()
 	.css({
         'line-color': "#fb9a99"
     })
-    .selector("edge[type='REGULATION']")
+    .selector("edge[type='EXPRESSION']")
 	.css({
         'line-color': "#a65628"
     });
