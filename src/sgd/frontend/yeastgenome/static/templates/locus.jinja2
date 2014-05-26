@@ -4,9 +4,6 @@
 
 {% block head %}
 <script>
-    var regulation_overview = {{ regulation_overview | safe }};
-    var phenotype_overview = {{ phenotype_overview | safe }};
-    var interaction_overview = {{ interaction_overview | safe }};
     var locus_graph_link = "{{ locus_graph_link }}";
 
 	var download_table_link = "{{download_table_link}}";
@@ -39,168 +36,35 @@
 
         <script>
             add_navbar_title("<a href='{{ locus.link }}'>{{ locus.display_name }}/{{ locus.format_name }}</a>");
-            add_navbar_element("Summary", "summary");
-            add_navbar_element("Sequence", "sequence");
-            add_navbar_element("Literature", "literature");
-            add_navbar_element("Gene Ontology", "go");
-            add_navbar_element("Phenotype", "phenotype");
-            add_navbar_element("Interactions", "interaction");
-            add_navbar_element("Expression", "expression");
-            add_navbar_element("Regulation", "regulation");
-            add_navbar_element("Protein", "protein");
             add_navbar_element("Network Visualization", "network");
-            add_navbar_element("Paragraph", "paragraph");
-            add_navbar_element("Resources", "resources");
         </script>
-
-        <!-- Summary
-        ================================================== -->
-        <section id="summary" data-magellan-destination="summary">
-            <div class="page-header">
-                <h1>Summary</h1>
-                <ul class="unstyled">
-
-                </ul>
-            </div>
-        </section>
-
-<!-- Sequence
-================================================== -->
-        <section id="sequence" data-magellan-destination="sequence">
-            <div class="page-header">
-                <h1>Sequence</h1>
-                <!-- Includes sequence_overview into template -->
-                {% include "sequence_overview.jinja2" %}
-                <a href="/locus/{{ locus.sgdid }}/sequence" class="button">See More Sequence Information -></a>
-            </div>
-        </section>
-
-<!-- Literature
-================================================== -->
-        <section id="literature" data-magellan-destination="literature">
-            <div class="page-header">
-                <h1>Literature</h1>
-                <!-- Includes literature_overview into template -->
-                {% include "literature_overview.jinja2" %}
-                <a href="/locus/{{ locus.sgdid }}/literature" class="button">See More Literature Information -></a>
-            </div>
-        </section>
-
-<!-- GO
-================================================== -->
-        <section id="go" data-magellan-destination="go">
-            <div class="page-header">
-                <h1>Gene Ontology</h1>
-                <!-- Includes go_overview into template -->
-                {% include "go_overview.jinja2" %}
-                <a href="/locus/{{ locus.sgdid }}/go" class="button">See More Gene Ontology Information -></a>
-            </div>
-        </section>
-
-<!-- Phenotype
-================================================== -->
-        <section id="phenotype" data-magellan-destination="phenotype">
-            <div class="page-header">
-                <h1>Phenotype</h1>
-                <!-- Includes phenotype_overview into template -->
-                {% include "phenotype_overview.jinja2" %}
-                <a href="/locus/{{ locus.sgdid }}/phenotype" class="button">See More Phenotype Information -></a>
-            </div>
-        </section>
-
-<!-- Interaction
-================================================== -->
-        <section id="interaction" data-magellan-destination="interaction">
-            <div class="page-header">
-                <h1>Interaction</h1>
-                <!-- Includes interaction_overview into template -->
-                {% include "interaction_overview.jinja2" %}
-                <a href="/locus/{{ locus.sgdid }}/interaction" class="button">See More Interaction Information -></a>
-            </div>
-        </section>
-
-<!-- Expression
-================================================== -->
-        <section id="expression" data-magellan-destination="expression">
-            <div class="page-header">
-                <h1>Expression</h1>
-                <!-- Includes expression_overview into template -->
-                {% include "expression_overview.jinja2" %}
-                <br>
-                <a href="/locus/{{ locus.sgdid }}/expression" class="button">See More Expression Information -></a>
-            </div>
-        </section>
-
-<!-- Regulation
-================================================== -->
-        <section id="regulation" data-magellan-destination="regulation">
-            <div class="page-header">
-                <h1>Regulation</h1>
-                <!-- Includes regulation_overview into template -->
-                {% include "regulation_overview.jinja2" %}
-                <a href="/locus/{{ locus.sgdid }}/regulation" class="button">See More Regulation Information -></a>
-            </div>
-        </section>
-
-<!-- Protein
-================================================== -->
-        <section id="protein" data-magellan-destination="protein">
-            <div class="page-header">
-                <h1>Protein</h1>
-                <a href="/locus/{{ locus.sgdid }}/protein" class="button">See More Protein Information -></a>
-            </div>
-        </section>
 
 <!-- Network Visualization
 ================================================== -->
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
                 <h1>Network Visualization</h1>
-                <div class="panel">
-                    <div id="discrete_filter">
-                        <label for="union_radio">
-                            <input id="union_radio" type="radio" name="group1" checked> All
-                            </label>
-                        <label for="go_radio" class="legend-label">
-                            <input id="go_radio" type="radio" name="group1"> <span style="color:#4daf4a">GO</span>
-                        </label>
-                        <label for="phenotype_radio" class="legend-label">
-                            <input id="phenotype_radio" type="radio" name="group1"> <span style="color:#984ea3">Phenotype</span>
-                        </label>
-                        <label for="domain_radio" class="legend-label">
-                            <input id="domain_radio" type="radio" name="group1"> <span style="color:#377eb8">Domain</span>
-                        </label>
-                        <label for="physical_radio" class="legend-label">
-                            <input id="physical_radio" type="radio" name="group1"> <span style="color:#ff7f00">Physical Interaction</span>
-                        </label>
-                        <label for="genetic_radio" class="legend-label">
-                            <input id="genetic_radio" type="radio" name="group1"> <span style="color:#fb9a99">Genetic Interaction</span>
-                        </label>
+                    <div class="panel">
+                        <div class="row">
+                        <div class="small-12 large-10 columns content-column">
+                            <div id="cy" name="cy" style="width:100%;height:700px"></div>
+                            <div id="discrete_filter">
+                                <input id="go_checkbox" type="checkbox" checked><label for="go_checkbox"><span style="color:#4daf4a">GO</span></label>
+                                <input id="phenotype_checkbox" type="checkbox" checked><label for="phenotype_checkbox"><span style="color:#984ea3">Phenotype</span></label>
+                                <input id="domain_checkbox" type="checkbox" checked><label for="domain_checkbox"><span style="color:#377eb8">Domain</span></label>
+                                <input id="physical_checkbox" type="checkbox" checked><label for="physical_checkbox"><span style="color:#ff7f00">Physical Interaction</span></label>
+                                <input id="genetic_checkbox" type="checkbox" checked><label for="genetic_checkbox"><span style="color:#fb9a99">Genetic Interaction</span></label>
+                            </div>
+                        </div>
+                        <div class="small-12 large-2 columns content-column panel">
+                            <ul id="top_interactors">
+                            </ul>
+                        </div>
                     </div>
-                    <div id="cy" name="cy" style="width:100%;height:700px"></div>
-                    <h5>Filter genes by # of connections with {{ locus.display_name }}:</h5>
-                    <div id="slider" class="noUiSlider" style="width:100%"></div>
-                    <div id="slider_ticks"></div>
-                    <br>
                 </div>
             </div>
         </section>
 
-<!-- Paragraph
-================================================== -->
-        <section id="paragraph" data-magellan-destination="paragraph">
-            <div class="page-header">
-                <h1>Paragraph</h1>
-            </div>
-        </section>
-
-<!-- Resources
-================================================== -->
-        <section id="resources" data-magellan-destination="resources">
-            <div class="page-header">
-                <h1>Resources</h1>
-            </div>
-        </section>
     </div>
 </div>
 
@@ -211,8 +75,6 @@
     <script src="/static/js/cytoscape.js"></script>
     <script src="/static/js/local.js"></script>
     <script src="/static/js/evidence.js"></script>
-    <script src="/static/js/phenotype_overview.js"></script>
-    <script src="/static/js/regulation_overview.js"></script>
     <script src="/static/js/locus.js"></script>
 {% endblock scripts %}
 

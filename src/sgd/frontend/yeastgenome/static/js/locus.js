@@ -1,23 +1,63 @@
 
 $(document).ready(function() {
   	$.getJSON(locus_graph_link, function(data) {
-  		if(data['nodes'].length > 1) {
-  			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
-            var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], function (new_cutoff) {return "node[gene_count >= " + new_cutoff + "], edge";}, 10);
-            create_discrete_filter("union_radio", graph, slider, function(){return "node, edge";}, data["max_cutoff"]);
-            create_discrete_filter("go_radio", graph, slider, function(){return "node, edge[type = 'GO']";}, data["max_cutoff"]);
-            create_discrete_filter("phenotype_radio", graph, slider, function(){return "node, edge[type = 'PHENOTYPE']";}, data["max_cutoff"]);
-            create_discrete_filter("domain_radio", graph, slider, function(){return "node, edge[type = 'DOMAIN']";}, data["max_cutoff"]);
-            create_discrete_filter("genetic_radio", graph, slider, function(){return "node, edge[type = 'GENINTERACTION']";}, data["max_cutoff"]);
-            create_discrete_filter("physical_radio", graph, slider, function(){return "node, edge[type = 'PHYSINTERACTION']";}, data["max_cutoff"]);
-  		}
-		else {
-			hide_section("network");
-		}
+  		var graph = create_cytoscape_vis("cy", layout, graph_style, data);
+        $('#go_checkbox').click(function(){
+            if($(this).is(':checked')){
+                graph.filters['go'] = "node, edge";
+            } else {
+                graph.filters['go'] = "node, edge[type != 'GO']";
+            }
+            graph.applyFilters();
+        });
+        $('#phenotype_checkbox').click(function(){
+            if($(this).is(':checked')){
+                graph.filters['phenotype'] = "node, edge";
+            } else {
+                graph.filters['phenotype'] = "node, edge[type != 'PHENOTYPE']";
+            }
+            graph.applyFilters();
+        });
+        $('#domain_checkbox').click(function(){
+            if($(this).is(':checked')){
+                graph.filters['domain'] = "node, edge";
+            } else {
+                graph.filters['domain'] = "node, edge[type != 'DOMAIN']";
+            }
+            graph.applyFilters();
+        });
+        $('#physical_checkbox').click(function(){
+            if($(this).is(':checked')){
+                graph.filters['physical'] = "node, edge";
+            } else {
+                graph.filters['physical'] = "node, edge[type != 'PHYSINTERACTION']";
+            }
+            graph.applyFilters();
+        });
+        $('#genetic_checkbox').click(function(){
+            if($(this).is(':checked')){
+                graph.filters['genetic'] = "node, edge";
+            } else {
+                graph.filters['genetic'] = "node, edge[type != 'GENINTERACTION']";
+            }
+            graph.applyFilters();
+        });
+        var top_list = $("#top_interactors");
+        for(var i=0; i < data['top_bioconcepts'].length; i++) {
+            var bioconcept = data['top_bioconcepts'][i];
+            var child = document.createElement('li');
+            var link = document.createElement('a');
+            link.innerHTML = bioconcept['display_name'];
+            link.href = bioconcept['link'];
+            var bioconcept_id = bioconcept['id'];
+            link.onmouseover = function() {graph.style().selector("node[BIOCONCEPT" + bioconcept_id + "]").css('background-color', 'blue')};
+            child.appendChild(link);
+            top_list.append(child);
+        }
 	});
 
 	//Hack because footer overlaps - need to fix this.
-    add_footer_space("resources");
+    add_footer_space("network");
 });
 
 var graph_style = cytoscape.stylesheet()
@@ -36,7 +76,8 @@ var graph_style = cytoscape.stylesheet()
 	})
 	.selector('edge')
 	.css({
-		'width': 2
+		'width': 'data(count)',
+        'opacity':.6
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({
