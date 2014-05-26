@@ -106,11 +106,7 @@ function regulation_data_to_table(evidence, is_regulator) {
 	else {
 	    analyze_value = evidence['locus2']['id'];
 	}
-	var source = evidence['source']['display_name'];
-	if(source == "YEASTRACT") {
-	    source = create_link(source, "http://yeastract.com/view.php?existing=regulation&proteinname=" + evidence["locus1"]["display_name"] + "p&orfname=" + evidence["locus2"]["display_name"], true);
-	}
-  	return [evidence['id'], analyze_value, bioent1, evidence['locus1']['format_name'], bioent2, evidence['locus2']['format_name'], experiment, conditions, strain, source, reference];
+  	return [evidence['id'], analyze_value, bioent1, evidence['locus1']['format_name'], bioent2, evidence['locus2']['format_name'], experiment, evidence['assay'], evidence['construct'], conditions, strain, reference];
 }
 
 function interaction_data_to_table(evidence, index) {
