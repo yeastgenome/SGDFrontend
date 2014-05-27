@@ -76,7 +76,7 @@ $(document).ready(function() {
             else {
                 residues = '';
             }
-            $("#reference_sequence").html(residues.chunk(10).join(' '));
+            $("#reference_sequence").html(prep_sequence(residues));
 
             mode.children('option[value=genomic_dna]')
                 .attr('disabled', !('S288C' in strain_to_genomic_data));
@@ -128,7 +128,7 @@ $(document).ready(function() {
             else {
                 residues = '';
             }
-            $("#alternative_sequence").html(residues.chunk(10).join(' '));
+            $("#alternative_sequence").html(prep_sequence(residues));
 
             mode.children('option[value=genomic_dna]')
                 .attr('disabled', !(alternative_selection.val() in strain_to_genomic_data));
@@ -187,7 +187,7 @@ $(document).ready(function() {
             else {
                 residues = '';
             }
-            $("#other_sequence").html(residues.chunk(10).join(' '));
+            $("#other_sequence").html(prep_sequence(residues));
 
             mode.children('option[value=genomic_dna]')
                 .attr('disabled', !(other_selection.val() in strain_to_genomic_data));
@@ -220,6 +220,30 @@ $(document).ready(function() {
 	//Hack because footer overlaps - need to fix this.
 	add_footer_space("resources");
 });
+
+function pad_number(number, num_digits) {
+    number = '' + number;
+    while(number.length < num_digits) {
+        number = ' ' + number;
+    }
+    return number;
+}
+
+function prep_sequence(residues) {
+    var chunks = residues.chunk(10).join(' ').chunk(66);
+    var num_digits = ('' + residues.length).length;
+
+    var new_sequence = pad_number(1, num_digits) + ' ' + chunks[0];
+    for(var i=1; i < chunks.length; i++) {
+        if(i == chunks.length-1) {
+            new_sequence = new_sequence + '<br>' + pad_number(i*60+1, num_digits) + ' ' + chunks[i];
+        }
+        else {
+            new_sequence = new_sequence + '<br>' + pad_number(i*60+1, num_digits) + ' ' + chunks[i];
+        }
+    }
+    return new_sequence;
+}
 
 function strand_to_direction(strand) {
     if(strand == '+') {
@@ -544,6 +568,8 @@ function draw_sublabel_chart(chart_id, data) {
 
 function color_sequence(seq_id, data) {
     if(data['tags'].length > 1) {
+        var num_digits = ('' + data['residues'].length).length;
+
         var seq = $("#" + seq_id).html();
         var new_seq = '';
         var start = 0;
@@ -557,18 +583,59 @@ function color_sequence(seq_id, data) {
                 label_to_color[data['tags'][i]['display_name']] = color;
                 color_index = color_index + 1;
             }
-            var start_index = data['tags'][i]['relative_start'] + Math.floor(1.0*(data['tags'][i]['relative_start']-1)/10) - 1;
-            var end_index = data['tags'][i]['relative_end'] + Math.floor(1.0*(data['tags'][i]['relative_end'])/10);
-            new_seq = new_seq +
-                    seq.substring(start, start_index) +
+            var start_index = data['tags'][i]['relative_start']-1;
+            var end_index = data['tags'][i]['relative_end'];
+
+            var html_start_index = relative_to_html(start_index, num_digits);
+            var html_end_index = relative_to_html(end_index, num_digits);
+
+            var start_index_row = Math.floor(1.0*start_index/60);
+            var end_index_row = Math.floor(1.0*end_index/60);
+
+            if(start_index_row == end_index_row) {
+                new_seq = new_seq +
+                    seq.substring(start, html_start_index) +
                     "<span style='color:" + color + "'>" +
-                    seq.substring(start_index, end_index) +
+                    seq.substring(html_start_index, html_end_index) +
                     "</span>";
-            start = end_index;
+            }
+            else {
+                var start_index_row_end = (start_index_row+1)*(71+num_digits);
+                var end_index_row_start = end_index_row*(71+num_digits) + 1 + num_digits;
+                new_seq = new_seq +
+                    seq.substring(start, html_start_index) +
+                    "<span style='color:" + color + "'>" +
+                    seq.substring(html_start_index, start_index_row_end) +
+                    "</span>";
+                start = start_index_row_end;
+
+                for(var j=start_index_row+1; j < end_index_row; j++) {
+                    var row_start = j*(71+num_digits) + 1 + num_digits;
+                    var row_end = (j+1)*(71+num_digits);
+                    new_seq = new_seq +
+                        seq.substring(start, row_start) +
+                        "<span style='color:" + color + "'>" +
+                        seq.substring(row_start, row_end) +
+                        "</span>";
+                    start = row_end
+                }
+                new_seq = new_seq +
+                    seq.substring(start, end_index_row_start) +
+                    "<span style='color:" + color + "'>" +
+                    seq.substring(end_index_row_start, html_end_index) +
+                    "</span>";
+            }
+            start = html_end_index;
         }
         new_seq = new_seq + seq.substr(start, seq.length)
         $("#" + seq_id).html(new_seq);
     }
+}
+
+function relative_to_html(index, num_digits) {
+    var row = Math.floor(1.0*index/60);
+    var column = index - row*60;
+    return row*(71+num_digits) + 1 + num_digits + column + Math.floor(1.0*column/10);
 }
 
 function create_subfeature_table(data) {
