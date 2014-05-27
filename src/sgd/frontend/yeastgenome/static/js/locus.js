@@ -59,9 +59,9 @@ $(document).ready(function() {
             var link = document.createElement('a');
             link.innerHTML = bioconcept['display_name'];
             link.href = bioconcept['link'];
-            var bioconcept_id = bioconcept['id'];
-            link.id = bioconcept_id;
+            link.id = bioconcept['id'];
             child.appendChild(link);
+            $(link).hover(function() {graph.elements('node[BIOCONCEPT' + this.id + ']').css('background-color', '#fade71')}, function(){graph.elements('node[BIOCONCEPT' + this.id + '][sub_type != "FOCUS"]').css('background-color', '#848484')});
             if(bioconcept['class_type'] == 'GO') {
                 top_go.append(child);
             }
@@ -76,7 +76,8 @@ $(document).ready(function() {
             var link = document.createElement('a');
             link.innerHTML = bioconcept['display_name'];
             link.href = bioconcept['link'];
-            var bioconcept_id = bioconcept['id'];
+            link.id = bioconcept['id'];
+            $(link).hover(function() {graph.elements('node[BIOITEM' + this.id + ']').css('background-color', '#fade71')}, function(){graph.elements('node[BIOITEM' + this.id + '][sub_type != "FOCUS"]').css('background-color', '#848484')});
             child.appendChild(link);
             top_domain.append(child);
         }
@@ -98,7 +99,8 @@ var graph_style = cytoscape.stylesheet()
 		'color': '#fff',
 		'width': 30,
 		'height': 30,
-		'border-color': '#fff'
+		'border-color': '#fff',
+        'background-color': '#848484'
 	})
 	.selector('edge')
 	.css({
