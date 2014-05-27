@@ -1,6 +1,7 @@
 google.load("visualization", "1", {packages:["corechart"]});
 
 var phosphodata = null;
+var current_residues = null;
 
 var source_to_color = {};
 
@@ -38,10 +39,11 @@ $(document).ready(function() {
         }
 
         function on_change(index) {
-            $("#sequence_residues").html(protein_data[index]['residues'].chunk(10).join(' '));
+            $("#sequence_residues").html(prep_sequence(protein_data[index]['residues']));
             $("#strain_description").html(protein_data[index]['strain']['description']);
             $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span>' + '- ' + protein_data[index]['strain']['display_name'] + '</span>';
             set_up_properties(protein_data[index]);
+            current_residues = protein_data[index]['residues'];
             draw_phosphodata();
             $("#sequence_download").click(function f() {
                 download_sequence(protein_data[index]['residues'], download_sequence_link, display_name, '');
@@ -99,6 +101,30 @@ $(document).ready(function() {
     //Hack because footer overlaps - need to fix this.
 	add_footer_space("resources");
 });
+
+function pad_number(number, num_digits) {
+    number = '' + number;
+    while(number.length < num_digits) {
+        number = ' ' + number;
+    }
+    return number;
+}
+
+function prep_sequence(residues) {
+    var chunks = residues.chunk(10).join(' ').chunk(66);
+    var num_digits = ('' + residues.length).length;
+
+    var new_sequence = pad_number(1, num_digits) + ' ' + chunks[0];
+    for(var i=1; i < chunks.length; i++) {
+        if(i == chunks.length-1) {
+            new_sequence = new_sequence + '<br>' + pad_number(i*60+1, num_digits) + ' ' + chunks[i];
+        }
+        else {
+            new_sequence = new_sequence + '<br>' + pad_number(i*60+1, num_digits) + ' ' + chunks[i];
+        }
+    }
+    return new_sequence;
+}
 
 function update_property(prop_id, prop_value) {
     if(prop_value != null && prop_value != 'None') {
@@ -174,18 +200,25 @@ function set_up_properties(data) {
 
 function draw_phosphodata() {
     var data = [];
-    if(phosphodata != null && phosphodata.length > 0) {
-        var additional = 0;
+    if(phosphodata != null && phosphodata.length > 0 && current_residues != null) {
+        var num_digits = ('' + current_residues.length).length;
+        var residues = $("#sequence_residues");
+        var old_residues = residues.html();
+        var new_residues = '';
+        var start = 0;
         for (var i=0; i < phosphodata.length; i++) {
-            var index = phosphodata[i]['site_index'] + Math.floor((phosphodata[i]['site_index'] - 1)/10) - 1 + additional;
-            var residues = $("#sequence_residues");
-            var old_residues = residues.html();
-            if(phosphodata[i]['site_residue'] == old_residues.substring(index, index+1)) {
-                residues.html(old_residues.substring(0, index) + "<span style='color:red'>" + old_residues.substring(index, index+1) + "</span>" + old_residues.substring(index+1, old_residues.length));
-                additional = additional + 31;
+            var index = relative_to_html(phosphodata[i]['site_index']-1, num_digits);
+            if(old_residues.substring(index, index+1) == phosphodata[i]['site_residue']) {
+                new_residues = new_residues + old_residues.substring(start, index) +
+                    "<span style='color:red'>" +
+                    old_residues.substring(index, index+1) +
+                    "</span>";
+                start = index+1
                 data.push(phosphodata[i]);
             }
         }
+        new_residues = new_residues + old_residues.substring(start, old_residues.length)
+        residues.html(new_residues);
         var phospho_table = create_phosphorylation_table(data);
         create_download_button("phosphorylation_table_download", phospho_table, download_table_link, phosphorylation_table_filename);
 
@@ -194,6 +227,12 @@ function draw_phosphodata() {
     else {
         $("#phosphorylation_sites_wrapper").hide();
     }
+}
+
+function relative_to_html(index, num_digits) {
+    var row = Math.floor(1.0*index/60);
+    var column = index - row*60;
+    return row*(71+num_digits) + 1 + num_digits + column + Math.floor(1.0*column/10);
 }
 
 function create_phosphorylation_table(data) {
