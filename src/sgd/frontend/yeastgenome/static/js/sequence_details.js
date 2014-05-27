@@ -309,66 +309,6 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
             }
             $(tickmarks[i]).html(y_new);
         }
-
-//        //Highlight central gene.
-//        var divider_height = Math.round(svg_gs[0].childNodes[0].getAttribute('height'));
-//        var y_one = min_tick;
-//        var y_two = max_tick;
-//
-//        var x_one = null;
-//        var x_two = null;
-//
-//        for (i=0; i < rectangles.length; i++) {
-//            if(rectangles[i].nodeName == 'rect') {
-//                var x = Math.round(rectangles[i].getAttribute('x'));
-//                var y = Math.round(rectangles[i].getAttribute('y'));
-//                if(x > 0 && (y > divider_height && has_three_prime) || (y < divider_height && has_five_prime)) {
-//                    if(x_one == null || x < x_one) {
-//                        x_one = x;
-//                    }
-//                    if(x_two == null || x > x_two) {
-//                        //x_two = x + Math.round(rectangles[i].getAttribute('width'));
-//                    }
-//                }
-//            }
-//            else if(rectangles[i].nodeName == 'text' && $(rectangles[i]).html() == display_name) {
-//                //$(rectangles[i-1]).css('fill', "#3366cc");
-//            }
-//        }
-
-//        //Fix timeline axis.
-//        var m = (y_two - y_one)/(x_two - x_one);
-//        var b = y_two - m*x_two;
-//
-//        var tickmark_holder = svg_gs[1];
-//        var tickmarks = tickmark_holder.childNodes;
-//        var tickmark_space;
-//        if(tickmarks.length > 1) {
-//            tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
-//        }
-//        else {
-//            tickmark_space = 100;
-//        }
-//        for (var i=0; i < tickmarks.length; i++) {
-//            var x_new = Math.round(tickmarks[i].getAttribute('x'));
-//            var y_new = Math.round(m*x_new + b);
-//            if(m*tickmark_space > 10000) {
-//                y_new = 10000*Math.round(y_new/10000);
-//            }
-//            else if(m*tickmark_space > 1000) {
-//                y_new = 1000*Math.round(y_new/1000);
-//            }
-//            else if(m*tickmark_space > 100) {
-//                y_new = 100*Math.round(y_new/100);
-//            }
-//            else if(m*tickmark_space > 10) {
-//                y_new = 10*Math.round(y_new/10)
-//            }
-//            if(y_new <= 0) {
-//                y_new = 1;
-//            }
-//            $(tickmarks[i]).html(y_new);
-//        }
     }
     return ready_handler;
 }
