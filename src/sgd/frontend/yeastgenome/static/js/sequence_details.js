@@ -254,9 +254,6 @@ function draw_label_chart(chart_id, strain_name) {
         var min_tick = null;
         var max_tick = null;
 
-        var five_prime_colors = [];
-        var three_prime_colors = [];
-
         var display_name_to_format_name = {};
 
         for (i=0; i < data.length; i++) {
@@ -265,26 +262,12 @@ function draw_label_chart(chart_id, strain_name) {
             var direction = strand_to_direction(data[i]['strand']);
             display_name_to_format_name[data[i]['locus']['display_name']] = data[i]['locus']['format_name'];
             if(direction == "5'") {
-                data_array.push([direction, data[i]['locus']['display_name'], start, end]);
+                data_array.unshift([direction, data[i]['locus']['display_name'], start, end]);
                 has_five_prime = true;
-
-                if(data[i]['locus']['display_name'] == display_name) {
-                    five_prime_colors.push("#3366cc");
-                }
-                else {
-                    five_prime_colors.push('#A4A4A4');
-                }
             }
             else {
                 data_array.push([direction, data[i]['locus']['display_name'], start, end]);
                 has_three_prime = true;
-
-                if(data[i]['locus']['display_name'] == display_name) {
-                    three_prime_colors.push("#3366cc");
-                }
-                else {
-                    three_prime_colors.push('#A4A4A4');
-                }
             }
 
             if(min_tick == null || start < min_tick) {
@@ -297,28 +280,17 @@ function draw_label_chart(chart_id, strain_name) {
 
         if(!has_five_prime) {
             data_array.unshift(["5'", '', null, null]);
-            five_prime_colors.push('#A4A4A4');
         }
         if(!has_three_prime) {
             data_array.push(["3'", '', null, null]);
-            three_prime_colors.push('#A4A4A4');
-        }
-
-        var colors = [];
-        for (i=0; i < five_prime_colors.length; i++) {
-            colors.push(five_prime_colors[i]);
-        }
-        for (i=0; i < three_prime_colors.length; i++) {
-            colors.push(three_prime_colors[i]);
         }
 
         dataTable.addRows(data_array);
 
         var options = {
             'height': 1,
-            'timeline': {'hAxis': {'position': 'none'}},
-            'tooltip': {'isHTML': true},
-            'colors': colors
+            'timeline': {'hAxis': {'position': 'none'}, 'singleColor': '#A4A4A4'},
+            'tooltip': {'isHTML': true}
         };
 
         chart.draw(dataTable, options);
@@ -362,6 +334,9 @@ function draw_label_chart(chart_id, strain_name) {
                         x_two = x + Math.round(rectangles[i].getAttribute('width'));
                     }
                 }
+            }
+            else if(rectangles[i].nodeName == 'text' && rectangles[i].innerHTML == display_name) {
+                rectangles[i-1].style.fill = "#3366cc";
             }
         }
 
@@ -435,8 +410,8 @@ function draw_sublabel_chart(chart_id, data) {
         }
     }
     else {
-        var start = data['start'];
-        var end = data['end'];
+        var start = 1;
+        var end = data['end'] - data['start'] + 1;
         data_array.push([display_name, display_name, start, end]);
         labels[display_name] = true;
     }
@@ -468,12 +443,21 @@ function draw_sublabel_chart(chart_id, data) {
     var svg_gs = $("#" + chart_id + " > div > div > svg > g");
     var rectangle_holder = svg_gs[3];
     var rectangles = rectangle_holder.childNodes;
-    var y_one = data['tags'][0]['relative_start'];
-    var y_two = data['tags'][data['tags'].length-1]['relative_end'];
 
+    var y_one;
+    var y_two;
     var x_one = null;
     var x_two = null;
     var x_two_start = null;
+    if(data['tags'].length > 0) {
+        y_one = data['tags'][0]['relative_start'];
+        y_two = data['tags'][data['tags'].length-1]['relative_end'];
+    }
+    else {
+        y_one = 1;
+        y_two = data['end'] - data['start'];
+    }
+
 
     for (var i=0; i < rectangles.length; i++) {
         if(rectangles[i].nodeName == 'rect') {
