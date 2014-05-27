@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
   	$.getJSON(locus_graph_link, function(data) {
-  		var graph = create_cytoscape_vis("cy", layout, graph_style, data);
+  		var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
         $('#go_checkbox').click(function(){
             if($(this).is(':checked')){
                 graph.filters['go'] = "node, edge";
@@ -60,14 +60,15 @@ $(document).ready(function() {
             link.innerHTML = bioconcept['display_name'];
             link.href = bioconcept['link'];
             var bioconcept_id = bioconcept['id'];
-            link.onmouseover = function() {graph.style().selector("node[BIOCONCEPT" + bioconcept_id + "]").css('background-color', 'blue')};
+            link.id = bioconcept_id;
             child.appendChild(link);
-            if(bioconcept['link'].startswith('/go')) {
+            if(bioconcept['class_type'] == 'GO') {
                 top_go.append(child);
             }
-            else if(bioconcept['link'].startswith('/observable')) {
+            else if(bioconcept['class_type'] == 'OBSERVABLE') {
                 top_phenotype.append(child);
             }
+
         }
         for(var i=0; i < data['top_bioitems'].length; i++) {
             var bioconcept = data['top_bioitems'][i];
@@ -76,11 +77,8 @@ $(document).ready(function() {
             link.innerHTML = bioconcept['display_name'];
             link.href = bioconcept['link'];
             var bioconcept_id = bioconcept['id'];
-            link.onmouseover = function() {graph.style().selector("node[BIOITEM" + bioconcept_id + "]").css('background-color', 'blue')};
             child.appendChild(link);
-            if(bioconcept['link'].startswith('/domain')) {
-                top_domain.append(child);
-            }
+            top_domain.append(child);
         }
 	});
 
