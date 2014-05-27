@@ -288,6 +288,110 @@ function create_domain_table(data) {
     return create_table("domain_table", options);
 }
 
+function make_domain_ready_handler(chart_id, chart, min_start, max_end, descriptions, data_array) {
+    function ready_handler() {
+        //Fix tooltips.
+        function tooltipHandler(e) {
+            var datarow = data_array[e.row];
+            var spans = $(".google-visualization-tooltip-action > span");
+            if(spans.length > 3) {
+                spans[0].innerHTML = 'Coords:';
+                spans[1].innerHTML = ' ' + datarow[2]/10 + '-' + datarow[3]/10;
+                spans[2].innerHTML = 'Descr: ';
+                if(descriptions[e.row] != null) {
+                    spans[3].innerHTML = '<span>' + descriptions[e.row] + '</span>';
+                }
+                else {
+                    spans[3].innerHTML = 'Not available.';
+                }
+            }
+        }
+        google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
+
+        //Fix axis.
+        var svg_gs = $("#" + chart_id + " > div > div > svg > g");
+
+        var rectangle_holder = svg_gs[3];
+        rectangles = rectangle_holder.childNodes;
+        var y_one = min_start/10;
+        var y_two = max_end/10;
+
+        var x_one = null;
+        var x_two = null;
+
+        for (i=0; i < rectangles.length; i++) {
+            if(rectangles[i].nodeName == 'rect') {
+                var x = Math.round(rectangles[i].getAttribute('x'));
+                var y = Math.round(rectangles[i].getAttribute('y'));
+                if(x_one == null || x < x_one) {
+                    x_one = x;
+                }
+                if(x_two == null || x > x_two) {
+                    x_two = x + Math.round(rectangles[i].getAttribute('width'));
+                }
+            }
+        }
+
+        var m = (y_two - y_one)/(x_two - x_one);
+        var b = y_two - m*x_two;
+
+        var tickmark_holder = svg_gs[1];
+        var tickmarks = tickmark_holder.childNodes;
+        var tickmark_space;
+        if(tickmarks.length > 1) {
+            tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
+        }
+        else {
+            tickmark_space = 100;
+        }
+        for (i=0; i < tickmarks.length; i++) {
+            var x_new = Math.round(tickmarks[i].getAttribute('x'));
+            var y_new = Math.round(m*x_new + b);
+            if(m*tickmark_space > 10000) {
+                y_new = 10000*Math.round(y_new/10000);
+            }
+            else if(m*tickmark_space > 1000) {
+                y_new = 1000*Math.round(y_new/1000);
+            }
+            else if(m*tickmark_space > 100) {
+                y_new = 100*Math.round(y_new/100);
+            }
+            else if(m*tickmark_space > 10) {
+                y_new = 10*Math.round(y_new/10)
+            }
+            if(y_new <= 0) {
+                y_new = 1;
+            }
+            $(tickmarks[i]).html(y_new);
+        }
+
+        //Grab colors for network.
+        rectangle_holder = svg_gs[3];
+        var rectangles = rectangle_holder.childNodes;
+        var ordered_colors = [];
+        for (var i=0; i < rectangles.length; i++) {
+            if(rectangles[i].nodeName == 'rect') {
+                var color = $(rectangles[i]).attr('fill');
+                if(ordered_colors[ordered_colors.length - 1] != color) {
+                    ordered_colors.push(color);
+                }
+
+            }
+        }
+
+        var label_holder = svg_gs[0];
+        var labels = label_holder.childNodes;
+        var color_index = 0;
+        for (var i=0; i < labels.length; i++) {
+            if(labels[i].nodeName == 'text') {
+                source_to_color[$(labels[i]).text()] = ordered_colors[color_index];
+                color_index = color_index + 1;
+            }
+        }
+    }
+    return ready_handler;
+}
+
 function draw_domain_chart(chart_id, data) {
     var container = document.getElementById(chart_id);
 
@@ -332,108 +436,10 @@ function draw_domain_chart(chart_id, data) {
     };
 
     chart.draw(dataTable, options);
+    google.visualization.events.addListener(chart, 'ready', make_domain_ready_handler(chart_id, chart, min_start, max_end, descriptions, data_array));
 
     options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
     chart.draw(dataTable, options);
-
-    function tooltipHandler(e) {
-        var datarow = data_array[e.row];
-        var spans = $(".google-visualization-tooltip-action > span");
-        if(spans.length > 3) {
-            spans[0].innerHTML = 'Coords:';
-            spans[1].innerHTML = ' ' + datarow[2]/10 + '-' + datarow[3]/10;
-            spans[2].innerHTML = 'Descr: ';
-            if(descriptions[e.row] != null) {
-                spans[3].innerHTML = '<span>' + descriptions[e.row] + '</span>';
-            }
-            else {
-                spans[3].innerHTML = 'Not available.';
-            }
-        }
-    }
-
-    var svg_gs = $("#" + chart_id + " > div > div > svg > g");
-
-    var rectangle_holder = svg_gs[3];
-    rectangles = rectangle_holder.childNodes;
-    var y_one = min_start/10;
-    var y_two = max_end/10;
-
-    var x_one = null;
-    var x_two = null;
-
-    for (i=0; i < rectangles.length; i++) {
-        if(rectangles[i].nodeName == 'rect') {
-            var x = Math.round(rectangles[i].getAttribute('x'));
-            var y = Math.round(rectangles[i].getAttribute('y'));
-            if(x_one == null || x < x_one) {
-                x_one = x;
-            }
-            if(x_two == null || x > x_two) {
-                x_two = x + Math.round(rectangles[i].getAttribute('width'));
-            }
-        }
-    }
-
-    var m = (y_two - y_one)/(x_two - x_one);
-    var b = y_two - m*x_two;
-
-    var tickmark_holder = svg_gs[1];
-    var tickmarks = tickmark_holder.childNodes;
-    var tickmark_space;
-    if(tickmarks.length > 1) {
-        tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
-    }
-    else {
-        tickmark_space = 100;
-    }
-    for (i=0; i < tickmarks.length; i++) {
-        var x_new = Math.round(tickmarks[i].getAttribute('x'));
-        var y_new = Math.round(m*x_new + b);
-        if(m*tickmark_space > 10000) {
-            y_new = 10000*Math.round(y_new/10000);
-        }
-        else if(m*tickmark_space > 1000) {
-            y_new = 1000*Math.round(y_new/1000);
-        }
-        else if(m*tickmark_space > 100) {
-            y_new = 100*Math.round(y_new/100);
-        }
-        else if(m*tickmark_space > 10) {
-            y_new = 10*Math.round(y_new/10)
-        }
-        if(y_new <= 0) {
-            y_new = 1;
-        }
-        tickmarks[i].innerHTML = y_new;
-    }
-
-    rectangle_holder = svg_gs[3];
-    var rectangles = rectangle_holder.childNodes;
-    var ordered_colors = [];
-    for (i=0; i < rectangles.length; i++) {
-        if(rectangles[i].nodeName == 'rect') {
-            var color = rectangles[i].getAttribute('fill');
-            if(ordered_colors[ordered_colors.length - 1] != color) {
-                ordered_colors.push(color);
-            }
-
-        }
-    }
-
-    var label_holder = svg_gs[0];
-    var labels = label_holder.childNodes;
-    var color_index = 0;
-    for (i=0; i < labels.length; i++) {
-        if(labels[i].nodeName == 'text') {
-            source_to_color[labels[i].innerHTML] = ordered_colors[color_index];
-            color_index = color_index + 1;
-        }
-    }
-
-    // Listen for the 'select' event, and call my function selectHandler() when
-    // the user selects something on the chart.
-    google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
 }
 
 function prep_style() {

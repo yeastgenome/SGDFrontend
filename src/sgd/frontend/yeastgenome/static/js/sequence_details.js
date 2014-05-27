@@ -232,6 +232,87 @@ function strand_to_direction(strand) {
 
 var strain_to_neighbors = {};
 
+function make_label_ready_handler(chart_id, chart, data, display_name_to_format_name, data_array) {
+    function ready_handler() {
+        //Fix tooltips.
+        function tooltipHandler(e) {
+            var datarow = data_array[e.row];
+            var title_spans = $(".google-visualization-tooltip-item > span");
+            $(title_spans[0]).html($(title_spans[0]).html()) + ' (' + display_name_to_format_name[$(title_spans[0]).html()] + ')';
+
+            var spans = $(".google-visualization-tooltip-action > span");
+            if(spans.length > 3) {
+                $(spans[1]).html(' ' + datarow[2] + '-' + datarow[3]);
+                $(spans[2]).html('Length:');
+                $(spans[3]).html(' ' + datarow[3] - datarow[2] + 1);
+            }
+        }
+        google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
+
+        //Fix timeline axis.
+        var svg_gs = $("#" + chart_id + " > div > div > svg > g");
+        var rectangle_holder = svg_gs[3];
+        var rectangles = rectangle_holder.childNodes;
+
+        var y_one = data[0]['start'];
+        var y_two = data[data.length-1]['end'];
+        var x_one = null;
+        var x_two = null;
+        var x_two_start = null;
+
+        for (var i=0; i < rectangles.length; i++) {
+            if(rectangles[i].nodeName == 'rect') {
+                var x = Math.round(rectangles[i].getAttribute('x'));
+                var y = Math.round(rectangles[i].getAttribute('y'));
+                if(x_one == null || x < x_one) {
+                    x_one = x;
+                }
+                if(x_two == null || x > x_two_start) {
+                    x_two = x + Math.round(rectangles[i].getAttribute('width'));
+                    x_two_start = x;
+                }
+            }
+            else if(rectangles[i].nodeName == 'text' && $(rectangles[i]).text() == display_name) {
+                $(rectangles[i-1]).css('fill', "#3366cc");
+            }
+        }
+
+        var m = (y_two - y_one)/(x_two - x_one);
+        var b = y_two - m*x_two;
+
+        var tickmark_holder = svg_gs[1];
+        var tickmarks = tickmark_holder.childNodes;
+        var tickmark_space;
+        if(tickmarks.length > 1) {
+            tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
+        }
+        else {
+            tickmark_space = 100;
+        }
+        for (var i=0; i < tickmarks.length; i++) {
+            var x_new = Math.round(tickmarks[i].getAttribute('x'));
+            var y_new = Math.round(m*x_new + b);
+            if(m*tickmark_space > 10000) {
+                y_new = 10000*Math.round(y_new/10000);
+            }
+            else if(m*tickmark_space > 1000) {
+                y_new = 1000*Math.round(y_new/1000);
+            }
+            else if(m*tickmark_space > 100) {
+                y_new = 100*Math.round(y_new/100);
+            }
+            else if(m*tickmark_space > 10) {
+                y_new = 10*Math.round(y_new/10)
+            }
+            if(y_new <= 0) {
+                y_new = 1;
+            }
+            $(tickmarks[i]).html(y_new);
+        }
+    }
+    return ready_handler;
+}
+
 function draw_label_chart(chart_id, strain_name) {
     if(strain_name in strain_to_neighbors) {
         var data = strain_to_neighbors[strain_name];
@@ -294,49 +375,58 @@ function draw_label_chart(chart_id, strain_name) {
         };
 
         chart.draw(dataTable, options);
+        google.visualization.events.addListener(chart, 'ready', make_label_ready_handler(chart_id, chart, data, display_name_to_format_name, data_array));
 
         options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
         chart.draw(dataTable, options);
+    }
+}
 
-        var svg_gs = $("#" + chart_id + " > div > div > svg > g");
-        var rectangle_holder = svg_gs[3];
-        var rectangles = rectangle_holder.childNodes;
+function make_sublabel_ready_handler(chart_id, chart, data, data_array) {
+    function ready_handler() {
 
+        //Fix tooltips
         function tooltipHandler(e) {
             var datarow = data_array[e.row];
-            var title_spans = $(".google-visualization-tooltip-item > span");
-            title_spans[0].innerHTML = title_spans[0].innerHTML + ' (' + display_name_to_format_name[title_spans[0].innerHTML] + ')';
-
             var spans = $(".google-visualization-tooltip-action > span");
-            if(spans.length > 3) {
+            if(spans.length > 2) {
                 spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
                 spans[2].innerHTML = 'Length:';
                 spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
             }
         }
+        google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
 
-        var divider_height = Math.round(svg_gs[0].childNodes[0].getAttribute('height'));
-        var y_one = min_tick;
-        var y_two = max_tick;
+        //Fix timeline axis.
+        var svg_gs = $("#" + chart_id + " > div > div > svg > g");
+        var rectangle_holder = svg_gs[3];
+        var rectangles = rectangle_holder.childNodes;
 
+        var y_one;
+        var y_two;
         var x_one = null;
         var x_two = null;
+        var x_two_start = null;
+        if(data['tags'].length > 0) {
+            y_one = data['tags'][0]['relative_start'];
+            y_two = data['tags'][data['tags'].length-1]['relative_end'];
+        }
+        else {
+            y_one = 1;
+            y_two = data['end'] - data['start'];
+        }
 
-        for (i=0; i < rectangles.length; i++) {
+        for (var i=0; i < rectangles.length; i++) {
             if(rectangles[i].nodeName == 'rect') {
                 var x = Math.round(rectangles[i].getAttribute('x'));
                 var y = Math.round(rectangles[i].getAttribute('y'));
-                if(x > 0 && (y > divider_height && has_three_prime) || (y < divider_height && has_five_prime)) {
-                    if(x_one == null || x < x_one) {
-                        x_one = x;
-                    }
-                    if(x_two == null || x > x_two) {
-                        x_two = x + Math.round(rectangles[i].getAttribute('width'));
-                    }
+                if(x_one == null || x < x_one) {
+                    x_one = x;
                 }
-            }
-            else if(rectangles[i].nodeName == 'text' && rectangles[i].innerHTML == display_name) {
-                rectangles[i-1].style.fill = "#3366cc";
+                if(x_two == null || x > x_two_start) {
+                    x_two = x + Math.round(rectangles[i].getAttribute('width'));
+                    x_two_start = x;
+                }
             }
         }
 
@@ -370,13 +460,32 @@ function draw_label_chart(chart_id, strain_name) {
             if(y_new <= 0) {
                 y_new = 1;
             }
-            tickmarks[i].innerHTML = y_new;
+            $(tickmarks[i]).html(y_new);
         }
 
-        // Listen for the 'select' event, and call my function selectHandler() when
-        // the user selects something on the chart.
-        google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
+        //Get colors for sublables on sequence.
+        var rectangle_holder = svg_gs[3];
+        var rectangles = rectangle_holder.childNodes;
+        var ordered_colors = [];
+        for (var i=0; i < rectangles.length; i++) {
+            if(rectangles[i].nodeName == 'rect') {
+                var color = rectangles[i].getAttribute('fill');
+                if(ordered_colors[ordered_colors.length - 1] != color) {
+                    ordered_colors.push(color);
+                }
+            }
+        }
+
+        var label_holder = svg_gs[0];
+        var color_index = 0;
+        for (var i=0; i < data['tags'].length; i++) {
+            if(!(data['tags'][i]['display_name'] in label_to_color)) {
+                label_to_color[data['tags'][i]['display_name']] = ordered_colors[color_index];
+                color_index = color_index + 1;
+            }
+        }
     }
+    return ready_handler;
 }
 
 function draw_sublabel_chart(chart_id, data) {
@@ -426,111 +535,11 @@ function draw_sublabel_chart(chart_id, data) {
     }
 
     chart.draw(dataTable, options);
+    google.visualization.events.addListener(chart, 'ready', make_sublabel_ready_handler(chart_id, chart, data, data_array));
 
     options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
 
     chart.draw(dataTable, options);
-
-    function tooltipHandler(e) {
-        var datarow = data_array[e.row];
-        var spans = $(".google-visualization-tooltip-action > span");
-        if(spans.length > 2) {
-            spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
-            spans[2].innerHTML = 'Length:';
-            spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
-        }
-    }
-    var svg_gs = $("#" + chart_id + " > div > div > svg > g");
-    var rectangle_holder = svg_gs[3];
-    var rectangles = rectangle_holder.childNodes;
-
-    var y_one;
-    var y_two;
-    var x_one = null;
-    var x_two = null;
-    var x_two_start = null;
-    if(data['tags'].length > 0) {
-        y_one = data['tags'][0]['relative_start'];
-        y_two = data['tags'][data['tags'].length-1]['relative_end'];
-    }
-    else {
-        y_one = 1;
-        y_two = data['end'] - data['start'];
-    }
-
-
-    for (var i=0; i < rectangles.length; i++) {
-        if(rectangles[i].nodeName == 'rect') {
-            var x = Math.round(rectangles[i].getAttribute('x'));
-            var y = Math.round(rectangles[i].getAttribute('y'));
-            if(x_one == null || x < x_one) {
-                x_one = x;
-            }
-            if(x_two == null || x > x_two_start) {
-                x_two = x + Math.round(rectangles[i].getAttribute('width'));
-                x_two_start = x;
-            }
-        }
-    }
-
-    var m = (y_two - y_one)/(x_two - x_one);
-    var b = y_two - m*x_two;
-
-    var tickmark_holder = svg_gs[1];
-    var tickmarks = tickmark_holder.childNodes;
-    var tickmark_space;
-    if(tickmarks.length > 1) {
-        tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
-    }
-    else {
-        tickmark_space = 100;
-    }
-    for (var i=0; i < tickmarks.length; i++) {
-        var x_new = Math.round(tickmarks[i].getAttribute('x'));
-        var y_new = Math.round(m*x_new + b);
-        if(m*tickmark_space > 10000) {
-            y_new = 10000*Math.round(y_new/10000);
-        }
-        else if(m*tickmark_space > 1000) {
-            y_new = 1000*Math.round(y_new/1000);
-        }
-        else if(m*tickmark_space > 100) {
-            y_new = 100*Math.round(y_new/100);
-        }
-        else if(m*tickmark_space > 10) {
-            y_new = 10*Math.round(y_new/10)
-        }
-        if(y_new <= 0) {
-            y_new = 1;
-        }
-        tickmarks[i].innerHTML = y_new;
-    }
-
-    // Listen for the 'select' event, and call my function selectHandler() when
-    // the user selects something on the chart.
-    google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
-
-    var rectangle_holder = svg_gs[3];
-    var rectangles = rectangle_holder.childNodes;
-    var ordered_colors = [];
-    for (var i=0; i < rectangles.length; i++) {
-        if(rectangles[i].nodeName == 'rect') {
-            var color = rectangles[i].getAttribute('fill');
-            if(ordered_colors[ordered_colors.length - 1] != color) {
-                ordered_colors.push(color);
-            }
-        }
-    }
-
-    var label_holder = svg_gs[0];
-    var labels = label_holder.childNodes;
-    var color_index = 0;
-    for (var i=0; i < data['tags'].length; i++) {
-        if(!(data['tags'][i]['display_name'] in label_to_color)) {
-            label_to_color[data['tags'][i]['display_name']] = ordered_colors[color_index];
-            color_index = color_index + 1;
-        }
-    }
 }
 
 function color_sequence(seq_id, data) {
