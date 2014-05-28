@@ -10,6 +10,11 @@
 	var display_name = "{{ locus.display_name }}";
 	var class_type = "{{ locus.class_type }}";
     var sgdid = "{{ locus.sgdid }}";
+
+	var phenotype_overview = {{phenotype_overview | safe}};
+	var regulation_overview = {{regulation_overview | safe}};
+	var interaction_overview = {{interaction_overview | safe}};
+
 </script>
 {% endblock %}
 
@@ -36,8 +41,29 @@
 
         <script>
             add_navbar_title("<a href='{{ locus.link }}'>{{ locus.display_name }}/{{ locus.format_name }}</a>");
+            add_navbar_element("Summary", "summary");
             add_navbar_element("Network Visualization", "network");
+            add_navbar_element("Gene Ontology", "go");
+            add_navbar_element("Regulation", "regulation");
+            add_navbar_element("Phenotype", "phenotype");
+            add_navbar_element("Interaction", "interaction");
+            add_navbar_element("Expression", "expression");
+            add_navbar_element("Protein", "protein");
+            add_navbar_element("Sequence", "sequence");
+            add_navbar_element("Paragraph", "paragraph");
+            add_navbar_element("References", "references");
+            add_navbar_element("Resources", "resources");
         </script>
+
+    <!-- Summary
+================================================== -->
+        <section id="summary" data-magellan-destination="summary">
+            <div class="page-header">
+                <h1>Summary</h1>
+                <p></p>
+            </div>
+        </section>
+
 
 <!-- Network Visualization
 ================================================== -->
@@ -61,6 +87,96 @@
             </div>
         </section>
 
+<!-- GO
+================================================== -->
+        <section id="go" data-magellan-destination="go">
+            <div class="page-header">
+                <h1>Gene Ontology</h1>
+                <!-- Includes go_overview.html into template -->
+                {% include "go_overview.jinja2" %}
+
+            </div>
+        </section>
+
+<!-- Regulation
+================================================== -->
+        <section id="regulation" data-magellan-destination="regulation">
+            <div class="page-header">
+                <h1>Regulation</h1>
+                <p id="summary_paragraph"></p>
+                <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
+                <div class="panel" id="summary_wrapper">
+                    <!-- Includes regulation_overview.html into template -->
+                    {% include "regulation_overview.jinja2" %}
+                </div>
+            </div>
+        </section>
+
+<!-- Phenotype
+================================================== -->
+        <section id="phenotype" data-magellan-destination="phenotype">
+            <div class="page-header">
+                <h1>Phenotype</h1>
+                <!-- Includes phenotype_overview.html into template -->
+                {% include "phenotype_overview.jinja2" %}
+            </div>
+        </section>
+
+<!-- Interaction
+================================================== -->
+        <section id="interaction" data-magellan-destination="interaction">
+            <div class="page-header">
+                <h1>Interactions</h1>
+                <!-- Includes interaction_overview.html into template -->
+                {% include "interaction_overview.jinja2" %}
+            </div>
+        </section>
+
+<!-- Expression
+================================================== -->
+        <section id="expression" data-magellan-destination="expression">
+            <div class="page-header">
+                <h1>Expression</h1>
+            </div>
+        </section>
+
+<!-- Protein
+================================================== -->
+        <section id="protein" data-magellan-destination="protein">
+            <div class="page-header">
+                <h1>Protein</h1>
+                <!-- Includes protein_overview.html into template -->
+                {% include "protein_overview.jinja2" %}
+            </div>
+        </section>
+
+<!-- Sequence
+================================================== -->
+        <section id="sequence" data-magellan-destination="sequence">
+            <div class="page-header">
+                <h1>Sequence</h1>
+                <!-- Includes sequence_overview into template -->
+                {% include "sequence_overview.jinja2" %}
+            </div>
+        </section>
+
+        <section id="paragraph" data-magellan-destination="paragraph">
+            <div class="page-header">
+                <h1>Paragraph</h1>
+            </div>
+        </section>
+
+        <section id="references" data-magellan-destination="references">
+            <div class="page-header">
+                <h1>References</h1>
+            </div>
+        </section>
+
+        <section id="resources" data-magellan-destination="resources">
+            <div class="page-header">
+                <h1>Resources</h1>
+            </div>
+        </section>
     </div>
 </div>
 
@@ -72,6 +188,9 @@
     <script src="/static/js/local.js"></script>
     <script src="/static/js/evidence.js"></script>
     <script src="/static/js/locus.js"></script>
+    <script src="/static/js/interaction_overview.js"></script>
+    <script src="/static/js/regulation_overview.js"></script>
+    <script src="/static/js/phenotype_overview.js"></script>
 {% endblock scripts %}
 
 {% endblock body %}

@@ -84,7 +84,7 @@ $(document).ready(function() {
 	});
 
 	//Hack because footer overlaps - need to fix this.
-    add_footer_space("network");
+    add_footer_space("resources");
 });
 
 var graph_style = cytoscape.stylesheet()
