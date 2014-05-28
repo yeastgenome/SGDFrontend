@@ -161,7 +161,7 @@ function create_link(display_name, link, new_window) {
 function create_note_icon(drop_id_num, text) {
 	var icon;
 	if(text != null && text != '') {
-		icon = "<a href='#' data-dropdown='drop" + drop_id_num + "'><i class='icon-info-sign'></i></a><div id='drop" + drop_id_num + "' class='f-dropdown content medium' data-dropdown-content><p>" + text + "</p></div>"
+		icon = "<a href='#' data-dropdown='drop" + drop_id_num + "'><i class='fa fa-info-circle'></i></a><div id='drop" + drop_id_num + "' class='f-dropdown content medium' data-dropdown-content><p>" + text + "</p></div>"
 	}
 	else {
 		icon = '';
@@ -370,10 +370,11 @@ function create_show_child_button(child_button_id, table, data, details_all_link
 
 function create_table(table_id, options) {
     if('oLanguage' in options) {
-        options['oLanguage']['sSearch'] = '<a href="#" data-dropdown="drop_search"><i class="fa fa-info-circle"></i></a><div id="drop_search" class="f-dropdown content medium" data-dropdown-content>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both \'BAS1\' and \'37\’.</div> Filter:';
+        options['oLanguage']['sSearch'] = '<a href="#" data-dropdown="' + table_id + '_filter_drop"><i class="fa fa-info-circle"></i></a><div id="' + table_id + '_filter_drop" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37".</p></div> Filter:';
     }
     else {
-        options['oLanguage'] = {'sSearch': '<a href="#" data-dropdown="drop_search"><i class="fa fa-info-circle"></i></a><div id="drop_search" class="f-dropdown content medium" data-dropdown-content>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both \'BAS1\' and \'37\’.</div> Filter:'};
+        options['oLanguage'] = {'sSearch': '<a href="#" data-dropdown="' + table_id + '_filter_drop"><i class="fa fa-info-circle"></i></a><div id="' + table_id + '_filter_drop" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37".</p></div> Filter:'};
+
     }
        setup_datatable_highlight();
   	table = $('#' + table_id).dataTable(options);
