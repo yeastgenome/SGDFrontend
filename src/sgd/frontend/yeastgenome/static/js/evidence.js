@@ -290,6 +290,7 @@ function go_data_to_table(evidence, index) {
 	  		}
 	  	}
 	  	else if(obj != null) {
+
 	  		var new_rel_entry = condition['role'] + ' ';
             if(obj['link'] == null) {
                 new_rel_entry = new_rel_entry + obj['display_name'];
