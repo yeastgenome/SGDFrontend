@@ -94,7 +94,7 @@
                 <h1>Gene Ontology</h1>
                 <!-- Includes go_overview.html into template -->
                 {% include "go_overview.jinja2" %}
-
+                <a href="/locus/{{ locus.sgdid }}/go" class="button [radius round]">See Details</a>
             </div>
         </section>
 
@@ -110,6 +110,7 @@
                     {% include "regulation_overview.jinja2" %}
                 </div>
             </div>
+            <a href="/locus/{{ locus.sgdid }}/regulation" class="button [radius round]">See Details</a>
         </section>
 
 <!-- Phenotype
@@ -119,6 +120,7 @@
                 <h1>Phenotype</h1>
                 <!-- Includes phenotype_overview.html into template -->
                 {% include "phenotype_overview.jinja2" %}
+                <a href="/locus/{{ locus.sgdid }}/phenotype" class="button [radius round]">See Details</a>
             </div>
         </section>
 
@@ -129,6 +131,7 @@
                 <h1>Interactions</h1>
                 <!-- Includes interaction_overview.html into template -->
                 {% include "interaction_overview.jinja2" %}
+                <a href="/locus/{{ locus.sgdid }}/interaction" class="button [radius round]">See Details</a>
             </div>
         </section>
 
@@ -137,6 +140,7 @@
         <section id="expression" data-magellan-destination="expression">
             <div class="page-header">
                 <h1>Expression</h1>
+                <a href="/locus/{{ locus.sgdid }}/expression" class="button [radius round]">See Details</a>
             </div>
         </section>
 
@@ -147,6 +151,7 @@
                 <h1>Protein</h1>
                 <!-- Includes protein_overview.html into template -->
                 {% include "protein_overview.jinja2" %}
+                <a href="/locus/{{ locus.sgdid }}/protein" class="button [radius round]">See Details</a>
             </div>
         </section>
 
@@ -157,6 +162,7 @@
                 <h1>Sequence</h1>
                 <!-- Includes sequence_overview into template -->
                 {% include "sequence_overview.jinja2" %}
+                <a href="/locus/{{ locus.sgdid }}/sequence" class="button [radius round]">See Details</a>
             </div>
         </section>
 
