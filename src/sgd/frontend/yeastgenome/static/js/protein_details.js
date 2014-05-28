@@ -8,6 +8,8 @@ var source_to_color = {};
 
 $(document).ready(function() {
 
+    create_physico_chemical_download();
+
     $.getJSON(protein_domains_link, function(data) {
         var domain_table = create_domain_table(data);
         create_download_button("domain_table_download", domain_table, download_table_link, domains_table_filename);
@@ -101,6 +103,28 @@ $(document).ready(function() {
     //Hack because footer overlaps - need to fix this.
 	add_footer_space("resources");
 });
+
+function create_physico_chemical_download() {
+    var download_button = $("#protein_properties_download");
+    var download_function = function() {
+        var data = table._('tr', {"filter": "applied"});
+        var filename = name;
+
+        var table_headers = table.fnSettings().aoColumns;
+        var headers = [];
+        for(var i=0,len=table_headers.length; i<len; i++) {
+            headers.push(table_headers[i].nTh.innerHTML);
+        }
+
+        var search_term = table.fnSettings().oPreviousSearch.sSearch
+        if(search_term != '') {
+            filename = filename + '_filtered_by_-' + search_term + '-'
+        }
+
+        post_to_url(download_link, {"display_name":filename, 'headers': JSON.stringify(headers), 'data': JSON.stringify(data)});
+    };
+    download_button.click(download_function);
+}
 
 function pad_number(number, num_digits) {
     number = '' + number;
