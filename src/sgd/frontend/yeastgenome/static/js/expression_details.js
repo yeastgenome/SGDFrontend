@@ -26,16 +26,21 @@ function create_expression_table(data) {
         var options = {};
         options["bPaginate"] = true;
         options["aaSorting"] = [[4, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, {"bVisible":false}, null, null, null, {'sWidth': '250px'}, null];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, {"bVisible":false}, null, null, null, null];
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
         options["aaData"] = [];
     }
     else {
         var datatable = [];
         var geo_ids = {};
+        var evidence_ids = {};
+        var new_data = [];
         for (var i=0; i < data.length; i++) {
-            datatable.push(expression_data_to_table(data[i], i));
-            geo_ids[data[i]['geo_id']] = true;
+            if(!(data[i]['pcl_filename'] in evidence_ids)) {
+                datatable.push(expression_data_to_table(data[i], i));
+                evidence_ids[data[i]['pcl_filename']] = true;
+                geo_ids[data[i]['geo_id']] = true;
+            }
         }
 
         set_up_header('expression_table', datatable.length, 'entry', 'entries', Object.keys(geo_ids).length, 'GEO ID', 'GEO IDS');
@@ -43,7 +48,7 @@ function create_expression_table(data) {
         var options = {};
         options["bPaginate"] = true;
         options["aaSorting"] = [[4, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null];
         options["oLanguage"] = {"sEmptyTable": "No expression data for " + display_name};
         options["aaData"] = datatable;
     }
@@ -55,14 +60,54 @@ google.load("visualization", "1", {packages:["corechart"]});
 function create_expression_chart(data) {
     var datatable1 = [['Name', 'Number']];
     var datatable2 = [['Name', 'Number']];
+    var datatable_left = [['Name', 'Number']];
+    var datatable_right = [['Name', 'Number']];
+
+    var sum = 0;
+    var sum_of_squares = 0;
+    var n = 0;
+    for (var i=0; i < data.length; i++) {
+        var value = data[i]['value'];
+        if(value >= -5 && value <= 5) {
+            sum = sum + value;
+            sum_of_squares = sum_of_squares + value*value;
+            n = n + 1;
+        }
+    }
+    var mean = 1.0*sum/n;
+    var variance = 1.0*sum_of_squares/n - mean*mean;
+    var standard_dev = Math.sqrt(variance);
+
     for (var i=0; i < data.length; i++) {
         if(data[i]['channel_count'] == 1) {
             datatable1.push([data[i]['condition'], data[i]['value']]);
         }
         else if(data[i]['channel_count'] == 2) {
-            datatable2.push([data[i]['condition'], data[i]['value']]);
+            if(data[i]['value'] >= -5 && data[i]['value'] <= 5) {
+                datatable2.push([data[i]['condition'], data[i]['value']]);
+                if(data[i]['value'] < (mean - 2*standard_dev)) {
+                    datatable_left.push([data[i]['condition'], data[i]['value']]);
+                }
+                else if(data[i]['value'] > (mean + 2*standard_dev)) {
+                    datatable_right.push([data[i]['condition'], data[i]['value']]);
+                }
+            }
         }
     }
+
+    var chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart_left'));
+    chart.draw(google.visualization.arrayToDataTable(datatable_left), {
+                                title: 'Low-Expression Number of 2-channel experiments vs. log2 ratios',
+                                legend: { position: 'none' },
+                                height: 300
+                            });
+
+    var chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart_right'));
+    chart.draw(google.visualization.arrayToDataTable(datatable_right), {
+                                title: 'High-Expression Number of 2-channel experiments vs. log2 ratios',
+                                legend: { position: 'none' },
+                                height: 300
+                            });
 
     var chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart'));
     chart.draw(google.visualization.arrayToDataTable(datatable2), {
