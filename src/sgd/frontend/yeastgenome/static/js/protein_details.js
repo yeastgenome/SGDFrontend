@@ -85,18 +85,6 @@ $(document).ready(function() {
         }
 	});
 
-    $.getJSON(bioentity_details_link, function(data) {
-        var description_references = [];
-        for (var i=0; i < data.length; i++) {
-            if(data[i]['info_key'] == 'Description') {
-                description_references.push('<a href="' + data[i]['reference']['link'] + '">' + data[i]['reference']['display_name'] + '</a>');
-            }
-        }
-        if(description_references != '') {
-            $('#description_references').html(description_references.join(', '));
-        }
-	});
-
     var alias_table = create_alias_table(aliases);
     create_download_button("alias_table_download", alias_table, download_table_link, alias_table_filename);
 
