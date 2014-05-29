@@ -3,7 +3,8 @@
   "version": "2",
   "dependencies": {
     "cytoscape": "2.2.7",
-    "datatables": "1.9.4",
+    "datatables": "1.10.0",
+    "datatables-plugins": "latest",
     "font-awesome": "4.1.0",
     "foundation": "5.2.2",
     "jquery": "^1.11.1",
