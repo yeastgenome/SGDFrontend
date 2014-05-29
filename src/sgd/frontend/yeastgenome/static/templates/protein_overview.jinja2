@@ -18,7 +18,11 @@
                 {% endfor %}
             </li>
             <li><strong>Description: </strong>{{ locus.description }}</li>
-            <li id="description_references"></li>
+            <li>
+                {% for reference in locus.description_references %}
+                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </li>
             <li>
                 {% for alias in locus.aliases if alias.category == 'NCBI protein name' %}
                     {% if loop.first %}<strong>Protein Product: </strong>{% endif %}
