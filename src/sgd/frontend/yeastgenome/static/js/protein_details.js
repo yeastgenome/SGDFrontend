@@ -17,6 +17,17 @@ $(document).ready(function() {
             if(data['nodes'].length > 1) {
                 var graph_style = prep_style();
                 create_cytoscape_vis("cy", layout, graph_style, data);
+
+                var download_headers = ['', 'Gene', 'Domain'];
+                var download_data = [];
+                var id_to_name = {};
+                for(var i=0; i < data['nodes'].length; i++) {
+                    id_to_name[data['nodes'][i]['data']['id']] = data['nodes'][i]['data']['name'];
+                }
+                for(var i=0; i < data['edges'].length; i++) {
+                    download_data.push(['', id_to_name[data['edges'][i]['data']['target']], id_to_name[data['edges'][i]['data']['source']]]);
+                }
+                create_download_button_no_table('domain_network_download', download_headers, download_data, download_table_link, domain_network_filename);
             }
             else {
                 $("#shared_domains").hide();
