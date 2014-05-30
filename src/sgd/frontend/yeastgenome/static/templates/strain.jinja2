@@ -71,11 +71,7 @@
 
 {% block scripts %}
 <script src="/static/js/local.js"></script>
-    <script>
-        document.getElementById("summary_paragraph").innerHTML = paragraph['text'];
-        references = paragraph['references'];
-        set_up_references(references, "summary_paragraph_reference_list");
-    </script>
+<script src="/static/js/strain.js"></script>
 {% endblock scripts %}
 
 {% endblock body %}
