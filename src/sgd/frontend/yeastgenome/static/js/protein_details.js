@@ -17,6 +17,17 @@ $(document).ready(function() {
             if(data['nodes'].length > 1) {
                 var graph_style = prep_style();
                 create_cytoscape_vis("cy", layout, graph_style, data);
+
+                var download_headers = ['', 'Gene', 'Domain'];
+                var download_data = [];
+                var id_to_name = {};
+                for(var i=0; i < data['nodes'].length; i++) {
+                    id_to_name[data['nodes'][i]['data']['id']] = data['nodes'][i]['data']['name'];
+                }
+                for(var i=0; i < data['edges'].length; i++) {
+                    download_data.push(['', id_to_name[data['edges'][i]['data']['target']], id_to_name[data['edges'][i]['data']['source']]]);
+                }
+                create_download_button_no_table('domain_network_download', download_headers, download_data, download_table_link, domain_network_filename);
             }
             else {
                 $("#shared_domains").hide();
@@ -83,18 +94,6 @@ $(document).ready(function() {
         }
 	});
 
-    $.getJSON(bioentity_details_link, function(data) {
-        var description_references = [];
-        for (var i=0; i < data.length; i++) {
-            if(data[i]['info_key'] == 'Description') {
-                description_references.push('<a href="' + data[i]['reference']['link'] + '">' + data[i]['reference']['display_name'] + '</a>');
-            }
-        }
-        if(description_references != '') {
-            $('#description_references').html(description_references.join(', '));
-        }
-	});
-
     var alias_table = create_alias_table(aliases);
     create_download_button("alias_table_download", alias_table, download_table_link, alias_table_filename);
 
@@ -140,31 +139,40 @@ function get_perc(top, bottom) {
 }
 
 function set_up_properties(data) {
+    var download_headers = ['', 'Gene', 'Gene Systematic Name', 'Property', 'Value'];
+    var download_data = [];
     update_property('length', data['residues'].length-1);
+    download_data.push(['', display_name, format_name, 'Length', data['residues'].length-1]);
     update_property('molecular_weight', data['molecular_weight']);
+    download_data.push(['', display_name, format_name, 'Molecular Weight (Da)', data['molecular_weight']]);
     update_property('pi', data['pi']);
+    download_data.push(['', display_name, format_name, 'Isoelectric Point (pI)', data['pi']]);
     update_property('aliphatic_index', data['aliphatic_index']);
+    download_data.push(['', display_name, format_name, 'Aliphatic Index', data['aliphatic_index']]);
     update_property('instability_index', data['instability_index']);
+    download_data.push(['', display_name, format_name, 'Instability Index', data['instability_index']]);
     var formula = '-';
     if(data['carbon'] != null) {
         formula = 'C<sub>' + data['carbon'] + '</sub>H<sub>' + data['hydrogen'] + '</sub>N<sub>' + data['nitrogen'] + '</sub>O<sub>' + data['oxygen'] + '</sub>S<sub>' + data['sulfur'] + '</sub>';
     }
     update_property('formula', formula);
+    download_data.push(['', display_name, format_name, 'Formula', formula]);
 
     update_property('codon_bias', data['codon_bias']);
+    download_data.push(['', display_name, format_name, 'Codon Bias', data['codon_bias']]);
     update_property('cai', data['cai']);
+    download_data.push(['', display_name, format_name, 'Codon Adaptation Index', data['cai']]);
     update_property('fop_score', data['fop_score']);
+    download_data.push(['', display_name, format_name, 'Frequency of Optimal Codons', data['fop_score']]);
     update_property('gravy_score', data['gravy_score']);
+    download_data.push(['', display_name, format_name, 'Hydropathicity of Protein', data['gravy_score']]);
     update_property('aromaticity_score', data['aromaticity_score']);
+    download_data.push(['', display_name, format_name, 'Aromaticity Score', data['aromaticity_score']]);
 
-    update_property('ecoli_half_life', data['ecoli_half_life']);
-    update_property('mammal_half_life', data['mammal_half_life']);
-    update_property('yeast_half_life', data['yeast_half_life']);
-
-    update_property('all_half_cys_ext_coeff', data['all_half_cys_ext_coeff']);
-    update_property('no_cys_ext_coeff', data['no_cys_ext_coeff']);
     update_property('all_cys_ext_coeff', data['all_cys_ext_coeff']);
-    update_property('all_pairs_cys_ext_coeff', data['all_pairs_cys_ext_coeff']);
+    download_data.push(['', display_name, format_name, 'Extincation Coefficients at 280nm ALL Cys residues appear as half cystines', data['all_cys_ext_coeff']]);
+    update_property('no_cys_ext_coeff', data['no_cys_ext_coeff']);
+    download_data.push(['', display_name, format_name, 'Extincation Coefficients at 280nm NO Cys residues appear as half cystines', data['no_cys_ext_coeff']]);
 
     var options = {};
     options["bPaginate"] = false;
@@ -177,6 +185,27 @@ function set_up_properties(data) {
                          ['H', data['his'], get_perc(data['his'], total)], ['I', data['ile'], get_perc(data['ile'], total)], ['L', data['leu'], get_perc(data['leu'], total)], ['K', data['lys'], get_perc(data['lys'], total)],
                          ['M', data['met'], get_perc(data['met'], total)], ['F', data['phe'], get_perc(data['phe'], total)], ['P', data['pro'], get_perc(data['pro'], total)], ['S', data['ser'], get_perc(data['ser'], total)],
                          ['T', data['thr'], get_perc(data['thr'], total)], ['W', data['trp'], get_perc(data['trp'], total)], ['Y', data['tyr'], get_perc(data['tyr'], total)], ['V', data['val'], get_perc(data['val'], total)]];
+
+    download_data.push(['', display_name, format_name, 'A', data['ala']]);
+    download_data.push(['', display_name, format_name, 'R', data['arg']]);
+    download_data.push(['', display_name, format_name, 'N', data['asn']]);
+    download_data.push(['', display_name, format_name, 'D', data['asp']]);
+    download_data.push(['', display_name, format_name, 'C', data['cys']]);
+    download_data.push(['', display_name, format_name, 'Q', data['gln']]);
+    download_data.push(['', display_name, format_name, 'E', data['glu']]);
+    download_data.push(['', display_name, format_name, 'G', data['gly']]);
+    download_data.push(['', display_name, format_name, 'H', data['his']]);
+    download_data.push(['', display_name, format_name, 'I', data['ile']]);
+    download_data.push(['', display_name, format_name, 'L', data['leu']]);
+    download_data.push(['', display_name, format_name, 'K', data['lys']]);
+    download_data.push(['', display_name, format_name, 'M', data['met']]);
+    download_data.push(['', display_name, format_name, 'F', data['phe']]);
+    download_data.push(['', display_name, format_name, 'P', data['pro']]);
+    download_data.push(['', display_name, format_name, 'S', data['ser']]);
+    download_data.push(['', display_name, format_name, 'T', data['thr']]);
+    download_data.push(['', display_name, format_name, 'W', data['trp']]);
+    download_data.push(['', display_name, format_name, 'Y', data['tyr']]);
+    download_data.push(['', display_name, format_name, 'V', data['val']]);
 
     create_table("amino_acid_table", options);
 
@@ -195,7 +224,15 @@ function set_up_properties(data) {
         options["aaData"] = [['Carbon', '-', '-'], ['Hydrogen', '-', '-'], ['Nitrogen', '-', '-'], ['Oxygen', '-', '-'], ['Sulfur', '-', '-']];
     }
 
+    download_data.push(['', display_name, format_name, 'Carbon', data['carbon']]);
+    download_data.push(['', display_name, format_name, 'Hydrogen', data['hydrogen']]);
+    download_data.push(['', display_name, format_name, 'Nitrogen', data['nitrogen']]);
+    download_data.push(['', display_name, format_name, 'Oxygen', data['oxygen']]);
+    download_data.push(['', display_name, format_name, 'Sulfur', data['sulfur']]);
+
     create_table("atomic_table", options);
+
+    create_download_button_no_table('protein_properties_download', download_headers, download_data, download_table_link, properties_table_filename);
 }
 
 function draw_phosphodata() {

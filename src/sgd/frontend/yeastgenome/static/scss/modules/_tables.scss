@@ -1,0 +1,9 @@
+// Tables
+table {
+    border-collapse: separate;
+    border-spacing: 1px;
+}
+
+th { 
+    padding-right: 16px !important;    // to allow for sort arrows
+}

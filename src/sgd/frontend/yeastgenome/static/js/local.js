@@ -374,7 +374,6 @@ function create_table(table_id, options) {
     }
     else {
         options['oLanguage'] = {'sSearch': '<a href="#" data-dropdown="' + table_id + '_filter_drop"><i class="fa fa-info-circle"></i></a><div id="' + table_id + '_filter_drop" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37".</p></div> Filter:'};
-
     }
     options["lengthMenu"] = [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]];
     setup_datatable_highlight();
