@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-		
+
 <!-- Summary
 ================================================== -->
 <section id="summary" data-magellan-destination="summary">
@@ -20,6 +19,12 @@
             </li>
             <li><strong>Description: </strong>{{ locus.description }}</li>
             <li id="description_references"></li>
+            <li>
+                {% for alias in locus.aliases if alias.category == 'NCBI protein name' %}
+                    {% if loop.first %}<strong>Protein Product: </strong>{% endif %}
+                    <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </li>
             <li id="ec_number"></li>
         </ul>
 	</div>

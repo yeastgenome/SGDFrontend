@@ -1,14 +1,13 @@
-<!DOCTYPE html>
+{% extends "global_layout.jinja2" %}
 
+{% block title %}{{ strain.display_name }}{% endblock %}
+
+{% block head %}
 <script>
     var display_name = "{{ strain.display_name }}";
     var paragraph = {{ paragraph| safe }};
 </script>
-
-<title>{{ strain.display_name }}</title>
-
-{% extends "global_layout.jinja2" %}
-
+{% endblock %}
 
 {% block body %}
 
@@ -42,6 +41,7 @@
                 <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
                 <ul class="unstyled">
                     <li><strong>Status: </strong> {{ strain.status }}</li>
+                    <li><strong>Genotype: </strong> {{ strain.genotype|safe }}</li>
                     <li><strong>Description: </strong>{{ strain.description }}</li>
                 </ul>
             </div>
@@ -54,16 +54,20 @@
                 <div class="page-header">
                     <h1>Resources</h1>
                     <ul id="resource_list">
-                        {% for resource in strain.urls %}
+                        {% for resource in strain.urls if resource.category != 'source' %}
                             <a href="{{ resource.link }}">{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </ul>
+
+                    {% for resource in strain.urls if resource.category == 'source' %}
+                        {% if loop.first %}<h3>Sources</h3>{% endif %}
+                        <a href="{{ resource.link }}">{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
                 </div>
             </section>
         {% endif %}
     </div>
 </div>
-{% endblock body %}
 
 {% block scripts %}
 <script src="/static/js/local.js"></script>
@@ -73,3 +77,5 @@
         set_up_references(references, "summary_paragraph_reference_list");
     </script>
 {% endblock scripts %}
+
+{% endblock body %}
