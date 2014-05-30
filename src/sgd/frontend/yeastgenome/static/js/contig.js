@@ -29,6 +29,83 @@ function strand_to_direction(strand) {
         return "3'";
     }
 }
+
+function make_ready_handler(chart_id, chart, min_tick, max_tick, has_five_prime, has_three_prime, display_name_to_format_name, data_array) {
+    function ready_handler() {
+        function tooltipHandler(e) {
+            var datarow = data_array[e.row];
+            var title_spans = $(".google-visualization-tooltip-item > span");
+            title_spans[0].innerHTML = title_spans[0].innerHTML + ' (' + display_name_to_format_name[title_spans[0].innerHTML] + ')';
+            var spans = $(".google-visualization-tooltip-action > span");
+            if(spans.length > 3) {
+                spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
+                spans[2].innerHTML = 'Length:';
+                spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
+            }
+        }
+        google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
+
+        var divider_height = Math.round($("#" + chart_id + " > div > div > svg > g")[0].childNodes[0].getAttribute('height'));
+
+        var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
+        var rectangles = rectangle_holder.childNodes;
+        var y_one = min_tick;
+        var y_two = max_tick;
+
+        var x_one = null;
+        var x_two = null;
+
+        for (var i=0; i < rectangles.length; i++) {
+            if(rectangles[i].nodeName == 'rect') {
+                var x = Math.round(rectangles[i].getAttribute('x'));
+                var y = Math.round(rectangles[i].getAttribute('y'));
+                if(x > 0 && (y > divider_height && has_three_prime) || (y < divider_height && has_five_prime)) {
+                    if(x_one == null || x < x_one) {
+                        x_one = x;
+                    }
+                    if(x_two == null || x > x_two) {
+                        x_two = x + Math.round(rectangles[i].getAttribute('width'));
+                    }
+                }
+            }
+        }
+
+        var m = (y_two - y_one)/(x_two - x_one);
+        var b = y_two - m*x_two;
+
+        var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
+        var tickmarks = tickmark_holder.childNodes;
+        var tickmark_space;
+        if(tickmarks.length > 1) {
+            tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
+        }
+        else {
+            tickmark_space = 100;
+        }
+        for (var i=0; i < tickmarks.length; i++) {
+            var x_new = Math.round(tickmarks[i].getAttribute('x'));
+            var y_new = Math.round(m*x_new + b);
+            if(m*tickmark_space > 10000) {
+                y_new = 10000*Math.round(y_new/10000);
+            }
+            else if(m*tickmark_space > 1000) {
+                y_new = 1000*Math.round(y_new/1000);
+            }
+            else if(m*tickmark_space > 100) {
+                y_new = 100*Math.round(y_new/100);
+            }
+            else if(m*tickmark_space > 10) {
+                y_new = 10*Math.round(y_new/10)
+            }
+            if(y_new <= 0) {
+                y_new = 1;
+            }
+            $(tickmarks[i]).html(y_new);
+        }
+    }
+    return ready_handler;
+}
+
 function set_up_sequence(chart_id, data) {
     var container = document.getElementById(chart_id);
 
@@ -94,91 +171,11 @@ function set_up_sequence(chart_id, data) {
     }
 
     chart.draw(dataTable, options);
-
+    google.visualization.events.addListener(chart, 'ready', make_ready_handler(chart_id, chart, min_tick, max_tick,
+        has_five_prime, has_three_prime, display_name_to_format_name, data_array));
     var height = $("#" + chart_id + " > div > div > div > svg").height() + 60;
     options['height'] = height;
     chart.draw(dataTable, options);
-
-    function tooltipHandler(e) {
-        var datarow = data_array[e.row];
-        var title_spans = $(".google-visualization-tooltip-item > span");
-        title_spans[0].innerHTML = title_spans[0].innerHTML + ' (' + display_name_to_format_name[title_spans[0].innerHTML] + ')';
-        var spans = $(".google-visualization-tooltip-action > span");
-        if(spans.length > 3) {
-            spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
-            spans[2].innerHTML = 'Length:';
-            spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
-        }
-    }
-
-    var divider_height = Math.round($("#" + chart_id + " > div > div > svg > g")[0].childNodes[0].getAttribute('height'));
-
-    var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
-    var rectangles = rectangle_holder.childNodes;
-    var y_one = min_tick;
-    var y_two = max_tick;
-
-    var x_one = null;
-    var x_two = null;
-
-    for (var i=0; i < rectangles.length; i++) {
-        if(rectangles[i].nodeName == 'rect') {
-            var x = Math.round(rectangles[i].getAttribute('x'));
-            var y = Math.round(rectangles[i].getAttribute('y'));
-            if(x > 0 && (y > divider_height && has_three_prime) || (y < divider_height && has_five_prime)) {
-                if(x_one == null || x < x_one) {
-                    x_one = x;
-                }
-                if(x_two == null || x > x_two) {
-                    x_two = x + Math.round(rectangles[i].getAttribute('width'));
-                }
-            }
-        }
-    }
-
-    var m = (y_two - y_one)/(x_two - x_one);
-    var b = y_two - m*x_two;
-
-    function tickmarkHandler(e) {
-        window.setTimeout(function() {
-            var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
-            var tickmarks = tickmark_holder.children();
-            var tickmark_space;
-            if(tickmarks.length > 1) {
-                tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
-            }
-            else {
-                tickmark_space = 100;
-            }
-            for (var i=0; i < tickmarks.length; i++) {
-                var x_new = Math.round(tickmarks[i].getAttribute('x'));
-                var y_new = Math.round(m*x_new + b);
-                if(m*tickmark_space > 10000) {
-                    y_new = 10000*Math.round(y_new/10000);
-                }
-                else if(m*tickmark_space > 1000) {
-                    y_new = 1000*Math.round(y_new/1000);
-                }
-                else if(m*tickmark_space > 100) {
-                    y_new = 100*Math.round(y_new/100);
-                }
-                else if(m*tickmark_space > 10) {
-                    y_new = 10*Math.round(y_new/10)
-                }
-                if(y_new <= 0) {
-                    y_new = 1;
-                }
-                tickmarks[i].html(y_new);
-            }
-        }, 1000);
-    }
-    google.visualization.events.addListener(chart, 'ready', tickmarkHandler);
-
-    chart.draw(dataTable, options);
-
-    // Listen for the 'select' event, and call my function selectHandler() when
-    // the user selects something on the chart.
-    google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
 }
 
 function create_feature_table(data) {
