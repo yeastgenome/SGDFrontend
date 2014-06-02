@@ -27,7 +27,7 @@ function create_domain_table(data) {
 
     var options = {};
     options["bPaginate"] = true;
-    options["aaSorting"] = [[2, "asc"]];
+    options["aaSorting"] = [[2, "asc"], [4, "asc"]];
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": "No genes associated with domain " + display_name + "."};
