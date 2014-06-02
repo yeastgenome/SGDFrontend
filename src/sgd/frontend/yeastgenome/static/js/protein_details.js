@@ -388,8 +388,8 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
             if(spans.length > 3) {
                 spans[0].innerHTML = 'Coords:';
                 spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
+                spans[2].innerHTML = '';
                 if(descriptions[e.row] != null && descriptions[e.row] != '') {
-                    spans[2].innerHTML = 'Descr: ';
                     spans[3].innerHTML = '<span>' + descriptions[e.row] + '</span>';
                 }
                 else {
