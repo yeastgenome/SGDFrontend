@@ -96,6 +96,8 @@ $(document).ready(function() {
             var strain_data = strain_to_genomic_data[alternative_selection.val()];
             $("#alternative_strain_description").html(strain_data['strain']['description']);
             $("#navbar_alternative").children()[0].innerHTML = 'Alternative Reference Strains <span>' + '- ' + strain_to_genomic_data[alternative_selection.val()]['strain']['display_name'] + '</span>';
+            $("#current_alternative_strain_sequence").html(strain_to_genomic_data[alternative_selection.val()]['strain']['display_name']);
+            $("#current_alternative_strain_location").html(strain_to_genomic_data[alternative_selection.val()]['strain']['display_name']);
             if(strain_data['strand'] == '-') {
                 $("#alternative_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['end'] + ' - ' + strain_data['start']);
             }
@@ -154,6 +156,8 @@ $(document).ready(function() {
             var strain_data = strain_to_genomic_data[other_selection.val()];
             $("#other_strain_description").html(strain_data['strain']['description']);
             $("#navbar_other").children()[0].innerHTML = 'Other Strains <span>' + '- ' + other_selection.val() + '</span>';
+            $("#current_other_strain_sequence").html(strain_to_genomic_data[other_selection.val()]['strain']['display_name']);
+            $("#current_other_strain_location").html(strain_to_genomic_data[other_selection.val()]['strain']['display_name']);
             if(strain_data['strand'] == '-') {
                 $("#other_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['end'] + ' - ' + strain_data['start']);
             }
