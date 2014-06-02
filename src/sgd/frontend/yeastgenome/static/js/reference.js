@@ -170,13 +170,29 @@ function create_interaction_table(data) {
 }
 
 function create_go_table(data) {
+    var options = {};
+    options["bPaginate"] = true;
+    options["aaSorting"] = [[3, "asc"]];
+    options["bDestroy"] = true;
+    options["aoColumns"] = [
+            {"bSearchable":false, "bVisible":false}, //evidence_id
+            {"bSearchable":false, "bVisible":false}, //analyze_id
+            null, //gene
+            {"bSearchable":false, "bVisible":false}, //gene systematic name
+            null, //gene ontology term
+            {"bSearchable":false, "bVisible":false}, //gene ontology term id
+            null, //qualifier
+            {"bSearchable":false, "bVisible":false}, //aspect
+            {"bSearchable":false, "bVisible":false}, //method
+            null, //evidence
+            null, //source
+            null, //assigned on
+            null, //annotation_extension
+            {"bSearchable":false, "bVisible":false} // reference
+            ];
+
     if("Error" in data) {
-        var options = {};
-        options["bPaginate"] = true;
-        options["aaSorting"] = [[3, "asc"]];
-        options["bDestroy"] = true;
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
         options["aaData"] = [];
     }
     else {
@@ -189,12 +205,7 @@ function create_go_table(data) {
 
         set_up_header('go_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
-        var options = {};
-        options["bPaginate"] = true;
-        options["aaSorting"] = [[3, "asc"]];
-        options["bDestroy"] = true;
         options["oLanguage"] = {"sEmptyTable": "No gene ontology data for " + display_name};
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
         options["aaData"] = datatable;
     }
 
