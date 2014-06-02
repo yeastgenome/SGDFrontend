@@ -209,31 +209,25 @@
                 <h3>Homologs</h3>
                     <p>
                         {% for url in locus.urls if url.category == 'Protein Information Homologs' or url.category == 'Analyze Sequence S288C vs. other species'%}
-                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
-                <h3>Protein Databases</h3>
+                <h3>Protein Databases/Other</h3>
                     <p>
                         {% for url in locus.urls if url.category == 'Protein databases/Other'%}
-                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Localization</h3>
                     <p>
                         {% for url in locus.urls if url.category == 'Localization Resources'%}
-                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-                <h3>Domains</h3>
-                    <p>
-                        {% for url in locus.urls if url.category == 'Domain'%}
-                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Post-translational Modifications</h3>
                     <p>
                         {% for url in locus.urls if url.category == 'Post-translational modifications'%}
-                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
             </div>
