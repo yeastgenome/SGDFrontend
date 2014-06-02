@@ -30,7 +30,7 @@ $(document).ready(function() {
 
                 if(i != data['all_children'].length-1) {
                     var comma = document.createElement('span');
-                    comma.innerHTML = ', ';
+                    comma.innerHTML = ' &bull; ';
                     children_div.appendChild(comma);
                 }
             }
