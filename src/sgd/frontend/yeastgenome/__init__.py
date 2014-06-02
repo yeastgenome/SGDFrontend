@@ -579,7 +579,10 @@ class YeastgenomeFrontend(FrontendInterface):
 
         response.text = '>' + display_name + '  ' + contig_name + '\n' + clean_cell(sequence.replace(' ', ''))
         headers['Content-Type'] = 'text/plain'
-        headers['Content-Disposition'] = str('attachment; filename=' + display_name + '_' + contig_name + '_sequence.txt')
+        if contig_name is not None and contig_name != '':
+            headers['Content-Disposition'] = str('attachment; filename=' + display_name + '_' + contig_name + '_sequence.txt')
+        else:
+            headers['Content-Disposition'] = str('attachment; filename=' + display_name + '_sequence.txt')
         headers['Content-Description'] = 'File Transfer'
         return response
     
