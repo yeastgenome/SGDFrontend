@@ -11,7 +11,9 @@ $(document).ready(function() {
     $.getJSON(protein_domains_link, function(data) {
         var domain_table = create_domain_table(data);
         create_download_button("domain_table_download", domain_table, download_table_link, domains_table_filename);
-        draw_domain_chart("domain_chart", data);
+        if(data.length > 0) {
+            draw_domain_chart("domain_chart", data);
+        }
 
         $.getJSON(protein_domain_graph_link, function(data) {
             if(data['nodes'].length > 1) {
@@ -31,6 +33,7 @@ $(document).ready(function() {
             }
             else {
                 $("#shared_domains").hide();
+                $("#domain_locations").hide();
             }
         });
 	});
@@ -40,29 +43,35 @@ $(document).ready(function() {
 
     $.getJSON(sequence_details_link, function(data) {
         var protein_data = data['protein'];
-        var strain_selection = $("#strain_selection");
-        for (var i=0; i < protein_data.length; i++) {
-            var option = document.createElement("option");
-            option.setAttribute("value", protein_data[i]['strain']['format_name']);
-            option.innerHTML = protein_data[i]['strain']['display_name'];
-            strain_selection.append(option);
+        if(protein_data.length > 0) {
+            var strain_selection = $("#strain_selection");
+            for (var i=0; i < protein_data.length; i++) {
+                var option = document.createElement("option");
+                option.setAttribute("value", protein_data[i]['strain']['format_name']);
+                option.innerHTML = protein_data[i]['strain']['display_name'];
+                strain_selection.append(option);
 
+            }
+
+            function on_change(index) {
+                $("#sequence_residues").html(prep_sequence(protein_data[index]['residues']));
+                $("#strain_description").html(protein_data[index]['strain']['description']);
+                $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span>' + '- ' + protein_data[index]['strain']['display_name'] + '</span>';
+                set_up_properties(protein_data[index]);
+                current_residues = protein_data[index]['residues'];
+                draw_phosphodata();
+                $("#sequence_download").click(function f() {
+                    download_sequence(protein_data[index]['residues'], download_sequence_link, display_name, '');
+                });
+            }
+
+            strain_selection.change(function() {on_change(this.selectedIndex)});
+            on_change(0);
         }
-
-        function on_change(index) {
-            $("#sequence_residues").html(prep_sequence(protein_data[index]['residues']));
-            $("#strain_description").html(protein_data[index]['strain']['description']);
-            $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span>' + '- ' + protein_data[index]['strain']['display_name'] + '</span>';
-            set_up_properties(protein_data[index]);
-            current_residues = protein_data[index]['residues'];
-            draw_phosphodata();
-            $("#sequence_download").click(function f() {
-                download_sequence(protein_data[index]['residues'], download_sequence_link, display_name, '');
-            });
+        else {
+            $("#sequence_section").hide();
+            $("#sequence_section_message").show();
         }
-
-        strain_selection.change(function() {on_change(this.selectedIndex)});
-        on_change(0);
 	});
 
     $.getJSON(protein_phosphorylation_details_link, function(data) {
