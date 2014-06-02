@@ -52,6 +52,9 @@
                         {% for url in go_term.urls if url.category == 'GO' %}
                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>
                         {% endfor %}
+                        {% if go_term.urls|length == 0 %}
+                           <span>{{ go_term.go_id }}</span>
+                        {% endif %}
                     </li>
                     <li><strong>Aspect: </strong>{{ go_term.go_aspect|title }}</li>
                     <li><strong>Description: </strong>{{ go_term.description }}</li>
