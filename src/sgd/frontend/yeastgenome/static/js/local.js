@@ -101,9 +101,10 @@ function set_up_references(references, ref_list_id) {
 		a.href = reference['link'];
 		reflink_li.appendChild(a);
 		refLinks.appendChild(reflink_li);
-		
-		for (var j=0; j < reference['urls'].length; j++) {
-			var url = reference['urls'][j]
+
+        var urls = reference['urls'].sort(function(a, b) {return a['display_name'] < b['display_name']});
+		for (var j=0; j < urls.length; j++) {
+			var url = urls[j];
 			var reflink_li = document.createElement('li');
 			var a = document.createElement('a');
 			var linkText = document.createTextNode(url['display_name']);
