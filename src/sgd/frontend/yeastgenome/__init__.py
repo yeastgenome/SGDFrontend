@@ -9,7 +9,7 @@ import requests
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP, render
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from src.sgd.frontend.frontend_interface import FrontendInterface
 
 class YeastgenomeFrontend(FrontendInterface):
@@ -153,6 +153,8 @@ class YeastgenomeFrontend(FrontendInterface):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
         bioent_id = str(bioent['id'])
         tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
+        if not tabs['protein_tab']:
+            return HTTPNotFound(bioent['display_name'] + ' does not encode a protein.')
 
         page = {
                     #Basic info
