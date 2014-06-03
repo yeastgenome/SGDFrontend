@@ -382,7 +382,7 @@ function create_table(table_id, options) {
         options['sDom'] = '<"clearfix" p<"left" f>rtl<"right" i>>';
     }
     else {
-        options['sDom'] = '<"clearfix" <"left" f><"right" i>>t';
+        options['sDom'] = '<"clearfix" <"left" f>>t<"right" i>';
     }
 
     setup_datatable_highlight();
