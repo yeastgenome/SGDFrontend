@@ -194,6 +194,7 @@ function set_up_properties(data) {
     options["aaSorting"] = [[0, "asc"]];
     options["bFilter"] = false;
     options["bDestroy"] = true;
+    options['sDom'] = 't';
     var total = data['ala'] + data['arg'] + data['asn'] + data['asp'] + data['cys'] + data['gln'] + data['glu'] + data['gly'] + data['his'] + data['ile'] + data['leu'] + data['lys'] + data['met'] + data['phe'] + data['pro'] + data['ser'] + data['thr'] + data['trp'] + data['tyr'] + data['val'];
     options["aaData"] = [['A', data['ala'], get_perc(data['ala'], total)], ['R', data['arg'], get_perc(data['arg'], total)], ['N', data['asn'], get_perc(data['asn'], total)], ['D', data['asp'], get_perc(data['asp'], total)],
                          ['C', data['cys'], get_perc(data['cys'], total)], ['Q', data['gln'], get_perc(data['gln'], total)], ['E', data['glu'], get_perc(data['glu'], total)], ['G', data['gly'], get_perc(data['gly'], total)],
@@ -229,6 +230,7 @@ function set_up_properties(data) {
     options["aaSorting"] = [[0, "asc"]];
     options["bFilter"] = false;
     options["bDestroy"] = true;
+    options['sDom'] = 't';
 
     if(data['carbon'] != null) {
         total = data['carbon'] + data['hydrogen'] + data['nitrogen'] + data['oxygen'] + data['sulfur'];
