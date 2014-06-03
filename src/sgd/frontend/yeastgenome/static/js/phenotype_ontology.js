@@ -46,7 +46,7 @@ function set_up_full_ontology(ontology_list_id, data) {
                 ul.id = 'expand' + parent_id;
 
 				var minus = document.createElement('i');
-				minus.className = minus.className + ' fa icon-minus-sign';
+				minus.className = minus.className + ' fa fa-minus-circle';
                 parent.insertBefore(minus, parent.firstChild);
 
                 parent.appendChild(ul);
