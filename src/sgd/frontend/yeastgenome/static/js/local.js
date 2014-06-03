@@ -389,6 +389,7 @@ function create_table(table_id, options) {
   	table = $('#' + table_id).dataTable(options);
   	setup_datatable_highlight();
   	table.fnSearchHighlighting();
+    $('#' + table_id).foundation();
   	return table;
 }
 
