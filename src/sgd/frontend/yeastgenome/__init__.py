@@ -406,7 +406,6 @@ class YeastgenomeFrontend(FrontendInterface):
 
     def author(self, author_repr):
         author = get_json(self.backend_url + '/author/' + author_repr + '/overview')
-        author_id = str(author['id'])
 
         page = {
                     #Basic info
@@ -422,8 +421,7 @@ class YeastgenomeFrontend(FrontendInterface):
         page = {
                     #Basic info
                     'references_this_week_link': self.backend_url + '/references/this_week?callback=?',
-                    'download_citations_link': '/download_citations',
-                    'a_week_ago': str(datetime.date.today() - datetime.timedelta(days=7)).replace('-', '_')
+                    'download_citations_link': '/download_citations'
                     }
         return page
 

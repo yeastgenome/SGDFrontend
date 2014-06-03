@@ -2,7 +2,8 @@
 $(document).ready(function() {
 
   	$.getJSON(references_this_week_link, function(data) {
-        set_up_reference_list("references_header", "references_list", "references_message", "references_wrapper", "export_references", download_link, "citations_for_week_of_" + a_week_ago, data);
+        $("#dates").html(data['start'] + ' to ' + data['end']);
+        set_up_reference_list("references_header", "references_list", "references_message", "references_wrapper", "export_references", download_link, "citations_for_week_of_" + data['start'].replace('-', '_'), data['references']);
     });
 
 	//Hack because footer overlaps - need to fix this.
@@ -20,17 +21,6 @@ function set_up_reference_list(header_id, list_id, message_id, wrapper_id, downl
 	$("#" + download_button_id).click(function f() {
 		download_citations(list_id, download_link, download_filename);
 	});
-
-    for (var i=0; i < data.length; i++) {
-        var ref_entry = $("#" + data[i]['id']);
-        if(data[i]['literature_details']['primary'].length + data[i]['literature_details']['additional'].length + data[i]['literature_details']['reviews'].length > 0) {
-            var lit_list = document.createElement("blockquote");
-            lit_list.appendChild(create_gene_list(data[i]['literature_details']['primary'], "Primary Literature For: "));
-            lit_list.appendChild(create_gene_list(data[i]['literature_details']['additional'], "Additional Literature For: "));
-            lit_list.appendChild(create_gene_list(data[i]['literature_details']['reviews'], "Review Literature For: "));
-            ref_entry.append(lit_list);
-        }
-    }
 }
 
 function create_gene_list(data, header_text) {

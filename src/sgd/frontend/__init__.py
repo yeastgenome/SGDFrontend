@@ -5,6 +5,11 @@ from src.sgd.frontend import config
 def prep_views(chosen_frontend, config):  
     
     #Reference views
+    config.add_route('references_this_week', '/reference/recent')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('references_this_week', request)(getattr(chosen_frontend, 'references_this_week')()),
+                    renderer=chosen_frontend.get_renderer('references_this_week'),
+                    route_name='references_this_week')
+
     config.add_route('reference', '/reference/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('reference', request)(getattr(chosen_frontend, 'reference')(request.matchdict['identifier'])),
                     renderer=chosen_frontend.get_renderer('reference'),
@@ -19,11 +24,6 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: chosen_frontend.response_wrapper('strain', request)(getattr(chosen_frontend, 'strain')(request.matchdict['identifier'])),
                     renderer=chosen_frontend.get_renderer('strain'),
                     route_name='strain')
-
-    config.add_route('references_this_week', '/references/this_week')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('references_this_week', request)(getattr(chosen_frontend, 'references_this_week')()),
-                    renderer=chosen_frontend.get_renderer('references_this_week'),
-                    route_name='references_this_week')
 
     config.add_route('redirect', '/redirect/{page}')
     config.add_view(lambda request: getattr(chosen_frontend, 'redirect')(page=request.matchdict['page'], params=request.GET),
