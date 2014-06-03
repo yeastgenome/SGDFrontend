@@ -40,10 +40,12 @@
 
 </head>
 <body>
+
 	<!-- Includes header.html into template -->
 	{% include "header.jinja2" %}
 
 	<div class="container" id="layout-document">
+        <a href="#" data-dropdown="drop"></a><div id="drop" class="f-dropdown content medium" data-dropdown-content></div>
     	{% block body %}{% endblock %}
     </div>
     
