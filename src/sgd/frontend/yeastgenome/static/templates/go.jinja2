@@ -83,7 +83,13 @@
                     <div id="cy" name="cy" style="width:100%;height:700px"></div>
                 </div>
                 <div id="children_wrapper">
-                    <strong>All Child Terms: </strong><p id="children"></p>
+                    <strong>Child Terms:</strong>
+                    <p>
+                        <span id="children"></span>
+                        <a id="children_see_more_button" onclick="$('#children_see_more').show();$('#children_see_more_button').hide();$('#children_see_less_button').show();">... See more >></a>
+                        <span id="children_see_more" hidden></span>
+                        <a id="children_see_less_button" onclick="$('#children_see_more').hide();$('#children_see_more_button').show();$('#children_see_less_button').hide();" hidden> << See less</a>
+                    </p>
                 </div>
                 <br>
             </div>

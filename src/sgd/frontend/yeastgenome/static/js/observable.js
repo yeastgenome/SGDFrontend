@@ -20,23 +20,41 @@ $(document).ready(function() {
 
 	$.getJSON(ontology_graph_link, function(data) {
   		create_cytoscape_vis("cy", layout, graph_style, data);
+
         if(data['all_children'] != null && data['all_children'].length > 0) {
             var children_div = document.getElementById("children");
+            var more_children_div = document.getElementById("children_see_more");
             for(var i=0; i < data['all_children'].length; i++) {
                 var a = document.createElement('a');
                 a.innerHTML = data['all_children'][i]['display_name'];
                 a.href = data['all_children'][i]['link']
-                children_div.appendChild(a);
+
+                if(i < 20) {
+                    children_div.appendChild(a);
+                }
+                else {
+                    more_children_div.appendChild(a);
+                }
+
 
                 if(i != data['all_children'].length-1) {
                     var comma = document.createElement('span');
                     comma.innerHTML = ' &bull; ';
-                    children_div.appendChild(comma);
+                    if(i < 20) {
+                        children_div.appendChild(comma);
+                    }
+                    else {
+                        more_children_div.appendChild(comma);
+                    }
                 }
+            }
+
+            if(data['all_children'].length <= 20) {
+                $("#children_see_more_button").hide();
             }
         }
         else {
-            $("#children_wrapper").hide();
+            $("#children_wrapper").hide()
         }
 	});
 
