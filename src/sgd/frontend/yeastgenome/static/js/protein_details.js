@@ -306,7 +306,6 @@ function create_phosphorylation_table(data) {
     options["bPaginate"] = true;
     options["aaSorting"] = [[4, "asc"]];
     options["bDestroy"] = true;
-    options["bAutoWidth"] = false;
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "phospho" }, null, null, null];
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": 'No phosphorylation data for this strain.'};
