@@ -385,7 +385,7 @@ function create_table(table_id, options) {
     else {
         options['sDom'] = '<"clearfix" <"left" f>>t<"right" i>';
     }
-
+    options["bAutoWidth"] = false;
     setup_datatable_highlight();
   	table = $('#' + table_id).dataTable(options);
   	setup_datatable_highlight();
