@@ -2,6 +2,8 @@
 $(document).ready(function() {
 
     $.getJSON(literature_details_link, function(data) {
+        var sorted_data = data.sort(function(a, b) {return a['locus']['display_name'] > b['locus']['display_name']});
+
         create_literature_list('primary', data, 'Primary Literature')
         create_literature_list('additional', data, 'Additional Literature')
         create_literature_list('review', data, 'Reviews')
