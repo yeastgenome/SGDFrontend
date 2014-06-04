@@ -19,3 +19,12 @@ input[type="text"].big-search {
 	.subheader { color: rgb(230,230,230); }
 	li a { height: 155px; }
 }
+
+// Hack to fix double arrow issue in Firefox (until v31)
+// https://gist.github.com/joaocunha/6273016
+select {
+    -moz-appearance: none;
+    text-indent: 0.01px;
+    text-overflow: ' ';
+}
+    
