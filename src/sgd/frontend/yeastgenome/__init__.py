@@ -233,7 +233,8 @@ class YeastgenomeFrontend(FrontendInterface):
                     'regulation_overview': json.dumps(bioent['regulation_overview']),
                     'interaction_overview': json.dumps(bioent['interaction_overview']),
                     'sequence_overview': bioent['sequence_overview'],
-
+                    'protein_domain_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_details?callback=?',
+                    'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
                     #Overview
                     'tabs': tabs,
 

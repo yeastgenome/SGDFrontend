@@ -54,7 +54,7 @@
 
         <script>
         //Set up navbar
-            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Protein');
+            add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</a> Protein');
             add_navbar_element('Summary', 'summary');
             add_navbar_element('Domains and Classification', 'domain');
             add_navbar_element('Experimental Data', 'experiment');

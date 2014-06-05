@@ -11,6 +11,9 @@
 	var class_type = "{{ locus.class_type }}";
     var sgdid = "{{ locus.sgdid }}";
 
+    var protein_domains_link = "{{ protein_domain_details_link }}";
+    var sequence_details_link = "{{ sequence_details_link }}";
+
 	var phenotype_overview = {{phenotype_overview | safe}};
 	var regulation_overview = {{regulation_overview | safe}};
 	var interaction_overview = {{interaction_overview | safe}};
@@ -21,7 +24,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Summary  <a href="/help/Locus.html" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+	<h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Summary  <a href="/help/Locus.html" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
 </div>
 
 <!-- Tabs
@@ -40,7 +43,7 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title("<a href='{{ locus.link }}'>{{ locus.display_name }}/{{ locus.format_name }}</a>");
+            add_navbar_title("<a href='{{ locus.link }}'>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</a>");
             add_navbar_element("Summary", "summary");
             add_navbar_element("Network Visualization", "network");
             add_navbar_element("Gene Ontology", "go");
@@ -94,7 +97,7 @@
                 <h1>Gene Ontology</h1>
                 <!-- Includes go_overview.html into template -->
                 {% include "go_overview.jinja2" %}
-                <a href="/locus/{{ locus.sgdid }}/go" class="button [radius round]">See Details</a>
+                <a href="/locus/{{ locus.sgdid }}/go" class="button [radius round]">See Gene Ontology Details</a>
             </div>
         </section>
 
@@ -110,7 +113,7 @@
                     {% include "regulation_overview.jinja2" %}
                 </div>
             </div>
-            <a href="/locus/{{ locus.sgdid }}/regulation" class="button [radius round]">See Details</a>
+            <a href="/locus/{{ locus.sgdid }}/regulation" class="button [radius round]">See Regulation Details</a>
         </section>
 
 <!-- Phenotype
@@ -120,7 +123,7 @@
                 <h1>Phenotype</h1>
                 <!-- Includes phenotype_overview.html into template -->
                 {% include "phenotype_overview.jinja2" %}
-                <a href="/locus/{{ locus.sgdid }}/phenotype" class="button [radius round]">See Details</a>
+                <a href="/locus/{{ locus.sgdid }}/phenotype" class="button [radius round]">See Phenotype Details</a>
             </div>
         </section>
 
@@ -131,7 +134,7 @@
                 <h1>Interactions</h1>
                 <!-- Includes interaction_overview.html into template -->
                 {% include "interaction_overview.jinja2" %}
-                <a href="/locus/{{ locus.sgdid }}/interaction" class="button [radius round]">See Details</a>
+                <a href="/locus/{{ locus.sgdid }}/interaction" class="button [radius round]">See Interaction Details</a>
             </div>
         </section>
 
@@ -140,7 +143,7 @@
         <section id="expression" data-magellan-destination="expression">
             <div class="page-header">
                 <h1>Expression</h1>
-                <a href="/locus/{{ locus.sgdid }}/expression" class="button [radius round]">See Details</a>
+                <a href="/locus/{{ locus.sgdid }}/expression" class="button [radius round]">See Expression Details</a>
             </div>
         </section>
 
@@ -149,9 +152,8 @@
         <section id="protein" data-magellan-destination="protein">
             <div class="page-header">
                 <h1>Protein</h1>
-                <!-- Includes protein_overview.html into template -->
-                {% include "protein_overview.jinja2" %}
-                <a href="/locus/{{ locus.sgdid }}/protein" class="button [radius round]">See Details</a>
+                <div id="domain_chart"></div>
+                <a href="/locus/{{ locus.sgdid }}/protein" class="button [radius round]">See Protein Details</a>
             </div>
         </section>
 
@@ -160,27 +162,22 @@
         <section id="sequence" data-magellan-destination="sequence">
             <div class="page-header">
                 <h1>Sequence</h1>
-                <!-- Includes sequence_overview into template -->
-                {% include "sequence_overview.jinja2" %}
-                <a href="/locus/{{ locus.sgdid }}/sequence" class="button [radius round]">See Details</a>
+                <div id="reference_contig"></div>
+                <div id="reference_label_chart"></div>
+                <div id="reference_sublabel_chart"></div>
+
+                <!-- Includes chromosomal_coord_table into template -->
+                {% set table_id = "subfeature_table" %}
+                {% include "chromosomal_coord_table.jinja2" %}
+                <a href="/locus/{{ locus.sgdid }}/sequence" class="button [radius round]">See Sequence Details</a>
             </div>
         </section>
 
+<!-- Paragraph
+================================================== -->
         <section id="paragraph" data-magellan-destination="paragraph">
             <div class="page-header">
                 <h1>Paragraph</h1>
-            </div>
-        </section>
-
-        <section id="references" data-magellan-destination="references">
-            <div class="page-header">
-                <h1>References</h1>
-            </div>
-        </section>
-
-        <section id="resources" data-magellan-destination="resources">
-            <div class="page-header">
-                <h1>Resources</h1>
             </div>
         </section>
     </div>
@@ -197,6 +194,10 @@
     <script src="/static/js/interaction_overview.js"></script>
     <script src="/static/js/regulation_overview.js"></script>
     <script src="/static/js/phenotype_overview.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
+           'version':'1','packages':['timeline']}]}"></script>
+
 {% endblock scripts %}
 
 {% endblock body %}

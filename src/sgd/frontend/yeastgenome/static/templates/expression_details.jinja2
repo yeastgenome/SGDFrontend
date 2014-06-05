@@ -16,7 +16,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Expression</h2>
+	<h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Expression</h2>
 </div>
 
 <!-- Tabs
@@ -35,7 +35,7 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title("<a href='{{ locus.link }}'>{{ locus.display_name }}/{{ locus.format_name }}</a> Expression");
+            add_navbar_title("<a href='{{ locus.link }}'>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</a> Expression");
             add_navbar_element("Summary", "summary");
             add_navbar_element("Annotations", "annotations")
             add_navbar_element("Network Visualization", "network");

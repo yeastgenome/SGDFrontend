@@ -34,7 +34,7 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Literature');
+            add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</a> Literature');
             add_navbar_element('Literature Summary', 'summary');
             add_navbar_element('Primary Literature', 'primary');
             add_navbar_element('Network Visualization', 'network');
