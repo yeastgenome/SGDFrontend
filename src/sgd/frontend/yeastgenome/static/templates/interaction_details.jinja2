@@ -23,7 +23,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Physical and Genetic Interactions</h2>
+	<h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Physical and Genetic Interactions</h2>
 </div>
 
 <!-- Tabs

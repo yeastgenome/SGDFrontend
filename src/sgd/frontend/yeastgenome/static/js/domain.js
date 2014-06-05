@@ -7,9 +7,6 @@ $(document).ready(function() {
   	    create_download_button("domain_table_download", annotation_table, download_table_link, download_filename);
 	});
 
-    //Hack because footer overlaps - need to fix this.
-	add_footer_space("annotations");
-
 });
 
 function create_domain_table(data) {
@@ -27,7 +24,7 @@ function create_domain_table(data) {
 
     var options = {};
     options["bPaginate"] = true;
-    options["aaSorting"] = [[2, "asc"]];
+    options["aaSorting"] = [[2, "asc"], [4, "asc"]];
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": "No genes associated with domain " + display_name + "."};

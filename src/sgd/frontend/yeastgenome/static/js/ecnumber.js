@@ -7,9 +7,6 @@ $(document).ready(function() {
   	    create_download_button("gene_list_table_download", annotation_table, download_table_link, download_filename);
 	});
 
-    //Hack because footer overlaps - need to fix this.
-	add_footer_space("annotations");
-
 });
 
 function create_ecnumber_table(data) {

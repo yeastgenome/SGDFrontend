@@ -66,13 +66,8 @@ $(document).ready(function() {
         }
         else {
             hide_section("network");
-            //Hack because footer overlaps - need to fix this.
-	        add_footer_space("regulators");
         }
     });
-
-    //Hack because footer overlaps - need to fix this.
-	add_footer_space("network");
 });
 
 function create_domain_table(data) {

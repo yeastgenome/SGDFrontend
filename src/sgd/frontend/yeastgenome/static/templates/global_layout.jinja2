@@ -40,14 +40,15 @@
 
 </head>
 <body>
+
 	<!-- Includes header.html into template -->
 	{% include "header.jinja2" %}
 
 	<div class="container" id="layout-document">
     	{% block body %}{% endblock %}
+    	<div id="layout-document-footer-pusher"><!-- keep empty --></div>
     </div>
     
-    <div id="layout-document-footer-pusher"><!-- keep empty --></div>
     
 	<!-- Includes footer.html into template -->
 	{% include "footer.jinja2" %}
@@ -63,7 +64,7 @@
 
 	<script src="/static/js/local.js"></script>
 	<script src="/static/js/build/datatables/dataTables.min.js"></script>
-	<script src="/static/js/vendor/datatables/dataTables.foundation.js"></script>
+	<script src="/static/js/build/datatables/dataTables.foundation.min.js"></script>
 	
 	<script src="/static/js/build/foundation.min.js"></script>
 

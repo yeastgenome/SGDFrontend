@@ -1,6 +1,16 @@
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
+        replace: {
+            datatables_images: {
+                src: ["bower_components/datatables-plugins/integration/foundation/dataTables.foundation.css"],
+                overwrite: true,
+                replacements: [{
+                    from: "images/",
+                    to: "../img/"
+                }]
+            }
+        },
         uglify: {
             modernizr: {
                 files: {
@@ -10,6 +20,11 @@ module.exports = function(grunt) {
             datatables: {
                 files: {
                     "src/sgd/frontend/yeastgenome/static/js/build/datatables/datatables.min.js": ["bower_components/datatables/media/js/jquery.datatables.js"]
+                }
+            },
+            datatablesplugins: {
+                files: {
+                    "src/sgd/frontend/yeastgenome/static/js/build/datatables/datatables.foundation.min.js": ["bower_components/datatables-plugins/integration/foundation/datatables.foundation.js"]
                 }
             },
             fastclick: {
@@ -40,19 +55,27 @@ module.exports = function(grunt) {
                 },
                 files: {
                     "normalize.scss": "foundation/scss/normalize.scss",
-                    "build/_nouislider.scss": "nouislider/jquery.nouislider.css"
+                    "build/_nouislider.scss": "nouislider/jquery.nouislider.css",
+                    "build/_dataTables.foundation.scss": "datatables-plugins/integration/foundation/dataTables.foundation.css"
                 }
             },
             fonts: {
                 files: {
                     "src/sgd/frontend/yeastgenome/static/fonts": "font-awesome/fonts"
                 }
+            },
+            images: {
+                files: {
+                    "src/sgd/frontend/yeastgenome/static/img": "datatables-plugins/integration/foundation/images"
+                }
             }
+            
         }
     });
     
+    grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks("grunt-bowercopy");
     
-    grunt.registerTask('default', ['uglify', 'bowercopy']);
+    grunt.registerTask('default', ['replace','uglify', 'bowercopy']);
 };

@@ -9,7 +9,7 @@ import requests
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP, render
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from src.sgd.frontend.frontend_interface import FrontendInterface
 
 class YeastgenomeFrontend(FrontendInterface):
@@ -153,6 +153,8 @@ class YeastgenomeFrontend(FrontendInterface):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
         bioent_id = str(bioent['id'])
         tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
+        if not tabs['protein_tab']:
+            return HTTPNotFound(bioent['display_name'] + ' does not encode a protein.')
 
         page = {
                     #Basic info
@@ -404,7 +406,6 @@ class YeastgenomeFrontend(FrontendInterface):
 
     def author(self, author_repr):
         author = get_json(self.backend_url + '/author/' + author_repr + '/overview')
-        author_id = str(author['id'])
 
         page = {
                     #Basic info
@@ -420,8 +421,7 @@ class YeastgenomeFrontend(FrontendInterface):
         page = {
                     #Basic info
                     'references_this_week_link': self.backend_url + '/references/this_week?callback=?',
-                    'download_citations_link': '/download_citations',
-                    'a_week_ago': str(datetime.date.today() - datetime.timedelta(days=7)).replace('-', '_')
+                    'download_citations_link': '/download_citations'
                     }
         return page
 
@@ -459,6 +459,9 @@ class YeastgenomeFrontend(FrontendInterface):
         elif page == 'literature':
             if len(params) > 0:
                 return HTTPFound('/locus/' + params.values()[0] + '/literature')
+        elif page == 'protein':
+            if len(params) > 0:
+                return HTTPFound('/locus/' + params.values()[0] + '/protein')
         elif page == 'phenotype':
             if 'phenotype' in params:
                 old_phenotype = params['phenotype'].split(':')
@@ -579,7 +582,10 @@ class YeastgenomeFrontend(FrontendInterface):
 
         response.text = '>' + display_name + '  ' + contig_name + '\n' + clean_cell(sequence.replace(' ', ''))
         headers['Content-Type'] = 'text/plain'
-        headers['Content-Disposition'] = str('attachment; filename=' + display_name + '_' + contig_name + '_sequence.txt')
+        if contig_name is not None and contig_name != '':
+            headers['Content-Disposition'] = str('attachment; filename=' + display_name + '_' + contig_name + '_sequence.txt')
+        else:
+            headers['Content-Disposition'] = str('attachment; filename=' + display_name + '_sequence.txt')
         headers['Content-Description'] = 'File Transfer'
         return response
     

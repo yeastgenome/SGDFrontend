@@ -40,8 +40,8 @@
                 <p id="summary_paragraph"></p>
                 <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
                 <ul class="unstyled">
-                    <li><strong>Status: </strong> {{ strain.status }}</li>
-                    <li><strong>Genotype: </strong> {{ strain.genotype|safe }}</li>
+                    {% if strain.status != None %}<li><strong>Status: </strong> {{ strain.status }}</li>{% endif %}
+                    {% if strain.genotype != None %}<li><strong>Genotype: </strong> {{ strain.genotype|safe }}</li>{% endif %}
                     <li><strong>Description: </strong>{{ strain.description }}</li>
                 </ul>
             </div>
@@ -71,11 +71,7 @@
 
 {% block scripts %}
 <script src="/static/js/local.js"></script>
-    <script>
-        document.getElementById("summary_paragraph").innerHTML = paragraph['text'];
-        references = paragraph['references'];
-        set_up_references(references, "summary_paragraph_reference_list");
-    </script>
+<script src="/static/js/strain.js"></script>
 {% endblock scripts %}
 
 {% endblock body %}

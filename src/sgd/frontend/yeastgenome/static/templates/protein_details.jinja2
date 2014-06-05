@@ -19,18 +19,22 @@
 
     var domains_table_filename = "{{ locus.display_name }}_domains";
     var alias_table_filename = "{{ locus.display_name }}_external_ids";
+    var domain_network_filename = "{{ locus.display_name }}_domain_network";
+    var properties_table_filename = "{{ locus.display_name }}_protein_properties";
     var protein_experiment_table_filename = "{{ locus.display_name }}_experimental_data";
     var phosphorylation_table_filename = "{{ locus.display_name }}_phosphorylation";
 
 	var display_name = "{{ locus.display_name }}";
+    var format_name = "{{ locus.format_name }}";
 	var locus_id = "{{ locus.id }}";
+
 </script>
 {% endblock %}
 
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{ locus.display_name }}/{{ locus.format_name }}</span> Protein Information</h2>
+	<h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Protein Information</h2>
 </div>
 
 <!-- Tabs
@@ -78,14 +82,19 @@
                 {% set table_id = "domain_table" %}
                 {% include "domain_table.jinja2" %}
 
-                <h2 class="subheader">Domain Locations</h2>
-                <div id="domain_chart"></div>
+                <div id="domain_locations">
+                    <h2  class="subheader">Domain Locations</h2>
+                    <div id="domain_chart"></div>
+                </div>
 
                 <div id="shared_domains">
                     <h2 id="network" class="subheader">Shared Domains</h2>
                     <div class="panel">
                         <div id="cy" name="cy" style="width:100%;height:500px"></div>
                     </div><!-- .panel -->
+                    <ul class="button-group radius">
+                        <li><a id="domain_network_download" class="small button secondary"><i class="fa fa-download"></i> Download Shared Domains</a></li>
+                    </ul>
                 </div>
             </div>
         </section>
@@ -106,81 +115,88 @@
         <section id="sequence" data-magellan-destination="sequence">
             <div class="page-header">
                 <h1>Sequence</h1>
-                <label><h3>Strain</h3>
-                    <select id="strain_selection" class="big-input"></select> - <span id="strain_description"></span>
-                </label>
+                <p id="sequence_section_message" hidden>This locus is not translated into a protein.</p>
+                <div id="sequence_section">
+                    <label><h3>Strain</h3>
+                        <select id="strain_selection" class="large-3"></select> - <span id="strain_description"></span>
+                    </label>
 
-                <div class="button-bar">
-                    <ul class="button-group radius">
-                        <li><a id="sequence_download" class="small button secondary"><i class="fa fa-download"></i> Download</a></li>
-                    </ul>
-                </div>
-                <blockquote id="sequence_residues" style="font-family:Monospace; font-size:large"></blockquote>
+                    <div class="button-bar">
+                        <ul class="button-group radius">
+                            <li><a id="sequence_download" class="small button secondary"><i class="fa fa-download"></i> Download</a></li>
+                        </ul>
+                    </div>
+                    <pre><blockquote id="sequence_residues" style="font-family:Monospace; font-size:large"></blockquote></pre>
+                    <p>* Red amino acids indicate phosphorylation sites. More information below.</p>
 
-                <div id="phosphorylation_sites_wrapper">
-                    <h2 class="subheader">Phosphorylation Sites <span id="phosphorylation_table_header" class="round secondary label"></span></h2>
-                    <!-- Includes phosphorylation_table into template -->
-                    {% include "phosphorylation_table.jinja2" %}
-                </div>
+                    <div id="phosphorylation_sites_wrapper">
+                        <h2 class="subheader">Phosphorylation Sites <span id="phosphorylation_table_header" class="round secondary label"></span></h2>
+                        <!-- Includes phosphorylation_table into template -->
+                        {% include "phosphorylation_table.jinja2" %}
+                    </div>
 
-                <div id="physicochemical_props">
-                    <h2 class="subheader">Sequence-Based Physico-chemical Properties</h2>
+                    <div id="physicochemical_props">
+                        <h2 class="subheader">Sequence-Based Physico-chemical Properties</h2>
 
-                    <div class="row">
-                        <div class="small-12 large-6 columns content-column">
-                            <h3>Amino Acid Composition</h3>
-                            <table class="table table-striped table-bordered table-condensed" id="amino_acid_table" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th>Amino Acid</th>
-                                        <th>Frequency</th>
-                                        <th>Percentage</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <div class="small-12 large-6 columns content-column">
-                            <h3>Physical Details</h3>
-                            <table class="table table-striped table-bordered table-condensed" id="phosphorylation_table" width="100%">
-                                <tbody>
-                                    <tr><td>Length (a.a):</td><td id="length"></td></tr>
-                                    <tr><td>Molecular Weight (Da):</td><td id="molecular_weight"></td></tr>
-                                    <tr><td>Isoelectric Point (pl):</td><td id="pi"></td></tr>
-                                    <tr><td>Formula:</td><td id="formula"></td></tr>
-                                    <tr><td>Aliphatic Index:</td><td id="aliphatic_index"></td></tr>
-                                    <tr><td>Instability Index:</td><td id="instability_index"></td></tr>
-                                </tbody>
-                            </table>
+                        <div class="row">
+                            <div class="small-12 large-6 columns content-column">
+                                <h3>Amino Acid Composition</h3>
+                                <table class="table table-striped table-bordered table-condensed" id="amino_acid_table" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Amino Acid</th>
+                                            <th>Frequency</th>
+                                            <th>Percentage</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                <ul class="button-group radius">
+                                    <li><a id="protein_properties_download" class="small button secondary"><i class="fa fa-download"></i> Download Properties</a></li>
+                                </ul>
+                            </div>
+                            <div class="small-12 large-6 columns content-column">
+                                <h3>Physical Details</h3>
+                                <table class="table table-striped table-bordered table-condensed" id="physical_details_table" width="100%">
+                                    <tbody>
+                                        <tr><td>Length (a.a):</td><td id="length"></td></tr>
+                                        <tr><td>Molecular Weight (Da):</td><td id="molecular_weight"></td></tr>
+                                        <tr><td>Isoelectric Point (pl):</td><td id="pi"></td></tr>
+                                        <tr><td>Formula:</td><td id="formula"></td></tr>
+                                        <tr><td>Aliphatic Index:</td><td id="aliphatic_index"></td></tr>
+                                        <tr><td>Instability Index:</td><td id="instability_index"></td></tr>
+                                    </tbody>
+                                </table>
 
-                            <h3>Coding Region Translation Calculations</h3>
-                            <table class="table table-striped table-bordered table-condensed" id="phosphorylation_table" width="100%">
-                                <tbody>
-                                    <tr><td>Codon Bias:</td><td id="codon_bias"></td></tr>
-                                    <tr><td>Codon Adaptation Index:</td><td id="cai"></td></tr>
-                                    <tr><td>Frequence of Optimal Codons:</td><td id="fop_score"></td></tr>
-                                    <tr><td>Hydropathicity of Protein:</td><td id="gravy_score"></td></tr>
-                                    <tr><td>Aromaticity Score:</td><td id="aromaticity_score"></td></tr>
-                                </tbody>
-                            </table>
+                                <h3>Coding Region Translation Calculations</h3>
+                                <table class="table table-striped table-bordered table-condensed" id="coding_region_table" width="100%">
+                                    <tbody>
+                                        <tr><td>Codon Bias:</td><td id="codon_bias"></td></tr>
+                                        <tr><td>Codon Adaptation Index:</td><td id="cai"></td></tr>
+                                        <tr><td>Frequence of Optimal Codons:</td><td id="fop_score"></td></tr>
+                                        <tr><td>Hydropathicity of Protein:</td><td id="gravy_score"></td></tr>
+                                        <tr><td>Aromaticity Score:</td><td id="aromaticity_score"></td></tr>
+                                    </tbody>
+                                </table>
 
-                            <h3>Extinction Coefficients at 280nm</h3>
-                            <table class="table table-striped table-bordered table-condensed" id="phosphorylation_table" width="100%">
-                                <tbody>
-                                    <tr><td>ALL Cys residues appear as half cystines:</td><td id="all_cys_ext_coeff"></td></tr>
-                                    <tr><td>NO Cys residues appear as half cystines:</td><td id="no_cys_ext_coeff"></td></tr>
-                                </tbody>
-                            </table>
+                                <h3>Extinction Coefficients at 280nm</h3>
+                                <table class="table table-striped table-bordered table-condensed" id="extinction_coeff_table" width="100%">
+                                    <tbody>
+                                        <tr><td>ALL Cys residues appear as half cystines:</td><td id="all_cys_ext_coeff"></td></tr>
+                                        <tr><td>NO Cys residues appear as half cystines:</td><td id="no_cys_ext_coeff"></td></tr>
+                                    </tbody>
+                                </table>
 
-                            <h3>Atomic Composition</h3>
-                            <table class="table table-striped table-bordered table-condensed" id="atomic_table" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th>Atom</th>
-                                        <th>Frequency</th>
-                                        <th>Percentage</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                                <h3>Atomic Composition</h3>
+                                <table class="table table-striped table-bordered table-condensed" id="atomic_table" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Atom</th>
+                                            <th>Frequency</th>
+                                            <th>Percentage</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -206,31 +222,25 @@
                 <h3>Homologs</h3>
                     <p>
                         {% for url in locus.urls if url.category == 'Protein Information Homologs' or url.category == 'Analyze Sequence S288C vs. other species'%}
-                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
-                <h3>Protein Databases</h3>
+                <h3>Protein Databases/Other</h3>
                     <p>
                         {% for url in locus.urls if url.category == 'Protein databases/Other'%}
-                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Localization</h3>
                     <p>
                         {% for url in locus.urls if url.category == 'Localization Resources'%}
-                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-                <h3>Domains</h3>
-                    <p>
-                        {% for url in locus.urls if url.category == 'Domain'%}
-                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Post-translational Modifications</h3>
                     <p>
                         {% for url in locus.urls if url.category == 'Post-translational modifications'%}
-                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
             </div>
