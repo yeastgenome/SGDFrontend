@@ -54,27 +54,6 @@ $(document).ready(function() {
     else {
         hide_section("regulation");
     }
-
-  	//Hack because footer overlaps - need to fix this.
-  	if(counts["regulation"] > 0) {
-        add_footer_space("regulation");
-  	}
-  	else if(counts["phenotype"] > 0) {
-  	    add_footer_space("phenotype");
-  	}
-  	else if(counts["go"] > 0) {
-  	    add_footer_space("go");
-  	}
-  	else if(counts["interaction"] > 0) {
-  	    add_footer_space("interaction");
-  	}
-  	else if(related_reference_count > 0){
-  	    add_footer_space("related");
-  	}
-    else {
-        add_footer_space("summary");
-    }
-
 });
 
 function create_literature_list(list_id, data, topic) {

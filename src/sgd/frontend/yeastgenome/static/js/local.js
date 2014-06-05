@@ -55,15 +55,6 @@ function download_image(stage, width, height, download_link, image_name) {
 	});
 }
 
-function add_footer_space(section_id) {
-    next_section = $("#" + section_id);
-    next_section.append(document.createElement("br"));
-    next_section.append(document.createElement("br"));
-    next_section.append(document.createElement("br"));
-    next_section.append(document.createElement("br"));
-            next_section.append(document.createElement("br"));
-            next_section.append(document.createElement("br"));
-}
 
 function set_up_references(references, ref_list_id) {
   	//Set up references

@@ -15,9 +15,6 @@ $(document).ready(function() {
 			e.stopPropagation();
 		});
 	});
-
-	add_footer_space("ontology");
-
 });
 
 function set_up_full_ontology(ontology_list_id, data) {
