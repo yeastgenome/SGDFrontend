@@ -92,9 +92,10 @@ function set_up_references(references, ref_list_id) {
 		a.href = reference['link'];
 		reflink_li.appendChild(a);
 		refLinks.appendChild(reflink_li);
-		
-		for (var j=0; j < reference['urls'].length; j++) {
-			var url = reference['urls'][j]
+
+        var urls = reference['urls'].sort(function(a, b) {return a['display_name'] < b['display_name']});
+		for (var j=0; j < urls.length; j++) {
+			var url = urls[j];
 			var reflink_li = document.createElement('li');
 			var a = document.createElement('a');
 			var linkText = document.createTextNode(url['display_name']);
@@ -366,10 +367,21 @@ function create_table(table_id, options) {
     else {
         options['oLanguage'] = {'sSearch': '<a href="#" data-dropdown="' + table_id + '_filter_drop"><i class="fa fa-info-circle"></i></a><div id="' + table_id + '_filter_drop" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37".</p></div> Filter:'};
     }
-       setup_datatable_highlight();
+    if('sDom' in options) {
+
+    }
+    else if(options['bPaginate'] || !('bPaginate' in options)) {
+        options['sDom'] = '<"clearfix" p<"left" f>rtl<"right" i>>';
+    }
+    else {
+        options['sDom'] = '<"clearfix" <"left" f>>t<"right" i>';
+    }
+    options["bAutoWidth"] = false;
+    setup_datatable_highlight();
   	table = $('#' + table_id).dataTable(options);
   	setup_datatable_highlight();
   	table.fnSearchHighlighting();
+    $(document).foundation();
   	return table;
 }
 
