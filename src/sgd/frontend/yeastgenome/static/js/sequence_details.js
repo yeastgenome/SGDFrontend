@@ -220,9 +220,6 @@ $(document).ready(function() {
         draw_label_chart('alternative_label_chart', $("#alternative_strain_selection").val());
         draw_label_chart('other_label_chart', $("#other_strain_selection").val());
     });
-
-	//Hack because footer overlaps - need to fix this.
-	add_footer_space("resources");
 });
 
 function pad_number(number, num_digits) {

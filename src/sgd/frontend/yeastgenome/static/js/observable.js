@@ -57,10 +57,6 @@ $(document).ready(function() {
             $("#children_wrapper").hide()
         }
 	});
-
-	//Hack because footer overlaps - need to fix this.
-	add_footer_space("annotations");
-
 });
 
 function create_phenotype_table(data) {

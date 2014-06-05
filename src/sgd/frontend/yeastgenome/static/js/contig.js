@@ -14,8 +14,6 @@ $(document).ready(function() {
         set_up_sequence("feature_div", data['genomic_dna']);
   	});
 
-	//Hack because footer overlaps - need to fix this.
-	add_footer_space("feature");
 });
 
 var colors = ["#2E2EFE", "#FA5858", "#088A08", "#F3F781", "#9F81F7"];

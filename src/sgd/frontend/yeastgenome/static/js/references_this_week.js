@@ -6,9 +6,6 @@ $(document).ready(function() {
         set_up_reference_list("references_header", "references_list", "references_message", "references_wrapper", "export_references", download_link, "citations_for_week_of_" + data['start'].replace('-', '_'), data['references']);
     });
 
-	//Hack because footer overlaps - need to fix this.
-	add_footer_space("references");
-
 });
 
 function set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data) {

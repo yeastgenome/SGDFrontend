@@ -57,9 +57,6 @@ $(document).ready(function() {
         }
 	});
 
-	//Hack because footer overlaps - need to fix this.
-	add_footer_space("annotations");
-
 });
 
 function create_go_table(data) {

@@ -7,9 +7,6 @@ $(document).ready(function() {
   	    create_download_button("domain_table_download", annotation_table, download_table_link, download_filename);
 	});
 
-    //Hack because footer overlaps - need to fix this.
-	add_footer_space("annotations");
-
 });
 
 function create_domain_table(data) {

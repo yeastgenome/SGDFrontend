@@ -10,10 +10,7 @@ $(document).ready(function() {
 	  	create_analyze_button("go_table_analyze", go_table, analyze_link, analyze_filename, true);
   	    create_download_button("go_table_download", go_table, download_table_link, download_filename);
 	});
-
-	//Hack because footer overlaps - need to fix this.
-	add_footer_space("annotations");
-
+	
 });
 
 function create_go_table(data) {

@@ -112,8 +112,6 @@ $(document).ready(function() {
     var alias_table = create_alias_table(aliases);
     create_download_button("alias_table_download", alias_table, download_table_link, alias_table_filename);
 
-    //Hack because footer overlaps - need to fix this.
-	add_footer_space("resources");
 });
 
 function pad_number(number, num_digits) {

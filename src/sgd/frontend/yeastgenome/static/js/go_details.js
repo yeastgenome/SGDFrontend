@@ -43,14 +43,8 @@ $(document).ready(function() {
   		}
 		else {
 			hide_section("network");
-
-			//Hack because footer overlaps - need to fix this.
-	        add_footer_space("comp");
 		}
 	});
-
-	//Hack because footer overlaps - need to fix this.
-	add_footer_space("network");
 });
 
 function create_go_table(prefix, message, filter, data) {

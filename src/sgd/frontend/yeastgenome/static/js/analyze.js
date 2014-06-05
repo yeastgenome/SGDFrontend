@@ -11,8 +11,6 @@ $(document).ready(function() {
 
     set_up_tools(gene_table, "go_term_finder", "go_slim_mapper", "spell", "yeastmine");
 
-    //Hack because footer overlaps - need to fix this.
-	add_footer_space("enrichment");
 });
 
 function create_gene_table(data) {

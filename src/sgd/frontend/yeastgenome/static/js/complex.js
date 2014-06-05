@@ -25,9 +25,6 @@ $(document).ready(function() {
         create_analyze_button(table_name + "_analyze", gene_table, analyze_link, analyze_filename, true);
     }
 
-    //Hack because footer overlaps - need to fix this.
-	add_footer_space("annotations");
-
 });
 
 function create_go_table(data) {
