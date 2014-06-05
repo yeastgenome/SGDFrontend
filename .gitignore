@@ -12,6 +12,7 @@ bin
 gbi
 src/sgd/SGDFrontend.egg-info
 src/sgd/frontend/yeastgenome/static/img/yetfasco
+src/sgd/frontend/yeastgenome/static/img/sort_*.png
 src/sgd/frontend/yeastgenome/static/css/normalize.css
 src/sgd/frontend/yeastgenome/static/css/style.css
 src/sgd/frontend/yeastgenome/static/scss/normalize.scss

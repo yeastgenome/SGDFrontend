@@ -22,26 +22,40 @@ $(document).ready(function() {
 
         if(data['all_children'] != null && data['all_children'].length > 0) {
             var children_div = document.getElementById("children");
+            var more_children_div = document.getElementById("children_see_more");
             for(var i=0; i < data['all_children'].length; i++) {
                 var a = document.createElement('a');
                 a.innerHTML = data['all_children'][i]['display_name'];
                 a.href = data['all_children'][i]['link']
-                children_div.appendChild(a);
+
+                if(i < 20) {
+                    children_div.appendChild(a);
+                }
+                else {
+                    more_children_div.appendChild(a);
+                }
+
 
                 if(i != data['all_children'].length-1) {
                     var comma = document.createElement('span');
-                    comma.innerHTML = ', ';
-                    children_div.appendChild(comma);
+                    comma.innerHTML = ' &bull; ';
+                    if(i < 20) {
+                        children_div.appendChild(comma);
+                    }
+                    else {
+                        more_children_div.appendChild(comma);
+                    }
                 }
+            }
+
+            if(data['all_children'].length <= 20) {
+                $("#children_see_more_button").hide();
             }
         }
         else {
             $("#children_wrapper").hide()
         }
 	});
-
-	//Hack because footer overlaps - need to fix this.
-	add_footer_space("annotations");
 
 });
 
@@ -59,8 +73,23 @@ function create_go_table(data) {
 	options["aaSorting"] = [[3, "asc"]];
 	options["bDestroy"] = true;
 	options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + display_name};
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
-	options["aaData"] = datatable;
+    options["aoColumns"] = [
+            {"bSearchable":false, "bVisible":false}, //evidence_id
+            {"bSearchable":false, "bVisible":false}, //analyze_id
+            null, //gene
+            {"bSearchable":false, "bVisible":false}, //gene systematic name
+            null, //gene ontology term
+            {"bSearchable":false, "bVisible":false}, //gene ontology term id
+            null, //qualifier
+            {"bSearchable":false, "bVisible":false}, //aspect
+            {"bSearchable":false, "bVisible":false}, //method
+            null, //evidence
+            null, //source
+            null, //assigned on
+            null, //annotation_extension
+            null // reference
+            ];
+    options["aaData"] = datatable;
 
     return create_table("go_table", options);
 }

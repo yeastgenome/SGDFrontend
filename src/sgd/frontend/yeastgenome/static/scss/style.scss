@@ -67,9 +67,9 @@
 
 // other vendor styles
 @import
-	"vendor/dataTables.foundation",
-	"vendor/webicons",
-	"build/nouislider";
+	"build/dataTables.foundation",
+	"build/nouislider",
+	"vendor/webicons";
 	
 // SGD Styles
 @import 
@@ -85,6 +85,7 @@
 	"modules/nested-lists",
 	"modules/references",
 	"modules/legends",
+	"modules/tables",
 	"modules/yetfasco",
 	"modules/foundation-overwrites",
 	"state",

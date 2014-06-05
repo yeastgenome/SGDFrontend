@@ -10,10 +10,7 @@ $(document).ready(function() {
 	  	create_analyze_button("go_table_analyze", go_table, analyze_link, analyze_filename, true);
   	    create_download_button("go_table_download", go_table, download_table_link, download_filename);
 	});
-
-	//Hack because footer overlaps - need to fix this.
-	add_footer_space("annotations");
-
+	
 });
 
 function create_go_table(data) {
@@ -31,8 +28,23 @@ function create_go_table(data) {
 	options["aaSorting"] = [[3, "asc"]];
 	options["bDestroy"] = true;
 	options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + display_name};
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}];
-	options["aaData"] = datatable;
+    options["aoColumns"] = [
+            {"bSearchable":false, "bVisible":false}, //evidence_id
+            {"bSearchable":false, "bVisible":false}, //analyze_id
+            null, //gene
+            {"bSearchable":false, "bVisible":false}, //gene systematic name
+            {"bSearchable":false, "bVisible":false}, //gene ontology term
+            {"bSearchable":false, "bVisible":false}, //gene ontology term id
+            null, //qualifier
+            {"bSearchable":false, "bVisible":false}, //aspect
+            {"bSearchable":false, "bVisible":false}, //method
+            null, //evidence
+            null, //source
+            null, //assigned on
+            null, //annotation_extension
+            null // reference
+            ];
+    options["aaData"] = datatable;
 
     return create_table("go_table", options);
 }

@@ -290,6 +290,7 @@ function go_data_to_table(evidence, index) {
 	  		}
 	  	}
 	  	else if(obj != null) {
+
 	  		var new_rel_entry = condition['role'] + ' ';
             if(obj['link'] == null) {
                 new_rel_entry = new_rel_entry + obj['display_name'];
@@ -318,5 +319,5 @@ function go_data_to_table(evidence, index) {
         qualifier = '';
     }
 
-  	return [evidence['id'], evidence['locus']['id'], icon, bioent, evidence['locus']['format_name'], biocon, evidence['go']['go_id'], qualifier, evidence['go']['go_aspect'], evidence['annotation_type'], evidence_code, evidence['source']['display_name'], evidence['date_created'], reference, relationship_entry];
+  	return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], biocon, evidence['go']['go_id'], qualifier, evidence['go']['go_aspect'], evidence['annotation_type'], evidence_code, evidence['source']['display_name'], evidence['date_created'], relationship_entry, reference];
 }

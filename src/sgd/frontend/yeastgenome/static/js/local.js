@@ -55,15 +55,6 @@ function download_image(stage, width, height, download_link, image_name) {
 	});
 }
 
-function add_footer_space(section_id) {
-    next_section = $("#" + section_id);
-    next_section.append(document.createElement("br"));
-    next_section.append(document.createElement("br"));
-    next_section.append(document.createElement("br"));
-    next_section.append(document.createElement("br"));
-            next_section.append(document.createElement("br"));
-            next_section.append(document.createElement("br"));
-}
 
 function set_up_references(references, ref_list_id) {
   	//Set up references
@@ -101,9 +92,10 @@ function set_up_references(references, ref_list_id) {
 		a.href = reference['link'];
 		reflink_li.appendChild(a);
 		refLinks.appendChild(reflink_li);
-		
-		for (var j=0; j < reference['urls'].length; j++) {
-			var url = reference['urls'][j]
+
+        var urls = reference['urls'].sort(function(a, b) {return a['display_name'] < b['display_name']});
+		for (var j=0; j < urls.length; j++) {
+			var url = urls[j];
 			var reflink_li = document.createElement('li');
 			var a = document.createElement('a');
 			var linkText = document.createTextNode(url['display_name']);
@@ -161,7 +153,7 @@ function create_link(display_name, link, new_window) {
 function create_note_icon(drop_id_num, text) {
 	var icon;
 	if(text != null && text != '') {
-		icon = "<a href='#' data-dropdown='drop" + drop_id_num + "'><i class='icon-info-sign'></i></a><div id='drop" + drop_id_num + "' class='f-dropdown content medium' data-dropdown-content><p>" + text + "</p></div>"
+		icon = "<a href='#' data-dropdown='drop" + drop_id_num + "'><i class='fa fa-info-circle'></i></a><div id='drop" + drop_id_num + "' class='f-dropdown content medium' data-dropdown-content><p>" + text + "</p></div>"
 	}
 	else {
 		icon = '';
@@ -370,16 +362,26 @@ function create_show_child_button(child_button_id, table, data, details_all_link
 
 function create_table(table_id, options) {
     if('oLanguage' in options) {
-        options['oLanguage']['sSearch'] = '<a href="#" data-dropdown="drop_search"><i class="fa fa-info-circle"></i></a><div id="drop_search" class="f-dropdown content medium" data-dropdown-content>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both \'BAS1\' and \'37\’.</div> Filter:';
+        options['oLanguage']['sSearch'] = '<a href="#" data-dropdown="' + table_id + '_filter_drop"><i class="fa fa-info-circle"></i></a><div id="' + table_id + '_filter_drop" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37".</p></div> Filter:';
     }
     else {
-        options['oLanguage'] = {'sSearch': '<a href="#" data-dropdown="drop_search"><i class="fa fa-info-circle"></i></a><div id="drop_search" class="f-dropdown content medium" data-dropdown-content>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both \'BAS1\' and \'37\’.</div> Filter:'};
+        options['oLanguage'] = {'sSearch': '<a href="#" data-dropdown="' + table_id + '_filter_drop"><i class="fa fa-info-circle"></i></a><div id="' + table_id + '_filter_drop" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37".</p></div> Filter:'};
     }
-    options["lengthMenu"] = [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]];
+    if('sDom' in options) {
+
+    }
+    else if(options['bPaginate'] || !('bPaginate' in options)) {
+        options['sDom'] = '<"clearfix" p<"left" f>rtl<"right" i>>';
+    }
+    else {
+        options['sDom'] = '<"clearfix" <"left" f>>t<"right" i>';
+    }
+    options["bAutoWidth"] = false;
     setup_datatable_highlight();
   	table = $('#' + table_id).dataTable(options);
   	setup_datatable_highlight();
   	table.fnSearchHighlighting();
+    $(document).foundation();
   	return table;
 }
 

@@ -15,9 +15,6 @@ $(document).ready(function() {
 			hide_section("network");
 		}
 	});
-
-	//Hack because footer overlaps - need to fix this.
-	add_footer_space("resources");
 });
 
 function create_phenotype_table(data) {
@@ -80,7 +77,7 @@ var graph_style = cytoscape.stylesheet()
 		'text-outline-color': '#fff',
 		'color': '#888'
 	})
-	.selector("node[type='PHENOTYPE']")
+	.selector("node[type='OBSERVABLE']")
 	.css({
 		'shape': 'rectangle',
 		'text-outline-color': '#fff',

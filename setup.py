@@ -8,11 +8,11 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
     'markupsafe<0.16',
-    'pyramid',
-    'pyramid_jinja2',
-    'waitress',
-    'simplejson',
-    'requests'
+    'pyramid==1.5',
+    'pyramid_jinja2==2.1',
+    'waitress==0.8.9',
+    'simplejson==3.5.2',
+    'requests==2.3.0'
     ]
 
 tests_require = [

@@ -20,9 +20,6 @@ $(document).ready(function() {
 		}
 	});
 
-	//Hack because footer overlaps - need to fix this.
-	add_footer_space("regulation");
-
 });
 
 function set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data) {
