@@ -15,9 +15,6 @@ $(document).ready(function() {
 			hide_section("network");
 		}
 	});
-
-	//Hack because footer overlaps - need to fix this.
-	add_footer_space("resources");
 });
 
 function create_phenotype_table(data) {

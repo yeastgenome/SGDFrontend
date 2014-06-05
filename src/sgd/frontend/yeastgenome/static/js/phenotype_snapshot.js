@@ -87,6 +87,3 @@ function drawChart() {
     };
     var gene_histogram_chart = new google.visualization.ColumnChart(document.getElementById('gene_histogram_diagram')).draw(google.visualization.arrayToDataTable(gene_histogram_data), gene_histogram_graph_options);
 }
-
-//Hack because footer overlaps - need to fix this.
-add_footer_space("download");

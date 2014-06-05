@@ -2,6 +2,8 @@
 $(document).ready(function() {
 
     $.getJSON(literature_details_link, function(data) {
+        var sorted_data = data.sort(function(a, b) {return a['locus']['display_name'] > b['locus']['display_name']});
+
         create_literature_list('primary', data, 'Primary Literature')
         create_literature_list('additional', data, 'Additional Literature')
         create_literature_list('review', data, 'Reviews')
@@ -52,27 +54,6 @@ $(document).ready(function() {
     else {
         hide_section("regulation");
     }
-
-  	//Hack because footer overlaps - need to fix this.
-  	if(counts["regulation"] > 0) {
-        add_footer_space("regulation");
-  	}
-  	else if(counts["phenotype"] > 0) {
-  	    add_footer_space("phenotype");
-  	}
-  	else if(counts["go"] > 0) {
-  	    add_footer_space("go");
-  	}
-  	else if(counts["interaction"] > 0) {
-  	    add_footer_space("interaction");
-  	}
-  	else if(related_reference_count > 0){
-  	    add_footer_space("related");
-  	}
-    else {
-        add_footer_space("summary");
-    }
-
 });
 
 function create_literature_list(list_id, data, topic) {
@@ -170,13 +151,29 @@ function create_interaction_table(data) {
 }
 
 function create_go_table(data) {
+    var options = {};
+    options["bPaginate"] = true;
+    options["aaSorting"] = [[3, "asc"]];
+    options["bDestroy"] = true;
+    options["aoColumns"] = [
+            {"bSearchable":false, "bVisible":false}, //evidence_id
+            {"bSearchable":false, "bVisible":false}, //analyze_id
+            null, //gene
+            {"bSearchable":false, "bVisible":false}, //gene systematic name
+            null, //gene ontology term
+            {"bSearchable":false, "bVisible":false}, //gene ontology term id
+            null, //qualifier
+            {"bSearchable":false, "bVisible":false}, //aspect
+            {"bSearchable":false, "bVisible":false}, //method
+            null, //evidence
+            null, //source
+            null, //assigned on
+            null, //annotation_extension
+            {"bSearchable":false, "bVisible":false} // reference
+            ];
+
     if("Error" in data) {
-        var options = {};
-        options["bPaginate"] = true;
-        options["aaSorting"] = [[3, "asc"]];
-        options["bDestroy"] = true;
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}];
         options["aaData"] = [];
     }
     else {
@@ -189,12 +186,7 @@ function create_go_table(data) {
 
         set_up_header('go_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
-        var options = {};
-        options["bPaginate"] = true;
-        options["aaSorting"] = [[3, "asc"]];
-        options["bDestroy"] = true;
         options["oLanguage"] = {"sEmptyTable": "No gene ontology data for " + display_name};
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}];
         options["aaData"] = datatable;
     }
 

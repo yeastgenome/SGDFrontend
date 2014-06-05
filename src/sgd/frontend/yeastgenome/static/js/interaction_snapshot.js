@@ -99,6 +99,3 @@ function drawChart() {
     var interactor_histogram_chart = new google.visualization.ColumnChart(document.getElementById('interactor_histogram_diagram'));
     interactor_histogram_chart.draw(interactor_histogram_data_table, interactor_histogram_graph_options);
 }
-
-//Hack because footer overlaps - need to fix this.
-add_footer_space("download");

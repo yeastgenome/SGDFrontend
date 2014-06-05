@@ -55,17 +55,17 @@ http://smacss.com/book/type-module
 .site-links {
 	margin: 0;
 	position: absolute;
-    right: 115px;
+    right: 130px;
     font-size: em-calc(13);
     li {
-        margin-left: em-calc(18);
+        margin-left: em-calc(14);
     }
 }
 
 .social-links {
 	margin: 0;
 	li {
-		margin-left: em-calc(8);
+		margin-left: em-calc(9);
 		margin-top: em-calc(2);
 	}
 }

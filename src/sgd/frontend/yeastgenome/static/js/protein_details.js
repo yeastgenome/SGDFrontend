@@ -8,61 +8,76 @@ var source_to_color = {};
 
 $(document).ready(function() {
 
-    $.getJSON(protein_domains_link, function(data) {
-        var domain_table = create_domain_table(data);
-        create_download_button("domain_table_download", domain_table, download_table_link, domains_table_filename);
-        draw_domain_chart("domain_chart", data);
-
-        $.getJSON(protein_domain_graph_link, function(data) {
-            if(data['nodes'].length > 1) {
-                var graph_style = prep_style();
-                create_cytoscape_vis("cy", layout, graph_style, data);
-
-                var download_headers = ['', 'Gene', 'Domain'];
-                var download_data = [];
-                var id_to_name = {};
-                for(var i=0; i < data['nodes'].length; i++) {
-                    id_to_name[data['nodes'][i]['data']['id']] = data['nodes'][i]['data']['name'];
-                }
-                for(var i=0; i < data['edges'].length; i++) {
-                    download_data.push(['', id_to_name[data['edges'][i]['data']['target']], id_to_name[data['edges'][i]['data']['source']]]);
-                }
-                create_download_button_no_table('domain_network_download', download_headers, download_data, download_table_link, domain_network_filename);
-            }
-            else {
-                $("#shared_domains").hide();
-            }
-        });
-	});
-
     $("#domain_table_analyze").hide();
 
+    $.getJSON(sequence_details_link, function(sequence_data) {
+        var protein_data = sequence_data['protein'];
 
-    $.getJSON(sequence_details_link, function(data) {
-        var protein_data = data['protein'];
-        var strain_selection = $("#strain_selection");
-        for (var i=0; i < protein_data.length; i++) {
-            var option = document.createElement("option");
-            option.setAttribute("value", protein_data[i]['strain']['format_name']);
-            option.innerHTML = protein_data[i]['strain']['display_name'];
-            strain_selection.append(option);
+        var length = null;
+        if(protein_data.length > 0) {
+            var strain_selection = $("#strain_selection");
+            for (var i=0; i < protein_data.length; i++) {
+                var option = document.createElement("option");
+                option.setAttribute("value", protein_data[i]['strain']['format_name']);
+                option.innerHTML = protein_data[i]['strain']['display_name'];
+                strain_selection.append(option);
+                if(protein_data[i]['strain']['format_name'] == 'S288C') {
+                    length = protein_data[i]['residues'].length - 1;
+                }
+            }
 
+            function on_change(index) {
+                $("#sequence_residues").html(prep_sequence(protein_data[index]['residues']));
+                $("#strain_description").html(protein_data[index]['strain']['description']);
+                $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span>' + '- ' + protein_data[index]['strain']['display_name'] + '</span>';
+                set_up_properties(protein_data[index]);
+                current_residues = protein_data[index]['residues'];
+                draw_phosphodata();
+                $("#sequence_download").click(function f() {
+                    download_sequence(protein_data[index]['residues'], download_sequence_link, display_name, '');
+                });
+            }
+
+            strain_selection.change(function() {on_change(this.selectedIndex)});
+            on_change(0);
+        }
+        else {
+            $("#sequence_section").hide();
+            $("#sequence_section_message").show();
         }
 
-        function on_change(index) {
-            $("#sequence_residues").html(prep_sequence(protein_data[index]['residues']));
-            $("#strain_description").html(protein_data[index]['strain']['description']);
-            $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span>' + '- ' + protein_data[index]['strain']['display_name'] + '</span>';
-            set_up_properties(protein_data[index]);
-            current_residues = protein_data[index]['residues'];
-            draw_phosphodata();
-            $("#sequence_download").click(function f() {
-                download_sequence(protein_data[index]['residues'], download_sequence_link, display_name, '');
+        //Get domain info
+        $.getJSON(protein_domains_link, function(protein_domain_data) {
+            var domain_table = create_domain_table(protein_domain_data);
+            create_download_button("domain_table_download", domain_table, download_table_link, domains_table_filename);
+            if(protein_domain_data.length > 0) {
+                draw_domain_chart("domain_chart", length, protein_domain_data);
+            }
+            else {
+                $("#domain_locations").hide();
+            }
+
+            $.getJSON(protein_domain_graph_link, function(protein_domain_graph_data) {
+                if(protein_domain_graph_data['nodes'].length > 1) {
+                    var graph_style = prep_style();
+                    create_cytoscape_vis("cy", layout, graph_style, protein_domain_graph_data);
+
+                    var download_headers = ['', 'Gene', 'Domain'];
+                    var download_data = [];
+                    var id_to_name = {};
+                    for(var i=0; i < protein_domain_graph_data['nodes'].length; i++) {
+                        id_to_name[protein_domain_graph_data['nodes'][i]['data']['id']] = protein_domain_graph_data['nodes'][i]['data']['name'];
+                    }
+                    for(var i=0; i < protein_domain_graph_data['edges'].length; i++) {
+                        download_data.push(['', id_to_name[protein_domain_graph_data['edges'][i]['data']['target']], id_to_name[protein_domain_graph_data['edges'][i]['data']['source']]]);
+                    }
+                    create_download_button_no_table('domain_network_download', download_headers, download_data, download_table_link, domain_network_filename);
+                }
+                else {
+                    $("#shared_domains").hide();
+                }
             });
-        }
-
-        strain_selection.change(function() {on_change(this.selectedIndex)});
-        on_change(0);
+        });
 	});
 
     $.getJSON(protein_phosphorylation_details_link, function(data) {
@@ -97,8 +112,6 @@ $(document).ready(function() {
     var alias_table = create_alias_table(aliases);
     create_download_button("alias_table_download", alias_table, download_table_link, alias_table_filename);
 
-    //Hack because footer overlaps - need to fix this.
-	add_footer_space("resources");
 });
 
 function pad_number(number, num_digits) {
@@ -179,6 +192,7 @@ function set_up_properties(data) {
     options["aaSorting"] = [[0, "asc"]];
     options["bFilter"] = false;
     options["bDestroy"] = true;
+    options['sDom'] = 't';
     var total = data['ala'] + data['arg'] + data['asn'] + data['asp'] + data['cys'] + data['gln'] + data['glu'] + data['gly'] + data['his'] + data['ile'] + data['leu'] + data['lys'] + data['met'] + data['phe'] + data['pro'] + data['ser'] + data['thr'] + data['trp'] + data['tyr'] + data['val'];
     options["aaData"] = [['A', data['ala'], get_perc(data['ala'], total)], ['R', data['arg'], get_perc(data['arg'], total)], ['N', data['asn'], get_perc(data['asn'], total)], ['D', data['asp'], get_perc(data['asp'], total)],
                          ['C', data['cys'], get_perc(data['cys'], total)], ['Q', data['gln'], get_perc(data['gln'], total)], ['E', data['glu'], get_perc(data['glu'], total)], ['G', data['gly'], get_perc(data['gly'], total)],
@@ -214,6 +228,7 @@ function set_up_properties(data) {
     options["aaSorting"] = [[0, "asc"]];
     options["bFilter"] = false;
     options["bDestroy"] = true;
+    options['sDom'] = 't';
 
     if(data['carbon'] != null) {
         total = data['carbon'] + data['hydrogen'] + data['nitrogen'] + data['oxygen'] + data['sulfur'];
@@ -372,13 +387,14 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
             var spans = $(".google-visualization-tooltip-action > span");
             if(spans.length > 3) {
                 spans[0].innerHTML = 'Coords:';
-                spans[1].innerHTML = ' ' + datarow[2]/10 + '-' + datarow[3]/10;
-                spans[2].innerHTML = 'Descr: ';
-                if(descriptions[e.row] != null) {
+                spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
+                spans[2].innerHTML = '';
+                if(descriptions[e.row] != null && descriptions[e.row] != '') {
                     spans[3].innerHTML = '<span>' + descriptions[e.row] + '</span>';
                 }
                 else {
-                    spans[3].innerHTML = 'Not available.';
+                    spans[2].innerHTML = '';
+                    spans[3].innerHTML = '';
                 }
             }
         }
@@ -389,8 +405,8 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
 
         var rectangle_holder = svg_gs[3];
         rectangles = rectangle_holder.childNodes;
-        var y_one = min_start/10;
-        var y_two = max_end/10;
+        var y_one = min_start;
+        var y_two = max_end;
 
         var x_one = null;
         var x_two = null;
@@ -468,7 +484,7 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
     return ready_handler;
 }
 
-function draw_domain_chart(chart_id, data) {
+function draw_domain_chart(chart_id, length, data) {
     var container = document.getElementById(chart_id);
 
     var chart = new google.visualization.Timeline(container);
@@ -487,8 +503,8 @@ function draw_domain_chart(chart_id, data) {
     var max_end = null;
 
     for (var i=0; i < data.length; i++) {
-        var start = data[i]['start']*10;
-        var end = data[i]['end']*10;
+        var start = data[i]['start'];
+        var end = data[i]['end'];
         var source = '';
         if(data[i]['domain']['source'] != null) {
             source = data[i]['domain']['source']['display_name'];
@@ -502,6 +518,9 @@ function draw_domain_chart(chart_id, data) {
             max_end = end;
         }
     }
+    data_array.unshift([' ', display_name, 1, length]);
+    descriptions.unshift('');
+
     dataTable.addRows(data_array);
 
     var options = {

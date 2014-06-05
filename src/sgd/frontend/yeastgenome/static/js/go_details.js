@@ -43,22 +43,32 @@ $(document).ready(function() {
   		}
 		else {
 			hide_section("network");
-
-			//Hack because footer overlaps - need to fix this.
-	        add_footer_space("comp");
 		}
 	});
-
-	//Hack because footer overlaps - need to fix this.
-	add_footer_space("network");
 });
 
 function create_go_table(prefix, message, filter, data) {
     var options = {};
+    options["aoColumns"] = [
+            {"bSearchable":false, "bVisible":false}, //evidence_id
+            {"bSearchable":false, "bVisible":false}, //analyze_id
+            {"bSearchable":false, "bVisible":false}, //gene
+            {"bSearchable":false, "bVisible":false}, //gene systematic name
+            null, //gene ontology term
+            {"bSearchable":false, "bVisible":false}, //gene ontology term id
+            null, //qualifier
+            {"bSearchable":false, "bVisible":false}, //aspect
+            {"bSearchable":false, "bVisible":false}, //method
+            null, //evidence
+            null, //source
+            null, //assigned on
+            null, //annotation_extension
+            null // reference
+            ];
+    options["bPaginate"] = true;
+    options["aaSorting"] = [[5, "asc"]];
+
     if("Error" in data) {
-        options["bPaginate"] = true;
-        options["aaSorting"] = [[5, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, {"bSearchable":false, "bVisible":false}];
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
         options["aaData"] = [];
     }
@@ -73,9 +83,6 @@ function create_go_table(prefix, message, filter, data) {
         }
         set_up_header(prefix + '_go_table', datatable.length, 'entry', 'entries', Object.keys(gos).length, 'Gene Ontology term', 'Gene Ontology terms');
 
-        options["bPaginate"] = true;
-        options["aaSorting"] = [[5, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}];
         options["oLanguage"] = {"sEmptyTable": message};
         options["aaData"] = datatable;
 

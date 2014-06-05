@@ -43,8 +43,9 @@
             <div class="page-header">
                 <h1>Summary</h1>
                 <ul class="unstyled">
-                    <li><strong>Accession ID: </strong>
+                    <li>
                         {% for url in domain.urls %}
+                           {% if loop.first %}<strong>Accession ID: </strong>{% endif %}
                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %}, {% endif %}
                         {% endfor %}
                     </li>
