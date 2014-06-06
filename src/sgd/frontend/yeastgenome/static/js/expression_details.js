@@ -36,14 +36,14 @@ function create_expression_table(data) {
         var evidence_ids = {};
         var new_data = [];
         for (var i=0; i < data.length; i++) {
-            if(!(data[i]['pcl_filename'] in evidence_ids)) {
+            if(!(data[i]['dataset']['pcl_filename'] in evidence_ids)) {
                 datatable.push(expression_data_to_table(data[i], i));
-                evidence_ids[data[i]['pcl_filename']] = true;
+                evidence_ids[data[i]['dataset']['pcl_filename']] = true;
                 geo_ids[data[i]['geo_id']] = true;
             }
         }
 
-        set_up_header('expression_table', datatable.length, 'entry', 'entries', Object.keys(geo_ids).length, 'GEO ID', 'GEO IDS');
+        set_up_header('expression_table', datatable.length, 'entry', 'entries');
 
         var options = {};
         options["bPaginate"] = true;
@@ -58,9 +58,12 @@ function create_expression_table(data) {
 google.load("visualization", "1", {packages:["corechart"]});
 
 function create_expression_chart(data) {
+    data.sort(function(a, b) {return b['value'] - a['value']});
     var datatable2 = [['Name', 'Number']];
     var datatable_left = [['Name', 'Number']];
+    var datatable_left_links = [];
     var datatable_right = [['Name', 'Number']];
+    var datatable_right_links = [];
 
     var sum = 0;
     var sum_of_squares = 0;
@@ -79,14 +82,16 @@ function create_expression_chart(data) {
         datatable2.push([data[i]['condition'], data[i]['value']]);
         if(data[i]['value'] < (mean - 2*standard_dev)) {
             datatable_left.push([data[i]['condition'], data[i]['value']]);
+            datatable_left_links.push(data[i]['dataset']['link']);
         }
         else if(data[i]['value'] > (mean + 2*standard_dev)) {
             datatable_right.push([data[i]['condition'], data[i]['value']]);
+            datatable_right_links.push(data[i]['dataset']['link']);
         }
     }
 
-    var chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart_left'));
-    chart.draw(google.visualization.arrayToDataTable(datatable_left), {
+    var left_chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart_left'));
+    left_chart.draw(google.visualization.arrayToDataTable(datatable_left), {
                                 title: 'Low-Expression Experiments',
                                 legend: { position: 'none' },
                                 hAxis: {title: 'log2 ratio'},
@@ -94,8 +99,8 @@ function create_expression_chart(data) {
                                 height: 300
                             });
 
-    var chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart_right'));
-    chart.draw(google.visualization.arrayToDataTable(datatable_right), {
+    var right_chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart_right'));
+    right_chart.draw(google.visualization.arrayToDataTable(datatable_right), {
                                 title: 'High-Expression Experiments',
                                 legend: { position: 'none' },
                                 hAxis: {title: 'log2 ratio'},
@@ -111,6 +116,21 @@ function create_expression_chart(data) {
                                 vAxis: {title: 'Number of experiments'},
                                 height: 300
                             });
+
+    // The select handler. Call the chart's getSelection() method
+    function leftSelectHandler() {
+        var selectedItem = left_chart.getSelection();
+        window.location = datatable_left_links[selectedItem[0].row];
+    }
+    function rightSelectHandler() {
+        var selectedItem = right_chart.getSelection();
+        window.location = datatable_right_links[selectedItem[0].row];
+    }
+
+    // Listen for the 'select' event, and call my function selectHandler() when
+    // the user selects something on the chart.
+    google.visualization.events.addListener(left_chart, 'select', leftSelectHandler);
+    google.visualization.events.addListener(right_chart, 'select', rightSelectHandler);
 }
 
 var graph_style = cytoscape.stylesheet()

@@ -1,17 +1,16 @@
 {% extends "global_layout.jinja2" %}
 
-{% block title %}{{ ecnumber.display_name }}{% endblock %}
+{% block title %}{{ dataset.display_name }}{% endblock %}
 
 {% block head %}
 <script>
-	var ecnumber_details_link = "{{ecnumber_details_link}}";
 	var download_table_link = "{{download_table_link}}";
 	var analyze_link = "{{analyze_table_link}}";
 
-	var download_filename = "{{ ecnumber.format_name|replace(".", "_") }}_annotations";
-    var analyze_filename = "<a href='{{ ecnumber.link }}' class='gene_name'>{{ ecnumber.display_name }}</a> Genes";
+	var download_filename = "{{ dataset.format_name|replace(".", "_") }}_annotations";
+    var analyze_filename = "<a href='{{ dataset.link }}' class='gene_name'>{{ dataset.display_name }}</a> Genes";
 
-    var display_name = "{{ ecnumber.display_name }}";
+    var display_name = "{{ dataset.display_name }}";
 </script>
 {% endblock %}
 
@@ -19,7 +18,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>EC Number: <span class="gene_name">{{ ecnumber.display_name }}</span></h2>
+	<h2>Dataset: <span class="gene_name">{{ dataset.display_name }}</span></h2>
 </div>
 
 <!-- Navbar
@@ -32,9 +31,11 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title('EC Number: <span class="gene_name">{{ ecnumber.display_name }}</span>');
+            add_navbar_title('Dataset: <span class="gene_name">{{ dataset.display_name }}</span>');
             add_navbar_element('Summary', 'summary');
-            add_navbar_element('Annotations', 'annotations');
+            {%  if dataset.reference.abstract != none %}
+                add_navbar_element('Abstract', 'abstract');
+            {%  endif %}
             add_navbar_element('Resources', 'resources');
         </script>
 
@@ -44,35 +45,37 @@
             <div class="page-header">
                 <h1>Summary</h1>
                 <ul class="unstyled">
-                    <li><strong>Description: </strong>{{ ecnumber.description }}</li>
+                    <li><strong>GEO ID: </strong>{{ dataset.geo_id }}</li>
+                    <li><strong>Reference: </strong><a href="{{ dataset.reference.link }}">{{ dataset.reference.display_name }}</a></li>
+                    <li><strong>Channels: </strong>{{ dataset.channel_count }}</li>
+                    <li><strong>Conditions: </strong>{{ dataset.condition_count }}</li>
+                    <li><strong>Description: </strong>{{ dataset.short_description|safe }}</li>
+                    <li><strong>Tags: </strong>{{ dataset.tags|replace('|', ', ') }}</li>
                 </ul>
             </div>
         </section>
 
-        <!-- Annotations
-        ================================================== -->
-        <section id="annotations" data-magellan-destination="annotations">
-            <div class="page-header">
-                <h1>Annotations <span id="gene_list_table_header" class="round secondary label"></span></h1>
-                <!-- Includes domain_table into template -->
-                {% set table_id = "gene_list_table" %}
-                {% include "gene_list_table.jinja2" %}
-            </div>
-        </section>
+        {%  if dataset.reference.abstract != none %}
+            <section id="abstract" data-magellan-destination="abstract">
+                <div class="page-header">
+                    <h1>Abstract</h1>
+                    <p>{{ dataset.reference.abstract.text|safe}}</p>
+                </div>
+            </section>
+        {%  endif %}
 
-                <!-- Resources
+        <!-- Resources
 ================================================== -->
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
                 <h1>Resources</h1>
                 <ul id='resource_list' class="unstyled">
-                    {% for url in ecnumber.urls %}
+                    {% for url in dataset.urls %}
                         <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                     {% endfor %}
                 </ul>
             </div>
         </section>
-
     </div>
 </div>
 
