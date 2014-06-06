@@ -58,7 +58,6 @@ function create_expression_table(data) {
 google.load("visualization", "1", {packages:["corechart"]});
 
 function create_expression_chart(data) {
-    var datatable1 = [['Name', 'Number']];
     var datatable2 = [['Name', 'Number']];
     var datatable_left = [['Name', 'Number']];
     var datatable_right = [['Name', 'Number']];
@@ -68,58 +67,48 @@ function create_expression_chart(data) {
     var n = 0;
     for (var i=0; i < data.length; i++) {
         var value = data[i]['value'];
-        if(value >= -5 && value <= 5) {
-            sum = sum + value;
-            sum_of_squares = sum_of_squares + value*value;
-            n = n + 1;
-        }
+        sum = sum + value;
+        sum_of_squares = sum_of_squares + value*value;
+        n = n + 1;
     }
     var mean = 1.0*sum/n;
     var variance = 1.0*sum_of_squares/n - mean*mean;
     var standard_dev = Math.sqrt(variance);
 
     for (var i=0; i < data.length; i++) {
-        if(data[i]['channel_count'] == 1) {
-            datatable1.push([data[i]['condition'], data[i]['value']]);
+        datatable2.push([data[i]['condition'], data[i]['value']]);
+        if(data[i]['value'] < (mean - 2*standard_dev)) {
+            datatable_left.push([data[i]['condition'], data[i]['value']]);
         }
-        else if(data[i]['channel_count'] == 2) {
-            if(data[i]['value'] >= -5 && data[i]['value'] <= 5) {
-                datatable2.push([data[i]['condition'], data[i]['value']]);
-                if(data[i]['value'] < (mean - 2*standard_dev)) {
-                    datatable_left.push([data[i]['condition'], data[i]['value']]);
-                }
-                else if(data[i]['value'] > (mean + 2*standard_dev)) {
-                    datatable_right.push([data[i]['condition'], data[i]['value']]);
-                }
-            }
+        else if(data[i]['value'] > (mean + 2*standard_dev)) {
+            datatable_right.push([data[i]['condition'], data[i]['value']]);
         }
     }
 
     var chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart_left'));
     chart.draw(google.visualization.arrayToDataTable(datatable_left), {
-                                title: 'Low-Expression Number of 2-channel experiments vs. log2 ratios',
+                                title: 'Low-Expression Experiments',
                                 legend: { position: 'none' },
+                                hAxis: {title: 'log2 ratio'},
+                                vAxis: {title: 'Number of experiments'},
                                 height: 300
                             });
 
     var chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart_right'));
     chart.draw(google.visualization.arrayToDataTable(datatable_right), {
-                                title: 'High-Expression Number of 2-channel experiments vs. log2 ratios',
+                                title: 'High-Expression Experiments',
                                 legend: { position: 'none' },
+                                hAxis: {title: 'log2 ratio'},
+                                vAxis: {title: 'Number of experiments'},
                                 height: 300
                             });
 
     var chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart'));
     chart.draw(google.visualization.arrayToDataTable(datatable2), {
-                                title: 'Number of 2-channel experiments vs. log2 ratios',
+                                title: 'All Experiments',
                                 legend: { position: 'none' },
-                                height: 300
-                            });
-
-    var chart = new google.visualization.Histogram(document.getElementById('one_channel_expression_chart'));
-    chart.draw(google.visualization.arrayToDataTable(datatable1), {
-                                title: 'Number of 1-channel experiments vs. log2 transformed expression levels',
-                                legend: { position: 'none' },
+                                hAxis: {title: 'log2 ratio'},
+                                vAxis: {title: 'Number of experiments'},
                                 height: 300
                             });
 }
