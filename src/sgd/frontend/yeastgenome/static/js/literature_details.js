@@ -23,6 +23,8 @@ $(document).ready(function() {
 });
 
 function set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_link, download_filename, data) {
+    data.sort(function(a, b) {return b['year'] - a['year']});
+
     $("#" + header_id).html(data.length);
 	set_up_references(data, list_id);
 	if (data.length == 0) {
