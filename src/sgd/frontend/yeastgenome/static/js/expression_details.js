@@ -10,7 +10,6 @@ $(document).ready(function() {
   	$.getJSON(expression_graph_link, function(data) {
   		if(data['nodes'].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
-            var slider = create_slider("slider", graph, data["min_evidence_cutoff"], data["max_evidence_cutoff"], function(new_cutoff) {return "node, edge[evidence >= " + (new_cutoff) + "]";}, 100);
   		}
 		else {
 			hide_section("network");
@@ -59,7 +58,7 @@ google.load("visualization", "1", {packages:["corechart"]});
 
 function create_expression_chart(data) {
     data.sort(function(a, b) {return b['value'] - a['value']});
-    var datatable2 = [['Name', 'Number']];
+    var datatable2 = [['Low', 'Medium', 'High']];
     var datatable_left = [['Name', 'Number']];
     var datatable_left_links = [];
     var datatable_right = [['Name', 'Number']];
@@ -79,14 +78,18 @@ function create_expression_chart(data) {
     var standard_dev = Math.sqrt(variance);
 
     for (var i=0; i < data.length; i++) {
-        datatable2.push([data[i]['condition'], data[i]['value']]);
-        if(data[i]['value'] < (mean - 2*standard_dev)) {
+        if(data[i]['value'] <= (mean - 2*standard_dev)) {
             datatable_left.push([data[i]['condition'], data[i]['value']]);
             datatable_left_links.push(data[i]['dataset']['link']);
+            datatable2.push([data[i]['value'], null, null]);
         }
-        else if(data[i]['value'] > (mean + 2*standard_dev)) {
+        else if(data[i]['value'] >= (mean + 2*standard_dev)) {
             datatable_right.push([data[i]['condition'], data[i]['value']]);
             datatable_right_links.push(data[i]['dataset']['link']);
+            datatable2.push([null, null, data[i]['value']]);
+        }
+        else {
+            datatable2.push([null, data[i]['value'], null]);
         }
     }
 
@@ -96,7 +99,8 @@ function create_expression_chart(data) {
                                 legend: { position: 'none' },
                                 hAxis: {title: 'log2 ratio'},
                                 vAxis: {title: 'Number of experiments'},
-                                height: 300
+                                height: 300,
+                                colors: ['#7FBF7B']
                             });
 
     var right_chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart_right'));
@@ -105,7 +109,8 @@ function create_expression_chart(data) {
                                 legend: { position: 'none' },
                                 hAxis: {title: 'log2 ratio'},
                                 vAxis: {title: 'Number of experiments'},
-                                height: 300
+                                height: 300,
+                                colors: ['#AF8DC3']
                             });
 
     var chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart'));
@@ -114,7 +119,9 @@ function create_expression_chart(data) {
                                 legend: { position: 'none' },
                                 hAxis: {title: 'log2 ratio'},
                                 vAxis: {title: 'Number of experiments'},
-                                height: 300
+                                height: 300,
+                                colors: ['#7FBF7B', '#888', '#AF8DC3'],
+                                isStacked: true
                             });
 
     // The select handler. Call the chart's getSelection() method
@@ -149,7 +156,7 @@ var graph_style = cytoscape.stylesheet()
 	})
 	.selector('edge')
 	.css({
-		'width': 2
+		'width': 'data(score)'
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({
@@ -163,7 +170,15 @@ var graph_style = cytoscape.stylesheet()
 		'text-outline-color': '#fff',
 		'color': '#888',
 		'background-color': "#D0A9F5"
-});
+    })
+    .selector("edge[direction = 'positive']")
+	.css({
+		'line-color': "#AF8DC3"
+	})
+	.selector("edge[direction = 'negative']")
+	.css({
+		'line-color': "#7FBF7B"
+	});
 
 var layout = {
 	"name": "arbor",
