@@ -270,6 +270,20 @@ class YeastgenomeFrontend(FrontendInterface):
                     'analyze_table_link': '/analyze'
                     }
         return page
+
+    def dataset(self, bioitem_repr):
+        biocon = get_json(self.backend_url + '/dataset/' + bioitem_repr + '/overview')
+        biocon_id = str(biocon['id'])
+
+        page = {
+                    #Basic info
+                    'dataset': biocon,
+
+                    #Links
+                    'download_table_link': '/download_table',
+                    'analyze_table_link': '/analyze'
+                    }
+        return page
     
     def phenotype(self, biocon_repr):
         biocon = get_json(self.backend_url + '/phenotype/' + biocon_repr + '/overview')

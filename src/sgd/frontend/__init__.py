@@ -188,6 +188,11 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('domain'),
                     route_name='domain')
 
+    config.add_route('dataset', '/dataset/{identifier}/overview')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('dataset', request)(getattr(chosen_frontend, 'dataset')(bioitem_repr=request.matchdict['identifier'].lower())),
+                    renderer=chosen_frontend.get_renderer('dataset'),
+                    route_name='dataset')
+
     config.add_route('contig', '/contig/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('contig', request)(getattr(chosen_frontend, 'contig')(contig_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('contig'),

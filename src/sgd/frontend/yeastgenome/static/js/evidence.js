@@ -20,9 +20,14 @@ function domain_data_to_table(evidence) {
 
 function expression_data_to_table(evidence) {
     var locus = create_link(evidence['locus']['display_name'], evidence['locus']['link'], false);
-    var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link'], false);
+    var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+    if(evidence['reference']['pubmed_id'] != null) {
+        reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+	}
 
-    return [evidence['id'], evidence['locus']['id'], locus, evidence['locus']['format_name'], evidence['geo_id'], evidence['tags'], evidence['channel_count'], evidence['value'], reference]
+    var dataset = create_link(evidence['dataset']['display_name'], evidence['dataset']['link']);
+
+    return [evidence['id'], evidence['locus']['id'], locus, evidence['locus']['format_name'], dataset, evidence['dataset']['short_description'], evidence['dataset']['tags'].split('|').join(', '), evidence['dataset']['condition_count'], reference]
 }
 
 function phosphorylation_data_to_table(evidence) {
