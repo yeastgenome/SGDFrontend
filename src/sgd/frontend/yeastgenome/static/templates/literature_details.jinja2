@@ -8,6 +8,7 @@
 	var literature_graph_link = "{{literature_graph_link}}";
 	var display_name = "{{ locus.display_name }}";
   	var download_link = "{{download_citations_link}}";
+    var literature_overview = {{ literature_overview | safe }};
 </script>
 {% endblock %}
 
@@ -176,6 +177,7 @@
 <script src="/static/js/build/cytoscape.min.js"></script>	
 <script src="/static/js/build/arbor.js"></script>
 <script src="/static/js/cytoscape.js"></script>
+<script src="/static/js/literature_overview.js"></script>
 <script src="/static/js/literature_details.js"></script>
 {% endblock scripts %}
 

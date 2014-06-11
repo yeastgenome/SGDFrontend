@@ -2,8 +2,8 @@ google.load("visualization", "1", {packages:["corechart"]});
 function drawChart() {
     if(regulation_overview['target_count'] + regulation_overview['regulator_count'] > 0){
         var data_table = google.visualization.arrayToDataTable([['Category', 'Genes', { role: 'style' }, { role: 'annotation' }],
-                                                                ['Targets', regulation_overview['target_count'], '#AF8DC3', regulation_overview['target_count']],
-                                                                ['Regulators', regulation_overview['regulator_count'], '#7FBF7B', regulation_overview['regulator_count']]]);
+                                                                ['Targets', regulation_overview['target_count'], '#f96968', regulation_overview['target_count']],
+                                                                ['Regulators', regulation_overview['regulator_count'], '#fdcbca', regulation_overview['regulator_count']]]);
 
 
         var chart = new google.visualization.BarChart(document.getElementById('summary_diagram'));
@@ -13,12 +13,22 @@ function drawChart() {
             var selectedItem = chart.getSelection()[0];
             if (selectedItem) {
                 if(selectedItem.row == 1) {
-                    window.location.hash = "";
-                    window.location.hash = "regulators";
+                    if(window.location.pathname.indexOf('/locus/' + display_name + '/regulation') > -1) {
+                        window.location.hash = "";
+                        window.location.hash = 'regulators'
+                    }
+                    else {
+                        window.location = '/locus/' + display_name + '/regulation#regulators'
+                    }
                 }
                 else {
-                    window.location.hash = "";
-                    window.location.hash = "targets";
+                    if(window.location.pathname.indexOf('/locus/' + display_name + '/regulation') > -1) {
+                        window.location.hash = "";
+                        window.location.hash = 'targets'
+                    }
+                    else {
+                        window.location = '/locus/' + display_name + '/regulation#targets'
+                    }
                 }
             }
         }

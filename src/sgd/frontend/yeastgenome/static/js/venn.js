@@ -25,6 +25,14 @@ function draw_venn_diagram(container_name, r, s, x, A, B, C, color1, color2) {
             fill: color1,
             opacity: 0.6
         });
+        physical_circle.on('click', function() {
+            if(window.location.pathname.indexOf('/locus/' + display_name + '/interaction') > -1) {
+                window.location.hash = 'annotations'
+            }
+            else {
+                window.location = '/locus/' + display_name + '/interaction?filter=Physical#annotations'
+            }
+        });
         layer.add(physical_circle);
 
         var physical_label = new Kinetic.Text({
@@ -55,6 +63,15 @@ function draw_venn_diagram(container_name, r, s, x, A, B, C, color1, color2) {
             radius: 100*r*zoom,
             fill: color2,
             opacity: 0.6
+        });
+        genetic_circle.on('click', function() {
+            if(window.location.pathname.indexOf('/locus/' + display_name + '/interaction') > -1) {
+                window.location.hash = "";
+                window.location.hash = 'annotations'
+            }
+            else {
+                window.location = '/locus/' + display_name + '/interaction?filter=Genetic#annotations'
+            }
         });
         layer.add(genetic_circle);
 

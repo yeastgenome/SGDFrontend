@@ -12,7 +12,7 @@ function drawChart() {
             'hAxis': {title: '# of ' + label, minValue:0, maxValue:5, gridlines:{count:6}},
             'chartArea': {left:110,top:50,width:"60%",height:"60%"},
             'dataOpacity':.75,
-            'colors': ["#7FBF7B", "#AF8DC3", "#1F78B4"],
+            'colors': ["#8c5ba9", "#d2bfdd"],
             'backgroundColor': 'transparent',
             'height':300
         };
@@ -25,10 +25,16 @@ function drawChart() {
             if (selectedItem) {
                 var mutant_type = phenotype_overview['experiment_categories'][selectedItem.row+1][0];
                 var experiment_type = phenotype_overview['experiment_categories'][0][selectedItem.column];
-                var phenotype_table = $($.fn.dataTable.fnTables(true)).dataTable();
-                phenotype_table.fnFilter( mutant_type + ' ' + experiment_type );
-                window.location.hash = "";
-                window.location.hash = "annotations";
+                if(window.location.pathname.indexOf('/locus/' + display_name + '/overview') > -1) {
+                    window.location = '/locus/' + display_name + '/phenotype?filter=' + (mutant_type + ' ' + experiment_type).replace(' ' + '_') + '#annotations'
+                }
+                else {
+
+                    var phenotype_table = $($.fn.dataTable.fnTables(true)).dataTable();
+                    phenotype_table.fnFilter( mutant_type + ' ' + experiment_type );
+                    window.location.hash = "";
+                    window.location.hash = 'annotations'
+                }
             }
         }
 
@@ -47,7 +53,7 @@ function drawChart() {
             'vAxis': {title: '# of ' + label, minValue:0, maxValue:5, gridlines:{count:6}},
             'hAxis': {title: 'Strain'},
             'dataOpacity':.75,
-            'colors': ["#1F78B4"],
+            'colors': ["#AF8DC3"],
             'chartArea': {left:50,top:50,width:"80%",height:"50%"},
             'backgroundColor': 'transparent',
             'height':300
@@ -58,12 +64,16 @@ function drawChart() {
         function selectHandler() {
             var selectedItem = strain_chart.getSelection()[0];
             if (selectedItem) {
-                //var value = strain_data.getValue(selectedItem.row, selectedItem.column);
                 var strain = phenotype_overview['strains'][selectedItem.row+1][0];
-                var phenotype_table = $($.fn.dataTable.fnTables(true)).dataTable();
-                phenotype_table.fnFilter( strain );
-                window.location.hash = "";
-                window.location.hash = "annotations";
+                if(window.location.pathname.indexOf('/locus/' + display_name + '/overview') > -1) {
+                    window.location = '/locus/' + display_name + '/phenotype?filter=' + strain + '#annotations'
+                }
+                else {
+                    var phenotype_table = $($.fn.dataTable.fnTables(true)).dataTable();
+                    phenotype_table.fnFilter( strain );
+                    window.location.hash = "";
+                    window.location.hash = 'annotations'
+                }
             }
         }
 

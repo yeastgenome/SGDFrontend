@@ -34,7 +34,7 @@ class YeastgenomeFrontend(FrontendInterface):
             return data
         return f
     
-    def interaction_details(self, bioent_repr):
+    def interaction_details(self, bioent_repr, filter):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
         if bioent is not None:
             bioent_id = str(bioent['id'])
@@ -48,6 +48,9 @@ class YeastgenomeFrontend(FrontendInterface):
                         #Overview
                         'interaction_overview': json.dumps(overview),
                         'tabs': tabs,
+
+                        #Filter
+                        'filter': '' if filter is None else filter.replace('_', ' '),
 
                         #Links
                         'interaction_details_link': self.backend_url + '/locus/' + bioent_id + '/interaction_details?callback=?',
@@ -69,7 +72,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'locus': bioent,
                     
                     #Overview
-                    'literature_overview': overview,
+                    'literature_overview': json.dumps(overview),
                     'tabs': tabs,
                     
                     #Links
@@ -105,7 +108,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     }
         return page
     
-    def phenotype_details(self, bioent_repr):
+    def phenotype_details(self, bioent_repr, filter):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
         bioent_id = str(bioent['id'])
         overview = bioent['phenotype_overview']
@@ -118,6 +121,9 @@ class YeastgenomeFrontend(FrontendInterface):
                     #Overview
                     'phenotype_overview': json.dumps(overview),
                     'tabs': tabs,
+
+                    #Filter
+                    'filter': '' if filter is None else filter.replace('_', ' '),
                     
                     #Links
                     'phenotype_details_link': self.backend_url + '/locus/' + bioent_id + '/phenotype_details?callback=?',
@@ -138,6 +144,7 @@ class YeastgenomeFrontend(FrontendInterface):
 
                     #Overview
                     'tabs': tabs,
+                    'expression_overview': json.dumps(bioent['expression_overview']),
 
                     #Links
                     'expression_details_link': self.backend_url + '/locus/' + bioent_id + '/expression_details?callback=?',
@@ -182,10 +189,11 @@ class YeastgenomeFrontend(FrontendInterface):
 
                     #Overview
                     'tabs': tabs,
+                    'protein_overview': json.dumps(bioent['protein_overview']),
+                    'length': None if bioent['protein_overview']['protein_sequence'] is None else len(bioent['protein_overview']['protein_sequence']['residues']) - 1,
 
                     #Links
                     'bioentity_details_link': self.backend_url + '/locus/' + bioent_id + '/bioentity_details?callback=?',
-                    'protein_domain_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_details?callback=?',
                     'protein_domain_graph_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_graph?callback=?',
                     'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
                     'protein_phosphorylation_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_phosphorylation_details?callback=?',
@@ -208,7 +216,7 @@ class YeastgenomeFrontend(FrontendInterface):
 
                     #Overview
                     'tabs': tabs,
-                    'sequence_overview': bioent['sequence_overview'],
+                    'sequence_overview': json.dumps(bioent['sequence_overview']),
 
                     #Links
                     'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
@@ -228,15 +236,17 @@ class YeastgenomeFrontend(FrontendInterface):
                     #Basic info
                     'locus': bioent,
                     'go_overview': bioent['go_overview'],
-                    'literature_overview': bioent['literature_overview'],
+                    'literature_overview': json.dumps(bioent['literature_overview']),
                     'phenotype_overview': json.dumps(bioent['phenotype_overview']),
                     'regulation_overview': json.dumps(bioent['regulation_overview']),
                     'interaction_overview': json.dumps(bioent['interaction_overview']),
-                    'sequence_overview': bioent['sequence_overview'],
-                    'protein_domain_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_details?callback=?',
-                    'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
+                    'sequence_overview': json.dumps(bioent['sequence_overview']),
+                    'protein_overview': json.dumps(bioent['protein_overview']),
+                    'expression_overview': json.dumps(bioent['expression_overview']),
+                    'neighbor_sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/neighbor_sequence_details?callback=?',
                     #Overview
                     'tabs': tabs,
+                    'length': None if bioent['protein_overview']['protein_sequence'] is None else len(bioent['protein_overview']['protein_sequence']['residues']) - 1,
 
                     #Links
                     'locus_graph_link': self.backend_url + '/locus/' + bioent_id + '/locus_graph?callback=?',

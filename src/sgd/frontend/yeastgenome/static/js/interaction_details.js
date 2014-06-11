@@ -3,6 +3,7 @@ $(document).ready(function() {
 
     $.getJSON(interaction_details_link, function(data) {
         var interaction_table = create_interaction_table(data);
+        interaction_table.fnFilter(filter);
         create_download_button("interaction_table_download", interaction_table, download_table_link, evidence_table_filename);
         create_analyze_button("interaction_table_analyze", interaction_table, analyze_link, analyze_filename + " interactors", true);
   	    create_analyze_button("phys_gen_union", interaction_table, analyze_link, analyze_filename + " interactors", false);

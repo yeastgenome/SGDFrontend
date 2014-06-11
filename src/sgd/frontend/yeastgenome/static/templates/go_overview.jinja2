@@ -3,17 +3,9 @@
 
     <li id='summary_message' style='display:none'>0 GO Terms curated.</li>
 
-    <li><strong>GO Slim Terms:</strong>
-        {% for slim in go_overview.go_slim %}
-            {% if loop.index < 11 %}<span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
+    <li><strong>Key GO Terms:</strong>
+        {% for slim in go_overview.go_slim_down %}
+            <span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>{% if not loop.last %}, {% endif %}
         {% endfor %}
-
-        <a id="see_more_button" onclick="$('#see_more').show();$('#see_more_button').hide();$('#see_less_button').show();" {% if go_overview.go_slim|length <= 10 %}hidden{% endif %}>... See more >></a>
-        <span id="see_more" hidden>
-            {% for slim in go_overview.go_slim %}
-                {% if loop.index >= 11 %}<span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
-            {% endfor %}
-        </span>
-        <a id="see_less_button" onclick="$('#see_more').hide();$('#see_more_button').show();$('#see_less_button').hide();" hidden> << See less</a>
     </li>
 </ul>

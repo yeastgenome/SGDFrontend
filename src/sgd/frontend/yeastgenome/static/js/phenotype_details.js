@@ -1,9 +1,10 @@
 
 $(document).ready(function() {
+    $("#phenotype_table_analyze").hide();
   	$.getJSON(phenotype_details_link, function(data) {
   	    var phenotype_table = create_phenotype_table(data);
         create_download_button("phenotype_table_download", phenotype_table, download_table_link, download_table_filename);
-        $("#phenotype_table_analyze").hide();
+        phenotype_table.fnFilter(filter);
   	});
 
   	$.getJSON(phenotype_graph_link, function(data) {
@@ -82,7 +83,7 @@ var graph_style = cytoscape.stylesheet()
 		'shape': 'rectangle',
 		'text-outline-color': '#fff',
 		'color': '#888',
-		'background-color': "#D0A9F5"
+		'background-color': "#AF8DC3"
 });
 
 var layout = {

@@ -1,9 +1,9 @@
 
-<ul class="unstyled">
+<div id="reference_contig"></div>
+<div id="reference_label_chart"></div>
+<h2 class="subheader">Subfeatures <span id="subfeature_table_header" class="round secondary label"></span> - S288C</h2>
+<div id="reference_sublabel_chart"></div>
 
-    <li><strong>Strains: </strong>
-        {% for strain in sequence_overview %}
-            <a href="{{ strain.link|e }}">{{ strain.display_name|e }}</a>{% if not loop.last %}, {% endif %}
-        {% endfor %}
-    </li>
-</ul>
+<!-- Includes chromosomal_coord_table into template -->
+{% set table_id = "subfeature_table" %}
+{% include "chromosomal_coord_table.jinja2" %}

@@ -104,7 +104,7 @@ def prep_views(chosen_frontend, config):
                     route_name='locus')
     
     config.add_route('interaction_details', '/locus/{identifier}/interaction')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('interaction_details', request)(getattr(chosen_frontend, 'interaction_details')(bioent_repr=request.matchdict['identifier'].upper())),
+    config.add_view(lambda request: chosen_frontend.response_wrapper('interaction_details', request)(getattr(chosen_frontend, 'interaction_details')(bioent_repr=request.matchdict['identifier'].upper(), filter=None if 'filter' not in request.GET else request.GET['filter'])),
                     renderer=chosen_frontend.get_renderer('interaction_details'),
                     route_name='interaction_details')
     
@@ -119,7 +119,7 @@ def prep_views(chosen_frontend, config):
                     route_name='regulation_details')
     
     config.add_route('phenotype_details', '/locus/{identifier}/phenotype')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('phenotype_details', request)(getattr(chosen_frontend, 'phenotype_details')(bioent_repr=request.matchdict['identifier'].upper())),
+    config.add_view(lambda request: chosen_frontend.response_wrapper('phenotype_details', request)(getattr(chosen_frontend, 'phenotype_details')(bioent_repr=request.matchdict['identifier'].upper(), filter=None if 'filter' not in request.GET else request.GET['filter'])),
                     renderer=chosen_frontend.get_renderer('phenotype_details'),
                     route_name='phenotype_details')
 

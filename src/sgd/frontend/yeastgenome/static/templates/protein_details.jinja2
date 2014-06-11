@@ -4,7 +4,8 @@
 
 {% block head %}
 <script>
-	var protein_domains_link = "{{ protein_domain_details_link }}";
+	var protein_overview = {{ protein_overview | safe }};
+    var length = {{ length }};
     var protein_domain_graph_link = "{{ protein_domain_graph_link }}";
     var sequence_details_link = "{{ sequence_details_link }}";
     var protein_phosphorylation_details_link = "{{ protein_phosphorylation_details_link }}";
@@ -68,8 +69,33 @@
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
 		<h1>Summary</h1>
-        <!-- Includes protein_overview.html into template -->
-        {% include "protein_overview.jinja2" %}
+        <ul class="unstyled">
+            <li>
+                {% for alias in locus.aliases if alias.category == 'Uniform' %}
+                    {% if loop.first %}<strong>Aliases: </strong>{% endif %}
+                    <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </li>
+            <li>
+                {% for alias in locus.aliases if alias.category == 'Gene product' %}
+                    {% if loop.first %}<strong>Gene Product: </strong>{% endif %}
+                    <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </li>
+            <li><strong>Description: </strong>{{ locus.description }}</li>
+            <li>
+                {% for reference in locus.description_references %}
+                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </li>
+            <li>
+                {% for alias in locus.aliases if alias.category == 'NCBI protein name' %}
+                    {% if loop.first %}<strong>Protein Product: </strong>{% endif %}
+                    <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </li>
+            <li id="ec_number"></li>
+        </ul>
 	</div>
 </section>
 
@@ -84,7 +110,8 @@
 
                 <div id="domain_locations">
                     <h2  class="subheader">Domain Locations</h2>
-                    <div id="domain_chart"></div>
+                    <!-- Includes protein_overview.html into template -->
+                    {% include "protein_overview.jinja2" %}
                 </div>
 
                 <div id="shared_domains">
@@ -259,6 +286,7 @@
 <script src="/static/js/local.js"></script>
 <script src="/static/js/cytoscape.js"></script>
 <script src="/static/js/evidence.js"></script>
+<script src="/static/js/protein_overview.js"></script>
 <script src="/static/js/protein_details.js"></script>
 {% endblock scripts %}
 
