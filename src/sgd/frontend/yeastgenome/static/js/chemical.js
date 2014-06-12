@@ -22,7 +22,21 @@ function create_phenotype_table(data) {
 	var options = {};
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[4, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, {"sWidth": "250px"}, null];
+    options["aoColumns"] = [
+        {"bSearchable":false, "bVisible":false}, //Evidence ID
+        {"bSearchable":false, "bVisible":false}, //Analyze ID
+        null, //Gene
+        {"bSearchable":false, "bVisible":false}, //Gene Systematic Name
+        null, //Phenotype
+        {"bVisible":false}, //Phenotype slim
+        null, //Experiment Type
+        {"bVisible":false}, //Experiment Type Category
+        null, //Mutant Information
+        null, //Strain Background
+        null, //Chemical
+        {"sWidth": "250px"}, //Details
+        null //Reference
+    ];
     options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + display_name};
 	options["aaData"] = datatable;
 

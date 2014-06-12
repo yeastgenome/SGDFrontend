@@ -60,13 +60,28 @@ $(document).ready(function() {
 });
 
 function create_phenotype_table(data) {
+    var options = {"bPaginate": true,
+                    "aaSorting": [[2, "asc"]],
+                    "bDestroy": true,
+                    "aoColumns": [
+                        {"bSearchable":false, "bVisible":false}, //Evidence ID
+                        {"bSearchable":false, "bVisible":false}, //Analyze ID
+                        null, //Gene
+                        {"bSearchable":false, "bVisible":false}, //Gene Systematic Name
+                        null, //Phenotype
+                        {"bVisible":false}, //Phenotype Slim
+                        null, //Experiment Type
+                        {"bVisible":false}, //Experiment Type Category
+                        null, //Mutant Information
+                        null, //Strain Background
+                        null, //Chemical
+                        {"sWidth": "250px"}, //Details
+                        null //Reference
+                    ]
+    };
+
     if("Error" in data) {
-        var options = {};
-        options["bPaginate"] = true;
-        options["aaSorting"] = [[2, "asc"]];
-        options["bDestroy"] = true;
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bVisible":false}, null, null, null, {"sWidth": "250px"}, null];
         options["aaData"] = [];
     }
     else {
@@ -79,12 +94,8 @@ function create_phenotype_table(data) {
 
         set_up_header('phenotype_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
-        var options = {};
-        options["bPaginate"] = true;
-        options["aaSorting"] = [[2, "asc"]];
         options["bDestroy"] = true;
         options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + display_name};
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bVisible":false}, null, null, null, {"sWidth": "250px"}, null];
         options["aaData"] = datatable;
     }
 

@@ -6,7 +6,7 @@ function drawChart() {
     var literature_options = {
         'legend': {'position': 'none'},
         'title': 'Literature for ' + display_name,
-        'vAxis': {title: '# of References', minValue:0, maxValue:5, gridlines:{count:6}},
+        'vAxis': {title: '# of References', minValue:0, maxValue:5, gridlines:{count:5}},
         'hAxis': {title: 'Literature Type'},
         'dataOpacity':.75,
         'colors': ["#ffcc33"],
@@ -21,8 +21,14 @@ function drawChart() {
         var selectedItem = literature_chart.getSelection()[0];
         if (selectedItem) {
             //var value = strain_data.getValue(selectedItem.row, selectedItem.column);
-            var literature_type = literature_overview[selectedItem.row+1][0];
-            window.location.hash = literature_type;
+            var literature_type = literature_overview[selectedItem.row+1][0].toLowerCase();
+            if(window.location.pathname.indexOf('overview') > -1) {
+                window.location = '/locus/' + display_name + '/literature#' + literature_type
+            }
+            else {
+                window.location.hash = "";
+                window.location.hash = literature_type;
+            }
         }
     }
 

@@ -26,7 +26,7 @@ function draw_venn_diagram(container_name, r, s, x, A, B, C, color1, color2) {
             opacity: 0.6
         });
         physical_circle.on('click', function() {
-            if(window.location.pathname.indexOf('/locus/' + display_name + '/interaction') > -1) {
+            if(window.location.pathname.indexOf('interaction') > -1) {
                 window.location.hash = 'annotations'
             }
             else {
@@ -65,7 +65,7 @@ function draw_venn_diagram(container_name, r, s, x, A, B, C, color1, color2) {
             opacity: 0.6
         });
         genetic_circle.on('click', function() {
-            if(window.location.pathname.indexOf('/locus/' + display_name + '/interaction') > -1) {
+            if(window.location.pathname.indexOf('interaction') > -1) {
                 window.location.hash = "";
                 window.location.hash = 'annotations'
             }

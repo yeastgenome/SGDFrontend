@@ -25,7 +25,7 @@ function drawChart() {
             if (selectedItem) {
                 var mutant_type = phenotype_overview['experiment_categories'][selectedItem.row+1][0];
                 var experiment_type = phenotype_overview['experiment_categories'][0][selectedItem.column];
-                if(window.location.pathname.indexOf('/locus/' + display_name + '/overview') > -1) {
+                if(window.location.pathname.indexOf('overview') > -1) {
                     window.location = '/locus/' + display_name + '/phenotype?filter=' + (mutant_type + ' ' + experiment_type).replace(' ' + '_') + '#annotations'
                 }
                 else {
@@ -65,7 +65,7 @@ function drawChart() {
             var selectedItem = strain_chart.getSelection()[0];
             if (selectedItem) {
                 var strain = phenotype_overview['strains'][selectedItem.row+1][0];
-                if(window.location.pathname.indexOf('/locus/' + display_name + '/overview') > -1) {
+                if(window.location.pathname.indexOf('overview') > -1) {
                     window.location = '/locus/' + display_name + '/phenotype?filter=' + strain + '#annotations'
                 }
                 else {
@@ -87,4 +87,41 @@ function drawChart() {
     if(phenotype_overview['experiment_categories'].length == 1 && phenotype_overview['strains'].length == 1) {
         $("#summary_wrapper").hide()
     }
+
+
+    var data= [['Observable', 'Count']];
+
+    for(var i=0; i < phenotype_overview['phenotype_slim'].length; i=i+1) {
+        data.push([phenotype_overview['phenotype_slim'][i][0]['display_name'], phenotype_overview['phenotype_slim'][i][1]]);
+    }
+
+    var dataTable = google.visualization.arrayToDataTable(data);
+
+    var options = {
+          title: 'Phenotype Slim',
+          pieSliceText: 'none',
+          colors: ['#8b5aa8', '#a680bc', '#c1a7d1', '#dccde5', '#f7f4f9']
+    };
+
+    var slim = new google.visualization.PieChart(document.getElementById('observable_chart'));
+
+    // The select handler. Call the chart's getSelection() method
+        function slimSelectHandler() {
+            var selectedItem = slim.getSelection()[0];
+            if (selectedItem) {
+                var observable = data[selectedItem.row+1][0];
+                if(window.location.pathname.indexOf('overview') > -1) {
+                    window.location = '/locus/' + display_name + '/phenotype?filter=' + observable + '#annotations'
+                }
+                else {
+                    var phenotype_table = $($.fn.dataTable.fnTables(true)).dataTable();
+                    phenotype_table.fnFilter( observable );
+                    window.location.hash = "";
+                    window.location.hash = 'annotations'
+                }
+            }
+        }
+    google.visualization.events.addListener(slim, 'select', slimSelectHandler);
+
+    slim.draw(dataTable, options);
 }

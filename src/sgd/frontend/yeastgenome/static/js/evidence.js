@@ -252,7 +252,7 @@ function phenotype_data_to_table(evidence, index) {
         reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
     }
 
-  	return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], biocon, experiment, evidence['experiment']['category'], evidence['mutant_type'] + allele, strain, chemical, note, reference];
+  	return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], biocon, evidence['phenotype']['ancestor']['display_name'], experiment, evidence['experiment']['category'], evidence['mutant_type'] + allele, strain, chemical, note, reference];
 }
 
 function go_data_to_table(evidence, index) {

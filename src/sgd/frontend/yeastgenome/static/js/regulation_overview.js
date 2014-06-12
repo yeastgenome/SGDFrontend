@@ -13,7 +13,7 @@ function drawChart() {
             var selectedItem = chart.getSelection()[0];
             if (selectedItem) {
                 if(selectedItem.row == 1) {
-                    if(window.location.pathname.indexOf('/locus/' + display_name + '/regulation') > -1) {
+                    if(window.location.pathname.indexOf('regulation') > -1) {
                         window.location.hash = "";
                         window.location.hash = 'regulators'
                     }
@@ -22,7 +22,7 @@ function drawChart() {
                     }
                 }
                 else {
-                    if(window.location.pathname.indexOf('/locus/' + display_name + '/regulation') > -1) {
+                    if(window.location.pathname.indexOf('regulation') > -1) {
                         window.location.hash = "";
                         window.location.hash = 'targets'
                     }

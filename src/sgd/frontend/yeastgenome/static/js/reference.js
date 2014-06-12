@@ -194,11 +194,26 @@ function create_go_table(data) {
 }
 
 function create_phenotype_table(data) {
+    var options = {"bPaginate": true,
+                    "aaSorting": [[4, "asc"]],
+                    "aoColumns": [
+                        {"bSearchable":false, "bVisible":false}, //Evidence ID
+                        {"bSearchable":false, "bVisible":false}, //Analyze ID
+                        null, //Gene
+                        {"bSearchable":false, "bVisible":false}, //Gene Systematic Name
+                        null, //Phenotype
+                        {"bVisible":false}, //Phenotype Slim
+                        null, //Experiment Type
+                        {"bVisible":false}, //Experiment Type Category
+                        null, //Mutant Information
+                        null, //Strain Background
+                        null, //Chemical
+                        {'sWidth': '250px'}, //Details
+                        {"bSearchable":false, "bVisible":false} //Reference
+                    ]
+    };
+
     if("Error" in data) {
-        var options = {};
-        options["bPaginate"] = true;
-        options["aaSorting"] = [[4, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, {'sWidth': '250px'}, {"bSearchable":false, "bVisible":false}];
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
         options["aaData"] = [];
     }
@@ -212,10 +227,6 @@ function create_phenotype_table(data) {
 
         set_up_header('phenotype_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
-        var options = {};
-        options["bPaginate"] = true;
-        options["aaSorting"] = [[4, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, {'sWidth': '250px'}, {"bSearchable":false, "bVisible":false}];
         options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + display_name};
         options["aaData"] = datatable;
     }
