@@ -54,6 +54,7 @@ function create_expression_chart() {
                                 title: 'High-Expression Experiments',
                                 legend: { position: 'none' },
                                 hAxis: {title: 'log2 ratio'},
+                                histogram: { lastBucketPercentile: 20 },
                                 vAxis: {title: 'Number of experiments'},
                                 height: 300,
                                 colors: ['#eb7500']

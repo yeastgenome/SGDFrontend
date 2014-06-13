@@ -152,7 +152,7 @@ function draw_domain_chart(chart_id, length, data) {
             max_end = end;
         }
     }
-    data_array.unshift([' ', display_name, 1, length]);
+    data_array.unshift([' ', protein_display_name, 1, length]);
     descriptions.unshift('');
 
     dataTable.addRows(data_array);

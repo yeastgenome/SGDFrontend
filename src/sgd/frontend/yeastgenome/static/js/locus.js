@@ -9,6 +9,8 @@ $(document).ready(function() {
         draw_label_chart('reference_label_chart', 'S288C');
     });
 
+    $("#reference_download").click(function f() {download_sequence(sequence_overview['residues'], download_sequence_link, display_name, sequence_overview['contig']['display_name']);});
+
   	$.getJSON(locus_graph_link, function(data) {
   		var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
         $('#go_checkbox').click(function(){

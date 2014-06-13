@@ -128,8 +128,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     #Links
                     'phenotype_details_link': self.backend_url + '/locus/' + bioent_id + '/phenotype_details?callback=?',
                     'phenotype_graph_link': self.backend_url + '/locus/' + bioent_id + '/phenotype_graph?callback=?',
-                    'download_table_link': '/download_table',
-                    'ontology_link': '/ontology/phenotype/ypo/overview'
+                    'download_table_link': '/download_table'
                     }
         return page
 
@@ -251,6 +250,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     #Links
                     'locus_graph_link': self.backend_url + '/locus/' + bioent_id + '/locus_graph?callback=?',
                     'download_table_link': '/download_table',
+                    'download_sequence_link': '/download_sequence',
                     'analyze_table_link': '/analyze'
                     }
         return page
@@ -282,12 +282,12 @@ class YeastgenomeFrontend(FrontendInterface):
         return page
 
     def dataset(self, bioitem_repr):
-        biocon = get_json(self.backend_url + '/dataset/' + bioitem_repr + '/overview')
-        biocon_id = str(biocon['id'])
+        bioitem = get_json(self.backend_url + '/dataset/' + bioitem_repr + '/overview')
 
         page = {
                     #Basic info
-                    'dataset': biocon,
+                    'dataset': bioitem,
+                    'expression_overview': json.dumps(bioitem['expression_overview']),
 
                     #Links
                     'download_table_link': '/download_table',

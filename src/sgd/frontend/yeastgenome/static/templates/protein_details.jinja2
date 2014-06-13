@@ -26,6 +26,7 @@
     var phosphorylation_table_filename = "{{ locus.display_name }}_phosphorylation";
 
 	var display_name = "{{ locus.display_name }}";
+    var protein_display_name = "{{ locus.display_name|title }}p";
     var format_name = "{{ locus.format_name }}";
 	var locus_id = "{{ locus.id }}";
 
@@ -82,10 +83,20 @@
                     <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
                 {% endfor %}
             </li>
-            <li><strong>Description: </strong>{{ locus.description }}</li>
             <li>
+                <strong>Description: </strong>{{ locus.description }}
                 {% for reference in locus.description_references %}
-                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                    {% if loop.first %}
+                        <a href="#" data-dropdown="drop_description" data-options="align:left"><i class="fa fa-info-circle"></i></a>
+                        <div id="drop_description" class="f-dropdown content medium" data-dropdown-content>
+                        <p>
+                    {% endif %}
+                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>
+                    {% if not loop.last %}
+                        ,
+                    {% else %}
+                        </p></div>
+                    {% endif %}
                 {% endfor %}
             </li>
             <li>
@@ -248,25 +259,25 @@
                 <h1>Resources</h1>
                 <h3>Homologs</h3>
                     <p>
-                        {% for url in locus.urls if url.category == 'Protein Information Homologs' or url.category == 'Analyze Sequence S288C vs. other species'%}
+                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}
                             <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Protein Databases/Other</h3>
                     <p>
-                        {% for url in locus.urls if url.category == 'Protein databases/Other'%}
+                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
                             <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Localization</h3>
                     <p>
-                        {% for url in locus.urls if url.category == 'Localization Resources'%}
+                        {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION'%}
                             <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Post-translational Modifications</h3>
                     <p>
-                        {% for url in locus.urls if url.category == 'Post-translational modifications'%}
+                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS'%}
                             <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>

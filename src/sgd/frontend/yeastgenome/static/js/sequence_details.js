@@ -13,12 +13,12 @@ $(document).ready(function() {
             strain_to_genomic_data[dna_data[i]['strain']['format_name']] = dna_data[i];
 
             if(dna_data[i]['strain']['display_name'] == 'S288C') {
-                if(dna_data[i]['strand'] == '-') {
-                    $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['end'] + ' - ' + dna_data[i]['start']);
-                }
-                else {
-                    $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['start'] + ' - ' + dna_data[i]['end']);
-                }
+//                if(dna_data[i]['strand'] == '-') {
+//                    $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['end'] + ' - ' + dna_data[i]['start']);
+//                }
+//                else {
+//                    $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['start'] + ' - ' + dna_data[i]['end']);
+//                }
 
                 //draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
                 //var subfeature_table = create_subfeature_table(dna_data[i]);

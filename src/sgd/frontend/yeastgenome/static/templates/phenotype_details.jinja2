@@ -88,18 +88,22 @@
                 <h1>Resources</h1>
                 <h3>Mutant Strains</h3>
                     <p>
-                        {% for url in locus.urls if url.category == 'Mutant Strains'%}
+                        {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_MUTANT_STRAINS'%}
                             <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Phenotype Resources</h3>
                     <p>
-                        {% for url in locus.urls if url.category == 'Phenotype Resources'%}
+                        {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_PHENOTYPE_RESOURCES'%}
                             <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Ontology</h3>
-                <a href="{{ontology_link}}">Yeast Phenotype Ontology</a>
+                    <p>
+                        {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_ONTOLOGY'%}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
             </div>
         </section>
     </div>

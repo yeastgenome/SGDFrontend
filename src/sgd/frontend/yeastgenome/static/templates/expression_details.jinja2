@@ -82,7 +82,11 @@
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
                 <h1>Resources</h1>
-                    <a href="http://spell.yeastgenome.org/search/show_results?search_string={{ locus.format_name }}">SPELL</a>
+                <p>
+                    {% for url in locus.urls if url.category == 'LOCUS_EXPRESSION'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
             </div>
         </section>
     </div>

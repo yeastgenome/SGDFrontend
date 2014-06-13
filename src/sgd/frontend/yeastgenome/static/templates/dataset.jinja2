@@ -48,9 +48,9 @@
                     <li><strong>GEO ID: </strong>{{ dataset.geo_id }}</li>
                     <li><strong>Reference: </strong><a href="{{ dataset.reference.link }}">{{ dataset.reference.display_name }}</a></li>
                     <li><strong>Channels: </strong>{{ dataset.channel_count }}</li>
-                    <li><strong>Conditions: </strong>{{ dataset.condition_count }}</li>
+                    <li><strong># of Conditions: </strong>{{ dataset.condition_count }}</li>
                     <li><strong>Description: </strong>{{ dataset.short_description|safe }}</li>
-                    <li><strong>Tags: </strong>{{ dataset.tags|replace('|', ', ') }}</li>
+                    <li><strong>Categories: </strong>{{ dataset.tags|replace('|', ', ') }}</li>
                 </ul>
             </div>
         </section>

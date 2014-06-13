@@ -5,6 +5,13 @@ var strain_to_neighbors = {};
 var subfeature_table = create_subfeature_table(sequence_overview);
 create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
 
+if(sequence_overview['strand'] == '-') {
+    $("#reference_contig").html('<a href="' + sequence_overview['contig']['link'] + '">' + sequence_overview['contig']['display_name'] + '</a>: ' + sequence_overview['end'] + ' - ' + sequence_overview['start']);
+}
+else {
+    $("#reference_contig").html('<a href="' + sequence_overview['contig']['link'] + '">' + sequence_overview['contig']['display_name'] + '</a>: ' + sequence_overview['start'] + ' - ' + sequence_overview['end']);
+}
+
 google.load("visualization", "1", {packages:["corechart"]});
 
 google.setOnLoadCallback(function(){draw_sublabel_chart('reference_sublabel_chart', sequence_overview);});
