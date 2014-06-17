@@ -189,7 +189,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     #Overview
                     'tabs': tabs,
                     'protein_overview': json.dumps(bioent['protein_overview']),
-                    'length': None if bioent['protein_overview']['protein_sequence'] is None else len(bioent['protein_overview']['protein_sequence']['residues']) - 1,
+                    'length': 0 if bioent['protein_overview']['protein_sequence'] is None else len(bioent['protein_overview']['protein_sequence']['residues']) - 1,
 
                     #Links
                     'bioentity_details_link': self.backend_url + '/locus/' + bioent_id + '/bioentity_details?callback=?',
@@ -220,6 +220,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     #Links
                     'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
                     'neighbor_sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/neighbor_sequence_details?callback=?',
+                    'history_details_link': self.backend_url + '/locus/' + bioent_id + '/history_details?callback=?',
                     'download_table_link': '/download_table',
                     'download_sequence_link': '/download_sequence',
                     'analyze_table_link': '/analyze'
@@ -243,9 +244,10 @@ class YeastgenomeFrontend(FrontendInterface):
                     'protein_overview': json.dumps(bioent['protein_overview']),
                     'expression_overview': json.dumps(bioent['expression_overview']),
                     'neighbor_sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/neighbor_sequence_details?callback=?',
+                    'history_details_link': self.backend_url + '/locus/' + bioent_id + '/history_details?callback=?',
                     #Overview
                     'tabs': tabs,
-                    'length': None if bioent['protein_overview']['protein_sequence'] is None else len(bioent['protein_overview']['protein_sequence']['residues']) - 1,
+                    'length': 0 if bioent['protein_overview']['protein_sequence'] is None else len(bioent['protein_overview']['protein_sequence']['residues']) - 1,
 
                     #Links
                     'locus_graph_link': self.backend_url + '/locus/' + bioent_id + '/locus_graph?callback=?',

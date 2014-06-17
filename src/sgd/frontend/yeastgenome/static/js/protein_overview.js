@@ -3,7 +3,7 @@ var source_to_color = {};
 google.load("visualization", "1", {packages:["corechart"]});
 
 google.setOnLoadCallback(function(){
-    if(protein_overview['domains'].length > 0) {
+    if(protein_overview != null && protein_overview['domains'].length > 0) {
         draw_domain_chart("domain_chart", length, protein_overview['domains']);
     }
 });

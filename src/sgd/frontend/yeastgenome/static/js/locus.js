@@ -85,7 +85,98 @@ $(document).ready(function() {
             top_domain.append(child);
         }
 	});
+
+    $.getJSON(history_details_link, function(data) {
+        var lsp_data = [];
+        for(var i=1; i < data.length; i++) {
+            if(data[i]['history_type'] == 'LSP') {
+                lsp_data.push(data[i]);
+            }
+        }
+        if(lsp_data.length > 0) {
+            draw_history_chart('history_chart', lsp_data);
+            var history_table = create_history_table(lsp_data);
+            create_download_button("history_table_download", history_table, download_table_link, history_table_filename);
+        }
+        else {
+            hide_section("history");
+        }
+    });
 });
+
+function draw_history_chart(chart_id, data) {
+    var container = document.getElementById(chart_id);
+
+    var chart = new google.visualization.Timeline(container);
+
+    var dataTable = new google.visualization.DataTable();
+
+    dataTable.addColumn({ type: 'string', id: 'Position' });
+    dataTable.addColumn({ type: 'string', id: 'Category' });
+    dataTable.addColumn({ type: 'date', id: 'Start' });
+    dataTable.addColumn({ type: 'date', id: 'End' });
+
+    var data_array = [['History', "SGD Goes Live", new Date(1990, 8, 8), new Date(1990, 8, 8)]];
+
+    for (var i=0; i < data.length; i++) {
+        var date_values = data[i]['date_created'].split('-');
+        var start = new Date(parseInt(date_values[0]), parseInt(date_values[1])-1, parseInt(date_values[2]));
+        data_array.push(['History', data[i]['category'], start, start]);
+    }
+    data_array.push(['History', 'Today', new Date(), new Date()])
+
+    dataTable.addRows(data_array);
+
+    var options = {
+        'height': 1,
+        'timeline': {'hAxis': {'position': 'none'},
+                    'showRowLabels': false,
+                    'groupByRowLabel': true,
+                    'colorByRowLabel': true},
+
+        'tooltip': {'isHTML': true}
+    }
+
+    chart.draw(dataTable, options);
+
+    options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
+
+    chart.draw(dataTable, options);
+}
+
+function create_history_table(data) {
+    var options = {"bPaginate":  true,
+                    "aaSorting": [[4, "asc"]],
+                    "aoColumns":  [
+                        {"bSearchable":false, "bVisible":false}, //Evidence ID
+                        {"bSearchable":false, "bVisible":false}, //Analyze ID
+                        {"bSearchable":false, "bVisible":false}, //Gene
+                        {"bSearchable":false, "bVisible":false}, //Gene Systematic Name
+                        null, //Date
+                        null, //Note
+                        null //Reference
+                    ]
+    };
+
+
+    if("Error" in data) {
+        options["oLanguage"] = {"sEmptyTable": data["Error"]};
+        options["aaData"] = [];
+    }
+    else {
+        var datatable = [];
+        for (var i=0; i < data.length; i++) {
+            datatable.push(history_data_to_table(data[i], i));
+        }
+
+        set_up_header('history_table', datatable.length, 'entry', 'entries');
+
+        options["oLanguage"] = {"sEmptyTable": "No history data for " + display_name};
+        options["aaData"] = datatable;
+    }
+
+    return create_table("history_table", options);
+}
 
 var graph_style = cytoscape.stylesheet()
 	.selector('node')

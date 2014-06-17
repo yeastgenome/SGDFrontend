@@ -326,3 +326,16 @@ function go_data_to_table(evidence, index) {
 
   	return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], biocon, evidence['go']['go_id'], qualifier, evidence['go']['go_aspect'], evidence['annotation_type'], evidence_code, evidence['source']['display_name'], evidence['date_created'], relationship_entry, reference];
 }
+
+function history_data_to_table(evidence) {
+	var bioent = create_link(evidence['locus']['display_name'], evidence['locus']['link']);
+  	var reference = '';
+    if(evidence['reference'] != null) {
+        reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+        if(evidence['reference']['pubmed_id'] != null) {
+            reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+        }
+    }
+
+  	return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], evidence['date_created'], evidence['note'], reference];
+}

@@ -7,9 +7,12 @@
     var sequence_overview = {{ sequence_overview | safe }};
 	var sequence_details_link = "{{sequence_details_link}}";
     var neighbor_sequence_details_link = "{{neighbor_sequence_details_link}}";
+    var history_details_link = "{{history_details_link}}";
 	var download_table_link = "{{download_table_link}}";
     var download_sequence_link = "{{download_sequence_link}}";
 	var analyze_link = "{{analyze_table_link}}";
+
+    var history_table_filename = "{{locus.display_name}}_sequence_history";
 
 	var display_name = "{{ locus.display_name }}";
 	var locus_id = "{{ locus.id }}";
@@ -43,6 +46,7 @@
             add_navbar_element('Reference Strain - S288C', 'reference');
             add_navbar_element('Alternative Reference Strains', 'alternative');
             add_navbar_element('Other Strains', 'other');
+            add_navbar_element('History', 'history');
             add_navbar_element('Resources', 'resources');
         </script>
 
@@ -123,6 +127,19 @@
             </div>
         </section>
 
+        <!-- History
+================================================== -->
+        <section id="history" data-magellan-destination="history">
+            <div class="page-header">
+                <h1>History</h1>
+                <div id="history_chart"></div>
+
+                <!-- Includes history_table into template -->
+                {% set table_id = "history_table" %}
+                {% include "history_table.jinja2" %}
+            </div>
+        </section>
+
         <!-- Resources
 ================================================== -->
         <section id="resources" data-magellan-destination="resources">
@@ -144,6 +161,7 @@
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
        'version':'1','packages':['timeline']}]}"></script>
 <script src="/static/js/local.js"></script>
+<script src="/static/js/evidence.js"></script>
 <script src="/static/js/sequence_overview.js"></script>
 <script src="/static/js/sequence_details.js"></script>
 {% endblock scripts %}
