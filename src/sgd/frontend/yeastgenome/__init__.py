@@ -521,8 +521,8 @@ class YeastgenomeFrontend(FrontendInterface):
                     if 'property_value' in params:
                         if 'chemicals' in new_phenotype:
                             new_phenotype = new_phenotype.replace('chemicals', params['property_value'].replace(' ', '_').replace('|', '_and_'))
-                        elif 'chemical' in new_phenotype:
-                            new_phenotype = new_phenotype.replace('chemical', params['property_value'].replace(' ', '_'))
+                        elif 'chemical_compound' in new_phenotype:
+                            new_phenotype = new_phenotype.replace('chemical_compound', params['property_value'].replace(' ', '_'))
                 else:
                     new_phenotype = old_phenotype[0]
                 return HTTPFound('/phenotype/' + new_phenotype + '/overview')

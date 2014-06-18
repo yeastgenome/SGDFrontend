@@ -114,8 +114,8 @@ function create_literature_list(list_id, data, topic) {
         $('#' + list_id + '_see_more').hide();
     }
 
-    if(count == 0) {
-        primary_list.hide();
+    if(count > 0) {
+        primary_list.show();
     }
 }
 
