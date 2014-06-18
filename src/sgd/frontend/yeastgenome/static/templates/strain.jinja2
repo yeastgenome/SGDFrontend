@@ -38,13 +38,14 @@
             <div class="page-header clearfix">
                 <h1>Summary</h1>
                 <div class="panel callout radius right">
-                    <ul class="unstyled">
+                    <ul class="unstyled" style="width:250px">
                         <h3 class="text-center">{{ strain.display_name }}</h3>
                         {% if strain.status != None %}<li><strong>Status: </strong> {{ strain.status }}</li>{% endif %}
+                        {% if strain.genotype != None %}<li><strong>Genotype: </strong> {{ strain.genotype|safe }}</li>{% endif %}
                     </ul>
                 </div>
                 <h3 class="subheader">{{ strain.description }}</h3>
-                {% if strain.genotype != None %}<p><strong>Genotype: </strong> {{ strain.genotype|safe }}</p>{% endif %}
+
                 <p id="summary_paragraph"></p>
                 <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
             </div>
