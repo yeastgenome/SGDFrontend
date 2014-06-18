@@ -50,14 +50,17 @@
 <!-- Summary
 ================================================== -->	
         <section id="summary" data-magellan-destination="summary">
-            <div class="page-header">
+            <div class="page-header clearfix">
                 <h1>Summary</h1>
-                <ul class="unstyled">
-                    <li><strong>Associated Gene Ontology Term: </strong><a href="{{ complex.go.link }}">{{ complex.go.display_name }}</a></li>
-                    <li><strong>Cellular Localization: </strong>{{ complex.cellular_localization }}</li>
-                    <li><strong>Aliases: </strong>{{ complex.aliases|map(attribute='display_name')|join(', ') }}</li>
-                    <li><strong>Definition: </strong>{{ complex.description }}</li>
-                </ul>
+                <div class="panel callout radius right">
+                    <ul class="unstyled">
+                        <h3 class="text-center">{{ complex.display_name }}</h3>
+                        <li><strong>Gene Ontology Term: </strong><a href="{{ complex.go.link }}">{{ complex.go.display_name }}</a></li>
+                        <li><strong>Cellular Localization: </strong>{{ complex.cellular_localization }}</li>
+                        <li><strong>Aliases: </strong>{{ complex.aliases|map(attribute='display_name')|join(', ') }}</li>
+                    </ul>
+                </div>
+                <p>{{ complex.description|safe }}</p>
             </div>
         </section>
 

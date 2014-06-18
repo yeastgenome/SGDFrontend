@@ -35,15 +35,18 @@
         <!-- Summary
         ================================================== -->
         <section id="summary" data-magellan-destination="summary">
-            <div class="page-header">
+            <div class="page-header clearfix">
                 <h1>Summary</h1>
+                <div class="panel callout radius right">
+                    <ul class="unstyled">
+                        <h3 class="text-center">{{ strain.display_name }}</h3>
+                        {% if strain.status != None %}<li><strong>Status: </strong> {{ strain.status }}</li>{% endif %}
+                    </ul>
+                </div>
+                <h3 class="subheader">{{ strain.description }}</h3>
+                {% if strain.genotype != None %}<p><strong>Genotype: </strong> {{ strain.genotype|safe }}</p>{% endif %}
                 <p id="summary_paragraph"></p>
                 <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
-                <ul class="unstyled">
-                    {% if strain.status != None %}<li><strong>Status: </strong> {{ strain.status }}</li>{% endif %}
-                    {% if strain.genotype != None %}<li><strong>Genotype: </strong> {{ strain.genotype|safe }}</li>{% endif %}
-                    <li><strong>Description: </strong>{{ strain.description }}</li>
-                </ul>
             </div>
         </section>
 
@@ -61,7 +64,9 @@
 
                     {% for resource in strain.urls if resource.category == 'source' %}
                         {% if loop.first %}<h3>Sources</h3>{% endif %}
-                        <a href="{{ resource.link }}">{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        <ul id="resource_list">
+                            <a href="{{ resource.link }}">{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        </ul>
                     {% endfor %}
                 </div>
             </section>

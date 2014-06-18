@@ -90,6 +90,7 @@
 
                 <div class="panel callout radius right">
                     <ul class="unstyled">
+                        <h3 class="text-center">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</h3>
                         <li>
                             <strong>Standard Name: </strong>{{ locus.display_name }}
                             {% for basic_info in locus.basic_info_references if info_key == 'Gene Name' %}

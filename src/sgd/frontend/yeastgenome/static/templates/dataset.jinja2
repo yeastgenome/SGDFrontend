@@ -42,16 +42,19 @@
         <!-- Summary
         ================================================== -->
         <section id="summary" data-magellan-destination="summary">
-            <div class="page-header">
+            <div class="page-header clearfix">
                 <h1>Summary</h1>
-                <ul class="unstyled">
-                    <li><strong>GEO ID: </strong>{{ dataset.geo_id }}</li>
-                    <li><strong>Reference: </strong><a href="{{ dataset.reference.link }}">{{ dataset.reference.display_name }}</a></li>
-                    <li><strong>Channels: </strong>{{ dataset.channel_count }}</li>
-                    <li><strong># of Conditions: </strong>{{ dataset.condition_count }}</li>
-                    <li><strong>Description: </strong>{{ dataset.short_description|safe }}</li>
-                    <li><strong>Categories: </strong>{{ dataset.tags|replace('|', ', ') }}</li>
-                </ul>
+                <div class="panel callout radius right">
+                    <ul class="unstyled">
+                        <h3 class="text-center">{{ dataset.display_name }}</h3>
+                        <li><strong>GEO ID: </strong>{{ dataset.geo_id }}</li>
+                        <li><strong>Channels: </strong>{{ dataset.channel_count }}</li>
+                        <li><strong># of Conditions: </strong>{{ dataset.condition_count }}</li>
+                        <li><strong>Categories: </strong>{{ dataset.tags|replace('|', ', ') }}</li>
+                    </ul>
+                </div>
+                <p>{{ dataset.short_description|safe }}</p>
+                <span><strong>Reference: </strong><a href="{{ dataset.reference.link }}">{{ dataset.reference.display_name }}</a></span>
             </div>
         </section>
 

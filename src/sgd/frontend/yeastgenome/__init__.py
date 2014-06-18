@@ -289,7 +289,6 @@ class YeastgenomeFrontend(FrontendInterface):
         page = {
                     #Basic info
                     'dataset': bioitem,
-                    'expression_overview': json.dumps(bioitem['expression_overview']),
 
                     #Links
                     'download_table_link': '/download_table',
