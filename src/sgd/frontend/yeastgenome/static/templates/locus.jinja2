@@ -406,48 +406,45 @@
     <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
            'version':'1','packages':['timeline']}]}"></script>
 
-    {% if tabs['interaction_tab'] %}
-        <script src="/static/js/interaction_overview.js"></script>
-    {% endif %}
-    {% if tabs['regulation_tab'] %}
-        <script src="/static/js/regulation_overview.js"></script>
-    {% endif %}
-    {% if tabs['phenotype_tab'] %}
-        <script src="/static/js/phenotype_overview.js"></script>
-    {% endif %}
-    {% if tabs['sequence_tab'] %}
-        <script src="/static/js/sequence_overview.js"></script>
-    {% endif %}
-    {% if tabs['protein_tab'] %}
-        <script src="/static/js/protein_overview.js"></script>
-    {% endif %}
-    {% if tabs['expression_tab'] %}
-        <script src="/static/js/expression_overview.js"></script>
-    {% endif %}
-    {% if tabs['literature_tab'] %}
-        <script src="/static/js/literature_overview.js"></script>
-    {% endif %}
-    {% if tabs['go_tab'] %}
-        <script src="/static/js/go_overview.js"></script>
-    {% endif %}
+    <script src="/static/js/interaction_overview.js"></script>
+    <script src="/static/js/regulation_overview.js"></script>
+    <script src="/static/js/phenotype_overview.js"></script>
+    <script src="/static/js/sequence_overview.js"></script>
+    <script src="/static/js/protein_overview.js"></script>
+    <script src="/static/js/expression_overview.js"></script>
+    <script src="/static/js/literature_overview.js"></script>
+    <script src="/static/js/go_overview.js"></script>
 
     <script>
-        google.load("visualization", "1", {packages:["corechart"]});
-        google.setOnLoadCallback(function(){
-            if(sequence_overview != null) {
-                draw_sublabel_chart('reference_sublabel_chart', sequence_overview);
-            }
-            if(regulation_overview != null) {
-                draw_regulation_overview();
-            }
-            if(protein_overview != null && protein_overview['domains'].length > 0) {
-                draw_domain_chart("domain_chart", length, protein_overview['domains']);
-            }
-            draw_phenotype_overview();
-            draw_literature_overview();
-            draw_go_overview();
-            create_expression_chart();
-        });
+        google.load("visualization", "1", {packages:["corechart"], callback: function(){
+            {% if tabs['sequence_tab'] %}
+                if(sequence_overview != null) {
+                    draw_sublabel_chart('reference_sublabel_chart', sequence_overview);
+                }
+            {% endif %}
+            {% if tabs['regulation_tab'] %}
+                if(regulation_overview != null) {
+                    draw_regulation_overview();
+                }
+            {% endif %}
+            {% if tabs['protein_tab'] %}
+                if(protein_overview != null && protein_overview['domains'].length > 0) {
+                    draw_domain_chart("domain_chart", length, protein_overview['domains']);
+                }
+            {% endif %}
+            {% if tabs['phenotype_tab'] %}
+                draw_phenotype_overview();
+            {% endif %}
+            {% if tabs['literature_tab'] %}
+                draw_literature_overview();
+            {% endif %}
+            {% if tabs['go_tab'] %}
+                draw_go_overview();
+            {% endif %}
+            {% if tabs['expression_tab'] %}
+                create_expression_chart();
+            {% endif %}
+        }});
     </script>
     <script src="/static/js/build/nouislider.min.js"></script>
     <script src="/static/js/build/cytoscape.min.js"></script>
@@ -458,7 +455,6 @@
     <script src="/static/js/locus.js"></script>
     <script src="/static/js/build/kinetic.min.js"></script>
     <script src="/static/js/venn.js"></script>
-    <script src="/static/js/interaction_overview.js"></script>
 
 {% endblock scripts %}
 
