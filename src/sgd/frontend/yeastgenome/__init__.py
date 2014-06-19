@@ -131,26 +131,6 @@ class YeastgenomeFrontend(FrontendInterface):
                     'download_table_link': '/download_table'
                     }
         return page
-
-    def expression_details(self, bioent_repr):
-        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        bioent_id = str(bioent['id'])
-        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
-
-        page = {
-                    #Basic info
-                    'locus': bioent,
-
-                    #Overview
-                    'tabs': tabs,
-                    'expression_overview': json.dumps(bioent['expression_overview']),
-
-                    #Links
-                    'expression_details_link': self.backend_url + '/locus/' + bioent_id + '/expression_details?callback=?',
-                    'expression_graph_link': self.backend_url + '/locus/' + bioent_id + '/expression_graph?callback=?',
-                    'download_table_link': '/download_table',
-                    }
-        return page
     
     def go_details(self, bioent_repr):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
@@ -205,28 +185,6 @@ class YeastgenomeFrontend(FrontendInterface):
                     }
         return page
 
-    def sequence_details(self, bioent_repr):
-        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        bioent_id = str(bioent['id'])
-        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
-
-        page = {
-                    #Basic info
-                    'locus': bioent,
-
-                    #Overview
-                    'tabs': tabs,
-                    'sequence_overview': json.dumps(bioent['sequence_overview']),
-
-                    #Links
-                    'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
-                    'neighbor_sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/neighbor_sequence_details?callback=?',
-                    'history_details_link': self.backend_url + '/locus/' + bioent_id + '/history_details?callback=?',
-                    'download_table_link': '/download_table',
-                    'download_sequence_link': '/download_sequence',
-                    'analyze_table_link': '/analyze'
-                    }
-        return page
 
     def locus(self, locus_repr):
         try:
@@ -288,19 +246,6 @@ class YeastgenomeFrontend(FrontendInterface):
 
                     #Links
                     'ecnumber_details_link': self.backend_url + '/ecnumber/' + biocon_id + '/locus_details?callback=?',
-                    'download_table_link': '/download_table',
-                    'analyze_table_link': '/analyze'
-                    }
-        return page
-
-    def dataset(self, bioitem_repr):
-        bioitem = get_json(self.backend_url + '/dataset/' + bioitem_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'dataset': bioitem,
-
-                    #Links
                     'download_table_link': '/download_table',
                     'analyze_table_link': '/analyze'
                     }
@@ -477,23 +422,6 @@ class YeastgenomeFrontend(FrontendInterface):
                     #Basic info
                     'references_this_week_link': self.backend_url + '/references/this_week?callback=?',
                     'download_citations_link': '/download_citations'
-                    }
-        return page
-
-    def contig(self, contig_repr):
-        contig = get_json(self.backend_url + '/contig/' + contig_repr + '/overview')
-        contig_id = str(contig['id'])
-
-        page = {
-                    #Basic info
-                    'contig': contig,
-                    'overview': json.dumps(contig['overview']),
-
-                    #Links
-                    'sequence_details_link': self.backend_url + '/contig/' + contig_id + '/sequence_details?callback=?',
-                    'download_table_link': '/download_table',
-                    'download_sequence_link': '/download_sequence',
-                    'analyze_table_link': '/analyze'
                     }
         return page
     

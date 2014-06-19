@@ -45,10 +45,6 @@ class FrontendInterface:
         return None
 
     @abstractmethod
-    def sequence_details(self, bioent_repr):
-        return None
-
-    @abstractmethod
     def protein_details(self, bioent_repr):
         return None
     
@@ -78,14 +74,6 @@ class FrontendInterface:
 
     @abstractmethod
     def domain(self, domain_repr):
-        return None
-
-    @abstractmethod
-    def contig(self, contig_repr):
-        return None
-
-    @abstractmethod
-    def complex(self, complex_repr):
         return None
 
     @abstractmethod
