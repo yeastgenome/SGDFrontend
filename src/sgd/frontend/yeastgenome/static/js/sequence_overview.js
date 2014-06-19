@@ -13,15 +13,6 @@ if(sequence_overview != null) {
     }
 }
 
-google.load("visualization", "1", {packages:["corechart"]});
-
-google.setOnLoadCallback(function(){
-    if(sequence_overview != null) {
-        draw_sublabel_chart('reference_sublabel_chart', sequence_overview);
-    }
-});
-
-
 function make_sublabel_ready_handler(chart_id, chart, data, data_array) {
     function ready_handler() {
 

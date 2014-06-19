@@ -1,5 +1,4 @@
-google.load("visualization", "1", {packages:["corechart"]});
-function drawChart() {
+function draw_regulation_overview() {
     if(regulation_overview != null) {
         if(regulation_overview['target_count'] + regulation_overview['regulator_count'] > 0){
             var data_table = google.visualization.arrayToDataTable([['Category', 'Genes', { role: 'style' }, { role: 'annotation' }],
@@ -52,4 +51,3 @@ function drawChart() {
         }
     }
 }
-google.setOnLoadCallback(drawChart);

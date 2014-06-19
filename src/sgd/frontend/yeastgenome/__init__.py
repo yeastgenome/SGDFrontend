@@ -164,6 +164,7 @@ class YeastgenomeFrontend(FrontendInterface):
 
                     #Overview
                     'go_overview': overview,
+                    'go_overview_json': json.dumps(bioent['go_overview']),
                     'date_last_reviewed': None if 'date_last_reviewed' not in overview else overview['date_last_reviewed'],
                     'tabs': tabs,
                     
@@ -236,6 +237,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     #Basic info
                     'locus': bioent,
                     'go_overview': bioent['go_overview'],
+                    'go_overview_json': json.dumps(bioent['go_overview']),
                     'literature_overview': json.dumps(bioent['literature_overview']),
                     'phenotype_overview': json.dumps(bioent['phenotype_overview']),
                     'regulation_overview': json.dumps(bioent['regulation_overview']),

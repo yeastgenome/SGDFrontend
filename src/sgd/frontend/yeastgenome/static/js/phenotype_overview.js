@@ -1,6 +1,4 @@
-google.load("visualization", "1", {packages:["corechart"]});
-google.setOnLoadCallback(drawChart);
-function drawChart() {
+function draw_phenotype_overview() {
     if(phenotype_overview != null) {
         if(phenotype_overview['experiment_categories'].length > 1) {
             var label = 'Annotations';

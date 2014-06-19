@@ -160,9 +160,17 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
        'version':'1','packages':['timeline']}]}"></script>
+<script src="/static/js/sequence_overview.js"></script>
+<script>
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(function(){
+        if(sequence_overview != null) {
+            draw_sublabel_chart('reference_sublabel_chart', sequence_overview);
+        }
+    });
+</script>
 <script src="/static/js/local.js"></script>
 <script src="/static/js/evidence.js"></script>
-<script src="/static/js/sequence_overview.js"></script>
 <script src="/static/js/sequence_details.js"></script>
 {% endblock scripts %}
 

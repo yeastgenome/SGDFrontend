@@ -3,9 +3,27 @@
 
     <li id='go_summary_message' style='display:none'>0 GO Terms curated.</li>
 
-    <li><strong>Key GO Terms:</strong>
-        {% for slim in go_overview.go_slim_down %}
+    <li>
+        {% for slim in go_overview.go_slim_down_bp %}
+            {% if loop.first %}<strong>Key Biological Process Terms:</strong>{% endif %}
+            <span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    </li>
+    <li><strong>Key Molecular Function Terms:</strong>
+        {% if loop.first %}<strong>Key Molecular Function Terms:</strong>{% endif %}
+        {% for slim in go_overview.go_slim_down_mf %}
+            <span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    </li>
+    <li><strong>Key Cellular Compartment Terms:</strong>
+        {% if loop.first %}<strong>Cellular Compartment Terms:</strong>{% endif %}
+        {% for slim in go_overview.go_slim_down_cc %}
             <span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>{% if not loop.last %}, {% endif %}
         {% endfor %}
     </li>
 </ul>
+
+<div id="summary_wrapper" class="row">
+    <div class="large-6 columns" id="go_slim_chart"></div>
+    <div class="large-6 columns" id="aspect_chart" ></div>
+</div>

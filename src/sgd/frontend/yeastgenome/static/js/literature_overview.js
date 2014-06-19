@@ -1,6 +1,5 @@
-google.load("visualization", "1", {packages:["corechart"]});
-google.setOnLoadCallback(drawChart);
-function drawChart() {
+
+function draw_literature_overview() {
     if(literature_overview != null) {
         var literature_data = google.visualization.arrayToDataTable(literature_overview);
         var literature_options = {

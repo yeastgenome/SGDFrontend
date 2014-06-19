@@ -84,7 +84,7 @@ $(document).ready(function() {
                     .attr('disabled', !('S288C' in strain_to_protein_data));
 
                 if(mode.val() == 'genomic_dna') {
-                    color_sequence("reference_sequence", strain_to_genomic_data['S288C']);
+                    //color_sequence("reference_sequence", strain_to_genomic_data['S288C']);
                 }
             }
             else {
@@ -278,19 +278,21 @@ function prep_sequence(residues) {
 
 
 function color_sequence(seq_id, data) {
-    if(data['tags'].length > 1) {
+    var tags = data['tags'];
+    tags.sort(function(a, b){return a['relative_start']-b['relative_start']});
+    if(tags.length > 1) {
         var num_digits = ('' + data['residues'].length).length;
 
         var seq = $("#" + seq_id).html();
         var new_seq = '';
         var start = 0;
-        for (var i=0; i < data['tags'].length; i++) {
+        for (var i=0; i < tags.length; i++) {
             var color;
-            if(data['tags'][i]['display_name'] in label_to_color) {
-                color = label_to_color[data['tags'][i]['display_name']];
+            if(tags[i]['display_name'] in label_to_color) {
+                color = label_to_color[tags[i]['display_name']];
 
-                var start_index = data['tags'][i]['relative_start']-1;
-                var end_index = data['tags'][i]['relative_end'];
+                var start_index = tags[i]['relative_start']-1;
+                var end_index = tags[i]['relative_end'];
 
                 var html_start_index = relative_to_html(start_index, num_digits);
                 var html_end_index = relative_to_html(end_index, num_digits);

@@ -1,13 +1,5 @@
 var source_to_color = {};
 
-google.load("visualization", "1", {packages:["corechart"]});
-
-google.setOnLoadCallback(function(){
-    if(protein_overview != null && protein_overview['domains'].length > 0) {
-        draw_domain_chart("domain_chart", length, protein_overview['domains']);
-    }
-});
-
 function make_domain_ready_handler(chart_id, chart, min_start, max_end, descriptions, data_array) {
     function ready_handler() {
         //Fix tooltips.

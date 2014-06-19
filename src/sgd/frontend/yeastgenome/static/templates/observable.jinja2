@@ -104,6 +104,12 @@
 {% block scripts %}
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script src="/static/js/phenotype_overview.js"></script>
+<script>
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(function(){
+        draw_phenotype_overview();
+    });
+</script>
 <script src="/static/js/build/cytoscape.min.js"></script>
 <script src="/static/js/build/arbor.js"></script>
 <script src="/static/js/local.js"></script>

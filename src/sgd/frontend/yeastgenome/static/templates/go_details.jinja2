@@ -19,6 +19,7 @@
 	var comp_cc_download_table_filename = "{{ locus.display_name }}_computational_cc_go";
 
 	var display_name = "{{ locus.display_name }}";
+    var go_overview = {{go_overview_json | safe}};
 </script>
 {% endblock %}
 
@@ -191,6 +192,14 @@
 </div>
 
 {% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="/static/js/go_overview.js"></script>
+<script>
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(function(){
+        draw_go_overview();
+    });
+</script>
 <script src="/static/js/build/nouislider.min.js"></script>
 <script src="/static/js/build/arbor.js"></script>
 <script src="/static/js/build/cytoscape.min.js"></script>

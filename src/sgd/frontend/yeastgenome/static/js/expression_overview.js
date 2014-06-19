@@ -2,8 +2,6 @@
  * Created by kpaskov on 6/11/14.
  */
 
-google.load("visualization", "1", {packages:["corechart"]});
-google.setOnLoadCallback(create_expression_chart);
 function create_expression_chart() {
     if(expression_overview != null) {
         var all_data = expression_overview['all_values'];

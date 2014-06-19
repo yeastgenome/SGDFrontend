@@ -26,6 +26,7 @@
     var protein_overview = {{protein_overview | safe}};
     var expression_overview = {{expression_overview | safe}};
     var literature_overview = {{literature_overview | safe}};
+    var go_overview = {{go_overview_json | safe}};
 
 </script>
 {% endblock %}
@@ -90,7 +91,7 @@
 
                 <div class="panel callout radius right">
                     <ul class="unstyled">
-                        <h2 class="text-center">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</h2>
+                        <h3 class="text-center">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</h3>
                         <li>
                             <strong>Standard Name: </strong>{{ locus.display_name }}
                             {% for basic_info in locus.basic_info_references if info_key == 'Gene Name' %}
@@ -360,8 +361,10 @@
             <div class="page-header">
                 <h1>Regulation</h1>
                 <p id="regulation_summary_message" hidden>0 Targets and 0 Regulators curated.</p>
-                <div class="panel" id="regulation_summary_wrapper">
+                {% if locus.regulation_overview.paragraph != None %}
                     <p>{{ locus.regulation_overview.paragraph.text|safe|truncate(250, True) }} <small><a href="/locus/{{ locus.sgdid }}/regulation">See More</a></small></p>
+                {% endif %}
+                <div class="panel" id="regulation_summary_wrapper">
                     <!-- Includes regulation_overview.html into template -->
                     {% include "regulation_overview.jinja2" %}
                 </div>
@@ -402,13 +405,7 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
            'version':'1','packages':['timeline']}]}"></script>
-    <script src="/static/js/build/nouislider.min.js"></script>
-    <script src="/static/js/build/cytoscape.min.js"></script>
-    <script src="/static/js/build/arbor.js"></script>
-    <script src="/static/js/cytoscape.js"></script>
-    <script src="/static/js/local.js"></script>
-    <script src="/static/js/evidence.js"></script>
-    <script src="/static/js/locus.js"></script>
+
     {% if tabs['interaction_tab'] %}
         <script src="/static/js/interaction_overview.js"></script>
     {% endif %}
@@ -430,6 +427,38 @@
     {% if tabs['literature_tab'] %}
         <script src="/static/js/literature_overview.js"></script>
     {% endif %}
+    {% if tabs['go_tab'] %}
+        <script src="/static/js/go_overview.js"></script>
+    {% endif %}
+
+    <script>
+        google.load("visualization", "1", {packages:["corechart"]});
+        google.setOnLoadCallback(function(){
+            if(sequence_overview != null) {
+                draw_sublabel_chart('reference_sublabel_chart', sequence_overview);
+            }
+            if(regulation_overview != null) {
+                draw_regulation_overview();
+            }
+            if(protein_overview != null && protein_overview['domains'].length > 0) {
+                draw_domain_chart("domain_chart", length, protein_overview['domains']);
+            }
+            draw_phenotype_overview();
+            draw_literature_overview();
+            draw_go_overview();
+            create_expression_chart();
+        });
+    </script>
+    <script src="/static/js/build/nouislider.min.js"></script>
+    <script src="/static/js/build/cytoscape.min.js"></script>
+    <script src="/static/js/build/arbor.js"></script>
+    <script src="/static/js/cytoscape.js"></script>
+    <script src="/static/js/local.js"></script>
+    <script src="/static/js/evidence.js"></script>
+    <script src="/static/js/locus.js"></script>
+    <script src="/static/js/build/kinetic.min.js"></script>
+    <script src="/static/js/venn.js"></script>
+    <script src="/static/js/interaction_overview.js"></script>
 
 {% endblock scripts %}
 

@@ -288,16 +288,24 @@
 </div>
 
 {% block scripts %}
-<script src="/static/js/build/nouislider.min.js"></script>
-<script src="/static/js/build/cytoscape.min.js"></script>
-<script src="/static/js/build/arbor.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
        'version':'1','packages':['timeline']}]}"></script>
+<script src="/static/js/protein_overview.js"></script>
+<script>
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(function(){
+        if(protein_overview != null && protein_overview['domains'].length > 0) {
+            draw_domain_chart("domain_chart", length, protein_overview['domains']);
+        }
+    });
+</script>
+<script src="/static/js/build/nouislider.min.js"></script>
+<script src="/static/js/build/cytoscape.min.js"></script>
+<script src="/static/js/build/arbor.js"></script>
 <script src="/static/js/local.js"></script>
 <script src="/static/js/cytoscape.js"></script>
 <script src="/static/js/evidence.js"></script>
-<script src="/static/js/protein_overview.js"></script>
 <script src="/static/js/protein_details.js"></script>
 {% endblock scripts %}
 

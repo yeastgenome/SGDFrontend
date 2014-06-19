@@ -206,6 +206,16 @@
 </div>
 
 {% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="/static/js/regulation_overview.js"></script>
+<script>
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(function(){
+        if(regulation_overview != null) {
+            draw_regulation_overview();
+        }
+    });
+</script>
 <script src="/static/js/build/nouislider.min.js"></script>
 <script src="/static/js/build/cytoscape.min.js"></script>	
 <script src="/static/js/build/arbor.js"></script>	
