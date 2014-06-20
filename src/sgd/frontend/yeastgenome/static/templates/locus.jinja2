@@ -81,6 +81,7 @@
                 add_navbar_element("Protein", "protein");
             {% endif %}
             add_navbar_element("History", "history");
+            add_navbar_element("Summary Text", "summary-text");
         </script>
 
     <!-- Summary
@@ -89,9 +90,27 @@
             <div class="page-header clearfix">
                 <h1>Summary</h1>
 
-                <div class="panel callout radius right">
+                <div class="panel callout radius">
+                
+                    <h3 class="text-center">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</h3>
+                
+                    <h3 class="subheader">{{ locus.description }}
+                    {% for reference in locus.description_references %}
+                        {% if loop.first %}
+                            <a href="#" data-dropdown="drop_description" data-options="align:left;is_hover:true"><i class="fa fa-info-circle"></i></a>
+                            <div id="drop_description" class="f-dropdown content medium" data-dropdown-content>
+                            <p>
+                        {% endif %}
+                        <a href="{{ reference.link }}">{{ reference.display_name }}</a>
+                        {% if not loop.last %}
+                            ,
+                        {% else %}
+                            </p></div>
+                        {% endif %}
+                    {% endfor %}
+                    </h3>
+                
                     <ul class="unstyled">
-                        <h3 class="text-center">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</h3>
                         <li>
                             <strong>Standard Name: </strong>{{ locus.display_name }}
                             {% for basic_info in locus.basic_info_references if info_key == 'Gene Name' %}
@@ -204,28 +223,6 @@
                         </li>
                     </ul>
                 </div>
-
-                <h3 class="subheader">{{ locus.description }}
-                {% for reference in locus.description_references %}
-                    {% if loop.first %}
-                        <a href="#" data-dropdown="drop_description" data-options="align:left;is_hover:true"><i class="fa fa-info-circle"></i></a>
-                        <div id="drop_description" class="f-dropdown content medium" data-dropdown-content>
-                        <p>
-                    {% endif %}
-                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>
-                    {% if not loop.last %}
-                        ,
-                    {% else %}
-                        </p></div>
-                    {% endif %}
-                {% endfor %}
-                </h3>
-
-                {% if locus.paragraph != None %}
-                    <p>
-                        {{ locus.paragraph.text|safe }}
-                    </p>
-                {% endif %}
             </div>
         </section>
 
@@ -284,7 +281,7 @@
                         <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                     {% endfor %}
                 </div>
-                <a href="/locus/{{ locus.sgdid }}/sequence" class="button [radius round]">See Sequence and Strain Details</a>
+                <a href="/locus/{{ locus.sgdid }}/sequence" class="button radius">See Sequence and Strain Details</a>
             </div>
         </section>
         {% endif %}
@@ -297,7 +294,7 @@
                 <h1>Function</h1>
                 <!-- Includes go_overview.html into template -->
                 {% include "go_overview.jinja2" %}
-                <a style="background:#4daf4a" href="/locus/{{ locus.sgdid }}/go" class="button [radius round]">See Gene Ontology Details</a>
+                <a style="background:#4daf4a" href="/locus/{{ locus.sgdid }}/go" class="button radius">See Gene Ontology Details</a>
             </div>
         </section>
         {% endif %}
@@ -310,7 +307,7 @@
                 <h1>Phenotype</h1>
                 <!-- Includes phenotype_overview.html into template -->
                 {% include "phenotype_overview.jinja2" %}
-                <a style="background:#984ea3" href="/locus/{{ locus.sgdid }}/phenotype" class="button [radius round]">See Phenotype Details</a>
+                <a style="background:#984ea3" href="/locus/{{ locus.sgdid }}/phenotype" class="button radius">See Phenotype Details</a>
             </div>
         </section>
         {% endif %}
@@ -323,7 +320,7 @@
                 <h1>Literature</h1>
                 <!-- Includes literature_overview.html into template -->
                 {% include "literature_overview.jinja2" %}
-                <a style="background:#ffcc33" href="/locus/{{ locus.sgdid }}/literature" class="button [radius round]">See Literature Details</a>
+                <a style="background:#ffcc33" href="/locus/{{ locus.sgdid }}/literature" class="button radius">See Literature Details</a>
             </div>
         </section>
         {% endif %}
@@ -336,7 +333,7 @@
                 <h1>Interactions</h1>
                 <!-- Includes interaction_overview.html into template -->
                 {% include "interaction_overview.jinja2" %}
-                <a style="background:#7d411e" href="/locus/{{ locus.sgdid }}/interaction" class="button [radius round]">See Interaction Details</a>
+                <a style="background:#7d411e" href="/locus/{{ locus.sgdid }}/interaction" class="button radius">See Interaction Details</a>
             </div>
         </section>
         {% endif %}
@@ -349,7 +346,7 @@
                 <h1>Expression</h1>
                 <!-- Includes expression_overview.html into template -->
                 {% include "expression_overview.jinja2" %}
-                <a style="background:#eb7500" href="/locus/{{ locus.sgdid }}/expression" class="button [radius round]">See Expression Details</a>
+                <a style="background:#eb7500" href="/locus/{{ locus.sgdid }}/expression" class="button radius">See Expression Details</a>
             </div>
         </section>
         {% endif %}
@@ -369,7 +366,7 @@
                     {% include "regulation_overview.jinja2" %}
                 </div>
             </div>
-            <a style="background:#f96968" href="/locus/{{ locus.sgdid }}/regulation" class="button [radius round]">See Regulation Details</a>
+            <a style="background:#f96968" href="/locus/{{ locus.sgdid }}/regulation" class="button radius">See Regulation Details</a>
         </section>
         {% endif %}
 
@@ -380,7 +377,7 @@
             <div class="page-header">
                 <h1>Protein</h1>
                 <div id="domain_chart"></div>
-                <a style="background:#377eb8" href="/locus/{{ locus.sgdid }}/protein" class="button [radius round]">See Protein Details</a>
+                <a style="background:#377eb8" href="/locus/{{ locus.sgdid }}/protein" class="button radius">See Protein Details</a>
             </div>
         </section>
         {% endif %}
@@ -395,6 +392,19 @@
                 <!-- Includes history_table into template -->
                 {% set table_id = "history_table" %}
                 {% include "history_table.jinja2" %}
+            </div>
+        </section>
+        
+         <!-- Summary Text
+================================================== -->
+        <section id="summary-text" data-magellan-destination="summary-text">
+            <div class="page-header">
+                <h1>Summary Text</h1>
+                {% if locus.paragraph != None %}
+                    <p>
+                        {{ locus.paragraph.text|safe }}
+                    </p>
+                {% endif %}
             </div>
         </section>
 
