@@ -55,10 +55,10 @@
         <script>
             add_navbar_title("<a href='{{ locus.link }}'>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</a>");
             add_navbar_element("Summary", "summary");
-            add_navbar_element("Network Visualization", "network");
             {% if tabs['sequence_tab'] %}
                 add_navbar_element("Sequence", "sequence");
             {% endif %}
+            add_navbar_element("Network Visualization", "network");
             {% if tabs['go_tab'] %}
                 add_navbar_element("Function", "go");
             {% endif %}
@@ -132,10 +132,11 @@
                         <dd>{{ locus.format_name }}</dd>
                         
                         {% for alias in locus.aliases if alias.category == 'Uniform' %}
-                        {% if loop.first %}<dt>Aliases</dt>{% endif %}
-                            <dd>
+                        {% if loop.first %}<dt>Aliases</dt>
+                        <dd>{% endif %}
+                            
                                 {{ alias.display_name }}
-                            </dd>
+                            
                                 {% for evidence in alias.evidences %}
                                     {% if loop.first %}
                                         <a href="#" data-dropdown="drop_alias_{{ alias.id }}" data-options="align:left;is_hover:true"><i class="fa fa-info-circle"></i></a>
@@ -147,7 +148,7 @@
                                         </p></div>
                                     {% endif %}
                                 {% endfor %}
-                            {% if not loop.last %}, {% endif %}
+                            {% if not loop.last %},{% else %}</dd>{% endif %}
                         {% endfor %}
                             
                         <dt>Feature Type</dt>
@@ -228,6 +229,27 @@
             </div>
         </section>
 
+<!-- Sequence
+================================================== -->
+        {% if tabs['sequence_tab'] %}
+        <section id="sequence" data-magellan-destination="sequence">
+            <div class="page-header">
+                <h1>Sequence</h1>
+                <h2 class="subheader">S288C</h2>
+                <!-- Includes sequence_overview into template -->
+                {% include "sequence_overview.jinja2" %}
+                <div class="button-bar">
+                    <ul class="button-group radius">
+                        <li><a id="reference_download" class="small button secondary"><i class="fa fa-download"></i> Download Reference Sequence</a></li>
+                    </ul>
+                    {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_SECTION'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </div>
+                <a href="/locus/{{ locus.sgdid }}/sequence" class="button radius">Sequence and Strain Details</a>
+            </div>
+        </section>
+        {% endif %}
 
 <!-- Network Visualization
 ================================================== -->
@@ -265,28 +287,6 @@
                 </div>
             </div>
         </section>
-
-<!-- Sequence
-================================================== -->
-        {% if tabs['sequence_tab'] %}
-        <section id="sequence" data-magellan-destination="sequence">
-            <div class="page-header">
-                <h1>Sequence</h1>
-                <h2 class="subheader">S288C</h2>
-                <!-- Includes sequence_overview into template -->
-                {% include "sequence_overview.jinja2" %}
-                <div class="button-bar">
-                    <ul class="button-group radius">
-                        <li><a id="reference_download" class="small button secondary"><i class="fa fa-download"></i> Download Reference Sequence</a></li>
-                    </ul>
-                    {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_SECTION'%}
-                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </div>
-                <a href="/locus/{{ locus.sgdid }}/sequence" class="button radius">Sequence and Strain Details</a>
-            </div>
-        </section>
-        {% endif %}
 
 <!-- GO
 ================================================== -->
