@@ -50,7 +50,7 @@
 	"compass/css3/images",
 	"compass/css3/border-radius";
 
-// Font Awesome (check bower.json for version)
+// Font Awesome (check bower.json for version), probably should comment out a couple of these below
 @import 
 	"../../../../../../bower_components/font-awesome/scss/variables",
     "../../../../../../bower_components/font-awesome/scss/mixins",
@@ -76,18 +76,19 @@
 	"base",
 	"layout",
 	"modules/autocomplete",
-	"modules/header",
 	"modules/footer",
-	"modules/side-nav",
 	"modules/forms",
+	"modules/foundation-overwrites",
+	"modules/header",
 	"modules/icons",
+	"modules/key-value-display",
 	"modules/labels",
+	"modules/legends",
 	"modules/nested-lists",
 	"modules/references",
-	"modules/legends",
+	"modules/side-nav",
 	"modules/tables",
 	"modules/yetfasco",
-	"modules/foundation-overwrites",
 	"state",
 	"theme",
 	"legacy",
