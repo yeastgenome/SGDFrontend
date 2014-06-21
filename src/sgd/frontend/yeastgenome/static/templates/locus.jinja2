@@ -243,10 +243,12 @@
                 <div class="button-bar">
                     <ul class="button-group radius">
                         <li><a id="reference_download" class="small button secondary"><i class="fa fa-download"></i> Download Reference Sequence</a></li>
-                    </ul>
-                    {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_SECTION'%}
-                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
+                    </ul>                    
+                    <span class="secondary-links">
+                        {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_SECTION'%}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </span>
                 </div>
                 <a href="/locus/{{ locus.sgdid }}/sequence" class="button radius">Sequence and Strain Details</a>
             </div>
