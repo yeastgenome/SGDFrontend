@@ -94,22 +94,6 @@
                 
                     <h3 class="text-center">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</h3>
                 
-                    <h3 class="subheader">{{ locus.description }}
-                    {% for reference in locus.description_references %}
-                        {% if loop.first %}
-                            <a href="#" data-dropdown="drop_description" data-options="align:left;is_hover:true"><i class="fa fa-info-circle"></i></a>
-                            <div id="drop_description" class="f-dropdown content medium" data-dropdown-content>
-                            <p>
-                        {% endif %}
-                        <a href="{{ reference.link }}">{{ reference.display_name }}</a>
-                        {% if not loop.last %}
-                            ,
-                        {% else %}
-                            </p></div>
-                        {% endif %}
-                    {% endfor %}
-                    </h3>
-                
                     <dl class="key-value">
                         <dt>Standard Name</dt> 
                         <dd>{{ locus.display_name }}</dd>
@@ -225,6 +209,24 @@
                             </dd>{% if not loop.last %}, {% endif %}
                         {% endfor %}
                     </dl>
+                    
+                    <!-- Description Text -->
+                    <h3 class="subheader">{{ locus.description }}
+                    {% for reference in locus.description_references %}
+                        {% if loop.first %}
+                            <a href="#" data-dropdown="drop_description" data-options="align:left;is_hover:true"><i class="fa fa-info-circle"></i></a>
+                            <div id="drop_description" class="f-dropdown content medium" data-dropdown-content>
+                            <p>
+                        {% endif %}
+                        <a href="{{ reference.link }}">{{ reference.display_name }}</a>
+                        {% if not loop.last %}
+                            ,
+                        {% else %}
+                            </p></div>
+                        {% endif %}
+                    {% endfor %}
+                    </h3>
+                    
                 </div>
             </div>
         </section>
