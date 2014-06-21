@@ -92,3 +92,8 @@ a[href^="http://downloads.yeastgenome.org"]:after,
 a[href^="http://yeastmine.yeastgenome.org"]:after{
     content: none !important;
 }
+
+/* Secondary Links - links to the right of buttons, vertically aligned middle */
+.secondary-links {
+    line-height: 2.3em;
+}
