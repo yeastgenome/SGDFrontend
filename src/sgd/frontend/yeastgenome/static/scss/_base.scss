@@ -79,16 +79,17 @@ a[href^="http"]:empty:after {
 }
 
 /* do not use external link icon in these cases... */
-/* global nav and footer */
+/* global nav and footer and tabs */
 #layout-page-header a[href^="http:"]:after, 
-#layout-document-footer a[href^="http:"]:after {
+#layout-document-footer a[href^="http:"]:after,
+#tab a[href^="http:"]:after {
     content: none !important;
 }
 
 /* other */
-a[href^="http://www.yeastgenome.org"]:after,
-a[href^="http://browse.yeastgenome.org"]:after,
-a[href^="http://downloads.yeastgenome.org"]:after, 
-a[href^="http://yeastmine.yeastgenome.org"]:after{
+a[href*="yeastgenome.org"]:after,
+a[href*="sgd-dev"]:after,
+a[href*="fasolt"]:after,
+a[href*="pastry"]:after {
     content: none !important;
 }
