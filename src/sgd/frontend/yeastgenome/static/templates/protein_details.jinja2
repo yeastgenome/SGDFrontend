@@ -66,6 +66,17 @@
         <!-- Includes protein_overview.html into template -->
         {% include "protein_overview.jinja2" %}
 
+        <!-- Experimental Data
+================================================== -->
+        <section id="experiment" data-magellan-destination="experiment">
+            <div class="page-header">
+                <h1>Experimental Data</h1>
+                <!-- Includes domain_table into template -->
+                {% set table_id = "protein_experiment_table" %}
+                {% include "protein_experiment_table.jinja2" %}
+            </div>
+        </section>
+
 <!-- Domains
 ================================================== -->
         <section id="domain" data-magellan-destination="domain">
@@ -89,17 +100,6 @@
                         <li><a id="domain_network_download" class="small button secondary"><i class="fa fa-download"></i> Download Shared Domains</a></li>
                     </ul>
                 </div>
-            </div>
-        </section>
-
-        <!-- Experimental Data
-================================================== -->
-        <section id="experiment" data-magellan-destination="experiment">
-            <div class="page-header">
-                <h1>Experimental Data</h1>
-                <!-- Includes domain_table into template -->
-                {% set table_id = "protein_experiment_table" %}
-                {% include "protein_experiment_table.jinja2" %}
             </div>
         </section>
 
