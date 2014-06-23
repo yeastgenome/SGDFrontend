@@ -132,11 +132,11 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: chosen_frontend.response_wrapper('protein_details', request)(getattr(chosen_frontend, 'protein_details')(bioent_repr=request.matchdict['identifier'].upper())),
                     renderer=chosen_frontend.get_renderer('protein_details'),
                     route_name='protein_details')
-    #
-    # config.add_route('sequence_details', '/locus/{identifier}/sequence')
-    # config.add_view(lambda request: chosen_frontend.response_wrapper('sequence_details', request)(getattr(chosen_frontend, 'sequence_details')(bioent_repr= request.matchdict['identifier'].upper())),
-    #                 renderer=chosen_frontend.get_renderer('sequence_details'),
-    #                 route_name='sequence_details')
+
+    config.add_route('sequence_details', '/locus/{identifier}/sequence')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('sequence_details', request)(getattr(chosen_frontend, 'sequence_details')(bioent_repr= request.matchdict['identifier'].upper())),
+                    renderer=chosen_frontend.get_renderer('sequence_details'),
+                    route_name='sequence_details')
 
     config.add_route('phenotype', '/phenotype/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('phenotype', request)(getattr(chosen_frontend, 'phenotype')(biocon_repr= request.matchdict['identifier'].lower())),
@@ -183,10 +183,10 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('domain'),
                     route_name='domain')
 
-    # config.add_route('contig', '/contig/{identifier}/overview')
-    # config.add_view(lambda request: chosen_frontend.response_wrapper('contig', request)(getattr(chosen_frontend, 'contig')(contig_repr=request.matchdict['identifier'].lower())),
-    #                 renderer=chosen_frontend.get_renderer('contig'),
-    #                 route_name='contig')
+    config.add_route('contig', '/contig/{identifier}/overview')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('contig', request)(getattr(chosen_frontend, 'contig')(contig_repr=request.matchdict['identifier'].lower())),
+                    renderer=chosen_frontend.get_renderer('contig'),
+                    route_name='contig')
     
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':

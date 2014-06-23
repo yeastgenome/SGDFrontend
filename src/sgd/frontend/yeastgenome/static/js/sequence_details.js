@@ -568,6 +568,13 @@ function draw_sublabel_chart(chart_id, data) {
 }
 
 function color_sequence(seq_id, data) {
+    var reference_legend = $("#reference_legend");
+    for(var key in label_to_color) {
+        var new_entry = document.createElement('li');
+        new_entry.innerHTML = '<span style="color:' + label_to_color[key] + '">&#9608;</span> ' + key;
+        reference_legend.append(new_entry);
+    }
+
     if(data['tags'].length > 1) {
         var num_digits = ('' + data['residues'].length).length;
 
