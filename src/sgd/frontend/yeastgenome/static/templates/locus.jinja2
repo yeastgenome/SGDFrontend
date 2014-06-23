@@ -55,10 +55,10 @@
         <script>
             add_navbar_title("<a href='{{ locus.link }}'>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</a>");
             add_navbar_element("Summary", "summary");
-            add_navbar_element("Network Visualization", "network");
             {% if tabs['sequence_tab'] %}
                 add_navbar_element("Sequence", "sequence");
             {% endif %}
+            add_navbar_element("Network Visualization", "network");
             {% if tabs['go_tab'] %}
                 add_navbar_element("Function", "go");
             {% endif %}
@@ -81,6 +81,7 @@
                 add_navbar_element("Protein", "protein");
             {% endif %}
             add_navbar_element("History", "history");
+            add_navbar_element("Summary Text", "summary-text");
         </script>
 
     <!-- Summary
@@ -89,31 +90,37 @@
             <div class="page-header clearfix">
                 <h1>Summary</h1>
 
-                <div class="panel callout radius right">
-                    <ul class="unstyled">
-                        <h3 class="text-center">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</h3>
-                        <li>
-                            <strong>Standard Name: </strong>{{ locus.display_name }}
+                <div class="panel callout radius">
+                
+                    <h3 class="text-center">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</h3>
+                
+                    <dl class="key-value">
+                        <dt>Standard Name</dt> 
+                        <dd>{{ locus.display_name }}</dd>
                             {% for basic_info in locus.basic_info_references if info_key == 'Gene Name' %}
                                 {% if loop.first %}
                                     <a href="#" data-dropdown="drop_name" data-options="align:left;is_hover:true"><i class="fa fa-info-circle"></i></a>
                                     <div id="drop_name" class="f-dropdown content medium" data-dropdown-content>
-                                    <p>
-                                {% endif %}
-                                <a href="{{ basic_info.reference.link }}">{{ basic_info.reference.display_name }}</a>
-                                {% if not loop.last %}
-                                    ,
-                                {% else %}
-                                    </p></div>
+                                        <p>
+                                            {% endif %}
+                                            <a href="{{ basic_info.reference.link }}">{{ basic_info.reference.display_name }}</a>
+                                            {% if not loop.last %}
+                                                ,
+                                            {% else %}
+                                        </p>
+                                    </div>
                                 {% endif %}
                             {% endfor %}
-                        </li>
-                        <li><strong>Systematic Name: </strong>{{ locus.format_name }}</li>
-                        <li>
+                        
+                        <dt>Systematic Name</dt>
+                        <dd>{{ locus.format_name }}</dd>
+                        
                         {% for alias in locus.aliases if alias.category == 'Uniform' %}
-                            {% if loop.first %}<strong>Aliases: </strong>{% endif %}
-                            <span>
+                        {% if loop.first %}<dt>Aliases</dt>
+                        <dd>{% endif %}
+                            
                                 {{ alias.display_name }}
+                            
                                 {% for evidence in alias.evidences %}
                                     {% if loop.first %}
                                         <a href="#" data-dropdown="drop_alias_{{ alias.id }}" data-options="align:left;is_hover:true"><i class="fa fa-info-circle"></i></a>
@@ -125,28 +132,28 @@
                                         </p></div>
                                     {% endif %}
                                 {% endfor %}
-                            </span>{% if not loop.last %}, {% endif %}
+                            {% if not loop.last %},{% else %}</dd>{% endif %}
                         {% endfor %}
-                        </li>
-                        <li>
-                            <strong>Feature Type: </strong>{{ locus.locus_type }}
-                            {% for basic_info in locus.basic_info_references if info_key == 'Feature Type' %}
-                                {% if loop.first %}
-                                    <a href="#" data-dropdown="drop_feature_type" data-options="align:left;is_hover:true"><i class="fa fa-info-circle"></i></a>
-                                    <div id="drop_feature_type" class="f-dropdown content medium" data-dropdown-content>
-                                    <p>
-                                {% endif %}
-                                <a href="{{ basic_info.reference.link }}">{{ basic_info.reference.display_name }}</a>
-                                {% if not loop.last %}
-                                    ,
-                                {% else %}
-                                   </p></div>
-                                {% endif %}
-                            {% endfor %}
-                        </li>
+                            
+                        <dt>Feature Type</dt>
+                        <dd>{{ locus.locus_type }}</dd>
+                                {% for basic_info in locus.basic_info_references if info_key == 'Feature Type' %}
+                                    {% if loop.first %}
+                                        <a href="#" data-dropdown="drop_feature_type" data-options="align:left;is_hover:true"><i class="fa fa-info-circle"></i></a>
+                                        <div id="drop_feature_type" class="f-dropdown content medium" data-dropdown-content>
+                                        <p>
+                                    {% endif %}
+                                    <a href="{{ basic_info.reference.link }}">{{ basic_info.reference.display_name }}</a>
+                                    {% if not loop.last %}
+                                        ,
+                                    {% else %}
+                                       </p></div>
+                                    {% endif %}
+                                {% endfor %}
+
                         {% if locus.name_description != None %}
-                            <li>
-                                <strong>Name Description: </strong>{{ locus.name_description }}
+                            <dt>Name Description</dt>
+                            <dd>{{ locus.name_description }}</dd>
                                 {% for basic_info in locus.basic_info_references if info_key == 'Name Description' %}
                                     {% if loop.first %}
                                         <a href="#" data-dropdown="drop_name_description" data-options="align:left;is_hover:true"><i class="fa fa-info-circle"></i></a>
@@ -160,12 +167,13 @@
                                        </p></div>
                                     {% endif %}
                                 {% endfor %}
-                            </li>
                         {% endif %}
-                        <li>
+
                         {% for alias in locus.aliases if alias.category == 'Gene product' %}
-                            {% if loop.first %}<strong>Gene Product: </strong>{% endif %}
-                                <span>
+                            {% if loop.first %}
+                                <dt>Gene Product</dt>
+                            {% endif %}
+                                <dd>
                                     {{ alias.display_name }}
                                     {% for evidence in alias.evidences %}
                                         {% if loop.first %}
@@ -178,13 +186,12 @@
                                             </p></div>
                                         {% endif %}
                                     {% endfor %}
-                                </span>{% if not loop.last %}, {% endif %}
+                                </dd>{% if not loop.last %}, {% endif %}
                         {% endfor %}
-                        </li>
-                        <li>
+    
                         {% for alias in locus.aliases if alias.category == 'NCBI protein name' %}
-                            {% if loop.first %}<strong>Protein Product: </strong>{% endif %}
-                            <span>
+                            {% if loop.first %}<dt>Protein Product</dt>{% endif %}
+                            <dd>
                                 {{ alias.display_name }}
                                 {% for evidence in alias.evidences %}
                                     {% if loop.first %}
@@ -199,36 +206,54 @@
                                         </p></div>
                                     {% endif %}
                                 {% endfor %}
-                            </span>{% if not loop.last %}, {% endif %}
+                            </dd>{% if not loop.last %}, {% endif %}
                         {% endfor %}
-                        </li>
-                    </ul>
+                    </dl>
+                    
+                    <!-- Description Text -->
+                    <h3 class="subheader">{{ locus.description }}
+                    {% for reference in locus.description_references %}
+                        {% if loop.first %}
+                            <a href="#" data-dropdown="drop_description" data-options="align:left;is_hover:true"><i class="fa fa-info-circle"></i></a>
+                            <div id="drop_description" class="f-dropdown content medium" data-dropdown-content>
+                            <p>
+                        {% endif %}
+                        <a href="{{ reference.link }}">{{ reference.display_name }}</a>
+                        {% if not loop.last %}
+                            ,
+                        {% else %}
+                            </p></div>
+                        {% endif %}
+                    {% endfor %}
+                    </h3>
+                    
                 </div>
-
-                <h3 class="subheader">{{ locus.description }}
-                {% for reference in locus.description_references %}
-                    {% if loop.first %}
-                        <a href="#" data-dropdown="drop_description" data-options="align:left;is_hover:true"><i class="fa fa-info-circle"></i></a>
-                        <div id="drop_description" class="f-dropdown content medium" data-dropdown-content>
-                        <p>
-                    {% endif %}
-                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>
-                    {% if not loop.last %}
-                        ,
-                    {% else %}
-                        </p></div>
-                    {% endif %}
-                {% endfor %}
-                </h3>
-
-                {% if locus.paragraph != None %}
-                    <p>
-                        {{ locus.paragraph.text|safe }}
-                    </p>
-                {% endif %}
             </div>
         </section>
 
+<!-- Sequence
+================================================== -->
+        {% if tabs['sequence_tab'] %}
+        <section id="sequence" data-magellan-destination="sequence">
+            <div class="page-header">
+                <h1>Sequence</h1>
+                <h2 class="subheader">S288C</h2>
+                <!-- Includes sequence_overview into template -->
+                {% include "sequence_overview.jinja2" %}
+                <div class="button-bar">
+                    <ul class="button-group radius">
+                        <li><a id="reference_download" class="small button secondary"><i class="fa fa-download"></i> Download Reference Sequence</a></li>
+                    </ul>                    
+                    <span class="secondary-links">
+                        {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_SECTION'%}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                <a href="/locus/{{ locus.sgdid }}/sequence" class="button radius">Sequence and Strain Details</a>
+            </div>
+        </section>
+        {% endif %}
 
 <!-- Network Visualization
 ================================================== -->
@@ -267,28 +292,6 @@
             </div>
         </section>
 
-<!-- Sequence
-================================================== -->
-        {% if tabs['sequence_tab'] %}
-        <section id="sequence" data-magellan-destination="sequence">
-            <div class="page-header">
-                <h1>Sequence</h1>
-                <h2 class="subheader">S288C</h2>
-                <!-- Includes sequence_overview into template -->
-                {% include "sequence_overview.jinja2" %}
-                <div class="button-bar">
-                    <ul class="button-group radius">
-                        <li><a id="reference_download" class="small button secondary"><i class="fa fa-download"></i> Download Reference Sequence</a></li>
-                    </ul>
-                    {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_SECTION'%}
-                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </div>
-                <a href="/locus/{{ locus.sgdid }}/sequence" class="button [radius round]">See Sequence and Strain Details</a>
-            </div>
-        </section>
-        {% endif %}
-
 <!-- GO
 ================================================== -->
         {% if tabs['go_tab'] %}
@@ -297,7 +300,7 @@
                 <h1>Function</h1>
                 <!-- Includes go_overview.html into template -->
                 {% include "go_overview.jinja2" %}
-                <a style="background:#4daf4a" href="/locus/{{ locus.sgdid }}/go" class="button [radius round]">See Gene Ontology Details</a>
+                <a style="background:#4daf4a" href="/locus/{{ locus.sgdid }}/go" class="button radius">Gene Ontology Details</a>
             </div>
         </section>
         {% endif %}
@@ -310,7 +313,7 @@
                 <h1>Phenotype</h1>
                 <!-- Includes phenotype_overview.html into template -->
                 {% include "phenotype_overview.jinja2" %}
-                <a style="background:#984ea3" href="/locus/{{ locus.sgdid }}/phenotype" class="button [radius round]">See Phenotype Details</a>
+                <a style="background:#984ea3" href="/locus/{{ locus.sgdid }}/phenotype" class="button radius">Phenotype Details</a>
             </div>
         </section>
         {% endif %}
@@ -323,7 +326,7 @@
                 <h1>Literature</h1>
                 <!-- Includes literature_overview.html into template -->
                 {% include "literature_overview.jinja2" %}
-                <a style="background:#ffcc33" href="/locus/{{ locus.sgdid }}/literature" class="button [radius round]">See Literature Details</a>
+                <a style="background:#ffcc33" href="/locus/{{ locus.sgdid }}/literature" class="button radius">Literature Details</a>
             </div>
         </section>
         {% endif %}
@@ -336,7 +339,7 @@
                 <h1>Interactions</h1>
                 <!-- Includes interaction_overview.html into template -->
                 {% include "interaction_overview.jinja2" %}
-                <a style="background:#7d411e" href="/locus/{{ locus.sgdid }}/interaction" class="button [radius round]">See Interaction Details</a>
+                <a style="background:#7d411e" href="/locus/{{ locus.sgdid }}/interaction" class="button radius">Interaction Details</a>
             </div>
         </section>
         {% endif %}
@@ -349,7 +352,7 @@
                 <h1>Expression</h1>
                 <!-- Includes expression_overview.html into template -->
                 {% include "expression_overview.jinja2" %}
-                <a style="background:#eb7500" href="/locus/{{ locus.sgdid }}/expression" class="button [radius round]">See Expression Details</a>
+                <a style="background:#eb7500" href="/locus/{{ locus.sgdid }}/expression" class="button radius">Expression Details</a>
             </div>
         </section>
         {% endif %}
@@ -369,7 +372,7 @@
                     {% include "regulation_overview.jinja2" %}
                 </div>
             </div>
-            <a style="background:#f96968" href="/locus/{{ locus.sgdid }}/regulation" class="button [radius round]">See Regulation Details</a>
+            <a style="background:#f96968" href="/locus/{{ locus.sgdid }}/regulation" class="button radius">Regulation Details</a>
         </section>
         {% endif %}
 
@@ -380,7 +383,7 @@
             <div class="page-header">
                 <h1>Protein</h1>
                 <div id="domain_chart"></div>
-                <a style="background:#377eb8" href="/locus/{{ locus.sgdid }}/protein" class="button [radius round]">See Protein Details</a>
+                <a style="background:#377eb8" href="/locus/{{ locus.sgdid }}/protein" class="button radius">Protein Details</a>
             </div>
         </section>
         {% endif %}
@@ -395,6 +398,19 @@
                 <!-- Includes history_table into template -->
                 {% set table_id = "history_table" %}
                 {% include "history_table.jinja2" %}
+            </div>
+        </section>
+        
+         <!-- Summary Text
+================================================== -->
+        <section id="summary-text" data-magellan-destination="summary-text">
+            <div class="page-header">
+                <h1>Summary Text</h1>
+                {% if locus.paragraph != None %}
+                    <p>
+                        {{ locus.paragraph.text|safe }}
+                    </p>
+                {% endif %}
             </div>
         </section>
 
