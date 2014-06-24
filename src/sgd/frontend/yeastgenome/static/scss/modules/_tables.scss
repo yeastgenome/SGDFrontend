@@ -7,3 +7,7 @@ table {
 th { 
     padding-right: 16px !important;    // to allow for sort arrows
 }
+
+.dataTables_wrapper {
+    overflow: hidden;
+}   

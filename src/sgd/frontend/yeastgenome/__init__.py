@@ -187,14 +187,7 @@ class YeastgenomeFrontend(FrontendInterface):
 
 
     def locus(self, locus_repr):
-        try:
-            locus_id = int(locus_repr)
-            if locus_id < 500:
-                bioent = get_json('http://sgd-qa.stanford.edu/webservice/locus/' + locus_repr + '/overview')
-            else:
-               bioent = get_json(self.backend_url + '/locus/' + locus_repr + '/overview')
-        except:
-            bioent = get_json(self.backend_url + '/locus/' + locus_repr + '/overview')
+        bioent = get_json(self.backend_url + '/locus/' + locus_repr + '/overview')
 
         bioent_id = str(bioent['id'])
         tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')

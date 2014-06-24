@@ -401,67 +401,64 @@ function prep_style() {
 	.css({
 		'shape': 'rectangle',
 		'text-outline-color': '#fff',
-		'color': '#888',
-        'background-color': '#377eb8'
-    });
-
-
-//    .selector("node[type='DOMAIN'][source='-']")
-//	.css({
-//		'background-color': source_to_color['-']
-//    })
-//    .selector("node[type='DOMAIN'][source='Gene3D']")
-//	.css({
-//		'background-color': source_to_color['Gene3D']
-//    })
-//    .selector("node[type='DOMAIN'][source='JASPAR']")
-//	.css({
-//		'background-color': source_to_color['JASPAR']
-//    })
-//    .selector("node[type='DOMAIN'][source='PANTHER']")
-//	.css({
-//		'background-color': source_to_color['PANTHER']
-//    })
-//    .selector("node[type='DOMAIN'][source='Pfam']")
-//	.css({
-//		'background-color': source_to_color['Pfam']
-//    })
-//    .selector("node[type='DOMAIN'][source='PIR superfamily']")
-//	.css({
-//		'background-color': source_to_color['PIR superfamily']
-//    })
-//    .selector("node[type='DOMAIN'][source='PRINTS']")
-//	.css({
-//		'background-color': source_to_color['PRINTS']
-//    })
-//    .selector("node[type='DOMAIN'][source='ProDom']")
-//	.css({
-//		'background-color': source_to_color['ProDom']
-//    })
-//    .selector("node[type='DOMAIN'][source='PROSITE']")
-//	.css({
-//		'background-color': source_to_color['PROSITE']
-//    })
-//    .selector("node[type='DOMAIN'][source='SignalP']")
-//	.css({
-//		'background-color': source_to_color['SignalP']
-//    })
-//    .selector("node[type='DOMAIN'][source='SMART']")
-//	.css({
-//		'background-color': source_to_color['SMART']
-//    })
-//    .selector("node[type='DOMAIN'][source='SUPERFAMILY']")
-//	.css({
-//		'background-color': source_to_color['SUPERFAMILY']
-//    })
-//    .selector("node[type='DOMAIN'][source='TIGRFAMs']")
-//	.css({
-//		'background-color': source_to_color['TIGRFAMs']
-//    })
-//    .selector("node[type='DOMAIN'][source='TMHMM']")
-//	.css({
-//		'background-color': source_to_color['TMHMM']
-//    })
+		'color': '#888'
+    })
+    .selector("node[type='DOMAIN'][source='-']")
+	.css({
+		'background-color': source_to_color['-']
+    })
+    .selector("node[type='DOMAIN'][source='Gene3D']")
+	.css({
+		'background-color': source_to_color['Gene3D']
+    })
+    .selector("node[type='DOMAIN'][source='JASPAR']")
+	.css({
+		'background-color': source_to_color['JASPAR']
+    })
+    .selector("node[type='DOMAIN'][source='PANTHER']")
+	.css({
+		'background-color': source_to_color['PANTHER']
+    })
+    .selector("node[type='DOMAIN'][source='Pfam']")
+	.css({
+		'background-color': source_to_color['Pfam']
+    })
+    .selector("node[type='DOMAIN'][source='PIR superfamily']")
+	.css({
+		'background-color': source_to_color['PIR superfamily']
+    })
+    .selector("node[type='DOMAIN'][source='PRINTS']")
+	.css({
+		'background-color': source_to_color['PRINTS']
+    })
+    .selector("node[type='DOMAIN'][source='ProDom']")
+	.css({
+		'background-color': source_to_color['ProDom']
+    })
+    .selector("node[type='DOMAIN'][source='PROSITE']")
+	.css({
+		'background-color': source_to_color['PROSITE']
+    })
+    .selector("node[type='DOMAIN'][source='SignalP']")
+	.css({
+		'background-color': source_to_color['SignalP']
+    })
+    .selector("node[type='DOMAIN'][source='SMART']")
+	.css({
+		'background-color': source_to_color['SMART']
+    })
+    .selector("node[type='DOMAIN'][source='SUPERFAMILY']")
+	.css({
+		'background-color': source_to_color['SUPERFAMILY']
+    })
+    .selector("node[type='DOMAIN'][source='TIGRFAMs']")
+	.css({
+		'background-color': source_to_color['TIGRFAMs']
+    })
+    .selector("node[type='DOMAIN'][source='TMHMM']")
+	.css({
+		'background-color': source_to_color['TMHMM']
+    })
 
 ;
 }
