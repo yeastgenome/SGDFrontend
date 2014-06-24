@@ -250,7 +250,7 @@
                         {% endfor %}
                     </span>
                 </div>
-                <a href="/locus/{{ locus.sgdid }}/sequence" class="button radius">Sequence and Strain Details</a>
+                <a href="/locus/{{ locus.sgdid }}/sequence" class="button radius">Sequence and Strain Details <i class="fa fa-arrow-right"></i></a>
             </div>
         </section>
         {% endif %}
@@ -300,7 +300,7 @@
                 <h1>Function</h1>
                 <!-- Includes go_overview.html into template -->
                 {% include "go_overview.jinja2" %}
-                <a style="background:#4daf4a" href="/locus/{{ locus.sgdid }}/go" class="button radius">Gene Ontology Details</a>
+                <a style="background:#4daf4a" href="/locus/{{ locus.sgdid }}/go" class="button radius">Gene Ontology Details <i class="fa fa-arrow-right"></i></a>
             </div>
         </section>
         {% endif %}
@@ -313,7 +313,7 @@
                 <h1>Phenotype</h1>
                 <!-- Includes phenotype_overview.html into template -->
                 {% include "phenotype_overview.jinja2" %}
-                <a style="background:#984ea3" href="/locus/{{ locus.sgdid }}/phenotype" class="button radius">Phenotype Details</a>
+                <a style="background:#984ea3" href="/locus/{{ locus.sgdid }}/phenotype" class="button radius">Phenotype Details <i class="fa fa-arrow-right"></i></a>
             </div>
         </section>
         {% endif %}
@@ -326,7 +326,7 @@
                 <h1>Literature</h1>
                 <!-- Includes literature_overview.html into template -->
                 {% include "literature_overview.jinja2" %}
-                <a style="background:#ffcc33" href="/locus/{{ locus.sgdid }}/literature" class="button radius">Literature Details</a>
+                <a style="background:#ffcc33" href="/locus/{{ locus.sgdid }}/literature" class="button radius">Literature Details <i class="fa fa-arrow-right"></i></a>
             </div>
         </section>
         {% endif %}
@@ -339,7 +339,7 @@
                 <h1>Interactions</h1>
                 <!-- Includes interaction_overview.html into template -->
                 {% include "interaction_overview.jinja2" %}
-                <a style="background:#7d411e" href="/locus/{{ locus.sgdid }}/interaction" class="button radius">Interaction Details</a>
+                <a style="background:#7d411e" href="/locus/{{ locus.sgdid }}/interaction" class="button radius">Interaction Details <i class="fa fa-arrow-right"></i></a>
             </div>
         </section>
         {% endif %}
@@ -352,7 +352,7 @@
                 <h1>Expression</h1>
                 <!-- Includes expression_overview.html into template -->
                 {% include "expression_overview.jinja2" %}
-                <a style="background:#eb7500" href="/locus/{{ locus.sgdid }}/expression" class="button radius">Expression Details</a>
+                <a style="background:#eb7500" href="/locus/{{ locus.sgdid }}/expression" class="button radius">Expression Details <i class="fa fa-arrow-right"></i></a>
             </div>
         </section>
         {% endif %}
@@ -372,7 +372,7 @@
                     {% include "regulation_overview.jinja2" %}
                 </div>
             </div>
-            <a style="background:#f96968" href="/locus/{{ locus.sgdid }}/regulation" class="button radius">Regulation Details</a>
+            <a style="background:#f96968" href="/locus/{{ locus.sgdid }}/regulation" class="button radius">Regulation Details <i class="fa fa-arrow-right"></i></a>
         </section>
         {% endif %}
 
@@ -383,7 +383,7 @@
             <div class="page-header">
                 <h1>Protein</h1>
                 <div id="domain_chart"></div>
-                <a style="background:#377eb8" href="/locus/{{ locus.sgdid }}/protein" class="button radius">Protein Details</a>
+                <a style="background:#377eb8" href="/locus/{{ locus.sgdid }}/protein" class="button radius">Protein Details <i class="fa fa-arrow-right"></i></a>
             </div>
         </section>
         {% endif %}
