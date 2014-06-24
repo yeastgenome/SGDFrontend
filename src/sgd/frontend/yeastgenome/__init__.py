@@ -138,6 +138,7 @@ class YeastgenomeFrontend(FrontendInterface):
 
                     #Overview
                     'tabs': tabs,
+                    'expression_overview': json.dumps(bioent['expression_overview']),
 
                     #Links
                     'expression_details_link': self.backend_url + '/locus/' + bioent_id + '/expression_details?callback=?',

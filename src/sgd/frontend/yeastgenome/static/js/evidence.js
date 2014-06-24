@@ -20,10 +20,13 @@ function domain_data_to_table(evidence) {
 
 function expression_data_to_table(evidence) {
     var locus = create_link(evidence['locus']['display_name'], evidence['locus']['link'], false);
-    var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
-    if(evidence['reference']['pubmed_id'] != null) {
-        reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
-	}
+    var reference = '';
+    if(evidence['reference'] != null) {
+        reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+        if(evidence['reference']['pubmed_id'] != null) {
+            reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+        }
+    }
 
     var dataset = create_link(evidence['dataset']['display_name'], evidence['dataset']['link']);
 
