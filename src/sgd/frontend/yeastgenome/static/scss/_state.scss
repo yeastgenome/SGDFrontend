@@ -84,3 +84,16 @@ http://smacss.com/book/type-state
     }
   }
 }
+
+/* Stack tabs on narrow screens */
+@media only screen and (max-width: 1000px) {
+    .sgd-tabs {
+        padding: 0;
+        li {
+            float: none;
+        }
+    }
+    .sgd-tabs li > a {
+        padding: rem-calc(6) rem-calc(24);
+    }
+}
