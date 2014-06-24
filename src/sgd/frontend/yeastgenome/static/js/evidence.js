@@ -82,7 +82,7 @@ function protein_experiment_data_to_table(evidence) {
         reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
     }
 
-    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], evidence['experiment']['display_name'], evidence['data_value'], reference];
+    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], evidence['experiment']['display_name'], evidence['data_value'] + ' ' + evidence['data_unit'], reference];
 }
 
 function regulation_data_to_table(evidence, is_regulator) {
