@@ -387,7 +387,7 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
             var spans = $(".google-visualization-tooltip-action > span");
             if(spans.length > 3) {
                 spans[0].innerHTML = 'Coords:';
-                spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
+                spans[1].innerHTML = ' ' + datarow[2]/10 + '-' + datarow[3]/10;
                 spans[2].innerHTML = '';
                 if(descriptions[e.row] != null && descriptions[e.row] != '') {
                     spans[3].innerHTML = '<span>' + descriptions[e.row] + '</span>';
@@ -440,16 +440,16 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
             var x_new = Math.round(tickmarks[i].getAttribute('x'));
             var y_new = Math.round(m*x_new + b);
             if(m*tickmark_space > 10000) {
-                y_new = 10000*Math.round(y_new/10000);
+                y_new = 1000*Math.round(y_new/10000);
             }
             else if(m*tickmark_space > 1000) {
-                y_new = 1000*Math.round(y_new/1000);
+                y_new = 100*Math.round(y_new/1000);
             }
             else if(m*tickmark_space > 100) {
-                y_new = 100*Math.round(y_new/100);
+                y_new = 10*Math.round(y_new/100);
             }
             else if(m*tickmark_space > 10) {
-                y_new = 10*Math.round(y_new/10)
+                y_new = Math.round(y_new/10)
             }
             if(y_new <= 0) {
                 y_new = 1;
@@ -499,9 +499,6 @@ function draw_domain_chart(chart_id, length, data) {
     var data_array = [];
     var descriptions = [];
 
-    var min_start = null;
-    var max_end = null;
-
     for (var i=0; i < data.length; i++) {
         var start = data[i]['start'];
         var end = data[i]['end'];
@@ -509,16 +506,10 @@ function draw_domain_chart(chart_id, length, data) {
         if(data[i]['domain']['source'] != null) {
             source = data[i]['domain']['source']['display_name'];
         }
-        data_array.push([source, data[i]['domain']['display_name'], start, end]);
+        data_array.push([source, data[i]['domain']['display_name'], start*10, end*10]);
         descriptions.push(data[i]['domain']['description']);
-        if(min_start == null || start < min_start) {
-            min_start = start;
-        }
-        if(max_end == null || end > max_end) {
-            max_end = end;
-        }
     }
-    data_array.unshift([' ', display_name, 1, length]);
+    data_array.unshift([' ', display_name, 10, length*10]);
     descriptions.unshift('');
 
     dataTable.addRows(data_array);
@@ -531,7 +522,7 @@ function draw_domain_chart(chart_id, length, data) {
     };
 
     chart.draw(dataTable, options);
-    google.visualization.events.addListener(chart, 'ready', make_domain_ready_handler(chart_id, chart, min_start, max_end, descriptions, data_array));
+    google.visualization.events.addListener(chart, 'ready', make_domain_ready_handler(chart_id, chart, 1, length*10, descriptions, data_array));
 
     options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
     chart.draw(dataTable, options);

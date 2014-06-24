@@ -56,8 +56,8 @@
         //Set up navbar
             add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Protein');
             add_navbar_element('Summary', 'summary');
-            add_navbar_element('Domains and Classification', 'domain');
             add_navbar_element('Experimental Data', 'experiment');
+            add_navbar_element('Domains and Classification', 'domain');
             add_navbar_element('Sequence', 'sequence');
             add_navbar_element('External Identifiers', 'external_ids');
             add_navbar_element('Resources', 'resources');
@@ -65,6 +65,17 @@
 
         <!-- Includes protein_overview.html into template -->
         {% include "protein_overview.jinja2" %}
+
+        <!-- Experimental Data
+================================================== -->
+        <section id="experiment" data-magellan-destination="experiment">
+            <div class="page-header">
+                <h1>Experimental Data</h1>
+                <!-- Includes domain_table into template -->
+                {% set table_id = "protein_experiment_table" %}
+                {% include "protein_experiment_table.jinja2" %}
+            </div>
+        </section>
 
 <!-- Domains
 ================================================== -->
@@ -89,17 +100,6 @@
                         <li><a id="domain_network_download" class="small button secondary"><i class="fa fa-download"></i> Download Shared Domains (.txt)</a></li>
                     </ul>
                 </div>
-            </div>
-        </section>
-
-        <!-- Experimental Data
-================================================== -->
-        <section id="experiment" data-magellan-destination="experiment">
-            <div class="page-header">
-                <h1>Experimental Data</h1>
-                <!-- Includes domain_table into template -->
-                {% set table_id = "protein_experiment_table" %}
-                {% include "protein_experiment_table.jinja2" %}
             </div>
         </section>
 
