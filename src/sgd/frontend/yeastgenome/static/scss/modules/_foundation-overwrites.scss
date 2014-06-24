@@ -20,8 +20,6 @@ orbit-slide-number {
 	display: none;
 }
 
-// fixing multiselects on older pages/forms
-select[multiple] {
-    height: auto;
-    background-image: none;
+.button-bar {
+    margin-bottom: rem-calc(12); 
 }

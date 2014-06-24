@@ -93,3 +93,8 @@ a[href*="fasolt"]:after,
 a[href*="pastry"]:after {
     content: none !important;
 }
+
+/* Secondary Links - links to the right of buttons, vertically aligned middle */
+.secondary-links {
+    line-height: 2.3em;
+}

@@ -60,3 +60,27 @@ http://smacss.com/book/type-state
 #social-footer {
 	@extend .hide-for-medium-up;
 }
+
+
+// make key-value description lists responsive
+@media (max-width: 480px) {
+  // Remove the horizontal styles
+  .key-value {
+    dt {
+    	float: none;
+    	width: auto;
+    	padding-top: 0;
+    	text-align: left;
+    }
+    // Move over all values to left
+    dt, dd {
+    	margin-left: 0;
+    	padding-top: 0;
+    	margin-bottom: 0px;
+    }
+    // add vertical space to key-value pairs
+    dd {
+    	margin-bottom: 15px;
+    }
+  }
+}
