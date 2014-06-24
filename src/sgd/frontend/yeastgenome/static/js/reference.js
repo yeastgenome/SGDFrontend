@@ -91,7 +91,7 @@ function create_literature_list(list_id, data, topic) {
         }
         else if(topic_data.length > 10) {
             var see_less = document.createElement('a');
-            see_less.innerHTML = " << See less";
+            see_less.innerHTML = ' <i class="fa fa-arrow-circle-left"></i> Show fewer';
             see_less.id = list_id + '_see_less_button';
             see_less.onclick = function() {
                 $('#' + list_id + '_see_more').hide();
@@ -101,7 +101,7 @@ function create_literature_list(list_id, data, topic) {
         }
         if(i==10) {
             var see_more = document.createElement('a');
-            see_more.innerHTML = '... See more >>';
+            see_more.innerHTML = ' ... <i class="fa fa-arrow-circle-right"></i> Show all';
             see_more.id = list_id + '_see_more_button';
             see_more.onclick = function() {
                 $('#' + list_id + '_see_more').show();

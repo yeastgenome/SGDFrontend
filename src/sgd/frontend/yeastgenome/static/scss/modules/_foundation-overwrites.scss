@@ -19,3 +19,9 @@ div.orbit-wrapper {
 orbit-slide-number {
 	display: none;
 }
+
+// fixing multiselects on older pages/forms
+select[multiple] {
+    height: auto;
+    background-image: none;
+}
