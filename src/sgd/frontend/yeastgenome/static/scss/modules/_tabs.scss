@@ -1,0 +1,45 @@
+// SGD Tabs
+
+.sgd-tabs:before, .sgd-tabs:after {
+    content: " ";
+    display: table;
+}
+
+.sgd-tabs:after {
+    clear: both;
+}
+
+.sgd-tabs {
+    margin-bottom: 0 !important;
+    margin-left: 0;
+    background-color: #efefef;
+}
+
+.sgd-tabs li {
+    float: left;
+    list-style: none outside none;
+    margin-bottom: 0 !important;
+    position: relative;
+}
+
+.sgd-tabs li#current a {
+    background: none repeat scroll 0 0 #fff;
+    color: #222;
+}
+
+.sgd-tabs li > a {
+    background: none repeat scroll 0 0 #efefef;
+    color: #222;
+    display: block;
+    font-family: "Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif !important;
+    font-size: rem-calc(14);
+    padding: rem-calc(10) rem-calc(24);
+}
+
+.sgd-tabs li > a:hover {
+    background: #e1e1e1;
+}
+
+.sgd-tabs li#current > a:hover {
+    background: #fff;
+}
