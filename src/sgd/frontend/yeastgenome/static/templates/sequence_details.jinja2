@@ -72,11 +72,6 @@
                 {% include "chromosomal_coord_table.jinja2" %}
 
                 <h2 class="subheader">Sequence - S288C</h2>
-                <div class="button-bar">
-                    <ul class="button-group radius">
-                        <li><a id="reference_download" class="small button secondary"><i class="fa fa-download"></i> Download</a></li>
-                    </ul>
-                </div>
                 <select id="reference_chooser" class="large-3">
                     <option value="genomic_dna">Genomic DNA</option>
                     <option value="coding_dna">Coding DNA</option>
@@ -84,6 +79,11 @@
                 </select>
                 <ul id="reference_legend" class="ref-links"></ul>
                 <pre><blockquote id="reference_sequence" style="font-family:Monospace"></blockquote></pre>
+                <div class="button-bar">
+                    <ul class="button-group radius">
+                        <li><a id="reference_download" class="small button secondary"><i class="fa fa-download"></i> Download (.txt)</a></li>
+                    </ul>
+                </div>
             </div>
         </section>
 
@@ -101,7 +101,7 @@
                 <h2 class="subheader">Sequence - <span id="current_alternative_strain_sequence"></span></h2>
                 <div class="button-bar">
                     <ul class="button-group radius">
-                        <li><a id="alternative_download" class="small button secondary"><i class="fa fa-download"></i> Download</a></li>
+                        <li><a id="alternative_download" class="small button secondary"><i class="fa fa-download"></i> Download (.txt)</a></li>
                     </ul>
                 </div>
                 <select id="alternative_chooser" class="large-3">
@@ -127,7 +127,7 @@
                 <h2 class="subheader">Sequence - <span id="current_other_strain_sequence"></span></h2>
                 <div class="button-bar">
                     <ul class="button-group radius">
-                        <li><a id="other_download" class="small button secondary"><i class="fa fa-download"></i> Download</a></li>
+                        <li><a id="other_download" class="small button secondary"><i class="fa fa-download"></i> Download (.txt)</a></li>
                     </ul>
                 </div>
                 <select id="other_chooser" class="large-3">

@@ -83,7 +83,7 @@
 
                 <div class="button-bar">
                     <ul class="button-group radius">
-                        <li><a id="download_citation" class="small button secondary">Download Citation</a></li>
+                        <li><a id="download_citation" class="small button secondary"><i class="fa fa-download"></i> Download Citation (.nbib)</a></li>
                     </ul>
                 </div>
 
@@ -99,13 +99,13 @@
                             {% if loop.index < 11 %}<span><a href="{{ author.link|e }}">{{ author.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
                         {% endfor %}
 
-                        <a id="author_see_more_button" onclick="$('#author_see_more').show();$('#author_see_more_button').hide();$('#author_see_less_button').show();" {% if reference.authors|length <= 10 %}hidden{% endif %}>... See more >></a>
+                        <a id="author_see_more_button" onclick="$('#author_see_more').show();$('#author_see_more_button').hide();$('#author_see_less_button').show();" {% if reference.authors|length <= 10 %}hidden{% endif %}> ... <i class="fa fa-arrow-circle-right"></i> Show all</a>
                         <span id="author_see_more" hidden>
                             {% for author in reference.authors %}
                                 {% if loop.index >= 11 %}<span><a href="{{ author.link|e }}">{{ author.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
                             {% endfor %}
                         </span>
-                        <a id="author_see_less_button" onclick="$('#author_see_more').hide();$('#author_see_more_button').show();$('#author_see_less_button').hide();" hidden> << See less</a>
+                        <a id="author_see_less_button" onclick="$('#author_see_more').hide();$('#author_see_more_button').show();$('#author_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
                     </li>
 
                     <li id="primary_list" hidden><strong>Primary Literature For: </strong></li>
