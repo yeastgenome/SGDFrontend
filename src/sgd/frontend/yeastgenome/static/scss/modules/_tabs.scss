@@ -1,4 +1,5 @@
 // SGD Tabs
+// Need to refactor for mobile-first
 
 .sgd-tabs:before, .sgd-tabs:after {
     content: " ";
@@ -13,6 +14,7 @@
     margin: 0;
     padding: 0 10px;
     background-color: #efefef;
+     @include border-radius($global-radius);
 }
 
 .sgd-tabs li {
