@@ -27,6 +27,7 @@
 .sgd-tabs li#current a {
     background: none repeat scroll 0 0 #fff;
     color: #222;
+    border-top: 2px solid $primary-color;
 }
 
 .sgd-tabs li > a {
