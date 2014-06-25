@@ -156,58 +156,12 @@ $(document).ready(function() {
             var strain_data = strain_to_genomic_data[other_selection.val()];
             $("#other_strain_description").html(strain_data['strain']['description']);
             $("#navbar_other").children()[0].innerHTML = 'Other Strains <span>' + '- ' + other_selection.val() + '</span>';
-            $("#current_other_strain_sequence").html(strain_to_genomic_data[other_selection.val()]['strain']['display_name']);
-            $("#current_other_strain_location").html(strain_to_genomic_data[other_selection.val()]['strain']['display_name']);
-            if(strain_data['strand'] == '-') {
-                $("#other_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['end'] + ' - ' + strain_data['start']);
-            }
-            else {
-                $("#other_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
-            }
 
-            draw_label_chart('other_label_chart', strain_data['strain']['display_name']);
-
-            var mode = $("#other_chooser");
             var download = $("#other_download");
-            var residues;
-            if(mode.val() == 'genomic_dna' && other_selection.val() in strain_to_genomic_data) {
-                residues = strain_to_genomic_data[other_selection.val()]['residues'];
-                download.click(function f() {
-                    download_sequence(residues, download_sequence_link, display_name, strain_to_genomic_data[other_selection.val()]['contig']['format_name']);
-                });
-            }
-            else if(mode.val() == 'coding_dna' && other_selection.val() in strain_to_coding_data) {
-                residues = strain_to_coding_data[other_selection.val()]['residues'];
-                download.click(function f() {
-                    download_sequence(residues, download_sequence_link, display_name, 'coding_dna');
-                });
-            }
-            else if(mode.val() == 'protein' && other_selection.val() in strain_to_protein_data) {
-                residues = strain_to_protein_data[other_selection.val()]['residues'];
-                download.click(function f() {
-                    download_sequence(residues, download_sequence_link, display_name, 'protein');
-                });
-            }
-            else {
-                residues = '';
-            }
-            $("#other_sequence").html(prep_sequence(residues));
-
-            mode.children('option[value=genomic_dna]')
-                .attr('disabled', !(other_selection.val() in strain_to_genomic_data));
-            mode.children('option[value=coding_dna]')
-                .attr('disabled', !(other_selection.val() in strain_to_coding_data));
-            mode.children('option[value=protein]')
-                .attr('disabled', !(other_selection.val() in strain_to_protein_data));
-
-            if(mode.val() == 'protein' && !(other_selection.val() in strain_to_protein_data)) {
-                mode.children('option[value=genomic_dna]').attr('selected', true);
-                other_on_change();
-            }
-            if(mode.val() == 'coding_dna' && !(other_selection.val() in strain_to_coding_data)) {
-                mode.children('option[value=genomic_dna]').attr('selected', true);
-                other_on_change();
-            }
+            var residues = strain_to_genomic_data[other_selection.val()]['residues'];
+            download.click(function f() {
+                download_sequence(residues, download_sequence_link, display_name, strain_to_genomic_data[other_selection.val()]['contig']['format_name']);
+            });
         }
         other_selection.change(other_on_change);
         $("#other_chooser").change(other_on_change);
@@ -568,14 +522,17 @@ function draw_sublabel_chart(chart_id, data) {
 }
 
 function color_sequence(seq_id, data) {
-    var reference_legend = $("#reference_legend");
-    for(var key in label_to_color) {
-        var new_entry = document.createElement('li');
-        new_entry.innerHTML = '<span style="color:' + label_to_color[key] + '">&#9608;</span> ' + key;
-        reference_legend.append(new_entry);
-    }
+
 
     if(data['tags'].length > 1) {
+
+        var reference_legend = $("#reference_legend");
+        for(var key in label_to_color) {
+            var new_entry = document.createElement('li');
+            new_entry.innerHTML = '<span style="color:' + label_to_color[key] + '">&#9608;</span> ' + key;
+            reference_legend.append(new_entry);
+        }
+
         var num_digits = ('' + data['residues'].length).length;
 
         var seq = $("#" + seq_id).html();
