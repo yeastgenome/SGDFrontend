@@ -1,9 +1,0 @@
-
-<ul class="unstyled">
-
-    <li><strong>Strains: </strong>
-        {% for strain in sequence_overview %}
-            <a href="{{ strain.link|e }}">{{ strain.display_name|e }}</a>{% if not loop.last %}, {% endif %}
-        {% endfor %}
-    </li>
-</ul>
