@@ -251,9 +251,6 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
                     x_two_start = x;
                 }
             }
-            else if(rectangles[i].nodeName == 'text' && $(rectangles[i]).text() == display_name) {
-                $(rectangles[i-1]).css('fill', "#3366cc");
-            }
         }
 
         var m = (y_two - y_one)/(x_two - x_one);
@@ -349,14 +346,34 @@ function draw_label_chart(chart_id, strain_name) {
 
         var options = {
             'height': 1,
-            'timeline': {'hAxis': {'position': 'none'}, 'singleColor': '#A4A4A4'},
+            'timeline': {'hAxis': {'position': 'none'}},
             'tooltip': {'isHTML': true}
         };
 
         chart.draw(dataTable, options);
-        google.visualization.events.addListener(chart, 'ready', make_label_ready_handler(chart_id, chart, data, display_name_to_format_name, data_array));
 
         options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
+        chart.draw(dataTable, options);
+
+        //Fix timeline axis.
+        var svg_gs = $("#" + chart_id + " > div > div > svg > g");
+        var rectangle_holder = svg_gs[3];
+        var rectangles = rectangle_holder.childNodes;
+
+        var colors = [];
+        for (var i=0; i < rectangles.length; i++) {
+            if(rectangles[i].nodeName == 'rect') {
+                colors.push('#A4A4A4');
+            }
+            if(rectangles[i].nodeName == 'text' && $(rectangles[i]).text() == display_name) {
+                colors.pop();
+                colors.push("#3366cc");
+            }
+        }
+        options['colors'] = colors;
+
+
+        google.visualization.events.addListener(chart, 'ready', make_label_ready_handler(chart_id, chart, data, display_name_to_format_name, data_array));
         chart.draw(dataTable, options);
     }
 }
