@@ -106,14 +106,28 @@ form#searchform {
 }
 
 .logo {
-	background: url("../img/logo.gif") no-repeat;
+	background: url("../img/sgd-logo.png") no-repeat;
+	background-size: 320px 90px;
 	height: 90px;
-	width: 400px;
+	width: 320px;
 	display: inline-block;
 	.logo-label {
 		display: inline-block;
 		text-indent: -9999px;
 	}
+}
+
+// use hi-rez logo on retina (etc) screens
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+    only screen and (min--moz-device-pixel-ratio: 2),
+    only screen and (-o-min-device-pixel-ratio: 2/1),
+    only screen and (min-device-pixel-ratio: 2),
+    only screen and (min-resolution: 192dpi),
+    only screen and (min-resolution: 2dppx) {
+        .logo {
+            background: url("../img/sgd-logo-2x.png") no-repeat;
+            background-size: 320px 90px;
+        }
 }
 
 .top-bar {
