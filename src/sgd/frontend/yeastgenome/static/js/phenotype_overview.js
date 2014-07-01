@@ -9,7 +9,7 @@ function drawChart() {
             'legend': {'position': 'top', title: 'Experiment Type'},
             'title': label + ' by mutant type and experiment type',
             'vAxis': {title: 'Mutant Type'},
-            'hAxis': {title: '# of ' + label, minValue:0, maxValue:5, gridlines:{count:6}},
+            'hAxis': {title: 'Number of ' + label, minValue:0, maxValue:5, gridlines:{count:6}},
             'chartArea': {left:110,top:50,width:"60%",height:"60%"},
             'dataOpacity':.75,
             'colors': ["#7FBF7B", "#AF8DC3", "#1F78B4"],
@@ -44,7 +44,7 @@ function drawChart() {
         var strain_options = {
             'legend': {'position': 'none'},
             'title': label + ' in different strain backgrounds',
-            'vAxis': {title: '# of ' + label, minValue:0, maxValue:5, gridlines:{count:6}},
+            'vAxis': {title: 'Number of ' + label, minValue:0, maxValue:5, gridlines:{count:6}},
             'hAxis': {title: 'Strain'},
             'dataOpacity':.75,
             'colors': ["#1F78B4"],
