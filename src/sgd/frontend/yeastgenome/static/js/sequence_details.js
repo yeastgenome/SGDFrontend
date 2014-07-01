@@ -336,10 +336,10 @@ function draw_label_chart(chart_id, strain_name) {
         }
 
         if(!has_five_prime) {
-            data_array.unshift(["5'", '', null, null]);
+            data_array.unshift(["5'", '', min_tick, min_tick]);
         }
         if(!has_three_prime) {
-            data_array.push(["3'", '', null, null]);
+            data_array.push(["3'", '', min_tick, min_tick]);
         }
 
         dataTable.addRows(data_array);
@@ -371,7 +371,6 @@ function draw_label_chart(chart_id, strain_name) {
             }
         }
         options['colors'] = colors;
-
 
         google.visualization.events.addListener(chart, 'ready', make_label_ready_handler(chart_id, chart, data, display_name_to_format_name, data_array));
         chart.draw(dataTable, options);
