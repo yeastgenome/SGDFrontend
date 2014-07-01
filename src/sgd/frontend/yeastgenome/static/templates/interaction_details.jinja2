@@ -44,7 +44,7 @@
         <script>
         //Set up navbar
             add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Interactions');
-            add_navbar_element('Interactors Summary', 'summary');
+            add_navbar_element('Summary', 'summary');
             add_navbar_element('Interactions', 'annotations');
             add_navbar_element('Network Visualization', 'network');
             add_navbar_element('Resources', 'resources');
@@ -54,7 +54,7 @@
 ================================================== -->
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
-		<h1>Interactors Summary</h1>
+		<h1>Summary</h1>
 		<p>This page lists all genes/proteins that interact with {{ locus.display_name }}. See help for information about <a href="/help/function-help/interactions">interaction data</a>.</p>
 
         <!-- Includes interaction_overview.html into template -->
