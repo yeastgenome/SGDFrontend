@@ -544,6 +544,7 @@ function color_sequence(seq_id, data) {
     if(data['tags'].length > 1) {
 
         var reference_legend = $("#reference_legend");
+        reference_legend.html('');
         for(var key in label_to_color) {
             var new_entry = document.createElement('li');
             new_entry.innerHTML = '<span style="color:' + label_to_color[key] + '">&#9608;</span> ' + key;
