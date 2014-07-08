@@ -396,6 +396,7 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
                     spans[2].innerHTML = '';
                     spans[3].innerHTML = '';
                 }
+                $(".google-visualization-tooltip-item").parent().parent().height('auto');
             }
         }
         google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
