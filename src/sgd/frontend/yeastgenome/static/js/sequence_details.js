@@ -601,7 +601,8 @@ function create_subfeature_table(data) {
         datatable.push([data['id'], data['locus']['id'], data['locus']['display_name'], data['locus']['format_name'],
                         data['tags'][i]['display_name'],
                         data['tags'][i]['relative_start'] + '-' + data['tags'][i]['relative_end'],
-                        data['tags'][i]['chromosomal_start'] + '-' + data['tags'][i]['chromosomal_end'], data['strand']
+                        data['tags'][i]['chromosomal_start'] + '-' + data['tags'][i]['chromosomal_end'], data['strand'],
+                        data['tags'][i]['coord_version'], data['tags'][i]['seq_version']
                         ]);
     }
 
@@ -612,7 +613,15 @@ function create_subfeature_table(data) {
     var options = {};
     options["bPaginate"] = false;
     options["aaSorting"] = [[5, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, { "sType": "range" }, { "sType": "range" }, {"bSearchable":false, "bVisible":false}]
+    options["aoColumns"] = [
+        {"bSearchable":false, "bVisible":false},
+        {"bSearchable":false, "bVisible":false},
+        {"bSearchable":false, "bVisible":false},
+        {"bSearchable":false, "bVisible":false},
+        null,
+        { "sType": "range" },
+        { "sType": "range" },
+        {"bSearchable":false, "bVisible":false}, null, null]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": "No subfeatures for " + display_name + '.'};
 
