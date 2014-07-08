@@ -183,7 +183,7 @@ function create_feature_table(data) {
         datatable.push([null, data[i]['locus']['id'],
                         create_link(data[i]['locus']['display_name'], data[i]['locus']['link']),
                         data[i]['locus']['format_name'],
-                        data[i]['locus']['locus_type'], '',
+                        data[i]['locus']['locus_type'],
                         data[i]['start'] + '-' + data[i]['end'],
                         data[i]['strand']
                         ]);
@@ -196,7 +196,7 @@ function create_feature_table(data) {
     var options = {};
     options["bPaginate"] = true;
     options["aaSorting"] = [[2, "asc"]];
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, null]
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, { "sType": "range" }, null]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": "No features for " + display_name + '.'};
 
