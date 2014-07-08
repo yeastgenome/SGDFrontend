@@ -132,17 +132,17 @@ var graph_style = cytoscape.stylesheet()
 		'height': 30,
         'shape': 'rectangle'
 	})
-	.selector("node[sub_type='molecular function']")
+	.selector("node[sub_type='HAS_CHILDREN']")
 	.css(
-		{'background-color': "#7FBF7B"
+		{'background-color': "#165782"
 	})
-	.selector("node[sub_type='biological process']")
+	.selector("node[sub_type='HAS_DESCENDANTS']")
 	.css(
-		{'background-color': "#AF8DC3"
+		{'background-color': "#43a0df"
 	})
-	.selector("node[sub_type='cellular component']")
+	.selector("node[sub_type='NO_DESCENDANTS']")
 	.css(
-		{'background-color': "#1F78B4"
+		{'background-color': "#c9e4f6"
 	});
 
 var layout = {
