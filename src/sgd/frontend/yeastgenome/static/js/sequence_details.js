@@ -217,73 +217,47 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
         function tooltipHandler(e) {
             var datarow = data_array[e.row];
             var title_spans = $(".google-visualization-tooltip-item > span");
-            $(title_spans[0]).html($(title_spans[0]).html()) + ' (' + display_name_to_format_name[$(title_spans[0]).html()] + ')';
-
+            var display_name = $(title_spans[0]).html();
             var spans = $(".google-visualization-tooltip-action > span");
-            if(spans.length > 3) {
-                $(spans[1]).html(' ' + datarow[2] + '-' + datarow[3]);
-                $(spans[2]).html('Length:');
-                $(spans[3]).html(' ' + datarow[3] - datarow[2] + 1);
+            if(display_name in display_name_to_format_name) {
+                var format_name = display_name_to_format_name[display_name];
+                if(format_name != display_name) {
+                    $(title_spans[0]).html(display_name + ' (' + format_name + ')');
+                }
+
+                if(spans.length > 3) {
+                    $(spans[1]).html(' ' + datarow[2] + '-' + datarow[3]);
+                    $(spans[2]).html('Length:');
+                    $(spans[3]).html(' ' + datarow[3] - datarow[2] + 1);
+                }
             }
+            else {
+                $(".google-visualization-tooltip-item").parent().parent().hide();
+            }
+
         }
         google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
 
         //Fix timeline axis.
         var svg_gs = $("#" + chart_id + " > div > div > svg > g");
-        var rectangle_holder = svg_gs[3];
-        var rectangles = rectangle_holder.childNodes;
 
-        var y_one = data[0]['start'];
-        var y_two = data[data.length-1]['end'];
-        var x_one = null;
-        var x_two = null;
-        var x_two_start = null;
-
-        for (var i=0; i < rectangles.length; i++) {
-            if(rectangles[i].nodeName == 'rect') {
-                var x = Math.round(rectangles[i].getAttribute('x'));
-                var y = Math.round(rectangles[i].getAttribute('y'));
-                if(x_one == null || x < x_one) {
-                    x_one = x;
-                }
-                if(x_two == null || x > x_two_start) {
-                    x_two = x + Math.round(rectangles[i].getAttribute('width'));
-                    x_two_start = x;
-                }
-            }
+        var y_one = data['start'];
+        if(y_one == 1) {
+            y_one = 0;
         }
-
-        var m = (y_two - y_one)/(x_two - x_one);
-        var b = y_two - m*x_two;
+        var y_two = data['end'];
 
         var tickmark_holder = svg_gs[1];
         var tickmarks = tickmark_holder.childNodes;
-        var tickmark_space;
-        if(tickmarks.length > 1) {
-            tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
-        }
-        else {
-            tickmark_space = 100;
-        }
+
+        var m = Math.round((y_two - y_one)/tickmarks.length/1000)*1000;
+
         for (var i=0; i < tickmarks.length; i++) {
-            var x_new = Math.round(tickmarks[i].getAttribute('x'));
-            var y_new = Math.round(m*x_new + b);
-            if(m*tickmark_space > 10000) {
-                y_new = 10000*Math.round(y_new/10000);
+            var tick = y_one + i*m;
+            if(tick == 0) {
+                tick = 1;
             }
-            else if(m*tickmark_space > 1000) {
-                y_new = 1000*Math.round(y_new/1000);
-            }
-            else if(m*tickmark_space > 100) {
-                y_new = 100*Math.round(y_new/100);
-            }
-            else if(m*tickmark_space > 10) {
-                y_new = 10*Math.round(y_new/10)
-            }
-            if(y_new <= 0) {
-                y_new = 1;
-            }
-            $(tickmarks[i]).html(y_new);
+            $(tickmarks[i]).html(tick);
         }
     }
     return ready_handler;
@@ -291,7 +265,8 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
 
 function draw_label_chart(chart_id, strain_name) {
     if(strain_name in strain_to_neighbors) {
-        var data = strain_to_neighbors[strain_name];
+        var neighbor_data = strain_to_neighbors[strain_name];
+        var data = neighbor_data['neighbors'];
 
         var container = document.getElementById(chart_id);
 
@@ -306,73 +281,72 @@ function draw_label_chart(chart_id, strain_name) {
 
         var data_array = [];
 
-        var has_five_prime = false;
-        var has_three_prime = false;
-        var min_tick = null;
-        var max_tick = null;
+        var min_tick = neighbor_data['start'];
+        var max_tick = neighbor_data['end'];
 
         var display_name_to_format_name = {};
 
-        for (i=0; i < data.length; i++) {
+        var colors5 = ['#D8D8D8'];
+        var colors3 = ['#D8D8D8'];
+
+        var colors5_row2 = [];
+        var colors3_row2 = [];
+
+        data_array.push(["5'", '', min_tick+10, min_tick+10]);
+        data_array.push(["3'", '', min_tick+10, min_tick+10]);
+        var previous_end = 0;
+        for (var i=0; i < data.length; i++) {
             var start = data[i]['start'];
             var end = data[i]['end'];
             var direction = strand_to_direction(data[i]['strand']);
             display_name_to_format_name[data[i]['locus']['display_name']] = data[i]['locus']['format_name'];
-            if(direction == "5'") {
-                data_array.unshift([direction, data[i]['locus']['display_name'], start, end]);
-                has_five_prime = true;
+            var color;
+            if(data[i]['locus']['display_name'] == display_name) {
+                color = "#3366cc";
             }
             else {
-                data_array.push([direction, data[i]['locus']['display_name'], start, end]);
-                has_three_prime = true;
+                color = "#A4A4A4";
             }
-
-            if(min_tick == null || start < min_tick) {
-                min_tick = start;
+            if(direction == "5'") {
+                if(previous_end <= start) {
+                    colors5.push(color);
+                }
+                else {
+                    colors5_row2.push(color);
+                }
             }
-            if(max_tick == null || end > max_tick) {
-                max_tick = end;
+            else {
+                if(previous_end <= start) {
+                    colors3.push(color);
+                }
+                else {
+                    colors3_row2.push(color);
+                }
             }
+            previous_end = end;
+            data_array.push([direction, data[i]['locus']['display_name'], start, end]);
         }
 
-        if(!has_five_prime) {
-            data_array.unshift(["5'", '', min_tick, min_tick]);
-        }
-        if(!has_three_prime) {
-            data_array.push(["3'", '', min_tick, min_tick]);
-        }
+        data_array.push(["5'", '', max_tick, max_tick]);
+        data_array.push(["3'", '', max_tick, max_tick]);
 
         dataTable.addRows(data_array);
+
+        var colors5 = colors5.concat(colors5_row2);
+        var colors3 = colors3.concat(colors3_row2);
+        var colors = colors5.concat(colors3);
 
         var options = {
             'height': 1,
             'timeline': {'hAxis': {'position': 'none'}},
-            'tooltip': {'isHTML': true}
+            'tooltip': {'isHTML': true},
+            'colors': colors
         };
 
         chart.draw(dataTable, options);
 
         options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
-        chart.draw(dataTable, options);
-
-        //Fix timeline axis.
-        var svg_gs = $("#" + chart_id + " > div > div > svg > g");
-        var rectangle_holder = svg_gs[3];
-        var rectangles = rectangle_holder.childNodes;
-
-        var colors = [];
-        for (var i=0; i < rectangles.length; i++) {
-            if(rectangles[i].nodeName == 'rect') {
-                colors.push('#A4A4A4');
-            }
-            if(rectangles[i].nodeName == 'text' && $(rectangles[i]).text() == display_name) {
-                colors.pop();
-                colors.push("#3366cc");
-            }
-        }
-        options['colors'] = colors;
-
-        google.visualization.events.addListener(chart, 'ready', make_label_ready_handler(chart_id, chart, data, display_name_to_format_name, data_array));
+        google.visualization.events.addListener(chart, 'ready', make_label_ready_handler(chart_id, chart, neighbor_data, display_name_to_format_name, data_array));
         chart.draw(dataTable, options);
     }
 }

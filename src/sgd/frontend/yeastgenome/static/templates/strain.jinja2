@@ -61,7 +61,9 @@
 
                     {% for resource in strain.urls if resource.category == 'source' %}
                         {% if loop.first %}<h3>Sources</h3>{% endif %}
-                        <a href="{{ resource.link }}">{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        <ul id="resource_list">
+                            <a href="{{ resource.link }}">{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        </ul>
                     {% endfor %}
                 </div>
             </section>

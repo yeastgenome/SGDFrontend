@@ -215,25 +215,25 @@
                 <h1>Resources</h1>
                 <h3>Homologs</h3>
                     <p>
-                        {% for url in locus.urls if url.category == 'Protein Information Homologs' or url.category == 'Analyze Sequence S288C vs. other species'%}
+                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}
                             <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Protein Databases/Other</h3>
                     <p>
-                        {% for url in locus.urls if url.category == 'Protein databases/Other'%}
+                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
                             <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Localization</h3>
                     <p>
-                        {% for url in locus.urls if url.category == 'Localization Resources'%}
+                        {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION'%}
                             <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Post-translational Modifications</h3>
                     <p>
-                        {% for url in locus.urls if url.category == 'Post-translational modifications'%}
+                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS'%}
                             <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
