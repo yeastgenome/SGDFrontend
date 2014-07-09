@@ -1,11 +1,11 @@
 @browser
 Feature: Analyze
 
+    @basic
     Scenario Outline: Visit page
         When I visit "/locus/?/interaction" for "ACT1"
         And I click the button with id "phys"
-        Then the title should be <title>
-        And I should see an element with id "center_title"
+        Then I should see an element with id "center_title"
         And I should see an element with id "sidebar"
 
         And I should see an element with id "tools"
@@ -13,10 +13,6 @@ Feature: Analyze
         And I should see an element with id "enrichment"
         And I should see an element "gene_list_table_header" with text <gene_list_header_text>
         And I should see an element "enrichment_table_header" with text <enrichment_header_text>
-
-    Examples:
-        | title                         | gene_list_header_text                         | enrichment_header_text    |
-        | "Analyze"                     | "141"                                         | "_ entries for 141 genes"   |
 
     Scenario Outline: Click download button
         When I visit "/locus/?/interaction" for "ACT1"
