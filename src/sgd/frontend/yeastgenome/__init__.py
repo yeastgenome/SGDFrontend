@@ -313,6 +313,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'go_details_all_link': self.backend_url + '/go/' + biocon_id + '/locus_details_all?callback=?',
                     'ontology_graph_link': self.backend_url + '/go/' + biocon_id + '/ontology_graph?callback=?',
                     'download_table_link': '/download_table',
+                    'download_network_link': '/download_image',
                     'analyze_table_link': '/analyze'
                     }
         return page

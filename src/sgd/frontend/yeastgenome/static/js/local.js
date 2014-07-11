@@ -45,16 +45,6 @@ function download_sequence(sequence, download_link, list_name, contig_name) {
 	post_to_url(download_link, {"display_name":list_name, "sequence": sequence, 'contig_name': contig_name});
 }
 
-function download_image(stage, width, height, download_link, image_name) {
-	stage.toDataURL({
-		width: width,
-		height: height,
-		callback: function(dataUrl) {
-			post_to_url(download_link, {"display_name":image_name, 'data': dataUrl});
-		}
-	});
-}
-
 
 function set_up_references(references, ref_list_id) {
   	//Set up references
@@ -119,24 +109,6 @@ String.prototype.chunk = function(n) {
     }
     return ret
 };
-
-function set_up_resources(resource_id, data) {
-	resource_list = document.getElementById(resource_id);
-	for (var i=0; i < data.length; i++) {
-		var a = document.createElement('a');
-		var linkText = document.createTextNode(data[i]['display_name']);
-		a.appendChild(linkText);
-		a.href = data[i]['link'];
-		a.target = '_blank';
-		resource_list.appendChild(a);
-
-        if(i != data.length-1) {
-            var span=document.createElement('span');
-		    span.innerHTML = ' | ';
-		    resource_list.appendChild(span);
-        }
-	}
-}
 
 function create_link(display_name, link, new_window) {
     if(link == null) {

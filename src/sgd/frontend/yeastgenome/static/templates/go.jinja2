@@ -11,6 +11,7 @@
 
 	var download_table_link = "{{download_table_link}}";
     var analyze_link = "{{analyze_table_link}}";
+    var download_network_link = "{{download_network_link}}";
 
 	var download_filename = "{{ go_term.display_name }}_annotations";
     var analyze_filename = "<a href='{{ go_term.link }}' class='gene_name'>{{ go_term.display_name }}</a> genes";
@@ -85,6 +86,13 @@
                     <span><span style="color:#43a0df">&#9608;</span> Descendants Have Annotations </span>
                     <span><span style="color:#c9e4f6">&#9608;</span> No Annotations to Term or Descendants </span>
                 </div>
+                <div class="button-bar">
+                    <ul class="button-group radius">
+                        <li><a disabled="true" id="cy_download" class="small button secondary"><i
+                                class="fa fa-download"></i> Download (.png)</a></li>
+                    </ul>
+                </div>
+
                 <div id="children_wrapper">
                     <strong>Child Terms:</strong>
                     <p>

@@ -79,7 +79,13 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 	};
 	cytoscape_div.before(recenter_button, cytoscape_div);
 	recenter_button.setAttribute('disabled', 'disabled');
+
 	return cy;
+}
+
+function create_cy_download_button(cy, button_id, download_url, file_name) {
+    $("#" + button_id).click(function() {post_to_url(download_url, {"display_name":file_name, 'data': cy.png()});});
+    $("#" + button_id).attr('disabled', false);
 }
 
 function create_slider(slider_id, graph, min, max, slide_f, stop) {
