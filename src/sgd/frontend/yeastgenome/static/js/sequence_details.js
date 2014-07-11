@@ -177,7 +177,6 @@ $(document).ready(function() {
         strain_to_neighbors = data;
         draw_label_chart('reference_label_chart', 'S288C');
         draw_label_chart('alternative_label_chart', $("#alternative_strain_selection").val());
-        draw_label_chart('other_label_chart', $("#other_strain_selection").val());
     });
 });
 
@@ -299,7 +298,8 @@ function draw_label_chart(chart_id, strain_name) {
 
         data_array.push(["5'", '', min_tick, min_tick]);
         data_array.push(["3'", '', min_tick, min_tick]);
-        var previous_end = 0;
+        var previous_end_5 = 0;
+        var previous_end_3 = 0;
         for (var i=0; i < data.length; i++) {
             var start = data[i]['start'];
             var end = data[i]['end'];
@@ -313,22 +313,24 @@ function draw_label_chart(chart_id, strain_name) {
                 color = "#A4A4A4";
             }
             if(direction == "5'") {
-                if(previous_end <= start) {
+                if(previous_end_5 <= start) {
                     colors5.push(color);
                 }
                 else {
                     colors5_row2.push(color);
                 }
+                previous_end_5 = end;
             }
             else {
-                if(previous_end <= start) {
+                if(previous_end_3 <= start) {
                     colors3.push(color);
                 }
                 else {
                     colors3_row2.push(color);
                 }
+                previous_end_3 = end;
             }
-            previous_end = end;
+
             data_array.push([direction, data[i]['locus']['display_name'], start, end]);
         }
 
