@@ -1,22 +1,14 @@
+{% extends "table.jinja2" %}
 
-<table class="table table-striped table-bordered table-condensed" id="phosphorylation_table">
-    <thead>
-    <tr>
-        <th hidden>Evidence ID</th>
-        <th hidden>Analyze ID</th>
-        <th>Gene</th>
-        <th hidden>Gene Systematic Name</th>
-        <th>Site</th>
-        <th>Site Functions</th>
-        <th>Kinases</th>
-        <th>Source</th>
-    </tr>
-    </thead>
-</table>
+{% block columns %}
+    <th hidden>Evidence ID</th>
+    <th hidden>Analyze ID</th>
+    <th>Gene</th>
+    <th hidden>Gene Systematic Name</th>
+    <th>Site</th>
+    <th>Site Functions</th>
+    <th>Kinases</th>
+    <th>Source</th>
+{% endblock %}
 
-<div class="button-bar">
-    <ul class="button-group radius">
-        <li><a id="phosphorylation_table_download" class="small button secondary"><i class="fa fa-download"></i>
-            Download (.txt)</a></li>
-    </ul>
-</div>
+{% block additional_buttons %}{% endblock %}

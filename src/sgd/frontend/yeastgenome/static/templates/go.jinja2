@@ -80,18 +80,8 @@
         <section id="ontology" data-magellan-destination="ontology">
             <div class="page-header">
                 <h1>Ontology Diagram</h1>
-                <div class="panel">
-                    <div id="cy" name="cy" style="width:100%;height:700px"></div>
-                    <span><span style="color:#165782">&#9608;</span> Has Annotations </span>
-                    <span><span style="color:#43a0df">&#9608;</span> Descendants Have Annotations </span>
-                    <span><span style="color:#c9e4f6">&#9608;</span> No Annotations to Term or Descendants </span>
-                </div>
-                <div class="button-bar">
-                    <ul class="button-group radius">
-                        <li><a disabled="true" id="cy_download" class="small button secondary"><i
-                                class="fa fa-download"></i> Download (.png)</a></li>
-                    </ul>
-                </div>
+                {% set network_id = "cy" %}
+                {% include "go_ontology_network.jinja2" %}
 
                 <div id="children_wrapper">
                     <strong>Child Terms:</strong>

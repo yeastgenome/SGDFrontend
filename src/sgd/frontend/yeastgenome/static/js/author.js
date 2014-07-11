@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-  	set_up_reference_list("references_header", "references_list", "references_message", "references_wrapper", "export_references", download_link, display_name + "_citations", reference_data);
+  	set_up_reference_list("references_header", "references_list", "references_message", "references_wrapper", "references_list_download", download_link, display_name + "_citations", reference_data);
 
 });
 

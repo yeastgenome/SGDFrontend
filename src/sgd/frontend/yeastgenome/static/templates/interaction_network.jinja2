@@ -1,0 +1,20 @@
+{% extends "network.jinja2" %}
+
+{% block legend %}
+    <div id="discrete_filter" hidden>
+        <label for="union_radio">
+            <input id="union_radio" type="radio" name="group1" checked> All
+        </label>
+        <label for="physical_radio" class="legend-label physical">
+            <input id="physical_radio" type="radio" name="group1"> Physical
+        </label>
+        <label for="genetic_radio" class="legend-label genetic">
+            <input id="genetic_radio" type="radio" name="group1"> Genetic
+        </label>
+    </div>
+
+    <h5>Filter Interactions by # of Experiments:</h5>
+    <div id="slider" class="noUiSlider" style="width:100%"></div>
+    <div id="slider_ticks"></div>
+    <br>
+{% endblock %}

@@ -464,7 +464,7 @@ function create_download_button(download_button_id, table, download_link, name) 
   	        download_button.off('click');
   	    }
   	    else {
-  	        download_button.attr('disabled', false);
+  	        download_button.removeAttr('disabled');
   	        download_button.click(download_function);
   	    }
   	});
@@ -475,9 +475,10 @@ function create_download_button(download_button_id, table, download_link, name) 
   	    download_button.off('click');
   	}
   	else {
-  	    download_button.attr('disabled', false);
+  	    download_button.removeAttr('disabled');
   	    download_button.click(download_function);
   	}
+    download_button.removeAttr('disabled');
 }
 
 function create_download_button_no_table(download_button_id, headers, data, download_link, filename) {

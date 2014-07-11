@@ -97,11 +97,6 @@ def prep_views(chosen_frontend, config):
                                         bioent_ids = None if 'bioent_ids' not in request.json_body else request.json_body['bioent_ids'])),
                     renderer=chosen_frontend.get_renderer('enrichment'),
                     route_name='enrichment')
-
-    # config.add_route('locus', '/locus/{identifier}/overview')
-    # config.add_view(lambda request: chosen_frontend.response_wrapper('locus', request)(getattr(chosen_frontend, 'locus')(request.matchdict['identifier'])),
-    #                 renderer=chosen_frontend.get_renderer('locus'),
-    #                 route_name='locus')
     
     config.add_route('interaction_details', '/locus/{identifier}/interaction')
     config.add_view(lambda request: chosen_frontend.response_wrapper('interaction_details', request)(getattr(chosen_frontend, 'interaction_details')(bioent_repr=request.matchdict['identifier'].upper())),
@@ -172,11 +167,6 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: chosen_frontend.response_wrapper('chemical', request)(getattr(chosen_frontend, 'chemical')(chemical_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('chemical'),
                     route_name='chemical')
-    
-    # config.add_route('complex', '/complex/{identifier}/overview')
-    # config.add_view(lambda request: chosen_frontend.response_wrapper('complex', request)(getattr(chosen_frontend, 'complex')(complex_repr= request.matchdict['identifier'].lower())),
-    #                 renderer=chosen_frontend.get_renderer('complex'),
-    #                 route_name='complex')
 
     config.add_route('domain', '/domain/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('domain', request)(getattr(chosen_frontend, 'domain')(domain_repr=request.matchdict['identifier'].lower())),

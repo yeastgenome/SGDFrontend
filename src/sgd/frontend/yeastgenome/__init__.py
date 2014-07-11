@@ -53,7 +53,8 @@ class YeastgenomeFrontend(FrontendInterface):
                         'interaction_details_link': self.backend_url + '/locus/' + bioent_id + '/interaction_details?callback=?',
                         'interaction_graph_link': self.backend_url + '/locus/' + bioent_id + '/interaction_graph?callback=?',
                         'download_table_link': '/download_table',
-                        'analyze_table_link': '/analyze'
+                        'analyze_table_link': '/analyze',
+                        'download_network_link': '/download_image'
                     }
             return page
         return Response(status_int=500, body='Could not find locus ' + bioent_repr + '.')
@@ -145,7 +146,8 @@ class YeastgenomeFrontend(FrontendInterface):
                     #Links
                     'go_details_link': self.backend_url + '/locus/' + bioent_id + '/go_details?callback=?',
                     'go_graph_link': self.backend_url + '/locus/' + bioent_id + '/go_graph?callback=?',
-                    'download_table_link': '/download_table'
+                    'download_table_link': '/download_table',
+                    'download_network_link': '/download_image'
                     }
         return page
 
@@ -196,31 +198,6 @@ class YeastgenomeFrontend(FrontendInterface):
                     'neighbor_sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/neighbor_sequence_details?callback=?',
                     'download_table_link': '/download_table',
                     'download_sequence_link': '/download_sequence',
-                    'analyze_table_link': '/analyze'
-                    }
-        return page
-
-    def locus(self, locus_repr):
-        bioent = get_json(self.backend_url + '/locus/' + locus_repr + '/overview')
-        bioent_id = str(bioent['id'])
-        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
-
-        page = {
-                    #Basic info
-                    'locus': bioent,
-                    'go_overview': bioent['go_overview'],
-                    'literature_overview': bioent['literature_overview'],
-                    'phenotype_overview': json.dumps(bioent['phenotype_overview']),
-                    'regulation_overview': json.dumps(bioent['regulation_overview']),
-                    'interaction_overview': json.dumps(bioent['interaction_overview']),
-                    'sequence_overview': bioent['sequence_overview'],
-
-                    #Overview
-                    'tabs': tabs,
-
-                    #Links
-                    'locus_graph_link': self.backend_url + '/locus/' + bioent_id + '/locus_graph?callback=?',
-                    'download_table_link': '/download_table',
                     'analyze_table_link': '/analyze'
                     }
         return page
@@ -330,6 +307,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'go_details_link': self.backend_url + '/go/' + biocon_id + '/locus_details?callback=?',
                     'ontology_graph_link': self.backend_url + '/go/' + biocon_id + '/ontology_graph?callback=?',
                     'download_table_link': '/download_table',
+                    'download_network_link': '/download_image',
                     'analyze_table_link': '/analyze'
                     }
         return page
@@ -359,25 +337,6 @@ class YeastgenomeFrontend(FrontendInterface):
 
                     #Links
                     'domain_details_link': self.backend_url + '/domain/' + domain_id + '/locus_details?callback=?',
-                    'download_table_link': '/download_table',
-                    'analyze_table_link': '/analyze'
-                    }
-        return page
-
-    def complex(self, complex_repr):
-        complex = get_json(self.backend_url + '/complex/' + complex_repr + '/overview')
-        complex_id = str(complex['id'])
-
-        page = {
-                    #Basic info
-                    'complex': complex,
-                    'subcomplexes': json.dumps(complex['subcomplexes']),
-                    'complex_evidences': json.dumps(complex['complex_evidences']),
-
-                    #Links
-                    'go_details_link': self.backend_url + '/go/' + str(complex['go']['id']) + '/locus_details?callback=?',
-                    'complex_graph_link': self.backend_url + '/complex/' + complex_id + '/graph?callback=?',
-                    'go_enrichment_link': '/enrichment',
                     'download_table_link': '/download_table',
                     'analyze_table_link': '/analyze'
                     }

@@ -40,6 +40,7 @@ $(document).ready(function() {
         if(data['nodes'].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data);
             var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);
+            create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_go_graph')
   		}
 		else {
 			hide_section("network");

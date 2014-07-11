@@ -1,24 +1,11 @@
+{% extends "table.jinja2" %}
 
-<table class='table table-striped table-bordered table-condensed' id='{{ table_id }}'>
-    <thead>
-    <tr>
-        <th>Gene ID</th>
-        <th>Analyze ID</th>
-        <th>Gene Systematic Name</th>
-        <th>Gene Name</th>
-        <th>Description</th>
-    </tr>
-    </thead>
-</table>
+{% block columns %}
+    <th>Gene ID</th>
+    <th>Analyze ID</th>
+    <th>Gene Systematic Name</th>
+    <th>Gene Name</th>
+    <th>Description</th>
+{% endblock %}
 
-<div class="button-bar">
-    <ul class="button-group radius">
-        <li><a id="{{ table_id }}_download" class="small button secondary"><i class='fa fa-download'></i>
-            Download (.txt)</a></li>
-    </ul>
-
-    <ul class="button-group radius">
-        <li><a disabled="true" id="{{ table_id }}_analyze" class="small button secondary"><i
-                class="fa fa-briefcase"></i> Analyze</a></li>
-    </ul>
-</div>
+{% block additional_buttons %}{% endblock %}

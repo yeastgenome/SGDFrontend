@@ -2,7 +2,8 @@
 $(document).ready(function() {
 
 	$.getJSON(ontology_graph_link, function(data) {
-  		create_cytoscape_vis("cy", layout, graph_style, data);
+  		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
+        create_cy_download_button(cy, "cy_download", download_network_link, display_name + '_go_ontology_graph')
 	});
 
     $.getJSON(go_details_link, function(data) {

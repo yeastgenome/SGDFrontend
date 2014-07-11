@@ -1,33 +1,20 @@
+{% extends "table.jinja2" %}
 
-<table class="table table-striped table-bordered table-condensed" id="{{ table_id }}">
-    <thead>
-    <tr>
-        <th hidden>Evidence ID</th>
-        <th hidden>Analyze ID</th>
-        <th>Feature</th>
-        <th>Feature Systematic Name</th>
-        <th>Feature Type</th>
-        {% if include_relative %}
+{% block columns %}
+    <th hidden>Evidence ID</th>
+    <th hidden>Analyze ID</th>
+    <th>Feature</th>
+    <th>Feature Systematic Name</th>
+    <th>Feature Type</th>
+    {% if include_relative %}
         <th>Relative Coordinates</th>
-        {% endif %}
-        <th>Coordinates</th>
-        <th>Strand</th>
-        {% if include_version %}
+    {% endif %}
+    <th>Coordinates</th>
+    <th>Strand</th>
+    {% if include_version %}
         <th>Coord. Version</th>
         <th>Seq. Version</th>
-        {% endif %}
-    </tr>
-    </thead>
-</table>
+    {% endif %}
+{% endblock %}
 
-<div class="button-bar">
-    <ul class="button-group radius">
-        <li><a id="{{ table_id }}_download" class="small button secondary"><i class="fa fa-download"></i> Download (.txt)</a>
-        </li>
-    </ul>
-
-    <ul class="button-group radius">
-        <li><a disabled="true" id="{{ table_id }}_analyze" class="small button secondary"><i
-                class="fa fa-briefcase"></i> Analyze</a></li>
-    </ul>
-</div>
+{% block additional_buttons %}{% endblock %}

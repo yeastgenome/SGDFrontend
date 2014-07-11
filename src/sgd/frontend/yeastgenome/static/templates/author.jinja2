@@ -38,9 +38,9 @@
                 <h1>References <span id="references_header" class="label secondary round"></span></h1>
                 <p id="references_message" hidden>No citations for this author.</p>
                 <div id="references_wrapper">
-                    <a id="export_references" class="small radius button secondary"><i class="fa fa-download"></i> Download References (.nbib)</a>
-                    <ul id="references_list" class="literature-list">
-                    </ul>
+                    <!-- Includes interaction_table into template -->
+                    {% set reference_list_id = "references_list" %}
+                    {% include "reference_list.jinja2" %}
                 </div>
             </div>
         </section>
