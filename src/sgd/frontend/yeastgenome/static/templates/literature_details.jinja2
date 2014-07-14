@@ -8,6 +8,7 @@
 	var literature_graph_link = "{{literature_graph_link}}";
 	var display_name = "{{ locus.display_name }}";
   	var download_link = "{{download_citations_link}}";
+    var download_network_link = "{{download_network_link}}";
 </script>
 {% endblock %}
 
@@ -65,12 +66,10 @@
 <section id="primary" data-magellan-destination="primary">
 	<div class="page-header">
 		<h1>Primary Literature <span id="primary_header" class="label secondary round"></span></h1>
-		<p id='primary_message' hidden>No primary literature curated.<br></p>
-		<div id='primary_wrapper'>
-			<a id="export_primary" class="small button secondary radius"><i class='fa fa-download'></i> Download (.nbib)</a>
-			<ul id="primary_list" class="literature-list">
-			</ul>
-		</div>
+        <!-- Includes reference_list into template -->
+        {% set reference_list_id = "primary_list" %}
+        {% set empty_message = "No primary literature curated." %}
+        {% include "reference_list.jinja2" %}
 	</div>
 </section>
 
@@ -79,9 +78,9 @@
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
                 <h1>Network Visualization</h1>
-                <div class="panel">
-                    <div id="cy" style="width:100%;height:700px"></div>
-                </div>
+                <!-- Includes literature_network into template -->
+                {% set network_id = "cy" %}
+                {% include "basic_network.jinja2" %}
             </div>
         </section>
 
@@ -90,12 +89,10 @@
         <section id="additional" data-magellan-destination="additional">
             <div class="page-header">
                 <h1>Additional Literature <span id="additional_header" class="label secondary round"></span></h1>
-                <p id="additional_message" hidden>No additional literature curated.</p>
-                <div id="additional_wrapper">
-                    <a id="export_additional" class="small button secondary radius"><i class="fa fa-download"></i> Download (.nbib)</a>
-                    <ul id="additional_list" class="literature-list">
-                    </ul>
-                </div>
+                <!-- Includes reference_list into template -->
+                {% set reference_list_id = "additional_list" %}
+                {% set empty_message = "No additional literature curated." %}
+                {% include "reference_list.jinja2" %}
             </div>
         </section>
 
@@ -104,12 +101,10 @@
         <section id="reviews" data-magellan-destination="reviews">
             <div class="page-header">
                 <h1>Reviews <span id="review_header" class="label secondary round"></span></h1>
-                <p id='review_message' hidden>No reviews curated.</p>
-                <div id='review_wrapper'>
-                    <a id="export_review" class="small button secondary radius"><i class="fa fa-download"></i> Download (.nbib)</a>
-                    <ul id="review_list" class="literature-list">
-                    </ul>
-                </div>
+                <!-- Includes reference_list into template -->
+                {% set reference_list_id = "review_list" %}
+                {% set empty_message = "No reviews curated." %}
+                {% include "reference_list.jinja2" %}
             </div>
         </section>
 
@@ -118,12 +113,10 @@
         <section id="go" data-magellan-destination="go">
             <div class="page-header">
                 <h1>Gene Ontology Literature <span id="go_header" class="label secondary round"></span></h1>
-                <p id='go_message' hidden>No gene ontology literature curated.</p>
-                <div id='go_wrapper'>
-                    <a id="export_go" class="small button secondary radius"><i class="fa fa-download"></i> Download (.nbib)</a>
-                    <ul id="go_list" class="literature-list">
-                    </ul>
-                </div>
+                <!-- Includes reference_list into template -->
+                {% set reference_list_id = "go_list" %}
+                {% set empty_message = "No gene ontology literature curated." %}
+                {% include "reference_list.jinja2" %}
             </div>
         </section>
 
@@ -132,12 +125,10 @@
         <section id="phenotype" data-magellan-destination="phenotype">
             <div class="page-header">
                 <h1>Phenotype Literature <span id="phenotype_header" class="label secondary round"></span></h1>
-                <p id='phenotype_message' hidden>No phenotype literature curated.</p>
-                <div id='phenotype_wrapper'>
-                    <a id="export_phenotype" class="small button secondary radius"><i class="fa fa-download"></i> Download (.nbib)</a>
-                    <ul id="phenotype_list" class="literature-list">
-                    </ul>
-                </div>
+                <!-- Includes reference_list into template -->
+                {% set reference_list_id = "phenotype_list" %}
+                {% set empty_message = "No phenotype literature curated." %}
+                {% include "reference_list.jinja2" %}
             </div>
         </section>
 
@@ -146,12 +137,10 @@
         <section id="interaction" data-magellan-destination="interaction">
             <div class="page-header">
                 <h1>Interaction Literature <span id="interaction_header" class="label secondary round"></span></h1>
-                <p id='interaction_message' hidden>No interaction literature curated.</p>
-                <div id='interaction_wrapper'>
-                    <a id="export_interaction" class="small button secondary radius"><i class="fa fa-download"></i> Download (.nbib)</a>
-                    <ul id="interaction_list" class="literature-list">
-                    </ul>
-                </div>
+                <!-- Includes reference_list into template -->
+                {% set reference_list_id = "interaction_list" %}
+                {% set empty_message = "No interaction literature curated." %}
+                {% include "reference_list.jinja2" %}
             </div>
         </section>
 
@@ -160,12 +149,10 @@
         <section id="regulation" data-magellan-destination="regulation">
             <div class="page-header">
                 <h1>Regulation Literature <span id="regulation_header" class="label secondary round"></span></h1>
-                <p id='regulation_message' hidden>No regulation literature curated.</p>
-                <div id='regulation_wrapper'>
-                    <a id="export_regulation" class="small button secondary radius"><i class="fa fa-download"></i> Download (.nbib)</a>
-                    <ul id="regulation_list" class="literature-list">
-                    </ul>
-                </div>
+                <!-- Includes reference_list into template -->
+                {% set reference_list_id = "regulation_list" %}
+                {% set empty_message = "No regulation literature curated." %}
+                {% include "reference_list.jinja2" %}
             </div>
         </section>
 

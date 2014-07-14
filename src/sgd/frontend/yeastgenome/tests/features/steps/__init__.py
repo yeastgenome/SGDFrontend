@@ -54,7 +54,7 @@ def reference_list_should_have_rows(context, reference_list_id):
 def resource_list_should_have_rows(context, resource_list_id):
     try:
         num_rows = len(context.browser.find_elements_by_xpath("//p[@id='" + resource_list_id + "']/a"))
-        assert num_rows > 1, 'Only ' + str(num_rows) + ' entries in resource list.'
+        assert num_rows > 0, 'Only ' + str(num_rows) + ' entries in resource list.'
     except NoSuchElementException:
         assert 0, 'No element with id.'
 

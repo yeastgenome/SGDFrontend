@@ -19,7 +19,8 @@ $(document).ready(function() {
 	});
 
 	$.getJSON(ontology_graph_link, function(data) {
-  		create_cytoscape_vis("cy", layout, graph_style, data);
+  		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
+        create_cy_download_button(cy, "cy_download", download_network_link, display_name + '_ontology')
 
         if(data['all_children'] != null && data['all_children'].length > 0) {
             var children_div = document.getElementById("children");

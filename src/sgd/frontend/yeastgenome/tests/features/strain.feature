@@ -1,13 +1,9 @@
 @browser
-Feature: PhenotypeOntology
-
+Feature: Strain
     @basic
     Scenario: Visit page
-        When I visit "/ontology/phenotype/?/overview" for "ypo"
+        When I visit "/strain/?/overview" for "S288C"
         And I should see an element with id "center_title"
         And I should see an element with id "sidebar"
-
         And I should see an element with id "summary"
-        And I should see an element with id "network"
-
-        And the network with id "cy" should appear
+        And I should see an element with id "resources"

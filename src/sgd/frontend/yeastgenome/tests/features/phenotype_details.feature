@@ -1,9 +1,8 @@
 @browser
 Feature: PhenotypeDetails
-
-    Scenario Outline: Visit page
-        When I visit "/locus/?/phenotype" for <gene>
-        Then the title should be <title>
+    @basic
+    Scenario: Visit page
+        When I visit "/locus/?/phenotype" for "ACT1"
         And I should see an element with id "center_title"
         And I should see an element with id "sidebar"
 
@@ -12,17 +11,15 @@ Feature: PhenotypeDetails
         And I should see an element with id "network"
         And I should see an element with id "resources"
 
-        And I should see an element "phenotype_table_header" with text <header_text>
+        And the table with id "phenotype_table" should have rows in it
+        And the network with id "cy" should appear
+        And the resource list with id "mutant_resources_list" should have rows in it
+        And the resource list with id "phenotype_resources_list" should have rows in it
+        And the resource list with id "ontology_resources_list" should have rows in it
 
-    Examples:
-        | gene    | title                       | header_text                       |
-        | "ACT1"  | "ACT1 Phenotypes"           | "42 entries for 25 phenotypes"    |
-
-    Scenario Outline: Click download buttons
-        When I visit "/locus/?/phenotype" for <gene>
-        And I click the button with id <button>
-        Then I should download a file named <filename>
-
-    Examples:
-        | gene    | button                      | filename                          |
-        | "GAL4"  | "phenotype_table_download"  | "ACT1_phenotype_annotations.txt"  |
+    Scenario: Click download buttons
+        When I visit "/locus/?/phenotype" for "ACT1"
+        And I click the button with id "phenotype_table_download"
+        Then I should download a file named "ACT1_phenotype_annotations.txt"
+        And I click the button with id "cy_download"
+        Then I should download a file named "network.png"

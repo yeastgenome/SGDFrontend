@@ -1,9 +1,8 @@
 @browser
 Feature: ProteinDetails
-
-    Scenario Outline: Visit page
-        When I visit "/locus/?/protein" for <gene>
-        Then the title should be <title>
+    @basic
+    Scenario: Visit page
+        When I visit "/locus/?/protein" for "ACT1"
         And I should see an element with id "center_title"
         And I should see an element with id "sidebar"
 
@@ -14,22 +13,33 @@ Feature: ProteinDetails
         And I should see an element with id "external_ids"
         And I should see an element with id "resources"
 
-        And I should see an element "domain_table_header" with text <domain_header_text>
-        And I should see an element "phosphorylation_table_header" with text <phosphorylation_header_text>
-        And I should see an element "alias_table_header" with text <alias_header_text>
+        And the table with id "domain_table" should have rows in it
+        And the table with id "phosphorylation_table" should have rows in it
+        And the table with id "alias_table" should have rows in it
+        And the table with id "amino_acid_table" should have rows in it
+        And the table with id "physical_details_table" should have rows in it
+        And the table with id "coding_region_table" should have rows in it
+        And the table with id "extinction_coeff_table" should have rows in it
+        And the table with id "atomic_table" should have rows in it
+        And the network with id "cy" should appear
+        And the resource list with id "homolog_resources_list" should have rows in it
+        And the resource list with id "protein_databases_resources_list" should have rows in it
+        And the resource list with id "localization_resources_list" should have rows in it
+        And the resource list with id "modifications_resources_list" should have rows in it
 
-    Examples:
-        | gene    | title                           | domain_header_text            | phosphorylation_header_text   | alias_header_text             |
-        | "GAL4"  | "GAL4 Protein"                  | "11 entries for 11 domains"   | "4 entries for 4 sites"       | "41 entries for 10 sources"   |
-
-    Scenario Outline: Click download buttons
-        When I visit "/locus/?/protein" for <gene>
-        And I click the button with id <button>
-        Then I should download a file named <filename>
-
-    Examples:
-        | gene    | button                          | filename                      |
-        | "GAL4"  | "domain_table_download"         | "GAL4_domains.txt"            |
-        | "GAL4"  | "sequence_download"             | "GAL4_sequence.txt"           |
-        | "GAL4"  | "phosphorylation_table_download"| "GAL4_phosphorylation.txt"    |
-        | "GAL4"  | "alias_table_download"          | "GAL4_external_ids.txt"       |
+    Scenario: Click download buttons
+        When I visit "/locus/?/protein" for "ACT1"
+        And I click the button with id "domain_table_download"
+        Then I should download a file named "ACT1_domains.txt"
+        And I click the button with id "cy_download"
+        Then I should download a file named "network.txt"
+        And I click the button with id "cy_txt_download"
+        Then I should download a file named "ACT1_domains_network.txt"
+        And I click the button with id "sequence_download"
+        Then I should download a file named "ACT1_sequence.txt"
+        And I click the button with id "phosphorylation_table_download"
+        Then I should download a file named "ACT1_phosphorylation.txt"
+        And I click the button with id "protein_properties_download"
+        Then I should download a file named "ACT1_protein_properties.txt"
+        And I click the button with id "alias_table_download"
+        Then I should download a file named "ACT1_external_identifiers.txt"

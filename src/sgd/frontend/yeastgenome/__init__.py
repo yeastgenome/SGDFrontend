@@ -76,7 +76,8 @@ class YeastgenomeFrontend(FrontendInterface):
                     #Links
                     'literature_details_link': self.backend_url + '/locus/' + bioent_id + '/literature_details?callback=?',
                     'literature_graph_link': self.backend_url + '/locus/' + bioent_id + '/literature_graph?callback=?',
-                    'download_citations_link': '/download_citations'
+                    'download_citations_link': '/download_citations',
+                    'download_network_link': '/download_image'
                 }
         return page
     
@@ -124,6 +125,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'phenotype_details_link': self.backend_url + '/locus/' + bioent_id + '/phenotype_details?callback=?',
                     'phenotype_graph_link': self.backend_url + '/locus/' + bioent_id + '/phenotype_graph?callback=?',
                     'download_table_link': '/download_table',
+                    'download_network_link': '/download_image',
                     'ontology_link': '/ontology/phenotype/ypo/overview'
                     }
         return page
@@ -176,7 +178,8 @@ class YeastgenomeFrontend(FrontendInterface):
                     'protein_experiment_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_experiment_details?callback=?',
                     'download_table_link': '/download_table',
                     'download_sequence_link': '/download_sequence',
-                    'analyze_table_link': '/analyze'
+                    'analyze_table_link': '/analyze',
+                    'download_network_link': '/download_image'
                     }
         return page
 
@@ -260,7 +263,8 @@ class YeastgenomeFrontend(FrontendInterface):
                     'phenotype_details_all_link': self.backend_url + '/observable/' + biocon_id + '/locus_details_all?callback=?',
                     'ontology_graph_link': self.backend_url + '/observable/' + biocon_id + '/ontology_graph?callback=?',
                     'download_table_link': '/download_table',
-                    'analyze_table_link': '/analyze'
+                    'analyze_table_link': '/analyze',
+                    'download_network_link': '/download_image'
                     }
         return page
     

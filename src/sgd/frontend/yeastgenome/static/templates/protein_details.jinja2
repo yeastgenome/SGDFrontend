@@ -4,7 +4,7 @@
 
 {% block head %}
 <script>
-	var protein_domains_link = "{{ protein_domain_details_link }}";
+	var protein_domain_link = "{{ protein_domain_details_link }}";
     var protein_domain_graph_link = "{{ protein_domain_graph_link }}";
     var sequence_details_link = "{{ sequence_details_link }}";
     var protein_phosphorylation_details_link = "{{ protein_phosphorylation_details_link }}";
@@ -16,6 +16,7 @@
 	var download_table_link = "{{download_table_link}}";
     var download_sequence_link = "{{download_sequence_link}}";
 	var analyze_link = "{{analyze_table_link}}";
+    var download_network_link = "{{download_network_link}}";
 
     var domains_table_filename = "{{ locus.display_name }}_domains";
     var alias_table_filename = "{{ locus.display_name }}_external_ids";
@@ -93,12 +94,8 @@
 
                 <div id="shared_domains">
                     <h2 id="network" class="subheader">Shared Domains</h2>
-                    <div class="panel">
-                        <div id="cy" name="cy" style="width:100%;height:500px"></div>
-                    </div><!-- .panel -->
-                    <ul class="button-group radius">
-                        <li><a id="domain_network_download" class="small button secondary"><i class="fa fa-download"></i> Download Shared Domains (.txt)</a></li>
-                    </ul>
+                    {% set network_id = "cy" %}
+                    {% include "domain_network.jinja2" %}
                 </div>
             </div>
         </section>
@@ -126,6 +123,7 @@
                     <div id="phosphorylation_sites_wrapper">
                         <h2 class="subheader">Phosphorylation Sites <span id="phosphorylation_table_header" class="round secondary label"></span></h2>
                         <!-- Includes phosphorylation_table into template -->
+                        {% set table_id = "phosphorylation_table" %}
                         {% include "phosphorylation_table.jinja2" %}
                     </div>
 
@@ -214,25 +212,25 @@
             <div class="page-header">
                 <h1>Resources</h1>
                 <h3>Homologs</h3>
-                    <p>
+                    <p id='homolog_resources_list'>
                         {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}
                             <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Protein Databases/Other</h3>
-                    <p>
+                    <p id='protein_databases_resources_list'>
                         {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
                             <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Localization</h3>
-                    <p>
+                    <p id="localization_resources_list">
                         {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION'%}
                             <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Post-translational Modifications</h3>
-                    <p>
+                    <p id="modifications_resources_list">
                         {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS'%}
                             <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}

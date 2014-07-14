@@ -3,7 +3,7 @@ $(document).ready(function() {
 
   	$.getJSON(references_this_week_link, function(data) {
         $("#dates").html(data['start'] + ' to ' + data['end']);
-        set_up_reference_list("references_header", "references_list", "references_message", "references_wrapper", "export_references", download_link, "citations_for_week_of_" + data['start'].replace('-', '_'), data['references']);
+        set_up_reference_list("references_header", "references_list", "references_list_empty_message", "references_list_wrapper", "references_list_download", download_link, "citations_for_week_of_" + data['start'].replace('-', '_'), data['references']);
     });
 
 });

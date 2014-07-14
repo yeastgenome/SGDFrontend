@@ -9,6 +9,8 @@ var source_to_color = {};
 $(document).ready(function() {
 
     $("#domain_table_analyze").hide();
+    $("#alias_table_analyze").hide();
+     $("#phosphorylation_table_analyze").hide();
 
     $.getJSON(sequence_details_link, function(sequence_data) {
         var protein_data = sequence_data['protein'];
@@ -47,7 +49,7 @@ $(document).ready(function() {
         }
 
         //Get domain info
-        $.getJSON(protein_domains_link, function(protein_domain_data) {
+        $.getJSON(protein_domain_link, function(protein_domain_data) {
             var domain_table = create_domain_table(protein_domain_data);
             create_download_button("domain_table_download", domain_table, download_table_link, domains_table_filename);
             if(protein_domain_data.length > 0) {
@@ -60,7 +62,8 @@ $(document).ready(function() {
             $.getJSON(protein_domain_graph_link, function(protein_domain_graph_data) {
                 if(protein_domain_graph_data['nodes'].length > 1) {
                     var graph_style = prep_style();
-                    create_cytoscape_vis("cy", layout, graph_style, protein_domain_graph_data);
+                    var graph = create_cytoscape_vis("cy", layout, graph_style, protein_domain_graph_data);
+                    create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_protein_domain_graph')
 
                     var download_headers = ['', 'Gene', 'Domain'];
                     var download_data = [];
@@ -71,7 +74,7 @@ $(document).ready(function() {
                     for(var i=0; i < protein_domain_graph_data['edges'].length; i++) {
                         download_data.push(['', id_to_name[protein_domain_graph_data['edges'][i]['data']['target']], id_to_name[protein_domain_graph_data['edges'][i]['data']['source']]]);
                     }
-                    create_download_button_no_table('domain_network_download', download_headers, download_data, download_table_link, domain_network_filename);
+                    create_download_button_no_table('cy_txt_download', download_headers, download_data, download_table_link, domain_network_filename);
                 }
                 else {
                     $("#shared_domains").hide();

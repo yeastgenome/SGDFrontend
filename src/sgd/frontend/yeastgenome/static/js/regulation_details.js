@@ -33,11 +33,6 @@ $(document).ready(function() {
                 var enrichment_table = create_enrichment_table("enrichment_table", target_table, enrichment_data);
                 create_download_button("enrichment_table_download", enrichment_table, download_table_link, enrichment_table_filename);
                 add_button_to_table('enrichment_table', 'recalculate', 'Recalculate With New Filter');
-
-    <ul class="button-group radius">
-        <li><a id="{{ table_id }}_recalculate" class="small button secondary" style="display:none">Recalculate With
-            New Filter</a></li>
-    </ul>
   	        });
   		}
   		else {

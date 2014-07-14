@@ -130,25 +130,25 @@
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
                 <h1>Resources</h1>
-                <p>
+                <p id='resources_list'>
                     {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE'%}
                         <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                     {% endfor %}
                 </p>
                 <h3>S288C only</h3>
-                <p>
+                <p id="reference_only_resources_list">
                     {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C'%}
                         <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                     {% endfor %}
                 </p>
                 <h3>S288C vs. other species</h3>
-                <p>
+                <p id="other_species_resources_list">
                     {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_SPECIES'%}
                         <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                     {% endfor %}
                 </p>
                 <h3>S288C vs. other strains</h3>
-                <p>
+                <p id="other_strains_resources_list">
                     {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_STRAINS'%}
                         <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                     {% endfor %}

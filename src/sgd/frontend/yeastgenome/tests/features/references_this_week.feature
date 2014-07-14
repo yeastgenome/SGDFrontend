@@ -1,24 +1,16 @@
 @browser
 Feature: ReferencesThisWeek
-
-    Scenario Outline: Visit page
-        When I visit "/references/?" for <page>
-        Then the title should be <title>
+    @basic
+    Scenario: Visit page
+        When I visit "/reference/?" for "recent"
         And I should see an element with id "center_title"
         And I should see an element with id "sidebar"
-
         And I should see an element with id "references"
         And I should see an element with id "references_header"
 
-    Examples:
-        | page          | title                                 |
-        | "this_week"   | "Literature Recently Added to SGD"    |
+        And the reference list with id "references_list" should have rows in it
 
-    Scenario Outline: Click download buttons
-        When I visit "/references/?" for <page>
-        And I click the button with id <button>
-        Then I should download a file named <filename>
-
-    Examples:
-        | page          | button                                | filename              |
-        | "this_week"   | "export_references"                   | "recently_added.txt"  |
+    Scenario: Click download buttons
+        When I visit "/reference/?" for "recent"
+        And I click the button with id "references_list_download"
+        Then I should download a file named "Bi_E_citations.nbib"
