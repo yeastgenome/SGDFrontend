@@ -29,11 +29,33 @@ $(document).ready(function() {
         create_download_button("comp_cc_go_table_download", comp_cc_go_table, download_table_link, comp_cc_download_table_filename);
 
         var transformed_data = [];
+        var mc_count = 0;
+        var htp_count = 0;
+        var comp_count = 0;
         for (var i=0; i < data.length; i++) {
             transformed_data.push(go_data_to_table(data[i], i));
+            if(data[i]['annotation_type'] == 'manually curated') {
+                mc_count = mc_count + 1;
+            }
+            else if(data[i]['annotation_type'] == 'high-throughput') {
+                htp_count = htp_count + 1;
+            }
+            else if(data[i]['annotation_type'] == 'computational') {
+                comp_count = comp_count + 1;
+            }
         }
         var headers = ["Evidence ID", "Analyze ID", "", "Gene", "Gene Format Name", "Gene Ontology Term", "Gene Ontology Term ID", "Qualifier", "Aspect", "Method", "Evidence", "Source", "Assigned On", "Reference", "Relationships"];
         create_download_button_no_table("go_download_all", headers, transformed_data, download_table_link, display_name + "_go_annotations")
+
+        if(mc_count == 0) {
+            hide_section('manual');
+        }
+        if(htp_count == 0) {
+            hide_section('htp');
+        }
+        if(comp_count == 0) {
+            hide_section('comp');
+        }
   	});
 
   	$.getJSON(go_graph_link, function(data) {
@@ -88,6 +110,7 @@ function create_go_table(prefix, message, filter, data) {
 
         if(Object.keys(gos).length == 0) {
             $("#" + prefix + "_go").hide();
+            $("#" + prefix + "_subsection").hide();
         }
     }
 
