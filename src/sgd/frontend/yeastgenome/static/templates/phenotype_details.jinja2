@@ -17,7 +17,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Phenotypes  <a href="/help/PhenoHelp.html" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+	<h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Phenotypes  <a href="/help/PhenoHelp.html" name="top" class="help"><i class="fa fa-question-circle"></i></a></h2>
 </div>
 
 <!-- Tabs
@@ -58,7 +58,6 @@
                     additional details are provided.</p>
             </div>
         </h1>
-		<p>This page lists all curated single mutant phenotypes associated with {{ locus.display_name }}.</p>
 
         <!-- Includes phenotype_overview.html into template -->
         {% include "phenotype_overview.jinja2" %}

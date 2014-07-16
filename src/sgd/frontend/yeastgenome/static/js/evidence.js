@@ -253,7 +253,7 @@ function go_data_to_table(evidence, index) {
 
     var evidence_code = null;
     if(evidence['experiment'] != null) {
-        evidence_code = '<a href="' + evidence['experiment']['link'] + '" data-dropdown="go_evidence_' + index + '" data-options="is_hover:true">' + evidence['experiment']['display_name'] + '</a><div id="go_evidence_' + index + '" class="f-dropdown content medium" data-dropdown-content><p>' + evidence['experiment']['description'] + '</p></div>';
+        evidence_code = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);;
     }
     else {
         evidence_code = evidence['go_evidence'];
