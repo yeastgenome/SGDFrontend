@@ -54,7 +54,17 @@
 ================================================== -->
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
-		<h1>Interactors Summary</h1>
+        <h1>Interactors Summary
+            <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
+
+            <div id="summary_info" class="f-dropdown content medium" data-dropdown-content>
+                <p>Interaction annotations are curated by BioGRID and include both physical and genetic interactions
+                    observed between at least two genes. An interaction annotation is composed of the type of
+                    interaction, name of the interactor, assay type (e.g., Two-Hybrid), annotation type (e.g., manual or
+                    high-throughput), and a reference. Experimental details, phenotype, modification, and multiple
+                    mutant information are included when available.</p>
+            </div>
+        </h1>
 		<p>This page lists all genes/proteins that interact with {{ locus.display_name }}. See help for information about <a href="/help/function-help/interactions">interaction data</a>.</p>
 
         <!-- Includes interaction_overview.html into template -->
@@ -78,7 +88,17 @@
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Interactions <span id="interaction_table_header" class="round secondary label"></span></h1>
+                <h1>Interactions
+                    <a href="#" data-dropdown="annotations_info"><i class="fa fa-info-circle"></i></a>
+
+                    <div id="annotations_info" class="f-dropdown content medium" data-dropdown-content>
+                        <p>An interaction is defined as an experimentally observed physical or genetic interaction
+                            between two genes. There may be more than one row listed for the same interactor if the
+                            interaction between it and the given gene was observed in separate studies. All interactions
+                            listed in SGD are curated by BioGRID.</p>
+                    </div>
+                    <span id="interaction_table_header" class="round secondary label"></span>
+                </h1>
                 <!-- Includes interaction_table into template -->
                 {% set table_id = "interaction_table" %}
                 {% include "interaction_table.jinja2" %}
@@ -89,7 +109,22 @@
 ================================================== -->
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
-                <h1>Network Visualization</h1>
+                <h1>Network Visualization
+                    <a href="#" data-dropdown="network_info"><i class="fa fa-question-circle"></i></a>
+
+                    <div id="network_info" class="f-dropdown content medium" data-dropdown-content>
+                        <p>Click on a gene to go to its specific page within SGD; drag any of the gene objects around
+                            within the visualization for easier viewing; click “Reset” to automatically redraw the
+                            diagram; filter the number of interactors displayed by adjusting the number of experiments
+                            supporting a gene's interaction with the given gene by clicking anywhere on the slider bar
+                            or dragging the tab to the desired filter number.</p>
+                    </div>
+                </h1>
+                <p>This diagram displays physical (purple lines) and genetic (green lines) interactions between the
+                    given gene (yellow circle) and its interactors (gray circles) based on the number of experiments
+                    supporting each interaction (adjustable using the slider at the bottom). Interactions between the
+                    interactors for a given gene are also shown.</p>
+
                 <div class="panel">
                     <div id="discrete_filter" hidden>
                         <label for="union_radio">
@@ -116,7 +151,13 @@
 ================================================== -->
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
-                <h1>Resources</h1>
+                <h1>Resources
+                    <a href="#" data-dropdown="resource_info"><i class="fa fa-info-circle"></i></a>
+
+                    <div id="resource_info" class="f-dropdown content medium" data-dropdown-content>
+                        <p>Links to external resources relevant to yeast physical and genetic interactions.</p>
+                    </div>
+                </h1>
                 <p>
                     {% for url in locus.urls if url.category == 'Interaction Resources'%}
                         <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
