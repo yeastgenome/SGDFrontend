@@ -48,13 +48,13 @@ $(document).ready(function() {
         create_download_button_no_table("go_download_all", headers, transformed_data, download_table_link, display_name + "_go_annotations")
 
         if(mc_count == 0) {
-            hide_section('manual');
+            $("#manual_message").show();
         }
         if(htp_count == 0) {
-            hide_section('htp');
+            $("#htp_message").show();
         }
         if(comp_count == 0) {
-            hide_section('comp');
+            $("#comp_message").show();
         }
   	});
 

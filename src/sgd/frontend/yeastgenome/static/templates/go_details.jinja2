@@ -100,6 +100,8 @@
                     </h1>
                     <p><strong>Date Last Reviewed:</strong> {{ locus.go_overview.date_last_reviewed.text }}</p>
 
+                    <p style="display:none" id="manual_message">There are no manually curated annotations for {{ locus.display_name }}.</p>
+
                     <h2 id='mc_bp_subsection' class="subheader">Biological Process
                         <a href="#" data-dropdown="mc_bp_help"><i class="fa fa-question-circle"></i></a>
 
@@ -176,6 +178,8 @@
                         </div>
                     </h1>
 
+                    <p id="htp_message" style="display:none">There are no high-throughput annotations for {{ locus.display_name }}.</p>
+
                     <h2 id='htp_bp_subsection' class="subheader">Biological Process
                         <a href="#" data-dropdown="htp_bp_help"><i class="fa fa-question-circle"></i></a>
 
@@ -248,6 +252,8 @@
                                     Institute (EBI)</a>).</p>
                         </div>
                     </h1>
+
+                    <p id="comp_message" style="display:none">There are no computational annotations for {{ locus.display_name }}.</p>
 
                     <h2 id='comp_bp_subsection' class="subheader">Biological Process
                         <a href="#" data-dropdown="comp_bp_help"><i class="fa fa-question-circle"></i></a>
