@@ -81,18 +81,54 @@
 ================================================== -->
         <section id="domain" data-magellan-destination="domain">
             <div class="page-header">
-                <h1>Domains and Classification <span id="domain_table_header" class="round secondary label"></span></h1>
+                <h1>Domains and Classification
+                    <a href="#" data-dropdown="domain_info"><i class="fa fa-info-circle"></i></a>
+
+                    <div id="domain_info" class="f-dropdown content medium" data-dropdown-content>
+                        <p>Collection of domains associated with the protein based on various sources, including the
+                            protein coordinates for the domain, a domain Description, a Source and corresponding
+                            accession ID, and the number of S. cerevisiae genes that share the same domain.</p>
+                    </div>
+                    <span id="domain_table_header" class="round secondary label"></span>
+                </h1>
                 <!-- Includes domain_table into template -->
                 {% set table_id = "domain_table" %}
                 {% include "domain_table.jinja2" %}
 
                 <div id="domain_locations">
-                    <h2  class="subheader">Domain Locations</h2>
+                    <h2 class="subheader">Domain Locations
+                        <a href="#" data-dropdown="domain_location_info"><i class="fa fa-info-circle"></i></a>
+
+                        <div id="domain_location_info" class="f-dropdown content medium" data-dropdown-content>
+                            <p>Visual representation of the locations of the domains within the protein, as listed in
+                                the Domains and Classification table. Each row displays the domain(s) derived from a
+                                different Source, with domains color-coded according to this Source.</p>
+                        </div>
+
+                        <a href="#" data-dropdown="domain_location_help"><i class="fa fa-question-circle"></i></a>
+
+                        <div id="domain_location_help" class="f-dropdown content medium" data-dropdown-content>
+                            <p>Scroll over a domain to view its exact coordinates and its Description.</p>
+                        </div>
+                    </h2>
                     <div id="domain_chart"></div>
                 </div>
 
                 <div id="shared_domains">
-                    <h2 id="network" class="subheader">Shared Domains</h2>
+                    <h2 id="network" class="subheader">Shared Domains
+                        <a href="#" data-dropdown="network_help"><i class="fa fa-question-circle"></i></a>
+
+                        <div id="network_help" class="f-dropdown content medium" data-dropdown-content>
+                            <p>Click on a gene or domain name to go to its specific page within SGD; drag any of the
+                                gene or domain objects around within the visualization for easier viewing; click “Reset”
+                                to automatically redraw the diagram.</p>
+                        </div>
+                    </h2>
+
+                    <p>This diagram displays domains (colored squares) shared between the given protein (yellow circle)
+                        and other proteins (gray circles); the domains are color-coded according to their source, as
+                        displayed in the Domain Locations table, above.</p>
+
                     <div class="panel">
                         <div id="cy" name="cy" style="width:100%;height:500px"></div>
                     </div><!-- .panel -->
@@ -107,7 +143,27 @@
 ================================================== -->
         <section id="sequence" data-magellan-destination="sequence">
             <div class="page-header">
-                <h1>Sequence</h1>
+                <h1>Sequence
+                    <a href="#" data-dropdown="sequence_info"><i class="fa fa-info-circle"></i></a>
+
+                    <div id="sequence_info" class="f-dropdown content medium" data-dropdown-content>
+                        <p>Protein sequence for the given gene in S288C and other strains, when available. Amino acids
+                            displayed in red represent phosphorylation sites, as curated by PhosphoGRID. More detailed
+                            evidence for these phosphorylation sites is presented in the Phosphorylation Sites table,
+                            located just below the protein sequence.</p>
+                    </div>
+
+                    <a href="#" data-dropdown="sequence_help"><i class="fa fa-question-circle"></i></a>
+
+                    <div id="sequence_help" class="f-dropdown content medium" data-dropdown-content>
+                        <p>Use the pull-down menu under "Strain" to select the sequence for a specific strain. The
+                            sequence for that strain will appear and can then be downloaded as a .txt file.
+                            Phosphorylated residues, as curated by PhosphoGRID, are shown in red if the residues are
+                            present in the given strain, and are further detailed in the "Phosphorylation Sites" table
+                            below the sequence. Note that a residue marked as phosphorylated has not necessarily been
+                            shown to be phosphorylated in a specific strain.</p>
+                    </div>
+                </h1>
                 <p id="sequence_section_message" hidden>This locus is not translated into a protein.</p>
                 <div id="sequence_section">
                     <label><h3>Strain</h3>
@@ -124,13 +180,36 @@
                     </div>
 
                     <div id="phosphorylation_sites_wrapper">
-                        <h2 class="subheader">Phosphorylation Sites <span id="phosphorylation_table_header" class="round secondary label"></span></h2>
+                        <h2 class="subheader">Phosphorylation Sites
+                            <a href="#" data-dropdown="phosphorylation_info"><i class="fa fa-info-circle"></i></a>
+
+                            <div id="phosphorylation_info" class="f-dropdown content medium" data-dropdown-content>
+                                <p>Phosphorylation sites for the protein in the selected strain, based on the presence
+                                    of a residue in the specific strain, as inferred from experimental evidence curated
+                                    by PhosphoGRID.</p>
+                            </div>
+                            <span id="phosphorylation_table_header" class="round secondary label"></span>
+                        </h2>
                         <!-- Includes phosphorylation_table into template -->
                         {% include "phosphorylation_table.jinja2" %}
                     </div>
 
                     <div id="physicochemical_props">
-                        <h2 class="subheader">Sequence-Based Physico-chemical Properties</h2>
+                        <h2 class="subheader">Sequence-Based Physico-chemical Properties
+                            <a href="#" data-dropdown="properties_info"><i class="fa fa-info-circle"></i></a>
+
+                            <div id="properties_info" class="f-dropdown content medium" data-dropdown-content>
+                                <p>Calculated protein properties, including amino acid composition, length, coding
+                                    region calculations, and atomic compositionD.</p>
+                            </div>
+
+                            <a href="#" data-dropdown="properties_help"><i class="fa fa-question-circle"></i></a>
+
+                            <div id="properties_help" class="f-dropdown content medium" data-dropdown-content>
+                                <p>Sort tables using the arrows to the right of a column header to sort by that column;
+                                    download all properties as a .txt file using the "Download Properties" button.</p>
+                            </div>
+                        </h2>
 
                         <div class="row">
                             <div class="small-12 large-6 columns content-column">
@@ -201,7 +280,14 @@
 ================================================== -->
         <section id="external_ids" data-magellan-destination="external_ids">
             <div class="page-header">
-                <h1>External Identifiers <span id="alias_table_header" class="round secondary label"></span></h1>
+                <h1>External Identifiers
+                    <a href="#" data-dropdown="external_id_info"><i class="fa fa-info-circle"></i></a>
+
+                    <div id="external_id_info" class="f-dropdown content medium" data-dropdown-content>
+                        <p>List of external identifiers for the protein from various database sources.</p>
+                    </div>
+                    <span id="alias_table_header" class="round secondary label"></span>
+                </h1>
                 <!-- Includes alias_table into template -->
                 {% set table_id = "alias_table" %}
                 {% include "alias_table.jinja2" %}
@@ -212,7 +298,14 @@
 ================================================== -->
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
-                <h1>Resources</h1>
+                <h1>Resources
+                    <a href="#" data-dropdown="resource_info"><i class="fa fa-info-circle"></i></a>
+
+                    <div id="resource_info" class="f-dropdown content medium" data-dropdown-content>
+                        <p>Links to the protein's specific pages in external resources, including homology, domain,
+                            localization, and modification information.</p>
+                    </div>
+                </h1>
                 <h3>Homologs</h3>
                     <p>
                         {% for url in locus.urls if url.category == 'Protein Information Homologs' or url.category == 'Analyze Sequence S288C vs. other species'%}
