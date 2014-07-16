@@ -251,7 +251,13 @@ function go_data_to_table(evidence, index) {
         reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
     }
 
-    var evidence_code = '<a href="' + evidence['experiment']['link'] + '" data-dropdown="go_evidence_' + index + '" data-options="is_hover:true">' + evidence['experiment']['display_name'] + '</a><div id="go_evidence_' + index + '" class="f-dropdown content medium" data-dropdown-content><p>' + evidence['experiment']['description'] + '</p></div>';
+    var evidence_code = null;
+    if(evidence['experiment'] != null) {
+        evidence_code = '<a href="' + evidence['experiment']['link'] + '" data-dropdown="go_evidence_' + index + '" data-options="is_hover:true">' + evidence['experiment']['display_name'] + '</a><div id="go_evidence_' + index + '" class="f-dropdown content medium" data-dropdown-content><p>' + evidence['experiment']['description'] + '</p></div>';
+    }
+    else {
+        evidence_code = evidence['go_evidence'];
+    }
 
   	var with_entry = null;
 	var relationship_entry = null;
