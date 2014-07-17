@@ -45,8 +45,8 @@
         <script>
         //Set up navbar
             add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Interactions');
-            add_navbar_element('Interactors Summary', 'summary');
-            add_navbar_element('Interactions', 'annotations');
+            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Annotations', 'annotations');
             add_navbar_element('Network Visualization', 'network');
             add_navbar_element('Resources', 'resources');
         </script>
@@ -102,7 +102,6 @@
                     </h1>
                 <!-- Includes interaction_table into template -->
                 {% set table_id = "interaction_table" %}
-                {% set table_title = "Interaction Annotations for " + locus.display_name %}
                 {% include "interaction_table.jinja2" %}
             </div>
         </section>
@@ -125,7 +124,6 @@
                         </p>
                     </h1>
                 {% set network_id = "cy" %}
-                {% set network_title = "Interaction Network for " + locus.display_name %}
                 {% include "interaction_network.jinja2" %}
             </div>
         </section>
@@ -134,7 +132,7 @@
 ================================================== -->
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
-                <h1>External Resources</h1>
+                <h1>Resources</h1>
                 <p id="resources_list">
                     {% for url in locus.urls if url.category == 'LOCUS_INTERACTION'%}
                         <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
