@@ -77,8 +77,23 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
         }
 		cy.zoomingEnabled(old_zoom_value);
 	};
-	cytoscape_div.before(recenter_button, cytoscape_div);
+
 	recenter_button.setAttribute('disabled', 'disabled');
+
+    var network_help = document.createElement('a');
+    network_help.setAttribute('data-dropdown', 'network_help');
+    network_help.innerHTML = '<i class="fa fa-question-circle"></i>  '
+    var network_help_message = document.createElement('p');
+    network_help_message.id = 'network_help';
+    network_help_message.className = "f-dropdown content medium";
+    network_help_message.setAttribute('data-dropdown-content', true);
+    network_help_message.innerHTML = 'Click on a gene or phenotype observable name to go to its specific page within SGD; drag any of the gene or observable objects around within the visualization for easier viewing; click “Reset” to automatically redraw the diagram; filter the genes that share observable terms with the given gene by the number of terms they share by clicking anywhere on the slider bar or dragging the tab to the desired filter number.';
+
+    cytoscape_div.before(network_help_message, cytoscape_div);
+    cytoscape_div.before(network_help, cytoscape_div);
+
+    cytoscape_div.before(recenter_button, cytoscape_div);
+
 	return cy;
 }
 
