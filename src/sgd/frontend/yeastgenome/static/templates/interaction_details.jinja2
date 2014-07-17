@@ -24,7 +24,10 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Physical and Genetic Interactions</h2>
+    <h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}
+        {{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Physical and Genetic Interactions <a
+            href="/help/function-help/interactions" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a>
+    </h2>
 </div>
 
 <!-- Tabs
