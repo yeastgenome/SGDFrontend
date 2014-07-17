@@ -65,7 +65,7 @@
             }
 
             if(target_count + regulator_count > 0) {
-                add_navbar_element("Network Visualization", "network");
+                add_navbar_element("Regulation Network", "network");
             }
         </script>
 
@@ -155,17 +155,17 @@
         <section id="targets" data-magellan-destination="targets">
             <div class="page-header">
                 <h1>Targets
-                <a href="#" data-dropdown="drop_targets"><i class="fa fa-info-circle"></i></a>
+                    <a href="#" data-dropdown="drop_targets"><i class="fa fa-info-circle"></i></a>
 
-                <p id="drop_targets" class="f-dropdown content medium" data-dropdown-content>
-                    This table lists putative transcriptional regulatory targets for the central gene represented
-                    on this page. These targets were identified based on the presence of predicted regulator
-                    binding sites or experimental regulator binding in the target promoter, and/or changes in
-                    the target gene’s transcript levels in regulator mutant strains. Data includes
-                    high-throughput techniques such as microarray, RNA-seq, and ChIP assays; information about
-                    the experiment and assay type, constructs, conditions, and strains, as well as a reference,
-                    are provided for each Regulator annotation.
-                </p>
+                    <p id="drop_targets" class="f-dropdown content medium" data-dropdown-content>
+                        This table lists putative transcriptional regulatory targets for the central gene represented
+                        on this page. These targets were identified based on the presence of predicted regulator
+                        binding sites or experimental regulator binding in the target promoter, and/or changes in
+                        the target gene’s transcript levels in regulator mutant strains. Data includes
+                        high-throughput techniques such as microarray, RNA-seq, and ChIP assays; information about
+                        the experiment and assay type, constructs, conditions, and strains, as well as a reference,
+                        are provided for each Regulator annotation.
+                    </p>
                     <span id="target_table_header" class="round secondary label"></span>
                 </h1>
 
@@ -189,7 +189,7 @@
                     Targets table, a button to "Recalculate with new Filter" will appear below this table allowing
                     the shared GO terms to be recalculated based on the new set of Targets.
                 </p>
-                    <span id="enrichment_table_header" class="round secondary label"></span>
+                <span id="enrichment_table_header" class="round secondary label"></span>
             </h1>
                 <!-- Includes gene_list_table into template -->
                 {% set table_id = "enrichment_table" %}

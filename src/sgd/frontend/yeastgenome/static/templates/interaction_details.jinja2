@@ -47,7 +47,7 @@
             add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Interactions');
             add_navbar_element('Summary', 'summary');
             add_navbar_element('Annotations', 'annotations');
-            add_navbar_element('Network Visualization', 'network');
+            add_navbar_element('Interaction Network', 'network');
             add_navbar_element('Resources', 'resources');
         </script>
 
@@ -99,6 +99,7 @@
                             interactions
                             listed in SGD are curated by <a href="http://thebiogrid.org/" target="_blank">BioGRID</a>.
                         </p>
+                        <span id="interaction_table_header" class="round secondary label"></span>
                     </h1>
                 <!-- Includes interaction_table into template -->
                 {% set table_id = "interaction_table" %}
@@ -110,7 +111,7 @@
 ================================================== -->
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
-                <h1>Network Visualization
+                <h1>Interaction Network
                         <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
 
                         <p id="network_info" class="f-dropdown content medium" data-dropdown-content>

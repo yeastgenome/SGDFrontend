@@ -53,7 +53,7 @@
         add_navbar_element("Manually Curated", "manual");
         add_navbar_element("High-throughput", "htp");
         add_navbar_element("Computational", "comp");
-        add_navbar_element("Network Visualization", "network");
+        add_navbar_element("Shared GO Terms", "network");
     </script>
 
     <!-- Summary
@@ -105,20 +105,26 @@
                 for {{ locus.display_name }}.</p>
 
             <div id="mc_bp_go">
+                <h2 class="subheader">Biological Process
+                    <span id="mc_bp_go_table_header" class="round secondary label"></span>
+                </h2>
                 {% set table_id = "mc_bp_go_table" %}
-                {% set table_title = "Biological Process" %}
                 {% include "go_table.jinja2" %}
             </div>
 
             <div id="mc_mf_go">
+                <h2 class="subheader">Molecular Function
+                    <span id="mc_mf_go_table_header" class="round secondary label"></span>
+                </h2>
                 {% set table_id = "mc_mf_go_table" %}
-                {% set table_title = "Molecular Function" %}
                 {% include "go_table.jinja2" %}
             </div>
 
             <div id="mc_cc_go">
+                <h2 class="subheader">Cellular Component
+                    <span id="mc_cc_go_table_header" class="round secondary label"></span>
+                </h2>
                 {% set table_id = "mc_cc_go_table" %}
-                {% set table_title = "Cellular Component" %}
                 {% include "go_table.jinja2" %}
             </div>
         </div>
@@ -148,20 +154,26 @@
                 for {{ locus.display_name }}.</p>
 
             <div id="htp_bp_go">
+                <h2 class="subheader">Biological Process
+                    <span id="htp_bp_go_table_header" class="round secondary label"></span>
+                </h2>
                 {% set table_id = "htp_bp_go_table" %}
-                {% set table_title = "Biological Process High-Throughput Annotations for " + locus.display_name %}
                 {% include "go_table.jinja2" %}
             </div>
 
             <div id="htp_mf_go">
+                <h2 class="subheader">Molecular Function
+                    <span id="htp_mf_go_table_header" class="round secondary label"></span>
+                </h2>
                 {% set table_id = "htp_mf_go_table" %}
-                {% set table_title = "Molecular Function High-Throughput Annotations for " + locus.display_name %}
                 {% include "go_table.jinja2" %}
             </div>
 
             <div id="htp_cc_go">
+                <h2 class="subheader">Cellular Component
+                    <span id="htp_cc_go_table_header" class="round secondary label"></span>
+                </h2>
                 {% set table_id = "htp_cc_go_table" %}
-                {% set table_title = "Cellular Component" %}
                 {% include "go_table.jinja2" %}
             </div>
         </div>
@@ -188,20 +200,26 @@
                 for {{ locus.display_name }}.</p>
 
             <div id="comp_bp_go">
+                <h2 class="subheader">Biological Process
+                    <span id="comp_bp_go_table_header" class="round secondary label"></span>
+                </h2>
                 {% set table_id = "comp_bp_go_table" %}
-                {% set table_title = "Biological Process Computational Annotations for " + locus.display_name %}
                 {% include "go_table.jinja2" %}
             </div>
 
             <div id="comp_mf_go">
+                <h2 class="subheader">Molecular Function
+                    <span id="comp_mf_go_table_header" class="round secondary label"></span>
+                </h2>
                 {% set table_id = "comp_mf_go_table" %}
-                {% set table_title = "Molecular Function Computational Annotations for " + locus.display_name %}
                 {% include "go_table.jinja2" %}
             </div>
 
             <div id="comp_cc_go">
+                <h2 class="subheader">Cellular Component
+                    <span id="comp_cc_go_table_header" class="round secondary label"></span>
+                </h2>
                 {% set table_id = "comp_cc_go_table" %}
-                {% set table_title = "Cellular Component Computational Annotations for " + locus.display_name %}
                 {% include "go_table.jinja2" %}
             </div>
         </div>
@@ -211,7 +229,7 @@
     ================================================== -->
     <section id="network" data-magellan-destination="network">
         <div class="page-header">
-            <h1>Network Visualization
+            <h1>Shared GO Terms
                 <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
 
                 <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
@@ -222,7 +240,6 @@
             </h1>
 
             {% set network_id = "cy" %}
-            {% set network_title = "Shared GO Terms for " + locus.display_name %}
             {% include "go_network.jinja2" %}
         </div>
     </section>
