@@ -1,19 +1,21 @@
 {% extends "network.jinja2" %}
 
+{% block help %}
+    Click on a gene to go to its specific page within SGD; drag any of the gene objects around within the visualization
+    for easier viewing; click “Reset” to automatically redraw the diagram; filter the number of interactors displayed by
+    adjusting the number of experiments supporting a gene's interaction with the given gene by clicking anywhere on the
+    slider bar or dragging the tab to the desired filter number.
+{% endblock %}
+
 {% block legend %}
     <div id="discrete_filter" hidden>
-        <label for="union_radio">
-            <input id="union_radio" type="radio" name="group1" checked> All
-        </label>
-        <label for="physical_radio" class="legend-label physical">
-            <input id="physical_radio" type="radio" name="group1"> Physical
-        </label>
-        <label for="genetic_radio" class="legend-label genetic">
-            <input id="genetic_radio" type="radio" name="group1"> Genetic
-        </label>
+        <label><strong>Filter Interaction by Type</strong></label>
+        <input type="radio" name="group1" id="union_radio"><label for="union_radio">All</label>
+        <input type="radio" name="group1" id="physical_radio" class="legend-label physical"><label for="physical_radio">Physical</label>
+        <input type="radio" name="group1" id="genetic_radio" class="legend-label genetic"><label for="genetic_radio">Genetic</label>
     </div>
 
-    <h5>Filter Interactions by # of Experiments:</h5>
+    <label><strong>Filter Interactions by # of Experiments</strong></label>
     <div id="slider" class="noUiSlider" style="width:100%"></div>
     <div id="slider_ticks"></div>
     <br>

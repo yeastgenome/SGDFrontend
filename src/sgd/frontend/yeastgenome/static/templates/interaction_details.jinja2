@@ -89,7 +89,7 @@
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Interactions
+                <h1>Annotations
                         <a href="#" data-dropdown="annotations_info"><i class="fa fa-info-circle"></i></a>
 
                         <p id="annotations_info" class="f-dropdown content medium" data-dropdown-content>
@@ -99,10 +99,10 @@
                             interactions
                             listed in SGD are curated by BioGRID.
                         </p>
-                        <span id="interaction_table_header" class="round secondary label"></span>
                     </h1>
                 <!-- Includes interaction_table into template -->
                 {% set table_id = "interaction_table" %}
+                {% set table_title = "Interaction Annotations for " + locus.display_name %}
                 {% include "interaction_table.jinja2" %}
             </div>
         </section>
@@ -125,6 +125,7 @@
                         </p>
                     </h1>
                 {% set network_id = "cy" %}
+                {% set network_title = "Interaction Network for " + locus.display_name %}
                 {% include "interaction_network.jinja2" %}
             </div>
         </section>
