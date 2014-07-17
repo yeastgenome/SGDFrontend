@@ -1,44 +1,30 @@
 
-<!-- Summary
-================================================== -->
-<section id="summary" data-magellan-destination="summary">
-	<div class="page-header">
-        <h1>Protein Summary
-            <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
+<ul class="unstyled">
+    <li>
+        {% for alias in locus.aliases if alias.category == 'Uniform' %}
+            {% if loop.first %}<strong>Aliases: </strong>{% endif %}
+            <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    </li>
+    <li>
+        {% for alias in locus.aliases if alias.category == 'Gene product' %}
+            {% if loop.first %}<strong>Gene Product: </strong>{% endif %}
+            <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    </li>
+    <li><strong>Description: </strong>{{ locus.description }}</li>
+    <li>
+        {% for reference in locus.description_references %}
+            <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    </li>
+    <li>
+        {% for alias in locus.aliases if alias.category == 'NCBI protein name' %}
+            {% if loop.first %}<strong>Protein Product: </strong>{% endif %}
+            <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    </li>
+    <li id="ec_number"></li>
+</ul>
 
-            <div id="summary_info" class="f-dropdown content medium" data-dropdown-content>
-                <p>Protein abundance data, domains, shared domains with other proteins, protein sequence retrieval for
-                    various strains, sequence-based physico-chemical proterties, phosphorylation sites, and external
-                    identifiers for the protein.</p>
-            </div>
-        </h1>
-		<ul class="unstyled">
-            <li>
-                {% for alias in locus.aliases if alias.category == 'Uniform' %}
-                    {% if loop.first %}<strong>Aliases: </strong>{% endif %}
-                    <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
-                {% endfor %}
-            </li>
-            <li>
-                {% for alias in locus.aliases if alias.category == 'Gene product' %}
-                    {% if loop.first %}<strong>Gene Product: </strong>{% endif %}
-                    <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
-                {% endfor %}
-            </li>
-            <li><strong>Description: </strong>{{ locus.description }}</li>
-            <li>
-                {% for reference in locus.description_references %}
-                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
-                {% endfor %}
-            </li>
-            <li>
-                {% for alias in locus.aliases if alias.category == 'NCBI protein name' %}
-                    {% if loop.first %}<strong>Protein Product: </strong>{% endif %}
-                    <span>{{ alias.display_name }}</span>{% if not loop.last %}, {% endif %}
-                {% endfor %}
-            </li>
-            <li id="ec_number"></li>
-        </ul>
-	</div>
-</section>
 

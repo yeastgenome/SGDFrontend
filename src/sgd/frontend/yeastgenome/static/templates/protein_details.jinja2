@@ -64,6 +64,20 @@
         add_navbar_element('Resources', 'resources');
     </script>
 
+    <section id="summary" data-magellan-destination="summary">
+        <div class="page-header">
+            <h1>Summary
+                <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
+
+                <div id="summary_info" class="f-dropdown content medium" data-dropdown-content>
+                    <p>Protein abundance data, domains, shared domains with other proteins, protein sequence retrieval
+                        for
+                        various strains, sequence-based physico-chemical proterties, phosphorylation sites, and external
+                        identifiers for the protein.</p>
+                </div>
+            </h1>
+        </div>
+    </section>
     <!-- Includes protein_overview.html into template -->
     {% include "protein_overview.jinja2" %}
 
