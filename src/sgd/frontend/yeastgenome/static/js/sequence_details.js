@@ -366,9 +366,9 @@ function make_sublabel_ready_handler(chart_id, chart, data, data_array) {
             var datarow = data_array[e.row];
             var spans = $(".google-visualization-tooltip-action > span");
             if(spans.length > 2) {
-                spans[1].innerHTML = ' ' + datarow[2]/10 + '-' + datarow[3]/10;
+                spans[1].innerHTML = ' ' + datarow[2]/100 + '-' + datarow[3]/100;
                 spans[2].innerHTML = 'Length:';
-                spans[3].innerHTML = ' ' + datarow[3]/10 - datarow[2]/10 + 1;
+                spans[3].innerHTML = ' ' + datarow[3]/100 - datarow[2]/100 + 1;
             }
         }
         google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
@@ -483,8 +483,8 @@ function draw_sublabel_chart(chart_id, data) {
 
     if(data['tags'].length > 0) {
         for (var i=0; i < data['tags'].length; i++) {
-            var start = data['tags'][i]['relative_start']*10;
-            var end = data['tags'][i]['relative_end']*10;
+            var start = data['tags'][i]['relative_start']*100;
+            var end = data['tags'][i]['relative_end']*100;
             var name = data['tags'][i]['display_name'];
             data_array.push([display_name, name, start, end]);
             labels[name] = true;
@@ -496,7 +496,7 @@ function draw_sublabel_chart(chart_id, data) {
     }
     else {
         var start = 1;
-        var end = data['end']*10 - data['start']*10 + 1;
+        var end = data['end']*100 - data['start']*100 + 1;
         data_array.push([display_name, display_name, start, end]);
         labels[display_name] = true;
     }
@@ -651,6 +651,7 @@ function create_subfeature_table(data) {
         {"bSearchable":false, "bVisible":false}, null, null]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": "No subfeatures for " + display_name + '.'};
+    options['sDom'] = 't';
 
     return create_table("subfeature_table", options);
 }

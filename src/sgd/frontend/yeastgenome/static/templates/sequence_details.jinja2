@@ -65,12 +65,17 @@
             <div class="page-header">
                 <h1>S288C</h1>
                 <h2 class="subheader">Location - S288C</h2>
-                <div id="reference_contig"></div>
-                <br>
+                <div class="clearfix">
+                    <div id="reference_contig" class="left"></div>
+                    <div class="right">
+                        View in:
+                        {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE' and (url.display_name == 'GBrowse' or url.display_name == 'ORF Map') %}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            <br>
                 <div id="reference_label_chart"></div>
-                {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE' and url.display_name == 'GBrowse' %}
-                    <a href="{{ url.link }}">View in GBrowse</a>{% if not loop.last %} | {% endif %}
-                {% endfor %}
                 <h2 class="subheader">Subfeatures <span id="subfeature_table_header" class="round secondary label"></span> - S288C</h2>
                 <div id="reference_sublabel_chart"></div>
 
