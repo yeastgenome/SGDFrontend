@@ -86,6 +86,10 @@ $(document).ready(function() {
 
             if(mode.val() == 'genomic_dna' && can_color) {
                 color_sequence("reference_sequence", strain_to_genomic_data['S288C']);
+                $("#reference_legend").show();
+            }
+            else {
+                $("#reference_legend").hide();
             }
         }
         $("#reference_chooser").change(reference_on_change);
