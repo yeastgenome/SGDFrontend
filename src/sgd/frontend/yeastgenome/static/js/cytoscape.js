@@ -65,7 +65,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 	};
 
     var recenter_button = $('#' + div_id + '_recenter');
-    recenter_button.onclick = function() {
+    recenter_button.click(function() {
 		var old_zoom_value = cy.zoomingEnabled();
 		cy.zoomingEnabled(true);
 		cy.reset();
@@ -73,7 +73,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 		    cy.layout().run();
         }
 		cy.zoomingEnabled(old_zoom_value);
-	};
+	});
 
 	return cy;
 }

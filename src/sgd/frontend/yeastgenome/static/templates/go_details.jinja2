@@ -104,30 +104,21 @@
             <p style="display:none" id="manual_message">There are no manually curated annotations
                 for {{ locus.display_name }}.</p>
 
-            <h2 id='mc_bp_subsection' class="subheader">Biological Process
-                <span id="mc_bp_go_table_header" class="round secondary label"></span></h2>
-
             <div id="mc_bp_go">
-                <!-- Includes go_table into template -->
                 {% set table_id = "mc_bp_go_table" %}
+                {% set table_title = "Biological Process Manually Curated Annotations for " + locus.display_name %}
                 {% include "go_table.jinja2" %}
             </div>
-
-            <h2 id='mc_mf_subsection' class="subheader">Molecular Function
-                <span id="mc_mf_go_table_header" class="round secondary label"></span></h2>
 
             <div id="mc_mf_go">
-                <!-- Includes go_table into template -->
                 {% set table_id = "mc_mf_go_table" %}
+                {% set table_title = "Molecular Function Manually Curated Annotations for " + locus.display_name %}
                 {% include "go_table.jinja2" %}
             </div>
 
-            <h2 id='mc_cc_subsection' class="subheader">Cellular Component
-                <span id="mc_cc_go_table_header" class="round secondary label"></span></h2>
-
             <div id="mc_cc_go">
-                <!-- Includes go_table into template -->
                 {% set table_id = "mc_cc_go_table" %}
+                {% set table_title = "Cellular Component Manually Curated Annotations for " + locus.display_name %}
                 {% include "go_table.jinja2" %}
             </div>
         </div>
@@ -156,30 +147,21 @@
             <p id="htp_message" style="display:none">There are no high-throughput annotations
                 for {{ locus.display_name }}.</p>
 
-            <h2 id='htp_bp_subsection' class="subheader">Biological Process
-                <span id="htp_bp_go_table_header" class="round secondary label"></span></h2>
-
             <div id="htp_bp_go">
-                <!-- Includes go_table into template -->
                 {% set table_id = "htp_bp_go_table" %}
+                {% set table_title = "Biological Process High-Throughput Annotations for " + locus.display_name %}
                 {% include "go_table.jinja2" %}
             </div>
-
-            <h2 id='htp_mf_subsection' class="subheader">Molecular Function
-                <span id="htp_mf_go_table_header" class="round secondary label"></span></h2>
 
             <div id="htp_mf_go">
-                <!-- Includes go_table into template -->
                 {% set table_id = "htp_mf_go_table" %}
+                {% set table_title = "Molecular Function High-Throughput Annotations for " + locus.display_name %}
                 {% include "go_table.jinja2" %}
             </div>
 
-            <h2 id='htp_cc_subsection' class="subheader">Cellular Component
-                <span id="htp_cc_go_table_header" class="round secondary label"></span></h2>
-
             <div id="htp_cc_go">
-                <!-- Includes go_table into template -->
                 {% set table_id = "htp_cc_go_table" %}
+                {% set table_title = "Cellular Component High-Throughput Annotations for " + locus.display_name %}
                 {% include "go_table.jinja2" %}
             </div>
         </div>
@@ -205,30 +187,21 @@
             <p id="comp_message" style="display:none">There are no computational annotations
                 for {{ locus.display_name }}.</p>
 
-            <h2 id='comp_bp_subsection' class="subheader">Biological Process
-                <span id="comp_bp_go_table_header" class="round secondary label"> </span></h2>
-
             <div id="comp_bp_go">
-                <!-- Includes go_table into template -->
                 {% set table_id = "comp_bp_go_table" %}
+                {% set table_title = "Biological Process Computational Annotations for " + locus.display_name %}
                 {% include "go_table.jinja2" %}
             </div>
-
-            <h2 id='comp_mf_subsection' class="subheader">Molecular Function
-                <span id="comp_mf_go_table_header" class="round secondary label"></span></h2>
 
             <div id="comp_mf_go">
-                <!-- Includes go_table into template -->
                 {% set table_id = "comp_mf_go_table" %}
+                {% set table_title = "Molecular Function Computational Annotations for " + locus.display_name %}
                 {% include "go_table.jinja2" %}
             </div>
 
-            <h2 id='comp_cc_subsection' class="subheader">Cellular Component
-                <span id="comp_cc_go_table_header" class="round secondary label"></span></h2>
-
             <div id="comp_cc_go">
-                <!-- Includes go_table into template -->
                 {% set table_id = "comp_cc_go_table" %}
+                {% set table_title = "Cellular Component Computational Annotations for " + locus.display_name %}
                 {% include "go_table.jinja2" %}
             </div>
         </div>
@@ -249,6 +222,7 @@
             </h1>
 
             {% set network_id = "cy" %}
+            {% set network_title = "Shared GO Terms for " + locus.display_name %}
             {% include "go_network.jinja2" %}
         </div>
     </section>

@@ -48,18 +48,17 @@
 ================================================== -->
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
-		<h1>Summary
-                        <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
+        <h1>Summary
+            <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
 
-                        <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
-                            Phenotype annotations for a gene are curated single mutant phenotypes that require an
-                            observable (e.g., "cell shape"), a qualifier (e.g., "abnormal"), a mutant type (e.g., null),
-                            strain background, and a reference. In addition, annotations are classified as classical
-                            genetics or high-throughput (e.g., large scale survey, systematic mutation set). Whenever
-                            possible, allele information and additional details are provided.
-                        </p>
-                    </h1>
-		<p>This page lists all curated single mutant phenotypes associated with {{ locus.display_name }}.</p>
+            <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
+                Phenotype annotations for a gene are curated single mutant phenotypes that require an
+                observable (e.g., "cell shape"), a qualifier (e.g., "abnormal"), a mutant type (e.g., null),
+                strain background, and a reference. In addition, annotations are classified as classical
+                genetics or high-throughput (e.g., large scale survey, systematic mutation set). Whenever
+                possible, allele information and additional details are provided.
+            </p>
+        </h1>
 
         <!-- Includes phenotype_overview.html into template -->
         {% include "phenotype_overview.jinja2" %}
@@ -69,18 +68,18 @@
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Phenotype Annotations
-                        <a href="#" data-dropdown="annotation_info"><i class="fa fa-info-circle"></i></a>
+                <h1>Annotations
+                    <a href="#" data-dropdown="annotation_info"><i class="fa fa-info-circle"></i></a>
 
-                        <p id="annotation_info" class="f-dropdown content medium" data-dropdown-content>
-                            A phenotype is defined as a an observable (e.g., apoptosis) and a qualifier (e.g.,
-                            increased). There may be more than one row with the same phenotype if was observed in
-                            separate studies or in different conditions, strains, alleles, etc.
-                        </p>
-                        <span id="phenotype_table_header" class="round secondary label"></span>
-                    </h1>
+                    <p id="annotation_info" class="f-dropdown content medium" data-dropdown-content>
+                        A phenotype is defined as a an observable (e.g., apoptosis) and a qualifier (e.g.,
+                        increased). There may be more than one row with the same phenotype if was observed in
+                        separate studies or in different conditions, strains, alleles, etc.
+                    </p>
+                </h1>
                 <!-- Includes phenotype_table into template -->
                 {% set table_id = "phenotype_table" %}
+                {% set table_title = "Phenotype Annotations for " + locus.display_name %}
                 {% include "phenotype_table.jinja2" %}
             </div>
         </section>
@@ -99,6 +98,7 @@
                         </p>
                     </h1>
                 {% set network_id = "cy" %}
+                {% set network_title = "Shared Observables for " + locus.display_name %}
                 {% include "phenotype_network.jinja2" %}
             </div>
         </section>
