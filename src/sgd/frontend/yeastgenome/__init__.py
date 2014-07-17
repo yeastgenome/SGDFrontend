@@ -104,6 +104,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'go_enrichment_link': '/enrichment',
                     'download_table_link': '/download_table',
                     'analyze_link': '/analyze',
+                    'download_network_link': '/download_image'
                     }
         return page
     
