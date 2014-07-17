@@ -71,6 +71,7 @@
 
                 <!-- Includes chromosomal_coord_table into template -->
                 {% set table_id = "chromosomal_coord_table" %}
+                {% set table_title = 'Feature Coordinates for ' + contig.display_name %}
                 {% set include_relative = False %}
                 {% set include_version = False %}
                 {% include "chromosomal_coord_table.jinja2" %}

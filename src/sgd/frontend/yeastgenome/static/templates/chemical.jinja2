@@ -69,6 +69,7 @@
                 </h1>
                 <!-- Includes phenotype_table into template -->
                 {% set table_id = "phenotype_table" %}
+                {% set table_title = "Phenotype Annotations for " + chemical.display_name %}
                 {% include "phenotype_table.jinja2" %}
             </div>
         </section>

@@ -84,9 +84,10 @@
 ================================================== -->
         <section id="gene_list" data-magellan-destination="gene_list">
             <div class="page-header">
-                <h1>Genes  <span id="gene_list_table_header" class="round secondary label"></span></h1>
+                <h1>Genes</h1>
                 <!-- Includes gene_list_table into template -->
                 {% set table_id = "gene_list_table" %}
+                {% set table_title = list_name %}
                 {% include "gene_list_table.jinja2" %}
             </div>
         </section>
@@ -95,9 +96,10 @@
 ================================================== -->
         <section id="enrichment" data-magellan-destination="enrichment">
             <div class="page-header">
-                <h1>Shared GO Processes <span id="enrichment_table_header" class="round secondary label"></span></h1>
+                <h1>Shared GO Processes</h1>
                 <!-- Includes gene_list_table into template -->
                 {% set table_id = "enrichment_table" %}
+                {% set table_title = 'Biological Process Enrichment for ' + list_name %}
                 {% include "enrichment_table.jinja2" %}
            </div>
         </section>
