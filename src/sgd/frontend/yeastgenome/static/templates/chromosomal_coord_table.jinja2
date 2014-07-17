@@ -1,5 +1,11 @@
 {% extends "table.jinja2" %}
 
+{% block help %}
+    Increase the total number of rows showing on this page using the pull-down located below the table, or use the page
+    scroll at the table's top right to browse through the table's pages; use the arrows to the right of a column header
+    to sort by that column; filter the table using the "Filter" box at the top of the table.
+{% endblock %}
+
 {% block columns %}
     <th hidden>Evidence ID</th>
     <th hidden>Analyze ID</th>

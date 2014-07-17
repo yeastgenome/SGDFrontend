@@ -75,7 +75,7 @@
                 <h1>Ontology Diagram</h1>
                 <!-- Includes phenotype_table into template -->
                 {% set network_id = "cy" %}
-                {% include "basic_network.jinja2" %}
+                {% include "phenotype_ontology_network.jinja2" %}
                 <div id="children_wrapper">
                     <strong>Child Terms:</strong>
                     <p>
@@ -93,7 +93,7 @@
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Phenotype Annotations <span id="phenotype_table_header" class="round secondary label"></span></h1>
+                <h1>Annotations <span id="phenotype_table_header" class="round secondary label"></span></h1>
                 <!-- Includes phenotype_table into template -->
                 {% set table_id = "phenotype_table" %}
                 {% include "phenotype_table.jinja2" %}

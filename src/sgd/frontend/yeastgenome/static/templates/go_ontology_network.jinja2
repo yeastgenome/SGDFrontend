@@ -1,5 +1,10 @@
 {% extends "network.jinja2" %}
 
+{% block help %}
+    Click on a go term to go to its specific page within SGD; drag any of the go term objects around within the visualization
+    for easier viewing; click “Reset” to automatically redraw the diagram.
+{% endblock %}
+
 {% block legend %}
     <span><span style="color:#165782">&#9608;</span> Has Annotations </span>
     <span><span style="color:#43a0df">&#9608;</span> Descendants Have Annotations </span>

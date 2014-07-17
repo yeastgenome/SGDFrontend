@@ -37,7 +37,7 @@ var download_network_link = "{{download_network_link}}";
         add_navbar_title('Gene Ontology: <span class="gene_name">{{ ontology.display_name|title }}</span>');
         add_navbar_element('Summary', 'summary');
         add_navbar_element('Ontology Diagram', 'ontology');
-        add_navbar_element('Gene Ontology Annotations', 'all_go');
+        add_navbar_element('Annotations', 'all_go');
     </script>
 
 <!-- Summary
@@ -75,7 +75,7 @@ var download_network_link = "{{download_network_link}}";
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Gene Ontology Annotations <span id="go_table_header" class="round secondary label"></span></h1>
+                <h1>Annotations <span id="go_table_header" class="round secondary label"></span></h1>
                 <!-- Includes go_table into template -->
                 {% set table_id = "go_table" %}
                 {% include "go_table.jinja2" %}
