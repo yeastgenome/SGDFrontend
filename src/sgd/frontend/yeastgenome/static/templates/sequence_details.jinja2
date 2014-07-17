@@ -39,11 +39,22 @@
         <script>
             //Set up navbar
             add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Sequence');
+            add_navbar_element('Summary', 'summary');
             add_navbar_element('Reference Strain - S288C', 'reference');
             add_navbar_element('Alternative Reference Strains', 'alternative');
             add_navbar_element('Other Strains', 'other');
             add_navbar_element('Resources', 'resources');
         </script>
+
+        <!-- Summary
+================================================== -->
+        <section id="summary" data-magellan-destination="summary">
+            <div class="page-header">
+                <h1>Summary</h1>
+                <!-- Includes sequence_overview into template -->
+                {% include "sequence_overview.jinja2" %}
+            </div>
+        </section>
 
         <!-- S288C
 ================================================== -->
@@ -117,11 +128,21 @@
                 <label><h3>Strain</h3>
                     <select id="other_strain_selection" class="large-3"></select> - <span id="other_strain_description"></span>
                 </label>
+                <h2 class="subheader">Location - <span id="current_other_strain_location"></span></h2>
+                <div id="other_contig"></div>
+                <div id="other_label_chart"></div>
+                <h2 class="subheader">Sequence - <span id="current_other_strain_sequence"></span></h2>
                 <div class="button-bar">
                     <ul class="button-group radius">
                         <li><a id="other_download" class="small button secondary"><i class="fa fa-download"></i> Download (.txt)</a></li>
                     </ul>
                 </div>
+                <select id="other_chooser" class="large-3">
+                    <option value="genomic_dna">Genomic DNA</option>
+                    <option value="coding_dna">Coding DNA</option>
+                    <option value="protein">Protein</option>
+                </select>
+                <pre><blockquote id="other_sequence" style="font-family:Monospace"></blockquote></pre>
             </div>
         </section>
 
