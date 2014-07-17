@@ -1,6 +1,7 @@
 
 $(document).ready(function() {
 
+    $("#enrichment_table_analyze").hide();
     if(regulation_overview['paragraph'] != null) {
         document.getElementById("summary_paragraph").innerHTML = regulation_overview['paragraph']['text'];
         set_up_references(regulation_overview['paragraph']['references'], "summary_paragraph_reference_list");
@@ -32,7 +33,6 @@ $(document).ready(function() {
   	        $.getJSON(regulation_target_enrichment_link, function(enrichment_data) {
                 var enrichment_table = create_enrichment_table("enrichment_table", target_table, enrichment_data);
                 create_download_button("enrichment_table_download", enrichment_table, download_table_link, enrichment_table_filename);
-                add_button_to_table('enrichment_table', 'recalculate', 'Recalculate With New Filter');
   	        });
   		}
   		else {
