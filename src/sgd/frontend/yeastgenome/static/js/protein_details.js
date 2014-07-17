@@ -10,7 +10,10 @@ $(document).ready(function() {
 
     $("#domain_table_analyze").hide();
     $("#alias_table_analyze").hide();
-     $("#phosphorylation_table_analyze").hide();
+    $("#phosphorylation_table_analyze").hide();
+    $("#amino_acid_table_analyze").hide();
+    $("#amino_acid_table_download").hide();
+    $("#amino_acid_table_header").hide();
 
     $.getJSON(sequence_details_link, function(sequence_data) {
         var protein_data = sequence_data['protein'];
