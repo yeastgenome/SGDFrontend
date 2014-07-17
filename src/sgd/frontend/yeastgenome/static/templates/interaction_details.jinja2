@@ -55,18 +55,18 @@
 ================================================== -->
 <section id="summary" data-magellan-destination="summary">
 	<div class="page-header">
-		<h1>Summary
-                        <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
+        <h1>Summary
+            <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
 
-                        <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
-                            Interaction annotations are curated by BioGRID and include physical or genetic interactions
-                            observed between at least two genes. An interaction annotation is composed of the
-                            interaction type, name of the interactor, assay type (e.g., Two-Hybrid), annotation type
-                            (e.g., manual orhigh-throughput), and a reference. Experimental details, phenotype,
-                            modification, andmultiplemutant information are included when available.
-                        </p>
-                    </h1>
-		<p>This page lists all genes/proteins that interact with {{ locus.display_name }}. See help for information about <a href="/help/function-help/interactions">interaction data</a>.</p>
+            <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
+                Interaction annotations are curated by <a href="http://thebiogrid.org/" target="_blank">BioGRID</a> and
+                include physical or genetic interactions
+                observed between at least two genes. An interaction annotation is composed of the
+                interaction type, name of the interactor, assay type (e.g., Two-Hybrid), annotation type
+                (e.g., manual orhigh-throughput), and a reference. Experimental details, phenotype,
+                modification, andmultiplemutant information are included when available.
+            </p>
+        </h1>
 
         <!-- Includes interaction_overview.html into template -->
         {% include "interaction_overview.jinja2" %}
@@ -97,7 +97,7 @@
                             between two genes. There may be more than one row listed for the same interactor if the
                             interaction between it and the given gene was observed in separate studies. All
                             interactions
-                            listed in SGD are curated by BioGRID.
+                            listed in SGD are curated by <a href="http://thebiogrid.org/" target="_blank">BioGRID</a>.
                         </p>
                     </h1>
                 <!-- Includes interaction_table into template -->
