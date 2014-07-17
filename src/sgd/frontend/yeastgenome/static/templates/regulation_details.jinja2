@@ -51,7 +51,7 @@
     <div class="small-12 large-9 columns content-column">
         <script>
             add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Regulation');
-            add_navbar_element("Regulation Summary", "summary");
+            add_navbar_element("Summary", "summary");
 
             if(target_count > 0) {
                 add_navbar_element("Domains and Classification", "domain");
@@ -116,10 +116,10 @@
                     protein coordinates for the domain, a domain Description, a Source and corresponding
                     accession ID, and the number of S. cerevisiae genes that share the same domain.
                 </p>
+                <span id="domain_table_header" class="round secondary label"></span>
             </h1>
                 <!-- Includes domain_table into template -->
                 {% set table_id = "domain_table" %}
-                {% set table_title = "Domain Annotations for " + locus.display_name %}
                 {% include "domain_table.jinja2" %}
             </div>
         </section>
@@ -136,6 +136,11 @@
                 </p>
 
                 <a href="#" data-dropdown="binding_help"><i class="fa fa-question-circle"></i></a>
+                <p id="binding_help" class="f-dropdown content medium" data-dropdown-content>
+                    Click on a motif to view its <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a>
+                    record. You can also view these predicted binding sites in the Genome Browser (option listed below
+                    motifs).
+                </p>
             </h1>
                 <div>
                     Click on a motif to view <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a> record.
@@ -161,11 +166,11 @@
                     the experiment and assay type, constructs, conditions, and strains, as well as a reference,
                     are provided for each Regulator annotation.
                 </p>
+                    <span id="target_table_header" class="round secondary label"></span>
                 </h1>
 
                 <!-- Includes regulation_table into template -->
                 {% set table_id = "target_table" %}
-                {% set table_title = "Target Annotations for " + locus.display_name %}
                 {% include "regulation_table.jinja2" %}
             </div>
         </section>
@@ -184,10 +189,10 @@
                     Targets table, a button to "Recalculate with new Filter" will appear below this table allowing
                     the shared GO terms to be recalculated based on the new set of Targets.
                 </p>
+                    <span id="enrichment_table_header" class="round secondary label"></span>
             </h1>
                 <!-- Includes gene_list_table into template -->
                 {% set table_id = "enrichment_table" %}
-                {% set table_title = "Biological Process Enrichment for Targets of " + locus.display_name %}
                 {% include "enrichment_table.jinja2" %}
            </div>
         </section>
@@ -207,11 +212,11 @@
                         information about the experiment and assay type, constructs, conditions, and strains, as
                         well as a reference, are provided for each Regulator annotation.
                     </p>
+                    <span id="regulator_table_header" class="round secondary label"></span>
                 </h1>
 
                 <!-- Includes regulation_table into template -->
                 {% set table_id = "regulator_table" %}
-                {% set table_title = "Regulator Annotations for " + locus.display_name %}
                 {% include "regulation_table.jinja2" %}
             </div>
         </section>
@@ -220,7 +225,7 @@
 ================================================== -->
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
-                <h1>Network Visualization
+                <h1>Regulation Network
                     <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
 
                     <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
@@ -233,7 +238,6 @@
                 </h1>
 
                 {% set network_id = "cy" %}
-                {% set network_title = "Regulation network for " + locus.display_name %}
                 {% include "regulation_network.jinja2" %}
             </div>
         </section>

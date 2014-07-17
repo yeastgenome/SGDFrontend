@@ -1,13 +1,7 @@
-<h1 id='{{ table_id }}_title'><small>{{ table_title }}
-    <a href="#" data-dropdown="{{ table_id }}_help"><i class="fa fa-question-circle"></i></a>
+<p id="{{ table_id }}_help" class="small content f-dropdown" data-dropdown-content>
+    {% block help %}{% endblock %}
+</p>
 
-    <p id="{{ table_id }}_help" class="f-dropdown content medium" data-dropdown-content>
-        {% block help %}{% endblock %}
-    </p>
-    </small>
-    <span id="{{ table_id }}_header" class="round secondary label"></span>
-
-</h1>
 <table class='table table-striped table-bordered table-condensed' id='{{ table_id }}'>
     <thead>
     <tr>

@@ -337,7 +337,7 @@ function create_table(table_id, options) {
         options['oLanguage']['sSearch'] = '<a href="#" data-dropdown="' + table_id + '_filter_drop"><i class="fa fa-question-circle"></i></a><div id="' + table_id + '_filter_drop" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37". To remove the filter, simply delete the text from the box. </p></div> Filter:';
     }
     else {
-        options['oLanguage'] = {'sSearch': '<a href="#" data-dropdown="' + table_id + '_filter_drop"><i class="fa fa-question-circle"></i></a><div id="' + table_id + '_filter_drop" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37". To remove the filter, simply delete the text from the box.</p></div> Filter:',
+        options['oLanguage'] = {'sSearch': '<a href="#" data-dropdown="' + table_id + '_filter_drop"><i class="fa fa-question-circle"></i></a><div id="' + table_id + '_filter_drop" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37". To remove the filter, simply delete the text from the box.</p></div> Filter:'
         };
     }
     if('sDom' in options) {
@@ -355,6 +355,9 @@ function create_table(table_id, options) {
   	setup_datatable_highlight();
   	table.fnSearchHighlighting();
     $(document).foundation();
+
+    $("#" + table_id).before('<div class="right"><a href="#" data-options="align:left" data-dropdown="' + table_id + '_help"><i class="fa fa-question-circle"></i></a></div>');
+
   	return table;
 }
 
