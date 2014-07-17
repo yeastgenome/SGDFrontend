@@ -13,7 +13,8 @@ $(document).ready(function() {
     $("#phosphorylation_table_analyze").hide();
     $("#amino_acid_table_analyze").hide();
     $("#amino_acid_table_download").hide();
-    $("#amino_acid_table_header").hide();
+    $("#atomic_table_analyze").hide();
+    $("#atomic_table_download").hide();
 
     $.getJSON(sequence_details_link, function(sequence_data) {
         var protein_data = sequence_data['protein'];
@@ -52,7 +53,7 @@ $(document).ready(function() {
         }
 
         //Get domain info
-        $.getJSON(protein_domain_link, function(protein_domain_data) {
+        $.getJSON(protein_domains_link, function(protein_domain_data) {
             var domain_table = create_domain_table(protein_domain_data);
             create_download_button("domain_table_download", domain_table, download_table_link, domains_table_filename);
             if(protein_domain_data.length > 0) {

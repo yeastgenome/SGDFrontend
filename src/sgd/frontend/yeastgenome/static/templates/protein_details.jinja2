@@ -109,7 +109,6 @@
             </h1>
             <!-- Includes domain_table into template -->
             {% set table_id = "domain_table" %}
-            {% set table_title = "Domain Annotations for " + locus.display_name %}
             {% include "domain_table.jinja2" %}
 
             <div id="domain_locations">
@@ -121,10 +120,14 @@
                         the Domains and Classification table. Each row displays the domain(s) derived from a
                         different Source, with domains color-coded according to this Source.
                     </p>
+
+                    <a href="#" data-dropdown="domain_location_help"><i class="fa fa-question-circle"></i></a>
+
+                    <p id="domain_location_help" class="f-dropdown content medium" data-dropdown-content>
+                        Scroll over a domain to view its exact coordinates and its Description.
+                    </p>
                 </h2>
-                {% set map_id = "domain_chart" %}
-                {% set map_title = "Domain Locations for " + locus.display_name %}
-                {% include "map_chart.jinja2" %}
+                <div id="domain_chart"></div>
             </div>
 
             <div id="shared_domains">
@@ -139,7 +142,6 @@
                 </h2>
 
                 {% set network_id = "cy" %}
-                {% set network_title = "Shared Domains for " + locus.display_name %}
                 {% include "domain_network.jinja2" %}
             </div>
         </div>
@@ -200,6 +202,7 @@
                         <span id="phosphorylation_table_header" class="round secondary label"></span>
                     </h2>
                     <!-- Includes phosphorylation_table into template -->
+                    {% set table_id = 'phosphorylation_table' %}
                     {% include "phosphorylation_table.jinja2" %}
                 </div>
 
@@ -211,19 +214,11 @@
                             Calculated protein properties, including amino acid composition, length, coding
                             region calculations, and atomic compositionD.
                         </p>
-
-                        <a href="#" data-dropdown="properties_help"><i class="fa fa-question-circle"></i></a>
-
-                        <p id="properties_help" class="f-dropdown content medium" data-dropdown-content>
-                            Sort tables using the arrows to the right of a column header to sort by that column;
-                            download all properties as a .txt file using the "Download Properties" button.
-                        </p>
                     </h2>
 
                     <div class="row">
                         <div class="small-12 large-6 columns content-column">
                             {% set table_id = "amino_acid_table" %}
-                            {% set table_title = "Amino Acid Composition for " + locus.display_name + " in S288C" %}
                             {% include "amino_acid_table.jinja2" %}
 
                             <ul class="button-group radius">
@@ -306,16 +301,8 @@
                             </table>
 
                             <h3>Atomic Composition</h3>
-                            <table class="table table-striped table-bordered table-condensed" id="atomic_table"
-                                   width="100%">
-                                <thead>
-                                <tr>
-                                    <th>Atom</th>
-                                    <th>Frequency</th>
-                                    <th>Percentage</th>
-                                </tr>
-                                </thead>
-                            </table>
+                            {% set table_id = "atomic_table" %}
+                            {% include "atomic_table.jinja2" %}
                         </div>
                     </div>
                 </div>
@@ -336,7 +323,6 @@
             </h1>
             <!-- Includes alias_table into template -->
             {% set table_id = "alias_table" %}
-            {% set table_title = "External Identifiers for " + locus.display_name %}
             {% include "alias_table.jinja2" %}
         </div>
     </section>
