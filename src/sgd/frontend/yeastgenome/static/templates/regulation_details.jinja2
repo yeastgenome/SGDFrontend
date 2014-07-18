@@ -31,7 +31,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Transcriptional Regulation  <a href="/help/function-help/regulation" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span> <a href="/help/function-help/regulation" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h1>
 </div>
 
 <!-- Tabs
@@ -49,8 +49,8 @@
 
     <div class="small-12 large-9 columns content-column">
         <script>
-            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Regulation');
-            add_navbar_element("Regulation Summary", "summary");
+            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }} / {{ locus.format_name }}</a> Regulation');
+            add_navbar_element("Overview", "overview");
 
             if(target_count > 0) {
                 add_navbar_element("Domains and Classification", "domain");
@@ -70,9 +70,9 @@
 
 <!-- Summary
 ================================================== -->
-<section id="summary" data-magellan-destination="summary">
+<section id="overview" data-magellan-destination="overview">
 	<div class="page-header">
-		<h1>Regulation Summary</h1>
+		<h2>Regulation Overview</h2>
         <p id="summary_paragraph"></p>
         <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
         <div class="panel" id="summary_wrapper">
@@ -97,7 +97,7 @@
 ================================================== -->
         <section id="domain" data-magellan-destination="domain">
             <div class="page-header">
-                <h1>Domains and Classification <span id="domain_table_header" class="round secondary label"></span></h1>
+                <h2>Domains and Classification <span id="domain_table_header" class="round secondary label"></span></h2>
                 <!-- Includes domain_table into template -->
                 {% set table_id = "domain_table" %}
                 {% include "domain_table.jinja2" %}
@@ -108,7 +108,7 @@
 ================================================== -->
         <section id="binding" data-magellan-destination="binding" hidden>
             <div class="page-header">
-                <h1>DNA Binding Site Motifs</h1>
+                <h2>DNA Binding Site Motifs</h2>
                 <div>
                     Click on a motif to view <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a> record.
                     <ul id="binding_motifs"></ul>
@@ -121,7 +121,7 @@
 ================================================== -->
         <section id="targets" data-magellan-destination="targets">
             <div class="page-header">
-                <h1>Targets <span id="target_table_header" class="round secondary label"></span></h1>
+                <h2>Targets <span id="target_table_header" class="round secondary label"></span></h2>
                 <p>Genes with {{ locus.display_name }}-dependent expression and/or {{ locus.display_name }}p binding data
                     <a href="#" data-dropdown="drop_targets"><i class="fa fa-info-circle"></i></a>
                     <div id="drop_targets" class="f-dropdown content medium" data-dropdown-content>
@@ -139,7 +139,7 @@
 ================================================== -->
         <section id="enrichment" data-magellan-destination="enrichment">
             <div class="page-header">
-                <h1>Shared GO Processes Among Targets <span id="enrichment_table_header" class="round secondary label"></span></h1>
+                <h2>Shared GO Processes Among Targets <span id="enrichment_table_header" class="round secondary label"></span></h2>
                 <p>Based on data presented in the Targets table
                     <a href="#" data-dropdown="drop_enrichment"><i class="fa fa-info-circle"></i></a>
                     <div id="drop_enrichment" class="f-dropdown content medium" data-dropdown-content>
@@ -156,7 +156,7 @@
 ================================================== -->
         <section id="regulators" data-magellan-destination="regulators">
             <div class="page-header">
-                <h1>Regulators <span id="regulator_table_header" class="round secondary label"></span></h1>
+                <h2>Regulators <span id="regulator_table_header" class="round secondary label"></span></h2>
                 <p>Genes implicated in regulating {{ locus.display_name }} through DNA-binding and/or expression data
                     <a href="#" data-dropdown="drop_regulators"><i class="fa fa-info-circle"></i></a>
                     <div id="drop_regulators" class="f-dropdown content medium" data-dropdown-content>
@@ -173,7 +173,7 @@
 ================================================== -->
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
-                <h1>Network Visualization</h1>
+                <h2>Network Visualization</h2>
                 <p>Based on data presented in the Targets and Regulators tables
                     <a href="#" data-dropdown="drop_network"><i class="fa fa-info-circle"></i></a>
                     <div id="drop_network" class="f-dropdown content medium" data-dropdown-content>

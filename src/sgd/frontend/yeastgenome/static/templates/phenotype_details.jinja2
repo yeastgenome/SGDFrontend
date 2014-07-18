@@ -17,7 +17,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Phenotypes  <a href="/help/PhenoHelp.html" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span> <a href="/help/PhenoHelp.html" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h1>
 </div>
 
 <!-- Tabs
@@ -36,8 +36,8 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title("<a href='{{ locus.link }}'>{{ locus.display_name }}/{{ locus.format_name }}</a> Phenotypes");
-            add_navbar_element("Summary", "summary");
+            add_navbar_title("<a href='{{ locus.link }}'>{{ locus.display_name }} / {{ locus.format_name }}</a> Phenotypes");
+            add_navbar_element("Overview", "overview");
             add_navbar_element("Annotations", "annotations");
             add_navbar_element("Network Visualization", "network");
             add_navbar_element("Resources", "resources");
@@ -45,9 +45,9 @@
 
 <!-- Summary
 ================================================== -->
-<section id="summary" data-magellan-destination="summary">
+<section id="overview" data-magellan-destination="overview">
 	<div class="page-header">
-		<h1>Summary</h1>
+		<h2>Phenotype Overview</h2>
 		<p>This page lists all curated single mutant phenotypes associated with {{ locus.display_name }}.</p>
 
         <!-- Includes phenotype_overview.html into template -->
@@ -58,7 +58,7 @@
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Phenotype Annotations <span id="phenotype_table_header" class="round secondary label"></span></h1>
+                <h2>Phenotype Annotations <span id="phenotype_table_header" class="round secondary label"></span></h2>
                 <!-- Includes phenotype_table into template -->
                 {% set table_id = "phenotype_table" %}
                 {% include "phenotype_table.jinja2" %}
@@ -69,7 +69,7 @@
 ================================================== -->
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
-                <h1>Network Visualization</h1>
+                <h2>Network Visualization</h2>
                 <div class="panel">
                     <div id="cy" name="cy" style="width:100%;height:700px"></div>
                     <h5>Filter Genes by # of Phenotypes Shared With {{ locus.display_name }}:</h5>
@@ -84,7 +84,7 @@
 ================================================== -->
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
-                <h1>Resources</h1>
+                <h2>Resources</h2>
                 <h3>Mutant Strains</h3>
                     <p>
                         {% for url in locus.urls if url.category == 'Mutant Strains'%}

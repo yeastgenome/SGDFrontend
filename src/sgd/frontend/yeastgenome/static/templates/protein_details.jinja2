@@ -34,7 +34,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Protein Information</h2>
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
 <!-- Tabs
@@ -54,8 +54,8 @@
 
         <script>
         //Set up navbar
-            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Protein');
-            add_navbar_element('Summary', 'summary');
+            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }} / {{ locus.format_name }}</a> Protein');
+            add_navbar_element('Overview', 'overview');
             add_navbar_element('Experimental Data', 'experiment');
             add_navbar_element('Domains and Classification', 'domain');
             add_navbar_element('Sequence', 'sequence');
@@ -70,7 +70,7 @@
 ================================================== -->
         <section id="experiment" data-magellan-destination="experiment">
             <div class="page-header">
-                <h1>Experimental Data</h1>
+                <h2>Experimental Data</h2>
                 <!-- Includes domain_table into template -->
                 {% set table_id = "protein_experiment_table" %}
                 {% include "protein_experiment_table.jinja2" %}
@@ -81,7 +81,7 @@
 ================================================== -->
         <section id="domain" data-magellan-destination="domain">
             <div class="page-header">
-                <h1>Domains and Classification <span id="domain_table_header" class="round secondary label"></span></h1>
+                <h2>Domains and Classification <span id="domain_table_header" class="round secondary label"></span></h2>
                 <!-- Includes domain_table into template -->
                 {% set table_id = "domain_table" %}
                 {% include "domain_table.jinja2" %}
@@ -107,7 +107,7 @@
 ================================================== -->
         <section id="sequence" data-magellan-destination="sequence">
             <div class="page-header">
-                <h1>Sequence</h1>
+                <h2>Sequence</h2>
                 <p id="sequence_section_message" hidden>This locus is not translated into a protein.</p>
                 <div id="sequence_section">
                     <label><h3>Strain</h3>
@@ -201,7 +201,7 @@
 ================================================== -->
         <section id="external_ids" data-magellan-destination="external_ids">
             <div class="page-header">
-                <h1>External Identifiers <span id="alias_table_header" class="round secondary label"></span></h1>
+                <h2>External Identifiers <span id="alias_table_header" class="round secondary label"></span></h2>
                 <!-- Includes alias_table into template -->
                 {% set table_id = "alias_table" %}
                 {% include "alias_table.jinja2" %}
@@ -212,7 +212,7 @@
 ================================================== -->
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
-                <h1>Resources</h1>
+                <h2>Resources</h2>
                 <h3>Homologs</h3>
                     <p>
                         {% for url in locus.urls if url.category == 'Protein Information Homologs' or url.category == 'Analyze Sequence S288C vs. other species'%}
