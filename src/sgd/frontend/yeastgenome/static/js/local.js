@@ -374,7 +374,8 @@ function create_table(table_id, options) {
         options['sDom'] = '<"clearfix" <"dt-tools-head"<"left"><"right" f>>rt<"dt-tools-foot" il <"right" p>>>';
     }
     else {
-        options['sDom'] = '<"clearfix" <"dt-tools-head"<"left"><"right" f>>t<"dt-tools-foot" i <"right">>>';
+        //options['sDom'] = '<"clearfix" <"dt-tools-head"<"left"><"right" f>>t<"dt-tools-foot" i <"right">>>';
+        options['sDom'] = '<"clearfix" <"dt-tools-head"<"left"><"right" f>>t<"dt-tools-foot" <"right">>>';
     }
     options["bAutoWidth"] = false;
     setup_datatable_highlight();
