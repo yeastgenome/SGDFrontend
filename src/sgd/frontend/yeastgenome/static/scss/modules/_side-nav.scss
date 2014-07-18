@@ -12,7 +12,7 @@ http://smacss.com/book/type-module
 .side-nav { //extending Foundation
 	border: 1px #ccc solid;
 	@include border-radius(4px);
-	margin-top: 15px;
+	margin-top: 5px;
 	box-shadow: 0 0 0 4px #F0F0F0;
 	list-style-type: disc;
 	list-style-position: outside;
@@ -58,6 +58,7 @@ http://smacss.com/book/type-module
 // dont put padding on title links
 #nav-title a {
     padding: 0;
+    display: inline;
 }
 
 // Overwrite a couple magellan settings - need to make these case specific though
