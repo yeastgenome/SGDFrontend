@@ -10,7 +10,7 @@
     "jquery": "^1.11.1",
     "kineticjs": "5.1.0",
     "nouislider": "6.2.0",
-    "rem-unit-polyfill": "1.2.4",
+    "rem-unit-polyfill": "1.3.2",
     "respond": ">=1.4.2"
   },
   "resolutions": {
