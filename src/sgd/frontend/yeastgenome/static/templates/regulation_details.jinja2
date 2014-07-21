@@ -141,11 +141,6 @@
                     motifs).
                 </p>
                 </h2>
-                <div>
-                    Click on a motif to view <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a> record.
-                    <ul id="binding_motifs"></ul>
-                    <h3>View predicted binding sites in the <a href="http://browse.yeastgenome.org/cgi-bin/gbrowse/scgenome/?name={{ locus.display_name }}_*&enable=SGD%20PMW%20motifs">Genome Browser</a></h3>
-                </div>
            </div>
         </section>
 
@@ -165,13 +160,8 @@
                         the experiment and assay type, constructs, conditions, and strains, as well as a reference,
                         are provided for each Regulator annotation.
                     </p>
-                    <span id="target_table_header" class="round secondary label"></span></h2>
-                <p>Genes with {{ locus.display_name }}-dependent expression and/or {{ locus.display_name }}p binding data
-                    <a href="#" data-dropdown="drop_targets"><i class="fa fa-info-circle"></i></a>
-                    <div id="drop_targets" class="f-dropdown content medium" data-dropdown-content>
-                        <p>This table lists putative regulatory targets for the central gene represented on this page. These targets were identified based on the presence of predicted regulator binding sites or experimental regulator binding in the target promoter, and/or changes in the target gene’s transcript levels in regulator mutant strains. Data includes high-throughput techniques such as microarray, RNA-seq, and ChIP assays.  To filter the table by a specific experiment type, type a keyword into the Filter box (for example, “microarray”).</p>
-                    </div>
-                </p>
+                    <span id="target_table_header" class="round secondary label"></span>
+                </h2>
 
                 <!-- Includes regulation_table into template -->
                 {% set table_id = "target_table" %}
@@ -186,21 +176,14 @@
                 <h2>Shared GO Processes Among Targets 
                     <a href="#" data-dropdown="drop_enrichment"><i class="fa fa-info-circle"></i></a>
 
-                <p id="drop_enrichment" class="f-dropdown content medium" data-dropdown-content>
-                    The shared GO processes listed in this table are based on the the data presented in the
-                    Targets table, which includes high-throughput data; shared GO terms, the number of target
-                    genes that share them, and the P-value are all indicated in the table. After filtering the
-                    Targets table, a button to "Recalculate with new Filter" will appear below this table allowing
-                    the shared GO terms to be recalculated based on the new set of Targets.
-                </p>
-                    <span id="enrichment_table_header" class="round secondary label"></span></h2>
-                <p>Based on data presented in the Targets table
-                    <a href="#" data-dropdown="drop_enrichment"><i class="fa fa-info-circle"></i></a>
-                    <div id="drop_enrichment" class="f-dropdown content medium" data-dropdown-content>
-                        <p>The shared GO processes listed in this table are based on the the data presented in the Targets table, which includes high-throughput data.  You can filter the targets in the Target table and recalculate the shared GO processes in this table by typing any keyword into the Filter box of the Target table (e.g. "micorarray", "Yeastract", "author name",  "gene name").  After filtering the Targets table, the option to ”Recalculate With New Filter” will appear next to the Download button in this Shared GO Processes table.</p>
-                    </div>
-                </p>
-                                <span id="enrichment_table_header" class="round secondary label"></span>
+                    <p id="drop_enrichment" class="f-dropdown content medium" data-dropdown-content>
+                        The shared GO processes listed in this table are based on the the data presented in the
+                        Targets table, which includes high-throughput data; shared GO terms, the number of target
+                        genes that share them, and the P-value are all indicated in the table. After filtering the
+                        Targets table, a button to "Recalculate with new Filter" will appear below this table allowing
+                        the shared GO terms to be recalculated based on the new set of Targets.
+                    </p>
+                    <span id="enrichment_table_header" class="round secondary label"></span>
                 </h2>
                 <!-- Includes gene_list_table into template -->
                 {% set table_id = "enrichment_table" %}
@@ -223,13 +206,8 @@
                         information about the experiment and assay type, constructs, conditions, and strains, as
                         well as a reference, are provided for each Regulator annotation.
                     </p>
-                    <span id="regulator_table_header" class="round secondary label"></span></h2>
-                <p>Genes implicated in regulating {{ locus.display_name }} through DNA-binding and/or expression data
-                    <a href="#" data-dropdown="drop_regulators"><i class="fa fa-info-circle"></i></a>
-                    <div id="drop_regulators" class="f-dropdown content medium" data-dropdown-content>
-                        <p>This table lists genes that are putative regulators of the central gene represented on this page, based primarily on experiments showing that a regulator binds to the gene’s promoter or affects the gene’s transcription when the regulator is mutated. This includes data generated by high-throughput techniques such as microarray, RNA-seq, and ChIP assays.  To filter the table by a specific experiment type, type a keyword into the Filter box (for example, “microarray”). </p>
-                    </div>
-                </p>
+                    <span id="regulator_table_header" class="round secondary label"></span>
+                </h2>
                 <!-- Includes regulation_table into template -->
                 {% set table_id = "regulator_table" %}
                 {% include "regulation_table.jinja2" %}

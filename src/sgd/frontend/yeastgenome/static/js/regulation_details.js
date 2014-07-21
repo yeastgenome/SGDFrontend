@@ -51,15 +51,19 @@ $(document).ready(function() {
         if(data != null && data["nodes"].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
             create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_regulation_graph')
-            var slider = create_slider("slider", graph, data["min_evidence_cutoff"], data["max_evidence_cutoff"], slider_filter);
-            $("#min_evidence_count").html(data["min_evidence_cutoff"]);
+            var message = 'Showing regulatory relationships supported by at least <strong>' + data["min_evidence_cutoff"] + '</strong> experiment';
             if(data["min_evidence_cutoff"] == 1) {
-                $("#plural").hide();
+                message = message + '.';
             }
+            else {
+                message = message + 's.';
+            }
+            $("#legend").html(message);
+
             if(data["max_target_cutoff"] >= data["min_evidence_cutoff"] && data["max_regulator_cutoff"] >= data["min_evidence_cutoff"]) {
-                create_discrete_filter("all_radio", graph, slider, all_filter, data["max_evidence_cutoff"]);
-                create_discrete_filter("targets_radio", graph, slider, target_filter, data["max_target_cutoff"]);
-                create_discrete_filter("regulators_radio", graph, slider, regulator_filter, data["max_regulator_cutoff"]);
+                create_discrete_filter("all_radio", graph, null, all_filter, data["max_evidence_cutoff"]);
+                create_discrete_filter("targets_radio", graph, null, target_filter, data["max_target_cutoff"]);
+                create_discrete_filter("regulators_radio", graph, null, regulator_filter, data["max_regulator_cutoff"]);
                 $("#discrete_filter").show();
             }
             else {

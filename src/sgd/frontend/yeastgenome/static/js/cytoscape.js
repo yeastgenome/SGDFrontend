@@ -174,7 +174,9 @@ function create_slider_ticks(slider_tick_id, min, max, stop) {
 function create_discrete_filter(radio_id, graph, slider, target_filter, max_value) {
     var radio = $("#" + radio_id);
     radio.click(function() {
-        slider.update_new_max(max_value);
+        if(slider != null) {
+            slider.update_new_max(max_value);
+        }
         graph.filters['discrete'] = target_filter();
         graph.applyFilters();
     });

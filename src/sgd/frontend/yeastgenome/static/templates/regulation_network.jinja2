@@ -8,15 +8,15 @@
 
 {% block legend %}
 
-    <div id="discrete_filter" hidden>
+    <div id="discrete_filter">
         <label><strong>Filter Genes by Type</strong></label>
         <input type="radio" name="group1" id="all_radio" checked><label for="all_radio">All</label>
         <input type="radio" name="group1" id="targets_radio"><label for="targets_radio">Targets</label>
         <input type="radio" name="group1" id="regulators_radio"><label for="regulators_radio">Regulators</label>
     </div>
 
-    <p>Showing regulatory relationships supported by at least <span id="min_evidence_count"></span> experiment<span
-            id='plural'>s</span>.</p>
+    <p id="legend"></p>
+
 {% endblock %}
 
 {% block additional_buttons %}{% endblock %}
