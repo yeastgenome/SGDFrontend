@@ -17,7 +17,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span> <a href="/help/PhenoHelp.html" name="top" class="help"><i class="fa fa-question-circle"></i></a></h1>
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
 <!-- Tabs
@@ -36,7 +36,7 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title("<a href='{{ locus.link }}'>{{ locus.display_name }} / {{ locus.format_name }}</a> Phenotypes");
+            add_navbar_title("<a href='{{ locus.link }}'>{{ locus.display_name }} / {{ locus.format_name }}</a> Phenotype");
             add_navbar_element("Overview", "overview");
             add_navbar_element("Annotations", "annotations");
             add_navbar_element("Network Visualization", "network");
@@ -47,6 +47,7 @@
 ================================================== -->
 <section id="overview" data-magellan-destination="overview">
 	<div class="page-header">
+	    <a href="/help/PhenoHelp.html" name="top" class="documentation-link">Phenotype documentation</a>
 		<h2>Phenotype Overview</h2>
 		<p>This page lists all curated single mutant phenotypes associated with {{ locus.display_name }}.</p>
 
