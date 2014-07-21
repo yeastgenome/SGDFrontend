@@ -209,9 +209,22 @@ function draw_overview(data) {
     function drawChart() {
         var dataTable = google.visualization.arrayToDataTable(data);
 
+        var count = 0;
+        for (var i=0; i < data.length; i++) {
+            if(data[i][1] > 0 ) {
+                count = count + 1;
+            }
+        }
+
+        var size = 14;
+        if(count > 10) {
+            size = 10;
+        }
+
         var options = {
           title: 'Feature Types',
-          pieSliceText: 'none'
+          pieSliceText: 'none',
+          legend: {textStyle: {fontSize: size}}
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
