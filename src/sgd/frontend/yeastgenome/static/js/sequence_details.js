@@ -386,11 +386,8 @@ function make_sublabel_ready_handler(chart_id, chart, seq_start, seq_end, data, 
         var tickmark_holder = svg_gs[1];
         var tickmarks = tickmark_holder.childNodes;
 
-        var m;
-        if (y_two > 100) {
-            m = Math.round((y_two - y_one)/tickmarks.length/100)*100;
-        }
-        else {
+        var m = Math.round((y_two - y_one)/tickmarks.length/100)*100;
+        if (m == 0) {
             m = Math.round((y_two - y_one)/tickmarks.length/10)*10;
         }
 
