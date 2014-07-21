@@ -368,7 +368,7 @@ function create_table(table_id, options) {
   	$('.dataTables_filter input').attr("placeholder", "Filter table");
     $(document).foundation();
 
-    $('#' + table_id).prev().children().first().append('<div class="right"><a href="#" data-dropdown="' + table_id + '_help"><i class="fa fa-question-circle"></i></a></div>');
+    //$('#' + table_id).prev().children().first().append('<div class="right"><a href="#" data-dropdown="' + table_id + '_help"><i class="fa fa-question-circle"></i></a></div>');
 
   	return table;
 }
