@@ -15,7 +15,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Literature</h2>
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span> Literature</h1>
 </div>
 
 <!-- Tabs
@@ -34,8 +34,8 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Literature');
-            add_navbar_element('Literature Summary', 'summary');
+            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }} / {{ locus.format_name }}</a> Literature');
+            add_navbar_element('Literature Overview', 'overview');
             add_navbar_element('Primary Literature', 'primary');
             add_navbar_element('Network Visualization', 'network');
             add_navbar_element('Additional Literature', 'additional');
@@ -48,9 +48,9 @@
 
 <!-- Summary
 ================================================== -->
-<section id="summary" data-magellan-destination="summary">
+<section id="overview" data-magellan-destination="overview">
 	<div class="page-header">
-		<h1>Literature Summary</h1>
+		<h2>Literature Overview</h2>
 		<!-- Includes literature_overview.html into template -->
         {% include "literature_overview.jinja2" %}
         {% for alias in locus.aliases if alias.category == 'Uniform' or alias.category == 'Gene product' %}
@@ -64,7 +64,7 @@
 ================================================== -->
 <section id="primary" data-magellan-destination="primary">
 	<div class="page-header">
-		<h1>Primary Literature <span id="primary_header" class="label secondary round"></span></h1>
+		<h2>Primary Literature <span id="primary_header" class="label secondary round"></span></h2>
 		<p id='primary_message' hidden>No primary literature curated.<br></p>
 		<div id='primary_wrapper'>
 			<a id="export_primary" class="small button secondary radius"><i class='fa fa-download'></i> Download (.nbib)</a>
@@ -78,7 +78,7 @@
 ================================================== -->
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
-                <h1>Network Visualization</h1>
+                <h2>Network Visualization</h2>
                 <div class="panel">
                     <div id="cy" style="width:100%;height:700px"></div>
                 </div>
@@ -89,7 +89,7 @@
 ================================================== -->
         <section id="additional" data-magellan-destination="additional">
             <div class="page-header">
-                <h1>Additional Literature <span id="additional_header" class="label secondary round"></span></h1>
+                <h2>Additional Literature <span id="additional_header" class="label secondary round"></span></h2>
                 <p id="additional_message" hidden>No additional literature curated.</p>
                 <div id="additional_wrapper">
                     <a id="export_additional" class="small button secondary radius"><i class="fa fa-download"></i> Download (.nbib)</a>
@@ -103,7 +103,7 @@
 ================================================== -->
         <section id="reviews" data-magellan-destination="reviews">
             <div class="page-header">
-                <h1>Reviews <span id="review_header" class="label secondary round"></span></h1>
+                <h2>Reviews <span id="review_header" class="label secondary round"></span></h2>
                 <p id='review_message' hidden>No reviews curated.</p>
                 <div id='review_wrapper'>
                     <a id="export_review" class="small button secondary radius"><i class="fa fa-download"></i> Download (.nbib)</a>
@@ -117,7 +117,7 @@
 ================================================== -->
         <section id="go" data-magellan-destination="go">
             <div class="page-header">
-                <h1>Gene Ontology Literature <span id="go_header" class="label secondary round"></span></h1>
+                <h2>Gene Ontology Literature <span id="go_header" class="label secondary round"></span></h2>
                 <p id='go_message' hidden>No gene ontology literature curated.</p>
                 <div id='go_wrapper'>
                     <a id="export_go" class="small button secondary radius"><i class="fa fa-download"></i> Download (.nbib)</a>
@@ -131,7 +131,7 @@
 ================================================== -->
         <section id="phenotype" data-magellan-destination="phenotype">
             <div class="page-header">
-                <h1>Phenotype Literature <span id="phenotype_header" class="label secondary round"></span></h1>
+                <h2>Phenotype Literature <span id="phenotype_header" class="label secondary round"></span></h2>
                 <p id='phenotype_message' hidden>No phenotype literature curated.</p>
                 <div id='phenotype_wrapper'>
                     <a id="export_phenotype" class="small button secondary radius"><i class="fa fa-download"></i> Download (.nbib)</a>
@@ -145,7 +145,7 @@
 ================================================== -->
         <section id="interaction" data-magellan-destination="interaction">
             <div class="page-header">
-                <h1>Interaction Literature <span id="interaction_header" class="label secondary round"></span></h1>
+                <h2>Interaction Literature <span id="interaction_header" class="label secondary round"></span></h2>
                 <p id='interaction_message' hidden>No interaction literature curated.</p>
                 <div id='interaction_wrapper'>
                     <a id="export_interaction" class="small button secondary radius"><i class="fa fa-download"></i> Download (.nbib)</a>
@@ -159,7 +159,7 @@
 ================================================== -->
         <section id="regulation" data-magellan-destination="regulation">
             <div class="page-header">
-                <h1>Regulation Literature <span id="regulation_header" class="label secondary round"></span></h1>
+                <h2>Regulation Literature <span id="regulation_header" class="label secondary round"></span></h2>
                 <p id='regulation_message' hidden>No regulation literature curated.</p>
                 <div id='regulation_wrapper'>
                     <a id="export_regulation" class="small button secondary radius"><i class="fa fa-download"></i> Download (.nbib)</a>
