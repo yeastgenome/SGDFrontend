@@ -35,7 +35,7 @@ http://smacss.com/book/type-module
     line-height: 20px;
 }
 
-.side-nav li.active a {
+.side-nav li.active a, .side-nav li.active a:hover {
     background-color: #615f8f;
     color: #fff;
 }
@@ -54,6 +54,7 @@ http://smacss.com/book/type-module
     color: #fff;
     cursor: default;
 }
+
 
 // dont put padding on title links
 #nav-title a {
