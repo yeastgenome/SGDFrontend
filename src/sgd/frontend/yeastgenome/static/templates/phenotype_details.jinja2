@@ -18,7 +18,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span> <a href="/help/PhenoHelp.html" name="top" class="help"><i class="fa fa-question-circle"></i></a></h1>
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
 <!-- Tabs
@@ -37,7 +37,7 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title("<a href='{{ locus.link }}'>{{ locus.display_name }} / {{ locus.format_name }}</a> Phenotypes");
+            add_navbar_title("<a href='{{ locus.link }}'>{{ locus.display_name }} / {{ locus.format_name }}</a> Phenotype");
             add_navbar_element("Phenotype Overview", "overview");
             add_navbar_element("Annotations", "annotations");
             add_navbar_element("Shared Phenotypes", "network");
@@ -48,7 +48,8 @@
 ================================================== -->
 <section id="overview" data-magellan-destination="overview">
 	<div class="page-header">
-		<h2>Overview
+	    <a href="/help/PhenoHelp.html" name="top" class="documentation-link">Phenotype documentation</a>
+		<h2>Phenotype Overview
             <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
 
             <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
@@ -59,7 +60,6 @@
                 possible, allele information and additional details are provided.
             </p>
         </h2>
-		<p>This page lists all curated single mutant phenotypes associated with {{ locus.display_name }}.</p>
 
         <!-- Includes phenotype_overview.html into template -->
         {% include "phenotype_overview.jinja2" %}

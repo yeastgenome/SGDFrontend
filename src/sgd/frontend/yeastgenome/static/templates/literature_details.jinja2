@@ -16,10 +16,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-    <h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}
-        {{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Literature <a href="/help/literature-help"
-                                                                                         name="top" class="help"><img
-            src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
 <!-- Tabs
@@ -38,8 +35,8 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Literature');
-            add_navbar_element('Summary', 'summary');
+            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }} / {{ locus.format_name }}</a> Literature');
+            add_navbar_element('Literature Overview', 'overview');
             add_navbar_element('Primary Literature', 'primary');
             add_navbar_element('Network Visualization', 'network');
             add_navbar_element('Additional Literature', 'additional');
@@ -52,9 +49,9 @@
 
 <!-- Summary
 ================================================== -->
-<section id="summary" data-magellan-destination="summary">
+<section id="overview" data-magellan-destination="overview">
 	<div class="page-header">
-		<h1>Summary</h1>
+		<h2>Literature Overview</h2>
 		<!-- Includes literature_overview.html into template -->
         {% include "literature_overview.jinja2" %}
         {% for alias in locus.aliases if alias.category == 'Uniform' or alias.category == 'Gene product' %}
@@ -68,6 +65,13 @@
 ================================================== -->
 <section id="primary" data-magellan-destination="primary">
 	<div class="page-header">
+		<h2>Primary Literature <span id="primary_header" class="label secondary round"></span></h2>
+		<p id='primary_message' hidden>No primary literature curated.<br></p>
+		<div id='primary_wrapper'>
+			<a id="export_primary" class="small button secondary radius"><i class='fa fa-download'></i> Download (.nbib)</a>
+			<ul id="primary_list" class="literature-list">
+			</ul>
+		</div>
 		<h1>Primary Literature <span id="primary_header" class="label secondary round"></span></h1>
         <!-- Includes reference_list into template -->
         {% set reference_list_id = "primary_list" %}
@@ -80,7 +84,7 @@
 ================================================== -->
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
-                <h1>Network Visualization</h1>
+                <h2>Network Visualization</h2>
                 <!-- Includes literature_network into template -->
                 {% set network_id = "cy" %}
                 {% include "basic_network.jinja2" %}
@@ -92,7 +96,6 @@
         <section id="additional" data-magellan-destination="additional">
             <div class="page-header">
                 <h1>Additional Literature <span id="additional_header" class="label secondary round"></span></h1>
-                <!-- Includes reference_list into template -->
                 {% set reference_list_id = "additional_list" %}
                 {% set empty_message = "No additional literature curated." %}
                 {% include "reference_list.jinja2" %}
@@ -103,8 +106,7 @@
 ================================================== -->
         <section id="reviews" data-magellan-destination="reviews">
             <div class="page-header">
-                <h1>Reviews <span id="review_header" class="label secondary round"></span></h1>
-                <!-- Includes reference_list into template -->
+                <h2>Reviews <span id="review_header" class="label secondary round"></span></h2>
                 {% set reference_list_id = "review_list" %}
                 {% set empty_message = "No reviews curated." %}
                 {% include "reference_list.jinja2" %}
@@ -115,8 +117,7 @@
 ================================================== -->
         <section id="go" data-magellan-destination="go">
             <div class="page-header">
-                <h1>Gene Ontology Literature <span id="go_header" class="label secondary round"></span></h1>
-                <!-- Includes reference_list into template -->
+                <h2>Gene Ontology Literature <span id="go_header" class="label secondary round"></span></h2>
                 {% set reference_list_id = "go_list" %}
                 {% set empty_message = "No gene ontology literature curated." %}
                 {% include "reference_list.jinja2" %}
@@ -127,8 +128,7 @@
 ================================================== -->
         <section id="phenotype" data-magellan-destination="phenotype">
             <div class="page-header">
-                <h1>Phenotype Literature <span id="phenotype_header" class="label secondary round"></span></h1>
-                <!-- Includes reference_list into template -->
+                <h2>Phenotype Literature <span id="phenotype_header" class="label secondary round"></span></h2>
                 {% set reference_list_id = "phenotype_list" %}
                 {% set empty_message = "No phenotype literature curated." %}
                 {% include "reference_list.jinja2" %}
@@ -139,8 +139,7 @@
 ================================================== -->
         <section id="interaction" data-magellan-destination="interaction">
             <div class="page-header">
-                <h1>Interaction Literature <span id="interaction_header" class="label secondary round"></span></h1>
-                <!-- Includes reference_list into template -->
+                <h2>Interaction Literature <span id="interaction_header" class="label secondary round"></span></h2>
                 {% set reference_list_id = "interaction_list" %}
                 {% set empty_message = "No interaction literature curated." %}
                 {% include "reference_list.jinja2" %}
@@ -151,8 +150,7 @@
 ================================================== -->
         <section id="regulation" data-magellan-destination="regulation">
             <div class="page-header">
-                <h1>Regulation Literature <span id="regulation_header" class="label secondary round"></span></h1>
-                <!-- Includes reference_list into template -->
+                <h2>Regulation Literature <span id="regulation_header" class="label secondary round"></span></h2>
                 {% set reference_list_id = "regulation_list" %}
                 {% set empty_message = "No regulation literature curated." %}
                 {% include "reference_list.jinja2" %}

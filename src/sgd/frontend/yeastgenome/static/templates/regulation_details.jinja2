@@ -32,7 +32,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span> <a href="/help/function-help/regulation" name="top" class="help"><i class="fa fa-question-circle"></i></a></h1>
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
 <!-- Tabs
@@ -73,6 +73,7 @@
 ================================================== -->
 <section id="overview" data-magellan-destination="overview">
 	<div class="page-header">
+	    <a href="/help/function-help/regulation" name="top" class="documentation-link">Regulation documentation</a>
 		<h2>Regulation Overview
             <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
 
@@ -162,6 +163,7 @@
                     </p>
                     <span id="target_table_header" class="round secondary label"></span>
                 </h2>
+
 
                 <!-- Includes regulation_table into template -->
                 {% set table_id = "target_table" %}
