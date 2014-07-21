@@ -1,28 +1,5 @@
-<h3 class="text-center">
-    {% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/
-        {{ locus.format_name }}{% endif %}</h3>
 
 <dl class="key-value">
-    <dt>Standard Name</dt><dd>{{ locus.display_name }}</dd>
-    {% for basic_info in locus.basic_info_references if info_key == 'Gene Name' %}
-        {% if loop.first %}
-            <a href="#" data-dropdown="drop_name" data-options="align:left;is_hover:true"><i
-                    class="fa fa-info-circle"></i></a>
-            <div id="drop_name" class="f-dropdown content medium" data-dropdown-content>
-            <p>
-        {% endif %}
-    <a href="{{ basic_info.reference.link }}">{{ basic_info.reference.display_name }}</a>
-    {% if not loop.last %}
-        ,
-    {% else %}
-        </p>
-        </div>
-    {% endif %}
-    {% endfor %}
-
-    <dt>Systematic Name</dt>
-    <dd>{{ locus.format_name }}</dd>
-
     {% for alias in locus.aliases if alias.category == 'Uniform' %}
         {% if loop.first %}
             <dt>Aliases</dt>
@@ -62,83 +39,22 @@
     {% endif %}
     {% endfor %}
 
-    {% if locus.name_description != None %}
-        <dt>Name Description</dt>
-        <dd>{{ locus.name_description }}</dd>
-        {% for basic_info in locus.basic_info_references if info_key == 'Name Description' %}
+    <dt>Description</dt>
+    <dd>
+        {{ locus.description }}
+        {% for reference in locus.description_references %}
             {% if loop.first %}
-                <a href="#" data-dropdown="drop_name_description" data-options="align:left;is_hover:true"><i
+                <a href="#" data-dropdown="drop_description" data-options="align:left;is_hover:true"><i
                         class="fa fa-info-circle"></i></a>
-                <div id="drop_name_description" class="f-dropdown content medium" data-dropdown-content>
+                <div id="drop_description" class="f-dropdown content medium" data-dropdown-content>
                 <p>
             {% endif %}
-        <a href="{{ basic_info.reference.link }}">{{ basic_info.reference.display_name }}</a>
+        <a href="{{ reference.link }}">{{ reference.display_name }}</a>
         {% if not loop.last %}
             ,
         {% else %}
             </p></div>
         {% endif %}
         {% endfor %}
-    {% endif %}
-
-    {% for alias in locus.aliases if alias.category == 'Gene product' %}
-        {% if loop.first %}
-            <dt>Gene Product</dt>
-        {% endif %}
-        <dd>
-            {{ alias.display_name }}
-            {% for evidence in alias.evidences %}
-                {% if loop.first %}
-                    <a href="#" data-dropdown="drop_alias_{{ alias.id }}" data-options="align:left;is_hover:true"><i
-                            class="fa fa-info-circle"></i></a>
-                    <div id="drop_alias_{{ alias.id }}" class="f-dropdown content medium" data-dropdown-content>
-                    <p>
-                {% endif %}
-            <a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a>{% if not loop.last %},
-            {% else %}
-                </p></div>
-            {% endif %}
-            {% endfor %}
-        </dd>{% if not loop.last %}, {% endif %}
-    {% endfor %}
-
-    {% for alias in locus.aliases if alias.category == 'NCBI protein name' %}
-        {% if loop.first %}
-            <dt>Protein Product</dt>{% endif %}
-        <dd>
-            {{ alias.display_name }}
-            {% for evidence in alias.evidences %}
-                {% if loop.first %}
-                    <a href="#" data-dropdown="drop_alias_{{ alias.id }}" data-options="align:left;is_hover:true"><i
-                            class="fa fa-info-circle"></i></a>
-                    <div id="drop_alias_{{ alias.id }}" class="f-dropdown content medium" data-dropdown-content>
-                    <p>
-                {% endif %}
-            <a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a>
-            {% if not loop.last %}
-                ,
-            {% else %}
-                </p></div>
-            {% endif %}
-            {% endfor %}
-        </dd>{% if not loop.last %}, {% endif %}
-    {% endfor %}
+    </dd>
 </dl>
-
-<!-- Description Text -->
-<h3 class="subheader">{{ locus.description }}
-    {% for reference in locus.description_references %}
-        {% if loop.first %}
-            <a href="#" data-dropdown="drop_description" data-options="align:left;is_hover:true"><i
-                    class="fa fa-info-circle"></i></a>
-            <div id="drop_description" class="f-dropdown content medium" data-dropdown-content>
-            <p>
-        {% endif %}
-    <a href="{{ reference.link }}">{{ reference.display_name }}</a>
-    {% if not loop.last %}
-        ,
-    {% else %}
-        </p></div>
-    {% endif %}
-    {% endfor %}
-</h3>
