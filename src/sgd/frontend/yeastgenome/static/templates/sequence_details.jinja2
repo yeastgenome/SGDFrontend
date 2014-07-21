@@ -18,9 +18,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span> Sequence <a href="/help/sequence"
-                                                                                         name="top" class="help"><img
-            src="/images/icon_help_circle_dark.png" alt="Help"></a></h1>
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
 <!-- Tabs
@@ -52,6 +50,7 @@
 ================================================== -->
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
+                <a href="/help/sequence" name="top" class="documentation-link">Sequence documentation</a>
                 <h2>Sequence Overview</h2>
                 <!-- Includes sequence_overview into template -->
                 {% include "sequence_overview.jinja2" %}
