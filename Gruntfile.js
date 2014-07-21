@@ -39,8 +39,8 @@ module.exports = function(grunt) {
                     destPrefix: "src/sgd/frontend/yeastgenome/static/js/build"
                 },
                 files: {
-                    "cytoscape.min.js": "cytoscape/documentation/js/cytoscape.min.js",
-                    "arbor.js": "cytoscape/documentation/js/arbor.js",
+                    "cytoscape.min.js": "cytoscape/dist/cytoscape.min.js",
+                    "arbor.js": "cytoscape/lib/arbor.js",
                     "foundation.min.js": "foundation/js/foundation.min.js",
                     "jquery.min.js": "jquery/dist/jquery.min.js",
                     "kinetic.min.js": "kineticjs/kinetic.min.js",
