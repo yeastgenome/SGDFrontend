@@ -45,6 +45,16 @@ function download_sequence(sequence, download_link, list_name, contig_name) {
 	post_to_url(download_link, {"display_name":list_name, "sequence": sequence, 'contig_name': contig_name});
 }
 
+function download_image(stage, width, height, download_link, image_name) {
+	stage.toDataURL({
+		width: width,
+		height: height,
+		callback: function(dataUrl) {
+			post_to_url(download_link, {"display_name":image_name, 'data': dataUrl});
+		}
+	});
+}
+
 
 function set_up_references(references, ref_list_id) {
   	//Set up references
@@ -341,19 +351,21 @@ function create_table(table_id, options) {
         };
     }
     if('sDom' in options) {
-
+        // nothing? -Greg
     }
     else if(options['bPaginate'] || !('bPaginate' in options)) {
-        options['sDom'] = '<"clearfix" p<"left" f>rtl<"right" i>>';
+        options['sDom'] = '<"clearfix" <"dt-tools-head"<"left"><"right" f>>rt<"dt-tools-foot" il <"right" p>>>';
     }
     else {
-        options['sDom'] = '<"clearfix" <"left" f>>t<"clearfix" <"right" i>>';
+        //options['sDom'] = '<"clearfix" <"dt-tools-head"<"left"><"right" f>>t<"dt-tools-foot" i <"right">>>';
+        options['sDom'] = '<"clearfix" <"dt-tools-head"<"left"><"right" f>>t<"dt-tools-foot" <"right">>>';
     }
     options["bAutoWidth"] = false;
     setup_datatable_highlight();
   	table = $('#' + table_id).dataTable(options);
   	setup_datatable_highlight();
   	table.fnSearchHighlighting();
+  	$('.dataTables_filter input').attr("placeholder", "Filter table");
     $(document).foundation();
 
     $("#" + table_id).before('<div class="right"><a href="#" data-options="align:left" data-dropdown="' + table_id + '_help"><i class="fa fa-question-circle"></i></a></div>');

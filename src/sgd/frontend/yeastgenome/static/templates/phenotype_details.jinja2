@@ -18,10 +18,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-    <h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}
-        {{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Phenotypes <a href="/help/PhenoHelp.html"
-                                                                                         name="top" class="help"><img
-            src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span> <a href="/help/PhenoHelp.html" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h1>
 </div>
 
 <!-- Tabs
@@ -40,8 +37,8 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title("<a href='{{ locus.link }}'>{{ locus.display_name }}/{{ locus.format_name }}</a> Phenotypes");
-            add_navbar_element("Summary", "summary");
+            add_navbar_title("<a href='{{ locus.link }}'>{{ locus.display_name }} / {{ locus.format_name }}</a> Phenotypes");
+            add_navbar_element("Overview", "overview");
             add_navbar_element("Annotations", "annotations");
             add_navbar_element("Shared Phenotypes", "network");
             add_navbar_element("Resources", "resources");
@@ -49,9 +46,9 @@
 
 <!-- Summary
 ================================================== -->
-<section id="summary" data-magellan-destination="summary">
+<section id="overview" data-magellan-destination="overview">
 	<div class="page-header">
-        <h1>Summary
+		<h2>Phenotype Overview
             <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
 
             <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
@@ -61,7 +58,8 @@
                 genetics or high-throughput (e.g., large scale survey, systematic mutation set). Whenever
                 possible, allele information and additional details are provided.
             </p>
-        </h1>
+        </h2>
+		<p>This page lists all curated single mutant phenotypes associated with {{ locus.display_name }}.</p>
 
         <!-- Includes phenotype_overview.html into template -->
         {% include "phenotype_overview.jinja2" %}
@@ -71,7 +69,7 @@
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Annotations
+                <h2>Phenotype Annotations 
                     <a href="#" data-dropdown="annotation_info"><i class="fa fa-info-circle"></i></a>
 
                     <p id="annotation_info" class="f-dropdown content medium" data-dropdown-content>
@@ -79,8 +77,7 @@
                         increased). There may be more than one row with the same phenotype if was observed in
                         separate studies or in different conditions, strains, alleles, etc.
                     </p>
-                    <span id="phenotype_table_header" class="round secondary label"></span>
-                </h1>
+                    <span id="phenotype_table_header" class="round secondary label"></span></h2>
                 <!-- Includes phenotype_table into template -->
                 {% set table_id = "phenotype_table" %}
                 {% include "phenotype_table.jinja2" %}
@@ -91,15 +88,15 @@
 ================================================== -->
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
-                <h1>Shared Phenotypes
-                        <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
+                <h2>Shared Phenotypes
+                <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
 
                         <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
                             This diagram displays phenotype observables (purple squares) that are shared between the
                             given gene (yellow circle) and other genes (gray circles) based on the number of phenotype
                             observables shared (adjustable using the slider at the bottom).
                         </p>
-                    </h1>
+                </h2>
                 {% set network_id = "cy" %}
                 {% set network_title = "Shared Observables for " + locus.display_name %}
                 {% include "phenotype_network.jinja2" %}
@@ -110,7 +107,7 @@
 ================================================== -->
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
-                <h1>Resources</h1>
+                <h2>Resources</h2>
                 <h3>Mutant Strains</h3>
                     <p id="mutant_resources_list">
                         {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_MUTANT_STRAINS'%}

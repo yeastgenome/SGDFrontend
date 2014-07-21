@@ -10,4 +10,43 @@ th {
 
 .dataTables_wrapper {
     overflow: hidden;
-}   
+    table { margin: 0 !important; }
+}
+
+.dt-tools-head, .dt-tools-foot {
+    margin: 0;
+    padding: 5px 15px;
+    overflow: hidden;
+    background-color: $table-head-bg;
+    border-color: $table-border-color;
+    border-style: $table-border-style;
+}
+    
+.dt-tools-head {
+    @include border-top-radius($global-radius);
+    border-width: 1px 1px 0 1px;
+}
+
+.dt-tools-foot {
+    @include border-bottom-radius($global-radius);
+    border-width: 0 1px 1px 1px;
+}
+
+ul.pagination {
+    min-height: 0;
+}
+
+div.dataTables_paginate {
+    margin-top: 7px;
+}
+
+div.dataTables_info {
+    display: inline-block;
+    position: relative;
+    top: -13px;
+}
+
+div.dataTables_length {
+    display: inline-block;
+    margin-left: 5px;
+}

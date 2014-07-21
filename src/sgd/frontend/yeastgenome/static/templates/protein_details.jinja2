@@ -35,10 +35,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-    <h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}
-        {{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Protein Information <a href="/help/function-help/protein-information"
-                                                                                         name="top" class="help"><img
-            src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span> <a href="/help/function-help/protein-information" name="top" class="help"><img src="/images/icon_help_circle_dark.png" alt="Help"></a></h1>
 </div>
 
 <!-- Tabs
@@ -58,8 +55,8 @@
 
         <script>
         //Set up navbar
-            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Protein');
-            add_navbar_element('Summary', 'summary');
+            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }} / {{ locus.format_name }}</a> Protein');
+            add_navbar_element('Overview', 'overview');
             add_navbar_element('Experimental Data', 'experiment');
             add_navbar_element('Domains and Classification', 'domain');
             add_navbar_element('Sequence', 'sequence');
@@ -84,13 +81,12 @@
     {% include "protein_overview.jinja2" %}
         </div>
     </section>
-   
 
         <!-- Experimental Data
 ================================================== -->
         <section id="experiment" data-magellan-destination="experiment">
             <div class="page-header">
-                <h1>Experimental Data</h1>
+                <h2>Experimental Data</h2>
                 <!-- Includes domain_table into template -->
                 {% set table_id = "protein_experiment_table" %}
                 {% include "protein_experiment_table.jinja2" %}
@@ -98,23 +94,24 @@
         </section>
 
 <!-- Domains
-    ================================================== -->
-    <section id="domain" data-magellan-destination="domain">
-        <div class="page-header">
-            <h1>Domains and Classification
-                <a href="#" data-dropdown="domain_info"><i class="fa fa-info-circle"></i></a>
+================================================== -->
+        <section id="domain" data-magellan-destination="domain">
+            <div class="page-header">
+                <h2>Domains and Classification 
+                    <a href="#" data-dropdown="domain_info"><i class="fa fa-info-circle"></i></a>
 
                 <p id="domain_info" class="f-dropdown content medium" data-dropdown-content>
                     Collection of domains associated with the protein based on various sources; includes protein
                     coordinates for the domain, a domain Description, a Source and corresponding
                     accession ID, and the number of <i>S. cerevisiae</i> genes that share the same domain.
                 </p>
-            </h1>
-            <!-- Includes domain_table into template -->
-            {% set table_id = "domain_table" %}
-            {% include "domain_table.jinja2" %}
+                    <span id="domain_table_header" class="round secondary label"></span>
+                </h2>
+                <!-- Includes domain_table into template -->
+                {% set table_id = "domain_table" %}
+                {% include "domain_table.jinja2" %}
 
-            <div id="domain_locations">
+               <div id="domain_locations">
                 <h2 class="subheader">Domain Locations
                     <a href="#" data-dropdown="domain_location_info"><i class="fa fa-info-circle"></i></a>
 
@@ -147,37 +144,36 @@
                 {% set network_id = "cy" %}
                 {% include "domain_network.jinja2" %}
             </div>
-        </div>
-    </section>
+            </div>
+        </section>
 
 <!-- Sequence
-    ================================================== -->
-    <section id="sequence" data-magellan-destination="sequence">
-        <div class="page-header">
-            <h1>Sequence
-                <a href="#" data-dropdown="sequence_info"><i class="fa fa-info-circle"></i></a>
+================================================== -->
+        <section id="sequence" data-magellan-destination="sequence">
+            <div class="page-header">
+                <h2>Sequence
+                    <a href="#" data-dropdown="sequence_info"><i class="fa fa-info-circle"></i></a>
 
-                <p id="sequence_info" class="f-dropdown content medium" data-dropdown-content>
-                    Protein sequence for the given gene in S288C and other strains, when available. Amino acids
-                    displayed in red represent phosphorylation sites, as curated by <a href="http://www.phosphogrid.org/" target="_blank">PhosphoGRID</a>. More detailed
-                    evidence for these phosphorylation sites is presented in the Phosphorylation Sites table,
-                    located just below the protein sequence.
-                </p>
-
-                <a href="#" data-dropdown="sequence_help"><i class="fa fa-question-circle"></i></a>
-
-                <p id="sequence_help" class="f-dropdown content medium" data-dropdown-content>
-                    Use the pull-down menu under "Strain" to select the sequence for a specific strain. The
-                    sequence for that strain will appear and can then be downloaded as a .txt file.
-                    Phosphorylated residues, as curated by <a href="http://www.phosphogrid.org/" target="_blank">PhosphoGRID</a>, are shown in red if the residues are
-                    present in the selected strain, and are further detailed in the "Phosphorylation Sites" table
-                    below the sequence. Note that a residue marked as phosphorylated has not necessarily been
-                    shown to be phosphorylated in a specific strain.
-                </p>
-            </h1>
-            <p id="sequence_section_message" hidden>This locus is not translated into a protein.</p>
-
-            <div id="sequence_section">
+                    <p id="sequence_info" class="f-dropdown content medium" data-dropdown-content>
+                        Protein sequence for the given gene in S288C and other strains, when available. Amino acids
+                        displayed in red represent phosphorylation sites, as curated by <a href="http://www.phosphogrid.org/" target="_blank">PhosphoGRID</a>. More detailed
+                        evidence for these phosphorylation sites is presented in the Phosphorylation Sites table,
+                        located just below the protein sequence.
+                    </p>
+    
+                    <a href="#" data-dropdown="sequence_help"><i class="fa fa-question-circle"></i></a>
+    
+                    <p id="sequence_help" class="f-dropdown content medium" data-dropdown-content>
+                        Use the pull-down menu under "Strain" to select the sequence for a specific strain. The
+                        sequence for that strain will appear and can then be downloaded as a .txt file.
+                        Phosphorylated residues, as curated by <a href="http://www.phosphogrid.org/" target="_blank">PhosphoGRID</a>, are shown in red if the residues are
+                        present in the selected strain, and are further detailed in the "Phosphorylation Sites" table
+                        below the sequence. Note that a residue marked as phosphorylated has not necessarily been
+                        shown to be phosphorylated in a specific strain.
+                    </p>
+                </h2>
+                <p id="sequence_section_message" hidden>This locus is not translated into a protein.</p>
+                <div id="sequence_section">
                 <label><h3>Strain</h3>
                     <select id="strain_selection" class="large-3"></select> - <span id="strain_description"></span>
                 </label>
@@ -311,30 +307,30 @@
                 </div>
             </div>
         </div>
-    </section>
+        </section>
 
- <!-- External IDs
-    ================================================== -->
-    <section id="external_ids" data-magellan-destination="external_ids">
-        <div class="page-header">
-            <h1>External Identifiers
-                <a href="#" data-dropdown="external_id_info"><i class="fa fa-info-circle"></i></a>
+<!-- External IDs
+================================================== -->
+        <section id="external_ids" data-magellan-destination="external_ids">
+            <div class="page-header">
+                <h2>External Identifiers 
+                    <a href="#" data-dropdown="external_id_info"><i class="fa fa-info-circle"></i></a>
 
-                <p id="external_id_info" class="f-dropdown content medium" data-dropdown-content>
-                    List of external identifiers for the protein from various database sources.
-                </p>
-            </h1>
-            <!-- Includes alias_table into template -->
-            {% set table_id = "alias_table" %}
-            {% include "alias_table.jinja2" %}
-        </div>
-    </section>
+                    <p id="external_id_info" class="f-dropdown content medium" data-dropdown-content>
+                        List of external identifiers for the protein from various database sources.
+                    </p>
+                    <span id="alias_table_header" class="round secondary label"></span></h2>
+                <!-- Includes alias_table into template -->
+                {% set table_id = "alias_table" %}
+                {% include "alias_table.jinja2" %}
+            </div>
+        </section>
 
 <!-- Resources
 ================================================== -->
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
-                <h1>Resources</h1>
+                <h2>Resources</h2>
                 <h3>Homologs</h3>
                     <p id='homolog_resources_list'>
                         {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}

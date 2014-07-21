@@ -119,7 +119,7 @@ $large-up: "#{$screen} and (min-width:#{lower-bound($large-range)})";
 
 // We use these to control header font styles
 // $header-font-family: $body-font-family;
-// $header-font-weight: normal;
+$header-font-weight: 500;
 // $header-font-style: normal;
 // $header-font-color: #222;
 // $header-line-height: 1.4;

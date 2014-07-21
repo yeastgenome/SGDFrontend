@@ -18,10 +18,9 @@
 {% block body %}
 
 <div id="center_title" class="row">
-    <h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}
-        {{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Sequence <a href="/help/sequence"
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span> Sequence <a href="/help/sequence"
                                                                                          name="top" class="help"><img
-            src="/images/icon_help_circle_dark.png" alt="Help"></a></h2>
+            src="/images/icon_help_circle_dark.png" alt="Help"></a></h1>
 </div>
 
 <!-- Tabs
@@ -41,8 +40,8 @@
 
         <script>
             //Set up navbar
-            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Sequence');
-            add_navbar_element('Summary', 'summary');
+            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }} / {{ locus.format_name }}</a> Sequence');
+            add_navbar_element('Overview', 'overview');
             add_navbar_element('Reference Strain - S288C', 'reference');
             add_navbar_element('Alternative Reference Strains', 'alternative');
             add_navbar_element('Other Strains', 'other');
@@ -51,9 +50,9 @@
 
         <!-- Summary
 ================================================== -->
-        <section id="summary" data-magellan-destination="summary">
+        <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Summary</h1>
+                <h2>Sequence Overview</h2>
                 <!-- Includes sequence_overview into template -->
                 {% include "sequence_overview.jinja2" %}
             </div>
@@ -63,7 +62,7 @@
 ================================================== -->
         <section id="reference" data-magellan-destination="reference">
             <div class="page-header">
-                <h1>Reference Strain: S288C</h1>
+                <h2>Reference Strain: S288C</h2>
                 <h2 class="subheader">Location - S288C</h2>
                 <div class="clearfix">
                     <div id="reference_contig" class="left"></div>
@@ -105,7 +104,7 @@
 ================================================== -->
         <section id="alternative" data-magellan-destination="alternative">
             <div class="page-header">
-                <h1>Alternative Reference Strains</h1>
+                <h2>Alternative Reference Strains</h2>
                 <label><h3>Strain</h3>
                     <select id="alternative_strain_selection" class="large-3"></select> - <span id="alternative_strain_description"></span>
                 </label>
@@ -132,15 +131,25 @@
 ================================================== -->
         <section id="other" data-magellan-destination="other">
             <div class="page-header">
-                <h1>Other Strains</h1>
+                <h2>Other Strains</h2>
                 <label><h3>Strains Available for Download</h3>
                     <select id="other_strain_selection" class="large-3"></select> - <span id="other_strain_description"></span>
                 </label>
+                <h2 class="subheader">Location - <span id="current_other_strain_location"></span></h2>
+                <div id="other_contig"></div>
+                <div id="other_label_chart"></div>
+                <h2 class="subheader">Sequence - <span id="current_other_strain_sequence"></span></h2>
                 <div class="button-bar">
                     <ul class="button-group radius">
                         <li><a id="other_download" class="small button secondary"><i class="fa fa-download"></i> Download (.txt)</a></li>
                     </ul>
                 </div>
+                <select id="other_chooser" class="large-3">
+                    <option value="genomic_dna">Genomic DNA</option>
+                    <option value="coding_dna">Coding DNA</option>
+                    <option value="protein">Protein</option>
+                </select>
+                <pre><blockquote id="other_sequence" style="font-family:Monospace"></blockquote></pre>
             </div>
         </section>
 
@@ -148,7 +157,7 @@
 ================================================== -->
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
-                <h1>Resources</h1>
+                <h2>Resources</h2>
                 <p id='resources_list'>
                     {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE'%}
                         <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
