@@ -362,7 +362,7 @@ function draw_label_chart(chart_id, strain_name) {
     }
 }
 
-function make_sublabel_ready_handler(chart_id, chart, data, data_array) {
+function make_sublabel_ready_handler(chart_id, chart, seq_start, seq_end, data, data_array) {
     function ready_handler() {
 
         //Fix tooltips
@@ -379,68 +379,28 @@ function make_sublabel_ready_handler(chart_id, chart, data, data_array) {
 
         //Fix timeline axis.
         var svg_gs = $("#" + chart_id + " > div > div > svg > g");
-        var rectangle_holder = svg_gs[3];
-        var rectangles = rectangle_holder.childNodes;
 
-        var y_one;
-        var y_two;
-        var x_one = null;
-        var x_two = null;
-        var x_two_start = null;
-        if(data['tags'].length > 0) {
-            y_one = data['tags'][0]['relative_start'];
-            y_two = data['tags'][data['tags'].length-1]['relative_end'];
-        }
-        else {
-            y_one = 1;
-            y_two = data['end'] - data['start'];
-        }
-
-        for (var i=0; i < rectangles.length; i++) {
-            if(rectangles[i].nodeName == 'rect') {
-                var x = Math.round(rectangles[i].getAttribute('x'));
-                var y = Math.round(rectangles[i].getAttribute('y'));
-                if(x_one == null || x < x_one) {
-                    x_one = x;
-                }
-                if(x_two == null || x > x_two_start) {
-                    x_two = x + Math.round(rectangles[i].getAttribute('width'));
-                    x_two_start = x;
-                }
-            }
-        }
-
-        var m = (y_two - y_one)/(x_two - x_one);
-        var b = y_two - m*x_two;
+        var y_one = 0;
+        var y_two = seq_end - seq_start;
 
         var tickmark_holder = svg_gs[1];
         var tickmarks = tickmark_holder.childNodes;
-        var tickmark_space;
-        if(tickmarks.length > 1) {
-            tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
+
+        var m;
+        if (y_two > 100) {
+            m = Math.round((y_two - y_one)/tickmarks.length/100)*100;
         }
         else {
-            tickmark_space = 100;
+            m = Math.round((y_two - y_one)/tickmarks.length/10)*10;
         }
+
+
         for (var i=0; i < tickmarks.length; i++) {
-            var x_new = Math.round(tickmarks[i].getAttribute('x'));
-            var y_new = Math.round(m*x_new + b);
-            if(m*tickmark_space > 10000) {
-                y_new = 10000*Math.round(y_new/10000);
+            var tick = y_one + i*m;
+            if(tick == 0) {
+                tick = 1;
             }
-            else if(m*tickmark_space > 1000) {
-                y_new = 1000*Math.round(y_new/1000);
-            }
-            else if(m*tickmark_space > 100) {
-                y_new = 100*Math.round(y_new/100);
-            }
-            else if(m*tickmark_space > 10) {
-                y_new = 10*Math.round(y_new/10)
-            }
-            if(y_new <= 0) {
-                y_new = 1;
-            }
-            $(tickmarks[i]).html(y_new);
+            $(tickmarks[i]).html(tick);
         }
 
         //Get colors for sublables on sequence.
@@ -456,11 +416,10 @@ function make_sublabel_ready_handler(chart_id, chart, data, data_array) {
             }
         }
 
-        var label_holder = svg_gs[0];
         var color_index = 0;
-        for (var i=0; i < data['tags'].length; i++) {
-            if(!(data['tags'][i]['display_name'] in label_to_color)) {
-                label_to_color[data['tags'][i]['display_name']] = ordered_colors[color_index];
+        for (var i=0; i < data.length; i++) {
+            if(!(data[i]['display_name'] in label_to_color)) {
+                label_to_color[data[i]['display_name']] = ordered_colors[color_index];
                 color_index = color_index + 1;
             }
         }
@@ -469,6 +428,10 @@ function make_sublabel_ready_handler(chart_id, chart, data, data_array) {
 }
 
 function draw_sublabel_chart(chart_id, data) {
+    var seq_start = data['start'];
+    var seq_end = data['end'];
+    var data = data['tags'].sort(function(a, b){return a['relative_start']-b['relative_start']});
+
     var container = document.getElementById(chart_id);
 
     var chart = new google.visualization.Timeline(container);
@@ -483,28 +446,21 @@ function draw_sublabel_chart(chart_id, data) {
     var data_array = [];
     var labels = {};
 
-    var min_tick = null;
 
-    if(data['tags'].length > 0) {
-        for (var i=0; i < data['tags'].length; i++) {
-            var start = data['tags'][i]['relative_start']*100;
-            var end = data['tags'][i]['relative_end']*100;
-            var name = data['tags'][i]['display_name'];
-            data_array.push([display_name, name, start, end]);
-            labels[name] = true;
-
-            if(min_tick == null || min_tick < start) {
-                min_tick = start;
-            }
-        }
+    for (var i=0; i < data.length; i++) {
+        var start = data[i]['relative_start']*100;
+        var end = data[i]['relative_end']*100;
+        var name = data[i]['display_name'];
+        data_array.push([display_name, name, start, end]);
+        labels[name] = true;
     }
-    else {
-        var start = 1;
-        var end = data['end']*100 - data['start']*100 + 1;
+    var start = 100;
+    var end = seq_end*100 - seq_start*100 + 100;
+
+    if(data.length == 0 || data[0]['relative_start']*100 > start || data[data.length-1]['relative_end']*100 < end) {
         data_array.push([display_name, display_name, start, end]);
         labels[display_name] = true;
     }
-
     dataTable.addRows(data_array);
 
     var options = {
@@ -515,7 +471,7 @@ function draw_sublabel_chart(chart_id, data) {
     }
 
     chart.draw(dataTable, options);
-    google.visualization.events.addListener(chart, 'ready', make_sublabel_ready_handler(chart_id, chart, data, data_array));
+    google.visualization.events.addListener(chart, 'ready', make_sublabel_ready_handler(chart_id, chart, seq_start, seq_end, data, data_array));
 
     options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
     if(options['height'] <= 105) {
