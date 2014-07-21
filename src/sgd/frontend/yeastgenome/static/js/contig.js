@@ -217,7 +217,7 @@ function draw_overview(data) {
         }
 
         var size = 14;
-        if(count > 10) {
+        if(count >= 10) {
             size = 10;
         }
 
