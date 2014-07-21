@@ -1,5 +1,6 @@
 
 var label_to_color = {};
+var chromosome = null;
 
 $(document).ready(function() {
 
@@ -18,6 +19,7 @@ $(document).ready(function() {
             strain_to_genomic_data[dna_data[i]['strain']['format_name']] = dna_data[i];
 
             if(dna_data[i]['strain']['display_name'] == 'S288C') {
+                chromosome = dna_data[i]['contig']['display_name'];
                 $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['start'] + ' - ' + dna_data[i]['end']);
 
                 draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
@@ -228,15 +230,17 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
             var display_name = $(title_spans[0]).html();
             var spans = $(".google-visualization-tooltip-action > span");
             if(display_name in display_name_to_format_name) {
-                var format_name = display_name_to_format_name[display_name];
+                var format_name = display_name_to_format_name[display_name]['format_name'];
                 if(format_name != display_name) {
                     $(title_spans[0]).html(display_name + ' (' + format_name + ')');
                 }
 
                 if(spans.length > 3) {
+                    $(spans[0]).html(chromosome + ':');
                     $(spans[1]).html(' ' + datarow[2] + '-' + datarow[3]);
                     $(spans[2]).html('Length:');
                     $(spans[3]).html(' ' + datarow[3] - datarow[2] + 1);
+                    //$(".google-visualization-tooltip-action-list").append($(".google-visualization-tooltip-action").first());
                 }
             }
             else {
@@ -309,7 +313,7 @@ function draw_label_chart(chart_id, strain_name) {
             var start = data[i]['start'];
             var end = data[i]['end'];
             var direction = strand_to_direction(data[i]['strand']);
-            display_name_to_format_name[data[i]['locus']['display_name']] = data[i]['locus']['format_name'];
+            display_name_to_format_name[data[i]['locus']['display_name']] = data[i]['locus'];
             var color;
             if(data[i]['locus']['display_name'] == display_name) {
                 color = "#3366cc";
