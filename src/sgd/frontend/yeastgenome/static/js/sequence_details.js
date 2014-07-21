@@ -611,7 +611,6 @@ function create_subfeature_table(data) {
         {"bSearchable":false, "bVisible":false}, null, null]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": "No subfeatures for " + display_name + '.'};
-    options['sDom'] = 't';
 
     return create_table("subfeature_table", options);
 }
