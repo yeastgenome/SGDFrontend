@@ -28,6 +28,10 @@ http://smacss.com/book/type-module
     padding: 0 10px 0;
     margin: 10px 0;
     a { color: #980d0d; }
+    h4 {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+   }
 }
 
 .side-nav > li {
