@@ -230,16 +230,18 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
             var display_name = $(title_spans[0]).html();
             var spans = $(".google-visualization-tooltip-action > span");
             if(display_name in display_name_to_format_name) {
-                var format_name = display_name_to_format_name[display_name]['format_name'];
+                var format_name = display_name_to_format_name[display_name]['locus']['format_name'];
                 if(format_name != display_name) {
                     $(title_spans[0]).html(display_name + ' (' + format_name + ')');
                 }
 
                 if(spans.length > 3) {
+                    var start = display_name_to_format_name[display_name]['start'];
+                    var end = display_name_to_format_name[display_name]['end'];
                     $(spans[0]).html(chromosome + ':');
-                    $(spans[1]).html(' ' + datarow[2] + '-' + datarow[3]);
+                    $(spans[1]).html(' ' + start + '-' + end);
                     $(spans[2]).html('Length:');
-                    $(spans[3]).html(' ' + datarow[3] - datarow[2] + 1);
+                    $(spans[3]).html(' ' + end - start + 1);
                     //$(".google-visualization-tooltip-action-list").append($(".google-visualization-tooltip-action").first());
                 }
             }
@@ -310,10 +312,10 @@ function draw_label_chart(chart_id, strain_name) {
         var previous_end_5 = 0;
         var previous_end_3 = 0;
         for (var i=0; i < data.length; i++) {
-            var start = data[i]['start'];
-            var end = data[i]['end'];
+            var start = Math.max(data[i]['start'], min_tick);
+            var end = Math.min(data[i]['end'], max_tick);
             var direction = strand_to_direction(data[i]['strand']);
-            display_name_to_format_name[data[i]['locus']['display_name']] = data[i]['locus'];
+            display_name_to_format_name[data[i]['locus']['display_name']] = data[i];
             var color;
             if(data[i]['locus']['display_name'] == display_name) {
                 color = "#3366cc";
