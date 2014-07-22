@@ -2,6 +2,15 @@
 var label_to_color = {};
 var chromosome = null;
 
+var reference_download_residues = '';
+var reference_contig = '';
+
+var alternative_download_residues = '';
+var alternative_contig = '';
+
+var other_download_residues = '';
+var other_contig = '';
+
 $(document).ready(function() {
 
     $("#subfeature_table_analyze").hide();
@@ -54,30 +63,21 @@ $(document).ready(function() {
 
         function reference_on_change() {
             var mode = $("#reference_chooser");
-            var reference_download = $("#reference_download");
-            var residues;
+            reference_download_residues = '';
             if(mode.val() == 'genomic_dna') {
-                residues = strain_to_genomic_data['S288C']['residues'];
-                reference_download.click(function f() {
-                    download_sequence(residues, download_sequence_link, display_name, strain_to_genomic_data['S288C']['contig']['format_name']);
-                });
+                reference_download_residues = strain_to_genomic_data['S288C']['residues'];
+                reference_contig = strain_to_genomic_data['S288C']['contig']['format_name'];
             }
             else if(mode.val() == 'coding_dna') {
-                residues = strain_to_coding_data['S288C']['residues'];
-                reference_download.click(function f() {
-                    download_sequence(residues, download_sequence_link, display_name, 'coding_dna');
-                });
+                reference_download_residues = strain_to_coding_data['S288C']['residues'];
+                reference_contig = 'S288C coding_dna';
             }
             else if(mode.val() == 'protein') {
-                residues = strain_to_protein_data['S288C']['residues'];
-                reference_download.click(function f() {
-                    download_sequence(residues, download_sequence_link, display_name, 'protein');
-                });
+                reference_download_residues = strain_to_protein_data['S288C']['residues'];
+                reference_contig = 'S288C protein';
             }
-            else {
-                residues = '';
-            }
-            $("#reference_sequence").html(prep_sequence(residues));
+
+            $("#reference_sequence").html(prep_sequence(reference_download_residues));
 
             mode.children('option[value=genomic_dna]')
                 .attr('disabled', !('S288C' in strain_to_genomic_data));
@@ -97,8 +97,11 @@ $(document).ready(function() {
         $("#reference_chooser").change(reference_on_change);
         reference_on_change();
 
-        if(has_alternative) {
+        $("#reference_download").click(function f() {
+            download_sequence(reference_download_residues, download_sequence_link, display_name, reference_contig);
+        });
 
+        if(has_alternative) {
             function alternative_on_change() {
                 var strain_data = strain_to_genomic_data[alternative_selection.val()];
                 $("#alternative_strain_description").html(strain_data['strain']['description']);
@@ -108,30 +111,21 @@ $(document).ready(function() {
                 draw_label_chart('alternative_label_chart', strain_data['strain']['format_name']);
 
                 var mode = $("#alternative_chooser");
-                var download = $("#alternative_download");
-                var residues;
+                alternative_download_residues = '';
                 if(mode.val() == 'genomic_dna') {
-                    residues = strain_data['residues'];
-                    download.click(function f() {
-                        download_sequence(residues, download_sequence_link, display_name, strain_data['contig']['format_name']);
-                    });
+                    alternative_download_residues = strain_data['residues'];
+                    alternative_contig = strain_data['contig']['format_name'];
                 }
                 else if(mode.val() == 'coding_dna') {
-                    residues = strain_to_coding_data[alternative_selection.val()]['residues'];
-                    download.click(function f() {
-                        download_sequence(residues, download_sequence_link, display_name, 'coding_dna');
-                    });
+                    alternative_download_residues = strain_to_coding_data[alternative_selection.val()]['residues'];
+                    alternative_contig = alternative_selection.val() + ' coding_dna';
                 }
                 else if(mode.val() == 'protein') {
-                    residues = strain_to_protein_data[alternative_selection.val()]['residues'];
-                    download.click(function f() {
-                        download_sequence(residues, download_sequence_link, display_name, 'protein');
-                    });
+                    alternative_download_residues = strain_to_protein_data[alternative_selection.val()]['residues'];
+                    alternative_contig = alternative_selection.val() + ' protein';
                 }
-                else {
-                    residues = '';
-                }
-                $("#alternative_sequence").html(prep_sequence(residues));
+
+                $("#alternative_sequence").html(prep_sequence(alternative_download_residues));
 
                 mode.children('option[value=genomic_dna]')
                     .attr('disabled', !(alternative_selection.val() in strain_to_genomic_data));
@@ -152,6 +146,10 @@ $(document).ready(function() {
             alternative_selection.change(alternative_on_change);
             $("#alternative_chooser").change(alternative_on_change);
             alternative_on_change();
+
+            $("#alternative_download").click(function f() {
+                download_sequence(alternative_download_residues, download_sequence_link, display_name, alternative_contig);
+            });
         }
         else {
             hide_section('alternative');
@@ -162,15 +160,16 @@ $(document).ready(function() {
                 var strain_data = strain_to_genomic_data[other_selection.val()];
                 $("#other_strain_description").html(strain_data['strain']['description']);
 
-                var download = $("#other_download");
-                var residues = strain_data['residues'];
-                download.click(function f() {
-                    download_sequence(residues, download_sequence_link, display_name, strain_data['contig']['format_name']);
-                });
+                other_download_residues = strain_data['residues'];
+                other_contig = strain_data['contig']['format_name'];
             }
             other_selection.change(other_on_change);
             $("#other_chooser").change(other_on_change);
             other_on_change();
+
+            $("#other_download").click(function f() {
+                download_sequence(other_download_residues, download_sequence_link, display_name, other_contig);
+            });
         }
         else {
             hide_section('other');
