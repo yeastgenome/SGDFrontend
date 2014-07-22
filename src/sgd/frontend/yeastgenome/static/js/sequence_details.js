@@ -326,7 +326,7 @@ function draw_label_chart(chart_id, strain_name) {
                 else {
                     colors5_row2.push(color);
                 }
-                previous_end_5 = end;
+                previous_end_5 = Math.max(previous_end_5, end);
             }
             else {
                 if(previous_end_3 <= start) {
@@ -335,7 +335,7 @@ function draw_label_chart(chart_id, strain_name) {
                 else {
                     colors3_row2.push(color);
                 }
-                previous_end_3 = end;
+                previous_end_3 = Math.max(previous_end_3, end);
             }
 
             data_array.push([direction, data[i]['locus']['display_name'], start, end]);
