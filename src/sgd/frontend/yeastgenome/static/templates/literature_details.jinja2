@@ -35,8 +35,8 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }} / {{ locus.format_name }}</a> Literature');
-            add_navbar_element('Literature Overview', 'overview');
+            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }} / {{ locus.format_name }}</a><br>Literature');
+            add_navbar_element('Overview', 'overview');
             add_navbar_element('Primary Literature', 'primary');
             add_navbar_element('Network Visualization', 'network');
             add_navbar_element('Additional Literature', 'additional');
@@ -51,7 +51,7 @@
 ================================================== -->
 <section id="overview" data-magellan-destination="overview">
 	<div class="page-header">
-		<h2>Literature Overview</h2>
+		<h2>Overview</h2>
 		<!-- Includes literature_overview.html into template -->
         {% include "literature_overview.jinja2" %}
         {% for alias in locus.aliases if alias.category == 'Uniform' or alias.category == 'Gene product' %}
@@ -72,7 +72,7 @@
 			<ul id="primary_list" class="literature-list">
 			</ul>
 		</div>
-		<h1>Primary Literature <span id="primary_header" class="label secondary round"></span></h1>
+		<h2>Primary Literature <span id="primary_header" class="label secondary round"></span></h2>
         <!-- Includes reference_list into template -->
         {% set reference_list_id = "primary_list" %}
         {% set empty_message = "No primary literature curated." %}
@@ -95,7 +95,7 @@
 ================================================== -->
         <section id="additional" data-magellan-destination="additional">
             <div class="page-header">
-                <h1>Additional Literature <span id="additional_header" class="label secondary round"></span></h1>
+                <h2>Additional Literature <span id="additional_header" class="label secondary round"></span></h2>
                 {% set reference_list_id = "additional_list" %}
                 {% set empty_message = "No additional literature curated." %}
                 {% include "reference_list.jinja2" %}

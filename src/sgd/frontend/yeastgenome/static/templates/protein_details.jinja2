@@ -55,7 +55,7 @@
 
         <script>
         //Set up navbar
-            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }} / {{ locus.format_name }}</a> Protein');
+            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }} / {{ locus.format_name }}</a><br>Protein');
             add_navbar_element('Overview', 'overview');
             add_navbar_element('Experimental Data', 'experiment');
             add_navbar_element('Domains and Classification', 'domain');
@@ -66,7 +66,7 @@
 
         <section id="overview" data-magellan-destination="overview">
         <div class="page-header">
-            <h1>Protein Overview
+            <h1>Overview
                 <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
 
                 <div id="summary_info" class="f-dropdown content medium" data-dropdown-content>
