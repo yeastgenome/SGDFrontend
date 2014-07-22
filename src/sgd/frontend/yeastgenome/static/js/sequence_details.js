@@ -449,6 +449,9 @@ function draw_sublabel_chart(chart_id, data) {
 
     for (var i=0; i < data.length; i++) {
         var start = data[i]['relative_start']*100;
+        if(start == 100) {
+            start = 0;
+        }
         var end = data[i]['relative_end']*100;
         var name = data[i]['display_name'];
         data_array.push([display_name, name, start, end]);
@@ -458,6 +461,9 @@ function draw_sublabel_chart(chart_id, data) {
     var end = seq_end*100 - seq_start*100 + 100;
 
     if(data.length == 0 || data[0]['relative_start']*100 > start || data[data.length-1]['relative_end']*100 < end) {
+        if(start == 100) {
+            start = 0;
+        }
         data_array.push([display_name, display_name, start, end]);
         labels[display_name] = true;
     }
