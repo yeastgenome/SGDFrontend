@@ -28,77 +28,46 @@ function strand_to_direction(strand) {
     }
 }
 
-function make_ready_handler(chart_id, chart, min_tick, max_tick, has_five_prime, has_three_prime, display_name_to_format_name, data_array) {
+function make_ready_handler(chart_id, chart, min_tick, max_tick, display_name_to_format_name, data_array) {
     function ready_handler() {
         function tooltipHandler(e) {
-            var datarow = data_array[e.row];
-            var title_spans = $(".google-visualization-tooltip-item > span");
-            title_spans[0].innerHTML = title_spans[0].innerHTML + ' (' + display_name_to_format_name[title_spans[0].innerHTML] + ')';
-            var spans = $(".google-visualization-tooltip-action > span");
-            if(spans.length > 3) {
-                spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
-                spans[2].innerHTML = 'Length:';
-                spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
-            }
+                var datarow = data_array[e.row];
+                var title_spans = $(".google-visualization-tooltip-item > span");
+                if(title_spans[0].innerHTML in display_name_to_format_name) {
+                    title_spans[0].innerHTML = title_spans[0].innerHTML + ' (' + display_name_to_format_name[title_spans[0].innerHTML] + ')';
+                    var spans = $(".google-visualization-tooltip-action > span");
+                    if(spans.length > 3) {
+                        spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
+                        spans[2].innerHTML = 'Length:';
+                        spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
+                    }
+                }
+                else {
+                    $(".google-visualization-tooltip-item").parent().parent().hide();
+                }
         }
         google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
 
-        var divider_height = Math.round($("#" + chart_id + " > div > div > svg > g")[0].childNodes[0].getAttribute('height'));
+        //Fix timeline axis.
+        var svg_gs = $("#" + chart_id + " > div > div > svg > g");
 
-        var rectangle_holder = $("#" + chart_id + " > div > div > svg > g")[3];
-        var rectangles = rectangle_holder.childNodes;
         var y_one = min_tick;
+        if(y_one == 1) {
+            y_one = 0;
+        }
         var y_two = max_tick;
 
-        var x_one = null;
-        var x_two = null;
-
-        for (var i=0; i < rectangles.length; i++) {
-            if(rectangles[i].nodeName == 'rect') {
-                var x = Math.round(rectangles[i].getAttribute('x'));
-                var y = Math.round(rectangles[i].getAttribute('y'));
-                if(x > 0 && (y > divider_height && has_three_prime) || (y < divider_height && has_five_prime)) {
-                    if(x_one == null || x < x_one) {
-                        x_one = x;
-                    }
-                    if(x_two == null || x > x_two) {
-                        x_two = x + Math.round(rectangles[i].getAttribute('width'));
-                    }
-                }
-            }
-        }
-
-        var m = (y_two - y_one)/(x_two - x_one);
-        var b = y_two - m*x_two;
-
-        var tickmark_holder = $("#" + chart_id + " > div > div > svg > g")[1];
+        var tickmark_holder = svg_gs[1];
         var tickmarks = tickmark_holder.childNodes;
-        var tickmark_space;
-        if(tickmarks.length > 1) {
-            tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
-        }
-        else {
-            tickmark_space = 100;
-        }
+
+        var m = Math.round((y_two - y_one)/tickmarks.length/10000)*10000;
+
         for (var i=0; i < tickmarks.length; i++) {
-            var x_new = Math.round(tickmarks[i].getAttribute('x'));
-            var y_new = Math.round(m*x_new + b);
-            if(m*tickmark_space > 10000) {
-                y_new = 10000*Math.round(y_new/10000);
+            var tick = y_one + i*m;
+            if(tick == 0) {
+                tick = 1;
             }
-            else if(m*tickmark_space > 1000) {
-                y_new = 1000*Math.round(y_new/1000);
-            }
-            else if(m*tickmark_space > 100) {
-                y_new = 100*Math.round(y_new/100);
-            }
-            else if(m*tickmark_space > 10) {
-                y_new = 10*Math.round(y_new/10)
-            }
-            if(y_new <= 0) {
-                y_new = 1;
-            }
-            $(tickmarks[i]).html(y_new);
+            $(tickmarks[i]).html(tick);
         }
     }
     return ready_handler;
@@ -117,17 +86,14 @@ function set_up_sequence(chart_id, data) {
     dataTable.addColumn({ type: 'number', id: 'End' });
 
     var data_array = [];
-    var labels = {};
 
     var start = new Date()
     var end = new Date()
 
-    var has_five_prime = false;
-    var has_three_prime = false;
-    var min_tick = null;
-    var max_tick = null;
-
     var display_name_to_format_name = {};
+
+    data_array.push(["5'", '', 1, 1]);
+    data_array.push(["3'", '', 1, 1]);
 
     for (var i=0; i < data.length; i++) {
         var start = data[i]['start'];
@@ -135,28 +101,15 @@ function set_up_sequence(chart_id, data) {
         var direction = strand_to_direction(data[i]['strand']);
         display_name_to_format_name[data[i]['locus']['display_name']] = data[i]['locus']['format_name'];
         if(direction == "5'") {
-            data_array.unshift([direction, data[i]['locus']['display_name'], start, end]);
-            has_five_prime = true;
+            data_array.push([direction, data[i]['locus']['display_name'], start, end]);
         }
         else {
             data_array.push([direction, data[i]['locus']['display_name'], start, end]);
-            has_three_prime = true;
         }
+    }
+    data_array.push(["5'", '', length, length]);
+    data_array.push(["3'", '', length, length]);
 
-        if(min_tick == null || start < min_tick) {
-            min_tick = start;
-        }
-        if(max_tick == null || end > max_tick) {
-            max_tick = end;
-        }
-    }
-
-    if(!has_five_prime) {
-        data_array.unshift(["5'", '', null, null]);
-    }
-    if(!has_three_prime) {
-        data_array.push(["3'", '', null, null]);
-    }
     dataTable.addRows(data_array);
     var myColors = ['#A4A4A4'];
 
@@ -164,13 +117,12 @@ function set_up_sequence(chart_id, data) {
         'height': 1,
         'timeline': {'hAxis': {'position': 'none'}},
         'colors': myColors,
-        //'enableInteractivity': false,
         'tooltip': {'isHTML': true}
     }
 
     chart.draw(dataTable, options);
-    google.visualization.events.addListener(chart, 'ready', make_ready_handler(chart_id, chart, min_tick, max_tick,
-        has_five_prime, has_three_prime, display_name_to_format_name, data_array));
+    google.visualization.events.addListener(chart, 'ready', make_ready_handler(chart_id, chart, 1, length,
+        display_name_to_format_name, data_array));
     var height = $("#" + chart_id + " > div > div > div > svg").height() + 60;
     options['height'] = height;
     chart.draw(dataTable, options);

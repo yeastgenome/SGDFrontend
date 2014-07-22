@@ -397,6 +397,7 @@ class YeastgenomeFrontend(FrontendInterface):
         page = {
                     #Basic info
                     'contig': contig,
+                    'length': len(contig['residues']),
                     'overview': json.dumps(contig['overview']),
 
                     #Links
