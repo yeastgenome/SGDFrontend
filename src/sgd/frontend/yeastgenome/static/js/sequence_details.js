@@ -236,10 +236,9 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
                     var start = display_name_to_format_name[display_name]['start'];
                     var end = display_name_to_format_name[display_name]['end'];
                     $(spans[0]).html(chromosome + ':');
-                    $(spans[1]).html(' ' + start + '-' + end);
-                    $(spans[2]).html('Length:');
-                    $(spans[3]).html(' ' + end - start + 1);
-                    //$(".google-visualization-tooltip-action-list").append($(".google-visualization-tooltip-action").first());
+                    $(spans[1]).html(' ' + start + '-' + end + ' (Length: ' + (end - start + 1) + ')');
+                    $(spans[2]).html(display_name_to_format_name[display_name]['locus']['locus_type'] + ': ');
+                    $(spans[3]).html(display_name_to_format_name[display_name]['locus']['headline']);
                 }
             }
             else {
