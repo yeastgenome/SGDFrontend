@@ -66,7 +66,9 @@
 
         <section id="overview" data-magellan-destination="overview">
         <div class="page-header">
-            <h1>Protein Overview
+            <a href="/help/function-help/protein-information" name="top" class="documentation-link">Protein documentation</a>
+
+            <h2>Protein Overview
                 <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
 
                 <div id="summary_info" class="f-dropdown content medium" data-dropdown-content>
@@ -75,10 +77,10 @@
                         various strains, sequence-based physico-chemical proterties, phosphorylation sites, and external
                         identifiers for the protein.</p>
                 </div>
-            </h1>
+            </h2>
             
              <!-- Includes protein_overview.html into template -->
-    {% include "protein_overview.jinja2" %}
+            {% include "protein_overview.jinja2" %}
         </div>
     </section>
 

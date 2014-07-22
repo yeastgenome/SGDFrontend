@@ -95,14 +95,16 @@ $(document).ready(function() {
 
     $.getJSON(ec_number_details_link, function(data) {
         if(data.length > 0) {
-            var ec_number_html = "<strong>Enzyme Commission (EC) Number:</strong> ";
+            $("#protein_overview").append('<dt>Enzyme Commission (EC) Number</dt>');
+
+            var ec_number_html = '';
             for (var i=0; i < data.length; i++) {
                 ec_number_html = ec_number_html + "<a href='" + data[i]['ecnumber']['link'] + "'>" + data[i]['ecnumber']['display_name'] + "</a>";
                 if(i != data.length-1) {
                     ec_number_html = ec_number_html + ', ';
                 }
             }
-            $("#ec_number").html(ec_number_html)
+            $("#protein_overview").append('<dd>' + ec_number_html + '</dd>');
         }
 	});
 
