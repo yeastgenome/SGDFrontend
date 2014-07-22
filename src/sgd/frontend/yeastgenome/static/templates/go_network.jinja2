@@ -1,9 +1,10 @@
 {% extends "network.jinja2" %}
 
 {% block help %}
-    Click on a gene to go to its specific page within SGD; drag any of the gene objects around within the visualization
-    for easier viewing; click “Reset” to automatically redraw the diagram; the caption below the diagram indicates how
-    many experiments support the regulatory relationships.
+    Click on a gene or Biological Process GO term name to go to its specific page within SGD; drag any of the gene or GO
+    term name objects around within the visualization for easier viewing; click “Reset” to automatically redraw the
+    diagram; filter the genes that share GO Biological Process terms with the given gene by the number of terms they
+    share by clicking anywhere on the slider bar or dragging the tab to the desired filter number.
 {% endblock %}
 
 {% block legend %}
