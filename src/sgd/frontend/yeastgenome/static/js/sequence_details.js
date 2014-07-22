@@ -102,9 +102,8 @@ $(document).ready(function() {
             function alternative_on_change() {
                 var strain_data = strain_to_genomic_data[alternative_selection.val()];
                 $("#alternative_strain_description").html(strain_data['strain']['description']);
-                $("#navbar_alternative").children()[0].innerHTML = 'Alternative Reference Strains <span>' + '- ' + strain_to_genomic_data[alternative_selection.val()]['strain']['display_name'] + '</span>';
-                $("#current_alternative_strain_sequence").html(strain_to_genomic_data[alternative_selection.val()]['strain']['display_name']);
-                $("#current_alternative_strain_location").html(strain_to_genomic_data[alternative_selection.val()]['strain']['display_name']);
+                $("#current_alternative_strain_sequence").html(strain_data['strain']['display_name']);
+                $("#current_alternative_strain_location").html(strain_data['strain']['display_name']);
                 $("#alternative_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
                 draw_label_chart('alternative_label_chart', strain_data['strain']['format_name']);
 
@@ -112,9 +111,9 @@ $(document).ready(function() {
                 var download = $("#alternative_download");
                 var residues;
                 if(mode.val() == 'genomic_dna') {
-                    residues = strain_to_genomic_data[alternative_selection.val()]['residues'];
+                    residues = strain_data['residues'];
                     download.click(function f() {
-                        download_sequence(residues, download_sequence_link, display_name, strain_to_genomic_data[alternative_selection.val()]['contig']['format_name']);
+                        download_sequence(residues, download_sequence_link, display_name, strain_data['contig']['format_name']);
                     });
                 }
                 else if(mode.val() == 'coding_dna') {
@@ -162,12 +161,11 @@ $(document).ready(function() {
             function other_on_change() {
                 var strain_data = strain_to_genomic_data[other_selection.val()];
                 $("#other_strain_description").html(strain_data['strain']['description']);
-                $("#navbar_other").children()[0].innerHTML = 'Other Strains <span>' + '- ' + other_selection.val() + '</span>';
 
                 var download = $("#other_download");
-                var residues = strain_to_genomic_data[other_selection.val()]['residues'];
+                var residues = strain_data['residues'];
                 download.click(function f() {
-                    download_sequence(residues, download_sequence_link, display_name, strain_to_genomic_data[other_selection.val()]['contig']['format_name']);
+                    download_sequence(residues, download_sequence_link, display_name, strain_data['contig']['format_name']);
                 });
             }
             other_selection.change(other_on_change);
