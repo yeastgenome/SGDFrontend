@@ -245,6 +245,7 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
                 $(".google-visualization-tooltip-item").parent().parent().hide();
             }
             $(".google-visualization-tooltip-item").parent().parent().height('auto');
+            $(".google-visualization-tooltip-item").parent().parent().width(300);
 
         }
         google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
