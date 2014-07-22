@@ -51,7 +51,7 @@
             add_navbar_element("Manually Curated", "manual");
             add_navbar_element("High-throughput", "htp");
             add_navbar_element("Computational", "comp");
-            add_navbar_element("Shared GO Terms", "network");
+            add_navbar_element("Shared Biological Processes", "network");
         </script>
 
 <!-- Summary
@@ -86,16 +86,16 @@
                 <h2>Manually Curated
                     <a href="#" data-dropdown="drop_manual"><i class="fa fa-info-circle"></i></a>
 
-                <p id="drop_manual" class="f-dropdown content medium" data-dropdown-content>
-                    <a href="/help/glossary.html#manual">Manually curated</a> GO annotations reflect our best
-                    understanding of the basic <a href="/help/glossary.html#molecfunction">molecular
-                    function</a>, <a href="/help/glossary.html#biolprocess">biological process</a>, and
-                    <a href="/help/glossary.html#cellcomp">cellular component</a> for this gene product.
-                    Manually curated annotations are assigned by SGD curators based on published papers when
-                    available, or by curatorial statements if necessary. Curators periodically review all
-                    manually curated GO annotations for accuracy and completeness. The "Date Last Reviewed"
-                    indicates when these annotations were last reviewed.
-                </p>
+                    <p id="drop_manual" class="f-dropdown content medium" data-dropdown-content>
+                        <a href="/help/glossary.html#manual">Manually curated</a> GO annotations reflect our best
+                        understanding of the basic <a href="/help/glossary.html#molecfunction">molecular
+                        function</a>, <a href="/help/glossary.html#biolprocess">biological process</a>, and
+                        <a href="/help/glossary.html#cellcomp">cellular component</a> for this gene product.
+                        Manually curated annotations are assigned by SGD curators based on published papers when
+                        available, or by curatorial statements if necessary. Curators periodically review all
+                        manually curated GO annotations for accuracy and completeness. The "Date Last Reviewed"
+                        indicates when these annotations were last reviewed.
+                    </p>
                 </h2>
                 <p><strong>Date Last Reviewed:</strong> {{locus.go_overview.date_last_reviewed.text}}</p>
                 <p style="display:none" id="manual_message">There are no manually curated annotations
@@ -226,7 +226,7 @@
 ================================================== -->
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
-                <h2>Shared GO Terms
+                <h2>Shared Biological Processes
                 <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
 
                 <p id="network_info" class="f-dropdown content medium" data-dropdown-content>

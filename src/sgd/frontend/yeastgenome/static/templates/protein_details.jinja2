@@ -66,7 +66,8 @@
 
         <section id="overview" data-magellan-destination="overview">
         <div class="page-header">
-            <h1>Overview
+            <a href="/help/function-help/protein-information" name="top" class="documentation-link">Protein documentation</a>
+            <h2>Overview
                 <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
 
                 <div id="summary_info" class="f-dropdown content medium" data-dropdown-content>
@@ -75,10 +76,10 @@
                         various strains, sequence-based physico-chemical proterties, phosphorylation sites, and external
                         identifiers for the protein.</p>
                 </div>
-            </h1>
+            </h2>
             
              <!-- Includes protein_overview.html into template -->
-    {% include "protein_overview.jinja2" %}
+            {% include "protein_overview.jinja2" %}
         </div>
     </section>
 
@@ -112,7 +113,7 @@
                 {% include "domain_table.jinja2" %}
 
                <div id="domain_locations">
-                <h2 class="subheader">Domain Locations
+                <h3 class="subheader">Domain Locations
                     <a href="#" data-dropdown="domain_location_info"><i class="fa fa-info-circle"></i></a>
 
                     <p id="domain_location_info" class="f-dropdown content medium" data-dropdown-content>
@@ -126,12 +127,12 @@
                     <p id="domain_location_help" class="f-dropdown content medium" data-dropdown-content>
                         Scroll over a domain to view its exact coordinates and its Description.
                     </p>
-                </h2>
+                </h3>
                 <div id="domain_chart"></div>
             </div>
 
             <div id="shared_domains">
-                <h2 id="network" class="subheader">Network Visualization
+                <h3 id="network" class="subheader">Shared Domains
                     <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
 
                     <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
@@ -139,7 +140,7 @@
                         and other proteins (gray circles); the domains are color-coded according to their source, as
                         displayed in the Domain Locations table, above.
                     </p>
-                </h2>
+                </h3>
 
                 {% set network_id = "cy" %}
                 {% include "domain_network.jinja2" %}
@@ -190,7 +191,7 @@
                 </div>
 
                 <div id="phosphorylation_sites_wrapper">
-                    <h2 class="subheader">Phosphorylation Sites
+                    <h3 class="subheader">Phosphorylation Sites
                         <a href="#" data-dropdown="phosphorylation_info"><i class="fa fa-info-circle"></i></a>
 
                         <p id="phosphorylation_info" class="f-dropdown content medium" data-dropdown-content>
@@ -199,21 +200,21 @@
                             by <a href="http://www.phosphogrid.org/" target="_blank">PhosphoGRID</a>.
                         </p>
                         <span id="phosphorylation_table_header" class="round secondary label"></span>
-                    </h2>
+                    </h3>
                     <!-- Includes phosphorylation_table into template -->
                     {% set table_id = 'phosphorylation_table' %}
                     {% include "phosphorylation_table.jinja2" %}
                 </div>
 
                 <div id="physicochemical_props">
-                    <h2 class="subheader">Sequence-Based Physico-chemical Properties
+                    <h3 class="subheader">Sequence-Based Physico-chemical Properties
                         <a href="#" data-dropdown="properties_info"><i class="fa fa-info-circle"></i></a>
 
                         <p id="properties_info" class="f-dropdown content medium" data-dropdown-content>
                             Calculated protein properties, including amino acid composition, length, coding
                             region calculations, and atomic composition.
                         </p>
-                    </h2>
+                    </h3>
 
                     <div class="row">
                         <div class="small-12 large-6 columns content-column">

@@ -102,9 +102,8 @@ $(document).ready(function() {
             function alternative_on_change() {
                 var strain_data = strain_to_genomic_data[alternative_selection.val()];
                 $("#alternative_strain_description").html(strain_data['strain']['description']);
-                $("#navbar_alternative").children()[0].innerHTML = 'Alternative Reference Strains <span>' + '- ' + strain_to_genomic_data[alternative_selection.val()]['strain']['display_name'] + '</span>';
-                $("#current_alternative_strain_sequence").html(strain_to_genomic_data[alternative_selection.val()]['strain']['display_name']);
-                $("#current_alternative_strain_location").html(strain_to_genomic_data[alternative_selection.val()]['strain']['display_name']);
+                $("#current_alternative_strain_sequence").html(strain_data['strain']['display_name']);
+                $("#current_alternative_strain_location").html(strain_data['strain']['display_name']);
                 $("#alternative_contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
                 draw_label_chart('alternative_label_chart', strain_data['strain']['format_name']);
 
@@ -112,9 +111,9 @@ $(document).ready(function() {
                 var download = $("#alternative_download");
                 var residues;
                 if(mode.val() == 'genomic_dna') {
-                    residues = strain_to_genomic_data[alternative_selection.val()]['residues'];
+                    residues = strain_data['residues'];
                     download.click(function f() {
-                        download_sequence(residues, download_sequence_link, display_name, strain_to_genomic_data[alternative_selection.val()]['contig']['format_name']);
+                        download_sequence(residues, download_sequence_link, display_name, strain_data['contig']['format_name']);
                     });
                 }
                 else if(mode.val() == 'coding_dna') {
@@ -162,12 +161,11 @@ $(document).ready(function() {
             function other_on_change() {
                 var strain_data = strain_to_genomic_data[other_selection.val()];
                 $("#other_strain_description").html(strain_data['strain']['description']);
-                $("#navbar_other").children()[0].innerHTML = 'Other Strains <span>' + '- ' + other_selection.val() + '</span>';
 
                 var download = $("#other_download");
-                var residues = strain_to_genomic_data[other_selection.val()]['residues'];
+                var residues = strain_data['residues'];
                 download.click(function f() {
-                    download_sequence(residues, download_sequence_link, display_name, strain_to_genomic_data[other_selection.val()]['contig']['format_name']);
+                    download_sequence(residues, download_sequence_link, display_name, strain_data['contig']['format_name']);
                 });
             }
             other_selection.change(other_on_change);
@@ -230,16 +228,18 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
             var display_name = $(title_spans[0]).html();
             var spans = $(".google-visualization-tooltip-action > span");
             if(display_name in display_name_to_format_name) {
-                var format_name = display_name_to_format_name[display_name]['format_name'];
+                var format_name = display_name_to_format_name[display_name]['locus']['format_name'];
                 if(format_name != display_name) {
                     $(title_spans[0]).html(display_name + ' (' + format_name + ')');
                 }
 
                 if(spans.length > 3) {
+                    var start = display_name_to_format_name[display_name]['start'];
+                    var end = display_name_to_format_name[display_name]['end'];
                     $(spans[0]).html(chromosome + ':');
-                    $(spans[1]).html(' ' + datarow[2] + '-' + datarow[3]);
+                    $(spans[1]).html(' ' + start + '-' + end);
                     $(spans[2]).html('Length:');
-                    $(spans[3]).html(' ' + datarow[3] - datarow[2] + 1);
+                    $(spans[3]).html(' ' + end - start + 1);
                     //$(".google-visualization-tooltip-action-list").append($(".google-visualization-tooltip-action").first());
                 }
             }
@@ -310,10 +310,10 @@ function draw_label_chart(chart_id, strain_name) {
         var previous_end_5 = 0;
         var previous_end_3 = 0;
         for (var i=0; i < data.length; i++) {
-            var start = data[i]['start'];
-            var end = data[i]['end'];
+            var start = Math.max(data[i]['start'], min_tick);
+            var end = Math.min(data[i]['end'], max_tick);
             var direction = strand_to_direction(data[i]['strand']);
-            display_name_to_format_name[data[i]['locus']['display_name']] = data[i]['locus'];
+            display_name_to_format_name[data[i]['locus']['display_name']] = data[i];
             var color;
             if(data[i]['locus']['display_name'] == display_name) {
                 color = "#3366cc";

@@ -35,7 +35,6 @@ $(document).ready(function() {
             function on_change(index) {
                 $("#sequence_residues").html(prep_sequence(protein_data[index]['residues']));
                 $("#strain_description").html(protein_data[index]['strain']['description']);
-                $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span>' + '- ' + protein_data[index]['strain']['display_name'] + '</span>';
                 set_up_properties(protein_data[index]);
                 current_residues = protein_data[index]['residues'];
                 draw_phosphodata();
@@ -95,14 +94,16 @@ $(document).ready(function() {
 
     $.getJSON(ec_number_details_link, function(data) {
         if(data.length > 0) {
-            var ec_number_html = "<strong>Enzyme Commission (EC) Number:</strong> ";
+            $("#protein_overview").append('<dt>Enzyme Commission (EC) Number</dt>');
+
+            var ec_number_html = '';
             for (var i=0; i < data.length; i++) {
                 ec_number_html = ec_number_html + "<a href='" + data[i]['ecnumber']['link'] + "'>" + data[i]['ecnumber']['display_name'] + "</a>";
                 if(i != data.length-1) {
                     ec_number_html = ec_number_html + ', ';
                 }
             }
-            $("#ec_number").html(ec_number_html)
+            $("#protein_overview").append('<dd>' + ec_number_html + '</dd>');
         }
 	});
 
