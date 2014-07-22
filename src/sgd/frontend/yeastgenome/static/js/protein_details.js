@@ -35,7 +35,6 @@ $(document).ready(function() {
             function on_change(index) {
                 $("#sequence_residues").html(prep_sequence(protein_data[index]['residues']));
                 $("#strain_description").html(protein_data[index]['strain']['description']);
-                $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span>' + '- ' + protein_data[index]['strain']['display_name'] + '</span>';
                 set_up_properties(protein_data[index]);
                 current_residues = protein_data[index]['residues'];
                 draw_phosphodata();
