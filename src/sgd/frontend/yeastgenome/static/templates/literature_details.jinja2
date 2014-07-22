@@ -38,7 +38,7 @@
             add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }} / {{ locus.format_name }}</a> Literature');
             add_navbar_element('Literature Overview', 'overview');
             add_navbar_element('Primary Literature', 'primary');
-            add_navbar_element('Network Visualization', 'network');
+            add_navbar_element('Related Literature', 'network');
             add_navbar_element('Additional Literature', 'additional');
             add_navbar_element('Reviews', 'reviews');
             add_navbar_element('Gene Ontology Literature', 'go');
@@ -84,7 +84,7 @@
 ================================================== -->
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
-                <h2>Network Visualization</h2>
+                <h2>Related Literature</h2>
                 <!-- Includes literature_network into template -->
                 {% set network_id = "cy" %}
                 {% include "basic_network.jinja2" %}
