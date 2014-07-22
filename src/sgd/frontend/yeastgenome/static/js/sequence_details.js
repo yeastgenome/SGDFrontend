@@ -374,7 +374,7 @@ function make_sublabel_ready_handler(chart_id, chart, seq_start, seq_end, data, 
             var spans = $(".google-visualization-tooltip-action > span");
             if(spans.length > 2) {
                 spans[1].innerHTML = ' ' + datarow[2]/100 + '-' + datarow[3]/100;
-                spans[2].innerHTML = 'Length:';
+                spans[2].innerHTML = 'Length: ';
                 spans[3].innerHTML = ' ' + datarow[3]/100 - datarow[2]/100 + 1;
             }
         }
