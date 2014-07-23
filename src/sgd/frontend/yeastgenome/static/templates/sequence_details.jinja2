@@ -92,8 +92,9 @@
                         {% endfor %}
                     </div>
                 </div>
-            <br>
+                <br>
                 <div id="reference_label_chart"></div>
+                <div id="subfeature_wrapper">
                 <h3 class="subheader">Subfeatures - S288C <span id="subfeature_table_header" class="round secondary label"></span></h3>
                 <div id="reference_sublabel_chart"></div>
 
@@ -102,6 +103,7 @@
                 {% set include_relative = True %}
                 {% set include_version = True %}
                 {% include "chromosomal_coord_table.jinja2" %}
+                </div>
 
                 <h3 class="subheader">Sequence - S288C
                     <a href="#" data-dropdown="reference_sequence_help"><i class="fa fa-question-circle"></i></a>
