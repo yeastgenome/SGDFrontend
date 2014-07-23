@@ -1,7 +1,8 @@
 google.load("visualization", "1", {packages:["corechart"]});
 
 var phosphodata = null;
-var current_residues = null;
+var current_residues = '';
+var current_strain = '';
 
 var source_to_color = {};
 
@@ -35,15 +36,20 @@ $(document).ready(function() {
             function on_change(index) {
                 $("#sequence_residues").html(prep_sequence(protein_data[index]['residues']));
                 $("#strain_description").html(protein_data[index]['strain']['description']);
+                $("#phosphorylation_strain").html(protein_data[index]['strain']['display_name']);
+                $("#properties_strain").html(protein_data[index]['strain']['display_name']);
                 set_up_properties(protein_data[index]);
                 current_residues = protein_data[index]['residues'];
+                current_strain = protein_data[index]['strain']['display_name'];
                 draw_phosphodata();
-                $("#sequence_download").click(function f() {
-                    download_sequence(protein_data[index]['residues'], download_sequence_link, display_name, '');
-                });
             }
 
             strain_selection.change(function() {on_change(this.selectedIndex)});
+
+            $("#sequence_download").click(function f() {
+                download_sequence(current_residues, download_sequence_link, display_name, current_strain);
+            });
+
             on_change(0);
         }
         else {
