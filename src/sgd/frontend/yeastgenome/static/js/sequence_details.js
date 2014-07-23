@@ -370,6 +370,10 @@ function draw_label_chart(chart_id, strain_name) {
         options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
         google.visualization.events.addListener(chart, 'ready', make_label_ready_handler(chart_id, chart, neighbor_data, display_name_to_format_name, data_array));
         chart.draw(dataTable, options);
+
+        //Adjust chart to look more like genome browser
+        $("#" + chart_id + " > div > div > svg > g:first > path:last").attr('stroke', 'black');
+        $("#" + chart_id + " > div > div > svg > g:first > rect:last").attr('stroke', 'white');
     }
 }
 
