@@ -69,178 +69,164 @@
             }
         </script>
 
-<!-- Summary
+<!-- Overview
 ================================================== -->
 <section id="overview" data-magellan-destination="overview">
-	<div class="page-header">
-	    <a href="/help/function-help/regulation" name="top" class="documentation-link">Regulation Help <i class="fa fa-question-circle"></i></a>
-		<h2>Regulation Overview
-            <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
+    <a href="/help/function-help/regulation" name="top" class="documentation-link">Regulation Help <i class="fa fa-question-circle"></i></a>
+    <h2>Regulation Overview
+        <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
 
-                <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
-                    Transcriptional regulation information for a gene, including any predicted DNA binding site
-                    motifs
-                    (<a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a>) for the gene'e protein product, as well as any of its targets (genes it regulates) or
-                    regulators (genes that regulate it), based on experimental evidence. For genes with regulatory
-                    targets, shared GO Biological Process terms for these targets are listed.
-                </p>
-        </h2>
-        <p id="summary_paragraph"></p>
-        <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
-        <div class="panel" id="summary_wrapper">
-            <!-- Includes regulation_overview.html into template -->
-            {% include "regulation_overview.jinja2" %}
+            <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
+                Transcriptional regulation information for a gene, including any predicted DNA binding site
+                motifs
+                (<a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a>) for the gene'e protein product, as well as any of its targets (genes it regulates) or
+                regulators (genes that regulate it), based on experimental evidence. For genes with regulatory
+                targets, shared GO Biological Process terms for these targets are listed.
+            </p>
+    </h2>
+    <p id="summary_paragraph"></p>
+    <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
+    <div class="panel" id="summary_wrapper">
+        <!-- Includes regulation_overview.html into template -->
+        {% include "regulation_overview.jinja2" %}
 
-            <div class="button-bar">
-				<h5>Analyze</h5>
-				<ul class="button-group radius">
-					<li><a disabled="true" id="analyze_targets" class="small button secondary">Targets</a></li>
-					<li><a disabled="true" id="analyze_regulators" class="small button secondary">Regulators</a></li>
-				</ul>
-				<ul class="button-group radius" hidden>
-					<li><a disabled="true" class="small button secondary radius" id="download_overview"><i class="icon-picture"></i> PNG</a></li>
-				</ul>
-			</div>
+        <div class="button-bar">
+            <h5>Analyze</h5>
+            <ul class="button-group radius">
+                <li><a disabled="true" id="analyze_targets" class="small button secondary">Targets</a></li>
+                <li><a disabled="true" id="analyze_regulators" class="small button secondary">Regulators</a></li>
+            </ul>
+            <ul class="button-group radius" hidden>
+                <li><a disabled="true" class="small button secondary radius" id="download_overview"><i class="icon-picture"></i> PNG</a></li>
+            </ul>
         </div>
-	</div>
+    </div>
 </section>
 
 <!-- Domains
 ================================================== -->
-        <section id="domain" data-magellan-destination="domain">
-            <div class="page-header">
-                <h2>Domains and Classification 
-                    <a href="#" data-dropdown="domain_info"><i class="fa fa-info-circle"></i></a>
+    <section id="domain" data-magellan-destination="domain">
+        <h2>Domains and Classification 
+            <a href="#" data-dropdown="domain_info"><i class="fa fa-info-circle"></i></a>
 
-                <p id="domain_info" class="f-dropdown content medium" data-dropdown-content>
-                    Collection of domains associated with the protein based on various sources, including the
-                    protein coordinates for the domain, a domain Description, a Source and corresponding
-                    accession ID, and the number of <i>S. cerevisiae</i> genes that share the same domain.
-                </p>            
-                    <span id="domain_table_header" class="round secondary label"></span></h2>
-                <!-- Includes domain_table into template -->
-                {% set table_id = "domain_table" %}
-                {% include "domain_table.jinja2" %}
-            </div>
-        </section>
+        <p id="domain_info" class="f-dropdown content medium" data-dropdown-content>
+            Collection of domains associated with the protein based on various sources, including the
+            protein coordinates for the domain, a domain Description, a Source and corresponding
+            accession ID, and the number of <i>S. cerevisiae</i> genes that share the same domain.
+        </p>            
+            <span id="domain_table_header" class="round secondary label"></span></h2>
+        <!-- Includes domain_table into template -->
+        {% set table_id = "domain_table" %}
+        {% include "domain_table.jinja2" %}
+    </section>
 
 <!-- Binding Sites
 ================================================== -->
-        <section id="binding" data-magellan-destination="binding" hidden>
-            <div class="page-header">
-                <h2>DNA Binding Site Motifs
-                <a href="#" data-dropdown="binding_info"><i class="fa fa-info-circle"></i></a>
+    <section id="binding" data-magellan-destination="binding" hidden>
+        <h2>DNA Binding Site Motifs
+        <a href="#" data-dropdown="binding_info"><i class="fa fa-info-circle"></i></a>
 
-                <p id="binding_info" class="f-dropdown content medium" data-dropdown-content>
-                    Binding sites motifs as predicted by <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a>.
-                </p>
+        <p id="binding_info" class="f-dropdown content medium" data-dropdown-content>
+            Binding sites motifs as predicted by <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a>.
+        </p>
 
-                <a href="#" data-dropdown="binding_help"><i class="fa fa-question-circle"></i></a>
-                <p id="binding_help" class="f-dropdown content medium" data-dropdown-content>
-                    Click on a motif to view its <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a>
-                    record. You can also view these predicted binding sites in the Genome Browser (option listed below
-                    motifs).
-                </p>
-                </h2>
+        <a href="#" data-dropdown="binding_help"><i class="fa fa-question-circle"></i></a>
+        <p id="binding_help" class="f-dropdown content medium" data-dropdown-content>
+            Click on a motif to view its <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a>
+            record. You can also view these predicted binding sites in the Genome Browser (option listed below
+            motifs).
+        </p>
+        </h2>
 
-                <div>
-                    <ul id="binding_motifs"></ul>
-                    <h3>View predicted binding sites in the <a href="http://browse.yeastgenome.org/cgi-bin/gbrowse/scgenome/?name={{ locus.display_name }}_*&enable=SGD%20PMW%20motifs">Genome Browser</a></h3>
-                </div>
-           </div>
-        </section>
+        <div>
+            <ul id="binding_motifs"></ul>
+            <h3>View predicted binding sites in the <a href="http://browse.yeastgenome.org/cgi-bin/gbrowse/scgenome/?name={{ locus.display_name }}_*&enable=SGD%20PMW%20motifs">Genome Browser</a></h3>
+        </div>
+    </section>
 
 <!-- Targets
 ================================================== -->
-        <section id="targets" data-magellan-destination="targets">
-            <div class="page-header">
-                <h2>Targets 
-                    <a href="#" data-dropdown="drop_targets"><i class="fa fa-info-circle"></i></a>
+    <section id="targets" data-magellan-destination="targets">
+        <h2>Targets 
+            <a href="#" data-dropdown="drop_targets"><i class="fa fa-info-circle"></i></a>
 
-                    <p id="drop_targets" class="f-dropdown content medium" data-dropdown-content>
-                        This table lists putative transcriptional regulatory targets for the central gene represented
-                        on this page. These targets were identified based on the presence of predicted regulator
-                        binding sites or experimental regulator binding in the target promoter, and/or changes in
-                        the target gene’s transcript levels in regulator mutant strains. Data includes
-                        high-throughput techniques such as microarray, RNA-seq, and ChIP assays; information about
-                        the experiment and assay type, constructs, conditions, and strains, as well as a reference,
-                        are provided for each Regulator annotation.
-                    </p>
-                    <span id="target_table_header" class="round secondary label"></span>
-                </h2>
+            <p id="drop_targets" class="f-dropdown content medium" data-dropdown-content>
+                This table lists putative transcriptional regulatory targets for the central gene represented
+                on this page. These targets were identified based on the presence of predicted regulator
+                binding sites or experimental regulator binding in the target promoter, and/or changes in
+                the target gene’s transcript levels in regulator mutant strains. Data includes
+                high-throughput techniques such as microarray, RNA-seq, and ChIP assays; information about
+                the experiment and assay type, constructs, conditions, and strains, as well as a reference,
+                are provided for each Regulator annotation.
+            </p>
+            <span id="target_table_header" class="round secondary label"></span>
+        </h2>
 
 
-                <!-- Includes regulation_table into template -->
-                {% set table_id = "target_table" %}
-                {% include "regulation_table.jinja2" %}
-            </div>
-        </section>
+        <!-- Includes regulation_table into template -->
+        {% set table_id = "target_table" %}
+        {% include "regulation_table.jinja2" %}
+    </section>
 
 <!-- Enrichment
 ================================================== -->
-        <section id="enrichment" data-magellan-destination="enrichment">
-            <div class="page-header">
-                <h2>Shared GO Processes Among Targets 
-                    <a href="#" data-options="align:left" data-dropdown="drop_enrichment"><i class="fa fa-info-circle"></i></a>
+    <section id="enrichment" data-magellan-destination="enrichment">
+        <h2>Shared GO Processes Among Targets 
+            <a href="#" data-options="align:left" data-dropdown="drop_enrichment"><i class="fa fa-info-circle"></i></a>
 
-                    <p id="drop_enrichment" class="f-dropdown content medium" data-dropdown-content>
-                        The shared GO processes listed in this table are based on the the data presented in the
-                        Targets table, which includes high-throughput data; shared GO terms, the number of target
-                        genes that share them, and the P-value are all indicated in the table. After filtering the
-                        Targets table, a button to "Recalculate with new Filter" will appear below this table allowing
-                        the shared GO terms to be recalculated based on the new set of Targets.
-                    </p>
-                    <span id="enrichment_table_header" class="round secondary label"></span>
-                </h2>
-                <!-- Includes gene_list_table into template -->
-                {% set table_id = "enrichment_table" %}
-                {% include "enrichment_table.jinja2" %}
-           </div>
-        </section>
+            <p id="drop_enrichment" class="f-dropdown content medium" data-dropdown-content>
+                The shared GO processes listed in this table are based on the the data presented in the
+                Targets table, which includes high-throughput data; shared GO terms, the number of target
+                genes that share them, and the P-value are all indicated in the table. After filtering the
+                Targets table, a button to "Recalculate with new Filter" will appear below this table allowing
+                the shared GO terms to be recalculated based on the new set of Targets.
+            </p>
+            <span id="enrichment_table_header" class="round secondary label"></span>
+        </h2>
+        <!-- Includes gene_list_table into template -->
+        {% set table_id = "enrichment_table" %}
+        {% include "enrichment_table.jinja2" %}
+    </section>
 
 <!-- Regulators
 ================================================== -->
-        <section id="regulators" data-magellan-destination="regulators">
-            <div class="page-header">
-                <h2>Regulators 
-                    <a href="#" data-dropdown="drop_regulators"><i class="fa fa-info-circle"></i></a>
+    <section id="regulators" data-magellan-destination="regulators">
+        <h2>Regulators 
+            <a href="#" data-dropdown="drop_regulators"><i class="fa fa-info-circle"></i></a>
 
-                    <p id="drop_regulators" class="f-dropdown content medium" data-dropdown-content>
-                        This table lists genes that are putative regulators of the central gene represented on this
-                        page, based primarily on experiments showing that a regulator binds to the gene’s promoter
-                        or affects the gene’s transcription when the regulator is mutated. This includes data
-                        generated by high-throughput techniques such as microarray, RNA-seq, and ChIP assays;
-                        information about the experiment and assay type, constructs, conditions, and strains, as
-                        well as a reference, are provided for each Regulator annotation.
-                    </p>
-                    <span id="regulator_table_header" class="round secondary label"></span>
-                </h2>
-                <!-- Includes regulation_table into template -->
-                {% set table_id = "regulator_table" %}
-                {% include "regulation_table.jinja2" %}
-            </div>
-        </section>
+            <p id="drop_regulators" class="f-dropdown content medium" data-dropdown-content>
+                This table lists genes that are putative regulators of the central gene represented on this
+                page, based primarily on experiments showing that a regulator binds to the gene’s promoter
+                or affects the gene’s transcription when the regulator is mutated. This includes data
+                generated by high-throughput techniques such as microarray, RNA-seq, and ChIP assays;
+                information about the experiment and assay type, constructs, conditions, and strains, as
+                well as a reference, are provided for each Regulator annotation.
+            </p>
+            <span id="regulator_table_header" class="round secondary label"></span>
+        </h2>
+        <!-- Includes regulation_table into template -->
+        {% set table_id = "regulator_table" %}
+        {% include "regulation_table.jinja2" %}
+    </section>
 
 <!-- Network Visualization
 ================================================== -->
-        <section id="network" data-magellan-destination="network">
-            <div class="page-header">
-                <h2>Regulation Network
-                    <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
+    <section id="network" data-magellan-destination="network">
+        <h2>Regulation Network
+            <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
 
-                    <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
-                        This diagram displays targets (purple) and regulators (green) of the given gene (yellow)
-                        based on the data presented in the Targets and Regulators tables and therefore includes
-                        high-throughput data generated by techniques such as microarray, RNA-seq, and ChIP assays.
-                        The arrows move in the direction of Regulator -> Target and include any regulatory
-                        relationships between genes other than the given gene.
-                    </p>
-                </h2>
+            <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
+                This diagram displays targets (purple) and regulators (green) of the given gene (yellow)
+                based on the data presented in the Targets and Regulators tables and therefore includes
+                high-throughput data generated by techniques such as microarray, RNA-seq, and ChIP assays.
+                The arrows move in the direction of Regulator -> Target and include any regulatory
+                relationships between genes other than the given gene.
+            </p>
+        </h2>
 
-                {% set network_id = "cy" %}
-                {% include "regulation_network.jinja2" %}
-            </div>
-        </section>
+        {% set network_id = "cy" %}
+        {% include "regulation_network.jinja2" %}
+    </section>
     </div><!-- .tab-content -->
 </div>
 
