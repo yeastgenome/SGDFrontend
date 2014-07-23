@@ -47,35 +47,34 @@
             add_navbar_element('Regulation Literature', 'regulation');
         </script>
 
-<!-- Summary
+<!-- Overview
 ================================================== -->
 <section id="overview" data-magellan-destination="overview">
-	<div class="page-header">
-    	<a href="/help/literature-help/literature-guide" name="top" class="documentation-link">Literature Help <i class="fa fa-question-circle"></i></a>
-		<h2>Literature Overview
-            <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
+    <a href="/help/literature-help/literature-guide" name="top" class="documentation-link">Literature Help <i class="fa fa-question-circle"></i></a>
+    <h2>Literature Overview
+        <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
 
-            <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
-                All manually curated literature for the specified gene, organized by relevance to the gene and by
-                association with specific annotations to the gene in SGD. SGD gathers references via a PubMed search for
-                papers whose titles or abstracts contain “yeast” or “cerevisiae;” these papers are reviewed manually and
-                linked to relevant genes and literature topics by SGD curators.
-            </p>
-        </h2>
-		<!-- Includes literature_overview.html into template -->
+        <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
+            All manually curated literature for the specified gene, organized by relevance to the gene and by
+            association with specific annotations to the gene in SGD. SGD gathers references via a PubMed search for
+            papers whose titles or abstracts contain “yeast” or “cerevisiae;” these papers are reviewed manually and
+            linked to relevant genes and literature topics by SGD curators.
+        </p>
+    </h2>
+    <div class="panel">    
+        <!-- Includes literature_overview.html into template -->
         {% include "literature_overview.jinja2" %}
         {% for alias in locus.aliases if alias.category == 'Uniform' or alias.category == 'Gene product' %}
             {% if loop.first %}<p><strong>Aliases: </strong>{% endif %}
             {{ alias.display_name }}{% if not loop.last %}, {% else %}</p>{% endif %}
         {% endfor %}
-	</div>
+    </div>
 </section>
 
 <!-- Primary
 ================================================== -->
-<section id="primary" data-magellan-destination="primary">
-	<div class="page-header">
-		<h2>Primary Literature
+    <section id="primary" data-magellan-destination="primary">
+        <h2>Primary Literature
             <a href="#" data-dropdown="primary_info"><i class="fa fa-info-circle"></i></a>
 
             <p id="primary_info" class="f-dropdown content medium" data-dropdown-content>
@@ -89,131 +88,118 @@
         {% set reference_list_id = "primary_list" %}
         {% set empty_message = "No primary literature curated." %}
         {% include "reference_list.jinja2" %}
-	</div>
-</section>
+    </section>
 
-<!-- Network Visualization
+<!-- Related Literature / Network Visualization
 ================================================== -->
-        <section id="network" data-magellan-destination="network">
-            <div class="page-header">
-                <h2>Related Literature
-                    <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
+    <section id="network" data-magellan-destination="network">
+        <h2>Related Literature
+            <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
 
-                    <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
-                        Genes (indicated by gray circles) that share literature with the specified gene (indicated by
-                        yellow circle).
-                    </p>
-                </h2>
-                <!-- Includes literature_network into template -->
-                {% set network_id = "cy" %}
-                {% include "literature_network.jinja2" %}
-            </div>
-        </section>
+            <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
+                Genes (indicated by gray circles) that share literature with the specified gene (indicated by
+                yellow circle).
+            </p>
+        </h2>
+        <div class="panel">
+            <!-- Includes literature_network into template -->
+            {% set network_id = "cy" %}
+            {% include "literature_network.jinja2" %}
+        </div>
+    </section>
 
 <!-- Additional
 ================================================== -->
-        <section id="additional" data-magellan-destination="additional">
-            <div class="page-header">
-                <h2>Additional Literature
-                    <a href="#" data-dropdown="additional_info"><i class="fa fa-info-circle"></i></a>
+    <section id="additional" data-magellan-destination="additional">
+        <h2>Additional Literature
+            <a href="#" data-dropdown="additional_info"><i class="fa fa-info-circle"></i></a>
 
-                    <p id="additional_info" class="f-dropdown content medium" data-dropdown-content>
-                        Papers that show experimental evidence for the gene or describe homologs in other species, but
-                        for which the gene is not the paper’s principal focus.
-                    </p>
-                    <span id="additional_header" class="label secondary round"></span>
-                </h2>
-                {% set reference_list_id = "additional_list" %}
-                {% set empty_message = "No additional literature curated." %}
-                {% include "reference_list.jinja2" %}
-            </div>
-        </section>
+            <p id="additional_info" class="f-dropdown content medium" data-dropdown-content>
+                Papers that show experimental evidence for the gene or describe homologs in other species, but
+                for which the gene is not the paper’s principal focus.
+            </p>
+            <span id="additional_header" class="label secondary round"></span>
+        </h2>
+        {% set reference_list_id = "additional_list" %}
+        {% set empty_message = "No additional literature curated." %}
+        {% include "reference_list.jinja2" %}
+    </section>
 
 <!-- Review
 ================================================== -->
-        <section id="reviews" data-magellan-destination="reviews">
-            <div class="page-header">
-                <h2>Reviews <span id="review_header" class="label secondary round"></span></h2>
-                {% set reference_list_id = "review_list" %}
-                {% set empty_message = "No reviews curated." %}
-                {% include "reference_list.jinja2" %}
-            </div>
-        </section>
+    <section id="reviews" data-magellan-destination="reviews">
+            <h2>Reviews <span id="review_header" class="label secondary round"></span></h2>
+            {% set reference_list_id = "review_list" %}
+            {% set empty_message = "No reviews curated." %}
+            {% include "reference_list.jinja2" %}
+    </section>
 
 <!-- GO
 ================================================== -->
-        <section id="go" data-magellan-destination="go">
-            <div class="page-header">
-                <h2>Gene Ontology Literature
-                    <a href="#" data-dropdown="go_info"><i class="fa fa-info-circle"></i></a>
+    <section id="go" data-magellan-destination="go">
+        <h2>Gene Ontology Literature
+            <a href="#" data-dropdown="go_info"><i class="fa fa-info-circle"></i></a>
 
-                    <p id="go_info" class="f-dropdown content medium" data-dropdown-content>
-                        Paper(s) associated with one or more GO (Gene Ontology) terms in SGD for the specified gene.
-                    </p>
-                    <span id="go_header" class="label secondary round"></span>
-                </h2>
-                {% set reference_list_id = "go_list" %}
-                {% set empty_message = "No gene ontology literature curated." %}
-                {% include "reference_list.jinja2" %}
-            </div>
-        </section>
+            <p id="go_info" class="f-dropdown content medium" data-dropdown-content>
+                Paper(s) associated with one or more GO (Gene Ontology) terms in SGD for the specified gene.
+            </p>
+            <span id="go_header" class="label secondary round"></span>
+        </h2>
+        {% set reference_list_id = "go_list" %}
+        {% set empty_message = "No gene ontology literature curated." %}
+        {% include "reference_list.jinja2" %}
+    </section>
 
 <!-- Phenotype
 ================================================== -->
-        <section id="phenotype" data-magellan-destination="phenotype">
-            <div class="page-header">
-                <h2>Phenotype Literature
-                    <a href="#" data-dropdown="phenotype_info"><i class="fa fa-info-circle"></i></a>
+    <section id="phenotype" data-magellan-destination="phenotype">
+        <h2>Phenotype Literature
+            <a href="#" data-dropdown="phenotype_info"><i class="fa fa-info-circle"></i></a>
 
-                    <p id="phenotype_info" class="f-dropdown content medium" data-dropdown-content>
-                         Paper(s) associated with one or more pieces of phenotype evidence in SGD for the specified gene.
-                    </p>
-                    <span id="phenotype_header" class="label secondary round"></span>
-                </h2>
-                {% set reference_list_id = "phenotype_list" %}
-                {% set empty_message = "No phenotype literature curated." %}
-                {% include "reference_list.jinja2" %}
-            </div>
-        </section>
+            <p id="phenotype_info" class="f-dropdown content medium" data-dropdown-content>
+                 Paper(s) associated with one or more pieces of phenotype evidence in SGD for the specified gene.
+            </p>
+            <span id="phenotype_header" class="label secondary round"></span>
+        </h2>
+        {% set reference_list_id = "phenotype_list" %}
+        {% set empty_message = "No phenotype literature curated." %}
+        {% include "reference_list.jinja2" %}
+    </section>
 
 <!-- Interaction
 ================================================== -->
-        <section id="interaction" data-magellan-destination="interaction">
-            <div class="page-header">
-                <h2>Interaction Literature
-                    <a href="#" data-dropdown="interaction_info"><i class="fa fa-info-circle"></i></a>
+    <section id="interaction" data-magellan-destination="interaction">
+        <h2>Interaction Literature
+            <a href="#" data-dropdown="interaction_info"><i class="fa fa-info-circle"></i></a>
 
-                    <p id="interaction_info" class="f-dropdown content medium" data-dropdown-content>
-                        Paper(s) associated with evidence supporting a physical or genetic interaction between the
-                        specified gene and another gene in SGD. Currently, all interaction evidence is obtained from
-                        <a href="http://thebiogrid.org/" target="_blank">BioGRID</a>.
-                    </p>
-                    <span id="interaction_header" class="label secondary round"></span>
-                </h2>
-                {% set reference_list_id = "interaction_list" %}
-                {% set empty_message = "No interaction literature curated." %}
-                {% include "reference_list.jinja2" %}
-            </div>
-        </section>
+            <p id="interaction_info" class="f-dropdown content medium" data-dropdown-content>
+                Paper(s) associated with evidence supporting a physical or genetic interaction between the
+                specified gene and another gene in SGD. Currently, all interaction evidence is obtained from
+                <a href="http://thebiogrid.org/" target="_blank">BioGRID</a>.
+            </p>
+            <span id="interaction_header" class="label secondary round"></span>
+        </h2>
+        {% set reference_list_id = "interaction_list" %}
+        {% set empty_message = "No interaction literature curated." %}
+        {% include "reference_list.jinja2" %}
+    </section>
 
 <!-- Regulation
 ================================================== -->
-        <section id="regulation" data-magellan-destination="regulation">
-            <div class="page-header">
-                <h2>Regulation Literature
-                    <a href="#" data-dropdown="regulation_info"><i class="fa fa-info-circle"></i></a>
+    <section id="regulation" data-magellan-destination="regulation">
+        <h2>Regulation Literature
+            <a href="#" data-dropdown="regulation_info"><i class="fa fa-info-circle"></i></a>
 
-                    <p id="regulation_info" class="f-dropdown content medium" data-dropdown-content>
-                        Paper(s) associated with one or more pieces of regulation evidence in SGD, as found on the
-                        Regulation page.
-                    </p>
-                    <span id="regulation_header" class="label secondary round"></span>
-                </h2>
-                {% set reference_list_id = "regulation_list" %}
-                {% set empty_message = "No regulation literature curated." %}
-                {% include "reference_list.jinja2" %}
-            </div>
-        </section>
+            <p id="regulation_info" class="f-dropdown content medium" data-dropdown-content>
+                Paper(s) associated with one or more pieces of regulation evidence in SGD, as found on the
+                Regulation page.
+            </p>
+            <span id="regulation_header" class="label secondary round"></span>
+        </h2>
+        {% set reference_list_id = "regulation_list" %}
+        {% set empty_message = "No regulation literature curated." %}
+        {% include "reference_list.jinja2" %}
+    </section>
 
     </div>
 </div>

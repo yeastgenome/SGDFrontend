@@ -44,90 +44,89 @@
             add_navbar_element("Resources", "resources");
         </script>
 
-<!-- Summary
+<!-- Overview
 ================================================== -->
 <section id="overview" data-magellan-destination="overview">
-	<div class="page-header">
-	    <a href="/help/PhenoHelp.html" name="top" class="documentation-link">Phenotype Help <i class="fa fa-question-circle"></i></a>
-		<h2>Phenotype Overview
-            <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
+    <a href="/help/PhenoHelp.html" name="top" class="documentation-link">Phenotype Help <i class="fa fa-question-circle"></i></a>
+    <h2>Phenotype Overview
+        <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
 
-            <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
-                Phenotype annotations for a gene are curated single mutant phenotypes that require an
-                observable (e.g., "cell shape"), a qualifier (e.g., "abnormal"), a mutant type (e.g., null),
-                strain background, and a reference. In addition, annotations are classified as classical
-                genetics or high-throughput (e.g., large scale survey, systematic mutation set). Whenever
-                possible, allele information and additional details are provided.
-            </p>
-        </h2>
+        <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
+            Phenotype annotations for a gene are curated single mutant phenotypes that require an
+            observable (e.g., "cell shape"), a qualifier (e.g., "abnormal"), a mutant type (e.g., null),
+            strain background, and a reference. In addition, annotations are classified as classical
+            genetics or high-throughput (e.g., large scale survey, systematic mutation set). Whenever
+            possible, allele information and additional details are provided.
+        </p>
+    </h2>
 
-        <!-- Includes phenotype_overview.html into template -->
-        {% include "phenotype_overview.jinja2" %}
-	</div>
+    <!-- Includes phenotype_overview.html into template -->
+    {% include "phenotype_overview.jinja2" %}
 </section>
+
 <!-- Annotations
 ================================================== -->
-        <section id="annotations" data-magellan-destination="annotations">
-            <div class="page-header">
-                <h2>Annotations
-                    <a href="#" data-dropdown="annotation_info"><i class="fa fa-info-circle"></i></a>
+    <section id="annotations" data-magellan-destination="annotations">
+        <h2>Annotations
+            <a href="#" data-dropdown="annotation_info"><i class="fa fa-info-circle"></i></a>
 
-                    <p id="annotation_info" class="f-dropdown content medium" data-dropdown-content>
-                        A phenotype is defined as a an observable (e.g., apoptosis) and a qualifier (e.g.,
-                        increased). There may be more than one row with the same phenotype if was observed in
-                        separate studies or in different conditions, strains, alleles, etc.
-                    </p>
-                    <span id="phenotype_table_header" class="round secondary label"></span></h2>
-                <!-- Includes phenotype_table into template -->
-                {% set table_id = "phenotype_table" %}
-                {% include "phenotype_table.jinja2" %}
-            </div>
-        </section>
+            <p id="annotation_info" class="f-dropdown content medium" data-dropdown-content>
+                A phenotype is defined as a an observable (e.g., apoptosis) and a qualifier (e.g.,
+                increased). There may be more than one row with the same phenotype if was observed in
+                separate studies or in different conditions, strains, alleles, etc.
+            </p>
+            <span id="phenotype_table_header" class="round secondary label"></span></h2>
+        <div>
+            <!-- Includes phenotype_table into template -->
+            {% set table_id = "phenotype_table" %}
+            {% include "phenotype_table.jinja2" %}
+        </div>
+    </section>
 
 <!-- Network Visualization
 ================================================== -->
-        <section id="network" data-magellan-destination="network">
-            <div class="page-header">
-                <h2>Shared Phenotypes
-                    <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
+    <section id="network" data-magellan-destination="network">
+        <h2>Shared Phenotypes
+            <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
 
-                        <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
-                            This diagram displays phenotype observables (purple squares) that are shared between the
-                            given gene (yellow circle) and other genes (gray circles) based on the number of phenotype
-                            observables shared (adjustable using the slider at the bottom).
-                        </p>
-                </h2>
-                {% set network_id = "cy" %}
-                {% set network_title = "Shared Observables for " + locus.display_name %}
-                {% include "phenotype_network.jinja2" %}
-            </div>
-        </section>
+                <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
+                    This diagram displays phenotype observables (purple squares) that are shared between the
+                    given gene (yellow circle) and other genes (gray circles) based on the number of phenotype
+                    observables shared (adjustable using the slider at the bottom).
+                </p>
+        </h2>
+        <div class="panel">
+            {% set network_id = "cy" %}
+            {% set network_title = "Shared Observables for " + locus.display_name %}
+            {% include "phenotype_network.jinja2" %}
+        </div>
+    </section>
 
 <!-- Resources
 ================================================== -->
-        <section id="resources" data-magellan-destination="resources">
-            <div class="page-header">
-                <h2>Resources</h2>
-                <h3>Mutant Strains</h3>
-                    <p id="mutant_resources_list">
-                        {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_MUTANT_STRAINS'%}
-                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-                <h3>Phenotype Resources</h3>
-                    <p id="phenotype_resources_list">
-                        {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_PHENOTYPE_RESOURCES'%}
-                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-                <h3>Ontology</h3>
-                    <p id="ontology_resources_list">
-                        {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_ONTOLOGY'%}
-                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-            </div>
-        </section>
+    <section id="resources" data-magellan-destination="resources">
+        <h2>Resources</h2>
+        <div class="panel">
+            <h3>Mutant Strains</h3>
+                <p id="mutant_resources_list">
+                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_MUTANT_STRAINS'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            <h3>Phenotype Resources</h3>
+                <p id="phenotype_resources_list">
+                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_PHENOTYPE_RESOURCES'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            <h3>Ontology</h3>
+                <p id="ontology_resources_list">
+                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_ONTOLOGY'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+    </div>
+    </section>
     </div>
 </div>
 

@@ -51,12 +51,11 @@
             add_navbar_element('Resources', 'resources');
         </script>
 
-<!-- Summary
+<!-- Overview
 ================================================== -->
-<section id="overview" data-magellan-destination="overview">
-	<div class="page-header">
+    <section id="overview" data-magellan-destination="overview">
         <a href="/help/function-help/interactions" name="top" class="documentation-link">Interaction Help <i class="fa fa-question-circle"></i></a>
-		<h2>Interactions Overview
+        <h2>Interactions Overview
             <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
 
             <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
@@ -68,79 +67,76 @@
                 modification, and multiple mutant information are included when available.
             </p>
         </h2>
-
-        <!-- Includes interaction_overview.html into template -->
-        {% include "interaction_overview.jinja2" %}
-
-        <div class="button-bar">
-            <h5>Analyze</h5>
-            <ul class="button-group radius">
-                <li><a disabled="true" id="phys" class="small button secondary sgd-icon-venn-physical">Physical</a></li>
-                <li><a disabled="true" id="gen" class="small button secondary sgd-icon-venn-genetic">Genetic</a></li>
-                <li><a disabled="true" id="phys_gen_intersect" class="small button secondary sgd-icon-venn-intersection">Intersection</a></li>
-                <li><a disabled="true" id="phys_gen_union" class="small button secondary sgd-icon-venn-all">All</a></li>
-            </ul>
-            <ul class="button-group radius" hidden>
-                <li><a disabled="true" class="small button secondary radius" id="download_overview"><i class="icon-picture"></i> PNG</a></li>
-            </ul>
+        <div class="panel">
+            <!-- Includes interaction_overview.html into template -->
+            {% include "interaction_overview.jinja2" %}
+        
+            <div class="button-bar">
+                <h5>Analyze</h5>
+                <ul class="button-group radius">
+                    <li><a disabled="true" id="phys" class="small button secondary sgd-icon-venn-physical">Physical</a></li>
+                    <li><a disabled="true" id="gen" class="small button secondary sgd-icon-venn-genetic">Genetic</a></li>
+                    <li><a disabled="true" id="phys_gen_intersect" class="small button secondary sgd-icon-venn-intersection">Intersection</a></li>
+                    <li><a disabled="true" id="phys_gen_union" class="small button secondary sgd-icon-venn-all">All</a></li>
+                </ul>
+                <ul class="button-group radius" hidden>
+                    <li><a disabled="true" class="small button secondary radius" id="download_overview"><i class="icon-picture"></i> PNG</a></li>
+                </ul>
+            </div>
         </div>
-	</div>
-</section>
+    </section>
+
 <!-- Annotations
 ================================================== -->
-        <section id="annotations" data-magellan-destination="annotations">
-            <div class="page-header">
-                <h2>Annotations
-                    <a href="#" data-dropdown="annotations_info"><i class="fa fa-info-circle"></i></a>
+    <section id="annotations" data-magellan-destination="annotations">
+        <h2>Annotations
+            <a href="#" data-dropdown="annotations_info"><i class="fa fa-info-circle"></i></a>
 
-                        <p id="annotations_info" class="f-dropdown content medium" data-dropdown-content>
-                            An interaction is defined as an experimentally observed physical or genetic interaction
-                            between two genes. There may be more than one row listed for the same interactor if the
-                            interaction between it and the given gene was observed in separate studies. All
-                            interactions
-                            listed in SGD are curated by <a href="http://thebiogrid.org/" target="_blank">BioGRID</a>.
-                        </p>
-                    <span id="interaction_table_header" class="round secondary label"></span></h2>
-                <!-- Includes interaction_table into template -->
-                {% set table_id = "interaction_table" %}
-                {% include "interaction_table.jinja2" %}
-            </div>
-        </section>
+                <p id="annotations_info" class="f-dropdown content medium" data-dropdown-content>
+                    An interaction is defined as an experimentally observed physical or genetic interaction
+                    between two genes. There may be more than one row listed for the same interactor if the
+                    interaction between it and the given gene was observed in separate studies. All
+                    interactions
+                    listed in SGD are curated by <a href="http://thebiogrid.org/" target="_blank">BioGRID</a>.
+                </p>
+            <span id="interaction_table_header" class="round secondary label"></span></h2>
+        <!-- Includes interaction_table into template -->
+        {% set table_id = "interaction_table" %}
+        {% include "interaction_table.jinja2" %}
+    </section>
 
 <!-- Network Visualization
 ================================================== -->
-        <section id="network" data-magellan-destination="network">
-            <div class="page-header">
-                <h2>Interaction Network
-                     <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
+    <section id="network" data-magellan-destination="network">
+        <h2>Interaction Network
+             <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
 
-                        <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
-                            This diagram displays physical (purple lines) and genetic (green lines) interactions between
-                            the
-                            given gene (yellow circle) and its interactors (gray circles) based on the number of
-                            experiments
-                            supporting each interaction (adjustable using the slider at the bottom). Interactions
-                            between the
-                            interactors for a given gene are also shown.
-                        </p>
-                </h2>
-                {% set network_id = "cy" %}
-                {% include "interaction_network.jinja2" %}
-            </div>
-        </section>
+                <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
+                    This diagram displays physical (purple lines) and genetic (green lines) interactions between
+                    the
+                    given gene (yellow circle) and its interactors (gray circles) based on the number of
+                    experiments
+                    supporting each interaction (adjustable using the slider at the bottom). Interactions
+                    between the
+                    interactors for a given gene are also shown.
+                </p>
+        </h2>
+        <div class="panel">
+            {% set network_id = "cy" %}
+            {% include "interaction_network.jinja2" %}
+        </div>
+    </section>
 
 <!-- Resources
 ================================================== -->
-        <section id="resources" data-magellan-destination="resources">
-            <div class="page-header">
-                <h2>Resources</h2>
-                <p id="resources_list">
-                    {% for url in locus.urls if url.category == 'LOCUS_INTERACTION'%}
-                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
-            </div>
-        </section>
+    <section id="resources" data-magellan-destination="resources">
+        <h2>Resources</h2>
+        <p id="resources_list" class="panel">
+            {% for url in locus.urls if url.category == 'LOCUS_INTERACTION'%}
+                <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+            {% endfor %}
+        </p>
+    </section>
 
     </div>
 </div>
