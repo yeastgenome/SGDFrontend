@@ -44,7 +44,7 @@
 
         <script>
         //Set up navbar
-            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }} / {{ locus.format_name }}</a><br>Interactions');
+            add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</a>');
             add_navbar_element('Interactions Overview', 'overview');
             add_navbar_element('Annotations', 'annotations');
             add_navbar_element('Interaction Network', 'network');
