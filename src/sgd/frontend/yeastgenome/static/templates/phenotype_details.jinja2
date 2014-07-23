@@ -76,9 +76,11 @@
                 separate studies or in different conditions, strains, alleles, etc.
             </p>
             <span id="phenotype_table_header" class="round secondary label"></span></h2>
-        <!-- Includes phenotype_table into template -->
-        {% set table_id = "phenotype_table" %}
-        {% include "phenotype_table.jinja2" %}
+        <div>
+            <!-- Includes phenotype_table into template -->
+            {% set table_id = "phenotype_table" %}
+            {% include "phenotype_table.jinja2" %}
+        </div>
     </section>
 
 <!-- Network Visualization
@@ -93,33 +95,37 @@
                     observables shared (adjustable using the slider at the bottom).
                 </p>
         </h2>
-        {% set network_id = "cy" %}
-        {% set network_title = "Shared Observables for " + locus.display_name %}
-        {% include "phenotype_network.jinja2" %}
+        <div class="panel">
+            {% set network_id = "cy" %}
+            {% set network_title = "Shared Observables for " + locus.display_name %}
+            {% include "phenotype_network.jinja2" %}
+        </div>
     </section>
 
 <!-- Resources
 ================================================== -->
     <section id="resources" data-magellan-destination="resources">
         <h2>Resources</h2>
-        <h3>Mutant Strains</h3>
-            <p id="mutant_resources_list">
-                {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_MUTANT_STRAINS'%}
-                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                {% endfor %}
-            </p>
-        <h3>Phenotype Resources</h3>
-            <p id="phenotype_resources_list">
-                {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_PHENOTYPE_RESOURCES'%}
-                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                {% endfor %}
-            </p>
-        <h3>Ontology</h3>
-            <p id="ontology_resources_list">
-                {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_ONTOLOGY'%}
-                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                {% endfor %}
-            </p>
+        <div class="panel">
+            <h3>Mutant Strains</h3>
+                <p id="mutant_resources_list">
+                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_MUTANT_STRAINS'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            <h3>Phenotype Resources</h3>
+                <p id="phenotype_resources_list">
+                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_PHENOTYPE_RESOURCES'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            <h3>Ontology</h3>
+                <p id="ontology_resources_list">
+                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_ONTOLOGY'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+    </div>
     </section>
     </div>
 </div>

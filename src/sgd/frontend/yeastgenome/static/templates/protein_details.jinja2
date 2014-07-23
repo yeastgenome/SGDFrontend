@@ -78,17 +78,21 @@
                     identifiers for the protein.</p>
             </div>
         </h2>
-         <!-- Includes protein_overview.html into template -->
-        {% include "protein_overview.jinja2" %}
+        <div class="panel">
+            <!-- Includes protein_overview.html into template -->
+            {% include "protein_overview.jinja2" %}
+        </div>
     </section>
 
 <!-- Experimental Data
 ================================================== -->
     <section id="experiment" data-magellan-destination="experiment">
         <h2>Experimental Data</h2>
-        <!-- Includes domain_table into template -->
-        {% set table_id = "protein_experiment_table" %}
-        {% include "protein_experiment_table.jinja2" %}
+        <div class="panel">
+            <!-- Includes domain_table into template -->
+            {% set table_id = "protein_experiment_table" %}
+            {% include "protein_experiment_table.jinja2" %}
+        </div>
     </section>
 
 <!-- Domains
@@ -104,11 +108,14 @@
         </p>
             <span id="domain_table_header" class="round secondary label"></span>
         </h2>
-        <!-- Includes domain_table into template -->
-        {% set table_id = "domain_table" %}
-        {% include "domain_table.jinja2" %}
-
-        <div id="domain_locations">
+        
+        <div class="panel">
+            <!-- Includes domain_table into template -->
+            {% set table_id = "domain_table" %}
+            {% include "domain_table.jinja2" %}
+        </div>
+        
+        <div id="domain_locations" class="panel">
             <h3 class="subheader">Domain Locations
                 <a href="#" data-dropdown="domain_location_info"><i class="fa fa-info-circle"></i></a>
 
@@ -124,10 +131,10 @@
                     Scroll over a domain to view its exact coordinates and its Description.
                 </p>
             </h3>
-        <div id="domain_chart"></div>
+        <div id="domain_chart" class="panel"></div>
         </div>
 
-        <div id="shared_domains">
+        <div id="shared_domains" class="panel">
             <h3 id="network" class="subheader">Shared Domains
                 <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
 
@@ -167,24 +174,28 @@
                     shown to be phosphorylated in a specific strain.
                 </p>
             </h2>
+            
+        <div class="panel">
             <p id="sequence_section_message" hidden>This locus is not translated into a protein.</p>
             <div id="sequence_section">
             <label><h3>Strain</h3>
                 <select id="strain_selection" class="large-3"></select> - <span id="strain_description"></span>
             </label>
 
-            <pre><blockquote id="sequence_residues"
-                             style="font-family:Monospace; font-size:large"></blockquote></pre>
-            <p>* Red amino acids indicate phosphorylation sites. More information below.</p>
+            <div class="panel">
+                <pre><blockquote id="sequence_residues"
+                                 style="font-family:Monospace; font-size:large"></blockquote></pre>
+                <p>* Red amino acids indicate phosphorylation sites. More information below.</p>
 
-            <div class="button-bar">
-                <ul class="button-group radius">
-                    <li><a id="sequence_download" class="small button secondary"><i class="fa fa-download"></i>
-                        Download (.txt)</a></li>
-                </ul>
+                <div class="button-bar">
+                    <ul class="button-group radius">
+                        <li><a id="sequence_download" class="small button secondary"><i class="fa fa-download"></i>
+                            Download Sequence (.txt)</a></li>
+                    </ul>
+                </div>
             </div>
 
-            <div id="phosphorylation_sites_wrapper">
+            <div id="phosphorylation_sites_wrapper" class="panel">
                 <h3 class="subheader">Phosphorylation Sites
                     <a href="#" data-dropdown="phosphorylation_info"><i class="fa fa-info-circle"></i></a>
 
@@ -200,7 +211,7 @@
                 {% include "phosphorylation_table.jinja2" %}
             </div>
 
-            <div id="physicochemical_props">
+            <div id="physicochemical_props" class="panel">
                 <h3 class="subheader">Sequence-Based Physico-chemical Properties
                     <a href="#" data-dropdown="properties_info"><i class="fa fa-info-circle"></i></a>
 
@@ -300,6 +311,7 @@
                     </div>
                 </div>
             </div>
+         </div>
         </div>
     </section>
 
@@ -313,39 +325,45 @@
                 List of external identifiers for the protein from various database sources.
             </p>
             <span id="alias_table_header" class="round secondary label"></span></h2>
-        <!-- Includes alias_table into template -->
-        {% set table_id = "alias_table" %}
-        {% include "alias_table.jinja2" %}
+            
+            <div class="panel">
+                <!-- Includes alias_table into template -->
+                {% set table_id = "alias_table" %}
+                {% include "alias_table.jinja2" %}
+            </div>
     </section>
 
 <!-- Resources
 ================================================== -->
     <section id="resources" data-magellan-destination="resources">
         <h2>Resources</h2>
-        <h3>Homologs</h3>
-            <p id='homolog_resources_list'>
-                {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}
-                    <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                {% endfor %}
-            </p>
-        <h3>Protein Databases/Other</h3>
-            <p id='protein_databases_resources_list'>
-                {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
-                    <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                {% endfor %}
-            </p>
-        <h3>Localization</h3>
-            <p id="localization_resources_list">
-                {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION'%}
-                    <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                {% endfor %}
-            </p>
-        <h3>Post-translational Modifications</h3>
-            <p id="modifications_resources_list">
-                {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS'%}
-                    <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                {% endfor %}
-            </p>
+        
+        <div class="panel">
+            <h3>Homologs</h3>
+                <p id='homolog_resources_list'>
+                    {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}
+                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            <h3>Protein Databases/Other</h3>
+                <p id='protein_databases_resources_list'>
+                    {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
+                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            <h3>Localization</h3>
+                <p id="localization_resources_list">
+                    {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION'%}
+                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            <h3>Post-translational Modifications</h3>
+                <p id="modifications_resources_list">
+                    {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS'%}
+                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+        </div>
     </section>
     </div>
 </div>

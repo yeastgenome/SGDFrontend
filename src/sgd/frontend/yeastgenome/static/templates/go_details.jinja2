@@ -69,13 +69,15 @@
                 literature, as well as computational, or predicted, annotations.
             </p>
     </h2>
+    
+    <div class="panel">
+        <!-- Includes go_overview.html into template -->
+        {% include "go_overview.jinja2" %}
 
-    <!-- Includes go_overview.html into template -->
-    {% include "go_overview.jinja2" %}
-
-    <ul class="button-group radius">
-        <li><a id="go_download_all" class="small button secondary"><i class="fa fa-download"></i> Download All Annotations (.txt)</a></li>
-    </ul>
+        <ul class="button-group radius">
+            <li><a id="go_download_all" class="small button secondary"><i class="fa fa-download"></i> Download All Annotations (.txt)</a></li>
+        </ul>
+    </div>
 </section>
 
 <!-- Manually Curated
@@ -96,26 +98,29 @@
             </p>
         </h2>
         <p><strong>Date Last Reviewed:</strong> {{locus.go_overview.date_last_reviewed.text}}</p>
-        <p style="display:none" id="manual_message">There are no manually curated annotations
-        for {{ locus.display_name }}.</p>
-        <div id="mc_bp_go">
-                            <h2 class="subheader">Biological Process <span id="mc_bp_go_table_header" class="round secondary label"></span></h2>
+        
+        <div class="panel">
+            <p style="display:none" id="manual_message">There are no manually curated annotations
+            for {{ locus.display_name }}.</p>
+            <div id="mc_bp_go">
+                <h2 class="subheader">Biological Process <span id="mc_bp_go_table_header" class="round secondary label"></span></h2>
 
-            <!-- Includes go_table into template -->
-            {% set table_id = "mc_bp_go_table" %}
-            {% include "go_table.jinja2" %}
+                <!-- Includes go_table into template -->
+                {% set table_id = "mc_bp_go_table" %}
+                {% include "go_table.jinja2" %}
+            </div>
         </div>
-
-        <div id="mc_mf_go">
-                            <h2 class="subheader">Molecular Function <span id="mc_mf_go_table_header" class="round secondary label"></span></h2>
+        
+        <div id="mc_mf_go" class="panel">
+            <h2 class="subheader">Molecular Function <span id="mc_mf_go_table_header" class="round secondary label"></span></h2>
 
             <!-- Includes go_table into template -->
             {% set table_id = "mc_mf_go_table" %}
             {% include "go_table.jinja2" %}
         </div>
 
-        <div id="mc_cc_go">
-                            <h2 class="subheader">Cellular Component <span id="mc_cc_go_table_header" class="round secondary label"></span></h2>
+        <div id="mc_cc_go" class="panel">
+            <h2 class="subheader">Cellular Component <span id="mc_cc_go_table_header" class="round secondary label"></span></h2>
 
             <!-- Includes go_table into template -->
             {% set table_id = "mc_cc_go_table" %}
@@ -145,24 +150,24 @@
          <p id="htp_message" style="display:none">There are no high-throughput annotations
         for {{ locus.display_name }}.</p>
 
-        <div id="htp_bp_go">
-                            <h2 class="subheader">Biological Process <span id="htp_bp_go_table_header" class="round secondary label"></span></h2>
+        <div id="htp_bp_go" class="panel">
+            <h2 class="subheader">Biological Process <span id="htp_bp_go_table_header" class="round secondary label"></span></h2>
 
             <!-- Includes go_table into template -->
             {% set table_id = "htp_bp_go_table" %}
             {% include "go_table.jinja2" %}
         </div>
 
-        <div id="htp_mf_go">
-                            <h2 class="subheader">Molecular Function <span id="htp_mf_go_table_header" class="round secondary label"></span></h2>
+        <div id="htp_mf_go" class="panel">
+            <h2 class="subheader">Molecular Function <span id="htp_mf_go_table_header" class="round secondary label"></span></h2>
 
             <!-- Includes go_table into template -->
             {% set table_id = "htp_mf_go_table" %}
             {% include "go_table.jinja2" %}
         </div>
 
-        <div id="htp_cc_go">
-                            <h2 class="subheader">Cellular Component <span id="htp_cc_go_table_header" class="round secondary label"></span></h2>
+        <div id="htp_cc_go" class="panel">
+            <h2 class="subheader">Cellular Component <span id="htp_cc_go_table_header" class="round secondary label"></span></h2>
 
             <!-- Includes go_table into template -->
             {% set table_id = "htp_cc_go_table" %}
@@ -189,24 +194,24 @@
         <p id="comp_message" style="display:none">There are no computational annotations
         for {{ locus.display_name }}.</p>
         
-        <div id="comp_bp_go">
-                            <h2 class="subheader">Biological Process <span id="comp_bp_go_table_header" class="round secondary label"> </span></h2>
+        <div id="comp_bp_go" class="panel">
+            <h2 class="subheader">Biological Process <span id="comp_bp_go_table_header" class="round secondary label"> </span></h2>
 
             <!-- Includes go_table into template -->
             {% set table_id = "comp_bp_go_table" %}
             {% include "go_table.jinja2" %}
         </div>
 
-        <div id="comp_mf_go">
-                            <h2 class="subheader">Molecular Function <span id="comp_mf_go_table_header" class="round secondary label"></span></h2>
+        <div id="comp_mf_go" class="panel">
+            <h2 class="subheader">Molecular Function <span id="comp_mf_go_table_header" class="round secondary label"></span></h2>
 
             <!-- Includes go_table into template -->
             {% set table_id = "comp_mf_go_table" %}
             {% include "go_table.jinja2" %}
         </div>
 
-        <div id="comp_cc_go">
-                            <h2 class="subheader">Cellular Component <span id="comp_cc_go_table_header" class="round secondary label"></span></h2>
+        <div id="comp_cc_go" class="panel">
+            <h2 class="subheader">Cellular Component <span id="comp_cc_go_table_header" class="round secondary label"></span></h2>
 
             <!-- Includes go_table into template -->
             {% set table_id = "comp_cc_go_table" %}
@@ -225,8 +230,10 @@
             (green squares) that are shared between the given gene (yellow circle) and other genes (gray
             circles) based on the number of GO terms shared (adjustable using the slider at the bottom).
         </p></h2>
-        {% set network_id = "cy" %}
-        {% include "go_network.jinja2" %}
+        <div class="panel">
+            {% set network_id = "cy" %}
+            {% include "go_network.jinja2" %}
+        </div>
     </section>
 
     </div>

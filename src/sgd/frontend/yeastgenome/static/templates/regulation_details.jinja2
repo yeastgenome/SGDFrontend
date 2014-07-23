@@ -115,9 +115,11 @@
             accession ID, and the number of <i>S. cerevisiae</i> genes that share the same domain.
         </p>            
             <span id="domain_table_header" class="round secondary label"></span></h2>
-        <!-- Includes domain_table into template -->
-        {% set table_id = "domain_table" %}
-        {% include "domain_table.jinja2" %}
+        <div class="panel">
+            <!-- Includes domain_table into template -->
+            {% set table_id = "domain_table" %}
+            {% include "domain_table.jinja2" %}
+        </div>
     </section>
 
 <!-- Binding Sites
@@ -138,7 +140,7 @@
         </p>
         </h2>
 
-        <div>
+        <div class="panel">
             <ul id="binding_motifs"></ul>
             <h3>View predicted binding sites in the <a href="http://browse.yeastgenome.org/cgi-bin/gbrowse/scgenome/?name={{ locus.display_name }}_*&enable=SGD%20PMW%20motifs">Genome Browser</a></h3>
         </div>
@@ -162,10 +164,11 @@
             <span id="target_table_header" class="round secondary label"></span>
         </h2>
 
-
-        <!-- Includes regulation_table into template -->
-        {% set table_id = "target_table" %}
-        {% include "regulation_table.jinja2" %}
+        <div class="panel">
+            <!-- Includes regulation_table into template -->
+            {% set table_id = "target_table" %}
+            {% include "regulation_table.jinja2" %}
+        </div>
     </section>
 
 <!-- Enrichment
@@ -183,9 +186,11 @@
             </p>
             <span id="enrichment_table_header" class="round secondary label"></span>
         </h2>
-        <!-- Includes gene_list_table into template -->
-        {% set table_id = "enrichment_table" %}
-        {% include "enrichment_table.jinja2" %}
+        <div class="panel">
+            <!-- Includes gene_list_table into template -->
+            {% set table_id = "enrichment_table" %}
+            {% include "enrichment_table.jinja2" %}
+        </div>
     </section>
 
 <!-- Regulators
@@ -204,9 +209,11 @@
             </p>
             <span id="regulator_table_header" class="round secondary label"></span>
         </h2>
-        <!-- Includes regulation_table into template -->
-        {% set table_id = "regulator_table" %}
-        {% include "regulation_table.jinja2" %}
+        <div>
+            <!-- Includes regulation_table into template -->
+            {% set table_id = "regulator_table" %}
+            {% include "regulation_table.jinja2" %}
+        </div>
     </section>
 
 <!-- Network Visualization
@@ -223,9 +230,10 @@
                 relationships between genes other than the given gene.
             </p>
         </h2>
-
-        {% set network_id = "cy" %}
-        {% include "regulation_network.jinja2" %}
+        <div class="panel">
+            {% set network_id = "cy" %}
+            {% include "regulation_network.jinja2" %}
+        </div>
     </section>
     </div><!-- .tab-content -->
 </div>

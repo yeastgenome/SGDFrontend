@@ -61,12 +61,14 @@
             linked to relevant genes and literature topics by SGD curators.
         </p>
     </h2>
-    <!-- Includes literature_overview.html into template -->
-    {% include "literature_overview.jinja2" %}
-    {% for alias in locus.aliases if alias.category == 'Uniform' or alias.category == 'Gene product' %}
-        {% if loop.first %}<p><strong>Aliases: </strong>{% endif %}
-        {{ alias.display_name }}{% if not loop.last %}, {% else %}</p>{% endif %}
-    {% endfor %}
+    <div class="panel">    
+        <!-- Includes literature_overview.html into template -->
+        {% include "literature_overview.jinja2" %}
+        {% for alias in locus.aliases if alias.category == 'Uniform' or alias.category == 'Gene product' %}
+            {% if loop.first %}<p><strong>Aliases: </strong>{% endif %}
+            {{ alias.display_name }}{% if not loop.last %}, {% else %}</p>{% endif %}
+        {% endfor %}
+    </div>
 </section>
 
 <!-- Primary
@@ -88,7 +90,7 @@
         {% include "reference_list.jinja2" %}
     </section>
 
-<!-- Network Visualization
+<!-- Related Literature / Network Visualization
 ================================================== -->
     <section id="network" data-magellan-destination="network">
         <h2>Related Literature
@@ -99,9 +101,11 @@
                 yellow circle).
             </p>
         </h2>
-        <!-- Includes literature_network into template -->
-        {% set network_id = "cy" %}
-        {% include "literature_network.jinja2" %}
+        <div class="panel">
+            <!-- Includes literature_network into template -->
+            {% set network_id = "cy" %}
+            {% include "literature_network.jinja2" %}
+        </div>
     </section>
 
 <!-- Additional

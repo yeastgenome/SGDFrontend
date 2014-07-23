@@ -7,3 +7,7 @@ http://smacss.com/book/type-theme
 	color: #fff;
 	@include background(linear-gradient(center top , #9190B7 0%, #615F8F 100%));
 }
+
+.panel .panel {
+    background-color: #fff;
+}
