@@ -92,8 +92,9 @@
                         {% endfor %}
                     </div>
                 </div>
-            <br>
+                <br>
                 <div id="reference_label_chart"></div>
+                <div id="subfeature_wrapper">
                 <h3 class="subheader">Subfeatures - S288C <span id="subfeature_table_header" class="round secondary label"></span></h3>
                 <div id="reference_sublabel_chart"></div>
 
@@ -102,6 +103,7 @@
                 {% set include_relative = True %}
                 {% set include_version = True %}
                 {% include "chromosomal_coord_table.jinja2" %}
+                </div>
 
                 <h3 class="subheader">Sequence - S288C
                     <a href="#" data-dropdown="reference_sequence_help"><i class="fa fa-question-circle"></i></a>
@@ -147,7 +149,10 @@
                      <a href="#" data-dropdown="alternative_location_help"><i class="fa fa-question-circle"></i></a>
 
                     <p id="alternative_location_help" class="f-dropdown content medium" data-dropdown-content>
-                       Depicts genomic context; mouse over to view names, coordinates, and brief descriptions.
+                        Depicts genomic context; mouse over to view names, coordinates, and brief descriptions. Genomic
+                        features for Alternative Reference Strains were determined computationally from the S288C
+                        Reference using BLAT-based Batch Coordinate Conversion (liftOver) and may contain duplicate
+                        annotations. These data are preliminary and subject to change without notice.
                     </p>
                 </h3>
                 <div id="alternative_contig"></div>

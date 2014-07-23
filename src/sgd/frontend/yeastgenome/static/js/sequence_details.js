@@ -31,9 +31,16 @@ $(document).ready(function() {
                 chromosome = dna_data[i]['contig']['display_name'];
                 $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['start'] + ' - ' + dna_data[i]['end']);
 
-                draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
-                var subfeature_table = create_subfeature_table(dna_data[i]);
-                create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
+                if(dna_data[i]['tags'].length > 0) {
+                    draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
+                    var subfeature_table = create_subfeature_table(dna_data[i]);
+                    create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
+                }
+                else {
+                    $("#subfeature_wrapper").hide();
+                }
+
+
             }
             else {
                 var option = document.createElement("option");
@@ -455,25 +462,26 @@ function draw_sublabel_chart(chart_id, data) {
         }
         var end = data[i]['relative_end']*100;
         var name = data[i]['display_name'];
-        data_array.push([display_name, name, start, end]);
+        data_array.push(['Subfeatures', name, start, end]);
         labels[name] = true;
     }
     var start = 100;
     var end = seq_end*100 - seq_start*100 + 100;
-
+    var show_row_lables = false;
     if(data.length == 0 || data[0]['relative_start']*100 > start || data[data.length-1]['relative_end']*100 < end) {
         if(start == 100) {
             start = 0;
         }
-        data_array.push([display_name, display_name, start, end]);
+        data_array.unshift(['Locus', display_name, start, end]);
         labels[display_name] = true;
+        show_row_lables = true;
     }
     dataTable.addRows(data_array);
 
     var options = {
         'height': 1,
         'timeline': {'hAxis': {'position': 'none'},
-                    'showRowLabels': false},
+                    'showRowLabels': show_row_lables},
         'tooltip': {'isHTML': true}
     }
 
