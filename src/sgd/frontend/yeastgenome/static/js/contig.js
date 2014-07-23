@@ -126,10 +126,6 @@ function set_up_sequence(chart_id, data) {
     var height = $("#" + chart_id + " > div > div > div > svg").height() + 60;
     options['height'] = height;
     chart.draw(dataTable, options);
-
-    //Adjust chart to look more like genome browser
-    $("#" + chart_id + " > div > div > svg > g:first > path:last").attr('stroke', 'black');
-    $("#" + chart_id + " > div > div > svg > g:first > rect:last").attr('stroke', 'white');
 }
 
 function create_feature_table(data) {
