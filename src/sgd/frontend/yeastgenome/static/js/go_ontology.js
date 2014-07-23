@@ -61,7 +61,7 @@ var graph_style = cytoscape.stylesheet()
 		'width': 30,
 		'height': 30,
 		'border-color': '#fff',
-		'background-color': "grey",
+		'background-color': "#43a0df",
 		'text-outline-color': '#fff',
 		'color': '#888'
 	})
@@ -81,19 +81,19 @@ var graph_style = cytoscape.stylesheet()
 		'background-color': "#fade71",
 		'text-outline-color': '#fff',
 		'color': '#888'
-	})
-	.selector("node[sub_type='HAS_CHILDREN']")
-	.css(
-		{'background-color': "#165782"
-	})
-	.selector("node[sub_type='HAS_DESCENDANTS']")
-	.css(
-		{'background-color': "#43a0df"
-	})
-	.selector("node[sub_type='NO_DESCENDANTS']")
-	.css(
-		{'background-color': "#c9e4f6"
 	});
+//	.selector("node[sub_type='HAS_CHILDREN']")
+//	.css(
+//		{'background-color': "#165782"
+//	})
+//	.selector("node[sub_type='HAS_DESCENDANTS']")
+//	.css(
+//		{'background-color': "#43a0df"
+//	})
+//	.selector("node[sub_type='NO_DESCENDANTS']")
+//	.css(
+//		{'background-color': "#c9e4f6"
+//	});
 
 var layout = {
     "name": "breadthfirst",

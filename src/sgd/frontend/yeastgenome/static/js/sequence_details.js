@@ -245,6 +245,7 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
                 $(".google-visualization-tooltip-item").parent().parent().hide();
             }
             $(".google-visualization-tooltip-item").parent().parent().height('auto');
+            $(".google-visualization-tooltip-item").parent().parent().width(300);
 
         }
         google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
@@ -374,7 +375,7 @@ function make_sublabel_ready_handler(chart_id, chart, seq_start, seq_end, data, 
             var spans = $(".google-visualization-tooltip-action > span");
             if(spans.length > 2) {
                 spans[1].innerHTML = ' ' + datarow[2]/100 + '-' + datarow[3]/100;
-                spans[2].innerHTML = 'Length:';
+                spans[2].innerHTML = 'Length: ';
                 spans[3].innerHTML = ' ' + datarow[3]/100 - datarow[2]/100 + 1;
             }
         }
@@ -449,6 +450,9 @@ function draw_sublabel_chart(chart_id, data) {
 
     for (var i=0; i < data.length; i++) {
         var start = data[i]['relative_start']*100;
+        if(start == 100) {
+            start = 0;
+        }
         var end = data[i]['relative_end']*100;
         var name = data[i]['display_name'];
         data_array.push([display_name, name, start, end]);
@@ -458,6 +462,9 @@ function draw_sublabel_chart(chart_id, data) {
     var end = seq_end*100 - seq_start*100 + 100;
 
     if(data.length == 0 || data[0]['relative_start']*100 > start || data[data.length-1]['relative_end']*100 < end) {
+        if(start == 100) {
+            start = 0;
+        }
         data_array.push([display_name, display_name, start, end]);
         labels[display_name] = true;
     }
