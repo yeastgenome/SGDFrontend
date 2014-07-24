@@ -29,6 +29,5 @@ Feature: RegulationDetails
         Then I should download a file named "GAL4_target_enrichment.txt"
         And I click the button with id "regulator_table_download"
         Then I should download a file named "GAL4_regulators.txt"
-        Then the button with id "analyze_targets" should be disabled
         And I click the button with id "analyze_targets"
         Then the table with id "gene_list_table" should have rows in it
