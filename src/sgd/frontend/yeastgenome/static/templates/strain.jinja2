@@ -39,7 +39,6 @@
                 <h2>Overview</h2>
                 <div class="panel">
                     <p id="summary_paragraph"></p>
-                    <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
 
                     <dl class="key-value">
                         {% if strain.status != None %}
@@ -55,6 +54,8 @@
                         <dt>Description</dt>
                         <dd>{{ strain.description }}</dd>
                     </dl>
+
+                    <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
                 </div>
             </div>
         </section>
