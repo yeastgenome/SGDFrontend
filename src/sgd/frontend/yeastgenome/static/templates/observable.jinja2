@@ -27,7 +27,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>Observable: <span class="gene_name">{{ observable.display_name }}</span></h2>
+	<h1>Observable: <span class="gene_name">{{ observable.display_name }}</span></h1>
 </div>
 
 <div class="row">
@@ -41,28 +41,33 @@
 
         <script>
             add_navbar_title('Observable: <span class="gene_name">{{ observable.display_name }}</span>')
-            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Overview', 'overview');
             add_navbar_element('Ontology Diagram', 'ontology');
             add_navbar_element('Annotations', 'annotations');
         </script>
 <!-- Summary
 ================================================== -->
-        <section id="summary" data-magellan-destination="summary">
+        <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Summary</h1>
-                <ul class="unstyled">
-                    <li><strong>Description: </strong>{{ observable.description }}</li>
-                    <li><strong>Qualifiers: </strong>
-                        {% for phenotype in observable.phenotypes %}
-                            <span><a href="{{ phenotype.link|e }}">{{ phenotype.qualifier|e }}</a></span>{% if not loop.last %}, {% endif %}
-                        {% endfor %}
-                    </li>
-                </ul>
+                <h2>Overview</h2>
+                <div class="panel">
+                    <dl class="key-value">
+                        <dt>Description</dt>
+                        <dd>{{ observable.description }}</dd>
 
-                <div class="panel" id="summary_wrapper">
-                    <div class="row">
-                        <div class="large-6 columns" id="mutant_experiment_chart"></div>
-                        <div class="large-6 columns" id="strain_chart" ></div>
+                        <dt>Qualifiers</dt>
+                        <dd>
+                            {% for phenotype in observable.phenotypes %}
+                            <span><a href="{{ phenotype.link|e }}">{{ phenotype.qualifier|e }}</a></span>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </dd>
+                    </dl>
+
+                    <div class="panel" id="summary_wrapper">
+                        <div class="row">
+                            <div class="large-6 columns" id="mutant_experiment_chart"></div>
+                            <div class="large-6 columns" id="strain_chart" ></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -72,20 +77,22 @@
 ================================================== -->
         <section id="ontology" data-magellan-destination="ontology">
             <div class="page-header">
-                <h1>Ontology Diagram</h1>
-                <!-- Includes phenotype_table into template -->
-                {% set network_id = "cy" %}
-                {% include "phenotype_ontology_network.jinja2" %}
-                <div id="children_wrapper">
-                    <strong>Child Terms:</strong>
-                    <p>
-                        <span id="children"></span>
-                        <a id="children_see_more_button" onclick="$('#children_see_more').show();$('#children_see_more_button').hide();$('#children_see_less_button').show();"> ... <i class="fa fa-arrow-circle-right"></i> Show all</a>
-                        <span id="children_see_more" hidden></span>
-                        <a id="children_see_less_button" onclick="$('#children_see_more').hide();$('#children_see_more_button').show();$('#children_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
-                    </p>
+                <h2>Ontology Diagram</h2>
+                <div class="panel">
+                    <!-- Includes phenotype_table into template -->
+                    {% set network_id = "cy" %}
+                    {% include "phenotype_ontology_network.jinja2" %}
+                    <div id="children_wrapper">
+                        <br>
+                        <strong>Child Terms:</strong>
+                        <p>
+                            <span id="children"></span>
+                            <a id="children_see_more_button" onclick="$('#children_see_more').show();$('#children_see_more_button').hide();$('#children_see_less_button').show();"> ... <i class="fa fa-arrow-circle-right"></i> Show all</a>
+                            <span id="children_see_more" hidden></span>
+                            <a id="children_see_less_button" onclick="$('#children_see_more').hide();$('#children_see_more_button').show();$('#children_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
+                        </p>
+                    </div>
                 </div>
-                <br>
             </div>
         </section>
 
@@ -93,7 +100,7 @@
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Annotations <span id="phenotype_table_header" class="round secondary label"></span></h1>
+                <h2>Annotations <span id="phenotype_table_header" class="round secondary label"></span></h2>
                 <!-- Includes phenotype_table into template -->
                 {% set table_id = "phenotype_table" %}
                 {% include "phenotype_table.jinja2" %}

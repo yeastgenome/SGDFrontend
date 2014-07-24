@@ -117,6 +117,10 @@ function create_literature_list(list_id, data, topic) {
     if(count > 0) {
         primary_list.show();
     }
+    else {
+        $("#" + list_id + "_list_header").hide()
+
+    }
 }
 
 function create_interaction_table(data) {

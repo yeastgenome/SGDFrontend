@@ -140,8 +140,7 @@ function create_feature_table(data) {
                         data[i]['strand']
                         ]);
     }
-
-    $("#chromosomal_coord_table_header").html(datatable.length);
+    set_up_header('chromosomal_coord_table', datatable.length, 'feature', 'features');
 
     set_up_range_sort();
 

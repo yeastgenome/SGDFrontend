@@ -19,7 +19,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>Domain: <span class="gene_name">{{ domain.display_name }}</span></h2>
+	<h1>Domain: <span class="gene_name">{{ domain.display_name }}</span></h1>
 </div>
 
 <!-- Navbar
@@ -33,27 +33,32 @@
 
         <script>
             add_navbar_title('Domain: <span class="gene_name">{{ domain.display_name }}</span>');
-            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Overview', 'overview');
             add_navbar_element('Annotations', 'annotations');
         </script>
 
         <!-- Summary
         ================================================== -->
-        <section id="summary" data-magellan-destination="summary">
+        <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Summary</h1>
-                <ul class="unstyled">
-                    <li>
+                <h2>Overview</h2>
+                <div class="panel">
+                    <dl class="key-value">
                         {% for url in domain.urls %}
-                           {% if loop.first %}<strong>Accession ID: </strong>{% endif %}
-                           <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %}, {% endif %}
+                            {% if loop.first %}<dt>Accession ID</dt><dd>{% endif %}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %}, {% else %}</dd>{% endif %}
                         {% endfor %}
-                    </li>
-                    <li><strong>Source: </strong>{{ domain.source.display_name }}</li>
-                    {%  if domain.description != none %}
-                        <li><strong>Description: </strong>{{ domain.description }}</li>
-                    {%  endif %}
-                </ul>
+
+                        <dt>Source</dt>
+                        <dd>{{ domain.source.display_name }}</dd>
+
+                        {%  if domain.description != none %}
+                            <dt>Description</dt>
+                            <dd>{{ domain.description }}</dd>
+                        {%  endif %}
+
+                    </dl>
+                </div>
             </div>
         </section>
 
@@ -61,10 +66,12 @@
         ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Annotations <span id="domain_table_header" class="round secondary label"></span></h1>
-                <!-- Includes domain_table into template -->
-                {% set table_id = "domain_table" %}
-                {% include "domain_table.jinja2" %}
+                <h2>Annotations <span id="domain_table_header" class="round secondary label"></span></h2>
+                <div class="panel">
+                    <!-- Includes domain_table into template -->
+                    {% set table_id = "domain_table" %}
+                    {% include "domain_table.jinja2" %}
+                </div>
             </div>
         </section>
 
