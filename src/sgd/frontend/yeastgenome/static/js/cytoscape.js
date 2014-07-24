@@ -64,11 +64,8 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
         }
 	};
 
-	var recenter_button = document.createElement('a');
-	recenter_button.id = "cy_recenter";
-	recenter_button.className = "small button secondary radius";
-	recenter_button.innerHTML = "Reset";
-	recenter_button.onclick = function() {
+    var recenter_button = $('#' + div_id + '_recenter');
+    recenter_button.click(function() {
 		var old_zoom_value = cy.zoomingEnabled();
 		cy.zoomingEnabled(true);
 		cy.reset();
@@ -76,10 +73,14 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 		    cy.layout().run();
         }
 		cy.zoomingEnabled(old_zoom_value);
-	};
-	cytoscape_div.before(recenter_button, cytoscape_div);
-	recenter_button.setAttribute('disabled', 'disabled');
+	});
+
 	return cy;
+}
+
+function create_cy_download_button(cy, button_id, download_url, file_name) {
+    $("#" + button_id).click(function() {post_to_url(download_url, {"display_name":file_name, 'data': cy.png()});});
+    $("#" + button_id).attr('disabled', false);
 }
 
 function create_slider(slider_id, graph, min, max, slide_f, stop) {
@@ -142,28 +143,28 @@ function create_slider_ticks(slider_tick_id, min, max, stop) {
     }
     $("#" + slider_tick_id).empty();
     if(max==min) {
-		var spacing =  92;
+		var spacing =  87;
 	    i = min-1
 	    var value = i+1;
 	    if(value >= stop) {
-	    	var left = (spacing * (i-min+1))+2
+	    	var left = (spacing * (i-min+1))+4.5
 	       	$('<span class="ui-slider-tick-mark muted">' +stop+ '+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
 	    }
 	    else {
-	    	var left = (spacing * (i-min+1))+3.5
+	    	var left = (spacing * (i-min+1))+6
 			$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
 		}
 	}
 	else {
-		var spacing =  92 / (max - min);
+		var spacing =  87 / (max - min);
 	    for (var i = min-1; i < max ; i=i+1) {
 	    	var value = i+1;
 	    	if(value >= stop) {
-	    		var left = (spacing * (i-min+1))+2
+	    		var left = (spacing * (i-min+1))+4.5
 	        	$('<span class="ui-slider-tick-mark muted">' +stop+ '+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
 	    	}
 	    	else {
-	    		var left = (spacing * (i-min+1))+3.5
+	    		var left = (spacing * (i-min+1))+6
 				$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
 	    	}
 		}
@@ -173,7 +174,9 @@ function create_slider_ticks(slider_tick_id, min, max, stop) {
 function create_discrete_filter(radio_id, graph, slider, target_filter, max_value) {
     var radio = $("#" + radio_id);
     radio.click(function() {
-        slider.update_new_max(max_value);
+        if(slider != null) {
+            slider.update_new_max(max_value);
+        }
         graph.filters['discrete'] = target_filter();
         graph.applyFilters();
     });

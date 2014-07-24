@@ -1,29 +1,21 @@
+{% extends "table.jinja2" %}
 
-<div>
-    <table class="table table-striped table-bordered table-condensed" id="{{ table_id }}">
-        <thead>
-        <tr>
-            <th hidden>Evidence ID</th>
-            <th hidden>Analyze ID</th>
-            <th>Gene</th>
-            <th hidden>Gene Systematic Name</th>
-            <th>Protein Coordinates</th>
-            <th>Accession ID</th>
-            <th>Description</th>
-            <th>Source</th>
-            <th># of Genes<br>with Domain</th>
-        </tr>
-        </thead>
-    </table>
-    
-    <div class="button-bar">
-        <ul class="button-group radius">
-            <li><a id="{{ table_id }}_download" class="small button secondary"><i class="fa fa-download"></i> Download (.txt)</a>
-            </li>
-        </ul>
-        <ul class="button-group radius">
-            <li><a disabled="true" id="{{ table_id }}_analyze" class="small button secondary" hidden><i
-                    class="fa fa-briefcase"></i> Analyze</a></li>
-        </ul>
-    </div>
-</div>
+{% block help %}
+    Increase the total number of rows showing on this page by using the pull-down located below the table, or use the
+    page scroll at the table's top right to browse through its pages; use the arrows to the right of a column header to
+    sort by that column; filter the table using the "Filter" box at the top of the table.
+{% endblock %}
+
+{% block columns %}
+    <th hidden>Evidence ID</th>
+    <th hidden>Analyze ID</th>
+    <th>Gene</th>
+    <th hidden>Gene Systematic Name</th>
+    <th>Protein Coordinates</th>
+    <th>Accession ID</th>
+    <th>Description</th>
+    <th>Source</th>
+    <th>No. of Genes<br>with Domain</th>
+{% endblock %}
+
+{% block additional_buttons %}{% endblock %}

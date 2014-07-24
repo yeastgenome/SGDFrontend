@@ -1,7 +1,8 @@
 google.load("visualization", "1", {packages:["corechart"]});
 
 var phosphodata = null;
-var current_residues = null;
+var current_residues = '';
+var current_strain = '';
 
 var source_to_color = {};
 
@@ -9,6 +10,12 @@ var source_to_color = {};
 $(document).ready(function() {
 
     $("#domain_table_analyze").hide();
+    $("#alias_table_analyze").hide();
+    $("#phosphorylation_table_analyze").hide();
+    $("#amino_acid_table_analyze").hide();
+    $("#amino_acid_table_download").hide();
+    $("#atomic_table_analyze").hide();
+    $("#atomic_table_download").hide();
 
     $.getJSON(sequence_details_link, function(sequence_data) {
         var protein_data = sequence_data['protein'];
@@ -29,16 +36,20 @@ $(document).ready(function() {
             function on_change(index) {
                 $("#sequence_residues").html(prep_sequence(protein_data[index]['residues']));
                 $("#strain_description").html(protein_data[index]['strain']['description']);
-                $("#navbar_sequence").children()[0].innerHTML = 'Sequence <span>' + '- ' + protein_data[index]['strain']['display_name'] + '</span>';
+                $("#phosphorylation_strain").html(protein_data[index]['strain']['display_name']);
+                $("#properties_strain").html(protein_data[index]['strain']['display_name']);
                 set_up_properties(protein_data[index]);
                 current_residues = protein_data[index]['residues'];
+                current_strain = protein_data[index]['strain']['display_name'];
                 draw_phosphodata();
-                $("#sequence_download").click(function f() {
-                    download_sequence(protein_data[index]['residues'], download_sequence_link, display_name, '');
-                });
             }
 
             strain_selection.change(function() {on_change(this.selectedIndex)});
+
+            $("#sequence_download").click(function f() {
+                download_sequence(current_residues, download_sequence_link, display_name, current_strain);
+            });
+
             on_change(0);
         }
         else {
@@ -60,7 +71,8 @@ $(document).ready(function() {
             $.getJSON(protein_domain_graph_link, function(protein_domain_graph_data) {
                 if(protein_domain_graph_data['nodes'].length > 1) {
                     var graph_style = prep_style();
-                    create_cytoscape_vis("cy", layout, graph_style, protein_domain_graph_data);
+                    var graph = create_cytoscape_vis("cy", layout, graph_style, protein_domain_graph_data);
+                    create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_protein_domain_graph')
 
                     var download_headers = ['', 'Gene', 'Domain'];
                     var download_data = [];
@@ -71,7 +83,7 @@ $(document).ready(function() {
                     for(var i=0; i < protein_domain_graph_data['edges'].length; i++) {
                         download_data.push(['', id_to_name[protein_domain_graph_data['edges'][i]['data']['target']], id_to_name[protein_domain_graph_data['edges'][i]['data']['source']]]);
                     }
-                    create_download_button_no_table('domain_network_download', download_headers, download_data, download_table_link, domain_network_filename);
+                    create_download_button_no_table('cy_txt_download', download_headers, download_data, download_table_link, domain_network_filename);
                 }
                 else {
                     $("#shared_domains").hide();
@@ -88,14 +100,16 @@ $(document).ready(function() {
 
     $.getJSON(ec_number_details_link, function(data) {
         if(data.length > 0) {
-            var ec_number_html = "<strong>Enzyme Commission (EC) Number:</strong> ";
+            $("#protein_overview").append('<dt>Enzyme Commission (EC) Number</dt>');
+
+            var ec_number_html = '';
             for (var i=0; i < data.length; i++) {
                 ec_number_html = ec_number_html + "<a href='" + data[i]['ecnumber']['link'] + "'>" + data[i]['ecnumber']['display_name'] + "</a>";
                 if(i != data.length-1) {
                     ec_number_html = ec_number_html + ', ';
                 }
             }
-            $("#ec_number").html(ec_number_html)
+            $("#protein_overview").append('<dd>' + ec_number_html + '</dd>');
         }
 	});
 
@@ -396,6 +410,7 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
                     spans[2].innerHTML = '';
                     spans[3].innerHTML = '';
                 }
+                $(".google-visualization-tooltip-item").parent().parent().height('auto');
             }
         }
         google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);

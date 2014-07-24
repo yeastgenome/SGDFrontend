@@ -16,6 +16,7 @@
 	var download_table_link = "{{download_table_link}}";
     var download_sequence_link = "{{download_sequence_link}}";
 	var analyze_link = "{{analyze_table_link}}";
+    var download_network_link = "{{download_network_link}}";
 
     var domains_table_filename = "{{ locus.display_name }}_domains";
     var alias_table_filename = "{{ locus.display_name }}_external_ids";
@@ -34,7 +35,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Protein Information</h2>
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
 <!-- Tabs
@@ -54,8 +55,8 @@
 
         <script>
         //Set up navbar
-            add_navbar_title('<a href="{{ locus.link }}">{{ locus.display_name }}/{{ locus.format_name }}</a> Protein');
-            add_navbar_element('Summary', 'summary');
+            add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</a>');
+            add_navbar_element('Protein Overview', 'overview');
             add_navbar_element('Experimental Data', 'experiment');
             add_navbar_element('Domains and Classification', 'domain');
             add_navbar_element('Sequence', 'sequence');
@@ -63,182 +64,309 @@
             add_navbar_element('Resources', 'resources');
         </script>
 
-        <!-- Includes protein_overview.html into template -->
-        {% include "protein_overview.jinja2" %}
-
-        <!-- Experimental Data
+<!-- Overview
 ================================================== -->
-        <section id="experiment" data-magellan-destination="experiment">
-            <div class="page-header">
-                <h1>Experimental Data</h1>
-                <!-- Includes domain_table into template -->
-                {% set table_id = "protein_experiment_table" %}
-                {% include "protein_experiment_table.jinja2" %}
+    <section id="overview" data-magellan-destination="overview">
+        <a href="/help/function-help/protein-information" name="top" class="documentation-link">Protein Help <i class="fa fa-question-circle"></i></a>
+        <h2>Protein Overview
+            <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
+
+            <div id="summary_info" class="f-dropdown content medium" data-dropdown-content>
+                <p>Protein abundance data, domains, shared domains with other proteins, protein sequence retrieval
+                    for
+                    various strains, sequence-based physico-chemical proterties, phosphorylation sites, and external
+                    identifiers for the protein.</p>
             </div>
-        </section>
+        </h2>
+        <div class="panel">
+            <!-- Includes protein_overview.html into template -->
+            {% include "protein_overview.jinja2" %}
+        </div>
+    </section>
+
+<!-- Experimental Data
+================================================== -->
+    <section id="experiment" data-magellan-destination="experiment">
+        <h2>Experimental Data</h2>
+        <div class="panel">
+            <!-- Includes domain_table into template -->
+            {% set table_id = "protein_experiment_table" %}
+            {% include "protein_experiment_table.jinja2" %}
+        </div>
+    </section>
 
 <!-- Domains
 ================================================== -->
-        <section id="domain" data-magellan-destination="domain">
-            <div class="page-header">
-                <h1>Domains and Classification <span id="domain_table_header" class="round secondary label"></span></h1>
-                <!-- Includes domain_table into template -->
-                {% set table_id = "domain_table" %}
-                {% include "domain_table.jinja2" %}
+    <section id="domain" data-magellan-destination="domain">
+        <h2>Domains and Classification 
+            <a href="#" data-dropdown="domain_info"><i class="fa fa-info-circle"></i></a>
 
-                <div id="domain_locations">
-                    <h2  class="subheader">Domain Locations</h2>
-                    <div id="domain_chart"></div>
-                </div>
+            <p id="domain_info" class="f-dropdown content medium" data-dropdown-content>
+                Collection of domains associated with the protein based on various sources; includes protein
+                coordinates for the domain, a domain Description, a Source and corresponding
+                accession ID, and the number of <i>S. cerevisiae</i> genes that share the same domain.
+            </p>
+            <span id="domain_table_header" class="round secondary label"></span>
+        </h2>
+        
+        <div class="panel">
+            <!-- Includes domain_table into template -->
+            {% set table_id = "domain_table" %}
+            {% include "domain_table.jinja2" %}
+        </div>
+        
+        <div id="domain_locations" class="panel">
+            <h3>Domain Locations
+                <a href="#" data-dropdown="domain_location_info"><i class="fa fa-info-circle"></i></a>
 
-                <div id="shared_domains">
-                    <h2 id="network" class="subheader">Shared Domains</h2>
-                    <div class="panel">
-                        <div id="cy" name="cy" style="width:100%;height:500px"></div>
-                    </div><!-- .panel -->
-                    <ul class="button-group radius">
-                        <li><a id="domain_network_download" class="small button secondary"><i class="fa fa-download"></i> Download Shared Domains (.txt)</a></li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+                <p id="domain_location_info" class="f-dropdown content medium" data-dropdown-content>
+                    Visual representation of the locations of the domains within the protein, as listed in
+                    the Domains and Classification table. Each row displays the domain(s) derived from a
+                    different Source, with domains color-coded according to this Source.
+                </p>
+
+                <a href="#" data-dropdown="domain_location_help"><i class="fa fa-question-circle"></i></a>
+
+                <p id="domain_location_help" class="f-dropdown content medium" data-dropdown-content>
+                    Scroll over a domain to view its exact coordinates and its Description.
+                </p>
+            </h3>
+        <div id="domain_chart" class="panel"></div>
+        </div>
+
+        <div id="shared_domains" class="panel">
+            <h3 id="network">Shared Domains
+                <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
+
+                <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
+                    This diagram displays domains (colored squares) shared between the given protein (yellow circle)
+                    and other proteins (gray circles); the domains are color-coded according to their source, as
+                    displayed in the Domain Locations table, above.
+                </p>
+            </h3>
+
+            {% set network_id = "cy" %}
+            {% include "domain_network.jinja2" %}
+        </div>
+    </section>
 
 <!-- Sequence
 ================================================== -->
         <section id="sequence" data-magellan-destination="sequence">
-            <div class="page-header">
-                <h1>Sequence</h1>
-                <p id="sequence_section_message" hidden>This locus is not translated into a protein.</p>
-                <div id="sequence_section">
-                    <label><h3>Strain</h3>
-                        <select id="strain_selection" class="large-3"></select> - <span id="strain_description"></span>
-                    </label>
+            <h2>Sequence
+                <a href="#" data-dropdown="sequence_info"><i class="fa fa-info-circle"></i></a>
 
-                    <pre><blockquote id="sequence_residues" style="font-family:Monospace; font-size:large"></blockquote></pre>
-                    <p>* Red amino acids indicate phosphorylation sites. More information below.</p>
-                    
-                    <div class="button-bar">
+                <p id="sequence_info" class="f-dropdown content medium" data-dropdown-content>
+                    Protein sequence for the given gene in S288C and other strains, when available. Amino acids
+                    displayed in red represent phosphorylation sites, as curated by <a href="http://www.phosphogrid.org/" target="_blank">PhosphoGRID</a>. More detailed
+                    evidence for these phosphorylation sites is presented in the Phosphorylation Sites table,
+                    located just below the protein sequence.
+                </p>
+
+                <a href="#" data-dropdown="sequence_help"><i class="fa fa-question-circle"></i></a>
+
+                <p id="sequence_help" class="f-dropdown content medium" data-dropdown-content>
+                    Use the pull-down menu under "Strain" to select the sequence for a specific strain. The
+                    sequence for that strain will appear and can then be downloaded as a .txt file.
+                    Phosphorylated residues, as curated by <a href="http://www.phosphogrid.org/" target="_blank">PhosphoGRID</a>, are shown in red if the residues are
+                    present in the selected strain, and are further detailed in the "Phosphorylation Sites" table
+                    below the sequence. Note that a residue marked as phosphorylated has not necessarily been
+                    shown to be phosphorylated in a specific strain.
+                </p>
+            </h2>
+            
+        <div class="panel">
+            <p id="sequence_section_message" hidden>This locus is not translated into a protein.</p>
+            <div id="sequence_section">
+            <label><h3>Strain</h3>
+                <select id="strain_selection" class="large-3"></select> - <span id="strain_description"></span>
+            </label>
+
+            <div class="panel">
+                <pre><blockquote id="sequence_residues"
+                                 style="font-family:Monospace; font-size:large"></blockquote></pre>
+                <p>* Red amino acids indicate phosphorylation sites. More information below.</p>
+
+                <div class="button-bar">
+                    <ul class="button-group radius">
+                        <li><a id="sequence_download" class="small button secondary"><i class="fa fa-download"></i>
+                            Download Sequence (.txt)</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="phosphorylation_sites_wrapper" class="panel">
+                <h3>Phosphorylation Sites - <span id="phosphorylation_strain"></span>
+                    <a href="#" data-dropdown="phosphorylation_info"><i class="fa fa-info-circle"></i></a>
+
+                    <p id="phosphorylation_info" class="f-dropdown content medium" data-dropdown-content>
+                        Phosphorylation sites for the protein in the selected strain, based on the presence
+                        of a residue in the specific strain, as inferred from experimental evidence curated
+                        by <a href="http://www.phosphogrid.org/" target="_blank">PhosphoGRID</a>.
+                    </p>
+                    <span id="phosphorylation_table_header" class="round secondary label"></span>
+                </h3>
+                <!-- Includes phosphorylation_table into template -->
+                {% set table_id = 'phosphorylation_table' %}
+                {% include "phosphorylation_table.jinja2" %}
+            </div>
+
+            <div id="physicochemical_props" class="panel">
+                <h3>Sequence-Based Physico-chemical Properties - <span id="properties_strain">S288C</span>
+                    <a href="#" data-dropdown="properties_info"><i class="fa fa-info-circle"></i></a>
+
+                    <p id="properties_info" class="f-dropdown content medium" data-dropdown-content>
+                        Calculated protein properties, including amino acid composition, length, coding
+                        region calculations, and atomic composition.
+                    </p>
+                </h3>
+
+                <div class="row">
+                    <div class="small-12 large-6 columns content-column">
+                        <h3>Amino Acid Composition</h3>
+                        {% set table_id = "amino_acid_table" %}
+                        {% include "amino_acid_table.jinja2" %}
+
                         <ul class="button-group radius">
-                            <li><a id="sequence_download" class="small button secondary"><i class="fa fa-download"></i> Download (.txt)</a></li>
+                            <li><a id="protein_properties_download" class="small button secondary"><i
+                                    class="fa fa-download"></i> Download Properties (.txt)</a></li>
                         </ul>
                     </div>
+                    <div class="small-12 large-6 columns content-column">
+                        <h3>Physical Details</h3>
+                        <table class="table table-striped table-bordered table-condensed"
+                               id="physical_details_table" width="100%">
+                            <tbody>
+                            <tr>
+                                <td>Length (a.a):</td>
+                                <td id="length"></td>
+                            </tr>
+                            <tr>
+                                <td>Molecular Weight (Da):</td>
+                                <td id="molecular_weight"></td>
+                            </tr>
+                            <tr>
+                                <td>Isoelectric Point (pl):</td>
+                                <td id="pi"></td>
+                            </tr>
+                            <tr>
+                                <td>Formula:</td>
+                                <td id="formula"></td>
+                            </tr>
+                            <tr>
+                                <td>Aliphatic Index:</td>
+                                <td id="aliphatic_index"></td>
+                            </tr>
+                            <tr>
+                                <td>Instability Index:</td>
+                                <td id="instability_index"></td>
+                            </tr>
+                            </tbody>
+                        </table>
 
-                    <div id="phosphorylation_sites_wrapper">
-                        <h2 class="subheader">Phosphorylation Sites <span id="phosphorylation_table_header" class="round secondary label"></span></h2>
-                        <!-- Includes phosphorylation_table into template -->
-                        {% include "phosphorylation_table.jinja2" %}
-                    </div>
+                        <h3>Coding Region Translation Calculations</h3>
+                        <table class="table table-striped table-bordered table-condensed" id="coding_region_table"
+                               width="100%">
+                            <tbody>
+                            <tr>
+                                <td>Codon Bias:</td>
+                                <td id="codon_bias"></td>
+                            </tr>
+                            <tr>
+                                <td>Codon Adaptation Index:</td>
+                                <td id="cai"></td>
+                            </tr>
+                            <tr>
+                                <td>Frequence of Optimal Codons:</td>
+                                <td id="fop_score"></td>
+                            </tr>
+                            <tr>
+                                <td>Hydropathicity of Protein:</td>
+                                <td id="gravy_score"></td>
+                            </tr>
+                            <tr>
+                                <td>Aromaticity Score:</td>
+                                <td id="aromaticity_score"></td>
+                            </tr>
+                            </tbody>
+                        </table>
 
-                    <div id="physicochemical_props">
-                        <h2 class="subheader">Sequence-Based Physico-chemical Properties</h2>
+                        <h3>Extinction Coefficients at 280nm</h3>
+                        <table class="table table-striped table-bordered table-condensed"
+                               id="extinction_coeff_table" width="100%">
+                            <tbody>
+                            <tr>
+                                <td>ALL Cys residues appear as half cystines:</td>
+                                <td id="all_cys_ext_coeff"></td>
+                            </tr>
+                            <tr>
+                                <td>NO Cys residues appear as half cystines:</td>
+                                <td id="no_cys_ext_coeff"></td>
+                            </tr>
+                            </tbody>
+                        </table>
 
-                        <div class="row">
-                            <div class="small-12 large-6 columns content-column">
-                                <h3>Amino Acid Composition</h3>
-                                <table class="table table-striped table-bordered table-condensed" id="amino_acid_table" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Amino Acid</th>
-                                            <th>Frequency</th>
-                                            <th>Percentage</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                                <ul class="button-group radius">
-                                    <li><a id="protein_properties_download" class="small button secondary"><i class="fa fa-download"></i> Download Properties</a></li>
-                                </ul>
-                            </div>
-                            <div class="small-12 large-6 columns content-column">
-                                <h3>Physical Details</h3>
-                                <table class="table table-striped table-bordered table-condensed" id="physical_details_table" width="100%">
-                                    <tbody>
-                                        <tr><td>Length (a.a):</td><td id="length"></td></tr>
-                                        <tr><td>Molecular Weight (Da):</td><td id="molecular_weight"></td></tr>
-                                        <tr><td>Isoelectric Point (pl):</td><td id="pi"></td></tr>
-                                        <tr><td>Formula:</td><td id="formula"></td></tr>
-                                        <tr><td>Aliphatic Index:</td><td id="aliphatic_index"></td></tr>
-                                        <tr><td>Instability Index:</td><td id="instability_index"></td></tr>
-                                    </tbody>
-                                </table>
-
-                                <h3>Coding Region Translation Calculations</h3>
-                                <table class="table table-striped table-bordered table-condensed" id="coding_region_table" width="100%">
-                                    <tbody>
-                                        <tr><td>Codon Bias:</td><td id="codon_bias"></td></tr>
-                                        <tr><td>Codon Adaptation Index:</td><td id="cai"></td></tr>
-                                        <tr><td>Frequence of Optimal Codons:</td><td id="fop_score"></td></tr>
-                                        <tr><td>Hydropathicity of Protein:</td><td id="gravy_score"></td></tr>
-                                        <tr><td>Aromaticity Score:</td><td id="aromaticity_score"></td></tr>
-                                    </tbody>
-                                </table>
-
-                                <h3>Extinction Coefficients at 280nm</h3>
-                                <table class="table table-striped table-bordered table-condensed" id="extinction_coeff_table" width="100%">
-                                    <tbody>
-                                        <tr><td>ALL Cys residues appear as half cystines:</td><td id="all_cys_ext_coeff"></td></tr>
-                                        <tr><td>NO Cys residues appear as half cystines:</td><td id="no_cys_ext_coeff"></td></tr>
-                                    </tbody>
-                                </table>
-
-                                <h3>Atomic Composition</h3>
-                                <table class="table table-striped table-bordered table-condensed" id="atomic_table" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Atom</th>
-                                            <th>Frequency</th>
-                                            <th>Percentage</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
+                        <h3>Atomic Composition</h3>
+                        {% set table_id = "atomic_table" %}
+                        {% include "atomic_table.jinja2" %}
                     </div>
                 </div>
             </div>
-        </section>
+         </div>
+        </div>
+    </section>
 
 <!-- External IDs
 ================================================== -->
-        <section id="external_ids" data-magellan-destination="external_ids">
-            <div class="page-header">
-                <h1>External Identifiers <span id="alias_table_header" class="round secondary label"></span></h1>
+   <section id="external_ids" data-magellan-destination="external_ids">
+        <h2>External Identifiers 
+            <a href="#" data-dropdown="external_id_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="external_id_info" class="f-dropdown content medium" data-dropdown-content>
+                List of external identifiers for the protein from various database sources.
+            </p>
+            <span id="alias_table_header" class="round secondary label"></span>
+        </h2>
+            
+            <div class="panel">
                 <!-- Includes alias_table into template -->
                 {% set table_id = "alias_table" %}
                 {% include "alias_table.jinja2" %}
             </div>
-        </section>
+    </section>
 
 <!-- Resources
 ================================================== -->
         <section id="resources" data-magellan-destination="resources">
-            <div class="page-header">
-                <h1>Resources</h1>
-                <h3>Homologs</h3>
-                    <p>
-                        {% for url in locus.urls if url.category == 'Protein Information Homologs' or url.category == 'Analyze Sequence S288C vs. other species'%}
-                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-                <h3>Protein Databases/Other</h3>
-                    <p>
-                        {% for url in locus.urls if url.category == 'Protein databases/Other'%}
-                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-                <h3>Localization</h3>
-                    <p>
-                        {% for url in locus.urls if url.category == 'Localization Resources'%}
-                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-                <h3>Post-translational Modifications</h3>
-                    <p>
-                        {% for url in locus.urls if url.category == 'Post-translational modifications'%}
-                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-            </div>
-        </section>
+        <h2>Resources</h2>
+        
+        <div class="panel">
+            <h3>Homologs</h3>
+                <p id='homolog_resources_list'>
+                    {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}
+                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            <h3>Protein Databases/Other</h3>
+                <p id='protein_databases_resources_list'>
+                    {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
+                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            <h3>Localization</h3>
+                <p id="localization_resources_list">
+                    {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION'%}
+                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            <h3>Post-translational Modifications</h3>
+                <p id="modifications_resources_list">
+                    {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS'%}
+                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+        </div>
+    </section>
 
     </div>
 </div>

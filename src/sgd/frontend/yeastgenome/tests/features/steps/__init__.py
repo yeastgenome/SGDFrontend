@@ -34,23 +34,34 @@ def should_see_element_with_id_with_text(context, element_id, text):
 def title_should_be(context, title):
     assert context.browser.title == title, 'Wrong title'
 
-@step('the table with id "{table_id}" should have {num_rows} rows')
-def table_should_have_num_rows(context, table_id, num_rows):
+@step('the table with id "{table_id}" should have rows in it')
+def table_should_have_rows(context, table_id):
     try:
-        context.browser.find_element_by_id(table_id)
-        table_info = context.browser.find_element_by_id(table_id + '_info')
-        assert table_info.text == 'Showing 1 to ' + "{:,}".format(int(num_rows)) + ' of ' + "{:,}".format(int(num_rows)) + ' entries', 'Wrong number of rows in table: ' + table_info.text
-        summary_info = context.browser.find_element_by_id(table_id + '_header')
-        assert summary_info.text == str(num_rows), 'Wrong count in header.'
+        num_rows = len(context.browser.find_elements_by_xpath("//table[@id='" + table_id + "']/tbody/tr"))
+        assert num_rows > 1, 'Only ' + str(num_rows) + ' entries in table.'
     except NoSuchElementException:
         assert 0, 'No element with id.'
 
-@step('the limited table with id "{table_id}" should have {num_rows} rows')
-def limited_table_should_have_num_rows(context, table_id, num_rows):
+@step('the reference list with id "{reference_list_id}" should have rows in it')
+def reference_list_should_have_rows(context, reference_list_id):
     try:
-        context.browser.find_element_by_id(table_id)
-        table_info = context.browser.find_element_by_id(table_id + '_info')
-        assert table_info.text == 'Showing 1 to 10 of ' + num_rows + ' entries', 'Wrong number of rows in table.'
+        num_rows = len(context.browser.find_elements_by_xpath("//ul[@id='" + reference_list_id + "']/li"))
+        assert num_rows > 1, 'Only ' + str(num_rows) + ' entries in reference list.'
+    except NoSuchElementException:
+        assert 0, 'No element with id.'
+
+@step('the resource list with id "{resource_list_id}" should have rows in it')
+def resource_list_should_have_rows(context, resource_list_id):
+    try:
+        num_rows = len(context.browser.find_elements_by_xpath("//p[@id='" + resource_list_id + "']/a"))
+        assert num_rows > 0, 'Only ' + str(num_rows) + ' entries in resource list.'
+    except NoSuchElementException:
+        assert 0, 'No element with id.'
+
+@step('the network with id "{network_id}" should appear')
+def network_should_appear(context, network_id):
+    try:
+        assert len(context.browser.find_elements_by_xpath("//div[@id='" + network_id + "']/div/canvas")) == 7, 'Network not drawn.'
     except NoSuchElementException:
         assert 0, 'No element with id.'
 
@@ -70,3 +81,9 @@ def button_with_id_should_be_disabled(context, button_id):
 @step('I should download a file named "{filename}"')
 def download_a_file_named(context, filename):
     pass
+
+@step('I wait {num_sec} seconds')
+def wait(context, num_sec):
+    from time import sleep
+    sleep(float(num_sec))
+    assert True

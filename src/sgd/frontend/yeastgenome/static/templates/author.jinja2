@@ -36,15 +36,12 @@
         <section id="references" data-magellan-destination="references">
             <div class="page-header">
                 <h1>References <span id="references_header" class="label secondary round"></span></h1>
-                <p id="references_message" hidden>No citations for this author.</p>
-                <div id="references_wrapper">
-                    <a id="export_references" class="small radius button secondary"><i class="fa fa-download"></i> Download References (.nbib)</a>
-                    <ul id="references_list" class="literature-list">
-                    </ul>
-                </div>
+                <!-- Includes reference_list into template -->
+                {% set reference_list_id = "references_list" %}
+                {% set empty_message = "No citations for this author." %}
+                {% include "reference_list.jinja2" %}
             </div>
         </section>
-
     </div>
 </div>
 

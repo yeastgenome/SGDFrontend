@@ -1,9 +1,57 @@
 
-<ul class="unstyled">
+<dl class="key-value">
+    {% for alias in locus.aliases if alias.category == 'Uniform' %}
+        {% if loop.first %}
+            <dt>Aliases</dt>
+            <dd>{% endif %}
 
-    <li><strong>Strains: </strong>
-        {% for strain in sequence_overview %}
-            <a href="{{ strain.link|e }}">{{ strain.display_name|e }}</a>{% if not loop.last %}, {% endif %}
+        {{ alias.display_name }}
+
+        {% for evidence in alias.evidences %}
+            {% if loop.first %}
+                <a href="#" data-dropdown="drop_alias_{{ alias.id }}"><i
+                        class="fa fa-info-circle"></i></a>
+                <p id="drop_alias_{{ alias.id }}" class="f-dropdown content medium" data-dropdown-content>
+            {% endif %}
+        <a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a>{% if not loop.last %},
+        {% else %}
+            </p>
+        {% endif %}
         {% endfor %}
-    </li>
-</ul>
+        {% if not loop.last %},{% else %}</dd>{% endif %}
+    {% endfor %}
+
+    <dt>Feature Type</dt>
+    <dd>{{ locus.locus_type }}</dd>
+    {% for basic_info in locus.basic_info_references if info_key == 'Feature Type' %}
+        {% if loop.first %}
+            <a href="#" data-dropdown="drop_feature_type"><i
+                    class="fa fa-info-circle"></i></a>
+            <p id="drop_feature_type" class="f-dropdown content medium" data-dropdown-content>
+        {% endif %}
+    <a href="{{ basic_info.reference.link }}">{{ basic_info.reference.display_name }}</a>
+    {% if not loop.last %}
+        ,
+    {% else %}
+        </p>
+    {% endif %}
+    {% endfor %}
+
+    <dt>Description</dt>
+    <dd>
+        {{ locus.description }}
+        {% for reference in locus.description_references %}
+            {% if loop.first %}
+                <a href="#" data-dropdown="drop_description"><i
+                        class="fa fa-info-circle"></i></a>
+                <p id="drop_description" class="f-dropdown content medium" data-dropdown-content>
+            {% endif %}
+        <a href="{{ reference.link }}">{{ reference.display_name }}</a>
+        {% if not loop.last %}
+            ,
+        {% else %}
+            </p>
+        {% endif %}
+        {% endfor %}
+    </dd>
+</dl>

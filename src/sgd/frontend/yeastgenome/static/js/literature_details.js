@@ -2,18 +2,19 @@
 $(document).ready(function() {
 
   	$.getJSON(literature_details_link, function(data) {
-  	    set_up_reference_list("primary_header", "primary_list", "primary_message", "primary_wrapper", "export_primary", download_link, display_name + "_primary_citations", data['primary']);
-        set_up_reference_list("additional_header", "additional_list", "additional_message", "additional_wrapper", "export_additional", download_link, display_name + "_additional_citations", data['additional']);
-  		set_up_reference_list("review_header", "review_list", "review_message", "review_wrapper", "export_review", download_link, display_name + "_review_citations", data['review']);
-  		set_up_reference_list("go_header", "go_list", "go_message", "go_wrapper", "export_go", download_link, display_name + "_go_citations", data['go']);
-  		set_up_reference_list("phenotype_header", "phenotype_list", "phenotype_message", "phenotype_wrapper", "export_phenotype", download_link, display_name + "_phenotype_citations", data['phenotype']);
-  		set_up_reference_list("interaction_header", "interaction_list", "interaction_message", "interaction_wrapper", "export_interaction", download_link, display_name + "_interaction_citations", data['interaction']);
-  		set_up_reference_list("regulation_header", "regulation_list", "regulation_message", "regulation_wrapper", "export_regulation", download_link, display_name + "_regulation_citations", data['regulation']);
+  	    set_up_reference_list("primary_header", "primary_list", "primary_list_empty_message", "primary_list_wrapper", "primary_list_download", download_link, display_name + "_primary_citations", data['primary']);
+        set_up_reference_list("additional_header", "additional_list", "additional_list_empty_message", "additional_list_wrapper", "additional_list_download", download_link, display_name + "_additional_citations", data['additional']);
+  		set_up_reference_list("review_header", "review_list", "review_list_empty_message", "review_list_wrapper", "review_list_download", download_link, display_name + "_review_citations", data['review']);
+  		set_up_reference_list("go_header", "go_list", "go_list_empty_message", "go_list_wrapper", "go_list_download", download_link, display_name + "_go_citations", data['go']);
+  		set_up_reference_list("phenotype_header", "phenotype_list", "phenotype_list_empty_message", "phenotype_list_wrapper", "phenotype_list_download", download_link, display_name + "_phenotype_citations", data['phenotype']);
+  		set_up_reference_list("interaction_header", "interaction_list", "interaction_list_empty_message", "interaction_list_wrapper", "interaction_list_download", download_link, display_name + "_interaction_citations", data['interaction']);
+  		set_up_reference_list("regulation_header", "regulation_list", "regulation_list_empty_message", "regulation_list_wrapper", "regulation_list_download", download_link, display_name + "_regulation_citations", data['regulation']);
     });
 
   	$.getJSON(literature_graph_link, function(data) {
   		if(data['nodes'].length > 1) {
-  			create_cytoscape_vis("cy", layout, graph_style, data);
+  			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
+            create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_literature_graph')
   		}
 		else {
 			hide_section("network");

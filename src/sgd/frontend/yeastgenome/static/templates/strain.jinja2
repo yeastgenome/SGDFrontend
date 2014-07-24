@@ -53,15 +53,16 @@
             <section id="resources" data-magellan-destination="resources">
                 <div class="page-header">
                     <h1>Resources</h1>
-                    <ul id="resource_list">
-                        {% for resource in strain.urls if resource.category != 'source' %}
-                            <a href="{{ resource.link }}">{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
+
+                    <p id="resources_list">
+                        {% for resource in strain.urls|sort(attribute='display_name') if resource.category != 'source' %}
+                            <a href="{{ resource.link }}" {% if resource.category == 'pubmed' %}target="_blank"{% endif %}>{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
-                    </ul>
+                    </p>
 
                     {% for resource in strain.urls if resource.category == 'source' %}
-                        {% if loop.first %}<h3>Sources</h3>{% endif %}
-                        <a href="{{ resource.link }}">{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% if loop.first %}<h3>Sources</h3><p id="sources_resources_list">{% endif %}
+                        <a href="{{ resource.link }}" target="_blank">{{ resource.display_name }}</a>{% if not loop.last %} | {% else %}</p>{% endif %}
                     {% endfor %}
                 </div>
             </section>

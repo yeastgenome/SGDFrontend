@@ -1,0 +1,120 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oops! There's nothing here - Error 404</title>
+    <link rel="stylesheet" href="http://www.yeastgenome.org/static/css/normalize.css" />
+    <link rel="stylesheet" href="http://www.yeastgenome.org/static/css/style.css" />
+    <script src="http://www.yeastgenome.org/static/js/build/modernizr.min.js"></script>
+    <style>
+    .prefix-input {
+    border-bottom-right-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    }
+
+    #links {
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    #links > li {
+        display: inline-block;
+        float: none;
+    }
+
+    #links > li:first-child {
+        margin: 0;
+    }
+
+    #sgd-logo {
+        margin-right: 12px;
+        max-height: 100px;
+        position: relative;
+        top: -35px;
+    }
+
+    #sgd-maintenance-logo {
+        max-height: 100px;
+        position: relative;
+        top: 10px;
+        left: 2em;
+    }
+
+    #search-layout {
+        margin-top: 3.5em;
+    }
+
+    .error-head {
+        padding-top: 30px;
+        text-align: center;
+    }
+
+    .maintenance-content {
+        padding-top: 30px;
+    }
+
+    .error-head h1, .error-head h4 {
+        text-align: left;
+    }
+    .error-head div {
+        display: inline-block;
+    }
+    </style>
+  </head>
+  <body>
+    
+    <header class="row error-head">
+        <div>
+            <img id="sgd-logo" src="http://www.yeastgenome.org/static/img/SGD-Error-404.svg" alt="Error 404">
+        </div>
+        <div>
+            <h1>Oops! There's nothing here.</h1>
+            <h3>The URL may be mistyped or the page is no longer active.</h3>
+        </div>
+    </header>
+
+    <div class="row" id="search-layout">
+      <div class="small-12 large-6 large-centered columns">
+            <form method="get" class="no-margins" id="searchform" autocomplete="off" action="http://www.yeastgenome.org/cgi-bin/search/luceneQS.fpl">      
+                <div class="row collapse">
+                    <div class="large-10 columns">
+                        <input type="text" aria-haspopup="true" aria-autocomplete="list" role="textbox" autocomplete="off" placeholder="Search SGD" class="search-query radius prefix-input no-margins ui-autocomplete-input" name="query" id="txt_search">    
+                    </div>
+                    <div class="large-2 columns">
+                        <a onclick="document.getElementById('searchform').submit();" class="secondary button postfix radius" href="#"><i class="fa fa-search"></i></a>
+                    </div>
+                </div>
+            </form>
+      </div>
+    </div>
+
+     <div class="row">
+      <div class="small-12 large-8 large-centered columns">
+        <ul id="links" class="inline-list">
+            <li><a href="/">SGD Home</a></li>
+            <li><a href="/site-map">Site Map</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <script>
+    // print referral 'back' link if exists
+    (function(){
+        var referrer = document.referrer.toLowerCase();
+        if (referrer.length != 0) {
+            console.log(referrer);
+            $("#links").prepend("<li><a href='"+referrer+"'>Return to previous page</a></li>");
+        }
+    })();
+    </script>
+    
+    <script src="http://www.yeastgenome.org/static/js/build/jquery.min.js"></script>
+    <script src="http://www.yeastgenome.org/static/js/build/foundation.min.js"></script>
+    <script src="http://www.yeastgenome.org/javascript/search.js"></script>
+    <script>
+      $(document).foundation();
+    </script>
+  </body>
+</html>

@@ -44,8 +44,6 @@ $warning-color: #e6df67 !default;
 	font-size: em-calc(14);
 }
 
-h1,h2,h3,h4,h5,h6 { font-weight: bold; }
-
 button.small, .button.small {
     padding: 0.675rem 1.6rem 0.7375rem;  
 }
@@ -92,4 +90,27 @@ a[href*="sgd-dev"]:after,
 a[href*="fasolt"]:after,
 a[href*="pastry"]:after {
     content: none !important;
+}
+
+// Resize icons in headers to be of reasonable proportion
+h1 .fa-question-circle, 
+h1 .fa-info-circle,
+h2 .fa-question-circle, 
+h2 .fa-info-circle,
+h3 .fa-question-circle, 
+h3 .fa-info-circle {
+    font-size: 1rem;
+    vertical-align: text-top;
+    margin-top: 0.3em;
+}
+h3 .fa-question-circle, 
+h3 .fa-info-circle {
+    margin-top: 0.1em;
+}
+
+.documentation-link {
+    float: right;
+    position: relative;
+    top:3px;
+    line-height: 1.4em;
 }

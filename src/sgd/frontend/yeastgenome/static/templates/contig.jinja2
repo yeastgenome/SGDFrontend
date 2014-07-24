@@ -12,7 +12,7 @@
 	var display_name = "{{ contig.display_name }}";
     var link = "{{ contig.link }}";
     var format_name = "{{ contig.format_name }}";
-    var length = "{{ contig.length }}";
+    var length = {{ length }};
     var residues = "{{ contig.residues }}";
     var overview = {{ overview|safe }};
 
@@ -47,7 +47,7 @@
         <section id="summary" data-magellan-destination="summary">
             <div class="page-header">
                 <h1>Summary</h1>
-                <div id="piechart" style="height: 300px;"></div>
+                <div id="piechart" style="height: 350px;"></div>
                 <ul class="unstyled">
                     <li><strong>Strain: </strong>{{ contig.strain.display_name }}</li>
                     <li><strong>Length: </strong>{{ contig.residues|length }} bases</li>
@@ -71,6 +71,9 @@
 
                 <!-- Includes chromosomal_coord_table into template -->
                 {% set table_id = "chromosomal_coord_table" %}
+                {% set table_title = 'Feature Coordinates for ' + contig.display_name %}
+                {% set include_relative = False %}
+                {% set include_version = False %}
                 {% include "chromosomal_coord_table.jinja2" %}
             </div>
         </section>

@@ -266,6 +266,14 @@ function go_data_to_table(evidence, index) {
         reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
     }
 
+    var evidence_code = null;
+    if(evidence['experiment'] != null) {
+        evidence_code = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);;
+    }
+    else {
+        evidence_code = evidence['go_evidence'];
+    }
+
   	var with_entry = null;
 	var relationship_entry = null;
 
@@ -315,9 +323,6 @@ function go_data_to_table(evidence, index) {
 	  	}
 
   	}
-	var icon = create_note_icon(index, relationship_entry);
-
-  	var evidence_code = evidence['go_evidence'];
   	if(with_entry != null) {
   		evidence_code = evidence_code + ' with ' + with_entry;
   	}

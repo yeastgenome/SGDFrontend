@@ -2,22 +2,19 @@
 
 // For tabs, title above tabs, and gray bar
 #center_title {
-    padding-bottom: 10px;
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
     text-align: center;
-    h2 {
-		font-size: 20px !important;
-		margin: 10px 0 0;
-	}
+    h1 {
+        margin-bottom: 0;
+        font-size: 1.6125rem;
+    }
 }
 
 .gene_name {
     color: #980D0D;
     font-style: normal;
     font-weight: bold;
-}
-
-a.help {
-    vertical-align: super;
 }
 
 #tab {
@@ -33,7 +30,7 @@ a.help {
 #tab ul {
     list-style: none outside none;
     margin: 0;
-    padding: 10px 10px 0;
+    padding: 0 10px 0;
 }
 
 #tab #current {

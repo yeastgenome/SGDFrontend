@@ -22,6 +22,7 @@ $(document).ready(function() {
 	    if(data != null && data["nodes"].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
             var slider = create_slider("slider", graph, data["min_evidence_cutoff"], data["max_evidence_cutoff"], slider_filter);
+            create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_interaction_graph')
 
             if(data["max_phys_cutoff"] >= data["min_evidence_cutoff"] && data["max_gen_cutoff"] >= data["min_evidence_cutoff"]) {
                 create_discrete_filter("union_radio", graph, slider, all_filter, data["max_evidence_cutoff"]);

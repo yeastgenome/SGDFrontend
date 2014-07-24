@@ -1,13 +1,13 @@
 @browser
 Feature: InteractionDetails
 
-    Scenario Outline: Visit page
-        When I visit "/locus/?/literature" for <gene>
-        Then the title should be <title>
+    @basic
+    Scenario: Visit page
+        When I visit "/locus/?/literature" for "ACT1"
         And I should see an element with id "center_title"
         And I should see an element with id "sidebar"
 
-        And I should see an element with id "summary"
+        And I should see an element with id "overview"
         And I should see an element with id "primary"
         And I should see an element with id "network"
         And I should see an element with id "additional"
@@ -17,30 +17,30 @@ Feature: InteractionDetails
         And I should see an element with id "interaction"
         And I should see an element with id "regulation"
 
-        And I should see an element "primary_header" with text <primary_header_text>
-        And I should see an element "additional_header" with text <additional_header_text>
-        And I should see an element "review_header" with text <reviews_header_text>
-        And I should see an element "go_header" with text <go_header_text>
-        And I should see an element "phenotype_header" with text <phenotype_header_text>
-        And I should see an element "interaction_header" with text <interaction_header_text>
-        And I should see an element "regulation_header" with text <regulation_header_text>
+        And the reference list with id "primary_list" should have rows in it
+        And the reference list with id "additional_list" should have rows in it
+        And the reference list with id "review_list" should have rows in it
+        And the reference list with id "go_list" should have rows in it
+        And the reference list with id "phenotype_list" should have rows in it
+        And the reference list with id "interaction_list" should have rows in it
+        And the reference list with id "regulation_list" should have rows in it
+        And the network with id "cy" should appear
 
-    Examples:
-        | gene    | title               | primary_header_text               | additional_header_text    | reviews_header_text   | go_header_text    | phenotype_header_text | interaction_header_text   | regulation_header_text    |
-        | "ACT1"  | "ACT1 Literature"   | "238"                             | "671"                     | "135"                 | "20"              | "6"                   | "204"                     | "9"                       |
-
-    Scenario Outline: Click download buttons
-        When I visit "/locus/?/literature" for <gene>
-        And I click the button with id <button>
-        Then I should download a file named <filename>
-
-    Examples:
-        | gene    | button              | filename                          |
-        | "ACT1"  | "export_primary"    | "ACT1_primary_citations.nbib"     |
-        | "ACT1"  | "export_additional" | "ACT1_additional_citations.nbib"  |
-        | "ACT1"  | "export_review"    | "ACT1_review_citations.nbib"      |
-        | "ACT1"  | "export_go"         | "ACT1_go_citations.nbib"          |
-        | "ACT1"  | "export_phenotype"  | "ACT1_phenotype_citations.nbib"   |
-        | "ACT1"  | "export_interaction"| "ACT1_interaction_citations.nbib" |
-        | "ACT1"  | "export_regulation" | "ACT1_regulation_citations.nbib"  |
-
+    Scenario: Click download buttons
+        When I visit "/locus/?/literature" for "ACT1"
+        And I click the button with id "primary_list_download"
+        Then I should download a file named "ACT1_primary_citations.nbib"
+        And I click the button with id "additional_list_download"
+        Then I should download a file named "ACT1_additional_citations.nbib"
+        And I click the button with id "review_list_download"
+        Then I should download a file named "ACT1_review_citations.nbib"
+        And I click the button with id "go_list_download"
+        Then I should download a file named "ACT1_go_citations.nbib"
+        And I click the button with id "phenotype_list_download"
+        Then I should download a file named "ACT1_phenotype_citations.nbib"
+        And I click the button with id "interaction_list_download"
+        Then I should download a file named "ACT1_interaction_citations.nbib"
+        And I click the button with id "regulation_list_download"
+        Then I should download a file named "ACT1_regulation_citations.nbib"
+        And I click the button with id "cy_download"
+        Then I should download a file named "network.png"

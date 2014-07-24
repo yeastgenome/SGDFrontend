@@ -120,24 +120,6 @@ String.prototype.chunk = function(n) {
     return ret
 };
 
-function set_up_resources(resource_id, data) {
-	resource_list = document.getElementById(resource_id);
-	for (var i=0; i < data.length; i++) {
-		var a = document.createElement('a');
-		var linkText = document.createTextNode(data[i]['display_name']);
-		a.appendChild(linkText);
-		a.href = data[i]['link'];
-		a.target = '_blank';
-		resource_list.appendChild(a);
-
-        if(i != data.length-1) {
-            var span=document.createElement('span');
-		    span.innerHTML = ' | ';
-		    resource_list.appendChild(span);
-        }
-	}
-}
-
 function create_link(display_name, link, new_window) {
     if(link == null) {
         return display_name
@@ -361,27 +343,33 @@ function create_show_child_button(child_button_id, table, data, details_all_link
 }
 
 function create_table(table_id, options) {
-    if('oLanguage' in options) {
-        options['oLanguage']['sSearch'] = '<a href="#" data-dropdown="' + table_id + '_filter_drop"><i class="fa fa-info-circle"></i></a><div id="' + table_id + '_filter_drop" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37".</p></div> Filter:';
+    if ('oLanguage' in options) {
+        options['oLanguage']['sSearch'] = '<a href="#" data-options="align:left" data-dropdown="' + table_id + '_filter_drop"><i class="fa fa-question-circle"></i></a><div id="' + table_id + '_filter_drop" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37". To remove the filter, simply delete the text from the box. </p></div>';
     }
     else {
-        options['oLanguage'] = {'sSearch': '<a href="#" data-dropdown="' + table_id + '_filter_drop"><i class="fa fa-info-circle"></i></a><div id="' + table_id + '_filter_drop" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37".</p></div> Filter:'};
+        options['oLanguage'] = {'sSearch': '<a href="#" data-options="align:left" data-dropdown="' + table_id + '_filter_drop"><i class="fa fa-question-circle"></i></a><div id="' + table_id + '_filter_drop" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37". To remove the filter, simply delete the text from the box.</p></div>'
+        };
     }
     if('sDom' in options) {
-
+        // nothing? -Greg
     }
     else if(options['bPaginate'] || !('bPaginate' in options)) {
-        options['sDom'] = '<"clearfix" p<"left" f>rtl<"right" i>>';
+        options['sDom'] = '<"clearfix" <"dt-tools-head"<"left"><"right" f>>rt<"dt-tools-foot" il <"right" p>>>';
     }
     else {
-        options['sDom'] = '<"clearfix" <"left" f>>t<"clearfix" <"right" i>>';
+        //options['sDom'] = '<"clearfix" <"dt-tools-head"<"left"><"right" f>>t<"dt-tools-foot" i <"right">>>';
+        options['sDom'] = '<"clearfix" <"dt-tools-head"<"left"><"right" f>>t<"dt-tools-foot" <"right">>>';
     }
     options["bAutoWidth"] = false;
     setup_datatable_highlight();
   	table = $('#' + table_id).dataTable(options);
   	setup_datatable_highlight();
   	table.fnSearchHighlighting();
+  	$('.dataTables_filter input').attr("placeholder", "Filter table");
     $(document).foundation();
+
+    //$('#' + table_id).prev().children().first().append('<div class="right"><a href="#" data-dropdown="' + table_id + '_help"><i class="fa fa-question-circle"></i></a></div>');
+
   	return table;
 }
 
@@ -492,7 +480,7 @@ function create_download_button(download_button_id, table, download_link, name) 
   	        download_button.off('click');
   	    }
   	    else {
-  	        download_button.attr('disabled', false);
+  	        download_button.removeAttr('disabled');
   	        download_button.click(download_function);
   	    }
   	});
@@ -503,9 +491,10 @@ function create_download_button(download_button_id, table, download_link, name) 
   	    download_button.off('click');
   	}
   	else {
-  	    download_button.attr('disabled', false);
+  	    download_button.removeAttr('disabled');
   	    download_button.click(download_function);
   	}
+    download_button.removeAttr('disabled');
 }
 
 function create_download_button_no_table(download_button_id, headers, data, download_link, filename) {
@@ -615,13 +604,13 @@ function set_up_header(table_id, header_count, header_singular, header_plural, s
     if(header_count == 1) {
         header_label = header_singular;
     }
-    var header_text = header_count + ' <small>' + header_label + '</small>';
+    var header_text = header_count + ' ' + header_label + '';
     if(subheader_count != null) {
         var subheader_label = subheader_plural;
         if(subheader_count == 1) {
             subheader_label = subheader_singular;
         }
-        header_text = header_text + ' <small>for</small> ' + subheader_count + ' <small>' + subheader_label + '</small>';
+        header_text = header_text + ' for ' + subheader_count + ' ' + subheader_label;
     }
     $("#" + table_id + "_header").html(header_text);
 }

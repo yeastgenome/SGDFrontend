@@ -1,19 +1,34 @@
-
 <ul class="unstyled">
 
     <li id='summary_message' style='display:none'>0 GO Terms curated.</li>
 
-    <li><strong>GO Slim Terms:</strong>
+    <li><strong>GO Slim Terms
+        <a href="#" data-dropdown="go_slim_help"><i class="fa fa-info-circle"></i></a>
+
+        <p id="go_slim_help" class="f-dropdown content medium" data-dropdown-content>
+            The yeast GO Slim terms are higher level terms that best represent the major <i>S. cerevisiae</i> biological
+                processes, functions, and cellular components. The GO Slim terms listed here are the broader parent
+                terms for the specific terms to which this gene product is annotated, and thus represent the more
+                general processes, functions, and components in which it is involved.
+        </p>
+        :
+    </strong>
         {% for slim in go_overview.go_slim %}
-            {% if loop.index < 11 %}<span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
+            {% if loop.index < 11 %}<span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>
+                {% if not loop.last %}, {% endif %} {% endif %}
         {% endfor %}
 
-        <a id="see_more_button" onclick="$('#see_more').show();$('#see_more_button').hide();$('#see_less_button').show();" {% if go_overview.go_slim|length <= 10 %}hidden{% endif %}>... See more >></a>
+        <a id="see_more_button"
+           onclick="$('#see_more').show();$('#see_more_button').hide();$('#see_less_button').show();"
+           {% if go_overview.go_slim|length <= 10 %}hidden{% endif %}>... See more >></a>
         <span id="see_more" hidden>
             {% for slim in go_overview.go_slim %}
-                {% if loop.index >= 11 %}<span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
+                {% if loop.index >= 11 %}<span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>
+                    {% if not loop.last %}, {% endif %} {% endif %}
             {% endfor %}
         </span>
-        <a id="see_less_button" onclick="$('#see_more').hide();$('#see_more_button').show();$('#see_less_button').hide();" hidden> << See less</a>
+        <a id="see_less_button"
+           onclick="$('#see_more').hide();$('#see_more_button').show();$('#see_less_button').hide();" hidden> << See
+            less</a>
     </li>
 </ul>

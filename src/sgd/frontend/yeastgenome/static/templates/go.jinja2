@@ -11,6 +11,7 @@
 
 	var download_table_link = "{{download_table_link}}";
     var analyze_link = "{{analyze_table_link}}";
+    var download_network_link = "{{download_network_link}}";
 
 	var download_filename = "{{ go_term.display_name }}_annotations";
     var analyze_filename = "<a href='{{ go_term.link }}' class='gene_name'>{{ go_term.display_name }}</a> genes";
@@ -79,9 +80,9 @@
         <section id="ontology" data-magellan-destination="ontology">
             <div class="page-header">
                 <h1>Ontology Diagram</h1>
-                <div class="panel">
-                    <div id="cy" name="cy" style="width:100%;height:700px"></div>
-                </div>
+                {% set network_id = "cy" %}
+                {% include "go_ontology_network.jinja2" %}
+
                 <div id="children_wrapper">
                     <strong>Child Terms:</strong>
                     <p>
@@ -99,7 +100,7 @@
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Gene Ontology Annotations <span id="go_table_header" class="round secondary label"></span></h1>
+                <h1>Annotations <span id="go_table_header" class="round secondary label"></span></h1>
                 <!-- Includes go_table into template -->
                 {% set table_id = "go_table" %}
                 {% include "go_table.jinja2" %}

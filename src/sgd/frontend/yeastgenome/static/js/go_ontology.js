@@ -2,7 +2,8 @@
 $(document).ready(function() {
 
 	$.getJSON(ontology_graph_link, function(data) {
-  		create_cytoscape_vis("cy", layout, graph_style, data);
+  		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
+        create_cy_download_button(cy, "cy_download", download_network_link, display_name + '_go_ontology_graph')
 	});
 
     $.getJSON(go_details_link, function(data) {
@@ -60,7 +61,7 @@ var graph_style = cytoscape.stylesheet()
 		'width': 30,
 		'height': 30,
 		'border-color': '#fff',
-		'background-color': "grey",
+		'background-color': "#43a0df",
 		'text-outline-color': '#fff',
 		'color': '#888'
 	})
@@ -80,19 +81,19 @@ var graph_style = cytoscape.stylesheet()
 		'background-color': "#fade71",
 		'text-outline-color': '#fff',
 		'color': '#888'
-	})
-	.selector("node[sub_type='molecular function']")
-	.css(
-		{'background-color': "#7FBF7B"
-	})
-	.selector("node[sub_type='biological process']")
-	.css(
-		{'background-color': "#AF8DC3"
-	})
-	.selector("node[sub_type='cellular component']")
-	.css(
-		{'background-color': "#1F78B4"
-});
+	});
+//	.selector("node[sub_type='HAS_CHILDREN']")
+//	.css(
+//		{'background-color': "#165782"
+//	})
+//	.selector("node[sub_type='HAS_DESCENDANTS']")
+//	.css(
+//		{'background-color': "#43a0df"
+//	})
+//	.selector("node[sub_type='NO_DESCENDANTS']")
+//	.css(
+//		{'background-color': "#c9e4f6"
+//	});
 
 var layout = {
     "name": "breadthfirst",

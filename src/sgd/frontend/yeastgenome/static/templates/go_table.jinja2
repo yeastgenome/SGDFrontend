@@ -1,38 +1,33 @@
+{% extends "table.jinja2" %}
 
-<table class="table table-striped table-bordered table-condensed" id="{{ table_id }}">
-    <thead>
-    <tr>
-        <th hidden>Evidence ID</th>
-        <th hidden>Analyze ID</th>
-        <th>Gene</th>
-        <th hidden>Gene Systematic Name</th>
-        <th>Gene Ontology Term</th>
-        <th hidden>Gene Ontology Term ID</th>
-        <th>Qualifier</th>
-        <th>Aspect</th>
-        <th>Method</th>
-        <th>Evidence</th>
-        <th>Source</th>
-        <th>Assigned On</th>
-        <th>Annotation Extension</th>
-        <th>Reference</th>
-    </tr>
-    </thead>
-</table>
+{% block help %}
+    Increase the total number of rows showing on this page using the pull-down located below the table, or use the page
+    scroll at the table's top right to browse through the table's pages; use the arrows to the right of a column header
+    to sort by that column; filter the table using the "Filter" box at the top of the table.
+{% endblock %}
 
-<div class="button-bar">
+{% block columns %}
+    <th hidden>Evidence ID</th>
+    <th hidden>Analyze ID</th>
+    <th>Gene</th>
+    <th hidden>Gene Systematic Name</th>
+    <th>Gene Ontology Term</th>
+    <th hidden>Gene Ontology Term ID</th>
+    <th>Qualifier</th>
+    <th>Aspect</th>
+    <th>Method</th>
+    <th>Evidence</th>
+    <th>Source</th>
+    <th>Assigned On</th>
+    <th>Annotation Extension</th>
+    <th>Reference</th>
+{% endblock %}
+
+
+
+{% block additional_buttons %}
     <ul class="button-group radius">
         <li><a disabled="true" id="{{ table_id }}_show_children" class="small button secondary" style="display:none">Add
             Annotations to Child Terms</a></li>
     </ul>
-
-    <ul class="button-group radius">
-        <li><a disabled="true" id="{{ table_id }}_download" class="small button secondary"><i
-                class="fa fa-download"></i> Download (.txt)</a></li>
-    </ul>
-
-    <ul class="button-group radius">
-        <li><a disabled="true" id="{{ table_id }}_analyze" class="small button secondary"><i
-                class="fa fa-briefcase"></i> Analyze</a></li>
-    </ul>
-</div>
+{% endblock %}
