@@ -25,3 +25,7 @@ select[multiple] {
     height: auto;
     background-image: none;
 }
+
+button, .button {
+    margin: 0; // get rid of bottom margin
+}
