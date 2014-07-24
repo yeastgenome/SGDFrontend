@@ -813,7 +813,7 @@ $panel-bg: darken(#fff, 0.6%); //scale-color(#fff, $lightness: -5%);
 
 // We use these to set default inner padding and bottom margin
 // $panel-margin-bottom: rem-calc(20);
-// $panel-padding: rem-calc(20);
+$panel-padding: rem-calc(16);
 
 // We use these to set default font colors
 // $panel-font-color: #333;
