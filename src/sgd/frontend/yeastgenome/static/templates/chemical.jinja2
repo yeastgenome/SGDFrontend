@@ -19,7 +19,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>Chemical: <span class="gene_name">{{ chemical.display_name }}</span></h2>
+	<h1>Chemical: <span class="gene_name">{{ chemical.display_name }}</span></h1>
 </div>
 
 <!-- Navbar
@@ -33,30 +33,32 @@
 
         <script>
             add_navbar_title('Chemical: <span class="gene_name">{{ chemical.display_name }}</span>')
-            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Overview', 'overview');
             add_navbar_element('Phenotype Annotations', 'phenotype');
         </script>
 
         <!-- Summary
         ================================================== -->
-        <section id="summary" data-magellan-destination="summary">
+        <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Summary</h1>
-                <ul class="unstyled">
-                    <li><strong>Chemical Name: </strong>{{ chemical.display_name }}</li>
-                    {% if chemical.chebi_id != none %}
-                        <li>
-                            <strong>Chebi ID: </strong>
+                <h2>Overview</h2>
+                <div class="panel">
+                    <dl class="key-value">
+                        <dt>Chemical Name</dt>
+                        <dd>{{ chemical.display_name }}</dd>
+
+                        <dt>Chebi ID</dt>
+                        <dd>
                             {% if chemical.urls|length > 0 %}
-                                <a href="{{ chemical.urls[0].link }}" target="_blank">
-                            {% endif %}
-                            {{ chemical.chebi_id }}
-                            {% if chemical.urls|length > 0 %}
-                                </a>
-                            {% endif %}
-                        </li>
-                    {% endif %}
-                </ul>
+                                    <a href="{{ chemical.urls[0].link }}" target="_blank">
+                                {% endif %}
+                                {{ chemical.chebi_id }}
+                                {% if chemical.urls|length > 0 %}
+                                    </a>
+                                {% endif %}
+                        </dd>
+                    </dl>
+                </div>
             </div>
         </section>
 
@@ -64,9 +66,9 @@
         ================================================== -->
         <section id="phenotype" data-magellan-destination="phenotype">
             <div class="page-header">
-                <h1>Phenotype Annotations
+                <h2>Phenotype Annotations
                     <span id="phenotype_table_header" class="round secondary label"></span>
-                </h1>
+                </h2>
                 <!-- Includes phenotype_table into template -->
                 {% set table_id = "phenotype_table" %}
                 {% include "phenotype_table.jinja2" %}

@@ -26,7 +26,7 @@
 
         <script>
             add_navbar_title('Strain: <span class="gene_name">{{ strain.display_name }}</span>');
-            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Overview', 'overview');
             {% if strain.urls|length > 0 %}
                 add_navbar_element('Resources', 'resources');
             {% endif %}
@@ -34,16 +34,28 @@
 
         <!-- Summary
         ================================================== -->
-        <section id="summary" data-magellan-destination="summary">
+        <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Summary</h1>
-                <p id="summary_paragraph"></p>
-                <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
-                <ul class="unstyled">
-                    {% if strain.status != None %}<li><strong>Status: </strong> {{ strain.status }}</li>{% endif %}
-                    {% if strain.genotype != None %}<li><strong>Genotype: </strong> {{ strain.genotype|safe }}</li>{% endif %}
-                    <li><strong>Description: </strong>{{ strain.description }}</li>
-                </ul>
+                <h2>Overview</h2>
+                <div class="panel">
+                    <p id="summary_paragraph"></p>
+                    <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
+
+                    <dl class="key-value">
+                        {% if strain.status != None %}
+                            <dt>Status</dt>
+                            <dd>{{ strain.status }}</dd>
+                        {% endif %}
+
+                        {% if strain.genotype != None %}
+                            <dt>Genotype: </dt>
+                            <dd>{{ strain.genotype|safe }}</dd>
+                        {% endif %}
+
+                        <dt>Description: </dt>
+                        <dd>{{ strain.description }}</dd>
+                    </dl>
+                </div>
             </div>
         </section>
 
@@ -52,18 +64,19 @@
         {% if strain.urls|length > 0 %}
             <section id="resources" data-magellan-destination="resources">
                 <div class="page-header">
-                    <h1>Resources</h1>
+                    <h2>Resources</h2>
+                    <div class="panel">
+                        <p id="resources_list">
+                            {% for resource in strain.urls|sort(attribute='display_name') if resource.category != 'source' %}
+                                <a href="{{ resource.link }}" {% if resource.category == 'pubmed' %}target="_blank"{% endif %}>{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
+                            {% endfor %}
+                        </p>
 
-                    <p id="resources_list">
-                        {% for resource in strain.urls|sort(attribute='display_name') if resource.category != 'source' %}
-                            <a href="{{ resource.link }}" {% if resource.category == 'pubmed' %}target="_blank"{% endif %}>{{ resource.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% for resource in strain.urls if resource.category == 'source' %}
+                            {% if loop.first %}<h3>Sources</h3><p id="sources_resources_list">{% endif %}
+                            <a href="{{ resource.link }}" target="_blank">{{ resource.display_name }}</a>{% if not loop.last %} | {% else %}</p>{% endif %}
                         {% endfor %}
-                    </p>
-
-                    {% for resource in strain.urls if resource.category == 'source' %}
-                        {% if loop.first %}<h3>Sources</h3><p id="sources_resources_list">{% endif %}
-                        <a href="{{ resource.link }}" target="_blank">{{ resource.display_name }}</a>{% if not loop.last %} | {% else %}</p>{% endif %}
-                    {% endfor %}
+                    </div>
                 </div>
             </section>
         {% endif %}

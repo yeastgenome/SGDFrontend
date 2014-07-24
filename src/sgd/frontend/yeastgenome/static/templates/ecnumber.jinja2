@@ -19,7 +19,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>EC Number: <span class="gene_name">{{ ecnumber.display_name }}</span></h2>
+	<h1>EC Number: <span class="gene_name">{{ ecnumber.display_name }}</span></h1>
 </div>
 
 <!-- Navbar
@@ -33,19 +33,22 @@
 
         <script>
             add_navbar_title('EC Number: <span class="gene_name">{{ ecnumber.display_name }}</span>');
-            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Overview', 'overview');
             add_navbar_element('Annotations', 'annotations');
             add_navbar_element('Resources', 'resources');
         </script>
 
         <!-- Summary
         ================================================== -->
-        <section id="summary" data-magellan-destination="summary">
+        <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Summary</h1>
-                <ul class="unstyled">
-                    <li><strong>Description: </strong>{{ ecnumber.description }}</li>
-                </ul>
+                <h2>Overview</h2>
+                <div class="panel">
+                    <dl class="key-value">
+                        <dt>Description</dt>
+                        <dd>{{ ecnumber.description }}</dd>
+                    </dl>
+                </div>
             </div>
         </section>
 
@@ -53,10 +56,12 @@
         ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Annotations <span id="gene_list_table_header" class="round secondary label"></span></h1>
-                <!-- Includes domain_table into template -->
-                {% set table_id = "gene_list_table" %}
-                {% include "gene_list_table.jinja2" %}
+                <h2>Annotations <span id="gene_list_table_header" class="round secondary label"></span></h2>
+                <div class="panel">
+                    <!-- Includes domain_table into template -->
+                    {% set table_id = "gene_list_table" %}
+                    {% include "gene_list_table.jinja2" %}
+                </div>
             </div>
         </section>
 
@@ -64,12 +69,14 @@
 ================================================== -->
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
-                <h1>Resources</h1>
-                <p id='resource_list'>
-                    {% for url in ecnumber.urls %}
-                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
+                <h2>Resources</h2>
+                <div class="panel">
+                    <p id='resource_list'>
+                        {% for url in ecnumber.urls %}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
             </div>
         </section>
 

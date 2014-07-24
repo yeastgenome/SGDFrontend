@@ -21,7 +21,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>Phenotype: <span class="gene_name">{{ phenotype.display_name }}</span></h2>
+	<h1>Phenotype: <span class="gene_name">{{ phenotype.display_name }}</span></h1>
 </div>
 
 <div class="row">
@@ -35,27 +35,30 @@
 
         <script>
             add_navbar_title('Phenotype: <span class="gene_name">{{ phenotype.display_name }}</span>')
-            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Overview', 'overview');
             add_navbar_element('Annotations', 'annotations');
         </script>
 
 <!-- Summary
 ================================================== -->
-        <section id="summary" data-magellan-destination="summary">
+        <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Summary</h1>
-                <p>
-                    <strong>Observable:</strong> <a href="{{ phenotype.observable.link }}">{{ phenotype.observable.display_name }}</a>
-                    <br>
-                    <strong>Qualifier:</strong> {{ phenotype.qualifier }}
-                    <div class="panel" id="summary_wrapper">
-                    <div class="row">
+                <h2>Overview</h2>
+                <div class="panel">
+                    <dl class="key-value">
+                        <dt>Observable</dt>
+                        <dd><a href="{{ phenotype.observable.link }}">{{ phenotype.observable.display_name }}</a></dd>
+
+                        <dt>Qualifier</dt>
+                        <dd>{{ phenotype.qualifier }}</dd>
+                   </dl>
+
+                   <div class="panel" id="summary_wrapper">
+                   <div class="row">
                         <div class="large-6 columns" id="mutant_experiment_chart"></div>
                         <div class="large-6 columns" id="strain_chart" ></div>
-                    </div>
+                   </div>
                 </div>
-                </p>
-
             </div>
         </section>
 
@@ -63,7 +66,7 @@
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Annotations <span id="phenotype_table_header" class="round secondary label"></span></h1>
+                <h2>Annotations <span id="phenotype_table_header" class="round secondary label"></span></h2>
                 <!-- Includes phenotype_table into template -->
                 {% set table_id = "phenotype_table" %}
                 {% include "phenotype_table.jinja2" %}

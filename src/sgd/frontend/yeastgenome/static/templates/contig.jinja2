@@ -23,7 +23,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>Map: <span class="gene_name">{{ contig.display_name }}</span></h2>
+	<h1>Map: <span class="gene_name">{{ contig.display_name }}</span></h1>
 </div>
 
 <!-- Navbar
@@ -38,27 +38,33 @@
         <script>
         //Set up navbar
             add_navbar_title('Map: <span class="gene_name">{{ contig.display_name }}</span>');
-            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Overview', 'overview');
             add_navbar_element('Features', 'feature');
         </script>
 
         <!-- Summary
 ================================================== -->
-        <section id="summary" data-magellan-destination="summary">
+        <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Summary</h1>
-                <div id="piechart" style="height: 350px;"></div>
-                <ul class="unstyled">
-                    <li><strong>Strain: </strong>{{ contig.strain.display_name }}</li>
-                    <li><strong>Length: </strong>{{ contig.residues|length }} bases</li>
-                    <li>
-                        <div class="button-bar">
-                            <ul class="button-group radius">
-                                <li><a id="sequence_download" class="small button secondary"><i class="fa fa-download"></i> Download Sequence</a></li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
+                <h2>Overview</h2>
+                <div class="panel">
+                    <div id="piechart" style="height: 350px;"></div>
+
+                    <dl class="key-value">
+                        <dt>Strain</dt>
+                        <dd>{{ contig.strain.display_name }}</dd>
+
+                        <dt>Length</dt>
+                        <dd>{{ contig.residues|length }} bases</dd>
+                    </dl>
+
+                    <div class="button-bar">
+                        <ul class="button-group radius">
+                            <li><a id="sequence_download" class="small button secondary"><i class="fa fa-download"></i> Download Sequence</a></li>
+                        </ul>
+                    </div>
+
+                </div>
             </div>
         </section>
 
@@ -66,15 +72,17 @@
 ================================================== -->
         <section id="feature" data-magellan-destination="feature">
             <div class="page-header">
-                <h1>Features <span id="chromosomal_coord_table_header" class="round secondary label"></span></h1>
-                <div id="feature_div"></div>
+                <h2>Features <span id="chromosomal_coord_table_header" class="round secondary label"></span></h2>
+                <div class="panel">
+                    <div id="feature_div"></div>
 
-                <!-- Includes chromosomal_coord_table into template -->
-                {% set table_id = "chromosomal_coord_table" %}
-                {% set table_title = 'Feature Coordinates for ' + contig.display_name %}
-                {% set include_relative = False %}
-                {% set include_version = False %}
-                {% include "chromosomal_coord_table.jinja2" %}
+                    <!-- Includes chromosomal_coord_table into template -->
+                    {% set table_id = "chromosomal_coord_table" %}
+                    {% set table_title = 'Feature Coordinates for ' + contig.display_name %}
+                    {% set include_relative = False %}
+                    {% set include_version = False %}
+                    {% include "chromosomal_coord_table.jinja2" %}
+                </div>
             </div>
         </section>
 
