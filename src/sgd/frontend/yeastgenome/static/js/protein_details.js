@@ -100,7 +100,7 @@ $(document).ready(function() {
 
     $.getJSON(ec_number_details_link, function(data) {
         if(data.length > 0) {
-            $("#protein_overview").append('<dt>EC Number (Enzyme Commission)</dt>');
+            $("#protein_overview").append('<dt>EC Number</dt>');
 
             var ec_number_html = '';
             for (var i=0; i < data.length; i++) {
