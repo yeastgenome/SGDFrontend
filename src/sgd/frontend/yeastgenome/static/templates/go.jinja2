@@ -25,7 +25,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>Gene Ontology Term: <span class="gene_name">{{ go_term.display_name }}</span></h2>
+	<h1>Gene Ontology Term: <span class="gene_name">{{ go_term.display_name }}</span></h1>
 </div>
 
 <div class="row">
@@ -37,41 +37,48 @@
 
         <script>
             add_navbar_title('Gene Ontology Term: <span class="gene_name">{{ go_term.display_name }}</span>')
-            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Overview', 'overview');
             add_navbar_element('Ontology Diagram', 'ontology');
             add_navbar_element('Annotations', 'annotations');
         </script>
 
 <!-- Summary
 ================================================== -->
-        <section id="summary" data-magellan-destination="summary">
+        <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Summary</h1>
-                <ul class="unstyled">
-                    <li>
-                        <strong>GO ID: </strong>
-                        {% for url in go_term.urls if url.category == 'GO' %}
-                           <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>
-                        {% endfor %}
-                        {% if go_term.urls|length == 0 %}
-                           <span>{{ go_term.go_id }}</span>
-                        {% endif %}
-                    </li>
-                    <li><strong>Aspect: </strong>{{ go_term.go_aspect|title }}</li>
-                    <li><strong>Description: </strong>{{ go_term.description }}</li>
-                    {% if go_term.aliases|length > 0 %}
-                        <li><strong>Synonyms:</strong>
-                            {% for alias in go_term.aliases %}
-                                <span>{{ alias|e }}</span>{% if not loop.last %}, {% endif %}
+                <h2>Overview</h2>
+
+                <div class="panel">
+                    <dl class="key-value">
+                        <dt>GO ID</dt>
+                        <dd>
+                            {% for url in go_term.urls if url.category == 'GO' %}
+                               <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>
                             {% endfor %}
-                        </li>
-                    {% endif %}
-                    <li>
-                        {% for url in go_term.urls if url.category == 'Amigo' %}
-                           <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>
-                        {% endfor %}
-                    </li>
-                </ul>
+                            {% if go_term.urls|length == 0 %}
+                               <span>{{ go_term.go_id }}</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt>Aspect</dt>
+                        <dd>{{ go_term.go_aspect|title }}</dd>
+
+                        <dt>Description</dt>
+                        <dd>{{ go_term.description }}</dd>
+
+                        {% if go_term.aliases|length > 0 %}
+                            <dt>Synonyms</dt>
+                            <dd>
+                                {% for alias in go_term.aliases %}
+                                    <span>{{ alias|e }}</span>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </dd>
+                        {% endif %}
+                    </dl>
+                    {% for url in go_term.urls if url.category == 'Amigo' %}
+                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>
+                    {% endfor %}
+                </div>
             </div>
         </section>
 
@@ -79,20 +86,22 @@
 ================================================== -->
         <section id="ontology" data-magellan-destination="ontology">
             <div class="page-header">
-                <h1>Ontology Diagram</h1>
-                {% set network_id = "cy" %}
-                {% include "go_ontology_network.jinja2" %}
+                <h2>Ontology Diagram</h2>
+                <div class="panel">
+                    {% set network_id = "cy" %}
+                    {% include "go_ontology_network.jinja2" %}
 
-                <div id="children_wrapper">
-                    <strong>Child Terms:</strong>
-                    <p>
-                        <span id="children"></span>
-                        <a id="children_see_more_button" onclick="$('#children_see_more').show();$('#children_see_more_button').hide();$('#children_see_less_button').show();"> ... <i class="fa fa-arrow-circle-right"></i> Show all</a>
-                        <span id="children_see_more" hidden></span>
-                        <a id="children_see_less_button" onclick="$('#children_see_more').hide();$('#children_see_more_button').show();$('#children_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
-                    </p>
+                    <div id="children_wrapper">
+                        <br>
+                        <strong>Child Terms:</strong>
+                        <p>
+                            <span id="children"></span>
+                            <a id="children_see_more_button" onclick="$('#children_see_more').show();$('#children_see_more_button').hide();$('#children_see_less_button').show();"> ... <i class="fa fa-arrow-circle-right"></i> Show all</a>
+                            <span id="children_see_more" hidden></span>
+                            <a id="children_see_less_button" onclick="$('#children_see_more').hide();$('#children_see_more_button').show();$('#children_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
+                        </p>
+                    </div>
                 </div>
-                <br>
             </div>
         </section>
 
@@ -100,10 +109,12 @@
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Annotations <span id="go_table_header" class="round secondary label"></span></h1>
-                <!-- Includes go_table into template -->
-                {% set table_id = "go_table" %}
-                {% include "go_table.jinja2" %}
+                <h2>Annotations <span id="go_table_header" class="round secondary label"></span></h2>
+                <div class="panel">
+                    <!-- Includes go_table into template -->
+                    {% set table_id = "go_table" %}
+                    {% include "go_table.jinja2" %}
+                </div>
             </div>
         </section>
     </div>

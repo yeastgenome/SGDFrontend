@@ -14,7 +14,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>Author: <span class="gene_name">{{ author.display_name }}</span></h2>
+	<h1>Author: <span class="gene_name">{{ author.display_name }}</span></h1>
 </div>
 
 <!-- Navbar
@@ -35,7 +35,7 @@
 ================================================== -->
         <section id="references" data-magellan-destination="references">
             <div class="page-header">
-                <h1>References <span id="references_header" class="label secondary round"></span></h1>
+                <h2>References <span id="references_header" class="label secondary round"></span></h2>
                 <!-- Includes reference_list into template -->
                 {% set reference_list_id = "references_list" %}
                 {% set empty_message = "No citations for this author." %}

@@ -12,7 +12,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{{ ontology.display_name }}</span></h2>
+	<h1><span class="gene_name">{{ ontology.display_name }}</span></h1>
 </div>
 
 <div class="row">
@@ -26,16 +26,21 @@
 
         <script>
             add_navbar_title('<span class="gene_name">{{ ontology.display_name }}</span>')
-            add_navbar_element('Summary', 'summary');
+            add_navbar_element('Overview', 'overview');
             add_navbar_element('Ontology Diagram', 'network');
         </script>
 
 <!-- Summary
 ================================================== -->
-        <section id="summary" data-magellan-destination="summary">
+        <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Summary</h1>
-                <p><strong>Description: </strong>{{ ontology.description|replace("Saccharomyces cerevisiae", "<em>Saccharomyces cerevisiae</em>")|safe }}</p>
+                <h2>Overview</h2>
+                <div class="panel">
+                    <dl class="key-value">
+                        <dt>Description</dt>
+                        <dd>{{ ontology.description|replace("Saccharomyces cerevisiae", "<em>Saccharomyces cerevisiae</em>")|safe }}</dd>
+                    </dl>
+                </div>
             </div>
         </section>
 
@@ -43,11 +48,14 @@
 ================================================== -->
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
-                <h1>Ontology Diagram</h1>
-                <!-- Includes phenotype_table into template -->
-                {% set network_id = "cy" %}
-                {% include "phenotype_ontology_network.jinja2" %}
-                <ul id='full_ontology' class='unstyled nested-lists'></ul>
+                <h2>Ontology Diagram</h2>
+                <div class="panel">
+                    <!-- Includes phenotype_table into template -->
+                    {% set network_id = "cy" %}
+                    {% include "phenotype_ontology_network.jinja2" %}
+                    <br>
+                    <ul id='full_ontology' class='unstyled nested-lists'></ul>
+                </div>
             </div>
         </section>
 
