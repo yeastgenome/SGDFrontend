@@ -1,2 +1,10 @@
 
-<p><strong>Unique references: </strong>{{literature_overview.total_count}}</p>
+<dl class="key-value">
+    <dt>Unique References</dt>
+    <dd>{{literature_overview.total_count}}</dd>
+
+    {% for alias in locus.aliases if alias.category == 'Uniform' or alias.category == 'Gene product' %}
+        {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+        {{ alias.display_name }}{% if not loop.last %}, {% else %}</dd>{% endif %}
+    {% endfor %}
+</dl>
