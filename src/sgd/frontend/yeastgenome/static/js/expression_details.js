@@ -1,5 +1,7 @@
 
 $(document).ready(function() {
+    $("#expression_table_analyze").hide();
+
   	$.getJSON(expression_details_link, function(data) {
   	    var expression_table = create_expression_table(data);
         create_download_button("expression_table_download", expression_table, download_table_link, download_table_filename);
@@ -38,7 +40,7 @@ function create_expression_table(data) {
             }
         }
 
-        set_up_header('expression_table', datatable.length, 'entry', 'entries');
+        set_up_header('expression_table', datatable.length, 'dataset', 'datasets');
 
         var options = {};
         options["bPaginate"] = true;

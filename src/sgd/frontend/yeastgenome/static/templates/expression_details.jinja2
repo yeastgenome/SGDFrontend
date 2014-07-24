@@ -17,7 +17,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span> Expression</h2>
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
 <!-- Tabs
@@ -36,8 +36,8 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title("<a href='{{ locus.link }}'>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</a> Expression");
-            add_navbar_element("Summary", "summary");
+            add_navbar_title("<a href='{{ locus.link }}'>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</a>");
+            add_navbar_element("Expression Overview", "overview");
             add_navbar_element("Annotations", "annotations")
             add_navbar_element("Network Visualization", "network");
             add_navbar_element("Resources", "resources");
@@ -45,12 +45,13 @@
 
 <!-- Summary
 ================================================== -->
-<section id="summary" data-magellan-destination="summary">
+<section id="overview" data-magellan-destination="overview">
 	<div class="page-header">
-		<h1>Summary</h1>
-
-        <!-- Includes expression_overview.html into template -->
-        {% include "expression_overview.jinja2" %}
+		<h2>Expression Overview</h2>
+        <div class="panel">
+            <!-- Includes expression_overview.html into template -->
+            {% include "expression_overview.jinja2" %}
+        </div>
 	</div>
 </section>
 
@@ -58,10 +59,12 @@
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h1>Expression Annotations <span id="expression_table_header" class="round secondary label"></span></h1>
-                <!-- Includes expression_table into template -->
-                {% set table_id = "expression_table" %}
-                {% include "expression_table.jinja2" %}
+                <h2>Annotations <span id="expression_table_header" class="round secondary label"></span></h2>
+                <div class="panel">
+                    <!-- Includes expression_table into template -->
+                    {% set table_id = "expression_table" %}
+                    {% include "expression_table.jinja2" %}
+                </div>
             </div>
         </section>
 
@@ -69,10 +72,11 @@
 ================================================== -->
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
-                <h1>Network Visualization</h1>
+                <h2>Similar Expression Profiles</h2>
                 <div class="panel">
-                    <div id="cy" name="cy" style="width:100%;height:500px"></div>
-                    <br>
+                    <!-- Includes expression_table into template -->
+                    {% set network_id = "cy" %}
+                    {% include "expression_network.jinja2" %}
                 </div>
             </div>
         </section>
@@ -81,12 +85,14 @@
 ================================================== -->
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
-                <h1>Resources</h1>
-                <p>
-                    {% for url in locus.urls if url.category == 'LOCUS_EXPRESSION'%}
-                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
+                <h2>Resources</h2>
+                <div class="panel">
+                    <p>
+                        {% for url in locus.urls if url.category == 'LOCUS_EXPRESSION'%}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
             </div>
         </section>
     </div>
