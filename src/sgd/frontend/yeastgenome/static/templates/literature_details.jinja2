@@ -64,10 +64,6 @@
     <div class="panel">    
         <!-- Includes literature_overview.html into template -->
         {% include "literature_overview.jinja2" %}
-        {% for alias in locus.aliases if alias.category == 'Uniform' or alias.category == 'Gene product' %}
-            {% if loop.first %}<p><strong>Aliases: </strong>{% endif %}
-            {{ alias.display_name }}{% if not loop.last %}, {% else %}</p>{% endif %}
-        {% endfor %}
     </div>
 </section>
 
