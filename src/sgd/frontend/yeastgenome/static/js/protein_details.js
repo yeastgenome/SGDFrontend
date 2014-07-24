@@ -109,7 +109,7 @@ $(document).ready(function() {
                     ec_number_html = ec_number_html + ', ';
                 }
             }
-            $("#protein_overview").append('<dd>' + ec_number_html + '</dd>');
+            $("#protein_overview").append('<dd>' + ec_number_html + '</dd><br>');
         }
 	});
 

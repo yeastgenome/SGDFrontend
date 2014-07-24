@@ -609,7 +609,7 @@ function create_subfeature_table(data) {
                         ]);
     }
 
-    set_up_header('subfeature_table', datatable.length, 'entry', 'entries', null, null, null);
+    set_up_header('subfeature_table', datatable.length, 'subfeature', 'subfeatures', null, null, null);
 
     set_up_range_sort();
 
