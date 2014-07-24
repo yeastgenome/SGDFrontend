@@ -7,7 +7,7 @@ Feature: InteractionDetails
         And I should see an element with id "center_title"
         And I should see an element with id "sidebar"
 
-        And I should see an element with id "summary"
+        And I should see an element with id "overview"
         And I should see an element with id "primary"
         And I should see an element with id "network"
         And I should see an element with id "additional"

@@ -109,12 +109,13 @@
         <h2>Domains and Classification 
             <a href="#" data-dropdown="domain_info"><i class="fa fa-info-circle"></i></a>
 
-        <p id="domain_info" class="f-dropdown content medium" data-dropdown-content>
-            Collection of domains associated with the protein based on various sources, including the
-            protein coordinates for the domain, a domain Description, a Source and corresponding
-            accession ID, and the number of <i>S. cerevisiae</i> genes that share the same domain.
-        </p>            
-            <span id="domain_table_header" class="round secondary label"></span></h2>
+            <p id="domain_info" class="f-dropdown content medium" data-dropdown-content>
+                Collection of domains associated with the protein based on various sources, including the
+                protein coordinates for the domain, a domain Description, a Source and corresponding
+                accession ID, and the number of <i>S. cerevisiae</i> genes that share the same domain.
+            </p>
+            <span id="domain_table_header" class="round secondary label"></span>
+        </h2>
         <div class="panel">
             <!-- Includes domain_table into template -->
             {% set table_id = "domain_table" %}
@@ -126,18 +127,18 @@
 ================================================== -->
     <section id="binding" data-magellan-destination="binding" hidden>
         <h2>DNA Binding Site Motifs
-        <a href="#" data-dropdown="binding_info"><i class="fa fa-info-circle"></i></a>
+            <a href="#" data-dropdown="binding_info"><i class="fa fa-info-circle"></i></a>
 
-        <p id="binding_info" class="f-dropdown content medium" data-dropdown-content>
-            Binding sites motifs as predicted by <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a>.
-        </p>
+            <p id="binding_info" class="f-dropdown content medium" data-dropdown-content>
+                Binding sites motifs as predicted by <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a>.
+            </p>
 
-        <a href="#" data-dropdown="binding_help"><i class="fa fa-question-circle"></i></a>
-        <p id="binding_help" class="f-dropdown content medium" data-dropdown-content>
-            Click on a motif to view its <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a>
-            record. You can also view these predicted binding sites in the Genome Browser (option listed below
-            motifs).
-        </p>
+            <a href="#" data-dropdown="binding_help"><i class="fa fa-question-circle"></i></a>
+            <p id="binding_help" class="f-dropdown content medium" data-dropdown-content>
+                Click on a motif to view its <a href="http://yetfasco.ccbr.utoronto.ca" target="_blank">YeTFaSCo</a>
+                record. You can also view these predicted binding sites in the Genome Browser (option listed below
+                motifs).
+            </p>
         </h2>
 
         <div class="panel">
@@ -209,7 +210,7 @@
             </p>
             <span id="regulator_table_header" class="round secondary label"></span>
         </h2>
-        <div>
+        <div class="panel">
             <!-- Includes regulation_table into template -->
             {% set table_id = "regulator_table" %}
             {% include "regulation_table.jinja2" %}

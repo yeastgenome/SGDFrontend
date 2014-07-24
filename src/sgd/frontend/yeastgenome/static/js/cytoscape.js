@@ -143,28 +143,28 @@ function create_slider_ticks(slider_tick_id, min, max, stop) {
     }
     $("#" + slider_tick_id).empty();
     if(max==min) {
-		var spacing =  92;
+		var spacing =  87;
 	    i = min-1
 	    var value = i+1;
 	    if(value >= stop) {
-	    	var left = (spacing * (i-min+1))+2
+	    	var left = (spacing * (i-min+1))+4.5
 	       	$('<span class="ui-slider-tick-mark muted">' +stop+ '+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
 	    }
 	    else {
-	    	var left = (spacing * (i-min+1))+3.5
+	    	var left = (spacing * (i-min+1))+6
 			$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
 		}
 	}
 	else {
-		var spacing =  92 / (max - min);
+		var spacing =  87 / (max - min);
 	    for (var i = min-1; i < max ; i=i+1) {
 	    	var value = i+1;
 	    	if(value >= stop) {
-	    		var left = (spacing * (i-min+1))+2
+	    		var left = (spacing * (i-min+1))+4.5
 	        	$('<span class="ui-slider-tick-mark muted">' +stop+ '+</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
 	    	}
 	    	else {
-	    		var left = (spacing * (i-min+1))+3.5
+	    		var left = (spacing * (i-min+1))+6
 				$('<span class="ui-slider-tick-mark muted">' +value+ '</span>').css('left', left + '%').css('display', 'inline-block').css('position', 'absolute').css('margin-top', '8px').appendTo("#" + slider_tick_id);
 	    	}
 		}

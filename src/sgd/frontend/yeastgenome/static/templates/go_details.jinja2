@@ -103,7 +103,7 @@
             <p style="display:none" id="manual_message">There are no manually curated annotations
             for {{ locus.display_name }}.</p>
             <div id="mc_bp_go">
-                <h2 class="subheader">Biological Process <span id="mc_bp_go_table_header" class="round secondary label"></span></h2>
+                <h3>Biological Process <span id="mc_bp_go_table_header" class="round secondary label"></span></h3>
 
                 <!-- Includes go_table into template -->
                 {% set table_id = "mc_bp_go_table" %}
@@ -112,7 +112,7 @@
         </div>
         
         <div id="mc_mf_go" class="panel">
-            <h2 class="subheader">Molecular Function <span id="mc_mf_go_table_header" class="round secondary label"></span></h2>
+            <h3>Molecular Function <span id="mc_mf_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
             {% set table_id = "mc_mf_go_table" %}
@@ -120,7 +120,7 @@
         </div>
 
         <div id="mc_cc_go" class="panel">
-            <h2 class="subheader">Cellular Component <span id="mc_cc_go_table_header" class="round secondary label"></span></h2>
+            <h3>Cellular Component <span id="mc_cc_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
             {% set table_id = "mc_cc_go_table" %}
@@ -151,7 +151,7 @@
         for {{ locus.display_name }}.</p>
 
         <div id="htp_bp_go" class="panel">
-            <h2 class="subheader">Biological Process <span id="htp_bp_go_table_header" class="round secondary label"></span></h2>
+            <h3>Biological Process <span id="htp_bp_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
             {% set table_id = "htp_bp_go_table" %}
@@ -159,7 +159,7 @@
         </div>
 
         <div id="htp_mf_go" class="panel">
-            <h2 class="subheader">Molecular Function <span id="htp_mf_go_table_header" class="round secondary label"></span></h2>
+            <h3>Molecular Function <span id="htp_mf_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
             {% set table_id = "htp_mf_go_table" %}
@@ -167,7 +167,7 @@
         </div>
 
         <div id="htp_cc_go" class="panel">
-            <h2 class="subheader">Cellular Component <span id="htp_cc_go_table_header" class="round secondary label"></span></h2>
+            <h3>Cellular Component <span id="htp_cc_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
             {% set table_id = "htp_cc_go_table" %}
@@ -195,7 +195,7 @@
         for {{ locus.display_name }}.</p>
         
         <div id="comp_bp_go" class="panel">
-            <h2 class="subheader">Biological Process <span id="comp_bp_go_table_header" class="round secondary label"> </span></h2>
+            <h3>Biological Process <span id="comp_bp_go_table_header" class="round secondary label"> </span></h3>
 
             <!-- Includes go_table into template -->
             {% set table_id = "comp_bp_go_table" %}
@@ -203,7 +203,7 @@
         </div>
 
         <div id="comp_mf_go" class="panel">
-            <h2 class="subheader">Molecular Function <span id="comp_mf_go_table_header" class="round secondary label"></span></h2>
+            <h3>Molecular Function <span id="comp_mf_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
             {% set table_id = "comp_mf_go_table" %}
@@ -211,7 +211,7 @@
         </div>
 
         <div id="comp_cc_go" class="panel">
-            <h2 class="subheader">Cellular Component <span id="comp_cc_go_table_header" class="round secondary label"></span></h2>
+            <h3>Cellular Component <span id="comp_cc_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
             {% set table_id = "comp_cc_go_table" %}
@@ -223,13 +223,14 @@
 ================================================== -->
     <section id="network" data-magellan-destination="network">
         <h2>Shared Biological Processes
-        <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
+            <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
 
-        <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
-            This diagram displays manually curated and high-throughput GO Biological Process terms
-            (green squares) that are shared between the given gene (yellow circle) and other genes (gray
-            circles) based on the number of GO terms shared (adjustable using the slider at the bottom).
-        </p></h2>
+            <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
+                This diagram displays manually curated and high-throughput GO Biological Process terms
+                (green squares) that are shared between the given gene (yellow circle) and other genes (gray
+                circles) based on the number of GO terms shared (adjustable using the slider at the bottom).
+            </p>
+        </h2>
         <div class="panel">
             {% set network_id = "cy" %}
             {% include "go_network.jinja2" %}

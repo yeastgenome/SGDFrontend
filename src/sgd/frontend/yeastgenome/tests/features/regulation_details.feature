@@ -6,7 +6,7 @@ Feature: RegulationDetails
         And I should see an element with id "center_title"
         And I should see an element with id "sidebar"
 
-        And I should see an element with id "summary"
+        And I should see an element with id "overview"
         And I should see an element with id "domain"
         And I should see an element with id "binding"
         And I should see an element with id "targets"
