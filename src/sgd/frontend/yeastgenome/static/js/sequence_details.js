@@ -382,9 +382,13 @@ function make_sublabel_ready_handler(chart_id, chart, seq_start, seq_end, data, 
             var datarow = data_array[e.row];
             var spans = $(".google-visualization-tooltip-action > span");
             if(spans.length > 2) {
-                spans[1].innerHTML = ' ' + datarow[2]/100 + '-' + datarow[3]/100;
+                var start = datarow[2]/100;
+                if(start == 0) {
+                    start = 1;
+                }
+                spans[1].innerHTML = ' ' + start + '-' + datarow[3]/100;
                 spans[2].innerHTML = 'Length: ';
-                spans[3].innerHTML = ' ' + datarow[3]/100 - datarow[2]/100 + 1;
+                spans[3].innerHTML = ' ' + datarow[3]/100 - start + 1;
             }
         }
         google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
@@ -455,7 +459,8 @@ function draw_sublabel_chart(chart_id, data) {
     var data_array = [];
     var labels = {};
 
-
+    var min_start = null;
+    var max_end = null;
     for (var i=0; i < data.length; i++) {
         var start = data[i]['relative_start']*100;
         if(start == 100) {
@@ -465,11 +470,18 @@ function draw_sublabel_chart(chart_id, data) {
         var name = data[i]['display_name'];
         data_array.push(['Subfeatures', name, start, end]);
         labels[name] = true;
+
+        if(min_start == null || start < min_start) {
+            min_start = start;
+        }
+        if(max_end == null || end > max_end) {
+            max_end = end;
+        }
     }
-    var start = 100;
+    var start = 0;
     var end = seq_end*100 - seq_start*100 + 100;
     var show_row_lables = false;
-    if(data.length == 0 || data[0]['relative_start']*100 > start || data[data.length-1]['relative_end']*100 < end) {
+    if(min_start == null || max_end == null || min_start > 0 || max_end < end) {
         if(start == 100) {
             start = 0;
         }

@@ -61,6 +61,18 @@ function make_ready_handler(chart_id, chart, min_tick, max_tick, display_name_to
         var tickmarks = tickmark_holder.childNodes;
 
         var m = Math.round((y_two - y_one)/tickmarks.length/10000)*10000;
+        if(m == 0) {
+            m = Math.round((y_two - y_one)/tickmarks.length/1000)*1000;
+        }
+        if(m == 0) {
+            m = Math.round((y_two - y_one)/tickmarks.length/100)*100;
+        }
+        if(m == 0) {
+            m = Math.round((y_two - y_one)/tickmarks.length/10)*10;
+        }
+        if(m == 0) {
+            m = Math.round((y_two - y_one)/tickmarks.length);
+        }
 
         for (var i=0; i < tickmarks.length; i++) {
             var tick = y_one + i*m;
