@@ -28,9 +28,24 @@ function expression_data_to_table(evidence) {
         }
     }
 
-    var dataset = create_link(evidence['dataset']['display_name'], evidence['dataset']['link']);
+    var dataset = create_link(evidence['datasetcolumn']['dataset']['display_name'], evidence['datasetcolumn']['dataset']['link']);
 
-    return [evidence['id'], evidence['locus']['id'], locus, evidence['locus']['format_name'], dataset, evidence['dataset']['short_description'], evidence['dataset']['tags'].split('|').join(', '), evidence['dataset']['condition_count'], reference]
+    return [evidence['id'], evidence['locus']['id'], locus, evidence['locus']['format_name'], dataset, evidence['datasetcolumn']['dataset']['short_description'], evidence['datasetcolumn']['dataset']['tags'].split('|').join(', '), evidence['datasetcolumn']['dataset']['condition_count'], reference]
+}
+
+function datasetcolumn_data_to_table(evidence) {
+    var locus = create_link(evidence['locus']['display_name'], evidence['locus']['link'], false);
+    var reference = '';
+    if(evidence['reference'] != null) {
+        reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+        if(evidence['reference']['pubmed_id'] != null) {
+            reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+        }
+    }
+
+    var dataset = create_link(evidence['datasetcolumn']['dataset']['display_name'], evidence['datasetcolumn']['dataset']['link']);
+    var datasetcolumn = create_link(evidence['datasetcolumn']['display_name'], evidence['datasetcolumn']['link']);
+    return [evidence['id'], evidence['locus']['id'], locus, evidence['locus']['format_name'], datasetcolumn, dataset, evidence['value'].toString()]
 }
 
 function phosphorylation_data_to_table(evidence) {

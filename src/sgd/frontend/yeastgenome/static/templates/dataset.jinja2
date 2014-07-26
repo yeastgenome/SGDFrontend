@@ -8,7 +8,6 @@
 	var analyze_link = "{{analyze_table_link}}";
 
 	var download_filename = "{{ dataset.format_name|replace(".", "_") }}_annotations";
-    var analyze_filename = "<a href='{{ dataset.link }}' class='gene_name'>{{ dataset.display_name }}</a> Genes";
 
     var display_name = "{{ dataset.display_name }}";
 </script>
@@ -36,6 +35,7 @@
             {%  if dataset.reference.abstract != none %}
                 add_navbar_element('Abstract', 'abstract');
             {%  endif %}
+            add_navbar_element('Conditions', 'conditions');
             {% if dataset.urls|length > 0 %}
                 add_navbar_element('Resources', 'resources');
             {%  endif %}
@@ -64,12 +64,18 @@
                         <dd>{{ dataset.short_description|safe }}</dd>
 
                         <dt>Tags</dt>
-                        <dd>{{ dataset.tags|replace('|', ', ') }}</dd>
+                        <dd>
+                            {% for tag in dataset.tags %}
+                                <a href="{{ tag.link }}">{{ tag.display_name }}</a>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </dd>
                      </dl>
                 </div>
             </div>
         </section>
 
+            <!-- Abstract
+================================================== -->
         {%  if dataset.reference.abstract != none %}
             <section id="abstract" data-magellan-destination="abstract">
                 <div class="page-header">
@@ -80,6 +86,21 @@
                 </div>
             </section>
         {%  endif %}
+
+            <!-- Conditions
+================================================== -->
+        <section id="conditions" data-magellan-destination="conditions">
+            <div class="page-header">
+                <h2>Conditions</h2>
+                <div class="panel">
+                    <ul>
+                        {% for condition in dataset.datasetcolumns %}
+                            <li><a href="{{ condition.link }}">{{ condition.display_name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </section>
 
         <!-- Resources
 ================================================== -->
@@ -104,7 +125,6 @@
 {% block scripts %}
 <script src="/static/js/local.js"></script>
 <script src="/static/js/evidence.js"></script>
-<script src="/static/js/ecnumber.js"></script>
 {% endblock scripts %}
 
 {% endblock body %}

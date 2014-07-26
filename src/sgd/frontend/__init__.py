@@ -183,10 +183,20 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('dataset'),
                     route_name='dataset')
 
+    config.add_route('datasetcolumn', '/datasetcolumn/{identifier}/overview')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('datasetcolumn', request)(getattr(chosen_frontend, 'datasetcolumn')(bioitem_repr=request.matchdict['identifier'].lower())),
+                    renderer=chosen_frontend.get_renderer('datasetcolumn'),
+                    route_name='datasetcolumn')
+
     config.add_route('contig', '/contig/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('contig', request)(getattr(chosen_frontend, 'contig')(contig_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('contig'),
                     route_name='contig')
+
+    config.add_route('tag', '/tag/{identifier}/overview')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('tag', request)(getattr(chosen_frontend, 'tag')(tag_repr=request.matchdict['identifier'].lower())),
+                    renderer=chosen_frontend.get_renderer('tag'),
+                    route_name='tag')
     
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':

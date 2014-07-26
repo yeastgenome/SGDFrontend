@@ -1,0 +1,73 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ tag.display_name }}{% endblock %}
+
+{% block head %}
+<script>
+	var download_table_link = "{{download_table_link}}";
+	var analyze_link = "{{analyze_table_link}}";
+
+	var download_filename = "{{ tag.format_name|replace(".", "_") }}_annotations";
+
+    var display_name = "{{ tag.display_name }}";
+</script>
+{% endblock %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h1>Tag: <span class="gene_name">{{ tag.display_name }}</span></h1>
+</div>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+	
+<!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            add_navbar_title('Tag: <span class="gene_name">{{ tag.display_name }}</span>');
+            add_navbar_element('Overview', 'overview');
+            add_navbar_element('Datasets', 'datasets');
+        </script>
+
+        <!-- Summary
+        ================================================== -->
+        <section id="overview" data-magellan-destination="overview">
+            <div class="page-header">
+                <h2>Overview</h2>
+                <div class="panel">
+                    <dl class="key-value">
+                        <dt>Description</dt>
+                        <dd>{{ tag.display_name }}</dd>
+                     </dl>
+                </div>
+            </div>
+        </section>
+
+
+            <!-- Dataset
+================================================== -->
+        <section id="datasets" data-magellan-destination="datasets">
+            <div class="page-header">
+                <h2>Datasets</h2>
+                <div class="panel">
+
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+
+{% block scripts %}
+<script src="/static/js/local.js"></script>
+<script src="/static/js/evidence.js"></script>
+{% endblock scripts %}
+
+{% endblock body %}
