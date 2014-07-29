@@ -3,8 +3,7 @@
  */
 
 google.load("visualization", "1", {packages:["corechart"]});
-google.setOnLoadCallback(create_expression_chart);
-function create_expression_chart() {
+function create_expression_chart(expression_overview) {
     if(expression_overview != null) {
         var all_data = expression_overview['all_values'];
         var low_data = expression_overview['low_values'];
@@ -32,12 +31,12 @@ function create_expression_chart() {
         }
 
         for (var i=0; i < low_data.length; i++) {
-            datatable_left.push([low_data[i]['condition'], low_data[i]['value']]);
-            datatable_left_links.push(low_data[i]['dataset']['link']);
+            datatable_left.push([low_data[i]['datasetcolumn']['display_name'], low_data[i]['value']]);
+            datatable_left_links.push(low_data[i]['datasetcolumn']['link']);
         }
         for (var i=0; i < high_data.length; i++) {
-            datatable_right.push([high_data[i]['condition'], high_data[i]['value']]);
-            datatable_right_links.push(high_data[i]['dataset']['link']);
+            datatable_right.push([high_data[i]['datasetcolumn']['display_name'], high_data[i]['value']]);
+            datatable_right_links.push(high_data[i]['datasetcolumn']['link']);
         }
 
         var left_chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart_left'));

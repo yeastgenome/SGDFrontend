@@ -142,12 +142,12 @@ class YeastgenomeFrontend(FrontendInterface):
 
                     #Overview
                     'tabs': tabs,
-                    'expression_overview': json.dumps(bioent['expression_overview']),
 
                     #Links
                     'expression_details_link': self.backend_url + '/locus/' + bioent_id + '/expression_details?callback=?',
                     'expression_graph_link': self.backend_url + '/locus/' + bioent_id + '/expression_graph?callback=?',
                     'download_table_link': '/download_table',
+                    'download_network_link': '/download_image'
                     }
         return page
     
@@ -288,6 +288,7 @@ class YeastgenomeFrontend(FrontendInterface):
         page = {
                     #Basic info
                     'tag': biocon,
+                    'bioitems': json.dumps(biocon['bioitems']),
 
                     #Links
                     'download_table_link': '/download_table',

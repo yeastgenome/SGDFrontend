@@ -18,6 +18,24 @@ function domain_data_to_table(evidence) {
     return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], coord_range, domain, description, evidence['source']['display_name'], '' + evidence['domain']['count']]
 }
 
+function dataset_datat_to_table(dataset) {
+    var reference = '';
+    if(dataset['reference'] != null) {
+        reference = create_link(dataset['reference']['display_name'], dataset['reference']['link']);
+        if(dataset['reference']['pubmed_id'] != null) {
+            reference = reference + ' <small>PMID:' + dataset['reference']['pubmed_id'] + '</small>';
+        }
+    }
+
+    var dataset_with_link = create_link(dataset['display_name'], dataset['link']);
+    var tags = [];
+    for(var j=0; j < dataset['tags'].length; j++) {
+        tags.push(create_link(dataset['tags'][j]['display_name'], dataset['tags'][j]['link']));
+    }
+
+    return [dataset['id'], dataset_with_link, dataset['short_description'], tags.join(', '), dataset['condition_count'], reference]
+}
+
 function expression_data_to_table(evidence) {
     var locus = create_link(evidence['locus']['display_name'], evidence['locus']['link'], false);
     var reference = '';
@@ -27,23 +45,7 @@ function expression_data_to_table(evidence) {
             reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
         }
     }
-
-    var dataset = create_link(evidence['datasetcolumn']['dataset']['display_name'], evidence['datasetcolumn']['dataset']['link']);
-
-    return [evidence['id'], evidence['locus']['id'], locus, evidence['locus']['format_name'], dataset, evidence['datasetcolumn']['dataset']['short_description'], evidence['datasetcolumn']['dataset']['tags'].split('|').join(', '), evidence['datasetcolumn']['dataset']['condition_count'], reference]
-}
-
-function datasetcolumn_data_to_table(evidence) {
-    var locus = create_link(evidence['locus']['display_name'], evidence['locus']['link'], false);
-    var reference = '';
-    if(evidence['reference'] != null) {
-        reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
-        if(evidence['reference']['pubmed_id'] != null) {
-            reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
-        }
-    }
-
-    var dataset = create_link(evidence['datasetcolumn']['dataset']['display_name'], evidence['datasetcolumn']['dataset']['link']);
+    var dataset = create_link(evidence['dataset']['display_name'], evidence['dataset']['link']);
     var datasetcolumn = create_link(evidence['datasetcolumn']['display_name'], evidence['datasetcolumn']['link']);
     return [evidence['id'], evidence['locus']['id'], locus, evidence['locus']['format_name'], datasetcolumn, dataset, evidence['value'].toString()]
 }

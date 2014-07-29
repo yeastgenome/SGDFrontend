@@ -7,9 +7,8 @@
 	var download_table_link = "{{download_table_link}}";
 	var analyze_link = "{{analyze_table_link}}";
 
-	var download_filename = "{{ tag.format_name|replace(".", "_") }}_annotations";
-
     var display_name = "{{ tag.display_name }}";
+    var bioitems = {{bioitems | safe}};
 </script>
 {% endblock %}
 
@@ -56,7 +55,9 @@
             <div class="page-header">
                 <h2>Datasets</h2>
                 <div class="panel">
-
+                    <!-- Includes expression_table into template -->
+                    {% set table_id = "expression_table" %}
+                    {% include "dataset_table.jinja2" %}
                 </div>
             </div>
         </section>
@@ -68,6 +69,7 @@
 {% block scripts %}
 <script src="/static/js/local.js"></script>
 <script src="/static/js/evidence.js"></script>
+<script src="/static/js/tag.js"></script>
 {% endblock scripts %}
 
 {% endblock body %}

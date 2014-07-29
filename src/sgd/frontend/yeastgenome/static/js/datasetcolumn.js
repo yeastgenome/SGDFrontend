@@ -31,7 +31,7 @@ function create_expression_table(data) {
         var datatable = [];
         var genes = {};
         for (var i=0; i < data.length; i++) {
-            datatable.push(datasetcolumn_data_to_table(data[i]));
+            datatable.push(expression_data_to_table(data[i]));
             genes[data[i]['locus']['id']] = true;
         }
 

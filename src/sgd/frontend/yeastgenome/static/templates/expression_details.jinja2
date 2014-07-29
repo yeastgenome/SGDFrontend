@@ -4,13 +4,13 @@
 
 {% block head %}
 <script>
-    var expression_overview = {{ expression_overview | safe }};
     var expression_details_link = "{{expression_details_link}}";
 	var expression_graph_link = "{{expression_graph_link}}";
 	var download_table_link = "{{download_table_link}}";
+    var download_network_link = "{{download_network_link}}";
 	var download_table_filename = "{{ locus.display_name}}_expression";
 	var display_name = "{{ locus.display_name }}";
-	var class_type = "{{ locus.class_type }}";
+
 </script>
 {% endblock %}
 
@@ -39,7 +39,7 @@
             add_navbar_title("<a href='{{ locus.link }}'>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</a>");
             add_navbar_element("Expression Overview", "overview");
             add_navbar_element("Annotations", "annotations")
-            add_navbar_element("Network Visualization", "network");
+            add_navbar_element("Similar Expression Profiles", "network");
             add_navbar_element("Resources", "resources");
         </script>
 
@@ -63,7 +63,7 @@
                 <div class="panel">
                     <!-- Includes expression_table into template -->
                     {% set table_id = "expression_table" %}
-                    {% include "expression_table.jinja2" %}
+                    {% include "dataset_table.jinja2" %}
                 </div>
             </div>
         </section>
