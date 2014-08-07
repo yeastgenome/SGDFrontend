@@ -37,71 +37,48 @@
 <!-- Analyze
 ================================================== -->
         <section id="tools" data-magellan-destination="tools">
-            <div class="page-header">
                 <h2>Tools</h2>
-
-                <ul class="giant button-group radius even-4 secondary">
-                    <li class="span3">
-                        <a id="go_term_finder" class="large button expand">
-                            <div class="caption">
-                                <h3>GO Term Finder</h3>
-                                <h4 class="subheader">Find common features between genes.</h4>
-                            </div>
-                        </a>
-                    </li>
-
-                    <li class="span3">
-                        <a id="go_slim_mapper" class="large button expand">
-                            <div class="caption">
-                                <h3>GO Slim Mapper</h3>
-                                <h4 class="subheader">Sort genes into broad categories.</h4>
-                            </div>
-                        </a>
-                    </li>
-
-                    <li class="span3">
-                        <a id="spell" class="large button expand">
-                            <div class="caption">
-                                <h3>SPELL</h3>
-                                <h4 class="subheader">View expression data.</h4>
-                            </div>
-                        </a>
-                    </li>
-
-                    <li class="span3">
-                        <a id="yeastmine" class="large button expand">
-                            <div class="caption">
-                                <h3>YeastMine</h3>
-                                <h4 class="subheader">Conduct advanced analysis.</h4>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+                
+                <div class="row">
+                    <div class="large-3 columns">
+                        <h3><a id="go_term_finder">GO Term Finder</a></h3>
+                        <h4 class="subheader">Find common features between genes.</h4>
+                    </div>
+                    <div class="large-3 columns">
+                        <h3><a id="go_slim_mapper">GO Slim Mapper</a></h3>
+                        <h4 class="subheader">Sort genes into broad categories.</h4>
+                    </div>
+                    <div class="large-3 columns">
+                        <h3><a id="spell">SPELL</a></h3>
+                        <h4 class="subheader">View expression data.</h4>
+                    </div>
+                    <div class="large-3 columns">
+                        <h3><a id="yeastmine">YeastMine</a></h3>
+                        <h4 class="subheader">Conduct advanced analysis.</h4>
+                    </div>
+                </div>
         </section>
+        
+        <hr>
 
 <!-- Gene List
 ================================================== -->
         <section id="gene_list" data-magellan-destination="gene_list">
-            <div class="page-header">
                 <h2>Genes</h2>
                 <!-- Includes gene_list_table into template -->
                 {% set table_id = "gene_list_table" %}
                 {% set table_title = list_name %}
                 {% include "gene_list_table.jinja2" %}
-            </div>
         </section>
 
 <!-- Enrichment
 ================================================== -->
         <section id="enrichment" data-magellan-destination="enrichment">
-            <div class="page-header">
                 <h2>Shared GO Processes</h2>
                 <!-- Includes gene_list_table into template -->
                 {% set table_id = "enrichment_table" %}
                 {% set table_title = 'Biological Process Enrichment for ' + list_name %}
                 {% include "enrichment_table.jinja2" %}
-           </div>
         </section>
 
     </div>
