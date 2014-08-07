@@ -1,16 +1,23 @@
 // Tables
-table {
-    border-collapse: separate;
-    border-spacing: 1px;
+
+th {
+    padding-right: 16px !important;    // to allow for sort arrows
 }
 
-th { 
-    padding-right: 16px !important;    // to allow for sort arrows
+th, tr.even td {   
+    border-right: 1px solid #fff;
+}
+th:last-child, tr.even td:last-child { 
+    border-right: none;
 }
 
 .dataTables_wrapper {
     overflow: hidden;
-    table { margin: 0 !important; }
+    table { 
+        margin: 0 !important;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
 }
 
 .dt-tools-head, .dt-tools-foot {
