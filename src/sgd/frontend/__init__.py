@@ -1,5 +1,5 @@
 import json
-from pyramid.renderers import render
+from pyramid.renderers import render, Response
 from src.sgd.frontend import config
 
 def prep_views(chosen_frontend, config):  
@@ -192,7 +192,12 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: chosen_frontend.response_wrapper('tag', request)(getattr(chosen_frontend, 'tag')(tag_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('tag'),
                     route_name='tag')
-    
+
+    config.add_route('experiment', '/experiment/{identifier}/overview')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('experiment', request)(getattr(chosen_frontend, 'experiment')(experiment_repr=request.matchdict['identifier'].lower())),
+                    renderer=chosen_frontend.get_renderer('experiment'),
+                    route_name='experiment')
+
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':
         from src.sgd.frontend.yeastgenome import yeastgenome_frontend

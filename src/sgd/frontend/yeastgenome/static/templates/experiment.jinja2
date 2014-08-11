@@ -1,0 +1,74 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ experiment.display_name }}{% endblock %}
+
+{% block head %}
+<script>
+    var display_name = "{{ experiment.display_name }}";
+  	var download_link = "{{download_citations_link}}";
+    var reference_data = {{references | safe}};
+</script>
+{% endblock %}
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2>Experiment: <span class="gene_name">{{ experiment.display_name }}</span></h2>
+</div>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+	
+<!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            add_navbar_title('Experiment: <span class="gene_name">{{ experiment.display_name }}</span>');
+            add_navbar_element('Overview', 'overview');
+            add_navbar_element('References', 'references');
+        </script>
+
+        <!-- Summary
+        ================================================== -->
+        <section id="overview" data-magellan-destination="overview">
+            <div class="page-header">
+                <h2>Overview</h2>
+                <div class="panel">
+
+                    <dl class="key-value">
+                        {% if experiment.eco_id != None %}
+                            <dt>ECO ID</dt>
+                            <dd>{{ experiment.eco_id }}</dd>
+                        {% endif %}
+                        <dt>Description</dt>
+                        <dd>{{ experiment.description }}</dd>
+                    </dl>
+
+                </div>
+            </div>
+        </section>
+
+    <!-- References
+================================================== -->
+        <section id="references" data-magellan-destination="references">
+            <div class="page-header">
+                <h2>References <span id="references_header" class="label secondary round"></span></h2>
+                <!-- Includes reference_list into template -->
+                {% set reference_list_id = "references_list" %}
+                {% set empty_message = "No citations for this experiment." %}
+                {% include "reference_list.jinja2" %}
+            </div>
+        </section>
+
+    </div>
+</div>
+
+{% block scripts %}
+<script src="/static/js/local.js"></script>
+<script src="/static/js/experiment.js"></script>
+{% endblock scripts %}
+
+{% endblock body %}

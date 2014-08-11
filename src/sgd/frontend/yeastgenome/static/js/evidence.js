@@ -102,7 +102,9 @@ function protein_experiment_data_to_table(evidence) {
         reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
     }
 
-    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], evidence['experiment']['display_name'], evidence['data_value'] + ' ' + evidence['data_unit'], reference];
+    var experiment = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);
+
+    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], experiment, evidence['data_value'] + ' ' + evidence['data_unit'], reference];
 }
 
 function regulation_data_to_table(evidence, is_regulator) {
@@ -111,7 +113,7 @@ function regulation_data_to_table(evidence, is_regulator) {
 
 	var experiment = '';
 	if(evidence['experiment'] != null) {
-	    experiment = evidence['experiment']['display_name'];
+        experiment = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);
 	}
 	var strain = '';
 	if(evidence['strain'] != null) {
@@ -182,7 +184,7 @@ function interaction_data_to_table(evidence, index) {
 
 	var experiment = '';
 	if(evidence['experiment'] != null) {
-		experiment = evidence['experiment']['display_name'];
+		experiment = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);
 	}
 	var phenotype = '';
 	if(evidence['phenotype'] != null) {
@@ -214,7 +216,7 @@ function phenotype_data_to_table(evidence, index) {
 
 	var experiment = '';
 	if(evidence['experiment'] != null) {
-		experiment = evidence['experiment']['display_name'];
+		experiment = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);
 		if(evidence['experiment_details'] != null) {
 			experiment = experiment + ' ' + create_note_icon('experiment_icon' + index, evidence['experiment_details']);
 		}
