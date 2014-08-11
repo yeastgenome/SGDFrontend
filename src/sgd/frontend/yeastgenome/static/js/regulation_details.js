@@ -59,8 +59,6 @@ $(document).ready(function() {
                 message = message + 's.';
             }
             $("#legend").html(message);
-
-            $("#discrete_filter").hide();
         }
         else {
             hide_section("network");
