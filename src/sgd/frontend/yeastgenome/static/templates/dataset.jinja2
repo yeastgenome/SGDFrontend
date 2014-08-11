@@ -63,7 +63,7 @@
                         <dt>Description</dt>
                         <dd>{{ dataset.short_description|safe }}</dd>
 
-                        <dt>Tags</dt>
+                        <dt>Categories</dt>
                         <dd>
                             {% for tag in dataset.tags %}
                                 <a href="{{ tag.link }}">{{ tag.display_name }}</a>{% if not loop.last %}, {% endif %}

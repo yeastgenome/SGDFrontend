@@ -16,7 +16,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h1>Tag: <span class="gene_name">{{ tag.display_name }}</span></h1>
+	<h1>Category: <span class="gene_name">{{ tag.display_name }}</span></h1>
 </div>
 
 <!-- Navbar
@@ -29,7 +29,7 @@
     <div class="small-12 large-9 columns content-column">
 
         <script>
-            add_navbar_title('Tag: <span class="gene_name">{{ tag.display_name }}</span>');
+            add_navbar_title('Category: <span class="gene_name">{{ tag.display_name }}</span>');
             add_navbar_element('Overview', 'overview');
             add_navbar_element('Datasets', 'datasets');
         </script>
@@ -42,7 +42,7 @@
                 <div class="panel">
                     <dl class="key-value">
                         <dt>Description</dt>
-                        <dd>{{ tag.display_name }}</dd>
+                        <dd>{{ tag.description }}</dd>
                      </dl>
                 </div>
             </div>
