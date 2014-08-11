@@ -59,6 +59,11 @@ $(document).ready(function() {
                 message = message + 's.';
             }
             $("#legend").html(message);
+
+            create_discrete_filter("all_radio", graph, null, function(){return "node, edge"}, 1);
+            create_discrete_filter("positive_radio", graph, null, function(){return "node, edge[action = 'expression activated']"}, 1);
+            create_discrete_filter("negative_radio", graph, null, function(){return "node, edge[action = 'expression repressed']"}, 1);
+
         }
         else {
             hide_section("network");
