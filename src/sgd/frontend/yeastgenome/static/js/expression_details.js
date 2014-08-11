@@ -74,7 +74,7 @@ var graph_style = cytoscape.stylesheet()
 	})
 	.selector('edge')
 	.css({
-		'width': 'data(score)'
+		'width': 2
 	})
 	.selector("node[sub_type='FOCUS']")
 	.css({

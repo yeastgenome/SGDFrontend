@@ -266,21 +266,6 @@ class YeastgenomeFrontend(FrontendInterface):
                     }
         return page
 
-    def datasetcolumn(self, bioitem_repr):
-        biocon = get_json(self.backend_url + '/datasetcolumn/' + bioitem_repr + '/overview')
-        biocon_id = str(biocon['id'])
-
-        page = {
-                    #Basic info
-                    'datasetcolumn': biocon,
-
-                    #Links
-                    'download_table_link': '/download_table',
-                    'analyze_table_link': '/analyze',
-                    'expression_details_link': self.backend_url + '/datasetcolumn/' + biocon_id + '/expression_details?callback=?',
-                    }
-        return page
-
     def tag(self, tag_repr):
         biocon = get_json(self.backend_url + '/tag/' + tag_repr + '/overview')
         biocon_id = str(biocon['id'])

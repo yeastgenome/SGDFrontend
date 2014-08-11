@@ -51,8 +51,8 @@ $(document).ready(function() {
         if(data != null && data["nodes"].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
             create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_regulation_graph')
-            var message = 'Showing regulatory relationships supported by at least <strong>' + data["min_evidence_cutoff"] + '</strong> experiment';
-            if(data["min_evidence_cutoff"] == 1) {
+            var message = 'Showing regulatory relationships supported by at least <strong>' + data['min_evidence_count'] + '</strong> experiment';
+            if(data['min_evidence_count'] == 1) {
                 message = message + '.';
             }
             else {
@@ -60,15 +60,7 @@ $(document).ready(function() {
             }
             $("#legend").html(message);
 
-            if(data["max_target_cutoff"] >= data["min_evidence_cutoff"] && data["max_regulator_cutoff"] >= data["min_evidence_cutoff"]) {
-                create_discrete_filter("all_radio", graph, null, all_filter, data["max_evidence_cutoff"]);
-                create_discrete_filter("targets_radio", graph, null, target_filter, data["max_target_cutoff"]);
-                create_discrete_filter("regulators_radio", graph, null, regulator_filter, data["max_regulator_cutoff"]);
-                $("#discrete_filter").show();
-            }
-            else {
-                $("#discrete_filter").hide();
-            }
+            $("#discrete_filter").hide();
         }
         else {
             hide_section("network");
@@ -179,22 +171,6 @@ function create_regulator_table(data) {
     return create_table("regulator_table", options);
 }
 
-function slider_filter(new_cutoff) {
-    return "node, edge[evidence >= " + new_cutoff + "]";
-}
-
-function all_filter() {
-    return "node, edge";
-}
-
-function target_filter() {
-    return "node, edge[class_type = 'TARGET']";
-}
-
-function regulator_filter() {
-    return "node, edge[class_type = 'REGULATOR']";
-}
-
 var graph_style = cytoscape.stylesheet()
 	.selector('node')
 	.css({
@@ -222,18 +198,22 @@ var graph_style = cytoscape.stylesheet()
 		'text-outline-color': '#fff',
 		'color': '#888'
 	})
-	.selector("node[targ_evidence>0][sub_type!='FOCUS']")
+	.selector("node[sub_type='REGULATOR']")
 	.css({
 		'background-color': "#AF8DC3",
 		'text-outline-color': '#888',
 		'color': '#fff'
 	})
-	.selector("node[reg_evidence>0][sub_type!='FOCUS']")
+	.selector("node[sub_type='TARGET']")
 	.css({
 		'background-color': "#7FBF7B",
 		'text-outline-color': '#888',
 		'color': '#fff'
-	});
+	})
+    .selector("edge[action='expression repressed']")
+	.css({
+		'target-arrow-shape': 'tee'
+    });
 
 var layout = {
 	"name": "arbor",
