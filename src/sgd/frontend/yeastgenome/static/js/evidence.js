@@ -33,7 +33,30 @@ function dataset_datat_to_table(dataset) {
         tags.push(create_link(dataset['tags'][j]['display_name'], dataset['tags'][j]['link']));
     }
 
-    return [dataset['id'], dataset_with_link, dataset['short_description'], tags.join(', '), dataset['condition_count'], reference]
+    var hist_values = [];
+    if('hist_values' in dataset) {
+        for(var j=0; j < dataset['hist_values'].length; j++) {
+            var min_range = dataset['hist_values'][j];
+            var max_range = min_range + .5;
+            if(min_range == -5.5) {
+                min_range = '*';
+            }
+            else {
+                min_range = min_range.toFixed(1);
+            }
+            if(max_range == 5.5) {
+                max_range = '*';
+            }
+            else {
+                max_range = max_range.toFixed(1);
+            }
+            hist_values.push('hist' + min_range + '-hist' + max_range)
+        }
+    }
+
+
+
+    return [dataset['id'], dataset_with_link, dataset['short_description'], tags.join(', '), dataset['condition_count'].toString(), reference, hist_values.join(', ')]
 }
 
 function expression_data_to_table(evidence) {

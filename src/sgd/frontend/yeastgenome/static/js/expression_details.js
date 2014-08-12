@@ -3,7 +3,7 @@ $(document).ready(function() {
     $("#expression_table_analyze").hide();
 
   	$.getJSON(expression_details_link, function(data) {
-        create_expression_chart(data['overview']);
+        create_expression_chart(data['overview'], data['min_value'], data['max_value']);
   	    var expression_table = create_expression_table(data['datasets']);
         create_download_button("expression_table_download", expression_table, download_table_link, download_table_filename);
         $("#expression_table_analyze").hide();
@@ -30,7 +30,8 @@ function create_expression_table(data) {
             null, //Description
             null, //Tags
             null, //Number of Conditions
-            null //Reference
+            null, //Reference
+            {"bVisible":false} //Histogram
             ]
     }
     if("Error" in data) {
