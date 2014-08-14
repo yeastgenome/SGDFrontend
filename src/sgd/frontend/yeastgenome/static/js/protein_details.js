@@ -4,7 +4,21 @@ var phosphodata = null;
 var current_residues = '';
 var current_strain = '';
 
-var source_to_color = {};
+var source_to_color = {
+   'PANTHER': '#3366cc',
+   'Pfam': '#dc3912',
+   'Gene3D': '#ff9900',
+   'SUPERFAMILY': '#109618',
+   'TIGRFAM': '#990099',
+   'PIRSF': '#0099c6',
+   'SMART': '#dd4477',
+   'PRINTS': '#66aa00',
+   'JASPAR': '#b82e2e',
+   'Phobius': '#316395',
+   '-': '##994499',
+   'SignalP': '#4c33cc',
+   'TMHMM': '#33cc99'
+};
 
 
 $(document).ready(function() {
@@ -471,30 +485,6 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
             }
             $(tickmarks[i]).html(y_new);
         }
-
-        //Grab colors for network.
-        rectangle_holder = svg_gs[3];
-        var rectangles = rectangle_holder.childNodes;
-        var ordered_colors = [];
-        for (var i=0; i < rectangles.length; i++) {
-            if(rectangles[i].nodeName == 'rect') {
-                var color = $(rectangles[i]).attr('fill');
-                if(ordered_colors[ordered_colors.length - 1] != color) {
-                    ordered_colors.push(color);
-                }
-
-            }
-        }
-
-        var label_holder = svg_gs[0];
-        var labels = label_holder.childNodes;
-        var color_index = 0;
-        for (var i=0; i < labels.length; i++) {
-            if(labels[i].nodeName == 'text') {
-                source_to_color[$(labels[i]).text()] = ordered_colors[color_index];
-                color_index = color_index + 1;
-            }
-        }
     }
     return ready_handler;
 }
@@ -513,6 +503,8 @@ function draw_domain_chart(chart_id, length, data) {
 
     var data_array = [];
     var descriptions = [];
+    var colors = ['#888'];
+    var sources = {};
 
     for (var i=0; i < data.length; i++) {
         var start = data[i]['start'];
@@ -523,6 +515,11 @@ function draw_domain_chart(chart_id, length, data) {
         }
         data_array.push([source, data[i]['domain']['display_name'], start*10, end*10]);
         descriptions.push(data[i]['domain']['description']);
+
+        if(!(source in sources)) {
+            colors.push(source_to_color[source])
+            sources[source] = true;
+        }
     }
     data_array.unshift([' ', display_name, 10, length*10]);
     descriptions.unshift('');
@@ -533,7 +530,8 @@ function draw_domain_chart(chart_id, length, data) {
         'height': 1,
         'timeline': {'colorByRowLabel': true,
             'hAxis': {'position': 'none'}
-        }
+        },
+        'colors': colors
     };
 
     chart.draw(dataTable, options);
@@ -574,18 +572,6 @@ function prep_style() {
 		'text-outline-color': '#fff',
 		'color': '#888'
     })
-    .selector("node[type='DOMAIN'][source='-']")
-	.css({
-		'background-color': source_to_color['-']
-    })
-    .selector("node[type='DOMAIN'][source='Gene3D']")
-	.css({
-		'background-color': source_to_color['Gene3D']
-    })
-    .selector("node[type='DOMAIN'][source='JASPAR']")
-	.css({
-		'background-color': source_to_color['JASPAR']
-    })
     .selector("node[type='DOMAIN'][source='PANTHER']")
 	.css({
 		'background-color': source_to_color['PANTHER']
@@ -594,37 +580,45 @@ function prep_style() {
 	.css({
 		'background-color': source_to_color['Pfam']
     })
-    .selector("node[type='DOMAIN'][source='PIR superfamily']")
+    .selector("node[type='DOMAIN'][source='Gene3D']")
 	.css({
-		'background-color': source_to_color['PIR superfamily']
-    })
-    .selector("node[type='DOMAIN'][source='PRINTS']")
-	.css({
-		'background-color': source_to_color['PRINTS']
-    })
-    .selector("node[type='DOMAIN'][source='ProDom']")
-	.css({
-		'background-color': source_to_color['ProDom']
-    })
-    .selector("node[type='DOMAIN'][source='PROSITE']")
-	.css({
-		'background-color': source_to_color['PROSITE']
-    })
-    .selector("node[type='DOMAIN'][source='SignalP']")
-	.css({
-		'background-color': source_to_color['SignalP']
-    })
-    .selector("node[type='DOMAIN'][source='SMART']")
-	.css({
-		'background-color': source_to_color['SMART']
+		'background-color': source_to_color['Gene3D']
     })
     .selector("node[type='DOMAIN'][source='SUPERFAMILY']")
 	.css({
 		'background-color': source_to_color['SUPERFAMILY']
     })
-    .selector("node[type='DOMAIN'][source='TIGRFAMs']")
+    .selector("node[type='DOMAIN'][source='TIGRFAM']")
 	.css({
-		'background-color': source_to_color['TIGRFAMs']
+		'background-color': source_to_color['TIGRFAM']
+    })
+    .selector("node[type='DOMAIN'][source='PIRSF']")
+	.css({
+		'background-color': source_to_color['PIRSF']
+    })
+    .selector("node[type='DOMAIN'][source='SMART']")
+	.css({
+		'background-color': source_to_color['SMART']
+    })
+    .selector("node[type='DOMAIN'][source='PRINTS']")
+	.css({
+		'background-color': source_to_color['PRINTS']
+    })
+    .selector("node[type='DOMAIN'][source='JASPAR']")
+	.css({
+		'background-color': source_to_color['JASPAR']
+    })
+    .selector("node[type='DOMAIN'][source='Phobius']")
+	.css({
+		'background-color': source_to_color['Phobius']
+    })
+    .selector("node[type='DOMAIN'][source='-']")
+	.css({
+		'background-color': source_to_color['-']
+    })
+    .selector("node[type='DOMAIN'][source='SignalP']")
+	.css({
+		'background-color': source_to_color['SignalP']
     })
     .selector("node[type='DOMAIN'][source='TMHMM']")
 	.css({

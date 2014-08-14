@@ -29,3 +29,11 @@ select[multiple] {
 button, .button {
     margin: 0; // get rid of bottom margin
 }
+
+// Fix for CSS clip bug on Safari 5.1.7 and older
+// See: https://github.com/zurb/foundation/issues/5222
+// Foundation will probably implement this by default soon.
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    .top-bar.expanded .top-bar-section .has-dropdown.moved > .dropdown { clip:initial;}
+    .top-bar.expanded .top-bar-section .dropdown {clip:initial;}
+}
