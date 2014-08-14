@@ -21,7 +21,7 @@ $(document).ready(function() {
 	$.getJSON(interaction_graph_link, function(data) {
 	    if(data != null && data["nodes"].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
-            var slider = create_slider("slider", graph, data["min_evidence_cutoff"], data["max_evidence_cutoff"], slider_filter);
+            var slider = create_slider("slider", graph, data["min_evidence_cutoff"], data["max_evidence_cutoff"], function slider_filter(new_cutoff) {return "node, edge[evidence >= " + new_cutoff + "]";});
             create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_interaction_graph')
 
             if(data["max_phys_cutoff"] >= data["min_evidence_cutoff"] && data["max_gen_cutoff"] >= data["min_evidence_cutoff"]) {
@@ -121,10 +121,6 @@ function get_physical_and_genetic_interactors(data) {
         }
     }
     return intersect_ids;
-}
-
-function slider_filter(new_cutoff) {
-    return "node, edge[evidence >= " + new_cutoff + "]";
 }
 
 function all_filter() {

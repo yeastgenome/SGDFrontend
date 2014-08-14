@@ -12,6 +12,7 @@ $(document).ready(function() {
   	$.getJSON(expression_graph_link, function(data) {
   		if(data['nodes'].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
+            var slider = create_slider("slider", graph, data["min_coeff"], Math.min(data["max_coeff"], 20), function slider_filter(new_cutoff) {return "node, edge[score >= " + (new_cutoff/10) + "]";}, 20);
             create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_expression_graph')
   		}
 		else {
