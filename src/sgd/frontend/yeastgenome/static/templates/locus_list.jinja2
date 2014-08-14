@@ -1,0 +1,52 @@
+{% extends "global_layout.jinja2" %}
+{% block title %}{{ list_name }}{% endblock %}
+
+{% block head %}
+<script>
+	var download_table_link = "{{ download_table_link }}";
+	var bioents = {{bioents | safe}};
+    var list_name = "{{ list_name }}";
+</script>
+{% endblock %}
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h2>{{ list_name | safe }}</h2>
+</div>
+
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns">
+
+        <script>
+            add_navbar_title(list_name);
+            add_navbar_element('Entries', 'entries');
+        </script>
+
+<!-- Gene List
+================================================== -->
+        <section id="entries" data-magellan-destination="entries">
+            <div class="page-header">
+                <h2>Entries</h2>
+                <!-- Includes gene_list_table into template -->
+                {% set table_id = "gene_list_table" %}
+                {% set table_title = list_name %}
+                {% include "gene_list_table.jinja2" %}
+            </div>
+        </section>
+    </div>
+</div>
+
+{% block scripts %}
+<script src="/static/js/evidence.js"></script>
+<script src="/static/js/locus_list.js"></script>
+{% endblock scripts %}
+
+{% endblock body %}

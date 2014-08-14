@@ -637,6 +637,18 @@ class YeastgenomeFrontend(FrontendInterface):
                     'download_table_link': '/download_table'
                 }
         return page
+
+    def locus_list(self, list_name):
+        objects = get_json(self.backend_url + '/all/' + list_name)
+        page = {
+                    #Basic Info
+                    'list_name': list_name,
+                    'bioents': json.dumps(objects),
+
+                    #Links
+                    'download_table_link': '/download_table'
+                }
+        return page
     
     def enrichment(self, bioent_ids):
         enrichment_results = get_json(self.backend_url + '/go_enrichment', data={'bioent_ids': bioent_ids})

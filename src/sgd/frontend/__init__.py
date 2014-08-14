@@ -193,6 +193,11 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('tag'),
                     route_name='tag')
 
+    config.add_route('locus_list', '/locus/{list_name}')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('locus_list', request)(getattr(chosen_frontend, 'locus_list')(list_name=request.matchdict['list_name'])),
+                    renderer=chosen_frontend.get_renderer('locus_list'),
+                    route_name='locus_list')
+
     config.add_route('experiment', '/experiment/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('experiment', request)(getattr(chosen_frontend, 'experiment')(experiment_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('experiment'),

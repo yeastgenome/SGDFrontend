@@ -48,8 +48,10 @@
                 <h2>Overview</h2>
                 <div class="panel">
                     <dl class="key-value">
-                        <dt>GEO ID</dt>
-                        <dd>{{ dataset.geo_id }}</dd>
+                        {% if dataset.geo_id != None %}
+                            <dt>GEO ID</dt>
+                            <dd>{{ dataset.geo_id }}</dd>
+                        {% endif %}
 
                         <dt>Reference</dt>
                         <dd><a href="{{ dataset.reference.link }}">{{ dataset.reference.display_name }}</a></dd>
