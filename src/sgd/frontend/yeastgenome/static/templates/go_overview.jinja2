@@ -13,9 +13,8 @@
         </p>
         :
     </strong>
-        {% for slim in go_overview.go_slim %}
-            {% if loop.index < 11 %}<span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>
-                {% if not loop.last %}, {% endif %} {% endif %}
+        {% for slim in go_overview.go_slim if slim.format_name != 'molecular_function' and slim.format_name != 'cellular_component' and slim.format_name != 'biological_process' %}
+            {% if loop.index < 11 %}<span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
         {% endfor %}
 
         <a id="see_more_button"
@@ -23,8 +22,7 @@
            {% if go_overview.go_slim|length <= 10 %}hidden{% endif %}>... See more >></a>
         <span id="see_more" hidden>
             {% for slim in go_overview.go_slim %}
-                {% if loop.index >= 11 %}<span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>
-                    {% if not loop.last %}, {% endif %} {% endif %}
+                {% if loop.index >= 11 %}<span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
             {% endfor %}
         </span>
         <a id="see_less_button"
