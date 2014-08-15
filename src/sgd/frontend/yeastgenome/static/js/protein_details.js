@@ -15,7 +15,7 @@ var source_to_color = {
    'PRINTS': '#66aa00',
    'JASPAR': '#b82e2e',
    'Phobius': '#316395',
-   '-': '##994499',
+   '-': '#994499',
    'SignalP': '#4c33cc',
    'TMHMM': '#33cc99'
 };
