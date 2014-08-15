@@ -50,7 +50,14 @@
                     <dl class="key-value">
                         {% if dataset.geo_id != None %}
                             <dt>GEO ID</dt>
-                            <dd>{{ dataset.geo_id }}</dd>
+                            <dd>
+                                {% for url in dataset.urls if url.category == 'External' %}
+                                   <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>
+                                {% endfor %}
+                                {% if dataset.urls|length == 0 %}
+                                   {{ dataset.geo_id }}
+                                {% endif %}
+                            </dd>
                         {% endif %}
 
                         <dt>Reference</dt>
