@@ -23,12 +23,18 @@ function drawChart() {
         function barSelectHandler() {
             var selectedItem = chart.getSelection()[0];
             if (selectedItem) {
+                $('#phenotype_table_filter > label > input:first').removeClass('flash');
                 var mutant_type = phenotype_overview['experiment_categories'][selectedItem.row+1][0];
                 var experiment_type = phenotype_overview['experiment_categories'][0][selectedItem.column];
                 var phenotype_table = $($.fn.dataTable.fnTables(true)).dataTable();
                 phenotype_table.fnFilter( mutant_type + ' ' + experiment_type );
-                window.location.hash = "";
-                window.location.hash = "annotations";
+                try {
+                    $('#navbar_annotations > a:first').click();
+                }
+                catch(err) {
+
+                }
+                $('#phenotype_table_filter > label > input:first').addClass('flash');
             }
         }
 
@@ -58,12 +64,18 @@ function drawChart() {
         function selectHandler() {
             var selectedItem = strain_chart.getSelection()[0];
             if (selectedItem) {
+                $('#phenotype_table_filter > label > input:first').removeClass('flash');
                 //var value = strain_data.getValue(selectedItem.row, selectedItem.column);
                 var strain = phenotype_overview['strains'][selectedItem.row+1][0];
                 var phenotype_table = $($.fn.dataTable.fnTables(true)).dataTable();
                 phenotype_table.fnFilter( strain );
-                window.location.hash = "";
-                window.location.hash = "annotations";
+                try {
+                    $('#navbar_annotations > a:first').click();
+                }
+                catch(err) {
+
+                }
+                $('#phenotype_table_filter > label > input:first').addClass('flash');
             }
         }
 

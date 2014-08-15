@@ -5,36 +5,59 @@
 google.load("visualization", "1", {packages:["corechart"]});
 function create_expression_chart(all_data, min_value, max_value) {
     if(all_data != null) {
-        var datatable2 = [['Low-Expression', 'High-Expression']];
+        var datatable2 = [['Low-Extreme', 'Low', 'High', 'High-Extreme']];
 
         var min_extreme = 0;
         for (var key in all_data) {
             var value = parseFloat(key);
-            if(value < 0) {
+            if(value == -5.5) {
                 for(var i=0; i < all_data[key]; i++) {
-                    datatable2.push([value, null]);
+                    datatable2.push([value, null, null, null]);
                 }
-                if(value < min_extreme) {
-                    min_extreme = value;
+            }
+            else if(value < 0) {
+                for(var i=0; i < all_data[key]; i++) {
+                    datatable2.push([null, value, null, null]);
+                }
+            }
+            else if(value == 5) {
+                for(var i=0; i < all_data[key]; i++) {
+                    datatable2.push([null, null, null, value]);
                 }
             }
             else {
                 for(var i=0; i < all_data[key]; i++) {
-                    datatable2.push([null, value]);
+                    datatable2.push([null, null, value, null]);
                 }
+            }
+
+            if(value < min_extreme) {
+                min_extreme = value;
             }
         }
 
         min_extreme = Math.ceil(min_extreme);
 
         function draw_chart(use_log) {
+            function tooltipHandler(e) {
+                    var gs = $('#two_channel_expression_chart > div > div > svg > g');
+                    $(gs[2]).show();
+                    var tooltips = $('#two_channel_expression_chart > div > div > svg > g > g > g > text');
+                    for(var i=0; i < tooltips.length; i++) {
+                        var tooltip = $(tooltips[i]);
+                        if(tooltip.html() == 'Items:') {
+                            $(tooltips[i+1]).html(Math.round(Math.pow(10, $(tooltips[i+1]).html())));
+                        }
+                    }
+                }
+
             var chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart'));
             chart.draw(google.visualization.arrayToDataTable(datatable2), {
                                         legend: { position: 'none' },
                                         hAxis: {title: 'log2 ratio', viewWindow: {min: -5.5, max: 5.5}},
                                         vAxis: {title: 'Number of conditions', logScale: use_log},
                                         height: 300,
-                                        colors: ['#0d9853', '#980D0D'],
+                                        colors: ['#13e07a', '#0d9853', '#980D0D', '#e01313'],
                                         histogram: {bucketSize:.5},
                                         isStacked: true,
                                         titlePosition: 'none'
@@ -42,6 +65,9 @@ function create_expression_chart(all_data, min_value, max_value) {
 
             // The select handler. Call the chart's getSelection() method
             function selectHandler() {
+                $('#expression_table_filter > label > input:first').removeClass('flash');
+                var gs = $('#two_channel_expression_chart > div > div > svg > g');
+                $(gs[2]).hide();
                 var min_range = chart.getSelection()[0].row/2 + min_extreme -.5;
                 var max_range = min_range + .5;
                 if(min_range == -5.5) {
@@ -56,10 +82,16 @@ function create_expression_chart(all_data, min_value, max_value) {
                 else {
                     max_range = max_range.toFixed(1);
                 }
+                chart.setSelection([]);
                 var dataset_table = $($.fn.dataTable.fnTables(true)).dataTable();
-                dataset_table.fnFilter( 'hist' + min_range + '-hist' + max_range );
-                window.location.hash = "";
-                window.location.hash = "annotations";
+                dataset_table.fnFilter( 'log2ratio=' + min_range + ':' + max_range );
+                try {
+                    $('#navbar_annotations > a:first').click();
+                }
+                catch(err) {
+
+                }
+                $('#expression_table_filter > label > input:first').addClass('flash');
             }
 
             // Listen for the 'select' event, and call my function selectHandler() when
@@ -68,15 +100,6 @@ function create_expression_chart(all_data, min_value, max_value) {
 
             //Fix tooltips
             if(use_log) {
-                function tooltipHandler(e) {
-                    var tooltips = $('#two_channel_expression_chart > div > div > svg > g > g > g > text');
-                    for(var i=0; i < tooltips.length; i++) {
-                        var tooltip = $(tooltips[i]);
-                        if(tooltip.html() == 'Items:') {
-                            $(tooltips[i+1]).html(Math.round(Math.pow(10, $(tooltips[i+1]).html())));
-                        }
-                    }
-                }
                 google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
             }
 

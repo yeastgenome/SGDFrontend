@@ -15,12 +15,20 @@ if(regulation_overview['target_count'] + regulation_overview['regulator_count'] 
             var selectedItem = chart.getSelection()[0];
             if (selectedItem) {
                 if(selectedItem.row == 1) {
-                    window.location.hash = "";
-                    window.location.hash = "regulators";
+                    try {
+                        $('#navbar_regulators > a:first').click();
+                    }
+                    catch(err) {
+
+                    }
                 }
                 else {
-                    window.location.hash = "";
-                    window.location.hash = "targets";
+                   try {
+                        $('#navbar_targets > a:first').click();
+                    }
+                    catch(err) {
+
+                    }
                 }
             }
         }
