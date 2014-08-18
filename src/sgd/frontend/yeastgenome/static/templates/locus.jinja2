@@ -1,0 +1,482 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ locus.display_name }}{% endblock %}
+
+{% block head %}
+<script>
+    var sequence_details_link = "{{ sequence_details_link }}";
+    var neighbor_sequence_details_link = "{{ neighbor_sequence_details_link }}";
+    var expression_details_link = "{{expression_details_link}}";
+
+    var aliases = {{ aliases|safe }};
+
+	var download_table_link = "{{download_table_link}}";
+    var download_sequence_link = "{{download_sequence_link}}";
+	var analyze_link = "{{analyze_table_link}}";
+    var download_network_link = "{{download_network_link}}";
+
+	var display_name = "{{ locus.display_name }}";
+    var format_name = "{{ locus.format_name }}";
+	var locus_id = "{{ locus.id }}";
+
+</script>
+{% endblock %}
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
+</div>
+
+<!-- Tabs
+================================================== -->
+<!-- Includes tabs.html into template -->
+{% include "tabs.jinja2" %}
+<script>document.getElementById('summary_tab').id = 'current';</script>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+	
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            //Set up navbar
+            add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</a>');
+            add_navbar_element('Locus Overview', 'overview');
+            add_navbar_element('Sequence', 'sequence');
+            add_navbar_element('Literature', 'literature');
+            add_navbar_element('Gene Ontology', 'go');
+            add_navbar_element('Phenotype', 'phenotype');
+            add_navbar_element('Interaction', 'interaction');
+            add_navbar_element('Expression', 'expression');
+            add_navbar_element('Regulation', 'regulation');
+            add_navbar_element('Protein', 'protein');
+            add_navbar_element('History', 'history');
+            add_navbar_element('Resources', 'resources');
+            add_navbar_element('Paragraph', 'paragraph');
+            add_navbar_element('References', 'references');
+        </script>
+
+<!-- Overview
+================================================== -->
+    <section id="overview" data-magellan-destination="overview">
+        <h2>Locus Overview
+        </h2>
+        <div class="panel">
+
+            <dl class="key-value">
+                <dt>Standard Name</dt>
+                <dd>{{ locus.display_name }}</dd>
+
+                <dt>Systematic Name</dt>
+                <dd>{{ locus.format_name }}</dd>
+
+                <dt>SGD ID</dt>
+                <dd>{{ locus.sgdid }}</dd>
+
+                {% for alias in locus.aliases if alias.category == 'Uniform' %}
+                    {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+                    {{ alias.display_name }}
+                    {% for evidence in alias.evidences %}
+                        {% if loop.first %}
+                            <a href="#" data-dropdown="drop_alias_{{ alias.id }}"><i
+                                    class="fa fa-info-circle"></i></a>
+                            <p id="drop_alias_{{ alias.id }}" class="f-dropdown content medium" data-dropdown-content>
+                        {% endif %}
+                    <a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a>{% if not loop.last %},{% else %}</p>{% endif %}
+                    {% endfor %}
+                    {% if not loop.last %},{% else %}</dd>{% endif %}
+                {% endfor %}
+
+                <dt>Feature Type</dt>
+                <dd>{{ locus.locus_type }}</dd>
+
+                <dt>Description</dt>
+                <dd>
+                    {{ locus.description }}
+                    {% for reference in locus.description_references %}
+                        {% if loop.first %}
+                            <a href="#" data-dropdown="drop_description"><i
+                                    class="fa fa-info-circle"></i></a>
+                            <p id="drop_description" class="f-dropdown content medium" data-dropdown-content>
+                        {% endif %}
+                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>
+                    {% if not loop.last %}
+                        ,
+                    {% else %}
+                        </p>
+                    {% endif %}
+                    {% endfor %}
+                </dd>
+
+                <dt>Name Description</dt>
+                <dd>{{ locus.name_description }}</dd>
+
+                {% for alias in locus.aliases if alias.category == 'Gene product' %}
+                    {% if loop.first %}
+                        <dt>Gene Product</dt>
+                        <dd>{% endif %}
+
+                    {{ alias.display_name }}
+
+                    {% for evidence in alias.evidences %}
+                        {% if loop.first %}
+                            <a href="#" data-dropdown="drop_alias_{{ alias.id }}"><i
+                                    class="fa fa-info-circle"></i></a>
+                            <p id="drop_alias_{{ alias.id }}" class="f-dropdown content medium" data-dropdown-content>
+                        {% endif %}
+                    <a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a>{% if not loop.last %},
+                    {% else %}
+                        </p>
+                    {% endif %}
+                    {% endfor %}
+                    {% if not loop.last %},{% else %}</dd>{% endif %}
+                {% endfor %}
+            </dl>
+
+        </div>
+    </section>
+
+<!-- Sequence
+================================================== -->
+    <section id="sequence" data-magellan-destination="sequence">
+        <h2>Sequence</h2>
+        <div class="panel">
+            <div class="panel">
+                <h3>Location - S288C
+                    <a href="#" data-dropdown="reference_location_help"><i class="fa fa-question-circle"></i></a>
+
+                    <p id="reference_location_help" class="f-dropdown content medium" data-dropdown-content>
+                       Depicts genomic context; mouse over to view names, coordinates, and brief descriptions. Use the
+                        links to GBrowse and ORF Map for an interactive view of this region.
+                    </p>
+                </h3>
+                <div class="clearfix">
+                    <div id="reference_contig" class="left"></div>
+                    <div class="right">
+                        View in:
+                        {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE' and (url.display_name == 'GBrowse' or url.display_name == 'ORF Map') %}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div id="reference_label_chart"></div>
+            </div>
+
+            <div id="subfeature_wrapper" class="panel">
+                <h3>Subfeatures - S288C <span id="subfeature_table_header" class="round secondary label"></span></h3>
+                <div id="reference_sublabel_chart"></div>
+
+                <!-- Includes chromosomal_coord_table into template -->
+                {% set table_id = "subfeature_table" %}
+                {% set include_relative = True %}
+                {% set include_version = True %}
+                {% include "chromosomal_coord_table.jinja2" %}
+            </div>
+
+            <div class="panel">
+                <h3>Resources</h3>
+                 <p id='resources_list'>
+                    {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+
+                {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C'%}
+                    {% if loop.first %}<h3>S288C only</h3><p id="reference_only_resources_list">{% endif %}
+                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
+                {% endfor %}
+
+
+                {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_SPECIES'%}
+                    {% if loop.first %}<h3>S288C vs. other species</h3> <p id="other_species_resources_list">{% endif %}
+                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
+                {% endfor %}
+
+
+                {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_STRAINS'%}
+                    {% if loop.first %}<h3>S288C vs. other strains</h3><p id="other_strains_resources_list">{% endif %}
+                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+<!-- Literature
+================================================== -->
+    <section id="literature" data-magellan-destination="literature">
+        <h2>Literature</h2>
+        <div class="panel">
+            <dl class="key-value">
+                <dt>Unique References</dt>
+                <dd>{{locus.literature_overview.total_count}}</dd>
+            </dl>
+        </div>
+    </section>
+
+<!-- GO
+================================================== -->
+    <section id="go" data-magellan-destination="go">
+        <h2>Gene Ontology</h2>
+        <div class="panel">
+            <dl class="key-value">
+                <dt>Molecular Function</dt>
+                <dd><ul>
+                    {% for goterm in locus.go_overview.molecular_function_terms|sort(attribute='display_name') %}
+                        <li><a href="{{ goterm.link }}">{{ goterm.display_name }}</a></li>
+                    {% endfor %}
+                </ul></dd>
+
+                <dt>Biological Process</dt>
+                <dd><ul>
+                    {% for goterm in locus.go_overview.biological_process_terms|sort(attribute='display_name')  %}
+                        <li><a href="{{ goterm.link }}">{{ goterm.display_name }}</a></li>
+                    {% endfor %}
+                </ul></dd>
+
+                <dt>Cellular Component</dt>
+                <dd><ul>
+                    {% for goterm in locus.go_overview.cellular_component_terms|sort(attribute='display_name')  %}
+                        <li><a href="{{ goterm.link }}">{{ goterm.display_name }}</a></li>
+                    {% endfor %}
+                </ul></dd>
+            </dl>
+        </div>
+    </section>
+
+<!-- Phenotype
+================================================== -->
+    <section id="phenotype" data-magellan-destination="phenotype">
+        <h2>Phenotype</h2>
+        <div class="panel">
+
+            <div class="panel">
+                <h3>Classical Genetics</h3>
+                <dl class="key-value">
+                    {% for mutant, phenotypes in locus.phenotype_overview.classical_phenotypes.iteritems() %}
+                        <dt>{{ mutant }}</dt>
+                        <dd><ul>
+                            {% for phenotype in phenotypes|sort(attribute='display_name') %}
+                                 <li><a href="{{ phenotype.link }}">{{ phenotype.display_name }}</a></li>
+                            {% endfor %}
+                        </ul></dd>
+                    {% endfor %}
+                </dl>
+            </div>
+
+            <div class="panel">
+                <dl class="key-value">
+                    <h3>Large-scale Survey</h3>
+                    {% for mutant, phenotypes in locus.phenotype_overview.large_scale_phenotypes.iteritems() %}
+                        <dt>{{ mutant }}</dt>
+                        <dd><ul>
+                            {% for phenotype in phenotypes|sort(attribute='display_name') %}
+                                 <li><a href="{{ phenotype.link }}">{{ phenotype.display_name }}</a></li>
+                            {% endfor %}
+                        </ul></dd>
+                    {% endfor %}
+                </dl>
+            </div>
+
+            <div class="panel">
+                <h3>Mutant Strains</h3>
+                <p id="mutant_resources_list">
+                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_MUTANT_STRAINS'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+                <h3>Phenotype Resources</h3>
+                <p id="phenotype_resources_list">
+                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_PHENOTYPE_RESOURCES'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+                <h3>Ontology</h3>
+                <p id="ontology_resources_list">
+                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_ONTOLOGY'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+    </section>
+
+<!-- Interaction
+================================================== -->
+    <section id="interaction" data-magellan-destination="interaction">
+        <h2>Interaction</h2>
+        <div class="panel">
+            <p>{{ locus.interaction_overview.total_interactions }} total interactions for {{ locus.interaction_overview.total_interactors }} unique genes</p>
+            <div class="panel">
+                <h3>Physical Interactions</h3>
+                <ul>
+                    {% for experiment in locus.interaction_overview.physical_experiments.keys()|sort %}
+                        <li>{{ experiment }}: {{ locus.interaction_overview.physical_experiments[experiment] }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="panel">
+                <h3>Genetic Interactions</h3>
+                <ul>
+                    {% for experiment, count in locus.interaction_overview.genetic_experiments.iteritems() %}
+                        <li>{{ experiment }}: {{ locus.interaction_overview.genetic_experiments[experiment] }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="panel">
+                <h3>Resources</h3>
+                <p id="resources_list">
+                    {% for url in locus.urls if url.category == 'LOCUS_INTERACTION'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+<!-- Expression
+================================================== -->
+    <section id="expression" data-magellan-destination="expression">
+        <h2>Expression</h2>
+        <div class="panel">
+            <div id="two_channel_expression_chart" class="panel"></div>
+            <div class="panel">
+                <h3>Resources</h3>
+                <p>
+                    {% for url in locus.urls if url.category == 'LOCUS_EXPRESSION'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+    </section>
+
+<!-- Regulation
+================================================== -->
+    <section id="regulation" data-magellan-destination="regulation">
+        <h2>Regulation</h2>
+        <div class="panel">
+            <div class="panel">
+                 <dl class="key-value">
+                     <dt>Regulators</dt>
+                     <dd>{{ locus.regulation_overview.regulator_count }}</dd>
+
+                     <dt>Targets</dt>
+                     <dd>{{ locus.regulation_overview.target_count }}</dd>
+                 </dl>
+            </div>
+
+            <div class="panel">
+                <h3>Resources</h3>
+                <p>
+                    {% for url in locus.urls if url.category == 'LOCUS_REGULATION'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+    </section>
+
+<!-- Protein
+================================================== -->
+    <section id="protein" data-magellan-destination="protein">
+        <h2>Protein</h2>
+        <div class="panel">
+            <div class="panel">
+                 <dl class="key-value">
+                     <dt>Length (a.a.)</dt>
+                     <dd>{{ locus.protein_overview.length }}</dd>
+
+                     <dt>Molecular Weight</dt>
+                     <dd>{{ locus.protein_overview.molecular_weight }}</dd>
+
+                     <dt>Isoelectric Point</dt>
+                     <dd>{{ locus.protein_overview.pi }}</dd>
+                 </dl>
+            </div>
+
+            <div class="panel">
+                <h3>Homologs</h3>
+                    <p id='homolog_resources_list'>
+                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
+                <h3>Protein Databases/Other</h3>
+                    <p id='protein_databases_resources_list'>
+                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
+                <h3>Localization</h3>
+                    <p id="localization_resources_list">
+                        {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION'%}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
+                <h3>Post-translational Modifications</h3>
+                    <p id="modifications_resources_list">
+                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS'%}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
+            </div>
+        </div>
+    </section>
+
+<!-- History
+================================================== -->
+    <section id="history" data-magellan-destination="history">
+        <h2>History</h2>
+        <div class="panel">
+
+        </div>
+    </section>
+
+<!-- Resources
+================================================== -->
+    <section id="resources" data-magellan-destination="resources">
+        <h2>Resources</h2>
+        <div class="panel">
+
+        </div>
+    </section>
+
+<!-- Paragraph
+================================================== -->
+    <section id="paragraph" data-magellan-destination="paragraph">
+        <h2>Paragraph</h2>
+        <div class="panel">
+
+        </div>
+    </section>
+
+<!-- References
+================================================== -->
+    <section id="references" data-magellan-destination="references">
+        <h2>References</h2>
+        <div class="panel">
+
+        </div>
+
+    </section>
+    </div>
+</div>
+
+{% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
+       'version':'1','packages':['timeline']}]}"></script>
+<script src="/static/js/local.js"></script>
+<script src="/static/js/expression_overview.js"></script>
+<script src="/static/js/locus.js"></script>
+{% endblock scripts %}
+
+{% endblock body %}

@@ -204,6 +204,30 @@ class YeastgenomeFrontend(FrontendInterface):
                     }
         return page
 
+    def locus(self, bioent_repr):
+        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
+        bioent_id = str(bioent['id'])
+        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
+
+        page = {
+                    #Basic info
+                    'locus': bioent,
+                    'aliases': json.dumps(bioent['aliases']),
+
+                    #Overview
+                    'tabs': tabs,
+
+                    #Links
+                    'neighbor_sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/neighbor_sequence_details?callback=?',
+                    'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
+                    'expression_details_link': self.backend_url + '/locus/' + bioent_id + '/expression_details?callback=?',
+                    'download_table_link': '/download_table',
+                    'download_sequence_link': '/download_sequence',
+                    'analyze_table_link': '/analyze',
+                    'download_network_link': '/download_image'
+                    }
+        return page
+
     def sequence_details(self, bioent_repr):
         bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
         bioent_id = str(bioent['id'])

@@ -203,6 +203,11 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('experiment'),
                     route_name='experiment')
 
+    config.add_route('locus', '/locus/{identifier}/overview')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('locus', request)(getattr(chosen_frontend, 'locus')(bioent_repr=request.matchdict['identifier'].lower())),
+                    renderer=chosen_frontend.get_renderer('locus'),
+                    route_name='locus')
+
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':
         from src.sgd.frontend.yeastgenome import yeastgenome_frontend
