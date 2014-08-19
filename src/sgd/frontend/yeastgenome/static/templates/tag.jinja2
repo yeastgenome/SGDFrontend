@@ -6,6 +6,7 @@
 <script>
 	var download_table_link = "{{download_table_link}}";
 	var analyze_link = "{{analyze_table_link}}";
+    var all_tags_link = "{{all_tags_link}}";
 
     var display_name = "{{ tag.display_name }}";
     var bioitems = {{bioitems | safe}};
@@ -32,6 +33,7 @@
             add_navbar_title('Category: <span class="gene_name">{{ tag.display_name }}</span>');
             add_navbar_element('Overview', 'overview');
             add_navbar_element('Datasets', 'datasets');
+            add_navbar_element('Other Tags', 'other_tags');
         </script>
 
         <!-- Summary
@@ -59,6 +61,15 @@
                     {% set table_id = "expression_table" %}
                     {% include "dataset_table.jinja2" %}
                 </div>
+            </div>
+        </section>
+
+         <!-- Other Tags
+================================================== -->
+        <section id="other_tags" data-magellan-destination="other_tags">
+            <h2>Other Tags</h2>
+            <div class="panel">
+                <p id='other_tags_list'></p>
             </div>
         </section>
 
