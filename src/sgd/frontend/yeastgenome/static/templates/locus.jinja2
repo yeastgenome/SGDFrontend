@@ -9,6 +9,7 @@
     var expression_details_link = "{{expression_details_link}}";
 
     var aliases = {{ aliases|safe }};
+    var paragraph = {{ paragraph | safe }};
 
 	var download_table_link = "{{download_table_link}}";
     var download_sequence_link = "{{download_sequence_link}}";
@@ -445,7 +446,11 @@
     <section id="resources" data-magellan-destination="resources">
         <h2>Resources</h2>
         <div class="panel">
-
+            <p>
+                {% for url in locus.urls if url.category == 'LOCUS_LSP'%}
+                    <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                {% endfor %}
+            </p>
         </div>
     </section>
 
@@ -454,7 +459,8 @@
     <section id="paragraph" data-magellan-destination="paragraph">
         <h2>Paragraph</h2>
         <div class="panel">
-
+            <div id="summary_paragraph"></div>
+            <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
         </div>
     </section>
 

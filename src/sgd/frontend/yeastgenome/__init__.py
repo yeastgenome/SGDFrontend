@@ -213,6 +213,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     #Basic info
                     'locus': bioent,
                     'aliases': json.dumps(bioent['aliases']),
+                    'paragraph': json.dumps(bioent['paragraph']),
 
                     #Overview
                     'tabs': tabs,

@@ -37,6 +37,11 @@ $(document).ready(function() {
     $.getJSON(expression_details_link, function(data) {
         create_expression_chart(data['overview'], data['min_value'], data['max_value']);
   	});
+
+    if(paragraph != null) {
+        document.getElementById("summary_paragraph").innerHTML = paragraph['text'];
+        set_up_references(paragraph['references'], "summary_paragraph_reference_list");
+    }
 });
 
 function strand_to_direction(strand) {
