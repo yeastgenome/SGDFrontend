@@ -56,7 +56,7 @@ function dataset_datat_to_table(dataset) {
 
 
 
-    return [dataset['id'], dataset_with_link, dataset['short_description'], tags.join(', '), dataset['condition_count'].toString(), reference, hist_values.join(', ')]
+    return [dataset['id'], dataset['id'], hist_values.join(', '), dataset_with_link, dataset['short_description'], tags.join(', '), dataset['condition_count'].toString(), reference]
 }
 
 function phosphorylation_data_to_table(evidence) {

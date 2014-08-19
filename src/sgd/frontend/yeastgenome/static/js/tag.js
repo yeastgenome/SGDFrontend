@@ -11,6 +11,8 @@ function create_expression_table(data) {
         'aaSorting': [[1, "asc"]],
         'aoColumns': [
             {"bSearchable":false, "bVisible":false}, //Evidence ID
+            {"bSearchable":false, "bVisible":false}, //Analyze ID,
+            {"bVisible":false}, //Histogram
             null, //Dataset
             null, //Description
             null, //Tags

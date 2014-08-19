@@ -3,7 +3,13 @@ $(document).ready(function() {
     $("#expression_table_analyze").hide();
 
   	$.getJSON(expression_details_link, function(data) {
-        create_expression_chart(data['overview'], data['min_value'], data['max_value']);
+        if(data['datasets'].length > 0) {
+            create_expression_chart(data['overview'], data['min_value'], data['max_value']);
+        }
+        else {
+            $('#expression_overview_panel').hide();
+            $('#expression_message').show();
+        }
   	    var expression_table = create_expression_table(data['datasets']);
         create_download_button("expression_table_download", expression_table, download_table_link, download_table_filename);
         $("#expression_table_analyze").hide();
@@ -12,7 +18,8 @@ $(document).ready(function() {
   	$.getJSON(expression_graph_link, function(data) {
   		if(data['nodes'].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
-            var slider = create_slider("slider", graph, data["min_coeff"], Math.min(data["max_coeff"], 20), function slider_filter(new_cutoff) {return "node, edge[score >= " + (new_cutoff/10) + "]";}, 20);
+            var max_value = data["min_coeff"] + Math.min(data["max_coeff"] - data["min_coeff"], 10);
+            var slider = create_slider("slider", graph, data["min_coeff"], max_value, function slider_filter(new_cutoff) {return "node, edge[score >= " + (new_cutoff/10) + "]";}, max_value+1);
             create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_expression_graph')
   		}
 		else {
@@ -27,12 +34,13 @@ function create_expression_table(data) {
         'aaSorting': [[1, "asc"]],
         'aoColumns': [
             {"bSearchable":false, "bVisible":false}, //Evidence ID
+            {"bSearchable":false, "bVisible":false}, //Analyze ID
+            {"bVisible":false}, //Histogram
             null, //Dataset
             null, //Description
             null, //Tags
             null, //Number of Conditions
-            null, //Reference
-            {"bVisible":false} //Histogram
+            null //Reference
             ]
     }
     if("Error" in data) {

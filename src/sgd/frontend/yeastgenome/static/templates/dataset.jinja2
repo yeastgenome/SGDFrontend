@@ -33,7 +33,7 @@
             add_navbar_title('Dataset: <span class="gene_name">{{ dataset.display_name }}</span>');
             add_navbar_element('Overview', 'overview');
             {%  if dataset.reference.abstract != none %}
-                add_navbar_element('Abstract', 'abstract');
+                add_navbar_element('Summary', 'summary');
             {%  endif %}
             add_navbar_element('Conditions', 'conditions');
             {% if dataset.urls|length > 0 %}
@@ -86,9 +86,9 @@
             <!-- Abstract
 ================================================== -->
         {%  if dataset.reference.abstract != none %}
-            <section id="abstract" data-magellan-destination="abstract">
+            <section id="summary" data-magellan-destination="summary">
                 <div class="page-header">
-                    <h2>Abstract</h2>
+                    <h2>Summary</h2>
                     <div class="panel">
                         <p>{{ dataset.reference.abstract.text|safe}}</p>
                     </div>
