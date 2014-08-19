@@ -5,26 +5,27 @@
 google.load("visualization", "1", {packages:["corechart"]});
 function create_expression_chart(all_data, min_value, max_value) {
     if(all_data != null) {
-
+        var capped_min = Math.max(-5.5, min_value);
+        var capped_max = Math.min(5, max_value);
         var header_row = [];
         var colors = [];
         var indexes = [];
-        if(min_value == -5.5) {
+        if(capped_min == -5.5) {
             header_row.push('Low-Extreme');
             colors.push('#13e07a');
         }
         indexes.push(header_row.length-1);
-        if(min_value < 0) {
+        if(capped_min < 0) {
             header_row.push('Low');
             colors.push('#0d9853');
         }
         indexes.push(header_row.length-1);
-        if(max_value-.5 >= 0) {
+        if(capped_max >= 0) {
             header_row.push('High');
             colors.push('#980D0D');
         }
         indexes.push(header_row.length-1);
-        if(max_value-.5 == 5) {
+        if(capped_max == 5) {
             header_row.push('High-Extreme');
             colors.push('#e01313');
         }
@@ -64,17 +65,15 @@ function create_expression_chart(all_data, min_value, max_value) {
             }
         }
 
-        min_value = Math.ceil(min_value);
-
         function draw_chart(use_log) {
             function tooltipHandler(e) {
                     var gs = $('#two_channel_expression_chart > div > div > svg > g');
                     $(gs[2]).show();
                     var tooltips = $('#two_channel_expression_chart > div > div > svg > g > g > g > text');
                     for(var i=0; i < tooltips.length; i++) {
-                        var tooltip = $(tooltips[i]);
-                        if(tooltip.html() == 'Items:') {
-                            $(tooltips[i+1]).html(Math.round(Math.pow(10, $(tooltips[i+1]).html())));
+                        var tooltip = tooltips[i];
+                        if(tooltip.innerHTML == 'Items:') {
+                            $(tooltips[i+1]).html('' + Math.round(Math.pow(10, $(tooltips[i+1]).html())));
                         }
                     }
                 }
@@ -96,7 +95,7 @@ function create_expression_chart(all_data, min_value, max_value) {
                 $('#expression_table_filter > label > input:first').removeClass('flash');
                 var gs = $('#two_channel_expression_chart > div > div > svg > g');
                 $(gs[2]).hide();
-                var min_range = chart.getSelection()[0].row/2 + min_value -.5;
+                var min_range = .5*chart.getSelection()[0].row + Math.max(capped_min, -5.5);
                 var max_range = min_range + .5;
                 if(min_range == -5.5) {
                     min_range = '*';
