@@ -21,7 +21,7 @@ $(document).ready(function() {
 function create_expression_table(data) {
     var options = {
         'bPaginate': true,
-        'aaSorting': [[1, "asc"]],
+        'aaSorting': [[3, "asc"]],
         'aoColumns': [
             {"bSearchable":false, "bVisible":false}, //Evidence ID
             {"bSearchable":false, "bVisible":false}, //Analyze ID,
@@ -39,17 +39,15 @@ function create_expression_table(data) {
     }
     else {
         var datatable = [];
-        var geo_ids = {};
-        var evidence_ids = {};
+        var reference_ids = {};
         for (var i=0; i < data.length; i++) {
-            if(!(data[i]['pcl_filename'] in evidence_ids)) {
-                datatable.push(dataset_datat_to_table(data[i], i));
-                evidence_ids[data[i]['pcl_filename']] = true;
-                geo_ids[data[i]['geo_id']] = true;
+            datatable.push(dataset_datat_to_table(data[i], i));
+            if(data[i]['reference'] != null) {
+                reference_ids[data[i]['reference']['id']] = true;
             }
         }
 
-        set_up_header('expression_table', datatable.length, 'dataset', 'datasets');
+        set_up_header('expression_table', datatable.length, 'dataset', 'datasets', Object.keys(reference_ids).length, 'reference', 'references');
 
         options["oLanguage"] = {"sEmptyTable": "No expression data for " + display_name};
         options["aaData"] = datatable;
