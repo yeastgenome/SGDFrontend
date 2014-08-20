@@ -303,6 +303,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     #Links
                     'download_table_link': '/download_table',
                     'analyze_table_link': '/analyze',
+                    'all_tags_link': self.backend_url + '/all/tag?callback=?'
                     }
         return page
 

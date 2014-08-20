@@ -48,10 +48,11 @@
 <section id="overview" data-magellan-destination="overview">
 	<div class="page-header">
 		<h2>Expression Overview</h2>
-        <div class="panel">
+        <div id='expression_overview_panel' class="panel">
             <!-- Includes expression_overview.html into template -->
             {% include "expression_overview.jinja2" %}
         </div>
+        <p id='expression_message' hidden>No expression data for {{ locus.display_name }}.</p>
 	</div>
 </section>
 
