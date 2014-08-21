@@ -138,6 +138,11 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('sequence_details'),
                     route_name='sequence_details')
 
+    config.add_route('curator_sequence', '/curator/locus/{identifier}/sequence')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('curator_sequence', request)(getattr(chosen_frontend, 'curator_sequence')(bioent_repr= request.matchdict['identifier'].upper())),
+                    renderer=chosen_frontend.get_renderer('curator_sequence'),
+                    route_name='curator_sequence')
+
     config.add_route('phenotype', '/phenotype/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('phenotype', request)(getattr(chosen_frontend, 'phenotype')(biocon_repr= request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('phenotype'),

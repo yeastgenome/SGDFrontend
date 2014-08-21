@@ -251,6 +251,28 @@ class YeastgenomeFrontend(FrontendInterface):
                     }
         return page
 
+    def curator_sequence(self, bioent_repr):
+        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
+        bioent_id = str(bioent['id'])
+        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
+
+        page = {
+                    #Basic info
+                    'locus': bioent,
+
+                    #Overview
+                    'tabs': tabs,
+                    'sequence_overview': bioent['sequence_overview'],
+
+                    #Links
+                    'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
+                    'neighbor_sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/neighbor_sequence_details?callback=?',
+                    'download_table_link': '/download_table',
+                    'download_sequence_link': '/download_sequence',
+                    'analyze_table_link': '/analyze'
+                    }
+        return page
+
     def strain(self, strain_repr):
         strain = get_json(self.backend_url + '/strain/' + strain_repr + '/overview')
 

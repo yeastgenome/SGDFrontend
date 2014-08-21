@@ -1,0 +1,153 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ locus.display_name }} Sequence{% endblock %}
+
+{% block head %}
+<script>
+	var sequence_details_link = "{{sequence_details_link}}";
+    var neighbor_sequence_details_link = "{{neighbor_sequence_details_link}}";
+	var download_table_link = "{{download_table_link}}";
+    var download_sequence_link = "{{download_sequence_link}}";
+	var analyze_link = "{{analyze_table_link}}";
+
+	var display_name = "{{ locus.display_name }}";
+	var locus_id = "{{ locus.id }}";
+</script>
+{% endblock %}
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
+</div>
+
+<!-- Tabs
+================================================== -->
+<!-- Includes tabs.html into template -->
+{% include "tabs.jinja2" %}
+<script>document.getElementById('sequence_tab').id = 'current';</script>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+	
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            //Set up navbar
+            add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</a>');
+            add_navbar_element('Sequence Overview', 'overview');
+            add_navbar_element('Compare', 'compare');
+            add_navbar_element('Location', 'location');
+            add_navbar_element('Subfeatures', 'subfeatures');
+            add_navbar_element('Sequence', 'sequence');
+        </script>
+
+<!-- Overview
+================================================== -->
+    <section id="overview" data-magellan-destination="overview">
+        <a href="/help/sequence" name="top" class="documentation-link">Sequence Help <i class="fa fa-question-circle"></i></a>
+        <h2>Sequence Overview
+            <a href="#" data-dropdown="overview_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="overview_info" class="f-dropdown content medium" data-dropdown-content>
+               Sequences and genome annotation information for Reference Strain S288C and a select set of
+                Alternative References.
+            </p>
+        </h2>
+        <div class="panel">
+            <!-- Includes sequence_overview into template -->
+            {% include "sequence_overview.jinja2" %}
+        </div>
+    </section>
+
+<!-- Compare
+================================================== -->
+    <section id="compare" data-magellan-destination="compare">
+        <h2>Compare</h2>
+        <div class="panel">
+            <label><h3>Strain 1</h3>
+                <select id="strain_selection1" class="large-3"></select>
+            </label>
+
+            <label><h3>Strain 2</h3>
+                <select id="strain_selection2" class="large-3"></select>
+            </label>
+        </div>
+    </section>
+
+<!-- Location
+================================================== -->
+    <section id="location" data-magellan-destination="location">
+        <h2>Location</h2>
+        <div class="panel">
+
+            <h3 id="location1_header"></h3>
+            <div id="contig1"></div>
+            <div id="label_chart1"></div>
+
+            <h3 id="location2_header"></h3>
+            <div id="contig2"></div>
+            <div id="label_chart2"></div>
+        </div>
+    </section>
+
+<!-- Subfeatures
+================================================== -->
+    <section id="subfeatures" data-magellan-destination="subfeatures">
+        <h2>Subfeatures</h2>
+        <div class="panel">
+
+            <h3 id="subfeature1_header"></h3>
+            <div id="sublabel_chart1"></div>
+            <br>
+            <h3 id="subfeature2_header"></h3>
+            <div id="sublabel_chart2"></div>
+        </div>
+    </section>
+        
+<!-- Sequence
+================================================== -->
+    <section id="sequence" data-magellan-destination="sequence">
+        <h2>Sequence</h2>
+        <div class="panel">
+            <select id="sequence_type_chooser" class="large-3">
+                <option value="genomic_dna">Genomic DNA</option>
+                <option value="coding_dna">Coding DNA</option>
+                <option value="protein">Protein</option>
+            </select>
+
+            <h3 id="sequence1_header"></h3>
+            <ul id="legend1" class="ref-links"></ul>
+            <pre><blockquote id="sequence1" style="font-family:Monospace"></blockquote></pre>
+            <div class="button-bar">
+                <ul class="button-group radius">
+                    <li><a id="download1" class="small button secondary"><i class="fa fa-download"></i> Download Sequence (.txt)</a></li>
+                </ul>
+            </div>
+            <br>
+            <h3 id="sequence2_header"></h3>
+            <ul id="legend2" class="ref-links"></ul>
+            <pre><blockquote id="sequence2" style="font-family:Monospace"></blockquote></pre>
+            <div class="button-bar">
+                <ul class="button-group radius">
+                    <li><a id="download2" class="small button secondary"><i class="fa fa-download"></i> Download Sequence (.txt)</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
+       'version':'1','packages':['timeline']}]}"></script>
+<script src="/static/js/curator_sequence.js"></script>
+{% endblock scripts %}
+
