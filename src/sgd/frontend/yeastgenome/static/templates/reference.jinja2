@@ -29,6 +29,7 @@
 
     var locus_id = null;
     var reference_id = {{ reference.id }};
+    var datasets = {{datasets | safe}};
 </script>
 {% endblock %}
 
@@ -61,6 +62,7 @@
             add_navbar_element('Gene Ontology Annotations', 'go');
             add_navbar_element('Phenotype Annotations', 'phenotype');
             add_navbar_element('Regulation Annotations', 'regulation');
+            add_navbar_element('Expression Datasets', 'expression');
         </script>
 
 <!-- Summary
@@ -208,6 +210,19 @@
                     <!-- Includes regulation_table into template -->
                     {% set table_id = "regulation_table" %}
                     {% include "regulation_table.jinja2" %}
+                </div>
+            </div>
+        </section>
+
+<!-- Expression
+================================================== -->
+        <section id="expression" data-magellan-destination="expression">
+            <div class="page-header">
+                <h2>Expression Datasets <span id="expression_table_header" class="round secondary label"></span></h2>
+                <div class="panel">
+                    <!-- Includes regulation_table into template -->
+                    {% set table_id = "expression_table" %}
+                    {% include "dataset_table.jinja2" %}
                 </div>
             </div>
         </section>

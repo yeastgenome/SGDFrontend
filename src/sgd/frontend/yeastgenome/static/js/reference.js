@@ -1,6 +1,10 @@
 
 $(document).ready(function() {
 
+    $("#expression_table_analyze").hide();
+    var expression_table = create_expression_table(datasets);
+    create_download_button("expression_table_download", expression_table, download_table_link, display_name + '_datasets');
+
     $.getJSON(literature_details_link, function(data) {
         data.sort(function(a, b) {return a['locus']['display_name'] > b['locus']['display_name']});
 
@@ -256,4 +260,42 @@ function create_regulation_table(data) {
     }
 
 	return create_table("regulation_table", options);
+}
+
+function create_expression_table(data) {
+    var options = {
+        'bPaginate': true,
+        'aaSorting': [[3, "asc"]],
+        'aoColumns': [
+            {"bSearchable":false, "bVisible":false}, //Evidence ID
+            {"bSearchable":false, "bVisible":false}, //Analyze ID,
+            {"bVisible":false}, //Histogram
+            null, //Dataset
+            null, //Description
+            null, //Tags
+            null, //Number of Conditions
+            {"bSearchable":false, "bVisible":false} //Reference
+            ]
+    }
+    if("Error" in data) {
+        options["oLanguage"] = {"sEmptyTable": data["Error"]};
+        options["aaData"] = [];
+    }
+    else {
+        var datatable = [];
+        var reference_ids = {};
+        for (var i=0; i < data.length; i++) {
+            datatable.push(dataset_datat_to_table(data[i], i));
+            if(data[i]['reference'] != null) {
+                reference_ids[data[i]['reference']['id']] = true;
+            }
+        }
+
+        set_up_header('expression_table', datatable.length, 'dataset', 'datasets', Object.keys(reference_ids).length, 'reference', 'references');
+
+        options["oLanguage"] = {"sEmptyTable": "No expression data for " + display_name};
+        options["aaData"] = datatable;
+    }
+
+    return create_table("expression_table", options);
 }
