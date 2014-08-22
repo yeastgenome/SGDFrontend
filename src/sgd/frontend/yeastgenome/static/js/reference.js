@@ -1,9 +1,14 @@
 
 $(document).ready(function() {
 
-    $("#expression_table_analyze").hide();
-    var expression_table = create_expression_table(datasets);
-    create_download_button("expression_table_download", expression_table, download_table_link, display_name + '_datasets');
+    if(datasets.length > 0) {
+        $("#expression_table_analyze").hide();
+        var expression_table = create_expression_table(datasets);
+        create_download_button("expression_table_download", expression_table, download_table_link, display_name + '_datasets');
+    }
+    else {
+        hide_section('expression');
+    }
 
     $.getJSON(literature_details_link, function(data) {
         data.sort(function(a, b) {return a['locus']['display_name'] > b['locus']['display_name']});
