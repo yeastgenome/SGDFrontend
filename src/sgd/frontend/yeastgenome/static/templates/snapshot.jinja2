@@ -1,0 +1,68 @@
+{% extends "lite_layout.jinja2" %}
+
+{% block title %} Saccharomyces cerevisiae Genome Overview{% endblock %}
+
+{% block body %}
+
+<div class="row">
+	<div class="navbar-container large-3 columns">
+	</div>
+
+	<div class="small-12 large-9 columns content-column">
+		<a name="genomeInventory"></a>
+		<div class="row snapshot-container genome-snapshot" data-magellan-destination="genomeInventory">
+			<div class="large-12 columns">
+				<h1><i>Saccharomyces cerevisiae</i> Genome Snapshot/Overview</h1>
+
+				<p>
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</p>
+
+				<h2>Genome Inventory</h2>
+
+				<p>
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</p>
+
+				<div class="genome-snapshot-target sgd-viz">
+					<img class="loader" src="/static/img/dark-slow-wheel.gif" >
+				</div>
+			</div>
+		</div>
+
+		<a name="goAnnotations"></a>
+		<div class="row snapshot-container go-snapshot" data-magellan-destination="goAnnotations">
+			<div class="large-12 columns">
+				<h2>Summary of Gene Ontology (GO) Annotations</h2>
+				<p>
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+				</p>
+				<div class="go-snapshot-target sgd-viz panel">
+					<img class="loader" src="/static/img/dark-slow-wheel.gif" >
+				</div>
+			</div>
+		</div>
+
+		<a name="phenotypeAnnotations"></a>
+		<div class="row snapshot-container phenotype-snapshot" data-magellan-destination="phenotypeAnnotations">
+			<div class="large-12 columns">
+				<h2>Summary of Phenotype Annotations</h2>
+				<p>
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+				</p>
+				<div class="phenotype-snapshot-target sgd-viz panel">
+					<img class="loader" src="/static/img/dark-slow-wheel.gif" >
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/application.js"></script>
+<script>
+	views.snapshot.render();
+</script>
+{% endblock scripts %}
