@@ -35,9 +35,10 @@ module.exports = React.createClass({
 		);
 	},
 
-
+	// NOTE: Has effects outside of component. $(document)
 	// setup magellan nav with jquery helper
 	componentDidMount: function () {
+		$(document).foundation();
 		$(".side-nav").foundation("magellan", {threshold: 50});
 	}
 });
