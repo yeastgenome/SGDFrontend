@@ -9,6 +9,8 @@ module.exports = class PhenotypeSnapshotModel extends BaseModel {
 
 		// filter out id 176220 (overview) to just have an array of children
 		var filteredId = 176220;
-		return _.filter(response.phenotype_slim_terms, (t) => { return t.id != filteredId });
+		var arr = _.filter(response.phenotype_slim_terms, (t) => { return t.id != filteredId });
+		arr = _.sortBy(arr, (p) => { return -p.annotation_count; });
+		return arr;
 	}
 };
