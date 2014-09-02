@@ -1,4 +1,6 @@
 module.exports = function(grunt) {
+    var BUILD_PATH = "src/sgd/frontend/yeastgenome/static/";
+    
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
         replace: {
@@ -101,13 +103,66 @@ module.exports = function(grunt) {
                 }
             }
             
+        },
+
+        compass: {
+            dev: {
+                options: {
+                    cssDir: BUILD_PATH + "css",
+                    fontsPath: "client/public/fonts",
+                    httpPath: "/",
+                    imagesPath: "client/public/img",
+                    importPath: ["bower_components/foundation/scss", "bower_components/font-awesome/scss"],
+                    outputStyle: "compressed",
+                    sassDir: "client/scss"
+                }
+            }
+        },
+
+        browserify: {
+            dev: {
+                dest: BUILD_PATH + "js/application.js",
+                src: "client/jsx/application.jsx",
+                options: {
+                    bundleOptions: {
+                        debug: true
+                    }
+                }
+            }
+        },
+
+        watch: {
+            dev: {
+                files: ["client/**/*.jsx", "client/**/*.scss"],
+                tasks: ["concurrent:dev"],
+                options: {
+                    livereload: true
+                }
+            }
+        },
+
+        // define some parallel tasks to speed up compilation
+        concurrent: {
+            dev: {
+                tasks: ["browserify:dev", "compass:dev"]
+            },
+            options: {
+                logConcurrentOutput: true
+            }
         }
     });
     
     grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-contrib-compass");
+    grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks("grunt-bowercopy");
+    grunt.loadNpmTasks("grunt-browserify");
+    grunt.loadNpmTasks("grunt-concurrent");
+
+    // development task to keep running during development
+    grunt.registerTask("dev", ["replace","uglify", "bowercopy", "concurrent:dev", "watch:dev"])
     
-    grunt.registerTask('default', ['replace', 'concat', 'uglify', 'bowercopy']);
+    grunt.registerTask("default", ["replace","uglify", "bowercopy", "concurrent:dev"]);
 };

@@ -1,0 +1,10 @@
+// For Print
+@media print {
+
+// Hide navigation and search
+#layout-page-header-nav, #header-tools, #tab, #shaded_line {
+    display: none;
+}
+
+//end
+}

@@ -1,0 +1,37 @@
+/** @jsx React.DOM */
+var React = require("react");
+
+module.exports = React.createClass({
+	getDefaultProps: function () {
+		return {
+			visible: false,
+			text: "",
+			left: 0,
+			top: 0,
+			text: "",
+			href: null
+		};
+	},
+
+	render: function () {
+		var props = this.props;
+		var _style = {
+			position: "absolute",
+			display: (props.visible ? "block" : "none"),
+			top: props.top,
+			left: props.left
+		};
+
+		// make the text a link if href prop is present
+		var _textNode = props.href ? (<a href={props.href}>{props.text}</a>) : props.text;
+
+		return (
+			<div className='flexible-tooltip' style={_style}>
+				<span className='flexible-tooltip-text'>
+					{_textNode}
+				</span>
+				<div className='flexible-tooltip-arrow'></div>
+			</div>
+		);
+	}
+});

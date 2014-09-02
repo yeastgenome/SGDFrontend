@@ -1,0 +1,114 @@
+.snapshot-container {
+	h1, h2, h3 {
+		font-family: Palatino;
+	}
+
+	h1:first-child {
+		margin-top: 0.5em;
+	}
+
+	a:hover {
+		text-decoration: underline;
+	}
+
+	.loader {
+		position: absolute;
+		margin-top: -16px;
+		margin-left: -16px;
+		top: 50%;
+		left: 50%;
+	}
+}
+
+.sgd-viz {
+	min-height: 100px;
+	position: relative;
+	margin-bottom: 3em;
+	&.genome-snapshot-target {
+		min-height: 113px;		
+	}
+	&.go-snapshot-target {
+		min-height: 400px;
+	}
+}
+
+.sgd-viz-filter-message {
+	margin-top: 1em;
+}
+
+
+.genome-snapshot {
+	transition: max-height 1s;
+}
+
+.flexible-tooltip {
+	position: absolute;
+	min-width: 100px;
+	min-height: 35px;
+	margin-left: -50px;
+	margin-top: -60px;
+	background-color: $tooltip-bg;
+	border-radius: 5px;
+	z-index: $z-tooltip;
+}
+
+.flexible-tooltip-text {
+	display: block;
+	text-align: center;
+	margin: 0.5em;
+	white-space: nowrap;
+}
+
+.flexible-tooltip-arrow {
+	position: absolute;
+	bottom: -29px;
+	left: 50px;
+	width: 0; 
+	height: 0;
+	margin-left: -7px;
+	border-left: 7px solid transparent;
+	border-right: 7px solid transparent;
+	border-top: 30px solid #e7e7e7;
+}
+
+.chromosome-snapshot-container p {
+	margin: 0.5em 0;
+}
+
+.bar-label {
+	font-size: 12px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.bar-container {
+	transition: top 0.5s;
+	&:hover .bar-node {
+		opacity: 1
+	}
+}
+
+.bar-node {
+	opacity: 0.6;
+	transition: width 0.5s;
+
+}
+
+.y-axis-label {
+	position: relative;
+	text-align: center;
+	margin-bottom: 0;
+}
+
+.y-axis {
+	line {
+		stroke: black;
+	}
+
+	path.domain {
+		fill: none;
+		stroke: black;
+		shape-rendering: crispEdges;
+	}
+}

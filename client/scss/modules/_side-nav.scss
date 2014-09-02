@@ -1,0 +1,79 @@
+/********************************************
+Module rules - SMACSS 
+http://smacss.com/book/type-module
+*********************************************/
+
+// Sticky Side navigation
+#side-nav-sticky {
+	width: 180px;
+	padding: 0;
+}
+
+.side-nav { //extending Foundation
+	border: 1px #ccc solid;
+	@include border-radius(4px);
+	margin-top: 5px;
+	box-shadow: 0 0 0 4px #F0F0F0;
+	list-style-type: disc;
+	list-style-position: outside;
+	overflow: hidden;
+}
+
+#side-nav-sticky.fixed {
+	max-width: 180px;
+	width: 180px;
+}
+
+#nav-title {
+    padding: 0 10px 0;
+    margin: 10px 0;
+    a { color: #980d0d; }
+    h4 {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+   }
+}
+
+.side-nav > li {
+    margin-bottom: -1px;
+    line-height: 20px;
+}
+
+.side-nav li.active a, .side-nav li.active a:hover {
+    background-color: #615f8f;
+    color: #fff;
+}
+.side-nav > li > a {
+    display: block;
+    border-top: 1px solid #ccc;
+    padding: 8px 12px 10px 12px;
+    margin-right: 0;
+    line-height: 20px;
+}
+
+.side-nav > .active > a, .side-nav > .active > a:hover {
+    border-color: #ddd;
+    border-style: solid;
+    border-width: 1px;
+    color: #fff;
+    cursor: default;
+}
+
+
+// dont put padding on title links
+#nav-title a {
+    padding: 0;
+    display: inline;
+}
+
+// Overwrite a couple magellan settings - need to make these case specific though
+
+
+[data-magellan-expedition], [data-magellan-expedition-clone] {
+    min-width: 0;
+    margin-top: rem-calc(15);
+}
+
+[data-magellan-expedition-clone] {
+    display: none;
+}

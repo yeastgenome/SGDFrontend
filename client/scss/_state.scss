@@ -1,0 +1,123 @@
+/********************************************
+State rules - SMACSS 
+http://smacss.com/book/type-state
+*********************************************/
+
+// lte IE8
+.lt-ie9 .top-bar-section .has-dropdown > a:after {
+	display: none;
+}
+
+// Show left side menu on 
+
+// Header and global nav / top bar
+#layout-page-header-content {
+	@extend .show-for-medium-up;
+}
+
+.menu-search {
+	@extend .hide-for-medium-up;
+}
+
+#info-menu {
+	@extend .hide-for-medium-up;
+}
+
+// Sidebar
+// hide on small screens
+#sidebar {
+	@extend .show-for-large-up;
+}
+
+
+// Footer
+@media only screen and (min-width: 1000px) {
+	// Sticky footer on large screens
+	@include sticky-footer(90px, "#layout-document", "#layout-document-footer-pusher", "#layout-document-footer");
+
+#footer-links {
+	display: block;
+	list-style: none;
+	overflow: hidden;
+	margin-bottom: 5px;
+	li { 
+		float: left;
+		margin-right: em-calc(20);
+		}
+	}
+
+	.logo-list {
+		list-style: none;
+		float: right;
+		li {
+			float: left;
+			margin-left: 20px;
+			margin-bottom: 0;
+		}
+	}
+}
+
+#social-footer {
+	@extend .hide-for-medium-up;
+}
+
+// make key-value description lists responsive
+@media (max-width: 480px) {
+  // Remove the horizontal styles
+  .key-value {
+    dt {
+     float: none;
+     width: auto;
+     padding-top: 0;
+     text-align: left;
+    }
+    // Move over all values to left
+    dt, dd {
+     margin-left: 0;
+     padding-top: 0;
+     margin-bottom: 0px;
+    }
+    // add vertical space to key-value pairs
+    dd {
+     margin-bottom: 15px;
+    }
+  }
+}
+
+// Responsive tables
+//
+// Wrap your tables in `.table-responsive` and we'll make them mobile friendly
+// by enabling horizontal scrolling. Only applies <768px. Everything above that
+// will display normally.
+
+@media (max-width: 768px) {
+  .table-responsive {
+    width: 100%;
+    margin-bottom: $table-margin-bottom;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    border: $table-border-size $table-border-style $table-border-color;
+    -webkit-overflow-scrolling: touch;
+
+    .dt-tools-head, .dt-tools-foot { width: 100%; }
+
+    // Tighten up spacing
+    > .table {
+      margin-bottom: 0;
+
+      // Ensure the content doesn't wrap
+      > thead,
+      > tbody,
+      > tfoot {
+        > tr {
+          > th,
+          > td {
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+  }
+}
+

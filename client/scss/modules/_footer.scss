@@ -1,0 +1,58 @@
+/********************************************
+Module rules - SMACSS 
+http://smacss.com/book/type-module
+*********************************************/
+
+/* Footer Stylings */
+#layout-document-footer {
+	background: #696599;  //615F8F
+	// @include background-image(linear-gradient(center top , #9190B7 0%, #615F8F 100%));
+}
+
+footer { // should be in states
+	color: #fff;
+	a, a:hover, a:active { 
+		color: #fff;
+		font-size: em-calc(14);
+	}
+	a:hover { text-decoration: underline; }
+}
+
+#footer-links {
+	display: block;
+	list-style: none;
+	overflow: hidden;
+	margin-bottom: 5px;
+	margin-left: 0;
+}
+
+.logo-list {
+	list-style: none;
+	margin: 0;
+	li {
+		text-align: right;
+		margin-bottom: 15px;
+		display: block;
+	}
+}
+
+#social-footer {
+	margin-top: 8px;
+}
+
+footer .social-links {
+	margin: 10px 0;
+	li:first-child {
+		margin-left: 0;
+	}
+	li {
+		margin-left: em-calc(8);
+	}
+}
+
+
+#stanford-logo {
+	min-width: 90px;
+}
+
+#copyright { font-size: em-calc(13); }
