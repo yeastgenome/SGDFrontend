@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var React = require("react");
 var d3 = require("d3");
 var _ = require("underscore");
@@ -24,7 +23,7 @@ module.exports = React.createClass({
 				"molecular_function": "#FFA419",
 				"biological_process": "#8200FF",
 				"cellular_component": "#09B343",
-				undefined: "transparent"
+				undefined: "#AAA"
 			};
 			return _colors[name];
 		};
@@ -79,7 +78,7 @@ module.exports = React.createClass({
 					<div className="large-6 columns sgd-viz">
 						<BarChart data={_barData} yValue={_yValue} hasTooltip={true}
 							colorScale={_colorScale} colorValue={_colorValue} labelValue={_labelValue}
-							nodeOpacity={_opacity} onMouseOver={_handleMouseOver} yAxisLabel="Genes Annotated"
+							nodeOpacity={_opacity} onMouseOver={_handleMouseOver} yAxisLabel="Gene Products Annotated"
 							filter={_initFilterData} labelRatio={0.4}
 						/>
 					</div>

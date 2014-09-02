@@ -33,7 +33,7 @@ module.exports = React.createClass({
 	render: function () {
 		var state = this.state;
 		return (
-			<div style={{ position: "relative" }} onMouseLeave={this._clearTooltip}>
+			<div style={{ position: "relative" }} onMouseLeave={ () => { this._clearTooltip(true); } }>
 				<FlexibleTooltip visible={state.tooltipVisible}
 				left={state.tooltipLeft} top={state.tooltipTop} text={state.tooltipText} href={state.tooltipHref} />
 			</div>
@@ -55,7 +55,8 @@ module.exports = React.createClass({
 		var svg = d3.select(this.getDOMNode()).selectAll("svg").data([null]).enter().append("svg")
 			.attr({
 				width: width,
-				height: height + 20
+				height: height + 20,
+				class: "zoomable-sunburst"
 			})
 			.append("g")
 				.attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")")
@@ -81,30 +82,47 @@ module.exports = React.createClass({
 		  };
 		}
 
+		// track the zoom depth, change when zooming
+		var currentZoomDepth = 0;
+
 		var click = (d) => {
+			currentZoomDepth = d.depth;
 			if (this.props.onZoom) {
 				this.props.onZoom(d, getTopParent(d));
 			}
-			this._clearTooltip()
+			this._clearTooltip(true)
 			path.transition()
 				.duration(500)
+				.style({
+					cursor: (d) => { return d.depth < currentZoomDepth ? "zoom-out": "pointer"; },
+					"fill": (d, i) => {
+						if (currentZoomDepth || d.depth) {
+							return this.props.colorScale(getTopParent(d).data.format_name);
+						} else {
+							return "none";
+						}					
+					}
+				})
 				.attrTween("d", arcTween(d));
 		}
 
+		// TEMP commenting
 		var partition = d3.layout.partition()
-			.children( (d) => {
-				var children = d.children;
-				// if there are children, add dummy node to make things add up
-				if (d.depth && d.children && d.children.length) {
-					var delta = this.props.yValue(d.data) - d3.sum(children, (d) => { return this.props.yValue(d.data); });
-					// the children < node value
-					if (delta > 0) {
-						children.push({ dummy: true, forceValue: delta });
-					}
-				}
-				return children;
-			})
-			.value( (d) => { return d.forceValue ? d.forceValue: this.props.yValue(d.data); });
+			// .children( (d) => {
+			// 	var children = d.children;
+			// 	// if there are children, add dummy node to make things add up
+			// 	if (d.depth && d.children && d.children.length) {
+			// 		var delta = this.props.yValue(d.data) - d3.sum(children, (d) => { return this.props.yValue(d.data); });
+			// 		// the children < node value
+			// 		if (delta > 0) {
+			// 			children.push({ dummy: true, forceValue: delta });
+			// 		}
+			// 	}
+			// 	return children;
+			// })
+			.value((d) => { return 1; })
+			// .value( (d) => { return d.forceValue ? d.forceValue: this.props.yValue(d.data); });
+
 
 		var arc = d3.svg.arc()
 		    .startAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
@@ -122,12 +140,17 @@ module.exports = React.createClass({
 			.attr("d", arc)
 			.style({
 				"fill": (d, i) => {
-					return this.props.colorScale(getTopParent(d).data.format_name);
+					if (currentZoomDepth || d.depth) {
+						return this.props.colorScale(getTopParent(d).data.format_name);
+					} else {
+						return "none";
+					}					
 				},
 				"fill-rule": "evenodd",
 				"stroke": "#fff",
 				opacity: 0.6,
-				display: (d) => { return d.dummy ? "none": "auto"; }
+				display: (d) => { return d.dummy ? "none": "auto"; },
+				cursor: "pointer"
 			})
 			.on("click", click)
 			.on("mouseenter", function (d) {
@@ -138,9 +161,11 @@ module.exports = React.createClass({
 			});
 	},
 
-	_clearTooltip: function () {
-		d3.select(this.getDOMNode()).selectAll("path").style({ opacity: 0.6 });
+	_clearTooltip: function (lowerAllOpacity) {
 		this.setState({ tooltipVisible: false });
+		if (lowerAllOpacity) {
+			d3.select(this.getDOMNode()).selectAll("path").style({ opacity: 0.6 });
+		}
 	},
 
 	// respond to mouseover events from d3, update state for tooltip data
@@ -158,7 +183,7 @@ module.exports = React.createClass({
 
 		this.setState({
 			tooltipVisible: true,
-			tooltipText: d.data.display_name + " - " + d.data.annotation_count.toLocaleString() + " genes annotated",
+			tooltipText: d.data.display_name + " - " + d.data.annotation_count.toLocaleString(),
 			tooltipTop: _top,
 			tooltipLeft: _left,
 			tooltipHref: d.data.link

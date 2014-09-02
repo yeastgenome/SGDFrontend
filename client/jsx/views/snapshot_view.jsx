@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 var React = require("react");
 
+var NavBar = require("../components/navbar.jsx");
 var GenomeSnapshotModel = require("../models/genome_snapshot_model.jsx");
 var GoSnapshotModel = require("../models/go_snapshot_model.jsx");
 var PhenotypeSnapshotModel = require("../models/phenotype_snapshot_model.jsx");
@@ -10,6 +11,17 @@ var BarChart = require("../components/viz/bar_chart.jsx");
 
 var snapshotView = {};
 snapshotView.render = function () {
+
+	// render nav bar
+	var navElements = [
+		{ name: "Genome Inventory", target: "genomeInventory" },
+		{ name: "GO Annotations", target: "goAnnotations" },
+		{ name: "Phenotype Annotations", target: "phenotypeAnnotations" }
+	];
+	React.renderComponent(
+		<NavBar title="Genome Snapshot" elements={navElements} />,
+		document.getElementsByClassName("navbar-container")[0]
+	);
 
 	// render if .genome-snapshot-container is present
 	var genomeSnapshotContainers = document.getElementsByClassName("snapshot-container");
@@ -56,4 +68,3 @@ snapshotView.render = function () {
 };
 
 module.exports = snapshotView;
-

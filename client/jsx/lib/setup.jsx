@@ -9,7 +9,6 @@ module.exports = function () {
 
 	// foundation setup
 	$(document).foundation();
-	$(".side-nav").foundation("magellan", {threshold: 50});
 
 	// add fast click event listener to reduce delay of mobile "clicks" 
 	attachFastClick(document.body);

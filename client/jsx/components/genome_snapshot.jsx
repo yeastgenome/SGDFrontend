@@ -15,6 +15,7 @@ module.exports = React.createClass({
     },
 
     toggleShowChromosomes: function (e) {
+        e.preventDefault();
         this.setState({
             showChromosomes: !this.state.showChromosomes,
             inTransition: true
@@ -45,21 +46,24 @@ module.exports = React.createClass({
                 return total + f.value;
             }, 0);
             chromosomeNodes =
-                [<ChromosomeSnapshot key="combinedFeatureGraph" maxFeatures={_maxFeatures}
-                    displayName="Genome Features" features={this.props.data.combined} path={null} pathRoot={"/locus/"} />];
+                [<ChromosomeSnapshot
+                    key="combinedFeatureGraph"
+                    maxFeatures={_maxFeatures}
+                    displayName={null}
+                    features={this.props.data.combined}
+                    path={null}
+                    pathRoot={"/locus/"}
+                />];
             _height = 200;
         }
 
+        var _buttonText = this.state.showChromosomes ?
+            <span>Hide Chromosomes&nbsp;<i className="fa fa-angle-up"></i></span> : <span>Show Chromosomes&nbsp;<i className="fa fa-angle-down"></i></span>;
+
 		return (
-    		<div className='genome-snapshot' style={{ maxHeight: _height, overflow: "hidden" }}>
-                <div className="switch-container">
-                    <span><i className="fa fa-minus"></i>&nbsp;Combined</span>
-                    <div className="switch round tiny" >
-                        <input id="expandChromosomesSwitch" type="checkbox" />
-                        <label htmlFor="expandChromosomesSwitch" onClick={this.toggleShowChromosomes}></label>
-                    </div>
-                    <span><i className="fa fa-list"></i>&nbsp;Chromosomes</span>
-                </div>
+    		<div className="genome-snapshot panel" style={{ maxHeight: _height, overflow: "hidden" }}>
+                <h2 style={{ marginBottom: "1em" }}>Features by Type</h2>
+                <a style={{ marginBottom: "1.5em", minWidth: 185 }}onClick={this.toggleShowChromosomes} className="button small" role="button">{_buttonText}</a>
                 {chromosomeNodes}
     		</div>);
 	}

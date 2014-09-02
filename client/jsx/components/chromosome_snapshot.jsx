@@ -9,7 +9,8 @@ module.exports = React.createClass({
 	getDefaultProps: function () {
 		return {
 			path: null,
-			delay: 0
+			delay: 0,
+			nodeHeight: "15px"
 		};
 	},
 
@@ -26,7 +27,16 @@ module.exports = React.createClass({
 	render: function () {
 		var state = this.state;
 
-		var textNode = this.props.path ? ([<span key="textLabel">{this.props.displayName + " - "}</span>, <a key="textAnchor" href={this.props.path}>Overview</a>]) : this.props.displayName;
+		// text node can be a label with a link, just a label, or nothing
+		var textNode;
+		if (this.props.path && this.props.displayName) {
+			textNode = [<span key="textLabel">{this.props.displayName + " - "}</span>, <a key="textAnchor" href={this.props.path}>Overview</a>];
+		} else if (this.props.displayName) {
+			textNode = this.props.displayName;
+		} else {
+			textNode = null;
+		}
+
 		return (
 			<div className="chromosome-snapshot-container" onMouseLeave={this._clearTooltip} >
 				<FlexibleTooltip visible={state.tooltipVisible} href={state.tooltipHref}
@@ -43,25 +53,31 @@ module.exports = React.createClass({
 	// render features with d3
 	componentDidMount: function () {
 		// declare some scales
-		var widthScale = d3.scale.linear().domain([0, this.props.maxFeatures]).range([0, $(this.getDOMNode()).width()])
-		var colorScale = d3.scale.category20();
+		var widthScale = d3.scale.linear()
+			.domain([0, 1, this.props.maxFeatures])
+			.range([0, 3, $(this.getDOMNode()).width() - 50]);
+
+		// define color scale for features, as well as ORF statuses
+		var colors = d3.scale.category20b().range();
+		var orfStatusScale = d3.scale.ordinal().range(colors.slice(0, 3));
+		var featureColorScale = d3.scale.ordinal().range(colors.slice(3, -1));
 
 		// bind data to selection
-		var sel = d3.select(this.getDOMNode())
+		var sel = d3.select(this.getDOMNode());
 		var features = sel.select(".feature-container").selectAll('feature-node').data(this.props.features);
 
 		// exit
 		features.exit().remove();
 
 		// append divs for each feature
-		var _this = this; // proxy "this" to also use d3 node in callbacks
+		var _this = this; // alias "this" to also use d3 node in callbacks
 		features.enter().append("div")
 			.attr({ class: "feature-node"})
 			.style({
 				float: 'left',
 				width: "0px",
-				height: "15px",
-				"background-color": (d, i) => { return colorScale(i); },
+				height: this.props.nodeHeight,
+				"background-color": (d, i) => { return featureColorScale(i); },
 				border: 'none',
 				opacity: 0.6
 			})
@@ -84,12 +100,13 @@ module.exports = React.createClass({
 
 	_updateTooltip: function (d, node) {
 		var _href = this.props.pathRoot ? this.props.pathRoot + d.name : null;
+		var _rect = node.getBoundingClientRect();
 
 		this.setState({
 			tooltipVisible: true,
-			tooltipText: d.name.replace(/_/g, " ") + " - " + d.value.toLocaleString() + " features",
+			tooltipText: `${d.value.toLocaleString()} ${d.name.replace(/_/g, " ")}s`,
 			tooltipTop: node.offsetTop,
-			tooltipLeft: node.offsetLeft + node.getBoundingClientRect().width/2,
+			tooltipLeft: node.offsetLeft + _rect.width/2,
 			tooltipHref: _href
 		});
 	},

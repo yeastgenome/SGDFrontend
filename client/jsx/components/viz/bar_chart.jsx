@@ -71,11 +71,12 @@ module.exports = React.createClass({
 			};
 
 			var _onMouseOver = (e) => { this._handleMouseOver(e, d); }
+			var _innerLabelNode = d.link ? <a href={d.link}>{props.labelValue(d)}</a> : props.labelValue(d);
 
 			return (
 				<div className="bar-container" style={_containerStyle} onMouseOver={_onMouseOver} key={`bar${props.labelValue(d)}`}>
 					<div className="bar-label" style={{ width: `${props.labelRatio * 100}%`, lineHeight: 1.25, textAlign: "right", paddingRight: "1em" }}>
-						<span>{props.labelValue(d)}</span>
+						<span>{_innerLabelNode}</span>
 					</div>
 					<div className="bar-node" style={_barStyle} />
 				</div>
@@ -144,15 +145,19 @@ module.exports = React.createClass({
 	},
 
 	_handleMouseOver: function (e, d) {
+		var target = e.currentTarget;
+		var barNode = target.getElementsByClassName("bar-node")[0];
+
+		d3.select(this.getDOMNode()).selectAll(".bar-node").style({ opacity: 0.6 });
+		d3.select(barNode).style({ opacity: 1 })
+
 		if (this.props.onMouseOver) {
 			this.props.onMouseOver(d);
 		}
 		if (this.props.hasTooltip) {
-			var target = e.currentTarget;
-			var barNode = target.getElementsByClassName("bar-node")[0];
 			this.setState({
 				tooltipVisible: true,
-				tooltipText: `${this.props.labelValue(d)} - ${this.props.yValue(d).toLocaleString()} genes annotated`,
+				tooltipText: `${this.props.labelValue(d)} - ${this.props.yValue(d).toLocaleString()}`,
 				tooltipTop: target.offsetTop,
 				tooltipLeft: barNode.offsetLeft + barNode.getBoundingClientRect().width/2,
 				tooltipHref: d.link
@@ -161,6 +166,7 @@ module.exports = React.createClass({
 	},
 
 	_handleMouseExit: function () {
+		d3.select(this.getDOMNode()).selectAll(".bar-node").style({ opacity: 0.6 });
 		this.setState({
 			tooltipVisible: false,
 		});
