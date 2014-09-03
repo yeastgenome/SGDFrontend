@@ -1,5 +1,9 @@
 // Tables
 
+table {
+    table-layout: auto;
+}
+
 th {
     padding-right: 16px !important;    // to allow for sort arrows
 }
@@ -56,4 +60,7 @@ div.dataTables_info {
 div.dataTables_length {
     display: inline-block;
     margin-left: 5px;
+    select {
+        margin: 0;
+    }
 }
