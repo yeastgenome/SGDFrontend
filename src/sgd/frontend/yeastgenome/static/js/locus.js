@@ -1,25 +1,19 @@
 
 var chromosome = null;
 
-var reference_download_residues = '';
-var reference_contig = '';
-
 $(document).ready(function() {
 
     $("#subfeature_table_analyze").hide();
+    $("#subfeature_table_download").hide();
   	$.getJSON(sequence_details_link, function(data) {
         var dna_data = data['genomic_dna'];
-        var strain_to_genomic_data = {};
-        var strain_to_protein_data = {};
-        var strain_to_coding_data = {};
 
         for (var i=0; i < dna_data.length; i++) {
             if(dna_data[i]['strain']['display_name'] == 'S288C') {
                 $("#reference_contig").html('<a href="' + dna_data[i]['contig']['link'] + '">' + dna_data[i]['contig']['display_name'] + '</a>: ' + dna_data[i]['start'] + ' - ' + dna_data[i]['end']);
                 if(dna_data[i]['tags'].length > 0) {
                     draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
-                    var subfeature_table = create_subfeature_table(dna_data[i]);
-                    create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
+                    create_subfeature_table(dna_data[i]);
                 }
                 else {
                     $("#subfeature_wrapper").hide();
@@ -59,7 +53,6 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
     function ready_handler() {
         //Fix tooltips.
         function tooltipHandler(e) {
-            var datarow = data_array[e.row];
             var title_spans = $(".google-visualization-tooltip-item > span");
             var display_name = $(title_spans[0]).html();
             var spans = $(".google-visualization-tooltip-action > span");
@@ -361,6 +354,7 @@ function create_subfeature_table(data) {
         {"bSearchable":false, "bVisible":false}, null, null]
     options["aaData"] = datatable;
     options["oLanguage"] = {"sEmptyTable": "No subfeatures for " + display_name + '.'};
+    options['sDom'] = 't'
 
     return create_table("subfeature_table", options);
 }
