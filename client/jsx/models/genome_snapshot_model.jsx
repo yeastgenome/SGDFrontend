@@ -52,6 +52,14 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 			return prev;
 		}, _initCombinedFeatures);
 
+		// TEMP
+		// fake some ORF characterization status data
+		_combinedFeatures[0].value = [
+			{ name: "Characterized", value: 5102 },
+			{ name: "Uncharacterized", value: 719 },
+			{ name: "Dubious", value: 786 }
+		];
+
 		return {
 			featureData: {
 				chromosomes: _chromosomeData,

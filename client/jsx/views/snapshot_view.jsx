@@ -3,10 +3,11 @@
 
 var React = require("react");
 
-var NavBar = require("../components/navbar.jsx");
-var GenomeSnapshotModel = require("../models/genome_snapshot_model.jsx");
+var FeaturesSnapshotModel = require("../models/features_snapshot_model.jsx");
 var GoSnapshotModel = require("../models/go_snapshot_model.jsx");
 var PhenotypeSnapshotModel = require("../models/phenotype_snapshot_model.jsx");
+
+var NavBar = require("../components/navbar.jsx");
 var TableAlternative = require("../components/table_alternative.jsx");
 var SunburstBarChart = require("../components/viz/sunburst_bar_chart.jsx");
 var BarChart = require("../components/viz/bar_chart.jsx");
@@ -30,16 +31,22 @@ snapshotView.render = function () {
 	if (genomeSnapshotContainers.length) {
 
 		// declare models to intereact with API
-		var genomeSnapshotModel = new GenomeSnapshotModel({ url: "http://sgd-qa.stanford.edu/webservice/sequence_snapshot?callback=?" });
+		var featuresSnapshotModel = new FeaturesSnapshotModel({ url: "http://sgd-qa.stanford.edu/webservice/sequence_snapshot?callback=?" });
 		var goSnapshotModel = new GoSnapshotModel({ url: "http://sgd-qa.stanford.edu/webservice/go_snapshot?callback=?" });
 		var phenotypeModel = new PhenotypeSnapshotModel({ url: "http://sgd-qa.stanford.edu/webservice/phenotype_snapshot?callback=?" });
 		
-		genomeSnapshotModel.fetch( (err, genomeData) => {
-			// render TableAlternative with graphData and tableData
+		featuresSnapshotModel.fetch( (err, featuresData) => {
+
 			React.renderComponent(
-				<TableAlternative isInitiallyTable={false} graphData={genomeData.featureData} tableData={genomeData.tableData} />,
-				document.getElementsByClassName("genome-snapshot-target")[0]
+				<BarChart data={featuresData.combined} yValue={function(d){return d.value;}} labelValue={function(d){return d.name;}}/>,
+				document.getElementsByClassName("genome-snapshot-target")[0]	
 			);
+
+			// TEMP
+			// React.renderComponent(
+			// 	<TableAlternative isInitiallyTable={false} graphData={genomeData.featureData} tableData={genomeData.tableData} />,
+			// 	document.getElementsByClassName("genome-snapshot-target")[0]
+			// );
 
 			goSnapshotModel.fetch( (err, goData) => {
 				// render TableAlternative with graphData and tableData

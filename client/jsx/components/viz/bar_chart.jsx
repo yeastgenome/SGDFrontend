@@ -59,6 +59,7 @@ module.exports = React.createClass({
 
 		// render bar nodes
 		var bars = _.map(data, (d, i) => {
+
 			var _containerStyle = {
 				width: "100%",
 				height: barHeight,
@@ -72,9 +73,24 @@ module.exports = React.createClass({
 				left: `${props.labelRatio * 100}%`,
 				width: state.widthScale(props.yValue(d)),
 				height: "100%",
-				background: props.colorScale(props.colorValue(d)),
+				background: d.nestedValues ? "none": props.colorScale(props.colorValue(d)),
 				opacity: props.nodeOpacity(d)
 			};
+
+			// if nestedValues is present, make some nested nodes, otherwise leave them null
+			var nestedBars = null;
+			if (d.nestedValues) {
+				nestedBars = _.map(d.nestedValues, function (nestedData, nestedIndex) {
+					var _nestedStyle = {
+						background: d3.scale.category10().range()[nestedIndex],
+						width: state.widthScale(props.yValue(nestedData)),
+						height: "100%",
+						float: "left"
+					};
+
+					return <div className="nested-bar-node" key={`nestedBar${nestedIndex}`} style={_nestedStyle}></div>;
+				})
+			}
 
 			var _onMouseOver = (e) => { this._handleMouseOver(e, d); }
 			var _innerLabelNode = d.link ? <a href={d.link}>{props.labelValue(d)}</a> : props.labelValue(d);
@@ -84,7 +100,9 @@ module.exports = React.createClass({
 					<div className="bar-label" style={{ width: `${props.labelRatio * 100}%`, lineHeight: 1.25, textAlign: "right", paddingRight: "1em" }}>
 						<span>{_innerLabelNode}</span>
 					</div>
-					<div className="bar-node" style={_barStyle} />
+					<div className="bar-node clearfix" style={_barStyle}>
+						{nestedBars}
+					</div>
 				</div>
 			);
 		});
