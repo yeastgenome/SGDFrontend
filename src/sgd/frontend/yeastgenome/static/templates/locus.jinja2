@@ -56,9 +56,9 @@
             add_navbar_element('Expression', 'expression');
             add_navbar_element('Regulation', 'regulation');
             add_navbar_element('Protein', 'protein');
-            {% if locus.history|length > 0 %}
+            {% for evidence in locus.history if evidence.history_type == 'LSP' %}{% if loop.first %}
                 add_navbar_element('History', 'history');
-            {% endif %}
+            {% endif %}{% endfor %}
             add_navbar_element('Resources', 'resources');
             {% if locus.paragraph != None %}
                 add_navbar_element('Paragraph', 'paragraph');
@@ -500,7 +500,7 @@
 
 <!-- History
 ================================================== -->
-    {% if locus.history|length > 0 %}
+    {% for evidence in locus.history if evidence.history_type == 'LSP' %}{% if loop.first %}
     <section id="history" data-magellan-destination="history">
         <h2>History</h2>
         <div class="panel">
@@ -513,7 +513,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for evidence in locus.history %}
+                    {% for evidence in locus.history if evidence.history_type == 'LSP' %}
                         <tr>
                             <td>{{ evidence.date_created }}</td>
                             <td>{{ evidence.note }}</td>
@@ -524,7 +524,7 @@
             </table>
         </div>
     </section>
-    {% endif %}
+    {% endif %}{% endfor %}
 
 <!-- Resources
 ================================================== -->
