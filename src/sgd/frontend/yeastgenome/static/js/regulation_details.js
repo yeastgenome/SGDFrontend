@@ -42,8 +42,8 @@ $(document).ready(function() {
   		}
 
   		var regulator_table = create_regulator_table(data);
-  		create_analyze_button("regulator_table_analyze", regulator_table, analyze_link, analyze_filename + " targets", true);
-  	    create_analyze_button("analyze_regulators", regulator_table, analyze_link, analyze_filename + " targets", false);
+  		create_analyze_button("regulator_table_analyze", regulator_table, analyze_link, analyze_filename + " regulators", true);
+  	    create_analyze_button("analyze_regulators", regulator_table, analyze_link, analyze_filename + " regulators", false);
   	    create_download_button("regulator_table_download", regulator_table, download_table_link, regulators_table_filename);
   	});
 
