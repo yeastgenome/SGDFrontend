@@ -26,6 +26,24 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		return features
 	}
 
+	// put data in table format
+	_formatDataForTable (response, chromosomeData) {
+		var tableHeaders = response.rows;
+		tableHeaders.unshift("Chromosome");
+		var tableRows = _.map(chromosomeData, (c) => {
+			var row = _.map(c.features, (f) => {
+				return f.value;
+			});
+			row.unshift(c.display_name.split(" ")[1])
+			return row;
+		});
+
+		return {
+			headers: tableHeaders,
+			rows: tableRows
+		};
+	}
+
 	parse (response) {
 
 		// get the contigs for S288C
@@ -67,12 +85,15 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 			return c;
 		});
 
-		// TODO
-		// make the table data
+		// format data for table
+		var _tableData = this._formatDataForTable(response, chroms);
 
 		return {
-			chromosomes: chroms,
-			combined: combined
+			tableData: _tableData,
+			graphData: {
+				chromosomes: chroms,
+				combined: combined
+			}
 		};
 	}
 };

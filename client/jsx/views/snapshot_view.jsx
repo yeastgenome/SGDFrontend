@@ -37,16 +37,15 @@ snapshotView.render = function () {
 		
 		featuresSnapshotModel.fetch( (err, featuresData) => {
 
-			React.renderComponent(
-				<BarChart data={featuresData.combined} yValue={function(d){return d.value;}} labelValue={function(d){return d.name;}}/>,
-				document.getElementsByClassName("genome-snapshot-target")[0]	
-			);
-
-			// TEMP
 			// React.renderComponent(
-			// 	<TableAlternative isInitiallyTable={false} graphData={genomeData.featureData} tableData={genomeData.tableData} />,
-			// 	document.getElementsByClassName("genome-snapshot-target")[0]
+			// 	<BarChart data={featuresData.combined} yValue={function(d){return d.value;}} labelValue={function(d){return d.name;}}/>,
+			// 	document.getElementsByClassName("genome-snapshot-target")[0]	
 			// );
+
+			React.renderComponent(
+				<TableAlternative vizType="bar" isInitiallyTable={false} graphData={featuresData.graphData} tableData={featuresData.tableData} />,
+				document.getElementsByClassName("genome-snapshot-target")[0]
+			);
 
 			goSnapshotModel.fetch( (err, goData) => {
 				// render TableAlternative with graphData and tableData

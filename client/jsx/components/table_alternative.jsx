@@ -14,7 +14,10 @@ var GenomeSnapshot = require("./genome_snapshot.jsx");
 */
 module.exports = React.createClass({
 	getDefaultProps: function () {
-		return { isInitiallyTable: true };
+		return {
+			isInitiallyTable: true,
+			vizType: "bar"
+		};
 	},
 
 	getInitialState: function () {
@@ -25,10 +28,15 @@ module.exports = React.createClass({
 		// is table defaults to state, set to props.isInitiallyTable if state is null
 		var isTable = ((this.state.isTable === null) ? this.props.isInitiallyTable : this.state.isTable);
 
-		var barNode = (<BarChart
-			data={this.props.graphData.combined} yValue={ function (d) { return d.value; } }
-			labelValue={ function (d) { return d.name; } } labelRatio={0.2} colorScale={ function () { return "#DF8B93"; }}
-		/>);
+		var vizNodeTypes = {
+			bar: (<BarChart
+				data={this.props.graphData.combined} yValue={ function (d) { return d.value; } }
+				labelValue={ function (d) { return d.name; } } labelRatio={0.2} colorScale={ function () { return "#DF8B93"; }}
+			/>),
+			genomeSnapshot: <GenomeSnapshot data={this.props.graphData} />
+		};
+
+		var vizNode = vizNodeTypes[this.props.vizType];
 
 		return (
 			<div className="table-alternative">
@@ -43,7 +51,7 @@ module.exports = React.createClass({
 				{/* render table or alternativeComponent */}
 				<div className="table-alternative-content-container">
 					{
-						(isTable ? (<DataTable data={this.props.tableData} />) : barNode)
+						isTable ? <DataTable data={this.props.tableData} /> : vizNode
 					}
 				</div>
 			</div>
