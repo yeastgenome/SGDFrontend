@@ -1,20 +1,39 @@
+.snapshot-container {
+	h1, h2, h3 {
+		font-family: Palatino;
+	}
+
+	h1:first-child {
+		margin-top: 0.5em;
+	}
+
+	a:hover {
+		text-decoration: underline;
+	}
+
+	.loader {
+		position: absolute;
+		margin-top: -16px;
+		margin-left: -16px;
+		top: 50%;
+		left: 50%;
+	}
+}
+
 .sgd-viz {
-	min-height: 300px;
+	min-height: 100px;
 	position: relative;
 	margin-bottom: 3em;
-	font-size: 12px;
-	&.genome-snapshot-panel {
-		min-height: 507px;
+	&.genome-snapshot-target {
+		min-height: 113px;		
 	}
 	&.go-snapshot-target {
-		min-height: 633px;
+		min-height: 400px;
 	}
 }
 
 .sgd-viz-filter-message {
 	margin-top: 1em;
-	margin-bottom: 0;
-	font-size: 12px;
 }
 
 
@@ -23,23 +42,25 @@
 }
 
 .flexible-tooltip {
+	position: absolute;
 	min-width: 100px;
 	min-height: 35px;
 	margin-left: -50px;
 	margin-top: -60px;
 	background-color: $tooltip-bg;
 	border-radius: 5px;
-	font-size: 16px;
 	z-index: $z-tooltip;
 }
 
 .flexible-tooltip-text {
+	display: block;
 	text-align: center;
 	margin: 0.5em;
 	white-space: nowrap;
 }
 
 .flexible-tooltip-arrow {
+	position: absolute;
 	bottom: -29px;
 	left: 50px;
 	width: 0; 
@@ -61,22 +82,23 @@
 	text-overflow: ellipsis;
 }
 
+.bar-container {
+	transition: top 0.5s;
+}
+
 .bar-node {
 	opacity: 0.6;
 	transition: width 0.5s;
 
 }
 
-.axis-label {
+.y-axis-label {
+	position: relative;
 	text-align: center;
 	margin-bottom: 0;
-	font-size: 14px;
-	height: 1em;
 }
 
-.axis {
-	font-size: 12px;
-
+.y-axis {
 	line {
 		stroke: black;
 	}
@@ -85,85 +107,5 @@
 		fill: none;
 		stroke: black;
 		shape-rendering: crispEdges;
-	}
-}
-
-// legend
-.viz-legend {
-	margin-bottom: 7px;
-}
-
-.legend-entry-container {
-	margin-right: 1em;
-	&:last-child {
-		margin-right: 0;
-	}
-}
-
-.legend-color {
-	width: 1.5em;
-	height: 1.5em;
-	margin-bottom: -0.3em;
-	margin-right: 0.5em;
-	display: inline-block;
-	opacity: 0.6;
-}
-
-// genome snapshot
-.button.chromosome-toggle {
-	width: 200px;
-	display: block;
-	margin: 0 auto;
-	margin-top: 2em;
-}
-
-.chromosome-label-text {
-	margin-top: 3em;
-	h3 {
-		margin-bottom: 0;
-	}
-	h3:first-child {
-		float: left;
-	}
-	h3:last-child {
-		float: right;
-	}
-}
-
-.genome-snapshot-target thead tr:first-child td {
-	text-align: center;
-}
-
-.genome-snapshot-target td {
-	white-space: nowrap;
-}
-
-// toggle bar chart
-.toggle-bar-chart {
-	.radio-selector {
-		font-size: 16px;
-	}
-
-	.radio-selector label {
-		text-transform: capitalize;
-		font-size: 16px;
-	}
-
-	.radio-element-container {
-		text-align: center;
-		&:first-child {
-			text-align: left;
-		}
-		&:last-child {
-			text-align: right;
-		}
-	}
-
-	.toggle-text {
-		margin-top: 1em;
-	}
-
-	.inner-toggle-text {
-		text-transform: capitalize;
 	}
 }
