@@ -1,4 +1,6 @@
 /** @jsx React.DOM */
+"use strict";
+
 var React = require("react");
 var d3 = require("d3");
 var _ = require("underscore");
@@ -132,7 +134,7 @@ module.exports = React.createClass({
 		var svg = d3.select(this.getDOMNode()).select("svg");
 		
 		var _translate = `translate(${this.getDOMNode().getBoundingClientRect().width * this.props.labelRatio - 1}, 30)`;
-		yAxis = svg.selectAll("g.y-axis").data([null]);
+		var yAxis = svg.selectAll("g.y-axis").data([null]);
 		yAxis.enter().append("g")
 			.attr({
 				class: "y-axis",

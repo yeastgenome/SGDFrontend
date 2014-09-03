@@ -1,4 +1,6 @@
 /** @jsx React.DOM */
+"use strict";
+
 var React = require("react");
 
 module.exports = React.createClass({
@@ -8,7 +10,6 @@ module.exports = React.createClass({
 			text: "",
 			left: 0,
 			top: 0,
-			text: "",
 			href: null
 		};
 	},

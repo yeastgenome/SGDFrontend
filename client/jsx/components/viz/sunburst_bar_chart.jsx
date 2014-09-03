@@ -1,3 +1,6 @@
+/** @jsx React.DOM */
+"use strict";
+
 var React = require("react");
 var d3 = require("d3");
 var _ = require("underscore");

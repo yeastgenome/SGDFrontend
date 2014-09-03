@@ -1,4 +1,6 @@
 /** @jsx React.DOM */
+"use strict";
+
 var $ = require("jquery");
 var attachFastClick = require("fastclick");
 require("foundation");

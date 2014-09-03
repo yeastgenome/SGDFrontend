@@ -1,4 +1,5 @@
 /** @jsx React.DOM */
+"use strict";
 
 // 
 // This js is for SGD search pages
@@ -7,9 +8,9 @@
 var $ = require("jquery");
 require("jquery-ui");
 
-SUGGEST_URL='/cgi-bin/search/searchSuggest.fpl'; 
+var SUGGEST_URL='/cgi-bin/search/searchSuggest.fpl'; 
 
-SEARCH_URL='/cgi-bin/search/instantSearch.fpl?query='; 
+var SEARCH_URL='/cgi-bin/search/instantSearch.fpl?query='; 
         
 var fields = ['gene_name',
 	      'headline',
