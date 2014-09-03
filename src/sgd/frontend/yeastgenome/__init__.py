@@ -466,6 +466,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     #Basic info
                     'reference': reference,
                     'counts': json.dumps(reference['counts']),
+                    'datasets': json.dumps(reference['expression_datasets']),
 
                     #Links
                     'go_details_link': self.backend_url + '/reference/' + reference_id + '/go_details?callback=?',
