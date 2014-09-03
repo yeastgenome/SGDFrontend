@@ -4,7 +4,7 @@
   "dependencies": {
     "cytoscape": "2.2.11",
     "datatables": "1.9.4",
-    "datatables-plugins": "latest",
+    "datatables-plugins": "https://github.com/DataTables/Plugins.git#24b417bd86986d19662df2033262de754ea6e4d0",
     "font-awesome": "4.1.0",
     "foundation": "5.4.3",
     "jquery": "^1.11.1",
