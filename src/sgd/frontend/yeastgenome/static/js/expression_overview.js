@@ -132,12 +132,11 @@ function create_expression_chart(all_data, min_value, max_value) {
 
             var labels = $('#two_channel_expression_chart > div > div > svg > g > g > g > text');
             for(var i=0; i < labels.length; i++) {
-                var label = $(labels[i]);
-                if(label.html() == '-5.5') {
-                    label.html(min_value.toFixed(1));
+                if(labels[i].innerHTML == '-5.5') {
+                    labels[i].innerHTML = min_value.toFixed(1);
                 }
-                else if(label.html() == '5.5') {
-                    label.html(max_value.toFixed(1));
+                else if(labels[i].innerHTML == '5.5') {
+                    labels[i].innerHTML = max_value.toFixed(1);
                 }
             }
         }
