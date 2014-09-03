@@ -179,8 +179,11 @@
         <a href="/locus/{{ locus.sgdid }}/sequence" name="top" class="documentation-link">See Sequence Details</a>
         <h2>Sequence</h2>
         <div class="panel">
+            <label><h3>Strain</h3>
+                <select id="strain_selection" class="large-3"></select> - <span id="strain_description"></span>
+            </label>
             <div class="panel">
-                <h3>Location - S288C
+                <h3>Location - <span id="strain_location"></span>
                     <a href="#" data-dropdown="reference_location_help"><i class="fa fa-question-circle"></i></a>
 
                     <p id="reference_location_help" class="f-dropdown content medium" data-dropdown-content>
@@ -189,7 +192,7 @@
                     </p>
                 </h3>
                 <div class="clearfix">
-                    <div id="reference_contig" class="left"></div>
+                    <div id="contig" class="left"></div>
                     <div class="right">
                         View in:
                         {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE' and (url.display_name == 'GBrowse' or url.display_name == 'ORF Map') %}
@@ -197,12 +200,12 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div id="reference_label_chart"></div>
+                <div id="label_chart"></div>
             </div>
 
             <div id="subfeature_wrapper" class="panel">
-                <h3>Subfeatures - S288C <span id="subfeature_table_header" class="round secondary label"></span></h3>
-                <div id="reference_sublabel_chart"></div>
+                <h3>Subfeatures - <span id="strain_subfeature"></span> <span id="subfeature_table_header" class="round secondary label"></span></h3>
+                <div id="sublabel_chart"></div>
 
                 <!-- Includes chromosomal_coord_table into template -->
                 {% set table_id = "subfeature_table" %}
@@ -210,6 +213,15 @@
                 {% set include_version = True %}
                 {% include "chromosomal_coord_table.jinja2" %}
             </div>
+
+            <button href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="small button secondary dropdown"><i
+                class="fa fa-download"></i> Download Sequence (.txt)</button><br>
+            <ul id="drop1" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1">
+                <li><a id="genomic_download">Genomic DNA</a></li>
+                <li><a id="coding_download">Coding DNA</a></li>
+                <li><a id="protein_download">Protein</a></li>
+            </ul>
+            <br>
 
             <div class="panel">
                 <h3>Resources</h3>
