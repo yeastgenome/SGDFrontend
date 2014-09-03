@@ -66,63 +66,63 @@
 <!-- Summary
 ================================================== -->
         <section id="summary" data-magellan-destination="summary">
-            <div class="page-header">
-                <h2>Abstract</h2>
-                <div class="panel">
-                    {%  if reference.abstract != none %}
-                        <p>{{ reference.abstract.text|safe}}</p>
-                    {% else %}
-                        <p>SGD does not have an abstract for this paper.</p>
-                    {% endif %}
+            <a class="documentation-link" name="top" href="/help/literature-help/curated-paper">
+            <h2>Abstract</h2>
+            <div class="panel">
+                {%  if reference.abstract != none %}
+                    <p>{{ reference.abstract.text|safe}}</p>
+                {% else %}
+                    <p>SGD does not have an abstract for this paper.</p>
+                {% endif %}
 
-                    <ul id="ref_links" class="ref-links">
-                        {%  if reference.pubmed_id != none %}<li>PMID: {{ reference.pubmed_id }}</li>{% endif %}
-                        {% for url in reference.urls %}
-                            <li><a href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
-                        {% endfor %}
+                <ul id="ref_links" class="ref-links">
+                    {%  if reference.pubmed_id != none %}<li>PMID: {{ reference.pubmed_id }}</li>{% endif %}
+                    {% for url in reference.urls %}
+                        <li><a href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                    {% endfor %}
+                </ul>
+
+                <div class="button-bar">
+                    <ul class="button-group radius">
+                        <li><a id="download_citation" class="small button secondary"><i class="fa fa-download"></i> Download Citation (.nbib)</a></li>
                     </ul>
-
-                    <div class="button-bar">
-                        <ul class="button-group radius">
-                            <li><a id="download_citation" class="small button secondary"><i class="fa fa-download"></i> Download Citation (.nbib)</a></li>
-                        </ul>
-                    </div>
-
-
-                    <dl class="key-value">
-                        <dt>Reference Type</dt>
-                        <dd>
-                            {% for reftype in reference.reftypes %}
-                            <span>{{ reftype.display_name }}</span>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                        </dd>
-
-                        <dt>Authors</dt>
-                        <dd>
-                            {% for author in reference.authors %}
-                            {% if loop.index < 11 %}<span><a href="{{ author.link|e }}">{{ author.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
-                            {% endfor %}
-
-                            <a id="author_see_more_button" onclick="$('#author_see_more').show();$('#author_see_more_button').hide();$('#author_see_less_button').show();" {% if reference.authors|length <= 10 %}hidden{% endif %}> ... <i class="fa fa-arrow-circle-right"></i> Show all</a>
-                            <span id="author_see_more" hidden>
-                                {% for author in reference.authors %}
-                                    {% if loop.index >= 11 %}<span><a href="{{ author.link|e }}">{{ author.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
-                                {% endfor %}
-                            </span>
-                            <a id="author_see_less_button" onclick="$('#author_see_more').hide();$('#author_see_more_button').show();$('#author_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
-                        </dd>
-
-                        <dt id="primary_list_header">Primary Lit For</dt>
-                        <dd id="primary_list"></dd>
-
-                        <dt id="additional_list_header">Additional Lit For</dt>
-                        <dd id="additional_list"></dd>
-
-                        <dt id="review_list_header">Review For</dt>
-                        <dd id="review_list"></dd>
-                    </dl>
                 </div>
+
+
+                <dl class="key-value">
+                    <dt>Reference Type</dt>
+                    <dd>
+                        {% for reftype in reference.reftypes %}
+                        <span>{{ reftype.display_name }}</span>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                    </dd>
+
+                    <dt>Authors</dt>
+                    <dd>
+                        {% for author in reference.authors %}
+                        {% if loop.index < 11 %}<span><a href="{{ author.link|e }}">{{ author.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
+                        {% endfor %}
+
+                        <a id="author_see_more_button" onclick="$('#author_see_more').show();$('#author_see_more_button').hide();$('#author_see_less_button').show();" {% if reference.authors|length <= 10 %}hidden{% endif %}> ... <i class="fa fa-arrow-circle-right"></i> Show all</a>
+                        <span id="author_see_more" hidden>
+                            {% for author in reference.authors %}
+                                {% if loop.index >= 11 %}<span><a href="{{ author.link|e }}">{{ author.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
+                            {% endfor %}
+                        </span>
+                        <a id="author_see_less_button" onclick="$('#author_see_more').hide();$('#author_see_more_button').show();$('#author_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
+                    </dd>
+
+                    <dt id="primary_list_header">Primary Lit For</dt>
+                    <dd id="primary_list"></dd>
+
+                    <dt id="additional_list_header">Additional Lit For</dt>
+                    <dd id="additional_list"></dd>
+
+                    <dt id="review_list_header">Review For</dt>
+                    <dd id="review_list"></dd>
+                </dl>
             </div>
+    
         </section>
 
 <!-- Related References
