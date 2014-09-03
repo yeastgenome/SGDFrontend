@@ -58,7 +58,9 @@
             add_navbar_element('Protein', 'protein');
             add_navbar_element('History', 'history');
             add_navbar_element('Resources', 'resources');
-            add_navbar_element('Paragraph', 'paragraph');
+            {% if locus.paragraph != None %}
+                add_navbar_element('Paragraph', 'paragraph');
+            {% endif %}
             add_navbar_element('References', 'references');
         </script>
 
@@ -71,7 +73,21 @@
 
             <dl class="key-value">
                 <dt>Standard Name</dt>
-                <dd>{{ locus.display_name }}</dd>
+                <dd>{{ locus.display_name }}
+                    {% for evidence in locus.bioentity_references if evidence.info_key == 'Gene Name' %}
+                        {% if loop.first %}
+                            <a href="#" data-dropdown="drop_description"><i
+                                    class="fa fa-info-circle"></i></a>
+                            <p id="drop_description" class="f-dropdown content medium" data-dropdown-content>
+                        {% endif %}
+                    <a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a>
+                    {% if not loop.last %}
+                        ,
+                    {% else %}
+                        </p>
+                    {% endif %}
+                    {% endfor %}
+                </dd>
 
                 <dt>Systematic Name</dt>
                 <dd>{{ locus.format_name }}</dd>
@@ -89,23 +105,22 @@
                             <p id="drop_alias_{{ alias.id }}" class="f-dropdown content medium" data-dropdown-content>
                         {% endif %}
                     <a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a>{% if not loop.last %},{% else %}</p>{% endif %}
-                    {% endfor %}
-                    {% if not loop.last %},{% else %}</dd>{% endif %}
+                    {% endfor %}{% if not loop.last %},{% else %}</dd>{% endif %}
                 {% endfor %}
 
                 <dt>Feature Type</dt>
-                <dd>{{ locus.locus_type }}</dd>
+                <dd>{{ locus.locus_type }}, {% if locus.qualifier != None %}{{ locus.qualifier }}{% endif %}</dd>
 
                 <dt>Description</dt>
                 <dd>
                     {{ locus.description }}
-                    {% for reference in locus.description_references %}
+                    {% for evidence in locus.bioentity_references if evidence.info_key == 'Description' %}
                         {% if loop.first %}
                             <a href="#" data-dropdown="drop_description"><i
                                     class="fa fa-info-circle"></i></a>
                             <p id="drop_description" class="f-dropdown content medium" data-dropdown-content>
                         {% endif %}
-                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>
+                    <a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a>
                     {% if not loop.last %}
                         ,
                     {% else %}
@@ -115,7 +130,21 @@
                 </dd>
 
                 <dt>Name Description</dt>
-                <dd>{{ locus.name_description }}</dd>
+                <dd>{{ locus.name_description }}
+                    {% for evidence in locus.bioentity_references if evidence.info_key == 'Name Description' %}
+                        {% if loop.first %}
+                            <a href="#" data-dropdown="drop_description"><i
+                                    class="fa fa-info-circle"></i></a>
+                            <p id="drop_description" class="f-dropdown content medium" data-dropdown-content>
+                        {% endif %}
+                    <a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a>
+                    {% if not loop.last %}
+                        ,
+                    {% else %}
+                        </p>
+                    {% endif %}
+                    {% endfor %}
+                </dd>
 
                 {% for alias in locus.aliases if alias.category == 'Gene product' %}
                     {% if loop.first %}
@@ -456,6 +485,7 @@
 
 <!-- Paragraph
 ================================================== -->
+    {% if locus.paragraph != None %}
     <section id="paragraph" data-magellan-destination="paragraph">
         <h2>Paragraph</h2>
         <div class="panel">
@@ -463,6 +493,7 @@
             <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
         </div>
     </section>
+        {% endif %}
 
 <!-- References
 ================================================== -->

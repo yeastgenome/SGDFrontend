@@ -114,25 +114,10 @@ $(document).ready(function() {
             mode.children('option[value=protein]')
                     .attr('disabled', !(strain_selection1.val() in strain_to_protein_data && strain_selection2.val() in strain_to_protein_data));
 
-            if(mode.val() == 'genomic_dna' && can_color1) {
-                color_sequence("sequence1", strain1_data);
-                $("#legend1").show();
-            }
-            else {
-                $("#legend1").hide();
-            }
-
-            if(mode.val() == 'genomic_dna' && can_color2) {
-                color_sequence("sequence2", strain2_data);
-                $("#legend2").show();
-            }
-            else {
-                $("#legend2").hide();
-            }
-
         }
         strain_selection1.change(on_strain_change);
         strain_selection2.change(on_strain_change);
+        $("#sequence_type_chooser").change(on_strain_change);
         on_strain_change();
 
         $("#download1").click(function f() {
@@ -577,53 +562,4 @@ function relative_to_html(index, num_digits) {
     var row = Math.floor(1.0*index/60);
     var column = index - row*60;
     return row*(71+num_digits) + 1 + num_digits + column + Math.floor(1.0*column/10);
-}
-
-function create_subfeature_table(table_id, data) {
-	var datatable = [];
-
-    for (var i=0; i < data['tags'].length; i++) {
-        var coord_version = data['tags'][i]['coord_version'];
-        var seq_version = data['tags'][i]['seq_version'];
-        if(coord_version == 'None') {
-            coord_version = '';
-        }
-        if(seq_version == 'None') {
-            seq_version = '';
-        }
-        var coords = '';
-        if(data['tags'][i]['chromosomal_start'] < data['tags'][i]['chromosomal_end']) {
-            coords = data['tags'][i]['chromosomal_start'] + '-' + data['tags'][i]['chromosomal_end'];
-        }
-        else {
-            coords = data['tags'][i]['chromosomal_end'] + '-' + data['tags'][i]['chromosomal_start'];
-        }
-        datatable.push([data['id'], data['locus']['id'], data['locus']['display_name'], data['locus']['format_name'],
-                        data['tags'][i]['display_name'],
-                        data['tags'][i]['relative_start'] + '-' + data['tags'][i]['relative_end'],
-                        coords, data['strand'],
-                        coord_version, seq_version
-                        ]);
-    }
-
-    set_up_header(table_id, datatable.length, 'subfeature', 'subfeatures', null, null, null);
-
-    set_up_range_sort();
-
-    var options = {};
-    options["bPaginate"] = false;
-    options["aaSorting"] = [[5, "asc"]];
-    options["aoColumns"] = [
-        {"bSearchable":false, "bVisible":false},
-        {"bSearchable":false, "bVisible":false},
-        {"bSearchable":false, "bVisible":false},
-        {"bSearchable":false, "bVisible":false},
-        null,
-        { "sType": "range" },
-        { "sType": "range" },
-        {"bSearchable":false, "bVisible":false}, null, null]
-    options["aaData"] = datatable;
-    options["oLanguage"] = {"sEmptyTable": "No subfeatures for " + display_name + '.'};
-
-    return create_table("subfeature_table", options);
 }
