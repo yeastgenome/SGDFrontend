@@ -84,9 +84,6 @@
 
 .bar-container {
 	transition: top 0.5s;
-	&:hover .bar-node {
-		opacity: 1
-	}
 }
 
 .bar-node {

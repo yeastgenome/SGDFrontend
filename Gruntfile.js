@@ -41,24 +41,17 @@ module.exports = function(grunt) {
           },
         },
         uglify: {
-            modernizr: {
+            staticJs: {
                 files: {
-                    "src/sgd/frontend/yeastgenome/static/js/build/modernizr.min.js": ["bower_components/modernizr/modernizr.js"]
-                }
-            },
-            datatables: {
-                files: {
-                    "src/sgd/frontend/yeastgenome/static/js/build/datatables/datatables.min.js": ["bower_components/datatables/media/js/jquery.datatables.js"]
-                }
-            },
-            datatablesplugins: {
-                files: {
-                    "src/sgd/frontend/yeastgenome/static/js/build/datatables/datatables.foundation.min.js": ["bower_components/datatables-plugins/integration/foundation/datatables.foundation.js"]
-                }
-            },
-            fastclick: {
-                files: {
+                    "src/sgd/frontend/yeastgenome/static/js/build/modernizr.min.js": ["bower_components/modernizr/modernizr.js"],
+                    "src/sgd/frontend/yeastgenome/static/js/build/datatables/datatables.min.js": ["bower_components/datatables/media/js/jquery.datatables.js"],
+                    "src/sgd/frontend/yeastgenome/static/js/build/datatables/datatables.foundation.min.js": ["bower_components/datatables-plugins/integration/foundation/datatables.foundation.js"],
                     "src/sgd/frontend/yeastgenome/static/js/build/fastclick.min.js": ["bower_components/fastclick/lib/fastclick.js"]
+                }
+            },
+            dynamicJs: {
+                files: {
+                    "src/sgd/frontend/yeastgenome/static/js/application.js": ["src/sgd/frontend/yeastgenome/static/js/application.js"],
                 }
             },
             foundation: {
@@ -84,7 +77,7 @@ module.exports = function(grunt) {
             },
             scss: {
                 options: {
-                    destPrefix: "src/sgd/frontend/yeastgenome/static/scss"
+                    destPrefix: "client/scss"
                 },
                 files: {
                     "normalize.scss": "foundation/scss/normalize.scss",
@@ -109,9 +102,9 @@ module.exports = function(grunt) {
             dev: {
                 options: {
                     cssDir: BUILD_PATH + "css",
-                    fontsPath: "client/public/fonts",
+                    fontsPath: "src/sgd/frontend/yeastgenome/static/fonts",
                     httpPath: "/",
-                    imagesPath: "client/public/img",
+                    imagesPath: "src/sgd/frontend/yeastgenome/static/img",
                     importPath: ["bower_components/foundation/scss", "bower_components/font-awesome/scss"],
                     outputStyle: "compressed",
                     sassDir: "client/scss"
@@ -161,8 +154,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-browserify");
     grunt.loadNpmTasks("grunt-concurrent");
 
-    // development task to keep running during development
-    grunt.registerTask("dev", ["replace","uglify", "bowercopy", "concurrent:dev", "watch:dev"])
+    // development compile
+    grunt.registerTask("compileDev", ["replace","uglify:staticJs", "bowercopy", "concurrent:dev"]);
+
+    // compile dev, then watch and trigger live reload
+    grunt.registerTask("dev", ["compileDev", "watch:dev"]);
     
-    grunt.registerTask("default", ["replace","uglify", "bowercopy", "concurrent:dev"]);
+    grunt.registerTask("default", ["compileDev", "uglify:dynamicJs"]);
 };

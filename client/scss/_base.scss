@@ -18,6 +18,9 @@ ul.unstyled, ol.unstyled {
 
 /* End of temp styles; remove once off Bootstrap "look" */
 
+// Variables
+$header-height: 85px;
+
 input[type="text"] {
 	@include border-radius($global-radius);
 }
@@ -29,6 +32,10 @@ input[type="text"] {
 .no-padding {
 	margin:0 !important;
 }
+
+// global colors to complement those set in foundation
+$tertiary-color: #aeabd3 !default;
+$warning-color: #e6df67 !default;
 
 .fixed { width: auto; }
 

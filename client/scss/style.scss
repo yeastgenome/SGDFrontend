@@ -35,14 +35,13 @@
     "../../bower_components/foundation/scss/foundation/components/tooltips",
     "../../bower_components/foundation/scss/foundation/components/top-bar",
     "../../bower_components/foundation/scss/foundation/components/type",
-    "../../bower_components/foundation/scss/foundation/components/switches",
     "../../bower_components/foundation/scss/foundation/components/visibility";
-     //"../../../../../../bower_components/foundation/scss/foundation/components/flex-video",
-     //"../../../../../../bower_components/foundation/scss/foundation/components/joyride",
-     //"../../../../../../bower_components/foundation/scss/foundation/components/pricing-tables",
-    //"../../../../../../bower_components/foundation/scss/foundation/components/progress-bars",
-
-     //"../../../../../../bower_components/foundation/scss/foundation/components/offcanvas",
+     //"../../bower_components/foundation/scss/foundation/components/flex-video",
+     //"../../bower_components/foundation/scss/foundation/components/joyride",
+     //"../../bower_components/foundation/scss/foundation/components/pricing-tables",
+    //"../../bower_components/foundation/scss/foundation/components/progress-bars",
+     //"../../bower_components/foundation/scss/foundation/components/switch",
+     //"../../bower_components/foundation/scss/foundation/components/offcanvas",
 
 // Compass mixins
 @import
@@ -71,12 +70,15 @@
 	"build/dataTables.foundation",
 	"build/nouislider",
 	"vendor/webicons";
+
+// custom settings not for founation
+@import "settings";
 	
 // SGD Styles
-@import
-    "settings",
+@import 
 	"base",
 	"layout",
+	"modules/animations",
 	"modules/autocomplete",
 	"modules/header",
 	"modules/footer",
@@ -90,10 +92,10 @@
 	"modules/legends",
 	"modules/tables",
 	"modules/yetfasco",
-    "modules/table_alternative",
 	"modules/foundation-overwrites",
+    "modules/table_alternative",
+    "modules/viz",
 	"state",
 	"theme",
 	"legacy",
-	"modules/print",
-    "modules/gene_snapshot";
+	"modules/print";

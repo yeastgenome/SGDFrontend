@@ -9,6 +9,13 @@
 	z-index: 1;
 }
 
+.table-alternative .button {
+	background: $topbar-bg-color;
+	&:hover {
+		text-decoration: none;
+	}
+}
+
 .table-alternative .tabs a:hover {
 	text-decoration: none;
 }
@@ -20,33 +27,9 @@
 .table-alternative .sgd-tabs li.active a {
     background: none repeat scroll 0 0 #fff;
     color: #222;
-    border-top: 2px solid $primary-color;
+    border-top: 2px solid $topbar-bg-color;
     padding-top: 14px;
     z-index: 2;
-}
-
-.table-alternative .switch-container {
-	height: 50px;
-	span, .switch {
-		display: inline-block;
-	}
-
-	span:first-child {
-		margin-right: 1em;
-	}
-
-	span:last-child {
-		margin-left: 1em;
-	}
-
-	.switch {
-		height: 19px;
-	}
-
-	label {
-		background: #ddd !important;
-		margin-bottom: 0 !important;
-	}
 }
 
 .table-alternative .table-scroll-container {
