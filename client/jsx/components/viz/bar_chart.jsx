@@ -15,14 +15,18 @@ var FlexibleTooltip = require("../flexible_tooltip.jsx");
 module.exports = React.createClass({
 
 	getDefaultProps: function () {
+		var _identity = (d) => { return d; };
+		
 		return {
+			data: null, // *
 			colorValue: function (d) { return d; },
 			colorScale: d3.scale.category20(),
 			hasTooltip: false,
 			labelRatio: 0.5,
-			labelValue: function (d) { return d; },
+			labelValue: _identity,
 			nodeOpacity: function (d) { return "auto"; },
-			filter: null
+			filter: null,
+			yValue: _identity
 		};
 	},
 

@@ -1,8 +1,10 @@
 /** @jsx React.DOM */
 "use strict";
 
+var d3 = require("d3");
 var React = require("react");
 
+var BarChart = require("./viz/bar_chart.jsx");
 var DataTable = require("./data_table.jsx");
 var GenomeSnapshot = require("./genome_snapshot.jsx");
 
@@ -23,6 +25,11 @@ module.exports = React.createClass({
 		// is table defaults to state, set to props.isInitiallyTable if state is null
 		var isTable = ((this.state.isTable === null) ? this.props.isInitiallyTable : this.state.isTable);
 
+		var barNode = (<BarChart
+			data={this.props.graphData.combined} yValue={ function (d) { return d.value; } }
+			labelValue={ function (d) { return d.name; } } labelRatio={0.2} colorScale={ function () { return "#DF8B93"; }}
+		/>);
+
 		return (
 			<div className="table-alternative">
 				<ul className="tabs sgd-tabs" data-tab>
@@ -36,7 +43,7 @@ module.exports = React.createClass({
 				{/* render table or alternativeComponent */}
 				<div className="table-alternative-content-container">
 					{
-						(isTable ? (<DataTable data={this.props.tableData} />) : (<GenomeSnapshot data={this.props.graphData} />))
+						(isTable ? (<DataTable data={this.props.tableData} />) : barNode)
 					}
 				</div>
 			</div>
