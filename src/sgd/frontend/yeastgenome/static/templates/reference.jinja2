@@ -129,35 +129,33 @@
 ================================================== -->
         {% if reference.related_references|length > 0 %}
             <section id="related" data-magellan-destination="related">
-                <div class="page-header">
-                    <h2>Related References</h2>
-                    <div class="panel">
-                        <ul class="unstyled">
-                            {% for relref in reference.related_references %}
-                                <li>
-                                    <strong>Reference Type:
-                                        {% for reftype in relref.reftypes %}
-                                            <span>{{ reftype.display_name }}</span>{% if not loop.last %} | {% endif %}
-                                        {% endfor %}
-                                    </strong><br>
-                                    <a href="{{ relref.link|e }}">{{ relref.display_name|e }}</a>
-                                    <span>{{ relref.citation|e|replace(relref.display_name, '') }}</span>
-                                    {% if relref.pubmed_id != none %}
-                                        <small>PMID: {{ relref.pubmed_id|e }}</small>
-                                    {% endif %}
-                                    <ul class="ref-links">
-                                        <li><a href="{{ relref.link|e }}">SGD Paper</a></li>
-                                        {% for url in relref.urls %}
-                                            <li><a target="_blank" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
-                                        {% endfor %}
-                                    </ul>
-                                    {% if relref.abstract != none %}
-                                        <blockquote>{{ relref.abstract.text|safe }}</blockquote>
-                                    {% endif %}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                <h2>Related References</h2>
+                <div class="panel">
+                    <ul class="unstyled">
+                        {% for relref in reference.related_references %}
+                            <li>
+                                <strong>Reference Type:
+                                    {% for reftype in relref.reftypes %}
+                                        <span>{{ reftype.display_name }}</span>{% if not loop.last %} | {% endif %}
+                                    {% endfor %}
+                                </strong><br>
+                                <a href="{{ relref.link|e }}">{{ relref.display_name|e }}</a>
+                                <span>{{ relref.citation|e|replace(relref.display_name, '') }}</span>
+                                {% if relref.pubmed_id != none %}
+                                    <small>PMID: {{ relref.pubmed_id|e }}</small>
+                                {% endif %}
+                                <ul class="ref-links">
+                                    <li><a href="{{ relref.link|e }}">SGD Paper</a></li>
+                                    {% for url in relref.urls %}
+                                        <li><a target="_blank" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                                {% if relref.abstract != none %}
+                                    <blockquote>{{ relref.abstract.text|safe }}</blockquote>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </section>
         {% endif %}
@@ -165,50 +163,42 @@
 <!-- Interaction
 ================================================== -->
         <section id="interaction" data-magellan-destination="interaction">
-            <div class="page-header">
-                <h2>Interaction Annotations <span id="interaction_table_header" class="round secondary label"></span></h2>
-                <div>
-                    <!-- Includes interaction_table into template -->
-                    {% set table_id = "interaction_table" %}
-                    {% include "interaction_table.jinja2" %}
-                </div>
+            <h2>Interaction Annotations <span id="interaction_table_header" class="round secondary label"></span></h2>
+            <div>
+                <!-- Includes interaction_table into template -->
+                {% set table_id = "interaction_table" %}
+                {% include "interaction_table.jinja2" %}
             </div>
         </section>
 
 <!-- GO
 ================================================== -->
         <section id="go" data-magellan-destination="go">
-            <div class="page-header">
-                <h2>Gene Ontology Annotations <span id="go_table_header" class="round secondary label"></span></h2>
-                <div class="panel">
-                    <!-- Includes go_table into template -->
-                    {% set table_id = "go_table" %}
-                    {% include "go_table.jinja2" %}
-                </div>
+            <h2>Gene Ontology Annotations <span id="go_table_header" class="round secondary label"></span></h2>
+            <div class="panel">
+                <!-- Includes go_table into template -->
+                {% set table_id = "go_table" %}
+                {% include "go_table.jinja2" %}
             </div>
         </section>
 
 <!-- Phenotype
 ================================================== -->
         <section id="phenotype" data-magellan-destination="phenotype">
-            <div class="page-header">
-                <h2>Phenotype Annotations <span id="phenotype_table_header" class="round secondary label"></span></h2>
-                <!-- Includes phenotype_table into template -->
-                {% set table_id = "phenotype_table" %}
-                {% include "phenotype_table.jinja2" %}
-            </div>
+            <h2>Phenotype Annotations <span id="phenotype_table_header" class="round secondary label"></span></h2>
+            <!-- Includes phenotype_table into template -->
+            {% set table_id = "phenotype_table" %}
+            {% include "phenotype_table.jinja2" %}
         </section>
 
 <!-- Regulation
 ================================================== -->
         <section id="regulation" data-magellan-destination="regulation">
-            <div class="page-header">
-                <h2>Regulation Annotations <span id="regulation_table_header" class="round secondary label"></span></h2>
-                <div class="panel">
-                    <!-- Includes regulation_table into template -->
-                    {% set table_id = "regulation_table" %}
-                    {% include "regulation_table.jinja2" %}
-                </div>
+            <h2>Regulation Annotations <span id="regulation_table_header" class="round secondary label"></span></h2>
+            <div class="panel">
+                <!-- Includes regulation_table into template -->
+                {% set table_id = "regulation_table" %}
+                {% include "regulation_table.jinja2" %}
             </div>
         </section>
     </div>
