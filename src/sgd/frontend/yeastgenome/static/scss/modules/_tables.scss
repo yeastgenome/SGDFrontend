@@ -16,7 +16,7 @@ th:last-child, tr.even td:last-child {
 }
 
 .dataTables_wrapper {
-    overflow: hidden;
+    overflow: auto;
     table { 
         margin: 0 !important;
         border-collapse: separate;
