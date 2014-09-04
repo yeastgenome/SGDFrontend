@@ -176,12 +176,15 @@
 <!-- Sequence
 ================================================== -->
     <section id="sequence" data-magellan-destination="sequence">
-        <a href="/locus/{{ locus.sgdid }}/sequence" name="top" class="documentation-link">See Sequence Details</a>
+        <a href="/locus/{{ locus.sgdid }}/sequence" name="top" class="documentation-link"><i class="fa fa-chevron-circle-right"></i> Sequence Details</a>
         <h2>Sequence</h2>
         <div class="panel">
             <label><h3>Strain</h3>
                 <select id="strain_selection" class="large-3"></select> - <span id="strain_description"></span>
             </label>
+            <button href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="small radius button secondary dropdown form-pad"><i
+                class="fa fa-download"></i> Download Sequence (.txt)</button>
+                
             <div class="panel">
                 <h3>Location - <span id="strain_location"></span>
                     <a href="#" data-dropdown="reference_location_help"><i class="fa fa-question-circle"></i></a>
@@ -214,14 +217,11 @@
                 {% include "chromosomal_coord_table.jinja2" %}
             </div>
 
-            <button href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="small button secondary dropdown"><i
-                class="fa fa-download"></i> Download Sequence (.txt)</button><br>
             <ul id="drop1" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1">
                 <li><a id="genomic_download">Genomic DNA</a></li>
                 <li><a id="coding_download">Coding DNA</a></li>
                 <li><a id="protein_download">Protein</a></li>
             </ul>
-            <br>
 
             <div class="panel">
                 <h3>Resources</h3>
@@ -248,72 +248,81 @@
                     <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
                 {% endfor %}
             </div>
+            <a href="/locus/{{ locus.sgdid }}/sequence" class="small radius secondary button">Sequence Details</a>
         </div>
     </section>
 
 <!-- Literature
 ================================================== -->
     <section id="literature" data-magellan-destination="literature">
-        <a href="/locus/{{ locus.sgdid }}/literature" name="top" class="documentation-link">See Literature Details</a>
+        <a href="/locus/{{ locus.sgdid }}/literature" name="top" class="documentation-link"><i class="fa fa-chevron-circle-right"></i> Literature Details</a>
         <h2>Literature</h2>
         <div class="panel">
-            <dl class="key-value">
-                <dt>Unique References</dt>
-                <dd>{{locus.literature_overview.total_count}}</dd>
-            </dl>
+            <div class="panel">
+                <dl class="key-value">
+                    <dt>Unique References</dt>
+                    <dd>{{locus.literature_overview.total_count}}</dd>
+                </dl>
+            </div>
+            
+            <a href="/locus/{{ locus.sgdid }}/literature" name="top" class="small radius secondary button">Literature Details</a>
         </div>
     </section>
 
 <!-- GO
 ================================================== -->
     <section id="go" data-magellan-destination="go">
-        <a href="/locus/{{ locus.sgdid }}/go" name="top" class="documentation-link">See Gene Ontology Details</a>
+        <a href="/locus/{{ locus.sgdid }}/go" name="top" class="documentation-link"><i class="fa fa-chevron-circle-right"></i> Gene Ontology Details</a>
         <h2>Gene Ontology</h2>
         <div class="panel">
-            <dl class="key-value">
-                <dt>Molecular Function</dt>
-                <dd><ul>
-                    {% for entry in locus.go_overview.molecular_function_terms %}
-                        <li>
-                            <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                            {% for code in entry.evidence_codes %}
-                                {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                            {% endfor %}
-                        </li>
-                    {% endfor %}
-                </ul></dd>
+            <div class="panel">
+                <dl class="key-value">
+                    <dt>Molecular Function</dt>
+                    <dd><ul>
+                        {% for entry in locus.go_overview.molecular_function_terms %}
+                            <li>
+                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                {% for code in entry.evidence_codes %}
+                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                    </ul></dd>
 
-                <dt>Biological Process</dt>
-                <dd><ul>
-                    {% for entry in locus.go_overview.biological_process_terms  %}
-                        <li>
-                            <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                            {% for code in entry.evidence_codes %}
-                                {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                            {% endfor %}
-                        </li>
-                    {% endfor %}
-                </ul></dd>
+                    <dt>Biological Process</dt>
+                    <dd><ul>
+                        {% for entry in locus.go_overview.biological_process_terms  %}
+                            <li>
+                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                {% for code in entry.evidence_codes %}
+                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                    </ul></dd>
 
-                <dt>Cellular Component</dt>
-                <dd><ul>
-                    {% for entry in locus.go_overview.cellular_component_terms  %}
-                        <li>
-                            <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                            {% for code in entry.evidence_codes %}
-                                {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                            {% endfor %}
-                        </li>
-                    {% endfor %}
-                </ul></dd>
-            </dl>
+                    <dt>Cellular Component</dt>
+                    <dd><ul>
+                        {% for entry in locus.go_overview.cellular_component_terms  %}
+                            <li>
+                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                {% for code in entry.evidence_codes %}
+                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                    </ul></dd>
+                </dl>
+            </div>
+            
+            <a href="/locus/{{ locus.sgdid }}/go" class="small radius secondary button">Gene Ontology Details</a>
         </div>
     </section>
 
 <!-- Phenotype
 ================================================== -->
     <section id="phenotype" data-magellan-destination="phenotype">
-        <a href="/locus/{{ locus.sgdid }}/phenotype" name="top" class="documentation-link">See Phenotype Details</a>
+        <a href="/locus/{{ locus.sgdid }}/phenotype" name="top" class="documentation-link"><i class="fa fa-chevron-circle-right"></i> Phenotype Details</a>
         <h2>Phenotype</h2>
         <div class="panel">
 
@@ -365,13 +374,15 @@
                     {% endfor %}
                 </p>
             </div>
+            
+            <a href="/locus/{{ locus.sgdid }}/phenotype" class="small radius secondary button">Phenotype Details</a>
         </div>
     </section>
 
 <!-- Interaction
 ================================================== -->
     <section id="interaction" data-magellan-destination="interaction">
-        <a href="/locus/{{ locus.sgdid }}/interaction" name="top" class="documentation-link">See Interaction Details</a>
+        <a href="/locus/{{ locus.sgdid }}/interaction" name="top" class="documentation-link"><i class="fa fa-chevron-circle-right"></i> Interaction Details</a>
         <h2>Interaction</h2>
         <div class="panel">
             <p>{{ locus.interaction_overview.total_interactions }} total interactions for {{ locus.interaction_overview.total_interactors }} unique genes</p>
@@ -402,13 +413,14 @@
                 </p>
             </div>
 
+            <a href="/locus/{{ locus.sgdid }}/interaction" class="small radius secondary button">Interaction Details</a>
         </div>
     </section>
 
 <!-- Expression
 ================================================== -->
     <section id="expression" data-magellan-destination="expression">
-        <a href="/locus/{{ locus.sgdid }}/expression" name="top" class="documentation-link">See Expression Details</a>
+        <a href="/locus/{{ locus.sgdid }}/expression" name="top" class="documentation-link"><i class="fa fa-chevron-circle-right"></i> Expression Details</a>
         <h2>Expression</h2>
         <div class="panel">
             <div id="two_channel_expression_chart" class="panel"></div>
@@ -420,13 +432,15 @@
                     {% endfor %}
                 </p>
             </div>
+            
+            <a href="/locus/{{ locus.sgdid }}/expression" class="small radius secondary button">Expression Details</a>
         </div>
     </section>
 
 <!-- Regulation
 ================================================== -->
     <section id="regulation" data-magellan-destination="regulation">
-        <a href="/locus/{{ locus.sgdid }}/regulation" name="top" class="documentation-link">See Regulation Details</a>
+        <a href="/locus/{{ locus.sgdid }}/regulation" name="top" class="documentation-link"><i class="fa fa-chevron-circle-right"></i> Regulation Details</a>
         <h2>Regulation</h2>
         <div class="panel">
             <div class="panel">
@@ -447,13 +461,15 @@
                     {% endfor %}
                 </p>
             </div>
+            
+            <a href="/locus/{{ locus.sgdid }}/regulation" class="small radius secondary button">Regulation Details</a>
         </div>
     </section>
 
 <!-- Protein
 ================================================== -->
     <section id="protein" data-magellan-destination="protein">
-        <a href="/locus/{{ locus.sgdid }}/protein" name="top" class="documentation-link">See Protein Details</a>
+        <a href="/locus/{{ locus.sgdid }}/protein" name="top" class="documentation-link"><i class="fa fa-chevron-circle-right"></i> Protein Details</a>
         <h2>Protein</h2>
         <div class="panel">
             <div class="panel">
@@ -495,6 +511,8 @@
                         {% endfor %}
                     </p>
             </div>
+            
+            <a href="/locus/{{ locus.sgdid }}/protein" class="small radius secondary button">Protein Details</a>
         </div>
     </section>
 
