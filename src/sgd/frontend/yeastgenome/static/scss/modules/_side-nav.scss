@@ -68,6 +68,9 @@ http://smacss.com/book/type-module
 
 // Overwrite a couple magellan settings - need to make these case specific though
 
+.fixed {
+    left: auto; // a Foundation update added a 0 value to this, restoring to default
+}
 
 [data-magellan-expedition], [data-magellan-expedition-clone] {
     min-width: 0;
