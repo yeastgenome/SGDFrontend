@@ -25,6 +25,7 @@ module.exports = React.createClass({
 			hasYAxis: true,
 			labelRatio: 0.5,
 			labelValue: _identity,
+			maxY: null,
 			nodeOpacity: function (d) { return "auto"; },
 			filter: null,
 			yValue: _identity
@@ -76,7 +77,7 @@ module.exports = React.createClass({
 				width: state.widthScale(props.yValue(d)),
 				height: "100%",
 				background: d.nestedValues ? "none": props.colorScale(props.colorValue(d)),
-				opacity: props.nodeOpacity(d)
+				opacity: d.nestedValues ? 1 : props.nodeOpacity(d)
 			};
 
 			// if nestedValues is present, make some nested nodes, otherwise leave them null
@@ -85,7 +86,7 @@ module.exports = React.createClass({
 				nestedBars = _.map(d.nestedValues, (nestedData, nestedIndex) => {
 					var _nestedColors = ["#1f77b4", "#aec7e8", "#999"];
 					var _nestedStyle = {
-						background: _nestedColors[nestedIndex] || props.colorScale(props.colorValue(nestedData)),
+						background: _nestedColors[nestedIndex],
 						width: state.widthScale(props.yValue(nestedData)),
 						height: "100%",
 						float: "left"
@@ -94,9 +95,10 @@ module.exports = React.createClass({
 					_onMouseOver = null;
 					var _onNestedMouseOver = (e) => { this._handleMouseOver(e, nestedData); };
 
-					return <div className="bar-node nested-bar-node" key={`nestedBar${nestedIndex}`} style={_nestedStyle} onMouseOver={_onNestedMouseOver}></div>;
+					return <div className="bar-node nested-bar-node data-node" key={`nestedBar${nestedIndex}`} style={_nestedStyle} onMouseOver={_onNestedMouseOver}></div>;
 				})
 			}
+
 			var _innerLabelNode = d.link ? <a href={d.link}>{props.labelValue(d)}</a> : props.labelValue(d);
 
 			return (
@@ -104,7 +106,7 @@ module.exports = React.createClass({
 					<div className="bar-label" style={{ width: `${props.labelRatio * 100}%`, lineHeight: 1.25, textAlign: "right", paddingRight: "1em" }}>
 						<span>{_innerLabelNode}</span>
 					</div>
-					<div className="bar-node clearfix" style={_barStyle}>
+					<div className={`bar-node clearfix ${d.nestedValues ? "" : "data-node"}`} style={_barStyle}>
 						{nestedBars}
 					</div>
 				</div>
@@ -191,7 +193,7 @@ module.exports = React.createClass({
 			baseLeft = target.parentNode.offsetLeft;
 		}
 
-		d3.select(this.getDOMNode()).selectAll(".bar-node").style({ opacity: 0.6 });
+		d3.select(this.getDOMNode()).selectAll(".bar-node.data-node").style({ opacity: 0.6 });
 		d3.select(barNode).style({ opacity: 1 })
 
 		if (this.props.onMouseOver) {
@@ -209,7 +211,7 @@ module.exports = React.createClass({
 	},
 
 	_handleMouseExit: function () {
-		d3.select(this.getDOMNode()).selectAll(".bar-node").style({ opacity: 0.6 });
+		d3.select(this.getDOMNode()).selectAll(".bar-node.data-node").style({ opacity: 0.6 });
 		this.setState({
 			tooltipVisible: false,
 		});
@@ -218,7 +220,7 @@ module.exports = React.createClass({
 	// domain from data get range from DOMNode with
 	_calculateWidthScale: function (props) {
 		var _props = props ? props : this.props;
-		var _maxY = d3.max(_props.data, _props.yValue);
+		var _maxY = _props.maxY || d3.max(_props.data, _props.yValue); // defaults to maxY prop, if defined
 		var _width = this.getDOMNode().getBoundingClientRect().width;
 		var _scale = d3.scale.linear().domain([0, _maxY]).range([0, _width * (1-_props.labelRatio)]);
 		this.setState({ widthScale: _scale });
