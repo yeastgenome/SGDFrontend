@@ -68,98 +68,96 @@
 <!-- Summary
 ================================================== -->
         <section id="summary" data-magellan-destination="summary">
-            <div class="page-header">
-                <h2>Abstract</h2>
-                <div class="panel">
-                    {%  if reference.abstract != none %}
-                        <p>{{ reference.abstract.text|safe}}</p>
-                    {% else %}
-                        <p>SGD does not have an abstract for this paper.</p>
-                    {% endif %}
+            <a class="documentation-link" name="top" href="/help/literature-help/curated-paper">Reference Help <i class="fa fa-question-circle"></i></a>
+            <h2>Abstract</h2>
+            <div class="panel">
+                {%  if reference.abstract != none %}
+                    <p>{{ reference.abstract.text|safe}}</p>
+                {% else %}
+                    <p>SGD does not have an abstract for this paper.</p>
+                {% endif %}
 
-                    <ul id="ref_links" class="ref-links">
-                        {%  if reference.pubmed_id != none %}<li>PMID: {{ reference.pubmed_id }}</li>{% endif %}
-                        {% for url in reference.urls %}
-                            <li><a href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
-                        {% endfor %}
+                <ul id="ref_links" class="ref-links">
+                    {%  if reference.pubmed_id != none %}<li>PMID: {{ reference.pubmed_id }}</li>{% endif %}
+                    {% for url in reference.urls %}
+                        <li><a href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                    {% endfor %}
+                </ul>
+
+                <div class="button-bar">
+                    <ul class="button-group radius">
+                        <li><a id="download_citation" class="small button secondary"><i class="fa fa-download"></i> Download Citation (.nbib)</a></li>
                     </ul>
-
-                    <div class="button-bar">
-                        <ul class="button-group radius">
-                            <li><a id="download_citation" class="small button secondary"><i class="fa fa-download"></i> Download Citation (.nbib)</a></li>
-                        </ul>
-                    </div>
-
-
-                    <dl class="key-value">
-                        <dt>Reference Type</dt>
-                        <dd>
-                            {% for reftype in reference.reftypes %}
-                            <span>{{ reftype.display_name }}</span>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                        </dd>
-
-                        <dt>Authors</dt>
-                        <dd>
-                            {% for author in reference.authors %}
-                            {% if loop.index < 11 %}<span><a href="{{ author.link|e }}">{{ author.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
-                            {% endfor %}
-
-                            <a id="author_see_more_button" onclick="$('#author_see_more').show();$('#author_see_more_button').hide();$('#author_see_less_button').show();" {% if reference.authors|length <= 10 %}hidden{% endif %}> ... <i class="fa fa-arrow-circle-right"></i> Show all</a>
-                            <span id="author_see_more" hidden>
-                                {% for author in reference.authors %}
-                                    {% if loop.index >= 11 %}<span><a href="{{ author.link|e }}">{{ author.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
-                                {% endfor %}
-                            </span>
-                            <a id="author_see_less_button" onclick="$('#author_see_more').hide();$('#author_see_more_button').show();$('#author_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
-                        </dd>
-
-                        <dt id="primary_list_header">Primary Lit For</dt>
-                        <dd id="primary_list"></dd>
-
-                        <dt id="additional_list_header">Additional Lit For</dt>
-                        <dd id="additional_list"></dd>
-
-                        <dt id="review_list_header">Review For</dt>
-                        <dd id="review_list"></dd>
-                    </dl>
                 </div>
+
+
+                <dl class="key-value">
+                    <dt>Reference Type</dt>
+                    <dd>
+                        {% for reftype in reference.reftypes %}
+                        <span>{{ reftype.display_name }}</span>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                    </dd>
+
+                    <dt>Authors</dt>
+                    <dd>
+                        {% for author in reference.authors %}
+                        {% if loop.index < 11 %}<span><a href="{{ author.link|e }}">{{ author.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
+                        {% endfor %}
+
+                        <a id="author_see_more_button" onclick="$('#author_see_more').show();$('#author_see_more_button').hide();$('#author_see_less_button').show();" {% if reference.authors|length <= 10 %}hidden{% endif %}> ... <i class="fa fa-arrow-circle-right"></i> Show all</a>
+                        <span id="author_see_more" hidden>
+                            {% for author in reference.authors %}
+                                {% if loop.index >= 11 %}<span><a href="{{ author.link|e }}">{{ author.display_name|e }}</a></span>{% if not loop.last %}, {% endif %} {% endif %}
+                            {% endfor %}
+                        </span>
+                        <a id="author_see_less_button" onclick="$('#author_see_more').hide();$('#author_see_more_button').show();$('#author_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
+                    </dd>
+
+                    <dt id="primary_list_header">Primary Lit For</dt>
+                    <dd id="primary_list"></dd>
+
+                    <dt id="additional_list_header">Additional Lit For</dt>
+                    <dd id="additional_list"></dd>
+
+                    <dt id="review_list_header">Review For</dt>
+                    <dd id="review_list"></dd>
+                </dl>
             </div>
+    
         </section>
 
 <!-- Related References
 ================================================== -->
         {% if reference.related_references|length > 0 %}
             <section id="related" data-magellan-destination="related">
-                <div class="page-header">
-                    <h2>Related References</h2>
-                    <div class="panel">
-                        <ul class="unstyled">
-                            {% for relref in reference.related_references %}
-                                <li>
-                                    <strong>Reference Type:
-                                        {% for reftype in relref.reftypes %}
-                                            <span>{{ reftype.display_name }}</span>{% if not loop.last %} | {% endif %}
-                                        {% endfor %}
-                                    </strong><br>
-                                    <a href="{{ relref.link|e }}">{{ relref.display_name|e }}</a>
-                                    <span>{{ relref.citation|e|replace(relref.display_name, '') }}</span>
-                                    {% if relref.pubmed_id != none %}
-                                        <small>PMID: {{ relref.pubmed_id|e }}</small>
-                                    {% endif %}
-                                    <ul class="ref-links">
-                                        <li><a href="{{ relref.link|e }}">SGD Paper</a></li>
-                                        {% for url in relref.urls %}
-                                            <li><a target="_blank" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
-                                        {% endfor %}
-                                    </ul>
-                                    {% if relref.abstract != none %}
-                                        <blockquote>{{ relref.abstract.text|safe }}</blockquote>
-                                    {% endif %}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                <h2>Related References</h2>
+                <div class="panel">
+                    <ul class="unstyled">
+                        {% for relref in reference.related_references %}
+                            <li>
+                                <strong>Reference Type:
+                                    {% for reftype in relref.reftypes %}
+                                        <span>{{ reftype.display_name }}</span>{% if not loop.last %} | {% endif %}
+                                    {% endfor %}
+                                </strong><br>
+                                <a href="{{ relref.link|e }}">{{ relref.display_name|e }}</a>
+                                <span>{{ relref.citation|e|replace(relref.display_name, '') }}</span>
+                                {% if relref.pubmed_id != none %}
+                                    <small>PMID: {{ relref.pubmed_id|e }}</small>
+                                {% endif %}
+                                <ul class="ref-links">
+                                    <li><a href="{{ relref.link|e }}">SGD Paper</a></li>
+                                    {% for url in relref.urls %}
+                                        <li><a target="_blank" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                                {% if relref.abstract != none %}
+                                    <blockquote>{{ relref.abstract.text|safe }}</blockquote>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </section>
         {% endif %}
@@ -167,50 +165,42 @@
 <!-- Interaction
 ================================================== -->
         <section id="interaction" data-magellan-destination="interaction">
-            <div class="page-header">
-                <h2>Interaction Annotations <span id="interaction_table_header" class="round secondary label"></span></h2>
-                <div>
-                    <!-- Includes interaction_table into template -->
-                    {% set table_id = "interaction_table" %}
-                    {% include "interaction_table.jinja2" %}
-                </div>
+            <h2>Interaction Annotations <span id="interaction_table_header" class="round secondary label"></span></h2>
+            <div>
+                <!-- Includes interaction_table into template -->
+                {% set table_id = "interaction_table" %}
+                {% include "interaction_table.jinja2" %}
             </div>
         </section>
 
 <!-- GO
 ================================================== -->
         <section id="go" data-magellan-destination="go">
-            <div class="page-header">
-                <h2>Gene Ontology Annotations <span id="go_table_header" class="round secondary label"></span></h2>
-                <div class="panel">
-                    <!-- Includes go_table into template -->
-                    {% set table_id = "go_table" %}
-                    {% include "go_table.jinja2" %}
-                </div>
+            <h2>Gene Ontology Annotations <span id="go_table_header" class="round secondary label"></span></h2>
+            <div class="panel">
+                <!-- Includes go_table into template -->
+                {% set table_id = "go_table" %}
+                {% include "go_table.jinja2" %}
             </div>
         </section>
 
 <!-- Phenotype
 ================================================== -->
         <section id="phenotype" data-magellan-destination="phenotype">
-            <div class="page-header">
-                <h2>Phenotype Annotations <span id="phenotype_table_header" class="round secondary label"></span></h2>
-                <!-- Includes phenotype_table into template -->
-                {% set table_id = "phenotype_table" %}
-                {% include "phenotype_table.jinja2" %}
-            </div>
+            <h2>Phenotype Annotations <span id="phenotype_table_header" class="round secondary label"></span></h2>
+            <!-- Includes phenotype_table into template -->
+            {% set table_id = "phenotype_table" %}
+            {% include "phenotype_table.jinja2" %}
         </section>
 
 <!-- Regulation
 ================================================== -->
         <section id="regulation" data-magellan-destination="regulation">
-            <div class="page-header">
-                <h2>Regulation Annotations <span id="regulation_table_header" class="round secondary label"></span></h2>
-                <div class="panel">
-                    <!-- Includes regulation_table into template -->
-                    {% set table_id = "regulation_table" %}
-                    {% include "regulation_table.jinja2" %}
-                </div>
+            <h2>Regulation Annotations <span id="regulation_table_header" class="round secondary label"></span></h2>
+            <div class="panel">
+                <!-- Includes regulation_table into template -->
+                {% set table_id = "regulation_table" %}
+                {% include "regulation_table.jinja2" %}
             </div>
         </section>
 

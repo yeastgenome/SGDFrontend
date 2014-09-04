@@ -102,11 +102,26 @@
             <div class="page-header">
                 <h2>Conditions</h2>
                 <div class="panel">
-                    <ul>
-                        {% for condition in dataset.datasetcolumns %}
-                            <li>{{ condition.display_name }}</li>
-                        {% endfor %}
-                    </ul>
+                    <table class="table table-striped table-bordered table-condensed" width="100%">
+                        <thead>
+                             <tr>
+                                 <td>Condition</td>
+                                 <td>GEO ID</td>
+                             </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for condition in dataset.datasetcolumns %}
+                            <tr>
+                                <td>{{ condition.display_name }}</td>
+                                <td>
+                                    {% if condition.geo_id  %}<a href="{{ condition.link }}" target="_blank">{{ condition.geo_id }}</a>{% endif %}
+                                </td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
