@@ -258,10 +258,13 @@
         <a href="/locus/{{ locus.sgdid }}/literature" name="top" class="documentation-link"><i class="fa fa-chevron-circle-right"></i> Literature Details</a>
         <h2>Literature</h2>
         <div class="panel">
-            <dl class="key-value">
-                <dt>Unique References</dt>
-                <dd>{{locus.literature_overview.total_count}}</dd>
-            </dl>
+            <div class="panel">
+                <dl class="key-value">
+                    <dt>Unique References</dt>
+                    <dd>{{locus.literature_overview.total_count}}</dd>
+                </dl>
+            </div>
+            
             <a href="/locus/{{ locus.sgdid }}/literature" name="top" class="small radius secondary button">Literature Details</a>
         </div>
     </section>
@@ -272,43 +275,45 @@
         <a href="/locus/{{ locus.sgdid }}/go" name="top" class="documentation-link"><i class="fa fa-chevron-circle-right"></i> Gene Ontology Details</a>
         <h2>Gene Ontology</h2>
         <div class="panel">
-            <dl class="key-value">
-                <dt>Molecular Function</dt>
-                <dd><ul>
-                    {% for entry in locus.go_overview.molecular_function_terms %}
-                        <li>
-                            <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                            {% for code in entry.evidence_codes %}
-                                {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                            {% endfor %}
-                        </li>
-                    {% endfor %}
-                </ul></dd>
+            <div class="panel">
+                <dl class="key-value">
+                    <dt>Molecular Function</dt>
+                    <dd><ul>
+                        {% for entry in locus.go_overview.molecular_function_terms %}
+                            <li>
+                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                {% for code in entry.evidence_codes %}
+                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                    </ul></dd>
 
-                <dt>Biological Process</dt>
-                <dd><ul>
-                    {% for entry in locus.go_overview.biological_process_terms  %}
-                        <li>
-                            <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                            {% for code in entry.evidence_codes %}
-                                {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                            {% endfor %}
-                        </li>
-                    {% endfor %}
-                </ul></dd>
+                    <dt>Biological Process</dt>
+                    <dd><ul>
+                        {% for entry in locus.go_overview.biological_process_terms  %}
+                            <li>
+                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                {% for code in entry.evidence_codes %}
+                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                    </ul></dd>
 
-                <dt>Cellular Component</dt>
-                <dd><ul>
-                    {% for entry in locus.go_overview.cellular_component_terms  %}
-                        <li>
-                            <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                            {% for code in entry.evidence_codes %}
-                                {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                            {% endfor %}
-                        </li>
-                    {% endfor %}
-                </ul></dd>
-            </dl>
+                    <dt>Cellular Component</dt>
+                    <dd><ul>
+                        {% for entry in locus.go_overview.cellular_component_terms  %}
+                            <li>
+                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                {% for code in entry.evidence_codes %}
+                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                    </ul></dd>
+                </dl>
+            </div>
             
             <a href="/locus/{{ locus.sgdid }}/go" class="small radius secondary button">Gene Ontology Details</a>
         </div>
