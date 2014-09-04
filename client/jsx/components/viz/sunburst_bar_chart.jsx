@@ -7,6 +7,7 @@ var _ = require("underscore");
 
 var ZoomableSunburst = require("./zoomable_sunburst.jsx");
 var BarChart = require("./bar_chart.jsx");
+var Legend = require("./legend.jsx");
 
 /*
 	Combine the sunburst, and a bar chart with cross highlighting and make the zoom in suburst filter the bar chart.
@@ -70,8 +71,17 @@ module.exports = React.createClass({
 
 		var _initFilterData = this.state.filteredBarData ? null : (d) => { return _yValue(d) > 200; };
 
+		// init legend
+		var _legendElements = [
+			{ text: "Molecular Function", color: _colorScale("molecular_function") },
+			{ text: "Biological Process", color: _colorScale("biological_process") },
+			{ text: "Cellular Component", color: _colorScale("cellular_component") }
+		];
+		var legenNode = <Legend elements={_legendElements} />;
+
 		return (
 			<div>
+				{legenNode}
 				<div className="row">
 					<div className="large-6 columns sgd-viz">
 						<ZoomableSunburst data={this.props.data.nested} colorScale={_colorScale} yValue={_yValue}

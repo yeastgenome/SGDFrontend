@@ -89,6 +89,19 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		// format data for table
 		var _tableData = this._formatDataForTable(response, chroms);
 
+		// combine "other" (non-ORF) features
+		chroms = _.map(chroms, (c) => {
+			var combinedFeatures = [c.features[0]];
+			combinedFeatures.push(_.reduce(c.features, (prev, f, i) => {
+				if (i > 0) {
+					prev.value += f.value;
+				}
+				return prev;
+			}, { name: "Other", value: 0 }));
+			c.features = combinedFeatures;
+			return c;
+		});
+
 		return {
 			tableData: _tableData,
 			graphData: {

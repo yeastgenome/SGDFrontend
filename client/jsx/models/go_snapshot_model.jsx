@@ -71,9 +71,10 @@ module.exports = class GoSnapshotModel extends BaseModel {
 			assignToChildren(secondaryRelationships[i], _nestedData);
 		}
 
-		for (var i = tertiaryRelationsips.length - 1; i >= 0; i--) {
-			assignToChildren(tertiaryRelationsips[i], _nestedData);
-		}
+		// TEMP remove tertiary nodes
+		// for (var i = tertiaryRelationsips.length - 1; i >= 0; i--) {
+		// 	assignToChildren(tertiaryRelationsips[i], _nestedData);
+		// }
 
 		// also put data into linear format for bar chart consumption
 		var _linearData = _.map(goTerms, (t) => {

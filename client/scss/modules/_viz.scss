@@ -132,3 +132,14 @@
 .chromosome-label-text {
 	margin-top: 2em;
 }
+
+// GO snapshot sunburst bar chart
+.go-snapshot-target {
+	.viz-legend {
+		margin-bottom: 2em;
+	}
+
+	.legend-entry-container {
+		width: 30%;
+	}
+}
