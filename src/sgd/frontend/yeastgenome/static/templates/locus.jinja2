@@ -249,6 +249,7 @@
                     <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
                 {% endfor %}
             </div>
+            <a href="/locus/{{ locus.sgdid }}/sequence" class="small radius secondary button">Sequence Details</a>
         </div>
     </section>
 
@@ -262,6 +263,7 @@
                 <dt>Unique References</dt>
                 <dd>{{locus.literature_overview.total_count}}</dd>
             </dl>
+            <a href="/locus/{{ locus.sgdid }}/literature" name="top" class="small radius secondary button">Literature Details</a>
         </div>
     </section>
 
@@ -308,6 +310,8 @@
                     {% endfor %}
                 </ul></dd>
             </dl>
+            
+            <a href="/locus/{{ locus.sgdid }}/go" class="small radius secondary button">Gene Ontology Details</a>
         </div>
     </section>
 
@@ -366,6 +370,8 @@
                     {% endfor %}
                 </p>
             </div>
+            
+            <a href="/locus/{{ locus.sgdid }}/phenotype" class="small radius secondary button">Phenotype Details</a>
         </div>
     </section>
 
@@ -403,6 +409,7 @@
                 </p>
             </div>
 
+            <a href="/locus/{{ locus.sgdid }}/interaction" class="small radius secondary button">Interaction Details</a>
         </div>
     </section>
 
@@ -421,6 +428,8 @@
                     {% endfor %}
                 </p>
             </div>
+            
+            <a href="/locus/{{ locus.sgdid }}/expression" class="small radius secondary button">Expression Details</a>
         </div>
     </section>
 
@@ -448,6 +457,8 @@
                     {% endfor %}
                 </p>
             </div>
+            
+            <a href="/locus/{{ locus.sgdid }}/regulation" class="small radius secondary button">Regulation Details</a>
         </div>
     </section>
 
@@ -496,6 +507,8 @@
                         {% endfor %}
                     </p>
             </div>
+            
+            <a href="/locus/{{ locus.sgdid }}/protein" class="small radius secondary button">Protein Details</a>
         </div>
     </section>
 
