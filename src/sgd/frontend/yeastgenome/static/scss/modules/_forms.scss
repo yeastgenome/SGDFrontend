@@ -49,4 +49,7 @@ select {
         height: 19px;
     }
 } 
-    
+
+input.form-pad, button.form-pad, textarea.form-pad {
+    margin: 0 0 $form-spacing 0;
+}
