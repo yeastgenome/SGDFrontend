@@ -59,6 +59,7 @@ module.exports = React.createClass({
 
 		// render bar nodes
 		var bars = _.map(data, (d, i) => {
+			var _onMouseOver = (e) => { this._handleMouseOver(e, d); };
 
 			var _containerStyle = {
 				width: "100%",
@@ -80,19 +81,20 @@ module.exports = React.createClass({
 			// if nestedValues is present, make some nested nodes, otherwise leave them null
 			var nestedBars = null;
 			if (d.nestedValues) {
-				nestedBars = _.map(d.nestedValues, function (nestedData, nestedIndex) {
+				nestedBars = _.map(d.nestedValues, (nestedData, nestedIndex) => {
 					var _nestedStyle = {
-						background: d3.scale.category10().range()[nestedIndex],
+						background: d3.rgb(props.colorScale(d)).darker(nestedIndex).toString(),
 						width: state.widthScale(props.yValue(nestedData)),
 						height: "100%",
 						float: "left"
 					};
 
-					return <div className="nested-bar-node" key={`nestedBar${nestedIndex}`} style={_nestedStyle}></div>;
+					_onMouseOver = null;
+					var _onNestedMouseOver = (e) => { this._handleMouseOver(e, nestedData); };
+
+					return <div className="bar-node nested-bar-node" key={`nestedBar${nestedIndex}`} style={_nestedStyle} onMouseOver={_onNestedMouseOver}></div>;
 				})
 			}
-
-			var _onMouseOver = (e) => { this._handleMouseOver(e, d); }
 			var _innerLabelNode = d.link ? <a href={d.link}>{props.labelValue(d)}</a> : props.labelValue(d);
 
 			return (
@@ -171,6 +173,13 @@ module.exports = React.createClass({
 	_handleMouseOver: function (e, d) {
 		var target = e.currentTarget;
 		var barNode = target.getElementsByClassName("bar-node")[0];
+		var baseLeft = 0;
+
+		// take care of nested mousover
+		if (!barNode) {
+			barNode = target;
+			baseLeft = target.parentNode.offsetLeft;
+		}
 
 		d3.select(this.getDOMNode()).selectAll(".bar-node").style({ opacity: 0.6 });
 		d3.select(barNode).style({ opacity: 1 })
@@ -183,7 +192,7 @@ module.exports = React.createClass({
 				tooltipVisible: true,
 				tooltipText: `${this.props.labelValue(d)} - ${this.props.yValue(d).toLocaleString()}`,
 				tooltipTop: target.offsetTop,
-				tooltipLeft: barNode.offsetLeft + barNode.getBoundingClientRect().width/2,
+				tooltipLeft: baseLeft + barNode.offsetLeft + barNode.getBoundingClientRect().width/2,
 				tooltipHref: d.link
 			});
 		}

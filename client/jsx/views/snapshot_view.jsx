@@ -37,13 +37,8 @@ snapshotView.render = function () {
 		
 		featuresSnapshotModel.fetch( (err, featuresData) => {
 
-			// React.renderComponent(
-			// 	<BarChart data={featuresData.combined} yValue={function(d){return d.value;}} labelValue={function(d){return d.name;}}/>,
-			// 	document.getElementsByClassName("genome-snapshot-target")[0]	
-			// );
-
 			React.renderComponent(
-				<TableAlternative vizType="bar" isInitiallyTable={false} graphData={featuresData.graphData} tableData={featuresData.tableData} />,
+				<TableAlternative vizType="genomeSnapshot" isInitiallyTable={false} graphData={featuresData.graphData} tableData={featuresData.tableData} />,
 				document.getElementsByClassName("genome-snapshot-target")[0]
 			);
 
@@ -57,7 +52,7 @@ snapshotView.render = function () {
 
 			phenotypeModel.fetch( (err, phenotypeData) => {
 
-				var _colorValue = (d) => { return "#666"; };
+				var _colorValue = (d) => { return "#DF8B93"; }
 				var _yValue = (d) => { return d.annotation_count; };
 				var _labelValue = (d) => { return d.display_name; };
 
@@ -66,7 +61,7 @@ snapshotView.render = function () {
 						data={phenotypeData} yValue={_yValue}
 						labelValue={_labelValue} labelRatio={0.15}
 						hasTooltip={true} colorScale={_colorValue}
-						yAxisLabel="Genes Annotated"
+						yAxisLabel="Genes Products Annotated"
 					/>
 				);
 				React.renderComponent(barChart, document.getElementsByClassName("phenotype-snapshot-target")[0]);
