@@ -182,6 +182,9 @@
             <label><h3>Strain</h3>
                 <select id="strain_selection" class="large-3"></select> - <span id="strain_description"></span>
             </label>
+            <button href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="small radius button secondary dropdown form-pad"><i
+                class="fa fa-download"></i> Download Sequence (.txt)</button>
+                
             <div class="panel">
                 <h3>Location - <span id="strain_location"></span>
                     <a href="#" data-dropdown="reference_location_help"><i class="fa fa-question-circle"></i></a>
@@ -214,8 +217,6 @@
                 {% include "chromosomal_coord_table.jinja2" %}
             </div>
 
-            <button href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="small button secondary dropdown"><i
-                class="fa fa-download"></i> Download Sequence (.txt)</button><br>
             <ul id="drop1" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1">
                 <li><a id="genomic_download">Genomic DNA</a></li>
                 <li><a id="coding_download">Coding DNA</a></li>
