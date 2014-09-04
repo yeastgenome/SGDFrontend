@@ -9,14 +9,15 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 	// helper function which takes a list of features and nests the characterization status
 	// returns features array filtered and nexted in "nestedValues" of ORF
 	_nestOrfCharacterizationStatuses (features) {
+		var charaStatuses = ["Verified", "Uncharacterized", "Dubious"];
+
 		// boolean helper function
 		var isORFChara = (f) => {
-			var charaStatuses = ["Verified", "Dubious", "Uncharacterized"];
 			return charaStatuses.indexOf(f.name) >= 0;
 		};
 
 		// get the statuses, separate them from the rest of features
-		var characFeatures = _.filter(features, isORFChara);
+		var characFeatures = _.sortBy(_.filter(features, isORFChara), (f) => { return charaStatuses.indexOf(f.name); });
 		features = _.filter(features, (f) => { return !isORFChara(f); })
 		
 		// finally, assign them to orf element

@@ -109,3 +109,21 @@
 		shape-rendering: crispEdges;
 	}
 }
+
+// legend
+.legend-entry-container {
+	display: inline-block;
+	margin-right: 1em;
+	&:last-child {
+		margin-right: 0;
+	}
+}
+
+.legend-color {
+	width: 1.5em;
+	height: 1.5em;
+	margin-bottom: -0.3em;
+	margin-right: 0.5em;
+	display: inline-block;
+	opacity: 0.6;
+}

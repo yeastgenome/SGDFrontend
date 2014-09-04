@@ -22,6 +22,7 @@ module.exports = React.createClass({
 			colorValue: function (d) { return d; },
 			colorScale: d3.scale.category20(),
 			hasTooltip: false,
+			hasYAxis: true,
 			labelRatio: 0.5,
 			labelValue: _identity,
 			nodeOpacity: function (d) { return "auto"; },
@@ -82,8 +83,9 @@ module.exports = React.createClass({
 			var nestedBars = null;
 			if (d.nestedValues) {
 				nestedBars = _.map(d.nestedValues, (nestedData, nestedIndex) => {
+					var _nestedColors = ["#1f77b4", "#aec7e8", "#999"];
 					var _nestedStyle = {
-						background: d3.rgb(props.colorScale(d)).darker(nestedIndex).toString(),
+						background: _nestedColors[nestedIndex] || props.colorScale(props.colorValue(nestedData)),
 						width: state.widthScale(props.yValue(nestedData)),
 						height: "100%",
 						float: "left"
@@ -112,16 +114,21 @@ module.exports = React.createClass({
 		// add unfiltering message if the filter was used
 		var filterMessageNode = hasFilter ? <p className="sgd-viz-filter-message">Some values have been hidden.  <a onClick={this._clearFilter}>Show All</a></p> : null;
 
-		var _yAxisStyle = { left: `${props.labelRatio*100}%`, width: `${(1-props.labelRatio)*100}%` };
-		var yAxisLabel = props.yAxisLabel ? (<p className="y-axis-label" style={_yAxisStyle}>{props.yAxisLabel}</p>) : null;
+		// create y axis, if hasYaxis
+		var yAxis = null;
+		if (props.hasYAxis) {
+			var _yAxisStyle = { left: `${props.labelRatio*100}%`, width: `${(1-props.labelRatio)*100}%` };
+			var yAxisLabel = props.yAxisLabel ? (<p className="y-axis-label" style={_yAxisStyle}>{props.yAxisLabel}</p>) : null;
+			yAxis = [yAxisLabel, <svg style={{ width: "100%", height: 40, display: "block" }}></svg>];
+		}
+
 		var tooltipNode = props.hasTooltip ? (<FlexibleTooltip visible={state.tooltipVisible}
 				left={state.tooltipLeft} top={state.tooltipTop} text={state.tooltipText} href={state.tooltipHref}
 			/>) : null;
 
 		return (
 			<div className="sgd-viz-bar-chart">
-				{yAxisLabel}
-				<svg style={{ width: "100%", height: 40, display: "block" }}></svg>
+				{yAxis}
 				<div className="bar-nodes-container clearfix" onMouseLeave={this._handleMouseExit} style={{ position: "relative", height: (barHeight + 1) * data.length }}>
 					{tooltipNode}
 					{bars}
@@ -144,6 +151,9 @@ module.exports = React.createClass({
 	},
 
 	_renderSVGScale: function () {
+		// return if no yAxis
+		if (!this.props.hasYAxis) { return; }
+
 		var state = this.state;
 
 		// require widthScale to continue
