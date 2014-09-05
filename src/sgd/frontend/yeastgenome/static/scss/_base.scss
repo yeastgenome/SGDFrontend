@@ -108,14 +108,9 @@ h3 .fa-info-circle {
     margin-top: 0.1em;
 }
 
-.documentation-link {
+.documentation-link, .details-link {
     float: right;
     position: relative;
     top:3px;
     line-height: 1.4em;
-}
-
-.details-link {
-    position: relative;
-    top: -7px;
 }
