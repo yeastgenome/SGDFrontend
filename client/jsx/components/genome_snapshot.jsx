@@ -38,7 +38,7 @@ module.exports = React.createClass({
   //       }
 
         var _buttonText = this.state.showChromosomes ?
-            <span>Hide Chromosomes&nbsp;<i className="fa fa-angle-up"></i></span> : <span>Show Chromosomes&nbsp;<i className="fa fa-angle-down"></i></span>;
+            <span>Show by Genome&nbsp;<i className="fa fa-angle-up"></i></span> : <span>Show by Chromosome&nbsp;<i className="fa fa-angle-down"></i></span>;
 
         // init bar chart(s)
         var barNodes;
@@ -58,10 +58,10 @@ module.exports = React.createClass({
 
 		return (
     		<div className="genome-snapshot panel">
-                <h2 style={{ marginBottom: "1em" }}>Features by Type</h2>
-                <a style={{ marginBottom: "1.5em", minWidth: 185 }}onClick={this.toggleShowChromosomes} className="button small" role="button">{_buttonText}</a>
+                <a style={{ marginBottom: "1.5em", minWidth: 195 }}onClick={this.toggleShowChromosomes} className="button small" role="button">{_buttonText}</a>
                 {barNodes}
-    		</div>);
+    		</div>
+        );
 	},
 
     _getBarChart: function(data, maxY) {

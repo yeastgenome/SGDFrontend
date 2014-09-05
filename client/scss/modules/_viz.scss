@@ -133,6 +133,14 @@
 	margin-top: 2em;
 }
 
+.genome-snapshot-target thead tr:first-child td {
+	text-align: center;
+}
+
+.genome-snapshot-target td {
+	white-space: nowrap;
+}
+
 // GO snapshot sunburst bar chart
 .go-snapshot-target {
 	.viz-legend {

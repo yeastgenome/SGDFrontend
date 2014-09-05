@@ -28,14 +28,21 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 	}
 
 	// put data in table format
-	_formatDataForTable (response, chromosomeData) {
-		var tableHeaders = response.rows;
-		tableHeaders.unshift("Chromosome");
-		var tableRows = _.map(chromosomeData, (c) => {
-			var row = _.map(c.features, (f) => {
-				return f.value;
+	_formatDataForTable (chromosomeData) {
+		var tableHeaders = _.map(chromosomeData, (c) => {
+			return {
+				value: c.display_name.split(" ")[1],
+				href: c.link
+			};
+		});
+		tableHeaders.unshift("Feature Type");
+		tableHeaders = [["", "Chromosome Number"], tableHeaders];
+
+		var tableRows = _.map(chromosomeData[0].features, (f, i) => {
+			var row = _.map(chromosomeData, (c) => {
+				return c.features[i].value;
 			});
-			row.unshift(c.display_name.split(" ")[1])
+			row.unshift(f.name.replace(/_/g, ' '));
 			return row;
 		});
 
@@ -87,7 +94,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		});
 
 		// format data for table
-		var _tableData = this._formatDataForTable(response, chroms);
+		var _tableData = this._formatDataForTable(chroms);
 
 		// combine "other" (non-ORF) features
 		chroms = _.map(chroms, (c) => {
