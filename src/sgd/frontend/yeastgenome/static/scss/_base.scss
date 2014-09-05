@@ -114,3 +114,20 @@ h3 .fa-info-circle {
     top:3px;
     line-height: 1.4em;
 }
+
+.back-to-top {
+    background-color: rgba(231, 231, 231, 0.8);
+    @include transition-property(background-color);
+    @include transition-duration(300ms);
+    @include border-top-left-radius($global-radius);
+    @include border-bottom-left-radius($global-radius);
+    bottom: 2em;
+    display: none;
+    font-size: rem-calc(12);
+    font-weight: 500;
+    padding: .7em;
+    position: fixed;
+    right: 0;
+    text-decoration: none;
+}
+.back-to-top:hover { background-color: rgba(185,185,185,0.85); } 
