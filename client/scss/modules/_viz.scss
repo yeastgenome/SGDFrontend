@@ -111,6 +111,10 @@
 }
 
 // legend
+.viz-legend {
+	margin-bottom: 5px;
+}
+
 .legend-entry-container {
 	display: inline-block;
 	margin-right: 1em;
@@ -129,6 +133,13 @@
 }
 
 // genome snapshot
+.button.chromosome-toggle {
+	width: 200px;
+	display: block;
+	margin: 0 auto;
+	margin-top: 2em;
+}
+
 .chromosome-label-text {
 	margin-top: 2em;
 }

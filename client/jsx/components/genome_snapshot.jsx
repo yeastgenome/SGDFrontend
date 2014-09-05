@@ -58,8 +58,13 @@ module.exports = React.createClass({
 
 		return (
     		<div className="genome-snapshot panel">
-                <a style={{ marginBottom: "1.5em", minWidth: 195 }}onClick={this.toggleShowChromosomes} className="button small" role="button">{_buttonText}</a>
                 {barNodes}
+                <a
+                    onClick={this.toggleShowChromosomes} className="button small chromosome-toggle"
+                    role="button"
+                >
+                    {_buttonText}
+                </a>                
     		</div>
         );
 	},
