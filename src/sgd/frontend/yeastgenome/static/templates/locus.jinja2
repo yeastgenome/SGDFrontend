@@ -61,7 +61,7 @@
             {% endif %}{% endfor %}
             add_navbar_element('Resources', 'resources');
             {% if locus.paragraph != None %}
-                add_navbar_element('Paragraph', 'paragraph');
+                add_navbar_element('Summary Paragraph', 'paragraph');
             {% endif %}
             add_navbar_element('References', 'references');
         </script>
@@ -561,7 +561,7 @@
 ================================================== -->
     {% if locus.paragraph != None %}
     <section id="paragraph" data-magellan-destination="paragraph">
-        <h2>Paragraph</h2>
+        <h2>Summary Paragraph</h2>
         <div class="panel">
             <div id="summary_paragraph"></div>
             <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
