@@ -614,3 +614,21 @@ function set_up_header(table_id, header_count, header_singular, header_plural, s
     }
     $("#" + table_id + "_header").html(header_text);
 }
+
+// Add dynamic "back to top" link to bottom right of all pages
+$(document).ready(function() {
+    var offset = 245; // how far (px) to scroll to trigger link
+    var duration = 500; // 0.5s fade in/out
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > offset) {
+            $('.back-to-top').fadeIn(duration);
+        } else {
+            $('.back-to-top').fadeOut(duration);
+        }
+    });
+    $('.back-to-top').click(function(event) {
+        event.preventDefault();
+        $('html, body').animate({scrollTop: 0}, duration);
+        return false;
+    })
+});
