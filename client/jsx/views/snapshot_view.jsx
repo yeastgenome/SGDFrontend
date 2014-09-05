@@ -12,6 +12,11 @@ var BarChart = require("../components/viz/bar_chart.jsx");
 var snapshotView = {};
 snapshotView.render = function () {
 
+	// render date
+	var currentDate = new Date()
+	document.getElementsByClassName("date-container")[0].innerHTML =
+		` - ${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+
 	// render nav bar
 	var navElements = [
 		{ name: "Genome Inventory", target: "genomeInventory" },

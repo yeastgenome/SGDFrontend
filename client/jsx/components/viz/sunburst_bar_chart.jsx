@@ -72,11 +72,14 @@ module.exports = React.createClass({
 		var _initFilterData = this.state.filteredBarData ? null : (d) => { return _yValue(d) > 200; };
 
 		// init legend
-		var _legendElements = [
-			{ text: "Molecular Function", color: _colorScale("molecular_function") },
-			{ text: "Biological Process", color: _colorScale("biological_process") },
-			{ text: "Cellular Component", color: _colorScale("cellular_component") }
-		];
+		var _legendElements = _.map(this.props.data.nested.children, (d) => {
+			return {
+				text: d.data.display_name,
+				color: _colorScale(d.data.format_name),
+				href: d.data.link
+			};
+		});
+		_legendElements = _.sortBy(_legendElements, (d) => { return d.text; });
 		var legenNode = <Legend elements={_legendElements} />;
 
 		return (

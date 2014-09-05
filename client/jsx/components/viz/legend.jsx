@@ -18,10 +18,11 @@ module.exports = React.createClass({
 
 		var labelText = this.props.labelText ? <span className="legend-entry-container">{this.props.labelText}</span> : null;
 		var elementNodes = _.map(this.props.elements, (entry, i) => {
+			var textNode = entry.href ? <a href={entry.href}>{entry.text}</a> : entry.text;
 			return (
 				<div className="legend-entry-container" key={`legend${i}`}>
 					<div className="legend-color" style={{ background: entry.color }}></div>
-					{entry.text}
+					{textNode}
 				</div>
 			);
 		});
