@@ -11,6 +11,33 @@ module.exports = function(grunt) {
                 }]
             }
         },
+        concat: {
+            options: {
+              separator: ''
+            },
+            dist: {
+              src: [
+                'bower_components/foundation/js/foundation/foundation.js', 
+                'bower_components/foundation/js/foundation/foundation.abide.js',
+                'bower_components/foundation/js/foundation/foundation.accordion.js',
+                'bower_components/foundation/js/foundation/foundation.alert.js',
+                'bower_components/foundation/js/foundation/foundation.clearing.js',
+                'bower_components/foundation/js/foundation/foundation.dropdown.js',
+                'bower_components/foundation/js/foundation/foundation.equalizer.js',
+                'bower_components/foundation/js/foundation/foundation.interchange.js',
+                'bower_components/foundation/js/foundation/foundation.joyride.js',
+                'src/sgd/frontend/yeastgenome/static/js/vendor/foundation/foundation.magellan.js',
+                'bower_components/foundation/js/foundation/foundation.offcanvas.js',
+                'bower_components/foundation/js/foundation/foundation.orbit.js',
+                'bower_components/foundation/js/foundation/foundation.reveal.js',
+                'bower_components/foundation/js/foundation/foundation.slider.js',
+                'bower_components/foundation/js/foundation/foundation.tab.js',
+                'bower_components/foundation/js/foundation/foundation.tooltip.js',
+                'bower_components/foundation/js/foundation/foundation.topbar.js'
+              ],
+              dest: 'bower_components/foundation/js/foundation.js'
+          },
+        },
         uglify: {
             modernizr: {
                 files: {
@@ -31,6 +58,11 @@ module.exports = function(grunt) {
                 files: {
                     "src/sgd/frontend/yeastgenome/static/js/build/fastclick.min.js": ["bower_components/fastclick/lib/fastclick.js"]
                 }
+            },
+            foundation: {
+                files: {
+                    "src/sgd/frontend/yeastgenome/static/js/build/foundation.min.js": ["bower_components/foundation/js/foundation.js"]
+                }
             }
         },
         bowercopy: {
@@ -41,7 +73,6 @@ module.exports = function(grunt) {
                 files: {
                     "cytoscape.min.js": "cytoscape/dist/cytoscape.min.js",
                     "arbor.js": "cytoscape/lib/arbor.js",
-                    "foundation.min.js": "foundation/js/foundation.min.js",
                     "jquery.min.js": "jquery/dist/jquery.min.js",
                     "kinetic.min.js": "kineticjs/kinetic.min.js",
                     "respond.min.js": "respond/dest/respond.min.js",
@@ -74,8 +105,9 @@ module.exports = function(grunt) {
     });
     
     grunt.loadNpmTasks('grunt-text-replace');
+    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks("grunt-bowercopy");
     
-    grunt.registerTask('default', ['replace','uglify', 'bowercopy']);
+    grunt.registerTask('default', ['replace', 'concat', 'uglify', 'bowercopy']);
 };
