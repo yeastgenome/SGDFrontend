@@ -48,18 +48,38 @@
             //Set up navbar
             add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</a>');
             add_navbar_element('Locus Overview', 'overview');
-            add_navbar_element('Sequence', 'sequence');
-            add_navbar_element('Literature', 'literature');
-            add_navbar_element('Gene Ontology', 'go');
-            add_navbar_element('Phenotype', 'phenotype');
-            add_navbar_element('Interaction', 'interaction');
-            add_navbar_element('Expression', 'expression');
-            add_navbar_element('Regulation', 'regulation');
-            add_navbar_element('Protein', 'protein');
-            {% for evidence in locus.history if evidence.history_type == 'LSP' %}{% if loop.first %}
-                add_navbar_element('History', 'history');
+            {% if tabs['summary_tab'] %}
+                add_navbar_element('Sequence', 'sequence');
+            {% endif %}
+            {% if tabs['literature_tab'] %}
+                add_navbar_element('Literature', 'literature');
+            {% endif %}
+            {% if tabs['go_tab'] %}
+                add_navbar_element('Gene Ontology', 'go');
+            {% endif %}
+            {% if tabs['phenotype_tab'] %}
+                add_navbar_element('Phenotype', 'phenotype');
+            {% endif %}
+            {% if tabs['interaction_tab'] %}
+                add_navbar_element('Interaction', 'interaction');
+            {% endif %}
+            {% if tabs['expression_tab'] %}
+                add_navbar_element('Expression', 'expression');
+            {% endif %}
+            {% if tabs['regulation_tab'] %}
+                add_navbar_element('Regulation', 'regulation');
+            {% endif %}
+            {% if tabs['protein_tab'] %}
+                add_navbar_element('Protein', 'protein');
+            {% endif %}
+            {% if tabs['history_tab'] %}
+                {% for evidence in locus.history if evidence.history_type == 'LSP' %}{% if loop.first %}
+                    add_navbar_element('History', 'history');
+                {% endif %}{% endfor %}
+            {% endif %}
+            {% for url in locus.urls if url.category == 'LSP' %}{% if loop.first %}
+                add_navbar_element('Resources', 'resources');
             {% endif %}{% endfor %}
-            add_navbar_element('Resources', 'resources');
             {% if locus.paragraph != None %}
                 add_navbar_element('Summary Paragraph', 'paragraph');
             {% endif %}
@@ -175,6 +195,7 @@
 
 <!-- Sequence
 ================================================== -->
+    {% if tabs['sequence_tab'] %}
     <section id="sequence" data-magellan-destination="sequence">
         <h2>Sequence</h2>
         <a href="/locus/{{ locus.sgdid }}/sequence" class="details-link">Sequence Details <i class="fa fa-chevron-circle-right"></i></a>
@@ -250,9 +271,11 @@
             </div>
         </div>
     </section>
+    {% endif %}
 
 <!-- Literature
 ================================================== -->
+    {% if tabs['literature_tab'] %}
     <section id="literature" data-magellan-destination="literature">
         <h2>Literature</h2>
         <a href="/locus/{{ locus.sgdid }}/literature" class="details-link">Literature Details <i class="fa fa-chevron-circle-right"></i></a>
@@ -265,9 +288,11 @@
             </div>
         </div>
     </section>
+    {% endif %}
 
 <!-- GO
 ================================================== -->
+    {% if tabs['go_tab'] %}
     <section id="go" data-magellan-destination="go">
         <h2>Gene Ontology</h2>
         <a href="/locus/{{ locus.sgdid }}/go" class="details-link">Gene Ontology Details <i class="fa fa-chevron-circle-right"></i></a>
@@ -313,9 +338,11 @@
             </div>
         </div>
     </section>
+    {% endif %}
 
 <!-- Phenotype
 ================================================== -->
+    {% if tabs['phenotype_tab'] %}
     <section id="phenotype" data-magellan-destination="phenotype">
         <h2>Phenotype</h2>
         <a href="/locus/{{ locus.sgdid }}/phenotype" class="details-link">Phenotype Details <i class="fa fa-chevron-circle-right"></i></a>
@@ -370,9 +397,11 @@
             </div>
         </div>
     </section>
+    {% endif %}
 
 <!-- Interaction
 ================================================== -->
+    {% if tabs['interaction_tab'] %}
     <section id="interaction" data-magellan-destination="interaction">
         <h2>Interaction</h2>
         <a href="/locus/{{ locus.sgdid }}/interaction" class="details-link">Interaction Details <i class="fa fa-chevron-circle-right"></i></a>
@@ -406,9 +435,11 @@
             </div>
         </div>
     </section>
+    {% endif %}
 
 <!-- Expression
 ================================================== -->
+    {% if tabs['expression_tab'] %}
     <section id="expression" data-magellan-destination="expression">
         <h2>Expression</h2>
         <a href="/locus/{{ locus.sgdid }}/expression" class="details-link">Expression Details <i class="fa fa-chevron-circle-right"></i></a>
@@ -424,9 +455,11 @@
             </div>
         </div>
     </section>
+    {% endif %}
 
 <!-- Regulation
 ================================================== -->
+    {% if tabs['regulation_tab'] %}
     <section id="regulation" data-magellan-destination="regulation">
         <h2>Regulation</h2>
         <a href="/locus/{{ locus.sgdid }}/regulation" class="details-link">Regulation Details <i class="fa fa-chevron-circle-right"></i></a>
@@ -451,9 +484,11 @@
             </div>
         </div>
     </section>
+    {% endif %}
 
 <!-- Protein
 ================================================== -->
+    {% if tabs['protein_tab'] %}
     <section id="protein" data-magellan-destination="protein">
         <h2>Protein</h2>
         <a href="/locus/{{ locus.sgdid }}/protein" class="details-link">Protein Details <i class="fa fa-chevron-circle-right"></i></a>
@@ -499,9 +534,11 @@
             </div>
         </div>
     </section>
+    {% endif %}
 
 <!-- History
 ================================================== -->
+    {% if tabs['history_tab'] %}
     {% for evidence in locus.history if evidence.history_type == 'LSP' %}{% if loop.first %}
     <section id="history" data-magellan-destination="history">
         <h2>History</h2>
@@ -527,9 +564,11 @@
         </div>
     </section>
     {% endif %}{% endfor %}
+    {% endif %}
 
 <!-- Resources
 ================================================== -->
+    {% for url in locus.urls if url.category == 'LSP' %}{% if loop.first %}
     <section id="resources" data-magellan-destination="resources">
         <h2>Resources</h2>
         <div class="panel">
@@ -540,6 +579,7 @@
             </p>
         </div>
     </section>
+    {% endif %}{% endfor %}
 
 <!-- Paragraph
 ================================================== -->
