@@ -82,8 +82,15 @@ module.exports = React.createClass({
 		_legendElements = _.sortBy(_legendElements, (d) => { return d.text; });
 		var legenNode = <Legend elements={_legendElements} />;
 
+		// calc max annotations for title text
+		var maxAnnotations = d3.max(this.props.data.nested.children, (d) => {
+			return d.data.annotation_count;
+		});
+
+
 		return (
 			<div>
+				<h2>{maxAnnotations.toLocaleString()} Total Gene Products Annotated</h2>
 				{legenNode}
 				<div className="row">
 					<div className="large-6 columns sgd-viz">

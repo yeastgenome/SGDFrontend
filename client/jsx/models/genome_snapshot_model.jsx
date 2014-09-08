@@ -196,6 +196,20 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 			assignToChildren(secondaryRelationships[i], _nestedData);
 		}
 
+		// add terms annoted to root
+		for (var i = _nestedData.children.length - 1; i >= 0; i--) {
+			var term = _nestedData.children[i];
+			term.children.push({
+				data: {
+					display_name: "annotated to root term",
+					format_name: "annotated_to_root_term",
+					link: term.data.link,
+					annotation_count: 0,
+					isRoot: true
+				}
+			});
+		}
+
 		// also put data into linear format for bar chart consumption
 		var _linearData = _.map(goTerms, (t) => {
 			return _.map(t.children, (c) => {

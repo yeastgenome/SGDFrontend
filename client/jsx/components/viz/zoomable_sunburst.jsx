@@ -98,7 +98,9 @@ module.exports = React.createClass({
 				.style({
 					cursor: (d) => { return d.depth < currentZoomDepth ? "zoom-out": "pointer"; },
 					"fill": (d, i) => {
-						if (currentZoomDepth || d.depth) {
+						if (d.data.isRoot) {
+							return d3.rgb(this.props.colorScale(getTopParent(d).data.format_name)).brighter(2);
+						} else if (currentZoomDepth || d.depth) {
 							return this.props.colorScale(getTopParent(d).data.format_name);
 						} else {
 							return "none";
@@ -122,7 +124,10 @@ module.exports = React.createClass({
 			// 	}
 			// 	return children;
 			// })
-			.value((d) => { return 1; })
+			.sort( (a, b) => {
+				return (b.data.display_name.toLowerCase() < a.data.display_name.toLowerCase()) ? 1 : -1;
+			})
+			.value( (d) => { return 1; })
 			// .value( (d) => { return d.forceValue ? d.forceValue: this.props.yValue(d.data); });
 
 
@@ -142,7 +147,9 @@ module.exports = React.createClass({
 			.attr("d", arc)
 			.style({
 				"fill": (d, i) => {
-					if (currentZoomDepth || d.depth) {
+					if (d.data.isRoot) {
+						return d3.rgb(this.props.colorScale(getTopParent(d).data.format_name)).brighter(2);
+					} else if (currentZoomDepth || d.depth) {
 						return this.props.colorScale(getTopParent(d).data.format_name);
 					} else {
 						return "none";
@@ -172,7 +179,7 @@ module.exports = React.createClass({
 
 	// respond to mouseover events from d3, update state for tooltip data
 	_updateTooltip: function (d) {
-		if (!d.data.annotation_count) {
+		if (typeof d.data.annotation_count === "undefined") {
 			this._clearTooltip();
 			return;
 		}
@@ -185,7 +192,7 @@ module.exports = React.createClass({
 
 		this.setState({
 			tooltipVisible: true,
-			tooltipText: d.data.display_name + " - " + d.data.annotation_count.toLocaleString(),
+			tooltipText: d.data.display_name,
 			tooltipTop: _top,
 			tooltipLeft: _left,
 			tooltipHref: d.data.link
