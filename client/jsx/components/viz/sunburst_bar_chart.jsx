@@ -80,7 +80,16 @@ module.exports = React.createClass({
 			};
 		});
 		_legendElements = _.sortBy(_legendElements, (d) => { return d.text; });
-		var legenNode = <Legend elements={_legendElements} />;
+		var legendNode = <Legend key="primaryLegend" elements={_legendElements} />;
+
+		// TEMP make up num annotated to root
+		var _secondLegendElements = _.map(_legendElements, (d) => {
+			return _.extend(_.clone(d), {
+				href: null,
+				text: "1,111 Annotated to Root"
+			});
+		});
+		var secondLegendNode =  <Legend key="secondaryLegend" elements={_secondLegendElements} />;
 
 		// calc max annotations for title text
 		var maxAnnotations = d3.max(this.props.data.nested.children, (d) => {
@@ -91,7 +100,10 @@ module.exports = React.createClass({
 		return (
 			<div>
 				<h2>{maxAnnotations.toLocaleString()} Total Gene Products Annotated</h2>
-				{legenNode}
+				{legendNode}
+				<div className="secondary-legend-container">
+					{secondLegendNode}
+				</div>
 				<div className="row">
 					<div className="large-6 columns sgd-viz">
 						<ZoomableSunburst data={this.props.data.nested} colorScale={_colorScale} yValue={_yValue}

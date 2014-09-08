@@ -155,11 +155,17 @@
 // GO snapshot sunburst bar chart
 .go-snapshot-target {
 	h2 {
-		margin-bottom: 0.5em;
+		margin-bottom: 1.25em;
 	}
 	.viz-legend {
-		margin-bottom: 2em;
+		margin-bottom: 0;
 		text-transform: capitalize;
+	}
+	.secondary-legend-container {
+		margin-bottom: 2em;
+		.legend-color {
+			visibility: hidden;
+		}
 	}
 
 	.legend-entry-container {

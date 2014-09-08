@@ -39,6 +39,9 @@ module.exports = React.createClass({
 
         var _buttonText = this.state.showChromosomes ?
             <span>Show by Genome&nbsp;<i className="fa fa-angle-up"></i></span> : <span>Show by Chromosome&nbsp;<i className="fa fa-angle-down"></i></span>;
+        var buttonNode = (<a onClick={this.toggleShowChromosomes} className="button small chromosome-toggle" role="button">
+            {_buttonText}
+        </a>);
 
         // init bar chart(s)
         var barNodes;
@@ -58,13 +61,9 @@ module.exports = React.createClass({
 
 		return (
     		<div className="genome-snapshot panel">
+                {this.state.showChromosomes ? buttonNode: null}
                 {barNodes}
-                <a
-                    onClick={this.toggleShowChromosomes} className="button small chromosome-toggle"
-                    role="button"
-                >
-                    {_buttonText}
-                </a>                
+                {buttonNode}
     		</div>
         );
 	},
