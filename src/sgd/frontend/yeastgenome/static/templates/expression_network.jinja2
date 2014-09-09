@@ -1,8 +1,10 @@
 {% extends "network.jinja2" %}
 
 {% block help %}
-    Click on a gene to go to its specific page within SGD; drag any of the genes around within the visualization
-    for easier viewing; click “Reset” to automatically redraw the diagram.
+    Click on a gene to go to its specific page within SGD; drag any of the gene objects around within the visualization
+    for easier viewing. Filter similar genes by adjusting the number of datasets in which their expression profiles are
+    highly correlated with the gene of interest by clicking anywhere on the slider bar or dragging the tab to the
+    desired filter number. Click “Reset” to automatically redraw the diagram.
 {% endblock %}
 
 {% block legend %}

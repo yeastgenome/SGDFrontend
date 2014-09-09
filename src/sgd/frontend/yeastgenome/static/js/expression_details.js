@@ -16,7 +16,7 @@ $(document).ready(function() {
   	});
 
   	$.getJSON(expression_graph_link, function(data) {
-  		if(data['nodes'].length > 1) {
+  		if(data != null && data['nodes'].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
             var max_value = data["min_coeff"] + Math.min(data["max_coeff"] - data["min_coeff"], 10);
             var slider = create_slider("slider", graph, data["min_coeff"], max_value, function slider_filter(new_cutoff) {return "node, edge[score >= " + (new_cutoff/10) + "]";}, max_value+1);
@@ -59,7 +59,8 @@ function create_expression_table(data) {
 
         set_up_header('expression_table', datatable.length, 'dataset', 'datasets', Object.keys(reference_ids).length, 'reference', 'references');
 
-        options["oLanguage"] = {"sEmptyTable": "No expression data for " + display_name};
+        options["oLanguage"] = {"sEmptyTable": "No expression data for " + display_name,
+                                'sSearch': 'Type a keyword (examples: “histone”, “stress”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “transcription factor” returns rows that contain both “transcription and “factor”. To remove the filter, simply delete the text from the box.'};
         options["aaData"] = datatable;
     }
 

@@ -3,9 +3,7 @@
  */
 
 function make_expression_ready_handler(chart, use_log, min_value, max_value) {
-    alert('here')
     function ready_handler() {
-        alert('ready');
         //Fix tooltips
         function tooltipHandler(e) {
                     var gs = $('#two_channel_expression_chart > div > div > svg > g');
