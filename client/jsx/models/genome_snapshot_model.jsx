@@ -218,7 +218,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 					return obj;
 				})
 				.sort( (a, b) => {
-					return (a.annotation_count < b.annotation_count) ? 1 : -1;
+					return (a.descendant_annotation_gene_count < b.descendant_annotation_gene_count) ? 1 : -1;
 				});
 		});
 
@@ -237,6 +237,6 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		// filter out id 176220 (overview) to just have an array of children
 		var filteredId = 176220;
 		var arr = _.filter(response.phenotype_slim_terms, (t) => { return t.id != filteredId });
-		arr = _.sortBy(arr, (p) => { return -p.annotation_count; });
+		arr = _.sortBy(arr, (p) => { return -p.descendant_annotation_gene_count; });
 		return arr;
 	}};

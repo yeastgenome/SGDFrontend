@@ -34,7 +34,7 @@ module.exports = React.createClass({
 
 		// bar chart vars
 		var _colorValue = (d) => { return d.top_level; };
-		var _yValue = (d) => { return d.annotation_count; };
+		var _yValue = (d) => { return d.descendant_annotation_gene_count; };
 		var _labelValue = (d) => { return d.display_name; };
 		var _opacity = this.state.opacity;
 		var _handleMouseOver = (d) => {
@@ -93,7 +93,7 @@ module.exports = React.createClass({
 
 		// calc max annotations for title text
 		var maxAnnotations = d3.max(this.props.data.nested.children, (d) => {
-			return d.data.annotation_count;
+			return d.data.descendant_annotation_gene_count;
 		});
 
 

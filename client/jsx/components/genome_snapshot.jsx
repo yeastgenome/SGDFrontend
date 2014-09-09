@@ -7,6 +7,7 @@ var d3 = require("d3");
 
 var BarChart = require("../components/viz/bar_chart.jsx");
 var Legend = require("../components/viz/legend.jsx");
+var StandaloneAxis = require("../components/viz/standalone_axis.jsx");
 
 module.exports = React.createClass({
 
@@ -56,7 +57,8 @@ module.exports = React.createClass({
             });
 
         } else {
-            barNodes = this._getBarChart(this.props.data.combined);
+            var _maxFeatures = d3.max(this.props.data.combined, (d) => { return d.value; })
+            barNodes = this._getBarChart(this.props.data.combined, _maxFeatures);
         }
 
 		return (
@@ -72,6 +74,7 @@ module.exports = React.createClass({
         var _colorScale = (d) => {
             return d.nestedValues ? "#1f77b4" :  "#DF8B93";
         };
+        var _labelRatio = 0.2;
 
         // init legend
         var totalOrfs = data[0].value;
@@ -86,10 +89,14 @@ module.exports = React.createClass({
 
         var barNode = (<BarChart
             data={data} yValue={ function (d) { return d.value; } }
-            labelValue={ function (d) { return d.name; } } labelRatio={0.2} colorScale={_colorScale}
+            labelValue={ function (d) { return d.name; } } labelRatio={_labelRatio} colorScale={_colorScale}
             hasTooltip={true} hasYAxis={false} maxY={maxY}
         />);
 
-        return [legendNode, barNode];
+        var axisNode = (<div style={{ height: 75, marginLeft: `${_labelRatio * 100}%` }}>
+            <StandaloneAxis maxValue={maxY} labelText="Features" />
+        </div>);
+
+        return [axisNode, legendNode, barNode];
     }
 });

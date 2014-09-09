@@ -46,7 +46,7 @@ snapshotView.render = function () {
 
 		var phenotypeData = nestedData.phenotypeData;
 		var _colorValue = (d) => { return "#DF8B93"; }
-		var _yValue = (d) => { return d.annotation_count; };
+		var _yValue = (d) => { return d.descendant_annotation_gene_count; };
 		var _labelValue = (d) => { return d.display_name; };
 
 		var barChart = (
