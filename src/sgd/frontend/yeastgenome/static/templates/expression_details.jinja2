@@ -82,7 +82,19 @@
 ================================================== -->
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
-                <h2>Annotations <span id="expression_table_header" class="round secondary label"></span></h2>
+                <h2>Annotations
+                    <a href="#" data-dropdown="annotations_help"><i class="fa fa-info-circle"></i></a>
+
+                    <p id="annotations_help" class="f-dropdown content medium" data-dropdown-content>
+                        Datasets are used to populate the expression analysis tool SPELL and may contain data for more
+                        than one unique experimental condition. All data is log2 transformed and normalized, and the
+                        files are provided in PCL format. Short descriptions of the experimental focus are provided, as
+                        are categories, assigned based on the area(s) of biology investigated and used in SPELL to group
+                        and filter like data. The number of unique experimental conditions are indicated and all
+                        datasets are referenced.
+                    </p>
+                    <span id="expression_table_header" class="round secondary label"></span>
+                </h2>
                 <div class="panel">
                     <!-- Includes expression_table into template -->
                     {% set table_id = "expression_table" %}
