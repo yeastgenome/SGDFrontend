@@ -35,6 +35,8 @@
 
 .sgd-viz-filter-message {
 	margin-top: 1em;
+	margin-bottom: 0;
+	font-size: 14px;
 }
 
 
@@ -99,6 +101,7 @@
 	text-align: center;
 	margin-bottom: 0;
 	font-size: 14px;
+	height: 1em;
 }
 
 .axis {
@@ -165,7 +168,7 @@
 	.viz-legend {
 		margin-bottom: 0;
 		text-transform: capitalize;
-		font-size: 16px;
+		font-size: 14px;
 	}
 	.secondary-legend-container {
 		margin-bottom: 2em;

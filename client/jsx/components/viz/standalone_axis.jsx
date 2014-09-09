@@ -25,10 +25,11 @@ module.exports = React.createClass({
 	render: function () {
 		var labelNode = this.props.labelText ? <p className="axis-label">{this.props.labelText}</p> : null;
 
+		var _height = this.props.gridTicks ? "100%" : 32;
 		var _klass = `standalone-axis ${this.props.gridTicks ? "grid-ticks" : ""}`;
 		return (<div className={_klass} style={{ position: "relative" }}>
 			{labelNode}
-			<svg style={{ width: "100%", marginLeft: -5 }}></svg>
+			<svg preserveAspectRatio="none" style={{ width: "100%", height: _height, marginLeft: -5 }}></svg>
 		</div>);
 	},
 
@@ -76,7 +77,7 @@ module.exports = React.createClass({
 				class: "axis",
 				transform: _translate
 			});
-		axis.transition().duration(500)
+		axis
 			.attr({ transform: _translate })
 			.call(axisFn);
 	}

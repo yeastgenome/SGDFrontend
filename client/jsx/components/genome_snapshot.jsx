@@ -52,7 +52,7 @@ module.exports = React.createClass({
             });
 
             barNodes = _.map(this.props.data.chromosomes, (c) => {
-                var chromosomeLabelNode = <h3 className="chromosome-label-text">{c.display_name}&nbsp;<a href={c.link}>Details</a></h3>;
+                var chromosomeLabelNode = <h3 className="chromosome-label-text">{c.display_name}&nbsp;-&nbsp;<a href={c.link}>Details</a></h3>;
                 return [chromosomeLabelNode, this._getBarChart(c.features, _maxFeatures)];
             });
 
@@ -93,7 +93,7 @@ module.exports = React.createClass({
             hasTooltip={true} hasYAxis={false} maxY={maxY}
         />);
 
-        var axisNode = (<div style={{ height: 75, marginLeft: `${_labelRatio * 100}%` }}>
+        var axisNode = (<div style={{ height: 53, marginLeft: `${_labelRatio * 100}%` }}>
             <StandaloneAxis maxValue={maxY} labelText="Features" />
         </div>);
 

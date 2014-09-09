@@ -113,9 +113,6 @@ module.exports = React.createClass({
 			);
 		});
 
-		// add unfiltering message if the filter was used
-		var filterMessageNode = hasFilter ? <p className="sgd-viz-filter-message">Some values have been hidden.  <a onClick={this._clearFilter}>Show All</a></p> : null;
-
 		// create y axis, if hasYaxis
 		var yAxis = null;
 		if (props.hasYAxis) {
@@ -135,7 +132,7 @@ module.exports = React.createClass({
 					{tooltipNode}
 					{bars}
 				</div>
-				{filterMessageNode}
+				{this._getFilterMessageNode()}
 			</div>
 		);
 	},
@@ -226,7 +223,20 @@ module.exports = React.createClass({
 		this.setState({ widthScale: _scale });
 	},
 
-	_clearFilter: function () {
-		this.setState({ filterIsApplied: false });
+	_getFilterMessageNode: function () {
+		var _toggleFilter = () => {
+			this.setState({
+				filterIsApplied: !this.state.filterIsApplied
+			});
+		};
+
+		var messageNode = null;
+		if (this.props.filter) {
+			messageNode = this.state.filterIsApplied ?
+				 <p className="sgd-viz-filter-message">Some values have been hidden.  <a onClick={_toggleFilter}>Show All</a></p> :
+				 <p className="sgd-viz-filter-message">All values are being shown.  <a onClick={_toggleFilter}>Reset Filter</a></p>;
+		}
+
+		return messageNode;
 	}
 });

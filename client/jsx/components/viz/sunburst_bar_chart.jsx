@@ -96,7 +96,6 @@ module.exports = React.createClass({
 			return d.data.descendant_annotation_gene_count;
 		});
 
-
 		return (
 			<div>
 				<h2>{maxAnnotations.toLocaleString()} Total Gene Products Annotated</h2>
