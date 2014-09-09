@@ -114,6 +114,8 @@ $(document).ready(function() {
         document.getElementById("summary_paragraph").innerHTML = paragraph['text'];
         set_up_references(paragraph['references'], "summary_paragraph_reference_list");
     }
+
+    set_up_history_table();
 });
 
 function strand_to_direction(strand) {
@@ -385,6 +387,16 @@ function draw_sublabel_chart(chart_id, data) {
     options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
 
     chart.draw(dataTable, options);
+}
+
+function set_up_history_table() {
+    var options = {};
+    options["bPaginate"] = true;
+    options["aaSorting"] = [[0, "asc"]];
+    options["aoColumns"] = [{'sWidth': '100px'},, null, null]
+    options["oLanguage"] = {"sEmptyTable": "No history for " + display_name + '.'};
+
+    return create_table("history_table", options);
 }
 
 function create_subfeature_table(data) {

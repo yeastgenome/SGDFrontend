@@ -188,7 +188,19 @@ $(document).ready(function() {
         draw_label_chart('reference_label_chart', 'S288C');
         draw_label_chart('alternative_label_chart', $("#alternative_strain_selection").val());
     });
+
+    set_up_history_table();
 });
+
+function set_up_history_table() {
+    var options = {};
+    options["bPaginate"] = true;
+    options["aaSorting"] = [[0, "asc"]];
+    options["aoColumns"] = [null, null, null]
+    options["oLanguage"] = {"sEmptyTable": "No history for " + display_name + '.'};
+
+    return create_table("history_table", options);
+}
 
 function pad_number(number, num_digits) {
     number = '' + number;

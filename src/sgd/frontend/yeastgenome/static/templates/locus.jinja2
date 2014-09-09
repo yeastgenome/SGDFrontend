@@ -548,7 +548,7 @@
     <section id="history" data-magellan-destination="history">
         <h2>History</h2>
         <div class="panel">
-            <table class="table table-striped table-bordered table-condensed" width="100%">
+            <table id="history_table" class="table table-striped table-bordered table-condensed" width="100%">
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -561,7 +561,10 @@
                         <tr>
                             <td>{{ evidence.date_created }}</td>
                             <td>{{ evidence.note }}</td>
-                            <td><a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a></td>
+                            <td>{% for reference in evidence.references %}
+                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
