@@ -188,6 +188,11 @@
                     {% endfor %}
                     {% if not loop.last %},{% else %}</dd>{% endif %}
                 {% endfor %}
+
+                {% if locus.genetic_position != None %}
+                    <dt>Genetic Position</dt>
+                    <dd>{{ locus.genetic_position }}</dd>
+                {% endif %}
             </dl>
 
         </div>
