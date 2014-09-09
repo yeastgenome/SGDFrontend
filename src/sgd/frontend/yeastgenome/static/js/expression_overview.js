@@ -4,27 +4,26 @@
 
 function make_expression_ready_handler(chart, use_log, min_value, max_value) {
     function ready_handler() {
-        //Fix tooltips
-        function tooltipHandler(e) {
-                    var gs = $('#two_channel_expression_chart > div > div > svg > g');
-                    $(gs[2]).show();
+                //Fix tooltips
+                function tooltipHandler(e) {
                     var tooltips = $('#two_channel_expression_chart > div > div > svg > g > g > g > text');
                     for(var i=0; i < tooltips.length; i++) {
                         var tooltip = tooltips[i];
                         if(tooltip.innerHTML == 'Items:') {
                             $(tooltips[i]).html('Conditions: ');
                             $(tooltips[i+1]).attr('x', parseInt($(tooltips[i]).attr('x'))+70);
-                            $(tooltips[i+1]).html('' + Math.round(Math.pow(10, $(tooltips[i+1]).html())));
+                            if(use_log) {
+                                $(tooltips[i+1]).html('' + Math.round(Math.pow(10, $(tooltips[i+1]).html())));
+                            }
                         }
                     }
                 }
 
-       if(use_log) {
-            google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
-       }
+                google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
 
-       $("text:contains('-5.5')").html(min_value.toFixed(1));
-       $("text:contains('5.5')").html(max_value.toFixed(1));
+               $("text:contains('-5.5')").html(min_value.toFixed(1));
+               $("text:contains('5.5')").html(max_value.toFixed(1));
+
     }
     return ready_handler;
 }
