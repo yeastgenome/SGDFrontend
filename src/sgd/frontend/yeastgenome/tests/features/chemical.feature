@@ -5,7 +5,7 @@ Feature: Chemical
         When I visit "/chemical/?/overview" for "benomyl"
         And I should see an element with id "center_title"
         And I should see an element with id "sidebar"
-        And I should see an element with id "summary"
+        And I should see an element with id "overview"
         And I should see an element with id "phenotype"
         And the table with id "phenotype_table" should have rows in it
 

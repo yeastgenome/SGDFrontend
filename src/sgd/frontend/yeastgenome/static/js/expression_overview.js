@@ -2,7 +2,14 @@
  * Created by kpaskov on 6/11/14.
  */
 
-google.load("visualization", "1", {packages:["corechart"]});
+function make_expression_ready_handler(chart, use_log, min_value, max_value) {
+    function ready_handler() {
+        $("text:contains('-5.5')").first().html(min_value.toFixed(1));
+        $("text:contains('5.5')").first().html(max_value.toFixed(1));
+    }
+    return ready_handler;
+}
+
 function create_expression_chart(all_data, min_value, max_value) {
     if(all_data != null) {
         var capped_min = Math.max(-5.5, min_value);
@@ -66,20 +73,7 @@ function create_expression_chart(all_data, min_value, max_value) {
         }
 
         function draw_chart(use_log) {
-            function tooltipHandler(e) {
-                    var gs = $('#two_channel_expression_chart > div > div > svg > g');
-                    $(gs[2]).show();
-                    var tooltips = $('#two_channel_expression_chart > div > div > svg > g > g > g > text');
-                    for(var i=0; i < tooltips.length; i++) {
-                        var tooltip = tooltips[i];
-                        if(tooltip.innerHTML == 'Items:') {
-                            $(tooltips[i+1]).html('' + Math.round(Math.pow(10, $(tooltips[i+1]).html())));
-                        }
-                    }
-                }
-
-            var chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart'));
-            chart.draw(google.visualization.arrayToDataTable(datatable2), {
+            var options = {
                                         legend: { position: 'none' },
                                         hAxis: {title: 'log2 ratio', viewWindow: {min: -5.5, max: 5.5}},
                                         vAxis: {title: 'Number of conditions', logScale: use_log},
@@ -87,8 +81,13 @@ function create_expression_chart(all_data, min_value, max_value) {
                                         colors: colors,
                                         histogram: {bucketSize:.5, hideBucketItems:true},
                                         isStacked: true,
-                                        titlePosition: 'none'
-                                    });
+                                        titlePosition: 'none',
+                                        tooltip: {trigger: 'none'}
+
+                                    };
+            var chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart'));
+            google.visualization.events.addListener(chart, 'ready', make_expression_ready_handler(chart, use_log, min_value, max_value));
+            chart.draw(google.visualization.arrayToDataTable(datatable2), options);
 
             // The select handler. Call the chart's getSelection() method
             function selectHandler() {
@@ -124,21 +123,6 @@ function create_expression_chart(all_data, min_value, max_value) {
             // Listen for the 'select' event, and call my function selectHandler() when
             // the user selects something on the chart.
             google.visualization.events.addListener(chart, 'select', selectHandler);
-
-            //Fix tooltips
-            if(use_log) {
-                google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
-            }
-
-            var labels = $('#two_channel_expression_chart > div > div > svg > g > g > g > text');
-            for(var i=0; i < labels.length; i++) {
-                if(labels[i].innerHTML == '-5.5') {
-                    labels[i].innerHTML = min_value.toFixed(1);
-                }
-                else if(labels[i].innerHTML == '5.5') {
-                    labels[i].innerHTML = max_value.toFixed(1);
-                }
-            }
         }
         draw_chart(true);
 

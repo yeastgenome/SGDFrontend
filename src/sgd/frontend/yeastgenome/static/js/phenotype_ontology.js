@@ -14,6 +14,10 @@ $(document).ready(function() {
 
 			e.stopPropagation();
 		});
+
+        $("a:contains('resistance to chemicals')").prev().click();
+        $("a:contains('chemical compound accumulation')").prev().click();
+        $("a:contains('chemical compound excretion')").prev().click();
 	});
 });
 

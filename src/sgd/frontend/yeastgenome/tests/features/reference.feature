@@ -6,11 +6,12 @@ Feature: Reference
         And I should see an element with id "title"
         And I should see an element with id "sidebar"
 
-        And I should see an element with id "summary"
+        And I should see an element with id "overview"
         And I should see an element with id "go"
         And I should see an element with id "phenotype"
         And I should see an element with id "interaction"
         And I should see an element with id "regulation"
+        And I should see an element with id "expression"
 
         And the table with id "go_table" should have rows in it
         And the table with id "phenotype_table" should have rows in it
