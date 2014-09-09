@@ -179,7 +179,7 @@ module.exports = React.createClass({
 
 	// respond to mouseover events from d3, update state for tooltip data
 	_updateTooltip: function (d) {
-		if (typeof d.data.annotation_count === "undefined") {
+		if (typeof this.props.yValue(d.data) === "undefined") {
 			this._clearTooltip();
 			return;
 		}

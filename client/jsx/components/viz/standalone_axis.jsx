@@ -23,7 +23,7 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		var labelNode = this.props.labelText ? <p className="y-axis-label">{this.props.labelText}</p> : null;
+		var labelNode = this.props.labelText ? <p className="axis-label">{this.props.labelText}</p> : null;
 
 		var _klass = `standalone-axis ${this.props.gridTicks ? "grid-ticks" : ""}`;
 		return (<div className={_klass} style={{ position: "relative" }}>
@@ -70,10 +70,10 @@ module.exports = React.createClass({
 		var svg = d3.select(this.getDOMNode()).select("svg");
 		
 		var _translate = `translate(5, 30)`;
-		var axis = svg.selectAll("g.y-axis").data([null]);
+		var axis = svg.selectAll("g.axis").data([null]);
 		axis.enter().append("g")
 			.attr({
-				class: "y-axis",
+				class: "axis",
 				transform: _translate
 			});
 		axis.transition().duration(500)

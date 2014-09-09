@@ -120,7 +120,7 @@ module.exports = React.createClass({
 		var yAxis = null;
 		if (props.hasYAxis) {
 			var _yAxisStyle = { left: `${props.labelRatio*100}%`, width: `${(1-props.labelRatio)*100}%` };
-			var yAxisLabel = props.yAxisLabel ? (<p className="y-axis-label" style={_yAxisStyle}>{props.yAxisLabel}</p>) : null;
+			var yAxisLabel = props.yAxisLabel ? (<p className="axis-label" style={_yAxisStyle}>{props.yAxisLabel}</p>) : null;
 			yAxis = [yAxisLabel, <svg style={{ width: "100%", height: 40, display: "block" }}></svg>];
 		}
 
@@ -170,10 +170,10 @@ module.exports = React.createClass({
 		var svg = d3.select(this.getDOMNode()).select("svg");
 		
 		var _translate = `translate(${this.getDOMNode().getBoundingClientRect().width * this.props.labelRatio - 1}, 30)`;
-		var yAxis = svg.selectAll("g.y-axis").data([null]);
+		var yAxis = svg.selectAll("g.axis").data([null]);
 		yAxis.enter().append("g")
 			.attr({
-				class: "y-axis",
+				class: "axis",
 				transform: _translate
 			});
 		yAxis.transition().duration(500)
