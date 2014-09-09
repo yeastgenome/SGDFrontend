@@ -393,7 +393,7 @@ function set_up_history_table() {
     var options = {};
     options["bPaginate"] = true;
     options["aaSorting"] = [[0, "asc"]];
-    options["aoColumns"] = [{'sWidth': '100px'},, null, null]
+    options["aoColumns"] = [null, null, null]
     options["oLanguage"] = {"sEmptyTable": "No history for " + display_name + '.'};
 
     return create_table("history_table", options);
