@@ -5,7 +5,7 @@ Feature: Go
         When I visit "/go/?/overview" for "GO:0043234"
         And I should see an element with id "center_title"
         And I should see an element with id "sidebar"
-        And I should see an element with id "summary"
+        And I should see an element with id "overview"
         And I should see an element with id "ontology"
         And I should see an element with id "annotations"
         And the table with id "go_table" should have rows in it

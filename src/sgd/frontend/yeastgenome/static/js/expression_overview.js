@@ -4,25 +4,8 @@
 
 function make_expression_ready_handler(chart, use_log, min_value, max_value) {
     function ready_handler() {
-                //Fix tooltips
-                function tooltipHandler(e) {
-                    var tooltip = $("text:contains('Items:')").first();
-                    try {
-                        tooltip.html('Conds:');
-                        if(use_log) {
-                            tooltip.next().html('' + Math.round(Math.pow(10, tooltip.next().html())));
-                        }
-                    }
-                    catch(err) {
-                        $($('#two_channel_expression_chart > div > div > svg > g')[2]).hide();
-                    }
-                }
-
-                google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
-
-               $("text:contains('-5.5')").first().html(min_value.toFixed(1));
-               $("text:contains('5.5')").first().html(max_value.toFixed(1));
-
+        $("text:contains('-5.5')").first().html(min_value.toFixed(1));
+        $("text:contains('5.5')").first().html(max_value.toFixed(1));
     }
     return ready_handler;
 }
@@ -98,7 +81,8 @@ function create_expression_chart(all_data, min_value, max_value) {
                                         colors: colors,
                                         histogram: {bucketSize:.5, hideBucketItems:true},
                                         isStacked: true,
-                                        titlePosition: 'none'
+                                        titlePosition: 'none',
+                                        tooltip: {trigger: 'none'}
 
                                     };
             var chart = new google.visualization.Histogram(document.getElementById('two_channel_expression_chart'));
