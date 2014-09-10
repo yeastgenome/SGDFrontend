@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-  	$.getJSON(go_details_link, function(data) {
+  	get_json(go_details_link, function(data) {
   	    var mc_bp_go_table = create_go_table("mc_bp", "No manually curated biological process terms for " + display_name, function(x) {return x["annotation_type"] == "manually curated" && x["go"]["go_aspect"] == "biological process"}, data);
         create_download_button("mc_bp_go_table_download", mc_bp_go_table, download_table_link, mc_bp_download_table_filename);
 
@@ -58,7 +58,7 @@ $(document).ready(function() {
         }
   	});
 
-  	$.getJSON(go_graph_link, function(data) {
+  	get_json(go_graph_link, function(data) {
         if(data['nodes'].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data);
             var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);

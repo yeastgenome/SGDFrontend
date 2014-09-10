@@ -9,7 +9,7 @@ $(document).ready(function() {
 
     if(target_count > 0) {
         $("#domain_table_analyze").hide();
-		$.getJSON(protein_domains_link, function(data) {
+		get_json(protein_domains_link, function(data) {
             var domain_table = create_domain_table(data);
             if(domain_table != null) {
                 create_download_button("domain_table_download", domain_table, download_table_link, domains_table_filename);
@@ -18,19 +18,19 @@ $(document).ready(function() {
     }
 
     if(target_count > 0) {
-	  	$.getJSON(binding_site_details_link, function(data) {
+	  	get_json(binding_site_details_link, function(data) {
 	        create_binding_site_table(data);
 	    });
 	}
 
-	$.getJSON(regulation_details_link, function(data) {
+	get_json(regulation_details_link, function(data) {
   		if(target_count > 0) {
   		    var target_table = create_target_table(data);
   		    create_analyze_button("target_table_analyze", target_table, analyze_link, analyze_filename + " targets", true);
   	        create_analyze_button("analyze_targets", target_table, analyze_link, analyze_filename + " targets", false);
   	        create_download_button("target_table_download", target_table, download_table_link, targets_table_filename);
 
-  	        $.getJSON(regulation_target_enrichment_link, function(enrichment_data) {
+  	        get_json(regulation_target_enrichment_link, function(enrichment_data) {
                 var enrichment_table = create_enrichment_table("enrichment_table", target_table, enrichment_data);
                 create_download_button("enrichment_table_download", enrichment_table, download_table_link, enrichment_table_filename);
   	        });
@@ -47,7 +47,7 @@ $(document).ready(function() {
   	    create_download_button("regulator_table_download", regulator_table, download_table_link, regulators_table_filename);
   	});
 
-    $.getJSON(regulation_graph_link, function(data) {
+    get_json(regulation_graph_link, function(data) {
         if(data != null && data["nodes"].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
             create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_regulation_graph')

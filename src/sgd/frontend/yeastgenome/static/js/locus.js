@@ -5,7 +5,7 @@ $(document).ready(function() {
 
     $("#subfeature_table_analyze").hide();
     $("#subfeature_table_download").hide();
-  	$.getJSON(sequence_details_link, function(data) {
+  	get_json(sequence_details_link, function(data) {
         var dna_data = data['genomic_dna'];
         var strain_selection = $("#strain_selection");
         var strain_to_genomic_data = {};
@@ -101,12 +101,12 @@ $(document).ready(function() {
         }
     });
 
-    $.getJSON(neighbor_sequence_details_link, function(data) {
+    get_json(neighbor_sequence_details_link, function(data) {
         strain_to_neighbors = data;
         draw_label_chart('label_chart', $("#strain_selection").val());
     });
 
-    $.getJSON(expression_details_link, function(data) {
+    get_json(expression_details_link, function(data) {
         create_expression_chart(data['overview'], data['min_value'], data['max_value']);
   	});
 

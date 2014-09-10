@@ -1,12 +1,12 @@
 
 $(document).ready(function() {
-  	$.getJSON(phenotype_details_link, function(data) {
+  	get_json(phenotype_details_link, function(data) {
   	    var phenotype_table = create_phenotype_table(data);
         create_download_button("phenotype_table_download", phenotype_table, download_table_link, download_table_filename);
         $("#phenotype_table_analyze").hide();
   	});
 
-  	$.getJSON(phenotype_graph_link, function(data) {
+  	get_json(phenotype_graph_link, function(data) {
   		if(data['nodes'].length > 1) {
   			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
   			var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);

@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-	$.getJSON(phenotype_details_link, function(data) {
+	get_json(phenotype_details_link, function(data) {
 	  	var phenotype_table = create_phenotype_table(data);
 	  	create_analyze_button("phenotype_table_analyze", phenotype_table, analyze_link, analyze_filename, true);
   	    create_download_button("phenotype_table_download", phenotype_table, download_table_link, download_filename);

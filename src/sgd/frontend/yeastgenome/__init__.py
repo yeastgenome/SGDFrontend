@@ -11,6 +11,7 @@ from pyramid.renderers import JSONP, render
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from src.sgd.frontend.frontend_interface import FrontendInterface
+from src.sgd.frontend.yeastgenome.backendless.load_data_from_file import get_data
 
 class YeastgenomeFrontend(FrontendInterface):
     def __init__(self, backend_url, heritage_url, log_directory):
@@ -28,10 +29,14 @@ class YeastgenomeFrontend(FrontendInterface):
     
     def response_wrapper(self, method_name, request):
         request_id = str(uuid.uuid4())
+        callback = None if 'callback' not in request.GET else request.GET['callback']
         self.log.info(request_id + ' ' + method_name + ('' if 'identifier' not in request.matchdict else ' ' + request.matchdict['identifier']))
         def f(data):
             self.log.info(request_id + ' end')
-            return data
+            if callback is not None:
+                return Response(body="%s(%s)" % (callback, data), content_type='application/json')
+            else:
+                return data
         return f
     
     def interaction_details(self, bioent_repr):
@@ -706,6 +711,9 @@ class YeastgenomeFrontend(FrontendInterface):
     def enrichment(self, bioent_ids):
         enrichment_results = get_json(self.backend_url + '/go_enrichment', data={'bioent_ids': bioent_ids})
         return enrichment_results
+
+    def backendless(self, url_repr):
+        return json.dumps(get_data(url_repr))
     
 def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     chosen_frontend = YeastgenomeFrontend(backend_url, heritage_url, log_directory)
@@ -723,12 +731,15 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     return chosen_frontend, config
 
 def get_json(url, data=None):
-    if data is not None:
-        headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
-        r = requests.post(url, data=json.dumps(data), headers=headers)
+    if url.startswith('backendless'):
+        return get_data(url[11:])
     else:
-        r = requests.get(url)
-    return r.json()
+        if data is not None:
+            headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
+            r = requests.post(url, data=json.dumps(data), headers=headers)
+        else:
+            r = requests.get(url)
+        return r.json()
 
 def set_up_logging(log_directory, label):
     logging.basicConfig(format='%(asctime)s %(name)s: %(message)s', level=logging.ERROR)

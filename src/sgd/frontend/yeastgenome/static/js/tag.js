@@ -4,7 +4,7 @@ $(document).ready(function() {
     var expression_table = create_expression_table(bioitems);
     create_download_button("expression_table_download", expression_table, download_table_link, display_name + '_datasets');
 
-    $.getJSON(all_tags_link, function(data) {
+    get_json(all_tags_link, function(data) {
         var tag_links = [];
         for (var i=0; i < data.length; i++) {
             if(data[i]['display_name'] != display_name) {

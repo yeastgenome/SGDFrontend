@@ -14,7 +14,7 @@ var other_contig = '';
 $(document).ready(function() {
 
     $("#subfeature_table_analyze").hide();
-  	$.getJSON(sequence_details_link, function(data) {
+  	get_json(sequence_details_link, function(data) {
         var dna_data = data['genomic_dna'];
         var alternative_selection = $("#alternative_strain_selection");
         var other_selection = $("#other_strain_selection");
@@ -183,7 +183,7 @@ $(document).ready(function() {
         }
     });
 
-    $.getJSON(neighbor_sequence_details_link, function(data) {
+    get_json(neighbor_sequence_details_link, function(data) {
         strain_to_neighbors = data;
         draw_label_chart('reference_label_chart', 'S288C');
         draw_label_chart('alternative_label_chart', $("#alternative_strain_selection").val());

@@ -1,3 +1,11 @@
+function get_json(url, f) {
+    if(url.indexOf('backendless') == 0) {
+        url = 'http://localhost:6545/backendless/' + url.slice(11, url.length).split('/').join('.');
+    }
+
+    $.getJSON(url, f);
+}
+
 http://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit
 function post_to_url(path, params) {
     // The rest of this code assumes you are not using a library.

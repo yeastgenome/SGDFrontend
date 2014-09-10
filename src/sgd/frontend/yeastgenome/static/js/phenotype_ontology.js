@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-  	$.getJSON(ontology_graph_link, function(data) {
+  	get_json(ontology_graph_link, function(data) {
   		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
 
         $("#ontology").show();

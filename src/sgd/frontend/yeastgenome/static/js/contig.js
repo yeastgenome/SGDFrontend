@@ -6,7 +6,7 @@ $(document).ready(function() {
 		download_sequence(residues, download_sequence_link, format_name, format_name);
 	});
 
-  	$.getJSON(sequence_details_link, function(data) {
+  	get_json(sequence_details_link, function(data) {
         var feature_table = create_feature_table(data['genomic_dna']);
         create_download_button("chromosomal_coord_table_download", feature_table, download_table_link, display_name + '_features');
         create_analyze_button("chromosomal_coord_table_analyze", feature_table, analyze_link, "<a href='" + link + "' class='gene_name'>" + display_name + "</a> genes", true);

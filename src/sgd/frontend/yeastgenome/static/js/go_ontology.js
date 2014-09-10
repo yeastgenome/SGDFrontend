@@ -1,12 +1,12 @@
 
 $(document).ready(function() {
 
-	$.getJSON(ontology_graph_link, function(data) {
+	get_json(ontology_graph_link, function(data) {
   		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
         create_cy_download_button(cy, "cy_download", download_network_link, display_name + '_go_ontology_graph')
 	});
 
-    $.getJSON(go_details_link, function(data) {
+    get_json(go_details_link, function(data) {
 	  	var go_table = create_go_table(data);
 	  	create_analyze_button("go_table_analyze", go_table, analyze_link, analyze_filename, true);
   	    create_download_button("go_table_download", go_table, download_table_link, download_filename);

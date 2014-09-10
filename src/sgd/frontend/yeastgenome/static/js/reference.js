@@ -10,7 +10,7 @@ $(document).ready(function() {
         hide_section('expression');
     }
 
-    $.getJSON(literature_details_link, function(data) {
+    get_json(literature_details_link, function(data) {
         data.sort(function(a, b) {return a['locus']['display_name'] > b['locus']['display_name']});
 
         create_literature_list('primary', data, 'Primary Literature')
@@ -21,7 +21,7 @@ $(document).ready(function() {
     $("#download_citation").click(function() {post_to_url(download_link, {"display_name":display_name.replace(' ', '_') + '_citation.nbib', "reference_ids": [reference_id]});})
 
     if(counts['interaction'] > 0) {
-        $.getJSON(interaction_details_link, function(data) {
+        get_json(interaction_details_link, function(data) {
             var interaction_table = create_interaction_table(data);
             create_download_button("interaction_table_download", interaction_table, download_table_link, interaction_download_filename);
             create_analyze_button("interaction_table_analyze", interaction_table, analyze_link, interaction_analyze_filename, true);
@@ -32,7 +32,7 @@ $(document).ready(function() {
     }
 
     if(counts['go'] > 0) {
-        $.getJSON(go_details_link, function(data) {
+        get_json(go_details_link, function(data) {
             var go_table = create_go_table(data);
             create_download_button("go_table_download", go_table, download_table_link, go_download_filename);
             create_analyze_button("go_table_analyze", go_table, analyze_link, go_analyze_filename, true);
@@ -43,7 +43,7 @@ $(document).ready(function() {
     }
 
     if(counts['phenotype'] > 0) {
-        $.getJSON(phenotype_details_link, function(data) {
+        get_json(phenotype_details_link, function(data) {
             var phenotype_table = create_phenotype_table(data);
             create_download_button("phenotype_table_download", phenotype_table, download_table_link, phenotype_download_filename);
             create_analyze_button("phenotype_table_analyze", phenotype_table, analyze_link, phenotype_analyze_filename, true);
@@ -54,7 +54,7 @@ $(document).ready(function() {
     }
 
     if(counts["regulation"] > 0) {
-        $.getJSON(regulation_details_link, function(data) {
+        get_json(regulation_details_link, function(data) {
             var regulation_table = create_regulation_table(data);
             create_download_button("regulation_table_download", regulation_table, download_table_link, regulation_download_filename);
             create_analyze_button("regulation_table_analyze", regulation_table, analyze_link, regulation_analyze_filename, true);

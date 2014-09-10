@@ -2,7 +2,7 @@
 $(document).ready(function() {
     $("#expression_table_analyze").hide();
 
-  	$.getJSON(expression_details_link, function(data) {
+  	get_json(expression_details_link, function(data) {
         if(data['datasets'].length > 0) {
             create_expression_chart(data['overview'], data['min_value'], data['max_value']);
         }
@@ -15,7 +15,7 @@ $(document).ready(function() {
         $("#expression_table_analyze").hide();
   	});
 
-  	$.getJSON(expression_graph_link, function(data) {
+  	get_json(expression_graph_link, function(data) {
   		if(data != null && data['nodes'].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
             var max_value = data["min_coeff"] + Math.min(data["max_coeff"] - data["min_coeff"], 10);

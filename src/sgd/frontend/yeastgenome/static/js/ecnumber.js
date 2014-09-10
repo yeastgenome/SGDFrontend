@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-	$.getJSON(ecnumber_details_link, function(data) {
+	get_json(ecnumber_details_link, function(data) {
 	  	var annotation_table = create_ecnumber_table(data);
 	  	create_analyze_button("gene_list_table_analyze", annotation_table, analyze_link, analyze_filename, true);
   	    create_download_button("gene_list_table_download", annotation_table, download_table_link, download_filename);

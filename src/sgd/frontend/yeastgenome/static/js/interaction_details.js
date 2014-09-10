@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-    $.getJSON(interaction_details_link, function(data) {
+    get_json(interaction_details_link, function(data) {
         var interaction_table = create_interaction_table(data);
         create_download_button("interaction_table_download", interaction_table, download_table_link, evidence_table_filename);
         create_analyze_button("interaction_table_analyze", interaction_table, analyze_link, analyze_filename + " interactors", true);
@@ -18,7 +18,7 @@ $(document).ready(function() {
   	    }
 	});
 
-	$.getJSON(interaction_graph_link, function(data) {
+	get_json(interaction_graph_link, function(data) {
 	    if(data != null && data["nodes"].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
             var slider = create_slider("slider", graph, data["min_evidence_cutoff"], data["max_evidence_cutoff"], function slider_filter(new_cutoff) {return "node, edge[evidence >= " + new_cutoff + "]";});

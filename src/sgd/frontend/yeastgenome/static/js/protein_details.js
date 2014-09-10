@@ -31,7 +31,7 @@ $(document).ready(function() {
     $("#atomic_table_analyze").hide();
     $("#atomic_table_download").hide();
 
-    $.getJSON(sequence_details_link, function(sequence_data) {
+    get_json(sequence_details_link, function(sequence_data) {
         var protein_data = sequence_data['protein'];
 
         var length = null;
@@ -106,13 +106,13 @@ $(document).ready(function() {
         });
 	});
 
-    $.getJSON(protein_phosphorylation_details_link, function(data) {
+    get_json(protein_phosphorylation_details_link, function(data) {
         phosphodata = data;
         create_phosphorylation_table(data);
         draw_phosphodata();
 	});
 
-    $.getJSON(ec_number_details_link, function(data) {
+    get_json(ec_number_details_link, function(data) {
         if(data.length > 0) {
             $("#protein_overview").append('<dt>EC Number</dt>');
 
@@ -127,7 +127,7 @@ $(document).ready(function() {
         }
 	});
 
-    $.getJSON(protein_experiment_details_link, function(data) {
+    get_json(protein_experiment_details_link, function(data) {
         if(data.length > 0) {
             var protein_experiment_table = create_protein_experiment_table(data);
             create_download_button("protein_experiment_table_download", protein_experiment_table, download_table_link, protein_experiment_table_filename);
