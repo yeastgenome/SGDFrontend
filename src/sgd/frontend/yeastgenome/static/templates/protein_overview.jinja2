@@ -80,4 +80,13 @@
         {% endif %}
         {% endfor %}
     </dd>
+
+    {% if locus.paralogs|length > 0 %}
+        <dt>Paralog</dt>
+        <dd>
+        {% for paralog in locus.paralogs %}
+            <a href="{{ paralog.link }}">{{ paralog.display_name }}</a>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+        </dd>
+    {% endif %}
 </dl>

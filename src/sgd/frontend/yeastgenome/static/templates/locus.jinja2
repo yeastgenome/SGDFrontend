@@ -193,6 +193,15 @@
                     <dt>Genetic Position</dt>
                     <dd>{{ locus.genetic_position }}</dd>
                 {% endif %}
+
+                {% if locus.paralogs|length > 0 %}
+                    <dt>Paralog</dt>
+                    <dd>
+                    {% for paralog in locus.paralogs %}
+                        <a href="{{ paralog.link }}">{{ paralog.display_name }}</a>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                    </dd>
+                {% endif %}
             </dl>
 
         </div>
@@ -246,8 +255,8 @@
             <ul id="drop1" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1">
                 <li><a id="genomic_download">Genomic DNA</a></li>
                 <li><a id="coding_download">Coding DNA</a></li>
-                <li><a id="protein_download">Protein</a></li>
                 <li><a id="kb_download">1KB Up- and Down- Stream</a></li>
+                <li><a id="protein_download">Protein</a></li>
             </ul>
 
             <div class="panel">
@@ -321,11 +330,16 @@
         <a href="/locus/{{ locus.sgdid }}/go" class="details-link">Gene Ontology Details <i class="fa fa-chevron-circle-right"></i></a>
         <h2>Gene Ontology</h2>
         <div class="panel">
+            <a href="/locus/{{ locus.sgdid }}/go#comp">View computational annotations</a>
+
+            {% if locus.go_overview.manual_molecular_function_terms|length + locus.go_overview.manual_biological_process_terms|length + locus.go_overview.manual_cellular_component_terms|length > 0 %}
             <div class="panel">
+                <h3>Manually Curated</h3>
                 <dl class="key-value">
+                    {% if locus.go_overview.manual_molecular_function_terms|length > 0 %}
                     <dt>Molecular Function</dt>
                     <dd><ul>
-                        {% for entry in locus.go_overview.molecular_function_terms %}
+                        {% for entry in locus.go_overview.manual_molecular_function_terms %}
                             <li>
                                 <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
                                 {% for code in entry.evidence_codes %}
@@ -334,10 +348,12 @@
                             </li>
                         {% endfor %}
                     </ul></dd>
+                    {% endif %}
 
+                    {% if locus.go_overview.manual_biological_process_terms|length > 0 %}
                     <dt>Biological Process</dt>
                     <dd><ul>
-                        {% for entry in locus.go_overview.biological_process_terms  %}
+                        {% for entry in locus.go_overview.manual_biological_process_terms  %}
                             <li>
                                 <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
                                 {% for code in entry.evidence_codes %}
@@ -346,10 +362,12 @@
                             </li>
                         {% endfor %}
                     </ul></dd>
+                    {% endif %}
 
+                    {% if locus.go_overview.manual_cellular_component_terms|length > 0 %}
                     <dt>Cellular Component</dt>
                     <dd><ul>
-                        {% for entry in locus.go_overview.cellular_component_terms  %}
+                        {% for entry in locus.go_overview.manual_cellular_component_terms  %}
                             <li>
                                 <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
                                 {% for code in entry.evidence_codes %}
@@ -358,8 +376,59 @@
                             </li>
                         {% endfor %}
                     </ul></dd>
+                    {% endif %}
                 </dl>
             </div>
+            {% endif %}
+
+            {% if locus.go_overview.htp_molecular_function_terms|length + locus.go_overview.htp_biological_process_terms|length + locus.go_overview.htp_cellular_component_terms|length > 0 %}
+            <div class="panel">
+                <h3>High-Throughput</h3>
+                <dl class="key-value">
+                    {% if locus.go_overview.htp_molecular_function_terms|length > 0 %}
+                    <dt>Molecular Function</dt>
+                    <dd><ul>
+                        {% for entry in locus.go_overview.htp_molecular_function_terms %}
+                            <li>
+                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                {% for code in entry.evidence_codes %}
+                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                    </ul></dd>
+                    {% endif %}
+
+                    {% if locus.go_overview.htp_biological_process_terms|length > 0 %}
+                    <dt>Biological Process</dt>
+                    <dd><ul>
+                        {% for entry in locus.go_overview.htp_biological_process_terms  %}
+                            <li>
+                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                {% for code in entry.evidence_codes %}
+                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                    </ul></dd>
+                    {% endif %}
+
+                    {% if locus.go_overview.htp_cellular_component_terms|length > 0 %}
+                    <dt>Cellular Component</dt>
+                    <dd><ul>
+                        {% for entry in locus.go_overview.htp_cellular_component_terms  %}
+                            <li>
+                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                {% for code in entry.evidence_codes %}
+                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                    </ul></dd>
+                    {% endif %}
+                </dl>
+            </div>
+            {% endif %}
         </div>
     </section>
     {% endif %}
@@ -371,6 +440,7 @@
         <a href="/locus/{{ locus.sgdid }}/phenotype" class="details-link">Phenotype Details <i class="fa fa-chevron-circle-right"></i></a>
         <h2>Phenotype</h2>
         <div class="panel">
+            {% if locus.phenotype_overview.classical_phenotypes|length > 0 %}
             <div class="panel">
                 <h3>Classical Genetics</h3>
                 <dl class="key-value">
@@ -384,7 +454,9 @@
                     {% endfor %}
                 </dl>
             </div>
+            {% endif %}
 
+            {% if locus.phenotype_overview.large_scale_phenotypes|length > 0 %}
             <div class="panel">
                 <dl class="key-value">
                     <h3>Large-scale Survey</h3>
@@ -398,6 +470,7 @@
                     {% endfor %}
                 </dl>
             </div>
+            {% endif %}
 
             <div class="panel">
                 <h3>Mutant Strains</h3>
