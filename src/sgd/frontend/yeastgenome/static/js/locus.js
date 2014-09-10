@@ -391,7 +391,7 @@ function draw_sublabel_chart(chart_id, data) {
 
 function set_up_history_table() {
     var options = {};
-    options["bPaginate"] = true;
+    options["bPaginate"] = false;
     options["aaSorting"] = [[0, "asc"]];
     options["aoColumns"] = [null, null, null]
     options["oLanguage"] = {"sEmptyTable": "No history for " + display_name + '.'};

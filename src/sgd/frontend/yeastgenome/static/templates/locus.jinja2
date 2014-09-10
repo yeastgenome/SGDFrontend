@@ -560,7 +560,7 @@
                     {% for evidence in locus.history if evidence.history_type == 'LSP' %}
                         <tr>
                             <td>{{ evidence.date_created }}</td>
-                            <td>{{ evidence.note }}</td>
+                            <td>{{ evidence.note|safe }}</td>
                             <td>{% for reference in evidence.references %}
                                 <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
                                 {% endfor %}
