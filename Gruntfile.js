@@ -139,6 +139,9 @@ module.exports = function(grunt) {
             dev: {
                 tasks: ["browserify:dev", "compass:dev"]
             },
+            production: {
+                tasks: ["dynamicJs:production", "compileCss", "static"]
+            },
             options: {
                 logConcurrentOutput: true
             }
@@ -154,7 +157,12 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-browserify");
     grunt.loadNpmTasks("grunt-concurrent");
 
-    // development compile
+    // production helper tasks
+    grunt.registerTask("dynamicJs:production", ["browserify:dev", "uglify:dynamicJs"]);
+    grunt.registerTask("compileCss", ["replace", "bowercopy:scss", "compass:dev"]);
+    grunt.registerTask("static", ["bowercopy", "uglify:staticJs"]);
+
+    // dev helper task
     grunt.registerTask("compileDev", ["replace","uglify:staticJs", "bowercopy", "concurrent:dev"]);
 
     // compile dev, then watch and trigger live reload
