@@ -168,5 +168,5 @@ module.exports = function(grunt) {
     // compile dev, then watch and trigger live reload
     grunt.registerTask("dev", ["compileDev", "watch:dev"]);
     
-    grunt.registerTask("default", ["compileDev", "uglify:dynamicJs"]);
+    grunt.registerTask("default", ["concurrent:production"]);
 };
