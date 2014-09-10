@@ -549,6 +549,9 @@ class YeastgenomeFrontend(FrontendInterface):
             del params['type']
             if len(params) > 0:
                 return HTTPFound('/locus/' + params.values()[0] + '/expression')
+        elif page == 'locus':
+            if len(params) > 0:
+                return HTTPFound('/locus/' + params.values()[0] + '/overview')
         elif page == 'phenotype':
             if 'phenotype' in params:
                 old_phenotype = params['phenotype'].split(':')
