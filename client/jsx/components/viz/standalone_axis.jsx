@@ -70,7 +70,8 @@ module.exports = React.createClass({
 
 		var svg = d3.select(this.getDOMNode()).select("svg");
 		
-		var _translate = `translate(5, 30)`;
+		var _yTranslate = (this.props.orientation === "top") ? 30 : 0;
+		var _translate = `translate(5, ${_yTranslate})`;
 		var axis = svg.selectAll("g.axis").data([null]);
 		axis.enter().append("g")
 			.attr({

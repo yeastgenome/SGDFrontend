@@ -19,6 +19,13 @@ module.exports = React.createClass({
 
     toggleShowChromosomes: function (e) {
         e.preventDefault();
+
+        // if hiding chromosomes and at bottom, scroll to the top
+        var _clientTop = this.getDOMNode().getBoundingClientRect().top;
+        if (this.state.showChromosomes && _clientTop < 0) {
+            window.scrollTo(0, _clientTop)
+        }
+
         this.setState({
             showChromosomes: !this.state.showChromosomes,
         });
