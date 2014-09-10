@@ -21,6 +21,7 @@ $(document).ready(function() {
         var strain_to_genomic_data = {};
         var strain_to_protein_data = {};
         var strain_to_coding_data = {};
+        var strain_to_kb_data = {};
         var has_alternative = false;
         var has_other = false;
 
@@ -68,6 +69,11 @@ $(document).ready(function() {
             strain_to_coding_data[coding_data[i]['strain']['format_name']] = coding_data[i];
         }
 
+        var kb_data = data['1kb'];
+        for (i=0; i < kb_data.length; i++) {
+            strain_to_kb_data[kb_data[i]['strain']['format_name']] = kb_data[i];
+        }
+
         function reference_on_change() {
             var mode = $("#reference_chooser");
             reference_download_residues = '';
@@ -83,6 +89,10 @@ $(document).ready(function() {
                 reference_download_residues = strain_to_protein_data['S288C']['residues'];
                 reference_contig = 'S288C protein';
             }
+            else if(mode.val() == 'kb') {
+                reference_download_residues = strain_to_kb_data['S288C']['residues'];
+                reference_contig = strain_to_genomic_data['S288C']['contig']['format_name'];
+            }
 
             $("#reference_sequence").html(prep_sequence(reference_download_residues));
 
@@ -92,10 +102,16 @@ $(document).ready(function() {
                 .attr('disabled', !('S288C' in strain_to_coding_data));
             mode.children('option[value=protein]')
                 .attr('disabled', !('S288C' in strain_to_protein_data));
+            mode.children('option[value=kb]')
+                .attr('disabled', !('S288C' in strain_to_kb_data));
 
             if(mode.val() == 'genomic_dna' && can_color) {
-                color_sequence("reference_sequence", strain_to_genomic_data['S288C']);
+                color_sequence("reference_sequence", "reference_legend", strain_to_genomic_data['S288C']);
                 $("#reference_legend").show();
+            }
+            else if(mode.val() == 'kb') {
+                color_kb_sequence("reference_sequence", strain_to_kb_data['S288C']);
+                $("#reference_legend").hide();
             }
             else {
                 $("#reference_legend").hide();
@@ -131,6 +147,10 @@ $(document).ready(function() {
                     alternative_download_residues = strain_to_protein_data[alternative_selection.val()]['residues'];
                     alternative_contig = alternative_selection.val() + ' protein';
                 }
+                else if(mode.val() == 'kb') {
+                    alternative_download_residues = strain_to_kb_data[alternative_selection.val()]['residues'];
+                    alternative_contig = alternative_selection.val() + ' protein';
+                }
 
                 $("#alternative_sequence").html(prep_sequence(alternative_download_residues));
 
@@ -140,6 +160,8 @@ $(document).ready(function() {
                     .attr('disabled', !(alternative_selection.val() in strain_to_coding_data));
                 mode.children('option[value=protein]')
                     .attr('disabled', !(alternative_selection.val() in strain_to_protein_data));
+                mode.children('option[value=kb]')
+                    .attr('disabled', !(alternative_selection.val() in strain_to_kb_data));
 
                 if(mode.val() == 'protein' && !(alternative_selection.val() in strain_to_protein_data)) {
                     mode.children('option[value=genomic_dna]').attr('selected', true);
@@ -149,7 +171,18 @@ $(document).ready(function() {
                     mode.children('option[value=genomic_dna]').attr('selected', true);
                     other_on_change();
                 }
+                if(mode.val() == 'kb' && !(alternative_selection.val() in strain_to_kb_data)) {
+                    mode.children('option[value=kb]').attr('selected', true);
+                    other_on_change();
+                }
+
+                if(mode.val() == 'kb') {
+                    color_kb_sequence("alternative_sequence", strain_to_kb_data[alternative_selection.val()]);
+                }
             }
+
+
+
             alternative_selection.change(alternative_on_change);
             $("#alternative_chooser").change(alternative_on_change);
             alternative_on_change();
@@ -523,12 +556,68 @@ function draw_sublabel_chart(chart_id, data) {
 
 var can_color = false;
 
-function color_sequence(seq_id, data) {
+function color_kb_sequence(seq_id, data) {
+        var num_digits = ('' + data['residues'].length).length;
+
+        var seq = $("#" + seq_id).html();
+        var new_seq = '';
+        var start = 0;
+            var color = '#3366cc';
+
+            var start_index = 1000;
+            var end_index = data['residues'].length-1000;
+
+            var html_start_index = relative_to_html(start_index, num_digits);
+            var html_end_index = relative_to_html(end_index, num_digits);
+
+            var start_index_row = Math.floor(1.0*start_index/60);
+            var end_index_row = Math.floor(1.0*end_index/60);
+
+            if(start_index_row == end_index_row) {
+                new_seq = new_seq +
+                    seq.substring(start, html_start_index) +
+                    "<span style='color:" + color + "'>" +
+                    seq.substring(html_start_index, html_end_index) +
+                    "</span>";
+            }
+            else {
+                var start_index_row_end = (start_index_row+1)*(71+num_digits);
+                var end_index_row_start = end_index_row*(71+num_digits) + 1 + num_digits;
+                new_seq = new_seq +
+                    seq.substring(start, html_start_index) +
+                    "<span style='color:" + color + "'>" +
+                    seq.substring(html_start_index, start_index_row_end) +
+                    "</span>";
+                start = start_index_row_end;
+
+                for(var j=start_index_row+1; j < end_index_row; j++) {
+                    var row_start = j*(71+num_digits) + 1 + num_digits;
+                    var row_end = (j+1)*(71+num_digits);
+                    new_seq = new_seq +
+                        seq.substring(start, row_start) +
+                        "<span style='color:" + color + "'>" +
+                        seq.substring(row_start, row_end) +
+                        "</span>";
+                    start = row_end
+                }
+                new_seq = new_seq +
+                    seq.substring(start, end_index_row_start) +
+                    "<span style='color:" + color + "'>" +
+                    seq.substring(end_index_row_start, html_end_index) +
+                    "</span>";
+            }
+            start = html_end_index;
+
+        new_seq = new_seq + seq.substr(start, seq.length)
+        $("#" + seq_id).html(new_seq);
+}
+
+function color_sequence(seq_id, legend_id, data) {
 
 
     if(data['tags'].length > 1) {
 
-        var reference_legend = $("#reference_legend");
+        var reference_legend = $("#" + legend_id);
         reference_legend.html('');
         for(var key in label_to_color) {
             var new_entry = document.createElement('li');

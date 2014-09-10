@@ -11,6 +11,7 @@ $(document).ready(function() {
         var strain_to_genomic_data = {};
         var strain_to_protein_data = {};
         var strain_to_coding_data = {};
+        var strain_to_kb_data = {};
 
         if(dna_data.length > 0) {
             for (var i=0; i < dna_data.length; i++) {
@@ -35,10 +36,16 @@ $(document).ready(function() {
                 strain_to_coding_data[coding_data[i]['strain']['format_name']] = coding_data[i];
             }
 
+            var kb_data = data['1kb'];
+            for (i=0; i < kb_data.length; i++) {
+                strain_to_kb_data[kb_data[i]['strain']['format_name']] = kb_data[i];
+            }
+
             function on_strain_change() {
                 var strain_data = strain_to_genomic_data[strain_selection.val()];
                 var coding_data = strain_to_coding_data[strain_selection.val()];
                 var protein_data = strain_to_protein_data[strain_selection.val()];
+                var kb_data = strain_to_kb_data[strain_selection.val()];
                 $("#strain_description").html(strain_data['strain']['description']);
                 $("#strain_subfeature").html(strain_data['strain']['display_name']);
                 $("#strain_location").html(strain_data['strain']['display_name']);
@@ -48,7 +55,7 @@ $(document).ready(function() {
                 create_subfeature_table(strain_data);
 
                 $("#genomic_download").click(function f() {
-                    download_sequence(strain_data['residues'], download_sequence_link, display_name, strain_data['contig']);
+                    download_sequence(strain_data['residues'], download_sequence_link, display_name, strain_data['contig']['display_name']);
                 });
 
                 $("#coding_download").click(function f() {
@@ -58,42 +65,12 @@ $(document).ready(function() {
                 $("#protein_download").click(function f() {
                     download_sequence(protein_data['residues'], download_sequence_link, display_name, strain_selection.val() + ' protein');
                 });
+                $("#kb_download").click(function f() {
+                    download_sequence(kb_data['residues'], download_sequence_link, display_name, strain_data['contig']['display_name']);
+                });
 
-//                var mode = $("#alternative_chooser");
-//                alternative_download_residues = '';
-//                if(mode.val() == 'genomic_dna') {
-//                    alternative_download_residues = strain_data['residues'];
-//                    alternative_contig = strain_data['contig']['format_name'];
-//                }
-//                else if(mode.val() == 'coding_dna') {
-//                    alternative_download_residues = strain_to_coding_data[alternative_selection.val()]['residues'];
-//                    alternative_contig = alternative_selection.val() + ' coding_dna';
-//                }
-//                else if(mode.val() == 'protein') {
-//                    alternative_download_residues = strain_to_protein_data[alternative_selection.val()]['residues'];
-//                    alternative_contig = alternative_selection.val() + ' protein';
-//                }
-//
-//                $("#alternative_sequence").html(prep_sequence(alternative_download_residues));
-//
-//                mode.children('option[value=genomic_dna]')
-//                    .attr('disabled', !(alternative_selection.val() in strain_to_genomic_data));
-//                mode.children('option[value=coding_dna]')
-//                    .attr('disabled', !(alternative_selection.val() in strain_to_coding_data));
-//                mode.children('option[value=protein]')
-//                    .attr('disabled', !(alternative_selection.val() in strain_to_protein_data));
-//
-//                if(mode.val() == 'protein' && !(alternative_selection.val() in strain_to_protein_data)) {
-//                    mode.children('option[value=genomic_dna]').attr('selected', true);
-//                    other_on_change();
-//                }
-//                if(mode.val() == 'coding_dna' && !(alternative_selection.val() in strain_to_coding_data)) {
-//                    mode.children('option[value=genomic_dna]').attr('selected', true);
-//                    other_on_change();
-//                }
             }
             strain_selection.change(on_strain_change);
-            //$("#alternative_chooser").change(on_strain_change);
             on_strain_change();
         }
         else {
