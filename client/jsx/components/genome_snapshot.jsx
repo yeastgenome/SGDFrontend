@@ -23,7 +23,7 @@ module.exports = React.createClass({
         // if hiding chromosomes and at bottom, scroll to the top
         var _clientTop = this.getDOMNode().getBoundingClientRect().top;
         if (this.state.showChromosomes && _clientTop < 0) {
-            window.scrollTo(0, _clientTop)
+            window.scrollTo(0, _clientTop);
         }
 
         this.setState({
@@ -92,7 +92,7 @@ module.exports = React.createClass({
                 color: _colors[i]
             };
         });
-        var legendNode = <div style={{ marginLeft: "20%", fontSize: 12 }}><Legend elements={legendElements} labelText={`${totalOrfs.toLocaleString()} ORFs`} /></div>;
+        var legendNode = <div style={{ marginLeft: `${_labelRatio * 100}%`, fontSize: 12 }}><Legend elements={legendElements} labelText={`${totalOrfs.toLocaleString()} ORFs`} /></div>;
 
         var barNode = (<BarChart
             data={data} yValue={ function (d) { return d.value; } }
@@ -100,8 +100,8 @@ module.exports = React.createClass({
             hasTooltip={true} hasYAxis={false} maxY={maxY}
         />);
 
-        var axisNode = (<div style={{ height: 53, marginLeft: `${_labelRatio * 100}%` }}>
-            <StandaloneAxis maxValue={maxY} labelText="Features" />
+        var axisNode = (<div style={{ height: 53 }}>
+            <StandaloneAxis maxValue={maxY} labelText="Features" leftRatio={_labelRatio} />
         </div>);
 
         return [axisNode, legendNode, barNode];

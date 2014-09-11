@@ -10,9 +10,11 @@ module.exports = React.createClass({
 		return {
 			gridTicks: false,
 			labelText: null,
+			leftRatio: 0,
 			maxValue: null, // *
 			orientation: "top", // [top, right, bottom, left]
-			scaleType: "linear"
+			scaleType: "linear",
+			transitionDuration: 0
 		};
 	},
 
@@ -23,13 +25,15 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		var labelNode = this.props.labelText ? <p className="axis-label">{this.props.labelText}</p> : null;
+		var labelNode = this.props.labelText ?
+			<p className="axis-label" style={{ marginLeft: `${this.props.leftRatio * 100}%` }}>{this.props.labelText}</p> :
+			null;
 
 		var _height = this.props.gridTicks ? "100%" : 32;
 		var _klass = `standalone-axis ${this.props.gridTicks ? "grid-ticks" : ""}`;
 		return (<div className={_klass} style={{ position: "relative" }}>
 			{labelNode}
-			<svg preserveAspectRatio="none" style={{ width: "100%", height: _height, marginLeft: -5 }}></svg>
+			<svg ref="svg" style={{ width: "100%", height: _height }}></svg>
 		</div>);
 	},
 
@@ -39,17 +43,24 @@ module.exports = React.createClass({
 		this._calculateScale();
 	},
 
+	componentWillReceiveProps: function (nextProps) {
+		this._calculateScale(nextProps);
+	},
+
 	componentDidUpdate: function () {
 		this._renderSVG();
 	},
 
-	_calculateScale: function () {
+	_calculateScale: function (nextProps) {
+		var props = nextProps || this.props;
+		
 		// maxValue can't be null
-		if (this.props.maxValue === null) return;
+		if (props.maxValue === null) return;
 
 		var _baseScale = d3.scale.linear();
-		var _width = this.getDOMNode().getBoundingClientRect().width - 5;
-		var _scale = _baseScale.domain([0, this.props.maxValue]).range([0, _width]);
+		var _width = this.getDOMNode().getBoundingClientRect().width - 1;
+		var _xOffset = _width * props.leftRatio;
+		var _scale = _baseScale.domain([0, props.maxValue]).range([0, _width - _xOffset]);
 
 		this.setState({
 			scale: _scale
@@ -68,17 +79,18 @@ module.exports = React.createClass({
 			.tickSize(_tickSize)
 			.scale(this.state.scale);
 
-		var svg = d3.select(this.getDOMNode()).select("svg");
+		var svg = d3.select(this.refs["svg"].getDOMNode());
 		
+		var _xTranslate = (this.getDOMNode().getBoundingClientRect().width * this.props.leftRatio)
 		var _yTranslate = (this.props.orientation === "top") ? 30 : 0;
-		var _translate = `translate(5, ${_yTranslate})`;
+		var _translate = `translate(${_xTranslate}, ${_yTranslate})`;
 		var axis = svg.selectAll("g.axis").data([null]);
 		axis.enter().append("g")
 			.attr({
 				class: "axis",
 				transform: _translate
 			});
-		axis
+		axis.transition().duration(this.props.transitionDuration)
 			.attr({ transform: _translate })
 			.call(axisFn);
 	}

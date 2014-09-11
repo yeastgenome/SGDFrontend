@@ -6,6 +6,7 @@ var d3 = require("d3");
 var _ = require("underscore");
 
 var FlexibleTooltip = require("../flexible_tooltip.jsx");
+var StandaloneAxis = require("./standalone_axis.jsx");
 
 /*
 	Uses react to render bars, with d3 doing some calculations.
@@ -116,9 +117,8 @@ module.exports = React.createClass({
 		// create y axis, if hasYaxis
 		var yAxis = null;
 		if (props.hasYAxis) {
-			var _yAxisStyle = { left: `${props.labelRatio*100}%`, width: `${(1-props.labelRatio)*100}%` };
-			var yAxisLabel = props.yAxisLabel ? (<p className="axis-label" style={_yAxisStyle}>{props.yAxisLabel}</p>) : null;
-			yAxis = [yAxisLabel, <svg style={{ width: "100%", height: 40, display: "block" }}></svg>];
+			var _maxY = props.maxY || d3.max(data, props.yValue);
+			yAxis = <StandaloneAxis maxValue={_maxY} labelText="Gene Products Annotated" leftRatio={props.labelRatio} transitionDuration={500} />;
 		}
 
 		var tooltipNode = props.hasTooltip ? (<FlexibleTooltip visible={state.tooltipVisible}
@@ -141,42 +141,8 @@ module.exports = React.createClass({
 		this._calculateWidthScale();
 	},
 
-	componentDidUpdate: function () {
-		this._renderSVGScale();
-	},
-
 	componentWillReceiveProps: function (nextProps) {
 		this._calculateWidthScale(nextProps);
-	},
-
-	_renderSVGScale: function () {
-		// return if no yAxis
-		if (!this.props.hasYAxis) { return; }
-
-		var state = this.state;
-
-		// require widthScale to continue
-		if (!state.widthScale) { return; }
-
-		var yAxisFn = d3.svg.axis()
-			.orient("top")
-			.ticks(3)
-			.tickSize(6)
-			.scale(state.widthScale);
-
-		var svg = d3.select(this.getDOMNode()).select("svg");
-		
-		var _translate = `translate(${this.getDOMNode().getBoundingClientRect().width * this.props.labelRatio - 1}, 30)`;
-		var yAxis = svg.selectAll("g.axis").data([null]);
-		yAxis.enter().append("g")
-			.attr({
-				class: "axis",
-				transform: _translate
-			});
-		yAxis.transition().duration(500)
-			.attr({ transform: _translate })
-			.call(yAxisFn);
-		
 	},
 
 	_handleMouseOver: function (e, d) {
