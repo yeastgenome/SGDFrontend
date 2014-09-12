@@ -54,13 +54,28 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				href: c.link
 			};
 		});
+		tableHeaders.splice(16, 0, "Nuclear Genome")
 		tableHeaders.unshift("Feature Type");
 		tableHeaders = [["", "Chromosome Number"], tableHeaders];
 
 		var tableRows = _.map(chromosomeData[0].features, (f, i) => {
+			// columns in each row
 			var row = _.map(chromosomeData, (c) => {
+				// if (c.format_name.match("micron") {
+					
+				// }
 				return c.features[i].value;
 			});
+
+			// add up nuclear genome
+			var nuclearTotal = _.reduce(row, (memo, c, i) => {
+				if (i < 16) {
+					memo += c;
+				}
+				return memo;
+			}, 0);
+			row.splice(16, 0, nuclearTotal);
+			
 			row.unshift(f.name.replace(/_/g, ' '));
 			return row;
 		});
