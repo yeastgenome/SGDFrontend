@@ -27,11 +27,11 @@ module.exports = React.createClass({
 		var _textNode = props.href ? (<a href={props.href}>{props.text}</a>) : props.text;
 
 		return (
-			<div className='flexible-tooltip' style={_style}>
-				<span className='flexible-tooltip-text'>
+			<div className="flexible-tooltip" style={_style}>
+				<span className="flexible-tooltip-text" style={{ display: "block" }}>
 					{_textNode}
 				</span>
-				<div className='flexible-tooltip-arrow'></div>
+				<div className="flexible-tooltip-arrow" style={{ position: "absolute" }}></div>
 			</div>
 		);
 	}

@@ -20,7 +20,7 @@ module.exports = React.createClass({
 		var elementNodes = _.map(this.props.elements, (entry, i) => {
 			var textNode = entry.href ? <a href={entry.href}>{entry.text}</a> : entry.text;
 			return (
-				<div className="legend-entry-container" key={`legend${i}`}>
+				<div className="legend-entry-container" key={`legend${i}`} style={{ display: "inline-block" }}>
 					<div className="legend-color" style={{ background: entry.color }}></div>
 					{textNode}
 				</div>

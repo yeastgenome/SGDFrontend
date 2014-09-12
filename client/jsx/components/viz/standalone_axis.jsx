@@ -26,7 +26,7 @@ module.exports = React.createClass({
 
 	render: function () {
 		var labelNode = this.props.labelText ?
-			<p className="axis-label" style={{ marginLeft: `${this.props.leftRatio * 100}%` }}>{this.props.labelText}</p> :
+			<p className="axis-label" style={{ marginLeft: `${this.props.leftRatio * 100}%`, position: "relative" }}>{this.props.labelText}</p> :
 			null;
 
 		var _height = this.props.gridTicks ? "100%" : 32;

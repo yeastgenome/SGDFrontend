@@ -45,7 +45,6 @@
 }
 
 .flexible-tooltip {
-	position: absolute;
 	min-width: 100px;
 	min-height: 35px;
 	margin-left: -50px;
@@ -57,14 +56,12 @@
 }
 
 .flexible-tooltip-text {
-	display: block;
 	text-align: center;
 	margin: 0.5em;
 	white-space: nowrap;
 }
 
 .flexible-tooltip-arrow {
-	position: absolute;
 	bottom: -29px;
 	left: 50px;
 	width: 0; 
@@ -97,7 +94,6 @@
 }
 
 .axis-label {
-	position: relative;
 	text-align: center;
 	margin-bottom: 0;
 	font-size: 14px;
@@ -124,7 +120,6 @@
 }
 
 .legend-entry-container {
-	display: inline-block;
 	margin-right: 1em;
 	&:last-child {
 		margin-right: 0;
