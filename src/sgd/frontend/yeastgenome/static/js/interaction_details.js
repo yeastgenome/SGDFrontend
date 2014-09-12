@@ -16,6 +16,10 @@ $(document).ready(function() {
   	    if(C > 0) {
   	        create_analyze_button_with_list("phys_gen_intersect", get_physical_and_genetic_interactors(data), "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> both physical and genetic interactors");
   	    }
+        else {
+            $("#interaction_table_download").hide();
+            $("#interaction_table_analyze").hide();
+        }
 	});
 
 	$.getJSON('/backend/locus/' + locus['id'] + '/interaction_graph?callback=?', function(data) {

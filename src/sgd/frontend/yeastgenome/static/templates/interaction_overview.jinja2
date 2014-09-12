@@ -1,5 +1,8 @@
 
-<p id='summary_message' style='display:none'>0 Genetic and 0 Physical Interactors curated.</p>
+{% if locus.interaction_overview.total_interactors == 0 %}
+    <p id='summary_message' style='display:none'>0 Genetic and 0 Physical Interactors curated.</p>
+{% endif %}
+
 <div class="panel" id="summary_wrapper">
     <div id="venn_diagram"></div>
 </div>

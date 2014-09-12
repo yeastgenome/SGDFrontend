@@ -57,7 +57,8 @@
         <div class="panel">
             <!-- Includes interaction_overview.html into template -->
             {% include "interaction_overview.jinja2" %}
-        
+
+           {% if locus.interaction_overview.total_interactors > 0 %}
             <div class="button-bar">
                 <h5>Analyze</h5>
                 <ul class="button-group radius">
@@ -70,6 +71,7 @@
                     <li><a disabled="true" class="small button secondary radius" id="download_overview"><i class="icon-picture"></i> PNG</a></li>
                 </ul>
             </div>
+            {% endif %}
         </div>
     </section>
 

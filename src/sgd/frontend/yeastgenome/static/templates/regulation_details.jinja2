@@ -32,18 +32,16 @@
             add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</a>');
             add_navbar_element("Regulation Overview", "overview");
 
-            if(target_count > 0) {
+            if(locus['regulation_overview']['target_count'] > 0) {
                 add_navbar_element("Domains and Classification", "domain");
                 add_navbar_element("DNA Binding Site Motifs", "binding");
                 add_navbar_element("Targets", "targets");
                 add_navbar_element("Shared GO Processes Among Targets", "enrichment");
             }
 
-            if(regulator_count > 0) {
-                add_navbar_element("Regulators", "regulators");
-            }
+            add_navbar_element("Regulators", "regulators");
 
-            if(target_count + regulator_count > 0) {
+            if(locus['regulation_overview']['target_count'] + locus['regulation_overview']['regulator_count'] > 0) {
                 add_navbar_element("Regulation Network", "network");
             }
         </script>
@@ -69,6 +67,7 @@
         <!-- Includes regulation_overview.html into template -->
         {% include "regulation_overview.jinja2" %}
 
+        {% if locus.regulation_overview.regulator_count + locus.regulation_overview.target_count > 0 %}
         <div class="button-bar">
             <h5>Analyze</h5>
             <ul class="button-group radius">
@@ -79,6 +78,7 @@
                 <li><a disabled="true" class="small button secondary radius" id="download_overview"><i class="icon-picture"></i> PNG</a></li>
             </ul>
         </div>
+        {% endif %}
     </div>
 </section>
 

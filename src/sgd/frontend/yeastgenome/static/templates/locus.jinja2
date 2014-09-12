@@ -477,19 +477,32 @@
             </div>
             {% endif %}
 
+            {% if locus.phenotype_overview.classical_phenotypes|length + locus.phenotype_overview.large_scale_phenotypes|length == 0 %}
+                <p>No phenotypes annotated to {{ locus.display_name }}.</p>
+            {% endif %}
+
             <div class="panel">
-                <h3>Mutant Strains</h3>
-                <p id="mutant_resources_list">
-                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_MUTANT_STRAINS'%}
-                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
-                <h3>Phenotype Resources</h3>
-                <p id="phenotype_resources_list">
-                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_PHENOTYPE_RESOURCES'%}
-                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
+
+                {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_MUTANT_STRAINS'%}
+                    {% if loop.first %}
+                        <h3>Mutant Strains</h3>
+                        <p id="mutant_resources_list">
+                    {% elif loop.last %}
+                        </p>
+                    {% endif %}
+                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                {% endfor %}
+
+                {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_PHENOTYPE_RESOURCES'%}
+                    {% if loop.first %}
+                        <h3>Phenotype Resources</h3>
+                        <p id="phenotype_resources_list">
+                    {% elif loop.last %}
+                        </p>
+                    {% endif %}
+                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                {% endfor %}
+
                 <h3>Ontology</h3>
                 <p id="ontology_resources_list">
                     {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_ONTOLOGY'%}
@@ -513,6 +526,8 @@
             {% else %}
                 <p>{{ locus.interaction_overview.total_interactions }} total interactions for {{ locus.interaction_overview.total_interactors }} unique genes</p>
             {% endif %}
+
+            {% if locus.interaction_overview.num_phys_interactors  > 0 %}
             <div class="panel">
                 <h3>Physical Interactions</h3>
                 <ul>
@@ -521,7 +536,9 @@
                     {% endfor %}
                 </ul>
             </div>
+            {% endif %}
 
+            {% if locus.interaction_overview.num_gen_interactors  > 0 %}
             <div class="panel">
                 <h3>Genetic Interactions</h3>
                 <ul>
@@ -530,6 +547,7 @@
                     {% endfor %}
                 </ul>
             </div>
+            {% endif %}
 
             <div class="panel">
                 <h3>Resources</h3>

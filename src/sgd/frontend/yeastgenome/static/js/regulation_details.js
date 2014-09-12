@@ -42,15 +42,22 @@ $(document).ready(function() {
   		}
 
   		var regulator_table = create_regulator_table(data);
-  		create_analyze_button("regulator_table_analyze", regulator_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> regulators", true);
-  	    create_analyze_button("analyze_regulators", regulator_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> regulators", false);
-  	    create_download_button("regulator_table_download", regulator_table, locus['display_name'] + "_regulators");
+
+        if(locus['regulation_overview']['target_count'] + locus['regulation_overview']['regulator_count'] > 0) {
+  		    create_analyze_button("regulator_table_analyze", regulator_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> regulators", true);
+  	        create_analyze_button("analyze_regulators", regulator_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> regulators", false);
+  	        create_download_button("regulator_table_download", regulator_table, locus['display_name'] + "_regulators");
+        }
+        else {
+            $("#regulator_table_download").hide();
+            $("#regulator_table_analyze").hide();
+        }
   	});
 
     $.getJSON('/backend/locus/' + locus['id'] + '/regulation_graph?callback=?', function(data) {
         if(data != null && data["nodes"].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
-            create_cy_download_button(graph, "cy_download", download_network_link, locus['display_name'] + '_regulation_graph')
+            create_cy_download_button(graph, "cy_download", locus['display_name'] + '_regulation_graph')
             var message = 'Showing regulatory relationships supported by at least <strong>' + data['min_evidence_count'] + '</strong> experiment';
             if(data['min_evidence_count'] == 1) {
                 message = message + '.';
