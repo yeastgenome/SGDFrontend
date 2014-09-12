@@ -1,11 +1,11 @@
 
-if(regulation_overview['target_count'] + regulation_overview['regulator_count'] > 0){
+if(locus['regulation_overview']['target_count'] + locus['regulation_overview']['regulator_count'] > 0){
     google.load("visualization", "1", {packages:["corechart"]});
     google.setOnLoadCallback(drawChart);
     function drawChart() {
         var data_table = google.visualization.arrayToDataTable([['Category', 'Genes', { role: 'style' }, { role: 'annotation' }],
-                                                                ['Targets', regulation_overview['target_count'], '#AF8DC3', regulation_overview['target_count']],
-                                                                ['Regulators', regulation_overview['regulator_count'], '#7FBF7B', regulation_overview['regulator_count']]]);
+                                                                ['Targets', locus['regulation_overview']['target_count'], '#AF8DC3', locus['regulation_overview']['target_count']],
+                                                                ['Regulators', locus['regulation_overview']['regulator_count'], '#7FBF7B', locus['regulation_overview']['regulator_count']]]);
 
 
         var chart = new google.visualization.BarChart(document.getElementById('summary_diagram'));
@@ -38,7 +38,7 @@ if(regulation_overview['target_count'] + regulation_overview['regulator_count'] 
         google.visualization.events.addListener(chart, 'select', barSelectHandler);
 
         chart.draw(data_table, {
-            'title': 'Transcriptional Targets and Regulators for ' + display_name + ' (includes high-throughput predictions)',
+            'title': 'Transcriptional Targets and Regulators for ' + locus['display_name'] + ' (includes high-throughput predictions)',
             'legend': {'position': 'none'},
             'hAxis': {title: 'Genes', minValue:0, maxValue:5, gridlines:{count:6}},
             'dataOpacity':1,

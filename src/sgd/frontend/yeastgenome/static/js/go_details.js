@@ -1,32 +1,32 @@
 $(document).ready(function() {
 
-  	get_json(go_details_link, function(data) {
-  	    var mc_bp_go_table = create_go_table("mc_bp", "No manually curated biological process terms for " + display_name, function(x) {return x["annotation_type"] == "manually curated" && x["go"]["go_aspect"] == "biological process"}, data);
-        create_download_button("mc_bp_go_table_download", mc_bp_go_table, download_table_link, mc_bp_download_table_filename);
+  	$.getJSON('/backend/locus/' + locus['id'] + '/go_details?callback=?', function(data) {
+  	    var mc_bp_go_table = create_go_table("mc_bp", "No manually curated biological process terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "manually curated" && x["go"]["go_aspect"] == "biological process"}, data);
+        create_download_button("mc_bp_go_table_download", mc_bp_go_table, locus['display_name'] + "_manual_bp_go");
 
-        var mc_mf_go_table = create_go_table("mc_mf", "No manually curated molecular function terms for " + display_name, function(x) {return x["annotation_type"] == "manually curated" && x["go"]["go_aspect"] == "molecular function"}, data);
-        create_download_button("mc_mf_go_table_download", mc_mf_go_table, download_table_link, mc_mf_download_table_filename);
+        var mc_mf_go_table = create_go_table("mc_mf", "No manually curated molecular function terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "manually curated" && x["go"]["go_aspect"] == "molecular function"}, data);
+        create_download_button("mc_mf_go_table_download", mc_mf_go_table, locus['display_name'] + "manual_mf_go");
 
-        var mc_cc_go_table = create_go_table("mc_cc", "No manually curated cellular component terms for " + display_name, function(x) {return x["annotation_type"] == "manually curated" && x["go"]["go_aspect"] == "cellular component"}, data);
-        create_download_button("mc_cc_go_table_download", mc_cc_go_table, download_table_link, mc_cc_download_table_filename);
+        var mc_cc_go_table = create_go_table("mc_cc", "No manually curated cellular component terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "manually curated" && x["go"]["go_aspect"] == "cellular component"}, data);
+        create_download_button("mc_cc_go_table_download", mc_cc_go_table, locus['display_name'] + "_manual_cc_go");
 
-        var htp_bp_go_table = create_go_table("htp_bp", "No high-throughput biological process terms for " + display_name, function(x) {return x["annotation_type"] == "high-throughput" && x["go"]["go_aspect"] == "biological process"}, data);
-        create_download_button("htp_bp_go_table_download", htp_bp_go_table, download_table_link, htp_bp_download_table_filename);
+        var htp_bp_go_table = create_go_table("htp_bp", "No high-throughput biological process terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "high-throughput" && x["go"]["go_aspect"] == "biological process"}, data);
+        create_download_button("htp_bp_go_table_download", htp_bp_go_table, locus['display_name'] + "_htp_bp_go");
 
-        var htp_mf_go_table = create_go_table("htp_mf", "No high-throughput molecular function terms for " + display_name, function(x) {return x["annotation_type"] == "high-throughput" && x["go"]["go_aspect"] == "molecular function"}, data);
-        create_download_button("htp_mf_go_table_download", htp_mf_go_table, download_table_link, htp_mf_download_table_filename);
+        var htp_mf_go_table = create_go_table("htp_mf", "No high-throughput molecular function terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "high-throughput" && x["go"]["go_aspect"] == "molecular function"}, data);
+        create_download_button("htp_mf_go_table_download", htp_mf_go_table, locus['display_name'] + "_htp_mf_go");
 
-        var htp_cc_go_table = create_go_table("htp_cc", "No high-throughput cellular component terms for " + display_name, function(x) {return x["annotation_type"] == "high-throughput" && x["go"]["go_aspect"] == "cellular component"}, data);
-        create_download_button("htp_cc_go_table_download", htp_cc_go_table, download_table_link, htp_cc_download_table_filename);
+        var htp_cc_go_table = create_go_table("htp_cc", "No high-throughput cellular component terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "high-throughput" && x["go"]["go_aspect"] == "cellular component"}, data);
+        create_download_button("htp_cc_go_table_download", htp_cc_go_table, locus['display_name'] + "_htp_cc_go");
 
-        var comp_bp_go_table = create_go_table("comp_bp", "No computational biological process terms for " + display_name, function(x) {return x["annotation_type"] == "computational" && x["go"]["go_aspect"] == "biological process"}, data);
-        create_download_button("comp_bp_go_table_download", comp_bp_go_table, download_table_link, comp_bp_download_table_filename);
+        var comp_bp_go_table = create_go_table("comp_bp", "No computational biological process terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "computational" && x["go"]["go_aspect"] == "biological process"}, data);
+        create_download_button("comp_bp_go_table_download", comp_bp_go_table, locus['display_name'] + "_computational_bp_go");
 
-        var comp_mf_go_table = create_go_table("comp_mf", "No computational molecular function terms for " + display_name, function(x) {return x["annotation_type"] == "computational" && x["go"]["go_aspect"] == "molecular function"}, data);
-        create_download_button("comp_mf_go_table_download", comp_mf_go_table, download_table_link, comp_mf_download_table_filename);
+        var comp_mf_go_table = create_go_table("comp_mf", "No computational molecular function terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "computational" && x["go"]["go_aspect"] == "molecular function"}, data);
+        create_download_button("comp_mf_go_table_download", comp_mf_go_table, locus['display_name'] + "_computational_mf_go");
 
-        var comp_cc_go_table = create_go_table("comp_cc", "No computational cellular component terms for " + display_name, function(x) {return x["annotation_type"] == "computational" && x["go"]["go_aspect"] == "cellular component"}, data);
-        create_download_button("comp_cc_go_table_download", comp_cc_go_table, download_table_link, comp_cc_download_table_filename);
+        var comp_cc_go_table = create_go_table("comp_cc", "No computational cellular component terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "computational" && x["go"]["go_aspect"] == "cellular component"}, data);
+        create_download_button("comp_cc_go_table_download", comp_cc_go_table, locus['display_name'] + "_computational_cc_go");
 
         var transformed_data = [];
         var mc_count = 0;
@@ -45,7 +45,7 @@ $(document).ready(function() {
             }
         }
         var headers = ["Evidence ID", "Analyze ID", "", "Gene", "Gene Format Name", "Gene Ontology Term", "Gene Ontology Term ID", "Qualifier", "Aspect", "Method", "Evidence", "Source", "Assigned On", "Reference", "Relationships"];
-        create_download_button_no_table("go_download_all", headers, transformed_data, download_table_link, display_name + "_go_annotations")
+        create_download_button_no_table("go_download_all", headers, transformed_data, locus['display_name'] + "_go_annotations")
 
         if(mc_count == 0) {
             $("#manual_message").show();
@@ -58,11 +58,11 @@ $(document).ready(function() {
         }
   	});
 
-  	get_json(go_graph_link, function(data) {
+  	$.getJSON('/backend/locus/' + locus['id'] + '/go_graph?callback=?', function(data) {
         if(data['nodes'].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data);
             var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);
-            create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_go_graph')
+            create_cy_download_button(graph, "cy_download", locus['display_name'] + '_go_graph')
   		}
 		else {
 			hide_section("network");

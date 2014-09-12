@@ -3,7 +3,6 @@
 		<ul>
 			<li id="summary_tab" {% if not tabs['summary_tab'] %} style="display:none" {% endif %}><a href="/cgi-bin/locus.fpl?locus={{ locus.sgdid }}"><span>Summary</span></a></li>
             <li id="sequence_tab" {% if not tabs['sequence_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/sequence"><span>Sequence</span></a></li>
-			<li id="history_tab" {% if not tabs['history_tab'] %} style="display:none" {% endif %}><a href="/cgi-bin/locusHistory.pl?locus={{ locus.sgdid }}"><span>Locus History</span></a></li>
 			<li id="literature_tab" {% if not tabs['literature_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/literature"><span>Literature</span></a></li>
 			<li id="go_tab" {% if not tabs['go_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/go"><span>Gene Ontology</span></a></li>
 			<li id="phenotype_tab" {% if not tabs['phenotype_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/phenotype"><span>Phenotype</span></a></li>
@@ -11,7 +10,6 @@
 			<li id="expression_tab" {% if not tabs['expression_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/expression"><span>Expression</span></a></li>
 			<li id="regulation_tab" {% if not tabs['regulation_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/regulation"><span>Regulation</span></a></li>
 			<li id="protein_tab" {% if not tabs['protein_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/protein"><span>Protein</span></a></li>
-			<li id="wiki_tab" {% if not tabs['wiki_tab'] %} style="display:none" {% endif %}><a href="/cgi-bin/locusWiki.pl?locus={{ locus.sgdid }}"><span>Wiki</span></a></li>
 		</ul>
 	</nav>
 </div>

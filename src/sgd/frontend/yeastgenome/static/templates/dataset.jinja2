@@ -4,12 +4,7 @@
 
 {% block head %}
 <script>
-	var download_table_link = "{{download_table_link}}";
-	var analyze_link = "{{analyze_table_link}}";
-
-	var download_filename = "{{ dataset.format_name|replace(".", "_") }}_annotations";
-
-    var display_name = "{{ dataset.display_name }}";
+	var dataset = {{ dataset_js|safe }};
 </script>
 {% endblock %}
 

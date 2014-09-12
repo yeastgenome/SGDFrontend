@@ -1,28 +1,28 @@
 
 $(document).ready(function() {
 
-    get_json(interaction_details_link, function(data) {
+    $.getJSON('/backend/locus/' + locus['id'] + '/interaction_details?callback=?', function(data) {
         var interaction_table = create_interaction_table(data);
-        create_download_button("interaction_table_download", interaction_table, download_table_link, evidence_table_filename);
-        create_analyze_button("interaction_table_analyze", interaction_table, analyze_link, analyze_filename + " interactors", true);
-  	    create_analyze_button("phys_gen_union", interaction_table, analyze_link, analyze_filename + " interactors", false);
+        create_download_button("interaction_table_download", interaction_table, locus['display_name'] + "_interactions");
+        create_analyze_button("interaction_table_analyze", interaction_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> interactors", true);
+  	    create_analyze_button("phys_gen_union", interaction_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> interactors", false);
 
         if(B > 0) {
-  	        create_analyze_button_with_list("phys", get_physical_interactors(data), analyze_link, analyze_filename + " physical interactors");
+  	        create_analyze_button_with_list("phys", get_physical_interactors(data), "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> physical interactors");
   	    }
   	    if(A > 0) {
-  	        create_analyze_button_with_list("gen", get_genetic_interactors(data), analyze_link, analyze_filename + " genetic interactors");
+  	        create_analyze_button_with_list("gen", get_genetic_interactors(data), "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> genetic interactors");
   	    }
   	    if(C > 0) {
-  	        create_analyze_button_with_list("phys_gen_intersect", get_physical_and_genetic_interactors(data), analyze_link, analyze_filename + " both physical and genetic interactors");
+  	        create_analyze_button_with_list("phys_gen_intersect", get_physical_and_genetic_interactors(data), "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> both physical and genetic interactors");
   	    }
 	});
 
-	get_json(interaction_graph_link, function(data) {
+	$.getJSON('/backend/locus/' + locus['id'] + '/interaction_graph?callback=?', function(data) {
 	    if(data != null && data["nodes"].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
             var slider = create_slider("slider", graph, data["min_evidence_cutoff"], data["max_evidence_cutoff"], function slider_filter(new_cutoff) {return "node, edge[evidence >= " + new_cutoff + "]";});
-            create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_interaction_graph')
+            create_cy_download_button(graph, "cy_download", locus['display_name'] + '_interaction_graph')
 
             if(data["max_phys_cutoff"] >= data["min_evidence_cutoff"] && data["max_gen_cutoff"] >= data["min_evidence_cutoff"]) {
                 create_discrete_filter("union_radio", graph, slider, all_filter, data["max_evidence_cutoff"]);
@@ -55,7 +55,7 @@ function create_interaction_table(data) {
         var genes = {};
         for (var i=0; i < data.length; i++) {
             datatable.push(interaction_data_to_table(data[i], i));
-            if(data[i]["locus1"]["id"] == locus_id) {
+            if(data[i]["locus1"]["id"] == locus['id']) {
                 genes[data[i]["locus2"]["id"]] = true;
             }
             else {
@@ -68,7 +68,7 @@ function create_interaction_table(data) {
         options["bPaginate"] = true;
         options["aaSorting"] = [[5, "asc"]];
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}];
-        options["oLanguage"] = {"sEmptyTable": "No interaction data for " + display_name};
+        options["oLanguage"] = {"sEmptyTable": "No interaction data for " + locus['display_name']};
         options["aaData"] = datatable;
     }
 
@@ -79,7 +79,7 @@ function get_physical_interactors(data) {
     var bioent_ids = {};
     for(var i=0; i < data.length; i++) {
         if(data[i]["interaction_type"] == "Physical") {
-            if(data[i]["locus1"]["id"] == locus_id) {
+            if(data[i]["locus1"]["id"] == locus['id']) {
                 bioent_ids[data[i]["locus2"]["id"]] = true;
             }
             else {
@@ -94,7 +94,7 @@ function get_genetic_interactors(data) {
     var bioent_ids = {};
     for(var i=0; i < data.length; i++) {
         if(data[i]["interaction_type"] == "Genetic") {
-            if(data[i]["locus1"]["id"] == locus_id) {
+            if(data[i]["locus1"]["id"] == locus['id']) {
                 bioent_ids[data[i]["locus2"]["id"]] = true;
             }
             else {

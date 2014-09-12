@@ -2,7 +2,7 @@
 $(document).ready(function() {
     $("#expression_table_analyze").hide();
 
-  	get_json(expression_details_link, function(data) {
+  	$.getJSON('/backend/locus/' + locus['id'] + '/expression_details?callback=?', function(data) {
         if(data['datasets'].length > 0) {
             create_expression_chart(data['overview'], data['min_value'], data['max_value']);
         }
@@ -11,16 +11,16 @@ $(document).ready(function() {
             $('#expression_message').show();
         }
   	    var expression_table = create_expression_table(data['datasets']);
-        create_download_button("expression_table_download", expression_table, download_table_link, download_table_filename);
+        create_download_button("expression_table_download", expression_table, locus['display_name'] + "_expression");
         $("#expression_table_analyze").hide();
   	});
 
-  	get_json(expression_graph_link, function(data) {
+  	$.getJSON('/backend/locus/' + locus['id'] + '/expression_graph?callback=?', function(data) {
   		if(data != null && data['nodes'].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
             var max_value = data["min_coeff"] + Math.min(data["max_coeff"] - data["min_coeff"], 10);
             var slider = create_slider("slider", graph, data["min_coeff"], max_value, function slider_filter(new_cutoff) {return "node, edge[score >= " + (new_cutoff/10) + "]";}, max_value+1);
-            create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_expression_graph')
+            create_cy_download_button(graph, "cy_download", locus['display_name'] + '_expression_graph')
   		}
 		else {
 			hide_section("network");
@@ -59,7 +59,7 @@ function create_expression_table(data) {
 
         set_up_header('expression_table', datatable.length, 'dataset', 'datasets', Object.keys(reference_ids).length, 'reference', 'references');
 
-        options["oLanguage"] = {"sEmptyTable": "No expression data for " + display_name,
+        options["oLanguage"] = {"sEmptyTable": "No expression data for " + locus['display_name'],
                                 'sSearch': 'Type a keyword (examples: “histone”, “stress”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “transcription factor” returns rows that contain both “transcription and “factor”. To remove the filter, simply delete the text from the box.'};
         options["aaData"] = datatable;
     }

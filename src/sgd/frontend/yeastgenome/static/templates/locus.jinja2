@@ -4,22 +4,7 @@
 
 {% block head %}
 <script>
-    var sequence_details_link = "{{ sequence_details_link }}";
-    var neighbor_sequence_details_link = "{{ neighbor_sequence_details_link }}";
-    var expression_details_link = "{{expression_details_link}}";
-
-    var aliases = {{ aliases|safe }};
-    var paragraph = {{ paragraph | safe }};
-
-	var download_table_link = "{{download_table_link}}";
-    var download_sequence_link = "{{download_sequence_link}}";
-	var analyze_link = "{{analyze_table_link}}";
-    var download_network_link = "{{download_network_link}}";
-
-	var display_name = "{{ locus.display_name }}";
-    var format_name = "{{ locus.format_name }}";
-	var locus_id = "{{ locus.id }}";
-
+    var locus = {{ locus_js|safe }};
 </script>
 {% endblock %}
 
@@ -96,19 +81,14 @@
             <dl class="key-value">
                 <dt>Standard Name</dt>
                 <dd>{{ locus.display_name }}
-                    {% for evidence in locus.bioentity_references if evidence.info_key == 'Gene Name' %}
-                        {% if loop.first %}
-                            <a href="#" data-dropdown="drop_description"><i
-                                    class="fa fa-info-circle"></i></a>
-                            <p id="drop_description" class="f-dropdown content medium" data-dropdown-content>
-                        {% endif %}
-                    <a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a>
-                    {% if not loop.last %}
-                        ,
-                    {% else %}
+                    {% if 'gene_name' in locus.qualities and locus.qualities.gene_name.references|length > 0 %}
+                        <a href="#" data-dropdown="drop_gene_name"><i class="fa fa-info-circle"></i></a>
+                        <p id="drop_gene_name" class="f-dropdown content medium" data-dropdown-content>
+                            {% for reference in locus.qualities.gene_name.references %}
+                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
                         </p>
                     {% endif %}
-                    {% endfor %}
                 </dd>
 
                 <dt>Systematic Name</dt>
@@ -120,85 +100,110 @@
                 {% for alias in locus.aliases if alias.category == 'Uniform' %}
                     {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
                     {{ alias.display_name }}
-                    {% for evidence in alias.evidences %}
-                        {% if loop.first %}
-                            <a href="#" data-dropdown="drop_alias_{{ alias.id }}"><i
-                                    class="fa fa-info-circle"></i></a>
-                            <p id="drop_alias_{{ alias.id }}" class="f-dropdown content medium" data-dropdown-content>
-                        {% endif %}
-                    <a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a>{% if not loop.last %},{% else %}</p>{% endif %}
-                    {% endfor %}{% if not loop.last %},{% else %}</dd>{% endif %}
+                    {% if alias.references|length > 0 %}
+                        <a href="#" data-dropdown="drop_alias_{{ alias.id }}"><i class="fa fa-info-circle"></i></a>
+                        <p id="drop_alias_{{ alias.id }}" class="f-dropdown content medium" data-dropdown-content>
+                            {% for reference in alias.references %}
+                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                    {% endif %}
+                    {% if not loop.last %},{% else %}</dd>{% endif %}
                 {% endfor %}
 
                 <dt>Feature Type</dt>
-                <dd>{{ locus.locus_type }}, {% if locus.qualifier != None %}{{ locus.qualifier }}{% endif %}</dd>
+                <dd>{{ locus.locus_type }}
+                    {% if 'feature_type' in locus.qualities and locus.qualities.feature_type.references|length > 0 %}
+                        <a href="#" data-dropdown="drop_feature_type"><i class="fa fa-info-circle"></i></a>
+                        <p id="drop_feature_type" class="f-dropdown content medium" data-dropdown-content>
+                            {% for reference in locus.qualities.feature_type.references %}
+                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                    {% endif %}
+                    {% if locus.qualifier != None %}, {{ locus.qualifier }}{% endif %}
+                    {% if 'qualifier' in locus.qualities and locus.qualities.qualifier.references|length > 0 %}
+                        <a href="#" data-dropdown="drop_qualifier"><i class="fa fa-info-circle"></i></a>
+                        <p id="drop_qualifier" class="f-dropdown content medium" data-dropdown-content>
+                            {% for reference in locus.qualities.qualifier.references %}
+                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                    {% endif %}
+                </dd>
 
                 <dt>Description</dt>
                 <dd>
                     {{ locus.description }}
-                    {% for evidence in locus.bioentity_references if evidence.info_key == 'Description' %}
-                        {% if loop.first %}
-                            <a href="#" data-dropdown="drop_description"><i
-                                    class="fa fa-info-circle"></i></a>
-                            <p id="drop_description" class="f-dropdown content medium" data-dropdown-content>
-                        {% endif %}
-                    <a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a>
-                    {% if not loop.last %}
-                        ,
-                    {% else %}
+                    {% if 'description' in locus.qualities and locus.qualities.description.references|length > 0 %}
+                        <a href="#" data-dropdown="drop_description"><i class="fa fa-info-circle"></i></a>
+                        <p id="drop_description" class="f-dropdown content medium" data-dropdown-content>
+                            {% for reference in locus.qualities.description.references %}
+                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
                         </p>
                     {% endif %}
-                    {% endfor %}
                 </dd>
 
-                <dt>Name Description</dt>
-                <dd>{{ locus.name_description }}
-                    {% for evidence in locus.bioentity_references if evidence.info_key == 'Name Description' %}
-                        {% if loop.first %}
-                            <a href="#" data-dropdown="drop_description"><i
-                                    class="fa fa-info-circle"></i></a>
-                            <p id="drop_description" class="f-dropdown content medium" data-dropdown-content>
+                {% if locus.name_description != None %}
+                    <dt>Name Description</dt>
+                    <dd>{{ locus.name_description }}
+                        {% if 'name_description' in locus.qualities and locus.qualities.name_description.references|length > 0 %}
+                            <a href="#" data-dropdown="drop_name_description"><i class="fa fa-info-circle"></i></a>
+                            <p id="drop_name_description" class="f-dropdown content medium" data-dropdown-content>
+                                {% for reference in locus.qualities.name_description.references %}
+                                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
                         {% endif %}
-                    <a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a>
-                    {% if not loop.last %}
-                        ,
-                    {% else %}
-                        </p>
-                    {% endif %}
-                    {% endfor %}
-                </dd>
+                    </dd>
+                {% endif %}
 
                 {% for alias in locus.aliases if alias.category == 'Gene product' %}
                     {% if loop.first %}
                         <dt>Gene Product</dt>
-                        <dd>{% endif %}
+                        <dd>
 
-                    {{ alias.display_name }}
-
-                    {% for evidence in alias.evidences %}
-                        {% if loop.first %}
-                            <a href="#" data-dropdown="drop_alias_{{ alias.id }}"><i
-                                    class="fa fa-info-circle"></i></a>
+                        {{ alias.display_name }}
+                        {% if alias.references|length > 0 %}
+                            <a href="#" data-dropdown="drop_alias_{{ alias.id }}"><i class="fa fa-info-circle"></i></a>
                             <p id="drop_alias_{{ alias.id }}" class="f-dropdown content medium" data-dropdown-content>
+                                {% for reference in alias.references %}
+                                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
                         {% endif %}
-                    <a href="{{ evidence.reference.link }}">{{ evidence.reference.display_name }}</a>{% if not loop.last %},
-                    {% else %}
-                        </p>
                     {% endif %}
-                    {% endfor %}
-                    {% if not loop.last %},{% else %}</dd>{% endif %}
                 {% endfor %}
 
                 {% if locus.genetic_position != None %}
                     <dt>Genetic Position</dt>
-                    <dd>{{ locus.genetic_position }}</dd>
+                    <dd>{{ locus.genetic_position }}
+                        {% if 'genetic_position' in locus.qualities and locus.qualities.genetic_position.references|length > 0 %}
+                            <a href="#" data-dropdown="drop_genetic_position"><i class="fa fa-info-circle"></i></a>
+                            <p id="drop_genetic_position" class="f-dropdown content medium" data-dropdown-content>
+                                {% for reference in locus.qualities.genetic_position.references %}
+                                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+                    </dd>
                 {% endif %}
 
                 {% if locus.paralogs|length > 0 %}
                     <dt>Paralog</dt>
                     <dd>
                     {% for paralog in locus.paralogs %}
-                        <a href="{{ paralog.link }}">{{ paralog.display_name }}</a>{% if not loop.last %}, {% endif %}
+                        <a href="{{ paralog.child.link }}">{{ paralog.child.display_name }}</a>
+                        {% if paralog.references|length > 0 %}
+                            <a href="#" data-dropdown="drop_paralog_{{ paralog.id }}"><i class="fa fa-info-circle"></i></a>
+                            <p id="drop_paralog_{{ paralog.id }}" class="f-dropdown content medium" data-dropdown-content>
+                            {% for reference in paralog.references %}
+                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                            </p>
+                        {% endif %}
+                        {% if not loop.last %}, {% endif %}
                     {% endfor %}
                     </dd>
                 {% endif %}

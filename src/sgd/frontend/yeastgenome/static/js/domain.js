@@ -1,10 +1,10 @@
 
 $(document).ready(function() {
 
-	get_json(domain_details_link, function(data) {
+	$.getJSON('/backend/domain/' + domain['id'] + '/locus_details?callback=?', function(data) {
 	  	var annotation_table = create_domain_table(data);
-	  	create_analyze_button("domain_table_analyze", annotation_table, analyze_link, analyze_filename, true);
-  	    create_download_button("domain_table_download", annotation_table, download_table_link, download_filename);
+	  	create_analyze_button("domain_table_analyze", annotation_table, "<a href='" + domain['link'] + "' class='gene_name'>" + domain['display_name'] + "</a> Genes", true);
+  	    create_download_button("domain_table_download", annotation_table, domain['display_name'] + "_annotations");
 	});
 
 });
@@ -27,7 +27,7 @@ function create_domain_table(data) {
     options["aaSorting"] = [[2, "asc"], [4, "asc"]];
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}]
     options["aaData"] = datatable;
-    options["oLanguage"] = {"sEmptyTable": "No genes associated with domain " + display_name + "."};
+    options["oLanguage"] = {"sEmptyTable": "No genes associated with domain " + domain['display_name'] + "."};
 
     return create_table("domain_table", options);
 }

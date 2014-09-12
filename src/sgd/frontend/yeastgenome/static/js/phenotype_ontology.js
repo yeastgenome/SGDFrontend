@@ -1,8 +1,9 @@
 
 $(document).ready(function() {
 
-  	get_json(ontology_graph_link, function(data) {
+  	$.getJSON('/backend/observable/' + ontology['id'] + '/ontology_graph?callback=?', function(data) {
   		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
+        create_cy_download_button(cy, "cy_download", ontology['display_name'] + '_ontology')
 
         $("#ontology").show();
 		set_up_full_ontology("full_ontology", data['full_ontology']);

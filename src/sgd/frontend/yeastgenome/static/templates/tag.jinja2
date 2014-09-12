@@ -4,12 +4,7 @@
 
 {% block head %}
 <script>
-	var download_table_link = "{{download_table_link}}";
-	var analyze_link = "{{analyze_table_link}}";
-    var all_tags_link = "{{all_tags_link}}";
-
-    var display_name = "{{ tag.display_name }}";
-    var bioitems = {{bioitems | safe}};
+	var tag = {{ tag_js|safe }};
 </script>
 {% endblock %}
 

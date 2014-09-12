@@ -78,19 +78,6 @@
 	<script>
 	    //initialize search
 	    initialize_sgd_search();
-
-		//Get resources
-		var tab_link = "{{tab_link}}";
-		$.getJSON(tab_link, function(data) {
-			for(var key in data) {
-				if(!data[key]) {
-					var element = document.getElementById(key);
-					if(element != null) {
-						element.style.display = "none";
-					}
-				}
-			}
-		});
 	</script>
 
 {% block scripts %}{% endblock %}

@@ -4,22 +4,7 @@
 
 {% block head %}
 <script>
-	var go_details_link = "{{go_details_link}}";
-	var go_graph_link = "{{go_graph_link}}";
-	var download_table_link = "{{download_table_link}}";
-    var download_network_link = "{{download_network_link}}";
-
-	var mc_bp_download_table_filename = "{{ locus.display_name }}_manual_bp_go";
-	var mc_mf_download_table_filename = "{{ locus.display_name }}_manual_mf_go";
-	var mc_cc_download_table_filename = "{{ locus.display_name }}_manual_cc_go";
-    var htp_bp_download_table_filename = "{{ locus.display_name }}_htp_bp_go";
-	var htp_mf_download_table_filename = "{{ locus.display_name }}_htp_mf_go";
-	var htp_cc_download_table_filename = "{{ locus.display_name }}_htp_cc_go";
-    var comp_bp_download_table_filename = "{{ locus.display_name }}_computational_bp_go";
-	var comp_mf_download_table_filename = "{{ locus.display_name }}_computational_mf_go";
-	var comp_cc_download_table_filename = "{{ locus.display_name }}_computational_cc_go";
-
-	var display_name = "{{ locus.display_name }}";
+    var locus = {{ locus_js|safe }}
 </script>
 {% endblock %}
 

@@ -1,10 +1,10 @@
 
 $(document).ready(function() {
 
-	get_json(chemical_details_link, function(data) {
+	$.getJSON('/backend/chemical/' + chemical['id']  + '/phenotype_details?callback=?', function(data) {
 	  	var phenotype_table = create_phenotype_table(data);
-	  	create_analyze_button("phenotype_table_analyze", phenotype_table, analyze_link, analyze_filename, true);
-  	    create_download_button("phenotype_table_download", phenotype_table, download_table_link, download_filename);
+	  	create_analyze_button("phenotype_table_analyze", phenotype_table, "<a href='" + chemical['link'] + "' class='gene_name'>" + chemical['display_name'] + "</a> Genes", true);
+  	    create_download_button("phenotype_table_download", phenotype_table, chemical['display_name'] + "_annotations");
 	});
 
 });
@@ -23,7 +23,7 @@ function create_phenotype_table(data) {
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[4, "asc"]];
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, {"sWidth": "250px"}, null];
-    options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + display_name};
+    options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + chemical['display_name']};
 	options["aaData"] = datatable;
 
     return create_table("phenotype_table", options);

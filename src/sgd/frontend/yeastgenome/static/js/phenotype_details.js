@@ -1,16 +1,16 @@
 
 $(document).ready(function() {
-  	get_json(phenotype_details_link, function(data) {
+  	$.getJSON('/backend/locus/' + locus['id'] + '/phenotype_details?callback=?', function(data) {
   	    var phenotype_table = create_phenotype_table(data);
-        create_download_button("phenotype_table_download", phenotype_table, download_table_link, download_table_filename);
+        create_download_button("phenotype_table_download", phenotype_table, locus['display_name'] + "_phenotypes");
         $("#phenotype_table_analyze").hide();
   	});
 
-  	get_json(phenotype_graph_link, function(data) {
+  	$.getJSON('/backend/locus/' + locus['id'] + '/phenotype_graph?callback=?', function(data) {
   		if(data['nodes'].length > 1) {
   			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
   			var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);
-            create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_phenotype_graph')
+            create_cy_download_button(graph, "cy_download", locus['display_name'] + '_phenotype_graph')
   		}
 		else {
 			hide_section("network");
@@ -41,7 +41,7 @@ function create_phenotype_table(data) {
         options["bPaginate"] = true;
         options["aaSorting"] = [[4, "asc"]];
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, {"bVisible":false}, null, null, null, {'sWidth': '250px'}, null];
-        options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + display_name};
+        options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + locus['display_name']};
         options["aaData"] = datatable;
     }
 

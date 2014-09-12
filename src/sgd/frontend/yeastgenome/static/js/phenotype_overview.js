@@ -2,6 +2,17 @@ google.load("visualization", "1", {packages:["corechart"]});
 google.setOnLoadCallback(drawChart);
 function drawChart() {
 
+    var phenotype_overview = null;
+    if(!(typeof observable === 'undefined')) {
+        phenotype_overview = observable['overview'];
+    }
+    else if(!(typeof phenotype === 'undefined')) {
+        phenotype_overview = phenotype['overview'];
+    }
+    else if(!(typeof locus === 'undefined')) {
+        phenotype_overview = locus['phenotype_overview'];
+    }
+
     if(phenotype_overview['experiment_categories'].length > 1) {
         var label = 'Annotations';
         var data = google.visualization.arrayToDataTable(phenotype_overview['experiment_categories']);

@@ -4,20 +4,7 @@
 
 {% block head %}
 <script>
-	var interaction_details_link = "{{interaction_details_link}}";
-	var interaction_graph_link = "{{interaction_graph_link}}";
-	var download_table_link = "{{download_table_link}}";
-    var download_network_link = "{{download_network_link}}";
-	var analyze_link = "{{analyze_table_link}}";
-    var evidence_table_filename = "{{ locus.display_name}}_interactions";
-    var analyze_filename = "<a href='{{ locus.link }}' class='gene_name'>{{ locus.display_name }}</a>";
-    var interaction_overview = {{interaction_overview | safe}};
-
-	var summary_download_filename = "{{ locus.display_name}}_interaction_summary";
-    var annotation_analyze_filename = "{{ locus.display_name}}_interactors";
-
-	var display_name = "{{ locus.display_name }}";
-	var locus_id = "{{ locus.id }}";
+    var locus = {{ locus_js|safe }}
 </script>
 {% endblock %}
 

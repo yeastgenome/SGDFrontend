@@ -4,19 +4,8 @@
 
 {% block head %}
 <script>
-	var protein_domains_link = "{{ protein_domain_details_link }}";
-    var protein_domain_graph_link = "{{ protein_domain_graph_link }}";
-    var sequence_details_link = "{{ sequence_details_link }}";
-    var protein_phosphorylation_details_link = "{{ protein_phosphorylation_details_link }}";
-    var ec_number_details_link = "{{ ec_number_details_link }}";
-    var protein_experiment_details_link = "{{ protein_experiment_details_link }}";
-    var bioentity_details_link = "{{ bioentity_details_link }}";
-    var aliases = {{ aliases|safe }};
+    var locus = {{ locus_js|safe }};
 
-	var download_table_link = "{{download_table_link}}";
-    var download_sequence_link = "{{download_sequence_link}}";
-	var analyze_link = "{{analyze_table_link}}";
-    var download_network_link = "{{download_network_link}}";
 
     var domains_table_filename = "{{ locus.display_name }}_domains";
     var alias_table_filename = "{{ locus.display_name }}_external_ids";

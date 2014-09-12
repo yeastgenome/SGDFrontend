@@ -1,13 +1,13 @@
 
 $(document).ready(function() {
 
-	get_json(phenotype_details_link, function(data) {
+	$.getJSON('/backend/observable/' + observable['id'] + '/locus_details?callback=?', function(data) {
         var phenotype_table = create_phenotype_table(data);
-        create_analyze_button("phenotype_table_analyze", phenotype_table, analyze_link, analyze_filename, true);
-        create_download_button("phenotype_table_download", phenotype_table, download_table_link, download_filename);
+        create_analyze_button("phenotype_table_analyze", phenotype_table, "<a href='" + observable['link'] + "' class='gene_name'>" + observable['display_name'] + "</a> genes", true);
+        create_download_button("phenotype_table_download", phenotype_table, observable['display_name'] + "_annotations");
 
-        if(child_count > count) {
-            create_show_child_button("phenotype_table_show_children", phenotype_table, data, phenotype_details_all_link, phenotype_data_to_table, function(table_data) {
+        if(observable['child_count'] > observable['count']) {
+            create_show_child_button("phenotype_table_show_children", phenotype_table, data, '/backend/observable/' + observable['id'] + '/locus_details_all?callback=?', phenotype_data_to_table, function(table_data) {
 
                 var genes = {};
                 for (var i=0; i < table_data.length; i++) {
@@ -18,9 +18,9 @@ $(document).ready(function() {
         }
 	});
 
-	get_json(ontology_graph_link, function(data) {
+	$.getJSON('/backend/observable/' + observable['id'] + '/ontology_graph?callback=?', function(data) {
   		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
-        create_cy_download_button(cy, "cy_download", download_network_link, display_name + '_ontology')
+        create_cy_download_button(cy, "cy_download", observable['display_name'] + '_ontology')
 
         if(data['all_children'] != null && data['all_children'].length > 0) {
             var children_div = document.getElementById("children");
@@ -84,7 +84,7 @@ function create_phenotype_table(data) {
         options["bPaginate"] = true;
         options["aaSorting"] = [[2, "asc"]];
         options["bDestroy"] = true;
-        options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + display_name};
+        options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + observable['display_name']};
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bVisible":false}, null, null, null, {"sWidth": "250px"}, null];
         options["aaData"] = datatable;
     }

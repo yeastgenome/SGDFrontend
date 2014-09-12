@@ -14,7 +14,7 @@ var other_contig = '';
 $(document).ready(function() {
 
     $("#subfeature_table_analyze").hide();
-  	get_json(sequence_details_link, function(data) {
+  	$.getJSON('/backend/locus/' + locus['id'] + '/sequence_details?callback=?', function(data) {
         var dna_data = data['genomic_dna'];
         var alternative_selection = $("#alternative_strain_selection");
         var other_selection = $("#other_strain_selection");
@@ -35,7 +35,7 @@ $(document).ready(function() {
                 if(dna_data[i]['tags'].length > 0) {
                     draw_sublabel_chart('reference_sublabel_chart', dna_data[i]);
                     var subfeature_table = create_subfeature_table(dna_data[i]);
-                    create_download_button("subfeature_table_download", subfeature_table, download_table_link, display_name + '_subfeatures');
+                    create_download_button("subfeature_table_download", subfeature_table, locus['display_name'] + '_subfeatures');
                 }
                 else {
                     $("#subfeature_wrapper").hide();
@@ -121,7 +121,7 @@ $(document).ready(function() {
         reference_on_change();
 
         $("#reference_download").click(function f() {
-            download_sequence(reference_download_residues, download_sequence_link, display_name, reference_contig);
+            download_sequence(reference_download_residues, locus['display_name'], reference_contig);
         });
 
         if(has_alternative) {
@@ -188,7 +188,7 @@ $(document).ready(function() {
             alternative_on_change();
 
             $("#alternative_download").click(function f() {
-                download_sequence(alternative_download_residues, download_sequence_link, display_name, alternative_contig);
+                download_sequence(alternative_download_residues, locus['display_name'], alternative_contig);
             });
         }
         else {
@@ -208,7 +208,7 @@ $(document).ready(function() {
             other_on_change();
 
             $("#other_download").click(function f() {
-                download_sequence(other_download_residues, download_sequence_link, display_name, other_contig);
+                download_sequence(other_download_residues, locus['display_name'], other_contig);
             });
         }
         else {
@@ -216,7 +216,7 @@ $(document).ready(function() {
         }
     });
 
-    get_json(neighbor_sequence_details_link, function(data) {
+    $.getJSON('/backend/locus/' + locus['id'] + '/neighbor_sequence_details?callback=?', function(data) {
         strain_to_neighbors = data;
         draw_label_chart('reference_label_chart', 'S288C');
         draw_label_chart('alternative_label_chart', $("#alternative_strain_selection").val());
@@ -230,7 +230,7 @@ function set_up_history_table() {
     options["bPaginate"] = false;
     options["aaSorting"] = [[0, "asc"]];
     options["aoColumns"] = [null, null, null]
-    options["oLanguage"] = {"sEmptyTable": "No history for " + display_name + '.'};
+    options["oLanguage"] = {"sEmptyTable": "No history for " + locus['display_name'] + '.'};
 
     return create_table("history_table", options);
 }
@@ -366,7 +366,7 @@ function draw_label_chart(chart_id, strain_name) {
             var direction = strand_to_direction(data[i]['strand']);
             display_name_to_format_name[data[i]['locus']['display_name']] = data[i];
             var color;
-            if(data[i]['locus']['display_name'] == display_name) {
+            if(data[i]['locus']['display_name'] == locus['display_name']) {
                 color = "#3366cc";
             }
             else {
@@ -530,8 +530,8 @@ function draw_sublabel_chart(chart_id, data) {
         if(start == 100) {
             start = 0;
         }
-        data_array.unshift(['Locus', display_name, start, end]);
-        labels[display_name] = true;
+        data_array.unshift(['Locus', locus['display_name'], start, end]);
+        labels[locus['display_name']] = true;
         show_row_lables = true;
     }
     dataTable.addRows(data_array);
@@ -739,7 +739,7 @@ function create_subfeature_table(data) {
         { "sType": "range" },
         {"bSearchable":false, "bVisible":false}, null, null]
     options["aaData"] = datatable;
-    options["oLanguage"] = {"sEmptyTable": "No subfeatures for " + display_name + '.'};
+    options["oLanguage"] = {"sEmptyTable": "No subfeatures for " + locus['display_name'] + '.'};
 
     return create_table("subfeature_table", options);
 }

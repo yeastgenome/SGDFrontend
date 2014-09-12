@@ -4,21 +4,7 @@
 
 {% block head %}
 <script>
-	//Template links and filenames
-	var go_details_link = "{{go_details_link}}";
-	var go_details_all_link = "{{go_details_all_link}}";
-	var ontology_graph_link = "{{ontology_graph_link}}";
-
-	var download_table_link = "{{download_table_link}}";
-    var analyze_link = "{{analyze_table_link}}";
-    var download_network_link = "{{download_network_link}}";
-
-	var download_filename = "{{ go_term.display_name }}_annotations";
-    var analyze_filename = "<a href='{{ go_term.link }}' class='gene_name'>{{ go_term.display_name }}</a> genes";
-
-    var display_name = "{{ go_term.display_name }}";
-    var count = "{{ go_term.count }}";
-    var child_count = "{{ go_term.child_count }}";
+    var go_term = {{ go_term_js|safe }};
 </script>
 {% endblock %}
 

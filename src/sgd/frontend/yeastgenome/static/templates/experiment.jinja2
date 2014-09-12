@@ -4,9 +4,7 @@
 
 {% block head %}
 <script>
-    var display_name = "{{ experiment.display_name }}";
-  	var download_link = "{{download_citations_link}}";
-    var reference_data = {{references | safe}};
+    var experiment = {{experiment_js | safe}};
 </script>
 {% endblock %}
 

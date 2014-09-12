@@ -2,37 +2,37 @@
 $(document).ready(function() {
 
     $("#enrichment_table_analyze").hide();
-    if(regulation_overview['paragraph'] != null) {
-        document.getElementById("summary_paragraph").innerHTML = regulation_overview['paragraph']['text'];
-        set_up_references(regulation_overview['paragraph']['references'], "summary_paragraph_reference_list");
+    if(locus['regulation_overview']['paragraph'] != null) {
+        document.getElementById("summary_paragraph").innerHTML = locus['regulation_overview']['paragraph']['text'];
+        set_up_references(locus['regulation_overview']['paragraph']['references'], "summary_paragraph_reference_list");
     }
 
-    if(target_count > 0) {
+    if(locus['regulation_overview']['target_count'] > 0) {
         $("#domain_table_analyze").hide();
-		get_json(protein_domains_link, function(data) {
+		$.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_details?callback=?', function(data) {
             var domain_table = create_domain_table(data);
             if(domain_table != null) {
-                create_download_button("domain_table_download", domain_table, download_table_link, domains_table_filename);
+                create_download_button("domain_table_download", domain_table, locus['display_name'] + "_domains");
             }
 		});
     }
 
-    if(target_count > 0) {
-	  	get_json(binding_site_details_link, function(data) {
+    if(locus['regulation_overview']['target_count'] > 0) {
+	  	$.getJSON('/backend/locus/' + locus['id'] + '/binding_site_details?callback=?', function(data) {
 	        create_binding_site_table(data);
 	    });
 	}
 
-	get_json(regulation_details_link, function(data) {
-  		if(target_count > 0) {
+	$.getJSON('/backend/locus/' + locus['id'] + '/regulation_details?callback=?', function(data) {
+  		if(locus['regulation_overview']['target_count'] > 0) {
   		    var target_table = create_target_table(data);
-  		    create_analyze_button("target_table_analyze", target_table, analyze_link, analyze_filename + " targets", true);
-  	        create_analyze_button("analyze_targets", target_table, analyze_link, analyze_filename + " targets", false);
-  	        create_download_button("target_table_download", target_table, download_table_link, targets_table_filename);
+  		    create_analyze_button("target_table_analyze", target_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> targets", true);
+  	        create_analyze_button("analyze_targets", target_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> targets", false);
+  	        create_download_button("target_table_download", target_table, locus['display_name'] + "_targets");
 
-  	        get_json(regulation_target_enrichment_link, function(enrichment_data) {
+  	        get_json('/backend/locus/' + locus['id'] + '/regulation_target_enrichment?callback=?', function(enrichment_data) {
                 var enrichment_table = create_enrichment_table("enrichment_table", target_table, enrichment_data);
-                create_download_button("enrichment_table_download", enrichment_table, download_table_link, enrichment_table_filename);
+                create_download_button("enrichment_table_download", enrichment_table, locus['display_name'] + "_targets_go_process_enrichment");
   	        });
   		}
   		else {
@@ -42,15 +42,15 @@ $(document).ready(function() {
   		}
 
   		var regulator_table = create_regulator_table(data);
-  		create_analyze_button("regulator_table_analyze", regulator_table, analyze_link, analyze_filename + " regulators", true);
-  	    create_analyze_button("analyze_regulators", regulator_table, analyze_link, analyze_filename + " regulators", false);
-  	    create_download_button("regulator_table_download", regulator_table, download_table_link, regulators_table_filename);
+  		create_analyze_button("regulator_table_analyze", regulator_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> regulators", true);
+  	    create_analyze_button("analyze_regulators", regulator_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> regulators", false);
+  	    create_download_button("regulator_table_download", regulator_table, locus['display_name'] + "_regulators");
   	});
 
-    get_json(regulation_graph_link, function(data) {
+    $.getJSON('/backend/locus/' + locus['id'] + '/regulation_graph?callback=?', function(data) {
         if(data != null && data["nodes"].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
-            create_cy_download_button(graph, "cy_download", download_network_link, display_name + '_regulation_graph')
+            create_cy_download_button(graph, "cy_download", download_network_link, locus['display_name'] + '_regulation_graph')
             var message = 'Showing regulatory relationships supported by at least <strong>' + data['min_evidence_count'] + '</strong> experiment';
             if(data['min_evidence_count'] == 1) {
                 message = message + '.';
@@ -133,7 +133,7 @@ function create_target_table(data) {
         var genes = {};
         var target_entry_count = 0;
         for (var i=0; i < data.length; i++) {
-            if(data[i]["locus1"]["id"] == locus_id) {
+            if(data[i]["locus1"]["id"] == locus['id']) {
                 datatable.push(regulation_data_to_table(data[i], false));
                 genes[data[i]["locus2"]["id"]] = true;
                 target_entry_count = target_entry_count + 1;
@@ -156,7 +156,7 @@ function create_regulator_table(data) {
 	var genes = {};
     var regulation_entry_count = 0;
 	for (var i=0; i < data.length; i++) {
-	    if(data[i]["locus2"]["id"] == locus_id) {
+	    if(data[i]["locus2"]["id"] == locus['id']) {
             datatable.push(regulation_data_to_table(data[i], true));
 		    genes[data[i]["locus1"]["id"]] = true;
             regulation_entry_count = regulation_entry_count+1;
@@ -168,7 +168,7 @@ function create_regulator_table(data) {
     options["bPaginate"] = true;
 	options["aaSorting"] = [[2, "asc"]];
 	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null]
-	options["oLanguage"] = {"sEmptyTable": "No regulation data for " + display_name};
+	options["oLanguage"] = {"sEmptyTable": "No regulation data for " + locus['display_name']};
 	options["aaData"] = datatable;
 
     return create_table("regulator_table", options);

@@ -4,32 +4,7 @@
 
 {% block head %}
 <script>
-    var interaction_details_link = "{{ interaction_details_link }}";
-    var regulation_details_link = "{{ regulation_details_link }}";
-    var phenotype_details_link = "{{ phenotype_details_link }}";
-    var go_details_link = "{{ go_details_link }}";
-    var literature_details_link = "{{ literature_details_link }}";
-
-    var download_table_link = "{{ download_table_link }}";
-    var analyze_link = "{{ analyze_table_link }}";
-    var download_link = "{{ download_citations_link }}";
-
-    var interaction_download_filename = "{{ reference.display_name }}_interactions";
-    var interaction_analyze_filename = "{{ reference.display_name }} interaction genes";
-    var regulation_download_filename = "{{ reference.display_name }}_regulation";
-    var regulation_analyze_filename = "{{ reference.display_name }} regulation genes";
-    var phenotype_download_filename = "{{ reference.display_name }}_phenotypes";
-    var phenotype_analyze_filename = "{{ reference.display_name }} phenotype genes";
-    var go_download_filename = "{{ reference.display_name }}_go_terms";
-    var go_analyze_filename = "{{ reference.display_name }} Gene Ontology terms";
-
-    var display_name = "{{ reference.display_name }}";
-    var related_reference_count = {{ reference.related_references|length }};
-    var counts = {{counts|safe}};
-
-    var locus_id = null;
-    var reference_id = {{ reference.id }};
-    var datasets = {{datasets | safe}};
+    var reference = {{ reference_js|safe }};
 </script>
 {% endblock %}
 
