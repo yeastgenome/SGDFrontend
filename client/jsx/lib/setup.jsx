@@ -18,21 +18,10 @@ module.exports = function () {
 	// exec search setup script
 	search();
 
-	//Get resources
-	var tab_link = "{{tab_link}}";
-	$.getJSON(tab_link, function(data) {
-		for(var key in data) {
-			if(!data[key]) {
-				var element = document.getElementById(key);
-				if(element != null) {
-					element.style.display = "none";
-				}
-			}
-		}
-	});
-
-	$(document).ready(function(){          // does the following only after DOM completely loads
-		if (window.location.hash) {         // if the url contains an anchor
+	// does the following only after DOM completely loads
+	// if the url contains an anchor
+	$(document).ready(function(){          
+		if (window.location.hash) {
 			var anchor = window.location.hash;
 			window.location.hash = anchor;
 		}
