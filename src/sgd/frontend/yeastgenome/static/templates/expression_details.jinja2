@@ -69,6 +69,13 @@
             {% include "expression_overview.jinja2" %}
         </div>
         <p id='expression_message' hidden>No expression data for {{ locus.display_name }}.</p>
+        <p>View genes with similar expression profiles using
+            {% for url in locus.urls if url.category == 'LOCUS_EXPRESSION'%}
+                {% if url.display_name == 'SPELL' %}
+                    <strong><a href="{{ url.link }}">{{ url.display_name }}</a></strong>
+                {% endif %}
+            {% endfor %}(Serial Pattern of Expression Levels Locator).
+        </p>
 	</div>
 </section>
 
