@@ -1,3 +1,6 @@
+{% if locus.phenotype_overview.classical_phenotypes|length + locus.phenotype_overview.large_scale_phenotypes|length == 0 %}
+    <p>No phenotypes annotated to {{ locus.display_name }}.</p>
+{% endif %}
 
 <div class="panel" id="summary_wrapper">
     <div class="row">
