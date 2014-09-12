@@ -1,25 +1,3 @@
-.snapshot-container {
-	h1, h2, h3 {
-		font-family: Palatino;
-	}
-
-	h1:first-child {
-		margin-top: 0.5em;
-	}
-
-	a:hover {
-		text-decoration: underline;
-	}
-
-	.loader {
-		position: absolute;
-		margin-top: -16px;
-		margin-left: -16px;
-		top: 50%;
-		left: 50%;
-	}
-}
-
 .sgd-viz {
 	min-height: 100px;
 	position: relative;
