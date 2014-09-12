@@ -38,97 +38,6 @@ class YeastgenomeFrontend(FrontendInterface):
             else:
                 return data
         return f
-    
-    def interaction_details(self, bioent_repr):
-        locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
-
-        page = {
-                        #Basic info
-                        'locus': locus,
-                        'locus_js': json.dumps(locus),
-                        'tabs': tabs
-
-                }
-        return page
-
-    def literature_details(self, bioent_repr):
-        locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
-
-        page = {
-                        #Basic info
-                        'locus': locus,
-                        'locus_js': json.dumps(locus),
-                        'tabs': tabs
-
-                }
-        return page
-    
-    def regulation_details(self, bioent_repr):
-        locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
-
-        page = {
-                        #Basic info
-                        'locus': locus,
-                        'locus_js': json.dumps(locus),
-                        'tabs': tabs
-
-                }
-        return page
-    
-    def phenotype_details(self, bioent_repr):
-        locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
-
-        page = {
-                    #Basic info
-                    'locus': locus,
-                    'locus_js': json.dumps(locus),
-                    'tabs': tabs,
-
-                    }
-        return page
-
-    def expression_details(self, bioent_repr):
-        locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
-
-        page = {
-                    #Basic info
-                    'locus': locus,
-                    'locus_js': json.dumps(locus),
-                    'tabs': tabs,
-
-                    }
-        return page
-    
-    def go_details(self, bioent_repr):
-        locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
-
-        page = {
-                    #Basic info
-                    'locus': locus,
-                    'locus_js': json.dumps(locus),
-                    'tabs': tabs,
-
-                    }
-        return page
-
-    def protein_details(self, bioent_repr):
-        locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
-
-        page = {
-                    #Basic info
-                    'locus': locus,
-                    'locus_js': json.dumps(locus),
-                    'tabs': tabs,
-
-                    }
-        return page
 
     def locus(self, bioent_repr):
         locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
@@ -142,196 +51,94 @@ class YeastgenomeFrontend(FrontendInterface):
 
                     }
         return page
+    
+    def interaction_details(self, bioent_repr):
+        return self.locus(bioent_repr)
+
+    def literature_details(self, bioent_repr):
+        return self.locus(bioent_repr)
+    
+    def regulation_details(self, bioent_repr):
+        return self.locus(bioent_repr)
+    
+    def phenotype_details(self, bioent_repr):
+        return self.locus(bioent_repr)
+
+    def expression_details(self, bioent_repr):
+        return self.locus(bioent_repr)
+    
+    def go_details(self, bioent_repr):
+        return self.locus(bioent_repr)
+
+    def protein_details(self, bioent_repr):
+        return self.locus(bioent_repr)
 
     def sequence_details(self, bioent_repr):
-        locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
-
-        page = {
-                        #Basic info
-                        'locus': locus,
-                        'locus_js': json.dumps(locus),
-                        'tabs': tabs
-
-                }
-        return page
+        return self.locus(bioent_repr)
 
     def curator_sequence(self, bioent_repr):
-        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        bioent_id = str(bioent['id'])
-        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
+        return self.locus(bioent_repr)
+
+    def get_obj(self, obj_type, obj_repr, obj_url=None):
+        if obj_url is None:
+            obj_url = self.backend_url + '/' + obj_type + '/' + obj_repr + '/overview'
+
+        obj = get_json(obj_url)
 
         page = {
                     #Basic info
-                    'locus': bioent,
-                    'locus_js': json.dumps(bioent),
-                    'tabs': tabs,
+                    obj_type: obj,
+                    obj_type + '_js': json.dumps(obj)
                     }
         return page
 
     def strain(self, strain_repr):
-        strain = get_json(self.backend_url + '/strain/' + strain_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'strain': strain,
-                    'strain_js': json.dumps(strain)
-                    }
-        return page
+        return self.get_obj('strain', strain_repr)
 
     def ecnumber(self, biocon_repr):
-        ecnumber = get_json(self.backend_url + '/ecnumber/' + biocon_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'ecnumber': ecnumber,
-                    'ecnumber_js': json.dumps(ecnumber)
-
-                    }
-        return page
+        return self.get_obj('ecnumber', biocon_repr)
 
     def dataset(self, bioitem_repr):
-        dataset = get_json(self.backend_url + '/dataset/' + bioitem_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'dataset': dataset,
-                    'dataset_js': json.dumps(dataset)
-
-                    }
-        return page
+        return self.get_obj('dataset', bioitem_repr)
 
     def tag(self, tag_repr):
-        tag = get_json(self.backend_url + '/tag/' + tag_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'tag': tag,
-                    'tag_js': json.dumps(tag)
-                    }
-        return page
+        return self.get_obj('tag', tag_repr)
 
     def experiment(self, experiment_repr):
-        experiment = get_json(self.backend_url + '/experiment/' + experiment_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'experiment': experiment,
-                    'experiment_js': json.dumps(experiment),
-
-                    }
-        return page
+        return self.get_obj('experiment', experiment_repr)
     
     def phenotype(self, biocon_repr):
-        phenotype = get_json(self.backend_url + '/phenotype/' + biocon_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'phenotype': phenotype,
-                    'phenotype_js': json.dumps(phenotype),
-
-                    }
-        return page
+        return self.get_obj('phenotype', biocon_repr)
     
     def observable(self, biocon_repr):
-        observable = get_json(self.backend_url + '/observable/' + biocon_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'observable': observable,
-                    'observable_js': json.dumps(observable),
-
-                    }
-        return page
+        return self.get_obj('observable', biocon_repr)
     
     def phenotype_ontology(self):
-        ontology = get_json(self.backend_url + '/observable/ypo/overview')
-
-        page = {
-                    #Basic info
-                    'ontology': ontology,
-                    'ontology_js': json.dumps(ontology)
-
-                    }
-        return page
+        return self.get_obj('ontology', None, obj_url=self.backend_url + '/observable/ypo/overview')
     
     def go(self, biocon_repr):
-        go_term = get_json(self.backend_url + '/go/' + biocon_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'go_term': go_term,
-                    'go_term_js': json.dumps(go_term)
-
-                    }
-        return page
+        return self.get_obj('go_term', None, obj_url=self.backend_url + '/go/' + biocon_repr + '/overview')
 
     def go_ontology(self, biocon_repr):
-        ontology = get_json(self.backend_url + '/go/' + biocon_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'ontology': ontology,
-                    'ontology_js': json.dumps(ontology)
-
-                    }
-        return page
+        return self.get_obj('ontology', None, obj_url=self.backend_url + '/go/' + biocon_repr + '/overview')
     
     def chemical(self, chemical_repr):
-        chemical = get_json(self.backend_url + '/chemical/' + chemical_repr + '/overview')
-        chemical_id = str(chemical['id'])
-
-        page = {
-                    #Basic info
-                    'chemical': chemical,
-                    'chemical_js': json.dumps(chemical),
-                    }
-        return page
+        return self.get_obj('chemical', chemical_repr)
 
     def domain(self, domain_repr):
-        domain = get_json(self.backend_url + '/domain/' + domain_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'domain': domain,
-                    'domain_js': json.dumps(domain)
-
-                    }
-        return page
+        return self.get_obj('domain', domain_repr)
 
     def reference(self, reference_repr):
-        reference = get_json(self.backend_url + '/reference/' + reference_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'reference': reference,
-                    'reference_js': json.dumps(reference),
-
-                    }
-        return page
+        return self.get_obj('reference', reference_repr)
 
     def author(self, author_repr):
-        author = get_json(self.backend_url + '/author/' + author_repr + '/overview')
+        return self.get_obj('author', author_repr)
 
-        page = {
-                    #Basic info
-                    'author': author,
-                    'author_js': json.dumps(author)
-                    }
-        return page
+    def contig(self, contig_repr):
+        return self.get_obj('contig', contig_repr)
 
     def references_this_week(self):
         page = {}
-        return page
-
-    def contig(self, contig_repr):
-        contig = get_json(self.backend_url + '/contig/' + contig_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'contig': contig,
-                    'contig_js': json.dumps(contig)
-                    }
         return page
     
     def home(self):
