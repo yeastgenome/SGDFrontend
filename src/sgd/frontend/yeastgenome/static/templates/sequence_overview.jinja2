@@ -47,4 +47,22 @@
                         </p>
                     {% endif %}
                 </dd>
+
+                {% if locus.paralogs|length > 0 %}
+                    <dt>Paralog</dt>
+                    <dd>
+                    {% for paralog in locus.paralogs %}
+                        <a href="{{ paralog.child.link }}">{{ paralog.child.display_name }}</a>
+                        {% if paralog.references|length > 0 %}
+                            <a href="#" data-dropdown="drop_paralog_{{ paralog.id }}"><i class="fa fa-info-circle"></i></a>
+                            <p id="drop_paralog_{{ paralog.id }}" class="f-dropdown content medium" data-dropdown-content>
+                            {% for reference in paralog.references %}
+                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                            </p>
+                        {% endif %}
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                    </dd>
+                {% endif %}
 </dl>

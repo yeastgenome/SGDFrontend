@@ -1,5 +1,4 @@
-
-<dl class="key-value" id="protein_overview">
+<dl class="key-value">
                 {% for alias in locus.aliases if alias.category == 'Uniform' %}
                     {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
                     {{ alias.display_name }}
@@ -14,39 +13,26 @@
                     {% if not loop.last %},{% else %}</dd>{% endif %}
                 {% endfor %}
 
-                {% for alias in locus.aliases if alias.category == 'Gene product' %}
-                    {% if loop.first %}
-                        <dt>Gene Product</dt>
-                        <dd>
-
-                        {{ alias.display_name }}
-                        {% if alias.references|length > 0 %}
-                            <a href="#" data-dropdown="drop_alias_{{ alias.id }}"><i class="fa fa-info-circle"></i></a>
-                            <p id="drop_alias_{{ alias.id }}" class="f-dropdown content medium" data-dropdown-content>
-                                {% for reference in alias.references %}
-                                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
-                                {% endfor %}
-                            </p>
-                        {% endif %}
+                <dt>Feature Type</dt>
+                <dd>{{ locus.locus_type }}
+                    {% if 'feature_type' in locus.qualities and locus.qualities.feature_type.references|length > 0 %}
+                        <a href="#" data-dropdown="drop_feature_type"><i class="fa fa-info-circle"></i></a>
+                        <p id="drop_feature_type" class="f-dropdown content medium" data-dropdown-content>
+                            {% for reference in locus.qualities.feature_type.references %}
+                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
                     {% endif %}
-                {% endfor %}
-
-                {% for alias in locus.aliases if alias.category == 'NCBI protein name' %}
-                    {% if loop.first %}
-                        <dt>Gene Product</dt>
-                        <dd>
-
-                        {{ alias.display_name }}
-                        {% if alias.references|length > 0 %}
-                            <a href="#" data-dropdown="drop_alias_{{ alias.id }}"><i class="fa fa-info-circle"></i></a>
-                            <p id="drop_alias_{{ alias.id }}" class="f-dropdown content medium" data-dropdown-content>
-                                {% for reference in alias.references %}
-                                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
-                                {% endfor %}
-                            </p>
-                        {% endif %}
+                    {% if locus.qualifier != None %}, {{ locus.qualifier }}{% endif %}
+                    {% if 'qualifier' in locus.qualities and locus.qualities.qualifier.references|length > 0 %}
+                        <a href="#" data-dropdown="drop_qualifier"><i class="fa fa-info-circle"></i></a>
+                        <p id="drop_qualifier" class="f-dropdown content medium" data-dropdown-content>
+                            {% for reference in locus.qualities.qualifier.references %}
+                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
                     {% endif %}
-                {% endfor %}
+                </dd>
 
                 <dt>Description</dt>
                 <dd>
