@@ -33,7 +33,7 @@
             //Set up navbar
             add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</a>');
             add_navbar_element('Locus Overview', 'overview');
-            {% if tabs['summary_tab'] %}
+            {% if tabs['sequence_tab'] %}
                 add_navbar_element('Sequence', 'sequence');
             {% endif %}
             {% if tabs['literature_tab'] %}
@@ -58,9 +58,7 @@
                 add_navbar_element('Protein', 'protein');
             {% endif %}
             {% if tabs['history_tab'] %}
-                {% for evidence in locus.history if evidence.history_type == 'LSP' %}{% if loop.first %}
-                    add_navbar_element('History', 'history');
-                {% endif %}{% endfor %}
+                add_navbar_element('History', 'history');
             {% endif %}
             {% for url in locus.urls if url.category == 'LSP' %}{% if loop.first %}
                 add_navbar_element('Resources', 'resources');
@@ -675,7 +673,6 @@
 <!-- History
 ================================================== -->
     {% if tabs['history_tab'] %}
-    {% for evidence in locus.history if evidence.history_type == 'LSP' %}{% if loop.first %}
     <section id="history" data-magellan-destination="history">
         <h2>History</h2>
         <div>
@@ -702,7 +699,6 @@
             </table>
         </div>
     </section>
-    {% endif %}{% endfor %}
     {% endif %}
 
 <!-- Resources
