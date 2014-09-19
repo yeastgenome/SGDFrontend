@@ -261,32 +261,6 @@
                 <li><a id="kb_download">1KB Up- and Down- Stream</a></li>
                 <li><a id="protein_download">Protein</a></li>
             </ul>
-
-            <div class="panel">
-                <h3>Resources</h3>
-                 <p id='resources_list'>
-                    {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE'%}
-                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
-
-                {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C'%}
-                    {% if loop.first %}<h3>S288C only</h3><p id="reference_only_resources_list">{% endif %}
-                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
-                {% endfor %}
-
-
-                {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_SPECIES'%}
-                    {% if loop.first %}<h3>S288C vs. other species</h3> <p id="other_species_resources_list">{% endif %}
-                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
-                {% endfor %}
-
-
-                {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_STRAINS'%}
-                    {% if loop.first %}<h3>S288C vs. other strains</h3><p id="other_strains_resources_list">{% endif %}
-                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
-                {% endfor %}
-            </div>
         </div>
     </section>
     {% endif %}
@@ -309,33 +283,6 @@
                      <dt>Isoelectric Point</dt>
                      <dd>{{ locus.protein_overview.pi }}</dd>
                  </dl>
-            </div>
-
-            <div class="panel">
-                <h3>Homologs</h3>
-                    <p id='homolog_resources_list'>
-                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}
-                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-                <h3>Protein Databases/Other</h3>
-                    <p id='protein_databases_resources_list'>
-                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
-                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-                <h3>Localization</h3>
-                    <p id="localization_resources_list">
-                        {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION'%}
-                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-                <h3>Post-translational Modifications</h3>
-                    <p id="modifications_resources_list">
-                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS'%}
-                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
             </div>
         </div>
     </section>
@@ -493,36 +440,6 @@
             {% if locus.phenotype_overview.classical_phenotypes|length + locus.phenotype_overview.large_scale_phenotypes|length == 0 %}
                 <p>No phenotypes annotated to {{ locus.display_name }}.</p>
             {% endif %}
-
-            <div class="panel">
-
-                {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_MUTANT_STRAINS'%}
-                    {% if loop.first %}
-                        <h3>Mutant Strains</h3>
-                        <p id="mutant_resources_list">
-                    {% elif loop.last %}
-                        </p>
-                    {% endif %}
-                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                {% endfor %}
-
-                {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_PHENOTYPE_RESOURCES'%}
-                    {% if loop.first %}
-                        <h3>Phenotype Resources</h3>
-                        <p id="phenotype_resources_list">
-                    {% elif loop.last %}
-                        </p>
-                    {% endif %}
-                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                {% endfor %}
-
-                <h3>Ontology</h3>
-                <p id="ontology_resources_list">
-                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_ONTOLOGY'%}
-                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
-            </div>
         </div>
     </section>
     {% endif %}
@@ -561,15 +478,6 @@
                 </ul>
             </div>
             {% endif %}
-
-            <div class="panel">
-                <h3>Resources</h3>
-                <p id="resources_list">
-                    {% for url in locus.urls if url.category == 'LOCUS_INTERACTION'%}
-                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
-            </div>
         </div>
     </section>
     {% endif %}
@@ -602,15 +510,6 @@
                      </dd>
                  </dl>
             </div>
-
-            <div class="panel">
-                <h3>Resources</h3>
-                <p>
-                    {% for url in locus.urls if url.category == 'LOCUS_REGULATION'%}
-                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
-            </div>
         </div>
     </section>
     {% endif %}
@@ -623,14 +522,6 @@
         <h2>Expression</h2>
         <div class="panel">
             <div id="two_channel_expression_chart" class="panel"></div>
-            <div class="panel">
-                <h3>Resources</h3>
-                <p>
-                    {% for url in locus.urls if url.category == 'LOCUS_EXPRESSION'%}
-                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
-            </div>
         </div>
     </section>
     {% endif %}
