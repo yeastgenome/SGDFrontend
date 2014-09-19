@@ -274,7 +274,6 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
     function ready_handler() {
         //Fix tooltips.
         function tooltipHandler(e) {
-            var datarow = data_array[e.row];
             var title_spans = $(".google-visualization-tooltip-item > span");
             var display_name = $(title_spans[0]).html();
             var spans = $(".google-visualization-tooltip-action > span");
@@ -330,7 +329,7 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
 function draw_label_chart(chart_id, strain_name) {
     if(strain_name in strain_to_neighbors) {
         var neighbor_data = strain_to_neighbors[strain_name];
-        var data = neighbor_data['neighbors'].sort(function(a, b){return a['start']-b['start']});
+        var data = neighbor_data['neighbors'].sort(function(a, b){return a['start']-b['start'];});
 
         var container = document.getElementById(chart_id);
 
@@ -350,16 +349,22 @@ function draw_label_chart(chart_id, strain_name) {
 
         var display_name_to_format_name = {};
 
-        var colors5 = ['#D8D8D8'];
-        var colors3 = ['#D8D8D8'];
+        var colors5 = [];
+        var colors3 = [];
 
         var colors5_row2 = [];
         var colors3_row2 = [];
+
+        var colors5_row3 = [];
+        var colors3_row3 = [];
 
         data_array.push(["5'", '', min_tick, min_tick]);
         data_array.push(["3'", '', min_tick, min_tick]);
         var previous_end_5 = 0;
         var previous_end_3 = 0;
+        var previous_end5_2 = 0;
+        var previous_end3_2 = 0;
+
         for (var i=0; i < data.length; i++) {
             var start = Math.max(data[i]['start'], min_tick);
             var end = Math.min(data[i]['end'], max_tick);
@@ -375,20 +380,44 @@ function draw_label_chart(chart_id, strain_name) {
             if(direction == "5'") {
                 if(previous_end_5 <= start) {
                     colors5.push(color);
+                    previous_end_5 = Math.max(previous_end_5, end);
+                }
+                else if(previous_end5_2 <= start) {
+                    if(i==1) {
+                        previous_end5_2 = previous_end_5;
+                        colors5_row2 = colors5;
+                        previous_end_5 = end
+                        colors5 = [color];
+                    }
+                    else {
+                        colors5_row2.push(color);
+                        previous_end5_2 = Math.max(previous_end5_2, end);
+                    }
                 }
                 else {
-                    colors5_row2.push(color);
+                    colors5_row3.push(color);
                 }
-                previous_end_5 = Math.max(previous_end_5, end);
             }
             else {
                 if(previous_end_3 <= start) {
                     colors3.push(color);
+                    previous_end_3 = Math.max(previous_end_3, end);
+                }
+                else if(previous_end3_2 <= start) {
+                    if(i==1) {
+                        previous_end3_2 = previous_end_3;
+                        colors3_row2 = colors3;
+                        previous_end_3 = end
+                        colors3 = [color];
+                    }
+                    else {
+                        colors3_row2.push(color);
+                        previous_end3_2 = Math.max(previous_end3_2, end);
+                    }
                 }
                 else {
-                    colors3_row2.push(color);
+                    colors3_row3.push(color);
                 }
-                previous_end_3 = Math.max(previous_end_3, end);
             }
 
             data_array.push([direction, data[i]['locus']['display_name'], start, end]);
@@ -399,8 +428,8 @@ function draw_label_chart(chart_id, strain_name) {
 
         dataTable.addRows(data_array);
 
-        var colors5 = colors5.concat(colors5_row2);
-        var colors3 = colors3.concat(colors3_row2);
+        var colors5 = ['#D8D8D8'].concat(colors5).concat(colors5_row2).concat(colors5_row3);
+        var colors3 = ['#D8D8D8'].concat(colors3).concat(colors3_row2).concat(colors3_row3);
         var colors = colors5.concat(colors3);
 
         var options = {
