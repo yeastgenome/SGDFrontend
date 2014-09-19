@@ -4,14 +4,7 @@
 
 {% block head %}
 <script>
-	var chemical_details_link = "{{chemical_details_link}}";
-	var download_table_link = "{{download_table_link}}";
-	var analyze_link = "{{analyze_table_link}}";
-
-	var download_filename = "{{ chemical.display_name }}_annotations";
-    var analyze_filename = "<a href='{{ chemical.link }}' class='gene_name'>{{ chemical.display_name }}</a> Genes";
-
-    var display_name = "{{ chemical.display_name }}";
+    var chemical = {{ chemical_js|safe }}
 </script>
 {% endblock %}
 

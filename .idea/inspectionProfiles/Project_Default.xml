@@ -14,5 +14,18 @@
     <inspection_tool class="EndBlockNamesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ExtendsTagPositionInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="HtmlUnknownTarget" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="5">
+            <item index="0" class="java.lang.String" itemvalue="simplejson" />
+            <item index="1" class="java.lang.String" itemvalue="requests" />
+            <item index="2" class="java.lang.String" itemvalue="pyramid" />
+            <item index="3" class="java.lang.String" itemvalue="pyramid_jinja2" />
+            <item index="4" class="java.lang.String" itemvalue="waitress" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
   </profile>
 </component>

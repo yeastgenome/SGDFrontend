@@ -1,13 +1,13 @@
 
 $(document).ready(function() {
 
-	$.getJSON(go_details_link, function(data) {
+	$.getJSON('/backend/go/' + go_term['id'] + '/locus_details?callback=?', function(data) {
 	  	var go_table = create_go_table(data);
-	  	create_analyze_button("go_table_analyze", go_table, analyze_link, analyze_filename, true);
-  	    create_download_button("go_table_download", go_table, download_table_link, download_filename);
+	  	create_analyze_button("go_table_analyze", go_table, "<a href='" + go_term['link'] + "' class='gene_name'>" + go_term['display_name'] + "</a> genes", true);
+  	    create_download_button("go_table_download", go_table, go_term['display_name'] + "_annotations");
 
-        if(child_count > count) {
-            create_show_child_button("go_table_show_children", go_table, data, go_details_all_link, go_data_to_table, function(table_data) {
+        if(go_term['child_count'] > go_term['count']) {
+            create_show_child_button("go_table_show_children", go_table, data, '/backend/go/' + go_term['id'] + '/locus_details_all?callback=?', go_data_to_table, function(table_data) {
                 var genes = {};
                 for (var i=0; i < table_data.length; i++) {
                     genes[table_data[i][1]] = true;
@@ -17,9 +17,9 @@ $(document).ready(function() {
         }
 	});
 
-	$.getJSON(ontology_graph_link, function(data) {
+	$.getJSON('/backend/go/' + go_term['id'] + '/ontology_graph?callback=?', function(data) {
   		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
-        create_cy_download_button(cy, "cy_download", download_network_link, display_name + '_ontology')
+        create_cy_download_button(cy, "cy_download", go_term['display_name'] + '_ontology')
 
         if(data['all_children'] != null && data['all_children'].length > 0) {
             var children_div = document.getElementById("children");
@@ -73,7 +73,7 @@ function create_go_table(data) {
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[3, "asc"]];
 	options["bDestroy"] = true;
-	options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + display_name};
+	options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + go_term['display_name']};
     options["aoColumns"] = [
             {"bSearchable":false, "bVisible":false}, //evidence_id
             {"bSearchable":false, "bVisible":false}, //analyze_id

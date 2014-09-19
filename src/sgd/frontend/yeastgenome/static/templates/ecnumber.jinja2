@@ -4,14 +4,7 @@
 
 {% block head %}
 <script>
-	var ecnumber_details_link = "{{ecnumber_details_link}}";
-	var download_table_link = "{{download_table_link}}";
-	var analyze_link = "{{analyze_table_link}}";
-
-	var download_filename = "{{ ecnumber.format_name|replace(".", "_") }}_annotations";
-    var analyze_filename = "<a href='{{ ecnumber.link }}' class='gene_name'>{{ ecnumber.display_name }}</a> Genes";
-
-    var display_name = "{{ ecnumber.display_name }}";
+    var ecnumber = {{ ecnumber_js|safe }};
 </script>
 {% endblock %}
 

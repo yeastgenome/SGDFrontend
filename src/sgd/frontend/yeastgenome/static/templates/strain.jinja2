@@ -4,8 +4,7 @@
 
 {% block head %}
 <script>
-    var display_name = "{{ strain.display_name }}";
-    var paragraph = {{ paragraph| safe }};
+    var strain = {{ strain_js|safe }};
 </script>
 {% endblock %}
 

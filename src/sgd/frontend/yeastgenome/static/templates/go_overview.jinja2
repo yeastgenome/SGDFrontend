@@ -1,7 +1,7 @@
 <span id='summary_message' style='display:none'>0 GO Terms curated.</span>
 
 <dl class="key-value" id="protein_overview">
-    {% for slim in go_overview.go_slim if slim.format_name != 'molecular_function' and slim.format_name != 'cellular_component' and slim.format_name != 'biological_process' %}
+    {% for slim in locus.go_overview.go_slim if slim.format_name != 'molecular_function' and slim.format_name != 'cellular_component' and slim.format_name != 'biological_process' %}
         {% if loop.first %}
             <dt>
                 GO Slim Terms

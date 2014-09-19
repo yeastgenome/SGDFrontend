@@ -4,11 +4,7 @@
 
 {% block head %}
 <script>
-	var literature_details_link = "{{literature_details_link}}";
-	var literature_graph_link = "{{literature_graph_link}}";
-	var display_name = "{{ locus.display_name }}";
-  	var download_link = "{{download_citations_link}}";
-    var download_network_link = "{{download_network_link}}";
+    var locus = {{ locus_js|safe }}
 </script>
 {% endblock %}
 

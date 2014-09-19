@@ -1,5 +1,6 @@
-
-<p id="summary_message" hidden>0 Targets and 0 Regulators curated.</p>
+{% if locus.regulation_overview.regulator_count + locus.regulation_overview.target_count == 0 %}
+    <p>0 Targets and 0 Regulators curated.</p>
+{% endif %}
 <div id="summary_diagram"></div>
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>

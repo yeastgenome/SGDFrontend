@@ -1,16 +1,16 @@
 
 $(document).ready(function() {
 
-    if(datasets.length > 0) {
+    if(reference['expression_datasets'].length > 0) {
         $("#expression_table_analyze").hide();
-        var expression_table = create_expression_table(datasets);
-        create_download_button("expression_table_download", expression_table, download_table_link, display_name + '_datasets');
+        var expression_table = create_expression_table(reference['expression_datasets']);
+        create_download_button("expression_table_download", expression_table, reference['display_name'] + '_datasets');
     }
     else {
         hide_section('expression');
     }
 
-    $.getJSON(literature_details_link, function(data) {
+    $.getJSON('/backend/reference/' + reference['id'] + '/literature_details?callback=?', function(data) {
         data.sort(function(a, b) {return a['locus']['display_name'] > b['locus']['display_name']});
 
         create_literature_list('primary', data, 'Primary Literature')
@@ -18,46 +18,46 @@ $(document).ready(function() {
         create_literature_list('review', data, 'Reviews')
     });
 
-    $("#download_citation").click(function() {post_to_url(download_link, {"display_name":display_name.replace(' ', '_') + '_citation.nbib', "reference_ids": [reference_id]});})
+    $("#download_citation").click(function() {post_to_url(download_link, {"display_name":reference['display_name'].replace(' ', '_') + '_citation.nbib', "reference_ids": [reference['id']]});})
 
-    if(counts['interaction'] > 0) {
-        $.getJSON(interaction_details_link, function(data) {
+    if(reference['counts']['interaction'] > 0) {
+        $.getJSON('/backend/reference/' + reference['id'] + '/interaction_details?callback=?', function(data) {
             var interaction_table = create_interaction_table(data);
-            create_download_button("interaction_table_download", interaction_table, download_table_link, interaction_download_filename);
-            create_analyze_button("interaction_table_analyze", interaction_table, analyze_link, interaction_analyze_filename, true);
+            create_download_button("interaction_table_download", interaction_table, reference['display_name'] + "_interactions");
+            create_analyze_button("interaction_table_analyze", interaction_table, reference['display_name'] + " interaction genes", true);
         });
     }
     else {
         hide_section("interaction");
     }
 
-    if(counts['go'] > 0) {
-        $.getJSON(go_details_link, function(data) {
+    if(reference['counts']['go'] > 0) {
+        $.getJSON('/backend/reference/' + reference['id'] + '/go_details?callback=?', function(data) {
             var go_table = create_go_table(data);
-            create_download_button("go_table_download", go_table, download_table_link, go_download_filename);
-            create_analyze_button("go_table_analyze", go_table, analyze_link, go_analyze_filename, true);
+            create_download_button("go_table_download", go_table, reference['display_name'] + "_go_terms");
+            create_analyze_button("go_table_analyze", go_table, reference['display_name'] + " Gene Ontology terms", true);
         });
     }
     else {
         hide_section("go");
     }
 
-    if(counts['phenotype'] > 0) {
-        $.getJSON(phenotype_details_link, function(data) {
+    if(reference['counts']['phenotype'] > 0) {
+        $.getJSON('/backend/reference/' + reference['id'] + '/phenotype_details?callback=?', function(data) {
             var phenotype_table = create_phenotype_table(data);
-            create_download_button("phenotype_table_download", phenotype_table, download_table_link, phenotype_download_filename);
-            create_analyze_button("phenotype_table_analyze", phenotype_table, analyze_link, phenotype_analyze_filename, true);
+            create_download_button("phenotype_table_download", phenotype_table, reference['display_name'] + "_phenotypes");
+            create_analyze_button("phenotype_table_analyze", phenotype_table, reference['display_name'] + " phenotype genes", true);
         });
     }
     else {
         hide_section("phenotype");
     }
 
-    if(counts["regulation"] > 0) {
-        $.getJSON(regulation_details_link, function(data) {
+    if(reference['counts']["regulation"] > 0) {
+        $.getJSON('/backend/reference/' + reference['id'] + '/regulation_details?callback=?', function(data) {
             var regulation_table = create_regulation_table(data);
-            create_download_button("regulation_table_download", regulation_table, download_table_link, regulation_download_filename);
-            create_analyze_button("regulation_table_analyze", regulation_table, analyze_link, regulation_analyze_filename, true);
+            create_download_button("regulation_table_download", regulation_table, reference['display_name'] + "_regulation");
+            create_analyze_button("regulation_table_analyze", regulation_table, reference['display_name'] + " regulation genes", true);
         });
     }
     else {
@@ -156,7 +156,7 @@ function create_interaction_table(data) {
         options["bPaginate"] = true;
         options["aaSorting"] = [[3, "asc"]];
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}]
-        options["oLanguage"] = {"sEmptyTable": "No interaction data for " + display_name};
+        options["oLanguage"] = {"sEmptyTable": "No interaction data for " + reference['display_name']};
         options["aaData"] = datatable;
     }
 
@@ -199,7 +199,7 @@ function create_go_table(data) {
 
         set_up_header('go_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
-        options["oLanguage"] = {"sEmptyTable": "No gene ontology data for " + display_name};
+        options["oLanguage"] = {"sEmptyTable": "No gene ontology data for " + reference['display_name']};
         options["aaData"] = datatable;
     }
 
@@ -229,7 +229,7 @@ function create_phenotype_table(data) {
         options["bPaginate"] = true;
         options["aaSorting"] = [[4, "asc"]];
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, {'sWidth': '250px'}, {"bSearchable":false, "bVisible":false}];
-        options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + display_name};
+        options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + reference['display_name']};
         options["aaData"] = datatable;
     }
 
@@ -260,7 +260,7 @@ function create_regulation_table(data) {
         options["bPaginate"] = true;
         options["aaSorting"] = [[3, "asc"]];
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}]
-        options["oLanguage"] = {"sEmptyTable": "No regulation data for " + display_name};
+        options["oLanguage"] = {"sEmptyTable": "No regulation data for " + reference['display_name']};
         options["aaData"] = datatable;
     }
 
@@ -298,7 +298,7 @@ function create_expression_table(data) {
 
         set_up_header('expression_table', datatable.length, 'dataset', 'datasets', Object.keys(reference_ids).length, 'reference', 'references');
 
-        options["oLanguage"] = {"sEmptyTable": "No expression data for " + display_name};
+        options["oLanguage"] = {"sEmptyTable": "No expression data for " + reference['display_name']};
         options["aaData"] = datatable;
     }
 

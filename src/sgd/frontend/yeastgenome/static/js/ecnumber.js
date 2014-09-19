@@ -1,10 +1,10 @@
 
 $(document).ready(function() {
 
-	$.getJSON(ecnumber_details_link, function(data) {
+	$.getJSON('/backend/ecnumber/' + ecnumber['id'] + '/locus_details?callback=?', function(data) {
 	  	var annotation_table = create_ecnumber_table(data);
-	  	create_analyze_button("gene_list_table_analyze", annotation_table, analyze_link, analyze_filename, true);
-  	    create_download_button("gene_list_table_download", annotation_table, download_table_link, download_filename);
+	  	create_analyze_button("gene_list_table_analyze", annotation_table, "<a href='" + ecnumber['link'] + "' class='gene_name'>" + ecnumber['display_name'] + "</a> Genes", true);
+  	    create_download_button("gene_list_table_download", annotation_table, ecnumber['format_name'].split('.').join('_') + "_annotations");
 	});
 
 });
@@ -25,7 +25,7 @@ function create_ecnumber_table(data) {
     options["aaSorting"] = [[3, "asc"]];
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null]
     options["aaData"] = datatable;
-    options["oLanguage"] = {"sEmptyTable": "No genes associated with EC Number " + display_name + "."};
+    options["oLanguage"] = {"sEmptyTable": "No genes associated with EC Number " + ecnumber['display_name'] + "."};
 
     return create_table("gene_list_table", options);
 }

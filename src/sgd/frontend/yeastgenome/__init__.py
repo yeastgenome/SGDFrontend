@@ -11,6 +11,7 @@ from pyramid.renderers import JSONP, render
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from src.sgd.frontend.frontend_interface import FrontendInterface
+from src.sgd.frontend.yeastgenome.backendless.load_data_from_file import get_data
 
 class YeastgenomeFrontend(FrontendInterface):
     def __init__(self, backend_url, heritage_url, log_directory):
@@ -28,496 +29,116 @@ class YeastgenomeFrontend(FrontendInterface):
     
     def response_wrapper(self, method_name, request):
         request_id = str(uuid.uuid4())
+        callback = None if 'callback' not in request.GET else request.GET['callback']
         self.log.info(request_id + ' ' + method_name + ('' if 'identifier' not in request.matchdict else ' ' + request.matchdict['identifier']))
         def f(data):
             self.log.info(request_id + ' end')
-            return data
+            if callback is not None:
+                return Response(body="%s(%s)" % (callback, data), content_type='application/json')
+            else:
+                return data
         return f
-    
-    def interaction_details(self, bioent_repr):
-        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        if bioent is not None:
-            bioent_id = str(bioent['id'])
-            overview = bioent['interaction_overview']
-            tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
-
-            page = {
-                        #Basic info
-                        'locus': bioent,
-
-                        #Overview
-                        'interaction_overview': json.dumps(overview),
-                        'tabs': tabs,
-
-                        #Links
-                        'interaction_details_link': self.backend_url + '/locus/' + bioent_id + '/interaction_details?callback=?',
-                        'interaction_graph_link': self.backend_url + '/locus/' + bioent_id + '/interaction_graph?callback=?',
-                        'download_table_link': '/download_table',
-                        'analyze_table_link': '/analyze',
-                        'download_network_link': '/download_image'
-                    }
-            return page
-        return Response(status_int=500, body='Could not find locus ' + bioent_repr + '.')
-    
-    def literature_details(self, bioent_repr):
-        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        bioent_id = str(bioent['id'])
-        overview = bioent['literature_overview']
-        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
-        
-        page = {
-                    #Basic info
-                    'locus': bioent,
-                    
-                    #Overview
-                    'literature_overview': overview,
-                    'tabs': tabs,
-                    
-                    #Links
-                    'literature_details_link': self.backend_url + '/locus/' + bioent_id + '/literature_details?callback=?',
-                    'literature_graph_link': self.backend_url + '/locus/' + bioent_id + '/literature_graph?callback=?',
-                    'download_citations_link': '/download_citations',
-                    'download_network_link': '/download_image'
-                }
-        return page
-    
-    def regulation_details(self, bioent_repr):
-        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        bioent_id = str(bioent['id'])
-        overview = bioent['regulation_overview']
-        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
-        
-        page = {
-                    #Basic info
-                    'locus': bioent,
-                    
-                    #Overview
-                    'regulation_overview': json.dumps(overview),
-                    'tabs': tabs,
-                    
-                    #Links
-                    'regulation_details_link': self.backend_url + '/locus/' + bioent_id + '/regulation_details?callback=?',
-                    'regulation_graph_link': self.backend_url + '/locus/' + bioent_id + '/regulation_graph?callback=?',
-                    'regulation_target_enrichment_link': self.backend_url + '/locus/' + bioent_id + '/regulation_target_enrichment?callback=?',
-                    'protein_domain_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_details?callback=?',
-                    'binding_site_details_link': self.backend_url + '/locus/' + bioent_id + '/binding_site_details?callback=?',
-                    'go_enrichment_link': '/enrichment',
-                    'download_table_link': '/download_table',
-                    'analyze_link': '/analyze',
-                    'download_network_link': '/download_image'
-                    }
-        return page
-    
-    def phenotype_details(self, bioent_repr):
-        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        bioent_id = str(bioent['id'])
-        overview = bioent['phenotype_overview']
-        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
-        
-        page = {
-                    #Basic info
-                    'locus': bioent,
-
-                    #Overview
-                    'phenotype_overview': json.dumps(overview),
-                    'tabs': tabs,
-                    
-                    #Links
-                    'phenotype_details_link': self.backend_url + '/locus/' + bioent_id + '/phenotype_details?callback=?',
-                    'phenotype_graph_link': self.backend_url + '/locus/' + bioent_id + '/phenotype_graph?callback=?',
-                    'download_table_link': '/download_table',
-                    'download_network_link': '/download_image',
-                    'ontology_link': '/ontology/phenotype/ypo/overview'
-                    }
-        return page
-
-    def expression_details(self, bioent_repr):
-        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        bioent_id = str(bioent['id'])
-        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
-
-        page = {
-                    #Basic info
-                    'locus': bioent,
-
-                    #Overview
-                    'tabs': tabs,
-
-                    #Links
-                    'expression_details_link': self.backend_url + '/locus/' + bioent_id + '/expression_details?callback=?',
-                    'expression_graph_link': self.backend_url + '/locus/' + bioent_id + '/expression_graph?callback=?',
-                    'download_table_link': '/download_table',
-                    'download_network_link': '/download_image'
-                    }
-        return page
-    
-    def go_details(self, bioent_repr):
-        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        bioent_id = str(bioent['id'])
-        overview = bioent['go_overview']
-        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
-
-        page = {
-                    #Basic info
-                    'locus': bioent,
-
-                    #Overview
-                    'go_overview': overview,
-                    'date_last_reviewed': None if 'date_last_reviewed' not in overview else overview['date_last_reviewed'],
-                    'tabs': tabs,
-                    
-                    #Links
-                    'go_details_link': self.backend_url + '/locus/' + bioent_id + '/go_details?callback=?',
-                    'go_graph_link': self.backend_url + '/locus/' + bioent_id + '/go_graph?callback=?',
-                    'download_table_link': '/download_table',
-                    'download_network_link': '/download_image'
-                    }
-        return page
-
-    def protein_details(self, bioent_repr):
-        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        bioent_id = str(bioent['id'])
-        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
-        if not tabs['protein_tab']:
-            return HTTPNotFound(bioent['display_name'] + ' does not encode a protein.')
-
-        page = {
-                    #Basic info
-                    'locus': bioent,
-                    'aliases': json.dumps(bioent['aliases']),
-
-                    #Overview
-                    'tabs': tabs,
-
-                    #Links
-                    'bioentity_details_link': self.backend_url + '/locus/' + bioent_id + '/bioentity_details?callback=?',
-                    'protein_domain_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_details?callback=?',
-                    'protein_domain_graph_link': self.backend_url + '/locus/' + bioent_id + '/protein_domain_graph?callback=?',
-                    'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
-                    'protein_phosphorylation_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_phosphorylation_details?callback=?',
-                    'ec_number_details_link': self.backend_url + '/locus/' + bioent_id + '/ecnumber_details?callback=?',
-                    'protein_experiment_details_link': self.backend_url + '/locus/' + bioent_id + '/protein_experiment_details?callback=?',
-                    'download_table_link': '/download_table',
-                    'download_sequence_link': '/download_sequence',
-                    'analyze_table_link': '/analyze',
-                    'download_network_link': '/download_image'
-                    }
-        return page
 
     def locus(self, bioent_repr):
-        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        bioent_id = str(bioent['id'])
-        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
+        locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
+        tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
 
         page = {
                     #Basic info
-                    'locus': bioent,
-                    'aliases': json.dumps(bioent['aliases']),
-                    'paragraph': json.dumps(bioent['paragraph']),
+                    'locus': locus,
+                    'locus_js': json.dumps(locus),
+                    'tabs': tabs
 
-                    #Overview
-                    'tabs': tabs,
-
-                    #Links
-                    'neighbor_sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/neighbor_sequence_details?callback=?',
-                    'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
-                    'expression_details_link': self.backend_url + '/locus/' + bioent_id + '/expression_details?callback=?',
-                    'download_table_link': '/download_table',
-                    'download_sequence_link': '/download_sequence',
-                    'analyze_table_link': '/analyze',
-                    'download_network_link': '/download_image'
                     }
         return page
+    
+    def interaction_details(self, bioent_repr):
+        return self.locus(bioent_repr)
+
+    def literature_details(self, bioent_repr):
+        return self.locus(bioent_repr)
+    
+    def regulation_details(self, bioent_repr):
+        return self.locus(bioent_repr)
+    
+    def phenotype_details(self, bioent_repr):
+        return self.locus(bioent_repr)
+
+    def expression_details(self, bioent_repr):
+        return self.locus(bioent_repr)
+    
+    def go_details(self, bioent_repr):
+        return self.locus(bioent_repr)
+
+    def protein_details(self, bioent_repr):
+        return self.locus(bioent_repr)
 
     def sequence_details(self, bioent_repr):
-        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        bioent_id = str(bioent['id'])
-        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
-
-        page = {
-                    #Basic info
-                    'locus': bioent,
-
-                    #Overview
-                    'tabs': tabs,
-                    'sequence_overview': bioent['sequence_overview'],
-
-                    #Links
-                    'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
-                    'neighbor_sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/neighbor_sequence_details?callback=?',
-                    'download_table_link': '/download_table',
-                    'download_sequence_link': '/download_sequence',
-                    'analyze_table_link': '/analyze'
-                    }
-        return page
+        return self.locus(bioent_repr)
 
     def curator_sequence(self, bioent_repr):
-        bioent = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        bioent_id = str(bioent['id'])
-        tabs = get_json(self.backend_url + '/locus/' + bioent_id + '/tabs')
+        return self.locus(bioent_repr)
+
+    def get_obj(self, obj_type, obj_repr, obj_url=None):
+        if obj_url is None:
+            obj_url = self.backend_url + '/' + obj_type + '/' + obj_repr + '/overview'
+
+        obj = get_json(obj_url)
 
         page = {
                     #Basic info
-                    'locus': bioent,
-
-                    #Overview
-                    'tabs': tabs,
-                    'sequence_overview': bioent['sequence_overview'],
-
-                    #Links
-                    'sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/sequence_details?callback=?',
-                    'neighbor_sequence_details_link': self.backend_url + '/locus/' + bioent_id + '/neighbor_sequence_details?callback=?',
-                    'download_table_link': '/download_table',
-                    'download_sequence_link': '/download_sequence',
-                    'analyze_table_link': '/analyze'
+                    obj_type: obj,
+                    obj_type + '_js': json.dumps(obj)
                     }
         return page
 
     def strain(self, strain_repr):
-        strain = get_json(self.backend_url + '/strain/' + strain_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'strain': strain,
-                    'paragraph': json.dumps(strain['paragraph']),
-                    'resources': json.dumps(strain['urls'])
-                    }
-        return page
+        return self.get_obj('strain', strain_repr)
 
     def ecnumber(self, biocon_repr):
-        biocon = get_json(self.backend_url + '/ecnumber/' + biocon_repr + '/overview')
-        biocon_id = str(biocon['id'])
-
-        page = {
-                    #Basic info
-                    'ecnumber': biocon,
-
-                    #Links
-                    'ecnumber_details_link': self.backend_url + '/ecnumber/' + biocon_id + '/locus_details?callback=?',
-                    'download_table_link': '/download_table',
-                    'analyze_table_link': '/analyze'
-                    }
-        return page
+        return self.get_obj('ecnumber', biocon_repr)
 
     def dataset(self, bioitem_repr):
-        biocon = get_json(self.backend_url + '/dataset/' + bioitem_repr + '/overview')
-        biocon_id = str(biocon['id'])
-
-        page = {
-                    #Basic info
-                    'dataset': biocon,
-
-                    #Links
-                    'download_table_link': '/download_table',
-                    'analyze_table_link': '/analyze'
-                    }
-        return page
+        return self.get_obj('dataset', bioitem_repr)
 
     def tag(self, tag_repr):
-        biocon = get_json(self.backend_url + '/tag/' + tag_repr + '/overview')
-        biocon_id = str(biocon['id'])
-
-        page = {
-                    #Basic info
-                    'tag': biocon,
-                    'bioitems': json.dumps(biocon['bioitems']),
-
-                    #Links
-                    'download_table_link': '/download_table',
-                    'analyze_table_link': '/analyze',
-                    'all_tags_link': self.backend_url + '/all/tag?callback=?'
-                    }
-        return page
+        return self.get_obj('tag', tag_repr)
 
     def experiment(self, experiment_repr):
-        biocon = get_json(self.backend_url + '/experiment/' + experiment_repr + '/overview')
-        biocon_id = str(biocon['id'])
-
-        page = {
-                    #Basic info
-                    'experiment': biocon,
-                    'references': json.dumps(biocon['references']),
-
-                    #Links
-                    'download_citations_link': '/download_citations'
-                    }
-        return page
+        return self.get_obj('experiment', experiment_repr)
     
     def phenotype(self, biocon_repr):
-        biocon = get_json(self.backend_url + '/phenotype/' + biocon_repr + '/overview')
-        biocon_id = str(biocon['id'])
-        overview = biocon['overview']
-
-        page = {
-                    #Basic info
-                    'phenotype': biocon,
-                    'overview': json.dumps(overview),
-                    
-                    #Links
-                    'phenotype_details_link': self.backend_url + '/phenotype/' + biocon_id + '/locus_details?callback=?',
-                    'download_table_link': '/download_table',
-                    'analyze_table_link': '/analyze'
-                    }
-        return page
+        return self.get_obj('phenotype', biocon_repr)
     
     def observable(self, biocon_repr):
-        biocon = get_json(self.backend_url + '/observable/' + biocon_repr + '/overview')
-        biocon_id = str(biocon['id'])
-        overview = biocon['overview']
-
-        page = {
-                    #Basic info
-                    'observable': biocon,
-                    'overview': json.dumps(overview),
-                    
-                    #Links
-                    'phenotype_details_link': self.backend_url + '/observable/' + biocon_id + '/locus_details?callback=?',
-                    'phenotype_details_all_link': self.backend_url + '/observable/' + biocon_id + '/locus_details_all?callback=?',
-                    'ontology_graph_link': self.backend_url + '/observable/' + biocon_id + '/ontology_graph?callback=?',
-                    'download_table_link': '/download_table',
-                    'analyze_table_link': '/analyze',
-                    'download_network_link': '/download_image'
-                    }
-        return page
+        return self.get_obj('observable', biocon_repr)
     
     def phenotype_ontology(self):
-        biocon = get_json(self.backend_url + '/observable/ypo/overview')
-        biocon_id = str(biocon['id'])
-
-        page = {
-                    #Basic info
-                    'ontology': biocon,
-
-                    #Links
-                    'ontology_graph_link': self.backend_url + '/observable/' + biocon_id + '/ontology_graph?callback=?',
-                    }
-        return page
+        return self.get_obj('ontology', None, obj_url=self.backend_url + '/observable/ypo/overview')
     
     def go(self, biocon_repr):
-        biocon = get_json(self.backend_url + '/go/' + biocon_repr + '/overview')
-        biocon_id = str(biocon['id'])
-
-        page = {
-                    #Basic info
-                    'go_term': biocon,
-                    
-                    #Links
-                    'go_details_link': self.backend_url + '/go/' + biocon_id + '/locus_details?callback=?',
-                    'go_details_all_link': self.backend_url + '/go/' + biocon_id + '/locus_details_all?callback=?',
-                    'ontology_graph_link': self.backend_url + '/go/' + biocon_id + '/ontology_graph?callback=?',
-                    'download_table_link': '/download_table',
-                    'download_network_link': '/download_image',
-                    'analyze_table_link': '/analyze'
-                    }
-        return page
+        return self.get_obj('go_term', None, obj_url=self.backend_url + '/go/' + biocon_repr + '/overview')
 
     def go_ontology(self, biocon_repr):
-        biocon = get_json(self.backend_url + '/go/' + biocon_repr + '/overview')
-        biocon_id = str(biocon['id'])
-
-        page = {
-                    #Basic info
-                    'ontology': biocon,
-
-                    #Links
-                    'go_details_link': self.backend_url + '/go/' + biocon_id + '/locus_details?callback=?',
-                    'ontology_graph_link': self.backend_url + '/go/' + biocon_id + '/ontology_graph?callback=?',
-                    'download_table_link': '/download_table',
-                    'download_network_link': '/download_image',
-                    'analyze_table_link': '/analyze'
-                    }
-        return page
+        return self.get_obj('ontology', None, obj_url=self.backend_url + '/go/' + biocon_repr + '/overview')
     
     def chemical(self, chemical_repr):
-        chemical = get_json(self.backend_url + '/chemical/' + chemical_repr + '/overview')
-        chemical_id = str(chemical['id'])
-
-        page = {
-                    #Basic info
-                    'chemical': chemical,
-                    
-                    #Links
-                    'chemical_details_link': self.backend_url + '/chemical/' + chemical_id + '/phenotype_details?callback=?',
-                    'download_table_link': '/download_table',
-                    'analyze_table_link': '/analyze'
-                    }
-        return page
+        return self.get_obj('chemical', chemical_repr)
 
     def domain(self, domain_repr):
-        domain = get_json(self.backend_url + '/domain/' + domain_repr + '/overview')
-        domain_id = str(domain['id'])
-
-        page = {
-                    #Basic info
-                    'domain': domain,
-
-                    #Links
-                    'domain_details_link': self.backend_url + '/domain/' + domain_id + '/locus_details?callback=?',
-                    'download_table_link': '/download_table',
-                    'analyze_table_link': '/analyze'
-                    }
-        return page
+        return self.get_obj('domain', domain_repr)
 
     def reference(self, reference_repr):
-        reference = get_json(self.backend_url + '/reference/' + reference_repr + '/overview')
-        reference_id = str(reference['id'])
-
-        page = {
-                    #Basic info
-                    'reference': reference,
-                    'counts': json.dumps(reference['counts']),
-                    'datasets': json.dumps(reference['expression_datasets']),
-
-                    #Links
-                    'go_details_link': self.backend_url + '/reference/' + reference_id + '/go_details?callback=?',
-                    'phenotype_details_link': self.backend_url + '/reference/' + reference_id + '/phenotype_details?callback=?',
-                    'interaction_details_link': self.backend_url + '/reference/' + reference_id + '/interaction_details?callback=?',
-                    'regulation_details_link': self.backend_url + '/reference/' + reference_id + '/regulation_details?callback=?',
-                    'binding_details_link': self.backend_url + '/reference/' + reference_id + '/binding_details?callback=?',
-                    'literature_details_link': self.backend_url + '/reference/' + reference_id + '/literature_details?callback=?',
-                    'download_table_link': '/download_table',
-                    'download_citations_link': '/download_citations',
-                    'analyze_table_link': '/analyze'
-                    }
-        return page
+        return self.get_obj('reference', reference_repr)
 
     def author(self, author_repr):
-        author = get_json(self.backend_url + '/author/' + author_repr + '/overview')
-
-        page = {
-                    #Basic info
-                    'author': author,
-                    'references': json.dumps(author['references']),
-
-                    #Links
-                    'download_citations_link': '/download_citations'
-                    }
-        return page
-
-    def references_this_week(self):
-        page = {
-                    #Basic info
-                    'references_this_week_link': self.backend_url + '/references/this_week?callback=?',
-                    'download_citations_link': '/download_citations'
-                    }
-        return page
+        return self.get_obj('author', author_repr)
 
     def contig(self, contig_repr):
-        contig = get_json(self.backend_url + '/contig/' + contig_repr + '/overview')
-        contig_id = str(contig['id'])
+        return self.get_obj('contig', contig_repr)
 
-        page = {
-                    #Basic info
-                    'contig': contig,
-                    'length': len(contig['residues']),
-                    'overview': json.dumps(contig['overview']),
-
-                    #Links
-                    'sequence_details_link': self.backend_url + '/contig/' + contig_id + '/sequence_details?callback=?',
-                    'download_table_link': '/download_table',
-                    'download_sequence_link': '/download_sequence',
-                    'analyze_table_link': '/analyze'
-                    }
+    def references_this_week(self):
+        page = {}
         return page
     
     def home(self):
@@ -544,6 +165,9 @@ class YeastgenomeFrontend(FrontendInterface):
             del params['type']
             if len(params) > 0:
                 return HTTPFound('/locus/' + params.values()[0] + '/expression')
+        elif page == 'locus':
+            if len(params) > 0:
+                return HTTPFound('/locus/' + params.values()[0] + '/overview')
         elif page == 'phenotype':
             if 'phenotype' in params:
                 old_phenotype = params['phenotype'].split(':')
@@ -684,10 +308,6 @@ class YeastgenomeFrontend(FrontendInterface):
                     'list_name_html': list_name,
                     'list_name': clean_cell(list_name).replace(' ', '_'),
                     'bioents': json.dumps(bioents),
-
-                    #Links
-                    'go_enrichment_link': '/enrichment',
-                    'download_table_link': '/download_table'
                 }
         return page
 
@@ -706,6 +326,13 @@ class YeastgenomeFrontend(FrontendInterface):
     def enrichment(self, bioent_ids):
         enrichment_results = get_json(self.backend_url + '/go_enrichment', data={'bioent_ids': bioent_ids})
         return enrichment_results
+
+    def backend(self, url_repr):
+        if self.backend_url == 'backendless':
+            return json.dumps(get_data(url_repr))
+        else:
+            return json.dumps(get_json(self.backend_url + '/' + ('/'.join(url_repr))))
+
     
 def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     chosen_frontend = YeastgenomeFrontend(backend_url, heritage_url, log_directory)
@@ -723,11 +350,14 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     return chosen_frontend, config
 
 def get_json(url, data=None):
-    if data is not None:
-        headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
-        r = requests.post(url, data=json.dumps(data), headers=headers)
+    if url.startswith('backendless'):
+        return get_data(url[12:].split('/'))
     else:
-        r = requests.get(url)
+        if data is not None:
+            headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
+            r = requests.post(url, data=json.dumps(data), headers=headers)
+        else:
+            r = requests.get(url)
     return r.json()
 
 def set_up_logging(log_directory, label):

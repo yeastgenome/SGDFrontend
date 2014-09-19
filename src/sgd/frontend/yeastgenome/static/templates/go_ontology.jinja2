@@ -4,16 +4,7 @@
 
 {% block head %}
 <script>
-    var go_details_link = "{{go_details_link}}";
-    var ontology_graph_link = "{{ontology_graph_link}}";
-    var display_name = "{{ ontology.display_name }}";
-
-    var download_filename = "{{ ontology.display_name }}_annotations";
-    var analyze_filename = "<a href='{{ ontology.link }}' class='gene_name'>{{ ontology.display_name }}</a> genes";
-
-    var download_table_link = "{{download_table_link}}";
-    var analyze_link = "{{analyze_table_link}}";
-var download_network_link = "{{download_network_link}}";
+    var ontology = {{ ontology_js|safe }}
 </script>
 {% endblock %}
 

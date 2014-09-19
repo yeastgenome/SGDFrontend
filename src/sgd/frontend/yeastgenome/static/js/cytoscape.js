@@ -78,8 +78,8 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 	return cy;
 }
 
-function create_cy_download_button(cy, button_id, download_url, file_name) {
-    $("#" + button_id).click(function() {post_to_url(download_url, {"display_name":file_name, 'data': cy.png()});});
+function create_cy_download_button(cy, button_id, file_name) {
+    $("#" + button_id).click(function() {post_to_url('/download_image', {"display_name":file_name, 'data': cy.png()});});
     $("#" + button_id).attr('disabled', false);
 }
 

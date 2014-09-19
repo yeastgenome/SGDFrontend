@@ -4,14 +4,7 @@
 
 {% block head %}
 <script>
-	var domain_details_link = "{{domain_details_link}}";
-	var download_table_link = "{{download_table_link}}";
-	var analyze_link = "{{analyze_table_link}}";
-
-	var download_filename = "{{ domain.display_name }}_annotations";
-    var analyze_filename = "<a href='{{ domain.link }}' class='gene_name'>{{ domain.display_name }}</a> Genes";
-
-    var display_name = "{{ domain.display_name }}";
+    var domain = {{ domain_js|safe }};
 </script>
 {% endblock %}
 

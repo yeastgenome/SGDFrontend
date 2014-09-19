@@ -3,6 +3,6 @@
  */
 
 $(document).ready(function() {
-    document.getElementById("summary_paragraph").innerHTML = paragraph['text'];
-    set_up_references(paragraph['references'], "summary_paragraph_reference_list");
+    document.getElementById("summary_paragraph").innerHTML = strain['paragraph']['text'];
+    set_up_references(strain['paragraph']['references'], "summary_paragraph_reference_list");
 });

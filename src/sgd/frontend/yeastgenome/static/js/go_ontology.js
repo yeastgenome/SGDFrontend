@@ -1,15 +1,15 @@
 
 $(document).ready(function() {
 
-	$.getJSON(ontology_graph_link, function(data) {
+	$.getJSON('/backend/go/' + ontology['id'] + '/ontology_graph?callback=?', function(data) {
   		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
-        create_cy_download_button(cy, "cy_download", download_network_link, display_name + '_go_ontology_graph')
+        create_cy_download_button(cy, "cy_download", ontology['display_name'] + '_go_ontology_graph')
 	});
 
-    $.getJSON(go_details_link, function(data) {
+    $.getJSON('/backend/go/' + ontology['id'] + '/locus_details?callback=?', function(data) {
 	  	var go_table = create_go_table(data);
-	  	create_analyze_button("go_table_analyze", go_table, analyze_link, analyze_filename, true);
-  	    create_download_button("go_table_download", go_table, download_table_link, download_filename);
+	  	create_analyze_button("go_table_analyze", go_table, "<a href='" + ontology['link'] + "' class='gene_name'>" + ontology['display_name'] + "</a> genes", true);
+  	    create_download_button("go_table_download", go_table, ontology['display_name'] + "_annotations");
 	});
 	
 });
@@ -28,7 +28,7 @@ function create_go_table(data) {
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[3, "asc"]];
 	options["bDestroy"] = true;
-	options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + display_name};
+	options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + ontology['display_name']};
     options["aoColumns"] = [
             {"bSearchable":false, "bVisible":false}, //evidence_id
             {"bSearchable":false, "bVisible":false}, //analyze_id

@@ -13,7 +13,7 @@ var can_color2 = false;
 $(document).ready(function() {
 
     $("#subfeature_table_analyze").hide();
-  	$.getJSON(sequence_details_link, function(data) {
+  	$.getJSON('/backend/locus/' + locus['id'] + '/sequence_details?callback=?', function(data) {
         var dna_data = data['genomic_dna'];
         var strain_selection1 = $("#strain_selection1");
         var strain_selection2 = $("#strain_selection2");
@@ -121,14 +121,14 @@ $(document).ready(function() {
         on_strain_change();
 
         $("#download1").click(function f() {
-            download_sequence(residues1, download_sequence_link, display_name, chromosome1);
+            download_sequence(residues1, locus['display_name'], chromosome1);
         });
         $("#download2").click(function f() {
-            download_sequence(residues2, download_sequence_link, display_name, chromosome2);
+            download_sequence(residues2, locus['display_name'], chromosome2);
         });
     });
 
-    $.getJSON(neighbor_sequence_details_link, function(data) {
+    $.getJSON('/backend/locus/' + locus['id'] + '/neighbor_sequence_details?callback=?', function(data) {
         strain_to_neighbors = data;
 
         draw_label_chart('label_chart1', $("#strain_selection1").val());
@@ -274,7 +274,7 @@ function draw_label_chart(chart_id, strain_name) {
             var direction = strand_to_direction(data[i]['strand']);
             display_name_to_format_name[data[i]['locus']['display_name']] = data[i];
             var color;
-            if(data[i]['locus']['display_name'] == display_name) {
+            if(data[i]['locus']['display_name'] == locus['display_name']) {
                 color = "#3366cc";
             }
             else {
@@ -446,8 +446,8 @@ function draw_sublabel_chart(chart_id, data) {
         if(start == 100) {
             start = 0;
         }
-        data_array.unshift(['Locus', display_name, start, end]);
-        labels[display_name] = true;
+        data_array.unshift(['Locus', locus['display_name'], start, end]);
+        labels[locus['display_name']] = true;
         show_row_lables = true;
     }
     dataTable.addRows(data_array);

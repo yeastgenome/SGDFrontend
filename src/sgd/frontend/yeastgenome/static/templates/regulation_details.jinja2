@@ -4,28 +4,7 @@
 
 {% block head %}
 <script>
-    var regulation_overview = {{ regulation_overview | safe }};
-	var target_count = regulation_overview["target_count"];
-	var regulator_count = regulation_overview["regulator_count"];
-	var display_name = "{{ locus.display_name }}";
-	var locus_id = "{{ locus.id }}";
-
-	var regulation_details_link = "{{ regulation_details_link }}";
-	var protein_domains_link = "{{ protein_domain_details_link }}"
-	var binding_site_details_link = "{{ binding_site_details_link }}"
-	var regulation_target_enrichment_link = "{{ regulation_target_enrichment_link }}"
-	var regulation_graph_link = "{{ regulation_graph_link }}";
-
-	var download_table_link = "{{ download_table_link }}";
-	var analyze_link = "{{ analyze_link }}";
-	var go_enrichment_link = "{{ go_enrichment_link }}";
-    var download_network_link = "{{download_network_link}}";
-
-    var domains_table_filename = "{{ locus.display_name }}_domains";
-	var targets_table_filename = "{{ locus.display_name }}_targets";
-	var enrichment_table_filename = "{{ locus.display_name }}_targets_go_process_enrichment"
-	var regulators_table_filename = "{{ locus.display_name }}_regulators";
-    var analyze_filename = "<a href='{{ locus.link }}' class='gene_name'>{{ locus.display_name }}</a>";
+    var locus = {{ locus_js|safe }};
 </script>
 {% endblock %}
 
@@ -53,18 +32,16 @@
             add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</a>');
             add_navbar_element("Regulation Overview", "overview");
 
-            if(target_count > 0) {
+            if(locus['regulation_overview']['target_count'] > 0) {
                 add_navbar_element("Domains and Classification", "domain");
                 add_navbar_element("DNA Binding Site Motifs", "binding");
                 add_navbar_element("Targets", "targets");
                 add_navbar_element("Shared GO Processes Among Targets", "enrichment");
             }
 
-            if(regulator_count > 0) {
-                add_navbar_element("Regulators", "regulators");
-            }
+            add_navbar_element("Regulators", "regulators");
 
-            if(target_count + regulator_count > 0) {
+            if(locus['regulation_overview']['target_count'] + locus['regulation_overview']['regulator_count'] > 0) {
                 add_navbar_element("Regulation Network", "network");
             }
         </script>
@@ -90,6 +67,7 @@
         <!-- Includes regulation_overview.html into template -->
         {% include "regulation_overview.jinja2" %}
 
+        {% if locus.regulation_overview.regulator_count + locus.regulation_overview.target_count > 0 %}
         <div class="button-bar">
             <h5>Analyze</h5>
             <ul class="button-group radius">
@@ -100,6 +78,7 @@
                 <li><a disabled="true" class="small button secondary radius" id="download_overview"><i class="icon-picture"></i> PNG</a></li>
             </ul>
         </div>
+        {% endif %}
     </div>
 </section>
 

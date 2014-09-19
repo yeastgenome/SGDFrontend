@@ -1,15 +1,15 @@
-draw_overview(overview);
+draw_overview(contig['overview']);
 
 $(document).ready(function() {
 
     $("#sequence_download").click(function f() {
-		download_sequence(residues, download_sequence_link, format_name, format_name);
+		download_sequence(contig['residues'], contig['format_name'], contig['format_name']);
 	});
 
-  	$.getJSON(sequence_details_link, function(data) {
+  	$.getJSON('/backend/contig/' + contig['id'] + '/sequence_details?callback=?', function(data) {
         var feature_table = create_feature_table(data['genomic_dna']);
-        create_download_button("chromosomal_coord_table_download", feature_table, download_table_link, display_name + '_features');
-        create_analyze_button("chromosomal_coord_table_analyze", feature_table, analyze_link, "<a href='" + link + "' class='gene_name'>" + display_name + "</a> genes", true);
+        create_download_button("chromosomal_coord_table_download", feature_table, contig['display_name'] + '_features');
+        create_analyze_button("chromosomal_coord_table_analyze", feature_table, "<a href='" + contig['link'] + "' class='gene_name'>" + contig['display_name'] + "</a> genes", true);
 
         set_up_sequence("feature_div", data['genomic_dna']);
   	});
@@ -119,8 +119,8 @@ function set_up_sequence(chart_id, data) {
             data_array.push([direction, data[i]['locus']['display_name'], start, end]);
         }
     }
-    data_array.push(["5'", '', length, length]);
-    data_array.push(["3'", '', length, length]);
+    data_array.push(["5'", '', contig['residues'].length, contig['residues'].length]);
+    data_array.push(["3'", '', contig['residues'].length, contig['residues'].length]);
 
     dataTable.addRows(data_array);
     var myColors = ['#A4A4A4'];
@@ -133,7 +133,7 @@ function set_up_sequence(chart_id, data) {
     }
 
     chart.draw(dataTable, options);
-    google.visualization.events.addListener(chart, 'ready', make_ready_handler(chart_id, chart, 1, length,
+    google.visualization.events.addListener(chart, 'ready', make_ready_handler(chart_id, chart, 1, contig['residues'].length,
         display_name_to_format_name, data_array));
     var height = $("#" + chart_id + " > div > div > div > svg").height() + 60;
     options['height'] = height;
@@ -161,7 +161,7 @@ function create_feature_table(data) {
     options["aaSorting"] = [[5, "asc"]];
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, { "sType": "range" }, null]
     options["aaData"] = datatable;
-    options["oLanguage"] = {"sEmptyTable": "No features for " + display_name + '.'};
+    options["oLanguage"] = {"sEmptyTable": "No features for " + contig['display_name'] + '.'};
 
     return create_table("chromosomal_coord_table", options);
 }

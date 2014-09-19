@@ -5,12 +5,14 @@ $(document).ready(function() {
 
     $("#subfeature_table_analyze").hide();
     $("#subfeature_table_download").hide();
-  	$.getJSON(sequence_details_link, function(data) {
+
+  	$.getJSON('/backend/locus/' + locus['id'] + '/sequence_details?callback=?', function(data) {
         var dna_data = data['genomic_dna'];
         var strain_selection = $("#strain_selection");
         var strain_to_genomic_data = {};
         var strain_to_protein_data = {};
         var strain_to_coding_data = {};
+        var strain_to_kb_data = {};
 
         if(dna_data.length > 0) {
             for (var i=0; i < dna_data.length; i++) {
@@ -35,65 +37,44 @@ $(document).ready(function() {
                 strain_to_coding_data[coding_data[i]['strain']['format_name']] = coding_data[i];
             }
 
+            var kb_data = data['1kb'];
+            for (i=0; i < kb_data.length; i++) {
+                strain_to_kb_data[kb_data[i]['strain']['format_name']] = kb_data[i];
+            }
+
             function on_strain_change() {
                 var strain_data = strain_to_genomic_data[strain_selection.val()];
                 var coding_data = strain_to_coding_data[strain_selection.val()];
                 var protein_data = strain_to_protein_data[strain_selection.val()];
-                $("#strain_description").html(strain_data['strain']['description']);
-                $("#strain_subfeature").html(strain_data['strain']['display_name']);
-                $("#strain_location").html(strain_data['strain']['display_name']);
-                $("#contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
-                draw_label_chart('label_chart', strain_data['strain']['format_name']);
-                draw_sublabel_chart('sublabel_chart', strain_data);
-                create_subfeature_table(strain_data);
+                var kb_data = strain_to_kb_data[strain_selection.val()];
 
-                $("#genomic_download").click(function f() {
-                    download_sequence(strain_data['residues'], download_sequence_link, display_name, strain_data['contig']);
-                });
+                if(strain_data != null) {
+                    $("#strain_description").html(strain_data['strain']['description']);
+                    $("#strain_subfeature").html(strain_data['strain']['display_name']);
+                    $("#strain_location").html(strain_data['strain']['display_name']);
+                    $("#contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
+                    draw_label_chart('label_chart', strain_data['strain']['format_name']);
+                    draw_sublabel_chart('sublabel_chart', strain_data);
+                    create_subfeature_table(strain_data);
 
-                $("#coding_download").click(function f() {
-                    download_sequence(coding_data['residues'], download_sequence_link, display_name, strain_selection.val() + ' coding_dna');
-                });
+                    $("#genomic_download").click(function f() {
+                        download_sequence(strain_data['residues'], locus['display_name'], strain_data['contig']['display_name']);
+                    });
 
-                $("#protein_download").click(function f() {
-                    download_sequence(protein_data['residues'], download_sequence_link, display_name, strain_selection.val() + ' protein');
-                });
+                    $("#coding_download").click(function f() {
+                        download_sequence(coding_data['residues'], locus['display_name'], strain_selection.val() + ' coding_dna');
+                    });
 
-//                var mode = $("#alternative_chooser");
-//                alternative_download_residues = '';
-//                if(mode.val() == 'genomic_dna') {
-//                    alternative_download_residues = strain_data['residues'];
-//                    alternative_contig = strain_data['contig']['format_name'];
-//                }
-//                else if(mode.val() == 'coding_dna') {
-//                    alternative_download_residues = strain_to_coding_data[alternative_selection.val()]['residues'];
-//                    alternative_contig = alternative_selection.val() + ' coding_dna';
-//                }
-//                else if(mode.val() == 'protein') {
-//                    alternative_download_residues = strain_to_protein_data[alternative_selection.val()]['residues'];
-//                    alternative_contig = alternative_selection.val() + ' protein';
-//                }
-//
-//                $("#alternative_sequence").html(prep_sequence(alternative_download_residues));
-//
-//                mode.children('option[value=genomic_dna]')
-//                    .attr('disabled', !(alternative_selection.val() in strain_to_genomic_data));
-//                mode.children('option[value=coding_dna]')
-//                    .attr('disabled', !(alternative_selection.val() in strain_to_coding_data));
-//                mode.children('option[value=protein]')
-//                    .attr('disabled', !(alternative_selection.val() in strain_to_protein_data));
-//
-//                if(mode.val() == 'protein' && !(alternative_selection.val() in strain_to_protein_data)) {
-//                    mode.children('option[value=genomic_dna]').attr('selected', true);
-//                    other_on_change();
-//                }
-//                if(mode.val() == 'coding_dna' && !(alternative_selection.val() in strain_to_coding_data)) {
-//                    mode.children('option[value=genomic_dna]').attr('selected', true);
-//                    other_on_change();
-//                }
+                    $("#protein_download").click(function f() {
+                        download_sequence(protein_data['residues'], locus['display_name'], strain_selection.val() + ' protein');
+                    });
+                    $("#kb_download").click(function f() {
+                        download_sequence(kb_data['residues'], locus['display_name'], strain_data['contig']['display_name']);
+                    });
+                }
+
             }
             strain_selection.change(on_strain_change);
-            //$("#alternative_chooser").change(on_strain_change);
             on_strain_change();
         }
         else {
@@ -101,19 +82,23 @@ $(document).ready(function() {
         }
     });
 
-    $.getJSON(neighbor_sequence_details_link, function(data) {
+    $.getJSON('/backend/locus/' + locus['id'] + '/neighbor_sequence_details?callback=?', function(data) {
         strain_to_neighbors = data;
         draw_label_chart('label_chart', $("#strain_selection").val());
     });
 
-    $.getJSON(expression_details_link, function(data) {
-        create_expression_chart(data['overview'], data['min_value'], data['max_value']);
+    $.getJSON('/backend/locus/' + locus['id'] + '/expression_details?callback=?', function(data) {
+        if(data['overview'].length > 0) {
+            create_expression_chart(data['overview'], data['min_value'], data['max_value']);
+        }
   	});
 
-    if(paragraph != null) {
-        document.getElementById("summary_paragraph").innerHTML = paragraph['text'];
-        set_up_references(paragraph['references'], "summary_paragraph_reference_list");
+    if(locus['paragraph'] != null) {
+        document.getElementById("summary_paragraph").innerHTML = locus['paragraph']['text'];
+        set_up_references(locus['paragraph']['references'], "summary_paragraph_reference_list");
     }
+
+    set_up_history_table();
 });
 
 function strand_to_direction(strand) {
@@ -222,7 +207,7 @@ function draw_label_chart(chart_id, strain_name) {
             var direction = strand_to_direction(data[i]['strand']);
             display_name_to_format_name[data[i]['locus']['display_name']] = data[i];
             var color;
-            if(data[i]['locus']['display_name'] == display_name) {
+            if(data[i]['locus']['display_name'] == locus['display_name']) {
                 color = "#3366cc";
             }
             else {
@@ -366,8 +351,8 @@ function draw_sublabel_chart(chart_id, data) {
         if(start == 100) {
             start = 0;
         }
-        data_array.unshift(['Locus', display_name, start, end]);
-        labels[display_name] = true;
+        data_array.unshift(['Locus', locus['display_name'], start, end]);
+        labels[locus['display_name']] = true;
         show_row_lables = true;
     }
     dataTable.addRows(data_array);
@@ -385,6 +370,16 @@ function draw_sublabel_chart(chart_id, data) {
     options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
 
     chart.draw(dataTable, options);
+}
+
+function set_up_history_table() {
+    var options = {};
+    options["bPaginate"] = false;
+    options["aaSorting"] = [[0, "asc"]];
+    options["aoColumns"] = [null, null, null]
+    options["oLanguage"] = {"sEmptyTable": "No history entries for " + locus['display_name'] + '.'};
+
+    return create_table("history_table", options);
 }
 
 function create_subfeature_table(data) {
@@ -432,7 +427,7 @@ function create_subfeature_table(data) {
         { "sType": "range" },
         {"bSearchable":false, "bVisible":false}, null, null]
     options["aaData"] = datatable;
-    options["oLanguage"] = {"sEmptyTable": "No subfeatures for " + display_name + '.'};
+    options["oLanguage"] = {"sEmptyTable": "No subfeatures for " + locus['display_name'] + '.'};
     options['sDom'] = 't'
 
     return create_table("subfeature_table", options);

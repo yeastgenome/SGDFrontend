@@ -90,9 +90,9 @@ function phosphorylation_data_to_table(evidence) {
     var source = evidence['source']['display_name'];
     if(source == "PhosphoGRID") {
         var gene_id = null;
-        for(var j=0; j < aliases.length; j++) {
-            if(aliases[j]['category'] == 'Gene ID' && aliases[j]['source']['display_name'] == 'BioGRID') {
-                gene_id = aliases[j]['display_name'];
+        for(var j=0; j < locus['aliases'].length; j++) {
+            if(locus['aliases'][j]['category'] == 'Gene ID' && locus['aliases'][j]['source']['display_name'] == 'BioGRID') {
+                gene_id = locus['aliases'][j]['display_name'];
             }
         }
         if(gene_id != null) {
@@ -166,8 +166,8 @@ function interaction_data_to_table(evidence, index) {
 	var direction = evidence['bait_hit'];
     var analyze_key;
 
-	if(locus_id != null) {
-	    if(locus_id == evidence['locus1']['id']) {
+	if(locus['id'] != null) {
+	    if(locus['id'] == evidence['locus1']['id']) {
             if(direction == 'Hit-Bait') {
                 direction = 'Hit';
             }

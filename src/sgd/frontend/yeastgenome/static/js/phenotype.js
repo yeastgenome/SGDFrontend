@@ -1,10 +1,10 @@
 
 $(document).ready(function() {
 
-	$.getJSON(phenotype_details_link, function(data) {
+	$.getJSON('/backend/phenotype/' + phenotype['id'] + '/locus_details?callback=?', function(data) {
 	  	var phenotype_table = create_phenotype_table(data);
-	  	create_analyze_button("phenotype_table_analyze", phenotype_table, analyze_link, analyze_filename, true);
-  	    create_download_button("phenotype_table_download", phenotype_table, download_table_link, download_filename);
+	  	create_analyze_button("phenotype_table_analyze", phenotype_table, "<a href='" + phenotype['link'] + "' class='gene_name'>" + phenotype['display_name'] + "</a> genes", true);
+  	    create_download_button("phenotype_table_download", phenotype_table, phenotype['display_name'] + "_annotations");
 	});
 
 });
@@ -32,7 +32,7 @@ function create_phenotype_table(data) {
         options["bPaginate"] = true;
         options["aaSorting"] = [[2, "asc"]];
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bVisible":false}, null, null, null, {"sWidth": "250px"}, null];
-        options["oLanguage"] = {"sEmptyTable": "No annotations for " + display_name};
+        options["oLanguage"] = {"sEmptyTable": "No annotations for " + phenotype['display_name']};
         options["aaData"] = datatable;
     }
 
