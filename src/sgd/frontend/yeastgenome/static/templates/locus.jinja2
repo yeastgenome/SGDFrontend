@@ -36,8 +36,8 @@
             {% if tabs['sequence_tab'] %}
                 add_navbar_element('Sequence', 'sequence');
             {% endif %}
-            {% if tabs['literature_tab'] %}
-                add_navbar_element('Literature', 'literature');
+            {% if tabs['protein_tab'] %}
+                add_navbar_element('Protein', 'protein');
             {% endif %}
             {% if tabs['go_tab'] %}
                 add_navbar_element('Gene Ontology', 'go');
@@ -48,25 +48,25 @@
             {% if tabs['interaction_tab'] %}
                 add_navbar_element('Interaction', 'interaction');
             {% endif %}
-            {% if tabs['expression_tab'] %}
-                add_navbar_element('Expression', 'expression');
-            {% endif %}
             {% if tabs['regulation_tab'] %}
                 add_navbar_element('Regulation', 'regulation');
             {% endif %}
-            {% if tabs['protein_tab'] %}
-                add_navbar_element('Protein', 'protein');
+            {% if tabs['expression_tab'] %}
+                add_navbar_element('Expression', 'expression');
+            {% endif %}
+            {% if locus.paragraph != None %}
+                add_navbar_element('Summary Paragraph', 'paragraph');
+            {% endif %}
+            {% if tabs['literature_tab'] %}
+                add_navbar_element('Literature', 'literature');
             {% endif %}
             {% if tabs['history_tab'] %}
                 add_navbar_element('History', 'history');
             {% endif %}
+            add_navbar_element('References', 'references');
             {% for url in locus.urls if url.category == 'LSP' %}{% if loop.first %}
                 add_navbar_element('Resources', 'resources');
             {% endif %}{% endfor %}
-            {% if locus.paragraph != None %}
-                add_navbar_element('Summary Paragraph', 'paragraph');
-            {% endif %}
-            add_navbar_element('References', 'references');
         </script>
 
 <!-- Overview
@@ -291,36 +291,51 @@
     </section>
     {% endif %}
 
-<!-- Literature
+<!-- Protein
 ================================================== -->
-    {% if tabs['literature_tab'] %}
-    <section id="literature" data-magellan-destination="literature">
-        <a href="/locus/{{ locus.sgdid }}/literature" class="details-link">Literature Details <i class="fa fa-chevron-circle-right"></i></a>
-        <h2>Literature</h2>
+    {% if tabs['protein_tab'] %}
+    <section id="protein" data-magellan-destination="protein">
+        <a href="/locus/{{ locus.sgdid }}/protein" class="details-link">Protein Details <i class="fa fa-chevron-circle-right"></i></a>
+        <h2>Protein</h2>
         <div class="panel">
             <div class="panel">
-                <dl class="key-value">
-                    <dt>Primary</dt>
-                    {% if locus.literature_overview.primary_count > 0 %}
-                        <dd><a href="/locus/{{ locus.sgdid }}/literature#primary">{{locus.literature_overview.primary_count}}</a></dd>
-                    {% else %}
-                        <dd>{{locus.literature_overview.primary_count}}</dd>
-                    {% endif %}
+                 <dl class="key-value">
+                     <dt>Length (a.a.)</dt>
+                     <dd>{{ locus.protein_overview.length }}</dd>
 
-                    <dt>Additional</dt>
-                    {% if locus.literature_overview.additional_count > 0 %}
-                        <dd><a href="/locus/{{ locus.sgdid }}/literature#additional">{{locus.literature_overview.additional_count}}</a></dd>
-                    {% else %}
-                        <dd>{{locus.literature_overview.additional_count}}</dd>
-                    {% endif %}
+                     <dt>Molecular Weight (Da)</dt>
+                     <dd>{{ locus.protein_overview.molecular_weight }}</dd>
 
-                    <dt>Reviews</dt>
-                    {% if locus.literature_overview.review_count > 0 %}
-                        <dd><a href="/locus/{{ locus.sgdid }}/literature#reviews">{{locus.literature_overview.review_count}}</a></dd>
-                    {% else %}
-                        <dd>{{locus.literature_overview.review_count}}</dd>
-                    {% endif %}
-                </dl>
+                     <dt>Isoelectric Point</dt>
+                     <dd>{{ locus.protein_overview.pi }}</dd>
+                 </dl>
+            </div>
+
+            <div class="panel">
+                <h3>Homologs</h3>
+                    <p id='homolog_resources_list'>
+                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
+                <h3>Protein Databases/Other</h3>
+                    <p id='protein_databases_resources_list'>
+                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
+                <h3>Localization</h3>
+                    <p id="localization_resources_list">
+                        {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION'%}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
+                <h3>Post-translational Modifications</h3>
+                    <p id="modifications_resources_list">
+                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS'%}
+                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
             </div>
         </div>
     </section>
@@ -559,26 +574,6 @@
     </section>
     {% endif %}
 
-<!-- Expression
-================================================== -->
-    {% if tabs['expression_tab'] %}
-    <section id="expression" data-magellan-destination="expression">
-        <a href="/locus/{{ locus.sgdid }}/expression" class="details-link">Expression Details <i class="fa fa-chevron-circle-right"></i></a>
-        <h2>Expression</h2>
-        <div class="panel">
-            <div id="two_channel_expression_chart" class="panel"></div>
-            <div class="panel">
-                <h3>Resources</h3>
-                <p>
-                    {% for url in locus.urls if url.category == 'LOCUS_EXPRESSION'%}
-                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
-            </div>
-        </div>
-    </section>
-    {% endif %}
-
 <!-- Regulation
 ================================================== -->
     {% if tabs['regulation_tab'] %}
@@ -620,51 +615,68 @@
     </section>
     {% endif %}
 
-<!-- Protein
+<!-- Expression
 ================================================== -->
-    {% if tabs['protein_tab'] %}
-    <section id="protein" data-magellan-destination="protein">
-        <a href="/locus/{{ locus.sgdid }}/protein" class="details-link">Protein Details <i class="fa fa-chevron-circle-right"></i></a>
-        <h2>Protein</h2>
+    {% if tabs['expression_tab'] %}
+    <section id="expression" data-magellan-destination="expression">
+        <a href="/locus/{{ locus.sgdid }}/expression" class="details-link">Expression Details <i class="fa fa-chevron-circle-right"></i></a>
+        <h2>Expression</h2>
+        <div class="panel">
+            <div id="two_channel_expression_chart" class="panel"></div>
+            <div class="panel">
+                <h3>Resources</h3>
+                <p>
+                    {% for url in locus.urls if url.category == 'LOCUS_EXPRESSION'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+<!-- Paragraph
+================================================== -->
+    {% if locus.paragraph != None %}
+    <section id="paragraph" data-magellan-destination="paragraph">
+        <h2>Summary Paragraph</h2>
+        <div class="panel">
+            <div id="summary_paragraph"></div>
+            <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
+        </div>
+    </section>
+        {% endif %}
+
+<!-- Literature
+================================================== -->
+    {% if tabs['literature_tab'] %}
+    <section id="literature" data-magellan-destination="literature">
+        <a href="/locus/{{ locus.sgdid }}/literature" class="details-link">Literature Details <i class="fa fa-chevron-circle-right"></i></a>
+        <h2>Literature</h2>
         <div class="panel">
             <div class="panel">
-                 <dl class="key-value">
-                     <dt>Length (a.a.)</dt>
-                     <dd>{{ locus.protein_overview.length }}</dd>
+                <dl class="key-value">
+                    <dt>Primary</dt>
+                    {% if locus.literature_overview.primary_count > 0 %}
+                        <dd><a href="/locus/{{ locus.sgdid }}/literature#primary">{{locus.literature_overview.primary_count}}</a></dd>
+                    {% else %}
+                        <dd>{{locus.literature_overview.primary_count}}</dd>
+                    {% endif %}
 
-                     <dt>Molecular Weight (Da)</dt>
-                     <dd>{{ locus.protein_overview.molecular_weight }}</dd>
+                    <dt>Additional</dt>
+                    {% if locus.literature_overview.additional_count > 0 %}
+                        <dd><a href="/locus/{{ locus.sgdid }}/literature#additional">{{locus.literature_overview.additional_count}}</a></dd>
+                    {% else %}
+                        <dd>{{locus.literature_overview.additional_count}}</dd>
+                    {% endif %}
 
-                     <dt>Isoelectric Point</dt>
-                     <dd>{{ locus.protein_overview.pi }}</dd>
-                 </dl>
-            </div>
-
-            <div class="panel">
-                <h3>Homologs</h3>
-                    <p id='homolog_resources_list'>
-                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}
-                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-                <h3>Protein Databases/Other</h3>
-                    <p id='protein_databases_resources_list'>
-                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
-                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-                <h3>Localization</h3>
-                    <p id="localization_resources_list">
-                        {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION'%}
-                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
-                <h3>Post-translational Modifications</h3>
-                    <p id="modifications_resources_list">
-                        {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS'%}
-                            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                        {% endfor %}
-                    </p>
+                    <dt>Reviews</dt>
+                    {% if locus.literature_overview.review_count > 0 %}
+                        <dd><a href="/locus/{{ locus.sgdid }}/literature#reviews">{{locus.literature_overview.review_count}}</a></dd>
+                    {% else %}
+                        <dd>{{locus.literature_overview.review_count}}</dd>
+                    {% endif %}
+                </dl>
             </div>
         </div>
     </section>
@@ -701,7 +713,17 @@
     </section>
     {% endif %}
 
-<!-- Resources
+<!-- References
+================================================== -->
+    <section id="references" data-magellan-destination="references">
+        <h2>References</h2>
+        <div class="panel">
+
+        </div>
+
+    </section>
+
+    <!-- Resources
 ================================================== -->
     {% for url in locus.urls if url.category == 'LSP' %}{% if loop.first %}
     <section id="resources" data-magellan-destination="resources">
@@ -716,27 +738,6 @@
     </section>
     {% endif %}{% endfor %}
 
-<!-- Paragraph
-================================================== -->
-    {% if locus.paragraph != None %}
-    <section id="paragraph" data-magellan-destination="paragraph">
-        <h2>Summary Paragraph</h2>
-        <div class="panel">
-            <div id="summary_paragraph"></div>
-            <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
-        </div>
-    </section>
-        {% endif %}
-
-<!-- References
-================================================== -->
-    <section id="references" data-magellan-destination="references">
-        <h2>References</h2>
-        <div class="panel">
-
-        </div>
-
-    </section>
     </div>
 </div>
 {% endblock body %}
