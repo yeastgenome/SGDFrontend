@@ -133,24 +133,22 @@
 	white-space: nowrap;
 }
 
-// GO snapshot sunburst bar chart
-.go-snapshot-target {
-	h2 {
-		margin-bottom: 1.25em;
-	}
-	.viz-legend {
-		margin-bottom: 0;
-		text-transform: capitalize;
-		font-size: 14px;
-	}
-	.secondary-legend-container {
-		margin-bottom: 2em;
-		.legend-color {
-			visibility: hidden;
-		}
+// toggle bar chart
+.toggle-bar-chart {
+	.radio-selector {
+		font-size: 16px;
 	}
 
-	.legend-entry-container {
+	.radio-selector label {
+		text-transform: capitalize;
+		font-size: 16px;
+	}
+
+	.radio-element-container {
 		width: 30%;
+	}
+
+	.toggle-text {
+		margin-top: 1em;
 	}
 }

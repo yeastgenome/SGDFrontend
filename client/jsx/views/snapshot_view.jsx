@@ -6,7 +6,7 @@ var React = require("react");
 var GenomeSnapshotModel = require("../models/genome_snapshot_model.jsx");
 var NavBar = require("../components/navbar.jsx");
 var TableAlternative = require("../components/table_alternative.jsx");
-var SunburstBarChart = require("../components/viz/sunburst_bar_chart.jsx");
+var ToggleBarChart = require("../components/viz/toggle_bar_chart.jsx");
 var BarChart = require("../components/viz/bar_chart.jsx");
 
 var snapshotView = {};
@@ -38,21 +38,26 @@ snapshotView.render = function () {
 			document.getElementsByClassName("genome-snapshot-target")[0]
 		);
 
-		var goData = nestedData.goData;
+		var _labelValue = (d) => { return d.display_name; };
+
+		var _goData = nestedData.goData;
+		var _goYValue = (d) => { return d.descendant_annotation_gene_count; };
 		React.renderComponent(
-			<SunburstBarChart data={goData} />,
+			<ToggleBarChart
+				data={_goData} initialActiveDataKey="biological_process"
+				labelValue={_labelValue} yValue={_goYValue}
+			/>,
 			document.getElementsByClassName("go-snapshot-target")[0]
 		);
 
-		var phenotypeData = nestedData.phenotypeData;
+		var _phenotypeData = nestedData.phenotypeData;
 		var _colorValue = (d) => { return "#DF8B93"; }
-		var _yValue = (d) => { return d.descendant_annotation_gene_count; };
-		var _labelValue = (d) => { return d.display_name; };
+		var _phenoYValue = (d) => { return d.descendant_annotation_gene_count; };
 
 		var barChart = (
 			<BarChart
-				data={phenotypeData} yValue={_yValue}
-				labelValue={_labelValue} labelRatio={0.15}
+				data={_phenotypeData} yValue={_phenoYValue}
+				labelValue={_labelValue} labelRatio={0.20}
 				hasTooltip={true} colorScale={_colorValue}
 				yAxisLabel="Genes Products Annotated"
 			/>

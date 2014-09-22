@@ -21,7 +21,7 @@ module.exports = React.createClass({
 		return {
 			data: null, // *
 			colorValue: function (d) { return d; },
-			colorScale: d3.scale.category20(),
+			colorScale: function (d) { return "rgb(223, 139, 147)" },
 			hasTooltip: false,
 			hasYAxis: true,
 			labelRatio: 0.5,

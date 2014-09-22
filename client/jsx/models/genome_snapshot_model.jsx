@@ -155,96 +155,56 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 	_parseGo (response) {
 		var data = response;
 		var allSlimTerms = _.uniq(data.go_slim_terms, (t) => { return t.id });
-		function termById (id) {
-			var term = _.filter(allSlimTerms, (t) => {
-				return t.id === id;
-			})[0];
-			return term;
-		}
+
+		// helper function to get terms from their ID
+		var termById = function (_id) {
+			return _.findWhere(allSlimTerms, { id: _id });
+		};
 
 		// id's for top level
 		var topIds = [139709, 137832, 140984];
+
+		// define relationship elements for more specific terms
+		var relationships = _.uniq(data.go_slim_relationships, (r) => {
+			return r[0];
+		});
+		relationships = _.filter(relationships, (r) => {
+			return topIds.indexOf(r[1]) >= 0;
+		});
+
+		// get child terms
+		var childTerms = _.filter(allSlimTerms, (t) => {
+			return topIds.indexOf(t.id) < 0;
+		});
 
 		// start with array of top level GO cats
 		var goTerms = _.filter(allSlimTerms, (t) => {
 			return topIds.indexOf(t.id) >= 0;
 		});
 
+		// format data, mapping children to parents
 		goTerms = _.map(goTerms, (termData) => {
+			var _childRelationships = _.filter(relationships, (r) => {
+				return r[1] === termData.id;
+			});
+
+			var _childTerms = _.map(_childRelationships, (r) => {
+				return termById(r[0]);
+			});
+			_childTerms = _.sortBy(_childTerms, (d) => {
+				return -d.descendant_annotation_gene_count;
+			});
+
 			return {
-				data: termData,
-				children: []
-			}
+				id: termData.id,
+				key: termData.format_name,
+				name: termData.display_name,
+				data: _childTerms,
+				text: `${termData.direct_annotation_gene_count.toLocaleString()} Gene Products Annotated to Unknown`
+			};
 		});
 
-		// filter out repeats
-		relationships = _.uniq(data.go_slim_relationships, (r) => {
-			return r[0];
-		});
-
-		// define relationship elements for more specific terms
-		var relationships = _.filter(relationships, (r) => {
-			return !isNaN(r[0]); // not the defs
-		});
-		var secondaryRelationships = _.filter(relationships, (r) => {
-			return (topIds.indexOf(r[0]) < 0 && topIds.indexOf(r[1]) >= 0);
-		});
-
-		// helper function to recursively try to assign to parent
-		function assignToChildren (relationship, targetTerm) {
-			if (relationship[1] === targetTerm.data.id) {
-				var term = termById(relationship[0]);
-				targetTerm.children.push({ data: term, children: []});
-				return;
-			} else {
-				for (var i = targetTerm.children.length - 1; i >= 0; i--) {
-					assignToChildren(relationship, targetTerm.children[i])
-				};
-				return;
-			}
-		}
-
-		var _nestedData = { data: {}, children: goTerms };
-
-		// use helper function to assign children
-		for (var i = secondaryRelationships.length - 1; i >= 0; i--) {
-			assignToChildren(secondaryRelationships[i], _nestedData);
-		}
-
-		// // add terms annoted to root
-		// for (var i = _nestedData.children.length - 1; i >= 0; i--) {
-		// 	var term = _nestedData.children[i];
-		// 	term.children.push({
-		// 		data: {
-		// 			display_name: "annotated to root term",
-		// 			format_name: "annotated_to_root_term",
-		// 			link: term.data.link,
-		// 			annotation_count: 0,
-		// 			isRoot: true
-		// 		}
-		// 	});
-		// }
-
-		// also put data into linear format for bar chart consumption
-		var _linearData = _.map(goTerms, (t) => {
-			return _.map(t.children, (c) => {
-					var obj = c.data;
-					obj["top_level"] = t.data.format_name;
-					return obj;
-				})
-				.sort( (a, b) => {
-					return (a.descendant_annotation_gene_count < b.descendant_annotation_gene_count) ? 1 : -1;
-				});
-		});
-
-		_linearData = _.reduce(_linearData, (prev, current) => {
-			return prev.concat(current);
-		}, []);
-
-		return {
-			nested: _nestedData,
-			linear: _linearData
-		};
+		return _.sortBy(goTerms, (t) => { return t.key === "biological_process" ? -1 : 1; });
 	}
 
 	// return just array of phenotype terms (no relationships)
