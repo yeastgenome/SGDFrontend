@@ -590,7 +590,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for evidence in locus.history if evidence.history_type == 'LSP' %}
+                    {% for evidence in locus.history if evidence.history_type == 'LSP' or not tabs['sequence_tab'] %}
                         <tr>
                             <td>{{ evidence.date_created }}</td>
                             <td>{{ evidence.note|safe }}</td>
