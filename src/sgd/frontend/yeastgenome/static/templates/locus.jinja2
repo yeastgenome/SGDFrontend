@@ -295,7 +295,9 @@
         <a href="/locus/{{ locus.sgdid }}/go" class="details-link">Gene Ontology Details <i class="fa fa-chevron-circle-right"></i></a>
         <h2>Gene Ontology</h2>
         <div class="panel">
-            <a href="/locus/{{ locus.sgdid }}/go#comp">View computational annotations</a>
+            {% if locus.go_overview.computational_annotation_count > 0 %}
+                <a href="/locus/{{ locus.sgdid }}/go#comp">View computational annotations</a>
+            {% endif %}
 
             {% if locus.go_overview.manual_molecular_function_terms|length + locus.go_overview.manual_biological_process_terms|length + locus.go_overview.manual_cellular_component_terms|length > 0 %}
             <div class="panel">
