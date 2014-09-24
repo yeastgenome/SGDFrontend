@@ -541,8 +541,9 @@ function create_expression_chart(all_data, min_value, max_value) {
 
         // The select handler. Call the chart's getSelection() method
         function selectHandler() {
-
+            window.location.href = '/locus/' + locus.sgdid + '/expression';
         }
+        google.visualization.events.addListener(chart, 'select', selectHandler);
     }
 }
 
