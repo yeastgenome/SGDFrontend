@@ -41,8 +41,12 @@ module.exports = React.createClass({
 				});
 			};
 			var _checked = d.key === this.state.activeElementKey;
+
+			// make the width as wide as possible
+			var widthPercent = `${1 / this.props.elements.length * 100}%`;
+
 			return (
-				<div className="radio-element-container" style={{ display: "inline-block" }}>
+				<div className="radio-element-container" style={{ display: "inline-block", width: widthPercent }}>
 					<input type="radio" onClick={_onClick} name={d.key} value={d.key} checked={_checked}>
 						<label>{d.name}</label>
 					</input>

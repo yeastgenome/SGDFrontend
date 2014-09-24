@@ -145,7 +145,13 @@
 	}
 
 	.radio-element-container {
-		width: 30%;
+		text-align: center;
+		&:first-child {
+			text-align: left;
+		}
+		&:last-child {
+			text-align: right;
+		}
 	}
 
 	.toggle-text {

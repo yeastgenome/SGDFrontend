@@ -46,6 +46,7 @@ module.exports = React.createClass({
 			textNode = <h3 className="toggle-text">{active.text}</h3>;
 		}
 
+		var _colorScale = (d) => { return "#18AB2F"; };
 		return (
 			<div className="toggle-bar-chart">
 				{controlsNode}
@@ -53,27 +54,10 @@ module.exports = React.createClass({
 					data={activeData} yValue={this.props.yValue}
 					labelRatio={0.20} hasTooltip={true}
 					yAxisLabel="Genes Products Annotated" labelValue={this.props.labelValue}
+					colorScale={_colorScale}
 				/>
 				{textNode}
 			</div>
 		);
-	},
-
-	_getControls: function () {
-		var inputs = _.map(this.props.data, (d) => {
-			var _onClick = (e) => {
-				e.preventDefault();
-
-			};
-			var _checked = d.key === this.state.activeDataKey;
-			return <input type="radio" onClick={_onClick} name={d.key} value={d.key} checked={_checked}>{d.name}</input>;
-		});
-
-		return (
-			<form action="">
-				{inputs}
-			</form>
-		);
-
 	}
 });
