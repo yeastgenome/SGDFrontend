@@ -312,13 +312,17 @@
     <section id="go" data-magellan-destination="go">
         <a href="/locus/{{ locus.sgdid }}/go" class="details-link">Gene Ontology Details <i class="fa fa-chevron-circle-right"></i></a>
         <h2>Gene Ontology
-            <a href="#" data-dropdown="protein_info"><i class="fa fa-info-circle"></i></a>
+            <a href="#" data-dropdown="go_info"><i class="fa fa-info-circle"></i></a>
 
-            <p id="protein_info" class="f-dropdown content medium" data-dropdown-content>
-                Basic information about the protein. Click "Protein Details" for further information about the protein
-                such as abundance data, domains, shared domains with other proteins, protein sequence retrieval for
-                various strains, sequence-based physico-chemical proterties, protein modification sites sites, and
-                external identifiers for the protein.
+            <p id="go_info" class="f-dropdown content medium" data-dropdown-content>
+                GO Annotations consist of four mandatory components: a gene product, a term from one of the three
+                <a href="http://geneontology.org/">Gene Ontology (GO)</a> controlled vocabularies
+                (<a href='/ontology/go/molecular_function/overview'>Molecular Function</a>,
+                <a href='/ontology/go/biological_process/overview'>Biological Process</a>, and
+                <a href='/ontology/go/cellular_component/overview'>Cellular Component</a>), a reference, and an
+                evidence code. SGD has manually curated and high-throughput GO Annotations, both derived from the
+                literature, as well as computational, or predicted, annotations. Click "Gene Ontology Details" to view
+                all GO information and evidence for this locus as well as biological processes it shares with other genes.
             </p>
         </h2>
         <div class="panel">
@@ -444,7 +448,18 @@
     {% if tabs['phenotype_tab'] %}
     <section id="phenotype" data-magellan-destination="phenotype">
         <a href="/locus/{{ locus.sgdid }}/phenotype" class="details-link">Phenotype Details <i class="fa fa-chevron-circle-right"></i></a>
-        <h2>Phenotype</h2>
+        <h2>Phenotype
+            <a href="#" data-dropdown="phenotype_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="phenotype_info" class="f-dropdown content medium" data-dropdown-content>
+                Phenotype annotations for a gene are curated single mutant phenotypes that require an observable
+                (e.g., "cell shape"), a qualifier (e.g., "abnormal"), a mutant type (e.g., null), strain background,
+                and a reference. In addition, annotations are classified as classical genetics or high-throughput
+                (e.g., large scale survey, systematic mutation set). Whenever possible, allele information and
+                additional details are provided. Click "Phenotype Details" to view all phenotype annotations and
+                evidence for this locus as well as phenotypes it shares with other genes.
+            </p>
+        </h2>
         <div class="panel">
             {% if locus.phenotype_overview.classical_phenotypes|length + locus.phenotype_overview.large_scale_phenotypes|length == 0 %}
                 <p>No phenotype data available.</p>
@@ -490,7 +505,18 @@
     {% if tabs['interaction_tab'] %}
     <section id="interaction" data-magellan-destination="interaction">
         <a href="/locus/{{ locus.sgdid }}/interaction" class="details-link">Interaction Details <i class="fa fa-chevron-circle-right"></i></a>
-        <h2>Interaction</h2>
+        <h2>Interaction
+            <a href="#" data-dropdown="interaction_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="interaction_info" class="f-dropdown content medium" data-dropdown-content>
+                Interaction annotations are curated by <a href="http://thebiogrid.org/">BioGRID</a> and include physical
+                or genetic interactions observed
+                between at least two genes. An interaction annotation is composed of the interaction type, name of the
+                interactor, assay type (e.g., Two-Hybrid), annotation type (e.g., manual or high-throughput), and a
+                reference, as well as other experimental details. Click "Interaction Details" to view all interaction
+                annotations and evidence for this locus, including an interaction visualization.
+            </p>
+        </h2>
         <div class="panel">
             {% if locus.interaction_overview.total_interactions == 0 %}
                 <p>No interaction data available.</p>
@@ -528,7 +554,16 @@
     {% if tabs['regulation_tab'] %}
     <section id="regulation" data-magellan-destination="regulation">
         <a href="/locus/{{ locus.sgdid }}/regulation" class="details-link">Regulation Details <i class="fa fa-chevron-circle-right"></i></a>
-        <h2>Regulation</h2>
+        <h2>Regulation
+            <a href="#" data-dropdown="regulation_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="regulation_info" class="f-dropdown content medium" data-dropdown-content>
+                The number of putative Regulators (genes that regulate it) and Targets (genes it regulates) for the
+                given locus, based on experimental evidence. This evidence includes data generated through
+                high-throughput techniques. Click "Regulation Details" to view all regulation annotations, shared GO
+                enrichment among regulation Targets, and a regulator/target diagram for the locus.
+            </p>
+        </h2>
         <div class="panel">
             <div class="panel">
                 {% if locus.regulation_overview.regulator_count + locus.regulation_overview.target_count == 0 %}
@@ -564,7 +599,19 @@
     {% if tabs['expression_tab'] %}
     <section id="expression" data-magellan-destination="expression">
         <a href="/locus/{{ locus.sgdid }}/expression" class="details-link">Expression Details <i class="fa fa-chevron-circle-right"></i></a>
-        <h2>Expression</h2>
+        <h2>Expression
+            <a href="#" data-dropdown="expression_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="expression_info" class="f-dropdown content medium" data-dropdown-content>
+                Expression data are derived from records contained in the
+                <a href="http://www.ncbi.nlm.nih.gov/geo/">Gene Expression Omnibus (GEO)</a>, and are first log2
+                transformed and normalized. Referenced datasets may contain one or more condition(s), and as a result
+                there may be a greater number of conditions than datasets represented in a single clickable histogram
+                bar. The histogram division at 0.0 separates the down-regulated (green) conditions and datasets from
+                those that are up-regulated (red). Click "Expression Details" to view all expression annotations and
+                details for this locus, including a visualization of genes that share a similar expression pattern.
+            </p>
+        </h2>
         <div class="panel">
             <div id="two_channel_expression_chart" class="panel"></div>
         </div>
@@ -575,7 +622,16 @@
 ================================================== -->
     {% if locus.paragraph != None %}
     <section id="paragraph" data-magellan-destination="paragraph">
-        <h2>Summary Paragraph</h2>
+        <h2>Summary Paragraph
+            <a href="#" data-dropdown="paragraph_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="paragraph_info" class="f-dropdown content medium" data-dropdown-content>
+                A summary of the locus, written by SGD Biocurators following a thorough review of the literature for
+                the locus. Note that Summary Paragraphs were no longer created or edited after ----. Instead, the
+                Descriptions for the locus were lengthened to capture additional information. Links to gene names and
+                curated GO terms are included within the Summary Paragraphs.
+            </p>
+        </h2>
         <div class="panel">
             <div id="summary_paragraph"></div>
             <p>Last Updated: {{ locus.paragraph.date_created }}</p>
@@ -588,7 +644,15 @@
     {% if tabs['literature_tab'] %}
     <section id="literature" data-magellan-destination="literature">
         <a href="/locus/{{ locus.sgdid }}/literature" class="details-link">Literature Details <i class="fa fa-chevron-circle-right"></i></a>
-        <h2>Literature</h2>
+        <h2>Literature
+            <a href="#" data-dropdown="literature_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="literature_info" class="f-dropdown content medium" data-dropdown-content>
+                All manually curated literature for the specified gene, organized into topics according to their
+                relevance to the gene (Primary Literature, Additional Literature, or Review). Click "Literature Details"
+                to view all literature information for this locus, including shared literature between genes.
+            </p>
+        </h2>
         <div class="panel">
             <div class="panel">
                 {% if locus.literature_overview.primary_count + locus.literature_overview.additional_count + locus.literature_overview.review_count == 0 %}
@@ -626,7 +690,13 @@
 ================================================== -->
     {% if tabs['history_tab'] %}
     <section id="history" data-magellan-destination="history">
-        <h2>History</h2>
+        <h2>History
+            <a href="#" data-dropdown="history_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="history_info" class="f-dropdown content medium" data-dropdown-content>
+                A catalog of any nomenclature and/or sequence changes, or other notes related to the annotation of the feature.
+            </p>
+        </h2>
         <div>
             {% if locus.history|length == 0 %}
                 <p>No history data available.</p>
@@ -660,7 +730,15 @@
 <!-- References
 ================================================== -->
     <section id="references" data-magellan-destination="references">
-        <h2>References</h2>
+        <h2>References
+            <a href="#" data-dropdown="reference_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="reference_info" class="f-dropdown content medium" data-dropdown-content>
+                List of references used specifically on this page as citations for information in the Overview (e.g.
+                gene names, aliases, Descriptions), Summary Paragraph, or History sections. The complete list of curated
+                references associated with this locus can be found by clicking on the "Literature" tab for this locus.
+            </p>
+        </h2>
         <div class="panel">
 
         </div>
