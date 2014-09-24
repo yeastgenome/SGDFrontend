@@ -46,6 +46,8 @@ module.exports = React.createClass({
 			textNode = <h3 className="toggle-text">{active.text}</h3>;
 		}
 
+		var filter = (d) => { return this.props.yValue(d) > 150; };
+
 		var _colorScale = (d) => { return "#18AB2F"; };
 		return (
 			<div className="toggle-bar-chart">
@@ -54,7 +56,7 @@ module.exports = React.createClass({
 					data={activeData} yValue={this.props.yValue}
 					labelRatio={0.20} hasTooltip={true}
 					yAxisLabel="Genes Products Annotated" labelValue={this.props.labelValue}
-					colorScale={_colorScale}
+					colorScale={_colorScale} filter={filter}
 				/>
 				{textNode}
 			</div>

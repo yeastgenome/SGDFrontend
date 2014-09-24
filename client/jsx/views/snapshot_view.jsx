@@ -2,6 +2,7 @@
 "use strict";
 
 var React = require("react");
+var $ = require("jquery");
 
 var GenomeSnapshotModel = require("../models/genome_snapshot_model.jsx");
 var NavBar = require("../components/navbar.jsx");
@@ -14,8 +15,7 @@ snapshotView.render = function () {
 
 	// render date
 	var currentDate = new Date()
-	document.getElementsByClassName("date-container")[0].innerHTML =
-		` - ${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+	$(".date-container").text(` (as of ${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()})`);
 
 	// render nav bar
 	var navElements = [
