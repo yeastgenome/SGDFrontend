@@ -364,6 +364,8 @@ function create_table(table_id, options) {
 
     //$('#' + table_id).prev().children().first().append('<div class="right"><a href="#" data-dropdown="' + table_id + '_help"><i class="fa fa-question-circle"></i></a></div>');
 
+    set_hash();
+
   	return table;
 }
 
