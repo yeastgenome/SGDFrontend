@@ -188,9 +188,21 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				return r[1] === termData.id;
 			});
 
+			// format child terms
 			var _childTerms = _.map(_childRelationships, (r) => {
 				return termById(r[0]);
 			});
+			// add an entry for annotated to root (unknown)
+			// Note: * always use direct annotation for this entry.
+			_childTerms.push({
+				descendant_annotation_gene_count: termData.direct_annotation_gene_count, // *
+				direct_annotation_gene_count: termData.direct_annotation_gene_count,
+				link: null,
+				display_name: "annotated to unknown",
+				isRoot: true,
+				format_name: "annotated_to_unknown"
+			});
+			// sort desc
 			_childTerms = _.sortBy(_childTerms, (d) => {
 				return -d.descendant_annotation_gene_count;
 			});
@@ -199,8 +211,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				id: termData.id,
 				key: termData.format_name,
 				name: termData.display_name,
-				data: _childTerms,
-				text: `${termData.direct_annotation_gene_count.toLocaleString()} Gene Products Annotated to Unknown`
+				data: _childTerms
 			};
 		});
 

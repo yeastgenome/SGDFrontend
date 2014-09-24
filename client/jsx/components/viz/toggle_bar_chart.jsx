@@ -8,6 +8,9 @@ var _ = require("underscore");
 var RadioSelector = require("../radio_selector.jsx");
 var BarChart = require("./bar_chart.jsx");
 
+// add a filter to bar chart if more than this number of nodes
+var FILTER_TRESHOLD = 26;
+
 /*
 	From some sets of data, allow user to toggle between bar charts.
 */
@@ -37,18 +40,19 @@ module.exports = React.createClass({
 		};
 		var controlsNode = <RadioSelector elements={this.props.data} initialActiveElementKey={this.state.activeDataKey} onSelect={_onSelect} />;
 
+		// get the data that corresponds to the active element
 		var active = _.findWhere(this.props.data, { key: this.state.activeDataKey })
 		var activeData = active.data;
 
-		// add text node at bottom if active element has text property
-		var textNode = null;
-		if (active.text) {
-			textNode = <h3 className="toggle-text">{active.text}</h3>;
+		// if there are more than FILTER_TRESHOLD elements, filter them
+		var filter = null;
+		if (activeData.length > FILTER_TRESHOLD) {
+			filter = (d) => {
+				return activeData.indexOf(d) <= FILTER_TRESHOLD;
+			};
 		}
 
-		var filter = (d) => { return this.props.yValue(d) > 150; };
-
-		var _colorScale = (d) => { return "#18AB2F"; };
+		var _colorScale = (d) => { return d.isRoot ? "#DF8B93" : "#18AB2F"; };
 		return (
 			<div className="toggle-bar-chart">
 				{controlsNode}
@@ -58,7 +62,6 @@ module.exports = React.createClass({
 					yAxisLabel="Genes Products Annotated" labelValue={this.props.labelValue}
 					colorScale={_colorScale} filter={filter}
 				/>
-				{textNode}
 			</div>
 		);
 	}

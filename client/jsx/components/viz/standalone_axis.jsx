@@ -57,7 +57,12 @@ module.exports = React.createClass({
 		// maxValue can't be null
 		if (props.maxValue === null) return;
 
-		var _baseScale = d3.scale.linear();
+		var scaleTypes = {
+			linear: d3.scale.linear(),
+			sqrt: d3.scale.sqrt()
+		};
+		var _baseScale = scaleTypes[this.props.scaleType];
+		
 		var _width = this.getDOMNode().getBoundingClientRect().width - 1;
 		var _xOffset = _width * props.leftRatio;
 		var _scale = _baseScale.domain([0, props.maxValue]).range([0, _width - _xOffset]);

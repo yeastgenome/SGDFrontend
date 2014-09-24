@@ -21,7 +21,7 @@ module.exports = React.createClass({
 		return {
 			data: null, // *
 			colorValue: function (d) { return d; },
-			colorScale: function (d) { return "rgb(223, 139, 147)" },
+			colorScale: function (d) { return "#DF8B93" },
 			hasTooltip: false,
 			hasYAxis: true,
 			labelRatio: 0.5,
@@ -29,6 +29,7 @@ module.exports = React.createClass({
 			maxY: null,
 			nodeOpacity: function (d) { return "auto"; },
 			filter: null,
+			scaleType: "linear",
 			yValue: _identity
 		};
 	},
@@ -118,7 +119,7 @@ module.exports = React.createClass({
 		var yAxis = null;
 		if (props.hasYAxis) {
 			var _maxY = props.maxY || d3.max(data, props.yValue);
-			yAxis = <StandaloneAxis maxValue={_maxY} labelText="Gene Products Annotated" leftRatio={props.labelRatio} transitionDuration={500} />;
+			yAxis = <StandaloneAxis scaleType={this.props.scaleType} maxValue={_maxY} labelText="Gene Products Annotated" leftRatio={props.labelRatio} transitionDuration={500} />;
 		}
 
 		var tooltipNode = props.hasTooltip ? (<FlexibleTooltip visible={state.tooltipVisible}
@@ -182,10 +183,16 @@ module.exports = React.createClass({
 
 	// domain from data get range from DOMNode with
 	_calculateWidthScale: function (props) {
+		var scaleTypes = {
+			linear: d3.scale.linear(),
+			sqrt: d3.scale.sqrt()
+		};
+		var _baseScale = scaleTypes[this.props.scaleType];
+		
 		var _props = props ? props : this.props;
 		var _maxY = _props.maxY || d3.max(_props.data, _props.yValue); // defaults to maxY prop, if defined
 		var _width = this.getDOMNode().getBoundingClientRect().width;
-		var _scale = d3.scale.linear().domain([0, _maxY]).range([0, _width * (1-_props.labelRatio)]);
+		var _scale = _baseScale.domain([0, _maxY]).range([0, _width * (1-_props.labelRatio)]);
 		this.setState({ widthScale: _scale });
 	},
 

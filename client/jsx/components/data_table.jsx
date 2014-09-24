@@ -16,7 +16,7 @@ module.exports = React.createClass({
 
 		return (
 			<div className="table-scroll-container">
-				<table >
+				<table className="table table-striped table-bordered table-condensed">
 					<thead>
 						{headerRows}
 					</thead>
@@ -30,8 +30,10 @@ module.exports = React.createClass({
 
 	_getBodyRows: function () {
 		var bodyRows = this.props.data.rows.map( (r, i) => {
+			var evenClass = i % 2 === 0 ? "odd" : "even";
+
 			return (
-				<tr key={"row" + i}>
+				<tr key={"row" + i} className={evenClass} >
 					{r.map( (d, i) => {
 						{/* if data is obj with href and value, make a link, otherwise just plain text if just a string */}
 						var textNode = (d.href && d.value) ? <a href={d.href}>{d.value}</a> : d;
