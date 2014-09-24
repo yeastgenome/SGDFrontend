@@ -215,7 +215,16 @@
     {% if tabs['sequence_tab'] %}
     <section id="sequence" data-magellan-destination="sequence">
         <a href="/locus/{{ locus.sgdid }}/sequence" class="details-link">Sequence Details <i class="fa fa-chevron-circle-right"></i></a>
-        <h2>Sequence</h2>
+        <h2>Sequence
+            <a href="#" data-dropdown="sequence_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="sequence_info" class="f-dropdown content medium" data-dropdown-content>
+                The <i>S. cerevisiae</i> Reference Genome sequence is derived from laboratory strain
+                <a href="/strain/S288C/overview">S288C</a>. Download DNA or protein sequence, view genomic context and
+                coordinates. Click "Sequence Details" to view all sequence information for this locus, including that
+                for other strains.
+            </p>
+        </h2>
         <div class="panel">
             <label><h3>Strain</h3>
                 <select id="strain_selection" class="large-3"></select> - <span id="strain_description"></span>
@@ -270,7 +279,16 @@
     {% if tabs['protein_tab'] %}
     <section id="protein" data-magellan-destination="protein">
         <a href="/locus/{{ locus.sgdid }}/protein" class="details-link">Protein Details <i class="fa fa-chevron-circle-right"></i></a>
-        <h2>Protein</h2>
+        <h2>Protein
+            <a href="#" data-dropdown="protein_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="protein_info" class="f-dropdown content medium" data-dropdown-content>
+                Basic information about the protein. Click "Protein Details" for further information about the protein
+                such as abundance data, domains, shared domains with other proteins, protein sequence retrieval for
+                various strains, sequence-based physico-chemical proterties, protein modification sites sites, and
+                external identifiers for the protein.
+            </p>
+        </h2>
         <div class="panel">
             <div class="panel">
                  <dl class="key-value">
@@ -293,108 +311,122 @@
     {% if tabs['go_tab'] %}
     <section id="go" data-magellan-destination="go">
         <a href="/locus/{{ locus.sgdid }}/go" class="details-link">Gene Ontology Details <i class="fa fa-chevron-circle-right"></i></a>
-        <h2>Gene Ontology</h2>
+        <h2>Gene Ontology
+            <a href="#" data-dropdown="protein_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="protein_info" class="f-dropdown content medium" data-dropdown-content>
+                Basic information about the protein. Click "Protein Details" for further information about the protein
+                such as abundance data, domains, shared domains with other proteins, protein sequence retrieval for
+                various strains, sequence-based physico-chemical proterties, protein modification sites sites, and
+                external identifiers for the protein.
+            </p>
+        </h2>
         <div class="panel">
-            {% if 'computational_annotation_count' not in locus.go_overview or locus.go_overview.computational_annotation_count > 0 %}
-                <a href="/locus/{{ locus.sgdid }}/go#comp">View computational annotations</a>
-            {% endif %}
+            {% if locus.go_overview.manual_molecular_function_terms|length + locus.go_overview.manual_biological_process_terms|length + locus.go_overview.manual_cellular_component_terms|length + locus.go_overview.htp_molecular_function_terms|length + locus.go_overview.htp_biological_process_terms|length + locus.go_overview.htp_cellular_component_terms|length + locus.go_overview.computational_annotation_count == 0 %}
+                <p>No Gene Ontology data available.</p>
+            {% else %}
 
-            {% if locus.go_overview.manual_molecular_function_terms|length + locus.go_overview.manual_biological_process_terms|length + locus.go_overview.manual_cellular_component_terms|length > 0 %}
-            <div class="panel">
-                <h3>Manually Curated</h3>
-                <dl class="key-value">
-                    {% if locus.go_overview.manual_molecular_function_terms|length > 0 %}
-                    <dt>Molecular Function</dt>
-                    <dd><ul>
-                        {% for entry in locus.go_overview.manual_molecular_function_terms %}
-                            <li>
-                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                                {% for code in entry.evidence_codes %}
-                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                                {% endfor %}
-                            </li>
-                        {% endfor %}
-                    </ul></dd>
-                    {% endif %}
+                {% if 'computational_annotation_count' not in locus.go_overview or locus.go_overview.computational_annotation_count > 0 %}
+                    <a href="/locus/{{ locus.sgdid }}/go#comp">View computational annotations</a>
+                {% endif %}
 
-                    {% if locus.go_overview.manual_biological_process_terms|length > 0 %}
-                    <dt>Biological Process</dt>
-                    <dd><ul>
-                        {% for entry in locus.go_overview.manual_biological_process_terms  %}
-                            <li>
-                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                                {% for code in entry.evidence_codes %}
-                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                                {% endfor %}
-                            </li>
-                        {% endfor %}
-                    </ul></dd>
-                    {% endif %}
+                {% if locus.go_overview.manual_molecular_function_terms|length + locus.go_overview.manual_biological_process_terms|length + locus.go_overview.manual_cellular_component_terms|length > 0 %}
+                <div class="panel">
+                    <h3>Manually Curated</h3>
+                    <dl class="key-value">
+                        {% if locus.go_overview.manual_molecular_function_terms|length > 0 %}
+                        <dt>Molecular Function</dt>
+                        <dd><ul>
+                            {% for entry in locus.go_overview.manual_molecular_function_terms %}
+                                <li>
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul></dd>
+                        {% endif %}
 
-                    {% if locus.go_overview.manual_cellular_component_terms|length > 0 %}
-                    <dt>Cellular Component</dt>
-                    <dd><ul>
-                        {% for entry in locus.go_overview.manual_cellular_component_terms  %}
-                            <li>
-                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                                {% for code in entry.evidence_codes %}
-                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                                {% endfor %}
-                            </li>
-                        {% endfor %}
-                    </ul></dd>
-                    {% endif %}
-                </dl>
-            </div>
-            {% endif %}
+                        {% if locus.go_overview.manual_biological_process_terms|length > 0 %}
+                        <dt>Biological Process</dt>
+                        <dd><ul>
+                            {% for entry in locus.go_overview.manual_biological_process_terms  %}
+                                <li>
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul></dd>
+                        {% endif %}
 
-            {% if locus.go_overview.htp_molecular_function_terms|length + locus.go_overview.htp_biological_process_terms|length + locus.go_overview.htp_cellular_component_terms|length > 0 %}
-            <div class="panel">
-                <h3>High-Throughput</h3>
-                <dl class="key-value">
-                    {% if locus.go_overview.htp_molecular_function_terms|length > 0 %}
-                    <dt>Molecular Function</dt>
-                    <dd><ul>
-                        {% for entry in locus.go_overview.htp_molecular_function_terms %}
-                            <li>
-                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                                {% for code in entry.evidence_codes %}
-                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                                {% endfor %}
-                            </li>
-                        {% endfor %}
-                    </ul></dd>
-                    {% endif %}
+                        {% if locus.go_overview.manual_cellular_component_terms|length > 0 %}
+                        <dt>Cellular Component</dt>
+                        <dd><ul>
+                            {% for entry in locus.go_overview.manual_cellular_component_terms  %}
+                                <li>
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul></dd>
+                        {% endif %}
+                    </dl>
+                </div>
+                {% endif %}
 
-                    {% if locus.go_overview.htp_biological_process_terms|length > 0 %}
-                    <dt>Biological Process</dt>
-                    <dd><ul>
-                        {% for entry in locus.go_overview.htp_biological_process_terms  %}
-                            <li>
-                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                                {% for code in entry.evidence_codes %}
-                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                                {% endfor %}
-                            </li>
-                        {% endfor %}
-                    </ul></dd>
-                    {% endif %}
+                {% if locus.go_overview.htp_molecular_function_terms|length + locus.go_overview.htp_biological_process_terms|length + locus.go_overview.htp_cellular_component_terms|length > 0 %}
+                <div class="panel">
+                    <h3>High-Throughput</h3>
+                    <dl class="key-value">
+                        {% if locus.go_overview.htp_molecular_function_terms|length > 0 %}
+                        <dt>Molecular Function</dt>
+                        <dd><ul>
+                            {% for entry in locus.go_overview.htp_molecular_function_terms %}
+                                <li>
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul></dd>
+                        {% endif %}
 
-                    {% if locus.go_overview.htp_cellular_component_terms|length > 0 %}
-                    <dt>Cellular Component</dt>
-                    <dd><ul>
-                        {% for entry in locus.go_overview.htp_cellular_component_terms  %}
-                            <li>
-                                <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                                {% for code in entry.evidence_codes %}
-                                    {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                                {% endfor %}
-                            </li>
-                        {% endfor %}
-                    </ul></dd>
-                    {% endif %}
-                </dl>
-            </div>
+                        {% if locus.go_overview.htp_biological_process_terms|length > 0 %}
+                        <dt>Biological Process</dt>
+                        <dd><ul>
+                            {% for entry in locus.go_overview.htp_biological_process_terms  %}
+                                <li>
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul></dd>
+                        {% endif %}
+
+                        {% if locus.go_overview.htp_cellular_component_terms|length > 0 %}
+                        <dt>Cellular Component</dt>
+                        <dd><ul>
+                            {% for entry in locus.go_overview.htp_cellular_component_terms  %}
+                                <li>
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul></dd>
+                        {% endif %}
+                    </dl>
+                </div>
+                {% endif %}
             {% endif %}
         </div>
     </section>
@@ -407,40 +439,40 @@
         <a href="/locus/{{ locus.sgdid }}/phenotype" class="details-link">Phenotype Details <i class="fa fa-chevron-circle-right"></i></a>
         <h2>Phenotype</h2>
         <div class="panel">
-            {% if locus.phenotype_overview.classical_phenotypes|length > 0 %}
-            <div class="panel">
-                <h3>Classical Genetics</h3>
-                <dl class="key-value">
-                    {% for mutant, phenotypes in locus.phenotype_overview.classical_phenotypes.iteritems() %}
-                        <dt>{{ mutant }}</dt>
-                        <dd><ul>
-                            {% for phenotype in phenotypes|sort(attribute='display_name') %}
-                                 <li><a href="{{ phenotype.link }}">{{ phenotype.display_name }}</a></li>
-                            {% endfor %}
-                        </ul></dd>
-                    {% endfor %}
-                </dl>
-            </div>
-            {% endif %}
-
-            {% if locus.phenotype_overview.large_scale_phenotypes|length > 0 %}
-            <div class="panel">
-                <dl class="key-value">
-                    <h3>Large-scale Survey</h3>
-                    {% for mutant, phenotypes in locus.phenotype_overview.large_scale_phenotypes.iteritems() %}
-                        <dt>{{ mutant }}</dt>
-                        <dd><ul>
-                            {% for phenotype in phenotypes|sort(attribute='display_name') %}
-                                 <li><a href="{{ phenotype.link }}">{{ phenotype.display_name }}</a></li>
-                            {% endfor %}
-                        </ul></dd>
-                    {% endfor %}
-                </dl>
-            </div>
-            {% endif %}
-
             {% if locus.phenotype_overview.classical_phenotypes|length + locus.phenotype_overview.large_scale_phenotypes|length == 0 %}
-                <p>No phenotypes annotated to {{ locus.display_name }}.</p>
+                <p>No phenotype data available.</p>
+            {% else %}
+                {% if locus.phenotype_overview.classical_phenotypes|length > 0 %}
+                <div class="panel">
+                    <h3>Classical Genetics</h3>
+                    <dl class="key-value">
+                        {% for mutant, phenotypes in locus.phenotype_overview.classical_phenotypes.iteritems() %}
+                            <dt>{{ mutant }}</dt>
+                            <dd><ul>
+                                {% for phenotype in phenotypes|sort(attribute='display_name') %}
+                                     <li><a href="{{ phenotype.link }}">{{ phenotype.display_name }}</a></li>
+                                {% endfor %}
+                            </ul></dd>
+                        {% endfor %}
+                    </dl>
+                </div>
+                {% endif %}
+
+                {% if locus.phenotype_overview.large_scale_phenotypes|length > 0 %}
+                <div class="panel">
+                    <dl class="key-value">
+                        <h3>Large-scale Survey</h3>
+                        {% for mutant, phenotypes in locus.phenotype_overview.large_scale_phenotypes.iteritems() %}
+                            <dt>{{ mutant }}</dt>
+                            <dd><ul>
+                                {% for phenotype in phenotypes|sort(attribute='display_name') %}
+                                     <li><a href="{{ phenotype.link }}">{{ phenotype.display_name }}</a></li>
+                                {% endfor %}
+                            </ul></dd>
+                        {% endfor %}
+                    </dl>
+                </div>
+                {% endif %}
             {% endif %}
         </div>
     </section>
@@ -453,32 +485,32 @@
         <a href="/locus/{{ locus.sgdid }}/interaction" class="details-link">Interaction Details <i class="fa fa-chevron-circle-right"></i></a>
         <h2>Interaction</h2>
         <div class="panel">
-            {% if locus.interaction_overview.total_interactions  > 0 %}
-                <p><a href="/locus/{{ locus.sgdid }}/interaction#annotations">{{ locus.interaction_overview.total_interactions }}</a> total interactions for {{ locus.interaction_overview.total_interactors }} unique genes</p>
+            {% if locus.interaction_overview.total_interactions == 0 %}
+                <p>No interaction data available.</p>
             {% else %}
-                <p>{{ locus.interaction_overview.total_interactions }} total interactions for {{ locus.interaction_overview.total_interactors }} unique genes</p>
-            {% endif %}
+                <p><a href="/locus/{{ locus.sgdid }}/interaction#annotations">{{ locus.interaction_overview.total_interactions }}</a> total interactions for {{ locus.interaction_overview.total_interactors }} unique genes</p>
 
-            {% if locus.interaction_overview.num_phys_interactors  > 0 %}
-            <div class="panel">
-                <h3>Physical Interactions</h3>
-                <ul>
-                    {% for experiment in locus.interaction_overview.physical_experiments.keys()|sort %}
-                        <li>{{ experiment }}: {{ locus.interaction_overview.physical_experiments[experiment] }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
+                {% if locus.interaction_overview.num_phys_interactors  > 0 %}
+                <div class="panel">
+                    <h3>Physical Interactions</h3>
+                    <ul>
+                        {% for experiment in locus.interaction_overview.physical_experiments.keys()|sort %}
+                            <li>{{ experiment }}: {{ locus.interaction_overview.physical_experiments[experiment] }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
 
-            {% if locus.interaction_overview.num_gen_interactors  > 0 %}
-            <div class="panel">
-                <h3>Genetic Interactions</h3>
-                <ul>
-                    {% for experiment, count in locus.interaction_overview.genetic_experiments.iteritems() %}
-                        <li>{{ experiment }}: {{ locus.interaction_overview.genetic_experiments[experiment] }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
+                {% if locus.interaction_overview.num_gen_interactors  > 0 %}
+                <div class="panel">
+                    <h3>Genetic Interactions</h3>
+                    <ul>
+                        {% for experiment, count in locus.interaction_overview.genetic_experiments.iteritems() %}
+                            <li>{{ experiment }}: {{ locus.interaction_overview.genetic_experiments[experiment] }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
             {% endif %}
         </div>
     </section>
@@ -492,25 +524,29 @@
         <h2>Regulation</h2>
         <div class="panel">
             <div class="panel">
-                 <dl class="key-value">
-                     <dt>Regulators</dt>
-                     <dd>
-                         {% if locus.regulation_overview.regulator_count > 0 %}
-                            <a href="/locus/{{ locus.sgdid }}/regulation#regulators">{{ locus.regulation_overview.regulator_count }}</a>
-                         {% else %}
-                             {{ locus.regulation_overview.regulator_count }}
-                         {% endif %}
-                     </dd>
+                {% if locus.regulation_overview.regulator_count + locus.regulation_overview.target_count == 0 %}
+                    <p>No regulation data available.</p>
+                {% else %}
+                    <dl class="key-value">
+                         <dt>Regulators</dt>
+                         <dd>
+                             {% if locus.regulation_overview.regulator_count > 0 %}
+                                <a href="/locus/{{ locus.sgdid }}/regulation#regulators">{{ locus.regulation_overview.regulator_count }}</a>
+                             {% else %}
+                                 {{ locus.regulation_overview.regulator_count }}
+                             {% endif %}
+                         </dd>
 
-                     <dt>Targets</dt>
-                     <dd>
-                        {% if locus.regulation_overview.target_count > 0 %}
-                            <a href="/locus/{{ locus.sgdid }}/regulation#targets">{{ locus.regulation_overview.target_count }}</a>
-                        {% else %}
-                            {{ locus.regulation_overview.target_count }}
-                        {% endif %}
-                     </dd>
-                 </dl>
+                         <dt>Targets</dt>
+                         <dd>
+                            {% if locus.regulation_overview.target_count > 0 %}
+                                <a href="/locus/{{ locus.sgdid }}/regulation#targets">{{ locus.regulation_overview.target_count }}</a>
+                            {% else %}
+                                {{ locus.regulation_overview.target_count }}
+                            {% endif %}
+                         </dd>
+                    </dl>
+                {% endif %}
             </div>
         </div>
     </section>
@@ -548,28 +584,32 @@
         <h2>Literature</h2>
         <div class="panel">
             <div class="panel">
-                <dl class="key-value">
-                    <dt>Primary</dt>
-                    {% if locus.literature_overview.primary_count > 0 %}
-                        <dd><a href="/locus/{{ locus.sgdid }}/literature#primary">{{locus.literature_overview.primary_count}}</a></dd>
-                    {% else %}
-                        <dd>{{locus.literature_overview.primary_count}}</dd>
-                    {% endif %}
+                {% if locus.literature_overview.primary_count + locus.literature_overview.additional_count + locus.literature_overview.review_count == 0 %}
+                    <p>No literature data available.</p>
+                {% else %}
+                    <dl class="key-value">
+                        <dt>Primary</dt>
+                        {% if locus.literature_overview.primary_count > 0 %}
+                            <dd><a href="/locus/{{ locus.sgdid }}/literature#primary">{{locus.literature_overview.primary_count}}</a></dd>
+                        {% else %}
+                            <dd>{{locus.literature_overview.primary_count}}</dd>
+                        {% endif %}
 
-                    <dt>Additional</dt>
-                    {% if locus.literature_overview.additional_count > 0 %}
-                        <dd><a href="/locus/{{ locus.sgdid }}/literature#additional">{{locus.literature_overview.additional_count}}</a></dd>
-                    {% else %}
-                        <dd>{{locus.literature_overview.additional_count}}</dd>
-                    {% endif %}
+                        <dt>Additional</dt>
+                        {% if locus.literature_overview.additional_count > 0 %}
+                            <dd><a href="/locus/{{ locus.sgdid }}/literature#additional">{{locus.literature_overview.additional_count}}</a></dd>
+                        {% else %}
+                            <dd>{{locus.literature_overview.additional_count}}</dd>
+                        {% endif %}
 
-                    <dt>Reviews</dt>
-                    {% if locus.literature_overview.review_count > 0 %}
-                        <dd><a href="/locus/{{ locus.sgdid }}/literature#reviews">{{locus.literature_overview.review_count}}</a></dd>
-                    {% else %}
-                        <dd>{{locus.literature_overview.review_count}}</dd>
-                    {% endif %}
-                </dl>
+                        <dt>Reviews</dt>
+                        {% if locus.literature_overview.review_count > 0 %}
+                            <dd><a href="/locus/{{ locus.sgdid }}/literature#reviews">{{locus.literature_overview.review_count}}</a></dd>
+                        {% else %}
+                            <dd>{{locus.literature_overview.review_count}}</dd>
+                        {% endif %}
+                    </dl>
+                {% endif %}
             </div>
         </div>
     </section>
@@ -581,27 +621,31 @@
     <section id="history" data-magellan-destination="history">
         <h2>History</h2>
         <div>
-            <table id="history_table" class="table table-striped table-bordered table-condensed" width="100%">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Note</th>
-                        <th>Reference</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for evidence in locus.history if evidence.history_type == 'LSP' or not tabs['sequence_tab'] %}
+            {% if locus.history|length == 0 %}
+                <p>No history data available.</p>
+            {% else %}
+                <table id="history_table" class="table table-striped table-bordered table-condensed" width="100%">
+                    <thead>
                         <tr>
-                            <td>{{ evidence.date_created }}</td>
-                            <td>{{ evidence.note|safe }}</td>
-                            <td>{% for reference in evidence.references %}
-                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
-                                {% endfor %}
-                            </td>
+                            <th>Date</th>
+                            <th>Note</th>
+                            <th>Reference</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for evidence in locus.history if evidence.history_type == 'LSP' or not tabs['sequence_tab'] %}
+                            <tr>
+                                <td>{{ evidence.date_created }}</td>
+                                <td>{{ evidence.note|safe }}</td>
+                                <td>{% for reference in evidence.references %}
+                                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
         </div>
     </section>
     {% endif %}
