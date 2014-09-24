@@ -330,13 +330,13 @@
                     <a href="/locus/{{ locus.sgdid }}/go#comp">View computational annotations</a>
                 {% endif %}
 
-                {% if locus.go_overview.manual_molecular_function_terms|length + locus.go_overview.manual_biological_process_terms|length + locus.go_overview.manual_cellular_component_terms|length > 0 %}
+                {% if locus.go_overview.manual_molecular_function_terms|length + locus.go_overview.htp_molecular_function_terms|length > 0 %}
                 <div class="panel">
-                    <h3>Manually Curated</h3>
+                    <h3>Molecular Function</h3>
                     <dl class="key-value">
                         {% if locus.go_overview.manual_molecular_function_terms|length > 0 %}
-                        <dt>Molecular Function</dt>
-                        <dd><ul>
+                        <dt>Manually Curated</dt>
+                        <dd><ul style="list-style-type:disc">
                             {% for entry in locus.go_overview.manual_molecular_function_terms %}
                                 <li>
                                     <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
@@ -348,24 +348,10 @@
                         </ul></dd>
                         {% endif %}
 
-                        {% if locus.go_overview.manual_biological_process_terms|length > 0 %}
-                        <dt>Biological Process</dt>
-                        <dd><ul>
-                            {% for entry in locus.go_overview.manual_biological_process_terms  %}
-                                <li>
-                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                                    {% for code in entry.evidence_codes %}
-                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                                    {% endfor %}
-                                </li>
-                            {% endfor %}
-                        </ul></dd>
-                        {% endif %}
-
-                        {% if locus.go_overview.manual_cellular_component_terms|length > 0 %}
-                        <dt>Cellular Component</dt>
-                        <dd><ul>
-                            {% for entry in locus.go_overview.manual_cellular_component_terms  %}
+                        {% if locus.go_overview.htp_molecular_function_terms|length > 0 %}
+                        <dt>High-Throughput</dt>
+                        <dd><ul style="list-style-type:disc">
+                            {% for entry in locus.go_overview.htp_molecular_function_terms %}
                                 <li>
                                     <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
                                     {% for code in entry.evidence_codes %}
@@ -379,14 +365,14 @@
                 </div>
                 {% endif %}
 
-                {% if locus.go_overview.htp_molecular_function_terms|length + locus.go_overview.htp_biological_process_terms|length + locus.go_overview.htp_cellular_component_terms|length > 0 %}
+                {% if locus.go_overview.manual_biological_process_terms|length + locus.go_overview.htp_biological_process_terms|length > 0 %}
                 <div class="panel">
-                    <h3>High-Throughput</h3>
+                    <h3>Biological Process</h3>
                     <dl class="key-value">
-                        {% if locus.go_overview.htp_molecular_function_terms|length > 0 %}
-                        <dt>Molecular Function</dt>
-                        <dd><ul>
-                            {% for entry in locus.go_overview.htp_molecular_function_terms %}
+                        {% if locus.go_overview.manual_biological_process_terms|length > 0 %}
+                        <dt>Manually Curated</dt>
+                        <dd><ul style="list-style-type:disc">
+                            {% for entry in locus.go_overview.manual_biological_process_terms %}
                                 <li>
                                     <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
                                     {% for code in entry.evidence_codes %}
@@ -398,9 +384,30 @@
                         {% endif %}
 
                         {% if locus.go_overview.htp_biological_process_terms|length > 0 %}
-                        <dt>Biological Process</dt>
-                        <dd><ul>
-                            {% for entry in locus.go_overview.htp_biological_process_terms  %}
+                        <dt>High-Throughput</dt>
+                        <dd><ul style="list-style-type:disc">
+                            {% for entry in locus.go_overview.htp_biological_process_terms %}
+                                <li>
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul></dd>
+                        {% endif %}
+                    </dl>
+                </div>
+                {% endif %}
+
+                {% if locus.go_overview.manual_cellular_component_terms|length + locus.go_overview.htp_cellular_component_terms|length > 0 %}
+                <div class="panel">
+                    <h3>Cellular Component</h3>
+                    <dl class="key-value">
+                        {% if locus.go_overview.manual_cellular_component_terms|length > 0 %}
+                        <dt>Manually Curated</dt>
+                        <dd><ul style="list-style-type:disc">
+                            {% for entry in locus.go_overview.manual_cellular_component_terms %}
                                 <li>
                                     <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
                                     {% for code in entry.evidence_codes %}
@@ -412,9 +419,9 @@
                         {% endif %}
 
                         {% if locus.go_overview.htp_cellular_component_terms|length > 0 %}
-                        <dt>Cellular Component</dt>
-                        <dd><ul>
-                            {% for entry in locus.go_overview.htp_cellular_component_terms  %}
+                        <dt>High-Throughput</dt>
+                        <dd><ul style="list-style-type:disc">
+                            {% for entry in locus.go_overview.htp_cellular_component_terms %}
                                 <li>
                                     <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
                                     {% for code in entry.evidence_codes %}
@@ -448,7 +455,7 @@
                     <dl class="key-value">
                         {% for mutant, phenotypes in locus.phenotype_overview.classical_phenotypes.iteritems() %}
                             <dt>{{ mutant }}</dt>
-                            <dd><ul>
+                            <dd><ul style="list-style-type:disc">
                                 {% for phenotype in phenotypes|sort(attribute='display_name') %}
                                      <li><a href="{{ phenotype.link }}">{{ phenotype.display_name }}</a></li>
                                 {% endfor %}
@@ -464,7 +471,7 @@
                         <h3>Large-scale Survey</h3>
                         {% for mutant, phenotypes in locus.phenotype_overview.large_scale_phenotypes.iteritems() %}
                             <dt>{{ mutant }}</dt>
-                            <dd><ul>
+                            <dd><ul style="list-style-type:disc">
                                 {% for phenotype in phenotypes|sort(attribute='display_name') %}
                                      <li><a href="{{ phenotype.link }}">{{ phenotype.display_name }}</a></li>
                                 {% endfor %}
