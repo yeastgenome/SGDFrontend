@@ -59,7 +59,10 @@ module.exports = React.createClass({
             });
 
             barNodes = _.map(this.props.data.chromosomes, (c) => {
-                var chromosomeLabelNode = <h3 className="chromosome-label-text">{c.display_name}&nbsp;-&nbsp;<a href={c.link}>Details</a></h3>;
+                var chromosomeLabelNode = (<div className="clearfix chromosome-label-text">
+                    <h3>{c.display_name}&nbsp;-&nbsp;<a href={c.link}>Details</a></h3>
+                    <h3>Length: {c.length.toLocaleString()} bp</h3>
+                </div>);
                 return [chromosomeLabelNode, this._getBarChart(c.features, _maxFeatures)];
             });
 

@@ -54,7 +54,6 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				href: c.link
 			};
 		});
-		tableHeaders.splice(16, 0, "Nuclear Genome")
 		tableHeaders.unshift("Feature Type");
 		tableHeaders = [["", "Chromosome Number"], tableHeaders];
 
@@ -67,18 +66,48 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				return c.features[i].value;
 			});
 
-			// add up nuclear genome
-			var nuclearTotal = _.reduce(row, (memo, c, i) => {
-				if (i < 16) {
-					memo += c;
-				}
-				return memo;
-			}, 0);
-			row.splice(16, 0, nuclearTotal);
+			// // add up nuclear genome
+			// var nuclearTotal = _.reduce(row, (memo, c, i) => {
+			// 	if (i < 16) {
+			// 		memo += c;
+			// 	}
+			// 	return memo;
+			// }, 0);
+			// row.splice(16, 0, nuclearTotal);
 			
 			row.unshift(f.name.replace(/_/g, ' '));
 			return row;
 		});
+
+		// add row for length (bp)
+		var lengthRow = _.map(chromosomeData, (c) => {
+			return c.length;
+		});
+		lengthRow.unshift("Chromosome Length (bp)");
+		tableRows.push(lengthRow);
+
+		// add nuclear totals
+		tableHeaders[1].splice(17, 0, "Nuclear Genome");
+		tableRows = _.map(tableRows, (row) => {
+			var nuclearTotal = _.reduce(row, (memo, c, i) => {
+				if (i < 1) return memo;
+				if (i < 17) {
+					memo += c;
+				}
+				return memo;
+			}, 0);
+			row.splice(17, 0, nuclearTotal);
+			return row;
+		});
+
+		// make numbers strings
+		tableRows = _.map(tableRows, (row) => {
+			row = _.map(row, (c) => {
+				return c.toLocaleString();
+			});
+			return row;
+		});
+
 
 		return {
 			headers: tableHeaders,
