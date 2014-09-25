@@ -52,10 +52,17 @@ module.exports = React.createClass({
 			};
 		}
 
+		// add text node if active element has text property
+		var textNode = null;
+		if (active.text) {
+			textNode = <h3 className="toggle-text">{active.text}</h3>;
+		}
+
 		var _colorScale = (d) => { return d.isRoot ? "#DF8B93" : "#18AB2F"; };
 		return (
 			<div className="toggle-bar-chart">
 				{controlsNode}
+				{textNode}
 				<BarChart
 					data={activeData} yValue={this.props.yValue}
 					labelRatio={0.20} hasTooltip={true}

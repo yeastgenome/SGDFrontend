@@ -60,24 +60,28 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		var tableRows = _.map(chromosomeData[0].features, (f, i) => {
 			// columns in each row
 			var row = _.map(chromosomeData, (c) => {
-				// if (c.format_name.match("micron") {
-					
-				// }
 				return c.features[i].value;
 			});
-
-			// // add up nuclear genome
-			// var nuclearTotal = _.reduce(row, (memo, c, i) => {
-			// 	if (i < 16) {
-			// 		memo += c;
-			// 	}
-			// 	return memo;
-			// }, 0);
-			// row.splice(16, 0, nuclearTotal);
 			
 			row.unshift(f.name.replace(/_/g, ' '));
 			return row;
 		});
+
+		// add totals
+		var _exampleRow = tableRows[0];
+		var totalRow = _.reduce(_exampleRow, (memo, c, i) => {
+			if (i == 0) return memo;
+
+			// get total number of features for this chromosome
+			var totalFeatures = _.reduce(tableRows, (_memo, row) => {
+				_memo += row[i];
+				return _memo;
+			}, 0);
+
+			memo.push(totalFeatures);
+			return memo;
+		}, ["Total Features"]);
+		tableRows.push(totalRow);
 
 		// add row for length (bp)
 		var lengthRow = _.map(chromosomeData, (c) => {
@@ -230,6 +234,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				display_name: "annotated to unknown",
 				isRoot: true,
 				format_name: "annotated_to_unknown"
+
 			});
 			// sort desc
 			_childTerms = _.sortBy(_childTerms, (d) => {
@@ -240,7 +245,8 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				id: termData.id,
 				key: termData.format_name,
 				name: termData.display_name,
-				data: _childTerms
+				data: _childTerms,
+				text: `${termData.descendant_annotation_gene_count.toLocaleString()} Total Gene Products Annotated`
 			};
 		});
 
