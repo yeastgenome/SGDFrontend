@@ -536,7 +536,7 @@
                 <div class="panel">
                     <h3>Genetic Interactions</h3>
                     <ul>
-                        {% for experiment, count in locus.interaction_overview.genetic_experiments.iteritems() %}
+                        {% for experiment in locus.interaction_overview.genetic_experiments.keys()|sort %}
                             <li>{{ experiment }}: {{ locus.interaction_overview.genetic_experiments[experiment] }}</li>
                         {% endfor %}
                     </ul>
