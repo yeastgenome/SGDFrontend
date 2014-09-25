@@ -32,7 +32,6 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-
 		var _onSelect = (key) => {
 			this.setState({
 				activeDataKey: key

@@ -7,7 +7,7 @@
 		min-height: 113px;		
 	}
 	&.go-snapshot-target {
-		min-height: 400px;
+		min-height: 633px;
 	}
 }
 
@@ -59,10 +59,6 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-}
-
-.bar-container {
-	transition: top 0.5s;
 }
 
 .bar-node {
@@ -165,5 +161,6 @@
 
 	.toggle-text {
 		margin-top: 1em;
+		text-transform: capitalize;
 	}
 }

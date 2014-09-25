@@ -8,6 +8,8 @@ var _ = require("underscore");
 var FlexibleTooltip = require("../flexible_tooltip.jsx");
 var StandaloneAxis = require("./standalone_axis.jsx");
 
+var BAR_HEIGHT = 15;
+
 /*
 	Uses react to render bars, with d3 doing some calculations.
 
@@ -50,16 +52,53 @@ module.exports = React.createClass({
 		var state = this.state;
 		var props = this.props;
 
-		var barHeight = 15;
 		// require widthScale to continue
-		if (!state.widthScale) { return <div></div>; }
+		if (!state.widthScale) return <div></div>;
 
-		// if a filter is defined (and filterIsApplied), then filter data with it.
-		var hasFilter = props.filter && state.filterIsApplied;
-		var data = props.data;
-		if (hasFilter) {
-			data = _.filter(data, props.filter);
+		var bars = this._getBarNodes();
+
+		// create y axis, if hasYaxis
+		var data = this._getData();
+		var yAxis = null;
+		if (props.hasYAxis) {
+			var _maxY = props.maxY || d3.max(data, props.yValue);
+			yAxis = <StandaloneAxis scaleType={this.props.scaleType} maxValue={_maxY} labelText="Gene Products Annotated" leftRatio={props.labelRatio} transitionDuration={500} />;
 		}
+
+		var tooltipNode = props.hasTooltip ? (<FlexibleTooltip visible={state.tooltipVisible}
+				left={state.tooltipLeft} top={state.tooltipTop} text={state.tooltipText} href={state.tooltipHref}
+			/>) : null;
+
+		// get height for all the bars
+		var _height = (BAR_HEIGHT + 1) * data.length;
+
+		return (
+			<div className="sgd-viz-bar-chart">
+				{yAxis}
+				<div className="bar-nodes-container clearfix" onMouseLeave={this._handleMouseExit} style={{ position: "relative", height: _height }}>
+					{tooltipNode}
+					{bars}
+				</div>
+				{this._getFilterMessageNode()}
+			</div>
+		);
+	},
+
+	componentDidMount: function () {
+		this._calculateWidthScale();
+	},
+
+	componentWillReceiveProps: function (nextProps) {
+		this._calculateWidthScale(nextProps);
+	},
+
+	// helper function to get the bar nodes
+	_getBarNodes: function () {
+		var props = this.props;
+		var state = this.state;
+
+		// get data from helper
+		var data = this._getData();
 
 		// render bar nodes
 		var bars = _.map(data, (d, i) => {
@@ -67,9 +106,9 @@ module.exports = React.createClass({
 
 			var _containerStyle = {
 				width: "100%",
-				height: barHeight,
+				height: BAR_HEIGHT,
 				position: "absolute",
-				top: (i*barHeight + i)
+				top: (i*BAR_HEIGHT + i)
 			};
 
 			var _barStyle = {
@@ -115,35 +154,17 @@ module.exports = React.createClass({
 			);
 		});
 
-		// create y axis, if hasYaxis
-		var yAxis = null;
-		if (props.hasYAxis) {
-			var _maxY = props.maxY || d3.max(data, props.yValue);
-			yAxis = <StandaloneAxis scaleType={this.props.scaleType} maxValue={_maxY} labelText="Gene Products Annotated" leftRatio={props.labelRatio} transitionDuration={500} />;
+		return bars;
+	},
+
+	_getData: function () {
+		var hasFilter = this.props.filter && this.state.filterIsApplied;
+		var data = this.props.data;
+		if (hasFilter) {
+			data = _.filter(data, this.props.filter);
 		}
 
-		var tooltipNode = props.hasTooltip ? (<FlexibleTooltip visible={state.tooltipVisible}
-				left={state.tooltipLeft} top={state.tooltipTop} text={state.tooltipText} href={state.tooltipHref}
-			/>) : null;
-
-		return (
-			<div className="sgd-viz-bar-chart">
-				{yAxis}
-				<div className="bar-nodes-container clearfix" onMouseLeave={this._handleMouseExit} style={{ position: "relative", height: (barHeight + 1) * data.length }}>
-					{tooltipNode}
-					{bars}
-				</div>
-				{this._getFilterMessageNode()}
-			</div>
-		);
-	},
-
-	componentDidMount: function () {
-		this._calculateWidthScale();
-	},
-
-	componentWillReceiveProps: function (nextProps) {
-		this._calculateWidthScale(nextProps);
+		return data;
 	},
 
 	_handleMouseOver: function (e, d) {
