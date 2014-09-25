@@ -227,12 +227,37 @@ $(document).ready(function() {
 
 function set_up_history_table() {
     var options = {};
+    options["aoColumns"] = [
+                {"bSearchable":false, "bVisible":false}, //evidence_id
+                {"bSearchable":false, "bVisible":false}, //analyze_id
+                {"bSearchable":false, "bVisible":false}, //gene
+                {"bSearchable":false, "bVisible":false}, //gene systematic name
+                null, //date
+                null, //note
+                null //references
+                ];
     options["bPaginate"] = false;
-    options["aaSorting"] = [[0, "asc"]];
-    options["aoColumns"] = [null, null, null]
-    options["oLanguage"] = {"sEmptyTable": "No history for " + locus['display_name'] + '.'};
+    options["aaSorting"] = [[4, "asc"]];
 
-    return create_table("history_table", options);
+    var datatable = [];
+    for (var i=0; i < locus['history'].length; i++) {
+        if(locus['history'][i]['history_type'] == 'SEQUENCE') {
+            datatable.push(history_data_to_table(locus['history'][i]));
+        }
+    }
+
+    if(datatable.length > 0) {
+        options["oLanguage"] = {"sEmptyTable": "No history entries for " + locus['display_name'] + '.'};
+        options["aaData"] = datatable;
+
+        $('#history_table_analyze').hide();
+        $('#history_table_download').hide();
+
+        return create_table("history_table", options);
+    }
+    else {
+        hide_section('history');
+    }
 }
 
 function pad_number(number, num_digits) {
@@ -542,7 +567,7 @@ function draw_sublabel_chart(chart_id, data) {
         }
         var end = data[i]['relative_end']*100;
         var name = data[i]['display_name'];
-        data_array.push(['Subfeatures', name, start, end]);
+        data_array.push(['Relative Coordinates', name, start, end]);
         labels[name] = true;
 
         if(min_start == null || start < min_start) {

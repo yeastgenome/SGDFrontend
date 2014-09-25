@@ -103,6 +103,17 @@ function phosphorylation_data_to_table(evidence) {
     return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], site_residue + site_index, site_functions, kinases, source];
 }
 
+function history_data_to_table(evidence) {
+    var bioent = create_link(evidence['locus']['display_name'], evidence['locus']['link'], false);
+
+    var references = [];
+    for(var j=0; j < evidence['references'].length; j++) {
+        var reference = evidence['references'][j];
+        references.push(create_link(reference['display_name'], reference['link']))
+    }
+    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], evidence['date_created'], evidence['note'], references.join(', ')];
+}
+
 function protein_experiment_data_to_table(evidence) {
     var bioent = create_link(evidence['locus']['display_name'], evidence['locus']['link'], false);
 

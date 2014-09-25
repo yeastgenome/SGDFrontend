@@ -7,84 +7,82 @@ $(document).ready(function() {
     $("#subfeature_table_download").hide();
 
   	$.getJSON('/backend/locus/' + locus['id'] + '/sequence_details?callback=?', function(data) {
-        var dna_data = data['genomic_dna'];
-        var strain_selection = $("#strain_selection");
-        var strain_to_genomic_data = {};
-        var strain_to_protein_data = {};
-        var strain_to_coding_data = {};
-        var strain_to_kb_data = {};
+        var genomic_data = null;
+        var protein_data = null;
+        var coding_data = null;
+        var kb_data = null;
 
-        if(dna_data.length > 0) {
-            for (var i=0; i < dna_data.length; i++) {
-                strain_to_genomic_data[dna_data[i]['strain']['format_name']] = dna_data[i];
-
-                var option = document.createElement("option");
-                option.value = dna_data[i]['strain']['format_name'];
-                option.innerHTML = dna_data[i]['strain']['display_name'];
-
-                if(dna_data[i]['strain']['status'] == 'Alternative Reference' || dna_data[i]['strain']['status'] == 'Reference') {
-                    strain_selection.append(option);
-                }
+        for (var i = 0; i < data['genomic_dna'].length; i++) {
+            if (data['genomic_dna'][i]['strain']['display_name'] == 'S288C') {
+                genomic_data = data['genomic_dna'][i];
             }
+        }
 
-            var protein_data = data['protein'];
-            for (i=0; i < protein_data.length; i++) {
-                strain_to_protein_data[protein_data[i]['strain']['format_name']] = protein_data[i];
+        for (i = 0; i < data['protein'].length; i++) {
+            if (data['protein'][i]['strain']['display_name'] == 'S288C') {
+                protein_data = data['protein'][i];
             }
+        }
 
-            var coding_data = data['coding_dna'];
-            for (i=0; i < coding_data.length; i++) {
-                strain_to_coding_data[coding_data[i]['strain']['format_name']] = coding_data[i];
+        for (i = 0; i < data['coding_dna'].length; i++) {
+            if (data['coding_dna'][i]['strain']['display_name'] == 'S288C') {
+                coding_data = data['coding_dna'][i];
             }
+        }
 
-            var kb_data = data['1kb'];
-            for (i=0; i < kb_data.length; i++) {
-                strain_to_kb_data[kb_data[i]['strain']['format_name']] = kb_data[i];
+        for (i = 0; i < data['1kb'].length; i++) {
+            if (data['1kb'][i]['strain']['display_name'] == 'S288C') {
+                kb_data = data['1kb'][i];
             }
+        }
 
-            function on_strain_change() {
-                var strain_data = strain_to_genomic_data[strain_selection.val()];
-                var coding_data = strain_to_coding_data[strain_selection.val()];
-                var protein_data = strain_to_protein_data[strain_selection.val()];
-                var kb_data = strain_to_kb_data[strain_selection.val()];
+        if (genomic_data != null) {
+            chromosome = genomic_data['contig']['display_name'];
+            $("#contig").html('<a href="' + genomic_data['contig']['link'] + '">' + genomic_data['contig']['display_name'] + '</a>: ' + genomic_data['start'] + ' - ' + genomic_data['end']);
+            draw_label_chart('label_chart', genomic_data['strain']['format_name']);
+            draw_sublabel_chart('sublabel_chart', genomic_data);
+            create_subfeature_table(genomic_data);
 
-                if(strain_data != null) {
-                    $("#strain_description").html(strain_data['strain']['description']);
-                    $("#strain_subfeature").html(strain_data['strain']['display_name']);
-                    $("#strain_location").html(strain_data['strain']['display_name']);
-                    $("#contig").html('<a href="' + strain_data['contig']['link'] + '">' + strain_data['contig']['display_name'] + '</a>: ' + strain_data['start'] + ' - ' + strain_data['end']);
-                    draw_label_chart('label_chart', strain_data['strain']['format_name']);
-                    draw_sublabel_chart('sublabel_chart', strain_data);
-                    create_subfeature_table(strain_data);
-
-                    $("#genomic_download").click(function f() {
-                        download_sequence(strain_data['residues'], locus['display_name'], strain_data['contig']['display_name']);
-                    });
-
-                    $("#coding_download").click(function f() {
-                        download_sequence(coding_data['residues'], locus['display_name'], strain_selection.val() + ' coding_dna');
-                    });
-
-                    $("#protein_download").click(function f() {
-                        download_sequence(protein_data['residues'], locus['display_name'], strain_selection.val() + ' protein');
-                    });
-                    $("#kb_download").click(function f() {
-                        download_sequence(kb_data['residues'], locus['display_name'], strain_data['contig']['display_name']);
-                    });
-                }
-
-            }
-            strain_selection.change(on_strain_change);
-            on_strain_change();
+            $("#genomic_download").click(function f() {
+                download_sequence(genomic_data['residues'], locus['display_name'], genomic_data['contig']['display_name']);
+            });
         }
         else {
             hide_section('sequence');
         }
+
+        if(coding_data != null) {
+            $("#coding_download").click(function f() {
+                download_sequence(coding_data['residues'], locus['display_name'], strain_selection.val() + ' coding_dna');
+            });
+        }
+        else {
+            $("#coding_download").hide();
+        }
+
+        if(protein_data != null) {
+            $("#protein_download").click(function f() {
+                download_sequence(protein_data['residues'], locus['display_name'], strain_selection.val() + ' protein');
+            });
+        }
+        else {
+            $("#protein_download").hide();
+        }
+
+        if(kb_data != null) {
+            $("#kb_download").click(function f() {
+                download_sequence(kb_data['residues'], locus['display_name'], genomic_data['contig']['display_name'] + ' flanking');
+            });
+        }
+        else {
+            $("#kb_download").hide();
+        }
+
     });
 
     $.getJSON('/backend/locus/' + locus['id'] + '/neighbor_sequence_details?callback=?', function(data) {
         strain_to_neighbors = data;
-        draw_label_chart('label_chart', $("#strain_selection").val());
+        draw_label_chart('label_chart', 'S288C');
     });
 
     $.getJSON('/backend/locus/' + locus['id'] + '/expression_details?callback=?', function(data) {
@@ -362,7 +360,7 @@ function draw_sublabel_chart(chart_id, data) {
         }
         var end = data[i]['relative_end']*100;
         var name = data[i]['display_name'];
-        data_array.push(['Subfeatures', name, start, end]);
+        data_array.push(['Relative Coordinates', name, start, end]);
         labels[name] = true;
 
         if(min_start == null || start < min_start) {
@@ -402,12 +400,37 @@ function draw_sublabel_chart(chart_id, data) {
 
 function set_up_history_table() {
     var options = {};
+    options["aoColumns"] = [
+                {"bSearchable":false, "bVisible":false}, //evidence_id
+                {"bSearchable":false, "bVisible":false}, //analyze_id
+                {"bSearchable":false, "bVisible":false}, //gene
+                {"bSearchable":false, "bVisible":false}, //gene systematic name
+                null, //date
+                null, //note
+                null //references
+                ];
     options["bPaginate"] = false;
-    options["aaSorting"] = [[0, "asc"]];
-    options["aoColumns"] = [null, null, null]
-    options["oLanguage"] = {"sEmptyTable": "No history entries for " + locus['display_name'] + '.'};
+    options["aaSorting"] = [[4, "asc"]];
 
-    return create_table("history_table", options);
+    var datatable = [];
+    for (var i=0; i < locus['history'].length; i++) {
+        if(locus['history'][i]['history_type'] == 'LSP' || sequence_tab == 'False') {
+            datatable.push(history_data_to_table(locus['history'][i]));
+        }
+    }
+
+    if(datatable.length > 0) {
+        options["oLanguage"] = {"sEmptyTable": "No history entries for " + locus['display_name'] + '.'};
+        options["aaData"] = datatable;
+
+        $('#history_table_analyze').hide();
+        $('#history_table_download').hide();
+
+        return create_table("history_table", options);
+    }
+    else {
+        hide_section('history');
+    }
 }
 
 function create_subfeature_table(data) {
@@ -462,7 +485,7 @@ function create_subfeature_table(data) {
 }
 
 function create_expression_chart(all_data, min_value, max_value) {
-    if(all_data != null) {
+    if(all_data != null && all_data.length > 0) {
         var capped_min = Math.max(-5.5, min_value);
         var capped_max = Math.min(5, max_value);
         var header_row = [];
