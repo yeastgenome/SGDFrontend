@@ -99,6 +99,7 @@ function set_up_references(references, ref_list_id) {
 		
 		ref_list.appendChild(li);
 	}
+    set_hash();
 }
 
 String.prototype.chunk = function(n) {
