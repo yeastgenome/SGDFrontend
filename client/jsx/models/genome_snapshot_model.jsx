@@ -85,7 +85,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 		// add row for length (bp)
 		var lengthRow = _.map(chromosomeData, (c) => {
-			return c.length;
+			return c.length || 0;
 		});
 		lengthRow.unshift("Chromosome Length (bp)");
 		tableRows.push(lengthRow);
