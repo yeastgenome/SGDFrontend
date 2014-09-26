@@ -13,6 +13,7 @@ module.exports = function(grunt) {
                 }]
             }
         },
+
         concat: {
             options: {
               separator: ''
@@ -40,26 +41,24 @@ module.exports = function(grunt) {
               dest: 'bower_components/foundation/js/foundation.js'
           },
         },
+
         uglify: {
             staticJs: {
                 files: {
                     "src/sgd/frontend/yeastgenome/static/js/build/modernizr.min.js": ["bower_components/modernizr/modernizr.js"],
                     "src/sgd/frontend/yeastgenome/static/js/build/datatables/datatables.min.js": ["bower_components/datatables/media/js/jquery.datatables.js"],
                     "src/sgd/frontend/yeastgenome/static/js/build/datatables/datatables.foundation.min.js": ["bower_components/datatables-plugins/integration/foundation/datatables.foundation.js"],
-                    "src/sgd/frontend/yeastgenome/static/js/build/fastclick.min.js": ["bower_components/fastclick/lib/fastclick.js"]
+                    "src/sgd/frontend/yeastgenome/static/js/build/fastclick.min.js": ["bower_components/fastclick/lib/fastclick.js"],
+                    "src/sgd/frontend/yeastgenome/static/js/build/foundation.min.js": ["bower_components/foundation/js/foundation.js"]
                 }
             },
             dynamicJs: {
                 files: {
                     "src/sgd/frontend/yeastgenome/static/js/application.js": ["src/sgd/frontend/yeastgenome/static/js/application.js"],
                 }
-            },
-            foundation: {
-                files: {
-                    "src/sgd/frontend/yeastgenome/static/js/build/foundation.min.js": ["bower_components/foundation/js/foundation.js"]
-                }
             }
         },
+
         bowercopy: {
             js: {
                 options: {
@@ -140,7 +139,7 @@ module.exports = function(grunt) {
                 tasks: ["browserify:dev", "compass:dev"]
             },
             production: {
-                tasks: ["dynamicJs:production", "compileCss", "static"]
+                tasks: ["dynamicJs:production", "compileCss"]
             },
             options: {
                 logConcurrentOutput: true
@@ -148,8 +147,8 @@ module.exports = function(grunt) {
         }
     });
     
-    grunt.loadNpmTasks('grunt-text-replace');
-    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks("grunt-text-replace");
+    grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-compass");
     grunt.loadNpmTasks("grunt-contrib-watch");
@@ -159,14 +158,14 @@ module.exports = function(grunt) {
 
     // production helper tasks
     grunt.registerTask("dynamicJs:production", ["browserify:dev", "uglify:dynamicJs"]);
-    grunt.registerTask("compileCss", ["replace", "bowercopy:scss", "compass:dev"]);
-    grunt.registerTask("static", ["bowercopy", "uglify:staticJs"]);
+    grunt.registerTask("compileCss", ["bowercopy:scss", "compass:dev"]);
+    grunt.registerTask("static", ["replace", "concat", "uglify:staticJs", "bowercopy"]);
 
     // dev helper task
-    grunt.registerTask("compileDev", ["replace","uglify:staticJs", "bowercopy", "concurrent:dev"]);
+    grunt.registerTask("compileDev", ["static", "concurrent:dev"]);
 
     // compile dev, then watch and trigger live reload
     grunt.registerTask("dev", ["compileDev", "watch:dev"]);
     
-    grunt.registerTask("default", ["concurrent:production"]);
+    grunt.registerTask("default", ["static", "concurrent:production"]);
 };
