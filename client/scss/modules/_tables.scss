@@ -62,3 +62,11 @@ div.dataTables_length {
     display: inline-block;
     margin-left: 5px;
 }
+
+// allow x scroll on large and below
+.dataTables_wrapper {
+    overflow-x: auto;
+    @media only screen and (min-width: 85.94em) {
+        overflow-x: visible;
+    }
+}
