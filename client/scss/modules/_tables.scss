@@ -1,5 +1,9 @@
 // Tables
 
+table {
+    table-layout: auto;
+}
+
 th {
     padding-right: 16px !important;    // to allow for sort arrows
 }
@@ -12,12 +16,13 @@ th:last-child, tr.even td:last-child {
 }
 
 .dataTables_wrapper {
-    overflow: hidden;
+    min-width: 100%;
     table { 
         margin: 0 !important;
         border-collapse: separate;
         border-spacing: 0;
     }
+    input, select { margin: 0; }
 }
 
 .dt-tools-head, .dt-tools-foot {

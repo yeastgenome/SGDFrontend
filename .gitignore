@@ -22,3 +22,4 @@ src/sgd/frontend/yeastgenome/static/scss/build/
 src/sgd/frontend/yeastgenome/static/fonts/
 bower_components/
 node_modules/
+client/scss/build/

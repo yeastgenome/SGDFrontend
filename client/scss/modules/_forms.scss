@@ -27,4 +27,26 @@ select {
     text-indent: 0.01px;
     text-overflow: ' ';
 }
+
+.switch-container {
+    height: 30px;
+    span, .switch {
+        display: inline-block;
+        position: relative;
+    }
+
+    span:first-child, span:last-child {
+        margin-right: .2em;
+        top: -3px;
+    }
+
+    span:last-child {
+        margin-left: .2em;
+        top: -3px;
+    }
+
+    .switch {
+        height: 19px;
+    }
+} 
     
