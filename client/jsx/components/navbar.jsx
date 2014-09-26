@@ -17,6 +17,9 @@ module.exports = React.createClass({
 
 	render: function () {
 
+		// title can be link or plain text, depending on if title has href property
+		var titleNode = this.props.title.href ? <a href={this.props.title.href}>{this.props.title.name}</a> : this.props.title;
+
 		var listElements = _.map(this.props.elements, (element) => {
 			return (
 				<li data-magellan-arrival={element.target} id={`navbar_${element.target}`}>
@@ -29,7 +32,7 @@ module.exports = React.createClass({
 			<nav id="sidebar">
 				<div data-magellan-expedition="fixed">
 			        <ul className="side-nav" id="side-nav-sticky">
-			        	<li id="nav-title"><h4>{this.props.title}</h4></li>
+			        	<li id="nav-title"><h4>{titleNode}</h4></li>
 			        	{listElements}
 			        </ul>
 			    </div>
