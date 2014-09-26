@@ -485,7 +485,7 @@ function create_subfeature_table(data) {
 }
 
 function create_expression_chart(all_data, min_value, max_value) {
-    if(all_data != null && all_data.length > 0) {
+    if(all_data != null && Object.keys(all_data).length > 0) {
         var capped_min = Math.max(-5.5, min_value);
         var capped_max = Math.min(5, max_value);
         var header_row = [];
@@ -564,7 +564,7 @@ function create_expression_chart(all_data, min_value, max_value) {
 
         // The select handler. Call the chart's getSelection() method
         function selectHandler() {
-            window.location.href = '/locus/' + locus.sgdid + '/expression';
+            window.location.href = '/locus/' + locus['sgdid'] + '/expression';
         }
         google.visualization.events.addListener(chart, 'select', selectHandler);
     }
