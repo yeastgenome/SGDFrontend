@@ -91,7 +91,7 @@ module.exports = React.createClass({
         />);
 
         var axisNode = (<div style={{ height: 53 }}>
-            <StandaloneAxis maxValue={maxY} labelText="Features" leftRatio={_labelRatio} />
+            <StandaloneAxis domain={[0, maxY]} labelText="Features" leftRatio={_labelRatio} />
         </div>);
 
         return [axisNode, legendNode, barNode];

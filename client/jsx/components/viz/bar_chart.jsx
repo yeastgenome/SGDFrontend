@@ -64,7 +64,7 @@ module.exports = React.createClass({
 		var yAxis = null;
 		if (props.hasYAxis) {
 			var _maxY = props.maxY || d3.max(data, props.yValue);
-			yAxis = <StandaloneAxis scaleType={this.props.scaleType} maxValue={_maxY} labelText="Gene Products Annotated" leftRatio={props.labelRatio} transitionDuration={500} />;
+			yAxis = <StandaloneAxis scaleType={this.props.scaleType} domain={[0, _maxY]} labelText="Gene Products Annotated" leftRatio={props.labelRatio} transitionDuration={500} />;
 		}
 
 		var tooltipNode = props.hasTooltip ? (<FlexibleTooltip visible={state.tooltipVisible}
