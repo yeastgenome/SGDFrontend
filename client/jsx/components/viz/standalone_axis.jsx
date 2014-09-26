@@ -14,9 +14,11 @@ module.exports = React.createClass({
 			gridTicks: false,
 			labelText: null,
 			leftRatio: 0,
-			maxValue: null, // *
+			domain: null, // *
 			orientation: "top", // [top, right, bottom, left]
 			scaleType: "linear",
+			ticks: 3,
+			tickFormat: null,
 			transitionDuration: 0
 		};
 	},
@@ -32,7 +34,7 @@ module.exports = React.createClass({
 			<p className="axis-label" style={{ marginLeft: `${this.props.leftRatio * 100}%`, position: "relative" }}>{this.props.labelText}</p> :
 			null;
 
-		var _height = this.props.gridTicks ? "100%" : 32;
+		var _height = this.props.height || (this.props.gridTicks ? "100%" : 32);
 		var _klass = `standalone-axis ${this.props.gridTicks ? "grid-ticks" : ""}`;
 		return (<div className={_klass} style={{ position: "relative" }}>
 			{labelNode}
@@ -73,7 +75,7 @@ module.exports = React.createClass({
 		
 		var _width = this.getDOMNode().getBoundingClientRect().width - 1;
 		var _xOffset = _width * props.leftRatio;
-		var _scale = _baseScale.domain([0, props.maxValue]).range([0, _width - _xOffset]);
+		var _scale = _baseScale.domain(props.domain).range([0, _width - _xOffset]);
 
 		this.setState({
 			scale: _scale
@@ -88,7 +90,8 @@ module.exports = React.createClass({
 		var _tickSize = this.props.gridTicks ? (-this.getDOMNode().offsetHeight) : 6;
 		var axisFn = d3.svg.axis()
 			.orient(this.props.orientation)
-			.ticks(3)
+			.ticks(this.props.ticks)
+			.tickFormat(this.props.tickFormat)
 			.tickSize(_tickSize)
 			.scale(this.state.scale);
 
@@ -96,6 +99,9 @@ module.exports = React.createClass({
 		
 		var _xTranslate = (this.getDOMNode().getBoundingClientRect().width * this.props.leftRatio)
 		var _yTranslate = (this.props.orientation === "top") ? 30 : 0;
+		if (this.props.gridTicks && this.props.orientation === "bottom") {
+			_yTranslate += this.getDOMNode().getBoundingClientRect().height - 30;
+		}
 		var _translate = `translate(${_xTranslate}, ${_yTranslate})`;
 		var axis = svg.selectAll("g.axis").data([null]);
 		axis.enter().append("g")

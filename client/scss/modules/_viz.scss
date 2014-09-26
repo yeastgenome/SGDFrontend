@@ -30,6 +30,14 @@
 	&.go-snapshot-target {
 		min-height: 400px;
 	}
+
+	.loader {
+		position: absolute;
+		margin-top: -16px;
+		margin-left: -16px;
+		top: 50%;
+		left: 50%;
+	}
 }
 
 .sgd-viz-filter-message {
@@ -108,4 +116,120 @@
 		stroke: black;
 		shape-rendering: crispEdges;
 	}
+}
+
+// legend
+.viz-legend {
+	margin-bottom: 7px;
+}
+
+.legend-entry-container {
+	margin-right: 1em;
+	&:last-child {
+		margin-right: 0;
+	}
+}
+
+.legend-color {
+	width: 1.5em;
+	height: 1.5em;
+	margin-bottom: -0.3em;
+	margin-right: 0.5em;
+	display: inline-block;
+	opacity: 0.6;
+}
+
+// genome snapshot
+.button.chromosome-toggle {
+	width: 200px;
+	display: block;
+	margin: 0 auto;
+	margin-top: 2em;
+}
+
+.chromosome-label-text {
+	margin-top: 3em;
+	h3 {
+		margin-bottom: 0;
+	}
+	h3:first-child {
+		float: left;
+	}
+	h3:last-child {
+		float: right;
+	}
+}
+
+.genome-snapshot-target thead tr:first-child td {
+	text-align: center;
+}
+
+.genome-snapshot-target td {
+	white-space: nowrap;
+}
+
+// toggle bar chart
+.toggle-bar-chart {
+	.radio-selector {
+		font-size: 16px;
+	}
+
+	.radio-selector label {
+		text-transform: capitalize;
+		font-size: 16px;
+	}
+
+	.radio-element-container {
+		text-align: center;
+		&:first-child {
+			text-align: left;
+		}
+		&:last-child {
+			text-align: right;
+		}
+	}
+
+	.toggle-text {
+		margin-top: 1em;
+	}
+
+	.inner-toggle-text {
+		text-transform: capitalize;
+	}
+}
+
+// locus diagram
+.locus-diagram-control-container {
+	margin-bottom: 1em;
+
+}
+.locus-diagram-button-group {
+	float: right;
+	margin-left: 1em;
+	.button.disabled {
+		opacity: 0.25;
+	}
+}
+
+.locus-diagram-axis-container {
+	g.tick line {
+		stroke: #ddd;
+	}
+	path.domain {
+		stroke: none;
+	}
+}
+
+.midpoint-marker {
+	stroke: #ddd;
+	stroke-width: 2px;
+	stroke-dasharray: 3px 5px;
+}
+
+.locus-svg {
+	border: 1px solid #ddd;
+}
+
+.locus-svg text {
+	pointer-events: none;
 }
