@@ -4,8 +4,8 @@
                     {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
 
                     {{ alias.display_name }}
-                    {% set label = "alias" %}
                     {% set references = alias.references %}
+                    {% set full_url = True %}
                     {%- include "biblio_references.jinja2" -%}
 
                     {% if not loop.last %},{% else %}</dd>{% endif %}
@@ -14,25 +14,25 @@
                 <dt>Feature Type</dt>
                 <dd>{{ locus.locus_type }}
                     {% if 'feature_type' in locus.qualities %}
-                        {% set label = "feature_type" %}
                         {% set references = locus.qualities.feature_type.references %}
+                        {% set full_url = True %}
                         {% include "biblio_references.jinja2" %}
                     {% endif %}
 
                     {% if locus.qualifier != None %}, {{ locus.qualifier }}{% endif %}
                     {% if 'qualifier' in locus.qualities %}
-                        {% set label = "qualifier" %}
                         {% set references = locus.qualities.qualifier.references %}
+                        {% set full_url = True %}
                         {% include "biblio_references.jinja2" %}
                     {% endif %}
-                </dd>                </dd>
+                </dd>
 
                 <dt>Description</dt>
                 <dd>
                     {{ locus.description }}
                     {% if 'description' in locus.qualities %}
-                        {% set label = "description" %}
                         {% set references = locus.qualities.description.references %}
+                        {% set full_url = True %}
                         {% include "biblio_references.jinja2" %}
                     {% endif %}
                 </dd>
@@ -42,8 +42,8 @@
                     <dd>
                     {% for paralog in locus.paralogs %}
                         <a href="{{ paralog.child.link }}">{{ paralog.child.display_name }}</a>
-                        {% set label = "paralog" %}
                         {% set references = paralog.references %}
+                        {% set full_url = True %}
                         {% include "biblio_references.jinja2" %}
 
                         {% if not loop.last %}, {% endif %}

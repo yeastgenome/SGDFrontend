@@ -82,7 +82,6 @@
                     <dt>Standard Name</dt>
                     <dd>{{ locus.display_name }}
                         {% if 'gene_name' in locus.qualities %}
-                            {% set label = "gene_name" %}
                             {% set references = locus.qualities.gene_name.references %}
                             {% include "biblio_references.jinja2" %}
                         {% endif %}
@@ -99,7 +98,6 @@
                     {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
 
                     {{ alias.display_name }}
-                    {% set label = "alias" %}
                     {% set references = alias.references %}
                     {%- include "biblio_references.jinja2" -%}
 
@@ -109,14 +107,12 @@
                 <dt>Feature Type</dt>
                 <dd>{{ locus.locus_type }}
                     {% if 'feature_type' in locus.qualities %}
-                        {% set label = "feature_type" %}
                         {% set references = locus.qualities.feature_type.references %}
                         {% include "biblio_references.jinja2" %}
                     {% endif %}
 
                     {% if locus.qualifier != None %}, {{ locus.qualifier }}{% endif %}
                     {% if 'qualifier' in locus.qualities %}
-                        {% set label = "qualifier" %}
                         {% set references = locus.qualities.qualifier.references %}
                         {% include "biblio_references.jinja2" %}
                     {% endif %}
@@ -126,7 +122,6 @@
                 <dd>
                     {{ locus.description }}
                     {% if 'description' in locus.qualities %}
-                        {% set label = "description" %}
                         {% set references = locus.qualities.description.references %}
                         {% include "biblio_references.jinja2" %}
                     {% endif %}
@@ -136,7 +131,6 @@
                     <dt>Name Description</dt>
                     <dd>{{ locus.name_description }}
                         {% if 'name_description' in locus.qualities %}
-                            {% set label = "name_description" %}
                             {% set references = locus.qualities.name_description.references %}
                             {% include "biblio_references.jinja2" %}
                         {% endif %}
@@ -149,7 +143,6 @@
                         <dd>
 
                         {{ alias.display_name }}
-                        {% set label = "gene_product" %}
                         {% set references = alias.references %}
                         {% include "biblio_references.jinja2" %}
                     {% endif %}
@@ -160,7 +153,6 @@
                     <dd>
                     {% for paralog in locus.paralogs %}
                         <a href="{{ paralog.child.link }}">{{ paralog.child.display_name }}</a>
-                        {% set label = "paralog" %}
                         {% set references = paralog.references %}
                         {% include "biblio_references.jinja2" %}
 
@@ -173,7 +165,6 @@
                     {% if loop.first %}<dt>Retired Name</dt><dd>{% endif %}
 
                     {{ alias.display_name }}
-                    {% set label = "alias" %}
                     {% set references = alias.references %}
                     {%- include "biblio_references.jinja2" -%}
 

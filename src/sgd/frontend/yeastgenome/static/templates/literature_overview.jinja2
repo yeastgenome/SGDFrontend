@@ -6,8 +6,8 @@
         {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
 
         {{ alias.display_name }}
-        {% set label = "alias" %}
         {% set references = alias.references %}
+        {% set full_url = True %}
         {%- include "biblio_references.jinja2" -%}
 
         {% if not loop.last %},{% else %}</dd>{% endif %}
