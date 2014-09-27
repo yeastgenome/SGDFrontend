@@ -202,6 +202,12 @@
         <div class="panel">
             <button href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="small radius button secondary dropdown form-pad"><i
                 class="fa fa-download"></i> Download Sequence (.txt)</button>
+            <ul id="drop1" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1">
+                <li><a id="genomic_download">Genomic DNA</a></li>
+                <li><a id="kb_download">Genomic DNA +/- 1kb</a></li>
+                <li><a id="coding_download">Coding DNA</a></li>
+                <li><a id="protein_download">Protein</a></li>
+            </ul>
                 
             <div class="panel">
                 <h3>Location
@@ -250,12 +256,26 @@
                 {% include "chromosomal_coord_table.jinja2" %}
             </div>
 
-            <ul id="drop1" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1">
-                <li><a id="genomic_download">Genomic DNA</a></li>
-                <li><a id="kb_download">Genomic DNA +/- 1kb</a></li>
-                <li><a id="coding_download">Coding DNA</a></li>
-                <li><a id="protein_download">Protein</a></li>
-            </ul>
+            <div class=panel>
+                <h3>Analyze Sequence</h3>
+                {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C'%}
+                    {% if loop.first %}<h4>S288C only</h4><p id="reference_only_resources_list">{% endif %}
+                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
+                {% endfor %}
+
+
+                {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_SPECIES'%}
+                    {% if loop.first %}<h4>S288C vs. other species</h4> <p id="other_species_resources_list">{% endif %}
+                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
+                {% endfor %}
+
+
+                {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_STRAINS'%}
+                    {% if loop.first %}<h4>S288C vs. other strains</h4><p id="other_strains_resources_list">{% endif %}
+                    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
+                {% endfor %}
+
+            </div>
         </div>
     </section>
     {% endif %}
