@@ -340,7 +340,7 @@
                         <dd><ul style="list-style-type:disc">
                             {% for entry in locus.go_overview.manual_molecular_function_terms %}
                                 <li>
-                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
                                     {% for code in entry.evidence_codes %}
                                         {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
                                     {% endfor %}
@@ -354,7 +354,7 @@
                         <dd><ul style="list-style-type:disc">
                             {% for entry in locus.go_overview.htp_molecular_function_terms %}
                                 <li>
-                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
                                     {% for code in entry.evidence_codes %}
                                         {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
                                     {% endfor %}
@@ -375,7 +375,7 @@
                         <dd><ul style="list-style-type:disc">
                             {% for entry in locus.go_overview.manual_biological_process_terms %}
                                 <li>
-                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
                                     {% for code in entry.evidence_codes %}
                                         {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
                                     {% endfor %}
@@ -389,7 +389,7 @@
                         <dd><ul style="list-style-type:disc">
                             {% for entry in locus.go_overview.htp_biological_process_terms %}
                                 <li>
-                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
                                     {% for code in entry.evidence_codes %}
                                         {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
                                     {% endfor %}
@@ -410,7 +410,7 @@
                         <dd><ul style="list-style-type:disc">
                             {% for entry in locus.go_overview.manual_cellular_component_terms %}
                                 <li>
-                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
                                     {% for code in entry.evidence_codes %}
                                         {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
                                     {% endfor %}
@@ -424,7 +424,7 @@
                         <dd><ul style="list-style-type:disc">
                             {% for entry in locus.go_overview.htp_cellular_component_terms %}
                                 <li>
-                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
                                     {% for code in entry.evidence_codes %}
                                         {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
                                     {% endfor %}
