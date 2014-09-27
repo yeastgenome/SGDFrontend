@@ -43,6 +43,21 @@ $(document).ready(function() {
             draw_sublabel_chart('sublabel_chart', genomic_data);
             create_subfeature_table(genomic_data);
 
+            if(genomic_data['embedded_within'].length > 0) {
+                var embedded_within = [];
+                for(i = 0; i < genomic_data['embedded_within'].length; i++) {
+                    embedded_within.push('<a href="' + genomic_data['embedded_within'][i]['link'] + '">' + genomic_data['embedded_within'][i]['display_name'] + '</a>');
+                }
+
+                var dt = document.createElement('dt');
+                dt.innerHTML = 'Embedded Within';
+                $('#embedded_features').append(dt);
+
+                var dd = document.createElement('dd');
+                dd.innerHTML = embedded_within.join(', ');
+                $('#embedded_features').append(dd);
+            }
+
             $("#genomic_download").click(function f() {
                 download_sequence(genomic_data['residues'], locus['display_name'], genomic_data['contig']['display_name']);
             });
@@ -443,28 +458,22 @@ function set_up_history_table() {
 function create_subfeature_table(data) {
 	var datatable = [];
 
+    var embedded_features = [];
     for (var i=0; i < data['tags'].length; i++) {
-        var coord_version = data['tags'][i]['coord_version'];
-        var seq_version = data['tags'][i]['seq_version'];
-        if(coord_version == 'None') {
-            coord_version = '';
+        datatable.push(sublabel_data_to_table(data['tags'][i], data['locus'], data['strand'], data['id']));
+        if(data['tags'][i]['bioentity'] != null) {
+            embedded_features.push('<a href="' + data['tags'][i]['bioentity']['link'] + '">' + data['tags'][i]['bioentity']['display_name'] + '</a>');
         }
-        if(seq_version == 'None') {
-            seq_version = '';
-        }
-        var coords = '';
-        if(data['tags'][i]['chromosomal_start'] < data['tags'][i]['chromosomal_end']) {
-            coords = data['tags'][i]['chromosomal_start'] + '-' + data['tags'][i]['chromosomal_end'];
-        }
-        else {
-            coords = data['tags'][i]['chromosomal_end'] + '-' + data['tags'][i]['chromosomal_start'];
-        }
-        datatable.push([data['id'], data['locus']['id'], data['locus']['display_name'], data['locus']['format_name'],
-                        data['tags'][i]['display_name'],
-                        data['tags'][i]['relative_start'] + '-' + data['tags'][i]['relative_end'],
-                        coords, data['strand'],
-                        coord_version, seq_version
-                        ]);
+    }
+
+    if(embedded_features.length > 0) {
+        var dt = document.createElement('dt');
+        dt.innerHTML = 'Embedded Features';
+        $('#embedded_features').append(dt);
+
+        var dd = document.createElement('dd');
+        dd.innerHTML = embedded_features.join(', ');
+        $('#embedded_features').append(dd);
     }
 
     set_up_header('subfeature_table', datatable.length, 'subfeature', 'subfeatures', null, null, null);

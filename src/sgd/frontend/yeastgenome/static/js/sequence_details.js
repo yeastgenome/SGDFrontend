@@ -753,27 +753,7 @@ function create_subfeature_table(data) {
 	var datatable = [];
 
     for (var i=0; i < data['tags'].length; i++) {
-        var coord_version = data['tags'][i]['coord_version'];
-        var seq_version = data['tags'][i]['seq_version'];
-        if(coord_version == 'None') {
-            coord_version = '';
-        }
-        if(seq_version == 'None') {
-            seq_version = '';
-        }
-        var coords = '';
-        if(data['tags'][i]['chromosomal_start'] < data['tags'][i]['chromosomal_end']) {
-            coords = data['tags'][i]['chromosomal_start'] + '-' + data['tags'][i]['chromosomal_end'];
-        }
-        else {
-            coords = data['tags'][i]['chromosomal_end'] + '-' + data['tags'][i]['chromosomal_start'];
-        }
-        datatable.push([data['id'], data['locus']['id'], data['locus']['display_name'], data['locus']['format_name'],
-                        data['tags'][i]['display_name'],
-                        data['tags'][i]['relative_start'] + '-' + data['tags'][i]['relative_end'],
-                        coords, data['strand'],
-                        coord_version, seq_version
-                        ]);
+        datatable.push(sublabel_data_to_table(data['tags'][i], data['locus'], data['strand'], data['id']));
     }
 
     set_up_header('subfeature_table', datatable.length, 'subfeature', 'subfeatures', null, null, null);

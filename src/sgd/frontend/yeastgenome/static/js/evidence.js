@@ -127,6 +127,31 @@ function protein_experiment_data_to_table(evidence) {
     return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], experiment, evidence['data_value'] + ' ' + evidence['data_unit'], reference];
 }
 
+function sublabel_data_to_table(evidence, locus, strand, data_id) {
+    var coord_version = evidence['coord_version'];
+    var seq_version = evidence['seq_version'];
+    if(coord_version == 'None') {
+        coord_version = '';
+    }
+    if(seq_version == 'None') {
+        seq_version = '';
+    }
+    var coords = '';
+    if(evidence['chromosomal_start'] < evidence['chromosomal_end']) {
+        coords = evidence['chromosomal_start'] + '-' + evidence['chromosomal_end'];
+    }
+    else {
+        coords = evidence['chromosomal_end'] + '-' + evidence['chromosomal_start'];
+    }
+
+    var display_name = evidence['display_name'];
+    if(evidence['bioentity'] != null) {
+        display_name = create_link(display_name, evidence['bioentity']['link']);
+    }
+
+    return [data_id, locus['id'], locus['display_name'], locus['format_name'], display_name, evidence['relative_start'] + '-' + evidence['relative_end'], coords, strand, coord_version, seq_version];
+}
+
 function regulation_data_to_table(evidence, is_regulator) {
     var bioent1 = create_link(evidence['locus1']['display_name'], evidence['locus1']['link']);
 	var bioent2 = create_link(evidence['locus2']['display_name'], evidence['locus2']['link']);
