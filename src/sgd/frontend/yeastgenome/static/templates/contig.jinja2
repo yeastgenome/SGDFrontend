@@ -45,6 +45,13 @@
 
                         <dt>Length</dt>
                         <dd>{{ contig.residues|length }} bases</dd>
+
+                        {% for url in contig.urls %}
+                            {% if loop.first %}
+                                <dt>GenBank</dt>
+                                <dd><a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a></dd>
+                            {% endif %}
+                        {% endfor %}
                     </dl>
 
                     <div class="button-bar">
