@@ -91,11 +91,18 @@ $(document).ready(function() {
 
     if(locus['paragraph'] != null) {
         document.getElementById("summary_paragraph").innerHTML = locus['paragraph']['text'];
-        set_up_references(locus['paragraph']['references'], "summary_paragraph_reference_list");
     }
 
     set_up_history_table();
+    set_up_reference_list("reference_header", "reference_list", locus['references']);
 });
+
+function set_up_reference_list(header_id, list_id, data) {
+    data.sort(function(a, b) {return b['year'] - a['year']});
+
+    set_up_header(null, header_id, data.length, 'reference', 'references');
+	set_up_references(data, list_id);
+}
 
 function strand_to_direction(strand) {
     if(strand == '+') {

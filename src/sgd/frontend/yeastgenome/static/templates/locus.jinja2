@@ -64,8 +64,8 @@
             {% if tabs['history_tab'] %}
                 add_navbar_element('History', 'history');
             {% endif %}
-            add_navbar_element('References', 'references');
-            {% for url in locus.urls if url.category == 'LSP' %}{% if loop.first %}
+            add_navbar_element('References', 'reference');
+            {% for url in locus.urls if url.category == 'LOCUS_LSP' %}{% if loop.first %}
                 add_navbar_element('Resources', 'resources');
             {% endif %}{% endfor %}
         </script>
@@ -81,13 +81,10 @@
                 {% if locus.format_name != locus.display_name %}
                     <dt>Standard Name</dt>
                     <dd>{{ locus.display_name }}
-                        {% if 'gene_name' in locus.qualities and locus.qualities.gene_name.references|length > 0 %}
-                            <a href="#" data-dropdown="drop_gene_name"><i class="fa fa-info-circle"></i></a>
-                            <p id="drop_gene_name" class="f-dropdown content medium" data-dropdown-content>
-                                {% for reference in locus.qualities.gene_name.references %}
-                                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
-                                {% endfor %}
-                            </p>
+                        {% if 'gene_name' in locus.qualities %}
+                            {% set label = "gene_name" %}
+                            {% set references = locus.qualities.gene_name.references %}
+                            {% include "biblio_references.jinja2" %}
                         {% endif %}
                     </dd>
                 {% endif %}
@@ -100,62 +97,48 @@
 
                 {% for alias in locus.aliases if alias.category == 'Uniform' %}
                     {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+
                     {{ alias.display_name }}
-                    {% if alias.references|length > 0 %}
-                        <a href="#" data-dropdown="drop_alias_{{ alias.id }}"><i class="fa fa-info-circle"></i></a>
-                        <p id="drop_alias_{{ alias.id }}" class="f-dropdown content medium" data-dropdown-content>
-                            {% for reference in alias.references %}
-                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
-                            {% endfor %}
-                        </p>
-                    {% endif %}
+                    {% set label = "alias" %}
+                    {% set references = alias.references %}
+                    {%- include "biblio_references.jinja2" -%}
+
                     {% if not loop.last %},{% else %}</dd>{% endif %}
                 {% endfor %}
 
                 <dt>Feature Type</dt>
                 <dd>{{ locus.locus_type }}
-                    {% if 'feature_type' in locus.qualities and locus.qualities.feature_type.references|length > 0 %}
-                        <a href="#" data-dropdown="drop_feature_type"><i class="fa fa-info-circle"></i></a>
-                        <p id="drop_feature_type" class="f-dropdown content medium" data-dropdown-content>
-                            {% for reference in locus.qualities.feature_type.references %}
-                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
-                            {% endfor %}
-                        </p>
+                    {% if 'feature_type' in locus.qualities %}
+                        {% set label = "feature_type" %}
+                        {% set references = locus.qualities.feature_type.references %}
+                        {% include "biblio_references.jinja2" %}
                     {% endif %}
+
                     {% if locus.qualifier != None %}, {{ locus.qualifier }}{% endif %}
-                    {% if 'qualifier' in locus.qualities and locus.qualities.qualifier.references|length > 0 %}
-                        <a href="#" data-dropdown="drop_qualifier"><i class="fa fa-info-circle"></i></a>
-                        <p id="drop_qualifier" class="f-dropdown content medium" data-dropdown-content>
-                            {% for reference in locus.qualities.qualifier.references %}
-                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
-                            {% endfor %}
-                        </p>
+                    {% if 'qualifier' in locus.qualities %}
+                        {% set label = "qualifier" %}
+                        {% set references = locus.qualities.qualifier.references %}
+                        {% include "biblio_references.jinja2" %}
                     {% endif %}
                 </dd>
 
                 <dt>Description</dt>
                 <dd>
                     {{ locus.description }}
-                    {% if 'description' in locus.qualities and locus.qualities.description.references|length > 0 %}
-                        <a href="#" data-dropdown="drop_description"><i class="fa fa-info-circle"></i></a>
-                        <p id="drop_description" class="f-dropdown content medium" data-dropdown-content>
-                            {% for reference in locus.qualities.description.references %}
-                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
-                            {% endfor %}
-                        </p>
+                    {% if 'description' in locus.qualities %}
+                        {% set label = "description" %}
+                        {% set references = locus.qualities.description.references %}
+                        {% include "biblio_references.jinja2" %}
                     {% endif %}
                 </dd>
 
                 {% if locus.name_description != None %}
                     <dt>Name Description</dt>
                     <dd>{{ locus.name_description }}
-                        {% if 'name_description' in locus.qualities and locus.qualities.name_description.references|length > 0 %}
-                            <a href="#" data-dropdown="drop_name_description"><i class="fa fa-info-circle"></i></a>
-                            <p id="drop_name_description" class="f-dropdown content medium" data-dropdown-content>
-                                {% for reference in locus.qualities.name_description.references %}
-                                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
-                                {% endfor %}
-                            </p>
+                        {% if 'name_description' in locus.qualities %}
+                            {% set label = "name_description" %}
+                            {% set references = locus.qualities.name_description.references %}
+                            {% include "biblio_references.jinja2" %}
                         {% endif %}
                     </dd>
                 {% endif %}
@@ -166,14 +149,9 @@
                         <dd>
 
                         {{ alias.display_name }}
-                        {% if alias.references|length > 0 %}
-                            <a href="#" data-dropdown="drop_alias_{{ alias.id }}"><i class="fa fa-info-circle"></i></a>
-                            <p id="drop_alias_{{ alias.id }}" class="f-dropdown content medium" data-dropdown-content>
-                                {% for reference in alias.references %}
-                                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
-                                {% endfor %}
-                            </p>
-                        {% endif %}
+                        {% set label = "gene_product" %}
+                        {% set references = alias.references %}
+                        {% include "biblio_references.jinja2" %}
                     {% endif %}
                 {% endfor %}
 
@@ -182,14 +160,10 @@
                     <dd>
                     {% for paralog in locus.paralogs %}
                         <a href="{{ paralog.child.link }}">{{ paralog.child.display_name }}</a>
-                        {% if paralog.references|length > 0 %}
-                            <a href="#" data-dropdown="drop_paralog_{{ paralog.id }}"><i class="fa fa-info-circle"></i></a>
-                            <p id="drop_paralog_{{ paralog.id }}" class="f-dropdown content medium" data-dropdown-content>
-                            {% for reference in paralog.references %}
-                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
-                            {% endfor %}
-                            </p>
-                        {% endif %}
+                        {% set label = "paralog" %}
+                        {% set references = paralog.references %}
+                        {% include "biblio_references.jinja2" %}
+
                         {% if not loop.last %}, {% endif %}
                     {% endfor %}
                     </dd>
@@ -710,7 +684,7 @@
 
 <!-- References
 ================================================== -->
-    <section id="references" data-magellan-destination="references">
+    <section id="reference" data-magellan-destination="reference">
         <h2>References
             <a href="#" data-dropdown="reference_info"><i class="fa fa-info-circle"></i></a>
 
@@ -719,16 +693,15 @@
                 gene names, aliases, Descriptions), Summary Paragraph, or History sections. The complete list of curated
                 references associated with this locus can be found by clicking on the "Literature" tab for this locus.
             </p>
+            <span id="reference_header" class="label secondary round"></span>
         </h2>
-        <div class="panel">
 
-        </div>
-
+        <ol id="reference_list" type="1"></ol>
     </section>
 
     <!-- Resources
 ================================================== -->
-    {% for url in locus.urls if url.category == 'LSP' %}{% if loop.first %}
+    {% for url in locus.urls if url.category == 'LOCUS_LSP' %}{% if loop.first %}
     <section id="resources" data-magellan-destination="resources">
         <h2>Resources</h2>
         <div class="panel">

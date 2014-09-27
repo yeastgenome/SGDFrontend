@@ -1,0 +1,6 @@
+{% for reference in references %}
+    <a href="#reference" data-dropdown="drop_{{ label }}_{{ locus.reference_mapping[reference.id|string] }}" data-options="is_hover:true"><sup>{{ locus.reference_mapping[reference.id|string] }}</sup></a>
+    <span id="drop_{{ label }}_{{ locus.reference_mapping[reference.id|string] }}" class="f-dropdown content medium" data-dropdown-content>
+        <a href="{{ reference.link }}">{{ reference.display_name }}</a>
+    </span>
+{% endfor %}
