@@ -128,6 +128,9 @@ class YeastgenomeFrontend(FrontendInterface):
     def domain(self, domain_repr):
         return self.get_obj('domain', domain_repr)
 
+    def reserved_name(self, reserved_name_repr):
+        return self.get_obj('reserved_name', reserved_name_repr)
+
     def reference(self, reference_repr):
         return self.get_obj('reference', reference_repr)
 

@@ -1,0 +1,64 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ reserved_name.display_name }}{% endblock %}
+
+{% block head %}
+<script>
+    var reserved_name = {{ reserved_name_js|safe }};
+</script>
+{% endblock %}
+
+
+{% block body %}
+
+<div id="center_title" class="row">
+	<h1>Reserved Gene Name: <span class="gene_name">{{ reserved_name.display_name }}</span></h1>
+</div>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+	
+<!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 large-9 columns content-column">
+
+        <script>
+            add_navbar_title('Reserved Gene Name: <span class="gene_name">{{ reserved_name.display_name }}</span>');
+            add_navbar_element('Overview', 'overview');
+        </script>
+
+        <!-- Summary
+        ================================================== -->
+        <section id="overview" data-magellan-destination="overview">
+            <div class="page-header">
+                <h2>Overview</h2>
+                <div class="panel">
+                    <dl class="key-value">
+                        {% if reserved_name.locus != None %}
+                            <dt>Feature</dt>
+                            <dd><a href="{{ reserved_name.locus.link }}">{{ reserved_name.locus.display_name }}</a></dd>
+                        {% endif %}
+
+                        <dt>Reservation Date</dt>
+                        <dd>{{ reserved_name.reservation_date }}</dd>
+
+                        <dt>Expiration Date</dt>
+                        <dd>{{ reserved_name.expiration_date }}</dd>
+
+                        {% if reserved_name.reference != None %}
+                            <dt>Reference</dt>
+                            <dd><a href="{{ reserved_name.reference.link }}">{{ reserved_name.reference.display_name }}</a></dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+{% endblock scripts %}

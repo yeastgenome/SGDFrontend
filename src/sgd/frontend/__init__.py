@@ -39,7 +39,7 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: {'header': render('static/templates/header.jinja2', {})},
                     renderer=chosen_frontend.get_renderer('header'),
                     route_name='header')
-    
+
     config.add_route('footer', '/footer')
     config.add_view(lambda request: {'footer': render('static/templates/footer.jinja2', {})},
                     renderer=chosen_frontend.get_renderer('footer'),
@@ -182,6 +182,11 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: chosen_frontend.response_wrapper('domain', request)(getattr(chosen_frontend, 'domain')(domain_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('domain'),
                     route_name='domain')
+
+    config.add_route('reserved_name', '/reserved_name/{identifier}/overview')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('reserved_name', request)(getattr(chosen_frontend, 'reserved_name')(reserved_name_repr=request.matchdict['identifier'].lower())),
+                    renderer=chosen_frontend.get_renderer('reserved_name'),
+                    route_name='reserved_name')
 
     config.add_route('dataset', '/dataset/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('dataset', request)(getattr(chosen_frontend, 'dataset')(bioitem_repr=request.matchdict['identifier'].lower())),
