@@ -95,7 +95,7 @@
                 <dt>SGD ID</dt>
                 <dd>{{ locus.sgdid }}</dd>
 
-                {% for alias in locus.aliases if alias.category == 'Uniform' %}
+                {% for alias in locus.aliases if alias.category == 'Alias' %}
                     {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
 
                     {{ alias.display_name }}
@@ -168,6 +168,17 @@
                     {% endfor %}
                     </dd>
                 {% endif %}
+
+                {% for alias in locus.aliases if alias.category == 'Retired name' %}
+                    {% if loop.first %}<dt>Retired Name</dt><dd>{% endif %}
+
+                    {{ alias.display_name }}
+                    {% set label = "alias" %}
+                    {% set references = alias.references %}
+                    {%- include "biblio_references.jinja2" -%}
+
+                    {% if not loop.last %},{% else %}</dd>{% endif %}
+                {% endfor %}
             </dl>
 
         </div>

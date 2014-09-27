@@ -2,19 +2,14 @@
     <dt>Unique References</dt>
     <dd>{{ locus.literature_overview.total_count }}</dd>
 
-    {% for alias in locus.aliases if alias.category == 'Uniform' %}
-        {% if loop.first %}
-            <dt>Aliases</dt>
-            <dd>{% endif %}
+    {% for alias in locus.aliases if alias.category == 'Alias' %}
+        {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+
         {{ alias.display_name }}
-        {% if alias.references|length > 0 %}
-            <a href="#" data-dropdown="drop_alias_{{ alias.id }}"><i class="fa fa-info-circle"></i></a>
-            <p id="drop_alias_{{ alias.id }}" class="f-dropdown content medium" data-dropdown-content>
-                {% for reference in alias.references %}
-                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
-                {% endfor %}
-            </p>
-        {% endif %}
+        {% set label = "alias" %}
+        {% set references = alias.references %}
+        {%- include "biblio_references.jinja2" -%}
+
         {% if not loop.last %},{% else %}</dd>{% endif %}
     {% endfor %}
 </dl>

@@ -1,6 +1,6 @@
 
 <dl class="key-value">
-                {% for alias in locus.aliases if alias.category == 'Uniform' %}
+                {% for alias in locus.aliases if alias.category == 'Alias' %}
                     {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
 
                     {{ alias.display_name }}
