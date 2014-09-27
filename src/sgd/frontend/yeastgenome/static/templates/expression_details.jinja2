@@ -108,7 +108,21 @@
 ================================================== -->
         <section id="network" data-magellan-destination="network">
             <div class="page-header">
-                <h2>Similar Gene Expression Profiles</h2>
+                <h2>Similar Gene Expression Profiles
+
+                    <a href="#" data-dropdown="similar_help"><i class="fa fa-info-circle"></i></a>
+
+                    <p id="similar_help" class="f-dropdown content medium" data-dropdown-content>
+                        This diagram displays a gene network based on correlated expression profiles (purple lines)
+                        between the given gene (yellow circle) and genes that share expression profiles (gray circles).
+                        The correlation coefficient is calculated between every pair of genes in every dataset, then
+                        the number of datasets in which the pair of genes has a significant correlation with one another
+                        is determined. The network displays the genes whose expression is correlated with the given gene
+                        in the largest number of datasets. Please note that SPELL use a different algorithm to make a
+                        global calculation taking into account all the datasets at once, and may therefore display a
+                        different set of correlated genes.
+                    </p>
+                </h2>
                 <div class="panel">
                     <!-- Includes expression_table into template -->
                     {% set network_id = "cy" %}
