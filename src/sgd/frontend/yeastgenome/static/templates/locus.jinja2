@@ -220,7 +220,7 @@
                 {% if locus.genetic_position != None %}
                     <dl class='key-value'>
                     <dt>Genetic Position</dt>
-                    <dd>{{ locus.genetic_position }}cM
+                    <dd>{{ locus.genetic_position }} cM
                         {% if 'genetic_position' in locus.qualities and locus.qualities.genetic_position.references|length > 0 %}
                             <a href="#" data-dropdown="drop_genetic_position"><i class="fa fa-info-circle"></i></a>
                             <p id="drop_genetic_position" class="f-dropdown content medium" data-dropdown-content>
