@@ -30,7 +30,7 @@ $(document).ready(function() {
   	        create_analyze_button("analyze_targets", target_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> targets", false);
   	        create_download_button("target_table_download", target_table, locus['display_name'] + "_targets");
 
-  	        get_json('/backend/locus/' + locus['id'] + '/regulation_target_enrichment?callback=?', function(enrichment_data) {
+  	        $.getJSON('/backend/locus/' + locus['id'] + '/regulation_target_enrichment?callback=?', function(enrichment_data) {
                 var enrichment_table = create_enrichment_table("enrichment_table", target_table, enrichment_data);
                 create_download_button("enrichment_table_download", enrichment_table, locus['display_name'] + "_targets_go_process_enrichment");
   	        });

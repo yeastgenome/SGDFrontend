@@ -28,6 +28,7 @@
             add_navbar_title('Domain: <span class="gene_name">{{ domain.display_name }}</span>');
             add_navbar_element('Overview', 'overview');
             add_navbar_element('Annotations', 'annotations');
+            add_navbar_element('GO Process Enrichment', 'enrichment');
         </script>
 
         <!-- Summary
@@ -65,6 +66,17 @@
                     {% set table_id = "domain_table" %}
                     {% include "domain_table.jinja2" %}
                 </div>
+            </div>
+        </section>
+
+        <!-- Enrichment
+    ================================================== -->
+        <section id="enrichment" data-magellan-destination="enrichment">
+            <h2>GO Process Enrichment <span id="enrichment_table_header" class="round secondary label"></span></h2>
+            <div class="panel">
+                <!-- Includes gene_list_table into template -->
+                {% set table_id = "enrichment_table" %}
+                {% include "enrichment_table.jinja2" %}
             </div>
         </section>
 

@@ -5,8 +5,14 @@ $(document).ready(function() {
 	  	var annotation_table = create_domain_table(data);
 	  	create_analyze_button("domain_table_analyze", annotation_table, "<a href='" + domain['link'] + "' class='gene_name'>" + domain['display_name'] + "</a> Genes", true);
   	    create_download_button("domain_table_download", annotation_table, domain['display_name'] + "_annotations");
+
+        $.getJSON('/backend/domain/' + domain['id'] + '/enrichment?callback=?', function(enrichment_data) {
+            var enrichment_table = create_enrichment_table("enrichment_table", annotation_table, enrichment_data);
+            create_download_button("enrichment_table_download", enrichment_table, domain['display_name'] + "_go_process_enrichment");
+        });
 	});
 
+    $("#enrichment_table_analyze").hide();
 });
 
 function create_domain_table(data) {
