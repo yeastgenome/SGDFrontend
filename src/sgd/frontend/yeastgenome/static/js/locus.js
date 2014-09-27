@@ -53,7 +53,7 @@ $(document).ready(function() {
 
         if(coding_data != null) {
             $("#coding_download").click(function f() {
-                download_sequence(coding_data['residues'], locus['display_name'], strain_selection.val() + ' coding_dna');
+                download_sequence(coding_data['residues'], locus['display_name'], 'S288C_coding_dna');
             });
         }
         else {
@@ -62,7 +62,7 @@ $(document).ready(function() {
 
         if(protein_data != null) {
             $("#protein_download").click(function f() {
-                download_sequence(protein_data['residues'], locus['display_name'], strain_selection.val() + ' protein');
+                download_sequence(protein_data['residues'], locus['display_name'], 'S288C_protein');
             });
         }
         else {
