@@ -61,9 +61,7 @@
             {% if tabs['literature_tab'] %}
                 add_navbar_element('Literature', 'literature');
             {% endif %}
-            {% if tabs['history_tab'] %}
-                add_navbar_element('History', 'history');
-            {% endif %}
+            add_navbar_element('History', 'history');
             add_navbar_element('References', 'reference');
             {% for url in locus.urls if url.category == 'LOCUS_LSP' %}{% if loop.first %}
                 add_navbar_element('Resources', 'resources');
