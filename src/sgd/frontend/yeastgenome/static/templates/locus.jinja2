@@ -43,6 +43,9 @@
             {% if tabs['go_tab'] %}
                 add_navbar_element('Gene Ontology', 'go');
             {% endif %}
+            {% if locus.pathways|length > 0 %}
+                add_navbar_element('Pathways', 'pathway');
+            {% endif %}
             {% if tabs['phenotype_tab'] %}
                 add_navbar_element('Phenotype', 'phenotype');
             {% endif %}
@@ -444,6 +447,21 @@
                 </div>
                 {% endif %}
             {% endif %}
+        </div>
+    </section>
+    {% endif %}
+
+<!-- Pathway
+================================================== -->
+    {% if locus.pathways|length > 0 %}
+    <section id="pathway" data-magellan-destination="pathway">
+        <h2>Pathways</h2>
+        <div class="panel">
+            <ul>
+                {% for pathwayevidence in locus.pathways %}
+                    <li><a href="{{ pathwayevidence.pathway.link }}">{{ pathwayevidence.pathway.display_name }}</a></li>
+                {% endfor %}
+            </ul>
         </div>
     </section>
     {% endif %}
