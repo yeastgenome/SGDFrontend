@@ -11,6 +11,18 @@
                     {% if not loop.last %},{% else %}</dd>{% endif %}
                 {% endfor %}
 
+                {% for alias in locus.aliases if alias.category == 'NCBI protein name' %}
+                    {% if loop.first %}
+                        <dt>Protein Product</dt>
+                        <dd>
+                            {{ alias.display_name }}
+                            {% set references = alias.references %}
+                            {% set full_url = True %}
+                            {%- include "biblio_references.jinja2" -%}
+                        </dd>
+                    {% endif %}
+                {% endfor %}
+
                 <dt>Feature Type</dt>
                 <dd>{{ locus.locus_type }}
                     {% if 'feature_type' in locus.qualities %}
@@ -49,5 +61,10 @@
                         {% if not loop.last %}, {% endif %}
                     {% endfor %}
                     </dd>
+                {% endif %}
+
+                {% if locus.ecnumber != None %}
+                    <dt>EC Number</dt>
+                    <dd><a href="{{ locus.ecnumber.link }}">{{ locus.ecnumber.display_name }}</a></dd>
                 {% endif %}
 </dl>
