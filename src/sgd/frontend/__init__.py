@@ -1,9 +1,10 @@
 import json
 from pyramid.renderers import render, Response
 from src.sgd.frontend import config
+from pyramid.view import notfound_view_config
 
-def prep_views(chosen_frontend, config):  
-    
+def prep_views(chosen_frontend, config):
+
     #Reference views
     config.add_route('references_this_week', '/reference/recent')
     config.add_view(lambda request: chosen_frontend.response_wrapper('references_this_week', request)(getattr(chosen_frontend, 'references_this_week')()),

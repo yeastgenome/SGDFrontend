@@ -34,24 +34,29 @@ class YeastgenomeFrontend(FrontendInterface):
         def f(data):
             self.log.info(request_id + ' end')
             if callback is not None:
-                return Response(body="%s(%s)" % (callback, data), content_type='application/json')
+                 return Response(body="%s(%s)" % (callback, data), content_type='application/json')
             else:
-                return data
+                if data is not None:
+                    return data
+                else:
+                    return Response(status='404', content_type='text/html', body=open('src/sgd/system/404.html').read())
         return f
 
     def locus(self, bioent_repr):
         locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-        tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
 
-        page = {
+        if locus is None:
+            return None
+
+        tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
+        return {
                     #Basic info
                     'locus': locus,
                     'locus_js': json.dumps(locus),
                     'tabs': tabs
 
                     }
-        return page
-    
+
     def interaction_details(self, bioent_repr):
         return self.locus(bioent_repr)
 
@@ -85,12 +90,14 @@ class YeastgenomeFrontend(FrontendInterface):
 
         obj = get_json(obj_url)
 
-        page = {
+        if obj is None:
+            return None
+
+        return {
                     #Basic info
                     obj_type: obj,
                     obj_type + '_js': json.dumps(obj)
                     }
-        return page
 
     def strain(self, strain_repr):
         return self.get_obj('strain', strain_repr)
@@ -361,7 +368,11 @@ def get_json(url, data=None):
             r = requests.post(url, data=json.dumps(data), headers=headers)
         else:
             r = requests.get(url)
-    return r.json()
+
+    try:
+        return r.json()
+    except:
+        return None
 
 def set_up_logging(log_directory, label):
     logging.basicConfig(format='%(asctime)s %(name)s: %(message)s', level=logging.ERROR)
