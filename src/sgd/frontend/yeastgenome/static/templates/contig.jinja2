@@ -48,7 +48,7 @@
 
                         {% for url in contig.urls %}
                             {% if loop.first %}
-                                <dt>GenBank</dt>
+                                <dt>{% if contig.strain.display_name == 'S288C' %}NCBI RefSeq{% else %}GenBank{% endif %}</dt>
                                 <dd><a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a></dd>
                             {% endif %}
                         {% endfor %}
