@@ -6,6 +6,8 @@ import uuid
 import urllib
 import base64
 import requests
+import os.path
+import sys
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP, render
 from pyramid.response import Response
@@ -39,7 +41,7 @@ class YeastgenomeFrontend(FrontendInterface):
                 if data is not None:
                     return data
                 else:
-                    return Response(status='404', content_type='text/html', body=open('src/sgd/system/404.html').read())
+                    return Response(status='404', content_type='text/html', body=open(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "system/404.html")), "r").read())
         return f
 
     def locus(self, bioent_repr):
