@@ -113,8 +113,6 @@ $(document).ready(function() {
 });
 
 function set_up_reference_list(header_id, list_id, data) {
-    data.sort(function(a, b) {return b['year'] - a['year']});
-
     set_up_header(header_id, data.length, 'reference', 'references');
 	set_up_references(data, list_id);
 }
