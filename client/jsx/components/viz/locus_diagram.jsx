@@ -8,11 +8,13 @@ var _ = require("underscore");
 var SequenceDetailsModel = require("../../models/sequence_details_model.jsx");
 var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
 var StandaloneAxis = require("./standalone_axis.jsx");
+var ChromosomeThumb = require("./chromosome_thumb.jsx");
 
 var AXIS_LABELING_HEIGHT = 22;
 var HEIGHT = 17;
 var POINT_WIDTH = 10;
 var TRACK_SPACING = 10;
+var MIN_BP_WIDTH = 200; // show at least 200 BP
 
 var VIZ_HEIGHT_FN = function (tracksPerStrand) {
 	return (tracksPerStrand * 2) * (HEIGHT + TRACK_SPACING) + 2 * TRACK_SPACING;
@@ -26,6 +28,7 @@ module.exports = React.createClass({
 			data: null, // { locci: [] }
 			domainBounds: null, // [0, 100]
 			hasControls: true,
+			hasChromosomeThumb: true,
 			focusLocusDisplayName: null,
 			showSubFeatures: false,
 			tracksPerStrand: 3 // TEMP
@@ -35,7 +38,7 @@ module.exports = React.createClass({
 	getInitialState: function () {
 		return {
 			domain: this.props.domainBounds,
-			DOMWidth: 600,
+			DOMWidth: 355,
 			mouseoverOpacityString: null
 		};
 	},
@@ -44,9 +47,11 @@ module.exports = React.createClass({
 		var height = VIZ_HEIGHT_FN(this.props.tracksPerStrand);
 
 		var controlsNode = this._getControlsNode();
+
+		var _ticks = (this.state.DOMWidth > 400) ? null : 3;
 		var axisNode = (<StandaloneAxis 
 			domain={this._getScale().domain()} orientation="bottom"
-			gridTicks={true} ticks={null}
+			gridTicks={true} ticks={_ticks}
 			height={height + AXIS_LABELING_HEIGHT}
 		/>);
 
@@ -256,12 +261,13 @@ module.exports = React.createClass({
 
 	// Set the new domain; it may want some control in the future.
 	_setDomain: function (newDomain) {
+		// TEMP be more forgiving with new domain
 		// don't let the new domain go outside domain bounds
-		var _lb = Math.max(newDomain[0], this.props.domainBounds[0]);
-		var _rb = Math.min(newDomain[1], this.props.domainBounds[1]);
+		var _lb = newDomain[0];
+		var _rb = newDomain[1];
 
-		// show at least 10 bp
-		if (_rb - _lb < 10) return;
+		// make sure not TOO zoomed in
+		// if (_rb - _lb < MIN_BP_WIDTH) return;
 
 		this.setState({
 			domain: [_lb, _rb]
@@ -281,10 +287,7 @@ module.exports = React.createClass({
 	},
 
 	_getScale: function () {
-		var _width = this.state.DOMWidth;
-		if (!_width) return false;
-
-		return d3.scale.linear().domain(this.state.domain).range([0, _width]);
+		return d3.scale.linear().domain(this.state.domain).range([0, this.state.DOMWidth]);
 	},
 
 	// Subtracts 10% to both sides of the chart.
@@ -329,7 +332,7 @@ module.exports = React.createClass({
 
 	// setup d3 zoom and pan behavior
 	_setupZoomEvents: function () {
-		var scale = this._getScale()
+		var scale = this._getScale();
 		var zoom = d3.behavior.zoom()
 			.x(scale)
 			.on("zoom", () => {
@@ -361,19 +364,44 @@ module.exports = React.createClass({
 			var zoomIn = inDisabled ? null : this._zoomIn;
 			var zoomOut = outDisabled ? null : this._zoomOut;
 
-			controlsNode = (<div className="locus-diagram-control-container clearfix">
-				<ul className="locus-diagram-button-group round button-group">
-					<li><a className={`tiny button ${leftDisabledClass}`} onClick={stepLeft}><i className="fa fa-backward"></i></a></li>
-					<li><a className={`tiny button ${rightDisabledClass}`} onClick={stepRight}><i className="fa fa-forward"></i></a></li>
-				</ul>
-				<ul className="locus-diagram-button-group round button-group">
-					<li><a className={`tiny button ${inDisabledClass}`} onClick={zoomIn}><i className="fa fa-plus"></i></a></li>
-					<li><a className={`tiny button ${outDisabledClass}`} onClick={zoomOut}><i className="fa fa-minus"></i></a></li>
-				</ul>
+			var chromThumb = this._getChromsomeThumb();
+
+			controlsNode = (<div className="locus-diagram-control-container row">
+				<div className="medium-8 columns">
+					{chromThumb}
+				</div>
+				<div className="medium-4 columns end clearfix">
+					<ul className="locus-diagram-button-group round button-group">
+						<li><a className={`tiny button ${leftDisabledClass}`} onClick={stepLeft}><i className="fa fa-backward"></i></a></li>
+						<li><a className={`tiny button ${rightDisabledClass}`} onClick={stepRight}><i className="fa fa-forward"></i></a></li>
+					</ul>
+					<ul className="locus-diagram-button-group round button-group">
+						<li><a className={`tiny button ${inDisabledClass}`} onClick={zoomIn}><i className="fa fa-plus"></i></a></li>
+						<li><a className={`tiny button ${outDisabledClass}`} onClick={zoomOut}><i className="fa fa-minus"></i></a></li>
+					</ul>
+				</div>
 			</div>);
 		}
 
 		return controlsNode;
+	},
+
+	_getChromsomeThumb: function () {
+		var chromThumb = <span>&nbsp;</span>;
+		if (this.props.hasChromosomeThumb) {
+
+			// TEMP chrom data
+			var chromLength = 250000;
+			var innerDomain = this.state.domain;
+			var centromerePosition = 100000;
+
+			chromThumb = (<ChromosomeThumb
+				totalLength={chromLength} innerDomain={innerDomain}
+				centromerePosition={centromerePosition}
+			/>);
+		}
+
+		return chromThumb;
 	}
 });
 
