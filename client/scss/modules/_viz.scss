@@ -233,3 +233,11 @@
 .locus-svg text {
 	pointer-events: none;
 }
+
+// chrom thumb {
+.chromosome-thumb-inset {
+	shape-rendering: crispEdges;
+	stroke: $primary-color;
+	stroke-width: 2px;
+
+}

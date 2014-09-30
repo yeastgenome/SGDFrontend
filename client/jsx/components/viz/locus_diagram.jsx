@@ -80,6 +80,11 @@ module.exports = React.createClass({
 		this._setupZoomEvents();
 	},
 
+	// if the width is updated, setup zoom events again
+	componentDidUpdate: function (prevProps, prevState) {
+		if (this.state.DOMWidth !== prevState.DOMWidth) this._setupZoomEvents();
+	},
+
 
 	// returns an svg "g" element, with embedded shapes
 	_getLocusNode: function (d) {
@@ -263,11 +268,11 @@ module.exports = React.createClass({
 	_setDomain: function (newDomain) {
 		// TEMP be more forgiving with new domain
 		// don't let the new domain go outside domain bounds
-		var _lb = newDomain[0];
-		var _rb = newDomain[1];
+		var _lb = Math.max(newDomain[0], this.props.domainBounds[0]);
+		var _rb = Math.min(newDomain[1], this.props.domainBounds[1]);
 
 		// make sure not TOO zoomed in
-		// if (_rb - _lb < MIN_BP_WIDTH) return;
+		if (_rb - _lb < MIN_BP_WIDTH) return;
 
 		this.setState({
 			domain: [_lb, _rb]
