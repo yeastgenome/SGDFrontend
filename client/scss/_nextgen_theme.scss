@@ -2,7 +2,7 @@
 
 .s-nextgen {
 	h1, h2, h3 {
-		font-family: Palatino;
+		font-family: $serif-font;
 	}
 
 	h1:first-child {
@@ -19,5 +19,9 @@
 		margin-left: -16px;
 		top: 50%;
 		left: 50%;
+	}
+
+	.context-help-icon p {
+		font-family: $sans-serif-font;
 	}
 }

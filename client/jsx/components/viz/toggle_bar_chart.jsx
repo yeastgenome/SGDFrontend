@@ -5,6 +5,7 @@ var React = require("react");
 var d3 = require("d3");
 var _ = require("underscore");
 
+var HelpIcon = require("../help_icon.jsx");
 var RadioSelector = require("../radio_selector.jsx");
 var BarChart = require("./bar_chart.jsx");
 
@@ -54,9 +55,11 @@ module.exports = React.createClass({
 		// add text node if active element has text property
 		var textNode = null;
 		if (active.text) {
-			textNode = <h3 className="toggle-text">{active.text}</h3>;
+			// TEMP
+			var _helpText = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+			textNode = <div className="clearfix"><h3 className="toggle-text">{active.text} <HelpIcon text={_helpText}/></h3></div>;
 		}
-
+		
 		var _colorScale = (d) => { return d.isRoot ? "#DF8B93" : "#18AB2F"; };
 		return (
 			<div className="toggle-bar-chart">
