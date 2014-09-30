@@ -5,7 +5,7 @@ var React = require("react");
 var $ = require("jquery");
 
 var NavBar = require("../components/navbar.jsx");
-var LocusDiagram = require("../components/viz/locus_diagram.jsx");
+var AsyncLocusDiagram = require("../components/async/async_locus_diagram.jsx");
 
 var sequenceView = {};
 sequenceView.render = function () {
@@ -28,7 +28,7 @@ sequenceView.render = function () {
 
 	// render locus neighbot diagram
 	React.renderComponent(
-		<LocusDiagram
+		<AsyncLocusDiagram
 			baseUrl="http://sgd-qa.stanford.edu/webservice" showSubFeatures={false}
 			locusId={locus_id} focusLocusDisplayName={display_name}
 		/>,
@@ -36,7 +36,7 @@ sequenceView.render = function () {
 	);
 
 	React.renderComponent(
-		<LocusDiagram
+		<AsyncLocusDiagram
 			baseUrl="http://sgd-qa.stanford.edu/webservice" showSubFeatures={true}
 			locusId={locus_id} focusLocusDisplayName={display_name}
 		/>,

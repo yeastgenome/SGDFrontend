@@ -27,16 +27,13 @@ module.exports = React.createClass({
 			domainBounds: null, // [0, 100]
 			hasControls: true,
 			focusLocusDisplayName: null,
-			locusId: null,
 			showSubFeatures: false,
-			tracksPerStrand: 3
+			tracksPerStrand: 3 // TEMP
 		};
 	},
 
 	getInitialState: function () {
 		return {
-			data: this.props.data,
-			domainBounds: this.props.domainBounds,
 			domain: this.props.domainBounds,
 			DOMWidth: 600,
 			mouseoverOpacityString: null
@@ -44,9 +41,6 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		// return a loader if can't render
-		if (!this._canRender()) return <div><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div>;
-
 		var height = VIZ_HEIGHT_FN(this.props.tracksPerStrand);
 
 		var controlsNode = this._getControlsNode();
@@ -56,7 +50,7 @@ module.exports = React.createClass({
 			height={height + AXIS_LABELING_HEIGHT}
 		/>);
 
-		var locciNodes = _.map(this.state.data.locci, (d) => { return this._getLocusNode(d); });
+		var locciNodes = _.map(this.props.data.locci, (d) => { return this._getLocusNode(d); });
 		return (
 			<div className="locus-diagram">
 				{controlsNode}
@@ -78,56 +72,12 @@ module.exports = React.createClass({
 	// If can't render, get data.
 	componentDidMount: function () {
 		this._calculateWidth();
-
-		if (this._canRender()) {
-			this._setupZoomEvents();	
-		} else {
-			this._fetchData();
-		}
+		this._setupZoomEvents();
 	},
 
-	// if just got data, setupZoomEvents
-	componentDidUpdate: function (prevProps, prevState) {
-		if (this._canRender() && !this._canRender(prevState)) {			
-			this._setupZoomEvents();
-		}
-	},
-
-	// returns true if it can render (has data domainBounds)
-	_canRender: function (state) {
-		var state = state || this.state;
-		return (state.data && state.domainBounds);
-	},
-
-	// from locusId, get data and update
-	_fetchData: function () {
-
-		var options = {
-			id: this.props.locusId,
-			baseUrl: this.props.baseUrl
-		};
-
-		var sequenceDetailsModel = new SequenceDetailsModel(_.clone(options));
-		var sequenceNeighborsModel = new SequenceNeighborsModel(_.clone(options));
-		var model = this.props.showSubFeatures ? sequenceDetailsModel: sequenceNeighborsModel;
-
-		// var neighborModel 
-		model.fetch( (err, response) => {
-			this.setState({
-				data: response.data,
-				domain: response.domainBounds,
-				domainBounds: response.domainBounds
-			});
-		});
-
-	},
 
 	// returns an svg "g" element, with embedded shapes
 	_getLocusNode: function (d) {
-
-		// TEMP
-		// d.track = d.strand === "+" ? 1 : -1;
-
 		var isFocusLocus = d.locus.display_name === this.props.focusLocusDisplayName;
 
 		if (this.props.showSubFeatures &&  d.tags.length) {
@@ -307,8 +257,8 @@ module.exports = React.createClass({
 	// Set the new domain; it may want some control in the future.
 	_setDomain: function (newDomain) {
 		// don't let the new domain go outside domain bounds
-		var _lb = Math.max(newDomain[0], this.state.domainBounds[0]);
-		var _rb = Math.min(newDomain[1], this.state.domainBounds[1]);
+		var _lb = Math.max(newDomain[0], this.props.domainBounds[0]);
+		var _rb = Math.min(newDomain[1], this.props.domainBounds[1]);
 
 		// show at least 10 bp
 		if (_rb - _lb < 10) return;
@@ -395,7 +345,7 @@ module.exports = React.createClass({
 
 		if (this.props.hasControls) {
 			var stateDomain = this.state.domain;
-			var propsDomain = this.state.domainBounds;
+			var propsDomain = this.props.domainBounds;
 
 			var leftDisabled = stateDomain[0] <= propsDomain[0];
 			var leftDisabledClass = leftDisabled ? "disabled secondary" : "secondary";
