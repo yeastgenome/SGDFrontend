@@ -109,7 +109,11 @@ function history_data_to_table(evidence) {
     var references = [];
     for(var j=0; j < evidence['references'].length; j++) {
         var reference = evidence['references'][j];
-        references.push(create_link(reference['display_name'], reference['link']))
+        var ref_link = create_link(reference['display_name'], reference['link']);
+        if(reference['pubmed_id'] != null) {
+            ref_link = ref_link + ' <small>PMID:' + reference['pubmed_id'] + '</small>';
+        }
+        references.push(ref_link)
     }
     return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], evidence['date_created'], evidence['note'], references.join(', ')];
 }
