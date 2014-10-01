@@ -4,7 +4,10 @@
 var d3 = require("d3");
 var React = require("react");
 
+var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
+
 module.exports = React.createClass({
+	mixins: [CalcWidthOnResize],
 
 	getDefaultProps: function () {
 		return {
@@ -49,6 +52,11 @@ module.exports = React.createClass({
 
 	componentDidUpdate: function () {
 		this._renderSVG();
+	},
+
+	// called by mixin
+	_calculateWidth: function () {
+		this._calculateScale();
 	},
 
 	_calculateScale: function (nextProps) {

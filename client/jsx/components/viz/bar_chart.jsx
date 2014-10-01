@@ -5,6 +5,7 @@ var React = require("react");
 var d3 = require("d3");
 var _ = require("underscore");
 
+var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
 var FlexibleTooltip = require("../flexible_tooltip.jsx");
 var StandaloneAxis = require("./standalone_axis.jsx");
 
@@ -16,6 +17,7 @@ var BAR_HEIGHT = 15;
 	NOTE: Only supports left orientation and values >= 0
 */
 module.exports = React.createClass({
+	mixins: [CalcWidthOnResize],
 
 	getDefaultProps: function () {
 		var _identity = (d) => { return d; };
@@ -90,6 +92,11 @@ module.exports = React.createClass({
 
 	componentWillReceiveProps: function (nextProps) {
 		this._calculateWidthScale(nextProps);
+	},
+
+	// called by mixin
+	_calculateWidth: function () {
+		this._calculateWidthScale();
 	},
 
 	// helper function to get the bar nodes
