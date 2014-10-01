@@ -64,10 +64,9 @@ module.exports = React.createClass({
 			height={height + AXIS_LABELING_HEIGHT}
 		/>);
 
-		var locciNodes = _.map(this.props.data.locci, (d) => { return this._getLocusNode(d); });
-		var _onMouseLeave = this._clearMouseOver;
+		var locciNodes = _.map(this.props.data.locci, d => { return this._getLocusNode(d); });
 		return (
-			<div className="locus-diagram" onMouseLeave={_onMouseLeave}>
+			<div className="locus-diagram" onMouseLeave={this._clearMouseOver} onClick={this._clearMouseOver}>
 				{controlsNode}
 				<div className="locus-diagram-viz-container" style={{ position: "relative" }}>
 					<FlexibleTooltip
@@ -106,7 +105,6 @@ module.exports = React.createClass({
 		var isFocusLocus = d.locus.display_name === this.props.focusLocusDisplayName;
 
 		if (this.props.showSubFeatures &&  d.tags.length) {
-			// var tagNodes = this._getSubFeatureNodes(d.tags, isWatsonStrand, d.start, _isFocusLocus);
 			return this._getLocusWithSubFeaturesNode(d, isFocusLocus);
 		} else {
 			return this._getSimpleLocusNode(d, isFocusLocus);
@@ -129,7 +127,7 @@ module.exports = React.createClass({
 		var scale = this._getScale();
 
 		// calc the last feature, to know where to draw arrow
-		var lastSubFeature = _.max(tags, (d) => { return d.relative_start; });
+		var lastSubFeature = _.max(tags, d => { return d.relative_start; });
 
 		var colorScale = d3.scale.category10();
 		return _.map(tags, (d, i) => {
@@ -157,40 +155,46 @@ module.exports = React.createClass({
 			var isIntron = d.class_type === "INTRON";
 			var isLast = d === lastSubFeature;
 
-			// TODO
 			// text node
-			// var textNode = <text>d.displayName</text>;
+			var _textX = startX  + (endX - startX) / 2;
+			var _textY = isIntron ? 0 : HEIGHT - 4;
+			var _textTransform = `translate(${_textX}, ${_textY})`;
+			var textNode = <text transform={_textTransform} textAnchor="middle">{d.display_name.replace(/_/g, " ")}</text>;
+			// hide text if too small
+			var _approxWidth = d.display_name.length * 8;
+			if (_approxWidth > (endX - startX)) textNode = null;
 
 			// properties for all possible nodes
 			var _transformY = this._getTransformObject(d).y;
-			var _transform = `translate(0, ${_transformY})`;
-			var _opacity = d.display_name === this.state.mouseoverOpacityString ? 1 : 0.6;
+			var groupTransform = `translate(0, ${_transformY})`;
+			var opacity = d.display_name === this.state.mouseoverOpacityString ? 1 : 0.6;
 
 			// mouseover callback
 			var mouseoverObj = _.clone(d);
 			mouseoverObj.x = startX;
-			// TEMP
-			// TODO, handle sub feature mouse over
-			var handleMouseover = null;//(e) => { this._handleMouseOver(e, mouseoverObj); };
+			var handleMouseover = e => { this._handleMouseOver(e, mouseoverObj); };
 			
+			// assign node for shape based on data
+			var shapeNode;
 			// last non intron, add arrow
 			if (isLast && !isIntron) {
 				var pathString = this._getTrapezoidStringPath(startX, endX, isWatson);
-				return (<g transform={_transform}>
-					<path d={pathString}  onMouseOver={handleMouseover} opacity={_opacity} fill={fill} />
-				</g>);
+				shapeNode = <path d={pathString}  onMouseOver={handleMouseover} opacity={opacity} fill={fill} />;
 			// intron, line
 			} else if (isIntron) {
-				var pathString = `M${startX} ${HEIGHT/2} C ${startX + (endX - startX) * 0.25} ${HEIGHT / 5}, ${startX + (endX - startX) * 0.75} ${HEIGHT / 5}, ${endX} ${HEIGHT / 2}`
-				return (<g transform={_transform}>
-					<path d={pathString} onMouseOver={handleMouseover} opacity={_opacity} stroke="black" fill="none" />
-				</g>);
+				var pathString = `M${startX} ${HEIGHT/2} C ${startX + (endX - startX) * 0.25} ${HEIGHT / 5}, ${startX + (endX - startX) * 0.75} ${HEIGHT / 5}, ${endX} ${HEIGHT / 2}`;
+				shapeNode = <path d={pathString} onMouseOver={handleMouseover} opacity={opacity} stroke="black" fill="none" />;
 			// everything else, rectangle
 			} else {
-				return (<g transform={_transform}>
-					<rect onMouseOver={handleMouseover} opacity={_opacity} x={startX} width={endX - startX} height={HEIGHT} fill={fill} />
-				</g>);
+				shapeNode = <rect onMouseOver={handleMouseover} opacity={opacity} x={startX} width={endX - startX} height={HEIGHT} fill={fill} />;
 			}
+
+			return (
+				<g transform={groupTransform}>
+					{shapeNode}
+					{textNode}
+				</g>
+			);
 		});
 	},
 
@@ -278,8 +282,9 @@ module.exports = React.createClass({
 		}
 
 		var areaFn = d3.svg.line()
-			.x( (d) => { return d.x; })
-			.y( (d) => { return d.y; })
+			.x( d => { return d.x; })
+			.y( d => { return d.y; });
+
 		return areaFn(points) + "Z";
 	},
 
@@ -328,25 +333,38 @@ module.exports = React.createClass({
 		});
 	},
 
+	_formatTooltipData: function (d) {
+		var _title;
+		if (d.locus) {
+			_title = (d.locus.display_name === d.locus.format_name) ? d.locus.display_name : `${d.locus.display_name} (${d.locus.format_name})`;
+		} else {
+			_title = d.display_name.replace(/_/g, " ");
+		}
+			
+		// dynamic key value object
+		var _data = {};
+		if (d.locus) {
+			_data[d.locus.locus_type] = d.locus.headline;
+			// TODO add chrom number 
+			_data["Coordinates"] = `${d.start.toLocaleString()} - ${d.end.toLocaleString()}`;
+			_data["Length"] = (d.end - d.start).toLocaleString() + " bp";
+		} else {
+			_data["Relative Coordinates"] = `${d.relative_start} - ${d.relative_end}`;
+			_data["Length"] = (d.relative_end - d.relative_start).toLocaleString() + " bp";
+		}
+
+		return {
+			title: _title,
+			data: _data,
+			href: d.locus ? d.locus.link : null
+		};
+	},
+
 	_clearMouseOver: function () {
 		this.setState({
 			mouseoverOpacityString: null, 
 			tooltipVisible: false
 		}); 
-	},
-
-	_formatTooltipData: function (d) {
-		var _title = (d.locus.display_name === d.locus.format_name) ? d.locus.display_name : `${d.locus.display_name} (${d.locus.format_name})`;
-			
-		// dynamic key value object
-		var _data = {};
-		_data[d.locus.locus_type] = d.locus.headline;
-
-		return {
-			title: _title,
-			data: _data,
-			href: d.locus.link
-		};
 	},
 
 	_handleClick: function (e, d) {
