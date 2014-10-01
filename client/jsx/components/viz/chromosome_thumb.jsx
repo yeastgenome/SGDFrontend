@@ -4,6 +4,8 @@
 var React = require("react");
 var d3 = require("d3");
 
+var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
+
 var HEIGHT = 30;
 var CENTROMERE_RADIUS = HEIGHT / 5;
 var PADDING = 3;
@@ -12,6 +14,7 @@ var PADDING = 3;
 	A small visualization of a chromosome and inset to show smaller location within. 
 */
 module.exports = React.createClass({
+	mixins: [CalcWidthOnResize],
 
 	getDefaultProps: function () {
 		return {

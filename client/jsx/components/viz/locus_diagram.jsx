@@ -5,6 +5,7 @@ var React = require("react");
 var d3 = require("d3");
 var _ = require("underscore");
 
+var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
 var ChromosomeThumb = require("./chromosome_thumb.jsx");
 var FlexibleTooltip = require("../flexible_tooltip.jsx");
 var SequenceDetailsModel = require("../../models/sequence_details_model.jsx");
@@ -22,6 +23,7 @@ var VIZ_HEIGHT_FN = function (tracksPerStrand) {
 };
 
 module.exports = React.createClass({
+	mixins: [CalcWidthOnResize],
 
 	getDefaultProps: function () {
 		return {
