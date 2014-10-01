@@ -162,16 +162,6 @@
                     </dd>
                 {% endif %}
 
-                {% for alias in locus.aliases if alias.category == 'Retired name' %}
-                    {% if loop.first %}<dt>Retired Name</dt><dd>{% endif %}
-
-                    {{ alias.display_name }}
-                    {% set references = alias.references %}
-                    {%- include "biblio_references.jinja2" -%}
-
-                    {% if not loop.last %},{% else %}</dd>{% endif %}
-                {% endfor %}
-
                 {% if 'reserved_name' in locus %}
                     <dt>Reserved Name</dt>
                     <dd><a href="{{ locus.reserved_name.link }}">{{ locus.reserved_name.display_name }}</a>
@@ -255,7 +245,6 @@
                 {% set include_version = True %}
                 {% include "chromosomal_coord_table.jinja2" %}
 
-                <dl id="embedded_features" class="key-value"></dl>
             </div>
 
             <div class=panel>

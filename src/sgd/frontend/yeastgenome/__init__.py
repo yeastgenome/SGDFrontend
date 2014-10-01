@@ -327,7 +327,7 @@ class YeastgenomeFrontend(FrontendInterface):
         objects = get_json(self.backend_url + '/all/' + list_name)
         page = {
                     #Basic Info
-                    'list_name': list_name,
+                    'list_name': list_name if len(objects) == 0 else objects[0]['locus_type'],
                     'bioents': json.dumps(objects),
 
                     #Links

@@ -456,24 +456,6 @@ function set_up_history_table() {
 function create_subfeature_table(data) {
 	var datatable = [];
 
-    var embedded_features = [];
-    for (var i=0; i < data['tags'].length; i++) {
-        datatable.push(sublabel_data_to_table(data['tags'][i], data['locus'], data['strand'], data['id']));
-        if(data['tags'][i]['bioentity'] != null) {
-            embedded_features.push('<a href="' + data['tags'][i]['bioentity']['link'] + '">' + data['tags'][i]['bioentity']['display_name'] + '</a>');
-        }
-    }
-
-    if(embedded_features.length > 0) {
-        var dt = document.createElement('dt');
-        dt.innerHTML = 'Embedded Features';
-        $('#embedded_features').append(dt);
-
-        var dd = document.createElement('dd');
-        dd.innerHTML = embedded_features.join(', ');
-        $('#embedded_features').append(dd);
-    }
-
     set_up_header('subfeature_table', datatable.length, 'subfeature', 'subfeatures', null, null, null);
 
     set_up_range_sort();
