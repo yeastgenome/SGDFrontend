@@ -5,12 +5,13 @@ var React = require("react");
 var d3 = require("d3");
 var _ = require("underscore");
 
+var ChromosomeThumb = require("./chromosome_thumb.jsx");
+var FlexibleTooltip = require("../flexible_tooltip.jsx");
 var SequenceDetailsModel = require("../../models/sequence_details_model.jsx");
 var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
 var StandaloneAxis = require("./standalone_axis.jsx");
-var ChromosomeThumb = require("./chromosome_thumb.jsx");
 
-var AXIS_LABELING_HEIGHT = 22;
+var AXIS_LABELING_HEIGHT = 24;
 var HEIGHT = 17;
 var POINT_WIDTH = 10;
 var TRACK_SPACING = 10;
@@ -31,7 +32,7 @@ module.exports = React.createClass({
 			hasChromosomeThumb: true,
 			focusLocusDisplayName: null,
 			showSubFeatures: false,
-			tracksPerStrand: 3 // TEMP
+			tracksPerStrand: 2 // TEMP
 		};
 	},
 
@@ -39,7 +40,13 @@ module.exports = React.createClass({
 		return {
 			domain: this.props.domainBounds,
 			DOMWidth: 355,
-			mouseoverOpacityString: null
+			mouseoverOpacityString: null,
+			tooltipVisible: false,
+			tooltipLeft: 0,
+			tooltipTop: 0,
+			tooltipTitle: null,
+			tooltipData: null,
+			tooltipHref: null
 		};
 	},
 
@@ -56,10 +63,16 @@ module.exports = React.createClass({
 		/>);
 
 		var locciNodes = _.map(this.props.data.locci, (d) => { return this._getLocusNode(d); });
+		var _onMouseLeave = this._clearMouseOver;
 		return (
-			<div className="locus-diagram">
+			<div className="locus-diagram" onMouseLeave={_onMouseLeave}>
 				{controlsNode}
 				<div className="locus-diagram-viz-container" style={{ position: "relative" }}>
+					<FlexibleTooltip
+						visible={this.state.tooltipVisible} left={this.state.tooltipLeft} top={this.state.tooltipTop}
+						title={this.state.tooltipTitle} data={this.state.tooltipData}
+						href={this.state.tooltipHref}
+					/>
 					<div className="locus-diagram-axis-container" style={{ position: "absolute", top: 0, width: "100%" }}>
 						{axisNode}
 					</div>
@@ -119,8 +132,6 @@ module.exports = React.createClass({
 		var colorScale = d3.scale.category10();
 		return _.map(tags, (d, i) => {
 
-			var handleMouseover = (e) => { this._handleMouseOver(e, d); };
-
 			// TEMP
 			var fill = colorScale(d.class_type);
 
@@ -152,6 +163,13 @@ module.exports = React.createClass({
 			var _transformY = this._getTransformObject(d).y;
 			var _transform = `translate(0, ${_transformY})`;
 			var _opacity = d.display_name === this.state.mouseoverOpacityString ? 1 : 0.6;
+
+			// mouseover callback
+			var mouseoverObj = _.clone(d);
+			mouseoverObj.x = startX;
+			// TEMP
+			// TODO, handle sub feature mouse over
+			var handleMouseover = null;//(e) => { this._handleMouseOver(e, mouseoverObj); };
 			
 			// last non intron, add arrow
 			if (isLast && !isIntron) {
@@ -198,13 +216,17 @@ module.exports = React.createClass({
 		// hide text if too small
 		if (_approxWidth > relativeEndX) textNode = null;
 
+		// interaction handlers
 		var _onMouseover = (e) => {
 			this._handleMouseOver(e, d);
 		};
+		var _onClick = (e) => {
+			this._handleClick(e, d);
+		}
 
 		return (
 			<g transform={_transform}>
-				<path d={pathString} fill={_fill} opacity={_opacity} onMouseOver={_onMouseover} />
+				<path className="locus-diagram locus-path" d={pathString} fill={_fill} opacity={_opacity} onClick= {_onClick} onMouseOver={_onMouseover} />
 				{textNode}
 			</g>
 		);
@@ -266,6 +288,8 @@ module.exports = React.createClass({
 
 	// Set the new domain; it may want some control in the future.
 	_setDomain: function (newDomain) {
+		this._clearMouseOver();
+
 		// TEMP be more forgiving with new domain
 		// don't let the new domain go outside domain bounds
 		var _lb = Math.max(newDomain[0], this.props.domainBounds[0]);
@@ -281,9 +305,53 @@ module.exports = React.createClass({
 
 	_handleMouseOver: function (e, d) {
 		var opacityString = d.locus ? d.locus.display_name : d.display_name;
+
+		// get the position
+		var target = e.currentTarget;
+		var _width = target.getBBox().width;
+		var _transformObj = this._getTransformObject(d);
+		var _tooltipLeft = (d.x || _transformObj.x) + _width / 2;
+		var _tooltipTop = _transformObj.y;
+
+		var _tooltipData = this._formatTooltipData(d);
+
 		this.setState({
-			mouseoverOpacityString: opacityString
+			mouseoverOpacityString: opacityString,
+			tooltipData: _tooltipData.data,
+			tooltipTitle: _tooltipData.title,
+			tooltipHref: _tooltipData.href,
+			tooltipVisible: true,
+			tooltipLeft: _tooltipLeft,
+			tooltipTop: _tooltipTop
 		});
+	},
+
+	_clearMouseOver: function () {
+		this.setState({
+			mouseoverOpacityString: null, 
+			tooltipVisible: false
+		}); 
+	},
+
+	_formatTooltipData: function (d) {
+		var _title = (d.locus.display_name === d.locus.format_name) ? d.locus.display_name : `${d.locus.display_name} (${d.locus.format_name})`;
+			
+		// dynamic key value object
+		var _data = {};
+		_data[d.locus.locus_type] = d.locus.headline;
+
+		return {
+			title: _title,
+			data: _data,
+			href: d.locus.link
+		};
+	},
+
+	_handleClick: function (e, d) {
+		e.preventDefault();
+		if (d.locus.link) {
+			document.location = d.locus.link;
+		}
 	},
 
 	_onLocusSelect: function (e, d) {

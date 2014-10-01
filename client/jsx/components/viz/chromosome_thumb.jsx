@@ -4,7 +4,7 @@
 var React = require("react");
 var d3 = require("d3");
 
-var HEIGHT = 33;
+var HEIGHT = 30;
 var CENTROMERE_RADIUS = HEIGHT / 5;
 var PADDING = 3;
 
@@ -36,11 +36,11 @@ module.exports = React.createClass({
 
 		// form left arm
 		var _leftWidth = centromereX - (CENTROMERE_RADIUS / 2);
-		var leftArmNode = <rect x={0} y={0} width={_leftWidth} height={armHeight} rx={HEIGHT / 2} fill="#ddd" />;
+		var leftArmNode = <rect x={0} y={0} width={_leftWidth} height={armHeight} rx={HEIGHT / 2} fill="#e7e7e7" />;
 
 		// form right arm
 		var _rightWidth = this.state.DOMWidth - centromereX - (CENTROMERE_RADIUS / 2);
-		var rightArmNode = <rect x={centromereX + CENTROMERE_RADIUS / 2} y={0} width={_rightWidth} height={armHeight} rx={HEIGHT / 2} fill="#ddd" />;
+		var rightArmNode = <rect x={centromereX + CENTROMERE_RADIUS / 2} y={0} width={_rightWidth} height={armHeight} rx={HEIGHT / 2} fill="#e7e7e7" />;
 
 		// centromere circle
 		var centroMereNode = <circle cx={centromereX} cy={HEIGHT / 2} r={CENTROMERE_RADIUS} fill="black" />;
@@ -48,7 +48,7 @@ module.exports = React.createClass({
 		// inset box
 		var _lbX = scale(this.props.innerDomain[0]);
 		var _domainWidth = scale(this.props.innerDomain[1]) - _lbX;
-		var innerDomainNode = <rect className="chromosome-thumb-inset" x={_lbX} y={1} width={_domainWidth} height={HEIGHT - 2} fill="none" />;
+		var innerDomainNode = <rect className="chromosome-thumb-inset" x={_lbX + 1} y={1} width={_domainWidth} height={HEIGHT - 2} fill="none" />;
 
 		return (<div>
 			<svg className="chromosome-thumb" style={{ width: this.state.DOMWidth, height: HEIGHT }}>

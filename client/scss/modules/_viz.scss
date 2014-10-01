@@ -206,6 +206,9 @@
 .locus-diagram-button-group {
 	float: right;
 	margin-left: 1em;
+	.button {
+		font-size: 0.5rem;
+	}
 	.button.disabled {
 		opacity: 0.25;
 	}
@@ -218,6 +221,10 @@
 	path.domain {
 		stroke: none;
 	}
+}
+
+.locus-diagram .locus-path:hover {
+	cursor: pointer;
 }
 
 .midpoint-marker {
