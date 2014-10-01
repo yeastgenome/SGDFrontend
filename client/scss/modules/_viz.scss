@@ -199,15 +199,32 @@
 }
 
 // locus diagram
-.row.locus-diagram-control-container {
-	margin-bottom: 1em;
+.locus-diagram-label-text {
+	.secondary.label {
+		margin-bottom: 0;
+	}
+}
+
+.locus-diagram-control-container .row.control-row {
+	margin-bottom: 6px;
+}
+
+.locus-diagram-control-container p {
+	margin-bottom: 0.5em;
+}
+
+.locus-diagram-control-container .columns.right p {
+	text-align: right;
 }
 
 .locus-diagram-button-group {
-	float: right;
 	margin-left: 1em;
+	margin-top: -4px;
+	float: right;
 	.button {
 		font-size: 0.5rem;
+		padding-top: 6px;
+		padding-bottom: 6px;
 	}
 	.button.disabled {
 		opacity: 0.25;
@@ -244,7 +261,14 @@
 // chrom thumb {
 .chromosome-thumb-inset {
 	shape-rendering: crispEdges;
-	stroke: $primary-color;
-	stroke-width: 2px;
-
+	stroke: darkgray;
+	stroke-width: 1px;
+	// stroke-dasharray: 3 3;
 }
+
+.chromosome-thumb-focus-inset {
+	shape-rendering: crispEdges;
+	stroke: none;
+	fill: rgb(31, 119, 180);
+}
+

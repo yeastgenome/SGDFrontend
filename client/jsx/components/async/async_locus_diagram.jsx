@@ -36,13 +36,16 @@ module.exports = React.createClass({
 		if (this._isPending()) {
 			return <div><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div>;
 		} else {
-			return (<LocusDiagram
-				data={this.state.data}
-				domainBounds={this.state.domainBounds}
-				focusLocusDisplayName={this.props.focusLocusDisplayName}
-				hasControls={this.props.hasControls}
-				showSubFeatures={this.props.showSubFeatures}
-			/>);
+			var labelNode = this._getLabelNode();
+			return (<div>
+				{labelNode}
+				<LocusDiagram
+					data={this.state.data}
+					domainBounds={this.state.domainBounds}
+					focusLocusDisplayName={this.props.focusLocusDisplayName}
+					showSubFeatures={this.props.showSubFeatures}
+				/>
+			</div>);
 		}
 	},
 
@@ -70,6 +73,24 @@ module.exports = React.createClass({
 			});
 		});
 
+	},
+
+	_getLabelNode: function () {
+		var focusLocus = this._getFocusLocus();
+
+		// TEMP labeling content
+		var _labelNode = this.props.showSubFeatures ?
+				<h3 className="locus-diagram-label-text">Subfeatures <span className="round secondary label">{focusLocus.tags.length}</span></h3> :
+				<h3 className="locus-diagram-label-text">Location: <a>Chromosome VI</a> 55,345 - 58,632</h3>;
+		return _labelNode;
+	},
+
+	_getFocusLocus: function () {
+		// require focus locus display name
+		if (!this.props.focusLocusDisplayName) return false;
+
+		var _locci = this.state.data.locci;
+		return _.filter(_locci, d => { return d.locus.display_name === this.props.focusLocusDisplayName; })[0];
 	},
 
 	// return true if it has necessary data to render

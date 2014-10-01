@@ -6,7 +6,7 @@ var d3 = require("d3");
 
 var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
 
-var HEIGHT = 30;
+var HEIGHT = 20;
 var CENTROMERE_RADIUS = HEIGHT / 5;
 var PADDING = 3;
 
@@ -19,6 +19,7 @@ module.exports = React.createClass({
 	getDefaultProps: function () {
 		return {
 			totalLength: null, // *
+			domain: null,
 			innerDomain: null,
 			centromerePosition: null  // *
 		};
@@ -49,16 +50,28 @@ module.exports = React.createClass({
 		var centroMereNode = <circle cx={centromereX} cy={HEIGHT / 2} r={CENTROMERE_RADIUS} fill="black" />;
 
 		// inset box
-		var _lbX = scale(this.props.innerDomain[0]);
-		var _domainWidth = scale(this.props.innerDomain[1]) - _lbX;
-		var innerDomainNode = <rect className="chromosome-thumb-inset" x={_lbX + 1} y={1} width={_domainWidth} height={HEIGHT - 2} fill="none" />;
+		var domainNode = null;
+		if (this.props.domain) {
+			var _lbX = scale(this.props.domain[0]) - 1;
+			var _width = scale(this.props.domain[1]) - _lbX;
+			domainNode = <rect className="chromosome-thumb-inset" x={_lbX + 1} y={0} width={_width} height={HEIGHT - 1} fill="none" />;
+		}
+
+		// inner domain for focus
+		var focusNode = null;
+		if (this.props.innerDomain) {
+			var _innerLbx = scale(this.props.innerDomain[0]);
+			var _innerWidth = scale(this.props.innerDomain[1]) - _innerLbx;
+			focusNode = <rect className="chromosome-thumb-focus-inset" x={_innerLbx + 1} y={0} width={_innerWidth} height={HEIGHT}/>;
+		}
 
 		return (<div>
 			<svg className="chromosome-thumb" style={{ width: this.state.DOMWidth, height: HEIGHT }}>
 				{leftArmNode}
 				{rightArmNode}
 				{centroMereNode}
-				{innerDomainNode}
+				{domainNode}
+				{focusNode}
 			</svg>
 		</div>);
 	},

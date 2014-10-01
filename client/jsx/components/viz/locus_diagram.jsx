@@ -457,44 +457,61 @@ module.exports = React.createClass({
 			var zoomIn = inDisabled ? null : this._zoomIn;
 			var zoomOut = outDisabled ? null : this._zoomOut;
 
-			var chromThumb = this._getChromsomeThumb();
+			// chromosome reference labeling
+			var chromThumb = this._getChromosomeThumb();
 
-			controlsNode = (<div className="locus-diagram-control-container row">
-				<div className="medium-8 columns">
-					{chromThumb}
+			controlsNode = (
+				<div className="locus-diagram-control-container">
+					<div className="row control-row">
+						<div className="medium-8 columns">
+							{chromThumb}
+						</div>
+						<div className="medium-4 columns end clearfix">
+							<ul className="locus-diagram-button-group round button-group">
+								<li><a className={`tiny button ${leftDisabledClass}`} onClick={stepLeft}><i className="fa fa-backward"></i></a></li>
+								<li><a className={`tiny button ${rightDisabledClass}`} onClick={stepRight}><i className="fa fa-forward"></i></a></li>
+							</ul>
+							<ul className="locus-diagram-button-group round button-group">
+								<li><a className={`tiny button ${inDisabledClass}`} onClick={zoomIn}><i className="fa fa-plus"></i></a></li>
+								<li><a className={`tiny button ${outDisabledClass}`} onClick={zoomOut}><i className="fa fa-minus"></i></a></li>
+							</ul>
+						</div>
+					</div>
 				</div>
-				<div className="medium-4 columns end clearfix">
-					<ul className="locus-diagram-button-group round button-group">
-						<li><a className={`tiny button ${leftDisabledClass}`} onClick={stepLeft}><i className="fa fa-backward"></i></a></li>
-						<li><a className={`tiny button ${rightDisabledClass}`} onClick={stepRight}><i className="fa fa-forward"></i></a></li>
-					</ul>
-					<ul className="locus-diagram-button-group round button-group">
-						<li><a className={`tiny button ${inDisabledClass}`} onClick={zoomIn}><i className="fa fa-plus"></i></a></li>
-						<li><a className={`tiny button ${outDisabledClass}`} onClick={zoomOut}><i className="fa fa-minus"></i></a></li>
-					</ul>
-				</div>
-			</div>);
+			);
 		}
 
 		return controlsNode;
 	},
 
-	_getChromsomeThumb: function () {
+	_getChromosomeThumb: function () {
 		var chromThumb = <span>&nbsp;</span>;
 		if (this.props.hasChromosomeThumb) {
 
 			// TEMP chrom data
 			var chromLength = 250000;
-			var innerDomain = this.state.domain;
+			var domain = this.state.domain;
 			var centromerePosition = 100000;
 
+			// focus domain
+			var _focusLocus = this._getFocusLocus();
+			var _innerDomain = [_focusLocus.start, _focusLocus.end];
+
 			chromThumb = (<ChromosomeThumb
-				totalLength={chromLength} innerDomain={innerDomain}
-				centromerePosition={centromerePosition}
+				totalLength={chromLength} domain={domain}
+				centromerePosition={centromerePosition} innerDomain={_innerDomain}
 			/>);
 		}
 
 		return chromThumb;
-	}
+	},
+
+	_getFocusLocus: function () {
+		// require focus locus display name
+		if (!this.props.focusLocusDisplayName) return false;
+
+		var _locci = this.props.data.locci;
+		return _.filter(_locci, d => { return d.locus.display_name === this.props.focusLocusDisplayName; })[0];
+	},
 });
 

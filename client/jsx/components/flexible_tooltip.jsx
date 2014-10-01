@@ -33,7 +33,7 @@ module.exports = React.createClass({
 
 		var innerContentNode = this._getInnerContentNode();
 		return (
-			<div className="flexible-tooltip s-nextgen" style={_style}>
+			<div className="flexible-tooltip" style={_style}>
 				{innerContentNode}
 				<div className="flexible-tooltip-arrow" style={{ position: "absolute" }}></div>
 			</div>
