@@ -58,6 +58,10 @@
 	background-color: $tooltip-bg;
 	border-radius: 5px;
 	z-index: $z-tooltip;
+
+	dt {
+		width: auto;
+	}
 }
 
 .flexible-tooltip-text {
@@ -77,6 +81,14 @@
 	border-left: 7px solid transparent;
 	border-right: 7px solid transparent;
 	border-top: 30px solid #e7e7e7;
+	&.complex {
+		top: 25px;
+		left: 357px;
+		border-top: 7px solid transparent;
+		border-bottom: 7px solid transparent;
+		border-left: 30px solid #e7e7e7;
+		border-right: none;
+	}
 }
 
 .chromosome-snapshot-container p {

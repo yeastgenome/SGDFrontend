@@ -324,8 +324,9 @@ module.exports = React.createClass({
 		var target = e.currentTarget;
 		var _width = target.getBBox().width;
 		var _transformObj = this._getTransformObject(d);
-		var _tooltipLeft = (d.x || _transformObj.x) + _width / 2;
-		var _tooltipTop = _transformObj.y;
+		var _tooltipLeft = Math.min(this.state.DOMWidth, (d.x || _transformObj.x) + _width / 2);
+		_tooltipLeft = Math.max(5, _tooltipLeft);
+		var _tooltipTop = _transformObj.y + HEIGHT / 3;
 
 		var _tooltipData = this._formatTooltipData(d);
 

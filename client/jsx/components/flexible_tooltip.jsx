@@ -20,22 +20,25 @@ module.exports = React.createClass({
 	render: function () {
 		var props = this.props;
 		var _isComplex = this._isComplex();
+		var _complexWidth = 350
 		var _style = {
 			position: "absolute",
 			display: (props.visible ? "block" : "none"),
 			top: props.top,
 			left: props.left,
-			marginLeft: -50,
-			marginTop: _isComplex ? -193 : -60,
-			minHeight: _isComplex ? 175 : 35,
-			padding: _isComplex ? "1em" : 0
+			marginLeft: _isComplex ? -(_complexWidth + 30) : -50,
+			marginTop: _isComplex ? -30 : -60,
+			minHeight: _isComplex ? 100 : 35,
+			padding: _isComplex ? "1em" : 0,
+			width: _isComplex ? _complexWidth: "auto"
 		};
 
 		var innerContentNode = this._getInnerContentNode();
+		var arrowKlass = _isComplex ? "flexible-tooltip-arrow complex" : "flexible-tooltip-arrow";
 		return (
-			<div className="flexible-tooltip" style={_style}>
+			<div className="flexible-tooltip" style={_style} >
 				{innerContentNode}
-				<div className="flexible-tooltip-arrow" style={{ position: "absolute" }}></div>
+				<div className={arrowKlass} style={{ position: "absolute" }}></div>
 			</div>
 		);
 	},
