@@ -18,8 +18,10 @@ var POINT_WIDTH = 10;
 var TRACK_SPACING = 10;
 var MIN_BP_WIDTH = 200; // show at least 200 BP
 
-var VIZ_HEIGHT_FN = function (tracksPerStrand) {
-	return (tracksPerStrand * 2) * (HEIGHT + TRACK_SPACING) + 2 * TRACK_SPACING;
+var VIZ_HEIGHT_FN = function (watsonTracks, crickTracks) {
+	return ((watsonTracks) * (HEIGHT + TRACK_SPACING) +  TRACK_SPACING + 
+		(crickTracks) * (HEIGHT + TRACK_SPACING) + TRACK_SPACING
+	);
 };
 
 module.exports = React.createClass({
@@ -34,7 +36,8 @@ module.exports = React.createClass({
 			hasChromosomeThumb: true,
 			focusLocusDisplayName: null,
 			showSubFeatures: false,
-			tracksPerStrand: 2 // TEMP
+			crickTracks: 1,
+			watsonTracks: 1
 		};
 	},
 
@@ -53,7 +56,7 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		var height = VIZ_HEIGHT_FN(this.props.tracksPerStrand);
+		var height = VIZ_HEIGHT_FN(this.props.watsonTracks, this.props.crickTracks);
 
 		var controlsNode = this._getControlsNode();
 
@@ -78,7 +81,7 @@ module.exports = React.createClass({
 						{axisNode}
 					</div>
 					<svg ref="svg" className="locus-svg" style={{ width: "100%", height: height, position: "relative" }}>
-						<line className="midpoint-marker" x1="0" x2={this.state.DOMWidth} y1={height /2} y2={height /2} />
+						<line className="midpoint-marker" x1="0" x2={this.state.DOMWidth} y1={this._getMidpointY()} y2={this._getMidpointY()} />
 						{locciNodes}
 					</svg>
 				</div>
@@ -248,13 +251,17 @@ module.exports = React.createClass({
 	_getTransformObject: function (d) {
 		var scale = this._getScale();
 		var _x = scale(Math.min(d.start, d.end));
-		var _y = (VIZ_HEIGHT_FN(this.props.tracksPerStrand) / 2) - d.track * (HEIGHT + TRACK_SPACING);
+		var _y = this._getMidpointY() - d.track * (HEIGHT + TRACK_SPACING);
 		if (d.track < 0) _y -= HEIGHT;
 
 		return {
 			x: _x,
 			y: _y
 		};
+	},
+
+	_getMidpointY: function () {
+		return (this.props.watsonTracks) * (HEIGHT + TRACK_SPACING) + TRACK_SPACING;
 	},
 
 	// from relative start, relative end, and bool isWatson, return the string to draw a trapezoid

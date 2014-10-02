@@ -26,13 +26,15 @@ module.exports = class SequenceNeighborsModel extends BaseModel {
 		var strainData = response["S288C"];
 
 		var _locci = this._assignTracksToLocci(strainData.neighbors);
+		var _trackDomain = LocusFormatHelper.getTrackDomain(_locci);
 
 		var _start = _.min(_locci, (d) => { return d.start; }).start;
 		var _end = _.max(_locci, (d) => { return d.end; }).end;
 
 		var _response = {
 			data: { locci: _locci },
-			domainBounds: [_start, _end]
+			domainBounds: [_start, _end],
+			trackDomain: _trackDomain
 		};
 		
 		return _response;
@@ -42,9 +44,9 @@ module.exports = class SequenceNeighborsModel extends BaseModel {
 		Takes an array of locci, and assigns a track number to make sure they don't overlap.
 		Positive for watson, negative for crick.  Further from 0 is further from the center.
 	*/
-	_assignTracksToLocci (_locci) {
-		return _.map(_locci, (d) => {
-			return this._assignTrackToSingleLocus(d, _locci);
+	_assignTracksToLocci (locci) {
+		return _.map(locci, (d) => {
+			return this._assignTrackToSingleLocus(d, locci);
 		});
 	}
 
@@ -52,5 +54,7 @@ module.exports = class SequenceNeighborsModel extends BaseModel {
 	_assignTrackToSingleLocus (locus, locci) {
 		return LocusFormatHelper.assignTrackToSingleLocus(locus, locci);
 	}
+
+
 
 };

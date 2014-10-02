@@ -44,6 +44,8 @@ module.exports = React.createClass({
 					domainBounds={this.state.domainBounds}
 					focusLocusDisplayName={this.props.focusLocusDisplayName}
 					showSubFeatures={this.props.showSubFeatures}
+					watsonTracks={this.state.watsonTracks}
+					crickTracks={this.state.crickTracks}
 				/>
 			</div>);
 		}
@@ -69,7 +71,9 @@ module.exports = React.createClass({
 		model.fetch( (err, response) => {
 			if (this.isMounted()) this.setState({
 				data: response.data,
-				domainBounds: response.domainBounds
+				domainBounds: response.domainBounds,
+				watsonTracks: Math.abs(response.trackDomain[1]),
+				crickTracks: Math.abs(response.trackDomain[0])
 			});
 		});
 

@@ -28,10 +28,12 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		})[0];
 
 		var _locusWithTracks = this._assignTracksToLocci([_response]);
+		var _trackDomain = LocusFormatHelper.getTrackDomain(_locusWithTracks[0].tags);
 
 		_response = {
 			data: { locci: _locusWithTracks },
-			domainBounds: [_response.start, _response.end ]
+			domainBounds: [_response.start, _response.end ],
+			trackDomain: _trackDomain
 		};
 
 		return _response;

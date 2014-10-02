@@ -51,6 +51,19 @@ module.exports = {
 
 		locus.track = track;
 		return locus;
+	},
+
+	// get the min and max track as d3-ish domain array [min, max]
+	getTrackDomain: function (locci) {
+		var min = -1;
+		var max = 1;
+
+		for (var i = locci.length - 1; i >= 0; i--) {
+			min = Math.min(min, locci[i].track);
+			max = Math.max(max, locci[i].track);
+		}
+
+		return [min, max];
 	}
 
 };
