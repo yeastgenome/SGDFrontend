@@ -63,7 +63,10 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				return c.features[i].value;
 			});
 			
-			row.unshift(f.name.replace(/_/g, ' '));
+			row.unshift({
+				value: f.name.replace(/_/g, ' '),
+				href: `/locus/${f.name}`
+			});
 			return row;
 		});
 
@@ -107,7 +110,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		// make numbers strings
 		tableRows = _.map(tableRows, (row) => {
 			row = _.map(row, (c) => {
-				return c.toLocaleString();
+				return (typeof c === "number") ? c.toLocaleString() : c;
 			});
 			return row;
 		});
@@ -121,12 +124,12 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 	_parseFeatures (response) {
 		// get the contigs for S288C
-		var chroms = _.filter(response.columns, (d) => {
+		var chroms = _.filter(response.columns, d => {
 			return d.format_name.match("S288C");
 		});
 
 		// assign feature data
-		chroms = _.map(chroms, (c) => {
+		chroms = _.map(chroms, c => {
 			var chromIndex = response.columns.indexOf(c);
 			c.features = _.reduce(response.data, (prev, featuresByType, featureIndex) => {
 				prev.push({
@@ -139,10 +142,11 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		});
 
 		// combine the chromosomes for whole genome data
-		var headers = _.map(response.rows, (c) => {
+		var headers = _.map(response.rows, c => {
 			return {
 				name: c.replace(/_/g, ' '),
-				value: 0
+				value: 0,
+				link: `/locus/${c}`
 			};
 		});
 		var combined = _.reduce(chroms, (prev, c) => {
@@ -154,7 +158,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 		// nest the ORF characterization status data in "nestedValues" of ORF
 		combined = this._nestOrfCharacterizationStatuses(combined);
-		chroms = _.map(chroms, (c) => {
+		chroms = _.map(chroms, c => {
 			c.features = this._nestOrfCharacterizationStatuses(c.features);
 			return c;
 		});
@@ -163,7 +167,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		var _tableData = this._formatDataForTable(chroms);
 
 		// combine "other" (non-ORF) features
-		chroms = _.map(chroms, (c) => {
+		chroms = _.map(chroms, c => {
 			var combinedFeatures = [c.features[0]];
 			combinedFeatures.push(_.reduce(c.features, (prev, f, i) => {
 				if (i > 0) {
@@ -260,4 +264,5 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		var arr = _.filter(response.phenotype_slim_terms, (t) => { return t.id != filteredId });
 		arr = _.sortBy(arr, (p) => { return -p.descendant_annotation_gene_count; });
 		return arr;
-	}};
+	}
+};
