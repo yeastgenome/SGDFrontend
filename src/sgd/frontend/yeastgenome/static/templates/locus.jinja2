@@ -79,6 +79,15 @@
         <div class="panel">
 
             <dl class="key-value">
+
+                {% if 'reserved_name' in locus %}
+                    <dt>Reserved Name</dt>
+                    <dd><a href="{{ locus.reserved_name.link }}">{{ locus.reserved_name.display_name }}</a>
+                        {% set references = [locus.reserved_name.reference] %}
+                        {% include "biblio_references.jinja2" %}
+                    </dd>
+                {% endif %}
+
                 {% if locus.format_name != locus.display_name %}
                     <dt>Standard Name</dt>
                     <dd>{{ locus.display_name }}
@@ -159,14 +168,6 @@
 
                         {% if not loop.last %}, {% endif %}
                     {% endfor %}
-                    </dd>
-                {% endif %}
-
-                {% if 'reserved_name' in locus %}
-                    <dt>Reserved Name</dt>
-                    <dd><a href="{{ locus.reserved_name.link }}">{{ locus.reserved_name.display_name }}</a>
-                        {% set references = [locus.reserved_name.reference] %}
-                        {% include "biblio_references.jinja2" %}
                     </dd>
                 {% endif %}
             </dl>
