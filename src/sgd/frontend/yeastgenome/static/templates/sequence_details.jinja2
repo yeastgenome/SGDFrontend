@@ -220,7 +220,16 @@
 ================================================== -->
     {% for evidence in locus.history if evidence.history_type == 'SEQUENCE' %}{% if loop.first %}
     <section id="history" data-magellan-destination="history">
-        <h2>History</h2>
+        <h2>History
+            <a href="#" data-dropdown="history_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="history_info" class="f-dropdown content medium" data-dropdown-content>
+               Documentation of sequence and/or annotation changes that have been made or proposed in the Reference
+                strain S288C, and that directly affect this gene by altering the start, stop, intron structure, or
+                amino acid sequence. Also includes information regarding sequence changes in adjacent intergenic
+                regions. May also contain notes and references for the mapping of this gene.
+            </p>
+        </h2>
         <div>
             <!-- Includes go_table into template -->
             {% set table_id = "history_table" %}
