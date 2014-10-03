@@ -94,9 +94,12 @@
 });
 
    $( document ).ajaxComplete(function() {
+       console.log(window.location.hash);
       if (window.location.hash) {         // if the url contains an anchor
-			var anchor = window.location.hash;
-            window.location.hash = anchor;
+			//var anchor = window.location.hash;
+            //window.location.hash = anchor;
+            var element_to_scroll_to = document.getElementById(window.location.hash);
+            element_to_scroll_to.scrollIntoView();
 		}
    });
 

@@ -14,6 +14,7 @@
             var a = document.createElement('a');
             a.href = "#" + section_name;
             a.innerHTML = entry_name;
+            a.id = section_name + '_click';
             li.appendChild(a);
             navbar.appendChild(li);
         }
