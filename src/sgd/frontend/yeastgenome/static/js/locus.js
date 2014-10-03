@@ -329,6 +329,9 @@ function make_sublabel_ready_handler(chart_id, chart, seq_start, seq_end, data, 
         var svg_gs = $("#" + chart_id + " > div > div > svg > g");
 
         var y_one = 0;
+        if(data_array[0][2] < 1) {
+            y_one = Math.floor(data_array[0][2]/10000)*100;
+        }
         var y_two = seq_end - seq_start;
 
         var tickmark_holder = svg_gs[1];
@@ -455,6 +458,10 @@ function set_up_history_table() {
 
 function create_subfeature_table(data) {
 	var datatable = [];
+
+    for (var i=0; i < data['tags'].length; i++) {
+        datatable.push(sublabel_data_to_table(data['tags'][i], data['locus'], data['strand'], data['id']));
+    }
 
     set_up_header('subfeature_table', datatable.length, 'subfeature', 'subfeatures', null, null, null);
 

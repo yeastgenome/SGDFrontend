@@ -496,6 +496,9 @@ function make_sublabel_ready_handler(chart_id, chart, seq_start, seq_end, data, 
         var svg_gs = $("#" + chart_id + " > div > div > svg > g");
 
         var y_one = 0;
+        if(data_array[0][2] < 0) {
+            y_one = Math.ceil(data_array[0][2]);
+        }
         var y_two = seq_end - seq_start;
 
         var tickmark_holder = svg_gs[1];
