@@ -214,6 +214,7 @@ $(document).ready(function() {
         else {
             hide_section('other');
         }
+
     });
 
     $.getJSON('/backend/locus/' + locus['id'] + '/neighbor_sequence_details?callback=?', function(data) {

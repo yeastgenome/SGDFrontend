@@ -99,7 +99,6 @@ function set_up_references(references, ref_list_id) {
 		
 		ref_list.appendChild(li);
 	}
-    set_hash();
 }
 
 String.prototype.chunk = function(n) {
@@ -364,8 +363,6 @@ function create_table(table_id, options) {
     $(document).foundation();
 
     //$('#' + table_id).prev().children().first().append('<div class="right"><a href="#" data-dropdown="' + table_id + '_help"><i class="fa fa-question-circle"></i></a></div>');
-
-    set_hash();
 
   	return table;
 }

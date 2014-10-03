@@ -93,16 +93,13 @@
 }
 });
 
-   function set_hash() {
-       if (window.location.hash) {         // if the url contains an anchor
+   $( document ).ajaxComplete(function() {
+      if (window.location.hash) {         // if the url contains an anchor
 			var anchor = window.location.hash;
             window.location.hash = anchor;
 		}
-   }
+   });
 
-	$(document).ready(function(){          // does the following only after DOM completely loads
-        set_hash();
-	});
 </script>
 
 <script>
