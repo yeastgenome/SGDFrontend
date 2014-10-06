@@ -139,7 +139,7 @@ module.exports = function(grunt) {
                 tasks: ["browserify:dev", "compass:dev"]
             },
             production: {
-                tasks: ["dynamicJs:production", "compileCss"]
+                tasks: ["dynamicJs:production", "compass:dev"]
             },
             options: {
                 logConcurrentOutput: true
@@ -158,7 +158,6 @@ module.exports = function(grunt) {
 
     // production helper tasks
     grunt.registerTask("dynamicJs:production", ["browserify:dev", "uglify:dynamicJs"]);
-    grunt.registerTask("compileCss", ["bowercopy:scss", "compass:dev"]);
     grunt.registerTask("static", ["replace", "concat", "uglify:staticJs", "bowercopy"]);
 
     // dev helper task
