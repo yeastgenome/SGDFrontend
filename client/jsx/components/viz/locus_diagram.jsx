@@ -210,9 +210,8 @@ module.exports = React.createClass({
 		var relativeEndX = endX - startX;
 
 		var pathString = this._getTrapezoidStringPath(relativeStartX, relativeEndX, (d.track > 0));
-
-		var _fill = isFocusLocus ? "rgb(31, 119, 180)" : "#999";
-		var _transform = this._getGroupTransform(d);
+		
+		var focusKlass = isFocusLocus ? " focus" : "";
 
 		// text node
 		var _approxWidth = d.locus.display_name.length * 8;
@@ -221,7 +220,7 @@ module.exports = React.createClass({
 		var _textY = HEIGHT - 4;
 		var _textTransform = `translate(${_textX}, ${_textY})`;
 		var _opacity = d.locus.display_name === this.state.mouseoverOpacityString ? 1 : 0.6;
-		var textNode = <text className="locus-diagram-anchor" onClick={_onClick} transform={_textTransform} textAnchor="middle">{d.locus.display_name}</text>;
+		var textNode = <text className={`locus-diagram-anchor${focusKlass}`} onClick={_onClick} transform={_textTransform} textAnchor="middle">{d.locus.display_name}</text>;
 		// hide text if too small
 		if (_approxWidth > relativeEndX) textNode = null;
 
@@ -233,9 +232,10 @@ module.exports = React.createClass({
 			this._handleClick(e, d);
 		}
 
+		var _transform = this._getGroupTransform(d);
 		return (
 			<g transform={_transform}>
-				<path className="locus-diagram locus-path" d={pathString} fill={_fill} opacity={_opacity} onClick= {_onClick} onMouseOver={_onMouseover} />
+				<path className={`locus-node${focusKlass}`} d={pathString}opacity={_opacity} onClick= {_onClick} onMouseOver={_onMouseover} />
 				{textNode}
 			</g>
 		);

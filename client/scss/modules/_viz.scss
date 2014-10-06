@@ -239,12 +239,17 @@
 	margin-top: -4px;
 	float: right;
 	.button {
+		background: #696599;
+		color: white;
 		font-size: 0.5rem;
 		padding-top: 6px;
 		padding-bottom: 6px;
 	}
 	.button.disabled {
 		opacity: 0.25;
+	}
+	li:first-child a.button {
+		margin-right: 5px;
 	}
 }
 
@@ -273,19 +278,36 @@
 
 .locus-svg text {
 	pointer-events: none;
+	&.focus {
+		fill: white;
+	}
+}
+
+.locus-node {
+	fill: #aaa;
+	&.focus {
+		fill: #696599;
+	}
+	&:hover {
+		cursor: pointer;
+	}
 }
 
 // chrom thumb {
 .chromosome-thumb-inset {
 	shape-rendering: crispEdges;
-	stroke: darkgray;
+	stroke: white;
+	fill: #696599;
 	stroke-width: 1px;
-	// stroke-dasharray: 3 3;
+	// fill: rgb(42, 162, 198);
+	// fill: #11728b; // version b, c
+	// fill: white; // version c, d
+	// opacity: 0.5; // version c, d
 }
 
-.chromosome-thumb-focus-inset {
-	shape-rendering: crispEdges;
-	stroke: none;
-	fill: rgb(31, 119, 180);
+.chromosome-thumb-arm {
+	fill: #696599;
+	opacity: 0.6;
+	// fill: #11728b; // version b,c
+	// opacity: 0.25;// version b,c
 }
-

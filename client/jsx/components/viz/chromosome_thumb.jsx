@@ -20,7 +20,6 @@ module.exports = React.createClass({
 		return {
 			totalLength: null, // *
 			domain: null,
-			innerDomain: null,
 			centromerePosition: null  // *
 		};
 	},
@@ -37,32 +36,23 @@ module.exports = React.createClass({
 		var centromereX = scale(this.props.centromerePosition);
 		var armHeight = HEIGHT;
 
-
 		// form left arm
 		var _leftWidth = centromereX - (CENTROMERE_RADIUS / 2);
-		var leftArmNode = <rect x={0} y={0} width={_leftWidth} height={armHeight} rx={HEIGHT / 2} fill="#e7e7e7" />;
+		var leftArmNode = <rect className="chromosome-thumb-arm" x={0} y={0} width={_leftWidth} height={armHeight} rx={HEIGHT / 2} />;
 
 		// form right arm
 		var _rightWidth = this.state.DOMWidth - centromereX - (CENTROMERE_RADIUS / 2);
-		var rightArmNode = <rect x={centromereX + CENTROMERE_RADIUS / 2} y={0} width={_rightWidth} height={armHeight} rx={HEIGHT / 2} fill="#e7e7e7" />;
+		var rightArmNode = <rect className="chromosome-thumb-arm" x={centromereX + CENTROMERE_RADIUS / 2} y={0} width={_rightWidth} height={armHeight} rx={HEIGHT / 2} />;
 
 		// centromere circle
-		var centroMereNode = <circle cx={centromereX} cy={HEIGHT / 2} r={CENTROMERE_RADIUS} fill="black" />;
+		var centroMereNode = <circle cx={centromereX} cy={HEIGHT / 2} r={CENTROMERE_RADIUS} fill="black" shape-rendering="crispEdges" />;
 
 		// inset box
 		var domainNode = null;
 		if (this.props.domain) {
 			var _lbX = scale(this.props.domain[0]) - 1;
 			var _width = scale(this.props.domain[1]) - _lbX;
-			domainNode = <rect className="chromosome-thumb-inset" x={_lbX + 1} y={0} width={_width} height={HEIGHT - 1} fill="none" />;
-		}
-
-		// inner domain for focus
-		var focusNode = null;
-		if (this.props.innerDomain) {
-			var _innerLbx = scale(this.props.innerDomain[0]);
-			var _innerWidth = scale(this.props.innerDomain[1]) - _innerLbx;
-			focusNode = <rect className="chromosome-thumb-focus-inset" x={_innerLbx + 1} y={0} width={_innerWidth} height={HEIGHT}/>;
+			domainNode = <rect className="chromosome-thumb-inset" x={_lbX + 1} y={-1} width={_width} height={HEIGHT + 1} fill="none" />;
 		}
 
 		return (<div>
@@ -71,7 +61,6 @@ module.exports = React.createClass({
 				{rightArmNode}
 				{centroMereNode}
 				{domainNode}
-				{focusNode}
 			</svg>
 		</div>);
 	},
