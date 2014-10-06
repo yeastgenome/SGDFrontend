@@ -17,7 +17,7 @@ $(document).ready(function() {
 
   	$.getJSON('/backend/locus/' + locus['id'] + '/expression_graph?callback=?', function(data) {
   		if(data != null && data['nodes'].length > 1) {
-            var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
+            var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, false);
             var max_value = data["min_coeff"] + Math.min(data["max_coeff"] - data["min_coeff"], 10);
             var slider = create_slider("slider", graph, data["min_coeff"], max_value, function slider_filter(new_cutoff) {return "node, edge[score >= " + (new_cutoff/10) + "]";}, max_value+1);
             create_cy_download_button(graph, "cy_download", locus['display_name'] + '_expression_graph')
@@ -91,13 +91,6 @@ var graph_style = cytoscape.stylesheet()
 		'text-outline-color': '#fff',
 		'color': '#888'
 	})
-	.selector("node[type='PHENOTYPE']")
-	.css({
-		'shape': 'rectangle',
-		'text-outline-color': '#fff',
-		'color': '#888',
-		'background-color': "#D0A9F5"
-    })
     .selector("edge[direction = 'positive']")
 	.css({
 		'line-color': "#AF8DC3"
@@ -105,11 +98,12 @@ var graph_style = cytoscape.stylesheet()
 	.selector("edge[direction = 'negative']")
 	.css({
 		'line-color': "#7FBF7B"
-	});
+	})
+	;
 
 var layout = {
 	"name": "arbor",
-	"liveUpdate": true,
+	"liveUpdate": false,
 	"ungrabifyWhileSimulating": true,
 	"nodeMass":function(data) {
 		if(data.sub_type == 'FOCUS') {
