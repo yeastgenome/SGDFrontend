@@ -19,6 +19,9 @@ if __name__ == "__main__":
 
     #Load new files into data
     for url in to_load:
-        f = open('data/' + url.replace('/', '.') + '.json', 'w')
+        rel_path = url.replace('/', '.') + '.json'
+        rel_path = rel_path[1:]
+        f = open( 'data/' + rel_path, 'w')
+        print url
         json.dump(requests.get(backend_url + url).json(), f)
         f.close()
