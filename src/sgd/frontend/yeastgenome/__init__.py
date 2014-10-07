@@ -160,6 +160,12 @@ class YeastgenomeFrontend(FrontendInterface):
     def contig(self, contig_repr):
         return self.get_obj('contig', contig_repr)
 
+    def snapshot(self):
+        backend_url = self.backend_url
+        if (backend_url == 'backendless'):
+            backend_url = '/backend'
+        return { 'obj_url': backend_url + '/snapshot?callback=?' }
+
     def references_this_week(self):
         page = {}
         return page

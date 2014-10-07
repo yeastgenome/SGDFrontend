@@ -28,10 +28,14 @@ snapshotView.render = function () {
 		document.getElementsByClassName("navbar-container")[0]
 	);
 
-	// TEMP!!! QA endpoind
-	var genomeModel = new GenomeSnapshotModel({ url: "http://sgd-qa.stanford.edu/webservice/snapshot?callback=?"});
+	// get the data URL from a variable in the DOM
+	var _snapshotUrl = bootstrappedData.snapshotUrl;
+
+	// init the model and fetch data
+	var genomeModel = new GenomeSnapshotModel({ url: _snapshotUrl });
 	genomeModel.fetch( (err, nestedData) => {
 
+		// features visualization and table alt
 		var featuresData = nestedData.featuresData;
 		React.renderComponent(
 			<TableAlternative vizType="genomeSnapshot" isInitiallyTable={false} graphData={featuresData.graphData} tableData={featuresData.tableData} />,
@@ -40,6 +44,7 @@ snapshotView.render = function () {
 
 		var _labelValue = (d) => { return d.display_name; };
 
+		// GO viz
 		var _goData = nestedData.goData;
 		var _goYValue = (d) => { return d.descendant_annotation_gene_count; };
 		React.renderComponent(
@@ -50,10 +55,10 @@ snapshotView.render = function () {
 			document.getElementsByClassName("go-snapshot-target")[0]
 		);
 
+		// phenotype viz
 		var _phenotypeData = nestedData.phenotypeData;
 		var _colorValue = (d) => { return "#DF8B93"; }
 		var _phenoYValue = (d) => { return d.descendant_annotation_gene_count; };
-
 		var barChart = (
 			<BarChart
 				data={_phenotypeData} yValue={_phenoYValue}
