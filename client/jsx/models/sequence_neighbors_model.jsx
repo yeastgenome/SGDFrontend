@@ -25,6 +25,7 @@ module.exports = class SequenceNeighborsModel extends BaseModel {
 	parse (response) {
 		var strainData = response["S288C"];
 
+		var _contigData = LocusFormatHelper.formatContigData(strainData.neighbors[0].contig);
 		var _locci = this._assignTracksToLocci(strainData.neighbors);
 		var _trackDomain = LocusFormatHelper.getTrackDomain(_locci);
 
@@ -34,6 +35,7 @@ module.exports = class SequenceNeighborsModel extends BaseModel {
 		var _response = {
 			data: { locci: _locci },
 			domainBounds: [_start, _end],
+			contigData: _contigData,
 			trackDomain: _trackDomain
 		};
 		
@@ -46,15 +48,7 @@ module.exports = class SequenceNeighborsModel extends BaseModel {
 	*/
 	_assignTracksToLocci (locci) {
 		return _.map(locci, (d) => {
-			return this._assignTrackToSingleLocus(d, locci);
+			return LocusFormatHelper.assignTrackToSingleLocus(d, locci);
 		});
 	}
-
-	// For the given locus, assign a track higher than overlaps. return locus, with track assigned
-	_assignTrackToSingleLocus (locus, locci) {
-		return LocusFormatHelper.assignTrackToSingleLocus(locus, locci);
-	}
-
-
-
 };

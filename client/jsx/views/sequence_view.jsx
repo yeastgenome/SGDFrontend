@@ -2,7 +2,6 @@
 "use strict";
 
 var React = require("react");
-var $ = require("jquery");
 
 var NavBar = require("../components/navbar.jsx");
 var AsyncLocusDiagram = require("../components/async/async_locus_diagram.jsx");
@@ -26,7 +25,7 @@ sequenceView.render = function () {
 		document.getElementsByClassName("navbar-container")[0]
 	);
 
-	// render locus neighbot diagram
+	// render locus neighbor diagram
 	React.renderComponent(
 		<AsyncLocusDiagram
 			baseUrl="http://sgd-qa.stanford.edu/webservice" showSubFeatures={false}
@@ -35,6 +34,7 @@ sequenceView.render = function () {
 		document.getElementsByClassName("locus-neighbor-viz")[0]
 	);
 
+	// render sub featureta
 	React.renderComponent(
 		<AsyncLocusDiagram
 			baseUrl="http://sgd-qa.stanford.edu/webservice" showSubFeatures={true}

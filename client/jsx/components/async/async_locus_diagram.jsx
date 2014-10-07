@@ -4,6 +4,7 @@
 var React = require("react");
 var _ = require("underscore");
 
+var DataTable = require("../data_table.jsx");
 var SequenceDetailsModel = require("../../models/sequence_details_model.jsx");
 var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
@@ -28,7 +29,8 @@ module.exports = React.createClass({
 			data: null, // { locci: [] }
 			domainBounds: null, // [0, 100]
 			watsonTracks: 1,
-			crickTracks: 1
+			crickTracks: 1,
+			tableData: null
 		};
 	},
 
@@ -37,9 +39,11 @@ module.exports = React.createClass({
 			return <div><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div>;
 		} else {
 			var labelNode = this._getLabelNode();
+			var tableNode = this._getSubFeaturesTable();
 			return (<div>
 				{labelNode}
 				<LocusDiagram
+					contigData={this.state.contigData}
 					data={this.state.data}
 					domainBounds={this.state.domainBounds}
 					focusLocusDisplayName={this.props.focusLocusDisplayName}
@@ -47,6 +51,7 @@ module.exports = React.createClass({
 					watsonTracks={this.state.watsonTracks}
 					crickTracks={this.state.crickTracks}
 				/>
+				{tableNode}
 			</div>);
 		}
 	},
@@ -70,10 +75,12 @@ module.exports = React.createClass({
  		// fetch data and set result
 		model.fetch( (err, response) => {
 			if (this.isMounted()) this.setState({
+				contigData: response.contigData,
 				data: response.data,
 				domainBounds: response.domainBounds,
 				watsonTracks: Math.abs(response.trackDomain[1]),
-				crickTracks: Math.abs(response.trackDomain[0])
+				crickTracks: Math.abs(response.trackDomain[0]),
+				tableData: response.tableData
 			});
 		});
 
@@ -100,6 +107,20 @@ module.exports = React.createClass({
 	// return true if it has necessary data to render
 	_isPending: function () {
 		return !(this.state.data && this.state.domainBounds);
-	}
+	},
+
+	_getSubFeaturesTable: function () {
+		var tableNode = null;
+		if (this.props.showSubFeatures) {
+			var options = {
+				bPaginate: false,
+				oLanguage: { "sEmptyTable": "No subfeatures for " + this.props.focusLocusDisplayName + '.' }
+			};
+
+			tableNode = <DataTable data={this.state.tableData} usePlugin={true} pluginOptions={options} />;
+		}
+
+		return tableNode;
+	},
 
 });

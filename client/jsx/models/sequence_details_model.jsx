@@ -27,13 +27,17 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 			return s.strain.display_name === "S288C";
 		})[0];
 
+		var _contigData = LocusFormatHelper.formatContigData(_response.contig);
 		var _locusWithTracks = this._assignTracksToLocci([_response]);
 		var _trackDomain = LocusFormatHelper.getTrackDomain(_locusWithTracks[0].tags);
+		var _tableData = this._formatTableData(_response.tags);
 
 		_response = {
+			contigData: _contigData,
 			data: { locci: _locusWithTracks },
 			domainBounds: [_response.start, _response.end ],
-			trackDomain: _trackDomain
+			trackDomain: _trackDomain,
+			tableData: _tableData
 		};
 
 		return _response;
@@ -45,9 +49,6 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 	*/
 	_assignTracksToLocci (_locci) {
 		return _.map(_locci, (d) => {
-			var isWatson = d.strand === "+";
-			d.track = isWatson ? 1 : -1;
-
 			// assign tracks to sub features
 			d.tags = _.map(d.tags, (t) => {
 				t.strand = d.strand;
@@ -59,4 +60,26 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		});
 	}
 
+	_formatTableData (subFeatures) {
+
+		var _headers = [
+			"Feature",
+			"Relative Coordinates",
+			"Coordinates",
+			"Coord. Version"
+		];
+
+		var _rows = _.map(subFeatures, d => {
+			var _relativeCoord = `${d.relative_start.toLocaleString()} - ${d.relative_end.toLocaleString()}`;
+			var _coord = `${d.chromosomal_start.toLocaleString()} - ${d.chromosomal_end.toLocaleString()}`;
+			return [d.format_name, _relativeCoord, _coord, d.coord_version];
+		});
+
+		var tableData = {
+			headers: [_headers],
+			rows: _rows
+		};
+
+		return tableData;
+	}
 };

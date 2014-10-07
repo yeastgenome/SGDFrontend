@@ -11,7 +11,8 @@
   },
   "browser": {
     "foundation": "./bower_components/foundation/js/foundation.min.js",
-    "react": "./node_modules/react/dist/react.min.js"
+    "react": "./node_modules/react/dist/react.min.js",
+    "datatables": "./bower_components/datatables/media/js/jquery.dataTables.js"
   },
   "browserify-shim": {
     "jquery": { "exports": "global:$"},

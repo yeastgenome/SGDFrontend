@@ -30,6 +30,7 @@ module.exports = React.createClass({
 	getDefaultProps: function () {
 		return {
 			baseUrl: null,
+			contigData: null, // {}
 			data: null, // { locci: [] }
 			domainBounds: null, // [0, 100]
 			hasControls: true,
@@ -101,7 +102,6 @@ module.exports = React.createClass({
 	componentDidUpdate: function (prevProps, prevState) {
 		if (this.state.DOMWidth !== prevState.DOMWidth) this._setupZoomEvents();
 	},
-
 
 	// returns an svg "g" element, with embedded shapes
 	_getLocusNode: function (d) {
@@ -495,19 +495,9 @@ module.exports = React.createClass({
 	_getChromosomeThumb: function () {
 		var chromThumb = <span>&nbsp;</span>;
 		if (this.props.hasChromosomeThumb) {
-
-			// TEMP chrom data
-			var chromLength = 250000;
-			var domain = this.state.domain;
-			var centromerePosition = 100000;
-
-			// focus domain
-			var _focusLocus = this._getFocusLocus();
-			var _innerDomain = [_focusLocus.start, _focusLocus.end];
-
 			chromThumb = (<ChromosomeThumb
-				totalLength={chromLength} domain={domain}
-				centromerePosition={centromerePosition} innerDomain={_innerDomain}
+				totalLength={this.props.contigData.length} domain={this.state.domain}
+				centromerePosition={this.props.contigData.centromerePosition}
 			/>);
 		}
 
@@ -522,4 +512,3 @@ module.exports = React.createClass({
 		return _.filter(_locci, d => { return d.locus.display_name === this.props.focusLocusDisplayName; })[0];
 	},
 });
-
