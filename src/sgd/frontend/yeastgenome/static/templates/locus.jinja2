@@ -194,7 +194,7 @@
         </h2>
         <div class="panel">
             <button href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="small radius button secondary dropdown form-pad"><i
-                class="fa fa-download"></i> Download Sequence (.txt)</button>
+                class="fa fa-download"></i> Download Sequence (.fsa)</button>
             <ul id="drop1" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1">
                 <li><a id="genomic_download">Genomic DNA</a></li>
                 <li><a id="kb_download">Genomic DNA +/- 1kb</a></li>
@@ -349,6 +349,11 @@
                         <dd><ul style="list-style-type:disc">
                             {% for entry in locus.go_overview.manual_molecular_function_terms %}
                                 <li>
+                                    {% if 'qualifiers' in entry %}
+                                        {% for qualifier in entry.qualifiers if qualifier != 'part of' and qualifier != 'enables' %}
+                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
                                     <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
                                     {% for code in entry.evidence_codes %}
                                         {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
