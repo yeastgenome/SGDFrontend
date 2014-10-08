@@ -8,6 +8,7 @@ var React = require("react");
 
 var DataTable = require("../data_table.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
+var SequenceToggler = require("./sequence_toggler.jsx");
 
 module.exports = React.createClass({
 
@@ -81,13 +82,16 @@ module.exports = React.createClass({
 		</div>);
 	},
 
-	// TODO
 	_getSequenceNode: function () {
 		if (!this.props.showSequence) return null;
 
-		return (<div className="panel sgd-viz">
-			<img className="loader" src="/static/img/dark-slow-wheel.gif" />
-		</div>);
+		var innerNode = <img className="loader" src="/static/img/dark-slow-wheel.gif" />;
+		if (this.props.detailsModel) {
+			var _text = this.props.showAltStrains ? "Sequence" : "Sequence - S288C";
+			innerNode = <SequenceToggler sequences={this.props.detailsModel.attributes.sequences} text={_text}/>;
+		}
+
+		return <div className="panel sgd-viz">{innerNode}</div>;
 	},
 
 	_getSubFeaturesTable: function () {

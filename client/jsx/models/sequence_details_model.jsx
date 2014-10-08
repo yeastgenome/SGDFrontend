@@ -17,9 +17,32 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 	}
 
 	parse (response) {
+		// TEMP
+		var strainDisplayName = "S288C"
+
 		var _response = _.filter(response.genomic_dna, (s) => {
-			return s.strain.display_name === "S288C";
+			return s.strain.display_name === strainDisplayName;
 		})[0];
+
+		// format sequences
+		var sequenceNames = {
+			"genomic_dna": "Genomic DNA",
+			"1kb": "Genomic DNA +/- 1kb",
+			"coding_dna": "Coding DNA",
+			"protein": "Protein"
+		};
+		var _sequences = _.map(_.keys(sequenceNames), key => {
+			var _sequenceArr = _.filter(response[key], s => {
+				return s.strain.display_name === strainDisplayName;
+			});
+			var _sequence = _sequenceArr.length ? _sequenceArr[0].residues : null;
+
+			return {
+				key: key,
+				name: sequenceNames[key],
+				sequence: _sequence
+			};
+		});
 
 		var _contigData = LocusFormatHelper.formatContigData(_response.contig);
 		var _locusWithTracks = this._assignTracksToLocci([_response]);
@@ -30,6 +53,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 			contigData: _contigData,
 			data: { locci: _locusWithTracks },
 			domainBounds: [_response.start, _response.end ],
+			sequences: _sequences,
 			trackDomain: _trackDomain,
 			tableData: _tableData
 		};
@@ -55,7 +79,6 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 	}
 
 	_formatTableData (subFeatures) {
-
 		var _headers = [
 			"Feature",
 			"Relative Coordinates",
