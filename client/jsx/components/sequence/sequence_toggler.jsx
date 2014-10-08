@@ -45,9 +45,9 @@ module.exports = React.createClass({
 
 	_getDropdownNode: function () {
 		var optionsNodes = _.map(this.props.sequences, s => {
-			return <option value={s.key}>{s.name}</option>;
+			return <option value={s.key} disabled={!s.sequence}>{s.name}</option>;
 		});
-		return <select className="large-3">{optionsNodes}</select>;
+		return <select onChange={this._handleChangeSequence} className="large-3" value={this.state.activeSequence.key}>{optionsNodes}</select>;
 	},
 
 	_formatActiveSequenceTextNode: function () {
@@ -65,6 +65,12 @@ module.exports = React.createClass({
 			return <span>{l}<br /></span>;
 		});
 		return <span>{lineNodes}</span>;
+	},
+
+	_handleChangeSequence: function (e) {
+		var _newKey = e.currentTarget.value;
+		var _activeSequence =  _.findWhere(this.props.sequences, { key: _newKey });
+		this.setState({ activeSequence: _activeSequence });
 	}
 
 });
