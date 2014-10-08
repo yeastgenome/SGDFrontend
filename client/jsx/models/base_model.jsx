@@ -19,6 +19,7 @@ module.exports = class BaseModel {
 	fetch (callback) {
 		$.getJSON(this.url, (data) => {
 			var _formattedData = this.parse(data);
+			this.attributes = _formattedData;
 			callback(null, _formattedData);
 		});
 	}

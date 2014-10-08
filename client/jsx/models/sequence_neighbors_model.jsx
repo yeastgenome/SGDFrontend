@@ -6,19 +6,11 @@ var _ = require("underscore");
 var BaseModel = require("./base_model.jsx");
 var LocusFormatHelper = require("../lib/locus_format_helper.jsx");
 
-var DEFAULT_BASE_URL = "/webservice";
-
 module.exports = class SequenceNeighborsModel extends BaseModel {
 
 	constructor (options) {
 		options = options || {};
-
-		// unless URL is in options, construct from id
-		var _baseUrl = options.baseUrl || DEFAULT_BASE_URL;
-		if (options.id) {
-			options.url = options.url || _baseUrl + `/locus/${options.id}/neighbor_sequence_details?callback=?`;
-		}
-
+		options.url = `/backend/locus/${options.id}/neighbor_sequence_details?callback=?`;
 		super(options);
 	}
 

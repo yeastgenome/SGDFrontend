@@ -6,6 +6,7 @@ var _ = require("underscore");
 
 var SequenceDetailsModel = require("../../models/sequence_details_model.jsx");
 var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
+var SequenceComposite = require("./sequence_composite.jsx");
 
 /*
 	Fetches data from model and renders locus diagram (or loader while fetching).
@@ -33,9 +34,12 @@ module.exports = React.createClass({
 		var mainStrainNode = this._getMainStrainNode();
 		var altStrainNode = this._getAltStrainNode();
 
+		// TODO
 		// get node for alt strains
 
-		return <span></span>;
+		return (<div>
+			{mainStrainNode}
+		</div>);
 	},
 
 	componentDidMount: function () {
@@ -44,23 +48,35 @@ module.exports = React.createClass({
 
 	// from locusId, get data and update
 	_fetchData: function () {
-		// TODO
-
-		// fetch the neighbor model
-		// set the model to state
-		// fetch the details model
-		// set the model to state
-
+		var _neighborsModel = new SequenceNeighborsModel({ id: this.props.locusId });
+		_neighborsModel.fetch( response => {
+			if (this.isMounted()) {
+				this.setState({ neighborsModel: _neighborsModel });
+				var _detailsModel = new SequenceDetailsModel({ id: this.props.locusId });
+				_detailsModel.fetch( response => {
+					if (this.isMounted()) this.setState({ detailsModel: _detailsModel });
+				});
+			}
+		});
 	},
 
 	_getMainStrainNode: function () {
-		// if no model, return a giant spinner panel
-		// if neighbors model, render first viz in panel, with another spinner panel
-		// if both models, render neigbors, sub-features, and sequence toggler
+		var node = (<div>
+			<h3>{this.props.focusLocusDisplayName} Location: dfsdfds</h3>
+			<SequenceComposite
+				focusLocusDisplayName={this.props.focusLocusDisplayName}
+				neighborsModel={this.state.neighborsModel}
+				detailsModel={this.state.detailsModel}
+				showAltStrains={false}
+			/>
+		</div>);
+
+		return node;
 	},
 
 	_getAltStrainNode: function () {
-
+		// TEMP
+		return null;
 	}
 
 });

@@ -4,7 +4,8 @@
 var React = require("react");
 
 var NavBar = require("../components/navbar.jsx");
-var AsyncLocusDiagram = require("../components/async/async_locus_diagram.jsx");
+// var AsyncLocusDiagram = require("../components/async/async_locus_diagram.jsx");
+var AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");
 
 var sequenceView = {};
 sequenceView.render = function () {
@@ -27,22 +28,11 @@ sequenceView.render = function () {
 
 	// render locus neighbor diagram
 	React.renderComponent(
-		<AsyncLocusDiagram
-			baseUrl="http://sgd-qa.stanford.edu/webservice" showSubFeatures={false}
+		<AsyncSequenceView
 			locusId={locus_id} focusLocusDisplayName={display_name}
 		/>,
-		document.getElementsByClassName("locus-neighbor-viz")[0]
+		document.getElementById("sequence-viz")
 	);
-
-	// render sub featureta
-	React.renderComponent(
-		<AsyncLocusDiagram
-			baseUrl="http://sgd-qa.stanford.edu/webservice" showSubFeatures={true}
-			locusId={locus_id} focusLocusDisplayName={display_name}
-		/>,
-		document.getElementsByClassName(" locus-subfeatures-viz")[0]
-	);
-
 };
 
 module.exports = sequenceView;

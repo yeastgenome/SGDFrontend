@@ -12,13 +12,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 
 	constructor (options) {
 		options = options || {};
-
-		// unless URL is in options, construct from id
-		var _baseUrl = options.baseUrl || DEFAULT_BASE_URL;
-		if (options.id) {
-			options.url = options.url || _baseUrl + `/locus/${options.id}/sequence_details?callback=?`;
-		}
-
+		options.url = `/backend/locus/${options.id}/sequence_details?callback=?`;
 		super(options);
 	}
 
