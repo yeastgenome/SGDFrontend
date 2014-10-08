@@ -1,4 +1,4 @@
-{% for reference in references|sort(attribute='year', reverse=True) %}
+{% for reference in locus.references if reference.id in references|map(attribute='id') %}
     <span data-tooltip aria-haspopup="true" class="has-tip" title="{{ reference.display_name }}">
         {% if full_url %}
             <a href="/locus/{{ locus.sgdid }}/overview#reference"><sup>{{ locus.reference_mapping[reference.id|string] }}</sup></a>
