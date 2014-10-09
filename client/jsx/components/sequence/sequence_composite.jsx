@@ -5,8 +5,10 @@
 	If it doesn't have the models, returns the right loaders
 */
 var React = require("react");
+var _ = require("underscore");
 
 var DataTable = require("../data_table.jsx");
+var DropdownSelector = require("../widgets/dropdown_selector.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
 var SequenceToggler = require("./sequence_toggler.jsx");
 
@@ -24,14 +26,20 @@ module.exports = React.createClass({
 		};
 	},
 
+	getInitialState: function () {
+		return { activeStrainKey: null };
+	},
+
 	render: function () {
 		if (!this.props.neighborsModel && !this.props.detailsModel) {
 			return <div className="panel sgd-viz"><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div>;
 		} else {
+			var strainSelectorNode = this._getStrainSelectorNode();
 			var neighborsNode = this._getNeighborsNode();
 			var detailsNode = this._getDetailsNode();
 			var sequenceNode = this._getSequenceNode();
 			return (<div>
+				{strainSelectorNode}
 				{neighborsNode}
 				{detailsNode}
 				{sequenceNode}
@@ -39,10 +47,33 @@ module.exports = React.createClass({
 		}
 	},
 
+	componentDidUpdate: function () {
+		if (this.props.detailsModel && !this.state.activeStrainKey) {
+			var _altStrainKey = this.props.detailsModel.attributes.altStrainMetaData[0].key;
+			this.setState({ activeStrainKey: _altStrainKey });
+		}
+	},
+
+	_getStrainSelectorNode: function () {
+		var node = null;
+		if (this.props.showAltStrains && this.props.detailsModel && this.state.activeStrainKey) {
+			var _elements = _.map(this.props.detailsModel.attributes.altStrainMetaData, s => {
+				return {
+					value: s.key,
+					name: s.name
+				};
+			});
+			var _onChange = (key) => { this.setState({ activeStrainKey: key }); };
+			node = <DropdownSelector elements={_elements} onChange={_onChange} defaultActiveValue={this.state.activeStrainKey}/>;
+		}
+
+		return node;
+	},
+
 	_getNeighborsNode: function () {
 		var innerNode = <img className="loader" src="/static/img/dark-slow-wheel.gif" />;
-		if (this.props.neighborsModel) {
-			var attr = this.props.neighborsModel.attributes;
+		if (this.props.neighborsModel && (!this.props.showAltStrains || this.state.activeStrainKey)) {
+			var attr = this._getActiveStrainNeighborsData();
 			innerNode = (<LocusDiagram
 				contigData={attr.contigData}
 				data={attr.data}
@@ -61,8 +92,8 @@ module.exports = React.createClass({
 
 		var innerNode = <img className="loader" src="/static/img/dark-slow-wheel.gif" />;
 		var tableNode = null;
-		if (this.props.detailsModel) {
-			var attr = this.props.detailsModel.attributes;
+		if (this._canRenderDetails()) {
+			var attr = this._getActiveStrainDetailsData();
 			innerNode = (<LocusDiagram
 				contigData={attr.contigData}
 				data={attr.data}
@@ -86,21 +117,43 @@ module.exports = React.createClass({
 		if (!this.props.showSequence) return null;
 
 		var innerNode = <img className="loader" src="/static/img/dark-slow-wheel.gif" />;
-		if (this.props.detailsModel) {
+		if (this._canRenderDetails()) {
 			var _text = this.props.showAltStrains ? "Sequence" : "Sequence - S288C";
-			innerNode = <SequenceToggler sequences={this.props.detailsModel.attributes.sequences} text={_text}/>;
+			var _sequences = this._getActiveStrainDetailsData().sequences;
+			innerNode = <SequenceToggler sequences={_sequences} text={_text}/>;
 		}
 
 		return <div className="panel sgd-viz">{innerNode}</div>;
 	},
 
+	_canRenderDetails: function () {
+		return (this.props.detailsModel && (!this.props.showAltStrains || this.state.activeStrainKey));
+	},
+
 	_getSubFeaturesTable: function () {
-		if (!this.props.showSubFeaturesTable) return null;
+		if (!this.props.showSubFeaturesTable && !this._canRenderDetails()) return null;
 
 		var _options = {
 			bPaginate: false,
 			oLanguage: { "sEmptyTable": "No subfeatures for " + this.props.focusLocusDisplayName + '.' }
 		};
-		return <DataTable data={this.props.detailsModel.attributes.tableData} usePlugin={true} pluginOptions={_options} />;
+		var _tableData = this._getActiveStrainDetailsData().tableData;
+		return <DataTable data={_tableData} usePlugin={true} pluginOptions={_options} />;
+	},
+
+	_getActiveStrainNeighborsData: function () {
+		if (this.props.showAltStrains) {
+			return _.findWhere(this.props.neighborsModel.attributes.altStrains, { strainKey: this.state.activeStrainKey });
+		} else {
+			return this.props.neighborsModel.attributes.mainStrain;
+		}
+	},
+
+	_getActiveStrainDetailsData: function () {
+		if (this.props.showAltStrains) {
+			return _.findWhere(this.props.detailsModel.attributes.altStrains, { strainKey: this.state.activeStrainKey });
+		} else {
+			return this.props.detailsModel.attributes.mainStrain;	
+		}
 	}
 });

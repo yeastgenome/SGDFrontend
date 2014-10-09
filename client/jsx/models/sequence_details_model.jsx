@@ -6,7 +6,7 @@ var _ = require("underscore");
 var BaseModel = require("./base_model.jsx");
 var LocusFormatHelper = require("../lib/locus_format_helper.jsx");
 
-var DEFAULT_BASE_URL = "/webservice";
+var MAIN_STRAIN_NAME = "S288C";
 
 module.exports = class SequenceDetailsModel extends BaseModel {
 
@@ -17,10 +17,33 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 	}
 
 	parse (response) {
-		// TEMP
-		var strainDisplayName = "S288C"
+		// alt strain data
+		var _altStrainTemp = _.filter(response.coding_dna, s => {
+			return (s.strain.status === "Alternative Reference");
+		});
+		var _altStrainsRaw = _.map(_altStrainTemp, s => {
+			return s.strain;
+		});
+		var _altStrains = _.map(_altStrainsRaw, s => {
+			return this._formatStrainData(s.display_name, response, s.format_name);
+		});
+		// alt strain meta data
+		var _altMeta = _.map(_altStrainsRaw, s => {
+			return this._formatAltStrainMetaData(s.display_name, response, s.format_name);
+		});
+		// 288C data
+		var _mainStrain = this._formatStrainData(MAIN_STRAIN_NAME, response, MAIN_STRAIN_NAME);
 
-		var _response = _.filter(response.genomic_dna, (s) => {
+		return {
+			mainStrain: _mainStrain,
+			altStrains: _altStrains,
+			altStrainMetaData: _altMeta
+		};
+	}
+
+	_formatStrainData (strainDisplayName, response, strainKey) {
+		var _response = _.clone(response);
+		_response = _.filter(_response.genomic_dna, (s) => {
 			return s.strain.display_name === strainDisplayName;
 		})[0];
 
@@ -54,6 +77,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 			data: { locci: _locusWithTracks },
 			domainBounds: [_response.start, _response.end ],
 			sequences: _sequences,
+			strainKey: strainKey,
 			trackDomain: _trackDomain,
 			tableData: _tableData
 		};
@@ -98,5 +122,17 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		};
 
 		return tableData;
+	}
+
+	_formatAltStrainMetaData(strainDisplayName, response) {
+		var _strain = _.filter(response.coding_dna, s => { return s.strain.display_name === strainDisplayName; })[0].strain;
+		return {
+			key: _strain.format_name,
+			name: _strain.display_name,
+			description: _strain.description,
+			href: _strain.link,
+			id: _strain.id,
+			status: _strain.status
+		};
 	}
 };

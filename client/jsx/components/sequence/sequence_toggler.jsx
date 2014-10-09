@@ -4,6 +4,7 @@
 var React = require("react");
 var _ = require("underscore");
 
+var DropdownSelector = require("../widgets/dropdown_selector.jsx");
 var LETTERS_PER_LINE = 60;
 
 module.exports = React.createClass({
@@ -44,10 +45,12 @@ module.exports = React.createClass({
 	},
 
 	_getDropdownNode: function () {
-		var optionsNodes = _.map(this.props.sequences, s => {
-			return <option value={s.key} disabled={!s.sequence}>{s.name}</option>;
+		var _isDisabled = (s) => { return !s.sequence; };
+		var _elements = _.map(this.props.sequences, s => {
+			s.value = s.key;
+			return s;
 		});
-		return <select onChange={this._handleChangeSequence} className="large-3" value={this.state.activeSequence.key}>{optionsNodes}</select>;
+		return <DropdownSelector elements={_elements} isDisabled={_isDisabled} onChange={this._handleChangeSequence} />;
 	},
 
 	_formatActiveSequenceTextNode: function () {
@@ -67,9 +70,8 @@ module.exports = React.createClass({
 		return <span>{lineNodes}</span>;
 	},
 
-	_handleChangeSequence: function (e) {
-		var _newKey = e.currentTarget.value;
-		var _activeSequence =  _.findWhere(this.props.sequences, { key: _newKey });
+	_handleChangeSequence: function (value) {
+		var _activeSequence =  _.findWhere(this.props.sequences, { key: value });
 		this.setState({ activeSequence: _activeSequence });
 	}
 
