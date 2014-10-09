@@ -10,7 +10,9 @@ module.exports = React.createClass({
 	getDefaultProps: function () {
 		return {
 			text: "",
-			orientation: "left"
+			html: null,
+			orientation: "left",
+			isInfo: false, // makes an "i" if true, default is "?"
 		};
 	},
 
@@ -30,10 +32,13 @@ module.exports = React.createClass({
 		// get text (null if unless textIsVisible)
 		var textNode = this._getTextNode();
 
+		var _iconKlass = this.props.isInfo ? "info-circle" : "question-circle" ;
+		var iconKlass = `fa fa-${_iconKlass}`
+
 		return (
 			<span className="context-help-icon" style={{ position: "relative" }}>
 				{textNode}
-				<a onClick={_toggleTextVisible}><i className="fa fa-question-circle"></i></a>
+				<a onClick={_toggleTextVisible}><i className={iconKlass}></i></a>
 			</span>
 		);
 	},

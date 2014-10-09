@@ -6,6 +6,7 @@ var React = require("react");
 
 var BarChart = require("./viz/bar_chart.jsx");
 var DataTable = require("./data_table.jsx");
+var HelpIcon = require("./help_icon.jsx");
 var GenomeSnapshot = require("./genome_snapshot.jsx");
 
 /*
@@ -27,16 +28,7 @@ module.exports = React.createClass({
 	render: function () {
 		// is table defaults to state, set to props.isInitiallyTable if state is null
 		var isTable = ((this.state.isTable === null) ? this.props.isInitiallyTable : this.state.isTable);
-
-		var vizNodeTypes = {
-			bar: (<BarChart
-				data={this.props.graphData.combined} yValue={ function (d) { return d.value; } }
-				labelValue={ function (d) { return d.name; } } labelRatio={0.2} colorScale={ function () { return "#DF8B93"; }}
-			/>),
-			genomeSnapshot: <GenomeSnapshot data={this.props.graphData} />
-		};
-
-		var vizNode = vizNodeTypes[this.props.vizType];
+		var dataNode = this._getDataNode();
 
 		return (
 			<div className="table-alternative">
@@ -50,11 +42,29 @@ module.exports = React.createClass({
 				</ul>
 				{/* render table or alternativeComponent */}
 				<div className="table-alternative-content-container">
-					{
-						isTable ? <DataTable data={this.props.tableData} /> : vizNode
-					}
+					{dataNode}
 				</div>
 			</div>
 		);
+	},
+
+	_getDataNode: function () {
+		if (this.state.isTable) {
+			var _helpText = "Information specific to individual chromosomes can be accessed by selecting the chromosome of interest. For a list of all features of a certain type (e.g. verified ORF, tRNA, etc.), select that chromosomal feature.";
+			return (<div>
+				<p style={{ position: "absolute", marginTop: 6, marginLeft: "1em" }}><HelpIcon isInfo={true} text={_helpText} /></p>
+				<DataTable data={this.props.tableData} />
+			</div>);
+		} else {
+			var vizNodeTypes = {
+				bar: (<BarChart
+					data={this.props.graphData.combined} yValue={ function (d) { return d.value; } }
+					labelValue={ function (d) { return d.name; } } labelRatio={0.2} colorScale={ function () { return "#DF8B93"; }}
+				/>),
+				genomeSnapshot: <GenomeSnapshot data={this.props.graphData} />
+			};
+
+			return vizNodeTypes[this.props.vizType];
+		}
 	}
 });

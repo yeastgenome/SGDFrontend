@@ -55,9 +55,11 @@ module.exports = React.createClass({
 		// add text node if active element has text property
 		var textNode = null;
 		if (active.text) {
-			// TEMP
-			var _helpText = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-			textNode = <div className="clearfix"><h3 className="toggle-text">{active.text} <HelpIcon text={_helpText}/></h3></div>;
+			// TEMP snapshot-specific
+			var _helpText = (<span>The default view is of Biological Process Features that are annotated to the ‘root’ terms are
+				considered ‘unknown’ and are shown in red.  More information on GO and GO slims can be found on SGD’s <a href="http://www.yeastgenome.org/help/function-help/gene-ontology-go">GO help page</a>. 
+				Please use the <a href="http://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a> or download the <a href="http://downloads.yeastgenome.org/curation/literature/">go_slim_mapping.tab</a> file to obtain the GO data summarized in these graphs.</span>);
+			textNode = <div className="clearfix"><h3 className="toggle-text"><span className="inner-toggle-text">{active.text}</span> <HelpIcon text={_helpText} isInfo={true}/></h3></div>;
 		}
 		
 		var _colorScale = (d) => { return d.isRoot ? "#DF8B93" : "#18AB2F"; };

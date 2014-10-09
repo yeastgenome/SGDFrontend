@@ -32,19 +32,6 @@ module.exports = React.createClass({
     },
 
     render: function () {
-        // prepare chromsomeNodes
-        // If showChromosomes, create an array of ChromsomeSnapshots for each in chromosome data.
-        // Otherwise, show combined features by making a single Chromsome snapshot with combined data.
-
-		// var _maxFeatures, _height;
-  //       if (this.state.showChromosomes) {
-
-  //           _height = 1500;
-  //       } else {
-
-  //           _height = 500;
-  //       }
-
         var _buttonText = this.state.showChromosomes ?
             <span>Show by Genome&nbsp;<i className="fa fa-angle-up"></i></span> : <span>Show by Chromosome&nbsp;<i className="fa fa-angle-down"></i></span>;
         var buttonNode = (<a onClick={this.toggleShowChromosomes} className="button small chromosome-toggle" role="button">

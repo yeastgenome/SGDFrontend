@@ -28,11 +28,8 @@ snapshotView.render = function () {
 		document.getElementsByClassName("navbar-container")[0]
 	);
 
-	// get the data URL from a variable in the DOM
-	var _snapshotUrl = bootstrappedData.snapshotUrl;
-
 	// init the model and fetch data
-	var genomeModel = new GenomeSnapshotModel({ url: _snapshotUrl });
+	var genomeModel = new GenomeSnapshotModel();
 	genomeModel.fetch( (err, nestedData) => {
 
 		// features visualization and table alt

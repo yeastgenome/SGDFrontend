@@ -6,6 +6,12 @@ var _ = require("underscore");
 
 module.exports = class GenomeSnapshotModel extends BaseModel {
 
+	constructor (options) {
+		var options = options || {};
+		options.url = options.url || "/backend/snapshot?callback=?";
+		super(options);
+	}
+
 	// Takes a large response, and uses separate parse functions and ultimately returns
 	// a nested object, with each value in the format expected by the corresponding component.
 	parse (response) {
