@@ -90,16 +90,23 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		Positive for watson, negative for crick.  Further from 0 is further from the center.
 	*/
 	_assignTracksToLocci (_locci) {
-		return _.map(_locci, (d) => {
+		var locci = _.map(_locci, (d) => {
 			// assign tracks to sub features
 			d.tags = _.map(d.tags, (t) => {
 				t.strand = d.strand;
 				t.start = t.relative_start;
-				t.end = t.relative_end
+				t.end = t.relative_end;
 				return LocusFormatHelper.assignTrackToSingleLocus(t, d.tags);
 			});
 			return d;
 		});
+
+		// if no subfeatures, assign track to locus
+		if (!locci[0].tags.length) {
+			locci[0] = LocusFormatHelper.assignTrackToSingleLocus(locci[0], locci);
+		}
+
+		return locci;
 	}
 
 	_formatTableData (subFeatures) {

@@ -90,17 +90,22 @@ module.exports = React.createClass({
 		);
 	},
 
-	// Get width from DOM to redo scale.
-	// If can render, setup d3 zoom/panning.
-	// If can't render, get data.
+	// Update width to that of real DOM.
 	componentDidMount: function () {
 		this._calculateWidth();
-		this._setupZoomEvents();
 	},
 
-	// if the width is updated, setup zoom events again
 	componentDidUpdate: function (prevProps, prevState) {
+		// If the width is updated, setup zoom events again.
 		if (this.state.DOMWidth !== prevState.DOMWidth) this._setupZoomEvents();
+
+		// If a new default domain (prob strain change, reset domain), and setup zoom events after 0.1 sec.
+		if (this.props.domainBounds !== prevProps.domainBounds) {
+			this.setState({ domain: this.props.domainBounds }); // don't use _setDomain to force it
+			setTimeout( () => {
+				if (this.isMounted()) this._setupZoomEvents();
+			}, 100);
+		}
 	},
 
 	// returns an svg "g" element, with embedded shapes

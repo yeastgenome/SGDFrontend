@@ -48,8 +48,9 @@ module.exports = React.createClass({
 	},
 
 	componentDidUpdate: function () {
-		if (this.props.detailsModel && !this.state.activeStrainKey) {
-			var _altStrainKey = this.props.detailsModel.attributes.altStrainMetaData[0].key;
+		var _detailsModel = this.props.detailsModel;
+		if (_detailsModel && !this.state.activeStrainKey && _detailsModel.attributes.altStrainMetaData.length) {
+			var _altStrainKey = _detailsModel.attributes.altStrainMetaData[0].key;
 			this.setState({ activeStrainKey: _altStrainKey });
 		}
 	},
@@ -100,8 +101,8 @@ module.exports = React.createClass({
 				domainBounds={attr.domainBounds}
 				focusLocusDisplayName={this.props.focusLocusDisplayName}
 				showSubFeatures={true}
-				watsonTracks={Math.abs(attr.trackDomain[0])}
-				crickTracks={Math.abs(attr.trackDomain[1])}
+				watsonTracks={Math.abs(attr.trackDomain[1])}
+				crickTracks={Math.abs(attr.trackDomain[0])}
 			/>);
 
 			tableNode = this._getSubFeaturesTable();

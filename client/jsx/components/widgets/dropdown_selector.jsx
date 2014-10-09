@@ -24,7 +24,7 @@ module.exports = React.createClass({
 	render: function () {
 		var optionsNodes = _.map(this.props.elements, e => {
 			var _disabled = this.props.isDisabled(e);
-			return <option value={e.key} disabled={_disabled}>{e.name}</option>;
+			return <option value={e.value} disabled={_disabled}>{e.name}</option>;
 		});
 		return <select onChange={this._handleChange} className="large-3" value={this.state.activeValue}>{optionsNodes}</select>;
 	},
