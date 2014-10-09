@@ -56,8 +56,8 @@ module.exports = React.createClass({
 			domainNode = <rect className="chromosome-thumb-inset" x={_lbX + 1} y={-1} width={_width} height={HEIGHT + 1} fill="none" />;
 		}
 
-		var _lbX = scale(this.props.domain[0]) - 1;
-		var _rbX = scale(this.props.domain[1]) - 1;
+		var _lbX = scale(this.props.domain[0] - 1);
+		var _rbX = scale(this.props.domain[1] + 1);
 		var _domainStyle = { position: "absolute", top: 0, bottom: 0 };
 		var _lDomainStyle = _.extend(_.clone(_domainStyle), { left: 0, width: _lbX });
 		var _rDomainStyle = _.extend(_.clone(_domainStyle), { left: _rbX, right: 0 });
@@ -66,7 +66,7 @@ module.exports = React.createClass({
 		var centerDomainNode = <div className="chromosome-thumb-center-inset" style={_cDomainStyle} />;
 		var rightDomainNode = <div className="chromosome-thumb-inset" style={_rDomainStyle} />;
 
-		return (<div>
+		return (<div style={{ position: "relative" }}>
 			<svg className="chromosome-thumb" style={{ width: this.state.DOMWidth, height: HEIGHT }}>
 				{leftArmNode}
 				{rightArmNode}

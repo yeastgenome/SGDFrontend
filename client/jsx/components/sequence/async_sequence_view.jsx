@@ -62,7 +62,6 @@ module.exports = React.createClass({
 
 	_getMainStrainNode: function () {
 		var node = (<div>
-			<h3>{this.props.focusLocusDisplayName} Location: dfsdfds</h3>
 			<SequenceComposite
 				focusLocusDisplayName={this.props.focusLocusDisplayName}
 				neighborsModel={this.state.neighborsModel}

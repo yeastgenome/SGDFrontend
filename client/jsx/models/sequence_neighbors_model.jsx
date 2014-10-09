@@ -12,6 +12,7 @@ module.exports = class SequenceNeighborsModel extends BaseModel {
 
 	constructor (options) {
 		options = options || {};
+		if (options.id) this.id = parseInt(options.id);
 		options.url = `/backend/locus/${options.id}/neighbor_sequence_details?callback=?`;
 		super(options);
 	}
@@ -37,10 +38,16 @@ module.exports = class SequenceNeighborsModel extends BaseModel {
 		var _start = _.min(_locci, (d) => { return d.start; }).start;
 		var _end = _.max(_locci, (d) => { return d.end; }).end;
 
+		var _focusLocus = _.filter(_locci, l => {
+			return l.locus.id === this.id;
+		})[0];
+		var _focusLocusDomain = [_focusLocus.start, _focusLocus.end];
+
 		return {
 			data: { locci: _locci },
 			domainBounds: [_start, _end],
 			contigData: _contigData,
+			focusLocusDomain: _focusLocusDomain,
 			strainKey: strainDisplayName,
 			trackDomain: _trackDomain
 		};

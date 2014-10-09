@@ -72,20 +72,25 @@ module.exports = React.createClass({
 	},
 
 	_getNeighborsNode: function () {
-		var innerNode = <img className="loader" src="/static/img/dark-slow-wheel.gif" />;
+		var node = <div className="panel sgd-viz"><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div>;
 		if (this.props.neighborsModel && (!this.props.showAltStrains || this.state.activeStrainKey)) {
 			var attr = this._getActiveStrainNeighborsData();
-			innerNode = (<LocusDiagram
-				contigData={attr.contigData}
-				data={attr.data}
-				domainBounds={attr.domainBounds}
-				focusLocusDisplayName={this.props.focusLocusDisplayName}
-				showSubFeatures={false}
-				watsonTracks={Math.abs(attr.trackDomain[1])}
-				crickTracks={Math.abs(attr.trackDomain[0])}
-			/>);
+			node = (<div className="panel sgd-viz">
+				<h3>
+					{this.props.focusLocusDisplayName} Location: <a href={attr.contigData.href}>{attr.contigData.name}</a> {attr.focusLocusDomain[0].toLocaleString()} - {attr.focusLocusDomain[1].toLocaleString()}
+				</h3>
+				<LocusDiagram
+					contigData={attr.contigData}
+					data={attr.data}
+					domainBounds={attr.domainBounds}
+					focusLocusDisplayName={this.props.focusLocusDisplayName}
+					showSubFeatures={false}
+					watsonTracks={Math.abs(attr.trackDomain[1])}
+					crickTracks={Math.abs(attr.trackDomain[0])}
+				/>
+			</div>);
 		}
-		return <div className="panel sgd-viz">{innerNode}</div>;
+		return node;
 	},
 
 	_getDetailsNode: function () {
