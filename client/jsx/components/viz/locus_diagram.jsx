@@ -137,10 +137,13 @@ module.exports = React.createClass({
 		// calc the last feature, to know where to draw arrow
 		var lastSubFeature = _.max(tags, d => { return d.relative_start; });
 
+		// tweak d3 color scale to use SGD purple for CDS
 		var colorScale = d3.scale.category10();
-		return _.map(tags, (d, i) => {
+		var _cRangd = colorScale.range();
+		_cRangd[0] = "#696599";
+		colorScale = colorScale.range(_cRangd);
 
-			// TEMP
+		return _.map(tags, (d, i) => {
 			var fill = colorScale(d.class_type);
 
 			var start = d.relative_start;
@@ -167,7 +170,8 @@ module.exports = React.createClass({
 			var _textX = startX  + (endX - startX) / 2;
 			var _textY = isIntron ? 0 : HEIGHT - 4;
 			var _textTransform = `translate(${_textX}, ${_textY})`;
-			var textNode = <text transform={_textTransform} textAnchor="middle">{d.display_name.replace(/_/g, " ")}</text>;
+			var _textFill = d.class_type === "CDS" ? "white" : "black";
+			var textNode = <text transform={_textTransform} textAnchor="middle" fill={_textFill}>{d.display_name.replace(/_/g, " ")}</text>;
 			// hide text if too small
 			var _approxWidth = d.display_name.length * 8;
 			if (_approxWidth > (endX - startX)) textNode = null;
@@ -175,7 +179,7 @@ module.exports = React.createClass({
 			// properties for all possible nodes
 			var _transformY = this._getTransformObject(d).y;
 			var groupTransform = `translate(0, ${_transformY})`;
-			var opacity = d.display_name === this.state.mouseoverOpacityString ? 1 : 0.6;
+			var opacity = d.display_name === this.state.mouseoverOpacityString ? 1 : 0.8;
 
 			// mouseover callback
 			var mouseoverObj = _.clone(d);
@@ -224,7 +228,7 @@ module.exports = React.createClass({
 		var _textX = relativeEndX / 2;
 		var _textY = HEIGHT - 4;
 		var _textTransform = `translate(${_textX}, ${_textY})`;
-		var _opacity = d.locus.display_name === this.state.mouseoverOpacityString ? 1 : 0.6;
+		var _opacity = d.locus.display_name === this.state.mouseoverOpacityString ? 1 : 0.8;
 		var textNode = <text className={`locus-diagram-anchor${focusKlass}`} onClick={_onClick} transform={_textTransform} textAnchor="middle">{d.locus.display_name}</text>;
 		// hide text if too small
 		if (_approxWidth > relativeEndX) textNode = null;
@@ -499,11 +503,17 @@ module.exports = React.createClass({
 
 	_getChromosomeThumb: function () {
 		var chromThumb = <span>&nbsp;</span>;
-		if (this.props.hasChromosomeThumb) {
+		// neighbor diagram with chrom thumb prop
+		if (this.props.hasChromosomeThumb &&!this.props.showSubFeatures) {
 			chromThumb = (<ChromosomeThumb
 				totalLength={this.props.contigData.length} domain={this.state.domain}
 				centromerePosition={this.props.contigData.centromerePosition}
 			/>);
+		// details diagram
+		} else if (this.props.showSubFeatures) {
+			var _subN = this.props.data.locci[0].tags.length;
+			var _labelText = (_subN > 1) ? "subfeatures" : "subfeature";
+			chromThumb = <h3 className="subfeature-label-text">Subfeatures - S288C<span className="round secondary label">{_subN} {_labelText}</span></h3>;
 		}
 
 		return chromThumb;

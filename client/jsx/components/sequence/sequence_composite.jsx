@@ -81,8 +81,8 @@ module.exports = React.createClass({
 				domainBounds={attr.domainBounds}
 				focusLocusDisplayName={this.props.focusLocusDisplayName}
 				showSubFeatures={false}
-				watsonTracks={Math.abs(attr.trackDomain[0])}
-				crickTracks={Math.abs(attr.trackDomain[1])}
+				watsonTracks={Math.abs(attr.trackDomain[1])}
+				crickTracks={Math.abs(attr.trackDomain[0])}
 			/>);
 		}
 		return <div className="panel sgd-viz">{innerNode}</div>;

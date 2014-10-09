@@ -18,7 +18,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 
 	parse (response) {
 		// alt strain data
-		var _altStrainTemp = _.filter(response.coding_dna, s => {
+		var _altStrainTemp = _.filter(response.genomic_dna, s => {
 			return (s.strain.status === "Alternative Reference");
 		});
 		var _altStrainsRaw = _.map(_altStrainTemp, s => {

@@ -67,7 +67,7 @@ module.exports = React.createClass({
 				focusLocusDisplayName={this.props.focusLocusDisplayName}
 				neighborsModel={this.state.neighborsModel}
 				detailsModel={this.state.detailsModel}
-				showAltStrains={true}
+				showAltStrains={false}
 			/>
 		</div>);
 

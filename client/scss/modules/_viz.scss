@@ -44,7 +44,6 @@
 	margin-top: 1em;
 }
 
-
 .genome-snapshot {
 	transition: max-height 1s;
 }
@@ -243,8 +242,8 @@
 	margin-top: -4px;
 	float: right;
 	.button {
-		background: #696599;
-		color: white;
+		// background: #696599;
+		// color: white;
 		font-size: 0.5rem;
 		padding-top: 6px;
 		padding-bottom: 6px;
@@ -299,19 +298,23 @@
 
 // chrom thumb {
 .chromosome-thumb-inset {
-	shape-rendering: crispEdges;
-	stroke: white;
-	fill: #696599;
-	stroke-width: 1px;
-	// fill: rgb(42, 162, 198);
-	// fill: #11728b; // version b, c
-	// fill: white; // version c, d
-	// opacity: 0.5; // version c, d
+	background: white;
+	opacity: 0.5;
+}
+
+.chromosome-thumb-center-inset {
+	border: 1px solid white;
+	border-bottom: none;
+	border-top: none;
 }
 
 .chromosome-thumb-arm {
-	fill: #696599;
-	opacity: 0.6;
-	// fill: #11728b; // version b,c
-	// opacity: 0.25;// version b,c
+	fill: #79050D;
+}
+
+h3.subfeature-label-text {
+	margin-bottom: 0;
+	span.secondary {
+		margin-bottom: 0;
+	}
 }
