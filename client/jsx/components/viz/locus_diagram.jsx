@@ -46,7 +46,7 @@ module.exports = React.createClass({
 		return {
 			domain: this.props.domainBounds,
 			DOMWidth: 355,
-			mouseoverOpacityString: null,
+			mouseoverId: null,
 			tooltipVisible: false,
 			tooltipLeft: 0,
 			tooltipTop: 0,
@@ -120,10 +120,9 @@ module.exports = React.createClass({
 	},
 
 	_getLocusWithSubFeaturesNode: function (d, isFocusLocus) {
-		var subFeatureNodes = this._getSubFeatureNodes(d.start, d.end, d.tags, (d.track > 0), isFocusLocus);
-
 		var _transformX = this._getTransformObject(d).x;
 		var _transform = `translate(${_transformX}, 0)`;
+		var subFeatureNodes = this._getSubFeatureNodes(d.start, d.end, d.tags, (d.strand === "+"), isFocusLocus, _transformX);
 		return (
 			<g transform={_transform}>
 				{subFeatureNodes}
@@ -131,7 +130,7 @@ module.exports = React.createClass({
 		);
 	},
 
-	_getSubFeatureNodes: function (chromStart, chromEnd, tags, isWatson, isFocusLocus) {
+	_getSubFeatureNodes: function (chromStart, chromEnd, tags, isWatson, isFocusLocus, groupTransformX) {
 		var scale = this._getScale();
 
 		// calc the last feature, to know where to draw arrow
@@ -179,18 +178,18 @@ module.exports = React.createClass({
 			// properties for all possible nodes
 			var _transformY = this._getTransformObject(d).y;
 			var groupTransform = `translate(0, ${_transformY})`;
-			var opacity = d.display_name === this.state.mouseoverOpacityString ? 1 : 0.8;
+			var opacity = d.id === this.state.mouseoverId ? 1 : 0.8;
 
 			// mouseover callback
 			var mouseoverObj = _.clone(d);
-			mouseoverObj.x = startX;
+			mouseoverObj.x = groupTransformX + startX;
 			var handleMouseover = e => { this._handleMouseOver(e, mouseoverObj); };
 			
 			// assign node for shape based on data
 			var shapeNode;
 			// last non intron, add arrow
 			if (isLast && !isIntron) {
-				var pathString = this._getTrapezoidStringPath(startX, endX, isWatson);
+				var pathString = this._getTrapezoidStringPath(startX, endX, (d.track > 0));
 				shapeNode = <path d={pathString}  onMouseOver={handleMouseover} opacity={opacity} fill={fill} />;
 			// intron, line
 			} else if (isIntron) {
@@ -228,7 +227,7 @@ module.exports = React.createClass({
 		var _textX = relativeEndX / 2;
 		var _textY = HEIGHT - 4;
 		var _textTransform = `translate(${_textX}, ${_textY})`;
-		var _opacity = d.locus.display_name === this.state.mouseoverOpacityString ? 1 : 0.8;
+		var _opacity = d.id === this.state.mouseoverId ? 1 : 0.8;
 		var textNode = <text className={`locus-diagram-anchor${focusKlass}`} onClick={_onClick} transform={_textTransform} textAnchor="middle">{d.locus.display_name}</text>;
 		// hide text if too small
 		if (_approxWidth > relativeEndX) textNode = null;
@@ -327,8 +326,6 @@ module.exports = React.createClass({
 	},
 
 	_handleMouseOver: function (e, d) {
-		var opacityString = d.locus ? d.locus.display_name : d.display_name;
-
 		// get the position
 		var target = e.currentTarget;
 		var _width = target.getBBox().width;
@@ -336,11 +333,10 @@ module.exports = React.createClass({
 		var _tooltipLeft = Math.min(this.state.DOMWidth, (d.x || _transformObj.x) + _width / 2);
 		_tooltipLeft = Math.max(5, _tooltipLeft);
 		var _tooltipTop = _transformObj.y + HEIGHT / 3;
-
 		var _tooltipData = this._formatTooltipData(d);
 
 		this.setState({
-			mouseoverOpacityString: opacityString,
+			mouseoverId: d.id,
 			tooltipData: _tooltipData.data,
 			tooltipTitle: _tooltipData.title,
 			tooltipHref: _tooltipData.href,
@@ -379,7 +375,7 @@ module.exports = React.createClass({
 
 	_clearMouseOver: function () {
 		this.setState({
-			mouseoverOpacityString: null, 
+			mouseoverId: null, 
 			tooltipVisible: false
 		}); 
 	},
