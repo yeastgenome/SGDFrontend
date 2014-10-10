@@ -108,7 +108,7 @@ h3 .fa-info-circle {
     margin-top: 0.1em;
 }
 
-.documentation-link {
+.documentation-link, .details-link {
     float: right;
     position: relative;
     top:3px;
@@ -129,4 +129,4 @@ h3 .fa-info-circle {
     right: 0;
     text-decoration: none;
 }
-.back-to-top:hover { background-color: rgba(185,185,185,0.85); } 
+.back-to-top:hover { background-color: rgba(185,185,185,0.85); }

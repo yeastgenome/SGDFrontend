@@ -45,15 +45,15 @@
 
 // Compass mixins
 @import
-	"compass/support",
-	"compass/layout/sticky-footer",
-	"compass/css3/images",
-	"compass/css3/border-radius",
-	"compass/css3/transition";
+    "compass/support",
+    "compass/layout/sticky-footer",
+    "compass/css3/images",
+    "compass/css3/border-radius",
+    "compass/css3/transition";
 
 // Font Awesome (check bower.json for version)
 @import 
-	"../../bower_components/font-awesome/scss/variables",
+    "../../bower_components/font-awesome/scss/variables",
     "../../bower_components/font-awesome/scss/mixins",
     "../../bower_components/font-awesome/scss/path",
     "../../bower_components/font-awesome/scss/core",
@@ -68,36 +68,36 @@
 
 // other vendor styles
 @import
-	"build/dataTables.foundation",
-	"build/nouislider",
-	"vendor/webicons";
+    "build/dataTables.foundation",
+    "build/nouislider",
+    "vendor/webicons";
 
 // custom variable
 @import "settings";
-	
+    
 // SGD Styles
 @import 
-	"base",
-	"layout",
-	"modules/animations",
-	"modules/autocomplete",
-	"modules/header",
-	"modules/footer",
-	"modules/side-nav",
-	"modules/forms",
-	"modules/icons",
-	"modules/key-value-display",
-	"modules/labels",
-	"modules/nested-lists",
-	"modules/references",
-	"modules/legends",
-	"modules/tables",
-	"modules/yetfasco",
-	"modules/foundation-overwrites",
+    "base",
+    "layout",
+    "modules/animations",
+    "modules/autocomplete",
+    "modules/header",
+    "modules/footer",
+    "modules/side-nav",
+    "modules/forms",
+    "modules/icons",
+    "modules/key-value-display",
+    "modules/labels",
+    "modules/nested-lists",
+    "modules/references",
+    "modules/legends",
+    "modules/tables",
+    "modules/yetfasco",
+    "modules/foundation-overwrites",
     "modules/viz",
     "modules/table_alternative",
     "nextgen_theme",
-	"state",
-	"theme",
-	"legacy",
-	"modules/print";
+    "state",
+    "theme",
+    "legacy",
+    "modules/print";
