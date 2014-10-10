@@ -75,6 +75,7 @@ module.exports = React.createClass({
 		var node = <div className="panel sgd-viz"><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div>;
 		if (this.props.neighborsModel && (!this.props.showAltStrains || this.state.activeStrainKey)) {
 			var attr = this._getActiveStrainNeighborsData();
+			if (!attr) return null
 			node = (<div className="panel sgd-viz">
 				<h3>
 					{this.props.focusLocusDisplayName} Location: <a href={attr.contigData.href}>{attr.contigData.name}</a> {attr.focusLocusDomain[0].toLocaleString()} - {attr.focusLocusDomain[1].toLocaleString()}
@@ -126,7 +127,8 @@ module.exports = React.createClass({
 		if (this._canRenderDetails()) {
 			var _text = this.props.showAltStrains ? "Sequence" : "Sequence - S288C";
 			var _sequences = this._getActiveStrainDetailsData().sequences;
-			innerNode = <SequenceToggler sequences={_sequences} text={_text}/>;
+			var _contigName = this._getActiveStrainDetailsData().contigData.formatName;
+			innerNode = <SequenceToggler sequences={_sequences} text={_text} locusDisplayName={this.props.focusLocusDisplayName} contigName={_contigName}/>;
 		}
 
 		return <div className="panel sgd-viz">{innerNode}</div>;

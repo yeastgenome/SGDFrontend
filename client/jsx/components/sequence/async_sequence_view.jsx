@@ -7,6 +7,7 @@ var _ = require("underscore");
 var SequenceDetailsModel = require("../../models/sequence_details_model.jsx");
 var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
 var SequenceComposite = require("./sequence_composite.jsx");
+var SequenceToggler = require("./sequence_toggler.jsx");
 
 /*
 	Fetches data from model and renders locus diagram (or loader while fetching).
@@ -28,17 +29,15 @@ module.exports = React.createClass({
 		};
 	},
 
-	// TEMP
 	render: function () {
-
 		var mainStrainNode = this._getMainStrainNode();
-		var altStrainNode = this._getAltStrainNode();
-
-		// TODO
-		// get node for alt strains
+		var altStrainsNode = this._getAltStrainsNode();
+		var otherStrainsNode = this._getOtherStrainsNode();
 
 		return (<div>
 			{mainStrainNode}
+			{altStrainsNode}
+			{otherStrainsNode}
 		</div>);
 	},
 
@@ -73,9 +72,33 @@ module.exports = React.createClass({
 		return node;
 	},
 
-	_getAltStrainNode: function () {
-		// TEMP
-		return null;
+	_getAltStrainsNode: function () {
+		var node = null;
+		if (this.state.detailsModel ? this.state.detailsModel.attributes.altStrains.length : false) {
+			node = (<div><SequenceComposite
+				focusLocusDisplayName={this.props.focusLocusDisplayName}
+				neighborsModel={this.state.neighborsModel}
+				detailsModel={this.state.detailsModel}
+				showAltStrains={true}
+				showSubFeatures={false}
+			/></div>);
+		}
+
+		return node;
+	},
+
+	_getOtherStrainsNode: function () {
+		var node = null
+		if (this.state.detailsModel ? this.state.detailsModel.attributes.otherStrains.length : false) {
+			node = (<div className="panel sgd-viz">
+				<SequenceToggler
+					sequences={this.state.detailsModel.attributes.otherStrains} text={"hello"}
+					locusDisplayName={this.props.focusLocusDisplayName} showSequence={false}
+				/>
+			</div>);
+		}
+
+		return node;
 	}
 
 });

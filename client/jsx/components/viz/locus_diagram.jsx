@@ -503,7 +503,7 @@ module.exports = React.createClass({
 		if (this.props.hasChromosomeThumb &&!this.props.showSubFeatures) {
 			chromThumb = (<ChromosomeThumb
 				totalLength={this.props.contigData.length} domain={this.state.domain}
-				centromerePosition={this.props.contigData.centromerePosition}
+				centromerePosition={this.props.contigData.centromerePosition} isChromosome={this.props.contigData.isChromosome}
 			/>);
 		// details diagram
 		} else if (this.props.showSubFeatures) {

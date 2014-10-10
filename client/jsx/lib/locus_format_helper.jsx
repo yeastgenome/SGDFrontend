@@ -68,19 +68,19 @@ module.exports = {
 
 	formatContigData: function (contigData) {
 		var _centromerePosition = null;
-		contigData.is_chromosome = true; // TEMP
+		contigData.is_chromosome = (contigData.is_chromosome === "undefined") ? false : contigData.is_chromosome;
 		if (contigData.is_chromosome) {
-			// TEMP default centromere position to 50000
 			_centromerePosition = (contigData.centromere_start && contigData.centromere_end) ?
 				(contigData.centromere_start + contigData.centromere_end) / 2:
-				50000;
+				null;
 		}
 
 		return {
 			name: contigData.display_name,
+			formatName: contigData.format_name,
 			href: contigData.link,
 			isChromosome: contigData.is_chromosome,
-			length: contigData.length || 250000,
+			length: contigData.length || 250000, // TEMP default 250 kbp length
 			centromerePosition: _centromerePosition
 		};
 	}

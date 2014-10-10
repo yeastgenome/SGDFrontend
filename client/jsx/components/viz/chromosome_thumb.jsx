@@ -21,7 +21,8 @@ module.exports = React.createClass({
 		return {
 			totalLength: null, // *
 			domain: null,
-			centromerePosition: null  // *
+			centromerePosition: null,  // *
+			isChromosome: true
 		};
 	},
 
@@ -34,19 +35,30 @@ module.exports = React.createClass({
 	render: function () {
 		// helper vars
 		var scale = this._getScale();
-		var centromereX = scale(this.props.centromerePosition);
 		var armHeight = HEIGHT;
+		var borderRadius = this.props.isChromosome ? (HEIGHT / 2) : 0;
 
-		// form left arm
-		var _leftWidth = centromereX - (CENTROMERE_RADIUS / 2);
-		var leftArmNode = <rect className="chromosome-thumb-arm" x={0} y={0} width={_leftWidth} height={armHeight} rx={HEIGHT / 2} />;
+		var leftArmNode = null;
+		var rightArmNode = null;
+		var centroMereNode = null;
+		var nonChromNode = null
 
-		// form right arm
-		var _rightWidth = this.state.DOMWidth - centromereX - (CENTROMERE_RADIUS / 2);
-		var rightArmNode = <rect className="chromosome-thumb-arm" x={centromereX + CENTROMERE_RADIUS / 2} y={0} width={_rightWidth} height={armHeight} rx={HEIGHT / 2} />;
+		if (this.props.isChromosome) {
+			var centromereX = scale(this.props.centromerePosition);
+			
+			// form left arm
+			var _leftWidth = centromereX - (CENTROMERE_RADIUS / 2);
+			leftArmNode = <rect className="chromosome-thumb-arm" x={0} y={0} width={_leftWidth} height={armHeight} rx={borderRadius} />;
 
-		// centromere circle
-		var centroMereNode = <circle cx={centromereX} cy={HEIGHT / 2} r={CENTROMERE_RADIUS} fill="black" shape-rendering="crispEdges" />;
+			// form right arm
+			var _rightWidth = this.state.DOMWidth - centromereX - (CENTROMERE_RADIUS / 2);
+			rightArmNode = <rect className="chromosome-thumb-arm" x={centromereX + CENTROMERE_RADIUS / 2} y={0} width={_rightWidth} height={armHeight} rx={borderRadius} />;
+
+			// centromere circle
+			centroMereNode = <circle cx={centromereX} cy={HEIGHT / 2} r={CENTROMERE_RADIUS} fill="black" shape-rendering="crispEdges" />;
+		} else {
+			nonChromNode = <rect className="chromosome-thumb-arm" x={0} y={0} width={this.state.DOMWidth} height={armHeight} rx={borderRadius} />;
+		}
 
 		// inset box
 		var domainNode = null;
@@ -71,6 +83,7 @@ module.exports = React.createClass({
 				{leftArmNode}
 				{rightArmNode}
 				{centroMereNode}
+				{nonChromNode}
 				{leftDomainNode}
 				{centerDomainNode}
 				{rightDomainNode}

@@ -33,11 +33,19 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		});
 		// 288C data
 		var _mainStrain = this._formatStrainData(MAIN_STRAIN_NAME, response, MAIN_STRAIN_NAME);
+		// other strains
+		var _otherTemp = _.filter(response.genomic_dna, s => {
+			return (s.strain.status === "Other");
+		});
+		var _otherStrains = _.map(_otherTemp, s => {
+			return this._formatOtherStrainData(s.strain.format_name, response);
+		});
 
 		return {
 			mainStrain: _mainStrain,
 			altStrains: _altStrains,
-			altStrainMetaData: _altMeta
+			altStrainMetaData: _altMeta,
+			otherStrains: _otherStrains
 		};
 	}
 
@@ -132,7 +140,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 	}
 
 	_formatAltStrainMetaData(strainDisplayName, response) {
-		var _strain = _.filter(response.coding_dna, s => { return s.strain.display_name === strainDisplayName; })[0].strain;
+		var _strain = _.filter(response.genomic_dna, s => { return s.strain.display_name === strainDisplayName; })[0].strain;
 		return {
 			key: _strain.format_name,
 			name: _strain.display_name,
@@ -140,6 +148,22 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 			href: _strain.link,
 			id: _strain.id,
 			status: _strain.status
+		};
+	}
+
+	_formatOtherStrainData(strainFormatName, response) {
+		var strainData = _.filter(response.genomic_dna, s => { return s.strain.format_name === strainFormatName; })[0];
+
+		return {
+			contigFormatName: strainData.contig.format_name,
+			key: strainData.strain.format_name,
+			name: strainData.strain.display_name,
+			value: strainData.strain.format_name,
+			description: strainData.strain.description,
+			href: strainData.strain.link,
+			id: strainData.strain.id,
+			status: strainData.strain.status,
+			sequence: strainData.residues
 		};
 	}
 };
