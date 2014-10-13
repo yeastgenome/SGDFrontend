@@ -27,7 +27,14 @@ module.exports = React.createClass({
 	},
 
 	getInitialState: function () {
-		return { activeStrainKey: null };
+		var _strainKey = null;
+		if (this.props.defaultAltStrainKey) {
+			_strainKey = this.props.defaultAltStrainKey;
+		}
+
+		return {
+			activeStrainKey: _strainKey
+		};
 	},
 
 	render: function () {
@@ -44,14 +51,6 @@ module.exports = React.createClass({
 				{detailsNode}
 				{sequenceNode}
 			</div>);
-		}
-	},
-
-	componentDidUpdate: function () {
-		var _detailsModel = this.props.detailsModel;
-		if (_detailsModel && !this.state.activeStrainKey && _detailsModel.attributes.altStrainMetaData.length) {
-			var _altStrainKey = _detailsModel.attributes.altStrainMetaData[0].key;
-			this.setState({ activeStrainKey: _altStrainKey });
 		}
 	},
 
@@ -73,7 +72,7 @@ module.exports = React.createClass({
 
 	_getNeighborsNode: function () {
 		var node = <div className="panel sgd-viz"><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div>;
-		if (this.props.neighborsModel && (!this.props.showAltStrains || this.state.activeStrainKey)) {
+		if (this._canRenderNeighbors()) {
 			var attr = this._getActiveStrainNeighborsData();
 			if (!attr) return null
 			node = (<div className="panel sgd-viz">
@@ -132,6 +131,10 @@ module.exports = React.createClass({
 		}
 
 		return <div className="panel sgd-viz">{innerNode}</div>;
+	},
+
+	_canRenderNeighbors: function () {
+		return (this.props.neighborsModel && (!this.props.showAltStrains || this.state.activeStrainKey));
 	},
 
 	_canRenderDetails: function () {

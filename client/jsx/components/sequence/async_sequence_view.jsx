@@ -74,11 +74,13 @@ module.exports = React.createClass({
 
 	_getAltStrainsNode: function () {
 		var node = null;
-		if (this.state.detailsModel ? this.state.detailsModel.attributes.altStrains.length : false) {
+		if (this.state.detailsModel ? this.state.detailsModel.attributes.altStrainMetaData.length : false) {
+			var _defaultAltStrainKey = this.state.detailsModel.attributes.altStrainMetaData[0].key;
 			node = (<div><SequenceComposite
 				focusLocusDisplayName={this.props.focusLocusDisplayName}
 				neighborsModel={this.state.neighborsModel}
 				detailsModel={this.state.detailsModel}
+				defaultAltStrainKey={_defaultAltStrainKey}
 				showAltStrains={true}
 				showSubFeatures={false}
 			/></div>);

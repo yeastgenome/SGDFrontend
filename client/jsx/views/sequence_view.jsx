@@ -4,7 +4,6 @@
 var React = require("react");
 
 var NavBar = require("../components/navbar.jsx");
-// var AsyncLocusDiagram = require("../components/async/async_locus_diagram.jsx");
 var AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");
 
 var sequenceView = {};
