@@ -9,6 +9,7 @@ var _ = require("underscore");
 
 var DataTable = require("../data_table.jsx");
 var DropdownSelector = require("../widgets/dropdown_selector.jsx");
+var HelpIcon = require("../widgets/help_icon.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
 var SequenceToggler = require("./sequence_toggler.jsx");
 
@@ -41,12 +42,12 @@ module.exports = React.createClass({
 		if (!this.props.neighborsModel && !this.props.detailsModel) {
 			return <div className="panel sgd-viz"><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div>;
 		} else {
-			var strainSelectorNode = this._getStrainSelectorNode();
+			var titleNode = this._getTitleNode();
 			var neighborsNode = this._getNeighborsNode();
 			var detailsNode = this._getDetailsNode();
 			var sequenceNode = this._getSequenceNode();
 			return (<div>
-				{strainSelectorNode}
+				{titleNode}
 				{neighborsNode}
 				{detailsNode}
 				{sequenceNode}
@@ -60,11 +61,39 @@ module.exports = React.createClass({
 			var _elements = _.map(this.props.detailsModel.attributes.altStrainMetaData, s => {
 				return {
 					value: s.key,
-					name: s.name
+					name: s.name,
+					description: s.description
 				};
 			});
 			var _onChange = (key) => { this.setState({ activeStrainKey: key }); };
-			node = <DropdownSelector elements={_elements} onChange={_onChange} defaultActiveValue={this.state.activeStrainKey}/>;
+			node = <DropdownSelector elements={_elements} onChange={_onChange} defaultActiveValue={this.state.activeStrainKey}/>;				
+		}
+
+		return node;
+	},
+
+	_getTitleNode: function () {
+		var node;
+		if (this.props.showAltStrains) {
+			var selectNode = this._getStrainSelectorNode();
+			var helpNode = <HelpIcon text="Alternative Reference strains are major laboratory yeast strains with a substantial history of use and experimental results. These strains include W303, Sigma1278b, SK1, SEY6210, CEN.PK, D273-10B, JK9-3d, FL100, RM11-1a, and Y55." isInfo={true} />;
+			node = (<div>
+				<h2>Alternative Reference Strains {helpNode}</h2>
+				{selectNode}
+			</div>);
+		} else {
+			var helpNode = <HelpIcon text={<span>The <i>S. cerevisiae</i> reference genome sequence is derived from laboratory strain S288C.</span>} isInfo={true} />;
+			var _gbHref = "http://browse.yeastgenome.org/fgb2/gbrowse/scgenome/?name=" + this.props.focusLocusFormatName;
+			var _mapHref = "http://www.yeastgenome.org/cgi-bin/ORFMAP/ORFmap?dbid=" + this.props.focusLocusFormatName;
+			node = (<div className="row">
+				<div className="columns small-6">
+					<h2>Reference Strain: S288C {helpNode}</h2>
+				</div>
+				<div className="columns small-6 right">
+					<p className="text-right">View in: <a href={_gbHref}>GBrowse</a> | <a href={_mapHref}>ORF Map</a></p>
+				</div>
+			</div>);
+			
 		}
 
 		return node;

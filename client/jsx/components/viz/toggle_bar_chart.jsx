@@ -5,7 +5,7 @@ var React = require("react");
 var d3 = require("d3");
 var _ = require("underscore");
 
-var HelpIcon = require("../help_icon.jsx");
+var HelpIcon = require("../widgets/help_icon.jsx");
 var RadioSelector = require("../radio_selector.jsx");
 var BarChart = require("./bar_chart.jsx");
 

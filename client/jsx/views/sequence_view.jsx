@@ -28,7 +28,7 @@ sequenceView.render = function () {
 	// render locus neighbor diagram
 	React.renderComponent(
 		<AsyncSequenceView
-			locusId={locus_id} focusLocusDisplayName={display_name}
+			locusId={locus_id} locusDisplayName={display_name} locusFormatName={format_name}
 		/>,
 		document.getElementById("sequence-viz")
 	);

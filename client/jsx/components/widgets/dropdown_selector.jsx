@@ -26,7 +26,17 @@ module.exports = React.createClass({
 			var _disabled = this.props.isDisabled(e);
 			return <option value={e.value} disabled={_disabled}>{e.name}</option>;
 		});
-		return <select onChange={this._handleChange} className="large-3" value={this.state.activeValue}>{optionsNodes}</select>;
+
+		var descriptionNode = null;
+		var _description = this._getActiveElement().description;
+		if (_description) {
+			descriptionNode = <span> - {_description}</span>;
+		}
+
+		return (<span>
+			<select onChange={this._handleChange} className="large-3" value={this.state.activeValue}>{optionsNodes}</select>
+			{descriptionNode}
+		</span>);
 	},
 
 	_handleChange: function (e) {
@@ -35,5 +45,9 @@ module.exports = React.createClass({
 			this.props.onChange(_newValue);
 		}
 		this.setState({ activeValue: _newValue });
+	},
+
+	_getActiveElement: function () {
+		return _.findWhere(this.props.elements, { value: this.state.activeValue });
 	}
 });

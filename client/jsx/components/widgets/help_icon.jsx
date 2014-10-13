@@ -10,7 +10,6 @@ module.exports = React.createClass({
 	getDefaultProps: function () {
 		return {
 			text: "",
-			html: null,
 			orientation: "left",
 			isInfo: false, // makes an "i" if true, default is "?"
 		};

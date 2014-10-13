@@ -4,6 +4,7 @@
 var React = require("react");
 var _ = require("underscore");
 
+var HelpIcon = require("../widgets/help_icon.jsx");
 var SequenceDetailsModel = require("../../models/sequence_details_model.jsx");
 var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
 var SequenceComposite = require("./sequence_composite.jsx");
@@ -16,8 +17,10 @@ module.exports = React.createClass({
 
 	getDefaultProps: function () {
 		return {
-			focusLocusDisplayName: null,
+			locusDisplayName: null,
+			locusFormatName: null,
 			showAltStrains: true,
+			showOtherStrains: true,
 			locusId: null,
 		};
 	},
@@ -60,30 +63,32 @@ module.exports = React.createClass({
 	},
 
 	_getMainStrainNode: function () {
-		var node = (<div>
+		var node = (<section id="reference" data-magellan-destination="reference">
 			<SequenceComposite
-				focusLocusDisplayName={this.props.focusLocusDisplayName}
+				focusLocusDisplayName={this.props.locusDisplayName}
+				focusLocusFormatName={this.props.locusFormatName}
 				neighborsModel={this.state.neighborsModel}
 				detailsModel={this.state.detailsModel}
 				showAltStrains={false}
 			/>
-		</div>);
+		</section>);
 
 		return node;
 	},
 
 	_getAltStrainsNode: function () {
 		var node = null;
+		if (!this.props.showAltStrains) return node;
 		if (this.state.detailsModel ? this.state.detailsModel.attributes.altStrainMetaData.length : false) {
 			var _defaultAltStrainKey = this.state.detailsModel.attributes.altStrainMetaData[0].key;
-			node = (<div><SequenceComposite
-				focusLocusDisplayName={this.props.focusLocusDisplayName}
+			node = (<section id="alternative" data-magellan-destination="alternative"><SequenceComposite
+				focusLocusDisplayName={this.props.locusDisplayName}
 				neighborsModel={this.state.neighborsModel}
 				detailsModel={this.state.detailsModel}
 				defaultAltStrainKey={_defaultAltStrainKey}
 				showAltStrains={true}
 				showSubFeatures={false}
-			/></div>);
+			/></section>);
 		}
 
 		return node;
@@ -91,13 +96,20 @@ module.exports = React.createClass({
 
 	_getOtherStrainsNode: function () {
 		var node = null
+		if (!this.props.showOtherStrains) return node;
 		if (this.state.detailsModel ? this.state.detailsModel.attributes.otherStrains.length : false) {
-			node = (<div className="panel sgd-viz">
-				<SequenceToggler
-					sequences={this.state.detailsModel.attributes.otherStrains} text={"hello"}
-					locusDisplayName={this.props.focusLocusDisplayName} showSequence={false}
-				/>
-			</div>);
+			var outerHelpNode = <HelpIcon text="Other laboratory, industrial, and environmental isolates; sequences available via the Download button." isInfo={true} />;
+			var innerHelpNode = <HelpIcon text="Select a strain using the pull-down in order to download its sequence as an .fsa file using the Download button located directly below." />;
+			node = (<section id="other" data-magellan-destination="other">
+				<h2>Other Strains {outerHelpNode}</h2>
+				<div className="panel sgd-viz">
+					<h3>Strains Available for Download {innerHelpNode}</h3>
+					<SequenceToggler
+						sequences={this.state.detailsModel.attributes.otherStrains}
+						locusDisplayName={this.props.locusDisplayName} showSequence={false}
+					/>
+				</div>
+			</section>);
 		}
 
 		return node;
