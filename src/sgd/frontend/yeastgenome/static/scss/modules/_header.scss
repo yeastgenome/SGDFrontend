@@ -41,7 +41,22 @@ http://smacss.com/book/type-module
 
 #sgd-mini-logo {
 	margin: 8px;
-}	
+}
+
+// TEMP survery link
+.temp-survey-notice {
+	position: absolute;
+	width: 204px;
+	top: 21px;
+	left: 330px;
+	z-index: 10;
+}
+.small-survey-container {
+	background: #f04124;
+	a {
+		color: white;
+	}
+}
 
 #adv-search-links {
 	font-size: em-calc(11);
