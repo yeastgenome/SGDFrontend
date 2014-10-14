@@ -30,6 +30,11 @@ http://smacss.com/book/type-module
 	}
 }
 
+#txt_search_container {
+	margin-left: 38.5% !important;
+	width: 53.17%;
+}
+
 #top-search-input-container div {
 	top: -30px;
 }
@@ -55,7 +60,7 @@ http://smacss.com/book/type-module
 .site-links {
 	margin: 0;
 	position: absolute;
-    right: 130px;
+    right: 153px;
     font-size: em-calc(13);
     li {
         margin-left: em-calc(14);
