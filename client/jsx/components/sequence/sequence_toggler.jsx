@@ -75,7 +75,7 @@ module.exports = React.createClass({
 				var _colors = [{ text: "CDS", color: "blue" }, { text: "Intron" , color: "red" }];
 				legendNode = <Legend elements={_colors} />;
 			} else {
-				sequenceNode = this._getComplexSequenceNode(seq);
+				sequenceNode = this._getSimpleSequenceNode(seq);
 			}
 
 			node = (<div>
@@ -108,16 +108,31 @@ module.exports = React.createClass({
 		return null;
 	},
 
-	_getSimleSequenceNode: function (sequence) {
-
+	_getSimpleSequenceNode: function (sequence) {
+		var tenChunked = sequence.match(/.{1,10}/g).join(" ");
+		var lineArr = tenChunked.match(/.{1,66}/g);
+		var maxLabelLength = ((lineArr.length * LETTERS_PER_LINE + 1).toString().length)
+		lineArr = _.map(lineArr, (l, i) => {
+			var lineNum = i * LETTERS_PER_LINE + 1;
+			var numSpaces = maxLabelLength - lineNum.toString().length;
+			var spacesStr = Array(numSpaces + 1).join(" ");
+			return `${spacesStr}${lineNum} ${l}`;
+		});
+		return _.map(lineArr, l => {
+			return <span>{l}<br /></span>;
+		});
 	},
 
 	_getComplexSequenceNode: function (sequence) {
+		var maxLabelLength = sequence.length.toString().length + 1;
+		console.log(maxLabelLength)
 		var chunked = sequence.split("")
 		var colors = {
 			"CDS": "blue",
 			"INTRON": "red"
 		};
+
+		
 		
 		return _.map(chunked, (c, i) => {
 			i++;
@@ -126,7 +141,9 @@ module.exports = React.createClass({
 			var str = c + sp + cr;
 			var _classType = this._getSubFeatureTypeFromIndex(i);
 
-			return <span key={`sequence-car${i}`} style={{ color: colors[_classType] }}>{str}</span>;
+			var labelNode = (i - 1) % LETTERS_PER_LINE === 0 ? <span style={{ color: "black" }}>{`${i}${Array(maxLabelLength - i.toString().length).join(" ")} `}</span> : null;
+
+			return <span key={`sequence-car${i}`} style={{ color: colors[_classType] }}>{labelNode}{str}</span>;
 		});
 	},
 
