@@ -8,6 +8,7 @@ var React = require("react");
 var _ = require("underscore");
 
 var DataTable = require("../data_table.jsx");
+var DownloadButton = require("../widgets/download_button.jsx");
 var DropdownSelector = require("../widgets/dropdown_selector.jsx");
 var HelpIcon = require("../widgets/help_icon.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
@@ -127,6 +128,7 @@ module.exports = React.createClass({
 
 		var innerNode = <img className="loader" src="/static/img/dark-slow-wheel.gif" />;
 		var tableNode = null;
+		var downloadNode = null;
 		if (this._canRenderDetails()) {
 			var attr = this._getActiveStrainDetailsData();
 			innerNode = (<LocusDiagram
@@ -140,11 +142,14 @@ module.exports = React.createClass({
 			/>);
 
 			tableNode = this._getSubFeaturesTable();
+			// TODO add params
+			downloadNode = <DownloadButton url="/download_table" />;
 		}
 
 		return (<div className="panel sgd-viz">
 			{innerNode}
 			{tableNode}
+			{downloadNode}
 		</div>);
 	},
 
@@ -154,9 +159,10 @@ module.exports = React.createClass({
 		var innerNode = <img className="loader" src="/static/img/dark-slow-wheel.gif" />;
 		if (this._canRenderDetails()) {
 			var _text = this.props.showAltStrains ? "Sequence" : "Sequence - S288C";
-			var _sequences = this._getActiveStrainDetailsData().sequences;
-			var _contigName = this._getActiveStrainDetailsData().contigData.formatName;
-			innerNode = <SequenceToggler sequences={_sequences} text={_text} locusDisplayName={this.props.focusLocusDisplayName} contigName={_contigName}/>;
+			var _detailsData = this._getActiveStrainDetailsData()
+			var _sequences = _detailsData.sequences;
+			var _contigName = _detailsData.contigData.formatName;
+			innerNode = <SequenceToggler sequences={_sequences} text={_text} locusDisplayName={this.props.focusLocusDisplayName} contigName={_contigName} subFeatureData={_detailsData.data.locci[0].tags}/>;
 		}
 
 		return <div className="panel sgd-viz">{innerNode}</div>;
