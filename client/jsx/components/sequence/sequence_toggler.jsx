@@ -125,15 +125,12 @@ module.exports = React.createClass({
 
 	_getComplexSequenceNode: function (sequence) {
 		var maxLabelLength = sequence.length.toString().length + 1;
-		console.log(maxLabelLength)
 		var chunked = sequence.split("")
 		var colors = {
 			"CDS": "blue",
 			"INTRON": "red"
 		};
-
-		
-		
+				
 		return _.map(chunked, (c, i) => {
 			i++;
 			var sp = (i % LETTERS_PER_CHUNK === 0 && !(i % LETTERS_PER_LINE === 0)) ? " " : "";

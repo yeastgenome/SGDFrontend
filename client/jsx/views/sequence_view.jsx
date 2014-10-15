@@ -13,7 +13,7 @@ sequenceView.render = function () {
 	document.getElementById('sequence_tab').id = 'current';
 
 	// render nav bar
-	var navTitle = { href: locus_link, name: ( format_name === display_name ? display_name : `${display_name} / ${format_name}`) };
+	var navTitle = { href: bootstrappedData.locusLink, name: ( bootstrappedData.formatName === bootstrappedData.displayName ? bootstrappedData.displayName : `${bootstrappedData.displayName} / ${bootstrappedData.formatName}`) };
 	var navElements = [
 		{ name: "Sequence Overview", target: "overview" },
 		{ name: "Reference Strain: S288C", target: "reference" },
@@ -28,7 +28,8 @@ sequenceView.render = function () {
 	// render locus neighbor diagram
 	React.renderComponent(
 		<AsyncSequenceView
-			locusId={locus_id} locusDisplayName={display_name} locusFormatName={format_name}
+			locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
+			locusFormatName={bootstrappedData.formatName} locusHistory={bootstrappedData.locusHistory}
 		/>,
 		document.getElementById("sequence-viz")
 	);

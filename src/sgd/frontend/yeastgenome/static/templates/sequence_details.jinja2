@@ -10,10 +10,13 @@
     var download_sequence_link = "{{download_sequence_link}}";
 	var analyze_link = "{{analyze_table_link}}";
 
-	var display_name = "{{ locus.display_name }}";
-    var format_name = "{{ locus.format_name }}";
-	var locus_id = "{{ locus.id }}";
-    var locus_link = "{{ locus.link }}";
+    var bootstrappedData = {
+        displayName: "{{ locus.display_name }}",
+        formatName: "{{ locus.format_name }}",
+        locusId: "{{ locus.id }}",
+        locusLink: "{{ locus.link }}",
+        locusHistory: {{ history_js|safe }}
+    };
 </script>
 {% endblock %}
 

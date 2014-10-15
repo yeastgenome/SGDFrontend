@@ -92,7 +92,10 @@ class YeastgenomeFrontend(FrontendInterface):
         return self.locus(bioent_repr)
 
     def sequence_details(self, bioent_repr):
-        return self.locus(bioent_repr)
+        obj = self.locus(bioent_repr)
+        history = { 'history_js': json.dumps(obj.get('locus').get('history')) }
+        obj.update(history)
+        return obj
 
     def curator_sequence(self, bioent_repr):
         return self.locus(bioent_repr)
