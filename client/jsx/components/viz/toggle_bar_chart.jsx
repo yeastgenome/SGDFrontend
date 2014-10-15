@@ -41,7 +41,7 @@ module.exports = React.createClass({
 		var controlsNode = <RadioSelector elements={this.props.data} initialActiveElementKey={this.state.activeDataKey} onSelect={_onSelect} />;
 
 		// get the data that corresponds to the active element
-		var active = _.findWhere(this.props.data, { key: this.state.activeDataKey })
+		var active = _.findWhere(this.props.data, { key: this.state.activeDataKey });
 		var activeData = active.data;
 
 		// if there are more than FILTER_TRESHOLD elements, filter them

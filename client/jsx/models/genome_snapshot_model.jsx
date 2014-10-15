@@ -54,7 +54,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 	// put data in table format
 	_formatDataForTable (chromosomeData) {
-		var tableHeaders = _.map(chromosomeData, (c) => {
+		var tableHeaders = _.map(chromosomeData, c => {
 			return {
 				value: c.display_name.split(" ")[1],
 				href: c.link
@@ -103,7 +103,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		tableRows.push(totalRow);
 
 		// add row for length (bp)
-		var lengthRow = _.map(chromosomeData, (c) => {
+		var lengthRow = _.map(chromosomeData, c => {
 			return c.length || 0;
 		});
 		lengthRow.unshift("Chromosome Length (bp)");
@@ -125,7 +125,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 		// make numbers strings
 		tableRows = _.map(tableRows, (row) => {
-			row = _.map(row, (c) => {
+			row = _.map(row, c => {
 				return (typeof c === "number") ? c.toLocaleString() : c;
 			});
 			return row;
@@ -207,42 +207,40 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 	// format GO data into nested format for d3 partition
 	_parseGo (response) {
 		var data = response;
-		var allSlimTerms = _.uniq(data.go_slim_terms, (t) => { return t.id });
+		var allSlimTerms = _.uniq(data.go_slim_terms, t => { return t.id });
 
 		// helper function to get terms from their ID
 		var termById = function (_id) {
 			return _.findWhere(allSlimTerms, { id: _id });
 		};
 
-		// id's for top level
-		var topIds = [139709, 137832, 140984];
+		// start with array of top level GO cats
+		var goTerms = _.filter(allSlimTerms, t => {
+			return t.is_root;
+		});
+
+		var topIds = _.map(goTerms, t => { return t.id; });
+		// get child terms
+		var childTerms = _.filter(allSlimTerms, t => {
+			return !t.is_root;
+		});
 
 		// define relationship elements for more specific terms
-		var relationships = _.uniq(data.go_slim_relationships, (r) => {
+		var allRelationships = _.uniq(data.go_slim_relationships, r => {
 			return r[0];
 		});
-		relationships = _.filter(relationships, (r) => {
+		var relationships = _.filter(allRelationships, r => {
 			return topIds.indexOf(r[1]) >= 0;
-		});
-
-		// get child terms
-		var childTerms = _.filter(allSlimTerms, (t) => {
-			return topIds.indexOf(t.id) < 0;
-		});
-
-		// start with array of top level GO cats
-		var goTerms = _.filter(allSlimTerms, (t) => {
-			return topIds.indexOf(t.id) >= 0;
 		});
 
 		// format data, mapping children to parents
 		goTerms = _.map(goTerms, (termData) => {
-			var _childRelationships = _.filter(relationships, (r) => {
+			var _childRelationships = _.filter(relationships, r => {
 				return r[1] === termData.id;
 			});
 
 			// format child terms
-			var _childTerms = _.map(_childRelationships, (r) => {
+			var _childTerms = _.map(_childRelationships, r => {
 				return termById(r[0]);
 			});
 			// add an entry for annotated to root (unknown)
@@ -257,7 +255,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 			});
 			// sort desc
-			_childTerms = _.sortBy(_childTerms, (d) => {
+			_childTerms = _.sortBy(_childTerms, d => {
 				return -d.descendant_annotation_gene_count;
 			});
 
@@ -270,15 +268,13 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 			};
 		});
 
-		return _.sortBy(goTerms, (t) => { return t.key === "biological_process" ? -1 : 1; });
+		return _.sortBy(goTerms, t => { return t.key === "biological_process" ? -1 : 1; });
 	}
 
 	// return just array of phenotype terms (no relationships)
 	_parsePhenotypes (response) {
-		// filter out id 176220 (overview) to just have an array of children
-		var filteredId = 176220;
-		var arr = _.filter(response.phenotype_slim_terms, (t) => { return t.id != filteredId });
-		arr = _.sortBy(arr, (p) => { return -p.descendant_annotation_gene_count; });
+		var arr = _.filter(response.phenotype_slim_terms, p => { return !p.is_root; });
+		arr = _.sortBy(arr, p => { return -p.descendant_annotation_gene_count; });
 		return arr;
 	}
 };
