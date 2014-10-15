@@ -65,7 +65,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 		var tableRows = _.map(chromosomeData[0].features, (f, i) => {
 			// columns in each row
-			var row = _.map(chromosomeData, (c) => {
+			var row = _.map(chromosomeData, c => {
 				return c.features[i].value;
 			});
 			
@@ -75,6 +75,16 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 			});
 			return row;
 		});
+
+		// add nested orf rows
+		var nestedRows = _.map(chromosomeData[0].features[0].nestedValues, (f, i) => {
+			var nestedCols = _.map(chromosomeData, c => {
+				return c.features[0].nestedValues[i].value;
+			});
+			nestedCols.unshift(`${f.name} ORF`);
+			return nestedCols;
+		});
+		tableRows.splice(1, 0, nestedRows[0], nestedRows[1], nestedRows[2]);
 
 		// add totals
 		var _exampleRow = tableRows[0];

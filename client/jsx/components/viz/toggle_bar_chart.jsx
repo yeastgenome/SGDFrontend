@@ -56,7 +56,7 @@ module.exports = React.createClass({
 		var textNode = null;
 		if (active.text) {
 			// TEMP snapshot-specific
-			var _helpText = (<span>The default view is of Biological Process Features that are annotated to the ‘root’ terms are
+			var _helpText = (<span>Features that are annotated to the ‘root’ terms are
 				considered ‘unknown’ and are shown in red.  More information on GO and GO slims can be found on SGD’s <a href="http://www.yeastgenome.org/help/function-help/gene-ontology-go">GO help page</a>. 
 				Please use the <a href="http://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a> or download the <a href="http://downloads.yeastgenome.org/curation/literature/">go_slim_mapping.tab</a> file to obtain the GO data summarized in these graphs.</span>);
 			textNode = <div className="clearfix"><h3 className="toggle-text"><span className="inner-toggle-text">{active.text}</span> <HelpIcon text={_helpText} isInfo={true}/></h3></div>;

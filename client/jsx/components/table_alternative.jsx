@@ -6,7 +6,6 @@ var React = require("react");
 
 var BarChart = require("./viz/bar_chart.jsx");
 var DataTable = require("./data_table.jsx");
-var HelpIcon = require("./help_icon.jsx");
 var GenomeSnapshot = require("./genome_snapshot.jsx");
 
 /*
@@ -50,9 +49,8 @@ module.exports = React.createClass({
 
 	_getDataNode: function () {
 		if (this.state.isTable) {
-			var _helpText = "Information specific to individual chromosomes can be accessed by selecting the chromosome of interest. For a list of all features of a certain type (e.g. verified ORF, tRNA, etc.), select that chromosomal feature.";
 			return (<div>
-				<p style={{ position: "absolute", marginTop: 6, marginLeft: "1em" }}><HelpIcon isInfo={true} text={_helpText} /></p>
+				<p style={{ position: "absolute", marginTop: 6, marginLeft: "1em" }}></p>
 				<DataTable data={this.props.tableData} />
 			</div>);
 		} else {

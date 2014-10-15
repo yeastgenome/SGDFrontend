@@ -225,7 +225,7 @@ def prep_views(chosen_frontend, config):
                     route_name='backend')
 
     config.add_route('snapshot', '/genome-snapshot')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('snapshot', request)(getattr(chosen_frontend, 'snapshot')()),
+    config.add_view(lambda request: {'snapshot': render('static/templates/snapshot.jinja2', {})},
                     renderer=chosen_frontend.get_renderer('snapshot'),
                     route_name='snapshot')
     
