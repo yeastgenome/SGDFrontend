@@ -7,7 +7,7 @@
 var React = require("react");
 var _ = require("underscore");
 
-var DataTable = require("../data_table.jsx");
+var DataTable = require("../widgets/data_table.jsx");
 var DownloadButton = require("../widgets/download_button.jsx");
 var DropdownSelector = require("../widgets/dropdown_selector.jsx");
 var HelpIcon = require("../widgets/help_icon.jsx");

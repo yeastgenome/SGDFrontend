@@ -6,7 +6,7 @@ var d3 = require("d3");
 var _ = require("underscore");
 
 var HelpIcon = require("../widgets/help_icon.jsx");
-var RadioSelector = require("../radio_selector.jsx");
+var RadioSelector = require("../widgets/radio_selector.jsx");
 var BarChart = require("./bar_chart.jsx");
 
 // add a filter to bar chart if more than this number of nodes

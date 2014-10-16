@@ -18,6 +18,7 @@ sequenceView.render = function () {
 		{ name: "Sequence Overview", target: "overview" },
 		{ name: "Reference Strain: S288C", target: "reference" },
 		{ name: "Other Strains", target: "other" },
+		{ name: "History", target: "history" },
 		{ name: "Resources", target: "resources" }
 	];
 	React.renderComponent(
@@ -29,7 +30,7 @@ sequenceView.render = function () {
 	React.renderComponent(
 		<AsyncSequenceView
 			locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
-			locusFormatName={bootstrappedData.formatName} locusHistory={bootstrappedData.locusHistory}
+			locusFormatName={bootstrappedData.formatName} locusHistoryData={bootstrappedData.locusHistory}
 		/>,
 		document.getElementById("sequence-viz")
 	);

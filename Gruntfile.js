@@ -124,13 +124,17 @@ module.exports = function(grunt) {
         },
 
         watch: {
-            dev: {
-                files: ["client/**/*.jsx", "client/**/*.scss"],
-                tasks: ["concurrent:dev"],
-                options: {
-                    livereload: true
-                }
-            }
+            options: {
+                livereload: true
+            },
+            jsx: {
+                files: ["client/**/*.jsx"],
+                tasks: ["browserify:dev"]
+            },
+            scss: {
+                files: ["client/**/*.scss"],
+                tasks: ["compass:dev"]
+            },
         },
 
         // define some parallel tasks to speed up compilation
@@ -164,7 +168,7 @@ module.exports = function(grunt) {
     grunt.registerTask("compileDev", ["static", "concurrent:dev"]);
 
     // compile dev, then watch and trigger live reload
-    grunt.registerTask("dev", ["compileDev", "watch:dev"]);
+    grunt.registerTask("dev", ["compileDev", "watch"]);
     
     grunt.registerTask("default", ["static", "concurrent:production"]);
 };
