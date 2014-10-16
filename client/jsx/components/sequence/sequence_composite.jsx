@@ -86,11 +86,11 @@ module.exports = React.createClass({
 			var helpNode = <HelpIcon text={<span>The <i>S. cerevisiae</i> reference genome sequence is derived from laboratory strain S288C.</span>} isInfo={true} />;
 			var _gbHref = "http://browse.yeastgenome.org/fgb2/gbrowse/scgenome/?name=" + this.props.focusLocusFormatName;
 			var _mapHref = "http://www.yeastgenome.org/cgi-bin/ORFMAP/ORFmap?dbid=" + this.props.focusLocusFormatName;
-			node = (<div className="row">
+			node = (<div className="row title-right-text">
 				<div className="columns small-6">
 					<h2>Reference Strain: S288C {helpNode}</h2>
 				</div>
-				<div className="columns small-6 right">
+				<div className="columns small-6">
 					<p className="text-right">View in: <a href={_gbHref}>GBrowse</a> | <a href={_mapHref}>ORF Map</a></p>
 				</div>
 			</div>);
@@ -146,7 +146,7 @@ module.exports = React.createClass({
 			downloadNode = <DownloadButton url="/download_table" />;
 		}
 
-		return (<div className="panel sgd-viz">
+		return (<div className="panel sgd-viz sequence-details-container">
 			{innerNode}
 			{tableNode}
 			{downloadNode}

@@ -138,7 +138,7 @@ module.exports = React.createClass({
 			var str = c + sp + cr;
 			var _classType = this._getSubFeatureTypeFromIndex(i);
 
-			var labelNode = (i - 1) % LETTERS_PER_LINE === 0 ? <span style={{ color: "black" }}>{`${i}${Array(maxLabelLength - i.toString().length).join(" ")} `}</span> : null;
+			var labelNode = (i - 1) % LETTERS_PER_LINE === 0 ? <span style={{ color: "black" }}>{`${Array(maxLabelLength - i.toString().length).join(" ")}${i} `}</span> : null;
 
 			return <span key={`sequence-car${i}`} style={{ color: colors[_classType] }}>{labelNode}{str}</span>;
 		});

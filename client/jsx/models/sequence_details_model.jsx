@@ -122,13 +122,14 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 			"Feature",
 			"Relative Coordinates",
 			"Coordinates",
-			"Coord. Version"
+			"Coord. Version",
+			"Seq. Version"
 		];
 
 		var _rows = _.map(subFeatures, d => {
 			var _relativeCoord = `${d.relative_start.toLocaleString()} - ${d.relative_end.toLocaleString()}`;
 			var _coord = `${d.chromosomal_start.toLocaleString()} - ${d.chromosomal_end.toLocaleString()}`;
-			return [d.format_name, _relativeCoord, _coord, d.coord_version];
+			return [d.format_name, _relativeCoord, _coord, d.coord_version, d.seq_version];
 		});
 
 		var tableData = {
