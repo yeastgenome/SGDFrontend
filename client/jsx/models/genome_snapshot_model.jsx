@@ -93,7 +93,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 			// get total number of features for this chromosome
 			var totalFeatures = _.reduce(tableRows, (_memo, row) => {
-				_memo += row[i];
+				if (typeof row[0] !== "string") _memo += row[i];
 				return _memo;
 			}, 0);
 
