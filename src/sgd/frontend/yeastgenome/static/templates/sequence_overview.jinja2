@@ -57,13 +57,22 @@
                         {% set references = paralog.references %}
                         {% set full_url = True %}
                         {% include "biblio_references.jinja2" %}
-
-                        {% if not loop.last %}, {% endif %}
+                        {%- if not loop.last %}, {% endif %}
                     {% endfor %}
                     </dd>
                 {% endif %}
 
-                {% if locus.ecnumber != None %}
+                {% if 'ecnumbers' in locus and locus.ecnumbers != None %}
+                    <dt>EC Number</dt>
+                    <dd>
+                    {% for ecnumber in locus.ecnumbers %}
+                        <a href="{{ ecnumber.link }}">{{ ecnumber.display_name }}</a>
+                        {%- if not loop.last %}, {% endif %}
+                    {% endfor %}
+                    </dd>
+                {% endif %}
+
+                {% if 'ecnumber' in locus and locus.ecnumber != None %}
                     <dt>EC Number</dt>
                     <dd><a href="{{ locus.ecnumber.link }}">{{ locus.ecnumber.display_name }}</a></dd>
                 {% endif %}
