@@ -1,10 +1,10 @@
 .sgd-viz {
-	min-height: 100px;
+	min-height: 300px;
 	position: relative;
 	margin-bottom: 3em;
 	font-size: 12px;
-	&.genome-snapshot-target {
-		min-height: 113px;		
+	&.genome-snapshot-panel {
+		min-height: 507px;
 	}
 	&.go-snapshot-target {
 		min-height: 633px;
