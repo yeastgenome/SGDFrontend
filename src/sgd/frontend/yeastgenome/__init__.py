@@ -59,6 +59,9 @@ class YeastgenomeFrontend(FrontendInterface):
 
                     }
 
+    def locus_list(self, list_name):
+        return self.get_obj('locus_list', None, obj_url=self.backend_url + '/locus/' + list_name)
+
     def interaction_details(self, bioent_repr):
         return self.locus(bioent_repr)
 
@@ -320,18 +323,6 @@ class YeastgenomeFrontend(FrontendInterface):
                     'list_name_html': list_name,
                     'list_name': clean_cell(list_name).replace(' ', '_'),
                     'bioents': json.dumps(bioents),
-                }
-        return page
-
-    def locus_list(self, list_name):
-        objects = get_json(self.backend_url + '/all/' + list_name)
-        page = {
-                    #Basic Info
-                    'list_name': list_name if len(objects) == 0 else objects[0]['locus_type'],
-                    'bioents': json.dumps(objects),
-
-                    #Links
-                    'download_table_link': '/download_table'
                 }
         return page
     

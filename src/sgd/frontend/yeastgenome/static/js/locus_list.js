@@ -1,9 +1,10 @@
 
 $(document).ready(function() {
 
-    var gene_table = create_gene_table(bioents);
-    create_download_button("gene_list_table_download", gene_table, download_table_link, list_name);
+    var gene_table = create_gene_table(locus_list['locii']);
+    create_download_button("gene_list_table_download", gene_table, locus_list['list_name'] + '_locii');
     $("#gene_list_table_analyze").hide()
+
 });
 
 function create_gene_table(data) {
@@ -18,7 +19,7 @@ function create_gene_table(data) {
         $("#gene_list_table_header").html(data.length);
 
         var options = {};
-	    options["bPaginate"] = false;
+	    options["bPaginate"] = true;
 	    options["aaSorting"] = [[3, "asc"]];
 	    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null];
 	    options["aaData"] = datatable;

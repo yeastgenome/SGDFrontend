@@ -1,18 +1,16 @@
 {% extends "global_layout.jinja2" %}
-{% block title %}{{ list_name }}{% endblock %}
+{% block title %}{{ locus_list.list_name }} Locii{% endblock %}
 
 {% block head %}
 <script>
-	var download_table_link = "{{ download_table_link }}";
-	var bioents = {{bioents | safe}};
-    var list_name = "{{ list_name }}";
+    var locus_list = {{ locus_list_js|safe }};
 </script>
 {% endblock %}
 
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>{{ list_name | safe }}</h2>
+	<h2>{{ locus_list.list_name | safe }} Locii</h2>
 </div>
 
 
@@ -26,7 +24,7 @@
     <div class="small-12 large-9 columns">
 
         <script>
-            add_navbar_title(list_name);
+            add_navbar_title('{{ locus_list.list_name }} Locii');
             add_navbar_element('Entries', 'entries');
         </script>
 
@@ -39,6 +37,7 @@
                 {% set table_id = "gene_list_table" %}
                 {% set table_title = list_name %}
                 {% include "gene_list_table.jinja2" %}
+                <br>
             </div>
         </section>
     </div>
