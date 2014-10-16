@@ -65,7 +65,7 @@ module.exports = React.createClass({
 		var axisNode = (<StandaloneAxis 
 			domain={this._getScale().domain()} orientation="bottom"
 			gridTicks={true} ticks={_ticks}
-			height={height + AXIS_LABELING_HEIGHT}
+			height={height + AXIS_LABELING_HEIGHT} tickFormat={d => { return d; }}
 		/>);
 
 		var locciNodes = _.map(this.props.data.locci, d => { return this._getLocusNode(d); });
@@ -359,11 +359,11 @@ module.exports = React.createClass({
 		if (d.locus) {
 			_data[d.locus.locus_type] = d.locus.headline;
 			// TODO add chrom number 
-			_data["Coordinates"] = `${d.start.toLocaleString()} - ${d.end.toLocaleString()}`;
-			_data["Length"] = (d.end - d.start).toLocaleString() + " bp";
+			_data["Coordinates"] = `${d.start} - ${d.end}`;
+			_data["Length"] = (d.end - d.start) + " bp";
 		} else {
 			_data["Relative Coordinates"] = `${d.relative_start} - ${d.relative_end}`;
-			_data["Length"] = (d.relative_end - d.relative_start).toLocaleString() + " bp";
+			_data["Length"] = (d.relative_end - d.relative_start) + " bp";
 		}
 
 		return {

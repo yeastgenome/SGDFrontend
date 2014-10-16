@@ -107,7 +107,7 @@ module.exports = React.createClass({
 			if (!attr) return null
 			node = (<div className="panel sgd-viz">
 				<h3>
-					{this.props.focusLocusDisplayName} Location: <a href={attr.contigData.href}>{attr.contigData.name}</a> {attr.focusLocusDomain[0].toLocaleString()} - {attr.focusLocusDomain[1].toLocaleString()}
+					{this.props.focusLocusDisplayName} Location: <a href={attr.contigData.href}>{attr.contigData.name}</a> {attr.focusLocusDomain[0]} - {attr.focusLocusDomain[1]}
 				</h3>
 				<LocusDiagram
 					contigData={attr.contigData}
@@ -180,6 +180,7 @@ module.exports = React.createClass({
 		if (!this.props.showSubFeaturesTable && !this._canRenderDetails()) return null;
 
 		var _options = {
+			aaSorting: [[1, "asc"]],
 			bPaginate: false,
 			oLanguage: { "sEmptyTable": "No subfeatures for " + this.props.focusLocusDisplayName + '.' }
 		};
