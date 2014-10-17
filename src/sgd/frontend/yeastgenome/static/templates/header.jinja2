@@ -1,45 +1,61 @@
 <header id="layout-page-header">
+
+		<!-- TEMP mobile survey -->
+		<div class="small-survey-container hide-for-large-up">
+			<div class="row">
+				<div class="small-12 columns">
+					<a href="https://www.surveymonkey.com/s/C2DDHWK"><i class="fa fa-pencil-square-o"></i> Take our Survey</a>
+				</div>
+			</div>
+		</div>
+
 		<div class="row" id="layout-page-header-content">
-			<section class="small-4 columns" id="logo-section">
+			<section class="small-5 columns" id="logo-section">
 				<a href="/">
 				<div class="logo">
 					<span class="logo-label">Saccharomyces Genome Database</span>
 				</div>
 				</a>
+
+				<!-- TEMP DESKTOP SURVEY -->
+				<a href="https://www.surveymonkey.com/s/C2DDHWK" class="button round alert show-for-large-up temp-survey-notice"><i class="fa fa-pencil-square-o"></i> Take our Survey</a>
+
 			</section><!-- #logo-section -->
-			<section class="small-7 small-offset-1 columns" id="header-tools">
+			<section class="small-7 columns" id="header-tools">
 			 	<div class="row header-links">
-			 		
-						<ul class="site-links">
-							<li><a href="/about">About</a></li>
-							<li><a href="/blog">Blog</a></li>
-							<li><a href="/download-data">Download</a></li>
-							<li><a href="/site-map">Site Map</a></li>
-							<li><a href="/help">Help</a></li>
-						</ul>
-					
-						<ul class="social-links">
-							<li><a href="/cgi-bin/suggestion" target="_blank" id="email-header" class="webicon mail x-small">Email Us</a></li>
-							<li><a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter" class="webicon twitter x-small">Twitter</a></li>
-							<li><a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" class="webicon facebook x-small" id="facebook">Facebook</a></li>
-							<li><a href="https://www.youtube.com/channel/UCnTiLvqP2aYeHEaJl7m9DUg" target="_blank" id="youtube" class="webicon youtube x-small">YouTube</a></li>
-							<li><a href="/feed" target="_blank" id="rss" class="webicon rss x-small">RSS</a></li>
-						</ul>
-					
+		 			<ul class="site-links">
+						<li><a href="/about">About</a></li>
+						<li><a href="/blog">Blog</a></li>
+						<li><a href="/download-data">Download</a></li>
+						<li><a href="/site-map">Site Map</a></li>
+						<li><a href="/help">Help</a></li>
+					</ul>
+				
+					<ul class="social-links">
+						<li><a href="/cgi-bin/suggestion" target="_blank" id="email-header" class="webicon mail x-small">Email Us</a></li>
+						<li><a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter" class="webicon twitter x-small">Twitter</a></li>
+						<li><a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" class="webicon facebook x-small" id="facebook">Facebook</a></li>
+						<li><a href="https://www.linkedin.com/company/saccharomyces-genome-database" target="_blank" class="webicon linkedin x-small" id="linkedin">Linkedin</a></li>
+						<li><a href="https://www.youtube.com/channel/UCnTiLvqP2aYeHEaJl7m9DUg" target="_blank" id="youtube" class="webicon youtube x-small">YouTube</a></li>
+						<li><a href="/feed" target="_blank" id="rss" class="webicon rss x-small">RSS</a></li>
+					</ul>
 			 	</div><!-- .header-links -->
 			 	<div class="row header-search">
 			 		<form action="/cgi-bin/search/luceneQS.fpl" autocomplete="off" id="searchform" class="no-margins" method="get">
-					  <div id="top-search-input-container" class="row collapse">
-						<div class="small-6 small-offset-5 columns">
-						  <input id="txt_search" name="query" type="text" class="search-query radius prefix-input no-margins ui-autocomplete-input" placeholder="Search" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
+						<div id="top-search-input-container" class="row collapse">
+
+
+
+							<div id="txt_search_container" class="small-6 small-offset-5 columns">
+								<input id="txt_search" name="query" type="text" class="search-query radius prefix-input no-margins ui-autocomplete-input" placeholder="Search" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
+							</div>
+							<div class="small-1 columns">
+								<a href="#" class="secondary button no-margins postfix radius" onclick="document.getElementById('searchform').submit();"><i class="fa fa-search"></i></a>
+							</div>
 						</div>
-						<div class="small-1 columns">
-						  <a href="#" class="secondary button no-margins postfix radius" onclick="document.getElementById('searchform').submit();"><i class="fa fa-search"></i></a>
+						<div id="adv-search-links">
+							YeastMine: <a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Batch Analysis</a> or <a target="_blank" href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Advanced Search</a>
 						</div>
-					  </div>
-					  <div id="adv-search-links">
-						  	YeastMine: <a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Batch Analysis</a> or <a target="_blank" href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Advanced Search</a>
-					  </div>
 					</form>
 			 	</div><!-- .header-search -->
 			</section>

@@ -30,13 +30,37 @@ http://smacss.com/book/type-module
 	}
 }
 
+#txt_search_container {
+	margin-left: 38.5% !important;
+	width: 53.17%;
+}
+
 #top-search-input-container div {
 	top: -30px;
 }
 
 #sgd-mini-logo {
 	margin: 8px;
-}	
+}
+
+// TEMP survery link
+.temp-survey-notice {
+	position: absolute;
+	width: 204px;
+	top: 21px;
+	left: 330px;
+	z-index: 10;
+	&:after {
+		display: none !important;
+	}
+}
+
+.small-survey-container {
+	background: #f04124;
+	a {
+		color: white;
+	}
+}
 
 #adv-search-links {
 	font-size: em-calc(11);
@@ -55,7 +79,7 @@ http://smacss.com/book/type-module
 .site-links {
 	margin: 0;
 	position: absolute;
-    right: 130px;
+    right: 153px;
     font-size: em-calc(13);
     li {
         margin-left: em-calc(14);
