@@ -50,7 +50,11 @@ http://smacss.com/book/type-module
 	top: 21px;
 	left: 330px;
 	z-index: 10;
+	&:after {
+		display: none !important;
+	}
 }
+
 .small-survey-container {
 	background: #f04124;
 	a {
