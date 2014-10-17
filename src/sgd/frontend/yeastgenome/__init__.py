@@ -354,8 +354,10 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     config.add_translation_dirs('locale/')
     config.include('pyramid_jinja2')
     
-    config.add_static_view('static', 'src:sgd/frontend/yeastgenome/static')
-    config.add_static_view('img-domain', 'src:sgd/frontend/yeastgenome/img-domain')
+    # static assets, cached for 2 hours
+    config.add_static_view('static', 'src:sgd/frontend/yeastgenome/static', cache_max_age=7200)
+    # images cached for 1 week
+    config.add_static_view('img-domain', 'src:sgd/frontend/yeastgenome/img-domain', cache_max_age=604800)
     config.add_renderer('jsonp', JSONP(param_name='callback'))
 
     return chosen_frontend, config
