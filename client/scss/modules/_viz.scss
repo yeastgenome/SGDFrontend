@@ -30,7 +30,12 @@
 	&.go-snapshot-target {
 		min-height: 400px;
 	}
-
+	&.sequence-details-container {
+		min-height: 350px;
+	}
+	&.sub-sequence {
+		min-height: 600px;
+	}
 	.loader {
 		position: absolute;
 		margin-top: -16px;
@@ -38,6 +43,10 @@
 		top: 50%;
 		left: 50%;
 	}
+}
+
+.sequence-init {
+	min-height: 700px;
 }
 
 .sgd-viz-filter-message {

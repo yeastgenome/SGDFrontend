@@ -41,7 +41,7 @@ module.exports = React.createClass({
 
 	render: function () {
 		if (!this.props.neighborsModel && !this.props.detailsModel) {
-			return <div className="panel sgd-viz"><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div>;
+			return <div className="panel sgd-viz sub-sequence"><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div>;
 		} else {
 			var titleNode = this._getTitleNode();
 			var neighborsNode = this._getNeighborsNode();
