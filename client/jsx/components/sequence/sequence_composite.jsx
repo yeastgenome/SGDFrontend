@@ -142,8 +142,8 @@ module.exports = React.createClass({
 			/>);
 
 			tableNode = this._getSubFeaturesTable();
-			// TODO add params
-			downloadNode = <DownloadButton url="/download_table" />;
+			var _params = _.extend(this.props.detailsModel.attributes.subFeatureDownloadData, { display_name: `${this.props.focusLocusDisplayName}_subfeatures` });
+			downloadNode = <DownloadButton url="/download_table" params={_params} />;
 		}
 
 		return (<div className="panel sgd-viz sequence-details-container">

@@ -40,11 +40,14 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		var _otherStrains = _.map(_otherTemp, s => {
 			return this._formatOtherStrainData(s.strain.format_name, response);
 		});
+		// sub-feature download data
+		var _downloadData = this._formatDownloadData(MAIN_STRAIN_NAME, response);
 
 		return {
 			mainStrain: _mainStrain,
 			altStrains: _altStrains,
 			altStrainMetaData: _altMeta,
+			subFeatureDownloadData: _downloadData,
 			otherStrains: _otherStrains
 		};
 	}
@@ -76,7 +79,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		});
 
 		var _contigData = LocusFormatHelper.formatContigData(_response.contig);
-		var _locusWithTracks = this._assignTracksToLocci([_response]);
+		var _locusWithTracks = this._assignTracksToLoci([_response]);
 		var _trackDomain = LocusFormatHelper.getTrackDomain(_locusWithTracks[0].tags);
 		var _tableData = this._formatTableData(_response.tags);
 
@@ -94,11 +97,11 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 	}
 
 	/*
-		Takes an array of locci, and assigns a track number to make sure they don't overlap.
+		Takes an array of loci, and assigns a track number to make sure they don't overlap.
 		Positive for watson, negative for crick.  Further from 0 is further from the center.
 	*/
-	_assignTracksToLocci (_locci) {
-		var locci = _.map(_locci, (d) => {
+	_assignTracksToLoci (_loci) {
+		var loci = _.map(_loci, (d) => {
 			// assign tracks to sub features
 			d.tags = _.map(d.tags, (t) => {
 				t.strand = d.strand;
@@ -110,11 +113,11 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		});
 
 		// if no subfeatures, assign track to locus
-		if (!locci[0].tags.length) {
-			locci[0] = LocusFormatHelper.assignTrackToSingleLocus(locci[0], locci);
+		if (!loci[0].tags.length) {
+			loci[0] = LocusFormatHelper.assignTrackToSingleLocus(loci[0], loci);
 		}
 
-		return locci;
+		return loci;
 	}
 
 	_formatTableData (subFeatures) {
@@ -165,6 +168,20 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 			id: strainData.strain.id,
 			status: strainData.strain.status,
 			sequence: strainData.residues
+		};
+	}
+
+	_formatDownloadData(strainDisplayName, response) {
+		var _strain = _.filter(response.genomic_dna, s => { return s.strain.display_name === strainDisplayName; })[0];
+		var _headers = ["Evidence ID", "Analyze ID", "Feature", "Feature Systematic Name", "Feature Type", "Relative Coordinates", "Coordinates", "Strand", "Coord. Version", "Seq. Version"];
+		var _data = _.map(_strain.tags, t => {
+			var _relativeCoordinates = `${t.relative_start}-${t.relative_end}`;
+			var _coordinates = `${t.chromosomal_start}-${t.chromosomal_end}`;
+			return [t.evidence_id, _strain.locus.id, _strain.locus.display_name, _strain.locus.format_name, t.class_type, _relativeCoordinates, _coordinates, _strain.strand, t.coord_version, t.seq_version];
+		});
+		return {
+			headers: JSON.stringify(_headers),
+			data: JSON.stringify(_data)
 		};
 	}
 };
