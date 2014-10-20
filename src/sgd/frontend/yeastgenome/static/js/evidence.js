@@ -206,7 +206,7 @@ function interaction_data_to_table(evidence, index) {
 	var direction = evidence['bait_hit'];
     var analyze_key;
 
-	if(locus['id'] != null) {
+	if(typeof(locus) !== 'undefined') {
 	    if(locus['id'] == evidence['locus1']['id']) {
             if(direction == 'Hit-Bait') {
                 direction = 'Hit';
