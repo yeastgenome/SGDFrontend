@@ -40,10 +40,27 @@ module.exports = React.createClass({
 		);
 	},
 
-	// NOTE: Has effects outside of component. $(document)
-	// setup magellan nav with jquery helper
+	// NOTE: Has effects outside of component. $(document), $(window)
+	// Setup magellan nav with jquery helper.
+	// Back to top button.
 	componentDidMount: function () {
 		$(document).foundation();
 		$(".side-nav").foundation("magellan", {threshold: 50});
+
+		// back to top button
+		var offset = 245; // how far (px) to scroll to trigger link
+	    var duration = 500; // 0.5s fade in/out
+	    $(window).scroll( function () {
+	        if ($(this).scrollTop() > offset) {
+	            $(".back-to-top").fadeIn(duration);
+	        } else {
+	            $(".back-to-top").fadeOut(duration);
+	        }
+	    });
+	    $(".back-to-top").click( e => {
+	        e.preventDefault();
+	        $("html, body").animate({scrollTop: 0}, duration);
+	        return false;
+	    });
 	}
 });
