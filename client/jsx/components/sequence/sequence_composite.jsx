@@ -162,7 +162,12 @@ module.exports = React.createClass({
 			var _detailsData = this._getActiveStrainDetailsData()
 			var _sequences = _detailsData.sequences;
 			var _contigName = _detailsData.contigData.formatName;
-			innerNode = <SequenceToggler sequences={_sequences} text={_text} locusDisplayName={this.props.focusLocusDisplayName} contigName={_contigName} subFeatureData={_detailsData.data.locci[0].tags}/>;
+			innerNode = (<SequenceToggler
+				sequences={_sequences} text={_text}
+				locusDisplayName={this.props.focusLocusDisplayName} locusFormatName={this.props.focusLocusFormatName}
+				contigName={_contigName} showCustomRetrieval={!this.props.showAltStrains}
+				subFeatureData={_detailsData.data.locci[0].tags}
+			/>);
 		}
 
 		return <div className="panel sgd-viz">{innerNode}</div>;

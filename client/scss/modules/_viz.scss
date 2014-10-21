@@ -1,34 +1,13 @@
-.snapshot-container {
-	h1, h2, h3 {
-		font-family: Palatino;
-	}
-
-	h1:first-child {
-		margin-top: 0.5em;
-	}
-
-	a:hover {
-		text-decoration: underline;
-	}
-
-	.loader {
-		position: absolute;
-		margin-top: -16px;
-		margin-left: -16px;
-		top: 50%;
-		left: 50%;
-	}
-}
-
 .sgd-viz {
 	min-height: 100px;
 	position: relative;
 	margin-bottom: 3em;
-	&.genome-snapshot-target {
-		min-height: 113px;		
+	font-size: 12px;
+	&.genome-snapshot-panel {
+		min-height: 507px;
 	}
 	&.go-snapshot-target {
-		min-height: 400px;
+		min-height: 633px;
 	}
 	&.sequence-details-container {
 		min-height: 350px;
@@ -51,6 +30,8 @@
 
 .sgd-viz-filter-message {
 	margin-top: 1em;
+	margin-bottom: 0;
+	font-size: 12px;
 }
 
 .genome-snapshot {
@@ -58,13 +39,13 @@
 }
 
 .flexible-tooltip {
-	position: absolute;
 	min-width: 100px;
 	min-height: 35px;
 	margin-left: -50px;
 	margin-top: -60px;
 	background-color: $tooltip-bg;
 	border-radius: 5px;
+	font-size: 16px;
 	z-index: $z-tooltip;
 
 	dt {
@@ -73,14 +54,12 @@
 }
 
 .flexible-tooltip-text {
-	display: block;
 	text-align: center;
 	margin: 0.5em;
 	white-space: nowrap;
 }
 
 .flexible-tooltip-arrow {
-	position: absolute;
 	bottom: -29px;
 	left: 50px;
 	width: 0; 
@@ -110,23 +89,22 @@
 	text-overflow: ellipsis;
 }
 
-.bar-container {
-	transition: top 0.5s;
-}
-
 .bar-node {
 	opacity: 0.6;
 	transition: width 0.5s;
 
 }
 
-.y-axis-label {
-	position: relative;
+.axis-label {
 	text-align: center;
 	margin-bottom: 0;
+	font-size: 14px;
+	height: 1em;
 }
 
-.y-axis {
+.axis {
+	font-size: 12px;
+
 	line {
 		stroke: black;
 	}

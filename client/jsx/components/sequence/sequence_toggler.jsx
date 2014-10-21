@@ -17,8 +17,10 @@ module.exports = React.createClass({
 	getDefaultProps: function () {
 		return {
 			locusDisplayName: null, // *
+			locusFormatName: null,
 			contigName: null,
 			sequences: null, // * [{ name: "DNA Coding", sequence: "ACTCTAGGCT" }, ...]
+			showCustomRetrieval: false,
 			showSequence: true,
 			subFeatureData: null,
 			text: null
@@ -48,11 +50,24 @@ module.exports = React.createClass({
 		this._getActiveSequence()
 		var sequenceTextNode = this._formatActiveSequenceTextNode();
 
+		var customRetrievalNode = null;
+		if (this.props.showCustomRetrieval) {
+			customRetrievalNode = (<ul className="button-group radius">
+				<a className="button small secondary" href={"http://yeastgenome.org/cgi-bin/seqTools?back=1&seqname=" + this.props.locusFormatName}>Custom Sequence Retrieval</a>
+			</ul>);
+		}
+
 		return (<div>
 			{textNode}
 			{dropdownNode}
 			{sequenceTextNode}
-			<DownloadButton text="Download Sequence" url="/download_sequence" extension=".fsa" params={_downloadParams}/>
+			<div className="button-bar">
+				<ul className="button-group radius">
+					<li><DownloadButton text="Download Sequence" url="/download_sequence" extension=".fsa" params={_downloadParams}/></li>
+				</ul>
+				{customRetrievalNode}
+			</div>
+
 		</div>);
 	},
 
@@ -130,12 +145,6 @@ module.exports = React.createClass({
 	_getComplexSequenceNode: function (sequence) {
 		var maxLabelLength = sequence.length.toString().length + 1;
 		var chunked = sequence.split("")
-		var colors = {
-			"CDS": "blue",
-			"INTRON": "red"
-		};
-
-		var colorScale = d3.scale.category10();
 				
 		return _.map(chunked, (c, i) => {
 			i++;
@@ -146,7 +155,7 @@ module.exports = React.createClass({
 
 			var labelNode = (i - 1) % LETTERS_PER_LINE === 0 ? <span style={{ color: "#6f6f6f" }}>{`${Array(maxLabelLength - i.toString().length).join(" ")}${i} `}</span> : null;
 
-			return <span key={`sequence-car${i}`} style={{ color: colorScale(_classType) }}>{labelNode}{str}</span>;
+			return <span key={`sequence-car${i}`} style={{ color: subFeatureColorScale(_classType) }}>{labelNode}{str}</span>;
 		});
 	},
 

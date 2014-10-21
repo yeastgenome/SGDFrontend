@@ -51,10 +51,11 @@ module.exports = React.createClass({
 
 	_getBodyRows: function () {
 		var bodyRows = this.props.data.rows.map( (r, i) => {
-			var evenClass = i % 2 === 0 ? "odd" : "even";
+			var evenKlass = i % 2 === 0 ? "odd" : "even";
+			if (this.props.usePlugin) evenKlass = "";
 
 			return (
-				<tr key={"row" + i} className={evenClass} >
+				<tr key={"row" + i} className={evenKlass} >
 					{r.map( (d, i) => {
 						{/* if data is obj with href and value, make a link, otherwise just plain text if just a string */}
 						var textNode = (d.href && d.value) ? <a href={d.href}>{d.value}</a> : d;
