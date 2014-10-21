@@ -32,8 +32,7 @@ sequenceView.render = function () {
 		);
 	};
 
-	// render navbar immediately, but update with alt & other strain info
-	renderNavBar();
+	// render navbar with alt & other strain info
 	var _detailsCallback = (err, detailsModel) => {
 		renderNavBar(detailsModel.attributes.altStrains.length, detailsModel.attributes.otherStrains.length);
 	};

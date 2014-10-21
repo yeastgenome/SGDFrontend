@@ -25,9 +25,8 @@ module.exports = React.createClass({
 	},
 
 	getInitialState: function () {
-		var _activeSequence = _.filter(this.props.sequences, s => { return s.sequence; })[0];
 		return {
-			activeSequence: _activeSequence
+			activeSequenceType: this.props.sequences[0].key
 		};
 	},
 
@@ -37,13 +36,15 @@ module.exports = React.createClass({
 			textNode = <h3>{this.props.text}</h3>;
 		}
 
+		var _activeSequence = this._getActiveSequence();
 		var _downloadParams = {
 			"display_name": this.props.locusDisplayName,
-			sequence: this.state.activeSequence.sequence,
-			contig_name: this.state.activeSequence.contigFormatName || this.props.contigName
+			sequence: _activeSequence.sequence,
+			contig_name: _activeSequence.contigFormatName || this.props.contigName
 		};
 
 		var dropdownNode = this._getDropdownNode();
+		this._getActiveSequence()
 		var sequenceTextNode = this._formatActiveSequenceTextNode();
 
 		return (<div>
@@ -66,7 +67,7 @@ module.exports = React.createClass({
 	_formatActiveSequenceTextNode: function () {
 		var node = null;
 		if (this.props.showSequence) {
-			var seq = this.state.activeSequence.sequence;
+			var seq = this._getActiveSequence().sequence;
 
 			var sequenceNode;
 			var legendNode = null;
@@ -93,8 +94,7 @@ module.exports = React.createClass({
 	},
 
 	_handleChangeSequence: function (value) {
-		var _activeSequence =  _.findWhere(this.props.sequences, { key: value });
-		this.setState({ activeSequence: _activeSequence });
+		this.setState({ activeSequenceType: value });
 	},
 
 	_getSubFeatureTypeFromIndex: function (index) {
@@ -146,11 +146,15 @@ module.exports = React.createClass({
 
 	_canColorSubFeatures: function () {
 		var allSubFeatures = _.uniq(_.map(this.props.subFeatureData, f => { return f.class_type; }));
-		if (allSubFeatures.length === 2 && this.state.activeSequence.key === "genomic_dna") {
+		if (allSubFeatures.length === 2 && this.state.activeSequenceType === "genomic_dna") {
 			return true;
 		}
 
 		return false;
+	},
+
+	_getActiveSequence: function () {
+		return _.findWhere(this.props.sequences, { key: this.state.activeSequenceType });
 	}
 
 });
