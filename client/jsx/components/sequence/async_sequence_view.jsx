@@ -18,6 +18,7 @@ module.exports = React.createClass({
 
 	getDefaultProps: function () {
 		return {
+			detailsCallback: null, // (err, detailsModel)
 			locusDisplayName: null,
 			locusHistoryData: null,
 			locusFormatName: null,
@@ -62,6 +63,11 @@ module.exports = React.createClass({
 				var _detailsModel = new SequenceDetailsModel({ id: this.props.locusId });
 				_detailsModel.fetch( (err, response) => {
 					if (this.isMounted()) this.setState({ detailsModel: _detailsModel });
+
+					// call details callback (if defined)
+					if (this.props.detailsCallback) {
+						this.props.detailsCallback(err, _detailsModel);
+					}
 				});
 			}
 		});
@@ -140,7 +146,7 @@ module.exports = React.createClass({
 
 			var _dataTableOptions = {
 				bPaginate: false,
-				oLanguage: { "sEmptyTable": "No history for " + this.props.focusLocusDisplayName + '.' }
+				oLanguage: { "sEmptyTable": "No history for " + this.props.locusDisplayName + '.' }
 			};
 			node = (<section id="history" data-magellan-destination="history">
 				<h2>

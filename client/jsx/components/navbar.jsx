@@ -21,6 +21,7 @@ module.exports = React.createClass({
 		var titleNode = this.props.title.href ? <a href={this.props.title.href}>{this.props.title.name}</a> : this.props.title;
 
 		var listElements = _.map(this.props.elements, (element) => {
+			if (!element) return null;
 			return (
 				<li data-magellan-arrival={element.target} id={`navbar_${element.target}`}>
 					<a href={`#${element.target}`}>{element.name}</a>
