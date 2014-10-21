@@ -1,4 +1,4 @@
-{% extends "global_layout.jinja2" %}
+{% extends "lite_layout.jinja2" %}
 
 {% block title %}{{ locus.display_name }}{% endblock %}
 
@@ -15,11 +15,8 @@
 	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
-<!-- Tabs
-================================================== -->
-<!-- Includes tabs.html into template -->
+<!-- Tabs -->
 {% include "tabs.jinja2" %}
-<script>document.getElementById('summary_tab').id = 'current';</script>
 
 <!-- Navbar
 ================================================== -->
@@ -770,9 +767,10 @@
 {% block scripts %}
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
-       'version':'1','packages':['corechart', 'timeline']}]}"></script>
-<script src="/static/js/local.js"></script>
-<script src="/static/js/evidence.js"></script>
-<script src="/static/js/locus.js"></script>
+       'version':'1','packages':['corechart']}]}"></script>
+<script src="/static/js/application.js"></script>
+<script>
+    views.summary.render();
+</script>
 {% endblock scripts %}
 
