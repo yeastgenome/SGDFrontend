@@ -2,6 +2,7 @@
 "use strict";
 
 var _ = require("underscore");
+var d3 = require("d3");
 
 var WATSON_TRACKS = [1 ,2 , 3, 4, 5];
 var CRICK_TRACKS = [-1, -2, -3, -4, -5];
@@ -83,6 +84,16 @@ module.exports = {
 			length: contigData.length || 250000, // TEMP default 250 kbp length
 			centromerePosition: _centromerePosition
 		};
+	},
+
+	// returns a d3 ordinal scale with desired color scale for sub-feature types
+	subFeatureColorScale: function () {
+		var colorScale = d3.scale.category10();
+		var _cRange = colorScale.range();
+		_cRange[0] = "#696599";
+		colorScale = colorScale.range(_cRange);
+		// TODO account for specific sub-feature types and desired colors
+		return colorScale;
 	}
 
 };

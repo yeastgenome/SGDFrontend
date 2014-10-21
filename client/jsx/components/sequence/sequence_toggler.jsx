@@ -8,6 +8,7 @@ var _ = require("underscore");
 var DownloadButton = require("../widgets/download_button.jsx");
 var DropdownSelector = require("../widgets/dropdown_selector.jsx");
 var Legend = require("../viz/legend.jsx");
+var subFeatureColorScale = require("../../lib/locus_format_helper.jsx").subFeatureColorScale();
 var LETTERS_PER_CHUNK = 10;
 var LETTERS_PER_LINE = 60;
 
@@ -73,7 +74,10 @@ module.exports = React.createClass({
 			var legendNode = null;
 			if (this._canColorSubFeatures()) {
 				sequenceNode = this._getComplexSequenceNode(seq);
-				var _colors = [{ text: "CDS", color: "blue" }, { text: "Intron" , color: "red" }];
+				var _featureTypes = _.uniq(_.map(this.props.subFeatureData, f => { return f.class_type; }));
+				var _colors = _.map(_featureTypes, f => {
+					return { text: f, color: subFeatureColorScale(f) };
+				});
 				legendNode = <Legend elements={_colors} />;
 			} else {
 				sequenceNode = this._getSimpleSequenceNode(seq);
@@ -130,6 +134,8 @@ module.exports = React.createClass({
 			"CDS": "blue",
 			"INTRON": "red"
 		};
+
+		var colorScale = d3.scale.category10();
 				
 		return _.map(chunked, (c, i) => {
 			i++;
@@ -140,17 +146,21 @@ module.exports = React.createClass({
 
 			var labelNode = (i - 1) % LETTERS_PER_LINE === 0 ? <span style={{ color: "#6f6f6f" }}>{`${Array(maxLabelLength - i.toString().length).join(" ")}${i} `}</span> : null;
 
-			return <span key={`sequence-car${i}`} style={{ color: colors[_classType] }}>{labelNode}{str}</span>;
+			return <span key={`sequence-car${i}`} style={{ color: colorScale(_classType) }}>{labelNode}{str}</span>;
 		});
 	},
 
 	_canColorSubFeatures: function () {
-		var allSubFeatures = _.uniq(_.map(this.props.subFeatureData, f => { return f.class_type; }));
-		if (allSubFeatures.length === 2 && this.state.activeSequenceType === "genomic_dna") {
-			return true;
+		// must have sub-features and be on genomic DNA
+		if (!this.props.subFeatureData.length || this.state.activeSequenceType !== "genomic_dna") {
+			return false;
 		}
 
-		return false;
+		// no overlaps
+		var _allTracks = _.uniq(_.map(this.props.subFeatureData, f => { return f.track; }));
+		if (_allTracks.length > 1) return false;
+
+		return true;
 	},
 
 	_getActiveSequence: function () {

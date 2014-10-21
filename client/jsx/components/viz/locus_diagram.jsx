@@ -11,6 +11,7 @@ var FlexibleTooltip = require("../flexible_tooltip.jsx");
 var SequenceDetailsModel = require("../../models/sequence_details_model.jsx");
 var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
 var StandaloneAxis = require("./standalone_axis.jsx");
+var subFeatureColorScale = require("../../lib/locus_format_helper.jsx").subFeatureColorScale();
 
 var AXIS_LABELING_HEIGHT = 24;
 var HEIGHT = 17;
@@ -136,14 +137,8 @@ module.exports = React.createClass({
 		// calc the last feature, to know where to draw arrow
 		var lastSubFeature = _.max(tags, d => { return d.relative_start; });
 
-		// tweak d3 color scale to use SGD purple for CDS
-		var colorScale = d3.scale.category10();
-		var _cRangd = colorScale.range();
-		_cRangd[0] = "#696599";
-		colorScale = colorScale.range(_cRangd);
-
 		return _.map(tags, (d, i) => {
-			var fill = colorScale(d.class_type);
+			var fill = subFeatureColorScale(d.class_type);
 
 			var start = d.relative_start;
 			var end = d.relative_end;
@@ -161,13 +156,9 @@ module.exports = React.createClass({
 			var startX = scale(chromStart + start - 0.5) - scale(chromStart);
 			var endX = scale(chromStart + end + 0.5) - scale(chromStart);
 
-			// decide if intron and last subfeature
-			var isIntron = d.class_type === "INTRON";
-			var isLast = d === lastSubFeature;
-
 			// text node
 			var _textX = startX  + (endX - startX) / 2;
-			var _textY = isIntron ? 0 : HEIGHT - 4;
+			var _textY = (d.class_type === "INTRON") ? 0 : HEIGHT - 4;
 			var _textTransform = `translate(${_textX}, ${_textY})`;
 			var _textFill = d.class_type === "CDS" ? "white" : "black";
 			var textNode = <text transform={_textTransform} textAnchor="middle" fill={_textFill}>{d.display_name.replace(/_/g, " ")}</text>;
@@ -187,15 +178,15 @@ module.exports = React.createClass({
 			
 			// assign node for shape based on data
 			var shapeNode;
-			// last non intron, add arrow
-			if (isLast && !isIntron) {
-				var pathString = this._getTrapezoidStringPath(startX, endX, (d.track > 0));
-				shapeNode = <path d={pathString}  onMouseOver={handleMouseover} opacity={opacity} fill={fill} />;
-			// intron, line
-			} else if (isIntron) {
+			// intron; line
+			if (d.class_type === "INTRON") {
 				var pathString = `M${startX} ${HEIGHT/2} C ${startX + (endX - startX) * 0.25} ${HEIGHT / 5}, ${startX + (endX - startX) * 0.75} ${HEIGHT / 5}, ${endX} ${HEIGHT / 2}`;
 				shapeNode = <path d={pathString} onMouseOver={handleMouseover} opacity={opacity} stroke="black" fill="none" />;
-			// everything else, rectangle
+			// non-intron wide enough for trapezoid 
+			} else if ((endX - startX) > POINT_WIDTH) {
+				var pathString = this._getTrapezoidStringPath(startX, endX, (d.track > 0));
+				shapeNode = <path d={pathString}  onMouseOver={handleMouseover} opacity={opacity} fill={fill} />;
+			// too small for trapezoid, rectangle
 			} else {
 				shapeNode = <rect onMouseOver={handleMouseover} opacity={opacity} x={startX} width={endX - startX} height={HEIGHT} fill={fill} />;
 			}
@@ -240,10 +231,19 @@ module.exports = React.createClass({
 			this._handleClick(e, d);
 		}
 
+		var shapeNode;
+		// large enough for trapezoid
+		if ((endX - startX) > POINT_WIDTH) {
+			shapeNode = <path className={`locus-node${focusKlass}`} d={pathString} opacity={_opacity} onClick= {_onClick} onMouseOver={_onMouseover} />;
+		// too small; rect
+		} else {
+			shapeNode = <rect className={`locus-node${focusKlass}`} x={startX} width={endX - startX} height={HEIGHT} opacity={_opacity} onClick= {_onClick} onMouseOver={_onMouseover} />;
+		}
+
 		var _transform = this._getGroupTransform(d);
 		return (
 			<g transform={_transform}>
-				<path className={`locus-node${focusKlass}`} d={pathString}opacity={_opacity} onClick= {_onClick} onMouseOver={_onMouseover} />
+				{shapeNode}
 				{textNode}
 			</g>
 		);
