@@ -6,7 +6,7 @@ var d3 = require("d3");
 var _ = require("underscore");
 
 var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
-var FlexibleTooltip = require("../flexible_tooltip.jsx");
+var FlexibleTooltip = require("../widgets/flexible_tooltip.jsx");
 var StandaloneAxis = require("./standalone_axis.jsx");
 
 var BAR_HEIGHT = 15;

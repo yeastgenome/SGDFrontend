@@ -5,9 +5,9 @@ var React = require("react");
 var _ = require("underscore");
 var d3 = require("d3");
 
-var BarChart = require("../components/viz/bar_chart.jsx");
-var Legend = require("../components/viz/legend.jsx");
-var StandaloneAxis = require("../components/viz/standalone_axis.jsx");
+var BarChart = require("../../components/viz/bar_chart.jsx");
+var Legend = require("../../components/viz/legend.jsx");
+var StandaloneAxis = require("../../components/viz/standalone_axis.jsx");
 
 module.exports = React.createClass({
 

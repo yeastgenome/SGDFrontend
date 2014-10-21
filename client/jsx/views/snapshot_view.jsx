@@ -5,8 +5,8 @@ var React = require("react");
 var $ = require("jquery");
 
 var GenomeSnapshotModel = require("../models/genome_snapshot_model.jsx");
-var NavBar = require("../components/navbar.jsx");
-var TableAlternative = require("../components/table_alternative.jsx");
+var NavBar = require("../components/widgets/navbar.jsx");
+var TableAlternative = require("../components/snapshot/table_alternative.jsx");
 var ToggleBarChart = require("../components/viz/toggle_bar_chart.jsx");
 var BarChart = require("../components/viz/bar_chart.jsx");
 

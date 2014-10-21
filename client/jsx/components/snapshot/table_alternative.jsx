@@ -4,8 +4,8 @@
 var d3 = require("d3");
 var React = require("react");
 
-var BarChart = require("./viz/bar_chart.jsx");
-var DataTable = require("./widgets/data_table.jsx");
+var BarChart = require("../viz/bar_chart.jsx");
+var DataTable = require("../widgets/data_table.jsx");
 var GenomeSnapshot = require("./genome_snapshot.jsx");
 
 /*
