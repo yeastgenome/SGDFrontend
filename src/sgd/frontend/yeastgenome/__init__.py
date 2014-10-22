@@ -55,10 +55,6 @@ class YeastgenomeFrontend(FrontendInterface):
 
     # def locus(self, bioent_repr):
     #     locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-
-    #     if locus is None:
-    #         return None
-
     #     tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
     #     return {
     #                 #Basic info
