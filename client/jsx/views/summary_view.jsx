@@ -2,11 +2,13 @@
 "use strict";
 
 var $ = require("jquery");
+var _ = require("underscore");
 var google = require("google");
 var React = require("react");
 
 var AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");
 var ExpressionChart = require("../components/viz/expression_chart.jsx");
+var HistoryTable = require("../components/sequence/history_table.jsx");
 var ReferenceList = require("../components/literature/reference_list.jsx");
 
 var summaryView = {};
@@ -28,8 +30,8 @@ summaryView.render = function () {
 	$.getJSON('/backend/locus/' + bootstrappedData.locusId + '/expression_details?callback=?', function(data) {
 		if (data.datasets.length) {
 			React.renderComponent(
-				<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} />
-				, document.getElementById("two_channel_expression_chart")
+				<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} />,
+				document.getElementById("two_channel_expression_chart")
 			);
 		}
   	});
@@ -37,6 +39,14 @@ summaryView.render = function () {
   	// summary paragraph
   	if(bootstrappedData.summaryParagraph) {
         document.getElementById("summary_paragraph").innerHTML = bootstrappedData.summaryParagraph;
+    }
+
+    // history (if needed)
+    if (_.where(bootstrappedData.history, { history_type: "LSP" }).length) {
+    	React.renderComponent(
+    		<HistoryTable data={bootstrappedData.history} dataType="LSP" />,
+    		document.getElementById("history_target")
+    	);
     }
 
     // reference list

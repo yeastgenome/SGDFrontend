@@ -639,24 +639,8 @@
 
 <!-- History
 ================================================== -->
-    <section id="history" data-magellan-destination="history">
-        <h2>History
-            <a href="#" data-dropdown="history_info"><i class="fa fa-info-circle"></i></a>
-
-            <p id="history_info" class="f-dropdown content medium" data-dropdown-content>
-                A catalog of any nomenclature and/or sequence changes, or other notes related to the annotation of the feature.
-            </p>
-        </h2>
-        <div>
-            {% if locus.history|length == 0 %}
-                <p>No history data available.</p>
-            {% else %}
-                <!-- Includes go_table into template -->
-                {% set table_id = "history_table" %}
-                {% include "history_table.jinja2" %}
-            {% endif %}
-        </div>
-    </section>
+    <div id="history_target">
+    </div>
 
 <!-- References
 ================================================== -->

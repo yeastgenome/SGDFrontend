@@ -4,8 +4,8 @@
 var React = require("react");
 var _ = require("underscore");
 
-var DataTable = require("../widgets/data_table.jsx");
 var HelpIcon = require("../widgets/help_icon.jsx");
+var HistoryTable = require("./history_table.jsx");
 var SequenceDetailsModel = require("../../models/sequence_details_model.jsx");
 var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
 var SequenceComposite = require("./sequence_composite.jsx");
@@ -148,12 +148,7 @@ module.exports = React.createClass({
 				bPaginate: false,
 				oLanguage: { "sEmptyTable": "No history for " + this.props.locusDisplayName + '.' }
 			};
-			node = (<section id="history" data-magellan-destination="history">
-				<h2>
-					History <HelpIcon isInfo={true} text="Documentation of sequence and/or annotation changes that have been made or proposed in the Reference strain S288C, and that directly affect this gene by altering the start, stop, intron structure, or amino acid sequence. Also includes information regarding sequence changes in adjacent intergenic regions. May also contain notes and references for the mapping of this gene." />
-				</h2>
-				<DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions}/>
-			</section>);
+			node = <HistoryTable data={this.props.locusHistoryData} dataType="SEQUENCE" />;
 		}
 
 		return node;
