@@ -7,18 +7,11 @@ var React = require("react");
 
 var AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");
 var ExpressionChart = require("../components/viz/expression_chart.jsx");
+var ReferenceList = require("../components/literature/reference_list.jsx");
 
 var summaryView = {};
 summaryView.render = function () {
 	document.getElementById("summary_tab").id = "current";
-
-	// TEMP experiment with expression data
-	$.getJSON('/backend/locus/' + locus['id'] + '/expression_details?callback=?', function(data) {
-		React.renderComponent(
-			<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} />
-			, document.getElementById("two_channel_expression_chart")
-		);
-  	});
 
 	// async sequence view, fetches data, renders main strain, alt strains, and other strains (if present)
 	// once data is fetched, update the navbar
@@ -30,6 +23,27 @@ summaryView.render = function () {
 		/>,
 		document.getElementById("sequence-viz")
 	);
+
+	// TEMP experiment with expression data
+	$.getJSON('/backend/locus/' + bootstrappedData.locusId + '/expression_details?callback=?', function(data) {
+		if (data.datasets.length) {
+			React.renderComponent(
+				<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} />
+				, document.getElementById("two_channel_expression_chart")
+			);
+		}
+  	});
+
+  	// summary paragraph
+  	if(bootstrappedData.summaryParagraph) {
+        document.getElementById("summary_paragraph").innerHTML = bootstrappedData.summaryParagraph;
+    }
+
+    // reference list
+    React.renderComponent(
+    	<ReferenceList data={bootstrappedData.references}/>,
+    	document.getElementById("reference_list_target")
+    );
 };
 
 module.exports = summaryView;

@@ -4,13 +4,14 @@
 
 {% block head %}
 <script>
-    var locus = {{ locus_js|safe }};
     var sequence_tab = "{{ tabs['sequence_tab'] }}";
     var bootstrappedData = {
         displayName: "{{ locus.display_name }}",
         formatName: "{{ locus.format_name }}",
         locusId: "{{ locus.id }}",
-        locusLink: "{{ locus.link }}"
+        locusLink: "{{ locus.link }}",
+        summaryParagraph: {{summary_paragraph_js|safe}},
+        references: {{references_js|safe}}
     };
 </script>
 {% endblock %}
@@ -658,8 +659,8 @@
 
 <!-- References
 ================================================== -->
-    <section id="reference" data-magellan-destination="reference">
-        <h2>References
+    <section id="reference_list_target" data-magellan-destination="reference">
+<!--         <h2>References
             <a href="#" data-dropdown="reference_info"><i class="fa fa-info-circle"></i></a>
 
             <p id="reference_info" class="f-dropdown content medium" data-dropdown-content>
@@ -671,6 +672,7 @@
         </h2>
 
         <ol id="reference_list" type="1"></ol>
+ --> 
     </section>
 
     <!-- Resources

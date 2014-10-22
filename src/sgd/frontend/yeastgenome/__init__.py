@@ -53,6 +53,21 @@ class YeastgenomeFrontend(FrontendInterface):
             self.now = new_time
         return True
 
+    # def locus(self, bioent_repr):
+    #     locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
+
+    #     if locus is None:
+    #         return None
+
+    #     tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
+    #     return {
+    #                 #Basic info
+    #                 'locus': locus,
+    #                 'summary_paragraph_js': json.dumps(locus['paragraph']['text']),
+    #                 'locus_js': json.dumps(locus),
+    #                 'references_js': json.dumps(locus['references']),
+    #                 'tabs': tabs
+
     def locus(self, bioent_repr):
         if self.check_date() and bioent_repr.lower() in self.locuses:
             return_value = self.locuses[bioent_repr.lower()]
