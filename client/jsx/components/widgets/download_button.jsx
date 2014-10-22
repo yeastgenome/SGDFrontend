@@ -8,6 +8,7 @@ module.exports = React.createClass({
 
 	getDefaultProps: function () {
 		return {
+			isButton: true, // false makes a simpler anchor
 			url: null, // *
 			extension: ".txt",
 			params: {},

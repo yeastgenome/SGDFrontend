@@ -21,7 +21,7 @@ summaryView.render = function () {
 		<AsyncSequenceView
 			locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
 			locusFormatName={bootstrappedData.formatName} locusHistoryData={bootstrappedData.locusHistory}
-			showAltStrains={false} showOtherStrains={false} showHistory={false}
+			showAltStrains={false} showOtherStrains={false} showHistory={false} isSimplified={true}
 		/>,
 		document.getElementById("sequence-viz")
 	);

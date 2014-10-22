@@ -19,6 +19,7 @@ module.exports = React.createClass({
 	getDefaultProps: function () {
 		return {
 			detailsCallback: null, // (err, detailsModel)
+			isSimplified: false, // simplified is for LSP
 			locusDisplayName: null,
 			locusHistoryData: null,
 			locusFormatName: null,
@@ -74,17 +75,22 @@ module.exports = React.createClass({
 	},
 
 	_getMainStrainNode: function () {
-		var node = (<section id="reference" data-magellan-destination="reference">
-			<SequenceComposite
-				focusLocusDisplayName={this.props.locusDisplayName}
-				focusLocusFormatName={this.props.locusFormatName}
-				neighborsModel={this.state.neighborsModel}
-				detailsModel={this.state.detailsModel}
-				showAltStrains={false}
-			/>
-		</section>);
+		var innerNode = (<SequenceComposite
+			isSimplified={this.props.isSimplified}
+			focusLocusDisplayName={this.props.locusDisplayName}
+			focusLocusFormatName={this.props.locusFormatName}
+			neighborsModel={this.state.neighborsModel}
+			detailsModel={this.state.detailsModel}
+			showAltStrains={false}
+		/>);
 
-		return node;
+		if (this.props.isSimplified) {
+			return <div>{innerNode}</div>;
+		} else {
+			return (<section id="reference" data-magellan-destination="reference">
+				{innerNode}
+			</section>);
+		}
 	},
 
 	_getAltStrainsNode: function () {
@@ -129,25 +135,6 @@ module.exports = React.createClass({
 	_getHistoryNode: function () {
 		var node = null;
 		if (this.props.showHistory && this.props.locusHistoryData) {
-			// format history data for table
-			var _tableRows = _.map(this.props.locusHistoryData, e => {
-				var noteNode = <span dangerouslySetInnerHTML={{__html: e.note }} />;
-				var refsNode = _.map(e.references, (r, i) => {
-					var pubmedNode = r.pubmed_id ? <small> PMID:{r.pubmed_id}</small> : null;
-					var sepNode = (i > 0 && i !== e.references.length - 1) ? ", " : null;
-					return <span><a href={r.link}>{r.display_name}</a>{pubmedNode}{sepNode}</span>;
-				});
-				return [e.date_created, noteNode, refsNode];
-			});
-			var _tableData = {
-				headers: [["Date", "Note", "References"]],
-				rows: _tableRows
-			};
-
-			var _dataTableOptions = {
-				bPaginate: false,
-				oLanguage: { "sEmptyTable": "No history for " + this.props.locusDisplayName + '.' }
-			};
 			node = <HistoryTable data={this.props.locusHistoryData} dataType="SEQUENCE" />;
 		}
 

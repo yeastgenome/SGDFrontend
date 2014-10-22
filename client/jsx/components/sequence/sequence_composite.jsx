@@ -12,12 +12,14 @@ var DownloadButton = require("../widgets/download_button.jsx");
 var DropdownSelector = require("../widgets/dropdown_selector.jsx");
 var HelpIcon = require("../widgets/help_icon.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
+var MultiSequenceDownload = require("./multi_sequence_download.jsx");
 var SequenceToggler = require("./sequence_toggler.jsx");
 
 module.exports = React.createClass({
 
 	getDefaultProps: function () {
 		return  {
+			isSimplified: false, // simplified is for LSP
 			neighborsModel: null,
 			detailsModel: null,
 			focusLocusDisplayName: null,
@@ -88,7 +90,7 @@ module.exports = React.createClass({
 			var _mapHref = "http://www.yeastgenome.org/cgi-bin/ORFMAP/ORFmap?dbid=" + this.props.focusLocusFormatName;
 			node = (<div className="row title-right-text">
 				<div className="columns small-6">
-					<h2>Reference Strain: S288C {helpNode}</h2>
+					{this.props.isSimplified ? this._getSimplifiedSequenceNode() : <h2>Reference Strain: S288C {helpNode}</h2>}
 				</div>
 				<div className="columns small-6">
 					<p className="text-right">View in: <a href={_gbHref}>GBrowse</a> | <a href={_mapHref}>ORF Map</a></p>
@@ -143,7 +145,7 @@ module.exports = React.createClass({
 
 			tableNode = this._getSubFeaturesTable();
 			var _params = _.extend(this.props.detailsModel.attributes.subFeatureDownloadData, { display_name: `${this.props.focusLocusDisplayName}_subfeatures` });
-			downloadNode = <DownloadButton url="/download_table" params={_params} />;
+			downloadNode = this.props.isSimplified ? null : <DownloadButton url="/download_table" params={_params} />;
 		}
 
 		return (<div className="panel sgd-viz sequence-details-container">
@@ -154,7 +156,7 @@ module.exports = React.createClass({
 	},
 
 	_getSequenceNode: function () {
-		if (!this.props.showSequence) return null;
+		if (!this.props.showSequence || this.props.isSimplified) return null;
 
 		var innerNode = <img className="loader" src="/static/img/dark-slow-wheel.gif" />;
 		if (this._canRenderDetails()) {
@@ -207,5 +209,17 @@ module.exports = React.createClass({
 		} else {
 			return this.props.detailsModel.attributes.mainStrain;	
 		}
+	},
+
+	_getSimplifiedSequenceNode: function () {
+		if (this.props.detailsModel) {
+			var attr = this._getActiveStrainDetailsData();
+			return (<MultiSequenceDownload
+				sequences={attr.sequences} locusDisplayName={this.props.focusLocusDisplayName}
+				contigName={attr.contigData.name} locusFormatName={this.props.focusLocusFormatName}
+			/>);
+		} else {
+			return <a className="button dropdown small secondary disabled"><i className="fa fa-download" /> Download (.fsa)</a>;
+		}		
 	}
 });
