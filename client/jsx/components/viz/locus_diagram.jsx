@@ -353,11 +353,12 @@ module.exports = React.createClass({
 		} else {
 			_title = d.display_name.replace(/_/g, " ");
 		}
-			
+		
 		// dynamic key value object
 		var _data = {};
 		if (d.locus) {
-			_data[d.locus.locus_type] = d.locus.headline;
+			var _qualText = d.qualifier ? ` (${d.qualifier})` : "";
+			_data[d.locus.locus_type + _qualText] = d.locus.headline;
 			// TODO add chrom number 
 			_data["Coordinates"] = `${d.start} - ${d.end}`;
 			_data["Length"] = (d.end - d.start) + " bp";
