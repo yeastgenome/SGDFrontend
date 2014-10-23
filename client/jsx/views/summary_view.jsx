@@ -9,11 +9,34 @@ var React = require("react");
 var AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");
 var ExpressionChart = require("../components/viz/expression_chart.jsx");
 var HistoryTable = require("../components/sequence/history_table.jsx");
+var NavBar = require("../components/widgets/navbar.jsx");
 var ReferenceList = require("../components/literature/reference_list.jsx");
+var TabsModel = require("../models/tabs_model.jsx");
+
 
 var summaryView = {};
 summaryView.render = function () {
 	document.getElementById("summary_tab").id = "current";
+
+	// helper variables
+	var hasHistory = _.where(bootstrappedData.history, { history_type: "LSP" }).length;
+
+	// navbar
+	
+	var _tabModel = new TabsModel({
+		hasHistory: hasHistory,
+		hasParagraph: true, // TEMP why not?
+		hasResources: true, // ?
+		hasSequence: true, // TEMP why not?
+		rawTabsData: bootstrappedData.tabs,
+		tabType: "summary"
+	});
+	var _navTitleText = _tabModel.getNavTitle(bootstrappedData.displayName, bootstrappedData.formatName);
+	var _navTitle = { name: _navTitleText, href: bootstrappedData.locusLink };
+	React.renderComponent(
+		<NavBar title={_navTitle} elements={_tabModel.getTabElements()} />,
+		document.getElementById("navbar-container")
+	);
 
 	// async sequence view, fetches data, renders main strain, alt strains, and other strains (if present)
 	// once data is fetched, update the navbar
@@ -42,7 +65,7 @@ summaryView.render = function () {
     }
 
     // history (if needed)
-    if (_.where(bootstrappedData.history, { history_type: "LSP" }).length) {
+    if (hasHistory) {
     	React.renderComponent(
     		<HistoryTable data={bootstrappedData.history} dataType="LSP" />,
     		document.getElementById("history_target")

@@ -5,6 +5,7 @@ var React = require("react");
 
 var NavBar = require("../components/widgets/navbar.jsx");
 var AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");
+var TabsModel = require("../models/tabs_model.jsx");
 
 var sequenceView = {};
 sequenceView.render = function () {
@@ -14,21 +15,17 @@ sequenceView.render = function () {
 
 	// define render nav bar function
 	var renderNavBar = function (hasAltStrains, hasOtherStrains) {
-		var altElement = hasAltStrains ? { name: "Alternative Reference Strains", target: "alternative" } : null;
-		var otherElement = hasOtherStrains ? { name: "Other Strains", target: "other" } : null;
 
-		var navTitle = { href: bootstrappedData.locusLink, name: ( bootstrappedData.formatName === bootstrappedData.displayName ? bootstrappedData.displayName : `${bootstrappedData.displayName} / ${bootstrappedData.formatName}`) };
-		var navElements = [
-			{ name: "Sequence Overview", target: "overview" },
-			{ name: "Reference Strain: S288C", target: "reference" },
-			altElement,
-			otherElement,
-			{ name: "History", target: "history" },
-			{ name: "Resources", target: "resources" }
-		];
+		var _tabModel = new TabsModel({
+			tabType: "sequence",
+			hasAltStrains: hasAltStrains,
+			hasOtherStrains: hasOtherStrains
+		});
+		var _navTitleText = _tabModel.getNavTitle(bootstrappedData.displayName, bootstrappedData.formatName);
+		var navTitle = { href: bootstrappedData.locusLink, name: _navTitleText };
 		React.renderComponent(
-			<NavBar title={navTitle} elements={navElements} />,
-			document.getElementsByClassName("navbar-container")[0]
+			<NavBar title={navTitle} elements={_tabModel.getTabElements()} />,
+			document.getElementById("navbar-container")
 		);
 	};
 

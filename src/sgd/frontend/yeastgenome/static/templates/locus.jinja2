@@ -4,7 +4,6 @@
 
 {% block head %}
 <script>
-    var sequence_tab = "{{ tabs['sequence_tab'] }}";
     var bootstrappedData = {
         displayName: "{{ locus.display_name }}",
         formatName: "{{ locus.format_name }}",
@@ -12,7 +11,8 @@
         locusId: "{{ locus.id }}",
         locusLink: "{{ locus.link }}",
         summaryParagraph: {{summary_paragraph_js|safe}},
-        references: {{references_js|safe}}
+        references: {{references_js|safe}},
+        tabs: {{tabs_js|safe}}
     };
 </script>
 {% endblock %}
@@ -26,55 +26,12 @@
 <!-- Tabs -->
 {% include "tabs.jinja2" %}
 
-<!-- Navbar
-================================================== -->
 <div class="row">
 	
-    <!-- Includes navbar.html into template -->
-    {% include "navbar.jinja2" %}
+    <div id="navbar-container" class="large-3 columns">
+    </div>
 
     <div class="small-12 large-9 columns content-column">
-
-        <script>
-            //Set up navbar
-            add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</a>');
-            add_navbar_element('Locus Overview', 'overview');
-            {% if tabs['sequence_tab'] %}
-                add_navbar_element('Sequence', 'sequence');
-            {% endif %}
-            {% if tabs['protein_tab'] %}
-                add_navbar_element('Protein', 'protein');
-            {% endif %}
-            {% if tabs['go_tab'] %}
-                add_navbar_element('Gene Ontology', 'go');
-            {% endif %}
-            {% if locus.pathways|length > 0 %}
-                add_navbar_element('Pathways', 'pathway');
-            {% endif %}
-            {% if tabs['phenotype_tab'] %}
-                add_navbar_element('Phenotype', 'phenotype');
-            {% endif %}
-            {% if tabs['interaction_tab'] %}
-                add_navbar_element('Interaction', 'interaction');
-            {% endif %}
-            {% if tabs['regulation_tab'] %}
-                add_navbar_element('Regulation', 'regulation');
-            {% endif %}
-            {% if tabs['expression_tab'] %}
-                add_navbar_element('Expression', 'expression');
-            {% endif %}
-            {% if locus.paragraph != None %}
-                add_navbar_element('Summary Paragraph', 'paragraph');
-            {% endif %}
-            {% if tabs['literature_tab'] %}
-                add_navbar_element('Literature', 'literature');
-            {% endif %}
-            add_navbar_element('History', 'history');
-            add_navbar_element('References', 'reference');
-            {% for url in locus.urls if url.category == 'LOCUS_LSP' %}{% if loop.first %}
-                add_navbar_element('Resources', 'resources');
-            {% endif %}{% endfor %}
-        </script>
 
 <!-- Overview
 ================================================== -->
