@@ -43,6 +43,7 @@ function create_phenotype_table(data) {
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, {"bVisible":false}, null, null, null, {'sWidth': '250px'}, null];
         options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + locus['display_name']};
         options["aaData"] = datatable;
+        options["scrollX"] = true;
     }
 
     return create_table("phenotype_table", options);

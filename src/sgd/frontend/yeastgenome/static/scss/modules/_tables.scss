@@ -62,3 +62,11 @@ div.dataTables_length {
     display: inline-block;
     margin-left: 5px;
 }
+
+// allow x scroll on large and below
+#phenotype_table_wrapper {
+    overflow-x: auto;
+    @media only screen and (min-width: 90.063em) {
+        overflow-x: visible;
+    }
+}
