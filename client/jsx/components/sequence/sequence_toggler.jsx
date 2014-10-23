@@ -161,7 +161,7 @@ module.exports = React.createClass({
 
 	_canColorSubFeatures: function () {
 		// must have sub-features and be on genomic DNA
-		if (!this.props.subFeatureData.length || this.state.activeSequenceType !== "genomic_dna") {
+		if (this.props.subFeatureData.length <= 1 || this.state.activeSequenceType !== "genomic_dna") {
 			return false;
 		}
 

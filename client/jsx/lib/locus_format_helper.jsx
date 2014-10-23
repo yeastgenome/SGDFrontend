@@ -88,11 +88,49 @@ module.exports = {
 
 	// returns a d3 ordinal scale with desired color scale for sub-feature types
 	subFeatureColorScale: function () {
-		var colorScale = d3.scale.category10();
+		var FEAUTRE_TYPES = [
+			"CDS",
+			"INTRON",
+			"ARS",
+			"ARS CONSENSUS SEQUENCE",
+			"BINDING_SITE",
+			"CDEI",
+			"CDEII",
+			"CDEIII",
+			"CENTROMERE",
+			"EXTERNAL_TRANSCRIBED_SPACER_REGION",
+			"FIVE_PRIME_UTR_INTRON",
+			"INSERTION",
+			"INTERNAL_TRANSCRIBED_SPACER_REGION",
+			"LONG_TERMINAL_REPEAT",
+			"NON_TRANSCRIBED_REGION",
+			"NONCODING_EXON",
+			"ORF",
+			"PLUS_1_TRANSLATIONAL_FRAMESHIFT",
+			"PSEUDOGENE",
+			"REPEAT_REGION",
+			"RRNA",
+			"SNORNA",
+			"SNRNA",
+			"TELOMERIC_REPEAT",
+			"TRANSPOSABLE_ELEMENT_GENE",
+			"TRNA",
+			"W_REGION",
+			"X_ELEMENT_COMBINATORIAL_REPEATS",
+			"X_ELEMENT_CORE_SEQUENCE",
+			"X_REGION",
+			"Y'_ELEMENT",
+			"Y_REGION",
+			"Z1_REGION",
+			"Z2_REGION"
+		];
+
+
+		var colorScale = d3.scale.category20().domain(FEAUTRE_TYPES);
 		var _cRange = colorScale.range();
 		_cRange[0] = "#696599";
+		_cRange[1] = "red";
 		colorScale = colorScale.range(_cRange);
-		// TODO account for specific sub-feature types and desired colors
 		return colorScale;
 	}
 
