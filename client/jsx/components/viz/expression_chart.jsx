@@ -109,7 +109,10 @@ module.exports = React.createClass({
 				tooltip: {trigger: 'none'}
 	        };
 	        var chart = new google.visualization.Histogram(this.getDOMNode());
-	        // google.visualization.events.addListener(chart, 'ready', make_expression_ready_handler(min_value, max_value));
+	        google.visualization.events.addListener(chart, 'ready', () => {
+	        	$("text:contains('-5.5')").first().html(this.props.minValue.toFixed(1));
+		        $("text:contains('5.5')").first().html(this.props.maxValue.toFixed(1));
+	        });
 	        chart.draw(google.visualization.arrayToDataTable(datatable2), options);
 
 	        // The select handler. Call the chart's getSelection() method

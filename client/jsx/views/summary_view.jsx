@@ -52,7 +52,7 @@ summaryView.render = function () {
     // reference list
     React.renderComponent(
     	<ReferenceList data={bootstrappedData.references}/>,
-    	document.getElementById("reference_list_target")
+    	document.getElementById("reference")
     );
 };
 

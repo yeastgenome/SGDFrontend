@@ -200,11 +200,37 @@
 
         <!-- client-rendered sequence -->
         <div class="panel sgd-viz">
-            <div id="sequence-viz">
+            <div class="sgd-viz" id="sequence-viz">
                 <img class="loader" src="/static/img/dark-slow-wheel.gif" />
             </div>
+
+            {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C' or url.category == 'LOCUS_SEQUENCE_OTHER_SPECIES' or url.category == 'LOCUS_SEQUENCE_OTHER_STRAINS' %}
+                {% if loop.first %}
+                    <h3>Analyze Sequence</h3>
+                    <div class=panel>
+                        {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C'%}
+                            {% if loop.first %}<h4>S288C only</h4><p id="reference_only_resources_list">{% endif %}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
+                        {% endfor %}
+
+
+                        {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_SPECIES'%}
+                            {% if loop.first %}<h4>S288C vs. other species</h4> <p id="other_species_resources_list">{% endif %}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
+                        {% endfor %}
+
+
+                        {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_STRAINS'%}
+                            {% if loop.first %}<h4>S288C vs. other strains</h4><p id="other_strains_resources_list">{% endif %}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
+                        {% endfor %}
+
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
     </section>
+
     {% endif %}
 
 <!-- Protein
@@ -644,20 +670,7 @@
 
 <!-- References
 ================================================== -->
-    <section id="reference_list_target" data-magellan-destination="reference">
-<!--         <h2>References
-            <a href="#" data-dropdown="reference_info"><i class="fa fa-info-circle"></i></a>
-
-            <p id="reference_info" class="f-dropdown content medium" data-dropdown-content>
-                List of references used specifically on this page as citations for information in the Overview (e.g.
-                gene names, aliases, Descriptions), Summary Paragraph, or History sections. The complete list of curated
-                references associated with this locus can be found by clicking on the "Literature" tab for this locus.
-            </p>
-            <span id="reference_header" class="label secondary round"></span>
-        </h2>
-
-        <ol id="reference_list" type="1"></ol>
- --> 
+    <section id="reference" data-magellan-destination="reference">
     </section>
 
     <!-- Resources
