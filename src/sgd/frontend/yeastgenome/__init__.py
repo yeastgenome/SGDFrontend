@@ -20,6 +20,8 @@ class YeastgenomeFrontend(FrontendInterface):
         self.backend_url = backend_url
         self.heritage_url = heritage_url
         self.log = set_up_logging(log_directory, 'yeastgenome')
+        self.locuses = dict()
+        self.now = datetime.datetime.now()
         
     def get_renderer(self, method_name):
         if method_name in {'home', 'download_table', 'download_citations'}:
@@ -44,20 +46,26 @@ class YeastgenomeFrontend(FrontendInterface):
                     return Response(status='404', content_type='text/html', body=open(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "system/404.html")), "r").read())
         return f
 
+    def check_date(self):
+        new_time = datetime.datetime.now()
+        if new_time.date() != self.now.date() and new_time.hour >= 3:
+            self.locuses = dict()
+            self.now = new_time
+        return True
+
     def locus(self, bioent_repr):
-        locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-
-        if locus is None:
-            return None
-
-        tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
-        return {
-                    #Basic info
-                    'locus': locus,
-                    'locus_js': json.dumps(locus),
-                    'tabs': tabs
-
-                    }
+        if self.check_date() and bioent_repr.lower() in self.locuses:
+            return_value = self.locuses[bioent_repr.lower()]
+        else:
+            locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
+            if locus is None:
+                return_value = None
+            else:
+                tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
+                return_value = {'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs}
+            if locus is not None:
+                self.locuses[bioent_repr.lower()] = return_value
+        return return_value
 
     def locus_list(self, list_name):
         return self.get_obj('locus_list', None, obj_url=self.backend_url + '/locus/' + list_name)
