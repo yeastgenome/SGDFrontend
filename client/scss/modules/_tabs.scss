@@ -1,0 +1,52 @@
+.sgd-tabs .tab-title > a {
+	position: relative;
+	padding: 8px 16px;
+	border-right: 1px solid #e1e1e1;
+	border-left: 1px solid #e1e1e1;
+
+	// shrink font on smaller screens (around iPad)
+	@media only screen and (max-width: 64rem)  {
+		font-size: 14px;
+		padding: 4px 4px;
+	}
+}
+
+.sgd-tabs li.active a {
+    background: none repeat scroll 0 0 #fff;
+    color: #222;
+    border-top: 2px solid $topbar-bg-color;
+    padding-top: 6px;
+    z-index: 2;
+    border-right: none;
+    border-left: none;
+    @media only screen and (max-width: 64rem)  {
+		padding-top: 2px;
+	}
+}
+
+.sgd-tab-shadow {
+	position: relative;
+	height: 15px;
+	box-shadow: 0px -7px 5px -5px darkgray;
+	z-index: 1;
+}
+
+.mobile-tab-bar {
+	a { color: black !important; }
+	background: #b9b9b9;
+	&.expanded .title-area {
+		background: #b9b9b9;
+	}
+	li.name a {
+		color: black;
+	}
+	ul.right {
+		background: #ddd;
+		li {
+			background: #ddd;
+			a {
+				color: black;
+			}
+		}
+	}
+}

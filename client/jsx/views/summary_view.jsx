@@ -16,7 +16,7 @@ var TabsModel = require("../models/tabs_model.jsx");
 
 var summaryView = {};
 summaryView.render = function () {
-	document.getElementById("summary_tab").id = "current";
+	document.getElementById("summary_tab").className += " active";
 
 	// helper variables
 	var hasHistory = _.where(bootstrappedData.history, { history_type: "LSP" }).length;

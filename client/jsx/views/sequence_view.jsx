@@ -11,7 +11,7 @@ var sequenceView = {};
 sequenceView.render = function () {
 
 	// set current tab
-	document.getElementById("sequence_tab").id = "current";
+	document.getElementById("sequence_tab").className += " active";
 
 	// define render nav bar function
 	var renderNavBar = function (hasAltStrains, hasOtherStrains) {

@@ -23,7 +23,7 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
+<div id="center_title" class="row hide-for-small">
 	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
@@ -31,7 +31,7 @@
 ================================================== -->
 <!-- Includes tabs.html into template -->
 {% include "tabs.jinja2" %}
-<script>document.getElementById('protein_tab').id = 'current';</script>
+<script>document.getElementById("protein_tab").className += " active";</script>
 
 <!-- Navbar
 ================================================== -->
