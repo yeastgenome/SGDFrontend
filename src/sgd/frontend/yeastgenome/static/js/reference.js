@@ -10,7 +10,7 @@ $(document).ready(function() {
         hide_section('expression');
     }
 
-    $.getJSON('/backend/reference/' + reference['id'] + '/literature_details?callback=?', function(data) {
+    $.getJSON('/backend/reference/' + reference['sgdid'] + '/literature_details?callback=?', function(data) {
         data.sort(function(a, b) {return a['locus']['display_name'] > b['locus']['display_name']});
 
         create_literature_list('primary', data, 'Primary Literature')
@@ -21,7 +21,7 @@ $(document).ready(function() {
     $("#download_citation").click(function() {post_to_url(download_link, {"display_name":reference['display_name'].replace(' ', '_') + '_citation.nbib', "reference_ids": [reference['id']]});})
 
     if(reference['counts']['interaction'] > 0) {
-        $.getJSON('/backend/reference/' + reference['id'] + '/interaction_details?callback=?', function(data) {
+        $.getJSON('/backend/reference/' + reference['sgdid'] + '/interaction_details?callback=?', function(data) {
             var interaction_table = create_interaction_table(data);
             create_download_button("interaction_table_download", interaction_table, reference['display_name'] + "_interactions");
             create_analyze_button("interaction_table_analyze", interaction_table, reference['display_name'] + " interaction genes", true);
@@ -32,7 +32,7 @@ $(document).ready(function() {
     }
 
     if(reference['counts']['go'] > 0) {
-        $.getJSON('/backend/reference/' + reference['id'] + '/go_details?callback=?', function(data) {
+        $.getJSON('/backend/reference/' + reference['sgdid'] + '/go_details?callback=?', function(data) {
             var go_table = create_go_table(data);
             create_download_button("go_table_download", go_table, reference['display_name'] + "_go_terms");
             create_analyze_button("go_table_analyze", go_table, reference['display_name'] + " Gene Ontology terms", true);
@@ -43,7 +43,7 @@ $(document).ready(function() {
     }
 
     if(reference['counts']['phenotype'] > 0) {
-        $.getJSON('/backend/reference/' + reference['id'] + '/phenotype_details?callback=?', function(data) {
+        $.getJSON('/backend/reference/' + reference['sgdid'] + '/phenotype_details?callback=?', function(data) {
             var phenotype_table = create_phenotype_table(data);
             create_download_button("phenotype_table_download", phenotype_table, reference['display_name'] + "_phenotypes");
             create_analyze_button("phenotype_table_analyze", phenotype_table, reference['display_name'] + " phenotype genes", true);
@@ -54,7 +54,7 @@ $(document).ready(function() {
     }
 
     if(reference['counts']["regulation"] > 0) {
-        $.getJSON('/backend/reference/' + reference['id'] + '/regulation_details?callback=?', function(data) {
+        $.getJSON('/backend/reference/' + reference['sgdid'] + '/regulation_details?callback=?', function(data) {
             var regulation_table = create_regulation_table(data);
             create_download_button("regulation_table_download", regulation_table, reference['display_name'] + "_regulation");
             create_analyze_button("regulation_table_analyze", regulation_table, reference['display_name'] + " regulation genes", true);

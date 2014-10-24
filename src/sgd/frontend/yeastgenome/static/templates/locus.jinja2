@@ -132,7 +132,7 @@
 
                 <dt>Description</dt>
                 <dd>
-                    {{ locus.description }}
+                    {{ locus.description|safe }}
                     {% if 'description' in locus.qualities %}
                         {% set references = locus.qualities.description.references %}
                         {% include "biblio_references.jinja2" %}
