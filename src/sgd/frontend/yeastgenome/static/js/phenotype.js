@@ -35,6 +35,5 @@ function create_phenotype_table(data) {
         options["oLanguage"] = {"sEmptyTable": "No annotations for " + phenotype['display_name']};
         options["aaData"] = datatable;
     }
-
     return create_table("phenotype_table", options);
 }
