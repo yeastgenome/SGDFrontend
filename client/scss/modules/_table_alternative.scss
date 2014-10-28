@@ -20,18 +20,6 @@
 	text-decoration: none;
 }
 
-.table-alternative .sgd-tabs li a {
-	position: relative;
-}
-
-.table-alternative .sgd-tabs li.active a {
-    background: none repeat scroll 0 0 #fff;
-    color: #222;
-    border-top: 2px solid $topbar-bg-color;
-    padding-top: 14px;
-    z-index: 2;
-}
-
 .table-alternative .table-scroll-container {
 	overflow-x: scroll;
 }
