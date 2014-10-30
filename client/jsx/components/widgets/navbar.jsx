@@ -15,6 +15,12 @@ module.exports = React.createClass({
 		};
 	},
 
+	getInitialState: function () {
+		return {
+			backToTopVisible: false
+		};
+	},
+
 	render: function () {
 
 		// title can be link or plain text, depending on if title has href property
@@ -29,7 +35,12 @@ module.exports = React.createClass({
 			);
 		});
 
-		return (
+		var backToTopNode = null;
+		if (this.state.backToTopVisible) {
+			backToTopNode = <a href="#" className="back-to-top" style={{ position: "fixed", display: "inline" }}>Back to Top</a>;
+		}
+
+		return (<div>
 			<nav id="sidebar">
 				<div data-magellan-expedition="fixed">
 			        <ul className="side-nav" id="side-nav-sticky">
@@ -38,7 +49,9 @@ module.exports = React.createClass({
 			        </ul>
 			    </div>
 		    </nav>
-		);
+
+		    {backToTopNode}
+		</div>);
 	},
 
 	// NOTE: Has effects outside of component. $(document), $(window)
@@ -51,13 +64,17 @@ module.exports = React.createClass({
 		// back to top button
 		var offset = 245; // how far (px) to scroll to trigger link
 	    var duration = 500; // 0.5s fade in/out
-	    $(window).scroll( function () {
-	        if ($(this).scrollTop() > offset) {
-	            $(".back-to-top").fadeIn(duration);
+
+	    var _throttled = _.throttle( () => {
+	    	var yOffset = window.pageYOffset;
+	        if (yOffset > offset) {
+	        	this.setState({ backToTopVisible: true });
 	        } else {
-	            $(".back-to-top").fadeOut(duration);
+	            this.setState({ backToTopVisible: false });
 	        }
-	    });
+	    }, 500);
+	    $(window).scroll(_throttled);
+
 	    $(".back-to-top").click( e => {
 	        e.preventDefault();
 	        $("html, body").animate({scrollTop: 0}, duration);
