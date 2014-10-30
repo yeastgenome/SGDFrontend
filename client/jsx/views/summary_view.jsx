@@ -61,12 +61,9 @@ summaryView.render = function () {
 		);
 	}
 
-
-
-
   	// summary paragraph
-  	if(bootstrappedData.summaryParagraph) {
-        document.getElementById("summary_paragraph").innerHTML = locusData.paragraph;
+  	if(locusData.paragraph) {
+        document.getElementById("summary_paragraph").innerHTML = locusData.paragraph.text;
     }
 
     // history (if needed)
