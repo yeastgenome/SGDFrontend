@@ -16,18 +16,16 @@ var TabsModel = require("../models/tabs_model.jsx");
 
 var summaryView = {};
 summaryView.render = function () {
+	var locusData = bootstrappedData.locusData;
+	var hasHistory = _.where(locusData.history, { history_type: "LSP" }).length;
+
 	document.getElementById("summary_tab").className += " active";
 
-	// helper variables
-	var hasHistory = _.where(bootstrappedData.history, { history_type: "LSP" }).length;
-
 	// navbar
-	
 	var _tabModel = new TabsModel({
 		hasHistory: hasHistory,
-		hasParagraph: true, // TEMP why not?
-		hasResources: true, // ?
-		hasSequence: true, // TEMP why not?
+		hasParagraph: locusData.paragraph,
+		hasResources: true,
 		rawTabsData: bootstrappedData.tabs,
 		tabType: "summary"
 	});
@@ -38,43 +36,50 @@ summaryView.render = function () {
 		document.getElementById("navbar-container")
 	);
 
-	// async sequence view, fetches data, renders main strain, alt strains, and other strains (if present)
-	// once data is fetched, update the navbar
-	React.renderComponent(
-		<AsyncSequenceView
-			locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
-			locusFormatName={bootstrappedData.formatName} locusHistoryData={bootstrappedData.locusHistory}
-			showAltStrains={false} showOtherStrains={false} showHistory={false} isSimplified={true}
-		/>,
-		document.getElementById("sequence-viz")
-	);
-
+	var fetchAndRenderHistory = () => {
 	// TEMP experiment with expression data
-	$.getJSON('/backend/locus/' + bootstrappedData.locusId + '/expression_details?callback=?', function(data) {
-		if (data.datasets.length) {
-			React.renderComponent(
-				<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} />,
-				document.getElementById("two_channel_expression_chart")
-			);
-		}
-  	});
+		$.getJSON('/backend/locus/' + bootstrappedData.locusId + '/expression_details?callback=?', function(data) {
+			if (data.datasets.length) {
+				React.renderComponent(
+					<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} />,
+					document.getElementById("two_channel_expression_chart")
+				);
+			}
+	  	});
+	};
+
+	// async sequence (if needed)
+	if (bootstrappedData.tabs && bootstrappedData.tabs.sequence_tab) {
+		React.renderComponent(
+			<AsyncSequenceView
+				locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
+				locusFormatName={bootstrappedData.formatName} locusHistoryData={locusData.history}
+				showAltStrains={false} showOtherStrains={false} showHistory={false} isSimplified={true}
+				detailsCallback={fetchAndRenderHistory}
+			/>,
+			document.getElementById("sequence-viz")
+		);
+	}
+
+
+
 
   	// summary paragraph
   	if(bootstrappedData.summaryParagraph) {
-        document.getElementById("summary_paragraph").innerHTML = bootstrappedData.summaryParagraph;
+        document.getElementById("summary_paragraph").innerHTML = locusData.paragraph;
     }
 
     // history (if needed)
     if (hasHistory) {
     	React.renderComponent(
-    		<HistoryTable data={bootstrappedData.history} dataType="LSP" />,
+    		<HistoryTable data={locusData.history} dataType="LSP" />,
     		document.getElementById("history_target")
     	);
     }
 
     // reference list
     React.renderComponent(
-    	<ReferenceList data={bootstrappedData.references}/>,
+    	<ReferenceList data={locusData.references}/>,
     	document.getElementById("reference")
     );
 };

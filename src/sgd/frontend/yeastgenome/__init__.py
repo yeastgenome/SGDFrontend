@@ -73,7 +73,7 @@ class YeastgenomeFrontend(FrontendInterface):
                 return_value = None
             else:
                 tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
-                return_value = {'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs}
+                return_value = {'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs, 'tabs_js': json.dumps(tabs)}
             if locus is not None:
                 self.locuses[bioent_repr.lower()] = return_value
         return return_value

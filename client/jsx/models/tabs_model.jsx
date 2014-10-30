@@ -9,6 +9,15 @@ module.exports = class TabsModel {
 	constructor (options) {
 		var options = options || {};
 		options.tabType || "summary";
+		options.rawTabsData = options.rawTabsData || {
+			protein_tab: false,
+			go_tab: false,
+			phenotype_tab: false,
+			interaction_tab: false,
+			regulation_tab: false,
+			expression_tab: false,
+			literature_tab: false
+		};
 		this.attributes = options;
 	}
 
@@ -44,7 +53,7 @@ module.exports = class TabsModel {
 	_getSummaryTabs () {
 		return [
 			{ name: "Locus Overview", target: "overview" },
-			(this.attributes.hasSequence ? { name: "Sequence", target: "sequence" } : null),
+			(this.attributes.rawTabsData.sequence_tab ? { name: "Sequence", target: "sequence" } : null),
 			(this.attributes.rawTabsData.protein_tab ? { name: "Protein", target: "protein" } : null),
 			(this.attributes.rawTabsData.go_tab ? { name: "Gene Ontology", target: "go" } : null),
 			(this.attributes.rawTabsData.phenotype_tab ? { name: "Phenotype", target: "phenotype" } : null),
