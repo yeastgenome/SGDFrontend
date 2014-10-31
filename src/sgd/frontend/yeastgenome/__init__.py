@@ -8,6 +8,7 @@ import base64
 import requests
 import os.path
 import sys
+import random
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP, render
 from pyramid.response import Response
@@ -367,11 +368,16 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     config = Configurator(settings=settings)
     config.add_translation_dirs('locale/')
     config.include('pyramid_jinja2')
-    
-    # static assets, cached for 2 hours
-    config.add_static_view('static', 'src:sgd/frontend/yeastgenome/static', cache_max_age=7200)
-    # images cached for 1 week
-    config.add_static_view('img-domain', 'src:sgd/frontend/yeastgenome/img-domain', cache_max_age=604800)
+
+    # make a random number at restart to bust the cache
+    version_qs = random.random()
+    def add_template_global(event):
+        event['version_qs'] = version_qs
+    config.add_subscriber(add_template_global, 'pyramid.events.BeforeRender')
+
+    # cache everything for 1 month on browser    
+    config.add_static_view('static', 'src:sgd/frontend/yeastgenome/static', cache_max_age=2628000)
+    config.add_static_view('img-domain', 'src:sgd/frontend/yeastgenome/img-domain', cache_max_age=2628000)
     config.add_renderer('jsonp', JSONP(param_name='callback'))
 
     return chosen_frontend, config

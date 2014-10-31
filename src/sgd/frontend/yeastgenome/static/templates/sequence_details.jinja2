@@ -101,7 +101,7 @@
 {% endblock body %}
 
 {% block scripts %}
-<script src="/static/js/application.js"></script>
+<script src="/static/js/application.js?v={{version_qs}}"></script>
 <script>
     views.sequence.render();
 </script>

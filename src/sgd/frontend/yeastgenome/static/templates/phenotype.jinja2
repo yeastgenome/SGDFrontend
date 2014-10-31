@@ -70,9 +70,9 @@
 
 {% block scripts %}
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script src="/static/js/phenotype_overview.js"></script>
-<script src="/static/js/build/cytoscape.min.js"></script>
-<script src="/static/js/build/arbor.js"></script>
-<script src="/static/js/evidence.js"></script>
-<script src="/static/js/phenotype.js"></script>
+<script src="/static/js/phenotype_overview.js?v={{version_qs}}"></script>
+<script src="/static/js/build/cytoscape.min.js?v={{version_qs}}"></script>
+<script src="/static/js/build/arbor.js?v={{version_qs}}"></script>
+<script src="/static/js/evidence.js?v={{version_qs}}"></script>
+<script src="/static/js/phenotype.js?v={{version_qs}}"></script>
 {% endblock scripts %}

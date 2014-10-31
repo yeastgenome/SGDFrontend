@@ -74,8 +74,8 @@
 {% endblock body %}
 
 {% block scripts %}
-<script src="/static/js/local.js"></script>
-<script src="/static/js/evidence.js"></script>
-<script src="/static/js/tag.js"></script>
+<script src="/static/js/local.js?v={{version_qs}}"></script>
+<script src="/static/js/evidence.js?v={{version_qs}}"></script>
+<script src="/static/js/tag.js?v={{version_qs}}"></script>
 {% endblock scripts %}
 

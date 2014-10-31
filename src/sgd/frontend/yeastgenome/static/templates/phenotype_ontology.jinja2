@@ -64,8 +64,8 @@
 {% endblock body %}
 
 {% block scripts %}
-<script src="/static/js/build/cytoscape.min.js"></script>	
-<script src="/static/js/build/arbor.js"></script>
-<script src="/static/js/cytoscape.js"></script>
-<script src="/static/js/phenotype_ontology.js"></script>
+<script src="/static/js/build/cytoscape.min.js?v={{version_qs}}"></script>	
+<script src="/static/js/build/arbor.js?v={{version_qs}}"></script>
+<script src="/static/js/cytoscape.js?v={{version_qs}}"></script>
+<script src="/static/js/phenotype_ontology.js?v={{version_qs}}"></script>
 {% endblock scripts %}
