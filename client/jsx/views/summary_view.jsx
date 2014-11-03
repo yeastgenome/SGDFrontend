@@ -25,6 +25,7 @@ summaryView.render = function () {
 	var _tabModel = new TabsModel({
 		hasHistory: hasHistory,
 		hasParagraph: locusData.paragraph,
+		hasPathways: locusData.pathways.length,
 		hasResources: true,
 		rawTabsData: bootstrappedData.tabs,
 		tabType: "summary"

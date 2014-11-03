@@ -56,6 +56,7 @@ module.exports = class TabsModel {
 			(this.attributes.rawTabsData.sequence_tab ? { name: "Sequence", target: "sequence" } : null),
 			(this.attributes.rawTabsData.protein_tab ? { name: "Protein", target: "protein" } : null),
 			(this.attributes.rawTabsData.go_tab ? { name: "Gene Ontology", target: "go" } : null),
+			(this.attributes.hasPathways ?  { name: "Pathways", target: "pathway" } : null),
 			(this.attributes.rawTabsData.phenotype_tab ? { name: "Phenotype", target: "phenotype" } : null),
 			(this.attributes.rawTabsData.interaction_tab ? { name: "Interaction", target: "interaction" } : null),
 			(this.attributes.rawTabsData.regulation_tab ? { name: "Regulation", target: "regulation" } : null),
