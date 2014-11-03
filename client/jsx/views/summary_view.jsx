@@ -50,7 +50,7 @@ summaryView.render = function () {
 
 	// async sequence (if needed)
 	if (bootstrappedData.tabs && bootstrappedData.tabs.sequence_tab) {
-		var _geneticPosition = locusData.genetic_position + " cM";
+		var _geneticPosition = locusData.genetic_position ? (locusData.genetic_position + " cM") : null;
 		React.renderComponent(
 			<AsyncSequenceView
 				locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
