@@ -20,6 +20,7 @@ module.exports = React.createClass({
 	getDefaultProps: function () {
 		return  {
 			isSimplified: false, // simplified is for LSP
+			geneticPosition: null,
 			neighborsModel: null,
 			detailsModel: null,
 			focusLocusDisplayName: null,
@@ -93,7 +94,7 @@ module.exports = React.createClass({
 					{this.props.isSimplified ? this._getSimplifiedSequenceNode() : <h2>Reference Strain: S288C {helpNode}</h2>}
 				</div>
 				<div className="columns small-6">
-					<p className="text-right">View in: <a href={_gbHref}>GBrowse</a> | <a href={_mapHref}>ORF Map</a></p>
+					<p className="text-right locus-external-links">View in: <a href={_gbHref}>GBrowse</a> | <a href={_mapHref}>ORF Map</a></p>
 				</div>
 			</div>);
 			
@@ -106,7 +107,8 @@ module.exports = React.createClass({
 		var node = <div className="panel sgd-viz"><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div>;
 		if (this._canRenderNeighbors()) {
 			var attr = this._getActiveStrainNeighborsData();
-			if (!attr) return null
+			if (!attr) return null;
+			var geneticPositionNode = this.props.geneticPosition ? <dl className="key-value"><dt>Genetic Position</dt><dd>{this.props.geneticPosition}</dd></dl> : null;
 			node = (<div className="panel sgd-viz">
 				<h3>
 					{this.props.focusLocusDisplayName} Location: <a href={attr.contigData.href}>{attr.contigData.name}</a> {attr.focusLocusDomain[0]} - {attr.focusLocusDomain[1]}
@@ -120,6 +122,7 @@ module.exports = React.createClass({
 					watsonTracks={Math.abs(attr.trackDomain[1])}
 					crickTracks={Math.abs(attr.trackDomain[0])}
 				/>
+				{geneticPositionNode}
 			</div>);
 		}
 		return node;
@@ -219,7 +222,7 @@ module.exports = React.createClass({
 				contigName={attr.contigData.name} locusFormatName={this.props.focusLocusFormatName}
 			/>);
 		} else {
-			return <a className="button dropdown small secondary disabled"><i className="fa fa-download" /> Download (.fsa)</a>;
+			return <a className="button dropdown small secondary disabled multi-sequence-download-button"><i className="fa fa-download" /> Download (.fsa)</a>;
 		}		
 	}
 });

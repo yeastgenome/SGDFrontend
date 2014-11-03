@@ -50,7 +50,7 @@ module.exports = React.createClass({
 		var openKlass = this.state.isOpen ? "f-dropdown open" : "f-dropdown";
 		return (<div>
 			{hiddenFormContainerNode}
-			<a className="button dropdown small secondary" onClick={this._toggleOpen} ><i className="fa fa-download" /> Download (.fsa)</a>
+			<a className="button dropdown small secondary multi-sequence-download-button" onClick={this._toggleOpen} ><i className="fa fa-download" /> Download (.fsa)</a>
 			<ul className={openKlass} style={{ position: "absolute", left: "1rem", display: this.state.isOpen ? "block" : "none" }}>
 				{buttonNodes}
 			</ul>

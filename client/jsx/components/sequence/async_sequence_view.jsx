@@ -19,6 +19,7 @@ module.exports = React.createClass({
 	getDefaultProps: function () {
 		return {
 			detailsCallback: null, // (err, detailsModel)
+			geneticPosition: null,
 			isSimplified: false, // simplified is for LSP
 			locusDisplayName: null,
 			locusHistoryData: null,
@@ -79,6 +80,7 @@ module.exports = React.createClass({
 			isSimplified={this.props.isSimplified}
 			focusLocusDisplayName={this.props.locusDisplayName}
 			focusLocusFormatName={this.props.locusFormatName}
+			geneticPosition={this.props.geneticPosition}
 			neighborsModel={this.state.neighborsModel}
 			detailsModel={this.state.detailsModel}
 			showAltStrains={false}
