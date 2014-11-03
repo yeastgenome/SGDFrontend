@@ -148,7 +148,7 @@ module.exports = React.createClass({
 
 			tableNode = this._getSubFeaturesTable();
 			var _params = _.extend(this.props.detailsModel.attributes.subFeatureDownloadData, { display_name: `${this.props.focusLocusDisplayName}_subfeatures` });
-			downloadNode = this.props.isSimplified ? null : <DownloadButton url="/download_table" params={_params} />;
+			downloadNode = this.props.isSimplified ? null : <DownloadButton buttonId="subfeature_table_download" url="/download_table" params={_params} />;
 		}
 
 		return (<div className="panel sgd-viz sequence-details-container">
@@ -163,6 +163,7 @@ module.exports = React.createClass({
 
 		var innerNode = <img className="loader" src="/static/img/dark-slow-wheel.gif" />;
 		if (this._canRenderDetails()) {
+			var _buttonId = this.props.showAltStrains ? "alternative_download" : "reference_download";
 			var _text = this.props.showAltStrains ? "Sequence" : "Sequence - S288C";
 			var _detailsData = this._getActiveStrainDetailsData()
 			var _sequences = _detailsData.sequences;
@@ -171,7 +172,7 @@ module.exports = React.createClass({
 				sequences={_sequences} text={_text}
 				locusDisplayName={this.props.focusLocusDisplayName} locusFormatName={this.props.focusLocusFormatName}
 				contigName={_contigName} showCustomRetrieval={!this.props.showAltStrains}
-				subFeatureData={_detailsData.data.locci[0].tags}
+				subFeatureData={_detailsData.data.locci[0].tags} buttonId={_buttonId}
 			/>);
 		}
 
@@ -195,7 +196,7 @@ module.exports = React.createClass({
 			oLanguage: { "sEmptyTable": "No subfeatures for " + this.props.focusLocusDisplayName + '.' }
 		};
 		var _tableData = this._getActiveStrainDetailsData().tableData;
-		return <DataTable data={_tableData} usePlugin={true} pluginOptions={_options} />;
+		return <DataTable data={_tableData} usePlugin={true} pluginOptions={_options} tableId="subfeature_table" />;
 	},
 
 	_getActiveStrainNeighborsData: function () {

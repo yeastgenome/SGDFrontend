@@ -17,6 +17,7 @@ module.exports = React.createClass({
 		return {
 			data: null, // * { headers: [[]], rows: [[]]}
 			pluginOptions: {},
+			tableId: null,
 			usePlugin: false // if true, uses jQuery dataTable plugin after mounting
 		}
 	},
@@ -27,7 +28,7 @@ module.exports = React.createClass({
 
 		return (
 			<div className="data-table table-scroll-container dataTables_wrapper">
-				<table ref="table" className="table table-striped table-bordered table-condensed">
+				<table id={this.props.tableId} ref="table" className="table table-striped table-bordered table-condensed">
 					<thead>
 						{headerRows}
 					</thead>

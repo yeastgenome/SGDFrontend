@@ -126,6 +126,7 @@ module.exports = React.createClass({
 					<SequenceToggler
 						sequences={this.state.detailsModel.attributes.otherStrains}
 						locusDisplayName={this.props.locusDisplayName} showSequence={false}
+						buttonId="other_download"
 					/>
 				</div>
 			</section>);

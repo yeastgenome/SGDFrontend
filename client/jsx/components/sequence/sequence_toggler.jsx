@@ -16,6 +16,7 @@ module.exports = React.createClass({
 
 	getDefaultProps: function () {
 		return {
+			buttonId: null,
 			locusDisplayName: null, // *
 			locusFormatName: null,
 			contigName: null,
@@ -63,7 +64,7 @@ module.exports = React.createClass({
 			{sequenceTextNode}
 			<div className="button-bar">
 				<ul className="button-group radius">
-					<li><DownloadButton text="Download Sequence" url="/download_sequence" extension=".fsa" params={_downloadParams}/></li>
+					<li><DownloadButton buttonId={this.props.buttonId} text="Download Sequence" url="/download_sequence" extension=".fsa" params={_downloadParams}/></li>
 				</ul>
 				{customRetrievalNode}
 			</div>
