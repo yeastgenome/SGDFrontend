@@ -1,13 +1,44 @@
 __author__ = 'kpaskov'
 
+import os
+import sys
+import httplib
+import base64
+import json
+import new
+import unittest
+import sauceclient
 from selenium import webdriver
+from sauceclient import SauceClient
+from test_config import USERNAME, ACCESS_KEY, BASE_URL
+
+sauce = SauceClient(USERNAME, ACCESS_KEY)
+
+browsers = [{"platform": "Mac OS X 10.9",
+             "browserName": "chrome",
+             "version": "31"},
+            {"platform": "Windows 8.1",
+             "browserName": "internet explorer",
+             "version": "11"}]
 
 def before_feature(context, feature):
     if 'browser' in feature.tags:
-        context.browser = webdriver.Firefox()
-        context.browser.implicitly_wait(30) # seconds
-        context.base_url = 'http://localhost:6545'
+        sauce_url = "http://%s:%s@ondemand.saucelabs.com:80/wd/hub"
+        context.browser = webdriver.Remote(
+            desired_capabilities={'username': USERNAME, 'access-key': ACCESS_KEY, 'platform': 'Mac OS X 10.9', 'browserName': 'chrome', 'version': '31'},
+            command_executor=sauce_url % (USERNAME, ACCESS_KEY)
+        )
+        context.browser.implicitly_wait(30)
+
+        context.base_url = BASE_URL
 
 def after_feature(context, feature):
     if 'browser' in feature.tags:
-        context.browser.quit()
+        print("Link to your job: https://saucelabs.com/jobs/%s" % context.browser.session_id)
+        try:
+            if sys.exc_info() == (None, None, None):
+                sauce.jobs.update_job(context.browser.session_id, passed=True)
+            else:
+                sauce.jobs.update_job(context.browser.session_id, passed=False)
+        finally:
+            context.browser.quit()
