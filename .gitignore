@@ -24,3 +24,4 @@ bower_components/
 node_modules/
 client/scss/build/
 client/scss/normalize.scss
+asset_version.json

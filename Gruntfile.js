@@ -1,3 +1,6 @@
+var crypto = require("crypto");
+var fs = require("fs");
+
 module.exports = function(grunt) {
     var BUILD_PATH = "src/sgd/frontend/yeastgenome/static/";
     
@@ -150,6 +153,16 @@ module.exports = function(grunt) {
             }
         }
     });
+
+    grunt.registerTask("updateAssetVersion", "Change the asset_version.json file to have a new random string", function () {
+        var done = this.async();
+
+        var _random = crypto.randomBytes(20).toString("hex");
+        var obj = { version: _random };
+        fs.writeFile("asset_version.json", JSON.stringify(obj), function(err) {
+            return done(err);
+        });
+    });
     
     grunt.loadNpmTasks("grunt-text-replace");
     grunt.loadNpmTasks("grunt-contrib-concat");
@@ -170,5 +183,5 @@ module.exports = function(grunt) {
     // compile dev, then watch and trigger live reload
     grunt.registerTask("dev", ["compileDev", "watch"]);
     
-    grunt.registerTask("default", ["static", "concurrent:production"]);
+    grunt.registerTask("default", ["static", "concurrent:production", "updateAssetVersion"]);
 };

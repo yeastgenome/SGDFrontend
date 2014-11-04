@@ -369,12 +369,17 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     config.add_translation_dirs('locale/')
     config.include('pyramid_jinja2')
 
-    # make a random number at restart to bust the cache
-    version_qs = random.random()
+    # static assets with far future caching and "cache busting"
+    # make asset query string from asset_version.json (if available), which will bust the cache
+    try:
+        asset_version = json.load(open('asset_version.json'))['version']
+        version_qs = '?v=' + asset_version
+    except:
+        version_qs = ""
+    # put query string in global template variable
     def add_template_global(event):
         event['version_qs'] = version_qs
     config.add_subscriber(add_template_global, 'pyramid.events.BeforeRender')
-
     # cache everything for 1 month on browser    
     config.add_static_view('static', 'src:sgd/frontend/yeastgenome/static', cache_max_age=2628000)
     config.add_static_view('img-domain', 'src:sgd/frontend/yeastgenome/img-domain', cache_max_age=2628000)
