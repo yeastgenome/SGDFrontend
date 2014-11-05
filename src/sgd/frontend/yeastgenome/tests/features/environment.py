@@ -12,14 +12,11 @@ from selenium import webdriver
 from sauceclient import SauceClient
 from test_config import USERNAME, ACCESS_KEY, BASE_URL
 
-sauce = SauceClient(USERNAME, ACCESS_KEY)
+# import env variables
+USERNAME = os.environ['SAUCE_USERNAME']
+ACCESS_KEY = os.environ['SAUCE_ACCESS_KEY']
 
-browsers = [{"platform": "Mac OS X 10.9",
-             "browserName": "chrome",
-             "version": "31"},
-            {"platform": "Windows 8.1",
-             "browserName": "internet explorer",
-             "version": "11"}]
+sauce = SauceClient(USERNAME, ACCESS_KEY)
 
 def before_feature(context, feature):
     if 'browser' in feature.tags:
