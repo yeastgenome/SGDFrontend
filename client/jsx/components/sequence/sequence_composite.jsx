@@ -108,7 +108,7 @@ module.exports = React.createClass({
 		if (this._canRenderNeighbors()) {
 			var attr = this._getActiveStrainNeighborsData();
 			if (!attr) return null;
-			var geneticPositionNode = this.props.geneticPosition ? <dl className="key-value"><dt>Genetic Position</dt><dd>{this.props.geneticPosition}</dd></dl> : null;
+			var geneticPositionNode = this.props.geneticPosition ? <dl className="key-value"><dt>Genetic Position</dt><dd id="genetic_position">{this.props.geneticPosition}</dd></dl> : null;
 			node = (<div className="panel sgd-viz">
 				<h3>
 					{this.props.focusLocusDisplayName} Location: <a href={attr.contigData.href}>{attr.contigData.name}</a> {attr.focusLocusDomain[0]} - {attr.focusLocusDomain[1]}

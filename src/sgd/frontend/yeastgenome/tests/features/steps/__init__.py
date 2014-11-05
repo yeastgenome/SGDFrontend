@@ -27,7 +27,14 @@ def should_see_element_with_class_name(context, element_class):
     try:
         context.browser.find_element_by_class_name(element_class)
     except NoSuchElementException:
-        assert 0, 'No element with class ' + element_class        
+        assert 0, 'No element with class ' + element_class
+
+@step('I should see an element with css_selector "{css_selector}"')
+def should_see_element_with_css_selector(context, css_selector):
+        try:
+            context.browser.find_element_by_css_selector(css_selector)
+        except:
+            assert 0, 'No element with CSS selector ' + css_selector
 
 @step('I should see an element "{element_id}" with text "{text}"')
 def should_see_element_with_id_with_text(context, element_id, text):

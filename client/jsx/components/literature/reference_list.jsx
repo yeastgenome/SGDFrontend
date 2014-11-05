@@ -32,7 +32,7 @@ module.exports = React.createClass({
 				return <li><a href={ref.link}>{ref.display_name}</a></li>;
 			});
 			refNodes.unshift(<li><a href={r.link}>SGD Paper</a></li>)
-			return (<li>
+			return (<li className="reference-list-item">
 				<a href={r.link}>{r.display_name}</a> {_text} <small>PMID: {r.pubmed_id}</small>
 				<ul className="ref-links">
 					{refNodes}
@@ -40,6 +40,6 @@ module.exports = React.createClass({
 			</li>);
 		});
 
-		return <ol>{itemNodes}</ol>;
+		return <ol className="reference-list">{itemNodes}</ol>;
 	}
 });

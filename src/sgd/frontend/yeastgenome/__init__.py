@@ -365,7 +365,7 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
         asset_version = json.load(open('asset_version.json'))['version']
         version_qs = '?v=' + asset_version
     except:
-        version_qs = ""
+        version_qs = ''
     # put query string in global template variable
     def add_template_global(event):
         event['version_qs'] = version_qs
