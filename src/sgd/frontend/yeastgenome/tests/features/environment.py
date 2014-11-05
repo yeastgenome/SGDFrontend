@@ -10,7 +10,6 @@ import unittest
 import sauceclient
 from selenium import webdriver
 from sauceclient import SauceClient
-from test_config import USERNAME, ACCESS_KEY, BASE_URL
 
 # import env variables
 USERNAME = os.environ['SAUCE_USERNAME']
