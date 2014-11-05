@@ -14,6 +14,8 @@ from sauceclient import SauceClient
 # import env variables
 USERNAME = os.environ['SAUCE_USERNAME']
 ACCESS_KEY = os.environ['SAUCE_ACCESS_KEY']
+# point at production
+BASE_URL = "http://yeastgenome.org"
 
 sauce = SauceClient(USERNAME, ACCESS_KEY)
 
