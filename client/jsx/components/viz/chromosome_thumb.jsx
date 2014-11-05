@@ -43,7 +43,7 @@ module.exports = React.createClass({
 		var centroMereNode = null;
 		var nonChromNode = null
 
-		if (this.props.isChromosome) {
+		if (this.props.isChromosome && this.props.centromerePosition) {
 			var centromereX = scale(this.props.centromerePosition);
 			
 			// form left arm
