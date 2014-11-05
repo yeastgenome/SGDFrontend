@@ -380,9 +380,10 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     def add_template_global(event):
         event['version_qs'] = version_qs
     config.add_subscriber(add_template_global, 'pyramid.events.BeforeRender')
-    # cache everything for 1 month on browser    
-    config.add_static_view('static', 'src:sgd/frontend/yeastgenome/static', cache_max_age=2628000)
-    config.add_static_view('img-domain', 'src:sgd/frontend/yeastgenome/img-domain', cache_max_age=2628000)
+    # cache everything for 1 month on browser
+    # TEMP, only one hour
+    config.add_static_view('static', 'src:sgd/frontend/yeastgenome/static', cache_max_age=3600)
+    config.add_static_view('img-domain', 'src:sgd/frontend/yeastgenome/img-domain', cache_max_age=3600)
     config.add_renderer('jsonp', JSONP(param_name='callback'))
 
     return chosen_frontend, config
