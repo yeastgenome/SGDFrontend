@@ -37,7 +37,7 @@ module.exports = React.createClass({
 
 		var backToTopNode = null;
 		if (this.state.backToTopVisible) {
-			backToTopNode = <a href="#" className="back-to-top" style={{ position: "fixed", display: "inline" }}>Back to Top</a>;
+			backToTopNode = <a href="#" className="back-to-top" style={{ position: "fixed", display: "inline", zIndex: 1 }}>Back to Top</a>;
 		}
 
 		return (<div>
