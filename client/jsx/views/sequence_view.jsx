@@ -15,7 +15,7 @@ sequenceView.render = function () {
 
 	// define render nav bar function
 	var renderNavBar = function (hasAltStrains, hasOtherStrains) {
-
+		document.getElementById("navbar-container").innerHTML = "";
 		var _tabModel = new TabsModel({
 			tabType: "sequence",
 			hasAltStrains: hasAltStrains,
@@ -29,7 +29,8 @@ sequenceView.render = function () {
 		);
 	};
 
-	// render navbar with alt & other strain info
+	// render navbar immediately, then with alt & other strain info
+	renderNavBar();
 	var _detailsCallback = (err, detailsModel) => {
 		renderNavBar(detailsModel.attributes.altStrains.length, detailsModel.attributes.otherStrains.length);
 	};
