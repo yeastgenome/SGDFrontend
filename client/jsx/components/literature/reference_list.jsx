@@ -21,6 +21,7 @@ module.exports = React.createClass({
 	        <h2>
 	        	References <HelpIcon text={_infoText} isInfo={true} /> <span className="label secondary round">15</span>
 	        </h2>
+	        <hr />
 	        {listNode}
 		</div>);
 	},

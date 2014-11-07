@@ -36,7 +36,8 @@
     <section id="overview" data-magellan-destination="overview">
         <h2>Locus Overview
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
 
             <dl class="key-value">
 
@@ -154,9 +155,10 @@
                 for other strains.
             </p>
         </h2>
+        <hr />
 
         <!-- client-rendered sequence -->
-        <div class="panel sgd-viz">
+        <div class="sgd-viz">
             <div class="sgd-viz sequence-details-container" id="sequence-viz">
                 <img class="loader" src="/static/img/dark-slow-wheel.gif" />
             </div>
@@ -164,7 +166,7 @@
             {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C' or url.category == 'LOCUS_SEQUENCE_OTHER_SPECIES' or url.category == 'LOCUS_SEQUENCE_OTHER_STRAINS' %}
                 {% if loop.first %}
                     <h3>Analyze Sequence</h3>
-                    <div class=panel>
+                    <div class="">
                         {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C'%}
                             {% if loop.first %}<h4>S288C only</h4><p id="reference_only_resources_list">{% endif %}
                             <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
@@ -205,8 +207,9 @@
                 external identifiers for the protein.
             </p>
         </h2>
-        <div class="panel">
-            <div class="panel">
+        <hr />
+        <div class="">
+            <div class="">
                  <dl class="key-value">
                      <dt>Length (a.a.)</dt>
                      <dd>{{ locus.protein_overview.length }}</dd>
@@ -241,7 +244,8 @@
                 all GO information and evidence for this locus as well as biological processes it shares with other genes.
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             {% if locus.go_overview.manual_molecular_function_terms|length + locus.go_overview.manual_biological_process_terms|length + locus.go_overview.manual_cellular_component_terms|length + locus.go_overview.htp_molecular_function_terms|length + locus.go_overview.htp_biological_process_terms|length + locus.go_overview.htp_cellular_component_terms|length + locus.go_overview.computational_annotation_count == 0 %}
                 <p>No Gene Ontology data available.</p>
             {% else %}
@@ -369,6 +373,7 @@
     {% if locus.pathways|length > 0 %}
     <section id="pathway" data-magellan-destination="pathway">
         <h2>Pathways</h2>
+        <hr />
         <div class="panel">
             <ul>
                 {% for pathwayevidence in locus.pathways %}
@@ -396,7 +401,8 @@
                 evidence for this locus as well as phenotypes it shares with other genes.
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             {% if locus.phenotype_overview.classical_phenotypes|length + locus.phenotype_overview.large_scale_phenotypes|length == 0 %}
                 <p>No phenotype data available.</p>
             {% else %}
@@ -453,7 +459,8 @@
                 annotations and evidence for this locus, including an interaction visualization.
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             {% if locus.interaction_overview.total_interactions == 0 %}
                 <p>No interaction data available.</p>
             {% else %}
@@ -500,8 +507,9 @@
                 enrichment among regulation Targets, and a regulator/target diagram for the locus.
             </p>
         </h2>
-        <div class="panel">
-            <div class="panel">
+        <hr />
+        <div class="">
+            <div class="">
                 {% if locus.regulation_overview.regulator_count + locus.regulation_overview.target_count == 0 %}
                     <p>No regulation data available.</p>
                 {% else %}
@@ -548,7 +556,8 @@
                 details for this locus, including a visualization of genes that share a similar expression pattern.
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             <div id="two_channel_expression_chart" class="panel"></div>
         </div>
     </section>
@@ -566,7 +575,8 @@
                 to gene names and curated GO terms are included within the Summary Paragraphs.
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             <div id="summary_paragraph"></div>
             <p>Last Updated: {{ locus.paragraph.date_created }}</p>
         </div>
@@ -587,8 +597,9 @@
                 to view all literature information for this locus, including shared literature between genes.
             </p>
         </h2>
-        <div class="panel">
-            <div class="panel">
+        <hr />
+        <div class="">
+            <div class="">
                 {% if locus.literature_overview.primary_count + locus.literature_overview.additional_count + locus.literature_overview.review_count == 0 %}
                     <p>No literature data available.</p>
                 {% else %}
@@ -635,6 +646,7 @@
     {% for url in locus.urls if url.category == 'LOCUS_LSP' %}{% if loop.first %}
     <section id="resources" data-magellan-destination="resources">
         <h2>Resources</h2>
+        <hr />
         <div class="panel">
             <p>
                 {% for url in locus.urls if url.category == 'LOCUS_LSP'%}

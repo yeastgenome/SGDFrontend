@@ -111,7 +111,7 @@ h3 .fa-info-circle {
 .documentation-link, .details-link {
     float: right;
     position: relative;
-    top:3px;
+    top: 8px;
     line-height: 1.4em;
 }
 
@@ -130,3 +130,9 @@ h3 .fa-info-circle {
     text-decoration: none;
 }
 .back-to-top:hover { background-color: rgba(185,185,185,0.85); }
+
+hr {
+    border-color: #333;
+    border-width: 2px 0 0;
+    margin-top: 0;
+}
