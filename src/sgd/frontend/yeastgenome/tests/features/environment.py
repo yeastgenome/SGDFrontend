@@ -26,7 +26,7 @@ def before_feature(context, feature):
             desired_capabilities={'username': USERNAME, 'access-key': ACCESS_KEY, 'platform': 'Mac OS X 10.9', 'browserName': 'chrome', 'version': '31'},
             command_executor=sauce_url % (USERNAME, ACCESS_KEY)
         )
-        context.browser.implicitly_wait(30)
+        context.browser.implicitly_wait(5)
 
         context.base_url = BASE_URL
 
