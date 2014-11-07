@@ -362,7 +362,8 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     # static assets with far future caching and "cache busting"
     # make asset query string from asset_version.json (if available), which will bust the cache
     try:
-        asset_version = json.load(open('asset_version.json'))['version']
+        file_path = os.path.abspath('.') + '/asset_version.json'
+        asset_version = json.load(open(file_path, 'r'))['version']
         version_qs = '?v=' + asset_version
     except:
         version_qs = ''
