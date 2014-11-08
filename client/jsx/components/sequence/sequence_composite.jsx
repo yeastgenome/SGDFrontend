@@ -83,19 +83,23 @@ module.exports = React.createClass({
 			var helpNode = <HelpIcon text="Alternative Reference strains are major laboratory yeast strains with a substantial history of use and experimental results. These strains include W303, Sigma1278b, SK1, SEY6210, CEN.PK, D273-10B, JK9-3d, FL100, RM11-1a, and Y55." isInfo={true} />;
 			node = (<div>
 				<h2>Alternative Reference Strains {helpNode}</h2>
+				<hr />
 				{selectNode}
 			</div>);
 		} else {
 			var helpNode = <HelpIcon text={<span>The <i>S. cerevisiae</i> reference genome sequence is derived from laboratory strain S288C.</span>} isInfo={true} />;
 			var _gbHref = "http://browse.yeastgenome.org/fgb2/gbrowse/scgenome/?name=" + this.props.focusLocusFormatName;
 			var _mapHref = "http://www.yeastgenome.org/cgi-bin/ORFMAP/ORFmap?dbid=" + this.props.focusLocusFormatName;
-			node = (<div className="row title-right-text">
-				<div className="columns small-6">
-					{this.props.isSimplified ? this._getSimplifiedSequenceNode() : <h2>Reference Strain: S288C {helpNode}</h2>}
+			node = (<div>
+				<div className="row title-right-text">
+					<div className="columns small-6">
+						{this.props.isSimplified ? this._getSimplifiedSequenceNode() : <h2>Reference Strain: S288C {helpNode}</h2>}
+					</div>
+					<div className="columns small-6">
+						<p className="text-right locus-external-links">View in: <a href={_gbHref}>GBrowse</a> | <a href={_mapHref}>ORF Map</a></p>
+					</div>
 				</div>
-				<div className="columns small-6">
-					<p className="text-right locus-external-links">View in: <a href={_gbHref}>GBrowse</a> | <a href={_mapHref}>ORF Map</a></p>
-				</div>
+				{this.props.isSimplified ? null : <hr />}
 			</div>);
 			
 		}

@@ -52,7 +52,8 @@
                 Alternative References.
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             <!-- Includes sequence_overview into template -->
             {% include "sequence_overview.jinja2" %}
         </div>
@@ -69,6 +70,7 @@
 ================================================== -->
     <section id="resources" data-magellan-destination="resources">
         <h2>Resources</h2>
+        <hr />
         <div class="panel">
             <p id='resources_list'>
                 {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE'%}

@@ -121,6 +121,7 @@ module.exports = React.createClass({
 			var innerHelpNode = <HelpIcon text="Select a strain using the pull-down in order to download its sequence as an .fsa file using the Download button located directly below." />;
 			node = (<section id="other" data-magellan-destination="other">
 				<h2>Other Strains {outerHelpNode}</h2>
+				<hr />
 				<div className="panel sgd-viz">
 					<h3>Strains Available for Download {innerHelpNode}</h3>
 					<SequenceToggler
