@@ -362,7 +362,7 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     # static assets with far future caching and "cache busting"
     # make asset query string from asset_version.json (if available), which will bust the cache
     try:
-        file_path = os.path.abspath('.') + '/asset_version.json'
+        file_path = os.path.dirname(os.path.realpath(__file__)) + '/../../../../asset_version.json'
         asset_version = json.load(open(file_path, 'r'))['version']
         version_qs = '?v=' + asset_version
     except:
@@ -372,9 +372,8 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
         event['version_qs'] = version_qs
     config.add_subscriber(add_template_global, 'pyramid.events.BeforeRender')
     # cache everything for 1 month on browser
-    # TEMP, only one hour
-    config.add_static_view('static', 'src:sgd/frontend/yeastgenome/static', cache_max_age=3600)
-    config.add_static_view('img-domain', 'src:sgd/frontend/yeastgenome/img-domain', cache_max_age=3600)
+    config.add_static_view('static', 'src:sgd/frontend/yeastgenome/static', cache_max_age=2629740)
+    config.add_static_view('img-domain', 'src:sgd/frontend/yeastgenome/img-domain', cache_max_age=2629740)
     config.add_renderer('jsonp', JSONP(param_name='callback'))
 
     return chosen_frontend, config
