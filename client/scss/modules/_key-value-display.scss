@@ -6,6 +6,7 @@ $component-offset-horizontal: 170px !default;
 // add .key-value class to <dl> Description list element for inline dt-dl lists
 .key-value {
     overflow: hidden;
+    margin-top: -5px;
     dt, dd {
         //min-height: 20px; // = line-height ; defined somewhere?
         margin-bottom: 3px;
