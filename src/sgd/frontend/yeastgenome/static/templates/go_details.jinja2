@@ -86,7 +86,7 @@
         <hr />
         <p><strong>Date Last Reviewed:</strong> {{locus.go_overview.date_last_reviewed}}</p>
         
-        <div class="panel">
+        <div class="spaced-container">
             <p style="display:none" id="manual_message">There are no manually curated annotations
             for {{ locus.display_name }}.</p>
             <div id="mc_bp_go">
@@ -98,7 +98,7 @@
             </div>
         </div>
         
-        <div id="mc_mf_go" class="panel">
+        <div id="mc_mf_go" class="spaced-container">
             <h3>Molecular Function <span id="mc_mf_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
@@ -106,7 +106,7 @@
             {% include "go_table.jinja2" %}
         </div>
 
-        <div id="mc_cc_go" class="panel">
+        <div id="mc_cc_go" class="spaced-container">
             <h3>Cellular Component <span id="mc_cc_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
@@ -183,7 +183,7 @@
         <p id="comp_message" style="display:none">There are no computational annotations
         for {{ locus.display_name }}.</p>
         
-        <div id="comp_bp_go" class="panel">
+        <div id="comp_bp_go" class="spaced-container">
             <h3>Biological Process <span id="comp_bp_go_table_header" class="round secondary label"> </span></h3>
 
             <!-- Includes go_table into template -->
@@ -191,7 +191,7 @@
             {% include "go_table.jinja2" %}
         </div>
 
-        <div id="comp_mf_go" class="panel">
+        <div id="comp_mf_go" class="spaced-container">
             <h3>Molecular Function <span id="comp_mf_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
@@ -199,7 +199,7 @@
             {% include "go_table.jinja2" %}
         </div>
 
-        <div id="comp_cc_go" class="panel">
+        <div id="comp_cc_go" class="spaced-container">
             <h3>Cellular Component <span id="comp_cc_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
