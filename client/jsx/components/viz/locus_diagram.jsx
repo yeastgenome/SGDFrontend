@@ -8,6 +8,7 @@ var _ = require("underscore");
 var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
 var ChromosomeThumb = require("./chromosome_thumb.jsx");
 var FlexibleTooltip = require("../widgets/flexible_tooltip.jsx");
+var HelpIcon = require("../widgets/help_icon.jsx");
 var SequenceDetailsModel = require("../../models/sequence_details_model.jsx");
 var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
 var StandaloneAxis = require("./standalone_axis.jsx");
@@ -237,7 +238,7 @@ module.exports = React.createClass({
 			shapeNode = <path className={`locus-node${focusKlass}`} d={pathString} opacity={_opacity} onClick= {_onClick} onMouseOver={_onMouseover} />;
 		// too small; rect
 		} else {
-			shapeNode = <rect className={`locus-node${focusKlass}`} x={startX} width={endX - startX} height={HEIGHT} opacity={_opacity} onClick= {_onClick} onMouseOver={_onMouseover} />;
+			shapeNode = <rect className={`locus-node${focusKlass}`} x={0} width={endX - startX} height={HEIGHT} opacity={_opacity} onClick= {_onClick} onMouseOver={_onMouseover} />;
 		}
 
 		var _transform = this._getGroupTransform(d);
@@ -457,6 +458,7 @@ module.exports = React.createClass({
 			var stateDomain = this.state.domain;
 			var propsDomain = this.props.domainBounds;
 
+			var helpText = "With your cursor in the diagram, scroll up to zoom in, and scroll down to zoom out.  Once zoomed in, drag left or right to move to the side.  Hold the mouse over a feature for more information."
 			var leftDisabled = stateDomain[0] <= propsDomain[0];
 			var leftDisabledClass = leftDisabled ? "disabled secondary" : "secondary";
 			var rightDisabled = stateDomain[1] >= propsDomain[1];
@@ -481,6 +483,7 @@ module.exports = React.createClass({
 							{chromThumb}
 						</div>
 						<div className="medium-4 columns end clearfix">
+							<h3 style={{ display: "inline-block", marginTop: 1 }}><HelpIcon text={helpText} /></h3>
 							<ul className="locus-diagram-button-group round button-group">
 								<li><a className={`tiny button ${leftDisabledClass}`} onClick={stepLeft}><i className="fa fa-backward"></i></a></li>
 								<li><a className={`tiny button ${rightDisabledClass}`} onClick={stepRight}><i className="fa fa-forward"></i></a></li>
