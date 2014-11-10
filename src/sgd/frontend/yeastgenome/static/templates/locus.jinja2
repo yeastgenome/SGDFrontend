@@ -166,7 +166,7 @@
             {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C' or url.category == 'LOCUS_SEQUENCE_OTHER_SPECIES' or url.category == 'LOCUS_SEQUENCE_OTHER_STRAINS' %}
                 {% if loop.first %}
                     <h3>Analyze Sequence</h3>
-                    <div class="">
+                    <div class="panel">
                         {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C'%}
                             {% if loop.first %}<h4>S288C only</h4><p id="reference_only_resources_list">{% endif %}
                             <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
