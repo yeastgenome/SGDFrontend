@@ -33,8 +33,9 @@
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
                 <h2>Overview</h2>
+                <hr />
 
-                <div class="panel">
+                <div class="">
                     <dl class="key-value">
                         <dt>GO ID</dt>
                         <dd>
@@ -73,7 +74,8 @@
         <section id="ontology" data-magellan-destination="ontology">
             <div class="page-header">
                 <h2>Ontology Diagram</h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     {% set network_id = "cy" %}
                     {% include "go_ontology_network.jinja2" %}
 
@@ -96,7 +98,8 @@
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
                 <h2>Annotations <span id="go_table_header" class="round secondary label"></span></h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <!-- Includes go_table into template -->
                     {% set table_id = "go_table" %}
                     {% include "go_table.jinja2" %}

@@ -61,6 +61,7 @@
                 targets, shared GO Biological Process terms for these targets are listed.
             </p>
     </h2>
+    <hr />
     <p id="summary_paragraph"></p>
     <ul id="summary_paragraph_reference_list" class="literature-list"></ul>
     <div class="panel" id="summary_wrapper">
@@ -95,6 +96,7 @@
             </p>
             <span id="domain_table_header" class="round secondary label"></span>
         </h2>
+        <hr />
         <div class="panel">
             <!-- Includes domain_table into template -->
             {% set table_id = "domain_table" %}
@@ -119,6 +121,7 @@
                 motifs).
             </p>
         </h2>
+        <hr />
 
         <div class="panel">
             <ul id="binding_motifs"></ul>
@@ -143,6 +146,7 @@
             </p>
             <span id="target_table_header" class="round secondary label"></span>
         </h2>
+        <hr />
 
         <div class="panel">
             <!-- Includes regulation_table into template -->
@@ -166,6 +170,7 @@
             </p>
             <span id="enrichment_table_header" class="round secondary label"></span>
         </h2>
+        <hr />
         <div class="panel">
             <!-- Includes gene_list_table into template -->
             {% set table_id = "enrichment_table" %}
@@ -189,6 +194,7 @@
             </p>
             <span id="regulator_table_header" class="round secondary label"></span>
         </h2>
+        <hr />
         <div class="panel">
             <!-- Includes regulation_table into template -->
             {% set table_id = "regulator_table" %}
@@ -210,7 +216,8 @@
                 relationships between genes other than the given gene.
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             {% set network_id = "cy" %}
             {% include "regulation_network.jinja2" %}
         </div>

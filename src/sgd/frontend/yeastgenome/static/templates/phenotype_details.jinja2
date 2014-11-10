@@ -52,6 +52,7 @@
             possible, allele information and additional details are provided.
         </p>
     </h2>
+    <hr />
 
     <!-- Includes phenotype_overview.html into template -->
     {% include "phenotype_overview.jinja2" %}
@@ -70,6 +71,7 @@
             </p>
             <span id="phenotype_table_header" class="round secondary label"></span>
         </h2>
+        <hr />
         <div>
             <!-- Includes phenotype_table into template -->
             {% set table_id = "phenotype_table" %}
@@ -89,7 +91,8 @@
                     observables shared (adjustable using the slider at the bottom).
                 </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             {% set network_id = "cy" %}
             {% set network_title = "Shared Observables for " + locus.display_name %}
             {% include "phenotype_network.jinja2" %}
@@ -100,6 +103,7 @@
 ================================================== -->
     <section id="resources" data-magellan-destination="resources">
         <h2>Resources</h2>
+        <hr />
         <div class="panel">
             <h3>Mutant Strains</h3>
                 <p id="mutant_resources_list">

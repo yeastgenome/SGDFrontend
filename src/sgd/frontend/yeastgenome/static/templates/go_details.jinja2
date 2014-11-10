@@ -54,6 +54,7 @@
                 literature, as well as computational, or predicted, annotations.
             </p>
     </h2>
+    <hr />
     
     <div class="panel">
         <!-- Includes go_overview.html into template -->
@@ -82,6 +83,7 @@
                 indicates when these annotations were last reviewed.
             </p>
         </h2>
+        <hr />
         <p><strong>Date Last Reviewed:</strong> {{locus.go_overview.date_last_reviewed}}</p>
         
         <div class="panel">
@@ -131,6 +133,7 @@
             vocabularies of the Gene Ontology.
         </p>
         </h2>
+        <hr />
         
          <p id="htp_message" style="display:none">There are no high-throughput annotations
         for {{ locus.display_name }}.</p>
@@ -175,6 +178,7 @@
             Institute (EBI)</a>).
         </p>
         </h2>
+        <hr />
 
         <p id="comp_message" style="display:none">There are no computational annotations
         for {{ locus.display_name }}.</p>
@@ -216,7 +220,8 @@
                 circles) based on the number of GO terms shared (adjustable using the slider at the bottom).
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             {% set network_id = "cy" %}
             {% include "go_network.jinja2" %}
         </div>

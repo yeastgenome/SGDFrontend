@@ -54,6 +54,7 @@
                 modification, and multiple mutant information are included when available.
             </p>
         </h2>
+        <hr />
         <div class="panel">
             <!-- Includes interaction_overview.html into template -->
             {% include "interaction_overview.jinja2" %}
@@ -90,6 +91,7 @@
                 </p>
             <span id="interaction_table_header" class="round secondary label"></span>
         </h2>
+        <hr />
         <!-- Includes interaction_table into template -->
         {% set table_id = "interaction_table" %}
         {% include "interaction_table.jinja2" %}
@@ -111,7 +113,8 @@
                     interactors for a given gene are also shown.
                 </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             {% set network_id = "cy" %}
             {% include "interaction_network.jinja2" %}
         </div>
@@ -121,6 +124,7 @@
 ================================================== -->
     <section id="resources" data-magellan-destination="resources">
         <h2>Resources</h2>
+        <hr />
         <p id="resources_list" class="panel">
             {% for url in locus.urls if url.category == 'LOCUS_INTERACTION'%}
                 <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}

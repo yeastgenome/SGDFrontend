@@ -56,6 +56,7 @@
                     expression analysis tool <a href="http://spell.yeastgenome.org/">SPELL</a>.
                 </p>
         </h2>
+        <hr />
         <div id='expression_overview_panel' class="panel">
             <a href="#" data-options="align:left" data-dropdown="two_channel_expression_chart_help" class="right"><i class="fa fa-question-circle"></i></a>
 
@@ -96,6 +97,7 @@
                     </p>
                     <span id="expression_table_header" class="round secondary label"></span>
                 </h2>
+                <hr />
                 <div class="panel">
                     <!-- Includes expression_table into template -->
                     {% set table_id = "expression_table" %}
@@ -123,7 +125,8 @@
                         different set of correlated genes.
                     </p>
                 </h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <!-- Includes expression_table into template -->
                     {% set network_id = "cy" %}
                     {% include "expression_network.jinja2" %}
@@ -136,6 +139,7 @@
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
                 <h2>Resources</h2>
+                <hr />
                 <div class="panel">
                     <p id="resource_list">
                         {% for url in locus.urls if url.category == 'LOCUS_EXPRESSION'%}
