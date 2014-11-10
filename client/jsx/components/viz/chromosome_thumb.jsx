@@ -60,16 +60,8 @@ module.exports = React.createClass({
 			nonChromNode = <rect className="chromosome-thumb-arm" x={0} y={0} width={this.state.DOMWidth} height={armHeight} rx={borderRadius} />;
 		}
 
-		// inset box
-		var domainNode = null;
-		if (this.props.domain) {
-			var _lbX = scale(this.props.domain[0]) - 1;
-			var _width = scale(this.props.domain[1]) - _lbX;
-			domainNode = <rect className="chromosome-thumb-inset" x={_lbX + 1} y={-1} width={_width} height={HEIGHT + 1} fill="none" />;
-		}
-
-		var _lbX = scale(this.props.domain[0] - 1);
-		var _rbX = scale(this.props.domain[1] + 1);
+		var _lbX = scale(this.props.domain[0] - 1) - 1;
+		var _rbX = scale(this.props.domain[1] + 1) + 1;
 		var _domainStyle = { position: "absolute", top: 0, bottom: 0 };
 		var _lDomainStyle = _.extend(_.clone(_domainStyle), { left: 0, width: _lbX });
 		var _rDomainStyle = _.extend(_.clone(_domainStyle), { left: _rbX, right: 0 });
