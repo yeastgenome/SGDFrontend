@@ -36,7 +36,8 @@
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
                 <h2>Overview</h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <dl class="key-value">
                         <dt>Description</dt>
                         <dd>{{ tag.description }}</dd>
@@ -51,7 +52,8 @@
         <section id="datasets" data-magellan-destination="datasets">
             <div class="page-header">
                 <h2>Datasets <span id="expression_table_header" class="round secondary label"></span></h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <!-- Includes expression_table into template -->
                     {% set table_id = "expression_table" %}
                     {% include "dataset_table.jinja2" %}
@@ -63,6 +65,7 @@
 ================================================== -->
         <section id="additional_categories" data-magellan-destination="additional_categories">
             <h2>Additional Categories</h2>
+            <hr />
             <div class="panel">
                 <p id='other_tags_list'></p>
             </div>

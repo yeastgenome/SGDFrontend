@@ -36,7 +36,8 @@
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
                 <h2>Overview</h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <dl class="key-value">
                         {% for url in domain.urls %}
                             {% if loop.first %}<dt>Accession ID</dt><dd>{% endif %}
@@ -61,7 +62,8 @@
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
                 <h2>Annotations <span id="domain_table_header" class="round secondary label"></span></h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <!-- Includes domain_table into template -->
                     {% set table_id = "domain_table" %}
                     {% include "domain_table.jinja2" %}
@@ -73,7 +75,8 @@
     ================================================== -->
         <section id="enrichment" data-magellan-destination="enrichment">
             <h2>GO Process Enrichment <span id="enrichment_table_header" class="round secondary label"></span></h2>
-            <div class="panel">
+            <hr />
+            <div class="">
                 <!-- Includes gene_list_table into template -->
                 {% set table_id = "enrichment_table" %}
                 {% include "enrichment_table.jinja2" %}

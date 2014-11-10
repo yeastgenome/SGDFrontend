@@ -36,7 +36,8 @@
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
                 <h2>Overview</h2>
-                <div class="panel">
+                <hr />
+                <div class="">
 
                     <dl class="key-value">
                         {% if strain.status != None %}
@@ -65,6 +66,7 @@
             <section id="resources" data-magellan-destination="resources">
                 <div class="page-header">
                     <h2>Resources</h2>
+                    <hr />
                     <div class="panel">
                         <p id="resources_list">
                             {% for resource in strain.urls|sort(attribute='display_name') if resource.category != 'source' %}

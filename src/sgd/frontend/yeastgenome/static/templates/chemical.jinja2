@@ -35,7 +35,8 @@
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
                 <h2>Overview</h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <dl class="key-value">
                         <dt>Chemical Name</dt>
                         <dd>{{ chemical.display_name }}</dd>
@@ -62,6 +63,7 @@
                 <h2>Phenotype Annotations
                     <span id="phenotype_table_header" class="round secondary label"></span>
                 </h2>
+                <hr />
                 <!-- Includes phenotype_table into template -->
                 {% set table_id = "phenotype_table" %}
                 {% include "phenotype_table.jinja2" %}

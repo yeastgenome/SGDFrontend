@@ -36,7 +36,8 @@
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
                 <h2>Overview</h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <dl class="key-value">
                         <dt>Description</dt>
                         <dd>{{ ecnumber.description }}</dd>
@@ -50,7 +51,8 @@
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
                 <h2>Annotations <span id="gene_list_table_header" class="round secondary label"></span></h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <!-- Includes domain_table into template -->
                     {% set table_id = "gene_list_table" %}
                     {% include "gene_list_table.jinja2" %}
@@ -63,7 +65,8 @@
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
                 <h2>Resources</h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <p id='resource_list'>
                         {% for url in ecnumber.urls %}
                             <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
