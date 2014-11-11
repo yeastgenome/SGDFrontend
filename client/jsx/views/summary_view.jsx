@@ -38,7 +38,6 @@ summaryView.render = function () {
 	);
 
 	var fetchAndRenderHistory = () => {
-	// TEMP experiment with expression data
 		$.getJSON('/backend/locus/' + bootstrappedData.locusId + '/expression_details?callback=?', function(data) {
 			if (data.datasets.length) {
 				React.renderComponent(

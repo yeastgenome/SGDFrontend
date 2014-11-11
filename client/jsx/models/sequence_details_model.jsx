@@ -83,10 +83,24 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		var _trackDomain = LocusFormatHelper.getTrackDomain(_locusWithTracks[0].tags);
 		var _tableData = this._formatTableData(_response.tags);
 
+		// find a domain based on sub-features (may go beyond locus domain)
+		var _domainMin = _response.start;
+		var _domainMax = _response.end;
+		if (_locusWithTracks[0].tags.length) {
+			for (var i = _locusWithTracks[0].tags.length - 1; i >= 0; i--) {
+				var tag = _locusWithTracks[0].tags[i];
+				if (tag.relative_start < 0) _domainMin -= Math.abs(tag.relative_start);
+				var length = _locusWithTracks[0].end - _locusWithTracks[0].start;
+				if (tag.relative_end > length) {
+					_domainMax += (tag.relative_end - length);
+				}
+			};
+		}
+
 		_response = {
 			contigData: _contigData,
 			data: { locci: _locusWithTracks },
-			domainBounds: [_response.start, _response.end ],
+			domainBounds: [_domainMin, _domainMax],
 			sequences: _sequences,
 			strainKey: strainKey,
 			trackDomain: _trackDomain,
