@@ -26,7 +26,7 @@ module.exports = React.createClass({
 			display: (props.visible ? "block" : "none"),
 			top: props.top,
 			left: props.left,
-			marginLeft: _isComplex ? -(_complexWidth / 2) : -50,
+			marginLeft: _isComplex ? -(_complexWidth * 4/5) : -50,
 			marginTop: _isComplex ? 30 : -60,
 			minHeight: _isComplex ? 100 : 35,
 			padding: _isComplex ? "1em" : 0,
