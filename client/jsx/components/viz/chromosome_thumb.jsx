@@ -43,15 +43,13 @@ module.exports = React.createClass({
 			var _centroStyle = {
 				position: "absolute",
 				top: 0,
-				left: scale(this.props.centromerePosition),
+				left: scale(this.props.centromerePosition) - HEIGHT / 2,
 				borderRadius: borderRadius,
 				background: "black",
 				width: HEIGHT,
 				height: HEIGHT
 			};
-			centromereNode = <div style={_centroStyle} />;	
-			// centroMereNode = <circle cx={scale(this.props.centromerePosition)} cy={HEIGHT / 2} r={HEIGHT/2} fill="black" shape-rendering="crispEdges" />;
-			
+			centromereNode = <div style={_centroStyle} />;			
 		}
 		var chromNode = <rect className="chromosome-thumb-arm" x={0} y={0} width={this.state.DOMWidth} height={HEIGHT} rx={borderRadius} />;
 
