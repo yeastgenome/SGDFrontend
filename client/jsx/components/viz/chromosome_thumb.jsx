@@ -33,32 +33,27 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		// helper vars
 		var scale = this._getScale();
-		var armHeight = HEIGHT;
-		var borderRadius = this.props.isChromosome ? (HEIGHT / 2) : 0;
+		var centromereNode = null;
+		var borderRadius = 0;
 
-		var leftArmNode = null;
-		var rightArmNode = null;
-		var centroMereNode = null;
-		var nonChromNode = null
-
+		// add centromere circle if needed
 		if (this.props.isChromosome && this.props.centromerePosition) {
-			var centromereX = scale(this.props.centromerePosition);
+			borderRadius = HEIGHT / 2;
+			var _centroStyle = {
+				position: "absolute",
+				top: 0,
+				left: scale(this.props.centromerePosition),
+				borderRadius: borderRadius,
+				background: "black",
+				width: HEIGHT,
+				height: HEIGHT
+			};
+			centromereNode = <div style={_centroStyle} />;	
+			// centroMereNode = <circle cx={scale(this.props.centromerePosition)} cy={HEIGHT / 2} r={HEIGHT/2} fill="black" shape-rendering="crispEdges" />;
 			
-			// form left arm
-			var _leftWidth = centromereX - (CENTROMERE_RADIUS / 2);
-			leftArmNode = <rect className="chromosome-thumb-arm" x={0} y={0} width={_leftWidth} height={armHeight} rx={borderRadius} />;
-
-			// form right arm
-			var _rightWidth = this.state.DOMWidth - centromereX - (CENTROMERE_RADIUS / 2);
-			rightArmNode = <rect className="chromosome-thumb-arm" x={centromereX + CENTROMERE_RADIUS / 2} y={0} width={_rightWidth} height={armHeight} rx={borderRadius} />;
-
-			// centromere circle
-			centroMereNode = <circle cx={centromereX} cy={HEIGHT / 2} r={CENTROMERE_RADIUS} fill="black" shape-rendering="crispEdges" />;
-		} else {
-			nonChromNode = <rect className="chromosome-thumb-arm" x={0} y={0} width={this.state.DOMWidth} height={armHeight} rx={borderRadius} />;
 		}
+		var chromNode = <rect className="chromosome-thumb-arm" x={0} y={0} width={this.state.DOMWidth} height={HEIGHT} rx={borderRadius} />;
 
 		var _lbX = scale(this.props.domain[0] - 1) - 1;
 		var _rbX = scale(this.props.domain[1] + 1) + 1;
@@ -72,14 +67,12 @@ module.exports = React.createClass({
 
 		return (<div style={{ position: "relative" }}>
 			<svg className="chromosome-thumb" style={{ width: this.state.DOMWidth, height: HEIGHT }}>
-				{leftArmNode}
-				{rightArmNode}
-				{centroMereNode}
-				{nonChromNode}
+				{chromNode}				
+			</svg>
 				{leftDomainNode}
 				{centerDomainNode}
 				{rightDomainNode}
-			</svg>
+				{centromereNode}
 		</div>);
 	},
 
