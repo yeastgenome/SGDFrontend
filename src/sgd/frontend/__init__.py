@@ -224,10 +224,11 @@ def prep_views(chosen_frontend, config):
                     renderer='string',
                     route_name='backend')
 
-    config.add_route('snapshot', '/genome-snapshot')
-    config.add_view(lambda request: {'snapshot': render('static/templates/snapshot.jinja2', {})},
-                    renderer=chosen_frontend.get_renderer('snapshot'),
-                    route_name='snapshot')
+    # TEMP disable genome snapshot
+    # config.add_route('snapshot', '/genome-snapshot')
+    # config.add_view(lambda request: {'snapshot': render('static/templates/snapshot.jinja2', {})},
+    #                 renderer=chosen_frontend.get_renderer('snapshot'),
+    #                 route_name='snapshot')
     
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':
