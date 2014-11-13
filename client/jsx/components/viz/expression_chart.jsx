@@ -1,13 +1,10 @@
 /** @jsx React.DOM */
 "use strict";
 
+var d3 = require("d3");
 var React = require("react");
-var google= require("google");
+var _ = require("underscore");
 
-/*
-	Depends on global "google" variable to render a google chart.
-	Note:  This component is considered temporary, and has a bunch of legacy code that could be further customized.
-*/
 module.exports = React.createClass({
 
 	getDefaultProps: function () {
@@ -18,109 +15,56 @@ module.exports = React.createClass({
 		};
 	},
 
+	getInitialState: function () {
+		return {
+			DOMWidth: 800
+		};
+	},
+
 	render: function () {
-		return <div></div>;
+		var barsNode = this._getBarsNode();
+		return (<div>
+			{barsNode}
+			<svg ref="svg" style={{ width: "100%" }}></svg>
+		</div>);
 	},
 
 	componentDidMount: function () {
-		this._renderViz();
+		this._renderSVG();
 	},
 
-	componentDidUpdate: function () {
-		this._renderViz();
+	_renderSVG: function () {
+		var _xScale = this._getXScale();
+		var axisFn = d3.svg.axis()
+			.orient("bottom")
+			.ticks(_xScale.domain())
+			.scale(_xScale);
+
+		var svg = d3.select(this.refs.svg.getDOMNode());
+		var axis = svg.selectAll("g.axis").data([null]);
+
+		var _transform = `translate(0, 50)`;
+		axis.enter().append("g")
+			.attr({
+				class: "axis",
+				transform: _transform
+			});
+		axis
+			.attr({ transform: _transform })
+			.call(axisFn);
 	},
 
-	// LEGACY CODE COPIED HERE
-	_renderViz: function () {
-		var all_data = this.props.data;
-		var min_value = this.props.minValue;
-		var max_value = this.props.maxValue;
+	_getBarsNode: function () {
+		// TEMP
+		// var barsNode = _.map(this.props.data)
+		return null;
+	},
 
-		if(all_data != null && Object.keys(all_data).length > 0) {
-	        var capped_min = Math.max(-5.5, min_value);
-	        var capped_max = Math.min(5, max_value);
-	        var header_row = [];
-	        var colors = [];
-	        var indexes = [];
-	        if(capped_min == -5.5) {
-	            header_row.push('Low-Extreme');
-	            colors.push('#13e07a');
-	        }
-	        indexes.push(header_row.length-1);
-	        if(capped_min < 0) {
-	            header_row.push('Low');
-	            colors.push('#0d9853');
-	        }
-	        indexes.push(header_row.length-1);
-	        if(capped_max >= 0) {
-	            header_row.push('High');
-	            colors.push('#980D0D');
-	        }
-	        indexes.push(header_row.length-1);
-	        if(capped_max == 5) {
-	            header_row.push('High-Extreme');
-	            colors.push('#e01313');
-	        }
-	        indexes.push(header_row.length-1);
-
-	        var datatable2 = [header_row];
-
-	        for (var key in all_data) {
-	            var value = parseFloat(key);
-	            if(value == -5.5) {
-	                for(var i=0; i < all_data[key]; i++) {
-	                    var new_row = Array.apply(null, new Array(header_row.length));
-	                    new_row[indexes[0]] = value;
-	                    datatable2.push(new_row);
-	                }
-	            }
-	            else if(value < 0) {
-	                for(var i=0; i < all_data[key]; i++) {
-	                    var new_row = Array.apply(null, new Array(header_row.length));
-	                    new_row[indexes[1]] = value;
-	                    datatable2.push(new_row);
-	                }
-	            }
-	            else if(value == 5) {
-	                for(var i=0; i < all_data[key]; i++) {
-	                    var new_row = Array.apply(null, new Array(header_row.length));
-	                    new_row[indexes[3]] = value;
-	                    datatable2.push(new_row);
-	                }
-	            }
-	            else {
-	                for(var i=0; i < all_data[key]; i++) {
-	                    var new_row = Array.apply(null, new Array(header_row.length));
-	                    new_row[indexes[2]] = value;
-	                    datatable2.push(new_row);
-	                }
-	            }
-	        }
-
-	        var options = {
-				legend: { position: 'none' },
-				hAxis: {title: 'log2 ratio', viewWindow: {min: -5.5, max: 5.5}},
-				vAxis: {title: 'Number of conditions', logScale:true},
-				height: 300,
-				colors: colors,
-				histogram: {bucketSize:.5, hideBucketItems:true},
-				isStacked: true,
-				titlePosition: 'none',
-				tooltip: {trigger: 'none'}
-	        };
-	        var chart = new google.visualization.Histogram(this.getDOMNode());
-	        google.visualization.events.addListener(chart, 'ready', () => {
-	        	$("text:contains('-5.5')").first().html(this.props.minValue.toFixed(1));
-		        $("text:contains('5.5')").first().html(this.props.maxValue.toFixed(1));
-	        });
-	        chart.draw(google.visualization.arrayToDataTable(datatable2), options);
-
-	        // The select handler. Call the chart's getSelection() method
-	        var selectHandler = function () {
-	            window.location.href = '/locus/' + locus['sgdid'] + '/expression';
-	        }
-	        google.visualization.events.addListener(chart, 'select', selectHandler);
-	    }
+	_getXScale: function () {
+		var _buckets = _.sortBy(_.map(_.keys(this.props.data), d => { return parseFloat(d); }));
+		var scale = d3.scale.ordinal()
+			.domain(_buckets)
+			.rangePoints([0, this.state.DOMWidth]);
+		return scale;
 	}
 });
-
