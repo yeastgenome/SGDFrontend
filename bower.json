@@ -2,7 +2,7 @@
   "name": "SGDFrontend",
   "version": "2",
   "dependencies": {
-    "cytoscape": "2.3.3",
+    "cytoscape": "2.3.4",
     "datatables": "1.9.4",
     "datatables-plugins": "https://github.com/DataTables/Plugins.git#24b417bd86986d19662df2033262de754ea6e4d0",
     "font-awesome": "4.1.0",
