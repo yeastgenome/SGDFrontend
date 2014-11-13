@@ -5,6 +5,8 @@ var d3 = require("d3");
 var React = require("react");
 var _ = require("underscore");
 
+var HEIGHT = 300;
+
 module.exports = React.createClass({
 
 	getDefaultProps: function () {
@@ -55,16 +57,57 @@ module.exports = React.createClass({
 	},
 
 	_getBarsNode: function () {
-		// TEMP
-		// var barsNode = _.map(this.props.data)
-		return null;
+		var xScale = this._getXScale();
+		var yScale = this._getYScale();
+
+		var _barWidth = d3.scale.ordinal().domain(xScale.domain()).rangeRoundBands([0, this.state.DOMWidth], 0.05, 0).rangeBand();		
+		var _data = this._getDataAsArray();
+		var barsNodes = _.map(_data, (d, i) => {
+			var _style = {
+				position: "absolute",
+				background: (d.key >= 0 ? "red" : "green"),
+				left: Math.round(xScale(d.key)),
+				bottom: 0,
+				width: _barWidth,
+				height: yScale(d.value)
+			};
+			return <div key={"histogramBar" + i} style={_style} />;
+		});
+
+		return (<div style={{ position: "relative", height: HEIGHT }}>
+			{barsNodes}
+		</div>);
 	},
 
 	_getXScale: function () {
-		var _buckets = _.sortBy(_.map(_.keys(this.props.data), d => { return parseFloat(d); }));
-		var scale = d3.scale.ordinal()
+		var _buckets = this._getBuckets();
+		return d3.scale.ordinal()
 			.domain(_buckets)
 			.rangePoints([0, this.state.DOMWidth]);
-		return scale;
+	},
+
+	_getYScale: function () {
+		var _maxY = _.max(this._getDataAsArray(), d => { return d.value; }).value;
+		return d3.scale.log()
+			.base(10)
+			.domain([1, _maxY])
+			.range([0, HEIGHT]);
+	},
+
+	_getBuckets: function () {
+		var keys = _.map(_.keys(this.props.data), d => { return parseFloat(d); });
+		keys = _.sortBy(keys);
+		keys.push(this.props.maxValue);
+		return keys;
+	},
+
+	_getDataAsArray: function () {
+		var data = _.map(_.keys(this.props.data), d => {
+			return {
+				key: parseFloat(d),
+				value: this.props.data[d]
+			};
+		});
+		return _.sortBy(data, d => { return d.key; });
 	}
 });
