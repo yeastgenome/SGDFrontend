@@ -321,3 +321,21 @@ h3.subfeature-label-text {
 		margin-bottom: 0;
 	}
 }
+
+// expression histogram
+.histogram-axis-text.x {
+	display: block;
+	text-align: center;
+}
+
+.histogram-axis-text.y {
+	-ms-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+	-ms-transform-origin: 50% 0;
+	transform-origin: 50% 0;
+	position: absolute;
+	display: block;
+	text-align: center;
+	top: 50%;
+	left: -4rem;
+}

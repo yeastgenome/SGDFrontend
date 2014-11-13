@@ -5,12 +5,15 @@ var d3 = require("d3");
 var React = require("react");
 var _ = require("underscore");
 
+var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
+
 var HEIGHT = 300;
-var SIDE_PADDING = 50;
+var SIDE_PADDING = 100;
 var TOP_PADDING = 20;
 var TRANSITION_DURATION = 1000;
 
 module.exports = React.createClass({
+	mixins: [CalcWidthOnResize],
 
 	getDefaultProps: function () {
 		return {
@@ -22,18 +25,24 @@ module.exports = React.createClass({
 
 	getInitialState: function () {
 		return {
-			DOMWidth: 800,
+			DOMWidth: 400,
 			logAxis: true,
 		};
 	},
 
 	render: function () {
-		return (<div>
+		return (<div style={{ position: "relative" }}>
+			<span className="histogram-axis-text y"><i>Number of Conditions</i></span>
 			<svg ref="svg" style={{ width: "100%", height: HEIGHT }}></svg>
+			<span className="histogram-axis-text x"><i>log2 Ratio</i></span>
 		</div>);
 	},
 
 	componentDidMount: function () {
+		this._calculateWidth();
+	},
+
+	componentDidUpdate: function () {
 		this._renderSVG();
 	},
 
@@ -47,6 +56,7 @@ module.exports = React.createClass({
 		// x-axis
 		var xAxisFn = d3.svg.axis()
 			.orient("bottom")
+			.tickFormat(d3.format(".1f"))
 			.tickValues(xScale.domain())
 			.scale(xScale);
 		var xAxis = svg.selectAll("g.x-axis").data([null]);
@@ -81,13 +91,14 @@ module.exports = React.createClass({
 		// bars
 		var data = this._getDataAsArray();
 		var bars = svg.selectAll(".bar").data(data, d => { return d.key; });
+		var xFn = (d) => { return SIDE_PADDING + Math.round(xScale(d.key)) + 1; };
 
 		// enter
 		var _barWidth = d3.scale.ordinal().domain(xScale.domain()).rangeRoundBands([0, this.state.DOMWidth - 2 * SIDE_PADDING], 0.05, 0).rangeBand();
 		bars.enter().append("rect")
 			.attr({
 				class: "bar",
-				x: (d) => { return SIDE_PADDING + Math.round(xScale(d.key)); },
+				x: xFn,
 				y: HEIGHT - TOP_PADDING,
 				width: _barWidth,
 				height: 0,
@@ -97,10 +108,19 @@ module.exports = React.createClass({
 		// update
 		bars.transition().duration(TRANSITION_DURATION)
 			.attr({
-				x: (d) => { return SIDE_PADDING + Math.round(xScale(d.key)); },
+				x: xFn,
 				y: (d) => { return HEIGHT - TOP_PADDING - yScale(d.value); },
+				width: _barWidth,
 				height: (d) => { return yScale(d.value); },
-				fill: (d) => { return (d.key >= 0 ? "red" : "green"); }
+				fill: (d, i) => {
+					if (i === 0) {
+						return "#13E063";
+					} else if (i === data.length - 1) {
+						return "#D90000";
+					} else {
+						return (d.key >= 0 ? "#860004" : "#0E8B3F");
+					}
+				}
 			});
 
 		// exit
@@ -125,6 +145,7 @@ module.exports = React.createClass({
 	_getBuckets: function () {
 		var keys = _.map(_.keys(this.props.data), d => { return parseFloat(d); });
 		keys = _.sortBy(keys);
+		keys[0] = this.props.minValue;
 		keys.push(this.props.maxValue);
 		return keys;
 	},
@@ -136,6 +157,12 @@ module.exports = React.createClass({
 				value: this.props.data[d]
 			};
 		});
-		return _.sortBy(data, d => { return d.key; });
+		data = _.sortBy(data, d => { return d.key; })
+		data[0].key = this.props.minValue;
+		return data;
+	},
+
+	_calculateWidth: function () {
+		this.setState({ DOMWidth: this.getDOMNode().getBoundingClientRect().width });
 	}
 });
