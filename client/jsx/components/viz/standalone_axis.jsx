@@ -103,13 +103,13 @@ module.exports = React.createClass({
 			_yTranslate += this.getDOMNode().getBoundingClientRect().height - 30;
 		}
 		var _translate = `translate(${_xTranslate}, ${_yTranslate})`;
-		var xAxis = svg.selectAll("g.x-axis").data([null]);
-		xAxis.enter().append("g")
+		var axis = svg.selectAll("g.axis").data([null]);
+		axis.enter().append("g")
 			.attr({
-				class: "x-axis",
+				class: "axis",
 				transform: _translate
 			});
-		xAxis.transition().duration(this.props.transitionDuration)
+		axis.transition().duration(this.props.transitionDuration)
 			.attr({ transform: _translate })
 			.call(axisFn);
 	}
