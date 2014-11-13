@@ -3,7 +3,6 @@
 
 var $ = require("jquery");
 var _ = require("underscore");
-var google = require("google");
 var React = require("react");
 
 var AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");

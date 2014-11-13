@@ -16,8 +16,7 @@
   "browserify-shim": {
     "jquery": { "exports": "global:$"},
     "jquery-ui": { "exports": "global:$.ui" },
-    "foundation": { "exports": null },
-    "google": { "exports": "global:google" }
+    "foundation": { "exports": null }
   },
   "devDependencies": {
     "grunt": "~0.4.5",
