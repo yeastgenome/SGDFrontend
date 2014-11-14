@@ -91,10 +91,10 @@ module.exports = React.createClass({
 		// bars
 		var data = this._getDataAsArray();
 		var bars = svg.selectAll(".bar").data(data, d => { return d.key; });
-		var xFn = (d) => { return SIDE_PADDING + Math.round(xScale(d.key)) + 1; };
+		var _barWidth = d3.scale.ordinal().domain(xScale.domain()).rangeRoundBands([0, this.state.DOMWidth - 2 * SIDE_PADDING], 0.05, 0).rangeBand();
+		var xFn = (d) => { return SIDE_PADDING + Math.round(xScale(d.key)) + 0.05 * _barWidth; };
 
 		// enter
-		var _barWidth = d3.scale.ordinal().domain(xScale.domain()).rangeRoundBands([0, this.state.DOMWidth - 2 * SIDE_PADDING], 0.05, 0).rangeBand();
 		bars.enter().append("rect")
 			.attr({
 				class: "bar",
