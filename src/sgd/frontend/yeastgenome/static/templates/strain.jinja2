@@ -26,6 +26,9 @@
         <script>
             add_navbar_title('Strain: <span class="gene_name">{{ strain.display_name }}</span>');
             add_navbar_element('Overview', 'overview');
+            {% if strain.assembly_size != None %}
+                add_navbar_element('Genome Sequence', 'genome_sequence');
+            {% endif %}
             {% if strain.urls|length > 0 %}
                 add_navbar_element('Resources', 'resources');
             {% endif %}
@@ -59,6 +62,33 @@
                 </div>
             </div>
         </section>
+
+        {% if strain.assembly_size != None %}
+        <!-- Genome Sequence
+        ================================================== -->
+        <section id="genome_sequence" data-magellan-destination="genome_sequence">
+            <div class="page-header">
+                <h2>Genome Sequence</h2>
+                <hr />
+                <div class="">
+                    <dl class="key-value">
+                        <dt>GenBank</dt>
+                        <dd>{{ strain.genbank_id }}</dd>
+                        <dt>Assembly Size</dt>
+                        <dd>{{ strain.assembly_size }}</dd>
+                        <dt>Fold Coverage</dt>
+                        <dd>{{ strain.fold_coverage }}</dd>
+                        <dt># Scaffolds</dt>
+                        <dd>{{ strain.scaffold_number }}</dd>
+                        <dt>Longest Scaffold</dt>
+                        <dd>{{ strain.longest_scaffold }}</dd>
+                        <dt>Scaffold N50</dt>
+                        <dd>{{ strain.scaffold_n50 }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </section>
+        {% endif %}
 
         <!-- Resources
 ================================================== -->
