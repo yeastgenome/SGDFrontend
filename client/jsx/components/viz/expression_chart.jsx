@@ -19,7 +19,8 @@ module.exports = React.createClass({
 		return {
 			data: null,
 			minValue: null,
-			maxValue: null
+			maxValue: null,
+			onClick: null
 		};
 	},
 
@@ -31,7 +32,7 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		return (<div style={{ position: "relative" }}>
+		return (<div className="expression-histogram" style={{ position: "relative" }}>
 			<span className="histogram-axis-text y"><i>Number of Conditions</i></span>
 			<svg ref="svg" style={{ width: "100%", height: HEIGHT }}></svg>
 			<span className="histogram-axis-text x"><i>log2 Ratio</i></span>
@@ -103,6 +104,11 @@ module.exports = React.createClass({
 				width: _barWidth,
 				height: 0,
 				fill: (d) => { return (d.key >= 0 ? "red" : "green"); }
+			})
+			.on("click", (e) => {
+				if (this.props.onClick) {
+					this.props.onClick();
+				}
 			});
 
 		// update

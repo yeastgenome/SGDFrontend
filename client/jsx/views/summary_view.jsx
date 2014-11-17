@@ -39,8 +39,11 @@ summaryView.render = function () {
 	var fetchAndRenderHistory = () => {
 		$.getJSON('/backend/locus/' + bootstrappedData.locusId + '/expression_details?callback=?', function(data) {
 			if (data.datasets.length) {
+				var _onExpressionClick = () => {
+					window.location.href = "/locus/" + bootstrappedData.locusId + "/expression";
+				};
 				React.renderComponent(
-					<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} />,
+					<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} onClick={_onExpressionClick} />,
 					document.getElementById("two_channel_expression_chart")
 				);
 			}
