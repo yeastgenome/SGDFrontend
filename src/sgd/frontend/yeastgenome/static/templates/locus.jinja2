@@ -79,16 +79,16 @@
 
                 <dt>Feature Type</dt>
                 <dd>{{ locus.locus_type }}
-                    {% if 'feature_type' in locus.qualities %}
+                    {%- if 'feature_type' in locus.qualities -%}
                         {% set references = locus.qualities.feature_type.references %}
                         {% include "biblio_references.jinja2" %}
                     {% endif %}
-
-                    {% if locus.qualifier != None %}, {{ locus.qualifier }}{% endif %}
-                    {% if 'qualifier' in locus.qualities %}
+                    {%- if locus.qualifier != None -%}, {{ locus.qualifier }}{% endif %}
+                    {%- if 'qualifier' in locus.qualities -%}
                         {% set references = locus.qualities.qualifier.references %}
                         {% include "biblio_references.jinja2" %}
                     {% endif %}
+                    {%- if locus.bioent_status != 'Active' -%}, {{ locus.bioent_status }}{% endif %}
                 </dd>
 
                 <dt>Description</dt>
