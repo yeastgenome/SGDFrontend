@@ -25,13 +25,15 @@ function create_contig_table(data) {
                 refseq_link = '-';
             }
 
-            datatable.push([contig['id'],
+            if(contig['display_name'] != 'Chromosome 2-micron') {
+                datatable.push([contig['id'],
                     contig['id'],
                     '<a href="' + contig['link'] + '">' + contig['display_name'] + '</a>',
                     genbank_link,
                     refseq_link,
                     contig['length']
                 ]);
+            }
         }
         else {
             if(contig['reference_alignment'] != null) {
