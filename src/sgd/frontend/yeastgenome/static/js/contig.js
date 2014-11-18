@@ -171,7 +171,6 @@ function draw_overview(data) {
     google.setOnLoadCallback(drawChart);
     function drawChart() {
         var dataTable = google.visualization.arrayToDataTable(data);
-
         var count = 0;
         for (var i=0; i < data.length; i++) {
             if(data[i][1] > 0 ) {
@@ -182,6 +181,9 @@ function draw_overview(data) {
         var size = 14;
         if(count >= 10) {
             size = 10;
+        }
+        if(count == 1) {
+            $('#piechart').hide();
         }
 
         var options = {
