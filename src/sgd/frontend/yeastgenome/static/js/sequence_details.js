@@ -766,7 +766,7 @@ function create_subfeature_table(data) {
 
     var options = {};
     options["bPaginate"] = false;
-    options["aaSorting"] = [[5, "asc"]];
+    options["aaSorting"] = [[1, "asc"]];
     options["aoColumns"] = [
         {"bSearchable":false, "bVisible":false},
         {"bSearchable":false, "bVisible":false},

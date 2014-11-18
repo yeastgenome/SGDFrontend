@@ -196,6 +196,9 @@ module.exports = React.createClass({
 
 		var _options = {
 			aaSorting: [[1, "asc"]],
+			aoColumns: [
+				null, { "sType": "range" }, { "sType": "range" }, null, null
+			],
 			bPaginate: false,
 			oLanguage: { "sEmptyTable": "No subfeatures for " + this.props.focusLocusDisplayName + '.' }
 		};

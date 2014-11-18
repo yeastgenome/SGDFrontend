@@ -45,11 +45,39 @@ module.exports = React.createClass({
 		if (this.props.usePlugin) {
 			var options = this._getTableOptions();
 			this._setupTableHighlight();
+			this._setupPlugins();
 			var $table = $(this.refs.table.getDOMNode()).dataTable(options);
 			$(document).foundation();
 			$(this.getDOMNode()).find("input").attr("placeholder", "Filter table");
 			$table.fnSearchHighlighting();
 		}
+	},
+
+	_setupPlugins: function () {
+
+		$.fn.dataTableExt.oSort['range-desc'] = function(x,y) {
+			x = x.split("-");
+			y = y.split("-");
+
+			var x0 = parseInt(x[0]);
+			var y0 = parseInt(y[0]);
+
+			return (x0 > y0) ? -1 : ((x0 < y0) ? 1 : 0);
+
+		};
+
+		$.fn.dataTableExt.oSort['range-asc'] = function(x,y) {
+
+			x = x.split("-");
+			y = y.split("-");
+
+			var x0 = parseInt(x[0]);
+			var y0 = parseInt(y[0]);
+
+			return (x0 < y0) ? -1 : ((x0 > y0) ? 1 : 0);
+
+		};
+
 	},
 
 	// legacy code to highlight search text within a table

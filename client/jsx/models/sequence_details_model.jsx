@@ -144,8 +144,8 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		];
 
 		var _rows = _.map(subFeatures, d => {
-			var _relativeCoord = `${d.relative_start} - ${d.relative_end}`;
-			var _coord = `${d.chromosomal_start} - ${d.chromosomal_end}`;
+			var _relativeCoord = `${d.relative_start}-${d.relative_end}`;
+			var _coord = `${d.chromosomal_start}-${d.chromosomal_end}`;
 			return [d.format_name, _relativeCoord, _coord, d.coord_version, d.seq_version];
 		});
 
