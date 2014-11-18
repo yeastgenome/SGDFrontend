@@ -68,23 +68,46 @@
         ================================================== -->
         <section id="genome_sequence" data-magellan-destination="genome_sequence">
             <div class="page-header">
-                <h2>Genome Sequence</h2>
+                <h2>Genome Sequence
+                <a href="#" data-dropdown="genome_sequence_info"><i class="fa fa-info-circle"></i></a>
+
+                <p id="genome_sequence_info" class="f-dropdown content medium" data-dropdown-content>
+                    Genome sequence information for a particular strain, including GenBank accession IDs and assembly
+                    statistics. The table below lists all contigs included in the genome, listed by GenBank accession,
+                    with information regarding where that contig maps to the S288C Reference Genome. Note that only the
+                    single best BLAST hit for each contig is shown, based on highest bit score from a pairwise BLAST of
+                    the genome against <a href="/strain/S288C/overview">S288C</a> using
+                    <a href="http://www.ncbi.nlm.nih.gov//blast/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_PROG_DEF=megaBlast&BLAST_SPEC=OGP__4932__9518" target="_blank">NCBI’s Genome BLAST</a> tool.
+                </p>
+                </h2>
                 <hr />
                 <div class="">
                     <dl class="key-value">
                         <dt>GenBank</dt>
-                        <dd>{{ strain.genbank_id }}</dd>
+                        <dd><a href="http://www.ncbi.nlm.nih.gov/nuccore/{{ strain.genbank_id }}">{{ strain.genbank_id }}</a></dd>
                         <dt>Assembly Size</dt>
                         <dd>{{ strain.assembly_size }}</dd>
+                        {% if strain.fold_coverage != None %}
                         <dt>Fold Coverage</dt>
                         <dd>{{ strain.fold_coverage }}</dd>
-                        <dt># Scaffolds</dt>
+                        {% endif %}
+                        <dt>No. Scaffolds</dt>
                         <dd>{{ strain.scaffold_number }}</dd>
                         <dt>Longest Scaffold</dt>
                         <dd>{{ strain.longest_scaffold }}</dd>
+                        {% if strain.scaffold_n50 != None %}
                         <dt>Scaffold N50</dt>
                         <dd>{{ strain.scaffold_n50 }}</dd>
+                        {% endif %}
                     </dl>
+
+                    <!-- Includes contig_table into template -->
+                    {% set table_id = "contig_table" %}
+                    {% if strain.display_name == 'S288C' %}
+                        {% include "s288c_contig_table.jinja2" %}
+                    {% else %}
+                        {% include "contig_table.jinja2" %}
+                    {% endif %}
                 </div>
             </div>
         </section>
