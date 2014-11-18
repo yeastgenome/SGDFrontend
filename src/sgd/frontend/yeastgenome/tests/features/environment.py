@@ -15,7 +15,7 @@ from sauceclient import SauceClient
 USERNAME = os.environ.get('SAUCE_USERNAME')
 ACCESS_KEY = os.environ.get('SAUCE_ACCESS_KEY')
 # point at production
-BASE_URL = "http://yeastgenome.org"
+BASE_URL = "http://sgd-beta.stanford.edu"
 
 # parse env variable to maybe test remotely, defaults to local selenium connection
 IS_REMOTE = False
