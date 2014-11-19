@@ -94,7 +94,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 				if (tag.relative_end > length) {
 					_domainMax += (tag.relative_end - length);
 				}
-			};
+			}
 		}
 
 		_response = {
@@ -116,8 +116,11 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 	*/
 	_assignTracksToLoci (_loci) {
 		var loci = _.map(_loci, (d) => {
+			d.tags = _.sortBy(d.tags, t => {
+				return t.class_type === "ORF"; // separate ORFs
+			})
 			// assign tracks to sub features
-			d.tags = _.map(d.tags, (t) => {
+			d.tags = _.map(d.tags, t => {
 				t.strand = d.strand;
 				t.start = t.relative_start;
 				t.end = t.relative_end;
