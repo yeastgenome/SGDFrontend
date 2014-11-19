@@ -18,6 +18,7 @@ summaryView.render = function () {
 	var locusData = bootstrappedData.locusData;
 	var hasHistory = _.where(locusData.history, { history_type: "LSP" }).length;
 	var hasResources = _.where(locusData.urls, { category: "LOCUS_LSP" }).length;
+	var hasReferences = locusData.references.length;
 
 	document.getElementById("summary_tab").className += " active";
 
@@ -27,6 +28,7 @@ summaryView.render = function () {
 		hasParagraph: locusData.paragraph,
 		hasPathways: locusData.pathways.length,
 		hasResources: hasResources,
+		hasReferences: hasReferences,
 		rawTabsData: bootstrappedData.tabs,
 		tabType: "summary"
 	});
@@ -79,10 +81,12 @@ summaryView.render = function () {
     }
 
     // reference list
-    React.renderComponent(
-    	<ReferenceList data={locusData.references}/>,
-    	document.getElementById("reference")
-    );
+    if (hasReferences) {
+    	React.renderComponent(
+	    	<ReferenceList data={locusData.references}/>,
+	    	document.getElementById("reference")
+	    );
+    }
 };
 
 module.exports = summaryView;
