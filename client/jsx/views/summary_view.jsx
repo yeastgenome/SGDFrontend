@@ -17,6 +17,7 @@ var summaryView = {};
 summaryView.render = function () {
 	var locusData = bootstrappedData.locusData;
 	var hasHistory = _.where(locusData.history, { history_type: "LSP" }).length;
+	var hasResources = _.where(locusData.urls, { category: "LOCUS_LSP" }).length;
 
 	document.getElementById("summary_tab").className += " active";
 
@@ -25,7 +26,7 @@ summaryView.render = function () {
 		hasHistory: hasHistory,
 		hasParagraph: locusData.paragraph,
 		hasPathways: locusData.pathways.length,
-		hasResources: true,
+		hasResources: hasResources,
 		rawTabsData: bootstrappedData.tabs,
 		tabType: "summary"
 	});
