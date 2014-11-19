@@ -383,10 +383,10 @@ module.exports = React.createClass({
 			_data[d.locus.locus_type + _qualText] = d.locus.headline;
 			// TODO add chrom number 
 			_data["Coordinates"] = `${d.start} - ${d.end}`;
-			_data["Length"] = (d.end - d.start) + " bp";
+			_data["Length"] = (d.end - d.start + 1) + " bp";
 		} else {
 			_data["Relative Coordinates"] = `${d.relative_start} - ${d.relative_end}`;
-			_data["Length"] = (d.relative_end - d.relative_start) + " bp";
+			_data["Length"] = (d.relative_end - d.relative_start + 1) + " bp";
 		}
 
 		return {
