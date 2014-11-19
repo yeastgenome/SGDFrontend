@@ -140,7 +140,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 	_formatTableData (subFeatures, contigData) {
 		var contigString = "";
 		if (contigData.isChromosome) {
-			var num = contigData.formatName.split("_")[1];
+			var num = contigData.formatName.match(/Mito/) ? "mt" :contigData.formatName.split("_")[1];
 			contigString = `chr${num}:`;
 		}
 
@@ -156,6 +156,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 			
 			var _relativeCoord = `${d.relative_start}..${d.relative_end}`;
 			var _coord = `${contigString}${d.chromosomal_start}..${d.chromosomal_end}`;
+			_coord = "<a href='http://google.com'>" + _coord + "</a>"
 			return [d.format_name, _relativeCoord, _coord, d.coord_version, d.seq_version];
 		});
 
