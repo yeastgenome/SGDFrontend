@@ -156,8 +156,7 @@ module.exports = React.createClass({
 				<tr key={"row" + i} className={evenKlass} >
 					{r.map( (d, i) => {
 						{/* if data is obj with href and value, make a link, otherwise just plain text if just a string */}
-						var textNode = (d.href && d.value) ? <a href={d.href}>{d.value}</a> : d;
-						return <td key={"cell" + i}>{textNode}</td>;
+						return this._formatCell(d, i);
 					})}
 				</tr>
 			);
@@ -185,6 +184,16 @@ module.exports = React.createClass({
 		});
 
 		return headerRows;
+	},
+
+	_formatCell: function (d, i) {
+		// allow raw HTML cell
+		if (d.html) {
+			return <td dangerouslySetInnerHTML={{ __html: d.html }} />;
+		}
+		// otherwise format plain text or whole link
+		var textNode = (d.href && d.value) ? <a href={d.href}>{d.value}</a> : d;
+		return <td key={"cell" + i}>{textNode}</td>;
 	},
 
 	_getTableOptions: function () {
