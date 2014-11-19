@@ -81,7 +81,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		var _contigData = LocusFormatHelper.formatContigData(_response.contig);
 		var _locusWithTracks = this._assignTracksToLoci([_response]);
 		var _trackDomain = LocusFormatHelper.getTrackDomain(_locusWithTracks[0].tags);
-		var _tableData = this._formatTableData(_response.tags);
+		var _tableData = this._formatTableData(_response.tags, _contigData);
 
 		// find a domain based on sub-features (may go beyond locus domain)
 		var _domainMin = _response.start;
@@ -118,7 +118,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		var loci = _.map(_loci, (d) => {
 			d.tags = _.sortBy(d.tags, t => {
 				return t.class_type === "ORF"; // separate ORFs
-			})
+			});
 			// assign tracks to sub features
 			d.tags = _.map(d.tags, t => {
 				t.strand = d.strand;
@@ -137,7 +137,13 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		return loci;
 	}
 
-	_formatTableData (subFeatures) {
+	_formatTableData (subFeatures, contigData) {
+		var contigString = "";
+		if (contigData.isChromosome) {
+			var num = contigData.formatName.split("_")[1];
+			contigString = `chr${num}:`;
+		}
+
 		var _headers = [
 			"Feature",
 			"Relative Coordinates",
@@ -147,8 +153,9 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		];
 
 		var _rows = _.map(subFeatures, d => {
-			var _relativeCoord = `${d.relative_start}-${d.relative_end}`;
-			var _coord = `${d.chromosomal_start}-${d.chromosomal_end}`;
+			
+			var _relativeCoord = `${d.relative_start}..${d.relative_end}`;
+			var _coord = `${contigString}${d.chromosomal_start}..${d.chromosomal_end}`;
 			return [d.format_name, _relativeCoord, _coord, d.coord_version, d.seq_version];
 		});
 
@@ -192,8 +199,8 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		var _strain = _.filter(response.genomic_dna, s => { return s.strain.display_name === strainDisplayName; })[0];
 		var _headers = ["Evidence ID", "Analyze ID", "Feature", "Feature Systematic Name", "Feature Type", "Relative Coordinates", "Coordinates", "Strand", "Coord. Version", "Seq. Version"];
 		var _data = _.map(_strain.tags, t => {
-			var _relativeCoordinates = `${t.relative_start}-${t.relative_end}`;
-			var _coordinates = `${t.chromosomal_start}-${t.chromosomal_end}`;
+			var _relativeCoordinates = `${t.relative_start}..${t.relative_end}`;
+			var _coordinates = `${t.chromosomal_start}..${t.chromosomal_end}`;
 			return [t.evidence_id, _strain.locus.id, _strain.locus.display_name, _strain.locus.format_name, t.class_type, _relativeCoordinates, _coordinates, _strain.strand, t.coord_version, t.seq_version];
 		});
 		return {

@@ -68,8 +68,8 @@ module.exports = React.createClass({
 
 		$.fn.dataTableExt.oSort['range-asc'] = function(x,y) {
 
-			x = x.split("-");
-			y = y.split("-");
+			x = x.split("..");
+			y = y.split("..");
 
 			var x0 = parseInt(x[0]);
 			var y0 = parseInt(y[0]);
