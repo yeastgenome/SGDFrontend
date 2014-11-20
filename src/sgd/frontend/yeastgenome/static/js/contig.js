@@ -3,7 +3,9 @@ draw_overview(contig['overview']);
 $(document).ready(function() {
 
     $("#sequence_download").click(function f() {
-		download_sequence(contig['residues'], contig['format_name'], contig['format_name']);
+		download_sequence(contig['residues'],
+                contig['strain']['display_name'] + '_' + contig['display_name'] + '.fsa',
+                'gb|' + contig['genbank_accession'] + '| Saccharomyces cerevisiae ' + contig['strain']['display_name'] + ', whole genome shotgun sequence [length=' + contig['residues'].length + ']');
 	});
 
   	$.getJSON('/backend/contig/' + contig['id'] + '/sequence_details?callback=?', function(data) {

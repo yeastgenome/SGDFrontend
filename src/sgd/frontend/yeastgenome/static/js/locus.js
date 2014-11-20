@@ -59,7 +59,12 @@ $(document).ready(function() {
             }
 
             $("#genomic_download").click(function f() {
-                download_sequence(genomic_data['residues'], locus['display_name'], genomic_data['contig']['display_name']);
+                alert(locus['display_name'] + '_' + genomic_data['strain']['display_name'] + '.fsa');
+                alert(locus['format_name'] + ' ' + locus['display_name']+ ' SGDID:' + locus['sgdid'] + ', chr' + genomic_data['contig']['display_name'].substr(11) + ':' + genomic_data['start'] + '...' + genomic_data['end'] + ' [Genome Release 64-2-1]');
+                download_sequence(genomic_data['residues'],
+                    locus['display_name'] + '_' + genomic_data['strain']['display_name'] + '.fsa',
+                    locus['format_name'] + ' ' + locus['display_name']+ ' SGDID:' + locus['sgdid'] + ', chr' + genomic_data['contig']['display_name'].substr(11) + ':' + genomic_data['start'] + '...' + genomic_data['end'] + ' [Genome Release 64-2-1]'
+                );
             });
         }
         else {
