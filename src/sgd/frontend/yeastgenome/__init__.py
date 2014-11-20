@@ -314,7 +314,7 @@ class YeastgenomeFrontend(FrontendInterface):
         exclude = set([x for x in string.punctuation if x != ' ' and x != '_'])
         display_name = ''.join(ch for ch in display_name if ch not in exclude).replace(' ', '_')
 
-        response.text = '>' + display_name + '  ' + contig_name + '\n' + clean_cell(sequence)
+        response.text = '>' + display_name + '  ' + contig_name + '\n' + clean_cell('\n'.join([sequence[i:i+60] for i in range(0, len(sequence), 60)]))
         headers['Content-Type'] = 'text/plain'
         if contig_name is not None and contig_name != '':
             headers['Content-Disposition'] = str('attachment; filename=' + display_name + '_' + contig_name + '_sequence.fsa')
