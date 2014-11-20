@@ -115,7 +115,7 @@ module.exports = React.createClass({
 			var geneticPositionNode = this.props.geneticPosition ? <dl className="key-value"><dt>Genetic Position</dt><dd id="genetic_position">{this.props.geneticPosition}</dd></dl> : null;
 			node = (<div className="panel sgd-viz">
 				<h3>
-					{this.props.focusLocusDisplayName} Location: <a href={attr.contigData.href}>{attr.contigData.name}</a> {attr.focusLocusDomain[0]} - {attr.focusLocusDomain[1]}
+					{this.props.focusLocusDisplayName} Location: <a href={attr.contigData.href}>{attr.contigData.name}</a> {attr.focusLocusDomain[0]}..{attr.focusLocusDomain[1]}
 				</h3>
 				<LocusDiagram
 					contigData={attr.contigData}
@@ -196,6 +196,9 @@ module.exports = React.createClass({
 
 		var _options = {
 			aaSorting: [[1, "asc"]],
+			aoColumns: [
+				null, { "sType": "range" }, { "sType": "range" }, null, null
+			],
 			bPaginate: false,
 			oLanguage: { "sEmptyTable": "No subfeatures for " + this.props.focusLocusDisplayName + '.' }
 		};

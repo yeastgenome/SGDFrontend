@@ -45,11 +45,39 @@ module.exports = React.createClass({
 		if (this.props.usePlugin) {
 			var options = this._getTableOptions();
 			this._setupTableHighlight();
+			this._setupPlugins();
 			var $table = $(this.refs.table.getDOMNode()).dataTable(options);
 			$(document).foundation();
 			$(this.getDOMNode()).find("input").attr("placeholder", "Filter table");
 			$table.fnSearchHighlighting();
 		}
+	},
+
+	_setupPlugins: function () {
+
+		$.fn.dataTableExt.oSort['range-desc'] = function(x,y) {
+			x = x.split("-");
+			y = y.split("-");
+
+			var x0 = parseInt(x[0]);
+			var y0 = parseInt(y[0]);
+
+			return (x0 > y0) ? -1 : ((x0 < y0) ? 1 : 0);
+
+		};
+
+		$.fn.dataTableExt.oSort['range-asc'] = function(x,y) {
+
+			x = x.split("..");
+			y = y.split("..");
+
+			var x0 = parseInt(x[0]);
+			var y0 = parseInt(y[0]);
+
+			return (x0 < y0) ? -1 : ((x0 > y0) ? 1 : 0);
+
+		};
+
 	},
 
 	// legacy code to highlight search text within a table
@@ -128,8 +156,7 @@ module.exports = React.createClass({
 				<tr key={"row" + i} className={evenKlass} >
 					{r.map( (d, i) => {
 						{/* if data is obj with href and value, make a link, otherwise just plain text if just a string */}
-						var textNode = (d.href && d.value) ? <a href={d.href}>{d.value}</a> : d;
-						return <td key={"cell" + i}>{textNode}</td>;
+						return this._formatCell(d, i);
 					})}
 				</tr>
 			);
@@ -157,6 +184,16 @@ module.exports = React.createClass({
 		});
 
 		return headerRows;
+	},
+
+	_formatCell: function (d, i) {
+		// allow raw HTML cell
+		if (d.html) {
+			return <td dangerouslySetInnerHTML={{ __html: d.html }} />;
+		}
+		// otherwise format plain text or whole link
+		var textNode = (d.href && d.value) ? <a href={d.href}>{d.value}</a> : d;
+		return <td key={"cell" + i}>{textNode}</td>;
 	},
 
 	_getTableOptions: function () {

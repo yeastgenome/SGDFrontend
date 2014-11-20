@@ -16,6 +16,12 @@ function create_contig_table(data) {
   	var datatable = [];
     var options = {};
 
+    // helper fn to format contig names
+    var getFormattedContigName = function (formatName) {
+        var num = formatName.match(/Mito/) ? "mt" : formatName.split("_")[1];
+        return "chr" + num;
+    };
+
 	for (var i=0; i < data.length; i++) {
         var contig = data[i];
 
@@ -28,6 +34,7 @@ function create_contig_table(data) {
             }
 
             if(contig['display_name'] != 'Chromosome 2-micron') {
+
                 datatable.push([contig['id'],
                     contig['id'],
                     '<a href="' + contig['link'] + '">' + contig['display_name'] + '</a>',
@@ -39,10 +46,12 @@ function create_contig_table(data) {
         }
         else {
             if(contig['reference_alignment'] != null) {
+                var _formatName = contig['reference_alignment']['chromosome']['format_name'];
+                var contigName = getFormattedContigName(_formatName);
                 datatable.push([contig['id'],
                     contig['id'],
                     '<a href="' + contig['link'] + '">' + contig['display_name'] + '</a>',
-                    '<a href="' + contig['reference_alignment']['chromosome']['link'] + '">' + contig['reference_alignment']['chromosome']['display_name'] + '</a>: ' + contig['reference_alignment']['start'] + '...' + contig['reference_alignment']['end'],
+                    '<a href="' + contig['reference_alignment']['chromosome']['link'] + '">' + contigName + '</a>:' + contig['reference_alignment']['start'] + '..' + contig['reference_alignment']['end'],
                     contig['reference_alignment']['percent_identity'],
                     contig['reference_alignment']['alignment_length']
                 ]);

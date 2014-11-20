@@ -17,6 +17,8 @@ var summaryView = {};
 summaryView.render = function () {
 	var locusData = bootstrappedData.locusData;
 	var hasHistory = _.where(locusData.history, { history_type: "LSP" }).length;
+	var hasResources = _.where(locusData.urls, { category: "LOCUS_LSP" }).length;
+	var hasReferences = locusData.references.length;
 
 	document.getElementById("summary_tab").className += " active";
 
@@ -25,7 +27,8 @@ summaryView.render = function () {
 		hasHistory: hasHistory,
 		hasParagraph: locusData.paragraph,
 		hasPathways: locusData.pathways.length,
-		hasResources: true,
+		hasResources: hasResources,
+		hasReferences: hasReferences,
 		rawTabsData: bootstrappedData.tabs,
 		tabType: "summary"
 	});
@@ -39,8 +42,11 @@ summaryView.render = function () {
 	var fetchAndRenderHistory = () => {
 		$.getJSON('/backend/locus/' + bootstrappedData.locusId + '/expression_details?callback=?', function(data) {
 			if (data.datasets.length) {
+				var _onExpressionClick = () => {
+					window.location.href = "/locus/" + bootstrappedData.locusId + "/expression";
+				};
 				React.renderComponent(
-					<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} />,
+					<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} onClick={_onExpressionClick} />,
 					document.getElementById("two_channel_expression_chart")
 				);
 			}
@@ -75,10 +81,12 @@ summaryView.render = function () {
     }
 
     // reference list
-    React.renderComponent(
-    	<ReferenceList data={locusData.references}/>,
-    	document.getElementById("reference")
-    );
+    if (hasReferences) {
+    	React.renderComponent(
+	    	<ReferenceList data={locusData.references}/>,
+	    	document.getElementById("reference")
+	    );
+    }
 };
 
 module.exports = summaryView;

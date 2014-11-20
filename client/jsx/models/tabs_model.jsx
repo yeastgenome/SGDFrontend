@@ -64,7 +64,7 @@ module.exports = class TabsModel {
 			(this.attributes.hasParagraph ? { name: "Summary Paragraph", target: "paragraph" } : null),
 			(this.attributes.rawTabsData.literature_tab ? { name: "Literature", target: "literature" } : null),
 			(this.attributes.hasHistory ?  { name: "History", target: "history" } : null),
-			{ name: "References", target: "reference" },
+			(this.attributes.hasReferences ?  { name: "References", target: "reference" } : null),
 			(this.attributes.hasResources ? { name: "Resources", target: "resources" } : null)
 		];
 	}

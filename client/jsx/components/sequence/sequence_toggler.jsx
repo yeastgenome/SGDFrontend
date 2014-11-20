@@ -145,14 +145,15 @@ module.exports = React.createClass({
 
 	_getComplexSequenceNode: function (sequence) {
 		var maxLabelLength = sequence.length.toString().length + 1;
-		var chunked = sequence.split("")
+		var chunked = sequence.split("");
+		var offset = this.state.activeSequenceType === '1kb' ? 1000 : 0;
 				
 		return _.map(chunked, (c, i) => {
 			i++;
 			var sp = (i % LETTERS_PER_CHUNK === 0 && !(i % LETTERS_PER_LINE === 0)) ? " " : "";
 			var cr = (i % LETTERS_PER_LINE === 0) && (i > 1) ? "\n" : "";
 			var str = c + sp + cr;
-			var _classType = this._getSubFeatureTypeFromIndex(i);
+			var _classType = this._getSubFeatureTypeFromIndex(i - offset);
 
 			var labelNode = (i - 1) % LETTERS_PER_LINE === 0 ? <span style={{ color: "#6f6f6f" }}>{`${Array(maxLabelLength - i.toString().length).join(" ")}${i} `}</span> : null;
 
@@ -162,7 +163,7 @@ module.exports = React.createClass({
 
 	_canColorSubFeatures: function () {
 		// must have sub-features and be on genomic DNA
-		if (this.props.subFeatureData.length <= 1 || this.state.activeSequenceType !== "genomic_dna") {
+		if (this.props.subFeatureData.length <= 1 || this.state.activeSequenceType === "coding_dna" || this.state.activeSequenceType === "protein") {
 			return false;
 		}
 

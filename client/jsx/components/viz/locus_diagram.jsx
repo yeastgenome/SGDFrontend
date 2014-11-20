@@ -19,6 +19,7 @@ var HEIGHT = 17;
 var POINT_WIDTH = 10;
 var TRACK_SPACING = 10;
 var MIN_BP_WIDTH = 200; // show at least 200 BP
+var MOUSE_CAPTURE_TIME = 500; // millis until scrollwhell events are captured
 
 var VIZ_HEIGHT_FN = function (watsonTracks, crickTracks) {
 	return ((watsonTracks) * (HEIGHT + TRACK_SPACING) +  TRACK_SPACING + 
@@ -54,7 +55,8 @@ module.exports = React.createClass({
 			tooltipTop: 0,
 			tooltipTitle: null,
 			tooltipData: null,
-			tooltipHref: null
+			tooltipHref: null,
+			zoomEnabled: false
 		};
 	},
 
@@ -83,7 +85,7 @@ module.exports = React.createClass({
 					<div className="locus-diagram-axis-container" style={{ position: "absolute", top: 0, width: "100%" }}>
 						{axisNode}
 					</div>
-					<svg ref="svg" className="locus-svg" style={{ width: "100%", height: height, position: "relative" }}>
+					<svg ref="svg" className="locus-svg" onMouseEnter={this._onSVGMouseEnter} onMouseLeave={this._onSVGMouseLeave} style={{ width: "100%", height: height, position: "relative" }}>
 						<line className="midpoint-marker" x1="0" x2={this.state.DOMWidth} y1={this._getMidpointY()} y2={this._getMidpointY()} />
 						{locciNodes}
 					</svg>
@@ -93,13 +95,19 @@ module.exports = React.createClass({
 	},
 
 	// Update width to that of real DOM.
+	// If touch device, enable zoom
 	componentDidMount: function () {
 		this._calculateWidth();
+		if (Modernizr) {
+			if (Modernizr.touch) {
+				this.setState({ zoomEnabled: true });
+			}
+		}
 	},
 
 	componentDidUpdate: function (prevProps, prevState) {
-		// If the width is updated, setup zoom events again.
-		if (this.state.DOMWidth !== prevState.DOMWidth) this._setupZoomEvents();
+		// If the width or zoomEnabled is updated, setup zoom events again.
+		if (this.state.DOMWidth !== prevState.DOMWidth || this.state.zoomEnabled !== prevState.zoomEnabled) this._setupZoomEvents();
 
 		// If a new default domain (prob strain change, reset domain), and setup zoom events after 0.1 sec.
 		if (this.props.domainBounds !== prevProps.domainBounds) {
@@ -108,6 +116,19 @@ module.exports = React.createClass({
 				if (this.isMounted()) this._setupZoomEvents();
 			}, 100);
 		}
+	},
+
+	// enable zoom after 500 millis, unless it gets cancelled
+	_onSVGMouseEnter: function () {
+		this._timeout = setTimeout( () => {
+			if (this.isMounted()) this.setState({ zoomEnabled: true });
+		}, 500);
+	},
+
+	// clear timeout, disable zoom, clear mouseover
+	_onSVGMouseLeave: function () {
+		if (this._timeout) clearTimeout(this._timeout);
+		if (this.state.zoomEnabled) this.setState({ zoomEnabled: false });
 	},
 
 	// returns an svg "g" element, with embedded shapes
@@ -362,10 +383,10 @@ module.exports = React.createClass({
 			_data[d.locus.locus_type + _qualText] = d.locus.headline;
 			// TODO add chrom number 
 			_data["Coordinates"] = `${d.start} - ${d.end}`;
-			_data["Length"] = (d.end - d.start) + " bp";
+			_data["Length"] = (d.end - d.start + 1) + " bp";
 		} else {
 			_data["Relative Coordinates"] = `${d.relative_start} - ${d.relative_end}`;
-			_data["Length"] = (d.relative_end - d.relative_start) + " bp";
+			_data["Length"] = (d.relative_end - d.relative_start + 1) + " bp";
 		}
 
 		return {
@@ -438,7 +459,7 @@ module.exports = React.createClass({
 		this._setupZoomEvents();
 	},
 
-	// setup d3 zoom and pan behavior
+	// setup d3 zoom and pan behavior ()
 	_setupZoomEvents: function () {
 		var scale = this._getScale();
 		var zoom = d3.behavior.zoom()
@@ -447,6 +468,11 @@ module.exports = React.createClass({
 				this._setDomain(scale.domain());
 			});
 		var svg = d3.select(this.refs["svg"].getDOMNode());
+		// no zoom events if zoom enabled false
+		if (!this.state.zoomEnabled) {
+			zoom = () => { return null; };
+			svg.on(".zoom", null);
+		}
 		svg.call(zoom);
 	},
 

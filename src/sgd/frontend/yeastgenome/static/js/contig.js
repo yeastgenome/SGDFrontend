@@ -39,7 +39,7 @@ function make_ready_handler(chart_id, chart, min_tick, max_tick, display_name_to
                     title_spans[0].innerHTML = title_spans[0].innerHTML + ' (' + display_name_to_format_name[title_spans[0].innerHTML] + ')';
                     var spans = $(".google-visualization-tooltip-action > span");
                     if(spans.length > 3) {
-                        spans[1].innerHTML = ' ' + datarow[2] + '-' + datarow[3];
+                        spans[1].innerHTML = ' ' + datarow[2] + ".." + datarow[3];
                         spans[2].innerHTML = 'Length:';
                         spans[3].innerHTML = ' ' + datarow[3] - datarow[2] + 1;
                     }
@@ -150,7 +150,7 @@ function create_feature_table(data) {
                         create_link(data[i]['locus']['display_name'], data[i]['locus']['link']),
                         data[i]['locus']['format_name'],
                         data[i]['locus']['locus_type'],
-                        data[i]['start'] + '-' + data[i]['end'],
+                        data[i]['start'] + ".." + data[i]['end'],
                         data[i]['strand']
                         ]);
     }

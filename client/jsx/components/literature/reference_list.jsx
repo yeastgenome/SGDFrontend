@@ -19,7 +19,7 @@ module.exports = React.createClass({
 		var listNode = this._getListNode();
 		return (<div>
 	        <h2>
-	        	References <HelpIcon text={_infoText} isInfo={true} /> <span className="label secondary round">15</span>
+	        	References <HelpIcon text={_infoText} isInfo={true} /> <span className="label secondary round">{this.props.data.length}</span>
 	        </h2>
 	        <hr />
 	        {listNode}
