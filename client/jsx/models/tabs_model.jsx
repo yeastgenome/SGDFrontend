@@ -53,7 +53,7 @@ module.exports = class TabsModel {
 	_getSummaryTabs () {
 		return [
 			{ name: "Locus Overview", target: "overview" },
-			(this.attributes.rawTabsData.sequence_tab ? { name: "Sequence", target: "sequence" } : null),
+			(this.attributes.rawTabsData.sequence_section ? { name: "Sequence", target: "sequence" } : null),
 			(this.attributes.rawTabsData.protein_tab ? { name: "Protein", target: "protein" } : null),
 			(this.attributes.rawTabsData.go_tab ? { name: "Gene Ontology", target: "go" } : null),
 			(this.attributes.hasPathways ?  { name: "Pathways", target: "pathway" } : null),

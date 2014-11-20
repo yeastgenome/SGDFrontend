@@ -54,7 +54,7 @@ summaryView.render = function () {
 	};
 
 	// async sequence (if needed)
-	if (bootstrappedData.tabs && bootstrappedData.tabs.sequence_tab) {
+	if (bootstrappedData.tabs && bootstrappedData.tabs.sequence_section) {
 		var _geneticPosition = locusData.genetic_position ? (locusData.genetic_position + " cM") : null;
 		React.renderComponent(
 			<AsyncSequenceView
