@@ -1,0 +1,347 @@
+.sgd-viz {
+	min-height: 100px;
+	position: relative;
+	margin-bottom: 3em;
+	font-size: 12px;
+	&.genome-snapshot-panel {
+		min-height: 507px;
+	}
+	&.go-snapshot-target {
+		min-height: 633px;
+	}
+	&.sequence-details-container {
+		min-height: 350px;
+	}
+	&.sub-sequence {
+		min-height: 700px;
+	}
+	.loader {
+		position: absolute;
+		margin-top: -16px;
+		margin-left: -16px;
+		top: 50%;
+		left: 50%;
+	}
+}
+
+.sequence-init {
+	min-height: 700px;
+}
+
+.sgd-viz-filter-message {
+	margin-top: 1em;
+	margin-bottom: 0;
+	font-size: 12px;
+}
+
+.genome-snapshot {
+	transition: max-height 1s;
+}
+
+.flexible-tooltip {
+	min-width: 100px;
+	min-height: 35px;
+	margin-left: -50px;
+	margin-top: -60px;
+	background-color: $tooltip-bg;
+	border-radius: 5px;
+	font-size: 16px;
+	z-index: $z-tooltip;
+
+	dt {
+		width: auto;
+	}
+}
+
+.flexible-tooltip-text {
+	text-align: center;
+	margin: 0.5em;
+	white-space: nowrap;
+}
+
+.flexible-tooltip-arrow {
+	bottom: -29px;
+	left: 50px;
+	width: 0; 
+	height: 0;
+	margin-left: -7px;
+	border-left: 7px solid transparent;
+	border-right: 7px solid transparent;
+	border-top: 30px solid #e7e7e7;
+	&.complex {
+		top: -30px;
+		left: 280px;
+		border-left: 7px solid transparent;
+		border-right: 7px solid transparent;
+		border-bottom: 30px solid #e7e7e7;
+		border-top: none;
+	}
+}
+
+.chromosome-snapshot-container p {
+	margin: 0.5em 0;
+}
+
+.bar-label {
+	font-size: 12px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.bar-node {
+	opacity: 0.6;
+	transition: width 0.5s;
+
+}
+
+.axis-label {
+	text-align: center;
+	margin-bottom: 0;
+	font-size: 14px;
+	height: 1em;
+}
+
+.axis {
+	font-size: 12px;
+
+	line {
+		stroke: black;
+	}
+
+	path.domain {
+		fill: none;
+		stroke: black;
+		shape-rendering: crispEdges;
+	}
+}
+
+// legend
+.viz-legend {
+	margin-bottom: 7px;
+}
+
+.legend-entry-container {
+	margin-right: 1em;
+	&:last-child {
+		margin-right: 0;
+	}
+}
+
+.legend-color {
+	width: 1.5em;
+	height: 1.5em;
+	margin-bottom: -0.3em;
+	margin-right: 0.5em;
+	display: inline-block;	
+}
+
+.genome-snapshot-target .legend-color {
+	opacity: 0.6;
+}
+
+// genome snapshot
+.button.chromosome-toggle {
+	width: 200px;
+	display: block;
+	margin: 0 auto;
+	margin-top: 2em;
+}
+
+.chromosome-label-text {
+	margin-top: 3em;
+	h3 {
+		margin-bottom: 0;
+	}
+	h3:first-child {
+		float: left;
+	}
+	h3:last-child {
+		float: right;
+	}
+}
+
+.genome-snapshot-target thead tr:first-child td {
+	text-align: center;
+}
+
+.genome-snapshot-target td {
+	white-space: nowrap;
+}
+
+// toggle bar chart
+.toggle-bar-chart {
+	.radio-selector {
+		font-size: 16px;
+	}
+
+	.radio-selector label {
+		text-transform: capitalize;
+		font-size: 16px;
+	}
+
+	.radio-element-container {
+		text-align: center;
+		&:first-child {
+			text-align: left;
+		}
+		&:last-child {
+			text-align: right;
+		}
+	}
+
+	.toggle-text {
+		margin-top: 1em;
+	}
+
+	.inner-toggle-text {
+		text-transform: capitalize;
+	}
+}
+
+// locus diagram
+.multi-sequence-download-button {
+	margin-bottom: 1rem;
+}
+
+.title-right-text p.text-right {
+	margin-top: 0.6em;
+	margin-bottom: 0;
+}
+
+.sequence-details-container .data-table {
+	margin-top: 1em;
+}
+
+.locus-diagram {
+	padding-bottom: 20px;
+}
+
+.title-right-text {
+	margin-top: 10px;
+	margin-bottom: 0;
+}
+
+.locus-diagram-label-text {
+	.secondary.label {
+		margin-bottom: 0;
+	}
+}
+
+.locus-diagram-control-container .row.control-row {
+	margin-bottom: 6px;
+}
+
+.locus-diagram-control-container p {
+	margin-bottom: 0.5em;
+}
+
+.locus-diagram-control-container .columns.right p {
+	text-align: right;
+}
+
+.locus-diagram-button-group {
+	margin-left: 1em;
+	margin-top: -4px;
+	float: right;
+	.button {
+		// background: #696599;
+		// color: white;
+		font-size: 0.5rem;
+		padding-top: 6px;
+		padding-bottom: 6px;
+	}
+	.button.disabled {
+		opacity: 0.25;
+	}
+	li:first-child a.button {
+		margin-right: 5px;
+	}
+}
+
+.locus-diagram-axis-container {
+	g.tick line {
+		stroke: #ddd;
+	}
+	path.domain {
+		stroke: none;
+	}
+}
+
+.locus-diagram .locus-path:hover {
+	cursor: pointer;
+}
+
+.midpoint-marker {
+	stroke: #ddd;
+	stroke-width: 2px;
+	stroke-dasharray: 3px 5px;
+}
+
+.locus-svg {
+	border: 1px solid #ddd;
+}
+
+.locus-svg text {
+	pointer-events: none;
+	&.focus {
+		fill: white;
+	}
+}
+
+.locus-node {
+	fill: #aaa;
+	&.focus {
+		fill: #696599;
+	}
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+// chrom thumb {
+.chromosome-thumb-inset {
+	background: white;
+	opacity: 0.6;
+}
+
+.chromosome-thumb-center-inset {
+	border: 1px solid black;
+	// border-bottom: none;
+	// border-top: none;
+}
+
+.chromosome-thumb-arm {
+	fill: #79050D;
+}
+
+h3.subfeature-label-text {
+	margin-bottom: 0;
+	span.secondary {
+		margin-bottom: 0;
+	}
+}
+
+// expression histogram
+.histogram-axis-text.x {
+	display: block;
+	text-align: center;
+}
+
+.histogram-axis-text.y {
+	-ms-transform: rotate(-90deg);
+	-webkit-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+	-ms-transform-origin: 50% 0;
+	-webkit-transform-origin: 50% 0;
+	transform-origin: 50% 0;
+	position: absolute;
+	display: block;
+	text-align: center;
+	top: 50%;
+	left: -4rem;
+}
+
+.expression-histogram .bar {
+	cursor: pointer;
+}

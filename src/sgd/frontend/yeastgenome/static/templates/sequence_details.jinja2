@@ -1,16 +1,29 @@
-{% extends "global_layout.jinja2" %}
+{% extends "lite_layout.jinja2" %}
 
 {% block title %}{{ locus.display_name }} Sequence{% endblock %}
 
 {% block head %}
 <script>
-	var locus = {{ locus_js|safe }};
+	var sequence_details_link = "{{sequence_details_link}}";
+    var neighbor_sequence_details_link = "{{neighbor_sequence_details_link}}";
+	var download_table_link = "{{download_table_link}}";
+    var download_sequence_link = "{{download_sequence_link}}";
+	var analyze_link = "{{analyze_table_link}}";
+
+    var bootstrappedData = {
+        displayName: "{{ locus.display_name }}",
+        formatName: "{{ locus.format_name }}",
+        locusId: "{{ locus.id }}",
+        locusLink: "{{ locus.link }}",
+        locusHistory: {{ history_js|safe }},
+        sgdid: "{{locus.sgdid}}"
+    };
 </script>
 {% endblock %}
 
 {% block body %}
 
-<div id="center_title" class="row">
+<div id="center_title" class="row hide-for-small">
 	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
@@ -18,29 +31,15 @@
 ================================================== -->
 <!-- Includes tabs.html into template -->
 {% include "tabs.jinja2" %}
-<script>document.getElementById('sequence_tab').id = 'current';</script>
 
 <!-- Navbar
 ================================================== -->
 <div class="row">
-	
-    <!-- Includes navbar.html into template -->
-    {% include "navbar.jinja2" %}
+
+    <div id="navbar-container" class="large-3 columns">
+    </div>
 
     <div class="small-12 large-9 columns content-column">
-
-        <script>
-            //Set up navbar
-            add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</a>');
-            add_navbar_element('Sequence Overview', 'overview');
-            add_navbar_element('Reference Strain: S288C', 'reference');
-            add_navbar_element('Alternative Reference Strains', 'alternative');
-            add_navbar_element('Other Strains', 'other');
-            {% for evidence in locus.history if evidence.history_type == 'SEQUENCE' %}{% if loop.first %}
-                add_navbar_element('History', 'history');
-            {% endif %}{% endfor %}
-            add_navbar_element('Resources', 'resources');
-        </script>
 
 <!-- Overview
 ================================================== -->
@@ -54,200 +53,25 @@
                 Alternative References.
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             <!-- Includes sequence_overview into template -->
             {% include "sequence_overview.jinja2" %}
         </div>
     </section>
 
-<!-- Reference Strain: S288C
-================================================== -->
-    <section id="reference" data-magellan-destination="reference">
-        <h2>Reference Strain: S288C
-            <a href="#" data-dropdown="reference_info"><i class="fa fa-info-circle"></i></a>
-
-            <p id="reference_info" class="f-dropdown content medium" data-dropdown-content>
-               The <i>S. cerevisiae</i> reference genome sequence is derived from laboratory strain S288C.
-            </p>
-        </h2>
-        
-        <div class="panel">
-            <h3>Location - S288C
-                <a href="#" data-dropdown="reference_location_help"><i class="fa fa-question-circle"></i></a>
-
-                <p id="reference_location_help" class="f-dropdown content medium" data-dropdown-content>
-                   Depicts genomic context; mouse over to view names, coordinates, and brief descriptions. Use the
-                    links to GBrowse and ORF Map for an interactive view of this region.
-                </p>
-            </h3>
-            <div class="clearfix">
-                <div id="reference_contig" class="left"></div>
-                <div class="right">
-                    View in:
-                    {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE' and (url.display_name == 'GBrowse' or url.display_name == 'ORF Map') %}
-                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-            <div id="reference_label_chart"></div>
+    <!--  target for client rendering -->
+    <div id="sequence-viz" class="sequence-viz-container sequence-init">
+        <div class="panel sgd-viz sequence-init">
+            <img class="loader" src="/static/img/dark-slow-wheel.gif" />
         </div>
-        
-        <div id="subfeature_wrapper" class="panel">
-            <h3>Subfeatures - S288C <span id="subfeature_table_header" class="round secondary label"></span></h3>
-            <div id="reference_sublabel_chart"></div>
-
-            <!-- Includes chromosomal_coord_table into template -->
-            {% set table_id = "subfeature_table" %}
-            {% set include_relative = True %}
-            {% set include_version = True %}
-            {% include "chromosomal_coord_table.jinja2" %}
-        </div>
-
-        <div class="panel">
-            <h3>Sequence - S288C
-                <a href="#" data-dropdown="reference_sequence_help"><i class="fa fa-question-circle"></i></a>
-
-                <p id="reference_sequence_help" class="f-dropdown content medium" data-dropdown-content>
-                   Use the pulldown menu to view genomic DNA, coding DNA, or protein sequence for the selected
-                    strain, whenever available. Download the sequence as a .txt file using the Download button just
-                    below the sequence.
-                </p>
-            </h3>
-            <select id="reference_chooser" class="large-3">
-                <option value="genomic_dna">Genomic DNA</option>
-                <option value="kb">Genomic DNA +/- 1kb</option>
-                <option value="coding_dna">Coding DNA</option>
-                <option value="protein">Protein</option>
-            </select>
-            <ul id="reference_legend" class="ref-links"></ul>
-            <pre><blockquote id="reference_sequence" style="font-family:Monospace"></blockquote></pre>
-            <div class="button-bar">
-                <ul class="button-group radius">
-                    <li><a id="reference_download" class="small button secondary"><i class="fa fa-download"></i> Download Sequence (.fsa)</a></li>
-                </ul>
-
-                <ul class="button-group radius">
-                    <li><a class="small button secondary" href="http://yeastgenome.org/cgi-bin/seqTools?back=1&seqname={{ locus.format_name }}">Custom Sequence Retrieval</a></li>
-                </ul>
-            </div>
-
-
-        </div>
-    </section>
-
-<!-- Alternative Reference
-================================================== -->
-    <section id="alternative" data-magellan-destination="alternative">
-        <h2>Alternative Reference Strains
-            <a href="#" data-dropdown="alternative_info"><i class="fa fa-info-circle"></i></a>
-
-            <p id="alternative_info" class="f-dropdown content medium" data-dropdown-content>
-               Alternative Reference strains are major laboratory yeast strains with a substantial history of
-                use and experimental results. These strains include W303, Sigma1278b, SK1, SEY6210, CEN.PK,
-                D273-10B, JK9-3d, FL100, RM11-1a, and Y55.
-            </p>
-        </h2>
-        <div class="panel">
-            <label><h3>Strain</h3>
-                <select id="alternative_strain_selection" class="large-3"></select> - <span id="alternative_strain_description"></span>
-            </label>
-            <div class="panel">
-                <h3>Location - <span id="current_alternative_strain_location"></span>
-                     <a href="#" data-dropdown="alternative_location_help"><i class="fa fa-question-circle"></i></a>
-
-                    <p id="alternative_location_help" class="f-dropdown content medium" data-dropdown-content>
-                        Depicts genomic context; mouse over to view names, coordinates, and brief descriptions. Genomic
-                        features for Alternative Reference Strains were converted computationally from the S288C
-                        Reference using BLAT-based Batch Coordinate Conversion (liftOver) and may contain duplicate
-                        annotations in repetitive regions. These data are preliminary and subject to change without
-                        notice.
-                    </p>
-                </h3>
-                <div id="alternative_contig"></div>
-                <div id="alternative_label_chart"></div>
-            </div>
-            <div class="panel">
-                <h3>Sequence - <span id="current_alternative_strain_sequence"></span>
-                    <a href="#" data-dropdown="alternative_sequence_help"><i class="fa fa-question-circle"></i></a>
-
-                    <p id="alternative_sequence_help" class="f-dropdown content medium" data-dropdown-content>
-                       Use the pulldown menu to view genomic DNA, coding DNA, or protein sequence for the selected
-                        strain, whenever available. Download the sequence as a .txt file using the Download button just
-                        below the sequence.
-                    </p>
-                </h3>
-                <select id="alternative_chooser" class="large-3">
-                    <option value="genomic_dna">Genomic DNA</option>
-                    <option value="kb">Genomic DNA +/- 1kb</option>
-                    <option value="coding_dna">Coding DNA</option>
-                    <option value="protein">Protein</option>
-                </select>
-                <pre><blockquote id="alternative_sequence" style="font-family:Monospace"></blockquote></pre>
-                <div class="button-bar">
-                    <ul class="button-group radius">
-                        <li><a id="alternative_download" class="small button secondary"><i class="fa fa-download"></i> Download Sequence (.fsa)</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-<!-- Other
-================================================== -->
-    <section id="other" data-magellan-destination="other">
-        <h2>Other Strains
-            <a href="#" data-dropdown="other_info"><i class="fa fa-info-circle"></i></a>
-
-            <p id="other_info" class="f-dropdown content medium" data-dropdown-content>
-               Other laboratory, industrial, and environmental isolates; sequences available via the Download
-                button.
-            </p>
-        </h2>
-        <div class="panel">
-            <label><h3>Strains Available for Download
-                <a href="#" data-dropdown="other_sequence_help"><i class="fa fa-question-circle"></i></a>
-
-                <p id="other_sequence_help" class="f-dropdown content medium" data-dropdown-content>
-                   Select a strain using the pull-down in order to download its sequence as a .txt file using the
-                    Download button located directly below.
-                </p>
-            </h3>
-                <select id="other_strain_selection" class="large-3"></select> - <span id="other_strain_description"></span>
-            </label>
-            <div class="button-bar">
-                <ul class="button-group radius">
-                    <li><a id="other_download" class="small button secondary"><i class="fa fa-download"></i> Download Sequence (.fsa)</a></li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-<!-- History
-================================================== -->
-    {% for evidence in locus.history if evidence.history_type == 'SEQUENCE' %}{% if loop.first %}
-    <section id="history" data-magellan-destination="history">
-        <h2>History
-            <a href="#" data-dropdown="history_info"><i class="fa fa-info-circle"></i></a>
-
-            <p id="history_info" class="f-dropdown content medium" data-dropdown-content>
-               Documentation of sequence and/or annotation changes that have been made or proposed in the Reference
-                strain S288C, and that directly affect this gene by altering the start, stop, intron structure, or
-                amino acid sequence. Also includes information regarding sequence changes in adjacent intergenic
-                regions. May also contain notes and references for the mapping of this gene.
-            </p>
-        </h2>
-        <div>
-            <!-- Includes go_table into template -->
-            {% set table_id = "history_table" %}
-            {% include "history_table.jinja2" %}
-        </div>
-    </section>
-    {% endif %}{% endfor %}
+    </div>
 
         <!-- Resources
 ================================================== -->
     <section id="resources" data-magellan-destination="resources">
         <h2>Resources</h2>
+        <hr />
         <div class="panel">
             <p id='resources_list'>
                 {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE'%}
@@ -280,11 +104,8 @@
 {% endblock body %}
 
 {% block scripts %}
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
-       'version':'1','packages':['timeline']}]}"></script>
-<script src="/static/js/evidence.js"></script>
-<script src="/static/js/sequence_details.js"></script>
+<script src="/static/js/application.js{{version_qs}}"></script>
+<script>
+    views.sequence.render();
+</script>
 {% endblock scripts %}
-
-

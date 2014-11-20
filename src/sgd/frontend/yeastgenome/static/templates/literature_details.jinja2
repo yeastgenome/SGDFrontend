@@ -11,7 +11,7 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
+<div id="center_title" class="row hide-for-small">
 	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
@@ -19,7 +19,7 @@
 ================================================== -->
 <!-- Includes tabs.html into template -->
 {% include "tabs.jinja2" %}
-<script>document.getElementById('literature_tab').id = 'current';</script>
+<script>document.getElementById("literature_tab").className += " active";</script>
 
 <!-- Navbar
 ================================================== -->
@@ -57,7 +57,8 @@
             linked to relevant genes and literature topics by SGD curators.
         </p>
     </h2>
-    <div class="panel">    
+    <hr />
+    <div class="">    
         <!-- Includes literature_overview.html into template -->
         {% include "literature_overview.jinja2" %}
     </div>
@@ -76,6 +77,7 @@
             </p>
             <span id="primary_header" class="label secondary round"></span>
         </h2>
+        <hr />
         <!-- Includes reference_list into template -->
         {% set reference_list_id = "primary_list" %}
         {% set empty_message = "No primary literature curated." %}
@@ -93,7 +95,8 @@
                 yellow circle).
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             <!-- Includes literature_network into template -->
             {% set network_id = "cy" %}
             {% include "literature_network.jinja2" %}
@@ -112,6 +115,7 @@
             </p>
             <span id="additional_header" class="label secondary round"></span>
         </h2>
+        <hr />
         {% set reference_list_id = "additional_list" %}
         {% set empty_message = "No additional literature curated." %}
         {% include "reference_list.jinja2" %}
@@ -121,6 +125,7 @@
 ================================================== -->
     <section id="reviews" data-magellan-destination="reviews">
             <h2>Reviews <span id="review_header" class="label secondary round"></span></h2>
+            <hr />
             {% set reference_list_id = "review_list" %}
             {% set empty_message = "No reviews curated." %}
             {% include "reference_list.jinja2" %}
@@ -137,6 +142,7 @@
             </p>
             <span id="go_header" class="label secondary round"></span>
         </h2>
+        <hr />
         {% set reference_list_id = "go_list" %}
         {% set empty_message = "No gene ontology literature curated." %}
         {% include "reference_list.jinja2" %}
@@ -153,6 +159,7 @@
             </p>
             <span id="phenotype_header" class="label secondary round"></span>
         </h2>
+        <hr />
         {% set reference_list_id = "phenotype_list" %}
         {% set empty_message = "No phenotype literature curated." %}
         {% include "reference_list.jinja2" %}
@@ -171,6 +178,7 @@
             </p>
             <span id="interaction_header" class="label secondary round"></span>
         </h2>
+        <hr />
         {% set reference_list_id = "interaction_list" %}
         {% set empty_message = "No interaction literature curated." %}
         {% include "reference_list.jinja2" %}
@@ -188,6 +196,7 @@
             </p>
             <span id="regulation_header" class="label secondary round"></span>
         </h2>
+        <hr />
         {% set reference_list_id = "regulation_list" %}
         {% set empty_message = "No regulation literature curated." %}
         {% include "reference_list.jinja2" %}
@@ -198,9 +207,9 @@
 {% endblock body %}
 
 {% block scripts %}
-<script src="/static/js/build/cytoscape.min.js"></script>	
-<script src="/static/js/build/arbor.js"></script>
-<script src="/static/js/cytoscape.js"></script>
-<script src="/static/js/literature_details.js"></script>
+<script src="/static/js/build/cytoscape.min.js{{version_qs}}"></script>	
+<script src="/static/js/build/arbor.js{{version_qs}}"></script>
+<script src="/static/js/cytoscape.js{{version_qs}}"></script>
+<script src="/static/js/literature_details.js{{version_qs}}"></script>
 {% endblock scripts %}
 

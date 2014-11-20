@@ -45,6 +45,7 @@
         <section id="overview" data-magellan-destination="overview">
             <a class="documentation-link" name="top" href="/help/literature-help/curated-paper">Reference Help <i class="fa fa-question-circle"></i></a>
             <h2>Abstract</h2>
+            <hr />
             <div class="panel">
                 {%  if reference.abstract != none %}
                     <p>{{ reference.abstract.text|safe}}</p>
@@ -107,7 +108,8 @@
         {% if reference.related_references|length > 0 %}
             <section id="related" data-magellan-destination="related">
                 <h2>Related References</h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <ul class="unstyled">
                         {% for relref in reference.related_references %}
                             <li>
@@ -141,6 +143,7 @@
 ================================================== -->
         <section id="interaction" data-magellan-destination="interaction">
             <h2>Interaction Annotations <span id="interaction_table_header" class="round secondary label"></span></h2>
+            <hr />
             <div>
                 <!-- Includes interaction_table into template -->
                 {% set table_id = "interaction_table" %}
@@ -152,7 +155,8 @@
 ================================================== -->
         <section id="go" data-magellan-destination="go">
             <h2>Gene Ontology Annotations <span id="go_table_header" class="round secondary label"></span></h2>
-            <div class="panel">
+            <hr />
+            <div class="">
                 <!-- Includes go_table into template -->
                 {% set table_id = "go_table" %}
                 {% include "go_table.jinja2" %}
@@ -163,6 +167,7 @@
 ================================================== -->
         <section id="phenotype" data-magellan-destination="phenotype">
             <h2>Phenotype Annotations <span id="phenotype_table_header" class="round secondary label"></span></h2>
+            <hr />
             <!-- Includes phenotype_table into template -->
             {% set table_id = "phenotype_table" %}
             {% include "phenotype_table.jinja2" %}
@@ -172,7 +177,8 @@
 ================================================== -->
         <section id="regulation" data-magellan-destination="regulation">
             <h2>Regulation Annotations <span id="regulation_table_header" class="round secondary label"></span></h2>
-            <div class="panel">
+            <hr />
+            <div class="">
                 <!-- Includes regulation_table into template -->
                 {% set table_id = "regulation_table" %}
                 {% include "regulation_table.jinja2" %}
@@ -184,6 +190,7 @@
         <section id="expression" data-magellan-destination="expression">
             <div class="page-header">
                 <h2>Expression Datasets <span id="expression_table_header" class="round secondary label"></span></h2>
+                <hr />
                 <div class="panel">
                     <!-- Includes regulation_table into template -->
                     {% set table_id = "expression_table" %}
@@ -196,6 +203,6 @@
 {% endblock body %}
 
 {% block scripts %}
-<script src="/static/js/evidence.js"></script>
-<script src="/static/js/reference.js"></script>
+<script src="/static/js/evidence.js{{version_qs}}"></script>
+<script src="/static/js/reference.js{{version_qs}}"></script>
 {% endblock scripts %}

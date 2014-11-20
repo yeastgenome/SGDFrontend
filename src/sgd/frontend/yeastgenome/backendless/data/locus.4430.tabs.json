@@ -1,1 +1,1 @@
-{"protein_tab": true, "interaction_tab": true, "summary_tab": true, "wiki_tab": true, "expression_tab": true, "phenotype_tab": true, "literature_tab": true, "go_tab": true, "regulation_tab": true, "sequence_tab": true, "id": 4430, "history_tab": true}
+{"protein_tab": true, "interaction_tab": true, "summary_tab": true, "wiki_tab": false, "expression_tab": true, "phenotype_tab": true, "literature_tab": true, "go_tab": true, "regulation_tab": true, "sequence_tab": true, "id": 4430, "history_tab": false}

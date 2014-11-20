@@ -1,0 +1,176 @@
+/********************************************
+Module rules - SMACSS 
+http://smacss.com/book/type-module
+*********************************************/
+
+/* #layout-page-header-content {
+	background: url("../img/demo-watermark.png") repeat-x;
+} */
+
+#header-tools {
+	display: inline-block;
+	float: right;
+	height: 90px;
+	.header-links {
+		display: inline-block;
+		overflow: hidden;
+		float: right;
+		height: 25px;
+		margin-top: 7px;
+		font-size: em-calc(13);
+		font-weight: bold;
+		text-align: right;
+		a {color: rgb(0,0,0);}
+		a:hover {text-decoration: underline;}
+	}
+	.header-search {
+		height: 50px;
+		top: 30px;
+		overflow: none;
+	}
+}
+
+#txt_search_container {
+	margin-left: 38.5% !important;
+	width: 53.17%;
+}
+
+#top-search-input-container div {
+	top: -30px;
+}
+
+#sgd-mini-logo {
+	margin: 8px;
+}
+
+// TEMP survery link
+.temp-survey-notice {
+	position: absolute;
+	width: 204px;
+	top: 21px;
+	left: 330px;
+	z-index: 10;
+	&:after {
+		display: none !important;
+	}
+}
+
+.small-survey-container {
+	background: #f04124;
+	a {
+		color: white;
+	}
+}
+
+#adv-search-links {
+	font-size: em-calc(11);
+	float: right;
+	position: relative;
+	top: -37px;
+}
+
+.social-links, .site-links {
+	overflow: visible;
+	@include inline-list;
+	$inline-list-display: inline;
+	display: inline;
+}
+
+.site-links {
+	margin: 0;
+	position: absolute;
+    right: 153px;
+    font-size: em-calc(13);
+    li {
+        margin-left: em-calc(14);
+    }
+}
+
+.social-links {
+	margin: 0;
+	li {
+		margin-left: em-calc(9);
+		margin-top: em-calc(2);
+	}
+}
+
+.webicon.x-small {
+    border-radius: 2px;
+    height: 16px;
+    width: 16px;
+}
+
+div.header-search {
+	position: relative;
+	top: 5px;
+}
+
+form#searchform {
+	margin: 0;
+	padding: 0;
+}
+
+#header-search-box {
+	margin: 0;
+	padding: 0;
+}
+
+.menu-search { 
+	padding: 2px 10px;
+}
+
+#adv-search-links {
+	font-size: em-calc(12);
+	margin-top: 4px;
+}	
+
+
+#logo-section {
+	height: 90px;
+}
+
+.logo {
+	background: url("../img/sgd-logo.png") no-repeat;
+	background-size: 320px 90px;
+	height: 90px;
+	width: 320px;
+	display: inline-block;
+	.logo-label {
+		display: inline-block;
+		text-indent: -9999px;
+	}
+}
+
+// use hi-rez logo on retina (etc) screens
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+    only screen and (min--moz-device-pixel-ratio: 2),
+    only screen and (-o-min-device-pixel-ratio: 2/1),
+    only screen and (min-device-pixel-ratio: 2),
+    only screen and (min-resolution: 192dpi),
+    only screen and (min-resolution: 2dppx) {
+        .logo {
+            background: url("../img/sgd-logo-2x.png") no-repeat;
+            background-size: 320px 90px;
+        }
+}
+
+.top-bar {
+	margin-bottom: 0;
+}
+
+.top-bar-section ul li > a {
+    font-weight: bold;
+}   
+
+/* back styling for mobile menus */
+.back h5 {
+     font-size: 1.0em;
+     font-weight: bold !important;
+}
+.back h5 a:before {
+     content: "\00AB\ ";
+}
+
+#top-bar-search {
+	margin-right: 0.8em;
+}

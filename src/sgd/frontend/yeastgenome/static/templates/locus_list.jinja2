@@ -1,5 +1,5 @@
 {% extends "global_layout.jinja2" %}
-{% block title %}{{ locus_list.list_name }} Locii{% endblock %}
+{% block title %}{{ locus_list.list_name }} Loci{% endblock %}
 
 {% block head %}
 <script>
@@ -10,7 +10,7 @@
 {% block body %}
 
 <div id="center_title" class="row">
-	<h2>{{ locus_list.list_name | safe }} Locii</h2>
+	<h2>{{ locus_list.list_name | safe }} Loci</h2>
 </div>
 
 
@@ -24,7 +24,7 @@
     <div class="small-12 large-9 columns">
 
         <script>
-            add_navbar_title('{{ locus_list.list_name }} Locii');
+            add_navbar_title('{{ locus_list.list_name }} Loci');
             add_navbar_element('Entries', 'entries');
         </script>
 
@@ -44,8 +44,8 @@
 </div>
 
 {% block scripts %}
-<script src="/static/js/evidence.js"></script>
-<script src="/static/js/locus_list.js"></script>
+<script src="/static/js/evidence.js{{version_qs}}"></script>
+<script src="/static/js/locus_list.js{{version_qs}}"></script>
 {% endblock scripts %}
 
 {% endblock body %}

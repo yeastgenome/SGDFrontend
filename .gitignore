@@ -17,7 +17,11 @@ src/sgd/frontend/yeastgenome/static/css/normalize.css
 src/sgd/frontend/yeastgenome/static/css/style.css
 src/sgd/frontend/yeastgenome/static/scss/normalize.scss
 src/sgd/frontend/yeastgenome/static/js/build/
+src/sgd/frontend/yeastgenome/static/js/application.js
 src/sgd/frontend/yeastgenome/static/scss/build/
 src/sgd/frontend/yeastgenome/static/fonts/
 bower_components/
 node_modules/
+client/scss/build/
+client/scss/normalize.scss
+asset_version.json

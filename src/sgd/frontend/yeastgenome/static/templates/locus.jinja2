@@ -1,82 +1,43 @@
-{% extends "global_layout.jinja2" %}
+{% extends "lite_layout.jinja2" %}
 
 {% block title %}{{ locus.display_name }}{% endblock %}
 
 {% block head %}
 <script>
-    var locus = {{ locus_js|safe }};
-    var sequence_tab = "{{ tabs['sequence_tab'] }}";
+    var bootstrappedData = {
+        displayName: "{{ locus.display_name }}",
+        formatName: "{{ locus.format_name }}",
+        locusId: "{{ locus.id }}",
+        locusLink: "{{ locus.link }}",
+        locusData: {{locus_js|safe}},
+        tabs: {{tabs_js|safe}}
+    };
 </script>
 {% endblock %}
 
 {% block body %}
 
-<div id="center_title" class="row">
+<div id="center_title" class="row hide-for-small">
 	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
-<!-- Tabs
-================================================== -->
-<!-- Includes tabs.html into template -->
+<!-- Tabs -->
 {% include "tabs.jinja2" %}
-<script>document.getElementById('summary_tab').id = 'current';</script>
 
-<!-- Navbar
-================================================== -->
 <div class="row">
 	
-    <!-- Includes navbar.html into template -->
-    {% include "navbar.jinja2" %}
+    <div id="navbar-container" class="large-3 columns">
+    </div>
 
     <div class="small-12 large-9 columns content-column">
-
-        <script>
-            //Set up navbar
-            add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</a>');
-            add_navbar_element('Locus Overview', 'overview');
-            {% if tabs['sequence_tab'] %}
-                add_navbar_element('Sequence', 'sequence');
-            {% endif %}
-            {% if tabs['protein_tab'] %}
-                add_navbar_element('Protein', 'protein');
-            {% endif %}
-            {% if tabs['go_tab'] %}
-                add_navbar_element('Gene Ontology', 'go');
-            {% endif %}
-            {% if locus.pathways|length > 0 %}
-                add_navbar_element('Pathways', 'pathway');
-            {% endif %}
-            {% if tabs['phenotype_tab'] %}
-                add_navbar_element('Phenotype', 'phenotype');
-            {% endif %}
-            {% if tabs['interaction_tab'] %}
-                add_navbar_element('Interaction', 'interaction');
-            {% endif %}
-            {% if tabs['regulation_tab'] %}
-                add_navbar_element('Regulation', 'regulation');
-            {% endif %}
-            {% if tabs['expression_tab'] %}
-                add_navbar_element('Expression', 'expression');
-            {% endif %}
-            {% if locus.paragraph != None %}
-                add_navbar_element('Summary Paragraph', 'paragraph');
-            {% endif %}
-            {% if tabs['literature_tab'] %}
-                add_navbar_element('Literature', 'literature');
-            {% endif %}
-            add_navbar_element('History', 'history');
-            add_navbar_element('References', 'reference');
-            {% for url in locus.urls if url.category == 'LOCUS_LSP' %}{% if loop.first %}
-                add_navbar_element('Resources', 'resources');
-            {% endif %}{% endfor %}
-        </script>
 
 <!-- Overview
 ================================================== -->
     <section id="overview" data-magellan-destination="overview">
         <h2>Locus Overview
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
 
             <dl class="key-value">
 
@@ -118,16 +79,16 @@
 
                 <dt>Feature Type</dt>
                 <dd>{{ locus.locus_type }}
-                    {% if 'feature_type' in locus.qualities %}
+                    {%- if 'feature_type' in locus.qualities -%}
                         {% set references = locus.qualities.feature_type.references %}
                         {% include "biblio_references.jinja2" %}
                     {% endif %}
-
-                    {% if locus.qualifier != None %}, {{ locus.qualifier }}{% endif %}
-                    {% if 'qualifier' in locus.qualities %}
+                    {%- if locus.qualifier != None -%}, {{ locus.qualifier }}{% endif %}
+                    {%- if 'qualifier' in locus.qualities -%}
                         {% set references = locus.qualities.qualifier.references %}
                         {% include "biblio_references.jinja2" %}
                     {% endif %}
+                    {%- if locus.bioent_status != 'Active' -%}, {{ locus.bioent_status }}{% endif %}
                 </dd>
 
                 <dt>Description</dt>
@@ -164,7 +125,9 @@
                     <dt>Paralog</dt>
                     <dd>
                     {% for paralog in locus.paralogs %}
-                        <a href="{{ paralog.child.link }}">{{ paralog.child.display_name }}</a>
+                        {% if paralog.child %}
+                            <a href="{{ paralog.child.link }}">{{ paralog.child.display_name }}</a>
+                        {% endif %}
                         {% set references = paralog.references %}
                         {% include "biblio_references.jinja2" %}
 
@@ -179,9 +142,11 @@
 
 <!-- Sequence
 ================================================== -->
-    {% if tabs['sequence_tab'] %}
+    {% if tabs['sequence_section'] %}
     <section id="sequence" data-magellan-destination="sequence">
+        {% if tabs['sequence_tab'] %}
         <a href="/locus/{{ locus.sgdid }}/sequence" class="details-link">Sequence Details <i class="fa fa-chevron-circle-right"></i></a>
+        {% endif %}
         <h2>Sequence
             <a href="#" data-dropdown="sequence_info"><i class="fa fa-info-circle"></i></a>
 
@@ -192,92 +157,41 @@
                 for other strains.
             </p>
         </h2>
-        <div class="panel">
-            <button href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="small radius button secondary dropdown form-pad"><i
-                class="fa fa-download"></i> Download Sequence (.fsa)</button>
-            <ul id="drop1" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1">
-                <li><a id="genomic_download">Genomic DNA</a></li>
-                <li><a id="kb_download">Genomic DNA +/- 1kb</a></li>
-                <li><a id="coding_download">Coding DNA</a></li>
-                <li><a id="protein_download">Protein</a></li>
-                <li><a id="custom_download" href="/cgi-bin/seqTools?back=1&seqname={{ locus.format_name }}">Custom Retrieval</a></li>
-            </ul>
-                
-            <div class="panel">
-                <h3>Location
-                    <a href="#" data-dropdown="reference_location_help"><i class="fa fa-question-circle"></i></a>
+        <hr />
 
-                    <p id="reference_location_help" class="f-dropdown content medium" data-dropdown-content>
-                       Depicts genomic context; mouse over to view names, coordinates, and brief descriptions. Use the
-                        links to GBrowse and ORF Map for an interactive view of this region.
-                    </p>
-                </h3>
-                <div class="clearfix">
-                    <div id="contig" class="left"></div>
-                    <div class="right">
-                        View in:
-                        {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE' and (url.display_name == 'GBrowse' or url.display_name == 'ORF Map') %}
-                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+        <!-- client-rendered sequence -->
+        <div class="sgd-viz">
+            <div class="sgd-viz sequence-details-container" id="sequence-viz">
+                <img class="loader" src="/static/img/dark-slow-wheel.gif" />
+            </div>
+
+            {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C' or url.category == 'LOCUS_SEQUENCE_OTHER_SPECIES' or url.category == 'LOCUS_SEQUENCE_OTHER_STRAINS' %}
+                {% if loop.first %}
+                    <h3>Analyze Sequence</h3>
+                    <div class="panel">
+                        {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C'%}
+                            {% if loop.first %}<h4>S288C only</h4><p id="reference_only_resources_list">{% endif %}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
                         {% endfor %}
+
+
+                        {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_SPECIES'%}
+                            {% if loop.first %}<h4>S288C vs. other species</h4> <p id="other_species_resources_list">{% endif %}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
+                        {% endfor %}
+
+
+                        {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_STRAINS'%}
+                            {% if loop.first %}<h4>S288C vs. other strains</h4><p id="other_strains_resources_list">{% endif %}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
+                        {% endfor %}
+
                     </div>
-                </div>
-                <div id="label_chart"></div>
-                {% if locus.genetic_position != None %}
-                    <dl class='key-value'>
-                    <dt>Genetic Position</dt>
-                    <dd>{{ locus.genetic_position }} cM
-                        {% if 'genetic_position' in locus.qualities and locus.qualities.genetic_position.references|length > 0 %}
-                            <a href="#" data-dropdown="drop_genetic_position"><i class="fa fa-info-circle"></i></a>
-                            <p id="drop_genetic_position" class="f-dropdown content medium" data-dropdown-content>
-                                {% for reference in locus.qualities.genetic_position.references %}
-                                    <a href="{{ reference.link }}">{{ reference.display_name }}</a>{% if not loop.last %}, {% endif %}
-                                {% endfor %}
-                            </p>
-                        {% endif %}
-                    </dd>
-                    </dl>
                 {% endif %}
-            </div>
-
-            <div id="subfeature_wrapper" class="panel">
-                <h3>Subfeatures <span id="subfeature_table_header" class="round secondary label"></span></h3>
-                <div id="sublabel_chart"></div>
-
-                <!-- Includes chromosomal_coord_table into template -->
-                {% set table_id = "subfeature_table" %}
-                {% set include_relative = True %}
-                {% set include_version = True %}
-                {% include "chromosomal_coord_table.jinja2" %}
-
-            </div>
-
-
-                {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C' or url.category == 'LOCUS_SEQUENCE_OTHER_SPECIES' or url.category == 'LOCUS_SEQUENCE_OTHER_STRAINS' %}
-                    {% if loop.first %}
-                        <h3>Analyze Sequence</h3>
-                        <div class=panel>
-                            {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C'%}
-                                {% if loop.first %}<h4>S288C only</h4><p id="reference_only_resources_list">{% endif %}
-                                <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
-                            {% endfor %}
-
-
-                            {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_SPECIES'%}
-                                {% if loop.first %}<h4>S288C vs. other species</h4> <p id="other_species_resources_list">{% endif %}
-                                <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
-                            {% endfor %}
-
-
-                            {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_STRAINS'%}
-                                {% if loop.first %}<h4>S288C vs. other strains</h4><p id="other_strains_resources_list">{% endif %}
-                                <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
-                            {% endfor %}
-
-                        </div>
-                    {% endif %}
-                {% endfor %}
+            {% endfor %}
         </div>
     </section>
+
     {% endif %}
 
 <!-- Protein
@@ -295,8 +209,9 @@
                 external identifiers for the protein.
             </p>
         </h2>
-        <div class="panel">
-            <div class="panel">
+        <hr />
+        <div class="">
+            <div class="">
                  <dl class="key-value">
                      <dt>Length (a.a.)</dt>
                      <dd>{{ locus.protein_overview.length }}</dd>
@@ -331,7 +246,8 @@
                 all GO information and evidence for this locus as well as biological processes it shares with other genes.
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             {% if locus.go_overview.manual_molecular_function_terms|length + locus.go_overview.manual_biological_process_terms|length + locus.go_overview.manual_cellular_component_terms|length + locus.go_overview.htp_molecular_function_terms|length + locus.go_overview.htp_biological_process_terms|length + locus.go_overview.htp_cellular_component_terms|length + locus.go_overview.computational_annotation_count == 0 %}
                 <p>No Gene Ontology data available.</p>
             {% else %}
@@ -459,6 +375,7 @@
     {% if locus.pathways|length > 0 %}
     <section id="pathway" data-magellan-destination="pathway">
         <h2>Pathways</h2>
+        <hr />
         <div class="panel">
             <ul>
                 {% for pathwayevidence in locus.pathways %}
@@ -486,7 +403,8 @@
                 evidence for this locus as well as phenotypes it shares with other genes.
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             {% if locus.phenotype_overview.classical_phenotypes|length + locus.phenotype_overview.large_scale_phenotypes|length == 0 %}
                 <p>No phenotype data available.</p>
             {% else %}
@@ -543,7 +461,8 @@
                 annotations and evidence for this locus, including an interaction visualization.
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             {% if locus.interaction_overview.total_interactions == 0 %}
                 <p>No interaction data available.</p>
             {% else %}
@@ -590,8 +509,9 @@
                 enrichment among regulation Targets, and a regulator/target diagram for the locus.
             </p>
         </h2>
-        <div class="panel">
-            <div class="panel">
+        <hr />
+        <div class="">
+            <div class="">
                 {% if locus.regulation_overview.regulator_count + locus.regulation_overview.target_count == 0 %}
                     <p>No regulation data available.</p>
                 {% else %}
@@ -638,7 +558,8 @@
                 details for this locus, including a visualization of genes that share a similar expression pattern.
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             <div id="two_channel_expression_chart" class="panel"></div>
         </div>
     </section>
@@ -656,7 +577,8 @@
                 to gene names and curated GO terms are included within the Summary Paragraphs.
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             <div id="summary_paragraph"></div>
             <p>Last Updated: {{ locus.paragraph.date_created }}</p>
         </div>
@@ -677,8 +599,9 @@
                 to view all literature information for this locus, including shared literature between genes.
             </p>
         </h2>
-        <div class="panel">
-            <div class="panel">
+        <hr />
+        <div class="">
+            <div class="">
                 {% if locus.literature_overview.primary_count + locus.literature_overview.additional_count + locus.literature_overview.review_count == 0 %}
                     <p>No literature data available.</p>
                 {% else %}
@@ -712,40 +635,12 @@
 
 <!-- History
 ================================================== -->
-    <section id="history" data-magellan-destination="history">
-        <h2>History
-            <a href="#" data-dropdown="history_info"><i class="fa fa-info-circle"></i></a>
-
-            <p id="history_info" class="f-dropdown content medium" data-dropdown-content>
-                A catalog of any nomenclature and/or sequence changes, or other notes related to the annotation of the feature.
-            </p>
-        </h2>
-        <div>
-            {% if locus.history|length == 0 %}
-                <p>No history data available.</p>
-            {% else %}
-                <!-- Includes go_table into template -->
-                {% set table_id = "history_table" %}
-                {% include "history_table.jinja2" %}
-            {% endif %}
-        </div>
-    </section>
+    <div id="history_target">
+    </div>
 
 <!-- References
 ================================================== -->
     <section id="reference" data-magellan-destination="reference">
-        <h2>References
-            <a href="#" data-dropdown="reference_info"><i class="fa fa-info-circle"></i></a>
-
-            <p id="reference_info" class="f-dropdown content medium" data-dropdown-content>
-                List of references used specifically on this page as citations for information in the Overview (e.g.
-                gene names, aliases, Descriptions), Summary Paragraph, or History sections. The complete list of curated
-                references associated with this locus can be found by clicking on the "Literature" tab for this locus.
-            </p>
-            <span id="reference_header" class="label secondary round"></span>
-        </h2>
-
-        <ol id="reference_list" type="1"></ol>
     </section>
 
     <!-- Resources
@@ -753,6 +648,7 @@
     {% for url in locus.urls if url.category == 'LOCUS_LSP' %}{% if loop.first %}
     <section id="resources" data-magellan-destination="resources">
         <h2>Resources</h2>
+        <hr />
         <div class="panel">
             <p>
                 {% for url in locus.urls if url.category == 'LOCUS_LSP'%}
@@ -768,11 +664,9 @@
 {% endblock body %}
 
 {% block scripts %}
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
-       'version':'1','packages':['corechart', 'timeline']}]}"></script>
-<script src="/static/js/local.js"></script>
-<script src="/static/js/evidence.js"></script>
-<script src="/static/js/locus.js"></script>
+<script src="/static/js/application.js{{version_qs}}"></script>
+<script>
+    views.summary.render();
+</script>
 {% endblock scripts %}
 

@@ -79,8 +79,8 @@ def prep_views(chosen_frontend, config):
                                 getattr(chosen_frontend, 'download_sequence')(
                                         response = request.response,
                                         sequence = None if 'sequence' not in request.POST else request.POST['sequence'],
-                                        display_name = None if 'display_name' not in request.POST else request.POST['display_name'],
-                                        contig_name = None if 'contig_name' not in request.POST else request.POST['contig_name'])),
+                                        header = None if 'header' not in request.POST else request.POST['header'],
+                                        filename = None if 'filename' not in request.POST else request.POST['filename'])),
                     renderer=chosen_frontend.get_renderer('download_sequence'),
                     route_name='download_sequence')
 
@@ -224,6 +224,12 @@ def prep_views(chosen_frontend, config):
                     renderer='string',
                     route_name='backend')
 
+    # TEMP disable genome snapshot
+    # config.add_route('snapshot', '/genome-snapshot')
+    # config.add_view(lambda request: {'snapshot': render('static/templates/snapshot.jinja2', {})},
+    #                 renderer=chosen_frontend.get_renderer('snapshot'),
+    #                 route_name='snapshot')
+    
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':
         from src.sgd.frontend.yeastgenome import yeastgenome_frontend

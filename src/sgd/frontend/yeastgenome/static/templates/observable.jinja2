@@ -34,7 +34,8 @@
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
                 <h2>Overview</h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <dl class="key-value">
                         <dt>Description</dt>
                         <dd>{{ observable.description }}</dd>
@@ -62,7 +63,8 @@
         <section id="ontology" data-magellan-destination="ontology">
             <div class="page-header">
                 <h2>Ontology Diagram</h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <!-- Includes phenotype_table into template -->
                     {% set network_id = "cy" %}
                     {% include "phenotype_ontology_network.jinja2" %}
@@ -85,6 +87,7 @@
         <section id="annotations" data-magellan-destination="annotations">
             <div class="page-header">
                 <h2>Annotations <span id="phenotype_table_header" class="round secondary label"></span></h2>
+                <hr />
                 <!-- Includes phenotype_table into template -->
                 {% set table_id = "phenotype_table" %}
                 {% include "phenotype_table.jinja2" %}
@@ -96,10 +99,10 @@
 
 {% block scripts %}
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script src="/static/js/phenotype_overview.js"></script>
-<script src="/static/js/build/cytoscape.min.js"></script>
-<script src="/static/js/build/arbor.js"></script>
-<script src="/static/js/evidence.js"></script>
-<script src="/static/js/cytoscape.js"></script>
-<script src="/static/js/observable.js"></script>
+<script src="/static/js/phenotype_overview.js{{version_qs}}"></script>
+<script src="/static/js/build/cytoscape.min.js{{version_qs}}"></script>
+<script src="/static/js/build/arbor.js{{version_qs}}"></script>
+<script src="/static/js/evidence.js{{version_qs}}"></script>
+<script src="/static/js/cytoscape.js{{version_qs}}"></script>
+<script src="/static/js/observable.js{{version_qs}}"></script>
 {% endblock scripts %}

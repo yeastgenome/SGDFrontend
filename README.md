@@ -25,12 +25,7 @@ You must install node (preferably via homebrew) before building the app
 
     $ brew install node
 
-The build installs the following node packages:
-
-* bower
-* grunt
-* grunt-contrib-uglify
-* grunt-bowercopy
+The build installs several node packages.  All of them are development, or build time dependencies.
 
 For details, see files: package.json, Gruntfile.js, bower.json
 
@@ -48,34 +43,38 @@ To start the application:
 To run off of a different backend:
 Set the backend_url parameter in the config file to the URL of the new backend.
 
-##Notes on SASS/Compass
+##Grunt
 
-[SASS](http://sass-lang.com/) and [Compass](http://compass-style.org/) are being used. Before running to app, you need to builld the css files by starting 'compass watch' or doing a 'compass compile' (see below).
+The buildout uses grunt to compile JavaScript and CSS assets from JSX and SASS, respectively.  In the buildout, the default grunt task runs all the necessary compilation, minification, and copying.  To run this rask separately, run:
+
+    $ grunt
+
+##Using the Development Task
+
+In the production buildout, asset preparation tasks run from start to finish.  In development, however, there is an option to compile these assets, and then recompile them automatically when changes have been made.  To use this task, run:
+
+    $ grunt dev
+
+This will compile the JSX files and the SASS files in the client directory.  If you make any changes to these files while this task is running, they will automatically recompile.  Optionally, if you are using Chrome, you can install the [live reload plugin](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en), which will reload the browser once the changed files have finished compiling.  Another difference between the development and production compile is that the bundled application.js file will be unminified with source maps, to help debug.  To stop this task, type `ctrl + c`.
+
+##Browserify
+
+The bundled application.js is compiled using [browserify](http://browserify.org/).  Future client dependencies should be installed with NPM, and required using the CommonJS style.
+
+##JSX and React
+
+Many of the files that compose the bundled application.js are [JSX](http://jsx.github.io/) files, compiled using the harmony option, which allows some ES6 features.  Future additions to the client/jsx directory should also have a .jsx extension.  JSX features are optional in a JSX file.  While using supported ES6 features is encouraged, it is possible to write plain JavaScript in a JSX file.
+
+Some pages are written using the [react](http://facebook.github.io/react/) framework.  The react components are stored in the client/jsx/components directory, and future react components should follow.
+
+##SASS/Compass
+
+[SASS](http://sass-lang.com/) and [Compass](http://compass-style.org/) are being used via the grunt compass task.  SASS files can be found in the client/scss directory.
 
 ###Installing
 
-Both can be installed via Ruby gems:
+Compass and SASS can be installed via Ruby gems:
 
     $ gem install sass
     $ gem install compass
 
-###Compiling "on the fly"
-
-
-Compass can watch for any changes made to .scss files and instantly compile them to .css. To start this, from the root of the project (where config.rb is) do:
-
-    $ compass watch
-
-You can specify whether the compiled CSS is minified or not in config.rb. (Currently, it is set to minify.)
-
-###Force compiling
-
-    $ compass compile
-
-Again, you can specify whether the compiled CSS is minified or not in config.rb.
-
-Also see the [Compass Command Line Documentation](http://compass-style.org/help/tutorials/command-line/) and the [Configuration Reference](http://compass-style.org/help/tutorials/configuration-reference/).
-
-And of course:
-
-    $ compass help

@@ -53,7 +53,9 @@
                     <dt>Paralog</dt>
                     <dd>
                     {% for paralog in locus.paralogs %}
-                        <a href="{{ paralog.child.link }}">{{ paralog.child.display_name }}</a>
+                        {% if paralog.child %}
+                            <a href="{{ paralog.child.link }}">{{ paralog.child.display_name }}</a>
+                        {% endif %}
                         {% set references = paralog.references %}
                         {% set full_url = True %}
                         {% include "biblio_references.jinja2" %}

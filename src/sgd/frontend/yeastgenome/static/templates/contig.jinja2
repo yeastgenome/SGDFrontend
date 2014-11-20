@@ -36,6 +36,7 @@
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
                 <h2>Overview</h2>
+                <hr />
                 <div class="panel">
                     <div id="piechart" style="height: 350px;"></div>
 
@@ -69,6 +70,7 @@
         <section id="feature" data-magellan-destination="feature">
             <div class="page-header">
                 <h2>Features <span id="chromosomal_coord_table_header" class="round secondary label"></span></h2>
+                <hr />
                 <div class="panel">
                     <div id="feature_div"></div>
 
@@ -91,6 +93,6 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
        'version':'1','packages':['timeline']}]}"></script>
-<script src="/static/js/contig.js"></script>
+<script src="/static/js/contig.js{{version_qs}}"></script>
 {% endblock scripts %}
 

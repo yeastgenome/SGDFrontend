@@ -59,7 +59,10 @@ $(document).ready(function() {
             }
 
             $("#genomic_download").click(function f() {
-                download_sequence(genomic_data['residues'], locus['display_name'], genomic_data['contig']['display_name']);
+                download_sequence(genomic_data['residues'],
+                    locus['display_name'] + '_' + genomic_data['strain']['display_name'] + 'genomic.fsa',
+                    locus['format_name'] + ' ' + locus['display_name']+ ' SGDID:' + locus['sgdid'] + ', chr' + genomic_data['contig']['display_name'].substr(11) + ':' + genomic_data['start'] + '...' + genomic_data['end'] + ' [Genome Release 64-2-1]'
+                );
             });
         }
         else {
@@ -68,7 +71,10 @@ $(document).ready(function() {
 
         if(coding_data != null) {
             $("#coding_download").click(function f() {
-                download_sequence(coding_data['residues'], locus['display_name'], 'S288C_coding_dna');
+                download_sequence(coding_data['residues'],
+                    locus['display_name'] + '_' + genomic_data['strain']['display_name'] + 'coding.fsa',
+                    locus['format_name'] + ' ' + locus['display_name']+ ' SGDID:' + locus['sgdid'] + ' [Genome Release 64-2-1]'
+                );
             });
         }
         else {
@@ -77,7 +83,10 @@ $(document).ready(function() {
 
         if(protein_data != null) {
             $("#protein_download").click(function f() {
-                download_sequence(protein_data['residues'], locus['display_name'], 'S288C_protein');
+                download_sequence(protein_data['residues'],
+                    locus['display_name'] + '_' + genomic_data['strain']['display_name'] + 'protein.fsa',
+                    locus['format_name'] + ' ' + locus['display_name']+ ' SGDID:' + locus['sgdid'] + ' [Genome Release 64-2-1]'
+                );
             });
         }
         else {
@@ -86,7 +95,10 @@ $(document).ready(function() {
 
         if(kb_data != null) {
             $("#kb_download").click(function f() {
-                download_sequence(kb_data['residues'], locus['display_name'], genomic_data['contig']['display_name'] + ' flanking');
+                download_sequence(kb_data['residues'],
+                        locus['display_name'] + '_' + genomic_data['strain']['display_name'] + 'flanking.fsa',
+                    locus['format_name'] + ' ' + locus['display_name']+ ' SGDID:' + locus['sgdid'] + ', chr' + genomic_data['contig']['display_name'].substr(11) + ':' + genomic_data['start'] + '...' + genomic_data['end'] + ' [Genome Release 64-2-1]'
+                );
             });
         }
         else {

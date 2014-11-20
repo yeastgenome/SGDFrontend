@@ -11,7 +11,7 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
+<div id="center_title" class="row hide-for-small">
 	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
@@ -19,7 +19,7 @@
 ================================================== -->
 <!-- Includes tabs.html into template -->
 {% include "tabs.jinja2" %}
-<script>document.getElementById("go_tab").id = "current";</script>
+<script>document.getElementById("go_tab").className += " active";</script>
 
 <div class="row">
 
@@ -54,6 +54,7 @@
                 literature, as well as computational, or predicted, annotations.
             </p>
     </h2>
+    <hr />
     
     <div class="panel">
         <!-- Includes go_overview.html into template -->
@@ -82,9 +83,10 @@
                 indicates when these annotations were last reviewed.
             </p>
         </h2>
+        <hr />
         <p><strong>Date Last Reviewed:</strong> {{locus.go_overview.date_last_reviewed}}</p>
         
-        <div class="panel">
+        <div class="spaced-container">
             <p style="display:none" id="manual_message">There are no manually curated annotations
             for {{ locus.display_name }}.</p>
             <div id="mc_bp_go">
@@ -96,7 +98,7 @@
             </div>
         </div>
         
-        <div id="mc_mf_go" class="panel">
+        <div id="mc_mf_go" class="spaced-container">
             <h3>Molecular Function <span id="mc_mf_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
@@ -104,7 +106,7 @@
             {% include "go_table.jinja2" %}
         </div>
 
-        <div id="mc_cc_go" class="panel">
+        <div id="mc_cc_go" class="spaced-container">
             <h3>Cellular Component <span id="mc_cc_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
@@ -131,6 +133,7 @@
             vocabularies of the Gene Ontology.
         </p>
         </h2>
+        <hr />
         
          <p id="htp_message" style="display:none">There are no high-throughput annotations
         for {{ locus.display_name }}.</p>
@@ -175,11 +178,12 @@
             Institute (EBI)</a>).
         </p>
         </h2>
+        <hr />
 
         <p id="comp_message" style="display:none">There are no computational annotations
         for {{ locus.display_name }}.</p>
         
-        <div id="comp_bp_go" class="panel">
+        <div id="comp_bp_go" class="spaced-container">
             <h3>Biological Process <span id="comp_bp_go_table_header" class="round secondary label"> </span></h3>
 
             <!-- Includes go_table into template -->
@@ -187,7 +191,7 @@
             {% include "go_table.jinja2" %}
         </div>
 
-        <div id="comp_mf_go" class="panel">
+        <div id="comp_mf_go" class="spaced-container">
             <h3>Molecular Function <span id="comp_mf_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
@@ -195,7 +199,7 @@
             {% include "go_table.jinja2" %}
         </div>
 
-        <div id="comp_cc_go" class="panel">
+        <div id="comp_cc_go" class="spaced-container">
             <h3>Cellular Component <span id="comp_cc_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
@@ -216,7 +220,8 @@
                 circles) based on the number of GO terms shared (adjustable using the slider at the bottom).
             </p>
         </h2>
-        <div class="panel">
+        <hr />
+        <div class="">
             {% set network_id = "cy" %}
             {% include "go_network.jinja2" %}
         </div>

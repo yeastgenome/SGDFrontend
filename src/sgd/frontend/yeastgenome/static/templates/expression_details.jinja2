@@ -10,7 +10,7 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
+<div id="center_title" class="row hide-for-small">
 	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span></h1>
 </div>
 
@@ -18,7 +18,7 @@
 ================================================== -->
 <!-- Includes tabs.html into template -->
 {% include "tabs.jinja2" %}
-<script>document.getElementById("expression_tab").id = "current";</script>
+<script>document.getElementById("expression_tab").className += " active";</script>
 
 <div class="row">
 
@@ -56,6 +56,7 @@
                     expression analysis tool <a href="http://spell.yeastgenome.org/">SPELL</a>.
                 </p>
         </h2>
+        <hr />
         <div id='expression_overview_panel' class="panel">
             <a href="#" data-options="align:left" data-dropdown="two_channel_expression_chart_help" class="right"><i class="fa fa-question-circle"></i></a>
 
@@ -96,7 +97,8 @@
                     </p>
                     <span id="expression_table_header" class="round secondary label"></span>
                 </h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <!-- Includes expression_table into template -->
                     {% set table_id = "expression_table" %}
                     {% include "dataset_table.jinja2" %}
@@ -123,7 +125,8 @@
                         different set of correlated genes.
                     </p>
                 </h2>
-                <div class="panel">
+                <hr />
+                <div class="">
                     <!-- Includes expression_table into template -->
                     {% set network_id = "cy" %}
                     {% include "expression_network.jinja2" %}
@@ -136,6 +139,7 @@
         <section id="resources" data-magellan-destination="resources">
             <div class="page-header">
                 <h2>Resources</h2>
+                <hr />
                 <div class="panel">
                     <p id="resource_list">
                         {% for url in locus.urls if url.category == 'LOCUS_EXPRESSION'%}
@@ -150,16 +154,15 @@
 {% endblock body %}
 
 {% block scripts %}
-<script src="/static/js/build/nouislider.min.js"></script>
-<script src="/static/js/build/cytoscape.min.js"></script>
-<script src="/static/js/build/arbor.js"></script>
-<script src="/static/js/cytoscape.js"></script>
+<script src="/static/js/build/nouislider.min.js{{version_qs}}"></script>
+<script src="/static/js/build/cytoscape.min.js{{version_qs}}"></script>
+<script src="/static/js/build/arbor.js{{version_qs}}"></script>
+<script src="/static/js/cytoscape.js{{version_qs}}"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
        'version':'1','packages':['corechart']}]}"></script>
-<script src="/static/js/local.js"></script>
-<script src="/static/js/evidence.js"></script>
-<script src="/static/js/expression_overview.js"></script>
-<script src="/static/js/expression_details.js"></script>
+<script src="/static/js/local.js{{version_qs}}"></script>
+<script src="/static/js/evidence.js{{version_qs}}"></script>
+<script src="/static/js/expression_overview.js{{version_qs}}"></script>
+<script src="/static/js/expression_details.js{{version_qs}}"></script>
 {% endblock scripts %}
-

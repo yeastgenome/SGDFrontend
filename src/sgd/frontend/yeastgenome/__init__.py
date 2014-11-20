@@ -8,6 +8,7 @@ import base64
 import requests
 import os.path
 import sys
+import random
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP, render
 from pyramid.response import Response
@@ -62,9 +63,10 @@ class YeastgenomeFrontend(FrontendInterface):
                 return_value = None
             else:
                 tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
-                return_value = {'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs}
+                return_value = {'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs, 'tabs_js': json.dumps(tabs)}
             if locus is not None:
                 self.locuses[bioent_repr.lower()] = return_value
+
         return return_value
 
     def locus_list(self, list_name):
@@ -92,7 +94,10 @@ class YeastgenomeFrontend(FrontendInterface):
         return self.locus(bioent_repr)
 
     def sequence_details(self, bioent_repr):
-        return self.locus(bioent_repr)
+        obj = self.locus(bioent_repr)
+        history = { 'history_js': json.dumps(obj.get('locus').get('history')) }
+        obj.update(history)
+        return obj
 
     def curator_sequence(self, bioent_repr):
         return self.locus(bioent_repr)
@@ -159,7 +164,7 @@ class YeastgenomeFrontend(FrontendInterface):
 
     def contig(self, contig_repr):
         return self.get_obj('contig', contig_repr)
-
+    
     def references_this_week(self):
         page = {}
         return page
@@ -303,18 +308,12 @@ class YeastgenomeFrontend(FrontendInterface):
         headers['Content-Description'] = 'File Transfer'
         return response
 
-    def download_sequence(self, response, sequence, display_name, contig_name):
+    def download_sequence(self, response, sequence, filename, header):
         headers = response.headers
 
-        exclude = set([x for x in string.punctuation if x != ' ' and x != '_'])
-        display_name = ''.join(ch for ch in display_name if ch not in exclude).replace(' ', '_')
-
-        response.text = '>' + display_name + '  ' + contig_name + '\n' + clean_cell(sequence.replace(' ', ''))
+        response.text = '>' + header + '\n' + clean_cell('\n'.join([sequence[i:i+60] for i in range(0, len(sequence), 60)]))
         headers['Content-Type'] = 'text/plain'
-        if contig_name is not None and contig_name != '':
-            headers['Content-Disposition'] = str('attachment; filename=' + display_name + '_' + contig_name + '_sequence.fsa')
-        else:
-            headers['Content-Disposition'] = str('attachment; filename=' + display_name + '_sequence.fsa')
+        headers['Content-Disposition'] = str('attachment; filename=' + filename)
         headers['Content-Description'] = 'File Transfer'
         return response
     
@@ -353,9 +352,22 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     config = Configurator(settings=settings)
     config.add_translation_dirs('locale/')
     config.include('pyramid_jinja2')
-    
-    config.add_static_view('static', 'src:sgd/frontend/yeastgenome/static')
-    config.add_static_view('img-domain', 'src:sgd/frontend/yeastgenome/img-domain')
+
+    # static assets with far future caching and "cache busting"
+    # make asset query string from asset_version.json (if available), which will bust the cache
+    try:
+        file_path = os.path.dirname(os.path.realpath(__file__)) + '/../../../../asset_version.json'
+        asset_version = json.load(open(file_path, 'r'))['version']
+        version_qs = '?v=' + asset_version
+    except:
+        version_qs = ''
+    # put query string in global template variable
+    def add_template_global(event):
+        event['version_qs'] = version_qs
+    config.add_subscriber(add_template_global, 'pyramid.events.BeforeRender')
+    # cache everything for 1 month on browser
+    config.add_static_view('static', 'src:sgd/frontend/yeastgenome/static', cache_max_age=2629740)
+    config.add_static_view('img-domain', 'src:sgd/frontend/yeastgenome/img-domain', cache_max_age=2629740)
     config.add_renderer('jsonp', JSONP(param_name='callback'))
 
     return chosen_frontend, config

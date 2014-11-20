@@ -1,0 +1,25 @@
+.table-alternative {
+	position: relative;
+}
+
+.table-alternative-content-container {
+	position: relative;
+	padding-top: 1em;
+	box-shadow: 0px -10px 10px -10px darkgray;
+	z-index: 1;
+}
+
+.table-alternative .button {
+	background: $topbar-bg-color;
+	&:hover {
+		text-decoration: none;
+	}
+}
+
+.table-alternative .tabs a:hover {
+	text-decoration: none;
+}
+
+.table-alternative .table-scroll-container {
+	overflow-x: scroll;
+}
