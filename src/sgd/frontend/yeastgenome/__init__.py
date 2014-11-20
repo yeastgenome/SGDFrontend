@@ -308,14 +308,18 @@ class YeastgenomeFrontend(FrontendInterface):
         headers['Content-Description'] = 'File Transfer'
         return response
 
-    def download_sequence(self, response, sequence, filename, header):
-        print filename
-        print header
+    def download_sequence(self, response, sequence, display_name, contig_name):
         headers = response.headers
 
-        response.text = '>' + header + '\n' + sequence
+        exclude = set([x for x in string.punctuation if x != ' ' and x != '_'])
+        display_name = ''.join(ch for ch in display_name if ch not in exclude).replace(' ', '_')
+
+        response.text = '>' + display_name + '  ' + contig_name + '\n' + clean_cell(sequence)
         headers['Content-Type'] = 'text/plain'
-        headers['Content-Disposition'] = str('attachment; filename=' + filename)
+        if contig_name is not None and contig_name != '':
+            headers['Content-Disposition'] = str('attachment; filename=' + display_name + '_' + contig_name + '_sequence.fsa')
+        else:
+            headers['Content-Disposition'] = str('attachment; filename=' + display_name + '_sequence.fsa')
         headers['Content-Description'] = 'File Transfer'
         return response
     

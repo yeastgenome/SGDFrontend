@@ -41,8 +41,8 @@ function download_citations(citation_div, list_name) {
 	post_to_url('/download_citations', {"display_name":list_name, "reference_ids": reference_ids});
 }
 
-function download_sequence(sequence, filename, header) {
-	post_to_url('/download_sequence', {"filename":filename, "sequence": sequence, 'header': header});
+function download_sequence(sequence, list_name, contig_name) {
+	post_to_url('/download_sequence', {"display_name":list_name, "sequence": sequence, 'contig_name': contig_name});
 }
 
 function set_up_references(references, ref_list_id) {
