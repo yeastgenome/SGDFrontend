@@ -13,6 +13,8 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 	constructor (options) {
 		options = options || {};
 		options.url = `/backend/locus/${options.id}/sequence_details?callback=?`;
+		// TEMP
+		this.baseAttributes = options;
 		super(options);
 	}
 
@@ -54,7 +56,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 
 	_formatStrainData (strainDisplayName, response, strainKey) {
 		var _response = _.clone(response);
-		_response = _.filter(_response.genomic_dna, (s) => {
+		_response = _.filter(_response.genomic_dna, s => {
 			return s.strain.display_name === strainDisplayName;
 		})[0];
 
@@ -65,13 +67,25 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 			"coding_dna": "Coding DNA",
 			"protein": "Protein"
 		};
+
 		var _sequences = _.map(_.keys(sequenceNames), key => {
+			var header, filename;
 			var _sequenceArr = _.filter(response[key], s => {
+				// TEMP
+				// if (s.header) header = s.header;
+				// if (s.filename) filename = s.filename;
 				return s.strain.display_name === strainDisplayName;
 			});
+
+			// format default filenames and headers if needed
+			if (!header) header = this._formatDefaultHeader(key, _response.contig.display_name.substr(11), _response.start, _response.end);
+			if (!filename) filename = this._formatDefaultFilename(key, _response.strain.display_name);
+
 			var _sequence = _sequenceArr.length ? _sequenceArr[0].residues : null;
 
 			return {
+				filename: filename,
+				header: header,
 				key: key,
 				name: sequenceNames[key],
 				sequence: _sequence
@@ -108,6 +122,30 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		};
 
 		return _response;
+	}
+
+	_formatDefaultFilename (key, strainDisplayName) {
+		var attr = this.baseAttributes;
+		var _possibleSuffixes = {
+			genomic_dna: "genomic.fsa",
+			coding_dna: "coding.fsa",
+			"1kb": "flanking.fsa",
+			protein: "protein.fsa"
+		};
+		var suffix = _possibleSuffixes[key];
+		return `${strainDisplayName}_${attr.locusFormatName}_${attr.locusDiplayName}_${suffix}`;
+	}
+
+	_formatDefaultHeader (key, contigDisplayName, start, end) {
+		var attr = this.baseAttributes;
+		var _possibleSuffixes = {
+			genomic_dna: `, chr${contigDisplayName}:${start}..${end}`,
+			coding_dna: "",
+			"1kb": `, chr${contigDisplayName}:${start}..${end}+/- 1kb`,
+			protein: ""
+		};
+		var suffix = _possibleSuffixes[key];
+		return `${attr.locusDiplayName} ${attr.locusFormatName} SGDID:${attr.locusSGDID}${suffix}`;
 	}
 
 	/*

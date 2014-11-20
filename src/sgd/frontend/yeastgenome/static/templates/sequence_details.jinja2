@@ -15,7 +15,8 @@
         formatName: "{{ locus.format_name }}",
         locusId: "{{ locus.id }}",
         locusLink: "{{ locus.link }}",
-        locusHistory: {{ history_js|safe }}
+        locusHistory: {{ history_js|safe }},
+        sgdid: "{{locus.sgdid}}"
     };
 </script>
 {% endblock %}

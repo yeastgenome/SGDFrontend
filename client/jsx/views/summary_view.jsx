@@ -61,7 +61,7 @@ summaryView.render = function () {
 				locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
 				locusFormatName={bootstrappedData.formatName} locusHistoryData={locusData.history}
 				showAltStrains={false} showOtherStrains={false} showHistory={false} isSimplified={true}
-				detailsCallback={fetchAndRenderHistory} geneticPosition={_geneticPosition}
+				detailsCallback={fetchAndRenderHistory} geneticPosition={_geneticPosition} locusSGDID={bootstrappedData.locusData.sgdid}
 			/>,
 			document.getElementById("sequence-viz")
 		);

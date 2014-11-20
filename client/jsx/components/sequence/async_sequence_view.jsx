@@ -62,7 +62,12 @@ module.exports = React.createClass({
 		_neighborsModel.fetch( (err, response) => {
 			if (this.isMounted()) {
 				this.setState({ neighborsModel: _neighborsModel });
-				var _detailsModel = new SequenceDetailsModel({ id: this.props.locusId });
+				var _detailsModel = new SequenceDetailsModel({
+					id: this.props.locusId,
+					locusDiplayName: this.props.locusDisplayName,
+					locusFormatName: this.props.locusFormatName,
+					locusSGDID: this.props.locusSGDID
+				});
 				_detailsModel.fetch( (err, response) => {
 					if (this.isMounted()) this.setState({ detailsModel: _detailsModel });
 

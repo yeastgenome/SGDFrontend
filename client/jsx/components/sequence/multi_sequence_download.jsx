@@ -27,9 +27,9 @@ module.exports = React.createClass({
 	render: function () {
 		var _hiddenFormNodes = _.map(this.props.sequences, s => {
 			return (<form ref={s.key} method="POST" action="/download_sequence">
-				<input type="hidden" name="header" value={this.props.locusDisplayName} />
+				<input type="hidden" name="header" value={s.header} />
 				<input type="hidden" name="sequence" value={s.sequence} />
-				<input type="hidden" name="file_name" value={this.props.contigName} />
+				<input type="hidden" name="filename" value={s.filename} />
 			</form>);
 		});
 
