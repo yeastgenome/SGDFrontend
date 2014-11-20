@@ -3,8 +3,10 @@
  */
 
 $(document).ready(function() {
-    document.getElementById("summary_paragraph").innerHTML = strain['paragraph']['text'];
-    set_up_references(strain['paragraph']['references'], "summary_paragraph_reference_list");
+    if(strain['paragraph'] != null) {
+        document.getElementById("summary_paragraph").innerHTML = strain['paragraph']['text'];
+        set_up_references(strain['paragraph']['references'], "summary_paragraph_reference_list");
+    }
     var contig_table = create_contig_table(strain['contigs']);
     create_download_button("contig_table_download", contig_table, strain['display_name'] + "_contigs");
     $("#contig_table_analyze").hide();
