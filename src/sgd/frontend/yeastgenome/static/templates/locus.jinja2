@@ -144,7 +144,9 @@
 ================================================== -->
     {% if tabs['sequence_tab'] or locus.bioent_status == 'Merged' or locus.bioent_status == 'Deleted' %}
     <section id="sequence" data-magellan-destination="sequence">
+        {% if tabs['sequence_tab'] %}
         <a href="/locus/{{ locus.sgdid }}/sequence" class="details-link">Sequence Details <i class="fa fa-chevron-circle-right"></i></a>
+        {% endif %}
         <h2>Sequence
             <a href="#" data-dropdown="sequence_info"><i class="fa fa-info-circle"></i></a>
 
