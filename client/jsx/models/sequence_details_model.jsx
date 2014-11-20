@@ -71,9 +71,8 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		var _sequences = _.map(_.keys(sequenceNames), key => {
 			var header, filename;
 			var _sequenceArr = _.filter(response[key], s => {
-				// TEMP
-				// if (s.header) header = s.header;
-				// if (s.filename) filename = s.filename;
+				if (s.header) header = s.header;
+				if (s.filename) filename = s.filename;
 				return s.strain.display_name === strainDisplayName;
 			});
 
@@ -219,6 +218,14 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 	_formatOtherStrainData(strainFormatName, response) {
 		var strainData = _.filter(response.genomic_dna, s => { return s.strain.format_name === strainFormatName; })[0];
 
+		var attr = this.baseAttributes;
+		var header = strainData.header;
+		var filename = strainData.filename;
+
+		// get default download stuff if not defined
+		if (!header) header = this._formatDefaultHeader("genomic_dna", strainData.contig.display_name.substr(11), strainData.start, strainData.end);
+		if (!filename) filename = this._formatDefaultFilename("genomic_dna", strainData.strain.display_name);
+
 		return {
 			contigFormatName: strainData.contig.format_name,
 			key: strainData.strain.format_name,
@@ -228,7 +235,9 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 			href: strainData.strain.link,
 			id: strainData.strain.id,
 			status: strainData.strain.status,
-			sequence: strainData.residues
+			sequence: strainData.residues,
+			header: header,
+			filename: filename
 		};
 	}
 
