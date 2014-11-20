@@ -45,7 +45,7 @@ module.exports = React.createClass({
 
 		var hiddenFormContainerNode = (<div style={{ display: "none" }}>
 			{_hiddenFormNodes}
-		</div>)
+		</div>);
 
 		var openKlass = this.state.isOpen ? "f-dropdown open" : "f-dropdown";
 		return (<div>
