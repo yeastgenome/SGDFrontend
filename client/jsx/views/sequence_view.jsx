@@ -39,7 +39,7 @@ sequenceView.render = function () {
 		<AsyncSequenceView
 			locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
 			locusFormatName={bootstrappedData.formatName} locusHistoryData={bootstrappedData.locusHistory}
-			detailsCallback={_detailsCallback}
+			detailsCallback={_detailsCallback} locusSGDID={bootstrappedData.sgdid}
 		/>,
 		document.getElementById("sequence-viz")
 	);
