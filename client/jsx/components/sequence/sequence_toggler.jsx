@@ -42,9 +42,9 @@ module.exports = React.createClass({
 
 		var _activeSequence = this._getActiveSequence();
 		var _downloadParams = {
-			"display_name": this.props.locusDisplayName,
+			header: this.props.locusDisplayName,
 			sequence: _activeSequence.sequence,
-			contig_name: _activeSequence.contigFormatName || this.props.contigName
+			file_name: _activeSequence.contigFormatName || this.props.contigName
 		};
 
 		var dropdownNode = this._getDropdownNode();
