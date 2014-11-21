@@ -118,7 +118,16 @@ class YeastgenomeFrontend(FrontendInterface):
                     }
 
     def strain(self, strain_repr):
-        return self.get_obj('strain', strain_repr)
+        obj = self.get_obj('strain', strain_repr)
+
+        # add additional key to obj for segment of genbank url
+        genbank_url_segment = 'nuccore'
+        # change it for S288C
+        if obj['strain']['display_name'] == 'S288C':
+            genbank_url_segment = 'assembly'
+        obj['genbank_url_segment'] = genbank_url_segment
+
+        return obj
 
     def ecnumber(self, biocon_repr):
         return self.get_obj('ecnumber', biocon_repr)
