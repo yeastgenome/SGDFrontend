@@ -102,7 +102,15 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		if (_locusWithTracks[0].tags.length) {
 			for (var i = _locusWithTracks[0].tags.length - 1; i >= 0; i--) {
 				var tag = _locusWithTracks[0].tags[i];
-				if (tag.relative_start < 0) _domainMin -= Math.abs(tag.relative_start);
+				// handle upstream
+				if (tag.relative_start < 0) {
+					if (tag.track > 0)
+						_domainMin -= Math.abs(tag.relative_start); // watson
+					else {
+						_domainMax += Math.abs(tag.relative_start); // crick
+					}
+				}
+
 				var length = _locusWithTracks[0].end - _locusWithTracks[0].start;
 				if (tag.relative_end > length) {
 					_domainMax += (tag.relative_end - length);
