@@ -19,9 +19,10 @@ module.exports = React.createClass({
 
 	getInitialState: function () {
 		return {
+			canvasScrollY: 0,
 			DOMWidth: DEFAULT_DOM_SIDE_SIZE,
 			DOMHeight: DEFAULT_DOM_SIDE_SIZE,
-			canvasScrollY: 0,
+			mouseOverId: null,
 			onClick: null
 		};
 	},
@@ -55,17 +56,28 @@ module.exports = React.createClass({
 	_getOverlayNode: function () {
 		var chunkedData = this._getChunkedData();
 		var rectNodes = _.map(chunkedData, (d, i) => {
+			// UI events
 			var _onClick;
 			if (this.props.onClick) _onClick = (e) => { this.props.onClick(d); };
+			var _onMouseOver = (e) => {
+				this._onMouseOver(e, d);
+			};
+
+			// highlight if mouseover
+			var mouseOverNode = null;
+			if (d.id === this.state.mouseOverId) {
+				mouseOverNode = <rect width={NODE_SIZE * d.variationData.length} height={NODE_SIZE} x={LABEL_WIDTH} y={0} stroke="yellow" fill="none" strokeWidth={2} />;
+			}
 			var _transform = `translate(0, ${i * NODE_SIZE})`;
 			return (<g key={"heatmapOverlay" + i} transform={_transform}>
+				{mouseOverNode}
+				<rect onMouseOver={_onMouseOver} width={this.state.DOMWidth} height={NODE_SIZE} x={0} y={0} opacity={0} stroke="none" onClick={_onClick}/>
 				<text dy={13} fontSize={FONT_SIZE}>{d.name}</text>
-				<rect width={this.state.DOMWidth} height={NODE_SIZE} x={0} y={0} opacity={0} stroke="none" onClick={_onClick}/>
 			</g>);
 		});
 
 		var _canvasY = this._getCanvasY();
-		return (<svg ref="svg" style={{ position: "absolute", top: _canvasY, width: this.state.DOMWidth, height: CANVAS_SIZE }}>
+		return (<svg ref="svg" style={{ position: "absolute", top: _canvasY, width: this.state.DOMWidth, height: CANVAS_SIZE, cursor: "pointer" }}>
 			{rectNodes}
 		</svg>);
 	},
@@ -81,6 +93,13 @@ module.exports = React.createClass({
 
 	componentDidUpdate: function () {
 		this._renderCanvas();
+	},
+
+	_onMouseOver: function (e, d) {
+		// TODO, don't make canvas re-draw here
+		this.setState({
+			mouseOverId: d.id
+		});
 	},
 
 	_calculateWidth: function () {
@@ -106,7 +125,8 @@ module.exports = React.createClass({
 				left: Math.max(0, (i - 1) * NODE_SIZE + LABEL_WIDTH),
 				top: HEADER_HEIGHT / 2,
 				fontSize: FONT_SIZE,
-				transform: "rotate(-90deg)"
+				transform: "rotate(-90deg)",
+				transformOrigin: `${FONT_SIZE}px 2px`
 			};
 			return <span key={"strainLabel" + i} style={_style}>{d.name}</span>;
 		});
