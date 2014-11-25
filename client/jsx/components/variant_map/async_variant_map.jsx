@@ -5,6 +5,7 @@ var React = require("react");
 var _ = require("underscore");
 
 var DropdownChecklist = require("../widgets/dropdown_checklist.jsx");
+var Drawer = require("./drawer.jsx");
 var VariantHeatmap = require("./variant_heatmap.jsx");
 
 module.exports = React.createClass({
@@ -15,8 +16,12 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		var drawerNode = this._getDrawerNode();
 		var heatmapNode = this._getHeatmapNode();
+
+		var _onExit = () => {
+			this.setState({ drawerVisible: false });
+		};
+		var drawerNode = this.state.drawerVisible ? <Drawer onExit={_onExit} /> : null;
 		return (<div>
 			<div className="row">
 					<div className="columns small-6">
@@ -34,33 +39,6 @@ module.exports = React.createClass({
 			</div>
 			{drawerNode}
 		</div>);
-	},
-
-	_getDrawerNode: function () {
-		var node = null;
-		if (this.state.drawerVisible) {
-			var _style = {
-				position: "fixed",
-				bottom: 0,
-				left: 0,
-				right: 0,
-				height: 300,
-				background: "#efefef"
-			};
-			var _exitStyle = {
-				position: "absolute",
-				top: 0,
-				right: "3rem"
-			};
-			var _exit = (e) => {
-				e.preventDefault();
-				this.setState({ drawerVisible: false });
-			}
-			node = (<div style={_style}>
-				<a onClick={_exit} style={_exitStyle}><i className="fa fa-times"></i></a>
-			</div>);
-		}
-		return node;
 	},
 
 	_getHeatmapNode: function () {
