@@ -58,8 +58,14 @@ module.exports = React.createClass({
 		var rectNodes = _.map(chunkedData, (d, i) => {
 			// UI events
 			var _onClick;
-			if (this.props.onClick) _onClick = (e) => { this.props.onClick(d); };
+			if (this.props.onClick) _onClick = (e, d) => {
+				e.stopPropagation();
+			    e.nativeEvent.stopImmediatePropagation();
+				this.props.onClick(d);
+			};
 			var _onMouseOver = (e) => {
+				e.stopPropagation();
+			    e.nativeEvent.stopImmediatePropagation();
 				this._onMouseOver(e, d);
 			};
 
