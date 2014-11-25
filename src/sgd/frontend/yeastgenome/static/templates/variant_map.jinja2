@@ -1,6 +1,6 @@
 {% extends "lite_layout.jinja2" %}
 
-{% block title %}SGD{% endblock %}
+{% block title %}Variant Map{% endblock %}
 
 {% block body %}
 
@@ -15,7 +15,6 @@
 {% block scripts %}
 <script src="/static/js/application.js{{version_qs}}"></script>
 <script>
-	// add a JavaScript view to client/jsx/views/, and import in client/jsx/application.jsx
-	// views.example.render();
+	views.variantMap.render();
 </script>
 {% endblock scripts %}

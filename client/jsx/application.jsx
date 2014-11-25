@@ -12,7 +12,8 @@ var views = {
 	sequence: require("./views/sequence_view.jsx"),
 	snapshot: require("./views/snapshot_view.jsx"),
 	suggestion: require("./views/suggestion_view.jsx"),
-	summary: require("./views/summary_view.jsx")
+	summary: require("./views/summary_view.jsx"),
+	variantMap: require("./views/variant_map_view.jsx")
 };
 
 // call setup script
