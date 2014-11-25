@@ -1,0 +1,21 @@
+{% extends "lite_layout.jinja2" %}
+
+{% block title %}SGD{% endblock %}
+
+{% block body %}
+
+<div class="row">
+	<div id="j-main" class="small-12 columns content-column sgd-viz">
+		<img class="loader" src="/static/img/dark-slow-wheel.gif" />
+	</div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/application.js{{version_qs}}"></script>
+<script>
+	// add a JavaScript view to client/jsx/views/, and import in client/jsx/application.jsx
+	// views.example.render();
+</script>
+{% endblock scripts %}
