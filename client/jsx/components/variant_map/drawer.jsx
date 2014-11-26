@@ -40,14 +40,23 @@ module.exports = React.createClass({
 			right: "1rem",
 			color: "black"
 		};
+
+		var showSequenceButtonNode = this.state.showSequence ? null : <a className="button secondary small" onClick={this._showSequence}>Show Sequence</a>;
 		return (<div style={_style}>
 			<h1>
 				<a onClick={this.props.onExit} style={_exitStyle}><i className="fa fa-times"></i></a>
 			</h1>
+			{showSequenceButtonNode}
 		</div>);
 	},
 
 	didClickOutside: function () {
 		this.props.onExit();
+	},
+
+	_showSequence: function (e) {
+		e.stopPropagation();
+		e.nativeEvent.stopImmediatePropagation();
+		this.setState({ showSequence: true });
 	}
 });
