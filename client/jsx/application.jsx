@@ -17,7 +17,9 @@ var views = {
 };
 
 // call setup script
-setup();
+
+// ** SUPER TEMP **
+// setup();
 
 // assign to global view object
 window.views = views;

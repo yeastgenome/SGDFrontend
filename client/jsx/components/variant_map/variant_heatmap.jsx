@@ -23,7 +23,6 @@ module.exports = React.createClass({
 			DOMWidth: DEFAULT_DOM_SIDE_SIZE,
 			DOMHeight: DEFAULT_DOM_SIDE_SIZE,
 			mouseOverId: null,
-			onClick: null
 		};
 	},
 
@@ -58,7 +57,7 @@ module.exports = React.createClass({
 		var rectNodes = _.map(chunkedData, (d, i) => {
 			// UI events
 			var _onClick;
-			if (this.props.onClick) _onClick = (e, d) => {
+			if (this.props.onClick) _onClick = (e) => {
 				e.stopPropagation();
 			    e.nativeEvent.stopImmediatePropagation();
 				this.props.onClick(d);

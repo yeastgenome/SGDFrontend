@@ -37,7 +37,8 @@ _strainMetaData = _strainMetaData.reverse();
 module.exports = React.createClass({
 	getInitialState: function () {
 		return {
-			drawerVisible: false
+			drawerVisible: false,
+			selectedLocusId: null
 		};
 	},
 
@@ -47,21 +48,20 @@ module.exports = React.createClass({
 		var _onExit = () => {
 			this.setState({ drawerVisible: false });
 		};
-		var drawerNode = this.state.drawerVisible ? <Drawer onExit={_onExit} /> : null;
+		var drawerNode = this.state.drawerVisible ? <Drawer onExit={_onExit} locusId={this.state.selectedLocusId} /> : null;
 		return (<div>
+			<p><i className="fa fa-exclamation" /> This is a development version of this tool.  Data is NOT accurate.</p>
 			<div className="row">
 					<div className="columns small-6">
 						<h1>Variant Map</h1>
-					</div>
-					<div className="columns small-6 clearfix">
+						<hr />
 						<div style={{ float: "right", marginTop: "0.5em" }}>
 							<DropdownChecklist />
 						</div>
 					</div>
-			</div>
-			<hr />
-			<div style={{ height: 600 }}>
-				{heatmapNode}
+					<div className="columns small-6 clearfix panel">
+						{heatmapNode}
+					</div>
 			</div>
 			{drawerNode}
 		</div>);
@@ -70,7 +70,10 @@ module.exports = React.createClass({
 	_getHeatmapNode: function () {
 		// TEMP
 		var _onClick = (d) => {
-			this.setState({ drawerVisible: true });
+			this.setState({
+				drawerVisible: true,
+				selectedLocusId: d.id
+			});
 		};
 		return (<VariantHeatmap
 			data={heatpmapData}
