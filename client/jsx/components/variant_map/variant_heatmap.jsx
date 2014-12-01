@@ -3,6 +3,8 @@ var d3 = require("d3");
 var React = require("react");
 var _ = require("underscore");
 
+var Dendogram = require("../viz/dendogram.jsx");
+
 var DEFAULT_DOM_SIDE_SIZE = 400; // height and width\
 var FONT_SIZE = 14;
 var HEADER_HEIGHT = 60;
@@ -33,8 +35,8 @@ module.exports = React.createClass({
 		var strainLabelsNode = this._getLabelsNode();
 		var overlayNode = this._getOverlayNode();
 
-		return (
-		<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
+		return (<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
+			<Dendogram data={this.props.strainData} />
 			<div className="heatmap-header" style={{ height: HEADER_HEIGHT }}>
 				{strainLabelsNode}
 			</div>
@@ -127,11 +129,15 @@ module.exports = React.createClass({
 		var nodes = this.props.strainData.map( (d, i) => {
 			var _style = {
 				position: "absolute",
-				left: Math.max(0, (i - 1) * NODE_SIZE + LABEL_WIDTH),
-				top: HEADER_HEIGHT / 2,
+				left: Math.max(0, (i + 0.5) * NODE_SIZE + LABEL_WIDTH),
+				top: HEADER_HEIGHT - 15,
 				fontSize: FONT_SIZE,
 				transform: "rotate(-90deg)",
-				transformOrigin: `${FONT_SIZE}px 2px`
+				transformOrigin: "left center",
+				"-ms-transform": "rotate(-90deg)",
+			    "-ms-transform-origin": "left center",
+			    "-webkit-transform": "rotate(-90deg)",
+			    "-webkit-transform-origin": "left center"
 			};
 			return <span key={"strainLabel" + i} style={_style}>{d.name}</span>;
 		});
