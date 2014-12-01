@@ -33,8 +33,9 @@ module.exports = React.createClass({
 				return <li><a href={ref.link}>{ref.display_name}</a></li>;
 			});
 			refNodes.unshift(<li><a href={r.link}>SGD Paper</a></li>)
+			var pubmedNode = r.pubmed_id ? <small>PMID: {r.pubmed_id}</small> : null;
 			return (<li className="reference-list-item">
-				<a href={r.link}>{r.display_name}</a> {_text} <small>PMID: {r.pubmed_id}</small>
+				<a href={r.link}>{r.display_name}</a> {_text} {pubmedNode}
 				<ul className="ref-links">
 					{refNodes}
 				</ul>

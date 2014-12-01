@@ -185,7 +185,7 @@ jQuery.fn.dataTableExt.oApi.fnSearchHighlighting = function(oSettings) {
             // Only try to highlight if the cell is not empty or null
             if (aData[j]) {         
                 // If there is a search string try to match
-                if ((typeof sSregex !== 'undefined') && (sSregex)) {
+                if ((typeof sSregex !== 'undefined') && (sSregex) && (typeof aData[j] === 'string')) {
                     this.innerHTML = aData[j].replace( regex, function(matched) {
                         return "<span class='filterMatches'>"+matched+"</span>";
                     });
@@ -224,8 +224,8 @@ function set_up_scientific_notation_sorting() {
 
 function set_up_range_sort() {
 	jQuery.fn.dataTableExt.oSort['range-desc'] = function(x,y) {
-		x = x.split("-");
-		y = y.split("-");
+		x = x.split("..");
+		y = y.split("..");
 
 		x0 = parseInt(x[0]);
 		y0 = parseInt(y[0]);
@@ -236,8 +236,8 @@ function set_up_range_sort() {
 
 	jQuery.fn.dataTableExt.oSort['range-asc'] = function(x,y) {
 
-		x = x.split("-");
-		y = y.split("-");
+		x = x.split("..");
+		y = y.split("..");
 
 		x0 = parseInt(x[0]);
 		y0 = parseInt(y[0]);
