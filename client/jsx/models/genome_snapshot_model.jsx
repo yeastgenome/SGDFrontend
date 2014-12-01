@@ -49,7 +49,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		var orfElement = _.findWhere(features, { name: "ORF"} );
 		orfElement.nestedValues = characFeatures;
 
-		return features
+		return features;
 	}
 
 	// put data in table format
@@ -141,7 +141,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 	_parseFeatures (response) {
 		// get the contigs for S288C
 		var chroms = _.filter(response.columns, d => {
-			return d.format_name.match("S288C");
+			return d.strain.format_name === "S288C";
 		});
 
 		// assign feature data
