@@ -32,7 +32,6 @@ module.exports = React.createClass({
 
 	getDefaultProps: function () {
 		return {
-			baseUrl: null,
 			contigData: null, // {}
 			data: null, // { locci: [] }
 			domainBounds: null, // [0, 100]
