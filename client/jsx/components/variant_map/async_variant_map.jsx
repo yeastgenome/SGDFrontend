@@ -48,8 +48,8 @@ module.exports = React.createClass({
 		var _onExit = () => {
 			this.setState({ drawerVisible: false });
 		};
-		// TEMP hardcoded locus id for RAD54
-		var drawerNode = this.state.drawerVisible ? <Drawer onExit={_onExit} locusId={4672} /> : null;
+		// TEMP hardcoded locus id for RAD54 and display name
+		var drawerNode = this.state.drawerVisible ? <Drawer onExit={_onExit} locusDisplayName="RAD54" locusId={4672} /> : null;
 		return (<div>
 			<p><i className="fa fa-exclamation" /> This is a development version of this tool.  Data are NOT accurate.</p>
 			<div className="row">
