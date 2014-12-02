@@ -6,6 +6,7 @@ var _ = require("underscore");
 
 var Drawer = require("./drawer.jsx");
 var DropdownChecklist = require("../widgets/dropdown_checklist.jsx");
+var RadioSelector = require("../widgets/radio_selector.jsx");
 var SearchBar = require("../widgets/search_bar.jsx");
 var VariantHeatmap = require("./variant_heatmap.jsx");
 
@@ -39,7 +40,8 @@ module.exports = React.createClass({
 	getInitialState: function () {
 		return {
 			drawerVisible: false,
-			selectedLocusId: null
+			selectedLocusId: null,
+			mode: "dna"
 		};
 	},
 
@@ -49,26 +51,30 @@ module.exports = React.createClass({
 		var _onExit = () => {
 			this.setState({ drawerVisible: false });
 		};
+		var _onRadioSelect = key => { this.setState({ mode: key }); };
+		var _radioElements = [ { name: "DNA", key: "dna" }, { name: "Protein", key: "protein" }];
 		// TEMP hardcoded locus id for RAD54 and display name
 		var drawerNode = this.state.drawerVisible ? <Drawer onExit={_onExit} locusDisplayName="RAD54" locusId={4672} /> : null;
 		return (<div>
 			<p><i className="fa fa-exclamation" /> This is a development version of this tool.  Data are NOT accurate.</p>
+			<h1>Variant Map</h1>
+			<hr />
+						
 			<div className="row">
-					<div className="columns small-6">
-						<h1>Variant Map</h1>
-						<hr />
-						<div className="row">
-							<div className="columns small-6">
-								<DropdownChecklist />
-							</div>
-							<div className="columns small-6">
-								<SearchBar />
-							</div>
-						</div>
+				<div className="columns small-12 medium-6">
+					<SearchBar />
+				</div>
+				<div className="columns small-6 medium-2">
+					<DropdownChecklist />
+				</div>
+				<div className="columns small-6 medium-4">
+					<div style={{ marginTop: "0.35rem" }}>
+						<RadioSelector elements={_radioElements} initialActiveElementKey={this.state.mode} onSelect={_onRadioSelect} />
 					</div>
-					<div className="columns small-6 clearfix panel">
-						{heatmapNode}
-					</div>
+				</div>
+			</div>
+			<div className="panel">
+				{heatmapNode}
 			</div>
 			{drawerNode}
 		</div>);
