@@ -18,7 +18,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 		// separate the response into objects which will be separately parsed
 		var _rawFeatures = _.pick(response, ["rows", "data", "columns"]);
-		var _rawGo = _.pick(response, ["go_slim_terms", "go_slim_relationships"]);
+		var _rawGo = _.pick(response, ["go_slim_terms", "go_slim_relationships", "go_annotated_to_other_bp", "go_annotated_to_other_cc", "go_annotated_to_other_mf"]);
 		var _rawPhenotypes = _.pick(response, ["phenotype_slim_terms", "phenotype_slim_relationships"]);
 
 		// return the parsed versions, using helper parse methods
@@ -206,7 +206,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 	// format GO data into nested format for d3 partition
 	_parseGo (response) {
-		var data = response;
+		var data = _.clone(response);
 		var allSlimTerms = _.uniq(data.go_slim_terms, t => { return t.id });
 
 		// helper function to get terms from their ID
@@ -234,7 +234,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		});
 
 		// format data, mapping children to parents
-		goTerms = _.map(goTerms, (termData) => {
+		goTerms = _.map(goTerms, termData => {
 			var _childRelationships = _.filter(relationships, r => {
 				return r[1] === termData.id;
 			});
@@ -244,15 +244,17 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				return termById(r[0]);
 			});
 			// add an entry for annotated to root (unknown)
-			// Note: * always use direct annotation for this entry.
+			var _rootCounts = {
+				"molecular_function": response["go_annotated_to_other_mf"],
+				"cellular_component": response["go_annotated_to_other_cc"],
+				"biological_process": response["go_annotated_to_other_bp"]
+			};
 			_childTerms.push({
-				descendant_annotation_gene_count: termData.direct_annotation_gene_count, // *
-				direct_annotation_gene_count: termData.direct_annotation_gene_count,
+				descendant_annotation_gene_count: _rootCounts[termData.format_name],
 				link: null,
 				display_name: "annotated to unknown",
 				isRoot: true,
 				format_name: "annotated_to_unknown"
-
 			});
 			// sort desc
 			_childTerms = _.sortBy(_childTerms, d => {

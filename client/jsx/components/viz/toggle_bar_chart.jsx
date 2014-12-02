@@ -47,7 +47,7 @@ module.exports = React.createClass({
 		// if there are more than FILTER_TRESHOLD elements, filter them
 		var filter = null;
 		if (activeData.length > FILTER_TRESHOLD) {
-			filter = (d) => {
+			filter = d => {
 				return activeData.indexOf(d) <= FILTER_TRESHOLD;
 			};
 		}
@@ -61,8 +61,8 @@ module.exports = React.createClass({
 				Please use the <a href="http://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a> or download the <a href="http://downloads.yeastgenome.org/curation/literature/">go_slim_mapping.tab</a> file to obtain the GO data summarized in these graphs.</span>);
 			textNode = <div className="clearfix"><h3 className="toggle-text"><span className="inner-toggle-text">{active.text}</span> <HelpIcon text={_helpText} isInfo={true}/></h3></div>;
 		}
-		
-		var _colorScale = (d) => { return d.isRoot ? "#DF8B93" : "#18AB2F"; };
+
+		var _colorScale = d => { return d.isRoot ? "#DF8B93" : "#18AB2F"; };
 		return (
 			<div className="toggle-bar-chart">
 				{controlsNode}
