@@ -4,8 +4,9 @@
 var React = require("react");
 var _ = require("underscore");
 
-var DropdownChecklist = require("../widgets/dropdown_checklist.jsx");
 var Drawer = require("./drawer.jsx");
+var DropdownChecklist = require("../widgets/dropdown_checklist.jsx");
+var SearchBar = require("../widgets/search_bar.jsx");
 var VariantHeatmap = require("./variant_heatmap.jsx");
 
 // TEMP
@@ -56,8 +57,13 @@ module.exports = React.createClass({
 					<div className="columns small-6">
 						<h1>Variant Map</h1>
 						<hr />
-						<div style={{ float: "right", marginTop: "0.5em" }}>
-							<DropdownChecklist />
+						<div className="row">
+							<div className="columns small-6">
+								<DropdownChecklist />
+							</div>
+							<div className="columns small-6">
+								<SearchBar />
+							</div>
 						</div>
 					</div>
 					<div className="columns small-6 clearfix panel">
