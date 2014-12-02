@@ -6,7 +6,9 @@ var _ = require("underscore");
 var MultiScaleAxis = require("./multi_scale_axis.jsx");
 
 // TEMP vars
+var AXIS_HEIGHT = 30;
 var FONT_SIZE = 14;
+var LABEL_WIDTH = 180;
 var PX_PER_CHAR = 9.25;
 var SUMMARIZED_SIZE = 400;
 var TICK_HEIGHT = 6;
@@ -19,15 +21,31 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
+		var labelsNode = this._getLabelsNode();
 		var segmentNodes = this._getSegmentNodes();
 		var visibleSequenceNodes = this._getVisibleSegmentNodes();
 
 		return (<div>
+			{labelsNode}
 			<MultiScaleAxis segments={this.props.segments} scale={this._getXScale()} />
 			<svg ref="svg" style={{ width: "100%", height: 600 }}>
 				{segmentNodes}
 				{visibleSequenceNodes}
 			</svg>
+		</div>);
+	},
+
+	_getLabelsNode: function () {
+		var labelNodes = _.map(this.props.sequences, (s, i) => {
+			var _style = {
+				position: "absolute",
+				right: "1rem",
+				top: i * FONT_SIZE + AXIS_HEIGHT
+			}
+			return <a href={s.href} key={"sequenceAlignLabel" + i} style={_style}>{s.name}</a>
+		});
+		return (<div style={{ position: "relative", width: LABEL_WIDTH }}>
+			{labelNodes}
 		</div>);
 	},
 
@@ -98,7 +116,7 @@ module.exports = React.createClass({
 			var _delta = !s.visible ? SUMMARIZED_SIZE : ((s.domain[1] - s.domain[0]) * PX_PER_CHAR);
 			memo.push(_last += _delta);
 			return memo;
-		}, [0]);
+		}, [LABEL_WIDTH]);
 
 		return d3.scale.linear()
 			.domain(_domain)
