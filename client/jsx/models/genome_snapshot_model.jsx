@@ -18,7 +18,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 		// separate the response into objects which will be separately parsed
 		var _rawFeatures = _.pick(response, ["rows", "data", "columns"]);
-		var _rawGo = _.pick(response, ["go_slim_terms", "go_slim_relationships", "go_annotated_to_other_bp", "go_annotated_to_other_cc", "go_annotated_to_other_mf"]);
+		var _rawGo = _.pick(response, ["go_slim_terms", "go_slim_relationships"]);
 		var _rawPhenotypes = _.pick(response, ["phenotype_slim_terms", "phenotype_slim_relationships"]);
 
 		// return the parsed versions, using helper parse methods
@@ -244,13 +244,9 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				return termById(r[0]);
 			});
 			// add an entry for annotated to root (unknown)
-			var _rootCounts = {
-				"molecular_function": response["go_annotated_to_other_mf"],
-				"cellular_component": response["go_annotated_to_other_cc"],
-				"biological_process": response["go_annotated_to_other_bp"]
-			};
+			// Note: * always use direct annotation for this entry.
 			_childTerms.push({
-				descendant_annotation_gene_count: _rootCounts[termData.format_name],
+				descendant_annotation_gene_count: termData.direct_annotation_gene_count, // *
 				link: null,
 				display_name: "annotated to unknown",
 				isRoot: true,
