@@ -20,11 +20,18 @@ module.exports = React.createClass({
 		sequences: React.PropTypes.array.isRequired
 	},
 
+	getInitialState: function () {
+		return {
+			mouseOverSegmentIndex: null
+		};
+	},
+
 	render: function () {
 		var labelsNode = this._getLabelsNode();
 		var segmentNodes = this._getSegmentNodes();
 		var visibleSequenceNodes = this._getVisibleSegmentNodes();
 
+		// TEMP constant height
 		return (<div>
 			{labelsNode}
 			<MultiScaleAxis segments={this.props.segments} scale={this._getXScale()} />
@@ -35,14 +42,26 @@ module.exports = React.createClass({
 		</div>);
 	},
 
+	_onSegmentMouseOver: function (e, d, i) {
+		this.setState({
+			mouseOverSegmentIndex: i
+		});
+	},
+
+	_clearMouseOver: function () {
+		this.setState({
+			mouseOverSegmentIndex: null
+		});
+	},
+
 	_getLabelsNode: function () {
 		var labelNodes = _.map(this.props.sequences, (s, i) => {
 			var _style = {
 				position: "absolute",
 				right: "1rem",
-				top: i * FONT_SIZE + AXIS_HEIGHT
+				top: i * (FONT_SIZE + 2) + AXIS_HEIGHT
 			}
-			return <a href={s.href} key={"sequenceAlignLabel" + i} style={_style}>{s.name}</a>
+			return <a href={s.href} key={"sequenceAlignLabel" + i} target="_new" style={_style}>{s.name}</a>
 		});
 		return (<div style={{ position: "relative", width: LABEL_WIDTH }}>
 			{labelNodes}
@@ -51,14 +70,17 @@ module.exports = React.createClass({
 
 	_getSegmentNodes: function () {
 		var xScale = this._getXScale();
-		var yScale = this._getYScale();
 
 		return _.map(this.props.segments, (s, i) => {
 			var _x = xScale(s.domain[0]);
 			var _y = 0;
 			var _width = xScale(s.domain[1]) - xScale(s.domain[0]);
-			var _height = yScale.range()[1] - 0;
-			return <rect key={"segRect" + i} x={_x} y={_y} width={_width} height={_height} stroke="none" fill="none" />;
+			var _height = this.props.sequences.length * (FONT_SIZE + 3);
+			var _fill = (i === this.state.mouseOverSegmentIndex) ? "black" : "none";
+			var _onMouseOver = e => {
+				this._onSegmentMouseOver(e, s, i);
+			}
+			return <rect onMouseOver={_onMouseOver} key={"segRect" + i} x={_x} y={_y} width={_width} height={_height} fill={_fill} opacity="0.25" style={{ pointerEvents: "all" }} />;
 		});
 	},
 
@@ -68,7 +90,7 @@ module.exports = React.createClass({
 		return _.map(this.props.sequences, (seq, _i) => {
 			var _seqText = seq.sequence.slice(seg.domain[0], seg.domain[1])
 			var _transform = `translate(${xScale(seg.domain[0])}, ${yScale(seq.name)})`;
-			return <text key={"variantSeqNode" + i + _i} transform={_transform} fontSize={FONT_SIZE} fontFamily="Courier">{_seqText}</text>;
+			return <text key={"variantSeqNode" + i + _i} transform={_transform} fontSize={FONT_SIZE} fontFamily="Courier" style={{ pointerEvents: "none" }}>{_seqText}</text>;
 		});
 	},
 
@@ -78,12 +100,9 @@ module.exports = React.createClass({
 
 		var _yTranslate = (yScale.rangeExtent()[1] - yScale.rangeExtent()[0]) / 2;
 		var _transform = `translate(0, ${_yTranslate})`;
-		// return (<g className="summarized-segment" key={key} transform={_transform}>
-		// 	<line x1={xScale(startCoordinate)} x2={xScale(endCoordinate)} y1="0" y2="0" stroke="#efefef" style={{ shapeRendering: "crispEdges" }}/>
-		// 	<line x1={xScale(startCoordinate)} x2={xScale(endCoordinate)} y1="15" y2="15" stroke="#efefef" style={{ shapeRendering: "crispEdges" }}/>
-		// </g>);
 		return (<g className="summarized-segment" key={key} transform={_transform}>
-
+			<line stroke="black" strokeDasharray="3px 3px" x1={xScale(startCoordinate)} x2={xScale(endCoordinate)} y1="0" y2="0" style={{ shapeRendering: "crispEdges" }}/>
+			<line stroke="black" strokeDasharray="3px 3px" x1={xScale(startCoordinate)} x2={xScale(endCoordinate)} y1="15" y2="15" style={{ shapeRendering: "crispEdges" }}/>
 		</g>);
 	},
 

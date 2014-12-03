@@ -4,7 +4,6 @@
 var React = require("react");
 var _ = require("underscore");
 
-var DidClickOutside = require("../mixins/did_click_outside.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
 var MultiAlignmentViewer = require("./multi_alignment_viewer.jsx");
 var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
@@ -13,7 +12,6 @@ var HEIGHT_WITH_SEQUENCE = 580;
 var HEIGHT_WITHOUT_SEQUENCE = 390;
 
 module.exports = React.createClass({
-	mixins: [DidClickOutside],
 
 	propTypes: {
 		locusDisplayName: React.PropTypes.string.isRequired,
@@ -48,18 +46,19 @@ module.exports = React.createClass({
 		};
 
 		var locusDiagramNode = null;
-		if (this.state.neighborModelAttr) {
-			var attr = this.state.neighborModelAttr;
-			locusDiagramNode = (<LocusDiagram
-				contigData={attr.contigData}
-				data={attr.data}
-				domainBounds={attr.domainBounds}
-				focusLocusDisplayName={this.props.locusDisplayName}
-				showSubFeatures={false}
-				watsonTracks={Math.abs(attr.trackDomain[1])}
-				crickTracks={Math.abs(attr.trackDomain[0])}
-			/>);
-		}
+		// TEMP NO locus diagram
+		// if (this.state.neighborModelAttr) {
+		// 	var attr = this.state.neighborModelAttr;
+		// 	locusDiagramNode = (<LocusDiagram
+		// 		contigData={attr.contigData}
+		// 		data={attr.data}
+		// 		domainBounds={attr.domainBounds}
+		// 		focusLocusDisplayName={this.props.locusDisplayName}
+		// 		showSubFeatures={false}
+		// 		watsonTracks={Math.abs(attr.trackDomain[1])}
+		// 		crickTracks={Math.abs(attr.trackDomain[0])}
+		// 	/>);
+		// }
 
 		var sequenceNode = this._getSequenceNode();
 		return (<div style={_style}>
@@ -74,10 +73,6 @@ module.exports = React.createClass({
 
 	componentDidMount: function () {
 	    this._fetchNeighborData();  
-	},
-
-	didClickOutside: function () {
-		this.props.onExit();
 	},
 
 	_fetchNeighborData: function () {
