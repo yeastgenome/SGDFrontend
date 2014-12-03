@@ -49,19 +49,18 @@ module.exports = React.createClass({
 		};
 
 		var locusDiagramNode = null;
-		// TEMP NO locus diagram
-		// if (this.state.neighborModelAttr) {
-		// 	var attr = this.state.neighborModelAttr;
-		// 	locusDiagramNode = (<LocusDiagram
-		// 		contigData={attr.contigData}
-		// 		data={attr.data}
-		// 		domainBounds={attr.domainBounds}
-		// 		focusLocusDisplayName={this.props.locusDisplayName}
-		// 		showSubFeatures={false}
-		// 		watsonTracks={Math.abs(attr.trackDomain[1])}
-		// 		crickTracks={Math.abs(attr.trackDomain[0])}
-		// 	/>);
-		// }
+		if (this.state.neighborModelAttr) {
+			var attr = this.state.neighborModelAttr;
+			locusDiagramNode = (<LocusDiagram
+				contigData={attr.contigData}
+				data={attr.data}
+				domainBounds={attr.domainBounds}
+				focusLocusDisplayName={this.props.locusDisplayName}
+				showSubFeatures={false}
+				watsonTracks={Math.abs(attr.trackDomain[1])}
+				crickTracks={Math.abs(attr.trackDomain[0])}
+			/>);
+		}
 
 		var sequenceNode = this._getSequenceNode();
 		return (<div style={_style}>
@@ -160,7 +159,7 @@ module.exports = React.createClass({
 				<MultiAlignmentViewer segments={exampleData.segments} sequences={exampleData.sequences} />
 			</div>);
 		} else {
-			node = <a className="button secondary small" onClick={this._showSequence}>Show Sequence</a>
+			node = <p className="text-center" style={{ marginTop: "1rem" }}><a className="button secondary small" onClick={this._showSequence}>Show Sequence</a></p>;
 		}
 		return node;
 	},

@@ -11,6 +11,6 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		return <h1>parset</h1>;
+		return <span />;
 	}
 });
