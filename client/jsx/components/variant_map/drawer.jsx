@@ -51,12 +51,17 @@ module.exports = React.createClass({
 		var locusDiagramNode = null;
 		if (this.state.neighborModelAttr) {
 			var attr = this.state.neighborModelAttr;
+
+			// TEMP
+			var _variantData = [1];
+
 			locusDiagramNode = (<LocusDiagram
 				contigData={attr.contigData}
 				data={attr.data}
 				domainBounds={attr.domainBounds}
 				focusLocusDisplayName={this.props.locusDisplayName}
 				showSubFeatures={false}
+				variantData={_variantData}
 				watsonTracks={Math.abs(attr.trackDomain[1])}
 				crickTracks={Math.abs(attr.trackDomain[0])}
 			/>);

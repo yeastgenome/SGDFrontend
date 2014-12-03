@@ -39,6 +39,7 @@ module.exports = React.createClass({
 			hasChromosomeThumb: true,
 			focusLocusDisplayName: null,
 			showSubFeatures: false,
+			variantData: [], // [{ coordinateDomain: [20045, 20046] }, ...]
 			crickTracks: 1,
 			watsonTracks: 1
 		};
@@ -71,7 +72,9 @@ module.exports = React.createClass({
 			height={height + AXIS_LABELING_HEIGHT} tickFormat={d => { return d; }}
 		/>);
 
-		var locciNodes = _.map(this.props.data.locci, d => { return this._getLocusNode(d); });
+		var locciNodes = _.map(this.props.data.locci, (d, i) => { return this._getLocusNode(d, i); });
+
+		var variantNodes = this._getVariantNodes();
 		return (
 			<div className="locus-diagram" onMouseLeave={this._clearMouseOver} onClick={this._clearMouseOver}>
 				{controlsNode}
@@ -87,6 +90,7 @@ module.exports = React.createClass({
 					<svg ref="svg" className="locus-svg" onMouseEnter={this._onSVGMouseEnter} onMouseLeave={this._onSVGMouseLeave} style={{ width: "100%", height: height, position: "relative" }}>
 						<line className="midpoint-marker" x1="0" x2={this.state.DOMWidth} y1={this._getMidpointY()} y2={this._getMidpointY()} />
 						{locciNodes}
+						{variantNodes}
 					</svg>
 				</div>
 			</div>
@@ -131,22 +135,22 @@ module.exports = React.createClass({
 	},
 
 	// returns an svg "g" element, with embedded shapes
-	_getLocusNode: function (d) {
+	_getLocusNode: function (d, i) {
 		var isFocusLocus = d.locus.display_name === this.props.focusLocusDisplayName;
 
 		if (this.props.showSubFeatures &&  d.tags.length) {
-			return this._getLocusWithSubFeaturesNode(d, isFocusLocus);
+			return this._getLocusWithSubFeaturesNode(d, i, isFocusLocus);
 		} else {
-			return this._getSimpleLocusNode(d, isFocusLocus);
+			return this._getSimpleLocusNode(d, i, isFocusLocus);
 		}
 	},
 
-	_getLocusWithSubFeaturesNode: function (d, isFocusLocus) {
+	_getLocusWithSubFeaturesNode: function (d, i, isFocusLocus) {
 		var _transformX = this._getTransformObject(d).x;
 		var _transform = `translate(${_transformX}, 0)`;
 		var subFeatureNodes = this._getSubFeatureNodes(d.start, d.end, d.tags, (d.strand === "+"), isFocusLocus, _transformX);
 		return (
-			<g transform={_transform}>
+			<g transform={_transform} key={"locusWithSubFeature" + i}>
 				{subFeatureNodes}
 			</g>
 		);
@@ -213,7 +217,7 @@ module.exports = React.createClass({
 			}
 
 			return (
-				<g transform={groupTransform}>
+				<g transform={groupTransform} key={"locusSubFeature" + i}>
 					{shapeNode}
 					{textNode}
 				</g>
@@ -221,7 +225,7 @@ module.exports = React.createClass({
 		});
 	},
 
-	_getSimpleLocusNode: function (d, isFocusLocus) {
+	_getSimpleLocusNode: function (d, i, isFocusLocus) {
 		var scale = this._getScale();
 		var startX = scale(Math.min(d.start, d.end));
 		var endX = scale(Math.max(d.start, d.end));
@@ -263,7 +267,7 @@ module.exports = React.createClass({
 
 		var _transform = this._getGroupTransform(d);
 		return (
-			<g transform={_transform}>
+			<g transform={_transform} key={"simpleLocus" + i}>
 				{shapeNode}
 				{textNode}
 			</g>
@@ -551,4 +555,20 @@ module.exports = React.createClass({
 		var _locci = this.props.data.locci;
 		return _.filter(_locci, d => { return d.locus.display_name === this.props.focusLocusDisplayName; })[0];
 	},
+
+	// TEMP
+	_getVariantNodes: function () {
+		if (this.props.variantData.length === 0) {
+			return null;
+		}
+		var scale = this._getScale();
+		var focusLocus = this._getFocusLocus();
+		var _avgCoor = (focusLocus.start + focusLocus.end) / 2;
+		var midX = scale(_avgCoor)
+		var _transform = `translate(${midX}, 35)`;
+		return (<g transform={_transform}>
+			<line x1="0" x2="0" y1="0" y2="25" stroke="black" strokeWidth="2px" />
+			<circle r="10" fill="blue" />
+		</g>);
+	}
 });
