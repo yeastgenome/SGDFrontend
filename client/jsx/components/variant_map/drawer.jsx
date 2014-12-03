@@ -5,6 +5,7 @@ var React = require("react");
 var _ = require("underscore");
 
 var LocusDiagram = require("../viz/locus_diagram.jsx");
+var Parset = require("../viz/parset.jsx");
 var MultiAlignmentViewer = require("./multi_alignment_viewer.jsx");
 var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
 
@@ -22,7 +23,9 @@ module.exports = React.createClass({
 	getInitialState: function () {
 		return {
 			showSequence: false,
-			neighborModelAttr: null
+			neighborModelAttr: null,
+			parsetPixelDomain: null, // [150, 200] screen x coordinates
+			parsetCoordinateDomain: null, // [36000, 45000] sequence coordinates
 		};
 	},
 
@@ -62,6 +65,7 @@ module.exports = React.createClass({
 
 		var sequenceNode = this._getSequenceNode();
 		return (<div style={_style}>
+			<p><i className="fa fa-exclamation" /> This is a development version of this tool.  Data are NOT accurate.</p>
 			<h1>
 				{this.props.locusDisplayName}
 				<a onClick={this.props.onExit} style={_exitStyle}><i className="fa fa-times"></i></a>
@@ -151,7 +155,10 @@ module.exports = React.createClass({
 				}
 			]
 		};
-			node = <MultiAlignmentViewer segments={exampleData.segments} sequences={exampleData.sequences} />;
+			node = (<div>
+				<Parset pixelDomain={this.state.parsetPixelDomain} coordinateDomain={this.state.parsetPixelDomain}/>
+				<MultiAlignmentViewer segments={exampleData.segments} sequences={exampleData.sequences} />
+			</div>);
 		} else {
 			node = <a className="button secondary small" onClick={this._showSequence}>Show Sequence</a>
 		}

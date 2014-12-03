@@ -16,6 +16,7 @@ var TICK_HEIGHT = 6;
 module.exports = React.createClass({
 
 	propTypes: {
+		onMouseOverXCoordinates: React.PropTypes.func, // (startX, endX) =>
 		segments: React.PropTypes.array.isRequired,
 		sequences: React.PropTypes.array.isRequired
 	},
@@ -43,6 +44,12 @@ module.exports = React.createClass({
 	},
 
 	_onSegmentMouseOver: function (e, d, i) {
+		var xScale = this._getXScale();
+		if (this.props.onMouseOverXCoordinates) {
+			var _startX = xScale(d.domain[0]);
+			var _endX = xScale(d.domain[1]);
+			this.props.onMouseOverXCoordinates(_startX, _endX);
+		}
 		this.setState({
 			mouseOverSegmentIndex: i
 		});
