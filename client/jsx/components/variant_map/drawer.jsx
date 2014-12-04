@@ -17,7 +17,8 @@ module.exports = React.createClass({
 	propTypes: {
 		locusDisplayName: React.PropTypes.string.isRequired,
 		locusId: React.PropTypes.number.isRequired,
-		onExit: React.PropTypes.func.isRequired
+		onExit: React.PropTypes.func.isRequired,
+		strainData: React.PropTypes.array.isRequired
 	},
 
 	getInitialState: function () {
@@ -96,6 +97,7 @@ module.exports = React.createClass({
 		var node;
 		if (this.state.showSequence) {
 			// TEMP fake some sequence data
+			console.log(this.props.strainData)
 		var exampleData = {
 			sequences: [
 				{

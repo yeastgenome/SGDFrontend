@@ -54,7 +54,7 @@ module.exports = React.createClass({
 		var _onRadioSelect = key => { this.setState({ mode: key }); };
 		var _radioElements = [ { name: "DNA", key: "dna" }, { name: "Protein", key: "protein" }];
 		// TEMP hardcoded locus id for RAD54 and display name
-		var drawerNode = this.state.drawerVisible ? <Drawer onExit={_onExit} locusDisplayName="RAD54" locusId={4672} /> : null;
+		var drawerNode = this.state.drawerVisible ? <Drawer onExit={_onExit} locusDisplayName="RAD54" locusId={4672} strainData={_strainMetaData} /> : null;
 		return (<div>
 			<p><i className="fa fa-exclamation" /> This is a development version of this tool.  Data are NOT accurate.</p>
 			<h1>Variant Map</h1>
