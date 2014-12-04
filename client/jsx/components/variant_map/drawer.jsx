@@ -97,7 +97,6 @@ module.exports = React.createClass({
 		var node;
 		if (this.state.showSequence) {
 			// TEMP fake some sequence data
-			console.log(this.props.strainData)
 		var exampleData = {
 			sequences: [
 				{

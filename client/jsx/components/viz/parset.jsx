@@ -11,6 +11,6 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		return <span />;
+		return <img style={{ marginLeft: 550 }} src="/static/img/temp_blue_line.png" />;
 	}
 });

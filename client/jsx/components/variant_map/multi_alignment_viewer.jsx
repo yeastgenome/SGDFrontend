@@ -83,11 +83,13 @@ module.exports = React.createClass({
 			var _y = 0;
 			var _width = xScale(s.domain[1]) - xScale(s.domain[0]);
 			var _height = this.props.sequences.length * (FONT_SIZE + 3);
-			var _fill = (i === this.state.mouseOverSegmentIndex) ? "black" : "none";
+			var _visibleColor = s.visible ? "#17B0EF" : "black";
+			var _fill = (i === this.state.mouseOverSegmentIndex) ? _visibleColor : "none";
+			var _opacity = s.visible ? 1 : 0.25;
 			var _onMouseOver = e => {
 				this._onSegmentMouseOver(e, s, i);
 			}
-			return <rect onMouseOver={_onMouseOver} key={"segRect" + i} x={_x} y={_y} width={_width} height={_height} fill={_fill} opacity="0.25" style={{ pointerEvents: "all" }} />;
+			return <rect onMouseOver={_onMouseOver} key={"segRect" + i} x={_x} y={_y} width={_width} height={_height} fill={_fill} opacity={_opacity} style={{ pointerEvents: "all" }} />;
 		});
 	},
 
