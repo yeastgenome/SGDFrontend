@@ -228,6 +228,11 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: {'snapshot': render('static/templates/snapshot.jinja2', {})},
                     renderer=chosen_frontend.get_renderer('snapshot'),
                     route_name='snapshot')
+
+    config.add_route('suggestion', '/suggestion')
+    config.add_view(lambda request: {'suggestion': render('static/templates/suggestion.jinja2', {})},
+                    renderer=chosen_frontend.get_renderer('suggestion'),
+                    route_name='suggestion')
     
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':
