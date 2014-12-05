@@ -15,6 +15,12 @@ var TRANSITION_DURATION = 1000;
 module.exports = React.createClass({
 	mixins: [CalcWidthOnResize],
 
+	propTypes: {
+		data: React.PropTypes.object.isRequired,
+		minValue: React.PropTypes.number.isRequired,
+		maxValue: React.PropTypes.number.isRequired
+	},
+
 	getDefaultProps: function () {
 		return {
 			data: null,

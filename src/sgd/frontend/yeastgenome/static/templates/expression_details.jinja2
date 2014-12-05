@@ -67,7 +67,8 @@
                 on increased or decreased log2 expression ratios.
             </p>
             <!-- Includes expression_overview.html into template -->
-            {% include "expression_overview.jinja2" %}
+
+            <div id="j-expression-chart-target"></div>
         </div>
         <p id='expression_message' hidden>No expression data for {{ locus.display_name }}.</p>
         <p>View genes with similar expression profiles using
@@ -163,6 +164,6 @@
        'version':'1','packages':['corechart']}]}"></script>
 <script src="/static/js/local.js{{version_qs}}"></script>
 <script src="/static/js/evidence.js{{version_qs}}"></script>
-<script src="/static/js/expression_overview.js{{version_qs}}"></script>
 <script src="/static/js/expression_details.js{{version_qs}}"></script>
+<script src="/static/js/application.js{{version_qs}}"></script>
 {% endblock scripts %}

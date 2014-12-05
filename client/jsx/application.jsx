@@ -8,6 +8,7 @@ var setup = require("./lib/setup.jsx");
 */
 
 var views = {
+	expression: require("./views/expression_view.jsx"),
 	sequence: require("./views/sequence_view.jsx"),
 	snapshot: require("./views/snapshot_view.jsx"),
 	summary: require("./views/summary_view.jsx")
