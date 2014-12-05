@@ -68,7 +68,9 @@
             </p>
             <!-- Includes expression_overview.html into template -->
 
-            <div id="j-expression-chart-target"></div>
+            <div id="j-expression-chart-target" class="sgd-viz">
+                <img class="loader" src="/static/img/dark-slow-wheel.gif" />
+            </div>
         </div>
         <p id='expression_message' hidden>No expression data for {{ locus.display_name }}.</p>
         <p>View genes with similar expression profiles using

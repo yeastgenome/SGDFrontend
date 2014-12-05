@@ -17,6 +17,8 @@ module.exports = React.createClass({
 
 	propTypes: {
 		data: React.PropTypes.object.isRequired,
+		hasHelpIcon: React.PropTypes.bool,
+		hasScaleToggler: React.PropTypes.bool,
 		minValue: React.PropTypes.number.isRequired,
 		maxValue: React.PropTypes.number.isRequired
 	},
@@ -24,6 +26,8 @@ module.exports = React.createClass({
 	getDefaultProps: function () {
 		return {
 			data: null,
+			hasHelpIcon: false,
+			hasScaleToggler: false,
 			minValue: null,
 			maxValue: null,
 			onClick: null
