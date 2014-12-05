@@ -53,3 +53,7 @@ select {
 input.form-pad, button.form-pad, textarea.form-pad {
     margin: 0 0 $form-spacing 0;
 }
+
+.button-bar.bottom-space {
+    margin-bottom: 1rem;
+}
