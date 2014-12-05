@@ -12,7 +12,7 @@ expressionView.render = function () {
 	$.getJSON('/backend/locus/' + locus['id'] + '/expression_details?callback=?', (data) => {
 		if (data.datasets.length) {
 			React.renderComponent(
-				<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} />,
+				<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} hasScaleToggler={true} />,
 				document.getElementById("j-expression-chart-target")
 			);
 		} else {

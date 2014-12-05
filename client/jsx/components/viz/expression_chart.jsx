@@ -6,6 +6,7 @@ var React = require("react");
 var _ = require("underscore");
 
 var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
+var RadioSelector = require("../widgets/radio_selector.jsx");
 
 var HEIGHT = 300;
 var SIDE_PADDING = 100;
@@ -42,7 +43,9 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
+		var scaleTogglerNode = this._getScaleTogglerNode();
 		return (<div className="expression-histogram" style={{ position: "relative" }}>
+			{scaleTogglerNode}
 			<span className="histogram-axis-text y"><i>Number of Conditions</i></span>
 			<svg ref="svg" style={{ width: "100%", height: HEIGHT }}></svg>
 			<span className="histogram-axis-text x"><i>log2 Ratio</i></span>
@@ -152,8 +155,9 @@ module.exports = React.createClass({
 
 	_getYScale: function () {
 		var _maxY = _.max(this._getDataAsArray(), d => { return d.value; }).value;
-		return d3.scale.log()
-			.base(10)
+		var _baseScale = this.state.logAxis ? d3.scale.log().base(10) : d3.scale.linear();
+
+		return _baseScale
 			.domain([1, _maxY])
 			.range([0, HEIGHT - 2 * TOP_PADDING]);
 	},
@@ -180,5 +184,19 @@ module.exports = React.createClass({
 
 	_calculateWidth: function () {
 		this.setState({ DOMWidth: this.getDOMNode().getBoundingClientRect().width });
+	},
+
+	_getScaleTogglerNode: function () {
+		if (!this.props.hasScaleToggler) {
+			return null;
+		}
+
+		var _elements = [ { name: "log10 Y-Axis", key: "log" }, { name: "Linear Y-Axis" , key: "linear" }];
+		var _onSelect = (key) => {
+			this.setState({ logAxis: key === "log" });
+		}
+		return (<div style={{ width: 350 }}>
+			<RadioSelector elements={_elements} initialActiveElementKey="log" onSelect={_onSelect} />
+		</div>);
 	}
 });
