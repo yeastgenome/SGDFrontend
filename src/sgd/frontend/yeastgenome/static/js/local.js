@@ -41,6 +41,17 @@ function download_citations(citation_div, list_name) {
 	post_to_url('/download_citations', {"display_name":list_name, "reference_ids": reference_ids});
 }
 
+// TEMP added to fix protein tab, should be removed again
+function download_sequence(sequence, list_name, contig_name) {
+    var _header = locus.display_name + " " + locus.format_name + " SGDID:" + locus.sgdid;
+    var _filename = contig_name + "_" + locus.format_name + "_" + locus.display_name + "_protein.fsa";
+    post_to_url('/download_sequence', {
+        filename: _filename,
+        sequence: sequence,
+        header: _header
+    });
+}
+
 function set_up_references(references, ref_list_id) {
   	//Set up references
 	var ref_list = document.getElementById(ref_list_id);
