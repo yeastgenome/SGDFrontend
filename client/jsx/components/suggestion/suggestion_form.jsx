@@ -22,16 +22,44 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
+		var formNode = this._getFormNode();
 		return (<div>
 			<h1>Suggestion</h1>
 			<hr />
-			<GoogleRecaptcha onComplete={this._onCompleteCaptcha}/>
+			{formNode}
 		</div>);
+	},
+
+	_getFormNode: function () {
+		if (this.state.isPending) {
+			return <p>Please wait...</p>;
+		} else {
+			return (<div>
+				<form onSubmit={this._onSubmit}>
+					<div className="row">
+						<div className="large-12 columns">
+							<label>Field1
+								<input type="text" />
+							</label>
+							<GoogleRecaptcha onComplete={this._onCompleteCaptcha} />
+							<input type="submit" value="Send" className="button secondary" />
+						</div>
+					</div>
+				</form>
+			</div>);
+		}
 	},
 
 	_onCompleteCaptcha: function (response) {
 		this.setState({
 			userRecaptchaResponse: response
+		});
+	},
+
+	_onSubmit: function (e) {
+		e.preventDefault();
+		this.setState({
+			isPending: true
 		});
 	}
 });
