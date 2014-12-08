@@ -31,7 +31,7 @@ module.exports = React.createClass({
 			hasScaleToggler: false,
 			minValue: null,
 			maxValue: null,
-			onClick: null
+			onClick: null // (min, max) =>
 		};
 	},
 
@@ -118,9 +118,13 @@ module.exports = React.createClass({
 				height: 0,
 				fill: (d) => { return (d.key >= 0 ? "red" : "green"); }
 			})
-			.on("click", (e) => {
+			.on("click", d => {
 				if (this.props.onClick) {
-					this.props.onClick();
+					var _allKeys = _.sortBy(_.map(_.keys(this.props.data), d => { return parseFloat(d); }));
+					var _keyIndex = Math.max(_allKeys.indexOf(d.key), 0);
+					var _min = _keyIndex === 0 ? "*" : d.key.toFixed(1);
+					var _max =  _keyIndex === _allKeys.length - 1 ? "*" :  _allKeys[_keyIndex + 1].toFixed(1);
+					this.props.onClick(_min, _max);
 				}
 			});
 

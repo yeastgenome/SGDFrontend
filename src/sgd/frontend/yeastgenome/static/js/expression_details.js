@@ -1,3 +1,7 @@
+function filter_table(minValue, maxValue) {
+    var dataset_table = $($.fn.dataTable.fnTables(true)).dataTable();
+    dataset_table.fnFilter( 'log2ratio=' + minValue + ':' + maxValue );
+}
 
 $(document).ready(function() {
     $("#expression_table_analyze").hide();

@@ -8,11 +8,17 @@ var ExpressionChart = require("../components/viz/expression_chart.jsx");
 
 var expressionView = {};
 expressionView.render = function () {
-
 	$.getJSON('/backend/locus/' + locus['id'] + '/expression_details?callback=?', (data) => {
 		if (data.datasets.length) {
+
+			// use filter_table(minValue, maxValue) method from expression_details.js
+			var _onClick = null;
+			if (filter_table) {
+				_onClick = (minValue, maxValue) => { filter_table(minValue, maxValue); };
+			}
+
 			React.renderComponent(
-				<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} hasScaleToggler={true} />,
+				<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} hasScaleToggler={true} onClick={_onClick} />,
 				document.getElementById("j-expression-chart-target")
 			);
 		} else {
