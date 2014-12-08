@@ -248,12 +248,20 @@
         </h2>
         <hr />
         <div class="">
+
+            {% if locus['go_overview']['paragraph'] %}
+                <dl class="key-value">
+                    <dt>Summary</dt>
+                    <dd>{{ locus['go_overview']['paragraph'] }}</dd>
+                </dl>
+            {% endif %}
+
             {% if locus.go_overview.manual_molecular_function_terms|length + locus.go_overview.manual_biological_process_terms|length + locus.go_overview.manual_cellular_component_terms|length + locus.go_overview.htp_molecular_function_terms|length + locus.go_overview.htp_biological_process_terms|length + locus.go_overview.htp_cellular_component_terms|length + locus.go_overview.computational_annotation_count == 0 %}
                 <p>No Gene Ontology data available.</p>
             {% else %}
 
                 {% if 'computational_annotation_count' not in locus.go_overview or locus.go_overview.computational_annotation_count > 0 %}
-                    <a href="/locus/{{ locus.sgdid }}/go#comp">View computational annotations</a>
+                    <p><a href="/locus/{{ locus.sgdid }}/go#comp">View computational annotations</a></p>
                 {% endif %}
 
                 {% if locus.go_overview.manual_molecular_function_terms|length + locus.go_overview.htp_molecular_function_terms|length > 0 %}
