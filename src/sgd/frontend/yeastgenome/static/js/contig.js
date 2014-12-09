@@ -193,7 +193,7 @@ function draw_overview(data) {
         if(count >= 10) {
             size = 10;
         }
-        if(count == 1) {
+        if(count <= 1) {
             $('#piechart').hide();
         }
 
