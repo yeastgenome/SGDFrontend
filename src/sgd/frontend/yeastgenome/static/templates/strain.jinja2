@@ -72,12 +72,16 @@
                 <a href="#" data-dropdown="genome_sequence_info"><i class="fa fa-info-circle"></i></a>
 
                 <p id="genome_sequence_info" class="f-dropdown content medium" data-dropdown-content>
-                    Genome sequence information for a particular strain, including GenBank accession IDs and assembly
-                    statistics. The table below lists all contigs included in the genome, listed by GenBank accession,
-                    with information regarding where that contig maps to the S288C Reference Genome. Note that only the
-                    single best BLAST hit for each contig is shown, based on highest bit score from a pairwise BLAST of
-                    the genome against <a href="/strain/S288C/overview">S288C</a> using
-                    <a href="http://www.ncbi.nlm.nih.gov//blast/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_PROG_DEF=megaBlast&BLAST_SPEC=OGP__4932__9518" target="_blank">NCBI’s Genome BLAST</a> tool.
+                    {% if strain.display_name == 'S288C' %}
+                        Genome sequence information for the S288C reference strain, including GenBank accession IDs, RefSeq accession IDs, and assembly statistics.
+                    {% else %}
+                        Genome sequence information for a particular strain, including GenBank accession IDs and assembly
+                        statistics. The table below lists all contigs included in the genome, listed by GenBank accession,
+                        with information regarding where that contig maps to the S288C Reference Genome. Note that only the
+                        single best BLAST hit for each contig is shown, based on highest bit score from a pairwise BLAST of
+                        the genome against <a href="/strain/S288C/overview">S288C</a> using
+                        <a href="http://www.ncbi.nlm.nih.gov//blast/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_PROG_DEF=megaBlast&BLAST_SPEC=OGP__4932__9518" target="_blank">NCBI’s Genome BLAST</a> tool.
+                    {% endif %}
                 </p>
                 </h2>
                 <hr />
