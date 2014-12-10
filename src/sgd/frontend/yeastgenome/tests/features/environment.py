@@ -14,13 +14,14 @@ from sauceclient import SauceClient
 # import env variables
 USERNAME = os.environ.get('SAUCE_USERNAME')
 ACCESS_KEY = os.environ.get('SAUCE_ACCESS_KEY')
-# point at production
-BASE_URL = "http://yeastgenome.org"
+# point at local
+BASE_URL = "http://localhost:6545"
 
 # parse env variable to maybe test remotely, defaults to local selenium connection
 IS_REMOTE = False
 if (os.environ.get('REMOTE') in ['True', 'true', '1']):
     IS_REMOTE = True
+    BASE_URL = "http://sgd-beta.stanford.edu"
     sauce = SauceClient(USERNAME, ACCESS_KEY)
 
 def before_feature(context, feature):
