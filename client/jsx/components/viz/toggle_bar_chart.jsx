@@ -45,7 +45,7 @@ module.exports = React.createClass({
 
 		// if there are more than FILTER_TRESHOLD elements, filter them
 		var filter = null;
-		if (activeData.length > FILTER_TRESHOLD) {
+		if (activeData.length > FILTER_TRESHOLD + 1) {
 			filter = d => {
 				return activeData.indexOf(d) <= FILTER_TRESHOLD;
 			};
