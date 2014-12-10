@@ -263,7 +263,6 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				key: termData.format_name,
 				name: termData.display_name,
 				data: _childTerms,
-				text: `${termData.display_name}:  ${(termData.descendant_annotation_gene_count + termData.direct_annotation_gene_count).toLocaleString()} Total Gene Products Annotated`
 			};
 		});
 
