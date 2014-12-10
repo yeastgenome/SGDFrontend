@@ -18,7 +18,7 @@ expressionView.render = function () {
 			}
 
 			React.renderComponent(
-				<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} hasScaleToggler={true} onClick={_onClick} />,
+				<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} hasScaleToggler={true} onClick={_onClick} hasHelpIcon={true}/>,
 				document.getElementById("j-expression-chart-target")
 			);
 		} else {

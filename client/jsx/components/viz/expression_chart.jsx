@@ -6,6 +6,7 @@ var React = require("react");
 var _ = require("underscore");
 
 var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
+var HelpIcon = require("../widgets/help_icon.jsx");
 var RadioSelector = require("../widgets/radio_selector.jsx");
 
 var HEIGHT = 300;
@@ -44,7 +45,11 @@ module.exports = React.createClass({
 
 	render: function () {
 		var scaleTogglerNode = this._getScaleTogglerNode();
+
+		var _helpText = "The histogram panel contains a Y-axis toggle. The default view is in log10 space to better visualize the large amount of data, and enhance the tails at either expression extreme. Move the toggle slider to the left to view the data in linear space. Clickable histogram bars filter the dataset results presented in the table below based on increased or decreased log2 expression ratios.";
+		var helpNode = this.props.hasHelpIcon ? <h3 style={{ position: "absolute", top: 0, right: 0 }}><HelpIcon text={_helpText} orientation="left"/></h3> : null;
 		return (<div className="expression-histogram" style={{ position: "relative" }}>
+			{helpNode}
 			{scaleTogglerNode}
 			<span className="histogram-axis-text y"><i>Number of Conditions</i></span>
 			<svg ref="svg" style={{ width: "100%", height: HEIGHT }}></svg>
