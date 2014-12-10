@@ -5,10 +5,10 @@ var React = require("react");
 var _ = require("underscore");
 
 var Drawer = require("./drawer.jsx");
-var DropdownChecklist = require("../widgets/dropdown_checklist.jsx");
 var RadioSelector = require("../widgets/radio_selector.jsx");
 var SearchBar = require("../widgets/search_bar.jsx");
 var VariantHeatmap = require("./variant_heatmap.jsx");
+var StrainSelector = require("./strain_selector.jsx");
 
 // TEMP
 // FAKE HEATMAP DATA
@@ -53,6 +53,13 @@ module.exports = React.createClass({
 		};
 		var _onRadioSelect = key => { this.setState({ mode: key }); };
 		var _radioElements = [ { name: "DNA", key: "dna" }, { name: "Protein", key: "protein" }];
+
+		// TEMP strain selector cb
+		// ([123, 456]) =>
+		var _onStrainSelect = activeStrainIds => {
+			console.log(activeStrainIds);
+		};
+
 		// TEMP hardcoded locus id for RAD54 and display name
 		var drawerNode = this.state.drawerVisible ? <Drawer onExit={_onExit} locusDisplayName="RAD54" locusId={4672} strainData={_strainMetaData} /> : null;
 		return (<div>
@@ -65,7 +72,7 @@ module.exports = React.createClass({
 					<SearchBar />
 				</div>
 				<div className="columns small-6 medium-2">
-					<DropdownChecklist />
+					<StrainSelector onSelect={_onStrainSelect} />
 				</div>
 				<div className="columns small-6 medium-4">
 					<div style={{ marginTop: "0.35rem" }}>

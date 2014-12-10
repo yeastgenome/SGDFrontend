@@ -10,8 +10,7 @@ module.exports = React.createClass({
 		// TEMP just static image
 		var _style = {
 			width: 244,
-			height: 50,
-			marginLeft: 100
+			height: 50
 		}
 		return <img style={_style} src="/static/img/temp_fake_dendogram.gif" />;
 	}

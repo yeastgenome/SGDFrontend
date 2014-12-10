@@ -3,8 +3,6 @@ var d3 = require("d3");
 var React = require("react");
 var _ = require("underscore");
 
-var Dendogram = require("../viz/dendogram.jsx");
-
 var DEFAULT_DOM_SIDE_SIZE = 400; // height and width\
 var FONT_SIZE = 14;
 var HEADER_HEIGHT = 60;
@@ -36,7 +34,6 @@ module.exports = React.createClass({
 		var overlayNode = this._getOverlayNode();
 
 		return (<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
-			<Dendogram data={this.props.strainData} />
 			<div className="heatmap-header" style={{ height: HEADER_HEIGHT }}>
 				{strainLabelsNode}
 			</div>
