@@ -5,7 +5,7 @@ install: pip install behave selenium unittest2 sauceclient httplib2
 script: REMOTE=True behave src/sgd/frontend/yeastgenome/tests/features
 branches:
   only:
-    - integrating-saucelabs2
+    - development
 env:
   global:
   - secure: CSAlJu2IfRoX09Pvc7NqfNhOoP3iGdKHLEHRHA/p2UFExB97igv4PWwkW2iu/QcE0TA2kAoyB4/72KteWxo3NeK/IkAtjVY0ao9Fro3mAJoFM1hV+e6cRr0R/fepbhtegipPb+P19emdtrUkW3kT3iizLO50XRa7JAgFy+3PTB4=
