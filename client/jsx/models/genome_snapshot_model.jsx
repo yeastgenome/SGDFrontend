@@ -49,7 +49,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		var orfElement = _.findWhere(features, { name: "ORF"} );
 		orfElement.nestedValues = characFeatures;
 
-		return features
+		return features;
 	}
 
 	// put data in table format
@@ -141,7 +141,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 	_parseFeatures (response) {
 		// get the contigs for S288C
 		var chroms = _.filter(response.columns, d => {
-			return d.format_name.match("S288C");
+			return d.strain.format_name === "S288C";
 		});
 
 		// assign feature data
@@ -206,7 +206,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 	// format GO data into nested format for d3 partition
 	_parseGo (response) {
-		var data = response;
+		var data = _.clone(response);
 		var allSlimTerms = _.uniq(data.go_slim_terms, t => { return t.id });
 
 		// helper function to get terms from their ID
@@ -234,7 +234,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		});
 
 		// format data, mapping children to parents
-		goTerms = _.map(goTerms, (termData) => {
+		goTerms = _.map(goTerms, termData => {
 			var _childRelationships = _.filter(relationships, r => {
 				return r[1] === termData.id;
 			});
@@ -252,7 +252,6 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				display_name: "annotated to unknown",
 				isRoot: true,
 				format_name: "annotated_to_unknown"
-
 			});
 			// sort desc
 			_childTerms = _.sortBy(_childTerms, d => {
@@ -264,7 +263,6 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				key: termData.format_name,
 				name: termData.display_name,
 				data: _childTerms,
-				text: `${termData.display_name}:  ${(termData.descendant_annotation_gene_count - termData.direct_annotation_gene_count).toLocaleString()} Total Gene Products Annotated`
 			};
 		});
 

@@ -8,7 +8,7 @@
 	<div class="navbar-container large-3 columns">
 	</div>
 
-	<div class="small-12 large-9 columns content-column j-main s-nextgen">
+	<div class="small-12 large-9 columns content-column j-main">
 		<a name="genomeInventory"></a>
 		<div class="row genome-snapshot" data-magellan-destination="genomeInventory">
 			<div class="large-12 columns">
@@ -42,10 +42,20 @@
 		<a name="goAnnotations"></a>
 		<div class="row go-snapshot" data-magellan-destination="goAnnotations">
 			<div class="large-12 columns">
-				<h2>Summary of Gene Ontology (GO) Annotations<span class="date-container"></span></h2>
+				<h2>
+					Summary of Gene Ontology (GO) Annotations<span class="date-container"></span>
+				</h2>
 				<p>
 					These graphs represent the state of Gene Ontology (GO) annotation of the entire genome using GO slims, which are high-level subsets of GO terms that allow grouping of genes into broad categories. Each graph represents a single aspect of GO, such as Biological Process (BP), Molecular Function (MF), or Cellular Component (CC). The radio buttons can be used to access the bar graphs for MF and CC.  The GO slim terms are listed, along with the number of gene products annotated to that term or to a child of that term. Note that some gene products are annotated to one or more GO terms that map to more than one GO slim term. 
 				</p>
+				<h2>
+					<a href="#" data-dropdown="go_info"><i class="fa fa-info-circle"></i></a>
+		            <p id="go_info" class="f-dropdown content medium" data-dropdown-content>
+						Features that are annotated to the ‘root’ terms are
+						considered ‘unknown’ and are shown in red.  More information on GO and GO slims can be found on SGD’s <a href="http://www.yeastgenome.org/help/function-help/gene-ontology-go">GO help page</a>. 
+						Please use the <a href="http://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a> or download the <a href="http://downloads.yeastgenome.org/curation/literature/">go_slim_mapping.tab</a> file to obtain the GO data summarized in these graphs.
+		            </p>
+				</h2>
 				<div class="go-snapshot-target sgd-viz panel">
 					<img class="loader" src="/static/img/dark-slow-wheel.gif" />
 				</div>
