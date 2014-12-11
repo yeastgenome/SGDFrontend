@@ -31,7 +31,8 @@ for (var j = 0; j <= _numGenes; j++) {
 var _strainMetaData = [];
 for (var i = numStrains; i >= 0; i--) {
 	_strainMetaData.push ({
-		name: "Strain" + i
+		name: "Strain" + i,
+		key: Math.round(Math.random() * 10000)
 	});
 };
 _strainMetaData = _strainMetaData.reverse();
@@ -72,7 +73,7 @@ module.exports = React.createClass({
 					<SearchBar />
 				</div>
 				<div className="columns small-6 medium-2">
-					<StrainSelector onSelect={_onStrainSelect} />
+					<StrainSelector data={_strainMetaData} onSelect={_onStrainSelect} />
 				</div>
 				<div className="columns small-6 medium-4">
 					<div style={{ marginTop: "0.35rem" }}>
@@ -80,7 +81,7 @@ module.exports = React.createClass({
 					</div>
 				</div>
 			</div>
-			<div className="panel">
+			<div className="panel" style={{ zIndex: 1 }}>
 				{heatmapNode}
 			</div>
 			{drawerNode}
