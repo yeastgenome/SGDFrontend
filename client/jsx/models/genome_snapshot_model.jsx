@@ -232,12 +232,26 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		var relationships = _.filter(allRelationships, r => {
 			return topIds.indexOf(r[1]) >= 0;
 		});
+		var nonDirectRelationships = _.filter(allRelationships, r => {
+			return (typeof r[0] === "number" && topIds.indexOf(r[1]) < 0);
+		});
 
 		// format data, mapping children to parents
 		goTerms = _.map(goTerms, termData => {
 			var _childRelationships = _.filter(relationships, r => {
 				return r[1] === termData.id;
 			});
+
+			// assign the non-direct relationships
+			for (var i = _childRelationships.length - 1; i >= 0; i--) {
+				var _parentTerm = _childRelationships[i];
+				var _nonDirectChildRelationships = _.filter(nonDirectRelationships, _r => {
+					return _r[1] === _parentTerm[0];
+				});
+				if (_nonDirectChildRelationships.length) {
+					_childRelationships = _childRelationships.concat(_nonDirectChildRelationships)
+				}
+			}
 
 			// format child terms
 			var _childTerms = _.map(_childRelationships, r => {
