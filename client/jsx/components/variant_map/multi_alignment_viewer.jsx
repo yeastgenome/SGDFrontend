@@ -3,6 +3,7 @@ var d3 = require("d3");
 var React = require("react");
 var _ = require("underscore");
 
+var getJaggedScale = require("./get_jagged_scale.jsx");
 var MultiScaleAxis = require("./multi_scale_axis.jsx");
 
 // TEMP vars
@@ -128,27 +129,7 @@ module.exports = React.createClass({
 
 	// returns a d3 scale which has multiple linear scale segments corresponding to segments prop
 	_getXScale: function () {
-		// sort segments by domain
-		var _segs = _.sortBy(this.props.segments, s => {
-			return s.domain[0];
-		});
-		// make domain from "ticky" points in segment
-		var _domain = _.reduce(this.props.segments, (memo, s) => {
-			memo.push(s.domain[1]);
-			return memo;
-		}, [0]);
-		// make range
-		var _range = _.reduce(this.props.segments, (memo, s) => {
-			var _last = memo[memo.length - 1];
-			// add fixed px for invible, else calc based on sequence
-			var _delta = !s.visible ? SUMMARIZED_SIZE : ((s.domain[1] - s.domain[0]) * PX_PER_CHAR);
-			memo.push(_last += _delta);
-			return memo;
-		}, [LABEL_WIDTH]);
-
-		return d3.scale.linear()
-			.domain(_domain)
-			.range(_range);
+		return getJaggedScale(this.props.segments);
 	},
 
 	_getYScale: function () {

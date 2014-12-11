@@ -156,7 +156,7 @@ module.exports = React.createClass({
 				},
 				{
 					domain: [90, 354],
-					visble: false
+					visible: false
 				}
 			]
 		};
