@@ -76,9 +76,10 @@ module.exports = React.createClass({
         // init legend
         var totalOrfs = data[0].value;
         var legendElements = _.map(data[0].nestedValues, (entry, i) => {
-            var _colors = ["#1f77b4", "#aec7e8", "#999"]
+            var _colors = ["#1f77b4", "#aec7e8", "#999"];
+            var _percent = totalOrfs > 0 ? Math.round(entry.value/totalOrfs * 100) : "n/a";
             return {
-                text: `${Math.round(entry.value/totalOrfs * 100)}% ${entry.name}`,
+                text: `${_percent}% ${entry.name}`,
                 color: _colors[i]
             };
         });
