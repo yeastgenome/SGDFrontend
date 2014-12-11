@@ -5,6 +5,7 @@ var React = require("react");
 var d3 = require("d3");
 var _ = require("underscore");
 
+var HelpIcon = require("../widgets/help_icon.jsx");
 var RadioSelector = require("../widgets/radio_selector.jsx");
 var BarChart = require("./bar_chart.jsx");
 
@@ -52,9 +53,13 @@ module.exports = React.createClass({
 		}
 
 		var _colorScale = d => { return d.isRoot ? "#DF8B93" : "#18AB2F"; };
+		var _helpText = "Features that are annotated to the ‘root’ terms are considered ‘unknown’ and are shown in red.  More information on GO and GO slims can be found on SGD’s <a href='http://www.yeastgenome.org/help/function-help/gene-ontology-go'>GO help page</a>.  Please use the <a href='http://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl'>GO Slim Mapper</a> or download the <a href='http://downloads.yeastgenome.org/curation/literature/'>go_slim_mapping.tab</a> file to obtain the GO data summarized in these graphs.";
 		return (
 			<div className="toggle-bar-chart">
-				{controlsNode}
+				<h3 style={{ position: "absolute", top: "1rem", right: "1rem" }}><HelpIcon isInfo={true} orientation="left" text={_helpText}/></h3>
+				<div style={{ marginRight: "2rem" }}>
+					{controlsNode}
+				</div>
 				<BarChart
 					data={activeData} yValue={this.props.yValue}
 					labelRatio={0.20} hasTooltip={true}
