@@ -54,7 +54,6 @@ module.exports = React.createClass({
 		};
 
 		var _stopClick = e => {
-			e.preventDefault();
 			e.nativeEvent.stopImmediatePropagation();
 		};
 		return (<div onClick={_stopClick} style={_style}>
