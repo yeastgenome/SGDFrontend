@@ -6,8 +6,11 @@ var _ = require("underscore");
 
 var Checklist = require("../widgets/checklist.jsx");
 var Dendogram = require("../viz/dendogram.jsx");
+var DidClickOutside = require("../mixins/did_click_outside.jsx");
 
 module.exports = React.createClass({
+	mixins: [DidClickOutside],
+
 	propTypes: {
 		data: React.PropTypes.array.isRequired,
 		onSelect: React.PropTypes.func // (activeStrainIds) =>
@@ -26,9 +29,13 @@ module.exports = React.createClass({
 		</div>);
 	},
 
+	didClickOutside: function () {
+		this.setState({ isActive: false });
+	},
+
 	_toggleActive: function (e) {
-		// e.preventDefault();
-		// e.nativeEvent.stopImmediatePropagation();
+		e.preventDefault();
+		e.nativeEvent.stopImmediatePropagation();
 		this.setState({ isActive: !this.state.isActive });
 	},
 
@@ -45,8 +52,12 @@ module.exports = React.createClass({
 			height: 390,
 			zIndex: 2
 		};
-		var checklistNode
-		return (<div style={_style}>
+
+		var _stopClick = e => {
+			e.preventDefault();
+			e.nativeEvent.stopImmediatePropagation();
+		};
+		return (<div onClick={_stopClick} style={_style}>
 			<div className="row">
 				<div className="columns small-6">
 					<Dendogram />

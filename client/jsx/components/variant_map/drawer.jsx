@@ -32,7 +32,14 @@ module.exports = React.createClass({
 
 	render: function () {
 		var _height = this.state.showSequence ? HEIGHT_WITH_SEQUENCE : HEIGHT_WITHOUT_SEQUENCE;
-		var _style = {
+		var _maskStyle = {
+			position: "fixed",
+			top: 0,
+			right: 0,
+			bottom: 0,
+			left: 0
+		};
+		var _drawerStyle = {
 			position: "fixed",
 			bottom: 0,
 			left: 0,
@@ -69,14 +76,16 @@ module.exports = React.createClass({
 		}
 
 		var sequenceNode = this._getSequenceNode();
-		return (<div style={_style}>
-			<p><i className="fa fa-exclamation" /> This is a development version of this tool.  Data are NOT accurate.</p>
-			<h1>
-				{this.props.locusDisplayName}
-				<a onClick={this.props.onExit} style={_exitStyle}><i className="fa fa-times"></i></a>
-			</h1>
-			{locusDiagramNode}
-			{sequenceNode}
+		return (<div style={_maskStyle} onClick={this.props.onExit}>
+			<div style={_drawerStyle}>
+				<p><i className="fa fa-exclamation" /> This is a development version of this tool.  Data are NOT accurate.</p>
+				<h1>
+					{this.props.locusDisplayName}
+					<a onClick={this.props.onExit} style={_exitStyle}><i className="fa fa-times"></i></a>
+				</h1>
+				{locusDiagramNode}
+				{sequenceNode}
+			</div>
 		</div>);
 	},
 
