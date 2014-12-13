@@ -8,7 +8,7 @@ var FONT_SIZE = 14;
 var HEADER_HEIGHT = 60;
 var NODE_SIZE = 16;
 var CANVAS_SIZE = 8000;
-var LABEL_WIDTH = 100;
+var LABEL_WIDTH = 120;
 
 module.exports = React.createClass({
 	propTypes: {
@@ -34,12 +34,10 @@ module.exports = React.createClass({
 		var overlayNode = null// TEMP this._getOverlayNode();
 
 		return (<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
-			<div className="heatmap-header" style={{ height: HEADER_HEIGHT }}>
-				{strainLabelsNode}
-			</div>
+			{strainLabelsNode}
 			<div ref="outerScroll" style={{ height: this.state.DOMHeight - HEADER_HEIGHT, overflowX: "scroll", position: "relative" }}>
 				<div style={{ position: "relative", width: _scrollZoneSize }}>
-					<canvas ref="canvas" width={CANVAS_SIZE} height={this.state.DOMHeight - HEADER_HEIGHT} style={{ position: "absolute", left: _canvasX }}/>
+					<canvas ref="canvas" width={CANVAS_SIZE} height={this.state.DOMHeight} style={{ position: "absolute", left: _canvasX }}/>
 				</div>
 				{overlayNode}
 			</div>
@@ -166,7 +164,8 @@ module.exports = React.createClass({
 	_renderCanvas: function () {
 		// get canvas context and clear
 		var ctx = this.refs.canvas.getDOMNode().getContext("2d");
-		ctx.clearRect(0, 0, this.state.DOMWidth, this.state.DOMHeight);
+		ctx.clearRect(0, 0, CANVAS_SIZE, this.state.DOMHeight);
+		ctx.font = FONT_SIZE + "px Lato";
 
 		// render rows of features with strain variation in each column
 		var colorScale = d3.scale.linear()
@@ -177,10 +176,18 @@ module.exports = React.createClass({
 		var chunkOfData = this._getChunkedData();
 
 		chunkOfData.forEach( (d, i) => {
+			ctx.save();
+			ctx.fillStyle = "black";
+			ctx.translate(0, 0);
+			ctx.rotate(-Math.PI/2);
+			ctx.textAlign = "left";
+			ctx.fillText(d.name, -LABEL_WIDTH / 2, (i + 1) * NODE_SIZE + LABEL_WIDTH - 3);
+			ctx.restore();
+
 			d.variationData.forEach( (_d, _i) => {
 				// get color and draw rect
 				ctx.fillStyle = colorScale(_d);
-				ctx.fillRect(i * NODE_SIZE + LABEL_WIDTH, _i * NODE_SIZE, NODE_SIZE, NODE_SIZE);
+				ctx.fillRect(i * NODE_SIZE + LABEL_WIDTH, _i * NODE_SIZE + HEADER_HEIGHT, NODE_SIZE, NODE_SIZE);
 			});
 		});
 	}
