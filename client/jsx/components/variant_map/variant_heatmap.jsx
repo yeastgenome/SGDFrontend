@@ -32,7 +32,7 @@ module.exports = React.createClass({
 		var _canvasHeight = this._getYScale().range()[1] + HEADER_HEIGHT;
 
 		var strainLabelsNode = this._getLabelsNode();
-		var overlayNode = null// TEMP this._getOverlayNode();
+		var overlayNode = this._getOverlayNode();
 
 		return (<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
 			{strainLabelsNode}
@@ -52,6 +52,9 @@ module.exports = React.createClass({
 
 	_getOverlayNode: function () {
 		var chunkedData = this._getChunkedData();
+		var xScale = this._getXScale();
+		var nodeHeight = this.props.strainData.length * NODE_SIZE + HEADER_HEIGHT;
+
 		var rectNodes = _.map(chunkedData, (d, i) => {
 			// UI events
 			var _onClick;
@@ -69,18 +72,17 @@ module.exports = React.createClass({
 			// highlight if mouseover
 			var mouseOverNode = null;
 			if (d.id === this.state.mouseOverId) {
-				mouseOverNode = <rect width={NODE_SIZE * d.variationData.length} height={NODE_SIZE} x={LABEL_WIDTH} y={0} stroke="yellow" fill="none" strokeWidth={2} />;
+				mouseOverNode = <rect width={NODE_SIZE} height={nodeHeight - HEADER_HEIGHT} x={0} y={HEADER_HEIGHT} stroke="yellow" fill="none" strokeWidth={2} />;
 			}
-			var _transform = `translate(0, ${i * NODE_SIZE})`;
+			var _transform = `translate(${i * NODE_SIZE}, 0)`;
 			return (<g key={"heatmapOverlay" + i} transform={_transform}>
 				{mouseOverNode}
-				<rect onMouseOver={_onMouseOver} width={this.state.DOMWidth} height={NODE_SIZE} x={0} y={0} opacity={0} stroke="none" onClick={_onClick}/>
-				<text dy={13} fontSize={FONT_SIZE}>{d.name}</text>
+				<rect onMouseOver={_onMouseOver} onClick={_onClick} width={NODE_SIZE} height={nodeHeight} x={0} y={0} stroke="none" opacity={0} />
 			</g>);
 		});
 
-		var _canvasY = this._getCanvasY();
-		return (<svg ref="svg" style={{ position: "absolute", top: _canvasY, width: this.state.DOMWidth, height: CANVAS_SIZE, cursor: "pointer" }}>
+		var _canvasX = this._getCanvasX();
+		return (<svg ref="svg" style={{ position: "absolute", left: _canvasX, width: CANVAS_SIZE, height: nodeHeight, cursor: "pointer" }}>
 			{rectNodes}
 		</svg>);
 	},
@@ -174,7 +176,7 @@ module.exports = React.createClass({
 			ctx.translate(0, 0);
 			ctx.rotate(-Math.PI/2);
 			ctx.textAlign = "left";
-			ctx.fillText(d.name, -LABEL_WIDTH / 2, (i + 1) * NODE_SIZE - 3);
+			ctx.fillText(d.name, - LABEL_WIDTH / 2, (i + 1) * NODE_SIZE - 3);
 			ctx.restore();
 
 			d.variationData.forEach( (_d, _i) => {
