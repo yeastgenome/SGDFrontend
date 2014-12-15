@@ -39,6 +39,7 @@ module.exports = React.createClass({
 			hasChromosomeThumb: true,
 			focusLocusDisplayName: null,
 			showSubFeatures: false,
+			showVariants: false,
 			variantData: [], // [{ coordinateDomain: [20045, 20046] }, ...]
 			crickTracks: 1,
 			watsonTracks: 1
@@ -558,17 +559,23 @@ module.exports = React.createClass({
 
 	// TEMP
 	_getVariantNodes: function () {
-		if (this.props.variantData.length === 0) {
+		if (this.props.variantData.length === 0 || !this.props.showVariants) {
 			return null;
 		}
-		var scale = this._getScale();
+
 		var focusLocus = this._getFocusLocus();
-		var _avgCoor = (focusLocus.start + focusLocus.end) / 2;
-		var midX = scale(_avgCoor)
-		var _transform = `translate(${midX}, 35)`;
-		return (<g transform={_transform}>
-			<line x1="0" x2="0" y1="0" y2="25" stroke="black" strokeWidth="2px" />
-			<circle r="10" fill="blue" />
-		</g>);
+		var scale = this._getScale();
+		var yCoordinate = this._getTransformObject(focusLocus).y - HEIGHT;
+
+		return _.map(this.props.variantData, (d, i) => {
+			var _avgCoor = (d.coordinateDomain[0] + d.coordinateDomain[1]) / 2;
+			var midX = scale(_avgCoor)
+			var _transform = `translate(${midX}, ${yCoordinate})`;
+
+			return (<g transform={_transform} key={"variantNode" + i}>
+				<line x1="0" x2="0" y1="0" y2="25" stroke="black" strokeWidth="2px" />
+				<circle r="10" fill="blue" />
+			</g>);
+		});
 	}
 });

@@ -61,7 +61,12 @@ module.exports = React.createClass({
 			var attr = this.state.neighborModelAttr;
 
 			// TEMP
-			var _variantData = [1];
+			var _variantData = [
+				{
+					coordinateDomain: [195000, 195001],
+					value: 1
+				}
+			];
 
 			locusDiagramNode = (<LocusDiagram
 				contigData={attr.contigData}
@@ -69,6 +74,7 @@ module.exports = React.createClass({
 				domainBounds={attr.domainBounds}
 				focusLocusDisplayName={this.props.locusDisplayName}
 				showSubFeatures={false}
+				showVariants={true}
 				variantData={_variantData}
 				watsonTracks={Math.abs(attr.trackDomain[1])}
 				crickTracks={Math.abs(attr.trackDomain[0])}
@@ -78,7 +84,6 @@ module.exports = React.createClass({
 		var sequenceNode = this._getSequenceNode();
 		return (<div style={_maskStyle} onClick={this.props.onExit}>
 			<div style={_drawerStyle}>
-				<p><i className="fa fa-exclamation" /> This is a development version of this tool.  Data are NOT accurate.</p>
 				<h1>
 					{this.props.locusDisplayName}
 					<a onClick={this.props.onExit} style={_exitStyle}><i className="fa fa-times"></i></a>
