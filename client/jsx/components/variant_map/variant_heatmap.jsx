@@ -29,15 +29,16 @@ module.exports = React.createClass({
 	render: function () {
 		var _scrollZoneSize = this.props.data.length * NODE_SIZE;
 		var _canvasX = this._getCanvasX();
+		var _canvasHeight = this._getYScale().range()[1] + HEADER_HEIGHT;
 
 		var strainLabelsNode = this._getLabelsNode();
 		var overlayNode = null// TEMP this._getOverlayNode();
 
 		return (<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
 			{strainLabelsNode}
-			<div ref="outerScroll" style={{ height: this.state.DOMHeight - HEADER_HEIGHT, overflowX: "scroll", position: "relative" }}>
+			<div ref="outerScroll" style={{ width: this.state.DOMWidth - LABEL_WIDTH, height: _canvasHeight, overflowX: "scroll", position: "relative", left: LABEL_WIDTH }}>
 				<div style={{ position: "relative", width: _scrollZoneSize }}>
-					<canvas ref="canvas" width={CANVAS_SIZE} height={this.state.DOMHeight} style={{ position: "absolute", left: _canvasX }}/>
+					<canvas ref="canvas" width={CANVAS_SIZE} height={_canvasHeight} style={{ position: "absolute", left: _canvasX }}/>
 				</div>
 				{overlayNode}
 			</div>
@@ -115,24 +116,17 @@ module.exports = React.createClass({
 	_getChunkedData: function () {
 		var _canvasX = this._getCanvasX();
 		var _nodesPerCanvas = Math.round(CANVAS_SIZE / NODE_SIZE)
-		var _dataStartIndex = Math.round(this._getYScale().invert(_canvasX));
+		var _dataStartIndex = Math.round(this._getXScale().invert(_canvasX));
 		return this.props.data.slice(_dataStartIndex, _dataStartIndex + _nodesPerCanvas);
 	},
 
 	_getLabelsNode: function () {
-		var yScale = this._getYScale();
 		var nodes = this.props.strainData.map( (d, i) => {
 			var _style = {
 				position: "absolute",
 				left: 0,
 				top: HEADER_HEIGHT + i * NODE_SIZE - 3,
 				fontSize: FONT_SIZE
-				// transform: "rotate(-90deg)",
-				// transformOrigin: "left center",
-				// "-ms-transform": "rotate(-90deg)",
-			 //    "-ms-transform-origin": "left center",
-			 //    "-webkit-transform": "rotate(-90deg)",
-			 //    "-webkit-transform-origin": "left center"
 			};
 			return <span key={"strainLabel" + i} style={_style}>{d.name}</span>;
 		});
@@ -151,10 +145,9 @@ module.exports = React.createClass({
 	},
 
 	_getYScale: function () {
-		var maxColWidth = 11; // TEMP
 		return d3.scale.linear()
-			.domain([0, maxColWidth])
-			.range([0, this.state.DOMHeight]);
+			.domain([0, this.props.strainData.length])
+			.range([0, this.props.strainData.length * NODE_SIZE]);
 	},
 
 	_getCanvasX: function () {
@@ -181,13 +174,13 @@ module.exports = React.createClass({
 			ctx.translate(0, 0);
 			ctx.rotate(-Math.PI/2);
 			ctx.textAlign = "left";
-			ctx.fillText(d.name, -LABEL_WIDTH / 2, (i + 1) * NODE_SIZE + LABEL_WIDTH - 3);
+			ctx.fillText(d.name, -LABEL_WIDTH / 2, (i + 1) * NODE_SIZE - 3);
 			ctx.restore();
 
 			d.variationData.forEach( (_d, _i) => {
 				// get color and draw rect
 				ctx.fillStyle = colorScale(_d);
-				ctx.fillRect(i * NODE_SIZE + LABEL_WIDTH, _i * NODE_SIZE + HEADER_HEIGHT, NODE_SIZE, NODE_SIZE);
+				ctx.fillRect(i * NODE_SIZE, _i * NODE_SIZE + HEADER_HEIGHT, NODE_SIZE, NODE_SIZE);
 			});
 		});
 	}
