@@ -48,6 +48,7 @@ module.exports = React.createClass({
 	componentDidMount: function () {
 		this._calculateWidth();
 		this.refs.outerScroll.getDOMNode().onscroll = _.throttle(this._checkScroll, 100);
+		this._renderCanvas();
 	},
 
 	_getOverlayNode: function () {
@@ -93,11 +94,8 @@ module.exports = React.createClass({
 		var scrollDelta = Math.abs(scrollLeft - this.state.canvasScrollX)
 		if (scrollDelta > CANVAS_SIZE / 4) {
 			this.setState({ canvasScrollX: scrollLeft });
+			this._renderCanvas();
 		}
-	},
-
-	componentDidUpdate: function () {
-		this._renderCanvas();
 	},
 
 	_onMouseOver: function (e, d) {
