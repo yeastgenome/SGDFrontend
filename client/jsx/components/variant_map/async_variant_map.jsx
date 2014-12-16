@@ -14,8 +14,7 @@ var StrainSelector = require("./strain_selector.jsx");
 // FAKE HEATMAP DATA
 var heatpmapData = [];
 var _numGenes = 6400;
-var numStrains = 14;
-
+var numStrains = 13;
 for (var j = 0; j <= _numGenes; j++) {
 	var _variantData = [];
 	for (var k = numStrains; k >= 0; k--) {

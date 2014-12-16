@@ -62,6 +62,7 @@ module.exports = React.createClass({
 					<Dendogram />
 				</div>
 				<div className="columns small-6">
+					<span style={{ fontSize: "0.875rem" }}>S288C (reference)</span>
 					<Checklist elements={this.props.data} />
 				</div>
 			</div>
