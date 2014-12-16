@@ -194,7 +194,6 @@ module.exports = React.createClass({
 		if (this.props.onMouseOver) {
 			this.props.onMouseOver(d);
 		}
-		console.log(d.link)
 		if (this.props.hasTooltip) {
 			this.setState({
 				tooltipVisible: true,
