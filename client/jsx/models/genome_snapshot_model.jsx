@@ -4,6 +4,8 @@
 var BaseModel = require("./base_model.jsx");
 var _ = require("underscore");
 
+var QUALIFICATION_STATUSES = ["Verified", "Uncharacterized", "Dubious"];
+
 module.exports = class GenomeSnapshotModel extends BaseModel {
 
 	constructor (options) {
@@ -34,15 +36,14 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 	// helper function which takes a list of features and nests the characterization status
 	// returns features array filtered and nested in "nestedValues" of ORF
 	_nestOrfCharacterizationStatuses (features) {
-		var charaStatuses = ["Verified", "Uncharacterized", "Dubious"];
 
 		// boolean helper function
 		var isORFChara = (f) => {
-			return charaStatuses.indexOf(f.name) >= 0;
+			return QUALIFICATION_STATUSES.indexOf(f.name) >= 0;
 		};
 
 		// get the statuses, separate them from the rest of features
-		var characFeatures = _.sortBy(_.filter(features, isORFChara), (f) => { return charaStatuses.indexOf(f.name); });
+		var characFeatures = _.sortBy(_.filter(features, isORFChara), (f) => { return QUALIFICATION_STATUSES.indexOf(f.name); });
 		features = _.filter(features, (f) => { return !isORFChara(f); })
 		
 		// finally, assign them to orf element
@@ -68,7 +69,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 			var row = _.map(chromosomeData, c => {
 				return c.features[i].value;
 			});
-			
+
 			row.unshift({
 				value: f.name.replace(/_/g, ' '),
 				href: `/locus/${f.name}`
@@ -162,7 +163,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 			return {
 				name: c.replace(/_/g, ' '),
 				value: 0,
-				link: `/locus/${c}`
+				link: QUALIFICATION_STATUSES.indexOf(c) >= 0 ? null : `/locus/${c}`
 			};
 		});
 		var combined = _.reduce(chroms, (prev, c) => {
