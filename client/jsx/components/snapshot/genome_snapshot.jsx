@@ -88,7 +88,7 @@ module.exports = React.createClass({
         var barNode = (<BarChart
             data={data} yValue={ function (d) { return d.value; } }
             labelValue={ function (d) { return d.name; } } labelRatio={_labelRatio} colorScale={_colorScale}
-            hasTooltip={true} hasYAxis={false} maxY={maxY}
+            hasTooltip={true} hasYAxis={false} maxY={maxY} hasNonZeroWidth={true}
         />);
 
         var axisNode = (<div style={{ height: 53 }}>

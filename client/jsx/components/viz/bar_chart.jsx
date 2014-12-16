@@ -27,6 +27,7 @@ module.exports = React.createClass({
 			colorValue: function (d) { return d; },
 			colorScale: function (d) { return "#DF8B93" },
 			hasTooltip: false,
+			hasNonZeroWidth: false,
 			hasYAxis: true,
 			labelRatio: 0.5,
 			labelValue: _identity,
@@ -118,11 +119,13 @@ module.exports = React.createClass({
 				top: (i*BAR_HEIGHT + i)
 			};
 
+			var _naturalBarWidth = state.widthScale(props.yValue(d));
+			var _barWidth = (this.props.hasNonZeroWidth && props.yValue(d) > 0) ? Math.max(1, _naturalBarWidth) : _naturalBarWidth;
 			var _barStyle = {
 				position: "absolute",
 				top: 0,
 				left: `${props.labelRatio * 100}%`,
-				width: state.widthScale(props.yValue(d)),
+				width: _barWidth,
 				height: "100%",
 				background: d.nestedValues ? "none": props.colorScale(props.colorValue(d)),
 				opacity: d.nestedValues ? 1 : props.nodeOpacity(d)
