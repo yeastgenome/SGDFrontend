@@ -4,6 +4,7 @@
 var React = require("react");
 var _ = require("underscore");
 
+var DropdownSelector = require("../widgets/dropdown_selector.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
 var Parset = require("../viz/parset.jsx");
 var MultiAlignmentViewer = require("./multi_alignment_viewer.jsx");
@@ -81,13 +82,22 @@ module.exports = React.createClass({
 			/>);
 		}
 
+		var dropdownElements = _.map(this.props.strainData, d => {
+			return {
+				name: d.name,
+				value: d.key
+			};
+		});
+		var initialDropdownValue = dropdownElements[0].value;
+
 		var sequenceNode = this._getSequenceNode();
-		return (<div style={_maskStyle} onClick={this.props.onExit}>
+		return (<div style={_maskStyle}>
 			<div style={_drawerStyle}>
 				<h1>
 					{this.props.locusDisplayName}
 					<a onClick={this.props.onExit} style={_exitStyle}><i className="fa fa-times"></i></a>
 				</h1>
+				<DropdownSelector elements={dropdownElements} defaultActiveValue={initialDropdownValue} />
 				{locusDiagramNode}
 				{sequenceNode}
 			</div>
