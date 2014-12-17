@@ -140,13 +140,6 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 	}
 
 	_parseFeatures (response) {
-		// TEMP
-		// add 4 verified ORFs to 2-micron plasmid until loaded in backend
-		if (response.data[0][17] === 0) {
-			response.data[0][17] = 4;
-			response.data[21][17] = 4;
-		}
-
 		// get the contigs for S288C
 		var chroms = _.filter(response.columns, d => {
 			return d.strain.format_name === "S288C";
