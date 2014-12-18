@@ -4,6 +4,8 @@
 var BaseModel = require("./base_model.jsx");
 var _ = require("underscore");
 
+var QUALIFICATION_STATUSES = ["Verified", "Uncharacterized", "Dubious"];
+
 module.exports = class GenomeSnapshotModel extends BaseModel {
 
 	constructor (options) {
@@ -34,22 +36,21 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 	// helper function which takes a list of features and nests the characterization status
 	// returns features array filtered and nested in "nestedValues" of ORF
 	_nestOrfCharacterizationStatuses (features) {
-		var charaStatuses = ["Verified", "Uncharacterized", "Dubious"];
 
 		// boolean helper function
 		var isORFChara = (f) => {
-			return charaStatuses.indexOf(f.name) >= 0;
+			return QUALIFICATION_STATUSES.indexOf(f.name) >= 0;
 		};
 
 		// get the statuses, separate them from the rest of features
-		var characFeatures = _.sortBy(_.filter(features, isORFChara), (f) => { return charaStatuses.indexOf(f.name); });
+		var characFeatures = _.sortBy(_.filter(features, isORFChara), (f) => { return QUALIFICATION_STATUSES.indexOf(f.name); });
 		features = _.filter(features, (f) => { return !isORFChara(f); })
 		
 		// finally, assign them to orf element
 		var orfElement = _.findWhere(features, { name: "ORF"} );
 		orfElement.nestedValues = characFeatures;
 
-		return features
+		return features;
 	}
 
 	// put data in table format
@@ -68,7 +69,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 			var row = _.map(chromosomeData, c => {
 				return c.features[i].value;
 			});
-			
+
 			row.unshift({
 				value: f.name.replace(/_/g, ' '),
 				href: `/locus/${f.name}`
@@ -141,7 +142,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 	_parseFeatures (response) {
 		// get the contigs for S288C
 		var chroms = _.filter(response.columns, d => {
-			return d.format_name.match("S288C");
+			return d.strain.format_name === "S288C";
 		});
 
 		// assign feature data
@@ -162,7 +163,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 			return {
 				name: c.replace(/_/g, ' '),
 				value: 0,
-				link: `/locus/${c}`
+				link: QUALIFICATION_STATUSES.indexOf(c) >= 0 ? null : `/locus/${c}`
 			};
 		});
 		var combined = _.reduce(chroms, (prev, c) => {
@@ -206,7 +207,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 	// format GO data into nested format for d3 partition
 	_parseGo (response) {
-		var data = response;
+		var data = _.clone(response);
 		var allSlimTerms = _.uniq(data.go_slim_terms, t => { return t.id });
 
 		// helper function to get terms from their ID
@@ -232,12 +233,26 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		var relationships = _.filter(allRelationships, r => {
 			return topIds.indexOf(r[1]) >= 0;
 		});
+		var nonDirectRelationships = _.filter(allRelationships, r => {
+			return (typeof r[0] === "number" && topIds.indexOf(r[1]) < 0);
+		});
 
 		// format data, mapping children to parents
-		goTerms = _.map(goTerms, (termData) => {
+		goTerms = _.map(goTerms, termData => {
 			var _childRelationships = _.filter(relationships, r => {
 				return r[1] === termData.id;
 			});
+
+			// assign the non-direct relationships
+			for (var i = _childRelationships.length - 1; i >= 0; i--) {
+				var _parentTerm = _childRelationships[i];
+				var _nonDirectChildRelationships = _.filter(nonDirectRelationships, _r => {
+					return _r[1] === _parentTerm[0];
+				});
+				if (_nonDirectChildRelationships.length) {
+					_childRelationships = _childRelationships.concat(_nonDirectChildRelationships)
+				}
+			}
 
 			// format child terms
 			var _childTerms = _.map(_childRelationships, r => {
@@ -252,7 +267,6 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				display_name: "annotated to unknown",
 				isRoot: true,
 				format_name: "annotated_to_unknown"
-
 			});
 			// sort desc
 			_childTerms = _.sortBy(_childTerms, d => {
@@ -264,7 +278,6 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				key: termData.format_name,
 				name: termData.display_name,
 				data: _childTerms,
-				text: `${termData.display_name}:  ${(termData.descendant_annotation_gene_count - termData.direct_annotation_gene_count).toLocaleString()} Total Gene Products Annotated`
 			};
 		});
 

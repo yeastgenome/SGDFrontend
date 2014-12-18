@@ -16,5 +16,3 @@ Feature: GoOntology
         When I visit "/ontology/go/?/overview" for "biological_process"
         And I click the button with id "go_table_download"
         Then I should download a file named "biological_process_annotations.txt"
-        And I click the button with id "go_table_analyze"
-        Then the table with id "gene_list_table" should have rows in it

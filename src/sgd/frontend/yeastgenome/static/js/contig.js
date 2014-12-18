@@ -22,7 +22,9 @@ $(document).ready(function() {
         create_download_button("chromosomal_coord_table_download", feature_table, contig['display_name'] + '_features');
         create_analyze_button("chromosomal_coord_table_analyze", feature_table, "<a href='" + contig['link'] + "' class='gene_name'>" + contig['display_name'] + "</a> genes", true);
 
-        set_up_sequence("feature_div", data['genomic_dna']);
+        if (data['genomic_dna'].length) {
+            set_up_sequence("feature_div", data['genomic_dna']);        
+        }
   	});
 
 });
@@ -193,7 +195,7 @@ function draw_overview(data) {
         if(count >= 10) {
             size = 10;
         }
-        if(count == 1) {
+        if(count <= 1) {
             $('#piechart').hide();
         }
 

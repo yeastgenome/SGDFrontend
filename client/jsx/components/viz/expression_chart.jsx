@@ -6,6 +6,8 @@ var React = require("react");
 var _ = require("underscore");
 
 var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
+var HelpIcon = require("../widgets/help_icon.jsx");
+var RadioSelector = require("../widgets/radio_selector.jsx");
 
 var HEIGHT = 300;
 var SIDE_PADDING = 100;
@@ -15,12 +17,22 @@ var TRANSITION_DURATION = 1000;
 module.exports = React.createClass({
 	mixins: [CalcWidthOnResize],
 
+	propTypes: {
+		data: React.PropTypes.object.isRequired,
+		hasHelpIcon: React.PropTypes.bool,
+		hasScaleToggler: React.PropTypes.bool,
+		minValue: React.PropTypes.number.isRequired,
+		maxValue: React.PropTypes.number.isRequired
+	},
+
 	getDefaultProps: function () {
 		return {
 			data: null,
+			hasHelpIcon: false,
+			hasScaleToggler: false,
 			minValue: null,
 			maxValue: null,
-			onClick: null
+			onClick: null // (min, max) =>
 		};
 	},
 
@@ -32,7 +44,13 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
+		var scaleTogglerNode = this._getScaleTogglerNode();
+
+		var _helpText = "The histogram panel contains a Y-axis toggle. The default view is in log10 space to better visualize the large amount of data, and enhance the tails at either expression extreme. Move the toggle slider to the left to view the data in linear space. Clickable histogram bars filter the dataset results presented in the table below based on increased or decreased log2 expression ratios.";
+		var helpNode = this.props.hasHelpIcon ? <h3 style={{ position: "absolute", top: 0, right: 0 }}><HelpIcon text={_helpText} orientation="left"/></h3> : null;
 		return (<div className="expression-histogram" style={{ position: "relative" }}>
+			{helpNode}
+			{scaleTogglerNode}
 			<span className="histogram-axis-text y"><i>Number of Conditions</i></span>
 			<svg ref="svg" style={{ width: "100%", height: HEIGHT }}></svg>
 			<span className="histogram-axis-text x"><i>log2 Ratio</i></span>
@@ -105,9 +123,13 @@ module.exports = React.createClass({
 				height: 0,
 				fill: (d) => { return (d.key >= 0 ? "red" : "green"); }
 			})
-			.on("click", (e) => {
+			.on("click", d => {
 				if (this.props.onClick) {
-					this.props.onClick();
+					var _allKeys = _.sortBy(_.map(_.keys(this.props.data), d => { return parseFloat(d); }));
+					var _keyIndex = Math.max(_allKeys.indexOf(d.key), 0);
+					var _min = _keyIndex === 0 ? "*" : d.key.toFixed(1);
+					var _max =  _keyIndex === _allKeys.length - 1 ? "*" :  _allKeys[_keyIndex + 1].toFixed(1);
+					this.props.onClick(_min, _max);
 				}
 			});
 
@@ -142,8 +164,9 @@ module.exports = React.createClass({
 
 	_getYScale: function () {
 		var _maxY = _.max(this._getDataAsArray(), d => { return d.value; }).value;
-		return d3.scale.log()
-			.base(10)
+		var _baseScale = this.state.logAxis ? d3.scale.log().base(10) : d3.scale.linear();
+
+		return _baseScale
 			.domain([1, _maxY])
 			.range([0, HEIGHT - 2 * TOP_PADDING]);
 	},
@@ -170,5 +193,19 @@ module.exports = React.createClass({
 
 	_calculateWidth: function () {
 		this.setState({ DOMWidth: this.getDOMNode().getBoundingClientRect().width });
+	},
+
+	_getScaleTogglerNode: function () {
+		if (!this.props.hasScaleToggler) {
+			return null;
+		}
+
+		var _elements = [ { name: "log10 Y-Axis", key: "log" }, { name: "Linear Y-Axis" , key: "linear" }];
+		var _onSelect = (key) => {
+			this.setState({ logAxis: key === "log" });
+		}
+		return (<div style={{ width: 350 }}>
+			<RadioSelector elements={_elements} initialActiveElementKey="log" onSelect={_onSelect} />
+		</div>);
 	}
 });

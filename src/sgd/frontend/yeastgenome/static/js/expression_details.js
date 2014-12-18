@@ -1,19 +1,19 @@
+function filter_table(minValue, maxValue) {
+    var dataset_table = $($.fn.dataTable.fnTables(true)).dataTable();
+    dataset_table.fnFilter( 'log2ratio=' + minValue + ':' + maxValue );
+}
 
 $(document).ready(function() {
     $("#expression_table_analyze").hide();
 
   	$.getJSON('/backend/locus/' + locus['id'] + '/expression_details?callback=?', function(data) {
-        if(data['datasets'].length > 0) {
-            create_expression_chart(data['overview'], data['min_value'], data['max_value']);
-        }
-        else {
-            $('#expression_overview_panel').hide();
-            $('#expression_message').show();
-        }
   	    var expression_table = create_expression_table(data['datasets']);
         create_download_button("expression_table_download", expression_table, locus['display_name'] + "_expression");
         $("#expression_table_analyze").hide();
   	});
+
+    // defer some logic to React
+    views.expression.render();
 
   	$.getJSON('/backend/locus/' + locus['id'] + '/expression_graph?callback=?', function(data) {
   		if(data != null && data['nodes'].length > 1) {

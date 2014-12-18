@@ -45,29 +45,24 @@
         <h2>Expression Overview
             <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
 
-                <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
-                   Referenced datasets may contain one or more condition(s), and as a result there may be a greater
-                    number of conditions than datasets represented in a single clickable histogram bar. The histogram
-                    division at 0.0 separates the down-regulated (green) conditions and datasets from those that are
-                    up-regulated (red). Datasets are assigned one or more categories to facilitate grouping, filtering
-                    and browsing. Expression data are derived from records contained in the
-                    <a href="http://www.ncbi.nlm.nih.gov/geo/">Gene Expression Omnibus</a>, and are first log2
-                    transformed and normalized. The PCL files generated for each dataset are used to populate the
-                    expression analysis tool <a href="http://spell.yeastgenome.org/">SPELL</a>.
-                </p>
+            <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
+               Referenced datasets may contain one or more condition(s), and as a result there may be a greater
+                number of conditions than datasets represented in a single clickable histogram bar. The histogram
+                division at 0.0 separates the down-regulated (green) conditions and datasets from those that are
+                up-regulated (red). Datasets are assigned one or more categories to facilitate grouping, filtering
+                and browsing. Expression data are derived from records contained in the
+                <a href="http://www.ncbi.nlm.nih.gov/geo/">Gene Expression Omnibus</a>, and are first log2
+                transformed and normalized. The PCL files generated for each dataset are used to populate the
+                expression analysis tool <a href="http://spell.yeastgenome.org/">SPELL</a>.
+            </p>
         </h2>
         <hr />
         <div id='expression_overview_panel' class="panel">
-            <a href="#" data-options="align:left" data-dropdown="two_channel_expression_chart_help" class="right"><i class="fa fa-question-circle"></i></a>
-
-            <p id="two_channel_expression_chart_help" class="f-dropdown content medium" data-dropdown-content>
-                The histogram panel contains a Y-axis toggle. The default view is in log10 space to better visualize the large
-                amount of data, and enhance the tails at either expression extreme. Move the toggle slider to the left to view
-                the data in linear space. Clickable histogram bars filter the dataset results presented in the table below based
-                on increased or decreased log2 expression ratios.
-            </p>
             <!-- Includes expression_overview.html into template -->
-            {% include "expression_overview.jinja2" %}
+
+            <div id="j-expression-chart-target" class="sgd-viz">
+                <img class="loader" src="/static/img/dark-slow-wheel.gif" />
+            </div>
         </div>
         <p id='expression_message' hidden>No expression data for {{ locus.display_name }}.</p>
         <p>View genes with similar expression profiles using
@@ -163,6 +158,6 @@
        'version':'1','packages':['corechart']}]}"></script>
 <script src="/static/js/local.js{{version_qs}}"></script>
 <script src="/static/js/evidence.js{{version_qs}}"></script>
-<script src="/static/js/expression_overview.js{{version_qs}}"></script>
 <script src="/static/js/expression_details.js{{version_qs}}"></script>
+<script src="/static/js/application.js{{version_qs}}"></script>
 {% endblock scripts %}

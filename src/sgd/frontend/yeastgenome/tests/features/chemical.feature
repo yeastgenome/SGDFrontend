@@ -13,5 +13,3 @@ Feature: Chemical
         When I visit "/chemical/?/overview" for "benomyl"
         And I click the button with id "phenotype_table_download"
         Then I should download a file named "benomyl_annotations.txt"
-        And I click the button with id "phenotype_table_analyze"
-        Then the table with id "gene_list_table" should have rows in it

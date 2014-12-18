@@ -1,5 +1,5 @@
 @browser
-Feature: GenomeSnapshot
+Feature: LSP
     @basic
     Scenario: Visit page
         When I visit "/locus/?/overview" for "ACT1"

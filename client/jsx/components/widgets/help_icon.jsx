@@ -59,9 +59,7 @@ module.exports = React.createClass({
 			var _klass = `f-dropdown content medium ${_orientKlass}`;
 			var _left = (this.props.orientation === "left") ? -WIDTH : "1em";
 			textNode = (
-				<p className={_klass} style={{ width: WIDTH, top: -7, left: _left }} onClick={_onClick} >
-					{this.props.text}
-				</p>
+				<p className={_klass} style={{ width: WIDTH, top: -7, left: _left }} onClick={_onClick} dangerouslySetInnerHTML={{ __html: this.props.text }} />
 			);
 		}
 

@@ -4,16 +4,12 @@ var React = require("react");
 var _ = require("underscore");
 
 module.exports = React.createClass({
-
 	// elements, i.e.[ { name: "Doggy Woggy", key: "dog" }, ...]
-	// onSelect called with activeElementKey as only argument
-	getDefaultProps: function () {
-
-		return {
-			elements: [],
-			initialActiveElementKey: null,
-			onSelect: null,
-		};
+	// onSelect(activeElementKey)
+	propTypes: {
+		elements: React.PropTypes.array.isRequired,
+		initialActiveElementKey: React.PropTypes.string,
+		onSelect: React.PropTypes.func
 	},
 
 	getInitialState: function () {
@@ -33,9 +29,8 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		var inputs = _.map(this.props.elements, (d) => {
+		var inputs = _.map(this.props.elements, (d, i) => {
 			var _onClick = (e) => {
-				e.preventDefault();
 				this.setState({
 					activeElementKey: d.key
 				});
@@ -46,9 +41,9 @@ module.exports = React.createClass({
 			var widthPercent = `${1 / this.props.elements.length * 100}%`;
 
 			return (
-				<div className="radio-element-container" style={{ display: "inline-block", width: widthPercent }}>
-					<input type="radio" onClick={_onClick} name={d.key} value={d.key} checked={_checked}>
-						<label>{d.name}</label>
+				<div className="radio-element-container" style={{ display: "inline-block", width: widthPercent }} key={"radioElement" + i}>
+					<input type="radio" onChange={_onClick} name={d.key} value={d.key} checked={_checked}>
+						<label onClick={_onClick}>{d.name}</label>
 					</input>
 				</div>
 			);

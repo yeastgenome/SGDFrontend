@@ -65,6 +65,8 @@ summaryView.render = function () {
 			/>,
 			document.getElementById("sequence-viz")
 		);
+	} else if (bootstrappedData.tabs.expression_tab) {
+		fetchAndRenderHistory();
 	}
 
   	// summary paragraph

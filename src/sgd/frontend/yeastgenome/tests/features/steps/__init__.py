@@ -52,7 +52,7 @@ def title_should_be(context, title):
 def table_should_have_rows(context, table_id):
     try:
         num_rows = len(context.browser.find_elements_by_xpath("//table[@id='" + table_id + "']/tbody/tr"))
-        assert num_rows > 1, 'Only ' + str(num_rows) + ' entries in table.'
+        assert num_rows > 0, 'Only ' + str(num_rows) + ' entries in table.'
     except NoSuchElementException:
         assert 0, 'No element with id.'
 
@@ -75,7 +75,7 @@ def resource_list_should_have_rows(context, resource_list_id):
 @step('the network with id "{network_id}" should appear')
 def network_should_appear(context, network_id):
     try:
-        assert len(context.browser.find_elements_by_xpath("//div[@id='" + network_id + "']/div/canvas")) == 7, 'Network not drawn.'
+        assert len(context.browser.find_elements_by_xpath("//div[@id='" + network_id + "']/div/canvas")) == 5, 'Network not drawn.'
     except NoSuchElementException:
         assert 0, 'No element with id.'
 
