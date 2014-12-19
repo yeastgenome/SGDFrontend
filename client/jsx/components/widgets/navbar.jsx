@@ -4,7 +4,7 @@
 var React = require("react");
 var $ = require("jquery");
 var _ = require("underscore");
-require("foundation");
+require("bootstrap");
 
 module.exports = React.createClass({
 
@@ -40,16 +40,13 @@ module.exports = React.createClass({
 			backToTopNode = <a href="#" className="back-to-top" style={{ position: "fixed", display: "inline", zIndex: 1 }}>Back to Top</a>;
 		}
 
+		var _style = this.state.backToTopVisible ? { position: "fixed", top: 0 } : {};
 		return (<div>
-			<nav id="sidebar">
-				<div data-magellan-expedition="fixed">
-			        <ul className="side-nav" id="side-nav-sticky">
-			        	<li id="nav-title"><h4>{titleNode}</h4></li>
-			        	{listElements}
-			        </ul>
-			    </div>
-		    </nav>
-
+			<div className="svg-navbar" style={_style}>
+				<ul className="nav nav-pills nav-stacked">
+					{listElements}
+				</ul>
+			</div>
 		    {backToTopNode}
 		</div>);
 	},
@@ -58,8 +55,7 @@ module.exports = React.createClass({
 	// Setup magellan nav with jquery helper.
 	// Back to top button.
 	componentDidMount: function () {
-		$(document).foundation();
-		$(".side-nav").foundation("magellan", {threshold: 50});
+		$("body").scrollspy({ target: ".svg-navbar" })
 
 		// back to top button
 		var offset = 245; // how far (px) to scroll to trigger link
@@ -72,7 +68,7 @@ module.exports = React.createClass({
 	        } else {
 	            this.setState({ backToTopVisible: false });
 	        }
-	    }, 500);
+	    }, 100);
 	    $(window).scroll(_throttled);
 
 	    $(".back-to-top").click( e => {
