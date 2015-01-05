@@ -19,9 +19,9 @@ snapshotView.render = function () {
 
 	// render nav bar
 	var navElements = [
-		{ name: "Genome Inventory", target: "genomeInventory" },
-		{ name: "GO Annotations", target: "goAnnotations" },
-		{ name: "Phenotype Annotations", target: "phenotypeAnnotations" }
+		{ name: "Genome Inventory", target: "genome-inventory" },
+		{ name: "GO Annotations", target: "go-annotations" },
+		{ name: "Phenotype Annotations", target: "phenotype-annotations" }
 	];
 	React.renderComponent(
 		<NavBar title="Genome Snapshot" elements={navElements} />,
