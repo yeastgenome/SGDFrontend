@@ -68,6 +68,7 @@ module.exports = React.createClass({
 	        }
 	    }, 100);
 	    $(window).scroll(_throttled);
+	    $("body").on("touchmove", _throttled);
 	},
 
 	_onClickToTop: function (e) {
