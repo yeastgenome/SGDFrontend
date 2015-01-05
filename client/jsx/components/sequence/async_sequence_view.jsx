@@ -94,7 +94,7 @@ module.exports = React.createClass({
 		if (this.props.isSimplified) {
 			return <div>{innerNode}</div>;
 		} else {
-			return (<section id="reference" data-magellan-destination="reference">
+			return (<section id="reference">
 				{innerNode}
 			</section>);
 		}
@@ -105,7 +105,7 @@ module.exports = React.createClass({
 		if (!this.props.showAltStrains) return node;
 		if (this.state.detailsModel ? this.state.detailsModel.attributes.altStrainMetaData.length : false) {
 			var _defaultAltStrainKey = this.state.detailsModel.attributes.altStrainMetaData[0].key;
-			node = (<section id="alternative" data-magellan-destination="alternative"><SequenceComposite
+			node = (<section id="alternative"><SequenceComposite
 				focusLocusDisplayName={this.props.locusDisplayName}
 				neighborsModel={this.state.neighborsModel}
 				detailsModel={this.state.detailsModel}
@@ -124,7 +124,7 @@ module.exports = React.createClass({
 		if (this.state.detailsModel ? this.state.detailsModel.attributes.otherStrains.length : false) {
 			var outerHelpNode = <HelpIcon text="Other laboratory, industrial, and environmental isolates; sequences available via the Download button." isInfo={true} />;
 			var innerHelpNode = <HelpIcon text="Select a strain using the pull-down in order to download its sequence as an .fsa file using the Download button located directly below." />;
-			node = (<section id="other" data-magellan-destination="other">
+			node = (<section id="other">
 				<h2>Other Strains {outerHelpNode}</h2>
 				<hr />
 				<div className="panel sgd-viz">

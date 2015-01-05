@@ -26,7 +26,7 @@ module.exports = React.createClass({
 		var listElements = _.map(this.props.elements, element => {
 			if (!element) return null;
 			return (
-				<li data-magellan-arrival={element.target} id={`navbar_${element.target}`}>
+				<li id={`navbar_${element.target}`}>
 					<a href={`#${element.target}`}>{element.name}</a>
 				</li>
 			);
