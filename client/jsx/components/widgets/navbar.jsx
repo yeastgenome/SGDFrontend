@@ -6,6 +6,8 @@ var $ = require("jquery");
 var _ = require("underscore");
 require("bootstrap");
 
+var SCROLL_OFFSET = 245; // how far (px) to scroll to trigger link
+
 module.exports = React.createClass({
 
 	getDefaultProps: function () {
@@ -51,30 +53,30 @@ module.exports = React.createClass({
 		</div>);
 	},
 
-	// NOTE: Has effects outside of component. $(document), $(window)
-	// Setup magellan nav with jquery helper.
+	// NOTE: Has effects outside of component. $("body"), $(window)
 	// Back to top button.
 	componentDidMount: function () {
+		// bootstrap scrollspy
 		$("body").scrollspy({ target: ".sgd-navbar" })
 
 		// fix navbar if scrolling down below 245 px
-		var offset = 245; // how far (px) to scroll to trigger link
-	    var _throttled = _.throttle( () => {
-	    	var yOffset = window.pageYOffset;
-	        if (yOffset > offset) {
-	        	this.setState({ backToTopVisible: true });
-	        } else {
-	            this.setState({ backToTopVisible: false });
-	        }
-	    }, 100);
+	    var _throttled = _.throttle(this._checkScroll, 100);
 	    $(window).scroll(_throttled);
 	    $("body").on("touchmove", _throttled);
+
+	    // check scroll once
+	    this._checkScroll();
+	},
+
+	_checkScroll: function () {
+		var _isBelowThreshold = (window.pageYOffset > SCROLL_OFFSET)
+		this.setState({ backToTopVisible: _isBelowThreshold })
 	},
 
 	_onClickToTop: function (e) {
 		var duration = 500; // 0.5s fade in/out
 		e.preventDefault();
-        $("html, body").animate({scrollTop: 0}, duration);
+        $("html, body").animate({ scrollTop: 0 }, duration);
         window.location.hash = "";
 	}
 });
