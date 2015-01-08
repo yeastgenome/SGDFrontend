@@ -189,7 +189,7 @@
             </div>
 
             <div id="phosphorylation_sites_wrapper" class="spaced-container">
-                <h3>Posttranslational Modifications - <span id="phosphorylation_strain"></span>
+                <h3>Post-translational Modifications - <span id="phosphorylation_strain"></span>
                     <a href="#" data-dropdown="phosphorylation_info"><i class="fa fa-info-circle"></i></a>
 
                     <p id="phosphorylation_info" class="f-dropdown content medium" data-dropdown-content>
@@ -199,6 +199,14 @@
                     </p>
                     <span id="phosphorylation_table_header" class="round secondary label"></span>
                 </h3>
+                <select id="ptm-selector" class="large-3">
+                    <option value="all" selected=>All</option>
+                    <option value="phosphorylation">Phosphorylation</option>
+                    <option value="succinylation">Succinylation</option>
+                    <option value="ubiquitination">Ubiquitination</option>
+                    <option value="methylation">Methylation</option>
+                    <option value="acetylation">Acetylation</option>
+                </select>
                 <!-- Includes phosphorylation_table into template -->
                 {% set table_id = 'phosphorylation_table' %}
                 {% include "phosphorylation_table.jinja2" %}
