@@ -100,8 +100,12 @@ function phosphorylation_data_to_table(evidence) {
         }
 	}
     var type = evidence['type'];
+    var reference = "";
+    if (evidence.source.format_name !== "PhosphoGRID") {
+        reference = "<span>PMID: " + evidence.reference.pubmed_id + "</span>";
+    } 
 
-    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], site_residue + site_index, site_functions, kinases, type, source];
+    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], site_residue + site_index, site_functions, type, kinases, source, reference];
 }
 
 function history_data_to_table(evidence) {

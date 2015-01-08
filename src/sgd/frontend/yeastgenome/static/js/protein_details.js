@@ -333,27 +333,9 @@ function create_phosphorylation_table(data) {
     options["bPaginate"] = true;
     options["aaSorting"] = [[4, "asc"]];
     options["bDestroy"] = true;
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "phospho" }, null, null, null, null];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "phospho" }, null, null, null, null, null];
     options["aaData"] = datatable;
-    options["oLanguage"] = {"sEmptyTable": 'No phosphorylation data for this strain.'};
-
-    $("#ptm-selector").off("change");
-    $("#ptm-selector").change( function (e) {
-        var _value = e.currentTarget.value;
-        if (_value === "all") {
-            create_phosphorylation_table(allPtmData)
-        } else {
-            var _modData = [];
-            for (var i = allPtmData.length - 1; i >= 0; i--) {
-                var d = allPtmData[i];
-                if (d.type === _value) {
-                    _modData.push(d);
-                }
-            }
-            create_phosphorylation_table(_modData);
-        }
-
-    });
+    options["oLanguage"] = {"sEmptyTable": 'No post-translational data for this strain.'};
 
     return create_table("phosphorylation_table", options);
 }

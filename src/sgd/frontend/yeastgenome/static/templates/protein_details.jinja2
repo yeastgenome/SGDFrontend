@@ -178,7 +178,7 @@
             <div class="panel">
                 <pre><blockquote id="sequence_residues"
                                  style="font-family:Monospace; font-size:large"></blockquote></pre>
-                <p>* Red amino acids indicate phosphorylation sites. More information below.</p>
+                <p>* Red amino acids indicate modifications sites. More information below.</p>
 
                 <div class="button-bar">
                     <ul class="button-group radius">
@@ -199,14 +199,6 @@
                     </p>
                     <span id="phosphorylation_table_header" class="round secondary label"></span>
                 </h3>
-                <select id="ptm-selector" class="large-3">
-                    <option value="all" selected=>All</option>
-                    <option value="phosphorylation">Phosphorylation</option>
-                    <option value="succinylation">Succinylation</option>
-                    <option value="ubiquitination">Ubiquitination</option>
-                    <option value="methylation">Methylation</option>
-                    <option value="acetylation">Acetylation</option>
-                </select>
                 <!-- Includes phosphorylation_table into template -->
                 {% set table_id = 'phosphorylation_table' %}
                 {% include "phosphorylation_table.jinja2" %}
