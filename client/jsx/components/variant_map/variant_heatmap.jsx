@@ -5,7 +5,7 @@ var _ = require("underscore");
 
 var DEFAULT_DOM_SIDE_SIZE = 400; // height and width\
 var FONT_SIZE = 14;
-var HEADER_HEIGHT = 60;
+var HEADER_HEIGHT = 120;
 var NODE_SIZE = 16;
 var CANVAS_SIZE = 8000;
 var LABEL_WIDTH = 120;
@@ -49,6 +49,12 @@ module.exports = React.createClass({
 		this._calculateWidth();
 		this.refs.outerScroll.getDOMNode().onscroll = _.throttle(this._checkScroll, 100);
 		this._renderCanvas();
+	},
+
+	componentDidUpdate: function (prevProps, prevState) {
+	    if (prevProps.data !== this.props.data) {
+	    	this._renderCanvas();
+	    }
 	},
 
 	_getOverlayNode: function () {
@@ -174,7 +180,7 @@ module.exports = React.createClass({
 			ctx.translate(0, 0);
 			ctx.rotate(-Math.PI/2);
 			ctx.textAlign = "left";
-			ctx.fillText(d.name, - LABEL_WIDTH / 2, (i + 1) * NODE_SIZE - 3);
+			ctx.fillText(d.name, - HEADER_HEIGHT, (i + 1) * NODE_SIZE - 3);
 			ctx.restore();
 
 			d.variationData.forEach( (_d, _i) => {

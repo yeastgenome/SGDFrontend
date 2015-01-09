@@ -12,9 +12,4 @@ module.exports = class AlignmentIndexModel extends BaseModel {
 		options.url = options.url || "/backend/alignments?callback=?";
 		super(options);
 	}
-
-	parse (response) {
-		console.log("VM model res: ", response)
-		return response;
-	}
 };

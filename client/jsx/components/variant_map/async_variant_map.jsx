@@ -16,7 +16,6 @@ module.exports = React.createClass({
 		return {
 			drawerVisible: false,
 			selectedLocusId: null,
-			mode: "dna",
 			isPending: true,
 			isProteinMode: false,
 			lociData: [],
@@ -34,7 +33,7 @@ module.exports = React.createClass({
 		var _onExit = () => {
 			this.setState({ drawerVisible: false });
 		};
-		var _onRadioSelect = key => { this.setState({ mode: key }); };
+		var _onRadioSelect = key => { this.setState({ isProteinMode: key === "protein" }); };
 		var _radioElements = [ { name: "DNA", key: "dna" }, { name: "Protein", key: "protein" }];
 
 		// TEMP strain selector cb
@@ -62,7 +61,7 @@ module.exports = React.createClass({
 				</div>
 				<div className="columns small-6 medium-4">
 					<div style={{ marginTop: "0.35rem" }}>
-						<RadioSelector elements={_radioElements} initialActiveElementKey={this.state.mode} onSelect={_onRadioSelect} />
+						<RadioSelector elements={_radioElements} initialActiveElementKey="dna" onSelect={_onRadioSelect} />
 					</div>
 				</div>
 			</div>
