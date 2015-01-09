@@ -4,48 +4,31 @@
 var React = require("react");
 var _ = require("underscore");
 
+var AlignmentIndexModel = require("../../models/alignment_index_model.jsx");
 var Drawer = require("./drawer.jsx");
 var RadioSelector = require("../widgets/radio_selector.jsx");
 var SearchBar = require("../widgets/search_bar.jsx");
 var VariantHeatmap = require("./variant_heatmap.jsx");
 var StrainSelector = require("./strain_selector.jsx");
 
-// TEMP
-// FAKE HEATMAP DATA
-var heatpmapData = [];
-var _numGenes = 6400;
-var numStrains = 13;
-for (var j = 0; j <= _numGenes; j++) {
-	var _variantData = [];
-	for (var k = numStrains; k >= 0; k--) {
-		_variantData.push(Math.random());
-	}
-	heatpmapData.push({
-		name: "Gene" + j,
-		id: j,
-		variationData: _variantData
-	});
-}
-// strain data for heatmap, also FAKE
-var _strainMetaData = [];
-for (var i = numStrains; i >= 0; i--) {
-	_strainMetaData.push ({
-		name: "Strain" + i,
-		key: Math.round(Math.random() * 10000)
-	});
-};
-_strainMetaData = _strainMetaData.reverse();
-
 module.exports = React.createClass({
 	getInitialState: function () {
 		return {
 			drawerVisible: false,
 			selectedLocusId: null,
-			mode: "dna"
+			mode: "dna",
+			isPending: true,
+			isProteinMode: false,
+			lociData: [],
+			strainData: []
 		};
 	},
 
 	render: function () {
+		if (this.state.isPending) {
+			return <img className="loader" src="/static/img/dark-slow-wheel.gif" />;
+		}
+
 		var heatmapNode = this._getHeatmapNode();
 
 		var _onExit = () => {
@@ -59,6 +42,9 @@ module.exports = React.createClass({
 		var _onStrainSelect = activeStrainIds => {
 			console.log(activeStrainIds);
 		};
+		var _strainData = _.map(this.state.strainData, d => {
+			return { key: d.id, name: d.display_name };
+		});
 
 		// TEMP hardcoded locus id for RAD54 and display name
 		var drawerNode = this.state.drawerVisible ? <Drawer onExit={_onExit} locusDisplayName="RAD54" locusId={4672} strainData={_strainMetaData} /> : null;
@@ -72,7 +58,7 @@ module.exports = React.createClass({
 					<SearchBar />
 				</div>
 				<div className="columns small-6 medium-2">
-					<StrainSelector data={_strainMetaData} onSelect={_onStrainSelect} />
+					<StrainSelector data={_strainData} onSelect={_onStrainSelect} />
 				</div>
 				<div className="columns small-6 medium-4">
 					<div style={{ marginTop: "0.35rem" }}>
@@ -87,6 +73,17 @@ module.exports = React.createClass({
 		</div>);
 	},
 
+	componentDidMount: function () {
+		var indexModel = new AlignmentIndexModel();
+		indexModel.fetch( (err, res) => {
+			this.setState({
+				isPending: false,
+				lociData: res.loci,
+				strainData: res.strains
+			});
+		});
+	},
+
 	_getHeatmapNode: function () {
 		// TEMP
 		var _onClick = (d) => {
@@ -95,9 +92,23 @@ module.exports = React.createClass({
 				selectedLocusId: d.id
 			});
 		};
+
+		var _heatmapData = _.map(this.state.lociData, d => {
+			return {
+				name: d.display_name,
+				id: d.id,
+				variationData: this.state.isProteinMode ? d.protein_scores : d.dna_scores
+			};
+		});
+		var _strainData = _.map(this.state.strainData, d => {
+			return {
+				name: d.display_name,
+				id: d.id
+			};
+		});
 		return (<VariantHeatmap
-			data={heatpmapData}
-			strainData={_strainMetaData}
+			data={_heatmapData}
+			strainData={_strainData}
 			onClick={_onClick}
 		/>);
 	}
