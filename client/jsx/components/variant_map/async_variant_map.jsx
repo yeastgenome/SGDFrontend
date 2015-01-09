@@ -14,8 +14,8 @@ var StrainSelector = require("./strain_selector.jsx");
 module.exports = React.createClass({
 	getInitialState: function () {
 		return {
+			activeLocusId: null,
 			drawerVisible: false,
-			selectedLocusId: null,
 			isPending: true,
 			isProteinMode: false,
 			lociData: [],
@@ -28,11 +28,6 @@ module.exports = React.createClass({
 			return <img className="loader" src="/static/img/dark-slow-wheel.gif" />;
 		}
 
-		var heatmapNode = this._getHeatmapNode();
-
-		var _onExit = () => {
-			this.setState({ drawerVisible: false });
-		};
 		var _onRadioSelect = key => { this.setState({ isProteinMode: key === "protein" }); };
 		var _radioElements = [ { name: "DNA", key: "dna" }, { name: "Protein", key: "protein" }];
 
@@ -45,8 +40,8 @@ module.exports = React.createClass({
 			return { key: d.id, name: d.display_name };
 		});
 
-		// TEMP hardcoded locus id for RAD54 and display name
-		var drawerNode = this.state.drawerVisible ? <Drawer onExit={_onExit} locusDisplayName="RAD54" locusId={4672} strainData={_strainMetaData} /> : null;
+		var heatmapNode = this._getHeatmapNode();
+		var drawerNode = this._getDrawerNode();
 		return (<div>
 			<p><i className="fa fa-exclamation" /> This is a development version of this tool.  Data are NOT accurate.</p>
 			<h1>Variant Map</h1>
@@ -88,7 +83,7 @@ module.exports = React.createClass({
 		var _onClick = (d) => {
 			this.setState({
 				drawerVisible: true,
-				selectedLocusId: d.id
+				activeLocusId: d.id
 			});
 		};
 
@@ -110,5 +105,17 @@ module.exports = React.createClass({
 			strainData={_strainData}
 			onClick={_onClick}
 		/>);
+	},
+
+	_getDrawerNode: function () {
+		var node = null;
+		if (this.state.activeLocusId) {
+			var _strainData = _.map(this.state.strainData, d => {
+				return { key: d.id, name: d.display_name };
+			});
+			var _onExit = () => { this.setState({ activeLocusId: null }); };
+			node = <Drawer onExit={_onExit} locusId={this.state.activeLocusId} strainData={_strainData} />;
+		}
+		return node;
 	}
 });

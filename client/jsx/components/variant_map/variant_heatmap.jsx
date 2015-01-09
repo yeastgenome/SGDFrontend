@@ -22,7 +22,7 @@ module.exports = React.createClass({
 			canvasScrollX: 0,
 			DOMWidth: DEFAULT_DOM_SIDE_SIZE,
 			DOMHeight: DEFAULT_DOM_SIDE_SIZE,
-			mouseOverId: null,
+			mouseOverId: null
 		};
 	},
 
@@ -142,7 +142,6 @@ module.exports = React.createClass({
 		</div>);
 	},
 
-
 	_getXScale: function () {
 		var _totalY = this.props.data.length * NODE_SIZE;
 		return d3.scale.linear()
@@ -180,7 +179,7 @@ module.exports = React.createClass({
 			ctx.translate(0, 0);
 			ctx.rotate(-Math.PI/2);
 			ctx.textAlign = "left";
-			ctx.fillText(d.name, - HEADER_HEIGHT, (i + 1) * NODE_SIZE - 3);
+			ctx.fillText(d.name, - HEADER_HEIGHT + 3, (i + 1) * NODE_SIZE - 3);
 			ctx.restore();
 
 			d.variationData.forEach( (_d, _i) => {

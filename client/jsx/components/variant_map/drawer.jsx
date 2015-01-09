@@ -4,11 +4,11 @@
 var React = require("react");
 var _ = require("underscore");
 
+var AlignmentShowModel = require("../../models/alignment_show_model.jsx");
 var DropdownSelector = require("../widgets/dropdown_selector.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
 var Parset = require("../viz/parset.jsx");
 var MultiAlignmentViewer = require("./multi_alignment_viewer.jsx");
-var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
 
 var HEIGHT_WITH_SEQUENCE = 580;
 var HEIGHT_WITHOUT_SEQUENCE = 390;
@@ -16,7 +16,6 @@ var HEIGHT_WITHOUT_SEQUENCE = 390;
 module.exports = React.createClass({
 
 	propTypes: {
-		locusDisplayName: React.PropTypes.string.isRequired,
 		locusId: React.PropTypes.number.isRequired,
 		onExit: React.PropTypes.func.isRequired,
 		strainData: React.PropTypes.array.isRequired
@@ -25,7 +24,7 @@ module.exports = React.createClass({
 	getInitialState: function () {
 		return {
 			showSequence: false,
-			neighborModelAttr: null,
+			asyncData: null,
 			parsetPixelDomain: null, // [150, 200] screen x coordinates
 			parsetCoordinateDomain: null, // [36000, 45000] sequence coordinates
 		};
@@ -57,30 +56,7 @@ module.exports = React.createClass({
 			color: "black"
 		};
 
-		var locusDiagramNode = null;
-		if (this.state.neighborModelAttr) {
-			var attr = this.state.neighborModelAttr;
-
-			// TEMP
-			var _variantData = [
-				{
-					coordinateDomain: [195000, 195001],
-					value: 1
-				}
-			];
-
-			locusDiagramNode = (<LocusDiagram
-				contigData={attr.contigData}
-				data={attr.data}
-				domainBounds={attr.domainBounds}
-				focusLocusDisplayName={this.props.locusDisplayName}
-				showSubFeatures={false}
-				showVariants={true}
-				variantData={_variantData}
-				watsonTracks={Math.abs(attr.trackDomain[1])}
-				crickTracks={Math.abs(attr.trackDomain[0])}
-			/>);
-		}
+		var locusDiagramNode = this._getLocusDiagramNode();
 
 		var dropdownElements = _.map(this.props.strainData, d => {
 			return {
@@ -94,8 +70,7 @@ module.exports = React.createClass({
 		return (<div style={_maskStyle}>
 			<div style={_drawerStyle}>
 				<h1>
-					{this.props.locusDisplayName}
-					<a onClick={this.props.onExit} style={_exitStyle}><i className="fa fa-times"></i></a>
+					<a onClick={this._exit} style={_exitStyle}><i className="fa fa-times"></i></a>
 				</h1>
 				<DropdownSelector elements={dropdownElements} defaultActiveValue={initialDropdownValue} />
 				{locusDiagramNode}
@@ -104,17 +79,50 @@ module.exports = React.createClass({
 		</div>);
 	},
 
-	componentDidMount: function () {
-	    this._fetchNeighborData();  
+	_exit: function () {
+		this.setState({
+			asyncData: null
+		});
+		this.props.onExit();
 	},
 
-	_fetchNeighborData: function () {
-		var neighborModel = new SequenceNeighborsModel({ id: this.props.locusId });
-		neighborModel.fetch( (err, response) => {
+	componentDidMount: function () {
+	    this._fetchData();
+	},
+
+	_fetchData: function () {
+		var showModel = new AlignmentShowModel({ id: this.props.locusId });
+		showModel.fetch( (err, res) => {
 			if (this.isMounted()) this.setState({
-				neighborModelAttr: neighborModel.attributes.mainStrain
+				asyncData: res
 			});
 		});
+	},
+
+	_getLocusDiagramNode: function () {
+		return <div style={{ position: "relative" }}><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div>; 
+		// if (false) {
+		// 			var attr = this.state.neighborModelAttr;
+
+		// 			// TEMP
+		// 			var _variantData = [
+		// 				{
+		// 					coordinateDomain: [195000, 195001],
+		// 					value: 1
+		// 				}
+		// 			];
+		// 			locusDiagramNode = (<LocusDiagram
+		// 				contigData={attr.contigData}
+		// 				data={attr.data}
+		// 				domainBounds={attr.domainBounds}
+		// 				focusLocusDisplayName={this.props.locusDisplayName}
+		// 				showSubFeatures={false}
+		// 				showVariants={true}
+		// 				variantData={_variantData}
+		// 				watsonTracks={Math.abs(attr.trackDomain[1])}
+		// 				crickTracks={Math.abs(attr.trackDomain[0])}
+		// 			/>);
+		// 		}
 	},
 
 	_getSequenceNode: function () {
