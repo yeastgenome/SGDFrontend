@@ -23,8 +23,9 @@ module.exports = React.createClass({
 
 	getInitialState: function () {
 		return {
+			alignmentModel: null,
 			showSequence: false,
-			asyncData: null,
+			isPending: true,
 			parsetPixelDomain: null, // [150, 200] screen x coordinates
 			parsetCoordinateDomain: null, // [36000, 45000] sequence coordinates
 		};
@@ -56,32 +57,24 @@ module.exports = React.createClass({
 			color: "black"
 		};
 
-		var locusDiagramNode = this._getLocusDiagramNode();
-
-		var dropdownElements = _.map(this.props.strainData, d => {
-			return {
-				name: d.name,
-				value: d.key
-			};
-		});
-		var initialDropdownValue = dropdownElements[0].value;
-
-		var sequenceNode = this._getSequenceNode();
+		var contentNode = this.state.isPending ? 
+			<div style={{ position: "relative", height: "100%" }}><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div> :
+			this._getContentNode();
 		return (<div style={_maskStyle}>
 			<div style={_drawerStyle}>
 				<h1>
 					<a onClick={this._exit} style={_exitStyle}><i className="fa fa-times"></i></a>
 				</h1>
-				<DropdownSelector elements={dropdownElements} defaultActiveValue={initialDropdownValue} />
-				{locusDiagramNode}
-				{sequenceNode}
+				{contentNode}
+				
 			</div>
 		</div>);
 	},
 
 	_exit: function () {
 		this.setState({
-			asyncData: null
+			alignmentModel: null,
+			isPending: true
 		});
 		this.props.onExit();
 	},
@@ -94,35 +87,32 @@ module.exports = React.createClass({
 		var showModel = new AlignmentShowModel({ id: this.props.locusId });
 		showModel.fetch( (err, res) => {
 			if (this.isMounted()) this.setState({
-				asyncData: res
+				alignmentModel: showModel,
+				isPending: false
 			});
 		});
 	},
 
-	_getLocusDiagramNode: function () {
-		return <div style={{ position: "relative" }}><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div>; 
-		// if (false) {
-		// 			var attr = this.state.neighborModelAttr;
+	_getContentNode: function () {
+		var dropdownElements = _.map(this.props.strainData, d => {
+			return {
+				name: d.name,
+				value: d.key
+			};
+		});
+		var initialDropdownValue = dropdownElements[0].value;
+		var sequenceNode = this._getSequenceNode();
 
-		// 			// TEMP
-		// 			var _variantData = [
-		// 				{
-		// 					coordinateDomain: [195000, 195001],
-		// 					value: 1
-		// 				}
-		// 			];
-		// 			locusDiagramNode = (<LocusDiagram
-		// 				contigData={attr.contigData}
-		// 				data={attr.data}
-		// 				domainBounds={attr.domainBounds}
-		// 				focusLocusDisplayName={this.props.locusDisplayName}
-		// 				showSubFeatures={false}
-		// 				showVariants={true}
-		// 				variantData={_variantData}
-		// 				watsonTracks={Math.abs(attr.trackDomain[1])}
-		// 				crickTracks={Math.abs(attr.trackDomain[0])}
-		// 			/>);
-		// 		}
+		var model = this.state.alignmentModel;
+		var locusData = model.getLocusDiagramData();
+		return (<div>
+			<DropdownSelector elements={dropdownElements} defaultActiveValue={initialDropdownValue} />
+			<LocusDiagram
+				focusLocusDisplayName={model.attributes.display_name} contigData={locusData.contigData}
+				data={locusData.data} domainBounds={locusData.domainBounds}
+			/>
+			{sequenceNode}
+		</div>);
 	},
 
 	_getSequenceNode: function () {
