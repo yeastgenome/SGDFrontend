@@ -114,7 +114,9 @@ module.exports = React.createClass({
 				return { key: d.id, name: d.display_name };
 			});
 			var _onExit = () => { this.setState({ activeLocusId: null }); };
-			node = <Drawer onExit={_onExit} locusId={this.state.activeLocusId} strainData={_strainData} />;
+			node = (<Drawer
+				onExit={_onExit} locusId={this.state.activeLocusId}
+				isProteinMode={this.state.isProteinMode} strainData={_strainData} />);
 		}
 		return node;
 	}

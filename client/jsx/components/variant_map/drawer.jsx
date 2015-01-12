@@ -44,8 +44,9 @@ module.exports = React.createClass({
 			position: "fixed",
 			top: 0,
 			right: 0,
-			bottom: 0,
-			left: 0
+			left: 0,
+			bottom: _height,
+			zIndex: 10
 		};
 		var _drawerStyle = {
 			position: "fixed",
@@ -67,7 +68,8 @@ module.exports = React.createClass({
 		var contentNode = this.state.isPending ? 
 			<div style={{ position: "relative", height: "100%" }}><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div> :
 			this._getContentNode();
-		return (<div style={_maskStyle}>
+		return (<div>
+			<div style={_maskStyle} onClick={this._exit} />
 			<div style={_drawerStyle}>
 				<h1>
 					<a onClick={this._exit} style={_exitStyle}><i className="fa fa-times"></i></a>
