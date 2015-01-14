@@ -119,7 +119,8 @@ module.exports = React.createClass({
 			var _onExit = () => { this.setState({ activeLocusId: null }); };
 			node = (<Drawer
 				onExit={_onExit} locusId={this.state.activeLocusId}
-				isProteinMode={this.state.isProteinMode} strainData={_strainData} />);
+				isProteinMode={this.state.isProteinMode} strainData={_strainData}
+			/>);
 		}
 		return node;
 	},
@@ -127,9 +128,22 @@ module.exports = React.createClass({
 	_getLociData: function () {
 		if (!this.state.searchQuery) {
 			return this.state.lociData;
+		} else if ((/[\s,]/).test(this.state.searchQuery)) {
+			// multiple inputs
+			var queries = this.state.searchQuery.split(/[\s,]/);
+			queries = _.filter(queries, d => { return (d !== ""); });
+			return _.filter(this.state.lociData, d => {
+				var _isMatch = false;
+				queries.forEach( _d => {
+					if (d.display_name.indexOf(_d) > -1) {
+						_isMatch = true;
+					}
+				});
+				return _isMatch;
+			});
 		} else {
 			return _.filter(this.state.lociData, d => {
-				return(d.display_name.indexOf(this.state.searchQuery) > -1);
+				return (d.display_name.indexOf(this.state.searchQuery) > -1);
 			});
 		}
 	},
