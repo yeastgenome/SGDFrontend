@@ -19,6 +19,7 @@ module.exports = React.createClass({
 			isPending: true,
 			isProteinMode: false,
 			lociData: [],
+			searchQuery: null,
 			strainData: []
 		};
 	},
@@ -42,6 +43,7 @@ module.exports = React.createClass({
 
 		var heatmapNode = this._getHeatmapNode();
 		var drawerNode = this._getDrawerNode();
+
 		return (<div>
 			<p><i className="fa fa-exclamation" /> This is a development version of this tool.  Data are NOT accurate.</p>
 			<h1>Variant Map</h1>
@@ -49,7 +51,7 @@ module.exports = React.createClass({
 						
 			<div className="row">
 				<div className="columns small-12 medium-6">
-					<SearchBar />
+					<SearchBar placeholderText="Gene Name, List of Genes" onSubmit={this._onSearch} />
 				</div>
 				<div className="columns small-6 medium-2">
 					<StrainSelector data={_strainData} onSelect={_onStrainSelect} />
@@ -87,7 +89,8 @@ module.exports = React.createClass({
 			});
 		};
 
-		var _heatmapData = _.map(this.state.lociData, d => {
+		var _lociData = this._getLociData();
+		var _heatmapData = _.map(_lociData, d => {
 			return {
 				name: d.display_name,
 				id: d.id,
@@ -119,5 +122,23 @@ module.exports = React.createClass({
 				isProteinMode={this.state.isProteinMode} strainData={_strainData} />);
 		}
 		return node;
+	},
+
+	_getLociData: function () {
+		if (!this.state.searchQuery) {
+			return this.state.lociData;
+		} else {
+			return _.filter(this.state.lociData, d => {
+				return(d.display_name.indexOf(this.state.searchQuery) > -1);
+			});
+		}
+	},
+
+	_onSearch: function (query) {
+		query = query.toUpperCase();
+		if (query.length === "") query = null;
+		this.setState({
+			searchQuery: query
+		});
 	}
 });

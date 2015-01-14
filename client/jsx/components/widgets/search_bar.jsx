@@ -5,17 +5,34 @@ var React = require("react");
 var _ = require("underscore");
 
 module.exports = React.createClass({
+	propTypes: {
+		placeholderText: React.PropTypes.string,
+		onSubmit: React.PropTypes.func // query =>
+	},
+
+	getDefaultProps: function () {
+		return {
+			placeholderText: ""
+		};
+	},
 
 	render: function () {
 		return (
 			<div className="row collapse">
 				<div className="small-10 columns">
-					<input type="text" placeholder="Gene Name, List of Genes" />
+					<input type="text" ref="searchInput" placeholder={this.props.placeholderText} />
 				</div>
 				<div className="small-2 columns">
-					<a href="#" className="button secondary postfix">Go</a>
+					<a href="#" className="button secondary postfix" onClick={this._onSubmit}>Go</a>
 				</div>
 			</div>
 		);
+	},
+
+	_onSubmit: function (e) {
+		e.preventDefault();
+		if (this.props.onSubmit) {
+			this.props.onSubmit(this.refs.searchInput.getDOMNode().value);
+		}
 	}
 });
