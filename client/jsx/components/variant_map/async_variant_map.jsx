@@ -14,6 +14,7 @@ var StrainSelector = require("./strain_selector.jsx");
 module.exports = React.createClass({
 	getInitialState: function () {
 		return {
+			activeStrainIds: [],
 			activeLocusId: null,
 			drawerVisible: false,
 			isPending: true,
@@ -30,12 +31,10 @@ module.exports = React.createClass({
 		}
 
 		var _onRadioSelect = key => { this.setState({ isProteinMode: key === "protein" }); };
-		var _radioElements = [ { name: "DNA", key: "dna" }, { name: "Protein", key: "protein" }];
+		var _radioElements = [{ name: "DNA", key: "dna" }, { name: "Protein", key: "protein" }];
 
-		// TEMP strain selector cb
-		// ([123, 456]) =>
-		var _onStrainSelect = activeStrainIds => {
-			console.log(activeStrainIds);
+		var _onStrainSelect = _activeStrainIds => {
+			this.setState({ activeStrainIds: _activeStrainIds });
 		};
 		var _strainData = _.map(this.state.strainData, d => {
 			return { key: d.id, name: d.display_name };
@@ -54,7 +53,7 @@ module.exports = React.createClass({
 					<SearchBar placeholderText="Gene Name, List of Genes" onSubmit={this._onSearch} />
 				</div>
 				<div className="columns small-6 medium-2">
-					<StrainSelector data={_strainData} onSelect={_onStrainSelect} />
+					<StrainSelector data={_strainData} onSelect={_onStrainSelect} initialActiveStrainIds={this.state.activeStrainIds} />
 				</div>
 				<div className="columns small-6 medium-4">
 					<div style={{ marginTop: "0.35rem" }}>
@@ -72,10 +71,34 @@ module.exports = React.createClass({
 	componentDidMount: function () {
 		var indexModel = new AlignmentIndexModel();
 		indexModel.fetch( (err, res) => {
+			// TEMP, add some fake strains
+			var _strains = _.map(res.strains, d => {
+				d["type"] = "alternative";
+				return d;
+			});
+			for (var i = 0; i < 10; i++) {
+				_strains.push({
+					display_name: "Strain" + i,
+					link: "http://yeastgenome.org",
+					id: 100 + i,
+					format_name: "strain" + i,
+					type: "other"
+				});
+			}
+
+			var _activeStrains = _.filter(_strains, d => {
+				return d.type !== "other";
+			});
+
+			var _activeStrainIds = _.map(_activeStrains, d => {
+				return d.id;
+			});
+
 			this.setState({
+				activeStrainIds: _activeStrainIds,
 				isPending: false,
 				lociData: res.loci,
-				strainData: res.strains
+				strainData: _strains
 			});
 		});
 	},
@@ -97,7 +120,10 @@ module.exports = React.createClass({
 				variationData: this.state.isProteinMode ? d.protein_scores : d.dna_scores
 			};
 		});
-		var _strainData = _.map(this.state.strainData, d => {
+		var _strainData = _.filter(this.state.strainData, d => {
+			return this.state.activeStrainIds.indexOf(d.id) > -1;
+		});
+		_strainData = _.map(_strainData, d => {
 			return {
 				name: d.display_name,
 				id: d.id

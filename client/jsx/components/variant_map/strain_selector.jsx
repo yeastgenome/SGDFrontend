@@ -13,12 +13,20 @@ module.exports = React.createClass({
 
 	propTypes: {
 		data: React.PropTypes.array.isRequired,
+		initialActiveStrainIds: React.PropTypes.array,
 		onSelect: React.PropTypes.func // (activeStrainIds) =>
+	},
+
+	getDefaultProps: function () {
+		return {
+			initialActiveStrainIds: []
+		};
 	},
 
 	getInitialState: function () {
 		return {
-			isActive: false
+			isActive: false,
+			activeStrainIds: this.props.initialActiveStrainIds
 		};
 	},
 
@@ -56,6 +64,12 @@ module.exports = React.createClass({
 		var _stopClick = e => {
 			e.nativeEvent.stopImmediatePropagation();
 		};
+		var _onSelect = keys => {
+			if (this.props.onSelect) {
+				this.props.onSelect(keys);
+			}
+			this.setState({ activeStrainIds: keys });
+		};
 		return (<div onClick={_stopClick} style={_style}>
 			<div className="row">
 				<div className="columns small-6">
@@ -63,7 +77,7 @@ module.exports = React.createClass({
 				</div>
 				<div className="columns small-6">
 					<span style={{ fontSize: "0.875rem" }}>S288C (reference)</span>
-					<Checklist elements={this.props.data} />
+					<Checklist elements={this.props.data} initialActiveElementKeys={this.state.activeStrainIds} onSelect={_onSelect} />
 				</div>
 			</div>
 		</div>);
