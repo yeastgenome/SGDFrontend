@@ -19,12 +19,14 @@ module.exports = React.createClass({
 	render: function () {
 		return (
 			<div className="row collapse">
-				<div className="small-10 columns">
-					<input type="text" ref="searchInput" placeholder={this.props.placeholderText} />
-				</div>
-				<div className="small-2 columns">
-					<a href="#" className="button secondary postfix" onClick={this._onSubmit}>Go</a>
-				</div>
+				<form onSubmit={this._onSubmit}>
+					<div className="small-10 columns" style={{ paddingLeft: 0, paddingRight: 0 }}>
+						<input type="text" ref="searchInput" placeholder={this.props.placeholderText} />
+					</div>
+					<div className="small-2 columns" style={{ paddingLeft: 0 }}>
+						<input type="submit" href="#" className="button secondary postfix" value="Search" />
+					</div>
+				</form>
 			</div>
 		);
 	},

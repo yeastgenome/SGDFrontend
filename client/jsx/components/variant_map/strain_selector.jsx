@@ -57,7 +57,7 @@ module.exports = React.createClass({
 			padding: "1rem",
 			background: "#efefef",
 			width: 300,
-			height: 390,
+			height: 580,
 			zIndex: 2
 		};
 
