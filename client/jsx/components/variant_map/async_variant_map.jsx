@@ -5,6 +5,7 @@ var React = require("react");
 var _ = require("underscore");
 
 var AlignmentIndexModel = require("../../models/alignment_index_model.jsx");
+var ColorScaleLegend = require("./color_scale_legend.jsx");
 var Drawer = require("./drawer.jsx");
 var RadioSelector = require("../widgets/radio_selector.jsx");
 var SearchBar = require("../widgets/search_bar.jsx");
@@ -64,6 +65,7 @@ module.exports = React.createClass({
 			<div className="panel" style={{ zIndex: 1 }}>
 				{heatmapNode}
 			</div>
+			<ColorScaleLegend />
 			{drawerNode}
 		</div>);
 	},

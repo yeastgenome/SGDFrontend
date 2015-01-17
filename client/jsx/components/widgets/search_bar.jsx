@@ -23,7 +23,6 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		var _hasExit = this.state.query !== "";
 		var exitNode = (this.state.query === "") ? null : <span onClick={this._clear} style={{ position: "absolute", top: 5, right: "1rem", fontSize: 18, cursor: "pointer" }}><i className="fa fa-times"></i></span>;
 
 		return (
