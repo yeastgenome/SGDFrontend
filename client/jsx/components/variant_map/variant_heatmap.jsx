@@ -105,7 +105,6 @@ module.exports = React.createClass({
 	},
 
 	_onMouseOver: function (e, d) {
-		// TODO, don't make canvas re-draw here
 		this.setState({
 			mouseOverId: d.id
 		});

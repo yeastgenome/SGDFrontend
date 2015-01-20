@@ -22,7 +22,8 @@ module.exports = React.createClass({
 			isProteinMode: false,
 			lociData: [],
 			searchQuery: null,
-			strainData: []
+			strainData: [],
+			indexModel: null
 		};
 	},
 
@@ -100,7 +101,8 @@ module.exports = React.createClass({
 				activeStrainIds: _activeStrainIds,
 				isPending: false,
 				lociData: res.loci,
-				strainData: _strains
+				strainData: _strains,
+				indexModel: indexModel
 			});
 		});
 	},
@@ -154,25 +156,12 @@ module.exports = React.createClass({
 	},
 
 	_getLociData: function () {
+		var model = this.state.indexModel;
+		model.getAllLoci();
 		if (!this.state.searchQuery) {
-			return this.state.lociData;
-		} else if ((/[\s,]/).test(this.state.searchQuery)) {
-			// multiple inputs
-			var queries = this.state.searchQuery.split(/[\s,]/);
-			queries = _.filter(queries, d => { return (d !== ""); });
-			return _.filter(this.state.lociData, d => {
-				var _isMatch = false;
-				queries.forEach( _d => {
-					if (d.display_name.indexOf(_d) > -1) {
-						_isMatch = true;
-					}
-				});
-				return _isMatch;
-			});
+			return model.getAllLoci();;
 		} else {
-			return _.filter(this.state.lociData, d => {
-				return (d.display_name.indexOf(this.state.searchQuery) > -1);
-			});
+			return model.searchLoci(this.state.searchQuery);
 		}
 	},
 
