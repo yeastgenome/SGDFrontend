@@ -102,7 +102,8 @@ function phosphorylation_data_to_table(evidence) {
     var type = evidence['type'];
     var reference = "";
     if (evidence.source.format_name !== "PhosphoGRID") {
-        reference = "<span>PMID: " + evidence.reference.pubmed_id + "</span>";
+        var _r = evidence.reference;
+        reference = "<span><a href='" + _r.link + "'>" + _r.display_name + "</a> <small>PMID: " + _r.pubmed_id + "</small></span>";
     } 
 
     return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], site_residue + site_index, site_functions, type, kinases, source, reference];
