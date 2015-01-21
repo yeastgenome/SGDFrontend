@@ -159,9 +159,9 @@ module.exports = React.createClass({
 		var model = this.state.indexModel;
 		model.getAllLoci();
 		if (!this.state.searchQuery) {
-			return model.getAllLoci();;
+			return model.getAllLoci(this.state.activeStrainIds);
 		} else {
-			return model.searchLoci(this.state.searchQuery);
+			return model.searchLoci(this.state.searchQuery, this.state.activeStrainIds);
 		}
 	},
 

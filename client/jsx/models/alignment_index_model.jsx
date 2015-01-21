@@ -21,6 +21,7 @@ module.exports = class AlignmentIndexModel extends BaseModel {
 		return this.attributes.loci;
 	}
 
+	// strainIds is optional
 	searchLoci (query, strainIds) {
 		var results;
 
@@ -52,7 +53,23 @@ module.exports = class AlignmentIndexModel extends BaseModel {
 
 	// takes an array of loci data and chops all the variant data corresponding to strainIds (required)
 	_filterLociVariantData (lociData, strainIds) {
-		// TEMP
-		return lociData;
+		var strainIndexes = _.map(strainIds, d => {
+			var _strainData = _.findWhere(this.attributes.strains, { id: d });
+			return this.attributes.strains.indexOf(_strainData);
+		});
+		var _dna, _protein;
+		return _.map(lociData, (d, i) => {
+			var data = _.clone(d);
+			_dna = _.filter(data.dna_scores, (_d, _i) => {
+				return strainIndexes.indexOf(_i) > -1;
+			});
+			_protein = _.filter(data.protein_scores, (_d, _i) => {
+				return strainIndexes.indexOf(_i) > -1;
+			});
+
+			data.dna_scores = _dna;
+			data.protein_scores = _protein;
+			return data;
+		});
 	}
 };
