@@ -38,13 +38,19 @@ $(document).ready(function() {
         if(protein_data.length > 0) {
             var strain_selection = $("#strain_selection");
             for (var i=0; i < protein_data.length; i++) {
-                var option = document.createElement("option");
-                option.setAttribute("value", protein_data[i]['strain']['format_name']);
-                option.innerHTML = protein_data[i]['strain']['display_name'];
-                strain_selection.append(option);
-                if(protein_data[i]['strain']['format_name'] == 'S288C') {
-                    length = protein_data[i]['residues'].length - 1;
+                // TEMP
+                var _strain = protein_data[i]['strain'];
+                console.log(_strain.display_name, _strain.status)
+                if (protein_data[i]['strain']['status'] !== 'Other') {
+                    var option = document.createElement("option");
+                    option.setAttribute("value", protein_data[i]['strain']['format_name']);
+                    option.innerHTML = protein_data[i]['strain']['display_name'];
+                    strain_selection.append(option);
+                    if(protein_data[i]['strain']['format_name'] == 'S288C') {
+                        length = protein_data[i]['residues'].length - 1;
+                    }  
                 }
+                
             }
 
             function on_change(index) {
