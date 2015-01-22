@@ -120,6 +120,7 @@ class YeastgenomeFrontend(FrontendInterface):
     def strain(self, strain_repr):
         obj = self.get_obj('strain', strain_repr)
         # get the genbank url and add to obj
+        genbank_url = None
         for url in obj['strain']['urls']:
             if url['category'] == 'genbank':
                 genbank_url = url['link']
