@@ -88,7 +88,7 @@
                 <div class="">
                     <dl class="key-value">
                         <dt>GenBank</dt>
-                        <dd><a href="http://www.ncbi.nlm.nih.gov/{{genbank_url_segment}}/{{ strain.genbank_id }}">{{ strain.genbank_id }}</a></dd>
+                        <dd><a href="{{genbank_url}}">{{ strain.genbank_id }}</a></dd>
                         <dt>Assembly Size</dt>
                         <dd>{{ strain.assembly_size }}</dd>
                         {% if strain.fold_coverage != None %}
