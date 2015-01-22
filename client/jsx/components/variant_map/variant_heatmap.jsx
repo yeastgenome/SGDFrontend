@@ -9,6 +9,9 @@ var HEADER_HEIGHT = 120;
 var NODE_SIZE = 16;
 var CANVAS_SIZE = 8000;
 var LABEL_WIDTH = 120;
+var TOOLTIP_DELAY = 250;
+
+var FlexibleTooltip = require("../widgets/flexible_tooltip.jsx");
 
 module.exports = React.createClass({
 	propTypes: {
@@ -22,7 +25,8 @@ module.exports = React.createClass({
 			canvasScrollX: 0,
 			DOMWidth: DEFAULT_DOM_SIDE_SIZE,
 			DOMHeight: DEFAULT_DOM_SIDE_SIZE,
-			mouseOverId: null
+			mouseOverId: null,
+			tooltipVisibile: false
 		};
 	},
 
@@ -33,11 +37,13 @@ module.exports = React.createClass({
 
 		var strainLabelsNode = this._getLabelsNode();
 		var overlayNode = this._getOverlayNode();
+		var tooltipNode = this._getTooltipNode();
 
 		return (<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
 			{strainLabelsNode}
 			<div ref="outerScroll" style={{ width: this.state.DOMWidth - LABEL_WIDTH, height: _canvasHeight, overflowX: "scroll", position: "relative", left: LABEL_WIDTH }}>
 				<div style={{ position: "relative", width: _scrollZoneSize }}>
+					{tooltipNode}
 					<canvas ref="canvas" width={CANVAS_SIZE} height={_canvasHeight} style={{ position: "absolute", left: _canvasX }}/>
 				</div>
 				{overlayNode}
@@ -68,6 +74,7 @@ module.exports = React.createClass({
 			if (this.props.onClick) _onClick = e => {
 				e.stopPropagation();
 			    e.nativeEvent.stopImmediatePropagation();
+			    this.setState({ tooltipVisible: false });
 				this.props.onClick(d);
 			};
 			var _onMouseOver = e => {
@@ -105,8 +112,14 @@ module.exports = React.createClass({
 	},
 
 	_onMouseOver: function (e, d) {
+		if (this._mouseoverTimeout) clearTimeout(this._mouseoverTimeout);
+		this._mouseoverTimeout = setTimeout( () => {
+			this.setState({ tooltipVisible: true });
+		}, TOOLTIP_DELAY);
+
 		this.setState({
-			mouseOverId: d.id
+			mouseOverId: d.id,
+			tooltipVisible: false
 		});
 	},
 
@@ -156,6 +169,25 @@ module.exports = React.createClass({
 
 	_getCanvasX: function () {
 		return Math.max(0, this.state.canvasScrollX - CANVAS_SIZE / 2);
+	},
+
+	_getTooltipNode: function () {
+		if (!(this.state.mouseOverId && this.state.tooltipVisible)) return null;
+
+		var xScale = this._getXScale();
+		var yScale = this._getYScale();
+		var locus = _.findWhere(this.props.data, { id: this.state.mouseOverId });
+
+		var title = { name: locus.name, href: locus.href };
+		var top = HEADER_HEIGHT; // TEMP
+		var left = xScale(this.props.data.indexOf(locus));
+
+		return (<FlexibleTooltip
+			top={top} left={left}
+			visible={true} orientation="bottom"
+			title={locus.name} data={{ foo: "bar" }}
+			href={locus.href}
+		/>);
 	},
 
 	_renderCanvas: function () {

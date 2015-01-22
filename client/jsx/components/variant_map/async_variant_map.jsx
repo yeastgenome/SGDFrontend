@@ -120,6 +120,7 @@ module.exports = React.createClass({
 		var _heatmapData = _.map(_lociData, d => {
 			return {
 				name: d.display_name,
+				href: d.link,
 				id: d.id,
 				variationData: this.state.isProteinMode ? d.protein_scores : d.dna_scores
 			};
