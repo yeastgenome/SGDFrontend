@@ -103,8 +103,10 @@
                         <dt>Scaffold N50</dt>
                         <dd>{{ strain.scaffold_n50 }}</dd>
                         {% endif %}
+                        {% if strain.feature_count != None %}
                         <dt>Features</dt>
                         <dd>{{ strain.feature_count }}</dd>
+                        {% endif %}
                     </dl>
 
                     <!-- Includes contig_table into template -->
