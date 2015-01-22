@@ -34,14 +34,15 @@ module.exports = React.createClass({
 				return <div key={"legendNode" + i} style={_style} />;
 			});
 
-		var _helpText = "The alignment score is computed by finding percentage of nucleotides in a sequence that differ relative to the same feature in S288C.";
+		// TEMP lorem ipsum
+		var _helpText = "Bacon ipsum dolor amet pork chop landjaeger porchetta fatback leberkas. Bacon andouille pastrami, ham hock brisket tail cupim frankfurter turducken flank fatback jowl ball tip.";
 		return (<div>
 			<p style={{ marginBottom: 0 }}>Alignment Score <HelpIcon text={_helpText} /></p>
-			<span>1.00</span>
+			<span>0.00</span>
 			<div style={{ margin: "0 1rem", display: "inline-block", position: "relative", top: 3 }}>
 				{boxNodes}
 			</div>
-			<span>0.00</span>
+			<span>1.00</span>
 		</div>);
 	}
 });
