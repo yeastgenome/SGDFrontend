@@ -114,11 +114,19 @@ module.exports = React.createClass({
 
 		var model = this.state.alignmentModel;
 		var locusData = model.getLocusDiagramData();
+		var _rawVariantData = this.props.isProteinMode ? model.attributes.variant_data_protein : model.attributes.variant_data_dna;
+		var _start = model.attributes.coordinates.start;
+		var variantData = _.map(_rawVariantData, d => {
+			return {
+				coordinateDomain: [d.start + _start, d.end + _start]
+			};
+		});
 		return (<div>
 			<DropdownSelector elements={dropdownElements} defaultActiveValue={initialDropdownValue} />
 			<LocusDiagram
 				focusLocusDisplayName={model.attributes.display_name} contigData={locusData.contigData}
-				data={locusData.data} domainBounds={locusData.domainBounds}
+				data={locusData.data} domainBounds={locusData.domainBounds} variantData={variantData}
+				showVariants={true}
 			/>
 			{sequenceNode}
 		</div>);
