@@ -43,6 +43,10 @@ module.exports = React.createClass({
 				{boxNodes}
 			</div>
 			<span>1.00</span>
+			<div>
+				<span>N/A</span>
+				<div style={{ margin: "0 1rem", display: "inline-block", position: "relative", top: 3, left: 3, width: NODE_SIZE -2 , height: NODE_SIZE - 2, background: "#79050D" }} />
+			</div>
 		</div>);
 	}
 });

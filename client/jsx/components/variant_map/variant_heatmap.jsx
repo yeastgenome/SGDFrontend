@@ -185,7 +185,7 @@ module.exports = React.createClass({
 		return (<FlexibleTooltip
 			top={top} left={left}
 			visible={true} orientation="bottom"
-			title={locus.name} data={{ foo: "bar" }}
+			text={locus.name}
 			href={locus.href}
 		/>);
 	},
@@ -215,7 +215,8 @@ module.exports = React.createClass({
 
 			d.variationData.forEach( (_d, _i) => {
 				// get color and draw rect
-				ctx.fillStyle = colorScale(_d);
+				var _color = (_d === null) ? "#79050D" : colorScale(_d);
+				ctx.fillStyle = _color;
 				ctx.fillRect(i * NODE_SIZE, _i * NODE_SIZE + HEADER_HEIGHT, NODE_SIZE, NODE_SIZE);
 			});
 		});
