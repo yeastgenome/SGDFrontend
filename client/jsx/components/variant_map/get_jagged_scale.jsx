@@ -6,7 +6,7 @@ var _ = require("underscore");
 
 var LABEL_WIDTH = 180;
 var PX_PER_CHAR = 9.25;
-var SUMMARIZED_SIZE = 400;
+var SUMMARIZED_SIZE = 30;
 
 // give an array of segment objects, get a d3 scale
 module.exports = function (segments) {

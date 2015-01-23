@@ -143,6 +143,8 @@ module.exports = React.createClass({
 					sequence: d.sequence
 				};
 			});
+
+			var segments = this.state.alignmentModel.formatSegments();
 			var exampleData = {
 				segments: [
 					{
@@ -161,7 +163,7 @@ module.exports = React.createClass({
 			};
 			node = (<div>
 				<Parset pixelDomain={this.state.parsetPixelDomain} coordinateDomain={this.state.parsetPixelDomain}/>
-				<MultiAlignmentViewer segments={exampleData.segments} sequences={_sequences} />
+				<MultiAlignmentViewer segments={segments} sequences={_sequences} />
 			</div>);
 		} else {
 			node = <p className="text-center" style={{ marginTop: "1rem" }}><a className="button secondary small" onClick={this._showSequence}>Show Sequence</a></p>;

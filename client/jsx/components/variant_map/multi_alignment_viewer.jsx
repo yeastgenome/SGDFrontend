@@ -11,7 +11,7 @@ var AXIS_HEIGHT = 30;
 var FONT_SIZE = 14;
 var LABEL_WIDTH = 180;
 var PX_PER_CHAR = 9.25;
-var SUMMARIZED_SIZE = 400;
+var SUMMARIZED_SIZE = 30;
 var TICK_HEIGHT = 6;
 
 module.exports = React.createClass({

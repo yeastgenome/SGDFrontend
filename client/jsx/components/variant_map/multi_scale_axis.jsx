@@ -5,7 +5,7 @@ var _ = require("underscore");
 
 // TEMP vars
 var PX_PER_CHAR = 12;
-var SUMMARIZED_SIZE = 50;
+var SUMMARIZED_SIZE = 30;
 var TICK_HEIGHT = 6;
 
 module.exports = React.createClass({

@@ -38,4 +38,31 @@ module.exports = class AlignmentShowModel extends BaseModel {
 			contigData: _contigData
 		};
 	}
+
+	formatSegments (isProtein) {
+		var variants = isProtein ? this.attributes.variant_data_protein : this.attributes.variant_data_dna;
+		var segments = _.reduce(variants, (memo, next, i) => {
+			// handle start if visible segment not at beginning
+			if (next.start > 1 && i === 0) {
+				memo.push({
+					domain: [1, next.start - 1],
+					visible: false
+				});
+			// if not consecutive, put in a summarized segment
+			} else if (i !== 0 && memo[i-1].domain[1] + 1 !== next.start) {
+				memo.push({
+					domain: [memo[i-1].domain[1] + 1, next.start - 1],
+					visible: false
+				});
+			}
+
+			memo.push({
+				domain: [next.start, next.end],
+				visible: true
+			});
+			// put in the visible segment
+			return memo;
+		}, []);
+		return segments;
+	}
 };
