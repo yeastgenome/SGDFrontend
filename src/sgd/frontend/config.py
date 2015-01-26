@@ -4,5 +4,7 @@ heritage_url = 'http://heritage.yeastgenome.org'
 #backend_url = 'http://sgd-dev.stanford.edu/webservice'
 backend_url = 'http://sgd-qa.stanford.edu/webservice'
 # backend_url = 'backendless'
-
+secret_key = '6LczNgATAAAAAKr8UPafFYrOrMtbB6tOOQy4CQy5'
+sender = 'sgd-helpdesk@lists.stanford.edu'
+author_response_file = '/Users/shuai/work/author_response/author_response.data'
 log_directory = None
