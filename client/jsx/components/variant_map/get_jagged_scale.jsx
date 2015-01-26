@@ -5,7 +5,7 @@ var d3 = require("d3");
 var _ = require("underscore");
 
 var LABEL_WIDTH = 180;
-var PX_PER_CHAR = 9.25;
+var PX_PER_CHAR = 8.5;
 var SUMMARIZED_SIZE = 30;
 
 // give an array of segment objects, get a d3 scale

@@ -7,7 +7,6 @@ var _ = require("underscore");
 var AlignmentShowModel = require("../../models/alignment_show_model.jsx");
 var DropdownSelector = require("../widgets/dropdown_selector.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
-var Parset = require("../viz/parset.jsx");
 var MultiAlignmentViewer = require("./multi_alignment_viewer.jsx");
 
 var HEIGHT_WITH_SEQUENCE = 580;
@@ -33,8 +32,6 @@ module.exports = React.createClass({
 			alignmentModel: null,
 			showSequence: false,
 			isPending: true,
-			parsetPixelDomain: null, // [150, 200] screen x coordinates
-			parsetCoordinateDomain: null, // [36000, 45000] sequence coordinates
 		};
 	},
 
@@ -121,12 +118,14 @@ module.exports = React.createClass({
 				coordinateDomain: [d.start + _start, d.end + _start]
 			};
 		});
+
+		var watsonTracks = model.attributes.strand === "+" ? 2 : 1;
 		return (<div>
 			<DropdownSelector elements={dropdownElements} defaultActiveValue={initialDropdownValue} />
 			<LocusDiagram
 				focusLocusDisplayName={model.attributes.display_name} contigData={locusData.contigData}
 				data={locusData.data} domainBounds={locusData.domainBounds} variantData={variantData}
-				showVariants={true}
+				showVariants={true} watsonTracks={watsonTracks}
 			/>
 			{sequenceNode}
 		</div>);
@@ -162,7 +161,6 @@ module.exports = React.createClass({
 				]
 			};
 			node = (<div>
-				<Parset pixelDomain={this.state.parsetPixelDomain} coordinateDomain={this.state.parsetPixelDomain}/>
 				<MultiAlignmentViewer segments={segments} sequences={_sequences} />
 			</div>);
 		} else {

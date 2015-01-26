@@ -30,17 +30,23 @@ module.exports = React.createClass({
 
 	render: function () {
 		var labelsNode = this._getLabelsNode();
-		var segmentNodes = this._getSegmentNodes();
+		// var segmentNodes = this._getSegmentNodes(); // TEMP DISABLED
 		var visibleSequenceNodes = this._getVisibleSegmentNodes();
+
+		var xScale = this._getXScale();
+		var maxX = xScale.range()[xScale.range().length - 1];
 
 		// TEMP constant height
 		return (<div>
 			{labelsNode}
-			<MultiScaleAxis segments={this.props.segments} scale={this._getXScale()} />
-			<svg ref="svg" style={{ width: "100%", height: 600 }}>
-				{segmentNodes}
-				{visibleSequenceNodes}
-			</svg>
+			<div style={{ width: "100%", overflow: "scroll" }}>
+				<div style={{ width: maxX + LABEL_WIDTH }}>
+					<MultiScaleAxis segments={this.props.segments} scale={xScale} />
+					<svg ref="svg" style={{ width: "100%", height: 600 }}>
+						{visibleSequenceNodes}
+					</svg>
+				</div>
+			</div>
 		</div>);
 	},
 
@@ -98,7 +104,7 @@ module.exports = React.createClass({
 		var xScale = this._getXScale();
 		var yScale = this._getYScale();
 		return _.map(this.props.sequences, (seq, _i) => {
-			var _seqText = seq.sequence.slice(seg.domain[0], seg.domain[1])
+			var _seqText = seq.sequence.slice(seg.domain[0] - 1, seg.domain[1] - 1)
 			var _transform = `translate(${xScale(seg.domain[0])}, ${yScale(seq.name)})`;
 			return <text key={"variantSeqNode" + i + _i} transform={_transform} fontSize={FONT_SIZE} fontFamily="Courier" style={{ pointerEvents: "none" }}>{_seqText}</text>;
 		});

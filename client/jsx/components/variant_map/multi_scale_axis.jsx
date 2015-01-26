@@ -4,7 +4,6 @@ var React = require("react");
 var _ = require("underscore");
 
 // TEMP vars
-var PX_PER_CHAR = 12;
 var SUMMARIZED_SIZE = 30;
 var TICK_HEIGHT = 6;
 
@@ -34,7 +33,7 @@ module.exports = React.createClass({
 				y1={_y}
 				y2={_y}
 				strokeDasharray={s.visible ? null : "3px 3px"}
-				stroke="black"
+				stroke={s.visible ? "red" : "blue"}
 				fill="none"
 			/>);
 		});

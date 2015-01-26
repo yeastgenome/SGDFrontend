@@ -63,6 +63,7 @@ module.exports = class AlignmentShowModel extends BaseModel {
 			// put in the visible segment
 			return memo;
 		}, []);
+
 		return segments;
 	}
 };
