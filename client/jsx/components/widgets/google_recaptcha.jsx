@@ -18,7 +18,7 @@ module.exports = React.createClass({
 	componentDidMount: function () {
 		setTimeout( () => {
 			grecaptcha.render(this.refs.gReCaptchaTarget.getDOMNode(), {
-				sitekey: "6LeL0P4SAAAAALBtOppCpB_XMdtRdtuZPRj_GuM3",
+				sitekey: "6LczNgATAAAAABpwOd3T4voHxUf2mtP_MybHqKqk",
 				callback: this.props.onComplete
 			});  
 		}, 500)
