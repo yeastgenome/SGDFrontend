@@ -455,3 +455,63 @@ def clean_cell(cell):
             cell = result
             result = remove_html(cell)
         return cell
+
+def send_message(request):
+
+    import smtplib
+    from urllib2 import Request, urlopen, URLError
+    
+    from email.mime.text import MIMEText
+
+    p = dict(request.params)
+
+    ### verify the user's response with google
+    
+    googleResponse = p.get('googleResponse')
+
+    from src.sgd.frontend import config
+
+    secret_key = config.secret_key
+    
+    url = "https://www.google.com/recaptcha/api/siteverify?secret=" + secret_key + "&response=" + googleResponse
+
+    req = Request(url)
+
+    res = urlopen(req)
+
+    successJson = res.read()
+
+    success = str(successJson)
+    
+    if 'false' in success: 
+        return
+
+    server = "localhost"
+    sender = config.sender 
+    
+    s = smtplib.SMTP(server)
+    
+    name = p.get('name')
+    email = p.get('email')
+    subject = p.get('subject')
+    message = p.get('message')
+    sendUserCopy = p.get('sendUserCopy')
+    
+    text = "Name = " + name + "\nEmail = " + email + "\nSubject = " + subject + "\nMessage = " + message
+
+    msg = MIMEText(text)
+    
+    s = smtplib.SMTP(server)
+    
+    recipients = [sender]
+
+    if sendUserCopy == 'true' and email:
+        recipients.append(email)
+
+    msg['Subject'] = subject
+    msg['From'] = sender
+    msg['To'] = ", ".join(recipients)
+    s.sendmail(sender, recipients, msg.as_string())
+
+    return Response(body=json.dumps(p), content_type='application/json')
+
