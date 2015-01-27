@@ -13,6 +13,11 @@ module.exports = class AlignmentShowModel extends BaseModel {
 		super(options);
 	}
 
+	// cache from local storage, otherwise normal fetch
+	fetch (options) {
+		console.log(localStorage)
+	}
+
 	getLocusDiagramData () {
 		var attr = this.attributes;
 		var _start = Math.min(attr.coordinates.start, attr.coordinates.end);
