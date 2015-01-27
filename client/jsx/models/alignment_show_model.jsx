@@ -14,8 +14,21 @@ module.exports = class AlignmentShowModel extends BaseModel {
 	}
 
 	// cache from local storage, otherwise normal fetch
-	fetch (options) {
-		console.log(localStorage)
+	fetch (callback) {
+		var storageKey = this.url;
+		var maybeCachedResponse = JSON.parse(localStorage.getItem(storageKey));
+
+		// cached data available, use
+		if (maybeCachedResponse) {
+			this.attributes = maybeCachedResponse;
+			callback(null, maybeCachedResponse);
+		// not in cache, fetch and set for next time
+		} else {
+			super( (err, resp) => {
+				callback(err, resp);
+				localStorage.setItem(storageKey, JSON.stringify(resp));
+			})
+		}
 	}
 
 	getLocusDiagramData () {
