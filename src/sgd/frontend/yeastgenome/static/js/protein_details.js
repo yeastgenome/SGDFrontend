@@ -297,6 +297,7 @@ function draw_phosphodata() {
         var uniq_indexes = {};
         for (var i=0; i < phosphodata.length; i++) {
             var _index = phosphodata[i].site_index;
+            data.push(phosphodata[i]);
             if (uniq_indexes[_index]) continue;
             uniq_indexes[_index] = phosphodata[i];
             var index = relative_to_html(phosphodata[i]['site_index']-1, num_digits);
@@ -305,8 +306,7 @@ function draw_phosphodata() {
                     "<span style='color:red'>" +
                     old_residues.substring(index, index+1) +
                     "</span>";
-                start = index+1
-                data.push(phosphodata[i]);
+                start = index+1;
             }
         }
         new_residues = new_residues + old_residues.substring(start, old_residues.length)
