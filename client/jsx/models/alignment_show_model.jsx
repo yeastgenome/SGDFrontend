@@ -46,37 +46,8 @@ module.exports = class AlignmentShowModel extends BaseModel {
 			return d.start;
 		});
 
-		// handle redundant variant segments
-		var repeatSegments = [];
-		// add segment which is known to be redundant
-		var mergeSegments = segment => {
-			// TODO
-			console.log("merge: ", segment)
-		};
-		var isOverlap = (segA, segB) => {
-			var _isBefore = (segA.end >= segB.start && segA.start <= segB.end);
-			var _isAfter = (segA.start <= segB.end && segA.end >= segB.start);
-			return (_isBefore || _isAfter);
-		};
-
-		// loop through segments
-		var _outer, _inner;
-		for (var i = variants.length - 1; i >= 0; i--) {
-			_outer = variants[i];
-			// look at others to check for overlap
-			for (var _i = variants.length - 1; _i >= 0; _i--) {
-				_inner = variants[_i];
-				// merge if inside
-				if (i ==! _i && isOverlap(_inner, _outer)) {
-					console.log(_inner.start, _inner.end, _outer.start, _outer.end)
-					mergeSegments(_inner);
-					break;
-				}
-			}
-		}
-			
-
 		var segments = _.reduce(variants, (memo, next, i) => {
+			// add needed visible segment(s)
 			// handle start if visible segment not at beginning
 			if (next.start > 1 && i === 0) {
 				memo.push({
@@ -90,12 +61,34 @@ module.exports = class AlignmentShowModel extends BaseModel {
 					visible: false
 				});
 			}
+			// or needed at end
+			// TODO
 
-			memo.push({
-				domain: [next.start, next.end],
-				visible: true
-			});
 			// put in the visible segment
+			// if already has an intersecting segment, just extend that one
+			var _isMerged = false;
+			var _other, _isBefore, _isAfter, _isSame;
+			for (var _i = memo.length - 1; _i >= 0; _i--) {
+				_other = memo[_i];
+				// check for intersect
+				_isBefore = (next.end >= _other.domain[0] && next.start <= _other.domain[1]);
+				_isAfter = (next.start <= _other.domain[1] && next.end >= _other.domain[0]);
+				_isSame = (i === _i);
+				if ((_isBefore || _isAfter) && (!_isSame)) {
+					_other.domain[0] = Math.min(_other.domain[0], next.start)
+					_other.domain[1] = Math.max(_other.domain[1], next.end);
+					_isMerged = true;
+					break;
+				}
+			}
+			// else, just add
+			if (!_isMerged) {
+				memo.push({
+					domain: [next.start, next.end],
+					visible: true
+				});
+			}
+			
 			return memo;
 		}, []);
 
