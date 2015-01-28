@@ -54,8 +54,14 @@ module.exports = React.createClass({
 					</div>
 				</div>
 			</div>
-			{indicatorNode}
-			<ColorScaleLegend />
+			<div className="row">
+				<div className="columns small-6">
+					<ColorScaleLegend />
+				</div>
+				<div className="columns small-6">
+					{indicatorNode}					
+				</div>
+			</div>
 		</div>);
 	},
 
@@ -73,16 +79,18 @@ module.exports = React.createClass({
 
 	_getPositionIndicator: function () {
 		var xScale = this._getXScale();
-		var ratio = this.state.canvasScrollX / xScale.range()[1];
+		var leftRatio = this.state.canvasScrollX / xScale.range()[1];
+		var widthRatio = Math.min(1, (this.state.DOMWidth / xScale.range()[1]));
+
 		var barStyle = {
 			position: "absolute",
-			left: `${ratio * 100}%`,
-			width: 15,
+			left: `${leftRatio * 100}%`,
+			width: `${widthRatio * 100}%`,
 			height: "100%",
-			background: "blue"
+			background: "#e1e1e1"
 		};
-		return (<div className="sgd-progress-bar" style={{ position: "relative", width: 300, height: 30, border: "1px solid black", marginTop: "1rem" }}>
-			<div style={barStyle} />
+		return (<div className="variant-map-progress-bar" style={{ position: "relative", width: "100%", height: 30, border: "1px solid #e1e1e1" }}>
+			<div className="variant-map-progress-bar-inner" style={barStyle} />
 		</div>);
 	},
 
@@ -200,6 +208,7 @@ module.exports = React.createClass({
 		var xScale = this._getXScale();
 		var yScale = this._getYScale();
 		var locus = _.findWhere(this.props.data, { id: this.state.mouseOverId });
+		if (!locus) return null;
 
 		var title = { name: locus.name, href: locus.href };
 		var top = HEADER_HEIGHT; // TEMP

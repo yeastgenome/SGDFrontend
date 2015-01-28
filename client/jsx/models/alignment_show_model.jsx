@@ -110,9 +110,9 @@ module.exports = class AlignmentShowModel extends BaseModel {
 			return memo;
 		}, []);
 		
-		segments.forEach( d => {
-			console.log(d.domain[0], d.domain[1])
-		})
+		// segments.forEach( d => {
+		// 	console.log(d.domain[0], d.domain[1])
+		// })
 		return segments;
 	}
 };
