@@ -38,6 +38,7 @@ module.exports = React.createClass({
 		var strainLabelsNode = this._getLabelsNode();
 		var overlayNode = this._getOverlayNode();
 		var tooltipNode = this._getTooltipNode();
+		var indicatorNode = this._getPositionIndicator();
 
 		return (<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
 			{strainLabelsNode}
@@ -48,6 +49,7 @@ module.exports = React.createClass({
 				</div>
 				{overlayNode}
 			</div>
+			{indicatorNode}
 		</div>);
 	},
 
@@ -61,6 +63,21 @@ module.exports = React.createClass({
 	    if (prevProps.data !== this.props.data) {
 	    	this._renderCanvas();
 	    }
+	},
+
+	_getPositionIndicator: function () {
+		var xScale = this._getXScale();
+		var ratio = this.state.canvasScrollX / xScale.range()[1];
+		var barStyle = {
+			position: "absolute",
+			left: `${ratio * 100}%`,
+			width: 15,
+			height: "100%",
+			background: "blue"
+		};
+		return (<div className="sgd-progress-bar" style={{ position: "relative", width: 300, height: 30, border: "1px solid black", marginTop: "1rem" }}>
+			<div style={barStyle} />
+		</div>);
 	},
 
 	_getOverlayNode: function () {
