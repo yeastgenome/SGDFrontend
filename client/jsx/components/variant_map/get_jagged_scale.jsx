@@ -23,7 +23,8 @@ module.exports = function (segments) {
 	var _range = _.reduce(segments, (memo, s) => {
 		var _last = memo[memo.length - 1];
 		// add fixed px for invible, else calc based on sequence
-		var _delta = !s.visible ? SUMMARIZED_SIZE : ((s.domain[1] - s.domain[0]) * PX_PER_CHAR);
+		var scaleSize = ((s.domain[1] - s.domain[0]) * PX_PER_CHAR);
+		var _delta = !s.visible ? Math.min(SUMMARIZED_SIZE, scaleSize): scaleSize;
 		memo.push(_last += _delta);
 		return memo;
 	}, [LABEL_WIDTH]);

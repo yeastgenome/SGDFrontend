@@ -11,7 +11,6 @@ var AXIS_HEIGHT = 30;
 var FONT_SIZE = 14;
 var LABEL_WIDTH = 180;
 var PX_PER_CHAR = 9.25;
-var SUMMARIZED_SIZE = 30;
 var TICK_HEIGHT = 6;
 
 module.exports = React.createClass({
@@ -105,7 +104,7 @@ module.exports = React.createClass({
 		var yScale = this._getYScale();
 		return _.map(this.props.sequences, (seq, _i) => {
 			var _seqText = seq.sequence.slice(seg.domain[0] - 1, seg.domain[1] - 1)
-			var _transform = `translate(${xScale(seg.domain[0])}, ${yScale(seq.name)})`;
+			var _transform = `translate(${xScale(seg.domain[0]) - PX_PER_CHAR / 2}, ${yScale(seq.name)})`;
 			return <text key={"variantSeqNode" + i + _i} transform={_transform} fontSize={FONT_SIZE} fontFamily="Courier" style={{ pointerEvents: "none" }}>{_seqText}</text>;
 		});
 	},
