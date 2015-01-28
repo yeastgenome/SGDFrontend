@@ -5,7 +5,7 @@ var React = require("react");
 var _ = require("underscore");
 
 var AlignmentShowModel = require("../../models/alignment_show_model.jsx");
-var DropdownSelector = require("../widgets/dropdown_selector.jsx");
+// var DropdownSelector = require("../widgets/dropdown_selector.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
 var MultiAlignmentViewer = require("./multi_alignment_viewer.jsx");
 
@@ -17,6 +17,7 @@ module.exports = React.createClass({
 	propTypes: {
 		isProteinMode: React.PropTypes.bool,
 		locusId: React.PropTypes.number.isRequired,
+		locusName: React.PropTypes.string.isRequired,
 		onExit: React.PropTypes.func.isRequired,
 		strainData: React.PropTypes.array.isRequired
 	},
@@ -71,6 +72,7 @@ module.exports = React.createClass({
 				<h1>
 					<a onClick={this._exit} style={_exitStyle}><i className="fa fa-times"></i></a>
 				</h1>
+				<h1>{this.props.locusName}</h1>
 				{contentNode}
 				
 			</div>
@@ -100,13 +102,13 @@ module.exports = React.createClass({
 	},
 
 	_getContentNode: function () {
-		var dropdownElements = _.map(this.props.strainData, d => {
-			return {
-				name: d.name,
-				value: d.key
-			};
-		});
-		var initialDropdownValue = dropdownElements[0].value;
+		// var dropdownElements = _.map(this.props.strainData, d => {
+		// 	return {
+		// 		name: d.name,
+		// 		value: d.key
+		// 	};
+		// });
+		// var initialDropdownValue = dropdownElements[0].value;
 		var sequenceNode = this._getSequenceNode();
 
 		var model = this.state.alignmentModel;
@@ -121,7 +123,7 @@ module.exports = React.createClass({
 
 		var watsonTracks = model.attributes.strand === "+" ? 2 : 1;
 		return (<div>
-			<DropdownSelector elements={dropdownElements} defaultActiveValue={initialDropdownValue} />
+			{/*<DropdownSelector elements={dropdownElements} defaultActiveValue={initialDropdownValue} />*/}
 			<LocusDiagram
 				focusLocusDisplayName={model.attributes.display_name} contigData={locusData.contigData}
 				data={locusData.data} domainBounds={locusData.domainBounds} variantData={variantData}
@@ -143,25 +145,9 @@ module.exports = React.createClass({
 				};
 			});
 
-			var segments = this.state.alignmentModel.formatSegments();
-			var exampleData = {
-				segments: [
-					{
-						domain: [0, 88],
-						visible: false
-					},
-					{
-						domain: [88, 89],
-						visible: true
-					},
-					{
-						domain: [90, 354],
-						visible: false
-					}
-				]
-			};
+			var _segments = this.state.alignmentModel.formatSegments();
 			node = (<div>
-				<MultiAlignmentViewer segments={segments} sequences={_sequences} />
+				<MultiAlignmentViewer segments={_segments} sequences={_sequences} />
 			</div>);
 		} else {
 			node = <p className="text-center" style={{ marginTop: "1rem" }}><a className="button secondary small" onClick={this._showSequence}>Show Sequence</a></p>;
