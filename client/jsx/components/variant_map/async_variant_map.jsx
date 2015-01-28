@@ -5,7 +5,6 @@ var React = require("react");
 var _ = require("underscore");
 
 var AlignmentIndexModel = require("../../models/alignment_index_model.jsx");
-var ColorScaleLegend = require("./color_scale_legend.jsx");
 var Drawer = require("./drawer.jsx");
 var RadioSelector = require("../widgets/radio_selector.jsx");
 var SearchBar = require("../widgets/search_bar.jsx");
@@ -62,11 +61,8 @@ module.exports = React.createClass({
 						<RadioSelector elements={_radioElements} initialActiveElementKey="dna" onSelect={_onRadioSelect} />
 					</div>
 				</div>
-			</div>
-			<div className="panel" style={{ zIndex: 1 }}>
-				{heatmapNode}
-			</div>
-			<ColorScaleLegend />
+			</div>			
+			{heatmapNode}
 			{drawerNode}
 		</div>);
 	},

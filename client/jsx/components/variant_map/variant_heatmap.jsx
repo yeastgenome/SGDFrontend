@@ -3,6 +3,9 @@ var d3 = require("d3");
 var React = require("react");
 var _ = require("underscore");
 
+var ColorScaleLegend = require("./color_scale_legend.jsx");
+var FlexibleTooltip = require("../widgets/flexible_tooltip.jsx");
+
 var DEFAULT_DOM_SIDE_SIZE = 400; // height and width\
 var FONT_SIZE = 14;
 var HEADER_HEIGHT = 120;
@@ -10,8 +13,6 @@ var NODE_SIZE = 16;
 var CANVAS_SIZE = 8000;
 var LABEL_WIDTH = 120;
 var TOOLTIP_DELAY = 250;
-
-var FlexibleTooltip = require("../widgets/flexible_tooltip.jsx");
 
 module.exports = React.createClass({
 	propTypes: {
@@ -40,16 +41,21 @@ module.exports = React.createClass({
 		var tooltipNode = this._getTooltipNode();
 		var indicatorNode = this._getPositionIndicator();
 
-		return (<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
-			{strainLabelsNode}
-			<div ref="outerScroll" style={{ width: this.state.DOMWidth - LABEL_WIDTH, height: _canvasHeight, overflowX: "scroll", position: "relative", left: LABEL_WIDTH }}>
-				<div style={{ position: "relative", width: _scrollZoneSize }}>
-					{tooltipNode}
-					<canvas ref="canvas" width={CANVAS_SIZE} height={_canvasHeight} style={{ position: "absolute", left: _canvasX }}/>
+		return (<div>
+			<div className="panel" style={{ position: "relative", zIndex: 1 }}>
+				<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
+					{strainLabelsNode}
+					<div ref="outerScroll" style={{ width: this.state.DOMWidth - LABEL_WIDTH - 18, height: _canvasHeight, overflowX: "scroll", position: "relative", left: LABEL_WIDTH }}>
+						<div style={{ position: "relative", width: _scrollZoneSize }}>
+							{tooltipNode}
+							<canvas ref="canvas" width={CANVAS_SIZE} height={_canvasHeight} style={{ position: "absolute", left: _canvasX }}/>
+						</div>
+						{overlayNode}
+					</div>
 				</div>
-				{overlayNode}
 			</div>
 			{indicatorNode}
+			<ColorScaleLegend />
 		</div>);
 	},
 
