@@ -124,10 +124,11 @@ module.exports = React.createClass({
 		var watsonTracks = model.attributes.strand === "+" ? 2 : 1;
 		return (<div>
 			{/*<DropdownSelector elements={dropdownElements} defaultActiveValue={initialDropdownValue} />*/}
+			<h3>S288C Location: <a href={locusData.contigData.link}>{locusData.contigData.display_name}</a> {locusData.domainBounds[0]}..{locusData.domainBounds[1]}</h3>
 			<LocusDiagram
 				focusLocusDisplayName={model.attributes.display_name} contigData={locusData.contigData}
 				data={locusData.data} domainBounds={locusData.domainBounds} variantData={variantData}
-				showVariants={true} watsonTracks={watsonTracks}
+				showVariants={true} watsonTracks={watsonTracks} ignoreMouseover={true}
 			/>
 			{sequenceNode}
 		</div>);

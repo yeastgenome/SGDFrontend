@@ -49,6 +49,7 @@ module.exports = class AlignmentShowModel extends BaseModel {
 			}
 		];
 		var _contigData = attr.contig;
+		_contigData.centromerePosition = (_contigData.centromere_start + _contigData.centromere_end) / 2;
 
 		return {
 			data: { locci: _loci} ,

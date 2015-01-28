@@ -37,6 +37,7 @@ module.exports = React.createClass({
 			domainBounds: null, // [0, 100]
 			hasControls: true,
 			hasChromosomeThumb: true,
+			ignoreMouseover: false,
 			focusLocusDisplayName: null,
 			showSubFeatures: false,
 			showVariants: false,
@@ -195,7 +196,7 @@ module.exports = React.createClass({
 			// properties for all possible nodes
 			var _transformY = this._getTransformObject(d).y;
 			var groupTransform = `translate(0, ${_transformY})`;
-			var opacity = d.id === this.state.mouseoverId ? 1 : 0.8;
+			var opacity = (d.id === this.state.mouseoverId || this.props.ignoreMouseover) ? 1 : 0.8;
 
 			// mouseover callback
 			var mouseoverObj = _.clone(d);
@@ -244,7 +245,7 @@ module.exports = React.createClass({
 		var _textX = relativeEndX / 2;
 		var _textY = HEIGHT - 4;
 		var _textTransform = `translate(${_textX}, ${_textY})`;
-		var _opacity = d.id === this.state.mouseoverId ? 1 : 0.8;
+		var _opacity = (d.id === this.state.mouseoverId || this.props.ignoreMouseover) ? 1 : 0.8;
 		var textNode = <text className={`locus-diagram-anchor${focusKlass}`} onClick={_onClick} transform={_textTransform} textAnchor="middle">{d.locus.display_name}</text>;
 		// hide text if too small
 		if (_approxWidth > relativeEndX) textNode = null;
@@ -352,6 +353,8 @@ module.exports = React.createClass({
 	},
 
 	_handleMouseOver: function (e, d) {
+		if (this.props.ignoreMouseover) return;
+
 		// get the position
 		var target = e.currentTarget;
 		var _width = target.getBBox().width;
