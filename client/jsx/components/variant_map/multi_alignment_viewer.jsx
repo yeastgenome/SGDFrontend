@@ -29,7 +29,7 @@ module.exports = React.createClass({
 
 	render: function () {
 		var labelsNode = this._getLabelsNode();
-		// var segmentNodes = this._getSegmentNodes(); // TEMP DISABLED
+		var segmentNodes = this._getSegmentNodes();
 		var visibleSequenceNodes = this._getVisibleSegmentNodes();
 
 		var xScale = this._getXScale();
@@ -42,6 +42,7 @@ module.exports = React.createClass({
 				<div style={{ width: maxX + LABEL_WIDTH }}>
 					<MultiScaleAxis segments={this.props.segments} scale={xScale} />
 					<svg ref="svg" style={{ width: "100%", height: 600 }}>
+						{segmentNodes}
 						{visibleSequenceNodes}
 					</svg>
 				</div>
@@ -68,34 +69,35 @@ module.exports = React.createClass({
 	},
 
 	_getLabelsNode: function () {
+		var yScale = this._getYScale();
 		var labelNodes = _.map(this.props.sequences, (s, i) => {
 			var _style = {
 				position: "absolute",
 				right: "1rem",
-				top: i * (FONT_SIZE + 2) + AXIS_HEIGHT
+				top: yScale(s.name) + 22//i * (FONT_SIZE + 2) + AXIS_HEIGHT
 			}
 			return <a href={s.href} key={"sequenceAlignLabel" + i} target="_new" style={_style}>{s.name}</a>
 		});
-		return (<div style={{ position: "relative", width: LABEL_WIDTH }}>
+		return (<div style={{ position: "absolute", height: "100%", background: "#efefef", width: LABEL_WIDTH }}>
 			{labelNodes}
 		</div>);
 	},
 
 	_getSegmentNodes: function () {
 		var xScale = this._getXScale();
-
 		return _.map(this.props.segments, (s, i) => {
-			var _x = xScale(s.domain[0]);
+			var offset = s.visible ? PX_PER_CHAR / 2 : 0;
+			var _x = xScale(s.domain[0]) - offset;
 			var _y = 0;
-			var _width = xScale(s.domain[1]) - xScale(s.domain[0]);
-			var _height = this.props.sequences.length * (FONT_SIZE + 3);
-			var _visibleColor = s.visible ? "#17B0EF" : "black";
-			var _fill = (i === this.state.mouseOverSegmentIndex) ? _visibleColor : "none";
-			var _opacity = s.visible ? 1 : 0.25;
+			var _width = xScale(s.domain[1]) - xScale(s.domain[0]) + offset;
+			var _height = this.props.sequences.length * FONT_SIZE + 3;
+			// var _visibleColor = s.visible ? "#17B0EF" : "black";
+			var _fill = (i === this.state.mouseOverSegmentIndex) ? "gray" : "none";
+			var _opacity = 0.5;
 			var _onMouseOver = e => {
 				this._onSegmentMouseOver(e, s, i);
 			}
-			return <rect onMouseOver={_onMouseOver} key={"segRect" + i} x={_x} y={_y} width={_width} height={_height} fill={_fill} opacity={_opacity} style={{ pointerEvents: "all" }} />;
+			return <rect onMouseOver={_onMouseOver} key={"segRect" + i} x={_x} y={_y} width={_width} height={_height} fill={_fill} stroke="none" opacity={_opacity} style={{ pointerEvents: "all" }} />;
 		});
 	},
 
@@ -105,7 +107,7 @@ module.exports = React.createClass({
 		return _.map(this.props.sequences, (seq, _i) => {
 			var _seqText = seq.sequence.slice(seg.domain[0] - 1, seg.domain[1] - 1)
 			var _transform = `translate(${xScale(seg.domain[0]) - PX_PER_CHAR / 2}, ${yScale(seq.name)})`;
-			return <text key={"variantSeqNode" + i + _i} transform={_transform} fontSize={FONT_SIZE} fontFamily="Courier" style={{ pointerEvents: "none" }}>{_seqText}</text>;
+			return <text key={"variantSeqNode" + i + "_" + _i} transform={_transform} fontSize={FONT_SIZE} fontFamily="Courier" style={{ pointerEvents: "none" }}>{_seqText}</text>;
 		});
 	},
 
