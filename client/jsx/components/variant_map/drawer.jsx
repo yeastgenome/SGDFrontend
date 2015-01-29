@@ -33,6 +33,7 @@ module.exports = React.createClass({
 			alignmentModel: null,
 			showSequence: false,
 			isPending: true,
+			highlightedSegment: null // [0, 100] relative coord
 		};
 	},
 
@@ -128,7 +129,7 @@ module.exports = React.createClass({
 			<LocusDiagram
 				focusLocusDisplayName={model.attributes.display_name} contigData={locusData.contigData}
 				data={locusData.data} domainBounds={locusData.domainBounds} variantData={variantData}
-				showVariants={true} watsonTracks={watsonTracks} ignoreMouseover={true}
+				showVariants={true} watsonTracks={watsonTracks} ignoreMouseover={true} highlightedRelativeCoordinates={this.state.highlightedSegment}
 			/>
 			{sequenceNode}
 		</div>);
@@ -147,8 +148,13 @@ module.exports = React.createClass({
 			});
 
 			var _segments = this.state.alignmentModel.formatSegments();
+			var _onMouseover = (start, end) => {
+				this.setState({
+					highlightedSegment: [start, end]
+				});
+			};
 			node = (<div>
-				<MultiAlignmentViewer segments={_segments} sequences={_sequences} />
+				<MultiAlignmentViewer segments={_segments} sequences={_sequences} onMouseOverCoordinates={_onMouseover} />
 			</div>);
 		} else {
 			node = <p className="text-center" style={{ marginTop: "1rem" }}><a className="button secondary small" onClick={this._showSequence}>Show Sequence</a></p>;

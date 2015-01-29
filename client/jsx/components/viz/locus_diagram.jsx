@@ -37,6 +37,7 @@ module.exports = React.createClass({
 			domainBounds: null, // [0, 100]
 			hasControls: true,
 			hasChromosomeThumb: true,
+			highlightedRelativeCoordinates: null,
 			ignoreMouseover: false,
 			focusLocusDisplayName: null,
 			showSubFeatures: false,
@@ -75,6 +76,7 @@ module.exports = React.createClass({
 		/>);
 
 		var locciNodes = _.map(this.props.data.locci, (d, i) => { return this._getLocusNode(d, i); });
+		var highlightedSegmentNode = this._getHighlightedSegmentNode();
 
 		var variantNodes = this._getVariantNodes();
 		return (
@@ -91,6 +93,7 @@ module.exports = React.createClass({
 					</div>
 					<svg ref="svg" className="locus-svg" onMouseEnter={this._onSVGMouseEnter} onMouseLeave={this._onSVGMouseLeave} style={{ width: "100%", height: height, position: "relative" }}>
 						<line className="midpoint-marker" x1="0" x2={this.state.DOMWidth} y1={this._getMidpointY()} y2={this._getMidpointY()} />
+						{highlightedSegmentNode}
 						{locciNodes}
 						{variantNodes}
 					</svg>
@@ -550,6 +553,19 @@ module.exports = React.createClass({
 		}
 
 		return chromThumb;
+	},
+
+	_getHighlightedSegmentNode: function () {
+		var _highCoord = this.props.highlightedRelativeCoordinates;
+		if (!_highCoord) return null;
+
+		var scale = this._getScale();
+		var startCoord = this.props.domainBounds[0] + _highCoord[0]
+		var endCoord = this.props.domainBounds[0] + _highCoord[1];
+		var _x = scale(startCoord);
+		var _width = scale(endCoord) - scale(startCoord);	
+		
+		return <rect x={_x} width={_width} height="100" fill="gray" opacity={0.5} />;
 	},
 
 	_getFocusLocus: function () {

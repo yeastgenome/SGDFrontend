@@ -69,7 +69,12 @@ module.exports = React.createClass({
 
 	componentDidMount: function () {
 		var indexModel = new AlignmentIndexModel();
+		// TEMP time
+		var startTime = new Date().getTime();
 		indexModel.fetch( (err, res) => {
+			var endTime = new Date().getTime();
+			console.log("data response time: ", endTime - startTime)
+
 			// TEMP, add some fake strains
 			var _strains = _.map(res.strains, d => {
 				d["type"] = "alternative";
