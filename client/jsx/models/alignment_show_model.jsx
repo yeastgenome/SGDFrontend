@@ -121,6 +121,16 @@ module.exports = class AlignmentShowModel extends BaseModel {
 			end: this.attributes.end
 		});
 
+		// change starts and ends to domains
+		mergedSegments = _.map(mergedSegments, d => {
+			d.domain = [d.start, d.end];
+			return d;
+		});
+		// sort
+		mergedSegments = _.sortBy(mergedSegments, d => {
+			return d.start;
+		});
+
 		return mergedSegments;
 
 		// var mergedSegments = _.reduce(variants, (memo, next, i) => {
