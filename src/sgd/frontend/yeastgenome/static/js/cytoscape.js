@@ -79,7 +79,17 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 }
 
 function create_cy_download_button(cy, button_id, file_name) {
-    $("#" + button_id).click(function() {post_to_url('/download_image', {"display_name":file_name, 'data': cy.png()});});
+    $("#" + button_id).click(function() {
+    	// TEMP
+    	var $canvas = $("#j-sgd-cyto-canvas")[0]
+    	var ctx = $canvas.getContext("2d");
+    	var image = new Image();
+    	image.src = cy.png();
+    	ctx.drawImage(image, 0, 0);
+    	ctx.fillText("Hello World!", 50, 50);
+
+    	post_to_url('/download_image', { "display_name":file_name, 'data': $canvas.toDataURL("image/png") });
+    });
     $("#" + button_id).attr('disabled', false);
 }
 
