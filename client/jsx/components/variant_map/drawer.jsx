@@ -109,8 +109,9 @@ module.exports = React.createClass({
 		var _rawVariantData = this.props.isProteinMode ? model.attributes.variant_data_protein : model.attributes.variant_data_dna;
 		var _start = model.attributes.coordinates.start;
 		var variantData = _.map(_rawVariantData, d => {
+			var _factor = this.props.isProteinMode ? 3 : 1;
 			return {
-				coordinateDomain: [d.start + _start, d.end + _start]
+				coordinateDomain: [d.start * _factor + _start, d.end * _factor + _start]
 			};
 		});
 
@@ -138,10 +139,11 @@ module.exports = React.createClass({
 				};
 			});
 
-			var _segments = this.state.alignmentModel.formatSegments();
+			var _segments = this.state.alignmentModel.formatSegments(this.props.isProteinMode);
 			var _onMouseover = (start, end) => {
+				var _factor = this.props.isProteinMode ? 3 : 1;
 				this.setState({
-					highlightedSegment: [start, end]
+					highlightedSegment: [start * _factor, end * _factor]
 				});
 			};
 			node = (<div>
