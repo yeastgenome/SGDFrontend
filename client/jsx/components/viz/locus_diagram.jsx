@@ -559,9 +559,10 @@ module.exports = React.createClass({
 		var _highCoord = this.props.highlightedRelativeCoordinates;
 		if (!_highCoord) return null;
 
+		var _locus = this._getFocusLocus();
 		var scale = this._getScale();
-		var startCoord = this.props.domainBounds[0] + _highCoord[0]
-		var endCoord = this.props.domainBounds[0] + _highCoord[1];
+		var startCoord = _locus.start + _highCoord[0]
+		var endCoord = _locus.start + _highCoord[1];
 		var _x = scale(startCoord);
 		var _width = scale(endCoord) - scale(startCoord);	
 		

@@ -18,6 +18,9 @@ module.exports = class AlignmentShowModel extends BaseModel {
 		var storageKey = this.url;
 		var maybeCachedResponse = JSON.parse(localStorage.getItem(storageKey));
 
+		// TEMP
+		maybeCachedResponse = this.parse(maybeCachedResponse);
+
 		// cached data available, use
 		if (maybeCachedResponse) {
 			this.attributes = maybeCachedResponse;
@@ -27,8 +30,20 @@ module.exports = class AlignmentShowModel extends BaseModel {
 			super( (err, resp) => {
 				callback(err, resp);
 				localStorage.setItem(storageKey, JSON.stringify(resp));
-			})
+			});
 		}
+	}
+
+	parse (response) {
+		response.aligned_protein_sequences = this._sortSequencesByStrain(response.aligned_protein_sequences);
+		response.aligned_dna_sequences = this._sortSequencesByStrain(response.aligned_dna_sequences);
+		return response;
+	}
+
+	_sortSequencesByStrain (sequences) {
+		return _.sortBy(sequences, d => {
+			return (d.strain_display_name === "S288C") ? 1 : 2;
+		});
 	}
 
 	getLocusDiagramData () {
@@ -36,7 +51,9 @@ module.exports = class AlignmentShowModel extends BaseModel {
 		var _start = Math.min(attr.coordinates.start, attr.coordinates.end);
 		var _end = Math.max(attr.coordinates.start, attr.coordinates.end);
 
-		var _domainBounds = [_start, _end];
+		// expand domain by 10% on each end to give some space around locus
+		var _padding = Math.abs(_end - _start) * 0.1;
+		var _domainBounds = [_start - _padding, _end + _padding];
 		var _loci = [
 			{
 				start: _start,
@@ -54,7 +71,9 @@ module.exports = class AlignmentShowModel extends BaseModel {
 		return {
 			data: { locci: _loci} ,
 			domainBounds: _domainBounds,
-			contigData: _contigData
+			contigData: _contigData,
+			start: _start,
+			end: _end
 		};
 	}
 

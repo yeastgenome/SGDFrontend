@@ -80,7 +80,7 @@ module.exports = React.createClass({
 			var _style = {
 				position: "absolute",
 				right: "1rem",
-				top: yScale(s.name) + 22//i * (FONT_SIZE + 2) + AXIS_HEIGHT
+				top: yScale(s.name) + 26
 			}
 			return <a href={s.href} key={"sequenceAlignLabel" + i} target="_new" style={_style}>{s.name}</a>
 		});

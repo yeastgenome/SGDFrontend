@@ -5,7 +5,6 @@ var React = require("react");
 var _ = require("underscore");
 
 var AlignmentShowModel = require("../../models/alignment_show_model.jsx");
-// var DropdownSelector = require("../widgets/dropdown_selector.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
 var MultiAlignmentViewer = require("./multi_alignment_viewer.jsx");
 
@@ -103,13 +102,6 @@ module.exports = React.createClass({
 	},
 
 	_getContentNode: function () {
-		// var dropdownElements = _.map(this.props.strainData, d => {
-		// 	return {
-		// 		name: d.name,
-		// 		value: d.key
-		// 	};
-		// });
-		// var initialDropdownValue = dropdownElements[0].value;
 		var sequenceNode = this._getSequenceNode();
 
 		var model = this.state.alignmentModel;
@@ -124,8 +116,7 @@ module.exports = React.createClass({
 
 		var watsonTracks = model.attributes.strand === "+" ? 2 : 1;
 		return (<div>
-			{/*<DropdownSelector elements={dropdownElements} defaultActiveValue={initialDropdownValue} />*/}
-			<h3>S288C Location: <a href={locusData.contigData.link}>{locusData.contigData.display_name}</a> {locusData.domainBounds[0]}..{locusData.domainBounds[1]}</h3>
+			<h3>S288C Location: <a href={locusData.contigData.link}>{locusData.contigData.display_name}</a> {locusData.start}..{locusData.end}</h3>
 			<LocusDiagram
 				focusLocusDisplayName={model.attributes.display_name} contigData={locusData.contigData}
 				data={locusData.data} domainBounds={locusData.domainBounds} variantData={variantData}
