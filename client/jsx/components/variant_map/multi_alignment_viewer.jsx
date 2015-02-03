@@ -52,7 +52,7 @@ module.exports = React.createClass({
 		</div>);
 	},
 
-	_onSegmentMouseOver: function (e, d, i) {
+	_onSegmentMouseOver: function (e, d, i, sequenceName) {
 		var xScale = this._getXScale();
 		if (this.props.onMouseOverXCoordinates) {
 			var _startX = xScale(d.domain[0]);
@@ -65,7 +65,8 @@ module.exports = React.createClass({
 			this.props.onMouseOverCoordinates(_start, _end);
 		}
 		this.setState({
-			mouseOverSegmentIndex: i
+			mouseOverSegmentIndex: i,
+			activeSequenceName: sequenceName
 		});
 	},
 
@@ -81,7 +82,7 @@ module.exports = React.createClass({
 			var _style = {
 				position: "absolute",
 				right: "1rem",
-				top: yScale(s.name) + 26
+				top: yScale(s.name) + 28
 			}
 			var indicatorNode = (this.state.activeSequenceName === s.name) ? <i className="fa fa-chevron-right"></i> : null;
 			return <a href={s.href} key={"sequenceAlignLabel" + i} target="_new" style={_style}>{indicatorNode} {s.name}</a>
@@ -99,7 +100,6 @@ module.exports = React.createClass({
 			var _y = 0;
 			var _width = xScale(s.domain[1]) - xScale(s.domain[0]) + offset;
 			var _height = this.props.sequences.length * FONT_SIZE + 3;
-			// var _visibleColor = s.visible ? "#17B0EF" : "black";
 			var _fill = (i === this.state.mouseOverSegmentIndex) ? "gray" : "none";
 			var _opacity = 0.5;
 			var _onMouseOver = e => {
@@ -116,10 +116,7 @@ module.exports = React.createClass({
 			var _seqText = seq.sequence.slice(seg.domain[0] - 1, seg.domain[1] - 1)
 			var _transform = `translate(${xScale(seg.domain[0]) - PX_PER_CHAR / 2}, ${yScale(seq.name)})`;
 			var _onMouseOver = e => {
-				this.setState({
-					activeSequenceName: seq.name,
-					mouseOverSegmentIndex: i
-				});
+				this._onSegmentMouseOver(e, seg, i, seq.name);
 			};
 			return <text onMouseOver={_onMouseOver} key={"variantSeqNode" + i + "_" + _i} transform={_transform} fontSize={FONT_SIZE} fontFamily="Courier" >{_seqText}</text>;
 		});
