@@ -5,11 +5,12 @@ var React = require("react");
 var _ = require("underscore");
 
 var AlignmentShowModel = require("../../models/alignment_show_model.jsx");
-var LocusDiagram = require("../viz/locus_diagram.jsx");
 var MultiAlignmentViewer = require("./multi_alignment_viewer.jsx");
+var LocusDiagram = require("../viz/locus_diagram.jsx");
+var Parset = require("../viz/parset.jsx");
 
 var HEIGHT_WITH_SEQUENCE = 580;
-var HEIGHT_WITHOUT_SEQUENCE = 390;
+var HEIGHT_WITHOUT_SEQUENCE = 490;
 
 module.exports = React.createClass({
 
@@ -32,7 +33,11 @@ module.exports = React.createClass({
 			alignmentModel: null,
 			showSequence: false,
 			isPending: true,
-			highlightedSegment: null // [0, 100] relative coord
+			highlightedSegment: null, // [0, 100] relative coord
+			parsetVisible: false,
+			parsetX1Coordinates: null,
+			parsetX2Coordinates: null,
+			parsetData: {}
 		};
 	},
 
@@ -103,6 +108,7 @@ module.exports = React.createClass({
 
 	_getContentNode: function () {
 		var sequenceNode = this._getSequenceNode();
+		var parsetNode = this._getParsetNode();
 
 		var model = this.state.alignmentModel;
 		var locusData = model.getLocusDiagramData();
@@ -114,8 +120,8 @@ module.exports = React.createClass({
 				coordinateDomain: [d.start * _factor + _start, d.end * _factor + _start]
 			};
 		});
-
 		var watsonTracks = model.attributes.strand === "+" ? 2 : 1;
+
 		return (<div>
 			<h3>S288C Location: <a href={locusData.contigData.link}>{locusData.contigData.display_name}</a> {locusData.start}..{locusData.end}</h3>
 			<LocusDiagram
@@ -123,8 +129,18 @@ module.exports = React.createClass({
 				data={locusData.data} domainBounds={locusData.domainBounds} variantData={variantData}
 				showVariants={true} watsonTracks={watsonTracks} ignoreMouseover={true} highlightedRelativeCoordinates={this.state.highlightedSegment}
 			/>
+			{parsetNode}
 			{sequenceNode}
 		</div>);
+	},
+
+	_getParsetNode: function () {
+		return (<Parset 
+			isVisible={this.props.parsetVisible}
+			x1Coordinates={this.props.parsetX1Coordinates}
+			x2Coordinates={this.props.parsetX2Coordinates}
+			data={this.props.parsetData}
+		/>);
 	},
 
 	_getSequenceNode: function () {
