@@ -24,6 +24,7 @@ module.exports = React.createClass({
 
 	getInitialState: function () {
 		return {
+			activeSequenceName: null,
 			mouseOverSegmentIndex: null
 		};
 	},
@@ -82,7 +83,8 @@ module.exports = React.createClass({
 				right: "1rem",
 				top: yScale(s.name) + 26
 			}
-			return <a href={s.href} key={"sequenceAlignLabel" + i} target="_new" style={_style}>{s.name}</a>
+			var indicatorNode = (this.state.activeSequenceName === s.name) ? <i className="fa fa-chevron-right"></i> : null;
+			return <a href={s.href} key={"sequenceAlignLabel" + i} target="_new" style={_style}>{indicatorNode} {s.name}</a>
 		});
 		return (<div style={{ position: "absolute", height: "100%", background: "#efefef", width: LABEL_WIDTH }}>
 			{labelNodes}
@@ -113,11 +115,18 @@ module.exports = React.createClass({
 		return _.map(this.props.sequences, (seq, _i) => {
 			var _seqText = seq.sequence.slice(seg.domain[0] - 1, seg.domain[1] - 1)
 			var _transform = `translate(${xScale(seg.domain[0]) - PX_PER_CHAR / 2}, ${yScale(seq.name)})`;
-			return <text key={"variantSeqNode" + i + "_" + _i} transform={_transform} fontSize={FONT_SIZE} fontFamily="Courier" style={{ pointerEvents: "none" }}>{_seqText}</text>;
+			var _onMouseOver = e => {
+				this.setState({
+					activeSequenceName: seq.name,
+					mouseOverSegmentIndex: i
+				});
+			};
+			return <text onMouseOver={_onMouseOver} key={"variantSeqNode" + i + "_" + _i} transform={_transform} fontSize={FONT_SIZE} fontFamily="Courier" >{_seqText}</text>;
 		});
 	},
 
 	_getSummarizedSegmentNode: function (startCoordinate, endCoordinate, key) {
+		return null;
 		var xScale = this._getXScale();
 		var yScale = this._getYScale();
 
