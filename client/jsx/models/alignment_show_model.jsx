@@ -18,9 +18,6 @@ module.exports = class AlignmentShowModel extends BaseModel {
 		var storageKey = this.url;
 		var maybeCachedResponse = JSON.parse(localStorage.getItem(storageKey));
 
-		// TEMP
-		maybeCachedResponse = this.parse(maybeCachedResponse);
-
 		// cached data available, use
 		if (maybeCachedResponse) {
 			this.attributes = maybeCachedResponse;
