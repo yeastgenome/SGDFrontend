@@ -97,7 +97,7 @@ module.exports = React.createClass({
 			var _y = 0;
 			var _width = xScale(s.domain[1]) - xScale(s.domain[0]) + offset;
 			var _height = this.props.sequences.length * FONT_SIZE + 3;
-			var _fill = (i === this.state.mouseOverSegmentIndex) ? "gray" : "none";
+			var _fill = (i === this.state.mouseOverSegmentIndex) ? "#DEC113" : "none";
 			var _opacity = 0.5;
 			var _onMouseOver = e => {
 				this._onSegmentMouseOver(e, s, i);

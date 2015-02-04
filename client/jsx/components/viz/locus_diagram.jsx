@@ -572,7 +572,7 @@ module.exports = React.createClass({
 		var _x = scale(startCoord);
 		var _width = scale(endCoord) - scale(startCoord);	
 		
-		return <rect x={_x} width={_width} height="100" fill="gray" opacity={0.5} />;
+		return <rect x={_x} width={_width} height="100" fill="#DEC113" opacity={0.5} />;
 	},
 
 	_getFocusLocus: function () {
@@ -600,7 +600,7 @@ module.exports = React.createClass({
 
 			return (<g transform={_transform} key={"variantNode" + i}>
 				<line x1="0" x2="0" y1="0" y2="25" stroke="black" strokeWidth="2px" />
-				<circle r="10" fill="blue" />
+				<circle r="10" fill="#1287C5" />
 			</g>);
 		});
 	}

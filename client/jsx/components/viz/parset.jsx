@@ -8,8 +8,7 @@ var _ = require("underscore");
 var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
 
 // style static elements
-var HEIGHT = 150;
-var FILL_COLOR = "yellow";
+var HEIGHT = 100;
 
 module.exports = React.createClass({
 	mixins: [CalcWidthOnResize],
@@ -39,7 +38,7 @@ module.exports = React.createClass({
 		var x1 = [_x1C[0], _x1C[1]];
 		var x2 = [_x2C[0], _x2C[1]];
 		var _polygonString = `${x1[0]},0 ${x1[1]},0 ${x2[1]},${HEIGHT} ${x2[0]},${HEIGHT}`;
-		var polygonNode = !this.props.isVisible ? null : <polygon points={_polygonString} style={{ fill: FILL_COLOR }} />;
+		var polygonNode = !this.props.isVisible ? null : <polygon points={_polygonString} fill="#DEC113" opacity={0.5} />;
 
 		return (<div className="parset" style={{ height: HEIGHT }}>
 			<svg width="100%" height={HEIGHT}>
