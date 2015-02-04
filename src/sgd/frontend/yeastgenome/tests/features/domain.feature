@@ -14,4 +14,3 @@ Feature: Domain
         And I click the button with id "domain_table_download"
         Then I should download a file named "PTHR11937_annotations.txt"
         And I click the button with id "domain_table_analyze"
-        Then the table with id "gene_list_table" should have rows in it

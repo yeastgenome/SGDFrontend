@@ -303,7 +303,7 @@ function draw_phosphodata() {
             var index = relative_to_html(phosphodata[i]['site_index']-1, num_digits);
             if(old_residues.substring(index, index+1) == phosphodata[i]['site_residue']) {
                 new_residues = new_residues + old_residues.substring(start, index) +
-                    "<span style='color:red'>" +
+                    "<span style='color:blue'>" +
                     old_residues.substring(index, index+1) +
                     "</span>";
                 start = index+1;
