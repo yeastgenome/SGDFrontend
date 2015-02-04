@@ -107,10 +107,6 @@ module.exports = React.createClass({
 	// If touch device, enable zoom
 	componentDidMount: function () {
 		this._calculateWidth();
-
-		var _scale = this._getScale();
-		this.props.onSetDomain(_scale);
-
 		if (Modernizr) {
 			if (Modernizr.touch) {
 				this.setState({ zoomEnabled: true });
@@ -341,11 +337,12 @@ module.exports = React.createClass({
 	_calculateWidth: function () {
 		var _width = this.getDOMNode().getBoundingClientRect().width;
 		this.setState({ DOMWidth: _width });
+		var _scale = d3.scale.linear().domain(this.props.domainBounds).range([0, _width]);
+		this.props.onSetDomain(_scale);
 	},
 
 	// Set the new domain; it may want some control in the future.
 	_setDomain: function (newDomain) {
-		console.log("set domain")
 		this._clearMouseOver();
 
 		// TEMP be more forgiving with new domain
