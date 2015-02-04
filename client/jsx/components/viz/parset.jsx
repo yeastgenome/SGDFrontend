@@ -5,14 +5,11 @@ var d3 = require("d3");
 var React = require("react");
 var _ = require("underscore");
 
-var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
-
 // style static elements
 var HEIGHT = 100;
+var LINE_HEIGHT = 6;
 
 module.exports = React.createClass({
-	mixins: [CalcWidthOnResize],
-
 	propTypes: {
 		isVisible: React.PropTypes.bool,
 		x1Coordinates: React.PropTypes.array,
@@ -26,35 +23,55 @@ module.exports = React.createClass({
 		};
 	},
 
-	getInitialState: function () {
-		return {
-			DOMWidth: 355
-		};
-	},
-
 	render: function () {
 		var _x1C = this.props.x1Coordinates;
 		var _x2C = this.props.x2Coordinates;
 		var x1 = [_x1C[0], _x1C[1]];
 		var x2 = [_x2C[0], _x2C[1]];
-		var _polygonString = `${x1[0]},0 ${x1[1]},0 ${x2[1]},${HEIGHT} ${x2[0]},${HEIGHT}`;
-		var polygonNode = !this.props.isVisible ? null : <polygon points={_polygonString} fill="#DEC113" opacity={0.5} />;
+		var _polygonString = `${x1[0]},${LINE_HEIGHT} ${x1[1]},${LINE_HEIGHT} ${x2[1]},${HEIGHT - LINE_HEIGHT} ${x2[0]},${HEIGHT - LINE_HEIGHT}`;
 
-		return (<div className="parset" style={{ height: HEIGHT }}>
+		var labelNode = this._getLabelNode();
+		var polygonNode = !this.props.isVisible ? null : <polygon points={_polygonString} fill="#DEC113" opacity={0.5} />;
+		var x1LineNode = this._getX1LineNode();
+		var x2LineNode = this._getX2LineNode();
+
+		return (<div className="parset" style={{ height: HEIGHT, position: "relative" }}>
+			{labelNode}
 			<svg width="100%" height={HEIGHT}>
+				{x1LineNode}
 				{polygonNode}
+				{x2LineNode}
 			</svg>
 		</div>);
 	},
 
-	componentDidMount: function () {
-		this._calculateWidth();
+	_getLabelNode: function () {
+		if (!this.props.isVisible) return null;
+
+		var _x1C = this.props.x1Coordinates;
+		var _left = (_x1C[0] + _x1C[1]) / 2;
+		return <h3 style={{ position: "absolute", left: _left - 150, top: LINE_HEIGHT * 2 }}>S288C Coordinates: 20000..21000</h3>;
 	},
 
-	// TEMP comment
-	// maybe not needed?
-	_calculateWidth: function () {
-		var _width = this.getDOMNode().getBoundingClientRect().width;
-		this.setState({ DOMWidth: _width });
+	_getX1LineNode: function () {
+		if (!this.props.isVisible) return null;
+
+		var _x1C = this.props.x1Coordinates;
+		return (<g>
+			<line x1={_x1C[0]} x2={_x1C[0]} y1={0} y2={LINE_HEIGHT} stroke="black" />
+			<line x1={_x1C[0]} x2={_x1C[1]} y1={LINE_HEIGHT} y2={LINE_HEIGHT} stroke="black" />
+			<line x1={_x1C[1]} x2={_x1C[1]} y1={0} y2={LINE_HEIGHT} stroke="black" />
+		</g>);
+	},
+
+	_getX2LineNode: function () {
+		if (!this.props.isVisible) return null;
+
+		var _x2C = this.props.x2Coordinates;
+		return (<g>
+			<line x1={_x2C[0]} x2={_x2C[0]} y1={HEIGHT - LINE_HEIGHT} y2={HEIGHT} stroke="black" />
+			<line x1={_x2C[0]} x2={_x2C[1]} y1={HEIGHT - LINE_HEIGHT} y2={HEIGHT - LINE_HEIGHT} stroke="black" />
+			<line x1={_x2C[1]} x2={_x2C[1]} y1={HEIGHT - LINE_HEIGHT} y2={HEIGHT} stroke="black" />
+		</g>);
 	}
 });
