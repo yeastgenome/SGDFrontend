@@ -54,15 +54,12 @@ module.exports = React.createClass({
 
 	_onSegmentMouseOver: function (e, d, i, sequenceName) {
 		var xScale = this._getXScale();
-		if (this.props.onMouseOverXCoordinates) {
-			var _startX = xScale(d.domain[0]);
-			var _endX = xScale(d.domain[1]);
-			this.props.onMouseOverXCoordinates(_startX, _endX);
-		}
-		if (this.props.onMouseOverCoordinates) {
+		if (this.props.onMouseOver) {
 			var _start = d.domain[0];
 			var _end = d.domain[1];
-			this.props.onMouseOverCoordinates(_start, _end);
+			var _startX = xScale(d.domain[0]);
+			var _endX = xScale(d.domain[1]);
+			this.props.onMouseOver(_start, _end, _startX, _endX);
 		}
 		this.setState({
 			mouseOverSegmentIndex: i,

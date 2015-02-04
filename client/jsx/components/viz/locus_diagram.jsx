@@ -44,7 +44,8 @@ module.exports = React.createClass({
 			showVariants: false,
 			variantData: [], // [{ coordinateDomain: [20045, 20046] }, ...]
 			crickTracks: 1,
-			watsonTracks: 1
+			watsonTracks: 1,
+			onSetDomain: function (start, end, xScale) {}
 		};
 	},
 
@@ -106,6 +107,10 @@ module.exports = React.createClass({
 	// If touch device, enable zoom
 	componentDidMount: function () {
 		this._calculateWidth();
+
+		var _scale = this._getScale();
+		this.props.onSetDomain(_scale);
+
 		if (Modernizr) {
 			if (Modernizr.touch) {
 				this.setState({ zoomEnabled: true });
@@ -340,6 +345,7 @@ module.exports = React.createClass({
 
 	// Set the new domain; it may want some control in the future.
 	_setDomain: function (newDomain) {
+		console.log("set domain")
 		this._clearMouseOver();
 
 		// TEMP be more forgiving with new domain
@@ -353,6 +359,9 @@ module.exports = React.createClass({
 		this.setState({
 			domain: [_lb, _rb]
 		});
+
+		var _scale = this._getScale();
+		this.props.onSetDomain(_scale);
 	},
 
 	_handleMouseOver: function (e, d) {

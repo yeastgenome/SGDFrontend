@@ -9,7 +9,7 @@ var MultiAlignmentViewer = require("./multi_alignment_viewer.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
 var Parset = require("../viz/parset.jsx");
 
-var HEIGHT_WITH_SEQUENCE = 580;
+var HEIGHT_WITH_SEQUENCE = 680;
 var HEIGHT_WITHOUT_SEQUENCE = 490;
 
 module.exports = React.createClass({
@@ -35,8 +35,9 @@ module.exports = React.createClass({
 			isPending: true,
 			highlightedSegment: null, // [0, 100] relative coord
 			parsetVisible: false,
-			parsetX1Coordinates: null,
-			parsetX2Coordinates: null,
+			locusX1Scale: function () {},
+			parsetX1Coordinates: [0, 0],
+			parsetX2Coordinates: [0, 0],
 			parsetData: {}
 		};
 	},
@@ -78,8 +79,7 @@ module.exports = React.createClass({
 					<a onClick={this._exit} style={_exitStyle}><i className="fa fa-times"></i></a>
 				</h1>
 				<h1>{this.props.locusName}</h1>
-				{contentNode}
-				
+				{contentNode}		
 			</div>
 		</div>);
 	},
@@ -122,12 +122,17 @@ module.exports = React.createClass({
 		});
 		var watsonTracks = model.attributes.strand === "+" ? 2 : 1;
 
+		var _onSetLocusDomain = (scale) => {
+			this.setState({ locusX1Scale: scale });
+		};
+
 		return (<div>
 			<h3>S288C Location: <a href={locusData.contigData.link}>{locusData.contigData.display_name}</a> {locusData.start}..{locusData.end}</h3>
 			<LocusDiagram
 				focusLocusDisplayName={model.attributes.display_name} contigData={locusData.contigData}
 				data={locusData.data} domainBounds={locusData.domainBounds} variantData={variantData}
 				showVariants={true} watsonTracks={watsonTracks} ignoreMouseover={true} highlightedRelativeCoordinates={this.state.highlightedSegment}
+				onSetDomain={_onSetLocusDomain}
 			/>
 			{parsetNode}
 			{sequenceNode}
@@ -136,9 +141,9 @@ module.exports = React.createClass({
 
 	_getParsetNode: function () {
 		return (<Parset 
-			isVisible={this.props.parsetVisible}
-			x1Coordinates={this.props.parsetX1Coordinates}
-			x2Coordinates={this.props.parsetX2Coordinates}
+			isVisible={this.state.parsetVisible}
+			x1Coordinates={this.state.parsetX1Coordinates}
+			x2Coordinates={this.state.parsetX2Coordinates}
 			data={this.props.parsetData}
 		/>);
 	},
@@ -156,14 +161,22 @@ module.exports = React.createClass({
 			});
 
 			var _segments = this.state.alignmentModel.formatSegments(this.props.isProteinMode);
-			var _onMouseover = (start, end) => {
+			var x1Scale = this.state.locusX1Scale;;
+			var _onMouseOver = (start, end, startX, endX) => {
+				var _coord = this.state.alignmentModel.attributes.coordinates;
 				var _factor = this.props.isProteinMode ? 3 : 1;
 				this.setState({
-					highlightedSegment: [start * _factor, end * _factor]
+					highlightedSegment: [start * _factor, end * _factor],
+					parsetX1Coordinates: [x1Scale(_coord.start + start), x1Scale(_coord.start + end)],
+					parsetX2Coordinates: [startX, endX],
+					parsetVisible: true
 				});
 			};
 			node = (<div>
-				<MultiAlignmentViewer segments={_segments} sequences={_sequences} onMouseOverCoordinates={_onMouseover} />
+				<MultiAlignmentViewer
+					segments={_segments} sequences={_sequences}
+					onMouseOver={_onMouseOver}
+				/>
 			</div>);
 		} else {
 			node = <p className="text-center" style={{ marginTop: "1rem" }}><a className="button secondary small" onClick={this._showSequence}>Show Sequence</a></p>;
