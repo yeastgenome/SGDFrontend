@@ -40,7 +40,7 @@ module.exports = React.createClass({
 			oLanguage: { "sEmptyTable": "No history." }
 		};
 
-		return (<section id="history" data-magellan-destination="history">
+		return (<section id="history">
 			<h2>
 				History <HelpIcon isInfo={true} text="Documentation of sequence and/or annotation changes that have been made or proposed in the Reference strain S288C, and that directly affect this gene by altering the start, stop, intron structure, or amino acid sequence. Also includes information regarding sequence changes in adjacent intergenic regions. May also contain notes and references for the mapping of this gene." />
 			</h2>

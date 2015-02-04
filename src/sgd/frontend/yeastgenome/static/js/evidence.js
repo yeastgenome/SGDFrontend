@@ -99,8 +99,14 @@ function phosphorylation_data_to_table(evidence) {
 	        source = create_link(source, "http://www.phosphogrid.org/sites/" + gene_id + "/" + evidence['locus']['format_name'] + ".phospho", true);
         }
 	}
+    var type = evidence['type'];
+    var reference = "";
+    if (evidence.source.format_name !== "PhosphoGRID") {
+        var _r = evidence.reference;
+        reference = "<span><a href='" + _r.link + "'>" + _r.display_name + "</a> <small>PMID: " + _r.pubmed_id + "</small></span>";
+    } 
 
-    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], site_residue + site_index, site_functions, kinases, source];
+    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], site_residue + site_index, site_functions, type, kinases, source, reference];
 }
 
 function history_data_to_table(evidence) {

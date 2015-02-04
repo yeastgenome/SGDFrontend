@@ -3,6 +3,7 @@ google.load("visualization", "1", {packages:["corechart"]});
 var phosphodata = null;
 var current_residues = '';
 var current_strain = '';
+var allPtmData = null;
 
 var source_to_color = {
    'PANTHER': '#3366cc',
@@ -20,7 +21,6 @@ var source_to_color = {
    'TMHMM': '#33cc99'
 };
 
-
 $(document).ready(function() {
 
     $("#domain_table_analyze").hide();
@@ -33,32 +33,38 @@ $(document).ready(function() {
 
     $.getJSON('/backend/locus/' + locus['id'] + '/sequence_details?callback=?', function(sequence_data) {
         var protein_data = sequence_data['protein'];
+        var alt_strain_protein_data = [];
 
         var length = null;
         if(protein_data.length > 0) {
             var strain_selection = $("#strain_selection");
             for (var i=0; i < protein_data.length; i++) {
-                var option = document.createElement("option");
-                option.setAttribute("value", protein_data[i]['strain']['format_name']);
-                option.innerHTML = protein_data[i]['strain']['display_name'];
-                strain_selection.append(option);
-                if(protein_data[i]['strain']['format_name'] == 'S288C') {
-                    length = protein_data[i]['residues'].length - 1;
+                var _strain = protein_data[i]['strain'];
+                if (protein_data[i]['strain']['status'] !== 'Other') {
+                    alt_strain_protein_data.push(protein_data[i]);
+                    var option = document.createElement("option");
+                    option.setAttribute("value", protein_data[i]['strain']['format_name']);
+                    option.innerHTML = protein_data[i]['strain']['display_name'];
+                    strain_selection.append(option);
+                    if(protein_data[i]['strain']['format_name'] == 'S288C') {
+                        length = protein_data[i]['residues'].length - 1;
+                    }  
                 }
+                
             }
 
             function on_change(index) {
-                $("#sequence_residues").html(prep_sequence(protein_data[index]['residues']));
-                $("#strain_description").html(protein_data[index]['strain']['description']);
-                $("#phosphorylation_strain").html(protein_data[index]['strain']['display_name']);
-                $("#properties_strain").html(protein_data[index]['strain']['display_name']);
-                set_up_properties(protein_data[index]);
-                current_residues = protein_data[index]['residues'];
-                current_strain = protein_data[index]['strain']['display_name'];
+                $("#sequence_residues").html(prep_sequence(alt_strain_protein_data[index]['residues']));
+                $("#strain_description").html(alt_strain_protein_data[index]['strain']['description']);
+                $("#phosphorylation_strain").html(alt_strain_protein_data[index]['strain']['display_name']);
+                $("#properties_strain").html(alt_strain_protein_data[index]['strain']['display_name']);
+                set_up_properties(alt_strain_protein_data[index]);
+                current_residues = alt_strain_protein_data[index]['residues'];
+                current_strain = alt_strain_protein_data[index]['strain']['display_name'];
                 draw_phosphodata();
             }
 
-            strain_selection.change(function() {on_change(this.selectedIndex)});
+            strain_selection.change(function() {console.log(this.value); on_change(this.selectedIndex)});
 
             $("#sequence_download").click(function f() {
                 download_sequence(current_residues, locus['display_name'], current_strain);
@@ -106,8 +112,9 @@ $(document).ready(function() {
         });
 	});
 
-    $.getJSON('/backend/locus/' + locus['id'] + '/protein_phosphorylation_details?callback=?', function(data) {
+    $.getJSON('/backend/locus/' + locus['id'] + '/posttranslational_details?callback=?', function(data) {
         phosphodata = data;
+        allPtmData = data;
         create_phosphorylation_table(data);
         draw_phosphodata();
 	});
@@ -286,15 +293,20 @@ function draw_phosphodata() {
         var old_residues = residues.html();
         var new_residues = '';
         var start = 0;
+
+        var uniq_indexes = {};
         for (var i=0; i < phosphodata.length; i++) {
+            var _index = phosphodata[i].site_index;
+            data.push(phosphodata[i]);
+            if (uniq_indexes[_index]) continue;
+            uniq_indexes[_index] = phosphodata[i];
             var index = relative_to_html(phosphodata[i]['site_index']-1, num_digits);
             if(old_residues.substring(index, index+1) == phosphodata[i]['site_residue']) {
                 new_residues = new_residues + old_residues.substring(start, index) +
                     "<span style='color:red'>" +
                     old_residues.substring(index, index+1) +
                     "</span>";
-                start = index+1
-                data.push(phosphodata[i]);
+                start = index+1;
             }
         }
         new_residues = new_residues + old_residues.substring(start, old_residues.length)
@@ -332,9 +344,9 @@ function create_phosphorylation_table(data) {
     options["bPaginate"] = true;
     options["aaSorting"] = [[4, "asc"]];
     options["bDestroy"] = true;
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "phospho" }, null, null, null];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "phospho" }, null, null, null, null, null];
     options["aaData"] = datatable;
-    options["oLanguage"] = {"sEmptyTable": 'No phosphorylation data for this strain.'};
+    options["oLanguage"] = {"sEmptyTable": 'No post-translational data for this strain.'};
 
     return create_table("phosphorylation_table", options);
 }

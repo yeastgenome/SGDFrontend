@@ -33,7 +33,7 @@
 
 <!-- Overview
 ================================================== -->
-    <section id="overview" data-magellan-destination="overview">
+    <section id="overview">
         <h2>Locus Overview
         </h2>
         <hr />
@@ -143,7 +143,7 @@
 <!-- Sequence
 ================================================== -->
     {% if tabs['sequence_section'] %}
-    <section id="sequence" data-magellan-destination="sequence">
+    <section id="sequence">
         {% if tabs['sequence_tab'] %}
         <a href="/locus/{{ locus.sgdid }}/sequence" class="details-link">Sequence Details <i class="fa fa-chevron-circle-right"></i></a>
         {% endif %}
@@ -197,7 +197,7 @@
 <!-- Protein
 ================================================== -->
     {% if tabs['protein_tab'] %}
-    <section id="protein" data-magellan-destination="protein">
+    <section id="protein">
         <a href="/locus/{{ locus.sgdid }}/protein" class="details-link">Protein Details <i class="fa fa-chevron-circle-right"></i></a>
         <h2>Protein
             <a href="#" data-dropdown="protein_info"><i class="fa fa-info-circle"></i></a>
@@ -230,7 +230,7 @@
 <!-- GO
 ================================================== -->
     {% if tabs['go_tab'] %}
-    <section id="go" data-magellan-destination="go">
+    <section id="go">
         <a href="/locus/{{ locus.sgdid }}/go" class="details-link">Gene Ontology Details <i class="fa fa-chevron-circle-right"></i></a>
         <h2>Gene Ontology
             <a href="#" data-dropdown="go_info"><i class="fa fa-info-circle"></i></a>
@@ -381,7 +381,7 @@
 <!-- Pathway
 ================================================== -->
     {% if locus.pathways|length > 0 %}
-    <section id="pathway" data-magellan-destination="pathway">
+    <section id="pathway">
         <h2>Pathways</h2>
         <hr />
         <div class="panel">
@@ -397,7 +397,7 @@
 <!-- Phenotype
 ================================================== -->
     {% if tabs['phenotype_tab'] %}
-    <section id="phenotype" data-magellan-destination="phenotype">
+    <section id="phenotype">
         <a href="/locus/{{ locus.sgdid }}/phenotype" class="details-link">Phenotype Details <i class="fa fa-chevron-circle-right"></i></a>
         <h2>Phenotype
             <a href="#" data-dropdown="phenotype_info"><i class="fa fa-info-circle"></i></a>
@@ -455,7 +455,7 @@
 <!-- Interaction
 ================================================== -->
     {% if tabs['interaction_tab'] %}
-    <section id="interaction" data-magellan-destination="interaction">
+    <section id="interaction">
         <a href="/locus/{{ locus.sgdid }}/interaction" class="details-link">Interaction Details <i class="fa fa-chevron-circle-right"></i></a>
         <h2>Interaction
             <a href="#" data-dropdown="interaction_info"><i class="fa fa-info-circle"></i></a>
@@ -505,7 +505,7 @@
 <!-- Regulation
 ================================================== -->
     {% if tabs['regulation_tab'] %}
-    <section id="regulation" data-magellan-destination="regulation">
+    <section id="regulation">
         <a href="/locus/{{ locus.sgdid }}/regulation" class="details-link">Regulation Details <i class="fa fa-chevron-circle-right"></i></a>
         <h2>Regulation
             <a href="#" data-dropdown="regulation_info"><i class="fa fa-info-circle"></i></a>
@@ -551,7 +551,7 @@
 <!-- Expression
 ================================================== -->
     {% if tabs['expression_tab'] %}
-    <section id="expression" data-magellan-destination="expression">
+    <section id="expression">
         <a href="/locus/{{ locus.sgdid }}/expression" class="details-link">Expression Details <i class="fa fa-chevron-circle-right"></i></a>
         <h2>Expression
             <a href="#" data-dropdown="expression_info"><i class="fa fa-info-circle"></i></a>
@@ -576,7 +576,7 @@
 <!-- Paragraph
 ================================================== -->
     {% if locus.paragraph != None %}
-    <section id="paragraph" data-magellan-destination="paragraph">
+    <section id="paragraph">
         <h2>Summary Paragraph
             <a href="#" data-dropdown="paragraph_info"><i class="fa fa-info-circle"></i></a>
 
@@ -596,7 +596,7 @@
 <!-- Literature
 ================================================== -->
     {% if tabs['literature_tab'] %}
-    <section id="literature" data-magellan-destination="literature">
+    <section id="literature">
         <a href="/locus/{{ locus.sgdid }}/literature" class="details-link">Literature Details <i class="fa fa-chevron-circle-right"></i></a>
         <h2>Literature
             <a href="#" data-dropdown="literature_info"><i class="fa fa-info-circle"></i></a>
@@ -648,13 +648,13 @@
 
 <!-- References
 ================================================== -->
-    <section id="reference" data-magellan-destination="reference">
+    <section id="reference">
     </section>
 
     <!-- Resources
 ================================================== -->
     {% for url in locus.urls if url.category == 'LOCUS_LSP' %}{% if loop.first %}
-    <section id="resources" data-magellan-destination="resources">
+    <section id="resources">
         <h2>Resources</h2>
         <hr />
         <div class="panel">
@@ -677,4 +677,3 @@
     views.summary.render();
 </script>
 {% endblock scripts %}
-

@@ -4,7 +4,7 @@ Feature: SequenceDetails
     Scenario: Visit page
         When I visit "/locus/?/sequence" for "ACT1"
         And I should see an element with id "center_title"
-        And I should see an element with id "sidebar"
+        And I should see an element with id "navbar-container"
 
         And I should see an element with id "overview"
         And I should see an element with id "reference"

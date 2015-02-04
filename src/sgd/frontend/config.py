@@ -4,5 +4,7 @@ heritage_url = 'http://heritage.yeastgenome.org'
 #backend_url = 'http://sgd-dev.stanford.edu/webservice'
 backend_url = 'http://sgd-qa.stanford.edu/webservice'
 # backend_url = 'backendless'
-
+secret_key = 'secret key here'
+sender = 'email address here'
+author_response_file = 'file with full path here'
 log_directory = None

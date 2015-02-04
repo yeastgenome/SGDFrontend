@@ -2,6 +2,7 @@ import json
 from pyramid.renderers import render, Response
 from src.sgd.frontend import config
 from pyramid.view import notfound_view_config
+from src.sgd.frontend.yeastgenome import send_message
 
 def prep_views(chosen_frontend, config):
 
@@ -228,6 +229,15 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: {'snapshot': render('static/templates/snapshot.jinja2', {})},
                     renderer=chosen_frontend.get_renderer('snapshot'),
                     route_name='snapshot')
+
+    config.add_route('suggestion', '/suggestion')
+    config.add_view(lambda request: {'suggestion': render('static/templates/suggestion.jinja2', {})},
+                    renderer=chosen_frontend.get_renderer('suggestion'),
+                    route_name='suggestion')
+
+    config.add_route('send_email', '/send_data')
+    config.add_view(send_message, route_name='send_email')   
+
     
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':
@@ -237,3 +247,6 @@ def prepare_frontend(frontend_type, **configs):
         
         prep_views(chosen_frontend, configuration)
         return configuration
+
+
+    

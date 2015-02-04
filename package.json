@@ -35,6 +35,7 @@
     "browserify-shim": "~3.6.0",
     "underscore": "~1.6.0",
     "d3": "~3.4.11",
-    "fastclick": "~1.0.3"
+    "fastclick": "~1.0.3",
+    "bootstrap": "~3.3.1"
   }
 }

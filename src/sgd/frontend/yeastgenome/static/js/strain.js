@@ -25,6 +25,7 @@ function create_contig_table(data) {
 	for (var i=0; i < data.length; i++) {
         var contig = data[i];
 
+        console.log(strain.urls)
         if(strain['display_name'] == 'S288C') {
             var genbank_link = '<a href="http://www.ncbi.nlm.nih.gov/nuccore/' + contig['genbank_accession'] + '">' + contig['genbank_accession'] + '</a>';
             var refseq_link = '<a href="http://www.ncbi.nlm.nih.gov/nuccore/' + contig['refseq_id'] + '">' + contig['refseq_id'] + '</a>'
