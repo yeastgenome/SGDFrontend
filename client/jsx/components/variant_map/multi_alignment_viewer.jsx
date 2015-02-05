@@ -9,7 +9,7 @@ var MultiScaleAxis = require("./multi_scale_axis.jsx");
 // TEMP vars
 var AXIS_HEIGHT = 30;
 var FONT_SIZE = 14;
-var LABEL_WIDTH = 180;
+var LABEL_WIDTH = 150;
 var PX_PER_CHAR = 9.25;
 var TICK_HEIGHT = 6;
 

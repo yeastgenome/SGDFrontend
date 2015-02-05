@@ -10,7 +10,7 @@ var LocusDiagram = require("../viz/locus_diagram.jsx");
 var Parset = require("../viz/parset.jsx");
 
 var HEIGHT_WITH_SEQUENCE = 680;
-var HEIGHT_WITHOUT_SEQUENCE = 490;
+var HEIGHT_WITHOUT_SEQUENCE = 345;
 
 module.exports = React.createClass({
 
@@ -43,7 +43,8 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		var _height = this.state.showSequence ? HEIGHT_WITH_SEQUENCE : HEIGHT_WITHOUT_SEQUENCE;
+		// var _height = this.state.showSequence ? HEIGHT_WITH_SEQUENCE : HEIGHT_WITHOUT_SEQUENCE;
+		var _height = this.state.showSequence ? "70%" : HEIGHT_WITHOUT_SEQUENCE;
 		var _maskStyle = {
 			position: "fixed",
 			top: 0,
@@ -52,15 +53,17 @@ module.exports = React.createClass({
 			bottom: _height,
 			zIndex: 10
 		};
-		var _drawerStyle = {
+		var _drawerWrapperStyle = {
 			position: "fixed",
 			bottom: 0,
 			left: 0,
 			right: 0,
 			height: _height,
+			maxHeight: HEIGHT_WITH_SEQUENCE,
 			background: "#efefef",
 			padding: "1rem",
-			zIndex: 10
+			zIndex: 10,
+			overflow: "scroll"
 		};
 		var _exitStyle = {
 			position: "absolute",
@@ -74,12 +77,14 @@ module.exports = React.createClass({
 			this._getContentNode();
 		return (<div>
 			<div style={_maskStyle} onClick={this._exit} />
-			<div style={_drawerStyle}>
-				<h1>
-					<a onClick={this._exit} style={_exitStyle}><i className="fa fa-times"></i></a>
-				</h1>
-				<h1>{this.props.locusName}</h1>
-				{contentNode}		
+			<div style={_drawerWrapperStyle}>
+				<div>
+					<h1>
+						<a onClick={this._exit} style={_exitStyle}><i className="fa fa-times"></i></a>
+					</h1>
+					<h1>{this.props.locusName}</h1>
+					{contentNode}		
+				</div>
 			</div>
 		</div>);
 	},
@@ -140,6 +145,8 @@ module.exports = React.createClass({
 	},
 
 	_getParsetNode: function () {
+		if (!this.state.showSequence) return null;
+
 		return (<Parset 
 			isVisible={this.state.parsetVisible}
 			x1Coordinates={this.state.parsetX1Coordinates}
