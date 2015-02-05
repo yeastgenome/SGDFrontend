@@ -6,6 +6,10 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 	var width = $('#' + div_id).width();
 	cytoscape_div.height(height);
 
+	$(".j-sgd-cyto-canvas")
+		.attr("width", width)
+		.attr("height", height);
+
 	options = {
 		showOverlay: false,
 		layout: layout,
@@ -21,6 +25,15 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 
 	$('#' + div_id).cytoscape(options);
     var cy = $('#' + div_id).cytoscape("get");
+
+    // add date
+    var $canvas = $("#j-sgd-visible-cyto-canvas")[0]
+	var ctx = $canvas.getContext("2d");
+	var fontSize = 16;
+	ctx.font = fontSize + "pt Helvetica";
+	var txt = (new Date()).toLocaleDateString();
+	var txtWidth = ctx.measureText(txt).width;
+	ctx.fillText(txt, width / 2 - txtWidth / 2, fontSize);
 
     cy.zoomingEnabled(false);
     if(f != null) {
@@ -80,15 +93,23 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 
 function create_cy_download_button(cy, button_id, file_name) {
     $("#" + button_id).click(function() {
-    	// TEMP
-    	var $canvas = $("#j-sgd-cyto-canvas")[0]
-    	var ctx = $canvas.getContext("2d");
-    	var image = new Image();
-    	image.src = cy.png();
-    	ctx.drawImage(image, 0, 0);
-    	ctx.fillText("Hello World!", 50, 50);
 
-    	post_to_url('/download_image', { "display_name":file_name, 'data': $canvas.toDataURL("image/png") });
+    	// get hidden canvas
+    	var $hiddenCanvas = $("#j-sgd-hidden-cyto-canvas")[0];
+    	var hiddenCtx = $hiddenCanvas.getContext("2d");
+    	
+    	// get custom canvas, write to hidden canvas
+    	var $customCanvas = $("#j-sgd-visible-cyto-canvas")[0];
+    	var customImage = new Image();
+    	customImage.src = $customCanvas.toDataURL();
+    	hiddenCtx.drawImage(customImage, 0, 0);
+
+    	// write cyto hidden canvas
+    	var cytoImage = new Image();
+    	cytoImage.src = cy.png();
+		hiddenCtx.drawImage(cytoImage, 0, 16);
+
+    	post_to_url('/download_image', { "display_name":file_name, 'data': $hiddenCanvas.toDataURL("image/png") });
     });
     $("#" + button_id).attr('disabled', false);
 }
