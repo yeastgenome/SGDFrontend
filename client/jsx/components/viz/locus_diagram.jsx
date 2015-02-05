@@ -45,7 +45,8 @@ module.exports = React.createClass({
 			variantData: [], // [{ coordinateDomain: [20045, 20046] }, ...]
 			crickTracks: 1,
 			watsonTracks: 1,
-			onSetScale: function (start, end, xScale) {}
+			onSetScale: function (start, end, xScale) {},
+			onVariantMouseOver: function (start, end ) {}
 		};
 	},
 
@@ -583,7 +584,6 @@ module.exports = React.createClass({
 		return _.filter(_locci, d => { return d.locus.display_name === this.props.focusLocusDisplayName; })[0];
 	},
 
-	// TEMP
 	_getVariantNodes: function () {
 		if (this.props.variantData.length === 0 || !this.props.showVariants) {
 			return null;
@@ -592,15 +592,17 @@ module.exports = React.createClass({
 		var focusLocus = this._getFocusLocus();
 		var scale = this._getScale();
 		var yCoordinate = this._getTransformObject(focusLocus).y - HEIGHT;
-
 		return _.map(this.props.variantData, (d, i) => {
 			var _avgCoor = (d.coordinateDomain[0] + d.coordinateDomain[1]) / 2;
-			var midX = scale(_avgCoor)
-			var _transform = `translate(${midX}, ${yCoordinate})`;
+			var _midX = scale(_avgCoor)
+			var _transform = `translate(${_midX}, ${yCoordinate})`;
+			var _onMouseOver = e => {
+				this.props.onVariantMouseOver(d.coordinateDomain[0],d.coordinateDomain[1])
+			};
 
 			return (<g transform={_transform} key={"variantNode" + i}>
 				<line x1="0" x2="0" y1="0" y2="25" stroke="black" strokeWidth="2px" />
-				<circle r="10" fill="#1287C5" />
+				<circle r="10" fill="#1287C5" onMouseOver={_onMouseOver}/>
 			</g>);
 		});
 	}

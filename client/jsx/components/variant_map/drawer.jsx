@@ -142,6 +142,9 @@ module.exports = React.createClass({
 		var _onSetX1Scale = scale => {
 			this.setState({ x1Scale: scale });
 		};
+		var _onVariantMouseOver = (start, end) => {
+			this._highlightSegment(start - _start, end - _start);
+		};
 
 		return (<div>
 			<h3>S288C Location: <a href={locusData.contigData.link}>{locusData.contigData.display_name}</a> {locusData.start}..{locusData.end}</h3>
@@ -149,7 +152,7 @@ module.exports = React.createClass({
 				focusLocusDisplayName={model.attributes.display_name} contigData={locusData.contigData}
 				data={locusData.data} domainBounds={locusData.domainBounds} variantData={variantData}
 				showVariants={true} watsonTracks={watsonTracks} ignoreMouseover={true} highlightedRelativeCoordinates={this.state.highlightedSegment}
-				onSetScale={_onSetX1Scale}
+				onSetScale={_onSetX1Scale} onVariantMouseOver={_onVariantMouseOver}
 			/>
 			{parsetNode}
 			{sequenceNode}
