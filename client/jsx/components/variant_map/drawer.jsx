@@ -44,13 +44,15 @@ module.exports = React.createClass({
 
 	render: function () {
 		// var _height = this.state.showSequence ? HEIGHT_WITH_SEQUENCE : HEIGHT_WITHOUT_SEQUENCE;
-		var _height = this.state.showSequence ? "70%" : HEIGHT_WITHOUT_SEQUENCE;
+		var _screenHeight = window.innerHeight;
+		var _drawerHeight = Math.min((this.state.showSequence ? 0.7 * _screenHeight : HEIGHT_WITHOUT_SEQUENCE), HEIGHT_WITH_SEQUENCE);
+		var _maskHeight = _screenHeight - _drawerHeight;
 		var _maskStyle = {
 			position: "fixed",
 			top: 0,
 			right: 0,
 			left: 0,
-			bottom: _height,
+			height: _maskHeight,
 			zIndex: 10
 		};
 		var _drawerWrapperStyle = {
@@ -58,8 +60,7 @@ module.exports = React.createClass({
 			bottom: 0,
 			left: 0,
 			right: 0,
-			height: _height,
-			maxHeight: HEIGHT_WITH_SEQUENCE,
+			height: _drawerHeight,
 			background: "#efefef",
 			padding: "1rem",
 			zIndex: 10,
