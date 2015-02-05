@@ -45,7 +45,7 @@ module.exports = React.createClass({
 			variantData: [], // [{ coordinateDomain: [20045, 20046] }, ...]
 			crickTracks: 1,
 			watsonTracks: 1,
-			onSetDomain: function (start, end, xScale) {}
+			onSetScale: function (start, end, xScale) {}
 		};
 	},
 
@@ -338,7 +338,7 @@ module.exports = React.createClass({
 		var _width = this.getDOMNode().getBoundingClientRect().width;
 		this.setState({ DOMWidth: _width });
 		var _scale = d3.scale.linear().domain(this.props.domainBounds).range([0, _width]);
-		this.props.onSetDomain(_scale);
+		this.props.onSetScale(_scale);
 	},
 
 	// Set the new domain; it may want some control in the future.
@@ -358,7 +358,7 @@ module.exports = React.createClass({
 		});
 
 		var _scale = this._getScale();
-		this.props.onSetDomain(_scale);
+		this.props.onSetScale(_scale);
 	},
 
 	_handleMouseOver: function (e, d) {

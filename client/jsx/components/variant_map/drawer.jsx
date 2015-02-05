@@ -35,7 +35,8 @@ module.exports = React.createClass({
 			isPending: true,
 			highlightedSegment: null, // [0, 100] relative coord
 			parsetVisible: false,
-			locusX1Scale: function () {},
+			x1Scale: function () { return 0; },
+			x2Scale: function () { return 0; },
 			parsetX1Coordinates: [0, 0],
 			parsetX2Coordinates: [0, 0],
 			parsetData: {}
@@ -43,7 +44,6 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		// var _height = this.state.showSequence ? HEIGHT_WITH_SEQUENCE : HEIGHT_WITHOUT_SEQUENCE;
 		var _screenHeight = window.innerHeight;
 		var _drawerHeight = Math.min((this.state.showSequence ? 0.7 * _screenHeight : HEIGHT_WITHOUT_SEQUENCE), HEIGHT_WITH_SEQUENCE);
 		var _maskHeight = _screenHeight - _drawerHeight;
@@ -90,16 +90,16 @@ module.exports = React.createClass({
 		</div>);
 	},
 
+	componentDidMount: function () {
+	    this._fetchData();
+	},
+
 	_exit: function () {
 		this.setState({
 			alignmentModel: null,
 			isPending: true
 		});
 		this.props.onExit();
-	},
-
-	componentDidMount: function () {
-	    this._fetchData();
 	},
 
 	_fetchData: function () {
@@ -109,6 +109,17 @@ module.exports = React.createClass({
 				alignmentModel: showModel,
 				isPending: false
 			});
+		});
+	},
+
+	_highlightSegment: function (start, end) {
+		var _coord = this.state.alignmentModel.attributes.coordinates;
+		var _factor = this.props.isProteinMode ? 3 : 1;
+		this.setState({
+			highlightedSegment: [start * _factor, end * _factor],
+			parsetX1Coordinates: [this.state.x1Scale(_coord.start + start), this.state.x1Scale(_coord.start + end)],
+			parsetX2Coordinates: [this.state.x2Scale(start), this.state.x2Scale(end)],
+			parsetVisible: true
 		});
 	},
 
@@ -128,8 +139,8 @@ module.exports = React.createClass({
 		});
 		var watsonTracks = model.attributes.strand === "+" ? 2 : 1;
 
-		var _onSetLocusDomain = (scale) => {
-			this.setState({ locusX1Scale: scale });
+		var _onSetX1Scale = scale => {
+			this.setState({ x1Scale: scale });
 		};
 
 		return (<div>
@@ -138,7 +149,7 @@ module.exports = React.createClass({
 				focusLocusDisplayName={model.attributes.display_name} contigData={locusData.contigData}
 				data={locusData.data} domainBounds={locusData.domainBounds} variantData={variantData}
 				showVariants={true} watsonTracks={watsonTracks} ignoreMouseover={true} highlightedRelativeCoordinates={this.state.highlightedSegment}
-				onSetDomain={_onSetLocusDomain}
+				onSetScale={_onSetX1Scale}
 			/>
 			{parsetNode}
 			{sequenceNode}
@@ -169,21 +180,13 @@ module.exports = React.createClass({
 			});
 
 			var _segments = this.state.alignmentModel.formatSegments(this.props.isProteinMode);
-			var x1Scale = this.state.locusX1Scale;;
-			var _onMouseOver = (start, end, startX, endX) => {
-				var _coord = this.state.alignmentModel.attributes.coordinates;
-				var _factor = this.props.isProteinMode ? 3 : 1;
-				this.setState({
-					highlightedSegment: [start * _factor, end * _factor],
-					parsetX1Coordinates: [x1Scale(_coord.start + start), x1Scale(_coord.start + end)],
-					parsetX2Coordinates: [startX, endX],
-					parsetVisible: true
-				});
+			var _onSetX2Scale = scale => {
+				this.setState({ x2Scale: scale });
 			};
 			node = (<div>
 				<MultiAlignmentViewer
 					segments={_segments} sequences={_sequences}
-					onMouseOver={_onMouseOver}
+					onMouseOver={this._highlightSegment} onSetScale={_onSetX2Scale}
 				/>
 			</div>);
 		} else {

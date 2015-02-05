@@ -16,10 +16,19 @@ var TICK_HEIGHT = 6;
 module.exports = React.createClass({
 
 	propTypes: {
+		// highlightedSegmentDomain: null or [start, end]
 		onMouseOverCoordinates: React.PropTypes.func, // (start, end) =>
 		onMouseOverXCoordinates: React.PropTypes.func, // (startX, endX) =>
+		onHighlightSegment: React.PropTypes.func, // (start, end) =>
+		onSetScale: React.PropTypes.func, // scale =>
 		segments: React.PropTypes.array.isRequired,
 		sequences: React.PropTypes.array.isRequired
+	},
+
+	getDefaultProps: function () {
+		return {
+			highlightedSegmentDomain: null
+		};
 	},
 
 	getInitialState: function () {
@@ -50,6 +59,13 @@ module.exports = React.createClass({
 				</div>
 			</div>
 		</div>);
+	},
+
+	componentDidMount: function () {
+		if (this.props.onSetScale) {
+			var _scale = this._getXScale();
+			this.props.onSetScale(_scale);
+		}
 	},
 
 	_onSegmentMouseOver: function (e, d, i, sequenceName) {
