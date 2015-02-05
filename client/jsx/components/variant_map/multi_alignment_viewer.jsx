@@ -17,8 +17,6 @@ module.exports = React.createClass({
 
 	propTypes: {
 		// highlightedSegmentDomain: null or [start, end]
-		onMouseOverCoordinates: React.PropTypes.func, // (start, end) =>
-		onMouseOverXCoordinates: React.PropTypes.func, // (startX, endX) =>
 		onHighlightSegment: React.PropTypes.func, // (start, end) =>
 		onSetScale: React.PropTypes.func, // scale =>
 		segments: React.PropTypes.array.isRequired,
@@ -34,7 +32,6 @@ module.exports = React.createClass({
 	getInitialState: function () {
 		return {
 			activeSequenceName: null,
-			mouseOverSegmentIndex: null
 		};
 	},
 
@@ -42,6 +39,7 @@ module.exports = React.createClass({
 		var labelsNode = this._getLabelsNode();
 		var segmentNodes = this._getSegmentNodes();
 		var visibleSequenceNodes = this._getVisibleSegmentNodes();
+		var highlightedSegmentNode = this._getHighlightedSegmentNode();
 
 		var xScale = this._getXScale();
 		var maxX = xScale.range()[xScale.range().length - 1];
@@ -53,6 +51,7 @@ module.exports = React.createClass({
 				<div style={{ width: maxX + LABEL_WIDTH }}>
 					<MultiScaleAxis segments={this.props.segments} scale={xScale} />
 					<svg ref="svg" style={{ width: "100%", height: 600 }}>
+						{highlightedSegmentNode}
 						{segmentNodes}
 						{visibleSequenceNodes}
 					</svg>
@@ -69,24 +68,17 @@ module.exports = React.createClass({
 	},
 
 	_onSegmentMouseOver: function (e, d, i, sequenceName) {
-		var xScale = this._getXScale();
-		if (this.props.onMouseOver) {
+		if (this.props.onHighlightSegment) {
 			var _start = d.domain[0];
 			var _end = d.domain[1];
-			var _startX = xScale(d.domain[0]);
-			var _endX = xScale(d.domain[1]);
-			this.props.onMouseOver(_start, _end, _startX, _endX);
+			this.props.onHighlightSegment(_start, _end);
 		}
-		this.setState({
-			mouseOverSegmentIndex: i,
-			activeSequenceName: sequenceName
-		});
+		this.setState({ activeSequenceName: sequenceName });
 	},
 
 	_clearMouseOver: function () {
-		this.setState({
-			mouseOverSegmentIndex: null
-		});
+		if (this.props.onHighlightSegment) this.props.onHighlightSegment(null);
+		this.setState({ activeSequenceName: null });
 	},
 
 	_getLabelsNode: function () {
@@ -118,8 +110,21 @@ module.exports = React.createClass({
 			var _onMouseOver = e => {
 				this._onSegmentMouseOver(e, s, i);
 			}
-			return <rect onMouseOver={_onMouseOver} key={"segRect" + i} x={_x} y={_y} width={_width} height={_height} fill={_fill} stroke="none" opacity={_opacity} style={{ pointerEvents: "all" }} />;
+			return <rect onMouseOver={_onMouseOver} key={"segRect" + i} x={_x} y={_y} width={_width} height={_height} fill={"none"} stroke="none" opacity={_opacity} style={{ pointerEvents: "all" }} />;
 		});
+	},
+
+	_getHighlightedSegmentNode: function () {
+		var hDom = this.props.highlightedSegmentDomain;
+		if (!hDom) return null;
+		var xScale = this._getXScale();
+		var _x = xScale(hDom[0]);
+		var _width = xScale(hDom[1]) - _x;
+		var _fill = "#DEC113";
+		var _opacity = 0.5;
+		var _height = this.props.sequences.length * FONT_SIZE + 3;
+		var _y = 0;
+		return <rect x={_x} y={_y} width={_width} height={_height} fill={_fill} stroke="none" opacity={_opacity} />;
 	},
 
 	_getVisibleSequenceNodes: function (seg, i) {

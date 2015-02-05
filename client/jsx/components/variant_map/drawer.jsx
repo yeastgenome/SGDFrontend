@@ -186,7 +186,8 @@ module.exports = React.createClass({
 			node = (<div>
 				<MultiAlignmentViewer
 					segments={_segments} sequences={_sequences}
-					onMouseOver={this._highlightSegment} onSetScale={_onSetX2Scale}
+					onHighlightSegment={this._highlightSegment} onSetScale={_onSetX2Scale}
+					highlightedSegmentDomain={this.state.highlightedSegment}
 				/>
 			</div>);
 		} else {
