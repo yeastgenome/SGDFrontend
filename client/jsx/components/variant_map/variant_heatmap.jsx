@@ -32,7 +32,7 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		var _scrollZoneSize = this.props.data.length * NODE_SIZE;
+		var _scrollZoneSize = this._getScrollSize();
 		var _canvasX = this._getCanvasX();
 		var _canvasHeight = this._getYScale().range()[1] + HEADER_HEIGHT;
 
@@ -132,9 +132,14 @@ module.exports = React.createClass({
 		</svg>);
 	},
 
+	_getScrollSize: function () {
+		return this.props.data.length * NODE_SIZE;
+	},
+
 	// check to see if the scroll y needs to be redrawn
 	_checkScroll: function () {
-		var scrollLeft = this.refs.outerScroll.getDOMNode().scrollLeft;
+		var _scrollSize = this._getScrollSize();
+		var scrollLeft = Math.min(_scrollSize, this.refs.outerScroll.getDOMNode().scrollLeft);
 		var scrollDelta = Math.abs(scrollLeft - this.state.canvasScrollX)
 		if (scrollDelta > CANVAS_SIZE / 4) {
 			this.setState({ canvasScrollX: scrollLeft });
