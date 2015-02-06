@@ -568,10 +568,10 @@ module.exports = React.createClass({
 
 		var _locus = this._getFocusLocus();
 		var scale = this._getScale();
-		var startCoord = _locus.start + _highCoord[0]
-		var endCoord = _locus.start + _highCoord[1];
+		var startCoord = (_locus.track > 0) ? (_locus.start + _highCoord[0]) : (_locus.end - _highCoord[0]);
+		var endCoord = (_locus.track > 0) ? (_locus.start + _highCoord[1]) : (_locus.end - _highCoord[1]);
 		var _x = scale(startCoord);
-		var _width = scale(endCoord) - scale(startCoord);	
+		var _width = Math.abs(scale(endCoord) - scale(startCoord));	
 		
 		return <rect x={_x} width={_width} height="100" fill="#DEC113" opacity={0.5} />;
 	},

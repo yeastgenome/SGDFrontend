@@ -113,11 +113,21 @@ module.exports = React.createClass({
 	},
 
 	_highlightSegment: function (start, end) {
-		var _coord = this.state.alignmentModel.attributes.coordinates;
+		var _attr = this.state.alignmentModel.attributes
+		var _coord = _attr.coordinates;
+		var x1Start = start;
+		var x1End = end;
+		// handle crick strand features
+		if (_attr.strand === "-") {
+			var _relEnd = _coord.end - _coord.start;
+			x1Start = _relEnd - end;
+			x1End = _relEnd - start;
+		}
 		var _factor = this.props.isProteinMode ? 3 : 1;
+
 		this.setState({
 			highlightedSegment: [start * _factor, end * _factor],
-			parsetX1Coordinates: [this.state.x1Scale(_coord.start + start), this.state.x1Scale(_coord.start + end)],
+			parsetX1Coordinates: [this.state.x1Scale(_coord.start + x1Start), this.state.x1Scale(_coord.start + x1End)],
 			parsetX2Coordinates: [this.state.x2Scale(start), this.state.x2Scale(end)],
 			parsetVisible: true
 		});
