@@ -16,6 +16,11 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from src.sgd.frontend.frontend_interface import FrontendInterface
 from src.sgd.frontend.yeastgenome.backendless.load_data_from_file import get_data
 
+# TEMP
+from elasticsearch import Elasticsearch
+# defaults to localhost:9200
+es = Elasticsearch()
+
 class YeastgenomeFrontend(FrontendInterface):
     def __init__(self, backend_url, heritage_url, log_directory):
         self.backend_url = backend_url
@@ -343,6 +348,27 @@ class YeastgenomeFrontend(FrontendInterface):
     def enrichment(self, bioent_ids):
         enrichment_results = get_json(self.backend_url + '/go_enrichment', data={'bioent_ids': bioent_ids})
         return enrichment_results
+
+    # TEMP elasticsearch endpoint
+    def search(self, params):
+        query = params['query']
+
+        # query by display_name
+        res = es.search(index="test-index", body={ "query": {
+            "filtered": {
+                "query": {
+                    "match": { "display_name": query }
+                }
+            }
+        }})
+
+        # if there's an internal hit, redirect there
+        if (res['hits']['total'] == 1):
+            display_name = res['hits']['hits'][0]['_source']['display_name']
+            return self.redirect('locus', { 'display_name': display_name })
+        # otherwise try google
+        else:
+            return HTTPFound("http://google.com?q=" + query)
 
     def backend(self, url_repr):
         if self.backend_url == 'backendless':
