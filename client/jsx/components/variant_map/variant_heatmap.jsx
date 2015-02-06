@@ -10,7 +10,7 @@ var DEFAULT_DOM_SIDE_SIZE = 400; // height and width\
 var FONT_SIZE = 14;
 var HEADER_HEIGHT = 120;
 var NODE_SIZE = 16;
-var CANVAS_SIZE = 8000;
+var MAX_CANVAS_SIZE = 8000;
 var LABEL_WIDTH = 120;
 var TOOLTIP_DELAY = 250;
 
@@ -34,6 +34,7 @@ module.exports = React.createClass({
 	render: function () {
 		var _scrollZoneSize = this._getScrollSize();
 		var _canvasX = this._getCanvasX();
+		var _canvasSize = this._getCanvasSize();
 		var _canvasHeight = this._getYScale().range()[1] + HEADER_HEIGHT;
 
 		var strainLabelsNode = this._getLabelsNode();
@@ -48,7 +49,7 @@ module.exports = React.createClass({
 					<div ref="outerScroll" style={{ width: this.state.DOMWidth - LABEL_WIDTH - 18, height: _canvasHeight, overflowX: "scroll", position: "relative", left: LABEL_WIDTH }}>
 						<div style={{ position: "relative", width: _scrollZoneSize }}>
 							{tooltipNode}
-							<canvas ref="canvas" width={CANVAS_SIZE} height={_canvasHeight} style={{ position: "absolute", left: _canvasX }}/>
+							<canvas ref="canvas" width={_canvasSize} height={_canvasHeight} style={{ position: "absolute", left: _canvasX }}/>
 						</div>
 						{overlayNode}
 					</div>
@@ -127,7 +128,8 @@ module.exports = React.createClass({
 		});
 
 		var _canvasX = this._getCanvasX();
-		return (<svg ref="svg" style={{ position: "absolute", left: _canvasX, width: CANVAS_SIZE, height: nodeHeight, cursor: "pointer" }}>
+		var _canvasSize = this._getCanvasSize();
+		return (<svg ref="svg" style={{ position: "absolute", left: _canvasX, width: _canvasSize, height: nodeHeight, cursor: "pointer" }}>
 			{rectNodes}
 		</svg>);
 	},
@@ -136,12 +138,18 @@ module.exports = React.createClass({
 		return this.props.data.length * NODE_SIZE;
 	},
 
+	_getCanvasSize: function () {
+		var _scrollZoneSize = this._getScrollSize();
+		return Math.min(_scrollZoneSize, MAX_CANVAS_SIZE);
+	},
+
 	// check to see if the scroll y needs to be redrawn
 	_checkScroll: function () {
 		var _scrollSize = this._getScrollSize();
+		var _canvasSize = this._getCanvasSize();
 		var scrollLeft = Math.min(_scrollSize, this.refs.outerScroll.getDOMNode().scrollLeft);
 		var scrollDelta = Math.abs(scrollLeft - this.state.canvasScrollX)
-		if (scrollDelta > CANVAS_SIZE / 4) {
+		if (scrollDelta > _canvasSize / 4) {
 			this.setState({ canvasScrollX: scrollLeft });
 			this._renderCanvas();
 		}
@@ -169,7 +177,8 @@ module.exports = React.createClass({
 
 	_getChunkedData: function () {
 		var _canvasX = this._getCanvasX();
-		var _nodesPerCanvas = Math.round(CANVAS_SIZE / NODE_SIZE)
+		var _canvasSize = this._getCanvasSize();
+		var _nodesPerCanvas = Math.round(_canvasSize / NODE_SIZE)
 		var _dataStartIndex = Math.round(this._getXScale().invert(_canvasX));
 		return this.props.data.slice(_dataStartIndex, _dataStartIndex + _nodesPerCanvas);
 	},
@@ -204,7 +213,8 @@ module.exports = React.createClass({
 	},
 
 	_getCanvasX: function () {
-		return Math.max(0, this.state.canvasScrollX - CANVAS_SIZE / 2);
+		var _canvasSize = this._getCanvasSize();
+		return Math.max(0, this.state.canvasScrollX - _canvasSize / 2);
 	},
 
 	_getTooltipNode: function () {
@@ -229,8 +239,9 @@ module.exports = React.createClass({
 
 	_renderCanvas: function () {
 		// get canvas context and clear
+		var _canvasSize = this._getCanvasSize();
 		var ctx = this.refs.canvas.getDOMNode().getContext("2d");
-		ctx.clearRect(0, 0, CANVAS_SIZE, this.state.DOMHeight);
+		ctx.clearRect(0, 0, _canvasSize, this.state.DOMHeight);
 		ctx.font = FONT_SIZE + "px Lato";
 
 		// render rows of features with strain variation in each column
