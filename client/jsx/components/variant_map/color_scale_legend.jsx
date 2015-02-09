@@ -16,7 +16,7 @@ module.exports = React.createClass({
 	render: function () {
 		var colorScale = d3.scale.linear()
 			.domain([0, 1])
-			.range(["blue", "white"]);
+			.range(["black", "#C2E3F6"]);
 
 		var _borderStyle = "1px solid #e1e1e1";
 		var boxNodes = new Array(NUM_BOXES)
@@ -45,7 +45,7 @@ module.exports = React.createClass({
 			<span>1.00</span>
 			<div>
 				<span>N/A</span>
-				<div style={{ margin: "0 1rem", display: "inline-block", position: "relative", top: 3, left: 3, width: NODE_SIZE -2 , height: NODE_SIZE - 2, background: "#79050D" }} />
+				<div style={{ margin: "0 1rem", display: "inline-block", position: "relative", top: 3, left: 3, width: NODE_SIZE -2 , height: NODE_SIZE - 2, background: "white", border: _borderStyle }} />
 			</div>
 		</div>);
 	}

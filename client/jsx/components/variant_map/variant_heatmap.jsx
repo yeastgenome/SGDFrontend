@@ -247,7 +247,7 @@ module.exports = React.createClass({
 		// render rows of features with strain variation in each column
 		var colorScale = d3.scale.linear()
 			.domain([0, 1])
-			.range(["blue", "white"]);
+			.range(["black", "#C2E3F6"]);
 
 		// get data that fits into canvas
 		var chunkOfData = this._getChunkedData();
@@ -263,7 +263,7 @@ module.exports = React.createClass({
 
 			d.variationData.forEach( (_d, _i) => {
 				// get color and draw rect
-				var _color = (_d === null) ? "#79050D" : colorScale(_d);
+				var _color = (_d === null) ? "white" : colorScale(_d);
 				ctx.fillStyle = _color;
 				ctx.fillRect(i * NODE_SIZE, _i * NODE_SIZE + HEADER_HEIGHT, NODE_SIZE, NODE_SIZE);
 			});
