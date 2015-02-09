@@ -1,14 +1,17 @@
 
 function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 	var cytoscape_div = $("#" + div_id);
-
 	var height = Math.min(.75*$(window).height(), 600);
 	var width = $('#' + div_id).width();
+	var offset = 200;
 	cytoscape_div.height(height);
 
 	$(".j-sgd-cyto-canvas")
 		.attr("width", width)
-		.attr("height", height);
+		.attr("height", height + offset);
+
+	$(".sgd-cyto-canvas-container").parent().height(height + offset)
+
 
 	options = {
 		showOverlay: false,
@@ -34,6 +37,14 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 	var txt = (new Date()).toLocaleDateString();
 	var txtWidth = ctx.measureText(txt).width;
 	ctx.fillText(txt, width / 2 - txtWidth / 2, fontSize);
+
+	// TEMP
+	// draw circles
+	ctx.beginPath();
+	ctx.arc(50, height + offset / 2, 15, 0, 2 * Math.PI, false);
+	ctx.fillStyle = '#757575';
+	ctx.fill();
+	// ctx.stroke();
 
     cy.zoomingEnabled(false);
     if(f != null) {
