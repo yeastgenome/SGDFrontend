@@ -32,19 +32,49 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
     // add date
     var $canvas = $("#j-sgd-visible-cyto-canvas")[0]
 	var ctx = $canvas.getContext("2d");
-	var fontSize = 16;
+	var fontSize = 14;
 	ctx.font = fontSize + "pt Helvetica";
 	var txt = (new Date()).toLocaleDateString();
 	var txtWidth = ctx.measureText(txt).width;
 	ctx.fillText(txt, width / 2 - txtWidth / 2, fontSize);
 
 	// TEMP
-	// draw circles
-	ctx.beginPath();
-	ctx.arc(50, height + offset / 2, 15, 0, 2 * Math.PI, false);
-	ctx.fillStyle = '#757575';
-	ctx.fill();
-	// ctx.stroke();
+	// draw legend
+	var legendY = height + 50;
+	ctx.fillText("Legend", 0, legendY);
+
+
+
+	var drawLegendNode = function (ctx, text, x, y, color, isCircle, isBlackText) {
+		ctx.fillStyle = color;
+		if (isCircle) {
+			ctx.beginPath();
+			ctx.arc(x, y, 15, 0, 2 * Math.PI, false);
+			ctx.closePath();
+			ctx.fill();
+		} else {
+			ctx.beginPath();
+			ctx.rect(x - 15, y - 15, 30, 30);
+			ctx.closePath();
+			ctx.fill();
+		}
+
+		var textX = x - ctx.measureText(text).width / 2;
+		var textY = y + 3;
+		ctx.font = 12 + "pt Helvetica";	
+		ctx.strokeStyle = isBlackText ? 'white': '#757575';
+	    ctx.lineWidth = 5;
+	    ctx.strokeText(text, textX, textY);
+		ctx.fillStyle = isBlackText ? '#757575' : 'white';
+		ctx.fillText(text, textX, textY);
+	};
+
+	drawLegendNode(ctx, "Current Locus", 70, height, '#F9DA56', true, false);
+	drawLegendNode(ctx, "Other Locus", 190, height, '#757575', true, true);
+	drawLegendNode(ctx, "GO Term", 300, height, '#6CB665', false, true);
+	drawLegendNode(ctx, "Phenotype", 380, height, '#C591F5', false, true);
+
+
 
     cy.zoomingEnabled(false);
     if(f != null) {
