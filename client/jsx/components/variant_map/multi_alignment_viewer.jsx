@@ -47,7 +47,7 @@ module.exports = React.createClass({
 		// TEMP constant height
 		return (<div>
 			{labelsNode}
-			<div style={{ width: "100%", overflow: "scroll" }}>
+			<div ref="scroller" style={{ width: "100%", overflow: "scroll" }}>
 				<div style={{ width: maxX + LABEL_WIDTH }}>
 					<MultiScaleAxis segments={this.props.segments} scale={xScale} />
 					<svg ref="svg" style={{ width: "100%", height: 600 }}>
@@ -65,6 +65,21 @@ module.exports = React.createClass({
 			var _scale = this._getXScale();
 			this.props.onSetScale(_scale);
 		}
+		this.refs.scroller.getDOMNode().onscroll = this._onScroll;
+	},
+
+	_onScroll: function (e) {
+		if (!this.props.onSetScale) return;
+		var _scrollLeft = this.refs.scroller.getDOMNode().scrollLeft;
+		var _xScale = this._getXScale();
+		var _oldRange = _xScale.range();
+		var _newRange = _oldRange.map( d => {
+			return d - _scrollLeft;
+		});
+		var _newScale = _xScale
+			.copy()
+			.range(_newRange);
+		this.props.onSetScale(_newScale);
 	},
 
 	_onSegmentMouseOver: function (e, d, i, sequenceName) {
