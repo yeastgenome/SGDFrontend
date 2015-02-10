@@ -2,8 +2,9 @@
 "use strict";
 
 var _ = require("underscore");
-
 var BaseModel = require("./base_model.jsx");
+
+var REFERENCE_DISPLAY_NAME = "S288C";
 
 module.exports = class AlignmentShowModel extends BaseModel {
 
@@ -39,7 +40,7 @@ module.exports = class AlignmentShowModel extends BaseModel {
 
 	_sortSequencesByStrain (sequences) {
 		return _.sortBy(sequences, d => {
-			return (d.strain_display_name === "S288C") ? 1 : 2;
+			return (d.strain_display_name === REFERENCE_DISPLAY_NAME) ? 1 : 2;
 		});
 	}
 
@@ -80,6 +81,28 @@ module.exports = class AlignmentShowModel extends BaseModel {
 		var _isAfter = (segA.start <= segB.end + 1 && segA.end >= segB.start);
 		var _isSame = (segA === segB);
 		return ((_isBefore || _isAfter) && (!_isSame));
+	}
+
+	// from start and end of aligned sequence, return reference coordinates (currently always S288C)
+	getReferenceCoordinatesFromAlignedCoordinates (alignedStart, alignedEnd, isProtein) {
+		var _attr = this.attributes;
+		var _seqs = isProtein ? _attr.aligned_protein_sequences : _attr.aligned_dna_sequences;
+		var referenceSequence = _.findWhere(_seqs, { strain_display_name: REFERENCE_DISPLAY_NAME }).sequence;
+		var refDomain = referenceSequence
+			.split("")
+			.reduce( (memo, next, i) => {
+				// only edit memo if this character isn't a gap
+				if (next !== "-") {
+					if (i < alignedStart) {
+						memo.start += 1;
+					}
+					if (i < alignedEnd) {
+						memo.end += 1;
+					}
+				}
+				return memo;
+			}, { start: 0, end: 0 });
+		return refDomain;
 	}
 
 	// from raw variant data, produce segments as expected by multi_alignment_viewer

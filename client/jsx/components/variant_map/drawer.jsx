@@ -33,6 +33,7 @@ module.exports = React.createClass({
 			alignmentModel: null,
 			showSequence: false,
 			isPending: true,
+			highlightedAlignedSegment: null, // [0, 100] relative coord to aligned sequence
 			highlightedSegment: null, // [0, 100] relative coord
 			parsetVisible: false,
 			x1Scale: function () { return 0; },
@@ -113,7 +114,8 @@ module.exports = React.createClass({
 	},
 
 	_highlightSegment: function (start, end) {
-		var _attr = this.state.alignmentModel.attributes
+		var model = this.state.alignmentModel;
+		var _attr = model.attributes;
 		var _coord = _attr.coordinates;
 		var x1Start = start;
 		var x1End = end;
@@ -124,10 +126,11 @@ module.exports = React.createClass({
 			x1End = _relEnd - start;
 		}
 		var _factor = this.props.isProteinMode ? 3 : 1;
-
+		var _refDomain = model.getReferenceCoordinatesFromAlignedCoordinates(x1Start, x1End, this.props.isProteinMode);
 		this.setState({
-			highlightedSegment: [start * _factor, end * _factor],
-			parsetX1Coordinates: [this.state.x1Scale(_coord.start + x1Start), this.state.x1Scale(_coord.start + x1End)],
+			highlightedAlignedSegment: [x1Start, x1End],
+			highlightedSegment: [_refDomain.start * _factor, _refDomain.end * _factor],
+			parsetX1Coordinates: [this.state.x1Scale(_coord.start + _refDomain.start), this.state.x1Scale(_coord.start + _refDomain.end)],
 			parsetX2Coordinates: [this.state.x2Scale(start), this.state.x2Scale(end)],
 			parsetVisible: true
 		});
@@ -200,7 +203,7 @@ module.exports = React.createClass({
 				<MultiAlignmentViewer
 					segments={_segments} sequences={_sequences}
 					onHighlightSegment={this._highlightSegment} onSetScale={_onSetX2Scale}
-					highlightedSegmentDomain={this.state.highlightedSegment}
+					highlightedSegmentDomain={this.state.highlightedAlignedSegment}
 				/>
 			</div>);
 		} else {
