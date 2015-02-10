@@ -117,20 +117,23 @@ module.exports = React.createClass({
 		var model = this.state.alignmentModel;
 		var _attr = model.attributes;
 		var _coord = _attr.coordinates;
-		var x1Start = start;
-		var x1End = end;
+		var _refDomain = model.getReferenceCoordinatesFromAlignedCoordinates(start, end, this.props.isProteinMode);
+		var x1Start = _refDomain.start;
+		var x1End = _refDomain.end;
+		var parsetX1Coord = [this.state.x1Scale(_coord.start + x1Start), this.state.x1Scale(_coord.start + x1End)];
 		// handle crick strand features
 		if (_attr.strand === "-") {
 			var _relEnd = _coord.end - _coord.start;
-			x1Start = _relEnd - end;
-			x1End = _relEnd - start;
+			var _tempX1Start = _relEnd - x1Start;
+			var _tempX1End = _relEnd - x1End;
+			parsetX1Coord = [this.state.x1Scale(_coord.start + _tempX1End), this.state.x1Scale(_coord.start + _tempX1Start)];
 		}
 		var _factor = this.props.isProteinMode ? 3 : 1;
-		var _refDomain = model.getReferenceCoordinatesFromAlignedCoordinates(x1Start, x1End, this.props.isProteinMode);
+		
 		this.setState({
-			highlightedAlignedSegment: [x1Start, x1End],
-			highlightedSegment: [_refDomain.start * _factor, _refDomain.end * _factor],
-			parsetX1Coordinates: [this.state.x1Scale(_coord.start + _refDomain.start), this.state.x1Scale(_coord.start + _refDomain.end)],
+			highlightedAlignedSegment: [start, end],
+			highlightedSegment: [x1Start * _factor, x1End * _factor],
+			parsetX1Coordinates: parsetX1Coord,
 			parsetX2Coordinates: [this.state.x2Scale(start), this.state.x2Scale(end)],
 			parsetVisible: true
 		});
