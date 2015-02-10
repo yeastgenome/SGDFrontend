@@ -38,15 +38,13 @@ module.exports = React.createClass({
 			parsetVisible: false,
 			x1Scale: function () { return 0; },
 			x2Scale: function () { return 0; },
-			parsetX1Coordinates: [0, 0],
-			parsetX2Coordinates: [0, 0],
 			parsetData: {}
 		};
 	},
 
 	render: function () {
 		var _screenHeight = window.innerHeight;
-		var _drawerHeight = Math.min((this.state.showSequence ? 0.7 * _screenHeight : HEIGHT_WITHOUT_SEQUENCE), HEIGHT_WITH_SEQUENCE);
+		var _drawerHeight = Math.min((this.state.showSequence ? 0.9 * _screenHeight : HEIGHT_WITHOUT_SEQUENCE), HEIGHT_WITH_SEQUENCE);
 		var _maskHeight = _screenHeight - _drawerHeight;
 		var _maskStyle = {
 			position: "fixed",
@@ -125,8 +123,6 @@ module.exports = React.createClass({
 		this.setState({
 			highlightedAlignedSegment: [start, end],
 			highlightedSegment: [x1Start * _factor, x1End * _factor],
-			// parsetX1Coordinates: parsetX1Coord,
-			// parsetX2Coordinates: [this.state.x2Scale(start), this.state.x2Scale(end)],
 			parsetVisible: true
 		});
 	},
@@ -141,9 +137,8 @@ module.exports = React.createClass({
 		var _start = model.attributes.coordinates.start;
 		var variantData = _.map(_rawVariantData, d => {
 			var _factor = this.props.isProteinMode ? 3 : 1;
-			return {
-				coordinateDomain: [d.start * _factor + _start, d.end * _factor + _start]
-			};
+			d.coordinateDomain = [d.start * _factor + _start, d.end * _factor + _start];
+			return d;
 		});
 		var watsonTracks = model.attributes.strand === "+" ? 2 : 1;
 

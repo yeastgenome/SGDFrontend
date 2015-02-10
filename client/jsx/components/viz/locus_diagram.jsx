@@ -600,9 +600,30 @@ module.exports = React.createClass({
 				this.props.onVariantMouseOver(d.coordinateDomain[0],d.coordinateDomain[1])
 			};
 
+			var tipNode;
+			var _tipStyle = { fontFamily: "FontAwesome", textAnchor: "middle" };
+			if (d.type === "insertion") {
+				tipNode = <text style={_tipStyle}>&#xf150;</text>;
+			} else if (d.type === "deletion") {
+				tipNode = <text style={_tipStyle}>&#xf057;</text>;
+			} else {
+				tipNode = <circle r="7" fill="#1287C5" onMouseOver={_onMouseOver}/>;
+			}
+
+			var lineNode;
+			if (d.type === "deletion") {
+				var _delta = Math.abs(scale(d.coordinateDomain[1]) - scale(d.coordinateDomain[0]));
+				lineNode = (<g>
+					<line x1={ -0.5 * _delta} x2={0.5 * _delta} y1="12" y2="12" stroke="black" strokeWidth="1px" />
+					<line x1="0" x2="0" y1="0" y2="12" stroke="black" strokeWidth="2px" />
+				</g>);
+			} else {
+				lineNode = <line x1="0" x2="0" y1="0" y2="25" stroke="black" strokeWidth="2px" />;
+			}
+
 			return (<g transform={_transform} key={"variantNode" + i}>
-				<line x1="0" x2="0" y1="0" y2="25" stroke="black" strokeWidth="2px" />
-				<circle r="10" fill="#1287C5" onMouseOver={_onMouseOver}/>
+				{lineNode}
+				{tipNode}
 			</g>);
 		});
 	}
