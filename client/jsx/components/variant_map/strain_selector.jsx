@@ -5,8 +5,9 @@ var React = require("react");
 var _ = require("underscore");
 
 var Checklist = require("../widgets/checklist.jsx");
-var Dendogram = require("../viz/dendogram.jsx");
 var DidClickOutside = require("../mixins/did_click_outside.jsx");
+
+var WIDTH = 200;
 
 module.exports = React.createClass({
 	mixins: [DidClickOutside],
@@ -50,14 +51,12 @@ module.exports = React.createClass({
 	_getActiveNode: function () {
 		if (!this.state.isActive) return null;
 
-		// TEMP hardcode the height
 		var _style = {
 			position: "absolute",
 			top: "3rem",
 			padding: "1rem",
 			background: "#efefef",
-			width: 300,
-			height: 580,
+			width: WIDTH,
 			zIndex: 2
 		};
 
@@ -71,15 +70,8 @@ module.exports = React.createClass({
 			this.setState({ activeStrainIds: keys });
 		};
 		return (<div onClick={_stopClick} style={_style}>
-			<div className="row">
-				<div className="columns small-6">
-					<Dendogram />
-				</div>
-				<div className="columns small-6">
-					<span style={{ fontSize: "0.875rem" }}>S288C (reference)</span>
-					<Checklist elements={this.props.data} initialActiveElementKeys={this.state.activeStrainIds} onSelect={_onSelect} />
-				</div>
-			</div>
+				<span style={{ fontSize: "0.875rem" }}>S288C (reference)</span>
+				<Checklist elements={this.props.data} initialActiveElementKeys={this.state.activeStrainIds} onSelect={_onSelect} />
 		</div>);
 	}
 });
