@@ -399,7 +399,7 @@ module.exports = React.createClass({
 			var _qualText = d.qualifier ? ` (${d.qualifier})` : "";
 			_data[d.locus.locus_type + _qualText] = d.locus.headline;
 			// TODO add chrom number 
-			_data["Coordinates"] = `${d.start} - ${d.end}`;
+			_data["Coordinates"] = `${d.start}..${d.end}`;
 			_data["Length"] = (d.end - d.start + 1) + " bp";
 		} else {
 			_data["Relative Coordinates"] = `${d.relative_start} - ${d.relative_end}`;

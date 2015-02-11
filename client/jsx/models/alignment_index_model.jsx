@@ -50,16 +50,14 @@ module.exports = class AlignmentIndexModel extends BaseModel {
 			results = _.filter(this.attributes.loci, d => {
 				var _isMatch = false;
 				queries.forEach( _d => {
-					if (d.display_name.indexOf(_d) > -1) {
-						_isMatch = true;
-					}
+					if (!_isMatch) _isMatch = this._matchSearchQuery(_d, d);
 				});
 				return _isMatch;
 			});
 		// simple, single query
 		} else {
 			results = _.filter(this.attributes.loci, d => {
-				return (d.display_name.indexOf(query) > -1);
+				return this._matchSearchQuery(query, d);
 			});
 		}
 
@@ -67,6 +65,15 @@ module.exports = class AlignmentIndexModel extends BaseModel {
 			return this._filterLociVariantData(results, strainIds);
 		}
 		return results;
+	}
+
+	_matchSearchQuery (query, locusData) {
+		if (locusData.display_name.indexOf(query) > -1) {
+			return true;
+		} else if (locusData.format_name.indexOf(query) > -1) {
+			return true;
+		}
+		return false;
 	}
 
 	// takes an array of loci data and chops all the variant data corresponding to strainIds (required)
