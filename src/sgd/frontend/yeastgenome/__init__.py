@@ -351,24 +351,19 @@ class YeastgenomeFrontend(FrontendInterface):
 
     # TEMP elasticsearch endpoint
     def search(self, params):
+        # try elastic search, if 1 gene_name response, redirect there
         query = params['query']
-
-        # query by display_name
-        res = es.search(index="test-index", body={ "query": {
-            "filtered": {
-                "query": {
-                    "match": { "display_name": query }
-                }
-            }
-        }})
-
-        # if there's an internal hit, redirect there
+        obj = {
+            'q': query,
+            'type': 'gene_name'
+        }
+        res = es.search(index='sgdlite', params=obj)
         if (res['hits']['total'] == 1):
-            display_name = res['hits']['hits'][0]['_source']['display_name']
-            return self.redirect('locus', { 'display_name': display_name })
-        # otherwise try google
+            url = res['hits']['hits'][0]['_source']['link_url']
+            return HTTPFound(url)
+        # otherwise try existing
         else:
-            return HTTPFound("http://google.com?q=" + query)
+            return HTTPFound("/cgi-bin/search/luceneQS.fpl?query=" + query)
 
     def backend(self, url_repr):
         if self.backend_url == 'backendless':
