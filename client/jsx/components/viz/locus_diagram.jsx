@@ -597,17 +597,17 @@ module.exports = React.createClass({
 			var _midX = scale(_avgCoor)
 			var _transform = `translate(${_midX}, ${yCoordinate})`;
 			var _onMouseOver = e => {
-				this.props.onVariantMouseOver(d.coordinateDomain[0],d.coordinateDomain[1])
+				this.props.onVariantMouseOver(d.coordinateDomain[0], d.coordinateDomain[1])
 			};
 
 			var tipNode;
-			var _tipStyle = { fontFamily: "FontAwesome", textAnchor: "middle" };
+			var _tipStyle = { fontFamily: "FontAwesome", textAnchor: "middle", fontSize: 16 };
 			if (d.type === "insertion") {
 				tipNode = <text style={_tipStyle}>&#xf150;</text>;
 			} else if (d.type === "deletion") {
 				tipNode = <text style={_tipStyle}>&#xf057;</text>;
 			} else {
-				tipNode = <circle r="7" fill="#1287C5" onMouseOver={_onMouseOver}/>;
+				tipNode = <circle r="7" fill="#1287C5"/>;
 			}
 
 			var lineNode;
@@ -621,7 +621,7 @@ module.exports = React.createClass({
 				lineNode = <line x1="0" x2="0" y1="0" y2="25" stroke="black" strokeWidth="2px" />;
 			}
 
-			return (<g transform={_transform} key={"variantNode" + i}>
+			return (<g transform={_transform} key={"variantNode" + i} onMouseOver={_onMouseOver}>
 				{lineNode}
 				{tipNode}
 			</g>);

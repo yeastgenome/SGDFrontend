@@ -133,20 +133,20 @@ module.exports = React.createClass({
 
 		var model = this.state.alignmentModel;
 		var locusData = model.getLocusDiagramData();
-		var _rawVariantData = this.props.isProteinMode ? model.attributes.variant_data_protein : model.attributes.variant_data_dna;
 		var _start = model.attributes.coordinates.start;
-		var variantData = _.map(_rawVariantData, d => {
-			var _factor = this.props.isProteinMode ? 3 : 1;
-			d.coordinateDomain = [d.start * _factor + _start, d.end * _factor + _start];
-			return d;
-		});
+		var _end = model.attributes.coordinates.end;
+		var variantData = model.getVariantData(this.props.isProteinMode);
 		var watsonTracks = model.attributes.strand === "+" ? 2 : 1;
 
 		var _onSetX1Scale = scale => {
 			this.setState({ x1Scale: scale });
 		};
 		var _onVariantMouseOver = (start, end) => {
-			this._highlightSegment(start - _start, end - _start);
+			if (model.attributes.strand === "+") {
+				this._highlightSegment(start - _start, end - _start);
+			} else {
+				this._highlightSegment(_end - end, _end - start);
+			}
 		};
 
 		return (<div>

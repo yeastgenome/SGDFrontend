@@ -121,6 +121,23 @@ module.exports = class AlignmentShowModel extends BaseModel {
 		return refDomain;
 	}
 
+	// format variant data for locus diagram
+	getVariantData (isProtein) {
+		var _rawVariantData = isProtein ? this.attributes.variant_data_protein : this.attributes.variant_data_dna;
+		var _start = this.attributes.coordinates.start;
+		var _end = this.attributes.coordinates.end;
+		var _factor = isProtein ? 3 : 1;
+		return _.map(_rawVariantData, d => {
+			var _refCoord = this.getReferenceCoordinatesFromAlignedCoordinates(d.start, d.end, isProtein);
+			if (this.attributes.strand === "+") {
+				d.coordinateDomain = [_refCoord.start * _factor + _start, _refCoord.end * _factor + _start];
+			} else {
+				d.coordinateDomain = [_end - _refCoord.end * _factor, _end - _refCoord.start * _factor];
+			}
+			return d;
+		});
+	}
+
 	// from raw variant data, produce segments as expected by multi_alignment_viewer
 	formatSegments (isProtein) {
 		var variants = isProtein ? this.attributes.variant_data_protein : this.attributes.variant_data_dna;
