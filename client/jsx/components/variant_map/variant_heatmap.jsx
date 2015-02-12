@@ -87,7 +87,7 @@ module.exports = React.createClass({
 
 	_onScroll: function (e) {
 		this.setState({ tooltipVisible: false });
-		_.throttle(this._checkScroll, 100);
+		this._checkScroll();
 	},
 
 	_getPositionIndicator: function () {
