@@ -82,7 +82,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 
 	// draw legend
 	var nextLegendY = legendY + 30;
-	drawLegendNode(ctx, "Current Locus", 60, nextLegendY, '#F9DA56', true, false);
+	drawLegendNode(ctx, "Current Locus", 53, nextLegendY, '#F9DA56', true, false);
 	drawLegendNode(ctx, "Other Locus", 160, nextLegendY, '#757575', true, true);
 	var nextLegendX = 245;
 	if (legendType === "protein") {
