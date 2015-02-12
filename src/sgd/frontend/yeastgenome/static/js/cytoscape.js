@@ -6,7 +6,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	var cytoscape_div = $("#" + div_id);
 	var height = Math.min(.75*$(window).height(), 600);
 	var width = $('#' + div_id).width();
-	var offset = 100;
+	var offset = 75;
 	cytoscape_div.height(height);
 
 	$(".j-sgd-cyto-canvas")
@@ -48,12 +48,11 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	var fontSize = 12;
 	ctx.font = fontSize + "pt Helvetica";
 	var now = new Date();
-	var txt = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
+	var txt = "SGD " + now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
 	var txtWidth = ctx.measureText(txt).width;
-	ctx.fillText(txt, width - txtWidth - fontSize, legendY);
+	ctx.fillText(txt, width - txtWidth - fontSize, legendY + 5);
 
 	/// *** draw legend ***
-	ctx.fillText("Legend", 0, legendY);
 
 	// helper method to draw legend nodes
 	var drawLegendNode = function (ctx, text, x, y, color, isCircle, isBlackText) {
@@ -81,16 +80,15 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	};
 
 	// draw legend
-	var nextLegendY = legendY + 30;
-	drawLegendNode(ctx, "Current Locus", 53, nextLegendY, '#F9DA56', true, false);
-	drawLegendNode(ctx, "Other Locus", 160, nextLegendY, '#757575', true, true);
+	drawLegendNode(ctx, "Current Locus", 53, legendY, '#F9DA56', true, false);
+	drawLegendNode(ctx, "Other Locus", 160, legendY, '#757575', true, true);
 	var nextLegendX = 245;
 	if (legendType === "protein") {
-		drawLegendNode(ctx, "Domain", nextLegendX, nextLegendY, '#3366cc', false, true);	
+		drawLegendNode(ctx, "Domain", nextLegendX, legendY, '#3366cc', false, true);	
 	} else if (legendType === "go") {
-		drawLegendNode(ctx, "GO Term", nextLegendX, nextLegendY, '#6CB665', false, true);
+		drawLegendNode(ctx, "GO Term", nextLegendX, legendY, '#6CB665', false, true);
 	} else if (legendType === "phenotype") {
-		drawLegendNode(ctx, "Phenotype", nextLegendX, nextLegendY, '#C591F5', false, true);
+		drawLegendNode(ctx, "Phenotype", nextLegendX, legendY, '#C591F5', false, true);
 	}
 
     cy.zoomingEnabled(false);
@@ -159,15 +157,22 @@ function create_cy_download_button(cy, button_id, file_name) {
     	// get custom canvas, write to hidden canvas
     	var $customCanvas = $("#j-sgd-visible-cyto-canvas")[0];
     	var customImage = new Image();
+    	customImage.onload = function () {
+    		hiddenCtx.drawImage(this, 0, 0);
+	    	// write cyto hidden canvas
+	    	var cytoImage = new Image();
+	    	
+	    	cytoImage.onload = function () {
+	    		hiddenCtx.drawImage(this, 0, 16);
+		    	post_to_url('/download_image', { "display_name":file_name, 'data': $hiddenCanvas.toDataURL("image/png") });
+	    	}
+	    	cytoImage.src = cy.png();
+    	}
     	customImage.src = $customCanvas.toDataURL();
-    	hiddenCtx.drawImage(customImage, 0, 0);
+    	
+		// hiddenCtx.drawImage(cytoImage, 0, 16);
 
-    	// write cyto hidden canvas
-    	var cytoImage = new Image();
-    	cytoImage.src = cy.png();
-		hiddenCtx.drawImage(cytoImage, 0, 16);
-
-    	post_to_url('/download_image', { "display_name":file_name, 'data': $hiddenCanvas.toDataURL("image/png") });
+    	// post_to_url('/download_image', { "display_name":file_name, 'data': $hiddenCanvas.toDataURL("image/png") });
     });
     $("#" + button_id).attr('disabled', false);
 }
