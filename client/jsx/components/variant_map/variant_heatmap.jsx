@@ -42,7 +42,7 @@ module.exports = React.createClass({
 		var tooltipNode = this._getTooltipNode();
 		var indicatorNode = this._getPositionIndicator();
 
-		return (<div>
+		return (<div onMouseLeave={this._onMouseLeave}>
 			{tooltipNode}
 			<div className="panel" style={{ position: "relative", zIndex: 1 }}>
 				<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
@@ -68,7 +68,7 @@ module.exports = React.createClass({
 
 	componentDidMount: function () {
 		this._calculateWidth();
-		this.refs.outerScroll.getDOMNode().onscroll = _.throttle(this._checkScroll, 100);
+		this.refs.outerScroll.getDOMNode().onscroll = this._onScroll;
 		this._renderCanvas();
 	},
 
@@ -76,6 +76,18 @@ module.exports = React.createClass({
 	    if (prevProps.data !== this.props.data) {
 	    	this._renderCanvas();
 	    }
+	},
+
+	_onMouseLeave: function (e) {
+		if (this._mouseLeaveTimeout) clearTimeout(this._mouseLeaveTimeout);
+		this._mouseLeaveTimeout = setTimeout( () => {
+			this.setState({ tooltipVisible: false });
+		}, TOOLTIP_DELAY);
+	},
+
+	_onScroll: function (e) {
+		this.setState({ tooltipVisible: false });
+		_.throttle(this._checkScroll, 100);
 	},
 
 	_getPositionIndicator: function () {
@@ -156,8 +168,8 @@ module.exports = React.createClass({
 	},
 
 	_onMouseOver: function (e, d) {
-		if (this._mouseoverTimeout) clearTimeout(this._mouseoverTimeout);
-		this._mouseoverTimeout = setTimeout( () => {
+		if (this._mouseOverTimeout) clearTimeout(this._mouseOverTimeout);
+		this._mouseOverTimeout = setTimeout( () => {
 			this.setState({ tooltipVisible: true });
 		}, TOOLTIP_DELAY);
 
