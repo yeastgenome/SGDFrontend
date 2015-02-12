@@ -6,7 +6,7 @@ var _ = require("underscore");
 var ColorScaleLegend = require("./color_scale_legend.jsx");
 var FlexibleTooltip = require("../widgets/flexible_tooltip.jsx");
 
-var DEFAULT_DOM_SIDE_SIZE = 400; // height and width\
+var DEFAULT_DOM_SIDE_SIZE = 400; // height and width
 var FONT_SIZE = 14;
 var HEADER_HEIGHT = 120;
 var NODE_SIZE = 16;
@@ -43,12 +43,12 @@ module.exports = React.createClass({
 		var indicatorNode = this._getPositionIndicator();
 
 		return (<div>
+			{tooltipNode}
 			<div className="panel" style={{ position: "relative", zIndex: 1 }}>
 				<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
 					{strainLabelsNode}
 					<div ref="outerScroll" style={{ width: this.state.DOMWidth - LABEL_WIDTH - 18, height: _canvasHeight, overflowX: "scroll", position: "relative", left: LABEL_WIDTH }}>
-						<div style={{ position: "relative", width: _scrollZoneSize }}>
-							{tooltipNode}
+						<div style={{ position: "relative", width: _scrollZoneSize }}>	
 							<canvas ref="canvas" width={_canvasSize} height={_canvasHeight} style={{ position: "absolute", left: _canvasX }}/>
 						</div>
 						{overlayNode}
@@ -225,15 +225,20 @@ module.exports = React.createClass({
 		var locus = _.findWhere(this.props.data, { id: this.state.mouseOverId });
 		if (!locus) return null;
 
-		var title = { name: locus.name, href: locus.href };
+		var title = (locus.displayName === locus.formatName) ? locus.displayName : `${locus.displayName} (${locus.formatName})`;
 		var top = HEADER_HEIGHT; // TEMP
-		var left = xScale(this.props.data.indexOf(locus));
+		var left = xScale(this.props.data.indexOf(locus)) - this.refs.outerScroll.getDOMNode().scrollLeft + LABEL_WIDTH + 40;
+
+		// format key value pairs for tooltip
+		var _data = {};
+		var _qualText = locus.qualifier ? ` (${locus.qualifier})` : "";
+		_data[locus.type + _qualText] = locus.headline;
 
 		return (<FlexibleTooltip
 			top={top} left={left}
-			visible={true} orientation="bottom"
-			text={locus.name}
-			href={locus.href}
+			visible={true} orientation="top"
+			title={title} href={locus.href}
+			data={_data}
 		/>);
 	},
 

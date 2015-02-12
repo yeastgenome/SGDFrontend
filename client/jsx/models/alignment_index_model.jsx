@@ -31,6 +31,17 @@ module.exports = class AlignmentIndexModel extends BaseModel {
 		}
 	}
 
+	// TEMP add extra data
+	parse (response) {
+		response.loci = response.loci.map( d => {
+			d.headline = "TEMP headline";
+			d.qualifier = "verified";
+			d.locus_type = "ORF";
+			return d;
+		});
+		return response;
+	}
+
 	// strainIds is optional
 	getAllLoci (strainIds) {
 		if (strainIds) {

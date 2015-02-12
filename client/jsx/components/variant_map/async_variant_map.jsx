@@ -120,9 +120,14 @@ module.exports = React.createClass({
 		var _lociData = this._getLociData();
 		var _heatmapData = _.map(_lociData, d => {
 			return {
-				name: d.display_name,
+				displayName: d.display_name,
+				formatName: d.format_name,
+				headline: d.headline,
 				href: d.link,
 				id: d.id,
+				type: d.locus_type,
+				name: d.display_name,
+				qualifier: d.qualifier,
 				variationData: this.state.isProteinMode ? d.protein_scores : d.dna_scores
 			};
 		});

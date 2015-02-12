@@ -26,7 +26,7 @@ module.exports = React.createClass({
 			display: (props.visible ? "block" : "none"),
 			top: props.top,
 			left: props.left,
-			marginLeft: _isComplex ? -(_complexWidth * 4/5) : -50,
+			marginLeft: (_isComplex && this.props.orientation !== "top") ? -(_complexWidth * 4/5) : -50,
 			marginTop: _isComplex ? 30 : -60,
 			minHeight: _isComplex ? 100 : 35,
 			padding: _isComplex ? "1em" : 0,
@@ -35,6 +35,7 @@ module.exports = React.createClass({
 
 		var innerContentNode = this._getInnerContentNode();
 		var arrowKlass = _isComplex ? "flexible-tooltip-arrow complex" : "flexible-tooltip-arrow";
+		if (this.props.orientation === "top") arrowKlass = "flexible-tooltip-arrow";
 		return (
 			<div className="flexible-tooltip" style={_style} >
 				{innerContentNode}
