@@ -8,7 +8,7 @@ $(document).ready(function() {
 
   	$.getJSON('/backend/locus/' + locus['id'] + '/phenotype_graph?callback=?', function(data) {
   		if(data['nodes'].length > 1) {
-  			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
+  			var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "phenotype");
   			var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);
             create_cy_download_button(graph, "cy_download", locus['display_name'] + '_phenotype_graph')
   		}

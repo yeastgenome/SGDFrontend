@@ -1,5 +1,8 @@
 
-function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
+function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, legendType) {
+	// legend type defaults to false (only loci)
+	legendType = legendType || false;
+
 	var cytoscape_div = $("#" + div_id);
 	var height = Math.min(.75*$(window).height(), 600);
 	var width = $('#' + div_id).width();
@@ -38,13 +41,12 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 	var txtWidth = ctx.measureText(txt).width;
 	ctx.fillText(txt, width / 2 - txtWidth / 2, fontSize);
 
-	// TEMP
-	// draw legend
+	/// *** draw legend ***
+
 	var legendY = height + 50;
 	ctx.fillText("Legend", 0, legendY);
 
-
-
+	// helper method to draw legend nodes
 	var drawLegendNode = function (ctx, text, x, y, color, isCircle, isBlackText) {
 		ctx.fillStyle = color;
 		if (isCircle) {
@@ -58,7 +60,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 			ctx.closePath();
 			ctx.fill();
 		}
-
+		
 		var textX = x - ctx.measureText(text).width / 2;
 		var textY = y + 3;
 		ctx.font = 12 + "pt Helvetica";	
@@ -69,12 +71,18 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 		ctx.fillText(text, textX, textY);
 	};
 
-	drawLegendNode(ctx, "Current Locus", 70, height, '#F9DA56', true, false);
-	drawLegendNode(ctx, "Other Locus", 190, height, '#757575', true, true);
-	drawLegendNode(ctx, "GO Term", 300, height, '#6CB665', false, true);
-	drawLegendNode(ctx, "Phenotype", 380, height, '#C591F5', false, true);
-
-
+	// draw legend
+	var nextLegendY = legendY + 30;
+	drawLegendNode(ctx, "Current Locus", 60, nextLegendY, '#F9DA56', true, false);
+	drawLegendNode(ctx, "Other Locus", 160, nextLegendY, '#757575', true, true);
+	var nextLegendX = 245;
+	if (legendType === "protein") {
+		drawLegendNode(ctx, "Domain", nextLegendX, nextLegendY, '#3366cc', false, true);	
+	} else if (legendType === "go") {
+		drawLegendNode(ctx, "GO Term", nextLegendX, nextLegendY, '#6CB665', false, true);
+	} else if (legendType === "phenotype") {
+		drawLegendNode(ctx, "Phenotype", nextLegendX, nextLegendY, '#C591F5', false, true);
+	}
 
     cy.zoomingEnabled(false);
     if(f != null) {
