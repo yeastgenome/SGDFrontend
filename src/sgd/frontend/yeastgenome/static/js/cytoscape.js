@@ -22,10 +22,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		expression: 75
 	};
 	var _legendOffset = _legendOffsets[legendType];
-
 	$(".sgd-cyto-canvas-container").parent().height(height + offset + _legendOffset);
-
-
 
 	options = {
 		showOverlay: false,
@@ -43,18 +40,19 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	$('#' + div_id).cytoscape(options);
     var cy = $('#' + div_id).cytoscape("get");
 
+    var legendY = height + 50;
+
     // add date
     var $canvas = $("#j-sgd-visible-cyto-canvas")[0]
 	var ctx = $canvas.getContext("2d");
-	var fontSize = 14;
+	var fontSize = 12;
 	ctx.font = fontSize + "pt Helvetica";
-	var txt = (new Date()).toLocaleDateString();
+	var now = new Date();
+	var txt = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
 	var txtWidth = ctx.measureText(txt).width;
-	ctx.fillText(txt, width / 2 - txtWidth / 2, fontSize);
+	ctx.fillText(txt, width - txtWidth - fontSize, legendY);
 
 	/// *** draw legend ***
-
-	var legendY = height + 50;
 	ctx.fillText("Legend", 0, legendY);
 
 	// helper method to draw legend nodes
