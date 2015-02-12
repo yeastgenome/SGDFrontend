@@ -24,7 +24,7 @@ $(document).ready(function() {
 
 	$.getJSON('/backend/locus/' + locus['id'] + '/interaction_graph?callback=?', function(data) {
 	    if(data != null && data["nodes"].length > 1) {
-            var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
+            var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true, "interaction");
             var slider = create_slider("slider", graph, data["min_evidence_cutoff"], data["max_evidence_cutoff"], function slider_filter(new_cutoff) {return "node, edge[evidence >= " + new_cutoff + "]";});
             create_cy_download_button(graph, "cy_download", locus['display_name'] + '_interaction_graph')
 

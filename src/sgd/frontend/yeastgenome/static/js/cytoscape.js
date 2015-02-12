@@ -6,14 +6,25 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	var cytoscape_div = $("#" + div_id);
 	var height = Math.min(.75*$(window).height(), 600);
 	var width = $('#' + div_id).width();
-	var offset = 200;
+	var offset = 100;
 	cytoscape_div.height(height);
 
 	$(".j-sgd-cyto-canvas")
 		.attr("width", width)
 		.attr("height", height + offset);
 
-	$(".sgd-cyto-canvas-container").parent().height(height + offset)
+	var _legendOffsets = {
+		protein: 0,
+		go: 75,
+		phenotype: 75,
+		interaction: 150,
+		regulation: 150,
+		expression: 75
+	};
+	var _legendOffset = _legendOffsets[legendType];
+
+	$(".sgd-cyto-canvas-container").parent().height(height + offset + _legendOffset);
+
 
 
 	options = {
