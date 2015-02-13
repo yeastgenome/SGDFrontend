@@ -365,6 +365,26 @@ class YeastgenomeFrontend(FrontendInterface):
         else:
             return HTTPFound("/cgi-bin/search/luceneQS.fpl?query=" + query)
 
+    # elasticsearch autocomplete results
+    def autocomplete_results(self, params):
+        term = params['term']
+        obj = {
+            'query': {
+                'match': {
+                    'term': {
+                        'query': term,
+                        'analyzer': 'standard'
+                    }
+                }
+            }
+        }
+        res = es.search(index='sgdlite', body=obj)
+        simplified_results = map(lambda x: x['_source']['term'], res['hits']['hits'])
+        temp = {
+            'results': simplified_results
+        }
+        return Response(body=json.dumps(simplified_results), content_type='application/json')
+
     def backend(self, url_repr):
         if self.backend_url == 'backendless':
             return json.dumps(get_data(url_repr))
