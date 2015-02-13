@@ -16,10 +16,10 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from src.sgd.frontend.frontend_interface import FrontendInterface
 from src.sgd.frontend.yeastgenome.backendless.load_data_from_file import get_data
 
-# TEMP
+# setup elastic search
+from src.sgd.frontend import config
 from elasticsearch import Elasticsearch
-# defaults to localhost:9200
-es = Elasticsearch()
+es = Elasticsearch(config.elasticsearch_address)
 
 class YeastgenomeFrontend(FrontendInterface):
     def __init__(self, backend_url, heritage_url, log_directory):
@@ -349,7 +349,7 @@ class YeastgenomeFrontend(FrontendInterface):
         enrichment_results = get_json(self.backend_url + '/go_enrichment', data={'bioent_ids': bioent_ids})
         return enrichment_results
 
-    # TEMP elasticsearch endpoint
+    # elasticsearch endpoint
     def search(self, params):
         # try elastic search, if 1 gene_name response, redirect there
         query = params['query']
@@ -376,6 +376,7 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     chosen_frontend = YeastgenomeFrontend(backend_url, heritage_url, log_directory)
     
     settings = dict(configs)
+
     settings.setdefault('jinja2.i18n.domain', 'myproject')
     config = Configurator(settings=settings)
     config.add_translation_dirs('locale/')
