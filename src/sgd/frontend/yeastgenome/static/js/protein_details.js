@@ -91,7 +91,7 @@ $(document).ready(function() {
             $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_graph?callback=?', function(protein_domain_graph_data) {
                 if(protein_domain_graph_data['nodes'].length > 1) {
                     var graph_style = prep_style();
-                    var graph = create_cytoscape_vis("cy", layout, graph_style, protein_domain_graph_data);
+                    var graph = create_cytoscape_vis("cy", layout, graph_style, protein_domain_graph_data, null, false, "protein");
                     create_cy_download_button(graph, "cy_download", locus['display_name'] + '_protein_domain_graph')
 
                     var download_headers = ['', 'Gene', 'Domain'];

@@ -56,7 +56,7 @@ $(document).ready(function() {
 
     $.getJSON('/backend/locus/' + locus['id'] + '/regulation_graph?callback=?', function(data) {
         if(data != null && data["nodes"].length > 1) {
-            var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
+            var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true, "regulation");
             create_cy_download_button(graph, "cy_download", locus['display_name'] + '_regulation_graph')
             var message = 'Showing regulatory relationships supported by at least <strong>' + data['min_evidence_count'] + '</strong> experiment';
             if(data['min_evidence_count'] == 1) {

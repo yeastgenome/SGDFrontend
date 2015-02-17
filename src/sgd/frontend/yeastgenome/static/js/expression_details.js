@@ -17,7 +17,7 @@ $(document).ready(function() {
 
   	$.getJSON('/backend/locus/' + locus['id'] + '/expression_graph?callback=?', function(data) {
   		if(data != null && data['nodes'].length > 1) {
-            var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true);
+            var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true, "expression");
             var max_value = data["min_coeff"] + Math.min(data["max_coeff"] - data["min_coeff"], 10);
             var slider = create_slider("slider", graph, data["min_coeff"], max_value, function slider_filter(new_cutoff) {return "node, edge[score >= " + (new_cutoff/10) + "]";}, max_value+1);
             create_cy_download_button(graph, "cy_download", locus['display_name'] + '_expression_graph')
