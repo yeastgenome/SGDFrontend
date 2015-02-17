@@ -80,7 +80,7 @@ Compass and SASS can be installed via Ruby gems:
     $ gem install sass
     $ gem install compass
 
-###Testing
+##Testing
 
 Selenium tests are written with [behave](http://pythonhosted.org/behave/).  With behave installed and the app running in development mode (see above), run:
 
