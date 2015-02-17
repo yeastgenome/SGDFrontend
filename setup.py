@@ -12,7 +12,8 @@ requires = [
     'pyramid_jinja2==2.1',
     'waitress==0.8.9',
     'simplejson==3.5.2',
-    'requests==2.3.0'
+    'requests==2.3.0',
+    'elasticsearch-py==1.4.0'
     ]
 
 tests_require = [
