@@ -367,18 +367,24 @@ class YeastgenomeFrontend(FrontendInterface):
 
     # elasticsearch autocomplete results
     def autocomplete_results(self, params):
-        term = params['term']
-        obj = {
+        query = params['term']
+        search_body = {
             'query': {
-                'match': {
-                    'term': {
-                        'query': term,
-                        'analyzer': 'standard'
-                    }
+                'bool': {
+                    'must': {
+                        'match': {
+                            'term': {
+                                'query': query,
+                                'analyzer': 'standard'
+                            }
+                        }
+                    },
+                    'must_not': { 'match': { 'type': 'paper' }},
+                    'should': { 'match': { 'type': 'gene_name' }}
                 }
             }
         }
-        res = es.search(index='sgdlite', body=obj)
+        res = es.search(index='sgdlite', body=search_body)
         simplified_results = map(lambda x: x['_source']['term'], res['hits']['hits'])
         temp = {
             'results': simplified_results
