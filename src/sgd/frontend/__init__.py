@@ -215,15 +215,15 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('experiment'),
                     route_name='experiment')
 
-    config.add_route('search', '/search')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('search', request)(getattr(chosen_frontend, 'search')(params=request.GET)),
-                    renderer=chosen_frontend.get_renderer('search'),
-                    route_name='search')
+    # config.add_route('search', '/search')
+    # config.add_view(lambda request: chosen_frontend.response_wrapper('search', request)(getattr(chosen_frontend, 'search')(params=request.GET)),
+    #                 renderer=chosen_frontend.get_renderer('search'),
+    #                 route_name='search')
 
-    config.add_route('autocomplete_results', '/autocomplete_results')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('autocomplete_results', request)(getattr(chosen_frontend, 'autocomplete_results')(params=request.GET)),
-                    renderer=chosen_frontend.get_renderer('autocomplete_results'),
-                    route_name='autocomplete_results')    
+    # config.add_route('autocomplete_results', '/autocomplete_results')
+    # config.add_view(lambda request: chosen_frontend.response_wrapper('autocomplete_results', request)(getattr(chosen_frontend, 'autocomplete_results')(params=request.GET)),
+    #                 renderer=chosen_frontend.get_renderer('autocomplete_results'),
+    #                 route_name='autocomplete_results')    
 
     config.add_route('locus', '/locus/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('locus', request)(getattr(chosen_frontend, 'locus')(bioent_repr=request.matchdict['identifier'].lower())),
