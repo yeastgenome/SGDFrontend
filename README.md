@@ -39,7 +39,7 @@ Grunt:
 
 Compass:
 
-    $ gem install compass
+    $ gem install compass -v 0.12.7
 
 The build installs several node packages.  All of them are development, or build time dependencies.
 
