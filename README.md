@@ -21,11 +21,25 @@ There is only one package in this project...
 * requests
 
 
-###Node
+###Build Dependencies
 
-You must install node (preferably via homebrew) before building the app
+There are a few development dependencies used to build assets, but not needed at runtime.  They are:
+
+* [Node](http://nodejs.org/)
+* [Grunt](http://gruntjs.com/)
+* [Compass](http://compass-style.org/)
+
+To install node:
 
     $ brew install node
+
+Grunt:
+
+    $ npm install -g grunt-cli
+
+Compass:
+
+    $ gem install compass
 
 The build installs several node packages.  All of them are development, or build time dependencies.
 
@@ -68,17 +82,6 @@ The bundled application.js is compiled using [browserify](http://browserify.org/
 Many of the files that compose the bundled application.js are [JSX](http://jsx.github.io/) files, compiled using the harmony option, which allows some ES6 features.  Future additions to the client/jsx directory should also have a .jsx extension.  JSX features are optional in a JSX file.  While using supported ES6 features is encouraged, it is possible to write plain JavaScript in a JSX file.
 
 Some pages are written using the [react](http://facebook.github.io/react/) framework.  The react components are stored in the client/jsx/components directory, and future react components should follow.
-
-##SASS/Compass
-
-[SASS](http://sass-lang.com/) and [Compass](http://compass-style.org/) are being used via the grunt compass task.  SASS files can be found in the client/scss directory.
-
-###Installing
-
-Compass and SASS can be installed via Ruby gems:
-
-    $ gem install sass
-    $ gem install compass
 
 ##Testing
 
