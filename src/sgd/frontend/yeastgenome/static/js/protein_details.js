@@ -525,6 +525,7 @@ function draw_domain_chart(chart_id, length, data) {
         if(data[i]['domain']['source'] != null) {
             source = data[i]['domain']['source']['display_name'];
         }
+
         data_array.push([source, data[i]['domain']['display_name'], start*10, end*10]);
         descriptions.push(data[i]['domain']['description']);
 
@@ -533,7 +534,7 @@ function draw_domain_chart(chart_id, length, data) {
             sources[source] = true;
         }
     }
-    data_array.unshift([' ', locus['display_name'], 10, length*10]);
+    data_array.unshift(["-", locus['display_name'], 10, length*10]);
     descriptions.unshift('');
 
     dataTable.addRows(data_array);
@@ -549,7 +550,7 @@ function draw_domain_chart(chart_id, length, data) {
     // try to predict height by finding number of unique sources
     var chartHeight = Object.keys(sources).length * 60 + 50;
     options['height'] = chartHeight;
-     chart.draw(dataTable, options);
+    chart.draw(dataTable, options);
     google.visualization.events.addListener(chart, 'ready', make_domain_ready_handler(chart_id, chart, 1, length*10, descriptions, data_array));
 }
 
