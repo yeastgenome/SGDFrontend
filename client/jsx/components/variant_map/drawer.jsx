@@ -149,12 +149,13 @@ module.exports = React.createClass({
 			}
 		};
 
+		var _refCoord = this._getRefHighlightedCoordinates(true);
 		return (<div>
 			<h3>S288C Location: <a href={locusData.contigData.link}>{locusData.contigData.display_name}</a> {locusData.start}..{locusData.end}</h3>
 			<LocusDiagram
 				focusLocusDisplayName={model.attributes.display_name} contigData={locusData.contigData}
 				data={locusData.data} domainBounds={locusData.domainBounds} variantData={variantData}
-				showVariants={true} watsonTracks={watsonTracks} ignoreMouseover={true} highlightedRelativeCoordinates={this.state.highlightedSegment}
+				showVariants={true} watsonTracks={watsonTracks} ignoreMouseover={true} highlightedRelativeCoordinates={_refCoord}
 				onSetScale={_onSetX1Scale} onVariantMouseOver={_onVariantMouseOver}
 			/>
 			{parsetNode}
@@ -165,21 +166,12 @@ module.exports = React.createClass({
 	_getParsetNode: function () {
 		if (!this.state.showSequence) return null;
 
-		var model = this.state.alignmentModel;
-		var _attr = model.attributes;
-		var _coord = _attr.coordinates;
 		var _alignedCoord = this.state.highlightedAlignedSegment || [0, 0];
-		var _refDomain = model.getReferenceCoordinatesFromAlignedCoordinates(_alignedCoord[0], _alignedCoord[1], this.props.isProteinMode);
-		var x1Start = _refDomain.start;
-		var x1End = _refDomain.end;
-		var parsetX1Coord = [this.state.x1Scale(_coord.start + x1Start), this.state.x1Scale(_coord.start + x1End)];
-		// handle crick strand features
-		if (_attr.strand === "-") {
-			var _relEnd = _coord.end - _coord.start;
-			var _tempX1Start = _relEnd - x1Start;
-			var _tempX1End = _relEnd - x1End;
-			parsetX1Coord = [this.state.x1Scale(_coord.start + _tempX1End), this.state.x1Scale(_coord.start + _tempX1Start)];
-		}
+		var _refCoord = this._getRefHighlightedCoordinates(false);
+		var parsetX1Coord = _refCoord
+			.map( d => {
+				return this.state.x1Scale(d);
+			});
 		var parsetX2Coord = _alignedCoord
 			.map( d => {
 				return this.state.x2Scale(d);
@@ -191,6 +183,24 @@ module.exports = React.createClass({
 			x2Coordinates={parsetX2Coord}
 			data={this.props.parsetData}
 		/>);
+	},
+
+	_getRefHighlightedCoordinates: function (isRelative) {
+		var model = this.state.alignmentModel;
+		var _attr = model.attributes;
+		var _coord = _attr.coordinates;
+		var _alignedCoord = this.state.highlightedAlignedSegment || [0, 0];
+		var _refDomain = model.getReferenceCoordinatesFromAlignedCoordinates(_alignedCoord[0], _alignedCoord[1], this.props.isProteinMode);
+		var x1Start = _refDomain.start;
+		var x1End = _refDomain.end;
+		var offset = isRelative ? 0 : _coord.start;
+		if (_attr.strand === "-") {
+			var _relEnd = _coord.end - _coord.start;
+			x1Start = _relEnd - x1Start;
+			x1End = _relEnd - x1End;
+			return [offset + x1End, offset + x1Start];
+		}
+		return [offset + x1Start, offset + x1End];
 	},
 
 	_getSequenceNode: function () {
