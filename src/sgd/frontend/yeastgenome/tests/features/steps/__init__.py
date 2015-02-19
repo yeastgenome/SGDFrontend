@@ -1,5 +1,6 @@
 __author__ = 'kpaskov'
 
+import re
 from behave import step
 from selenium.common.exceptions import NoSuchElementException
 
@@ -109,3 +110,12 @@ def should_not_see_a_loader(context):
         assert 0, 'Loader is still visible.'
     except NoSuchElementException:
         pass
+
+@step('I should see the text "{text}"')
+def should_see_text(context, text):
+    src = context.browser.page_source
+    text_found = re.search(text, src)
+    if text_found:
+        pass
+    else:
+        assert 0, 'Text not present.'
