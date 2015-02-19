@@ -48,7 +48,11 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	var fontSize = 12;
 	ctx.font = fontSize + "pt Helvetica";
 	var now = new Date();
-	var txt = "SGD " + now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
+	var month = (now.getMonth() + 1).toString();
+	var date = now.getDate().toString();
+	if (month.length === 1) month = "0" + month;
+	if (date.length === 1) date = "0" + date;
+	var txt = "SGD " + now.getFullYear() + "-" + month + "-" + date;
 	var txtWidth = ctx.measureText(txt).width;
 	ctx.fillText(txt, width - txtWidth - fontSize, legendY + 5);
 

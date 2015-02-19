@@ -502,6 +502,7 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
 }
 
 function draw_domain_chart(chart_id, length, data) {
+    console.log(data)
     var container = document.getElementById(chart_id);
 
     var chart = new google.visualization.Timeline(container);
