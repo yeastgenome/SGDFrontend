@@ -114,13 +114,12 @@ module.exports = class AlignmentShowModel extends BaseModel {
 		var _rawVariantData = isProtein ? this.attributes.variant_data_protein : this.attributes.variant_data_dna;
 		var _start = this.attributes.coordinates.start;
 		var _end = this.attributes.coordinates.end;
-		var _factor = isProtein ? 3 : 1;
 		return _.map(_rawVariantData, d => {
 			var _refCoord = this.getReferenceCoordinatesFromAlignedCoordinates(d.start, d.end, isProtein);
 			if (this.attributes.strand === "+") {
-				d.coordinateDomain = [_refCoord.start * _factor + _start, _refCoord.end * _factor + _start];
+				d.coordinateDomain = [_refCoord.start + _start, _refCoord.end + _start];
 			} else {
-				d.coordinateDomain = [_end - _refCoord.end * _factor, _end - _refCoord.start * _factor];
+				d.coordinateDomain = [_end - _refCoord.end, _end - _refCoord.start];
 			}
 			return d;
 		});
