@@ -23,6 +23,14 @@ def should_see_element_with_id(context, element_id):
     except NoSuchElementException:
         assert 0, 'No element with id ' + element_id
 
+@step('I should not see an element with id "{element_id}"')
+def should_see_element_with_id(context, element_id):
+    try:
+        context.browser.find_element_by_id(element_id)
+        assert 0, 'Element with id ' + element_id + ' is present.'
+    except NoSuchElementException:
+        pass
+
 @step('I should see an element with class_name "{element_class}"')
 def should_see_element_with_class_name(context, element_class):
     try:
