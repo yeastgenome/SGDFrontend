@@ -146,4 +146,3 @@ def test_url(context, desired_url):
         pass
     else:
         assert 0, "Current URL doesn't match desired URL."
-
