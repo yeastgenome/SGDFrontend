@@ -502,7 +502,6 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
 }
 
 function draw_domain_chart(chart_id, length, data) {
-    console.log(data)
     var container = document.getElementById(chart_id);
 
     var chart = new google.visualization.Timeline(container);
@@ -547,11 +546,11 @@ function draw_domain_chart(chart_id, length, data) {
         'colors': colors
     };
 
-    chart.draw(dataTable, options);
+    // try to predict height by finding number of unique sources
+    var chartHeight = Object.keys(sources).length * 60 + 50;
+    options['height'] = chartHeight;
+     chart.draw(dataTable, options);
     google.visualization.events.addListener(chart, 'ready', make_domain_ready_handler(chart_id, chart, 1, length*10, descriptions, data_array));
-
-    options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
-    chart.draw(dataTable, options);
 }
 
 function prep_style() {
