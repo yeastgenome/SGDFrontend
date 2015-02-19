@@ -602,16 +602,16 @@ module.exports = React.createClass({
 
 			var tipNode;
 			var _tipStyle = { fontFamily: "FontAwesome", textAnchor: "middle", fontSize: 16 };
-			if (d.type === "insertion") {
+			if (d.variant_type === "Insertion") {
 				tipNode = <text style={_tipStyle}>&#xf150;</text>;
-			} else if (d.type === "deletion") {
+			} else if (d.variant_type === "Deletion") {
 				tipNode = <text style={_tipStyle}>&#xf057;</text>;
 			} else {
 				tipNode = <circle r="7" fill="#1287C5"/>;
 			}
 
 			var lineNode;
-			if (d.type === "deletion") {
+			if (d.variant_type === "Deletion") {
 				var _delta = Math.abs(scale(d.coordinateDomain[1]) - scale(d.coordinateDomain[0]));
 				lineNode = (<g>
 					<line x1={ -0.5 * _delta} x2={0.5 * _delta} y1="12" y2="12" stroke="black" strokeWidth="1px" />

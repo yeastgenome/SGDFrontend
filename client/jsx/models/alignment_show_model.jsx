@@ -35,23 +35,7 @@ module.exports = class AlignmentShowModel extends BaseModel {
 	parse (response) {
 		response.aligned_protein_sequences = this._sortSequencesByStrain(response.aligned_protein_sequences);
 		response.aligned_dna_sequences = this._sortSequencesByStrain(response.aligned_dna_sequences);
-		// TEMP
-		response.variant_data_dna = this._parseVariantData(response.variant_data_dna);
-		response.variant_data_protein = this._parseVariantData(response.variant_data_protein);
-
 		return response;
-	}
-
-	// TEMP
-	_parseVariantData (data) {
-		var _delta, _insertOrDelete;
-		return data.map( d => {
-			_delta = Math.abs(d.end - d.start);
-			// randomly insertion or deletion
-			_insertOrDelete = (Math.random() > 0.5) ? "insertion" : "deletion";
-			d.type = (_delta > 1) ? _insertOrDelete : "snp";
-			return d;
-		});
 	}
 
 	_sortSequencesByStrain (sequences) {
@@ -118,6 +102,10 @@ module.exports = class AlignmentShowModel extends BaseModel {
 				}
 				return memo;
 			}, { start: 0, end: 0 });
+		if (isProtein) {
+			refDomain.start = refDomain.start * 3;
+			refDomain.end = refDomain.end * 3;
+		}
 		return refDomain;
 	}
 
