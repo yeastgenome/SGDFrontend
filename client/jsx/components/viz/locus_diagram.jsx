@@ -40,6 +40,7 @@ module.exports = React.createClass({
 			highlightedRelativeCoordinates: null,
 			ignoreMouseover: false,
 			focusLocusDisplayName: null,
+			relativeCoordinateAxes: false,
 			showSubFeatures: false,
 			showVariants: false,
 			variantData: [], // [{ coordinateDomain: [20045, 20046] }, ...]
@@ -71,8 +72,9 @@ module.exports = React.createClass({
 		var controlsNode = this._getControlsNode();
 
 		var _ticks = (this.state.DOMWidth > 400) ? null : 3;
+		var _domain = this.props.relativeCoordinateAxes ? this._getRelativeCoordDomain() : this._getScale().domain();
 		var axisNode = (<StandaloneAxis 
-			domain={this._getScale().domain()} orientation="bottom"
+			domain={_domain} orientation="bottom"
 			gridTicks={true} ticks={_ticks}
 			height={height + AXIS_LABELING_HEIGHT} tickFormat={d => { return d; }}
 		/>);
@@ -626,5 +628,13 @@ module.exports = React.createClass({
 				{tipNode}
 			</g>);
 		});
+	},
+
+	_getRelativeCoordDomain: function () {
+		var locus = this._getFocusLocus();
+		var delta = locus.end - locus.start;
+		var leftOffset = this.props.domainBounds[0] - locus.start ;
+		var rightOffset = this.props.domainBounds[1] - locus.start;
+		return [leftOffset, rightOffset];
 	}
 });

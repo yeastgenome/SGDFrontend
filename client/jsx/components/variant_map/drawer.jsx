@@ -155,8 +155,10 @@ module.exports = React.createClass({
 			<LocusDiagram
 				focusLocusDisplayName={model.attributes.display_name} contigData={locusData.contigData}
 				data={locusData.data} domainBounds={locusData.domainBounds} variantData={variantData}
-				showVariants={true} watsonTracks={watsonTracks} ignoreMouseover={true} highlightedRelativeCoordinates={_refCoord}
+				showVariants={true} watsonTracks={watsonTracks}
+				ignoreMouseover={true} highlightedRelativeCoordinates={_refCoord}
 				onSetScale={_onSetX1Scale} onVariantMouseOver={_onVariantMouseOver}
+				relativeCoordinateAxes={true}
 			/>
 			{parsetNode}
 			{sequenceNode}
