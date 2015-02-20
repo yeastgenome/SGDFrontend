@@ -442,7 +442,7 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
         google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
 
         //Fix axis.
-        var svg_gs = $("#" + chart_id + " > div > div > svg > g");
+        var svg_gs = $("#" + chart_id + " > div > div > div > svg > g");
 
         var rectangle_holder = svg_gs[3];
         rectangles = rectangle_holder.childNodes;
@@ -498,7 +498,10 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
             $(tickmarks[i]).html(y_new);
         }
     }
-    return ready_handler;
+    return ready_handler();
+    // google.visualization.events.addListener(chart, 'onmouseover', function (e) {
+    //     console.log(e)
+    // });
 }
 
 function draw_domain_chart(chart_id, length, data) {
