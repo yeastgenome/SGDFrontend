@@ -37,8 +37,7 @@ module.exports = React.createClass({
 			highlightedSegment: null, // [0, 100] relative coord
 			parsetVisible: false,
 			x1Scale: function () { return 0; },
-			x2Scale: function () { return 0; },
-			parsetData: {}
+			x2Scale: function () { return 0; }
 		};
 	},
 
@@ -178,12 +177,13 @@ module.exports = React.createClass({
 			.map( d => {
 				return this.state.x2Scale(d);
 			});
+		var text = `S288C Coordinates ${_refCoord[0] - 1}..${_refCoord[1] - 1}`;
 
 		return (<Parset 
 			isVisible={this.state.parsetVisible}
 			x1Coordinates={parsetX1Coord}
 			x2Coordinates={parsetX2Coord}
-			data={this.props.parsetData}
+			text={text}
 		/>);
 	},
 
@@ -197,7 +197,7 @@ module.exports = React.createClass({
 		var x1End = _refDomain.end;
 		var offset = isRelative ? 0 : _coord.start;
 		if (_attr.strand === "-") {
-			var _relEnd = _coord.end - _coord.start;
+			var _relEnd = _coord.end - _coord.start + 2;
 			x1Start = _relEnd - x1Start;
 			x1End = _relEnd - x1End;
 			return [offset + x1End, offset + x1Start];

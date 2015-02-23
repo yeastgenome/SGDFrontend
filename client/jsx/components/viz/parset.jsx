@@ -14,12 +14,13 @@ module.exports = React.createClass({
 		isVisible: React.PropTypes.bool,
 		x1Coordinates: React.PropTypes.array,
 		x2Coordinates: React.PropTypes.array,
-		data: React.PropTypes.object
+		text: React.PropTypes.string
 	},
 
 	getDefaultProps: function () {
 		return {
-			isVisible: false
+			isVisible: false,
+			text: ""
 		};
 	},
 
@@ -50,7 +51,7 @@ module.exports = React.createClass({
 
 		var _x1C = this.props.x1Coordinates;
 		var _left = (_x1C[0] + _x1C[1]) / 2;
-		return <h3 style={{ position: "absolute", left: _left - 150, top: LINE_HEIGHT * 2 }}>S288C Coordinates: 20000..21000</h3>;
+		return <h3 style={{ position: "absolute", left: _left - 150, top: LINE_HEIGHT * 2 }}>{this.props.text}</h3>;
 	},
 
 	_getX1LineNode: function () {
