@@ -635,6 +635,6 @@ module.exports = React.createClass({
 		var delta = locus.end - locus.start;
 		var leftOffset = this.props.domainBounds[0] - locus.start ;
 		var rightOffset = this.props.domainBounds[1] - locus.start;
-		return [leftOffset, rightOffset];
+		return (locus.track > 0) ? [leftOffset, rightOffset] : [rightOffset, leftOffset];
 	}
 });
