@@ -157,7 +157,7 @@ module.exports = React.createClass({
 				showVariants={true} watsonTracks={watsonTracks}
 				ignoreMouseover={true} highlightedRelativeCoordinates={_refCoord}
 				onSetScale={_onSetX1Scale} onVariantMouseOver={_onVariantMouseOver}
-				relativeCoordinateAxes={true}
+				relativeCoordinateAxes={true} hasControls={false}
 			/>
 			{parsetNode}
 			{sequenceNode}
