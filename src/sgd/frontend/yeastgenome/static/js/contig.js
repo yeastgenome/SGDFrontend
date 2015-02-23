@@ -62,7 +62,7 @@ function make_ready_handler(chart_id, chart, min_tick, max_tick, display_name_to
         google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
 
         //Fix timeline axis.
-        var svg_gs = $("#" + chart_id + " > div > div > svg > g");
+        var svg_gs = $("#" + chart_id + " > div > div > div > svg > g");
 
         var y_one = min_tick;
         if(y_one == 1) {
@@ -145,10 +145,11 @@ function set_up_sequence(chart_id, data) {
         'tooltip': {'isHTML': true}
     }
 
+    // options['height'] = 250;
     chart.draw(dataTable, options);
     google.visualization.events.addListener(chart, 'ready', make_ready_handler(chart_id, chart, 1, contig['residues'].length,
         display_name_to_format_name, data_array));
-    var height = $("#" + chart_id + " > div > div > div > svg").height() + 60;
+    var height = $("#" + chart_id + " > div > div > div > div > svg").height() + 60;
     options['height'] = height;
     chart.draw(dataTable, options);
 }
