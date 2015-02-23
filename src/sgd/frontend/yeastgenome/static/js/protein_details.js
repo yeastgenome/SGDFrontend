@@ -91,7 +91,7 @@ $(document).ready(function() {
             $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_graph?callback=?', function(protein_domain_graph_data) {
                 if(protein_domain_graph_data['nodes'].length > 1) {
                     var graph_style = prep_style();
-                    var graph = create_cytoscape_vis("cy", layout, graph_style, protein_domain_graph_data);
+                    var graph = create_cytoscape_vis("cy", layout, graph_style, protein_domain_graph_data, null, false, "protein");
                     create_cy_download_button(graph, "cy_download", locus['display_name'] + '_protein_domain_graph')
 
                     var download_headers = ['', 'Gene', 'Domain'];
@@ -442,7 +442,7 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
         google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
 
         //Fix axis.
-        var svg_gs = $("#" + chart_id + " > div > div > svg > g");
+        var svg_gs = $("#" + chart_id + " > div > div > div > svg > g");
 
         var rectangle_holder = svg_gs[3];
         rectangles = rectangle_holder.childNodes;
@@ -498,7 +498,10 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
             $(tickmarks[i]).html(y_new);
         }
     }
-    return ready_handler;
+    return ready_handler();
+    // google.visualization.events.addListener(chart, 'onmouseover', function (e) {
+    //     console.log(e)
+    // });
 }
 
 function draw_domain_chart(chart_id, length, data) {
@@ -525,6 +528,7 @@ function draw_domain_chart(chart_id, length, data) {
         if(data[i]['domain']['source'] != null) {
             source = data[i]['domain']['source']['display_name'];
         }
+
         data_array.push([source, data[i]['domain']['display_name'], start*10, end*10]);
         descriptions.push(data[i]['domain']['description']);
 
@@ -533,7 +537,7 @@ function draw_domain_chart(chart_id, length, data) {
             sources[source] = true;
         }
     }
-    data_array.unshift([' ', locus['display_name'], 10, length*10]);
+    data_array.unshift(["-", locus['display_name'], 10, length*10]);
     descriptions.unshift('');
 
     dataTable.addRows(data_array);
@@ -546,11 +550,11 @@ function draw_domain_chart(chart_id, length, data) {
         'colors': colors
     };
 
+    // try to predict height by finding number of unique sources
+    var chartHeight = Object.keys(sources).length * 60 + 50;
+    options['height'] = chartHeight;
     chart.draw(dataTable, options);
     google.visualization.events.addListener(chart, 'ready', make_domain_ready_handler(chart_id, chart, 1, length*10, descriptions, data_array));
-
-    options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
-    chart.draw(dataTable, options);
 }
 
 function prep_style() {

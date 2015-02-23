@@ -21,11 +21,25 @@ There is only one package in this project...
 * requests
 
 
-###Node
+###Build Dependencies
 
-You must install node (preferably via homebrew) before building the app
+There are a few development dependencies used to build assets, but not needed at runtime.  They are:
+
+* [Node](http://nodejs.org/)
+* [Grunt](http://gruntjs.com/)
+* [Compass](http://compass-style.org/)
+
+To install node:
 
     $ brew install node
+
+Grunt:
+
+    $ npm install -g grunt-cli
+
+Compass:
+
+    $ gem install compass -v 0.12.7
 
 The build installs several node packages.  All of them are development, or build time dependencies.
 
@@ -69,14 +83,8 @@ Many of the files that compose the bundled application.js are [JSX](http://jsx.g
 
 Some pages are written using the [react](http://facebook.github.io/react/) framework.  The react components are stored in the client/jsx/components directory, and future react components should follow.
 
-##SASS/Compass
+##Testing
 
-[SASS](http://sass-lang.com/) and [Compass](http://compass-style.org/) are being used via the grunt compass task.  SASS files can be found in the client/scss directory.
+Selenium tests are written with [behave](http://pythonhosted.org/behave/).  With behave installed and the app running in development mode (see above), run:
 
-###Installing
-
-Compass and SASS can be installed via Ruby gems:
-
-    $ gem install sass
-    $ gem install compass
-
+    $ behave src/sgd/frontend/yeastgenome/tests/features

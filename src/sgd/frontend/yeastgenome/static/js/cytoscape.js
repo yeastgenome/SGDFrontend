@@ -1,10 +1,28 @@
 
-function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
-	var cytoscape_div = $("#" + div_id);
+function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, legendType) {
+	// legend type defaults to false (only loci)
+	legendType = legendType || false;
 
+	var cytoscape_div = $("#" + div_id);
 	var height = Math.min(.75*$(window).height(), 600);
 	var width = $('#' + div_id).width();
+	var offset = 75;
 	cytoscape_div.height(height);
+
+	$(".j-sgd-cyto-canvas")
+		.attr("width", width)
+		.attr("height", height + offset);
+
+	var _legendOffsets = {
+		protein: 0,
+		go: 75,
+		phenotype: 75,
+		interaction: 150,
+		regulation: 150,
+		expression: 75
+	};
+	var _legendOffset = _legendOffsets[legendType];
+	$(".sgd-cyto-canvas-container").parent().height(height + offset + _legendOffset);
 
 	options = {
 		showOverlay: false,
@@ -21,6 +39,61 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 
 	$('#' + div_id).cytoscape(options);
     var cy = $('#' + div_id).cytoscape("get");
+
+    var legendY = height + 50;
+
+    // add date
+    var $canvas = $("#j-sgd-visible-cyto-canvas")[0]
+	var ctx = $canvas.getContext("2d");
+	var fontSize = 12;
+	ctx.font = fontSize + "pt Helvetica";
+	var now = new Date();
+	var month = (now.getMonth() + 1).toString();
+	var date = now.getDate().toString();
+	if (month.length === 1) month = "0" + month;
+	if (date.length === 1) date = "0" + date;
+	var txt = "SGD " + now.getFullYear() + "-" + month + "-" + date;
+	var txtWidth = ctx.measureText(txt).width;
+	ctx.fillText(txt, width - txtWidth - fontSize, legendY + 5);
+
+	/// *** draw legend ***
+
+	// helper method to draw legend nodes
+	var drawLegendNode = function (ctx, text, x, y, color, isCircle, isBlackText) {
+		ctx.fillStyle = color;
+		if (isCircle) {
+			ctx.beginPath();
+			ctx.arc(x, y, 15, 0, 2 * Math.PI, false);
+			ctx.closePath();
+			ctx.fill();
+		} else {
+			ctx.beginPath();
+			ctx.rect(x - 15, y - 15, 30, 30);
+			ctx.closePath();
+			ctx.fill();
+		}
+		
+		var textX = x - ctx.measureText(text).width / 2;
+		var textY = y + 3;
+		ctx.font = 12 + "pt Helvetica";	
+		ctx.strokeStyle = isBlackText ? 'white': '#757575';
+	    ctx.lineWidth = 5;
+	    ctx.strokeText(text, textX, textY);
+		ctx.fillStyle = isBlackText ? '#757575' : 'white';
+		ctx.fillText(text, textX, textY);
+	};
+
+	// draw legend
+	drawLegendNode(ctx, "Current Locus", 53, legendY, '#F9DA56', true, false);
+	drawLegendNode(ctx, "Other Locus", 160, legendY, '#757575', true, true);
+	var nextLegendX = 245;
+	if (legendType === "protein") {
+		drawLegendNode(ctx, "Domain", nextLegendX, legendY, '#3366cc', false, true);	
+	} else if (legendType === "go") {
+		drawLegendNode(ctx, "GO Term", nextLegendX, legendY, '#6CB665', false, true);
+	} else if (legendType === "phenotype") {
+		drawLegendNode(ctx, "Phenotype", nextLegendX, legendY, '#C591F5', false, true);
+	}
 
     cy.zoomingEnabled(false);
     if(f != null) {
@@ -79,7 +152,32 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons) {
 }
 
 function create_cy_download_button(cy, button_id, file_name) {
-    $("#" + button_id).click(function() {post_to_url('/download_image', {"display_name":file_name, 'data': cy.png()});});
+    $("#" + button_id).click(function() {
+
+    	// get hidden canvas
+    	var $hiddenCanvas = $("#j-sgd-hidden-cyto-canvas")[0];
+    	var hiddenCtx = $hiddenCanvas.getContext("2d");
+    	
+    	// get custom canvas, write to hidden canvas
+    	var $customCanvas = $("#j-sgd-visible-cyto-canvas")[0];
+    	var customImage = new Image();
+    	customImage.onload = function () {
+    		hiddenCtx.drawImage(this, 0, 0);
+	    	// write cyto hidden canvas
+	    	var cytoImage = new Image();
+	    	
+	    	cytoImage.onload = function () {
+	    		hiddenCtx.drawImage(this, 0, 16);
+		    	post_to_url('/download_image', { "display_name":file_name, 'data': $hiddenCanvas.toDataURL("image/png") });
+	    	}
+	    	cytoImage.src = cy.png();
+    	}
+    	customImage.src = $customCanvas.toDataURL();
+    	
+		// hiddenCtx.drawImage(cytoImage, 0, 16);
+
+    	// post_to_url('/download_image', { "display_name":file_name, 'data': $hiddenCanvas.toDataURL("image/png") });
+    });
     $("#" + button_id).attr('disabled', false);
 }
 
