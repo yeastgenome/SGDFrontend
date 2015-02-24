@@ -354,10 +354,16 @@ class YeastgenomeFrontend(FrontendInterface):
         # try elastic search, if 1 gene_name response, redirect there
         query = params['query']
         obj = {
-            'q': query,
-            'type': 'gene_name'
+            'query': {
+                'bool': {
+                    'must': [
+                        { 'match': { 'term': query } },
+                        { 'match': { 'type': 'gene_name' } }
+                    ]
+                }
+            }
         }
-        res = es.search(index='sgdlite', params=obj)
+        res = es.search(index='sgdlite', body=obj)
         if (res['hits']['total'] == 1):
             url = res['hits']['hits'][0]['_source']['link_url']
             return HTTPFound(url)
