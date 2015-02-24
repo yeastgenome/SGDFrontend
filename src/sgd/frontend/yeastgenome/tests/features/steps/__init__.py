@@ -127,3 +127,23 @@ def should_see_text(context, text):
         pass
     else:
         assert 0, 'Text not present.'
+
+@step('I search {query}')
+def type_text(context, query,):
+    search_container = context.browser.find_element_by_id('searchform')
+    input_el = search_container.find_element_by_id('txt_search_container').find_element_by_id('txt_search')
+    search_button = search_container.find_element_by_id('search-submit-btn')
+    input_el.click()
+    input_el.send_keys(query.strip('"'))
+    search_button.click()
+    pass
+
+@step('I should be at {desired_url}')
+def test_url(context, desired_url):
+    desired_url = desired_url.strip('"')
+    current_url = context.browser.current_url
+    if current_url == desired_url:
+        pass
+    else:
+        assert 0, "Current URL doesn't match desired URL."
+
