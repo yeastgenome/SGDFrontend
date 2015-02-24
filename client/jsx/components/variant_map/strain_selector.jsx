@@ -7,7 +7,9 @@ var _ = require("underscore");
 var Checklist = require("../widgets/checklist.jsx");
 var DidClickOutside = require("../mixins/did_click_outside.jsx");
 
-var WIDTH = 200;
+var WIDTH = 350;
+var IMAGE_WIDTH = 174;
+var IMAGE_HEIGHT = 274;
 
 module.exports = React.createClass({
 	mixins: [DidClickOutside],
@@ -69,9 +71,30 @@ module.exports = React.createClass({
 			}
 			this.setState({ activeStrainIds: keys });
 		};
-		return (<div onClick={_stopClick} style={_style}>
-				<span style={{ fontSize: "0.875rem" }}>S288C (reference)</span>
-				<Checklist elements={this.props.data} initialActiveElementKeys={this.state.activeStrainIds} onSelect={_onSelect} />
-		</div>);
+		// re-order data to match dendrogram order
+		var DESIRED_ID_ORDER = [1, 8, 12, 2, 11, 3, 4, 7, 5, 13, 6];
+		var _sortedData = _.sortBy(this.props.data, d => {
+			var _index = DESIRED_ID_ORDER.indexOf(d.key);
+			return _index >= 0 ? _index : Math.Infinity;
+		});
+		var _imgStyle = {
+			width: IMAGE_WIDTH,
+			height: IMAGE_HEIGHT,
+			marginTop: 8,
+			marginLeft: 20
+		};
+		return (
+			<div onClick={_stopClick} style={_style}>
+				<div className="row">
+					<div className="small-6 columns">
+						<img style={_imgStyle} src="/static/img/strains_dendrogram.png" />
+					</div>
+					<div className="small-6 columns">
+						<span style={{ fontSize: "0.875rem" }}>S288C (reference)</span>
+						<Checklist elements={_sortedData} initialActiveElementKeys={this.state.activeStrainIds} onSelect={_onSelect} />
+					</div>
+				</div>
+			</div>
+		);
 	}
 });
