@@ -40,7 +40,6 @@ module.exports = React.createClass({
 		var strainLabelsNode = this._getLabelsNode();
 		var overlayNode = this._getOverlayNode();
 		var tooltipNode = this._getTooltipNode();
-		var indicatorNode = this._getPositionIndicator();
 
 		return (<div onMouseLeave={this._onMouseLeave}>
 			{tooltipNode}
@@ -55,14 +54,7 @@ module.exports = React.createClass({
 					</div>
 				</div>
 			</div>
-			<div className="row">
-				<div className="columns small-6">
-					<ColorScaleLegend />
-				</div>
-				<div className="columns small-6">
-					{indicatorNode}					
-				</div>
-			</div>
+			<ColorScaleLegend />
 		</div>);
 	},
 
@@ -88,23 +80,6 @@ module.exports = React.createClass({
 	_onScroll: function (e) {
 		this.setState({ tooltipVisible: false });
 		this._checkScroll();
-	},
-
-	_getPositionIndicator: function () {
-		var xScale = this._getXScale();
-		var leftRatio = this.state.canvasScrollX / xScale.range()[1];
-		var widthRatio = Math.min(1, (this.state.DOMWidth / xScale.range()[1]));
-
-		var barStyle = {
-			position: "absolute",
-			left: `${leftRatio * 100}%`,
-			width: `${widthRatio * 100}%`,
-			height: "100%",
-			background: "#e1e1e1"
-		};
-		return (<div className="variant-map-progress-bar" style={{ position: "relative", width: "100%", height: 30, border: "1px solid #e1e1e1" }}>
-			<div className="variant-map-progress-bar-inner" style={barStyle} />
-		</div>);
 	},
 
 	_getOverlayNode: function () {

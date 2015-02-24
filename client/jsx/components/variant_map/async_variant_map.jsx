@@ -103,7 +103,6 @@ module.exports = React.createClass({
 	},
 
 	_getHeatmapNode: function () {
-		// TEMP
 		var _onClick = d => {
 			this.setState({
 				drawerVisible: true,
@@ -152,7 +151,7 @@ module.exports = React.createClass({
 			node = (<Drawer
 				onExit={_onExit} locusId={this.state.activeLocusId}
 				isProteinMode={this.state.isProteinMode} strainData={_strainData}
-				locusName={locusData.display_name}
+				locusName={locusData.display_name} locusHref={locusData.link}
 			/>);
 		}
 		return node;

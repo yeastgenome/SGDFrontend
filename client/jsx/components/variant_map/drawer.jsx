@@ -18,6 +18,7 @@ module.exports = React.createClass({
 		isProteinMode: React.PropTypes.bool,
 		locusId: React.PropTypes.number.isRequired,
 		locusName: React.PropTypes.string.isRequired,
+		locusHref: React.PropTypes.string.isRequired,
 		onExit: React.PropTypes.func.isRequired,
 		strainData: React.PropTypes.array.isRequired
 	},
@@ -81,7 +82,7 @@ module.exports = React.createClass({
 					<h1>
 						<a onClick={this._exit} style={_exitStyle}><i className="fa fa-times"></i></a>
 					</h1>
-					<h1>{this.props.locusName}</h1>
+					<h1><a href={this.props.locusHref}>{this.props.locusName}</a></h1>
 					{contentNode}		
 				</div>
 			</div>
