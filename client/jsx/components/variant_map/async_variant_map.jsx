@@ -11,6 +11,9 @@ var SearchBar = require("../widgets/search_bar.jsx");
 var VariantHeatmap = require("./variant_heatmap.jsx");
 var StrainSelector = require("./strain_selector.jsx");
 
+// id to filter out
+var REFERENCE_STRAIN_ID = 1;
+
 module.exports = React.createClass({
 	getInitialState: function () {
 		return {
@@ -40,6 +43,8 @@ module.exports = React.createClass({
 		var _strainData = _.map(this.state.strainData, d => {
 			return { key: d.id, name: d.display_name };
 		});
+		// filter out S288C
+		_strainData = _.filter(_strainData, d => { return d.key !== REFERENCE_STRAIN_ID; });
 
 		var heatmapNode = this._getHeatmapNode();
 		var drawerNode = this._getDrawerNode();
@@ -75,25 +80,14 @@ module.exports = React.createClass({
 			var endTime = new Date().getTime();
 			console.log("data response time: ", endTime - startTime)
 
-			// TEMP, add some fake strains
+			// format some strain data
 			var _strains = _.map(res.strains, d => {
 				d["type"] = "alternative";
 				return d;
 			});
-			for (var i = 0; i < 10; i++) {
-				_strains.push({
-					display_name: "Strain" + i,
-					link: "http://yeastgenome.org",
-					id: 100 + i,
-					format_name: "strain" + i,
-					type: "other"
-				});
-			}
-
 			var _activeStrains = _.filter(_strains, d => {
-				return d.type !== "other";
+				return (d.type !== "other" && d.id !== 1);
 			});
-
 			var _activeStrainIds = _.map(_activeStrains, d => {
 				return d.id;
 			});
@@ -132,7 +126,7 @@ module.exports = React.createClass({
 			};
 		});
 		var _strainData = _.filter(this.state.strainData, d => {
-			return this.state.activeStrainIds.indexOf(d.id) > -1;
+			return (this.state.activeStrainIds.indexOf(d.id) > -1) && (d.id !== REFERENCE_STRAIN_ID);
 		});
 		_strainData = _.map(_strainData, d => {
 			return {
