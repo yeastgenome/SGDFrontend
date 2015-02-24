@@ -14,23 +14,23 @@ module.exports = class AlignmentShowModel extends BaseModel {
 		super(options);
 	}
 
-	// // cache from local storage, otherwise normal fetch
-	// fetch (callback) {
-	// 	var storageKey = this.url;
-	// 	var maybeCachedResponse = JSON.parse(localStorage.getItem(storageKey));
+	// cache from local storage, otherwise normal fetch
+	fetch (callback) {
+		var storageKey = this.url;
+		var maybeCachedResponse = JSON.parse(localStorage.getItem(storageKey));
 
-	// 	// cached data available, use
-	// 	if (maybeCachedResponse) {
-	// 		this.attributes = maybeCachedResponse;
-	// 		callback(null, maybeCachedResponse);
-	// 	// not in cache, fetch and set for next time
-	// 	} else {
-	// 		super( (err, resp) => {
-	// 			callback(err, resp);
-	// 			localStorage.setItem(storageKey, JSON.stringify(resp));
-	// 		});
-	// 	}
-	// }
+		// cached data available, use
+		if (maybeCachedResponse) {
+			this.attributes = maybeCachedResponse;
+			callback(null, maybeCachedResponse);
+		// not in cache, fetch and set for next time
+		} else {
+			super( (err, resp) => {
+				callback(err, resp);
+				localStorage.setItem(storageKey, JSON.stringify(resp));
+			});
+		}
+	}
 
 	parse (response) {
 		response.aligned_protein_sequences = this._sortSequencesByStrain(response.aligned_protein_sequences);
