@@ -14,22 +14,22 @@ module.exports = class AlignmentIndexModel extends BaseModel {
 	}
 
 	// cache from local storage, otherwise normal fetch
-	// fetch (callback) {
-	// 	var storageKey = "/backend/alignments";
-	// 	var maybeCachedResponse = JSON.parse(localStorage.getItem(storageKey));
+	fetch (callback) {
+		var storageKey = "/backend/alignments";
+		var maybeCachedResponse = JSON.parse(localStorage.getItem(storageKey));
 
-	// 	// cached data available, use
-	// 	if (maybeCachedResponse) {
-	// 		this.attributes = maybeCachedResponse;
-	// 		callback(null, maybeCachedResponse);
-	// 	// not in cache, fetch and set for next time
-	// 	} else {
-	// 		super( (err, resp) => {
-	// 			callback(err, resp);
-	// 			localStorage.setItem(storageKey, JSON.stringify(resp));
-	// 		})
-	// 	}
-	// }
+		// cached data available, use
+		if (maybeCachedResponse) {
+			this.attributes = maybeCachedResponse;
+			callback(null, maybeCachedResponse);
+		// not in cache, fetch and set for next time
+		} else {
+			super( (err, resp) => {
+				callback(err, resp);
+				localStorage.setItem(storageKey, JSON.stringify(resp));
+			})
+		}
+	}
 
 	// TEMP add extra data
 	parse (response) {
