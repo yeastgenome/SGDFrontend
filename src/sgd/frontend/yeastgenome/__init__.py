@@ -357,7 +357,7 @@ class YeastgenomeFrontend(FrontendInterface):
             'query': {
                 'bool': {
                     'must': [
-                        { 'match': { 'term': query } },
+                        { 'match': { 'term.raw': query } },
                         { 'match': { 'type': 'gene_name' } }
                     ]
                 }
@@ -388,7 +388,8 @@ class YeastgenomeFrontend(FrontendInterface):
                     'must_not': { 'match': { 'type': 'paper' }},
                     'should': { 'match': { 'type': 'gene_name' }}
                 }
-            }
+            },
+            'sort': 'term.raw'
         }
         res = es.search(index='sgdlite', body=search_body)
         simplified_results = map(lambda x: x['_source']['term'], res['hits']['hits'])
