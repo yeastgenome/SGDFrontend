@@ -4,9 +4,9 @@ Feature: SEARCH
     Scenario: go to LSP for an ORF name
         When I visit "/locus/?/overview" for "ACT1"
         And I wait 2 seconds
-	And I search "YJR065C"        
-	And I wait 2 seconds
-	And I should be at "http://localhost:6545/locus/S000003826/overview"
+    	And I search "YJR065C"        
+    	And I wait 2 seconds
+    	And I should be at "http://localhost:6545/locus/S000003826/overview"
 
     Scenario: go to LSP for a primary SGDID
         When I visit "/locus/?/overview" for "ACT1"
@@ -62,7 +62,7 @@ Feature: SEARCH
         And I wait 2 seconds
         And I search "tY(GUA)F1"
         And I wait 2 seconds
-        And I should be at "http://localhost:6545/locus/S000006778/overview"
+        And I should be at "http://localhost:6545/locus/S000006779/overview"
     
     
     Scenario: go to "old" lucene search for a keyword search (eg, kinase) 

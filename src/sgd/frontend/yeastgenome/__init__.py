@@ -351,15 +351,16 @@ class YeastgenomeFrontend(FrontendInterface):
 
     # elasticsearch endpoint
     def search(self, params):
-        # try elastic search, if 1 gene_name response, redirect there
-        query = params['query'].upper()
+        # try elastic search, if 1 response, redirect there
+        query = params['query']
         obj = {
             'query': {
-                'bool': {
-                    'must': [
-                        { 'match': { 'term.raw': query } },
-                        { 'match': { 'type': 'gene_name' } }
-                    ]
+                'filtered': {
+                    'filter': {
+                        'term': {
+                            'term.raw': query
+                        }
+                    }
                 }
             }
         }
