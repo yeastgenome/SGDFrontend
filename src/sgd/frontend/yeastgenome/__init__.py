@@ -352,7 +352,7 @@ class YeastgenomeFrontend(FrontendInterface):
     # elasticsearch endpoint
     def search(self, params):
         # try elastic search, if 1 gene_name response, redirect there
-        query = params['query']
+        query = params['query'].upper()
         obj = {
             'query': {
                 'bool': {
@@ -388,8 +388,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     'must_not': { 'match': { 'type': 'paper' }},
                     'should': { 'match': { 'type': 'gene_name' }}
                 }
-            },
-            'sort': 'term.raw'
+            }
         }
         res = es.search(index='sgdlite', body=search_body)
         simplified_results = map(lambda x: x['_source']['term'], res['hits']['hits'])
