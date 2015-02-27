@@ -358,8 +358,20 @@ class YeastgenomeFrontend(FrontendInterface):
             'query': {
                 'filtered': {
                     'filter': {
-                        'term': {
-                            'term.raw': query
+                        'bool': {
+                            'must': [
+                                {
+                                    'term': {
+                                        'term.raw': query
+                                    }
+                                },
+                                {
+                                    'terms': {
+                                        'type': ['gene_name', 'paper', 'GO']
+                                    }
+                                }
+                                
+                            ]
                         }
                     }
                 }
