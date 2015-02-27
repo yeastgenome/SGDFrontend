@@ -352,7 +352,9 @@ class YeastgenomeFrontend(FrontendInterface):
     # elasticsearch endpoint
     def search(self, params):
         # try elastic search, if 1 response, redirect there
-        query = params['query']
+        raw_query = params['query']
+        query = raw_query.lower()
+        print 'querying ' + query
         obj = {
             'query': {
                 'filtered': {
@@ -370,7 +372,7 @@ class YeastgenomeFrontend(FrontendInterface):
             return HTTPFound(url)
         # otherwise try existing
         else:
-            return HTTPFound("/cgi-bin/search/luceneQS.fpl?query=" + query)
+            return HTTPFound("/cgi-bin/search/luceneQS.fpl?query=" + raw_query)
 
     # elasticsearch autocomplete results
     def autocomplete_results(self, params):

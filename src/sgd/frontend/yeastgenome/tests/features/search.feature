@@ -8,6 +8,13 @@ Feature: SEARCH
     	And I wait 2 seconds
     	And I should be at "http://localhost:6545/locus/S000003826/overview"
 
+    Scenario: go to LSP for an ORF name with lowercase letters
+        When I visit "/locus/?/overview" for "ACT1"
+        And I wait 2 seconds
+        And I search "yjr065C"
+        And I wait 2 seconds
+        And I should be at "http://localhost:6545/locus/S000003826/overview"
+
     Scenario: go to LSP for a primary SGDID
         When I visit "/locus/?/overview" for "ACT1"
         And I wait 2 seconds
