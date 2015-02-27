@@ -354,7 +354,6 @@ class YeastgenomeFrontend(FrontendInterface):
         # try elastic search, if 1 response, redirect there
         raw_query = params['query']
         query = raw_query.lower()
-        print 'querying ' + query
         obj = {
             'query': {
                 'filtered': {
