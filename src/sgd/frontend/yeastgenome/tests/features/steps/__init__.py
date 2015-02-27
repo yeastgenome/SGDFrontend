@@ -1,6 +1,7 @@
 __author__ = 'kpaskov'
 
 import re
+from urlparse import urlparse
 from behave import step
 from selenium.common.exceptions import NoSuchElementException
 
@@ -141,7 +142,12 @@ def type_text(context, query,):
 @step('I should be at {desired_url}')
 def test_url(context, desired_url):
     desired_url = desired_url.strip('"')
-    current_url = context.browser.current_url
+    absolute_url = context.browser.current_url
+    url_obj = urlparse(absolute_url)
+    query = url_obj.query
+    if (query != ''):
+        query = '?' + query
+    current_url = url_obj.path + query
     if current_url == desired_url:
         pass
     else:

@@ -371,7 +371,7 @@ class YeastgenomeFrontend(FrontendInterface):
             return HTTPFound(url)
         # otherwise try existing
         else:
-            return HTTPFound("/cgi-bin/search/luceneQS.fpl?query=" + raw_query)
+            return HTTPFound("/cgi-bin/search/luceneQS.fpl?query=" + urllib.quote(raw_query))
 
     # elasticsearch autocomplete results
     def autocomplete_results(self, params):
