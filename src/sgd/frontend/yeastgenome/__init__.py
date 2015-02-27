@@ -367,7 +367,7 @@ class YeastgenomeFrontend(FrontendInterface):
                                 },
                                 {
                                     'terms': {
-                                        'type': ['gene_name', 'paper', 'GO']
+                                        'type': ['gene_name', 'paper', 'go']
                                     }
                                 }
                                 
