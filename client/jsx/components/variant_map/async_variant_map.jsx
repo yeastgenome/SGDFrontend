@@ -51,7 +51,7 @@ module.exports = React.createClass({
 
 		return (<div>
 			<p><i className="fa fa-exclamation" /> This is a development version of this tool.  Data are NOT accurate.</p>
-			<h1>Variant Map</h1>
+			<h1>Variant Viewer</h1>
 			<hr />
 						
 			<div className="row">

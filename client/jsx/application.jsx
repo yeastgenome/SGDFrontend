@@ -13,7 +13,7 @@ var views = {
 	snapshot: require("./views/snapshot_view.jsx"),
 	suggestion: require("./views/suggestion_view.jsx"),
 	summary: require("./views/summary_view.jsx"),
-	variantMap: require("./views/variant_map_view.jsx")
+	variantViewer: require("./views/variant_viewer_view.jsx")
 };
 
 // call setup script
