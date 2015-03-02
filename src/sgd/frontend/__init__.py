@@ -248,10 +248,10 @@ def prep_views(chosen_frontend, config):
     config.add_route('send_email', '/send_data')
     config.add_view(send_message, route_name='send_email')   
 
-    config.add_route('variant_map', '/variant-map')
-    config.add_view(lambda request: {'variant_map': render('static/templates/variant_map.jinja2', {})},
-                    renderer=chosen_frontend.get_renderer('variant_map'),
-                    route_name='variant_map')
+    config.add_route('variant_viewer', '/variant-viewer')
+    config.add_view(lambda request: {'variant_viewer': render('static/templates/variant_viewer.jinja2', {})},
+                    renderer=chosen_frontend.get_renderer('variant_viewer'),
+                    route_name='variant_viewer')
     
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':
