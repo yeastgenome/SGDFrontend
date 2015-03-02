@@ -411,9 +411,6 @@ class YeastgenomeFrontend(FrontendInterface):
         }
         return Response(body=json.dumps(simplified_results), content_type='application/json')
 
-    def loader_test(self):
-        return Response(body="loaderio-86e9671d13920871a1e251a44706982d")
-
     def backend(self, url_repr):
         if self.backend_url == 'backendless':
             return json.dumps(get_data(url_repr))
