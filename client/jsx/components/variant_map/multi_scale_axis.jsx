@@ -28,7 +28,7 @@ module.exports = React.createClass({
 		var segmentNodes= _.map(this.props.segments, (s, i) => {
 			var _y = HEIGHT - 1;
 			return (<line key={"segmentLine" + i}
-				x1={scale(s.domain[0]) - PX_PER_CHAR / 2}
+				x1={scale(s.domain[0])}
 				x2={scale(s.domain[1])}
 				y1={_y}
 				y2={_y}
@@ -53,7 +53,7 @@ module.exports = React.createClass({
 		}, [1]);
 		
 		var tickNodes = _.map(tickData, (t, i) => {
-			var _transform = `translate(${scale(t - 0.5)}, ${HEIGHT - TICK_HEIGHT - 1})`;
+			var _transform = `translate(${scale(t + 0.5)}, ${HEIGHT - TICK_HEIGHT - 1})`;
 			var _textTransform = `translate(5, 0) rotate(-90)`;
 			return (<g key={"tick" + i} transform={_transform}>
 				<text textAnchor="left" transform={_textTransform}>{t}</text>

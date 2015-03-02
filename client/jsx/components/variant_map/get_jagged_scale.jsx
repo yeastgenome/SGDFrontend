@@ -24,7 +24,7 @@ module.exports = function (segments) {
 		var _last = memo[memo.length - 1];
 		// add fixed px for invible, else calc based on sequence
 		var scaleSize = ((s.domain[1] - s.domain[0]) * PX_PER_CHAR);
-		var _delta = !s.visible ? Math.min(SUMMARIZED_SIZE, scaleSize): scaleSize;
+		var _delta = !s.visible ? Math.min(SUMMARIZED_SIZE, scaleSize): scaleSize + PX_PER_CHAR;
 		memo.push(_last += _delta);
 		return memo;
 	}, [LABEL_WIDTH]);
