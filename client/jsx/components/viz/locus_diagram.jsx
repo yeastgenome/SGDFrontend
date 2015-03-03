@@ -605,7 +605,7 @@ module.exports = React.createClass({
 			var tipNode;
 			var _tipStyle = { fontFamily: "FontAwesome", textAnchor: "middle", fontSize: 16 };
 			if (d.variant_type === "Insertion") {
-				tipNode = <text style={_tipStyle}>&#xf150;</text>;
+				tipNode = <text style={_tipStyle}>&#xf077;</text>;
 			} else if (d.variant_type === "Deletion") {
 				tipNode = <text style={_tipStyle}>&#xf057;</text>;
 			} else {

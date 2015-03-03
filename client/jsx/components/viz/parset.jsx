@@ -14,7 +14,9 @@ module.exports = React.createClass({
 		isVisible: React.PropTypes.bool,
 		x1Coordinates: React.PropTypes.array,
 		x2Coordinates: React.PropTypes.array,
-		text: React.PropTypes.string
+		text: React.PropTypes.string,
+		contigHref: React.PropTypes.string,
+		contigDisplayName: React.PropTypes.string
 	},
 
 	getDefaultProps: function () {
@@ -51,7 +53,11 @@ module.exports = React.createClass({
 
 		var _x1C = this.props.x1Coordinates;
 		var _left = (_x1C[0] + _x1C[1]) / 2;
-		return <h3 style={{ position: "absolute", left: _left - 150, top: LINE_HEIGHT * 2 }}>{this.props.text}</h3>;
+		var anchorNode = null;
+		if (this.props.contigDisplayName && this.props.contigHref) {
+			anchorNode = <a href={this.props.contigHref}>{this.props.contigDisplayName}</a>;
+		}
+		return <h3 style={{ position: "absolute", left: _left - 150, top: LINE_HEIGHT * 2 }}>S288C Coordinates: {anchorNode} {this.props.text}</h3>;
 	},
 
 	_getX1LineNode: function () {

@@ -178,13 +178,16 @@ module.exports = React.createClass({
 			.map( d => {
 				return this.state.x2Scale(d);
 			});
-		var text = `S288C Coordinates ${_refCoord[0] - 1}..${_refCoord[1] - 1}`;
+		var contigData = this.state.alignmentModel.getLocusDiagramData().contigData;
+		var text = `${_refCoord[0] - 1}..${_refCoord[1] - 1}`;
 
 		return (<Parset 
 			isVisible={this.state.parsetVisible}
 			x1Coordinates={parsetX1Coord}
 			x2Coordinates={parsetX2Coord}
 			text={text}
+			contigDisplayName={contigData.display_name}
+			contigHref={contigData.link}
 		/>);
 	},
 
