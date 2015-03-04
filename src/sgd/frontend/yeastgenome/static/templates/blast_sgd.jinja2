@@ -1,0 +1,20 @@
+{% extends "lite_layout.jinja2" %}
+
+{% block title %}S. cerevisiae WU-BLAST2 Search{% endblock %}
+
+{% block body %}
+
+<div class="row">
+	<div id="j-main" class="small-12 columns content-column sgd-viz">
+		<img class="loader" src="/static/img/dark-slow-wheel.gif" />
+	</div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/application.js{{version_qs}}"></script>
+<script>
+	views.blast_sgd.render();
+</script>
+{% endblock scripts %}
