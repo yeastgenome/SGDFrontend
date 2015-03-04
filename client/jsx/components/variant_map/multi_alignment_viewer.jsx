@@ -155,25 +155,10 @@ module.exports = React.createClass({
 		});
 	},
 
-	_getSummarizedSegmentNode: function (startCoordinate, endCoordinate, key) {
-		return null;
-		var xScale = this._getXScale();
-		var yScale = this._getYScale();
-
-		var _yTranslate = (yScale.rangeExtent()[1] - yScale.rangeExtent()[0]) / 2;
-		var _transform = `translate(0, ${_yTranslate})`;
-		return (<g className="summarized-segment" key={key} transform={_transform}>
-			<line stroke="black" strokeDasharray="3px 3px" x1={xScale(startCoordinate)} x2={xScale(endCoordinate)} y1="0" y2="0" style={{ shapeRendering: "crispEdges" }}/>
-			<line stroke="black" strokeDasharray="3px 3px" x1={xScale(startCoordinate)} x2={xScale(endCoordinate)} y1="15" y2="15" style={{ shapeRendering: "crispEdges" }}/>
-		</g>);
-	},
-
 	_getVisibleSegmentNodes: function () {
 		return _.reduce(this.props.segments, (memo, seg, i) => {
 			if (seg.visible) {
 				memo = memo.concat(this._getVisibleSequenceNodes(seg, i));
-			} else {
-				memo.push(this._getSummarizedSegmentNode(seg.domain[0], seg.domain[1], "summarizedSequence" + i));
 			}
 			return memo;
 		}, []);
