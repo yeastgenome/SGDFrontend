@@ -13,7 +13,7 @@ $(document).ready(function() {
 
   	$.getJSON('/backend/locus/' + locus['id'] + '/literature_graph?callback=?', function(data) {
   		if(data['nodes'].length > 1) {
-  			var graph = create_cytoscape_vis("cy", layout, graph_style, data);
+  			var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "literature");
             create_cy_download_button(graph, "cy_download", locus['display_name'] + '_literature_graph')
   		}
 		else {
