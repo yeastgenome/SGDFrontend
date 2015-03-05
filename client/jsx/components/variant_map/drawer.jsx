@@ -118,11 +118,10 @@ module.exports = React.createClass({
 		var _refDomain = model.getReferenceCoordinatesFromAlignedCoordinates(start, end, this.props.isProteinMode);
 		var x1Start = _refDomain.start;
 		var x1End = _refDomain.end;
-		var _factor = this.props.isProteinMode ? 3 : 1;
 		
 		this.setState({
 			highlightedAlignedSegment: [start, end],
-			highlightedSegment: [x1Start * _factor, x1End * _factor],
+			highlightedSegment: [x1Start, x1End],
 			parsetVisible: true
 		});
 	},
@@ -142,11 +141,18 @@ module.exports = React.createClass({
 			this.setState({ x1Scale: scale });
 		};
 		var _onVariantMouseOver = (start, end) => {
+			var _highlightDomain;
 			if (model.attributes.strand === "+") {
-				this._highlightSegment(start - _start, end - _start);
+				_highlightDomain = [start - _start, end - _start];
 			} else {
-				this._highlightSegment(_end - end, _end - start);
+				_highlightDomain = [_end - end, _end - start];
 			}
+			if (this.props.isProteinMode) {
+				_highlightDomain = _.map(_highlightDomain, d => {
+					return d / 3;
+				});
+			}
+			this._highlightSegment(_highlightDomain[0], _highlightDomain[1]);
 		};
 
 		var _refCoord = this._getRefHighlightedCoordinates(true);
