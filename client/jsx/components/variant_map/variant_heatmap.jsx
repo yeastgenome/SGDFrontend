@@ -225,7 +225,7 @@ module.exports = React.createClass({
 			top={top} left={left}
 			visible={true} orientation="top"
 			title={title} href={locus.href}
-			data={_data}
+			data={_data} truncateText={true}
 		/>);
 	},
 

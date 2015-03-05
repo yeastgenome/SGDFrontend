@@ -5,6 +5,17 @@ var React = require("react");
 var _ = require("underscore");
 
 module.exports = React.createClass({
+	propTypes: {
+		visible: React.PropTypes.bool,
+		text: React.PropTypes.string,
+		left: React.PropTypes.number,
+		top: React.PropTypes.number,
+		title: React.PropTypes.string,
+		data: React.PropTypes.object,
+		href: React.PropTypes.string,
+		truncateText: React.PropTypes.bool
+	},
+
 	getDefaultProps: function () {
 		return {
 			visible: false,
@@ -13,7 +24,8 @@ module.exports = React.createClass({
 			top: 0,
 			title: null,
 			data: null,
-			href: null
+			href: null,
+			truncateText: false
 		};
 	},
 
@@ -30,7 +42,7 @@ module.exports = React.createClass({
 			marginTop: _isComplex ? 30 : -60,
 			minHeight: _isComplex ? 100 : 35,
 			padding: _isComplex ? "1em" : 0,
-			width: _isComplex ? _complexWidth: "auto"
+			width: _isComplex ? _complexWidth: "auto",
 		};
 
 		var innerContentNode = this._getInnerContentNode();
@@ -70,7 +82,15 @@ module.exports = React.createClass({
 			var _keys = _.keys(this.props.data);
 			var _innerNodes = _.reduce(_keys, (memo, k) => {
 				memo.push(<dt>{k}</dt>);
-				memo.push(<dd>{this.props.data[k]}</dd>);
+				var _detailStyle = {}
+				if (this.props.truncateText) {
+					_detailStyle = {
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+						whiteSpace: "nowrap"
+					}
+				}
+				memo.push(<dd style={_detailStyle}>{this.props.data[k]}</dd>);
 				return memo;
 			}, []);
 			dataNode = <dl className="key-value">{_innerNodes}</dl>;
