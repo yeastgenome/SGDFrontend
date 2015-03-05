@@ -147,7 +147,7 @@ module.exports = React.createClass({
 		var yScale = this._getYScale();
 		return _.map(this.props.sequences, (seq, _i) => {
 			var _seqText = seq.sequence.slice(seg.domain[0] - 1, seg.domain[1] - 1)
-			var _transform = `translate(${xScale(seg.domain[0])}, ${yScale(seq.name)})`;
+			var _transform = `translate(${xScale(seg.domain[0] - 1)}, ${yScale(seq.name)})`;
 			var _onMouseOver = e => {
 				this._onSegmentMouseOver(e, seg, i, seq.name);
 			};

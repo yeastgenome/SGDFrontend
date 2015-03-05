@@ -168,8 +168,8 @@ module.exports = class AlignmentShowModel extends BaseModel {
 			if (d.visible && i < _visibleSegments.length - 1) {
 				mergedSegments.push({
 					visible: false,
-					start: d.end + 1,
-					end: _visibleSegments[i + 1].start - 1
+					start: d.end,
+					end: _visibleSegments[i + 1].start
 				});
 			}
 		});

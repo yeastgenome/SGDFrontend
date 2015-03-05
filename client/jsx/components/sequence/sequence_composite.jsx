@@ -112,6 +112,7 @@ module.exports = React.createClass({
 		if (this._canRenderNeighbors()) {
 			var attr = this._getActiveStrainNeighborsData();
 			if (!attr) return null;
+			console.log(attr.data)
 			var geneticPositionNode = this.props.geneticPosition ? <dl className="key-value"><dt>Genetic Position</dt><dd id="genetic_position">{this.props.geneticPosition}</dd></dl> : null;
 			node = (<div className="panel sgd-viz">
 				<h3>
