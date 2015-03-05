@@ -40,7 +40,8 @@ module.exports = React.createClass({
 			highlightedRelativeCoordinates: null,
 			ignoreMouseover: false,
 			focusLocusDisplayName: null,
-			relativeCoordinateAxes: false,
+			relativeCoordinateAxis: false,
+			proteinCoordinateAxis: false,
 			showSubFeatures: false,
 			showVariants: false,
 			variantData: [], // [{ coordinateDomain: [20045, 20046] }, ...]
@@ -72,7 +73,7 @@ module.exports = React.createClass({
 		var controlsNode = this._getControlsNode();
 
 		var _ticks = (this.state.DOMWidth > 400) ? null : 3;
-		var _domain = this.props.relativeCoordinateAxes ? this._getRelativeCoordDomain() : this._getScale().domain();
+		var _domain = this.props.relativeCoordinateAxis ? this._getRelativeCoordDomain() : this._getScale().domain();
 		var axisNode = (<StandaloneAxis 
 			domain={_domain} orientation="bottom"
 			gridTicks={true} ticks={_ticks}
@@ -632,9 +633,12 @@ module.exports = React.createClass({
 
 	_getRelativeCoordDomain: function () {
 		var locus = this._getFocusLocus();
-		var delta = locus.end - locus.start;
-		var leftOffset = this.props.domainBounds[0] - locus.start ;
+		var leftOffset = this.props.domainBounds[0] - locus.start;
 		var rightOffset = this.props.domainBounds[1] - locus.start;
+		if (this.props.proteinCoordinateAxis) {
+			leftOffset = leftOffset / 3;
+			rightOffset = rightOffset / 3;
+		}
 		return (locus.track > 0) ? [leftOffset, rightOffset] : [rightOffset, leftOffset];
 	}
 });

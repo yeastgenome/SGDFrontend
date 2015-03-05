@@ -164,7 +164,8 @@ module.exports = React.createClass({
 				showVariants={true} watsonTracks={watsonTracks}
 				ignoreMouseover={true} highlightedRelativeCoordinates={_refCoord}
 				onSetScale={_onSetX1Scale} onVariantMouseOver={_onVariantMouseOver}
-				relativeCoordinateAxes={true} hasControls={false}
+				relativeCoordinateAxis={true} proteinCoordinateAxis={this.props.isProteinMode}
+				hasControls={false}
 			/>
 			{parsetNode}
 			{sequenceNode}
