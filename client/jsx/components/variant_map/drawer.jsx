@@ -240,7 +240,10 @@ module.exports = React.createClass({
 				/>
 			</div>);
 		} else {
-			node = <p className="text-center" style={{ marginTop: "1rem" }}><a className="button secondary small" onClick={this._showSequence}>Show Sequence</a></p>;
+			var _canShowSequence = this.state.alignmentModel.canShowSequence(this.props.isProteinMode);
+			var _onClick = _canShowSequence ? this._showSequence : null;
+			var _klass = _canShowSequence ? "button secondary small" : "button secondary small disabled";
+			node = <p className="text-center" style={{ marginTop: "1rem" }}><a className={_klass} onClick={_onClick}>Show Sequence</a></p>;
 		}
 		return node;
 	},
