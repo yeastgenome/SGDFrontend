@@ -158,7 +158,7 @@ module.exports = class AlignmentShowModel extends BaseModel {
 			mergedSegments.push({
 				visible: false,
 				start: 1,
-				end: mergedSegments[0].start - 1
+				end: mergedSegments[0].start
 			});
 		}
 		// loop through and connect visible segments with summarized segments

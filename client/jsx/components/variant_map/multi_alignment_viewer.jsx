@@ -84,8 +84,8 @@ module.exports = React.createClass({
 
 	_onSegmentMouseOver: function (e, d, i, sequenceName) {
 		if (this.props.onHighlightSegment) {
-			var _start = d.domain[0];
-			var _end = d.domain[1];
+			var _start = d.domain[0] - 1;
+			var _end = d.domain[1] - 1;
 			this.props.onHighlightSegment(_start, _end);
 		}
 		this.setState({ activeSequenceName: sequenceName });
