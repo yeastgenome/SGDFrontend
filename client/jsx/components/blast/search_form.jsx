@@ -86,7 +86,7 @@ module.exports = React.createClass({
 			var graph = this._getGraphNode();
 			return (<div>
                                <div className="row">
-                                    {graph}
+				    {graph}
 			       </div>	  	    
 			       <div dangerouslySetInnerHTML={{ __html: descText}} />
 			       <div dangerouslySetInnerHTML={{ __html: this.state.resultData.result}} />
@@ -171,8 +171,10 @@ module.exports = React.createClass({
 
                 var _maxY = data[0].query_length; 
 		var _left = 50;
+		var _size = data.length;
                 var barNode = (<blastBarChart 
-		                data={data} 
+		                data={data}
+				size={_size} 
                                 maxY={_maxY}
 				left={_left}
                                 yValue={ function (d) { return d.value; }}
@@ -185,7 +187,7 @@ module.exports = React.createClass({
                                 hasNoZeroWidth={true}
 				legendColor={legendColor}
                 />);
-
+             
                 return barNode;
 	
 	},
