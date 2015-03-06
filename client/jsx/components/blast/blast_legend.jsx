@@ -25,7 +25,7 @@ module.exports = React.createClass({
 			}
 			return (<div className="legend-entry-container" key={`legend${i}`} style={{ display: "inline-block" }}>
 			                {expLabel}
-                                        <div className="legend-color" style={{ background: entry.color }}></div>
+                                        <div className="legend-color" style={{ opacity: 0.5, background: entry.color }}></div>
                                         {entry.text}
                         </div>);
 		});

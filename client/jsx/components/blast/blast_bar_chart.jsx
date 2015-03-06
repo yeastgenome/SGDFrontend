@@ -10,13 +10,8 @@ var FlexibleTooltip = require("../widgets/flexible_tooltip.jsx");
 var StandaloneAxis = require("./standalone_axis.jsx");
 var Legend = require("./blast_legend.jsx");
 
-var AXIS_LABELING_HEIGHT = 24;
 var HEIGHT = 12;
 var POINT_WIDTH = 10;
-var TRACK_SPACING = 0;
-var MIN_BP_WIDTH = 200; // show at least 200 BP
-var MOUSE_CAPTURE_TIME = 500; // millis until scrollwhell events are captured
-
 
 module.exports = React.createClass({
 	mixins: [CalcWidthOnResize],
@@ -169,7 +164,7 @@ module.exports = React.createClass({
 	
 		var pathString = this._getTrapezoidStringPath(startX, endX, d.strand);
 
-		var _opacity = 1;
+		var _opacity = 0.5;
 		
 		// interaction handlers
 		var _onMouseover = (e) => {
@@ -215,7 +210,8 @@ module.exports = React.createClass({
 
 	_getMidpointY: function () {
 		// return (this.props.watsonTracks) * (HEIGHT + TRACK_SPACING) + TRACK_SPACING;
-		return (this.props.watsonTracks) * HEIGHT;
+		// return (this.props.watsonTracks) * HEIGHT;
+		return '';
 	},
 
 	// from relative start, relative end, and bool isWatson, return the string to draw a trapezoid
@@ -229,7 +225,8 @@ module.exports = React.createClass({
 				{ x: relativeEndX - pointWidth, y: 0 },
 				{ x: relativeEndX, y: HEIGHT / 2 },
 				{ x: relativeEndX - pointWidth, y: HEIGHT },
-				{ x: relativeStartX, y: HEIGHT }
+				{ x: relativeStartX, y: HEIGHT },
+				{ x: relativeStartX, y: 0 }
 			];
 		} else {
 			points = [
@@ -237,7 +234,8 @@ module.exports = React.createClass({
 				{ x: relativeEndX, y: 0},
 				{ x: relativeEndX, y: HEIGHT },
 				{ x: relativeStartX + pointWidth, y: HEIGHT },
-				{ x: relativeStartX, y: HEIGHT / 2 }
+				{ x: relativeStartX, y: HEIGHT / 2 },
+				{ x: relativeStartX + pointWidth, y: 0}
 			];
 		}
 
@@ -272,11 +270,13 @@ module.exports = React.createClass({
                 // get the position
                 var target = e.currentTarget;
                 var _width = target.getBBox().width;
-                var _transformObj = this._getTransformObject(d);
-                var _tooltipLeft = Math.min(this.state.DOMWidth, (d.x || _transformObj.x) + _width / 2);
+                // var _transformObj = this._getTransformObject(d);
+                // var _tooltipLeft = Math.min(this.state.DOMWidth, (d.x || _transformObj.x) + _width / 2);
+		var _tooltipLeft = Math.min(this.state.DOMWidth, d.x + _width/2);
                 _tooltipLeft = Math.max(5, _tooltipLeft);
-                var _tooltipTop = _transformObj.y + HEIGHT / 3;
-      
+                // var _tooltipTop = _transformObj.y + HEIGHT / 3;
+      		var _tooltipTop = HEIGHT/3;
+
                 if (this.props.onMouseOver) {
                         this.props.onMouseOver(d);
                 }
