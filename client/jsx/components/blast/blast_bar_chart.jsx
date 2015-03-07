@@ -73,15 +73,19 @@ module.exports = React.createClass({
                 />;
                 
                 var tooltipNode = props.hasTooltip ? (<FlexibleTooltip visible={state.tooltipVisible}
-                                left={state.tooltipLeft} top={state.tooltipTop} text={state.tooltipText} href={state.tooltipHref}
+                                left={state.tooltipLeft} top={state.tooltipTop} text={state.tooltipText}
                         />) : null;
 		
 		var _onMouseOver = (e) => { this._handleMouseOver(e, d); };
 
 		var allBars = [];
 		var preBars = [];
+		var h = 0;
 		_.map(data, d => { 
-		       var bar = this._getBarNode(d);
+		       if (!d.same_row) {
+		       	  h += 2*HEIGHT;
+		       }
+		       var bar = this._getBarNode(d, h);
 		       if (d.same_row) {
 			     preBars.push(bar);
 		       }
@@ -107,6 +111,7 @@ module.exports = React.createClass({
 			<div className="locus-diagram" onMouseLeave={this._clearMouseOver} onClick={this._clearMouseOver}>
 			     	{axisNode}
 				<div className="locus-diagram-viz-container" style={{ position: "relative" }}>
+				        {tooltipNode}
 					{allBars}
 					<div className="bar-nodes-container clearfix" style={{ position: "relative", height: HEIGHT*3 }}>
                                  	     {legendBar}
@@ -152,7 +157,7 @@ module.exports = React.createClass({
 		return data;
 	},
 
-	_getBarNode: function (d) {
+	_getBarNode: function (d, h) {
 		// var startX = this._getScale(d.start) + this.props.left;
 		// var endX = this._getScale(d.end) + this.props.left;
 
@@ -168,14 +173,14 @@ module.exports = React.createClass({
 		
 		// interaction handlers
 		var _onMouseover = (e) => {
-			this._handleMouseOver(e, d);
+			this._handleMouseOver(e, d, h);
 		};
 		var _onClick = (e) => {
 			this._handleClick(e, d);
 		}
 
 		var _color = this.props.colorScale(this.props.colorValue(d));
-
+		
 		var shapeNode;
 		// large enough for trapezoid
 		if ((endX - startX) > POINT_WIDTH) {
@@ -266,16 +271,10 @@ module.exports = React.createClass({
 		});
 	},
 
-	_handleMouseOver: function (e, d) {
+	_handleMouseOver: function (e, d, h) {
                 // get the position
-                var target = e.currentTarget;
-                var _width = target.getBBox().width;
-                // var _transformObj = this._getTransformObject(d);
-                // var _tooltipLeft = Math.min(this.state.DOMWidth, (d.x || _transformObj.x) + _width / 2);
-		var _tooltipLeft = Math.min(this.state.DOMWidth, d.x + _width/2);
-                _tooltipLeft = Math.max(5, _tooltipLeft);
-                // var _tooltipTop = _transformObj.y + HEIGHT / 3;
-      		var _tooltipTop = HEIGHT/3;
+		var _tooltipLeft = this._getScale(d.start) + this.props.left + 10;
+      		var _tooltipTop = h;
 
                 if (this.props.onMouseOver) {
                         this.props.onMouseOver(d);
