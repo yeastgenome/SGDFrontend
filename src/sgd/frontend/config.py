@@ -7,5 +7,5 @@ backend_url = 'http://sgd-qa.stanford.edu/webservice'
 secret_key = 'secret key here'
 sender = 'email address here'
 author_response_file = 'file with full path here'
-elasticsearch_address = 'http://localhost:9200'
+elasticsearch_address = 'url here'
 log_directory = None

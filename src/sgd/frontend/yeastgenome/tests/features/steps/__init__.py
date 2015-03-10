@@ -1,5 +1,7 @@
 __author__ = 'kpaskov'
 
+import re
+from urlparse import urlparse
 from behave import step
 from selenium.common.exceptions import NoSuchElementException
 
@@ -21,6 +23,14 @@ def should_see_element_with_id(context, element_id):
         context.browser.find_element_by_id(element_id)
     except NoSuchElementException:
         assert 0, 'No element with id ' + element_id
+
+@step('I should not see an element with id "{element_id}"')
+def should_see_element_with_id(context, element_id):
+    try:
+        context.browser.find_element_by_id(element_id)
+        assert 0, 'Element with id ' + element_id + ' is present.'
+    except NoSuchElementException:
+        pass
 
 @step('I should see an element with class_name "{element_class}"')
 def should_see_element_with_class_name(context, element_class):
@@ -109,3 +119,36 @@ def should_not_see_a_loader(context):
         assert 0, 'Loader is still visible.'
     except NoSuchElementException:
         pass
+
+@step('I should see the text "{text}"')
+def should_see_text(context, text):
+    src = context.browser.page_source
+    text_found = re.search(text, src)
+    if text_found:
+        pass
+    else:
+        assert 0, 'Text not present.'
+
+@step('I search {query}')
+def type_text(context, query,):
+    search_container = context.browser.find_element_by_id('searchform')
+    input_el = search_container.find_element_by_id('txt_search_container').find_element_by_id('txt_search')
+    search_button = search_container.find_element_by_id('search-submit-btn')
+    input_el.click()
+    input_el.send_keys(query.strip('"'))
+    search_button.click()
+    pass
+
+@step('I should be at {desired_url}')
+def test_url(context, desired_url):
+    desired_url = desired_url.strip('"')
+    absolute_url = context.browser.current_url
+    url_obj = urlparse(absolute_url)
+    query = url_obj.query
+    if (query != ''):
+        query = '?' + query
+    current_url = url_obj.path + query
+    if current_url == desired_url:
+        pass
+    else:
+        assert 0, "Current URL doesn't match desired URL."

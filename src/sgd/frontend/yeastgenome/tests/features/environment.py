@@ -33,7 +33,7 @@ def before_feature(context, feature):
                 command_executor=sauce_url % (USERNAME, ACCESS_KEY)
             )
         else:
-            context.browser = webdriver.Firefox()
+            context.browser = webdriver.Chrome()
 
         context.browser.implicitly_wait(5)
         context.base_url = BASE_URL

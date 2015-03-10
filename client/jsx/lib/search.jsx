@@ -8,9 +8,9 @@
 var $ = require("jquery");
 require("jquery-ui");
 
-var SUGGEST_URL='/cgi-bin/search/searchSuggest.fpl'; 
+var SUGGEST_URL='/autocomplete_results'; 
 
-var SEARCH_URL='/cgi-bin/search/instantSearch.fpl?query='; 
+var SEARCH_URL='/search?query='; 
         
 var fields = ['gene_name',
 	      'headline',
