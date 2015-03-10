@@ -274,7 +274,7 @@
                             {% for entry in locus.go_overview.manual_molecular_function_terms %}
                                 <li>
                                     {% if 'qualifiers' in entry %}
-                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes_with', 'contributes_to'] %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
                                             {{ qualifier }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     {% endif %}
@@ -314,7 +314,7 @@
                             {% for entry in locus.go_overview.manual_biological_process_terms %}
                                 <li>
                                     {% if 'qualifiers' in entry %}
-                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes_with', 'contributes_to'] %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
                                             {{ qualifier }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     {% endif %}
@@ -354,7 +354,7 @@
                             {% for entry in locus.go_overview.manual_cellular_component_terms %}
                                 <li>
                                     {% if 'qualifiers' in entry %}
-                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes_with', 'contributes_to'] %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
                                             {{ qualifier }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     {% endif %}
