@@ -20,7 +20,7 @@ module.exports = React.createClass({
 		locusName: React.PropTypes.string.isRequired,
 		locusHref: React.PropTypes.string.isRequired,
 		onExit: React.PropTypes.func.isRequired,
-		strainData: React.PropTypes.array.isRequired
+		strainIds: React.PropTypes.array.isRequired
 	},
 
 	getDefaultProps: function () {
@@ -219,15 +219,7 @@ module.exports = React.createClass({
 	_getSequenceNode: function () {
 		var node;
 		if (this.state.showSequence) {
-			var _baseArray = this.props.isProteinMode ? this.state.alignmentModel.attributes.aligned_protein_sequences : this.state.alignmentModel.attributes.aligned_dna_sequences;
-			var _sequences = _.map(_baseArray, d => {
-				return {
-					name: d.strain_display_name,
-					href: d.strain_link,
-					sequence: d.sequence
-				};
-			});
-
+			var _sequences = this.state.alignmentModel.formatSequences(this.props.isProteinMode, this.props.strainIds);
 			var _segments = this.state.alignmentModel.formatSegments(this.props.isProteinMode);
 			var _onSetX2Scale = scale => {
 				this.setState({ x2Scale: scale });

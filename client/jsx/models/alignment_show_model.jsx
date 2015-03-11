@@ -202,4 +202,21 @@ module.exports = class AlignmentShowModel extends BaseModel {
 
 		return mergedSegments;
 	}
+
+	formatSequences (isProtein, sequenceIds) {
+		// return all strains if sequenceIds undefined
+		var hasNoSequenceIds = sequenceIds === undefined;
+		var _baseArray = isProtein ? this.attributes.aligned_protein_sequences : this.attributes.aligned_dna_sequences;
+		_baseArray = _.filter(_baseArray, d => {
+			if (hasNoSequenceIds) return true;
+			return (sequenceIds.indexOf(d.strain_id) > -1);
+		});
+		return _.map(_baseArray, d => {
+			return {
+				name: d.strain_display_name,
+				href: d.strain_link,
+				sequence: d.sequence
+			};
+		});
+	}
 };
