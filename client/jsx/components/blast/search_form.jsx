@@ -78,6 +78,11 @@ module.exports = React.createClass({
 	_getFormNode: function () {
 		if (this.state.isComplete) {
 
+		        if (this.state.resultData.hits == '') {
+			     return (<div dangerouslySetInnerHTML={{ __html: this.state.resultData.result}} />);
+			     // return (<div><p>{this.state.resultData.result}</p></div>);
+			}
+
 		        var descText = "<hr><p>Query performed by the Saccharomyces Genome Database; for full BLAST options and parameters, refer to the NCBI BLAST Documentation Links to GenBank, EMBL, PIR, SwissProt, and SGD are shown in bold type; links to locations within this document are in normal type. Your comments and suggestions are requested: <a href='/suggestion'>Send a Message to SGD</a></p><hr>"; 
 			if (this.state.filter) {
 			       descText = descText + '<p><b>***Please Note Sequence Filtering is ON.***</b>Sequence filtering will mask out regions with low compositional complexity or segments consisting of simple repetitive sequences from your query sequence. Filtering can eliminate statistically significant but biologically uninteresting reports from the BLAST output. A low complexity sequence found by a filter program is substituted using the letter "N" in nucleotide sequence (e.g., "NNNNN") and the letter "X" in protein sequences (e.g., "XXXXX"). Filtering is on by default, however it can be turned off by selecting "none" from the Filter options on the BLAST form.</p><p>For more details on filtering see the <a href="http://blast.ncbi.nlm.nih.gov/blast_help.shtml">BLAST Help at NCBI</a>.</p><hr>';
@@ -499,23 +504,26 @@ module.exports = React.createClass({
 
 	_cleanUpSeq: function(seq) {
 		// get rid of anything that is no-alphabet characters
-		seq = seq.replace(/[^a-zA-Z]/g , "");
+		if (seq) {
+		   seq = seq.replace(/[^a-zA-Z]/g , "");
+		}
 		return seq;
 	},
 
 	_checkParameters: function(seq, program, database, wordLength, threshold) {
 	
+                // check sequence
+                // get seq from the box or from upload file and remove unwanted characters
+                if (!seq) {
+                     alert("Please enter a sequence");
+                     return 0;
+                }
+
+
 		// check database
 		if (database == '-') {
 		   alert("Please select a database.");
 		   return 0;
-		}
-
-		// check sequence
-		// get seq from the box or from upload file and remove unwanted characters
-		if (seq == '') {
-		     alert("Please enter a sequence");
-		     return 0;
 		}
 
 		// check sequence length and threadhold value
@@ -550,35 +558,49 @@ module.exports = React.createClass({
 		});		
 
 		database = database.replace(/\,/g, " ");
-		
+
 		var dblist = database.split(" ");
 		var goodDatabase = "";
-		
+		var badDatabase = "";
+		var good = 0;
 		var removed = 0;
+		var databaseType = "";
 		dblist.forEach( function(d) {
 		    if (dbType[d] == 'both' || dbType[d] == programType) {
 		        if (goodDatabase) {
 			     goodDatabase = goodDatabase + " ";
 			}
-		        goodDatabase = goodDatabase + d; 
+		        goodDatabase = goodDatabase + d;
+			good += 1; 
 		    }
 		    else {
 		    	removed = 1;
-                        alert("Dataset: " + d + " is made of " + dbType[d] + " sequences and thus does not work with " + program + " which requires " + programType + " sequences.");
+			badDatabase = badDatabase + " " + d;
+			databaseType = dbType[d];
 		    }
                 });
 		
 		if (removed == 1) {
 
-		    if (goodDatabase) {
-		        alert("The above mentioned dataset(s) have been removed from your request. Your BLAST search is starting with the following datasets: " + goodDatabase);
+		    // if (goodDatabase) {
+		    //     alert("The above mentioned dataset(s) have been removed from your request. Your BLAST search is starting with the following datasets: " + goodDatabase);
+		    // }
+
+		    if (databaseType) {
+		        alert("Dataset(s): " + badDatabase + " are made of " + databaseType + " sequences and thus does not work with " + program + " which requires " + programType + " sequences.");
 		    }
-		    else {
+
+		    if (!goodDatabase) {
 		    	alert("Your choice of datasets does not include one that is appropriate for " + program + ". BLASTP and BLASTX require a protein sequence database and other BLAST programs require a nucleotide sequence database. Adjust either the program or database selection before submitting your search.");
 			return 0;
+
 		    }
 		}
 		
+		if (good > 20) {
+		    alert("You picked more than 20 datasets! It will take a while to run...This page will be refreshed with the result when the search is done.");
+		}
+
 		return goodDatabase;
 		
 	},
