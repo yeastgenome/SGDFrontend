@@ -39,19 +39,16 @@ module.exports = React.createClass({
 		var labelsNode = this._getLabelsNode();
 		var segmentNodes = this._getSegmentNodes();
 		var visibleSequenceNodes = this._getVisibleSegmentNodes();
-		var highlightedSegmentNode = this._getHighlightedSegmentNode();
 
 		var xScale = this._getXScale();
 		var maxX = xScale.range()[xScale.range().length - 1];
 
-		// TEMP constant height
 		return (<div>
 			{labelsNode}
 			<div ref="scroller" style={{ width: "100%", overflow: "scroll" }}>
 				<div style={{ width: maxX + LABEL_WIDTH }}>
 					<MultiScaleAxis segments={this.props.segments} scale={xScale} />
 					<svg ref="svg" style={{ width: "100%", height: 600 }}>
-						{highlightedSegmentNode}
 						{segmentNodes}
 						{visibleSequenceNodes}
 					</svg>
@@ -127,19 +124,6 @@ module.exports = React.createClass({
 			}
 			return <rect onMouseOver={_onMouseOver} key={"segRect" + i} x={_x} y={_y} width={_width} height={_height} fill={"none"} stroke="none" opacity={_opacity} style={{ pointerEvents: "all" }} />;
 		});
-	},
-
-	_getHighlightedSegmentNode: function () {
-		var hDom = this.props.highlightedSegmentDomain;
-		if (!hDom) return null;
-		var xScale = this._getXScale();
-		var _x = xScale(hDom[0]);
-		var _width = xScale(hDom[1]) - _x;
-		var _fill = "#DEC113";
-		var _opacity = 0.5;
-		var _height = this.props.sequences.length * FONT_SIZE + 3;
-		var _y = 0;
-		return <rect x={_x} y={_y} width={_width} height={_height} fill={_fill} stroke="none" opacity={_opacity} />;
 	},
 
 	_getVisibleSequenceNodes: function (seg, i) {
