@@ -34,10 +34,13 @@ def _run_blast(p):
 
     dataSet = result.split("\t")
 
-    hits = json.loads(dataSet[1])
-
-    data = { "result": dataSet[0],
-             "hits": hits }
+    
+    if dataSet[1]:
+        data = { "result": dataSet[0],
+                 "hits":   json.loads(dataSet[1]) }
+    else:
+        data = { "result": dataSet[0],
+                 "hits": "" }
 
     return data
 
