@@ -106,7 +106,7 @@ module.exports = class AlignmentShowModel extends BaseModel {
 					}
 				}
 				return memo;
-			}, { start: 0, end: 0 });
+			}, { start: 1, end: 1 });
 		if (isProtein) {
 			refDomain.start = refDomain.start * 3;
 			refDomain.end = refDomain.end * 3;
