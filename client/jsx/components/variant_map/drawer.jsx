@@ -186,7 +186,7 @@ module.exports = React.createClass({
 				return this.state.x2Scale(d);
 			});
 		var contigData = this.state.alignmentModel.getLocusDiagramData().contigData;
-		var text = `${_refCoord[0] - 1}..${_refCoord[1] - 1}`;
+		var text = `${_refCoord[0]}..${_refCoord[1]}`;
 
 		return (<Parset 
 			isVisible={this.state.parsetVisible}
@@ -208,7 +208,7 @@ module.exports = React.createClass({
 		var x1End = _refDomain.end;
 		var offset = isRelative ? 0 : _coord.start;
 		if (_attr.strand === "-") {
-			var _relEnd = _coord.end - _coord.start + 2;
+			var _relEnd = _coord.end - _coord.start;
 			x1Start = _relEnd - x1Start;
 			x1End = _relEnd - x1End;
 			return [offset + x1End, offset + x1Start];

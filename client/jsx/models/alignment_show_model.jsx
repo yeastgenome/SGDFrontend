@@ -106,7 +106,7 @@ module.exports = class AlignmentShowModel extends BaseModel {
 					}
 				}
 				return memo;
-			}, { start: 1, end: 1 });
+			}, { start: 0, end: 0 });
 		if (isProtein) {
 			refDomain.start = refDomain.start * 3;
 			refDomain.end = refDomain.end * 3;
@@ -184,7 +184,7 @@ module.exports = class AlignmentShowModel extends BaseModel {
 		var _maxLength = _.max(sequences, d => { return d.sequence.length; }).sequence.length;
 		if (_last.end < _maxLength) {
 			mergedSegments.push({
-				start: _last.end + 1,
+				start: _last.end,
 				end: _maxLength,
 				visible: false
 			});

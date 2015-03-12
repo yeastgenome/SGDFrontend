@@ -574,7 +574,7 @@ module.exports = React.createClass({
 		var startCoord = _locus.start + _highCoord[0];
 		var endCoord = _locus.start + _highCoord[1];
 		var _x = scale(startCoord);
-		var _width = Math.abs(scale(endCoord) - scale(startCoord));	
+		var _width = Math.abs(scale(endCoord) - scale(startCoord));
 		
 		return <rect x={_x} width={_width} height="100" fill="#DEC113" opacity={0.5} />;
 	},
