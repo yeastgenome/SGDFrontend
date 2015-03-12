@@ -187,6 +187,11 @@ module.exports = React.createClass({
 			});
 		var contigData = this.state.alignmentModel.getLocusDiagramData().contigData;
 		var text = `${_refCoord[0]}..${_refCoord[1]}`;
+		// if a SNP (actually one nucleotide) make the text refer to the position, not a range
+		if (Math.abs(_refCoord[1] - _refCoord[0]) === 1) {
+			var _coord = (this.state.alignmentModel.attributes.strand === "+") ? _refCoord[0] : _refCoord[1];
+			text = _coord.toString();
+		}
 
 		return (<Parset 
 			isVisible={this.state.parsetVisible}
