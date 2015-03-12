@@ -60,14 +60,14 @@ module.exports = React.createClass({
 
 		if (this.props.blastType == 'sgd') {
 		        return (<div>
-			       <h1><i>S. cerevisiae</i> WU-BLAST2 Search</h1>
+			       <h1><i>S. cerevisiae</i> WU-BLAST2 Search <a href="http://www.yeastgenome.org/help/analyze/blast"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png"></img></a></h1>
 			       <hr />
 			       {formNode}
 			</div>);
 		}
 		else {
 		        return (<div>
-                               <h1>Fungal Genomes Search using WU-BLAST2</h1>
+                               <h1>Fungal Genomes Search using WU-BLAST2 <a href="http://www.yeastgenome.org/help/analyze/fungal-blast"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png"></img></a></h1>
 			       <hr />
                                {formNode}
                         </div>);
@@ -598,7 +598,7 @@ module.exports = React.createClass({
 		}
 		
 		if (good > 20) {
-		    alert("You picked more than 20 datasets! It will take a while to run...This page will be refreshed with the result when the search is done.");
+		    alert("You picked more than 20 datasets! It will take a while to run. This page will be refreshed with the result when the search is done.");
 		}
 
 		return goodDatabase;
