@@ -600,7 +600,7 @@ module.exports = React.createClass({
 			var _midX = scale(_avgCoor)
 			var _transform = `translate(${_midX}, ${yCoordinate})`;
 			var _onMouseOver = e => {
-				this.props.onVariantMouseOver(d.coordinateDomain[0], d.coordinateDomain[1])
+				this.props.onVariantMouseOver(d.start, d.end);
 			};
 
 			var tipNode;

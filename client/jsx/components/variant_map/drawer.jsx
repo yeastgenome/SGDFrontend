@@ -132,8 +132,6 @@ module.exports = React.createClass({
 
 		var model = this.state.alignmentModel;
 		var locusData = model.getLocusDiagramData();
-		var _start = model.attributes.coordinates.start;
-		var _end = model.attributes.coordinates.end;
 		var variantData = model.getVariantData(this.props.isProteinMode);
 		var watsonTracks = model.attributes.strand === "+" ? 2 : 1;
 
@@ -143,14 +141,9 @@ module.exports = React.createClass({
 		var _onVariantMouseOver = (start, end) => {
 			var _highlightDomain;
 			if (model.attributes.strand === "+") {
-				_highlightDomain = [start - _start, end - _start];
+				_highlightDomain = [start - 1, end - 1];
 			} else {
-				_highlightDomain = [_end - end, _end - start];
-			}
-			if (this.props.isProteinMode) {
-				_highlightDomain = _.map(_highlightDomain, d => {
-					return d / 3;
-				});
+				_highlightDomain = [end - 1, start - 1];
 			}
 			this._highlightSegment(_highlightDomain[0], _highlightDomain[1]);
 		};
@@ -213,6 +206,7 @@ module.exports = React.createClass({
 		var x1End = _refDomain.end;
 		var offset = isRelative ? 0 : _coord.start;
 		if (_attr.strand === "-") {
+			if (isRelative) offset -= (this.props.isProteinMode ? 3 : 1);
 			var _relEnd = _coord.end - _coord.start;
 			x1Start = _relEnd - x1Start;
 			x1End = _relEnd - x1End;
