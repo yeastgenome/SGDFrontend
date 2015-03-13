@@ -131,6 +131,21 @@ module.exports = class AlignmentShowModel extends BaseModel {
 		});
 	}
 
+	_mergeOrAddSegment (existingSegments, newSegment) {
+		var old;
+		for (var i = existingSegments.length - 1; i >= 0; i--) {
+			old = existingSegments[i];
+			if (this._isOverlap(old, newSegment)) {
+				old.start = Math.min(old.start, newSegment.start);
+				old.end = Math.max(old.end, newSegment.end);
+				return existingSegments;
+			}
+		};
+
+		existingSegments.push(_.extend(newSegment, { visible: true }));
+		return existingSegments;
+	}
+
 	// from raw variant data, produce segments as expected by multi_alignment_viewer
 	formatSegments (isProtein) {
 		var variants = isProtein ? this.attributes.variant_data_protein : this.attributes.variant_data_dna;
@@ -140,23 +155,10 @@ module.exports = class AlignmentShowModel extends BaseModel {
 			return d.start;
 		});
 
-		// first, merge all redundant visible segments to produce mutually exclusive visible segments
-		var mergedSegments = [];
-		variants.forEach( (d, i) => {
-			// if completely within another segment, do nothing
-			var isMerged = false;
-			mergedSegments.forEach( (_d, _i) => {
-				// if overlapping, extend existing
-				if (!isMerged && this._isOverlap(d, _d)) {
-					isMerged = true;
-					mergedSegments[_i].start = Math.min(d.start, _d.start);
-					mergedSegments[_i].end = Math.min(d.end, _d.end);
-				}
-			});
-			
-			// otherwise, create new segment with this data
-			if (!isMerged) mergedSegments.push(_.extend(d, { visible: true }));
-		});
+		// merge segments
+		var mergedSegments = _.reduce(variants, (memo, d) => {
+			return this._mergeOrAddSegment(memo, d);
+		}, []);
 
 		// add in needed summarized segments
 		// first one
