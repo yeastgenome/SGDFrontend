@@ -3,7 +3,7 @@
 
 var React = require("react");
 
-var SuggestionForm = require("../components/suggestion/suggestion_form.jsx");
+var SuggestionForm = React.createFactory(require("../components/suggestion/suggestion_form.jsx"));
 
 var suggestionView = {};
 suggestionView.render = function () {

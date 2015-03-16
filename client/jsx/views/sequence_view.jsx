@@ -3,8 +3,8 @@
 
 var React = require("react");
 
-var NavBar = require("../components/widgets/navbar.jsx");
-var AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");
+var NavBar = React.createFactory(require("../components/widgets/navbar.jsx"));
+var AsyncSequenceView = React.createFactory(require("../components/sequence/async_sequence_view.jsx"));
 var TabsModel = require("../models/tabs_model.jsx");
 
 var sequenceView = {};
@@ -22,7 +22,7 @@ sequenceView.render = function () {
 		});
 		var _navTitleText = _tabModel.getNavTitle(bootstrappedData.displayName, bootstrappedData.formatName);
 		var navTitle = { href: bootstrappedData.locusLink, name: _navTitleText };
-		React.renderComponent(
+		React.render(
 			<NavBar title={navTitle} elements={_tabModel.getTabElements()} />,
 			document.getElementById("navbar-container")
 		);
@@ -35,7 +35,7 @@ sequenceView.render = function () {
 
 	// async sequence view, fetches data, renders main strain, alt strains, and other strains (if present)
 	// once data is fetched, update the navbar
-	React.renderComponent(
+	React.render(
 		<AsyncSequenceView
 			locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
 			locusFormatName={bootstrappedData.formatName} locusHistoryData={bootstrappedData.locusHistory}

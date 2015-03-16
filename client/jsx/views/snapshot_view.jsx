@@ -5,10 +5,10 @@ var React = require("react");
 var $ = require("jquery");
 
 var GenomeSnapshotModel = require("../models/genome_snapshot_model.jsx");
-var NavBar = require("../components/widgets/navbar.jsx");
-var TableAlternative = require("../components/snapshot/table_alternative.jsx");
-var ToggleBarChart = require("../components/viz/toggle_bar_chart.jsx");
-var BarChart = require("../components/viz/bar_chart.jsx");
+var NavBar = React.createFactory(require("../components/widgets/navbar.jsx"));
+var TableAlternative = React.createFactory(require("../components/snapshot/table_alternative.jsx"));
+var ToggleBarChart = React.createFactory(require("../components/viz/toggle_bar_chart.jsx"));
+var BarChart = React.createFactory(require("../components/viz/bar_chart.jsx"));
 
 var snapshotView = {};
 snapshotView.render = function () {
