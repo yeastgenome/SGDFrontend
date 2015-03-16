@@ -11,10 +11,16 @@ var SearchBar = require("../widgets/search_bar.jsx");
 var VariantHeatmap = require("./variant_heatmap.jsx");
 var StrainSelector = require("./strain_selector.jsx");
 
+// router stuff
+var Router = require("react-router");
+var { Route, RouteHandler, Link, Transition } = Router;
+
 // id to filter out
 var REFERENCE_STRAIN_ID = 1;
 
 module.exports = React.createClass({
+	mixins: [Router.Navigation],
+
 	getInitialState: function () {
 		return {
 			activeStrainIds: [],
@@ -103,11 +109,14 @@ module.exports = React.createClass({
 	},
 
 	_getHeatmapNode: function () {
+		// TEMP
+		// play with router
 		var _onClick = d => {
-			this.setState({
-				drawerVisible: true,
-				activeLocusId: d.id
-			});
+			this.transitionTo("shallowDrawer",{ featureId: d.id});
+			// this.setState({
+			// 	drawerVisible: true,
+			// 	activeLocusId: d.id
+			// });
 		};
 
 		var _lociData = this._getLociData();
@@ -141,18 +150,20 @@ module.exports = React.createClass({
 	},
 
 	_getDrawerNode: function () {
-		var node = null;
-		if (this.state.activeLocusId) {
-			var _strainIds = [REFERENCE_STRAIN_ID].concat(this.state.activeStrainIds);
-			var _onExit = () => { this.setState({ activeLocusId: null }); };
-			var locusData = _.findWhere(this.state.lociData, { id: this.state.activeLocusId })
-			node = (<Drawer
-				onExit={_onExit} locusId={this.state.activeLocusId}
-				isProteinMode={this.state.isProteinMode} strainIds={_strainIds}
-				locusName={locusData.display_name} locusHref={locusData.link}
-			/>);
-		}
-		return node;
+		return RouteHandler(null, {
+		});
+		// var node = null;
+		// if (this.state.activeLocusId) {
+		// 	var _strainIds = [REFERENCE_STRAIN_ID].concat(this.state.activeStrainIds);
+		// 	var _onExit = () => { this.setState({ activeLocusId: null }); };
+		// 	var locusData = _.findWhere(this.state.lociData, { id: this.state.activeLocusId })
+		// 	node = (<Drawer
+		// 		onExit={_onExit} locusId={this.state.activeLocusId}
+		// 		isProteinMode={this.state.isProteinMode} strainIds={_strainIds}
+		// 		locusName={locusData.display_name} locusHref={locusData.link}
+		// 	/>);
+		// }
+		// return node;
 	},
 
 	_getLociData: function () {
