@@ -33,7 +33,7 @@ module.exports = React.createClass({
 						<input onChange={this._onType} type="text" ref="searchInput" placeholder={this.props.placeholderText} value={this.state.query} />
 					</div>
 					<div className="small-2 columns" style={{ paddingLeft: 0 }}>
-						<input type="submit" href="#" className="button secondary postfix" value="Search" />
+						<input type="submit" href="#" className="button secondary postfix" value="Filter" />
 					</div>
 				</form>
 			</div>
