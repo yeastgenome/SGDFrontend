@@ -37,10 +37,14 @@ def _run_blast(p):
     
     if dataSet[1]:
         data = { "result": dataSet[0],
-                 "hits":   json.loads(dataSet[1]) }
+                 "hits":   json.loads(dataSet[1]),
+                 "totalHits": dataSet[2],
+                 "showHits": dataSet[3]}
     else:
         data = { "result": dataSet[0],
-                 "hits": "" }
+                 "hits": "",
+                 "totalHits": 0,
+                 "showHits": 0}
 
     return data
 
@@ -62,14 +66,14 @@ def _construct_blast_url(p):
 
     blastOptions = _get_blast_options(p)
 
-    url = config.compute_url + "cgi-bin/blast2.pl?"
+    url = config.compute_url + "cgi-bin/blast3.pl?"
 
     database = database.replace(',', ' ');
     database = database.replace('  ', ' ');
     database = database.replace(' ', '+')
 
     blastOptions = blastOptions.replace(' ', '+')
-    url = url + "program=" + program + "&dataset=" + database + "&sequence=" + seq + "&seqname=" + seqname + "&config=" + confFile + "&options=" + blastOptions + "&filtering=" + str(filtering)
+    url = url + "program=" + program + "&dataset=" + database + "&sequence=" + seq + "&seqname=" + seqname + "&config=" + confFile + "&options=" + blastOptions + "&filtering=" + str(filtering) + "&alignToShow=" + str(p.get('alignToShow'))
     
     return url
 
@@ -150,8 +154,8 @@ def _get_blast_options(p):
     
     options = options + " B=" + alignToShow + " V=" + alignToShow
 
-    if outFormat != "gapped alignments":
-        options = options + " -nongap"
+    if outFormat.startswith("nongapped"):
+        options = options + " -nogap"
                    
     if program != 'blastn' and matrix != "BLOSUM62":
         options = options + " -matrix=" + matrix
