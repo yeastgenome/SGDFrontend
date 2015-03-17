@@ -4,7 +4,7 @@
 var React = require("react");
 var _ = require("underscore");
 
-module.exports = React.createClass({
+var FlexibleTooltip = React.createClass({
 	propTypes: {
 		visible: React.PropTypes.bool,
 		text: React.PropTypes.string,
@@ -80,8 +80,8 @@ module.exports = React.createClass({
 		var dataNode = null;
 		if (this.props.data) {
 			var _keys = _.keys(this.props.data);
-			var _innerNodes = _.reduce(_keys, (memo, k) => {
-				memo.push(<dt>{k}</dt>);
+			var _innerNodes = _.reduce(_keys, (memo, k, i) => {
+				memo.push(<dt key={"tooltipDataT" + i}>{k}</dt>);
 				var _detailStyle = {}
 				if (this.props.truncateText) {
 					_detailStyle = {
@@ -90,7 +90,7 @@ module.exports = React.createClass({
 						whiteSpace: "nowrap"
 					}
 				}
-				memo.push(<dd style={_detailStyle}>{this.props.data[k]}</dd>);
+				memo.push(<dd key={"tooltipDataD" + i} style={_detailStyle}>{this.props.data[k]}</dd>);
 				return memo;
 			}, []);
 			dataNode = <dl className="key-value">{_innerNodes}</dl>;
@@ -106,3 +106,5 @@ module.exports = React.createClass({
 		</span>);
 	}
 });
+
+module.exports = FlexibleTooltip;

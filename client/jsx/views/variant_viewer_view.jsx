@@ -16,7 +16,8 @@ view.render = function () {
 	var cacheBustingToken = CACHE_BUSTER || Math.random().toString();
 	(new LocalStorageSetup()).checkCache(cacheBustingToken);
 
-	var BlankComponent = React.createClass({ render: function () { return <span />; }});
+	// blank react component to make no drawer
+	var BlankComponent = React.createFactory(React.createClass({ render: function () { return <span />; }}));
 
 	var routes = (
 		<Route path="/" handler={AsyncVariantMap}>
@@ -31,10 +32,8 @@ view.render = function () {
 
 	// React.render(<AsyncVariantMap />, document.getElementById("j-main"))
 	Router.run(routes, (Handler) => {
-		React.render(<Handler />, document.getElementById("j-main"))
+		React.render(<Handler />, document.getElementById("j-main"));
 	});
 };
-
-
 
 module.exports = view;

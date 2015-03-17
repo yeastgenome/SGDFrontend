@@ -5,7 +5,7 @@ var React = require("react");
 var _ = require("underscore");
 var HelpIcon = require("../widgets/help_icon.jsx");
 
-module.exports = React.createClass({
+var ReferenceList = React.createClass({
 
 	getDefaultProps: function () {
 		return {
@@ -45,3 +45,5 @@ module.exports = React.createClass({
 		return <ol className="reference-list">{itemNodes}</ol>;
 	}
 });
+
+module.exports = ReferenceList;

@@ -3,8 +3,8 @@ var d3 = require("d3");
 var React = require("react");
 var _ = require("underscore");
 
-var ColorScaleLegend = require("./color_scale_legend.jsx");
-var FlexibleTooltip = require("../widgets/flexible_tooltip.jsx");
+var ColorScaleLegend = React.createFactory(require("./color_scale_legend.jsx"));
+var FlexibleTooltip = React.createFactory(require("../widgets/flexible_tooltip.jsx"));
 
 var DEFAULT_DOM_SIDE_SIZE = 400; // height and width
 var FONT_SIZE = 14;
@@ -14,7 +14,7 @@ var MAX_CANVAS_SIZE = 8000;
 var LABEL_WIDTH = 120;
 var TOOLTIP_DELAY = 250;
 
-module.exports = React.createClass({
+var VariantHeatmap = React.createClass({
 	propTypes: {
 		data: React.PropTypes.array.isRequired,
 		onClick: React.PropTypes.func,
@@ -262,3 +262,5 @@ module.exports = React.createClass({
 		});
 	}
 });
+
+module.exports = VariantHeatmap;

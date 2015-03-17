@@ -5,13 +5,12 @@ var d3 = require("d3");
 var React = require("react");
 var _ = require("underscore");
 
-var HelpIcon = require("../widgets/help_icon.jsx");
+var HelpIcon = React.createFactory(require("../widgets/help_icon.jsx"));
 
 var NUM_BOXES = 5;
 var NODE_SIZE = 17;
 
-module.exports = React.createClass({
-
+var ColorScaleLegend = React.createClass({
 
 	render: function () {
 		var colorScale = d3.scale.linear()
@@ -50,3 +49,5 @@ module.exports = React.createClass({
 		</div>);
 	}
 });
+
+module.exports = ColorScaleLegend;

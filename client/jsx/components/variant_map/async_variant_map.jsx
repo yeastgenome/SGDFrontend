@@ -5,27 +5,26 @@ var React = require("react");
 var _ = require("underscore");
 
 var AlignmentIndexModel = require("../../models/alignment_index_model.jsx");
-var Drawer = require("./drawer.jsx");
-var RadioSelector = require("../widgets/radio_selector.jsx");
-var SearchBar = require("../widgets/search_bar.jsx");
-var VariantHeatmap = require("./variant_heatmap.jsx");
-var StrainSelector = require("./strain_selector.jsx");
+var Drawer = React.createFactory(require("./drawer.jsx"));
+var RadioSelector = React.createFactory(require("../widgets/radio_selector.jsx"));
+var SearchBar = React.createFactory(require("../widgets/search_bar.jsx"));
+var VariantHeatmap = React.createFactory(require("./variant_heatmap.jsx"));
+var StrainSelector = React.createFactory(require("./strain_selector.jsx"));
 
 // router stuff
 var Router = require("react-router");
 var { Route, RouteHandler, Link, Transition } = Router;
+RouteHandler = React.createFactory(RouteHandler);
 
 // id to filter out
 var REFERENCE_STRAIN_ID = 1;
 
-module.exports = React.createClass({
+var AsyncVariantMap = React.createClass({
 	mixins: [Router.Navigation, Router.State],
 
 	getInitialState: function () {
 		return {
 			activeStrainIds: [],
-			activeLocusId: null,
-			drawerVisible: false,
 			isPending: true,
 			isProteinMode: false,
 			lociData: [],
@@ -109,14 +108,9 @@ module.exports = React.createClass({
 	},
 
 	_getHeatmapNode: function () {
-		// TEMP
-		// play with router
+		// navigate with router
 		var _onClick = d => {
 			this.transitionTo("shallowDrawer",{ locusId: d.id});
-			// this.setState({
-			// 	drawerVisible: true,
-			// 	activeLocusId: d.id
-			// });
 		};
 
 		var _lociData = this._getLociData();
@@ -196,3 +190,5 @@ module.exports = React.createClass({
 		});
 	}
 });
+
+module.exports = AsyncVariantMap;

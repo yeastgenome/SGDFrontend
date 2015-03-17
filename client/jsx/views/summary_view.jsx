@@ -8,7 +8,7 @@ var React = require("react");
 var AsyncSequenceView = React.createFactory(require("../components/sequence/async_sequence_view.jsx"));
 var ExpressionChart = React.createFactory(require("../components/viz/expression_chart.jsx"));
 var HistoryTable = React.createFactory(require("../components/sequence/history_table.jsx"));
-var NavBar = React.createFactory(require("../components/widgets/navbar.jsx"));
+var NavBar = React.createFactory(require("../components/widgets/navbar.jsx"));;
 var ReferenceList = React.createFactory(require("../components/literature/reference_list.jsx"));
 var TabsModel = require("../models/tabs_model.jsx");
 
@@ -83,10 +83,10 @@ summaryView.render = function () {
 
     // reference list
     if (hasReferences) {
-    	React.render(
-	    	<ReferenceList data={locusData.references}/>,
-	    	document.getElementById("reference")
-	    );
+		React.render(
+			<ReferenceList data={locusData.references}/>,
+			document.getElementById("reference")
+		);
     }
 };
 

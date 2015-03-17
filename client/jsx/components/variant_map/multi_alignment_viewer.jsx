@@ -13,7 +13,7 @@ var LABEL_WIDTH = 150;
 var PX_PER_CHAR = 9.25;
 var TICK_HEIGHT = 6;
 
-module.exports = React.createClass({
+var MultiAlignmentViewer = React.createClass({
 
 	propTypes: {
 		// highlightedSegmentDomain: null or [start, end]
@@ -161,3 +161,5 @@ module.exports = React.createClass({
 			.rangePoints([PX_PER_CHAR + 3, height + PX_PER_CHAR]);
 	}
 });
+
+module.exports = MultiAlignmentViewer;

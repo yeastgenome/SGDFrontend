@@ -4,7 +4,7 @@
 var React = require("react");
 var _ = require("underscore");
 
-module.exports = React.createClass({
+var SearchBar = React.createClass({
 	propTypes: {
 		placeholderText: React.PropTypes.string,
 		onSubmit: React.PropTypes.func // query =>
@@ -58,3 +58,5 @@ module.exports = React.createClass({
 		}
 	}
 });
+
+module.exports = SearchBar;

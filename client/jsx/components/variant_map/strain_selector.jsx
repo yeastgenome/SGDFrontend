@@ -4,14 +4,14 @@
 var React = require("react");
 var _ = require("underscore");
 
-var Checklist = require("../widgets/checklist.jsx");
+var Checklist = React.createFactory(require("../widgets/checklist.jsx"));
 var DidClickOutside = require("../mixins/did_click_outside.jsx");
 
 var WIDTH = 350;
 var IMAGE_WIDTH = 174;
 var IMAGE_HEIGHT = 274;
 
-module.exports = React.createClass({
+var StrainSelector = React.createClass({
 	mixins: [DidClickOutside],
 
 	propTypes: {
@@ -98,3 +98,5 @@ module.exports = React.createClass({
 		);
 	}
 });
+
+module.exports = StrainSelector;

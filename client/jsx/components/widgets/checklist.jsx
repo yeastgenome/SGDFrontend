@@ -3,7 +3,7 @@
 var React = require("react");
 var _ = require("underscore");
 
-module.exports = React.createClass({
+var Checklist = React.createClass({
 	propTypes: {
 		elements: React.PropTypes.array.isRequired, // [ { name: "Doggy Woggy", key: "dog" }, ...]
 		initialActiveElementKeys: React.PropTypes.array,
@@ -65,3 +65,5 @@ module.exports = React.createClass({
 	}
 
 });
+
+module.exports = Checklist;

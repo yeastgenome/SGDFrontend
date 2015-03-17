@@ -16,7 +16,7 @@ var { Route, RouteHandler, Link, Transition } = Router;
 var HEIGHT_WITH_SEQUENCE = 680;
 var HEIGHT_WITHOUT_SEQUENCE = 345;
 
-module.exports = React.createClass({
+var Drawer = React.createClass({
 	mixins: [Router.Navigation, Router.State],
 
 	propTypes: {
@@ -249,3 +249,5 @@ module.exports = React.createClass({
 		this.setState({ showSequence: true });
 	}
 });
+
+module.exports = Drawer;
