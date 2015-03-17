@@ -247,7 +247,7 @@
             </p>
         </h2>
         <hr />
-        <div class="">
+        <div>
 
             {% if locus['go_overview']['paragraph'] %}
                 <dl class="key-value">
@@ -431,6 +431,12 @@
             </p>
         </h2>
         <hr />
+        {% if locus['phenotype_overview']['paragraph'] %}
+            <dl class="key-value">
+                <dt>Summary</dt>
+                <dd>{{ locus['phenotype_overview']['paragraph'] }}</dd>
+            </dl>
+        {% endif %}
         <div class="">
             {% if locus.phenotype_overview.classical_phenotypes|length + locus.phenotype_overview.large_scale_phenotypes|length == 0 %}
                 <p>No phenotype data available.</p>

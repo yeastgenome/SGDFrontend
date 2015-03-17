@@ -37,28 +37,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		    edges: data['edges']
 		}
     };
-
     
-    var bioentIds = data.nodes.map( function (d) {
-    	var id = d.data.id
-    		.replace("BIOENTITY", "")
-    		.replace("INTERACTOR_DOMAIN", "")
-    		.replace("INTERACTOR_GO", "")
-    		.replace("INTERACTOR_OBSERVABLE", "")
-    		.replace("Node", "")
-    		.replace("INTERACTOR_REFERENCE", "");
-    	return parseInt(id);
-    		
-    });
-    $("#network_analyze_btn").click( function (e) {
-    	var form = $('<form action="' + "/analyze" + '" method="post">' +
-		  '<input type="text" name="bioent_ids" value="' + JSON.stringify(bioentIds) + '" />' +
-		  '<input type="text" name="list_name" value="' + "Network" + '" />' +
-		  '</form>');
-		$('body').append(form);
-		$(form).submit();
-    });
-
 	$('#' + div_id).cytoscape(options);
     var cy = $('#' + div_id).cytoscape("get");
 
