@@ -4,7 +4,7 @@ var React = require("react");
 var _ = require("underscore");
 
 var getJaggedScale = require("./get_jagged_scale.jsx");
-var MultiScaleAxis = require("./multi_scale_axis.jsx");
+var MultiScaleAxis = React.createFactory(require("./multi_scale_axis.jsx"));
 
 // TEMP vars
 var AXIS_HEIGHT = 30;
