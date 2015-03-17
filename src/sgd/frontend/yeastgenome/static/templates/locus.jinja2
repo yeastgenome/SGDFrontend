@@ -292,7 +292,8 @@
                         <dd><ul style="list-style-type:disc">
                             {% for entry in locus.go_overview.htp_molecular_function_terms %}
                                 <li>
-                                    {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                    {% if 'qualifiers' in entry %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
                                             {{ qualifier }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     {% endif %}
