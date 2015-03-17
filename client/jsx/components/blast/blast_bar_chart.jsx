@@ -6,12 +6,12 @@ var d3 = require("d3");
 var _ = require("underscore");
 
 var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
-var FlexibleTooltip = require("../widgets/flexible_tooltip.jsx");
+var FlexibleTooltip = require("./flexible_tooltip.jsx");
 var StandaloneAxis = require("./standalone_axis.jsx");
 var Legend = require("./blast_legend.jsx");
 
-var HEIGHT = 12;
-var POINT_WIDTH = 10;
+var HEIGHT = 10;
+var POINT_WIDTH = 15;
 
 module.exports = React.createClass({
 	mixins: [CalcWidthOnResize],
@@ -35,7 +35,7 @@ module.exports = React.createClass({
                         yValue: _identity,
                         start: null,
                         legendColor: null,
-			tracks: 5			
+			totalHits: 0			
 		};
 	},
 
@@ -71,7 +71,7 @@ module.exports = React.createClass({
                                  leftRatio={props.labelRatio} 
                                  transitionDuration={500} 
                 />;
-                
+                 
                 var tooltipNode = props.hasTooltip ? (<FlexibleTooltip visible={state.tooltipVisible}
                                 left={state.tooltipLeft} top={state.tooltipTop} text={state.tooltipText}
                         />) : null;
@@ -81,16 +81,17 @@ module.exports = React.createClass({
 		var allBars = [];
 		var preBars = [];
 		var h = 0;
+		// h += 2*HEIGHT;
 		_.map(data, d => { 
 		       if (!d.same_row) {
-		       	  h += 2*HEIGHT;
+		       	  h += 1.74*HEIGHT;
 		       }
 		       var bar = this._getBarNode(d, h);
 		       if (d.same_row) {
 			     preBars.push(bar);
 		       }
 		       else if (preBars) {
-		       	     allBars.push(<svg style={{ width: "90%", left: this.props.left, height: HEIGHT, position: "relative", background: "light=grey"}}>{preBars}</svg>);
+		       	     allBars.push(<svg style={{ width: "90%", left: this.props.left, height: HEIGHT, position: "relative"}}>{preBars}</svg>);
 			     preBars = [bar];
 		       }
 		       else {
@@ -98,7 +99,7 @@ module.exports = React.createClass({
 		       }
 		});
 
-		allBars.push(<svg style={{ width: "90%", left: this.props.left, height: HEIGHT, position: "relative", background: "light-grey"}}>{preBars}</svg>);
+		allBars.push(<svg style={{ width: "90%", left: this.props.left, height: HEIGHT, position: "relative"}}>{preBars}</svg>);
 		
 		allBars.push(<svg style={{ height: HEIGHT, position: "relative"}}></svg>); // empty row for extra space between bars and legend
     
@@ -106,19 +107,17 @@ module.exports = React.createClass({
                                   elements={props.legendColor}
                                   leftRatio={props.labelRatio}
                 />);
-		
-		return (
-			<div className="locus-diagram" onMouseLeave={this._clearMouseOver} onClick={this._clearMouseOver}>
-			     	{axisNode}
-				<div className="locus-diagram-viz-container" style={{ position: "relative" }}>
-				        {tooltipNode}
-					{allBars}
-					<div className="bar-nodes-container clearfix" style={{ position: "relative", height: HEIGHT*3 }}>
-                                 	     {legendBar}
-                                	</div>
-				</div>
-			</div>
-		);
+
+		return (<div className="blast-bar-graph" onMouseLeave={this._clearMouseOver} onClick={this._clearMouseOver}>
+			     {axisNode}
+		             <div className="blast-bar-container" style={{ position: "relative" }}>
+				   {tooltipNode}
+				   {allBars}
+				   <div className="lengend-container clearfix" style={{ position: "relative", height: HEIGHT*3 }}>
+                                 	{legendBar}
+                                   </div>
+			     </div>
+		</div>);
 	},
 
 	componentDidMount: function () {
@@ -273,8 +272,12 @@ module.exports = React.createClass({
 
 	_handleMouseOver: function (e, d, h) {
                 // get the position
-		var _tooltipLeft = this._getScale(d.start) + this.props.left + 10;
-      		var _tooltipTop = h;
+		// var target = e.currentTarget;
+		// var _tooltipTop = target.offsetTop;
+		// var _tooltipTop = e.clientY		
+		var _tooltipTop = h;
+		// var _tooltipLeft = this._getScale(d.start) + this.props.left + 10;
+                var _tooltipLeft = this.props.left + 30;
 
                 if (this.props.onMouseOver) {
                         this.props.onMouseOver(d);

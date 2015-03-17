@@ -10,7 +10,14 @@ module.exports = {
                    var params = queryStr.split('&');
                    for (var i = 0; i < params.length; i++) {
                        var pair = params[i].split('=');
-                       paramDict[pair[0]] = pair[1].replace(/\+/g, ' ');
+		       var key = pair[0];
+		       var value = pair[1].replace(/\+/g, ' ');
+		       if (paramDict[key]) {
+		       	    paramDict[key] = paramDict[key] + ' ' + value;
+		       }
+		       else {
+                       	    paramDict[key] = value;
+		       }
                    }
                 }
                 return paramDict;

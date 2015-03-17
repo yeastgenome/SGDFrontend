@@ -20,13 +20,18 @@ module.exports = React.createClass({
 	getInitialState: function () {
 	        
 		var param = params.getParams();
-
-		if (param['name']) {
-                   this._getSeq(param['name'], param['type']);
+		
+		var submitted = '';
+		if (param['seq'] && param['program']) {
+		     submitted = 1;
+		}
+		else {
+		     this._getConfigData(this.props.blastType);
+		     if (param['name']) {
+                     	  this._getSeq(param['name'], param['type']);
+		     }
                 }
 
-                this._getConfigData(this.props.blastType);
-        	
 		// need to put the date in a config file..
 		var lastUpdate = "January 13, 2015";	 
 		return {
@@ -51,48 +56,75 @@ module.exports = React.createClass({
 			alignToShow: null,
 			filtering: null,
 			filter: null,
-			resultData: {}
+			resultData: {},
+			submitted: submitted,
+			param: param
 		};
 	},
 
 	render: function () {
+		
 		var formNode = this._getFormNode();
 
 		if (this.props.blastType == 'sgd') {
 		        return (<div>
-			       <h1><i>S. cerevisiae</i> WU-BLAST2 Search <a href="http://www.yeastgenome.org/help/analyze/blast"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png"></img></a></h1>
-			       <hr />
+			       <span style={{ textAlign: "center" }}><h1><i>S. cerevisiae</i> WU-BLAST2 Search <a href="http://www.yeastgenome.org/help/analyze/blast"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png"></img></a></h1>
+			       <hr /></span>
 			       {formNode}
 			</div>);
 		}
 		else {
 		        return (<div>
-                               <h1>Fungal Genomes Search using WU-BLAST2 <a href="http://www.yeastgenome.org/help/analyze/fungal-blast"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png"></img></a></h1>
-			       <hr />
+                               <span style={{ textAlign: "center" }}><h1>Fungal Genomes Search using WU-BLAST2 <a href="http://www.yeastgenome.org/help/analyze/fungal-blast"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png"></img></a></h1>
+			       <hr /></span>
                                {formNode}
                         </div>);
 		}
+
 	},
 
-
 	_getFormNode: function () {
-		if (this.state.isComplete) {
 
+		if (this.state.submitted) {
+                        this._doBlast();
+		}
+					
+	        if (this.state.isComplete) {
 		        if (this.state.resultData.hits == '') {
-			     return (<div dangerouslySetInnerHTML={{ __html: this.state.resultData.result}} />);
-			     // return (<div><p>{this.state.resultData.result}</p></div>);
+			     var errorReport = this.state.resultData.result;
+			     // return (<div dangerouslySetInnerHTML={{ __html: this.state.resultData.result}} />);
+			     // return (<div><p>{resultData.result}</p></div>);
+			     return (<div dangerouslySetInnerHTML={{ __html: errorReport }} />);
+
 			}
 
-		        var descText = "<hr><p>Query performed by the Saccharomyces Genome Database; for full BLAST options and parameters, refer to the NCBI BLAST Documentation Links to GenBank, EMBL, PIR, SwissProt, and SGD are shown in bold type; links to locations within this document are in normal type. Your comments and suggestions are requested: <a href='/suggestion'>Send a Message to SGD</a></p><hr>"; 
+		        var descText = "<p>Query performed by the Saccharomyces Genome Database; for full BLAST options and parameters, refer to the NCBI BLAST Documentation Links to GenBank, EMBL, PIR, SwissProt, and SGD are shown in bold type; links to locations within this document are in normal type. Your comments and suggestions are requested: <a href='/suggestion'>Send a Message to SGD</a></p><hr>"; 
 			if (this.state.filter) {
 			       descText = descText + '<p><b>***Please Note Sequence Filtering is ON.***</b>Sequence filtering will mask out regions with low compositional complexity or segments consisting of simple repetitive sequences from your query sequence. Filtering can eliminate statistically significant but biologically uninteresting reports from the BLAST output. A low complexity sequence found by a filter program is substituted using the letter "N" in nucleotide sequence (e.g., "NNNNN") and the letter "X" in protein sequences (e.g., "XXXXX"). Filtering is on by default, however it can be turned off by selecting "none" from the Filter options on the BLAST form.</p><p>For more details on filtering see the <a href="http://blast.ncbi.nlm.nih.gov/blast_help.shtml">BLAST Help at NCBI</a>.</p><hr>';
 			}
 			
-			var graph = this._getGraphNode();
-			return (<div>
-                               <div className="row">
-				    {graph}
-			       </div>	  	    
+			var graph = this._getGraphNode(this.state.resultData.hits);
+			var tableStyle = { width: "900", marginLeft: "auto", marginRight: "auto" };
+
+			var showHits = this.state.resultData.showHits;
+                        var totalHits = this.state.resultData.totalHits;
+
+			var hitSummary = "All hits shown";
+			var hitSummary2 = "";
+
+			if (Number(showHits) < Number(totalHits)) {
+			       hitSummary = "The graph shows the highest hits per range";
+			       hitSummary2 = "Data has been omitted: " + showHits + "/" + totalHits + " hits displayed";
+			}
+
+			return(<div>
+			       <span style={{ textAlign: "center" }}><h3>{hitSummary}</h3></span>
+			       <span style={{ textAlign: "center" }}><h3>{hitSummary2}</h3></span>
+ 			       <div>
+				    <table style={tableStyle}>
+					 <tr><td>{graph}</td></tr>
+				    </table>
+			       </div> 	  	    
 			       <div dangerouslySetInnerHTML={{ __html: descText}} />
 			       <div dangerouslySetInnerHTML={{ __html: this.state.resultData.result}} />
                         </div>);
@@ -108,6 +140,12 @@ module.exports = React.createClass({
 			
 		}
 		else {
+
+		        if (this.state.submitted) {
+			     return <p>Please wait... The search may take a while to run.</p>; 
+
+			}
+
 		        var seqData = this.state.seqData;
                 	var configData = this.state.configData;
                 
@@ -118,7 +156,7 @@ module.exports = React.createClass({
                 	var databaseNode = this._getDatabaseNode(configData);
                 	var optionNode = this._getOptionsNode(configData);
 			// need to put the date in a config file
-			var descText = "<p>Datasets updated: January 13, 2015</p><p>This form allows BLAST searches of S. cerevisiae sequence datasets. Tosearch multiple fungal sequences, go to the <a href='/blast-fungal'>Fungal BLAST search form</a>.</p>";
+			var descText = "<p>Datasets updated: January 13, 2015</p><p>This form allows BLAST searches of S. cerevisiae sequence datasets. To search multiple fungal sequences, go to the <a href='/blast-fungal'>Fungal BLAST search form</a>.</p>";
 			
 			if (this.props.blastType == 'fungal') {
 			     descText = "<p>This form allows BLAST searches of multiple fungal sequence datasets. To restrict your search to S. cerevisiae with additional BLAST search options, go to the <a href='/blast-sgd'><i>S. cerevisiae</i> BLAST search form</a>.</p>";
@@ -143,10 +181,8 @@ module.exports = React.createClass({
 		}
 	},
 
-	_getGraphNode:  function() {
+	_getGraphNode:  function(data) {
 	
-	        var data = this.state.resultData.hits;
-		
 		var legendColor = [{text: "< 10",     color: "#0000FF"},
 				   {text: "10-50",  color: "#00FFFF"},
 				   {text: "50-100", color: "#7FFF00"},
@@ -177,6 +213,7 @@ module.exports = React.createClass({
                 var _maxY = data[0].query_length; 
 		var _left = 50;
 		var _size = data.length;
+		var _totalHits = this.state.resultData.totalHits; 
                 var barNode = (<blastBarChart 
 		                data={data}
 				size={_size} 
@@ -191,6 +228,7 @@ module.exports = React.createClass({
                                 hasYaxis={false}
                                 hasNoZeroWidth={true}
 				legendColor={legendColor}
+				totalHits={_totalHits}
                 />);
              
                 return barNode;
@@ -358,8 +396,14 @@ module.exports = React.createClass({
 
         _getAlignToShowMenu: function() {
 
-                var alignToShow = ['50', '0', '25', '50', '100', '200', '400', '800', '1000'];
-		var _elements = this._getDropdownList(alignToShow, "50");
+                var alignToShow = ['0', '25', '50', '100', '200', '400', '500', '800', '1000'];
+		
+		var defaultVal = "50";
+		if (this.props.blastType == 'fungal') {
+		     defaultVal = "500";
+		}
+		alignToShow.unshift(defaultVal);
+		var _elements = this._getDropdownList(alignToShow, defaultVal);
 		return <p><select ref='alignToShow' name='alignToShow' onChange={this._onChange}>{_elements}</select></p>;
 
         },
@@ -426,6 +470,7 @@ module.exports = React.createClass({
         },
 
 	_onSubmit: function (e) {
+
 		e.preventDefault();
 
 		var queryComment = this.refs.queryComment.getDOMNode().value.trim();
@@ -474,6 +519,46 @@ module.exports = React.createClass({
 		    return 1; 
 		}
 
+		var script = "blast-sgd";
+                if (this.props.blastType == 'fungal') {
+                    script = "blast-fungal";
+                }
+
+		// var parameter = "?program=" + program +"&database=" + database + "&seq=" + seq + "&outFormat=" + outFormat + "&matrix=" + matrix + "&cutoffScore=" + cutoffScore + "&wordLength=" + wordLength + "&threshold=" + threshold + "&alignToShow=" + alignToShow + "&filter=" + filter;
+		// var resultUrl = script + parameter;
+		// window.open(resultUrl,'result','left=10,top=10,width=1000,height=500');
+
+		var form = $('<form method="GET" action=' + script + ' target="blast_result_win">' + 
+			 '<input type="hidden" name="seq" value="' + seq + '" />' + 
+			 '<input type="hidden" name="program" value="' + program + '" />' +
+			 '<input type="hidden" name="database" value="' + database + '" />' +
+			 '<input type="hidden" name="outFormat" value="' + outFormat + '" />' +
+			 '<input type="hidden" name="matrix" value="' + matrix + '" />' +
+			 '<input type="hidden" name="cutoffScore" value="' + cutoffScore + '" />' +
+                         '<input type="hidden" name="wordLength" value="' + wordLength + '" />' +
+                         '<input type="hidden" name="threshold" value="' + threshold + '" />' +
+                         '<input type="hidden" name="alignToShow" value="' + alignToShow + '" />' +
+                         '<input type="hidden" name="filter" value="' + filter + '" />' +			 
+		'</form>');
+		$('body').append(form);
+		form.submit();
+
+	},
+
+	_doBlast: function() {
+
+		var param = this.state.param;
+	        // var queryComment = param['queryComment'];
+                var seq = param['seq'];
+                var program = param['program'];
+                var database = param['database'];
+		var outFormat = param['outFormat'];
+                var matrix = param['matrix'];
+                var cutoffScore = param['cutoffScore'];
+                var wordLength = param['wordLength'];
+                var threshold = param['threshold'];
+                var alignToShow = param['alignToShow'];
+                var filter = param['filter'];
 		$.ajax({
 			url: "/do_blast",
 			data_type: 'json',
@@ -493,12 +578,13 @@ module.exports = React.createClass({
 			success: function(data) {
 			      this.setState({isComplete: true,
 			                     resultData: data,
-					     filter: filter});
+			         	     filter: filter});
 			}.bind(this),
 			error: function(xhr, status, err) {
 			      this.setState({isPending: true}); 
 			}.bind(this) 
 		});
+
 	},
 
 
@@ -565,19 +651,23 @@ module.exports = React.createClass({
 		var good = 0;
 		var removed = 0;
 		var databaseType = "";
+		var foundDB = {};
 		dblist.forEach( function(d) {
 		    if (dbType[d] == 'both' || dbType[d] == programType) {
-		        if (goodDatabase) {
-			     goodDatabase = goodDatabase + " ";
-			}
-		        goodDatabase = goodDatabase + d;
-			good += 1; 
+		        if (foundDB[d] == undefined) {
+		             if (goodDatabase) {
+			     	  goodDatabase = goodDatabase + " ";
+			     }
+		             goodDatabase = goodDatabase + d;
+			     good += 1;
+			} 
 		    }
 		    else {
 		    	removed = 1;
 			badDatabase = badDatabase + " " + d;
 			databaseType = dbType[d];
 		    }
+		    foundDB[d] = 1;
                 });
 		
 		if (removed == 1) {
@@ -597,10 +687,6 @@ module.exports = React.createClass({
 		    }
 		}
 		
-		if (good > 20) {
-		    alert("You picked more than 20 datasets! It will take a while to run. This page will be refreshed with the result when the search is done.");
-		}
-
 		return goodDatabase;
 		
 	},

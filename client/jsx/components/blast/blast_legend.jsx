@@ -16,7 +16,7 @@ module.exports = React.createClass({
 	render: function () {
 
 		var strandLabel = "Fwd: >>  Rev: <<";  
-		var labelText = <span className="legend-entry-container" style={{marginLeft: `${this.props.leftRatio * 200}%`, marginRight: `${this.props.leftRatio * 25}%`, position: "relative"}}>{strandLabel}</span>
+		var labelText = <span className="legend-entry-container" style={{marginLeft: `${this.props.leftRatio * 150}%`, marginRight: `${this.props.leftRatio * 25}%`, position: "relative"}}>{strandLabel}</span>
 
 		var elementNodes = _.map(this.props.elements, (entry, i) => {
 			var expLabel = "";
@@ -41,14 +41,22 @@ module.exports = React.createClass({
 		    month = '0' + month;
 		}
 		today = year + "-" + month + "-" + day;
-		var dateString = "SGD " + today;
-		var dateText = <span className="legend-entry-container" style={{marginLeft: `${this.props.leftRatio * 25}%`, marginRight: `${this.props.leftRatio * 200}%`, position: "relative"}}>{dateString}</span>
+		var mod = "SGD";
+		// var modText = <span className="legend-entry-container" style={{marginLeft: `${this.props.leftRatio * 25}%`, marginRight: `${this.props.leftRatio * 200}%`, position: "relative"}}>{dateString}</span>
+		var modText = <span className="legend-entry-container" style={{left: "2%", position: "relative"}}>{mod}</span>
+		var dateText = <span className="legend-entry-container" style={{left: "85%", position: "relative"}}>{today}</span>
+
 
 		return (
 			<div className="viz-legend">
+			     <div>
 				{labelText}
 				{elementNodes}
+			     </div>
+			     <div>
+			        {modText}
 				{dateText}
+			     </div>
 			</div>
 		);
 	}
