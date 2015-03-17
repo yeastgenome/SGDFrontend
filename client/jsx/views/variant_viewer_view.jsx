@@ -2,8 +2,8 @@
 "use strict";
 
 var React = require("react");
-var AsyncVariantMap = React.createFactory(require("../components/variant_map/async_variant_map.jsx"));
-var Drawer = React.createFactory(require("../components/variant_map/drawer.jsx"));
+var AsyncVariantMap = require("../components/variant_map/async_variant_map.jsx");
+var Drawer = require("../components/variant_map/drawer.jsx");
 var LocalStorageSetup = require("../lib/local_storage_setup.jsx");
 
 // router stuff
@@ -17,7 +17,7 @@ view.render = function () {
 	(new LocalStorageSetup()).checkCache(cacheBustingToken);
 
 	// blank react component to make no drawer
-	var BlankComponent = React.createFactory(React.createClass({ render: function () { return <span />; }}));
+	var BlankComponent = React.createClass({ render: function () { return <span />; }});
 
 	var routes = (
 		<Route path="/" handler={AsyncVariantMap}>
@@ -30,7 +30,6 @@ view.render = function () {
 		</Route>
 	);
 
-	// React.render(<AsyncVariantMap />, document.getElementById("j-main"))
 	Router.run(routes, (Handler) => {
 		React.render(<Handler />, document.getElementById("j-main"));
 	});

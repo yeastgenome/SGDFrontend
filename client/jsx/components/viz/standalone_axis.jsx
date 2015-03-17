@@ -6,7 +6,7 @@ var React = require("react");
 
 var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
 
-module.exports = React.createClass({
+var StandaloneAxis = React.createClass({
 	mixins: [CalcWidthOnResize],
 
 	getDefaultProps: function () {
@@ -115,3 +115,5 @@ module.exports = React.createClass({
 	}
 
 });
+
+module.exports = StandaloneAxis;

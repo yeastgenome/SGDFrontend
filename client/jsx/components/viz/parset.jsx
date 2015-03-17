@@ -9,7 +9,7 @@ var _ = require("underscore");
 var HEIGHT = 100;
 var LINE_HEIGHT = 6;
 
-module.exports = React.createClass({
+var Parset = React.createClass({
 	propTypes: {
 		isVisible: React.PropTypes.bool,
 		x1Coordinates: React.PropTypes.array,
@@ -82,3 +82,5 @@ module.exports = React.createClass({
 		</g>);
 	}
 });
+
+module.exports = Parset;

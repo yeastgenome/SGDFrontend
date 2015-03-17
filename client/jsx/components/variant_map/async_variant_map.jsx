@@ -5,7 +5,6 @@ var React = require("react");
 var _ = require("underscore");
 
 var AlignmentIndexModel = require("../../models/alignment_index_model.jsx");
-var Drawer = React.createFactory(require("./drawer.jsx"));
 var RadioSelector = React.createFactory(require("../widgets/radio_selector.jsx"));
 var SearchBar = React.createFactory(require("../widgets/search_bar.jsx"));
 var VariantHeatmap = React.createFactory(require("./variant_heatmap.jsx"));
