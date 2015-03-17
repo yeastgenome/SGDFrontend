@@ -3,6 +3,7 @@
 
 var React = require("react");
 var AsyncVariantMap = React.createFactory(require("../components/variant_map/async_variant_map.jsx"));
+var Drawer = React.createFactory(require("../components/variant_map/drawer.jsx"));
 var LocalStorageSetup = require("../lib/local_storage_setup.jsx");
 
 // router stuff
@@ -20,10 +21,10 @@ view.render = function () {
 	var routes = (
 		<Route path="/" handler={AsyncVariantMap}>
 			<DefaultRoute
-				name="index" handler={BlankComponent}
+				name="variantViewerIndex" handler={BlankComponent}
 		    />
 		    <Route
-		    	name="shallowDrawer" path="/:featureId" handler={BlankComponent}
+		    	name="shallowDrawer" path="/:locusId" handler={Drawer}
 		    />
 		</Route>
 	);

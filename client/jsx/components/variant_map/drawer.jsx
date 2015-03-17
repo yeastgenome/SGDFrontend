@@ -9,17 +9,21 @@ var MultiAlignmentViewer = require("./multi_alignment_viewer.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
 var Parset = require("../viz/parset.jsx");
 
+// router stuff
+var Router = require("react-router");
+var { Route, RouteHandler, Link, Transition } = Router;
+
 var HEIGHT_WITH_SEQUENCE = 680;
 var HEIGHT_WITHOUT_SEQUENCE = 345;
 
 module.exports = React.createClass({
+	mixins: [Router.Navigation, Router.State],
 
 	propTypes: {
 		isProteinMode: React.PropTypes.bool,
 		locusId: React.PropTypes.number.isRequired,
 		locusName: React.PropTypes.string.isRequired,
 		locusHref: React.PropTypes.string.isRequired,
-		onExit: React.PropTypes.func.isRequired,
 		strainIds: React.PropTypes.array.isRequired
 	},
 
@@ -98,7 +102,7 @@ module.exports = React.createClass({
 			alignmentModel: null,
 			isPending: true
 		});
-		this.props.onExit();
+		this.transitionTo("variantViewerIndex");
 	},
 
 	_fetchData: function () {

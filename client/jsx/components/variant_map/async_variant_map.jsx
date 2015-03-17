@@ -19,7 +19,7 @@ var { Route, RouteHandler, Link, Transition } = Router;
 var REFERENCE_STRAIN_ID = 1;
 
 module.exports = React.createClass({
-	mixins: [Router.Navigation],
+	mixins: [Router.Navigation, Router.State],
 
 	getInitialState: function () {
 		return {
@@ -112,7 +112,7 @@ module.exports = React.createClass({
 		// TEMP
 		// play with router
 		var _onClick = d => {
-			this.transitionTo("shallowDrawer",{ featureId: d.id});
+			this.transitionTo("shallowDrawer",{ locusId: d.id});
 			// this.setState({
 			// 	drawerVisible: true,
 			// 	activeLocusId: d.id
@@ -150,8 +150,20 @@ module.exports = React.createClass({
 	},
 
 	_getDrawerNode: function () {
-		return RouteHandler(null, {
-		});
+		var _locusId = this.getParams().locusId;
+		if (_locusId) _locusId = parseInt(_locusId);
+		var _locusData = _.findWhere(this.state.lociData, { id: _locusId });
+		var _locusName = _locusData ? _locusData.display_name : "";
+		var _locusHref = _locusData ? _locusData.link : "";
+		var _strainIds = [REFERENCE_STRAIN_ID].concat(this.state.activeStrainIds);
+		return (<RouteHandler
+			locusData={_locusData}
+			locusId={_locusId}
+			locusName={_locusName}
+			locusHref={_locusHref}
+			isProteinMode={this.state.isProteinMode}
+			strainIds={_strainIds}
+		/>);
 		// var node = null;
 		// if (this.state.activeLocusId) {
 		// 	var _strainIds = [REFERENCE_STRAIN_ID].concat(this.state.activeStrainIds);
