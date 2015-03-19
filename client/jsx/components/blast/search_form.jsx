@@ -671,12 +671,13 @@ module.exports = React.createClass({
                 });
 		
 		if (removed >= 1) {
-
-		    // if (goodDatabase) {
-		    //     alert("The above mentioned dataset(s) have been removed from your request. Your BLAST search is starting with the following datasets: " + goodDatabase);
-		    // }
-
 		    if (databaseType) {
+		        if (databaseType == 'dna') {
+			    databaseType = 'DNA';
+			}
+			if (programType == 'dna') {
+			    programType = 'DNA';
+			}
 		        if (removed > 1) {
 		            badDatabase = badDatabase.replace(/ /g, ", ");
 			    badDatabase = badDatabase.replace(/^, /, "");
