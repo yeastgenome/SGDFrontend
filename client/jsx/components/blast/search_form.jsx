@@ -664,11 +664,11 @@ module.exports = React.createClass({
 		        if (removed > 1) {
 		            badDatabase = badDatabase.replace(/ /g, ", ");
 			    badDatabase = badDatabase.replace(/^, /, "");
-		            alert("Dataset(s): " + badDatabase + ", are " + databaseType + " sequence datasets and thus do not work with " + program.toUpperCase() + ", which requires " + programType + " sequences.");
+			    alert("The following datasets contain " + databaseType + " sequence and thus do not work with " + program.toUpperCase() + ", which requires " + programType + " sequences: " + badDatabase + "\n\n" + "Click OK to see results with these datasets excluded.");
 		        }
 			else {
-			    alert("Dataset(s): " + badDatabase + " is " + databaseType + " sequence dataset and thus does not work with " + program.toUpperCase() + ", which requires " + programType + " sequences.");
-			}
+			    alert("The following dataset contains " + databaseType + " sequence and thus does not work with " + program.toUpperCase() + ", which requires " + programType + " sequences: " + badDatabase + "\n\n" + "Click OK to see results with this dataset excluded.");
+                        }
 		    }
 		    if (!goodDatabase) {
 		    	alert("Your choice of datasets does not include one that is appropriate for " + program + ". BLASTP and BLASTX require a protein sequence database and other BLAST programs require a nucleotide sequence database. Adjust either the program or database selection before submitting your search.");
