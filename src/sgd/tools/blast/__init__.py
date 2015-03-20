@@ -24,16 +24,17 @@ def _run_blast(p):
 
     from urllib2 import Request, urlopen, URLError
 
-    url = _construct_blast_url(p)
-    
-    req = Request(url)
+    paramData = _construct_blast_parameters(p)
+
+    url = config.compute_url + "cgi-bin/blast2.pl"
+
+    req = Request(url=url, data=paramData)
 
     res = urlopen(req)
 
     result = res.read()
 
     dataSet = result.split("\t")
-
     
     if dataSet[1]:
         data = { "result": dataSet[0],
@@ -48,8 +49,7 @@ def _run_blast(p):
 
     return data
 
-
-def _construct_blast_url(p):
+def _construct_blast_parameters(p):
 
     program = p.get('program')
     database = p.get('database')
@@ -66,16 +66,23 @@ def _construct_blast_url(p):
 
     blastOptions = _get_blast_options(p)
 
-    url = config.compute_url + "cgi-bin/blast3.pl?"
-
-    database = database.replace(',', ' ');
-    database = database.replace('  ', ' ');
+    database = database.replace(',', ' ')
+    database = database.replace('  ', ' ')
     database = database.replace(' ', '+')
 
     blastOptions = blastOptions.replace(' ', '+')
-    url = url + "program=" + program + "&dataset=" + database + "&sequence=" + seq + "&seqname=" + seqname + "&config=" + confFile + "&options=" + blastOptions + "&filtering=" + str(filtering) + "&alignToShow=" + str(p.get('alignToShow'))
+
+    import urllib
     
-    return url
+    paramData = urllib.urlencode({ 'program': program,
+                                   'dataset': database,
+                                   'sequence': seq,
+                                   'seqname': seqname,
+                                   'config': confFile,
+                                   'options': blastOptions,
+                                   'filtering': filtering,
+                                   'alignToShow': p['alignToShow'] })
+    return paramData
 
     
 def _get_seq(name, type):
