@@ -185,7 +185,7 @@ module.exports = React.createClass({
 		if ((endX - startX) > POINT_WIDTH) {
 			  shapeNode = <path d={pathString} fill={_color} opacity={_opacity} onClick= {_onClick} onMouseOver={_onMouseover} />;
 		} else {  // too small; rect
-			shapeNode = <rect x={0} width={endX - startX} height={HEIGHT} opacity={_opacity} onClick= {_onClick} onMouseOver={_onMouseover} />;
+			shapeNode = <rect x={0} width={endX - startX} height={HEIGHT} fill={_color} opacity={_opacity} onClick= {_onClick} onMouseOver={_onMouseover} />;
 		}
 
 		var _transform = this._getGroupTransform(d);
