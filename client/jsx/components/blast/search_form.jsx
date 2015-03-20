@@ -22,7 +22,7 @@ module.exports = React.createClass({
 		var param = params.getParams();
 		
 		var submitted = '';
-		if (param['seq'] && param['program']) {
+		if (param['program']) {
 		     submitted = 1;
 		}
 		else {
@@ -164,7 +164,7 @@ module.exports = React.createClass({
 				
 			return (<div>
 			        <div dangerouslySetInnerHTML={{ __html: descText}} />
-				<form onSubmit={this._onSubmit}>
+				<form onSubmit={this._onSubmit} target="search_result">
 					<div className="row">
                         		     <div className="large-12 columns">
                                		     	  { commentBoxNode }
@@ -359,7 +359,7 @@ module.exports = React.createClass({
 		     }
                 });
 
-                return <p><select ref='outFormat' name='outFormat' onChange={this._onChange}>{_elements}</select></p>;
+                return <p><select ref='outFormat' onChange={this._onChange}>{_elements}</select></p>;
              
         },
 
@@ -367,14 +367,14 @@ module.exports = React.createClass({
                 if (!data.matrix) return null;
                 var matrix = data.matrix;
 		var _elements = this._getDropdownList(matrix, "BLOSUM62");
-		return <p><select ref='matrix' name='matrix' onChange={this._onChange}>{_elements}</select></p>;
+		return <p><select ref='matrix' onChange={this._onChange}>{_elements}</select></p>;
         },
 
         _getCutoffScoreMenu: function() {
 
                 var cutoffScore = ['default', '30', '50', '70', '90', '110'];
 		var _elements = this._getDropdownList(cutoffScore, "default");
-		return <p><select ref='cutoffScore' name='cutoffScore' onChange={this._onChange}>{_elements}</select></p>;
+		return <p><select ref='cutoffScore' onChange={this._onChange}>{_elements}</select></p>;
 
         },
 
@@ -382,7 +382,7 @@ module.exports = React.createClass({
 
                 var wordLength = ['default', '15', '14', '13', '12', '11', '10', '9', '8', '7', '6', '5', '4', '3', '2'];
 		var _elements = this._getDropdownList(wordLength, "default");
-		return <p><select ref='wordLength' name='wordLength' onChange={this._onChange}>{_elements}</select></p>;
+		return <p><select ref='wordLength' onChange={this._onChange}>{_elements}</select></p>;
 
         },
 
@@ -390,7 +390,7 @@ module.exports = React.createClass({
 
                 var threshold = ['default', '0.0001', '0.01', '1', '10', '100', '1000'];
 		var _elements = this._getDropdownList(threshold, "default");
-      		return <p><select ref='threshold' name='threshold' onChange={this._onChange}>{_elements}</select></p>;
+      		return <p><select ref='threshold' onChange={this._onChange}>{_elements}</select></p>;
 
         },
 
@@ -404,7 +404,7 @@ module.exports = React.createClass({
 		}
 		alignToShow.unshift(defaultVal);
 		var _elements = this._getDropdownList(alignToShow, defaultVal);
-		return <p><select ref='alignToShow' name='alignToShow' onChange={this._onChange}>{_elements}</select></p>;
+		return <p><select ref='alignToShow' onChange={this._onChange}>{_elements}</select></p>;
 
         },
 
@@ -471,16 +471,12 @@ module.exports = React.createClass({
 
 	_onSubmit: function (e) {
 
-		e.preventDefault();
-
 		var queryComment = this.refs.queryComment.getDOMNode().value.trim();
 		var seq = this.refs.sequence.getDOMNode().value.trim();
 		if (seq == '') {
 		    seq = this.state.uploadedSeq;
 		}
 		var program = this.refs.program.getDOMNode().value.trim();
-                // var database = this.refs.database.getDOMNode().value;
-		
 		var dbs = document.getElementById('database');
 		var database = '';
 		for (var i = 0; i < dbs.options.length; i++) {
@@ -514,51 +510,38 @@ module.exports = React.createClass({
 
 		if (newDatabase) {
 		    database = newDatabase;
+		    window.localStorage.clear();
+		    window.localStorage.setItem("seq", seq);
+		    window.localStorage.setItem("program", program);
+		    window.localStorage.setItem("database", database);
+		    window.localStorage.setItem("outFormat", outFormat);
+		    window.localStorage.setItem("matrix", matrix);
+		    window.localStorage.setItem("cutoffScore", cutoffScore);
+		    window.localStorage.setItem("wordLength", wordLength);
+		    window.localStorage.setItem("threshold", threshold);
+		    window.localStorage.setItem("alignToShow", alignToShow);
+		    window.localStorage.setItem("filter", filter);
 		}
 		else {
+		    e.preventDefault();
 		    return 1; 
 		}
-
-		var script = "blast-sgd";
-                if (this.props.blastType == 'fungal') {
-                    script = "blast-fungal";
-                }
-
-		// var parameter = "?program=" + program +"&database=" + database + "&seq=" + seq + "&outFormat=" + outFormat + "&matrix=" + matrix + "&cutoffScore=" + cutoffScore + "&wordLength=" + wordLength + "&threshold=" + threshold + "&alignToShow=" + alignToShow + "&filter=" + filter;
-		// var resultUrl = script + parameter;
-		// window.open(resultUrl,'result','left=10,top=10,width=1000,height=500');
-
-		var form = $('<form method="GET" action=' + script + ' target="blast_result_win">' + 
-			 '<input type="hidden" name="seq" value="' + seq + '" />' + 
-			 '<input type="hidden" name="program" value="' + program + '" />' +
-			 '<input type="hidden" name="database" value="' + database + '" />' +
-			 '<input type="hidden" name="outFormat" value="' + outFormat + '" />' +
-			 '<input type="hidden" name="matrix" value="' + matrix + '" />' +
-			 '<input type="hidden" name="cutoffScore" value="' + cutoffScore + '" />' +
-                         '<input type="hidden" name="wordLength" value="' + wordLength + '" />' +
-                         '<input type="hidden" name="threshold" value="' + threshold + '" />' +
-                         '<input type="hidden" name="alignToShow" value="' + alignToShow + '" />' +
-                         '<input type="hidden" name="filter" value="' + filter + '" />' +			 
-		'</form>');
-		$('body').append(form);
-		form.submit();
 
 	},
 
 	_doBlast: function() {
 
-		var param = this.state.param;
-	        // var queryComment = param['queryComment'];
-                var seq = param['seq'];
-                var program = param['program'];
-                var database = param['database'];
-		var outFormat = param['outFormat'];
-                var matrix = param['matrix'];
-                var cutoffScore = param['cutoffScore'];
-                var wordLength = param['wordLength'];
-                var threshold = param['threshold'];
-                var alignToShow = param['alignToShow'];
-                var filter = param['filter'];
+		var seq = window.localStorage.getItem("seq");
+		var program = window.localStorage.getItem("program");
+		var database = window.localStorage.getItem("database");
+		var outFormat = window.localStorage.getItem("outFormat");
+                var matrix = window.localStorage.getItem("matrix");
+                var cutoffScore = window.localStorage.getItem("cutoffScore");
+                var wordLength = window.localStorage.getItem("wordLength");
+                var threshold = window.localStorage.getItem("threshold");
+                var alignToShow = window.localStorage.getItem("alignToShow");
+                var filter = window.localStorage.getItem("filter");
+
 		$.ajax({
 			url: "/do_blast",
 			data_type: 'json',
