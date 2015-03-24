@@ -43,7 +43,7 @@ module.exports = React.createClass({
 
 			return (
 				<div className="radio-element-container" style={{ display: "inline-block", width: widthPercent }} key={"radioElement" + i}>
-					<input type="radio" onChange={_onClick} id={d.key} name={d.key} value={d.key} checked={_checked}>
+					<input type="radio" onChange={_onClick} id={d.key} value={d.key} checked={_checked}>
 						<label onClick={_onClick}>{d.name}</label>
 					</input>
 				</div>
