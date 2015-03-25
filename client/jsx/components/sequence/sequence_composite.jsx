@@ -153,6 +153,7 @@ module.exports = React.createClass({
 			tableNode = this._getSubFeaturesTable();
 			var _params = _.extend(this.props.detailsModel.attributes.subFeatureDownloadData, { display_name: `${this.props.focusLocusDisplayName}_subfeatures` });
 			downloadNode = this.props.isSimplified ? null : <DownloadButton buttonId="subfeature_table_download" url="/download_table" params={_params} />;
+
 		}
 
 		return (<div className="panel sgd-viz sequence-details-container">
@@ -161,7 +162,6 @@ module.exports = React.createClass({
 			{downloadNode}
 		</div>);
 	},
-
 	_getSequenceNode: function () {
 		if (!this.props.showSequence || this.props.isSimplified) return null;
 

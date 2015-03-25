@@ -12,6 +12,8 @@ var views = {
 	sequence: require("./views/sequence_view.jsx"),
 	snapshot: require("./views/snapshot_view.jsx"),
 	suggestion: require("./views/suggestion_view.jsx"),
+	blast_sgd: require("./views/blast_sgd_view.jsx"),
+	blast_fungal: require("./views/blast_fungal_view.jsx"),
 	summary: require("./views/summary_view.jsx")
 };
 
