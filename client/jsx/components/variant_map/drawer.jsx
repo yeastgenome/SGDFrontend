@@ -39,7 +39,6 @@ var Drawer = React.createClass({
 			showSequence: false,
 			isPending: true,
 			highlightedAlignedSegment: null, // [0, 100] relative coord to aligned sequence
-			highlightedSegment: null, // [0, 100] relative coord
 			parsetVisible: false,
 			x1Scale: function () { return 0; },
 			x2Scale: function () { return 0; }
@@ -125,7 +124,6 @@ var Drawer = React.createClass({
 		
 		this.setState({
 			highlightedAlignedSegment: [start, end],
-			highlightedSegment: [x1Start, x1End],
 			parsetVisible: true
 		});
 	},
@@ -149,6 +147,7 @@ var Drawer = React.createClass({
 			} else {
 				_highlightDomain = [end - 1, start - 1];
 			}
+			_highlightDomain = _.sortBy(_highlightDomain);
 			this._highlightSegment(_highlightDomain[0], _highlightDomain[1]);
 		};
 
