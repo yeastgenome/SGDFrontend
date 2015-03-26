@@ -4,7 +4,7 @@
 var React = require("react");
 var _ = require("underscore");
 
-var Checklist = React.createFactory(require("../widgets/checklist.jsx"));
+var Checklist = require("../widgets/checklist.jsx");
 var DidClickOutside = require("../mixins/did_click_outside.jsx");
 
 var WIDTH = 350;

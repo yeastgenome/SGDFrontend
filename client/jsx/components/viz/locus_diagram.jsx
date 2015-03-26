@@ -6,12 +6,12 @@ var d3 = require("d3");
 var _ = require("underscore");
 
 var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
-var ChromosomeThumb = React.createFactory(require("./chromosome_thumb.jsx"));
-var FlexibleTooltip = React.createFactory(require("../widgets/flexible_tooltip.jsx"));
-var HelpIcon = React.createFactory(require("../widgets/help_icon.jsx"));
+var ChromosomeThumb = require("./chromosome_thumb.jsx");
+var FlexibleTooltip = require("../widgets/flexible_tooltip.jsx");
+var HelpIcon = require("../widgets/help_icon.jsx");
 var SequenceDetailsModel = require("../../models/sequence_details_model.jsx");
 var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
-var StandaloneAxis = React.createFactory(require("./standalone_axis.jsx"));
+var StandaloneAxis = require("./standalone_axis.jsx");
 var subFeatureColorScale = require("../../lib/locus_format_helper.jsx").subFeatureColorScale();
 
 var AXIS_LABELING_HEIGHT = 24;

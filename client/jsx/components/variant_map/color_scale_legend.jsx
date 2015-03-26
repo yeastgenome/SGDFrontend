@@ -5,7 +5,7 @@ var d3 = require("d3");
 var React = require("react");
 var _ = require("underscore");
 
-var HelpIcon = React.createFactory(require("../widgets/help_icon.jsx"));
+var HelpIcon = require("../widgets/help_icon.jsx");
 
 var NUM_BOXES = 5;
 var NODE_SIZE = 17;

@@ -5,9 +5,9 @@ var React = require("react");
 var _ = require("underscore");
 
 var AlignmentShowModel = require("../../models/alignment_show_model.jsx");
-var MultiAlignmentViewer = React.createFactory(require("./multi_alignment_viewer.jsx"));
-var LocusDiagram = React.createFactory(require("../viz/locus_diagram.jsx"));
-var Parset = React.createFactory(require("../viz/parset.jsx"));
+var MultiAlignmentViewer = require("./multi_alignment_viewer.jsx");
+var LocusDiagram = require("../viz/locus_diagram.jsx");
+var Parset = require("../viz/parset.jsx");
 
 // router stuff
 var Router = require("react-router");

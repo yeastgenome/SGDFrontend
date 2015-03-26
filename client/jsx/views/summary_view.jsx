@@ -5,11 +5,11 @@ var $ = require("jquery");
 var _ = require("underscore");
 var React = require("react");
 
-var AsyncSequenceView = React.createFactory(require("../components/sequence/async_sequence_view.jsx"));
-var ExpressionChart = React.createFactory(require("../components/viz/expression_chart.jsx"));
-var HistoryTable = React.createFactory(require("../components/sequence/history_table.jsx"));
-var NavBar = React.createFactory(require("../components/widgets/navbar.jsx"));;
-var ReferenceList = React.createFactory(require("../components/literature/reference_list.jsx"));
+var AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");
+var ExpressionChart = require("../components/viz/expression_chart.jsx");
+var HistoryTable = require("../components/sequence/history_table.jsx");
+var NavBar = require("../components/widgets/navbar.jsx");
+var ReferenceList = require("../components/literature/reference_list.jsx");
 var TabsModel = require("../models/tabs_model.jsx");
 
 var summaryView = {};

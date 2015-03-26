@@ -25,10 +25,10 @@ var Navbar = React.createClass({
 
 	render: function () {
 
-		var listElements = _.map(this.props.elements, element => {
+		var listElements = _.map(this.props.elements, (element, i) => {
 			if (!element) return null;
 			return (
-				<li id={`navbar_${element.target}`}>
+				<li id={`navbar_${element.target}`} key={"navbarElement" + i}>
 					<a href={`#${element.target}`}>{element.name}</a>
 				</li>
 			);

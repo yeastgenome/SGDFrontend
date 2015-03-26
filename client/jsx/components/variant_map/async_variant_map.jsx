@@ -5,15 +5,15 @@ var React = require("react");
 var _ = require("underscore");
 
 var AlignmentIndexModel = require("../../models/alignment_index_model.jsx");
-var RadioSelector = React.createFactory(require("../widgets/radio_selector.jsx"));
-var SearchBar = React.createFactory(require("../widgets/search_bar.jsx"));
-var VariantHeatmap = React.createFactory(require("./variant_heatmap.jsx"));
-var StrainSelector = React.createFactory(require("./strain_selector.jsx"));
+var RadioSelector = require("../widgets/radio_selector.jsx");
+var SearchBar = require("../widgets/search_bar.jsx");
+var VariantHeatmap = require("./variant_heatmap.jsx");
+var StrainSelector = require("./strain_selector.jsx");
 
 // router stuff
 var Router = require("react-router");
 var { Route, RouteHandler, Link, Transition } = Router;
-RouteHandler = React.createFactory(RouteHandler);
+RouteHandler = RouteHandler;
 
 // id to filter out
 var REFERENCE_STRAIN_ID = 1;

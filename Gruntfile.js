@@ -119,9 +119,7 @@ module.exports = function(grunt) {
                 dest: BUILD_PATH + "js/application.js",
                 src: "client/jsx/application.jsx",
                 browserifyOptions: {
-                    bundleOptions: {
-                        debug: true
-                    }
+                    debug: true
                 }
             }
         },
