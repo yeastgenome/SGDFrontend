@@ -118,8 +118,10 @@ module.exports = function(grunt) {
             dev: {
                 dest: BUILD_PATH + "js/application.js",
                 src: "client/jsx/application.jsx",
-                browserifyOptions: {
-                    debug: true
+                options: {
+                    browserifyOptions: {
+                        debug: true
+                    }
                 }
             }
         },
