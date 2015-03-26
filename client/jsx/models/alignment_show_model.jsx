@@ -9,8 +9,17 @@ var REFERENCE_DISPLAY_NAME = "S288C";
 module.exports = class AlignmentShowModel extends BaseModel {
 
 	constructor (options) {
-		// TEMP use dev endpoint always
-		options.url = options.url || "http://sgd-dev.stanford.edu/webservice/alignments/" + options.id + "?callback=?";
+		// add strain id segment to url if strainIds defined
+		var strainIdUrlSegment = "";
+		if (options.strainIds) {
+			strainIdUrlSegment = _.reduce(options.strainIds, (memo, d, i) => {
+				return memo + "strain_id=" + d.toString() + "&";
+			}, "");
+			console.log(strainIdUrlSegment)
+		}
+		// TEMP use dev
+		options.url = options.url || "http://sgd-dev.stanford.edu/backend/alignments/" + options.id + "?" + strainIdUrlSegment + "callback=?" ;
+		
 		super(options);
 	}
 

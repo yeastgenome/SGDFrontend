@@ -26,40 +26,6 @@ module.exports = class BaseModel {
 		});
 	}
 
-	// TEMP, needs variable storage key
-	// NOT WORKING
-	// callback(err, response)
-	cacheOrFetch(callback) {
-		var currentTime = (new Date()).getTime();
-		// cache from local storage, otherwise normal fetch
-		var storageKey = "/backend/alignments";
-		var maybeCachedResponse = JSON.parse(localStorage.getItem(storageKey));
-		// check time of contents and delete if too old
-		if (maybeCachedResponse) {
-			var time = maybeCachedResponse.time;
-			var content = maybeCachedResponse.content;
-			if (currentTime > time + LOCAL_STORAGE_TIMEOUT) {
-				maybeCachedResponse = false;
-			}
-		}
-
-		// cached data available, use
-		if (maybeCachedResponse) {
-			this.attributes = maybeCachedResponse;
-			callback(null, maybeCachedResponse);
-		// not in cache, fetch and set for next time
-		} else {
-			this.fetch( (err, resp) => {
-				var _localStorePayload = {
-					time: currentTime,
-					content: resp
-				};
-				localStorage.setItem(storageKey, JSON.stringify(_localStorePayload));
-				callback(err, resp);
-			})
-		}
-	}
-
 	/*
 		Any transformations on the response should be overwritten in this method.
 	*/

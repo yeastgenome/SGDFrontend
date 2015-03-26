@@ -105,7 +105,10 @@ var Drawer = React.createClass({
 	},
 
 	_fetchData: function () {
-		var showModel = new AlignmentShowModel({ id: this.props.locusId });
+		var showModel = new AlignmentShowModel({
+			id: this.props.locusId,
+			strainIds: this.props.strainIds
+		});
 		showModel.fetch( (err, res) => {
 			if (this.isMounted()) this.setState({
 				alignmentModel: showModel,
