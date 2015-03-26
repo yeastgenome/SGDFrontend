@@ -13,6 +13,7 @@ var SequenceDetailsModel = require("../../models/sequence_details_model.jsx");
 var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
 var StandaloneAxis = require("./standalone_axis.jsx");
 var subFeatureColorScale = require("../../lib/locus_format_helper.jsx").subFeatureColorScale();
+var VariantPop = require("./variant_pop.jsx");
 
 var AXIS_LABELING_HEIGHT = 24;
 var HEIGHT = 17;
@@ -596,38 +597,12 @@ var LocusDiagram = React.createClass({
 		var scale = this._getScale();
 		var yCoordinate = this._getTransformObject(focusLocus).y - HEIGHT;
 		return _.map(this.props.variantData, (d, i) => {
-			var _avgCoor = (d.coordinateDomain[0] + d.coordinateDomain[1]) / 2;
-			var _midX = scale(_avgCoor)
-			var _transform = `translate(${_midX}, ${yCoordinate})`;
-			var _onMouseOver = e => {
-				this.props.onVariantMouseOver(d.start, d.end);
-			};
-
-			var tipNode;
-			var _tipStyle = { fontFamily: "FontAwesome", textAnchor: "middle", fontSize: 16 };
-			if (d.variant_type === "Insertion") {
-				tipNode = <text style={_tipStyle}>&#xf077;</text>;
-			} else if (d.variant_type === "Deletion") {
-				tipNode = <text style={_tipStyle}>&#xf057;</text>;
-			} else {
-				tipNode = <circle r="7" fill="#1287C5"/>;
-			}
-
-			var lineNode;
-			if (d.variant_type === "Deletion") {
-				var _delta = Math.abs(scale(d.coordinateDomain[1]) - scale(d.coordinateDomain[0]));
-				lineNode = (<g>
-					<line x1={ -0.5 * _delta} x2={0.5 * _delta} y1="12" y2="12" stroke="black" strokeWidth="1px" />
-					<line x1="0" x2="0" y1="0" y2="12" stroke="black" strokeWidth="2px" />
-				</g>);
-			} else {
-				lineNode = <line x1="0" x2="0" y1="0" y2="25" stroke="black" strokeWidth="2px" />;
-			}
-
-			return (<g transform={_transform} key={"variantNode" + i} onMouseOver={_onMouseOver}>
-				{lineNode}
-				{tipNode}
-			</g>);
+			return (<VariantPop
+				data={d}
+				scale={scale}
+				y={yCoordinate}
+				key={"variantNode" + i}
+			/>);
 		});
 	},
 
