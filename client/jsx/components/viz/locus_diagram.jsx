@@ -22,12 +22,6 @@ var TRACK_SPACING = 10;
 var MIN_BP_WIDTH = 200; // show at least 200 BP
 var MOUSE_CAPTURE_TIME = 500; // millis until scrollwhell events are captured
 
-var VIZ_HEIGHT_FN = function (watsonTracks, crickTracks) {
-	return ((watsonTracks) * (HEIGHT + TRACK_SPACING) +  TRACK_SPACING + 
-		(crickTracks) * (HEIGHT + TRACK_SPACING) + TRACK_SPACING
-	);
-};
-
 var LocusDiagram = React.createClass({
 	mixins: [CalcWidthOnResize],
 
@@ -69,25 +63,14 @@ var LocusDiagram = React.createClass({
 	},
 
 	render: function () {
-		var height = VIZ_HEIGHT_FN(this.props.watsonTracks, this.props.crickTracks);
-
-		var controlsNode = this._getControlsNode();
-
+		var height = this._getHeight(this.props.watsonTracks, this.props.crickTracks);
 		var _ticks = (this.state.DOMWidth > 400) ? null : 3;
 		var _domain = this.props.relativeCoordinateAxis ? this._getRelativeCoordDomain() : this._getScale().domain();
-		var axisNode = (<StandaloneAxis 
-			domain={_domain} orientation="bottom"
-			gridTicks={true} ticks={_ticks}
-			height={height + AXIS_LABELING_HEIGHT} tickFormat={d => { return d; }}
-		/>);
-
 		var locciNodes = _.map(this.props.data.locci, (d, i) => { return this._getLocusNode(d, i); });
-		var highlightedSegmentNode = this._getHighlightedSegmentNode();
 
-		var variantNodes = this._getVariantNodes();
 		return (
 			<div className="locus-diagram" onMouseLeave={this._clearMouseOver} onClick={this._clearMouseOver}>
-				{controlsNode}
+				{this._getControlsNode()}
 				<div className="locus-diagram-viz-container" style={{ position: "relative" }}>
 					<FlexibleTooltip
 						visible={this.state.tooltipVisible} left={this.state.tooltipLeft} top={this.state.tooltipTop}
@@ -95,16 +78,26 @@ var LocusDiagram = React.createClass({
 						href={this.state.tooltipHref}
 					/>
 					<div className="locus-diagram-axis-container" style={{ position: "absolute", top: 0, width: "100%" }}>
-						{axisNode}
+						<StandaloneAxis 
+							domain={_domain} orientation="bottom"
+							gridTicks={true} ticks={_ticks}
+							height={height + AXIS_LABELING_HEIGHT} tickFormat={d => { return d; }}
+						/>
 					</div>
 					<svg ref="svg" className="locus-svg" onMouseEnter={this._onSVGMouseEnter} onMouseLeave={this._onSVGMouseLeave} style={{ width: "100%", height: height, position: "relative" }}>
 						<line className="midpoint-marker" x1="0" x2={this.state.DOMWidth} y1={this._getMidpointY()} y2={this._getMidpointY()} />
-						{highlightedSegmentNode}
+						{this._getHighlightedSegmentNode()}
 						{locciNodes}
-						{variantNodes}
+						{this._getVariantNodes()}
 					</svg>
 				</div>
 			</div>
+		);
+	},
+
+	_getHeight: function (watsonTracks, crickTracks) {
+		return ((watsonTracks) * (HEIGHT + TRACK_SPACING) +  TRACK_SPACING + 
+			(crickTracks) * (HEIGHT + TRACK_SPACING) + TRACK_SPACING
 		);
 	},
 
@@ -599,6 +592,7 @@ var LocusDiagram = React.createClass({
 		return _.map(this.props.variantData, (d, i) => {
 			return (<VariantPop
 				data={d}
+				onMouseOver={this.props.onVariantMouseOver}
 				scale={scale}
 				y={yCoordinate}
 				key={"variantNode" + i}

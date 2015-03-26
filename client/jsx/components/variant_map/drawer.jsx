@@ -8,6 +8,7 @@ var AlignmentShowModel = require("../../models/alignment_show_model.jsx");
 var MultiAlignmentViewer = require("./multi_alignment_viewer.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
 var Parset = require("../viz/parset.jsx");
+var VariantPop = require("../viz/variant_pop.jsx");
 
 // router stuff
 var Router = require("react-router");
@@ -156,7 +157,14 @@ var Drawer = React.createClass({
 
 		var _refCoord = this._getRefHighlightedCoordinates(true);
 		return (<div>
-			<h3>S288C Location: <a href={locusData.contigData.link}>{locusData.contigData.display_name}</a> {locusData.start}..{locusData.end}</h3>
+			<div className="row">
+				<div className="columns small-12 medium-6">
+					<h3>S288C Location: <a href={locusData.contigData.link}>{locusData.contigData.display_name}</a> {locusData.start}..{locusData.end}</h3>
+				</div>
+				<div className="columns small-12 medium-6">
+					{this._getLegendNode()}
+				</div>
+			</div>
 			<LocusDiagram
 				focusLocusDisplayName={model.attributes.display_name} contigData={locusData.contigData}
 				data={locusData.data} domainBounds={locusData.domainBounds} variantData={variantData}
@@ -243,6 +251,59 @@ var Drawer = React.createClass({
 			node = <p className="text-center" style={{ marginTop: "1rem" }}><a className={_klass} onClick={_onClick}>Show Sequence</a></p>;
 		}
 		return node;
+	},
+
+	_getLegendNode: function () {
+		var _coordDom = [0, 0];
+		var y = 20;
+		var xSpacing = 85;
+		var legendData = [
+			{
+				coordinateDomain: _coordDom,
+				variant_type: "Deletion",
+			},
+			{
+				coordinateDomain: _coordDom,
+				variant_type: "Insertion",
+			},
+			{
+				coordinateDomain: _coordDom,
+				variant_type: "SNP",
+				snp_type: "Synonymous"
+			},
+			{
+				coordinateDomain: _coordDom,
+				variant_type: "SNP",
+				snp_type: "Nonsynonymous"
+			},
+			{
+				coordinateDomain: _coordDom,
+				variant_type: "SNP",
+				snp_type: "Intron"
+			},
+			{
+				coordinateDomain: _coordDom,
+				variant_type: "SNP",
+				snp_type: "Untranslatable"
+			},
+		];
+
+		var _transform, _text;
+		var legendNodes = _.map(legendData, (d, i) => {
+			_transform = `translate(${i * xSpacing}, ${y})`;
+			_text = (d.variant_type === "SNP") ? `${d.snp_type} SNP` : d.variant_type;
+			return (
+				<g key={"variantLegendNode" + i} transform={_transform}>
+					<VariantPop data={d}/>
+					<text transform="translate(8, 5)">{_text}</text>
+				</g>
+			);
+		});
+		return (
+			<svg width="100%" height="40px">
+				{legendNodes}
+			</svg>
+		);
 	},
 
 	_showSequence: function (e) {

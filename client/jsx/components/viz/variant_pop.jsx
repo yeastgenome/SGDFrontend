@@ -5,14 +5,15 @@ var React = require("react");
 var _ = require("underscore");
 
 // fill colors
-var SYNONYMOUS_COLOR = "blue";
-var NON_SYNONYMOUS_COLOR = "yellow";
-var INTRON_COLOR = "green";
+var SYNONYMOUS_COLOR = "#4D9221";  // dark yellow-green
+var NON_SYNONYMOUS_COLOR = "#C51B7D"; // dark pink
+var INTRON_COLOR = "#E6F5D0"; // pale yellow-green
 var UNTRANSLATEABLE_COLOR = "gray";
 
 var VariantPop = React.createClass({
 	propTypes: {
 		data: React.PropTypes.object.isRequired,
+		onMouseOver: React.PropTypes.func,
 		scale: React.PropTypes.func,
 		y: React.PropTypes.number
 	},
@@ -29,9 +30,11 @@ var VariantPop = React.createClass({
 		var _avgCoor = (d.coordinateDomain[0] + d.coordinateDomain[1]) / 2;
 		var _midX = this.props.scale(_avgCoor)
 		var _transform = `translate(${_midX}, ${this.props.y})`;
-		var _onMouseOver = e => {
-			this.props.onVariantMouseOver(d.start, d.end);
-		};
+		if (this.props.onMouseOver) {
+			var _onMouseOver = e => {
+				this.props.onMouseOver(d.start, d.end);
+			};
+		}
 
 		var tipNode;
 		var _tipStyle = { fontFamily: "FontAwesome", textAnchor: "middle", fontSize: 16 };
