@@ -256,8 +256,9 @@ var Drawer = React.createClass({
 
 	_getLegendNode: function () {
 		var _coordDom = [0, 0];
-		var y = 20;
-		var xSpacing = 85;
+		var startY = 15;
+		var x = 15;
+		var ySpacing = 15;
 		var legendData = [
 			{
 				coordinateDomain: _coordDom,
@@ -286,22 +287,22 @@ var Drawer = React.createClass({
 				coordinateDomain: _coordDom,
 				variant_type: "SNP",
 				snp_type: "Untranslatable"
-			},
+			}
 		];
 
 		var _transform, _text;
 		var legendNodes = _.map(legendData, (d, i) => {
-			_transform = `translate(${i * xSpacing}, ${y})`;
+			_transform = `translate(${x}, ${i * ySpacing + startY})`;
 			_text = (d.variant_type === "SNP") ? `${d.snp_type} SNP` : d.variant_type;
 			return (
 				<g key={"variantLegendNode" + i} transform={_transform}>
-					<VariantPop data={d}/>
-					<text transform="translate(8, 5)">{_text}</text>
+					<VariantPop data={d} hasStem={false} />
+					<text transform="translate(8, 0)">{_text}</text>
 				</g>
 			);
 		});
 		var _innnerNode = (
-			<svg width="100%" height="40px">
+			<svg width="150px" height="200px">
 				{legendNodes}
 			</svg>
 		);

@@ -13,6 +13,7 @@ var UNTRANSLATEABLE_COLOR = "gray";
 var VariantPop = React.createClass({
 	propTypes: {
 		data: React.PropTypes.object.isRequired,
+		hasStem: React.PropTypes.bool,
 		onMouseOver: React.PropTypes.func,
 		scale: React.PropTypes.func,
 		y: React.PropTypes.number
@@ -20,6 +21,7 @@ var VariantPop = React.createClass({
 
 	getDefaultProps: function () {
 		return {
+			hasStem: true,
 			scale: function () { return 0; },
 			y: 0
 		};
@@ -55,15 +57,17 @@ var VariantPop = React.createClass({
 			tipNode = <circle r="7" fill={_fill} />;
 		}
 
-		var lineNode;
-		if (d.variant_type === "Deletion") {
-			var _delta = Math.abs(this.props.scale(d.coordinateDomain[1]) - this.props.scale(d.coordinateDomain[0]));
-			lineNode = (<g>
-				<line x1={ -0.5 * _delta} x2={0.5 * _delta} y1="12" y2="12" stroke="black" strokeWidth="1px" />
-				<line x1="0" x2="0" y1="0" y2="12" stroke="black" strokeWidth="2px" />
-			</g>);
-		} else {
-			lineNode = <line x1="0" x2="0" y1="0" y2="25" stroke="black" strokeWidth="2px" />;
+		var lineNode = null;
+		if (this.props.hasStem) {
+			if (d.variant_type === "Deletion") {
+				var _delta = Math.abs(this.props.scale(d.coordinateDomain[1]) - this.props.scale(d.coordinateDomain[0]));
+				lineNode = (<g>
+					<line x1={ -0.5 * _delta} x2={0.5 * _delta} y1="12" y2="12" stroke="black" strokeWidth="1px" />
+					<line x1="0" x2="0" y1="0" y2="12" stroke="black" strokeWidth="2px" />
+				</g>);
+			} else {
+				lineNode = <line x1="0" x2="0" y1="0" y2="25" stroke="black" strokeWidth="2px" />;
+			}
 		}
 
 		return (
