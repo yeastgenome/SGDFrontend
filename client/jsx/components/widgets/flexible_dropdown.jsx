@@ -9,7 +9,14 @@ var FlexibleDropdown = React.createClass({
 
 	propTypes: {
 		labelText: React.PropTypes.string.isRequired,
-		innerNode: React.PropTypes.object.isRequired // react component
+		innerNode: React.PropTypes.object.isRequired, // react component
+		orientation: React.PropTypes.string // "left", "right"
+	},
+
+	getDefaultProps: function () {
+		return {
+			orientation: "left"
+		};
 	},
 
 	getInitialState: function () {
@@ -20,11 +27,15 @@ var FlexibleDropdown = React.createClass({
 
 	render: function () {
 		return (
-			<div className="strain-selector" style={{ position: "relative" }}>
+			<div style={{ position: "relative", display: "inline-block" }}>
 				{this._getActiveNode()}
 				<a className="button dropdown small secondary" onClick={this._toggleActive}>{this.props.labelText}</a>
 			</div>
 		);
+	},
+
+	didClickOutside: function () {
+		this.setState({ isActive: false });
 	},
 
 	_getActiveNode: function () {
@@ -34,9 +45,11 @@ var FlexibleDropdown = React.createClass({
 			position: "absolute",
 			top: "3rem",
 			padding: "1rem",
-			background: "#efefef",
+			background: "#b9b9b9",
 			zIndex: 2
 		};
+		if (this.props.orientation === "right") _style.right = 0;
+
 		return (
 			<div style={_style}>
 				{this.props.innerNode}

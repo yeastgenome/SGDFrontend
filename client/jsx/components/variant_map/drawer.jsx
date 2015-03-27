@@ -158,11 +158,11 @@ var Drawer = React.createClass({
 
 		var _refCoord = this._getRefHighlightedCoordinates(true);
 		return (<div>
-			<div className="row">
+			<div className="row" style={{ paddingBottom: "1rem" }}>
 				<div className="columns small-12 medium-6">
 					<h3>S288C Location: <a href={locusData.contigData.link}>{locusData.contigData.display_name}</a> {locusData.start}..{locusData.end}</h3>
 				</div>
-				<div className="columns small-12 medium-6">
+				<div className="columns small-12 medium-6 text-right">
 					{this._getLegendNode()}
 				</div>
 			</div>
@@ -258,7 +258,7 @@ var Drawer = React.createClass({
 		var _coordDom = [0, 0];
 		var startY = 15;
 		var x = 15;
-		var ySpacing = 15;
+		var ySpacing = 20;
 		var legendData = [
 			{
 				coordinateDomain: _coordDom,
@@ -290,23 +290,26 @@ var Drawer = React.createClass({
 			}
 		];
 
-		var _transform, _text;
+		var _transform, _text, _offset, _isSNP;
 		var legendNodes = _.map(legendData, (d, i) => {
-			_transform = `translate(${x}, ${i * ySpacing + startY})`;
-			_text = (d.variant_type === "SNP") ? `${d.snp_type} SNP` : d.variant_type;
+			_isSNP = d.variant_type === "SNP";
+			_offset = _isSNP ? 4 : 0;
+			_transform = `translate(${x}, ${i * ySpacing + startY - _offset})`;
+			_text = _isSNP ? `${d.snp_type} SNP` : d.variant_type;
 			return (
 				<g key={"variantLegendNode" + i} transform={_transform}>
 					<VariantPop data={d} hasStem={false} />
-					<text transform="translate(8, 0)">{_text}</text>
+					<text transform={`translate(15, ${_offset})`}>{_text}</text>
 				</g>
 			);
 		});
+		var _height = legendData.length * ySpacing;
 		var _innnerNode = (
-			<svg width="150px" height="200px">
+			<svg width="150px" height={_height}>
 				{legendNodes}
 			</svg>
 		);
-		return <FlexibleDropdown labelText="Legend" innerNode={_innnerNode}/>;
+		return <FlexibleDropdown labelText="Legend" innerNode={_innnerNode} orientation="right" />;
 	},
 
 	_showSequence: function (e) {
