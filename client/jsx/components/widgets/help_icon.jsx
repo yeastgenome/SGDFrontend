@@ -5,7 +5,7 @@ var React = require("react");
 
 var WIDTH = 400;
 
-module.exports = React.createClass({
+var HelpIcon = React.createClass({
 
 	getDefaultProps: function () {
 		return {
@@ -66,3 +66,5 @@ module.exports = React.createClass({
 		return textNode;
 	}
 });
+
+module.exports = HelpIcon;

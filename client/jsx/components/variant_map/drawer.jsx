@@ -5,8 +5,9 @@ var React = require("react");
 var _ = require("underscore");
 
 var AlignmentShowModel = require("../../models/alignment_show_model.jsx");
-var MultiAlignmentViewer = require("./multi_alignment_viewer.jsx");
+var FlexibleDropdown = require("../widgets/flexible_dropdown.jsx");
 var LocusDiagram = require("../viz/locus_diagram.jsx");
+var MultiAlignmentViewer = require("./multi_alignment_viewer.jsx");
 var Parset = require("../viz/parset.jsx");
 var VariantPop = require("../viz/variant_pop.jsx");
 
@@ -299,11 +300,12 @@ var Drawer = React.createClass({
 				</g>
 			);
 		});
-		return (
+		var _innnerNode = (
 			<svg width="100%" height="40px">
 				{legendNodes}
 			</svg>
 		);
+		return <FlexibleDropdown labelText="Legend" innerNode={_innnerNode}/>;
 	},
 
 	_showSequence: function (e) {
