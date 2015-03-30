@@ -247,7 +247,7 @@
             </p>
         </h2>
         <hr />
-        <div class="">
+        <div>
 
             {% if locus['go_overview']['paragraph'] %}
                 <dl class="key-value">
@@ -274,7 +274,7 @@
                             {% for entry in locus.go_overview.manual_molecular_function_terms %}
                                 <li>
                                     {% if 'qualifiers' in entry %}
-                                        {% for qualifier in entry.qualifiers if qualifier != 'part of' and qualifier != 'enables' %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
                                             {{ qualifier }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     {% endif %}
@@ -292,6 +292,11 @@
                         <dd><ul style="list-style-type:disc">
                             {% for entry in locus.go_overview.htp_molecular_function_terms %}
                                 <li>
+                                    {% if 'qualifiers' in entry %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
                                     <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
                                     {% for code in entry.evidence_codes %}
                                         {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
@@ -313,6 +318,11 @@
                         <dd><ul style="list-style-type:disc">
                             {% for entry in locus.go_overview.manual_biological_process_terms %}
                                 <li>
+                                    {% if 'qualifiers' in entry %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
                                     <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
                                     {% for code in entry.evidence_codes %}
                                         {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
@@ -348,6 +358,11 @@
                         <dd><ul style="list-style-type:disc">
                             {% for entry in locus.go_overview.manual_cellular_component_terms %}
                                 <li>
+                                    {% if 'qualifiers' in entry %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
                                     <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
                                     {% for code in entry.evidence_codes %}
                                         {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
@@ -362,6 +377,11 @@
                         <dd><ul style="list-style-type:disc">
                             {% for entry in locus.go_overview.htp_cellular_component_terms %}
                                 <li>
+                                    {% if 'qualifiers' in entry %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
                                     <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
                                     {% for code in entry.evidence_codes %}
                                         {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
@@ -412,6 +432,12 @@
             </p>
         </h2>
         <hr />
+        {% if locus['phenotype_overview']['paragraph'] %}
+            <dl class="key-value">
+                <dt>Summary</dt>
+                <dd>{{ locus['phenotype_overview']['paragraph'] }}</dd>
+            </dl>
+        {% endif %}
         <div class="">
             {% if locus.phenotype_overview.classical_phenotypes|length + locus.phenotype_overview.large_scale_phenotypes|length == 0 %}
                 <p>No phenotype data available.</p>

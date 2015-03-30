@@ -88,3 +88,5 @@ Some pages are written using the [react](http://facebook.github.io/react/) frame
 Selenium tests are written with [behave](http://pythonhosted.org/behave/).  With behave installed and the app running in development mode (see above), run:
 
     $ behave src/sgd/frontend/yeastgenome/tests/features
+
+Tests are currently configured to use the selenium chrome driver.  If not installed, see [https://sites.google.com/a/chromium.org/chromedriver/getting-started](https://sites.google.com/a/chromium.org/chromedriver/getting-started).

@@ -349,47 +349,67 @@ class YeastgenomeFrontend(FrontendInterface):
         enrichment_results = get_json(self.backend_url + '/go_enrichment', data={'bioent_ids': bioent_ids})
         return enrichment_results
 
-    # # elasticsearch endpoint
-    # def search(self, params):
-    #     # try elastic search, if 1 gene_name response, redirect there
-    #     query = params['query']
-    #     obj = {
-    #         'q': query,
-    #         'type': 'gene_name'
-    #     }
-    #     res = es.search(index='sgdlite', params=obj)
-    #     if (res['hits']['total'] == 1):
-    #         url = res['hits']['hits'][0]['_source']['link_url']
-    #         return HTTPFound(url)
-    #     # otherwise try existing
-    #     else:
-    #         return HTTPFound("/cgi-bin/search/luceneQS.fpl?query=" + query)
+    # elasticsearch endpoint
+    def search(self, params):
+        # try elastic search, if 1 response, redirect there
+        raw_query = params['query']
+        query = raw_query.lower()
+        obj = {
+            'query': {
+                'filtered': {
+                    'filter': {
+                        'bool': {
+                            'must': [
+                                {
+                                    'term': {
+                                        'term.raw': query
+                                    }
+                                },
+                                {
+                                    'terms': {
+                                        'type': ['gene_name', 'paper', 'go']
+                                    }
+                                }
+                                
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+        res = es.search(index='sgdlite', body=obj)
+        if (res['hits']['total'] == 1):
+            url = res['hits']['hits'][0]['_source']['link_url']
+            return HTTPFound(url)
+        # otherwise try existing
+        else:
+            return HTTPFound("/cgi-bin/search/luceneQS.fpl?query=" + urllib.quote(raw_query))
 
-    # # elasticsearch autocomplete results
-    # def autocomplete_results(self, params):
-    #     query = params['term']
-    #     search_body = {
-    #         'query': {
-    #             'bool': {
-    #                 'must': {
-    #                     'match': {
-    #                         'term': {
-    #                             'query': query,
-    #                             'analyzer': 'standard'
-    #                         }
-    #                     }
-    #                 },
-    #                 'must_not': { 'match': { 'type': 'paper' }},
-    #                 'should': { 'match': { 'type': 'gene_name' }}
-    #             }
-    #         }
-    #     }
-    #     res = es.search(index='sgdlite', body=search_body)
-    #     simplified_results = map(lambda x: x['_source']['term'], res['hits']['hits'])
-    #     temp = {
-    #         'results': simplified_results
-    #     }
-    #     return Response(body=json.dumps(simplified_results), content_type='application/json')
+    # elasticsearch autocomplete results
+    def autocomplete_results(self, params):
+        query = params['term']
+        search_body = {
+            'query': {
+                'bool': {
+                    'must': {
+                        'match': {
+                            'term': {
+                                'query': query,
+                                'analyzer': 'standard'
+                            }
+                        }
+                    },
+                    'must_not': { 'match': { 'type': 'paper' }},
+                    'should': { 'match': { 'type': 'gene_name' }}
+                }
+            }
+        }
+        res = es.search(index='sgdlite', body=search_body)
+        simplified_results = map(lambda x: x['_source']['term'], res['hits']['hits'])
+        temp = {
+            'results': simplified_results
+        }
+        return Response(body=json.dumps(simplified_results), content_type='application/json')
 
     def backend(self, url_repr):
         if self.backend_url == 'backendless':

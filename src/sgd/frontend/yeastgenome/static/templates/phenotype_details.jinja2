@@ -53,6 +53,12 @@
         </p>
     </h2>
     <hr />
+    {% if locus['phenotype_overview']['paragraph'] %}
+        <dl class="key-value">
+            <dt>Summary</dt>
+            <dd>{{ locus['phenotype_overview']['paragraph'] }}</dd>
+        </dl>
+    {% endif %}
 
     <!-- Includes phenotype_overview.html into template -->
     {% include "phenotype_overview.jinja2" %}

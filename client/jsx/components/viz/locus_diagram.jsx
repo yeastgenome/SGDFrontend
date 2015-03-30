@@ -73,9 +73,16 @@ module.exports = React.createClass({
 		/>);
 
 		var locciNodes = _.map(this.props.data.locci, d => { return this._getLocusNode(d); });
+
+
+
 		return (
 			<div className="locus-diagram" onMouseLeave={this._clearMouseOver} onClick={this._clearMouseOver}>
+
+
 				{controlsNode}
+
+
 				<div className="locus-diagram-viz-container" style={{ position: "relative" }}>
 					<FlexibleTooltip
 						visible={this.state.tooltipVisible} left={this.state.tooltipLeft} top={this.state.tooltipTop}

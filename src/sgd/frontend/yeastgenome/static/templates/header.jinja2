@@ -29,7 +29,7 @@
 					</ul>
 			 	</div><!-- .header-links -->
 			 	<div class="row header-search">
-			 		<form action="/cgi-bin/search/luceneQS.fpl" autocomplete="off" id="searchform" class="no-margins" method="get">
+			 		<form action="/search" autocomplete="off" id="searchform" class="no-margins" method="get">
 						<div id="top-search-input-container" class="row collapse">
 
 
@@ -38,7 +38,7 @@
 								<input id="txt_search" name="query" type="text" class="search-query radius prefix-input no-margins ui-autocomplete-input" placeholder="Search" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
 							</div>
 							<div class="small-1 columns">
-								<a href="#" class="secondary button no-margins postfix radius" onclick="document.getElementById('searchform').submit();"><i class="fa fa-search"></i></a>
+								<a id="search-submit-btn" href="#" class="secondary button no-margins postfix radius" onclick="document.getElementById('searchform').submit();"><i class="fa fa-search"></i></a>
 							</div>
 						</div>
 						<div id="adv-search-links">
@@ -73,8 +73,8 @@
 							<li class="has-dropdown"><a href="#">Analyze</a>
 								<ul class="dropdown">
 									<li><a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Gene Lists</a></li>
-									<li><a href="http://www.yeastgenome.org/cgi-bin/blast-sgd.pl">BLAST</a></li>
-									<li><a href="http://www.yeastgenome.org/cgi-bin/blast-fungal.pl">Fungal BLAST</a></li>
+									<li><a href="/blast-sgd">BLAST</a></li>
+									<li><a href="/blast-fungal">Fungal BLAST</a></li>
 									<li><a href="http://www.yeastgenome.org/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
 									<li><a href="http://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a></li>
 									<li><a href="http://www.yeastgenome.org/cgi-bin/PATMATCH/nph-patmatch">Pattern Matching</a></li>
@@ -86,8 +86,8 @@
 								<ul class="dropdown">
 									<li><a href="http://www.yeastgenome.org/download-data/sequence">Download</a></li>
 									<li><a href="http://browse.yeastgenome.org/fgb2/gbrowse/scgenome/">Genome Browser</a></li>
-									<li><a href="http://www.yeastgenome.org/cgi-bin/blast-sgd.pl">BLAST</a></li>
-									<li><a href="http://www.yeastgenome.org/cgi-bin/blast-fungal.pl">Fungal BLAST</a></li>
+									<li><a href="/blast-sgd">BLAST</a></li>
+									<li><a href="/blast-fungal">Fungal BLAST</a></li>
 									<li><a href="http://www.yeastgenome.org/cgi-bin/seqTools">Gene/Sequence Resources</a></li>
 									<li class="has-dropdown">
 										<a href="#">Reference Genome</a>
@@ -116,7 +116,8 @@
 									<li class="has-dropdown">
 										<a href="#">Resources</a>
 										<ul class="dropdown">
-											<li><a href="http://www.uniprot.org/">UnikProtKB (EBI)</a></li>
+											<li><a href="http://www.uniprot.org/">UniProtKB</a></li>
+
 											<li><a href="http://www.ebi.ac.uk/interpro/">InterPro (EBI)</a></li>
 											<li><a href="http://www.ncbi.nlm.nih.gov/homologene">HomoloGene (NCBI)</a></li>
 											<li><a href="http://wolfe.gen.tcd.ie/ygob/">YGOB (Trinity College)</a></li>

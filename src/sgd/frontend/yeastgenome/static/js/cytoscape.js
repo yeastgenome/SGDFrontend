@@ -17,6 +17,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		protein: 0,
 		go: 75,
 		phenotype: 75,
+		literature: 0,
 		interaction: 150,
 		regulation: 150,
 		expression: 75
@@ -36,7 +37,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		    edges: data['edges']
 		}
     };
-
+    
 	$('#' + div_id).cytoscape(options);
     var cy = $('#' + div_id).cytoscape("get");
 
@@ -85,7 +86,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 
 	// draw legend
 	drawLegendNode(ctx, "Current Locus", 53, legendY, '#F9DA56', true, false);
-	drawLegendNode(ctx, "Other Locus", 160, legendY, '#757575', true, true);
+	if (legendType !== "literature") drawLegendNode(ctx, "Other Locus", 160, legendY, '#757575', true, true);
 	var nextLegendX = 245;
 	if (legendType === "protein") {
 		drawLegendNode(ctx, "Domain", nextLegendX, legendY, '#3366cc', false, true);	
@@ -93,6 +94,8 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		drawLegendNode(ctx, "GO Term", nextLegendX, legendY, '#6CB665', false, true);
 	} else if (legendType === "phenotype") {
 		drawLegendNode(ctx, "Phenotype", nextLegendX, legendY, '#C591F5', false, true);
+	} else if (legendType === "literature") {
+		drawLegendNode(ctx, "Reference", nextLegendX, legendY, '#C591F5', true, true);
 	}
 
     cy.zoomingEnabled(false);
