@@ -23,7 +23,7 @@ snapshotView.render = function () {
 		{ name: "GO Annotations", target: "go-annotations" },
 		{ name: "Phenotype Annotations", target: "phenotype-annotations" }
 	];
-	React.renderComponent(
+	React.render(
 		<NavBar title="Genome Snapshot" elements={navElements} />,
 		document.getElementsByClassName("navbar-container")[0]
 	);
@@ -34,7 +34,7 @@ snapshotView.render = function () {
 
 		// features visualization and table alt
 		var featuresData = nestedData.featuresData;
-		React.renderComponent(
+		React.render(
 			<TableAlternative vizType="genomeSnapshot" isInitiallyTable={false} graphData={featuresData.graphData} tableData={featuresData.tableData} />,
 			document.getElementsByClassName("genome-snapshot-target")[0]
 		);
@@ -44,7 +44,7 @@ snapshotView.render = function () {
 		// GO viz
 		var _goData = nestedData.goData;
 		var _goYValue = (d) => { return d.descendant_annotation_gene_count; };
-		React.renderComponent(
+		React.render(
 			<ToggleBarChart
 				data={_goData} initialActiveDataKey="biological_process"
 				labelValue={_labelValue} yValue={_goYValue}
@@ -64,7 +64,7 @@ snapshotView.render = function () {
 				yAxisLabel="Genes Products Annotated"
 			/>
 		);
-		React.renderComponent(barChart, document.getElementsByClassName("phenotype-snapshot-target")[0]);
+		React.render(barChart, document.getElementsByClassName("phenotype-snapshot-target")[0]);
 
 	});
 };
