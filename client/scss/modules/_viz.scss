@@ -268,6 +268,15 @@
 	}
 }
 
+.standalone-axis {
+	g.tick line {
+		stroke: #ddd;
+	}
+	path.domain {
+		stroke: none;
+	}
+}
+
 .locus-diagram .locus-path:hover {
 	cursor: pointer;
 }
