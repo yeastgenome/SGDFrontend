@@ -81,12 +81,15 @@ $(document).ready(function() {
         $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_details?callback=?', function(protein_domain_data) {
             var domain_table = create_domain_table(protein_domain_data);
             create_download_button("domain_table_download", domain_table, locus['display_name'] + "_domains");
-            if(protein_domain_data.length > 0) {
-                draw_domain_chart("domain_chart", length, protein_domain_data);
-            }
-            else {
-                $("#domain_locations").hide();
-            }
+
+            // call react view from external file
+            views.protein.render(protein_domain_data);
+            // if(protein_domain_data.length > 0) {
+            //     draw_domain_chart("domain_chart", length, protein_domain_data);
+            // }
+            // else {
+            //     $("#domain_locations").hide();
+            // }
 
             $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_graph?callback=?', function(protein_domain_graph_data) {
                 if(protein_domain_graph_data['nodes'].length > 1) {

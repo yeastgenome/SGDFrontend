@@ -119,6 +119,7 @@ module.exports = function(grunt) {
                 dest: BUILD_PATH + "js/application.js",
                 src: "client/jsx/application.jsx",
                 options: {
+                    alias: ["./client/lib/sgd_visualization:sgd_visualization"],
                     browserifyOptions: {
                         debug: true
                     }
@@ -131,7 +132,7 @@ module.exports = function(grunt) {
                 livereload: true
             },
             jsx: {
-                files: ["client/**/*.jsx"],
+                files: ["client/**/*.jsx", "client/lib/sgd_visualization/**/*.jsx"],
                 tasks: ["browserify:dev"]
             },
             scss: {
