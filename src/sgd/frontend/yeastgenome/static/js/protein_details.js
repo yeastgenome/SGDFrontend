@@ -1,5 +1,3 @@
-google.load("visualization", "1", {packages:["corechart"]});
-
 var phosphodata = null;
 var current_residues = '';
 var current_strain = '';
@@ -81,15 +79,14 @@ $(document).ready(function() {
         $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_details?callback=?', function(protein_domain_data) {
             var domain_table = create_domain_table(protein_domain_data);
             create_download_button("domain_table_download", domain_table, locus['display_name'] + "_domains");
-
-            // call react view from external file
-            views.protein.render(protein_domain_data);
-            // if(protein_domain_data.length > 0) {
-            //     draw_domain_chart("domain_chart", length, protein_domain_data);
-            // }
-            // else {
-            //     $("#domain_locations").hide();
-            // }
+            
+            if(protein_domain_data.length > 0) {
+                // call react view from external file
+                views.protein.render(protein_domain_data);
+            }
+            else {
+                $("#domain_locations").hide();
+            }
 
             $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_graph?callback=?', function(protein_domain_graph_data) {
                 if(protein_domain_graph_data['nodes'].length > 1) {
@@ -505,59 +502,6 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
     // google.visualization.events.addListener(chart, 'onmouseover', function (e) {
     //     console.log(e)
     // });
-}
-
-function draw_domain_chart(chart_id, length, data) {
-    var container = document.getElementById(chart_id);
-
-    var chart = new google.visualization.Timeline(container);
-
-    var dataTable = new google.visualization.DataTable();
-
-    dataTable.addColumn({ type: 'string', id: 'Source' });
-    dataTable.addColumn({ type: 'string', id: 'Name' });
-    dataTable.addColumn({ type: 'number', id: 'Start' });
-    dataTable.addColumn({ type: 'number', id: 'End' });
-
-    var data_array = [];
-    var descriptions = [];
-    var colors = ['#888'];
-    var sources = {};
-
-    for (var i=0; i < data.length; i++) {
-        var start = data[i]['start'];
-        var end = data[i]['end'];
-        var source = '';
-        if(data[i]['domain']['source'] != null) {
-            source = data[i]['domain']['source']['display_name'];
-        }
-
-        data_array.push([source, data[i]['domain']['display_name'], start*10, end*10]);
-        descriptions.push(data[i]['domain']['description']);
-
-        if(!(source in sources)) {
-            colors.push(source_to_color[source])
-            sources[source] = true;
-        }
-    }
-    data_array.unshift(["-", locus['display_name'], 10, length*10]);
-    descriptions.unshift('');
-
-    dataTable.addRows(data_array);
-
-    var options = {
-        'height': 1,
-        'timeline': {'colorByRowLabel': true,
-            'hAxis': {'position': 'none'}
-        },
-        'colors': colors
-    };
-
-    // try to predict height by finding number of unique sources
-    var chartHeight = Object.keys(sources).length * 60 + 50;
-    options['height'] = chartHeight;
-    chart.draw(dataTable, options);
-    google.visualization.events.addListener(chart, 'ready', make_domain_ready_handler(chart_id, chart, 1, length*10, descriptions, data_array));
 }
 
 function prep_style() {

@@ -119,7 +119,7 @@ module.exports = function(grunt) {
                 dest: BUILD_PATH + "js/application.js",
                 src: "client/jsx/application.jsx",
                 options: {
-                    alias: ["./client/lib/sgd_visualization:sgd_visualization"],
+                    alias: ["./client/jsx/lib/sgd_visualization:sgd_visualization"],
                     browserifyOptions: {
                         debug: true
                     }
