@@ -82,7 +82,7 @@ $(document).ready(function() {
             
             if(protein_domain_data.length > 0) {
                 // call react view from external file
-                views.protein.render(protein_domain_data);
+                views.protein.render(protein_domain_data, length);
             }
             else {
                 $("#domain_locations").hide();
@@ -417,91 +417,6 @@ function create_domain_table(data) {
     options["oLanguage"] = {"sEmptyTable": "No known domains for " + locus['display_name'] + "."};
 
     return create_table("domain_table", options);
-}
-
-function make_domain_ready_handler(chart_id, chart, min_start, max_end, descriptions, data_array) {
-    function ready_handler() {
-        //Fix tooltips.
-        function tooltipHandler(e) {
-            var datarow = data_array[e.row];
-            var spans = $(".google-visualization-tooltip-action > span");
-            if(spans.length > 3) {
-                spans[0].innerHTML = 'Coords:';
-                spans[1].innerHTML = ' ' + datarow[2]/10 + '-' + datarow[3]/10;
-                spans[2].innerHTML = '';
-                if(descriptions[e.row] != null && descriptions[e.row] != '') {
-                    spans[3].innerHTML = '<span>' + descriptions[e.row] + '</span>';
-                }
-                else {
-                    spans[2].innerHTML = '';
-                    spans[3].innerHTML = '';
-                }
-                $(".google-visualization-tooltip-item").parent().parent().height('auto');
-            }
-        }
-        google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
-
-        //Fix axis.
-        var svg_gs = $("#" + chart_id).find("g");
-
-        var rectangle_holder = svg_gs[3];
-        rectangles = rectangle_holder.childNodes;
-        var y_one = min_start;
-        var y_two = max_end;
-
-        var x_one = null;
-        var x_two = null;
-
-        for (i=0; i < rectangles.length; i++) {
-            if(rectangles[i].nodeName == 'rect') {
-                var x = Math.round(rectangles[i].getAttribute('x'));
-                var y = Math.round(rectangles[i].getAttribute('y'));
-                if(x_one == null || x < x_one) {
-                    x_one = x;
-                }
-                if(x_two == null || x > x_two) {
-                    x_two = x + Math.round(rectangles[i].getAttribute('width'));
-                }
-            }
-        }
-
-        var m = (y_two - y_one)/(x_two - x_one);
-        var b = y_two - m*x_two;
-
-        var tickmark_holder = svg_gs[1];
-        var tickmarks = tickmark_holder.childNodes;
-        var tickmark_space;
-        if(tickmarks.length > 1) {
-            tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
-        }
-        else {
-            tickmark_space = 100;
-        }
-        for (i=0; i < tickmarks.length; i++) {
-            var x_new = Math.round(tickmarks[i].getAttribute('x'));
-            var y_new = Math.round(m*x_new + b);
-            if(m*tickmark_space > 10000) {
-                y_new = 1000*Math.round(y_new/10000);
-            }
-            else if(m*tickmark_space > 1000) {
-                y_new = 100*Math.round(y_new/1000);
-            }
-            else if(m*tickmark_space > 100) {
-                y_new = 10*Math.round(y_new/100);
-            }
-            else if(m*tickmark_space > 10) {
-                y_new = Math.round(y_new/10)
-            }
-            if(y_new <= 0) {
-                y_new = 1;
-            }
-            $(tickmarks[i]).html(y_new);
-        }
-    }
-    return ready_handler();
-    // google.visualization.events.addListener(chart, 'onmouseover', function (e) {
-    //     console.log(e)
-    // });
 }
 
 function prep_style() {
