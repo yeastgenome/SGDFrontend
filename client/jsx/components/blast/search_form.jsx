@@ -7,7 +7,9 @@ var $ = require("jquery");
 
 var radioSelector = require("./radio_selector.jsx");
 var blastBarChart = require("./blast_bar_chart.jsx");
-var params = require("../mixins/parse_url_params.jsx")
+var params = require("../mixins/parse_url_params.jsx");
+
+var BLAST_URL = "/run_blast";
 
 module.exports = React.createClass({
 
@@ -434,7 +436,7 @@ module.exports = React.createClass({
         },
 
 	_getSeq: function(name, type) {
-                var jsonUrl = "/do_blast?name=" + name;
+        var jsonUrl = BLAST_URL + "?name=" + name;
 		if (type == 'protein' || type == 'pep') {
 		   jsonUrl = jsonUrl + "&type=" + type;
 		}
@@ -452,7 +454,7 @@ module.exports = React.createClass({
         },
 
 	_getConfigData: function(db) {
-                var jsonUrl = "/do_blast?conf=";
+                var jsonUrl = BLAST_URL + "?conf=";
                 if (db == 'sgd') {
                       jsonUrl = jsonUrl + "blast-sgd";
                 }
@@ -545,7 +547,7 @@ module.exports = React.createClass({
                 var filter = window.localStorage.getItem("filter");
 
 		$.ajax({
-			url: "/do_blast",
+			url: BLAST_URL,
 			data_type: 'json',
 			type: 'POST',
 			data: { 'seq':         seq,

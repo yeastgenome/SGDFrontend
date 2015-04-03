@@ -259,7 +259,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('send_email', '/send_data')
     config.add_view(send_message, route_name='send_email')   
 
-    config.add_route('do_blast', '/do_blast')
+    config.add_route('do_blast', '/run_blast')
     config.add_view(do_blast, route_name='do_blast')
 
     
