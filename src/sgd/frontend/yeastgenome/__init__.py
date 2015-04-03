@@ -349,6 +349,7 @@ class YeastgenomeFrontend(FrontendInterface):
         enrichment_results = get_json(self.backend_url + '/go_enrichment', data={'bioent_ids': bioent_ids})
         return enrichment_results
 
+
     # elasticsearch endpoint
     def search(self, params):
         # try elastic search, if 1 response, redirect there
@@ -415,7 +416,11 @@ class YeastgenomeFrontend(FrontendInterface):
         if self.backend_url == 'backendless':
             return json.dumps(get_data(url_repr))
         else:
-            return json.dumps(get_json(self.backend_url + '/' + ('/'.join(url_repr))))
+            full_url = self.backend_url + '/' + ('/'.join(url_repr))
+            if args is not None and len(args) > 0:
+                full_url += '?' + ('&'.join([key + '=' + value for key, value in args.items() if key != 'callback']))
+            print full_url
+            return json.dumps(get_json(full_url))
 
     
 def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
