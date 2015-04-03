@@ -58,7 +58,8 @@ module.exports = React.createClass({
 			filter: null,
 			resultData: {},
 			submitted: submitted,
-			param: param
+			param: param,
+			didBlast: 0
 		};
 	},
 
@@ -85,8 +86,9 @@ module.exports = React.createClass({
 
 	_getFormNode: function () {
 
-		if (this.state.submitted) {
+		if (this.state.submitted && this.state.didBlast == 0) {
                         this._doBlast();
+			this.setState({ didBlast: 1 });
 		}
 					
 	        if (this.state.isComplete) {
