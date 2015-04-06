@@ -412,7 +412,7 @@ class YeastgenomeFrontend(FrontendInterface):
         }
         return Response(body=json.dumps(simplified_results), content_type='application/json')
 
-    def backend(self, url_repr):
+    def backend(self, url_repr, args=None):
         if self.backend_url == 'backendless':
             return json.dumps(get_data(url_repr))
         else:
