@@ -442,7 +442,7 @@ function make_domain_ready_handler(chart_id, chart, min_start, max_end, descript
         google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
 
         //Fix axis.
-        var svg_gs = $("#" + chart_id + " > div > div > div > svg > g");
+        var svg_gs = $("#" + chart_id).find("g");
 
         var rectangle_holder = svg_gs[3];
         rectangles = rectangle_holder.childNodes;

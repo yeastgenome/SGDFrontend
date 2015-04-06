@@ -3,6 +3,7 @@ from pyramid.renderers import render, Response
 from src.sgd.frontend import config
 from pyramid.view import notfound_view_config
 from src.sgd.frontend.yeastgenome import send_message
+from src.sgd.tools.blast import do_blast
 
 def prep_views(chosen_frontend, config):
 
@@ -231,7 +232,7 @@ def prep_views(chosen_frontend, config):
                     route_name='locus')
 
     config.add_route('backend', '/backend/*url')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('backend', request)(getattr(chosen_frontend, 'backend')(url_repr=request.matchdict['url'])),
+    config.add_view(lambda request: chosen_frontend.response_wrapper('backend', request)(getattr(chosen_frontend, 'backend')(url_repr=request.matchdict['url'], args=request.GET)),
                     renderer='string',
                     route_name='backend')
 
@@ -244,6 +245,16 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: {'suggestion': render('static/templates/suggestion.jinja2', {})},
                     renderer=chosen_frontend.get_renderer('suggestion'),
                     route_name='suggestion')
+    
+    config.add_route('blast_sgd', '/blast-sgd')
+    config.add_view(lambda request: {'blast_sgd': render('static/templates/blast_sgd.jinja2', {})},
+                    renderer=chosen_frontend.get_renderer('blast_sgd'),
+                    route_name='blast_sgd')
+
+    config.add_route('blast_fungal', '/blast-fungal')
+    config.add_view(lambda request: {'blast_fungal': render('static/templates/blast_fungal.jinja2', {})},
+                    renderer=chosen_frontend.get_renderer('blast_fungal'),
+                    route_name='blast_fungal')
 
     config.add_route('send_email', '/send_data')
     config.add_view(send_message, route_name='send_email')   
@@ -252,6 +263,10 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: {'variant_viewer': render('static/templates/variant_viewer.jinja2', {})},
                     renderer=chosen_frontend.get_renderer('variant_viewer'),
                     route_name='variant_viewer')
+    
+    config.add_route('do_blast', '/run_blast')
+    config.add_view(do_blast, route_name='do_blast')
+
     
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':
