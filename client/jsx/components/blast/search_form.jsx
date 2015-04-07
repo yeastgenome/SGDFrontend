@@ -510,7 +510,7 @@ module.exports = React.createClass({
 		    	      			      	program, 
 		    	      			        database, 
 						        wordLength, 
-						        threshold);
+						        cutoffScore);
 
 		if (newDatabase) {
 		    database = newDatabase;
@@ -583,7 +583,7 @@ module.exports = React.createClass({
 		return seq;
 	},
 
-	_checkParameters: function(seq, program, database, wordLength, threshold) {
+	_checkParameters: function(seq, program, database, wordLength, cutoffScore) {
 	
                 // check sequence
                 // get seq from the box or from upload file and remove unwanted characters
@@ -599,8 +599,8 @@ module.exports = React.createClass({
 		   return 0;
 		}
 
-		// check sequence length and threadhold value
-		if (threshold != 'default' && threshold < 60 && seq.length > 100) {
+		// check sequence length and cutoffScore (s) value
+		if (cutoffScore != 'default' && cutoffScore < 60 && seq.length > 100) {
 		     alert("The maximum sequence length for an S value less than 60 is 100. Please adjust either the S value or sequence");
 		     return 0;
 		}		
