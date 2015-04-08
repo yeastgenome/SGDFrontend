@@ -40,6 +40,7 @@ module.exports = class AlignmentShowModel extends BaseModel {
 	}
 
 	parse (response) {
+		response.strand = "+"; // force to render as crick strand
 		response.aligned_protein_sequences = this._sortSequencesByStrain(response.aligned_protein_sequences);
 		response.aligned_dna_sequences = this._sortSequencesByStrain(response.aligned_dna_sequences);
 		return response;

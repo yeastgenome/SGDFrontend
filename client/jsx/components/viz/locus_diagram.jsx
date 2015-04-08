@@ -67,6 +67,9 @@ var LocusDiagram = React.createClass({
 		var _ticks = (this.state.DOMWidth > 400) ? null : 3;
 		var _domain = this.props.relativeCoordinateAxis ? this._getRelativeCoordDomain() : this._getScale().domain();
 		var locciNodes = _.map(this.props.data.locci, (d, i) => { return this._getLocusNode(d, i); });
+		var midlineNode = this.props.crickTracks > 0 ?
+			<line className="midpoint-marker" x1="0" x2={this.state.DOMWidth} y1={this._getMidpointY()} y2={this._getMidpointY()} /> :
+			null;
 
 		return (
 			<div className="locus-diagram" onMouseLeave={this._clearMouseOver} onClick={this._clearMouseOver}>
@@ -85,7 +88,7 @@ var LocusDiagram = React.createClass({
 						/>
 					</div>
 					<svg ref="svg" className="locus-svg" onMouseEnter={this._onSVGMouseEnter} onMouseLeave={this._onSVGMouseLeave} style={{ width: "100%", height: height, position: "relative" }}>
-						<line className="midpoint-marker" x1="0" x2={this.state.DOMWidth} y1={this._getMidpointY()} y2={this._getMidpointY()} />
+						{midlineNode}
 						{this._getHighlightedSegmentNode()}
 						{locciNodes}
 						{this._getVariantNodes()}

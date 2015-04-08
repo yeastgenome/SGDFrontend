@@ -169,7 +169,7 @@ var Drawer = React.createClass({
 			<LocusDiagram
 				focusLocusDisplayName={model.attributes.display_name} contigData={locusData.contigData}
 				data={locusData.data} domainBounds={locusData.domainBounds} variantData={variantData}
-				showVariants={true} watsonTracks={watsonTracks}
+				showVariants={true} watsonTracks={watsonTracks} crickTracks={0}
 				ignoreMouseover={true} highlightedRelativeCoordinates={_refCoord}
 				onSetScale={_onSetX1Scale} onVariantMouseOver={_onVariantMouseOver}
 				relativeCoordinateAxis={true} proteinCoordinateAxis={this.props.isProteinMode}
