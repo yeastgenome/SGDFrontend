@@ -20,7 +20,9 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		literature: 0,
 		interaction: 150,
 		regulation: 150,
-		expression: 75
+		expression: 75,
+		phenotypeOntology: 0,
+		goOntology: 0
 	};
 	var _legendOffset = _legendOffsets[legendType];
 	$(".sgd-cyto-canvas-container").parent().height(height + offset + _legendOffset);
@@ -84,9 +86,22 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		ctx.fillText(text, textX, textY);
 	};
 
+	var mainText = "Current Locus";
+	var secondText = "Other Locus";
+	if (legendType === "goOntology") {
+		mainText = "Current Term";
+		secondText = "Other Term";
+	} else if (legendType === "phenotypeOntology") {
+		mainText = "Current Observable";
+		secondText = "Other Observable";
+	}
+	var secondColor = (legendType === "goOntology") ? "#458FD3" :  '#757575';
+
 	// draw legend
-	drawLegendNode(ctx, "Current Locus", 53, legendY, '#F9DA56', true, false);
-	if (legendType !== "literature") drawLegendNode(ctx, "Other Locus", 160, legendY, '#757575', true, true);
+	var startX = (legendType === "phenotypeOntology") ? 74 : 53;
+	drawLegendNode(ctx, mainText, startX, legendY, '#F9DA56', true, false);
+	var secondX = (legendType === "phenotypeOntology") ? 230 : 160;
+	if (legendType !== "literature") drawLegendNode(ctx, secondText, secondX, legendY, secondColor, true, true);
 	var nextLegendX = 245;
 	if (legendType === "protein") {
 		drawLegendNode(ctx, "Domain", nextLegendX, legendY, '#3366cc', false, true);	

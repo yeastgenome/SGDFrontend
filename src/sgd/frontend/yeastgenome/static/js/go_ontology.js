@@ -1,8 +1,7 @@
 
 $(document).ready(function() {
-
 	$.getJSON('/backend/go/' + ontology['id'] + '/ontology_graph?callback=?', function(data) {
-  		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
+  		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "goOntology");
         create_cy_download_button(cy, "cy_download", ontology['display_name'] + '_go_ontology_graph')
 	});
 
