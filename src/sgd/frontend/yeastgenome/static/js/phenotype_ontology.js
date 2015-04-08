@@ -2,7 +2,7 @@
 $(document).ready(function() {
 
   	$.getJSON('/backend/observable/' + ontology['id'] + '/ontology_graph?callback=?', function(data) {
-  		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "phenotypeOntology");
+  		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
         create_cy_download_button(cy, "cy_download", ontology['display_name'] + '_ontology')
 
         $("#ontology").show();
