@@ -54,7 +54,6 @@ var AsyncVariantMap = React.createClass({
 		var drawerNode = this._getDrawerNode();
 
 		return (<div>
-			<p><i className="fa fa-exclamation" /> This is a development version of this tool.  Data are NOT accurate.</p>
 			<h1>Variant Viewer</h1>
 			<hr />
 						
