@@ -82,7 +82,11 @@ $(document).ready(function() {
             
             if(protein_domain_data.length > 0) {
                 // call react view from external file
-                views.protein.render(protein_domain_data, length);
+                var colorScale = function (sourceName) {
+                    return source_to_color[sourceName];
+                };
+
+                views.protein.render(protein_domain_data, length, colorScale);
             }
             else {
                 $("#domain_locations").hide();

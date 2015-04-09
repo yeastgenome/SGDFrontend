@@ -6,7 +6,7 @@ var ProteinViewer = require("sgd_visualization").ProteinViewer;
 var _ = require("underscore");
 
 var proteinView = {};
-proteinView.render = function (rawDomainData, locusLength) {
+proteinView.render = function (rawDomainData, locusLength, colorScale) {
 
 	var rawLocusData = rawDomainData[0].locus;
 	var locusData = _.extend(rawLocusData, {
@@ -23,7 +23,7 @@ proteinView.render = function (rawDomainData, locusLength) {
 		return d;
 	});
 
-	React.render(<ProteinViewer data={domainData} locusData={locusData} />
+	React.render(<ProteinViewer data={domainData} locusData={locusData} colorScale={colorScale}/>
 	, document.getElementById("domain_chart"));
 
 };
