@@ -119,7 +119,6 @@ module.exports = function(grunt) {
                 dest: BUILD_PATH + "js/application.js",
                 src: "client/jsx/application.jsx",
                 options: {
-                    alias: ["./client/jsx/lib/sgd_visualization:sgd_visualization"],
                     browserifyOptions: {
                         debug: true
                     }
@@ -129,10 +128,7 @@ module.exports = function(grunt) {
                 dest: BUILD_PATH + "js/application.js",
                 src: "client/jsx/application.jsx",
                 options: {
-                    alias: [
-                        "./client/jsx/lib/sgd_visualization:sgd_visualization",
-                        "./node_modules/react/dist/react.min.js:react"
-                    ]
+                    alias: ["./node_modules/react/dist/react.min.js:react"]
                 }
             }
         },

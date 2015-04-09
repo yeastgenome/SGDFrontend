@@ -1,3 +1,0 @@
-[submodule "client/jsx/lib/sgd_visualization"]
-	path = client/jsx/lib/sgd_visualization
-	url = https://github.com/yeastgenome/sgd_visualization.git
