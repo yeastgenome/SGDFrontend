@@ -38,6 +38,6 @@
     "d3": "~3.4.11",
     "fastclick": "~1.0.3",
     "bootstrap": "~3.3.1",
-    "sgd_visualization": "git+https://git@github.com/yeastgenome/sgd_visualization.git"
+    "sgd_visualization": "^0.0.1"
   }
 }
