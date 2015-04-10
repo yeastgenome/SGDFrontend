@@ -138,7 +138,7 @@ var Drawer = React.createClass({
 		var parsetNode = this._getParsetNode();
 
 		var model = this.state.alignmentModel;
-		var locusData = model.getLocusDiagramData();
+		var locusData = model.getLocusDiagramData(this.props.isProteinMode);
 		var variantData = model.getVariantData(this.props.isProteinMode);
 		var watsonTracks = model.attributes.strand === "+" ? 2 : 1;
 
@@ -193,7 +193,7 @@ var Drawer = React.createClass({
 			.map( d => {
 				return this.state.x2Scale(d);
 			});
-		var contigData = this.state.alignmentModel.getLocusDiagramData().contigData;
+		var contigData = this.state.alignmentModel.getLocusDiagramData(this.props.isProteinMode).contigData;
 		var text = `${_refCoord[0]}..${_refCoord[1]}`;
 		// if a SNP (actually one nucleotide) make the text refer to the position, not a range
 		if (Math.abs(_refCoord[1] - _refCoord[0]) === 1) {

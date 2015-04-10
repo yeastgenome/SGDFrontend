@@ -16,7 +16,8 @@ module.exports = class AlignmentShowModel extends BaseModel {
 				return memo + "strain_id=" + d.toString() + "&";
 			}, "");
 		}
-		options.url = options.url || "/backend/alignments/" + options.id + "?" + strainIdUrlSegment + "callback=?" ;
+		// TEMP dev endpoint
+		options.url = options.url || "http://sgd-dev.stanford.edu/backend/alignments/" + options.id + "?" + strainIdUrlSegment + "callback=?" ;
 		
 		super(options);
 	}
@@ -57,10 +58,12 @@ module.exports = class AlignmentShowModel extends BaseModel {
 		});
 	}
 
-	getLocusDiagramData () {
+	getLocusDiagramData (isProtein) {
 		var attr = this.attributes;
 		var _start = Math.min(attr.coordinates.start, attr.coordinates.end);
-		var _end = Math.max(attr.coordinates.start, attr.coordinates.end);
+		var _end = isProtein ?
+			_start + attr.protein_length * 3 :
+			Math.max(attr.coordinates.start, attr.coordinates.end);
 
 		// expand domain by 10% on each end to give some space around locus
 		var _padding = Math.abs(_end - _start) * 0.1;
