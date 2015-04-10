@@ -156,18 +156,6 @@ var AsyncVariantMap = React.createClass({
 			isProteinMode={this.state.isProteinMode}
 			strainIds={_strainIds}
 		/>);
-		// var node = null;
-		// if (this.state.activeLocusId) {
-		// 	var _strainIds = [REFERENCE_STRAIN_ID].concat(this.state.activeStrainIds);
-		// 	var _onExit = () => { this.setState({ activeLocusId: null }); };
-		// 	var locusData = _.findWhere(this.state.lociData, { id: this.state.activeLocusId })
-		// 	node = (<Drawer
-		// 		onExit={_onExit} locusId={this.state.activeLocusId}
-		// 		isProteinMode={this.state.isProteinMode} strainIds={_strainIds}
-		// 		locusName={locusData.display_name} locusHref={locusData.link}
-		// 	/>);
-		// }
-		// return node;
 	},
 
 	_getLociData: function () {

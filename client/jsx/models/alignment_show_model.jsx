@@ -80,7 +80,7 @@ module.exports = class AlignmentShowModel extends BaseModel {
 		_contigData.centromerePosition = (_contigData.centromere_start + _contigData.centromere_end) / 2;
 
 		return {
-			data: { locci: _loci} ,
+			data: { locci: _loci } ,
 			domainBounds: _domainBounds,
 			contigData: _contigData,
 			start: _start,
@@ -189,14 +189,22 @@ module.exports = class AlignmentShowModel extends BaseModel {
 				});
 			}
 		});
-		// add last if last segment is visible and not at the end
+		
 		var _last = _.max(mergedSegments, d => { return d.end; });
 		var _maxLength = _.max(sequences, d => { return d.sequence.length; }).sequence.length;
+		// add last if last segment is visible and not at the end
 		if (_last.end < _maxLength) {
 			mergedSegments.push({
 				start: _last.end,
 				end: _maxLength,
 				visible: false
+			});
+		// add last if visible
+		} else {
+			mergedSegments.push({
+				start: _last.end,
+				end: _maxLength + 1,
+				visible: true
 			});
 		}
 		
@@ -209,7 +217,6 @@ module.exports = class AlignmentShowModel extends BaseModel {
 		mergedSegments = _.sortBy(mergedSegments, d => {
 			return d.start;
 		});
-
 		return mergedSegments;
 	}
 
