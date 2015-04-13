@@ -16,8 +16,7 @@ module.exports = class AlignmentShowModel extends BaseModel {
 				return memo + "strain_id=" + d.toString() + "&";
 			}, "");
 		}
-		// TEMP dev endpoint
-		options.url = options.url || "http://sgd-dev.stanford.edu/backend/alignments/" + options.id + "?" + strainIdUrlSegment + "callback=?" ;
+		options.url = options.url || "/backend/alignments/" + options.id + "?" + strainIdUrlSegment + "callback=?" ;
 		
 		super(options);
 	}

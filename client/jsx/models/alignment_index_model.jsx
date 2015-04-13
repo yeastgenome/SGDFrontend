@@ -31,15 +31,6 @@ module.exports = class AlignmentIndexModel extends BaseModel {
 		}
 	}
 
-	// assume type "ORF"
-	parse (response) {
-		response.loci = response.loci.map( d => {
-			d.locus_type = "ORF";
-			return d;
-		});
-		return response;
-	}
-
 	// strainIds is optional
 	getAllLoci (strainIds) {
 		if (strainIds) {
