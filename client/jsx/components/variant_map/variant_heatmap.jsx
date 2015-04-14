@@ -13,6 +13,7 @@ var NODE_SIZE = 16;
 var MAX_CANVAS_SIZE = 8000;
 var LABEL_WIDTH = 120;
 var TOOLTIP_DELAY = 250;
+var SCROLLBAR_HEIGHT = 15;
 
 var VariantHeatmap = React.createClass({
 	propTypes: {
@@ -35,7 +36,7 @@ var VariantHeatmap = React.createClass({
 		var _scrollZoneSize = this._getScrollSize();
 		var _canvasX = this._getCanvasX();
 		var _canvasSize = this._getCanvasSize();
-		var _canvasHeight = this._getYScale().range()[1] + HEADER_HEIGHT;
+		var _canvasHeight = this._getYScale().range()[1] + HEADER_HEIGHT + SCROLLBAR_HEIGHT;
 
 		var strainLabelsNode = this._getLabelsNode();
 		var overlayNode = this._getOverlayNode();
@@ -213,7 +214,7 @@ var VariantHeatmap = React.createClass({
 		if (!locus) return null;
 
 		var title = (locus.displayName === locus.formatName) ? locus.displayName : `${locus.displayName} (${locus.formatName})`;
-		var top = HEADER_HEIGHT; // TEMP
+		var top = HEADER_HEIGHT - 50;
 		var left = xScale(this.props.data.indexOf(locus)) - this.refs.outerScroll.getDOMNode().scrollLeft + LABEL_WIDTH + 40;
 
 		// format key value pairs for tooltip
