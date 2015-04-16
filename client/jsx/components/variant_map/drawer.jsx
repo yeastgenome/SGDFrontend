@@ -15,8 +15,10 @@ var VariantPop = require("../viz/variant_pop.jsx");
 var Router = require("react-router");
 var { Route, RouteHandler, Link, Transition } = Router;
 
+var REM_SIZE = 16;
 var HEIGHT_WITH_SEQUENCE = 680;
 var HEIGHT_WITHOUT_SEQUENCE = 345;
+var LABEL_WIDTH = 150;
 
 var Drawer = React.createClass({
 	mixins: [Router.Navigation, Router.State],
@@ -134,9 +136,6 @@ var Drawer = React.createClass({
 	},
 
 	_getContentNode: function () {
-		var sequenceNode = this._getSequenceNode();
-		var parsetNode = this._getParsetNode();
-
 		var model = this.state.alignmentModel;
 		var locusData = model.getLocusDiagramData(this.props.isProteinMode);
 		var variantData = model.getVariantData(this.props.isProteinMode);
@@ -175,8 +174,10 @@ var Drawer = React.createClass({
 				relativeCoordinateAxis={true} proteinCoordinateAxis={this.props.isProteinMode}
 				hasControls={false}
 			/>
-			{parsetNode}
-			{sequenceNode}
+			<div style={{ marginLeft: "-1rem", marginRight: "-1rem" }}>
+				{this._getParsetNode()}
+				{this._getSequenceNode()}
+			</div>
 		</div>);
 	},
 
@@ -187,11 +188,11 @@ var Drawer = React.createClass({
 		var _refCoord = this._getRefHighlightedCoordinates(false);
 		var parsetX1Coord = _refCoord
 			.map( d => {
-				return this.state.x1Scale(d);
+				return this.state.x1Scale(d) + REM_SIZE;
 			});
 		var parsetX2Coord = _alignedCoord
 			.map( d => {
-				return this.state.x2Scale(d);
+				return this.state.x2Scale(d) + LABEL_WIDTH;
 			});
 		var contigData = this.state.alignmentModel.getLocusDiagramData(this.props.isProteinMode).contigData;
 		var text = `${_refCoord[0]}..${_refCoord[1]}`;

@@ -36,22 +36,18 @@ var MultiAlignmentViewer = React.createClass({
 	},
 
 	render: function () {
-		var labelsNode = this._getLabelsNode();
-		var segmentNodes = this._getSegmentNodes();
-		var visibleSequenceNodes = this._getVisibleSegmentNodes();
-
 		var xScale = this._getXScale();
-		var maxX = xScale.range()[xScale.range().length - 1];
+		var maxX = _.max(xScale.range());
 		var svgHeight = (this.props.sequences.length + 3) * (PX_PER_CHAR + 3);
 
 		return (<div>
-			{labelsNode}
-			<div ref="scroller" style={{ width: "100%", overflow: "scroll" }}>
-				<div style={{ width: maxX + LABEL_WIDTH }}>
+			{this._getLabelsNode()}
+			<div ref="scroller" style={{ marginLeft: LABEL_WIDTH, overflow: "scroll" }}>
+				<div style={{ width: maxX + FONT_SIZE }}>
 					<MultiScaleAxis segments={this.props.segments} scale={xScale} />
-					<svg ref="svg" style={{ width: "100%", height: svgHeight }}>
-						{segmentNodes}
-						{visibleSequenceNodes}
+					<svg ref="svg" style={{ width: maxX + FONT_SIZE, height: svgHeight }}>
+						{this._getSegmentNodes()}
+						{this._getVisibleSegmentNodes()}
 					</svg>
 				</div>
 			</div>

@@ -4,7 +4,6 @@
 var d3 = require("d3");
 var _ = require("underscore");
 
-var LABEL_WIDTH = 180;
 var PX_PER_CHAR = 8.41;
 var SUMMARIZED_SIZE = 30;
 
@@ -27,7 +26,7 @@ module.exports = function (segments) {
 		var _delta = !s.visible ? Math.min(SUMMARIZED_SIZE, scaleSize) : scaleSize;
 		memo.push(_last += _delta);
 		return memo;
-	}, [LABEL_WIDTH]);
+	}, [PX_PER_CHAR]);
 
 	return d3.scale.linear()
 		.domain(_domain)
