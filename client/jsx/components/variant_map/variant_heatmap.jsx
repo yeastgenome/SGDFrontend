@@ -123,7 +123,7 @@ var VariantHeatmap = React.createClass({
 	},
 
 	_getScrollSize: function () {
-		return this.props.data.length * NODE_SIZE;
+		return this.props.data.length * NODE_SIZE * 0.975;
 	},
 
 	_getCanvasSize: function () {
