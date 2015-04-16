@@ -42,13 +42,14 @@ var MultiAlignmentViewer = React.createClass({
 
 		var xScale = this._getXScale();
 		var maxX = xScale.range()[xScale.range().length - 1];
+		var svgHeight = (this.props.sequences.length + 3) * (PX_PER_CHAR + 3);
 
 		return (<div>
 			{labelsNode}
 			<div ref="scroller" style={{ width: "100%", overflow: "scroll" }}>
 				<div style={{ width: maxX + LABEL_WIDTH }}>
 					<MultiScaleAxis segments={this.props.segments} scale={xScale} />
-					<svg ref="svg" style={{ width: "100%", height: 600 }}>
+					<svg ref="svg" style={{ width: "100%", height: svgHeight }}>
 						{segmentNodes}
 						{visibleSequenceNodes}
 					</svg>
