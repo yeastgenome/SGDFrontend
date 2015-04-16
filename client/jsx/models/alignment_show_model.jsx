@@ -47,8 +47,12 @@ module.exports = class AlignmentShowModel extends BaseModel {
 	}
 
 	canShowSequence (isProtein) {
-		var sequences = isProtein ? this.attributes.aligned_dna_sequences : this.attributes.aligned_protein_sequences;
-		return sequences.length > 1;
+		var attr = this.attributes;
+		if (isProtein) {
+			return attr.aligned_protein_sequences.length > 1 && attr.variant_data_protein.length > 0;
+		} else {
+			return attr.aligned_dna_sequences.length > 1 && attr.variant_data_dna.length > 0;
+		}
 	}
 
 	_sortSequencesByStrain (sequences) {
