@@ -1,6 +1,5 @@
 
 $(document).ready(function() {
-
 	$.getJSON('/backend/go/' + go_term['id'] + '/locus_details?callback=?', function(data) {
 	  	var go_table = create_go_table(data);
 	  	create_analyze_button("go_table_analyze", go_table, "<a href='" + go_term['link'] + "' class='gene_name'>" + go_term['display_name'] + "</a> genes", true);
