@@ -576,6 +576,9 @@ module.exports = React.createClass({
 
 
 	_cleanUpSeq: function(seq) {
+
+		seq = seq.replace(/^>.*$/m, '');
+		
 		// get rid of anything that is no-alphabet characters
 		if (seq) {
 		   seq = seq.replace(/[^a-zA-Z]/g , "");
