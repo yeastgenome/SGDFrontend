@@ -24,11 +24,12 @@ var Drawer = React.createClass({
 	mixins: [Router.Navigation, Router.State],
 
 	propTypes: {
-		isProteinMode: React.PropTypes.bool,
 		locusId: React.PropTypes.number.isRequired,
 		locusName: React.PropTypes.string.isRequired,
 		locusHref: React.PropTypes.string.isRequired,
-		strainIds: React.PropTypes.array.isRequired
+		strainIds: React.PropTypes.array.isRequired,
+		isProteinMode: React.PropTypes.bool,
+		locusHeadline: React.PropTypes.string
 	},
 
 	getDefaultProps: function () {
@@ -79,9 +80,6 @@ var Drawer = React.createClass({
 			color: "black"
 		};
 
-		var contentNode = this.state.isPending ? 
-			<div style={{ position: "relative", height: "100%" }}><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div> :
-			this._getContentNode();
 		return (<div>
 			<div style={_maskStyle} onClick={this._exit} />
 			<div style={_drawerWrapperStyle}>
@@ -89,8 +87,9 @@ var Drawer = React.createClass({
 					<h1>
 						<a onClick={this._exit} style={_exitStyle}><i className="fa fa-times"></i></a>
 					</h1>
-					<h1><a href={this.props.locusHref}>{this.props.locusName}</a></h1>
-					{contentNode}		
+					<h1 style={{ display: "inline-block" }}><a href={this.props.locusHref}>{this.props.locusName}</a></h1>
+					<span style={{ display: "inline-block", fontSize: REM_SIZE, marginLeft: REM_SIZE }}>{this.props.locusHeadline}</span>
+					{this._getContentNode()}		
 				</div>
 			</div>
 		</div>);
@@ -136,6 +135,8 @@ var Drawer = React.createClass({
 	},
 
 	_getContentNode: function () {
+		if (this.state.isPending) return <div style={{ position: "relative", height: "100%" }}><img className="loader" src="/static/img/dark-slow-wheel.gif" /></div>;
+
 		var model = this.state.alignmentModel;
 		var locusData = model.getLocusDiagramData(this.props.isProteinMode);
 		var variantData = model.getVariantData(this.props.isProteinMode);

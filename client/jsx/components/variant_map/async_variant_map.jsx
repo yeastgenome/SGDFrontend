@@ -51,9 +51,6 @@ var AsyncVariantMap = React.createClass({
 		// filter out S288C
 		_strainData = _.filter(_strainData, d => { return d.key !== REFERENCE_STRAIN_ID; });
 
-		var heatmapNode = this._getHeatmapNode();
-		var drawerNode = this._getDrawerNode();
-
 		return (<div>
 			<h1>Variant Viewer <HelpIcon text="SGD’s Variant Viewer displays similarity scores and sequence variants for open reading frames (ORFs) within a reference panel of 12 widely-used S. cerevisiae genomes. All scores and variants are presented relative to the S288C reference genome. The sequence data are all from Song et al., 2015. AGAPE (Automated Genome Analysis PipelinE) for Pan-Genome Analysis of Saccharomyces cerevisiae. PLoS One 10(3):e0120671 PMID:25781462" /></h1>
 			<hr />
@@ -71,8 +68,8 @@ var AsyncVariantMap = React.createClass({
 					</div>
 				</div>
 			</div>			
-			{heatmapNode}
-			{drawerNode}
+			{this._getHeatmapNode()}
+			{this._getDrawerNode()}
 		</div>);
 	},
 
@@ -147,12 +144,14 @@ var AsyncVariantMap = React.createClass({
 		if (_locusId) _locusId = parseInt(_locusId);
 		var _locusData = _.findWhere(this.state.lociData, { id: _locusId });
 		var _locusName = _locusData ? _locusData.display_name : "";
+		var _locusHeadline = _locusData ? _locusData.headline : "";
 		var _locusHref = _locusData ? _locusData.link : "";
 		var _strainIds = [REFERENCE_STRAIN_ID].concat(this.state.activeStrainIds);
 		return (<RouteHandler
 			locusData={_locusData}
 			locusId={_locusId}
 			locusName={_locusName}
+			locusHeadline={_locusHeadline}
 			locusHref={_locusHref}
 			isProteinMode={this.state.isProteinMode}
 			strainIds={_strainIds}
