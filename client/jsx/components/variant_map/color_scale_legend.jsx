@@ -33,7 +33,7 @@ var ColorScaleLegend = React.createClass({
 				return <div key={"legendNode" + i} style={_style} />;
 			});
 
-		var _helpText = "Alignment Scores represent the similarity of each gene in each strain relative to the S288C reference genome. A score of 1 indicates that the sequence of that gene in that is identical to that of S288C. A score of 0 indicates no similarity. Darker colors indicate more differences than lighter colors. A white square (N/A) indicates that no sequence data are available for that gene in that strain.";
+		var _helpText = "Alignment Scores represent the similarity of each gene in each strain relative to the S288C reference genome. A score of 1 indicates that the sequence of that gene in that strain is identical to that of S288C. A score of 0 indicates no similarity. Darker colors indicate more differences than lighter colors. A white square (N/A) indicates that no sequence data are available for that gene in that strain.";
 		return (<div>
 			<p style={{ marginBottom: 0 }}>Alignment Score <HelpIcon text={_helpText} /></p>
 			<span>1.00</span>

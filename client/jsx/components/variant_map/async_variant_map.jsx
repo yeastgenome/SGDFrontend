@@ -52,7 +52,7 @@ var AsyncVariantMap = React.createClass({
 		_strainData = _.filter(_strainData, d => { return d.key !== REFERENCE_STRAIN_ID; });
 
 		return (<div>
-			<h1>Variant Viewer <HelpIcon text="SGD’s Variant Viewer displays similarity scores and sequence variants for open reading frames (ORFs) within a reference panel of 12 widely-used S. cerevisiae genomes. All scores and variants are presented relative to the S288C reference genome. The sequence data are all from Song et al., 2015. AGAPE (Automated Genome Analysis PipelinE) for Pan-Genome Analysis of Saccharomyces cerevisiae. PLoS One 10(3):e0120671 PMID:25781462" /></h1>
+			<h1>Variant Viewer <HelpIcon text="SGD’s Variant Viewer displays similarity scores and sequence variants for open reading frames (ORFs) within a reference panel of 12 widely-used <i>S. cerevisiae</i> genomes. All scores and variants are presented relative to the S288C reference genome. The sequence data are all from Song et al., 2015. AGAPE (Automated Genome Analysis PipelinE) for Pan-Genome Analysis of <i>Saccharomyces cerevisiae</i>. PLoS One 10(3):e0120671 PMID:25781462" /></h1>
 			<hr />
 						
 			<div className="row">
