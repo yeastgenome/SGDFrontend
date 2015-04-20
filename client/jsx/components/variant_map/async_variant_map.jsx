@@ -5,6 +5,7 @@ var React = require("react");
 var _ = require("underscore");
 
 var AlignmentIndexModel = require("../../models/alignment_index_model.jsx");
+var HelpIcon = require("../widgets/help_icon.jsx");
 var RadioSelector = require("../widgets/radio_selector.jsx");
 var SearchBar = require("../widgets/search_bar.jsx");
 var VariantHeatmap = require("./variant_heatmap.jsx");
@@ -54,7 +55,7 @@ var AsyncVariantMap = React.createClass({
 		var drawerNode = this._getDrawerNode();
 
 		return (<div>
-			<h1>Variant Viewer</h1>
+			<h1>Variant Viewer <HelpIcon text="SGD’s Variant Viewer displays similarity scores and sequence variants for open reading frames (ORFs) within a reference panel of 12 widely-used S. cerevisiae genomes. All scores and variants are presented relative to the S288C reference genome. The sequence data are all from Song et al., 2015. AGAPE (Automated Genome Analysis PipelinE) for Pan-Genome Analysis of Saccharomyces cerevisiae. PLoS One 10(3):e0120671 PMID:25781462" /></h1>
 			<hr />
 						
 			<div className="row">

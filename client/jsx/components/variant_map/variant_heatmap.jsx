@@ -5,6 +5,7 @@ var _ = require("underscore");
 
 var ColorScaleLegend = require("./color_scale_legend.jsx");
 var FlexibleTooltip = require("../widgets/flexible_tooltip.jsx");
+var HelpIcon = require("../widgets/help_icon.jsx");
 
 var DEFAULT_DOM_SIDE_SIZE = 400; // height and width
 var FONT_SIZE = 14;
@@ -45,6 +46,9 @@ var VariantHeatmap = React.createClass({
 		return (<div onMouseLeave={this._onMouseLeave}>
 			{tooltipNode}
 			<div className="panel" style={{ position: "relative", zIndex: 1 }}>
+				<p className="text-right">
+					<HelpIcon orientation="left" text="Mouse over the diagram to display information identifying each gene. Click on the diagram to open a sequence display window." />
+				</p>
 				<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
 					{strainLabelsNode}
 					<div ref="outerScroll" style={{ width: this.state.DOMWidth - LABEL_WIDTH - 18, height: _canvasHeight, overflowX: "scroll", position: "relative", left: LABEL_WIDTH }}>
@@ -214,7 +218,7 @@ var VariantHeatmap = React.createClass({
 		if (!locus) return null;
 
 		var title = (locus.displayName === locus.formatName) ? locus.displayName : `${locus.displayName} (${locus.formatName})`;
-		var top = HEADER_HEIGHT - 50;
+		var top = HEADER_HEIGHT;
 		var left = xScale(this.props.data.indexOf(locus)) - this.refs.outerScroll.getDOMNode().scrollLeft + LABEL_WIDTH + 40;
 
 		// format key value pairs for tooltip
