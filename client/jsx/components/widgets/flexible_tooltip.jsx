@@ -85,9 +85,12 @@ var FlexibleTooltip = React.createClass({
 				var _detailStyle = {}
 				if (this.props.truncateText) {
 					_detailStyle = {
+						height: "3rem",
 						overflow: "hidden",
 						textOverflow: "ellipsis",
-						whiteSpace: "nowrap"
+						display: "-webkit-box",
+						WebkitLineClamp: "2",
+						WebkitBoxOrient: "vertical"
 					}
 				}
 				memo.push(<dd key={"tooltipDataD" + i} style={_detailStyle}>{this.props.data[k]}</dd>);

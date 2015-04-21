@@ -211,14 +211,13 @@ var VariantHeatmap = React.createClass({
 
 	_getTooltipNode: function () {
 		if (!(this.state.mouseOverId && this.state.tooltipVisible)) return null;
-
-		var xScale = this._getXScale();
-		var yScale = this._getYScale();
 		var locus = _.findWhere(this.props.data, { id: this.state.mouseOverId });
 		if (!locus) return null;
 
+		var xScale = this._getXScale();
+		var yScale = this._getYScale();
 		var title = (locus.displayName === locus.formatName) ? locus.displayName : `${locus.displayName} (${locus.formatName})`;
-		var top = HEADER_HEIGHT;
+		var top = HEADER_HEIGHT - 30;
 		var left = xScale(this.props.data.indexOf(locus)) - this.refs.outerScroll.getDOMNode().scrollLeft + LABEL_WIDTH + 40;
 
 		// format key value pairs for tooltip
