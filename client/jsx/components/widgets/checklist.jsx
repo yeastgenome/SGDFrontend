@@ -58,10 +58,33 @@ var Checklist = React.createClass({
 			
 		});
 		return (
-			<form className="checklist" action="">
-				{inputs}
-			</form>
+			<div>
+				<form className="checklist" action="">
+					{inputs}
+				</form>
+				{this._getAllToggleNode()}
+			</div>
 		);
+	},
+
+	_getAllToggleNode: function () {
+		var hasAll = this.state.activeElementKeys.length === this.props.elements.length;
+		var onClick, text;
+		if (hasAll) {
+			text = "Deselect All";
+			onClick = e => {
+				e.preventDefault();
+				this.setState({ activeElementKeys: [] });
+			}
+		} else {
+			text = "Select All";
+			var _allKeys = _.map(this.props.elements, d => { return d.key; });
+			onClick = e => {
+				e.preventDefault();
+				this.setState({ activeElementKeys: _allKeys });
+			}
+		}
+		return <a onClick={onClick}>{text}</a>;
 	}
 
 });
