@@ -5,7 +5,7 @@ var React = require("react");
 var _ = require("underscore");
 var HelpIcon = require("../widgets/help_icon.jsx");
 
-module.exports = React.createClass({
+var ReferenceList = React.createClass({
 
 	getDefaultProps: function () {
 		return {
@@ -27,14 +27,14 @@ module.exports = React.createClass({
 	},
 
 	_getListNode: function () {
-		var itemNodes = _.map(this.props.data, r => {
+		var itemNodes = _.map(this.props.data, (r, i)=> {
 			var _text = r.citation.replace(r.display_name, "");
-			var refNodes = _.map(r.urls, ref => {
-				return <li><a href={ref.link}>{ref.display_name}</a></li>;
+			var refNodes = _.map(r.urls, (url, _i)=> {
+				return <li key={"refListInner" + _i}><a href={url.link}>{url.display_name}</a></li>;
 			});
-			refNodes.unshift(<li><a href={r.link}>SGD Paper</a></li>)
+			refNodes.unshift(<li key={"sgdNode" + i}><a href={r.link}>SGD Paper</a></li>)
 			var pubmedNode = r.pubmed_id ? <small>PMID: {r.pubmed_id}</small> : null;
-			return (<li className="reference-list-item">
+			return (<li className="reference-list-item" key={"refListOuter" + i}>
 				<a href={r.link}>{r.display_name}</a> {_text} {pubmedNode}
 				<ul className="ref-links">
 					{refNodes}
@@ -45,3 +45,5 @@ module.exports = React.createClass({
 		return <ol className="reference-list">{itemNodes}</ol>;
 	}
 });
+
+module.exports = ReferenceList;

@@ -8,7 +8,7 @@ require("bootstrap");
 
 var SCROLL_OFFSET = 245; // how far (px) to scroll to trigger link
 
-module.exports = React.createClass({
+var Navbar = React.createClass({
 
 	getDefaultProps: function () {
 		return {
@@ -25,10 +25,10 @@ module.exports = React.createClass({
 
 	render: function () {
 
-		var listElements = _.map(this.props.elements, element => {
+		var listElements = _.map(this.props.elements, (element, i) => {
 			if (!element) return null;
 			return (
-				<li id={`navbar_${element.target}`}>
+				<li id={`navbar_${element.target}`} key={"navbarElement" + i}>
 					<a href={`#${element.target}`}>{element.name}</a>
 				</li>
 			);
@@ -80,3 +80,5 @@ module.exports = React.createClass({
         window.location.hash = "";
 	}
 });
+
+module.exports = Navbar;

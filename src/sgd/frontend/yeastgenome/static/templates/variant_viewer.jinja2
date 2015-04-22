@@ -1,0 +1,20 @@
+{% extends "lite_layout.jinja2" %}
+
+{% block title %}Variant Viewer{% endblock %}
+
+{% block body %}
+
+<div class="row">
+	<div id="j-main" class="small-12 columns content-column sgd-viz s-nextgen">
+		<img class="loader" src="/static/img/dark-slow-wheel.gif" />
+	</div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script src="/static/js/application.js{{version_qs}}"></script>
+<script>
+	views.variantViewer.render();
+</script>
+{% endblock scripts %}

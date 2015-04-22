@@ -12,7 +12,6 @@ var NavBar = require("../components/widgets/navbar.jsx");
 var ReferenceList = require("../components/literature/reference_list.jsx");
 var TabsModel = require("../models/tabs_model.jsx");
 
-
 var summaryView = {};
 summaryView.render = function () {
 	var locusData = bootstrappedData.locusData;

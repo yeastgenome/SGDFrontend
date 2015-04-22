@@ -4,7 +4,7 @@
 var React = require("react");
 var $ = require("jquery");
 
-var ExpressionChart = require("../components/viz/expression_chart.jsx");
+var ExpressionChart = React.createFactory(require("../components/viz/expression_chart.jsx"));
 
 var expressionView = {};
 expressionView.render = function () {
@@ -17,7 +17,7 @@ expressionView.render = function () {
 				_onClick = (minValue, maxValue) => { filter_table(minValue, maxValue); };
 			}
 
-			React.renderComponent(
+			React.render(
 				<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} hasScaleToggler={true} onClick={_onClick} hasHelpIcon={true}/>,
 				document.getElementById("j-expression-chart-target")
 			);
