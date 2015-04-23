@@ -86,18 +86,13 @@ var SearchForm = React.createClass({
 	},
 
 	componentDidMount: function () {
-	    if (this.state.submitted) {
-	        this._doBlast();
-	    }
+	        if (this.state.submitted) {
+	              this._doBlast();
+	        }
 	},
 
 	_getFormNode: function () {
-
-		if (this.state.submitted && this.state.didBlast == 0) {
-                        //this._doBlast();
-			//this.setState({ didBlast: 1 });
-		}
-					
+				
 	        if (this.state.isComplete) {
 		        if (this.state.resultData.hits == '') {
 			     var errorReport = this.state.resultData.result;
@@ -539,8 +534,6 @@ var SearchForm = React.createClass({
 	},
 
 	_doBlast: function() {
-
-		// console.log("I am in doBlast");
 
 		var seq = window.localStorage.getItem("seq");
 		var program = window.localStorage.getItem("program");
