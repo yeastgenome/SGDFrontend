@@ -11,7 +11,7 @@ var params = require("../mixins/parse_url_params.jsx");
 
 var BLAST_URL = "/run_blast";
 
-module.exports = React.createClass({
+var SearchForm = React.createClass({
 
 	getDefaultProps: function () {
                 return {
@@ -66,6 +66,7 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
+		console.log("foo")
 		
 		var formNode = this._getFormNode();
 
@@ -702,3 +703,5 @@ module.exports = React.createClass({
         }
 
 });
+
+module.exports = SearchForm;
