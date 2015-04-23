@@ -95,7 +95,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		mainText = "Current Observable";
 		secondText = "Other Observable";
 	}
-	var secondColor = (legendType === "goOntology") ? "#458FD3" :  '#757575';
+	var secondColor = (legendType === "goOntology") ? "#458FD3" :  "#757575";
 
 	// draw legend
 	var startX = (legendType === "phenotypeOntology") ? 74 : 53;
