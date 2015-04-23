@@ -65,9 +65,7 @@ var SearchForm = React.createClass({
 		};
 	},
 
-	render: function () {
-		console.log("foo")
-		
+	render: function () {		
 		var formNode = this._getFormNode();
 
 		if (this.props.blastType == 'sgd') {
