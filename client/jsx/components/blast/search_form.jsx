@@ -5,9 +5,9 @@ var React = require("react");
 var _ = require("underscore");
 var $ = require("jquery");
 
-var radioSelector = require("./radio_selector.jsx");
-var blastBarChart = require("./blast_bar_chart.jsx");
-var params = require("../mixins/parse_url_params.jsx");
+var RadioSelector = require("./radio_selector.jsx");
+var BlastBarChart = require("./blast_bar_chart.jsx");
+var Params = require("../mixins/parse_url_params.jsx");
 
 var BLAST_URL = "/run_blast";
 
@@ -21,7 +21,7 @@ var SearchForm = React.createClass({
 
 	getInitialState: function () {
 	        
-		var param = params.getParams();
+		var param = Params.getParams();
 		
 		var submitted = '';
 		if (param['program']) {
@@ -85,11 +85,17 @@ var SearchForm = React.createClass({
 
 	},
 
+	componentDidMount: function () {
+	    if (this.state.submitted) {
+	        this._doBlast();
+	    }
+	},
+
 	_getFormNode: function () {
 
 		if (this.state.submitted && this.state.didBlast == 0) {
-                        this._doBlast();
-			this.setState({ didBlast: 1 });
+                        //this._doBlast();
+			//this.setState({ didBlast: 1 });
 		}
 					
 	        if (this.state.isComplete) {
@@ -217,7 +223,7 @@ var SearchForm = React.createClass({
 		var _left = 50;
 		var _size = data.length;
 		var _totalHits = this.state.resultData.totalHits; 
-                var barNode = (<blastBarChart 
+                var barNode = (<BlastBarChart 
 		                data={data}
 				size={_size} 
                                 maxY={_maxY}
@@ -414,7 +420,7 @@ var SearchForm = React.createClass({
         _getFilterMenu: function() {
 
                 var _elements = [ { name: "On", key: "On" }, { name: "Off", key: "Off"}];
-		return <radioSelector name='filter' elements={_elements} initialActiveElementKey='On'/>; 
+		return <RadioSelector name='filter' elements={_elements} initialActiveElementKey='On'/>; 
         },
 
 	_getDropdownList: function(elementList, activeVal) {
@@ -533,6 +539,8 @@ var SearchForm = React.createClass({
 	},
 
 	_doBlast: function() {
+
+		// console.log("I am in doBlast");
 
 		var seq = window.localStorage.getItem("seq");
 		var program = window.localStorage.getItem("program");

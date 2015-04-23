@@ -3,11 +3,11 @@
 
 var React = require("react");
 
-var searchForm = require("../components/blast/search_form.jsx");
+var SearchForm = require("../components/blast/search_form.jsx");
 
 var blastFungalView = {};
 blastFungalView.render = function () {
-	React.render(<searchForm blastType='fungal'/>, document.getElementById("j-main"));
+	React.render(<SearchForm blastType='fungal'/>, document.getElementById("j-main"));
 };
 
 module.exports = blastFungalView;
