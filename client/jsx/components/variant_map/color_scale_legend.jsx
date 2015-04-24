@@ -7,8 +7,9 @@ var _ = require("underscore");
 
 var HelpIcon = require("../widgets/help_icon.jsx");
 
-var NUM_BOXES = 5;
-var NODE_SIZE = 17;
+var NUM_BOXES = 50;
+var NODE_WIDTH = 2;
+var NODE_HEIGHT = 17;
 
 var ColorScaleLegend = React.createClass({
 
@@ -25,10 +26,8 @@ var ColorScaleLegend = React.createClass({
 				var _style = {
 					background: colorScale(_score),
 					display: "inline-block",
-					width: NODE_SIZE,
-					height: NODE_SIZE,
-					border: _borderStyle,
-					borderLeft: (i === 0) ? _borderStyle : "none"
+					width: NODE_WIDTH,
+					height: NODE_HEIGHT
 				};
 				return <div key={"legendNode" + i} style={_style} />;
 			});
@@ -43,7 +42,7 @@ var ColorScaleLegend = React.createClass({
 			<span>0.00</span>
 			<div>
 				<span>N/A</span>
-				<div style={{ margin: "0 1rem", display: "inline-block", position: "relative", top: 3, left: 3, width: NODE_SIZE -2 , height: NODE_SIZE - 2, background: "white", border: _borderStyle }} />
+				<div style={{ margin: "0 1rem", display: "inline-block", position: "relative", top: 3, left: 3, width: NODE_HEIGHT -2 , height: NODE_HEIGHT - 2, background: "white", border: _borderStyle }} />
 			</div>
 		</div>);
 	}
