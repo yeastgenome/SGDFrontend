@@ -251,7 +251,7 @@ var Drawer = React.createClass({
 			var _canShowSequence = this.state.alignmentModel.canShowSequence(this.props.isProteinMode);
 			var showSequnceNode = _canShowSequence ?
 				<a className="button secondary small" onClick={this._showSequence}>Show Sequence</a> :
-				<span>Unable to show sequence for this feature</span>;
+				<span>These sequences are 100% identical</span>;
 			node = <p className="text-center" style={{ marginTop: "1rem" }}>{showSequnceNode}</p>;
 		}
 		return node;
