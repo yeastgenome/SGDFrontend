@@ -15,6 +15,7 @@ var MAX_CANVAS_SIZE = 8000;
 var LABEL_WIDTH = 120;
 var TOOLTIP_DELAY = 250;
 var SCROLLBAR_HEIGHT = 15;
+var LARGE_DATA_SIZE = 6500;
 
 var VariantHeatmap = React.createClass({
 	propTypes: {
@@ -39,23 +40,19 @@ var VariantHeatmap = React.createClass({
 		var _canvasSize = this._getCanvasSize();
 		var _canvasHeight = this._getYScale().range()[1] + HEADER_HEIGHT + SCROLLBAR_HEIGHT;
 
-		var strainLabelsNode = this._getLabelsNode();
-		var overlayNode = this._getOverlayNode();
-		var tooltipNode = this._getTooltipNode();
-
 		return (<div onMouseLeave={this._onMouseLeave}>
-			{tooltipNode}
+			{this._getTooltipNode()}
 			<div className="panel" style={{ position: "relative", zIndex: 1 }}>
 				<p className="text-right">
 					<HelpIcon orientation="left" text="Mouse over the diagram to display information identifying each gene. Click on the diagram to open a sequence display window." />
 				</p>
 				<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
-					{strainLabelsNode}
+					{this._getLabelsNode()}
 					<div ref="outerScroll" style={{ width: this.state.DOMWidth - LABEL_WIDTH - 18, height: _canvasHeight, overflowX: "scroll", position: "relative", left: LABEL_WIDTH }}>
 						<div style={{ position: "relative", width: _scrollZoneSize }}>	
 							<canvas ref="canvas" width={_canvasSize} height={_canvasHeight} style={{ position: "absolute", left: _canvasX }}/>
 						</div>
-						{overlayNode}
+						{this._getOverlayNode()}
 					</div>
 				</div>
 			</div>
@@ -127,7 +124,9 @@ var VariantHeatmap = React.createClass({
 	},
 
 	_getScrollSize: function () {
-		return this.props.data.length * NODE_SIZE * 0.975;
+		var length = this.props.data.length;
+		var offset = (length > LARGE_DATA_SIZE) ? 2800 : 0;  // manually make canvas smaller when very large
+		return length * NODE_SIZE - offset;
 	},
 
 	_getCanvasSize: function () {
