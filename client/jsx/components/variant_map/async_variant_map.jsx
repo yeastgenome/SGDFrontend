@@ -141,7 +141,7 @@ var AsyncVariantMap = React.createClass({
 
 	_getDrawerNode: function () {
 		var _locusId = this.getParams().locusId;
-		var _locusData = _.findWhere(this.state.lociData, { id: _locusId });
+		var _locusData = _.findWhere(this.state.lociData, { sgdid: _locusId });
 		var _locusName = _locusData ? _locusData.display_name : "";
 		var _locusHeadline = _locusData ? _locusData.headline : "";
 		var _locusHref = _locusData ? _locusData.link : "";
