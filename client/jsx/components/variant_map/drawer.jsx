@@ -24,7 +24,7 @@ var Drawer = React.createClass({
 	mixins: [Router.Navigation, Router.State],
 
 	propTypes: {
-		locusId: React.PropTypes.number.isRequired,
+		locusId: React.PropTypes.string.isRequired,
 		locusName: React.PropTypes.string.isRequired,
 		locusHref: React.PropTypes.string.isRequired,
 		strainIds: React.PropTypes.array.isRequired,

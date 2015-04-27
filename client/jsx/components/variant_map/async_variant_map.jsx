@@ -106,7 +106,7 @@ var AsyncVariantMap = React.createClass({
 	_getHeatmapNode: function () {
 		// navigate with router
 		var _onClick = d => {
-			this.transitionTo("shallowDrawer",{ locusId: d.id});
+			this.transitionTo("shallowDrawer",{ locusId: d.id });
 		};
 
 		var _lociData = this._getLociData();
@@ -116,7 +116,7 @@ var AsyncVariantMap = React.createClass({
 				formatName: d.format_name,
 				headline: d.headline,
 				href: d.link,
-				id: d.id,
+				id: d.sgdid,
 				type: d.locus_type,
 				name: d.display_name,
 				qualifier: d.qualifier,
@@ -141,7 +141,6 @@ var AsyncVariantMap = React.createClass({
 
 	_getDrawerNode: function () {
 		var _locusId = this.getParams().locusId;
-		if (_locusId) _locusId = parseInt(_locusId);
 		var _locusData = _.findWhere(this.state.lociData, { id: _locusId });
 		var _locusName = _locusData ? _locusData.display_name : "";
 		var _locusHeadline = _locusData ? _locusData.headline : "";
