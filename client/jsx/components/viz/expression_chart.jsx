@@ -14,7 +14,7 @@ var SIDE_PADDING = 100;
 var TOP_PADDING = 20;
 var TRANSITION_DURATION = 1000;
 
-module.exports = React.createClass({
+var ExpressionChart = React.createClass({
 	mixins: [CalcWidthOnResize],
 
 	propTypes: {
@@ -209,3 +209,5 @@ module.exports = React.createClass({
 		</div>);
 	}
 });
+
+module.exports = ExpressionChart;

@@ -19,7 +19,7 @@ $(document).ready(function() {
 	});
 
 	$.getJSON('/backend/observable/' + observable['id'] + '/ontology_graph?callback=?', function(data) {
-  		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
+  		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "observable");
         create_cy_download_button(cy, "cy_download", observable['display_name'] + '_ontology')
 
         if(data['all_children'] != null && data['all_children'].length > 0) {

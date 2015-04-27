@@ -268,6 +268,15 @@
 	}
 }
 
+.standalone-axis {
+	g.tick line {
+		stroke: #ddd;
+	}
+	path.domain {
+		stroke: none;
+	}
+}
+
 .locus-diagram .locus-path:hover {
 	cursor: pointer;
 }
@@ -348,4 +357,9 @@ h3.subfeature-label-text {
 
 #network .network-label {
 	margin-top: 50px;
+}
+
+// variant map
+.variant-map-progress-bar-inner {
+	transition: left 0.5s, width 0.5s;
 }

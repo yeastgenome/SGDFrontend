@@ -20,7 +20,10 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		literature: 0,
 		interaction: 150,
 		regulation: 150,
-		expression: 75
+		expression: 75,
+		phenotypeOntology: 0,
+		goOntology: 0,
+		observable: 0
 	};
 	var _legendOffset = _legendOffsets[legendType];
 	$(".sgd-cyto-canvas-container").parent().height(height + offset + _legendOffset);
@@ -84,10 +87,24 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		ctx.fillText(text, textX, textY);
 	};
 
+	var mainText = "Current Locus";
+	var secondText = "Other Locus";
+	if (legendType === "goOntology") {
+		mainText = "Current Term";
+		secondText = "Other Term";
+	} else if (legendType === "phenotypeOntology" || legendType === "observable") {
+		mainText = "Current Observable";
+		secondText = "Other Observable";
+	}
+	var secondColor = (legendType === "goOntology") ? "#458FD3" :  "#757575";
+	if (legendType === "observable") secondColor = "#FF6A00";
+
 	// draw legend
-	drawLegendNode(ctx, "Current Locus", 53, legendY, '#F9DA56', true, false);
-	if (legendType !== "literature") drawLegendNode(ctx, "Other Locus", 160, legendY, '#757575', true, true);
-	var nextLegendX = 245;
+	var startX = (legendType === "phenotypeOntology" || legendType === "observable") ? 74 : 53;
+	drawLegendNode(ctx, mainText, startX, legendY, '#F9DA56', true, false);
+	var secondX = (legendType === "phenotypeOntology" || legendType === "observable") ? 230 : 160;
+	if (legendType !== "literature") drawLegendNode(ctx, secondText, secondX, legendY, secondColor, true, true);
+	var nextLegendX = (legendType === "phenotypeOntology" || legendType === "observable") ? 360 : 245;
 	if (legendType === "protein") {
 		drawLegendNode(ctx, "Domain", nextLegendX, legendY, '#3366cc', false, true);	
 	} else if (legendType === "go") {
@@ -96,6 +113,8 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		drawLegendNode(ctx, "Phenotype", nextLegendX, legendY, '#C591F5', false, true);
 	} else if (legendType === "literature") {
 		drawLegendNode(ctx, "Reference", nextLegendX, legendY, '#C591F5', true, true);
+	} else if (legendType === "observable") {
+		drawLegendNode(ctx, "Ontology", nextLegendX, legendY, "#757575", true, true);
 	}
 
     cy.zoomingEnabled(false);

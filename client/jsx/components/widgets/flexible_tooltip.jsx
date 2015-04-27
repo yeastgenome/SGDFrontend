@@ -4,7 +4,18 @@
 var React = require("react");
 var _ = require("underscore");
 
-module.exports = React.createClass({
+var FlexibleTooltip = React.createClass({
+	propTypes: {
+		visible: React.PropTypes.bool,
+		text: React.PropTypes.string,
+		left: React.PropTypes.number,
+		top: React.PropTypes.number,
+		title: React.PropTypes.string,
+		data: React.PropTypes.object,
+		href: React.PropTypes.string,
+		truncateText: React.PropTypes.bool
+	},
+
 	getDefaultProps: function () {
 		return {
 			visible: false,
@@ -13,7 +24,8 @@ module.exports = React.createClass({
 			top: 0,
 			title: null,
 			data: null,
-			href: null
+			href: null,
+			truncateText: false
 		};
 	},
 
@@ -26,15 +38,16 @@ module.exports = React.createClass({
 			display: (props.visible ? "block" : "none"),
 			top: props.top,
 			left: props.left,
-			marginLeft: _isComplex ? -(_complexWidth * 4/5) : -50,
+			marginLeft: (_isComplex && this.props.orientation !== "top") ? -(_complexWidth * 4/5) : -50,
 			marginTop: _isComplex ? 30 : -60,
 			minHeight: _isComplex ? 100 : 35,
 			padding: _isComplex ? "1em" : 0,
-			width: _isComplex ? _complexWidth: "auto"
+			width: _isComplex ? _complexWidth: "auto",
 		};
 
 		var innerContentNode = this._getInnerContentNode();
 		var arrowKlass = _isComplex ? "flexible-tooltip-arrow complex" : "flexible-tooltip-arrow";
+		if (this.props.orientation === "top") arrowKlass = "flexible-tooltip-arrow";
 		return (
 			<div className="flexible-tooltip" style={_style} >
 				{innerContentNode}
@@ -67,9 +80,20 @@ module.exports = React.createClass({
 		var dataNode = null;
 		if (this.props.data) {
 			var _keys = _.keys(this.props.data);
-			var _innerNodes = _.reduce(_keys, (memo, k) => {
-				memo.push(<dt>{k}</dt>);
-				memo.push(<dd>{this.props.data[k]}</dd>);
+			var _innerNodes = _.reduce(_keys, (memo, k, i) => {
+				memo.push(<dt key={"tooltipDataT" + i}>{k}</dt>);
+				var _detailStyle = {}
+				if (this.props.truncateText) {
+					_detailStyle = {
+						height: "3rem",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+						display: "-webkit-box",
+						WebkitLineClamp: "2",
+						WebkitBoxOrient: "vertical"
+					}
+				}
+				memo.push(<dd key={"tooltipDataD" + i} style={_detailStyle}>{this.props.data[k]}</dd>);
 				return memo;
 			}, []);
 			dataNode = <dl className="key-value">{_innerNodes}</dl>;
@@ -85,3 +109,5 @@ module.exports = React.createClass({
 		</span>);
 	}
 });
+
+module.exports = FlexibleTooltip;

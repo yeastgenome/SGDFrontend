@@ -119,9 +119,16 @@ module.exports = function(grunt) {
                 dest: BUILD_PATH + "js/application.js",
                 src: "client/jsx/application.jsx",
                 options: {
-                    bundleOptions: {
+                    browserifyOptions: {
                         debug: true
                     }
+                }
+            },
+            production: {
+                dest: BUILD_PATH + "js/application.js",
+                src: "client/jsx/application.jsx",
+                options: {
+                    alias: ["./node_modules/react/dist/react.min.js:react"]
                 }
             }
         },
@@ -131,7 +138,7 @@ module.exports = function(grunt) {
                 livereload: true
             },
             jsx: {
-                files: ["client/**/*.jsx"],
+                files: ["client/**/*.jsx", "client/lib/sgd_visualization/**/*.jsx"],
                 tasks: ["browserify:dev"]
             },
             scss: {
@@ -174,7 +181,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-concurrent");
 
     // production helper tasks
-    grunt.registerTask("dynamicJs:production", ["browserify:dev", "uglify:dynamicJs"]);
+    grunt.registerTask("dynamicJs:production", ["browserify:production", "uglify:dynamicJs"]);
     grunt.registerTask("static", ["replace", "concat", "uglify:staticJs", "bowercopy"]);
 
     // dev helper task

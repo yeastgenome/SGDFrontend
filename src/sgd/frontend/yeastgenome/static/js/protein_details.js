@@ -1,5 +1,3 @@
-google.load("visualization", "1", {packages:["corechart"]});
-
 var phosphodata = null;
 var current_residues = '';
 var current_strain = '';
@@ -81,8 +79,14 @@ $(document).ready(function() {
         $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_details?callback=?', function(protein_domain_data) {
             var domain_table = create_domain_table(protein_domain_data);
             create_download_button("domain_table_download", domain_table, locus['display_name'] + "_domains");
+            
             if(protein_domain_data.length > 0) {
-                draw_domain_chart("domain_chart", length, protein_domain_data);
+                // call react view from external file
+                var colorScale = function (sourceName) {
+                    return source_to_color[sourceName];
+                };
+
+                views.protein.render(protein_domain_data, length, colorScale);
             }
             else {
                 $("#domain_locations").hide();
@@ -417,144 +421,6 @@ function create_domain_table(data) {
     options["oLanguage"] = {"sEmptyTable": "No known domains for " + locus['display_name'] + "."};
 
     return create_table("domain_table", options);
-}
-
-function make_domain_ready_handler(chart_id, chart, min_start, max_end, descriptions, data_array) {
-    function ready_handler() {
-        //Fix tooltips.
-        function tooltipHandler(e) {
-            var datarow = data_array[e.row];
-            var spans = $(".google-visualization-tooltip-action > span");
-            if(spans.length > 3) {
-                spans[0].innerHTML = 'Coords:';
-                spans[1].innerHTML = ' ' + datarow[2]/10 + '-' + datarow[3]/10;
-                spans[2].innerHTML = '';
-                if(descriptions[e.row] != null && descriptions[e.row] != '') {
-                    spans[3].innerHTML = '<span>' + descriptions[e.row] + '</span>';
-                }
-                else {
-                    spans[2].innerHTML = '';
-                    spans[3].innerHTML = '';
-                }
-                $(".google-visualization-tooltip-item").parent().parent().height('auto');
-            }
-        }
-        google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
-
-        //Fix axis.
-        var svg_gs = $("#" + chart_id).find("g");
-
-        var rectangle_holder = svg_gs[3];
-        rectangles = rectangle_holder.childNodes;
-        var y_one = min_start;
-        var y_two = max_end;
-
-        var x_one = null;
-        var x_two = null;
-
-        for (i=0; i < rectangles.length; i++) {
-            if(rectangles[i].nodeName == 'rect') {
-                var x = Math.round(rectangles[i].getAttribute('x'));
-                var y = Math.round(rectangles[i].getAttribute('y'));
-                if(x_one == null || x < x_one) {
-                    x_one = x;
-                }
-                if(x_two == null || x > x_two) {
-                    x_two = x + Math.round(rectangles[i].getAttribute('width'));
-                }
-            }
-        }
-
-        var m = (y_two - y_one)/(x_two - x_one);
-        var b = y_two - m*x_two;
-
-        var tickmark_holder = svg_gs[1];
-        var tickmarks = tickmark_holder.childNodes;
-        var tickmark_space;
-        if(tickmarks.length > 1) {
-            tickmark_space = Math.round(tickmarks[1].getAttribute('x')) - Math.round(tickmarks[0].getAttribute('x'));
-        }
-        else {
-            tickmark_space = 100;
-        }
-        for (i=0; i < tickmarks.length; i++) {
-            var x_new = Math.round(tickmarks[i].getAttribute('x'));
-            var y_new = Math.round(m*x_new + b);
-            if(m*tickmark_space > 10000) {
-                y_new = 1000*Math.round(y_new/10000);
-            }
-            else if(m*tickmark_space > 1000) {
-                y_new = 100*Math.round(y_new/1000);
-            }
-            else if(m*tickmark_space > 100) {
-                y_new = 10*Math.round(y_new/100);
-            }
-            else if(m*tickmark_space > 10) {
-                y_new = Math.round(y_new/10)
-            }
-            if(y_new <= 0) {
-                y_new = 1;
-            }
-            $(tickmarks[i]).html(y_new);
-        }
-    }
-    return ready_handler();
-    // google.visualization.events.addListener(chart, 'onmouseover', function (e) {
-    //     console.log(e)
-    // });
-}
-
-function draw_domain_chart(chart_id, length, data) {
-    var container = document.getElementById(chart_id);
-
-    var chart = new google.visualization.Timeline(container);
-
-    var dataTable = new google.visualization.DataTable();
-
-    dataTable.addColumn({ type: 'string', id: 'Source' });
-    dataTable.addColumn({ type: 'string', id: 'Name' });
-    dataTable.addColumn({ type: 'number', id: 'Start' });
-    dataTable.addColumn({ type: 'number', id: 'End' });
-
-    var data_array = [];
-    var descriptions = [];
-    var colors = ['#888'];
-    var sources = {};
-
-    for (var i=0; i < data.length; i++) {
-        var start = data[i]['start'];
-        var end = data[i]['end'];
-        var source = '';
-        if(data[i]['domain']['source'] != null) {
-            source = data[i]['domain']['source']['display_name'];
-        }
-
-        data_array.push([source, data[i]['domain']['display_name'], start*10, end*10]);
-        descriptions.push(data[i]['domain']['description']);
-
-        if(!(source in sources)) {
-            colors.push(source_to_color[source])
-            sources[source] = true;
-        }
-    }
-    data_array.unshift(["-", locus['display_name'], 10, length*10]);
-    descriptions.unshift('');
-
-    dataTable.addRows(data_array);
-
-    var options = {
-        'height': 1,
-        'timeline': {'colorByRowLabel': true,
-            'hAxis': {'position': 'none'}
-        },
-        'colors': colors
-    };
-
-    // try to predict height by finding number of unique sources
-    var chartHeight = Object.keys(sources).length * 60 + 50;
-    options['height'] = chartHeight;
-    chart.draw(dataTable, options);
-    google.visualization.events.addListener(chart, 'ready', make_domain_ready_handler(chart_id, chart, 1, length*10, descriptions, data_array));
 }
 
 function prep_style() {

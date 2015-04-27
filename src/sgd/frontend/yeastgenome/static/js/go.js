@@ -1,6 +1,5 @@
 
 $(document).ready(function() {
-
 	$.getJSON('/backend/go/' + go_term['id'] + '/locus_details?callback=?', function(data) {
 	  	var go_table = create_go_table(data);
 	  	create_analyze_button("go_table_analyze", go_table, "<a href='" + go_term['link'] + "' class='gene_name'>" + go_term['display_name'] + "</a> genes", true);
@@ -18,7 +17,7 @@ $(document).ready(function() {
 	});
 
 	$.getJSON('/backend/go/' + go_term['id'] + '/ontology_graph?callback=?', function(data) {
-  		var cy = create_cytoscape_vis("cy", layout, graph_style, data);
+  		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "goOntology");
         create_cy_download_button(cy, "cy_download", go_term['display_name'] + '_ontology')
 
         if(data['all_children'] != null && data['all_children'].length > 0) {

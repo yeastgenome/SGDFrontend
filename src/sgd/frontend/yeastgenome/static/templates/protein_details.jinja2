@@ -107,7 +107,7 @@
             {% include "domain_table.jinja2" %}
         </div>
         
-        <div id="domain_locations" class="panel">
+        <div id="domain_locations" class="panel sgd-viz">
             <h3>Domain Locations
                 <a href="#" data-dropdown="domain_location_info"><i class="fa fa-info-circle"></i></a>
 
@@ -123,7 +123,9 @@
                     Scroll over a domain to view its exact coordinates and its Description.
                 </p>
             </h3>
-        <div id="domain_chart"></div>
+            <div id="domain_chart">
+                <img class="loader" src="/static/img/dark-slow-wheel.gif" />
+            </div>
         </div>
 
         <div id="shared_domains" class="">
@@ -355,11 +357,9 @@
 <script src="/static/js/build/nouislider.min.js{{version_qs}}"></script>
 <script src="/static/js/build/cytoscape.min.js{{version_qs}}"></script>
 <script src="/static/js/build/arbor.js{{version_qs}}"></script>
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
-       'version':'1','packages':['timeline']}]}"></script>
 <script src="/static/js/local.js{{version_qs}}"></script>
 <script src="/static/js/cytoscape.js{{version_qs}}"></script>
 <script src="/static/js/evidence.js{{version_qs}}"></script>
+<script src="/static/js/application.js{{version_qs}}"></script>
 <script src="/static/js/protein_details.js{{version_qs}}"></script>
 {% endblock scripts %}

@@ -3,6 +3,8 @@
 
 var $ = require("jquery");
 
+var LOCAL_STORAGE_TIMEOUT = 7200000; // 2 hours
+
 /*
 	Base model is an ES6 class that provides a backbone like utility for fetching data from an external API.
 */
@@ -17,7 +19,7 @@ module.exports = class BaseModel {
 	*/
 	// callback(err, response)
 	fetch (callback) {
-		$.getJSON(this.url, (data) => {
+		$.getJSON(this.url, data => {
 			var _formattedData = this.parse(data);
 			this.attributes = _formattedData;
 			callback(null, _formattedData);

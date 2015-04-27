@@ -13,6 +13,7 @@ var SequenceDetailsModel = require("../../models/sequence_details_model.jsx");
 var SequenceNeighborsModel = require("../../models/sequence_neighbors_model.jsx");
 var StandaloneAxis = require("./standalone_axis.jsx");
 var subFeatureColorScale = require("../../lib/locus_format_helper.jsx").subFeatureColorScale();
+var VariantPop = require("./variant_pop.jsx");
 
 var AXIS_LABELING_HEIGHT = 24;
 var HEIGHT = 17;
@@ -21,27 +22,28 @@ var TRACK_SPACING = 10;
 var MIN_BP_WIDTH = 200; // show at least 200 BP
 var MOUSE_CAPTURE_TIME = 500; // millis until scrollwhell events are captured
 
-var VIZ_HEIGHT_FN = function (watsonTracks, crickTracks) {
-	return ((watsonTracks) * (HEIGHT + TRACK_SPACING) +  TRACK_SPACING + 
-		(crickTracks) * (HEIGHT + TRACK_SPACING) + TRACK_SPACING
-	);
-};
-
-module.exports = React.createClass({
+var LocusDiagram = React.createClass({
 	mixins: [CalcWidthOnResize],
 
 	getDefaultProps: function () {
 		return {
-			baseUrl: null,
 			contigData: null, // {}
 			data: null, // { locci: [] }
 			domainBounds: null, // [0, 100]
 			hasControls: true,
 			hasChromosomeThumb: true,
+			highlightedRelativeCoordinates: null,
+			ignoreMouseover: false,
 			focusLocusDisplayName: null,
+			relativeCoordinateAxis: false,
+			proteinCoordinateAxis: false,
 			showSubFeatures: false,
+			showVariants: false,
+			variantData: [], // [{ coordinateDomain: [20045, 20046] }, ...]
 			crickTracks: 1,
-			watsonTracks: 1
+			watsonTracks: 1,
+			onSetScale: function (start, end, xScale) {},
+			onVariantMouseOver: function (start, end ) {}
 		};
 	},
 
@@ -61,28 +63,17 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		var height = VIZ_HEIGHT_FN(this.props.watsonTracks, this.props.crickTracks);
-
-		var controlsNode = this._getControlsNode();
-
+		var height = this._getHeight(this.props.watsonTracks, this.props.crickTracks);
 		var _ticks = (this.state.DOMWidth > 400) ? null : 3;
-		var axisNode = (<StandaloneAxis 
-			domain={this._getScale().domain()} orientation="bottom"
-			gridTicks={true} ticks={_ticks}
-			height={height + AXIS_LABELING_HEIGHT} tickFormat={d => { return d; }}
-		/>);
-
-		var locciNodes = _.map(this.props.data.locci, d => { return this._getLocusNode(d); });
-
-
+		var _domain = this.props.relativeCoordinateAxis ? this._getRelativeCoordDomain() : this._getScale().domain();
+		var locciNodes = _.map(this.props.data.locci, (d, i) => { return this._getLocusNode(d, i); });
+		var midlineNode = this.props.crickTracks > 0 ?
+			<line className="midpoint-marker" x1="0" x2={this.state.DOMWidth} y1={this._getMidpointY()} y2={this._getMidpointY()} /> :
+			null;
 
 		return (
 			<div className="locus-diagram" onMouseLeave={this._clearMouseOver} onClick={this._clearMouseOver}>
-
-
-				{controlsNode}
-
-
+				{this._getControlsNode()}
 				<div className="locus-diagram-viz-container" style={{ position: "relative" }}>
 					<FlexibleTooltip
 						visible={this.state.tooltipVisible} left={this.state.tooltipLeft} top={this.state.tooltipTop}
@@ -90,14 +81,26 @@ module.exports = React.createClass({
 						href={this.state.tooltipHref}
 					/>
 					<div className="locus-diagram-axis-container" style={{ position: "absolute", top: 0, width: "100%" }}>
-						{axisNode}
+						<StandaloneAxis 
+							domain={_domain} orientation="bottom"
+							gridTicks={true} ticks={_ticks}
+							height={height + AXIS_LABELING_HEIGHT} tickFormat={d => { return d; }}
+						/>
 					</div>
 					<svg ref="svg" className="locus-svg" onMouseEnter={this._onSVGMouseEnter} onMouseLeave={this._onSVGMouseLeave} style={{ width: "100%", height: height, position: "relative" }}>
-						<line className="midpoint-marker" x1="0" x2={this.state.DOMWidth} y1={this._getMidpointY()} y2={this._getMidpointY()} />
+						{midlineNode}
+						{this._getHighlightedSegmentNode()}
 						{locciNodes}
+						{this._getVariantNodes()}
 					</svg>
 				</div>
 			</div>
+		);
+	},
+
+	_getHeight: function (watsonTracks, crickTracks) {
+		return ((watsonTracks) * (HEIGHT + TRACK_SPACING) +  TRACK_SPACING + 
+			(crickTracks) * (HEIGHT + TRACK_SPACING) + TRACK_SPACING
 		);
 	},
 
@@ -139,22 +142,22 @@ module.exports = React.createClass({
 	},
 
 	// returns an svg "g" element, with embedded shapes
-	_getLocusNode: function (d) {
+	_getLocusNode: function (d, i) {
 		var isFocusLocus = d.locus.display_name === this.props.focusLocusDisplayName;
 
 		if (this.props.showSubFeatures &&  d.tags.length) {
-			return this._getLocusWithSubFeaturesNode(d, isFocusLocus);
+			return this._getLocusWithSubFeaturesNode(d, i, isFocusLocus);
 		} else {
-			return this._getSimpleLocusNode(d, isFocusLocus);
+			return this._getSimpleLocusNode(d, i, isFocusLocus);
 		}
 	},
 
-	_getLocusWithSubFeaturesNode: function (d, isFocusLocus) {
+	_getLocusWithSubFeaturesNode: function (d, i, isFocusLocus) {
 		var _transformX = this._getTransformObject(d).x;
 		var _transform = `translate(${_transformX}, 0)`;
 		var subFeatureNodes = this._getSubFeatureNodes(d.start, d.end, d.tags, (d.strand === "+"), isFocusLocus, _transformX);
 		return (
-			<g transform={_transform}>
+			<g transform={_transform} key={"locusWithSubFeature" + i}>
 				{subFeatureNodes}
 			</g>
 		);
@@ -198,7 +201,7 @@ module.exports = React.createClass({
 			// properties for all possible nodes
 			var _transformY = this._getTransformObject(d).y;
 			var groupTransform = `translate(0, ${_transformY})`;
-			var opacity = d.id === this.state.mouseoverId ? 1 : 0.8;
+			var opacity = (d.id === this.state.mouseoverId || this.props.ignoreMouseover) ? 1 : 0.8;
 
 			// mouseover callback
 			var mouseoverObj = _.clone(d);
@@ -221,7 +224,7 @@ module.exports = React.createClass({
 			}
 
 			return (
-				<g transform={groupTransform}>
+				<g transform={groupTransform} key={"locusSubFeature" + i}>
 					{shapeNode}
 					{textNode}
 				</g>
@@ -229,7 +232,7 @@ module.exports = React.createClass({
 		});
 	},
 
-	_getSimpleLocusNode: function (d, isFocusLocus) {
+	_getSimpleLocusNode: function (d, i, isFocusLocus) {
 		var scale = this._getScale();
 		var startX = scale(Math.min(d.start, d.end));
 		var endX = scale(Math.max(d.start, d.end));
@@ -247,7 +250,7 @@ module.exports = React.createClass({
 		var _textX = relativeEndX / 2;
 		var _textY = HEIGHT - 4;
 		var _textTransform = `translate(${_textX}, ${_textY})`;
-		var _opacity = d.id === this.state.mouseoverId ? 1 : 0.8;
+		var _opacity = (d.id === this.state.mouseoverId || this.props.ignoreMouseover) ? 1 : 0.8;
 		var textNode = <text className={`locus-diagram-anchor${focusKlass}`} onClick={_onClick} transform={_textTransform} textAnchor="middle">{d.locus.display_name}</text>;
 		// hide text if too small
 		if (_approxWidth > relativeEndX) textNode = null;
@@ -271,7 +274,7 @@ module.exports = React.createClass({
 
 		var _transform = this._getGroupTransform(d);
 		return (
-			<g transform={_transform}>
+			<g transform={_transform} key={"simpleLocus" + i}>
 				{shapeNode}
 				{textNode}
 			</g>
@@ -335,6 +338,8 @@ module.exports = React.createClass({
 	_calculateWidth: function () {
 		var _width = this.getDOMNode().getBoundingClientRect().width;
 		this.setState({ DOMWidth: _width });
+		var _scale = d3.scale.linear().domain(this.props.domainBounds).range([0, _width]);
+		this.props.onSetScale(_scale);
 	},
 
 	// Set the new domain; it may want some control in the future.
@@ -352,9 +357,14 @@ module.exports = React.createClass({
 		this.setState({
 			domain: [_lb, _rb]
 		});
+
+		var _scale = this._getScale();
+		this.props.onSetScale(_scale);
 	},
 
 	_handleMouseOver: function (e, d) {
+		if (this.props.ignoreMouseover) return;
+
 		// get the position
 		var target = e.currentTarget;
 		var _width = target.getBBox().width;
@@ -389,7 +399,7 @@ module.exports = React.createClass({
 			var _qualText = d.qualifier ? ` (${d.qualifier})` : "";
 			_data[d.locus.locus_type + _qualText] = d.locus.headline;
 			// TODO add chrom number 
-			_data["Coordinates"] = `${d.start} - ${d.end}`;
+			_data["Coordinates"] = `${d.start}..${d.end}`;
 			_data["Length"] = (d.end - d.start + 1) + " bp";
 		} else {
 			_data["Relative Coordinates"] = `${d.relative_start} - ${d.relative_end}`;
@@ -552,6 +562,20 @@ module.exports = React.createClass({
 		return chromThumb;
 	},
 
+	_getHighlightedSegmentNode: function () {
+		var _highCoord = this.props.highlightedRelativeCoordinates;
+		if (!_highCoord) return null;
+
+		var _locus = this._getFocusLocus();
+		var scale = this._getScale();
+		var startCoord = _locus.start + _highCoord[0];
+		var endCoord = _locus.start + _highCoord[1];
+		var _x = scale(startCoord);
+		var _width = Math.abs(scale(endCoord) - scale(startCoord));
+		
+		return <rect x={_x} width={_width} height="100" fill="#DEC113" opacity={0.5} />;
+	},
+
 	_getFocusLocus: function () {
 		// require focus locus display name
 		if (!this.props.focusLocusDisplayName) return false;
@@ -559,4 +583,36 @@ module.exports = React.createClass({
 		var _locci = this.props.data.locci;
 		return _.filter(_locci, d => { return d.locus.display_name === this.props.focusLocusDisplayName; })[0];
 	},
+
+	_getVariantNodes: function () {
+		if (this.props.variantData.length === 0 || !this.props.showVariants) {
+			return null;
+		}
+
+		var focusLocus = this._getFocusLocus();
+		var scale = this._getScale();
+		var yCoordinate = this._getTransformObject(focusLocus).y - HEIGHT;
+		return _.map(this.props.variantData, (d, i) => {
+			return (<VariantPop
+				data={d}
+				onMouseOver={this.props.onVariantMouseOver}
+				scale={scale}
+				y={yCoordinate}
+				key={"variantNode" + i}
+			/>);
+		});
+	},
+
+	_getRelativeCoordDomain: function () {
+		var locus = this._getFocusLocus();
+		var leftOffset = this.props.domainBounds[0] - locus.start;
+		var rightOffset = this.props.domainBounds[1] - locus.start;
+		if (this.props.proteinCoordinateAxis) {
+			leftOffset = leftOffset / 3;
+			rightOffset = rightOffset / 3;
+		}
+		return (locus.track > 0) ? [leftOffset, rightOffset] : [rightOffset, leftOffset];
+	}
 });
+
+module.exports = LocusDiagram;
