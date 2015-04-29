@@ -501,7 +501,7 @@ def remove_html(html):
             key = html[start_tag_start+1:i]
             start_tag_end = i+1
             state = 'middle'
-        elif state == 'in_start_tag' and letter == '>':
+        elif state == 'in_start_tag' and letter == '>' and html[i-1] != '-':
             start_tag_end = i+1
             state = 'middle'
         elif state == 'middle' and letter == '<' and html[i:].startswith('</' + key + '>'):
