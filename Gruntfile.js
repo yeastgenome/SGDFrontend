@@ -6,6 +6,19 @@ module.exports = function(grunt) {
     
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
+
+        s3: {
+            options: {
+                accessKeyId: "<%= aws.accessKeyId %>",
+                secretAccessKey: "<%= aws.secretAccessKey %>",
+                bucket: "sgd-assets-ferment"
+            },
+            build: {
+                cwd: "src/sgd/frontend/yeastgenome/static/",
+                src: "**"
+            }
+        },
+
         replace: {
             datatables_images: {
                 src: ["bower_components/datatables-plugins/integration/foundation/dataTables.foundation.css"],
@@ -167,6 +180,16 @@ module.exports = function(grunt) {
         var _random = crypto.randomBytes(20).toString("hex");
         var obj = { version: _random };
         fs.writeFile("asset_version.json", JSON.stringify(obj), function(err) {
+            return done(err);
+        });
+    });
+
+    grunt.registerTask("uploadToS3", "Change the asset_version.json file to have a new random string", function () {
+        var done = this.async();
+
+        var _random = crypto.randomBytes(20).toString("hex");
+        var obj = { version: _random };
+        fs.writeFile("aws_version.json", JSON.stringify(obj), function(err) {
             return done(err);
         });
     });
