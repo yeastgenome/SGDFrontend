@@ -9,12 +9,13 @@ module.exports = function(grunt) {
 
         s3: {
             options: {
-                accessKeyId: "<%= aws.accessKeyId %>",
-                secretAccessKey: "<%= aws.secretAccessKey %>",
-                bucket: "sgd-assets-ferment"
+                accessKeyId: "<%= awsKey %>",
+                secretAccessKey: "<%= awsSecret %>",
+                bucket: "sgd-assets"
             },
             build: {
                 cwd: "src/sgd/frontend/yeastgenome/static/",
+                dest: "<%= awsDestDir %>/",
                 src: "**"
             }
         },
@@ -187,13 +188,18 @@ module.exports = function(grunt) {
     grunt.registerTask("uploadToS3", "Change the asset_version.json file to have a new random string", function () {
         var done = this.async();
 
-        var _random = crypto.randomBytes(20).toString("hex");
+        var _random = crypto.randomBytes(10).toString("hex");
         var obj = { version: _random };
-        fs.writeFile("aws_version.json", JSON.stringify(obj), function(err) {
+        fs.writeFile("production_asset_version.json", JSON.stringify(obj), function(err) {
+            grunt.config("awsKey", process.env.AWS_ACCESS_KEY_ID)
+            grunt.config("awsSecret", process.env.AWS_SECRET_ACCESS_KEY)
+            grunt.config("awsDestDir", _random);
+            grunt.task.run("s3:build");
             return done(err);
         });
     });
     
+    grunt.loadNpmTasks("grunt-aws");
     grunt.loadNpmTasks("grunt-text-replace");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-uglify");
