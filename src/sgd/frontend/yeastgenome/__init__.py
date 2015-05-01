@@ -433,17 +433,15 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     config.add_translation_dirs('locale/')
     config.include('pyramid_jinja2')
 
-    # static assets with far future caching and "cache busting"
-    # make asset query string from asset_version.json (if available), which will bust the cache
+    # set global template var asset_root from production_asset_url
     try:
-        file_path = os.path.dirname(os.path.realpath(__file__)) + '/../../../../asset_version.json'
-        asset_version = json.load(open(file_path, 'r'))['version']
-        version_qs = '?v=' + asset_version
+        file_path = os.path.dirname(os.path.realpath(__file__)) + '/../../../../production_asset_url.json'
+        asset_root = json.load(open(file_path, 'r'))['url']
     except:
-        version_qs = ''
+        asset_root = '/static'
     # put query string in global template variable
     def add_template_global(event):
-        event['version_qs'] = version_qs
+        event['asset_root'] = asset_root
     config.add_subscriber(add_template_global, 'pyramid.events.BeforeRender')
     # cache everything for 1 month on browser
     config.add_static_view('static', 'src:sgd/frontend/yeastgenome/static', cache_max_age=2629740)
