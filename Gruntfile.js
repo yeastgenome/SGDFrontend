@@ -228,4 +228,5 @@ module.exports = function(grunt) {
     grunt.registerTask("dev", ["compileDev", "watch"]);
     
     grunt.registerTask("default", ["static", "concurrent:production", "updateAssetVersion"]);
+    grunt.registerTask("deployAssets", ["static", "concurrent:production", "updateAssetVersion", "uploadToS3"]);
 };
