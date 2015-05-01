@@ -14,7 +14,7 @@
 {% endblock body %}
 
 {% block scripts %}
-<script src="/static/js/application.js{{version_qs}}"></script>
+<script src="{{asset_root}}/js/application.js"></script>
 <script>
 	views.suggestion.render();
 </script>
