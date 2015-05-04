@@ -3,6 +3,7 @@ var fs = require("fs");
 
 // cache assets on browser for 1 month
 var CACHE_TTL = 2629740;
+var CLOUDFRONT_ROOT = "https://d1dx7s2t1jbvin.cloudfront.net/";
 
 module.exports = function(grunt) {
     var BUILD_PATH = "src/sgd/frontend/yeastgenome/static/";
@@ -191,12 +192,12 @@ module.exports = function(grunt) {
         });
     });
 
+    // change write new asset URL to production_asset_url.json, and upload to s3.  Cloudfront will get new copy automatically.
     grunt.registerTask("uploadToS3", "Change the asset_version.json file to have a new random string", function () {
         var done = this.async();
 
         var _random = crypto.randomBytes(10).toString("hex");
-        // TEMP
-        var _url = "https://s3-us-west-2.amazonaws.com/sgd-assets/" + _random;
+        var _url = CLOUDFRONT_ROOT + _random;
         var obj = { url: _url };
         fs.writeFile("production_asset_url.json", JSON.stringify(obj), function(err) {
             grunt.config("awsKey", process.env.AWS_ACCESS_KEY_ID)
