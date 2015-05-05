@@ -1,11 +1,21 @@
 import os
 
-heritage_url = 'http://heritage.yeastgenome.org'
-secret_key = 'secret key here'
-sender = 'email address here'
 author_response_file = 'file with full path here'
 compute_url = 'http://compute.yeastgenome.org/'
+heritage_url = 'http://heritage.yeastgenome.org'
 log_directory = None
+
+# google recaptcha key
+try:
+	secret_key = os.environ['SECRET_KEY']
+except:
+	secret_key = 'secret key here'
+
+# sending email address for help line
+try:
+	sender = os.environ['SENDER']
+except:
+	sender = ''
 
 # elasticsearch
 try:
