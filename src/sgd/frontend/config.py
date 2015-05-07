@@ -6,28 +6,13 @@ heritage_url = 'http://heritage.yeastgenome.org'
 log_directory = None
 
 # google recaptcha key
-try:
-	secret_key = os.environ['SECRET_KEY']
-except:
-	secret_key = 'secret key here'
-
+secret_key = os.environ.get('SECRET_KEY', '')
 # sending email address for help line
-try:
-	sender = os.environ['SENDER']
-except:
-	sender = ''
-
-# elasticsearch
-try:
-	elasticsearch_address = os.environ['ELASTICSEARCH_ADDRESS']
-except:
-	elasticsearch_address = 'http://localhost:9200'
-	
+sender = os.environ.get('SENDER', '')
+# elasticsearch URL
+elasticsearch_address = os.environ.get('ELASTICSEARCH_ADDRESS', 'http://localhost:9200')	
 # backend data from production API by default
-try:
-	backend_url = os.environ['BACKEND_URL']
-except:
-	backend_url = 'http://www.yeastgenome.org/webservice'
+backend_url = os.environ.get('BACKEND_URL', 'http://www.yeastgenome.org/webservice')
 
 # by default, read assets from cloudfront
 try:
