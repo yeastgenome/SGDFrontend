@@ -56,9 +56,13 @@ http://smacss.com/book/type-module
 }
 
 .small-survey-container {
+	display: none;
 	background: #f04124;
 	a {
 		color: white;
+		&:after {
+			display: none;
+		}
 	}
 }
 

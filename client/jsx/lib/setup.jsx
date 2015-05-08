@@ -37,5 +37,8 @@ module.exports = function () {
 			window.location.hash = anchor;
 		}
 	});
+
+	// TEMP animate survey link
+	$("#j-survey").slideDown();
 };
 
