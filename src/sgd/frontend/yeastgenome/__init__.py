@@ -433,12 +433,15 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     configurator.add_translation_dirs('locale/')
     configurator.include('pyramid_jinja2')
 
-    # set global template var asset_root from production_asset_url
-    if config.use_cloudfront_assets:
+
+    # set global template var asset_root to read from cloudfront or local, depending on .ini value, default to False
+    production_assets = configs.get('production_assets', False)
+    if production_assets == 'True':
         file_path = os.path.dirname(os.path.realpath(__file__)) + '/../../../../production_asset_url.json'
         asset_root = json.load(open(file_path, 'r'))['url']
     else:
         asset_root = '/static'
+
     # put query string in global template variable
     def add_template_global(event):
         event['asset_root'] = asset_root
