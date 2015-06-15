@@ -1,11 +1,32 @@
 var crypto = require("crypto");
 var fs = require("fs");
 
+// cache assets on browser for 1 month
+var CACHE_TTL = 2629740;
+var CLOUDFRONT_ROOT = "https://d1dx7s2t1jbvin.cloudfront.net/";
+
 module.exports = function(grunt) {
     var BUILD_PATH = "src/sgd/frontend/yeastgenome/static/";
     
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
+
+        s3: {
+            options: {
+                accessKeyId: "<%= awsKey %>",
+                secretAccessKey: "<%= awsSecret %>",
+                bucket: "sgd-assets",
+                headers: {
+                    "CacheControl": CACHE_TTL
+                }
+            },
+            build: {
+                cwd: "src/sgd/frontend/yeastgenome/static/",
+                dest: "<%= awsDestDir %>/",
+                src: ["**", "!**/*.jinja2"]
+            }
+        },
+
         replace: {
             datatables_images: {
                 src: ["bower_components/datatables-plugins/integration/foundation/dataTables.foundation.css"],
@@ -170,7 +191,24 @@ module.exports = function(grunt) {
             return done(err);
         });
     });
+
+    // change write new asset URL to production_asset_url.json, and upload to s3.  Cloudfront will get new copy automatically.
+    grunt.registerTask("uploadToS3", "Change the asset_version.json file to have a new random string", function () {
+        var done = this.async();
+
+        var _random = crypto.randomBytes(10).toString("hex");
+        var _url = CLOUDFRONT_ROOT + _random;
+        var obj = { url: _url };
+        fs.writeFile("production_asset_url.json", JSON.stringify(obj), function(err) {
+            grunt.config("awsKey", process.env.AWS_ACCESS_KEY_ID)
+            grunt.config("awsSecret", process.env.AWS_SECRET_ACCESS_KEY)
+            grunt.config("awsDestDir", _random);
+            grunt.task.run("s3:build");
+            return done(err);
+        });
+    });
     
+    grunt.loadNpmTasks("grunt-aws");
     grunt.loadNpmTasks("grunt-text-replace");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-uglify");
@@ -191,4 +229,5 @@ module.exports = function(grunt) {
     grunt.registerTask("dev", ["compileDev", "watch"]);
     
     grunt.registerTask("default", ["static", "concurrent:production", "updateAssetVersion"]);
+    grunt.registerTask("deployAssets", ["static", "concurrent:production", "updateAssetVersion", "uploadToS3"]);
 };

@@ -354,12 +354,12 @@
 {% endblock body %}
 
 {% block scripts %}
-<script src="/static/js/build/nouislider.min.js{{version_qs}}"></script>
-<script src="/static/js/build/cytoscape.min.js{{version_qs}}"></script>
-<script src="/static/js/build/arbor.js{{version_qs}}"></script>
-<script src="/static/js/local.js{{version_qs}}"></script>
-<script src="/static/js/cytoscape.js{{version_qs}}"></script>
-<script src="/static/js/evidence.js{{version_qs}}"></script>
-<script src="/static/js/application.js{{version_qs}}"></script>
-<script src="/static/js/protein_details.js{{version_qs}}"></script>
+<script src="{{asset_root}}/js/build/nouislider.min.js"></script>
+<script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
+<script src="/static/js/build/arbor.js"></script>
+<script src="{{asset_root}}/js/local.js"></script>
+<script src="{{asset_root}}/js/cytoscape.js"></script>
+<script src="{{asset_root}}/js/evidence.js"></script>
+<script src="{{asset_root}}/js/application.js"></script>
+<script src="{{asset_root}}/js/protein_details.js"></script>
 {% endblock scripts %}
