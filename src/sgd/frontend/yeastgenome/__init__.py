@@ -411,13 +411,14 @@ class YeastgenomeFrontend(FrontendInterface):
         # remove duplicates, or add word if partial match
         unique = []
         for item in simplified_results:
-            if item not in unique:
-                unique.append(item)
-            # partial match of multi words
-            if item.find(query) > -1 and item.find(" ") > -1:
-                for word in item.split(" "):
-                    if word.find(query) > -1 and word not in unique:
-                        unique.insert(0, word)
+            for segment in item.split(";"):
+                if item not in unique:
+                    unique.append(item)
+                # partial match of multi words
+                if item.find(query) > -1 and item.find(" ") > -1:
+                    for word in item.split(" "):
+                        if word.find(query) > -1 and word not in unique:
+                            unique.insert(0, word)
 
         return Response(body=json.dumps(unique), content_type='application/json')
 
