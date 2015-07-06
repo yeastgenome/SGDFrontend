@@ -407,10 +407,19 @@ class YeastgenomeFrontend(FrontendInterface):
         }
         res = es.search(index='sgdlite', body=search_body)
         simplified_results = map(lambda x: x['_source']['term'], res['hits']['hits'])
-        temp = {
-            'results': simplified_results
-        }
-        return Response(body=json.dumps(simplified_results), content_type='application/json')
+
+        # remove duplicates, or add word if partial match
+        unique = []
+        for item in simplified_results:
+            if item not in unique:
+                unique.append(item)
+            # partial match of multi words
+            if item.find(query) > -1 and item.find(" ") > -1:
+                for word in item.split(" "):
+                    if word.find(query) > -1 and word not in unique:
+                        unique.insert(0, word)
+
+        return Response(body=json.dumps(unique), content_type='application/json')
 
     def backend(self, url_repr, args=None):
         if self.backend_url == 'backendless':
