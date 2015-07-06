@@ -412,12 +412,12 @@ class YeastgenomeFrontend(FrontendInterface):
         unique = []
         for item in simplified_results:
             for segment in item.split(";"):
-                if item not in unique:
-                    unique.append(item)
+                if segment not in unique:
+                    unique.append(segment)
                 # partial match of multi words
-                if item.find(query) > -1 and item.find(" ") > -1:
-                    for word in item.split(" "):
-                        if word.find(query) > -1 and word not in unique:
+                if segment.lower().find(query.lower()) > -1 and segment.find(" ") > -1:
+                    for word in segment.split(" "):
+                        if word.lower().find(query.lower()) > -1 and word not in unique:
                             unique.insert(0, word)
 
         return Response(body=json.dumps(unique), content_type='application/json')
