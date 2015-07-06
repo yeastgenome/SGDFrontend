@@ -429,28 +429,29 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     settings = dict(configs)
 
     settings.setdefault('jinja2.i18n.domain', 'myproject')
-    config = Configurator(settings=settings)
-    config.add_translation_dirs('locale/')
-    config.include('pyramid_jinja2')
+    configurator = Configurator(settings=settings)
+    configurator.add_translation_dirs('locale/')
+    configurator.include('pyramid_jinja2')
 
-    # static assets with far future caching and "cache busting"
-    # make asset query string from asset_version.json (if available), which will bust the cache
-    try:
-        file_path = os.path.dirname(os.path.realpath(__file__)) + '/../../../../asset_version.json'
-        asset_version = json.load(open(file_path, 'r'))['version']
-        version_qs = '?v=' + asset_version
-    except:
-        version_qs = ''
+
+    # set global template var asset_root to read from cloudfront or local, depending on .ini value, default to False
+    production_assets = configs.get('production_assets', False)
+    if production_assets == 'True':
+        file_path = os.path.dirname(os.path.realpath(__file__)) + '/../../../../production_asset_url.json'
+        asset_root = json.load(open(file_path, 'r'))['url']
+    else:
+        asset_root = '/static'
+
     # put query string in global template variable
     def add_template_global(event):
-        event['version_qs'] = version_qs
-    config.add_subscriber(add_template_global, 'pyramid.events.BeforeRender')
+        event['asset_root'] = asset_root
+    configurator.add_subscriber(add_template_global, 'pyramid.events.BeforeRender')
     # cache everything for 1 month on browser
-    config.add_static_view('static', 'src:sgd/frontend/yeastgenome/static', cache_max_age=2629740)
-    config.add_static_view('img-domain', 'src:sgd/frontend/yeastgenome/img-domain', cache_max_age=2629740)
-    config.add_renderer('jsonp', JSONP(param_name='callback'))
+    configurator.add_static_view('static', 'src:sgd/frontend/yeastgenome/static', cache_max_age=2629740)
+    configurator.add_static_view('img-domain', 'src:sgd/frontend/yeastgenome/img-domain', cache_max_age=2629740)
+    configurator.add_renderer('jsonp', JSONP(param_name='callback'))
 
-    return chosen_frontend, config
+    return chosen_frontend, configurator
 
 def get_json(url, data=None):
     if url.startswith('backendless'):

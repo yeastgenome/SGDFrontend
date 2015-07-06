@@ -45,6 +45,16 @@ The build installs several node packages.  All of them are development, or build
 
 For details, see files: package.json, Gruntfile.js, bower.json
 
+###Deploying Production Assets
+
+In production, assets are served from Amazon Cloudfront.  Before deploying to a production server, be sure to run 
+
+    $ grunt deployAssets
+
+and then commit changes to git.
+
+This task requires the environmental variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY be set on the machine pushing the assets.  This will change a few files checked into git, so these changes must be committed.
+
 ##Building the app
 
 To build the application:

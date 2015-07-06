@@ -24,6 +24,5 @@ bower_components/
 node_modules/
 client/scss/build/
 client/scss/normalize.scss
-asset_version.json
 client/lib/sgd_visualization/node_modules/
 client/lib/sgd_visualization/.git
