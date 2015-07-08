@@ -427,7 +427,7 @@ class YeastgenomeFrontend(FrontendInterface):
             if hit['_source']['type'] == 'description':
                 for word in hit['_source']['term'].split(" "):
                     if word.lower().find(query.lower()) > -1:
-                        simplified_results.append(re.sub(';', '', word))
+                        simplified_results.append(re.sub('[;,.]', '', word))
                         break
             else:
                 simplified_results.append(hit['_source']['term'])
