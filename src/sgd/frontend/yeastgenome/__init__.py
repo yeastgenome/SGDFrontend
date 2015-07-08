@@ -413,7 +413,6 @@ class YeastgenomeFrontend(FrontendInterface):
                         { 'match': { 'type': 'GO' }},
                         { 'match': { 'type': 'phenotyoe' }},
                         { 'match': { 'type': 'strain' }},
-                        { 'match': { 'type': 'GO' }},
                         { 'match': { 'type': 'paper' }},
                         { 'match': { 'type': 'description' }},
                     ]
