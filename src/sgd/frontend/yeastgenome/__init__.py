@@ -401,24 +401,42 @@ class YeastgenomeFrontend(FrontendInterface):
                         }
                     },
                     'must_not': { 'match': { 'type': 'paper' }},
-                    'should': { 'match': { 'type': 'gene_name' }}
+                    'should': [
+                        {
+                            'match': {
+                                'type': {
+                                    'query': 'gene_name',
+                                    'boost': 4
+                                }
+                            }
+                        },
+                        { 'match': { 'type': 'GO' }},
+                        { 'match': { 'type': 'phenotyoe' }},
+                        { 'match': { 'type': 'strain' }},
+                        { 'match': { 'type': 'GO' }},
+                        { 'match': { 'type': 'paper' }},
+                        { 'match': { 'type': 'description' }},
+                    ]
                 }
             }
         }
         res = es.search(index='sgdlite', body=search_body)
-        simplified_results = map(lambda x: x['_source']['term'], res['hits']['hits'])
+        simplified_results = []
+        for hit in res['hits']['hits']:
+            # add matching words from description, not whole description
+            if hit['_source']['type'] == 'description':
+                for word in hit['_source']['term'].split(" "):
+                    if word.lower().find(query.lower()) > -1:
+                        simplified_results.append(word)
+                        break
+            else:
+                simplified_results.append(hit['_source']['term'])
 
-        # remove duplicates, or add word if partial match
+        # filter duplicates
         unique = []
-        for item in simplified_results:
-            for segment in item.split(";"):
-                if segment not in unique:
-                    unique.append(segment)
-                # partial match of multi words
-                if segment.lower().find(query.lower()) > -1 and segment.find(" ") > -1:
-                    for word in segment.split(" "):
-                        if word.lower().find(query.lower()) > -1 and word not in unique:
-                            unique.insert(0, word)
+        for hit in simplified_results:
+            if hit not in unique:
+                unique.append(hit)
 
         return Response(body=json.dumps(unique), content_type='application/json')
 
