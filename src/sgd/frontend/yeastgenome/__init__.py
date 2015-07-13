@@ -9,6 +9,7 @@ import requests
 import os.path
 import sys
 import random
+import re
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP, render
 from pyramid.response import Response
@@ -401,16 +402,43 @@ class YeastgenomeFrontend(FrontendInterface):
                         }
                     },
                     'must_not': { 'match': { 'type': 'paper' }},
-                    'should': { 'match': { 'type': 'gene_name' }}
+                    'should': [
+                        {
+                            'match': {
+                                'type': {
+                                    'query': 'gene_name',
+                                    'boost': 4
+                                }
+                            }
+                        },
+                        { 'match': { 'type': 'GO' }},
+                        { 'match': { 'type': 'phenotyoe' }},
+                        { 'match': { 'type': 'strain' }},
+                        { 'match': { 'type': 'paper' }},
+                        { 'match': { 'type': 'description' }},
+                    ]
                 }
             }
         }
         res = es.search(index='sgdlite', body=search_body)
-        simplified_results = map(lambda x: x['_source']['term'], res['hits']['hits'])
-        temp = {
-            'results': simplified_results
-        }
-        return Response(body=json.dumps(simplified_results), content_type='application/json')
+        simplified_results = []
+        for hit in res['hits']['hits']:
+            # add matching words from description, not whole description
+            if hit['_source']['type'] == 'description':
+                for word in hit['_source']['term'].split(" "):
+                    if word.lower().find(query.lower()) > -1:
+                        simplified_results.append(re.sub('[;,.]', '', word))
+                        break
+            else:
+                simplified_results.append(hit['_source']['term'])
+
+        # filter duplicates
+        unique = []
+        for hit in simplified_results:
+            if hit not in unique:
+                unique.append(hit)
+
+        return Response(body=json.dumps(unique), content_type='application/json')
 
     def backend(self, url_repr, args=None):
         if self.backend_url == 'backendless':
