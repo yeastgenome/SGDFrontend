@@ -87,7 +87,7 @@ module.exports = React.createClass({
 				{selectNode}
 			</div>);
 		} else {
-			var helpNode = <HelpIcon text={<span>The <i>S. cerevisiae</i> reference genome sequence is derived from laboratory strain S288C.</span>} isInfo={true} />;
+			var helpNode = <HelpIcon text={"<span>The <i>S. cerevisiae</i> reference genome sequence is derived from laboratory strain S288C.</span>"} isInfo={true} />;
 			var _gbHref = "http://browse.yeastgenome.org/fgb2/gbrowse/scgenome/?name=" + this.props.focusLocusFormatName;
 			var _mapHref = "http://www.yeastgenome.org/cgi-bin/ORFMAP/ORFmap?dbid=" + this.props.focusLocusFormatName;
 			node = (<div>
