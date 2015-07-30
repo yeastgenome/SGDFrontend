@@ -440,6 +440,26 @@ class YeastgenomeFrontend(FrontendInterface):
 
         return Response(body=json.dumps(unique), content_type='application/json')
 
+    # es search for sequence objects
+    def search_sequence_objects(self, params):
+        query = params['query']
+        search_body = {
+            'query': {
+                'query_string': {
+                    'query': query
+                }
+            }
+        }
+        res = es.search(index='sequence_objects', body=search_body, size=100)
+        simple_hits = []
+        for hit in res['hits']['hits']:
+            simple_hits.append(hit['_source']['name'])
+        formatted_response = {
+            'loci': simple_hits
+        }
+
+        return Response(body=json.dumps(formatted_response), content_type='application/json')
+
     def backend(self, url_repr, args=None):
         if self.backend_url == 'backendless':
             return json.dumps(get_data(url_repr))

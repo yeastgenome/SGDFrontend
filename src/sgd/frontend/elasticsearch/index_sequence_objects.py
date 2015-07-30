@@ -26,7 +26,6 @@ def add_go_term_from_obj(go_overview_obj, key, lst):
 def index_set_of_loci(loci):
 	# index loci
 	print '*** INDEXING ALL LOCI ***'
-	i = 0
 	for locus in loci:
 		# set name
 		if locus['display_name'] == locus['format_name']:
@@ -45,14 +44,15 @@ def index_set_of_loci(loci):
 		go_terms = add_go_term_from_obj(go_overview, 'manual_biological_process_terms', go_terms)
 		go_terms = add_go_term_from_obj(go_overview, 'htp_biological_process_terms', go_terms)
 		go_terms = add_go_term_from_obj(go_overview, 'manual_cellular_component_terms', go_terms)
-		go_terms = add_go_term_from_obj(go_overview, 'htp_biological_process_terms', go_terms)
+		go_terms = add_go_term_from_obj(go_overview, 'htp_cellular_component_terms', go_terms)
 		go_terms = add_go_term_from_obj(go_overview, 'manual_molecular_function_terms', go_terms)
-		go_terms = add_go_term_from_obj(go_overview, 'htp_biological_process_terms', go_terms)
+		go_terms = add_go_term_from_obj(go_overview, 'htp_molecular_function_terms', go_terms)
 
 		# get domains
 		domain_url = LOCUS_BASE_URL + locus['sgdid'] + '/protein_domain_details'
 		domain_response = requests.get(domain_url).json()
 
+		# format obj and index
 		body = {
 			'sgdid': locus['sgdid'],
 			'name': name,
@@ -61,6 +61,7 @@ def index_set_of_loci(loci):
 			'description': locus['headline'],
 			'go_terms': go_terms
 		}
+		es.index(index=INDEX_NAME, doc_type=DOC_TYPE, id=locus['sgdid'], body=body)
 
 def index_loci():
 	# get list of genes from alignment webservice
@@ -70,12 +71,6 @@ def index_loci():
 
 	# split into chunks for pooling
 	index_set_of_loci(loci[:100]) # TEMP just 100
-
-
-
-		
-		# es.index(index=INDEX_NAME, doc_type=DOC_TYPE, id=i, body=body)
-		# i += 1
 
 def main():
 	reset_index()
