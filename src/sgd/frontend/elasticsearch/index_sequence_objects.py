@@ -36,7 +36,7 @@ def chunk_list(seq, num):
 
 	return out
 
-def index_set_of_loci(loci):
+def index_set_of_loci(loci, process_index):
 	# index loci
 	print 'indexing list of ' + str(len(loci)) + ' loci'
 	for locus in loci:
@@ -47,7 +47,7 @@ def index_set_of_loci(loci):
 			name = str(locus['display_name']) + ' / ' + str(locus['format_name'])
 
 		# fetch basic data
-		print 'fetching ' + name
+		print 'fetching ' + name + ' on thread ' + str(process_index)
 		basic_url = LOCUS_BASE_URL + locus['sgdid'] + '/overview'
 		basic_response = requests.get(basic_url).json()
 
@@ -63,7 +63,7 @@ def index_set_of_loci(loci):
 
 		# get domains
 		domain_url = LOCUS_BASE_URL + locus['sgdid'] + '/protein_domain_details'
-		domain_response = requests.get(domain_url).json()
+		# domain_response = requests.get(domain_url).json()
 
 		# format obj and index
 		body = {
@@ -72,7 +72,8 @@ def index_set_of_loci(loci):
 			'category': 'locus',
 			'url': locus['link'],
 			'description': locus['headline'],
-			'go_terms': go_terms
+			'go_terms': go_terms,
+			'dna_scores': locus['dna_scores']
 		}
 		es.index(index=INDEX_NAME, doc_type=DOC_TYPE, id=locus['sgdid'], body=body)
 
@@ -85,8 +86,10 @@ def index_loci():
 	# split into chunks for parallel processing
 	chunked_loci = chunk_list(loci, NUM_THREADS)
 	processes = []
+	i = 0
 	for chunk in chunked_loci:
-		p = Process(target=index_set_of_loci, args=(chunk,))
+		p = Process(target=index_set_of_loci, args=(chunk, i))
+		i += 1
 		p.start()
 		processes.append(p)
 
@@ -94,7 +97,7 @@ def index_loci():
 		p.join()
 
 def main():
-	reset_index()
+	# reset_index()
 	index_loci()
 
 main()
