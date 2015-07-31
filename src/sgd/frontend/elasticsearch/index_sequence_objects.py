@@ -1,14 +1,15 @@
 from elasticsearch import Elasticsearch
-import multiprocessing
+from multiprocessing import Process
 import requests
 es = Elasticsearch()
 
 INDEX_NAME = 'sequence_objects'
 DOC_TYPE = 'sequence_object'
-ALIGNMENT_URL = 'http://yeastgenome.org/webservice/alignments'
-LOCUS_BASE_URL = 'http://yeastgenome.org/webservice/locus/'
+BASE_URL = 'http://sgd-qa.stanford.edu'
+ALIGNMENT_URL = BASE_URL + '/webservice/alignments'
+LOCUS_BASE_URL = BASE_URL + '/webservice/locus/'
 FILTERED_GO_TERMS = ['biological process', 'cellular component', 'molecular function']
-NUM_THREADS = 5
+NUM_THREADS = 10
 
 def reset_index():
 	exists = es.indices.exists(INDEX_NAME)
@@ -23,9 +24,21 @@ def add_go_term_from_obj(go_overview_obj, key, lst):
 			lst.append(trm)
 	return lst
 
+# split list into num lists of roughly equal size
+def chunk_list(seq, num):
+	avg = len(seq) / float(num)
+	out = []
+	last = 0.0
+
+	while last < len(seq):
+		out.append(seq[int(last):int(last + avg)])
+		last += avg
+
+	return out
+
 def index_set_of_loci(loci):
 	# index loci
-	print '*** INDEXING ALL LOCI ***'
+	print 'indexing list of ' + str(len(loci)) + ' loci'
 	for locus in loci:
 		# set name
 		if locus['display_name'] == locus['format_name']:
@@ -69,8 +82,16 @@ def index_loci():
 	raw_alignment_data = requests.get(ALIGNMENT_URL).json()
 	loci = raw_alignment_data['loci']
 
-	# split into chunks for pooling
-	index_set_of_loci(loci[:100]) # TEMP just 100
+	# split into chunks for parallel processing
+	chunked_loci = chunk_list(loci, NUM_THREADS)
+	processes = []
+	for chunk in chunked_loci:
+		p = Process(target=index_set_of_loci, args=(chunk,))
+		p.start()
+		processes.append(p)
+
+	for p in processes:
+		p.join()
 
 def main():
 	reset_index()
