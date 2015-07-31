@@ -453,9 +453,14 @@ class YeastgenomeFrontend(FrontendInterface):
         res = es.search(index='sequence_objects', body=search_body, size=100)
         simple_hits = []
         for hit in res['hits']['hits']:
-            simple_hits.append(hit['_source']['name'])
+            obj = {
+                'name': hit['_source']['name'],
+                'dna_scores': hit['_source']['dna_scores'],
+            }
+            simple_hits.append(obj)
         formatted_response = {
-            'loci': simple_hits
+            'loci': simple_hits,
+            'total': res['hits']['total']
         }
 
         return Response(body=json.dumps(formatted_response), content_type='application/json')

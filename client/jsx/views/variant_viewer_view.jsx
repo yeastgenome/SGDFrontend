@@ -6,6 +6,7 @@ var $ = require("jquery");
 var AsyncVariantMap = require("../components/variant_map/async_variant_map.jsx");
 var Drawer = require("../components/variant_map/drawer.jsx");
 var LocalStorageSetup = require("../lib/local_storage_setup.jsx");
+var AlignmentClusterModel = require("../models/alignment_cluster_model.jsx");
 
 // router stuff
 var Router = require("react-router");
@@ -26,7 +27,7 @@ var SimpleLocusSearch = React.createClass({
 		var res = this.state.results;
 		if (res.length > 0) {
 			var resultItemNodes = this.state.results.map( (d, i) => {
-				return <li key={"searchResult" + i}>{d}</li>;
+				return <li key={"searchResult" + i}>{d.name}</li>;
 			});
 			resultNodes = (
 				<ul>{resultItemNodes}</ul>
@@ -49,6 +50,9 @@ var SimpleLocusSearch = React.createClass({
 		$.getJSON(url, data => {
 			if (this.isMounted()) {
 				this.setState({ results: data.loci });
+				var clusterModel = new AlignmentClusterModel();
+				var clusters = clusterModel.clusterFeatures(data.loci);
+				console.log(clusters)
 			}
 		});
 	},
