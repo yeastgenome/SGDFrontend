@@ -7,6 +7,7 @@ var AsyncVariantMap = require("../components/variant_map/async_variant_map.jsx")
 var Drawer = require("../components/variant_map/drawer.jsx");
 var LocalStorageSetup = require("../lib/local_storage_setup.jsx");
 var AlignmentClusterModel = require("../models/alignment_cluster_model.jsx");
+var d3 = require("d3");
 
 // router stuff
 var Router = require("react-router");
@@ -18,7 +19,8 @@ var SimpleLocusSearch = React.createClass({
 
 	getInitialState: function () {
 	    return {
-	        results: []  
+	        results: [],
+	        clusterData: null
 	    };
 	},
 
@@ -40,6 +42,7 @@ var SimpleLocusSearch = React.createClass({
 			<div>
 				<h1>Variant Viewer Search Test</h1>
 				<SearchBar onSubmit={this._onSearch}/>
+				{this._renderDendo()}
 				{resultNodes}
 			</div>
 		);
@@ -51,11 +54,51 @@ var SimpleLocusSearch = React.createClass({
 			if (this.isMounted()) {
 				this.setState({ results: data.loci });
 				var clusterModel = new AlignmentClusterModel();
-				var clusters = clusterModel.clusterFeatures(data.loci);
-				console.log(clusters)
+				if (data.loci.length > 0) {
+					var clusters = clusterModel.clusterFeatures(data.loci);
+					this.setState({ clusterData: clusters });
+				} else {
+					this.setState({ clusterData: null });
+				}
 			}
 		});
 	},
+
+	_renderDendo: function () {
+		if (!this.state.clusterData) return null;
+
+		var width = 600;
+		var height = 400;
+		var labelHeight = 70;
+		var dendoFn = d3.layout.cluster().size([width, height]);
+
+		var nodes = dendoFn.nodes(this.state.clusterData);
+		var links = dendoFn.links(nodes);
+		var diagonal = d3.svg.diagonal()
+		    .projection(function(d) { return [d.x, d.y]; });
+
+		var _transform, _fill;
+		var nodesNodes = nodes.map( (d, i) => {
+			_transform = `translate(${d.x}, ${d.y})`;
+			var textNode = d.isLeaf ? <text transform="rotate(90)">{d.value.name}</text> : null;
+			return (<g key={"dendoNode" + i} transform={_transform}>
+				{textNode}
+			</g>)
+		});
+
+		var pathString;
+		var linkNodes = links.map( (d, i) => {
+			pathString = diagonal(d);
+			return <path key={"pNode" + i} d={pathString} fill="none" stroke="black" />;
+		});
+		
+		return (
+			<svg width={width} height={height + labelHeight}>
+				{nodesNodes}
+				{linkNodes}
+			</svg>
+		);
+	}
 
 });
 
