@@ -20,29 +20,37 @@ var SimpleLocusSearch = React.createClass({
 	getInitialState: function () {
 	    return {
 	        results: [],
+	        totalResults: 0,
 	        clusterData: null
 	    };
 	},
 
 	render: function () {
-		var resultNodes;
+		var resultNodes = null;
 		var res = this.state.results;
 		if (res.length > 0) {
+			var matchingText;
 			var resultItemNodes = this.state.results.map( (d, i) => {
-				return <li key={"searchResult" + i}>{d.name}</li>;
+				matchingText = null;
+				var innerNodes;
+				if (d.highlight) {
+					innerNodes = d.highlight.go_terms.map( (_d, _i) => {
+						return <span key={"matchingText" + _i + i} dangerouslySetInnerHTML={{ __html: _d }} />;
+					});
+					matchingText = <small>{innerNodes}</small>;
+				}
+				return <li key={"searchResult" + i}>{d.name} {matchingText}</li>;
 			});
 			resultNodes = (
 				<ul>{resultItemNodes}</ul>
 			)
-		} else {
-			resultNodes = <p>No Results</p>;
 		}
-
 		return (
 			<div>
 				<h1>Variant Viewer Search Test</h1>
 				<SearchBar onSubmit={this._onSearch}/>
 				{this._renderDendo()}
+				<p>{this.state.totalResults} results</p>
 				{resultNodes}
 			</div>
 		);
@@ -52,7 +60,7 @@ var SimpleLocusSearch = React.createClass({
 		var url = `/search_sequence_objects?query=${query}`;
 		$.getJSON(url, data => {
 			if (this.isMounted()) {
-				this.setState({ results: data.loci });
+				this.setState({ results: data.loci, totalResults: data.total });
 				var clusterModel = new AlignmentClusterModel();
 				if (data.loci.length > 0) {
 					var clusters = clusterModel.clusterFeatures(data.loci);
