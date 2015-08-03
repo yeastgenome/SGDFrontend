@@ -78,7 +78,11 @@ var SimpleLocusSearch = React.createClass({
 		var width = 600;
 		var height = 400;
 		var labelHeight = 70;
-		var dendoFn = d3.layout.cluster().size([width, height]);
+		var dendoFn = d3.layout.cluster()
+			.separation( function (a,b) {
+				return 1;
+			})
+			.size([width, height]);
 
 		var nodes = dendoFn.nodes(this.state.clusterData);
 		var links = dendoFn.links(nodes);
@@ -96,7 +100,7 @@ var SimpleLocusSearch = React.createClass({
 
 		var pathString;
 		var linkNodes = links.map( (d, i) => {
-			pathString = diagonal(d);
+			pathString = `M ${d.source.x} ${d.source.y} L ${d.target.x} ${d.source.y} L ${d.target.x} ${d.target.y}`;
 			return <path key={"pNode" + i} d={pathString} fill="none" stroke="black" />;
 		});
 		
