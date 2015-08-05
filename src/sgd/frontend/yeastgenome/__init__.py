@@ -445,8 +445,8 @@ class YeastgenomeFrontend(FrontendInterface):
         query = params['query']
         search_body = {
             'query': {
-                'query_string': {
-                    'query': query
+                'match_phrase': {
+                    '_all': query
                 }
             },
             'highlight' : {
