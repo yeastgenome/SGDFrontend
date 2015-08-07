@@ -455,7 +455,7 @@ class YeastgenomeFrontend(FrontendInterface):
                 }
             }
         }
-        res = es.search(index='sequence_objects', body=search_body, size=1000)
+        res = es.search(index='sequence_objects3', body=search_body, size=1000)
         simple_hits = []
         for hit in res['hits']['hits']:
             highlight = None
@@ -464,7 +464,8 @@ class YeastgenomeFrontend(FrontendInterface):
             obj = {
                 'name': hit['_source']['name'],
                 'dna_scores': hit['_source']['dna_scores'],
-                'highlight': highlight
+                'highlight': highlight,
+                'snp_seqs': hit['_source']['snp_seqs']
             }
             simple_hits.append(obj)
         formatted_response = {

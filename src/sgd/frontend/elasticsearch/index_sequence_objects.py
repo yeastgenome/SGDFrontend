@@ -5,7 +5,7 @@ from random import shuffle
 import requests
 es = Elasticsearch()
 
-INDEX_NAME = 'sequence_objects'
+INDEX_NAME = 'sequence_objects3'
 DOC_TYPE = 'sequence_object'
 BASE_URL = 'http://sgd-qa.stanford.edu'
 ALIGNMENT_URL = BASE_URL + '/webservice/alignments'
@@ -38,6 +38,24 @@ def chunk_list(seq, num):
 
 	return out
 
+def aligned_sequence_to_snp_sequence(aligned_sequence_obj, variants):
+    aligned_sequence = aligned_sequence_obj['sequence']
+    snp_sequence = ''
+    # add SNP chars to snp_sequence
+    for var in variants:
+        if var['variant_type'] == 'SNP':
+            start = int(var['start']) - 1
+            end = int(var['end']) - 1
+            snp = aligned_sequence[start:end]
+            snp_sequence = snp_sequence + snp
+
+    obj = {
+        'name': aligned_sequence_obj['strain_display_name'],
+        'id': aligned_sequence_obj['strain_id'],
+        'snp_sequence': snp_sequence
+    }
+    return obj
+
 def fetch_and_index_locus(locus, name, process_index):
     # fetch basic data
     print 'fetching ' + name + ' on thread ' + str(process_index)
@@ -54,6 +72,11 @@ def fetch_and_index_locus(locus, name, process_index):
     go_terms = add_go_term_from_obj(go_overview, 'manual_molecular_function_terms', go_terms)
     go_terms = add_go_term_from_obj(go_overview, 'htp_molecular_function_terms', go_terms)
 
+    alignment_show_url = ALIGNMENT_URL + '/' + locus['sgdid']
+    alignment_response = requests.get(alignment_show_url).json()
+    dna_seqs = alignment_response['aligned_dna_sequences']
+    snp_seqs = [aligned_sequence_to_snp_sequence(seq, alignment_response['variant_data_dna']) for seq in dna_seqs]
+
     # TEMP don't do this, yet
     # # get domains
     # domain_url = LOCUS_BASE_URL + locus['sgdid'] + '/protein_domain_details'
@@ -67,7 +90,8 @@ def fetch_and_index_locus(locus, name, process_index):
       'url': locus['link'],
       'description': locus['headline'],
       'go_terms': go_terms,
-      'dna_scores': locus['dna_scores']
+      'dna_scores': locus['dna_scores'],
+      'snp_seqs': snp_seqs
     }
     es.index(index=INDEX_NAME, doc_type=DOC_TYPE, id=locus['sgdid'], body=body)
 

@@ -8,33 +8,48 @@ var STRAIN_NAMES = ["S288C", "X2180-1A", "SEY6210", "W303", "JK9-3d", "FL100", "
 module.exports = class AlignmentClusterModel {
 
 	clusterFeatures (data) {
-		var rawScores = data.map(d => {
-			return d.dna_scores;
+
+		var rawSnpSeqs = data.map(d => {
+			return d.snp_seqs;
 		});
-		// transpose
-		var transposedScores = rawScores[0].map(function(col, i) { 
-			var strainScores = rawScores.map(function(row, _i) { "X2180-1A"
+
+		// transpose to get array of strains with snp_sequence
+		var strainsSnpSequences = rawSnpSeqs[0].map(function(col, i) { 
+			var strainSnps = rawSnpSeqs.map(function(row, _i) {
 				return row[i] 
 			});
 
+			// for each gene, find the strains snp sequence and add
+			var strainGeneObj;
+			var snpSeq = rawSnpSeqs.reduce(function(memo, gene) {
+				strainGeneObj = gene[i];
+				memo += strainGeneObj.snp_sequence
+				return memo;
+			}, "");
+
 			return {
 				name: STRAIN_NAMES[i],
-				scores: strainScores
+				snpSequence: snpSeq
 			};
 		});
 
+		// get distance between two objects with key snpSequence
 		var distanceFn = function (a, b) {
 			var sum = 0;
 			var k
-			a.scores.forEach( function (j, i) {
-				k = b.scores[i];
-				if (typeof j === "number" && typeof k === "number") {
-					sum += Math.abs(j - k);
+			var seqA = a.snpSequence;
+			var seqB = b.snpSequence;
+			var aChars = seqA.split("");
+			var bChars = seqB.split("");
+			aChars.forEach( function (j, i) {
+				k = bChars[i];
+				if (j !== k) {
+					sum += 1 / seqA.length;
 				}
 			});
 			return sum;
 		};
-		var clusters = clusterfck.hcluster(transposedScores, distanceFn);
+		var clusters = clusterfck.hcluster(strainsSnpSequences, distanceFn);
 
 		return this.reformatCluster(clusters);
 	}
