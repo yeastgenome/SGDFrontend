@@ -443,9 +443,11 @@ class YeastgenomeFrontend(FrontendInterface):
     # es search for sequence objects
     def search_sequence_objects(self, params):
         query = params['query']
+
+        query_type = 'wildcard' if '*' in query else 'match_phrase'
         search_body = {
             'query': {
-                'match_phrase': {
+                query_type: {
                     '_all': query
                 }
             },
@@ -455,6 +457,7 @@ class YeastgenomeFrontend(FrontendInterface):
                 }
             }
         }
+        
         res = es.search(index='sequence_objects3', body=search_body, size=1000)
         simple_hits = []
         for hit in res['hits']['hits']:
