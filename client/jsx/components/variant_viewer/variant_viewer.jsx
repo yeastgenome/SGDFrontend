@@ -5,6 +5,7 @@ var React = require("react");
 var Router = require("react-router");
 var _ = require("underscore");
 
+var Dendrogram = require("./dendrogram.jsx");
 var SearchBar = require("../widgets/search_bar.jsx");
 var ScrollyHeatmap = require("./scrolly_heatmap.jsx");
 
@@ -36,7 +37,8 @@ var VariantViewer = React.createClass({
 	},
 
 	_renderDendro: function () {
-		return null;
+		var _data = this.props.store.getClusteredStrainData();
+		return <Dendrogram data={_data} width={300} height={200} />;
 	},
 
 	_renderHeatmap: function () {
@@ -48,8 +50,12 @@ var VariantViewer = React.createClass({
 	_renderSearchBar: function () {
 		var _onSubmit = query => {
 			this.props.store.setQuery(query);
-			this.props.store.fetchSearchResults( (err) => {
-				if (this.isMounted()) this.forceUpdate();
+			this.props.store.fetchSearchResults( err => {
+				if (this.isMounted()) {
+					this.props.store.clusterStrains( err => {
+						this.forceUpdate();
+					});
+				}
 			});
 		}
 		var _text = "Enter gene name, GO term, or list of gene names";

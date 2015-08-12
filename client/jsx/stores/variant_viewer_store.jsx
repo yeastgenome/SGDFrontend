@@ -3,6 +3,8 @@
 var _ = require("underscore");
 var $ = require("jquery");
 
+var clusterStrains = require("./cluster_strains.jsx");
+
 var LOCI_SEARCH_BASE_URL = "/search_sequence_objects";
 
 // internal data
@@ -14,26 +16,19 @@ var query = "";
 var visibleLociData = null;
 var visibleStrainIds = []; // TEMP
 
-// action callbacks
-var onSetQueryCb = function (_query) { return null };
-var onReceiveLociDataCb = function (_loci) { return null };
-
 module.exports = class VariantViewerStore {
 
 	// *** mutators ***
 	setQuery (newQuery) {
 		query = newQuery;
-		onSetQueryCb(query);
-	}
-
-	setOnReceiveLociDataCb (_newCb) {
-		onReceiveLociDataCb = _newCb;
 	}
 
 	// *** accessors ***
 	getQuery () { return query; }
 
 	getLociData () { return lociData; }
+
+	getClusteredStrainData () { return clusteredStrainData; }
 
 	getHeatmapData () {
 		// TEMP
@@ -57,7 +52,7 @@ module.exports = class VariantViewerStore {
 		]
 	}
 
-	// *** fetchers ***
+	// *** fetchers, calculators ***
 
 	// cb(err, data)
 	fetchSearchResults (cb) {
@@ -65,11 +60,15 @@ module.exports = class VariantViewerStore {
 		$.getJSON(url, data => {
 			var loci = data.loci;
 			var total = data.total;
-			lociData = loci;
-
-			// TODO, clusters
-			
+			lociData = loci;			
 			cb(null, data);
 		});
+	}
+
+	// cb (err)
+	clusterStrains (cb) {
+		var _clustered = clusterStrains(this.getLociData());
+		clusteredStrainData = _clustered;
+		cb(null);
 	}
 };
