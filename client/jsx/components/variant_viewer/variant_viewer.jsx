@@ -32,6 +32,12 @@ var VariantViewer = React.createClass({
 		);
 	},
 
+	// TEMP
+	componentDidMount: function () {
+		this.props.store.setQuery("kinase");
+		this.submitSearch()
+	},
+
 	_renderControls: function () {
 		return this._renderSearchBar();
 	},
@@ -50,16 +56,20 @@ var VariantViewer = React.createClass({
 	_renderSearchBar: function () {
 		var _onSubmit = query => {
 			this.props.store.setQuery(query);
-			this.props.store.fetchSearchResults( err => {
-				if (this.isMounted()) {
-					this.props.store.clusterStrains( err => {
-						this.forceUpdate();
-					});
-				}
-			});
+			this.submitSearch()
 		}
 		var _text = "Enter gene name, GO term, or list of gene names";
 		return <SearchBar placeholderText={_text} onSubmit={_onSubmit} />;
+	},
+
+	submitSearch: function () {
+		this.props.store.fetchSearchResults( err => {
+			if (this.isMounted()) {
+				this.props.store.clusterStrains( err => {
+					this.forceUpdate();
+				});
+			}
+		});
 	}
 });
 
