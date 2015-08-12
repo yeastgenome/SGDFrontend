@@ -3,11 +3,11 @@
 
 var React = require("react");
 var $ = require("jquery");
-var AsyncVariantMap = require("../components/variant_map/async_variant_map.jsx");
-var Drawer = require("../components/variant_map/drawer.jsx");
-var LocalStorageSetup = require("../lib/local_storage_setup.jsx");
+var VariantViewer = require("../components/variant_viewer/variant_viewer.jsx");
+// var Drawer = require("../components/variant_map/drawer.jsx");
 var AlignmentClusterModel = require("../models/alignment_cluster_model.jsx");
-var d3 = require("d3");
+// var d3 = require("d3");
+var VariantViewerStore = require("../stores/variant_viewer_store.jsx");
 
 // router stuff
 var Router = require("react-router");
@@ -111,38 +111,30 @@ var SimpleLocusSearch = React.createClass({
 			</svg>
 		);
 	}
-
 });
-
 
 var view = {};
 view.render = function () {
-	React.render(<SimpleLocusSearch />, document.getElementById("j-main"));
+	// blank react component to make no drawer
+	var BlankComponent = React.createClass({ render: function () { return <span />; }});
+
+	var routes = (
+		<Route path="/" handler={VariantViewer}>
+			<DefaultRoute
+				name="variantViewerIndex" handler={BlankComponent}
+		    />
+		    {/*}
+		    <Route
+		    	name="shallowDrawer" path="/:locusId" handler={Drawer}
+		    />
+		    {*/}
+		</Route>
+	);
+
+	var _store = new VariantViewerStore();
+	Router.run(routes, (Handler) => {
+		React.render(<Handler store={_store}/>, document.getElementById("j-main"));
+	});
 };
-
-// var view = {};
-// view.render = function () {
-// 	// validate local storage cache
-// 	var cacheBustingToken = CACHE_BUSTER || Math.random().toString();
-// 	(new LocalStorageSetup()).checkCache(cacheBustingToken);
-
-// 	// blank react component to make no drawer
-// 	var BlankComponent = React.createClass({ render: function () { return <span />; }});
-
-// 	var routes = (
-// 		<Route path="/" handler={AsyncVariantMap}>
-// 			<DefaultRoute
-// 				name="variantViewerIndex" handler={BlankComponent}
-// 		    />
-// 		    <Route
-// 		    	name="shallowDrawer" path="/:locusId" handler={Drawer}
-// 		    />
-// 		</Route>
-// 	);
-
-// 	Router.run(routes, (Handler) => {
-// 		React.render(<Handler />, document.getElementById("j-main"));
-// 	});
-// };
 
 module.exports = view;

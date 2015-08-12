@@ -24,7 +24,6 @@ module.exports = class VariantViewerStore {
 	setQuery (newQuery) {
 		query = newQuery;
 		onSetQueryCb(query);
-		this.searchLoci();
 	}
 
 	setOnReceiveLociDataCb (_newCb) {
@@ -36,8 +35,32 @@ module.exports = class VariantViewerStore {
 
 	getLociData () { return lociData; }
 
+	getHeatmapData () {
+		// TEMP
+		return [
+			{
+				name: "Foo",
+				id: "foo123",
+				data: [0.5, 0.1, 1, 0.75, 1]
+			}
+		];
+	}
+
+	getHeatmapStrainData() {
+		// TEMP
+		return [
+			{ name: "strain1", id: 1 },
+			{ name: "strain2", id: 2 },
+			{ name: "strain3", id: 3 },
+			{ name: "strain4", id: 4 },
+			{ name: "strain5", id: 5 },
+		]
+	}
+
 	// *** fetchers ***
-	searchLoci () {
+
+	// cb(err, data)
+	fetchSearchResults (cb) {
 		var url = `${LOCI_SEARCH_BASE_URL}?query=${query}`;
 		$.getJSON(url, data => {
 			var loci = data.loci;
@@ -45,7 +68,8 @@ module.exports = class VariantViewerStore {
 			lociData = loci;
 
 			// TODO, clusters
-			onReceiveLociDataCb(loci);
+			
+			cb(null, data);
 		});
 	}
 };
