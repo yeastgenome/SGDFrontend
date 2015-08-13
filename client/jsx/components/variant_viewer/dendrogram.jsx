@@ -22,33 +22,8 @@ var Dendrogram = React.createClass({
 	},
 
 	render: function () {
-		var alpha = 0.5;
-		var data = this.props.data;
-		if (!data) return null;
-
-		var width = this.props.width;
-		var height = this.props.height;
-		
-		// d3-fu
-		var dendoFn = d3.layout.cluster()
-			.separation( function (a,b) {
-				return 1;
-			})
-			.size([width, height]);
-		var nodes = dendoFn.nodes(data);
-		var links = dendoFn.links(nodes);
-		var diagonal = d3.svg.diagonal()
-		    .projection(function(d) { return [d.x, d.y]; });
-
-		var pathString;
-		var linkNodes = links.map( (d, i) => {
-			pathString = `M ${d.source.x} ${d.source.y} L ${d.target.x} ${d.source.y} L ${d.target.x} ${d.target.y}`;
-			return <path key={"pNode" + i} d={pathString} fill="none" stroke="black" />;
-		});
-		
 		return (
-			<svg width={width} height={height + LABEL_HEIGHT} ref="svg">
-				{linkNodes}
+			<svg width={this.props.width} height={this.props.height + LABEL_HEIGHT} ref="svg">
 			</svg>
 		);
 	},
@@ -84,16 +59,28 @@ var Dendrogram = React.createClass({
 			.text( function (d) {
 				return d.value.name;
 			});
-		labels.transition().duration(1000)
+		labels.transition().duration(TRANSITION_DURATION)
 			.attr({
 				transform: this._transform
 			})
 		labels.exit().remove();
-		// var links = sel.selectAll(".sgd-dendro-link").data(linksData);
-		// links.enter().append("path").attr({
-		// 	class: "sgd-dendro-link",
 
-		// })
+		sel.selectAll(".dendro-link").remove();
+		var links = sel.selectAll(".dendro-link").data(linksData);
+		links.enter().append("path").attr({
+			class: "dendro-link",
+			fill: "none",
+			stroke: "black",
+			d: function (d) {
+				return `M ${d.source.x} ${d.source.y} L ${d.target.x} ${d.source.y} L ${d.target.x} ${d.target.y}`;
+			},
+			"stroke-dasharray": "0, 1000"
+		});
+		links.transition().duration(TRANSITION_DURATION)
+			.attr({
+				"stroke-dasharray": "1000, 0"
+			});
+		links.exit().remove()
 
 	},
 
@@ -103,5 +90,6 @@ var Dendrogram = React.createClass({
 });
 
 var LABEL_HEIGHT = 70;
+var TRANSITION_DURATION = 1000;
 
 module.exports = Dendrogram;
