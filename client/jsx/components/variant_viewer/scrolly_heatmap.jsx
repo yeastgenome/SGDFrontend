@@ -35,19 +35,18 @@ var ScrollyHeatmap = React.createClass({
 	render: function () {
 		var _scrollZoneSize = this._getScrollSize();
 		var _canvasX = this._getCanvasX();
+		var _canvasWidth = this._getXScale().range()[1] + SCROLLBAR_HEIGHT + LABEL_WIDTH;
 		var _canvasSize = this._getCanvasSize();
-		var _canvasHeight = this._getYScale().range()[1] + HEADER_HEIGHT + SCROLLBAR_HEIGHT;
 
 		return (<div onMouseLeave={this._onMouseLeave}>
 			{this._getTooltipNode()}
-			<div className="panel" style={{ position: "relative", zIndex: 1 }}>
+			<div style={{ position: "relative", zIndex: 1 }}>
 				<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
-					{this._getLabelsNode()}
-					<div ref="outerScroll" style={{ width: this.state.DOMWidth - LABEL_WIDTH - 18, height: _canvasHeight, overflowX: "scroll", position: "relative", left: LABEL_WIDTH }}>
-						<div style={{ position: "relative", width: _scrollZoneSize }}>	
-							<canvas ref="canvas" width={_canvasSize} height={_canvasHeight} style={{ position: "absolute", left: _canvasX }}/>
+					<div ref="outerScroll" style={{ width: this.state.DOMWidth, height: 800, overflowY: "scroll", position: "relative", left: 0 }}>
+						<div style={{ position: "relative", height: _scrollZoneSize }}>	
+							<canvas ref="canvas" width={_canvasWidth} height={_canvasSize} style={{ position: "absolute", left: _canvasX, border: "1px solid red" }}/>
 						</div>
-						{this._getOverlayNode()}
+						{/* this._getOverlayNode() */}
 					</div>
 				</div>
 			</div>
@@ -58,12 +57,12 @@ var ScrollyHeatmap = React.createClass({
 	componentDidMount: function () {
 		this._calculateWidth();
 		this.refs.outerScroll.getDOMNode().onscroll = this._onScroll;
-		this._renderCanvas();
+		this._drawCanvas();
 	},
 
 	componentDidUpdate: function (prevProps, prevState) {
 	    if (prevProps.data !== this.props.data) {
-	    	this._renderCanvas();
+	    	this._drawCanvas();
 	    }
 	},
 
@@ -137,7 +136,7 @@ var ScrollyHeatmap = React.createClass({
 		var scrollDelta = Math.abs(scrollLeft - this.state.canvasScrollX)
 		if (scrollDelta > _canvasSize / 4) {
 			this.setState({ canvasScrollX: scrollLeft });
-			this._renderCanvas();
+			this._drawCanvas();
 		}
 	},
 
@@ -169,33 +168,33 @@ var ScrollyHeatmap = React.createClass({
 		return this.props.data.slice(_dataStartIndex, _dataStartIndex + _nodesPerCanvas);
 	},
 
-	_getLabelsNode: function () {
-		var nodes = this.props.strainData.map( (d, i) => {
-			var _style = {
-				position: "absolute",
-				left: 0,
-				top: HEADER_HEIGHT + i * NODE_SIZE - 3,
-				fontSize: FONT_SIZE
-			};
-			return <span key={"strainLabel" + i} style={_style}>{d.name}</span>;
-		});
+	// _getLabelsNode: function () {
+	// 	var nodes = this.props.strainData.map( (d, i) => {
+	// 		var _style = {
+	// 			position: "absolute",
+	// 			left: 0,
+	// 			top: HEADER_HEIGHT + i * NODE_SIZE - 3,
+	// 			fontSize: FONT_SIZE
+	// 		};
+	// 		return <span key={"strainLabel" + i} style={_style}>{d.name}</span>;
+	// 	});
 
-		return (<div style={{ position: "relative" }}>
-			{nodes}
-		</div>);
-	},
+	// 	return (<div style={{ position: "relative" }}>
+	// 		{nodes}
+	// 	</div>);
+	// },
 
 	_getXScale: function () {
+		return d3.scale.linear()
+			.domain([0, this.props.strainData.length])
+			.range([0, this.props.strainData.length * NODE_SIZE]);
+	},
+
+	_getYScale: function () {
 		var _totalY = this.props.data.length * NODE_SIZE;
 		return d3.scale.linear()
 			.domain([0, this.props.data.length])
 			.range([0, _totalY]);
-	},
-
-	_getYScale: function () {
-		return d3.scale.linear()
-			.domain([0, this.props.strainData.length])
-			.range([0, this.props.strainData.length * NODE_SIZE]);
 	},
 
 	_getCanvasX: function () {
@@ -207,7 +206,7 @@ var ScrollyHeatmap = React.createClass({
 		return null;
 	},
 
-	_renderCanvas: function () {
+	_drawCanvas: function () {
 		// get canvas context and clear
 		var _canvasSize = this._getCanvasSize();
 		var ctx = this.refs.canvas.getDOMNode().getContext("2d");
@@ -225,17 +224,14 @@ var ScrollyHeatmap = React.createClass({
 		chunkOfData.forEach( (d, i) => {
 			ctx.save();
 			ctx.fillStyle = "black";
-			ctx.translate(0, 0);
-			ctx.rotate(-Math.PI/2);
 			ctx.textAlign = "left";
-			ctx.fillText(d.name, - HEADER_HEIGHT + 3, (i + 1) * NODE_SIZE - 3);
-			ctx.restore();
+			ctx.fillText(d.name, 0, (i + 1) * NODE_SIZE - 3);
 
 			d.data.forEach( (_d, _i) => {
 				// get color and draw rect
 				var _color = (_d === null) ? "white" : colorScale(_d);
 				ctx.fillStyle = _color;
-				ctx.fillRect(i * NODE_SIZE, _i * NODE_SIZE + HEADER_HEIGHT, NODE_SIZE, NODE_SIZE);
+				ctx.fillRect(_i * NODE_SIZE + LABEL_WIDTH, i * NODE_SIZE, NODE_SIZE, NODE_SIZE);
 			});
 		});
 	}

@@ -56,12 +56,12 @@ var VariantViewer = React.createClass({
 
 	_renderDendro: function () {
 		var _data = this.props.store.getClusteredStrainData();
-		return <Dendrogram data={_data} width={300} height={200} />;
+		return <Dendrogram data={_data} width={200} height={150} />;
 	},
 
 	_renderHeatmap: function () {
-		var _heatmapData = this.props.store.getHeatmapData()
-		var _strainData = this.props.store.getHeatmapStrainData()
+		var _heatmapData = this.props.store.getHeatmapData();
+		var _strainData = this.props.store.getHeatmapStrainData();
 		return <ScrollyHeatmap data={_heatmapData} strainData={_strainData} />;
 	},
 
