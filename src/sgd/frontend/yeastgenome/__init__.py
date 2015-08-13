@@ -465,6 +465,7 @@ class YeastgenomeFrontend(FrontendInterface):
             if 'highlight' in hit.keys():
                 highlight = hit['highlight']
             obj = {
+                'sgdid': hit['_source']['sgdid'],
                 'name': hit['_source']['name'],
                 'dna_scores': hit['_source']['dna_scores'],
                 'highlight': highlight,

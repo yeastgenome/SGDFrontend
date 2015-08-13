@@ -16,7 +16,7 @@ var VariantViewer = React.createClass({
 
 	getInitialState: function () {
 		return {
-			isPending: false
+			isPending: true
 		};
 	},
 
@@ -26,8 +26,7 @@ var VariantViewer = React.createClass({
 				<h1>Variant Viewer</h1>
 				<hr />
 				{this._renderControls()}
-				{this._renderDendro()}
-				{this._renderHeatmap()}
+				{this._renderViz()}
 			</div>
 		);
 	},
@@ -36,10 +35,23 @@ var VariantViewer = React.createClass({
 	componentDidMount: function () {
 		this.props.store.setQuery("kinase");
 		this.submitSearch()
+		this.props.store.fetchInitialData( err => {
+			this.setState({ isPending: false });
+		});
 	},
 
 	_renderControls: function () {
 		return this._renderSearchBar();
+	},
+
+	_renderViz: function () {
+		if (this.state.isPending) return <p>Loading...</p>;
+		return (
+			<div>
+				{this._renderDendro()}
+				{this._renderHeatmap()}
+			</div>
+		);
 	},
 
 	_renderDendro: function () {

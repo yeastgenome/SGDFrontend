@@ -36,6 +36,7 @@ var Dendrogram = React.createClass({
 		var width = this.props.width;
 		var height = this.props.height;
 
+		// d3 fu
 		var dendoFn = d3.layout.cluster()
 			.separation( function (a,b) {
 				return 1;
@@ -48,7 +49,7 @@ var Dendrogram = React.createClass({
 
 		// traditional d3 rendering
 		var sel = d3.select(this.refs.svg.getDOMNode());
-
+		
 		var labelsData = _.where(nodesData, { isLeaf: true });
 		var labels = sel.selectAll(".dendro-label").data(labelsData, function (d) { return d.value.name; });
 		labels.enter().append("text")
@@ -74,7 +75,8 @@ var Dendrogram = React.createClass({
 			d: function (d) {
 				return `M ${d.source.x} ${d.source.y} L ${d.target.x} ${d.source.y} L ${d.target.x} ${d.target.y}`;
 			},
-			"stroke-dasharray": "0, 1000"
+			"stroke-dasharray": "0, 1000",
+			"shape-rendering": "crispedges"
 		});
 		links.transition().duration(TRANSITION_DURATION)
 			.attr({

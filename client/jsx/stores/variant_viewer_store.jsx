@@ -5,16 +5,19 @@ var $ = require("jquery");
 
 var clusterStrains = require("./cluster_strains.jsx");
 
+var ALIGNMENT_INDEX_URL = "/backend/alignments";
 var LOCI_SEARCH_BASE_URL = "/search_sequence_objects";
 
 // internal data
 var isApiError = false;
 var lociData = [];
+var allLociData = [];
 var clusteredStrainData = null;
 var isProteinMode = false;
 var query = "";
+var strainMetaData = [];
 var visibleLociData = null;
-var visibleStrainIds = []; // TEMP
+var visibleStrainIds = null;
 
 module.exports = class VariantViewerStore {
 
@@ -31,28 +34,39 @@ module.exports = class VariantViewerStore {
 	getClusteredStrainData () { return clusteredStrainData; }
 
 	getHeatmapData () {
-		// TEMP
-		return [
-			{
-				name: "Foo",
-				id: "foo123",
-				data: [0.5, 0.1, 1, 0.75, 1]
+		return lociData.map( d => {
+			return {
+				name: d.name,
+				id: d.sgdid,
+				data: (isProteinMode ? d.protein_scores : d.dna_scores)
 			}
-		];
+		});
 	}
 
 	getHeatmapStrainData() {
-		// TEMP
-		return [
-			{ name: "strain1", id: 1 },
-			{ name: "strain2", id: 2 },
-			{ name: "strain3", id: 3 },
-			{ name: "strain4", id: 4 },
-			{ name: "strain5", id: 5 },
-		]
+		return strainMetaData.map( d => {
+			return {
+				name: d.display_name,
+				id: d.id
+			};
+		});
 	}
 
 	// *** fetchers, calculators ***
+
+	// cb (err) gets called twice
+	fetchInitialData (cb) {
+		var firstFetchUrl = `${ALIGNMENT_INDEX_URL}?limit=50`;
+		var secondFetchUrl = ALIGNMENT_INDEX_URL;
+		$.getJSON(firstFetchUrl, data => {
+			strainMetaData = data.strains;
+			visibleStrainIds = strainMetaData.map( d => { return d.id; });
+			if (typeof cb === "function") cb(null);
+			$.getJSON(secondFetchUrl, data => {
+				if (typeof cb === "function") cb(null);
+			});
+		});
+	}
 
 	// cb(err, data)
 	fetchSearchResults (cb) {
@@ -60,14 +74,16 @@ module.exports = class VariantViewerStore {
 		$.getJSON(url, data => {
 			var loci = data.loci;
 			var total = data.total;
-			lociData = loci;			
+			lociData = loci;		
 			cb(null, data);
 		});
 	}
 
 	// cb (err)
 	clusterStrains (cb) {
+		var start = new Date().getTime();
 		var _clustered = clusterStrains(this.getLociData());
+		var end = new Date().getTime();
 		clusteredStrainData = _clustered;
 		cb(null);
 	}
