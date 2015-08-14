@@ -222,7 +222,6 @@ var ScrollyHeatmap = React.createClass({
 		var chunkOfData = this._getChunkedData();
 
 		chunkOfData.forEach( (d, i) => {
-			ctx.save();
 			ctx.fillStyle = "black";
 			ctx.textAlign = "left";
 			ctx.fillText(d.name, 0, (i + 1) * NODE_SIZE - 3);

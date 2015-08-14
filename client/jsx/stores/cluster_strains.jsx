@@ -5,14 +5,14 @@ var _ = require("underscore");
 
 var STRAIN_NAMES = ["S288C", "X2180-1A", "SEY6210", "W303", "JK9-3d", "FL100", "CEN.PK", "D273-10B", "Sigma1278b", "RM11-1a", "SK1", "Y55"];
 
-module.exports = function (data) {
+module.exports = function (data, strainMetaData) {
 
 	var rawSnpSeqs = data.map(d => {
 		return d.snp_seqs;
 	});
 
 	// transpose to get array of strains with snp_sequence
-	var strainsSnpSequences = rawSnpSeqs[0].map(function(col, i) { 
+	var strainsSnpSequences = strainMetaData.map(function(strain, i) { 
 		var strainSnps = rawSnpSeqs.map(function(row, _i) {
 			return row[i] 
 		});
@@ -28,7 +28,8 @@ module.exports = function (data) {
 
 		return {
 			name: STRAIN_NAMES[i],
-			snpSequence: snpSeq
+			snpSequence: snpSeq,
+			id: strain.id
 		};
 	});
 

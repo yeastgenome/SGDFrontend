@@ -16,7 +16,8 @@ var VariantViewer = React.createClass({
 
 	getInitialState: function () {
 		return {
-			isPending: true
+			isPending: true,
+			labelsVisible: true
 		};
 	},
 
@@ -33,10 +34,11 @@ var VariantViewer = React.createClass({
 
 	// TEMP
 	componentDidMount: function () {
-		this.props.store.setQuery("kinase");
-		this.submitSearch()
 		this.props.store.fetchInitialData( err => {
-			this.setState({ isPending: false });
+			this.props.store.setQuery("kinase");
+			this.submitSearch( err => {
+				this.setState({ isPending: false });
+			});
 		});
 	},
 
@@ -56,7 +58,13 @@ var VariantViewer = React.createClass({
 
 	_renderDendro: function () {
 		var _data = this.props.store.getClusteredStrainData();
-		return <Dendrogram data={_data} width={200} height={150} />;
+		var _left = this.state.labelsVisible ?  LABEL_WIDTH : 0;
+		var _width = this.props.store.getHeatmapStrainData().length * NODE_SIZE;
+		return (
+			<div style={{ marginLeft: _left }}>
+				<Dendrogram data={_data} width={_width} height={100} />
+			</div>
+		);
 	},
 
 	_renderHeatmap: function () {
@@ -68,21 +76,26 @@ var VariantViewer = React.createClass({
 	_renderSearchBar: function () {
 		var _onSubmit = query => {
 			this.props.store.setQuery(query);
-			this.submitSearch()
+			this.submitSearch();
 		}
 		var _text = "Enter gene name, GO term, or list of gene names";
 		return <SearchBar placeholderText={_text} onSubmit={_onSubmit} />;
 	},
 
-	submitSearch: function () {
+	// cb(err)
+	submitSearch: function (cb) {
 		this.props.store.fetchSearchResults( err => {
 			if (this.isMounted()) {
 				this.props.store.clusterStrains( err => {
 					this.forceUpdate();
+					if (typeof cb === "function") cb(err);
 				});
 			}
 		});
 	}
 });
+
+var LABEL_WIDTH = 120;
+var NODE_SIZE = 16;
 
 module.exports = VariantViewer;

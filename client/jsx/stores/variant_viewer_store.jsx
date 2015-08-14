@@ -13,6 +13,7 @@ var isApiError = false;
 var lociData = [];
 var allLociData = [];
 var clusteredStrainData = null;
+var strainClusterIndexes = null;
 var isProteinMode = false;
 var query = "";
 var strainMetaData = [];
@@ -34,11 +35,24 @@ module.exports = class VariantViewerStore {
 	getClusteredStrainData () { return clusteredStrainData; }
 
 	getHeatmapData () {
+		// first, create array of indexes for cluster sorted data
+		var strainObj;
+		var indexArr = strainClusterIndexes.map( _id => {
+			strainObj = _.findWhere(strainMetaData, { id: _id } );
+			return strainMetaData.indexOf(strainObj);
+		});
+
+		var unsorted, sorted;
 		return lociData.map( d => {
+			// sort heatmap nodes to match the dendrogram cluster
+			unsorted = (isProteinMode ? d.protein_scores : d.dna_scores);
+			sorted = indexArr.map( _d => {
+				return unsorted[_d];
+			});
 			return {
 				name: d.name,
 				id: d.sgdid,
-				data: (isProteinMode ? d.protein_scores : d.dna_scores)
+				data: sorted
 			}
 		});
 	}
@@ -59,12 +73,15 @@ module.exports = class VariantViewerStore {
 		var firstFetchUrl = `${ALIGNMENT_INDEX_URL}?limit=50`;
 		var secondFetchUrl = ALIGNMENT_INDEX_URL;
 		$.getJSON(firstFetchUrl, data => {
-			strainMetaData = data.strains;
+			strainMetaData = data.strains.map( d => {
+				return {
+					name: d.display_name,
+					id: d.id,
+					href: d.link
+				};
+			});
 			visibleStrainIds = strainMetaData.map( d => { return d.id; });
 			if (typeof cb === "function") cb(null);
-			$.getJSON(secondFetchUrl, data => {
-				if (typeof cb === "function") cb(null);
-			});
 		});
 	}
 
@@ -82,9 +99,28 @@ module.exports = class VariantViewerStore {
 	// cb (err)
 	clusterStrains (cb) {
 		var start = new Date().getTime();
-		var _clustered = clusterStrains(this.getLociData());
+		var _clustered = clusterStrains(this.getLociData(), strainMetaData);
 		var end = new Date().getTime();
 		clusteredStrainData = _clustered;
+		strainClusterIndexes = this.getStrainIndexes(clusteredStrainData);
 		cb(null);
+	}
+
+	// save the order of the strains in the dendro cluster object so that heatmap can 
+	getStrainIndexes (clustered, indexes) {
+		if (typeof indexes === "undefined") indexes = [];
+
+		// found a leaf, put in indexes and return
+		if (!clustered.children) {
+			indexes.push(clustered.value.id);
+			return indexes
+		// non-leaf children
+		} else {
+			clustered.children.forEach( d => {
+				var childIndexes = this.getStrainIndexes(d, indexes);
+				indexes.concat(childIndexes);
+			});
+			return indexes;
+		}
 	}
 };

@@ -442,23 +442,29 @@ class YeastgenomeFrontend(FrontendInterface):
 
     # es search for sequence objects
     def search_sequence_objects(self, params):
-        query = params['query']
+        query = params['query'] if 'query' in params.keys() else ''
+        offset = int(params['offset']) if 'offset' in params.keys() else 0
+        limit = int(params['limit']) if 'limit' in params.keys() else 1000
 
         query_type = 'wildcard' if '*' in query else 'match_phrase'
-        search_body = {
-            'query': {
-                query_type: {
-                    '_all': query
-                }
-            },
-            'highlight' : {
-                'fields' : {
-                    'go_terms' : {}
+        if query == '':
+            search_body = {
+                'query': { 'match_all': {} }
+            }
+        else:
+            search_body = {
+                'query': {
+                    query_type: {
+                        '_all': query
+                    }
+                },
+                'highlight' : {
+                    'fields' : {
+                        'go_terms' : {}
+                    }
                 }
             }
-        }
-        
-        res = es.search(index='sequence_objects3', body=search_body, size=1000)
+        res = es.search(index='sequence_objects3', body=search_body, size=limit, from_=offset)
         simple_hits = []
         for hit in res['hits']['hits']:
             highlight = None
@@ -474,7 +480,8 @@ class YeastgenomeFrontend(FrontendInterface):
             simple_hits.append(obj)
         formatted_response = {
             'loci': simple_hits,
-            'total': res['hits']['total']
+            'total': res['hits']['total'],
+            'offset': offset
         }
 
         return Response(body=json.dumps(formatted_response), content_type='application/json')

@@ -28,7 +28,7 @@ var Dendrogram = React.createClass({
 		);
 	},
 
-	componentDidMount: function () { this._drawSvg },
+	componentDidMount: function () { this._drawSvg() },
 	componentDidUpdate: function (prevProps, prevState) { if (prevProps !== this.props) this._drawSvg(); },
 
 	_drawSvg: function () {
