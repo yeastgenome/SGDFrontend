@@ -6,8 +6,10 @@ var Router = require("react-router");
 var _ = require("underscore");
 
 var Dendrogram = require("./dendrogram.jsx");
+var RadioSelector = require("../widgets/radio_selector.jsx");
 var SearchBar = require("../widgets/search_bar.jsx");
 var ScrollyHeatmap = require("./scrolly_heatmap.jsx");
+var StrainSelector = require("./strain_selector.jsx");
 
 var VariantViewer = React.createClass({
 	propTypes: {
@@ -44,7 +46,26 @@ var VariantViewer = React.createClass({
 	},
 
 	_renderControls: function () {
-		return this._renderSearchBar();
+		var radioElements = [
+			{ name: "DNA", key: "dna" },
+			{ name: "Protein", key: "protein" }
+		];
+		return (
+			<div className="row">
+				<div className="columns small-6">
+					{this._renderSearchBar()}
+				</div>
+				<div className="columns small-2">
+					<StrainSelector />
+				</div>
+				<div className="columns small-3" style={{ marginTop: "0.4rem" }}>
+					<RadioSelector elements={radioElements} initialActiveElementKey="dna" />
+				</div>
+				<div className="columns small-1">
+					<a className="button secondary small"><i className="fa fa-cog" /></a>
+				</div>
+			</div>
+		);
 	},
 
 	_renderViz: function () {
@@ -59,7 +80,7 @@ var VariantViewer = React.createClass({
 
 	_renderDendro: function () {
 		var _data = this.props.store.getClusteredStrainData();
-		var _left = this.state.labelsVisible ?  LABEL_WIDTH : 0;
+		var _left = this.state.labelsVisible ? LABEL_WIDTH : 0;
 		var _width = this.props.store.getHeatmapStrainData().length * NODE_SIZE;
 		return (
 			<div style={{ marginLeft: _left }}>
