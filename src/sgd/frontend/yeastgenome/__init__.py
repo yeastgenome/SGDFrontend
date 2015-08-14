@@ -464,7 +464,7 @@ class YeastgenomeFrontend(FrontendInterface):
                     }
                 }
             }
-        res = es.search(index='sequence_objects3', body=search_body, size=limit, from_=offset)
+        res = es.search(index='sequence_objects', body=search_body, size=limit, from_=offset)
         simple_hits = []
         for hit in res['hits']['hits']:
             highlight = None
