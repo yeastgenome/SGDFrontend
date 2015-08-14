@@ -81,7 +81,13 @@ module.exports = class VariantViewerStore {
 				};
 			});
 			visibleStrainIds = strainMetaData.map( d => { return d.id; });
-			if (typeof cb === "function") cb(null);
+			var url = `${LOCI_SEARCH_BASE_URL}`;
+			$.getJSON(url, data => {
+				lociData = data.loci;
+				this.clusterStrains( err => {
+					if (typeof cb === "function") cb(null);
+				})
+			});
 		});
 	}
 

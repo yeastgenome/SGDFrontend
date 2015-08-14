@@ -35,10 +35,11 @@ var VariantViewer = React.createClass({
 	// TEMP
 	componentDidMount: function () {
 		this.props.store.fetchInitialData( err => {
-			this.props.store.setQuery("kinase");
-			this.submitSearch( err => {
-				this.setState({ isPending: false });
-			});
+			this.setState({ isPending: false });
+			// this.props.store.setQuery("kinase");
+			// this.submitSearch( err => {
+			// 	this.setState({ isPending: false });
+			// });
 		});
 	},
 
@@ -95,7 +96,7 @@ var VariantViewer = React.createClass({
 	}
 });
 
-var LABEL_WIDTH = 120;
+var LABEL_WIDTH = 130;
 var NODE_SIZE = 16;
 
 module.exports = VariantViewer;

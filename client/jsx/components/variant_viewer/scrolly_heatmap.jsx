@@ -10,7 +10,7 @@ var FONT_SIZE = 14;
 var HEADER_HEIGHT = 120;
 var NODE_SIZE = 16;
 var MAX_CANVAS_SIZE = 8000;
-var LABEL_WIDTH = 120;
+var LABEL_WIDTH = 130;
 var TOOLTIP_DELAY = 250;
 var SCROLLBAR_HEIGHT = 15;
 var LARGE_DATA_SIZE = 6500;
@@ -44,7 +44,7 @@ var ScrollyHeatmap = React.createClass({
 				<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
 					<div ref="outerScroll" style={{ width: this.state.DOMWidth, height: 800, overflowY: "scroll", position: "relative", left: 0 }}>
 						<div style={{ position: "relative", height: _scrollZoneSize }}>	
-							<canvas ref="canvas" width={_canvasWidth} height={_canvasSize} style={{ position: "absolute", left: _canvasX, border: "1px solid red" }}/>
+							<canvas ref="canvas" width={_canvasWidth} height={_canvasSize} style={{ position: "absolute", left: _canvasX }}/>
 						</div>
 						{/* this._getOverlayNode() */}
 					</div>
