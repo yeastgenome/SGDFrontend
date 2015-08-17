@@ -28,7 +28,7 @@ var SearchBar = React.createClass({
 		return (
 			<div>
 				<form onSubmit={this._onSubmit} style={{ display: "flex" }}>
-					<div style={{ width: "80%"}}>
+					<div style={{ width: "80%", position: "relative" }}>
 						{exitNode}
 						<input onChange={this._onType} type="text" ref="searchInput" placeholder={this.props.placeholderText} value={this.state.query} style={{ borderRadius: "3px 0 0 3px" }}/>
 					</div>
