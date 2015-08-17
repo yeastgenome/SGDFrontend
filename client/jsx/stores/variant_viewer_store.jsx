@@ -19,12 +19,17 @@ var query = "";
 var strainMetaData = [];
 var visibleLocusData = null;
 var visibleStrainIds = null;
+var heatmapZoom = 16; // px per node
 
 module.exports = class VariantViewerStore {
 
 	// *** mutators ***
 	setQuery (newQuery) {
 		query = newQuery;
+	}
+
+	zoomHeatmap (isIn) {
+		heatmapZoom += isIn;
 	}
 
 	// *** accessors ***
@@ -59,7 +64,7 @@ module.exports = class VariantViewerStore {
 		});
 	}
 
-	getHeatmapStrainData() {
+	getHeatmapStrainData () {
 		return strainMetaData.map( d => {
 			return {
 				name: d.display_name,
@@ -67,6 +72,8 @@ module.exports = class VariantViewerStore {
 			};
 		});
 	}
+
+	getHeatmapZoom () { return heatmapZoom; }
 
 	// *** fetchers, calculators ***
 

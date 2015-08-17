@@ -8,7 +8,7 @@ var ColorScaleLegend = require("./color_scale_legend.jsx");
 var DEFAULT_DOM_SIDE_SIZE = 400; // height and width
 var FONT_SIZE = 14;
 var HEADER_HEIGHT = 120;
-var NODE_SIZE = 16;
+var DEFAULT_NODE_SIZE = 16;
 var MAX_CANVAS_SIZE = 8000;
 var LABEL_WIDTH = 130;
 var TOOLTIP_DELAY = 250;
@@ -18,8 +18,13 @@ var LARGE_DATA_SIZE = 6500;
 var ScrollyHeatmap = React.createClass({
 	propTypes: {
 		data: React.PropTypes.array.isRequired, // [{ name: "some123", id: "123", data: [0.1, 0.5, ...]}, ...]
+		nodeSize: React.PropTypes.number,
 		onClick: React.PropTypes.func,
 		strainData: React.PropTypes.array.isRequired // [{ name: "foo", id: 1 }, ...]
+	},
+
+	getDefaultProps: function () {
+		return { nodeSize: DEFAULT_NODE_SIZE };
 	},
 
 	getInitialState: function () {
@@ -38,20 +43,22 @@ var ScrollyHeatmap = React.createClass({
 		var _canvasWidth = this._getXScale().range()[1] + SCROLLBAR_HEIGHT + LABEL_WIDTH;
 		var _canvasSize = this._getCanvasSize();
 
-		return (<div onMouseLeave={this._onMouseLeave}>
-			{this._getTooltipNode()}
-			<div style={{ position: "relative", zIndex: 1 }}>
-				<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
-					<div ref="outerScroll" style={{ width: this.state.DOMWidth, height: 800, overflowY: "scroll", position: "relative", left: 0 }}>
-						<div style={{ position: "relative", height: _scrollZoneSize }}>	
-							<canvas ref="canvas" width={_canvasWidth} height={_canvasSize} style={{ position: "absolute", left: _canvasX }}/>
+		return (
+			<div onMouseLeave={this._onMouseLeave} style={{ width: _canvasWidth }}>
+				{this._getTooltipNode()}
+				<div style={{ position: "relative", zIndex: 1 }}>
+					<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
+						<div ref="outerScroll" style={{ width: this.state.DOMWidth, height: 800, overflowY: "scroll", position: "relative", left: 0 }}>
+							<div style={{ position: "relative", height: _scrollZoneSize }}>	
+								<canvas ref="canvas" width={_canvasWidth} height={_canvasSize} style={{ position: "absolute", left: _canvasX }}/>
+							</div>
+							{/* this._getOverlayNode() */}
 						</div>
-						{/* this._getOverlayNode() */}
 					</div>
 				</div>
+				<ColorScaleLegend />
 			</div>
-			<ColorScaleLegend />
-		</div>);
+		);
 	},
 
 	componentDidMount: function () {
@@ -81,7 +88,7 @@ var ScrollyHeatmap = React.createClass({
 	_getOverlayNode: function () {
 		var chunkedData = this._getChunkedData();
 		var xScale = this._getXScale();
-		var nodeHeight = this.props.strainData.length * NODE_SIZE + HEADER_HEIGHT;
+		var nodeHeight = this.props.strainData.length * this.props.nodeSize + HEADER_HEIGHT;
 
 		var rectNodes = _.map(chunkedData, (d, i) => {
 			// UI events
@@ -101,12 +108,12 @@ var ScrollyHeatmap = React.createClass({
 			// highlight if mouseover
 			var mouseOverNode = null;
 			if (d.id === this.state.mouseOverId) {
-				mouseOverNode = <rect width={NODE_SIZE} height={nodeHeight - HEADER_HEIGHT} x={0} y={HEADER_HEIGHT} stroke="yellow" fill="none" strokeWidth={2} />;
+				mouseOverNode = <rect width={this.props.nodeSize} height={nodeHeight - HEADER_HEIGHT} x={0} y={HEADER_HEIGHT} stroke="yellow" fill="none" strokeWidth={2} />;
 			}
-			var _transform = `translate(${i * NODE_SIZE}, 0)`;
+			var _transform = `translate(${i * this.props.nodeSize}, 0)`;
 			return (<g key={"heatmapOverlay" + i} transform={_transform}>
 				{mouseOverNode}
-				<rect onMouseOver={_onMouseOver} onClick={_onClick} width={NODE_SIZE} height={nodeHeight} x={0} y={0} stroke="none" opacity={0} />
+				<rect onMouseOver={_onMouseOver} onClick={_onClick} width={this.props.nodeSize} height={nodeHeight} x={0} y={0} stroke="none" opacity={0} />
 			</g>);
 		});
 
@@ -120,7 +127,7 @@ var ScrollyHeatmap = React.createClass({
 	_getScrollSize: function () {
 		var length = this.props.data.length;
 		var offset = (length > LARGE_DATA_SIZE) ? 2800 : 0;  // manually make canvas smaller when very large
-		return length * NODE_SIZE - offset;
+		return length * this.props.nodeSize - offset;
 	},
 
 	_getCanvasSize: function () {
@@ -163,7 +170,7 @@ var ScrollyHeatmap = React.createClass({
 	_getChunkedData: function () {
 		var _canvasX = this._getCanvasX();
 		var _canvasSize = this._getCanvasSize();
-		var _nodesPerCanvas = Math.round(_canvasSize / NODE_SIZE)
+		var _nodesPerCanvas = Math.round(_canvasSize / this.props.nodeSize)
 		var _dataStartIndex = Math.round(this._getXScale().invert(_canvasX));
 		return this.props.data.slice(_dataStartIndex, _dataStartIndex + _nodesPerCanvas);
 	},
@@ -173,7 +180,7 @@ var ScrollyHeatmap = React.createClass({
 	// 		var _style = {
 	// 			position: "absolute",
 	// 			left: 0,
-	// 			top: HEADER_HEIGHT + i * NODE_SIZE - 3,
+	// 			top: HEADER_HEIGHT + i * this.props.nodeSize - 3,
 	// 			fontSize: FONT_SIZE
 	// 		};
 	// 		return <span key={"strainLabel" + i} style={_style}>{d.name}</span>;
@@ -187,11 +194,11 @@ var ScrollyHeatmap = React.createClass({
 	_getXScale: function () {
 		return d3.scale.linear()
 			.domain([0, this.props.strainData.length])
-			.range([0, this.props.strainData.length * NODE_SIZE]);
+			.range([0, this.props.strainData.length * this.props.nodeSize]);
 	},
 
 	_getYScale: function () {
-		var _totalY = this.props.data.length * NODE_SIZE;
+		var _totalY = this.props.data.length * this.props.nodeSize;
 		return d3.scale.linear()
 			.domain([0, this.props.data.length])
 			.range([0, _totalY]);
@@ -224,13 +231,13 @@ var ScrollyHeatmap = React.createClass({
 		chunkOfData.forEach( (d, i) => {
 			ctx.fillStyle = "black";
 			ctx.textAlign = "left";
-			ctx.fillText(d.name, 0, (i + 1) * NODE_SIZE - 3);
+			ctx.fillText(d.name, 0, (i + 1) * this.props.nodeSize - 3);
 
 			d.data.forEach( (_d, _i) => {
 				// get color and draw rect
 				var _color = (_d === null) ? "white" : colorScale(_d);
 				ctx.fillStyle = _color;
-				ctx.fillRect(_i * NODE_SIZE + LABEL_WIDTH, i * NODE_SIZE, NODE_SIZE, NODE_SIZE);
+				ctx.fillRect(_i * this.props.nodeSize + LABEL_WIDTH, i * this.props.nodeSize, this.props.nodeSize, this.props.nodeSize);
 			});
 		});
 	}

@@ -34,14 +34,9 @@ var VariantViewer = React.createClass({
 		);
 	},
 
-	// TEMP
 	componentDidMount: function () {
 		this.props.store.fetchInitialData( err => {
 			this.setState({ isPending: false });
-			// this.props.store.setQuery("kinase");
-			// this.submitSearch( err => {
-			// 	this.setState({ isPending: false });
-			// });
 		});
 	},
 
@@ -71,7 +66,10 @@ var VariantViewer = React.createClass({
 		return (
 			<div>
 				{this._renderDendro()}
-				{this._renderHeatmap()}
+				<div style={{ display: "flex", justifyContent: "space-between" }}>
+					{this._renderHeatmap()}
+					{this._renderHeatmapNav()}
+				</div>
 			</div>
 		);
 	},
@@ -90,7 +88,22 @@ var VariantViewer = React.createClass({
 	_renderHeatmap: function () {
 		var _heatmapData = this.props.store.getHeatmapData();
 		var _strainData = this.props.store.getHeatmapStrainData();
-		return <ScrollyHeatmap data={_heatmapData} strainData={_strainData} />;
+		var _zoom = this.props.store.getHeatmapZoom()
+		return <ScrollyHeatmap data={_heatmapData} strainData={_strainData} nodeSize={_zoom} />;
+	},
+
+	_renderHeatmapNav: function () {
+		var _style = { backgroundColor: "#e7e7e7", padding: "0.25rem 0.5rem" };
+		var __style = _.extend(_.clone(_style), { borderTop: "1px solid #b9b9b9" });
+		var zoom = this.props.store.zoomHeatmap;
+		var zoomIn = e => { zoom(1); this.forceUpdate(); };
+		var zoomOut = e => { zoom(-1); this.forceUpdate(); };
+		return (
+			<div>
+				<div onClick={zoomIn} style={_style}><i className="fa fa-plus" /></div>
+				<div onClick={zoomOut} style={__style}><i className="fa fa-minus" /></div>
+			</div>
+		);
 	},
 
 	_renderSearchBar: function () {
