@@ -26,13 +26,13 @@ var SearchBar = React.createClass({
 		var exitNode = (this.state.query === "") ? null : <span onClick={this._clear} style={{ position: "absolute", top: 5, right: "1rem", fontSize: 18, cursor: "pointer" }}><i className="fa fa-times"></i></span>;
 
 		return (
-			<div className="row collapse">
-				<form onSubmit={this._onSubmit}>
-					<div className="small-10 columns" style={{ paddingLeft: 0, paddingRight: 0, position: "relative" }}>
+			<div>
+				<form onSubmit={this._onSubmit} style={{ display: "flex" }}>
+					<div style={{ width: "80%"}}>
 						{exitNode}
-						<input onChange={this._onType} type="text" ref="searchInput" placeholder={this.props.placeholderText} value={this.state.query} />
+						<input onChange={this._onType} type="text" ref="searchInput" placeholder={this.props.placeholderText} value={this.state.query} style={{ borderRadius: "3px 0 0 3px" }}/>
 					</div>
-					<div className="small-2 columns" style={{ paddingLeft: 0 }}>
+					<div style={{ width: "20%"}}>
 						<input type="submit" href="#" className="button secondary postfix" value="Filter" />
 					</div>
 				</form>
