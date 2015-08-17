@@ -55,12 +55,12 @@ var VariantViewer = React.createClass({
 				<div className="columns small-12 large-6">
 					{this._renderSearchBar()}
 				</div>
-				<div className="columns small-12 large-6" style={{ display: "flex", justifyContent: "space-between" }}>
+				<div className="columns small-12 large-6" style={{ display: "flex", justifyContent: "flex-start" }}>
 					<StrainSelector />
-					<div style={{ marginTop: "0.4rem", width: "15rem" }}>
+					<div style={{ marginTop: "0.4rem", marginLeft: "1.8rem", minWidth: "13rem" }}>
 						<RadioSelector elements={radioElements} initialActiveElementKey="dna" />
 					</div>
-					<a className="button dropdown secondary small" style={{ height: "2.4rem" }}><i className="fa fa-cog" /></a>
+					<a className="button dropdown secondary small" style={{ height: "2.4rem", marginLeft: "auto" }}><i className="fa fa-cog" /></a>
 				</div>
 			</div>
 		);
