@@ -41,11 +41,9 @@ var Dendrogram = React.createClass({
 			.separation( function (a,b) {
 				return 1;
 			})
-			.size([width, height]);
+			.size([width - FONT_SIZE / 2, height]);
 		var nodesData = dendoFn.nodes(data);
 		var linksData = dendoFn.links(nodesData);
-		var diagonal = d3.svg.diagonal()
-		    .projection(function(d) { return [d.x, d.y]; });
 
 		// traditional d3 rendering
 		var sel = d3.select(this.refs.svg.getDOMNode());
@@ -55,7 +53,9 @@ var Dendrogram = React.createClass({
 		labels.enter().append("text")
 			.attr({
 				class: "dendro-label",
-				transform: this._transform
+				transform: this._transform,
+				"text-anchor": "end",
+				"font-size": FONT_SIZE
 			})
 			.text( function (d) {
 				return d.value.name;
@@ -63,7 +63,7 @@ var Dendrogram = React.createClass({
 		labels.transition().duration(TRANSITION_DURATION)
 			.attr({
 				transform: this._transform
-			})
+			});
 		labels.exit().remove();
 
 		sel.selectAll(".dendro-link").remove();
@@ -82,16 +82,17 @@ var Dendrogram = React.createClass({
 			.attr({
 				"stroke-dasharray": "1000, 0"
 			});
-		links.exit().remove()
+		links.exit().remove();
 
 	},
 
 	_transform: function (d) {
-		return `translate(${d.x - 5}, ${d.y})rotate(90)`;
+		return `translate(${d.x - 5}, ${d.y + LABEL_HEIGHT})rotate(90)`;
 	}
 });
 
-var LABEL_HEIGHT = 70;
+var LABEL_HEIGHT = 80;
 var TRANSITION_DURATION = 1000;
+var FONT_SIZE = 14;
 
 module.exports = Dendrogram;
