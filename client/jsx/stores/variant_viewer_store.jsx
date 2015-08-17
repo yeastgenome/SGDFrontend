@@ -4,20 +4,20 @@ var _ = require("underscore");
 var $ = require("jquery");
 
 var clusterStrains = require("./cluster_strains.jsx");
+var staticStrainMetadata = require("./strain_metadata");
 
-var ALIGNMENT_INDEX_URL = "/backend/alignments";
 var LOCI_SEARCH_BASE_URL = "/search_sequence_objects";
 
 // internal data
 var isApiError = false;
-var lociData = [];
 var allLociData = [];
+var filteredlociData = [];
 var clusteredStrainData = null;
 var strainClusterIndexes = null;
 var isProteinMode = false;
 var query = "";
 var strainMetaData = [];
-var visibleLociData = null;
+var visibleLocusData = null;
 var visibleStrainIds = null;
 
 module.exports = class VariantViewerStore {
@@ -30,7 +30,9 @@ module.exports = class VariantViewerStore {
 	// *** accessors ***
 	getQuery () { return query; }
 
-	getLociData () { return lociData; }
+	getLociData () { return query === "" ? allLociData : filteredlociData; }
+
+	getLocusData () { return visibleLocusData; }
 
 	getClusteredStrainData () { return clusteredStrainData; }
 
@@ -43,7 +45,7 @@ module.exports = class VariantViewerStore {
 		});
 
 		var unsorted, sorted;
-		return lociData.map( d => {
+		return this.getLociData().map( d => {
 			// sort heatmap nodes to match the dendrogram cluster
 			unsorted = (isProteinMode ? d.protein_scores : d.dna_scores);
 			sorted = indexArr.map( _d => {
@@ -70,35 +72,35 @@ module.exports = class VariantViewerStore {
 
 	// cb (err) gets called twice
 	fetchInitialData (cb) {
-		var firstFetchUrl = `${ALIGNMENT_INDEX_URL}?limit=50`;
-		var secondFetchUrl = ALIGNMENT_INDEX_URL;
-		$.getJSON(firstFetchUrl, data => {
-			strainMetaData = data.strains.map( d => {
-				return {
-					name: d.display_name,
-					id: d.id,
-					href: d.link
-				};
-			});
-			visibleStrainIds = strainMetaData.map( d => { return d.id; });
-			var url = `${LOCI_SEARCH_BASE_URL}`;
-			$.getJSON(url, data => {
-				lociData = data.loci;
-				this.clusterStrains( err => {
-					if (typeof cb === "function") cb(null);
-				})
+		strainMetaData = staticStrainMetadata.strains;
+		clusteredStrainData = staticStrainMetadata.clusterData;
+		strainClusterIndexes = this.getStrainIndexes(clusteredStrainData);
+		visibleStrainIds = strainMetaData.map( d => { return d.id; });
+		var quickUrl = `${LOCI_SEARCH_BASE_URL}?limit=200`;
+		var longUrl = `${LOCI_SEARCH_BASE_URL}?limit=6500`;
+		$.getJSON(quickUrl, data => {
+			allLociData = data.loci;
+			if (typeof cb === "function") cb(null);
+			$.getJSON(longUrl, data => {
+				allLociData = data.loci;
+				if (typeof cb === "function") return cb(null);
+				return;
 			});
 		});
 	}
 
 	// cb(err, data)
 	fetchSearchResults (cb) {
+		// if blank query, just exec callback
+		if (query === "") {
+			if (typeof cb === "function") return cb(null, allLociData);
+			return;
+		}
 		var url = `${LOCI_SEARCH_BASE_URL}?query=${query}`;
 		$.getJSON(url, data => {
-			var loci = data.loci;
-			var total = data.total;
-			lociData = loci;		
-			cb(null, data);
+			filteredlociData = data.loci;		
+			if (typeof cb === "function") return cb(null, data);
+			return;
 		});
 	}
 

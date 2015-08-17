@@ -58,6 +58,7 @@ module.exports = function (data, strainMetaData) {
 var _reformatCluster = function (obj) {
 	if (!obj.left) {
 		obj.isLeaf = true;
+		obj.value.snpSequence = null;
 		return obj;
 	} else {
 		obj.isLeaf = false;
