@@ -34,7 +34,7 @@ var StrainSelector = React.createClass({
 	},
 
 	render: function () {
-		return (<div className="strain-selector" style={{ position: "relative" }}>
+		return (<div className="strain-selector" style={{ position: "relative", height: "2.4rem" }}>
 			{this._getActiveNode()}
 			<a className="button dropdown small secondary" onClick={this._toggleActive}><i className="fa fa-check-square" /> Strains</a>
 		</div>);
