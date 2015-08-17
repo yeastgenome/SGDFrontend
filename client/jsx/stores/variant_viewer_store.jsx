@@ -106,10 +106,12 @@ module.exports = class VariantViewerStore {
 
 	// cb (err)
 	clusterStrains (cb) {
-		var start = new Date().getTime();
-		var _clustered = clusterStrains(this.getLociData(), strainMetaData);
-		var end = new Date().getTime();
-		clusteredStrainData = _clustered;
+		if (query === "") {
+			clusteredStrainData = staticStrainMetadata.clusterData;
+		} else {
+			var _clustered = clusterStrains(this.getLociData(), strainMetaData);
+			clusteredStrainData = _clustered;
+		}
 		strainClusterIndexes = this.getStrainIndexes(clusteredStrainData);
 		cb(null);
 	}
