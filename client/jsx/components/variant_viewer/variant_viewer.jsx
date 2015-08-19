@@ -3,6 +3,7 @@
 
 var React = require("react");
 var Router = require("react-router");
+var d3 = require("d3");
 var _ = require("underscore");
 
 var Dendrogram = require("./dendrogram.jsx");
@@ -35,9 +36,9 @@ var VariantViewer = React.createClass({
 	},
 
 	componentDidMount: function () {
-		// this.props.store.fetchInitialData( err => {
-		// 	this.setState({ isPending: false });
-		// });
+		this.props.store.fetchInitialData( err => {
+			this.setState({ isPending: false });
+		});
 	},
 
 	_renderControls: function () {
@@ -88,7 +89,7 @@ var VariantViewer = React.createClass({
 	_renderHeatmap: function () {
 		var _heatmapData = this.props.store.getHeatmapData();
 		var _strainData = this.props.store.getHeatmapStrainData();
-		var _zoom = this.props.store.getHeatmapZoom()
+		var _zoom = this.props.store.getHeatmapZoom();
 		return <ScrollyHeatmap data={_heatmapData} strainData={_strainData} nodeSize={_zoom} />;
 	},
 
@@ -98,10 +99,19 @@ var VariantViewer = React.createClass({
 		var zoom = this.props.store.zoomHeatmap;
 		var zoomIn = e => { zoom(1); this.forceUpdate(); };
 		var zoomOut = e => { zoom(-1); this.forceUpdate(); };
+		var thumbScale = d3.scale.linear()
+			.domain([0, this.props.store.getAllLociTotal()])
+			.range([0, SCROLL_CONTAINER_HEIGHT]);
+		var totalVisibleLoci = this.props.store.getNumVisibleLoci();
+		var visibleHeight = Math.round(thumbScale(totalVisibleLoci));
+
 		return (
 			<div>
 				<div onClick={zoomIn} style={_style}><i className="fa fa-plus" /></div>
 				<div onClick={zoomOut} style={__style}><i className="fa fa-minus" /></div>
+				<div style={{ marginTop: "1rem", border: "1px solid blue", height: SCROLL_CONTAINER_HEIGHT }}>
+					<div style={{ width: "100%", height: visibleHeight, background: "blue" }} />
+				</div>
 			</div>
 		);
 	},
@@ -130,5 +140,6 @@ var VariantViewer = React.createClass({
 
 var LABEL_WIDTH = 130;
 var NODE_SIZE = 16;
+var SCROLL_CONTAINER_HEIGHT = 800;
 
 module.exports = VariantViewer;

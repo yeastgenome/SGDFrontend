@@ -6,6 +6,7 @@ var _ = require("underscore");
 var ColorScaleLegend = require("./color_scale_legend.jsx");
 
 var DEFAULT_DOM_SIDE_SIZE = 400; // height and width
+var SCROLL_CONTAINER_HEIGHT = 800;
 var FONT_SIZE = 14;
 var HEADER_HEIGHT = 120;
 var DEFAULT_NODE_SIZE = 16;
@@ -48,7 +49,7 @@ var ScrollyHeatmap = React.createClass({
 				{this._getTooltipNode()}
 				<div style={{ position: "relative", zIndex: 1 }}>
 					<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
-						<div ref="outerScroll" style={{ width: this.state.DOMWidth, height: 800, overflowY: "scroll", position: "relative", left: 0 }}>
+						<div ref="outerScroll" style={{ width: this.state.DOMWidth, height: SCROLL_CONTAINER_HEIGHT, overflowY: "scroll", position: "relative", left: 0 }}>
 							<div style={{ position: "relative", height: _scrollZoneSize }}>	
 								<canvas ref="canvas" width={_canvasWidth} height={_canvasSize} style={{ position: "absolute", left: _canvasX }}/>
 							</div>

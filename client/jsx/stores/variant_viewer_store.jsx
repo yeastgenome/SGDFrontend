@@ -11,6 +11,8 @@ var LOCI_SEARCH_BASE_URL = "/search_sequence_objects";
 // internal data
 var isApiError = false;
 var allLociData = [];
+var allLociTotal = 0;
+var totalLoci = 0;
 var filteredlociData = [];
 var clusteredStrainData = null;
 var strainClusterIndexes = null;
@@ -75,6 +77,14 @@ module.exports = class VariantViewerStore {
 
 	getHeatmapZoom () { return heatmapZoom; }
 
+	getAllLociTotal () { return allLociTotal; }
+
+	getTotal () { return totalLoci; }
+
+	getNumVisibleLoci () {
+		return Math.min(totalLoci, Math.round(SCROLL_CONTAINER_HEIGHT / heatmapZoom));
+	}
+
 	// *** fetchers, calculators ***
 
 	// cb (err) gets called twice
@@ -86,6 +96,8 @@ module.exports = class VariantViewerStore {
 		var quickUrl = `${LOCI_SEARCH_BASE_URL}?limit=200`;
 		var longUrl = `${LOCI_SEARCH_BASE_URL}?limit=6500`;
 		$.getJSON(quickUrl, data => {
+			totalLoci = data.total;
+			allLociTotal = data.total;
 			allLociData = data.loci;
 			if (typeof cb === "function") cb(null);
 			$.getJSON(longUrl, data => {
@@ -105,6 +117,7 @@ module.exports = class VariantViewerStore {
 		}
 		var url = `${LOCI_SEARCH_BASE_URL}?query=${query}`;
 		$.getJSON(url, data => {
+			totalLoci = data.total;
 			filteredlociData = data.loci;		
 			if (typeof cb === "function") return cb(null, data);
 			return;
@@ -130,7 +143,7 @@ module.exports = class VariantViewerStore {
 		// found a leaf, put in indexes and return
 		if (!clustered.children) {
 			indexes.push(clustered.value.id);
-			return indexes
+			return indexes;
 		// non-leaf children
 		} else {
 			clustered.children.forEach( d => {
@@ -141,3 +154,5 @@ module.exports = class VariantViewerStore {
 		}
 	}
 };
+
+var SCROLL_CONTAINER_HEIGHT = 800;
