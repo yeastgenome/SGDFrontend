@@ -35,9 +35,9 @@ var VariantViewer = React.createClass({
 	},
 
 	componentDidMount: function () {
-		this.props.store.fetchInitialData( err => {
-			this.setState({ isPending: false });
-		});
+		// this.props.store.fetchInitialData( err => {
+		// 	this.setState({ isPending: false });
+		// });
 	},
 
 	_renderControls: function () {
@@ -62,7 +62,7 @@ var VariantViewer = React.createClass({
 	},
 
 	_renderViz: function () {
-		if (this.state.isPending) return <p>Loading...</p>;
+		if (this.state.isPending) return <div className="sgd-loader-container"><div className="sgd-loader" /></div>;
 		return (
 			<div>
 				{this._renderDendro()}
