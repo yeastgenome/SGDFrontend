@@ -457,24 +457,16 @@ class YeastgenomeFrontend(FrontendInterface):
                     query_type: {
                         '_all': query
                     }
-                },
-                'highlight' : {
-                    'fields' : {
-                        'go_terms' : {}
-                    }
                 }
             }
         res = es.search(index='sequence_objects', body=search_body, size=limit, from_=offset)
         simple_hits = []
         for hit in res['hits']['hits']:
-            highlight = None
-            if 'highlight' in hit.keys():
-                highlight = hit['highlight']
             obj = {
                 'sgdid': hit['_source']['sgdid'],
                 'name': hit['_source']['name'],
+                'format_name': hit['_source']['format_name'],
                 'dna_scores': hit['_source']['dna_scores'],
-                'highlight': highlight,
                 'snp_seqs': hit['_source']['snp_seqs']
             }
             simple_hits.append(obj)
