@@ -3,8 +3,6 @@ var d3 = require("d3");
 var React = require("react");
 var _ = require("underscore");
 
-var ColorScaleLegend = require("./color_scale_legend.jsx");
-
 var DEFAULT_DOM_SIDE_SIZE = 400; // height and width
 var SCROLL_CONTAINER_HEIGHT = 800;
 var FONT_SIZE = 14;
@@ -57,7 +55,6 @@ var ScrollyHeatmap = React.createClass({
 						</div>
 					</div>
 				</div>
-				<ColorScaleLegend />
 			</div>
 		);
 	},
@@ -229,10 +226,11 @@ var ScrollyHeatmap = React.createClass({
 		// get data that fits into canvas
 		var chunkOfData = this._getChunkedData();
 
+		ctx.textAlign = "right";
 		chunkOfData.forEach( (d, i) => {
+			// label
 			ctx.fillStyle = "black";
-			ctx.textAlign = "left";
-			ctx.fillText(d.name, 0, (i + 1) * this.props.nodeSize - 3);
+			ctx.fillText(d.name, LABEL_WIDTH - 5, (i + 1) * this.props.nodeSize - 3);
 
 			d.data.forEach( (_d, _i) => {
 				// get color and draw rect

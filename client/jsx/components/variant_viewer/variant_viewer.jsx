@@ -6,6 +6,7 @@ var Router = require("react-router");
 var d3 = require("d3");
 var _ = require("underscore");
 
+var ColorScaleLegend = require("./color_scale_legend.jsx");
 var Dendrogram = require("./dendrogram.jsx");
 var RadioSelector = require("../widgets/radio_selector.jsx");
 var SearchBar = require("../widgets/search_bar.jsx");
@@ -70,6 +71,9 @@ var VariantViewer = React.createClass({
 				<div style={{ display: "flex", justifyContent: "flex-start" }}>
 					{this._renderHeatmap()}
 					{this._renderHeatmapNav()}
+					<div style={{ marginLeft: "auto" }}>
+						<ColorScaleLegend />
+					</div>
 				</div>
 			</div>
 		);
@@ -78,10 +82,11 @@ var VariantViewer = React.createClass({
 	_renderDendro: function () {
 		var _data = this.props.store.getClusteredStrainData();
 		var _left = this.state.labelsVisible ? LABEL_WIDTH : 0;
-		var _width = this.props.store.getHeatmapStrainData().length * NODE_SIZE;
+		var _width = this.props.store.getHeatmapStrainData().length * (NODE_SIZE + 0.5);
+		var _height = 150;
 		return (
-			<div style={{ marginLeft: _left }}>
-				<Dendrogram data={_data} width={_width} height={100} />
+			<div style={{ marginLeft: _left, height: _height, marginBottom: 5 }}>
+				<Dendrogram data={_data} width={_width} height={_height} />
 			</div>
 		);
 	},

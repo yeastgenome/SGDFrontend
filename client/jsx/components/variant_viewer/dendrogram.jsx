@@ -23,7 +23,7 @@ var Dendrogram = React.createClass({
 
 	render: function () {
 		return (
-			<svg width={this.props.width} height={this.props.height + LABEL_HEIGHT} ref="svg">
+			<svg width={this.props.width} height={this.props.height} ref="svg">
 			</svg>
 		);
 	},
@@ -34,7 +34,7 @@ var Dendrogram = React.createClass({
 	_drawSvg: function () {
 		var data = this.props.data;
 		var width = this.props.width;
-		var height = this.props.height;
+		var height = this.props.height - LABEL_HEIGHT;
 
 		// d3 fu
 		var dendoFn = d3.layout.cluster()
