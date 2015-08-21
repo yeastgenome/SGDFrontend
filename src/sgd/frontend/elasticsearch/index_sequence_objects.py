@@ -5,7 +5,7 @@ from random import shuffle
 import requests
 es = Elasticsearch()
 
-INDEX_NAME = 'sequence_objects3'
+INDEX_NAME = 'sequence_objects4'
 DOC_TYPE = 'sequence_object'
 BASE_URL = 'http://sgd-qa.stanford.edu'
 ALIGNMENT_URL = BASE_URL + '/webservice/alignments'
@@ -77,6 +77,15 @@ def fetch_and_index_locus(locus, name, process_index):
     dna_seqs = alignment_response['aligned_dna_sequences']
     snp_seqs = [aligned_sequence_to_snp_sequence(seq, alignment_response['variant_data_dna']) for seq in dna_seqs]
 
+    # get sequence details for chromStart, chromEnd, contig, and introns
+    # TEMP, just chromStart and chromEnd
+    seq_details_url = LOCUS_BASE_URL + locus['sgdid'] + '/sequence_details'
+    seq_details_response = requests.get(seq_details_url).json()
+    ref_obj = filter(lambda x: x['strain']['status'] == 'Reference', seq_details_response['genomic_dna'])[0]
+    chrom_start = ref_obj['start']
+    chrom_end = ref_obj['end']
+    contig_name = ref_obj['contig']['format_name']
+
     # TEMP don't do this, yet
     # # get domains
     # domain_url = LOCUS_BASE_URL + locus['sgdid'] + '/protein_domain_details'
@@ -85,13 +94,17 @@ def fetch_and_index_locus(locus, name, process_index):
     # format obj and index
     body = {
       'sgdid': locus['sgdid'],
-      'name': name,
+      'name': locus['display_name'],
+      'format_name': locus['format_name'],
       'category': 'locus',
       'url': locus['link'],
       'description': locus['headline'],
       'go_terms': go_terms,
       'dna_scores': locus['dna_scores'],
-      'snp_seqs': snp_seqs
+      'snp_seqs': snp_seqs,
+      'chrom_start': chrom_start,
+      'chrom_end': chrom_end,
+      'contig_name': contig_name
     }
     es.index(index=INDEX_NAME, doc_type=DOC_TYPE, id=locus['sgdid'], body=body)
 
@@ -109,8 +122,8 @@ def index_set_of_loci(loci, process_index):
 
             # see if exists
             exists = es.exists(index=INDEX_NAME, doc_type=DOC_TYPE, id=locus['sgdid'])
-            if not exists:
-                fetch_and_index_locus(locus, name, process_index)
+            # if not exists:
+            fetch_and_index_locus(locus, name, process_index)
 
     except:
         print 'Unexpected Error'

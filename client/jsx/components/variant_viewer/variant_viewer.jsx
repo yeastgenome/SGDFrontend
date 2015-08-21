@@ -141,7 +141,7 @@ var VariantViewer = React.createClass({
 	}
 });
 
-var LABEL_WIDTH = 130;
+var LABEL_WIDTH = 100;
 var NODE_SIZE = 16;
 var SCROLL_CONTAINER_HEIGHT = 800;
 var MIN_PENDING_TIME = 250; // millis before loading state invoked
