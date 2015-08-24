@@ -301,11 +301,14 @@ function draw_phosphodata() {
         var uniq_indexes = {};
         for (var i=0; i < phosphodata.length; i++) {
             var _index = phosphodata[i].site_index;
-            data.push(phosphodata[i]);
-            if (uniq_indexes[_index]) continue;
-            uniq_indexes[_index] = phosphodata[i];
             var index = relative_to_html(phosphodata[i]['site_index']-1, num_digits);
             if(old_residues.substring(index, index+1) == phosphodata[i]['site_residue']) {
+                data.push(phosphodata[i]);
+            }
+            if (uniq_indexes[_index]) continue;
+            uniq_indexes[_index] = phosphodata[i];
+            if(old_residues.substring(index, index+1) == phosphodata[i]['site_residue']) {
+                
                 new_residues = new_residues + old_residues.substring(start, index) +
                     "<span style='color:blue'>" +
                     old_residues.substring(index, index+1) +
