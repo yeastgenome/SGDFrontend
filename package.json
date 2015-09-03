@@ -39,7 +39,7 @@
     "d3": "~3.4.11",
     "fastclick": "~1.0.3",
     "bootstrap": "~3.3.1",
-    "sgd_visualization": "^0.0.1",
+    "sgd_visualization": "file:../sgd_visualization",
     "clusterfck": "~0.6.0"
   }
 }

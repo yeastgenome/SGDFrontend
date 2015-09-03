@@ -3,6 +3,7 @@
 
 var React = require("react");
 var Router = require("react-router");
+var { RouteHandler } = Router;
 var d3 = require("d3");
 var _ = require("underscore");
 
@@ -15,7 +16,12 @@ var StrainSelector = require("./strain_selector.jsx");
 
 var VariantViewer = React.createClass({
 	propTypes: {
-		store: React.PropTypes.object.isRequired		
+		store: React.PropTypes.object.isRequired,
+		visibleLocusId: React.PropTypes.string	
+	},
+
+	getDefaultProps: function () {
+		return { visibleLocusId: null };
 	},
 
 	getInitialState: function () {
@@ -28,6 +34,7 @@ var VariantViewer = React.createClass({
 	render: function () {
 		return (
 			<div>
+				<RouteHandler />
 				<h1>Variant Viewer</h1>
 				<hr />
 				{this._renderControls()}
@@ -48,19 +55,27 @@ var VariantViewer = React.createClass({
 			{ name: "Protein", key: "protein" }
 		];
 		return (
-			<div className="row">
-				<div className="columns small-12 large-6">
-					{this._renderSearchBar()}
-				</div>
-				<div className="columns small-12 large-6" style={{ display: "flex", justifyContent: "flex-start" }}>
-					<StrainSelector data={[]}/>
-					<div style={{ marginTop: "0.4rem", marginLeft: "1.8rem", minWidth: "13rem" }}>
-						<RadioSelector elements={radioElements} initialActiveElementKey="dna" />
+			<div>
+				{this._renderLocus()}
+				<div className="row">
+					<div className="columns small-12 large-6">
+						{this._renderSearchBar()}
 					</div>
-					<a className="button dropdown secondary small" style={{ height: "2.4rem", marginLeft: "auto" }}><i className="fa fa-cog" /></a>
+					<div className="columns small-12 large-6" style={{ display: "flex", justifyContent: "flex-start" }}>
+						<StrainSelector data={[]}/>
+						<div style={{ marginTop: "0.4rem", marginLeft: "1.8rem", minWidth: "13rem" }}>
+							<RadioSelector elements={radioElements} initialActiveElementKey="dna" />
+						</div>
+						<a className="button dropdown secondary small" style={{ height: "2.4rem", marginLeft: "auto" }}><i className="fa fa-cog" /></a>
+					</div>
 				</div>
 			</div>
 		);
+	},
+
+	_renderLocus: function () {
+		if (!this.props.visibleLocusId) return null;
+		return <h1>{this.props.visibleLocusId}</h1>;
 	},
 
 	_renderViz: function () {

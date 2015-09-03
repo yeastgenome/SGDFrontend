@@ -11,6 +11,10 @@ var VariantViewerStore = require("../stores/variant_viewer_store.jsx");
 var Router = require("react-router");
 var { Route, DefaultRoute } = Router;
 
+var Thing = React.createClass({
+	render: function () { return <h1 style={{ position: "absolute", top: 0 }}>DA THING</h1>; }
+});
+
 var view = {};
 view.render = function () {
 	// blank react component to make no drawer
@@ -21,11 +25,9 @@ view.render = function () {
 			<DefaultRoute
 				name="variantViewerIndex" handler={BlankComponent}
 		    />
-		    {/*}
 		    <Route
-		    	name="shallowDrawer" path="/:locusId" handler={Drawer}
+		    	name="shallowDrawer" path="/:locusId" handler={Thing}
 		    />
-		    {*/}
 		</Route>
 	);
 
