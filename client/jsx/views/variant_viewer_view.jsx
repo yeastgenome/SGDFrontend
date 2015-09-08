@@ -4,16 +4,12 @@
 var React = require("react");
 var $ = require("jquery");
 var VariantViewer = require("../components/variant_viewer/variant_viewer.jsx");
-// var Drawer = require("../components/variant_map/drawer.jsx");
+var Drawer = require("../components/variant_viewer/drawer.jsx");
 var VariantViewerStore = require("../stores/variant_viewer_store.jsx");
 
 // router stuff
 var Router = require("react-router");
 var { Route, DefaultRoute } = Router;
-
-var Thing = React.createClass({
-	render: function () { return <h1 style={{ position: "absolute", top: 0 }}>DA THING</h1>; }
-});
 
 var view = {};
 view.render = function () {
@@ -26,7 +22,7 @@ view.render = function () {
 				name="variantViewerIndex" handler={BlankComponent}
 		    />
 		    <Route
-		    	name="shallowDrawer" path="/:locusId" handler={Thing}
+		    	name="shallowDrawer" path="/:locusId" handler={Drawer}
 		    />
 		</Route>
 	);
