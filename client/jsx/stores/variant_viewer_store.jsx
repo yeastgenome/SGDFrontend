@@ -7,6 +7,7 @@ var clusterStrains = require("./cluster_strains.jsx");
 var staticStrainMetadata = require("./strain_metadata");
 
 var LOCI_SEARCH_BASE_URL = "/search_sequence_objects";
+var LOCUS_SHOW_BASE_URL = "/get_sequence_object";
 
 // internal data
 var isApiError = false;
@@ -121,6 +122,14 @@ module.exports = class VariantViewerStore {
 			filteredlociData = data.loci;		
 			if (typeof cb === "function") return cb(null, data);
 			return;
+		});
+	}
+
+	// cb(err, data)
+	fetchLocusData (id, cb) {
+		var url = `${LOCUS_SHOW_BASE_URL}/${id}`;
+		$.getJSON(url, data => {
+			return cb(null, data);
 		});
 	}
 
