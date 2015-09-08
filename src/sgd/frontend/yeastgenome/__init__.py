@@ -478,6 +478,30 @@ class YeastgenomeFrontend(FrontendInterface):
 
         return Response(body=json.dumps(formatted_response), content_type='application/json')
 
+    # get individual feature
+    def get_sequence_object(self, locus_repr):
+        id = locus_repr
+
+        search_body = {
+            'query': {
+                'filtered': {
+                    'filter': {
+                        'bool': {
+                            'must': [
+                                {
+                                    'term': {
+                                        'term.raw': query
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+        res = es.search(index='sequence_objects3', body=search_body)
+        return Response(body=json.dumps(res), content_type='application/json')
+
     def backend(self, url_repr, args=None):
         if self.backend_url == 'backendless':
             return json.dumps(get_data(url_repr))
