@@ -90,6 +90,7 @@ def fetch_and_index_locus(locus, name, process_index):
     # # get domains
     # domain_url = LOCUS_BASE_URL + locus['sgdid'] + '/protein_domain_details'
     # domain_response = requests.get(domain_url).json()
+    # formatted_domains = format_domains(domain_response)
 
     # format obj and index
     body = {
@@ -107,6 +108,10 @@ def fetch_and_index_locus(locus, name, process_index):
       'contig_name': contig_name
     }
     es.index(index=INDEX_NAME, doc_type=DOC_TYPE, id=locus['sgdid'], body=body)
+
+# translate from SGD API domain format to format expected by SGD viz
+def format_domains(raw_domain_data):
+    return []
 
 def index_set_of_loci(loci, process_index):
     shuffle(loci)
