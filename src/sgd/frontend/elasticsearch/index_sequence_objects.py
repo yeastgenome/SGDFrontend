@@ -21,9 +21,10 @@ RUNSCOPE_TRIGGER_URL = ''
 
 def setup_index():
 	exists = es.indices.exists(INDEX_NAME)
-	if RESET_INDEX:
+	if RESET_INDEX and not exists:
 		es.indices.delete(INDEX_NAME)
-	if not exists:
+		es.indices.create(INDEX_NAME)
+	elif not exists:
 		es.indices.create(INDEX_NAME)
 
 def add_go_term_from_obj(go_overview_obj, key, lst):
@@ -114,8 +115,8 @@ def fetch_and_index_locus(locus, name, process_index):
 
     # get domains
     domain_url = LOCUS_BASE_URL + locus['sgdid'] + '/protein_domain_details'
-    # domain_response = requests.get(domain_url).json()
-    formatted_domains = format_domains([False])
+    domain_response = requests.get(domain_url).json()
+    formatted_domains = format_domains(domain_response)
 
     # format obj and index
     body = {
@@ -134,7 +135,7 @@ def fetch_and_index_locus(locus, name, process_index):
       'protein_length': alignment_response['protein_length'],
       'variant_data_dna': alignment_response['variant_data_dna'],
       'variant_data_protein': alignment_response['variant_data_protein'],
-      'domains': formatted_domains,
+      'protein_domains': formatted_domains,
       'snp_seqs': snp_seqs,
       'chrom_start': chrom_start,
       'chrom_end': chrom_end,
@@ -160,7 +161,18 @@ def format_introns(raw_sequence_data):
 
 # translate from SGD API domain format to format expected by SGD viz
 def format_domains(raw_domain_data):
-    return raw_domain_data
+    formatted = []
+    for domain in raw_domain_data:
+        if domain['strain']['display_name'] == 'S288C':
+            obj = {
+                'name': domain['domain']['display_name'],
+                'id': None,
+                'sourceName': domain['source']['display_name'],
+                'start': domain['start'],
+                'end': domain['end']
+            }
+            formatted.append(obj)
+    return formatted
 
 # index RAD54
 def index_test_locus():
