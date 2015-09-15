@@ -7,21 +7,24 @@ es = Elasticsearch()
 
 INDEX_NAME = 'sequence_objects4'
 DOC_TYPE = 'sequence_object'
-BASE_URL = 'http://sgd-qa.stanford.edu'
+BASE_URL = 'http://yeastgenome.org'
 ALIGNMENT_URL = BASE_URL + '/webservice/alignments'
 LOCUS_BASE_URL = BASE_URL + '/webservice/locus/'
 FILTERED_GO_TERMS = ['biological process', 'cellular component', 'molecular function']
 NUM_THREADS = 5
 
+RESET_INDEX = False
+
 # TEMP, trigger runscope test, should be ENV var with default to False
 TEST = True
 RUNSCOPE_TRIGGER_URL = ''
 
-def reset_index():
+def setup_index():
 	exists = es.indices.exists(INDEX_NAME)
-	if exists:
+	if RESET_INDEX:
 		es.indices.delete(INDEX_NAME)
-	es.indices.create(INDEX_NAME)
+	if not exists:
+		es.indices.create(INDEX_NAME)
 
 def add_go_term_from_obj(go_overview_obj, key, lst):
 	for term in go_overview_obj[key]:
@@ -64,7 +67,10 @@ def fetch_and_index_locus(locus, name, process_index):
     # fetch basic data
     print 'fetching ' + name + ' on thread ' + str(process_index)
     basic_url = LOCUS_BASE_URL + locus['sgdid'] + '/overview'
-    basic_response = requests.get(basic_url).json()
+    # TEMP use local elasticsearch
+    # requests.get(basic_url).json()
+    temp_url = 'http://localhost:9200/backend_objects/backend_object/' + locus['sgdid']
+    basic_response = requests.get(temp_url).json()['_source']['src_data']
 
     # add raw GO term (strings) to indexed obj
     go_terms = []
@@ -76,6 +82,7 @@ def fetch_and_index_locus(locus, name, process_index):
     go_terms = add_go_term_from_obj(go_overview, 'manual_molecular_function_terms', go_terms)
     go_terms = add_go_term_from_obj(go_overview, 'htp_molecular_function_terms', go_terms)
 
+    print 'fetching alignments' 
     alignment_show_url = ALIGNMENT_URL + '/' + locus['sgdid']
     alignment_response = requests.get(alignment_show_url).json()
     dna_seqs = alignment_response['aligned_dna_sequences']
@@ -83,6 +90,7 @@ def fetch_and_index_locus(locus, name, process_index):
 
     # get sequence details for chromStart, chromEnd, contig, and introns
     # TEMP, just chromStart and chromEnd
+    print 'fetching sequence'    
     seq_details_url = LOCUS_BASE_URL + locus['sgdid'] + '/sequence_details'
     seq_details_response = requests.get(seq_details_url).json()
     ref_obj = filter(lambda x: x['strain']['status'] == 'Reference', seq_details_response['genomic_dna'])[0]
@@ -94,18 +102,26 @@ def fetch_and_index_locus(locus, name, process_index):
     # # get domains
     # domain_url = LOCUS_BASE_URL + locus['sgdid'] + '/protein_domain_details'
     # domain_response = requests.get(domain_url).json()
-    # formatted_domains = format_domains(domain_response)
+    formatted_domains = format_domains([False])
 
     # format obj and index
     body = {
       'sgdid': locus['sgdid'],
-      'name': locus['display_name'],
-      'format_name': locus['format_name'],
+      'name': name,
+      'format_name': basic_response['format_name'],
       'category': 'locus',
-      'url': locus['link'],
-      'description': locus['headline'],
+      'url': basic_response['link'],
+      'description': basic_response['headline'],
       'go_terms': go_terms,
-      'dna_scores': locus['dna_scores'],
+      # 'dna_scores': locus['dna_scores'],
+      # 'protein_scores': locus['protein_scores'],
+      'aligned_dna_sequences': alignment_response['aligned_dna_sequences'],
+      'aligned_protein_sequences': alignment_response['aligned_protein_sequences'],
+      'dna_length': alignment_response['dna_length'],
+      'protein_length': alignment_response['protein_length'],
+      'variant_data_dna': alignment_response['variant_data_dna'],
+      'variant_data_protein': alignment_response['variant_data_protein'],
+      'domains': formatted_domains,
       'snp_seqs': snp_seqs,
       'chrom_start': chrom_start,
       'chrom_end': chrom_end,
@@ -115,14 +131,14 @@ def fetch_and_index_locus(locus, name, process_index):
 
 # translate from SGD API domain format to format expected by SGD viz
 def format_domains(raw_domain_data):
-    return []
+    return raw_domain_data
 
 # index RAD54
 def index_test_locus():
     example_locus = {
         'sgdid': 'S000003131'
     }
-    fetch_and_index_locus(locus, 'RAD54', 0)
+    fetch_and_index_locus(example_locus, 'RAD54', 0)
 
 def index_set_of_loci(loci, process_index):
     shuffle(loci)
@@ -182,8 +198,9 @@ def index_loci():
                 # When none are left then loop will end
 
 def main():
-    # reset_index()
+    setup_index()
     # index_loci()
+    index_test_locus()
 
     if TEST:
         requests.get(RUNSCOPE_TRIGGER_URL)
