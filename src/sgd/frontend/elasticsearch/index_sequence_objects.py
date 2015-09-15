@@ -16,7 +16,7 @@ NUM_THREADS = 5
 RESET_INDEX = False
 
 # TEMP, trigger runscope test, should be ENV var with default to False
-TEST = True
+TEST = False
 RUNSCOPE_TRIGGER_URL = ''
 
 def setup_index():
@@ -91,8 +91,26 @@ def fetch_and_index_locus(locus, name, process_index):
     # get sequence details for chromStart, chromEnd, contig, and introns
     # TEMP, just chromStart and chromEnd
     print 'fetching sequence'    
-    seq_details_url = LOCUS_BASE_URL + locus['sgdid'] + '/sequence_details'
-    seq_details_response = requests.get(seq_details_url).json()
+    # seq_details_url = LOCUS_BASE_URL + locus['sgdid'] + '/sequence_details'
+    seq_details_url = '/locus/' +  locus['sgdid'] + '/sequence_details'
+    # seq_details_response = requests.get(seq_details_url).json()
+    obj = {
+        'query': {
+            'filtered': {
+                'filter': {
+                    'term': {
+                        'url': seq_details_url
+                    }
+                }
+            }
+        }
+    }
+    res = es.search(index='backend_objects', doc_type='backend_object', body=obj)
+    if res['hits']['total'] == 1:
+        seq_details_response = res['hits']['hits'][0]['_source']['src_data']
+    else:
+        seq_details_url = LOCUS_BASE_URL + locus['sgdid'] + '/sequence_details'
+        seq_details_response = requests.get(seq_details_url).json()
     ref_obj = filter(lambda x: x['strain']['status'] == 'Reference', seq_details_response['genomic_dna'])[0]
     chrom_start = ref_obj['start']
     chrom_end = ref_obj['end']
@@ -119,8 +137,8 @@ def fetch_and_index_locus(locus, name, process_index):
       'aligned_protein_sequences': alignment_response['aligned_protein_sequences'],
       'dna_length': alignment_response['dna_length'],
       'protein_length': alignment_response['protein_length'],
-      'variant_data_dna': alignment_response['variant_data_dna'],
-      'variant_data_protein': alignment_response['variant_data_protein'],
+      # 'variant_data_dna': alignment_response['variant_data_dna'],
+      # 'variant_data_protein': alignment_response['variant_data_protein'],
       'domains': formatted_domains,
       'snp_seqs': snp_seqs,
       'chrom_start': chrom_start,
