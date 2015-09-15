@@ -5,7 +5,7 @@ from random import shuffle
 import requests
 es = Elasticsearch()
 
-INDEX_NAME = 'sequence_objects4'
+INDEX_NAME = 'sequence_objects'
 DOC_TYPE = 'sequence_object'
 BASE_URL = 'http://yeastgenome.org'
 ALIGNMENT_URL = BASE_URL + '/webservice/alignments'
@@ -188,17 +188,14 @@ def index_set_of_loci(loci, process_index):
         # index loci
         print 'indexing list of ' + str(len(loci)) + ' loci'
         for locus in loci:
-            # set name
-            if locus['display_name'] == locus['format_name']:
-            	name = locus['display_name']
-            else:
-            	name = str(locus['display_name']) + ' / ' + str(locus['format_name'])
-
             # see if exists
             exists = es.exists(index=INDEX_NAME, doc_type=DOC_TYPE, id=locus['sgdid'])
             # if not exists:
-            fetch_and_index_locus(locus, name, process_index)
-
+            try:
+                fetch_and_index_locus(locus, locus['display_name'], process_index)
+            except:
+                print 'error fetching ' + locus['display_name']
+                continue
     except:
         print 'Unexpected Error'
         raise
@@ -241,8 +238,8 @@ def index_loci():
 
 def main():
     setup_index()
-    # index_loci()
-    index_test_locus()
+    index_loci()
+    # index_test_locus()
 
     if TEST:
         requests.get(RUNSCOPE_TRIGGER_URL)
