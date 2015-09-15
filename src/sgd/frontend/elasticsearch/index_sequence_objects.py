@@ -136,9 +136,9 @@ def format_domains(raw_domain_data):
 # index RAD54
 def index_test_locus():
     example_locus = {
-        'sgdid': 'S000003131'
+        'sgdid': 'S000001855'
     }
-    fetch_and_index_locus(example_locus, 'RAD54', 0)
+    fetch_and_index_locus(example_locus, 'ACT1', 0)
 
 def index_set_of_loci(loci, process_index):
     shuffle(loci)
