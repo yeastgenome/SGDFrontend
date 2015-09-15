@@ -13,6 +13,10 @@ LOCUS_BASE_URL = BASE_URL + '/webservice/locus/'
 FILTERED_GO_TERMS = ['biological process', 'cellular component', 'molecular function']
 NUM_THREADS = 5
 
+# TEMP, trigger runscope test, should be ENV var with default to False
+TEST = True
+RUNSCOPE_TRIGGER_URL = ''
+
 def reset_index():
 	exists = es.indices.exists(INDEX_NAME)
 	if exists:
@@ -113,6 +117,13 @@ def fetch_and_index_locus(locus, name, process_index):
 def format_domains(raw_domain_data):
     return []
 
+# index RAD54
+def index_test_locus():
+    example_locus = {
+        'sgdid': 'S000003131'
+    }
+    fetch_and_index_locus(locus, 'RAD54', 0)
+
 def index_set_of_loci(loci, process_index):
     shuffle(loci)
     try:
@@ -172,6 +183,8 @@ def index_loci():
 
 def main():
     # reset_index()
-    index_loci()
+    # index_loci()
 
+    if TEST:
+        requests.get(RUNSCOPE_TRIGGER_URL)
 main()
