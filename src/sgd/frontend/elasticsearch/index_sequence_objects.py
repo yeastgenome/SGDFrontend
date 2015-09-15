@@ -82,18 +82,13 @@ def fetch_and_index_locus(locus, name, process_index):
     go_terms = add_go_term_from_obj(go_overview, 'manual_molecular_function_terms', go_terms)
     go_terms = add_go_term_from_obj(go_overview, 'htp_molecular_function_terms', go_terms)
 
-    print 'fetching alignments' 
     alignment_show_url = ALIGNMENT_URL + '/' + locus['sgdid']
     alignment_response = requests.get(alignment_show_url).json()
     dna_seqs = alignment_response['aligned_dna_sequences']
     snp_seqs = [aligned_sequence_to_snp_sequence(seq, alignment_response['variant_data_dna']) for seq in dna_seqs]
 
     # get sequence details for chromStart, chromEnd, contig, and introns
-    # TEMP, just chromStart and chromEnd
-    print 'fetching sequence'    
-    # seq_details_url = LOCUS_BASE_URL + locus['sgdid'] + '/sequence_details'
     seq_details_url = '/locus/' +  locus['sgdid'] + '/sequence_details'
-    # seq_details_response = requests.get(seq_details_url).json()
     obj = {
         'query': {
             'filtered': {
@@ -115,10 +110,10 @@ def fetch_and_index_locus(locus, name, process_index):
     chrom_start = ref_obj['start']
     chrom_end = ref_obj['end']
     contig_name = ref_obj['contig']['format_name']
+    intron_data = format_introns(seq_details_response)
 
-    # TEMP don't do this, yet
-    # # get domains
-    # domain_url = LOCUS_BASE_URL + locus['sgdid'] + '/protein_domain_details'
+    # get domains
+    domain_url = LOCUS_BASE_URL + locus['sgdid'] + '/protein_domain_details'
     # domain_response = requests.get(domain_url).json()
     formatted_domains = format_domains([False])
 
@@ -137,15 +132,31 @@ def fetch_and_index_locus(locus, name, process_index):
       'aligned_protein_sequences': alignment_response['aligned_protein_sequences'],
       'dna_length': alignment_response['dna_length'],
       'protein_length': alignment_response['protein_length'],
-      # 'variant_data_dna': alignment_response['variant_data_dna'],
-      # 'variant_data_protein': alignment_response['variant_data_protein'],
+      'variant_data_dna': alignment_response['variant_data_dna'],
+      'variant_data_protein': alignment_response['variant_data_protein'],
       'domains': formatted_domains,
       'snp_seqs': snp_seqs,
       'chrom_start': chrom_start,
       'chrom_end': chrom_end,
-      'contig_name': contig_name
+      'contig_name': contig_name,
+      'block_starts': intron_data['block_starts'],
+      'block_sizes': intron_data['block_sizes']
     }
     es.index(index=INDEX_NAME, doc_type=DOC_TYPE, id=locus['sgdid'], body=body)
+
+def format_introns(raw_sequence_data):
+    _block_starts = []
+    _block_sizes = []
+    tags = raw_sequence_data['genomic_dna'][0]['tags']
+    for tag in tags:
+        if tag['format_name'] == 'CDS':
+            _block_starts.append(tag['relative_start'] - 1)
+            _block_sizes.append(tag['relative_end'] - tag['relative_start'] + 1)
+    obj = {
+        'block_starts': _block_starts,
+        'block_sizes': _block_sizes
+    }
+    return obj
 
 # translate from SGD API domain format to format expected by SGD viz
 def format_domains(raw_domain_data):
