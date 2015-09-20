@@ -22,8 +22,15 @@ module.exports = React.createClass({
 		}
 	},
 
+	// to not depend on _rootNodeID
+	getInitialState: function () {
+		var _fakeId = Math.round((Math.random() * 100)).toString() + "." + Math.round((Math.random() * 100)).toString();
+		return { fakeId: _fakeId };
+	},
+
 	render: function () {
 		var headerRows = this._getHeaderRows();
+		console.log(this.state.fakeId)
 		var bodyRows = this._getBodyRows();
 
 		return (
@@ -198,17 +205,18 @@ module.exports = React.createClass({
 
 	_getTableOptions: function () {
 	    var options = this.props.pluginOptions;
+	    var id = this.state.fakeId;
 
 	    if ('oLanguage' in options) {
 	        if(!('sSearch' in options['oLanguage'])) {
-	            options['oLanguage']['sSearch'] = `<a href="#" data-dropdown="table-help${this._rootNodeID.split(".").join("")}" data-options="align:left"><i class="fa fa-question-circle"></i></a><div id="table-help${this._rootNodeID.split(".").join("")}" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37". To remove the filter, simply delete the text from the box. </p></div>`;
+	            options['oLanguage']['sSearch'] = `<a href="#" data-dropdown="table-help${id.split(".").join("")}" data-options="align:left"><i class="fa fa-question-circle"></i></a><div id="table-help${id.split(".").join("")}" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37". To remove the filter, simply delete the text from the box. </p></div>`;
 	        }
 	        else {
-	            options['oLanguage']['sSearch'] = `<a href="#" data-dropdown="table-help${this._rootNodeID.split(".").join("")}" data-options="align:left"><i class="fa fa-question-circle"></i></a><div id="table-help${this._rootNodeID.split(".").join("")}" class="f-dropdown content medium" data-dropdown-content><p>' + options['oLanguage']['sSearch'] + '</p></div>`;
+	            options['oLanguage']['sSearch'] = `<a href="#" data-dropdown="table-help${id.split(".").join("")}" data-options="align:left"><i class="fa fa-question-circle"></i></a><div id="table-help${id.split(".").join("")}" class="f-dropdown content medium" data-dropdown-content><p>' + options['oLanguage']['sSearch'] + '</p></div>`;
 	        }
 	    }
 	    else {
-	        options['oLanguage'] = {'sSearch': `<a href="#" data-dropdown="table-help${this._rootNodeID.split(".").join("")}" data-options="align:left"><i class="fa fa-question-circle"></i></a><div id="table-help${this._rootNodeID.split(".").join("")}" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37". To remove the filter, simply delete the text from the box.</p></div>`
+	        options['oLanguage'] = {'sSearch': `<a href="#" data-dropdown="table-help${id.split(".").join("")}" data-options="align:left"><i class="fa fa-question-circle"></i></a><div id="table-help${id.split(".").join("")}" class="f-dropdown content medium" data-dropdown-content><p>Type a keyword (examples: “BAS1”, “zinc”) into this box to filter for those rows within the table that contain the keyword. Type in more than one keyword to find rows containing all keywords: for instance, “BAS1 37” returns rows that contain both "BAS1" and "37". To remove the filter, simply delete the text from the box.</p></div>`
 	        };
 	    }
 	    if('sDom' in options) {
