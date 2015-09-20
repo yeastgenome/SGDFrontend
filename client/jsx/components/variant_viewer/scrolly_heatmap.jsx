@@ -38,15 +38,17 @@ var ScrollyHeatmap = React.createClass({
 			DOMWidth: DEFAULT_DOM_SIDE_SIZE,
 			DOMHeight: DEFAULT_DOM_SIDE_SIZE,
 			mouseOverId: null,
-			tooltipVisibile: false
+			tooltipVisibile: false,
+			canvasRatio: 1
 		};
 	},
 
 	render: function () {
+		var canvasRatio = this.state.canvasRatio;
 		var _scrollZoneSize = this._getScrollSize();
 		var _canvasX = this._getCanvasX();
-		var _canvasWidth = this._getXScale().range()[1] + SCROLLBAR_HEIGHT + LABEL_WIDTH;
-		var _canvasSize = this._getCanvasSize();
+		var _canvasWidth = (this._getXScale().range()[1] + SCROLLBAR_HEIGHT + LABEL_WIDTH) * canvasRatio;
+		var _canvasSize = this._getCanvasSize() * canvasRatio;
 
 		return (
 			<div onMouseLeave={this._onMouseLeave} style={{ width: _canvasWidth }}>
@@ -55,7 +57,7 @@ var ScrollyHeatmap = React.createClass({
 					<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
 						<div ref="outerScroll" style={{ width: this.state.DOMWidth, height: SCROLL_CONTAINER_HEIGHT, overflowY: "scroll", position: "relative", left: 0 }}>
 							<div style={{ position: "relative", height: _scrollZoneSize }}>	
-								<canvas ref="canvas" width={_canvasWidth} height={_canvasSize} style={{ position: "absolute", left: _canvasX }}/>
+								<canvas ref="canvas" width={_canvasWidth} height={_canvasSize} style={{ position: "absolute", left: _canvasX, width: _canvasWidth / canvasRatio }}/>
 							</div>
 							{this._renderOverlayNode()}
 						</div>
@@ -68,13 +70,31 @@ var ScrollyHeatmap = React.createClass({
 	componentDidMount: function () {
 		this._calculateWidth();
 		this.refs.outerScroll.getDOMNode().onscroll = this._onScroll;
-		this._drawCanvas();
+		this._updateCanvasRatio( () => {
+			this._drawCanvas();
+		});
 	},
 
 	componentDidUpdate: function (prevProps, prevState) {
 	    if (prevProps.data !== this.props.data) {
 	    	this._drawCanvas();
 	    }
+	},
+
+	// calculate drawing ratio to solve blurry high DPI canvas issue
+	// cb passed to cb for this.setState
+	_updateCanvasRatio: function (cb) {
+		// query device pixel ratio
+		var ctx = this.refs.canvas.getDOMNode().getContext("2d");
+		var devicePixelRatio = window.devicePixelRatio || 1;
+		var backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
+			ctx.mozBackingStorePixelRatio ||
+			ctx.msBackingStorePixelRatio ||
+			ctx.oBackingStorePixelRatio ||
+			ctx.backingStorePixelRatio || 1;
+
+        var _canvasRatio = devicePixelRatio / backingStoreRatio;
+        this.setState({ canvasRatio: _canvasRatio}, cb)
 	},
 
 	_onMouseLeave: function (e) {
@@ -131,7 +151,7 @@ var ScrollyHeatmap = React.createClass({
 
 	_getCanvasSize: function () {
 		var _scrollZoneSize = this._getScrollSize();
-		return Math.min(_scrollZoneSize, MAX_CANVAS_SIZE);
+		return Math.min(_scrollZoneSize, MAX_CANVAS_SIZE) * this.state.canvasRatio;
 	},
 
 	// check to see if the scroll y needs to be redrawn
@@ -197,11 +217,12 @@ var ScrollyHeatmap = React.createClass({
 	},
 
 	_drawCanvas: function () {
+		var canvasRatio = this.state.canvasRatio;
 		// get canvas context and clear
 		var _canvasSize = this._getCanvasSize();
 		var ctx = this.refs.canvas.getDOMNode().getContext("2d");
 		ctx.clearRect(0, 0, _canvasSize, this.state.DOMHeight);
-		ctx.font = FONT_SIZE + "px Lato";
+		ctx.font = FONT_SIZE * canvasRatio + "px Lato";
 
 		// render rows of features with strain variation in each column
 		var colorScale = d3.scale.linear()
@@ -212,16 +233,25 @@ var ScrollyHeatmap = React.createClass({
 		var chunkOfData = this._getChunkedData();
 
 		ctx.textAlign = "right";
+		var textX, textY;
 		chunkOfData.forEach( (d, i) => {
 			// label
 			ctx.fillStyle = "black";
-			ctx.fillText(d.name, LABEL_WIDTH - 5, (i + 1) * this.props.nodeSize - 3);
+			textX = (LABEL_WIDTH - 5) * canvasRatio;
+			textY = (i + 1) * (this.props.nodeSize - 3) * canvasRatio;
+			ctx.fillText(d.name, textX, textY);
 
+			var x, y, color;
+			var nodeSize = this.props.nodeSize * canvasRatio;
 			d.data.forEach( (_d, _i) => {
 				// get color and draw rect
-				var _color = (_d === null) ? "white" : colorScale(_d);
-				ctx.fillStyle = _color;
-				ctx.fillRect(_i * this.props.nodeSize + LABEL_WIDTH, i * this.props.nodeSize, this.props.nodeSize, this.props.nodeSize);
+				
+				x = (_i * this.props.nodeSize + LABEL_WIDTH) * canvasRatio;
+				y = i * this.props.nodeSize * canvasRatio;
+				color = (_d === null) ? "white" : colorScale(_d);
+
+				ctx.fillStyle = color;
+				ctx.fillRect(x, y, nodeSize, nodeSize);
 			});
 		});
 	}
