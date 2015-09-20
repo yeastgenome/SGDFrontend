@@ -15,6 +15,8 @@ var ScrollyHeatmap = require("./scrolly_heatmap.jsx");
 var StrainSelector = require("./strain_selector.jsx");
 
 var VariantViewer = React.createClass({
+	mixins: [Router.Navigation, Router.State],
+
 	propTypes: {
 		store: React.PropTypes.object.isRequired,
 		visibleLocusId: React.PropTypes.string	
@@ -34,7 +36,7 @@ var VariantViewer = React.createClass({
 	render: function () {
 		return (
 			<div>
-				<RouteHandler />
+				<RouteHandler {...this.props} />
 				<h1>Variant Viewer</h1>
 				<hr />
 				{this._renderControls()}
@@ -110,7 +112,9 @@ var VariantViewer = React.createClass({
 		var _heatmapData = this.props.store.getHeatmapData();
 		var _strainData = this.props.store.getHeatmapStrainData();
 		var _zoom = this.props.store.getHeatmapZoom();
-		var _onClick = d => { return; }; // TEMP
+		var _onClick = d => {
+			this.transitionTo("variantViewerShow", { locusId: d.id });
+		};
 		return <ScrollyHeatmap data={_heatmapData} onClick={_onClick} strainData={_strainData} nodeSize={_zoom} />;
 	},
 

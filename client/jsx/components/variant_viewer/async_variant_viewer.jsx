@@ -30,7 +30,7 @@ var AsyncVariantViewer = React.createClass({
 	},
 
 	componentDidMount: function () {
-		this.props.fetchLocusData(this.props.sgdid, (err, _data) => {
+		this.props.store.fetchLocusData(this.props.sgdid, (err, _data) => {
 			if (this.isMounted()) {
 				this.setState({ data: _data });
 			}
@@ -38,11 +38,12 @@ var AsyncVariantViewer = React.createClass({
 	},
 
 	_renderContentNode: function () {
-		if (this.state.data) return <div className="sgd-loader-container"><div className="sgd-loader" /></div>;
+		if (!this.state.data) return <div className="sgd-loader-container"><div className="sgd-loader" /></div>;
 		return this.props.isProtein ? this._renderProteinViz() : this._renderDnaViz();
 	},
 
 	_renderDnaViz: function () {
+		var data = this.state.data;
 		return (<VariantViewerComponent
 			name={data.name}
 			chromStart={data.chromStart}
@@ -55,10 +56,11 @@ var AsyncVariantViewer = React.createClass({
 			strand={data.strand}
 			isProteinMode={false}
 			downloadCaption={CAPTION}
-		/>);
+		/>)
 	},
 
 	_renderProteinViz: function () {
+		var data = this.state.data;
 		return (<VariantViewerComponent
 			name={data.name}
 			chromStart={data.chromStart}

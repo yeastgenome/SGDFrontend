@@ -22,7 +22,7 @@ var Drawer = React.createClass({
 
 	render: function () {
 		var _screenHeight = window.innerHeight;
-		var _drawerHeight = Math.min((this.state.showSequence ? 0.9 * _screenHeight : HEIGHT_WITHOUT_SEQUENCE), HEIGHT_WITH_SEQUENCE);
+		var _drawerHeight = HEIGHT_WITH_SEQUENCE;
 		var _maskHeight = _screenHeight - _drawerHeight;
 		var _maskStyle = {
 			position: "fixed",
@@ -51,8 +51,8 @@ var Drawer = React.createClass({
 		};
 
 		return (<div>
-			<div style={_maskStyle} onClick={this._exit} />
-			<div style={_drawerWrapperStyle}>
+			<div border="1px solid red" onClick={this._exit} />
+			<div >
 				<div>
 					<h1>
 						<a onClick={this._exit} style={_exitStyle}><i className="fa fa-times"></i></a>
@@ -66,15 +66,14 @@ var Drawer = React.createClass({
 	},
 
 	_renderContentNode: function () {
-		var _sgdid = this.props.params.id;
+		var _sgdid = this.getParams().locusId;
 		return (
 			<AsyncVariantViewer sgdid={_sgdid} store={this.props.store} />
 		);
 	},
 
 	_exit: function () {
-		this.setState({ isPending: true });
-		this.transitionTo("variantViewerIndex");
+		this.transitionTo("variantViewerIndex", {});
 	}
 });
 

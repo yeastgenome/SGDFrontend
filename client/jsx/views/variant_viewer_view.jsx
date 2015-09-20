@@ -22,7 +22,7 @@ view.render = function () {
 				name="variantViewerIndex" handler={BlankComponent}
 		    />
 		    <Route
-		    	name="shallowDrawer" path="/:locusId" handler={Drawer}
+		    	name="variantViewerShow" path="/:locusId" handler={Drawer}
 		    />
 		</Route>
 	);
