@@ -459,7 +459,9 @@ class YeastgenomeFrontend(FrontendInterface):
                     }
                 }
             }
-        res = es.search(index='sequence_objects', body=search_body, size=limit, from_=offset)
+        # search_body['sort'] = 'format_name.raw'
+
+        res = es.search(index='sequence_objects5', body=search_body, size=limit, from_=offset)
         simple_hits = []
         for hit in res['hits']['hits']:
             obj = {

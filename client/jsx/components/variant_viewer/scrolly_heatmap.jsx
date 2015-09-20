@@ -2,6 +2,7 @@
 var d3 = require("d3");
 var React = require("react");
 var _ = require("underscore");
+var Radium = require("radium");
 
 var DEFAULT_DOM_SIDE_SIZE = 400; // height and width
 var SCROLL_CONTAINER_HEIGHT = 800;
@@ -13,17 +14,22 @@ var LABEL_WIDTH = 100;
 var TOOLTIP_DELAY = 250;
 var SCROLLBAR_HEIGHT = 15;
 var LARGE_DATA_SIZE = 6500;
+var DEFAULT_BORDER_COLOR = "#EBDD71";
 
 var ScrollyHeatmap = React.createClass({
 	propTypes: {
 		data: React.PropTypes.array.isRequired, // [{ name: "some123", id: "123", data: [0.1, 0.5, ...]}, ...]
 		nodeSize: React.PropTypes.number,
 		onClick: React.PropTypes.func,
-		strainData: React.PropTypes.array.isRequired // [{ name: "foo", id: 1 }, ...]
+		strainData: React.PropTypes.array.isRequired, // [{ name: "foo", id: 1 }, ...]
+		mouseOverBorderColor: React.PropTypes.string
 	},
 
 	getDefaultProps: function () {
-		return { nodeSize: DEFAULT_NODE_SIZE };
+		return {
+			nodeSize: DEFAULT_NODE_SIZE,
+			mouseOverBorderColor: DEFAULT_BORDER_COLOR
+		};
 	},
 
 	getInitialState: function () {
@@ -51,7 +57,7 @@ var ScrollyHeatmap = React.createClass({
 							<div style={{ position: "relative", height: _scrollZoneSize }}>	
 								<canvas ref="canvas" width={_canvasWidth} height={_canvasSize} style={{ position: "absolute", left: _canvasX }}/>
 							</div>
-							{/* this._getOverlayNode() */}
+							{this._renderOverlayNode()}
 						</div>
 					</div>
 				</div>
@@ -83,7 +89,40 @@ var ScrollyHeatmap = React.createClass({
 		this._checkScroll();
 	},
 
-	_getOverlayNode: function () {
+	_renderOverlayNode: function () {
+		var chunkedData = this._getChunkedData();
+		var xScale = this._getXScale();
+		var nodeSize = this.props.nodeSize;
+		var widthNodes = chunkedData[0].data.length;
+		var rectNodes = _.map(chunkedData, (d, i) => {
+			// UI events
+			var _onClick;
+			if (this.props.onClick) _onClick = e => {
+				e.stopPropagation();
+			    e.nativeEvent.stopImmediatePropagation();
+			    // this.setState({ tooltipVisible: false });
+				this.props.onClick(d);
+			};
+			var _onMouseOver = e => {
+				this.setState({ mouseOverId: d.id });
+			};
+			var _stroke = (d.id === this.state.mouseOverId) ? DEFAULT_BORDER_COLOR : "none";
+			return (
+				<rect key={"scrollyNode" + i} onClick={_onClick} onMouseOver={_onMouseOver}
+					x={LABEL_WIDTH} y={nodeSize* i}
+					width={widthNodes * nodeSize} height={nodeSize}
+					fill="white" opacity={0.5}
+					stroke={_stroke} strokeWidth={2}
+					
+				/>
+			);
+		});
+
+		return (<svg ref="svg" style={{ position: "absolute", top: 0, left: _canvasX, width: _canvasSize, height: nodeHeight, cursor: "pointer" }}>
+			{rectNodes}
+		</svg>);
+
+		// OLD
 		var chunkedData = this._getChunkedData();
 		var xScale = this._getXScale();
 		var nodeHeight = this.props.strainData.length * this.props.nodeSize + HEADER_HEIGHT;
@@ -117,7 +156,7 @@ var ScrollyHeatmap = React.createClass({
 
 		var _canvasX = this._getCanvasX();
 		var _canvasSize = this._getCanvasSize();
-		return (<svg ref="svg" style={{ position: "absolute", left: _canvasX, width: _canvasSize, height: nodeHeight, cursor: "pointer" }}>
+		return (<svg ref="svg" style={{ position: "absolute", top: 0, left: _canvasX, width: _canvasSize, height: nodeHeight, cursor: "pointer" }}>
 			{rectNodes}
 		</svg>);
 	},
@@ -242,4 +281,5 @@ var ScrollyHeatmap = React.createClass({
 	}
 });
 
+// wrap export with Radium
 module.exports = ScrollyHeatmap;

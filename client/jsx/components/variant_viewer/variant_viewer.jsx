@@ -110,7 +110,8 @@ var VariantViewer = React.createClass({
 		var _heatmapData = this.props.store.getHeatmapData();
 		var _strainData = this.props.store.getHeatmapStrainData();
 		var _zoom = this.props.store.getHeatmapZoom();
-		return <ScrollyHeatmap data={_heatmapData} strainData={_strainData} nodeSize={_zoom} />;
+		var _onClick = d => { return; }; // TEMP
+		return <ScrollyHeatmap data={_heatmapData} onClick={_onClick} strainData={_strainData} nodeSize={_zoom} />;
 	},
 
 	_renderHeatmapNav: function () {
