@@ -109,7 +109,7 @@ var ScrollyHeatmap = React.createClass({
 			var _stroke = (d.id === this.state.mouseOverId) ? DEFAULT_BORDER_COLOR : "none";
 			return (
 				<rect key={"scrollyNode" + i} onClick={_onClick} onMouseOver={_onMouseOver}
-					x={LABEL_WIDTH} y={nodeSize* i}
+					x={0} y={nodeSize* i}
 					width={widthNodes * nodeSize} height={nodeSize}
 					fill="white" opacity={0.5}
 					stroke={_stroke} strokeWidth={2}
@@ -118,45 +118,7 @@ var ScrollyHeatmap = React.createClass({
 			);
 		});
 
-		return (<svg ref="svg" style={{ position: "absolute", top: 0, left: _canvasX, width: _canvasSize, height: nodeHeight, cursor: "pointer" }}>
-			{rectNodes}
-		</svg>);
-
-		// OLD
-		var chunkedData = this._getChunkedData();
-		var xScale = this._getXScale();
-		var nodeHeight = this.props.strainData.length * this.props.nodeSize + HEADER_HEIGHT;
-
-		var rectNodes = _.map(chunkedData, (d, i) => {
-			// UI events
-			var _onClick;
-			if (this.props.onClick) _onClick = e => {
-				e.stopPropagation();
-			    e.nativeEvent.stopImmediatePropagation();
-			    this.setState({ tooltipVisible: false });
-				this.props.onClick(d);
-			};
-			var _onMouseOver = e => {
-				e.stopPropagation();
-			    e.nativeEvent.stopImmediatePropagation();
-				this._onMouseOver(e, d);
-			};
-
-			// highlight if mouseover
-			var mouseOverNode = null;
-			if (d.id === this.state.mouseOverId) {
-				mouseOverNode = <rect width={this.props.nodeSize} height={nodeHeight - HEADER_HEIGHT} x={0} y={HEADER_HEIGHT} stroke="yellow" fill="none" strokeWidth={2} />;
-			}
-			var _transform = `translate(${i * this.props.nodeSize}, 0)`;
-			return (<g key={"heatmapOverlay" + i} transform={_transform}>
-				{mouseOverNode}
-				<rect onMouseOver={_onMouseOver} onClick={_onClick} width={this.props.nodeSize} height={nodeHeight} x={0} y={0} stroke="none" opacity={0} />
-			</g>);
-		});
-
-		var _canvasX = this._getCanvasX();
-		var _canvasSize = this._getCanvasSize();
-		return (<svg ref="svg" style={{ position: "absolute", top: 0, left: _canvasX, width: _canvasSize, height: nodeHeight, cursor: "pointer" }}>
+		return (<svg ref="svg" style={{ position: "absolute", top: 0, left: LABEL_WIDTH, width: widthNodes * nodeSize, height: chunkedData.length * nodeSize, cursor: "pointer" }}>
 			{rectNodes}
 		</svg>);
 	},
@@ -211,22 +173,6 @@ var ScrollyHeatmap = React.createClass({
 		var _dataStartIndex = Math.round(this._getXScale().invert(_canvasX));
 		return this.props.data.slice(_dataStartIndex, _dataStartIndex + _nodesPerCanvas);
 	},
-
-	// _getLabelsNode: function () {
-	// 	var nodes = this.props.strainData.map( (d, i) => {
-	// 		var _style = {
-	// 			position: "absolute",
-	// 			left: 0,
-	// 			top: HEADER_HEIGHT + i * this.props.nodeSize - 3,
-	// 			fontSize: FONT_SIZE
-	// 		};
-	// 		return <span key={"strainLabel" + i} style={_style}>{d.name}</span>;
-	// 	});
-
-	// 	return (<div style={{ position: "relative" }}>
-	// 		{nodes}
-	// 	</div>);
-	// },
 
 	_getXScale: function () {
 		return d3.scale.linear()
