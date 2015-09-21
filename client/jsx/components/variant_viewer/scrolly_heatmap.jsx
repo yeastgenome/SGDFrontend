@@ -34,7 +34,7 @@ var ScrollyHeatmap = React.createClass({
 
 	getInitialState: function () {
 		return {
-			canvasScrollX: 0,
+			scrollPosition: 0,
 			DOMWidth: DEFAULT_DOM_SIDE_SIZE,
 			DOMHeight: DEFAULT_DOM_SIDE_SIZE,
 			mouseOverId: null,
@@ -56,8 +56,8 @@ var ScrollyHeatmap = React.createClass({
 				<div style={{ position: "relative", zIndex: 1 }}>
 					<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
 						<div ref="outerScroll" style={{ width: this.state.DOMWidth, height: SCROLL_CONTAINER_HEIGHT, overflowY: "scroll", position: "relative", left: 0 }}>
-							<div style={{ position: "relative", height: _scrollZoneSize }}>	
-								<canvas ref="canvas" width={_canvasWidth} height={_canvasSize} style={{ position: "absolute", left: _canvasX, width: _canvasWidth / canvasRatio }}/>
+							<canvas ref="canvas" width={_canvasWidth} height={_canvasSize} style={{ position: "absolute", top: this.state.scrollPosition, left: _canvasX, width: _canvasWidth / canvasRatio }}/>
+							<div style={{ position: "relative", height: _scrollZoneSize }}>									
 							</div>
 							{this._renderOverlayNode()}
 						</div>
@@ -68,8 +68,8 @@ var ScrollyHeatmap = React.createClass({
 	},
 
 	componentDidMount: function () {
-		this._calculateWidth();
-		this.refs.outerScroll.getDOMNode().onscroll = this._onScroll;
+		this._calculateDOMSize();
+		this.refs.outerScroll.getDOMNode().onscroll = _.throttle(this._onScroll, 10);
 		this._updateCanvasRatio( () => {
 			this._drawCanvas();
 		});
@@ -78,6 +78,7 @@ var ScrollyHeatmap = React.createClass({
 	componentDidUpdate: function (prevProps, prevState) {
 	    if (prevProps.data !== this.props.data) {
 	    	this._drawCanvas();
+	    	this._resetScroll();
 	    }
 	},
 
@@ -94,7 +95,11 @@ var ScrollyHeatmap = React.createClass({
 			ctx.backingStorePixelRatio || 1;
 
         var _canvasRatio = devicePixelRatio / backingStoreRatio;
-        this.setState({ canvasRatio: _canvasRatio}, cb)
+        this.setState({ canvasRatio: _canvasRatio }, cb)
+	},
+
+	_resetScroll: function () {
+		this.refs.outerScroll.getDOMNode().scrollTop = 0;
 	},
 
 	_onMouseLeave: function (e) {
@@ -105,11 +110,13 @@ var ScrollyHeatmap = React.createClass({
 	},
 
 	_onScroll: function (e) {
-		this.setState({ tooltipVisible: false });
-		this._checkScroll();
+		var scrollEl = this.refs.outerScroll.getDOMNode();
+		this.setState({ scrollPosition: scrollEl.scrollTop });
+		this._drawCanvas();
 	},
 
 	_renderOverlayNode: function () {
+		return null // TEMP
 		var chunkedData = this._getChunkedData();
 		var xScale = this._getXScale();
 		var nodeSize = this.props.nodeSize;
@@ -178,7 +185,7 @@ var ScrollyHeatmap = React.createClass({
 		});
 	},
 
-	_calculateWidth: function () {
+	_calculateDOMSize: function () {
 		var _clientRect = this.getDOMNode().getBoundingClientRect();
 		this.setState({
 			DOMWidth: _clientRect.width,
@@ -190,7 +197,7 @@ var ScrollyHeatmap = React.createClass({
 		var _canvasX = this._getCanvasX();
 		var _canvasSize = this._getCanvasSize();
 		var _nodesPerCanvas = Math.round(_canvasSize / this.props.nodeSize)
-		var _dataStartIndex = Math.round(this._getXScale().invert(_canvasX));
+		var _dataStartIndex = Math.round(this._getYScale().invert(this.state.scrollPosition));
 		return this.props.data.slice(_dataStartIndex, _dataStartIndex + _nodesPerCanvas);
 	},
 
@@ -208,6 +215,7 @@ var ScrollyHeatmap = React.createClass({
 	},
 
 	_getCanvasX: function () {
+		return 0; // TEMP
 		var _canvasSize = this._getCanvasSize();
 		return Math.max(0, this.state.canvasScrollX - _canvasSize / 2);
 	},
@@ -219,9 +227,8 @@ var ScrollyHeatmap = React.createClass({
 	_drawCanvas: function () {
 		var canvasRatio = this.state.canvasRatio;
 		// get canvas context and clear
-		var _canvasSize = this._getCanvasSize();
 		var ctx = this.refs.canvas.getDOMNode().getContext("2d");
-		ctx.clearRect(0, 0, _canvasSize, this.state.DOMHeight);
+		ctx.clearRect(0, 0, this.state.DOMWidth * canvasRatio, this.state.DOMHeight * canvasRatio);
 		ctx.font = FONT_SIZE * canvasRatio + "px Lato";
 
 		// render rows of features with strain variation in each column
@@ -238,7 +245,7 @@ var ScrollyHeatmap = React.createClass({
 			// label
 			ctx.fillStyle = "black";
 			textX = (LABEL_WIDTH - 5) * canvasRatio;
-			textY = (i + 1) * (this.props.nodeSize - 3) * canvasRatio;
+			textY = ((i + 1) * this.props.nodeSize - 3) * canvasRatio;
 			ctx.fillText(d.name, textX, textY);
 
 			var x, y, color;
