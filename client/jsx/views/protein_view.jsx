@@ -2,7 +2,7 @@
 "use strict";
 
 var React = require("react");
-var ProteinViewer = require("sgd_visualization").ProteinViewer;
+var ProteinViewer = require("sgd_visualization").ProteinViewerComponent;
 var _ = require("underscore");
 
 var proteinView = {};

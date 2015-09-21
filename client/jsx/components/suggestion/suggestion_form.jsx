@@ -63,9 +63,9 @@ module.exports = React.createClass({
 					<div className="row">
 						<div className="large-12 columns">
 							<p>Please fill in your name and e-mail address to send mail to a curator sgd-helpdesk@lists.stanford.edu</p>
-							<label>Name: <span class='red'>(Required)</span></label><br></br>
+							<label>Name: <span className='red'>(Required)</span></label><br></br>
 							<input type='text' placeholder='Your name' ref='name' size='50' required='true'></input><p></p>
-							<label>E-mail: <span class='red'>(Required)</span></label><br></br>
+							<label>E-mail: <span className='red'>(Required)</span></label><br></br>
 							<input type='text' placeholder='Your email address' ref='internet' size='50' required='true'></input><p></p>
 							<label>Subject:</label><br></br>
 							<input type='text' placeholder='a subject' ref='subject' size='50'></input><p></p>
