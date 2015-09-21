@@ -44,32 +44,50 @@ var AsyncVariantViewer = React.createClass({
 
 	_renderDnaViz: function () {
 		var data = this.state.data;
+		var dnaSeqs = data.aligned_dna_sequences.map( d => {
+			return {
+				name: d.strain_display_name,
+				id: d.strain_id,
+				href: d.strain_link,
+				sequence: d.sequence
+			};
+		});
 		return (<VariantViewerComponent
 			name={data.name}
-			chromStart={data.chromStart}
-			chromEnd={data.chromEnd}
-			contigName={data.contigName}
-			contigHref={data.contigHref}
-			alignedDnaSequences={data.alignedDnaSequences}
-			variantDataDna={data.variantDataDna}
-			dnaLength={data.dnaLength}
+			chromStart={data.chrom_start}
+			chromEnd={data.chrom_end}
+			contigName={data.contig_name}
+			
+			alignedDnaSequences={dnaSeqs}
+			variantDataDna={data.variant_data_dna}
+			dnaLength={data.dna_length}
 			strand={data.strand}
 			isProteinMode={false}
 			downloadCaption={CAPTION}
-		/>)
+			isRelative={true}
+		/>);
+		// contigHref
 	},
 
 	_renderProteinViz: function () {
 		var data = this.state.data;
+		var proteinSeqs = data.aligned_dna_sequences.map( d => {
+			return {
+				name: d.strain_display_name,
+				id: d.strain_id,
+				href: d.strain_link,
+				sequence: d.sequence
+			};
+		});
 		return (<VariantViewerComponent
 			name={data.name}
-			chromStart={data.chromStart}
-			chromEnd={data.chromEnd}
-			contigName={data.contigName}
-			contigHref={data.contigHref}
-			alignedProteinSequences={data.alignedProteinSequences}
-			variantDataProtein={data.variantDataProtein}
-			proteinLength={data.proteinLength}
+			chromStart={data.chrom_start}
+			chromEnd={data.chrom_end}
+			contigName={data.contig_name}
+			
+			alignedProteinSequences={proteinSeqs}
+			variantDataProtein={data.variant_data_protein}
+			proteinLength={data.protein_length}
 			strand={data.strand}
 			isProteinMode={true}
 			domains={data.domains}
