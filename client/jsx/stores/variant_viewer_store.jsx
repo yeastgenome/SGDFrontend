@@ -10,7 +10,7 @@ var LOCI_SEARCH_BASE_URL = "/search_sequence_objects";
 var LOCUS_SHOW_BASE_URL = "/get_sequence_object";
 var REFERENCE_STRAIN_ID = 1;
 
-// internal data
+// internal data, initial state
 var isApiError = false;
 var allLociData = [];
 var allLociTotal = 0;
@@ -24,6 +24,7 @@ var strainMetaData = [];
 var visibleLocusData = null;
 var visibleStrainIds = null;
 var heatmapZoom = 16; // px per node
+var sortBy = "position"; // or "entropy"
 
 module.exports = class VariantViewerStore {
 
@@ -32,14 +33,37 @@ module.exports = class VariantViewerStore {
 		query = newQuery;
 	}
 
-	setVisibleStrainIds (_visibleStrainIds) {
+	// cb(err)
+	setVisibleStrainIds (_visibleStrainIds, cb) {
 		// must contain reference
 		if (_visibleStrainIds.indexOf(REFERENCE_STRAIN_ID) < 0) _visibleStrainIds.push(REFERENCE_STRAIN_ID);
 		_visibleStrainIds = _.sortBy(_visibleStrainIds, d => { return d.id });
 		visibleStrainIds = _visibleStrainIds;
+		if (typeof cb === "function") return this.clusterStrains(cb);
+		return;
 	}
 
 	setIsProteinMode (_isProteinMode) { isProteinMode = _isProteinMode; }
+
+	setSortBy (_sortBy) {
+		sortBy = _sortBy;
+		this.sortLoci();
+	}
+
+	sortLoci () {
+		var sortFn;
+		if (sortBy === "position") {
+			sortFn = d => {
+				return d.format_name;
+			};
+		} else {
+			sortFn = d => {
+				return d.format_name;
+			};
+		}
+		allLociData = _.sortBy(allLociData, sortFn);
+		filteredlociData = _.sortBy(filteredlociData, sortFn);
+	}
 
 	zoomHeatmap (isIn) {
 		heatmapZoom += isIn;
@@ -152,10 +176,15 @@ module.exports = class VariantViewerStore {
 
 	// cb (err)
 	clusterStrains (cb) {
-		if (query === "") {
+		// initial state, use precalculated cluster
+		if (query === "" && visibleStrainIds.length === staticStrainMetadata.strains.length) {
 			clusteredStrainData = staticStrainMetadata.clusterData;
 		} else {
-			var _clustered = clusterStrains(this.getLociData(), strainMetaData);
+			var visibleStrainMetaData = visibleStrainIds
+				.map( d => {
+					return _.findWhere(strainMetaData, { id: d });
+			});
+			var _clustered = clusterStrains(this.getLociData(), visibleStrainMetaData);
 			clusteredStrainData = _clustered;
 		}
 		strainClusterIndexes = this.getStrainIndexes(clusteredStrainData);

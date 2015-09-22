@@ -69,12 +69,16 @@ var SettingsDropdown = React.createClass({
 				key: "entropy"
 			}
 		];
+		var _onSelect = _sortBy => {
+			this.props.store.setSortBy(_sortBy);
+			if (typeof this.props.onUpdate === "function") this.props.onUpdate();
+		};
 		return (
 			<div>
 				<h3>Sort By</h3>
 				<RadioSelector
 					elements={_elements} orientation="vertical"
-					initialActiveElementKey="position"
+					onSelect={_onSelect} initialActiveElementKey="position"
 				/>
 			</div>
 		);

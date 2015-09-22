@@ -62,7 +62,7 @@ var VariantViewer = React.createClass({
 				this.props.store.setIsProteinMode(this.state.isProteinMode);
 			});
 		};
-		var onStrainUpdate = this.forceUpdate.bind(this);
+		var onSettingsUpdate = this.forceUpdate.bind(this);
 
 		return (
 			<div>
@@ -72,12 +72,12 @@ var VariantViewer = React.createClass({
 						{this._renderSearchBar()}
 					</div>
 					<div className="columns small-12 large-6" style={{ display: "flex", justifyContent: "flex-start" }}>
-						<StrainSelector store={this.props.store} onUpdate={onStrainUpdate} />
+						<StrainSelector store={this.props.store} onUpdate={onSettingsUpdate} />
 						<div style={{ marginTop: "0.4rem", marginLeft: "1.8rem", minWidth: "13rem" }}>
 							<RadioSelector elements={radioElements} onSelect={radioOnSelect} initialActiveElementKey="dna" />
 						</div>
 						<div style={{ marginLeft: "auto" }}>
-							<SettingsDropdown />
+							<SettingsDropdown store={this.props.store} onUpdate={onSettingsUpdate} />
 						</div>
 					</div>
 				</div>

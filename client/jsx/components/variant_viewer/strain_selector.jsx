@@ -56,8 +56,9 @@ var StrainSelector = React.createClass({
 			return { name: d.name, key: d.id };
 		});
 		var _onSelect = ids => {
-			this.props.store.setVisibleStrainIds(ids);
-			if (typeof this.props.onUpdate === "function") this.props.onUpdate();
+			this.props.store.setVisibleStrainIds(ids, err => {
+				if (typeof this.props.onUpdate === "function") this.props.onUpdate();
+			});
 		};
 		return (
 			<div onClick={_stopClick} style={[style.activeWrapper]}>

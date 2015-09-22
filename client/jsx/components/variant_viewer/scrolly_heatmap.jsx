@@ -51,7 +51,7 @@ var ScrollyHeatmap = React.createClass({
 		var _canvasSize = this._getCanvasSize() * canvasRatio;
 
 		return (
-			<div onMouseLeave={this._onMouseLeave} style={{ width: _canvasWidth }}>
+			<div onMouseLeave={this._onMouseLeave}>
 				{this._getTooltipNode()}
 				<div style={{ position: "relative", zIndex: 1 }}>
 					<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
@@ -79,8 +79,11 @@ var ScrollyHeatmap = React.createClass({
 		if (prevProps.data !== this.props.data) {
 	    	this._drawCanvas();
 	    }
-	    if (prevProps.data.length !== this.props.data.length && prevProps.data[0].name !== this.props.data[0].name) {
+	    // maybe reset scroll
+	    if (prevProps.data.length !== this.props.data.length || this.props.data.length === 0) {
 	    	this._resetScroll();
+	    } else if (prevProps.data[0].name !== this.props.data[0].name) {
+			this._resetScroll();
 	    }
 	},
 
