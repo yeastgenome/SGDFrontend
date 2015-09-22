@@ -31,6 +31,8 @@ module.exports = class VariantViewerStore {
 		query = newQuery;
 	}
 
+	setIsProteinMode (_isProteinMode) { isProteinMode = _isProteinMode; }
+
 	zoomHeatmap (isIn) {
 		heatmapZoom += isIn;
 	}

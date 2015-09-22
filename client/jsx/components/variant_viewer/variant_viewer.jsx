@@ -56,7 +56,11 @@ var VariantViewer = React.createClass({
 			{ name: "DNA", key: "dna" },
 			{ name: "Protein", key: "protein" }
 		];
-		var radioOnSelect = key => { this.setState({ isProteinMode: (key === "protein") }); };
+		var radioOnSelect = key => {
+			this.setState({ isProteinMode: (key === "protein") }, () => {
+				this.props.store.setIsProteinMode(this.state.isProteinMode);
+			});
+		};
 		return (
 			<div>
 				{this._renderLocus()}

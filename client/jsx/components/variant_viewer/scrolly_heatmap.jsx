@@ -142,7 +142,7 @@ var ScrollyHeatmap = React.createClass({
 					width={totalWidth - LABEL_WIDTH - 1} height={nodeSize} x={LABEL_WIDTH}
 					fill="none" opacity="1"
 					stroke={DEFAULT_BORDER_COLOR} strokeWidth={2}
-					shapeRendering="crispEdges"
+					shapeRendering="crispEdges" onClick={_onClick}
 				/>);
 			}
 			return (

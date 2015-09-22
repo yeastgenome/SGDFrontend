@@ -468,6 +468,7 @@ class YeastgenomeFrontend(FrontendInterface):
                 'name': hit['_source']['name'],
                 'format_name': hit['_source']['format_name'],
                 'dna_scores': hit['_source']['dna_scores'],
+                'protein_scores': hit['_source']['protein_scores'],
                 'snp_seqs': hit['_source']['snp_seqs']
             }
             simple_hits.append(obj)
