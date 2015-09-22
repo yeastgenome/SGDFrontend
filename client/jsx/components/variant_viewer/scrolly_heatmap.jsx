@@ -76,8 +76,10 @@ var ScrollyHeatmap = React.createClass({
 	},
 
 	componentDidUpdate: function (prevProps, prevState) {
-	    if (prevProps.data !== this.props.data) {
+		if (prevProps.data !== this.props.data) {
 	    	this._drawCanvas();
+	    }
+	    if (prevProps.data.length !== this.props.data.length && prevProps.data[0].name !== this.props.data[0].name) {
 	    	this._resetScroll();
 	    }
 	},

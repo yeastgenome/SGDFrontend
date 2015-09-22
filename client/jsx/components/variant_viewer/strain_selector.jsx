@@ -1,43 +1,38 @@
 /** @jsx React.DOM */
 "use strict";
-
+var Radium = require("radium");
 var React = require("react");
 var _ = require("underscore");
 
 var Checklist = require("../widgets/checklist.jsx");
 var DidClickOutside = require("../mixins/did_click_outside.jsx");
 
-var WIDTH = 350;
+var WIDTH = 150;
 var IMAGE_WIDTH = 174;
 var IMAGE_HEIGHT = 274;
+var REFERENCE_STRAIN_ID = 1;
 
 var StrainSelector = React.createClass({
 	mixins: [DidClickOutside],
 
 	propTypes: {
-		data: React.PropTypes.array.isRequired,
-		initialActiveStrainIds: React.PropTypes.array,
-		onSelect: React.PropTypes.func // (activeStrainIds) =>
-	},
-
-	getDefaultProps: function () {
-		return {
-			initialActiveStrainIds: []
-		};
+		store: React.PropTypes.object,
+		onUpdate: React.PropTypes.func // onUpdate()
 	},
 
 	getInitialState: function () {
 		return {
 			isActive: false,
-			activeStrainIds: this.props.initialActiveStrainIds
 		};
 	},
 
 	render: function () {
-		return (<div className="strain-selector" style={{ position: "relative", height: "2.4rem" }}>
-			{this._getActiveNode()}
-			<a className="button dropdown small secondary" onClick={this._toggleActive}><i className="fa fa-check-square" /> Strains</a>
-		</div>);
+		return (
+			<div className="strain-selector" style={{ position: "relative", height: "2.4rem" }}>
+				{this._getActiveNode()}
+				<a className="button dropdown small secondary" onClick={this._toggleActive}><i className="fa fa-check-square" /> Strains</a>
+			</div>
+		);
 	},
 
 	didClickOutside: function () {
@@ -66,37 +61,29 @@ var StrainSelector = React.createClass({
 			e.nativeEvent.stopImmediatePropagation();
 		};
 		var _onSelect = keys => {
-			if (this.props.onSelect) {
-				this.props.onSelect(keys);
-			}
-			this.setState({ activeStrainIds: keys });
+			console.log(keys)
+			// this.props.store.setActiveStrainIds(keys);
 		};
-		// re-order data to match dendrogram order
-		var DESIRED_ID_ORDER = [1, 8, 12, 2, 11, 3, 4, 7, 5, 13, 6];
-		var _sortedData = _.sortBy(this.props.data, d => {
-			var _index = DESIRED_ID_ORDER.indexOf(d.key);
-			return _index >= 0 ? _index : Math.Infinity;
+		var currentActiveIds = this.props.store.getVisibleStrainIds();
+		var metaData = this.props.store.getStrainMetaData()
+			.filter( d => { return d.id !== REFERENCE_STRAIN_ID; });
+
+		var _elements = metaData.map( d => {
+			return { name: d.name, key: d.id };
 		});
-		var _imgStyle = {
-			width: IMAGE_WIDTH,
-			height: IMAGE_HEIGHT,
-			marginTop: 8,
-			marginLeft: 20
+		var _onSelect = ids => {
+			this.props.store.setVisibleStrainIds(ids);
+			if (typeof this.props.onUpdate === "function") this.props.onUpdate();
 		};
 		return (
 			<div onClick={_stopClick} style={_style}>
-				<div className="row">
-					<div className="small-6 columns">
-						<img style={_imgStyle} src="/static/img/strains_dendrogram.png" />
-					</div>
-					<div className="small-6 columns">
-						<span style={{ fontSize: "0.875rem" }}>S288C (reference)</span>
-						<Checklist elements={_sortedData} initialActiveElementKeys={this.state.activeStrainIds} onSelect={_onSelect} />
-					</div>
+				<div>
+					<span style={{ fontSize: "0.875rem" }}>S288C (reference)</span>
+					<Checklist elements={_elements} initialActiveElementKeys={currentActiveIds} onSelect={_onSelect} />
 				</div>
 			</div>
 		);
 	}
 });
 
-module.exports = StrainSelector;
+module.exports = Radium(StrainSelector);

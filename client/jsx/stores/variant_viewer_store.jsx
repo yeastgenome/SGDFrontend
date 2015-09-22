@@ -8,6 +8,7 @@ var staticStrainMetadata = require("./strain_metadata");
 
 var LOCI_SEARCH_BASE_URL = "/search_sequence_objects";
 var LOCUS_SHOW_BASE_URL = "/get_sequence_object";
+var REFERENCE_STRAIN_ID = 1;
 
 // internal data
 var isApiError = false;
@@ -29,6 +30,13 @@ module.exports = class VariantViewerStore {
 	// *** mutators ***
 	setQuery (newQuery) {
 		query = newQuery;
+	}
+
+	setVisibleStrainIds (_visibleStrainIds) {
+		// must contain reference
+		if (_visibleStrainIds.indexOf(REFERENCE_STRAIN_ID) < 0) _visibleStrainIds.push(REFERENCE_STRAIN_ID);
+		_visibleStrainIds = _.sortBy(_visibleStrainIds, d => { return d.id });
+		visibleStrainIds = _visibleStrainIds;
 	}
 
 	setIsProteinMode (_isProteinMode) { isProteinMode = _isProteinMode; }
@@ -70,15 +78,22 @@ module.exports = class VariantViewerStore {
 	}
 
 	getHeatmapStrainData () {
-		return strainMetaData.map( d => {
-			return {
-				name: d.display_name,
-				id: d.id
-			};
-		});
+		var strainMeta;
+		return visibleStrainIds
+			.map( d => {
+				strainMeta = _.findWhere(strainMetaData, { id: d });
+				return {
+					name: strainMeta.display_name,
+					id: strainMeta.id
+				};
+			});
 	}
 
 	getHeatmapZoom () { return heatmapZoom; }
+
+	getVisibleStrainIds () { return visibleStrainIds; }
+
+	getStrainMetaData () { return staticStrainMetadata.strains; }
 
 	getAllLociTotal () { return allLociTotal; }
 
@@ -95,7 +110,7 @@ module.exports = class VariantViewerStore {
 		strainMetaData = staticStrainMetadata.strains;
 		clusteredStrainData = staticStrainMetadata.clusterData;
 		strainClusterIndexes = this.getStrainIndexes(clusteredStrainData);
-		visibleStrainIds = strainMetaData.map( d => { return d.id; });
+		this.setVisibleStrainIds(strainMetaData.map( d => { return d.id; }));
 		var quickUrl = `${LOCI_SEARCH_BASE_URL}?limit=200`;
 		var longUrl = `${LOCI_SEARCH_BASE_URL}?limit=6500`;
 		$.getJSON(quickUrl, data => {
