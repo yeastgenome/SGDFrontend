@@ -4,13 +4,12 @@ var Radium = require("radium");
 var React = require("react");
 var _ = require("underscore");
 
-var Checklist = require("../widgets/checklist.jsx");
 var DidClickOutside = require("../mixins/did_click_outside.jsx");
+var RadioSelector = require("../widgets/radio_selector.jsx");
 
-var WIDTH = 150;
-var REFERENCE_STRAIN_ID = 1;
+var WIDTH = 200;
 
-var StrainSelector = React.createClass({
+var SettingsDropdown = React.createClass({
 	mixins: [DidClickOutside],
 
 	propTypes: {
@@ -26,9 +25,9 @@ var StrainSelector = React.createClass({
 
 	render: function () {
 		return (
-			<div style={{ position: "relative", height: "2.4rem" }}>
-				{this._getActiveNode()}
-				<a className="button dropdown small secondary" onClick={this._toggleActive}><i className="fa fa-check-square" /> Strains</a>
+			<div style={[style.wrapper]}>
+				{this._renderActiveWrapperNode()}
+				{this._renderButtonNode()}
 			</div>
 		);
 	},
@@ -43,37 +42,54 @@ var StrainSelector = React.createClass({
 		this.setState({ isActive: !this.state.isActive });
 	},
 
-	_getActiveNode: function () {
+	_renderButtonNode: function () {
+		return <a className="button dropdown small secondary" onClick={this._toggleActive}><i className="fa fa-cog" /> Settings</a>;
+	},
+
+	_renderActiveWrapperNode: function () {
 		if (!this.state.isActive) return null;
 		var _stopClick = e => {
 			e.nativeEvent.stopImmediatePropagation();
 		};
-		var currentActiveIds = this.props.store.getVisibleStrainIds();
-		var metaData = this.props.store.getStrainMetaData()
-			.filter( d => { return d.id !== REFERENCE_STRAIN_ID; });
-
-		var _elements = metaData.map( d => {
-			return { name: d.name, key: d.id };
-		});
-		var _onSelect = ids => {
-			this.props.store.setVisibleStrainIds(ids);
-			if (typeof this.props.onUpdate === "function") this.props.onUpdate();
-		};
 		return (
 			<div onClick={_stopClick} style={[style.activeWrapper]}>
-				<div>
-					<span style={{ fontSize: "0.875rem" }}>S288C (reference)</span>
-					<Checklist elements={_elements} initialActiveElementKeys={currentActiveIds} onSelect={_onSelect} />
-				</div>
+				{this._renderActiveNode()}
+			</div>
+		);
+	},
+
+	_renderActiveNode: function () {
+		var _elements = [
+			{
+				name: "Genetic Position",
+				key: "position"
+			},
+			{
+				name: "Variation",
+				key: "entropy"
+			}
+		];
+		return (
+			<div>
+				<h3>Sort By</h3>
+				<RadioSelector
+					elements={_elements} orientation="vertical"
+					initialActiveElementKey="position"
+				/>
 			</div>
 		);
 	}
 });
 
 var style = {
+	wrapper: {
+		position: "relative",
+		height: "2.4rem"
+	},
 	activeWrapper: {
 		position: "absolute",
 		top: "3rem",
+		right: 0,
 		padding: "1rem",
 		background: "#efefef",
 		width: WIDTH,
@@ -81,4 +97,4 @@ var style = {
 	}
 };
 
-module.exports = Radium(StrainSelector);
+module.exports = Radium(SettingsDropdown);

@@ -2,7 +2,7 @@
 "use strict";
 var React = require("react");
 var Router = require("react-router");
-var { RouteHandler } = Router;
+var { RouteHandler, Navigation, State } = Router;
 var d3 = require("d3");
 var _ = require("underscore");
 
@@ -10,11 +10,12 @@ var ColorScaleLegend = require("./color_scale_legend.jsx");
 var Dendrogram = require("./dendrogram.jsx");
 var RadioSelector = require("../widgets/radio_selector.jsx");
 var SearchBar = require("../widgets/search_bar.jsx");
+var SettingsDropdown = require("./settings_dropdown.jsx");
 var ScrollyHeatmap = require("./scrolly_heatmap.jsx");
 var StrainSelector = require("./strain_selector.jsx");
 
 var VariantViewer = React.createClass({
-	mixins: [Router.Navigation, Router.State],
+	mixins: [Navigation, State],
 
 	propTypes: {
 		store: React.PropTypes.object.isRequired,
@@ -61,7 +62,7 @@ var VariantViewer = React.createClass({
 				this.props.store.setIsProteinMode(this.state.isProteinMode);
 			});
 		};
-		var onStrainUpdate = () => { this.forceUpdate(); }
+		var onStrainUpdate = this.forceUpdate.bind(this);
 
 		return (
 			<div>
@@ -75,7 +76,9 @@ var VariantViewer = React.createClass({
 						<div style={{ marginTop: "0.4rem", marginLeft: "1.8rem", minWidth: "13rem" }}>
 							<RadioSelector elements={radioElements} onSelect={radioOnSelect} initialActiveElementKey="dna" />
 						</div>
-						<a className="button dropdown secondary small" style={{ height: "2.4rem", marginLeft: "auto" }}><i className="fa fa-cog" /></a>
+						<div style={{ marginLeft: "auto" }}>
+							<SettingsDropdown />
+						</div>
 					</div>
 				</div>
 			</div>
