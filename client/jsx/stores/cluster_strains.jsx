@@ -24,9 +24,8 @@ module.exports = function (data, strainMetaData) {
 			memo += strainGeneObj.snp_sequence;
 			return memo;
 		}, "");
-
 		return {
-			name: STRAIN_NAMES[i],
+			name: strain.name,
 			snpSequence: snpSeq,
 			id: strain.id
 		};

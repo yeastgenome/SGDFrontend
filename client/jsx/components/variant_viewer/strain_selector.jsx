@@ -48,13 +48,15 @@ var StrainSelector = React.createClass({
 		var _stopClick = e => {
 			e.nativeEvent.stopImmediatePropagation();
 		};
-		var currentActiveIds = this.props.store.getVisibleStrainIds();
+		var currentActiveIds = this.props.store.getVisibleStrainIds()
+			.filter( d => { return d !== REFERENCE_STRAIN_ID; });
 		var metaData = this.props.store.getStrainMetaData()
 			.filter( d => { return d.id !== REFERENCE_STRAIN_ID; });
 
 		var _elements = metaData.map( d => {
 			return { name: d.name, key: d.id };
 		});
+
 		var _onSelect = ids => {
 			this.props.store.setVisibleStrainIds(ids, err => {
 				if (typeof this.props.onUpdate === "function") this.props.onUpdate();

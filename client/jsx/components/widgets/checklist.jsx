@@ -42,7 +42,7 @@ var Checklist = React.createClass({
 						return _d !== d.key;
 					});
 				} else {
-					_currentActive = _currentActive.concat([d.key]);
+					_currentActive.push(d.key);
 				}
 				this.setState({ activeElementKeys: _currentActive });
 			};
