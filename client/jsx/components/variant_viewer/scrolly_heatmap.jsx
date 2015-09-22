@@ -116,11 +116,12 @@ var ScrollyHeatmap = React.createClass({
 	},
 
 	_renderOverlayNode: function () {
-		return null // TEMP
 		var chunkedData = this._getChunkedData();
+		if (chunkedData.length === 0) return null;
 		var xScale = this._getXScale();
 		var nodeSize = this.props.nodeSize;
 		var widthNodes = chunkedData[0].data.length;
+		var totalWidth = widthNodes * nodeSize + LABEL_WIDTH;
 		var rectNodes = _.map(chunkedData, (d, i) => {
 			// UI events
 			var _onClick;
@@ -133,19 +134,30 @@ var ScrollyHeatmap = React.createClass({
 			var _onMouseOver = e => {
 				this.setState({ mouseOverId: d.id });
 			};
-			var _stroke = (d.id === this.state.mouseOverId) ? DEFAULT_BORDER_COLOR : "none";
+			var _transform = `translate(0, ${nodeSize * i})`;
+			// maybe init highlighting node
+			var highlightNode = null;
+			if (d.id === this.state.mouseOverId) {
+				highlightNode = (<rect
+					width={totalWidth - LABEL_WIDTH - 1} height={nodeSize} x={LABEL_WIDTH}
+					fill="none" opacity="1"
+					stroke={DEFAULT_BORDER_COLOR} strokeWidth={2}
+					shapeRendering="crispEdges"
+				/>);
+			}
 			return (
-				<rect key={"scrollyNode" + i} onClick={_onClick} onMouseOver={_onMouseOver}
-					x={0} y={nodeSize* i}
-					width={widthNodes * nodeSize} height={nodeSize}
-					fill="white" opacity={0.5}
-					stroke={_stroke} strokeWidth={2}
-					
-				/>
+				<g key={"scrollyNode" + i} transform={_transform}>
+					<rect onClick={_onClick} onMouseOver={_onMouseOver}
+						width={totalWidth} height={nodeSize}
+						fill="white" opacity="0"
+						stroke="none"
+					/>
+					{highlightNode}
+				</g>
 			);
 		});
 
-		return (<svg ref="svg" style={{ position: "absolute", top: 0, left: LABEL_WIDTH, width: widthNodes * nodeSize, height: chunkedData.length * nodeSize, cursor: "pointer" }}>
+		return (<svg ref="svg" style={{ position: "absolute", top: this.state.scrollPosition, left: 0, width: totalWidth, height: chunkedData.length * nodeSize, cursor: "pointer" }}>
 			{rectNodes}
 		</svg>);
 	},
@@ -157,8 +169,7 @@ var ScrollyHeatmap = React.createClass({
 	},
 
 	_getCanvasSize: function () {
-		var _scrollZoneSize = this._getScrollSize();
-		return Math.min(_scrollZoneSize, MAX_CANVAS_SIZE) * this.state.canvasRatio;
+		return this.state.DOMHeight * this.state.canvasRatio;
 	},
 
 	// check to see if the scroll y needs to be redrawn

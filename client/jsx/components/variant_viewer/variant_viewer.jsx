@@ -1,6 +1,5 @@
 /** @jsx React.DOM */
 "use strict";
-
 var React = require("react");
 var Router = require("react-router");
 var { RouteHandler } = Router;
@@ -29,6 +28,7 @@ var VariantViewer = React.createClass({
 	getInitialState: function () {
 		return {
 			isPending: true,
+			isProteinMode: false,
 			labelsVisible: true
 		};
 	},
@@ -36,7 +36,7 @@ var VariantViewer = React.createClass({
 	render: function () {
 		return (
 			<div>
-				<RouteHandler {...this.props} />
+				<RouteHandler {...this.props} isProteinMode={this.state.isProteinMode} />
 				<h1>Variant Viewer</h1>
 				<hr />
 				{this._renderControls()}
@@ -56,6 +56,7 @@ var VariantViewer = React.createClass({
 			{ name: "DNA", key: "dna" },
 			{ name: "Protein", key: "protein" }
 		];
+		var radioOnSelect = key => { this.setState({ isProteinMode: (key === "protein") }); };
 		return (
 			<div>
 				{this._renderLocus()}
@@ -66,7 +67,7 @@ var VariantViewer = React.createClass({
 					<div className="columns small-12 large-6" style={{ display: "flex", justifyContent: "flex-start" }}>
 						<StrainSelector data={[]}/>
 						<div style={{ marginTop: "0.4rem", marginLeft: "1.8rem", minWidth: "13rem" }}>
-							<RadioSelector elements={radioElements} initialActiveElementKey="dna" />
+							<RadioSelector elements={radioElements} onSelect={radioOnSelect} initialActiveElementKey="dna" />
 						</div>
 						<a className="button dropdown secondary small" style={{ height: "2.4rem", marginLeft: "auto" }}><i className="fa fa-cog" /></a>
 					</div>
