@@ -10,8 +10,7 @@ var { Route, RouteHandler, Link, Transition } = Router;
 var AsyncVariantViewer = require("./async_variant_viewer.jsx");
 
 var REM_SIZE = 16;
-var HEIGHT_WITH_SEQUENCE = 680;
-var HEIGHT_WITHOUT_SEQUENCE = 345;
+var HEIGHT = 450;
 var LABEL_WIDTH = 150;
 
 var Drawer = React.createClass({
@@ -50,6 +49,9 @@ var Drawer = React.createClass({
 	}
 });
 
+var _screenHeight = window.innerHeight;
+var _drawerHeight = HEIGHT;
+var _maskHeight = _screenHeight - _drawerHeight;
 var style = {
 	mask: {
 		position: "fixed",
@@ -77,8 +79,5 @@ var style = {
 		color: "black"
 	}
 }
-var _screenHeight = window.innerHeight;
-var _drawerHeight = HEIGHT_WITH_SEQUENCE;
-var _maskHeight = _screenHeight - _drawerHeight;
 
 module.exports = Radium(Drawer);
