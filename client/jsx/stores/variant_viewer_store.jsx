@@ -31,6 +31,7 @@ module.exports = class VariantViewerStore {
 	// *** mutators ***
 	setQuery (newQuery) {
 		query = newQuery;
+		return;
 	}
 
 	// cb(err)
@@ -43,11 +44,12 @@ module.exports = class VariantViewerStore {
 		return;
 	}
 
-	setIsProteinMode (_isProteinMode) { isProteinMode = _isProteinMode; }
+	setIsProteinMode (_isProteinMode) { isProteinMode = _isProteinMode; return; }
 
 	setSortBy (_sortBy) {
 		sortBy = _sortBy;
 		this.sortLoci();
+		return;
 	}
 
 	sortLoci () {
@@ -56,13 +58,21 @@ module.exports = class VariantViewerStore {
 			sortFn = d => {
 				return d.format_name;
 			};
+		// entropy
 		} else {
-			sortFn = d => {
-				return d.format_name;
+			sortFn = (d, _i) => {
+				var n;
+				var sigma = 0;
+				for (var i = d.dna_scores.length - 1; i >= 0; i--) {
+					n = d.dna_scores[i];
+					if(typeof n === "number") sigma += n * (Math.log(n) / Math.log(2));
+				};
+				return sigma;
 			};
 		}
 		allLociData = _.sortBy(allLociData, sortFn);
 		filteredlociData = _.sortBy(filteredlociData, sortFn);
+		return;
 	}
 
 	zoomHeatmap (isIn) {

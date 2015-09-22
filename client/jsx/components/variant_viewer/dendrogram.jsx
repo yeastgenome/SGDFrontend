@@ -73,7 +73,7 @@ var Dendrogram = React.createClass({
 			fill: "none",
 			stroke: "black",
 			d: function (d) {
-				return `M ${d.source.x} ${d.source.y} L ${d.target.x} ${d.source.y} L ${d.target.x} ${d.target.y}`;
+				return `M ${d.source.x} ${d.source.y + 1} L ${d.target.x} ${d.source.y + 1} L ${d.target.x} ${d.target.y + 1}`;
 			},
 			"stroke-dasharray": "0, 1000",
 			"shape-rendering": "crispedges"
