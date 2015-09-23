@@ -4,7 +4,7 @@ var React = require("react");
 var _ = require("underscore");
 var Radium = require("radium");
 
-var DEFAULT_DOM_SIDE_SIZE = 400; // height and width
+var DEFAULT_DOM_SIDE_SIZE = 315; // height and width
 var SCROLL_CONTAINER_HEIGHT = 800;
 var FONT_SIZE = 14;
 var HEADER_HEIGHT = 120;
@@ -281,4 +281,4 @@ var ScrollyHeatmap = React.createClass({
 });
 
 // wrap export with Radium
-module.exports = ScrollyHeatmap;
+module.exports = Radium(ScrollyHeatmap);

@@ -57,7 +57,7 @@ var AsyncVariantViewer = React.createClass({
 	_renderHeader: function () {
 		var data = this.state.data;
 		if (!data) return null;
-		var name = (data.name === data.format_name) ? name : `${data.name} / ${data.format_name}`;
+		var name = (data.name === data.format_name) ? data.name : `${data.name} / ${data.format_name}`;
 
 		// init radio selector
 		var _elements = [{ name: "DNA", key: "dna" }, { name: "Protein", key: "protein" }];
@@ -91,6 +91,8 @@ var AsyncVariantViewer = React.createClass({
 			name={data.name}
 			chromStart={data.chrom_start}
 			chromEnd={data.chrom_end}
+			blockStarts={data.block_starts}
+			blockSizes={data.block_sizes}
 			contigName={data.contig_name}
 			alignedDnaSequences={dnaSeqs}
 			variantDataDna={data.variant_data_dna}
@@ -113,6 +115,12 @@ var AsyncVariantViewer = React.createClass({
 				sequence: d.sequence
 			};
 		});
+		// correct the fact that some ids are null for domains
+		var _id;
+		var _domains = data.protein_domains.map( (d, i) => {
+			_id = d.id || i;
+			return _.extend(d, { id: _id });
+		});
 		return (<VariantViewerComponent
 			name={data.name}
 			chromStart={data.chrom_start}
@@ -124,7 +132,7 @@ var AsyncVariantViewer = React.createClass({
 			proteinLength={data.protein_length}
 			strand={"+"}
 			isProteinMode={true}
-			domains={data.domains}
+			domains={_domains}
 			downloadCaption={CAPTION}
 		/>);
 	}
