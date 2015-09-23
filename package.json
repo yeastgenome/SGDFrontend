@@ -54,7 +54,7 @@
     "react": "~0.13.3",
     "react-router": "~0.13.3",
     "reactify": "~1.1.0",
-    "sgd_visualization": "^1.0.7",
+    "sgd_visualization": "../sgd_visualization",
     "underscore": "~1.6.0"
   }
 }
