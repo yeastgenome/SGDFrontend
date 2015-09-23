@@ -87,6 +87,7 @@ var AsyncVariantViewer = React.createClass({
 				sequence: d.sequence
 			};
 		});
+		var variantData = data.variant_data_dna.map( d => { return _.extend(d, { snpType: d.snp_type }); });
 		return (<VariantViewerComponent
 			name={data.name}
 			chromStart={data.chrom_start}
@@ -95,7 +96,7 @@ var AsyncVariantViewer = React.createClass({
 			blockSizes={data.block_sizes}
 			contigName={data.contig_name}
 			alignedDnaSequences={dnaSeqs}
-			variantDataDna={data.variant_data_dna}
+			variantDataDna={variantData}
 			dnaLength={data.dna_length}
 			strand={"+"}
 			isProteinMode={false}
@@ -121,6 +122,7 @@ var AsyncVariantViewer = React.createClass({
 			_id = d.id || i;
 			return _.extend(d, { id: _id });
 		});
+		var variantData = data.variant_data_protein.map( d => { return _.extend(d, { snpType: "nonsynonymous" }); });
 		return (<VariantViewerComponent
 			name={data.name}
 			chromStart={data.chrom_start}
@@ -128,7 +130,7 @@ var AsyncVariantViewer = React.createClass({
 			contigName={data.contig_name}
 			
 			alignedProteinSequences={proteinSeqs}
-			variantDataProtein={data.variant_data_protein}
+			variantDataProtein={variantData}
 			proteinLength={data.protein_length}
 			strand={"+"}
 			isProteinMode={true}
