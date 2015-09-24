@@ -88,6 +88,7 @@ var AsyncVariantViewer = React.createClass({
 			};
 		});
 		var variantData = data.variant_data_dna.map( d => { return _.extend(d, { snpType: d.snp_type }); });
+		if (variantData.length === 0) return this._renderEmptyNode();
 		return (<VariantViewerComponent
 			name={data.name}
 			chromStart={data.chrom_start}
@@ -123,6 +124,7 @@ var AsyncVariantViewer = React.createClass({
 			return _.extend(d, { id: _id });
 		});
 		var variantData = data.variant_data_protein.map( d => { return _.extend(d, { snpType: "nonsynonymous" }); });
+		if (variantData.length === 0) return this._renderEmptyNode();
 		return (<VariantViewerComponent
 			name={data.name}
 			chromStart={data.chrom_start}
@@ -137,6 +139,10 @@ var AsyncVariantViewer = React.createClass({
 			domains={_domains}
 			downloadCaption={CAPTION}
 		/>);
+	},
+
+	_renderEmptyNode: function () {
+		return <p style={[style.emptyNode]} >These sequences are 100% identical</p>;
 	}
 });
 
@@ -162,6 +168,10 @@ var style = {
 		width: "11rem",
 		marginTop: 5,
 		marginRight: "2rem"
+	},
+	emptyNode: {
+		marginTop: "5rem",
+		textAlign: "center"
 	}
 };
 

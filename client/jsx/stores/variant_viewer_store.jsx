@@ -56,7 +56,7 @@ module.exports = class VariantViewerStore {
 		var sortFn;
 		if (sortBy === "position") {
 			sortFn = d => {
-				return d.format_name;
+				return d.absolute_genetic_position;
 			};
 		// entropy
 		} else {
