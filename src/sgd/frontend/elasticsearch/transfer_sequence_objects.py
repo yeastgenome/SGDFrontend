@@ -3,10 +3,10 @@ from elasticsearch import Elasticsearch
 
 SRC_CLIENT_ADDRESS = 'http://localhost:9200'
 TARGET_CLIENT_ADDRESS = 'http://localhost:9200'
-SRC_INDEX = 'sequence_objects5'
+SRC_INDEX = 'sequence_objects'
 TARGET_INDEX = 'sequence_objects'
 
-RESET_INDEX = True
+RESET_INDEX = False
 
 src_client = Elasticsearch(SRC_CLIENT_ADDRESS)
 target_client = Elasticsearch(TARGET_CLIENT_ADDRESS)
@@ -15,7 +15,8 @@ def put_settings():
 	return
 
 def setup_index():
-	if RESET_INDEX:
+	exists = target_client.indices.exists(TARGET_INDEX)
+	if RESET_INDEX and exists:
 		target_client.indices.delete(TARGET_INDEX)
 	exists = target_client.indices.exists(TARGET_INDEX)
 	if not exists:
