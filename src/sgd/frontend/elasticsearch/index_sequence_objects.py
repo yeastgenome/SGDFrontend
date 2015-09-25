@@ -56,6 +56,11 @@ def aligned_sequence_to_snp_sequence(aligned_sequence_obj, variants):
             end = int(var['end']) - 1
             snp = aligned_sequence[start:end]
             snp_sequence = snp_sequence + snp
+        else:
+            start = int(var['start']) - 1
+            end = start + 1
+            snp = aligned_sequence[start:end]
+            snp_sequence = snp_sequence + snp
 
     obj = {
         'name': aligned_sequence_obj['strain_display_name'],
