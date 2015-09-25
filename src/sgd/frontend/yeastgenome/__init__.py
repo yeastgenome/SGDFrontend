@@ -452,6 +452,23 @@ class YeastgenomeFrontend(FrontendInterface):
                 'query': { 'match_all': {} },
                 'sort': { 'absolute_genetic_start': { 'order': 'asc' }}
             }
+        elif ',' in query:
+            original_query_list = query.split(',')
+            query_list = []
+            for item in original_query_list:
+                query_list.append(item.strip())
+            print query_list
+            search_body = {
+                'query': {
+                    'filtered': {
+                        'filter': {
+                            'terms': {
+                                '_all': query_list
+                            }
+                        }
+                    }
+                }
+            }
         else:
             search_body = {
                 'query': {
