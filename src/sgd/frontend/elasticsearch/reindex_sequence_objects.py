@@ -3,6 +3,7 @@ from elasticsearch import Elasticsearch
 from collections import OrderedDict
 
 CLIENT_ADDRESS = 'http://localhost:9200'
+SRC_INDEX = 'sequence_objects'
 INDEX = 'sequence_objects5'
 DOC_TYPE = 'sequence_object'
 RESET_INDEX = False
@@ -35,12 +36,14 @@ CONTIG_LENGTHS = OrderedDict([
 
 def setup_index():
 	exists = es.indices.exists(INDEX)
-	if RESET_INDEX and not exists:
+	if RESET_INDEX and exists:
 		es.indices.delete(INDEX)
 		es.indices.create(INDEX)
+		put_mapping()
 	elif not exists:
 		es.indices.create(INDEX)
-	put_mapping()
+		put_mapping()
+	return
 
 def put_mapping():
 	other_mapping_settings = {
@@ -68,18 +71,17 @@ def index_locus(old_data):
 	# _absolute_genetic_start += old_data['chrom_start']
 
 	_contig_name = old_data['contig_name'].replace('_', ' ')
-	print _contig_name
 
 	# assign new data
 	old_data['contig_name'] = _contig_name
-	# es.index(index=INDEX, doc_type=DOC_TYPE, id=old_data['sgdid'], body=old_data)
+	es.index(index=INDEX, doc_type=DOC_TYPE, id=old_data['sgdid'], body=old_data)
 	return
 
 # fetch all the loci, index in index_locus
 def index_loci():
 	# fetch all
 	body = { 'query': { 'match_all': { }}}
-	res = es.search(index=INDEX, body=body, size=10)
+	res = es.search(index=SRC_INDEX, body=body, size=7000)
 	for hit in res['hits']['hits']:
 		data = hit['_source']
 		index_locus(data)
