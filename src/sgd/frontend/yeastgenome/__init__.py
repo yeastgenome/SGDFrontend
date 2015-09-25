@@ -20,7 +20,7 @@ from src.sgd.frontend.yeastgenome.backendless.load_data_from_file import get_dat
 # setup elastic search
 from src.sgd.frontend import config
 from elasticsearch import Elasticsearch
-es = Elasticsearch(config.elasticsearch_address)
+es = Elasticsearch(config.elasticsearch_address, timeout=5)
 
 class YeastgenomeFrontend(FrontendInterface):
     def __init__(self, backend_url, heritage_url, log_directory):

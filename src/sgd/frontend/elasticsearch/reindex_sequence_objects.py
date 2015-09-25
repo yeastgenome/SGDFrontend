@@ -40,33 +40,46 @@ def setup_index():
 		es.indices.create(INDEX)
 	elif not exists:
 		es.indices.create(INDEX)
+	put_mapping()
 
-# TODO
 def put_mapping():
-	return
+	other_mapping_settings = {
+		'properties': {
+			'contig_name': {
+				'type': 'string',
+				'index': 'not_analyzed'
+			}
+		}
+	}
+	full_settings = {}
+	full_settings[DOC_TYPE] = other_mapping_settings
+	es.indices.put_mapping(index=INDEX, body=full_settings, doc_type=DOC_TYPE)
 
 def index_locus(old_data):
-	# add absolute_genetic_start
-	contig_numeral = old_data['contig_name'].split('_')[1]
-	contig_index = CONTIG_LENGTHS.keys().index(contig_numeral)
-	_absolute_genetic_start = 0
-	for contig in CONTIG_LENGTHS.keys():
+	# # add absolute_genetic_start
+	# contig_numeral = old_data['contig_name'].split('_')[1]
+	# contig_index = CONTIG_LENGTHS.keys().index(contig_numeral)
+	# _absolute_genetic_start = 0
+	# for contig in CONTIG_LENGTHS.keys():
 
-		if contig == contig_numeral:
-			break
-		_absolute_genetic_start += CONTIG_LENGTHS[contig]
-	_absolute_genetic_start += old_data['chrom_start']
+	# 	if contig == contig_numeral:
+	# 		break
+	# 	_absolute_genetic_start += CONTIG_LENGTHS[contig]
+	# _absolute_genetic_start += old_data['chrom_start']
+
+	_contig_name = old_data['contig_name'].replace('_', ' ')
+	print _contig_name
 
 	# assign new data
-	old_data['absolute_genetic_start'] = _absolute_genetic_start
-	es.index(index=INDEX, doc_type=DOC_TYPE, id=old_data['sgdid'], body=old_data)
+	old_data['contig_name'] = _contig_name
+	# es.index(index=INDEX, doc_type=DOC_TYPE, id=old_data['sgdid'], body=old_data)
 	return
 
 # fetch all the loci, index in index_locus
 def index_loci():
 	# fetch all
 	body = { 'query': { 'match_all': { }}}
-	res = es.search(index=INDEX, body=body, size=7000)
+	res = es.search(index=INDEX, body=body, size=10)
 	for hit in res['hits']['hits']:
 		data = hit['_source']
 		index_locus(data)
