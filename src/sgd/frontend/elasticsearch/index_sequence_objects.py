@@ -5,7 +5,7 @@ from random import shuffle
 import requests
 es = Elasticsearch()
 
-INDEX_NAME = 'sequence_objects'
+INDEX_NAME = 'sequence_objects5'
 DOC_TYPE = 'sequence_object'
 BASE_URL = 'http://yeastgenome.org'
 ALIGNMENT_URL = BASE_URL + '/webservice/alignments'
@@ -172,8 +172,9 @@ def format_domains(raw_domain_data):
         if domain['strain']['display_name'] == 'S288C':
             obj = {
                 'name': domain['domain']['display_name'],
-                'id': None,
+                'id': domain['domain']['id'],
                 'sourceName': domain['source']['display_name'],
+                'sourceId': domain['source']['id'],
                 'start': domain['start'],
                 'end': domain['end']
             }
@@ -183,7 +184,9 @@ def format_domains(raw_domain_data):
 # index RAD54
 def index_test_locus():
     example_locus = {
-        'sgdid': 'S000001855'
+        'sgdid': 'S000001855',
+        'dna_scores': [],
+        'protein_scores': []
     }
     fetch_and_index_locus(example_locus, 'ACT1', 0)
 
@@ -243,8 +246,8 @@ def index_loci():
 
 def main():
     setup_index()
-    index_loci()
-    # index_test_locus()
+    # index_loci()
+    index_test_locus()
 
     if TEST:
         requests.get(RUNSCOPE_TRIGGER_URL)
