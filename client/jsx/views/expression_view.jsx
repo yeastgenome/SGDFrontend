@@ -4,7 +4,7 @@
 var React = require("react");
 var $ = require("jquery");
 
-var ExpressionChart = React.createFactory(require("../components/viz/expression_chart.jsx"));
+var ExpressionChart = require("../components/viz/expression_chart.jsx");
 
 var expressionView = {};
 expressionView.render = function () {
