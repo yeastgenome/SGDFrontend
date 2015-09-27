@@ -3,9 +3,10 @@ from multiprocessing import Process
 from time import sleep
 from random import shuffle
 import requests
+from collections import OrderedDict
 es = Elasticsearch()
 
-INDEX_NAME = 'sequence_objects5'
+INDEX_NAME = 'sequence_objects6'
 DOC_TYPE = 'sequence_object'
 BASE_URL = 'http://yeastgenome.org'
 ALIGNMENT_URL = BASE_URL + '/webservice/alignments'
@@ -14,18 +15,35 @@ FILTERED_GO_TERMS = ['biological process', 'cellular component', 'molecular func
 NUM_THREADS = 5
 
 RESET_INDEX = False
+IGNORE_IF_EXISTS = True
 
 # TEMP, trigger runscope test, should be ENV var with default to False
 TEST = False
 RUNSCOPE_TRIGGER_URL = ''
 
 def setup_index():
-	exists = es.indices.exists(INDEX_NAME)
-	if RESET_INDEX and not exists:
-		es.indices.delete(INDEX_NAME)
-		es.indices.create(INDEX_NAME)
-	elif not exists:
-		es.indices.create(INDEX_NAME)
+    exists = es.indices.exists(INDEX_NAME)
+    if RESET_INDEX and exists:
+        es.indices.delete(INDEX_NAME)
+    exists = es.indices.exists(INDEX_NAME)
+    if not exists:
+        es.indices.create(INDEX_NAME)
+        put_mapping()
+    return
+
+def put_mapping():
+    other_mapping_settings = {
+        'properties': {
+            'contig_name': {
+                'type': 'string',
+                'index': 'not_analyzed'
+            }
+        }
+    }
+    full_settings = {}
+    full_settings[DOC_TYPE] = other_mapping_settings
+    es.indices.put_mapping(index=INDEX_NAME, body=full_settings, doc_type=DOC_TYPE)
+
 
 def add_go_term_from_obj(go_overview_obj, key, lst):
 	for term in go_overview_obj[key]:
@@ -70,6 +88,10 @@ def aligned_sequence_to_snp_sequence(aligned_sequence_obj, variants):
     return obj
 
 def fetch_and_index_locus(locus, name, process_index):
+    if IGNORE_IF_EXISTS:
+        exists = es.exists(index=INDEX_NAME, doc_type=DOC_TYPE, id=locus['sgdid'])
+        if exists:
+            return
     # fetch basic data
     print 'fetching ' + name + ' on thread ' + str(process_index)
     basic_url = LOCUS_BASE_URL + locus['sgdid'] + '/overview'
@@ -115,7 +137,9 @@ def fetch_and_index_locus(locus, name, process_index):
     ref_obj = filter(lambda x: x['strain']['status'] == 'Reference', seq_details_response['genomic_dna'])[0]
     chrom_start = ref_obj['start']
     chrom_end = ref_obj['end']
-    contig_name = ref_obj['contig']['format_name']
+    contig_data = seq_details_response['genomic_dna'][0]['contig']
+    contig_name = contig_data['format_name'].replace('_', ' ')
+    contig_href = contig_data['link']
     intron_data = format_introns(seq_details_response)
 
     # get domains
@@ -123,33 +147,73 @@ def fetch_and_index_locus(locus, name, process_index):
     domain_response = requests.get(domain_url).json()
     formatted_domains = format_domains(domain_response)
 
+    # assign absolute_genetic_start
+    locus['contig_name'] = contig_name
+    locus['chrom_start'] = chrom_start
+    _absolute_genetic_start = get_absolute_genetic_start(locus)    
+
     # format obj and index
     body = {
-      'sgdid': locus['sgdid'],
-      'name': name,
-      'format_name': basic_response['format_name'],
-      'category': 'locus',
-      'url': basic_response['link'],
-      'description': basic_response['headline'],
-      'strand': seq_details_response['genomic_dna'][0]['strand'],
-      'go_terms': go_terms,
-      'dna_scores': locus['dna_scores'],
-      'protein_scores': locus['protein_scores'],
-      'aligned_dna_sequences': alignment_response['aligned_dna_sequences'],
-      'aligned_protein_sequences': alignment_response['aligned_protein_sequences'],
-      'dna_length': alignment_response['dna_length'],
-      'protein_length': alignment_response['protein_length'],
-      'variant_data_dna': alignment_response['variant_data_dna'],
-      'variant_data_protein': alignment_response['variant_data_protein'],
-      'protein_domains': formatted_domains,
-      'snp_seqs': snp_seqs,
-      'chrom_start': chrom_start,
-      'chrom_end': chrom_end,
-      'contig_name': contig_name,
-      'block_starts': intron_data['block_starts'],
-      'block_sizes': intron_data['block_sizes']
+        'sgdid': locus['sgdid'],
+        'name': name,
+        'format_name': basic_response['format_name'],
+        'category': 'locus',
+        'url': basic_response['link'],
+        'href': basic_response['link'],
+        'absolute_genetic_start': _absolute_genetic_start,
+        'description': basic_response['headline'],
+        'strand': seq_details_response['genomic_dna'][0]['strand'],
+        'go_terms': go_terms,
+        'dna_scores': locus['dna_scores'],
+        'protein_scores': locus['protein_scores'],
+        'aligned_dna_sequences': alignment_response['aligned_dna_sequences'],
+        'aligned_protein_sequences': alignment_response['aligned_protein_sequences'],
+        'dna_length': alignment_response['dna_length'],
+        'protein_length': alignment_response['protein_length'],
+        'variant_data_dna': alignment_response['variant_data_dna'],
+        'variant_data_protein': alignment_response['variant_data_protein'],
+        'protein_domains': formatted_domains,
+        'snp_seqs': snp_seqs,
+        'chrom_start': chrom_start,
+        'chrom_end': chrom_end,
+        'contig_name': contig_name,
+        'contig_href': contig_href,
+        'block_starts': intron_data['block_starts'],
+        'block_sizes': intron_data['block_sizes']
     }
     es.index(index=INDEX_NAME, doc_type=DOC_TYPE, id=locus['sgdid'], body=body)
+
+def get_absolute_genetic_start(locus):
+    CONTIG_LENGTHS = OrderedDict([
+        ('I', 230218),
+        ('II', 813184),
+        ('III', 316620),
+        ('IV',  1531933),
+        ('V', 576874),
+        ('VI', 270161),
+        ('VII', 1090940),
+        ('VIII', 562643),
+        ('IX', 439888),
+        ('X', 745751),
+        ('XI', 666816),
+        ('XII', 1078177),
+        ('XIII', 924431),
+        ('XIV', 784333),
+        ('XV', 1091291),
+        ('XVI', 94806),
+        ('Mito', 85779),
+        ('2-micron', 6318)
+    ])
+    contig_numeral = locus['contig_name'].split(' ')[1]
+    contig_index = CONTIG_LENGTHS.keys().index(contig_numeral)
+    absolute_genetic_start = 0
+    for contig in CONTIG_LENGTHS.keys():
+
+        if contig == contig_numeral:
+            break
+        absolute_genetic_start += CONTIG_LENGTHS[contig]
+    absolute_genetic_start += locus['chrom_start']
+    return absolute_genetic_start
 
 def format_introns(raw_sequence_data):
     _block_starts = []
@@ -173,6 +237,7 @@ def format_domains(raw_domain_data):
             obj = {
                 'name': domain['domain']['display_name'],
                 'id': domain['domain']['id'],
+                'href': domain['domain']['link'],
                 'sourceName': domain['source']['display_name'],
                 'sourceId': domain['source']['id'],
                 'start': domain['start'],
@@ -246,8 +311,8 @@ def index_loci():
 
 def main():
     setup_index()
-    # index_loci()
-    index_test_locus()
+    index_loci()
+    # index_test_locus()
 
     if TEST:
         requests.get(RUNSCOPE_TRIGGER_URL)

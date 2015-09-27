@@ -22,7 +22,6 @@ var Drawer = React.createClass({
 	},
 
 	render: function () {
-		console.log(this.props.isProteinMode)
 		var screenHeight = this._getScreenHeight();
 		var maxDrawerHeight = Math.min(screenHeight * 0.9, MAX_HEIGHT);
 		var drawerHeight = maxDrawerHeight
