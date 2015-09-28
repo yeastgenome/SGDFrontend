@@ -159,6 +159,7 @@ module.exports = class VariantViewerStore {
 			if (typeof cb === "function") cb(null);
 			$.getJSON(longUrl, data => {
 				allLociData = data.loci;
+				this.sortLoci();
 				if (typeof cb === "function") return cb(null);
 				return;
 			});
