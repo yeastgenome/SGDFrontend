@@ -54,9 +54,10 @@ module.exports = class VariantViewerStore {
 
 	sortLoci () {
 		var sortFn;
+		// reference genetic position
 		if (sortBy === "position") {
 			sortFn = d => {
-				return d.absolute_genetic_position;
+				return d.absolute_genetic_start;
 			};
 		// entropy
 		} else {
@@ -77,6 +78,7 @@ module.exports = class VariantViewerStore {
 
 	zoomHeatmap (isIn) {
 		heatmapZoom += isIn;
+		heatmapZoom = Math.max(1, heatmapZoom);
 	}
 
 	// *** accessors ***
@@ -128,6 +130,8 @@ module.exports = class VariantViewerStore {
 
 	getVisibleStrainIds () { return visibleStrainIds; }
 
+	getSortBy () { return sortBy; }
+
 	getStrainMetaData () { return staticStrainMetadata.strains; }
 
 	getAllLociTotal () { return allLociTotal; }
@@ -172,6 +176,7 @@ module.exports = class VariantViewerStore {
 		$.getJSON(url, data => {
 			totalLoci = data.total;
 			filteredlociData = data.loci;
+			this.sortLoci();
 			if (typeof cb === "function") return cb(null, data);
 			return;
 		});

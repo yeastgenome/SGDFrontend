@@ -73,12 +73,13 @@ var SettingsDropdown = React.createClass({
 			this.props.store.setSortBy(_sortBy);
 			if (typeof this.props.onUpdate === "function") this.props.onUpdate();
 		};
+		var existingSortBy = this.props.store.getSortBy();
 		return (
 			<div>
 				<h3>Sort By</h3>
 				<RadioSelector
 					elements={_elements} orientation="vertical"
-					onSelect={_onSelect} initialActiveElementKey="position"
+					onSelect={_onSelect} initialActiveElementKey={existingSortBy}
 				/>
 			</div>
 		);

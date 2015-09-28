@@ -167,11 +167,11 @@ var VariantViewer = React.createClass({
 		}, MIN_PENDING_TIME);
 		this.props.store.fetchSearchResults( err => {
 			if (this.isMounted()) {
-				this.props.store.clusterStrains( err => {
+				// this.props.store.clusterStrains( err => {
 					if (this._pendingTimer) clearTimeout(this._pendingTimer);
 					this.setState({ isPending: false });
 					if (typeof cb === "function") return cb(err);
-				});
+				// });
 			}
 		});
 	}
