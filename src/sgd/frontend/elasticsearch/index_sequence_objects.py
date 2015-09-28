@@ -4,11 +4,11 @@ from time import sleep
 from random import shuffle
 import requests
 from collections import OrderedDict
-es = Elasticsearch()
+es = Elasticsearch(timeout=5)
 
-INDEX_NAME = 'sequence_objects6'
+INDEX_NAME = 'sequence_objects7'
 DOC_TYPE = 'sequence_object'
-BASE_URL = 'http://yeastgenome.org'
+BASE_URL = 'http://sgd-qa.stanford.edu'
 ALIGNMENT_URL = BASE_URL + '/webservice/alignments'
 LOCUS_BASE_URL = BASE_URL + '/webservice/locus/'
 FILTERED_GO_TERMS = ['biological process', 'cellular component', 'molecular function']
@@ -93,12 +93,30 @@ def fetch_and_index_locus(locus, name, process_index):
         if exists:
             return
     # fetch basic data
-    print 'fetching ' + name + ' on thread ' + str(process_index)
-    basic_url = LOCUS_BASE_URL + locus['sgdid'] + '/overview'
-    # TEMP use local elasticsearch
-    # requests.get(basic_url).json()
-    temp_url = 'http://localhost:9200/backend_objects/backend_object/' + locus['sgdid']
-    basic_response = requests.get(temp_url).json()['_source']['src_data']
+    print 'fetching ' + locus['sgdid'] + ' on thread ' + str(process_index)
+
+    # try to get from es, then from backend
+    # get sequence details for chromStart, chromEnd, contig, and introns
+    overview_url = '/locus/' +  locus['sgdid'] + '/overview'
+    obj = {
+        'query': {
+            'filtered': {
+                'filter': {
+                    'term': {
+                        'url': overview_url
+                    }
+                }
+            }
+        }
+    }
+
+    res = es.search(index='backend_objects', doc_type='backend_object', body=obj)
+    if res['hits']['total'] == 1:
+        basic_response = res['hits']['hits'][0]['_source']['src_data']
+    else:
+        basic_response_url = BASE_URL + overview_url
+        basic_response = requests.get(basic_response_url).json()
+
 
     # add raw GO term (strings) to indexed obj
     go_terms = []
@@ -112,8 +130,6 @@ def fetch_and_index_locus(locus, name, process_index):
 
     alignment_show_url = ALIGNMENT_URL + '/' + locus['sgdid']
     alignment_response = requests.get(alignment_show_url).json()
-    dna_seqs = alignment_response['aligned_dna_sequences']
-    snp_seqs = [aligned_sequence_to_snp_sequence(seq, alignment_response['variant_data_dna']) for seq in dna_seqs]
 
     # get sequence details for chromStart, chromEnd, contig, and introns
     seq_details_url = '/locus/' +  locus['sgdid'] + '/sequence_details'
@@ -143,14 +159,36 @@ def fetch_and_index_locus(locus, name, process_index):
     intron_data = format_introns(seq_details_response)
 
     # get domains
-    domain_url = LOCUS_BASE_URL + locus['sgdid'] + '/protein_domain_details'
+    # TEMP
+    domain_url = 'http://yeastgenome.org/webservice/locus/' + locus['sgdid'] + '/protein_domain_details'
+    # domain_url = LOCUS_BASE_URL + locus['sgdid'] + '/protein_domain_details'
     domain_response = requests.get(domain_url).json()
     formatted_domains = format_domains(domain_response)
 
     # assign absolute_genetic_start
     locus['contig_name'] = contig_name
     locus['chrom_start'] = chrom_start
-    _absolute_genetic_start = get_absolute_genetic_start(locus)    
+    _absolute_genetic_start = get_absolute_genetic_start(locus)
+
+    # protein length
+    if 'protein_length' in alignment_response.keys():
+        _protein_length = alignment_response['protein_length']
+    else:
+        _protein_length = 0
+
+    # variant data dna
+    if 'variant_data_dna' in alignment_response.keys():
+        _variant_data_dna = alignment_response['variant_data_dna']
+    else:
+        _variant_data_dna = []
+    # variant data protein
+    if 'variant_data_protein' in alignment_response.keys():
+        _variant_data_protein = alignment_response['variant_data_protein']
+    else:
+        _variant_data_protein = []
+
+    dna_seqs = alignment_response['aligned_dna_sequences']
+    snp_seqs = [aligned_sequence_to_snp_sequence(seq, _variant_data_dna) for seq in dna_seqs]
 
     # format obj and index
     body = {
@@ -169,9 +207,9 @@ def fetch_and_index_locus(locus, name, process_index):
         'aligned_dna_sequences': alignment_response['aligned_dna_sequences'],
         'aligned_protein_sequences': alignment_response['aligned_protein_sequences'],
         'dna_length': alignment_response['dna_length'],
-        'protein_length': alignment_response['protein_length'],
-        'variant_data_dna': alignment_response['variant_data_dna'],
-        'variant_data_protein': alignment_response['variant_data_protein'],
+        'protein_length': _protein_length,
+        'variant_data_dna': _variant_data_dna,
+        'variant_data_protein': _variant_data_protein,
         'protein_domains': formatted_domains,
         'snp_seqs': snp_seqs,
         'chrom_start': chrom_start,
@@ -264,11 +302,11 @@ def index_set_of_loci(loci, process_index):
             # see if exists
             exists = es.exists(index=INDEX_NAME, doc_type=DOC_TYPE, id=locus['sgdid'])
             # if not exists:
-            try:
-                fetch_and_index_locus(locus, locus['display_name'], process_index)
-            except:
-                print 'error fetching ' + locus['display_name']
-                continue
+            # try:
+            fetch_and_index_locus(locus, locus['display_name'], process_index)
+            # except:
+                # print 'error fetching ' + locus['display_name']
+                # continue
     except:
         print 'Unexpected Error'
         raise
@@ -278,7 +316,6 @@ def index_loci():
     print '*** FETCHING ALL LOCI ***'
     raw_alignment_data = requests.get(ALIGNMENT_URL).json()
     loci = raw_alignment_data['loci']
-
     # split into chunks for parallel processing
     chunked_loci = chunk_list(loci, NUM_THREADS)
 

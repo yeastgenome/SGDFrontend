@@ -7,7 +7,7 @@ SRC_INDEX = 'sequence_objects6'
 TARGET_INDEX = 'sequence_objects'
 DOC_TYPE = 'sequence_object'
 
-RESET_INDEX = False
+RESET_INDEX = True
 
 src_client = Elasticsearch(SRC_CLIENT_ADDRESS)
 target_client = Elasticsearch(TARGET_CLIENT_ADDRESS)
