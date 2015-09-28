@@ -58,6 +58,12 @@ var AsyncVariantViewer = React.createClass({
 		var data = this.state.data;
 		if (!data) return null;
 		var name = (data.name === data.format_name) ? data.name : `${data.name} / ${data.format_name}`;
+		var nameNode;
+		if (data.href) {
+			nameNode = <a href={data.href}>{name}</a>;
+		} else {
+			nameNode = name;
+		}
 
 		// init radio selector
 		var _elements = [{ name: "DNA", key: "dna" }, { name: "Protein", key: "protein" }];
@@ -67,7 +73,9 @@ var AsyncVariantViewer = React.createClass({
 		return (
 			<div style={[style.headerWrapper]}>
 				<div style={[style.textWrapper]}>
-					<h1 style={[style.textElement]}>{name}</h1>
+					<h1 style={[style.textElement]}>
+						{nameNode}
+					</h1>
 					<p style={[style.textElement, style.description]}>{data.description}</p>
 				</div>
 				<div style={[style.radio]}>
@@ -96,6 +104,7 @@ var AsyncVariantViewer = React.createClass({
 			blockStarts={data.block_starts}
 			blockSizes={data.block_sizes}
 			contigName={data.contig_name}
+			contigHref={data.contig_href}
 			alignedDnaSequences={dnaSeqs}
 			variantDataDna={variantData}
 			dnaLength={data.dna_length}
@@ -104,7 +113,6 @@ var AsyncVariantViewer = React.createClass({
 			downloadCaption={CAPTION}
 			isRelative={true}
 		/>);
-		// contigHref
 	},
 
 	_renderProteinViz: function () {
@@ -130,7 +138,7 @@ var AsyncVariantViewer = React.createClass({
 			chromStart={data.chrom_start}
 			chromEnd={data.chrom_end}
 			contigName={data.contig_name}
-			
+			contigHref={data.contig_href}
 			alignedProteinSequences={proteinSeqs}
 			variantDataProtein={variantData}
 			proteinLength={data.protein_length}
@@ -138,6 +146,7 @@ var AsyncVariantViewer = React.createClass({
 			isProteinMode={true}
 			domains={_domains}
 			downloadCaption={CAPTION}
+			isRelative={true}
 		/>);
 	},
 
