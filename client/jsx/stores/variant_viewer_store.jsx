@@ -171,7 +171,7 @@ module.exports = class VariantViewerStore {
 		var url = `${LOCI_SEARCH_BASE_URL}?query=${query}`;
 		$.getJSON(url, data => {
 			totalLoci = data.total;
-			filteredlociData = data.loci;		
+			filteredlociData = data.loci;
 			if (typeof cb === "function") return cb(null, data);
 			return;
 		});
