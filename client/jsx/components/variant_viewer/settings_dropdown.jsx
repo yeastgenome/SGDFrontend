@@ -97,7 +97,8 @@ var style = {
 		padding: "1rem",
 		background: "#efefef",
 		width: WIDTH,
-		zIndex: 2
+		zIndex: 2,
+		textAlign: "left"
 	}
 };
 

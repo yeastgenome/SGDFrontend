@@ -4,6 +4,8 @@ var React = require("react");
 var _ = require("underscore");
 var Radium = require("radium");
 
+var FlexibleTooltip = require("../widgets/flexible_tooltip.jsx");
+
 var DEFAULT_DOM_SIDE_SIZE = 315; // height and width
 var SCROLL_CONTAINER_HEIGHT = 800;
 var FONT_SIZE = 14;
@@ -20,6 +22,7 @@ var ScrollyHeatmap = React.createClass({
 	propTypes: {
 		data: React.PropTypes.array.isRequired, // [{ name: "some123", id: "123", data: [0.1, 0.5, ...]}, ...]
 		nodeSize: React.PropTypes.number,
+		originalNodeSize: React.PropTypes.number,
 		onClick: React.PropTypes.func,
 		strainData: React.PropTypes.array.isRequired, // [{ name: "foo", id: 1 }, ...]
 		mouseOverBorderColor: React.PropTypes.string
@@ -28,6 +31,7 @@ var ScrollyHeatmap = React.createClass({
 	getDefaultProps: function () {
 		return {
 			nodeSize: DEFAULT_NODE_SIZE,
+			originalNodeSize: 16,//DEFAULT_NODE_SIZE,
 			mouseOverBorderColor: DEFAULT_BORDER_COLOR
 		};
 	},
@@ -38,8 +42,8 @@ var ScrollyHeatmap = React.createClass({
 			DOMWidth: DEFAULT_DOM_SIDE_SIZE,
 			DOMHeight: DEFAULT_DOM_SIDE_SIZE,
 			mouseOverId: null,
+			canvasRatio: 1,
 			tooltipVisibile: false,
-			canvasRatio: 1
 		};
 	},
 
@@ -52,10 +56,10 @@ var ScrollyHeatmap = React.createClass({
 
 		return (
 			<div onMouseLeave={this._onMouseLeave}>
-				{this._getTooltipNode()}
 				<div style={{ position: "relative", zIndex: 1 }}>
 					<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
 						<div ref="outerScroll" style={{ width: this.state.DOMWidth, height: SCROLL_CONTAINER_HEIGHT, overflowY: "scroll", position: "relative", left: 0 }}>
+							{this._getTooltipNode()}
 							<canvas ref="canvas" width={_canvasWidth} height={_canvasSize} style={{ position: "absolute", top: this.state.scrollPosition, left: _canvasX, width: _canvasWidth / canvasRatio }}/>
 							<div style={{ position: "relative", height: _scrollZoneSize }}>									
 							</div>
@@ -116,7 +120,10 @@ var ScrollyHeatmap = React.createClass({
 
 	_onScroll: function (e) {
 		var scrollEl = this.refs.outerScroll.getDOMNode();
-		this.setState({ scrollPosition: scrollEl.scrollTop });
+		this.setState({
+			scrollPosition: scrollEl.scrollTop,
+			tooltipVisible: false
+		});
 		this._drawCanvas();
 	},
 
@@ -125,8 +132,9 @@ var ScrollyHeatmap = React.createClass({
 		if (chunkedData.length === 0) return null;
 		var xScale = this._getXScale();
 		var nodeSize = this.props.nodeSize;
+		var originalNodeSize = this.props.originalNodeSize;
 		var widthNodes = chunkedData[0].data.length;
-		var totalWidth = widthNodes * nodeSize + LABEL_WIDTH;
+		var totalWidth = widthNodes * originalNodeSize + LABEL_WIDTH;
 		var rectNodes = _.map(chunkedData, (d, i) => {
 			// UI events
 			var _onClick;
@@ -137,7 +145,7 @@ var ScrollyHeatmap = React.createClass({
 				this.props.onClick(d);
 			};
 			var _onMouseOver = e => {
-				this.setState({ mouseOverId: d.id });
+				this._onMouseOver(e, d);
 			};
 			var _transform = `translate(0, ${nodeSize * i})`;
 			// maybe init highlighting node
@@ -192,7 +200,10 @@ var ScrollyHeatmap = React.createClass({
 	_onMouseOver: function (e, d) {
 		if (this._mouseOverTimeout) clearTimeout(this._mouseOverTimeout);
 		this._mouseOverTimeout = setTimeout( () => {
-			this.setState({ tooltipVisible: true });
+			this.setState({
+				mouseOverId: d.id,
+				tooltipVisible: true
+			});
 		}, TOOLTIP_DELAY);
 
 		this.setState({
@@ -220,7 +231,7 @@ var ScrollyHeatmap = React.createClass({
 	_getXScale: function () {
 		return d3.scale.linear()
 			.domain([0, this.props.strainData.length])
-			.range([0, this.props.strainData.length * this.props.nodeSize]);
+			.range([0, this.props.strainData.length * this.props.originalNodeSize]);
 	},
 
 	_getYScale: function () {
@@ -237,7 +248,20 @@ var ScrollyHeatmap = React.createClass({
 	},
 
 	_getTooltipNode: function () {
-		return null;
+		if (!this.state.tooltipVisible) return null;
+		var locusData = _.findWhere(this.props.data, { id: this.state.mouseOverId });
+		var scale = this._getYScale();
+		var _left = LABEL_WIDTH;
+		var _top = scale(this.props.data.indexOf(locusData));
+		return (
+			<div >
+				<FlexibleTooltip
+					visible={this.state.tooltipVisible} text={locusData.name}
+					left={_left} top={_top}
+					href={locusData.href}
+				/>
+			</div>
+		);
 	},
 
 	_drawCanvas: function () {
@@ -263,18 +287,17 @@ var ScrollyHeatmap = React.createClass({
 			textX = (LABEL_WIDTH - 5) * canvasRatio;
 			textY = ((i + 1) * this.props.nodeSize - 3) * canvasRatio;
 			ctx.fillText(d.name, textX, textY);
-
+			// draw nodes
 			var x, y, color;
 			var nodeSize = this.props.nodeSize * canvasRatio;
+			var originalNodeSize = this.props.originalNodeSize * canvasRatio;
 			d.data.forEach( (_d, _i) => {
 				// get color and draw rect
-				
-				x = (_i * this.props.nodeSize + LABEL_WIDTH) * canvasRatio;
-				y = i * this.props.nodeSize * canvasRatio;
+				x = (_i * originalNodeSize) + (LABEL_WIDTH * canvasRatio);
+				y = i * nodeSize;
 				color = (_d === null) ? "white" : colorScale(_d);
-
 				ctx.fillStyle = color;
-				ctx.fillRect(x, y, nodeSize, nodeSize);
+				ctx.fillRect(x, y, originalNodeSize, nodeSize);
 			});
 		});
 	}

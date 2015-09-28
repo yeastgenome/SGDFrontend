@@ -484,6 +484,7 @@ class YeastgenomeFrontend(FrontendInterface):
             obj = {
                 'sgdid': hit['_source']['sgdid'],
                 'name': hit['_source']['name'],
+                'href': hit['_source']['href'],
                 'format_name': hit['_source']['format_name'],
                 'dna_scores': hit['_source']['dna_scores'],
                 'protein_scores': hit['_source']['protein_scores'],

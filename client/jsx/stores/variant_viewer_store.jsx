@@ -106,7 +106,8 @@ module.exports = class VariantViewerStore {
 			return {
 				name: d.name,
 				id: d.sgdid,
-				data: sorted
+				data: sorted,
+				href: d.href
 			}
 		});
 	}
