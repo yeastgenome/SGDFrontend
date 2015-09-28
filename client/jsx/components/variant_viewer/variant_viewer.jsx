@@ -154,7 +154,7 @@ var VariantViewer = React.createClass({
 			this.props.store.setQuery(query);
 			this.submitSearch();
 		}
-		var _text = "Enter gene name, GO term, or list of gene names";
+		var _text = "Enter gene name, GO term, chromosome, or list of gene names";
 		return <SearchBar placeholderText={_text} onSubmit={_onSubmit} />;
 	},
 
@@ -167,11 +167,11 @@ var VariantViewer = React.createClass({
 		}, MIN_PENDING_TIME);
 		this.props.store.fetchSearchResults( err => {
 			if (this.isMounted()) {
-				// this.props.store.clusterStrains( err => {
+				this.props.store.clusterStrains( err => {
 					if (this._pendingTimer) clearTimeout(this._pendingTimer);
 					this.setState({ isPending: false });
 					if (typeof cb === "function") return cb(err);
-				// });
+				});
 			}
 		});
 	}
