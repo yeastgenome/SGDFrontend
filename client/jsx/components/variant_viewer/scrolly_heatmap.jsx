@@ -281,12 +281,15 @@ var ScrollyHeatmap = React.createClass({
 
 		ctx.textAlign = "right";
 		var textX, textY;
+		var canDrawLabels = (this.props.nodeSize > FONT_SIZE);
 		chunkOfData.forEach( (d, i) => {
 			// label
-			ctx.fillStyle = "black";
-			textX = (LABEL_WIDTH - 5) * canvasRatio;
-			textY = ((i + 1) * this.props.nodeSize - 3) * canvasRatio;
-			ctx.fillText(d.name, textX, textY);
+			if (canDrawLabels) {
+				ctx.fillStyle = "black";
+				textX = (LABEL_WIDTH - 5) * canvasRatio;
+				textY = ((i + 1) * this.props.nodeSize - 3) * canvasRatio;
+				ctx.fillText(d.name, textX, textY);
+			}
 			// draw nodes
 			var x, y, color;
 			var nodeSize = this.props.nodeSize * canvasRatio;
