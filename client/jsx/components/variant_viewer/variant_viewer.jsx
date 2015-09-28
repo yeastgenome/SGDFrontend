@@ -71,13 +71,19 @@ var VariantViewer = React.createClass({
 					<div className="columns small-12 large-6">
 						{this._renderSearchBar()}
 					</div>
-					<div className="columns small-12 large-6" style={{ display: "flex", justifyContent: "flex-start" }}>
-						<StrainSelector store={this.props.store} onUpdate={onSettingsUpdate} />
-						<div style={{ marginTop: "0.4rem", marginLeft: "1.8rem", minWidth: "13rem" }}>
-							<RadioSelector elements={radioElements} onSelect={radioOnSelect} initialActiveElementKey="dna" />
-						</div>
-						<div style={{ marginLeft: "auto" }}>
-							<SettingsDropdown store={this.props.store} onUpdate={onSettingsUpdate} />
+					<div className="columns small-12 large-6 end" style={{ display: "flex", justifyContent: "flex-start" }}>
+						<div className="row">
+							<div className="columns small-3">
+								<StrainSelector store={this.props.store} onUpdate={onSettingsUpdate} />
+							</div>
+							<div className="columns small-5">
+								<div style={{ marginTop: "0.5rem", marginLeft: "1.8rem", minWidth: "13rem" }}>
+									<RadioSelector elements={radioElements} onSelect={radioOnSelect} initialActiveElementKey="dna" />
+								</div>
+							</div>
+							<div className="columns small-4 end" style={{ textAlign: "right" }}>
+								<SettingsDropdown store={this.props.store} onUpdate={onSettingsUpdate} />
+							</div>
 						</div>
 					</div>
 				</div>

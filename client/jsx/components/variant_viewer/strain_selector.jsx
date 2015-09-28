@@ -26,7 +26,7 @@ var StrainSelector = React.createClass({
 
 	render: function () {
 		return (
-			<div style={{ position: "relative", height: "2.4rem" }}>
+			<div style={[style.wrapper]}>
 				{this._getActiveNode()}
 				<a className="button dropdown small secondary" onClick={this._toggleActive}><i className="fa fa-check-square" /> Strains</a>
 			</div>
@@ -74,6 +74,11 @@ var StrainSelector = React.createClass({
 });
 
 var style = {
+	wrapper: {
+		position: "relative",
+		height: "2.4rem",
+		minWidth: WIDTH
+	},
 	activeWrapper: {
 		position: "absolute",
 		top: "3rem",
