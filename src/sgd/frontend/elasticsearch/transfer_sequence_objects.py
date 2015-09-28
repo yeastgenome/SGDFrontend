@@ -3,7 +3,7 @@ from elasticsearch import Elasticsearch
 
 SRC_CLIENT_ADDRESS = 'http://localhost:9200'
 TARGET_CLIENT_ADDRESS = 'http://localhost:9200'
-SRC_INDEX = 'sequence_objects5'
+SRC_INDEX = 'sequence_objects6'
 TARGET_INDEX = 'sequence_objects'
 DOC_TYPE = 'sequence_object'
 
@@ -26,15 +26,14 @@ def put_mapping():
 	target_client.indices.put_mapping(index=TARGET_INDEX, body=full_settings, doc_type=DOC_TYPE)
 
 def setup_index():
-	exists = target_client.indices.exists(TARGET_INDEX)
-	if RESET_INDEX and exists:
-		target_client.indices.delete(TARGET_INDEX)
-		target_client.indices.create(TARGET_INDEX)
-		put_mapping()
-	elif not exists:
-		target_client.indices.create(TARGET_INDEX)
-		put_mapping()
-	return
+    exists = target_client.indices.exists(TARGET_INDEX)
+    if RESET_INDEX and exists:
+        target_client.indices.delete(TARGET_INDEX)
+    exists = target_client.indices.exists(TARGET_INDEX)
+    if not exists:
+        target_client.indices.create(TARGET_INDEX)
+        put_mapping()
+    return
 
 def transfer():
 	# transfer sequence objects between clusters or index based on statics
