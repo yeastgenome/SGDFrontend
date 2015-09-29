@@ -42,6 +42,7 @@ var ScrollyHeatmap = React.createClass({
 			DOMWidth: DEFAULT_DOM_SIDE_SIZE,
 			DOMHeight: DEFAULT_DOM_SIDE_SIZE,
 			mouseOverId: null,
+			quickMouseOverId: null,
 			canvasRatio: 1,
 			tooltipVisibile: false,
 		};
@@ -150,7 +151,7 @@ var ScrollyHeatmap = React.createClass({
 			var _transform = `translate(0, ${nodeSize * i})`;
 			// maybe init highlighting node
 			var highlightNode = null;
-			if (d.id === this.state.mouseOverId) {
+			if (d.id === this.state.quickMouseOverId) {
 				highlightNode = (<rect
 					width={totalWidth - LABEL_WIDTH - 1} height={nodeSize} x={LABEL_WIDTH}
 					fill="none" opacity="1"
@@ -198,7 +199,7 @@ var ScrollyHeatmap = React.createClass({
 	},
 
 	_onMouseOver: function (e, d) {
-		if (this._mouseOverTimeout) clearTimeout(this._mouseOverTimeout);
+		this._clearMouseOverTimeout();
 		this._mouseOverTimeout = setTimeout( () => {
 			this.setState({
 				mouseOverId: d.id,
@@ -207,9 +208,12 @@ var ScrollyHeatmap = React.createClass({
 		}, TOOLTIP_DELAY);
 
 		this.setState({
-			mouseOverId: d.id,
-			tooltipVisible: false
+			quickMouseOverId: d.id,
 		});
+	},
+
+	_clearMouseOverTimeout: function () {
+		if (this._mouseOverTimeout) clearTimeout(this._mouseOverTimeout);
 	},
 
 	_calculateDOMSize: function () {
@@ -258,7 +262,7 @@ var ScrollyHeatmap = React.createClass({
 				<FlexibleTooltip
 					visible={this.state.tooltipVisible} text={locusData.name}
 					left={_left} top={_top}
-					href={locusData.href}
+					href={locusData.href} onMouseOver={this._clearMouseOverTimeout}
 				/>
 			</div>
 		);
