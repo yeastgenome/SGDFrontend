@@ -67,6 +67,7 @@ var Checklist = React.createClass({
 			text = "Deselect All";
 			onClick = e => {
 				e.preventDefault();
+				if (this.props.onSelect) this.props.onSelect([]);
 				this.setState({ activeElementKeys: [] });
 			}
 		} else {
@@ -74,6 +75,7 @@ var Checklist = React.createClass({
 			var _allKeys = _.map(this.props.elements, d => { return d.key; });
 			onClick = e => {
 				e.preventDefault();
+				if (this.props.onSelect) this.props.onSelect(_allKeys);
 				this.setState({ activeElementKeys: _allKeys });
 			}
 		}

@@ -3,7 +3,7 @@
 var _ = require("underscore");
 var $ = require("jquery");
 
-var clusterStrains = require("./cluster_strains.jsx");
+var ClusterStrains = require("./cluster_strains.jsx");
 var staticStrainMetadata = require("./strain_metadata");
 
 var LOCI_SEARCH_BASE_URL = "/search_sequence_objects";
@@ -37,7 +37,7 @@ module.exports = class VariantViewerStore {
 	// cb(err)
 	setVisibleStrainIds (_visibleStrainIds, cb) {
 		// must contain reference
-		if (_visibleStrainIds.indexOf(REFERENCE_STRAIN_ID) <= 0) _visibleStrainIds.push(REFERENCE_STRAIN_ID);
+		if (_visibleStrainIds.indexOf(REFERENCE_STRAIN_ID) < 0) _visibleStrainIds.push(REFERENCE_STRAIN_ID);
 		_visibleStrainIds = _.sortBy(_visibleStrainIds, d => { return d.id });
 		visibleStrainIds = _visibleStrainIds;
 		if (typeof cb === "function") return this.clusterStrains(cb);
@@ -193,6 +193,7 @@ module.exports = class VariantViewerStore {
 
 	// cb (err)
 	clusterStrains (cb) {
+		console.log('clusta')
 		// initial state, use precalculated cluster
 		if (query === "" && visibleStrainIds.length === staticStrainMetadata.strains.length) {
 			clusteredStrainData = staticStrainMetadata.clusterData;
@@ -201,7 +202,7 @@ module.exports = class VariantViewerStore {
 				.map( d => {
 					return _.findWhere(strainMetaData, { id: d });
 			});
-			var _clustered = clusterStrains(this.getLociData(), visibleStrainMetaData);
+			var _clustered = ClusterStrains(this.getLociData(), visibleStrainMetaData);
 			clusteredStrainData = _clustered;
 		}
 		strainClusterIndexes = this.getStrainIndexes(clusteredStrainData);
