@@ -22,21 +22,14 @@ var Checklist = React.createClass({
 		};
 	},
 
-	componentDidUpdate: function (nextProps, nextState) {
-		if (this.props.onSelect && this.state.activeElementKeys !== nextState.activeElementKeys) {
-			this.props.onSelect(this.state.activeElementKeys)
-		}
-	},
-
 	render: function () {
+		var _currentActive = this.state.activeElementKeys;
 		var inputs = _.map(this.props.elements, (d, i) => {
+			var _isActive = _currentActive.indexOf(d.key) >= 0;
 			var _onClick = e => {
 				// e.preventDefault();
 				e.nativeEvent.stopImmediatePropagation();
-
 				// add or remove key from active
-				var _currentActive = this.state.activeElementKeys;
-				var _isActive = _currentActive.indexOf(d.key) >= 0;
 				if (_isActive) {
 					_currentActive = _.filter(_currentActive, _d => {
 						return _d !== d.key;
@@ -44,19 +37,19 @@ var Checklist = React.createClass({
 				} else {
 					_currentActive.push(d.key);
 				}
+				if (this.props.onSelect) this.props.onSelect(_currentActive);
 				this.setState({ activeElementKeys: _currentActive });
 			};
-			var _checked = this.state.activeElementKeys.indexOf(d.key) >= 0;
 
 			return (
 				<div className="checklist-element-container" key={"checkElement" + i}>
-					<input type="checkbox" onChange={_onClick} name={d.key} value={d.key} checked={_checked} style={{ margin: 0 }}>
+					<input type="checkbox" onChange={_onClick} name={d.key} value={d.key} checked={_isActive} style={{ margin: 0 }}>
 						<label onClick={_onClick}>{d.name}</label>
 					</input>
 				</div>
-			);
-			
+			);		
 		});
+
 		return (
 			<div>
 				<form className="checklist" action="">

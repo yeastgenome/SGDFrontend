@@ -37,7 +37,7 @@ module.exports = class VariantViewerStore {
 	// cb(err)
 	setVisibleStrainIds (_visibleStrainIds, cb) {
 		// must contain reference
-		if (_visibleStrainIds.indexOf(REFERENCE_STRAIN_ID) < 0) _visibleStrainIds.push(REFERENCE_STRAIN_ID);
+		if (_visibleStrainIds.indexOf(REFERENCE_STRAIN_ID) <= 0) _visibleStrainIds.push(REFERENCE_STRAIN_ID);
 		_visibleStrainIds = _.sortBy(_visibleStrainIds, d => { return d.id });
 		visibleStrainIds = _visibleStrainIds;
 		if (typeof cb === "function") return this.clusterStrains(cb);
