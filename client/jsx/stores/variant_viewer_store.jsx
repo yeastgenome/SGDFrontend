@@ -3,8 +3,9 @@
 var _ = require("underscore");
 var $ = require("jquery");
 
-var ClusterStrains = require("./cluster_strains.jsx");
+var ClusterStrainsWorker = require("./cluster_strains.jsx");
 var staticStrainMetadata = require("./strain_metadata");
+var work = require("webworkify");
 
 var LOCI_SEARCH_BASE_URL = "/search_sequence_objects";
 var LOCUS_SHOW_BASE_URL = "/get_sequence_object";
@@ -193,7 +194,6 @@ module.exports = class VariantViewerStore {
 
 	// cb (err)
 	clusterStrains (cb) {
-		console.log('clusta')
 		// initial state, use precalculated cluster
 		if (query === "" && visibleStrainIds.length === staticStrainMetadata.strains.length) {
 			clusteredStrainData = staticStrainMetadata.clusterData;
@@ -202,11 +202,24 @@ module.exports = class VariantViewerStore {
 				.map( d => {
 					return _.findWhere(strainMetaData, { id: d });
 			});
-			var _clustered = ClusterStrains(this.getLociData(), visibleStrainMetaData);
-			clusteredStrainData = _clustered;
+
+			// web worker setup
+			var clusterWorker = work(ClusterStrainsWorker);
+			// attach results to cb
+			clusterWorker.addEventListener("message", ev => {
+				var _clusteredStrainData = JSON.parse(ev.data);
+				clusteredStrainData = _clusteredStrainData;
+				strainClusterIndexes = this.getStrainIndexes(clusteredStrainData);
+				cb(null);
+			});
+			// config and run
+			var configObj = {
+				lociData: this.getLociData(),
+				strainData: visibleStrainMetaData
+			};
+			var configObjStr = JSON.stringify(configObj);
+			clusterWorker.postMessage(configObjStr);
 		}
-		strainClusterIndexes = this.getStrainIndexes(clusteredStrainData);
-		cb(null);
 	}
 
 	// save the order of the strains in the dendro cluster object so that heatmap can 

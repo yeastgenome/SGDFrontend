@@ -3,9 +3,13 @@
 var clusterfck = require("clusterfck");
 var _ = require("underscore");
 
+
 var STRAIN_NAMES = ["S288C", "X2180-1A", "SEY6210", "W303", "JK9-3d", "FL100", "CEN.PK", "D273-10B", "Sigma1278b", "RM11-1a", "SK1", "Y55"];
 
-module.exports = function (data, strainMetaData) {
+// configObject { lociData, strainData }
+var ClusterStrains = function (configObject) {
+	var data = configObject.lociData;
+	var strainMetaData = configObject.strainData;
 	var rawSnpSeqs = data.map(d => {
 		return d.snp_seqs;
 	});
@@ -65,4 +69,14 @@ var _reformatCluster = function (obj) {
 		delete obj.right;
 		return _.clone(obj);
 	}
+};
+
+// wrap as web worker
+module.exports = function (self) {
+	self.addEventListener('message', function (ev) {
+		var configObject = JSON.parse(ev.data);
+		var clusteredData = ClusterStrains(configObject);
+		var clusteredDataStr = JSON.stringify(clusteredData);
+		self.postMessage(clusteredDataStr);
+	});
 };
