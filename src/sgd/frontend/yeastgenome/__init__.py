@@ -478,26 +478,16 @@ class YeastgenomeFrontend(FrontendInterface):
                 }
             }
 
+        search_body['_source'] = ['sgdid', 'name', 'href', 'absolute_genetic_start', 'format_name', 'dna_scores', 'protein_scores', 'snp_seqs']
         res = es.search(index='sequence_objects', body=search_body, size=limit, from_=offset)
         simple_hits = []
         for hit in res['hits']['hits']:
-            obj = {
-                'sgdid': hit['_source']['sgdid'],
-                'name': hit['_source']['name'],
-                'href': hit['_source']['href'],
-                'absolute_genetic_start': hit['_source']['absolute_genetic_start'],
-                'format_name': hit['_source']['format_name'],
-                'dna_scores': hit['_source']['dna_scores'],
-                'protein_scores': hit['_source']['protein_scores'],
-                'snp_seqs': hit['_source']['snp_seqs']
-            }
-            simple_hits.append(obj)
+            simple_hits.append(hit['_source'])
         formatted_response = {
-            'loci': simple_hits,
+            'loci': res['hits']['hits'],
             'total': res['hits']['total'],
             'offset': offset
         }
-
         return Response(body=json.dumps(formatted_response), content_type='application/json')
 
     # get individual feature
