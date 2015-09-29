@@ -2,6 +2,7 @@
 "use strict";
 var React = require("react");
 var Router = require("react-router");
+var Radium = require("radium");
 var { RouteHandler, Navigation, State } = Router;
 var d3 = require("d3");
 var _ = require("underscore");
@@ -71,7 +72,7 @@ var VariantViewer = React.createClass({
 					<div className="columns small-12 large-6">
 						{this._renderSearchBar()}
 					</div>
-					<div className="columns small-12 large-6 end" style={{ display: "flex", justifyContent: "flex-start" }}>
+					<div className="columns small-12 large-6 end" style={[style.vizWrapper]}>
 						<div className="row">
 							<div className="columns small-3">
 								<StrainSelector store={this.props.store} onUpdate={onSettingsUpdate} />
@@ -177,9 +178,16 @@ var VariantViewer = React.createClass({
 	}
 });
 
+var style = {
+	vizWrapper: {
+		display: "flex",
+		justifyContent: "flex-start"
+	}
+};
+
 var LABEL_WIDTH = 100;
 var NODE_SIZE = 16;
 var SCROLL_CONTAINER_HEIGHT = 800;
 var MIN_PENDING_TIME = 250; // millis before loading state invoked
 
-module.exports = VariantViewer;
+module.exports = Radium(VariantViewer);
