@@ -59,8 +59,8 @@ var ScrollyHeatmap = React.createClass({
 			<div onMouseLeave={this._onMouseLeave}>
 				<div style={{ position: "relative", zIndex: 1 }}>
 					<div className="variant-heatmap" style={{ height: "100%", position: "relative"}}>
+						{this._getTooltipNode()}
 						<div ref="outerScroll" style={{ width: this.state.DOMWidth, height: SCROLL_CONTAINER_HEIGHT, overflowY: "scroll", position: "relative", left: 0 }}>
-							{this._getTooltipNode()}
 							<canvas ref="canvas" width={_canvasWidth} height={_canvasSize} style={{ position: "absolute", top: this.state.scrollPosition, left: _canvasX, width: _canvasWidth / canvasRatio }}/>
 							<div style={{ position: "relative", height: _scrollZoneSize }}>									
 							</div>
@@ -256,7 +256,7 @@ var ScrollyHeatmap = React.createClass({
 		var locusData = _.findWhere(this.props.data, { id: this.state.mouseOverId });
 		var scale = this._getYScale();
 		var _left = LABEL_WIDTH;
-		var _top = scale(this.props.data.indexOf(locusData));
+		var _top = scale(this.props.data.indexOf(locusData)) - this.state.scrollPosition;
 		return (
 			<div >
 				<FlexibleTooltip
