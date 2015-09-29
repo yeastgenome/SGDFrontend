@@ -484,7 +484,7 @@ class YeastgenomeFrontend(FrontendInterface):
         for hit in res['hits']['hits']:
             simple_hits.append(hit['_source'])
         formatted_response = {
-            'loci': res['hits']['hits'],
+            'loci': simple_hits,
             'total': res['hits']['total'],
             'offset': offset
         }
