@@ -109,12 +109,12 @@ def fetch_and_index_locus(locus, name, process_index):
             }
         }
     }
-
     res = es.search(index='backend_objects', doc_type='backend_object', body=obj)
     if res['hits']['total'] == 1:
         basic_response = res['hits']['hits'][0]['_source']['src_data']
     else:
-        basic_response_url = BASE_URL + overview_url
+        basic_response_url = BASE_URL + '/webservice' + overview_url
+        print basic_response_url
         basic_response = requests.get(basic_response_url).json()
 
 
@@ -302,11 +302,11 @@ def index_set_of_loci(loci, process_index):
             # see if exists
             exists = es.exists(index=INDEX_NAME, doc_type=DOC_TYPE, id=locus['sgdid'])
             # if not exists:
-            # try:
-            fetch_and_index_locus(locus, locus['display_name'], process_index)
-            # except:
-                # print 'error fetching ' + locus['display_name']
-                # continue
+            try:
+                fetch_and_index_locus(locus, locus['display_name'], process_index)
+            except:
+                print 'error fetching ' + locus['display_name']
+                continue
     except:
         print 'Unexpected Error'
         raise
@@ -316,6 +316,7 @@ def index_loci():
     print '*** FETCHING ALL LOCI ***'
     raw_alignment_data = requests.get(ALIGNMENT_URL).json()
     loci = raw_alignment_data['loci']
+
     # split into chunks for parallel processing
     chunked_loci = chunk_list(loci, NUM_THREADS)
 
