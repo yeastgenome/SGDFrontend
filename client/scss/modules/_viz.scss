@@ -369,7 +369,10 @@ h3.subfeature-label-text {
 	display: flex;
 	min-height: 250px;
 	justify-content: center;
+	display: -webkit-flex; /* Safari */
+    -webkit-justify-content: space-around; /* Safari 6.1+ */
 	align-items: center;
+	-webkit-align-items: center; /* Safari 7.0+ */
 }
 @-moz-keyframes three-quarters-loader {
   0% {
