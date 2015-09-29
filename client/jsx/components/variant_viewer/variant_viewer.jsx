@@ -136,16 +136,14 @@ var VariantViewer = React.createClass({
 	},
 
 	_renderHeatmapNav: function () {
-		var _style = { backgroundColor: "#e7e7e7", padding: "0.25rem 0.5rem" };
-		var __style = _.extend(_.clone(_style), { borderTop: "1px solid #b9b9b9" });
 		var zoom = this.props.store.zoomHeatmap;
 		var zoomIn = e => { zoom(1); this.forceUpdate(); };
 		var zoomOut = e => { zoom(-1); this.forceUpdate(); };
 
 		return (
 			<div>
-				<div onClick={zoomIn} style={_style}><i className="fa fa-plus" /></div>
-				<div onClick={zoomOut} style={__style}><i className="fa fa-minus" /></div>
+				<div key="zoomBtn1" onClick={zoomIn} style={[style.button]}><i className="fa fa-plus" /></div>
+				<div key="zoomBtn2" onClick={zoomOut} style={[style.button, { borderTop: "1px solid #b9b9b9" }]}><i className="fa fa-minus" /></div>
 			</div>
 		);
 	},
@@ -182,6 +180,15 @@ var style = {
 	vizWrapper: {
 		display: "flex",
 		justifyContent: "flex-start"
+	},
+	button: {
+		userSelect: "none",
+		backgroundColor: "#e7e7e7",
+		padding: "0.25rem 0.5rem",
+		cursor: "pointer",
+		":hover": {
+	    	backgroundColor: "#b9b9b9"
+	    }
 	}
 };
 
