@@ -503,7 +503,7 @@ class YeastgenomeFrontend(FrontendInterface):
     # get individual feature
     def get_sequence_object(self, locus_repr):
         id = locus_repr.upper()
-        res = es.get(index='sequence_objects2', id=id)['_source']
+        res = es.get(index='sequence_objects', id=id)['_source']
         return Response(body=json.dumps(res), content_type='application/json')
 
     def backend(self, url_repr, args=None):
