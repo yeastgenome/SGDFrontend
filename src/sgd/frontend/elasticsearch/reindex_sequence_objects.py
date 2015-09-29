@@ -3,7 +3,7 @@ from elasticsearch import Elasticsearch
 
 CLIENT_ADDRESS = 'http://localhost:9200'
 SRC_INDEX = 'sequence_objects'
-INDEX = 'sequence_objects'
+INDEX = 'sequence_objects2'
 DOC_TYPE = 'sequence_object'
 RESET_INDEX = False
 # TEMP, trigger runscope test, should be ENV var with default to False
@@ -55,7 +55,10 @@ def put_mapping():
 
 def index_locus(old_data):
 	# calc variant data
-	# get introns in { start, end } format	
+	# get introns in { start, end } format
+	locus_id = old_data['sgdid']
+	print 'reindexing ' + locus_id
+	old_data = es.get(index=SRC_INDEX, id=locus_id)['_source']
 	block_starts = old_data['block_starts']
 	block_sizes = old_data['block_sizes']
 
@@ -70,7 +73,7 @@ def index_locus(old_data):
 			b_start = block_starts[i]
 			next_b_start = block_starts[i + 1]
 			_start = b_start + b_size
-			_end = next_b_start
+			_end = next_b_start - 1
 			obj = { 'start': _start, 'end': _end }
 			introns.append(obj)
 			start = b_start + b_size
@@ -78,7 +81,6 @@ def index_locus(old_data):
 
 	_variant_data_dna = calculate_variant_data('DNA', old_data['aligned_dna_sequences'], introns)
 	_variant_data_protein = calculate_variant_data('Protein', old_data['aligned_protein_sequences'], [])
-
 
 	old_data['variant_data_dna'] = _variant_data_dna
 	old_data['variant_data_protein'] = _variant_data_protein
@@ -91,7 +93,10 @@ def index_loci():
 	res = es.search(index=SRC_INDEX, body=body, size=7000)
 	for hit in res['hits']['hits']:
 		data = hit['_source']
-		index_locus(data)
+		try:
+			index_locus(data)
+		except:
+			print 'error redoing ' + data['sgdid']
 
 def translate(codon):
     if codon in codon_table:
@@ -209,14 +214,14 @@ def calculate_variant_data(type, aligned_sequences, introns):
     return variant_data
 
 def index_test_locus():
-	example_id = 'S000001855'
+	example_id = 'S000004440'
 	res = es.get(index='sequence_objects', id=example_id)['_source']
 	index_locus(res)
 
 def main():
 	setup_index()
-	# index_loci()
-	index_test_locus()
+	index_loci()
+	# index_test_locus()
 
 	if TEST:
 		requests.get(RUNSCOPE_TRIGGER_URL)
