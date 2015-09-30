@@ -7,7 +7,7 @@ var _ = require("underscore");
 var DidClickOutside = require("../mixins/did_click_outside.jsx");
 var RadioSelector = require("../widgets/radio_selector.jsx");
 
-var WIDTH = 200;
+var WIDTH = 220;
 
 var SettingsDropdown = React.createClass({
 	mixins: [DidClickOutside],
