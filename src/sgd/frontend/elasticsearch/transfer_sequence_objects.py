@@ -3,8 +3,8 @@ from elasticsearch import Elasticsearch
 
 SRC_CLIENT_ADDRESS = 'http://localhost:9200'
 TARGET_CLIENT_ADDRESS = 'http://localhost:9200'
-SRC_INDEX = 'sequence_objects5'
-TARGET_INDEX = 'sequence_objects2'
+SRC_INDEX = 'sequence_objects2'
+TARGET_INDEX = 'sequence_objects'
 DOC_TYPE = 'sequence_object'
 
 RESET_INDEX = False
