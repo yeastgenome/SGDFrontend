@@ -97,6 +97,7 @@ var AsyncVariantViewer = React.createClass({
 		});
 		var variantData = data.variant_data_dna.map( d => { return _.extend(d, { snpType: d.snp_type }); });
 		if (variantData.length === 0) return this._renderEmptyNode();
+		var caption = this._getDateStr();
 		return (<VariantViewerComponent
 			name={data.name}
 			chromStart={data.chrom_start}
@@ -110,7 +111,7 @@ var AsyncVariantViewer = React.createClass({
 			dnaLength={data.dna_length}
 			strand={"+"}
 			isProteinMode={false}
-			downloadCaption={CAPTION}
+			downloadCaption={caption}
 			isRelative={true}
 		/>);
 	},
@@ -133,6 +134,7 @@ var AsyncVariantViewer = React.createClass({
 		});
 		var variantData = data.variant_data_protein.map( d => { return _.extend(d, { snpType: "nonsynonymous" }); });
 		if (variantData.length === 0) return this._renderEmptyNode();
+		var caption = this._getDateStr();
 		return (<VariantViewerComponent
 			name={data.name}
 			chromStart={data.chrom_start}
@@ -145,7 +147,7 @@ var AsyncVariantViewer = React.createClass({
 			strand={"+"}
 			isProteinMode={true}
 			domains={_domains}
-			downloadCaption={CAPTION}
+			downloadCaption={caption}
 			isRelative={true}
 		/>);
 	},
@@ -162,6 +164,16 @@ var AsyncVariantViewer = React.createClass({
 			text = "These sequences are identical."
 		}
 		return <p style={[style.emptyNode]}>{text}</p>;
+	},
+
+	_getDateStr: function () {
+		var now = new Date();
+		var month = (now.getMonth() + 1).toString();
+		var date = now.getDate().toString();
+		if (month.length === 1) month = "0" + month;
+		if (date.length === 1) date = "0" + date;
+		var txt = "SGD " + now.getFullYear() + "-" + month + "-" + date;
+		return txt;
 	}
 });
 
@@ -193,7 +205,5 @@ var style = {
 		textAlign: "center"
 	}
 };
-
-var CAPTION = "SGD";
 
 module.exports = Radium(AsyncVariantViewer);
