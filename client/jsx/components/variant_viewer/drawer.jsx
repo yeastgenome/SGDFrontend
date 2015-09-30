@@ -28,12 +28,13 @@ var Drawer = React.createClass({
 		var maskHeight = screenHeight - drawerHeight;
 		return (
 			<div>
-				<div onClick={this._exit} style={[style.mask, { height: screenHeight }]} />
+				<div onClick={this._exit} style={[style.mask, { height: screenHeight }]}>
+				</div>
 				<div style={[style.drawerWrapper, { height: drawerHeight }]}>
-					<div>
-						<h1>
-							<a onClick={this._exit} style={[style.exit]}><i className="fa fa-times"></i></a>
-						</h1>
+					<div style={[style.exitWrapper]}>
+						<a onClick={this._exit} style={[style.exit]}><i className="fa fa-times"></i></a>
+					</div>
+					<div style={[style.contentWrapper]}>
 						{this._renderContentNode()}		
 					</div>
 				</div>
@@ -75,11 +76,21 @@ var style = {
 		zIndex: 10,
 		overflow: "scroll"
 	},
-	exit: {
+	exitWrapper: {
 		position: "absolute",
-		top: "0.5rem",
-		right: "1rem",
-		color: "black"
+		top: "1rem",
+		right: "1rem"
+	},
+	exit: {
+		color: "black",
+		fontSize: 24,
+		position: "relative",
+		zIndex: 101
+	},
+	contentWrapper: {
+		height: "100%",
+		overflow: "scroll",
+		paddingTop: "0.5rem"
 	}
 }
 
