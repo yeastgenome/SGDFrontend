@@ -151,7 +151,17 @@ var AsyncVariantViewer = React.createClass({
 	},
 
 	_renderEmptyNode: function () {
-		return <p style={[style.emptyNode]} >These sequences are 100% identical</p>;
+		var isProtein = this.state.childIsProtein;
+		var data = this.state.data;
+		var variantLength = isProtein ? data.variant_data_protein.length : data.variant_data_dna.length;
+		var numSequences = isProtein ? data.aligned_protein_sequences.length : data.aligned_dna_sequences.length;
+		var text;
+		if (numSequences <= 1) {
+			text = "Sequence is only available from one strain.  No comparison could be made."
+		} else {
+			text = "These sequences are identical."
+		}
+		return <p style={[style.emptyNode]}>{text}</p>;
 	}
 });
 

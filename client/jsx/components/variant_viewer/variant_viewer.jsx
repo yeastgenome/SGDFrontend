@@ -99,6 +99,8 @@ var VariantViewer = React.createClass({
 
 	_renderViz: function () {
 		if (this.state.isPending) return <div className="sgd-loader-container"><div className="sgd-loader" /></div>;
+		var heatmapData = this.props.store.getHeatmapData();
+		if (heatmapData.length === 0) return this._renderEmptyNode();
 		return (
 			<div>
 				{this._renderDendro()}
@@ -173,6 +175,11 @@ var VariantViewer = React.createClass({
 				});
 			}
 		});
+	},
+
+	_renderEmptyNode: function () {
+		var text = `No results for "${this.props.store.getQuery()}."  Please modify your search and try again.`;
+		return <h3>{text}</h3>;
 	}
 });
 

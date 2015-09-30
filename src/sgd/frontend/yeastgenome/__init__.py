@@ -443,6 +443,7 @@ class YeastgenomeFrontend(FrontendInterface):
     # es search for sequence objects
     def search_sequence_objects(self, params):
         query = params['query'] if 'query' in params.keys() else ''
+        query = query.lower()
         offset = int(params['offset']) if 'offset' in params.keys() else 0
         limit = int(params['limit']) if 'limit' in params.keys() else 1000
 
