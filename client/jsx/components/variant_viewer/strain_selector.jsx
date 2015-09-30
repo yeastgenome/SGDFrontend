@@ -19,7 +19,10 @@ var StrainSelector = React.createClass({
 	},
 
 	getInitialState: function () {
+		var metaData = this._getStrainMetaData();
+		var strainIds = metaData.map( d => { return d.id; });
 		return {
+			activeStrainIds: strainIds,
 			isActive: false,
 		};
 	},
@@ -56,7 +59,6 @@ var StrainSelector = React.createClass({
 		var currentActiveIds = this.props.store.getVisibleStrainIds()
 			.filter( d => { return d !== REFERENCE_STRAIN_ID; });
 		var metaData = this._getStrainMetaData();
-		var strainIds = metaData.map( d => { return d.id; });
 
 		var _elements = metaData.map( d => {
 			return { name: d.name, key: d.id };
@@ -64,6 +66,8 @@ var StrainSelector = React.createClass({
 		var _onSelect = ids => {
 			ids = ids.filter( d => { return d !== REFERENCE_STRAIN_ID; });
 			this.props.store.setVisibleStrainIds(ids, err => {
+				ids = ids.filter( d => { return d !== REFERENCE_STRAIN_ID; });
+				this.setState({ activeStrainIds: ids });
 				if (typeof this.props.onUpdate === "function") this.props.onUpdate();
 			});
 		};
@@ -71,7 +75,7 @@ var StrainSelector = React.createClass({
 			<div onClick={_stopClick} style={[style.activeWrapper]}>
 				<div>
 					<span style={{ fontSize: "0.875rem" }}>S288C (reference)</span>
-					<Checklist elements={_elements} initialActiveElementKeys={strainIds} onSelect={_onSelect} />
+					<Checklist elements={_elements} initialActiveElementKeys={this.state.activeStrainIds} onSelect={_onSelect} />
 				</div>
 			</div>
 		);

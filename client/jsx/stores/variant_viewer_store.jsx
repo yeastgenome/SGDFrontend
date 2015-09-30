@@ -196,8 +196,8 @@ module.exports = class VariantViewerStore {
 	clusterStrains (cb) {
 		// initial state, use precalculated cluster
 		if (query === "" && visibleStrainIds.length === staticStrainMetadata.strains.length) {
-			strainClusterIndexes = this.getStrainIndexes(clusteredStrainData);
 			clusteredStrainData = staticStrainMetadata.clusterData;
+			strainClusterIndexes = this.getStrainIndexes(clusteredStrainData);
 			cb(null);
 		} else {
 			var visibleStrainMetaData = visibleStrainIds
