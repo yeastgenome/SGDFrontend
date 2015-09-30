@@ -61,7 +61,7 @@ var SettingsDropdown = React.createClass({
 	_renderActiveNode: function () {
 		var _elements = [
 			{
-				name: "Genetic Position",
+				name: "Chromosomal Location",
 				key: "position"
 			},
 			{
