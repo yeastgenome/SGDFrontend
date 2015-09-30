@@ -20,7 +20,7 @@ from src.sgd.frontend.yeastgenome.backendless.load_data_from_file import get_dat
 # setup elastic search
 from src.sgd.frontend import config
 from elasticsearch import Elasticsearch
-es = Elasticsearch(config.elasticsearch_address)
+es = Elasticsearch(config.elasticsearch_address, timeout=5, retry_on_timeout=True)
 
 class YeastgenomeFrontend(FrontendInterface):
     def __init__(self, backend_url, heritage_url, log_directory):
@@ -439,6 +439,63 @@ class YeastgenomeFrontend(FrontendInterface):
                 unique.append(hit)
 
         return Response(body=json.dumps(unique), content_type='application/json')
+
+    # es search for sequence objects
+    def search_sequence_objects(self, params):
+        query = params['query'] if 'query' in params.keys() else ''
+        query = query.lower()
+        offset = int(params['offset']) if 'offset' in params.keys() else 0
+        limit = int(params['limit']) if 'limit' in params.keys() else 1000
+
+        query_type = 'wildcard' if '*' in query else 'match_phrase'
+        if query == '':
+            search_body = {
+                'query': { 'match_all': {} },
+                'sort': { 'absolute_genetic_start': { 'order': 'asc' }}
+            }
+        elif ',' in query:
+            original_query_list = query.split(',')
+            query_list = []
+            for item in original_query_list:
+                query_list.append(item.strip())
+            print query_list
+            search_body = {
+                'query': {
+                    'filtered': {
+                        'filter': {
+                            'terms': {
+                                '_all': query_list
+                            }
+                        }
+                    }
+                }
+            }
+        else:
+            search_body = {
+                'query': {
+                    query_type: {
+                        '_all': query
+                    }
+                }
+            }
+
+        search_body['_source'] = ['sgdid', 'name', 'href', 'absolute_genetic_start', 'format_name', 'dna_scores', 'protein_scores', 'snp_seqs']
+        res = es.search(index='sequence_objects', body=search_body, size=limit, from_=offset)
+        simple_hits = []
+        for hit in res['hits']['hits']:
+            simple_hits.append(hit['_source'])
+        formatted_response = {
+            'loci': simple_hits,
+            'total': res['hits']['total'],
+            'offset': offset
+        }
+        return Response(body=json.dumps(formatted_response), content_type='application/json')
+
+    # get individual feature
+    def get_sequence_object(self, locus_repr):
+        id = locus_repr.upper()
+        res = es.get(index='sequence_objects', id=id)['_source']
+        return Response(body=json.dumps(res), content_type='application/json')
 
     def backend(self, url_repr, args=None):
         if self.backend_url == 'backendless':

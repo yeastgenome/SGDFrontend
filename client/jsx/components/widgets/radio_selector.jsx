@@ -9,8 +9,11 @@ module.exports = React.createClass({
 	propTypes: {
 		elements: React.PropTypes.array.isRequired,
 		initialActiveElementKey: React.PropTypes.string,
-		onSelect: React.PropTypes.func
+		onSelect: React.PropTypes.func,
+		orientation: React.PropTypes.string // "horizontal" or "vertical"
 	},
+
+	getDefaultProps: function () { return { orientation: "horizontal" }; },
 
 	getInitialState: function () {
 		return {
@@ -38,11 +41,11 @@ module.exports = React.createClass({
 			var _checked = d.key === this.state.activeElementKey;
 
 			// make the width as wide as possible
-			var widthPercent = `${1 / this.props.elements.length * 100}%`;
-
+			var _width = (this.props.orientation === "horizontal") ? `${1 / this.props.elements.length * 100}%` : "auto";
+			var _display = (this.props.orientation === "horizontal") ? "inline-block" : "block";
 			return (
-				<div className="radio-element-container" style={{ display: "inline-block", width: widthPercent }} key={"radioElement" + i}>
-					<input type="radio" onChange={_onClick} name={d.key} value={d.key} checked={_checked}>
+				<div className="radio-element-container" style={{ display: _display, width: _width }} key={"radioElement" + i}>
+					<input type="radio" onChange={_onClick} id={d.key} value={d.key} checked={_checked}>
 						<label onClick={_onClick}>{d.name}</label>
 					</input>
 				</div>
@@ -50,9 +53,9 @@ module.exports = React.createClass({
 			
 		});
 		return (
-			<form className="radio-selector" action="">
+			<div className="radio-selector">
 				{inputs}
-			</form>
+			</div>
 		);
 	}
 

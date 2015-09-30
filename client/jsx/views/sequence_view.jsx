@@ -3,8 +3,8 @@
 
 var React = require("react");
 
-var NavBar = React.createFactory(require("../components/widgets/navbar.jsx"));
-var AsyncSequenceView = React.createFactory(require("../components/sequence/async_sequence_view.jsx"));
+var NavBar = require("../components/widgets/navbar.jsx");
+var AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");
 var TabsModel = require("../models/tabs_model.jsx");
 
 var sequenceView = {};
