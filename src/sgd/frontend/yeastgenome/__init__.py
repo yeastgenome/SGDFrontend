@@ -479,7 +479,7 @@ class YeastgenomeFrontend(FrontendInterface):
             }
 
         search_body['_source'] = ['sgdid', 'name', 'href', 'absolute_genetic_start', 'format_name', 'dna_scores', 'protein_scores', 'snp_seqs']
-        res = es.search(index='sequence_objects', body=search_body, size=limit, from_=offset)
+        res = es.search(index='sequence_objects2', body=search_body, size=limit, from_=offset)
         simple_hits = []
         for hit in res['hits']['hits']:
             simple_hits.append(hit['_source'])
@@ -493,7 +493,7 @@ class YeastgenomeFrontend(FrontendInterface):
     # get individual feature
     def get_sequence_object(self, locus_repr):
         id = locus_repr.upper()
-        res = es.get(index='sequence_objects', id=id)['_source']
+        res = es.get(index='sequence_objects2', id=id)['_source']
         return Response(body=json.dumps(res), content_type='application/json')
 
     def backend(self, url_repr, args=None):
