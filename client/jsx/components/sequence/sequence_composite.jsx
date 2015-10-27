@@ -61,7 +61,6 @@ module.exports = React.createClass({
 
 	_getStrainSelectorNode: function () {
 		var node = null;
-		console.log(this.state.activeStrainKey)
 		if (this.props.showAltStrains && this.props.detailsModel && this.state.activeStrainKey) {
 			var _elements = _.map(this.props.detailsModel.attributes.altStrainMetaData, (s, i) => {
 				return {
@@ -71,7 +70,6 @@ module.exports = React.createClass({
 				};
 			});
 			var _onChange = (key) => {
-				console.log(key, key.split('_')[0])
 				this.setState({ activeStrainKey: key.split('_')[0] });
 			};
 			node = <DropdownSelector elements={_elements} onChange={_onChange} />;				
