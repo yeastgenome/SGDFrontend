@@ -61,16 +61,20 @@ module.exports = React.createClass({
 
 	_getStrainSelectorNode: function () {
 		var node = null;
+		console.log(this.state.activeStrainKey)
 		if (this.props.showAltStrains && this.props.detailsModel && this.state.activeStrainKey) {
-			var _elements = _.map(this.props.detailsModel.attributes.altStrainMetaData, s => {
+			var _elements = _.map(this.props.detailsModel.attributes.altStrainMetaData, (s, i) => {
 				return {
-					value: s.key,
+					value: `${s.key}_${i}`,
 					name: s.name,
 					description: s.description
 				};
 			});
-			var _onChange = (key) => { this.setState({ activeStrainKey: key }); };
-			node = <DropdownSelector elements={_elements} onChange={_onChange} defaultActiveValue={this.state.activeStrainKey}/>;				
+			var _onChange = (key) => {
+				console.log(key, key.split('_')[0])
+				this.setState({ activeStrainKey: key.split('_')[0] });
+			};
+			node = <DropdownSelector elements={_elements} onChange={_onChange} />;				
 		}
 
 		return node;
