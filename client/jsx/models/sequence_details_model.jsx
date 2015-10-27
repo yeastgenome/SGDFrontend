@@ -43,7 +43,8 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 			return (s.strain.status === "Other");
 		});
 		var _otherStrains = _.map(_otherTemp, s => {
-			return this._formatOtherStrainData(s.strain.format_name, response);
+			var strainKey = s.strain.format_name + "_" + s.contig.format_name;
+			return this._formatOtherStrainData(s.strain.format_name, response, strainKey);
 		});
 		// sub-feature download data
 		var _downloadData = this._formatDownloadData(MAIN_STRAIN_NAME, response);
@@ -72,7 +73,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 			"protein": "Protein"
 		};
 
-		var _sequences = _.map(_.keys(sequenceNames), (key, i) => {
+		var _sequences = _.map(_.keys(sequenceNames), key => {
 			var header, filename;
 			var _sequenceArr = _.filter(response[key], s => {
 				if (s.header) header = s.header;
@@ -89,7 +90,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 			return {
 				filename: filename,
 				header: header,
-				key: `${key}_${i}`,
+				key: key,
 				name: sequenceNames[key],
 				sequence: _sequence
 			};
@@ -232,8 +233,10 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		};
 	}
 
-	_formatOtherStrainData(strainFormatName, response) {
-		var strainData = _.filter(response.genomic_dna, s => { return s.strain.format_name === strainFormatName; })[0];
+	_formatOtherStrainData(strainFormatName, response, strainKey) {
+		var strainData = _.filter(response.genomic_dna, s => {
+			return (s.strain.format_name + "_" + s.contig.format_name) === strainKey;
+		})[0];
 
 		var attr = this.baseAttributes;
 		var header = strainData.header;
@@ -245,7 +248,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 
 		return {
 			contigFormatName: strainData.contig.format_name,
-			key: strainData.strain.format_name,
+			key: strainKey,
 			name: strainData.strain.display_name,
 			value: strainData.strain.format_name,
 			description: strainData.strain.description,
