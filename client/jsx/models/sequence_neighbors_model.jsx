@@ -42,13 +42,12 @@ module.exports = class SequenceNeighborsModel extends BaseModel {
 			return l.locus.id === this.id;
 		})[0];
 		var _focusLocusDomain = [_focusLocus.start, _focusLocus.end];
-
 		return {
 			data: { locci: _locci },
 			domainBounds: [_start, _end],
 			contigData: _contigData,
 			focusLocusDomain: _focusLocusDomain,
-			strainKey: strainDisplayName,
+			strainKey: strainDisplayName + "_" + _contigData.formatName,
 			trackDomain: _trackDomain
 		};
 	}
