@@ -1,3 +1,4 @@
+*~
 *.pyc
 *.DS_Store
 *.egg-info
@@ -20,6 +21,7 @@ src/sgd/frontend/yeastgenome/static/js/build/
 src/sgd/frontend/yeastgenome/static/js/application.js
 src/sgd/frontend/yeastgenome/static/scss/build/
 src/sgd/frontend/yeastgenome/static/fonts/
+src/sgd/frontend/config.py
 bower_components/
 node_modules/
 client/scss/build/
