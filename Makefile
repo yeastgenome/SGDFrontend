@@ -10,7 +10,7 @@ prod-deploy:
 build: bootstrap dependencies grunt
 	.bin/buildout
 
-build-deploy: bootstrap grunt
+build-deploy: bootstrap
 	./bin/buildout -c $(BUILDOUT_DEPLOY)
 
 bootstrap:
