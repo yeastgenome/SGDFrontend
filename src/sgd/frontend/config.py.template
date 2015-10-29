@@ -1,0 +1,8 @@
+heritage_url = $(heritage_url)
+backend_url = $(backend_url)
+secret_key = $(secret_key)
+sender = $(sender)
+author_response_file = $(author_response_file)
+compute_url = $(compute_url)
+elasticsearch_address = $(elasticsearch_address)
+log_directory = $(log_directory)
