@@ -6,6 +6,15 @@ namespace :deploy do
     end
   end
 
+  desc 'Build static files'
+  task :build_statics do
+    on roles(:app), in: :sequence do
+      run_locally do
+        execute "npm install && grunt deployAssets"
+      end
+    end
+  end
+  
   desc 'Restart Apache'
   task :restart do
     on roles(:app), in: :sequence do
@@ -30,6 +39,14 @@ namespace :deploy do
   task :verify_symlink do
     on roles(:app), in: :sequence do
       execute "cd #{current_path}/../../ && if [ -h SGDFrontend ] && [ $(readlink SGDFrontend_app/current) != $(readlink SGDFrontend) ]; then echo \"Restoring symlink...\" && rm SGDFrontend && ln -s SGDFrontend_app/current SGDFrontend; fi"
+    end
+  end
+
+  desc 'Upload static files'
+  task :upload_statics do
+    on roles(:app), in: :sequence do
+      upload!('./asset_version.json', "#{current_path}/")
+      upload!('./production_asset_url.json', "#{current_path}/")
     end
   end
 end
