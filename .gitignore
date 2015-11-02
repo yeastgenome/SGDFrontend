@@ -24,7 +24,6 @@ src/sgd/frontend/config.py
 bower_components/
 node_modules/
 client/scss/build/
-client/scss/normalize.scss
 client/lib/sgd_visualization/node_modules/
 client/lib/sgd_visualization/.git
 dev_deploy_variables.sh
