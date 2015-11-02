@@ -104,7 +104,6 @@ module.exports = function(grunt) {
                     destPrefix: "client/scss"
                 },
                 files: {
-                    "normalize.scss": "foundation/scss/normalize.scss",
                     "build/_nouislider.scss": "nouislider/jquery.nouislider.css",
                     "build/_dataTables.foundation.scss": "datatables-plugins/integration/foundation/dataTables.foundation.css"
                 }
