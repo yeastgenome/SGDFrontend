@@ -16,6 +16,7 @@ module.exports = function(grunt) {
                 accessKeyId: "<%= awsKey %>",
                 secretAccessKey: "<%= awsSecret %>",
                 bucket: "sgd-assets",
+                region: "us-west-2",
                 headers: {
                     "CacheControl": CACHE_TTL
                 }

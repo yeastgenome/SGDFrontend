@@ -20,6 +20,7 @@ proteinView.render = function (rawDomainData, locusLength, colorScale) {
 		d.source.name = d.source.display_name;
 		d.domain.href = d.domain.link;
 		d.domain.id = `${d.domain.id}-${i}`;
+		d.sourceId = d.source.id;
 		return d;
 	});
 

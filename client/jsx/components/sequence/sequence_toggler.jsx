@@ -20,7 +20,7 @@ module.exports = React.createClass({
 			locusDisplayName: null, // *
 			locusFormatName: null,
 			contigName: null,
-			sequences: null, // * [{ name: "DNA Coding", sequence: "ACTCTAGGCT" }, ...]
+			sequences: null, // * [{ name: "DNA Coding", sequence: "ACTCTAGGCT" key: }, ...]
 			showCustomRetrieval: false,
 			showSequence: true,
 			subFeatureData: null,
