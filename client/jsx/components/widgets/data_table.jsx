@@ -30,7 +30,6 @@ var DataTable = React.createClass({
 
 	render: function () {
 		var headerRows = this._getHeaderRows();
-		console.log(this.state.fakeId)
 		var bodyRows = this._getBodyRows();
 
 		return (
