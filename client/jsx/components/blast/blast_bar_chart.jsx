@@ -108,7 +108,7 @@ module.exports = React.createClass({
                                   leftRatio={props.labelRatio}
                 />);
 
-		return (<div className="blast-bar-graph" onMouseLeave={this._clearMouseOver} onClick={this._clearMouseOver}>
+		return (<div ref="wrapper" className="blast-bar-graph" onMouseLeave={this._clearMouseOver} onClick={this._clearMouseOver}>
 			     {axisNode}
 		             <div className="blast-bar-container" style={{ position: "relative" }}>
 				   {tooltipNode}
@@ -142,7 +142,7 @@ module.exports = React.createClass({
 									    
 		var _props = props ? props : this.props;
 		var _maxY = _props.maxY || d3.max(_props.data, _props.yValue); // defaults to maxY prop, if defined
-		var _width = this.getDOMNode().getBoundingClientRect().width;
+		var _width = this.refs.wrapper.getBoundingClientRect().width;
 		var _scale = _baseScale.domain([0, _maxY]).range([0, _width * (1-_props.labelRatio)]);
 		this.setState({ widthScale: _scale });
 	},
