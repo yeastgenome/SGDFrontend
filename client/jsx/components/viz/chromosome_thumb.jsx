@@ -1,4 +1,4 @@
-
+/** @jsx React.DOM */
 "use strict";
 
 var React = require("react");
@@ -55,7 +55,7 @@ module.exports = React.createClass({
 
 		var _lbX = scale(this.props.domain[0] - 1) - 1;
 		var _rbX = scale(this.props.domain[1] + 1) + 1;
-		var _domainStyle = { position: "absolute", top: 0, bottom: 5 };
+		var _domainStyle = { position: "absolute", top: 0, bottom: 8 };
 		var _lDomainStyle = _.extend(_.clone(_domainStyle), { left: 0, width: _lbX, borderRadius: `${borderRadius}px 0 0 ${borderRadius}px` });
 		var _rDomainStyle = _.extend(_.clone(_domainStyle), { left: _rbX, right: 0, borderRadius: `0 ${borderRadius}px ${borderRadius}px 0` });
 		var _cDomainStyle = { position: "absolute", top: 0, height: HEIGHT, left: _lbX, width: (_rbX - _lbX)};
@@ -83,7 +83,7 @@ module.exports = React.createClass({
 	},
 
 	_calculateWidth: function () {
-		var _width = this.getDOMNode().getBoundingClientRect().width
+		var _width = this.refs.wrapper.getBoundingClientRect().width;
 		this.setState({ DOMWidth: _width });
 	}
 
