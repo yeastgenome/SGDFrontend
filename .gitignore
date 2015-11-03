@@ -1,3 +1,4 @@
+*~
 *.pyc
 *.DS_Store
 *.egg-info
@@ -15,14 +16,17 @@ src/sgd/frontend/yeastgenome/static/img/yetfasco
 src/sgd/frontend/yeastgenome/static/img/sort_*.png
 src/sgd/frontend/yeastgenome/static/css/normalize.css
 src/sgd/frontend/yeastgenome/static/css/style.css
-src/sgd/frontend/yeastgenome/static/scss/normalize.scss
 src/sgd/frontend/yeastgenome/static/js/build/
 src/sgd/frontend/yeastgenome/static/js/application.js
 src/sgd/frontend/yeastgenome/static/scss/build/
 src/sgd/frontend/yeastgenome/static/fonts/
+src/sgd/frontend/config.py
 bower_components/
 node_modules/
 client/scss/build/
-client/scss/normalize.scss
 client/lib/sgd_visualization/node_modules/
 client/lib/sgd_visualization/.git
+dev_deploy_variables.sh
+prod_deploy_variables.sh
+asset_version.json
+production_asset_url.json
