@@ -76,7 +76,7 @@ module.exports = React.createClass({
 		var _height = (BAR_HEIGHT + 1) * data.length;
 
 		return (
-			<div className="sgd-viz-bar-chart">
+			<div ref="wrapper" className="sgd-viz-bar-chart">
 				{yAxis}
 				<div className="bar-nodes-container clearfix" onMouseLeave={this._handleMouseExit} style={{ position: "relative", height: _height }}>
 					{tooltipNode}
@@ -188,7 +188,7 @@ module.exports = React.createClass({
 			baseLeft = target.parentNode.offsetLeft;
 		}
 
-		d3.select(this.getDOMNode()).selectAll(".bar-node.data-node").style({ opacity: 0.6 });
+		d3.select(this.refs.wrapper).selectAll(".bar-node.data-node").style({ opacity: 0.6 });
 		d3.select(barNode).style({ opacity: 1 })
 
 		if (this.props.onMouseOver) {
@@ -206,7 +206,7 @@ module.exports = React.createClass({
 	},
 
 	_handleMouseExit: function () {
-		d3.select(this.getDOMNode()).selectAll(".bar-node.data-node").style({ opacity: 0.6 });
+		d3.select(this.refs.wrapper).selectAll(".bar-node.data-node").style({ opacity: 0.6 });
 		this.setState({
 			tooltipVisible: false,
 		});
@@ -222,7 +222,7 @@ module.exports = React.createClass({
 		
 		var _props = props ? props : this.props;
 		var _maxY = _props.maxY || d3.max(_props.data, _props.yValue); // defaults to maxY prop, if defined
-		var _width = this.getDOMNode().getBoundingClientRect().width;
+		var _width = this.refs.wrapper.getBoundingClientRect().width;
 		var _scale = _baseScale.domain([0, _maxY]).range([0, _width * (1-_props.labelRatio)]);
 		this.setState({ widthScale: _scale });
 	},

@@ -2,6 +2,7 @@
 "use strict";
 
 var React = require("react");
+var ReactDOM = require("react-dom");
 var $ = require("jquery");
 var VariantViewer = require("../components/variant_viewer/variant_viewer.jsx");
 var Drawer = require("../components/variant_viewer/drawer.jsx");
@@ -9,7 +10,7 @@ var VariantViewerStore = require("../stores/variant_viewer_store.jsx");
 
 // router stuff
 var Router = require("react-router");
-var { Route, DefaultRoute } = Router;
+var { Route, IndexRoute } = Router;
 
 var view = {};
 view.render = function () {
@@ -17,20 +18,24 @@ view.render = function () {
 	var BlankComponent = React.createClass({ render: function () { return <span />; }});
 
 	var routes = (
-		<Route path="/" handler={VariantViewer}>
-			<DefaultRoute
-				name="variantViewerIndex" handler={BlankComponent}
-		    />
-		    <Route
-		    	name="variantViewerShow" path="/:locusId" handler={Drawer}
-		    />
-		</Route>
+		<Router path="/" component={VariantViewer}>
+			<IndexRoute
+				component={BlankComponent}
+	    />
+	    <Route
+	    	path="/:locusId" component={Drawer}
+	    />
+		</Router>
 	);
 
-	var _store = new VariantViewerStore();
-	Router.run(routes, (Handler) => {
-		React.render(<Handler store={_store}/>, document.getElementById("j-main"));
+	var Component = React.createClass({
+		render: function () {
+			return routes;
+		}
 	});
+
+	var _store = new VariantViewerStore();
+	ReactDOM.render(<Component />, document.getElementById("j-main"));
 };
 
 module.exports = view;

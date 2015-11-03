@@ -475,12 +475,12 @@ var SearchForm = React.createClass({
 
 	_onSubmit: function (e) {
 
-		var queryComment = this.refs.queryComment.getDOMNode().value.trim();
-		var seq = this.refs.sequence.getDOMNode().value.trim();
+		var queryComment = this.refs.queryComment.value.trim();
+		var seq = this.refs.sequence.value.trim();
 		if (seq == '') {
 		    seq = this.state.uploadedSeq;
 		}
-		var program = this.refs.program.getDOMNode().value.trim();
+		var program = this.refs.program.value.trim();
 		var dbs = document.getElementById('database');
 		var database = '';
 		for (var i = 0; i < dbs.options.length; i++) {
@@ -494,12 +494,12 @@ var SearchForm = React.createClass({
 		     }
 		}
 		
-                var outFormat = this.refs.outFormat.getDOMNode().value;
-                var matrix = this.refs.matrix.getDOMNode().value;
-                var cutoffScore = this.refs.cutoffScore.getDOMNode().value;
-                var wordLength = this.refs.wordLength.getDOMNode().value;
-                var threshold = this.refs.threshold.getDOMNode().value;
-                var alignToShow = this.refs.alignToShow.getDOMNode().value;
+                var outFormat = this.refs.outFormat.value;
+                var matrix = this.refs.matrix.value;
+                var cutoffScore = this.refs.cutoffScore.value;
+                var wordLength = this.refs.wordLength.value;
+                var threshold = this.refs.threshold.value;
+                var alignToShow = this.refs.alignToShow.value;
 		var filter = 'on';
 		if (document.getElementById('Off').checked) {
 		     filter = '';
