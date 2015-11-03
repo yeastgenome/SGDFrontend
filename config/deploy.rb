@@ -19,6 +19,7 @@ namespace :deploy do
   after :finishing, :write_config
   after :finishing, :build
   after :finishing, :build_statics
+  after :finishing, :upload_statics
   after :finishing, :verify_symlink
   after :finishing, :restart
 end
