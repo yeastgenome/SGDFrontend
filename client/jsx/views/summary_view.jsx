@@ -4,6 +4,7 @@
 var $ = require("jquery");
 var _ = require("underscore");
 var React = require("react");
+var ReactDOM = require("react-dom");
 
 var AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");
 var ExpressionChart = require("../components/viz/expression_chart.jsx");
@@ -33,7 +34,7 @@ summaryView.render = function () {
 	});
 	var _navTitleText = _tabModel.getNavTitle(bootstrappedData.displayName, bootstrappedData.formatName);
 	var _navTitle = { name: _navTitleText, href: bootstrappedData.locusLink };
-	React.render(
+	ReactDOM.render(
 		<NavBar title={_navTitle} elements={_tabModel.getTabElements()} />,
 		document.getElementById("navbar-container")
 	);
@@ -44,7 +45,7 @@ summaryView.render = function () {
 				var _onExpressionClick = () => {
 					window.location.href = "/locus/" + bootstrappedData.locusId + "/expression";
 				};
-				React.render(
+				ReactDOM.render(
 					<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} onClick={_onExpressionClick} />,
 					document.getElementById("two_channel_expression_chart")
 				);
@@ -55,7 +56,7 @@ summaryView.render = function () {
 	// async sequence (if needed)
 	if (bootstrappedData.tabs && bootstrappedData.tabs.sequence_section) {
 		var _geneticPosition = locusData.genetic_position ? (locusData.genetic_position + " cM") : null;
-		React.render(
+		ReactDOM.render(
 			<AsyncSequenceView
 				locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
 				locusFormatName={bootstrappedData.formatName} locusHistoryData={locusData.history}
@@ -75,7 +76,7 @@ summaryView.render = function () {
 
     // history (if needed)
     if (hasHistory) {
-    	React.render(
+    	ReactDOM.render(
     		<HistoryTable data={locusData.history} dataType="LSP" />,
     		document.getElementById("history_target")
     	);
@@ -83,7 +84,7 @@ summaryView.render = function () {
 
     // reference list
     if (hasReferences) {
-    	React.render(
+    	ReactDOM.render(
 	    	<ReferenceList data={locusData.references}/>,
 	    	document.getElementById("reference")
 	    );
