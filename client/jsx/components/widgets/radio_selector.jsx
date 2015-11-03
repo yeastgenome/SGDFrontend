@@ -3,7 +3,7 @@
 var React = require("react");
 var _ = require("underscore");
 
-module.exports = React.createClass({
+var RadioSelector = React.createClass({
 	// elements, i.e.[ { name: "Doggy Woggy", key: "dog" }, ...]
 	// onSelect(activeElementKey)
 	propTypes: {
@@ -45,9 +45,8 @@ module.exports = React.createClass({
 			var _display = (this.props.orientation === "horizontal") ? "inline-block" : "block";
 			return (
 				<div className="radio-element-container" style={{ display: _display, width: _width }} key={"radioElement" + i}>
-					<input type="radio" onChange={_onClick} id={d.key} value={d.key} checked={_checked}>
-						<label onClick={_onClick}>{d.name}</label>
-					</input>
+					<input type="radio" onChange={_onClick} id={d.key} value={d.key} checked={_checked} />
+					<label onClick={_onClick}>{d.name}</label>
 				</div>
 			);
 			
@@ -60,3 +59,5 @@ module.exports = React.createClass({
 	}
 
 });
+
+module.exports = RadioSelector;

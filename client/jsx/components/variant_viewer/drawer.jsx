@@ -7,6 +7,7 @@ var _ = require("underscore");
 var Router = require("react-router");
 var { Route, RouteHandler, Link, Transition } = Router;
 
+var VariantViewerStore = require("../../stores/variant_viewer_store.jsx");
 var AsyncVariantViewer = require("./async_variant_viewer.jsx");
 
 var REM_SIZE = 16;
@@ -19,6 +20,12 @@ var Drawer = React.createClass({
 	propTypes: {
 		store: React.PropTypes.object.isRequired,
 		isProteinMode: React.PropTypes.bool
+	},
+
+	getDefaultProps() {
+	    return {
+	        store: new VariantViewerStore(),  
+	    };
 	},
 
 	render: function () {
@@ -47,7 +54,7 @@ var Drawer = React.createClass({
 	},
 
 	_renderContentNode: function () {
-		var _sgdid = this.getParams().locusId;
+		var _sgdid = this.props.params.locusId;
 		return (
 			<AsyncVariantViewer sgdid={_sgdid} store={this.props.store} parentIsProtein={this.props.isProteinMode} />
 		);
