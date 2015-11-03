@@ -63,7 +63,7 @@ module.exports = React.createClass({
 		var centerDomainNode = <div className="chromosome-thumb-center-inset" style={_cDomainStyle} />;
 		var rightDomainNode = <div className="chromosome-thumb-inset" style={_rDomainStyle} />;
 
-		return (<div style={{ position: "relative" }}>
+		return (<div ref="wrapper" style={{ position: "relative" }}>
 			<svg className="chromosome-thumb" style={{ width: this.state.DOMWidth, height: HEIGHT }}>
 				{chromNode}				
 			</svg>
@@ -83,7 +83,7 @@ module.exports = React.createClass({
 	},
 
 	_calculateWidth: function () {
-		var _width = this.getDOMNode().getBoundingClientRect().width;
+		var _width = this.refs.wrapper.getBoundingClientRect().width;
 		this.setState({ DOMWidth: _width });
 	}
 

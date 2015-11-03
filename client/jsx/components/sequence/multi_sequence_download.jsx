@@ -6,7 +6,7 @@ var _ = require("underscore");
 
 var DidClickOutside = require("../mixins/did_click_outside.jsx");
 
-module.exports = React.createClass({
+var MultiSequenceDownload = React.createClass({
 	mixins: [DidClickOutside],
 
 	getDefaultProps: function () {
@@ -25,23 +25,23 @@ module.exports = React.createClass({
 	},
 
 	render: function () {
-		var _hiddenFormNodes = _.map(this.props.sequences, s => {
-			return (<form ref={s.key} method="POST" action="/download_sequence">
+		var _hiddenFormNodes = _.map(this.props.sequences, (s, i) => {
+			return (<form ref={s.key} method="POST" action="/download_sequence" key={"hiddenNode" + i}>
 				<input type="hidden" name="header" value={s.header} />
 				<input type="hidden" name="sequence" value={s.sequence} />
 				<input type="hidden" name="filename" value={s.filename} />
 			</form>);
 		});
 
-		var buttonNodes = _.map(this.props.sequences, s => {
+		var buttonNodes = _.map(this.props.sequences, (s, i) => {
 			var _onClick = e => {
 				e.preventDefault();
 				e.nativeEvent.stopImmediatePropagation();
 				this._handleClick(s.key);	
 			};
-			return <li><a onClick={_onClick}>{s.name}</a></li>;
+			return <li key={"seqButton" + i}><a onClick={_onClick}>{s.name}</a></li>;
 		});
-		buttonNodes.push(<li><a href={"/cgi-bin/seqTools?back=1&seqname=" + this.props.locusFormatName}>Custom Retrieval</a></li>);
+		buttonNodes.push(<li key="topSeqButton"><a href={"/cgi-bin/seqTools?back=1&seqname=" + this.props.locusFormatName}>Custom Retrieval</a></li>);
 
 		var hiddenFormContainerNode = (<div style={{ display: "none" }}>
 			{_hiddenFormNodes}
@@ -69,6 +69,8 @@ module.exports = React.createClass({
 
 	// get the DOM node for the form; submit to download
 	_handleClick: function (key) {
-		this.refs[key].getDOMNode().submit();
+		this.refs[key].submit();
 	}
 });
+
+module.exports = MultiSequenceDownload;
