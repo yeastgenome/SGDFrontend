@@ -72,7 +72,7 @@ var LocusDiagram = React.createClass({
 			null;
 
 		return (
-			<div className="locus-diagram" onMouseLeave={this._clearMouseOver} onClick={this._clearMouseOver}>
+			<div ref="wrapper" className="locus-diagram" onMouseLeave={this._clearMouseOver} onClick={this._clearMouseOver}>
 				{this._getControlsNode()}
 				<div className="locus-diagram-viz-container" style={{ position: "relative" }}>
 					<FlexibleTooltip
@@ -336,7 +336,7 @@ var LocusDiagram = React.createClass({
 	},
 
 	_calculateWidth: function () {
-		var _width = this.getDOMNode().getBoundingClientRect().width;
+		var _width = this.refs.wrapper.getBoundingClientRect().width;
 		this.setState({ DOMWidth: _width });
 		var _scale = d3.scale.linear().domain(this.props.domainBounds).range([0, _width]);
 		this.props.onSetScale(_scale);
@@ -484,7 +484,7 @@ var LocusDiagram = React.createClass({
 			.on("zoom", () => {
 				this._setDomain(scale.domain());
 			});
-		var svg = d3.select(this.refs["svg"].getDOMNode());
+		var svg = d3.select(this.refs.svg);
 		// no zoom events if zoom enabled false
 		if (!this.state.zoomEnabled) {
 			zoom = () => { return null; };

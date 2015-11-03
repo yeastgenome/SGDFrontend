@@ -15,7 +15,7 @@ var LocusDiagram = require("../viz/locus_diagram.jsx");
 var MultiSequenceDownload = require("./multi_sequence_download.jsx");
 var SequenceToggler = require("./sequence_toggler.jsx");
 
-module.exports = React.createClass({
+var SequenceComposite = React.createClass({
 
 	getDefaultProps: function () {
 		return  {
@@ -236,3 +236,5 @@ module.exports = React.createClass({
 		}		
 	}
 });
+
+module.exports = SequenceComposite;
