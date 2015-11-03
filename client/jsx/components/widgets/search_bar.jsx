@@ -40,7 +40,7 @@ var SearchBar = React.createClass({
 	},
 
 	_onType: function (e) {
-		this.setState({ query: this.refs.searchInput.getDOMNode().value });
+		this.setState({ query: this.refs.searchInput.value });
 	},
 
 	_onSubmit: function (e) {

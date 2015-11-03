@@ -46,7 +46,7 @@ var Dendrogram = React.createClass({
 		var linksData = dendoFn.links(nodesData);
 
 		// traditional d3 rendering
-		var sel = d3.select(this.refs.svg.getDOMNode());
+		var sel = d3.select(this.refs.svg);
 		
 		var labelsData = _.where(nodesData, { isLeaf: true });
 		var labels = sel.selectAll(".dendro-label").data(labelsData, function (d) { return d.value.name; });

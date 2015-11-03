@@ -21,7 +21,7 @@ module.exports = React.createClass({
         e.preventDefault();
 
         // if hiding chromosomes and at bottom, scroll to the top
-        var _clientTop = this.getDOMNode().getBoundingClientRect().top;
+        var _clientTop = this.refs.wrapper.getBoundingClientRect().top;
         if (this.state.showChromosomes && _clientTop < 0) {
             window.scrollTo(0, _clientTop);
         }
@@ -59,7 +59,7 @@ module.exports = React.createClass({
         }
 
 		return (
-    		<div className="genome-snapshot panel">
+    		<div ref="wrapper" className="genome-snapshot panel">
                 {this.state.showChromosomes ? buttonNode: null}
                 {barNodes}
                 {buttonNode}
