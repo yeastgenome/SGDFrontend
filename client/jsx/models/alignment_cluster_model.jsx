@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 "use strict";
 var clusterfck = require("clusterfck");
 var _ = require("underscore");

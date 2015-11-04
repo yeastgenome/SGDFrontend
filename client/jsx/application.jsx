@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 
 var setup = require("./lib/setup.jsx");
 

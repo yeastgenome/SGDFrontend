@@ -10,16 +10,16 @@ module.exports = function(grunt) {
     
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
-
+        
         s3: {
             options: {
                 accessKeyId: "<%= awsKey %>",
                 secretAccessKey: "<%= awsSecret %>",
                 bucket: "sgd-assets",
-                region: "us-west-2",
                 headers: {
                     "CacheControl": CACHE_TTL
-                }
+                },
+                region: "us-west-2"
             },
             build: {
                 cwd: "src/sgd/frontend/yeastgenome/static/",
@@ -142,14 +142,18 @@ module.exports = function(grunt) {
                 options: {
                     browserifyOptions: {
                         debug: true
-                    }
+                    },
+                    transform: ["babelify"]
                 }
             },
             production: {
                 dest: BUILD_PATH + "js/application.js",
                 src: "client/jsx/application.jsx",
                 options: {
-                    alias: ["./node_modules/react/dist/react.min.js:react"]
+                    browserifyOptions: {
+                        debug: false
+                    },
+                    transform: ["babelify"]
                 }
             }
         },
@@ -159,7 +163,7 @@ module.exports = function(grunt) {
                 livereload: true
             },
             jsx: {
-                files: ["client/**/*.jsx", "client/lib/sgd_visualization/**/*.jsx"],
+                files: ["client/**/*.jsx", "client/**/*.js"],
                 tasks: ["browserify:dev"]
             },
             scss: {
@@ -180,16 +184,6 @@ module.exports = function(grunt) {
                 logConcurrentOutput: true
             }
         }
-    });
-
-    grunt.registerTask("updateAssetVersion", "Change the asset_version.json file to have a new random string", function () {
-        var done = this.async();
-
-        var _random = crypto.randomBytes(20).toString("hex");
-        var obj = { version: _random };
-        fs.writeFile("asset_version.json", JSON.stringify(obj), function(err) {
-            return done(err);
-        });
     });
 
     // change write new asset URL to production_asset_url.json, and upload to s3.  Cloudfront will get new copy automatically.
@@ -218,6 +212,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-browserify");
     grunt.loadNpmTasks("grunt-concurrent");
 
+
     // production helper tasks
     grunt.registerTask("dynamicJs:production", ["browserify:production", "uglify:dynamicJs"]);
     grunt.registerTask("static", ["replace", "concat", "uglify:staticJs", "bowercopy"]);
@@ -228,6 +223,6 @@ module.exports = function(grunt) {
     // compile dev, then watch and trigger live reload
     grunt.registerTask("dev", ["compileDev", "watch"]);
     
-    grunt.registerTask("default", ["static", "concurrent:production", "updateAssetVersion"]);
-    grunt.registerTask("deployAssets", ["static", "concurrent:production", "updateAssetVersion", "uploadToS3"]);
+    grunt.registerTask("default", ["static", "concurrent:production"]);
+    grunt.registerTask("deployAssets", ["static", "concurrent:production", "uploadToS3"]);
 };

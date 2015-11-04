@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 "use strict";
 /*
 	A react component which can render locus diagrams, sub-feature tables, and a sequence toggler.

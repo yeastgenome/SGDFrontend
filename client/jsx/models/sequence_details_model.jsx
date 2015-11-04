@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 "use strict";
 
 var _ = require("underscore");
@@ -14,8 +14,9 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		options = options || {};
 		options.url = `/backend/locus/${options.id}/sequence_details?callback=?`;
 		// TEMP
-		this.baseAttributes = options;
 		super(options);
+		this.baseAttributes = options;
+		
 	}
 
 	parse (response) {

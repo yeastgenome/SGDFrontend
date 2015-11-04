@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 "use strict";
 
 var React = require("react");
@@ -56,7 +56,7 @@ module.exports = React.createClass({
 		var props = this.props;
 
 		// require widthScale to continue
-		if (!state.widthScale) return <div></div>;
+		if (!state.widthScale) return <div ref="wrapper"></div>;
 
 		var bars = this._getBarNodes();
 

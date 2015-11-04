@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 "use strict";
 
 var BaseModel = require("./base_model.jsx");

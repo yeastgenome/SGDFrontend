@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 "use strict";
 var Radium = require("radium");
 var React = require("react");
