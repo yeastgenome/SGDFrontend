@@ -1,7 +1,6 @@
-/** @jsx React.DOM */
 "use strict";
-
 var React = require("react");
+var ReactDOM = require("react-dom");
 var $ = require("jquery");
 
 var GenomeSnapshotModel = require("../models/genome_snapshot_model.jsx");
@@ -23,7 +22,7 @@ snapshotView.render = function () {
 		{ name: "GO Annotations", target: "go-annotations" },
 		{ name: "Phenotype Annotations", target: "phenotype-annotations" }
 	];
-	React.render(
+	ReactDOM.render(
 		<NavBar title="Genome Snapshot" elements={navElements} />,
 		document.getElementsByClassName("navbar-container")[0]
 	);
@@ -34,7 +33,7 @@ snapshotView.render = function () {
 
 		// features visualization and table alt
 		var featuresData = nestedData.featuresData;
-		React.render(
+		ReactDOM.render(
 			<TableAlternative vizType="genomeSnapshot" isInitiallyTable={false} graphData={featuresData.graphData} tableData={featuresData.tableData} />,
 			document.getElementsByClassName("genome-snapshot-target")[0]
 		);
@@ -44,7 +43,7 @@ snapshotView.render = function () {
 		// GO viz
 		var _goData = nestedData.goData;
 		var _goYValue = (d) => { return d.descendant_annotation_gene_count; };
-		React.render(
+		ReactDOM.render(
 			<ToggleBarChart
 				data={_goData} initialActiveDataKey="biological_process"
 				labelValue={_labelValue} yValue={_goYValue}
@@ -64,7 +63,7 @@ snapshotView.render = function () {
 				yAxisLabel="Genes Products Annotated"
 			/>
 		);
-		React.render(barChart, document.getElementsByClassName("phenotype-snapshot-target")[0]);
+		ReactDOM.render(barChart, document.getElementsByClassName("phenotype-snapshot-target")[0]);
 
 	});
 };

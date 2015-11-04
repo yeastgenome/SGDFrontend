@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 
 /*
 	Assumes that component has method called didClickOutside, which handles being clicked outside
