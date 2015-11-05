@@ -328,7 +328,7 @@
                         <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                     {% endfor %}
                 </p>
-            <h3>Protein Databases/Other</h3>
+            <h3>Protein Databases</h3>
                 <p id='protein_databases_resources_list'>
                     {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
                         <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
