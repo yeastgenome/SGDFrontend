@@ -229,7 +229,7 @@ function searchCallback(data, textStatus) {
 
     if (data.length > 0) {
 
-	$('#txt_subtitle').html(data[0]);
+	$('#txt_subtitle').html(escape(data[0]));
 	
 	$('#txt_list').html(data[1]);
 
