@@ -226,26 +226,6 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('experiment'),
                     route_name='experiment')
 
-    config.add_route('search', '/search')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('search', request)(getattr(chosen_frontend, 'search')(params=request.GET)),
-                    renderer=chosen_frontend.get_renderer('search'),
-                    route_name='search')
-
-    config.add_route('autocomplete_results', '/autocomplete_results')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('autocomplete_results', request)(getattr(chosen_frontend, 'autocomplete_results')(params=request.GET)),
-                    renderer=chosen_frontend.get_renderer('autocomplete_results'),
-                    route_name='autocomplete_results')
-
-    config.add_route('search_sequence_objects', '/search_sequence_objects')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('search_sequence_objects', request)(getattr(chosen_frontend, 'search_sequence_objects')(params=request.GET)),
-                    renderer=chosen_frontend.get_renderer('search_sequence_objects'),
-                    route_name='search_sequence_objects')
-
-    config.add_route('get_sequence_object', '/get_sequence_object/{id}')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('get_sequence_object', request)(getattr(chosen_frontend, 'get_sequence_object')(locus_repr=request.matchdict['id'].lower())),
-                    renderer=chosen_frontend.get_renderer('get_sequence_object'),
-                    route_name='get_sequence_object')
-
     config.add_route('locus', '/locus/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('locus', request)(getattr(chosen_frontend, 'locus')(bioent_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('locus'),
@@ -262,7 +242,12 @@ def prep_views(chosen_frontend, config):
     config.add_route('do_blast', '/run_blast')
     config.add_view(do_blast, route_name='do_blast')
 
-    
+    # example defer all rendering to react
+    config.add_route('search', '/search')
+    config.add_view(lambda request: {'search': render('static/templates/react_layout.jinja2', {})},
+                    renderer=chosen_frontend.get_renderer('react_layout'),
+                    route_name='search') 
+
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':
         from src.sgd.frontend.yeastgenome import yeastgenome_frontend

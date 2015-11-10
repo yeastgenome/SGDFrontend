@@ -17,10 +17,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from src.sgd.frontend.frontend_interface import FrontendInterface
 from src.sgd.frontend.yeastgenome.backendless.load_data_from_file import get_data
 
-# setup elastic search
 from src.sgd.frontend import config
-from elasticsearch import Elasticsearch
-es = Elasticsearch(config.elasticsearch_address, timeout=5, retry_on_timeout=True)
 
 class YeastgenomeFrontend(FrontendInterface):
     def __init__(self, backend_url, heritage_url, log_directory):
@@ -350,153 +347,6 @@ class YeastgenomeFrontend(FrontendInterface):
         enrichment_results = get_json(self.backend_url + '/go_enrichment', data={'bioent_ids': bioent_ids})
         return enrichment_results
 
-
-    # elasticsearch endpoint
-    def search(self, params):
-        # try elastic search, if 1 response, redirect there
-        raw_query = params['query']
-        query = raw_query.lower()
-        obj = {
-            'query': {
-                'filtered': {
-                    'filter': {
-                        'bool': {
-                            'must': [
-                                {
-                                    'term': {
-                                        'term.raw': query
-                                    }
-                                },
-                                {
-                                    'terms': {
-                                        'type': ['gene_name', 'paper', 'go']
-                                    }
-                                }
-                                
-                            ]
-                        }
-                    }
-                }
-            }
-        }
-        res = es.search(index='sgdlite', body=obj)
-        if (res['hits']['total'] == 1):
-            url = res['hits']['hits'][0]['_source']['link_url']
-            return HTTPFound(url)
-        # otherwise try existing
-        else:
-            return HTTPFound("/cgi-bin/search/luceneQS.fpl?query=" + urllib.quote(raw_query))
-
-    # elasticsearch autocomplete results
-    def autocomplete_results(self, params):
-        query = params['term']
-        search_body = {
-            'query': {
-                'bool': {
-                    'must': {
-                        'match': {
-                            'term': {
-                                'query': query,
-                                'analyzer': 'standard'
-                            }
-                        }
-                    },
-                    'must_not': { 'match': { 'type': 'paper' }},
-                    'should': [
-                        {
-                            'match': {
-                                'type': {
-                                    'query': 'gene_name',
-                                    'boost': 4
-                                }
-                            }
-                        },
-                        { 'match': { 'type': 'GO' }},
-                        { 'match': { 'type': 'phenotyoe' }},
-                        { 'match': { 'type': 'strain' }},
-                        { 'match': { 'type': 'paper' }},
-                        { 'match': { 'type': 'description' }},
-                    ]
-                }
-            }
-        }
-        res = es.search(index='sgdlite', body=search_body)
-        simplified_results = []
-        for hit in res['hits']['hits']:
-            # add matching words from description, not whole description
-            if hit['_source']['type'] == 'description':
-                for word in hit['_source']['term'].split(" "):
-                    if word.lower().find(query.lower()) > -1:
-                        simplified_results.append(re.sub('[;,.]', '', word))
-                        break
-            else:
-                simplified_results.append(hit['_source']['term'])
-
-        # filter duplicates
-        unique = []
-        for hit in simplified_results:
-            if hit not in unique:
-                unique.append(hit)
-
-        return Response(body=json.dumps(unique), content_type='application/json')
-
-    # es search for sequence objects
-    def search_sequence_objects(self, params):
-        query = params['query'] if 'query' in params.keys() else ''
-        query = query.lower()
-        offset = int(params['offset']) if 'offset' in params.keys() else 0
-        limit = int(params['limit']) if 'limit' in params.keys() else 1000
-
-        query_type = 'wildcard' if '*' in query else 'match_phrase'
-        if query == '':
-            search_body = {
-                'query': { 'match_all': {} },
-                'sort': { 'absolute_genetic_start': { 'order': 'asc' }}
-            }
-        elif ',' in query:
-            original_query_list = query.split(',')
-            query_list = []
-            for item in original_query_list:
-                query_list.append(item.strip())
-            print query_list
-            search_body = {
-                'query': {
-                    'filtered': {
-                        'filter': {
-                            'terms': {
-                                '_all': query_list
-                            }
-                        }
-                    }
-                }
-            }
-        else:
-            search_body = {
-                'query': {
-                    query_type: {
-                        '_all': query
-                    }
-                }
-            }
-
-        search_body['_source'] = ['sgdid', 'name', 'href', 'absolute_genetic_start', 'format_name', 'dna_scores', 'protein_scores', 'snp_seqs']
-        res = es.search(index='sequence_objects', body=search_body, size=limit, from_=offset)
-        simple_hits = []
-        for hit in res['hits']['hits']:
-            simple_hits.append(hit['_source'])
-        formatted_response = {
-            'loci': simple_hits,
-            'total': res['hits']['total'],
-            'offset': offset
-        }
-        return Response(body=json.dumps(formatted_response), content_type='application/json')
-
-    # get individual feature
-    def get_sequence_object(self, locus_repr):
-        id = locus_repr.upper()
-        res = es.get(index='sequence_objects', id=id)['_source']
-        return Response(body=json.dumps(res), content_type='application/json')
-
     def backend(self, url_repr, args=None):
         if self.backend_url == 'backendless':
             return json.dumps(get_data(url_repr))
@@ -506,7 +356,6 @@ class YeastgenomeFrontend(FrontendInterface):
                 full_url += '?' + ('&'.join([key + '=' + value for key, value in args.items() if key != 'callback']))
             self.log.info(full_url)
             return json.dumps(get_json(full_url))
-
     
 def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     chosen_frontend = YeastgenomeFrontend(backend_url, heritage_url, log_directory)
@@ -549,7 +398,7 @@ def get_json(url, data=None):
             r = requests.get(url)
 
     try:
-        return r.json()
+        return json.loads(r.content)
     except:
         return None
 
@@ -673,4 +522,3 @@ def send_message(request):
     s.sendmail(sender, recipients, msg.as_string())
 
     return Response(body=json.dumps(p), content_type='application/json')
-
