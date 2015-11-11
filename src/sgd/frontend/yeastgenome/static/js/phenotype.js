@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-	$.getJSON('/backend/phenotype/' + phenotype['id'] + '/locus_details?callback=?', function(data) {
+	$.getJSON('/backend/phenotype/' + phenotype['id'] + '/locus_details', function(data) {
 	  	var phenotype_table = create_phenotype_table(data);
 	  	create_analyze_button("phenotype_table_analyze", phenotype_table, "<a href='" + phenotype['link'] + "' class='gene_name'>" + phenotype['display_name'] + "</a> genes", true);
   	    create_download_button("phenotype_table_download", phenotype_table, phenotype['display_name'] + "_annotations");

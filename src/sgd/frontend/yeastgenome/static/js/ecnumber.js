@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-	$.getJSON('/backend/ecnumber/' + ecnumber['id'] + '/locus_details?callback=?', function(data) {
+	$.getJSON('/backend/ecnumber/' + ecnumber['id'] + '/locus_details', function(data) {
 	  	var annotation_table = create_ecnumber_table(data);
 	  	create_analyze_button("gene_list_table_analyze", annotation_table, "<a href='" + ecnumber['link'] + "' class='gene_name'>" + ecnumber['display_name'] + "</a> Genes", true);
   	    create_download_button("gene_list_table_download", annotation_table, ecnumber['format_name'].split('.').join('_') + "_annotations");

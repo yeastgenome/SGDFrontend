@@ -9,7 +9,7 @@ $(document).ready(function() {
 
     if(locus['regulation_overview']['target_count'] > 0) {
         $("#domain_table_analyze").hide();
-		$.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_details?callback=?', function(data) {
+		$.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_details', function(data) {
             var domain_table = create_domain_table(data);
             if(domain_table != null) {
                 create_download_button("domain_table_download", domain_table, locus['display_name'] + "_domains");
@@ -27,14 +27,14 @@ $(document).ready(function() {
 	    });
 	}
 
-	$.getJSON('/backend/locus/' + locus['id'] + '/regulation_details?callback=?', function(data) {
+	$.getJSON('/backend/locus/' + locus['id'] + '/regulation_details', function(data) {
   		if(locus['regulation_overview']['target_count'] > 0) {
   		    var target_table = create_target_table(data);
   		    create_analyze_button("target_table_analyze", target_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> targets", true);
   	        create_analyze_button("analyze_targets", target_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> targets", false);
   	        create_download_button("target_table_download", target_table, locus['display_name'] + "_targets");
 
-  	        $.getJSON('/backend/locus/' + locus['id'] + '/regulation_target_enrichment?callback=?', function(enrichment_data) {
+  	        $.getJSON('/backend/locus/' + locus['id'] + '/regulation_target_enrichment', function(enrichment_data) {
                 var enrichment_table = create_enrichment_table("enrichment_table", target_table, enrichment_data);
                 create_download_button("enrichment_table_download", enrichment_table, locus['display_name'] + "_targets_go_process_enrichment");
   	        });
@@ -58,7 +58,7 @@ $(document).ready(function() {
         }
   	});
 
-    $.getJSON('/backend/locus/' + locus['id'] + '/regulation_graph?callback=?', function(data) {
+    $.getJSON('/backend/locus/' + locus['id'] + '/regulation_graph', function(data) {
         if(data != null && data["nodes"].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true, "regulation");
             create_cy_download_button(graph, "cy_download", locus['display_name'] + '_regulation_graph')

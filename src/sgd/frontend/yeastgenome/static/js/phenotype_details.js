@@ -1,12 +1,12 @@
 
 $(document).ready(function() {
-  	$.getJSON('/backend/locus/' + locus['id'] + '/phenotype_details?callback=?', function(data) {
+  	$.getJSON('/backend/locus/' + locus['id'] + '/phenotype_details', function(data) {
   	    var phenotype_table = create_phenotype_table(data);
         create_download_button("phenotype_table_download", phenotype_table, locus['display_name'] + "_phenotypes");
         $("#phenotype_table_analyze").hide();
   	});
 
-  	$.getJSON('/backend/locus/' + locus['id'] + '/phenotype_graph?callback=?', function(data) {
+  	$.getJSON('/backend/locus/' + locus['id'] + '/phenotype_graph', function(data) {
   		if(data['nodes'].length > 1) {
   			var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "phenotype");
   			var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);

@@ -6,7 +6,7 @@ function filter_table(minValue, maxValue) {
 $(document).ready(function() {
     $("#expression_table_analyze").hide();
 
-  	$.getJSON('/backend/locus/' + locus['id'] + '/expression_details?callback=?', function(data) {
+  	$.getJSON('/backend/locus/' + locus['id'] + '/expression_details', function(data) {
   	    var expression_table = create_expression_table(data['datasets']);
         create_download_button("expression_table_download", expression_table, locus['display_name'] + "_expression");
         $("#expression_table_analyze").hide();
@@ -15,7 +15,7 @@ $(document).ready(function() {
     // defer some logic to React
     views.expression.render();
 
-  	$.getJSON('/backend/locus/' + locus['id'] + '/expression_graph?callback=?', function(data) {
+  	$.getJSON('/backend/locus/' + locus['id'] + '/expression_graph', function(data) {
   		if(data != null && data['nodes'].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true, "expression");
             var max_value = data["min_coeff"] + Math.min(data["max_coeff"] - data["min_coeff"], 10);
