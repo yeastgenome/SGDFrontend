@@ -6,60 +6,46 @@ export default class Header extends Component {
   render() {
     return (
       <header id="layout-page-header">
-        <div className="row" id="layout-page-header-content">
-          <section className="small-5 columns" id="logo-section">
+        {/* top white section */}
+        <div className="row">
+          {/* left */}
+          <div className="columns small-6">
             <a href="/">
               <div className="logo">
                 <span className="logo-label">Saccharomyces Genome Database</span>
               </div>
             </a>
-          </section>
-          <section className="small-7 columns right-header-container">
-            <div className="right-header-container">
-              <ul className="inline-list site-meta-links">
-                <li><a href="/about">About</a></li>
-                <li><a href="/blog">Blog</a></li>
-                <li><a href="/download-data">Download</a></li>
-                <li><a href="/help">Help</a></li>
-              </ul>
-              <ul className="social-links header-social-links">
-                <li><a href="/cgi-bin/suggestion" target="_blank" id="email-footer" className="webicon mail medium">Email Us</a></li>
-                <li><a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter-footer" className="webicon twitter medium">Twitter</a></li>
-                <li><a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" className="webicon facebook medium" id="facebook-footer">Facebook</a></li>
-                <li><a href="https://www.linkedin.com/company/saccharomyces-genome-database" target="_blank" className="webicon linkedin medium" id="linkedin-footer">LinkedIn</a></li>
-                <li><a href="https://www.youtube.com/channel/UCnTiLvqP2aYeHEaJl7m9DUg" target="_blank" id="youtube-footer" className="webicon youtube medium">YouTube</a></li>
-                <li><a href="/feed" target="_blank" id="rss-footer" className="webicon rss medium">RSS</a></li>
-              </ul>
-            </div>
-            <p className="yeastmine-links">Yeastmine: <a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Batch Analysis</a> or <a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Advanced Search</a></p>
-          </section>
-        </div>
-        <div id="layout-page-header-nav">
-          <div className="contain-to-grid">
-            <div className="row">
-              <nav className="top-bar columns small-12" data-topbar>
-                <ul className="show-for-small title-area">
-                  <li className="name">
-                    <h1>
-                      <span className="show-for-small"><a href="/"><img id="sgd-mini-logo" src="/img-domain/sgd-logo-sm-hi-res-v2.png" alt="SGD Logo"></img></a></span>
-                    </h1>
-                  </li> 
-                  <li className="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-                </ul>
-                <section className="top-bar-section">
-                  <div className="row">
-                    <div className="small-7 columns">
-                      {this._renderMenu()}   
-                    </div>
-                    <div className="small-5 columns">
-                      <AppSearchBar {...this.props}/>
-                    </div>
-                  </div>
-                </section>
-              </nav>
-            </div>
+            <ul className="inline-list">
+              <li><a href="/about">About</a></li>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="/download-data">Download</a></li>
+              <li><a href="/help">Help</a></li>
+            </ul>
+          </div>
+          {/* right */}
+          <div className="columns small-6">
+            <ul className="social-links header-social-links">
+              <li><a href="/cgi-bin/suggestion" target="_blank" id="email-footer" className="webicon mail large">Email Us</a></li>
+              <li><a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter-footer" className="webicon twitter large">Twitter</a></li>
+              <li><a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" className="webicon facebook large" id="facebook-footer">Facebook</a></li>
+              <li><a href="https://www.linkedin.com/company/saccharomyces-genome-database" target="_blank" className="webicon linkedin large" id="linkedin-footer">LinkedIn</a></li>
+              <li><a href="https://www.youtube.com/channel/UCnTiLvqP2aYeHEaJl7m9DUg" target="_blank" id="youtube-footer" className="webicon youtube large">YouTube</a></li>
+              <li><a href="/feed" target="_blank" id="rss-footer" className="webicon rss large">RSS</a></li>
+            </ul>
+            <p>Yeastmine: <a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Batch Analysis</a> or <a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Advanced Search</a></p>
           </div>
         </div>
+        {/* purple bar */}
+        <section className="top-bar-section contain-to-grid">
+          <div className="row">
+            <div className="small-7 columns">
+              {this._renderMenu()}   
+            </div>
+            <div className="small-5 columns">
+              <AppSearchBar {...this.props}/>
+            </div>
+          </div>
+        </section>
       </header>
     );
   }

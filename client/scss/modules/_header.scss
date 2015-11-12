@@ -7,6 +7,10 @@ http://smacss.com/book/type-module
 	background: url("../img/demo-watermark.png") repeat-x;
 } */
 
+#layout-page-header {
+	font-family: Lato, sans-serif;
+}
+
 // TODO, cleanup dead code here
 .right-header-container {
 	display: flex;
@@ -44,46 +48,15 @@ http://smacss.com/book/type-module
 	}
 }
 
-#txt_search_container {
-	margin-left: 38.5% !important;
-	width: 53.17%;
-}
-
-#top-search-input-container div {
-	top: -30px;
-}
-
 #sgd-mini-logo {
 	margin: 8px;
-}
-
-.small-survey-container {
-	display: none;
-	background: #f04124;
-	h3 {
-		margin-top: 6px;
-		color: white;
-	}
-	a {
-		color: white;
-		&:after {
-			display: none;
-		}
-	}
-}
-
-#adv-search-links {
-	font-size: em-calc(11);
-	float: right;
-	position: relative;
-	top: -37px;
 }
 
 .social-links, .site-links {
 	overflow: visible;
 	@include inline-list;
 	$inline-list-display: inline;
-	display: inline;
+	display: block;
 }
 
 .site-links {
