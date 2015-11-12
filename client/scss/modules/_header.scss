@@ -6,68 +6,47 @@ http://smacss.com/book/type-module
 /* #layout-page-header-content {
 	background: url("../img/demo-watermark.png") repeat-x;
 } */
+$logo-width: 297px;
+$logo-height: 52px;
+$header-text-font-size: 16.3px;
 
 #layout-page-header {
 	font-family: Lato, sans-serif;
 }
 
-// TODO, cleanup dead code here
-.right-header-container {
+.top-header {
+	padding: 0.25rem 0;
+}
+
+.header-right {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
-	.site-meta-links {
-		margin-bottom: 0;
-		margin-top: 4px;
-	}
-	.yeastmine-links {
-		margin-bottom: 0;
-	}
 }
 
-#header-tools {
-	display: inline-block;
-	float: right;
-	height: 90px;
-	.header-links {
-		display: inline-block;
-		overflow: hidden;
-		float: right;
-		height: 25px;
-		margin-top: 7px;
-		font-size: em-calc(13);
-		font-weight: bold;
-		text-align: right;
-		a {color: rgb(0,0,0);}
-		a:hover {text-decoration: underline;}
-	}
-	.header-search {
-		height: 50px;
-		top: 30px;
-		overflow: none;
-	}
+.yeastmine-links {
+	font-size: $header-text-font-size;
+	margin-bottom: 0;
+}
+
+.site-links {
+	width: $logo-width;
+	display: flex;
+	justify-content: space-between;
+	font-size: $header-text-font-size;
+	margin-top: 4px;
 }
 
 #sgd-mini-logo {
 	margin: 8px;
 }
 
-.social-links, .site-links {
+.social-links {
 	overflow: visible;
 	@include inline-list;
 	$inline-list-display: inline;
 	display: block;
-}
 
-.site-links {
-	margin: 0;
-	position: absolute;
-    right: 164px;
-    font-size: em-calc(13);
-    li {
-        margin-left: em-calc(14);
-    }
-}
 
 .social-links {
 	margin: 0;
@@ -112,11 +91,13 @@ form#searchform {
 	height: 90px;
 }
 
+=======
+>>>>>>> more layout work
 .logo {
 	background: url("../img/sgd-logo.png") no-repeat;
-	background-size: 320px 90px;
-	height: 90px;
-	width: 320px;
+	background-size: $logo-width $logo-height;
+	height: $logo-height;
+	width: $logo-width;
 	display: inline-block;
 	.logo-label {
 		display: inline-block;
@@ -133,7 +114,7 @@ form#searchform {
     only screen and (min-resolution: 2dppx) {
         .logo {
             background: url("../img/sgd-logo-2x.png") no-repeat;
-            background-size: 320px 90px;
+            background-size: $logo-width $logo-height;
         }
 }
 

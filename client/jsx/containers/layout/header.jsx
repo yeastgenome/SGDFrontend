@@ -7,7 +7,7 @@ export default class Header extends Component {
     return (
       <header id="layout-page-header">
         {/* top white section */}
-        <div className="row">
+        <div className="row top-header">
           {/* left */}
           <div className="columns small-6">
             <a href="/">
@@ -15,15 +15,15 @@ export default class Header extends Component {
                 <span className="logo-label">Saccharomyces Genome Database</span>
               </div>
             </a>
-            <ul className="inline-list">
-              <li><a href="/about">About</a></li>
-              <li><a href="/blog">Blog</a></li>
-              <li><a href="/download-data">Download</a></li>
-              <li><a href="/help">Help</a></li>
-            </ul>
+            <div className="site-links">
+              <div><a href="/about">About</a></div>
+              <div><a href="/blog">Blog</a></div>
+              <div><a href="/download-data">Download</a></div>
+              <div><a href="/help">Help</a></div>
+            </div>
           </div>
           {/* right */}
-          <div className="columns small-6">
+          <div className="columns small-6 header-right">
             <ul className="social-links header-social-links">
               <li><a href="/cgi-bin/suggestion" target="_blank" id="email-footer" className="webicon mail large">Email Us</a></li>
               <li><a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter-footer" className="webicon twitter large">Twitter</a></li>
@@ -32,7 +32,7 @@ export default class Header extends Component {
               <li><a href="https://www.youtube.com/channel/UCnTiLvqP2aYeHEaJl7m9DUg" target="_blank" id="youtube-footer" className="webicon youtube large">YouTube</a></li>
               <li><a href="/feed" target="_blank" id="rss-footer" className="webicon rss large">RSS</a></li>
             </ul>
-            <p>Yeastmine: <a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Batch Analysis</a> or <a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Advanced Search</a></p>
+            <p className="yeastmine-links">Yeastmine: <a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Batch Analysis</a> or <a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Advanced Search</a></p>
           </div>
         </div>
         {/* purple bar */}
