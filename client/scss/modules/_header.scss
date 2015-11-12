@@ -27,11 +27,10 @@ $right-section-width: 363px;
 }
 
 .site-links {
-	width: $logo-width;
+	width: 332px;
 	display: flex;
 	justify-content: space-between;
 	font-size: $header-text-font-size;
-	margin-top: 4px;
 }
 
 #sgd-mini-logo {
@@ -95,6 +94,7 @@ form#searchform {
 	height: $logo-height;
 	width: $logo-width;
 	display: inline-block;
+	margin-top: 12px;
 	.logo-label {
 		display: inline-block;
 		text-indent: -9999px;

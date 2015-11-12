@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
+const $ = require('jquery');
+require('foundation');
 
 const AppSearchBar = require('../app_search_bar.jsx');
 
 const Header = React.createClass({
   render() {
     return (
-      <header id="layout-page-header">
+      <header id="layout-page-header" ref="wrapper">
         {/* top white section */}
         <div className="row top-header">
           {/* left */}
@@ -15,12 +17,7 @@ const Header = React.createClass({
                 <span className="logo-label">Saccharomyces Genome Database</span>
               </div>
             </a>
-            <div className="site-links">
-              <div><a href="/about">About</a></div>
-              <div><a href="/blog">Blog</a></div>
-              <div><a href="/download-data">Download</a></div>
-              <div><a href="/help">Help</a></div>
-            </div>
+
           </div>
           {/* right */}
           <div className="columns small-6 header-right">
@@ -32,7 +29,12 @@ const Header = React.createClass({
               <li><a href="https://www.youtube.com/channel/UCnTiLvqP2aYeHEaJl7m9DUg" target="_blank" id="youtube-footer" className="webicon youtube large">YouTube</a></li>
               <li><a href="/feed" target="_blank" id="rss-footer" className="webicon rss large">RSS</a></li>
             </ul>
-            <p className="yeastmine-links">Yeastmine: <a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Batch Analysis</a> or <a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Advanced Search</a></p>
+            <div className="site-links">
+              <div><a href="/about">About</a></div>
+              <div><a href="/blog">Blog</a></div>
+              <div><a href="/download-data">Download</a></div>
+              <div><a href="/help">Help</a></div>
+            </div>
           </div>
         </div>
         {/* purple bar */}
@@ -52,12 +54,13 @@ const Header = React.createClass({
 
   _renderMenu() {
     return (
-      <nav className="top-bar">
+      <nav className="top-bar" data-topbar role="navigation">
         <section className="top-bar-section">
           <ul className="left">
             <li className="has-dropdown"><a href="#">Analyze</a>
               <ul className="dropdown">
                 <li><a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Gene Lists</a></li>
+                <li><a href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Yeastmine</a></li>
                 <li><a href="/blast-sgd">BLAST</a></li>
                 <li><a href="/blast-fungal">Fungal BLAST</a></li>
                 <li><a href="http://www.yeastgenome.org/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
@@ -215,6 +218,10 @@ const Header = React.createClass({
         </section>
       </nav>
     );
+  },
+
+  componentDidMount: function () {
+    $(document).foundation();
   }
 });
 
