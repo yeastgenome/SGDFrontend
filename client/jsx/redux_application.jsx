@@ -10,7 +10,7 @@ const ConfigureStore = require('./store/configure_store.js');
 const Layout = require('./containers/layout.jsx');
 const Search = require('./containers/search.jsx');
 
-export default class extends Component {
+const ReduxApplication = React.createClass({
 	render() {
     // configure store
     let store = ConfigureStore();
@@ -25,4 +25,6 @@ export default class extends Component {
       </Provider>
     );
 	}
-}
+});
+
+module.exports = ReduxApplication;

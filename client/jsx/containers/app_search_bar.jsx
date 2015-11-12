@@ -9,7 +9,7 @@ require('isomorphic-fetch');
 
 const Actions = require('../actions');
 
-class AppSearchBar extends Component {
+const AppSearchBar = React.createClass({
   render() {
     const _onChange = (newQuery, selectedOptions) => {
       if (selectedOptions[0].href) this._redirect(selectedOptions[0].href);
@@ -61,21 +61,21 @@ class AppSearchBar extends Component {
         />
       </div>
     );
-  }
+  },
 
   componentWillMount() {
     if (typeof this.props.query !== 'undefined' && this.props.query !== '') this._dispatchSubmit();
-  }
+  },
 
   _submit(newQuery) {
     this._updateUrl(newQuery);
     this._dispatchSubmit(newQuery);
-  }
+  },
 
   // update URL and HTML5 history with query param
   _updateUrl(query) {
     this.props.history.pushState(null, '/search', { q: query });
-  }
+  },
 
   _dispatchSubmit(query) {
     query = query || this.props.query;
@@ -83,12 +83,12 @@ class AppSearchBar extends Component {
     let fetchAction = Actions.fetchSearchResults(query);
     this.props.dispatch(startAction);
     this.props.dispatch(fetchAction);   
-  }
+  },
 
   _redirect (newUrl) {
     if (window) window.location.href = newUrl;
-  }
-};
+  },
+});
 
 const style = {
 
@@ -102,4 +102,4 @@ function mapStateToProps(_state) {
 }
 
 const StyledComponent = AppSearchBar;
-export default connect(mapStateToProps)(StyledComponent);
+module.exports = connect(mapStateToProps)(StyledComponent);

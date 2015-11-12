@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 
-export default class Footer extends Component {
+const Footer = React.createClass({
+  getDefaultProps() {
+    return {
+      assetRoot: '/static'   
+    };
+  },
+
   render() {
     let assetRoot = this.props.assetRoot;
     return (
@@ -42,6 +48,6 @@ export default class Footer extends Component {
       </footer>
     );
   }
-};
+});
 
-Footer.defaultProps = { assetRoot: '/static' };
+module.exports = Footer;

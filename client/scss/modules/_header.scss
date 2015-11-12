@@ -9,13 +9,10 @@ http://smacss.com/book/type-module
 $logo-width: 297px;
 $logo-height: 52px;
 $header-text-font-size: 16.3px;
-
-#layout-page-header {
-	font-family: Lato, sans-serif;
-}
+$right-section-width: 363px;
 
 .top-header {
-	padding: 0.25rem 0;
+	padding: 0.5rem 0 0.25rem 0;
 }
 
 .header-right {
@@ -46,7 +43,6 @@ $header-text-font-size: 16.3px;
 	@include inline-list;
 	$inline-list-display: inline;
 	display: block;
-
 
 .social-links {
 	margin: 0;
@@ -118,11 +114,16 @@ form#searchform {
         }
 }
 
+.top-menu-container {
+	padding-left: 0;
+}
+
 .top-bar {
 	margin-bottom: 0;
 }
 
 .top-bar-section ul li > a {
+<<<<<<< HEAD
     font-weight: bold;
 }
 
@@ -130,6 +131,15 @@ form#searchform {
 	padding: 0 22px;
 	font-family: Lato, sans-serif;
 } 
+=======
+    font-size: $header-text-font-size;
+    font-family: Lato, sans-serif;
+}
+
+.search-container {
+	width: $right-section-width;
+}
+>>>>>>> more babel setup and layout changes
 
 /* back styling for mobile menus */
 .back h5 {

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 const Header = require('./layout/header.jsx');
 const Footer = require('./layout/footer.jsx');
 
-export default class Layout extends Component {
+const Layout = React.createClass({
   render () {
     return (
       <div>
@@ -15,4 +15,6 @@ export default class Layout extends Component {
       </div>
     );
   }
-};
+});
+
+module.exports = Layout;

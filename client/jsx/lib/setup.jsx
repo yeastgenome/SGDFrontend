@@ -5,7 +5,6 @@ var $ = require("jquery");
 var attachFastClick = require("fastclick");
 require("foundation");
 
-var search = require("./search.jsx");
 
 module.exports = function () {
 
@@ -16,7 +15,7 @@ module.exports = function () {
 	attachFastClick(document.body);
 
 	// exec search setup script
-	search();
+	// TODO
 
 	// add console, console.log, and console.warn if they don't exist, for IE9
 	if (!(window.console && console.log && console.warn)) {
