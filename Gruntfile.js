@@ -187,7 +187,7 @@ module.exports = function(grunt) {
     });
 
     // change write new asset URL to production_asset_url.json, and upload to s3.  Cloudfront will get new copy automatically.
-    grunt.registerTask("uploadToS3", "Change the asset_version.json file to have a new random string", function () {
+    grunt.registerTask("uploadToS3", "Change the production_asset_url.json file to have a new random string", function () {
         var done = this.async();
 
         var _random = crypto.randomBytes(10).toString("hex");

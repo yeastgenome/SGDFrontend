@@ -45,7 +45,6 @@ namespace :deploy do
   desc 'Upload static files'
   task :upload_statics do
     on roles(:app), in: :sequence do
-      upload!('./asset_version.json', "#{current_path}/")
       upload!('./production_asset_url.json', "#{current_path}/")
     end
   end
