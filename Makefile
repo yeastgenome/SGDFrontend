@@ -4,6 +4,9 @@ BUILDOUT_DEPLOY = buildout_deploy.cfg
 dev-deploy:
 	. dev_deploy_variables.sh && cap dev deploy
 
+qa-deploy:
+	. dev_deploy_variables.sh && cap qa deploy
+
 prod-deploy:
 	. prod_deploy_variables.sh && cap prod deploy
 
