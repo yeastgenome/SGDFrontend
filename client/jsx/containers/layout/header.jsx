@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-const $ = require('jquery');
-require('foundation');
+// const $ = require('jquery');
+// require('foundation');
 
 const AppSearchBar = require('../app_search_bar.jsx');
 

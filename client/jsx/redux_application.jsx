@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Route, Link } from 'react-router';
-import createHistory from 'history/lib/createBrowserHistory';
 import { ReduxRouter, routerStateReducer, reduxReactRouter } from 'redux-router';
 import { Provider, connect } from 'react-redux';
 
