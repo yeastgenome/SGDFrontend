@@ -1,9 +1,5 @@
-
-"use strict";
 var React = require("react");
-var Router = require("react-router");
 var Radium = require("radium");
-var { RouteHandler, Navigation, State } = Router;
 var d3 = require("d3");
 var _ = require("underscore");
 
@@ -18,7 +14,7 @@ var StrainSelector = require("./strain_selector.jsx");
 var VariantViewerStore = require("../../stores/variant_viewer_store.jsx");
 
 var VariantViewer = React.createClass({
-	mixins: [Navigation, State],
+	// mixins: [Navigation, State],
 
 	propTypes: {
 		store: React.PropTypes.object.isRequired,
@@ -141,7 +137,8 @@ var VariantViewer = React.createClass({
 		var _strainData = this.props.store.getHeatmapStrainData();
 		var _zoom = this.props.store.getHeatmapZoom();
 		var _onClick = d => {
-			this.transitionTo("variantViewerShow", { locusId: d.id });
+			console.log(this.props)
+			this.props.history.pushState(null, "/" + d.id);
 		};
 		return <ScrollyHeatmap data={_heatmapData} onClick={_onClick} strainData={_strainData} nodeSize={_zoom} />;
 	},
