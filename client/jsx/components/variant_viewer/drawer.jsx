@@ -1,11 +1,6 @@
-
-"use strict";
 var Radium = require("radium");
 var React = require("react");
 var _ = require("underscore");
-// router stuff
-var Router = require("react-router");
-var { Route, RouteHandler, Link, Transition } = Router;
 
 var VariantViewerStore = require("../../stores/variant_viewer_store.jsx");
 var AsyncVariantViewer = require("./async_variant_viewer.jsx");
@@ -15,7 +10,6 @@ var MAX_HEIGHT = 800;
 var LABEL_WIDTH = 150;
 
 var Drawer = React.createClass({
-	mixins: [Router.Navigation, Router.State],
 
 	propTypes: {
 		store: React.PropTypes.object.isRequired,
@@ -61,7 +55,7 @@ var Drawer = React.createClass({
 	},
 
 	_exit: function () {
-		this.transitionTo("variantViewerIndex", {});
+		this.props.history.pushState(null, "/");
 	}
 });
 
