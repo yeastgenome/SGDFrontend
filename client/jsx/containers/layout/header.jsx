@@ -9,7 +9,7 @@ const Header = React.createClass({
     return (
       <header id="layout-page-header" ref="wrapper">
         {/* top white section */}
-        <div className="row top-header">
+        <div className="row top-header hide-for-small">
           {/* left */}
           <div className="columns small-6">
             <a href="/">
@@ -40,10 +40,10 @@ const Header = React.createClass({
         {/* purple bar */}
         <section className="contain-to-grid">
           <div className="row">
-            <div className="small-7 columns top-menu-container">
+            <div className="medium-8 large-7 columns top-menu-container">
               {this._renderMenu()}   
             </div>
-            <div className="small-5 columns search-container">
+            <div className="medium-4 large-5 columns search-container">
               <AppSearchBar {...this.props}/>
             </div>
           </div>
@@ -55,6 +55,14 @@ const Header = React.createClass({
   _renderMenu() {
     return (
       <nav className="top-bar" data-topbar role="navigation">
+        <ul className="title-area">
+          <li className="name">
+            <span className="show-for-small">
+              <a href="/"><img id="sgd-mini-logo" src="static/img/sgd-logo-sm-hi-res-v2.png" alt="SGD Logo" /></a>
+            </span>
+          </li>
+          <li className="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+        </ul>
         <section className="top-bar-section">
           <ul className="left">
             <li className="has-dropdown"><a href="#">Analyze</a>

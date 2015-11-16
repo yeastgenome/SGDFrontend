@@ -114,10 +114,6 @@ form#searchform {
         }
 }
 
-.top-menu-container {
-	padding-left: 0;
-}
-
 .top-bar {
 	margin-bottom: 0;
 }
@@ -137,7 +133,7 @@ form#searchform {
 }
 
 .search-container {
-	width: $right-section-width;
+	max-width: $right-section-width;
 }
 >>>>>>> more babel setup and layout changes
 
