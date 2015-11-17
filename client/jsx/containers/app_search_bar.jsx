@@ -2,70 +2,67 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Radium from 'radium';
 import { connect } from 'react-redux';
-import Select from 'react-select';
 import _ from 'underscore';
+import Typeahead from 'react-typeahead-component';
 // TEMP
-require('isomorphic-fetch');
+// require('isomorphic-fetch');
 
 const Actions = require('../actions');
 
+const SearchOption = React.createClass({
+  render () {
+    console.log(this.props)
+    return (
+      <div>
+        <p>{this.props.data.name}</p>
+      </div>
+    );
+  }
+});
+
 const AppSearchBar = React.createClass({
+  propTypes: {
+    redirectOnSearch: React.PropTypes.bool// if true, hard HTTP redirect to /search?q=${query}, if false, uses REDUX
+  },
+
+  getDefaultProps() {
+    return {
+      redirectOnSearch: true
+    };
+  },
+
+  getInitialState() {
+    return {
+      inputValue: ''
+    };
+  },
+
   render() {
-    const _onChange = (newQuery, selectedOptions) => {
-      if (selectedOptions[0].href) this._redirect(selectedOptions[0].href);
-      this._submit(newQuery);
-    };
+    let options = [
+      { name: 'barz' }
+    ];
 
-    const _valueRenderer = val => {
-      return <div className='Select-placeholder'>{val.value}</div>;
-    };
-
-    const _optionRenderer = val => {
-      if (val.href) {
-        let _type = (val.type === 'gene_name') ? 'Loci' : val.type;
-        return <div className='has-link'><a className='linked-result' href={val.href}>{val.label}</a> in {_type}</div>;
-      } else {
-        return <div>{val.label}</div>;
-      }      
-    };
-
-    // cb(null, data)
-    const _asyncOptions = (query, cb) => {
-      let url = `/backend/autocomplete_results?term=${query}`
-      fetch(url).then( response => {
-        return response.json();
-      }).then( response => {
-        if (query === '') return cb(null, { complete: false, options: [] });
-        let formattedResponse = response.map( d => {
-          return { value: d.name, label: d.name, href: d.href, type: d.type };
-        });
-        formattedResponse.unshift({ value: query, label: `Search for "${query}"`, forceResults: true }); // TEMP add fake autcomplete query
-        cb(null, { complete: false, options: formattedResponse });
-      });
-    };
-
-
+    const _onChange = e => {
+      let newValue = e.target.value;
+      this.setState({ inputValue: newValue });
+    }
+    console.log(this.state)
     return (
       <div> 
-        <Select
-          name="form-field-name"
-          asyncOptions={_asyncOptions}
+        <Typeahead
+          inputValue={this.state.inputValue}
+          placeholder='Search'
+          optionTemplate={SearchOption}
+          options={options}
           onChange={_onChange}
-          searchable={true}
-          placeholder="Search"
-          value={this.props.query}
-          filterOption={() => { return true; }}
-          valueRenderer={_valueRenderer}
-          optionRenderer={_optionRenderer}
-          autoload={false}
         />
       </div>
     );
   },
 
-  componentWillMount() {
-    if (typeof this.props.query !== 'undefined' && this.props.query !== '') this._dispatchSubmit();
-  },
+  // componentWillMount() {
+  //   if (typeof this.props.query !== 'undefined' && this.props.query !== '') this._dispatchSubmit();
+  // },
 
   _submit(newQuery) {
     this._updateUrl(newQuery);
