@@ -86,8 +86,6 @@ form#searchform {
 	height: 90px;
 }
 
-=======
->>>>>>> more layout work
 .logo {
 	background: url("../img/sgd-logo.png") no-repeat;
 	background-size: $logo-width $logo-height;
@@ -119,15 +117,6 @@ form#searchform {
 }
 
 .top-bar-section ul li > a {
-<<<<<<< HEAD
-    font-weight: bold;
-}
-
-.top-bar .name h1 a {
-	padding: 0 22px;
-	font-family: Lato, sans-serif;
-} 
-=======
     font-size: $header-text-font-size;
     font-family: Lato, sans-serif;
 }
@@ -135,7 +124,6 @@ form#searchform {
 .search-container {
 	max-width: $right-section-width;
 }
->>>>>>> more babel setup and layout changes
 
 /* back styling for mobile menus */
 .back h5 {

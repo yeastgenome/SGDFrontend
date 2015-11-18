@@ -1,18 +1,19 @@
 const RESULTS_PER_PAGE = 10;
 const DEFAULT_STATE = {
+  userInput: '',
+  autocompleteResults: [],
   results: [],
   aggregations: [],
   selectedCategories: [],
   total: 0,
   currentPage: 0,
   resultsPerPage: RESULTS_PER_PAGE,
-  query: "",
-  autoCompleteQuery: "",
+  query: '',
+  autoCompleteQuery: '',
   isPending: false
 };
 
 const searchResultsReducer = function (state, action) {
-  console.log(action.type)
   if (typeof state === 'undefined') {
     return DEFAULT_STATE;
   }
@@ -33,6 +34,7 @@ const searchResultsReducer = function (state, action) {
   // let the URL change the query
   if (action.type === '@@reduxReactRouter/routerDidChange') {
     state.query = action.payload.location.query.q;
+    state.userInput = action.payload.location.query.q;
     return state;
   }
   if (action.type === 'TOGGLE_AGG') {
@@ -54,6 +56,14 @@ const searchResultsReducer = function (state, action) {
   if (action.type === 'EXTRA_SEARCH_RESPONSE') {
     state.isPending = false;
     state.results = state.results.concat(action.response.results);
+    return state;
+  }
+  if (action.type === 'SET_USER_INPUT') {
+    state.userInput = action.value;
+    return state;
+  }
+  if (action.type === 'AUTOCOMPLETE_RESPONSE') {
+    state.autocompleteResults = action.value;
     return state;
   }
   return state;

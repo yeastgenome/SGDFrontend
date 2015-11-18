@@ -1,5 +1,6 @@
 require('isomorphic-fetch');
-const BASE_URL = '/backend/get_search_results';
+const RESULTS_URL = '/backend/get_search_results';
+const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
 const RESULTS_FACTOR = 3; // search n times results as shown per page
 
 // helper methods
@@ -25,6 +26,13 @@ const getCategoryDisplayName = function (key) {
   };
   return labels[key];
 }
+
+export function setUserInput (newValue) {
+  return {
+    type: 'SET_USER_INPUT',
+    value: newValue
+  };
+};
 
 export function startSearchFetch (_query) {
   return {
@@ -53,7 +61,8 @@ export function fetchSearchResults (query, isAppendingResults) {
     let offsetStart = (state.currentPage === 0 ? 0 : 1);
     let _offset = (state.currentPage + offsetStart) * state.resultsPerPage;
     let _limit = state.resultsPerPage * RESULTS_FACTOR;
-    let url = `${BASE_URL}?q=${query}&${aggQueryParam}&limit=${_limit}&offset=${_offset}`;
+    let url = `${RESULTS_URL}?q=${query}&${aggQueryParam}&limit=${_limit}&offset=${_offset}`;
+    const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
     fetchFromApi(url)
       .then( response => {
         response.aggregations = response.aggregations.map( d => {
@@ -107,5 +116,43 @@ export function toggleAgg (_key) {
   return {
     type: 'TOGGLE_AGG',
     key: _key
+  };
+};
+
+export function fetchAutocompleteResults () {
+  return function (dispatch, getState) {
+    // TEMP don't fetch just hardcode
+    let response = {  
+     "results":[  
+        {  
+           "category":"suggestion",
+           "name":"ACTin"
+        },
+        {  
+           "href":"/go/GO:0019211/overview",
+           "category":"GO",
+           "name":"phosphatase activator activity"
+        },
+        {  
+           "href":"/go/GO:0044692/overview",
+           "category":"GO",
+           "name":"exoribonuclease activator activity"
+        },
+        {  
+           "href":"/go/GO:0005096/overview",
+           "category":"GO",
+           "name":"GTPase activator activity"
+        }
+      ]
+    };
+    let action = receiveAutocompleteResponse(response.results);
+    return dispatch(action);
+  };
+};
+
+export function receiveAutocompleteResponse (_response) {
+  return {
+    type: 'AUTOCOMPLETE_RESPONSE',
+    value: _response
   };
 };

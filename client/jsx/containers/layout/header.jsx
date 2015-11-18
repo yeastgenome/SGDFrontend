@@ -39,11 +39,11 @@ const Header = React.createClass({
         </div>
         {/* purple bar */}
         <section className="contain-to-grid">
-          <div className="row">
+          <div className="row menu-bar-container">
             <div className="medium-8 large-7 columns top-menu-container">
               {this._renderMenu()}   
             </div>
-            <div className="medium-4 large-5 columns search-container">
+            <div className="medium-4 large-5 columns search-container" id="j-search-container">
               <AppSearchBar {...this.props}/>
             </div>
           </div>
