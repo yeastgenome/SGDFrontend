@@ -7,6 +7,7 @@ const RESULTS_FACTOR = 3; // search n times results as shown per page
 const fetchFromApi = function (url) {
   return fetch(url)
     .then(function(response) {
+      console.log(response.status)
       if (response.status >= 400) {
           throw new Error('API error.');
       }
@@ -65,6 +66,7 @@ export function fetchSearchResults (query, isAppendingResults) {
     const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
     fetchFromApi(url)
       .then( response => {
+        console.log(response)
         response.aggregations = response.aggregations.map( d => {
           d.key = d.name;
           d.name = getCategoryDisplayName(d.name);
