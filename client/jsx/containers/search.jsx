@@ -8,7 +8,7 @@ const Paginator = require('../components/widgets/paginator.jsx');
 const Loader = require('../components/widgets/loader.jsx');
 const Actions = require('../actions');
 
-const SearchView = Radium(React.createClass({
+const SearchView = React.createClass({
   displayName: 'SearchView',
   propTypes: {
     results: React.PropTypes.array, // [{ name, url, category, description }]
@@ -126,7 +126,7 @@ const SearchView = Radium(React.createClass({
       return <SearchResult key={'searchResults' + id} {...d}/>;
     });
   }
-}));
+});
 
 const LINK_COLOR = '#11728b';
 var style = {
@@ -179,4 +179,4 @@ function mapStateToProps(_state) {
   };
 }
 
-module.exports = connect(mapStateToProps)(SearchView);
+module.exports = connect(mapStateToProps)(Radium(SearchView));

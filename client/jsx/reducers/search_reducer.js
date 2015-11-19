@@ -10,7 +10,8 @@ const DEFAULT_STATE = {
   resultsPerPage: RESULTS_PER_PAGE,
   query: '',
   autoCompleteQuery: '',
-  isPending: false
+  isPending: false,
+  apiError: null
 };
 
 const searchResultsReducer = function (state, action) {

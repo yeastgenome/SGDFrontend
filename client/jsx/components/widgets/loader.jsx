@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class Layout extends Component {
+const Layout = React.createClass({
   render() {
     return <div className="sgd-loader-container"><div className="sgd-loader" /></div>
   }
-};
+});
+
+module.exports = Layout;
