@@ -15,6 +15,7 @@ const DEFAULT_STATE = {
 };
 
 const searchResultsReducer = function (state, action) {
+  console.log(action.type)
   if (typeof state === 'undefined') {
     return DEFAULT_STATE;
   }

@@ -52,13 +52,15 @@ const SearchResult = React.createClass({
       var _links = data.geo_ids.map( d => {
         return <li key={'geo' + d}><a href={`${GEO_BASE_URL}${d}`} target='_new'>{d}</a> </li>;
       });
-      geoNodes = <ul className='inline-list clearfix' style={[style.resourceList]}><li>PUBMED:</li>{_links}</ul>;
+      geoNodes = <ul className='inline-list clearfix' style={[style.resourceList]}><li>GEO:</li>{_links}</ul>;
     }
 
     return (
       <div>
-        <h3 style={[style.title]}>{this.props.name}</h3>
-        <p>{this.props.description}</p>
+        <h3 style={[style.title]}>
+          {this.props.name} <span className='radius secondary label'>{this.props.category}</span>
+        </h3>
+        <p style={[style.description]}>{this.props.description}</p>
         <div>
           {pmidsNodes}
           {geoNodes}
@@ -90,6 +92,7 @@ const style = {
     marginBottom: 0
   },
   resourceList: {
+    marginTop: '0.25rem',
     marginBottom: '0.25rem'
   }
 }

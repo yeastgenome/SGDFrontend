@@ -56,6 +56,11 @@ const SearchView = React.createClass({
     );
   },
 
+  componentWillMount() {
+    let fetchAction = Actions.fetchSearchResults();
+    this.props.dispatch(fetchAction);
+  },
+
   _renderSearchContent() {
     if (this.props.isPending) return <Loader />
     return (
