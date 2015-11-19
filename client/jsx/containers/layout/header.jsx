@@ -44,7 +44,7 @@ const Header = React.createClass({
               {this._renderMenu()}   
             </div>
             <div className="medium-4 large-5 columns search-container" id="j-search-container">
-              <AppSearchBar {...this.props}/>
+              <AppSearchBar {...this.props} redirectOnSearch={false}/>
             </div>
           </div>
         </section>
@@ -58,7 +58,7 @@ const Header = React.createClass({
         <ul className="title-area">
           <li className="name">
             <span className="show-for-small">
-              <a href="/"><img id="sgd-mini-logo" src="static/img/sgd-logo-sm-hi-res-v2.png" alt="SGD Logo" /></a>
+              <a href="/"><img id="sgd-mini-logo" src="/static/img/sgd-logo-sm-hi-res-v2.png" alt="SGD Logo" /></a>
             </span>
           </li>
           <li className="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>

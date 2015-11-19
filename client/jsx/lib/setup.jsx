@@ -1,21 +1,19 @@
-
-"use strict";
-
-var $ = require("jquery");
-var attachFastClick = require("fastclick");
-require("foundation");
-
+const $ = require('jquery');
+const attachFastClick = require('fastclick');
+const setupSearch = require('./setup_search.jsx');
+require('foundation');
 
 module.exports = function () {
-
 	// foundation setup
 	$(document).foundation();
 
 	// add fast click event listener to reduce delay of mobile "clicks" 
 	attachFastClick(document.body);
 
-	// exec search setup script
-	// TODO
+	// exec search setup script, don't do if on the search page, or any redux page (just search for now)
+	if (!window.location.href.match(/\/search/)) {
+		setupSearch();
+	}
 
 	// add console, console.log, and console.warn if they don't exist, for IE9
 	if (!(window.console && console.log && console.warn)) {

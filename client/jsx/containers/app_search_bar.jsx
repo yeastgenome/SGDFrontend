@@ -87,6 +87,10 @@ const AppSearchBar = React.createClass({
 
   _submit() {
     let newQuery = this.props.userInput;
+    if (this.props.redirectOnSearch) {
+      let newUrl = `/search?q=${newQuery}`;
+      return this._hardRedirect(newUrl);
+    }
     this._updateUrl(newQuery);
     this._dispatchSubmit(newQuery);
   },
