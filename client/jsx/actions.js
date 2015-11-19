@@ -7,9 +7,8 @@ const RESULTS_FACTOR = 3; // search n times results as shown per page
 const fetchFromApi = function (url) {
   return fetch(url)
     .then(function(response) {
-      console.log(response.status)
       if (response.status >= 400) {
-          throw new Error('API error.');
+        throw new Error('API error.');
       }
       return response.json();
     });
@@ -23,7 +22,8 @@ const getCategoryDisplayName = function (key) {
     biological_process: 'Biological Processes',
     phenotype: 'Phenotypes',
     strain: 'Strains',
-    author: 'Authors'
+    author: 'Authors',
+    download: 'Download'
   };
   return labels[key];
 }

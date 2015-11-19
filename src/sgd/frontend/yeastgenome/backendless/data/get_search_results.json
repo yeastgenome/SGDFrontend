@@ -56,10 +56,15 @@
          "name":"SCD5 / YOR329C"
       },
       {  
-         "category":"locus",
-         "href":"/locus/S000001058/overview",
-         "description":"Actin-binding protein",
-         "name":"YSC84 / YHR016C"
+         "category":"download",
+         "href": null,
+         "description": "Chemical genomics study of Snf1 as a gene repressor.",
+         "name":"GSE1201_family.soft.gz",
+         "download_metadata": {
+            "pubmed_ids": ["18955495"],
+            "geo_ids": ["GSE12061", "GSM108204", ""],
+            "download_url": "http://fake.download.yeastgenome.org"
+         }         
       }
    ],
    "aggregations":[  

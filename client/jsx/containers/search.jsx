@@ -131,7 +131,7 @@ const SearchView = React.createClass({
 const LINK_COLOR = '#11728b';
 var style = {
   panel: {
-    marginTop: "0.5rem"
+    marginTop: '0.5rem'
   },
   agg: {
     display: 'flex',

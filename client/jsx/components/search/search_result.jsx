@@ -1,31 +1,32 @@
-var React = require('react');
-var _ = require('underscore');
-var Radium = require('radium');
+const React = require('react');
+const _ = require('underscore');
+const Radium = require('radium');
+const DownloadButton = require('../widgets/download_button.jsx');
 
-var SearchResult = React.createClass({
+const PUBMED_BASE_URL = 'http://www.ncbi.nlm.nih.gov/pubmed/';
+const GEO_BASE_URL = 'http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=';
+
+const SearchResult = React.createClass({
   propTypes: {
     category: React.PropTypes.string.isRequired,
     description: React.PropTypes.string,
     name: React.PropTypes.string.isRequired,
-    href: React.PropTypes.string.isRequired,
+    href: React.PropTypes.string,
+    download_metadata: React.PropTypes.object // uses _ not camel case for nested values { pubmed_ids, geo_ids, download_url }
   },
 
   render: function () {
-    var innerNodeFns = {
-      gene: this._getBasicResultNode,
-      download: this._getDownloadResultNode,
-    };
-
+    let innerNode = (typeof this.props.download_metadata === 'object') ? this._getDownloadResultNode() : this._getBasicResultNode();
     return (
       <div style={[style.wrapper]}>
-        {innerNodeFns['gene']()}
+        {innerNode}
       </div>
     );
   },
 
   _getBasicResultNode: function () {
-    let description = this.props.description || "(no description available)";
-    let name = this.props.name || "(no name available)";
+    let description = this.props.description || '(no description available)';
+    let name = this.props.name || '(no name available)';
     return (
       <div>
         <h3 style={[style.title]}>
@@ -36,37 +37,34 @@ var SearchResult = React.createClass({
     );
   },
 
-  _getDownloadResultNode: function (d, i) {
-    var d = this.props.d;
-    var i = this.props.i;
-    var pmidsNodes = null;
-    var pubmedData = d.pubmed_data || [];
-    if (pubmedData.length) {
-      var _links = _.map(pubmedData, (_d, _i) => {
-        return <li key={"searchPmid" + i + "_" + _i}><a href={_d.link_url}>{_d.pmid}</a> </li>;
+  _getDownloadResultNode: function () {
+    let data = this.props.download_metadata;
+    let pmidsNodes = null;
+    if (data.pubmed_ids.length) {
+      var _links = data.pubmed_ids.map( d => {
+        return <li key={'searchPmid' + d}><a href={`${PUBMED_BASE_URL}'${d}`} target='_new'>{d}</a> </li>;
       });
-      pmidsNodes = <ul className="inline-list clearfix"><li>PUBMED:</li>{_links}</ul>;
+      pmidsNodes = <ul className='inline-list clearfix' style={[style.resourceList]}><li>PUBMED:</li>{_links}</ul>;
     }
 
-    var geoNodes = null;
-    var geoData = d.geo_data || [];
-    if (geoData.length) {
-      var _links = _.map(geoData, (_d, _i) => {
-        return <li key={"searchPmid" + i + "_" + _i}><a href={_d.link_url}>{_d.geo_id}</a> </li>;
+    let geoNodes = null;
+    if (data.geo_ids.length) {
+      var _links = data.geo_ids.map( d => {
+        return <li key={'geo' + d}><a href={`${GEO_BASE_URL}${d}`} target='_new'>{d}</a> </li>;
       });
-      geoNodes = <ul className="inline-list clearfix"><li>GEO:</li>{_links}</ul>;
+      geoNodes = <ul className='inline-list clearfix' style={[style.resourceList]}><li>PUBMED:</li>{_links}</ul>;
     }
 
     return (
       <div>
-        <h3 style={[style.title]}>{d.name}</h3>
-        <p>{d.description}</p>
+        <h3 style={[style.title]}>{this.props.name}</h3>
+        <p>{this.props.description}</p>
         <div>
           {pmidsNodes}
           {geoNodes}
         </div>
         <div>
-          <DownloadButton url={d.url} extension=".gz" />
+          <DownloadButton url={data.download_url} extension='.gz' />
         </div>
       </div>
     );
@@ -75,9 +73,9 @@ var SearchResult = React.createClass({
 
 const style = {
   wrapper: {
-    borderBottom: "1px solid #ddd",
-    paddingBottom: "1rem",
-    marginBottom: "1rem"
+    borderBottom: '1px solid #ddd',
+    paddingBottom: '1rem',
+    marginBottom: '1rem'
   },
   title: {
     marginBottom: 0
@@ -90,6 +88,9 @@ const style = {
     overflow: 'hidden',
     maxHeight: '3.6rem',
     marginBottom: 0
+  },
+  resourceList: {
+    marginBottom: '0.25rem'
   }
 }
 
