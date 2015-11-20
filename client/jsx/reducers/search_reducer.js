@@ -16,7 +16,7 @@ const DEFAULT_STATE = {
 };
 
 const searchResultsReducer = function (state, action) {
-  console.log(action.type)
+  // console.log(action.type)
   if (typeof state === 'undefined') {
     return DEFAULT_STATE;
   }
@@ -37,7 +37,6 @@ const searchResultsReducer = function (state, action) {
     return state;
   }
   if (action.type === 'START_SEARCH_FETCH') {
-    state.aggregations = [];
     state.isPending = true;
     return state;
   }

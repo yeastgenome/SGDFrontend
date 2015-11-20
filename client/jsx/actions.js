@@ -43,17 +43,16 @@ export function startSearchFetch () {
 
 export function fetchSearchResults () {
   return function (dispatch, getState) {
-    console.log('fetching')
     let state = getState().searchResults;
     let query = state.query;
     // stringify aggregations for url
     let selectedAggs = state.aggregations
       .filter( d => { return d.isActive; })
       .map( d => { return d.key; });
-    let aggQueryParam = selectedAggs.length === 0 ? '' : `categories=${selectedAggs.join()}`;
+    let aggQueryParam = state.activeAggregations.length === 0 ? '' : `categories=${state.activeAggregations.join()}`;
     // offset and limit for paginate
     let offsetStart = (state.currentPage === 0 ? 0 : 1);
-    let _offset = (state.currentPage + offsetStart) * state.resultsPerPage;
+    let _offset = (state.currentPage + offsetStart) * RESULTS_PER_PAGE;
     let url = `${RESULTS_URL}?q=${query}&${aggQueryParam}&limit=${RESULTS_PER_PAGE}&offset=${_offset}`;
     const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
     fetchFromApi(url)

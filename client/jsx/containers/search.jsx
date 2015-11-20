@@ -9,6 +9,8 @@ const Paginator = require('../components/widgets/paginator.jsx');
 const Loader = require('../components/widgets/loader.jsx');
 const Actions = require('../actions');
 
+const SEARCH_URL = '/search';
+
 const SearchView = React.createClass({
   displayName: 'SearchView',
   propTypes: {
@@ -77,7 +79,7 @@ const SearchView = React.createClass({
     const _onPaginate = newPage => {
       let urlParams = this.props.location.query;
       urlParams.page = newPage;
-      this.props.history.pushState(null, '/search', urlParams);
+      this.props.history.pushState(null, SEARCH_URL, urlParams);
       if (window) window.scrollTo(0, 0); // go to top
     };
     return <Paginator currentPage={this.props.currentPage} totalPages={this.props.totalPages} onPaginate={_onPaginate} />;
@@ -133,7 +135,7 @@ const SearchView = React.createClass({
     }
     let urlParams = this.props.location.query;
     urlParams.categories = newAggKeys.join();
-    return this.props.history.pushState(null, '/search', urlParams);
+    return this.props.history.pushState(null, SEARCH_URL, urlParams);
   },
 
   _renderResults() {
