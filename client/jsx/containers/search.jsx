@@ -52,7 +52,7 @@ const SearchView = React.createClass({
   componentWillMount() {
     this._unlisten = this.props.history.listen( listener => {
       this.forceUpdate( () => {
-        this._updateParamsFromUrlAndSearch();
+        this._fetchSearchResults();
       });
     });
   },
@@ -145,14 +145,11 @@ const SearchView = React.createClass({
   },
 
   // dispatches redux update and maybe fetches new data
-  _updateParamsFromUrlAndSearch() {
-    let urlParams = this.props.location.query;
+  _fetchSearchResults() {
     // define actions
-    let updateAction = Actions.updateParams(urlParams.q, urlParams.page, urlParams.categories);
     let startAction = Actions.startSearchFetch();
     let fetchAction = Actions.fetchSearchResults();
     // dispatch actions
-    this.props.dispatch(updateAction);
     this.props.dispatch(startAction);
     this.props.dispatch(fetchAction);
     return;
@@ -190,7 +187,7 @@ var style = {
     }
   },
   resultsWraper: {
-    minHeight: 600
+    minHeight: 800
   }
 };
 

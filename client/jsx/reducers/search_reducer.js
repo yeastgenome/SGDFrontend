@@ -20,10 +20,20 @@ const searchResultsReducer = function (state, action) {
   if (typeof state === 'undefined') {
     return DEFAULT_STATE;
   }
-  if (action.type === 'UPDATE_PARAMS') {
-    state.query = (typeof action.query === 'string') ? action.query : '';
-    state.currentPage = action.currentPage;
-    state.activeAggregations = action.categories;
+  // let the URL change the query and other params
+  if (action.type === '@@reduxReactRouter/routerDidChange') {
+    let params = action.payload.location.query;
+    // set userInput and query from q
+    let newQuery = (typeof params.q === 'string') ? params.q : '';
+    state.query = newQuery;
+    state.userInput = newQuery;
+    // set currentPage from page
+    let intPage = (typeof params.page === 'string' || typeof params.page === 'number') ? parseInt(params.page) : 0;
+    state.currentPage = intPage;
+    // set active aggs
+    let formattedActiveAggs = (typeof params.categories === 'string') ? params.categories.split(',') : [];
+    state.activeAggregations = formattedActiveAggs;
+
     return state;
   }
   if (action.type === 'START_SEARCH_FETCH') {
@@ -35,16 +45,11 @@ const searchResultsReducer = function (state, action) {
     state.total = action.response.total;
     state.results = action.response.results;
     state.totalPages = Math.floor(state.total / RESULTS_PER_PAGE) + ((state.total % RESULTS_PER_PAGE === 0) ? 0 : 1);
-    state.aggregations = replaceAggs(state.aggregations, action.response.aggregations);
+    state.aggregations = action.response.aggregations;
     state.isPending = false;
     return state;
   }
-  // let the URL change the query
-  if (action.type === '@@reduxReactRouter/routerDidChange') {
-    state.query = action.payload.location.query.q;
-    state.userInput = action.payload.location.query.q;
-    return state;
-  }
+
   if (action.type === 'SET_USER_INPUT') {
     state.userInput = action.value;
     return state;
@@ -54,12 +59,6 @@ const searchResultsReducer = function (state, action) {
     return state;
   }
   return state;
-};
-
-// Format from response, replace the nubers, but not the active state, sort by total.  Only have the entries in newAggs
-const replaceAggs = function (oldAggs, newAggs) {
-  if (oldAggs.length !== newAggs.length) return newAggs;
-  return oldAggs;
 };
 
 module.exports = searchResultsReducer;

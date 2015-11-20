@@ -41,17 +41,6 @@ export function startSearchFetch () {
   };
 };
 
-export function updateParams (_query, _currentPage, _categories) {
-  let formattedCategories = (typeof _categories === 'string') ? _categories.split(',') : [];
-  let intPage = (typeof _currentPage === 'string' || typeof _currentPage === 'number') ? parseInt(_currentPage) : 0;
-  return {
-    type: 'UPDATE_PARAMS',
-    query: _query,
-    currentPage: intPage,
-    categories: formattedCategories
-  };
-};
-
 export function fetchSearchResults () {
   return function (dispatch, getState) {
     console.log('fetching')
