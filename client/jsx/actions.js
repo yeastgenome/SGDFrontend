@@ -1,7 +1,7 @@
 require('isomorphic-fetch');
-const RESULTS_URL = '/backend/get_search_results';
 const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
-const RESULTS_FACTOR = 3; // search n times results as shown per page
+const RESULTS_PER_PAGE = 10;
+const RESULTS_URL = '/backend/get_search_results';
 
 // helper methods
 const fetchFromApi = function (url) {
@@ -35,24 +35,28 @@ export function setUserInput (newValue) {
   };
 };
 
-export function startSearchFetch (_query) {
+export function startSearchFetch () {
   return {
     type: 'START_SEARCH_FETCH',
-    query: _query
   };
 };
 
-export function receiveSearchResponse (_response) {
+export function updateParams (_query, _currentPage, _categories) {
+  let formattedCategories = (typeof _categories === 'string') ? _categories.split(',') : [];
+  let intPage = (typeof _currentPage === 'string' || typeof _currentPage === 'number') ? parseInt(_currentPage) : 0;
   return {
-    type: 'SEARCH_RESPONSE',
-    response: _response
+    type: 'UPDATE_PARAMS',
+    query: _query,
+    currentPage: intPage,
+    categories: formattedCategories
   };
 };
 
-export function fetchSearchResults (query, isAppendingResults) {
+export function fetchSearchResults () {
   return function (dispatch, getState) {
+    console.log('fetching')
     let state = getState().searchResults;
-    query = query || state.query;
+    let query = state.query;
     // stringify aggregations for url
     let selectedAggs = state.aggregations
       .filter( d => { return d.isActive; })
@@ -61,12 +65,10 @@ export function fetchSearchResults (query, isAppendingResults) {
     // offset and limit for paginate
     let offsetStart = (state.currentPage === 0 ? 0 : 1);
     let _offset = (state.currentPage + offsetStart) * state.resultsPerPage;
-    let _limit = state.resultsPerPage * RESULTS_FACTOR;
-    let url = `${RESULTS_URL}?q=${query}&${aggQueryParam}&limit=${_limit}&offset=${_offset}`;
+    let url = `${RESULTS_URL}?q=${query}&${aggQueryParam}&limit=${RESULTS_PER_PAGE}&offset=${_offset}`;
     const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
     fetchFromApi(url)
       .then( response => {
-        console.log(response)
         response.aggregations = response.aggregations.map( d => {
           d.key = d.name;
           d.name = getCategoryDisplayName(d.name);
@@ -76,43 +78,17 @@ export function fetchSearchResults (query, isAppendingResults) {
           d.category = getCategoryDisplayName(d.category);
           return d;
         });
-        if (isAppendingResults) {
-          return dispatch(receiveExtraSearchResponse(response))
-        } else {
-          return dispatch(receiveSearchResponse(response));
-        } 
+        return dispatch(receiveSearchResponse(response)); 
       });
   }
 };
 
-export function paginate (_number) {
+export function receiveSearchResponse (_response) {
   return {
-    type: 'PAGINATE',
-    number: _number
-  };
-};
-
-// get data for other pages
-export function receiveExtraSearchResponse (_response) {
-  return {
-    type: 'EXTRA_SEARCH_RESPONSE',
+    type: 'SEARCH_RESPONSE',
     response: _response
   };
 };
-
-// if will need to fetch after next page, dispatch extra fetch
-export function maybeFetchExtraResponses() {
-  return function (dispatch, getState) {
-    let state = getState().searchResults;
-    // if one page (or less) of extra data, fetch more
-    let desiredResultsNum = Math.min(state.total, (state.currentPage + 2) * state.resultsPerPage);
-    if (state.results.length < desiredResultsNum) {
-      dispatch(fetchSearchResults(state.query, true));
-    } else {
-      return;
-    }
-  }
-}
 
 export function toggleAgg (_key) {
   return {

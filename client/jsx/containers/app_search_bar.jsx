@@ -81,10 +81,6 @@ const AppSearchBar = React.createClass({
     this._setUserInput(data.name);
   },
 
-  // componentWillMount() {
-  //   if (typeof this.props.query !== 'undefined' && this.props.query !== '') this._dispatchSubmit();
-  // },
-
   _submit() {
     let newQuery = this.props.userInput;
     if (this.props.redirectOnSearch) {
@@ -92,7 +88,6 @@ const AppSearchBar = React.createClass({
       return this._hardRedirect(newUrl);
     }
     this._updateUrl(newQuery);
-    this._dispatchSubmit(newQuery);
   },
 
   // update URL and HTML5 history with query param
@@ -100,22 +95,10 @@ const AppSearchBar = React.createClass({
     this.props.history.pushState(null, '/search', { q: query });
   },
 
-  _dispatchSubmit(query) {
-    query = query || this.props.query;
-    let startAction = Actions.startSearchFetch(query);
-    let fetchAction = Actions.fetchSearchResults(query);
-    this.props.dispatch(startAction);
-    this.props.dispatch(fetchAction);   
-  },
-
   _hardRedirect (newUrl) {
     if (window) window.location.href = newUrl;
   },
 });
-
-const style = {
-
-};
 
 function mapStateToProps(_state) {
   let state = _state.searchResults;
@@ -125,5 +108,4 @@ function mapStateToProps(_state) {
   };
 }
 
-const StyledComponent = AppSearchBar;
-module.exports = connect(mapStateToProps)(StyledComponent);
+module.exports = connect(mapStateToProps)(AppSearchBar);

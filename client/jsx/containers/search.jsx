@@ -18,7 +18,7 @@ const SearchView = React.createClass({
     totalPages: React.PropTypes.number,
     isPending: React.PropTypes.bool,
     currentPage: React.PropTypes.number,
-    resultsPerPage: React.PropTypes.number
+    totalPages: React.PropTypes.number
   },
 
   getDefaultProps() {
@@ -43,10 +43,10 @@ const SearchView = React.createClass({
     }
     return (
       <div className='row'>
-        <div className='column small-4'>
+        <div className='column medium-4 hide-for-small'>
           {this._renderCategories()}
         </div>
-        <div className='column small-8'>
+        <div className='column small-12 medium-8'>
           <div style={[style.resultsWraper]}>
             {this._renderResultsText()}
             {this._renderSearchContent()}
@@ -56,9 +56,17 @@ const SearchView = React.createClass({
     );
   },
 
+  // listen to URL changes and dispatch needed events
   componentWillMount() {
-    let fetchAction = Actions.fetchSearchResults();
-    this.props.dispatch(fetchAction);
+    this._unlisten = this.props.history.listen( listener => {
+      this.forceUpdate( () => {
+        this._updateParamsFromUrlAndSearch();
+      });
+    });
+  },
+
+  componentWillUnmount() {
+    this._unlisten();
   },
 
   _renderSearchContent() {
@@ -75,14 +83,12 @@ const SearchView = React.createClass({
   _renderPaginator() {
     if (this.props.total === 0) return null;
     const _onPaginate = newPage => {
-      let paginateAction = Actions.paginate(newPage);
-      let maybeFetchAction = Actions.maybeFetchExtraResponses();
-      this.props.dispatch(paginateAction);
-      this.props.dispatch(maybeFetchAction);
+      let urlParams = this.props.location.query;
+      urlParams.page = newPage;
+      this.props.history.pushState(null, '/search', urlParams);
       if (window) window.scrollTo(0, 0); // go to top
     };
-    let _totalPages = Math.floor(this.props.total / this.props.resultsPerPage) + 1;
-    return <Paginator currentPage={this.props.currentPage} totalPages={_totalPages} onPaginate={_onPaginate} />;
+    return <Paginator currentPage={this.props.currentPage} totalPages={this.props.totalPages} onPaginate={_onPaginate} />;
   },
 
   _renderResultsText() {
@@ -130,6 +136,19 @@ const SearchView = React.createClass({
       let id = d.id || i;
       return <SearchResult key={'searchResults' + id} {...d}/>;
     });
+  },
+
+  // dispatches redux update and maybe fetches new data
+  _updateParamsFromUrlAndSearch() {
+    let urlParams = this.props.location.query;
+    // define actions
+    let updateAction = Actions.updateParams(urlParams.q, urlParams.page, urlParams.categories);
+    let startAction = Actions.startSearchFetch();
+    let fetchAction = Actions.fetchSearchResults();
+    // dispatch actions
+    this.props.dispatch(updateAction);
+    this.props.dispatch(startAction);
+    this.props.dispatch(fetchAction);
   }
 });
 
@@ -170,17 +189,15 @@ var style = {
 
 function mapStateToProps(_state) {
   let state = _state.searchResults;
-  // get the current page data
-  let start = state.currentPage * state.resultsPerPage;
-  let _results = state.results.slice(start, start + state.resultsPerPage);
   return {
-    results: _results,
+    results: state.results,
     total: state.total,
     query: state.query,
     aggregations: state.aggregations,
+    activeAggregations: state.activeAggregations,
     isPending: state.isPending,
     currentPage: state.currentPage,
-    resultsPerPage: state.resultsPerPage
+    totalPages: state.totalPages
   };
 }
 
