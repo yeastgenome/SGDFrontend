@@ -54,7 +54,6 @@ export function fetchSearchResults () {
     let offsetStart = (state.currentPage === 0 ? 0 : 1);
     let _offset = (state.currentPage + offsetStart) * RESULTS_PER_PAGE;
     let url = `${RESULTS_URL}?q=${query}&${aggQueryParam}&limit=${RESULTS_PER_PAGE}&offset=${_offset}`;
-    const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
     fetchFromApi(url)
       .then( response => {
         response.aggregations = response.aggregations.map( d => {
@@ -87,32 +86,13 @@ export function toggleAgg (_key) {
 
 export function fetchAutocompleteResults () {
   return function (dispatch, getState) {
-    // TEMP don't fetch just hardcode
-    let response = {  
-     "results":[  
-        {  
-           "category":"suggestion",
-           "name":"ACTin"
-        },
-        {  
-           "href":"/go/GO:0019211/overview",
-           "category":"GO",
-           "name":"phosphatase activator activity"
-        },
-        {  
-           "href":"/go/GO:0044692/overview",
-           "category":"GO",
-           "name":"exoribonuclease activator activity"
-        },
-        {  
-           "href":"/go/GO:0005096/overview",
-           "category":"GO",
-           "name":"GTPase activator activity"
-        }
-      ]
-    };
-    let action = receiveAutocompleteResponse(response.results);
-    return dispatch(action);
+    let state = getState().searchResults;
+    let url = `${AUTOCOMPLETE_URL}?term=${state.userInput}`;
+    fetchFromApi(url)
+      .then( response => {
+        let action = receiveAutocompleteResponse(response);
+        return dispatch(action);
+      });
   };
 };
 

@@ -189,7 +189,7 @@ var style = {
     }
   },
   resultsWraper: {
-    minHeight: 800
+    minHeight: 1000
   }
 };
 

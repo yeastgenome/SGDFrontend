@@ -31,9 +31,9 @@ class YeastgenomeFrontend(FrontendInterface):
         self.now = datetime.datetime.now()
         
     def get_renderer(self, method_name):
-        if method_name in {'home', 'download_table', 'download_citations'}:
+        if method_name in ['home', 'download_table', 'download_citations']:
             return None
-        elif method_name in {'header', 'footer', 'enrichment'}:
+        elif method_name in ['header', 'footer', 'enrichment']:
             return 'jsonp'
         else:
             return 'src:sgd/frontend/yeastgenome/static/templates/' + method_name + '.jinja2'
