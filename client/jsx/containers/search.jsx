@@ -2,6 +2,7 @@ import React from 'react';
 import Router from 'react-router';
 import Radium from 'radium';
 import { connect } from 'react-redux';
+import _ from 'underscore';
 
 const SearchResult = require('../components/search/search_result.jsx');
 const Paginator = require('../components/widgets/paginator.jsx');
@@ -13,22 +14,13 @@ const SearchView = React.createClass({
   propTypes: {
     results: React.PropTypes.array, // [{ name, url, category, description }]
     aggregations: React.PropTypes.array,
+    activeAggregations: React.PropTypes.array,
     query: React.PropTypes.string,
     total: React.PropTypes.number,
     totalPages: React.PropTypes.number,
     isPending: React.PropTypes.bool,
     currentPage: React.PropTypes.number,
     totalPages: React.PropTypes.number
-  },
-
-  getDefaultProps() {
-    return {
-      query: '',
-      results: [],
-      total: 0,
-      currentPage: 0,
-      totalPages: 1
-    };
   },
 
   render() {
@@ -109,12 +101,10 @@ const SearchView = React.createClass({
     let selectors = this.props.aggregations.map( d => {
       let _onClick = e => {
         e.preventDefault();
-        let toggleAction = Actions.toggleAgg(d.key);
-        let fetchAction = Actions.fetchSearchResults();
-        this.props.dispatch(toggleAction);
-        this.props.dispatch(fetchAction);
+        return this._toggleAgg(d.key);
       }
-      let _style = d.isActive ? [style.agg, style.activeAgg] : [style.agg, style.inactiveAgg];
+      let isActive = (this.props.activeAggregations.indexOf(d.key) > -1);
+      let _style = isActive ? [style.agg, style.activeAgg] : [style.agg, style.inactiveAgg];
       return (
         <div onClick={_onClick} style={_style} key={d.key}>
           <span>{d.name}</span>
@@ -128,6 +118,22 @@ const SearchView = React.createClass({
         {selectors}
       </div>
     );
+  },
+
+  // changes active aggs in memory, writes to URL
+  _toggleAgg(aggKey) {
+    let activeAggs = this.props.activeAggregations;
+    let isAlreadyInside = (activeAggs.indexOf(aggKey) > -1);
+    let newAggKeys;
+    if (isAlreadyInside) {
+      newAggKeys = _.without(activeAggs, aggKey)
+    } else {
+      activeAggs.push(aggKey)
+      newAggKeys = activeAggs;
+    }
+    let urlParams = this.props.location.query;
+    urlParams.categories = newAggKeys.join();
+    return this.props.history.pushState(null, '/search', urlParams);
   },
 
   _renderResults() {
@@ -149,6 +155,7 @@ const SearchView = React.createClass({
     this.props.dispatch(updateAction);
     this.props.dispatch(startAction);
     this.props.dispatch(fetchAction);
+    return;
   }
 });
 
