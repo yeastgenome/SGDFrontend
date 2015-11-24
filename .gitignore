@@ -58,3 +58,6 @@ target/
 
 # Emacs
 *~
+
+# Config files
+config.py
