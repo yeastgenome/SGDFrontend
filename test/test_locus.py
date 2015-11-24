@@ -9,6 +9,7 @@ class TestLocus:
 
     def test_invalid_locus(self):
         assert self.app.get('/locus/').status_code == 404
+        assert self.app.get('/locus/MyInVaLidLoCuSiD').status_code == 404
 
     def test_valid_locus(self):
         assert self.app.get('/locus/233').status_code == 200
