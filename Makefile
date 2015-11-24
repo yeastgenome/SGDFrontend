@@ -2,7 +2,10 @@ build: write-config
 	@pip install -r requirements.txt
 
 run:
-	@python src/app.py
+	ENV=dev python src/app.py
+
+run-prod:
+	ENV=prod python src/app.py
 
 tests:
 	@nosetests
