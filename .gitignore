@@ -62,3 +62,5 @@ target/
 # Config files
 config.py
 dev_deploy_variables.sh
+
+Gemfile.lock
