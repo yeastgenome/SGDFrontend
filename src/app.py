@@ -1,10 +1,14 @@
 from flask import Flask
 from flask_restful import Api
-from resources.locus import Locus
-from sqlalchemy import create_engine
+from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config.from_pyfile('config.py')
+
 api = Api(app)
+db = SQLAlchemy(app)
+
+from resources.locus import Locus
 
 api.add_resource(Locus, '/locus', '/locus/<string:id>')
 
