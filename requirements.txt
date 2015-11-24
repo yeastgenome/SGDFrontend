@@ -2,6 +2,7 @@ aniso8601==1.1.0
 cx-Oracle==5.2
 Flask==0.10.1
 Flask-RESTful==0.3.4
+Flask-SQLAlchemy==2.1
 itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23
