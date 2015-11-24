@@ -6,3 +6,9 @@ run:
 
 tests:
 	@nosetests
+
+dev-deploy:
+	. dev_deploy_variables.sh && cap dev deploy
+
+prod-deploy:
+	. prod_deploy_variables.sh && cap prod deploy
