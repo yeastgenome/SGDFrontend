@@ -2,10 +2,10 @@ build: write-config
 	@pip install -r requirements.txt
 
 run:
-	ENV=dev python src/app.py
+	ENV=dev python2.7 src/app.py
 
 run-prod:
-	ENV=prod python src/app.py
+	ENV=prod python2.7 src/app.py
 
 tests:
 	@nosetests
