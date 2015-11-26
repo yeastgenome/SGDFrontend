@@ -27,9 +27,7 @@ namespace :deploy do
 
   def generate_config_content
     config_file_content = ""
-    ["NEX2_URI"].each do |key|
-      config_file_content += "#{key} = \'#{ENV[key]}\'\n"
-    end
+    config_file_content += "SQLALCHEMY_DATABASE_URI = \'#{ENV["NEX2_URI"]}\'\n"
     config_file_content += "SQLALCHEMY_TRACK_MODIFICATIONS = False\n"
     return config_file_content
   end
