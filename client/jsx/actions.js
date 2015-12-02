@@ -23,7 +23,8 @@ const getCategoryDisplayName = function (key) {
     phenotype: 'Phenotypes',
     strain: 'Strains',
     author: 'Authors',
-    download: 'Download'
+    download: 'Downloads',
+    resource: 'Resources'
   };
   return labels[key];
 }
@@ -88,7 +89,7 @@ export function toggleAgg (_key) {
 export function fetchAutocompleteResults () {
   return function (dispatch, getState) {
     let state = getState().searchResults;
-    let url = `${AUTOCOMPLETE_URL}?term=${state.userInput}`;
+    let url = `${AUTOCOMPLETE_URL}?q=${state.userInput}`;
     fetchFromApi(url)
       .then( response => {
         if (!response) return;

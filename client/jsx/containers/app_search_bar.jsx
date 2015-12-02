@@ -37,7 +37,8 @@ const AppSearchBar = React.createClass({
 
   getInitialState() {
     return {
-      inputValue: ''
+      inputValue: '',
+      redirectHref: null
     };
   },
 
@@ -51,6 +52,7 @@ const AppSearchBar = React.createClass({
           options={this.props.autocompleteResults}
           onChange={this._onChange}
           onOptionChange={this._onOptionChange}
+          onOptionClick={this._onOptionChange}
           onKeyDown={this._onKeyDown}
         />
       </div>
@@ -69,19 +71,22 @@ const AppSearchBar = React.createClass({
     this._setUserInput(newValue);
     let fetchAction = Actions.fetchAutocompleteResults();
     this.props.dispatch(fetchAction);
-
   },
 
-  _setUserInput(newValue) {
+  _setUserInput(newValue, href) {
     let typeAction = Actions.setUserInput(newValue);
     this.props.dispatch(typeAction);
+    this.setState({ redirectHref: href });
   },
 
   _onOptionChange(e, data) {
-    this._setUserInput(data.name);
+    this._setUserInput(data.name, data.href);
   },
 
   _submit() {
+    if (typeof this.state.redirectHref === 'string') {
+      return this._hardRedirect(this.state.redirectHref)
+    }
     let newQuery = this.props.userInput;
     if (this.props.redirectOnSearch) {
       let newUrl = `/search?q=${newQuery}`;
