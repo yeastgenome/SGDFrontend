@@ -242,6 +242,12 @@ def prep_views(chosen_frontend, config):
     config.add_route('do_blast', '/run_blast')
     config.add_view(do_blast, route_name='do_blast')
 
+    # TEMP, render homepage here for prototype
+    config.add_route('home', '/')
+    config.add_view(lambda request: {'home': render('static/templates/temp_homepage.jinja2', {})},
+                    renderer=chosen_frontend.get_renderer('temp_homepage'),
+                    route_name='search')
+
     # example defer all rendering to react
     config.add_route('search', '/search')
     config.add_view(lambda request: {'search': render('static/templates/react_layout.jinja2', {})},

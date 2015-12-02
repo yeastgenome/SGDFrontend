@@ -56,6 +56,7 @@ export function fetchSearchResults () {
     let url = `${RESULTS_URL}?q=${query}&${aggQueryParam}&limit=${RESULTS_PER_PAGE}&offset=${_offset}`;
     fetchFromApi(url)
       .then( response => {
+        if (!response) return;
         response.aggregations = response.aggregations.map( d => {
           d.key = d.name;
           d.name = getCategoryDisplayName(d.name);
@@ -90,7 +91,8 @@ export function fetchAutocompleteResults () {
     let url = `${AUTOCOMPLETE_URL}?term=${state.userInput}`;
     fetchFromApi(url)
       .then( response => {
-        let action = receiveAutocompleteResponse(response);
+        if (!response) return;
+        let action = receiveAutocompleteResponse(response.results);
         return dispatch(action);
       });
   };
