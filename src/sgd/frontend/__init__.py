@@ -43,10 +43,10 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('redirect'),
                     route_name='redirect')
         
-    config.add_route('home', '/')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('home', request)(getattr(chosen_frontend, 'home')()),
-                    renderer=chosen_frontend.get_renderer('home'),
-                    route_name='home')
+    # config.add_route('home', '/')
+    # config.add_view(lambda request: chosen_frontend.response_wrapper('home', request)(getattr(chosen_frontend, 'home')()),
+    #                 renderer=chosen_frontend.get_renderer('home'),
+    #                 route_name='home')
     
     config.add_route('header', '/header')
     config.add_view(lambda request: {'header': render('static/templates/header.jinja2', {})},
@@ -246,7 +246,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('home', '/')
     config.add_view(lambda request: {'home': render('static/templates/temp_homepage.jinja2', {})},
                     renderer=chosen_frontend.get_renderer('temp_homepage'),
-                    route_name='search')
+                    route_name='home')
 
     # example defer all rendering to react
     config.add_route('search', '/search')

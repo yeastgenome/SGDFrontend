@@ -34,3 +34,19 @@ $border-color: #d9d9d9;
 .react-typeahead-option > p {
   margin-bottom: 0;
 }
+
+// TEMP homepage stuff
+#slide-show {
+  margin-top: 0.7rem;
+}
+.advanced-recent-posts {
+  margin-left: 0;
+}
+.advanced-recent-posts > li {
+  border-bottom: 1px solid $border-color;
+  padding: 1rem 0;
+  list-style: none;
+  &:first {
+    padding: 0 0 1rem 0;
+  }
+}
