@@ -345,7 +345,6 @@ function create_phosphorylation_table(data) {
     set_up_header('phosphorylation_table', datatable.length, 'entry', 'entries', Object.keys(sites).length, 'site', 'sites');
 
     set_up_phospho_sort();
-    console.log(datatable)
 
     var options = {};
     options["bPaginate"] = true;
