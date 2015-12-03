@@ -61,14 +61,16 @@ class YeastgenomeFrontend(FrontendInterface):
         return True
 
     def locus(self, bioent_repr):
+        # TEMP production backend
+        backend_url = 'http://yeastgenome.org/webservice'
         if self.check_date() and bioent_repr.lower() in self.locuses:
             return_value = self.locuses[bioent_repr.lower()]
         else:
-            locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
+            locus = get_json(backend_url + '/locus/' + bioent_repr + '/overview')
             if locus is None:
                 return_value = None
             else:
-                tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
+                tabs = get_json(backend_url + '/locus/' + str(locus['id']) + '/tabs')
                 return_value = {'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs, 'tabs_js': json.dumps(tabs)}
             if locus is not None:
                 self.locuses[bioent_repr.lower()] = return_value
@@ -559,10 +561,17 @@ class YeastgenomeFrontend(FrontendInterface):
         if self.backend_url == 'backendless':
             return json.dumps(get_data(url_repr))
         else:
-            full_url = self.backend_url + '/' + ('/'.join(url_repr))
+            relative_url = '/' + ('/'.join(url_repr))
+            # TEMP only get search from dev4, get everything else from production for prototype speed
+            if 'get_search_results' in relative_url or 'autocomplete_results' in relative_url:
+                backend_url = self.backend_url
+            else:
+                backend_url = 'http://yeastgenome.org/webservice'
+            full_url = backend_url + relative_url
             if args is not None and len(args) > 0:
                 full_url += '?' + ('&'.join([key + '=' + value for key, value in args.items() if key != 'callback']))
             self.log.info(full_url)
+            print full_url
             return json.dumps(get_json(full_url))
     
 def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):

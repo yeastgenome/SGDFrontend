@@ -52,7 +52,7 @@ const AppSearchBar = React.createClass({
           options={this.props.autocompleteResults}
           onChange={this._onChange}
           onOptionChange={this._onOptionChange}
-          onOptionClick={this._onOptionChange}
+          onOptionClick={this._onOptionClick}
           onKeyDown={this._onKeyDown}
         />
       </div>
@@ -62,7 +62,7 @@ const AppSearchBar = React.createClass({
   _onKeyDown(e) {
     // press enter
     if (e.keyCode === 13) {
-      this._submit()
+      this._submit();
     }
   },
 
@@ -81,6 +81,11 @@ const AppSearchBar = React.createClass({
 
   _onOptionChange(e, data) {
     this._setUserInput(data.name, data.href);
+  },
+
+  _onOptionClick(e, data) {
+    this._setUserInput(data.name, data.href);
+    this._submit();
   },
 
   _submit() {
