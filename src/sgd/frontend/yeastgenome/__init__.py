@@ -504,7 +504,7 @@ class YeastgenomeFrontend(FrontendInterface):
             full_url = self.backend_url + '/' + ('/'.join(url_repr))
             if args is not None and len(args) > 0:
                 full_url += '?' + ('&'.join([key + '=' + value for key, value in args.items() if key != 'callback']))
-            print full_url
+            self.log.info(full_url)
             return json.dumps(get_json(full_url))
 
     

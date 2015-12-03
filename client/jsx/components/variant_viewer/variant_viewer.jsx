@@ -1,9 +1,5 @@
-/** @jsx React.DOM */
-"use strict";
 var React = require("react");
-var Router = require("react-router");
 var Radium = require("radium");
-var { RouteHandler, Navigation, State } = Router;
 var d3 = require("d3");
 var _ = require("underscore");
 
@@ -15,9 +11,10 @@ var SearchBar = require("../widgets/search_bar.jsx");
 var SettingsDropdown = require("./settings_dropdown.jsx");
 var ScrollyHeatmap = require("./scrolly_heatmap.jsx");
 var StrainSelector = require("./strain_selector.jsx");
+var VariantViewerStore = require("../../stores/variant_viewer_store.jsx");
 
 var VariantViewer = React.createClass({
-	mixins: [Navigation, State],
+	// mixins: [Navigation, State],
 
 	propTypes: {
 		store: React.PropTypes.object.isRequired,
@@ -25,7 +22,10 @@ var VariantViewer = React.createClass({
 	},
 
 	getDefaultProps: function () {
-		return { visibleLocusId: null };
+		return {
+			store: new VariantViewerStore(),
+			visibleLocusId: null
+		};
 	},
 
 	getInitialState: function () {
@@ -40,7 +40,7 @@ var VariantViewer = React.createClass({
 		var helpText = "SGD’s Variant Viewer displays similarity scores and sequence variants for open reading frames (ORFs) within a reference panel of 12 widely-used <i>S. cerevisiae</i> genomes. All scores and variants are presented relative to the S288C reference genome. The sequence data are all from Song et al., 2015. AGAPE (Automated Genome Analysis PipelinE) for Pan-Genome Analysis of <i>Saccharomyces cerevisiae</i>. PLoS One 10(3):e0120671 PMID:25781462";
 		return (
 			<div>
-				<RouteHandler {...this.props} isProteinMode={this.state.isProteinMode} />
+				{React.cloneElement(this.props.children, { isProteinMode: this.state.isProteinMode })}
 				<h1>
 					<span style={{ marginRight: "0.5rem" }}>Variant Viewer</span>
 					<HelpIcon text={helpText} />
@@ -137,7 +137,7 @@ var VariantViewer = React.createClass({
 		var _strainData = this.props.store.getHeatmapStrainData();
 		var _zoom = this.props.store.getHeatmapZoom();
 		var _onClick = d => {
-			this.transitionTo("variantViewerShow", { locusId: d.id });
+			this.props.history.pushState(null, "/" + d.id);
 		};
 		return <ScrollyHeatmap data={_heatmapData} onClick={_onClick} strainData={_strainData} nodeSize={_zoom} />;
 	},

@@ -10,7 +10,7 @@ requires = [
     'markupsafe<0.16',
     'pyramid==1.5',
     'pyramid_jinja2==2.1',
-    'waitress==0.8.9',
+    'waitress==0.8.10',
     'simplejson==3.5.2',
     'requests==2.3.0',
     'elasticsearch==1.4.0'

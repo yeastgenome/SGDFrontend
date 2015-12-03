@@ -83,7 +83,7 @@ module.exports = React.createClass({
 	},
 
 	_calculateWidth: function () {
-		var _width = this.getDOMNode().getBoundingClientRect().width
+		var _width = this.refs.wrapper.getBoundingClientRect().width;
 		this.setState({ DOMWidth: _width });
 	}
 

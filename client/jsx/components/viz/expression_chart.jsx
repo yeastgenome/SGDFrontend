@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 "use strict";
 
 var d3 = require("d3");
@@ -48,7 +48,7 @@ var ExpressionChart = React.createClass({
 
 		var _helpText = "The histogram panel contains a Y-axis toggle. The default view is in log10 space to better visualize the large amount of data, and enhance the tails at either expression extreme. Move the toggle slider to the left to view the data in linear space. Clickable histogram bars filter the dataset results presented in the table below based on increased or decreased log2 expression ratios.";
 		var helpNode = this.props.hasHelpIcon ? <h3 style={{ position: "absolute", top: 0, right: 0 }}><HelpIcon text={_helpText} orientation="left"/></h3> : null;
-		return (<div className="expression-histogram" style={{ position: "relative" }}>
+		return (<div ref="wrapper" className="expression-histogram" style={{ position: "relative" }}>
 			{helpNode}
 			{scaleTogglerNode}
 			<span className="histogram-axis-text y"><i>Number of Conditions</i></span>
@@ -66,7 +66,7 @@ var ExpressionChart = React.createClass({
 	},
 
 	_renderSVG: function () {
-		var svg = d3.select(this.refs.svg.getDOMNode());
+		var svg = d3.select(this.refs.svg);
 		var xScale = this._getXScale();
 		var yScale = this._getYScale()
 		var reverseYScale = yScale.copy()
@@ -192,7 +192,7 @@ var ExpressionChart = React.createClass({
 	},
 
 	_calculateWidth: function () {
-		this.setState({ DOMWidth: this.getDOMNode().getBoundingClientRect().width });
+		this.setState({ DOMWidth: this.refs.wrapper.getBoundingClientRect().width });
 	},
 
 	_getScaleTogglerNode: function () {

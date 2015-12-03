@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 "use strict";
 
 var _ = require("underscore");
@@ -12,9 +12,9 @@ module.exports = class SequenceNeighborsModel extends BaseModel {
 
 	constructor (options) {
 		options = options || {};
-		if (options.id) this.id = parseInt(options.id);
-		options.url = `/backend/locus/${options.id}/neighbor_sequence_details?callback=?`;
+		options.url = `/backend/locus/${options.id}/neighbor_sequence_details`;
 		super(options);
+		if (options.id) this.id = parseInt(options.id);
 	}
 
 	parse (response) {

@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 "use strict";
 /*
 	A react component which can render locus diagrams, sub-feature tables, and a sequence toggler.
@@ -15,7 +15,7 @@ var LocusDiagram = require("../viz/locus_diagram.jsx");
 var MultiSequenceDownload = require("./multi_sequence_download.jsx");
 var SequenceToggler = require("./sequence_toggler.jsx");
 
-module.exports = React.createClass({
+var SequenceComposite = React.createClass({
 
 	getDefaultProps: function () {
 		return  {
@@ -236,3 +236,5 @@ module.exports = React.createClass({
 		}		
 	}
 });
+
+module.exports = SequenceComposite;

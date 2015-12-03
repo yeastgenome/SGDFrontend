@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 "use strict";
 
 var React = require("react");
@@ -17,7 +17,7 @@ module.exports = React.createClass({
 
 	componentDidMount: function () {
 		setTimeout( () => {
-			grecaptcha.render(this.refs.gReCaptchaTarget.getDOMNode(), {
+			grecaptcha.render(this.refs.gReCaptchaTarget, {
 				sitekey: "6LczNgATAAAAABpwOd3T4voHxUf2mtP_MybHqKqk",
 				callback: this.props.onComplete
 			});  

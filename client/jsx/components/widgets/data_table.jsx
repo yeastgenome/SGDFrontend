@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 "use strict";
 
 var React = require("react");
@@ -11,7 +11,7 @@ require("foundation");
 /*
 	A react component that renders a table, then uses jQuery data tables to spice it up.
 */
-module.exports = React.createClass({
+var DataTable = React.createClass({
 
 	getDefaultProps: function () {
 		return {
@@ -30,11 +30,10 @@ module.exports = React.createClass({
 
 	render: function () {
 		var headerRows = this._getHeaderRows();
-		console.log(this.state.fakeId)
 		var bodyRows = this._getBodyRows();
 
 		return (
-			<div className="data-table table-scroll-container dataTables_wrapper">
+			<div ref="wrapper" className="data-table table-scroll-container dataTables_wrapper">
 				<table id={this.props.tableId} ref="table" className="table table-striped table-bordered table-condensed">
 					<thead>
 						{headerRows}
@@ -53,9 +52,9 @@ module.exports = React.createClass({
 			var options = this._getTableOptions();
 			this._setupTableHighlight();
 			this._setupPlugins();
-			var $table = $(this.refs.table.getDOMNode()).dataTable(options);
+			var $table = $(this.refs.table).dataTable(options);
 			$(document).foundation();
-			$(this.getDOMNode()).find("input").attr("placeholder", "Filter table");
+			$(this.refs.wrapper).find("input").attr("placeholder", "Filter table");
 			$table.fnSearchHighlighting();
 		}
 	},
@@ -175,19 +174,19 @@ module.exports = React.createClass({
 	_getHeaderRows: function () {
 		var maxRowWidth = d3.max(this.props.data.headers, (r) => { return r.length; });
 
-		var headerRows = _.map(this.props.data.headers, (r) => {
-			var cells = _.map(r, (d, i) => {
+		var headerRows = _.map(this.props.data.headers, (r, i) => {
+			var cells = _.map(r, (d, _i) => {
 				// add a colspan if needed to make rows of equal col width
 				var _colSpan = null;
-				if (i === r.length - 1 && r.length < maxRowWidth) {
+				if (_i === r.length - 1 && r.length < maxRowWidth) {
 					_colSpan = maxRowWidth - i;
 				}
 
 				{/* if data is obj with href and value, make a link, otherwise just plain text if just a string */}
 				var textNode = (d.href && d.value) ? <a href={d.href}>{d.value}</a> : d;
-				return <td key={"cell" + i} colSpan={_colSpan}>{textNode}</td>;
+				return <td key={"cell" + _i} colSpan={_colSpan}>{textNode}</td>;
 			});
-			return <tr>{cells}</tr>;
+			return <tr key={"headerRow" + i}>{cells}</tr>;
 		});
 
 		return headerRows;
@@ -196,7 +195,7 @@ module.exports = React.createClass({
 	_formatCell: function (d, i) {
 		// allow raw HTML cell
 		if (d.html) {
-			return <td dangerouslySetInnerHTML={{ __html: d.html }} />;
+			return <td key={"cell" + i} dangerouslySetInnerHTML={{ __html: d.html }} />;
 		}
 		// otherwise format plain text or whole link
 		var textNode = (d.href && d.value) ? <a href={d.href}>{d.value}</a> : d;
@@ -233,3 +232,5 @@ module.exports = React.createClass({
 	    return options;
 	}
 });
+ 
+module.exports = DataTable;

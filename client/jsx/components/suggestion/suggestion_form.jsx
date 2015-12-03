@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 "use strict";
 
 var React = require("react");
@@ -90,11 +90,11 @@ module.exports = React.createClass({
 	_onSubmit: function (e) {
 		e.preventDefault();
 
-		var name = this.refs.name.getDOMNode().value.trim();
-		var email = this.refs.internet.getDOMNode().value.trim();
-                var subject = this.refs.subject.getDOMNode().value.trim();
-                var message = this.refs.text.getDOMNode().value.trim();
-                var sendUserCopy = this.refs.send_user_copy.getDOMNode().checked;
+		var name = this.refs.name.value.trim();
+		var email = this.refs.internet.value.trim();
+                var subject = this.refs.subject.value.trim();
+                var message = this.refs.text.value.trim();
+                var sendUserCopy = this.refs.send_user_copy.checked;
 		/* console.log(sendUserCopy) */
 		/* return */
 

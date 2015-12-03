@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+
 "use strict";
 
 var React = require("react");
@@ -14,7 +14,7 @@ var SequenceToggler = require("./sequence_toggler.jsx");
 /*
 	Fetches data from model and renders locus diagram (or loader while fetching).
 */
-module.exports = React.createClass({
+var AsyncSequenceView = React.createClass({
 
 	getDefaultProps: function () {
 		return {
@@ -151,3 +151,5 @@ module.exports = React.createClass({
 	},
 
 });
+
+module.exports = AsyncSequenceView;

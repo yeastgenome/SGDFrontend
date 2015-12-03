@@ -342,7 +342,6 @@ function create_phosphorylation_table(data) {
         datatable.push(phosphorylation_data_to_table(data[i]));
         sites[data[i]['site_residue'] + data[i]['site_index']] = true;
     }
-
     set_up_header('phosphorylation_table', datatable.length, 'entry', 'entries', Object.keys(sites).length, 'site', 'sites');
 
     set_up_phospho_sort();
@@ -351,8 +350,9 @@ function create_phosphorylation_table(data) {
     options["bPaginate"] = true;
     options["aaSorting"] = [[4, "asc"]];
     options["bDestroy"] = true;
-    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "phospho" }, null, null, null, null, null];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "phospho" }, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null];
     options["aaData"] = datatable;
+
     options["oLanguage"] = {"sEmptyTable": 'No post-translational data for this strain.'};
 
     return create_table("phosphorylation_table", options);
