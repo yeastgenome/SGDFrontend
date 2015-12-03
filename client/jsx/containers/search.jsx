@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import _ from 'underscore';
 
 const SearchResult = require('../components/search/search_result.jsx');
-const Paginator = require('../components/widgets/paginator.jsx');
+const Collapser = require('../components/widgets/collapser.jsx');
 const Loader = require('../components/widgets/loader.jsx');
+const Paginator = require('../components/widgets/paginator.jsx');
 const Actions = require('../actions');
 
 const SEARCH_URL = '/search';
@@ -41,6 +42,11 @@ const SearchView = React.createClass({
           {this._renderCategories()}
         </div>
         <div className='column small-12 medium-8'>
+          <div className='show-for-small-only'>
+            <Collapser label='Categories'>
+              {this._renderCategories(true)}
+            </Collapser>
+          </div>
           <div style={[style.resultsWraper]}>
             {this._renderResultsText()}
             {this._renderSearchContent()}
@@ -98,7 +104,9 @@ const SearchView = React.createClass({
     return <h2>{text}</h2>;
   },
 
-  _renderCategories() {
+  _renderCategories(isMobile) {
+    let keySuffix = '';
+    if (isMobile) keySuffix = 's';
     if (this.props.aggregations.length === 0) return null
     let selectors = this.props.aggregations.map( d => {
       let _onClick = e => {
@@ -108,15 +116,16 @@ const SearchView = React.createClass({
       let isActive = (this.props.activeAggregations.indexOf(d.key) > -1);
       let _style = isActive ? [style.agg, style.activeAgg] : [style.agg, style.inactiveAgg];
       return (
-        <div onClick={_onClick} style={_style} key={d.key}>
+        <div onClick={_onClick} style={_style} key={d.key + keySuffix}>
           <span>{d.name}</span>
           <span>{d.total.toLocaleString()}</span>
         </div>
-        );
+      );
     });
+    let klass = isMobile ? '' : 'panel';
     return (
-      <div className="panel" style={[style.panel]}>
-        <h3>Categories</h3>
+      <div className={klass} style={[style.panel]}>
+        {isMobile ? null : <h3>Categories</h3>}
         {selectors}
       </div>
     );
