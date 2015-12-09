@@ -1,25 +1,14 @@
-from flask import Flask
-from flask_restful import Api
-from flask.ext.sqlalchemy import SQLAlchemy
-
-from gevent.wsgi import WSGIServer
-
-import os
-
-app = Flask(__name__)
-app.config.from_pyfile('../config/config.py')
-
-api = Api(app)
-db = SQLAlchemy(app)
-
-from resources.locus import Locus
-
-api.add_resource(Locus, '/locus', '/locus/<string:id>')
+from wsgiref.simple_server import make_server
+from pyramid.config import Configurator
+from pyramid.response import Response
 
 if __name__ == '__main__':
-	if os.environ.get('ENV', False) == 'prod':
-		app.debug = False
-		http_server = WSGIServer(('', 5000), app)
-		http_server.serve_forever()
-	else:
-		app.run(debug=True)
+	config = Configurator()
+	config.add_route('home', '/')
+	config.add_route('upload', '/upload')
+	config.scan('views')
+	config.add_static_view(name='static', path='../static')
+	
+	app = config.make_wsgi_app()
+	server = make_server('0.0.0.0', 6543, app)
+	server.serve_forever()
