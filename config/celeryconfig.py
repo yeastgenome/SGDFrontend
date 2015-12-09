@@ -1,0 +1,6 @@
+BROKER_URL = "redis://localhost:6379"
+RESULT_BACKEND = "redis://localhost:6379"
+
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ENABLE_UTC = True
