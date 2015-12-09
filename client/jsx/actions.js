@@ -15,7 +15,7 @@ const fetchFromApi = function (url) {
 };
 const getCategoryDisplayName = function (key) {
   const labels = {
-    locus: 'Loci',
+    locus: 'Genes',
     reference: 'References',
     cellular_component: 'Cellular Components',
     molecular_function: 'Molecular Functions',

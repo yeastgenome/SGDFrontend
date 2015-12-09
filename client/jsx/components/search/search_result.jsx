@@ -16,7 +16,9 @@ const SearchResult = React.createClass({
   },
 
   render: function () {
-    let innerNode = (typeof this.props.download_metadata === 'object') ? this._getDownloadResultNode() : this._getBasicResultNode();
+    // TEMP just regular results
+    let innerNode = this._getBasicResultNode();
+    // let innerNode = (typeof this.props.download_metadata === 'object') ? this._getDownloadResultNode() : this._getBasicResultNode();
     return (
       <div style={[style.wrapper]}>
         {innerNode}
@@ -29,9 +31,9 @@ const SearchResult = React.createClass({
     let name = this.props.name || '(no name available)';
     return (
       <div>
-        <h3 style={[style.title]}>
+        <h2 style={[style.title]}>
           <a href={this.props.href}>{name}</a> <span className='radius secondary label'>{this.props.category}</span>
-        </h3>
+        </h2>
         <p style={[style.description]}>{description}</p>
       </div>
     );
