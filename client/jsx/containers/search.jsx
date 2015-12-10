@@ -15,14 +15,13 @@ const SEARCH_URL = '/search';
 const SearchView = React.createClass({
   displayName: 'SearchView',
   propTypes: {
-    results: React.PropTypes.array, // [{ name, url, category, description }]
-    aggregations: React.PropTypes.array,
     activeAggregations: React.PropTypes.array,
-    query: React.PropTypes.string,
-    total: React.PropTypes.number,
-    totalPages: React.PropTypes.number,
-    isPending: React.PropTypes.bool,
+    aggregations: React.PropTypes.array,
     currentPage: React.PropTypes.number,
+    isPending: React.PropTypes.bool,
+    query: React.PropTypes.string,
+    results: React.PropTypes.array, // [{ name, url, category, description }]
+    total: React.PropTypes.number,
     totalPages: React.PropTypes.number
   },
 

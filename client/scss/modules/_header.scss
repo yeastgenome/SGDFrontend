@@ -16,8 +16,11 @@ $right-section-width: 363px;
 }
 
 .header-right {
+	display:-webkit-flex;
 	display: flex;
+	-webkit-flex-direction: column;
 	flex-direction: column;
+	-webkit-align-items: flex-end;
 	align-items: flex-end;
 }
 
@@ -28,7 +31,9 @@ $right-section-width: 363px;
 
 .site-links {
 	width: 332px;
+	display:-webkit-flex;
 	display: flex;
+	-webkit-justify-content: space-between;
 	justify-content: space-between;
 	font-size: $header-text-font-size;
 }
