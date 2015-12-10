@@ -144,6 +144,7 @@ const SearchView = React.createClass({
     }
     let urlParams = this.props.location.query;
     urlParams.categories = newAggKeys.join();
+    urlParams.page = 0;
     return this.props.history.pushState(null, SEARCH_URL, urlParams);
   },
 

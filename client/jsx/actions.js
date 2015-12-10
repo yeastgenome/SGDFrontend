@@ -52,8 +52,7 @@ export function fetchSearchResults () {
       .map( d => { return d.key; });
     let aggQueryParam = state.activeAggregations.length === 0 ? '' : `categories=${state.activeAggregations.join()}`;
     // offset and limit for paginate
-    let offsetStart = (state.currentPage === 0 ? 0 : 1);
-    let _offset = (state.currentPage + offsetStart) * RESULTS_PER_PAGE;
+    let _offset = state.currentPage * RESULTS_PER_PAGE;
     let url = `${RESULTS_URL}?q=${query}&${aggQueryParam}&limit=${RESULTS_PER_PAGE}&offset=${_offset}`;
     fetchFromApi(url)
       .then( response => {
