@@ -30,10 +30,10 @@ const Header = React.createClass({
               <li><a href="/feed" target="_blank" id="rss-footer" className="webicon rss large">RSS</a></li>
             </ul>
             <div className="site-links">
-              <div><a href="/about"><i className="fa fa-info-circle" /> About</a></div>
-              <div><a href="/blog"><i className="fa fa-exclamation-circle" /> Blog</a></div>
-              <div><a href="/download-data"><i className="fa fa-download" /> Download</a></div>
-              <div><a href="/help"><i className="fa fa-question-circle" /> Help</a></div>
+              <div><a href="/about">About</a></div>
+              <div><a href="/blog">Blog</a></div>
+              <div><a href="/download-data">Download</a></div>
+              <div><a href="/help">Help</a></div>
             </div>
           </div>
         </div>
