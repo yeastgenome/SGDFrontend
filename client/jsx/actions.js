@@ -92,7 +92,12 @@ export function fetchAutocompleteResults () {
     fetchFromApi(url)
       .then( response => {
         if (!response) return;
-        let action = receiveAutocompleteResponse(response.results);
+        // change result labels
+        let results = response.results.map( d => {
+          d.category = getCategoryDisplayName(d.category);
+          return d;
+        });
+        let action = receiveAutocompleteResponse(results);
         return dispatch(action);
       });
   };
