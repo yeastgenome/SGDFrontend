@@ -15,10 +15,16 @@ const SearchResult = React.createClass({
     download_metadata: React.PropTypes.object // uses _ not camel case for nested values { pubmed_ids, geo_ids, download_url }
   },
 
+  getInitialState() {
+    return {
+      isFullDataVisible: false// only used for download results
+    };
+  },
+
   render: function () {
-    // TEMP just regular results
-    let innerNode = this._getBasicResultNode();
+    // TEMP always same result
     // let innerNode = (typeof this.props.download_metadata === 'object') ? this._getDownloadResultNode() : this._getBasicResultNode();
+    let innerNode = this._getBasicResultNode();
     return (
       <div style={[style.wrapper]}>
         {innerNode}
@@ -59,13 +65,26 @@ const SearchResult = React.createClass({
 
     return (
       <div>
-        <h3 style={[style.title]}>
-          {this.props.name} <span className='radius secondary label'>{this.props.category}</span>
-        </h3>
+        <h2 style={[style.title]}>
+          <a href={this.props.href} target='_new'>{name}</a> <span className='radius secondary label'>{this.props.category}</span>
+        </h2>
         <p style={[style.description]}>{this.props.description}</p>
         <div>
-          {pmidsNodes}
-          {geoNodes}
+            <dl className='key=value'>
+              <dt>Title</dt>
+              <dd>{data.title}</dd>
+              <dt>Citation</dt>
+              <dd>Experiment Type</dd>
+              <dt></dt>
+              <dd>Summary</dd>
+              <dt></dt>
+              <dd>Keywords</dd>
+              <dt></dt>
+              <dd>PUBMED ID(s)</dd>
+              <dt></dt>
+              <dd>Samples</dd>
+              <dt></dt>
+            </dl>
         </div>
         <div>
           <DownloadButton url={data.download_url} extension='.gz' />
