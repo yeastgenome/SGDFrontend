@@ -46,7 +46,7 @@ $right-section-width: 363px;
 .social-links {
 	margin: 0;
 	li {
-		margin-left: em-calc(9);
+		margin-left: 20px;
 		margin-top: em-calc(2);
 	}
 }
@@ -57,33 +57,9 @@ $right-section-width: 363px;
     width: 16px;
 }
 
-div.header-search {
-	position: relative;
-	top: 5px;
-}
-
-form#searchform {
-	margin: 0;
-	padding: 0;
-}
-
-#header-search-box {
-	margin: 0;
-	padding: 0;
-}
-
-.menu-search { 
-	padding: 2px 10px;
-}
-
-#adv-search-links {
-	font-size: em-calc(12);
-	margin-top: 8px;
-}	
-
-
-#logo-section {
-	height: 90px;
+.webicon.large {
+	height: 39px;
+    width: 39px;
 }
 
 .logo {
@@ -92,7 +68,7 @@ form#searchform {
 	height: $logo-height;
 	width: $logo-width;
 	display: inline-block;
-	margin-top: 12px;
+	margin-top: 6px;
 	.logo-label {
 		display: inline-block;
 		text-indent: -9999px;

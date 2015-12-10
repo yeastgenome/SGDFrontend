@@ -1,6 +1,16 @@
 $border-radius: 5px;
 $border-color: #d9d9d9;
 
+.sgd-search-container {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  top: 9px;
+  left: 0.5rem;
+}
+
 .react-typeahead-input {
     width: 100%;
     padding: 0.25rem;
@@ -9,6 +19,7 @@ $border-color: #d9d9d9;
     border: 1px solid $border-color;
     font-size: 18px;  
     margin-top: 6px;
+    padding-left: 1.75rem;
 }
 
 .react-typeahead-options {

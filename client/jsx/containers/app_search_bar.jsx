@@ -44,7 +44,7 @@ const AppSearchBar = React.createClass({
 
   render() {
     return (
-      <div> 
+      <div className='sgd-search-container'> 
         <Typeahead
           inputValue={this.props.userInput}
           placeholder='Search'
@@ -55,6 +55,7 @@ const AppSearchBar = React.createClass({
           onOptionClick={this._onOptionClick}
           onKeyDown={this._onKeyDown}
         />
+      <span className='search-icon'><i className='fa fa-search'/></span>
       </div>
     );
   },
