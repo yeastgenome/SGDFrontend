@@ -1,20 +1,11 @@
-from celery import Celery
-from celery.signals import worker_init
+from pyramid_celery import celery_app as app
+
 import boto
 from boto.s3.key import Key
 
 from common.helpers import md5
-
-celery = Celery()
-celery.config_from_object('config.celeryconfig')
-
-@worker_init.connect
-def bootstrap_pyramid(signal, sender):
-    import os
-    from pyramid.paster import bootstrap
-    sender.app.settings = bootstrap(os.environ['YOUR_CONFIG'])['registry'].settings
 	
-@celery.task
+@app.task
 def upload_to_s3(key, file_path):
     try:
 #        conn = boto.connect_s3(app.config['S3_ACCESS_KEY'], app.config['S3_SECRET_KEY'])
