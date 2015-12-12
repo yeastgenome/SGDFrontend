@@ -10,4 +10,6 @@ def main(global_config, **settings):
         config.scan()
         config.add_static_view(name='static', path='../static')
 
+        config.configure_celery(global_config['__file__'])
+
         return config.make_wsgi_app()
