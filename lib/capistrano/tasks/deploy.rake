@@ -22,15 +22,14 @@ namespace :deploy do
 
   desc 'Write local config file'
   task :local_write_config do
-    exec "echo \"#{generate_config_content}\" >> ./config/config.py"
+    exec "echo \"#{generate_config_content}\" >> development.ini"
   end
 
   def generate_config_content
-    config_file_content = ""
-    ["NEX2_URI"].each do |key|
+    config_file_content = "\n\n[s3]\n"
+    ["S3_ACCESS_KEY", "S3_SECRET_KEY"].each do |key|
       config_file_content += "#{key} = \'#{ENV[key]}\'\n"
     end
-    config_file_content += "SQLALCHEMY_TRACK_MODIFICATIONS = False\n"
     return config_file_content
   end
 end
