@@ -1,19 +1,24 @@
-build: write-config
+.PHONY: test lib config
+
+build: config
 	@pip install -r requirements.txt
 
 run:
-	ENV=dev python src/app.py
+	@pserve development.ini --reload
 
-run-prod:
-	ENV=prod python src/app.py
+celery:
+	@celery worker -A pyramid_celery.celery_app --ini development.ini
+
+flower:
+	@celery flower -A pyramid_celery.celery_app --address=127.0.0.1 --port=5555 --ini development.ini
 
 tests:
 	@nosetests
 
-write-config:
+config:
 	. dev_deploy_variables.sh && rake -f lib/capistrano/tasks/deploy.rake deploy:local_write_config
 
-dev-deploy:
+deploy:
 	. dev_deploy_variables.sh && cap dev deploy
 
 prod-deploy:
