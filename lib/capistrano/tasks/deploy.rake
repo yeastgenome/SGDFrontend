@@ -27,7 +27,7 @@ namespace :deploy do
 
   def generate_config_content
     config_file_content = "\n\n[s3]\n"
-    ["S3_ACCESS_KEY", "S3_SECRET_KEY"].each do |key|
+    ["S3_ACCESS_KEY", "S3_SECRET_KEY", "S3_BUCKET"].each do |key|
       config_file_content += "#{key} = \'#{ENV[key]}\'\n"
     end
     return config_file_content
