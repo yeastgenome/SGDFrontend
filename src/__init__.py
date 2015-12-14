@@ -2,14 +2,14 @@ from wsgiref.simple_server import make_server
 from pyramid.config import Configurator
 
 def main(global_config, **settings):
-        config = Configurator(settings=settings)
-        
-        config.add_route('home', '/')
-        config.add_route('upload', '/upload')
-        
-        config.scan()
-        config.add_static_view(name='static', path='../static')
+    config = Configurator(settings=settings)
 
-        config.configure_celery(global_config['__file__'])
+    config.add_route('home', '/')
+    config.add_route('upload', '/upload')
 
-        return config.make_wsgi_app()
+    config.scan()
+    config.add_static_view(name='static', path='../static')
+
+    config.configure_celery(global_config['__file__'])
+
+    return config.make_wsgi_app()
