@@ -2,6 +2,7 @@ import hashlib
 import werkzeug
 import os
 import shutil
+import tempfile
 
 def md5(fname):
     hash = hashlib.md5()
@@ -15,7 +16,7 @@ def allowed_file(filename):
 
 def secure_save_file(file, filename):
     filename = werkzeug.secure_filename(filename)
-    temp_file_path = os.path.join('/tmp', filename)
+    temp_file_path = os.path.join(tempfile.gettempdir(), filename)
 
     file.seek(0)
     with open(temp_file_path, 'wb') as output_file:
