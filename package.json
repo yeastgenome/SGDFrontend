@@ -70,6 +70,8 @@
     "webworkify": "^1.0.2",
     "mocha": "^2.3.4",
     "grunt-express": "^1.4.1"
-
+  },
+  "scripts": {
+    "test": "mocha client/jsx/test"
   }
 }
