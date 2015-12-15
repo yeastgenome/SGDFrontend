@@ -33,7 +33,8 @@ class HelpersTest(unittest.TestCase):
 
 
     @mock.patch('werkzeug.secure_filename', return_value='temp_test_1.txt')
-    def test_write_temp_file_with_secure_name(self, mock_secure_filename):
+    @mock.patch('tempfile.gettempdir', return_value='/tmp')
+    def test_write_temp_file_with_secure_name(self, mock_tmpdir, mock_secure_filename):
         filename = self.valid_filename
         
         f = open(filename, 'r')
