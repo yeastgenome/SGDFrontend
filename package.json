@@ -68,6 +68,9 @@
     "grunt-parallel": "^0.4.1",
     "grunt-text-replace": "~0.3.11",
     "htmltidy": "0.0.6",
-    "webworkify": "^1.0.2"
+    "webworkify": "^1.0.2",
+    "mocha": "^2.3.4",
+    "grunt-express": "^1.4.1"
+
   }
 }

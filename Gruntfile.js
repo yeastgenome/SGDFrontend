@@ -1,5 +1,6 @@
 var crypto = require("crypto");
 var fs = require("fs");
+var path = require("path");
 
 // cache assets on browser for 1 month
 var CACHE_TTL = 2629740;
@@ -10,6 +11,14 @@ module.exports = function(grunt) {
     
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
+
+        express: {
+            options: {
+                port: 5000,
+                server: path.resolve('./lib/node/server_app_instance.js')
+            },
+            dev: {}
+        },
         
         s3: {
             options: {
@@ -203,6 +212,7 @@ module.exports = function(grunt) {
     });
     
     grunt.loadNpmTasks("grunt-aws");
+    grunt.loadNpmTasks("grunt-express");
     grunt.loadNpmTasks("grunt-text-replace");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-uglify");
@@ -221,7 +231,7 @@ module.exports = function(grunt) {
     grunt.registerTask("compileDev", ["static", "concurrent:dev"]);
 
     // compile dev, then watch and trigger live reload
-    grunt.registerTask("dev", ["compileDev", "watch"]);
+    grunt.registerTask("dev", ["compileDev", "express:dev", "watch"]);
     
     grunt.registerTask("default", ["static", "concurrent:production"]);
     grunt.registerTask("deployAssets", ["static", "concurrent:production", "uploadToS3"]);

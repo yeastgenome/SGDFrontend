@@ -4,6 +4,7 @@ from src.sgd.frontend import config
 from pyramid.view import notfound_view_config
 from src.sgd.frontend.yeastgenome import send_message
 from src.sgd.tools.blast import do_blast
+from src.sgd.frontend.yeastgenome import get_react_client
 
 def prep_views(chosen_frontend, config):
     # some logic (NOT all) has been moved to views to be more 'pyramid-y'

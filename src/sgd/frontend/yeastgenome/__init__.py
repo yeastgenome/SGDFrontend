@@ -22,6 +22,9 @@ from src.sgd.frontend import config
 from elasticsearch import Elasticsearch
 es = Elasticsearch(config.elasticsearch_address, timeout=5, retry_on_timeout=True)
 
+# where to get node requests for server-side react rendering
+NODE_ADDRESS = 'http://localhost:5000'
+
 class YeastgenomeFrontend(FrontendInterface):
     def __init__(self, backend_url, heritage_url, log_directory):
         self.backend_url = backend_url
@@ -573,6 +576,14 @@ class YeastgenomeFrontend(FrontendInterface):
             self.log.info(full_url)
             print full_url
             return json.dumps(get_json(full_url))
+
+def get_react_client(request):
+    # print dir(request)
+    full_node_address = NODE_ADDRESS + request.path
+    node_response = requests.get(full_node_address)
+    print dir(node_response)
+    print node_response.text
+    return Response(body=node_response.text)
     
 def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     chosen_frontend = YeastgenomeFrontend(backend_url, heritage_url, log_directory)
