@@ -27,7 +27,7 @@ module.exports = function(relativeUrl, cb) {
   const store = compose(
   )(createStore)(reducer);
 
-  match({ routes, location: relativeUrl}, (err, redirectLocation, renderProps) => {
+  match({ routes, location: relativeUrl}, function (err, redirectLocation, renderProps) {
     // store.subscribe( () => {
     //   console.log(store.getState())
     // });
