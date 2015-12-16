@@ -14,7 +14,7 @@ const Provider = ReactRedux.Provider;
 const routes = require('./routes.jsx');
 const SearchReducer = require('./reducers/search_reducer.js');
 
-const TOP_HTML = '<html><head><link href="/static/css/normalize.css" rel="stylesheet"><link href="/static/css/style.css" rel="stylesheet"></head><body><div id="j-application">';
+const TOP_HTML = '<html><head><link href="/static/css/normalize.css" rel="stylesheet"><link href="/static/css/style.css" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script></head><body><div id="j-application">';
 const BOTTOM_HTML = '</div><script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script><script src="/static/js/application.js"></script><script>views.bundle.render();</script></body></html>';
 
 // takes relative url, call cb with html response
