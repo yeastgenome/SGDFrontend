@@ -2,10 +2,10 @@ from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
 from pyramid.response import Response, FileResponse
 from pyramid.response import FileResponse
 from pyramid.view import view_config
-import os
 from celery_tasks import upload_to_s3
 from common.helpers import allowed_file, secure_save_file
 
+import os
 
 @view_config(route_name='home')
 def home_view(request):

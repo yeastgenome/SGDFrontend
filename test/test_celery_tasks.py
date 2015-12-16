@@ -1,11 +1,9 @@
+from moto import mock_s3
 import unittest
 import mock
 import tempfile
-
 import os
-
 import boto
-from moto import mock_s3
 
 from src.celery_tasks import upload_to_s3
 
@@ -36,7 +34,7 @@ class UploadToS3Test(unittest.TestCase):
         conn.create_bucket('mybucket')
 
         with self.assertRaises(Exception):
-            upload_to_s3("tmp-testfile", self.tmpfilepath, "s3_access_key", "s3_secret_key", "mybucket")
+            upload_to_s3(self.tmpfilename, self.tmpfilepath, "s3_access_key", "s3_secret_key", "mybucket")
             mock_md5.assert_called_with(self.tmpfilepath)
 
     @mock_s3
@@ -45,7 +43,6 @@ class UploadToS3Test(unittest.TestCase):
         conn = boto.connect_s3()
         conn.create_bucket('mybucket')
 
-        upload_to_s3("tmp-testfile", self.tmpfilepath, "s3_access_key", "s3_secret_key", "mybucket")
+        upload_to_s3(self.tmpfilename, self.tmpfilepath, "s3_access_key", "s3_secret_key", "mybucket")
         
         self.assertTrue(mock_os_remove.called)
-

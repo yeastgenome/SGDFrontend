@@ -49,4 +49,3 @@ class HelpersTest(unittest.TestCase):
         self.assertEqual(os.path.join('/tmp', filename), temp_file_path)
 
         os.remove(os.path.join('/tmp', filename))
-
