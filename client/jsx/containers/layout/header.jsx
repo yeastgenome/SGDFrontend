@@ -22,12 +22,12 @@ const Header = React.createClass({
           {/* right */}
           <div className="columns small-6 header-right">
             <ul className="social-links header-social-links">
-              <li><a href="/cgi-bin/suggestion" target="_blank" id="email-footer" className="webicon mail large">Email Us</a></li>
-              <li><a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter-footer" className="webicon twitter large">Twitter</a></li>
-              <li><a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" className="webicon facebook large" id="facebook-footer">Facebook</a></li>
-              <li><a href="https://www.linkedin.com/company/saccharomyces-genome-database" target="_blank" className="webicon linkedin large" id="linkedin-footer">LinkedIn</a></li>
-              <li><a href="https://www.youtube.com/channel/UCnTiLvqP2aYeHEaJl7m9DUg" target="_blank" id="youtube-footer" className="webicon youtube large">YouTube</a></li>
-              <li><a href="/feed" target="_blank" id="rss-footer" className="webicon rss large">RSS</a></li>
+              <li><a href="/cgi-bin/suggestion" target="_blank" id="email-footer" className="webicon mail medium">Email Us</a></li>
+              <li><a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter-footer" className="webicon twitter medium">Twitter</a></li>
+              <li><a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" className="webicon facebook medium" id="facebook-footer">Facebook</a></li>
+              <li><a href="https://www.linkedin.com/company/saccharomyces-genome-database" target="_blank" className="webicon linkedin medium" id="linkedin-footer">LinkedIn</a></li>
+              <li><a href="https://www.youtube.com/channel/UCnTiLvqP2aYeHEaJl7m9DUg" target="_blank" id="youtube-footer" className="webicon youtube medium">YouTube</a></li>
+              <li><a href="/feed" target="_blank" id="rss-footer" className="webicon rss medium">RSS</a></li>
             </ul>
             <div className="site-links">
               <div><a href="/about">About</a></div>
