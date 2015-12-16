@@ -12,7 +12,7 @@ def md5(fname):
     return hash.hexdigest()
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[-1] in ['txt', 'jpg', 'json']
+    return '.' in filename and filename.rsplit('.', 1)[-1] in ['bed', 'bedgraph', 'bw', 'cdt', 'chain', 'cod', 'csv', 'cusp', 'doc', 'docx', 'fsa', 'gb', 'gcg', 'gff', 'gif', 'gz', 'html', 'jpg', 'pcl', 'pdf', 'pl', 'png', 'pptx', 'README', 'sql', 'sqn', 'tgz', 'txt', 'vcf', 'wig', 'wrl', 'xls', 'xlsx', 'xml', 'sql', 'txt', 'fsa', 'gff', 'html', 'gz', 'tsv']
 
 def secure_save_file(file, filename):
     filename = werkzeug.secure_filename(filename)
