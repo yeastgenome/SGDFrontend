@@ -120,3 +120,10 @@ export function setApiError (isError) {
     value: isError
   };
 };
+
+export function setReadyState (isReady) {
+  return {
+    type: 'SET_READY_STATE',
+    value: isReady
+  };
+};

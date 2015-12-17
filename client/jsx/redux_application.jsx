@@ -9,8 +9,8 @@ const Routes = require('./routes.jsx');
 
 const ReduxApplication = React.createClass({
 	render() {
-    // configure store
-    let store = ConfigureStore();
+    // configure store, with history in redux state
+    let store = ConfigureStore(true);
 
     return (
       <Provider store={store}>

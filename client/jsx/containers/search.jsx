@@ -6,6 +6,7 @@ import _ from 'underscore';
 
 const SearchResult = require('../components/search/search_result.jsx');
 const Collapser = require('../components/widgets/collapser.jsx');
+const DeferReadyState = require('../components/mixins/defer_ready_state.jsx');
 const ErrorMessage = require('../components/widgets/error_message.jsx');
 const Loader = require('../components/widgets/loader.jsx');
 const Paginator = require('../components/widgets/paginator.jsx');
@@ -14,6 +15,7 @@ const Actions = require('../actions');
 const SEARCH_URL = '/search';
 
 const SearchView = React.createClass({
+  mixins: [DeferReadyState],
   displayName: 'SearchView',
   propTypes: {
     activeAggregations: React.PropTypes.array,
@@ -58,6 +60,13 @@ const SearchView = React.createClass({
         </div>
       </div>
     );
+  },
+
+  onDeferReadyState() {
+    console.log('query ', this.props.query)
+    setTimeout( () => {
+      this.affirmReadyState();
+    }, 500)
   },
 
   // listen to URL changes and dispatch needed events
