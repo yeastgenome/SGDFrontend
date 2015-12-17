@@ -7,6 +7,7 @@ import StringIO
 
 from src.views import upload_file
 
+
 class MockFileStorage(object):
     pass
 
