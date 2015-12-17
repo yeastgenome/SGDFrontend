@@ -7,6 +7,7 @@ from common.helpers import allowed_file, secure_save_file
 
 import os
 
+
 @view_config(route_name='home')
 def home_view(request):
     return FileResponse('static/index.html', request=request)

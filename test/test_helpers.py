@@ -4,6 +4,7 @@ import mock
 
 from src.common.helpers import md5, allowed_file, secure_save_file
 
+
 class HelpersTest(unittest.TestCase):
     def setUp(self):
         self.valid_filename = 'temp_test_1.txt'
