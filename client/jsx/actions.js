@@ -67,6 +67,9 @@ export function fetchSearchResults () {
           return d;
         });
         return dispatch(receiveSearchResponse(response)); 
+      })
+      .catch(function(err) {
+        console.log('api error')
       });
   }
 };
