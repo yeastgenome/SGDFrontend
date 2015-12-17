@@ -63,10 +63,10 @@ const SearchView = React.createClass({
   },
 
   onDeferReadyState() {
-    console.log('query ', this.props.query)
+    // temp, just set ready to render
     setTimeout( () => {
-      this.affirmReadyState();
-    }, 500)
+      this.affirmReadyState();      
+    }, 50)
   },
 
   // listen to URL changes and dispatch needed events
