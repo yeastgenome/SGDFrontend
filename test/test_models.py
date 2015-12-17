@@ -1,6 +1,6 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
-from src.models import DBSession, Base, Source #Base, Colleague, Source
+from src.models import DBSession, Base, Source
 from fixtures import SourceFactory
 
 
@@ -23,3 +23,5 @@ class ModelsTest(unittest.TestCase):
 
         self.assertEqual(1, len(instances))
         self.assertEqual(source, instances[0])
+
+    
