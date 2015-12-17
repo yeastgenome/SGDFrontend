@@ -60,6 +60,7 @@ target/
 
 # Config files
 config.py
-dev_deploy_variables.sh
+dev_variables.sh
+prod_variables.sh
 
 Gemfile.lock
