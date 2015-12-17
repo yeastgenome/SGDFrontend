@@ -1,7 +1,7 @@
 .PHONY: test lib config
 
 build: config
-	@pip install -r requirements.txt
+	export ORACLE_HOME=/data/tools/oracle_instant_client/instantclient_11_2/ && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME && pip install -r requirements.txt
 
 run:
 	@pserve development.ini --reload
