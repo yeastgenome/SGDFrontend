@@ -4,6 +4,7 @@ import os
 import shutil
 import tempfile
 
+
 def md5(fname):
     hash = hashlib.md5()
     with open(fname, "rb") as f:
