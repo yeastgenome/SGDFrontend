@@ -1,6 +1,6 @@
 import datetime
 import factory
-from src.models import Source, DBSession
+from src.models import Source, Colleague, DBSession
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -16,3 +16,12 @@ class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
     description = "Plasmid Repository"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "EDITH"
+
+    
+class ColleagueFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Colleague
+        sqlalchemy_session = DBSession
+
+    colleague_id = 10
+    
