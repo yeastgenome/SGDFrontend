@@ -57,6 +57,10 @@ const searchResultsReducer = function (state, action) {
     state.autocompleteResults = action.value;
     return state;
   }
+  if (action.type === 'SEARCH_API_ERROR') {
+    state.apiError = action.value;
+    return state
+  }
   return state;
 };
 

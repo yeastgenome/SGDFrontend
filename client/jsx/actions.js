@@ -66,10 +66,11 @@ export function fetchSearchResults () {
           d.category = getCategoryDisplayName(d.category);
           return d;
         });
+        dispatch(setApiError(false));
         return dispatch(receiveSearchResponse(response)); 
       })
       .catch(function(err) {
-        console.log('api error')
+        return dispatch(setApiError(true));
       });
   }
 };
@@ -110,5 +111,12 @@ export function receiveAutocompleteResponse (_response) {
   return {
     type: 'AUTOCOMPLETE_RESPONSE',
     value: _response
+  };
+};
+
+export function setApiError (isError) {
+  return {
+    type: 'SEARCH_API_ERROR',
+    value: isError
   };
 };

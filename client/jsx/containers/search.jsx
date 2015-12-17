@@ -6,6 +6,7 @@ import _ from 'underscore';
 
 const SearchResult = require('../components/search/search_result.jsx');
 const Collapser = require('../components/widgets/collapser.jsx');
+const ErrorMessage = require('../components/widgets/error_message.jsx');
 const Loader = require('../components/widgets/loader.jsx');
 const Paginator = require('../components/widgets/paginator.jsx');
 const Actions = require('../actions');
@@ -22,10 +23,14 @@ const SearchView = React.createClass({
     query: React.PropTypes.string,
     results: React.PropTypes.array, // [{ name, url, category, description }]
     total: React.PropTypes.number,
-    totalPages: React.PropTypes.number
+    totalPages: React.PropTypes.number,
+    apiError: React.PropTypes.bool
   },
 
   render() {
+    if (this.props.apiError) {
+      return <ErrorMessage />;
+    }
     if (this.props.query === '') {
       return (
         <div className='row' style={[style.resultsWraper]}>
@@ -212,7 +217,8 @@ function mapStateToProps(_state) {
     activeAggregations: state.activeAggregations,
     isPending: state.isPending,
     currentPage: state.currentPage,
-    totalPages: state.totalPages
+    totalPages: state.totalPages,
+    apiError: state.apiError
   };
 }
 

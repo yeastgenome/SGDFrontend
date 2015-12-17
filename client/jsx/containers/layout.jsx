@@ -9,7 +9,11 @@ const Layout = React.createClass({
       <div>
         <Header {...this.props}/>
         <div className='container'>
-          {this.props.children}
+          <div className='row'>
+            <div className='columns small-12'>
+              {this.props.children}
+            </div>
+          </div>
         </div>
         <Footer />
       </div>
