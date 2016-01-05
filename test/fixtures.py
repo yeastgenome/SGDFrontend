@@ -23,5 +23,35 @@ class ColleagueFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = Colleague
         sqlalchemy_session = DBSession
 
-    colleague_id = 10
-    
+    colleague_id = 113698
+    format_name = "Jimmy_Page_LZ"
+    display_name = "Jimmy Page"
+    obj_url = "/colleague/Jimmy_Page_LZ"
+    source_id = 261
+    bud_id = 549
+    orcid = None
+    last_name = "Page"
+    first_name = "Jimmy"
+    suffix = None
+    other_last_name = None
+    profession = "Yeast Geneticist/Molecular biologist"
+    job_title = "Graduate Student"
+    institution = "Stanford Universty"
+    address1 = "Genome Research Center"
+    address2 = None
+    address3 = None
+    city = "Palo Alto"
+    state = "CA"
+    country = "USA"
+    postal_code = "94015"
+    work_phone = "444-444-4444"
+    other_phone = None
+    fax = "444-444-444"
+    email = "jimmy.page@stanford.edu"
+    research_interest = "mRNA decay, translation, mRNA decay"
+    is_pi = False
+    is_contact = False
+    display_email = True
+    date_last_modified = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "EDITH"
