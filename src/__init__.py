@@ -15,8 +15,7 @@ def main(global_config, **settings):
 
     config.add_route('home', '/')
     config.add_route('upload', '/upload')
-    #config.add_route('colleagues/search?last_name=')
-    #config.add_route('colleagues/{id}
+    config.add_route('colleagues', '/colleagues')
 
     config.scan()
     config.add_static_view(name='static', path='../static')
