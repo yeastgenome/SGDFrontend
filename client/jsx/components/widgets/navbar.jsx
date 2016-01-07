@@ -1,6 +1,3 @@
-
-"use strict";
-
 var React = require("react");
 var $ = require("jquery");
 var _ = require("underscore");
@@ -13,7 +10,7 @@ var Navbar = React.createClass({
 	getDefaultProps: function () {
 		return {
 			title: "",
-			elements: []
+			elements: []// { name, target }
 		};
 	},
 
