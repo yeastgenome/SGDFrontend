@@ -4,10 +4,11 @@ import Radium from 'radium';
 
 // internal dependencies
 const DataTable = require('../components/widgets/data_table.jsx');
+const DownloadButton = require('../components/widgets/download_button.jsx');
 const HelpIcon = require('../components/widgets/help_icon.jsx');
 const Legend = require('../components/viz/legend.jsx');
 const NavBar = require('../components/widgets/navbar.jsx');
-const DownloadButton = require('../components/widgets/download_button.jsx');
+const SequenceToggler = require('../components/sequence/sequence_toggler.jsx');
 
 const StyleGuide = React.createClass({
 	render () {
@@ -43,8 +44,10 @@ const StyleGuide = React.createClass({
             <DownloadButton url="http://yeastgenome.org/fake-download" />
           </div>
           <div id='sequence'>
+            {this._renderSequence()}
           </div>
           <div id='forms'>
+            {this._renderForms()}
           </div>
         </div>
       </div>
@@ -134,6 +137,37 @@ const StyleGuide = React.createClass({
         <h2>Table</h2>
         <hr />
         <DataTable data={_data} usePlugin={true} />
+      </div>
+    );
+  },
+
+  _renderSequence () {
+    let _sequences = [
+      {
+        name: 'DNA Coding',
+        sequence: 'ATG',
+        key: 'dna1'
+      },
+      {
+        name: 'Protein',
+        sequence: 'MDSEVAALVIDNGSG',
+        key: 'protein1'
+      }
+    ];
+    return (
+      <div>
+        <h2>Sequence</h2>
+        <hr />
+        <SequenceToggler locusDisplayName='RAD54' sequences={_sequences} />
+      </div>
+    );
+  },
+
+  _renderForms () {
+    return (
+      <div>
+        <h2>Forms</h2>
+        <hr />
       </div>
     );
   }

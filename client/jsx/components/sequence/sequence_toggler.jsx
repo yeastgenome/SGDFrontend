@@ -23,7 +23,7 @@ module.exports = React.createClass({
 			sequences: null, // * [{ name: "DNA Coding", sequence: "ACTCTAGGCT" key: }, ...]
 			showCustomRetrieval: false,
 			showSequence: true,
-			subFeatureData: null,
+			subFeatureData: [],
 			text: null
 		};
 	},
