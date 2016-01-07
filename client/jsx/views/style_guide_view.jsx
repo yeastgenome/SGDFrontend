@@ -24,7 +24,7 @@ const StyleGuide = React.createClass({
             {this._renderColors()}
           </div>
           <div id='typeography'>
-            <h2>Typeography</h2>
+            <h2>Typography</h2>
             <hr />
             <p>Headings are in a serif font.  Other text is in a sans-serif font.  The title of the page is an <code>h1</code> tag.  The sub-headings are <code>h2</code> tags, with an <code>hr</code> element underneath.  This page is a correct example.</p>
           </div>
@@ -39,8 +39,8 @@ const StyleGuide = React.createClass({
           <div id='buttons'>
             <h2>Buttons</h2>
             <hr />
-            <a className='button small secondary'>Basic</a>
-            <a className='button small'>More Attention</a>
+            <a className='button small secondary' style={[style.button]}>Basic</a>
+            <a className='button small' style={[style.button]}>More Attention</a>
             <DownloadButton url="http://yeastgenome.org/fake-download" />
           </div>
           <div id='sequence'>
@@ -61,8 +61,8 @@ const StyleGuide = React.createClass({
         target: 'colors'
       },
       {
-        name: 'Typeography',
-        target: 'typeography'
+        name: 'Typography',
+        target: 'typography'
       },
       {
         name: 'Table',
@@ -117,6 +117,7 @@ const StyleGuide = React.createClass({
         <hr />
         <p>As much as possible, ONLY the following colors should be used on SGD.</p>
         <Legend elements={_elements} />
+        <p>Also, this is an example of the Legend component.</p>
       </div>
     );
   },
@@ -174,6 +175,7 @@ const StyleGuide = React.createClass({
 });
 
 const style = {
+  button: { margin: '0 1rem 1rem 0' }
 };
 
 const StyledStyleGuide = Radium(StyleGuide);
