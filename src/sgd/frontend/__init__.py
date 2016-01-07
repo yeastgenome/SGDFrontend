@@ -273,6 +273,11 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: {'variant_viewer': render('static/templates/variant_viewer.jinja2', {})},
                     renderer=chosen_frontend.get_renderer('variant_viewer'),
                     route_name='variant_viewer')
+
+    config.add_route('style_guide', '/style-guide')
+    config.add_view(lambda request: {'style_guide': render('static/templates/style_guide.jinja2', {})},
+                    renderer=chosen_frontend.get_renderer('style_guide'),
+                    route_name='style_guide')
     
     config.add_route('do_blast', '/run_blast')
     config.add_view(do_blast, route_name='do_blast')
