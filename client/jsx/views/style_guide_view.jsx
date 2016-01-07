@@ -3,8 +3,11 @@ import ReactDOM from 'react-dom';
 import Radium from 'radium';
 
 // internal dependencies
-const NavBar = require('../components/widgets/navbar.jsx');
+const DataTable = require('../components/widgets/data_table.jsx');
+const HelpIcon = require('../components/widgets/help_icon.jsx');
 const Legend = require('../components/viz/legend.jsx');
+const NavBar = require('../components/widgets/navbar.jsx');
+const DownloadButton = require('../components/widgets/download_button.jsx');
 
 const StyleGuide = React.createClass({
 	render () {
@@ -20,18 +23,24 @@ const StyleGuide = React.createClass({
             {this._renderColors()}
           </div>
           <div id='typeography'>
-            <h3>Typeography</h3>
+            <h2>Typeography</h2>
             <hr />
-            <p>Headings are in a serif font.  Other text is in a sans-serif font.</p>
-            <p>The title of the page is an <code>h1</code> tag.  The sub-headings are <code>h3</code> tags, with a <code>hr</code> element underneath.  This page is a correct example.</p>
-          </div>
-          <div id='nav'>
+            <p>Headings are in a serif font.  Other text is in a sans-serif font.  The title of the page is an <code>h1</code> tag.  The sub-headings are <code>h2</code> tags, with an <code>hr</code> element underneath.  This page is a correct example.</p>
           </div>
           <div id='table'>
+            {this._renderTable()}
           </div>
           <div id='help'>
+            <h2>Help Icon</h2>
+            <hr />
+            <p>Add some inline text to help users. <HelpIcon text='To do the thing you want to do, eat more vegetables.' /></p>
           </div>
           <div id='buttons'>
+            <h2>Buttons</h2>
+            <hr />
+            <a className='button small secondary'>Basic</a>
+            <a className='button small'>More Attention</a>
+            <DownloadButton url="http://yeastgenome.org/fake-download" />
           </div>
           <div id='sequence'>
           </div>
@@ -51,10 +60,6 @@ const StyleGuide = React.createClass({
       {
         name: 'Typeography',
         target: 'typeography'
-      },
-      {
-        name: 'Nav Bar',
-        target: 'nav'
       },
       {
         name: 'Table',
@@ -109,6 +114,26 @@ const StyleGuide = React.createClass({
         <hr />
         <p>As much as possible, ONLY the following colors should be used on SGD.</p>
         <Legend elements={_elements} />
+      </div>
+    );
+  },
+
+  _renderTable () {
+    let rowData = [];
+    for (var i = 50; i >= 0; i--) {
+      rowData.push([`val${i}`, 'value', i, 'Foobar', 'bizz buzz'])
+    };
+    let _data = {
+      headers: [
+        ['Col1', 'Col2', 'Col3', 'Col4', 'Col5']
+      ],
+      rows: rowData
+    };
+    return (
+      <div>
+        <h2>Table</h2>
+        <hr />
+        <DataTable data={_data} usePlugin={true} />
       </div>
     );
   }

@@ -1,11 +1,7 @@
+import React from 'react';
+import _ from 'underscore';
 
-"use strict";
-
-var React = require("react");
-var _ = require("underscore");
-
-module.exports = React.createClass({
-
+const DownloadButton = React.createClass({
 	getDefaultProps: function () {
 		return {
 			buttonId: null,
@@ -33,3 +29,5 @@ module.exports = React.createClass({
 		);
 	}
 });
+
+module.exports = DownloadButton;
