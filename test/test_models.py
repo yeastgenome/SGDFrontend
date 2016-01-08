@@ -1,6 +1,6 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
-from src.models import DBSession, Base, Source, Colleague
+from src.models import DBSession, Base, Source, Colleague, Dbuser
 import fixtures as factory
 
 
@@ -36,3 +36,13 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(1, len(instances))
         self.assertEqual(colleague, instances[0])
         self.assertEqual(colleague.source, source)
+
+    def test_dbuser_model(self):
+        instances = DBSession.query(Dbuser).all()
+        self.assertEqual(0, len(instances))
+
+        dbuser = factory.DbuserFactory()
+        instances = DBSession.query(Dbuser).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(dbuser, instances[0])
