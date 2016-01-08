@@ -2,7 +2,7 @@ import unittest
 import os
 import mock
 
-from src.common.helpers import md5, allowed_file, secure_save_file
+from src.helpers import md5, allowed_file, secure_save_file, is_a_curator
 
 
 class HelpersTest(unittest.TestCase):
@@ -50,3 +50,17 @@ class HelpersTest(unittest.TestCase):
         self.assertEqual(os.path.join('/tmp', filename), temp_file_path)
 
         os.remove(os.path.join('/tmp', filename))
+
+    @mock.patch('src.models.DBSession.query', return_value='')
+    def test_is_an_active_curator(self, mock_query):
+        valid_email = "valid@curator.com"   
+        
+        self.assertTrue(is_a_curator(valid_email))
+        self.assertTrue(mock_query.called_with(Dbuser))
+
+    def test_is_an_inactive_curator(self):
+        pass
+
+    def test_is_an_inexistent_curator(self):
+        pass
+        

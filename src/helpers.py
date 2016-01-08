@@ -3,7 +3,7 @@ import werkzeug
 import os
 import shutil
 import tempfile
-
+from .models import DBSession, Dbuser
 
 def md5(fname):
     hash = hashlib.md5()
@@ -24,3 +24,7 @@ def secure_save_file(file, filename):
 	shutil.copyfileobj(file, output_file)
 
     return temp_file_path
+
+def is_a_curator(email):
+    user = DBSession.query(Dbuser).filter(Dbuser.email == email)
+    return len(user) > 1
