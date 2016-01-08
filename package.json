@@ -45,7 +45,9 @@
     "redux": "^3.0.2",
     "redux-router": "^1.0.0-beta3",
     "redux-thunk": "^1.0.0",
-    "underscore": "~1.6.0"
+    "underscore": "~1.6.0",
+    "tcomb-form": "^0.8.0",
+    "tcomb-json-schema": "^0.2.3"
   },
   "devDependencies": {
     "babelify": "^6.3.0",

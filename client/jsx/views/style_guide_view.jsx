@@ -9,6 +9,7 @@ const HelpIcon = require('../components/widgets/help_icon.jsx');
 const Legend = require('../components/viz/legend.jsx');
 const NavBar = require('../components/widgets/navbar.jsx');
 const SequenceToggler = require('../components/sequence/sequence_toggler.jsx');
+const TForm = require('../components/widgets/t_form.jsx');
 
 const StyleGuide = React.createClass({
 	render () {
@@ -165,10 +166,22 @@ const StyleGuide = React.createClass({
   },
 
   _renderForms () {
+    let exampleObject = {
+      title: 'Paper',
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        abstract: { type: 'string' }
+      },
+      required: ['title']
+    };
+    let _onSubmit = (value) => { console.log(value); };
     return (
       <div>
         <h2>Forms</h2>
         <hr />
+        <p>Forms can be created from JSON validation objects.</p>
+        <TForm validationObject={exampleObject} submitText="Save" onSubmit={_onSubmit} />
       </div>
     );
   }
