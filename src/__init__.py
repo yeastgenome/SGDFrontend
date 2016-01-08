@@ -1,13 +1,13 @@
 from wsgiref.simple_server import make_server
 from pyramid.config import Configurator
-from sqlalchemy import engine_from_config
+from sqlalchemy import create_engine
 import os
 
 from .models import DBSession, Base
 
 
 def main(global_config, **settings):
-    engine = os.environ['NEX2_URI']
+    engine = create_engine(os.environ['NEX2_URI'])
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
 
