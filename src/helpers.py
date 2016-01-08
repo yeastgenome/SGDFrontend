@@ -26,5 +26,5 @@ def secure_save_file(file, filename):
     return temp_file_path
 
 def is_a_curator(email):
-    user = DBSession.query(Dbuser).filter(Dbuser.email == email)
-    return len(user) > 1
+    user = DBSession.query(Dbuser).filter(Dbuser.email == email).first()
+    return (user and user.status == 'Current')
