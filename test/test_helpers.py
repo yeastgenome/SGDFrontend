@@ -3,6 +3,25 @@ import os
 import mock
 
 from src.helpers import md5, allowed_file, secure_save_file, is_a_curator
+from src.models import Dbuser
+
+import fixtures as factory
+
+
+class MockQueryFilter(object):
+    def __init__(self, query_result):
+        self._return = query_result
+
+    def first(self):
+        return self._return
+
+
+class MockQuery(object):
+    def __init__(self, query_result):
+        self._query_result = query_result
+
+    def filter(self, query_result):
+        return MockQueryFilter(self._query_result)
 
 
 class HelpersTest(unittest.TestCase):
@@ -51,16 +70,28 @@ class HelpersTest(unittest.TestCase):
 
         os.remove(os.path.join('/tmp', filename))
 
-    @mock.patch('src.models.DBSession.query', return_value='')
-    def test_is_an_active_curator(self, mock_query):
-        valid_email = "valid@curator.com"   
+    @mock.patch('src.models.DBSession.query')
+    def test_is_an_active_curator(self, mock_search):
+        db_user = factory.DbuserFactory.build()
+        mock_search.return_value = MockQuery(db_user)
         
-        self.assertTrue(is_a_curator(valid_email))
-        self.assertTrue(mock_query.called_with(Dbuser))
+        self.assertTrue(is_a_curator(db_user.email))
+        self.assertTrue(mock_search.called_with(Dbuser))
 
-    def test_is_an_inactive_curator(self):
-        pass
-
-    def test_is_an_inexistent_curator(self):
-        pass
+    @mock.patch('src.models.DBSession.query')
+    def test_is_an_inactive_curator(self, mock_search):
+        db_user = factory.DbuserFactory.build()
+        db_user.status = 'Former'
+        mock_search.return_value = MockQuery(db_user)
         
+        self.assertFalse(is_a_curator(db_user.email))
+        self.assertTrue(mock_search.called_with(Dbuser))
+
+    @mock.patch('src.models.DBSession.query')
+    def test_is_an_inexistent_curator(self, mock_search):
+        db_user = factory.DbuserFactory.build()
+        db_user.status = 'Former'
+        mock_search.return_value = MockQuery(None)
+        
+        self.assertFalse(is_a_curator(db_user.email))
+        self.assertTrue(mock_search.called_with(Dbuser))
