@@ -3,6 +3,7 @@ from pyramid.response import Response, FileResponse
 from pyramid.response import FileResponse
 from pyramid.view import view_config
 from pyramid.compat import escape
+from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
@@ -14,9 +15,9 @@ import logging
 log = logging.getLogger(__name__)
 
 
-@view_config(route_name='home', request_method='GET')
+@view_config(route_name='home', request_method='GET', renderer='home.jinja2')
 def home_view(request):
-    return FileResponse('static/index.html', request=request)
+    return {'google_client_id': os.environ['GOOGLE_CLIENT_ID']}
 
 @view_config(route_name='upload', request_method='POST')
 def upload_file(request):
@@ -45,21 +46,31 @@ def colleagues_by_last_name(request):
     return []
 #    return DBSession.query(Colleague).filter(Colleague.last_name == last_name)
 
-@view_config(route_name='authorize', renderer='json', request_method='POST')
-def authorize(request):
-	try:
-		idinfo = client.verify_id_token(request.POST.get('token'), os.environ['GOOGLE_CLIENT_ID'])
+@view_config(route_name='authenticate', renderer='json', request_method='POST')
+def authenticate(request):
+    check_csrf_token(request)
 
-		if idinfo.get('iss') not in ['accounts.google.com', 'https://accounts.google.com']:
-			raise crypt.AppIdentityError("Wrong issuer.")
+    try:
+        idinfo = client.verify_id_token(request.POST.get('token'), os.environ['GOOGLE_CLIENT_ID'])
 
-		log.info("User " + idinfo['email'] + " trying to authenticate from " + request.remote_addr)
+        if idinfo.get('iss') not in ['accounts.google.com', 'https://accounts.google.com']:
+            raise crypt.AppIdentityError("Wrong issuer.")
 
-#		if not is_a_curator(idinfo['email']):
-#			raise crypt.AppIdentityError("User not authorized.")
+        log.info("User " + idinfo['email'] + " trying to authenticate from " + request.remote_addr)
 
-		log.info("User " + idinfo['email'] + " was successfuly authenticated.")
-		return {'status': 200}
-	except crypt.AppIdentityError:
-		userid = idinfo['sub']
-		return {'status': 433}
+#	if not is_a_curator(idinfo['email']):
+#		raise crypt.AppIdentityError("User not authorized.")
+        
+        session = request.session
+
+        log.info("User " + idinfo['email'] + " was successfuly authenticated.")
+
+        if 'email' in session:
+            return {'status': 'old'}
+        else:
+            session['email'] = idinfo['email']
+            return {'status': 'new'}
+
+    except crypt.AppIdentityError:
+        userid = idinfo['sub']
+        return {'status': 433}
