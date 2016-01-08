@@ -4,6 +4,7 @@ const d3 = require("d3");
 const $ = require("jquery");
 require("datatables");
 require("foundation");
+require("foundationDatatables");
 
 /*
 	A react component that renders a table, then uses jQuery data tables to spice it up.

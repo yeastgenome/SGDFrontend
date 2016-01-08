@@ -13,7 +13,8 @@
   },
   "browser": {
     "foundation": "./bower_components/foundation/js/foundation.min.js",
-    "datatables": "./bower_components/datatables/media/js/jquery.dataTables.js"
+    "datatables": "./bower_components/datatables/media/js/jquery.dataTables.js",
+    "foundationDatatables": "./bower_components/datatables-plugins/integration/foundation/dataTables.foundation.js"
   },
   "browserify-shim": {
     "jquery": {

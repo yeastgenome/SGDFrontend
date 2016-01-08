@@ -24,31 +24,36 @@ const StyleGuide = React.createClass({
           <div id='colors'>
             {this._renderColors()}
           </div>
-          <div id='typeography'>
+          <div id='typeography' style={[style.sectionContainer]}>
             <h2>Typography</h2>
             <hr />
             <p>Headings are in a serif font.  Other text is in a sans-serif font.  The title of the page is an <code>h1</code> tag.  The sub-headings are <code>h2</code> tags, with an <code>hr</code> element underneath.  This page is a correct example.</p>
           </div>
-          <div id='table'>
+          <div id='table' style={[style.sectionContainer]}>
             {this._renderTable()}
           </div>
-          <div id='help'>
+          <div id='help' style={[style.sectionContainer]}>
             <h2>Help Icon</h2>
             <hr />
             <p>Add some inline text to help users. <HelpIcon text='To do the thing you want to do, eat more vegetables.' /></p>
           </div>
-          <div id='buttons'>
+          <div id='buttons' style={[style.sectionContainer]}>
             <h2>Buttons</h2>
             <hr />
             <a className='button small secondary' style={[style.button]}>Basic</a>
             <a className='button small' style={[style.button]}>More Attention</a>
             <DownloadButton url="http://yeastgenome.org/fake-download" />
           </div>
-          <div id='sequence'>
+          <div id='sequence' style={[style.sectionContainer]}>
             {this._renderSequence()}
           </div>
-          <div id='forms'>
+          <div id='forms' style={[style.sectionContainer]}>
             {this._renderForms()}
+          </div>
+          <div id='formatting' style={[style.sectionContainer]}>
+            <h2>Formatting</h2>
+            <hr />
+
           </div>
         </div>
       </div>
@@ -84,6 +89,10 @@ const StyleGuide = React.createClass({
       {
         name: 'Forms',
         target: 'forms'
+      },
+      {
+        name: 'Formatting',
+        target: 'formatting'
       }
     ];
     return <NavBar elements={_elements} />;
@@ -125,7 +134,7 @@ const StyleGuide = React.createClass({
 
   _renderTable () {
     let rowData = [];
-    for (var i = 50; i >= 0; i--) {
+    for (var i = 20; i >= 0; i--) {
       rowData.push([`val${i}`, 'value', i, 'Foobar', 'bizz buzz'])
     };
     let _data = {
@@ -188,6 +197,7 @@ const StyleGuide = React.createClass({
 });
 
 const style = {
+  sectionContainer: { marginBottom: '1rem' },
   button: { margin: '0 1rem 1rem 0' }
 };
 
