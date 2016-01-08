@@ -4,7 +4,7 @@ import boto
 from boto.s3.key import Key
 
 import os
-from common.helpers import md5
+from .helpers import md5
 	
 @app.task(bind=True, default_retry_delay=60)
 def upload_to_s3(self, key, file_path, s3_access_key, s3_secret_key, s3_bucket):
