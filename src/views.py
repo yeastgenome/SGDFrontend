@@ -1,4 +1,4 @@
-from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
+from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, HTTPForbidden, HTTPOk
 from pyramid.response import Response, FileResponse
 from pyramid.response import FileResponse
 from pyramid.view import view_config
@@ -8,7 +8,7 @@ from oauth2client import client, crypt
 import os
 
 from .models import DBSession, Colleague
-from .common.helpers import allowed_file, secure_save_file
+from .helpers import allowed_file, secure_save_file, is_a_curator
 from .celery_tasks import upload_to_s3
 
 import logging
@@ -48,29 +48,35 @@ def colleagues_by_last_name(request):
 
 @view_config(route_name='authenticate', renderer='json', request_method='POST')
 def authenticate(request):
-    check_csrf_token(request)
+    if not check_csrf_token(request, raises=False):
+        return HTTPForbidden('Expected CSRF token not found')
 
+    if request.POST.get('token') is None:
+        return HTTPForbidden('Expected authentication token not found')
+    
     try:
         idinfo = client.verify_id_token(request.POST.get('token'), os.environ['GOOGLE_CLIENT_ID'])
 
         if idinfo.get('iss') not in ['accounts.google.com', 'https://accounts.google.com']:
-            raise crypt.AppIdentityError("Wrong issuer.")
+            return HTTPForbidden('Authentication token has an invalid ISS')
+        
+        if idinfo.get('email') is None:
+            return HTTPForbidden('Authentication token has no email')
 
         log.info("User " + idinfo['email'] + " trying to authenticate from " + request.remote_addr)
 
-#	if not is_a_curator(idinfo['email']):
-#		raise crypt.AppIdentityError("User not authorized.")
+	if not is_a_curator(idinfo['email']):
+            return HTTPForbidden('User not authorized on SGD')
         
         session = request.session
 
-        log.info("User " + idinfo['email'] + " was successfuly authenticated.")
-
         if 'email' in session:
-            return {'status': 'old'}
+            log.info("User " + idinfo['email'] + " was successfuly authenticated and it has an existing session.")
         else:
             session['email'] = idinfo['email']
-            return {'status': 'new'}
+            log.info("User " + idinfo['email'] + " was successfuly authenticated and a new session was created.")
+
+        return HTTPOk()
 
     except crypt.AppIdentityError:
-        userid = idinfo['sub']
-        return {'status': 433}
+        return HTTPForbidden('Authentication token is invalid')

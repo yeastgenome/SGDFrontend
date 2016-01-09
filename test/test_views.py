@@ -5,7 +5,7 @@ import mock
 import os
 import StringIO
 import fixtures as factory
-from src.views import upload_file, colleagues_by_last_name
+from src.views import upload_file, colleagues_by_last_name, authenticate
 
 
 class MockFileStorage(object):
@@ -68,7 +68,6 @@ class ColleaguesTest(unittest.TestCase):
     def test_should_return_400_for_invalid_colleague_id(self):
         pass
 
-    
 
 class UploadTest(unittest.TestCase):
     def setUp(self):
@@ -112,3 +111,115 @@ class UploadTest(unittest.TestCase):
         mock_tasks.assert_called_with(upload.filename, os.path.join('/tmp', upload.filename), os.environ['S3_ACCESS_KEY'], os.environ['S3_SECRET_KEY'], os.environ['S3_BUCKET'])
         
         self.assertEqual(response.status_code, 200)
+
+
+class AutheticationTest(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def test_request_with_no_csrf_should_return_403(self):
+        request = testing.DummyRequest(post={})
+        request.context = testing.DummyRequest()
+        response = authenticate(request)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.message, 'Expected CSRF token not found')
+
+    def test_request_with_no_token_should_return_403(self):
+        csrf_token = 'dummy_csrf_token'
+        
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token})
+        request.session['_csrft_'] = csrf_token
+        request.context = testing.DummyRequest()
+        
+        response = authenticate(request)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.message, 'Expected authentication token not found')
+
+    def test_request_with_fake_token_should_return_403(self):
+        csrf_token = 'dummy_csrf_token'
+        
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'invalid_token'})
+        request.session['_csrft_'] = csrf_token
+        request.context = testing.DummyRequest()
+
+        response = authenticate(request)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.message, 'Authentication token is invalid')
+
+    @mock.patch('oauth2client.client.verify_id_token')
+    def test_request_with_invalid_iss_for_token_should_return_403(self, token_validator):
+        csrf_token = 'dummy_csrf_token'
+        
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'invalid_token'})
+        request.session['_csrft_'] = csrf_token
+        request.context = testing.DummyRequest()
+
+        token_validator.return_value = {'iss': 'invalid_iss'}
+
+        response = authenticate(request)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.message, 'Authentication token has an invalid ISS')
+
+    @mock.patch('oauth2client.client.verify_id_token')
+    def test_request_with_valid_token_but_no_email_should_return_403(self, token_validator):
+        csrf_token = 'dummy_csrf_token'
+        
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'invalid_token'})
+        request.session['_csrft_'] = csrf_token
+        request.context = testing.DummyRequest()
+
+        token_validator.return_value = {'iss': 'accounts.google.com'}
+
+        response = authenticate(request)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.message, 'Authentication token has no email')
+
+    @mock.patch('src.views.log.info')
+    @mock.patch('src.views.is_a_curator')
+    @mock.patch('oauth2client.client.verify_id_token')
+    def test_request_with_valid_token_but_not_a_curator_should_return_403(self, token_validator, is_a_curator, log):
+        csrf_token = 'dummy_csrf_token'
+        
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'invalid_token'})
+        request.session['_csrft_'] = csrf_token
+        request.context = testing.DummyRequest()
+        request.remote_addr = '127.0.0.1'
+
+        token_validator.return_value = {'iss': 'accounts.google.com', 'email': 'not-a-curator@example.org'}
+        is_a_curator.return_value = False
+
+        response = authenticate(request)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.message, 'User not authorized on SGD')
+        log.assert_called_with('User not-a-curator@example.org trying to authenticate from 127.0.0.1')
+
+    @mock.patch('src.views.log.info')
+    @mock.patch('src.views.is_a_curator')
+    @mock.patch('oauth2client.client.verify_id_token')
+    def test_request_with_valid_token_and_user_should_return_a_session(self, token_validator, is_a_curator, log):
+        csrf_token = 'dummy_csrf_token'
+        
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'invalid_token'})
+        request.session['_csrft_'] = csrf_token
+        request.context = testing.DummyRequest()
+        request.remote_addr = '127.0.0.1'
+
+        token_validator.return_value = {'iss': 'accounts.google.com', 'email': 'curator@example.org'}
+        is_a_curator.return_value = True
+
+        response = authenticate(request)
+
+        self.assertEqual(response.status_code, 200)
+        log.assert_called_with('User curator@example.org trying to authenticate from 127.0.0.1')
+        log.assert_called_with('User curator@example.org was successfuly authenticated and it has an existing session.')
+
+    def test_request_with_valid_token_user_session_should_keep_session(self):
+        pass
+
+    def test_valid_session_should_expire_in_time(self):
+        pass
+
