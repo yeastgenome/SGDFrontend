@@ -70,11 +70,10 @@ def authenticate(request):
         
         session = request.session
 
-        if 'email' in session:
-            log.info("User " + idinfo['email'] + " was successfuly authenticated and it has an existing session.")
-        else:
+        if 'email' not in session:
             session['email'] = idinfo['email']
-            log.info("User " + idinfo['email'] + " was successfuly authenticated and a new session was created.")
+
+        log.info("User " + idinfo['email'] + " was successfuly authenticated.")
 
         return HTTPOk()
 
