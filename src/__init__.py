@@ -17,7 +17,8 @@ def main(global_config, **settings):
     config.add_route('upload', '/upload')
     config.add_route('colleagues', '/colleagues')
 
-    config.add_route('authenticate', '/authenticate')
+    config.add_route('sign_in', '/signin')
+    config.add_route('sign_out', '/signout')
 
     config.scan()
     config.add_static_view(name='static', path='../static')

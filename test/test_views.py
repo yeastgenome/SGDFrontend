@@ -5,7 +5,7 @@ import mock
 import os
 import StringIO
 import fixtures as factory
-from src.views import upload_file, colleagues_by_last_name, authenticate
+from src.views import upload_file, colleagues_by_last_name, sign_in, sign_out
 
 
 class MockFileStorage(object):
@@ -123,7 +123,7 @@ class AutheticationTest(unittest.TestCase):
     def test_request_with_no_csrf_should_return_403(self):
         request = testing.DummyRequest(post={})
         request.context = testing.DummyRequest()
-        response = authenticate(request)
+        response = sign_in(request)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.message, 'Expected CSRF token not found')
 
@@ -134,7 +134,7 @@ class AutheticationTest(unittest.TestCase):
         request.session['_csrft_'] = csrf_token
         request.context = testing.DummyRequest()
         
-        response = authenticate(request)
+        response = sign_in(request)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.message, 'Expected authentication token not found')
         self.assertNotIn('email', request.session)
@@ -146,7 +146,7 @@ class AutheticationTest(unittest.TestCase):
         request.session['_csrft_'] = csrf_token
         request.context = testing.DummyRequest()
 
-        response = authenticate(request)
+        response = sign_in(request)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.message, 'Authentication token is invalid')
         self.assertNotIn('email', request.session)
@@ -161,7 +161,7 @@ class AutheticationTest(unittest.TestCase):
 
         token_validator.return_value = {'iss': 'invalid_iss'}
 
-        response = authenticate(request)
+        response = sign_in(request)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.message, 'Authentication token has an invalid ISS')
         self.assertNotIn('email', request.session)
@@ -176,7 +176,7 @@ class AutheticationTest(unittest.TestCase):
 
         token_validator.return_value = {'iss': 'accounts.google.com'}
 
-        response = authenticate(request)
+        response = sign_in(request)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.message, 'Authentication token has no email')
         self.assertNotIn('email', request.session)
@@ -195,7 +195,7 @@ class AutheticationTest(unittest.TestCase):
         token_validator.return_value = {'iss': 'accounts.google.com', 'email': 'not-a-curator@example.org'}
         is_a_curator.return_value = False
 
-        response = authenticate(request)
+        response = sign_in(request)
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.message, 'User not authorized on SGD')
@@ -217,8 +217,19 @@ class AutheticationTest(unittest.TestCase):
         token_validator.return_value = {'iss': 'accounts.google.com', 'email': 'curator@example.org'}
         is_a_curator.return_value = True
 
-        response = authenticate(request)
+        response = sign_in(request)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(request.session.get('email'), 'curator@example.org')
         log.assert_called_with('User curator@example.org was successfuly authenticated.')
+
+    def test_sign_out_should_clear_session(self):
+        request = testing.DummyRequest()
+        request.session['_csrft_'] = "csrf token"
+        request.session['email'] = "curator@example.org"
+        
+        response = sign_out(request)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn('email', request.session)
+        self.assertNotIn('_csrft_', request.session)
