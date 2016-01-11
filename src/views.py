@@ -46,8 +46,8 @@ def colleagues_by_last_name(request):
     return []
 #    return DBSession.query(Colleague).filter(Colleague.last_name == last_name)
 
-@view_config(route_name='authenticate', renderer='json', request_method='POST')
-def authenticate(request):
+@view_config(route_name='sign_in', request_method='POST')
+def sign_in(request):
     if not check_csrf_token(request, raises=False):
         return HTTPForbidden('Expected CSRF token not found')
 
@@ -79,3 +79,9 @@ def authenticate(request):
 
     except crypt.AppIdentityError:
         return HTTPForbidden('Authentication token is invalid')
+
+@view_config(route_name='sign_out', request_method='DELETE')
+def sign_out(request):
+    request.session.clear()
+
+    return HTTPOk()
