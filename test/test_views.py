@@ -137,6 +137,7 @@ class AutheticationTest(unittest.TestCase):
         response = authenticate(request)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.message, 'Expected authentication token not found')
+        self.assertNotIn('email', request.session)
 
     def test_request_with_fake_token_should_return_403(self):
         csrf_token = 'dummy_csrf_token'
@@ -148,12 +149,13 @@ class AutheticationTest(unittest.TestCase):
         response = authenticate(request)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.message, 'Authentication token is invalid')
+        self.assertNotIn('email', request.session)
 
     @mock.patch('oauth2client.client.verify_id_token')
     def test_request_with_invalid_iss_for_token_should_return_403(self, token_validator):
         csrf_token = 'dummy_csrf_token'
         
-        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'invalid_token'})
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'valid_token'})
         request.session['_csrft_'] = csrf_token
         request.context = testing.DummyRequest()
 
@@ -162,12 +164,13 @@ class AutheticationTest(unittest.TestCase):
         response = authenticate(request)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.message, 'Authentication token has an invalid ISS')
+        self.assertNotIn('email', request.session)
 
     @mock.patch('oauth2client.client.verify_id_token')
     def test_request_with_valid_token_but_no_email_should_return_403(self, token_validator):
         csrf_token = 'dummy_csrf_token'
         
-        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'invalid_token'})
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'valid_token'})
         request.session['_csrft_'] = csrf_token
         request.context = testing.DummyRequest()
 
@@ -176,6 +179,7 @@ class AutheticationTest(unittest.TestCase):
         response = authenticate(request)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.message, 'Authentication token has no email')
+        self.assertNotIn('email', request.session)
 
     @mock.patch('src.views.log.info')
     @mock.patch('src.views.is_a_curator')
@@ -183,7 +187,7 @@ class AutheticationTest(unittest.TestCase):
     def test_request_with_valid_token_but_not_a_curator_should_return_403(self, token_validator, is_a_curator, log):
         csrf_token = 'dummy_csrf_token'
         
-        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'invalid_token'})
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'valid_token'})
         request.session['_csrft_'] = csrf_token
         request.context = testing.DummyRequest()
         request.remote_addr = '127.0.0.1'
@@ -195,15 +199,17 @@ class AutheticationTest(unittest.TestCase):
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.message, 'User not authorized on SGD')
+        self.assertNotIn('email', request.session)
         log.assert_called_with('User not-a-curator@example.org trying to authenticate from 127.0.0.1')
 
     @mock.patch('src.views.log.info')
     @mock.patch('src.views.is_a_curator')
     @mock.patch('oauth2client.client.verify_id_token')
-    def test_request_with_valid_token_and_user_should_return_a_session(self, token_validator, is_a_curator, log):
+    def test_request_with_valid_token_and_user_should_return_a_logged_session(self, token_validator, is_a_curator, log):
         csrf_token = 'dummy_csrf_token'
         
-        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'invalid_token'})
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'valid_token'})
+        
         request.session['_csrft_'] = csrf_token
         request.context = testing.DummyRequest()
         request.remote_addr = '127.0.0.1'
@@ -214,12 +220,5 @@ class AutheticationTest(unittest.TestCase):
         response = authenticate(request)
 
         self.assertEqual(response.status_code, 200)
-        log.assert_called_with('User curator@example.org trying to authenticate from 127.0.0.1')
-        log.assert_called_with('User curator@example.org was successfuly authenticated and it has an existing session.')
-
-    def test_request_with_valid_token_user_session_should_keep_session(self):
-        pass
-
-    def test_valid_session_should_expire_in_time(self):
-        pass
-
+        self.assertEqual(request.session.get('email'), 'curator@example.org')
+        log.assert_called_with('User curator@example.org was successfuly authenticated.')
