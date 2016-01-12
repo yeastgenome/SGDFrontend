@@ -120,12 +120,12 @@ class AutheticationTest(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_request_with_no_csrf_should_return_403(self):
+    def test_request_with_no_csrf_should_return_400(self):
         request = testing.DummyRequest(post={})
         request.context = testing.DummyRequest()
         response = sign_in(request)
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.message, 'Expected CSRF token not found')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.message, 'Bad CSRF Token')
 
     def test_request_with_no_token_should_return_403(self):
         csrf_token = 'dummy_csrf_token'
