@@ -49,7 +49,7 @@ def colleagues_by_last_name(request):
 @view_config(route_name='sign_in', request_method='POST')
 def sign_in(request):
     if not check_csrf_token(request, raises=False):
-        return HTTPForbidden('Expected CSRF token not found')
+        return HTTPBadRequest('Bad CSRF Token')
 
     if request.POST.get('token') is None:
         return HTTPForbidden('Expected authentication token not found')
