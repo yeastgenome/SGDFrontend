@@ -63,7 +63,7 @@ def sign_in(request):
         if idinfo.get('email') is None:
             return HTTPForbidden('Authentication token has no email')
 
-        log.info("User " + idinfo['email'] + " trying to authenticate from " + request.remote_addr)
+        log.info("User " + idinfo['email'] + " trying to authenticate from " + (request.remote_addr or "(no remote address)"))
 
 	if not is_a_curator(idinfo['email']):
             return HTTPForbidden('User not authorized on SGD')
