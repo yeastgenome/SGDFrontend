@@ -35,7 +35,7 @@ summaryView.render = function () {
 	var _navTitleText = _tabModel.getNavTitle(bootstrappedData.displayName, bootstrappedData.formatName);
 	var _navTitle = { name: _navTitleText, href: bootstrappedData.locusLink };
 	ReactDOM.render(
-		<NavBar title={_navTitle} elements={_tabModel.getTabElements()} />,
+		<NavBar elements={_tabModel.getTabElements()} />,
 		document.getElementById("navbar-container")
 	);
 

@@ -99,7 +99,7 @@ $font-weight-bold: bold !default;
 // We use these to control various global styles
 // $body-bg: $white;
 // $body-font-color: $jet;
-// $body-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+$body-font-family: 'Lato', sans-serif;
 $body-font-weight: $font-weight-normal;
 // $body-font-style: normal;
 
@@ -196,7 +196,7 @@ $large-up: "#{$screen} and (min-width:#{lower-bound($large-range)})";
 // $include-html-type-classes: $include-html-classes;
 
 // We use these to control header font styles
-// $header-font-family: $body-font-family;
+$header-font-family: 'Droid Serif', serif;
 $header-font-weight: 500;
 // $header-font-style: normal;
 // $header-font-color: $jet;
