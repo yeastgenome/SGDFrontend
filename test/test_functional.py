@@ -5,6 +5,7 @@ import os
 import tempfile
 import fixtures as factory
 import json
+import mock
 
 
 class MockFileStorage(object):
@@ -42,6 +43,17 @@ class SGDFunctionalTests(unittest.TestCase):
         
         res = self.testapp.post('/upload', upload_files=[('file', self.tmpfilepath)])
         self.assertEqual(res.status, '200 OK')
+
+    @mock.patch('src.views.is_a_curator')
+    @mock.patch('oauth2client.client.verify_id_token')
+    @mock.patch('src.views.check_csrf_token', return_value=True)
+    def test_sign_in(self, csrf_token, token_validator, is_a_curator):
+        token_validator.return_value = {'iss': 'accounts.google.com', 'email': 'curator@example.org'}
+        is_a_curator.return_value = True
+        
+        res = self.testapp.post('/signin', {'token': 'abcdef'}, {'X-CSRF-Token': 'csrf'})
+        self.assertEqual(res.status, '200 OK')
+
 
     # def test_colleagues(self):
     #     res = self.testapp.get('/colleagues?last_name=Page')
