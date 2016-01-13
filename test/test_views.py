@@ -182,9 +182,9 @@ class AutheticationTest(unittest.TestCase):
         self.assertNotIn('email', request.session)
 
     @mock.patch('src.views.log.info')
-    @mock.patch('src.views.is_a_curator')
+    @mock.patch('src.views.curator_or_none')
     @mock.patch('oauth2client.client.verify_id_token')
-    def test_request_with_valid_token_but_not_a_curator_should_return_403(self, token_validator, is_a_curator, log):
+    def test_request_with_valid_token_but_not_a_curator_should_return_403(self, token_validator, curator_or_none, log):
         csrf_token = 'dummy_csrf_token'
         
         request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'valid_token'})
@@ -193,7 +193,7 @@ class AutheticationTest(unittest.TestCase):
         request.remote_addr = '127.0.0.1'
 
         token_validator.return_value = {'iss': 'accounts.google.com', 'email': 'not-a-curator@example.org'}
-        is_a_curator.return_value = False
+        curator_or_none.return_value = None
 
         response = sign_in(request)
 
@@ -203,9 +203,9 @@ class AutheticationTest(unittest.TestCase):
         log.assert_called_with('User not-a-curator@example.org trying to authenticate from 127.0.0.1')
 
     @mock.patch('src.views.log.info')
-    @mock.patch('src.views.is_a_curator')
+    @mock.patch('src.views.curator_or_none')
     @mock.patch('oauth2client.client.verify_id_token')
-    def test_request_with_valid_token_and_user_should_return_a_logged_session(self, token_validator, is_a_curator, log):
+    def test_request_with_valid_token_and_user_should_return_a_logged_session(self, token_validator, curator_or_none, log):
         csrf_token = 'dummy_csrf_token'
         
         request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'valid_token'})
@@ -215,7 +215,7 @@ class AutheticationTest(unittest.TestCase):
         request.remote_addr = '127.0.0.1'
 
         token_validator.return_value = {'iss': 'accounts.google.com', 'email': 'curator@example.org'}
-        is_a_curator.return_value = True
+        curator_or_none.return_value = factory.DbuserFactory.build()
 
         response = sign_in(request)
 

@@ -9,12 +9,17 @@ from oauth2client import client, crypt
 import os
 
 from .models import DBSession, Colleague
-from .helpers import allowed_file, secure_save_file, is_a_curator
+from .helpers import allowed_file, secure_save_file, curator_or_none
 from .celery_tasks import upload_to_s3
 
 import logging
 log = logging.getLogger(__name__)
 
+def authentication_required(view_callable):
+    def inner(context, request):
+        if 'email' not in request.session or 'username' not in request.session:
+            return HTTPForbidden()
+    return inner
 
 @view_config(route_name='home', request_method='GET', renderer='home.jinja2')
 def home_view(request):
@@ -66,13 +71,18 @@ def sign_in(request):
 
         log.info("User " + idinfo['email'] + " trying to authenticate from " + (request.remote_addr or "(no remote address)"))
 
-	if not is_a_curator(idinfo['email']):
+        curator = curator_or_none(idinfo['email'])
+
+	if curator is None:
             return HTTPForbidden('User not authorized on SGD')
         
         session = request.session
 
         if 'email' not in session:
             session['email'] = idinfo['email']
+
+        if 'username' not in session:
+            session['username'] = curator.username
 
         log.info("User " + idinfo['email'] + " was successfuly authenticated.")
 

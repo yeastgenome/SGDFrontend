@@ -44,12 +44,12 @@ class SGDFunctionalTests(unittest.TestCase):
         res = self.testapp.post('/upload', upload_files=[('file', self.tmpfilepath)])
         self.assertEqual(res.status, '200 OK')
 
-    @mock.patch('src.views.is_a_curator')
+    @mock.patch('src.views.curator_or_none')
     @mock.patch('oauth2client.client.verify_id_token')
     @mock.patch('src.views.check_csrf_token', return_value=True)
-    def test_sign_in(self, csrf_token, token_validator, is_a_curator):
+    def test_sign_in(self, csrf_token, token_validator, curator_or_none):
         token_validator.return_value = {'iss': 'accounts.google.com', 'email': 'curator@example.org'}
-        is_a_curator.return_value = True
+        curator_or_none.return_value = factory.DbuserFactory.build()
         
         res = self.testapp.post('/signin', {'token': 'abcdef'}, {'X-CSRF-Token': 'csrf'})
         self.assertEqual(res.status, '200 OK')
