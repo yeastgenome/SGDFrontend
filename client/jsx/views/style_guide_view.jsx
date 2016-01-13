@@ -9,6 +9,7 @@ const HelpIcon = require('../components/widgets/help_icon.jsx');
 const Legend = require('../components/viz/legend.jsx');
 const NavBar = require('../components/widgets/navbar.jsx');
 const SequenceToggler = require('../components/sequence/sequence_toggler.jsx');
+const Statics = require('../statics.jsx');
 const TForm = require('../components/widgets/t_form.jsx');
 
 const StyleGuide = React.createClass({
@@ -105,20 +106,20 @@ const StyleGuide = React.createClass({
         color: 'black'
       },
       {
-        text: '#b9b9b9',
-        color: '#b9b9b9'
+        text: Statics.GRAY,
+        color: Statics.GRAY
       },
       {
-        text: '#11728b',
-        color: '#11728b'
+        text: Statics.BLUE,
+        color: Statics.BLUE
       },
       {
-        text: '#682A87',
-        color: '#682A87'
+        text: Statics.PURPLE,
+        color: Statics.PURPLE
       },
       {
-        text: '#D70029',
-        color: '#D70029'
+        text: Statics.RED,
+        color: Statics.RED
       }
     ];
     return (
