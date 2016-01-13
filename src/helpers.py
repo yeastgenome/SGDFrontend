@@ -3,6 +3,7 @@ import werkzeug
 import os
 import shutil
 import tempfile
+from pyramid.httpexceptions import HTTPForbidden
 from .models import DBSession, Dbuser
 
 def md5(fname):
@@ -31,3 +32,9 @@ def curator_or_none(email):
         return user
     else:
         return None
+
+def authenticate_decorator(view_callable):
+    def inner(context, request):
+        if 'email' not in request.session or 'username' not in request.session:
+            return HTTPForbidden()
+    return inner
