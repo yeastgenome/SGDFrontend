@@ -2,7 +2,7 @@ import unittest
 import os
 import mock
 
-from src.helpers import md5, allowed_file, secure_save_file, is_a_curator
+from src.helpers import md5, allowed_file, secure_save_file, curator_or_none
 from src.models import Dbuser
 
 import fixtures as factory
@@ -75,7 +75,7 @@ class HelpersTest(unittest.TestCase):
         db_user = factory.DbuserFactory.build()
         mock_search.return_value = MockQuery(db_user)
         
-        self.assertTrue(is_a_curator(db_user.email))
+        self.assertEqual(curator_or_none(db_user.email), db_user)
         self.assertTrue(mock_search.called_with(Dbuser))
 
     @mock.patch('src.models.DBSession.query')
@@ -84,7 +84,7 @@ class HelpersTest(unittest.TestCase):
         db_user.status = 'Former'
         mock_search.return_value = MockQuery(db_user)
         
-        self.assertFalse(is_a_curator(db_user.email))
+        self.assertEqual(curator_or_none(db_user.email), None)
         self.assertTrue(mock_search.called_with(Dbuser))
 
     @mock.patch('src.models.DBSession.query')
@@ -93,5 +93,5 @@ class HelpersTest(unittest.TestCase):
         db_user.status = 'Former'
         mock_search.return_value = MockQuery(None)
         
-        self.assertFalse(is_a_curator(db_user.email))
+        self.assertEqual(curator_or_none(db_user.email), None)
         self.assertTrue(mock_search.called_with(Dbuser))
