@@ -54,6 +54,10 @@ class SGDFunctionalTests(unittest.TestCase):
         res = self.testapp.post('/signin', {'token': 'abcdef'}, {'X-CSRF-Token': 'csrf'})
         self.assertEqual(res.status, '200 OK')
 
+    def test_sign_out(self):
+        res = self.testapp.delete('/signout')
+        self.assertEqual(res.status, '200 OK')
+            
 
     # def test_colleagues(self):
     #     res = self.testapp.get('/colleagues?last_name=Page')
