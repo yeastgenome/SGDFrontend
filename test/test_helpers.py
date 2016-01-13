@@ -1,11 +1,13 @@
 import unittest
 import os
 import mock
+from pyramid import testing
 
-from src.helpers import md5, allowed_file, secure_save_file, curator_or_none
+from src.helpers import md5, allowed_file, secure_save_file, curator_or_none, authenticate_decorator
 from src.models import Dbuser
 
 import fixtures as factory
+from pyramid.httpexceptions import HTTPForbidden
 
 
 class MockQueryFilter(object):
@@ -95,3 +97,35 @@ class HelpersTest(unittest.TestCase):
         
         self.assertEqual(curator_or_none(db_user.email), None)
         self.assertTrue(mock_search.called_with(Dbuser))
+
+    def test_authentication_decorator_denies_requests_with_no_session(self):
+        decorator = authenticate_decorator(None)
+        
+        request = testing.DummyRequest()
+        response = decorator(None, request)
+        self.assertEqual(response.status, '403 Forbidden')
+
+    def test_authentication_decorator_denies_requests_with_no_email(self):
+        decorator = authenticate_decorator(None)
+        
+        request = testing.DummyRequest()
+        request.session['username'] = 'User'
+        response = decorator(None, request)
+        self.assertEqual(response.status, '403 Forbidden')
+
+    def test_authentication_decorator_denies_requests_with_no_username(self):
+        decorator = authenticate_decorator(None)
+        
+        request = testing.DummyRequest()
+        request.session['email'] = 'user@example.org'
+        response = decorator(None, request)
+        self.assertEqual(response.status, '403 Forbidden')
+
+    def test_authentication_decorator_accepts_requests_username_and_email(self):
+        decorator = authenticate_decorator(None)
+        
+        request = testing.DummyRequest()
+        request.session['username'] = 'user'
+        request.session['email'] = 'user@example.org'
+        response = decorator(None, request)
+        self.assertEqual(response, None)
