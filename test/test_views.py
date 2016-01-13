@@ -233,3 +233,13 @@ class AutheticationTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotIn('email', request.session)
         self.assertNotIn('_csrft_', request.session)
+
+    def test_sign_out_should_invalidate_session(self):
+        request = testing.DummyRequest()
+        request.session = mock.Mock()
+        
+        response = sign_out(request)
+        
+        self.assertEqual(response.status_code, 200)
+        request.session.invalidate.assert_called_with()
+
