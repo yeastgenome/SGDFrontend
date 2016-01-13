@@ -4,6 +4,7 @@ from pyramid.response import FileResponse
 from pyramid.view import view_config
 from pyramid.compat import escape
 from pyramid.session import check_csrf_token
+
 from oauth2client import client, crypt
 import os
 
@@ -82,6 +83,6 @@ def sign_in(request):
 
 @view_config(route_name='sign_out', request_method='DELETE')
 def sign_out(request):
-    request.session.clear()
+    request.session.invalidate()
 
     return HTTPOk()
