@@ -162,7 +162,7 @@
         <!-- client-rendered sequence -->
         <div class="sgd-viz">
             <div class="sgd-viz sequence-details-container" id="sequence-viz">
-                <img class="loader" src="/static/img/dark-slow-wheel.gif" />
+                <div class="sgd-loader-container"><div class="sgd-loader"></div></div>
             </div>
 
             {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C' or url.category == 'LOCUS_SEQUENCE_OTHER_SPECIES' or url.category == 'LOCUS_SEQUENCE_OTHER_STRAINS' %}
