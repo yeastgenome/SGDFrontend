@@ -16,10 +16,10 @@ const StyleGuide = React.createClass({
 	render () {
     return (
       <div className='row'>
-        <div className='columns small-3'>
+        <div className='columns small-2'>
           {this._renderNavBar()}
         </div>
-        <div className='columns small-9'>
+        <div className='columns small-10'>
           <h1>Style Guide</h1>
           <hr />
           <div id='colors'>
@@ -54,7 +54,20 @@ const StyleGuide = React.createClass({
           <div id='formatting' style={[style.sectionContainer]}>
             <h2>Formatting</h2>
             <hr />
-
+            <p>Literature citations should be formatted in the following manner.</p>
+            <div>
+              <ul className='literature-list'>
+                <li>
+                  <a href='/reference/S000180759/overview'>Park E, et al. (2015)</a> <span>Structure of a Bud6/Actin Complex Reveals a Novel WH2-like Actin Monomer Recruitment Motif. Structure 23(8):1492-9</span> <small>PMID:26118535</small>
+                  <ul className='ref-links'>
+                    <li><a href='/reference/S000180759/overview'>SGD Paper</a></li>
+                    <li><a href='http://www.ncbi.nlm.nih.gov/pubmed/23653364' targer='_blank'>PubMed</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <p>Or, for a summerized citation version (such as in a table), format like this.</p>
+            <p><a href='/reference/S000180759/overview'>Park E, et al. (2015)</a> <small>PMID:26118535</small></p>
           </div>
         </div>
       </div>
