@@ -140,7 +140,17 @@ const LocusDiagram = React.createClass({
 
   // returns an svg 'g' element, with embedded shapes
   _getLocusNode: function (d, i) {
-    var isFocusLocus = d.locus.display_name === this.props.focusLocusDisplayName;
+    // remove char codes from display name
+    var dn = this.props.focusLocusDisplayName;
+    var dislayNameWithoutCharCode;
+    var charIndex = dn.indexOf('&#');
+    if (charIndex < 0) {
+      dislayNameWithoutCharCode = dn;
+    } else {
+      var charCode = parseInt(dn.substring(charIndex + 2, dn.length));
+      dislayNameWithoutCharCode = dn.substring(0, charIndex) + String.fromCharCode(charCode);
+    }
+    var isFocusLocus = d.locus.display_name === dislayNameWithoutCharCode;
 
     if (this.props.showSubFeatures &&  d.tags.length) {
       return this._getLocusWithSubFeaturesNode(d, i, isFocusLocus);
