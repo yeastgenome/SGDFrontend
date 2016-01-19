@@ -37,6 +37,8 @@ class HelpersTest(unittest.TestCase):
             with open(fname, 'w') as f:
                 f.write(self.msg)
 
+        self.db_user = factory.DbuserFactory.build()
+
     def tearDown(self):
         for f in [self.valid_filename, self.invalid_extension_filename]:
             os.remove(f)
@@ -74,28 +76,25 @@ class HelpersTest(unittest.TestCase):
 
     @mock.patch('src.models.DBSession.query')
     def test_is_an_active_curator(self, mock_search):
-        db_user = factory.DbuserFactory.build()
-        mock_search.return_value = MockQuery(db_user)
+        mock_search.return_value = MockQuery(self.db_user)
         
-        self.assertEqual(curator_or_none(db_user.email), db_user)
+        self.assertEqual(curator_or_none(self.db_user.email), self.db_user)
         self.assertTrue(mock_search.called_with(Dbuser))
 
     @mock.patch('src.models.DBSession.query')
     def test_is_an_inactive_curator(self, mock_search):
-        db_user = factory.DbuserFactory.build()
-        db_user.status = 'Former'
-        mock_search.return_value = MockQuery(db_user)
+        self.db_user.status = 'Former'
+        mock_search.return_value = MockQuery(self.db_user)
         
-        self.assertEqual(curator_or_none(db_user.email), None)
+        self.assertEqual(curator_or_none(self.db_user.email), None)
         self.assertTrue(mock_search.called_with(Dbuser))
 
     @mock.patch('src.models.DBSession.query')
     def test_is_an_inexistent_curator(self, mock_search):
-        db_user = factory.DbuserFactory.build()
-        db_user.status = 'Former'
+        self.db_user.status = 'Former'
         mock_search.return_value = MockQuery(None)
         
-        self.assertEqual(curator_or_none(db_user.email), None)
+        self.assertEqual(curator_or_none(self.db_user.email), None)
         self.assertTrue(mock_search.called_with(Dbuser))
 
     def test_authentication_decorator_denies_requests_with_no_session(self):
