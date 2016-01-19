@@ -33,8 +33,10 @@ def curator_or_none(email):
     else:
         return None
 
-def authenticate_decorator(view_callable):
+def authenticate(view_callable):
     def inner(context, request):
         if 'email' not in request.session or 'username' not in request.session:
             return HTTPForbidden()
+        else:
+            return view_callable(request)
     return inner
