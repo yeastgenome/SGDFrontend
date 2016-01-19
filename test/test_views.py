@@ -79,7 +79,8 @@ class UploadTest(unittest.TestCase):
     def test_no_file_uploaded_should_return_400(self):
         request = testing.DummyRequest(post={})
         request.context = testing.DummyResource()
-        response = upload_file(request)
+        request.session = {'email': 'curator@example.org', 'username': 'curator'}
+        response = upload_file(request.context, request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.message, 'Field \'file\' is missing')
         
@@ -90,7 +91,8 @@ class UploadTest(unittest.TestCase):
         
         request = testing.DummyRequest(post={'file': upload, 'form.submitted': '1'})
         request.context = testing.DummyResource()
-        response = upload_file(request)
+        request.session = {'email': 'curator@example.org', 'username': 'curator'}
+        response = upload_file(request.context, request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.message, 'File extension is invalid')
 
@@ -103,8 +105,8 @@ class UploadTest(unittest.TestCase):
         
         request = testing.DummyRequest(post={'file': upload, 'form.submitted': '1'})
         request.context = testing.DummyResource()
-        
-        response = upload_file(request)
+        request.session = {'email': 'curator@example.org', 'username': 'curator'}
+        response = upload_file(request.context, request)
 
         self.assertTrue(mock_save.called)
         
