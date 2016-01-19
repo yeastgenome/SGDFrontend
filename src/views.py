@@ -1,6 +1,5 @@
 from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, HTTPForbidden, HTTPOk
 from pyramid.response import Response, FileResponse
-from pyramid.response import FileResponse
 from pyramid.view import view_config
 from pyramid.compat import escape
 from pyramid.session import check_csrf_token
@@ -9,23 +8,18 @@ from oauth2client import client, crypt
 import os
 
 from .models import DBSession, Colleague
-from .helpers import allowed_file, secure_save_file, curator_or_none
 from .celery_tasks import upload_to_s3
+from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate
 
 import logging
 log = logging.getLogger(__name__)
-
-def authentication_required(view_callable):
-    def inner(context, request):
-        if 'email' not in request.session or 'username' not in request.session:
-            return HTTPForbidden()
-    return inner
 
 @view_config(route_name='home', request_method='GET', renderer='home.jinja2')
 def home_view(request):
     return {'google_client_id': os.environ['GOOGLE_CLIENT_ID']}
 
 @view_config(route_name='upload', request_method='POST')
+@authenticate
 def upload_file(request):
     root_dir = os.path.dirname(os.getcwd())
 
@@ -50,7 +44,7 @@ def colleagues_by_last_name(request):
 
     last_name = escape(request.params['last_name'])
     return []
-#    return DBSession.query(Colleague).filter(Colleague.last_name == last_name)
+#    return DBSession.query(Colleague).filter(Colleague.last_name == last_name).first()
 
 @view_config(route_name='sign_in', request_method='POST')
 def sign_in(request):
@@ -79,7 +73,7 @@ def sign_in(request):
         session = request.session
 
         if 'email' not in session:
-            session['email'] = idinfo['email']
+            session['email'] = curator.email
 
         if 'username' not in session:
             session['username'] = curator.username
