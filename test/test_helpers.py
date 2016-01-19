@@ -3,11 +3,11 @@ import os
 import mock
 from pyramid import testing
 
-from src.helpers import md5, allowed_file, secure_save_file, curator_or_none, authenticate_decorator
+from src.helpers import md5, allowed_file, secure_save_file, curator_or_none, authenticate
 from src.models import Dbuser
 
 import fixtures as factory
-from pyramid.httpexceptions import HTTPForbidden
+from pyramid.httpexceptions import HTTPForbidden, HTTPOk
 
 
 class MockQueryFilter(object):
@@ -99,14 +99,14 @@ class HelpersTest(unittest.TestCase):
         self.assertTrue(mock_search.called_with(Dbuser))
 
     def test_authentication_decorator_denies_requests_with_no_session(self):
-        decorator = authenticate_decorator(None)
+        decorator = authenticate(None)
         
         request = testing.DummyRequest()
         response = decorator(None, request)
         self.assertEqual(response.status, '403 Forbidden')
 
     def test_authentication_decorator_denies_requests_with_no_email(self):
-        decorator = authenticate_decorator(None)
+        decorator = authenticate(None)
         
         request = testing.DummyRequest()
         request.session['username'] = 'User'
@@ -114,7 +114,7 @@ class HelpersTest(unittest.TestCase):
         self.assertEqual(response.status, '403 Forbidden')
 
     def test_authentication_decorator_denies_requests_with_no_username(self):
-        decorator = authenticate_decorator(None)
+        decorator = authenticate(None)
         
         request = testing.DummyRequest()
         request.session['email'] = 'user@example.org'
@@ -122,10 +122,14 @@ class HelpersTest(unittest.TestCase):
         self.assertEqual(response.status, '403 Forbidden')
 
     def test_authentication_decorator_accepts_requests_username_and_email(self):
-        decorator = authenticate_decorator(None)
+        def my_view(request):
+            return HTTPOk()
+
+        decorator = authenticate(my_view)
         
         request = testing.DummyRequest()
         request.session['username'] = 'user'
         request.session['email'] = 'user@example.org'
-        response = decorator(None, request)
-        self.assertEqual(response, None)
+        response = decorator(testing.DummyResource, request)
+
+        self.assertEqual(response.status, '200 OK')
