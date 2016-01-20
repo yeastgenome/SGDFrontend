@@ -1,6 +1,6 @@
 import datetime
 import factory
-from src.models import DBSession, Source, Colleague, Dbuser
+from src.models import DBSession, Source, Colleague, ColleagueUrl, Dbuser
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -46,7 +46,7 @@ class ColleagueFactory(factory.alchemy.SQLAlchemyModelFactory):
     postal_code = "94015"
     work_phone = "444-444-4444"
     other_phone = None
-    fax = "444-444-444"
+    fax = "333-333-3333"
     email = "jimmy.page@example.org"
     research_interest = "mRNA decay, translation, mRNA decay"
     is_pi = False
@@ -70,3 +70,19 @@ class DbuserFactory(factory.alchemy.SQLAlchemyModelFactory):
     status = "Current"
     email = "curator@example.org"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+
+
+class ColleagueUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ColleagueUrl
+        sqlalchemy_session = DBSession
+
+    url_id = 1
+    display_name = "Lab"
+    obj_url = "http://example.org"
+    source_id = 261
+    bud_id = 1
+    colleague_id = 113698
+    url_type = "Lab"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "EDITH"
