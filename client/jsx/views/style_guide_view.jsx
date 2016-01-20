@@ -69,6 +69,12 @@ const StyleGuide = React.createClass({
             <p>Or, for a summerized citation version (such as in a table), format like this.</p>
             <p><a href='/reference/S000180759/overview'>Park E, et al. (2015)</a> <small>PMID:26118535</small></p>
           </div>
+          <div id='formatting' style={[style.sectionContainer]}>
+            <h2>Loader</h2>
+            <hr />
+            <p>When waiting for something really slow, please use a loader like this.  No images, just CSS-fu.</p>
+            <div className='sgd-loader-container'><div className='sgd-loader'></div></div>
+          </div>
         </div>
       </div>
     );
@@ -107,6 +113,10 @@ const StyleGuide = React.createClass({
       {
         name: 'Formatting',
         target: 'formatting'
+      },
+      {
+        name: 'Loader',
+        target: 'loader'
       }
     ];
     return <NavBar elements={_elements} />;
