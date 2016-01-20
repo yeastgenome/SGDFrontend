@@ -58,7 +58,7 @@ module.exports = React.createClass({
 		var props = this.props;
 
 		// require widthScale to continue
-		if (! state.widthScale) return <div></div>;
+		if (!state.widthScale) return <div ref="wrapper"></div>;
 		
 		// create y axis, if hasYaxis
                 var data = this._getData();
