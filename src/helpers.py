@@ -27,11 +27,7 @@ def secure_save_file(file, filename):
     return temp_file_path
 
 def curator_or_none(email):
-    user = DBSession.query(Dbuser).filter(Dbuser.email == email).first()
-    if (user and user.status == 'Current'):
-        return user
-    else:
-        return None
+    return DBSession.query(Dbuser).filter((Dbuser.email == email) & (Dbuser.status == 'Current')).one_or_none()
 
 def authenticate(view_callable):
     def inner(context, request):
