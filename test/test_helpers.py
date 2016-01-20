@@ -1,29 +1,15 @@
-import unittest
 import os
+
+import unittest
 import mock
+from mock_helpers import MockQuery, MockQueryFilter
 from pyramid import testing
+import fixtures as factory
+
+from pyramid.httpexceptions import HTTPForbidden, HTTPOk
 
 from src.helpers import md5, allowed_file, secure_save_file, curator_or_none, authenticate
 from src.models import Dbuser
-
-import fixtures as factory
-from pyramid.httpexceptions import HTTPForbidden, HTTPOk
-
-
-class MockQueryFilter(object):
-    def __init__(self, query_result):
-        self._return = query_result
-
-    def first(self):
-        return self._return
-
-
-class MockQuery(object):
-    def __init__(self, query_result):
-        self._query_result = query_result
-
-    def filter(self, query_result):
-        return MockQueryFilter(self._query_result)
 
 
 class HelpersTest(unittest.TestCase):
@@ -73,21 +59,15 @@ class HelpersTest(unittest.TestCase):
         self.assertEqual(os.path.join('/tmp', filename), temp_file_path)
 
         os.remove(os.path.join('/tmp', filename))
-
+        
     @mock.patch('src.models.DBSession.query')
     def test_is_an_active_curator(self, mock_search):
         mock_search.return_value = MockQuery(self.db_user)
+        exp = (Dbuser.email == self.db_user.email) & (Dbuser.status == 'Current')
         
         self.assertEqual(curator_or_none(self.db_user.email), self.db_user)
         self.assertTrue(mock_search.called_with(Dbuser))
-
-    @mock.patch('src.models.DBSession.query')
-    def test_is_an_inactive_curator(self, mock_search):
-        self.db_user.status = 'Former'
-        mock_search.return_value = MockQuery(self.db_user)
-        
-        self.assertEqual(curator_or_none(self.db_user.email), None)
-        self.assertTrue(mock_search.called_with(Dbuser))
+        self.assertTrue(exp.compare(mock_search.return_value._query_filter.query_params()))
 
     @mock.patch('src.models.DBSession.query')
     def test_is_an_inexistent_curator(self, mock_search):
