@@ -1,53 +1,52 @@
+import React from 'react';
+import _ from 'underscore';
 
-"use strict";
+const DropdownSelector = React.createClass({
 
-var React = require("react");
-var _ = require("underscore");
+  getDefaultProps: function () {
+    return {
+      elements: null, // * [{ name: "Foo", value: "foo" }]
+      onChange: null, // (value) =>
+      defaultActiveValue: null,
+      isDisabled: function (e) { return false; }
+    };
+  },
 
-module.exports = React.createClass({
+  getInitialState: function () {
+    return {
+      activeValue: this.props.defaultActiveValue || this.props.elements[0].value
+    };
+  },
 
-	getDefaultProps: function () {
-		return {
-			elements: null, // * [{ name: "Foo", value: "foo" }]
-			onChange: null, // (value) =>
-			defaultActiveValue: null,
-			isDisabled: function (e) { return false; }
-		};
-	},
+  render: function () {
+    var optionsNodes = _.map(this.props.elements, (e, i) => {
+      var _disabled = this.props.isDisabled(e);
+      return <option value={e.value} disabled={_disabled} key={'dropOp' + i}>{e.name}</option>;
+    });
 
-	getInitialState: function () {
-		return {
-			activeValue: this.props.defaultActiveValue || this.props.elements[0].value
-		};
-	},
+    var descriptionNode = null;
+    var _description = this._getActiveElement().description;
+    if (_description) {
+      descriptionNode = <span> - {_description}</span>;
+    }
 
-	render: function () {
-		var optionsNodes = _.map(this.props.elements, e => {
-			var _disabled = this.props.isDisabled(e);
-			return <option value={e.value} disabled={_disabled}>{e.name}</option>;
-		});
+    return (<span>
+      <select onChange={this._handleChange} className="large-3" value={this.state.activeValue}>{optionsNodes}</select>
+      {descriptionNode}
+    </span>);
+  },
 
-		var descriptionNode = null;
-		var _description = this._getActiveElement().description;
-		if (_description) {
-			descriptionNode = <span> - {_description}</span>;
-		}
+  _handleChange: function (e) {
+    var _newValue = e.currentTarget.value;
+    if (this.props.onChange) {
+      this.props.onChange(_newValue);
+    }
+    this.setState({ activeValue: _newValue });
+  },
 
-		return (<span>
-			<select onChange={this._handleChange} className="large-3" value={this.state.activeValue}>{optionsNodes}</select>
-			{descriptionNode}
-		</span>);
-	},
-
-	_handleChange: function (e) {
-		var _newValue = e.currentTarget.value;
-		if (this.props.onChange) {
-			this.props.onChange(_newValue);
-		}
-		this.setState({ activeValue: _newValue });
-	},
-
-	_getActiveElement: function () {
-		return _.findWhere(this.props.elements, { value: this.state.activeValue });
-	}
+  _getActiveElement: function () {
+    return _.findWhere(this.props.elements, { value: this.state.activeValue });
+  }
 });
+
+module.exports = DropdownSelector;
