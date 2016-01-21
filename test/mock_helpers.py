@@ -9,6 +9,9 @@ class MockQueryFilter(object):
     def first(self):
         return self._return
 
+    def all(self):
+        return [self._return]
+
     def query_params(self):
         return self._params
     
