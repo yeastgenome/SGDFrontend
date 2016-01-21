@@ -13,47 +13,37 @@ class ColleaguesTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.colleague = factory.ColleagueFactory.build()
+        self.url_1 = factory.ColleagueUrlFactory.build(url_id=1, colleague_id=self.colleague.colleague_id)
+        self.url_2 = factory.ColleagueUrlFactory.build(url_id=2, colleague_id=self.colleague.colleague_id, url_type="Lab")
 
     def tearDown(self):
         testing.tearDown()
 
+    def test_should_return_400_for_missing_last_name_arg(self):
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        response = colleagues_by_last_name(request)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.message, 'Query string field is missing: last_name')
+
+    @mock.patch('src.models.Colleague.urls', new_callable=mock.PropertyMock)
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_list_of_colleagues_by_escaped_last_name(self, mock_search):
+    def test_should_return_list_of_colleagues_by_last_name(self, mock_search, colleague_urls):
         request = testing.DummyRequest(params={'last_name': 'Page'})
         request.context = testing.DummyResource()
 
         mock_search.return_value = MockQuery(self.colleague)
-#        response = colleagues_by_last_name(request)
-#        self.assertEqual(response, [self.colleague])
-#        self.assertTrue(mock_search.called_with(Colleague))
-#        self.assertEqual(1,0)
+        colleague_urls.return_value = [self.url_1, self.url_2]
+        
+        response = colleagues_by_last_name(request)
+        self.assertEqual(response, [{'work_phone': '444-444-4444', 'organization': 'Stanford Universty', 'first_name': 'Jimmy', 'last_name': 'Page', 'fax': '333-333-3333', 'lab_url': 'http://example.org', 'research_summary_url': 'http://example.org'}])
 
-#     @mock.patch('src.models.DBSession.query')
-#     @mock.patch('src.views.escape', return_value='Page')
-#     def test_should_return_list_of_colleagues_by_escaped_last_name(self, mock_escape, mock_search):
-#         request = testing.DummyRequest(params={'last_name': 'Page'})
-#         request.context = testing.DummyResource()
+    def test_should_return_404_for_unexistent_colleague_id(self):
+        pass
 
-# #        mock_search.return_value = MockQuery(colleagues)
-# #        response = colleagues_by_last_name(request)
-# #        mock_escape.assert_called_with('Page')
+    def test_should_return_400_for_invalid_colleague_id(self):
+        pass
 
-#     def test_should_return_400_for_missing_last_name_arg(self):
-#         request = testing.DummyRequest()
-#         request.context = testing.DummyResource()
-#         response = colleagues_by_last_name(request)
-# #        self.assertEqual(response.status_code, 400)
-# #        self.assertEqual(response.message, 'last_name argument is missing')
-
-#     def test_should_return_colleagues_info(self):
-#         pass
-
-#     def test_should_return_404_for_unexistent_colleague_id(self):
-#         pass
-
-#     def test_should_return_400_for_invalid_colleague_id(self):
-#         pass
-#
 #     test to guarantee LIKE % search
 
 class UploadTest(unittest.TestCase):
