@@ -48,9 +48,23 @@ class ModelsTest(unittest.TestCase):
             'last_name': 'Page',
             'organization': 'Stanford Universty',
             'work_phone': '444-444-4444',
+            'fax': '333-333-3333'
+        })
+
+    def test_colleague_model_search_result_dict_with_urls(self):
+        source = factory.SourceFactory()
+        colleague = factory.ColleagueFactory()
+        instances = DBSession.query(Colleague).all()
+        colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
+        colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
+        self.assertEqual(colleague.to_search_result_dict(), {
+            'first_name': 'Jimmy',
+            'last_name': 'Page',
+            'organization': 'Stanford Universty',
+            'work_phone': '444-444-4444',
             'fax': '333-333-3333',
-            'lab_url': '',
-            'research_summary_url': ''
+            'lab_url': 'http://example.org',
+            'research_summary_url': 'http://example.org'
         })
 
     def test_dbuser_model(self):
@@ -63,16 +77,24 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(1, len(instances))
         self.assertEqual(dbuser, instances[0])
 
-    def test_colleagueurl_model(self):
+    def test_colleague_url_model(self):
         instances = DBSession.query(ColleagueUrl).all()
         self.assertEqual(0, len(instances))
 
         source = factory.SourceFactory()
         colleague = factory.ColleagueFactory()
-        colleague_url = factory.ColleagueUrlFactory()
+
+        colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
         instances = DBSession.query(ColleagueUrl).all()
 
         self.assertEqual(1, len(instances))
-        self.assertEqual(colleague_url, instances[0])
-        self.assertEqual(colleague_url.source, source)
-        self.assertEqual(colleague_url.colleague, colleague)
+
+        self.assertEqual(colleague_url_1, instances[0])
+        self.assertEqual(colleague_url_1.source, source)
+        self.assertEqual(colleague_url_1.colleague, colleague)
+
+        colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
+        instances = DBSession.query(ColleagueUrl).all()
+
+        self.assertEqual(2, len(instances))
+        self.assertEqual(colleague.urls, [colleague_url_2, colleague_url_1])
