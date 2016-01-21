@@ -40,7 +40,7 @@ def upload_file(request):
 @view_config(route_name='colleagues', renderer='json', request_method='GET')
 def colleagues_by_last_name(request):
     if request.params.get('last_name') is None:
-        return HTTPBadRequest('last_name argument is missing')
+        return HTTPBadRequest('Query string field is missing: last_name')
 
     last_name = request.params['last_name']
     colleagues = DBSession.query(Colleague).filter(Colleague.last_name.like(last_name.capitalize() + "%")).all()
