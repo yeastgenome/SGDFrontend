@@ -244,7 +244,7 @@ class Colleague(Base):
 
     urls = relationship(u'ColleagueUrl')
 
-    def to_search_result_dict(self):
+    def to_search_results_dict(self):
         colleague_dict = {
             'first_name': self.first_name,
             'last_name': self.last_name,

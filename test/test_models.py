@@ -37,13 +37,13 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(colleague, instances[0])
         self.assertEqual(colleague.source, source)
 
-    def test_colleague_model_search_result_dict(self):
+    def test_colleague_model_search_results_dict(self):
         source = factory.SourceFactory()
         colleague = factory.ColleagueFactory()
         instances = DBSession.query(Colleague).all()
         self.assertEqual(1, len(instances))
         self.assertEqual(colleague, instances[0])
-        self.assertEqual(colleague.to_search_result_dict(), {
+        self.assertEqual(colleague.to_search_results_dict(), {
             'first_name': 'Jimmy',
             'last_name': 'Page',
             'organization': 'Stanford Universty',
@@ -57,7 +57,7 @@ class ModelsTest(unittest.TestCase):
         instances = DBSession.query(Colleague).all()
         colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
         colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
-        self.assertEqual(colleague.to_search_result_dict(), {
+        self.assertEqual(colleague.to_search_results_dict(), {
             'first_name': 'Jimmy',
             'last_name': 'Page',
             'organization': 'Stanford Universty',
