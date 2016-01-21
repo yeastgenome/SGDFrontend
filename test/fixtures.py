@@ -83,6 +83,6 @@ class ColleagueUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     source_id = 261
     bud_id = 1
     colleague_id = 113698
-    url_type = "Lab"
+    url_type = "Research summary"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "EDITH"

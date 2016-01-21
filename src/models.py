@@ -242,6 +242,24 @@ class Colleague(Base):
 
     source = relationship(u'Source')
 
+    urls = relationship(u'ColleagueUrl')
+
+    def to_search_result_dict(self):
+        colleague_dict = {
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'organization': self.institution,
+            'work_phone': self.work_phone,
+            'fax': self.fax
+        }
+
+        for url in self.urls:
+            if url.url_type == "Lab":
+                colleague_dict['lab_url'] = url.obj_url
+            elif url.url_type == "Research summary":
+                colleague_dict['research_summary_url'] = url.obj_url
+
+        return colleague_dict
 
 class ColleagueAssociation(Base):
     __tablename__ = 'colleague_association'
@@ -281,7 +299,7 @@ class ColleagueKeyword(Base):
     source = relationship(u'Source')
 
 
-class ColleagueLocu(Base):
+class ColleagueLocus(Base):
     __tablename__ = 'colleague_locus'
     __table_args__ = (
         Index('colleague_locus_uk', 'colleague_id', 'locus_id', unique=True),
