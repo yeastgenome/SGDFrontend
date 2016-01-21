@@ -44,6 +44,7 @@ def colleagues_by_last_name(request):
 
     last_name = request.params['last_name']
     colleagues = DBSession.query(Colleague).filter(Colleague.last_name.like(last_name.capitalize() + "%")).all()
+
     return [c.to_search_results_dict() for c in colleagues]
 
 @view_config(route_name='sign_in', request_method='POST')
