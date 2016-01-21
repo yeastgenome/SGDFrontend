@@ -42,9 +42,9 @@ def colleagues_by_last_name(request):
     if request.params.get('last_name') is None:
         return HTTPBadRequest('last_name argument is missing')
 
-    last_name = escape(request.params['last_name'])
-    return []
-#    return DBSession.query(Colleague).filter(Colleague.last_name == last_name).first()
+    last_name = request.params['last_name']
+    colleagues = DBSession.query(Colleague).filter(Colleague.last_name.like(last_name.capitalize() + "%")).all()
+    return [c.to_search_results_dict() for c in colleagues]
 
 @view_config(route_name='sign_in', request_method='POST')
 def sign_in(request):
