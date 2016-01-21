@@ -10,7 +10,10 @@ class MockQueryFilter(object):
         return self._return
 
     def all(self):
-        return [self._return]
+        if self._return is None:
+            return []
+        else:
+            return [self._return]
 
     def query_params(self):
         return self._params
