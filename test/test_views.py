@@ -35,19 +35,19 @@ class ColleaguesTest(unittest.TestCase):
 
         mock_search.return_value = MockQuery(self.colleague)
         colleague_urls.return_value = [self.url_1, self.url_2]
-        
+
         response = colleagues_by_last_name(request)
         self.assertEqual(response, [{'work_phone': '444-444-4444', 'organization': 'Stanford Universty', 'first_name': 'Jimmy', 'last_name': 'Page', 'fax': '333-333-3333', 'lab_url': 'http://example.org', 'research_summary_url': 'http://example.org'}])
 
     @mock.patch('src.models.DBSession.query')
     def test_last_names_should_begin_with_query_string(self, mock_search):
         mock_search.return_value = MockQuery(self.colleague)
-        
+
         request = testing.DummyRequest(params={'last_name': 'page'})
         exp = Colleague.last_name.like("Page%")
 
         response = colleagues_by_last_name(request)
-        
+
         self.assertTrue(mock_search.called_with(Colleague))
         self.assertTrue(exp.compare(mock_search.return_value._query_filter.query_params()))
 
