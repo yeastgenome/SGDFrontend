@@ -6,7 +6,7 @@ import os
 import StringIO
 import fixtures as factory
 from mock_helpers import MockQuery, MockQueryFilter, MockFileStorage
-from src.views import upload_file, colleagues_by_last_name, sign_in, sign_out
+from src.views import upload_file, colleagues_by_last_name, sign_in, sign_out, colleague_by_id
 from src.models import Colleague
 
 
@@ -37,7 +37,7 @@ class ColleaguesTest(unittest.TestCase):
         colleague_urls.return_value = [self.url_1, self.url_2]
 
         response = colleagues_by_last_name(request)
-        self.assertEqual(response, [{'work_phone': '444-444-4444', 'organization': 'Stanford Universty', 'first_name': 'Jimmy', 'last_name': 'Page', 'fax': '333-333-3333', 'lab_url': 'http://example.org', 'research_summary_url': 'http://example.org'}])
+        self.assertEqual(response, [{'work_phone': self.colleague.work_phone, 'organization': self.colleague.institution, 'first_name': self.colleague.first_name, 'last_name': self.colleague.last_name, 'fax': self.colleague.fax, 'lab_url': self.url_1.obj_url, 'research_summary_url': self.url_2.obj_url}])
 
     @mock.patch('src.models.DBSession.query')
     def test_last_names_should_begin_with_query_string(self, mock_search):
@@ -59,6 +59,40 @@ class ColleaguesTest(unittest.TestCase):
         response = colleagues_by_last_name(request)
 
         self.assertEqual(response, [])
+
+    @mock.patch('src.models.Colleague.urls', new_callable=mock.PropertyMock)
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_colleague_by_id(self, mock_search, colleague_urls):
+        mock_search.return_value = MockQuery(self.colleague)
+        colleague_urls.return_value = [self.url_1, self.url_2]
+
+        request = testing.DummyRequest()
+        request.matchdict['id'] = str(self.colleague.colleague_id)
+        response = colleague_by_id(request)
+
+        self.assertEqual(response, {'email': self.colleague.email, 'position': self.colleague.job_title, 'profession': self.colleague.profession, 'organization': self.colleague.institution, 'address': [self.colleague.address1, self.colleague.address2, self.colleague.address3], 'work_phone': self.colleague.work_phone, 'fax': self.colleague.fax, 'webpages': {'lab_url': 'http://example.org', 'research_summary_url': 'http://example.org'}, 'members_of_lab': [], 'associates': [], 'keywords': [], 'research_topics': [], 'last_update': str(self.colleague.date_last_modified)})
+
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_not_found_for_valid_colleague_by_id_but_non_existent(self, mock_search):
+        mock_search.return_value = MockQuery(None)
+
+        request = testing.DummyRequest()
+        request.matchdict['id'] = str(self.colleague.colleague_id)
+        response = colleague_by_id(request)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.message, 'Colleague not found')
+
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_not_found_for_invalid_colleague_by_id(self, mock_search):
+        mock_search.return_value = MockQuery(None)
+
+        request = testing.DummyRequest()
+        request.matchdict['id'] = "my_invalid_id"
+        response = colleague_by_id(request)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.message, 'Colleague not found')
 
 
 class UploadTest(unittest.TestCase):
