@@ -15,7 +15,7 @@ class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
     bud_id = 1035
     description = "Plasmid Repository"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "EDITH"
+    created_by = "TOTO"
 
     
 class ColleagueFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -54,7 +54,7 @@ class ColleagueFactory(factory.alchemy.SQLAlchemyModelFactory):
     display_email = True
     date_last_modified = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "EDITH"
+    created_by = "TOTO"
 
 
 class DbuserFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -85,4 +85,4 @@ class ColleagueUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     colleague_id = 113698
     url_type = "Research summary"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "EDITH"
+    created_by = "TOTO"

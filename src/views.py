@@ -1,4 +1,4 @@
-from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, HTTPForbidden, HTTPOk
+from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk, HTTPNotFound
 from pyramid.response import Response, FileResponse
 from pyramid.view import view_config
 from pyramid.compat import escape
@@ -46,6 +46,20 @@ def colleagues_by_last_name(request):
     colleagues = DBSession.query(Colleague).filter(Colleague.last_name.like(last_name.capitalize() + "%")).all()
 
     return [c.to_search_results_dict() for c in colleagues]
+
+@view_config(route_name='colleague', renderer='json', request_method='GET')
+def colleague_by_id(request):
+    try:
+        colleague_id = int(request.matchdict['id'])
+    except ValueError:
+        return HTTPNotFound('Colleague not found')
+    
+    colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == colleague_id).one_or_none()
+    
+    if colleague:
+        return colleague.to_info_dict()
+    else:
+        return HTTPNotFound('Colleague not found')
 
 @view_config(route_name='sign_in', request_method='POST')
 def sign_in(request):
