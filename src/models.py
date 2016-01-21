@@ -244,6 +244,13 @@ class Colleague(Base):
 
     urls = relationship(u'ColleagueUrl')
 
+    def _include_urls_to_dict(self, colleague_dict):
+        for url in self.urls:
+            if url.url_type == "Lab":
+                colleague_dict['lab_url'] = url.obj_url
+            elif url.url_type == "Research summary":
+                colleague_dict['research_summary_url'] = url.obj_url
+    
     def to_search_results_dict(self):
         colleague_dict = {
             'first_name': self.first_name,
@@ -253,13 +260,29 @@ class Colleague(Base):
             'fax': self.fax
         }
 
-        for url in self.urls:
-            if url.url_type == "Lab":
-                colleague_dict['lab_url'] = url.obj_url
-            elif url.url_type == "Research summary":
-                colleague_dict['research_summary_url'] = url.obj_url
-
+        self._include_urls_to_dict(colleague_dict)
         return colleague_dict
+
+    def to_info_dict(self):
+        colleague_dict = {
+            'email': self.email,
+            'position': self.job_title,
+            'profession': self.profession,
+            'organization': self.institution,
+            'address': [self.address1, self.address2, self.address3],
+            'work_phone': self.work_phone,
+            'fax': self.fax,
+            'webpages': {},
+            'members_of_lab': [],
+            'associates': [],
+            'keywords': [],
+            'research_topics': [],
+            'last_update': str(self.date_last_modified)
+        }
+
+        self._include_urls_to_dict(colleague_dict['webpages'])
+        return colleague_dict
+
 
 class ColleagueAssociation(Base):
     __tablename__ = 'colleague_association'

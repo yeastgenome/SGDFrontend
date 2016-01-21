@@ -44,11 +44,11 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(1, len(instances))
         self.assertEqual(colleague, instances[0])
         self.assertEqual(colleague.to_search_results_dict(), {
-            'first_name': 'Jimmy',
-            'last_name': 'Page',
-            'organization': 'Stanford Universty',
-            'work_phone': '444-444-4444',
-            'fax': '333-333-3333'
+            'first_name': colleague.first_name,
+            'last_name': colleague.last_name,
+            'organization': colleague.institution,
+            'work_phone': colleague.work_phone,
+            'fax': colleague.fax
         })
 
     def test_colleague_model_search_result_dict_with_urls(self):
@@ -58,14 +58,50 @@ class ModelsTest(unittest.TestCase):
         colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
         colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
         self.assertEqual(colleague.to_search_results_dict(), {
-            'first_name': 'Jimmy',
-            'last_name': 'Page',
-            'organization': 'Stanford Universty',
-            'work_phone': '444-444-4444',
-            'fax': '333-333-3333',
-            'lab_url': 'http://example.org',
-            'research_summary_url': 'http://example.org'
+            'first_name': colleague.first_name,
+            'last_name': colleague.last_name,
+            'organization': colleague.institution,
+            'work_phone': colleague.work_phone,
+            'fax': colleague.fax,
+            'lab_url': colleague_url_1.obj_url,
+            'research_summary_url': colleague_url_2.obj_url
         })
+
+    def test_colleague_model_info_dict(self):
+        source = factory.SourceFactory()
+        colleague = factory.ColleagueFactory()
+        instances = DBSession.query(Colleague).all()
+        colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
+        colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
+        self.assertEqual(colleague.to_info_dict(), {
+            'email': colleague.email,
+            'position': colleague.job_title,
+            'profession': colleague.profession,
+            'organization': colleague.institution,
+            'address': [colleague.address1, colleague.address2, colleague.address3],
+            'work_phone': colleague.work_phone,
+            'fax': colleague.fax,
+            'webpages': {
+                'lab_url': 'http://example.org',
+                'research_summary_url': 'http://example.org'
+            },
+            'members_of_lab': [],
+            'associates': [],
+            'keywords': [],
+            'research_topics': [],
+            'last_update': str(colleague.date_last_modified)
+        })
+
+    def test_colleague_model_should_include_urls_in_dict(self):
+        source = factory.SourceFactory()
+        colleague = factory.ColleagueFactory()
+        instances = DBSession.query(Colleague).all()
+        colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
+        colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
+
+        colleague_dict = {}
+        colleague._include_urls_to_dict(colleague_dict)
+        self.assertEqual(colleague_dict, {'lab_url': 'http://example.org', 'research_summary_url': 'http://example.org'})
 
     def test_dbuser_model(self):
         instances = DBSession.query(Dbuser).all()
