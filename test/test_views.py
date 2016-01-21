@@ -50,14 +50,16 @@ class ColleaguesTest(unittest.TestCase):
         
         self.assertTrue(mock_search.called_with(Colleague))
         self.assertTrue(exp.compare(mock_search.return_value._query_filter.query_params()))
-        
-    def test_should_return_404_for_unexistent_colleague_id(self):
-        pass
 
-    def test_should_return_400_for_invalid_colleague_id(self):
-        pass
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_empty_list_for_last_name_not_matched(self, mock_search):
+        mock_search.return_value = MockQuery(None)
 
-#     test to guarantee LIKE % search
+        request = testing.DummyRequest(params={'last_name': 'page'})
+        response = colleagues_by_last_name(request)
+
+        self.assertEqual(response, [])
+
 
 class UploadTest(unittest.TestCase):
     def setUp(self):
