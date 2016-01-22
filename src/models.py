@@ -265,7 +265,6 @@ class Colleague(Base):
 
     def to_info_dict(self):
         colleague_dict = {
-            'email': self.email,
             'position': self.job_title,
             'profession': self.profession,
             'organization': self.institution,
@@ -279,7 +278,10 @@ class Colleague(Base):
             'research_topics': [],
             'last_update': str(self.date_last_modified)
         }
-
+        
+        if self.display_email:
+            colleague_dict['email'] = self.email
+        
         self._include_urls_to_dict(colleague_dict['webpages'])
         return colleague_dict
 
