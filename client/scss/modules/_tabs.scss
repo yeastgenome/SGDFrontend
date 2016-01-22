@@ -54,3 +54,9 @@
 		}
 	}
 }
+
+@media print {
+    .sgd-tabs {
+        display: none;
+    }
+}

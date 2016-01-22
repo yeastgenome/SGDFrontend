@@ -83,3 +83,9 @@ http://smacss.com/book/type-module
 .sgd-navbar .side-nav {
     padding: 0;
 }
+
+@media print {
+    .sgd-navbar {
+        display: none;
+    }
+}
