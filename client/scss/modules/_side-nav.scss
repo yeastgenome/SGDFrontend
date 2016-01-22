@@ -13,6 +13,7 @@ http://smacss.com/book/type-module
 	border: 1px #ccc solid;
 	@include border-radius(4px);
 	margin-top: 5px;
+    margin-left: 5px;
 	list-style-type: disc;
 	list-style-position: outside;
 	overflow: hidden;
