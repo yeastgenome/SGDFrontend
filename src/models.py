@@ -232,7 +232,7 @@ class Colleague(Base):
     other_phone = Column(String(40))
     fax = Column(String(40))
     email = Column(String(100))
-    research_interests = Column(String(4000))
+    research_interest = Column(String(4000))
     is_pi = Column(Numeric(1, 0, asdecimal=False), nullable=False)
     is_contact = Column(Numeric(1, 0, asdecimal=False), nullable=False)
     display_email = Column(Numeric(1, 0, asdecimal=False), nullable=False)
@@ -275,7 +275,7 @@ class Colleague(Base):
             'webpages': {},
             'members_of_lab': [],
             'associates': [],
-            'keywords': self.research_interests,
+            'keywords': self.research_interest,
             'research_topics': [],
             'last_update': str(self.date_last_modified)
         }
