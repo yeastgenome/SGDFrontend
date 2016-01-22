@@ -31,7 +31,7 @@ const Navbar = React.createClass({
     });
     if (this.props.title) {
       var titleNode = this.props.title.href ? <a href={this.props.title.href} dangerouslySetInnerHTML={{ __html: this.props.title.name }} /> : <span dangerouslySetInnerHTML={{ __html: this.props.title }} />;
-      listElements.unshift(<li key="titleNode" id="nav-title"><h4>{titleNode}</h4></li>);
+      listElements.unshift(<li key="titleNode" id="nav-title">{titleNode}</li>);
     }
 
     var backToTopNode = null;
