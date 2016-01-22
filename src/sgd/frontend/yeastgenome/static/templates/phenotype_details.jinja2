@@ -10,10 +10,6 @@
 
 {% block body %}
 
-<div id="center_title" class="row hide-for-small">
-	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
-</div>
-
 <!-- Tabs
 ================================================== -->
 <!-- Includes tabs.html into template -->
@@ -41,7 +37,7 @@
 ================================================== -->
 <section id="overview" data-magellan-destination="overview">
     <a href="/help/PhenoHelp.html" name="top" class="documentation-link">Phenotype Help <i class="fa fa-question-circle"></i></a>
-    <h2>Phenotype Overview
+    <h1>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %} Phenotype
         <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
 
         <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
@@ -51,7 +47,7 @@
             genetics or high-throughput (e.g., large scale survey, systematic mutation set). Whenever
             possible, allele information and additional details are provided.
         </p>
-    </h2>
+    </h1>
     <hr />
     {% if locus['phenotype_overview']['paragraph'] %}
         <dl class="key-value">

@@ -23,10 +23,6 @@
 
 {% block body %}
 
-<div id="center_title" class="row hide-for-small">
-	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
-</div>
-
 <!-- Tabs
 ================================================== -->
 <!-- Includes tabs.html into template -->
@@ -44,7 +40,7 @@
 
         <script>
         //Set up navbar
-            add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</a>');
+            add_navbar_title('<span>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span>');
             add_navbar_element('Protein Overview', 'overview');
             add_navbar_element('Experimental Data', 'experiment');
             add_navbar_element('Domains and Classification', 'domain');
@@ -57,7 +53,7 @@
 ================================================== -->
     <section id="overview" data-magellan-destination="overview">
         <a href="/help/function-help/protein-information" name="top" class="documentation-link">Protein Help <i class="fa fa-question-circle"></i></a>
-        <h2>Protein Overview
+        <h1>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %} Protein
             <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
 
             <div id="summary_info" class="f-dropdown content medium" data-dropdown-content>
@@ -66,7 +62,7 @@
                     various strains, sequence-based physico-chemical proterties, phosphorylation sites, and external
                     identifiers for the protein.</p>
             </div>
-        </h2>
+        </h1>
         <hr />
         <div class="">
             <!-- Includes sequence_overview.html into template -->
