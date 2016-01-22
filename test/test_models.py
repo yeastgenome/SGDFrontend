@@ -92,6 +92,30 @@ class ModelsTest(unittest.TestCase):
             'last_update': str(colleague.date_last_modified)
         })
 
+    def test_colleague_model_info_dict_doesnt_send_email_if_required(self):
+        source = factory.SourceFactory()
+        colleague = factory.ColleagueFactory(display_email = False)
+        instances = DBSession.query(Colleague).all()
+        colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
+        colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
+        self.assertEqual(colleague.to_info_dict(), {
+            'position': colleague.job_title,
+            'profession': colleague.profession,
+            'organization': colleague.institution,
+            'address': [colleague.address1, colleague.address2, colleague.address3],
+            'work_phone': colleague.work_phone,
+            'fax': colleague.fax,
+            'webpages': {
+                'lab_url': 'http://example.org',
+                'research_summary_url': 'http://example.org'
+            },
+            'members_of_lab': [],
+            'associates': [],
+            'keywords': "mRNA decay, translation, mRNA decay",
+            'research_topics': [],
+            'last_update': str(colleague.date_last_modified)
+        })
+
     def test_colleague_model_should_include_urls_in_dict(self):
         source = factory.SourceFactory()
         colleague = factory.ColleagueFactory()
