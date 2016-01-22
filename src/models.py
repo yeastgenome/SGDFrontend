@@ -274,8 +274,8 @@ class Colleague(Base):
             'webpages': {},
             'members_of_lab': [],
             'associates': [],
-            'keywords': self.research_interest,
-            'research_topics': [],
+            'keywords': [],
+            'research_interests': self.research_interest,
             'last_update': str(self.date_last_modified)
         }
         

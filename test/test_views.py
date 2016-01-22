@@ -70,7 +70,7 @@ class ColleaguesTest(unittest.TestCase):
         request.matchdict['id'] = str(self.colleague.colleague_id)
         response = colleague_by_id(request)
         self.maxDiff = None
-        self.assertEqual(response, {'email': self.colleague.email, 'position': self.colleague.job_title, 'profession': self.colleague.profession, 'organization': self.colleague.institution, 'address': [self.colleague.address1, self.colleague.address2, self.colleague.address3], 'work_phone': self.colleague.work_phone, 'fax': self.colleague.fax, 'webpages': {'lab_url': 'http://example.org', 'research_summary_url': 'http://example.org'}, 'members_of_lab': [], 'associates': [], 'keywords': self.colleague.research_interest, 'research_topics': [], 'last_update': str(self.colleague.date_last_modified)})
+        self.assertEqual(response, {'email': self.colleague.email, 'position': self.colleague.job_title, 'profession': self.colleague.profession, 'organization': self.colleague.institution, 'address': [self.colleague.address1, self.colleague.address2, self.colleague.address3], 'work_phone': self.colleague.work_phone, 'fax': self.colleague.fax, 'webpages': {'lab_url': 'http://example.org', 'research_summary_url': 'http://example.org'}, 'members_of_lab': [], 'associates': [], 'keywords': [], 'research_interests': self.colleague.research_interest, 'last_update': str(self.colleague.date_last_modified)})
 
     @mock.patch('src.models.DBSession.query')
     def test_should_return_not_found_for_valid_colleague_by_id_but_non_existent(self, mock_search):
