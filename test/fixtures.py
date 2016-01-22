@@ -48,7 +48,7 @@ class ColleagueFactory(factory.alchemy.SQLAlchemyModelFactory):
     other_phone = None
     fax = "333-333-3333"
     email = "jimmy.page@example.org"
-    research_interest = "mRNA decay, translation, mRNA decay"
+    research_interests = "mRNA decay, translation, mRNA decay"
     is_pi = False
     is_contact = False
     display_email = True

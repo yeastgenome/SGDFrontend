@@ -87,7 +87,7 @@ class ModelsTest(unittest.TestCase):
             },
             'members_of_lab': [],
             'associates': [],
-            'keywords': [],
+            'keywords': "mRNA decay, translation, mRNA decay",
             'research_topics': [],
             'last_update': str(colleague.date_last_modified)
         })
