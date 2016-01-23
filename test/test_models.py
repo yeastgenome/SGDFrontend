@@ -1,6 +1,6 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
-from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, Dbuser
+from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, Dbuser
 import fixtures as factory
 
 
@@ -24,6 +24,16 @@ class ModelsTest(unittest.TestCase):
 
         self.assertEqual(1, len(instances))
         self.assertEqual(source, instances[0])
+
+    def test_dbuser_model(self):
+        instances = DBSession.query(Dbuser).all()
+        self.assertEqual(0, len(instances))
+
+        dbuser = factory.DbuserFactory()
+        instances = DBSession.query(Dbuser).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(dbuser, instances[0])
 
     def test_colleague_model(self):
         instances = DBSession.query(Colleague).all()
@@ -127,16 +137,6 @@ class ModelsTest(unittest.TestCase):
         colleague._include_urls_to_dict(colleague_dict)
         self.assertEqual(colleague_dict, {'lab_url': 'http://example.org', 'research_summary_url': 'http://example.org'})
 
-    def test_dbuser_model(self):
-        instances = DBSession.query(Dbuser).all()
-        self.assertEqual(0, len(instances))
-
-        dbuser = factory.DbuserFactory()
-        instances = DBSession.query(Dbuser).all()
-
-        self.assertEqual(1, len(instances))
-        self.assertEqual(dbuser, instances[0])
-
     def test_colleague_url_model(self):
         instances = DBSession.query(ColleagueUrl).all()
         self.assertEqual(0, len(instances))
@@ -158,3 +158,24 @@ class ModelsTest(unittest.TestCase):
 
         self.assertEqual(2, len(instances))
         self.assertEqual(colleague.urls, [colleague_url_2, colleague_url_1])
+
+    def test_colleague_association_model(self):
+        instances = DBSession.query(ColleagueAssociation).all()
+        self.assertEqual(0, len(instances))
+
+        association = factory.ColleagueAssociationFactory()
+        instances = DBSession.query(ColleagueAssociation).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(association, instances[0])
+        
+    def test_colleague_model_should_include_urls_in_dict(self):
+        source = factory.SourceFactory()
+        colleague = factory.ColleagueFactory()
+        instances = DBSession.query(Colleague).all()
+        colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
+        colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
+
+        colleague_dict = {}
+        colleague._include_urls_to_dict(colleague_dict)
+        self.assertEqual(colleague_dict, {'lab_url': 'http://example.org', 'research_summary_url': 'http://example.org'})

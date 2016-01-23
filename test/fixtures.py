@@ -1,6 +1,6 @@
 import datetime
 import factory
-from src.models import DBSession, Source, Colleague, ColleagueUrl, Dbuser
+from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueAssociation, Dbuser
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -84,5 +84,19 @@ class ColleagueUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     bud_id = 1
     colleague_id = 113698
     url_type = "Research summary"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class ColleagueAssociationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ColleagueAssociation
+        sqlalchemy_session = DBSession
+
+    colleague_association_id = 1
+    source_id = 261
+    bud_id = 1
+    colleague_id = 113698
+    associate_id = 113699
+    association_type = "Lab member"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
