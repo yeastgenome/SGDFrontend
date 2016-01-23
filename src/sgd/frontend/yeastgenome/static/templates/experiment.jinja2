@@ -10,10 +10,6 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
-	<h2>Experiment: <span class="gene_name">{{ experiment.display_name }}</span></h2>
-</div>
-
 <!-- Navbar
 ================================================== -->
 <div class="row">
@@ -33,7 +29,7 @@
         ================================================== -->
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h2>Overview</h2>
+                <h1>Experiment: {{ experiment.display_name }}</h1>
                 <div class="panel">
 
                     <dl class="key-value">

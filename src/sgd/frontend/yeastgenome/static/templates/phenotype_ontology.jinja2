@@ -11,10 +11,6 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
-	<h1><span class="gene_name">{{ ontology.display_name }}</span></h1>
-</div>
-
 <div class="row">
 
 <!-- Navbar
@@ -34,7 +30,7 @@
 ================================================== -->
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h2>Overview</h2>
+                <h1>{{ ontology.display_name }}</h1>
                 <div class="panel">
                     <dl class="key-value">
                         <dt>Description</dt>

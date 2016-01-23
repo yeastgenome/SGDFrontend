@@ -11,11 +11,6 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
-	<h2>Analyze {{ list_name_html | safe }}</h2>
-</div>
-
-
 <!-- Navbar
 ================================================== -->
 <div class="row">
@@ -24,6 +19,8 @@
     {% include "navbar.jinja2" %}
 
     <div class="small-12 large-9 columns">
+        <h1>Analyze {{ list_name_html | safe }}</h1>
+        <hr />
 
         <script>
             add_navbar_title(list_name_html);

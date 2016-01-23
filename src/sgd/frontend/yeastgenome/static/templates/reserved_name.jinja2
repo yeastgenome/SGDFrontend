@@ -11,10 +11,6 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
-	<h1>Reserved Gene Name: <span class="gene_name">{{ reserved_name.display_name }}</span></h1>
-</div>
-
 <!-- Navbar
 ================================================== -->
 <div class="row">
@@ -33,7 +29,7 @@
         ================================================== -->
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h2>Overview</h2>
+                <h1>Reserved Gene Name: {{ reserved_name.display_name }}</h1>
                 <div class="panel">
                     <dl class="key-value">
                         {% if reserved_name.locus != None %}
