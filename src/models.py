@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue
+from sqlalchemy import Column, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, Table, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -204,6 +204,32 @@ class ChebiUrl(Base):
     source = relationship(u'Source')
 
 
+class ColleagueAssociation(Base):
+    __tablename__ = 'colleague_association'
+    __table_args__ = (
+        Index('colleague_association_uk', 'colleague_id', 'associate_id', 'association_type', unique=True),
+    )
+
+    colleague_association_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    source_id = Column(ForeignKey(u'source.source_id'), nullable=False, index=True)
+    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    colleague_id = Column(ForeignKey(u'colleague.colleague_id'), nullable=False)
+    associate_id = Column(ForeignKey(u'colleague.colleague_id'), nullable=False, index=True)
+    association_type = Column(String(40), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
+    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+
+    associate = relationship(u'Colleague', primaryjoin='ColleagueAssociation.associate_id == Colleague.colleague_id')
+    colleague = relationship(u'Colleague', primaryjoin='ColleagueAssociation.colleague_id == Colleague.colleague_id')
+    source = relationship(u'Source')
+
+# ColleagueAssociation = Table('ColleagueAssociation',
+#                              Base.metadata,
+#                              Column('colleague_association_id', Numeric(scale=0, asdecimal=False), primary_key=True),
+#                              Column('colleague_id', Integer, ForeignKey(u'colleague.colleague_id')),
+#                              Column('associate_id', Integer, ForeignKey(u'colleague.colleague_id')),
+#                              Column('association_type', String(40), nullable=False))
+
 class Colleague(Base):
     __tablename__ = 'colleague'
 
@@ -241,8 +267,12 @@ class Colleague(Base):
     created_by = Column(String(12), nullable=False, server_default=FetchedValue())
 
     source = relationship(u'Source')
-
     urls = relationship(u'ColleagueUrl')
+    associates = relationship('Colleague',
+                              secondary=ColleagueAssociation.__table__,
+                              primaryjoin=ColleagueAssociation.colleague_id==colleague_id,
+                              secondaryjoin=ColleagueAssociation.associate_id==colleague_id,
+                              foreign_keys=[ColleagueAssociation.colleague_id, ColleagueAssociation.associate_id])
 
     def _include_urls_to_dict(self, colleague_dict):
         for url in self.urls:
@@ -250,6 +280,9 @@ class Colleague(Base):
                 colleague_dict['lab_url'] = url.obj_url
             elif url.url_type == "Research summary":
                 colleague_dict['research_summary_url'] = url.obj_url
+
+    def _include_association_to_dict(self, colleague_dict):
+        pass
     
     def to_search_results_dict(self):
         colleague_dict = {
@@ -284,26 +317,6 @@ class Colleague(Base):
         
         self._include_urls_to_dict(colleague_dict['webpages'])
         return colleague_dict
-
-
-class ColleagueAssociation(Base):
-    __tablename__ = 'colleague_association'
-    __table_args__ = (
-        Index('colleague_association_uk', 'colleague_id', 'associate_id', 'association_type', unique=True),
-    )
-
-    colleague_association_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    colleague_id = Column(ForeignKey(u'colleague.colleague_id'), nullable=False)
-    associate_id = Column(ForeignKey(u'colleague.colleague_id'), nullable=False, index=True)
-    association_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-
-    associate = relationship(u'Colleague', primaryjoin='ColleagueAssociation.associate_id == Colleague.colleague_id')
-    colleague = relationship(u'Colleague', primaryjoin='ColleagueAssociation.colleague_id == Colleague.colleague_id')
-    source = relationship(u'Source')
 
 
 class ColleagueKeyword(Base):
