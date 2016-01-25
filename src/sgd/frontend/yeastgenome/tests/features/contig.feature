@@ -3,7 +3,6 @@ Feature: Contig
     @basic
     Scenario: Visit page
         When I visit "/contig/?/overview" for "Chromosome_VI"
-        And I should see an element with id "center_title"
         And I should see an element with id "sidebar"
         And I should see an element with id "overview"
         And I should see an element with id "feature"

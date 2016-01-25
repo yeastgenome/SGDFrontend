@@ -3,7 +3,6 @@ Feature: Domain
     @basic
     Scenario: Visit page
         When I visit "/domain/?/overview" for "PTHR11937"
-        And I should see an element with id "center_title"
         And I should see an element with id "sidebar"
         And I should see an element with id "overview"
         And I should see an element with id "annotations"
