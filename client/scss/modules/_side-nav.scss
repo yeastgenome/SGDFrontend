@@ -5,14 +5,14 @@ http://smacss.com/book/type-module
 
 // Sticky Side navigation
 #side-nav-sticky {
-	width: 180px;
+	width: 162px;
 	padding: 0;
 }
 
 .side-nav { //extending Foundation
 	border: 1px #ccc solid;
 	@include border-radius(4px);
-	margin-top: 5px;
+	margin-top: 0;
     margin-left: 5px;
 	list-style-type: disc;
 	list-style-position: outside;
@@ -20,8 +20,7 @@ http://smacss.com/book/type-module
 }
 
 #side-nav-sticky.fixed {
-	max-width: 180px;
-	width: 180px;
+	width: 163px;
 }
 
 #nav-title {
