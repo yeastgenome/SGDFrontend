@@ -79,8 +79,8 @@ var style = {
 	},
 	exitWrapper: {
 		position: "absolute",
-		top: "1rem",
-		right: "1rem"
+		top: "0.65rem",
+		right: "2rem"
 	},
 	exit: {
 		color: "black",
