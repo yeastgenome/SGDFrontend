@@ -2,34 +2,26 @@ namespace :deploy do
   desc 'Build application'
   task :build do
     on roles(:app), in: :sequence do
-      execute "workon sgd && pip install -r requirements.txt"
+      execute "cd #{current_path} && workon sgd && pip install -r requirements.txt"
     end
   end
 
-  desc 'Restart WSGI'
+  desc 'Write config variables'
+  task :config do
+    on roles(:app), in: :sequence do
+      variables = "'"
+      ["NEX2_URI", "S3_ACCESS_KEY", "S3_SECRET_KEY", "S3_BUCKET", "GOOGLE_CLIENT_ID"].each do |k|
+        variables += "export #{k}=\"#{ENV[k]}\"\n"
+      end
+      variables += "'"
+      execute "echo #{variables} > #{current_path}/dev_variables.sh"
+    end
+  end
+
+  desc 'Start pyramid'
   task :restart do
     on roles(:app), in: :sequence do
-      execute "ENV=prod python #{current_path}/src/app.py &"
+      execute "cd #{current_path} && make restart-prod"
     end
-  end
-
-  desc 'Write config file'
-  task :write_config do
-    on roles(:app), in: :sequence do
-      execute "echo \"#{generate_config_content}\" >> #{current_path}/src/config/config.py"
-    end
-  end
-
-  desc 'Write local config file'
-  task :local_write_config do
-    exec "echo \"#{generate_config_content}\" >> development.ini"
-  end
-
-  def generate_config_content
-    config_file_content = "\n\n[s3]\n"
-    ["S3_ACCESS_KEY", "S3_SECRET_KEY", "S3_BUCKET"].each do |key|
-      config_file_content += "#{key} = \'#{ENV[key]}\'\n"
-    end
-    return config_file_content
   end
 end

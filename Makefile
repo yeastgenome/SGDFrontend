@@ -16,11 +16,17 @@ flower:
 tests:
 	. test_variables.sh && nosetests -s
 
-config:
-	. dev_variables.sh && rake -f lib/capistrano/tasks/deploy.rake deploy:local_write_config
-
 deploy:
 	. dev_variables.sh && cap dev deploy
 
 prod-deploy:
 	. prod_variables.sh && cap prod deploy
+
+run-prod:
+	. prod_variables.sh && pserve production.ini --daemon
+
+stop-prod:
+	. prod_variables.sh && pserve production.ini --stop-daemon
+
+restart-prod: stop-prod run-prod
+	echo "Restarted."
