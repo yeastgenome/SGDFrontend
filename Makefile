@@ -26,7 +26,7 @@ run-prod:
 	pserve production.ini --daemon
 
 stop-prod:
-	pserve production.ini --stop-daemon
+	-pserve production.ini --stop-daemon
 
 restart-prod: stop-prod run-prod
 	echo "Restarted."
