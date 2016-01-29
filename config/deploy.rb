@@ -16,7 +16,7 @@ set :format, :pretty
 set :log_level, :debug
 
 namespace :deploy do
-  after :finishing, :write_config
+  after :finishing, :config
   after :finishing, :build
   after :finishing, :restart
 end
