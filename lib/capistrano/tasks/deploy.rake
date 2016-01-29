@@ -2,7 +2,7 @@ namespace :deploy do
   desc 'Build application'
   task :build do
     on roles(:app), in: :sequence do
-      execute "cd #{current_path} && workon sgd && pip install -r requirements.txt"
+      execute "export WORKON_HOME=~/envs/ && source virtualenvwrapper.sh && cd #{current_path} && workon sgd && pip install -r requirements.txt"
     end
   end
 
@@ -14,7 +14,7 @@ namespace :deploy do
         variables += "export #{k}=\"#{ENV[k]}\"\n"
       end
       variables += "'"
-      execute "echo #{variables} > #{current_path}/dev_variables.sh"
+      execute "echo #{variables} > #{current_path}/prod_variables.sh"
     end
   end
 
@@ -22,6 +22,7 @@ namespace :deploy do
   task :restart do
     on roles(:app), in: :sequence do
       execute "cd #{current_path} && make restart-prod"
+      end
     end
   end
 end
