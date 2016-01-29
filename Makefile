@@ -5,28 +5,28 @@ build: config
 	export ORACLE_HOME=/data/tools/oracle_instant_client/instantclient_11_2/ && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME && pip install -r requirements.txt
 
 run:
-	. dev_variables.sh && pserve development.ini --reload
+	source dev_variables.sh && pserve development.ini --reload
 
 celery:
-	. dev_variables.sh && celery worker -A pyramid_celery.celery_app --ini development.ini
+	source dev_variables.sh && celery worker -A pyramid_celery.celery_app --ini development.ini
 
 flower:
 	@celery flower -A pyramid_celery.celery_app --address=127.0.0.1 --port=5555 --ini development.ini
 
 tests:
-	. test_variables.sh && nosetests -s
+	source test_variables.sh && nosetests -s
 
 deploy:
-	. dev_variables.sh && cap dev deploy
+	source dev_variables.sh && cap dev deploy
 
 prod-deploy:
-	. prod_variables.sh && cap prod deploy
+	source prod_variables.sh && cap prod deploy
 
 run-prod:
-	. prod_variables.sh && pserve production.ini --daemon
+	source prod_variables.sh && pserve production.ini --daemon
 
 stop-prod:
-	. prod_variables.sh && pserve production.ini --stop-daemon
+	source prod_variables.sh && pserve production.ini --stop-daemon
 
 restart-prod: stop-prod run-prod
 	echo "Restarted."
