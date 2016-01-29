@@ -38,7 +38,7 @@
 
       {% if not request.session.get('email') %}
 	$.ajax({
-	    url: "http://localhost:6543/signin",
+	    url: "/signin",
 	    type: "POST",
 	    headers: {
 		'X-CSRF-Token': '{{ request.session.get_csrf_token() }}',
@@ -63,7 +63,7 @@
 
 	    if (backendSignout) {
 		var xhr = new XMLHttpRequest();
-		xhr.open('DELETE', 'http://localhost:6543/signout');
+		xhr.open('DELETE', '/signout');
 		xhr.onload = function() {
 		    location.reload();
 		}
