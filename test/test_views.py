@@ -223,7 +223,7 @@ class AutheticationTest(unittest.TestCase):
         response = sign_in(request)
 
         self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.message, 'User not authorized on SGD')
+        self.assertEqual(response.message, 'User not-a-curator@example.org is not authorized on SGD')
         self.assertNotIn('email', request.session)
         log.assert_called_with('User not-a-curator@example.org trying to authenticate from 127.0.0.1')
 
