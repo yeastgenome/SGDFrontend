@@ -55,6 +55,13 @@ const SearchView = React.createClass({
           </div>
           <div style={[style.resultsWraper]}>
             {this._renderResultsText()}
+            <div>
+              <span>View as:</span>
+              <ul className='button-group' style={[style.viewAs]}>
+                <li><a className='button tiny'><i className='fa fa-reorder'/></a></li>
+                <li><a className='button secondary tiny'><i className='fa fa-th'/></a></li>
+              </ul>
+            </div>
             {this._renderSearchContent()}
           </div>
         </div>
@@ -72,9 +79,8 @@ const SearchView = React.createClass({
   // listen to URL changes and dispatch needed events
   componentWillMount() {
     this._unlisten = this.props.history.listen( listener => {
-      this.forceUpdate( () => {
-        this._fetchSearchResults();
-      });
+      console.log('url change')
+      // this._fetchSearchResults();
     });
   },
 
@@ -176,7 +182,7 @@ const SearchView = React.createClass({
     let fetchAction = Actions.fetchSearchResults();
     // dispatch actions
     this.props.dispatch(startAction);
-    this.props.dispatch(fetchAction);
+    // this.props.dispatch(fetchAction);
     return;
   }
 });
@@ -210,6 +216,10 @@ var style = {
     ':hover': {
       background: '#e6e6e6'
     }
+  },
+  viewAs: {
+    display: 'inline-block',
+    marginLeft: '1rem'
   },
   resultsWraper: {
     minHeight: 1000

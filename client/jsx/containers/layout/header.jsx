@@ -17,7 +17,6 @@ const Header = React.createClass({
                 <span className="logo-label">Saccharomyces Genome Database</span>
               </div>
             </a>
-
           </div>
           {/* right */}
           <div className="columns small-6 header-right">
@@ -34,6 +33,7 @@ const Header = React.createClass({
               <div><a href="/blog">Blog</a></div>
               <div><a href="/download-data">Download</a></div>
               <div><a href="/help">Help</a></div>
+              <div><a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Yeastmine</a></div>
             </div>
           </div>
         </div>

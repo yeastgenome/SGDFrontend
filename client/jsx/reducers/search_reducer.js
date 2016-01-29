@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 const RESULTS_PER_PAGE = 10;
 const DEFAULT_STATE = {
   userInput: '',
@@ -15,8 +17,9 @@ const DEFAULT_STATE = {
   apiError: null
 };
 
-const searchResultsReducer = function (state, action) {
-  // console.log(action.type)
+const searchResultsReducer = function (_state, action) {
+  let state = _.clone(_state);
+  console.log(action.type)
   if (typeof state === 'undefined') {
     return DEFAULT_STATE;
   }
