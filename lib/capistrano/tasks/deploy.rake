@@ -21,7 +21,7 @@ namespace :deploy do
   desc 'Start pyramid'
   task :restart do
     on roles(:app), in: :sequence do
-      execute "cd #{current_path} && make restart-prod"
+      execute "cd #{current_path} && source prod_variables.sh && make restart-prod"
     end
   end
 end
