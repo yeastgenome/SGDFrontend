@@ -20,13 +20,12 @@ const DEFAULT_STATE = {
 
 const searchResultsReducer = function (_state, action) {
   let state = _.clone(_state);
-  console.log(action.type)
   if (typeof state === 'undefined') {
     return DEFAULT_STATE;
   }
   // let the URL change the query and other params
-  if (action.type === '@@reduxReactRouter/routerDidChange') {
-    let params = action.payload.location.query;
+  if (action.type === '@@router/UPDATE_LOCATION') {
+    let params = action.payload.query;
     // set userInput and query from q
     let newQuery = (typeof params.q === 'string') ? params.q : '';
     state.query = newQuery;
@@ -35,9 +34,8 @@ const searchResultsReducer = function (_state, action) {
     let intPage = (typeof params.page === 'string' || typeof params.page === 'number') ? parseInt(params.page) : 0;
     state.currentPage = intPage;
     // set active aggs
-    let formattedActiveAggs = (typeof params.categories === 'string') ? params.categories.split(',') : [];
-    state.activeAggregations = formattedActiveAggs;
-
+    let activeCat = (typeof params.category === 'string') ? params.category : null;
+    state.activeCategory = activeCat;
     return state;
   }
   if (action.type === 'START_SEARCH_FETCH') {

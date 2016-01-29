@@ -55,6 +55,7 @@ const AppSearchBar = React.createClass({
           onOptionChange={this._onOptionChange}
           onOptionClick={this._onOptionClick}
           onKeyDown={this._onKeyDown}
+          autoFocus={true}
         />
       <span className='search-icon'><i className='fa fa-search'/></span>
       </div>

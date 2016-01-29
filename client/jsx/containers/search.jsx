@@ -2,6 +2,7 @@ import React from 'react';
 import Router from 'react-router';
 import Radium from 'radium';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import _ from 'underscore';
 
 import SearchResult from '../components/search/search_result.jsx';
@@ -10,7 +11,7 @@ import DeferReadyState from '../components/mixins/defer_ready_state.jsx';
 import ErrorMessage from '../components/widgets/error_message.jsx';
 import Loader from '../components/widgets/loader.jsx';
 import Paginator from '../components/widgets/paginator.jsx';
-import Actions from '../actions';
+import { startSearchFetch, fetchSearchResults } from '../actions';
 
 const SEARCH_URL = '/search';
 
@@ -34,15 +35,6 @@ const SearchView = React.createClass({
   render() {
     if (this.props.apiError) {
       return <ErrorMessage />;
-    }
-    if (this.props.query === '') {
-      return (
-        <div className='row' style={[style.resultsWraper]}>
-          <div className='column small-12 text-right'>
-            <h2>Enter a query.</h2>
-          </div>
-        </div>
-      );
     }
     return (
       <div className='row'>
@@ -78,15 +70,14 @@ const SearchView = React.createClass({
     }, 50)
   },
 
-  // listen to URL changes and dispatch needed events
   componentWillMount() {
-    this._unlisten = this.props.history.listen( listener => {
-      console.log('url change')
-      // this._fetchSearchResults();
+    this._unlisten = this.props.history.listen( () => {
+      this._fetchSearchResults()
     });
   },
 
   componentWillUnmount() {
+    console.log('unmount')
     this._unlisten();
   },
 
@@ -180,12 +171,9 @@ const SearchView = React.createClass({
 
   // dispatches redux update and maybe fetches new data
   _fetchSearchResults() {
-    // define actions
-    let startAction = Actions.startSearchFetch();
-    let fetchAction = Actions.fetchSearchResults();
     // dispatch actions
-    this.props.dispatch(startAction);
-    // this.props.dispatch(fetchAction);
+    this.props.dispatch(startSearchFetch());
+    this.props.dispatch(fetchSearchResults());
     return;
   }
 });
@@ -244,6 +232,6 @@ function mapStateToProps(_state) {
     totalPages: state.totalPages,
     apiError: state.apiError
   };
-}
+};
 
 module.exports = connect(mapStateToProps)(Radium(SearchView));

@@ -11,7 +11,6 @@ const NotFound = require("./containers/not_found.jsx");
 module.exports = (
   <Route path="/" component={Layout}>
     <Route path="search" component={Search} />
-    <Route path="variant-viewer" component={ExampleContainer} />
     <Route path="*" component={NotFound}/>
   </Route>
 );
