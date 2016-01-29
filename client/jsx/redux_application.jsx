@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 import { createHistory, useQueries } from 'history'
 
 // import store config and routes
-const ConfigureStore = require('./store/configure_store.js');
-const Routes = require('./routes.jsx');
+import ConfigureStore from './store/configure_store.js';
+import Routes from './routes.jsx';
 
 const ReduxApplication = React.createClass({
 	render() {

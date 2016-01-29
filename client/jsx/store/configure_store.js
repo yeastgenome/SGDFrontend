@@ -3,8 +3,8 @@ import thunk from 'redux-thunk';
 import { routeReducer, syncHistory } from 'react-router-redux';
 
 // custom reducers
-const ReadyStateReducer = require('../reducers/ready_state_reducer.js');
-const searchReducer = require('../reducers/search_reducer.js');
+import ReadyStateReducer from '../reducers/ready_state_reducer.js';
+import searchReducer from '../reducers/search_reducer.js';
 
 // add history to reducer and thunk to dispatch functions as actions
 const ConfigureStore = (initialState, history) => {
