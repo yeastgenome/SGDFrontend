@@ -22,7 +22,6 @@ namespace :deploy do
   task :restart do
     on roles(:app), in: :sequence do
       execute "cd #{current_path} && make restart-prod"
-      end
     end
   end
 end
