@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import Radium from 'radium';
 import { connect } from 'react-redux';
 import _ from 'underscore';
-import Typeahead from 'react-typeahead-component';
+// manually installed to fix react 14 warnings and problem installing from github
+import Typeahead from '../lib/react-typeahead-component';
 
 const Actions = require('../actions');
 

@@ -4,13 +4,13 @@ import Radium from 'radium';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 
-const SearchResult = require('../components/search/search_result.jsx');
-const Collapser = require('../components/widgets/collapser.jsx');
-const DeferReadyState = require('../components/mixins/defer_ready_state.jsx');
-const ErrorMessage = require('../components/widgets/error_message.jsx');
-const Loader = require('../components/widgets/loader.jsx');
-const Paginator = require('../components/widgets/paginator.jsx');
-const Actions = require('../actions');
+import SearchResult from '../components/search/search_result.jsx';
+import Collapser from '../components/widgets/collapser.jsx';
+import DeferReadyState from '../components/mixins/defer_ready_state.jsx';
+import ErrorMessage from '../components/widgets/error_message.jsx';
+import Loader from '../components/widgets/loader.jsx';
+import Paginator from '../components/widgets/paginator.jsx';
+import Actions from '../actions';
 
 const SEARCH_URL = '/search';
 
@@ -18,8 +18,10 @@ const SearchView = React.createClass({
   mixins: [DeferReadyState],
   displayName: 'SearchView',
   propTypes: {
-    activeAggregations: React.PropTypes.array,
-    aggregations: React.PropTypes.array,
+    activeCategory: React.PropTypes.string,
+    categoryAggs: React.PropTypes.array,
+    secondaryAggs: React.PropTypes.array,
+    wrapGeneResults: React.PropTypes.bool,
     currentPage: React.PropTypes.number,
     isPending: React.PropTypes.bool,
     query: React.PropTypes.string,
@@ -124,6 +126,7 @@ const SearchView = React.createClass({
   },
 
   _renderCategories(isMobile) {
+    return <p>catz</p>;
     let keySuffix = '';
     if (isMobile) keySuffix = 's';
     if (this.props.aggregations.length === 0) return null
@@ -232,8 +235,10 @@ function mapStateToProps(_state) {
     results: state.results,
     total: state.total,
     query: state.query,
-    aggregations: state.aggregations,
-    activeAggregations: state.activeAggregations,
+    activeCategory: null,
+    categoryAggs: [],
+    secondaryAggs: [],
+    wrapGeneResults: false,
     isPending: state.isPending,
     currentPage: state.currentPage,
     totalPages: state.totalPages,
