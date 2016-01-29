@@ -23,10 +23,10 @@ prod-deploy:
 	source prod_variables.sh && cap prod deploy
 
 run-prod:
-	source prod_variables.sh && pserve production.ini --daemon
+	pserve production.ini --daemon
 
 stop-prod:
-	source prod_variables.sh && pserve production.ini --stop-daemon
+	pserve production.ini --stop-daemon
 
 restart-prod: stop-prod run-prod
 	echo "Restarted."
