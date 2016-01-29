@@ -83,7 +83,7 @@ def sign_in(request):
         curator = curator_or_none(idinfo['email'])
 
 	if curator is None:
-            return HTTPForbidden('User not authorized on SGD')
+            return HTTPForbidden('User ' + idinfo['email'] + ' is not authorized on SGD')
         
         session = request.session
 
