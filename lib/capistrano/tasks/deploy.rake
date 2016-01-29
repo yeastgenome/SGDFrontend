@@ -2,7 +2,7 @@ namespace :deploy do
   desc 'Build application'
   task :build do
     on roles(:app), in: :sequence do
-      execute "export WORKON_HOME=~/envs/ && source virtualenvwrapper.sh && cd #{current_path} && workon sgd && pip install -r requirements.txt"
+      execute "export WORKON_HOME=~/envs/ && source virtualenvwrapper.sh && cd #{current_path} && workon sgd && make build"
     end
   end
 
@@ -21,7 +21,7 @@ namespace :deploy do
   desc 'Start pyramid'
   task :restart do
     on roles(:app), in: :sequence do
-      execute "cd #{current_path} && source prod_variables.sh && make restart-prod"
+      execute "cd #{current_path} && source #{current_path}/prod_variables.sh && export WORKON_HOME=~/envs/ && source virtualenvwrapper.sh && cd #{current_path} && workon sgd &&make restart-prod"
     end
   end
 end
