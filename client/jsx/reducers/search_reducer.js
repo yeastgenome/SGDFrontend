@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import getCategoryDisplayName from '../lib/get_category_display_name';
 
 const RESULTS_PER_PAGE = 10;
 const DEFAULT_STATE = {
@@ -6,6 +7,7 @@ const DEFAULT_STATE = {
   autocompleteResults: [],
   results: [],
   activeCategory: null,
+  activeCategoryName: null,
   categoryAggs: [],
   secondaryAggs: [],
   wrapGeneResults: false,
@@ -36,6 +38,7 @@ const searchResultsReducer = function (_state, action) {
     // set active aggs
     let activeCat = (typeof params.category === 'string') ? params.category : null;
     state.activeCategory = activeCat;
+    state.activeCategoryName = getCategoryDisplayName(activeCat);
     return state;
   }
   if (action.type === 'START_SEARCH_FETCH') {
@@ -46,7 +49,7 @@ const searchResultsReducer = function (_state, action) {
     state.total = action.response.total;
     state.results = action.response.results;
     state.totalPages = Math.floor(state.total / RESULTS_PER_PAGE) + ((state.total % RESULTS_PER_PAGE === 0) ? 0 : 1);
-    state.aggregations = action.response.aggregations;
+    state.categoryAggs = action.response.aggregations;
     state.isPending = false;
     return state;
   }

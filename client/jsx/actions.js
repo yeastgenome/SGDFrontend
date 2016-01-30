@@ -3,6 +3,8 @@ const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
 const RESULTS_PER_PAGE = 10;
 const RESULTS_URL = '/backend/get_search_results';
 
+import getCategoryDisplayName from './lib/get_category_display_name';
+
 // helper methods
 const fetchFromApi = function (url) {
   return fetch(url)
@@ -13,21 +15,7 @@ const fetchFromApi = function (url) {
       return response.json();
     });
 };
-const getCategoryDisplayName = function (key) {
-  const labels = {
-    locus: 'Genes',
-    reference: 'References',
-    cellular_component: 'Cellular Components',
-    molecular_function: 'Molecular Functions',
-    biological_process: 'Biological Processes',
-    phenotype: 'Phenotypes',
-    strain: 'Strains',
-    author: 'Authors',
-    download: 'Downloads',
-    resource: 'Resources'
-  };
-  return labels[key];
-}
+
 
 export function setUserInput (newValue) {
   return {

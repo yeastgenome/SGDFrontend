@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import _ from 'underscore';
 
 import SearchResult from '../components/search/search_result.jsx';
+import FacetSelector from './facet_selector.jsx';
 import Collapser from '../components/widgets/collapser.jsx';
 import DeferReadyState from '../components/mixins/defer_ready_state.jsx';
 import ErrorMessage from '../components/widgets/error_message.jsx';
@@ -77,7 +78,6 @@ const SearchView = React.createClass({
   },
 
   componentWillUnmount() {
-    console.log('unmount')
     this._unlisten();
   },
 
@@ -116,49 +116,13 @@ const SearchView = React.createClass({
     return <h2>{text}</h2>;
   },
 
-  _renderCategories(isMobile) {
-    return <p>catz</p>;
-    let keySuffix = '';
-    if (isMobile) keySuffix = 's';
-    if (this.props.aggregations.length === 0) return null
-    let selectors = this.props.aggregations.map( d => {
-      let _onClick = e => {
-        e.preventDefault();
-        return this._toggleAgg(d.key);
-      }
-      let isActive = (this.props.activeAggregations.indexOf(d.key) > -1);
-      let _style = isActive ? [style.agg, style.activeAgg] : [style.agg, style.inactiveAgg];
-      return (
-        <div onClick={_onClick} style={_style} key={d.key + keySuffix}>
-          <span>{d.name}</span>
-          <span>{d.total.toLocaleString()}</span>
-        </div>
-      );
-    });
-    let klass = isMobile ? '' : 'panel';
+  _renderCategories(_isMobile) {
+    let klass = _isMobile ? '' : 'panel';
     return (
       <div className={klass} style={[style.panel]}>
-        {isMobile ? null : <h3>Categories</h3>}
-        {selectors}
+        <FacetSelector isMobile={_isMobile}/>
       </div>
     );
-  },
-
-  // changes active aggs in memory, writes to URL
-  _toggleAgg(aggKey) {
-    let activeAggs = this.props.activeAggregations;
-    let isAlreadyInside = (activeAggs.indexOf(aggKey) > -1);
-    let newAggKeys;
-    if (isAlreadyInside) {
-      newAggKeys = _.without(activeAggs, aggKey)
-    } else {
-      activeAggs.push(aggKey)
-      newAggKeys = activeAggs;
-    }
-    let urlParams = this.props.location.query;
-    urlParams.categories = newAggKeys.join();
-    urlParams.page = 0;
-    return this.props.history.pushState(null, SEARCH_URL, urlParams);
   },
 
   _renderResults() {
@@ -178,35 +142,9 @@ const SearchView = React.createClass({
   }
 });
 
-const LINK_COLOR = '#11728b';
 var style = {
   panel: {
     marginTop: '0.5rem'
-  },
-  agg: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    cursor: 'pointer',
-    padding: '0.25rem 0.5rem',
-    marginBottom: '0.25rem',
-    borderRadius: '0.25rem',
-    userSelect: 'none'
-  },
-  activeAgg: {
-    background: LINK_COLOR,
-    color: 'white',
-    border: '1px solid #e6e6e6',
-    ':hover': {
-      background: LINK_COLOR
-    }
-  },
-  inactiveAgg: {
-    background: 'none',
-    color: LINK_COLOR,
-    border: '1px solid transparent',
-    ':hover': {
-      background: '#e6e6e6'
-    }
   },
   viewAs: {
     display: 'inline-block',
