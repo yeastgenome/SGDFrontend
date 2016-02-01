@@ -169,13 +169,20 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(1, len(instances))
         self.assertEqual(association, instances[0])
         
-    def test_colleague_model_should_include_urls_in_dict(self):
+    def test_colleague_model_should_include_associates_in_dict(self):
         source = factory.SourceFactory()
-        colleague = factory.ColleagueFactory()
-        instances = DBSession.query(Colleague).all()
-        colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
-        colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
+
+        colleague_1 = factory.ColleagueFactory(colleague_id=113698)
+        colleague_2 = factory.ColleagueFactory(colleague_id=113699, format_name="Jimmy_2")
+
+        association_1_2 = factory.ColleagueAssociationFactory(colleague_id=colleague_1.colleague_id, associate_id=colleague_2.colleague_id, association_type="Lab member")
+
+        association_2_1 = factory.ColleagueAssociationFactory(colleague_id=colleague_2.colleague_id, associate_id=colleague_1.colleague_id, association_type="Head of the lab")
 
         colleague_dict = {}
-        colleague._include_urls_to_dict(colleague_dict)
-        self.assertEqual(colleague_dict, {'lab_url': 'http://example.org', 'research_summary_url': 'http://example.org'})
+        colleague_1._include_associates_to_dict(colleague_dict)
+        self.assertEqual(colleague_dict, {'associates': {'Lab member': [(colleague_2.first_name, colleague_2.last_name, colleague_2.colleague_id)]}})
+
+        colleague_dict = {}
+        colleague_2._include_associates_to_dict(colleague_dict)
+        self.assertEqual(colleague_dict, {'associates': {'Head of the lab': [(colleague_1.first_name, colleague_1.last_name, colleague_1.colleague_id)]}})

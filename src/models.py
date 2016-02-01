@@ -223,12 +223,6 @@ class ColleagueAssociation(Base):
     colleague = relationship(u'Colleague', primaryjoin='ColleagueAssociation.colleague_id == Colleague.colleague_id')
     source = relationship(u'Source')
 
-# ColleagueAssociation = Table('ColleagueAssociation',
-#                              Base.metadata,
-#                              Column('colleague_association_id', Numeric(scale=0, asdecimal=False), primary_key=True),
-#                              Column('colleague_id', Integer, ForeignKey(u'colleague.colleague_id')),
-#                              Column('associate_id', Integer, ForeignKey(u'colleague.colleague_id')),
-#                              Column('association_type', String(40), nullable=False))
 
 class Colleague(Base):
     __tablename__ = 'colleague'
@@ -268,11 +262,6 @@ class Colleague(Base):
 
     source = relationship(u'Source')
     urls = relationship(u'ColleagueUrl')
-    associates = relationship('Colleague',
-                              secondary=ColleagueAssociation.__table__,
-                              primaryjoin=ColleagueAssociation.colleague_id==colleague_id,
-                              secondaryjoin=ColleagueAssociation.associate_id==colleague_id,
-                              foreign_keys=[ColleagueAssociation.colleague_id, ColleagueAssociation.associate_id])
 
     def _include_urls_to_dict(self, colleague_dict):
         for url in self.urls:
@@ -281,8 +270,17 @@ class Colleague(Base):
             elif url.url_type == "Research summary":
                 colleague_dict['research_summary_url'] = url.obj_url
 
-    def _include_association_to_dict(self, colleague_dict):
-        pass
+    def _include_associates_to_dict(self, colleague_dict):
+        obj = {}
+
+        for associate_id, association_type in DBSession.query(ColleagueAssociation.associate_id, ColleagueAssociation.association_type).filter(ColleagueAssociation.colleague_id == self.colleague_id).all():
+            colleague = DBSession.query(Colleague.first_name, Colleague.last_name, Colleague.colleague_id).filter(Colleague.colleague_id == associate_id).one()
+            if obj.get(association_type) is None:
+                obj[association_type] = [colleague]
+            else:
+                obj[association_type].append(colleague)
+
+        colleague_dict['associates'] = obj
     
     def to_search_results_dict(self):
         colleague_dict = {

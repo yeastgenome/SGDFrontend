@@ -87,12 +87,13 @@ class ColleagueUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+
 class ColleagueAssociationFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = ColleagueAssociation
         sqlalchemy_session = DBSession
 
-    colleague_association_id = 1
+    colleague_association_id = factory.Sequence(lambda n: n)
     source_id = 261
     bud_id = 1
     colleague_id = 113698
