@@ -5,7 +5,6 @@ import os
 
 from .models import DBSession, Base
 
-
 def main(global_config, **settings):
     engine = create_engine(os.environ['NEX2_URI'])
     DBSession.configure(bind=engine)
