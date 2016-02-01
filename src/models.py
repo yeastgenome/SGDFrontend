@@ -280,8 +280,9 @@ class Colleague(Base):
             else:
                 obj[association_type].append(colleague)
 
-        colleague_dict['associates'] = obj
-    
+        if obj != {}:
+            colleague_dict['associates'] = obj
+                
     def to_search_results_dict(self):
         colleague_dict = {
             'first_name': self.first_name,
@@ -292,6 +293,7 @@ class Colleague(Base):
         }
 
         self._include_urls_to_dict(colleague_dict)
+#        self._include_associates_to_dict(colleague_dict)
         return colleague_dict
 
     def to_info_dict(self):
