@@ -40,12 +40,12 @@ const SearchView = React.createClass({
     return (
       <div className='row'>
         <div className='column medium-4 hide-for-small'>
-          {this._renderCategories()}
+          <FacetSelector isMobile={false} />
         </div>
         <div className='column small-12 medium-8'>
           <div className='show-for-small-only'>
             <Collapser label='Categories'>
-              {this._renderCategories(true)}
+              <FacetSelector isMobile={true} />
             </Collapser>
           </div>
           <div style={[style.resultsWraper]}>
@@ -116,15 +116,6 @@ const SearchView = React.createClass({
     return <h2>{text}</h2>;
   },
 
-  _renderCategories(_isMobile) {
-    let klass = _isMobile ? '' : 'panel';
-    return (
-      <div className={klass} style={[style.panel]}>
-        <FacetSelector isMobile={_isMobile}/>
-      </div>
-    );
-  },
-
   _renderResults() {
     let results = this.props.results;
     return results.map( (d, i) => {
@@ -143,9 +134,6 @@ const SearchView = React.createClass({
 });
 
 var style = {
-  panel: {
-    marginTop: '0.5rem'
-  },
   viewAs: {
     display: 'inline-block',
     marginLeft: '1rem'

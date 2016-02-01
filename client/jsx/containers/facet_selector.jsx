@@ -7,7 +7,12 @@ const SEARCH_URL = '/search';
 
 const FacetSelector = React.createClass({
   render() {
-    return this.props.activeCategory ? this._renderCatAggs() : this._renderCatSelector();
+    let klass = this.props.isMobile ? '' : 'panel';
+    return (
+      <div className={klass} style={[style.panel]}>
+        {this.props.activeCategory ? this._renderCatAggs() : this._renderCatSelector()}
+      </div>
+    );
   },
 
   _renderCatSelector () {
@@ -79,7 +84,10 @@ var style = {
     ':hover': {
       background: '#e6e6e6'
     }
-  }
+  },
+  panel: {
+    marginTop: '0.5rem'
+  },
 };
 
 
