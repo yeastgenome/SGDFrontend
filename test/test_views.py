@@ -63,7 +63,14 @@ class ColleaguesTest(unittest.TestCase):
     @mock.patch('src.models.Colleague.urls', new_callable=mock.PropertyMock)
     @mock.patch('src.models.DBSession.query')
     def test_should_return_colleague_by_id(self, mock_search, colleague_urls):
-        mock_search.return_value = MockQuery(self.colleague)
+        
+        def side_effect(*args, **kwargs):
+            if args[0] == Colleague:
+                return MockQuery(self.colleague)
+            else:
+                return MockQuery(None)
+            
+        mock_search.side_effect = side_effect
         colleague_urls.return_value = [self.url_1, self.url_2]
 
         request = testing.DummyRequest()
