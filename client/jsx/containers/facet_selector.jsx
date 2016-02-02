@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { useQueries } from 'history';
 import Radium from 'radium';
+import _ from 'underscore';
 
 const SEARCH_URL = '/search';
 
@@ -43,16 +43,33 @@ const FacetSelector = React.createClass({
 
   _renderGeneAggs () {
     let qp = this.props.queryParams;
-    console.log(this.props.history)
-    // console.log(createPath({ pathname: SEARCH_URL, query: qp }))
     let baseHref = `${this._getRawUrl()}&category=locus`;
     let catNodes = this.props.secondaryAggs.map( (d, i) => {
       // get current actives from URL
-      let currentActiveVals = (typeof qp[d.key] === 'string') ? qp[d.key].split(',') : [];
-      console.log(currentActiveVals)
+      let currentActiveVals;
+      switch (typeof qp[d.key]) {
+        case 'string':
+          currentActiveVals = [qp[d.key]];
+          break;
+        case 'object': // array
+          currentActiveVals = qp[d.key];
+          break;
+        default:
+          currentActiveVals = [];
+      }
       let valueNodes = d.values.map( (_d, i) => {
-        let newHref = baseHref;
-        return this._renderAgg(_d.key, _d.total, `2agg${_d.key}`, newHref);
+        // create the href that would be true if you toggled the current value
+        let newActiveVals = currentActiveVals.slice(0);
+        let isActive = (currentActiveVals.indexOf(_d.key) > -1);
+        if (isActive) {
+          newActiveVals = _.without(currentActiveVals, _d.key);
+        } else {
+          newActiveVals.push(_d.key);
+        }
+        let newQp = _.clone(qp);
+        newQp[d.key] = newActiveVals;
+        let newHref = this.props.history.createPath({ pathname: SEARCH_URL, query: newQp });
+        return this._renderAgg(_d.key, _d.total, `2agg${_d.key}`, newHref, isActive);
       });
       return (
         <div key={`2aggContainer${d.key}`}>
@@ -69,10 +86,11 @@ const FacetSelector = React.createClass({
     );
   },
 
-  _renderAgg (name, total, _key, href) {
+  _renderAgg (name, total, _key, href, isActive) {
+    let activityStyle = isActive ? style.activeAgg: style.inactiveAgg;
     return (
       <Link to={href} key={_key}>
-        <div key={`aggA${_key}`} style={[style.agg, style.inactiveAgg]}>        
+        <div key={`aggA${_key}`} style={[style.agg, activityStyle]}>        
           <span>{name}</span>
           <span>{total.toLocaleString()}</span>
         </div>

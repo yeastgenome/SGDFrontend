@@ -39,12 +39,12 @@ const SearchView = React.createClass({
     return (
       <div className='row'>
         <div className='column medium-4 hide-for-small'>
-          <FacetSelector isMobile={false} />
+          <FacetSelector isMobile={false} {...this.props} />
         </div>
         <div className='column small-12 medium-8'>
           <div className='show-for-small-only'>
             <Collapser label='Categories'>
-              <FacetSelector isMobile={true} />
+              <FacetSelector isMobile={true} {...this.props} />
             </Collapser>
           </div>
           <div style={[style.resultsWraper]}>
@@ -71,7 +71,6 @@ const SearchView = React.createClass({
   },
 
   componentWillMount() {
-    console.log(this.context)
     this._unlisten = this.props.history.listen( () => {
       this._fetchSearchResults()
     });
@@ -144,7 +143,6 @@ var style = {
 };
 
 function mapStateToProps(_state) {
-  console.log(this)
   let state = _state.searchResults;
   return {
     results: state.results,

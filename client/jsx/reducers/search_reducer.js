@@ -1,6 +1,8 @@
 import _ from 'underscore';
 import getCategoryDisplayName from '../lib/get_category_display_name';
 
+const SECONDARY_AGG_KEYS = ['qualifier'];
+
 const RESULTS_PER_PAGE = 10;
 const DEFAULT_STATE = {
   userInput: '',
@@ -27,7 +29,7 @@ const searchResultsReducer = function (_state, action) {
     return DEFAULT_STATE;
   }
   // let the URL change the query and other params
-  if (action.type === '@@router/UPDATE_LOCATION') {
+  if (action.type === '@@router/UPDATE_LOCATION' && action.payload.pathname === '/search') {
     let params = action.payload.query;
     // set userInput and query from q
     let newQuery = (typeof params.q === 'string') ? params.q : '';
@@ -40,6 +42,20 @@ const searchResultsReducer = function (_state, action) {
     let activeCat = (typeof params.category === 'string') ? params.category : null;
     state.activeCategory = activeCat;
     state.activeCategoryName = getCategoryDisplayName(activeCat);
+    let newActiveSecondaryAggs = [];
+    // parse through query params that aren't q or category to populate active secondary aggs
+    let secondaryAggKeys = _.without(_.keys(params), 'q', 'category');
+    secondaryAggKeys.forEach( key => {
+      let localAggObj = {};
+      if (typeof params[key] === 'string') {
+        localAggObj[key] = [params[key]];
+        newActiveSecondaryAggs.push(localAggObj);
+      } else if (typeof params[key] === 'object') {
+        localAggObj[key] = params[key];
+        newActiveSecondaryAggs.push(localAggObj);
+      }
+    });
+    state.activeSecondaryAggs = newActiveSecondaryAggs;
     return state;
   }
   if (action.type === 'START_SEARCH_FETCH') {
