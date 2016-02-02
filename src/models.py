@@ -265,10 +265,13 @@ class Colleague(Base):
 
     def _include_urls_to_dict(self, colleague_dict):
         for url in self.urls:
+            if colleague_dict.get('webpages') is None:
+                colleague_dict['webpages'] = {}
+
             if url.url_type == "Lab":
-                colleague_dict['lab_url'] = url.obj_url
+                colleague_dict['webpages']['lab_url'] = url.obj_url
             elif url.url_type == "Research summary":
-                colleague_dict['research_summary_url'] = url.obj_url
+                colleague_dict['webpages']['research_summary_url'] = url.obj_url
 
     def _include_associates_to_dict(self, colleague_dict):
         obj = {}
@@ -303,7 +306,6 @@ class Colleague(Base):
             'address': [self.address1, self.address2, self.address3],
             'work_phone': self.work_phone,
             'fax': self.fax,
-            'webpages': {},
             'keywords': [],
             'research_interests': self.research_interest,
             'last_update': str(self.date_last_modified)
@@ -312,7 +314,7 @@ class Colleague(Base):
         if self.display_email:
             colleague_dict['email'] = self.email
         
-        self._include_urls_to_dict(colleague_dict['webpages'])
+        self._include_urls_to_dict(colleague_dict)
         self._include_associates_to_dict(colleague_dict)
         return colleague_dict
 

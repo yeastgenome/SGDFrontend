@@ -73,8 +73,10 @@ class ModelsTest(unittest.TestCase):
             'organization': colleague.institution,
             'work_phone': colleague.work_phone,
             'fax': colleague.fax,
-            'lab_url': colleague_url_1.obj_url,
-            'research_summary_url': colleague_url_2.obj_url
+            'webpages': {
+                'lab_url': colleague_url_1.obj_url,
+                'research_summary_url': colleague_url_2.obj_url
+            }
         })
 
     def test_colleague_model_info_dict(self):
@@ -140,7 +142,7 @@ class ModelsTest(unittest.TestCase):
 
         colleague_dict = {}
         colleague._include_urls_to_dict(colleague_dict)
-        self.assertEqual(colleague_dict, {'lab_url': 'http://example.org', 'research_summary_url': 'http://example.org'})
+        self.assertEqual(colleague_dict, {'webpages': {'lab_url': 'http://example.org', 'research_summary_url': 'http://example.org'}})
 
     def test_colleague_url_model(self):
         instances = DBSession.query(ColleagueUrl).all()
