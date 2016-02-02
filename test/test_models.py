@@ -85,7 +85,8 @@ class ModelsTest(unittest.TestCase):
         colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
 
         colleague_2 = factory.ColleagueFactory(colleague_id=113699, format_name="Jimmy_2")
-        association_1_2 = factory.ColleagueAssociationFactory(colleague_id=colleague.colleague_id, associate_id=colleague_2.colleague_id, association_type="Lab member")
+        factory.ColleagueAssociationFactory(colleague_id=colleague.colleague_id, associate_id=colleague_2.colleague_id, association_type="Lab member")
+        factory.ColleagueAssociationFactory(colleague_id=colleague.colleague_id, associate_id=colleague_2.colleague_id, association_type="Associate")
 
         self.assertEqual(colleague.to_info_dict(), {
             'email': colleague.email,
@@ -100,7 +101,8 @@ class ModelsTest(unittest.TestCase):
                 'research_summary_url': 'http://example.org'
             },
             'associations': {
-                'Lab member': [(colleague_2.first_name, colleague_2.last_name, colleague_2.colleague_id)]
+                'Lab member': [(colleague_2.first_name, colleague_2.last_name, colleague_2.colleague_id)],
+                'Associate': [(colleague_2.first_name, colleague_2.last_name, colleague_2.colleague_id)]
             },
             'keywords': [],
             'research_interests': colleague.research_interest,
