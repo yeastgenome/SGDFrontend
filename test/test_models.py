@@ -95,8 +95,6 @@ class ModelsTest(unittest.TestCase):
                 'lab_url': 'http://example.org',
                 'research_summary_url': 'http://example.org'
             },
-            'members_of_lab': [],
-            'associates': [],
             'keywords': [],
             'research_interests': colleague.research_interest,
             'last_update': str(colleague.date_last_modified)
@@ -119,8 +117,6 @@ class ModelsTest(unittest.TestCase):
                 'lab_url': 'http://example.org',
                 'research_summary_url': 'http://example.org'
             },
-            'members_of_lab': [],
-            'associates': [],
             'keywords': [],
             'research_interests': colleague.research_interest,
             'last_update': str(colleague.date_last_modified)
@@ -181,11 +177,11 @@ class ModelsTest(unittest.TestCase):
 
         colleague_dict = {}
         colleague_1._include_associates_to_dict(colleague_dict)
-        self.assertEqual(colleague_dict, {'associates': {'Lab member': [(colleague_2.first_name, colleague_2.last_name, colleague_2.colleague_id)]}})
+        self.assertEqual(colleague_dict, {'associations': {'Lab member': [(colleague_2.first_name, colleague_2.last_name, colleague_2.colleague_id)]}})
 
         colleague_dict = {}
         colleague_2._include_associates_to_dict(colleague_dict)
-        self.assertEqual(colleague_dict, {'associates': {'Head of the lab': [(colleague_1.first_name, colleague_1.last_name, colleague_1.colleague_id)]}})
+        self.assertEqual(colleague_dict, {'associations': {'Head of the lab': [(colleague_1.first_name, colleague_1.last_name, colleague_1.colleague_id)]}})
 
     def test_colleague_model_should_include_associates_in_dict(self):
          source = factory.SourceFactory()
