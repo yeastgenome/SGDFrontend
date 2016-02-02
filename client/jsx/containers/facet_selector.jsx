@@ -21,7 +21,7 @@ const FacetSelector = React.createClass({
     let aggNodes = this.props.categoryAggs.map( (d, i) => {
       let key = `aggNode${d.key}${keySuffix}`;
       let href = `${this._getRawUrl()}&category=${d.key}`;
-      return this._renderAgg(d.name, d.total, d.key, href);
+      return this._renderAgg(d.key, d.total, d.key, href);
     });
     return (
       <div>
@@ -43,7 +43,6 @@ const FacetSelector = React.createClass({
 
   _renderGeneAggs () {
     let qp = this.props.queryParams;
-    let baseHref = `${this._getRawUrl()}&category=locus`;
     let catNodes = this.props.secondaryAggs.map( (d, i) => {
       // get current actives from URL
       let currentActiveVals;

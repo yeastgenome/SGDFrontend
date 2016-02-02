@@ -42,8 +42,8 @@ export function fetchSearchResults () {
       .then( response => {
         if (!response) return;
         response.aggregations = response.aggregations.map( d => {
-          d.key = d.name;
-          d.name = getCategoryDisplayName(d.name);
+          d.key = d.key;
+          d.name = getCategoryDisplayName(d.key);
           return d;
         });
         response.results = response.results.map( d => {
@@ -53,9 +53,9 @@ export function fetchSearchResults () {
         dispatch(setApiError(false));
         return dispatch(receiveSearchResponse(response)); 
       })
-      // .catch(function(err) {
-      //   return dispatch(setApiError(true));
-      // });
+      .catch(function(err) {
+        return dispatch(setApiError(true));
+      });
   }
 };
 

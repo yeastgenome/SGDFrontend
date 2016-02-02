@@ -66,8 +66,11 @@ const searchResultsReducer = function (_state, action) {
     state.total = action.response.total;
     state.results = action.response.results;
     state.totalPages = Math.floor(state.total / RESULTS_PER_PAGE) + ((state.total % RESULTS_PER_PAGE === 0) ? 0 : 1);
-    state.categoryAggs = action.response.aggregations;
-    state.secondaryAggs = action.response.secondary_aggregations;
+    if (typeof state.activeCategory === 'string') {
+      state.secondaryAggs = action.response.aggregations;
+    } else {
+      state.categoryAggs = action.response.aggregations;
+    }
     state.isPending = false;
     return state;
   }
