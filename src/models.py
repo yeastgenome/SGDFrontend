@@ -281,7 +281,7 @@ class Colleague(Base):
                 obj[association_type].append(colleague)
 
         if obj != {}:
-            colleague_dict['associates'] = obj
+            colleague_dict['associations'] = obj
                 
     def to_search_results_dict(self):
         colleague_dict = {
@@ -304,8 +304,6 @@ class Colleague(Base):
             'work_phone': self.work_phone,
             'fax': self.fax,
             'webpages': {},
-            'members_of_lab': [],
-            'associates': [],
             'keywords': [],
             'research_interests': self.research_interest,
             'last_update': str(self.date_last_modified)
