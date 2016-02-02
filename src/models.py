@@ -293,7 +293,6 @@ class Colleague(Base):
         }
 
         self._include_urls_to_dict(colleague_dict)
-#        self._include_associates_to_dict(colleague_dict)
         return colleague_dict
 
     def to_info_dict(self):
@@ -316,6 +315,7 @@ class Colleague(Base):
             colleague_dict['email'] = self.email
         
         self._include_urls_to_dict(colleague_dict['webpages'])
+        self._include_associates_to_dict(colleague_dict)
         return colleague_dict
 
 
