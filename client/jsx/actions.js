@@ -53,9 +53,9 @@ export function fetchSearchResults () {
         dispatch(setApiError(false));
         return dispatch(receiveSearchResponse(response)); 
       })
-      .catch(function(err) {
-        return dispatch(setApiError(true));
-      });
+      // .catch(function(err) {
+      //   return dispatch(setApiError(true));
+      // });
   }
 };
 

@@ -2,7 +2,6 @@ import React from 'react';
 import Router from 'react-router';
 import Radium from 'radium';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import _ from 'underscore';
 
 import SearchResult from '../components/search/search_result.jsx';

@@ -9,7 +9,7 @@ const DEFAULT_STATE = {
   activeCategory: null,
   activeCategoryName: null,
   categoryAggs: [],
-  secondaryAggs: [],
+  secondaryAggs: [], // [{ key, name, values: [{ key, name, total, isActive}] }]
   wrapGeneResults: false,
   total: 0,
   currentPage: 0,
@@ -50,6 +50,7 @@ const searchResultsReducer = function (_state, action) {
     state.results = action.response.results;
     state.totalPages = Math.floor(state.total / RESULTS_PER_PAGE) + ((state.total % RESULTS_PER_PAGE === 0) ? 0 : 1);
     state.categoryAggs = action.response.aggregations;
+    state.secondaryAggs = action.response.secondary_aggregations;
     state.isPending = false;
     return state;
   }

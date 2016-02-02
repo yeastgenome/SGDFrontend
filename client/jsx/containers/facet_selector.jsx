@@ -24,7 +24,7 @@ const FacetSelector = React.createClass({
     });
     return (
       <div>
-        <h3>Categories</h3>
+        <p>Categories</p>
         {aggNodes}
       </div>
     );
@@ -34,7 +34,31 @@ const FacetSelector = React.createClass({
     return (
       <div>
         <p><Link to={this._getRawUrl()}><i className='fa fa-chevron-left'/> Show all categories</Link></p>
-        <h3>{this.props.activeCategoryName}</h3>
+        <h2>{this.props.activeCategoryName}</h2>
+        {this._renderGeneAggs()}
+      </div>
+    );
+  },
+
+  _renderGeneAggs () {
+    console.log(this.props.secondaryAggs)
+    let baseHref = `${this._getRawUrl()}&category=locus`;
+    let catNodes = this.props.secondaryAggs.map( (d, i) => {
+      let valueNodes = d.values.map( (_d, i) => {
+        let newHref = baseHref;
+        return this._renderAgg(_d.key, _d.total, `2agg${_d.key}`, newHref);
+      });
+      return (
+        <div key={`2aggContainer${d.key}`}>
+          <p style={style.aggLabel}>{d.key}</p>
+          {valueNodes}
+        </div>
+      );
+    });
+
+    return (
+      <div>
+        {catNodes}
       </div>
     );
   },
@@ -42,7 +66,7 @@ const FacetSelector = React.createClass({
   _renderAgg (name, total, _key, href) {
     return (
       <Link to={href} key={_key}>
-        <div style={[style.agg, style.inactiveAgg]}>        
+        <div key={`aggA${_key}`} style={[style.agg, style.inactiveAgg]}>        
           <span>{name}</span>
           <span>{total.toLocaleString()}</span>
         </div>
@@ -54,9 +78,6 @@ const FacetSelector = React.createClass({
     return `${SEARCH_URL}?q=${this.props.query}`;
   }
 });
-
-
-
 
 const LINK_COLOR = '#11728b';
 var style = {
@@ -88,8 +109,10 @@ var style = {
   panel: {
     marginTop: '0.5rem'
   },
+  aggLabel: {
+    marginBottom: 0
+  }
 };
-
 
 function mapStateToProps(_state) {
   let state = _state.searchResults;
