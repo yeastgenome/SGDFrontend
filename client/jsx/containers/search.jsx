@@ -71,6 +71,7 @@ const SearchView = React.createClass({
   },
 
   componentWillMount() {
+    console.log(this.context)
     this._unlisten = this.props.history.listen( () => {
       this._fetchSearchResults()
     });
@@ -143,6 +144,7 @@ var style = {
 };
 
 function mapStateToProps(_state) {
+  console.log(this)
   let state = _state.searchResults;
   return {
     results: state.results,

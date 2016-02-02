@@ -9,7 +9,8 @@ const DEFAULT_STATE = {
   activeCategory: null,
   activeCategoryName: null,
   categoryAggs: [],
-  secondaryAggs: [], // [{ key, name, values: [{ key, name, total, isActive}] }]
+  secondaryAggs: [], // [{ key, name, values: [{ key, name, total }] }]
+  activeSecondaryAggs: [], // [ { key, values: [key1, key2] }]
   wrapGeneResults: false,
   total: 0,
   currentPage: 0,

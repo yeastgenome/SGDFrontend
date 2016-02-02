@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-const Header = require('./layout/header.jsx');
-const Footer = require('./layout/footer.jsx');
+import Header from './layout/header.jsx';
+import Footer from './layout/footer.jsx';
 
 const Layout = React.createClass({
   render () {

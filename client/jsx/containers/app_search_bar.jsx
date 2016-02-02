@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Radium from 'radium';
 import { connect } from 'react-redux';
+import { routeActions } from 'react-router-redux';
 import _ from 'underscore';
 // manually installed to fix react 14 warnings and problem installing from github
 import Typeahead from '../lib/react-typeahead-component';
@@ -105,7 +106,7 @@ const AppSearchBar = React.createClass({
 
   // update URL and HTML5 history with query param
   _updateUrl(query) {
-    this.props.history.pushState(null, '/search', { q: query });
+    this.props.dispatch(routeActions.push({ pathname: '/search', query: { q: query }}));
   },
 
   _hardRedirect (newUrl) {

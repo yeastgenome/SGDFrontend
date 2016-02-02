@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import { useQueries } from 'history';
 import Radium from 'radium';
 
 const SEARCH_URL = '/search';
@@ -41,9 +42,14 @@ const FacetSelector = React.createClass({
   },
 
   _renderGeneAggs () {
-    console.log(this.props.secondaryAggs)
+    let qp = this.props.queryParams;
+    console.log(this.props.history)
+    // console.log(createPath({ pathname: SEARCH_URL, query: qp }))
     let baseHref = `${this._getRawUrl()}&category=locus`;
     let catNodes = this.props.secondaryAggs.map( (d, i) => {
+      // get current actives from URL
+      let currentActiveVals = (typeof qp[d.key] === 'string') ? qp[d.key].split(',') : [];
+      console.log(currentActiveVals)
       let valueNodes = d.values.map( (_d, i) => {
         let newHref = baseHref;
         return this._renderAgg(_d.key, _d.total, `2agg${_d.key}`, newHref);
@@ -118,6 +124,7 @@ function mapStateToProps(_state) {
   let state = _state.searchResults;
   return {
     query: state.query,
+    queryParams: _state.routing.location.query,
     activeCategory: state.activeCategory,
     activeCategoryName: state.activeCategoryName,
     categoryAggs: state.categoryAggs,

@@ -2,11 +2,10 @@ import React from 'react';
 import { Route } from 'react-router';
 
 // import handler containers
-const Layout = require('./containers/layout.jsx');
-const Search = require('./containers/search.jsx');
-
-const ExampleContainer = require("./containers/example_container.jsx");
-const NotFound = require("./containers/not_found.jsx");
+import Layout from './containers/layout.jsx';
+import Search from './containers/search.jsx';
+import ExampleContainer from './containers/example_container.jsx';
+import NotFound from './containers/not_found.jsx';
 
 module.exports = (
   <Route path="/" component={Layout}>
