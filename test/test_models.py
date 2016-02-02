@@ -83,6 +83,10 @@ class ModelsTest(unittest.TestCase):
         instances = DBSession.query(Colleague).all()
         colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
         colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
+
+        colleague_2 = factory.ColleagueFactory(colleague_id=113699, format_name="Jimmy_2")
+        association_1_2 = factory.ColleagueAssociationFactory(colleague_id=colleague.colleague_id, associate_id=colleague_2.colleague_id, association_type="Lab member")
+
         self.assertEqual(colleague.to_info_dict(), {
             'email': colleague.email,
             'position': colleague.job_title,
@@ -94,6 +98,9 @@ class ModelsTest(unittest.TestCase):
             'webpages': {
                 'lab_url': 'http://example.org',
                 'research_summary_url': 'http://example.org'
+            },
+            'associations': {
+                'Lab member': [(colleague_2.first_name, colleague_2.last_name, colleague_2.colleague_id)]
             },
             'keywords': [],
             'research_interests': colleague.research_interest,
