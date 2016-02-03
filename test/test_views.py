@@ -7,15 +7,23 @@ import StringIO
 import fixtures as factory
 from mock_helpers import MockQuery, MockQueryFilter, MockFileStorage
 from src.views import upload_file, colleagues_by_last_name, sign_in, sign_out, colleague_by_id
-from src.models import Colleague
+from src.models import Colleague, ColleagueAssociation, ColleagueKeyword, Keyword
 
 
 class ColleaguesTest(unittest.TestCase):    
     def setUp(self):
         self.config = testing.setUp()
         self.colleague = factory.ColleagueFactory.build()
+        self.colleague_2 = factory.ColleagueFactory.build(colleague_id=113699, format_name="Jimmy_2")
         self.url_1 = factory.ColleagueUrlFactory.build(url_id=1, colleague_id=self.colleague.colleague_id)
         self.url_2 = factory.ColleagueUrlFactory.build(url_id=2, colleague_id=self.colleague.colleague_id, url_type="Lab")
+        self.association_1_2 = factory.ColleagueAssociationFactory.build(colleague_id=self.colleague.colleague_id, associate_id=self.colleague_2.colleague_id, association_type="Lab member")
+        self.association_2_1 = factory.ColleagueAssociationFactory.build(colleague_id=self.colleague.colleague_id, associate_id=self.colleague_2.colleague_id, association_type="Associate")
+        self.keyword = factory.KeywordFactory()
+        self.keyword_2 = factory.KeywordFactory(keyword_id=2, format_name="format_name")
+        self.colleague_keyword = factory.ColleagueKeywordFactory.build(colleague_id=self.colleague.colleague_id, keyword_id=self.keyword.keyword_id)
+        self.colleague_keyword_2 = factory.ColleagueKeywordFactory.build(colleague_id=self.colleague.colleague_id, keyword_id=self.keyword_2.keyword_id)
+
 
     def tearDown(self):
         testing.tearDown()
@@ -77,6 +85,19 @@ class ColleaguesTest(unittest.TestCase):
         def side_effect(*args, **kwargs):
             if args[0] == Colleague:
                 return MockQuery(self.colleague)
+            elif args[0].__dict__ == ColleagueKeyword.keyword_id.__dict__:
+                return MockQuery(tuple([self.colleague_keyword.keyword_id]))
+            elif args[0].__dict__ == Keyword.display_name.__dict__:
+                return MockQuery(tuple([self.keyword.display_name]))
+            elif len(args) == 2: # We can't group them into 'and'(&)-clauses because sqlalchemy overloads all the operator and then it would generate a query and not a boolean expression
+                if args[0].__dict__ == ColleagueAssociation.associate_id.__dict__:
+                    if args[1].__dict__ == ColleagueAssociation.association_type.__dict__:
+                        return MockQuery((self.association_1_2.associate_id, self.association_1_2.association_type))
+            elif len(args) == 3:
+               if args[0].__dict__ == Colleague.first_name.__dict__:
+                    if args[1].__dict__ == Colleague.last_name.__dict__:
+                        if args[2].__dict__ == Colleague.colleague_id.__dict__:
+                            return MockQuery((self.colleague_2.first_name, self.colleague_2.last_name, self.colleague_2.colleague_id))
             else:
                 return MockQuery(None)
             
@@ -86,7 +107,7 @@ class ColleaguesTest(unittest.TestCase):
         request = testing.DummyRequest()
         request.matchdict['id'] = str(self.colleague.colleague_id)
         response = colleague_by_id(request)
-
+        self.maxDiff = None
         self.assertEqual(response, {
             'email': self.colleague.email,
             'position': self.colleague.job_title,
@@ -99,6 +120,8 @@ class ColleaguesTest(unittest.TestCase):
                 'lab_url': 'http://example.org',
                 'research_summary_url': 'http://example.org'
             },
+            'associations': {'Lab member': [(self.colleague_2.first_name, self.colleague_2.last_name, self.colleague_2.colleague_id)]},
+            'keywords': [self.keyword.display_name],
             'research_interests': self.colleague.research_interest,
             'last_update': str(self.colleague.date_last_modified)
         })
@@ -298,4 +321,3 @@ class AutheticationTest(unittest.TestCase):
         
         self.assertEqual(response.status_code, 200)
         request.session.invalidate.assert_called_with()
-
