@@ -1,6 +1,6 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
-from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Dbuser
+from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser
 import fixtures as factory
 
 
@@ -198,11 +198,11 @@ class ModelsTest(unittest.TestCase):
         instances = DBSession.query(ColleagueKeyword).all()
         self.assertEqual(0, len(instances))
 
-        association = factory.ColleagueKeywordFactory()
+        colleague_keyword = factory.ColleagueKeywordFactory()
         instances = DBSession.query(ColleagueKeyword).all()
 
         self.assertEqual(1, len(instances))
-        self.assertEqual(association, instances[0])
+        self.assertEqual(colleague_keyword, instances[0])
         
     def test_colleague_model_should_include_keywords_in_dict(self):
         source = factory.SourceFactory()
@@ -211,3 +211,13 @@ class ModelsTest(unittest.TestCase):
         colleague_dict = {}
         colleague._include_keywords_to_dict(colleague_dict)
         self.assertEqual(colleague_dict, {})
+
+    def test_keywords_model(self):
+        instances = DBSession.query(Keyword).all()
+        self.assertEqual(0, len(instances))
+
+        keyword = factory.KeywordFactory()
+        instances = DBSession.query(Keyword).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(keyword, instances[0])
