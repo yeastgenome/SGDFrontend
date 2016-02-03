@@ -287,7 +287,12 @@ class Colleague(Base):
             colleague_dict['associations'] = obj
 
     def _include_keywords_to_dict(self, colleague_dict):
-        pass
+        keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
+        if len(keyword_ids) > 0:
+            ids_query = [k[0] for k in keyword_ids]
+            keywords = DBSession.query(Keyword.display_name).filter(Keyword.keyword_id.in_(ids_query)).all()
+            colleague_dict['keywords'] = [k[0] for k in keywords]
+
                 
     def to_search_results_dict(self):
         colleague_dict = {

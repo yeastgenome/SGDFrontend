@@ -108,7 +108,7 @@ class ColleagueKeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = ColleagueKeyword
         sqlalchemy_session = DBSession
 
-    colleague_keyword_id = 1
+    colleague_keyword_id = factory.Sequence(lambda n: n)
     colleague_id = 113698
     keyword_id = 1
     source_id = 1
