@@ -49,7 +49,7 @@ const SearchView = React.createClass({
             </Collapser>
           </div>
           <div style={[style.resultsWraper]}>
-            <SearchBreadcrumb />
+            <SearchBreadcrumb history={this.props.history} />
             <div className='row'>
               <div className='columns small-6'>
                  {this._renderPaginator()}

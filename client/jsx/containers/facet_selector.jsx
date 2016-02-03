@@ -99,8 +99,8 @@ var style = {
     cursor: 'pointer',
     padding: '0.25rem 0.5rem',
     marginBottom: '0.25rem',
-    borderRadius: '0.25rem',
-    userSelect: 'none'
+    userSelect: 'none',
+    transition: 'background-color 300ms ease-out'
   },
   activeAgg: {
     background: LINK_COLOR,
