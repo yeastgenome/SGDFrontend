@@ -90,6 +90,11 @@ class ModelsTest(unittest.TestCase):
         factory.ColleagueAssociationFactory(colleague_id=colleague.colleague_id, associate_id=colleague_2.colleague_id, association_type="Lab member")
         factory.ColleagueAssociationFactory(colleague_id=colleague.colleague_id, associate_id=colleague_2.colleague_id, association_type="Associate")
 
+        keyword = factory.KeywordFactory()
+        factory.ColleagueKeywordFactory(colleague_id=colleague.colleague_id, keyword_id=keyword.keyword_id)
+        keyword_2 = factory.KeywordFactory(keyword_id=2, format_name="format_name")
+        factory.ColleagueKeywordFactory(colleague_id=colleague.colleague_id, keyword_id=keyword_2.keyword_id)
+
         self.assertEqual(colleague.to_info_dict(), {
             'email': colleague.email,
             'position': colleague.job_title,
@@ -106,6 +111,7 @@ class ModelsTest(unittest.TestCase):
                 'Lab member': [(colleague_2.first_name, colleague_2.last_name, colleague_2.colleague_id)],
                 'Associate': [(colleague_2.first_name, colleague_2.last_name, colleague_2.colleague_id)]
             },
+            'keywords': [keyword.display_name, keyword_2.display_name],
             'research_interests': colleague.research_interest,
             'last_update': str(colleague.date_last_modified)
         })
