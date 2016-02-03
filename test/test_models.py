@@ -1,6 +1,6 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
-from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, Dbuser
+from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Dbuser
 import fixtures as factory
 
 
@@ -194,10 +194,20 @@ class ModelsTest(unittest.TestCase):
         colleague_2._include_associates_to_dict(colleague_dict)
         self.assertEqual(colleague_dict, {'associations': {'Head of the lab': [(colleague_1.first_name, colleague_1.last_name, colleague_1.colleague_id)]}})
 
-    def test_colleague_model_should_include_associates_in_dict(self):
-         source = factory.SourceFactory()
+    def test_colleague_keywords_model(self):
+        instances = DBSession.query(ColleagueKeyword).all()
+        self.assertEqual(0, len(instances))
 
-         colleague = factory.ColleagueFactory()
-         colleague_dict = {}
-         colleague._include_associates_to_dict(colleague_dict)
-         self.assertEqual(colleague_dict, {})
+        association = factory.ColleagueKeywordFactory()
+        instances = DBSession.query(ColleagueKeyword).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(association, instances[0])
+        
+    def test_colleague_model_should_include_keywords_in_dict(self):
+        source = factory.SourceFactory()
+
+        colleague = factory.ColleagueFactory()
+        colleague_dict = {}
+        colleague._include_keywords_to_dict(colleague_dict)
+        self.assertEqual(colleague_dict, {})
