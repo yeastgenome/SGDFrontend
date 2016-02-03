@@ -208,9 +208,19 @@ class ModelsTest(unittest.TestCase):
         source = factory.SourceFactory()
 
         colleague = factory.ColleagueFactory()
+        keyword = factory.KeywordFactory()
+        factory.ColleagueKeywordFactory(colleague_id=colleague.colleague_id, keyword_id=keyword.keyword_id)
+
         colleague_dict = {}
         colleague._include_keywords_to_dict(colleague_dict)
-        self.assertEqual(colleague_dict, {})
+        self.assertEqual(colleague_dict, {'keywords': [keyword.display_name]})
+
+        keyword_2 = factory.KeywordFactory(keyword_id=2, format_name="format_name")
+        factory.ColleagueKeywordFactory(colleague_id=colleague.colleague_id, keyword_id=keyword_2.keyword_id)
+        colleague_dict = {}
+        colleague._include_keywords_to_dict(colleague_dict)
+        self.assertEqual(colleague_dict, {'keywords': [keyword.display_name, keyword_2.display_name]})
+        
 
     def test_keywords_model(self):
         instances = DBSession.query(Keyword).all()
