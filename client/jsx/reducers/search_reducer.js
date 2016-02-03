@@ -45,14 +45,16 @@ const searchResultsReducer = function (_state, action) {
     let newActiveSecondaryAggs = [];
     // parse through query params that aren't q or category to populate active secondary aggs
     let secondaryAggKeys = _.without(_.keys(params), 'q', 'category');
-    secondaryAggKeys.forEach( key => {
-      let localAggObj = {};
-      if (typeof params[key] === 'string') {
-        localAggObj[key] = [params[key]];
-        newActiveSecondaryAggs.push(localAggObj);
-      } else if (typeof params[key] === 'object') {
-        localAggObj[key] = params[key];
-        newActiveSecondaryAggs.push(localAggObj);
+    secondaryAggKeys.forEach( _key => {
+      let _values;
+      switch (typeof params[_key]) {
+        case 'string':
+          _values = [params[_key]];
+          newActiveSecondaryAggs.push({ key: _key, values: _values });
+          break;
+        case 'object': // array
+          _values = params[_key];
+          newActiveSecondaryAggs.push({ key: _key, values: _values });
       }
     });
     state.activeSecondaryAggs = newActiveSecondaryAggs;

@@ -42,20 +42,9 @@ const FacetSelector = React.createClass({
   },
 
   _renderGeneAggs () {
-    let qp = this.props.queryParams;
     let catNodes = this.props.secondaryAggs.map( (d, i) => {
-      // get current actives from URL
-      let currentActiveVals;
-      switch (typeof qp[d.key]) {
-        case 'string':
-          currentActiveVals = [qp[d.key]];
-          break;
-        case 'object': // array
-          currentActiveVals = qp[d.key];
-          break;
-        default:
-          currentActiveVals = [];
-      }
+      let curAgg = _.findWhere(this.props.activeSecondaryAggs, { key: d.key });
+      let currentActiveVals = (typeof curAgg === 'object') ? curAgg.values : [];
       let valueNodes = d.values.map( (_d, i) => {
         // create the href that would be true if you toggled the current value
         let newActiveVals = currentActiveVals.slice(0);
@@ -65,7 +54,7 @@ const FacetSelector = React.createClass({
         } else {
           newActiveVals.push(_d.key);
         }
-        let newQp = _.clone(qp);
+        let newQp = _.clone(this.props.queryParams);
         newQp[d.key] = newActiveVals;
         let newHref = this.props.history.createPath({ pathname: SEARCH_URL, query: newQp });
         return this._renderAgg(_d.key, _d.total, `2agg${_d.key}`, newHref, isActive);
@@ -145,7 +134,8 @@ function mapStateToProps(_state) {
     activeCategory: state.activeCategory,
     activeCategoryName: state.activeCategoryName,
     categoryAggs: state.categoryAggs,
-    secondaryAggs: state.secondaryAggs
+    secondaryAggs: state.secondaryAggs,
+    activeSecondaryAggs: state.activeSecondaryAggs
   };
 };
 

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import _ from 'underscore';
 
 import SearchResult from '../components/search/search_result.jsx';
+import SearchBreadcrumb from './search_breadcrumb.jsx';
 import FacetSelector from './facet_selector.jsx';
 import Collapser from '../components/widgets/collapser.jsx';
 import DeferReadyState from '../components/mixins/defer_ready_state.jsx';
@@ -39,16 +40,16 @@ const SearchView = React.createClass({
     return (
       <div className='row'>
         <div className='column medium-4 hide-for-small'>
-          <FacetSelector isMobile={false} {...this.props} />
+          <FacetSelector isMobile={false} history={this.props.history} />
         </div>
         <div className='column small-12 medium-8'>
           <div className='show-for-small-only'>
             <Collapser label='Categories'>
-              <FacetSelector isMobile={true} {...this.props} />
+              <FacetSelector isMobile={true} history={this.props.history} />
             </Collapser>
           </div>
           <div style={[style.resultsWraper]}>
-            {this._renderResultsText()}
+            <SearchBreadcrumb />
             <div className='row'>
               <div className='columns small-6'>
                  {this._renderPaginator()}
@@ -120,18 +121,6 @@ const SearchView = React.createClass({
     return <Paginator currentPage={this.props.currentPage} totalPages={this.props.totalPages} onPaginate={_onPaginate} />;
   },
 
-  _renderResultsText() {
-    let total = this.props.total.toLocaleString();
-    let query = this.props.query;
-    let text;
-    if (total === 0 && query !== '') {
-      text = `No results for "${query}."  Please modify your search.`
-    } else {
-      text = `Showing ${total} results for "${query}."`;
-    }
-    return <h2>{text}</h2>;
-  },
-
   _renderResults() {
     let results = this.props.results;
     return results.map( (d, i) => {
@@ -164,8 +153,6 @@ function mapStateToProps(_state) {
   let state = _state.searchResults;
   return {
     results: state.results,
-    total: state.total,
-    query: state.query,
     activeCategory: state.activeCategory,
     categoryAggs: state.categoryAggs,
     secondaryAggs: state.secondaryAggs,
