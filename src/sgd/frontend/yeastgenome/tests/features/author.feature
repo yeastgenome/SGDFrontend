@@ -3,7 +3,6 @@ Feature: Author
     @basic
     Scenario: Visit page
         When I visit "/author/?/overview" for "Bi_E"
-        And I should see an element with id "center_title"
         And I should see an element with id "sidebar"
         And I should see an element with id "references"
         And the reference list with id "references_list" should have rows in it

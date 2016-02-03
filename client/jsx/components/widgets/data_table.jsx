@@ -1,17 +1,15 @@
-
-"use strict";
-
-var React = require("react");
-var _ = require("underscore");
-var d3 = require("d3");
-var $ = require("jquery");
+const React = require("react");
+const _ = require("underscore");
+const d3 = require("d3");
+const $ = require("jquery");
 require("datatables");
 require("foundation");
+require("foundationDatatables");
 
 /*
 	A react component that renders a table, then uses jQuery data tables to spice it up.
 */
-var DataTable = React.createClass({
+const DataTable = React.createClass({
 
 	getDefaultProps: function () {
 		return {

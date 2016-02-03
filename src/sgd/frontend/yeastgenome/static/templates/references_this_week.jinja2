@@ -7,11 +7,6 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
-	<h1>Literature Recently Added to SGD</h1>
-    <h2 class="subheader" id="dates"></h2>
-</div>
-
 <!-- Navbar
 ================================================== -->
 <div class="row">
@@ -19,7 +14,7 @@
     <!-- Includes navbar.html into template -->
     {% include "navbar.jinja2" %}
 
-    <div class="small-12 large-9 columns content-column">
+    <div class="small-12 large-10 columns content-column">
 
         <script>
             add_navbar_title("Literature Recently Added to SGD");
@@ -30,7 +25,8 @@
 ================================================== -->
         <section id="references" data-magellan-destination="references">
             <div class="page-header">
-                <h2>References <span id="references_header" class="label secondary round"></span></h2>
+                <h1>Literature Recently Added to SGD</h1>
+                <h2 class="subheader" id="dates"></h2><span id="references_header" class="label secondary round"></span></h2>
                 <hr />
                 {% set reference_list_id = "references_list" %}
                 {% set empty_message = "No literature added recently." %}

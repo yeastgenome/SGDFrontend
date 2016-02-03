@@ -5,23 +5,19 @@ http://smacss.com/book/type-module
 
 // Sticky Side navigation
 #side-nav-sticky {
-	width: 180px;
+	width: 150px;
 	padding: 0;
 }
 
 .side-nav { //extending Foundation
+    width: 150px;
 	border: 1px #ccc solid;
 	@include border-radius(4px);
-	margin-top: 5px;
-	box-shadow: 0 0 0 4px #F0F0F0;
+	margin-top: 0;
+    margin-left: 5px;
 	list-style-type: disc;
 	list-style-position: outside;
 	overflow: hidden;
-}
-
-#side-nav-sticky.fixed {
-	max-width: 180px;
-	width: 180px;
 }
 
 #nav-title {
@@ -83,4 +79,10 @@ http://smacss.com/book/type-module
 
 .sgd-navbar .side-nav {
     padding: 0;
+}
+
+@media print {
+    .sgd-navbar {
+        display: none;
+    }
 }

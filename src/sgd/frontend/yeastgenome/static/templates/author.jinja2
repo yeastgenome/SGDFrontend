@@ -11,10 +11,6 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
-	<h1>Author: <span class="gene_name">{{ author.display_name }}</span></h1>
-</div>
-
 <!-- Navbar
 ================================================== -->
 <div class="row">
@@ -22,7 +18,7 @@
     <!-- Includes navbar.html into template -->
     {% include "navbar.jinja2" %}
 
-    <div class="small-12 large-9 columns content-column">
+    <div class="small-12 large-10 columns content-column">
 
         <script>
             add_navbar_title("Author: <span class='gene_name'>{{ author.display_name }}</span>");
@@ -33,6 +29,8 @@
 ================================================== -->
         <section id="references" data-magellan-destination="references">
             <div class="page-header">
+                <h1>Author: {{ author.display_name }}</h1>
+                <hr />
                 <h2>References <span id="references_header" class="label secondary round"></span></h2>
                 <hr />
                 <!-- Includes reference_list into template -->

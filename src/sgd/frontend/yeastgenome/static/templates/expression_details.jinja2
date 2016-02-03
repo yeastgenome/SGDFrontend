@@ -10,10 +10,6 @@
 
 {% block body %}
 
-<div id="center_title" class="row hide-for-small">
-	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span></h1>
-</div>
-
 <!-- Tabs
 ================================================== -->
 <!-- Includes tabs.html into template -->
@@ -27,10 +23,10 @@
     <!-- Includes navbar.html into template -->
     {% include "navbar.jinja2" %}
 
-    <div class="small-12 large-9 columns content-column">
+    <div class="small-12 large-10 columns content-column">
 
         <script>
-            add_navbar_title("<a href='{{ locus.link }}'>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</a>");
+            add_navbar_title("<span>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span>");
             add_navbar_element("Expression Overview", "overview");
             add_navbar_element("Annotations", "annotations")
             add_navbar_element("Similar Expression Profiles", "network");
@@ -42,7 +38,7 @@
 <section id="overview" data-magellan-destination="overview">
 	<div class="page-header">
         <a href="/help/function-help/expression" name="top" class="documentation-link">Expression Help <i class="fa fa-question-circle"></i></a>
-        <h2>Expression Overview
+        <h1>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %} Expression
             <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
 
             <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
@@ -55,7 +51,7 @@
                 transformed and normalized. The PCL files generated for each dataset are used to populate the
                 expression analysis tool <a href="http://spell.yeastgenome.org/">SPELL</a>.
             </p>
-        </h2>
+        </h1>
         <hr />
         <div id='expression_overview_panel' class="panel">
             <!-- Includes expression_overview.html into template -->

@@ -1,11 +1,7 @@
+import React from 'react';
+import _ from 'underscore';
 
-"use strict";
-
-var React = require("react");
-var _ = require("underscore");
-
-module.exports = React.createClass({
-
+const Legend = React.createClass({
 	// i.e. elements [{ text: "Audi", color: "#ccc" }]
 	getDefaultProps: function () {
 		return {
@@ -36,3 +32,5 @@ module.exports = React.createClass({
 	}
 
 });
+
+module.exports = Legend;

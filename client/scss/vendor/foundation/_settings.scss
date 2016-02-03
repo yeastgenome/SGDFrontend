@@ -99,7 +99,7 @@ $font-weight-bold: bold !default;
 // We use these to control various global styles
 // $body-bg: $white;
 // $body-font-color: $jet;
-// $body-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+$body-font-family: 'Lato', sans-serif;
 $body-font-weight: $font-weight-normal;
 // $body-font-style: normal;
 
@@ -196,7 +196,7 @@ $large-up: "#{$screen} and (min-width:#{lower-bound($large-range)})";
 // $include-html-type-classes: $include-html-classes;
 
 // We use these to control header font styles
-// $header-font-family: $body-font-family;
+$header-font-family: 'Droid Serif', serif;
 $header-font-weight: 500;
 // $header-font-style: normal;
 // $header-font-color: $jet;
@@ -636,10 +636,10 @@ $h6-font-reduction: 0 !default;
 // $input-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
 
 // We use these to style the fieldset border and spacing.
-// $fieldset-border-style: solid;
+$fieldset-border-style: none;
 // $fieldset-border-width: 1px;
 // $fieldset-border-color: $gainsboro;
-// $fieldset-padding: rem-calc(20);
+$fieldset-padding: 0;
 // $fieldset-margin: rem-calc(18 0);
 
 // We use these to style the legends when you use them
@@ -1138,7 +1138,7 @@ $side-nav-link-color-active: #fff;
 // $side-nav-font-size: rem-calc(14);
 // $side-nav-font-weight: $font-weight-normal;
 // $side-nav-font-weight-active: $side-nav-font-weight;
-// $side-nav-font-family: $body-font-family;
+$side-nav-font-family: 'Lato', 'sans-serif';
 // $side-nav-active-font-family: $side-nav-font-family;
 
 // We use these to control heading styles.

@@ -3,7 +3,6 @@ Feature: EC Number
     @basic
     Scenario: Visit page
         When I visit "/ecnumber/?/overview" for "2.4.1.-"
-        And I should see an element with id "center_title"
         And I should see an element with id "sidebar"
         And I should see an element with id "overview"
         And I should see an element with id "annotations"

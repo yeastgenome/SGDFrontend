@@ -11,10 +11,6 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
-	<h1>Map: <span class="gene_name">{{ contig.display_name }}</span></h1>
-</div>
-
 <!-- Navbar
 ================================================== -->
 <div class="row">
@@ -22,7 +18,7 @@
     <!-- Includes navbar.html into template -->
     {% include "navbar.jinja2" %}
 
-    <div class="small-12 large-9 columns content-column">
+    <div class="small-12 large-10 columns content-column">
 
         <script>
         //Set up navbar
@@ -35,7 +31,7 @@
 ================================================== -->
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h2>Overview</h2>
+                <h1>Map: {{ contig.display_name }}</h1>
                 <hr />
                 <div class="panel">
                     <div id="piechart" style="height: 350px;"></div>

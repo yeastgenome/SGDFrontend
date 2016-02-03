@@ -23,10 +23,6 @@
 
 {% block body %}
 
-<div id="center_title" class="row hide-for-small">
-	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
-</div>
-
 <!-- Tabs
 ================================================== -->
 <!-- Includes tabs.html into template -->
@@ -36,23 +32,23 @@
 ================================================== -->
 <div class="row">
 
-    <div id="navbar-container" class="large-3 columns hide-for-medium-down">
+    <div id="navbar-container" class="large-2 columns hide-for-medium-down">
     </div>
 
-    <div class="small-12 large-9 columns content-column">
+    <div class="small-12 large-10 columns content-column">
 
 <!-- Overview
 ================================================== -->
     <section id="overview">
         <a href="/help/sequence" name="top" class="documentation-link">Sequence Help <i class="fa fa-question-circle"></i></a>
-        <h2>Sequence Overview
+        <h1>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %} Sequence
             <a href="#" data-dropdown="overview_info"><i class="fa fa-info-circle"></i></a>
 
             <p id="overview_info" class="f-dropdown content medium" data-dropdown-content>
                Sequences and genome annotation information for Reference Strain S288C and a select set of
                 Alternative References.
             </p>
-        </h2>
+        </h1>
         <hr />
         <div class="">
             <!-- Includes sequence_overview into template -->

@@ -1,6 +1,6 @@
 <!-- Docs nav
 ================================================== -->
-<nav id="sidebar" class="large-3 columns">
+<nav id="sidebar" class="large-2 columns">
     <div data-magellan-expedition="fixed">
         <ul class="side-nav" id="side-nav-sticky"></ul>
     </div>
@@ -21,9 +21,9 @@
         function add_navbar_title(title) {
             var li = document.createElement('li');
             li.setAttribute('id', 'nav-title');
-            var h4 = document.createElement('h4');
-            h4.innerHTML = title;
-            li.appendChild(h4);
+            var titleSpan = document.createElement('span');
+            titleSpan.innerHTML = title;
+            li.appendChild(titleSpan);
             if (navbar.childElementCount > 0) {
                 navbar.insertBefore(li, navbar.firstChild);
             }

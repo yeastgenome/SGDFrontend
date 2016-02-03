@@ -11,10 +11,6 @@
 
 {% block body %}
 
-<div id="center_title" class="row hide-for-small">
-	<h1><span class="gene_name">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span></h1>
-</div>
-
 <!-- Tabs
 ================================================== -->
 <!-- Includes tabs.html into template -->
@@ -28,10 +24,10 @@
     <!-- Includes navbar.html into template -->
     {% include "navbar.jinja2" %}
 
-    <div class="small-12 large-9 columns content-column">
+    <div class="small-12 large-10 columns content-column">
 
         <script>
-            add_navbar_title('<a href="{{ locus.link }}">{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</a>');
+            add_navbar_title('<span>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span>');
             add_navbar_element('Literature Overview', 'overview');
             add_navbar_element('Primary Literature', 'primary');
             add_navbar_element('Related Literature', 'network');
@@ -47,7 +43,7 @@
 ================================================== -->
 <section id="overview" data-magellan-destination="overview">
     <a href="/help/literature-help/literature-guide" name="top" class="documentation-link">Literature Help <i class="fa fa-question-circle"></i></a>
-    <h2>Literature Overview
+    <h1>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %} Literature
         <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
 
         <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
@@ -56,7 +52,7 @@
             papers whose titles or abstracts contain “yeast” or “cerevisiae;” these papers are reviewed manually and
             linked to relevant genes and literature topics by SGD curators.
         </p>
-    </h2>
+    </h1>
     <hr />
     <div class="">    
         <!-- Includes literature_overview.html into template -->

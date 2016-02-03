@@ -9,11 +9,6 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
-	<h2>{{ locus_list.list_name | safe }} Loci</h2>
-</div>
-
-
 <!-- Navbar
 ================================================== -->
 <div class="row">
@@ -32,7 +27,7 @@
 ================================================== -->
         <section id="entries" data-magellan-destination="entries">
             <div class="page-header">
-                <h2>Entries</h2>
+                <h1>{{ locus_list.list_name | safe }} Loci</h1>
                 <!-- Includes gene_list_table into template -->
                 {% set table_id = "gene_list_table" %}
                 {% set table_title = list_name %}

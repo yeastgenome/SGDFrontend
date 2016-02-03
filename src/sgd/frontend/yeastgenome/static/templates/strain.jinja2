@@ -10,10 +10,6 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
-	<h2>Strain: <span class="gene_name">{{ strain.display_name }}</span></h2>
-</div>
-
 <!-- Navbar
 ================================================== -->
 <div class="row">
@@ -21,7 +17,7 @@
 <!-- Includes navbar.html into template -->
     {% include "navbar.jinja2" %}
 
-    <div class="small-12 large-9 columns content-column">
+    <div class="small-12 large-10 columns content-column">
 
         <script>
             add_navbar_title('Strain: <span class="gene_name">{{ strain.display_name }}</span>');
@@ -38,7 +34,7 @@
         ================================================== -->
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h2>Overview</h2>
+                <h1>Strain: {{ strain.display_name }}</h1>
                 <hr />
                 <div class="">
 

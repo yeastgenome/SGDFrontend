@@ -119,7 +119,7 @@ const SequenceComposite = React.createClass({
       if (!attr) return null;
       var geneticPositionNode = this.props.geneticPosition ? <dl className="key-value"><dt>Genetic Position</dt><dd id="genetic_position">{this.props.geneticPosition}</dd></dl> : null;
       node = (<div className="panel sgd-viz">
-        <h3>
+        <h3 className="sequence-viz-label">
           <span dangerouslySetInnerHTML={{ __html: this.props.focusLocusDisplayName }} /> Location: <a href={attr.contigData.href}>{attr.contigData.name}</a> {attr.focusLocusDomain[0]}..{attr.focusLocusDomain[1]}
         </h3>
         <LocusDiagram

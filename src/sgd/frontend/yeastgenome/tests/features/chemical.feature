@@ -3,10 +3,7 @@ Feature: Chemical
     @basic
     Scenario: Visit page
         When I visit "/chemical/?/overview" for "benomyl"
-        And I should see an element with id "center_title"
-        And I should see an element with id "sidebar"
-        And I should see an element with id "overview"
-        And I should see an element with id "phenotype"
+        And I should see an element with class_name "key-value"
         And the table with id "phenotype_table" should have rows in it
 
     Scenario: Click download button

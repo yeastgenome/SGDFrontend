@@ -1,6 +1,6 @@
 {
   "name": "SGDFrontend",
-  "version": "16.1",
+  "version": "16.1.0",
   "homepage": "http://www.yeastgenome.org",
   "repository": {
     "type": "git",
@@ -13,7 +13,8 @@
   },
   "browser": {
     "foundation": "./bower_components/foundation/js/foundation.min.js",
-    "datatables": "./bower_components/datatables/media/js/jquery.dataTables.js"
+    "datatables": "./bower_components/datatables/media/js/jquery.dataTables.js",
+    "foundationDatatables": "./bower_components/datatables-plugins/integration/foundation/dataTables.foundation.js"
   },
   "browserify-shim": {
     "jquery": {
@@ -45,7 +46,9 @@
     "redux": "^3.0.2",
     "redux-router": "^1.0.0-beta3",
     "redux-thunk": "^1.0.0",
-    "underscore": "~1.6.0"
+    "underscore": "~1.6.0",
+    "tcomb-form": "^0.8.0",
+    "tcomb-json-schema": "^0.2.3"
   },
   "devDependencies": {
     "babelify": "^6.3.0",

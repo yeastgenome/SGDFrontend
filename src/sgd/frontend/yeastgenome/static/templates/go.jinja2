@@ -10,16 +10,12 @@
 
 {% block body %}
 
-<div id="center_title" class="row">
-	<h1>Gene Ontology Term: <span class="gene_name">{{ go_term.display_name }}</span></h1>
-</div>
-
 <div class="row">
 	
     <!-- Includes navbar.html into template -->
     {% include "navbar.jinja2" %}
 
-    <div class="small-12 large-9 columns content-column">
+    <div class="small-12 large-10 columns content-column">
 
         <script>
             add_navbar_title('Gene Ontology Term: <span class="gene_name">{{ go_term.display_name }}</span>')
@@ -32,7 +28,7 @@
 ================================================== -->
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h2>Overview</h2>
+                <h1>Gene Ontology Term: {{ go_term.display_name }}</h1>
                 <hr />
 
                 <div class="">

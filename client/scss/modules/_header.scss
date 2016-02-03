@@ -43,18 +43,6 @@ http://smacss.com/book/type-module
 	margin: 8px;
 }
 
-// TEMP survery link
-.temp-survey-notice {
-	position: absolute;
-	width: 204px;
-	top: 21px;
-	left: 330px;
-	z-index: 10;
-	&:after {
-		display: none !important;
-	}
-}
-
 .small-survey-container {
 	display: none;
 	background: #f04124;
@@ -87,7 +75,7 @@ http://smacss.com/book/type-module
 .site-links {
 	margin: 0;
 	position: absolute;
-    right: 153px;
+    right: 164px;
     font-size: em-calc(13);
     li {
         margin-left: em-calc(14);
@@ -129,7 +117,7 @@ form#searchform {
 
 #adv-search-links {
 	font-size: em-calc(12);
-	margin-top: 4px;
+	margin-top: 8px;
 }	
 
 
@@ -168,7 +156,12 @@ form#searchform {
 
 .top-bar-section ul li > a {
     font-weight: bold;
-}   
+}
+
+.top-bar .name h1 a {
+	padding: 0 22px;
+	font-family: Lato, sans-serif;
+} 
 
 /* back styling for mobile menus */
 .back h5 {

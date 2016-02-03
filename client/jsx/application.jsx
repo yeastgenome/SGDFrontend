@@ -1,5 +1,3 @@
-
-
 var setup = require("./lib/setup.jsx");
 
 /*
@@ -16,7 +14,8 @@ var views = {
 	blast_fungal: require("./views/blast_fungal_view.jsx"),
 	protein: require("./views/protein_view.jsx"),
 	summary: require("./views/summary_view.jsx"),
-	variantViewer: require("./views/variant_viewer_view.jsx")
+	variantViewer: require("./views/variant_viewer_view.jsx"),
+	styleGuide: require("./views/style_guide_view.jsx")
 };
 
 // call setup script
