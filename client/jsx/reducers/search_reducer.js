@@ -83,6 +83,10 @@ const searchResultsReducer = function (_state, action) {
     state.autocompleteResults = action.value;
     return state;
   }
+  if (action.type === 'TOGGLE_GENE_WRAP') {
+    state.wrapGeneResults = !state.wrapGeneResults;
+    return state;
+  }
   if (action.type === 'SEARCH_API_ERROR') {
     state.apiError = action.value;
     return state

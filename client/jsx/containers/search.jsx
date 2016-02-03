@@ -11,7 +11,7 @@ import DeferReadyState from '../components/mixins/defer_ready_state.jsx';
 import ErrorMessage from '../components/widgets/error_message.jsx';
 import Loader from '../components/widgets/loader.jsx';
 import Paginator from '../components/widgets/paginator.jsx';
-import { startSearchFetch, fetchSearchResults } from '../actions';
+import { startSearchFetch, fetchSearchResults, toggleGeneWrap } from '../actions';
 
 const SEARCH_URL = '/search';
 
@@ -49,12 +49,13 @@ const SearchView = React.createClass({
           </div>
           <div style={[style.resultsWraper]}>
             {this._renderResultsText()}
-            <div>
-              <span>View as:</span>
-              <ul className='button-group' style={[style.viewAs]}>
-                <li><a className='button tiny'><i className='fa fa-reorder'/></a></li>
-                <li><a className='button secondary tiny'><i className='fa fa-th'/></a></li>
-              </ul>
+            <div className='row'>
+              <div className='columns small-6'>
+                 {this._renderPaginator()}
+              </div>
+              <div className='columns small-6 text-right'>
+                {this._renderViewAs()}
+              </div>
             </div>
             {this._renderSearchContent()}
           </div>
@@ -80,11 +81,28 @@ const SearchView = React.createClass({
     this._unlisten();
   },
 
+  _renderViewAs() {
+    if (this.props.activeCategory !== 'locus') return null;
+    let isW = this.props.wrapGeneResults;
+    let _onClick = e => {
+      e.preventDefault();
+      this.props.dispatch(toggleGeneWrap());
+    }
+    return (
+      <div>
+        <span>View as:</span>
+        <ul className='button-group' style={[style.viewAs]}>
+          <li><a onClick={_onClick} className={`button tiny${isW ? ' secondary':''}`}><i className='fa fa-reorder'/> List</a></li>
+          <li><a onClick={_onClick} className={`button tiny${!isW ? ' secondary':''}`}><i className='fa fa-th'/> Wrapped</a></li>
+        </ul>
+      </div>
+    );
+  },
+
   _renderSearchContent() {
     if (this.props.isPending) return <Loader />
     return (
       <div>
-        {this._renderPaginator()}
         {this._renderResults()}
         {this._renderPaginator()}
       </div>
@@ -103,10 +121,9 @@ const SearchView = React.createClass({
   },
 
   _renderResultsText() {
-    if (this.props.isPending) return null;
     let total = this.props.total.toLocaleString();
     let query = this.props.query;
-    var text;
+    let text;
     if (total === 0 && query !== '') {
       text = `No results for "${query}."  Please modify your search.`
     } else {
@@ -135,7 +152,8 @@ const SearchView = React.createClass({
 var style = {
   viewAs: {
     display: 'inline-block',
-    marginLeft: '1rem'
+    marginLeft: '1rem',
+    marginTop: '0.25rem'
   },
   resultsWraper: {
     minHeight: 1000
@@ -148,10 +166,10 @@ function mapStateToProps(_state) {
     results: state.results,
     total: state.total,
     query: state.query,
-    activeCategory: null,
-    categoryAggs: [],
-    secondaryAggs: [],
-    wrapGeneResults: false,
+    activeCategory: state.activeCategory,
+    categoryAggs: state.categoryAggs,
+    secondaryAggs: state.secondaryAggs,
+    wrapGeneResults: state.wrapGeneResults,
     isPending: state.isPending,
     currentPage: state.currentPage,
     totalPages: state.totalPages,

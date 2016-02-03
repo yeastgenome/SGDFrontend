@@ -98,6 +98,12 @@ export function receiveAutocompleteResponse (_response) {
   };
 };
 
+export function toggleGeneWrap () {
+  return {
+    type: 'TOGGLE_GENE_WRAP',
+  };
+};
+
 export function setApiError (isError) {
   return {
     type: 'SEARCH_API_ERROR',
