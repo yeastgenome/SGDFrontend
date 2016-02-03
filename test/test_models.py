@@ -106,7 +106,6 @@ class ModelsTest(unittest.TestCase):
                 'Lab member': [(colleague_2.first_name, colleague_2.last_name, colleague_2.colleague_id)],
                 'Associate': [(colleague_2.first_name, colleague_2.last_name, colleague_2.colleague_id)]
             },
-            'keywords': [],
             'research_interests': colleague.research_interest,
             'last_update': str(colleague.date_last_modified)
         })
@@ -128,7 +127,6 @@ class ModelsTest(unittest.TestCase):
                 'lab_url': 'http://example.org',
                 'research_summary_url': 'http://example.org'
             },
-            'keywords': [],
             'research_interests': colleague.research_interest,
             'last_update': str(colleague.date_last_modified)
         })
@@ -220,7 +218,6 @@ class ModelsTest(unittest.TestCase):
         colleague_dict = {}
         colleague._include_keywords_to_dict(colleague_dict)
         self.assertEqual(colleague_dict, {'keywords': [keyword.display_name, keyword_2.display_name]})
-        
 
     def test_keywords_model(self):
         instances = DBSession.query(Keyword).all()
