@@ -1,6 +1,6 @@
 import datetime
 import factory
-from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Dbuser
+from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -112,5 +112,21 @@ class ColleagueKeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
     colleague_id = 113698
     keyword_id = 1
     source_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class KeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Keyword
+        sqlalchemy_session = DBSession
+
+    keyword_id = 1
+    format_name = "protein_trafficking,_localization_and_degradation"
+    display_name = "protein trafficking, localization and degradation"
+    obj_url = "/keyword/protein_trafficking,_localization_and_degradation"
+    source_id = 1
+    bud_id = 1
+    description = "my description"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
