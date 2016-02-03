@@ -99,7 +99,6 @@ class ColleaguesTest(unittest.TestCase):
                 'lab_url': 'http://example.org',
                 'research_summary_url': 'http://example.org'
             },
-            'keywords': [],
             'research_interests': self.colleague.research_interest,
             'last_update': str(self.colleague.date_last_modified)
         })

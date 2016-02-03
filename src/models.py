@@ -314,7 +314,6 @@ class Colleague(Base):
             'address': [self.address1, self.address2, self.address3],
             'work_phone': self.work_phone,
             'fax': self.fax,
-            'keywords': [],
             'research_interests': self.research_interest,
             'last_update': str(self.date_last_modified)
         }
