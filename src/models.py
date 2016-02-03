@@ -323,6 +323,7 @@ class Colleague(Base):
         
         self._include_urls_to_dict(colleague_dict)
         self._include_associates_to_dict(colleague_dict)
+        self._include_keywords_to_dict(colleague_dict)
         return colleague_dict
 
 
