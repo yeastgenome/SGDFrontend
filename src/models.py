@@ -285,6 +285,9 @@ class Colleague(Base):
 
         if obj != {}:
             colleague_dict['associations'] = obj
+
+    def _include_keywords_to_dict(self, colleague_dict):
+        pass
                 
     def to_search_results_dict(self):
         colleague_dict = {
