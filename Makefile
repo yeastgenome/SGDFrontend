@@ -2,10 +2,10 @@
 
 build:
 	python setup.py develop
-	export ORACLE_HOME=/data/tools/oracle_instant_client/instantclient_11_2/ && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME && pip install -r requirements.txt
+	# export ORACLE_HOME=/data/tools/oracle_instant_client/instantclient_11_2/ && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME && pip install -r requirements.txt
 
 run:
-	source dev_variables.sh && pserve development.ini --reload
+	source dev_variables.sh && pserve development.ini --reload && webpack --watch 
 
 celery:
 	source dev_variables.sh && celery worker -A pyramid_celery.celery_app --ini development.ini
