@@ -1,12 +1,15 @@
+import Select from 'react-select';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import { routeActions } from 'react-router-redux'
 import Radium from 'radium';
 import _ from 'underscore';
 
 import { getHrefWithoutAgg } from '../lib/search_helpers';
 
 const SEARCH_URL = '/search';
+const SELECT_MAX_CHAR_WIDTH = 8;
 
 const FacetSelector = React.createClass({
   render() {
@@ -45,11 +48,16 @@ const FacetSelector = React.createClass({
 
   _renderGeneAggs () {
     let catNodes = this.props.secondaryAggs.map( (d, i) => {
+      // get current values
       let curAgg = _.findWhere(this.props.activeSecondaryAggs, { key: d.key });
       let currentActiveVals = (typeof curAgg === 'object') ? curAgg.values : [];
+      // TEMP
+      if (d.key === 'molecular_functions') {
+        return this._renderReactSelect(d.key, d.values, currentActiveVals);
+      }
       let valueNodes = d.values.map( (_d, i) => {
         let isActive = (currentActiveVals.indexOf(_d.key) > -1);
-        let newHref = getHrefWithoutAgg(this.props.history, this.props.queryParams, d.key, _d.key, currentActiveVals);
+        let newHref = this._getToggledHref(d.key, _d.key, currentActiveVals);
         return this._renderAgg(_d.key, _d.total, `2agg${_d.key}`, newHref, isActive);
       });
       return (
@@ -79,8 +87,29 @@ const FacetSelector = React.createClass({
     );
   },
 
+  _renderReactSelect (aggKey, selectableValues, currentValues) {
+    const _onChange = selectedKey => {
+      let newHref = this._getToggledHref(aggKey, selectedKey, currentValues);
+      this.props.dispatch(routeActions.push(newHref));
+    };
+    let selectValues = selectableValues.map( d => {
+      // let _label = (d.key.length < SELECT_MAX_CHAR_WIDTH) ? d.key : `${d.key.slice(0, SELECT_MAX_CHAR_WIDTH)}...`;
+      return { label: `${d.key} (${d.total})`, value: d.key };
+    });
+    return (
+      <div key='mfSelector'>
+        <p style={style.aggLabel}>Molecular Functions</p>
+        <Select multi simpleValue placeholder="Select" options={selectValues} value={currentValues} onChange={_onChange} />
+      </div>
+    )
+  },
+
   _getRawUrl () {
     return `${SEARCH_URL}?q=${this.props.query}`;
+  },
+
+  _getToggledHref (aggKey, value, currentValues) {
+    return getHrefWithoutAgg(this.props.history, this.props.queryParams, aggKey, value, currentValues);
   }
 });
 
