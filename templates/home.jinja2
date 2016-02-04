@@ -1,115 +1,32 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <meta name="google-signin-client_id" content="{{ google_client_id }}">
-    <meta name="google-signin-cookiepolicy" content="single_host_origin" />
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>SGD Admin</title>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <!-- Bootstrap Core CSS -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.1.2/foundation.css" rel="stylesheet">
 
-    <title>SGD File Uploader</title>
-    <link rel="shortcut icon" href="favicon.ico">
-    <link rel="stylesheet" type="text/css" href="static/css/normalize.css" />
-    <link rel="stylesheet" type="text/css" href="static/css/demo.css" />
-    <link rel="stylesheet" type="text/css" href="static/css/component.css" />
-    <!--[if IE]>
-  	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
+        <!-- Custom Fonts -->
+        <link href='https://fonts.googleapis.com/css?family=Lato|Droid+Serif:400,700' rel='stylesheet' type='text/css'>
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    </head>
+    <style>
+        body {
+            font-family: Lato, Helvetica, sans-serif;
+        }
+        h1, h2, h3, h3, h4, h5 {
+            font-family: 'Droid Serif', serif;
+        }
+    </style>
 
-    <!-- remove this if you use Modernizr -->
-    <script>(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
-  </head>
-  <body>
-    <script>
-      function onSignIn(googleUser) {
-	
-        var profile = googleUser.getBasicProfile();	
-        console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-        console.log("Name: " + profile.getName());
-        console.log("Image URL: " + profile.getImageUrl());
-        console.log("Email: " + profile.getEmail());
-
-        var id_token = googleUser.getAuthResponse().id_token;
-        console.log("ID Token: " + id_token);
-
-      {% if not request.session.get('email') %}
-	$.ajax({
-	    url: "/signin",
-	    type: "POST",
-	    headers: {
-		'X-CSRF-Token': '{{ request.session.get_csrf_token() }}',
-		'Content-Type': 'application/x-www-form-urlencoded'
-	    },
-	    data: {
-		'token': id_token
-	    }
-	}).done(function(response) {
-	    location.reload();
-	}).fail(function(response) {
-	    $("#notice").html(response.responseText);
-	    signOut(false);
-	});
-      {% endif %}
-      };
-
-      function signOut(backendSignout) {
-        var auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then(function () {
-            console.log('User signed out.');
-
-	    if (backendSignout) {
-		var xhr = new XMLHttpRequest();
-		xhr.open('DELETE', '/signout');
-		xhr.onload = function() {
-		    location.reload();
-		}
-		xhr.send();
-	    }
-        });
-      };
-    </script>
-
-    <div class="container">
-      <header class="codrops-header">
-	<h1>SGD File Uploader</h1>
-      </header>
-      
-      <div class="content">
-
-	<div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark" {% if request.session.get('email') %} style="display:none;" {% endif %}></div>
-	
-	{% if request.session.get('email') %}
-
-	You are logged as {{ request.session.get('email')}}. <a href="#" onclick="signOut(true);">Sign out</a>
-	
-	<form action="/upload" method="post" enctype="multipart/form-data">
-	  <div class="box">
-	    <input type="file" name="file" id="file-5" class="inputfile inputfile-4" data-multiple-caption="{count} files selected" multiple />
-	    <label for="file-5"><figure><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg></figure> <span>Choose a file&hellip;</span></label>
-	  </div>
-	</form>
-	
-	<div class="progress">
-	  <div class="bar"></div>
-	  <!-- <div class="percent">0%</div> -->
-	</div>
-	<div id="status"></div>
-
-	{% else %}
-
-	<p id="notice"></p>
-	
-	{% endif %}
-	
-      </div><!-- /content -->
-    </div><!-- /container -->
-
-    <script src="static/js/jquery-v1.min.js"></script>
-    <script src="static/js/jquery.form.js"></script>
-    <script src="static/js/custom-file-input.js"></script>
-  </body>
+    <body>
+        <div id="j-application"></div>
+        <!-- custom app js bundled -->
+        <script src="/static/js/application.js"></script>
+    </body>
 </html>

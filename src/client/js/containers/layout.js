@@ -12,19 +12,19 @@ const AppLayout = React.createClass({
     };
     // init auth nodes, either login or logout links
     let authNodes = this.props.isAuthenticated ?
-      <ul style={styles.authMenu} className='menu'><li><Link style={styles.navLink} to='/account'><i className='fa fa-user'></i> {this.props.username}</Link></li><li><a style={styles.navLink} onClick={onClickLogout} href='#'><i className='fa fa-sign-out'></i> Logout</a></li></ul> :
-      <ul style={styles.authMenu} className='menu'><li><Link style={styles.navLink} to='/login'><i className='fa fa-sign-in'></i> Login</Link></li></ul>;
+      <ul style={style.authMenu} className='menu'><li><Link style={style.navLink} to='/account'><i className='fa fa-user'></i> {this.props.username}</Link></li><li><a style={style.navLink} onClick={onClickLogout} href='#'><i className='fa fa-sign-out'></i> Logout</a></li></ul> :
+      <ul style={style.authMenu} className='menu'><li><Link style={style.navLink} to='/login'><i className='fa fa-sign-in'></i> Login</Link></li></ul>;
     return (
       <div>
-        <nav className='top-bar' style={styles.messageZone}>
-          <p style={styles.messageText}>Have a look at our <a>cookies policy</a> and <a>privacy policy.</a></p>
+        <nav className='top-bar' style={style.messageZone}>
+          <p style={style.messageText}>Have a look at our <a>cookies policy</a> and <a>privacy policy.</a></p>
         </nav>
-        <nav className='top-bar' style={styles.navWrapper}>
+        <nav className='top-bar' style={style.navWrapper}>
           <div className='top-bar-left'>
-            <ul className='menu' style={styles.menu}>
+            <ul className='menu' style={style.menu}>
               <li>
-                <Link to='dashboard' style={styles.indexLink}>
-                  <img src='img/sgd-logo.png' /><span style={styles.indexText}>Admin</span>
+                <Link to='dashboard' style={style.indexLink}>
+                  <img src='/static/img/sgd_logo.png' style={style.imgLogo}/>
                 </Link>
               </li>
             </ul>
@@ -46,10 +46,13 @@ const AppLayout = React.createClass({
 const purple = '#663882';
 const red = '#C22D38';
 const messageColor = '#CCC';
-var styles = {
+var style = {
   messageZone: {
     background: 'black',
     color: messageColor
+  },
+  imgLogo: {
+    width: 250
   },
   messageText: {
     marginBottom: '0.25rem'

@@ -1,9 +1,9 @@
 import _ from 'underscore';
 
 const DEFAULT_STATE = {
-  isAuthenticated: false,
+  isAuthenticated: true,
   isAuthenticating: false,
-  username: null,
+  username: 'user123',
   token: null
 };
 

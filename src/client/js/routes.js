@@ -9,7 +9,8 @@ import Dashboard from './containers/dashboard';
 import Index from './containers/index';
 import ExampleContainer from './containers/example_container';
 import Login from './containers/login';
-import FilesIndex from './containers/files_index';
+import FilesIndex from './containers/files/files_index';
+import NewFile from './containers/files/new_file';
 import NotFound from './containers/not_found';
 
 module.exports = (
@@ -19,7 +20,10 @@ module.exports = (
     <Route path='login' component={Login} />
     <Route path='dashboard' component={requireAuthentication(Dashboard)}>
       <IndexRoute component={Index} />
-      <Route path='files' component={FilesIndex} />
+      <Route path='files'>
+        <IndexRoute component={FilesIndex} />
+        <Route path='new' component={NewFile} />
+      </Route>
     </Route>
     <Route path='*' component={NotFound} />
   </Route>
