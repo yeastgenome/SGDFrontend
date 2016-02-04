@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import getCategoryDisplayName from '../lib/get_category_display_name';
+import { getCategoryDisplayName } from '../lib/search_helpers';
 
 const SECONDARY_AGG_KEYS = ['qualifier'];
 

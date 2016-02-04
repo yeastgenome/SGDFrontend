@@ -4,6 +4,8 @@ import { Link } from 'react-router';
 import Radium from 'radium';
 import _ from 'underscore';
 
+import { getHrefWithoutAgg } from '../lib/search_helpers';
+
 const SEARCH_URL = '/search';
 
 const FacetSelector = React.createClass({
@@ -46,17 +48,8 @@ const FacetSelector = React.createClass({
       let curAgg = _.findWhere(this.props.activeSecondaryAggs, { key: d.key });
       let currentActiveVals = (typeof curAgg === 'object') ? curAgg.values : [];
       let valueNodes = d.values.map( (_d, i) => {
-        // create the href that would be true if you toggled the current value
-        let newActiveVals = currentActiveVals.slice(0);
         let isActive = (currentActiveVals.indexOf(_d.key) > -1);
-        if (isActive) {
-          newActiveVals = _.without(currentActiveVals, _d.key);
-        } else {
-          newActiveVals.push(_d.key);
-        }
-        let newQp = _.clone(this.props.queryParams);
-        newQp[d.key] = newActiveVals;
-        let newHref = this.props.history.createPath({ pathname: SEARCH_URL, query: newQp });
+        let newHref = getHrefWithoutAgg(this.props.history, this.props.queryParams, d.key, _d.key, currentActiveVals);
         return this._renderAgg(_d.key, _d.total, `2agg${_d.key}`, newHref, isActive);
       });
       return (

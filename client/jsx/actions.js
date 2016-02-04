@@ -3,7 +3,7 @@ const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
 const RESULTS_PER_PAGE = 10;
 const RESULTS_URL = '/backend/get_search_results';
 
-import getCategoryDisplayName from './lib/get_category_display_name';
+import { getCategoryDisplayName } from './lib/search_helpers';
 
 // helper methods
 const fetchFromApi = function (url) {
@@ -53,9 +53,9 @@ export function fetchSearchResults () {
         dispatch(setApiError(false));
         return dispatch(receiveSearchResponse(response)); 
       })
-      .catch(function(err) {
-        return dispatch(setApiError(true));
-      });
+      // .catch(function(err) {
+      //   return dispatch(setApiError(true));
+      // });
   }
 };
 

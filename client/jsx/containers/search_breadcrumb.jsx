@@ -3,22 +3,34 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
-const SEARCH_URL = '/search';
+import { getHrefWithoutAgg } from '../lib/search_helpers';
 
+const SEARCH_URL = '/search';
 
 const SearchBreadcrumb = React.createClass({
   render() {
     let catCrumbNode = this._renderCategoryCrumb();
-    let secondaryAggCrumbNode
-    return (
-      <h2>{this.props.total.toLocaleString()} results for "{this.props.query}"{catCrumbNode}</h2>
-    );
+    let secondaryAggCrumbsNode = this._renderSecondaryAggCrumbs();
+    return  <h2>{this.props.total.toLocaleString()} results for "{this.props.query}"{catCrumbNode}{secondaryAggCrumbsNode}</h2>;
   },
 
   _renderCategoryCrumb () {
     if (!this.props.activeCategory) return null;
     let href = this.props.history.createPath({ pathname: SEARCH_URL, query: { q: this.props.query } });
     return <span> in {this._renderCrumb(this.props.activeCategory, href)}</span>;
+  },
+
+  _renderSecondaryAggCrumbs () {
+    // console.log(this.props.activeSecondaryAggs)
+    let nodes = [];
+    this.props.activeSecondaryAggs.map( d => {
+      d.values.map( _d => {
+        let newHref = getHrefWithoutAgg(this.props.history, this.props.queryParams, d.key, _d, d.values);
+        let node = <span key={`bcAgg${d.key}.${_d}`}> {this._renderCrumb(_d, newHref)}</span>;
+        nodes.push(node);
+      });
+    });
+    return <span>{nodes}</span>;
   },
 
   _renderCrumb (label, href) {
@@ -28,13 +40,12 @@ const SearchBreadcrumb = React.createClass({
 
 function mapStateToProps(_state) {
   let state = _state.searchResults;
-
   return {
-    results: state.results,
     total: state.total,
     query: state.query,
     activeCategory: state.activeCategory,
-    activeSecondaryAggs: state.activeSecondaryAggs
+    activeSecondaryAggs: state.activeSecondaryAggs,
+    queryParams: _state.routing.location.query
   };
 };
 
