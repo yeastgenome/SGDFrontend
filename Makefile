@@ -2,7 +2,9 @@
 
 build:
 	python setup.py develop
-	# export ORACLE_HOME=/data/tools/oracle_instant_client/instantclient_11_2/ && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME && pip install -r requirements.txt
+	npm install -g webpack
+	npm install
+	export ORACLE_HOME=/data/tools/oracle_instant_client/instantclient_11_2/ && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME && pip install -r requirements.txt
 
 run:
 	source dev_variables.sh && webpack --watch && pserve development.ini --reload
