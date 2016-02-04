@@ -64,3 +64,11 @@ dev_variables.sh
 prod_variables.sh
 
 Gemfile.lock
+
+# node and js stuff
+node_modules/
+static/js/application.js
+static/js/application.min.js
+
+# stupid mac files
+*.DS_Store
