@@ -11,6 +11,7 @@ const FilesIndex = React.createClass({
     return (
       <div>
         <h1>Dataset Upload</h1>
+        <hr />
         <div className='row'>
           <div className='columns small-6'>
             {this._renderForm()}
@@ -20,10 +21,11 @@ const FilesIndex = React.createClass({
             </div>
           </div>
           <div className='columns small-6'>
-            <p>File</p>
-            <div style={style.dropZoneContainer}>
-              <Dropzone onDrop={this._onDrop}>
+            <label>File</label>
+            <div style={style.dropZoneContainer} className='text-center'>
+              <Dropzone onDrop={this._onDrop} style={style.dropZone}>
                 <p style={style.dropMessage}>Drop file here or click to select.</p>
+                <h3><i className='fa fa-upload' /></h3>
               </Dropzone>
             </div>
           </div>
@@ -37,11 +39,17 @@ const FilesIndex = React.createClass({
         title: 'Dataset',
         type: 'object',
         properties: {
-          filename: { type: 'string' },
-          date: { type: 'string' },
+          file_display_name: { type: 'string' },
+          topic: { type: 'string' },
+          keywords: { type: 'string' },
+          pmids: { type: 'string' },
+          is_public: { type: 'boolean' },
+          for_spell: { type: 'boolean' },
+          for_browser: { type: 'boolean' },
           file_format: { type: 'string' },
+          date: { type: 'string' }
         },
-        required: ['filename']
+        required: ['file_display_name']
       };
       return <TForm validationObject={datasetSchema} />;
   },
@@ -55,8 +63,16 @@ const style = {
   dropZoneContainer: {
     marginBottom: '0.5rem'
   },
+  dropZone: {
+    width: '100%',
+    background: '#DDD',
+    padding: '1rem',
+    ':hover': {
+      background: '#CCC'
+    }
+  },
   dropMessage: {
-    margin: '1rem'
+    margin: '0 0 1rem 0'
   },
   formButton: {
     marginRight: '0.5rem'
