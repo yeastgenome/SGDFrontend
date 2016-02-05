@@ -20,7 +20,9 @@
     "react-router-redux": "^2.1.0",
     "redux": "^3.0.2",
     "redux-thunk": "^1.0.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "tcomb-form": "^0.8.0",
+    "tcomb-json-schema": "^0.2.3"
   },
   "devDependencies": {
     "babel-core": "^6.4.5",
