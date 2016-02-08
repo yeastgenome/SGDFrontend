@@ -7,7 +7,7 @@ import _ from 'underscore';
 // manually installed to fix react 14 warnings and problem installing from github
 import Typeahead from '../lib/react-typeahead-component';
 
-const Actions = require('../actions');
+const Actions = require('../actions/search_actions');
 
 const SearchOption = React.createClass({
   render () {

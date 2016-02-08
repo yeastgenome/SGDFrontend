@@ -8,16 +8,14 @@ import SearchResult from '../components/search/search_result.jsx';
 import SearchBreadcrumb from './search_breadcrumb.jsx';
 import FacetSelector from './facet_selector.jsx';
 import Collapser from '../components/widgets/collapser.jsx';
-import DeferReadyState from '../components/mixins/defer_ready_state.jsx';
 import ErrorMessage from '../components/widgets/error_message.jsx';
 import Loader from '../components/widgets/loader.jsx';
 import Paginator from '../components/widgets/paginator.jsx';
-import { startSearchFetch, fetchSearchResults, toggleGeneWrap } from '../actions';
+import { startSearchFetch, fetchSearchResults, toggleGeneWrap } from '../actions/search_actions';
 
 const SEARCH_URL = '/search';
 
 const SearchView = React.createClass({
-  mixins: [DeferReadyState],
   displayName: 'SearchView',
   propTypes: {
     activeCategory: React.PropTypes.string,
@@ -64,14 +62,7 @@ const SearchView = React.createClass({
       </div>
     );
   },
-
-  onDeferReadyState() {
-    // temp, just set ready to render
-    setTimeout( () => {
-      this.affirmReadyState();      
-    }, 50)
-  },
-
+  
   componentWillMount() {
     this._unlisten = this.props.history.listen( () => {
       this._fetchSearchResults()

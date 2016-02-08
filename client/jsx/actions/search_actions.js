@@ -3,7 +3,7 @@ const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
 const RESULTS_PER_PAGE = 10;
 const RESULTS_URL = '/backend/get_search_results';
 
-import { getCategoryDisplayName } from './lib/search_helpers';
+import { getCategoryDisplayName } from '../lib/search_helpers';
 
 // helper methods
 const fetchFromApi = function (url) {
@@ -108,12 +108,5 @@ export function setApiError (isError) {
   return {
     type: 'SEARCH_API_ERROR',
     value: isError
-  };
-};
-
-export function setReadyState (isReady) {
-  return {
-    type: 'SET_READY_STATE',
-    value: isReady
   };
 };
