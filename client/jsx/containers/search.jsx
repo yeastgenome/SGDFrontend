@@ -62,7 +62,7 @@ const SearchView = React.createClass({
       </div>
     );
   },
-  
+
   componentWillMount() {
     this._unlisten = this.props.history.listen( () => {
       this._fetchSearchResults()
@@ -113,11 +113,26 @@ const SearchView = React.createClass({
   },
 
   _renderResults() {
+    if (this.props.activeCategory === 'locus' && this.props.wrapGeneResults) return this._renderWrappedResults();
     let results = this.props.results;
     return results.map( (d, i) => {
       let id = d.id || i;
       return <SearchResult key={'searchResults' + id} {...d}/>;
     });
+  },
+
+  // TEMP fake
+  _renderWrappedResults() {
+    let numResults = 212;
+    let nodes = [];
+    for (var i = numResults; i >= 0; i--) {
+      nodes.push(<a style={style.wrappedResult} key={'wR' + i}>ABC1</a>)
+    }
+    return (
+      <div>
+        {nodes}
+      </div>
+    );
   },
 
   // dispatches redux update and maybe fetches new data
@@ -137,6 +152,10 @@ var style = {
   },
   resultsWraper: {
     minHeight: 1000
+  },
+  wrappedResult: {
+    display: 'inline-block',
+    padding: '0.25rem'
   }
 };
 
