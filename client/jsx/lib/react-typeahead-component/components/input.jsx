@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 module.exports = React.createClass({
     displayName: 'Input',
@@ -28,7 +29,7 @@ module.exports = React.createClass({
             // This is not desired because of a possible bug in Chrome.
             // If the page is RTL, and the input's `dir` attribute is set
             // to an empty string, Chrome assumes LTR, which isn't what we want.
-            React.findDOMNode(_this).removeAttribute('dir');
+            ReactDOM.findDOMNode(_this).removeAttribute('dir');
         }
     },
 
@@ -57,12 +58,12 @@ module.exports = React.createClass({
     },
 
     blur: function() {
-        React.findDOMNode(this).blur();
+        ReactDOM.findDOMNode(this).blur();
     },
 
     isCursorAtEnd: function() {
         var _this = this,
-            inputDOMNode = React.findDOMNode(_this),
+            inputDOMNode = ReactDOM.findDOMNode(_this),
             valueLength = _this.props.value.length;
 
         return inputDOMNode.selectionStart === valueLength &&

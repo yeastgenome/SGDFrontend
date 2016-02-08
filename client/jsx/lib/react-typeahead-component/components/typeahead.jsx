@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react'),
+    ReactDOM = require('react-dom'),
     Input = require('./input.jsx'),
     AriaStatus = require('./aria_status.jsx'),
     getTextDirection = require('../utils/get_text_direction'),
@@ -345,7 +346,7 @@ module.exports = React.createClass({
     },
 
     focus: function() {
-        React.findDOMNode(this.refs.input).focus();
+        ReactDOM.findDOMNode(this.refs.input).focus();
     },
 
     handleFocus: function(event) {
@@ -446,7 +447,7 @@ module.exports = React.createClass({
 
                             optionData = props.options[selectedIndex];
                             // Make selected option always scroll to visible
-                            dropdown = React.findDOMNode(_this.refs.dropdown);
+                            dropdown = ReactDOM.findDOMNode(_this.refs.dropdown);
                             selectedOption = dropdown.children[selectedIndex];
                             optionOffsetTop = selectedOption.offsetTop;
                             if(optionOffsetTop + selectedOption.clientHeight > dropdown.clientHeight ||
@@ -502,7 +503,7 @@ module.exports = React.createClass({
         var _this = this,
             target = event.target;
 
-        if (target !== window && !React.findDOMNode(this).contains(target)) {
+        if (target !== window && !ReactDOM.findDOMNode(this).contains(target)) {
             _this.hideHint();
             _this.hideDropdown();
         }
