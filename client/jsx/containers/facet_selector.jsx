@@ -1,15 +1,16 @@
-import Select from 'react-select';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { routeActions } from 'react-router-redux'
 import Radium from 'radium';
+import Select from 'react-select';
 import _ from 'underscore';
 
 import { getHrefWithoutAgg } from '../lib/search_helpers';
 
 const SEARCH_URL = '/search';
 const SELECT_MAX_CHAR_WIDTH = 8;
+const SELECT_OPTION_DELEMITER = '@@';
 
 const FacetSelector = React.createClass({
   render() {
@@ -88,18 +89,24 @@ const FacetSelector = React.createClass({
   },
 
   _renderReactSelect (aggKey, selectableValues, currentValues) {
-    const _onChange = selectedKey => {
-      let newHref = this._getToggledHref(aggKey, selectedKey, currentValues);
+    const _onChange = selectedItems => {
+      let newVals = (selectedItems === '') ? [] : selectedItems.split(SELECT_OPTION_DELEMITER);
+      let newHref = this._getToggledHref(aggKey, newVals, currentValues, true);
       this.props.dispatch(routeActions.push(newHref));
     };
     let selectValues = selectableValues.map( d => {
-      // let _label = (d.key.length < SELECT_MAX_CHAR_WIDTH) ? d.key : `${d.key.slice(0, SELECT_MAX_CHAR_WIDTH)}...`;
       return { label: `${d.key} (${d.total})`, value: d.key };
     });
+    // trim labels once selected to display
+    const _valueRenderer = val => {
+      let _label = (val.label.length < SELECT_MAX_CHAR_WIDTH) ? val.label : `${val.label.slice(0, SELECT_MAX_CHAR_WIDTH)}...`;
+      return <span>{_label}</span>;
+    };
+
     return (
       <div key='mfSelector'>
         <p style={style.aggLabel}>Molecular Functions</p>
-        <Select multi simpleValue placeholder="Select" options={selectValues} value={currentValues} onChange={_onChange} />
+        <Select multi simpleValue placeholder="Select" options={selectValues} value={currentValues} onChange={_onChange} valueRenderer={_valueRenderer} delimiter={SELECT_OPTION_DELEMITER} />
       </div>
     )
   },
@@ -108,8 +115,8 @@ const FacetSelector = React.createClass({
     return `${SEARCH_URL}?q=${this.props.query}`;
   },
 
-  _getToggledHref (aggKey, value, currentValues) {
-    return getHrefWithoutAgg(this.props.history, this.props.queryParams, aggKey, value, currentValues);
+  _getToggledHref (aggKey, value, currentValues, isReset) {
+    return getHrefWithoutAgg(this.props.history, this.props.queryParams, aggKey, value, currentValues, isReset);
   }
 });
 

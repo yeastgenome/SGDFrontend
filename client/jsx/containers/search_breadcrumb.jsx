@@ -11,7 +11,7 @@ const SearchBreadcrumb = React.createClass({
   render() {
     let catCrumbNode = this._renderCategoryCrumb();
     let secondaryAggCrumbsNode = this._renderSecondaryAggCrumbs();
-    return  <h2>{this.props.total.toLocaleString()} results for "{this.props.query}"{catCrumbNode}{secondaryAggCrumbsNode}</h2>;
+    return <h2>{this.props.total.toLocaleString()} results for "{this.props.query}"{catCrumbNode}{secondaryAggCrumbsNode}</h2>;
   },
 
   _renderCategoryCrumb () {
@@ -21,7 +21,6 @@ const SearchBreadcrumb = React.createClass({
   },
 
   _renderSecondaryAggCrumbs () {
-    // console.log(this.props.activeSecondaryAggs)
     let nodes = [];
     this.props.activeSecondaryAggs.map( d => {
       d.values.map( _d => {
@@ -34,7 +33,7 @@ const SearchBreadcrumb = React.createClass({
   },
 
   _renderCrumb (label, href) {
-    return  <Link to={href} className='button small' style={style.bcButton}><span style={style.bcLabel}>{label}</span><i className='fa fa-times'/></Link>;
+    return  <Link to={href} className='button small' style={style.bcButton}><i className='fa fa-times'/><span style={style.bcLabel}>{label}</span></Link>;
   }
 });
 
@@ -54,7 +53,7 @@ const style = {
     padding: '0.5rem 0.75rem'
   },
   bcLabel: {
-    marginRight: '1rem'
+    marginLeft: '0.5rem'
   }
 };
 

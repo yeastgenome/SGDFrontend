@@ -18,10 +18,13 @@ export function getCategoryDisplayName (key) {
 };
 
 // create the href that would be true if you toggled the current value
-export function getHrefWithoutAgg (history, queryParamsObject, aggKey, thisValue, currentValues) {
+export function getHrefWithoutAgg (history, queryParamsObject, aggKey, thisValue, currentValues, isReset) {
   let newActiveVals = currentValues.slice(0);
   let isActive = (currentValues.indexOf(thisValue) > -1);
-  if (isActive) {
+  // clear this key if thisValue is blank (likely a react-select clear)
+  if (isReset) {
+    newActiveVals = thisValue;
+  } else if (isActive) {
     newActiveVals = _.without(currentValues, thisValue);
   } else {
     newActiveVals.push(thisValue);

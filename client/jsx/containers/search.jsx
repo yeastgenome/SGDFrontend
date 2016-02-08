@@ -101,7 +101,7 @@ const SearchView = React.createClass({
   },
 
   _renderSearchContent() {
-    // if (this.props.isPending) return <Loader />
+    if (this.props.isPending) return <Loader />
     return (
       <div>
         {this._renderResults()}
