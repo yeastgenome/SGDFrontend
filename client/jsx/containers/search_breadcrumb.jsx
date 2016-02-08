@@ -23,6 +23,7 @@ const SearchBreadcrumb = React.createClass({
   _renderSecondaryAggCrumbs () {
     let nodes = [];
     this.props.activeSecondaryAggs.map( d => {
+      if (d.key === 'page') return null;
       d.values.map( _d => {
         let newHref = getHrefWithoutAgg(this.props.history, this.props.queryParams, d.key, _d, d.values);
         let node = <span key={`bcAgg${d.key}.${_d}`}> {this._renderCrumb(_d, newHref)}</span>;
