@@ -53,13 +53,13 @@ const FacetSelector = React.createClass({
       let curAgg = _.findWhere(this.props.activeSecondaryAggs, { key: d.key });
       let currentActiveVals = (typeof curAgg === 'object') ? curAgg.values : [];
       // TEMP
-      if (d.key === 'molecular_functions') {
+      if (false) {
         return this._renderReactSelect(d.key, d.values, currentActiveVals);
       }
-      let valueNodes = d.values.map( (_d, i) => {
+      let valueNodes = d.values.map( (_d, _i) => {
         let isActive = (currentActiveVals.indexOf(_d.key) > -1);
         let newHref = this._getToggledHref(d.key, _d.key, currentActiveVals);
-        return this._renderAgg(_d.key, _d.total, `2agg${_d.key}`, newHref, isActive);
+        return this._renderAgg(_d.key, _d.total, `2agg${_d.key}${i}.${_i}`, newHref, isActive);
       });
       return (
         <div key={`2aggContainer${d.key}`}>
@@ -104,8 +104,8 @@ const FacetSelector = React.createClass({
     };
 
     return (
-      <div key='mfSelector'>
-        <p style={style.aggLabel}>Molecular Functions</p>
+      <div>
+        <p style={style.aggLabel}>{aggKey}</p>
         <Select multi simpleValue placeholder="Select" options={selectValues} value={currentValues} onChange={_onChange} valueRenderer={_valueRenderer} delimiter={SELECT_OPTION_DELEMITER} />
       </div>
     )

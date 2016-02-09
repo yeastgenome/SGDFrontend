@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import { getCategoryDisplayName } from '../lib/search_helpers';
+import fakeAggValues from './fake_agg_values';
 
 const SECONDARY_AGG_KEYS = ['qualifier'];
 
@@ -11,7 +12,7 @@ const DEFAULT_STATE = {
   activeCategory: null,
   activeCategoryName: null,
   categoryAggs: [],
-  secondaryAggs: [], // [{ key, name, values: [{ key, name, total }] }]
+  secondaryAggs: fakeAggValues, // [{ key, name, values: [{ key, name, total }] }]
   activeSecondaryAggs: [], // [ { key, values: [key1, key2] }]
   wrapGeneResults: false,
   total: 0,
@@ -69,7 +70,7 @@ const searchResultsReducer = function (_state, action) {
     state.results = action.response.results;
     state.totalPages = Math.floor(state.total / RESULTS_PER_PAGE) + ((state.total % RESULTS_PER_PAGE === 0) ? 0 : 1);
     if (typeof state.activeCategory === 'string') {
-      state.secondaryAggs = action.response.aggregations;
+      // state.secondaryAggs = action.response.aggregations;
     } else {
       state.categoryAggs = action.response.aggregations;
     }
