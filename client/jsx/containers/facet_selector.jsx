@@ -104,7 +104,7 @@ const FacetSelector = React.createClass({
     };
 
     return (
-      <div>
+      <div key={`aggSelect${aggKey}`}>
         <p style={style.aggLabel}>{aggKey}</p>
         <Select multi simpleValue placeholder="Select" options={selectValues} value={currentValues} onChange={_onChange} valueRenderer={_valueRenderer} delimiter={SELECT_OPTION_DELEMITER} />
       </div>

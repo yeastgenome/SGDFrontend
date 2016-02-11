@@ -16,7 +16,6 @@ const fetchFromApi = function (url) {
     });
 };
 
-
 export function setUserInput (newValue) {
   return {
     type: 'SET_USER_INPUT',
@@ -42,7 +41,7 @@ export function fetchSearchResults () {
       .then( response => {
         if (!response) return;
         response.aggregations = response.aggregations.map( d => {
-          d.key = d.key;
+          d.key = d.name;
           d.name = getCategoryDisplayName(d.key);
           return d;
         });
