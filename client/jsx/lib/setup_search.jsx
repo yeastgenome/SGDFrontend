@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-const AppSearchBar = require('../containers/app_search_bar.jsx');
-const ConfigureStore = require('../store/configure_store.js');
+import AppSearchBar from '../containers/app_search_bar.jsx';
+import ConfigureStore from '../store/configure_store.js';
+import { createHistory, useQueries } from 'history'
 
 const SetupSearch = function () {
-  let store = ConfigureStore();
+  // configure store, with history in redux state
+  let history = useQueries(createHistory)();
+  let store = ConfigureStore(undefined, history);
   ReactDOM.render(<AppSearchBar store={store} />, document.getElementById('j-search-container'));
 };
 

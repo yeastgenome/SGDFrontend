@@ -53,7 +53,7 @@ const FacetSelector = React.createClass({
       let curAgg = _.findWhere(this.props.activeSecondaryAggs, { key: d.key });
       let currentActiveVals = (typeof curAgg === 'object') ? curAgg.values : [];
       // TEMP
-      if (false) {
+      if (d.key === 'biological_process' || d.key === 'cellular_component' || d.key === 'molecular_function') {
         return this._renderReactSelect(d.key, d.values, currentActiveVals);
       }
       let valueNodes = d.values.map( (_d, _i) => {
@@ -63,7 +63,7 @@ const FacetSelector = React.createClass({
       });
       return (
         <div key={`2aggContainer${d.key}`}>
-          <p style={style.aggLabel}>{d.key}</p>
+          <p style={style.aggLabel}>{d.name || d.key}</p>
           {valueNodes}
         </div>
       );
@@ -121,7 +121,7 @@ const FacetSelector = React.createClass({
 });
 
 const LINK_COLOR = '#11728b';
-var style = {
+const style = {
   agg: {
     display: 'flex',
     justifyContent: 'space-between',
