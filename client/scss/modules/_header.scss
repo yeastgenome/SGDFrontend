@@ -47,6 +47,7 @@ $right-section-width: 363px;
 	@include inline-list;
 	$inline-list-display: inline;
 	display: block;
+}
 
 .social-links {
 	margin: 0;
@@ -104,6 +105,10 @@ $right-section-width: 363px;
 
 .search-container {
 	max-width: $right-section-width;
+}
+
+.menu-bar-container {
+  padding: 6px 0;
 }
 
 /* back styling for mobile menus */
