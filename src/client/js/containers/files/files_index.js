@@ -7,6 +7,7 @@ const FilesIndex = React.createClass({
     return (
       <div>
         <h1>Datasets</h1>
+        <hr />
         <Link to='/dashboard/files/new'className='button'><i className='fa fa-plus'/> New Dataset</Link>
         <p>
           <span> Files in Progress</span>

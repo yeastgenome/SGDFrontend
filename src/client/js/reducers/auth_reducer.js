@@ -1,30 +1,30 @@
 import _ from 'underscore';
 
 const DEFAULT_STATE = {
-  isAuthenticated: true,
+  isAuthenticated: false,
   isAuthenticating: false,
-  username: 'user123',
-  token: null
+  username: null,
+  csrfToken: null
 };
 
 const authReducer = function (_state, action) {
   let state = _.clone(_state);
-  if (typeof state === 'undefined') {
-    return DEFAULT_STATE;
-  };
-  // TEMP
-  if (action.type === 'AUTHENTICATE_USER') {
-    state.isAuthenticated = true;
-    state.isAuthenticating = false;
-    state.username = 'ipsum123';
-    state.token = '1234fake';
-    return state;
-  } else if (action.type === 'LOGOUT') {
-    state.isAuthenticated = false;
-    state.isAuthenticating = false;
-    state.username = null;
+  switch (action.type) {
+    case 'RECEIVE_AUTH_RESPONSE':
+      state.isAuthenticated = true;
+      state.isAuthenticating = false;
+      state.username = action.payload.username;
+      return state;
+      break;
+    case 'LOGOUT':
+      state.isAuthenticated = false;
+      state.isAuthenticating = false;
+      state.username = null;
+      return state;
+      break;
+    default:
+      return DEFAULT_STATE;
   }
-  return state;
 };
 
 module.exports = authReducer;
