@@ -1,4 +1,7 @@
+import 'isomorphic-fetch';
 import { routeActions } from 'react-router-redux';
+
+const AUTH_URL = '/signin';
 
 export function authenticateUser () {
   return { type: 'AUTHENTICATE_USER' };
@@ -15,11 +18,37 @@ export function logoutAndRedirect () {
   }
 };
 
-export function receiveAuthenticationResponse (_username) {
+export function sendAuthRequest (googleToken) {
+  return function (dispatch, getState) {
+    let state = getState().auth;
+    // send POST request to server to get credentials, dispatch reception action
+    fetch(AUTH_URL, {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': state.csrfToken,
+        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+      },
+      body: {
+        token: googleToken
+      }
+    }).then( function handleAuthResponse (response) {
+      console.log('i got an auth response ', response)
+    });
+  };
+};
+
+export function setCSRFToken (token) {
+  return {
+    type: 'SET_CSRF_TOKEN',
+    payload: token
+  };
+};
+
+export function receiveAuthenticationResponse (_email) {
   return {
     type: 'RECEIVE_AUTH_RESPONSE',
     payload: {
-      username: _username, 
+      email: _email, 
     }
   };
 };

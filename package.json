@@ -13,6 +13,7 @@
     "babel-core": "^6.4.5",
     "babel-polyfill": "^6.5.0",
     "history": "^1.17.0",
+    "isomorphic-fetch": "^2.2.1",
     "radium": "^0.16.5",
     "react": "^0.14.6",
     "react-dom": "^0.14.2",
