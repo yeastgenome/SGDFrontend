@@ -27,7 +27,6 @@ export function sendAuthRequest (googleToken) {
       .substr(1, JSON.stringify(paramObj).length - 2)
       .replace(/"/g, '')
       .replace(/:/g, '=');
-    console.log(paramStr)
     // send POST request to server to get credentials, dispatch reception action
     fetch(AUTH_URL, {
       method: 'POST',
