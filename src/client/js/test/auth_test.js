@@ -23,11 +23,11 @@ describe('Store', function () {
   });
   it('is authenticated by receiving an auth response', function authWithoutCredentials () {
     let store = getNewStore();
-    const FAKE_USERNAME = 'user123';
-    let receiveAuthResponseAction = AuthActions.receiveAuthenticationResponse(FAKE_USERNAME);
+    const FAKE_EMAIL = 'user123@fake.com';
+    let receiveAuthResponseAction = AuthActions.receiveAuthenticationResponse(FAKE_EMAIL);
     store.dispatch(receiveAuthResponseAction);
     let authState = store.getState().auth;
     assert.equal(true, authState.isAuthenticated);
-    assert.equal(FAKE_USERNAME, authState.username);
+    assert.equal(FAKE_EMAIL, authState.email);
   });
 });

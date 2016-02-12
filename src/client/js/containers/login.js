@@ -4,17 +4,23 @@ import * as AuthActions from '../actions/auth_actions';
 
 const Login = React.createClass({
   render() {
-    let _onClick = e => {
-      e.preventDefault()
-      this.props.dispatch(AuthActions.authenticateUser());
-    };
+    // expose onSignIn to global window so google API can find
+    if (window) {
+      window.onSignIn = this.onSignIn
+    }
 
     return (
       <div>
         <h1>Login</h1>
-        <a className='btn btn-default' onClick={_onClick}>Login</a>
+        <hr />
+        <div className="g-signin2" data-onsuccess="onSignIn"></div>
       </div>
     );
+  },
+
+  onSignIn (googleUser) {
+    let sendAuthAction = AuthActions.sendAuthRequest(googleUser.getAuthResponse().id_token);
+    this.props.dispatch(sendAuthAction);
   }
 });
 
