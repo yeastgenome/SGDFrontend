@@ -9,6 +9,7 @@ const DEFAULT_STATE = {
 };
 
 export default function authReducer(_state, action) {
+  if (typeof _state === 'undefined') return DEFAULT_STATE;
   let state = _.clone(_state);
   switch (action.type) {
     case 'SET_CSRF_TOKEN':
@@ -28,6 +29,6 @@ export default function authReducer(_state, action) {
       return state;
       break;
     default:
-      return DEFAULT_STATE;
+      return state;
   }
 };
