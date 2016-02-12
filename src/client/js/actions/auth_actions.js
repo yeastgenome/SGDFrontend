@@ -21,16 +21,22 @@ export function logoutAndRedirect () {
 export function sendAuthRequest (googleToken) {
   return function (dispatch, getState) {
     let state = getState().auth;
+    // format params as JSON string without wrapping brackets
+    let paramObj = { google_token: googleToken };
+    let paramStr = JSON.stringify(paramObj)
+      .substr(1, JSON.stringify(paramObj).length - 2)
+      .replace(/"/g, '')
+      .replace(/:/g, '=');
+    console.log(paramStr)
     // send POST request to server to get credentials, dispatch reception action
     fetch(AUTH_URL, {
       method: 'POST',
+      credentials: 'same-origin',
       headers: {
-        'X-CSRF-Token': state.csrfToken,
+        'X-CSRF-Token': state.csrfToken,        
         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
       },
-      body: {
-        token: googleToken
-      }
+      body: paramStr
     }).then( function handleAuthResponse (response) {
       console.log('i got an auth response ', response)
     });

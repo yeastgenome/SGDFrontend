@@ -140,11 +140,11 @@ def sign_in(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest('Bad CSRF Token')
 
-    if request.POST.get('token') is None:
+    if request.POST.get('google_token') is None:
         return HTTPForbidden('Expected authentication token not found')
     
     try:
-        idinfo = client.verify_id_token(request.POST.get('token'), os.environ['GOOGLE_CLIENT_ID'])
+        idinfo = client.verify_id_token(request.POST.get('google_token'), os.environ['GOOGLE_CLIENT_ID'])
 
         if idinfo.get('iss') not in ['accounts.google.com', 'https://accounts.google.com']:
             return HTTPForbidden('Authentication token has an invalid ISS')
