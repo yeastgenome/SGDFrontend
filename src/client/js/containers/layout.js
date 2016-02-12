@@ -24,7 +24,7 @@ const AppLayout = React.createClass({
             <ul className='menu' style={style.menu}>
               <li>
                 <Link to='dashboard' style={style.indexLink}>
-                  <img src='/img/sgd_logo.png' style={style.imgLogo}/>
+                  <img src='/static/img/sgd_logo.png' style={style.imgLogo}/>
                 </Link>
               </li>
             </ul>

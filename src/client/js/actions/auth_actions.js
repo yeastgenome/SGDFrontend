@@ -14,3 +14,12 @@ export function logoutAndRedirect () {
     dispatch(routeActions.push('/login'));
   }
 };
+
+export function receiveAuthenticationResponse (_username) {
+  return {
+    type: 'RECEIVE_AUTH_RESPONSE',
+    payload: {
+      username: _username, 
+    }
+  };
+};
