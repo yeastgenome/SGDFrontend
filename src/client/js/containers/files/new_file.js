@@ -55,8 +55,8 @@ const FilesIndex = React.createClass({
   },
 
   _onDrop (files) {
-      console.log('Received files: ', files);
-    },
+    console.log('Received files: ', files);
+  },
 });
 
 const style = {
