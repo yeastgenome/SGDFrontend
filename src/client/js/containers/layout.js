@@ -12,7 +12,7 @@ const AppLayout = React.createClass({
     };
     // init auth nodes, either login or logout links
     let authNodes = this.props.isAuthenticated ?
-      <ul style={style.authMenu} className='menu'><li><Link style={style.navLink} to='/account'><i className='fa fa-user'></i> {this.props.username}</Link></li><li><a style={style.navLink} onClick={onClickLogout} href='#'><i className='fa fa-sign-out'></i> Logout</a></li></ul> :
+      <ul style={style.authMenu} className='menu'><li><Link style={style.navLink} to='/account'><i className='fa fa-user'></i> {this.props.email}</Link></li><li><a style={style.navLink} onClick={onClickLogout} href='#'><i className='fa fa-sign-out'></i> Logout</a></li></ul> :
       <ul style={style.authMenu} className='menu'><li><Link style={style.navLink} to='/login'><i className='fa fa-sign-in'></i> Login</Link></li></ul>;
     return (
       <div>
@@ -86,7 +86,7 @@ function mapStateToProps(_state) {
   return {
     isAuthenticated: state.isAuthenticated,
     isAuthenticating: state.isAuthenticating,
-    username: state.username
+    email: state.email
   };
 };
 
