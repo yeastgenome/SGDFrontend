@@ -49,7 +49,7 @@ const FilesIndex = React.createClass({
           file_format: { type: 'string' },
           date: { type: 'string' }
         },
-        required: ['file_display_name']
+        required: ['file_display_name', 'date']
       };
       return <TForm validationObject={datasetSchema} />;
   },
