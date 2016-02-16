@@ -6,24 +6,21 @@ const GOOGLE_PLATFORM_URL = 'https://apis.google.com/js/platform.js';
 
 const Login = React.createClass({
   render() {
-    // expose onSignIn to global window so google API can find
-    if (window) {
-      window.onSignIn = this.onSignIn
-    }
-
     return (
       <div>
         <h1>Login</h1>
         <hr />
-        <script src="https://apis.google.com/js/platform.js" async defer />
         <div className="g-signin2" data-onsuccess="onSignIn"></div>
       </div>
     );
   },
 
-  // append script tag to head to force render google login
+  // google login setup, adjusted for react
   componentDidMount () {
     if (document) {
+      // expose onSignIn to global window so google API can find
+      if (window) window.onSignIn = this.onSignIn
+      // manually add google sign in script
       let scriptTag = document.createElement('script');
       scriptTag.type = 'text/javascript';
       scriptTag.src = GOOGLE_PLATFORM_URL;
