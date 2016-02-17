@@ -54,10 +54,12 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(1, len(instances))
         self.assertEqual(colleague, instances[0])
         self.assertEqual(colleague.to_search_results_dict(), {
+            'id': colleague.colleague_id,
             'first_name': colleague.first_name,
             'last_name': colleague.last_name,
             'organization': colleague.institution,
             'work_phone': colleague.work_phone,
+            'email': colleague.email,
             'fax': colleague.fax
         })
 
@@ -68,16 +70,26 @@ class ModelsTest(unittest.TestCase):
         colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
         colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
         self.assertEqual(colleague.to_search_results_dict(), {
+            'id': colleague.colleague_id,
             'first_name': colleague.first_name,
             'last_name': colleague.last_name,
             'organization': colleague.institution,
             'work_phone': colleague.work_phone,
             'fax': colleague.fax,
+            'email': colleague.email,
             'webpages': {
                 'lab_url': colleague_url_1.obj_url,
                 'research_summary_url': colleague_url_2.obj_url
             }
         })
+
+    def test_colleague_model_search_results__doesnt_send_email_if_required(self):
+        source = factory.SourceFactory()
+        colleague = factory.ColleagueFactory(display_email=False)
+        instances = DBSession.query(Colleague).all()
+        self.assertEqual(1, len(instances))
+        self.assertEqual(colleague, instances[0])
+        self.assertNotIn('email', colleague.to_search_results_dict())
 
     def test_colleague_model_info_dict(self):
         source = factory.SourceFactory()

@@ -46,10 +46,12 @@ class ColleaguesTest(unittest.TestCase):
 
         response = colleagues_by_last_name(request)
         self.assertEqual(response, [{
+            'id': self.colleague.colleague_id,
             'work_phone': self.colleague.work_phone,
             'organization': self.colleague.institution,
             'first_name': self.colleague.first_name,
             'last_name': self.colleague.last_name,
+            'email': self.colleague.email,
             'fax': self.colleague.fax,
             'webpages': {
                 'lab_url': self.url_1.obj_url,

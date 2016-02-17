@@ -297,12 +297,16 @@ class Colleague(Base):
                 
     def to_search_results_dict(self):
         colleague_dict = {
+            'id': self.colleague_id,
             'first_name': self.first_name,
             'last_name': self.last_name,
             'organization': self.institution,
             'work_phone': self.work_phone,
             'fax': self.fax
         }
+
+        if self.display_email:
+            colleague_dict['email'] = self.email
 
         self._include_urls_to_dict(colleague_dict)
         return colleague_dict
