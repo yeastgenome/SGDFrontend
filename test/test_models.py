@@ -83,7 +83,7 @@ class ModelsTest(unittest.TestCase):
             }
         })
 
-    def test_colleague_model_search_results__doesnt_send_email_if_required(self):
+    def test_colleague_model_search_results_doesnt_send_email_if_required(self):
         source = factory.SourceFactory()
         colleague = factory.ColleagueFactory(display_email=False)
         instances = DBSession.query(Colleague).all()
@@ -108,6 +108,8 @@ class ModelsTest(unittest.TestCase):
         factory.ColleagueKeywordFactory(colleague_id=colleague.colleague_id, keyword_id=keyword_2.keyword_id)
 
         self.assertEqual(colleague.to_info_dict(), {
+            'first_name': colleague.first_name,
+            'last_name': colleague.last_name,
             'email': colleague.email,
             'position': colleague.job_title,
             'profession': colleague.profession,
@@ -135,6 +137,8 @@ class ModelsTest(unittest.TestCase):
         colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
         colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
         self.assertEqual(colleague.to_info_dict(), {
+            'first_name': colleague.first_name,
+            'last_name': colleague.last_name,
             'position': colleague.job_title,
             'profession': colleague.profession,
             'organization': colleague.institution,
