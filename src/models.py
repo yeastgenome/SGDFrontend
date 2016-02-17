@@ -313,6 +313,8 @@ class Colleague(Base):
 
     def to_info_dict(self):
         colleague_dict = {
+            'first_name': self.first_name,
+            'last_name': self.last_name,
             'position': self.job_title,
             'profession': self.profession,
             'organization': self.institution,

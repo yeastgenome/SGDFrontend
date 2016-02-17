@@ -111,6 +111,8 @@ class ColleaguesTest(unittest.TestCase):
         response = colleague_by_id(request)
         self.maxDiff = None
         self.assertEqual(response, {
+            'first_name': self.colleague.first_name,
+            'last_name': self.colleague.last_name,
             'email': self.colleague.email,
             'position': self.colleague.job_title,
             'profession': self.colleague.profession,
