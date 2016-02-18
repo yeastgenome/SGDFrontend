@@ -38,7 +38,7 @@ namespace :deploy do
   desc 'Creates symbolic link'
   task :verify_symlink do
     on roles(:app), in: :sequence do
-      execute "cd #{current_path}/../../ && echo \"Creating symlink...\"  && ln -f -s SGDFrontend_app/current SGDFrontend"
+      execute "cd #{current_path}/../../ && echo \"Creating symlink...\"  && rm -rf SGDFrontend && ln -s SGDFrontend_app/current SGDFrontend"
     end
   end
 
