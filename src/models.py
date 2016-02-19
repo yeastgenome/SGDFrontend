@@ -318,7 +318,10 @@ class Colleague(Base):
             'position': self.job_title,
             'profession': self.profession,
             'organization': self.institution,
-            'address': [self.address1, self.address2, self.address3],
+            'city': self.city,
+            'state': self.state,
+            'country': self.country,
+            'postal_code': self.postal_code,
             'work_phone': self.work_phone,
             'fax': self.fax,
             'research_interests': self.research_interest,
@@ -331,7 +334,6 @@ class Colleague(Base):
                 colleague_dict['address'].append(addr)
         if len(colleague_dict['address']) == 0:
             colleague_dict['address'] = None
-        
         
         if self.display_email:
             colleague_dict['email'] = self.email

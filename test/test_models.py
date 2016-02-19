@@ -115,6 +115,10 @@ class ModelsTest(unittest.TestCase):
             'profession': colleague.profession,
             'organization': colleague.institution,
             'address': [colleague.address1],
+            'city': colleague.city,
+            'state': colleague.state,
+            'country': colleague.country,
+            'postal_code': colleague.postal_code,
             'work_phone': colleague.work_phone,
             'fax': colleague.fax,
             'webpages': {
@@ -143,6 +147,10 @@ class ModelsTest(unittest.TestCase):
             'profession': colleague.profession,
             'organization': colleague.institution,
             'address': [colleague.address1],
+            'city': colleague.city,
+            'state': colleague.state,
+            'country': colleague.country,
+            'postal_code': colleague.postal_code,
             'work_phone': colleague.work_phone,
             'fax': colleague.fax,
             'webpages': {
