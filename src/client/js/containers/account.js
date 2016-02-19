@@ -12,4 +12,4 @@ function mapStateToProps(_state) {
   };
 }
 
-module.exports = connect(mapStateToProps)(Account);
+export default connect(mapStateToProps)(Account);

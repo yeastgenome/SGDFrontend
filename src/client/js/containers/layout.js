@@ -84,4 +84,4 @@ function mapStateToProps(_state) {
   };
 };
 
-module.exports = Radium(connect(mapStateToProps)(AppLayout));
+export default Radium(connect(mapStateToProps)(AppLayout));

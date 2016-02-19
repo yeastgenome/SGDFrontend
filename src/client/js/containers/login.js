@@ -39,4 +39,4 @@ function mapStateToProps(_state) {
   };
 }
 
-module.exports = connect(mapStateToProps)(Login);
+export default connect(mapStateToProps)(Login);

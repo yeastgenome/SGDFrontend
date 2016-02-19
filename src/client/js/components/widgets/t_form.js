@@ -79,8 +79,9 @@ const styles = {
     color: 'red'
   },  
   formButton: {
-    marginRight: '0.5rem'
+    marginRight: '0.5rem',
+    border: 'none'
   }
 };
 
-module.exports = TForm;
+export default TForm;
