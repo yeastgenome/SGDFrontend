@@ -118,6 +118,10 @@ class ColleaguesTest(unittest.TestCase):
             'profession': self.colleague.profession,
             'organization': self.colleague.institution,
             'address': [self.colleague.address1],
+            'city': self.colleague.city,
+            'state': self.colleague.state,
+            'country': self.colleague.country,
+            'postal_code': self.colleague.postal_code,
             'work_phone': self.colleague.work_phone,
             'fax': self.colleague.fax,
             'webpages': {
