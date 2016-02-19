@@ -37,7 +37,7 @@ export function sendAuthRequest (googleToken) {
       },
       body: paramStr
     }).then( function handleAuthResponse (response) {
-      dispatch(receiveAuthenticationResponse('user123'));
+      dispatch(receiveAuthResponseAndRedirect('user123'));
     });
   };
 };
@@ -46,6 +46,14 @@ export function setCSRFToken (token) {
   return {
     type: 'SET_CSRF_TOKEN',
     payload: token
+  };
+};
+
+export function receiveAuthResponseAndRedirect (email) {
+  return function (dispatch, getState) {
+    dispatch(receiveAuthenticationResponse(email));
+    let redirectUrl = getState().routing.location.query.next || '/login';
+    dispatch(routeActions.push(redirectUrl));
   };
 };
 
