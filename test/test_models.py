@@ -114,7 +114,7 @@ class ModelsTest(unittest.TestCase):
             'position': colleague.job_title,
             'profession': colleague.profession,
             'organization': colleague.institution,
-            'address': [colleague.address1, colleague.address2, colleague.address3],
+            'address': [colleague.address1],
             'work_phone': colleague.work_phone,
             'fax': colleague.fax,
             'webpages': {
@@ -142,7 +142,7 @@ class ModelsTest(unittest.TestCase):
             'position': colleague.job_title,
             'profession': colleague.profession,
             'organization': colleague.institution,
-            'address': [colleague.address1, colleague.address2, colleague.address3],
+            'address': [colleague.address1],
             'work_phone': colleague.work_phone,
             'fax': colleague.fax,
             'webpages': {
