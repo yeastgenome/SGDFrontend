@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 import * as AuthActions from '../actions/auth_actions';
 
 const AppLayout = React.createClass({
+  
   render() {
     let onClickLogout = e => {
       e.preventDefault();
@@ -16,9 +17,6 @@ const AppLayout = React.createClass({
       <ul style={style.authMenu} className='menu'><li><Link style={style.navLink} to='/login'><i className='fa fa-sign-in'></i> Login</Link></li></ul>;
     return (
       <div>
-        <nav className='top-bar' style={style.messageZone}>
-          <p style={style.messageText}>Have a look at our <a>cookies policy</a> and <a>privacy policy.</a></p>
-        </nav>
         <nav className='top-bar' style={style.navWrapper}>
           <div className='top-bar-left'>
             <ul className='menu' style={style.menu}>
@@ -29,7 +27,7 @@ const AppLayout = React.createClass({
               </li>
             </ul>
           </div>
-         <div className='top-bar-right'>
+        <div className='top-bar-right'>
           {authNodes}
         </div>
         </nav>
@@ -47,10 +45,6 @@ const purple = '#663882';
 const red = '#C22D38';
 const messageColor = '#CCC';
 var style = {
-  messageZone: {
-    background: 'black',
-    color: messageColor
-  },
   imgLogo: {
     width: 250
   },
