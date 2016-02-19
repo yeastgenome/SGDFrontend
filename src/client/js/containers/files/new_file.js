@@ -24,7 +24,7 @@ const SCHEMA_OBJ = {
 const FilesIndex = React.createClass({
   getInitialState () {
     return {
-      file: null,
+      files: null,
       isPending: false
     };
   },
@@ -57,11 +57,19 @@ const FilesIndex = React.createClass({
   },
 
   _onFormSubmit (value) {
-    console.log('form it is a changin ', value);
+    let formData = new FormData();
+    for (let k in value) {
+      formData.append(k, value[k]);
+    }
+    this.state.files.forEach( file => {
+      formData.append('file', file);
+    });
+    console.log(formData)
   },
 
-  _onDrop (_file) {
-    this.setState({ file: _file });
+  _onDrop (_files) {
+    console.log(_files)
+    this.setState({ files: _files });
   },
 });
 

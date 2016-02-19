@@ -1,9 +1,9 @@
 import _ from 'underscore';
 
 const DEFAULT_STATE = {
-  isAuthenticated: false,
+  isAuthenticated: true,
   isAuthenticating: false,
-  email: null,
+  email: 'user123',
   csrfToken: null,
   loginError: null // can be { message: 'user not found ', error: new Errow('user not found') }
 };
