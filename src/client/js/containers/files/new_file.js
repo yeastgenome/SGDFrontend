@@ -1,8 +1,11 @@
 import Radium from 'radium';
 import React from 'react';
+import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
+import 'isomorphic-fetch';
 
-import TForm from '../../components/widgets/t_form'
+import Loader from '../../components/widgets/loader';
+import TForm from '../../components/widgets/t_form';
 
 const SCHEMA_OBJ = {
   title: 'Dataset',
@@ -20,57 +23,96 @@ const SCHEMA_OBJ = {
   },
   required: ['file_display_name', 'date']
 };
+const UPLOAD_URL = '/upload';
 
 const FilesIndex = React.createClass({
   getInitialState () {
     return {
       files: null,
-      isPending: false
+      isPending: false,
+      isComplete: false,
     };
   },
 
-  render() {
+  render () {
     return (
       <div>
         <h1>Dataset Upload</h1>
         <hr />
-        <div className='row'>
-          <div className='columns small-6'>
-            {this._renderForm()}
-          </div>
-          <div className='columns small-6'>
-            <label>File</label>
-            <div style={[styles.dropZoneContainer]} className='text-center'>
-              <Dropzone onDrop={this._onDrop}>
-                <p style={[styles.dropMessage]}>Drop file here or click to select.</p>
-                <h3><i className='fa fa-upload' /></h3>
-              </Dropzone>
-            </div>
+        {this._renderFormOrMessage()}
+      </div>
+    );
+  },
+
+  _renderFormOrMessage () {
+    if (this.state.isPending) return <Loader />;
+    if (this.state.isComplete) {
+      return (
+        <p>File uploaded successfully.</p>
+      );
+    }
+    return this._renderForm();
+  },
+
+  _renderForm () {
+    return (
+      <div className='row'>
+        <div className='columns small-6'>
+          <TForm validationObject={SCHEMA_OBJ} onSubmit={this._onFormSubmit} submitText='Upload' cancelHref='/dashboard/files' />
+        </div>
+        <div className='columns small-6'>
+          <label>File</label>
+          <div style={[styles.dropZoneContainer]} className='text-center'>
+            <Dropzone onDrop={this._onDrop}>
+              <p style={[styles.dropMessage]}>Drop file here or click to select.</p>
+              <h3><i className='fa fa-upload' /></h3>
+            </Dropzone>
           </div>
         </div>
       </div>
     );
   },
 
-  _renderForm () {
-      return <TForm validationObject={SCHEMA_OBJ} onSubmit={this._onFormSubmit} submitText='Upload' cancelHref='/dashboard/files' />;
-  },
-
+  // only called if the metadata is valid according to json schema
+  // do extra valitation and check if file is there
+  // TODO, show error if no file
   _onFormSubmit (value) {
     let formData = new FormData();
     for (let k in value) {
       formData.append(k, value[k]);
     }
-    this.state.files.forEach( file => {
-      formData.append('file', file);
-    });
-    console.log(formData)
+    // TODO raise error
+    if (!this.state.files) return;
+    formData.append('file', this.state.files[0]);
+    this._uploadFile(formData);
   },
 
   _onDrop (_files) {
     console.log(_files)
     this.setState({ files: _files });
   },
+
+  _uploadFile (formData) {
+    console.log(this.props.csrfToken)
+    this.setState({ isPending: true });
+    fetch(UPLOAD_URL, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'X-CSRF-Token': this.props.csrfToken,        
+        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+      },
+      body: formData
+    }).then( response => {
+      if (this.isMounted()) {
+        console.log(response)
+        this.setState({
+          isPending: false,
+          isComplete: true,
+        });
+      }
+    });
+  }
 });
 
 const styles = {
@@ -82,4 +124,12 @@ const styles = {
   },
 }
 
-module.exports = Radium(FilesIndex);
+
+function mapStateToProps(_state) {
+  let state = _state.auth;
+  return {
+    csrfToken: state.csrfToken,
+  };
+};
+
+module.exports = connect(mapStateToProps)(Radium(FilesIndex));
