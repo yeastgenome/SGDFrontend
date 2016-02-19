@@ -117,7 +117,7 @@ class ColleaguesTest(unittest.TestCase):
             'position': self.colleague.job_title,
             'profession': self.colleague.profession,
             'organization': self.colleague.institution,
-            'address': [self.colleague.address1, self.colleague.address2, self.colleague.address3],
+            'address': [self.colleague.address1],
             'work_phone': self.colleague.work_phone,
             'fax': self.colleague.fax,
             'webpages': {

@@ -324,6 +324,14 @@ class Colleague(Base):
             'research_interests': self.research_interest,
             'last_update': str(self.date_last_modified)
         }
+
+        colleague_dict['address'] = []
+        for addr in [self.address1, self.address2, self.address3]:
+            if addr is not None:
+                colleague_dict['address'].append(addr)
+        if len(colleague_dict['address']) == 0:
+            colleague_dict['address'] = None
+        
         
         if self.display_email:
             colleague_dict['email'] = self.email
