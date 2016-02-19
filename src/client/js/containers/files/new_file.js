@@ -63,13 +63,20 @@ const FilesIndex = React.createClass({
         <div className='columns small-6'>
           <label>File</label>
           <div style={[styles.dropZoneContainer]} className='text-center'>
-            <Dropzone onDrop={this._onDrop}>
-              <p style={[styles.dropMessage]}>Drop file here or click to select.</p>
-              <h3><i className='fa fa-upload' /></h3>
-            </Dropzone>
+            {this._renderFileDrop()}
           </div>
         </div>
       </div>
+    );
+  },
+
+  _renderFileDrop () {
+    if (this.state.files) return <p className='text-left'>{this.state.files[0].name}</p>;
+    return (
+      <Dropzone onDrop={this._onDrop}>
+        <p style={[styles.dropMessage]}>Drop file here or click to select.</p>
+        <h3><i className='fa fa-upload' /></h3>
+      </Dropzone>
     );
   },
 
@@ -93,7 +100,6 @@ const FilesIndex = React.createClass({
   },
 
   _uploadFile (formData) {
-    console.log(this.props.csrfToken)
     this.setState({ isPending: true });
     fetch(UPLOAD_URL, {
       method: 'POST',
