@@ -37,7 +37,7 @@ export function sendAuthRequest (googleToken) {
       },
       body: paramStr
     }).then( function handleAuthResponse (response) {
-      console.log('i got an auth response ', response)
+      dispatch(receiveAuthenticationResponse('user123'));
     });
   };
 };
