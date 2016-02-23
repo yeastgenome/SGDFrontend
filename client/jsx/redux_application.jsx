@@ -1,21 +1,20 @@
 import React, { Component } from 'react';
 import { Router } from 'react-router';
 import { Provider } from 'react-redux';
-import { createHistory, useQueries } from 'history'
 
-// import store config and routes
-import ConfigureStore from './store/configure_store.js';
+// import routes
 import Routes from './routes.jsx';
 
 const ReduxApplication = React.createClass({
-	render() {
-    // configure store, with history in redux state
-    let history = useQueries(createHistory)();
-    let store = ConfigureStore(undefined, history);
+  propTypes: {
+    history: React.PropTypes.object.isRequired,
+    store: React.PropTypes.object.isRequired
+  },
 
+	render() {
     return (
-      <Provider store={store}>
-        <Router history={history}>
+      <Provider store={this.props.store}>
+        <Router history={this.props.history}>
           {Routes}
         </Router>
       </Provider>

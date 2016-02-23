@@ -1,13 +1,19 @@
+import 'babel/polyfill'; // allow promise
 import React from 'react';
 import ReactDOM from 'react-dom';
-import 'babel/polyfill'; // allow promise
+import { createHistory, useQueries } from 'history'
 
+import ConfigureStore from './store/configure_store.js';
 import ReduxApplication from './redux_application.jsx';
+
 // *** STARTS THE BROWSER APPLICATION ***
 // ------------------*-------------------
 var bundledView = {};
 bundledView.render = function () {
-  ReactDOM.render(<ReduxApplication />, document.getElementById("j-application"));
+  // configure redux store
+  let _history = useQueries(createHistory)();
+  let _store = ConfigureStore(undefined, _history);
+  ReactDOM.render(<ReduxApplication history={_history} store={_store} />, document.getElementById("j-application"));
 }
 
 module.exports = bundledView;
