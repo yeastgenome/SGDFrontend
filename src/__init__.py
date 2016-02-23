@@ -15,7 +15,7 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     config.add_route('upload', '/upload')
     
-    config.add_route('colleague', '/colleagues/{id}')
+    config.add_route('colleague', '/colleagues/{format_name}')
     config.add_route('colleagues', '/colleagues')
 
     config.add_route('sign_in', '/signin')

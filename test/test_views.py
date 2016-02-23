@@ -6,21 +6,26 @@ import os
 import StringIO
 import fixtures as factory
 from mock_helpers import MockQuery, MockQueryFilter, MockFileStorage
-from src.views import upload_file, colleagues_by_last_name, sign_in, sign_out, colleague_by_id
+from src.views import upload_file, colleagues_by_last_name, sign_in, sign_out, colleague_by_format_name
 from src.models import Colleague, ColleagueAssociation, ColleagueKeyword, Keyword
 
 
 class ColleaguesTest(unittest.TestCase):    
     def setUp(self):
         self.config = testing.setUp()
+        
         self.colleague = factory.ColleagueFactory.build()
         self.colleague_2 = factory.ColleagueFactory.build(colleague_id=113699, format_name="Jimmy_2")
+        
         self.url_1 = factory.ColleagueUrlFactory.build(url_id=1, colleague_id=self.colleague.colleague_id)
         self.url_2 = factory.ColleagueUrlFactory.build(url_id=2, colleague_id=self.colleague.colleague_id, url_type="Lab")
+        
         self.association_1_2 = factory.ColleagueAssociationFactory.build(colleague_id=self.colleague.colleague_id, associate_id=self.colleague_2.colleague_id, association_type="Lab member")
         self.association_2_1 = factory.ColleagueAssociationFactory.build(colleague_id=self.colleague.colleague_id, associate_id=self.colleague_2.colleague_id, association_type="Associate")
-        self.keyword = factory.KeywordFactory()
-        self.keyword_2 = factory.KeywordFactory(keyword_id=2, format_name="format_name")
+        
+        self.keyword = factory.KeywordFactory(format_name="format_name_1")
+        self.keyword_2 = factory.KeywordFactory(keyword_id=2, format_name="format_name_2")
+        
         self.colleague_keyword = factory.ColleagueKeywordFactory.build(colleague_id=self.colleague.colleague_id, keyword_id=self.keyword.keyword_id)
         self.colleague_keyword_2 = factory.ColleagueKeywordFactory.build(colleague_id=self.colleague.colleague_id, keyword_id=self.keyword_2.keyword_id)
 
@@ -46,7 +51,7 @@ class ColleaguesTest(unittest.TestCase):
 
         response = colleagues_by_last_name(request)
         self.assertEqual(response, [{
-            'id': self.colleague.colleague_id,
+            'format_name': self.colleague.format_name,
             'work_phone': self.colleague.work_phone,
             'organization': self.colleague.institution,
             'first_name': self.colleague.first_name,
@@ -82,7 +87,7 @@ class ColleaguesTest(unittest.TestCase):
 
     @mock.patch('src.models.Colleague.urls', new_callable=mock.PropertyMock)
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_colleague_by_id(self, mock_search, colleague_urls):
+    def test_should_return_colleague_by_format_name(self, mock_search, colleague_urls):
         
         def side_effect(*args, **kwargs):
             if args[0] == Colleague:
@@ -107,10 +112,11 @@ class ColleaguesTest(unittest.TestCase):
         colleague_urls.return_value = [self.url_1, self.url_2]
 
         request = testing.DummyRequest()
-        request.matchdict['id'] = str(self.colleague.colleague_id)
-        response = colleague_by_id(request)
+        request.matchdict['format_name'] = str(self.colleague.format_name)
+        response = colleague_by_format_name(request)
         self.maxDiff = None
         self.assertEqual(response, {
+            'orcid': self.colleague.orcid,
             'first_name': self.colleague.first_name,
             'last_name': self.colleague.last_name,
             'email': self.colleague.email,
@@ -135,20 +141,12 @@ class ColleaguesTest(unittest.TestCase):
         })
 
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_not_found_for_valid_colleague_by_id_but_non_existent(self, mock_search):
+    def test_should_return_not_found_for_valid_colleague_by_format_name_but_non_existent(self, mock_search):
         mock_search.return_value = MockQuery(None)
 
         request = testing.DummyRequest()
-        request.matchdict['id'] = str(self.colleague.colleague_id)
-        response = colleague_by_id(request)
-
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.message, 'Colleague not found')
-
-    def test_should_return_not_found_for_invalid_colleague_by_id(self):
-        request = testing.DummyRequest()
-        request.matchdict['id'] = "my_invalid_id"
-        response = colleague_by_id(request)
+        request.matchdict['format_name'] = str(self.colleague.format_name)
+        response = colleague_by_format_name(request)
 
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.message, 'Colleague not found')

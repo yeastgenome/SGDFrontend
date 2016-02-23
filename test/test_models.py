@@ -54,7 +54,7 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(1, len(instances))
         self.assertEqual(colleague, instances[0])
         self.assertEqual(colleague.to_search_results_dict(), {
-            'id': colleague.colleague_id,
+            'format_name': colleague.format_name,
             'first_name': colleague.first_name,
             'last_name': colleague.last_name,
             'organization': colleague.institution,
@@ -70,7 +70,7 @@ class ModelsTest(unittest.TestCase):
         colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
         colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
         self.assertEqual(colleague.to_search_results_dict(), {
-            'id': colleague.colleague_id,
+            'format_name': colleague.format_name,
             'first_name': colleague.first_name,
             'last_name': colleague.last_name,
             'organization': colleague.institution,
@@ -108,6 +108,7 @@ class ModelsTest(unittest.TestCase):
         factory.ColleagueKeywordFactory(colleague_id=colleague.colleague_id, keyword_id=keyword_2.keyword_id)
 
         self.assertEqual(colleague.to_info_dict(), {
+            'orcid': colleague.orcid,
             'first_name': colleague.first_name,
             'last_name': colleague.last_name,
             'email': colleague.email,
@@ -141,6 +142,7 @@ class ModelsTest(unittest.TestCase):
         colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
         colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
         self.assertEqual(colleague.to_info_dict(), {
+            'orcid': colleague.orcid,
             'first_name': colleague.first_name,
             'last_name': colleague.last_name,
             'position': colleague.job_title,
