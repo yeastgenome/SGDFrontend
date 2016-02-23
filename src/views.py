@@ -48,13 +48,10 @@ def colleagues_by_last_name(request):
     return [c.to_search_results_dict() for c in colleagues]
 
 @view_config(route_name='colleague', renderer='json', request_method='GET')
-def colleague_by_id(request):
-    try:
-        colleague_id = int(request.matchdict['id'])
-    except ValueError:
-        return HTTPNotFound('Colleague not found')
-    
-    colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == colleague_id).one_or_none()
+def colleague_by_format_name(request):
+    format_name = request.matchdict['format_name']
+
+    colleague = DBSession.query(Colleague).filter(Colleague.format_name == format_name).one_or_none()
     
     if colleague:
         return colleague.to_info_dict()

@@ -297,7 +297,7 @@ class Colleague(Base):
                 
     def to_search_results_dict(self):
         colleague_dict = {
-            'id': self.colleague_id,
+            'format_name': self.format_name,
             'first_name': self.first_name,
             'last_name': self.last_name,
             'organization': self.institution,
@@ -313,6 +313,7 @@ class Colleague(Base):
 
     def to_info_dict(self):
         colleague_dict = {
+            'orcid': self.orcid,
             'first_name': self.first_name,
             'last_name': self.last_name,
             'position': self.job_title,
