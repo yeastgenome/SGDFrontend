@@ -9,7 +9,6 @@ import Dashboard from './containers/dashboard';
 import DashboardIndex from './containers/dashboard_index';
 import ExampleContainer from './containers/example_container';
 import Login from './containers/login';
-import FilesIndex from './containers/files/files_index';
 import NewFile from './containers/files/new_file';
 import NotFound from './containers/not_found';
 
@@ -21,7 +20,7 @@ export default (
     <Route path='dashboard' component={requireAuthentication(Dashboard)}>
       <IndexRoute component={DashboardIndex} />
       <Route path='files'>
-        <IndexRoute component={FilesIndex} />
+        <IndexRoute component={NewFile} />
         <Route path='new' component={NewFile} />
       </Route>
     </Route>

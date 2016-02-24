@@ -58,7 +58,7 @@ const FilesIndex = React.createClass({
     return (
       <div className='row'>
         <div className='columns small-6'>
-          <TForm validationObject={SCHEMA_OBJ} onSubmit={this._onFormSubmit} submitText='Upload' cancelHref='/dashboard/files' />
+          <TForm validationObject={SCHEMA_OBJ} onSubmit={this._onFormSubmit} submitText='Upload' cancelHref='/dashboard' />
         </div>
         <div className='columns small-6'>
           <label>File</label>
