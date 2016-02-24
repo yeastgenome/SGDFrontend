@@ -103,8 +103,8 @@ class ColleaguesTest(unittest.TestCase):
             elif len(args) == 3:
                if args[0].__dict__ == Colleague.first_name.__dict__:
                     if args[1].__dict__ == Colleague.last_name.__dict__:
-                        if args[2].__dict__ == Colleague.colleague_id.__dict__:
-                            return MockQuery((self.colleague_2.first_name, self.colleague_2.last_name, self.colleague_2.colleague_id))
+                        if args[2].__dict__ == Colleague.format_name.__dict__:
+                            return MockQuery((self.colleague_2.first_name, self.colleague_2.last_name, self.colleague_2.format_name))
             else:
                 return MockQuery(None)
             
@@ -134,7 +134,7 @@ class ColleaguesTest(unittest.TestCase):
                 'lab_url': 'http://example.org',
                 'research_summary_url': 'http://example.org'
             },
-            'associations': {'Lab member': [(self.colleague_2.first_name, self.colleague_2.last_name, self.colleague_2.colleague_id)]},
+            'associations': {'Lab member': [(self.colleague_2.first_name, self.colleague_2.last_name, self.colleague_2.format_name)]},
             'keywords': [self.keyword.display_name],
             'research_interests': self.colleague.research_interest,
             'last_update': str(self.colleague.date_last_modified)
