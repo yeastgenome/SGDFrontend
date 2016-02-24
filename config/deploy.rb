@@ -19,7 +19,7 @@ namespace :deploy do
   after :finishing, :write_config
   after :finishing, :build
   if ENV['BUILD_STATICS']
-  	after :finishing, :build_statics
+    after :finishing, :build_statics
   end
   after :finishing, :upload_statics
   after :finishing, :verify_symlink

@@ -8,7 +8,10 @@ qa-deploy:
 	. dev_deploy_variables.sh && cap qa deploy
 
 beta-deploy:
-	. dev_deploy_variables.sh && cap beta deploy
+	. prod_deploy_variables.sh && cap beta deploy
+
+staging-deploy:
+	. prod_deploy_variables.sh && cap staging deploy
 
 prod-deploy:
 	. prod_deploy_variables.sh && cap prod deploy

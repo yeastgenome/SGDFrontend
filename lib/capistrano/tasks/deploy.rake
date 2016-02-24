@@ -35,10 +35,10 @@ namespace :deploy do
     end
   end
 
-  desc 'Recreates symbolic link if broken'
+  desc 'Creates symbolic link'
   task :verify_symlink do
     on roles(:app), in: :sequence do
-      execute "cd #{current_path}/../../ && if [ -h SGDFrontend ] && [ $(readlink SGDFrontend_app/current) != $(readlink SGDFrontend) ]; then echo \"Restoring symlink...\" && rm SGDFrontend && ln -s SGDFrontend_app/current SGDFrontend; fi"
+      execute "cd #{current_path}/../../ && echo \"Creating symlink...\"  && rm -rf SGDFrontend && ln -s SGDFrontend_app/current SGDFrontend"
     end
   end
 
