@@ -23,7 +23,7 @@ build-deploy: bootstrap
 	./bin/buildout -c $(BUILDOUT_DEPLOY)
 
 bootstrap:
-	python $(BOOTSTRAP)
+	/data/tools/python/current/bin/python $(BOOTSTRAP)
 
 grunt:
 	grunt
