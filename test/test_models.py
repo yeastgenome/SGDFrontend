@@ -127,8 +127,8 @@ class ModelsTest(unittest.TestCase):
                 'research_summary_url': 'http://example.org'
             },
             'associations': {
-                'Lab member': [(colleague_2.first_name, colleague_2.last_name, colleague_2.colleague_id)],
-                'Associate': [(colleague_2.first_name, colleague_2.last_name, colleague_2.colleague_id)]
+                'Lab member': [(colleague_2.first_name, colleague_2.last_name, colleague_2.format_name)],
+                'Associate': [(colleague_2.first_name, colleague_2.last_name, colleague_2.format_name)]
             },
             'keywords': [keyword.display_name, keyword_2.display_name],
             'research_interests': colleague.research_interest,
@@ -218,11 +218,11 @@ class ModelsTest(unittest.TestCase):
 
         colleague_dict = {}
         colleague_1._include_associates_to_dict(colleague_dict)
-        self.assertEqual(colleague_dict, {'associations': {'Lab member': [(colleague_2.first_name, colleague_2.last_name, colleague_2.colleague_id)]}})
+        self.assertEqual(colleague_dict, {'associations': {'Lab member': [(colleague_2.first_name, colleague_2.last_name, colleague_2.format_name)]}})
 
         colleague_dict = {}
         colleague_2._include_associates_to_dict(colleague_dict)
-        self.assertEqual(colleague_dict, {'associations': {'Head of the lab': [(colleague_1.first_name, colleague_1.last_name, colleague_1.colleague_id)]}})
+        self.assertEqual(colleague_dict, {'associations': {'Head of the lab': [(colleague_1.first_name, colleague_1.last_name, colleague_1.format_name)]}})
 
     def test_colleague_keywords_model(self):
         instances = DBSession.query(ColleagueKeyword).all()

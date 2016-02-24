@@ -277,7 +277,7 @@ class Colleague(Base):
         obj = {}
         
         for associate_id, association_type in DBSession.query(ColleagueAssociation.associate_id, ColleagueAssociation.association_type).filter(ColleagueAssociation.colleague_id == self.colleague_id).all():
-            colleague = DBSession.query(Colleague.first_name, Colleague.last_name, Colleague.colleague_id).filter(Colleague.colleague_id == associate_id).one_or_none()
+            colleague = DBSession.query(Colleague.first_name, Colleague.last_name, Colleague.format_name).filter(Colleague.colleague_id == associate_id).one_or_none()
             if colleague is not None:
                 if obj.get(association_type) is None:
                     obj[association_type] = [colleague]
