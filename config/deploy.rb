@@ -8,8 +8,7 @@ set :repo_url, 'git://github.com/yeastgenome/SGDFrontend.git'
 set :branch, ENV['BRANCH'] || $1 if `git branch` =~ /\* (\S+)\s/m
 set :deploy_to, '/data/www/' + fetch(:application) + '_app'
 
-set :local_user, "user"
-
+set :user, ask(:user, nil)
 set :tmp_dir, "/var/tmp"
 
 set :default_stage, "dev"

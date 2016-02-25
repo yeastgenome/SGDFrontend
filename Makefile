@@ -13,8 +13,15 @@ beta-deploy:
 staging-deploy:
 	. prod_deploy_variables.sh && cap staging deploy
 
-prod-deploy:
-	. prod_deploy_variables.sh && cap prod deploy
+# to deploy to both production instances at once, remember Uncle Ben ...
+#prod-deploy:
+#	. prod_deploy_variables.sh && cap prod deploy
+
+prod1-deploy:
+	. prod_deploy_variables.sh && cap prod1 deploy
+
+prod2-deploy:
+	. prod_deploy_variables.sh && cap prod2 deploy
 
 build: bootstrap dependencies grunt
 	.bin/buildout
