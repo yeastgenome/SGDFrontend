@@ -1,6 +1,5 @@
 import _ from 'underscore';
 import { getCategoryDisplayName } from '../lib/search_helpers';
-import fakeAggValues from './fake_agg_values';
 
 const SECONDARY_AGG_KEYS = ['qualifier'];
 
@@ -13,8 +12,6 @@ const DEFAULT_STATE = {
   activeCategoryName: null,
   categoryAggs: [],
   aggregations: [],
-  secondaryAggs: fakeAggValues, // [{ key, name, values: [{ key, name, total }] }]
-  activeSecondaryAggs: [], // [ { key, values: [key1, key2] }]
   wrapGeneResults: false,
   total: 0,
   currentPage: 0,
@@ -44,22 +41,6 @@ const searchResultsReducer = function (_state, action) {
     let activeCat = (typeof params.category === 'string') ? params.category : null;
     state.activeCategory = activeCat;
     state.activeCategoryName = getCategoryDisplayName(activeCat);
-    let newActiveSecondaryAggs = [];
-    // parse through query params that aren't q or category to populate active secondary aggs
-    let secondaryAggKeys = _.without(_.keys(params), 'q', 'category');
-    secondaryAggKeys.forEach( _key => {
-      let _values;
-      switch (typeof params[_key]) {
-        case 'string':
-          _values = [params[_key]];
-          newActiveSecondaryAggs.push({ key: _key, values: _values });
-          break;
-        case 'object': // array
-          _values = params[_key];
-          newActiveSecondaryAggs.push({ key: _key, values: _values });
-      }
-    });
-    state.activeSecondaryAggs = newActiveSecondaryAggs;
     return state;
   }
   if (action.type === 'START_SEARCH_FETCH') {
@@ -71,11 +52,6 @@ const searchResultsReducer = function (_state, action) {
     state.results = action.response.results;
     state.totalPages = Math.floor(state.total / RESULTS_PER_PAGE) + ((state.total % RESULTS_PER_PAGE === 0) ? 0 : 1);
     state.aggregations = action.response.aggregations;
-    // if (typeof state.activeCategory === 'string') {
-    //   // state.secondaryAggs = action.response.aggregations;
-    // } else {
-    //   state.categoryAggs = action.response.aggregations;
-    // }
     state.isPending = false;
     return state;
   }

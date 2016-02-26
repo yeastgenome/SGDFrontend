@@ -49,17 +49,29 @@ const FacetSelector = React.createClass({
   },
 
   _renderGeneAggs () {
+    const qp = this.props.queryParams;
     let catNodes = this.props.aggregations.map( (d, i) => {
-      // get current values
-      let curAgg = _.findWhere(this.props.activeSecondaryAggs, { key: d.key });
-      let currentActiveVals = (typeof curAgg === 'object') ? curAgg.values : [];
+      // create a currentAgg object like { key: 'cellular component', values: ['cytoplasm'] }
+      let currentAgg = { key: d.key };
+      let rawValue = qp[d.key];
+      switch (typeof rawValue) {
+        case 'string':
+          currentAgg.values = [rawValue];
+          break;
+        case 'object':
+          currentAgg.values = rawValue;
+          break;
+        default:
+          currentAgg.values = [];
+          break;
+      };
       // TEMP
       if (d.key === 'biological_process' || d.key === 'cellular_component' || d.key === 'molecular_function') {
-        return this._renderReactSelect(d.key, d.values, currentActiveVals);
+        return this._renderReactSelect(d.key, d.values, currentAgg.values);
       }
       let valueNodes = d.values.map( (_d, _i) => {
-        let isActive = (currentActiveVals.indexOf(_d.key) > -1);
-        let newHref = this._getToggledHref(d.key, _d.key, currentActiveVals);
+        let isActive = (currentAgg.values.indexOf(_d.key) > -1);
+        let newHref = this._getToggledHref(d.key, _d.key, currentAgg.values);
         return this._renderAgg(_d.key, _d.total, `2agg${_d.key}${i}.${_i}`, newHref, isActive);
       });
       return (
@@ -164,9 +176,6 @@ function mapStateToProps(_state) {
     queryParams: _state.routing.location.query,
     activeCategory: state.activeCategory,
     activeCategoryName: state.activeCategoryName,
-    categoryAggs: state.categoryAggs,
-    secondaryAggs: state.secondaryAggs,
-    activeSecondaryAggs: state.activeSecondaryAggs
   };
 };
 
