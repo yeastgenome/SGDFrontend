@@ -63,9 +63,10 @@ const SearchView = React.createClass({
     );
   },
 
+  // listen for history changes and fetch results when they change
   componentWillMount() {
     this._unlisten = this.props.history.listen( () => {
-      this._fetchSearchResults()
+      this._fetchSearchResults();
     });
   },
 
