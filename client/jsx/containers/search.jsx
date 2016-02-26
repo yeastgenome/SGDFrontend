@@ -164,8 +164,6 @@ function mapStateToProps(_state) {
   return {
     results: state.results,
     activeCategory: state.activeCategory,
-    categoryAggs: state.categoryAggs,
-    secondaryAggs: state.secondaryAggs,
     wrapGeneResults: state.wrapGeneResults,
     isPending: state.isPending,
     currentPage: state.currentPage,

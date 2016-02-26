@@ -6,37 +6,45 @@ import { Link } from 'react-router';
 import { getHrefWithoutAgg } from '../lib/search_helpers';
 
 const SEARCH_URL = '/search';
+const SKIPPED_PARAMS = ['page', 'q'];
 
 const SearchBreadcrumb = React.createClass({
   render() {
-    // TEMP
-    return null;
-    let catCrumbNode = this._renderCategoryCrumb();
-    let secondaryAggCrumbsNode = this._renderSecondaryAggCrumbs();
-    return <h2>{this.props.total.toLocaleString()} results for "{this.props.query}"{catCrumbNode}{secondaryAggCrumbsNode}</h2>;
+    return <h2>{this.props.total.toLocaleString()} results for "{this.props.queryParams.q}" {this._renderCrumbs()}</h2>;
   },
 
-  _renderCategoryCrumb () {
-    if (!this.props.activeCategory) return null;
-    let href = this.props.history.createPath({ pathname: SEARCH_URL, query: { q: this.props.query } });
-    return <span> in {this._renderCrumb(this.props.activeCategory, href)}</span>;
-  },
-
-  _renderSecondaryAggCrumbs () {
-    let nodes = [];
-    this.props.activeSecondaryAggs.map( d => {
-      if (d.key === 'page') return null;
-      d.values.map( _d => {
-        let newHref = getHrefWithoutAgg(this.props.history, this.props.queryParams, d.key, _d, d.values);
-        let node = <span key={`bcAgg${d.key}.${_d}`}> {this._renderCrumb(_d, newHref)}</span>;
-        nodes.push(node);
-      });
+  // From query params, render links to undo filter selections.  Each one is a link to the href of the unselected filter.
+  _renderCrumbs () {
+    const qp = this.props.queryParams;
+    // console.log(Object.keys(this.props.queryParams))
+    const nodes = [];
+    Object.keys(qp).forEach( key => {
+      // don't render for page param
+      if (SKIPPED_PARAMS.indexOf(key) >= 0) return;
+      // if category, give a really simple URL that returns to the initial results page (no filters)
+      if (key === 'category') {
+        let newHref = `${SEARCH_URL}?q=${this.props.queryParams.q}`;
+        nodes.push(this._renderCrumb(qp['category'], newHref));
+      // if single value, append the link
+      } else if (typeof qp[key] === 'string') {
+        let thisValue = qp[key];
+        let currentValues = [thisValue];
+        let newHref = getHrefWithoutAgg(this.props.history, qp, key, thisValue, currentValues);
+        nodes.push(this._renderCrumb(qp[key], newHref));
+      // if multiple, map them
+      } else {
+        let currentValues = qp[key];
+        currentValues.forEach( thisValue => {
+          let newHref = getHrefWithoutAgg(this.props.history, qp, key, thisValue, currentValues);
+          nodes.push(this._renderCrumb(thisValue, newHref));
+        });
+      }
     });
-    return <span>{nodes}</span>;
+    return nodes;
   },
 
   _renderCrumb (label, href) {
-    return  <Link to={href} className='button small' style={style.bcButton}><i className='fa fa-times'/><span style={style.bcLabel}>{label}</span></Link>;
+    return  <span key={`bcBtn${label}`}><Link to={href} className='button small' style={style.bcButton}><i className='fa fa-times'/><span style={style.bcLabel}>{label}</span></Link> </span>;
   }
 });
 
@@ -44,9 +52,6 @@ function mapStateToProps(_state) {
   let state = _state.searchResults;
   return {
     total: state.total,
-    query: state.query,
-    activeCategory: state.activeCategory,
-    activeSecondaryAggs: state.activeSecondaryAggs,
     queryParams: _state.routing.location.query
   };
 };
