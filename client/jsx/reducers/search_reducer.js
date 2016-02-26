@@ -1,8 +1,6 @@
 import _ from 'underscore';
 import { getCategoryDisplayName } from '../lib/search_helpers';
 
-const SECONDARY_AGG_KEYS = ['qualifier'];
-
 const RESULTS_PER_PAGE = 10;
 const DEFAULT_STATE = {
   userInput: '',
@@ -19,6 +17,7 @@ const DEFAULT_STATE = {
   query: '',
   autoCompleteQuery: '',
   isPending: false,
+  isAggPending: false,
   apiError: null
 };
 
@@ -39,6 +38,8 @@ const searchResultsReducer = function (_state, action) {
     state.currentPage = intPage;
     // set active aggs
     let activeCat = (typeof params.category === 'string') ? params.category : null;
+    // if changing cat, set isAggPending to true before setting active cat
+    if (state.activeCategory !== activeCat) state.isAggPending = true;
     state.activeCategory = activeCat;
     state.activeCategoryName = getCategoryDisplayName(activeCat);
     return state;
@@ -53,6 +54,7 @@ const searchResultsReducer = function (_state, action) {
     state.totalPages = Math.floor(state.total / RESULTS_PER_PAGE) + ((state.total % RESULTS_PER_PAGE === 0) ? 0 : 1);
     state.aggregations = action.response.aggregations;
     state.isPending = false;
+    state.isAggPending = false;
     return state;
   }
 
@@ -75,4 +77,4 @@ const searchResultsReducer = function (_state, action) {
   return state;
 };
 
-module.exports = searchResultsReducer;
+export default searchResultsReducer;

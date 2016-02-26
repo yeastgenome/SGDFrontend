@@ -13,7 +13,7 @@ bundledView.render = function () {
   // configure redux store
   let _history = useQueries(createHistory)();
   let _store = ConfigureStore(undefined, _history);
-  ReactDOM.render(<ReduxApplication history={_history} store={_store} />, document.getElementById("j-application"));
+  ReactDOM.render(<ReduxApplication history={_history} store={_store} />, document.getElementById('j-application'));
 }
 
 module.exports = bundledView;

@@ -14,9 +14,9 @@ const SELECT_OPTION_DELEMITER = '@@';
 
 const FacetSelector = React.createClass({
   render() {
-    let klass = this.props.isMobile ? '' : 'panel';
+    if (this.props.isAggPending) return null;
     return (
-      <div className={klass} style={[style.panel]}>
+      <div style={[style.panel]}>
         {this.props.activeCategory ? this._renderCatAggs() : this._renderCatSelector()}
       </div>
     );
@@ -176,6 +176,7 @@ function mapStateToProps(_state) {
     queryParams: _state.routing.location.query,
     activeCategory: state.activeCategory,
     activeCategoryName: state.activeCategoryName,
+    isAggPending: state.isAggPending
   };
 };
 

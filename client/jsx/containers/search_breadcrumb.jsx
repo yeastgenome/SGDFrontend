@@ -19,7 +19,7 @@ const SearchBreadcrumb = React.createClass({
     // console.log(Object.keys(this.props.queryParams))
     const nodes = [];
     Object.keys(qp).forEach( key => {
-      // don't render for page param
+      // don't render for page or q param
       if (SKIPPED_PARAMS.indexOf(key) >= 0) return;
       // if category, give a really simple URL that returns to the initial results page (no filters)
       if (key === 'category') {
@@ -65,4 +65,4 @@ const style = {
   }
 };
 
-module.exports = connect(mapStateToProps)(Radium(SearchBreadcrumb));
+export default connect(mapStateToProps)(Radium(SearchBreadcrumb));
