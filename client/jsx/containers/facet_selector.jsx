@@ -24,7 +24,8 @@ const FacetSelector = React.createClass({
 
   _renderCatSelector () {
     let keySuffix = this.props.isMobile ? 'm': '';
-    let aggNodes = this.props.categoryAggs.map( (d, i) => {
+    let aggs = (this.props.aggregations.length === 0) ? [] : this.props.aggregations[0].values;
+    let aggNodes = aggs.map( (d, i) => {
       let key = `aggNode${d.key}${keySuffix}`;
       let href = `${this._getRawUrl()}&category=${d.key}`;
       return this._renderAgg(d.key, d.total, d.key, href);
@@ -48,7 +49,7 @@ const FacetSelector = React.createClass({
   },
 
   _renderGeneAggs () {
-    let catNodes = this.props.secondaryAggs.map( (d, i) => {
+    let catNodes = this.props.aggregations.map( (d, i) => {
       // get current values
       let curAgg = _.findWhere(this.props.activeSecondaryAggs, { key: d.key });
       let currentActiveVals = (typeof curAgg === 'object') ? curAgg.values : [];
@@ -158,6 +159,7 @@ const style = {
 function mapStateToProps(_state) {
   let state = _state.searchResults;
   return {
+    aggregations: state.aggregations,
     query: state.query,
     queryParams: _state.routing.location.query,
     activeCategory: state.activeCategory,

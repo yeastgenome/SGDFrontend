@@ -31,18 +31,17 @@ export function startSearchFetch () {
 
 export function fetchSearchResults () {
   return function (dispatch, getState) {
-    let state = getState().searchResults;
-    let query = state.query;
-    // offset and limit for paginate
-    let _offset = state.currentPage * RESULTS_PER_PAGE;
-    let catQueryParam = state.activeCategory ? `&category=${state.activeCategory}` : '';
-    let url = `${RESULTS_URL}?q=${query}${catQueryParam}&limit=${RESULTS_PER_PAGE}&offset=${_offset}`;
+    const searchPath = getState().routing.location.search;
+    // // offset and limit for paginate
+    // let _offset = state.currentPage * RESULTS_PER_PAGE;
+    // let catQueryParam = state.activeCategory ? `&category=${state.activeCategory}` : '';
+    // let url = `${RESULTS_URL}?q=${query}${catQueryParam}&limit=${RESULTS_PER_PAGE}&offset=${_offset}`;
+    const url = `${RESULTS_URL}${searchPath}`;
     fetchFromApi(url)
       .then( response => {
         if (!response) return;
         response.aggregations = response.aggregations.map( d => {
-          d.key = d.name;
-          d.name = getCategoryDisplayName(d.key);
+          d.name = d.key;
           return d;
         });
         response.results = response.results.map( d => {

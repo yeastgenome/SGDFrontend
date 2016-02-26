@@ -9,6 +9,8 @@ const SEARCH_URL = '/search';
 
 const SearchBreadcrumb = React.createClass({
   render() {
+    // TEMP
+    return null;
     let catCrumbNode = this._renderCategoryCrumb();
     let secondaryAggCrumbsNode = this._renderSecondaryAggCrumbs();
     return <h2>{this.props.total.toLocaleString()} results for "{this.props.query}"{catCrumbNode}{secondaryAggCrumbsNode}</h2>;

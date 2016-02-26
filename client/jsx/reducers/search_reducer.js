@@ -12,6 +12,7 @@ const DEFAULT_STATE = {
   activeCategory: null,
   activeCategoryName: null,
   categoryAggs: [],
+  aggregations: [],
   secondaryAggs: fakeAggValues, // [{ key, name, values: [{ key, name, total }] }]
   activeSecondaryAggs: [], // [ { key, values: [key1, key2] }]
   wrapGeneResults: false,
@@ -69,11 +70,12 @@ const searchResultsReducer = function (_state, action) {
     state.total = action.response.total;
     state.results = action.response.results;
     state.totalPages = Math.floor(state.total / RESULTS_PER_PAGE) + ((state.total % RESULTS_PER_PAGE === 0) ? 0 : 1);
-    if (typeof state.activeCategory === 'string') {
-      // state.secondaryAggs = action.response.aggregations;
-    } else {
-      state.categoryAggs = action.response.aggregations;
-    }
+    state.aggregations = action.response.aggregations;
+    // if (typeof state.activeCategory === 'string') {
+    //   // state.secondaryAggs = action.response.aggregations;
+    // } else {
+    //   state.categoryAggs = action.response.aggregations;
+    // }
     state.isPending = false;
     return state;
   }
