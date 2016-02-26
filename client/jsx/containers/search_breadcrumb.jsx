@@ -29,13 +29,13 @@ const SearchBreadcrumb = React.createClass({
       } else if (typeof qp[key] === 'string') {
         let thisValue = qp[key];
         let currentValues = [thisValue];
-        let newHref = getHrefWithoutAgg(this.props.history, qp, key, thisValue, currentValues);
+        let newHref = getHrefWithoutAgg(qp, key, thisValue, currentValues);
         nodes.push(this._renderCrumb(qp[key], newHref));
       // if multiple, map them
       } else {
         let currentValues = qp[key];
         currentValues.forEach( thisValue => {
-          let newHref = getHrefWithoutAgg(this.props.history, qp, key, thisValue, currentValues);
+          let newHref = getHrefWithoutAgg(qp, key, thisValue, currentValues);
           nodes.push(this._renderCrumb(thisValue, newHref));
         });
       }

@@ -129,7 +129,7 @@ const FacetSelector = React.createClass({
   },
 
   _getToggledHref (aggKey, value, currentValues, isReset) {
-    return getHrefWithoutAgg(this.props.history, this.props.queryParams, aggKey, value, currentValues, isReset);
+    return getHrefWithoutAgg(this.props.queryParams, aggKey, value, currentValues, isReset);
   }
 });
 

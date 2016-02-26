@@ -1,9 +1,10 @@
 require('isomorphic-fetch');
-const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
-const RESULTS_PER_PAGE = 10;
-const RESULTS_URL = '/backend/get_search_results';
+import { getCategoryDisplayName, createPath } from '../lib/search_helpers';
+import _ from 'underscore';
 
-import { getCategoryDisplayName } from '../lib/search_helpers';
+const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
+const DEFAULT_RESULTS_PER_PAGE = 10;
+const RESULTS_URL = '/backend/get_search_results';
 
 // helper methods
 const fetchFromApi = function (url) {
@@ -31,12 +32,19 @@ export function startSearchFetch () {
 
 export function fetchSearchResults () {
   return function (dispatch, getState) {
+    // format the API request from quer params
+    const state = getState();
+    const qp = (state.routing.location.query);
     const searchPath = getState().routing.location.search;
-    // // offset and limit for paginate
-    // let _offset = state.currentPage * RESULTS_PER_PAGE;
-    // let catQueryParam = state.activeCategory ? `&category=${state.activeCategory}` : '';
-    // let url = `${RESULTS_URL}?q=${query}${catQueryParam}&limit=${RESULTS_PER_PAGE}&offset=${_offset}`;
-    const url = `${RESULTS_URL}${searchPath}`;
+    // from page and results per page, add limit and offset to API request
+    const page = qp['page'] || 1;
+    const resultsPerPage = DEFAULT_RESULTS_PER_PAGE;
+    const _offset = state.searchResults.currentPage * resultsPerPage; 
+    const _limit = resultsPerPage;
+    const newQp = _.clone(qp);
+    newQp.offset = _offset;
+    newQp.limit = _limit;
+    const url = createPath({ pathname: RESULTS_URL, query: newQp });
     fetchFromApi(url)
       .then( response => {
         if (!response) return;
