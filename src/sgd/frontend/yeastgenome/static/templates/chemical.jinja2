@@ -71,6 +71,7 @@
 
 {% block scripts %}
 <script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
+{# don't host arbor.js on CDN because it makes webworker files that don't work on the cloud :( #}
 <script src="/static/js/build/arbor.js"></script>
 <script src="{{asset_root}}/js/evidence.js"></script>
 <script src="{{asset_root}}/js/chemical.js"></script>
