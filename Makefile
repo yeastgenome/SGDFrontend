@@ -42,3 +42,6 @@ dependencies:
 
 run:
 	bin/pserve sgdfrontend_development.ini
+
+test:
+	. dev_deploy_variables.sh && bin/py lib/execute_ghost_suite.py && open $$GHOST_SUITE_BROWSER_URL
