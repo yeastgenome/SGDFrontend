@@ -43,12 +43,12 @@ const FacetSelector = React.createClass({
       <div>
         <p><Link to={this._getRawUrl()}><i className='fa fa-chevron-left'/> Show all categories</Link></p>
         <h2>{this.props.activeCategoryName}</h2>
-        {this._renderGeneAggs()}
+        {this._renderSecondaryAggs()}
       </div>
     );
   },
 
-  _renderGeneAggs () {
+  _renderSecondaryAggs () {
     const qp = this.props.queryParams;
     let catNodes = this.props.aggregations.map( (d, i) => {
       // create a currentAgg object like { key: 'cellular component', values: ['cytoplasm'] }

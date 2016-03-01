@@ -1,5 +1,5 @@
 import React from 'react';
-import Router from 'react-router';
+import { Link } from 'react-router';
 import Radium from 'radium';
 import { connect } from 'react-redux';
 import _ from 'underscore';
@@ -12,6 +12,7 @@ import ErrorMessage from '../components/widgets/error_message.jsx';
 import Loader from '../components/widgets/loader.jsx';
 import Paginator from '../components/widgets/paginator.jsx';
 import { startSearchFetch, fetchSearchResults, toggleGeneWrap } from '../actions/search_actions';
+import { createPath } from '../lib/search_helpers';
 
 const SEARCH_URL = '/search';
 
@@ -76,17 +77,16 @@ const SearchView = React.createClass({
 
   _renderViewAs() {
     if (this.props.activeCategory !== 'locus') return null;
-    let isW = this.props.wrapGeneResults;
-    let _onClick = e => {
-      e.preventDefault();
-      this.props.dispatch(toggleGeneWrap());
-    }
+    const qp = _.clone(this.props.queryParams);
+    const isWrapped = this._isWrappedResults();
+    const wrapPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, wrapResults: true }) });
+    const listPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, wrapResults: false }) });
     return (
       <div>
         <span>View as:</span>
         <ul className='button-group' style={[style.viewAs]}>
-          <li><a onClick={_onClick} className={`button tiny${isW ? ' secondary':''}`}><i className='fa fa-reorder'/> List</a></li>
-          <li><a onClick={_onClick} className={`button tiny${!isW ? ' secondary':''}`}><i className='fa fa-th'/> Wrapped</a></li>
+          <Link to={listPath} className={`button tiny${isWrapped ? ' secondary':''}`}><i className='fa fa-reorder'/> List</Link>
+          <Link to={wrapPath} className={`button tiny${!isWrapped ? ' secondary':''}`}><i className='fa fa-th'/> Wrapped</Link>
         </ul>
       </div>
     );
@@ -94,10 +94,12 @@ const SearchView = React.createClass({
 
   _renderSearchContent() {
     if (this.props.isPending) return <Loader />
+    // only render second paginator if num results is >= amount per page
+    const secondPaginateNode = (this.props.results.length >= this.props.resultsPerPage) ? this._renderPaginator() : null;
     return (
       <div>
         {this._renderResults()}
-        {this._renderPaginator()}
+        {secondPaginateNode}
       </div>
     );
   },
@@ -114,7 +116,7 @@ const SearchView = React.createClass({
   },
 
   _renderResults() {
-    if (this.props.activeCategory === 'locus' && this.props.wrapGeneResults) return this._renderWrappedResults();
+    if (this._isWrappedResults()) return this._renderWrappedResults();
     let results = this.props.results;
     return results.map( (d, i) => {
       let id = d.id || i;
@@ -122,13 +124,13 @@ const SearchView = React.createClass({
     });
   },
 
-  // TEMP fake
   _renderWrappedResults() {
     let numResults = 212;
-    let nodes = [];
-    for (var i = numResults; i >= 0; i--) {
-      nodes.push(<a style={style.wrappedResult} key={'wR' + i}>ABC1</a>)
-    }
+    const nodes = this.props.results.map( (d, i) => {
+      // only show display name if there is a '/' in name
+      const displayName = d.name.split(' / ')[0];
+      return <a style={style.wrappedResult} key={'serchWR' + i}>{displayName}</a>
+    });
     return (
       <div>
         {nodes}
@@ -142,6 +144,11 @@ const SearchView = React.createClass({
     this.props.dispatch(startSearchFetch());
     this.props.dispatch(fetchSearchResults());
     return;
+  },
+
+  _isWrappedResults () {
+    const isWrappedParam = (this.props.queryParams.wrapResults === 'true' || this.props.queryParams.wrapResults === true);
+    return (this.props.activeCategory === 'locus' && isWrappedParam);
   }
 });
 
@@ -165,11 +172,12 @@ function mapStateToProps(_state) {
   return {
     results: state.results,
     activeCategory: state.activeCategory,
-    wrapGeneResults: state.wrapGeneResults,
     isPending: state.isPending,
     currentPage: state.currentPage,
     totalPages: state.totalPages,
-    apiError: state.apiError
+    resultsPerPage: state.resultsPerPage,
+    apiError: state.apiError,
+    queryParams: _state.routing.location.query
   };
 };
 

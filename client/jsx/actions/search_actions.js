@@ -3,8 +3,6 @@ import { getCategoryDisplayName, createPath } from '../lib/search_helpers';
 import _ from 'underscore';
 
 const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
-const DEFAULT_RESULTS_PER_PAGE = 10;
-const LARGER_RESULTS_PER_PAGE = 220;
 const RESULTS_URL = '/backend/get_search_results';
 
 // helper methods
@@ -35,15 +33,13 @@ export function fetchSearchResults () {
   return function (dispatch, getState) {
     // format the API request from quer params
     const state = getState();
+    const searchState = state.searchResults;
     const qp = (state.routing.location.query);
-    const searchPath = getState().routing.location.search;
+    const searchPath = state.routing.location.search;
     // from page and results per page, add limit and offset to API request
     const page = qp['page'] || 1;
-    // allow results per page to be bigger if on locus and wrapping results;
-    const isLarge = (qp['category'] === 'locus' && state.searchResults.wrapGeneResults);
-    const resultsPerPage = (isLarge) ? LARGER_RESULTS_PER_PAGE : DEFAULT_RESULTS_PER_PAGE;
-    const _offset = state.searchResults.currentPage * resultsPerPage; 
-    const _limit = resultsPerPage;
+    const _offset = searchState.currentPage * searchState.resultsPerPage; 
+    const _limit = searchState.resultsPerPage;
     const newQp = _.clone(qp);
     newQp.offset = _offset;
     newQp.limit = _limit;
@@ -72,13 +68,6 @@ export function receiveSearchResponse (_response) {
   return {
     type: 'SEARCH_RESPONSE',
     response: _response
-  };
-};
-
-export function toggleAgg (_key) {
-  return {
-    type: 'TOGGLE_AGG',
-    key: _key
   };
 };
 

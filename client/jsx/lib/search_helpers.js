@@ -15,7 +15,7 @@ export function getCategoryDisplayName (key) {
     download: 'Downloads',
     resource: 'Resources'
   };
-  return labels[key];
+  return labels[key] || key;
 };
 
 // proxy the history createPath, but create a temp history object.  Ideally, this would be a class method import, but it's not.
