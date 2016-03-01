@@ -10,7 +10,7 @@ const SKIPPED_PARAMS = ['page', 'q', 'wrapResults'];
 
 const SearchBreadcrumb = React.createClass({
   render() {
-    return <h2>{this.props.total.toLocaleString()} results for "{this.props.queryParams.q}" {this._renderCrumbs()}</h2>;
+    return <h2>{this._getText()} {this._renderCrumbs()}</h2>;
   },
 
   // From query params, render links to undo filter selections.  Each one is a link to the href of the unselected filter.
@@ -45,6 +45,21 @@ const SearchBreadcrumb = React.createClass({
 
   _renderCrumb (label, href) {
     return  <span key={`bcBtn${label}`}><Link to={href} className='button small' style={style.bcButton}><i className='fa fa-times'/><span style={style.bcLabel}>{label}</span></Link> </span>;
+  },
+
+  _getText () {
+    const query = this.props.queryParams.q;
+    const totalString = this.props.total.toLocaleString();
+    // blank query
+    if (query === '') {
+      return `${totalString} results`;
+    // if pending results, not just pagination
+    } else if (this.props.isPending && !this.props.isPaginatePending) {
+      return `... results for "${query}"`;
+    // everything done
+    } else {
+      return `${totalString} results for "${query}"`
+    }
   }
 });
 
@@ -52,7 +67,9 @@ function mapStateToProps(_state) {
   let state = _state.searchResults;
   return {
     total: state.total,
-    queryParams: _state.routing.location.query
+    queryParams: _state.routing.location.query,
+    isPending: state.isPending,
+    isPaginatePending: state.isPaginatePending,
   };
 };
 

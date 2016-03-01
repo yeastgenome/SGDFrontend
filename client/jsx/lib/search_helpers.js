@@ -39,6 +39,8 @@ export function getHrefWithoutAgg (queryParamsObject, aggKey, thisValue, current
   }
   let newQp = _.clone(queryParamsObject);
   newQp[aggKey] = newActiveVals;
+  // reset pagintion
+  newQp.page = 0;
   // Create a little history object to use the createPath method. 
   const tempHistory = useQueries(createMemoryHistory)()
   return createPath({ pathname: SEARCH_URL, query: newQp });

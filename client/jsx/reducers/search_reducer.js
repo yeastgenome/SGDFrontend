@@ -17,6 +17,7 @@ const DEFAULT_STATE = {
   query: '',
   autoCompleteQuery: '',
   isPending: false,
+  isPaginatePending: false, // if the only change is the page, note special state for rendering total
   apiError: null
 };
 
@@ -33,8 +34,10 @@ const searchResultsReducer = function (_state, action) {
     state.query = newQuery;
     state.userInput = newQuery;
     // set currentPage from page
-    let intPage = (typeof params.page === 'string' || typeof params.page === 'number') ? parseInt(params.page) : 0;
-    state.currentPage = intPage;
+    let newPage = (typeof params.page === 'string' || typeof params.page === 'number') ? parseInt(params.page) : 0;
+    // set paginate pending if page is changing
+    if (newPage !== state.currentPage) state.isPaginatePending = true;
+    state.currentPage = newPage;
     // set active aggs
     let activeCat = (typeof params.category === 'string') ? params.category : null;
     // if changing cat, set isAggPending to true before setting active cat
@@ -57,6 +60,7 @@ const searchResultsReducer = function (_state, action) {
     state.aggregations = action.response.aggregations;
     state.isPending = false;
     state.isAggPending = false;
+    state.isPaginatePending = false;
     return state;
   }
 
