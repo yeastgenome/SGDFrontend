@@ -8,7 +8,6 @@ const DEFAULT_STATE = {
   results: [],
   activeCategory: null,
   activeCategoryName: null,
-  categoryAggs: [],
   aggregations: [],
   wrapGeneResults: false,
   total: 0,
