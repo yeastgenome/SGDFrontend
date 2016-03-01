@@ -49,34 +49,36 @@ const searchResultsReducer = function (_state, action) {
       LARGER_RESULTS_PER_PAGE : DEFAULT_RESULTS_PER_PAGE;
     return state;
   }
-  if (action.type === 'START_SEARCH_FETCH') {
-    state.isPending = true;
-    return state;
+  switch (action.type) {
+    case 'START_SEARCH_FETCH':
+      state.isPending = true;
+      return state;
+      break;
+    case 'SEARCH_RESPONSE':
+      state.total = action.response.total;
+      state.results = action.response.results;
+      state.totalPages = Math.floor(state.total / state.resultsPerPage) + ((state.total % state.resultsPerPage === 0) ? 0 : 1);
+      state.aggregations = action.response.aggregations;
+      state.isPending = false;
+      state.isAggPending = false;
+      state.isPaginatePending = false;
+      return state;
+      break;
+    case 'SET_USER_INPUT':
+      state.userInput = action.value;
+      return state;
+      break;
+    case 'AUTOCOMPLETE_RESPONSE':
+      state.autocompleteResults = action.value;
+      return state;
+      break;
+    case 'SEARCH_API_ERROR':
+      state.apiError = action.value;
+      return state;
+      break;
+    default:
+      return state;
   }
-  if (action.type === 'SEARCH_RESPONSE') {
-    state.total = action.response.total;
-    state.results = action.response.results;
-    state.totalPages = Math.floor(state.total / state.resultsPerPage) + ((state.total % state.resultsPerPage === 0) ? 0 : 1);
-    state.aggregations = action.response.aggregations;
-    state.isPending = false;
-    state.isAggPending = false;
-    state.isPaginatePending = false;
-    return state;
-  }
-
-  if (action.type === 'SET_USER_INPUT') {
-    state.userInput = action.value;
-    return state;
-  }
-  if (action.type === 'AUTOCOMPLETE_RESPONSE') {
-    state.autocompleteResults = action.value;
-    return state;
-  }
-  if (action.type === 'SEARCH_API_ERROR') {
-    state.apiError = action.value;
-    return state
-  }
-  return state;
-};
+}
 
 export default searchResultsReducer;
