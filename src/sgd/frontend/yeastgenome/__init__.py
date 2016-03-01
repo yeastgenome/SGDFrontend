@@ -65,7 +65,7 @@ class YeastgenomeFrontend(FrontendInterface):
 
     def locus(self, bioent_repr):
         # TEMP production backend
-        backend_url = 'http://sgd-qa.stanford.edu/webservice'
+        backend_url = 'http://yeastgenome.org/webservice'
         if self.check_date() and bioent_repr.lower() in self.locuses:
             return_value = self.locuses[bioent_repr.lower()]
         else:
@@ -569,7 +569,7 @@ class YeastgenomeFrontend(FrontendInterface):
             if 'get_search_results' in relative_url or 'autocomplete_results' in relative_url:
                 backend_url = self.backend_url
             else:
-                backend_url = 'http://sgd-qa.stanford.edu/webservice'
+                backend_url = 'http://yeastgenome.org/webservice'
             full_url = backend_url + relative_url
             if args is not None and len(args) > 0:
                 full_url += '?' + ('&'.join([key + '=' + value for key, value in args.items() if key != 'callback']))
