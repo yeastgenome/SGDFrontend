@@ -82,13 +82,10 @@ const SearchView = React.createClass({
     const wrapPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, wrapResults: true }) });
     const listPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, wrapResults: false }) });
     return (
-      <div>
-        <span>View as:</span>
         <ul className='button-group' style={[style.viewAs]}>
-          <Link to={listPath} className={`button tiny${isWrapped ? ' secondary':''}`}><i className='fa fa-reorder'/> List</Link>
-          <Link to={wrapPath} className={`button tiny${!isWrapped ? ' secondary':''}`}><i className='fa fa-th'/> Wrapped</Link>
+          <Link to={listPath} className={`button tiny${isWrapped ? ' secondary':''}`}><i className='fa fa-reorder'/> <span className='hide-for-small'>List</span></Link>
+          <Link to={wrapPath} className={`button tiny${!isWrapped ? ' secondary':''}`}><i className='fa fa-th'/> <span className='hide-for-small'>Wrapped</span></Link>
         </ul>
-      </div>
     );
   },
 
@@ -116,6 +113,7 @@ const SearchView = React.createClass({
   },
 
   _renderResults() {
+    if (this.props.total === 0) return <p>No results.  Please broaden your search or try a different query.</p>;
     if (this._isWrappedResults()) return this._renderWrappedResults();
     let results = this.props.results;
     return results.map( (d, i) => {
@@ -152,11 +150,10 @@ const SearchView = React.createClass({
   }
 });
 
-var style = {
+const style = {
   viewAs: {
     display: 'inline-block',
-    marginLeft: '1rem',
-    marginTop: '0.25rem'
+    marginTop: '2rem'
   },
   resultsWraper: {
     minHeight: 1000
