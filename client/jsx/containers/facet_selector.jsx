@@ -133,7 +133,7 @@ const FacetSelector = React.createClass({
   }
 });
 
-const LINK_COLOR = '#11728b';
+const LINK_COLOR = '#6582A6';
 const style = {
   agg: {
     display: 'flex',
