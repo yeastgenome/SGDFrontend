@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import Radium from 'radium';
 import { connect } from 'react-redux';
@@ -115,10 +115,12 @@ const AppSearchBar = React.createClass({
 });
 
 function mapStateToProps(_state) {
-  let state = _state.searchResults;
+  const state = _state.searchResults;
+  const isSearchPage = (_state.routing.location.pathname === '/search');
   return {
     userInput: state.userInput,
-    autocompleteResults: state.autocompleteResults
+    autocompleteResults: state.autocompleteResults,
+    redirectOnSearch: !isSearchPage // don't do hard redirect if currently on search page (just show results)
   };
 }
 

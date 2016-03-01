@@ -44,7 +44,7 @@ const Header = React.createClass({
               {this._renderMenu()}   
             </div>
             <div className="medium-4 large-5 columns search-container" id="j-search-container">
-              <AppSearchBar {...this.props} redirectOnSearch={false}/>
+              <AppSearchBar />
             </div>
           </div>
         </section>
