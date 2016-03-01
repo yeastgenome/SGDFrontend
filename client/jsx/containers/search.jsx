@@ -39,12 +39,12 @@ const SearchView = React.createClass({
     return (
       <div className='row'>
         <div className='column medium-5 hide-for-small'>
-          <FacetSelector isMobile={false} history={this.props.history} />
+          <FacetSelector isMobile={false} />
         </div>
         <div className='column small-12 medium-7'>
           <div className='show-for-small-only'>
             <Collapser label='Categories'>
-              <FacetSelector isMobile={true} history={this.props.history} />
+              <FacetSelector isMobile={true} />
             </Collapser>
           </div>
           <div style={[style.resultsWraper]}>
