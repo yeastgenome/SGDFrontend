@@ -48,7 +48,7 @@ const SearchBreadcrumb = React.createClass({
   },
 
   _getText () {
-    const query = this.props.queryParams.q;
+    const query = this.props.query;
     const totalString = this.props.total.toLocaleString();
     // blank query
     if (query === '') {
@@ -67,6 +67,7 @@ function mapStateToProps(_state) {
   let state = _state.searchResults;
   return {
     total: state.total,
+    query: state.query,
     queryParams: _state.routing.location.query,
     isPending: state.isPending,
     isPaginatePending: state.isPaginatePending,
