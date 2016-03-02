@@ -12,6 +12,7 @@ const SEARCH_URL = '/search';
 const SELECT_MAX_CHAR_WIDTH = 8;
 const SELECT_OPTION_DELEMITER = '@@';
 
+
 const FacetSelector = React.createClass({
   render() {
     if (this.props.isAggPending) return null;
@@ -69,7 +70,8 @@ const FacetSelector = React.createClass({
       if (d.key === 'biological_process' || d.key === 'cellular_component' || d.key === 'molecular_function') {
         return this._renderReactSelect(d.key, d.values, currentAgg.values);
       }
-      let valueNodes = d.values.map( (_d, _i) => {
+      // temp only top 5 values
+      let valueNodes = d.values.slice(0,5).map( (_d, _i) => {
         let isActive = (currentAgg.values.indexOf(_d.key) > -1);
         let newHref = this._getToggledHref(d.key, _d.key, currentAgg.values);
         return this._renderAgg(_d.key, _d.total, `2agg${_d.key}${i}.${_i}`, newHref, isActive);

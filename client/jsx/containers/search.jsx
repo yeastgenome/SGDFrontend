@@ -156,9 +156,10 @@ const style = {
     marginTop: '2rem'
   },
   resultsWraper: {
-    minHeight: 1000
+    minHeight: 1000,
   },
   wrappedResult: {
+    width: '4rem',
     display: 'inline-block',
     padding: '0.25rem'
   }
