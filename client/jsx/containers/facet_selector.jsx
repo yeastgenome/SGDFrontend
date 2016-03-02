@@ -8,10 +8,11 @@ import _ from 'underscore';
 
 import { getHrefWithoutAgg } from '../lib/search_helpers';
 
+const DEFAULT_FACET_LENGTH = 5;
+const MEDIUM_FACET_LENGTH = 20;
 const SEARCH_URL = '/search';
 const SELECT_MAX_CHAR_WIDTH = 8;
 const SELECT_OPTION_DELEMITER = '@@';
-
 
 const FacetSelector = React.createClass({
   render() {
@@ -70,17 +71,8 @@ const FacetSelector = React.createClass({
       if (d.key === 'biological_process' || d.key === 'cellular_component' || d.key === 'molecular_function') {
         return this._renderReactSelect(d.key, d.values, currentAgg.values);
       }
-      // temp only top 5 values
-      let valueNodes = d.values.slice(0,5).map( (_d, _i) => {
-        let isActive = (currentAgg.values.indexOf(_d.key) > -1);
-        let newHref = this._getToggledHref(d.key, _d.key, currentAgg.values);
-        return this._renderAgg(_d.key, _d.total, `2agg${_d.key}${i}.${_i}`, newHref, isActive);
-      });
       return (
-        <div key={`2aggContainer${d.key}`}>
-          <p style={style.aggLabel}>{d.name || d.key}</p>
-          {valueNodes}
-        </div>
+        <FacetList aggKey={d.key} values={d.values} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key}/>
       );
     });
 
@@ -88,18 +80,6 @@ const FacetSelector = React.createClass({
       <div>
         {catNodes}
       </div>
-    );
-  },
-
-  _renderAgg (name, total, _key, href, isActive) {
-    let activityStyle = isActive ? style.activeAgg: style.inactiveAgg;
-    return (
-      <Link to={href} key={_key}>
-        <div key={`aggA${_key}`} style={[style.agg, activityStyle]}>        
-          <span>{name}</span>
-          <span>{total.toLocaleString()}</span>
-        </div>
-      </Link>
     );
   },
 
@@ -126,6 +106,18 @@ const FacetSelector = React.createClass({
     )
   },
 
+  _renderAgg (name, total, _key, href, isActive) {
+    let activityStyle = isActive ? style.activeAgg: style.inactiveAgg;
+    return (
+      <Link to={href} key={_key}>
+        <div key={`aggA${_key}`} style={[style.agg, activityStyle]}>        
+          <span>{name}</span>
+          <span>{total.toLocaleString()}</span>
+        </div>
+      </Link>
+    );
+  },
+
   _getRawUrl () {
     return `${SEARCH_URL}?q=${this.props.query}`;
   },
@@ -134,6 +126,86 @@ const FacetSelector = React.createClass({
     return getHrefWithoutAgg(this.props.queryParams, aggKey, value, currentValues, isReset);
   }
 });
+
+const FacetList = Radium(React.createClass({
+  propTypes: {
+    aggKey: React.PropTypes.string.isRequired,
+    values: React.PropTypes.array.isRequired,
+    currentValues: React.PropTypes.array.isRequired,
+    queryParams: React.PropTypes.object.isRequired,
+    name: React.PropTypes.string,
+  },
+
+  getInitialState () {
+    // null means don't slice, show all
+    return { visibleLength: DEFAULT_FACET_LENGTH };
+  },
+
+  render () {
+    // if no values, don't show
+    if (this.props.values.length === 0) return null;
+    const slicedValues = (this.state.visibleLength === null) ? this.props.values : this.props.values.slice(0, this.state.visibleLength);
+    const valueNodes = slicedValues.map( (d, i) => {
+      let isActive = (this.props.currentValues.indexOf(d.key) > -1);
+      let newHref = this._getToggledHref(this.props.aggKey, d.key, this.props.currentValues);
+      return this._renderAgg(d.key, d.total, `2agg${d.key}.${i}`, newHref, isActive);
+    });
+    return (
+      <div>
+        <p style={style.aggLabel}>{this.props.name || this.props.aggKey}</p>
+        {valueNodes}
+        {this._renderShowMoreMaybe()}
+      </div>
+    );
+  },
+
+  _renderShowMoreMaybe () {
+    const visibleLength = this.state.visibleLength;
+    const valLength = this.props.values.length;
+    // no more to show, show nothing
+    if (visibleLength === DEFAULT_FACET_LENGTH && valLength <= visibleLength) return null;
+    let text, _onClick;
+    // currently showing all, allow collapse
+    if (visibleLength === null) {
+      _onClick = e => {
+        e.preventDefault();
+        this.setState({ visibleLength: DEFAULT_FACET_LENGTH });
+      };
+      text = `Show ${DEFAULT_FACET_LENGTH}`;
+    // only showing 5, show more
+    } else if (visibleLength === DEFAULT_FACET_LENGTH) {
+      _onClick = e => {
+        e.preventDefault();
+        this.setState({ visibleLength: MEDIUM_FACET_LENGTH });
+      };
+      text = 'Show more';
+    // medium length, show all
+    } else {
+      _onClick = e => {
+        e.preventDefault();
+        this.setState({ visibleLength: null });
+      };
+      text = 'Show all';
+    }
+    return <p className='text-right'><a onClick={_onClick}>{text}</a></p>;
+  },
+
+  _renderAgg (name, total, _key, href, isActive) {
+    let activityStyle = isActive ? style.activeAgg: style.inactiveAgg;
+    return (
+      <Link to={href} key={_key}>
+        <div key={`aggA${_key}`} style={[style.agg, activityStyle]}>        
+          <span>{name}</span>
+          <span>{total.toLocaleString()}</span>
+        </div>
+      </Link>
+    );
+  },
+
+  _getToggledHref (aggKey, value, currentValues, isReset) {
+    return getHrefWithoutAgg(this.props.queryParams, aggKey, value, currentValues, isReset);
+  }
+}));
 
 const LINK_COLOR = '#6582A6';
 const style = {
@@ -166,7 +238,8 @@ const style = {
     marginTop: '0.5rem'
   },
   aggLabel: {
-    marginBottom: 0
+    marginBottom: 0,
+    textTransform: 'capitalize'
   }
 };
 

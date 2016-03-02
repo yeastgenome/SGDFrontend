@@ -123,11 +123,10 @@ const SearchView = React.createClass({
   },
 
   _renderWrappedResults() {
-    let numResults = 212;
     const nodes = this.props.results.map( (d, i) => {
       // only show display name if there is a '/' in name
       const displayName = d.name.split(' / ')[0];
-      return <a style={style.wrappedResult} key={'serchWR' + i}>{displayName}</a>
+      return <a style={[style.wrappedResult]} key={'serchWR' + i}>{displayName}</a>
     });
     return (
       <div>
@@ -159,9 +158,9 @@ const style = {
     minHeight: 1000,
   },
   wrappedResult: {
-    width: '4rem',
     display: 'inline-block',
-    padding: '0.25rem'
+    padding: '0.25rem',
+    width: '7rem'
   }
 };
 
