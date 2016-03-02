@@ -138,7 +138,10 @@ const FacetList = Radium(React.createClass({
 
   getInitialState () {
     // null means don't slice, show all
-    return { visibleLength: DEFAULT_FACET_LENGTH };
+    return {
+      isCollapsed: false,
+      visibleLength: DEFAULT_FACET_LENGTH
+    };
   },
 
   render () {
@@ -150,11 +153,12 @@ const FacetList = Radium(React.createClass({
       let newHref = this._getToggledHref(this.props.aggKey, d.key, this.props.currentValues);
       return this._renderAgg(d.key, d.total, `2agg${d.key}.${i}`, newHref, isActive);
     });
+    const iconString = this.state.isCollapsed ? 'right' : 'down';
+    const valuesNodesMaybe = this.state.isCollapsed ? null : <div>{valueNodes}{this._renderShowMoreMaybe()}</div>;
     return (
       <div>
-        <p style={style.aggLabel}>{this.props.name || this.props.aggKey}</p>
-        {valueNodes}
-        {this._renderShowMoreMaybe()}
+        <p onClick={this._toggleIsCollapsed} style={style.aggLabel}><span>{this.props.name || this.props.aggKey}</span><i className={`fa fa-angle-${iconString}`} /></p>
+        {valuesNodesMaybe}
       </div>
     );
   },
@@ -204,6 +208,10 @@ const FacetList = Radium(React.createClass({
 
   _getToggledHref (aggKey, value, currentValues, isReset) {
     return getHrefWithoutAgg(this.props.queryParams, aggKey, value, currentValues, isReset);
+  },
+
+  _toggleIsCollapsed () {
+    this.setState({ isCollapsed: !this.state.isCollapsed });
   }
 }));
 
@@ -238,7 +246,10 @@ const style = {
     marginTop: '0.5rem'
   },
   aggLabel: {
-    marginBottom: 0,
+    margin: '0 0 0.5rem 0',
+    display: 'flex',
+    justifyContent: 'space-between',
+    cursor: 'pointer',
     textTransform: 'capitalize'
   }
 };

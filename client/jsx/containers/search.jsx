@@ -126,7 +126,7 @@ const SearchView = React.createClass({
     const nodes = this.props.results.map( (d, i) => {
       // only show display name if there is a '/' in name
       const displayName = d.name.split(' / ')[0];
-      return <a style={[style.wrappedResult]} key={'serchWR' + i}>{displayName}</a>
+      return <a href={d.href} style={[style.wrappedResult]} key={'serchWR' + i}>{displayName}</a>
     });
     return (
       <div>
