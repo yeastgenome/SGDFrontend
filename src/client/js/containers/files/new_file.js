@@ -12,14 +12,24 @@ const SCHEMA_OBJ = {
   type: 'object',
   properties: {
     file_display_name: { type: 'string' },
-    topic: { type: 'string' },
-    keywords: { type: 'string' },
+    path: { type: 'string' },
+    topic: {
+      type: 'string',
+      enum: ['one', 'two', 'three']
+    },
+    keywords: {
+      type: 'array',
+      items: {
+        type: 'string',
+        enum: ['one', 'two', 'three']
+      },
+    },
     pmids: { type: 'string' },
     is_public: { type: 'boolean' },
     for_spell: { type: 'boolean' },
     for_browser: { type: 'boolean' },
     file_format: { type: 'string' },
-    date: { type: 'string' }
+    date: { type: 'string', format: 'date-time' }
   },
   required: ['file_display_name', 'date']
 };
