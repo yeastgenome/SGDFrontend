@@ -24,7 +24,7 @@
     "redux": "^3.0.2",
     "redux-thunk": "^1.0.0",
     "tcomb-form": "^0.8.0",
-    "tcomb-json-schema": "^0.2.3",
+    "tcomb-json-schema": "^0.2.5",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

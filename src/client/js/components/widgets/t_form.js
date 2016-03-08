@@ -1,8 +1,14 @@
 import React from 'react';
-import ToSchema from 'tcomb-json-schema';
+import transform from 'tcomb-json-schema';
 import { form, validate } from 'tcomb-form';
 const Form = form.Form;
 import { Link } from 'react-router';
+
+// register date-time validation
+function isDateTime (str) {
+  return str.match(/[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/)
+};
+transform.registerFormat('date-time', isDateTime);
 
 // create form from JSON validation format
 const TForm = React.createClass({
@@ -41,7 +47,7 @@ const TForm = React.createClass({
 
   render() {
     // convert json schema to tcomb schema obj
-    let tcombSchema = ToSchema(this.props.validationObject);
+    let tcombSchema = transform(this.props.validationObject);
     let cancelNode = (typeof this.props.cancelHref === 'string') ? <Link to={this.props.cancelHref} className='button secondary' style={styles.formButton}>Cancel</Link> : null;
     return (
       <div>
