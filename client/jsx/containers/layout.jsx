@@ -7,8 +7,8 @@ const Layout = React.createClass({
   render () {
     return (
       <div>
-        <Header {...this.props}/>
-        <div className='container'>
+        <Header />
+        <div className='container' id='layout-document'>
           <div className='row'>
             <div className='columns small-12'>
               {this.props.children}

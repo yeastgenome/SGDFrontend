@@ -5,6 +5,10 @@ http://smacss.com/book/type-layout
 
 #layout-document {
 	overflow: hidden;
+	padding-bottom: 100px;
+	@media only screen and (max-width: 40em) {
+		padding-bottom: 250px;
+	}
 }
 
 /* Main page header, with global navigation */
@@ -26,6 +30,9 @@ http://smacss.com/book/type-layout
 /* PAGE FOOTER */
 #layout-document-footer {
 	padding: 22px 0 22px;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
 }
 
 .content-column section {
