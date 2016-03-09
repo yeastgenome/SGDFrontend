@@ -17,6 +17,13 @@ const SearchOption = React.createClass({
     if (this.props.data.href) {
       catNode = <span> in <a href={this.props.data.href}>{this.props.data.category}</a></span>;
     }
+    if (this.props.data.isShowAll) {
+      return (
+        <div className={`${_className} show-all`}>
+          <p>Show all results ...</p>
+        </div>
+      );
+    }
     return (
       <div className={_className}>
         <p>{this.props.data.name}{catNode}</p>
@@ -63,8 +70,8 @@ const AppSearchBar = React.createClass({
     );
   },
 
+  // submit when user pushes return key
   _onKeyDown(e) {
-    // press enter
     if (e.keyCode === 13) {
       this._submit();
     }
@@ -92,7 +99,9 @@ const AppSearchBar = React.createClass({
     this._submit();
   },
 
-  _submit() {
+  // ignoreRedirect adds ignore_redirect=true paramater to search URL to force showing search results
+  // and not redirect to gene pages
+  _submit(ignoreRedirect) {
     if (typeof this.state.redirectHref === 'string') {
       return this._hardRedirect(this.state.redirectHref)
     }
@@ -115,6 +124,7 @@ const AppSearchBar = React.createClass({
 });
 
 function mapStateToProps(_state) {
+
   const state = _state.searchResults;
   const isSearchPage = (_state.routing.location.pathname === '/search');
   return {

@@ -69,7 +69,10 @@ const searchResultsReducer = function (_state, action) {
       return state;
       break;
     case 'AUTOCOMPLETE_RESPONSE':
-      state.autocompleteResults = action.value;
+      const results = action.value;
+      // add 'show all to results' if there is some input
+      if (state.userInput !== '') results.unshift({ isShowAll: true, name: state.userInput });
+      state.autocompleteResults = results;
       return state;
       break;
     case 'SEARCH_API_ERROR':
