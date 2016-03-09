@@ -46,8 +46,8 @@ const AppSearchBar = React.createClass({
 
   getInitialState() {
     return {
-      inputValue: '',
-      redirectHref: null
+      redirectHref: null,
+      isShowAll: false
     };
   },
 
@@ -84,14 +84,14 @@ const AppSearchBar = React.createClass({
     this.props.dispatch(fetchAction);
   },
 
-  _setUserInput(newValue, href) {
+  _setUserInput(newValue, href, _isShowAll) {
     let typeAction = Actions.setUserInput(newValue);
     this.props.dispatch(typeAction);
-    this.setState({ redirectHref: href });
+    this.setState({ redirectHref: href, isShowAll: _isShowAll });
   },
 
   _onOptionChange(e, data) {
-    this._setUserInput(data.name, data.href);
+    this._setUserInput(data.name, data.href, data.isShowAll);
   },
 
   _onOptionClick(e, data) {
@@ -99,15 +99,14 @@ const AppSearchBar = React.createClass({
     this._submit();
   },
 
-  // ignoreRedirect adds ignore_redirect=true paramater to search URL to force showing search results
-  // and not redirect to gene pages
-  _submit(ignoreRedirect) {
+  _submit() {
     if (typeof this.state.redirectHref === 'string') {
       return this._hardRedirect(this.state.redirectHref)
     }
     let newQuery = this.props.userInput;
     if (this.props.redirectOnSearch) {
-      let newUrl = `/search?q=${newQuery}`;
+      // format query param, use isShowAll is to append
+      let newUrl = `/search?q=${newQuery}&is_quick=${this.state.isShowAll ? 'false' : 'true'}`;
       return this._hardRedirect(newUrl);
     }
     this._updateUrl(newQuery);
@@ -124,7 +123,6 @@ const AppSearchBar = React.createClass({
 });
 
 function mapStateToProps(_state) {
-
   const state = _state.searchResults;
   const isSearchPage = (_state.routing.location.pathname === '/search');
   return {
