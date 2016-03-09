@@ -251,8 +251,8 @@ def prep_views(chosen_frontend, config):
 
     # example defer all rendering to react
     config.add_route('search', '/search')
-    config.add_view(lambda request: {'search': render('static/templates/react_layout.jinja2', {})},
-                    renderer=chosen_frontend.get_renderer('react_layout'),
+    config.add_view(lambda request: {'search': render('static/templates/search.jinja2', {})},
+                    renderer=chosen_frontend.get_renderer('search'),
                     route_name='search') 
 
 def prepare_frontend(frontend_type, **configs):

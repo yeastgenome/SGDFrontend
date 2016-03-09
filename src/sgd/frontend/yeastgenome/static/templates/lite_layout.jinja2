@@ -2,9 +2,7 @@
 <head>
     {% block head %}{% endblock %}
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-	<meta name="keywords" content="python web application" />
-	<meta name="description" content="pyramid web application" />
-	<meta name="author" content="">
+	<meta name="description" content="The Saccharomyces Genome Database (SGD) provides comprehensive integrated biological information for the budding yeast Saccharomyces cerevisiae." />
 	<link rel="shortcut icon" type="image/x-icon" href="/img-domain/favicon.ico" />
     <style type="text/css">
         .locale { text-align: center; }
@@ -24,24 +22,17 @@
 	<script src="{{asset_root}}/js/build/modernizr.min.js"></script>
 </head>
 <body data-spy="scroll" data-target=".sgd-navbar">
-	<script type="text/javascript">
-		var CACHE_BUSTER = "{{asset_root}}";
-	</script
+	<!-- j-application-target is target for rendering react-router application -->
+	<div id="j-application-target">
+		{% include "header.jinja2" %}
 
-	<!-- Includes header.html into template -->
-	{% include "header.jinja2" %}
-
-	<div class="container" id="layout-document">
-    	{% block body %}{% endblock %}
-    	<div id="layout-document-footer-pusher"><!-- keep empty --></div>
-    </div>
-    
-	<!-- Includes footer.html into template -->
-	{% include "footer.jinja2" %}
-
-	<!-- Le javascript
-	================================================== -->
-	<!-- Placed at the end of the document so the pages load faster -->
+		<div class="container" id="layout-document">
+	    	{% block body %}{% endblock %}
+	    	<div id="layout-document-footer-pusher"><!-- keep empty --></div>
+	    </div>
+	    
+		{% include "footer.jinja2" %}
+	</div>
 
 <!-- Le javascript -->
 <!-- Placed at the end of the document so the pages load faster -->
