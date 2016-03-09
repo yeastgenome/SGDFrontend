@@ -14,6 +14,7 @@ from pyramid.config import Configurator
 from pyramid.renderers import JSONP, render
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.view import view_config
 from src.sgd.frontend.frontend_interface import FrontendInterface
 from src.sgd.frontend.yeastgenome.backendless.load_data_from_file import get_data
 
@@ -21,9 +22,6 @@ from src.sgd.frontend.yeastgenome.backendless.load_data_from_file import get_dat
 from src.sgd.frontend import config
 from elasticsearch import Elasticsearch
 es = Elasticsearch(config.elasticsearch_address, timeout=5, retry_on_timeout=True)
-
-# where to get node requests for server-side react rendering
-NODE_ADDRESS = 'http://localhost:5000'
 
 class YeastgenomeFrontend(FrontendInterface):
     def __init__(self, backend_url, heritage_url, log_directory):
@@ -414,42 +412,6 @@ class YeastgenomeFrontend(FrontendInterface):
         res = es.get(index='sequence_objects', id=id)['_source']
         return Response(body=json.dumps(res), content_type='application/json')
 
-    # elasticsearch endpoint
-    def search(self, params):
-        # try elastic search, if 1 response, redirect there
-        raw_query = params['query']
-        query = raw_query.lower()
-        obj = {
-            'query': {
-                'filtered': {
-                    'filter': {
-                        'bool': {
-                            'must': [
-                                {
-                                    'term': {
-                                        'term.raw': query
-                                    }
-                                },
-                                {
-                                    'terms': {
-                                        'type': ['gene_name', 'paper', 'go']
-                                    }
-                                }
-                                
-                            ]
-                        }
-                    }
-                }
-            }
-        }
-        res = es.search(index='sgdlite', body=obj)
-        if (res['hits']['total'] == 1):
-            url = res['hits']['hits'][0]['_source']['link_url']
-            return HTTPFound(url)
-        # otherwise try existing
-        else:
-            return HTTPFound("/cgi-bin/search/luceneQS.fpl?query=" + urllib.quote(raw_query))
-
     # elasticsearch autocomplete results
     def autocomplete_results(self, params):
         query = params['term']
@@ -576,14 +538,6 @@ class YeastgenomeFrontend(FrontendInterface):
             self.log.info(full_url)
             print full_url
             return json.dumps(get_json(full_url))
-
-def get_react_client(request):
-    # print dir(request)
-    full_node_address = NODE_ADDRESS + request.path
-    node_response = requests.get(full_node_address)
-    print dir(node_response)
-    print node_response.text
-    return Response(body=node_response.text)
     
 def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     chosen_frontend = YeastgenomeFrontend(backend_url, heritage_url, log_directory)

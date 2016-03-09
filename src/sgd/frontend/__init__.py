@@ -4,7 +4,6 @@ from src.sgd.frontend import config
 from pyramid.view import notfound_view_config
 from src.sgd.frontend.yeastgenome import send_message
 from src.sgd.tools.blast import do_blast
-from src.sgd.frontend.yeastgenome import get_react_client
 
 def prep_views(chosen_frontend, config):
     # some logic (NOT all) has been moved to views to be more 'pyramid-y'
@@ -16,6 +15,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('style_guide', '/style-guide')
     config.add_route('suggestion', '/suggestion')
     config.add_route('variant_viewer', '/variant-viewer')
+    config.add_route('search', '/search')
     # config.add_route('example', '/example')
 
     #Reference views
@@ -248,12 +248,6 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: {'home': render('static/templates/temp_homepage.jinja2', {})},
                     renderer=chosen_frontend.get_renderer('temp_homepage'),
                     route_name='home')
-
-    # example defer all rendering to react
-    config.add_route('search', '/search')
-    config.add_view(lambda request: {'search': render('static/templates/search.jinja2', {})},
-                    renderer=chosen_frontend.get_renderer('search'),
-                    route_name='search') 
 
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':

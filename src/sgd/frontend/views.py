@@ -41,3 +41,7 @@ def variant_viewer(request):
 # @view_config(route_name='example') 
 # def example(request):
 #     return render_to_response(TEMPLATE_ROOT + 'example.jinja2', {}, request=request)
+
+@view_config(route_name='search') 
+def search(request):
+    return render_to_response(TEMPLATE_ROOT + 'search.jinja2', {}, request=request)
