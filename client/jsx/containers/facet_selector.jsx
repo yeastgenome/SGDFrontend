@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { routeActions } from 'react-router-redux'
 import Radium from 'radium';
-import Select from 'react-select';
 import _ from 'underscore';
 
 import { getHrefWithoutAgg } from '../lib/search_helpers';
@@ -43,7 +42,7 @@ const FacetSelector = React.createClass({
   _renderCatAggs () {
     return (
       <div>
-        <p><Link to={this._getRawUrl()}><i className='fa fa-chevron-left'/> Show all categories</Link></p>
+        <p><Link to={this._getRawUrl()}><i className='fa fa-chevron-left' /> Show all categories</Link></p>
         <h2>{this.props.activeCategoryName}</h2>
         {this._renderSecondaryAggs()}
       </div>
@@ -67,10 +66,6 @@ const FacetSelector = React.createClass({
           currentAgg.values = [];
           break;
       };
-      // TEMP
-      if (d.key === 'biological_process' || d.key === 'cellular_component' || d.key === 'molecular_function') {
-        return this._renderReactSelect(d.key, d.values, currentAgg.values);
-      }
       return (
         <FacetList aggKey={d.key} values={d.values} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key}/>
       );
@@ -81,29 +76,6 @@ const FacetSelector = React.createClass({
         {catNodes}
       </div>
     );
-  },
-
-  _renderReactSelect (aggKey, selectableValues, currentValues) {
-    const _onChange = selectedItems => {
-      let newVals = (selectedItems === '') ? [] : selectedItems.split(SELECT_OPTION_DELEMITER);
-      let newHref = this._getToggledHref(aggKey, newVals, currentValues, true);
-      this.props.dispatch(routeActions.push(newHref));
-    };
-    let selectValues = selectableValues.map( d => {
-      return { label: `${d.key} (${d.total})`, value: d.key };
-    });
-    // trim labels once selected to display
-    const _valueRenderer = val => {
-      let _label = (val.label.length < SELECT_MAX_CHAR_WIDTH) ? val.label : `${val.label.slice(0, SELECT_MAX_CHAR_WIDTH)}...`;
-      return <span>{_label}</span>;
-    };
-
-    return (
-      <div key={`aggSelect${aggKey}`}>
-        <p style={style.aggLabel}>{aggKey}</p>
-        <Select multi simpleValue placeholder="Select" options={selectValues} value={currentValues} onChange={_onChange} valueRenderer={_valueRenderer} delimiter={SELECT_OPTION_DELEMITER} />
-      </div>
-    )
   },
 
   _renderAgg (name, total, _key, href, isActive) {
@@ -157,7 +129,7 @@ const FacetList = Radium(React.createClass({
     const valuesNodesMaybe = this.state.isCollapsed ? null : <div>{valueNodes}{this._renderShowMoreMaybe()}</div>;
     return (
       <div>
-        <p onClick={this._toggleIsCollapsed} style={style.aggLabel}><span>{this.props.name || this.props.aggKey}</span><i className={`fa fa-angle-${iconString}`} /></p>
+        <p onClick={this._toggleIsCollapsed} style={style.aggLabel}><span>{this.props.name || this.props.aggKey}</span><i className={`fa fa-angle-${iconString}`} style={[style.icon]} /></p>
         {valuesNodesMaybe}
       </div>
     );
@@ -216,6 +188,7 @@ const FacetList = Radium(React.createClass({
 }));
 
 const LINK_COLOR = '#6582A6';
+const HOVER_COLOR = '#e6e6e6';
 const style = {
   agg: {
     display: 'flex',
@@ -229,7 +202,7 @@ const style = {
   activeAgg: {
     background: LINK_COLOR,
     color: 'white',
-    border: '1px solid #e6e6e6',
+    border: `1px solid ${HOVER_COLOR}`,
     ':hover': {
       background: LINK_COLOR
     }
@@ -239,7 +212,7 @@ const style = {
     color: LINK_COLOR,
     border: '1px solid transparent',
     ':hover': {
-      background: '#e6e6e6'
+      background: HOVER_COLOR
     }
   },
   panel: {
@@ -250,7 +223,11 @@ const style = {
     display: 'flex',
     justifyContent: 'space-between',
     cursor: 'pointer',
-    textTransform: 'capitalize'
+    textTransform: 'capitalize',
+    fontWeight: 'bold'
+  },
+  icon: {
+    fontWeight: 'bold'
   }
 };
 

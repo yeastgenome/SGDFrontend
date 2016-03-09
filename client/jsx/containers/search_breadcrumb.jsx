@@ -6,7 +6,7 @@ import { Link } from 'react-router';
 import { getHrefWithoutAgg } from '../lib/search_helpers';
 
 const SEARCH_URL = '/search';
-const SKIPPED_PARAMS = ['page', 'q', 'wrapResults'];
+const SKIPPED_PARAMS = ['page', 'q', 'wrapResults', 'is_quick'];
 
 const SearchBreadcrumb = React.createClass({
   render() {
