@@ -2,10 +2,7 @@
 from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
-<<<<<<< HEAD
 from pyramid.httpexceptions import HTTPFound
-=======
->>>>>>> get intial search results from server
 from src.sgd.frontend import config
 import json
 import requests
@@ -24,13 +21,21 @@ def blast_sgd(request):
 def blast_sgd(request):
     return render_to_response(TEMPLATE_ROOT + 'interaction_search.jinja2', {}, request=request)
 
+# If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results and let client js do the rest.
 @view_config(route_name='search') 
 def search(request):
     # get search results
     search_url = config.backend_url + '/get_search_results' + '?' + request.query_string
     json_bootstrapped_search_results = requests.get(search_url).text
     # if param is_quick = true and there is a gene name match, redirect to that page
-    # TODO
+    parsed_results = json.loads(json_bootstrapped_search_results)['results']
+    if (request.params.get('is_quick') == 'true' and len(parsed_results) > 0):
+        first_result = parsed_results[0]
+        lower_display_name_from_result = first_result['name'].split('/')[0].lower().strip()
+        lower_query = request.params.get('q').lower()
+        print lower_query == lower_display_name_from_result
+        if (first_result['category'] == 'locus' and lower_query == lower_display_name_from_result):
+            return HTTPFound(first_result['href'])
     # otherwise, render results page and put results in scrip tag
     return render_to_response(TEMPLATE_ROOT + 'search.jinja2', { 'bootstrapped_search_results_json': json_bootstrapped_search_results }, request=request)
 
