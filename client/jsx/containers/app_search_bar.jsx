@@ -95,11 +95,14 @@ const AppSearchBar = React.createClass({
   },
 
   _onOptionClick(e, data) {
-    this._setUserInput(data.name, data.href);
+    console.log('le click')
+    this._setUserInput(data.name, data.href, data.isShowAll);
     this._submit();
   },
 
   _submit() {
+    console.log(this.state.redirectHref)
+    return
     if (typeof this.state.redirectHref === 'string') {
       return this._hardRedirect(this.state.redirectHref)
     }
