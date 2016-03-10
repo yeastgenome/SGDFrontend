@@ -95,7 +95,11 @@ $right-section-width: 363px;
 }
 
 .top-bar {
-	margin-bottom: 0;
+	margin-bottom: 0;	
+}
+
+.top-bar-section ul {
+	margin-left: -1rem;
 }
 
 .top-bar-section ul li > a {

@@ -17,6 +17,9 @@ def prep_views(chosen_frontend, config):
     config.add_route('variant_viewer', '/variant-viewer')
     config.add_route('search', '/search')
     # config.add_route('example', '/example')
+    
+    # TEMP, render homepage here for prototype
+    config.add_route('home', '/')
 
     #Reference views
     config.add_route('references_this_week', '/reference/recent')
@@ -43,7 +46,8 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: getattr(chosen_frontend, 'redirect')(page=request.matchdict['page'], params=request.GET),
                     renderer=chosen_frontend.get_renderer('redirect'),
                     route_name='redirect')
-        
+    
+    # TEMP, render homepage here for prototype
     # config.add_route('home', '/')
     # config.add_view(lambda request: chosen_frontend.response_wrapper('home', request)(getattr(chosen_frontend, 'home')()),
     #                 renderer=chosen_frontend.get_renderer('home'),
@@ -253,11 +257,6 @@ def prep_views(chosen_frontend, config):
     config.add_route('do_blast', '/run_blast')
     config.add_view(do_blast, route_name='do_blast')
 
-    # TEMP, render homepage here for prototype
-    config.add_route('home', '/')
-    config.add_view(lambda request: {'home': render('static/templates/temp_homepage.jinja2', {})},
-                    renderer=chosen_frontend.get_renderer('temp_homepage'),
-                    route_name='home')
 
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':

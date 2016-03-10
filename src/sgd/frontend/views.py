@@ -40,6 +40,11 @@ def variant_viewer(request):
 @view_config(route_name='search') 
 def search(request):
     return render_to_response(TEMPLATE_ROOT + 'search.jinja2', {}, request=request)
+    
+# TEMP, render homepage here for prototype
+@view_config(route_name='home') 
+def home(request):
+    return render_to_response(TEMPLATE_ROOT + 'temp_homepage.jinja2', {}, request=request)
 
 # example
 # @view_config(route_name='example') 

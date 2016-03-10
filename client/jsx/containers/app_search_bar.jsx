@@ -26,7 +26,7 @@ const SearchOption = React.createClass({
     }
     return (
       <div className={_className}>
-        <p>{this.props.data.name}{catNode}</p>
+        <p><a>{this.props.data.name}</a>{catNode}</p>
       </div>
     );
   }
@@ -84,10 +84,10 @@ const AppSearchBar = React.createClass({
     this.props.dispatch(fetchAction);
   },
 
-  _setUserInput(newValue, href, _isShowAll) {
+  _setUserInput(newValue, href, _isShowAll, cb) {
     let typeAction = Actions.setUserInput(newValue);
     this.props.dispatch(typeAction);
-    this.setState({ redirectHref: href, isShowAll: _isShowAll });
+    this.setState({ redirectHref: href, isShowAll: _isShowAll }, cb);
   },
 
   _onOptionChange(e, data) {
@@ -95,14 +95,11 @@ const AppSearchBar = React.createClass({
   },
 
   _onOptionClick(e, data) {
-    console.log('le click')
-    this._setUserInput(data.name, data.href, data.isShowAll);
-    this._submit();
+    if (e) e.preventDefault();
+    this._setUserInput(data.name, data.href, data.isShowAll, this._submit);
   },
 
   _submit() {
-    console.log(this.state.redirectHref)
-    return
     if (typeof this.state.redirectHref === 'string') {
       return this._hardRedirect(this.state.redirectHref)
     }
