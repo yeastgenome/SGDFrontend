@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-<!--[if IE 8]> <html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
     {% block head %}{% endblock %}
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
@@ -8,40 +6,25 @@
 	<meta name="description" content="pyramid web application" />
 	<meta name="author" content="">
 	<link rel="shortcut icon" type="image/x-icon" href="/img-domain/favicon.ico" />
-	<!--[if !IE 7]>
-	<style type="text/css">
-		#wrap {display:table;height:100%}
-    </style>
-	<![endif]-->
     <style type="text/css">
         .locale { text-align: center; }
         .locale-name { font-weight: bold; }
     </style>
     <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>{% block title %}{% endblock %} | SGD</title>
-
 	<link href="{{asset_root}}/css/normalize.css" rel="stylesheet">
 	<link href="{{asset_root}}/css/style.css" rel="stylesheet">
-	
 	<style>
 		.filterMatches
 		{
     		background-color: #fade71;
 		}
 	</style>
-
-	<!--[if lt IE 9]>
-	<script src="../static/js/build/respond.min.js"></script>
-	<![endif]-->
-
 	<script src="{{asset_root}}/js/build/modernizr.min.js"></script>
 	<script src="{{asset_root}}/js/build/fastclick.min.js"></script>
-
 </head>
 <body>
-
 	<!-- Includes header.html into template -->
 	{% include "header.jinja2" %}
 
@@ -50,16 +33,14 @@
     	<div id="layout-document-footer-pusher"><!-- keep empty --></div>
     </div>
     
-    
 	<!-- Includes footer.html into template -->
 	{% include "footer.jinja2" %}
 
+	<!-- Le javascript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
 
-<!-- Le javascript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-
-<!-- load jquery from google, with fallback to local copy -->
+	<!-- load jquery from google, with fallback to local copy -->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script>window.jQuery || document.write('<script src="{{asset_root}}/js/build/jquery.min.js"><\/script>')</script>
 
