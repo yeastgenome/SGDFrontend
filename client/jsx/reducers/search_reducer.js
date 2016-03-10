@@ -18,7 +18,8 @@ const DEFAULT_STATE = {
   autoCompleteQuery: '',
   isPending: false,
   isPaginatePending: false, // if the only change is the page, note special state for rendering total
-  apiError: null
+  apiError: null,
+  isHydrated: false
 };
 
 const searchResultsReducer = function (_state, action) {
@@ -56,9 +57,15 @@ const searchResultsReducer = function (_state, action) {
       break;
     case 'SEARCH_RESPONSE':
       state.total = action.response.total;
-      state.results = action.response.results;
+      state.results = action.response.results.map( d => {
+        d.category = getCategoryDisplayName(d.category);
+        return d;
+      });
+      state.aggregations = action.response.aggregations.map( d => {
+        d.name = d.key;
+        return d;
+      });
       state.totalPages = Math.floor(state.total / state.resultsPerPage) + ((state.total % state.resultsPerPage === 0) ? 0 : 1);
-      state.aggregations = action.response.aggregations;
       state.isPending = false;
       state.isAggPending = false;
       state.isPaginatePending = false;
@@ -79,6 +86,10 @@ const searchResultsReducer = function (_state, action) {
       state.apiError = action.value;
       return state;
       break;
+    case 'HYDRATE_SEARCH':
+      state.isHydrated = true;
+      return state;
+      break; 
     default:
       return state;
   }

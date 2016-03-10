@@ -29,11 +29,17 @@ export function startSearchFetch () {
   };
 };
 
+// on the first time, does NOT fetch, just uses global bootstrappedSearchResults
 export function fetchSearchResults () {
   return function (dispatch, getState) {
     // format the API request from quer params
     const state = getState();
     const searchState = state.searchResults;
+    // if not isHydrated and global bootstrappedSearchResults, use that as result, don't fetch anything, set isHydrated to false
+    if (!searchState.isHydrated && typeof bootstrappedSearchResults === 'object') {
+      dispatch(hydrateSearch());
+      return dispatch(receiveSearchResponse(bootstrappedSearchResults));
+    }
     const qp = (state.routing.location.query);
     const searchPath = state.routing.location.search;
     // from page and results per page, add limit and offset to API request
@@ -47,14 +53,6 @@ export function fetchSearchResults () {
     fetchFromApi(url)
       .then( response => {
         if (!response) return;
-        response.aggregations = response.aggregations.map( d => {
-          d.name = d.key;
-          return d;
-        });
-        response.results = response.results.map( d => {
-          d.category = getCategoryDisplayName(d.category);
-          return d;
-        });
         dispatch(setApiError(false));
         return dispatch(receiveSearchResponse(response)); 
       })
@@ -106,5 +104,11 @@ export function setApiError (isError) {
   return {
     type: 'SEARCH_API_ERROR',
     value: isError
+  };
+};
+
+export function hydrateSearch () {
+  return {
+    type: 'HYDRATE_SEARCH'
   };
 };

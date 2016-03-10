@@ -2,7 +2,10 @@
 from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
+<<<<<<< HEAD
 from pyramid.httpexceptions import HTTPFound
+=======
+>>>>>>> get intial search results from server
 from src.sgd.frontend import config
 import json
 import requests
@@ -21,6 +24,16 @@ def blast_sgd(request):
 def blast_sgd(request):
     return render_to_response(TEMPLATE_ROOT + 'interaction_search.jinja2', {}, request=request)
 
+@view_config(route_name='search') 
+def search(request):
+    # get search results
+    search_url = config.backend_url + '/get_search_results' + '?' + request.query_string
+    json_bootstrapped_search_results = requests.get(search_url).text
+    # if param is_quick = true and there is a gene name match, redirect to that page
+    # TODO
+    # otherwise, render results page and put results in scrip tag
+    return render_to_response(TEMPLATE_ROOT + 'search.jinja2', { 'bootstrapped_search_results_json': json_bootstrapped_search_results }, request=request)
+
 @view_config(route_name='snapshot') 
 def snapshot(request):
     return render_to_response(TEMPLATE_ROOT + 'snapshot.jinja2', {}, request=request)
@@ -36,10 +49,6 @@ def suggestion(request):
 @view_config(route_name='variant_viewer') 
 def variant_viewer(request):
     return render_to_response(TEMPLATE_ROOT + 'variant_viewer.jinja2', {}, request=request)
-
-@view_config(route_name='search') 
-def search(request):
-    return render_to_response(TEMPLATE_ROOT + 'search.jinja2', {}, request=request)
     
 # TEMP, render homepage here for prototype
 @view_config(route_name='home') 
