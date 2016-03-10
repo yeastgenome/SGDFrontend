@@ -12,6 +12,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	$(".j-sgd-cyto-canvas")
 		.attr("width", width)
 		.attr("height", height + offset);
+	$(".j-sgd-cyto-canvas").css("margin-top", '2rem');;
 
 	var _legendOffsets = {
 		protein: 0,
@@ -44,7 +45,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	$('#' + div_id).cytoscape(options);
     var cy = $('#' + div_id).cytoscape("get");
 
-    var legendY = height + 50;
+    var legendY = height + 35;
 
     // add date
     var $canvas = $("#j-sgd-visible-cyto-canvas")[0]
