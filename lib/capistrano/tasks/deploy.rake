@@ -41,11 +41,4 @@ namespace :deploy do
       execute "cd #{current_path}/../../ && echo \"Creating symlink...\"  && rm -rf SGDFrontend && ln -s SGDFrontend_app/current SGDFrontend"
     end
   end
-
-  desc 'Upload static files'
-  task :upload_statics do
-    on roles(:app), in: :sequence do
-      upload!('./production_asset_url.json', "#{current_path}/")
-    end
-  end
 end
