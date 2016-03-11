@@ -1,6 +1,9 @@
 BOOTSTRAP = bootstrap.py
 BUILDOUT_DEPLOY = buildout_deploy.cfg
 
+deploy-assets:
+	. dev_deploy_variables.sh && grunt deployAssets
+
 dev-deploy:
 	. dev_deploy_variables.sh && cap dev deploy
 

@@ -5,15 +5,6 @@ namespace :deploy do
       execute "cd #{release_path} && make build-deploy"
     end
   end
-
-  desc 'Build static files'
-  task :build_statics do
-    on roles(:app), in: :sequence do
-      run_locally do
-        execute "npm install && grunt deployAssets"
-      end
-    end
-  end
   
   desc 'Restart Apache'
   task :restart do
