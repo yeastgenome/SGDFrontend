@@ -1,12 +1,13 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
-from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser
+from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam
 import fixtures as factory
+import os
 
 
 class ModelsTest(unittest.TestCase):
     def setUp(self):
-        self.engine = create_engine('sqlite://')
+        self.engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
         DBSession.remove()
         DBSession.configure(bind=self.engine)
 
@@ -67,8 +68,16 @@ class ModelsTest(unittest.TestCase):
         source = factory.SourceFactory()
         colleague = factory.ColleagueFactory()
         instances = DBSession.query(Colleague).all()
-        colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
-        colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
+        self.assertEqual(1, len(instances))
+        self.assertEqual(colleague, instances[0])
+        
+        colleague_url_1 = factory.ColleagueUrlFactory(colleague_id=colleague.colleague_id)
+        colleague_url_2 = factory.ColleagueUrlFactory(colleague_id=colleague.colleague_id, url_type="Lab")
+
+        instances = DBSession.query(Colleague).all()
+        self.assertEqual(1, len(instances))
+        self.assertEqual(colleague, instances[0])
+        
         self.assertEqual(colleague.to_search_results_dict(), {
             'format_name': colleague.format_name,
             'first_name': colleague.first_name,
@@ -78,14 +87,14 @@ class ModelsTest(unittest.TestCase):
             'fax': colleague.fax,
             'email': colleague.email,
             'webpages': {
-                'lab_url': colleague_url_1.obj_url,
-                'research_summary_url': colleague_url_2.obj_url
+                'lab_url': colleague_url_2.obj_url,
+                'research_summary_url': colleague_url_1.obj_url
             }
         })
 
     def test_colleague_model_search_results_doesnt_send_email_if_required(self):
         source = factory.SourceFactory()
-        colleague = factory.ColleagueFactory(display_email=False)
+        colleague = factory.ColleagueFactory(display_email=0)
         instances = DBSession.query(Colleague).all()
         self.assertEqual(1, len(instances))
         self.assertEqual(colleague, instances[0])
@@ -95,10 +104,10 @@ class ModelsTest(unittest.TestCase):
         source = factory.SourceFactory()
         colleague = factory.ColleagueFactory()
         instances = DBSession.query(Colleague).all()
-        colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
-        colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
+        colleague_url_1 = factory.ColleagueUrlFactory(colleague_id=colleague.colleague_id)
+        colleague_url_2 = factory.ColleagueUrlFactory(colleague_id=colleague.colleague_id, url_type="Lab")
 
-        colleague_2 = factory.ColleagueFactory(colleague_id=113699, format_name="Jimmy_2")
+        colleague_2 = factory.ColleagueFactory(colleague_id=113699)
         factory.ColleagueAssociationFactory(colleague_id=colleague.colleague_id, associate_id=colleague_2.colleague_id, association_type="Lab member")
         factory.ColleagueAssociationFactory(colleague_id=colleague.colleague_id, associate_id=colleague_2.colleague_id, association_type="Associate")
 
@@ -123,8 +132,8 @@ class ModelsTest(unittest.TestCase):
             'work_phone': colleague.work_phone,
             'fax': colleague.fax,
             'webpages': {
-                'lab_url': 'http://example.org',
-                'research_summary_url': 'http://example.org'
+                'lab_url': colleague_url_2.obj_url,
+                'research_summary_url': colleague_url_1.obj_url
             },
             'associations': {
                 'Lab member': [(colleague_2.first_name, colleague_2.last_name, colleague_2.format_name)],
@@ -137,10 +146,10 @@ class ModelsTest(unittest.TestCase):
 
     def test_colleague_model_info_dict_doesnt_send_email_if_required(self):
         source = factory.SourceFactory()
-        colleague = factory.ColleagueFactory(display_email = False)
+        colleague = factory.ColleagueFactory(display_email = 0)
         instances = DBSession.query(Colleague).all()
-        colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
-        colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
+        colleague_url_1 = factory.ColleagueUrlFactory(colleague_id=colleague.colleague_id)
+        colleague_url_2 = factory.ColleagueUrlFactory(colleague_id=colleague.colleague_id, url_type="Lab")
         self.assertEqual(colleague.to_info_dict(), {
             'orcid': colleague.orcid,
             'first_name': colleague.first_name,
@@ -156,8 +165,8 @@ class ModelsTest(unittest.TestCase):
             'work_phone': colleague.work_phone,
             'fax': colleague.fax,
             'webpages': {
-                'lab_url': 'http://example.org',
-                'research_summary_url': 'http://example.org'
+                'lab_url': colleague_url_2.obj_url,
+                'research_summary_url': colleague_url_1.obj_url
             },
             'research_interests': colleague.research_interest,
             'last_update': str(colleague.date_last_modified)
@@ -167,12 +176,12 @@ class ModelsTest(unittest.TestCase):
         source = factory.SourceFactory()
         colleague = factory.ColleagueFactory()
         instances = DBSession.query(Colleague).all()
-        colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
-        colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
+        colleague_url_1 = factory.ColleagueUrlFactory(colleague_id=colleague.colleague_id)
+        colleague_url_2 = factory.ColleagueUrlFactory(colleague_id=colleague.colleague_id, url_type="Lab")
 
         colleague_dict = {}
         colleague._include_urls_to_dict(colleague_dict)
-        self.assertEqual(colleague_dict, {'webpages': {'lab_url': 'http://example.org', 'research_summary_url': 'http://example.org'}})
+        self.assertEqual(colleague_dict, {'webpages': {'lab_url': colleague_url_2.obj_url, 'research_summary_url': colleague_url_1.obj_url}})
 
     def test_colleague_url_model(self):
         instances = DBSession.query(ColleagueUrl).all()
@@ -181,7 +190,7 @@ class ModelsTest(unittest.TestCase):
         source = factory.SourceFactory()
         colleague = factory.ColleagueFactory()
 
-        colleague_url_1 = factory.ColleagueUrlFactory(url_id=1, colleague_id=colleague.colleague_id)
+        colleague_url_1 = factory.ColleagueUrlFactory(colleague_id=colleague.colleague_id)
         instances = DBSession.query(ColleagueUrl).all()
 
         self.assertEqual(1, len(instances))
@@ -190,13 +199,17 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(colleague_url_1.source, source)
         self.assertEqual(colleague_url_1.colleague, colleague)
 
-        colleague_url_2 = factory.ColleagueUrlFactory(url_id=2, colleague_id=colleague.colleague_id, url_type="Lab")
+        colleague_url_2 = factory.ColleagueUrlFactory(colleague_id=colleague.colleague_id, url_type="Lab")
         instances = DBSession.query(ColleagueUrl).all()
 
         self.assertEqual(2, len(instances))
-        self.assertEqual(colleague.urls, [colleague_url_2, colleague_url_1])
+        self.assertEqual(colleague.urls, [colleague_url_1, colleague_url_2])
 
     def test_colleague_association_model(self):
+        source = factory.SourceFactory()
+        colleague = factory.ColleagueFactory()
+        colleague = factory.ColleagueFactory(colleague_id=113699)
+        
         instances = DBSession.query(ColleagueAssociation).all()
         self.assertEqual(0, len(instances))
 
@@ -209,8 +222,8 @@ class ModelsTest(unittest.TestCase):
     def test_colleague_model_should_include_associates_in_dict(self):
         source = factory.SourceFactory()
 
-        colleague_1 = factory.ColleagueFactory(colleague_id=113698)
-        colleague_2 = factory.ColleagueFactory(colleague_id=113699, format_name="Jimmy_2")
+        colleague_1 = factory.ColleagueFactory()
+        colleague_2 = factory.ColleagueFactory(colleague_id=113699)
 
         association_1_2 = factory.ColleagueAssociationFactory(colleague_id=colleague_1.colleague_id, associate_id=colleague_2.colleague_id, association_type="Lab member")
 
@@ -225,6 +238,10 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(colleague_dict, {'associations': {'Head of the lab': [(colleague_1.first_name, colleague_1.last_name, colleague_1.format_name)]}})
 
     def test_colleague_keywords_model(self):
+        source = factory.SourceFactory()
+        colleague = factory.ColleagueFactory()
+        keyword = factory.KeywordFactory()
+        
         instances = DBSession.query(ColleagueKeyword).all()
         self.assertEqual(0, len(instances))
 
@@ -236,22 +253,23 @@ class ModelsTest(unittest.TestCase):
         
     def test_colleague_model_should_include_keywords_in_dict(self):
         source = factory.SourceFactory()
-
         colleague = factory.ColleagueFactory()
         keyword = factory.KeywordFactory()
-        factory.ColleagueKeywordFactory(colleague_id=colleague.colleague_id, keyword_id=keyword.keyword_id)
+        
+        factory.ColleagueKeywordFactory()
 
         colleague_dict = {}
         colleague._include_keywords_to_dict(colleague_dict)
         self.assertEqual(colleague_dict, {'keywords': [keyword.display_name]})
 
-        keyword_2 = factory.KeywordFactory(keyword_id=2, format_name="format_name")
+        keyword_2 = factory.KeywordFactory(keyword_id=2)
         factory.ColleagueKeywordFactory(colleague_id=colleague.colleague_id, keyword_id=keyword_2.keyword_id)
         colleague_dict = {}
         colleague._include_keywords_to_dict(colleague_dict)
         self.assertEqual(colleague_dict, {'keywords': [keyword.display_name, keyword_2.display_name]})
 
     def test_keywords_model(self):
+        source = factory.SourceFactory()
         instances = DBSession.query(Keyword).all()
         self.assertEqual(0, len(instances))
 
@@ -260,3 +278,14 @@ class ModelsTest(unittest.TestCase):
 
         self.assertEqual(1, len(instances))
         self.assertEqual(keyword, instances[0])
+
+    def test_edam_model(self):
+        source = factory.SourceFactory()
+        instances = DBSession.query(Edam).all()
+        self.assertEqual(0, len(instances))
+
+        edam = factory.EdamFactory()
+        instances = DBSession.query(Edam).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(edam, instances[0])
