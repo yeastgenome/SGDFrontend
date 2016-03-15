@@ -1,6 +1,6 @@
 import datetime
 import factory
-from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam
+from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -138,7 +138,7 @@ class EdamFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = Edam
         sqlalchemy_session = DBSession
 
-    edam_id = factory.Sequence(lambda n: n)
+    edam_id = 1
     format_name = "format_name"
     display_name = "display_name"
     obj_url = "/url"
@@ -147,5 +147,94 @@ class EdamFactory(factory.alchemy.SQLAlchemyModelFactory):
     edamid = factory.Sequence(lambda n: 'protein_{0}'.format(n))
     edam_namespace = "namespace"
     description = "This is my description"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+# class DbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
+#     class Meta:
+#         model = Dbentity
+#         sqlalchemy_session = DBSession
+
+#     dbentity_id = 1
+#     format_name = factory.Sequence(lambda n: 'format_{0}'.format(n))
+#     display_name = "My entity"
+#     obj_url = "http://example.org/entity"
+#     source_id = 1
+#     bud_id = None
+#     sgdid = "S000001"
+#     subclass = None
+#     dbentity_status = "ACTIVE"
+#     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+#     created_by = "TOTO"
+
+class ReferencedbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Referencedbentity
+        sqlalchemy_session = DBSession
+
+    dbentity_id = 1
+    method_obtained = "Dataset"
+    publication_status = "Published"
+    fulltext_status = "Done"
+    citation = factory.Sequence(lambda n: 'citation_{0}'.format(n))
+    year = 2016
+    pmid = 1
+    pmcid = factory.Sequence(lambda n: 'pmcid_{0}'.format(n))
+    date_published = "03/15/2016"
+    date_revised = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    issue = "1"
+    page = "10"
+    volume = "1"
+    title = "Nice title"
+    doi = "dodoi"
+    journal_id = 1
+    book_id = 1
+    
+    format_name = factory.Sequence(lambda n: 'format_{0}'.format(n))
+    display_name = "My entity"
+    obj_url = "http://example.org/entity"
+    source_id = 1
+    bud_id = None
+    sgdid = "S000001"
+    dbentity_status = "ACTIVE"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class JournalFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Journal
+        sqlalchemy_session = DBSession
+
+    journal_id = 1
+    format_name = "format_name"
+    display_name = "My Journal"
+    obj_url = "http://example.org/journal"
+    source_id = 1
+    bud_id = None
+    med_abbr = factory.Sequence(lambda n: 'med_{0}'.format(n))
+    title = factory.Sequence(lambda n: 'Title {0}'.format(n))
+    issn_print = "123"
+    issn_electronic = "213"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class BookFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Book
+        sqlalchemy_session = DBSession
+
+    book_id = 1
+    format_name = "format_name"
+    display_name = "My book"
+    obj_url = "http://example.org/book"
+    source_id = 1
+    bud_id = None
+    title = factory.Sequence(lambda n: 'Title {0}'.format(n))
+    volume_title = factory.Sequence(lambda n: 'Volume {0}'.format(n))
+    isbn = "1234"
+    total_pages = 1
+    publisher = "Publisher A"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"

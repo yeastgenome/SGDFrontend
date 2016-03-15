@@ -1,6 +1,6 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
-from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam
+from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book
 import fixtures as factory
 import os
 
@@ -289,3 +289,50 @@ class ModelsTest(unittest.TestCase):
 
         self.assertEqual(1, len(instances))
         self.assertEqual(edam, instances[0])
+
+    # def test_dbentity_model(self):
+    #     source = factory.SourceFactory()
+    #     instances = DBSession.query(Dbentity).all()
+    #     self.assertEqual(0, len(instances))
+
+    #     dbentity = factory.DbentityFactory()
+    #     instances = DBSession.query(Dbentity).all()
+
+    #     self.assertEqual(1, len(instances))
+    #     self.assertEqual(dbentity, instances[0])
+
+    def test_journal_model(self):
+        source = factory.SourceFactory()
+        instances = DBSession.query(Journal).all()
+        self.assertEqual(0, len(instances))
+
+        journal = factory.JournalFactory()
+        instances = DBSession.query(Journal).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(journal, instances[0])
+
+    def test_book_model(self):
+        source = factory.SourceFactory()
+        instances = DBSession.query(Book).all()
+        self.assertEqual(0, len(instances))
+
+        book = factory.BookFactory()
+        instances = DBSession.query(Book).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(book, instances[0])
+        
+    def test_referencedbentity_model(self):
+        source = factory.SourceFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        instances = DBSession.query(Referencedbentity).all()
+        self.assertEqual(0, len(instances))
+
+        refdbentity = factory.ReferencedbentityFactory()
+        instances = DBSession.query(Referencedbentity).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(refdbentity, instances[0])
+
