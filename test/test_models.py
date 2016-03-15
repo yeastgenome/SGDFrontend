@@ -290,17 +290,6 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(1, len(instances))
         self.assertEqual(edam, instances[0])
 
-    # def test_dbentity_model(self):
-    #     source = factory.SourceFactory()
-    #     instances = DBSession.query(Dbentity).all()
-    #     self.assertEqual(0, len(instances))
-
-    #     dbentity = factory.DbentityFactory()
-    #     instances = DBSession.query(Dbentity).all()
-
-    #     self.assertEqual(1, len(instances))
-    #     self.assertEqual(dbentity, instances[0])
-
     def test_journal_model(self):
         source = factory.SourceFactory()
         instances = DBSession.query(Journal).all()
@@ -327,12 +316,20 @@ class ModelsTest(unittest.TestCase):
         source = factory.SourceFactory()
         journal = factory.JournalFactory()
         book = factory.BookFactory()
+
+        instances = DBSession.query(Dbentity).all()
+        self.assertEqual(0, len(instances))
+        
         instances = DBSession.query(Referencedbentity).all()
         self.assertEqual(0, len(instances))
 
         refdbentity = factory.ReferencedbentityFactory()
+        
+        instances = DBSession.query(Dbentity).all()
+        self.assertEqual(1, len(instances))
+        self.assertEqual(refdbentity, instances[0])
+        
         instances = DBSession.query(Referencedbentity).all()
-
         self.assertEqual(1, len(instances))
         self.assertEqual(refdbentity, instances[0])
 
