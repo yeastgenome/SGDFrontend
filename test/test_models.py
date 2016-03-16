@@ -1,6 +1,6 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
-from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book
+from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath
 import fixtures as factory
 import os
 
@@ -333,3 +333,50 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(1, len(instances))
         self.assertEqual(refdbentity, instances[0])
 
+    def test_filekeyword_model(self):
+        source = factory.SourceFactory()
+        filedbentity = factory.FiledbentityFactory()
+        filepath = factory.FilepathFactory()
+        edam = factory.EdamFactory()
+        keyword = factory.KeywordFactory()
+        
+        instances = DBSession.query(FileKeyword).all()
+        self.assertEqual(0, len(instances))
+
+        fkeyword = factory.FileKeywordFactory()
+        instances = DBSession.query(FileKeyword).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(fkeyword, instances[0])
+
+    def test_filepath_model(self):
+        source = factory.SourceFactory()
+        instances = DBSession.query(Filepath).all()
+        self.assertEqual(0, len(instances))
+
+        filepath = factory.FilepathFactory()
+        instances = DBSession.query(Filepath).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(filepath, instances[0])
+
+    def test_filedbentity_model(self):
+        source = factory.SourceFactory()
+        filepath = factory.FilepathFactory()
+        edam = factory.EdamFactory()
+
+        instances = DBSession.query(Dbentity).all()
+        self.assertEqual(0, len(instances))
+        
+        instances = DBSession.query(Filedbentity).all()
+        self.assertEqual(0, len(instances))
+
+        refdbentity = factory.FiledbentityFactory()
+        
+        instances = DBSession.query(Dbentity).all()
+        self.assertEqual(1, len(instances))
+        self.assertEqual(refdbentity, instances[0])
+        
+        instances = DBSession.query(Filedbentity).all()
+        self.assertEqual(1, len(instances))
+        self.assertEqual(refdbentity, instances[0])

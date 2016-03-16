@@ -1,6 +1,6 @@
 import datetime
 import factory
-from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book
+from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -150,22 +150,6 @@ class EdamFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
-# class DbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
-#     class Meta:
-#         model = Dbentity
-#         sqlalchemy_session = DBSession
-
-#     dbentity_id = 1
-#     format_name = factory.Sequence(lambda n: 'format_{0}'.format(n))
-#     display_name = "My entity"
-#     obj_url = "http://example.org/entity"
-#     source_id = 1
-#     bud_id = None
-#     sgdid = "S000001"
-#     subclass = None
-#     dbentity_status = "ACTIVE"
-#     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-#     created_by = "TOTO"
 
 class ReferencedbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -238,3 +222,57 @@ class BookFactory(factory.alchemy.SQLAlchemyModelFactory):
     publisher = "Publisher A"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
+
+class FiledbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Filedbentity
+        sqlalchemy_session = DBSession
+
+    dbentity_id = 1
+    md5sum = "12345"
+    previous_file_name = "filename"
+    topic_id = 1
+    format_id = 1
+    file_date = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    is_public = 1
+    is_in_spell = 1
+    is_in_browser = 1
+    filepath_id = 1
+    readme_url = "http://example.org/readme"
+    file_extension = "txt"
+    s3_url = "http://example.org/s3"
+
+    format_name = factory.Sequence(lambda n: 'format_{0}'.format(n))
+    display_name = "My entity"
+    obj_url = "http://example.org/entity"
+    source_id = 1
+    bud_id = None
+    sgdid = "S000001"
+    dbentity_status = "ACTIVE"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+    
+class FileKeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = FileKeyword
+        sqlalchemy_session = DBSession
+
+    file_keyword_id = 1
+    file_id = 1
+    keyword_id = 1
+    source_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+    
+class FilepathFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Filepath
+        sqlalchemy_session = DBSession
+
+    filepath_id = 1
+    source_id = 1
+    filepath = "my_path"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
