@@ -28,6 +28,7 @@ def upload_to_s3(self, local_file_path, sgdid, file_extension, s3_access_key, s3
             fdb = DBSession.query(Filedbentity).filter(Filedbentity.sgdid == sgdid).one_or_none()
             fdb.md5sum = etag_md5_s3
             fdb.s3_url = file_s3.generate_url(expires_in=0, query_auth=False)
+
             DBSession.flush()
 
             transaction.commit()
