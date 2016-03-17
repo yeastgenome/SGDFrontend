@@ -9,11 +9,11 @@ const Header = React.createClass({
         {/* top black section */}
         <div className="row top-header hide-for-small">
           {/* left */}
-          <div className="columns medium-9">
+          <div className="columns medium-8 large-9">
 
           </div>
           {/* right */}
-          <div className="columns medium-3 header-right">
+          <div className="columns medium-4 large-3 header-right">
             <div className="site-links">
               <div><a href="/about">About</a></div>
               <div><a href="/blog">Blog</a></div>
