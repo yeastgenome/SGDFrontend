@@ -8,8 +8,7 @@ http://smacss.com/book/type-module
 } */
 $logo-width: 277px;
 $logo-height: 44px;
-$header-text-font-size: 16.3px;
-$right-section-width: 400px;
+$header-text-font-size: 14px;
 
 .top-header {
 	padding: 0.5rem 0 0.25rem 0;
@@ -26,13 +25,8 @@ $right-section-width: 400px;
 	align-items: flex-end;
 }
 
-.yeastmine-links {
-	font-size: $header-text-font-size;
-	margin-bottom: 0;
-}
-
 .site-links {
-	width: 370px;
+	width: 100%;
 	display:-webkit-flex;
 	display: flex;
 	-webkit-justify-content: space-between;
@@ -61,7 +55,7 @@ $right-section-width: 400px;
 
 .logo {
 	background: url("../img/sgd-logo.png") no-repeat;
-	background-size: $logo-width $logo-height;
+	background-size: 100% 100%;
 	height: $logo-height;
 	width: $logo-width;
 	display: inline-block;
@@ -78,10 +72,6 @@ $right-section-width: 400px;
 .top-bar-section ul li > a {
     font-size: $header-text-font-size;
     font-family: Lato, sans-serif;
-}
-
-.search-container {
-	max-width: $right-section-width;
 }
 
 .menu-bar-container {

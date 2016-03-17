@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-const AppSearchBar = require('../app_search_bar.jsx');
+import AppSearchBar from '../app_search_bar.jsx';
 
 const Header = React.createClass({
   render() {
@@ -9,16 +9,16 @@ const Header = React.createClass({
         {/* top black section */}
         <div className="row top-header hide-for-small">
           {/* left */}
-          <div className="columns small-6">
+          <div className="columns medium-9">
 
           </div>
           {/* right */}
-          <div className="columns small-6 header-right">
+          <div className="columns medium-3 header-right">
             <div className="site-links">
-              <div><a href="/about"><i className="fa fa-info"></i> About</a></div>
-              <div><a href="/blog"><i className="fa fa-exclamation"></i> Blog</a></div>
-              <div><a href="/download-data"><i className="fa fa-download"></i> Download</a></div>
-              <div><a href="/help"><i className="fa fa-question"></i> Help</a></div>
+              <div><a href="/about">About</a></div>
+              <div><a href="/blog">Blog</a></div>
+              <div><a href="/download-data">Download</a></div>
+              <div><a href="/help">Help</a></div>
               <div><a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Yeastmine</a></div>
             </div>
           </div>
@@ -26,14 +26,14 @@ const Header = React.createClass({
         {/* purple bar */}
         <section className="contain-to-grid">
           <div className="row menu-bar-container">
-            <div className="medium-2 columns top-menu-container">
+            <div className="medium-3 columns top-menu-container">
               <a href="/">
                 <div className="logo">
                   <span className="logo-label">Saccharomyces Genome Database</span>
                 </div>
               </a>
             </div>
-            <div className="medium-7 columns top-menu-container">
+            <div className="medium-6 columns top-menu-container">
               {this._renderMenu()}   
             </div>
             <div className="medium-3 columns search-container" id="j-search-container">
@@ -226,4 +226,4 @@ const Header = React.createClass({
   }
 });
 
-module.exports = Header;
+export default Header;
