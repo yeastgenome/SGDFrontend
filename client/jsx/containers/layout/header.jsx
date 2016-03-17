@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-// const $ = require('jquery');
-// require('foundation');
 
 const AppSearchBar = require('../app_search_bar.jsx');
 
@@ -8,31 +6,19 @@ const Header = React.createClass({
   render() {
     return (
       <header id="layout-page-header" ref="wrapper">
-        {/* top white section */}
+        {/* top black section */}
         <div className="row top-header hide-for-small">
           {/* left */}
           <div className="columns small-6">
-            <a href="/">
-              <div className="logo">
-                <span className="logo-label">Saccharomyces Genome Database</span>
-              </div>
-            </a>
+
           </div>
           {/* right */}
           <div className="columns small-6 header-right">
-            <ul className="social-links header-social-links">
-              <li><a href="/cgi-bin/suggestion" target="_blank" id="email-footer" className="webicon mail medium">Email Us</a></li>
-              <li><a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter-footer" className="webicon twitter medium">Twitter</a></li>
-              <li><a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" className="webicon facebook medium" id="facebook-footer">Facebook</a></li>
-              <li><a href="https://www.linkedin.com/company/saccharomyces-genome-database" target="_blank" className="webicon linkedin medium" id="linkedin-footer">LinkedIn</a></li>
-              <li><a href="https://www.youtube.com/channel/UCnTiLvqP2aYeHEaJl7m9DUg" target="_blank" id="youtube-footer" className="webicon youtube medium">YouTube</a></li>
-              <li><a href="/feed" target="_blank" id="rss-footer" className="webicon rss medium">RSS</a></li>
-            </ul>
             <div className="site-links">
-              <div><a href="/about">About</a></div>
-              <div><a href="/blog">Blog</a></div>
-              <div><a href="/download-data">Download</a></div>
-              <div><a href="/help">Help</a></div>
+              <div><a href="/about"><i className="fa fa-info"></i> About</a></div>
+              <div><a href="/blog"><i className="fa fa-exclamation"></i> Blog</a></div>
+              <div><a href="/download-data"><i className="fa fa-download"></i> Download</a></div>
+              <div><a href="/help"><i className="fa fa-question"></i> Help</a></div>
               <div><a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Yeastmine</a></div>
             </div>
           </div>
@@ -40,10 +26,17 @@ const Header = React.createClass({
         {/* purple bar */}
         <section className="contain-to-grid">
           <div className="row menu-bar-container">
-            <div className="medium-8 large-7 columns top-menu-container">
+            <div className="medium-2 columns top-menu-container">
+              <a href="/">
+                <div className="logo">
+                  <span className="logo-label">Saccharomyces Genome Database</span>
+                </div>
+              </a>
+            </div>
+            <div className="medium-7 columns top-menu-container">
               {this._renderMenu()}   
             </div>
-            <div className="medium-4 large-5 columns search-container" id="j-search-container">
+            <div className="medium-3 columns search-container" id="j-search-container">
               <AppSearchBar />
             </div>
           </div>

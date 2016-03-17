@@ -6,13 +6,15 @@ http://smacss.com/book/type-module
 /* #layout-page-header-content {
 	background: url("../img/demo-watermark.png") repeat-x;
 } */
-$logo-width: 297px;
-$logo-height: 52px;
+$logo-width: 277px;
+$logo-height: 44px;
 $header-text-font-size: 16.3px;
-$right-section-width: 363px;
+$right-section-width: 400px;
 
 .top-header {
 	padding: 0.5rem 0 0.25rem 0;
+	max-width: none;
+	background: black;
 }
 
 .header-right {
@@ -30,7 +32,7 @@ $right-section-width: 363px;
 }
 
 .site-links {
-	width: 332px;
+	width: 370px;
 	display:-webkit-flex;
 	display: flex;
 	-webkit-justify-content: space-between;
@@ -38,23 +40,12 @@ $right-section-width: 363px;
 	font-size: $header-text-font-size;
 }
 
+.site-links a {
+	color: #CCC;
+}
+
 #sgd-mini-logo {
 	margin: 8px;
-}
-
-.social-links {
-	overflow: visible;
-	@include inline-list;
-	$inline-list-display: inline;
-	display: block;
-}
-
-.social-links {
-	margin: 0;
-	li {
-		margin-left: 20px;
-		margin-top: em-calc(2);
-	}
 }
 
 .webicon.x-small {
@@ -74,32 +65,14 @@ $right-section-width: 363px;
 	height: $logo-height;
 	width: $logo-width;
 	display: inline-block;
-	margin-top: 6px;
 	.logo-label {
 		display: inline-block;
 		text-indent: -9999px;
 	}
 }
 
-// use hi-rez logo on retina (etc) screens
-@media only screen and (-webkit-min-device-pixel-ratio: 2),
-    only screen and (min--moz-device-pixel-ratio: 2),
-    only screen and (-o-min-device-pixel-ratio: 2/1),
-    only screen and (min-device-pixel-ratio: 2),
-    only screen and (min-resolution: 192dpi),
-    only screen and (min-resolution: 2dppx) {
-        .logo {
-            background: url("../img/sgd-logo-2x.png") no-repeat;
-            background-size: $logo-width $logo-height;
-        }
-}
-
 .top-bar {
-	margin-bottom: 0;	
-}
-
-.top-bar-section ul {
-	margin-left: -0.85rem;
+	margin-bottom: 0;
 }
 
 .top-bar-section ul li > a {
@@ -109,6 +82,11 @@ $right-section-width: 363px;
 
 .search-container {
 	max-width: $right-section-width;
+}
+
+.menu-bar-container {
+  padding: 6px 0;
+  max-width: none;
 }
 
 .menu-bar-container {
