@@ -63,6 +63,11 @@ $header-text-font-size: 14px;
 		display: inline-block;
 		text-indent: -9999px;
 	}
+	&.small-logo {
+		width: 200px;
+		height: 30px;
+		margin-top: 8px;
+	}
 }
 
 .top-bar {

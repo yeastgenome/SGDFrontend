@@ -26,17 +26,17 @@ const Header = React.createClass({
         {/* purple bar */}
         <section className="contain-to-grid">
           <div className="row menu-bar-container">
-            <div className="medium-3 columns top-menu-container">
+            <div className="large-3 columns top-menu-container hide-for-medium hide-for-small">
               <a href="/">
                 <div className="logo">
                   <span className="logo-label">Saccharomyces Genome Database</span>
                 </div>
               </a>
             </div>
-            <div className="medium-6 columns top-menu-container">
+            <div className="medium-8 large-6 columns top-menu-container">
               {this._renderMenu()}   
             </div>
-            <div className="medium-3 columns search-container" id="j-search-container">
+            <div className="medium-4 large-3 columns search-container" id="j-search-container">
               <AppSearchBar />
             </div>
           </div>
@@ -50,8 +50,17 @@ const Header = React.createClass({
       <nav className="top-bar" data-topbar role="navigation">
         <ul className="title-area">
           <li className="name">
-            <span className="show-for-small">
-              <a href="/"><img id="sgd-mini-logo" src="/static/img/sgd-logo-sm-hi-res-v2.png" alt="SGD Logo" /></a>
+            <span className="hide-for-large-up">
+              <a href="/" className="show-for-medium">
+                <div className="logo">
+                  <span className="logo-label">Saccharomyces Genome Database</span>
+                </div>
+              </a>
+              <a href="/" className="show-for-small">
+                <div className="logo small-logo">
+                  <span className="logo-label">Saccharomyces Genome Database</span>
+                </div>
+              </a>
             </span>
           </li>
           <li className="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
