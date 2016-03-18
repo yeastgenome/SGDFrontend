@@ -25,7 +25,7 @@
 	<script src="{{asset_root}}/js/build/fastclick.min.js"></script>
 </head>
 <body>
-	<!-- Includes header.html into template -->
+	{% include "social_links.jinja2" %}
 	{% include "header.jinja2" %}
 	<script>initialize_sgd_search();</script>
 

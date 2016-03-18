@@ -10,7 +10,6 @@ const Header = React.createClass({
         <div className="row top-header hide-for-small">
           {/* left */}
           <div className="columns medium-8 large-9">
-
           </div>
           {/* right */}
           <div className="columns medium-4 large-3 header-right">

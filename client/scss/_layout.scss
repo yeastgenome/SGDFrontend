@@ -43,3 +43,13 @@ http://smacss.com/book/type-layout
 .content-column section:last-child {
 	border-bottom: none;
 }
+
+.large-social-links {
+	position: fixed;
+	top: 7rem;
+	margin-left: 4px;
+}
+
+.large-social-links ul li {
+	list-style: none;
+}
