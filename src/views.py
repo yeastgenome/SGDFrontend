@@ -7,10 +7,14 @@ from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, Colleague
+from .models import DBSession, Colleague, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword
 from .celery_tasks import upload_to_s3
-from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate
+from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file
 
+import transaction
+
+import datetime
+import math
 import logging
 log = logging.getLogger(__name__)
 
@@ -21,21 +25,76 @@ def home_view(request):
 @view_config(route_name='upload', request_method='POST')
 @authenticate
 def upload_file(request):
-    root_dir = os.path.dirname(os.getcwd())
+    keys = ["file", "old_filepath", "new_filepath", "previous_file_name", "display_name", "status", "topic", "topic_id", "format", "format_id", "extension", "extension_id", "file_date", "is_public", "for_spell", "for_browser", "readme_name", "pmids", "keywords"]
 
-    if request.POST.get('file') is None:
-        return HTTPBadRequest('Field \'file\' is missing')
-    
+    for k in keys:
+        if request.POST.get(k) is None:
+            return HTTPBadRequest('Field \'' + k + '\' is missing')
+
     file = request.POST['file'].file
     filename = request.POST['file'].filename
 
-    if file and allowed_file(filename):
-        temp_file_path = secure_save_file(file, filename)
-        settings = request.registry.settings
-	upload_to_s3.delay(filename, temp_file_path, os.environ['S3_ACCESS_KEY'], os.environ['S3_SECRET_KEY'], os.environ['S3_BUCKET'])
-	return Response('Upload complete')
-    else:
+    if not file:
+        log.info('No file was sent.')
+        return HTTPBadRequest('No file was sent.')
+
+    if not allowed_file(filename):
+        log.info('Upload error: File ' + request.POST.get("display_name") + ' has an invalid extension.')
         return HTTPBadRequest('File extension is invalid')
+    
+    try:
+        references = extract_references(request)
+        keywords = extract_keywords(request)
+        topic = extract_topic(request)
+        format = extract_format(request)
+        filepath = get_or_create_filepath(request)
+    except HTTPBadRequest as bad_request:
+        return bad_request
+
+    if file_already_uploaded(request):
+        return HTTPBadRequest("Upload error: File " + request.POST.get("display_name") + " already exists.")
+
+    fdb = Filedbentity(
+        # Filedbentity params
+        md5sum=None,
+        previous_file_name=request.POST.get("previous_file_name"),
+        topic_id=topic.edam_id,
+        format_id=format.edam_id,
+        file_date=datetime.datetime.strptime(request.POST.get("file_date"), "%Y-%m-%d %H:%M:%S"),
+        is_public=request.POST.get("is_public"),
+        is_in_spell=request.POST.get("for_spell"),
+        is_in_browser=request.POST.get("for_browser"),
+        filepath_id=filepath.filepath_id,
+        readme_url=request.POST.get("readme_name"),
+        file_extension=request.POST.get("extension"),        
+
+        # DBentity params
+        format_name=request.POST.get("display_name"),
+        display_name=request.POST.get("display_name"),
+        s3_url=None,
+        source_id=339,
+        dbentity_status=request.POST.get("status")
+    )
+
+    DBSession.add(fdb)
+    DBSession.flush()
+    DBSession.refresh(fdb)
+
+    link_references_to_file(references, fdb.dbentity_id)
+    link_keywords_to_file(keywords, fdb.dbentity_id)
+    
+    # fdb object gets expired after transaction commit
+    fdb_sgdid = fdb.sgdid
+    fdb_file_extension = fdb.file_extension
+    
+    transaction.commit() # this commit must be synchronous because the upload_to_s3 task expects the row in the DB
+        
+    temp_file_path = secure_save_file(file, filename)
+    upload_to_s3.delay(temp_file_path, fdb_sgdid, fdb_file_extension, os.environ['S3_ACCESS_KEY'], os.environ['S3_SECRET_KEY'], os.environ['S3_BUCKET'])
+
+    log.info('File ' + request.POST.get('display_name') + ' was successfully uploaded.')
+    return Response('Upload complete')
+
 
 @view_config(route_name='colleagues', renderer='json', request_method='GET')
 def colleagues_by_last_name(request):
@@ -100,5 +159,4 @@ def sign_in(request):
 @view_config(route_name='sign_out', request_method='DELETE')
 def sign_out(request):
     request.session.invalidate()
-
     return HTTPOk()
