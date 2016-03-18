@@ -5,7 +5,7 @@ http://smacss.com/book/type-layout
 
 #layout-document {
 	overflow: hidden;
-	padding-bottom: 100px;
+	padding-bottom: 92px;
 	@media only screen and (max-width: 40em) {
 		padding-bottom: 250px;
 	}
@@ -52,4 +52,8 @@ http://smacss.com/book/type-layout
 
 .large-social-links ul li {
 	list-style: none;
+}
+
+.awesome-yeast-image {
+	width: 100%;
 }
