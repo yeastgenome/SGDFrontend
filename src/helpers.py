@@ -114,7 +114,7 @@ def link_references_to_file(references, fdb_dbentity_id):
         DBSession.add(rf)
     DBSession.commit()
 
-def link_keywords_to_file(keywords, fdb_db_entity_id):
+def link_keywords_to_file(keywords, fdb_dbentity_id):
     for keyword_id in keywords:
         fk = FileKeyword(
             keyword_id=keyword_id,

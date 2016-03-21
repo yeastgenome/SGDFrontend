@@ -8,7 +8,7 @@ import fixtures as factory
 
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk
 
-from src.helpers import md5, allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic
+from src.helpers import md5, allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file
 from src.models import Dbuser, Filepath
 
 
@@ -201,7 +201,6 @@ class HelpersTest(unittest.TestCase):
         self.assertEqual(response.__class__, Filepath)
         self.assertEqual(response.filepath, params["new_filepath"])
         self.assertEqual(response.source_id, 339)
-        
 
     @mock.patch('src.models.DBSession.query')
     def test_valid_topic_but_inexistent_should_raise_bad_requset(self, mock_search):
@@ -216,7 +215,7 @@ class HelpersTest(unittest.TestCase):
             extract_topic(request)
 
     @mock.patch('src.models.DBSession.query')
-    def test_valid_keywords_should_return_ids(self, mock_search):
+    def test_valid_topic_should_return_ids(self, mock_search):
         params = {'topic_id': '1234'}
         topic = factory.EdamFactory.build()
         
@@ -226,3 +225,75 @@ class HelpersTest(unittest.TestCase):
         request.context = testing.DummyResource()
 
         self.assertEqual(extract_topic(request), topic)
+
+    @mock.patch('src.models.DBSession.query')
+    def test_valid_format_but_inexistent_should_raise_bad_requset(self, mock_search):
+        params = {'format_id': '1234'}
+        
+        mock_search.return_value = MockQuery(None)
+
+        request = testing.DummyRequest(post=params)
+        request.context = testing.DummyResource()
+
+        with self.assertRaises(HTTPBadRequest):
+            extract_format(request)
+
+    @mock.patch('src.models.DBSession.query')
+    def test_valid_format_should_return_ids(self, mock_search):
+        params = {'format_id': '1234'}
+        format = factory.EdamFactory.build()
+        
+        mock_search.return_value = MockQuery(format)
+
+        request = testing.DummyRequest(post=params)
+        request.context = testing.DummyResource()
+
+        self.assertEqual(extract_format(request), format)
+
+    @mock.patch('src.models.DBSession.query')
+    def test_check_file_upload_should_return_true_for_existing_file(self, mock_search):
+        params = {'display_name': 'existing_file'}
+        filedb = factory.FiledbentityFactory.build()
+        
+        mock_search.return_value = MockQuery(filedb)
+
+        request = testing.DummyRequest(post=params)
+        request.context = testing.DummyResource()
+
+        self.assertTrue(file_already_uploaded(request))
+
+    @mock.patch('src.models.DBSession.query')
+    def test_check_file_upload_should_return_false_for_existing_file(self, mock_search):
+        params = {'display_name': 'existing_file'}
+        filedb = factory.FiledbentityFactory.build()
+        
+        mock_search.return_value = MockQuery(filedb)
+
+        request = testing.DummyRequest(post=params)
+        request.context = testing.DummyResource()
+
+        self.assertTrue(file_already_uploaded(request))
+
+    @mock.patch('src.helpers.DBSession')
+    def test_link_references_to_file(self, mock_session):
+        filedb = factory.FiledbentityFactory.build()
+        references = [factory.ReferencedbentityFactory.build(), factory.ReferencedbentityFactory.build()]
+
+        link_references_to_file(references, filedb.dbentity_id)
+
+        for ref in references:
+            self.assertTrue(mock_session.add.called_with(ref))
+        
+        self.assertTrue(mock_session.commit.called)
+        
+    @mock.patch('src.helpers.DBSession')
+    def test_link_keywords_to_file(self, mock_session):
+        filedb = factory.FiledbentityFactory.build()
+        keywords = [factory.FileKeywordFactory.build(), factory.FileKeywordFactory.build()]
+
+        link_keywords_to_file(keywords, filedb.dbentity_id)
+
+        for key in keywords:
+            self.assertTrue(mock_session.add.called_with(key))
+        
+        self.assertTrue(mock_session.commit.called)
