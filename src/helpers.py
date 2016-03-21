@@ -75,7 +75,7 @@ def extract_keywords(request):
 
 def get_or_create_filepath(request):
     filepath = DBSession.query(Filepath).filter(Filepath.filepath == request.POST.get("new_filepath")).one_or_none()
-    import pdb; pdb.set_trace()
+
     if filepath is None:
         filepath = Filepath(filepath=request.POST.get("new_filepath"), source_id=339)
         DBSession.add(filepath)
