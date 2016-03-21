@@ -6,10 +6,10 @@ from mock_helpers import MockQuery, MockQueryFilter
 from pyramid import testing
 import fixtures as factory
 
-from pyramid.httpexceptions import HTTPForbidden, HTTPOk
+from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk
 
-from src.helpers import md5, allowed_file, secure_save_file, curator_or_none, authenticate
-from src.models import Dbuser
+from src.helpers import md5, allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath
+from src.models import Dbuser, Filepath
 
 
 class HelpersTest(unittest.TestCase):
@@ -112,3 +112,93 @@ class HelpersTest(unittest.TestCase):
         response = decorator(testing.DummyResource, request)
 
         self.assertEqual(response.status, '200 OK')
+
+    def test_invalid_references_should_raise_bad_request(self):
+        params = {'pmids': 'invalid_pmid'}
+
+        request = testing.DummyRequest(post=params)
+        request.context = testing.DummyResource()
+
+        with self.assertRaises(HTTPBadRequest):
+            extract_references(request)
+
+    @mock.patch('src.models.DBSession.query')
+    def test_valid_pmids_but_inexistent_should_raise_bad_requset(self, mock_search):
+        params = {'pmids': '1234'}
+        
+        mock_search.return_value = MockQuery(None)
+
+        request = testing.DummyRequest(post=params)
+        request.context = testing.DummyResource()
+
+        with self.assertRaises(HTTPBadRequest):
+            extract_references(request)
+
+    @mock.patch('src.models.DBSession.query')
+    def test_valid_pmids_should_return_reference_ids(self, mock_search):
+        params = {'pmids': '1234'}
+        reference = factory.ReferencedbentityFactory.build()
+        
+        mock_search.return_value = MockQuery(reference)
+
+        request = testing.DummyRequest(post=params)
+        request.context = testing.DummyResource()
+
+        self.assertEqual(extract_references(request), [reference.dbentity_id])
+
+    @mock.patch('src.models.DBSession.query')
+    def test_valid_keywords_but_inexistent_should_raise_bad_requset(self, mock_search):
+        params = {'keywords': 'keyword_1'}
+        
+        mock_search.return_value = MockQuery(None)
+
+        request = testing.DummyRequest(post=params)
+        request.context = testing.DummyResource()
+
+        with self.assertRaises(HTTPBadRequest):
+            extract_keywords(request)
+
+    @mock.patch('src.models.DBSession.query')
+    def test_valid_keywords_should_return_ids(self, mock_search):
+        params = {'keywords': '1234'}
+        keyword = factory.KeywordFactory.build()
+        
+        mock_search.return_value = MockQuery(keyword)
+
+        request = testing.DummyRequest(post=params)
+        request.context = testing.DummyResource()
+
+        self.assertEqual(extract_keywords(request), [keyword.keyword_id])
+
+    @mock.patch('src.models.DBSession.query')
+    def test_existent_filepath_should_return_object(self, mock_search):
+        params = {'new_filepath': '/i/do/exist'}
+        filepath = factory.FilepathFactory.build()
+        
+        mock_search.return_value = MockQuery(filepath)
+
+        request = testing.DummyRequest(post=params)
+        request.context = testing.DummyResource()
+
+        self.assertEqual(get_or_create_filepath(request), filepath)
+
+    @mock.patch('src.helpers.DBSession')
+    def test_inexistent_filepath_should_return_new_object(self, mock_session):
+        params = {'new_filepath': '/valid/path'}
+        filepath = factory.FilepathFactory.build(filepath='/valid/path')
+
+        mock_session.query.return_value = MockQuery(None)
+        mock_session.return_value = MockQuery(None)
+
+        request = testing.DummyRequest(post=params)
+        request.context = testing.DummyResource()
+
+        response = get_or_create_filepath(request)
+        
+        self.assertTrue(mock_session.add.called_with(filepath))
+        self.assertTrue(mock_session.flush.called)
+        self.assertTrue(mock_session.refresh.called_with(filepath))
+        self.assertEqual(response.__class__, Filepath)
+        self.assertEqual(response.filepath, params["new_filepath"])
+        self.assertEqual(response.source_id, 339)
+        
