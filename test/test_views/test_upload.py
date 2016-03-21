@@ -249,7 +249,6 @@ class UploadTest(unittest.TestCase):
         self.assertTrue(mock_transaction.commit.called)
         self.assertTrue(mock_save.called)
         
-        
         mock_tasks.assert_called_with(os.path.join('/tmp', upload.filename), None, self.complete_params['extension'], os.environ['S3_ACCESS_KEY'], os.environ['S3_SECRET_KEY'], os.environ['S3_BUCKET'])
        
         self.assertEqual(response.status_code, 200)
