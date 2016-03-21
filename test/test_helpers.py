@@ -8,7 +8,7 @@ import fixtures as factory
 
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk
 
-from src.helpers import md5, allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath
+from src.helpers import md5, allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic
 from src.models import Dbuser, Filepath
 
 
@@ -202,3 +202,27 @@ class HelpersTest(unittest.TestCase):
         self.assertEqual(response.filepath, params["new_filepath"])
         self.assertEqual(response.source_id, 339)
         
+
+    @mock.patch('src.models.DBSession.query')
+    def test_valid_topic_but_inexistent_should_raise_bad_requset(self, mock_search):
+        params = {'topic_id': '1234'}
+        
+        mock_search.return_value = MockQuery(None)
+
+        request = testing.DummyRequest(post=params)
+        request.context = testing.DummyResource()
+
+        with self.assertRaises(HTTPBadRequest):
+            extract_topic(request)
+
+    @mock.patch('src.models.DBSession.query')
+    def test_valid_keywords_should_return_ids(self, mock_search):
+        params = {'topic_id': '1234'}
+        topic = factory.EdamFactory.build()
+        
+        mock_search.return_value = MockQuery(topic)
+
+        request = testing.DummyRequest(post=params)
+        request.context = testing.DummyResource()
+
+        self.assertEqual(extract_topic(request), topic)
