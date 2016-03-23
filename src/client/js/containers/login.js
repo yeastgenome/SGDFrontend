@@ -8,9 +8,21 @@ const Login = React.createClass({
   render() {
     return (
       <div>
+        {this._renderLoginError()}
         <h1>Login</h1>
         <hr />
         <div className="g-signin2" data-onsuccess="onSignIn"></div>
+      </div>
+    );
+  },
+
+  _renderLoginError () {
+    if (!this.props.loginError) return null;
+    return (
+      <div className='alert callout'>
+        <p>
+          There was an error with your login.  Make sure that you are signed into Google with your Stanford email address.  You may have to logout of gmail, and login with your Stanford email.
+        </p>
       </div>
     );
   },
@@ -36,6 +48,7 @@ const Login = React.createClass({
 
 function mapStateToProps(_state) {
   return {
+    loginError: _state.auth.loginError
   };
 }
 
