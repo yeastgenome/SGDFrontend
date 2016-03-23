@@ -5,7 +5,7 @@ const DEFAULT_STATE = {
   isAuthenticating: false,
   email: null,
   csrfToken: null,
-  loginError: null // can be { message: 'user not found ', error: new Errow('user not found') }
+  loginError: false
 };
 
 export default function authReducer(_state, action) {
@@ -20,12 +20,17 @@ export default function authReducer(_state, action) {
       state.isAuthenticated = true;
       state.isAuthenticating = false;
       state.email = action.payload.email;
+      state.loginError = false;
       return state;
       break;
     case 'LOGOUT':
       state.isAuthenticated = false;
       state.isAuthenticating = false;
       state.email = null;
+      return state;
+      break;
+    case 'SET_LOGIN_ERROR':
+      state.loginError = true;
       return state;
       break;
     default:

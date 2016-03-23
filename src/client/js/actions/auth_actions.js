@@ -27,18 +27,31 @@ export function sendAuthRequest (googleToken) {
       .substr(1, JSON.stringify(paramObj).length - 2)
       .replace(/"/g, '')
       .replace(/:/g, '=');
+    function checkStatus(response) {
+      if (response.status >= 200 && response.status < 300) {
+        return response;
+      } else {
+        const error = new Error(response.statusText);
+        error.response = response;
+        throw error;
+      }
+    };
     // send POST request to server to get credentials, dispatch reception action
     fetch(AUTH_URL, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: {
-        'X-CSRF-Token': state.csrfToken,        
-        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-      },
-      body: paramStr
-    }).then( function handleAuthResponse (response) {
-      dispatch(receiveAuthResponseAndRedirect('user123'));
-    });
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          'X-CSRF-Token': state.csrfToken,        
+          'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+        },
+        body: paramStr
+      })
+      .then(checkStatus)  
+      .then(function handleAuthResponse (response) {
+        dispatch(receiveAuthResponseAndRedirect('user123'));
+      }).catch(function handleAuthRequestError (error) {
+         dispatch(setLoginError());
+      });
   };
 };
 
@@ -63,5 +76,11 @@ export function receiveAuthenticationResponse (_email) {
     payload: {
       email: _email, 
     }
+  };
+};
+
+export function setLoginError () {
+  return {
+    type: 'SET_LOGIN_ERROR'
   };
 };
