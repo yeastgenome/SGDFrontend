@@ -124,11 +124,10 @@ const AppSearchBar = React.createClass({
 
 function mapStateToProps(_state) {
   const state = _state.searchResults;
-  const isSearchPage = (_state.routing.location.pathname === '/search');
   return {
     userInput: state.userInput,
     autocompleteResults: state.autocompleteResults,
-    redirectOnSearch: !isSearchPage // don't do hard redirect if currently on search page (just show results)
+    redirectOnSearch: true
   };
 }
 
