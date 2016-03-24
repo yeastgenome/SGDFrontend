@@ -13,16 +13,17 @@ const AppLayout = React.createClass({
     };
     // init auth nodes, either login or logout links
     let authNodes = this.props.isAuthenticated ?
-      <ul style={style.authMenu} className='menu'><li><Link style={style.navLink} to='/account'><i className='fa fa-user'></i> {this.props.email}</Link></li><li><a style={style.navLink} onClick={onClickLogout} href='#'><i className='fa fa-sign-out'></i> Logout</a></li></ul> :
-      <ul style={style.authMenu} className='menu'><li><Link style={style.navLink} to='/login'><i className='fa fa-sign-in'></i> Login</Link></li></ul>;
+      <ul style={[style.authMenu]} className='menu'><li><Link style={style.navLink} to='/account'><i className='fa fa-user'></i> {this.props.email}</Link></li><li><a style={[style.navLink]} onClick={onClickLogout} href='#'><i className='fa fa-sign-out'></i> Logout</a></li></ul> :
+      <ul style={[style.authMenu]} className='menu'><li><Link style={style.navLink} to='/login'><i className='fa fa-sign-in'></i> Login</Link></li></ul>;
     return (
       <div>
-        <nav className='top-bar' style={style.navWrapper}>
+        <nav className='top-bar' style={[style.navWrapper]}>
           <div className='top-bar-left'>
-            <ul className='menu' style={style.menu}>
+            <ul className='menu' style={[style.menu]}>
               <li>
-                <Link to='dashboard' style={style.indexLink}>
-                  <h3>SGD Curation</h3>
+                <Link to='dashboard' style={[style.indexLink]}>
+                  <img src="/static/img/sgd_logo.png" style={[style.imgLogo]}/>
+                  <span style={[style.logoText, style.navLink]}>Curator</span>
                 </Link>
               </li>
             </ul>
@@ -47,6 +48,10 @@ const messageColor = '#CCC';
 var style = {
   imgLogo: {
     width: 250
+  },
+  logoText: {
+    fontWeight: 'bold',
+    marginLeft: '1rem'
   },
   messageText: {
     marginBottom: '0.25rem'
@@ -84,4 +89,4 @@ function mapStateToProps(_state) {
   };
 };
 
-export default Radium(connect(mapStateToProps)(AppLayout));
+export default connect(mapStateToProps)(Radium(AppLayout));

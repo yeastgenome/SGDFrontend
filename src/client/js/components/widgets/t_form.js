@@ -5,10 +5,10 @@ const Form = form.Form;
 import { Link } from 'react-router';
 
 // register date-time validation
-function isDateTime (str) {
-  return str.match(/[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/)
+function isFormattedDate (str) {
+  return str.match(/[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/);
 };
-transform.registerFormat('date-time', isDateTime);
+transform.registerFormat('formatted-date', isFormattedDate);
 
 // create form from JSON validation format
 const TForm = React.createClass({
