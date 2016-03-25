@@ -22,29 +22,28 @@ const SearchResult = React.createClass({
   },
 
   render: function () {
-    // TEMP always same result
-    // let innerNode = (typeof this.props.download_metadata === 'object') ? this._getDownloadResultNode() : this._getBasicResultNode();
     let innerNode = this._getBasicResultNode();
     return (
-      <div style={[style.wrapper]}>
+      <div className='search-result' style={[style.wrapper]}>
         {innerNode}
       </div>
     );
   },
 
   _getBasicResultNode: function () {
-    let description = this.props.description || '(no description available)';
+    let description = this.props.description || '';
     let name = this.props.name || '(no name available)';
     return (
       <div>
         <h2 style={[style.title]}>
-          <a href={this.props.href}>{name}</a> <span className='radius secondary label'>{this.props.category}</span>
+          <a href={this.props.href} dangerouslySetInnerHTML={{ __html: name }}></a> <span className='radius secondary label'>{this.props.category}</span>
         </h2>
-        <p style={[style.description]}>{description}</p>
+        <p style={[style.description]} dangerouslySetInnerHTML={{ __html: description }}></p>
       </div>
     );
   },
 
+  // not used for now
   _getDownloadResultNode: function () {
     let data = this.props.download_metadata;
     let pmidsNodes = null;
