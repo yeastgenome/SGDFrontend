@@ -82,10 +82,10 @@ const SearchView = React.createClass({
     const wrapPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, wrapResults: true }) });
     const listPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, wrapResults: false }) });
     return (
-        <ul className='button-group' style={[style.viewAs]}>
-          <Link to={listPath} className={`button tiny${isWrapped ? ' secondary':''}`}><i className='fa fa-reorder'/> <span className='hide-for-small'>List</span></Link>
-          <Link to={wrapPath} className={`button tiny${!isWrapped ? ' secondary':''}`}><i className='fa fa-th'/> <span className='hide-for-small'>Wrapped</span></Link>
-        </ul>
+      <ul className='button-group' style={[style.viewAs]}>
+        <Link to={listPath} className={`button tiny${isWrapped ? ' secondary':''}`}><i className='fa fa-reorder'/> <span className='hide-for-small'>List</span></Link>
+        <Link to={wrapPath} className={`button tiny${!isWrapped ? ' secondary':''}`}><i className='fa fa-th'/> <span className='hide-for-small'>Wrapped</span></Link>
+      </ul>
     );
   },
 
@@ -118,7 +118,7 @@ const SearchView = React.createClass({
     let results = this.props.results;
     return results.map( (d, i) => {
       let id = d.id || i;
-      return <SearchResult key={'searchResults' + id} {...d}/>;
+      return <SearchResult key={'searchResults' + id} {...d} />;
     });
   },
 

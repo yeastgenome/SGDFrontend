@@ -10,6 +10,7 @@ const SearchResult = React.createClass({
   propTypes: {
     category: React.PropTypes.string.isRequired,
     description: React.PropTypes.string,
+    highlights: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
     href: React.PropTypes.string,
     download_metadata: React.PropTypes.object // uses _ not camel case for nested values { pubmed_ids, geo_ids, download_url }
@@ -21,7 +22,7 @@ const SearchResult = React.createClass({
     };
   },
 
-  render: function () {
+  render () {
     let innerNode = this._getBasicResultNode();
     return (
       <div className='search-result' style={[style.wrapper]}>
@@ -30,21 +31,32 @@ const SearchResult = React.createClass({
     );
   },
 
-  _getBasicResultNode: function () {
-    let description = this.props.description || '';
+  _getBasicResultNode () {
     let name = this.props.name || '(no name available)';
     return (
       <div>
         <h2 style={[style.title]}>
-          <a href={this.props.href} dangerouslySetInnerHTML={{ __html: name }}></a> <span className='radius secondary label'>{this.props.category}</span>
+          <a href={this.props.href}>{name}</a> <span className='radius secondary label'>{this.props.category}</span>
+          {this._getHighlightsNode()}
         </h2>
-        <p style={[style.description]} dangerouslySetInnerHTML={{ __html: description }}></p>
+        
       </div>
     );
   },
 
+  // if highlights, returns highlighted HTML in <dl>, otherise description
+  _getHighlightsNode () {
+    if (!this.props.highlights) return <p style={[style.description]}>{this.props.description}</p>;
+    // format highlights
+    let innerNodes = Object.keys(this.props.highlights).map( (d, i) => {
+      let highVal = this.props.highlights[d].join('...');
+      return <p style={[style.description]} key={`resHigh${i}`}><span style={[style.highlightKey]}>{d}</span>: <span dangerouslySetInnerHTML={{ __html: highVal }} /></p>;
+    });
+    return <div>{innerNodes}</div>;
+  },
+
   // not used for now
-  _getDownloadResultNode: function () {
+  _getDownloadResultNode () {
     let data = this.props.download_metadata;
     let pmidsNodes = null;
     if (data.pubmed_ids.length) {
@@ -110,6 +122,9 @@ const style = {
     overflow: 'hidden',
     maxHeight: '3.6rem',
     marginBottom: 0
+  },
+  highlightKey: {
+    fontWeight: 'bold'
   },
   resourceList: {
     marginTop: '0.25rem',
