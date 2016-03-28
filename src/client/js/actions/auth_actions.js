@@ -65,7 +65,7 @@ export function setCSRFToken (token) {
 export function receiveAuthResponseAndRedirect (email) {
   return function (dispatch, getState) {
     dispatch(receiveAuthenticationResponse(email));
-    let redirectUrl = getState().routing.location.query.next || '/login';
+    let redirectUrl = getState().routing.location.query.next || '/dashboard';
     dispatch(routeActions.push(redirectUrl));
   };
 };

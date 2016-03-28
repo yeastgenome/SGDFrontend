@@ -21,7 +21,7 @@ const AppLayout = React.createClass({
           <div className='top-bar-left'>
             <ul className='menu' style={[style.menu]}>
               <li>
-                <Link to='dashboard' style={[style.indexLink]}>
+                <Link to='dashboard' style={style.indexLink}>
                   <img src="/static/img/sgd_logo.png" style={[style.imgLogo]}/>
                   <span style={[style.logoText, style.navLink]}>Curator</span>
                 </Link>
@@ -45,7 +45,7 @@ const AppLayout = React.createClass({
 const purple = '#663882';
 const red = '#C22D38';
 const messageColor = '#CCC';
-var style = {
+const style = {
   imgLogo: {
     width: 250
   },
@@ -63,7 +63,7 @@ var style = {
   authMenu: {
     background: 'none',
     fontSize: '18px',
-    marginTop: '0.25rem'
+    marginTop: '0.2rem'
   },
   navWrapper: {
     background: purple
