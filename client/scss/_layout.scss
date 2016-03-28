@@ -6,6 +6,7 @@ http://smacss.com/book/type-layout
 #layout-document {
 	overflow: hidden;
 	padding-bottom: 92px;
+	margin-top: 0.5rem;
 	@media only screen and (max-width: 40em) {
 		padding-bottom: 250px;
 	}
