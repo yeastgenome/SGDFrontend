@@ -51,6 +51,10 @@ const FacetSelector = React.createClass({
 
   _renderSecondaryAggs () {
     const qp = this.props.queryParams;
+    // if no filters, show a message
+    if (this.props.aggregations.length === 0) {
+      return <p>No filters are available for this category.</p>;
+    }
     let catNodes = this.props.aggregations.map( (d, i) => {
       // create a currentAgg object like { key: 'cellular component', values: ['cytoplasm'] }
       let currentAgg = { key: d.key };
