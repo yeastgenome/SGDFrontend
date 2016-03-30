@@ -38,10 +38,10 @@ const SearchView = React.createClass({
     }
     return (
       <div className='row'>
-        <div className='column medium-5 hide-for-small'>
+        <div className='column medium-4 hide-for-small'>
           <FacetSelector isMobile={false} />
         </div>
-        <div className='column small-12 medium-7'>
+        <div className='column small-12 medium-8'>
           <div className='show-for-small-only'>
             <Collapser label='Categories'>
               <FacetSelector isMobile={true} />

@@ -27,14 +27,11 @@ def search(request):
     # get search results
     search_url = config.backend_url + '/get_search_results' + '?' + request.query_string
     json_bootstrapped_search_results = requests.get(search_url).text
-    # if param is_quick = true and there is a gene name match, redirect to that page
+    # if param is_quick = true and the first result has is_quick: true
     parsed_results = json.loads(json_bootstrapped_search_results)['results']
     if (request.params.get('is_quick') == 'true' and len(parsed_results) > 0):
         first_result = parsed_results[0]
-        lower_display_name_from_result = first_result['name'].split('/')[0].lower().strip()
-        lower_query = request.params.get('q').lower()
-        print lower_query == lower_display_name_from_result
-        if (first_result['category'] == 'locus' and lower_query == lower_display_name_from_result):
+        if (first_result.get('is_quick')):
             return HTTPFound(first_result['href'])
     # otherwise, render results page and put results in scrip tag
     return render_to_response(TEMPLATE_ROOT + 'search.jinja2', { 'bootstrapped_search_results_json': json_bootstrapped_search_results }, request=request)
