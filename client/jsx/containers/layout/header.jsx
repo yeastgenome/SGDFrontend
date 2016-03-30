@@ -12,26 +12,26 @@ const Header = React.createClass({
           <div className="columns medium-8">
             <div className="header-left">
               <a href="/" className="logo-link">
-                <div className="sgd-logo"></div>
-                <span className="sgd-logo-text"><i>Saccharomyces</i> Genome Database</span>
+                <div className="logo"></div>
               </a>
               <div className="site-links">
-                <a href="/suggestion" target="_blank" id="email-header" className="webicon mail medium">Email Us</a>
-                <a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter" className="webicon twitter medium">Twitter</a>
-                <a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" className="webicon facebook medium" id="facebook">Facebook</a>
-                <a href="https://www.linkedin.com/company/saccharomyces-genome-database" target="_blank" className="webicon linkedin medium" id="linkedin">Linkedin</a>
-                <a href="https://www.youtube.com/SaccharomycesGenomeDatabase" target="_blank" id="youtube" className="webicon youtube medium">YouTube</a>
+                
               </div>
             </div>
           </div>
           {/* right */}
           <div className="columns medium-4 header-right">
             <div className="site-links site-social-links">
-              <div><a href="/about"><i className="fa fa-info-circle"/> About</a></div>
-              <div><a href="/blog"><i className="fa fa-exclamation-circle"/> Blog</a></div>
-              <div><a href="/download-data"><i className="fa fa-download"/> Download</a></div>
-              <div><a href="/help"><i className="fa fa-question-circle"/> Help</a></div>
-              <div><a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Yeastmine</a></div>
+              <a href="/about">About</a>
+              <a href="/blog">Blog</a>
+              <a href="/download-data">Download</a>
+              <a href="/help">Help</a>
+              <a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Yeastmine</a>
+              <a href="/suggestion" target="_blank" id="email-header" className="webicon mail small">Email Us</a>
+              <a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter" className="webicon twitter small">Twitter</a>
+              <a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" className="webicon facebook small" id="facebook">Facebook</a>
+              <a href="https://www.linkedin.com/company/saccharomyces-genome-database" target="_blank" className="webicon linkedin small" id="linkedin">Linkedin</a>
+              <a href="https://www.youtube.com/SaccharomycesGenomeDatabase" target="_blank" id="youtube" className="webicon youtube small">YouTube</a>
             </div>
           </div>
         </div>

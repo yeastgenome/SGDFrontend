@@ -14,7 +14,7 @@ $header-text-font-size: 16px;
 	padding: 0.5rem 0 0.5rem 0;
 	max-width: none;
 	font-size: $header-text-font-size;
-	height: 57px;
+	height: 69px;
 }
 
 .header-left {
@@ -44,12 +44,12 @@ $header-text-font-size: 16px;
 	display: flex;
 	-webkit-justify-content: space-between;
 	justify-content: space-between;
-	margin-top: 7px;
+	margin-top: 29px;
 }
 
-// .site-links a {
-// 	color: #ccc;
-// }
+.site-links a {
+	color: black;
+}
 
 #sgd-mini-logo {
 	margin: 8px;
