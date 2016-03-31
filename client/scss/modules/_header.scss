@@ -6,49 +6,55 @@ http://smacss.com/book/type-module
 /* #layout-page-header-content {
 	background: url("../img/demo-watermark.png") repeat-x;
 } */
-$logo-width: 277px;
-$logo-height: 44px;
-$header-text-font-size: 16px;
+$logo-width: 250px;
+$logo-height: 40px;
+$header-text-font-size: 14px;
+$search-width: 400px;
 
 .top-header {
-	padding: 0.5rem 0 0.5rem 0;
+	padding: 0.5rem;
 	max-width: none;
 	font-size: $header-text-font-size;
-	height: 69px;
-}
-
-.header-left {
-	width: 35.8rem;
-	display:-webkit-flex;
+	display: -webkit-flex;
 	display: flex;
-	-webkit-justify-content: space-between;
-	justify-content: space-between;
-}
-
-.header-left .site-links {
-	width: 182px;
-}
-
-.header-right {
-	display:-webkit-flex;
-	display: flex;
-	-webkit-flex-direction: column;
-	flex-direction: column;
-	-webkit-align-items: flex-end;
-	align-items: flex-end;
+	flex-direction: row-reverse;
+	-webkit-flex-direction: row-reverse;
+	background: black;
 }
 
 .site-links {
-	width: 100%;
+	width: $search-width;
 	display:-webkit-flex;
 	display: flex;
 	-webkit-justify-content: space-between;
 	justify-content: space-between;
-	margin-top: 29px;
 }
 
 .site-links a {
-	color: black;
+	color: #CCC;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.site-links .webicon {
+	margin-top: 0px;
+}
+
+// purple section
+.menu-bar-container {
+	padding: 0 0.5rem;
+	max-width: none;
+	display:-webkit-flex;
+	display: flex;
+	justify-content: space-between;
+	-webkit-justify-content: space-between;
+	background: #696599;
+}
+
+.menu-search-container {
+	width: $search-width;
+	margin-top: 0.5rem;
+	margin-bottom: 0.85rem;
 }
 
 #sgd-mini-logo {
@@ -82,6 +88,7 @@ $header-text-font-size: 16px;
 	height: $logo-height;
 	width: $logo-width;
 	display: inline-block;
+	margin-top: 8px;
 	.logo-label {
 		display: inline-block;
 		text-indent: -9999px;
@@ -94,21 +101,29 @@ $header-text-font-size: 16px;
 }
 
 .top-bar {
-	margin-bottom: 0;
+	margin-top: 6px;
+	display: inline-block;
+}
+
+.sgd-menu-divider {
+	border-left: 1px solid black;
+	position: relative;
+	&.left {
+		left: 0.5rem;
+	}
+	&.right {
+		left: -0.5rem;
+	}
+}
+
+
+.top-bar-section ul {
+	margin-left: -0.5rem;
 }
 
 .top-bar-section ul li > a {
     font-size: $header-text-font-size;
     font-family: Lato, sans-serif;
-}
-
-.menu-bar-container {
-	padding: 6px 0;
-	max-width: none;
-}
-
-.menu-bar-container {
-	padding: 6px 0;
 }
 
 /* back styling for mobile menus */

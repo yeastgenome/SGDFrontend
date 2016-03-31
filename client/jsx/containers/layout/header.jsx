@@ -7,21 +7,10 @@ const Header = React.createClass({
     return (
       <header id="layout-page-header" ref="wrapper">
         {/* top black section */}
-        <div className="row top-header hide-for-small">
-          {/* left */}
-          <div className="columns medium-8">
-            <div className="header-left">
-              <a href="/" className="logo-link">
-                <div className="logo"></div>
-              </a>
-              <div className="site-links">
-                
-              </div>
-            </div>
-          </div>
+        <div className="hide-for-small">
           {/* right */}
-          <div className="columns medium-4 header-right">
-            <div className="site-links site-social-links">
+          <div className="top-header">
+            <div className="site-links">
               <a href="/about">About</a>
               <a href="/blog">Blog</a>
               <a href="/download-data">Download</a>
@@ -36,12 +25,19 @@ const Header = React.createClass({
           </div>
         </div>
         {/* purple bar */}
-        <section className="contain-to-grid">
-          <div className="row menu-bar-container">
-            <div className="medium-8 columns top-menu-container">
+        <section>
+          <div className="menu-bar-container">
+            <a href="/">
+              <div className="logo">
+                <span className="logo-label">Saccharomyces Genome Database</span>
+              </div>
+            </a>
+            <div className="sgd-menu-divider left"></div>
+            <div className="top-menu-container">
               {this._renderMenu()}   
             </div>
-            <div className="medium-4 columns search-container" id="j-search-container">
+            <div className="sgd-menu-divider right"></div>
+            <div className="menu-search-container" id="j-search-container">
               <AppSearchBar />
             </div>
           </div>
