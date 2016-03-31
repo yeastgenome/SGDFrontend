@@ -1,3 +1,4 @@
+'use strict';
 require('babel-core/register');
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
