@@ -6,8 +6,8 @@ http://smacss.com/book/type-module
 /* #layout-page-header-content {
 	background: url("../img/demo-watermark.png") repeat-x;
 } */
-$logo-width: 200px;
-$logo-height: 34px;
+$logo-width: 220px;
+$logo-height: 40px;
 $header-text-font-size: 14px;
 $search-width: 400px;
 
@@ -66,13 +66,13 @@ $search-width: 400px;
 	background-size: 100% 100%;
 	height: $logo-height;
 	width: $logo-width;
-	margin-top: 11px;
+	margin-top: 10px;
 	.logo-label {
 		display: inline-block;
 		text-indent: -9999px;
 	}
 	&.small-logo {
-		margin-top: 6px;
+		margin-top: 4px;
 	}
 }
 
@@ -92,11 +92,6 @@ $search-width: 400px;
 	margin-top: 6px;
 	display: inline-block;
 	min-width: 21rem;
-}
-
-
-.top-bar-section ul {
-	margin-left: -0.5rem;
 }
 
 .top-bar-section ul li > a {
