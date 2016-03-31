@@ -29,7 +29,7 @@ const FacetSelector = React.createClass({
     let aggNodes = aggs.map( (d, i) => {
       let key = `aggNode${d.key}${keySuffix}`;
       let href = `${this._getRawUrl()}&category=${d.key}`;
-      return this._renderAgg(d.key, d.total, d.key, href);
+      return this._renderAgg(d.key, d.total, d.key, href, false, true);
     });
     return (
       <div>
@@ -43,7 +43,7 @@ const FacetSelector = React.createClass({
     return (
       <div>
         <p><Link to={this._getRawUrl()}><i className='fa fa-chevron-left' /> Show all categories</Link></p>
-        <h2>{this.props.activeCategoryName}</h2>
+        <h2 className='search-cat-title'><span className={`search-cat ${this.props.activeCategory}`}/>{this.props.activeCategoryName}</h2>
         {this._renderSecondaryAggs()}
       </div>
     );
@@ -86,12 +86,13 @@ const FacetSelector = React.createClass({
     );
   },
 
-  _renderAgg (name, total, _key, href, isActive) {
+  _renderAgg (name, total, _key, href, isActive, isCategory) {
     let activityStyle = isActive ? style.activeAgg: style.inactiveAgg;
+    let catIconNode = isCategory ? <span className={`search-cat ${_key}`}></span> : null;
     return (
       <Link to={href} key={_key}>
-        <div key={`aggA${_key}`} style={[style.agg, activityStyle]}>        
-          <span>{name}</span>
+        <div key={`aggA${_key}`} style={[style.agg, activityStyle]}>
+          <span>{catIconNode}{name}</span>
           <span>{total.toLocaleString()}</span>
         </div>
       </Link>

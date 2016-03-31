@@ -16,8 +16,8 @@ import { createPath } from '../lib/search_helpers';
 
 const SEARCH_URL = '/search';
 
-const SearchView = React.createClass({
-  displayName: 'SearchView',
+const Search = React.createClass({
+  displayName: 'Search',
   propTypes: {
     activeCategory: React.PropTypes.string,
     categoryAggs: React.PropTypes.array,
@@ -178,4 +178,4 @@ function mapStateToProps(_state) {
   };
 };
 
-module.exports = connect(mapStateToProps)(Radium(SearchView));
+module.exports = connect(mapStateToProps)(Radium(Search));

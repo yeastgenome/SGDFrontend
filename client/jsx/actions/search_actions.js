@@ -78,7 +78,7 @@ export function fetchAutocompleteResults () {
         if (!response) return;
         // change result labels
         let results = response.results.map( d => {
-          d.category = getCategoryDisplayName(d.category);
+          d.categoryName = getCategoryDisplayName(d.category);
           return d;
         });
         let action = receiveAutocompleteResponse(results);

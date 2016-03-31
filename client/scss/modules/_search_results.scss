@@ -1,0 +1,44 @@
+// colors from https://github.com/mbostock/d3/wiki/Ordinal-Scales
+.search-cat {
+	width: 1rem;
+	height: 1rem;
+	display: inline-block;
+	border-radius: 0.5rem;
+	background: #1f77b4;
+	position: relative;
+	top: 0.15rem;
+	margin-right: 0.25rem;
+	&.reference {
+		background: #ff7f0e;
+	}
+	&.biological_process {
+		background: #2ca02c;
+	}
+	&.cellular_component {
+		background: #9467bd;
+	}
+	&.molecular_function {
+		background: #8c564b;
+	}
+	&.phenotype {
+		background: #e377c2;
+	}
+	&.strain {
+		background: #bcbd22;
+	}
+	&.resource {
+		background: #17becf;
+	}
+}
+
+.search-cat-title .search-cat {
+	top: 0;
+}
+
+.search-result-title-container .search-cat {
+	margin-top: 0.25rem;
+}
+
+.search-result em {
+  background: yellow;
+}

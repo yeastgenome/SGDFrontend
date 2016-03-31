@@ -58,7 +58,7 @@ const searchResultsReducer = function (_state, action) {
     case 'SEARCH_RESPONSE':
       state.total = action.response.total;
       state.results = action.response.results.map( d => {
-        d.category = getCategoryDisplayName(d.category);
+        d.categoryName = getCategoryDisplayName(d.category);
         return d;
       });
       state.aggregations = action.response.aggregations.map( d => {

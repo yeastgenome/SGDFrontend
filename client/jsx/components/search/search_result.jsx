@@ -35,11 +35,13 @@ const SearchResult = React.createClass({
     let name = this.props.name || '(no name available)';
     return (
       <div>
-        <h2 style={[style.title]}>
-          <a href={this.props.href}>{name}</a> <span className='radius secondary label'>{this.props.category}</span>
-          {this._getHighlightsNode()}
-        </h2>
-        
+        <div className='search-result-title-container' style={[style.titleContainer]}>
+          <h2 style={[style.title]}>
+            <a href={this.props.href}>{name}</a>
+          </h2>
+          <span><span className={`search-cat ${this.props.category}`}/> {this.props.categoryName}</span>
+        </div>
+        {this._getHighlightsNode()}
       </div>
     );
   },
@@ -111,8 +113,14 @@ const style = {
     paddingBottom: '1rem',
     marginBottom: '1rem'
   },
+  titleContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap'
+  },
   title: {
-    marginBottom: 0
+    marginBottom: 0,
+    width: '75%'
   },
   description: {
     textOverflow: 'ellipsis',
