@@ -4,16 +4,16 @@ const SEARCH_URL = '/search';
 
 export function getCategoryDisplayName (key) {
   const labels = {
-    locus: 'Genes',
-    reference: 'References',
-    cellular_component: 'Cellular Components',
-    molecular_function: 'Molecular Functions',
-    biological_process: 'Biological Processes',
-    phenotype: 'Phenotypes',
-    strain: 'Strains',
-    author: 'Authors',
-    download: 'Downloads',
-    resource: 'Resources'
+    locus: 'Gene',
+    reference: 'Reference',
+    cellular_component: 'Cellular Component',
+    molecular_function: 'Molecular Function',
+    biological_process: 'Biological Process',
+    phenotype: 'Phenotype',
+    strain: 'Strain',
+    author: 'Author',
+    download: 'Download',
+    resource: 'Resource'
   };
   return labels[key] || key;
 };
