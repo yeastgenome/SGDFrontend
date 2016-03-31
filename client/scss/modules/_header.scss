@@ -6,8 +6,8 @@ http://smacss.com/book/type-module
 /* #layout-page-header-content {
 	background: url("../img/demo-watermark.png") repeat-x;
 } */
-$logo-width: 250px;
-$logo-height: 40px;
+$logo-width: 200px;
+$logo-height: 34px;
 $header-text-font-size: 14px;
 $search-width: 400px;
 
@@ -61,59 +61,37 @@ $search-width: 400px;
 	margin: 8px;
 }
 
-.logo-link {
-	display: flex;
-	display:-webkit-flex;
-	margin-top: 4px;
-	margin-left: 14px;
-}
-
-.logo-link .sgd-logo {
-	background: url("../img/cute_sgd_logo.png") no-repeat;
-	background-size: 100% 100%;
-	height: 30px;
-	width: 50px;
-}
-
-.logo-link .sgd-logo-text {
-	font-size: 20px;
-	margin-left: 0.5rem;
-	margin-top: -1px;
-	color: black;
-}
-
 .logo {
 	background: url("../img/sgd-logo.png") no-repeat;
 	background-size: 100% 100%;
 	height: $logo-height;
 	width: $logo-width;
-	display: inline-block;
-	margin-top: 8px;
+	margin-top: 11px;
 	.logo-label {
 		display: inline-block;
 		text-indent: -9999px;
 	}
 	&.small-logo {
-		width: 200px;
-		height: 30px;
-		margin-top: 8px;
+		margin-top: 6px;
 	}
-}
-
-.top-bar {
-	margin-top: 6px;
-	display: inline-block;
 }
 
 .sgd-menu-divider {
 	border-left: 1px solid black;
 	position: relative;
+	z-index: 1;
 	&.left {
 		left: 0.5rem;
 	}
 	&.right {
 		left: -0.5rem;
 	}
+}
+
+.top-bar {
+	margin-top: 6px;
+	display: inline-block;
+	min-width: 21rem;
 }
 
 
@@ -124,6 +102,10 @@ $search-width: 400px;
 .top-bar-section ul li > a {
     font-size: $header-text-font-size;
     font-family: Lato, sans-serif;
+}
+
+.top-bar .toggle-topbar.menu-icon {
+	margin-top: -20px;
 }
 
 /* back styling for mobile menus */

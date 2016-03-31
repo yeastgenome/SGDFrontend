@@ -27,12 +27,12 @@ const Header = React.createClass({
         {/* purple bar */}
         <section>
           <div className="menu-bar-container">
-            <a href="/">
+            <a href="/" className="show-for-large-up">
               <div className="logo">
                 <span className="logo-label">Saccharomyces Genome Database</span>
               </div>
             </a>
-            <div className="sgd-menu-divider left"></div>
+            <div className="sgd-menu-divider left show-for-large-up"></div>
             <div className="top-menu-container">
               {this._renderMenu()}   
             </div>
@@ -53,7 +53,7 @@ const Header = React.createClass({
           <li className="name">
             <span className="hide-for-large-up">
               <a href="/" className="show-for-medium">
-                <div className="logo">
+                <div className="logo small-logo">
                   <span className="logo-label">Saccharomyces Genome Database</span>
                 </div>
               </a>
