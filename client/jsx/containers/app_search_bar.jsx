@@ -15,7 +15,7 @@ const SearchOption = React.createClass({
     let _className = `react-typeahead-option${extraClass}`;
     let catNode = null;
     if (this.props.data.href) {
-      catNode = <span style={{ float: 'right' }}><span className={`search-cat ${this.props.data.category}`}/> <a href={this.props.data.href}>{this.props.data.category}</a></span>;
+      catNode = <span style={{ float: 'right' }}><span className={`search-cat ${this.props.data.category}`}/> <a href={this.props.data.href}>{this.props.data.categoryName}</a></span>;
     }
     if (this.props.data.isShowAll) {
       return (

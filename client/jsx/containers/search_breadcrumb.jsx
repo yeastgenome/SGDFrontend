@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
-import { getHrefWithoutAgg } from '../lib/search_helpers';
+import { getHrefWithoutAgg, getCategoryDisplayName } from '../lib/search_helpers';
 
 const SEARCH_URL = '/search';
 const SKIPPED_PARAMS = ['page', 'q', 'wrapResults', 'is_quick'];
@@ -24,7 +24,8 @@ const SearchBreadcrumb = React.createClass({
       // if category, give a really simple URL that returns to the initial results page (no filters)
       if (key === 'category') {
         let newHref = `${SEARCH_URL}?q=${this.props.queryParams.q}`;
-        nodes.push(this._renderCrumb(qp['category'], newHref));
+        let name = getCategoryDisplayName(qp.category);
+        nodes.push(this._renderCrumb(name, newHref));
       // if single value, append the link
       } else if (typeof qp[key] === 'string') {
         let thisValue = qp[key];

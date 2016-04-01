@@ -37,6 +37,7 @@
     "express": "^4.13.3",
     "history": "^1.17.0",
     "isomorphic-fetch": "^2.1.1",
+    "pluralize": "^1.2.1",
     "radium": "^0.14.1",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
@@ -45,10 +46,10 @@
     "react-router-redux": "^2.1.0",
     "redux": "^3.0.2",
     "redux-thunk": "^1.0.0",
-    "underscore": "~1.6.0",
+    "sgd_visualization": "^1.0.12",
     "tcomb-form": "^0.8.0",
     "tcomb-json-schema": "^0.2.3",
-    "sgd_visualization": "^1.0.12"
+    "underscore": "~1.6.0"
   },
   "devDependencies": {
     "babelify": "^7.2.0",

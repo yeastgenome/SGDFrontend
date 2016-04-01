@@ -8,7 +8,6 @@ const DEFAULT_STATE = {
   autocompleteResults: [],
   results: [],
   activeCategory: null,
-  activeCategoryName: null,
   aggregations: [],
   total: 0,
   currentPage: 0,
@@ -44,7 +43,6 @@ const searchResultsReducer = function (_state, action) {
     // if changing cat, set isAggPending to true before setting active cat
     if (state.activeCategory !== activeCat) state.isAggPending = true;
     state.activeCategory = activeCat;
-    state.activeCategoryName = getCategoryDisplayName(activeCat);
     // if wrapResults and on genes, allow large request size
     state.resultsPerPage = (state.activeCategory === 'locus' && params.wrapResults === 'true') ?
       LARGER_RESULTS_PER_PAGE : DEFAULT_RESULTS_PER_PAGE;

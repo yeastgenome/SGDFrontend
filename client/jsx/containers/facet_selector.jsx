@@ -4,8 +4,9 @@ import { Link } from 'react-router';
 import { routeActions } from 'react-router-redux'
 import Radium from 'radium';
 import _ from 'underscore';
+import pluralize from 'pluralize';
 
-import { getHrefWithoutAgg } from '../lib/search_helpers';
+import { getHrefWithoutAgg, getCategoryDisplayName } from '../lib/search_helpers';
 
 const DEFAULT_FACET_LENGTH = 5;
 const MEDIUM_FACET_LENGTH = 20;
@@ -27,9 +28,9 @@ const FacetSelector = React.createClass({
     let keySuffix = this.props.isMobile ? 'm': '';
     let aggs = (this.props.aggregations.length === 0) ? [] : this.props.aggregations[0].values;
     let aggNodes = aggs.map( (d, i) => {
-      let key = `aggNode${d.key}${keySuffix}`;
+      let name = pluralize(getCategoryDisplayName(d.key));
       let href = `${this._getRawUrl()}&category=${d.key}`;
-      return this._renderAgg(d.key, d.total, d.key, href, false, true);
+      return this._renderAgg(name, d.total, d.key, href, false, true);
     });
     return (
       <div>
@@ -40,10 +41,11 @@ const FacetSelector = React.createClass({
   },
 
   _renderCatAggs () {
+    let catName = (this.props.activeCategory === 'locus') ? 'Genes / Genomic Features' : pluralize(getCategoryDisplayName(this.props.activeCategory));
     return (
       <div>
         <p><Link to={this._getRawUrl()}><i className='fa fa-chevron-left' /> Show all categories</Link></p>
-        <h2 className='search-cat-title'><span className={`search-cat ${this.props.activeCategory}`}/>{this.props.activeCategoryName}</h2>
+        <h2 className='search-cat-title'><span className={`search-cat ${this.props.activeCategory}`}/>{catName}</h2>
         {this._renderSecondaryAggs()}
       </div>
     );
@@ -247,7 +249,6 @@ function mapStateToProps(_state) {
     query: state.query,
     queryParams: _state.routing.location.query,
     activeCategory: state.activeCategory,
-    activeCategoryName: state.activeCategoryName,
     isAggPending: state.isAggPending
   };
 };
