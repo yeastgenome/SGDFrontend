@@ -51,8 +51,9 @@ const SearchResult = React.createClass({
     if (!this.props.highlights) return <p style={[style.description]}>{this.props.description}</p>;
     // format highlights
     let innerNodes = Object.keys(this.props.highlights).map( (d, i) => {
+      let highLabel = d.replace(/_/g, ' ');
       let highVal = this.props.highlights[d].join('...');
-      return <p style={[style.description]} key={`resHigh${i}`}><span style={[style.highlightKey]}>{d}</span>: <span dangerouslySetInnerHTML={{ __html: highVal }} /></p>;
+      return <p style={[style.description]} key={`resHigh${i}`}><span style={[style.highlightKey]}>{highLabel}</span>: <span dangerouslySetInnerHTML={{ __html: highVal }} /></p>;
     });
     return <div>{innerNodes}</div>;
   },
