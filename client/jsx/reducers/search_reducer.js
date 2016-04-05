@@ -1,6 +1,7 @@
 import _ from 'underscore';
 import { getCategoryDisplayName } from '../lib/search_helpers';
 
+const FILTERED_FACET_VALUES = ['cellular component', 'biological process', 'molecular function'];
 const DEFAULT_RESULTS_PER_PAGE = 10;
 const LARGER_RESULTS_PER_PAGE = 220;
 const DEFAULT_STATE = {
@@ -61,6 +62,10 @@ const searchResultsReducer = function (_state, action) {
       });
       state.aggregations = action.response.aggregations.map( d => {
         d.name = d.key;
+        // filter out root terms from values
+        d.values = d.values.filter( d => {
+          return (FILTERED_FACET_VALUES.indexOf(d.key) < 0);
+        });
         return d;
       });
       state.totalPages = Math.floor(state.total / state.resultsPerPage) + ((state.total % state.resultsPerPage === 0) ? 0 : 1);
