@@ -3,7 +3,6 @@ import _ from 'underscore';
 const DEFAULT_STATE = {
   isAuthenticated: false,
   isAuthenticating: false,
-  email: null,
   csrfToken: null,
   loginError: false
 };
@@ -19,14 +18,12 @@ export default function authReducer(_state, action) {
     case 'RECEIVE_AUTH_RESPONSE':
       state.isAuthenticated = true;
       state.isAuthenticating = false;
-      state.email = action.payload.email;
       state.loginError = false;
       return state;
       break;
     case 'LOGOUT':
       state.isAuthenticated = false;
       state.isAuthenticating = false;
-      state.email = null;
       return state;
       break;
     case 'SET_LOGIN_ERROR':
