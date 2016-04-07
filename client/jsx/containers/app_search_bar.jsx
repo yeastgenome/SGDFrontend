@@ -1,3 +1,4 @@
+import 'isomorphic-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Radium from 'radium';
@@ -7,7 +8,10 @@ import _ from 'underscore';
 // manually installed to fix react 14 warnings and problem installing from github
 import Typeahead from '../lib/react-typeahead-component';
 
-const Actions = require('../actions/search_actions');
+import { setUserInput } from '../actions/search_actions';
+import { getCategoryDisplayName } from '../lib/search_helpers';
+
+const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
 
 const SearchOption = React.createClass({
   render () {
@@ -34,6 +38,7 @@ const SearchOption = React.createClass({
 
 const AppSearchBar = React.createClass({
   propTypes: {
+    resultsUrl: React.PropTypes.string.isRequired,
     userInput: React.PropTypes.string,
     redirectOnSearch: React.PropTypes.bool// if true, hard HTTP redirect to /search?q=${query}, if false, uses REDUX
   },
@@ -47,7 +52,8 @@ const AppSearchBar = React.createClass({
   getInitialState() {
     return {
       redirectHref: null,
-      isShowAll: false
+      isShowAll: false,
+      autocompleteResults: []
     };
   },
 
@@ -58,14 +64,14 @@ const AppSearchBar = React.createClass({
           inputValue={this.props.userInput}
           placeholder='Search'
           optionTemplate={SearchOption}
-          options={this.props.autocompleteResults}
+          options={this.state.autocompleteResults}
           onChange={this._onChange}
           onOptionChange={this._onOptionChange}
           onOptionClick={this._onOptionClick}
           onKeyDown={this._onKeyDown}
           autoFocus={true}
         />
-      <span className='search-icon'><i className='fa fa-search'/></span>
+        <span className='search-icon'><i className='fa fa-search'/></span>
       </div>
     );
   },
@@ -77,15 +83,35 @@ const AppSearchBar = React.createClass({
     }
   },
 
+  // save user input to redux and fetch results, save them to state
   _onChange(e) {
     let newValue = e.target.value;
     this._setUserInput(newValue);
-    let fetchAction = Actions.fetchAutocompleteResults();
-    this.props.dispatch(fetchAction);
+    let url = `${this.props.resultsUrl}?q=${this.props.userInput}`;
+    fetch(url)
+      .then( function (response) {
+          if (response.status >= 400) {
+            throw new Error('API error.');
+          }
+          return response.json();
+        }).then( jsonResponse => {
+          console.log(jsonResponse)
+          // change result labels
+          let results = jsonResponse.results.map( d => {
+            d.categoryName = getCategoryDisplayName(d.category);
+            return d;
+          });
+          // add 'show all'
+          results.unshift({ isShowAll: true, name: this.props.userInput });
+          // save results to state
+          if (this.isMounted()) this.setState({ autocompleteResults: results });
+        }).catch(function(err) {
+          console.warn('Unable to fetch autocomplete results.');
+        });
   },
 
   _setUserInput(newValue, href, _isShowAll, cb) {
-    let typeAction = Actions.setUserInput(newValue);
+    let typeAction = setUserInput(newValue);
     this.props.dispatch(typeAction);
     this.setState({ redirectHref: href, isShowAll: _isShowAll }, cb);
   },
@@ -126,8 +152,8 @@ function mapStateToProps(_state) {
   const state = _state.searchResults;
   return {
     userInput: state.userInput,
-    autocompleteResults: state.autocompleteResults,
-    redirectOnSearch: true
+    redirectOnSearch: true,
+    resultsUrl: AUTOCOMPLETE_URL
   };
 }
 
