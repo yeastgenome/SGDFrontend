@@ -95,7 +95,6 @@ const AppSearchBar = React.createClass({
           }
           return response.json();
         }).then( jsonResponse => {
-          console.log(jsonResponse)
           // change result labels
           let results = jsonResponse.results.map( d => {
             d.categoryName = getCategoryDisplayName(d.category);
