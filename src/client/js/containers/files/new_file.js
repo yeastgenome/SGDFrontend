@@ -5,34 +5,7 @@ import Dropzone from 'react-dropzone';
 import 'isomorphic-fetch';
 
 import Loader from '../../components/widgets/loader';
-import TForm from '../../components/widgets/t_form';
 
-const SCHEMA_OBJ = {
-  title: 'Dataset',
-  type: 'object',
-  properties: {
-    file_display_name: { type: 'string' },
-    path: { type: 'string' },
-    topic: {
-      type: 'string',
-      enum: ['one', 'two', 'three']
-    },
-    // keywords: {
-    //   type: 'array',
-    //   items: {
-    //     type: 'string',
-    //     enum: ['one', 'two', 'three']
-    //   },
-    // },
-    pmids: { type: 'string' },
-    is_public: { type: 'boolean' },
-    for_spell: { type: 'boolean' },
-    for_browser: { type: 'boolean' },
-    file_format: { type: 'string' },
-    // date: { type: 'string', format: 'formatted-date' }
-  },
-  required: ['file_display_name', 'date']
-};
 const UPLOAD_URL = '/upload';
 
 const FilesIndex = React.createClass({
@@ -64,18 +37,53 @@ const FilesIndex = React.createClass({
     return this._renderForm();
   },
 
+  // "old_filepath", "new_filepath", "previous_file_name", "display_name", "status", "topic", "topic_id", "format", "format_id", "extension", "extension_id", "file_date", "is_public", "for_spell", "for_browser", "readme_name", "pmids", "keywords"
   _renderForm () {
+    // get today's date in SGD format
+    let now = new Date();
+    let strMonth = ("0" + now.getMonth()).slice(-2);
+    let strDate = ("0" + now.getDate()).slice(-2);
+    let strToday = `${now.getYear() + 1900}-${strMonth}-${strDate}`;
     return (
-      <div className='row'>
-        <div className='columns small-6'>
-          <TForm validationObject={SCHEMA_OBJ} onSubmit={this._onFormSubmit} submitText='Upload' cancelHref='/dashboard' />
-        </div>
-        <div className='columns small-6'>
-          <label>File</label>
-          <div style={[styles.dropZoneContainer]} className='text-center'>
+      <form ref='form' onSubmit={this._onFormSubmit}>
+        <div className='row'>
+          <div className='large-12 columns'>
             {this._renderFileDrop()}
           </div>
+          {this._renderStringField('Name', 'display_name')}
+          {this._renderStringField('Previous Name', 'previous_file_name')}
+          {this._renderStringField('Old File Path', 'old_filepath')}
+          {this._renderStringField('New File Path', 'new_filepath')}
+          {this._renderStringField('Status', 'status')}
+          {this._renderStringField('Date', 'file_date', strToday, 'YYYY-MM-DD')}
+          {this._renderCheckField('Public', 'is_public')}
+          {this._renderCheckField('For SPELL', 'for_spell')}
+          {this._renderCheckField('For Browser', 'for_browser')}
+          <div className='large-12 columns'>
+            <input type='submit' className='button' value='Upload' />
+          </div>
         </div>
+      </form>
+    );
+  },
+
+  _renderStringField(displayName, paramName, defaultValue, placeholder) {
+    return (
+      <div className='large-12 columns'>
+        <label>
+          {displayName}
+          <input type='text' name={paramName} placeholder={placeholder} defaultValue={defaultValue} />
+        </label>
+      </div>
+    );
+  },
+
+  _renderCheckField(displayName, paramName, isChecked) {
+    let _id = `sgd-c-check-${paramName}`;
+    return (
+      <div className='large-12 columns'>
+        <input type='checkbox' name={paramName} id={_id} />
+        <label htmlFor={_id}>{displayName}</label>
       </div>
     );
   },
@@ -93,14 +101,12 @@ const FilesIndex = React.createClass({
   // only called if the metadata is valid according to json schema
   // do extra valitation and check if file is there
   // TODO, show error if no file
-  _onFormSubmit (value) {
-    let formData = new FormData();
-    for (let k in value) {
-      formData.append(k, value[k]);
+  _onFormSubmit (e) {
+    e.preventDefault();
+    let formData = new FormData(this.refs.form);
+    if (this.state.files) {
+      formData.append('file', this.state.files[0]);
     }
-    // TODO raise error
-    if (!this.state.files) return;
-    formData.append('file', this.state.files[0]);
     this._uploadFile(formData);
   },
 
