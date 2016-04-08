@@ -2,7 +2,6 @@ require('isomorphic-fetch');
 import { getCategoryDisplayName, createPath } from '../lib/search_helpers';
 import _ from 'underscore';
 
-const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
 const RESULTS_URL = '/backend/get_search_results';
 
 // helper methods
@@ -66,31 +65,6 @@ export function receiveSearchResponse (_response) {
   return {
     type: 'SEARCH_RESPONSE',
     response: _response
-  };
-};
-
-export function fetchAutocompleteResults () {
-  return function (dispatch, getState) {
-    let state = getState().searchResults;
-    let url = `${AUTOCOMPLETE_URL}?q=${state.userInput}`;
-    fetchFromApi(url)
-      .then( response => {
-        if (!response) return;
-        // change result labels
-        let results = response.results.map( d => {
-          d.categoryName = getCategoryDisplayName(d.category);
-          return d;
-        });
-        let action = receiveAutocompleteResponse(results);
-        return dispatch(action);
-      });
-  };
-};
-
-export function receiveAutocompleteResponse (_response) {
-  return {
-    type: 'AUTOCOMPLETE_RESPONSE',
-    value: _response
   };
 };
 

@@ -6,7 +6,6 @@ const DEFAULT_RESULTS_PER_PAGE = 10;
 const LARGER_RESULTS_PER_PAGE = 220;
 const DEFAULT_STATE = {
   userInput: '',
-  autocompleteResults: [],
   results: [],
   activeCategory: null,
   aggregations: [],
@@ -15,7 +14,6 @@ const DEFAULT_STATE = {
   totalPages: 0,
   resultsPerPage: DEFAULT_RESULTS_PER_PAGE,
   query: '',
-  autoCompleteQuery: '',
   isPending: false,
   isPaginatePending: false, // if the only change is the page, note special state for rendering total
   apiError: null,
@@ -76,13 +74,6 @@ const searchResultsReducer = function (_state, action) {
       break;
     case 'SET_USER_INPUT':
       state.userInput = action.value;
-      return state;
-      break;
-    case 'AUTOCOMPLETE_RESPONSE':
-      const results = action.value;
-      // add 'show all to results' if there is some input
-      if (state.userInput !== '') results.unshift({ isShowAll: true, name: state.userInput });
-      state.autocompleteResults = results;
       return state;
       break;
     case 'SEARCH_API_ERROR':
