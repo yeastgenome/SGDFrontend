@@ -2,6 +2,7 @@ import Radium from 'radium';
 import React from 'react';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
+import Select from 'react-select';
 import 'isomorphic-fetch';
 
 import Loader from '../../components/widgets/loader';
@@ -44,6 +45,8 @@ const FilesIndex = React.createClass({
     let strMonth = ("0" + now.getMonth()).slice(-2);
     let strDate = ("0" + now.getDate()).slice(-2);
     let strToday = `${now.getYear() + 1900}-${strMonth}-${strDate}`;
+    // TEMP local options, need list of topics, formats, extensions, and PMIDs
+    const selectOptions = [{ value: 1, label: 'One' }, { value: 2, label: 'Two' }];
     return (
       <form ref='form' onSubmit={this._onFormSubmit}>
         <div className='row'>
@@ -52,13 +55,18 @@ const FilesIndex = React.createClass({
           </div>
           {this._renderStringField('Name', 'display_name')}
           {this._renderStringField('Previous Name', 'previous_file_name')}
+          {this._renderStringField('Path', 'new_filepath')}
           {this._renderStringField('Old File Path', 'old_filepath')}
-          {this._renderStringField('New File Path', 'new_filepath')}
           {this._renderStringField('Status', 'status')}
+          {this._renderMultiSelectField('Topic', 'topic_id', selectOptions)}
+          {this._renderSingleSelectField('Format', 'format_id', selectOptions)}
+          {this._renderSingleSelectField('Extension', 'extension_id', selectOptions)}
           {this._renderStringField('Date', 'file_date', strToday, 'YYYY-MM-DD')}
           {this._renderCheckField('Public', 'is_public')}
           {this._renderCheckField('For SPELL', 'for_spell')}
           {this._renderCheckField('For Browser', 'for_browser')}
+          {this._renderStringField('README name', 'readme_name')}
+          {this._renderMultiSelectField('PMIDs', 'pmids', selectOptions)}
           <div className='large-12 columns'>
             <input type='submit' className='button' value='Upload' />
           </div>
@@ -88,12 +96,30 @@ const FilesIndex = React.createClass({
     );
   },
 
+  _renderSingleSelectField(displayName, paramName, _options, defaultValue) {
+    return (
+      <div className='large-12 columns'>
+        <label>{displayName}</label>
+        <Select name={paramName} value={defaultValue} options={_options} multi={false} />
+      </div>
+    );
+  },
+
+  _renderMultiSelectField(displayName, paramName, _options, defaultValue) {
+    return (
+      <div className='large-12 columns'>
+        <label>{displayName}</label>
+        <Select name={paramName} value={defaultValue} options={_options} multi={true} />
+      </div>
+    );
+  },
+
   _renderFileDrop () {
     if (this.state.files) return <p className='text-left'>{this.state.files[0].name}</p>;
     return (
       <Dropzone onDrop={this._onDrop}>
         <p style={[styles.dropMessage]}>Drop file here or click to select.</p>
-        <h3><i className='fa fa-upload' /></h3>
+        <h3 style={[styles.dropIcon]}><i className='fa fa-upload' /></h3>
       </Dropzone>
     );
   },
@@ -144,8 +170,10 @@ const styles = {
   dropMessage: {
     margin: '1rem'
   },
-}
-
+  dropIcon: {
+    textAlign: 'center'
+  }
+};
 
 function mapStateToProps(_state) {
   let state = _state.auth;
