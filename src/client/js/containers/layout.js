@@ -42,7 +42,7 @@ const AppLayout = React.createClass({
   }
 });
 
-const purple = '#663882';
+const purple = '#696599';
 const red = '#C22D38';
 const messageColor = '#CCC';
 const style = {
