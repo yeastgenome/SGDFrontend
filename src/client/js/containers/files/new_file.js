@@ -21,8 +21,12 @@ const FilesIndex = React.createClass({
   render () {
     return (
       <div>
-        <h1>Dataset Upload</h1>
-        <hr />
+        <div className='row'>
+          <div className='large-12 columns'>
+            <h1>Dataset Upload</h1>
+            <hr />
+          </div>
+        </div>
         {this._renderFormOrMessage()}
       </div>
     );
@@ -48,36 +52,36 @@ const FilesIndex = React.createClass({
     // TEMP local options, need list of topics, formats, extensions, and PMIDs
     const selectOptions = [{ value: 1, label: 'One' }, { value: 2, label: 'Two' }];
     return (
-      <form ref='form' onSubmit={this._onFormSubmit}>
-        <div className='row'>
-          <div className='large-12 columns'>
-            {this._renderFileDrop()}
-          </div>
-          {this._renderStringField('Name', 'display_name')}
-          {this._renderStringField('Previous Name', 'previous_file_name')}
-          {this._renderStringField('Path', 'new_filepath')}
-          {this._renderStringField('Old File Path', 'old_filepath')}
-          {this._renderStringField('Status', 'status')}
-          {this._renderMultiSelectField('Topic', 'topic_id', selectOptions)}
-          {this._renderSingleSelectField('Format', 'format_id', selectOptions)}
-          {this._renderSingleSelectField('Extension', 'extension_id', selectOptions)}
-          {this._renderStringField('Date', 'file_date', strToday, 'YYYY-MM-DD')}
-          {this._renderCheckField('Public', 'is_public')}
-          {this._renderCheckField('For SPELL', 'for_spell')}
-          {this._renderCheckField('For Browser', 'for_browser')}
-          {this._renderStringField('README name', 'readme_name')}
-          {this._renderMultiSelectField('PMIDs', 'pmids', selectOptions)}
-          <div className='large-12 columns'>
+      <div className='row'>
+        <div className='large-6 columns'>
+          <form ref='form' onSubmit={this._onFormSubmit}>
+            {this._renderStringField('Name', 'display_name')}
+            {this._renderStringField('Previous Name', 'previous_file_name')}
+            {this._renderStringField('Path', 'new_filepath')}
+            {this._renderStringField('Old File Path', 'old_filepath')}
+            {this._renderStringField('Status', 'status')}
+            {this._renderMultiSelectField('Topic', 'topic_id', selectOptions)}
+            {this._renderSingleSelectField('Format', 'format_id', selectOptions)}
+            {this._renderSingleSelectField('Extension', 'extension_id', selectOptions)}
+            {this._renderStringField('Date', 'file_date', strToday, 'YYYY-MM-DD')}
+            {this._renderCheckField('Public', 'is_public')}
+            {this._renderCheckField('For SPELL', 'for_spell')}
+            {this._renderCheckField('For Browser', 'for_browser')}
+            {this._renderStringField('README name', 'readme_name')}
+            {this._renderMultiSelectField('PMIDs', 'pmids', selectOptions)}
             <input type='submit' className='button' value='Upload' />
-          </div>
+          </form>
         </div>
-      </form>
+        <div className='large-6 columns'>
+          {this._renderFileDrop()}
+        </div>
+      </div>
     );
   },
 
   _renderStringField(displayName, paramName, defaultValue, placeholder) {
     return (
-      <div className='large-12 columns'>
+      <div>
         <label>
           {displayName}
           <input type='text' name={paramName} placeholder={placeholder} defaultValue={defaultValue} />
@@ -89,7 +93,7 @@ const FilesIndex = React.createClass({
   _renderCheckField(displayName, paramName, isChecked) {
     let _id = `sgd-c-check-${paramName}`;
     return (
-      <div className='large-12 columns'>
+      <div>
         <input type='checkbox' name={paramName} id={_id} />
         <label htmlFor={_id}>{displayName}</label>
       </div>
@@ -98,7 +102,7 @@ const FilesIndex = React.createClass({
 
   _renderSingleSelectField(displayName, paramName, _options, defaultValue) {
     return (
-      <div className='large-12 columns'>
+      <div>
         <label>{displayName}</label>
         <Select name={paramName} value={defaultValue} options={_options} multi={false} />
       </div>
@@ -107,7 +111,7 @@ const FilesIndex = React.createClass({
 
   _renderMultiSelectField(displayName, paramName, _options, defaultValue) {
     return (
-      <div className='large-12 columns'>
+      <div>
         <label>{displayName}</label>
         <Select name={paramName} value={defaultValue} options={_options} multi={true} />
       </div>
@@ -117,10 +121,12 @@ const FilesIndex = React.createClass({
   _renderFileDrop () {
     if (this.state.files) return <p className='text-left'>{this.state.files[0].name}</p>;
     return (
-      <Dropzone onDrop={this._onDrop}>
-        <p style={[styles.dropMessage]}>Drop file here or click to select.</p>
-        <h3 style={[styles.dropIcon]}><i className='fa fa-upload' /></h3>
-      </Dropzone>
+      <div style={[styles.dropZoneContainer]}>
+        <Dropzone onDrop={this._onDrop}>
+          <p style={[styles.dropMessage]}>Drop file here or click to select.</p>
+          <h3 style={[styles.dropIcon]}><i className='fa fa-upload' /></h3>
+        </Dropzone>
+      </div>
     );
   },
 
@@ -165,7 +171,7 @@ const FilesIndex = React.createClass({
 
 const styles = {
   dropZoneContainer: {
-    marginBottom: '0.5rem'
+    marginTop: '1.5rem'
   },
   dropMessage: {
     margin: '1rem'
