@@ -2,6 +2,7 @@ import 'isomorphic-fetch';
 import { routeActions } from 'react-router-redux';
 
 const AUTH_URL = '/signin';
+const SIGN_OUT_URL = '/signout';
 
 export function authenticateUser () {
   return { type: 'AUTHENTICATE_USER' };
@@ -13,8 +14,18 @@ export function logout () {
 
 export function logoutAndRedirect () {
   return (dispatch, state) => {
-    dispatch(logout());
-    dispatch(routeActions.push('/login'));
+    fetch(SIGN_OUT_URL, {
+        method: 'DELETE',
+        credentials: 'same-origin',
+        headers: {
+          'X-CSRF-Token': state.csrfToken,        
+        }
+      })
+      .then(function handleAuthResponse (response) {
+        dispatch(logout());
+        // use http redirect to root
+        if (window) window.location.href = '/';
+      });
   }
 };
 
@@ -50,7 +61,7 @@ export function sendAuthRequest (googleToken) {
       .then(function handleAuthResponse (response) {
         dispatch(receiveAuthResponseAndRedirect('user123'));
       }).catch(function handleAuthRequestError (error) {
-         dispatch(setLoginError());
+        dispatch(setLoginError());
       });
   };
 };
@@ -62,20 +73,17 @@ export function setCSRFToken (token) {
   };
 };
 
-export function receiveAuthResponseAndRedirect (email) {
+export function receiveAuthResponseAndRedirect () {
   return function (dispatch, getState) {
-    dispatch(receiveAuthenticationResponse(email));
+    dispatch(receiveAuthenticationResponse());
     let redirectUrl = getState().routing.location.query.next || '/dashboard';
     dispatch(routeActions.push(redirectUrl));
   };
 };
 
-export function receiveAuthenticationResponse (_email) {
+export function receiveAuthenticationResponse () {
   return {
-    type: 'RECEIVE_AUTH_RESPONSE',
-    payload: {
-      email: _email, 
-    }
+    type: 'RECEIVE_AUTH_RESPONSE'
   };
 };
 
