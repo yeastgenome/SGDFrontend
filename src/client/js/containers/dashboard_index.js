@@ -1,12 +1,11 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
 const DashboardIndex = React.createClass({
   render() {
     return (
       <div>
-        <h1>SGD</h1>
+        <h1>SGD Curator</h1>
         <hr />
         <p><Link to='/dashboard/files/new'><i className='fa fa-upload'/> Upload a dataset</Link></p>
       </div>
@@ -14,9 +13,4 @@ const DashboardIndex = React.createClass({
   }
 });
 
-function mapStateToProps(_state) {
-  return {
-  };
-}
-
-export default connect(mapStateToProps)(DashboardIndex);
+export default DashboardIndex;

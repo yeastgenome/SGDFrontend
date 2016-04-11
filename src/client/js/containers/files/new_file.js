@@ -68,7 +68,7 @@ const FilesIndex = React.createClass({
             {this._renderCheckField('For SPELL', 'for_spell')}
             {this._renderCheckField('For Browser', 'for_browser')}
             {this._renderStringField('README name', 'readme_name')}
-            {this._renderMultiSelectField('PMIDs', 'pmids', selectOptions)}
+            {this._renderStringField('PMIDs', 'pmids')}
             <input type='submit' className='button' value='Upload' />
           </form>
         </div>
