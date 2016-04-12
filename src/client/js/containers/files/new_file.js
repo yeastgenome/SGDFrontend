@@ -5,8 +5,6 @@ import Dropzone from 'react-dropzone';
 import Select from 'react-select';
 import 'isomorphic-fetch';
 
-import Loader from '../../components/widgets/loader';
-
 const UPLOAD_URL = '/upload';
 
 const FilesIndex = React.createClass({
@@ -15,6 +13,7 @@ const FilesIndex = React.createClass({
       files: null,
       isPending: false,
       isComplete: false,
+      errors: []
     };
   },
 
@@ -33,7 +32,6 @@ const FilesIndex = React.createClass({
   },
 
   _renderFormOrMessage () {
-    if (this.state.isPending) return <Loader />;
     if (this.state.isComplete) {
       return (
         <p>File uploaded successfully.</p>
@@ -46,9 +44,10 @@ const FilesIndex = React.createClass({
   _renderForm () {
     // get today's date in SGD format
     let now = new Date();
-    let strMonth = ("0" + now.getMonth()).slice(-2);
+    let strMonth = ("0" + (now.getMonth() + 1)).slice(-2);
     let strDate = ("0" + now.getDate()).slice(-2);
     let strToday = `${now.getYear() + 1900}-${strMonth}-${strDate}`;
+    let buttonNode = this.state.isPending ? <a lassName='button disabled secondary'>Uploading</a> : <input type='submit' className='button' value='Upload' />;
     // TEMP local options, need list of topics, formats, extensions, and PMIDs
     const selectOptions = [{ value: 1, label: 'One' }, { value: 2, label: 'Two' }];
     return (
@@ -69,7 +68,8 @@ const FilesIndex = React.createClass({
             {this._renderCheckField('For Browser', 'for_browser')}
             {this._renderStringField('README name', 'readme_name')}
             {this._renderStringField('PMIDs', 'pmids')}
-            <input type='submit' className='button' value='Upload' />
+            {this._renderErrors()}
+            {buttonNode}
           </form>
         </div>
         <div className='large-6 columns'>
@@ -94,7 +94,7 @@ const FilesIndex = React.createClass({
     let _id = `sgd-c-check-${paramName}`;
     return (
       <div>
-        <input type='checkbox' name={paramName} id={_id} />
+        <input id={_id} type='checkbox' name={paramName} />
         <label htmlFor={_id}>{displayName}</label>
       </div>
     );
@@ -114,6 +114,15 @@ const FilesIndex = React.createClass({
       <div>
         <label>{displayName}</label>
         <Select name={paramName} value={defaultValue} options={_options} multi={true} />
+      </div>
+    );
+  },
+
+  _renderErrors () {
+    if (this.state.errors.length === 0) return null;
+    return (
+      <div className='callout warning'>
+        <p>Error</p>
       </div>
     );
   },
@@ -143,7 +152,6 @@ const FilesIndex = React.createClass({
   },
 
   _onDrop (_files) {
-    console.log(_files)
     this.setState({ files: _files });
   },
 
@@ -159,11 +167,12 @@ const FilesIndex = React.createClass({
       body: formData
     }).then( response => {
       if (this.isMounted()) {
-        console.log(response)
-        this.setState({
-          isPending: false,
-          isComplete: true,
-        });
+        this.setState({ isPending: false });
+        if (response.status === 200) {
+          this.setState({ isComplete: true });
+        } else {
+          this.setState({ errors: ['Unknown Problem'] });
+        }
       }
     });
   }
