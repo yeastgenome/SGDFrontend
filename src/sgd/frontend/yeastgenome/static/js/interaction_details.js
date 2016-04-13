@@ -28,7 +28,7 @@ $(document).ready(function() {
             var slider = create_slider("slider", graph, data["min_evidence_cutoff"], data["max_evidence_cutoff"], function slider_filter(new_cutoff) {return "node, edge[evidence >= " + new_cutoff + "]";});
             create_cy_download_button(graph, "cy_download", locus['display_name'] + '_interaction_graph')
 
-            if(data["max_phys_cutoff"] >= data["min_evidence_cutoff"] && data["max_gen_cutoff"] >= data["min_evidence_cutoff"]) {
+            if(true) {
                 create_discrete_filter("union_radio", graph, slider, all_filter, data["max_evidence_cutoff"]);
                 create_discrete_filter("physical_radio", graph, slider, physical_filter, data["max_phys_cutoff"]);
                 create_discrete_filter("genetic_radio", graph, slider, gen_filter, data["max_gen_cutoff"]);
