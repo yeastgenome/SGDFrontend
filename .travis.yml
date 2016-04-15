@@ -1,3 +1,5 @@
+install: true
+script: ls
 notifications:
   webhooks:
     urls:
