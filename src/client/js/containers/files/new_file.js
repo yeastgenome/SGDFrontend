@@ -13,7 +13,7 @@ const FilesIndex = React.createClass({
       files: null,
       isPending: false,
       isComplete: false,
-      errors: []
+      error: false
     };
   },
 
@@ -47,7 +47,7 @@ const FilesIndex = React.createClass({
     let strMonth = ("0" + (now.getMonth() + 1)).slice(-2);
     let strDate = ("0" + now.getDate()).slice(-2);
     let strToday = `${now.getYear() + 1900}-${strMonth}-${strDate}`;
-    let buttonNode = this.state.isPending ? <a lassName='button disabled secondary'>Uploading</a> : <input type='submit' className='button' value='Upload' />;
+    let buttonNode = this.state.isPending ? <a className='button disabled secondary'>Uploading</a> : <input type='submit' className='button' value='Upload' />;
     // TEMP local options, need list of topics, formats, extensions, and PMIDs
     const selectOptions = [{ value: 1, label: 'One' }, { value: 2, label: 'Two' }];
     return (
@@ -59,7 +59,8 @@ const FilesIndex = React.createClass({
             {this._renderStringField('Path', 'new_filepath')}
             {this._renderStringField('Old File Path', 'old_filepath')}
             {this._renderStringField('Status', 'status')}
-            {this._renderMultiSelectField('Topic', 'topic_id', selectOptions)}
+            {this._renderMultiSelectField('Keyword(s)', 'keywords', selectOptions)}
+            {this._renderSingleSelectField('Topic', 'topic_id', selectOptions)}
             {this._renderSingleSelectField('Format', 'format_id', selectOptions)}
             {this._renderSingleSelectField('Extension', 'extension_id', selectOptions)}
             {this._renderStringField('Date', 'file_date', strToday, 'YYYY-MM-DD')}
@@ -67,7 +68,7 @@ const FilesIndex = React.createClass({
             {this._renderCheckField('For SPELL', 'for_spell')}
             {this._renderCheckField('For Browser', 'for_browser')}
             {this._renderStringField('README name', 'readme_name')}
-            {this._renderStringField('PMIDs', 'pmids')}
+            {this._renderStringField('PMIDs', 'pmids', '', 'Comma-separated list of PMIDs')}
             {this._renderErrors()}
             {buttonNode}
           </form>
@@ -119,10 +120,10 @@ const FilesIndex = React.createClass({
   },
 
   _renderErrors () {
-    if (this.state.errors.length === 0) return null;
+    if (!this.state.error) return null;
     return (
       <div className='callout warning'>
-        <p>Error</p>
+        <p>{this.state.error}</p>
       </div>
     );
   },
@@ -160,20 +161,25 @@ const FilesIndex = React.createClass({
     fetch(UPLOAD_URL, {
       method: 'POST',
       credentials: 'same-origin',
-      headers: {
-        'X-CSRF-Token': this.props.csrfToken,        
-        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-      },
+      headers: { 'X-CSRF-Token': this.props.csrfToken },
       body: formData
     }).then( response => {
+      // if not 200 or 400 throw unkown error
+      if ([200, 400].indexOf(response.status) < 0) throw new Error('Upload API error.');
+      return response.json();
+    }).then( responseJson => {
       if (this.isMounted()) {
         this.setState({ isPending: false });
-        if (response.status === 200) {
-          this.setState({ isComplete: true });
+        // error state
+        if (responseJson.error) {
+          this.setState({ isComplete: false, error: responseJson.error });
+        // success
         } else {
-          this.setState({ errors: ['Unknown Problem'] });
+          this.setState({ isComplete: true, error: false });
         }
       }
+    }).catch( e => {
+      this.setState({ error: 'There was an uknown problem with your upload.  Please try again.  If you continue to see this message, please contact sgd-programmers@lists.stanford.edu' });
     });
   }
 });

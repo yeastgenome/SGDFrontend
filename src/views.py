@@ -22,25 +22,28 @@ log = logging.getLogger(__name__)
 def home_view(request):
     return {'google_client_id': os.environ['GOOGLE_CLIENT_ID']}
 
-@view_config(route_name='upload', request_method='POST')
+@view_config(route_name='upload', renderer='json', request_method='POST')
 @authenticate
 def upload_file(request):
-    keys = ["file", "old_filepath", "new_filepath", "previous_file_name", "display_name", "status", "topic", "topic_id", "format", "format_id", "extension", "extension_id", "file_date", "is_public", "for_spell", "for_browser", "readme_name", "pmids", "keywords"]
+    keys = ['file', 'old_filepath', 'new_filepath', 'previous_file_name', 'display_name', 'status', 'topic_id', 'format_id', 'extension_id', 'file_date', 'is_public', 'for_spell', 'for_browser', 'readme_name', 'pmids', 'keywords']
 
     for k in keys:
         if request.POST.get(k) is None:
-            return HTTPBadRequest('Field \'' + k + '\' is missing')
+            request.response.status = 400
+            return { 'error': 'Field \'' + k + '\' is missing' }
 
     file = request.POST['file'].file
     filename = request.POST['file'].filename
 
     if not file:
         log.info('No file was sent.')
-        return HTTPBadRequest('No file was sent.')
+        request.response.status = 400
+        return { 'error': 'No file was sent.' }
 
     if not allowed_file(filename):
-        log.info('Upload error: File ' + request.POST.get("display_name") + ' has an invalid extension.')
-        return HTTPBadRequest('File extension is invalid')
+        log.info('Upload error: File ' + request.POST.get('display_name') + ' has an invalid extension.')
+        request.response.status = 400
+        return { 'error': 'File extension is invalid' }
     
     try:
         references = extract_references(request)
@@ -49,31 +52,32 @@ def upload_file(request):
         format = extract_format(request)
         filepath = get_or_create_filepath(request)
     except HTTPBadRequest as bad_request:
-        return bad_request
+        return { 'error': bad_request }
 
     if file_already_uploaded(request):
-        return HTTPBadRequest("Upload error: File " + request.POST.get("display_name") + " already exists.")
+        request.response.status = 400
+        return { 'error': 'Upload error: File ' + request.POST.get('display_name') + ' already exists.' }
 
     fdb = Filedbentity(
         # Filedbentity params
         md5sum=None,
-        previous_file_name=request.POST.get("previous_file_name"),
+        previous_file_name=request.POST.get('previous_file_name'),
         topic_id=topic.edam_id,
         format_id=format.edam_id,
-        file_date=datetime.datetime.strptime(request.POST.get("file_date"), "%Y-%m-%d %H:%M:%S"),
-        is_public=request.POST.get("is_public"),
-        is_in_spell=request.POST.get("for_spell"),
-        is_in_browser=request.POST.get("for_browser"),
+        file_date=datetime.datetime.strptime(request.POST.get('file_date'), '%Y-%m-%d %H:%M:%S'),
+        is_public=request.POST.get('is_public'),
+        is_in_spell=request.POST.get('for_spell'),
+        is_in_browser=request.POST.get('for_browser'),
         filepath_id=filepath.filepath_id,
-        readme_url=request.POST.get("readme_name"),
-        file_extension=request.POST.get("extension"),        
+        readme_url=request.POST.get('readme_name'),
+        file_extension=request.POST.get('extension'),        
 
         # DBentity params
-        format_name=request.POST.get("display_name"),
-        display_name=request.POST.get("display_name"),
+        format_name=request.POST.get('display_name'),
+        display_name=request.POST.get('display_name'),
         s3_url=None,
         source_id=339,
-        dbentity_status=request.POST.get("status")
+        dbentity_status=request.POST.get('status')
     )
 
     DBSession.add(fdb)
@@ -93,7 +97,7 @@ def upload_file(request):
     upload_to_s3.delay(temp_file_path, fdb_sgdid, fdb_file_extension, os.environ['S3_ACCESS_KEY'], os.environ['S3_SECRET_KEY'], os.environ['S3_BUCKET'])
 
     log.info('File ' + request.POST.get('display_name') + ' was successfully uploaded.')
-    return Response('Upload complete')
+    return Response({ 'success': True })
 
 @view_config(route_name='colleagues', renderer='json', request_method='GET')
 def colleagues_by_last_name(request):
@@ -101,7 +105,7 @@ def colleagues_by_last_name(request):
         return HTTPBadRequest('Query string field is missing: last_name')
 
     last_name = request.params['last_name']
-    colleagues = DBSession.query(Colleague).filter(Colleague.last_name.like(last_name.capitalize() + "%")).all()
+    colleagues = DBSession.query(Colleague).filter(Colleague.last_name.like(last_name.capitalize() + '%')).all()
 
     return [c.to_search_results_dict() for c in colleagues]
 
@@ -152,7 +156,7 @@ def sign_in(request):
         if idinfo.get('email') is None:
             return HTTPForbidden('Authentication token has no email')
 
-        log.info("User " + idinfo['email'] + " trying to authenticate from " + (request.remote_addr or "(no remote address)"))
+        log.info('User ' + idinfo['email'] + ' trying to authenticate from ' + (request.remote_addr or '(no remote address)'))
 
         curator = curator_or_none(idinfo['email'])
 
@@ -167,7 +171,7 @@ def sign_in(request):
         if 'username' not in session:
             session['username'] = curator.username
 
-        log.info("User " + idinfo['email'] + " was successfuly authenticated.")
+        log.info('User ' + idinfo['email'] + ' was successfuly authenticated.')
 
         return HTTPOk()
 
