@@ -1,12 +1,11 @@
-language: python
-python:
-- '2.7'
-install: pip install behave selenium unittest2 sauceclient httplib2
-script: REMOTE=True behave src/sgd/frontend/yeastgenome/tests/features
+webhooks:
+  urls:
+    - https://api.ghostinspector.com/v1/suites/[SUITE_ID]/execute/?apiKey=[API_KEY]
+  on_success: always
+  on_failure: never
 branches:
   only:
     - master
 env:
-  global:
-  - secure: CSAlJu2IfRoX09Pvc7NqfNhOoP3iGdKHLEHRHA/p2UFExB97igv4PWwkW2iu/QcE0TA2kAoyB4/72KteWxo3NeK/IkAtjVY0ao9Fro3mAJoFM1hV+e6cRr0R/fepbhtegipPb+P19emdtrUkW3kT3iizLO50XRa7JAgFy+3PTB4=
-  - secure: udO4+nnTs4oucDuts/VVVDma0VJbqND3IBLQG6iZNf3RYwTt+E0DZyHRQ52+/2kMLgeNJHYrgVoRbIw6Rr4skpVQfHC+T2n+C4LEhrsAhtuy9NAeSVXBEVzD1C8YjJxqjPx+AwFjcu896RTxAUGqCbt+Z8CvpKN2dq1USAP0fHQ=
+  - secure: LIhOSFM8E2vHFBfMNNI7oLDKWLELax3FOdcAJOjahFqv+wKOoxSzZ75LS2VO47yJMAjHmWnJIIGdcHJjWPHiZK6lFjxpr3kla63Gan97qZihtH0OJD+1F6F0FFjATUUrANG66onBm4vDZSl9GvE7Vx5YhCJ/vag+xLbwxNzbkgk=
+  - secure: TzAdhFjT6js3jKPjsahdJKu16VGrhxwwBizinfP0pEHRbHPScmaUeVMvGr3OYXBwrl0DyCqrpQbWOu9iWMK4J8XShHpRS9+2BvKqOgn0qNKx9zfYdbTZ8DGFzm+tYTLjdClDq/cYvjLHeGV1hoYB2fTQT1gEx2WZ6sElp9KT7cM=
