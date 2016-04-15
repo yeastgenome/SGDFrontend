@@ -1,14 +1,14 @@
 install: true
 script: ls
+branches:
+  only:
+    - ghost
 notifications:
   webhooks:
     urls:
       - https://api.ghostinspector.com/v1/suites/[SUITE_ID]/execute/?apiKey=[API_KEY]
     on_success: always
     on_failure: never
-  branches:
-    only:
-      - ghost
 env:
   - secure: LIhOSFM8E2vHFBfMNNI7oLDKWLELax3FOdcAJOjahFqv+wKOoxSzZ75LS2VO47yJMAjHmWnJIIGdcHJjWPHiZK6lFjxpr3kla63Gan97qZihtH0OJD+1F6F0FFjATUUrANG66onBm4vDZSl9GvE7Vx5YhCJ/vag+xLbwxNzbkgk=
   - secure: TzAdhFjT6js3jKPjsahdJKu16VGrhxwwBizinfP0pEHRbHPScmaUeVMvGr3OYXBwrl0DyCqrpQbWOu9iWMK4J8XShHpRS9+2BvKqOgn0qNKx9zfYdbTZ8DGFzm+tYTLjdClDq/cYvjLHeGV1hoYB2fTQT1gEx2WZ6sElp9KT7cM=
