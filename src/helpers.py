@@ -46,7 +46,7 @@ def authenticate(view_callable):
 def extract_references(request):
     references = []
     if request.POST.get("pmids") != '':
-        pmids = str(request.POST.get("pmids")).split("|")
+        pmids = str(request.POST.get("pmids")).split(",")
         for pmid in pmids:
             try:
                 f_pmid = float(pmid)
@@ -57,7 +57,7 @@ def extract_references(request):
             reference = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == f_pmid).one_or_none()
             if reference is None:
                 log.info('Upload error: inexistent PMID(s): ' + pmid)
-                raise HTTPBadRequest('Inexistent PMID(s): ' + pmid)
+                raise HTTPBadRequest('Nonexistent PMID(s): ' + pmid)
             else:
                 references.append(reference.dbentity_id)
     return references
