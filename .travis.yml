@@ -2,13 +2,15 @@ install: true
 script: ls
 branches:
   only:
-    - ghost
+  - ghost
 notifications:
   webhooks:
     urls:
-      - https://api.ghostinspector.com/v1/suites/[SUITE_ID]/execute/?apiKey=[API_KEY]
+    - https://api.ghostinspector.com/v1/suites/[SUITE_ID]/execute/?apiKey=[API_KEY]
     on_success: always
     on_failure: never
 env:
-  secure: "LIhOSFM8E2vHFBfMNNI7oLDKWLELax3FOdcAJOjahFqv+wKOoxSzZ75LS2VO47yJMAjHmWnJIIGdcHJjWPHiZK6lFjxpr3kla63Gan97qZihtH0OJD+1F6F0FFjATUUrANG66onBm4vDZSl9GvE7Vx5YhCJ/vag+xLbwxNzbkgk="
-  secure: "TzAdhFjT6js3jKPjsahdJKu16VGrhxwwBizinfP0pEHRbHPScmaUeVMvGr3OYXBwrl0DyCqrpQbWOu9iWMK4J8XShHpRS9+2BvKqOgn0qNKx9zfYdbTZ8DGFzm+tYTLjdClDq/cYvjLHeGV1hoYB2fTQT1gEx2WZ6sElp9KT7cM="
+  secure: TzAdhFjT6js3jKPjsahdJKu16VGrhxwwBizinfP0pEHRbHPScmaUeVMvGr3OYXBwrl0DyCqrpQbWOu9iWMK4J8XShHpRS9+2BvKqOgn0qNKx9zfYdbTZ8DGFzm+tYTLjdClDq/cYvjLHeGV1hoYB2fTQT1gEx2WZ6sElp9KT7cM=
+  matrix:
+  - secure: PywPufimiaDJ8+uypfrXExfaEvYibE4wWnMMDV24QmbwERv5CL0MpKCVGOiGjY31L9L7nmu/+L2SYhsQDDTIKX0dNb3DebCk3HSxoAG+QxfnPvWPqmA9ykupEY+it84k7obPevjtOYA+0DSoiNttr2yD//jo8QKIp0S4L59MM7Y=
+  - secure: u5L5KXU3R97VfXkwSKuvgSoamfSXuwXOjqpZgSgWFe5ivYhtVNqciJJR59oss8pyz27BalhLS/BqumtMhRaiO6UZNq0H6UyvW5UL079wZqZKMeRHd/pE1FeLQURF75UcPpvi0IFvIiQSMs+7S1jrvxVgC7iPuwHXuPLPBNy1Fek=
