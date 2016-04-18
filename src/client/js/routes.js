@@ -3,7 +3,6 @@ import { Route, IndexRoute } from 'react-router';
 
 // import handler containers
 import { requireAuthentication } from './containers/authenticate_component';
-import Splash from './containers/splash';
 import Layout from './containers/layout';
 import Dashboard from './containers/dashboard';
 import DashboardIndex from './containers/dashboard_index';
@@ -14,7 +13,7 @@ import NotFound from './containers/not_found';
 
 export default (
   <Route path='/' component={Layout}>
-  	<IndexRoute component={Splash} />
+  	<IndexRoute component={requireAuthentication(DashboardIndex)} />
     <Route path='login' component={Login} />
     <Route path='dashboard' component={requireAuthentication(Dashboard)}>
       <IndexRoute component={DashboardIndex} />

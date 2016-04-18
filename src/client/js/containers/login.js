@@ -5,15 +5,33 @@ import * as AuthActions from '../actions/auth_actions';
 const GOOGLE_PLATFORM_URL = 'https://apis.google.com/js/platform.js';
 
 const Login = React.createClass({
+  // hide google login button by default to prevent auto login
+  getInitialState() {
+    return {
+      googleLoginVisible: false
+    };
+  },
+
   render() {
     return (
       <div>
         {this._renderLoginError()}
         <h1>Login</h1>
         <hr />
-        <div className="g-signin2" data-onsuccess="onSignIn"></div>
+        {this._renderLoginButton()}
       </div>
     );
+  },
+
+  _renderLoginButton () {
+    if (this.state.googleLoginVisible) {
+      return <div id='g-login' className="g-signin2" data-onsuccess="onSignIn"></div>;
+    }
+    const _onClick = e => {
+      e.preventDefault();
+      this.setState({ googleLoginVisible: true });
+    }
+    return <a className='button' onClick={_onClick}>Login with Google</a>
   },
 
   _renderLoginError () {
@@ -31,12 +49,21 @@ const Login = React.createClass({
   componentDidMount () {
     if (document) {
       // expose onSignIn to global window so google API can find
-      if (window) window.onSignIn = this.onSignIn
+      if (window) window.onSignIn = this.onSignIn;
       // manually add google sign in script
       let scriptTag = document.createElement('script');
       scriptTag.type = 'text/javascript';
       scriptTag.src = GOOGLE_PLATFORM_URL;
       document.head.appendChild(scriptTag);
+    }
+  },
+
+  // render google button if just toggled visible
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.googleLoginVisible) {
+      gapi.signin2.render('g-login', {
+        'onsuccess': this.onSignIn
+      });
     }
   },
 
