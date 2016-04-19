@@ -279,6 +279,15 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(1, len(instances))
         self.assertEqual(keyword, instances[0])
 
+    def test_keyword_model_to_dict(self):
+        source = factory.SourceFactory()
+        instances = DBSession.query(Keyword).all()
+        self.assertEqual(0, len(instances))
+
+        keyword = factory.KeywordFactory()
+
+        self.assertEqual(keyword.to_dict(), {'id': keyword.keyword_id, 'name': keyword.display_name})
+
     def test_edam_model(self):
         source = factory.SourceFactory()
         instances = DBSession.query(Edam).all()
