@@ -13,7 +13,8 @@ export function getCategoryDisplayName (key) {
     strain: 'Strain',
     author: 'Author',
     download: 'Download',
-    resource: 'Resource'
+    resource: 'Resource',
+    contig: 'Contig'
   };
   return labels[key] || key;
 };
