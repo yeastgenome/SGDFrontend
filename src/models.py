@@ -1698,6 +1698,9 @@ class Keyword(Base):
 
     source = relationship(u'Source')
 
+    def to_dict(self):
+        return {'name': self.display_name, 'id': int(self.keyword_id)}
+
 
 class Literatureannotation(Base):
     __tablename__ = 'literatureannotation'

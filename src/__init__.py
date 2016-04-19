@@ -17,6 +17,7 @@ def main(global_config, **settings):
     
     config.add_route('colleague', '/colleagues/{format_name}')
     config.add_route('colleagues', '/colleagues')
+    config.add_route('keywords', '/keywords')
 
     config.add_route('sign_in', '/signin')
     config.add_route('sign_out', '/signout')

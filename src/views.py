@@ -95,7 +95,6 @@ def upload_file(request):
     log.info('File ' + request.POST.get('display_name') + ' was successfully uploaded.')
     return Response('Upload complete')
 
-
 @view_config(route_name='colleagues', renderer='json', request_method='GET')
 def colleagues_by_last_name(request):
     if request.params.get('last_name') is None:
@@ -117,6 +116,11 @@ def colleague_by_format_name(request):
     else:
         return HTTPNotFound('Colleague not found')
 
+@view_config(route_name='keywords', renderer='json', request_method='GET')
+def keywords(request):
+    keywords_db = DBSession.query(Keyword).all()
+    return {'options': [k.to_dict() for k in keywords_db]}
+    
 @view_config(route_name='sign_in', request_method='POST')
 def sign_in(request):
     if not check_csrf_token(request, raises=False):

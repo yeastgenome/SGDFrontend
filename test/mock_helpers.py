@@ -27,6 +27,9 @@ class MockQuery(object):
         self._query_filter = MockQueryFilter(query_params, self._query_result)
         return self._query_filter
 
+    def all(self):
+        return self._query_result
+
 
 class MockFileStorage(object):
     pass
