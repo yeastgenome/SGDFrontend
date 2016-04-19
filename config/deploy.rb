@@ -19,4 +19,5 @@ namespace :deploy do
   after :finishing, :config
   after :finishing, :build
   after :finishing, :restart
+  after :finishing, :copy_js
 end

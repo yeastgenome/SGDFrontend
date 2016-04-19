@@ -24,4 +24,12 @@ namespace :deploy do
       execute "cd #{current_path} && source #{current_path}/prod_variables.sh && export WORKON_HOME=~/envs/ && source virtualenvwrapper.sh && workon sgd && make stop-prod && make run-prod"
     end
   end
+
+  desc 'Copy js build'
+  task :copy_js do
+    on roles(:app), in: :sequence do
+      js_build_path = "static/js/application.js"
+      upload!("./#{js_build_path}", "#{current_path}/#{js_build_path}")
+    end
+  end
 end
