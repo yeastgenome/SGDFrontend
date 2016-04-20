@@ -6,7 +6,8 @@ import os
 import StringIO
 import test.fixtures as factory
 from test.mock_helpers import MockQuery, MockQueryFilter, MockFileStorage
-from src.views import upload_file
+from src.views import upload_file, extensions
+from src.helpers import FILE_EXTENSIONS
 from src.models import Filedbentity
 
 
@@ -252,3 +253,18 @@ class UploadTest(unittest.TestCase):
         mock_tasks.assert_called_with(os.path.join('/tmp', upload.filename), None, self.complete_params['extension'], os.environ['S3_ACCESS_KEY'], os.environ['S3_SECRET_KEY'], os.environ['S3_BUCKET'])
        
         self.assertEqual(response.status_code, 200)
+
+
+class MiscUploadTest(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def test_should_return_all_valid_extensions(self):
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        response = extensions(request)
+        
+        self.assertEqual(response, {'options': FILE_EXTENSIONS})

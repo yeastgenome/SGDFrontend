@@ -10,6 +10,8 @@ from .models import DBSession, Dbuser, Referencedbentity, Keyword, Filepath, Eda
 import logging
 log = logging.getLogger(__name__)
 
+FILE_EXTENSIONS = ['bed', 'bedgraph', 'bw', 'cdt', 'chain', 'cod', 'csv', 'cusp', 'doc', 'docx', 'fsa', 'gb', 'gcg', 'gff', 'gif', 'gz', 'html', 'jpg', 'pcl', 'pdf', 'pl', 'png', 'pptx', 'README', 'sql', 'sqn', 'tgz', 'txt', 'vcf', 'wig', 'wrl', 'xls', 'xlsx', 'xml', 'sql', 'txt', 'fsa', 'gff', 'html', 'gz', 'tsv']
+
 def md5(fname):
     hash = hashlib.md5()
     with open(fname, "rb") as f:
@@ -18,7 +20,7 @@ def md5(fname):
     return hash.hexdigest()
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[-1] in ['bed', 'bedgraph', 'bw', 'cdt', 'chain', 'cod', 'csv', 'cusp', 'doc', 'docx', 'fsa', 'gb', 'gcg', 'gff', 'gif', 'gz', 'html', 'jpg', 'pcl', 'pdf', 'pl', 'png', 'pptx', 'README', 'sql', 'sqn', 'tgz', 'txt', 'vcf', 'wig', 'wrl', 'xls', 'xlsx', 'xml', 'sql', 'txt', 'fsa', 'gff', 'html', 'gz', 'tsv']
+    return '.' in filename and filename.rsplit('.', 1)[-1] in FILE_EXTENSIONS
 
 def secure_save_file(file, filename):
     filename = werkzeug.secure_filename(filename)
