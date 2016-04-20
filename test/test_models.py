@@ -299,6 +299,15 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(1, len(instances))
         self.assertEqual(edam, instances[0])
 
+    def test_edam_model_to_dict(self):
+        source = factory.SourceFactory()
+        instances = DBSession.query(Edam).all()
+        self.assertEqual(0, len(instances))
+
+        edam = factory.EdamFactory()
+
+        self.assertEqual(edam.to_dict(), {'id': edam.edam_id, 'name': edam.format_name})
+
     def test_journal_model(self):
         source = factory.SourceFactory()
         instances = DBSession.query(Journal).all()
