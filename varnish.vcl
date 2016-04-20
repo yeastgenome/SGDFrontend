@@ -1,5 +1,7 @@
 vcl 4.0;
 
+import vsthrottle;
+
 acl purgers {
      "127.0.0.1";
 }
@@ -15,6 +17,10 @@ sub vcl_recv {
         return (synth(405));
       }
       return (purge);
+    }
+
+    if (vsthrottle.is_denied(client.identity, 50, 10s)) {
+       return (synth(429, "Too Many Requests"));
     }
 
     unset req.http.Cookie;
