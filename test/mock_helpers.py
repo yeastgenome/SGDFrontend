@@ -12,6 +12,8 @@ class MockQueryFilter(object):
     def all(self):
         if self._return is None:
             return []
+        elif self._return.__class__ == list:
+            return self._return
         else:
             return [self._return]
 

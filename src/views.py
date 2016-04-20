@@ -120,7 +120,12 @@ def colleague_by_format_name(request):
 def keywords(request):
     keywords_db = DBSession.query(Keyword).all()
     return {'options': [k.to_dict() for k in keywords_db]}
-    
+
+@view_config(route_name='formats', renderer='json', request_method='GET')
+def formats(request):
+    formats_db = DBSession.query(Edam).filter(Edam.edam_namespace == 'format').all()
+    return {'options': [f.to_dict() for f in formats_db]}
+
 @view_config(route_name='sign_in', request_method='POST')
 def sign_in(request):
     if not check_csrf_token(request, raises=False):

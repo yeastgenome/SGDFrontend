@@ -1237,6 +1237,8 @@ class Edam(Base):
 
     source = relationship(u'Source')
 
+    def to_dict(self):
+        return {'id': int(self.edam_id), 'name': self.format_name}
 
 class EdamAlia(Base):
     __tablename__ = 'edam_alias'
