@@ -126,6 +126,11 @@ def formats(request):
     formats_db = DBSession.query(Edam).filter(Edam.edam_namespace == 'format').all()
     return {'options': [f.to_dict() for f in formats_db]}
 
+@view_config(route_name='topics', renderer='json', request_method='GET')
+def topics(request):
+    topics_db = DBSession.query(Edam).filter(Edam.edam_namespace == 'topic').all()
+    return {'options': [t.to_dict() for t in topics_db]}
+
 @view_config(route_name='sign_in', request_method='POST')
 def sign_in(request):
     if not check_csrf_token(request, raises=False):
