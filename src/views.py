@@ -9,7 +9,7 @@ import os
 
 from .models import DBSession, Colleague, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword
 from .celery_tasks import upload_to_s3
-from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file
+from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
 import transaction
 
@@ -130,6 +130,10 @@ def formats(request):
 def topics(request):
     topics_db = DBSession.query(Edam).filter(Edam.edam_namespace == 'topic').all()
     return {'options': [t.to_dict() for t in topics_db]}
+
+@view_config(route_name='extensions', renderer='json', request_method='GET')
+def extensions(request):
+    return {'options': FILE_EXTENSIONS}
 
 @view_config(route_name='sign_in', request_method='POST')
 def sign_in(request):
