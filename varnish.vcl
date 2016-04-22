@@ -19,7 +19,7 @@ sub vcl_recv {
       return (purge);
     }
 
-    if (vsthrottle.is_denied(client.identity, 50, 10s)) {
+    if (vsthrottle.is_denied(client.identity, 100, 10s)) {
        return (synth(429, "Too Many Requests"));
     }
 
