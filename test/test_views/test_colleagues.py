@@ -3,7 +3,7 @@ from pyramid import testing
 import unittest
 import mock
 import test.fixtures as factory
-from test.mock_helpers import MockQuery, MockQueryFilter
+from test.mock_helpers import MockQuery
 from src.views import colleagues_by_last_name, colleague_by_format_name
 from src.models import Colleague, ColleagueAssociation, ColleagueKeyword, Keyword
 

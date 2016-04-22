@@ -34,7 +34,7 @@ class AutheticationTest(unittest.TestCase):
     def test_request_with_fake_token_should_return_403(self):
         csrf_token = 'dummy_csrf_token'
         
-        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'invalid_token'})
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'google_token': 'invalid_token'})
         request.session['_csrft_'] = csrf_token
         request.context = testing.DummyRequest()
 
@@ -47,7 +47,7 @@ class AutheticationTest(unittest.TestCase):
     def test_request_with_invalid_iss_for_token_should_return_403(self, token_validator):
         csrf_token = 'dummy_csrf_token'
         
-        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'valid_token'})
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'google_token': 'valid_token'})
         request.session['_csrft_'] = csrf_token
         request.context = testing.DummyRequest()
 
@@ -62,7 +62,7 @@ class AutheticationTest(unittest.TestCase):
     def test_request_with_valid_token_but_no_email_should_return_403(self, token_validator):
         csrf_token = 'dummy_csrf_token'
         
-        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'valid_token'})
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'google_token': 'valid_token'})
         request.session['_csrft_'] = csrf_token
         request.context = testing.DummyRequest()
 
@@ -79,7 +79,7 @@ class AutheticationTest(unittest.TestCase):
     def test_request_with_valid_token_but_not_a_curator_should_return_403(self, token_validator, curator_or_none, log):
         csrf_token = 'dummy_csrf_token'
         
-        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'valid_token'})
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'google_token': 'valid_token'})
         request.session['_csrft_'] = csrf_token
         request.context = testing.DummyRequest()
         request.remote_addr = '127.0.0.1'
@@ -100,7 +100,7 @@ class AutheticationTest(unittest.TestCase):
     def test_request_with_valid_token_and_user_should_return_a_logged_session(self, token_validator, curator_or_none, log):
         csrf_token = 'dummy_csrf_token'
         
-        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'token': 'valid_token'})
+        request = testing.DummyRequest(headers={'X-CSRF-Token': csrf_token}, post={'google_token': 'valid_token'})
         
         request.session['_csrft_'] = csrf_token
         request.context = testing.DummyRequest()
