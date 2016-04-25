@@ -34,7 +34,7 @@ class UploadTest(unittest.TestCase):
             "for_browser": "",
             "readme_name": "",
             "pmids": "",
-            "keywords": "",
+            "keyword_ids": "",
 
             "form.submitted": 1
         }
@@ -112,7 +112,7 @@ class UploadTest(unittest.TestCase):
         upload.filename = 'file.txt'
 
         self.complete_params['file'] = upload
-        self.complete_params['keywords'] = "keyword_1"
+        self.complete_params['keyword_ids'] = "keyword_1"
 
         mock_search.return_value = MockQuery(None)
 
