@@ -59,7 +59,7 @@ export function sendAuthRequest (googleToken) {
       })
       .then(checkStatus)  
       .then(function handleAuthResponse (response) {
-        dispatch(receiveAuthResponseAndRedirect('user123'));
+        dispatch(receiveAuthResponseAndRedirect());
       }).catch(function handleAuthRequestError (error) {
         dispatch(setLoginError());
       });
