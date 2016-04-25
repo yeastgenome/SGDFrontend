@@ -8,7 +8,7 @@ const Login = React.createClass({
   // hide google login button by default to prevent auto login
   getInitialState() {
     return {
-      googleLoginVisible: false
+      googleLoginVisible: true
     };
   },
 
