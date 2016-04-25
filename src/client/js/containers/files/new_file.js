@@ -2,12 +2,12 @@ import Radium from 'radium';
 import React from 'react';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
-import Select from 'react-select';
+const Select = require('react-select');
 import 'isomorphic-fetch';
 
 const UPLOAD_URL = '/upload';
 
-const FilesIndex = React.createClass({
+const NewFile = React.createClass({
   getInitialState () {
     return {
       files: null,
@@ -59,10 +59,10 @@ const FilesIndex = React.createClass({
             {this._renderStringField('Path', 'new_filepath')}
             {this._renderStringField('Old File Path', 'old_filepath')}
             {this._renderStringField('Status', 'status')}
-            {this._renderMultiSelectField('Keyword(s)', 'keywords', selectOptions)}
-            {this._renderSingleSelectField('Topic', 'topic_id', selectOptions)}
-            {this._renderSingleSelectField('Format', 'format_id', selectOptions)}
-            {this._renderSingleSelectField('Extension', 'extension_id', selectOptions)}
+            {this._renderMultiSelectField('Keyword(s)', 'keyword_ids')}
+            {this._renderSingleSelectField('Topic', 'topic_id')}
+            {this._renderSingleSelectField('Format', 'format_id')}
+            {this._renderSingleSelectField('Extension', 'extension_id')}
             {this._renderStringField('Date', 'file_date', strToday, 'YYYY-MM-DD')}
             {this._renderCheckField('Public', 'is_public')}
             {this._renderCheckField('For SPELL', 'for_spell')}
@@ -101,22 +101,50 @@ const FilesIndex = React.createClass({
     );
   },
 
-  _renderSingleSelectField(displayName, paramName, _options, defaultValue) {
+  _renderSingleSelectField(displayName, paramName) {
+    const _onChange = newValue => {
+      let obj = {};
+      obj[paramName] = newValue;
+      this.setState(obj);
+    };
     return (
       <div>
         <label>{displayName}</label>
-        <Select name={paramName} value={defaultValue} options={_options} multi={false} />
+        <Select.Async
+          name={paramName} value={this.state[paramName]}
+          loadOptions={this._getAsyncOptions}
+          labelKey='name' valueKey='id'
+          onChange={_onChange}
+        />
       </div>
     );
   },
 
-  _renderMultiSelectField(displayName, paramName, _options, defaultValue) {
+  _renderMultiSelectField(displayName, paramName) {
+    const _onChange = newValue => {
+      newValue = newValue ? newValue.split(',').map( d => { return parseInt(d); }) : [];
+      let obj = {};
+      obj[paramName] = newValue;
+      this.setState(obj);
+    };
     return (
       <div>
         <label>{displayName}</label>
-        <Select name={paramName} value={defaultValue} options={_options} multi={true} />
+        <Select.Async  multi simpleValue joinValues
+          name={paramName} value={this.state[paramName]}
+          loadOptions={this._getAsyncOptions}
+          labelKey='name' valueKey='id'
+          onChange={_onChange} 
+        />
       </div>
     );
+  },
+
+  _getAsyncOptions (input, cb) {
+    return fetch('/topics')
+      .then( response => {
+        return response.json();
+      });
   },
 
   _renderErrors () {
@@ -170,7 +198,6 @@ const FilesIndex = React.createClass({
       return response.json();
     }).then( responseJson => {
       if (this.isMounted()) {
-        this.setState({ isPending: false });
         // error state
         if (responseJson.error) {
           this.setState({ isComplete: false, error: responseJson.error });
@@ -204,4 +231,4 @@ function mapStateToProps(_state) {
   };
 };
 
-module.exports = connect(mapStateToProps)(Radium(FilesIndex));
+module.exports = connect(mapStateToProps)(Radium(NewFile));

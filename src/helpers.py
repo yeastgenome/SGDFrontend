@@ -64,8 +64,8 @@ def extract_references(request):
 
 def extract_keywords(request):
     keywords = []
-    if request.POST.get("keywords") != '':
-        keyword_names = str(request.POST.get("keywords")).split("|")
+    if request.POST.get("keyword_ids") != '':
+        keyword_names = str(request.POST.get("keyword_ids")).split(",")
         for keyword in keyword_names:
             keyword_obj = DBSession.query(Keyword).filter(Keyword.display_name == keyword).one_or_none()
             if keyword_obj is None:
