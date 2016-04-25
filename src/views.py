@@ -16,34 +16,32 @@ import transaction
 import datetime
 import math
 import logging
+import json
 log = logging.getLogger(__name__)
 
 @view_config(route_name='home', request_method='GET', renderer='home.jinja2')
 def home_view(request):
     return {'google_client_id': os.environ['GOOGLE_CLIENT_ID']}
 
-@view_config(route_name='upload', renderer='json', request_method='POST')
+@view_config(route_name='upload', request_method='POST', renderer='json')
 @authenticate
 def upload_file(request):
     keys = ['file', 'old_filepath', 'new_filepath', 'previous_file_name', 'display_name', 'status', 'topic_id', 'format_id', 'extension_id', 'file_date', 'is_public', 'for_spell', 'for_browser', 'readme_name', 'pmids', 'keywords']
 
     for k in keys:
         if request.POST.get(k) is None:
-            request.response.status = 400
-            return { 'error': 'Field \'' + k + '\' is missing' }
+            return HTTPBadRequest(json.dumps({'error': 'Field \'' + k + '\' is missing'}))
 
     file = request.POST['file'].file
     filename = request.POST['file'].filename
 
     if not file:
         log.info('No file was sent.')
-        request.response.status = 400
-        return { 'error': 'No file was sent.' }
+        return HTTPBadRequest(json.dumps({'error': 'No file was sent.'}))
 
     if not allowed_file(filename):
         log.info('Upload error: File ' + request.POST.get('display_name') + ' has an invalid extension.')
-        request.response.status = 400
-        return { 'error': 'File extension is invalid' }
+        return HTTPBadRequest(json.dumps({'error': 'File extension is invalid'}))
     
     try:
         references = extract_references(request)
@@ -52,11 +50,10 @@ def upload_file(request):
         format = extract_format(request)
         filepath = get_or_create_filepath(request)
     except HTTPBadRequest as bad_request:
-        return { 'error': bad_request }
+        return HTTPBadRequest({'error': bad_request.detail})
 
     if file_already_uploaded(request):
-        request.response.status = 400
-        return { 'error': 'Upload error: File ' + request.POST.get('display_name') + ' already exists.' }
+        return HTTPBadRequest(json.dumps({'error': 'Upload error: File ' + request.POST.get('display_name') + ' already exists.'}))
 
     fdb = Filedbentity(
         # Filedbentity params
