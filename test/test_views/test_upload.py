@@ -123,7 +123,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, {'error': 'Invalid or inexistent Keyword: keyword_1'})
+        self.assertEqual(response.message, {'error': 'Invalid or nonexistent Keyword: keyword_1'})
 
     @mock.patch('src.models.DBSession.query')
     def test_inexistent_topic_should_return_400(self, mock_search):
@@ -143,7 +143,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, {'error': 'Invalid or inexistent Topic ID: random_topic'})
+        self.assertEqual(response.message, {'error': 'Invalid or nonexistent Topic ID: random_topic'})
 
     @mock.patch('src.views.extract_topic', return_value='')
     @mock.patch('src.models.DBSession.query')
@@ -164,7 +164,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, {'error': 'Invalid or inexistent Format ID: format_123'})
+        self.assertEqual(response.message, {'error': 'Invalid or nonexistent Format ID: format_123'})
 
     @mock.patch('src.views.file_already_uploaded', return_value=True)
     @mock.patch('src.views.extract_format', return_value='')

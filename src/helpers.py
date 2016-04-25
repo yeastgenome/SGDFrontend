@@ -56,7 +56,7 @@ def extract_references(request):
             
             reference = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == f_pmid).one_or_none()
             if reference is None:
-                log.info('Upload error: inexistent PMID(s): ' + pmid)
+                log.info('Upload error: nonexistent PMID(s): ' + pmid)
                 raise HTTPBadRequest('Nonexistent PMID(s): ' + pmid)
             else:
                 references.append(reference.dbentity_id)
@@ -69,8 +69,8 @@ def extract_keywords(request):
         for keyword in keyword_names:
             keyword_obj = DBSession.query(Keyword).filter(Keyword.display_name == keyword).one_or_none()
             if keyword_obj is None:
-                log.info('Upload error: invalid or inexistent Keyword: ' + keyword)
-                raise HTTPBadRequest('Invalid or inexistent Keyword: ' + keyword)
+                log.info('Upload error: invalid or nonexistent Keyword: ' + keyword)
+                raise HTTPBadRequest('Invalid or nonexistent Keyword: ' + keyword)
             else:
                 keywords.append(keyword_obj.keyword_id)
     return keywords
@@ -89,14 +89,14 @@ def extract_topic(request):
     topic = DBSession.query(Edam).filter(Edam.edamid == request.POST.get("topic_id")).one_or_none()
     if topic is None:
         log.info('Upload error: Topic ID ' + request.POST.get("topic_id") + ' is not registered or is invalid.')
-        raise HTTPBadRequest('Invalid or inexistent Topic ID: ' + request.POST.get("topic_id"))
+        raise HTTPBadRequest('Invalid or nonexistent Topic ID: ' + request.POST.get("topic_id"))
     return topic
 
 def extract_format(request):
     format = DBSession.query(Edam).filter(Edam.edamid == request.POST.get("format_id")).one_or_none()
     if format is None:
         log.info('Upload error: Format ID ' + request.POST.get("format_id") + ' is not registered or is invalid.')
-        raise HTTPBadRequest('Invalid or inexistent Format ID: ' + request.POST.get("format_id"))
+        raise HTTPBadRequest('Invalid or nonexistent Format ID: ' + request.POST.get("format_id"))
     return format
 
 def file_already_uploaded(request):
