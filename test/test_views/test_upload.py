@@ -4,6 +4,7 @@ import unittest
 import mock
 import os
 import StringIO
+import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery, MockQueryFilter, MockFileStorage
 from src.views import upload_file, extensions
@@ -49,7 +50,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, 'Field \'file\' is missing')
+        self.assertEqual(response.message, json.dumps({ 'error': 'Field \'file\' is missing' }))
         
     def test_invalid_file_upload_should_return_400(self):
         upload = MockFileStorage()
@@ -65,7 +66,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, 'File extension is invalid')
+        self.assertEqual(response.message, json.dumps({'error': 'File extension is invalid'}))
 
     def test_invalid_pmids_should_return_400(self):
         upload = MockFileStorage()
@@ -82,7 +83,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, 'PMIDs must be integer numbers. You sent: invalid_pmid')
+        self.assertEqual(response.message, {'error': 'PMIDs must be integer numbers. You sent: invalid_pmid'})
 
     @mock.patch('src.models.DBSession.query')
     def test_valid_pmids_but_inexistent_should_return_400(self, mock_search):
@@ -102,7 +103,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, 'Inexistent PMID(s): 1234')
+        self.assertEqual(response.message, {'error': 'Nonexistent PMID(s): 1234'})
 
     @mock.patch('src.models.DBSession.query')
     def test_inexistent_keywords_should_return_400(self, mock_search):
@@ -122,7 +123,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, 'Invalid or inexistent Keyword: keyword_1')
+        self.assertEqual(response.message, {'error': 'Invalid or inexistent Keyword: keyword_1'})
 
     @mock.patch('src.models.DBSession.query')
     def test_inexistent_topic_should_return_400(self, mock_search):
@@ -142,7 +143,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, 'Invalid or inexistent Topic ID: random_topic')
+        self.assertEqual(response.message, {'error': 'Invalid or inexistent Topic ID: random_topic'})
 
     @mock.patch('src.views.extract_topic', return_value='')
     @mock.patch('src.models.DBSession.query')
@@ -163,7 +164,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, 'Invalid or inexistent Format ID: format_123')
+        self.assertEqual(response.message, {'error': 'Invalid or inexistent Format ID: format_123'})
 
     @mock.patch('src.views.file_already_uploaded', return_value=True)
     @mock.patch('src.views.extract_format', return_value='')
@@ -186,7 +187,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, 'Upload error: File file.txt already exists.')
+        self.assertEqual(response.message, json.dumps({'error': 'Upload error: File file.txt already exists.'}))
 
     @mock.patch('src.views.transaction')
     @mock.patch('src.celery_tasks.upload_to_s3.delay')
