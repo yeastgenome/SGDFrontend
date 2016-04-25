@@ -26,8 +26,9 @@ def home_view(request):
 @view_config(route_name='upload', request_method='POST', renderer='json')
 @authenticate
 def upload_file(request):
-    keys = ['file', 'old_filepath', 'new_filepath', 'previous_file_name', 'display_name', 'status', 'topic_id', 'format_id', 'extension_id', 'file_date', 'is_public', 'for_spell', 'for_browser', 'readme_name', 'pmids', 'keyword_ids']
-
+    keys = ['file', 'old_filepath', 'new_filepath', 'previous_file_name', 'display_name', 'status', 'topic_id', 'format_id', 'extension_id', 'file_date', 'readme_name', 'pmids', 'keyword_ids']
+    optional_keys = ['is_public', 'for_spell', 'for_browser']
+    
     for k in keys:
         if request.POST.get(k) is None:
             return HTTPBadRequest(json.dumps({'error': 'Field \'' + k + '\' is missing'}))
@@ -62,9 +63,9 @@ def upload_file(request):
         topic_id=topic.edam_id,
         format_id=format.edam_id,
         file_date=datetime.datetime.strptime(request.POST.get('file_date'), '%Y-%m-%d %H:%M:%S'),
-        is_public=request.POST.get('is_public'),
-        is_in_spell=request.POST.get('for_spell'),
-        is_in_browser=request.POST.get('for_browser'),
+        is_public=request.POST.get('is_public', 0),
+        is_in_spell=request.POST.get('for_spell', 0),
+        is_in_browser=request.POST.get('for_browser', 0),
         filepath_id=filepath.filepath_id,
         readme_url=request.POST.get('readme_name'),
         file_extension=request.POST.get('extension'),        

@@ -4,6 +4,7 @@ build:
 	python setup.py develop
 	npm install -g webpack
 	npm install
+	webpack
 	export ORACLE_HOME=/data/tools/oracle_instant_client/instantclient_11_2/ && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME && pip install -r requirements.txt
 
 run:
