@@ -164,6 +164,7 @@ const FilesIndex = React.createClass({
       headers: { 'X-CSRF-Token': this.props.csrfToken },
       body: formData
     }).then( response => {
+      this.setState({ isPending: false });
       // if not 200 or 400 throw unkown error
       if ([200, 400].indexOf(response.status) < 0) throw new Error('Upload API error.');
       return response.json();
