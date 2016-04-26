@@ -7,7 +7,7 @@ from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, Colleague, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword
+from .models import DBSession, Colleague, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword, ReferenceDocument
 from .celery_tasks import upload_to_s3
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
@@ -136,6 +136,24 @@ def topics(request):
 @view_config(route_name='extensions', renderer='json', request_method='GET')
 def extensions(request):
     return {'options': FILE_EXTENSIONS}
+
+@view_config(route_name='reference_list', renderer='json', request_method='POST')
+def reference_list(request):
+    reference_ids = request.POST.get('reference_ids', request.json_body.get('reference_ids', None))
+    
+    if reference_ids is None or len(reference_ids) == 0:
+        return HTTPBadRequest("No reference_ids sent. JSON object expected: {\"reference_ids\": [\"id_1\", \"id_2\", ...]}")
+    else:
+        try:
+            reference_ids = [int(r) for r in reference_ids]
+            references = DBSession.query(ReferenceDocument.reference_id, ReferenceDocument.text).filter(ReferenceDocument.reference_id.in_(reference_ids), ReferenceDocument.document_type == 'Medline').all()
+
+            if len(references) == 0:
+                return HTTPNotFound("Reference_ids do not exist.")
+            
+            return [{'id': r.reference_id, 'text': r.text} for r in references]
+        except ValueError:
+            return HTTPBadRequest("IDs must be string format of integers. Example JSON object expected: {\"reference_ids\": [\"1\", \"2\"]}")
 
 @view_config(route_name='sign_in', request_method='POST')
 def sign_in(request):
