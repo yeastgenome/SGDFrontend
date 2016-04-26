@@ -1,6 +1,6 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
-from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath
+from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, ReferenceDocument
 import fixtures as factory
 import os
 
@@ -398,3 +398,19 @@ class ModelsTest(unittest.TestCase):
         instances = DBSession.query(Filedbentity).all()
         self.assertEqual(1, len(instances))
         self.assertEqual(refdbentity, instances[0])
+
+    def test_reference_document_model(self):
+        source = factory.SourceFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        refdbentity = factory.ReferencedbentityFactory()
+
+        instances = DBSession.query(ReferenceDocument).all()
+        self.assertEqual(0, len(instances))
+
+        refdoc = factory.ReferenceDocumentFactory()
+        
+        instances = DBSession.query(ReferenceDocument).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(refdoc, instances[0])

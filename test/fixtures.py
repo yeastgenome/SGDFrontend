@@ -1,6 +1,6 @@
 import datetime
 import factory
-from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath
+from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, ReferenceDocument
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -276,3 +276,17 @@ class FilepathFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+class ReferenceDocumentFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ReferenceDocument
+        sqlalchemy_session = DBSession
+
+    reference_document_id = 1
+    document_type = "Medline"
+    text = "Bla bla bla"
+    html = "<bla></bla>"
+    source_id = 1
+    bud_id = 1
+    reference_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
