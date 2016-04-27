@@ -1,6 +1,6 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
-from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, ReferenceDocument
+from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, ReferenceDocument, Chebi, ChebiUrl
 import fixtures as factory
 import os
 
@@ -414,3 +414,26 @@ class ModelsTest(unittest.TestCase):
 
         self.assertEqual(1, len(instances))
         self.assertEqual(refdoc, instances[0])
+
+    def test_chebi_model(self):
+        source = factory.SourceFactory()
+        instances = DBSession.query(Chebi).all()
+        self.assertEqual(0, len(instances))
+
+        chebi = factory.ChebiFactory()
+        instances = DBSession.query(Chebi).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(chebi, instances[0])
+
+    def test_chebiurl_model(self):
+        source = factory.SourceFactory()
+        chebi = factory.ChebiFactory()
+        instances = DBSession.query(ChebiUrl).all()
+        self.assertEqual(0, len(instances))
+
+        chebiurl = factory.ChebiUrlFactory()
+        instances = DBSession.query(ChebiUrl).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(chebiurl, instances[0])

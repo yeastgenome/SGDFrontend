@@ -7,7 +7,7 @@ from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, Colleague, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword, ReferenceDocument
+from .models import DBSession, Colleague, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword, ReferenceDocument, Chebi, ChebiUrl
 from .celery_tasks import upload_to_s3
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
@@ -154,6 +154,31 @@ def reference_list(request):
             return [{'id': r.reference_id, 'text': r.text} for r in references]
         except ValueError:
             return HTTPBadRequest("IDs must be string format of integers. Example JSON object expected: {\"reference_ids\": [\"1\", \"2\"]}")
+
+@view_config(route_name='chemical', renderer='json', request_method='GET')
+def chemical(request):
+    id = request.matchdict['id']
+    try:
+        float(id)
+        chemical = DBSession.query(Chebi.chebi_id, Chebi.display_name, Chebi.chebiid, Chebi.format_name).filter(Chebi.chebi_id == id).one_or_none()
+    except ValueError:
+        chemical = DBSession.query(Chebi.chebi_id, Chebi.display_name, Chebi.chebiid, Chebi.format_name).filter(Chebi.format_name == id).one_or_none()
+    
+    if chemical:
+        chemical_url = DBSession.query(ChebiUrl.obj_url).filter(ChebiUrl.chebi_id == chemical[0]).one_or_none()
+        urls = []
+        if chemical_url:
+            urls = [{'link': chemical_url[0]}]
+
+        return {
+            'display_name': chemical[1],
+            'chebi_id': chemical[2],
+            'id': int(chemical[0]),
+            'link': '/chemical/' + chemical[3] + '/overview/',
+            'urls': urls
+        }
+    else:
+        return HTTPNotFound('Chemical not found')
 
 @view_config(route_name='sign_in', request_method='POST')
 def sign_in(request):

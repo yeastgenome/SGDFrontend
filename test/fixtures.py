@@ -1,6 +1,6 @@
 import datetime
 import factory
-from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, ReferenceDocument
+from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, ReferenceDocument, Chebi, ChebiUrl
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -288,5 +288,36 @@ class ReferenceDocumentFactory(factory.alchemy.SQLAlchemyModelFactory):
     source_id = 1
     bud_id = 1
     reference_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class ChebiFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Chebi
+        sqlalchemy_session = DBSession
+
+    chebi_id = 1
+    format_name = "mon_chebi"
+    display_name = "Mon chebi"
+    obj_url = "/chebi"
+    source_id = 1
+    bud_id = None
+    chebiid = "CHEBI:8466"
+    description = "This is a Chebi"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class ChebiUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ChebiUrl
+        sqlalchemy_session = DBSession
+
+    url_id = 1
+    display_name = "chebi_url"
+    obj_url = "/chebi_url"
+    source_id = 1
+    bud_id = 1
+    chebi_id = 1
+    url_type = "ChEBI"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
