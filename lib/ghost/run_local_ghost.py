@@ -8,8 +8,12 @@ ghost_suite_id = os.environ.get('GHOST_SUITE_ID')
 ghost_key = os.environ.get('GHOST_API_KEY')
 
 # get start URL from ngrok API
-ngrok_response = requests.get(NGROK_URL).json()
-start_url = ngrok_response['tunnels'][0] # TODO get the rest of the object
+try:
+  ngrok_response = requests.get(NGROK_URL).json()
+  start_url = ngrok_response['tunnels'][0]['public_url']
+except Exception, e:
+  # TODO, give an error message instructing how to setup ngrok
+  raise e
 
 # construct ghost API url and ping to run test
 ghost_url = 'https://api.ghostinspector.com/v1/suites/' + ghost_suite_id + '/execute/?apiKey=' + ghost_key + '&immediate=1&startUrl=' + start_url
