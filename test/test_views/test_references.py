@@ -2,6 +2,7 @@ from pyramid import testing
 
 import unittest
 import mock
+import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
 from src.views import reference_list
@@ -24,7 +25,7 @@ class ReferencesTest(unittest.TestCase):
         response = reference_list(request)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, "No reference_ids sent. JSON object expected: {\"reference_ids\": [\"id_1\", \"id_2\", ...]}")
+        self.assertEqual(json.loads(response.body), {'error': "No reference_ids sent. JSON object expected: {\"reference_ids\": [\"id_1\", \"id_2\", ...]}"})
         
     def test_reference_list_should_400_for_invalid_data(self):
         request = testing.DummyRequest(post={'blablabla_ids': ['123']})
@@ -33,7 +34,7 @@ class ReferencesTest(unittest.TestCase):
         response = reference_list(request)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, "No reference_ids sent. JSON object expected: {\"reference_ids\": [\"id_1\", \"id_2\", ...]}")
+        self.assertEqual(json.loads(response.body), {'error': "No reference_ids sent. JSON object expected: {\"reference_ids\": [\"id_1\", \"id_2\", ...]}"})
 
         request = testing.DummyRequest(post={'reference_ids': []})
         request.json_body = {'reference_ids': []}
@@ -41,7 +42,7 @@ class ReferencesTest(unittest.TestCase):
         response = reference_list(request)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, "No reference_ids sent. JSON object expected: {\"reference_ids\": [\"id_1\", \"id_2\", ...]}")
+        self.assertEqual(json.loads(response.body), {'error': "No reference_ids sent. JSON object expected: {\"reference_ids\": [\"id_1\", \"id_2\", ...]}"})
         
         request = testing.DummyRequest(post={'reference_ids': ['a_random_crazy_id']})
         request.json_body = {'reference_ids': ['a_random_crazy_id']}
@@ -49,7 +50,7 @@ class ReferencesTest(unittest.TestCase):
         response = reference_list(request)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, "IDs must be string format of integers. Example JSON object expected: {\"reference_ids\": [\"1\", \"2\"]}")
+        self.assertEqual(json.loads(response.body), {'error': "IDs must be string format of integers. Example JSON object expected: {\"reference_ids\": [\"1\", \"2\"]}"})
 
     @mock.patch('src.models.DBSession.query')
     def test_reference_list_should_404_valid_but_nonexistent_ids(self, mock_search):
@@ -60,7 +61,7 @@ class ReferencesTest(unittest.TestCase):
         request.context = testing.DummyResource()
         response = reference_list(request)
 
-        self.assertEqual(response.message, "Reference_ids do not exist.")
+        self.assertEqual(json.loads(response.body), {'error': "Reference_ids do not exist."})
         self.assertEqual(response.status_code, 404)
 
     @mock.patch('src.models.DBSession.query')

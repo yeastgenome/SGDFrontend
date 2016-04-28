@@ -2,6 +2,7 @@ from pyramid import testing
 
 import unittest
 import mock
+import json
 from src.views import sign_in, sign_out
 import test.fixtures as factory
 
@@ -17,7 +18,7 @@ class AutheticationTest(unittest.TestCase):
         request.context = testing.DummyRequest()
         response = sign_in(request)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, 'Bad CSRF Token')
+        self.assertEqual(json.loads(response.body), {'error': 'Bad CSRF Token'})
 
     def test_request_with_no_token_should_return_403(self):
         csrf_token = 'dummy_csrf_token'
@@ -28,7 +29,7 @@ class AutheticationTest(unittest.TestCase):
         
         response = sign_in(request)
         self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.message, 'Expected authentication token not found')
+        self.assertEqual(json.loads(response.body), {'error': 'Expected authentication token not found'})
         self.assertNotIn('email', request.session)
 
     def test_request_with_fake_token_should_return_403(self):
@@ -40,7 +41,7 @@ class AutheticationTest(unittest.TestCase):
 
         response = sign_in(request)
         self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.message, 'Authentication token is invalid')
+        self.assertEqual(json.loads(response.body), {'error': 'Authentication token is invalid'})
         self.assertNotIn('email', request.session)
 
     @mock.patch('oauth2client.client.verify_id_token')
@@ -55,7 +56,7 @@ class AutheticationTest(unittest.TestCase):
 
         response = sign_in(request)
         self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.message, 'Authentication token has an invalid ISS')
+        self.assertEqual(json.loads(response.body), {'error': 'Authentication token has an invalid ISS'})
         self.assertNotIn('email', request.session)
 
     @mock.patch('oauth2client.client.verify_id_token')
@@ -70,7 +71,7 @@ class AutheticationTest(unittest.TestCase):
 
         response = sign_in(request)
         self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.message, 'Authentication token has no email')
+        self.assertEqual(json.loads(response.body), {'error': 'Authentication token has no email'})
         self.assertNotIn('email', request.session)
 
     @mock.patch('src.views.log.info')
@@ -90,7 +91,7 @@ class AutheticationTest(unittest.TestCase):
         response = sign_in(request)
 
         self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.message, 'User not-a-curator@example.org is not authorized on SGD')
+        self.assertEqual(json.loads(response.body), {'error': 'User not-a-curator@example.org is not authorized on SGD'})
         self.assertNotIn('email', request.session)
         log.assert_called_with('User not-a-curator@example.org trying to authenticate from 127.0.0.1')
 

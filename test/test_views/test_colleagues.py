@@ -2,6 +2,7 @@ from pyramid import testing
 
 import unittest
 import mock
+import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
 from src.views import colleagues_by_last_name, colleague_by_format_name
@@ -33,8 +34,9 @@ class ColleaguesTest(unittest.TestCase):
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
         response = colleagues_by_last_name(request)
+
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, 'Query string field is missing: last_name')
+        self.assertEqual(json.loads(response.body), {'error': 'Query string field is missing: last_name'})
 
     @mock.patch('src.models.Colleague.urls', new_callable=mock.PropertyMock)
     @mock.patch('src.models.DBSession.query')
@@ -46,6 +48,7 @@ class ColleaguesTest(unittest.TestCase):
         colleague_urls.return_value = [self.url_1, self.url_2]
 
         response = colleagues_by_last_name(request)
+
         self.assertEqual(response, [{
             'format_name': self.colleague.format_name,
             'work_phone': self.colleague.work_phone,
@@ -145,5 +148,5 @@ class ColleaguesTest(unittest.TestCase):
         response = colleague_by_format_name(request)
 
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.message, 'Colleague not found')
+        self.assertEqual(json.loads(response.body), {'error': 'Colleague not found'})
 
