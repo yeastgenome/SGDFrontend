@@ -12,8 +12,7 @@ try:
   ngrok_response = requests.get(NGROK_URL).json()
   start_url = ngrok_response['tunnels'][0]['public_url']
 except Exception, e:
-  # TODO, give an error message instructing how to setup ngrok
-  raise e
+  raise Exception('Unable to connect to ngrok.  Make sure you have an ngrok tunnel pointing to http://localhost:6545.  https://ngrok.com/download')
 
 # construct ghost API url and ping to run test
 ghost_url = 'https://api.ghostinspector.com/v1/suites/' + ghost_suite_id + '/execute/?apiKey=' + ghost_key + '&immediate=1&startUrl=' + start_url
