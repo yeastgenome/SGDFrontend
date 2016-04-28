@@ -31,21 +31,18 @@ def upload_file(request):
     
     for k in keys:
         if request.POST.get(k) is None:
-            request.response.status = 400
-            return { 'error': 'Field \'' + k + '\' is missing' }
+            return HTTPBadRequest(body=json.dumps({'error': 'Field \'' + k + '\' is missing'}))
 
     file = request.POST['file'].file
     filename = request.POST['file'].filename
 
     if not file:
         log.info('No file was sent.')
-        request.reponse.status = 400
-        return {'error': 'No file was sent.'}
+        return HTTPBadRequest(body=json.dumps({'error': 'No file was sent.'}))
 
     if not allowed_file(filename):
         log.info('Upload error: File ' + request.POST.get('display_name') + ' has an invalid extension.')
-        request.reponse.status = 400
-        return {'error': 'File extension is invalid'}
+        return HTTPBadRequest(body=json.dumps({'error': 'File extension is invalid'}))
     
     try:
         references = extract_references(request)
@@ -54,13 +51,10 @@ def upload_file(request):
         format = extract_format(request)
         filepath = get_or_create_filepath(request)
     except HTTPBadRequest as bad_request:
-        request.reponse.status = 400
-        return {'error': str(bad_request.detail)}
-        return HTTPBadRequest({'error': bad_request.detail})
+        return HTTPBadRequest(body=json.dumps({'error': str(bad_request.detail)}))
 
     if file_already_uploaded(request):
-        request.reponse.status = 400
-        return {'error': 'Upload error: File ' + request.POST.get('display_name') + ' already exists.'}
+        return HTTPBadRequest(body=json.dumps({'error': 'Upload error: File ' + request.POST.get('display_name') + ' already exists.'}))
 
     fdb = Filedbentity(
         # Filedbentity params
@@ -141,11 +135,7 @@ def topics(request):
 
 @view_config(route_name='extensions', renderer='json', request_method='GET')
 def extensions(request):
-    # format extensions
-    options = []
-    for extension in FILE_EXTENSIONS:
-        options.append({ 'id': extension, 'name': extension })
-    return {'options': options}
+    return {'options': [{'id': e, 'name': e} for e in FILE_EXTENSIONS]}
 
 @view_config(route_name='reference_list', renderer='json', request_method='POST')
 def reference_list(request):

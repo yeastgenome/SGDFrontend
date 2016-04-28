@@ -16,27 +16,27 @@ class UploadTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.complete_params = {
-            "file": "",
-            "old_filepath": "",
-            "new_filepath": "",
-            "previous_file_name": "",
-            "display_name": "",
-            "status": "",
-            "topic": "",
-            "topic_id": "",
-            "format": "",
-            "format_id": "",
-            "extension": "",
-            "extension_id": "",
-            "file_date": "",
-            "is_public": "",
-            "for_spell": "",
-            "for_browser": "",
-            "readme_name": "",
-            "pmids": "",
-            "keyword_ids": "",
+            'file': '',
+            'old_filepath': '',
+            'new_filepath': '',
+            'previous_file_name': '',
+            'display_name': '',
+            'status': '',
+            'topic': '',
+            'topic_id': '',
+            'format': '',
+            'format_id': '',
+            'extension': '',
+            'extension_id': '',
+            'file_date': '',
+            'is_public': '',
+            'for_spell': '',
+            'for_browser': '',
+            'readme_name': '',
+            'pmids': '',
+            'keyword_ids': '',
 
-            "form.submitted": 1
+            'form.submitted': 1
         }
 
     def tearDown(self):
@@ -50,7 +50,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, json.dumps({ 'error': 'Field \'file\' is missing' }))
+        self.assertEqual(json.loads(response.body), {'error': 'Field \'file\' is missing'})
         
     def test_invalid_file_upload_should_return_400(self):
         upload = MockFileStorage()
@@ -66,7 +66,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, json.dumps({'error': 'File extension is invalid'}))
+        self.assertEqual(json.loads(response.body), {'error': 'File extension is invalid'})
 
     def test_invalid_pmids_should_return_400(self):
         upload = MockFileStorage()
@@ -74,7 +74,7 @@ class UploadTest(unittest.TestCase):
         upload.filename = 'file.txt'
 
         self.complete_params['file'] = upload
-        self.complete_params['pmids'] = "invalid_pmid"
+        self.complete_params['pmids'] = 'invalid_pmid'
 
         request = testing.DummyRequest(post=self.complete_params)
         request.context = testing.DummyResource()
@@ -83,7 +83,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, {'error': 'PMIDs must be integer numbers. You sent: invalid_pmid'})
+        self.assertEqual(json.loads(response.body), {'error': 'PMIDs must be integer numbers. You sent: invalid_pmid'})
 
     @mock.patch('src.models.DBSession.query')
     def test_valid_pmids_but_inexistent_should_return_400(self, mock_search):
@@ -92,7 +92,7 @@ class UploadTest(unittest.TestCase):
         upload.filename = 'file.txt'
 
         self.complete_params['file'] = upload
-        self.complete_params['pmids'] = "1234"
+        self.complete_params['pmids'] = '1234'
 
         mock_search.return_value = MockQuery(None)
 
@@ -103,7 +103,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, {'error': 'Nonexistent PMID(s): 1234'})
+        self.assertEqual(json.loads(response.body), {'error': 'Nonexistent PMID(s): 1234'})
 
     @mock.patch('src.models.DBSession.query')
     def test_inexistent_keywords_should_return_400(self, mock_search):
@@ -112,7 +112,7 @@ class UploadTest(unittest.TestCase):
         upload.filename = 'file.txt'
 
         self.complete_params['file'] = upload
-        self.complete_params['keyword_ids'] = "keyword_1"
+        self.complete_params['keyword_ids'] = 'keyword_1'
 
         mock_search.return_value = MockQuery(None)
 
@@ -123,7 +123,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, {'error': 'Invalid or nonexistent Keyword: keyword_1'})
+        self.assertEqual(json.loads(response.body), {'error': 'Invalid or nonexistent Keyword: keyword_1'})
 
     @mock.patch('src.models.DBSession.query')
     def test_inexistent_topic_should_return_400(self, mock_search):
@@ -132,7 +132,7 @@ class UploadTest(unittest.TestCase):
         upload.filename = 'file.txt'
 
         self.complete_params['file'] = upload
-        self.complete_params['topic_id'] = "random_topic"
+        self.complete_params['topic_id'] = 'random_topic'
 
         mock_search.return_value = MockQuery(None)
 
@@ -143,7 +143,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, {'error': 'Invalid or nonexistent Topic ID: random_topic'})
+        self.assertEqual(json.loads(response.body), {'error': 'Invalid or nonexistent Topic ID: random_topic'})
 
     @mock.patch('src.views.extract_topic', return_value='')
     @mock.patch('src.models.DBSession.query')
@@ -153,7 +153,7 @@ class UploadTest(unittest.TestCase):
         upload.filename = 'file.txt'
 
         self.complete_params['file'] = upload
-        self.complete_params['format_id'] = "format_123"
+        self.complete_params['format_id'] = 'format_123'
 
         mock_search.return_value = MockQuery(None)
 
@@ -164,7 +164,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, {'error': 'Invalid or nonexistent Format ID: format_123'})
+        self.assertEqual(json.loads(response.body), {'error': 'Invalid or nonexistent Format ID: format_123'})
 
     @mock.patch('src.views.file_already_uploaded', return_value=True)
     @mock.patch('src.views.extract_format', return_value='')
@@ -178,7 +178,7 @@ class UploadTest(unittest.TestCase):
         upload.filename = 'file.txt'
 
         self.complete_params['file'] = upload
-        self.complete_params['display_name'] = "file.txt"
+        self.complete_params['display_name'] = 'file.txt'
 
         request = testing.DummyRequest(post=self.complete_params)
         request.context = testing.DummyResource()
@@ -187,7 +187,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.message, json.dumps({'error': 'Upload error: File file.txt already exists.'}))
+        self.assertEqual(json.loads(response.body), {'error': 'Upload error: File file.txt already exists.'})
 
     @mock.patch('src.views.transaction')
     @mock.patch('src.celery_tasks.upload_to_s3.delay')
@@ -215,8 +215,8 @@ class UploadTest(unittest.TestCase):
         mock_filepath.return_value = filepath
         
         self.complete_params['file'] = upload
-        self.complete_params['display_name'] = "file.txt"
-        self.complete_params['file_date'] = "2016-03-18 14:09:10"
+        self.complete_params['display_name'] = 'file.txt'
+        self.complete_params['file_date'] = '2016-03-18 14:09:10'
 
         request = testing.DummyRequest(post=self.complete_params)
         request.context = testing.DummyResource()
@@ -268,4 +268,4 @@ class MiscUploadTest(unittest.TestCase):
         request.context = testing.DummyResource()
         response = extensions(request)
         
-        self.assertEqual(response, {'options': FILE_EXTENSIONS})
+        self.assertEqual(response, {'options': [{'id': e, 'name': e} for e in FILE_EXTENSIONS]})
