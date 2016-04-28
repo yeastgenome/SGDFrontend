@@ -2,6 +2,7 @@ from pyramid import testing
 
 import unittest
 import mock
+import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
 from src.views import chemical
@@ -26,7 +27,7 @@ class ChemicalTest(unittest.TestCase):
         response = chemical(request)
 
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.message, "Chemical not found")
+        self.assertEqual(json.loads(response.body), {'error': "Chemical not found"})
 
     @mock.patch('src.models.DBSession.query')
     def test_chemical_should_return_chemical_for_id(self, mock_search):

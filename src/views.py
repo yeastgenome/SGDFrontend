@@ -100,7 +100,7 @@ def upload_file(request):
 @view_config(route_name='colleagues', renderer='json', request_method='GET')
 def colleagues_by_last_name(request):
     if request.params.get('last_name') is None:
-        return HTTPBadRequest('Query string field is missing: last_name')
+        return HTTPBadRequest(body=json.dumps({'error':'Query string field is missing: last_name'}))
 
     last_name = request.params['last_name']
     colleagues = DBSession.query(Colleague).filter(Colleague.last_name.like(last_name.capitalize() + '%')).all()
@@ -116,7 +116,7 @@ def colleague_by_format_name(request):
     if colleague:
         return colleague.to_info_dict()
     else:
-        return HTTPNotFound('Colleague not found')
+        return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
 
 @view_config(route_name='keywords', renderer='json', request_method='GET')
 def keywords(request):
@@ -142,18 +142,18 @@ def reference_list(request):
     reference_ids = request.POST.get('reference_ids', request.json_body.get('reference_ids', None))
     
     if reference_ids is None or len(reference_ids) == 0:
-        return HTTPBadRequest("No reference_ids sent. JSON object expected: {\"reference_ids\": [\"id_1\", \"id_2\", ...]}")
+        return HTTPBadRequest(body=json.dumps({'error': "No reference_ids sent. JSON object expected: {\"reference_ids\": [\"id_1\", \"id_2\", ...]}"}))
     else:
         try:
             reference_ids = [int(r) for r in reference_ids]
             references = DBSession.query(ReferenceDocument.reference_id, ReferenceDocument.text).filter(ReferenceDocument.reference_id.in_(reference_ids), ReferenceDocument.document_type == 'Medline').all()
 
             if len(references) == 0:
-                return HTTPNotFound("Reference_ids do not exist.")
+                return HTTPNotFound(body=json.dumps({'error': "Reference_ids do not exist."}))
             
             return [{'id': r.reference_id, 'text': r.text} for r in references]
         except ValueError:
-            return HTTPBadRequest("IDs must be string format of integers. Example JSON object expected: {\"reference_ids\": [\"1\", \"2\"]}")
+            return HTTPBadRequest(body=json.dumps({'error': "IDs must be string format of integers. Example JSON object expected: {\"reference_ids\": [\"1\", \"2\"]}"}))
 
 @view_config(route_name='chemical', renderer='json', request_method='GET')
 def chemical(request):
@@ -178,31 +178,31 @@ def chemical(request):
             'urls': urls
         }
     else:
-        return HTTPNotFound('Chemical not found')
+        return HTTPNotFound(body=json.dumps({'error': 'Chemical not found'}))
 
 @view_config(route_name='sign_in', request_method='POST')
 def sign_in(request):
     if not check_csrf_token(request, raises=False):
-        return HTTPBadRequest('Bad CSRF Token')
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
 
     if request.POST.get('google_token') is None:
-        return HTTPForbidden('Expected authentication token not found')
+        return HTTPForbidden(body=json.dumps({'error': 'Expected authentication token not found'}))
     
     try:
         idinfo = client.verify_id_token(request.POST.get('google_token'), os.environ['GOOGLE_CLIENT_ID'])
 
         if idinfo.get('iss') not in ['accounts.google.com', 'https://accounts.google.com']:
-            return HTTPForbidden('Authentication token has an invalid ISS')
+            return HTTPForbidden(body=json.dumps({'error': 'Authentication token has an invalid ISS'}))
         
         if idinfo.get('email') is None:
-            return HTTPForbidden('Authentication token has no email')
+            return HTTPForbidden(body=json.dumps({'error': 'Authentication token has no email'}))
 
         log.info('User ' + idinfo['email'] + ' trying to authenticate from ' + (request.remote_addr or '(no remote address)'))
 
         curator = curator_or_none(idinfo['email'])
 
 	if curator is None:
-            return HTTPForbidden('User ' + idinfo['email'] + ' is not authorized on SGD')
+            return HTTPForbidden(body=json.dumps({'error': 'User ' + idinfo['email'] + ' is not authorized on SGD'}))
         
         session = request.session
 
@@ -217,7 +217,7 @@ def sign_in(request):
         return HTTPOk()
 
     except crypt.AppIdentityError:
-        return HTTPForbidden('Authentication token is invalid')
+        return HTTPForbidden(body=json.dumps({'error': 'Authentication token is invalid'}))
 
 @view_config(route_name='sign_out', request_method='DELETE')
 def sign_out(request):
