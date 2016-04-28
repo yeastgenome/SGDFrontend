@@ -135,7 +135,11 @@ def topics(request):
 
 @view_config(route_name='extensions', renderer='json', request_method='GET')
 def extensions(request):
-    return {'options': FILE_EXTENSIONS}
+    # format extensions
+    options = []
+    for extension in FILE_EXTENSIONS:
+        options.append({ 'id': extension, 'name': extension })
+    return {'options': options}
 
 @view_config(route_name='reference_list', renderer='json', request_method='POST')
 def reference_list(request):
