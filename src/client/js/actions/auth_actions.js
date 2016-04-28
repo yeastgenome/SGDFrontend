@@ -1,5 +1,5 @@
 import 'isomorphic-fetch';
-import { routeActions } from 'react-router-redux';
+import { push } from 'react-router-redux';
 
 const AUTH_URL = '/signin';
 const SIGN_OUT_URL = '/signout';
@@ -60,9 +60,9 @@ export function sendAuthRequest (googleToken) {
       .then(checkStatus)  
       .then(function handleAuthResponse (response) {
         dispatch(receiveAuthResponseAndRedirect());
-      }).catch(function handleAuthRequestError (error) {
-        dispatch(setLoginError());
-      });
+      })//.catch(function handleAuthRequestError (error) {
+      //   dispatch(setLoginError());
+      // });
   };
 };
 
@@ -76,8 +76,8 @@ export function setCSRFToken (token) {
 export function receiveAuthResponseAndRedirect () {
   return function (dispatch, getState) {
     dispatch(receiveAuthenticationResponse());
-    let redirectUrl = getState().routing.location.query.next || '/dashboard';
-    dispatch(routeActions.push(redirectUrl));
+    let redirectUrl = '/dashboard';
+    dispatch(push(redirectUrl));
   };
 };
 
