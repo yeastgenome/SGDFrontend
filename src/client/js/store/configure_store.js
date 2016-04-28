@@ -1,6 +1,6 @@
 import { createStore, compose, applyMiddleware, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
-import { routeReducer, syncHistory } from 'react-router-redux';
+import { routerReducer, routerMiddleware, syncHistoryWithStore } from 'react-router-redux';
 
 // custom reducers
 import authReducer from '../reducers/auth_reducer';
@@ -9,15 +9,17 @@ import authReducer from '../reducers/auth_reducer';
 const ConfigureStore = (initialState, history) => {
   let reducerObj = {
     auth: authReducer,
-    routing: routeReducer,
+    routing: routerReducer,
   };
   const reducer = combineReducers(reducerObj);
-
-  let store = compose(
-    applyMiddleware(thunk),
-	applyMiddleware(syncHistory(history))
+  const _store = compose(
+    applyMiddleware(thunk, routerMiddleware(history))
   )(createStore)(reducer, initialState);
-  return store;
+  const _history = syncHistoryWithStore(history, _store);
+  return {
+    history: _history,
+    store: _store
+  };
 };
 
 module.exports = ConfigureStore;
