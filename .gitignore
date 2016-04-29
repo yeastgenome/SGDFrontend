@@ -62,6 +62,7 @@ target/
 config.py
 dev_variables.sh
 prod_variables.sh
+test_variables.sh
 
 Gemfile.lock
 
