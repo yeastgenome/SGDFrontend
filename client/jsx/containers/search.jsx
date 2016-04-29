@@ -64,9 +64,10 @@ const Search = React.createClass({
     );
   },
 
-  // listen for history changes and fetch results when they change
+  // listen for history changes and fetch results when they change, also update google analytics
   componentWillMount() {
     this._unlisten = this.props.history.listen( () => {
+      this._updateGoogleAnalytics();
       this._fetchSearchResults();
     });
   },
@@ -146,6 +147,14 @@ const Search = React.createClass({
   _isWrappedResults () {
     const isWrappedParam = (this.props.queryParams.wrapResults === 'true' || this.props.queryParams.wrapResults === true);
     return (this.props.activeCategory === 'locus' && isWrappedParam);
+  },
+
+  // updates google analytics, depends on global 'ga' object. Does nothing if not present
+  _updateGoogleAnalytics () {
+    if (!ga) return;
+    let fullUrl = `${this.props.location.pathname}${this.props.location.search}`;
+    ga('set', 'page', fullUrl);
+    ga('send', 'pageview');
   }
 });
 
