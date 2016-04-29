@@ -1,6 +1,6 @@
 import datetime
 import factory
-from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, ReferenceDocument, Chebi, ChebiUrl
+from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, ReferenceDocument, Chebi, ChebiUrl, Phenotypeannotation, PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -319,5 +319,180 @@ class ChebiUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     bud_id = 1
     chebi_id = 1
     url_type = "ChEBI"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class LocusdbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Locusdbentity
+        sqlalchemy_session = DBSession
+
+    dbentity_id = 1
+    systematic_name = "GENE1"
+    gene_name = "GENE1"
+    qualifier = "ORF"
+    genetic_position = 10
+    name_description = "Test gene"
+    headline = "This is gene 1"
+    description = "This is a description for gene 1"
+    has_summary = 1
+    has_sequence = 1
+    has_history = 1
+    has_literature = 1
+    has_go = 1
+    has_phenotype = 1
+    has_interaction = 1
+    has_expression = 1
+    has_regulation = 1
+    has_protein = 1
+    has_sequence_section = 1
+
+    format_name = factory.Sequence(lambda n: 'format_{0}'.format(n))
+    display_name = "My entity"
+    obj_url = "http://example.org/entity"
+    source_id = 1
+    bud_id = None
+    sgdid = "S000001"
+    dbentity_status = "ACTIVE"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class PhenotypeannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Phenotypeannotation
+        sqlalchemy_session = DBSession
+
+    annotation_id = 1
+    dbentity_id = 1
+    source_id = 1
+    bud_id = None
+    taxonomy_id = 1
+    reference_id = 1
+    phenotype_id = 1
+    experiment_id = 1
+    mutant_id = 1
+    allele_id = 1
+    reporter_id = 1
+    assay_id = 1
+    strain_name = "my strain"
+    details = "no details"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class PhenotypeannotationCondFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = PhenotypeannotationCond
+        sqlalchemy_session = DBSession
+
+    condition_id = 1
+    annotation_id = 1
+    condition_class = "chemical"
+    condition_name = "condition"
+    condition_value = "10"
+    condition_unit = "C"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class TaxonomyFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Taxonomy
+        sqlalchemy_session = DBSession
+
+    taxonomy_id = 1
+    format_name = "tax"
+    display_name = "Tax"
+    obj_url = "/obj/tax"
+    source_id = 1
+    taxid = "tax1"
+    common_name = "The T"
+    rank = "1"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+    
+
+class PhenotypeFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Phenotype
+        sqlalchemy_session = DBSession
+
+    phenotype_id = 1
+    format_name = "pheno"
+    display_name = "Pheno"
+    obj_url = "/obj/pheno"
+    source_id = 1
+    bud_id = None
+    observable_id = 1
+    qualifier_id = 1
+    description = "phenoo"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class ApoFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Apo
+        sqlalchemy_session = DBSession
+
+    apo_id = 1
+    format_name = "appo"
+    display_name = "APPo"
+    obj_url = "/obj/apo"
+    source_id = 1
+    bud_id = None
+    apoid = 1
+    apo_namespace = "ApoSpace"
+    description = "This is appo"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class AlleleFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Allele
+        sqlalchemy_session = DBSession
+
+    allele_id = 1
+    format_name = "allele"
+    display_name = "Allele"
+    obj_url = "/obj/allele"
+    source_id = 1
+    bud_id = None
+    description = "The allele"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class ReporterFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Reporter
+        sqlalchemy_session = DBSession
+
+    reporter_id = 1
+    format_name = "reporter"
+    display_name = "Reporter"
+    obj_url = "/obj/reporter"
+    source_id = 1
+    bud_id = None
+    description = "The reporter"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class ObiFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Obi
+        sqlalchemy_session = DBSession
+
+    obi_id = 1
+    format_name = "obi"
+    display_name = "Obi"
+    obj_url = "/obj/obi"
+    source_id = 1
+    bud_id = None
+    obiid = 1
+    description = "the obi"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"

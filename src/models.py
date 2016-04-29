@@ -1859,6 +1859,10 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Numeric(1, 0, asdecimal=False), nullable=False)
     has_sequence_section = Column(Numeric(1, 0, asdecimal=False), nullable=False)
 
+    __mapper_args__ = {
+        'polymorphic_identity': 'LOCUS',
+    }
+
 
 class Locusnoteannotation(Base):
     __tablename__ = 'locusnoteannotation'
@@ -2123,15 +2127,15 @@ class Phenotypeannotation(Base):
 class PhenotypeannotationCond(Base):
     __tablename__ = 'phenotypeannotation_cond'
     __table_args__ = (
-        Index('phenotypeannotation_cond_uk', 'annotation_id', 'condition_type', 'condition_name', 'condition_value', unique=True),
+        Index('phenotypeannotation_cond_uk', 'annotation_id', 'condition_class', 'condition_name', 'condition_value', unique=True),
         {u'schema': 'NEX'}
     )
 
     condition_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
     annotation_id = Column(ForeignKey(u'NEX.phenotypeannotation.annotation_id'), nullable=False)
-    condition_type = Column(String(40), nullable=False)
+    condition_class = Column(String(40), nullable=False)
     condition_name = Column(String(500), nullable=False)
-    condition_value = Column(String(25))
+    condition_value = Column(String(150))
     condition_unit = Column(String(25))
     date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
     created_by = Column(String(12), nullable=False, server_default=FetchedValue())

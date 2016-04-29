@@ -1,6 +1,6 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
-from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, ReferenceDocument, Chebi, ChebiUrl
+from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, ReferenceDocument, Chebi, ChebiUrl, Phenotypeannotation, PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi
 import fixtures as factory
 import os
 
@@ -437,3 +437,124 @@ class ModelsTest(unittest.TestCase):
 
         self.assertEqual(1, len(instances))
         self.assertEqual(chebiurl, instances[0])
+
+    def test_phenotypeannotation_model(self):
+        source = factory.SourceFactory()
+        reporter = factory.ReporterFactory()
+        obi = factory.ObiFactory()
+        apo = factory.ApoFactory()
+        allele = factory.AlleleFactory()
+        pheno = factory.PhenotypeFactory()
+        locus = factory.LocusdbentityFactory()
+        taxonomy = factory.TaxonomyFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        refdbentity = factory.ReferencedbentityFactory(dbentity_id=2, sgdid="S1")
+        instances = DBSession.query(Phenotypeannotation).all()
+        self.assertEqual(0, len(instances))
+
+        pa = factory.PhenotypeannotationFactory(reference_id=2)
+        instances = DBSession.query(Phenotypeannotation).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(pa, instances[0])
+        
+    def test_phenotypeannotationcond_model(self):
+        source = factory.SourceFactory()
+        reporter = factory.ReporterFactory()
+        obi = factory.ObiFactory()
+        apo = factory.ApoFactory()
+        allele = factory.AlleleFactory()
+        pheno = factory.PhenotypeFactory()
+        locus = factory.LocusdbentityFactory()
+        taxonomy = factory.TaxonomyFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        refdbentity = factory.ReferencedbentityFactory(dbentity_id=2, sgdid="S1")
+        pa = factory.PhenotypeannotationFactory(reference_id=2)
+        instances = DBSession.query(PhenotypeannotationCond).all()
+        self.assertEqual(0, len(instances))
+
+        pac = factory.PhenotypeannotationCondFactory()
+        instances = DBSession.query(PhenotypeannotationCond).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(pac, instances[0])
+
+    def test_locusdbentity_model(self):
+        source = factory.SourceFactory()
+        instances = DBSession.query(Locusdbentity).all()
+        self.assertEqual(0, len(instances))
+
+        locus = factory.LocusdbentityFactory()
+        instances = DBSession.query(Locusdbentity).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(locus, instances[0])
+
+    def test_taxonomy_model(self):
+        source = factory.SourceFactory()
+        instances = DBSession.query(Taxonomy).all()
+        self.assertEqual(0, len(instances))
+
+        taxonomy = factory.TaxonomyFactory()
+        instances = DBSession.query(Taxonomy).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(taxonomy, instances[0])
+
+    def test_phenotype_model(self):
+        source = factory.SourceFactory()
+        apo = factory.ApoFactory()
+        instances = DBSession.query(Phenotype).all()
+        self.assertEqual(0, len(instances))
+
+        pheno = factory.PhenotypeFactory()
+        instances = DBSession.query(Phenotype).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(pheno, instances[0])
+
+    def test_apo_model(self):
+        source = factory.SourceFactory()
+        instances = DBSession.query(Apo).all()
+        self.assertEqual(0, len(instances))
+
+        apo = factory.ApoFactory()
+        instances = DBSession.query(Apo).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(apo, instances[0])
+
+    def test_allele_model(self):
+        source = factory.SourceFactory()
+        instances = DBSession.query(Allele).all()
+        self.assertEqual(0, len(instances))
+
+        allele = factory.AlleleFactory()
+        instances = DBSession.query(Allele).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(allele, instances[0])
+
+    def test_reporter_model(self):
+        source = factory.SourceFactory()
+        instances = DBSession.query(Reporter).all()
+        self.assertEqual(0, len(instances))
+
+        reporter = factory.ReporterFactory()
+        instances = DBSession.query(Reporter).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(reporter, instances[0])
+
+    def test_obi_model(self):
+        source = factory.SourceFactory()
+        instances = DBSession.query(Obi).all()
+        self.assertEqual(0, len(instances))
+
+        obi = factory.ObiFactory()
+        instances = DBSession.query(Obi).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(obi, instances[0])
