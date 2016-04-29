@@ -8,8 +8,10 @@ const Header = React.createClass({
       <header id="layout-page-header" ref="wrapper">
         {/* top black section */}
         <div className="hide-for-small">
-          {/* right */}
           <div className="top-header">
+            <div>
+              <span className='header-notice'>Thanks for using our beta site.  <a href="https://www.surveymonkey.com/r/5M2QQSW" target="_new">Tell us what you think</a>.</span>
+            </div>
             <div className="site-links">
               <a href="/about">About</a>
               <a href="/blog">Blog</a>

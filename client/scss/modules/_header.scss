@@ -8,8 +8,10 @@ http://smacss.com/book/type-module
 } */
 $logo-width: 220px;
 $logo-height: 40px;
+$top-header-text-font-size: 16px;
 $header-text-font-size: 14px;
 $search-width: 400px;
+$top-header-font-color: #CCC;
 
 .top-header {
 	padding: 0.5rem;
@@ -17,9 +19,21 @@ $search-width: 400px;
 	font-size: $header-text-font-size;
 	display: -webkit-flex;
 	display: flex;
-	flex-direction: row-reverse;
-	-webkit-flex-direction: row-reverse;
 	background: black;
+	-webkit-justify-content: space-between;
+	justify-content: space-between;
+	font-size: $top-header-text-font-size;
+}
+
+.header-notice {
+	color: $top-header-font-color;
+	a {
+		text-decoration: underline;
+		color: $top-header-font-color;
+		&:after {
+			display: none;
+		}
+	}
 }
 
 .site-links {
@@ -31,8 +45,7 @@ $search-width: 400px;
 }
 
 .site-links a {
-	color: #CCC;
-	font-size: 16px;
+	color: $top-header-font-color;
 }
 
 .site-links .webicon {
