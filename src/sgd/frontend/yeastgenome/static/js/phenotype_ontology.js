@@ -7,7 +7,7 @@ $(document).ready(function() {
 
         $("#ontology").show();
 		set_up_full_ontology("full_ontology", data['full_ontology']);
-		$('i.fa').click(function(e) {
+		$('#full_ontology i.fa').click(function(e) {
 			if ($(this).parent().has('ul')) {
 				$(this).parent().children('ul').toggle();
 			}
