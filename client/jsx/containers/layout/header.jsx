@@ -86,7 +86,7 @@ const Header = React.createClass({
             <li className="has-dropdown"><a href="#">Sequence</a>
               <ul className="dropdown">
                 <li><a className="disabled-header-a" href="http://www.yeastgenome.org/download-data/sequence">Download</a></li>
-                <li><a className="disabled-header-a" href="http://browse.yeastgenome.org/fgb2/gbrowse/scgenome/">Genome Browser</a></li>
+                <li><a className="disabled-header-a" href="http://yeastgenome.org/browse">Genome Browser</a></li>
                 <li><a className="disabled-header-a" href="/blast-sgd">BLAST</a></li>
                 <li><a className="disabled-header-a" href="/blast-fungal">Fungal BLAST</a></li>
                 <li><a className="disabled-header-a" href="http://www.yeastgenome.org/cgi-bin/seqTools">Gene/Sequence Resources</a></li>
@@ -103,6 +103,7 @@ const Header = React.createClass({
                 <li className="has-dropdown">
                   <a href="#">Strains and Species</a>
                   <ul className="dropdown">
+                    <li><a className="disabled-header-a" href="http://www.yeastgenome.org/variant-viewer">Variant Viewer</a></li>
                     <li><a className="disabled-header-a" href="http://www.yeastgenome.org/cgi-bin/FUNGI/alignment.pl">Align Strain Sequences</a></li>
                     <li><a className="disabled-header-a" href="http://www.yeastgenome.org/cgi-bin/FUNGI/FungiMap">Synteny Viewer</a></li>
                   </ul>

@@ -24,8 +24,8 @@ def blast_sgd(request):
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results and let client js do the rest.
 @view_config(route_name='search') 
 def search(request):
-    # get search results
-    search_url = config.backend_url + '/get_search_results' + '?' + request.query_string
+    # get search results, make limit 25
+    search_url = config.backend_url + '/get_search_results' + '?' + request.query_string + '&limit=25'
     json_bootstrapped_search_results = requests.get(search_url).text
     # if param is_quick = true and the first result has is_quick: true
     parsed_results = json.loads(json_bootstrapped_search_results)['results']

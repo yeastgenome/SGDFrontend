@@ -2,7 +2,7 @@ import _ from 'underscore';
 import { getCategoryDisplayName } from '../lib/search_helpers';
 
 const FILTERED_FACET_VALUES = ['cellular component', 'biological process', 'molecular function'];
-const DEFAULT_RESULTS_PER_PAGE = 10;
+const DEFAULT_RESULTS_PER_PAGE = 20;
 const LARGER_RESULTS_PER_PAGE = 220;
 const DEFAULT_STATE = {
   userInput: '',
