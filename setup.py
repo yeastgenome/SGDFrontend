@@ -25,7 +25,7 @@ tests_require = [
 setup(name='SGDFrontend',
       version='0.0',
       description='SGDFrontend',
-      long_description=README + '\n\n' + CHANGES,
+      long_description=CHANGES,
       classifiers=[
         "Programming Language :: Python",
         "Framework :: Pyramid",
