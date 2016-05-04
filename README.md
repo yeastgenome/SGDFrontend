@@ -1,7 +1,5 @@
 #SGD Website Project
 
-[![Build Status](https://travis-ci.org/yeastgenome/SGDFrontend.svg?branch=development)](https://travis-ci.org/yeastgenome/SGDFrontend)
-
 This project is a frontend webaplication used for the SGD Nextgen Redesign. It retreives data in JSON format from
 SGDBackend, then creates the pages of the website.
 
@@ -95,8 +93,28 @@ Some pages are written using the [react](http://facebook.github.io/react/) frame
 
 ##Testing
 
-Selenium tests are written with [behave](http://pythonhosted.org/behave/).  With behave installed and the app running in development mode (see above), run:
+Integration tests are run using ghost inspector.  The tests are configured using their service.
 
-    $ behave src/sgd/frontend/yeastgenome/tests/features
+Make sure the ghost inspector variables are in dev_deploy_variables.sh
 
-Tests are currently configured to use the selenium chrome driver.  If not installed, see [https://sites.google.com/a/chromium.org/chromedriver/getting-started](https://sites.google.com/a/chromium.org/chromedriver/getting-started).
+### Test Production
+
+By running
+
+    $ make prod-test
+
+This command will email all the developers if a test fails.  To run a silent test that sends no emails, run
+
+    $ make silent-test
+
+the test suite will run against http://yeastgenome.org.  To run on a different server (such as staging) run
+
+    $ START_URL=http://your-server.edu make remote-test
+
+### Test Locally
+
+First, download ngrok (add URL) and start your ngrok server [https://ngrok.com/download](https://ngrok.com/download) This will tunnel requests from bgrok to your local development environment.
+
+Then, run
+
+    $ make local-test
