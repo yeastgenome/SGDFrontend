@@ -1,7 +1,5 @@
 #SGD Website Project
 
-[![Build Status](https://travis-ci.org/yeastgenome/SGDFrontend.svg?branch=development)](https://travis-ci.org/yeastgenome/SGDFrontend)
-
 This project is a frontend webaplication used for the SGD Nextgen Redesign. It retreives data in JSON format from
 SGDBackend, then creates the pages of the website.
 
