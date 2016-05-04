@@ -99,15 +99,19 @@ Integration tests are run using ghost inspector.  The tests are configured using
 
 Make sure the ghost inspector variables are in dev_deploy_variables.sh
 
-### Test a Remote Server
+### Test Production
 
 By running
 
-    $ make test
+    $ make prod-test
+
+This command will email all the developers if a test fails.  To run a silent test that sends no emails, run
+
+    $ make silent-test
 
 the test suite will run against http://yeastgenome.org.  To run on a different server (such as staging) run
 
-    $ START_URL=http://your-server.edu make test
+    $ START_URL=http://your-server.edu make remote-test
 
 ### Test Locally
 

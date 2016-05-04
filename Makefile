@@ -49,7 +49,7 @@ run:
 local-test:
 	. dev_deploy_variables.sh && bin/py lib/ghost/run_local_ghost.py && open $$GHOST_SUITE_BROWSER_URL
 
-remote-test:
+silent-test:
 	. dev_deploy_variables.sh && bin/py lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
 
 # add START_URL env variable to point at non-production environment
