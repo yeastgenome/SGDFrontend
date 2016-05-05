@@ -6,6 +6,15 @@ from src.sgd.frontend.yeastgenome import send_message
 from src.sgd.tools.blast import do_blast
 
 def prep_views(chosen_frontend, config):
+    # some logic (NOT all) has been moved to views to be more 'pyramid-y'
+    config.scan('src.sgd.frontend.views')
+    config.add_route('blast_fungal', '/blast-fungal')
+    config.add_route('blast_sgd', '/blast-sgd')
+    config.add_route('snapshot', '/genomesnapshot')
+    config.add_route('style_guide', '/style-guide')
+    config.add_route('suggestion', '/suggestion')
+    config.add_route('variant_viewer', '/variant-viewer')
+    # config.add_route('example', '/example')
 
     #Reference views
     config.add_route('references_this_week', '/reference/recent')
@@ -246,38 +255,8 @@ def prep_views(chosen_frontend, config):
                     renderer='string',
                     route_name='backend')
 
-    config.add_route('snapshot', '/genomesnapshot')
-    config.add_view(lambda request: {'snapshot': render('static/templates/snapshot.jinja2', {})},
-                    renderer=chosen_frontend.get_renderer('snapshot'),
-                    route_name='snapshot')
-
-    config.add_route('suggestion', '/suggestion')
-    config.add_view(lambda request: {'suggestion': render('static/templates/suggestion.jinja2', {})},
-                    renderer=chosen_frontend.get_renderer('suggestion'),
-                    route_name='suggestion')
-    
-    config.add_route('blast_sgd', '/blast-sgd')
-    config.add_view(lambda request: {'blast_sgd': render('static/templates/blast_sgd.jinja2', {})},
-                    renderer=chosen_frontend.get_renderer('blast_sgd'),
-                    route_name='blast_sgd')
-
-    config.add_route('blast_fungal', '/blast-fungal')
-    config.add_view(lambda request: {'blast_fungal': render('static/templates/blast_fungal.jinja2', {})},
-                    renderer=chosen_frontend.get_renderer('blast_fungal'),
-                    route_name='blast_fungal')
-
     config.add_route('send_email', '/send_data')
     config.add_view(send_message, route_name='send_email')   
-
-    config.add_route('variant_viewer', '/variant-viewer')
-    config.add_view(lambda request: {'variant_viewer': render('static/templates/variant_viewer.jinja2', {})},
-                    renderer=chosen_frontend.get_renderer('variant_viewer'),
-                    route_name='variant_viewer')
-
-    config.add_route('style_guide', '/style-guide')
-    config.add_view(lambda request: {'style_guide': render('static/templates/style_guide.jinja2', {})},
-                    renderer=chosen_frontend.get_renderer('style_guide'),
-                    route_name='style_guide')
     
     config.add_route('do_blast', '/run_blast')
     config.add_view(do_blast, route_name='do_blast')
