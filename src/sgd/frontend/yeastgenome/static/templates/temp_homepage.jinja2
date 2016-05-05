@@ -5,7 +5,7 @@
 {% block body %}
 <div class="row">
     <div class="medium-6 columns">
-        <div id="slide-show" style="z-index:1">
+        <div id="slide-show" style="z-index:1; visibility:hidden">
             <ul data-orbit id="slides" data-options="animation:slide; pause_on_hover:true;">
                 <li>
                     <img src="http://yeastgenome.org/wp-content/uploads/2015/10/Guidi_yAT1684-7-days-YPD-l60-12RGB.jpg">
@@ -166,3 +166,12 @@ anti-Fpr3 antibody courtesy of Jeremy Thorner, Ph.D., UC Berkeley</span>
 </div>
 
 {% endblock body %}
+
+{% block scripts %}
+<script>
+    // wait a little bit to show the slideshow
+    setTimeout(function () {
+        $('#slide-show').css({ visibility: 'visible' });
+    }, 300);
+</script>
+{% endblock scripts %}
