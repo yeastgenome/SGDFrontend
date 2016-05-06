@@ -62,6 +62,8 @@ $top-header-font-color: #CCC;
 	justify-content: space-around;
 	-webkit-justify-content: space-around;
 	background: #696599;
+	flex-wrap: wrap;
+	-webkit-flex-wrap: wrap;
 }
 
 .menu-search-container {
@@ -71,9 +73,17 @@ $top-header-font-color: #CCC;
 }
 
 .sgd-search-container {
-  position: absolute;
-  right: 0.5rem;
-  width: $search-width
+	position: absolute;
+	right: 0.5rem;
+	width: $search-width
+}
+// adjust for mobile screen
+@media (max-width: 48em) {
+	.sgd-search-container {
+		position: relative;
+		right: 0;
+		width: auto;
+	}
 }
 
 

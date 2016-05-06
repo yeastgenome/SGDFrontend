@@ -38,7 +38,7 @@ const Header = React.createClass({
             <div className="top-menu-container">
               {this._renderMenu()}   
             </div>
-            <div className="sgd-menu-divider right"></div>
+            <div className="sgd-menu-divider right show-for-large-up"></div>
             <div className="menu-search-container" id="j-search-container">
               <AppSearchBar />
             </div>
