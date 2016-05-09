@@ -53,9 +53,72 @@ def variant_viewer(request):
     return render_to_response(TEMPLATE_ROOT + 'variant_viewer.jinja2', {}, request=request)
     
 # TEMP, render homepage here for prototype
+# hardcode meetings and blog posts
 @view_config(route_name='home') 
 def home(request):
-    return render_to_response(TEMPLATE_ROOT + 'temp_homepage.jinja2', {}, request=request)
+    meetings = [
+        {
+            'name': 'Gene transcription in yeast: From chromatin to RNA and back',
+            'url': 'http://events.embo.org/16-transcription-yeast/',
+            'date': 'June 11, 2016',
+            'location': 'Sant Feliu de Guixols, Spain',
+            'deadline_description': 'Abstract deadline: March 14, 2016'
+        },
+        {
+            'name': 'Northeast Regional Yeast Meeting (NERY)',
+            'url': 'http://pjcullen.wix.com/nery',
+            'date': 'June 16, 2016',
+            'location': 'Buffalo, NY',
+            'deadline_description': 'Abstract and Registration Deadline: May 15, 2016'
+        },
+        {
+            'name': 'PYFF6 - 6th Conference on Physiology of Yeast and Filamentous Fungi',
+            'url': 'http://groups.tecnico.ulisboa.pt/bsrg/pyff6/index.php',
+            'date': 'July 11, 2016',
+            'location': 'University of Lisbon, Lisbon, Portugal',
+        },
+        {
+            'name': 'Yeast Genetics Meeting at TAGC 2016: The Allied Genetics Conference',
+            'url': 'http://www.genetics2016.org/communities/yeast',
+            'date': 'July 13, 2016',
+            'location': 'Orlando, FL',
+            'deadline_description': 'Abstract and early registration deadline: March 23, 2016'
+        },
+        {
+            'name': 'Yeast Genetics & Genomics Course',
+            'url': 'http://meetings.cshl.edu/courses.aspx?course=c-yeas&year=16',
+            'date': 'July 26, 2016',
+            'location': 'Cold Spring Harbor Laboratory, Cold Spring Harbor, NY',
+            'deadline_description': 'Application Deadline: April 15, 2016'
+        }
+    ]
+    blog_posts = [
+        {
+            'title': "Can't Get There Like That",
+            'url': 'http://www.yeastgenome.org/cant-get-there-like-that',
+            'date': '05/04/2016',
+            'excerpt': "As HBO's Silicon Valley scathingly relates, the mapping app from Apple was truly terrible when it was first launched. There are all kinds of funny (scary?) stories in which people following the directions ended up in the wrong place. (Click here for a few more of the epic fails.) And sometimes it would show impossible ways to get from one location to the other. For example, to get to a certain place, my iPhone would recommend..."
+        },
+        {
+            'title': "Sign Up Now for the Next SGD Webinar: May 4th, 2016",
+            'url': 'http://www.yeastgenome.org/sign-up-now-for-the-next-sgd-webinar-may-4th-2016',
+            'date': '04/26/2016',
+            'excerpt': "If you're not already using YeastMine to answer all your questions about S. cerevisiae genes and gene products...you should be! SGD's YeastMine is a powerful search tool that can retrieve, compare, and analyze data on thousands of genes at a time, greatly reducing the time needed to answer real, practical research questions. Through YeastMine, questions such as..."
+        },
+        {
+            'title': 'Chocolate and Coffee Too?',
+            'url': 'http://www.yeastgenome.org/chocolate-and-coffee-too',
+            'date': '04/20/2016',
+            'excerpt': "Most of us know about yeast's big part in making bread and booze. But those aren't yeast's only wonderful gifts. It also plays a big role in chocolate and coffee too. Is there anything this marvelous microorganism can't do? A new study by Ludlow and coworkers in Current Biology set out to look at the strains involved in cacao and coffee fermentation."
+        },
+        {
+            'title': "Lessons from Yeast: Poisoning Cancer ",
+            'url': 'http://www.yeastgenome.org/lessons-from-yeast-poisoning-cancer',
+            'date': '04/06/2016',
+            'excerpt': "In the book Dune, the mentat Thufir Hawat is captured by the evil Harkonnens and given a residual poison. He can only stay alive by getting a constant dose of the antidote. Once it is withdrawn, he will die. A new study in the journal GENETICS by Dodgson and coworkers shows that the same sort of thing can happen to yeast that carry an extra chromosome. In this case, certain genes on the extra chromosome turn..."
+        }
+    ]
+    return render_to_response(TEMPLATE_ROOT + 'temp_homepage.jinja2', { 'meetings': meetings, 'blog_posts': blog_posts }, request=request)
 
 # example
 # @view_config(route_name='example') 
