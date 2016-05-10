@@ -27,6 +27,7 @@ def main(global_config, **settings):
     #NEX endpoints
     config.add_route('reference_list', '/reference_list')
     config.add_route('chemical', '/chemical/{id}/overview')
+    config.add_route('chemical_phenotype_details', '/chemical/{id}/phenotype_details')
 
     config.scan()
     config.add_static_view(name='static', path='../static')

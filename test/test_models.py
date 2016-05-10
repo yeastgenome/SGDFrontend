@@ -526,6 +526,19 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(1, len(instances))
         self.assertEqual(apo, instances[0])
 
+    def test_apo_model_to_dict(self):
+        source = factory.SourceFactory()
+        apo = factory.ApoFactory()
+        instances = DBSession.query(Apo).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(apo, instances[0])
+        self.assertEqual(instances[0].to_dict, {
+            'display_name': apo.display_name,
+            'category': apo.display_name,
+            'link': 
+        })
+
     def test_allele_model(self):
         source = factory.SourceFactory()
         instances = DBSession.query(Allele).all()
@@ -558,3 +571,17 @@ class ModelsTest(unittest.TestCase):
 
         self.assertEqual(1, len(instances))
         self.assertEqual(obi, instances[0])
+
+    def test_dbentity_to_simple_dict(self):
+        source = factory.SourceFactory()
+        locus = factory.LocusdbentityFactory()
+        instances = DBSession.query(Locusdbentity).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(locus, instances[0])
+        self.assertEqual(instances[0].to_dict(), {
+            'id': locus.dbentity_id,
+            'format_name': locus.format_name,
+            'display_name': locus.display_name,
+            'link': '/locus/' + locus.format_name + '/overview'
+        })

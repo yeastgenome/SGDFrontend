@@ -975,6 +975,14 @@ class Dbentity(Base):
         'polymorphic_on':subclass
     }
 
+    def to_dict(self):
+        return {
+            'id': self.dbentity_id,
+            'format_name': self.format_name,
+            'display_name': self.display_name,
+            'link': '/' + self.subclass.lower()  + '/' + self.format_name + '/overview'
+        }
+
 
 class Dbuser(Base):
     __tablename__ = 'dbuser'
@@ -2123,6 +2131,10 @@ class Phenotypeannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict(self):
+        return {
+            'locus': self.dbentity.to_dict() # TODO: add missing fields
+        }
 
 class PhenotypeannotationCond(Base):
     __tablename__ = 'phenotypeannotation_cond'
