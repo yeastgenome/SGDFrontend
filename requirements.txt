@@ -10,7 +10,6 @@ celery==3.1.19
 certifi==2015.11.20.1
 cffi==1.4.2
 cryptography==1.1.2
-cx-Oracle==5.2
 enum34==1.1.2
 factory-boy==2.6.0
 fake-factory==0.5.3
