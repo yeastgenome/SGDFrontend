@@ -2,7 +2,7 @@
 
 build:
 	python setup.py develop
-	npm install
+	npm install --production
 	webpack
 #	export ORACLE_HOME=/data/tools/oracle_instant_client/instantclient_11_2/ && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME &&
 	pip install -r requirements.txt
@@ -26,7 +26,7 @@ prod-deploy:
 	source prod_variables.sh && cap prod deploy
 
 run-prod:
-	pserve production.ini --daemon --pid-file=/var/run/pyramid/pyramid.pid
+	source prod_variables.sh && pserve production.ini --daemon --pid-file=/var/run/pyramid/pyramid.pid
 
 stop-prod:
 	-pserve production.ini --stop-daemon --pid-file=/var/run/pyramid/pyramid.pid
