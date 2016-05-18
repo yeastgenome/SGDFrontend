@@ -1,5 +1,7 @@
 .PHONY: test lib config
 
+NEX2_URI = $NEX2_URI
+
 build:
 	python setup.py develop
 	npm install --production
@@ -26,8 +28,7 @@ prod-deploy:
 	source prod_variables.sh && cap prod deploy
 
 run-prod:
-	echo "nex2uri:"
-	echo $NEX2_URI
+	echo $(NEX2_URI)
 	pserve production.ini --daemon --pid-file=/var/run/pyramid/pyramid.pid
 
 stop-prod:
