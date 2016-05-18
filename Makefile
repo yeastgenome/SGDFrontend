@@ -26,6 +26,8 @@ prod-deploy:
 	source prod_variables.sh && cap prod deploy
 
 run-prod:
+	echo "nex2uri:"
+	echo $NEX2_URI
 	pserve production.ini --daemon --pid-file=/var/run/pyramid/pyramid.pid
 
 stop-prod:
