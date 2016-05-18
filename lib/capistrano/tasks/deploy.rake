@@ -21,7 +21,7 @@ namespace :deploy do
   desc 'Start pyramid'
   task :restart do
     on roles(:app), in: :sequence do
-      execute "cd #{current_path} && export WORKON_HOME=~/envs/ && source virtualenvwrapper.sh && workon sgd && make stop-prod && make run-prod"
+      execute "cd #{current_path} && export WORKON_HOME=~/envs/ && source virtualenvwrapper.sh && workon sgd && . prod_variables.sh && make run-prod && cat /var/run/pyramid/pyramid.pid"
     end
   end
 

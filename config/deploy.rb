@@ -18,6 +18,6 @@ set :log_level, :debug
 namespace :deploy do
   after :finishing, :config
   after :finishing, :build
-  after :finishing, :restart
   after :finishing, :copy_js
+  after :finishing, :restart
 end
