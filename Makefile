@@ -26,7 +26,7 @@ prod-deploy:
 	source prod_variables.sh && cap prod deploy
 
 run-prod:
-	source prod_variables.sh && pserve production.ini --daemon --pid-file=/var/run/pyramid/pyramid.pid
+	pserve production.ini --daemon --pid-file=/var/run/pyramid/pyramid.pid
 
 stop-prod:
 	-pserve production.ini --stop-daemon --pid-file=/var/run/pyramid/pyramid.pid
