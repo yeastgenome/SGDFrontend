@@ -26,10 +26,10 @@ prod-deploy:
 	source prod_variables.sh && cap prod deploy
 
 run-prod:
-	. ./prod_variables.sh && pserve production.ini --daemon --pid-file=/var/run/pyramid/pyramid.pid
+	pserve production.ini --daemon --pid-file=/var/run/pyramid/pyramid.pid
 
 stop-prod:
 	-pserve production.ini --stop-daemon --pid-file=/var/run/pyramid/pyramid.pid
 
 index-es:
-	source dev_variables.sh && python scripts/index_elastic_search.py
+	python scripts/index_elastic_search.py
