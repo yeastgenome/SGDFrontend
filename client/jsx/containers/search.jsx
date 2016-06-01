@@ -32,7 +32,7 @@ const Search = React.createClass({
     apiError: React.PropTypes.bool
   },
 
-  render() {
+  render () {
     if (this.props.apiError) {
       return <ErrorMessage />;
     }
@@ -50,8 +50,11 @@ const Search = React.createClass({
           <div style={[style.resultsWraper]}>
             <SearchBreadcrumb />
             <div className='row'>
-              <div className='columns small-6'>
+              <div className='columns small-3'>
                  {this._renderPaginator()}
+              </div>
+              <div className='columns small-3'>
+                {this._renderPageSizeSelector()}
               </div>
               <div className='columns small-6 text-right'>
                 {this._renderViewAs()}
@@ -65,18 +68,18 @@ const Search = React.createClass({
   },
 
   // listen for history changes and fetch results when they change, also update google analytics
-  componentWillMount() {
+  componentWillMount () {
     this._unlisten = this.props.history.listen( () => {
       this._updateGoogleAnalytics();
       this._fetchSearchResults();
     });
   },
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this._unlisten();
   },
 
-  _renderViewAs() {
+  _renderViewAs () {
     if (this.props.activeCategory !== 'locus') return null;
     const qp = _.clone(this.props.queryParams);
     const isWrapped = this._isWrappedResults();
@@ -90,7 +93,7 @@ const Search = React.createClass({
     );
   },
 
-  _renderSearchContent() {
+  _renderSearchContent () {
     if (this.props.isPending) return <Loader />
     // only render second paginator if num results is >= amount per page
     const secondPaginateNode = (this.props.results.length >= this.props.resultsPerPage) ? this._renderPaginator() : null;
@@ -102,7 +105,7 @@ const Search = React.createClass({
     );
   },
 
-  _renderPaginator() {
+  _renderPaginator () {
     if (this.props.total === 0) return null;
     const _onPaginate = newPage => {
       let urlParams = this.props.location.query;
@@ -113,7 +116,12 @@ const Search = React.createClass({
     return <Paginator currentPage={this.props.currentPage} totalPages={this.props.totalPages} onPaginate={_onPaginate} />;
   },
 
-  _renderResults() {
+  _renderPageSizeSelector () {
+    // start doing page sizer
+    return null;
+  },
+
+  _renderResults () {
     if (this.props.total === 0) return <p>No results.  Please broaden your search or try a different query.</p>;
     if (this._isWrappedResults()) return this._renderWrappedResults();
     let results = this.props.results;
