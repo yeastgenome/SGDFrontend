@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import _ from 'underscore';
 
 import SearchResult from '../components/search/search_result.jsx';
+import SearchDownloadAnalyze from '../components/search/search_download_analyze.jsx';
 import SearchBreadcrumb from './search_breadcrumb.jsx';
 import FacetSelector from './facet_selector.jsx';
 import Collapser from '../components/widgets/collapser.jsx';
@@ -95,11 +96,13 @@ const Search = React.createClass({
 
   _renderSearchContent () {
     if (this.props.isPending) return <Loader />
+    let downloadAnalyzeNode = (this.props.wrapResults) ? <SearchDownloadAnalyze results={this.props.results}/> : null;
     // only render second paginator if num results is >= amount per page
-    const secondPaginateNode = (this.props.results.length >= this.props.resultsPerPage) ? this._renderPaginator() : null;
+    let secondPaginateNode = (this.props.results.length >= this.props.resultsPerPage) ? this._renderPaginator() : null;
     return (
       <div>
         {this._renderResults()}
+        {downloadAnalyzeNode}
         {secondPaginateNode}
       </div>
     );
@@ -118,7 +121,7 @@ const Search = React.createClass({
 
   _renderPageSizeSelector () {
     // don't render if in wrapped mode
-    if (this.props.queryParams.wrapResults === 'true') return null;
+    if (this.props.wrapResults) return null;
     const options = [10, 25, 50, 100];
     let optionsNodes = options.map( d => {
       return <option key={`psOp${d}`} value={d}>{d}</option>;
@@ -172,8 +175,7 @@ const Search = React.createClass({
   },
 
   _isWrappedResults () {
-    const isWrappedParam = (this.props.queryParams.wrapResults === 'true' || this.props.queryParams.wrapResults === true);
-    return (this.props.activeCategory === 'locus' && isWrappedParam);
+    return (this.props.activeCategory === 'locus' && this.props.wrapResults);
   },
 
   // updates google analytics, depends on global 'ga' object. Does nothing if not present
@@ -217,7 +219,8 @@ function mapStateToProps(_state) {
     totalPages: state.totalPages,
     resultsPerPage: state.resultsPerPage,
     apiError: state.apiError,
-    queryParams: _state.routing.location.query
+    queryParams: _state.routing.location.query,
+    wrapResults: (_state.routing.location.query.wrapResults === 'true' || _state.routing.location.query.wrapResult === true)
   };
 };
 
