@@ -28,7 +28,6 @@ const searchResultsReducer = function (_state, action) {
   // let the URL change the query and other params
   if (action.type === '@@router/UPDATE_LOCATION' && action.payload.pathname === '/search') {
     let params = action.payload.query;
-    console.log('param for page size: ', params.page_size)
     // set userInput and query from q
     let newQuery = (typeof params.q === 'string') ? params.q : '';
     state.query = newQuery;
@@ -44,7 +43,7 @@ const searchResultsReducer = function (_state, action) {
     if (state.activeCategory !== activeCat) state.isAggPending = true;
     state.activeCategory = activeCat;
     // if wrapResults and on genes, allow large request size, otherwise look for param size, or just default
-    let unwrappedPageSize = DEFAULT_RESULTS_PER_PAGE;
+    let unwrappedPageSize = params.page_size || DEFAULT_RESULTS_PER_PAGE;
     state.resultsPerPage = (state.activeCategory === 'locus' && params.wrapResults === 'true') ?
       WRAPPED_PAGE_SIZE : unwrappedPageSize;
     return state;

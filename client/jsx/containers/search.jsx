@@ -51,7 +51,7 @@ const Search = React.createClass({
             <SearchBreadcrumb />
             <div className='row'>
               <div className='columns small-3'>
-                 {this._renderPaginator()}
+                {this._renderPaginator()}
               </div>
               <div className='columns small-3'>
                 {this._renderPageSizeSelector()}
@@ -117,8 +117,27 @@ const Search = React.createClass({
   },
 
   _renderPageSizeSelector () {
-    // start doing page sizer
-    return null;
+    // don't render if in wrapped mode
+    if (this.props.queryParams.wrapResults === 'true') return null;
+    const options = [10, 25, 50, 100];
+    let optionsNodes = options.map( d => {
+      return <option key={`psOp${d}`} value={d}>{d}</option>;
+    });
+    const _onChange = e => {
+      let newValue = e.currentTarget.value;
+      let urlParams = this.props.location.query;
+      urlParams.page_size = newValue;
+      urlParams.page = 0; // go back to first page when changing page size
+      this.props.history.pushState(null, SEARCH_URL, urlParams);
+    };
+    return (
+      <div>
+        <p style={[style.labelText]}>Results per Page</p>
+        <select onChange={_onChange} value={this.props.resultsPerPage} style={[style.selector]}>
+          {optionsNodes}
+        </select>
+      </div>
+    );
   },
 
   _renderResults () {
@@ -167,6 +186,13 @@ const Search = React.createClass({
 });
 
 const style = {
+  labelText: {
+    marginBottom: '0.5rem'
+  },
+  selector: {
+    height: 'auto',
+    padding: '0.5rem'
+  },
   viewAs: {
     display: 'inline-block',
     marginTop: '2rem'
