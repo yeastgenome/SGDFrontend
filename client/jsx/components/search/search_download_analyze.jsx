@@ -7,6 +7,9 @@ const SearchDownloadAnalyze = React.createClass({
   },
 
   render () {
+    const onDownloadClick = e => {
+      this.refs.downloadForm.submit();
+    };
     const onAnalyzeClick = e => {
       this.refs.analyzeForm.submit();
     };
@@ -14,7 +17,7 @@ const SearchDownloadAnalyze = React.createClass({
       <div className='button-bar' style={[style.container]}>
         <ul className='button-group radius'>
           <li>
-            <a className='small button secondary'><i className='fa fa-download' /> Download</a>
+            <a className='small button secondary' onClick={onDownloadClick}><i className='fa fa-download' /> Download</a>
           </li>
         </ul>
         <ul className='button-group radius'>
@@ -23,24 +26,37 @@ const SearchDownloadAnalyze = React.createClass({
           </li>
         </ul>
         {this._renderAnalyzeForm()}
+        {this._renderDownloadForm()}
       </div>
     );
   },
 
   _renderAnalyzeForm () {
+    let stringResults = this._getStringResults();
+    return (
+      <form ref='analyzeForm' action='/analyze' method='post' style={[style.form]}>
+        <input type='hidden' name='bioent_ids' value={stringResults} />
+        <input type='hidden' name='list_name' value='Search Results' />
+      </form>
+    );
+  },
+
+  _renderDownloadForm () {
+    let stringResults = this._getStringResults();
+    return (
+      <form ref='downloadForm' action='/download-list' method='post' style={[style.form]}>
+        <input type='hidden' name='bioent_ids' value={stringResults} />
+      </form>
+    );
+  },
+
+  _getStringResults () {
     let arrResults = this.props.results.reduce( (prev, current) => {
       let displayName = current.name.split(' / ')[0];
       prev.push(displayName);
       return prev;
     }, []);
-    let stringResults = JSON.stringify(arrResults);
-    return (
-      <form ref='analyzeForm' action='/analyze' method='post' style={[style.form]}>
-        <input type='hidden' name='bioent_ids' value={stringResults} />
-        <input type='hidden' name='list_name' value='Search Results' />
-        <input type='submit' className='small button secondary' value='Analyze' />
-      </form>
-    );
+    return JSON.stringify(arrResults);
   }
 });
 

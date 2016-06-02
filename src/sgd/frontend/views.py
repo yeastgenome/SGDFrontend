@@ -4,6 +4,7 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPFound
 from src.sgd.frontend import config
+import datetime
 import json
 import requests
 
@@ -17,9 +18,15 @@ def blast_fungal(request):
 def blast_sgd(request):
     return render_to_response(TEMPLATE_ROOT + 'blast_sgd.jinja2', {}, request=request)
 
-@view_config(route_name='interaction_search') 
-def blast_sgd(request):
-    return render_to_response(TEMPLATE_ROOT + 'interaction_search.jinja2', {}, request=request)
+@view_config(route_name='download_list') 
+def download_list(request):
+    date = datetime.datetime.now().strftime("%m/%d/%Y")
+    description = "!\n!Date: " + date + '\n' + "!From: Saccharomyces Genome Database (SGD) \n!URL: http://www.yeastgenome.org/ \n!Contact Email: sgd-helpdesk@lists.stanford.edu \n!Funding: NHGRI at US NIH, grant number 5-P41-HG001315 \n!"
+    response_text = description + '\n\n'
+    loci_list = json.loads(request.params.get('bioent_ids'))
+    for locus_name in loci_list:
+        response_text += (locus_name + '\n')
+    return Response(body=response_text, content_type='text/plain', charset='utf-8', content_disposition='attachment; filename=search_results.txt')
 
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results and let client js do the rest.
 @view_config(route_name='search') 

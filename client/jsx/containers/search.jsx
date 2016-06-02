@@ -153,7 +153,7 @@ const Search = React.createClass({
     });
   },
 
-  _renderWrappedResults() {
+  _renderWrappedResults () {
     const nodes = this.props.results.map( (d, i) => {
       // only show display name if there is a '/' in name
       const displayName = d.name.split(' / ')[0];
@@ -167,7 +167,7 @@ const Search = React.createClass({
   },
 
   // dispatches redux update and maybe fetches new data
-  _fetchSearchResults() {
+  _fetchSearchResults () {
     // dispatch actions
     this.props.dispatch(startSearchFetch());
     this.props.dispatch(fetchSearchResults());

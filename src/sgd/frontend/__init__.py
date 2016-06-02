@@ -11,6 +11,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('blast_fungal', '/blast-fungal')
     config.add_route('blast_sgd', '/blast-sgd')
     config.add_route('interaction_search', '/interaction-search')
+    config.add_route('download_list', '/download-list')
     config.add_route('snapshot', '/genomesnapshot')
     config.add_route('style_guide', '/style-guide')
     config.add_route('suggestion', '/suggestion')
