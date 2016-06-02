@@ -62,7 +62,8 @@ const SearchDownloadAnalyze = React.createClass({
 
 const style = {
   container: {
-    marginTop: '1rem'
+    marginTop: '1rem',
+    marginBottom: '2rem'
   },
   form: {
     display: 'none'
