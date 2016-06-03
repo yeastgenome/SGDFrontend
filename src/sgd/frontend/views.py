@@ -28,19 +28,25 @@ def download_list(request):
         response_text += (locus_name + '\n')
     return Response(body=response_text, content_type='text/plain', charset='utf-8', content_disposition='attachment; filename=search_results.txt')
 
-# If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results and let client js do the rest.
+# If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results in script tag and let client js do the rest.
 @view_config(route_name='search') 
 def search(request):
-    # get search results, make limit 25
-    search_url = config.backend_url + '/get_search_results' + '?' + request.query_string + '&limit=25'
+    # get limit, default to 25
+    limit = '25' if request.params.get('page_size') is None else request.params.get('page_size')
+    # get search results
+    search_url = config.backend_url + '/get_search_results' + '?' + request.query_string + '&limit=' + limit
     json_bootstrapped_search_results = requests.get(search_url).text
-    # if param is_quick = true and the first result has is_quick: true
+    # if param is_quick = true and the first result has is_quick: true then direct to that URL
     parsed_results = json.loads(json_bootstrapped_search_results)['results']
     if (request.params.get('is_quick') == 'true' and len(parsed_results) > 0):
         first_result = parsed_results[0]
         if (first_result.get('is_quick')):
             return HTTPFound(first_result['href'])
-    # otherwise, render results page and put results in scrip tag
+    # if wrapped, or page > 0, just make bootstrapped results None to avoid pagination logic in python and fetch on client
+    page = 0 if request.params.get('page') is None else int(request.params.get('page'))
+    if request.params.get('wrapResults') == 'true' or page > 0:
+        json_bootstrapped_search_results = 'false'    
+    # otherwise, render results page and put results in script tag
     return render_to_response(TEMPLATE_ROOT + 'search.jinja2', { 'bootstrapped_search_results_json': json_bootstrapped_search_results }, request=request)
 
 @view_config(route_name='snapshot') 

@@ -42,7 +42,6 @@ export function fetchSearchResults () {
     const qp = (state.routing.location.query);
     const searchPath = state.routing.location.search;
     // from page and results per page, add limit and offset to API request
-    const page = qp['page'] || 1;
     const _offset = searchState.currentPage * searchState.resultsPerPage; 
     const _limit = searchState.resultsPerPage;
     const newQp = _.clone(qp);

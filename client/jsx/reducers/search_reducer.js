@@ -3,7 +3,7 @@ import { getCategoryDisplayName } from '../lib/search_helpers';
 
 const FILTERED_FACET_VALUES = ['cellular component', 'biological process', 'molecular function'];
 const DEFAULT_RESULTS_PER_PAGE = 25;
-const WRAPPED_PAGE_SIZE = 500;
+const WRAPPED_PAGE_SIZE = 10000;
 const DEFAULT_STATE = {
   userInput: '',
   results: [],
