@@ -17,12 +17,12 @@ const SearchDownloadAnalyze = React.createClass({
       <div className='button-bar' style={[style.container]}>
         <ul className='button-group radius'>
           <li>
-            <a className='small button secondary' onClick={onDownloadClick}><i className='fa fa-download' /> Download</a>
+            <a className='tiny button secondary' onClick={onDownloadClick}><i className='fa fa-download' /> Download</a>
           </li>
         </ul>
         <ul className='button-group radius'>
           <li>
-            <a className='small button secondary' onClick={onAnalyzeClick}><i className='fa fa-briefcase' /> Analyze</a>
+            <a className='tiny button secondary' onClick={onAnalyzeClick}><i className='fa fa-briefcase' /> Analyze</a>
           </li>
         </ul>
         {this._renderAnalyzeForm()}
@@ -62,7 +62,7 @@ const SearchDownloadAnalyze = React.createClass({
 
 const style = {
   container: {
-    marginTop: '1rem',
+    marginTop: '1.75rem',
     marginBottom: '2rem'
   },
   form: {

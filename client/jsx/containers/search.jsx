@@ -51,13 +51,10 @@ const Search = React.createClass({
           <div style={[style.resultsWraper]}>
             <SearchBreadcrumb />
             <div className='row'>
-              <div className='columns small-3'>
+              <div className='columns small-8'>
                 {this._renderPaginator()}
               </div>
-              <div className='columns small-3'>
-                {this._renderPageSizeSelector()}
-              </div>
-              <div className='columns small-6 text-right'>
+              <div className='columns small-4 text-right'>
                 {this._renderViewAs()}
               </div>
             </div>
@@ -96,19 +93,18 @@ const Search = React.createClass({
 
   _renderSearchContent () {
     if (this.props.isPending) return <Loader />
-    let downloadAnalyzeNode = (this.props.wrapResults) ? <SearchDownloadAnalyze results={this.props.results}/> : null;
     // only render second paginator if num results is >= amount per page
     let secondPaginateNode = (this.props.results.length >= this.props.resultsPerPage) ? this._renderPaginator() : null;
     return (
       <div>
         {this._renderResults()}
-        {downloadAnalyzeNode}
         {secondPaginateNode}
       </div>
     );
   },
 
   _renderPaginator () {
+    if (this.props.wrapResults) return <SearchDownloadAnalyze results={this.props.results}/>;
     if (this.props.total === 0) return null;
     const _onPaginate = newPage => {
       let urlParams = this.props.location.query;
@@ -116,12 +112,21 @@ const Search = React.createClass({
       this.props.history.pushState(null, SEARCH_URL, urlParams);
       if (window) window.scrollTo(0, 0); // go to top
     };
-    return <Paginator currentPage={this.props.currentPage} totalPages={this.props.totalPages} onPaginate={_onPaginate} />;
+    return (
+      <div className='row'>
+        <div className='columns small-4'>
+          <Paginator currentPage={this.props.currentPage} totalPages={this.props.totalPages} onPaginate={_onPaginate} />
+        </div>
+        <div className='columns small-4'>
+          {this._renderPageSizeSelector()}
+        </div>
+        <div className='columns small-4'>
+        </div>
+      </div>
+    );
   },
 
   _renderPageSizeSelector () {
-    // don't render if in wrapped mode
-    if (this.props.wrapResults) return null;
     const options = [10, 25, 50, 100];
     let optionsNodes = options.map( d => {
       return <option key={`psOp${d}`} value={d}>{d}</option>;
