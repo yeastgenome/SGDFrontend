@@ -85,7 +85,7 @@ const Search = React.createClass({
   },
 
   _renderSearchContent () {
-    if (this.props.isPending) return <Loader />
+    if (this.props.isPending) return <Loader />;
     // only render second paginator if num results is >= amount per page
     let secondPaginateNode = (this.props.results.length >= this.props.resultsPerPage) ? this._renderControls() : null;
     return (
