@@ -3,6 +3,7 @@ import { getCategoryDisplayName } from '../lib/search_helpers';
 
 const FILTERED_FACET_VALUES = ['cellular component', 'biological process', 'molecular function'];
 const DEFAULT_RESULTS_PER_PAGE = 25;
+const DEFAULT_SORT_BY = 'relevance';
 const WRAPPED_PAGE_SIZE = 10000;
 const DEFAULT_STATE = {
   userInput: '',
@@ -17,7 +18,8 @@ const DEFAULT_STATE = {
   isPending: false,
   isPaginatePending: false, // if the only change is the page, note special state for rendering total
   apiError: null,
-  isHydrated: false
+  isHydrated: false,
+  sortBy: DEFAULT_SORT_BY
 };
 
 const searchResultsReducer = function (_state, action) {
@@ -46,6 +48,8 @@ const searchResultsReducer = function (_state, action) {
     let unwrappedPageSize = params.page_size || DEFAULT_RESULTS_PER_PAGE;
     state.resultsPerPage = (state.activeCategory === 'locus' && params.wrapResults === 'true') ?
       WRAPPED_PAGE_SIZE : unwrappedPageSize;
+    // set sortBy
+    state.sortBy = params.sort_by || DEFAULT_SORT_BY;
     return state;
   }
   switch (action.type) {

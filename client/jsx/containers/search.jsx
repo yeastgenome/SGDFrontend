@@ -117,10 +117,11 @@ const Search = React.createClass({
         <div className='columns small-4'>
           <Paginator currentPage={this.props.currentPage} totalPages={this.props.totalPages} onPaginate={_onPaginate} />
         </div>
-        <div className='columns small-4'>
+        <div className='columns medium-4 hide-for-small'>
           {this._renderPageSizeSelector()}
         </div>
-        <div className='columns small-4'>
+        <div className='columns medium-4 small-8'>
+          {this._renderSortBySelector()}
         </div>
       </div>
     );
@@ -142,6 +143,32 @@ const Search = React.createClass({
       <div>
         <p style={[style.labelText]}>Results per Page</p>
         <select onChange={_onChange} value={this.props.resultsPerPage} style={[style.selector]}>
+          {optionsNodes}
+        </select>
+      </div>
+    );
+  },
+
+  _renderSortBySelector () {
+    const options = [
+      { value: 'relevance', name: 'Relevance' },
+      { value: 'alphabetical', name: 'Alphabetical' },
+      { value: 'annotation', name: 'Annotation Count' }
+    ];
+    let optionsNodes = options.map( d => {
+      return <option key={`psOp${d.value}`} value={d.value}>{d.name}</option>;
+    });
+    const _onChange = e => {
+      let newValue = e.currentTarget.value;
+      let urlParams = this.props.location.query;
+      urlParams.sort_by = newValue;
+      urlParams.page = 0; // go back to first page when changing page size
+      this.props.history.pushState(null, SEARCH_URL, urlParams);
+    };
+    return (
+      <div>
+        <p style={[style.labelText]}>Sort By</p>
+        <select onChange={_onChange} value={this.props.sortBy} style={[style.selector]}>
           {optionsNodes}
         </select>
       </div>
@@ -223,6 +250,7 @@ function mapStateToProps(_state) {
     currentPage: state.currentPage,
     totalPages: state.totalPages,
     resultsPerPage: state.resultsPerPage,
+    sortBy: state.sortBy,
     apiError: state.apiError,
     queryParams: _state.routing.location.query,
     wrapResults: (_state.routing.location.query.wrapResults === 'true' || _state.routing.location.query.wrapResult === true)
