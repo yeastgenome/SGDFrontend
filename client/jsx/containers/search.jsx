@@ -50,14 +50,7 @@ const Search = React.createClass({
           </div>
           <div style={[style.resultsWraper]}>
             <SearchBreadcrumb />
-            <div className='row'>
-              <div className='columns small-8'>
-                {this._renderPaginator()}
-              </div>
-              <div className='columns small-4 text-right'>
-                {this._renderViewAs()}
-              </div>
-            </div>
+            {this._renderControls()}
             {this._renderSearchContent()}
           </div>
         </div>
@@ -85,8 +78,8 @@ const Search = React.createClass({
     const listPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, wrapResults: false }) });
     return (
       <ul className='button-group' style={[style.viewAs]}>
-        <Link to={listPath} className={`button tiny${isWrapped ? ' secondary':''}`}><i className='fa fa-reorder'/> <span className='hide-for-small'>List</span></Link>
-        <Link to={wrapPath} className={`button tiny${!isWrapped ? ' secondary':''}`}><i className='fa fa-th'/> <span className='hide-for-small'>Wrapped</span></Link>
+        <Link to={listPath} className={`button tiny${isWrapped ? ' secondary':''}`}><i className='fa fa-reorder'/> <span>List</span></Link>
+        <Link to={wrapPath} className={`button tiny${!isWrapped ? ' secondary':''}`}><i className='fa fa-th'/> <span>Wrapped</span></Link>
       </ul>
     );
   },
@@ -94,7 +87,7 @@ const Search = React.createClass({
   _renderSearchContent () {
     if (this.props.isPending) return <Loader />
     // only render second paginator if num results is >= amount per page
-    let secondPaginateNode = (this.props.results.length >= this.props.resultsPerPage) ? this._renderPaginator() : null;
+    let secondPaginateNode = (this.props.results.length >= this.props.resultsPerPage) ? this._renderControls() : null;
     return (
       <div>
         {this._renderResults()}
@@ -103,8 +96,8 @@ const Search = React.createClass({
     );
   },
 
-  _renderPaginator () {
-    if (this.props.wrapResults) return <SearchDownloadAnalyze results={this.props.results}/>;
+  _renderControls () {
+    if (this.props.wrapResults) return this._renderWrappedControls();
     if (this.props.total === 0) return null;
     const _onPaginate = newPage => {
       let urlParams = this.props.location.query;
@@ -114,17 +107,33 @@ const Search = React.createClass({
     };
     return (
       <div className='row'>
-        <div className='columns small-4'>
+        <div className='columns large-2 medium-4 small-6'>
           <Paginator currentPage={this.props.currentPage} totalPages={this.props.totalPages} onPaginate={_onPaginate} />
         </div>
-        <div className='columns medium-4 hide-for-small'>
+        <div className='columns large-3 medium-4 hide-for-small'>
           {this._renderPageSizeSelector()}
         </div>
-        <div className='columns medium-4 small-8'>
+        <div className='columns large-3 medium-4 small-6'>
           {this._renderSortBySelector()}
+        </div>
+        <div className='columns large-4 small-12 text-right'>
+          {this._renderViewAs()}
         </div>
       </div>
     );
+  },
+
+  _renderWrappedControls () {
+    return (
+      <div className='row'>
+        <div className='columns small-8'>
+          <SearchDownloadAnalyze results={this.props.results}/>
+        </div>
+        <div className='columns small-4 text-right'>
+          {this._renderViewAs()}
+        </div>
+      </div>
+    );      
   },
 
   _renderPageSizeSelector () {
@@ -162,7 +171,7 @@ const Search = React.createClass({
       let newValue = e.currentTarget.value;
       let urlParams = this.props.location.query;
       urlParams.sort_by = newValue;
-      urlParams.page = 0; // go back to first page when changing page size
+      urlParams.page = 0; // go back to first page when changing sorting
       this.props.history.pushState(null, SEARCH_URL, urlParams);
     };
     return (
