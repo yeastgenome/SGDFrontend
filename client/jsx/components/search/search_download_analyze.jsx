@@ -3,7 +3,9 @@ import Radium from 'radium';
 
 const SearchDownloadAnalyze = React.createClass({
   propTypes: {
-
+    results: React.PropTypes.array,
+    url: React.PropTypes.string,
+    query: React.PropTypes.string
   },
 
   render () {
@@ -46,6 +48,8 @@ const SearchDownloadAnalyze = React.createClass({
     return (
       <form ref='downloadForm' action='/download-list' method='post' style={[style.form]}>
         <input type='hidden' name='bioent_ids' value={stringResults} />
+        <input type='hidden' name='url' value={this.props.url} />
+        <input type='hidden' name='query' value={this.props.query} />
       </form>
     );
   },

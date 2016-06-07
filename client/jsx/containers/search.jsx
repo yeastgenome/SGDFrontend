@@ -107,13 +107,13 @@ const Search = React.createClass({
     };
     return (
       <div className='row'>
-        <div className='columns large-2 medium-4 small-6'>
+        <div className='columns large-3 medium-4 small-6'>
           <Paginator currentPage={this.props.currentPage} totalPages={this.props.totalPages} onPaginate={_onPaginate} />
         </div>
         <div className='columns large-3 medium-4 hide-for-small'>
           {this._renderPageSizeSelector()}
         </div>
-        <div className='columns large-3 medium-4 small-6'>
+        <div className='columns large-2 medium-4 small-6'>
           {this._renderSortBySelector()}
         </div>
         <div className='columns large-4 small-12 text-right'>
@@ -127,7 +127,7 @@ const Search = React.createClass({
     return (
       <div className='row'>
         <div className='columns small-8'>
-          <SearchDownloadAnalyze results={this.props.results}/>
+          <SearchDownloadAnalyze results={this.props.results} query={this.props.query}  url={this.props.url}/>
         </div>
         <div className='columns small-4 text-right'>
           {this._renderViewAs()}
@@ -261,6 +261,8 @@ function mapStateToProps(_state) {
     resultsPerPage: state.resultsPerPage,
     sortBy: state.sortBy,
     apiError: state.apiError,
+    query: state.query,
+    url: `${_state.routing.location.pathname}${_state.routing.location.search}`,
     queryParams: _state.routing.location.query,
     wrapResults: (_state.routing.location.query.wrapResults === 'true' || _state.routing.location.query.wrapResult === true)
   };

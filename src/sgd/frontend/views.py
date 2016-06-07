@@ -21,7 +21,10 @@ def blast_sgd(request):
 @view_config(route_name='download_list') 
 def download_list(request):
     date = datetime.datetime.now().strftime("%m/%d/%Y")
-    description = "!\n!Date: " + date + '\n' + "!From: Saccharomyces Genome Database (SGD) \n!URL: http://www.yeastgenome.org/ \n!Contact Email: sgd-helpdesk@lists.stanford.edu \n!Funding: NHGRI at US NIH, grant number 5-P41-HG001315 \n!"
+    query = request.params.get('query')
+    url = request.params.get('url')
+    print query, url
+    description = '!Search results for "' + query + '"\n!Date: ' + date + '\n' + "!From: Saccharomyces Genome Database (SGD) \n!URL: http://yeastgenome.org" + url +  "\n!Contact Email: sgd-helpdesk@lists.stanford.edu \n!Funding: NHGRI at US NIH, grant number 5-P41-HG001315 \n!"
     response_text = description + '\n\n'
     loci_list = json.loads(request.params.get('bioent_ids'))
     for locus_name in loci_list:
