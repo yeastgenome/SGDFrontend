@@ -131,7 +131,6 @@ def formats(request):
 @view_config(route_name='topics', renderer='json', request_method='GET')
 def topics(request):
     topics_db = DBSession.query(Edam).filter(Edam.edam_namespace == 'topic').all()
-    print topics_db[0]
     return {'options': [t.to_dict() for t in topics_db]}
 
 @view_config(route_name='extensions', renderer='json', request_method='GET')
