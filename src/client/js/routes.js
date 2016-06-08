@@ -5,6 +5,7 @@ import { Route, IndexRoute } from 'react-router';
 import { requireAuthentication } from './containers/authenticate_component';
 import Layout from './containers/layout';
 import ColleaguesIndex from './containers/colleagues/colleagues_index';
+import ColleaguesEdit from './containers/colleagues/colleagues_edit';
 import Dashboard from './containers/dashboard';
 import DashboardIndex from './containers/dashboard_index';
 import ExampleContainer from './containers/example_container';
@@ -24,6 +25,7 @@ export default (
       </Route>
       <Route path='colleagues'>
         <IndexRoute component={ColleaguesIndex}/>
+        <Route path='new' component={ColleaguesEdit} />
       </Route>
     </Route>
     <Route path='*' component={NotFound} />

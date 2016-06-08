@@ -65,12 +65,12 @@ def extract_references(request):
 def extract_keywords(request):
     keywords = []
     if request.POST.get("keyword_ids") != '':
-        keyword_names = str(request.POST.get("keyword_ids")).split(",")
-        for keyword in keyword_names:
-            keyword_obj = DBSession.query(Keyword).filter(Keyword.display_name == keyword).one_or_none()
+        keyword_ids = str(request.POST.get("keyword_ids")).split(",")
+        for keyword_id in keyword_ids:
+            keyword_obj = DBSession.query(Keyword).filter(Keyword.keyword_id == keyword_id).one_or_none()
             if keyword_obj is None:
-                log.info('Upload error: invalid or nonexistent Keyword: ' + keyword)
-                raise HTTPBadRequest('Invalid or nonexistent Keyword: ' + keyword)
+                log.info('Upload error: invalid or nonexistent Keyword ID: ' + keyword_id)
+                raise HTTPBadRequest('Invalid or nonexistent Keyword ID: ' + keyword_id)
             else:
                 keywords.append(keyword_obj.keyword_id)
     return keywords
@@ -86,14 +86,14 @@ def get_or_create_filepath(request):
     return filepath
 
 def extract_topic(request):
-    topic = DBSession.query(Edam).filter(Edam.edamid == request.POST.get("topic_id")).one_or_none()
+    topic = DBSession.query(Edam).filter(Edam.edam_id == request.POST.get("topic_id")).one_or_none()
     if topic is None:
         log.info('Upload error: Topic ID ' + request.POST.get("topic_id") + ' is not registered or is invalid.')
         raise HTTPBadRequest('Invalid or nonexistent Topic ID: ' + request.POST.get("topic_id"))
     return topic
 
 def extract_format(request):
-    format = DBSession.query(Edam).filter(Edam.edamid == request.POST.get("format_id")).one_or_none()
+    format = DBSession.query(Edam).filter(Edam.edam_id == request.POST.get("format_id")).one_or_none()
     if format is None:
         log.info('Upload error: Format ID ' + request.POST.get("format_id") + ' is not registered or is invalid.')
         raise HTTPBadRequest('Invalid or nonexistent Format ID: ' + request.POST.get("format_id"))
