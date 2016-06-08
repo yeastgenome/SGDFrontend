@@ -47,8 +47,8 @@ const NewFile = React.createClass({
   _renderForm () {
     // get today's date in SGD format
     let now = new Date();
-    let strMonth = ("0" + (now.getMonth() + 1)).slice(-2);
-    let strDate = ("0" + now.getDate()).slice(-2);
+    let strMonth = ('0' + (now.getMonth() + 1)).slice(-2);
+    let strDate = ('0' + now.getDate()).slice(-2);
     let strToday = `${now.getYear() + 1900}-${strMonth}-${strDate}`;
     let buttonNode = this.state.isPending ? <a className='button disabled secondary'>Uploading</a> : <input type='submit' className='button' value='Upload' />;
     return (

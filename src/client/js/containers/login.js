@@ -30,8 +30,8 @@ const Login = React.createClass({
     const _onClick = e => {
       e.preventDefault();
       this.setState({ googleLoginVisible: true });
-    }
-    return <a className='button' onClick={_onClick}>Login with Google</a>
+    };
+    return <a className='button' onClick={_onClick}>Login with Google</a>;
   },
 
   _renderLoginError () {
