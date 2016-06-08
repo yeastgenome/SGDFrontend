@@ -15,18 +15,18 @@ export function logout () {
 export function logoutAndRedirect () {
   return (dispatch, state) => {
     fetch(SIGN_OUT_URL, {
-        method: 'DELETE',
-        credentials: 'same-origin',
-        headers: {
-          'X-CSRF-Token': state.csrfToken,        
-        }
-      })
-      .then(function handleAuthResponse (response) {
-        dispatch(logout());
-        // use http redirect to root
-        if (window) window.location.href = '/';
-      });
-  }
+      method: 'DELETE',
+      credentials: 'same-origin',
+      headers: {
+        'X-CSRF-Token': state.csrfToken,        
+      }
+    })
+    .then(function handleAuthResponse (response) {
+      dispatch(logout());
+      // use http redirect to root
+      if (window) window.location.href = '/';
+    });
+  };
 };
 
 export function sendAuthRequest (googleToken) {
@@ -49,20 +49,20 @@ export function sendAuthRequest (googleToken) {
     };
     // send POST request to server to get credentials, dispatch reception action
     fetch(AUTH_URL, {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-          'X-CSRF-Token': state.csrfToken,        
-          'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-        },
-        body: paramStr
-      })
-      .then(checkStatus)  
-      .then(function handleAuthResponse (response) {
-        dispatch(receiveAuthResponseAndRedirect());
-      }).catch(function handleAuthRequestError (error) {
-        dispatch(setLoginError());
-      });
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'X-CSRF-Token': state.csrfToken,        
+        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+      },
+      body: paramStr
+    })
+    .then(checkStatus)  
+    .then(function handleAuthResponse (response) {
+      dispatch(receiveAuthResponseAndRedirect());
+    }).catch(function handleAuthRequestError (error) {
+      dispatch(setLoginError());
+    });
   };
 };
 
