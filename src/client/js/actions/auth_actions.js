@@ -76,8 +76,9 @@ export function setCSRFToken (token) {
 export function receiveAuthResponseAndRedirect () {
   return function (dispatch, getState) {
     dispatch(receiveAuthenticationResponse());
-    let redirectUrl = '/curate';
-    dispatch(push(redirectUrl));
+    let nextUrl = getState().routing.locationBeforeTransitions.query.next || '/curate' ;
+    // try to redirect to 'next' query param
+    dispatch(push(nextUrl));
   };
 };
 
