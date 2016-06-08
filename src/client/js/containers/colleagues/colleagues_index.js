@@ -30,30 +30,13 @@ const COLLEAGUE_SEARCH_URL = '/colleagues';
 
 module.exports = React.createClass({
     getInitialState: function() {
-  return {
-      isComplete: false,
-      query: null,
-      searchResults: null,
-      title: "Search SGD Colleague Information",
-      isPending: false
-  };
-    },
-
-    _queryInURL: function() {
-  var param = "last_name";
-  var regex = new RegExp("[?&]" + param + "(=([^&#]*)|&|#|$)");
-  
-        var results = regex.exec(window.location.href);
-  
-  if (!results) {
-      return null;
-  }
-  
-  if (!results[2]) {
-      return '';
-  }
-  
-  return decodeURIComponent(results[2].replace(/\+/g, " "));
+      return {
+          isComplete: false,
+          query: null,
+          searchResults: null,
+          title: "Search SGD Colleague Information",
+          isPending: false
+      };
     },
 
     render: function () {
@@ -76,34 +59,34 @@ module.exports = React.createClass({
     },
 
     _getFormResultsNode: function() {
-  if (this.state.isComplete) {
-      var searchResults = (<ColleaguesSearchResult query={this.state.query} results={this.state.searchResults} />);
-  } else {
-      var searchResults = (<div className="sgd-loader-container"><div className="sgd-loader"></div></div>);
-  }
+      if (this.state.isComplete) {
+          var searchResults = (<ColleaguesSearchResult query={this.state.query} results={this.state.searchResults} />);
+      } else {
+          var searchResults = (<div className="sgd-loader-container"><div className="sgd-loader"></div></div>);
+      }
 
-  return (<div>
-                  <form className="searchResultsForm" autoComplete="off" onSubmit={this._onSubmit}>
-    
-        <div className="row">
-          <div className="small-8 column">
-            <label className="control-label">Last Name (e.g. Botstein, Jones, Smith):</label>
+      return (
+        <div>
+          <form className="searchResultsForm" autoComplete="off" onSubmit={this._onSubmit}>
+            <div className="row">
+              <div className="small-8 column">
+                <label className="control-label">Last Name (e.g. Botstein, Jones, Smith):</label>
+              </div>
+            </div>
+            <div className="row medium-uncollapse large-collapse">
+              <div className="small-12 column">
+                <input style={{display:"none"}}></input>
+                <input name="title" type="text" className="form-control input-name" id="last_name" ref="name" autoComplete="off" defaultValue={this.state.query}></input>
+                <input type="submit" value="Search" className="button small secondary"  />
+                <a className="addColleague button small secondary">Add New Colleague</a>
+              </div>
+            </div>
+          </form>
+          <div id="searchResultsContent" className="row">
+            {searchResults}
           </div>
-       </div>
-
-       <div className="row medium-uncollapse large-collapse">
-         <div className="small-12 column">
-           <input style={{display:"none"}}></input>
-           <input name="title" type="text" className="form-control input-name" id="last_name" ref="name" autoComplete="off" defaultValue={this.state.query}></input>
-    <input type="submit" value="Search" className="button small secondary"  />
-    <a className="addColleague button small secondary">Add New Colleague</a>
         </div>
-      </div>
-    </form>
-    <div id="searchResultsContent" className="row">
-      {searchResults}
-    </div>
-              </div>);
+      );
     },
     
     _getFormNode: function() {
@@ -111,22 +94,21 @@ module.exports = React.createClass({
         <div>
           <form className="searchForm" autoComplete="off" onSubmit={this._onSubmit}>
             <div className="row">
-        
               <div className="small-8 small-centered column">
                 <label className="control-label" htmlFor="last_name">Last Name (e.g. Botstein, Jones, Smith):</label>
               </div>
-           </div>
-           <div className="row align-justify">
-             <div className="small-8 small-centered column">
-               <input style={{display:"none"}}></input>
-               <input name="title" type="text" className="form-control" id="last_name" ref="name" autoComplete="off"></input>
-             </div>
-           </div>
-           <div className="row align-center formButtons">
-             <div className="small-8 small-centered column">
-               <input type="submit" value="Search" className="searchButton button small secondary" />
-             </div>   
-           </div>
+            </div>
+            <div className="row align-justify">
+              <div className="small-8 small-centered column">
+                <input style={{display:"none"}}></input>
+                <input name="title" type="text" className="form-control" id="last_name" ref="name" autoComplete="off"></input>
+              </div>
+            </div>
+            <div className="row align-center formButtons">
+              <div className="small-8 small-centered column">
+                <input type="submit" value="Search" className="searchButton button small secondary" />
+              </div>   
+            </div>
           </form>
         </div>
       );
@@ -140,7 +122,11 @@ module.exports = React.createClass({
       }).then( response => {
         return response.json();
       }).then( json => {
-        console.log('json ', json)
+        this.setState({
+          isComplete: true,
+          isPending: false,
+          searchResults: json
+        });
       });
 
       // $.ajax({
