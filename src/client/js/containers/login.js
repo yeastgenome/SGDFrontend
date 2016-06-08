@@ -60,6 +60,7 @@ const Login = React.createClass({
 
   // render google button if just toggled visible
   componentDidUpdate(prevProps, prevState) {
+    return;
     if (this.state.googleLoginVisible) {
       gapi.signin2.render('g-login', {
         'onsuccess': this.onSignIn
