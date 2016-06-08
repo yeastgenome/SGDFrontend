@@ -21,7 +21,7 @@ const AppLayout = React.createClass({
           <div className='top-bar-left'>
             <ul className='menu' style={[style.menu]}>
               <li>
-                <Link to='dashboard' style={style.indexLink}>
+                <Link to='curate' style={style.indexLink}>
                   <img src="/static/img/sgd_logo.png" style={[style.imgLogo]}/>
                   <span style={[style.logoText, style.navLink]}>Curator</span>
                 </Link>

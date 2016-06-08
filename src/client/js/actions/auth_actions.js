@@ -60,9 +60,9 @@ export function sendAuthRequest (googleToken) {
       .then(checkStatus)  
       .then(function handleAuthResponse (response) {
         dispatch(receiveAuthResponseAndRedirect());
-      })//.catch(function handleAuthRequestError (error) {
-      //   dispatch(setLoginError());
-      // });
+      }).catch(function handleAuthRequestError (error) {
+        dispatch(setLoginError());
+      });
   };
 };
 
@@ -76,7 +76,7 @@ export function setCSRFToken (token) {
 export function receiveAuthResponseAndRedirect () {
   return function (dispatch, getState) {
     dispatch(receiveAuthenticationResponse());
-    let redirectUrl = '/dashboard';
+    let redirectUrl = '/curate';
     dispatch(push(redirectUrl));
   };
 };
