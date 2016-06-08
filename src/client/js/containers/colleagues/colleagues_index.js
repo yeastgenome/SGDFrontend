@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-const Account = React.createClass({
+const ColleaguesIndex = React.createClass({
   render() {
-    return <h1>Account</h1>
+    return <h1>ColleaguesIndex</h1>
   }
 });
 
@@ -12,4 +12,4 @@ function mapStateToProps(_state) {
   };
 }
 
-export default connect(mapStateToProps)(Account);
+export default connect(mapStateToProps)(ColleaguesIndex);
