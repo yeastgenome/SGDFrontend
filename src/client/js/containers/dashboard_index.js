@@ -7,7 +7,7 @@ const DashboardIndex = React.createClass({
       <div>
         <h1>SGD Curator</h1>
         <hr />
-        <p><Link to='/dashboard/files/new'><i className='fa fa-upload'/> Upload a dataset</Link></p>
+        <p><Link to='/curate/files/new'><i className='fa fa-upload'/> Upload a dataset</Link></p>
       </div>
     );
   }
