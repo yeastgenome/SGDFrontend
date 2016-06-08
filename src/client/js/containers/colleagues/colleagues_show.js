@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-const ExampleContainer = React.createClass({
+const ColleaguesShow = React.createClass({
   render() {
-    return <h1>Example</h1>;
+    return <h1>ColleaguesShow</h1>;
   }
 });
 
@@ -12,4 +12,4 @@ function mapStateToProps(_state) {
   };
 }
 
-export default connect(mapStateToProps)(ExampleContainer);
+export default connect(mapStateToProps)(ColleaguesShow);

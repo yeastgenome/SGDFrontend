@@ -9,7 +9,7 @@ const DashboardIndex = React.createClass({
         <hr />
         <p><Link to='/dashboard/files/new'><i className='fa fa-upload'/> Upload a dataset</Link></p>
       </div>
-    )
+    );
   }
 });
 

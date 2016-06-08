@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { createMemoryHistory, useQueries } from 'history'
+import { createMemoryHistory, useQueries } from 'history';
 
 import ConfigureStore from '../store/configure_store';
 import * as AuthActions from '../actions/auth_actions';
