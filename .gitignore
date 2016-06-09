@@ -70,6 +70,7 @@ Gemfile.lock
 node_modules/
 static/js/application.js
 static/js/application.min.js
+static/js/application.js.map
 
 # stupid mac files
 *.DS_Store
