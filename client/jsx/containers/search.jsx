@@ -16,6 +16,7 @@ import { startSearchFetch, fetchSearchResults, toggleGeneWrap } from '../actions
 import { createPath } from '../lib/search_helpers';
 
 const SEARCH_URL = '/search';
+const CATS_SORTED_BY_ANNOTATION = ['phenotype', 'biological_process','cellular_component', 'molecular_function'];
 
 const Search = React.createClass({
   displayName: 'Search',
@@ -110,10 +111,10 @@ const Search = React.createClass({
         <div className='columns large-3 medium-4 small-6'>
           <Paginator currentPage={this.props.currentPage} totalPages={this.props.totalPages} onPaginate={_onPaginate} />
         </div>
-        <div className='columns large-3 medium-4 hide-for-small'>
+        <div className='columns large-2 medium-4 hide-for-small'>
           {this._renderPageSizeSelector()}
         </div>
-        <div className='columns large-2 medium-4 small-6'>
+        <div className='columns large-3 medium-4 small-6'>
           {this._renderSortBySelector()}
         </div>
         <div className='columns large-4 small-12 text-right'>
@@ -150,7 +151,7 @@ const Search = React.createClass({
     };
     return (
       <div>
-        <p style={[style.labelText]}>Results per Page</p>
+        <p style={[style.labelText]}>Results</p>
         <select onChange={_onChange} value={this.props.resultsPerPage} style={[style.selector]}>
           {optionsNodes}
         </select>
@@ -159,11 +160,12 @@ const Search = React.createClass({
   },
 
   _renderSortBySelector () {
-    const options = [
+    let options = [
       { value: 'relevance', name: 'Relevance' },
       { value: 'alphabetical', name: 'Alphabetical' },
-      { value: 'annotation', name: 'Annotation Count' }
     ];
+    // only allow some categories to search by annotation
+    if (this.props.canSortByAnnotation) options.push({ value: 'annotation', name: 'Annotation Count' });
     let optionsNodes = options.map( d => {
       return <option key={`psOp${d.value}`} value={d.value}>{d.name}</option>;
     });
@@ -255,6 +257,7 @@ function mapStateToProps(_state) {
   return {
     results: state.results,
     activeCategory: state.activeCategory,
+    canSortByAnnotation: (CATS_SORTED_BY_ANNOTATION.indexOf(state.activeCategory) > -1),
     isPending: state.isPending,
     currentPage: state.currentPage,
     totalPages: state.totalPages,
