@@ -56,8 +56,7 @@ const SearchDownloadAnalyze = React.createClass({
 
   _getStringResults () {
     let arrResults = this.props.results.reduce( (prev, current) => {
-      let displayName = current.name.split(' / ')[0];
-      prev.push(displayName);
+      prev.push(current.bioentity_id);
       return prev;
     }, []);
     return JSON.stringify(arrResults);
