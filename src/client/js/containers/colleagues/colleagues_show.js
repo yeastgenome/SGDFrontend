@@ -1,15 +1,36 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import Loader from '../../components/widgets/loader';
+
+const COLLEAGUE_GET_URL = '/colleagues';
 
 const ColleaguesShow = React.createClass({
-  render() {
+  getInitialState () {
+    return {
+      data: null,
+      isPending: false
+    };
+  },
+
+  render () {
+    if (this.state.isPending) return <Loader />;
     return <h1>ColleaguesShow</h1>;
+  },
+
+  componentDidMount() {
+    this._fetchData();
+  },
+
+  _fetchData () {
+    this.setState({ isPending: true });
+    let displayName = this.props.routeParams.colleagueDisplayName;
+    fetch(`${COLLEAGUE_GET_URL}/${displayName}`, {
+      credentials: 'same-origin',
+    }).then( response => {
+      return response.json();
+    }).then( json => {
+      this.setState({ data: json, isPending: false });
+    });
   }
 });
 
-function mapStateToProps(_state) {
-  return {
-  };
-}
-
-export default connect(mapStateToProps)(ColleaguesShow);
+export default ColleaguesShow;

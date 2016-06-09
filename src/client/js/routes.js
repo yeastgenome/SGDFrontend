@@ -27,7 +27,7 @@ export default (
       <Route path='colleagues'>
         <IndexRoute component={ColleaguesIndex}/>
         <Route path='new' component={ColleaguesEdit} />
-        <Route path=':colleagueLastName' component={ColleaguesShow} />
+        <Route path=':colleagueDisplayName' component={ColleaguesShow} />
       </Route>
     </Route>
     <Route path='*' component={NotFound} />
