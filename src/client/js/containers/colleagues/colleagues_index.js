@@ -22,128 +22,74 @@
 // }
 
 // export default connect(mapStateToProps)(ColleaguesIndex);
-var React = require("react");
-var ColleaguesSearchResult = require("./search_result");
-var _ = require("underscore");
+import React from 'react';
+import { Link } from 'react-router';
+import _ from 'underscore';
+
+import ColleaguesSearchResults from './search_results';
 
 const COLLEAGUE_SEARCH_URL = '/colleagues';
 
-module.exports = React.createClass({
-    getInitialState: function() {
-      return {
-          isComplete: false,
-          query: null,
-          searchResults: null,
-          title: "Search SGD Colleague Information",
-          isPending: false
-      };
-    },
+const ColleaguesIndex = React.createClass({
+  getInitialState: function() {
+    return {
+      searchResults: null,
+      isPending: false
+    };
+  },
 
-    render: function () {
-  var query_in_url = this._queryInURL();
-  if (query_in_url && !this.state.isPending && !this.state.isComplete) {
-      this.state.query = query_in_url;
-      return null;
-  }
+  render: function () {
+    return (
+      <div>
+        <h1>Colleagues</h1>
+        <hr />
+        <Link to='/curate/colleagues/new' className='button small'>
+          <i className='fa fa-plus' /> Add New Colleague
+        </Link>
+        {this._renderFormNode()}
+        {this._renderSearchResultsNodes()}
+      </div>
+    );
+  },
 
-  if (this.state.isPending) {
-      var formNode = this._getFormResultsNode();
-  } else if (this.state.isComplete) {
-      var formNode = this._getFormResultsNode();
-  } else {
-      var formNode = this._getFormNode();
-  }
-  
-  return (<div className="spacer"><h1 id="center_title">{this.state.title}
-    <span className="context-help-icon"><a href="http://www.yeastgenome.org/help/colleaguesearch.html"><i className="fa fa-question-circle"></i></a></span></h1>{formNode}</div>);
-    },
+  _renderFormNode: function() {
+    return (
+      <div>
+        <p>Search for a colleague by last name.</p>
+        <form className='searchForm' autoComplete='off' onSubmit={this._onSubmit}>
+          <div className='input-group'>
+            <input className='input-group-field' type='text' ref='name' autoComplete='off' placeholder='Last Name (e.g.  "Jones")'/>
+            <div className='input-group-button' >
+              <input type='submit' className='button secondary' value='Search' />
+            </div>
+          </div> 
+        </form>
+      </div>
+    );
+  },
 
-    _getFormResultsNode: function() {
-      if (this.state.isComplete) {
-          var searchResults = (<ColleaguesSearchResult query={this.state.query} results={this.state.searchResults} />);
-      } else {
-          var searchResults = (<div className="sgd-loader-container"><div className="sgd-loader"></div></div>);
-      }
+  _renderSearchResultsNodes: function() {
+    if (this.state.isPending) return <div className='sgd-loader-container'><div className='sgd-loader'></div></div>;
+    if (this.state.searchResults) return <ColleaguesSearchResults query={this.state.query} results={this.state.searchResults} />;
+    return null;
+  },
 
-      return (
-        <div>
-          <form className="searchResultsForm" autoComplete="off" onSubmit={this._onSubmit}>
-            <div className="row">
-              <div className="small-8 column">
-                <label className="control-label">Last Name (e.g. Botstein, Jones, Smith):</label>
-              </div>
-            </div>
-            <div className="row medium-uncollapse large-collapse">
-              <div className="small-12 column">
-                <input style={{display:"none"}}></input>
-                <input name="title" type="text" className="form-control input-name" id="last_name" ref="name" autoComplete="off" defaultValue={this.state.query}></input>
-                <input type="submit" value="Search" className="button small secondary"  />
-                <a className="addColleague button small secondary">Add New Colleague</a>
-              </div>
-            </div>
-          </form>
-          <div id="searchResultsContent" className="row">
-            {searchResults}
-          </div>
-        </div>
-      );
-    },
-    
-    _getFormNode: function() {
-      return (
-        <div>
-          <form className="searchForm" autoComplete="off" onSubmit={this._onSubmit}>
-            <div className="row">
-              <div className="small-8 small-centered column">
-                <label className="control-label" htmlFor="last_name">Last Name (e.g. Botstein, Jones, Smith):</label>
-              </div>
-            </div>
-            <div className="row align-justify">
-              <div className="small-8 small-centered column">
-                <input style={{display:"none"}}></input>
-                <input name="title" type="text" className="form-control" id="last_name" ref="name" autoComplete="off"></input>
-              </div>
-            </div>
-            <div className="row align-center formButtons">
-              <div className="small-8 small-centered column">
-                <input type="submit" value="Search" className="searchButton button small secondary" />
-              </div>   
-            </div>
-          </form>
-        </div>
-      );
-    },
-
-    _onSubmit: function (e) {
-      if (e) e.preventDefault();
-      var query = this.refs.name.value.trim();
-      fetch(`${COLLEAGUE_SEARCH_URL}?last_name=${query}`, {
-        credentials: 'same-origin',
-      }).then( response => {
-        return response.json();
-      }).then( json => {
-        this.setState({
-          isComplete: true,
-          isPending: false,
-          searchResults: json
-        });
+  _onSubmit: function (e) {
+    if (e) e.preventDefault();
+    var query = this.refs.name.value.trim();
+    // no blank query
+    if (query === '') return;
+    fetch(`${COLLEAGUE_SEARCH_URL}?last_name=${query}`, {
+      credentials: 'same-origin',
+    }).then( response => {
+      return response.json();
+    }).then( json => {
+      this.setState({
+        isPending: false,
+        searchResults: json
       });
-
-      // $.ajax({
-      //     url: "/colleagues?last_name=" + query,
-      //     data_type: 'json',
-      //     type: 'GET',
-      //     success: function(data) {
-      //   if (data && data.length >= 0) {
-      //       this.setState({isComplete: true, isPending: false, searchResults: data, title: "SGD Colleague Search Results"});
-      //   }
-      //     }.bind(this),
-      //     error: function(xhr, status, err) {
-      //   this.setState({isPending: true}); 
-      //     }.bind(this)
-      // });
-
-      // this.setState({isComplete: false, isPending: true, query: query});
-    }
+    });
+  }
 });
 
+export default ColleaguesIndex;
