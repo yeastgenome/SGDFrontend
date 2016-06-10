@@ -13,10 +13,30 @@ const ColleaguesShow = React.createClass({
 
   render () {
     if (this.state.isPending) return <Loader />;
-    return <h1>ColleaguesShow</h1>;
+    if (!this.state.data) return null;
+    let data = this.state.data;
+    return (
+      <div>
+        <h1>{data.first_name} {data.last_name}</h1>
+        <hr />
+        {this._renderInfoField('email', 'email')}
+        {this._renderInfoField('position', 'flask')}
+        {this._renderInfoField('profession', 'clipboard')}
+        {this._renderInfoField('organization', 'university')}
+        {this._renderInfoField('orcid', 'info')}
+        {this._renderInfoField('work_phone', 'phone')}
+      </div>
+    );
   },
 
-  componentDidMount() {
+  _renderInfoField (fieldName, iconClass) {
+    let data = this.state.data;
+    if (!data[fieldName]) return null;
+    let iconNode = (iconClass) ? <span><i className={`fa fa-${iconClass}`} /> </span> : null;
+    return <p>{iconNode}{data[fieldName]}</p>;
+  },
+
+  componentDidMount () {
     this._fetchData();
   },
 
