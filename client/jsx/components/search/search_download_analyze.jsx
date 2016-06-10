@@ -34,7 +34,7 @@ const SearchDownloadAnalyze = React.createClass({
   },
 
   _renderAnalyzeForm () {
-    let stringResults = this._getStringResults();
+    let stringResults = this._getStringResults(true);
     return (
       <form ref='analyzeForm' action='/analyze' method='post' style={[style.form]}>
         <input type='hidden' name='bioent_ids' value={stringResults} />
@@ -44,7 +44,7 @@ const SearchDownloadAnalyze = React.createClass({
   },
 
   _renderDownloadForm () {
-    let stringResults = this._getStringResults();
+    let stringResults = this._getStringResults(false);
     return (
       <form ref='downloadForm' action='/download-list' method='post' style={[style.form]}>
         <input type='hidden' name='bioent_ids' value={stringResults} />
@@ -54,9 +54,10 @@ const SearchDownloadAnalyze = React.createClass({
     );
   },
 
-  _getStringResults () {
+  _getStringResults (useBioentityId) {
     let arrResults = this.props.results.reduce( (prev, current) => {
-      prev.push(current.bioentity_id);
+      let identifier = (useBioentityId) ? current.bioentity_id : current.name.split(' / ')[0];
+      prev.push(identifier);
       return prev;
     }, []);
     return JSON.stringify(arrResults);

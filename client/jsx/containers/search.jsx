@@ -240,7 +240,8 @@ const style = {
   },
   viewAs: {
     display: 'inline-block',
-    marginTop: '2rem'
+    marginTop: '2rem',
+    marginBottom: '1rem'
   },
   resultsWraper: {
     minHeight: 1000,
