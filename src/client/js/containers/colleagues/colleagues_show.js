@@ -25,6 +25,8 @@ const ColleaguesShow = React.createClass({
         {this._renderInfoField('work_phone', 'phone')}
         {this._renderAddress()}
         {this._renderResearchInterests()}
+        {this._renderKeywords()}
+        {this._renderWebpages()}
       </div>
     );
   },
@@ -43,7 +45,11 @@ const ColleaguesShow = React.createClass({
   _renderAddress () {
     let data = this.state.data;
     let addressArray = data.address || [];
-    addressArray.push(`${data.city}, ${data.state} ${data.postal_code} ${data.country}`);
+    let city = (data.city) ? `${data.city}, ` : '';
+    let state = (data.state) ? `${data.state} `: '';
+    let postal_code = (data.postal_code) ? `${data.postal_code} `: '';
+    let country = (data.country) ? `${data.country} `: '';
+    addressArray.push(`${city}${state}${postal_code}${country}`);
     let nodes = addressArray.map( (d, i) => {
       return <p key={`colAdd${i}`}>{d}</p>;
     });
@@ -65,6 +71,32 @@ const ColleaguesShow = React.createClass({
       <div>
         <label>Research Interests</label>
         {nodes}
+      </div>
+    );
+  },
+
+  _renderKeywords () {
+    let keywords = this.state.data.keywords;
+    if (!keywords) return null;
+    let nodes = keywords.map( (d, i) => {
+      return <p key={`colKW${i}`}>{d}</p>;
+    });
+    return (
+      <div>
+        <label>Keywords</label>
+        {nodes}
+      </div>
+    );
+  },
+
+  _renderWebpages () {
+    let webpages = this.state.data.webpages;
+    if (!webpages) return null;
+    return (
+      <div>
+        <label>Webpages</label>
+        <p>Lab URL: <a href={webpages.lab_url}>{webpages.lab_url}</a></p>
+        <p>Research Summary: <a href={webpages.research_summary_url}>{webpages.research_summary_url}</a></p>
       </div>
     );
   },
