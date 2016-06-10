@@ -2,10 +2,12 @@ from sqlalchemy import Column, DateTime, ForeignKey, Index, Numeric, String, Tex
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
-
+from elasticsearch import Elasticsearch
+import os
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
+ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
 
 class Allele(Base):
