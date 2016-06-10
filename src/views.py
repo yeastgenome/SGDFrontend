@@ -7,7 +7,7 @@ from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, Colleague, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword, ReferenceDocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation
+from .models import DBSession, ESearch, Colleague, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword, ReferenceDocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation
 from .celery_tasks import upload_to_s3
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
@@ -117,6 +117,70 @@ def colleague_by_format_name(request):
         return colleague.to_info_dict()
     else:
         return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
+
+@view_config(route_name='search_colleagues', renderer='json', request_method='GET')
+def search_colleagues(request):
+    limit = request.params.get('limit', 10)
+    offset = request.params.get('offset', 0)
+    
+    if request.params.get('q') is None:
+        query = {'match_all': {}}
+    else:
+        query = {
+            "bool": {
+                "should": [
+                    {
+                        "match_phrase_prefix": {
+                            "name": {
+                                "query": request.params.get('q'),
+                                "boost": 4,
+                                "max_expansions": 30,
+                                "analyzer": "standard"
+                            }
+                        }
+                    },
+                    {
+                        "match_phrase": {
+                            "name": {
+                                "query": request.params.get('q'),
+                                "boost": 10,
+                                "analyzer": "standard"
+                            }
+                        }
+                    },                        
+                    {
+                        "match": {
+                            "description": {
+                                "query": request.params.get('q'),
+                                "boost": 3,
+                                "analyzer": "standard"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    
+    es_query = {
+        'query': {
+            'filtered': {
+                'query': query,
+                'filter': {
+                    'bool': {
+                        'must': [{'term': { 'category': 'colleagues'}}]
+                    }
+                }
+            }
+        }
+    }
+
+    search_results = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=es_query, size=limit, from_=offset)
+
+    json_response = []
+    for r in search_results['hits']['hits']:
+        json_response.append(r['_source'])
+
+    return {'results': json_response, 'total': search_results['hits']['total']}
 
 @view_config(route_name='keywords', renderer='json', request_method='GET')
 def keywords(request):
