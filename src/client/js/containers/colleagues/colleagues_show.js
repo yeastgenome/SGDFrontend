@@ -17,14 +17,20 @@ const ColleaguesShow = React.createClass({
       <div>
         <h1>{data.first_name} {data.last_name}</h1>
         <hr />
-        {this._renderInfoField('email', 'email')}
+        {this._renderInfoField('email', 'envelope')}
         {this._renderInfoField('position', 'flask')}
         {this._renderInfoField('profession', 'clipboard')}
         {this._renderInfoField('organization', 'university')}
         {this._renderInfoField('orcid', 'info')}
         {this._renderInfoField('work_phone', 'phone')}
+        {this._renderAddress()}
+        {this._renderResearchInterests()}
       </div>
     );
+  },
+
+  componentDidMount () {
+    this._fetchData();
   },
 
   _renderInfoField (fieldName, iconClass) {
@@ -34,8 +40,33 @@ const ColleaguesShow = React.createClass({
     return <p>{iconNode}{data[fieldName]}</p>;
   },
 
-  componentDidMount () {
-    this._fetchData();
+  _renderAddress () {
+    let data = this.state.data;
+    let addressArray = data.address || [];
+    addressArray.push(`${data.city}, ${data.state} ${data.postal_code} ${data.country}`);
+    let nodes = addressArray.map( (d, i) => {
+      return <p key={`colAdd${i}`}>{d}</p>;
+    });
+    return (
+      <div>
+        <label>Address</label>
+        {nodes}
+      </div>
+    );
+  },
+
+  _renderResearchInterests () {
+    let interests = this.state.data.research_interests;
+    if (!interests) return null;
+    let nodes = interests.split(', ').map( (d, i) => {
+      return <p key={`colRI${i}`}>{d}</p>;
+    });
+    return (
+      <div>
+        <label>Research Interests</label>
+        {nodes}
+      </div>
+    );
   },
 
   _fetchData () {
