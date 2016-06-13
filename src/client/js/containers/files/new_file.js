@@ -10,6 +10,7 @@ const KEYWORDS_URL = '/keywords';
 const TOPICS_URL = '/topics';
 const FORMATS_URL = '/formats';
 const EXTENSIONS_URL = '/extensions';
+const REQUEST_TIMEOUT = 5000;
 
 const NewFile = React.createClass({
   getInitialState () {
@@ -196,12 +197,20 @@ const NewFile = React.createClass({
 
   _uploadFile (formData) {
     this.setState({ isPending: true });
-    fetch(UPLOAD_URL, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: { 'X-CSRF-Token': this.props.csrfToken },
-      body: formData
-    }).then( response => {
+    // timeout isomorphic fetch per https://github.com/whatwg/fetch/issues/20
+    let p = Promise.race([
+      fetch(UPLOAD_URL, {
+        method: 'POST',
+        timeout: REQUEST_TIMEOUT,
+        credentials: 'same-origin',
+        headers: { 'X-CSRF-Token': this.props.csrfToken },
+        body: formData
+      }),
+      new Promise(function (resolve, reject) {
+        setTimeout(() => reject(new Error('request timeout')), REQUEST_TIMEOUT);
+      })
+    ]);
+    p.then( response => {
       this.setState({ isPending: false });
       // if not 200 or 400 throw unkown error
       if ([200, 400].indexOf(response.status) < 0) throw new Error('Upload API error.');
@@ -216,8 +225,13 @@ const NewFile = React.createClass({
           this.setState({ isComplete: true, error: false });
         }
       }
-    }).catch( e => {
-      this.setState({ error: 'There was an uknown problem with your upload.  Please try again.  If you continue to see this message, please contact sgd-programmers@lists.stanford.edu' });
+    });
+    p.catch( e => {
+      this.setState({
+        isPending: false,
+        isComplete: false,
+        error: 'There was an uknown problem with your upload.  Please try again.  If you continue to see this message, please contact sgd-programmers@lists.stanford.edu'
+      });
     });
   }
 });
