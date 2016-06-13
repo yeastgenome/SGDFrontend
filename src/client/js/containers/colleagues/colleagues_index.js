@@ -7,14 +7,14 @@ import ColleaguesSearchResults from './search_results';
 const COLLEAGUE_SEARCH_URL = '/colleagues';
 
 const ColleaguesIndex = React.createClass({
-  getInitialState: function() {
+  getInitialState() {
     return {
       searchResults: null,
       isPending: false
     };
   },
 
-  render: function () {
+  render () {
     return (
       <div>
         <h1>Colleagues</h1>
@@ -28,7 +28,7 @@ const ColleaguesIndex = React.createClass({
     );
   },
 
-  _renderFormNode: function() {
+  _renderFormNode() {
     return (
       <div>
         <p>Search for a colleague by last name.</p>
@@ -44,13 +44,13 @@ const ColleaguesIndex = React.createClass({
     );
   },
 
-  _renderSearchResultsNodes: function() {
+  _renderSearchResultsNodes() {
     if (this.state.isPending) return <div className='sgd-loader-container'><div className='sgd-loader'></div></div>;
     if (this.state.searchResults) return <ColleaguesSearchResults query={this.state.query} results={this.state.searchResults} />;
     return null;
   },
 
-  _onSubmit: function (e) {
+  _onSubmit (e) {
     if (e) e.preventDefault();
     var query = this.refs.name.value.trim();
     // no blank query
