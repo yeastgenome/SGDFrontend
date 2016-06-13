@@ -2,6 +2,8 @@ import Radium from 'radium';
 import React from 'react';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
+import moment from 'moment';
+import DatePicker from 'react-datepicker';
 const Select = require('react-select');
 import 'isomorphic-fetch';
 
@@ -18,7 +20,8 @@ const NewFile = React.createClass({
       files: null,
       isPending: false,
       isComplete: false,
-      error: false
+      error: false,
+      time: moment(),
     };
   },
 
@@ -46,11 +49,6 @@ const NewFile = React.createClass({
   },
 
   _renderForm () {
-    // get today's date in SGD format
-    let now = new Date();
-    let strMonth = ('0' + (now.getMonth() + 1)).slice(-2);
-    let strDate = ('0' + now.getDate()).slice(-2);
-    let strToday = `${now.getYear() + 1900}-${strMonth}-${strDate}`;
     let buttonNode = this.state.isPending ? <a className='button disabled secondary'>Uploading</a> : <input type='submit' className='button' value='Upload' />;
     return (
       <div className='row'>
@@ -65,7 +63,7 @@ const NewFile = React.createClass({
             {this._renderSingleSelectField('Topic', 'topic_id', TOPICS_URL)}
             {this._renderSingleSelectField('Format', 'format_id', FORMATS_URL)}
             {this._renderSingleSelectField('Extension', 'extension', EXTENSIONS_URL)}
-            {this._renderStringField('Date', 'file_date', strToday, 'YYYY-MM-DD')}
+            {this._renderDateSelector()}
             {this._renderCheckField('Public', 'is_public')}
             {this._renderCheckField('For SPELL', 'for_spell')}
             {this._renderCheckField('For Browser', 'for_browser')}
@@ -147,6 +145,16 @@ const NewFile = React.createClass({
           labelKey='name' valueKey='id'
           onChange={_onChange} 
         />
+      </div>
+    );
+  },
+
+  _renderDateSelector () {
+    return (
+      <div>
+        <label>Date</label>
+        <DatePicker />
+        <input type='hidden' name='file_date' value='Archived' />
       </div>
     );
   },
