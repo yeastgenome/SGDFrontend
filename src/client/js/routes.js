@@ -4,6 +4,7 @@ import { Route, IndexRoute } from 'react-router';
 // import handler containers
 import { requireAuthentication } from './containers/authenticate_component';
 import Layout from './containers/layout';
+import PublicIndex from './containers/public_index';
 import ColleaguesIndex from './containers/colleagues/colleagues_index';
 import ColleaguesEdit from './containers/colleagues/colleagues_edit';
 import ColleaguesShow from './containers/colleagues/colleagues_show';
@@ -16,7 +17,7 @@ import NotFound from './containers/not_found';
 
 export default (
   <Route path='/' component={Layout}>
-  	<IndexRoute component={requireAuthentication(DashboardIndex)} />
+  	<IndexRoute component={PublicIndex} />
     <Route path='login' component={Login} />
     <Route path='curate' component={requireAuthentication(Dashboard)}>
       <IndexRoute component={DashboardIndex} />
