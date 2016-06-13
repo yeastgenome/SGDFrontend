@@ -26,7 +26,7 @@ def home_view(request):
 @view_config(route_name='upload', request_method='POST', renderer='json')
 @authenticate
 def upload_file(request):
-    keys = ['file', 'old_filepath', 'new_filepath', 'previous_file_name', 'display_name', 'status', 'topic_id', 'format_id', 'extension_id', 'file_date', 'readme_name', 'pmids', 'keyword_ids']
+    keys = ['file', 'old_filepath', 'new_filepath', 'previous_file_name', 'display_name', 'status', 'topic_id', 'format_id', 'extension', 'file_date', 'readme_name', 'pmids', 'keyword_ids']
     optional_keys = ['is_public', 'for_spell', 'for_browser']
     
     for k in keys:

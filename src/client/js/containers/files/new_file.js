@@ -63,7 +63,7 @@ const NewFile = React.createClass({
             {this._renderMultiSelectField('Keyword(s)', 'keyword_ids', KEYWORDS_URL)}
             {this._renderSingleSelectField('Topic', 'topic_id', TOPICS_URL)}
             {this._renderSingleSelectField('Format', 'format_id', FORMATS_URL)}
-            {this._renderSingleSelectField('Extension', 'extension_id', EXTENSIONS_URL)}
+            {this._renderSingleSelectField('Extension', 'extension', EXTENSIONS_URL)}
             {this._renderStringField('Date', 'file_date', strToday, 'YYYY-MM-DD')}
             {this._renderCheckField('Public', 'is_public')}
             {this._renderCheckField('For SPELL', 'for_spell')}
