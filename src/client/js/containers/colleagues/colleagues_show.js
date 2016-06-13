@@ -1,5 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { Link } from 'react-router';
+
+import Loader from '../../components/widgets/loader';
+
+const COLLEAGUE_GET_URL = '/colleagues';
 
 const ColleaguesShow = React.createClass({
   getInitialState () {
@@ -27,12 +31,20 @@ const ColleaguesShow = React.createClass({
         {this._renderResearchInterests()}
         {this._renderKeywords()}
         {this._renderWebpages()}
+        {this._renderAssociates()}
       </div>
     );
   },
 
   componentDidMount () {
     this._fetchData();
+  },
+
+  componentDidUpdate(prevProps, prevState) {
+    // fetch new data if going to a different show page
+    if (this.props.routeParams.colleagueDisplayName !== prevProps.routeParams.colleagueDisplayName) {
+      this._fetchData();
+    }
   },
 
   _renderInfoField (fieldName, iconClass) {
@@ -97,6 +109,35 @@ const ColleaguesShow = React.createClass({
         <label>Webpages</label>
         <p>Lab URL: <a href={webpages.lab_url}>{webpages.lab_url}</a></p>
         <p>Research Summary: <a href={webpages.research_summary_url}>{webpages.research_summary_url}</a></p>
+      </div>
+    );
+  },
+
+  _renderAssociates () {
+    let associates = this.state.data.associations;
+    if (!associates) return null;
+    return (
+      <div>
+        <label>Associations</label>
+        {this._renderAssociateSubSection('Associates', associates['Associate'])}
+        {this._renderAssociateSubSection('Lab Members', associates['Lab member'])}
+        {this._renderAssociateSubSection('Head of Lab', associates['Head of Lab'])}
+      </div>
+    );
+  },
+
+  _renderAssociateSubSection(label, data) {
+    if (!data) return null;
+    let nodes = data.map( (d, i) => {
+      let firstName = d[0];
+      let lastName = d[1];
+      let displayName = d[2];
+      return <p key={`collAssoc${label}${i}`}><Link to={`curate/colleagues/${displayName}`}>{firstName} {lastName}</Link></p>;
+    });
+    return (
+      <div key={`associateSub${label}`}>
+        <label>{label}</label>
+        {nodes}
       </div>
     );
   },
