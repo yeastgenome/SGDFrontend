@@ -2,7 +2,7 @@ namespace :deploy do
   desc 'Build application'
   task :build do
     on roles(:app), in: :sequence do
-      execute "export WORKON_HOME=~/envs/ && export NODE_ENV=production && source virtualenvwrapper.sh && cd #{current_path} && workon sgd && make build"
+      execute "export WORKON_HOME=/data/envs/ && export NODE_ENV=production && source virtualenvwrapper.sh && cd #{current_path} && workon sgd && make build"
     end
   end
 
@@ -21,7 +21,7 @@ namespace :deploy do
   desc 'Start pyramid'
   task :restart do
     on roles(:app), in: :sequence do
-      execute "cd #{current_path} && export WORKON_HOME=~/envs/ && source virtualenvwrapper.sh && workon sgd && . prod_variables.sh && make run-prod && cat /var/run/pyramid/pyramid.pid"
+      execute "cd #{current_path} && export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && workon sgd && . prod_variables.sh && make run-prod && cat /var/run/pyramid/backend.pid"
     end
   end
 
