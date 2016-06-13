@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router';
 
 const Dashboard = React.createClass({
-  render() {
+  render () {
     return (
       <div className='row'>
         <div className='columns small-2'>
