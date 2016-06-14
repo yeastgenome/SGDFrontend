@@ -91,7 +91,7 @@ const NewFile = React.createClass({
     );
   },
 
-  _renderStringField(displayName, paramName, defaultValue, placeholder) {
+  _renderStringField (displayName, paramName, defaultValue, placeholder) {
     return (
       <div>
         <label>{displayName}</label>
@@ -100,7 +100,7 @@ const NewFile = React.createClass({
     );
   },
 
-  _renderCheckField(displayName, paramName, isChecked) {
+  _renderCheckField (displayName, paramName, isChecked) {
     let _id = `sgd-c-check-${paramName}`;
     return (
       <div>
@@ -110,7 +110,7 @@ const NewFile = React.createClass({
     );
   },
 
-  _renderSingleSelectField(displayName, paramName, optionsUrl) {
+  _renderSingleSelectField (displayName, paramName, optionsUrl) {
     const _onChange = newValue => {
       let obj = {};
       obj[paramName] = newValue;
@@ -129,7 +129,7 @@ const NewFile = React.createClass({
     );
   },
 
-  _renderMultiSelectField(displayName, paramName, optionsUrl) {
+  _renderMultiSelectField (displayName, paramName, optionsUrl) {
     const _onChange = newValue => {
       newValue = newValue ? newValue.split(',').map( d => { return parseInt(d); }) : [];
       let obj = {};
@@ -153,8 +153,8 @@ const NewFile = React.createClass({
     return (
       <div>
         <label>Date</label>
-        <DatePicker />
-        <input type='hidden' name='file_date' value='Archived' />
+        // <DatePicker />
+        <input type='text' name='file_date' />
       </div>
     );
   },
