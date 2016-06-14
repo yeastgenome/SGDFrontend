@@ -54,29 +54,23 @@ const ColleaguesEdit = React.createClass({
             {this._renderStringField('Work Phone', 'work_phone', data.work_phone)}
             {this._renderStringField('Other Phone', 'other_phone', data.other_phone)}
             {this._renderAddress()}
+            {this._renderStringField('Lab Webpage', 'lab_page', data.lab_page)}
+            {this._renderStringField('Research Summary Webpage', 'research_page', data.research_page)}
+            {this._renderStringField('Research Interests', 'research_interests', data.research_interests)}
+            {this._renderStringField('Keywords', 'keywords', data.keywords)}
+            {this._renderTopics()}
           </div>
         </form>
       </div>
     );
-    // research summary page
-    // lab page
     // associates/collaborators - separates out lab members from supervisors/PIs
     // non-lab collaborators
     // research interests (free text)
-    // research topics (check boxes - controlled vocabulary)
-    // keywords (free text)
     // comments
     // curator Note -- combine this and 'Add a new note' into single section -- to show note and add a new one
     // associated genes
     // delay submission (make into a button at top and bottom with a space for reason)
     // delete submission check box (make a button at top and bottom)
-
-    // {this._renderAddress()}
-    // {this._renderResearchInterests()}
-    // {this._renderKeywords()}
-    // {this._renderWebpages()}
-    // {this._renderAssociates()}
-
   },
 
   _renderAddress () {
@@ -104,6 +98,38 @@ const ColleaguesEdit = React.createClass({
         </div>
       </div>
     );
+  },
+
+  _renderAddress () {
+    let data = this.state.data;
+    let addresses = this.state.data.addresses || ['', '', ''];
+    return (
+      <div className='row'>
+        <div className='column small-12'>
+          <label>Address</label>
+          <input type='text' name='address_1' defaultValue={addresses[0]} />
+          <input type='text' name='address_2' placeholder='street' defaultValue={addresses[1]} />
+          <input type='text' name='address_3' placeholder='suite #' defaultValue={addresses[2]} />
+        </div>
+        <div className='column small-3'>
+          {this._renderStringField('City', 'city', data.city)}
+        </div>
+        <div className='column small-3'>
+          {this._renderStringField('State / Region', 'state', data.state)}
+        </div>
+        <div className='column small-3'>
+          {this._renderStringField('Postal Code', 'postal_code', data.postal_code)}
+        </div>
+        <div className='column small-3'>
+          {this._renderStringField('Country', 'country', data.country)}
+        </div>
+      </div>
+    );
+  },
+
+  // TODO
+  _renderTopics () {
+    return null;
   },
 
   _renderStringField (displayName, paramName, defaultValue, placeholder) {
