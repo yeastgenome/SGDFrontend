@@ -147,15 +147,6 @@ def search_colleagues(request):
                                 "analyzer": "standard"
                             }
                         }
-                    },                        
-                    {
-                        "match": {
-                            "description": {
-                                "query": request.params.get('q'),
-                                "boost": 3,
-                                "analyzer": "standard"
-                            }
-                        }
                     }
                 ]
             }
