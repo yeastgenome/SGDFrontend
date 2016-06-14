@@ -19,6 +19,10 @@ const ColleaguesShow = React.createClass({
     let data = this.state.data;
     return (
       <div>
+        <ul className='menu simple'>
+          <li><Link to='/curate/colleagues'><i className='fa fa-chevron-left' /> All Colleagues</Link></li>
+          <li><Link to={`/curate/colleagues/${this.props.routeParams.colleagueDisplayName}/edit`}><i className='fa fa-edit' /> Edit</Link></li>
+        </ul>
         <h1>{data.first_name} {data.last_name}</h1>
         <hr />
         {this._renderInfoField('email', 'envelope')}
@@ -40,7 +44,7 @@ const ColleaguesShow = React.createClass({
     this._fetchData();
   },
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate (prevProps, prevState) {
     // fetch new data if going to a different show page
     if (this.props.routeParams.colleagueDisplayName !== prevProps.routeParams.colleagueDisplayName) {
       this._fetchData();
@@ -126,7 +130,7 @@ const ColleaguesShow = React.createClass({
     );
   },
 
-  _renderAssociateSubSection(label, data) {
+  _renderAssociateSubSection (label, data) {
     if (!data) return null;
     let nodes = data.map( (d, i) => {
       let firstName = d[0];
