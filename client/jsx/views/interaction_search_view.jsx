@@ -13,7 +13,7 @@ const InteractionSearch = React.createClass({
           
           <div className='panel'>
             <p>
-              Enter a gene name (e.g. DOG1), systematic ORF name (e.g. YDR477W) or an SGDID (e.g.S000005574). Search is not case-sensitive.
+              Enter a standard gene name (e.g. DOG1), systematic ORF name (e.g. YDR477W) or an SGDID (e.g.S000005574). Search is not case-sensitive.
             </p>
             <div className='row collapse'>
               <div className='columns small-10'>
