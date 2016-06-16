@@ -14,7 +14,8 @@ export function getCategoryDisplayName (key) {
     author: 'Author',
     download: 'Download',
     resource: 'Resource',
-    contig: 'Contig'
+    contig: 'Contig',
+    colleague: 'Colleague'
   };
   return labels[key] || key;
 };
