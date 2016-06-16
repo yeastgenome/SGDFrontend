@@ -13,6 +13,7 @@ const TOPICS_URL = '/topics';
 const FORMATS_URL = '/formats';
 const EXTENSIONS_URL = '/extensions';
 const REQUEST_TIMEOUT = 5000;
+const DATE_FORMAT = 'YYYY/MM/DD hh:mm:ss';
 
 const NewFile = React.createClass({
   getInitialState () {
@@ -21,7 +22,7 @@ const NewFile = React.createClass({
       isPending: false,
       isComplete: false,
       error: false,
-      time: moment(),
+      rawFileDate: moment(),
     };
   },
 
@@ -150,11 +151,14 @@ const NewFile = React.createClass({
   },
 
   _renderDateSelector () {
+    const _onDateChange = newDate => {
+      this.setState({ rawFileDate: newDate });
+    };
     return (
       <div>
         <label>Date</label>
-        // <DatePicker />
-        <input type='text' name='file_date' />
+        <DatePicker selected={this.state.rawFileDate} onChange={_onDateChange} dateFormat='YYYY/MM/DD' />
+        <input type='hidden' name='file_date' value={this._getFormattedTime()} />
       </div>
     );
   },
@@ -241,6 +245,10 @@ const NewFile = React.createClass({
         error: 'There was an uknown problem with your upload.  Please try again.  If you continue to see this message, please contact sgd-programmers@lists.stanford.edu'
       });
     });
+  },
+
+  _getFormattedTime () {
+    return this.state.rawFileDate.format(DATE_FORMAT);
   }
 });
 
