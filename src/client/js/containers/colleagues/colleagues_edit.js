@@ -59,6 +59,8 @@ const ColleaguesEdit = React.createClass({
             {this._renderStringField('Research Interests', 'research_interests', data.research_interests)}
             {this._renderStringField('Keywords', 'keywords', data.keywords)}
             {this._renderTopics()}
+            {this._renderAssociates()}
+            {this._renderGenes()}
           </div>
         </form>
       </div>
@@ -129,6 +131,14 @@ const ColleaguesEdit = React.createClass({
 
   // TODO
   _renderTopics () {
+    return null;
+  },
+
+  _renderAssociates () {
+    return null;
+  },
+
+  _renderGenes () {
     return null;
   },
 
