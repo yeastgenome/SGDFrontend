@@ -7,6 +7,8 @@ import DatePicker from 'react-datepicker';
 const Select = require('react-select');
 import 'isomorphic-fetch';
 
+import { StringField, CheckField } from '../../components/widgets/form_helpers';
+
 const UPLOAD_URL = '/upload';
 const KEYWORDS_URL = '/keywords';
 const TOPICS_URL = '/topics';
@@ -55,21 +57,21 @@ const NewFile = React.createClass({
       <div className='row'>
         <div className='large-6 columns'>
           <form ref='form' onSubmit={this._onFormSubmit}>
-            {this._renderStringField('Name', 'display_name')}
+            <StringField displayName='Name' paramName='display_name' />
             {this._renderStatusSelector()}
-            {this._renderStringField('Previous Name', 'previous_file_name')}
-            {this._renderStringField('Path', 'new_filepath')}
-            {this._renderStringField('Old File Path', 'old_filepath')}
+            <StringField displayName='Previous Name' paramName='previous_file_name' />
+            <StringField displayName='Path' paramName='new_filepath' />
+            <StringField displayName='Old File Path' paramName='old_filepath' />
             {this._renderMultiSelectField('Keyword(s)', 'keyword_ids', KEYWORDS_URL)}
             {this._renderSingleSelectField('Topic', 'topic_id', TOPICS_URL)}
             {this._renderSingleSelectField('Format', 'format_id', FORMATS_URL)}
             {this._renderSingleSelectField('Extension', 'extension', EXTENSIONS_URL)}
             {this._renderDateSelector()}
-            {this._renderCheckField('Public', 'is_public')}
-            {this._renderCheckField('For SPELL', 'for_spell')}
-            {this._renderCheckField('For Browser', 'for_browser')}
-            {this._renderStringField('README name', 'readme_name')}
-            {this._renderStringField('PMIDs', 'pmids', '', 'Comma-separated list of PMIDs')}
+            <CheckField displayName='Public' paramName='is_public' />
+            <CheckField displayName='For SPELL' paramName='for_spell' />
+            <CheckField displayName='For Browser' paramName='for_browser' />
+            <StringField displayName='README name' paramName='readme_name' />
+            <StringField displayName='PMIDs' paramName='pmids' placeholder='Comma-separated lis of PMIDs' />
             {this._renderErrors()}
             {buttonNode}
           </form>
@@ -88,25 +90,6 @@ const NewFile = React.createClass({
         <label>Status</label>
         <input id='upActiveRadio' defaultChecked type='radio' name='status' value='Active' /><label htmlFor='upActiveRadio'>Active</label>
         <input id='upArchivedRadio' type='radio' name='status' value='Archived' /><label htmlFor='upArchivedRadio'>Archived</label>
-      </div>
-    );
-  },
-
-  _renderStringField (displayName, paramName, defaultValue, placeholder) {
-    return (
-      <div>
-        <label>{displayName}</label>
-        <input type='text' name={paramName} placeholder={placeholder} defaultValue={defaultValue} />
-      </div>
-    );
-  },
-
-  _renderCheckField (displayName, paramName, isChecked) {
-    let _id = `sgd-c-check-${paramName}`;
-    return (
-      <div>
-        <input id={_id} type='checkbox' name={paramName} />
-        <label htmlFor={_id}>{displayName}</label>
       </div>
     );
   },
