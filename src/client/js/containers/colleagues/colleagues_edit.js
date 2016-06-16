@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Loader from '../../components/widgets/loader';
+import { StringField, CheckField } from '../../components/widgets/form_helpers';
 
 const COLLEAGUE_GET_URL = '/colleagues';
 
@@ -36,31 +37,37 @@ const ColleaguesEdit = React.createClass({
     return (
       <div className='row'>
         <form>
-          <div className='column small-5'>
-            {this._renderStringField('First Name', 'first_name', data.first_name)}
-          </div>
-          <div className='column small-5'>
-            {this._renderStringField('Last Name', 'last_name', data.last_name)}
+          <div className='column small-3'>
+            <StringField displayName='First Name' paramName='first_name' defaultValue={data.first_name} />
           </div>
           <div className='column small-2'>
-            {this._renderStringField('Suffix', 'suffix', data.suffix)}
+            <StringField displayName='Middle Name' paramName='middle_name' defaultValue={data.middle_name} />
+          </div>
+          <div className='column small-5'>
+            <StringField displayName='Last Name' paramName='last_name' defaultValue={data.last_name} />
+          </div>
+          <div className='column small-2'>
+            <StringField displayName='Suffix' paramName='suffix' defaultValue={data.suffix} />
           </div>
           <div className='column small-12'>
-            {this._renderStringField('Email', 'email', data.email)}
-            {this._renderStringField('Position', 'position', data.position)}
-            {this._renderStringField('Profession', 'profession', data.profession)}
-            {this._renderStringField('Organization', 'organization', data.organization)}
-            {this._renderStringField('ORCID', 'info', data.info)}
-            {this._renderStringField('Work Phone', 'work_phone', data.work_phone)}
-            {this._renderStringField('Other Phone', 'other_phone', data.other_phone)}
+            <StringField displayName='Email' paramName='email' defaultValue={data.email} />
+            <StringField displayName='Position' paramName='position' defaultValue={data.position} />
+            <StringField displayName='Profession' paramName='profession' defaultValue={data.profession} />
+            <StringField displayName='Organization' paramName='organization' defaultValue={data.organization} />
+            <StringField displayName='Work Phone' paramName='work_phone' defaultValue={data.work_phone} />
+            <StringField displayName='Other Phone' paramName='other_phone' defaultValue={data.other_phone} />
             {this._renderAddress()}
-            {this._renderStringField('Lab Webpage', 'lab_page', data.lab_page)}
-            {this._renderStringField('Research Summary Webpage', 'research_page', data.research_page)}
-            {this._renderStringField('Research Interests', 'research_interests', data.research_interests)}
-            {this._renderStringField('Keywords', 'keywords', data.keywords)}
+            <StringField displayName='Lab Webpage' paramName='lab_page' defaultValue={data.lab_page} />
+            <StringField displayName='Research Summary Webpage' paramName='research_page' defaultValue={data.research_page} />
+            <StringField displayName='Research Interests' paramName='research_interests' defaultValue={data.research_interests} />
+            <StringField displayName='Keywords' paramName='keywords' defaultValue={data.keywords} />
             {this._renderTopics()}
             {this._renderAssociates()}
             {this._renderGenes()}
+            {this._renderComments()}
+            {this._renderNotes()}
+            <CheckField displayName='Beta Tester' paramName='beta_tester' defaultValue={data.beta_tester} />
+            {this._renderOrcid()}
           </div>
         </form>
       </div>
@@ -87,49 +94,22 @@ const ColleaguesEdit = React.createClass({
           <input type='text' name='address_3' placeholder='suite #' defaultValue={addresses[2]} />
         </div>
         <div className='column small-3'>
-          {this._renderStringField('City', 'city', data.city)}
+          <StringField displayName='City' paramName='city' defaultValue={data.city} />
         </div>
         <div className='column small-3'>
-          {this._renderStringField('State / Region', 'state', data.state)}
+          <StringField displayName='State / Region' paramName='state' defaultValue={data.state} />
         </div>
         <div className='column small-3'>
-          {this._renderStringField('Postal Code', 'postal_code', data.postal_code)}
+          <StringField displayName='Postal Code' paramName='postal_code' datadefaultValue={data.postal_code} />
         </div>
         <div className='column small-3'>
-          {this._renderStringField('Country', 'country', data.country)}
+          <StringField displayName='Country' paramName='country' defaultValue={data.country} />
         </div>
       </div>
     );
   },
 
-  _renderAddress () {
-    let data = this.state.data;
-    let addresses = this.state.data.addresses || ['', '', ''];
-    return (
-      <div className='row'>
-        <div className='column small-12'>
-          <label>Address</label>
-          <input type='text' name='address_1' defaultValue={addresses[0]} />
-          <input type='text' name='address_2' placeholder='street' defaultValue={addresses[1]} />
-          <input type='text' name='address_3' placeholder='suite #' defaultValue={addresses[2]} />
-        </div>
-        <div className='column small-3'>
-          {this._renderStringField('City', 'city', data.city)}
-        </div>
-        <div className='column small-3'>
-          {this._renderStringField('State / Region', 'state', data.state)}
-        </div>
-        <div className='column small-3'>
-          {this._renderStringField('Postal Code', 'postal_code', data.postal_code)}
-        </div>
-        <div className='column small-3'>
-          {this._renderStringField('Country', 'country', data.country)}
-        </div>
-      </div>
-    );
-  },
-
-  // TODO
+  // TODO, controlled vocab
   _renderTopics () {
     return null;
   },
@@ -142,11 +122,19 @@ const ColleaguesEdit = React.createClass({
     return null;
   },
 
-  _renderStringField (displayName, paramName, defaultValue, placeholder) {
+  _renderComments () {
+    return null;
+  },
+
+  _renderNotes () {
+    return null;
+  },
+
+  _renderOrcid () {
     return (
       <div>
-        <label>{displayName}</label>
-        <input type='text' name={paramName} placeholder={placeholder} defaultValue={defaultValue} />
+        <label>ORCID iD.  Get one at <a href='https://orcid.org/register'>https://orcid.org/register</a>.</label>
+        <input type='text' name='orcid' defaultValue={this.state.data.orcid} />
       </div>
     );
   },
