@@ -2,7 +2,7 @@ namespace :deploy do
   desc 'Build application'
   task :build do
     on roles(:app), in: :sequence do
-      execute "export WORKON_HOME=/data/envs/ && export NODE_ENV=production && source virtualenvwrapper.sh && cd #{current_path} && workon sgd && make build"
+      execute "export WORKON_HOME=/data/envs/ && export NODE_ENV=production && source virtualenvwrapper.sh && cd #{current_path} && workon sgd && make prod-build"
     end
   end
 

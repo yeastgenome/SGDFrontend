@@ -1,11 +1,14 @@
 .PHONY: test lib config
 
 build:
-	python setup.py develop
 	npm install --production
 	webpack
-#	export ORACLE_HOME=/data/tools/oracle_instant_client/instantclient_11_2/ && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME &&
 	pip install -r requirements.txt
+	python setup.py develop
+
+prod-build:
+	pip install -r requirements.txt
+	python setup.py develop
 
 run:
 	source dev_variables.sh && webpack && pserve development.ini --reload
