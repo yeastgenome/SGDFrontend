@@ -61,12 +61,13 @@ def format_aggregation_results(aggregation_results, category, category_filters):
         return []
 
 def search_is_quick(query, search_results):
-    if query and query.lower().strip() in search_results['hits']['hits'][0].get('_source').get('keys'):
-        if len(search_results['hits']['hits']) > 1:
-            if (query.lower().strip() not in search_results['hits']['hits'][1].get('_source').get('keys')):
-                return True
-        else:
-                return True
+    if search_results['hits']['hits'][0].get('_source').get('keys'):
+        if query and query.lower().strip() in search_results['hits']['hits'][0].get('_source').get('keys'):
+            if len(search_results['hits']['hits']) > 1:
+                if (query.lower().strip() not in search_results['hits']['hits'][1].get('_source').get('keys')):
+                    return True
+                else:
+                    return True
     return False
 
 def add_exact_match(es_query, query, multi_match_fields):
