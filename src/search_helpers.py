@@ -135,11 +135,6 @@ def build_es_search_query(query, multi_match_fields):
     
     es_query = {
         "bool": {
-            "must_not" : {
-                "match" : {
-                    "category" : "colleagues"
-                }
-            },       
             "should": [
                 {
                     "match_phrase_prefix": {
