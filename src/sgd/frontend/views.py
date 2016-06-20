@@ -18,6 +18,10 @@ def blast_fungal(request):
 def blast_sgd(request):
     return render_to_response(TEMPLATE_ROOT + 'blast_sgd.jinja2', {}, request=request)
 
+@view_config(route_name='interaction_search') 
+def interaction_search(request):
+    return render_to_response(TEMPLATE_ROOT + 'interaction_search.jinja2', {}, request=request)
+
 @view_config(route_name='download_list') 
 def download_list(request):
     date = datetime.datetime.now().strftime("%m/%d/%Y")
