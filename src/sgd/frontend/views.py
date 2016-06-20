@@ -9,31 +9,31 @@ import requests
 
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 
-@view_config(route_name='blast_fungal') 
+@view_config(route_name='blast_fungal')
 def blast_fungal(request):
     return render_to_response(TEMPLATE_ROOT + 'blast_fungal.jinja2', {}, request=request)
 
-@view_config(route_name='blast_sgd') 
+@view_config(route_name='blast_sgd')
 def blast_sgd(request):
     return render_to_response(TEMPLATE_ROOT + 'blast_sgd.jinja2', {}, request=request)
 
-@view_config(route_name='interaction_search') 
-def blast_sgd(request):
+@view_config(route_name='interaction_search')
+def interaction_search(request):
     return render_to_response(TEMPLATE_ROOT + 'interaction_search.jinja2', {}, request=request)
 
-@view_config(route_name='snapshot') 
+@view_config(route_name='snapshot')
 def snapshot(request):
     return render_to_response(TEMPLATE_ROOT + 'snapshot.jinja2', {}, request=request)
 
-@view_config(route_name='style_guide') 
+@view_config(route_name='style_guide')
 def style_guide(request):
     return render_to_response(TEMPLATE_ROOT + 'style_guide.jinja2', {}, request=request)
 
-@view_config(route_name='suggestion') 
+@view_config(route_name='suggestion')
 def suggestion(request):
     return render_to_response(TEMPLATE_ROOT + 'suggestion.jinja2', {}, request=request)
 
-@view_config(route_name='variant_viewer') 
+@view_config(route_name='variant_viewer')
 def variant_viewer(request):
     return render_to_response(TEMPLATE_ROOT + 'variant_viewer.jinja2', {}, request=request)
 
