@@ -51,8 +51,9 @@ def format_aggregation_results(aggregation_results, category, category_filters):
         
         for agg_info in category_filters[category]:
             agg_obj = {'key': agg_info[0], 'values': []}
-            for agg in aggregation_results['aggregations'][agg_info[1]]['buckets']:
-                agg_obj['values'].append({'key': agg['key'], 'total': agg['doc_count']})
+            if agg_info[1] in aggregation_results['aggregations']:
+                for agg in aggregation_results['aggregations'][agg_info[1]]['buckets']:
+                    agg_obj['values'].append({'key': agg['key'], 'total': agg['doc_count']})
             formatted_agg.append(agg_obj)
             
         return formatted_agg
@@ -66,8 +67,8 @@ def search_is_quick(query, search_results):
             if len(search_results['hits']['hits']) > 1:
                 if (query.lower().strip() not in search_results['hits']['hits'][1].get('_source').get('keys')):
                     return True
-                else:
-                    return True
+            else:
+                return True
     return False
 
 def add_exact_match(es_query, query, multi_match_fields):
