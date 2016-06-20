@@ -144,7 +144,7 @@ const Header = React.createClass({
                     <li><a className="disabled-header-a" href="/ontology/phenotype/ypo/overview">Browse All Phenotypes</a></li>
                   </ul>
                 </li>
-                <li><a className="disabled-header-a" href="http://www.yeastgenome.org/cgi-bin/interaction_search">Interactions</a></li>
+                <li><a className="disabled-header-a" href="http://www.yeastgenome.org/interaction-search">Interactions</a></li>
                 <li><a className="disabled-header-a" href="http://yeastgfp.yeastgenome.org/">YeastGFP</a></li>
                 <li className="has-dropdown">
                   <a href="#">Resources</a>
@@ -216,6 +216,7 @@ const Header = React.createClass({
                   </ul>
                 </li>
                 <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Main_Page">Wiki</a></li>
+                <li><a className="disabled-header-a" href="http://www.yeastgenome.org/cgi-bin/submitData.pl">Submit Data</a></li>
                 <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/External_Links">Resources</a></li>
               </ul>
             </li>
