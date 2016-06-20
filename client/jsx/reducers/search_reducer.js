@@ -69,6 +69,23 @@ const searchResultsReducer = function (_state, action) {
         d.values = d.values.filter( d => {
           return (FILTERED_FACET_VALUES.indexOf(d.key) < 0);
         });
+        // sort to try to put relevant (mathces query) facet value on top
+        if (state.query !== '') {
+          d.values = d.values.sort( (a, b) => {
+            let aMatch = a.key.toLowerCase().match(state.query);
+            let bMatch = b.key.toLowerCase().match(state.query);
+            let totalIndex = (a.total > b.total) ? -1 : 1;
+            if (aMatch && bMatch) {
+              return totalIndex;
+            } else if (aMatch) {
+              return -1;
+            } else if (bMatch) {
+              return 1;
+            } else {
+              return totalIndex;
+            }
+          });
+        }
         return d;
       });
       state.totalPages = Math.floor(state.total / state.resultsPerPage) + ((state.total % state.resultsPerPage === 0) ? 0 : 1);

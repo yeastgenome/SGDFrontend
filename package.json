@@ -38,7 +38,7 @@
     "history": "^1.17.0",
     "isomorphic-fetch": "^2.1.1",
     "pluralize": "^1.2.1",
-    "radium": "^0.14.1",
+    "radium": "^0.17.1",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
     "react-redux": "^2.1.2",
