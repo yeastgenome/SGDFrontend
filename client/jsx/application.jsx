@@ -13,9 +13,9 @@ var views = {
 	suggestion: require("./views/suggestion_view.jsx"),
 	blast_sgd: require("./views/blast_sgd_view.jsx"),
 	blast_fungal: require("./views/blast_fungal_view.jsx"),
-	protein: require("./views/protein_view.jsx"),
+	// protein: require("./views/protein_view.jsx"), // TEMP
 	summary: require("./views/summary_view.jsx"),
-	variantViewer: require("./views/variant_viewer_view.jsx"),
+	// variantViewer: require("./views/variant_viewer_view.jsx"), // TEMP
 	styleGuide: require("./views/style_guide_view.jsx"),
 	router: require("./react_router_render.jsx")
 };

@@ -1,4 +1,4 @@
-{  
+module.exports = {  
   "strains":[  
     {  
       "name":"S288C",
@@ -235,4 +235,4 @@
       }
     ]
   }
-}
+};

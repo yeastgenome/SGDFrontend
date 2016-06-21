@@ -8,6 +8,7 @@ const WRAPPED_PAGE_SIZE = 500;
 const DEFAULT_STATE = {
   userInput: '',
   results: [],
+  asyncResults: [],
   activeCategory: null,
   aggregations: [],
   total: 0,

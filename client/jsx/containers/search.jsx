@@ -4,6 +4,7 @@ import Radium from 'radium';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 
+import FlexyScatterplot from '../components/viz/flexy_scatterplot.jsx';
 import SearchResult from '../components/search/search_result.jsx';
 import SearchDownloadAnalyze from '../components/search/search_download_analyze.jsx';
 import SearchBreadcrumb from './search_breadcrumb.jsx';
@@ -74,13 +75,18 @@ const Search = React.createClass({
   _renderViewAs () {
     if (this.props.activeCategory !== 'locus') return null;
     const qp = _.clone(this.props.queryParams);
-    const isWrapped = this._isWrappedResults();
-    const wrapPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, wrapResults: true }) });
-    const listPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, wrapResults: false }) });
+    const isList = (this.props.geneMode === 'list');
+    const isWrap = (this.props.geneMode === 'wrap');
+    const isViz = (this.props.geneMode === 'viz');
+    const listPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, geneMode: 'list' }) });
+    const wrapPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, geneMode: 'wrap' }) });
+    const vizPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, geneMode: 'viz' }) });
+    
     return (
       <ul className='button-group' style={[style.viewAs]}>
-        <Link to={listPath} className={`button tiny${isWrapped ? ' secondary':''}`}><i className='fa fa-reorder'/> <span>List</span></Link>
-        <Link to={wrapPath} className={`button tiny${!isWrapped ? ' secondary':''}`}><i className='fa fa-th'/> <span>Wrapped</span></Link>
+        <Link to={listPath} className={`button tiny${!isList ? ' secondary':''}`}><i className='fa fa-reorder'/> <span>List</span></Link>
+        <Link to={wrapPath} className={`button tiny${!isWrap ? ' secondary':''}`}><i className='fa fa-th'/> <span>Wrapped</span></Link>
+        <Link to={vizPath} className={`button tiny${!isViz ? ' secondary':''}`}><i className='fa fa-bar-chart'/> <span>Visualize</span></Link>
       </ul>
     );
   },
@@ -108,7 +114,7 @@ const Search = React.createClass({
     };
     return (
       <div className='row'>
-        <div className='columns large-3 medium-4 small-6'>
+        <div className='columns large-2 medium-4 small-6'>
           <Paginator currentPage={this.props.currentPage} totalPages={this.props.totalPages} onPaginate={_onPaginate} />
         </div>
         <div className='columns large-2 medium-4 hide-for-small'>
@@ -117,7 +123,7 @@ const Search = React.createClass({
         <div className='columns large-3 medium-4 small-6'>
           {this._renderSortBySelector()}
         </div>
-        <div className='columns large-4 small-12 text-right'>
+        <div className='columns large-5 small-12 text-right'>
           {this._renderViewAs()}
         </div>
       </div>
@@ -187,8 +193,15 @@ const Search = React.createClass({
   },
 
   _renderResults () {
+    // empty message
     if (this.props.total === 0) return <p>No results.  Please broaden your search or try a different query.</p>;
-    if (this._isWrappedResults()) return this._renderWrappedResults();
+    // maybe render special result types
+    if (this.props.geneMode === 'wrap') {
+      return this._renderWrappedResults();
+    } else if (this.props.geneMode === 'viz') {
+      return this._renderVizResults();
+    }
+    // if not wrapped or analyzed, just render regular results
     let results = this.props.results;
     return results.map( (d, i) => {
       let id = d.id || i;
@@ -197,7 +210,7 @@ const Search = React.createClass({
   },
 
   _renderWrappedResults () {
-    const nodes = this.props.results.map( (d, i) => {
+    const nodes = this.props.asyncResults.map( (d, i) => {
       // only show display name if there is a '/' in name
       const displayName = d.name.split(' / ')[0];
       return <a href={d.href} style={[style.wrappedResult]} key={'serchWR' + i}>{displayName}</a>;
@@ -206,6 +219,12 @@ const Search = React.createClass({
       <div>
         {nodes}
       </div>
+    );
+  },
+
+  _renderVizResults () {
+    return (
+      <FlexyScatterplot />
     );
   },
 
@@ -257,6 +276,7 @@ function mapStateToProps(_state) {
   let state = _state.searchResults;
   return {
     results: state.results,
+    asyncResults: state.asyncResults,
     activeCategory: state.activeCategory,
     canSortByAnnotation: (CATS_SORTED_BY_ANNOTATION.indexOf(state.activeCategory) > -1),
     isPending: state.isPending,
@@ -268,7 +288,7 @@ function mapStateToProps(_state) {
     query: state.query,
     url: `${_state.routing.location.pathname}${_state.routing.location.search}`,
     queryParams: _state.routing.location.query,
-    wrapResults: (_state.routing.location.query.wrapResults === 'true' || _state.routing.location.query.wrapResult === true)
+    geneMode: (_state.routing.location.query.geneMode || 'list')
   };
 };
 
