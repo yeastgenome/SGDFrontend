@@ -86,8 +86,9 @@ const AppSearchBar = React.createClass({
   // save user input to redux and fetch results, save them to state
   _onChange(e) {
     let newValue = e.target.value;
+    console.log(newValue)
     this._setUserInput(newValue);
-    let url = `${this.props.resultsUrl}?q=${this.props.userInput}`;
+    let url = `${this.props.resultsUrl}?q=${newValue}`;
     fetch(url)
       .then( function (response) {
           if (response.status >= 400) {
