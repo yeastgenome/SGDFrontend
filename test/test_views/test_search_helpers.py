@@ -178,6 +178,10 @@ class SearchHelpersTest(unittest.TestCase):
             }
         }, build_es_search_query(query, multi_match_fields))
 
+    def test_build_es_query_for_empty_query(self):
+        query = ""
+        self.assertEqual({'match_all': {}}, build_es_search_query("", []))
+        
     @mock.patch('src.search_helpers.add_exact_match')
     def test_add_exact_match_for_single_comma_queries(self, mock_exact):
         query = "'eu gene'"
@@ -194,4 +198,3 @@ class SearchHelpersTest(unittest.TestCase):
         build_es_search_query(query, multi_match_fields)
         self.assertTrue(mock_exact.called)
 
-    
