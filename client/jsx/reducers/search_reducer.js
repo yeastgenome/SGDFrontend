@@ -95,6 +95,14 @@ const searchResultsReducer = function (_state, action) {
       state.isPaginatePending = false;
       return state;
       break;
+
+    case 'START_ASYNC_FETCH':
+      state.isPending = true;
+      return state;
+      break;
+    case 'ASYNC_SEARCH_RESPONSE':
+      
+      break;
     case 'SET_USER_INPUT':
       state.userInput = action.value;
       return state;
