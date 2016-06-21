@@ -143,12 +143,12 @@ def search(request):
     multi_match_fields = ["summary", "name_description", "phenotypes", "cellular_component", "biological_process", "molecular_function", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "go_loci", "author", "journal", "year", "reference_loci"]
 
     es_query = build_search_query(query, multi_match_fields, category, category_filters, request)
-       
+
     search_body = {
         '_source': response_fields + ['keys'],
         'query': es_query,
-        'highlight' : {
-            'fields' : {}
+        'highlight': {
+            'fields': {}
         }
     }
     
