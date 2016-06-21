@@ -198,3 +198,144 @@ class SearchHelpersTest(unittest.TestCase):
         build_es_search_query(query, multi_match_fields)
         self.assertTrue(mock_exact.called)
 
+    def test_build_search_query_with_empty_category(self):
+        query = "eu gene"
+        multi_match_fields = [1,2,3]
+        category = ""
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+
+        self.assertEqual(build_es_search_query(query, multi_match_fields), build_search_query(query, multi_match_fields, category, self.category_filters, request))
+
+    def test_build_search_query_with_no_filters(self):
+        query = "eu gene"
+        multi_match_fields = [1,2,3]
+        category = "locus"
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+
+        self.assertEqual({
+            'filtered': {
+                'query': build_es_search_query(query, multi_match_fields),
+                'filter': {
+                    'bool': {
+                        'must': [{'term': {'category': category}}]
+                    }
+                }
+            }
+        }, build_search_query(query, multi_match_fields, category, self.category_filters, request))
+
+    def test_build_search_query_with_filters(self):
+        query = "eu gene"
+        multi_match_fields = [1,2,3]
+        category = "locus"
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        request.params['feature type'] = 'type_1'
+
+        item = self.category_filters[category][0]
+
+        self.maxDiff = None
+        self.assertEqual({
+            'filtered': {
+                'query': build_es_search_query(query, multi_match_fields),
+                'filter': {
+                    'bool': {
+                        'must': [{'term': {'category': category}}, {'term': {(item[1]+".raw"): request.params.get(item[0])}}]
+                    }
+                }
+            }
+        }, build_search_query(query, multi_match_fields, category, self.category_filters, request))
+
+    def test_build_aggregation_query_with_emtpy_category(self):
+        query = "eu gene"
+        multi_match_fields = [1,2]
+        category = ""
+        
+        es_query = build_es_search_query(query, multi_match_fields)
+        
+        self.assertEqual({
+            'query': es_query,
+            'size': 0,
+            'aggs': {
+                'categories': {
+                    'terms': {'field': 'category'}
+                },
+                'feature_type': {
+                    'terms': {'field': 'feature_type'}
+                }
+            }
+        }, build_aggregation_query(es_query, category, self.category_filters))
+
+    def test_build_aggregation_query_with_category(self):
+        query = "eu gene"
+        multi_match_fields = [1,2]
+        category = "locus"
+        
+        es_query = build_es_search_query(query, multi_match_fields)
+
+        aggs = {}
+        
+        for c in self.category_filters[category]:
+            aggs[c[1]] = {'terms': {'field': c[1] + '.raw', 'size': 999}}
+        
+        self.assertEqual({
+            'query': es_query,
+            'size': 0,
+            'aggs': aggs
+        }, build_aggregation_query(es_query, category, self.category_filters))
+
+    def test_add_exact_match(self):
+        query = "eu gene"
+        multi_match_fields = [1,2]
+        es_query = build_es_search_query(query, multi_match_fields)
+        
+        add_exact_match(es_query, query, multi_match_fields)
+
+        es_query_original = build_es_search_query(query, multi_match_fields)
+
+        self.assertEqual(es_query, {
+            'bool': {
+                'minimum_should_match': 1,
+                'should': [
+                    {
+                        'match_phrase_prefix': {
+                            'name': {
+                                'analyzer': 'standard',
+                                'boost': 4,
+                                'max_expansions': 30,
+                                'query': 'eu gene'
+                            }
+                        }
+                    },
+                    {
+                        'match_phrase_prefix': {
+                            'description': {
+                                'analyzer': 'standard',
+                                'boost': 3,
+                                'query': 'eu gene'
+                            }
+                        }
+                    },
+                    {
+                        'match_phrase_prefix': {
+                            'keys': {
+                                'analyzer': 'standard',
+                                'boost': 20,
+                                'query': 'eu gene'
+                            }
+                        }
+                    },
+                    {
+                        'multi_match': {
+                            'boost': 3,
+                            'fields': [1, 2],
+                            'query': 'eu gene',
+                            'type': 'phrase_prefix'
+                        }
+                    }]
+            }
+        })
