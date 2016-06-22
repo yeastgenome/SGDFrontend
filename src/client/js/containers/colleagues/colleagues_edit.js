@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import EditableList from '../../components/widgets/editable_list';
 import Loader from '../../components/widgets/loader';
 import { StringField, CheckField } from '../../components/widgets/form_helpers';
 
@@ -67,6 +68,8 @@ const ColleaguesEdit = React.createClass({
             {this._renderComments()}
             {this._renderNotes()}
             <CheckField displayName='Beta Tester' paramName='beta_tester' defaultValue={data.beta_tester} />
+            <CheckField displayName='Show Email' paramName='show_email' defaultValue={data.show_email} />
+            <CheckField displayName='Receive Newsletter' paramName='newsletter' defaultValue={data.newsletter} />
             {this._renderOrcid()}
           </div>
         </form>
@@ -74,7 +77,6 @@ const ColleaguesEdit = React.createClass({
     );
     // associates/collaborators - separates out lab members from supervisors/PIs
     // non-lab collaborators
-    // research interests (free text)
     // comments
     // curator Note -- combine this and 'Add a new note' into single section -- to show note and add a new one
     // associated genes
@@ -84,14 +86,13 @@ const ColleaguesEdit = React.createClass({
 
   _renderAddress () {
     let data = this.state.data;
-    let addresses = this.state.data.addresses || ['', '', ''];
     return (
       <div className='row'>
         <div className='column small-12'>
           <label>Address</label>
-          <input type='text' name='address_1' defaultValue={addresses[0]} />
-          <input type='text' name='address_2' placeholder='street' defaultValue={addresses[1]} />
-          <input type='text' name='address_3' placeholder='suite #' defaultValue={addresses[2]} />
+          <input type='text' name='address_0' defaultValue={data.address_0} />
+          <input type='text' name='address_1' placeholder='street' defaultValue={data.address_1} />
+          <input type='text' name='address_2' placeholder='suite #' defaultValue={data.address_2} />
         </div>
         <div className='column small-3'>
           <StringField displayName='City' paramName='city' defaultValue={data.city} />
@@ -100,7 +101,7 @@ const ColleaguesEdit = React.createClass({
           <StringField displayName='State / Region' paramName='state' defaultValue={data.state} />
         </div>
         <div className='column small-3'>
-          <StringField displayName='Postal Code' paramName='postal_code' datadefaultValue={data.postal_code} />
+          <StringField displayName='Postal Code' paramName='postal_code' defaultValue={data.postal_code} />
         </div>
         <div className='column small-3'>
           <StringField displayName='Country' paramName='country' defaultValue={data.country} />
@@ -127,7 +128,12 @@ const ColleaguesEdit = React.createClass({
   },
 
   _renderNotes () {
-    return null;
+    return (
+      <div>
+        <label>Notes</label>
+        <EditableList defaultValues={this.state.data.notes} placeholder='new note' />
+      </div>
+    );
   },
 
   _renderOrcid () {
