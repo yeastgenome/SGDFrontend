@@ -3,7 +3,7 @@ import { getCategoryDisplayName, createPath } from '../lib/search_helpers';
 import _ from 'underscore';
 
 const RESULTS_URL = '/backend/get_search_results';
-const WRAPPED_PAGE_SIZE = 500;
+const WRAPPED_PAGE_SIZE = 250;
 
 // helper methods
 function fetchFromApi (url) {
