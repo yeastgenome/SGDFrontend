@@ -4,6 +4,7 @@ import { getCategoryDisplayName } from '../lib/search_helpers';
 const FILTERED_FACET_VALUES = ['cellular component', 'biological process', 'molecular function'];
 const DEFAULT_RESULTS_PER_PAGE = 25;
 const DEFAULT_SORT_BY = 'relevance';
+const DEFAULT_GENE_MODE = 'list';
 const DEFAULT_STATE = {
   userInput: '',
   results: [],
@@ -20,11 +21,11 @@ const DEFAULT_STATE = {
   isPaginatePending: false, // if the only change is the page, note special state for rendering total
   apiError: null,
   isHydrated: false,
-  sortBy: DEFAULT_SORT_BY
+  sortBy: DEFAULT_SORT_BY,
+  geneMode: DEFAULT_GENE_MODE
 };
 
 const searchResultsReducer = function (_state, action) {
-  console.log(action)
   let state = _.clone(_state);
   if (typeof state === 'undefined') {
     return DEFAULT_STATE;
@@ -49,6 +50,7 @@ const searchResultsReducer = function (_state, action) {
     state.resultsPerPage = params.page_size || DEFAULT_RESULTS_PER_PAGE;
     // set sortBy
     state.sortBy = params.sort_by || DEFAULT_SORT_BY;
+    state.geneMode = params.geneMode || DEFAULT_GENE_MODE;
     return state;
   }
   switch (action.type) {
@@ -95,6 +97,7 @@ const searchResultsReducer = function (_state, action) {
       break;
 
     case 'START_ASYNC_FETCH':
+      state.asyncResults = [];
       state.isAsyncPending = true;
       return state;
       break;

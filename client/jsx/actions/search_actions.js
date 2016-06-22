@@ -45,12 +45,25 @@ export function setUserInput (newValue) {
   };
 };
 
+// start fetch, fetch, and start async fetching
+export function startSearchFetchMaybeAsycFetch () {
+  return function (dispatch, getState) {
+    dispatch(startSearchFetch());
+    dispatch(fetchSearchResults());
+    const state = getState().searchResults;
+    if(state.activeCategory === 'locus' && state.geneMode !== 'list') {
+      dispatch(startAsyncFetch());
+    }
+  };
+};
+
 export function startSearchFetch () {
   return {
     type: 'START_SEARCH_FETCH',
   };
 };
 
+// paginated fetches for wrapped results
 export function startAsyncFetch () {
   return function (dispatch, getState) {
     dispatch({ type: 'START_ASYNC_FETCH' });
@@ -116,12 +129,6 @@ export function receiveAsyncResponse (_results) {
 export function finishAsync () {
   return {
     type: 'FINISH_ASYNC',
-  };
-};
-
-export function toggleGeneWrap () {
-  return {
-    type: 'TOGGLE_GENE_WRAP',
   };
 };
 

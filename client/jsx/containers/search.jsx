@@ -13,7 +13,7 @@ import Collapser from '../components/widgets/collapser.jsx';
 import ErrorMessage from '../components/widgets/error_message.jsx';
 import Loader from '../components/widgets/loader.jsx';
 import Paginator from '../components/widgets/paginator.jsx';
-import { startSearchFetch, fetchSearchResults, toggleGeneWrap, startAsyncFetch } from '../actions/search_actions';
+import { startSearchFetchMaybeAsycFetch } from '../actions/search_actions';
 import { createPath } from '../lib/search_helpers';
 
 const SEARCH_URL = '/search';
@@ -231,12 +231,7 @@ const Search = React.createClass({
   // dispatches redux update and maybe fetches new data
   _fetchSearchResults () {
     // dispatch actions
-    this.props.dispatch(startSearchFetch());
-    this.props.dispatch(fetchSearchResults());
-    if (this._isWrappedResults()) {
-      this.props.dispatch(startAsyncFetch());
-    }
-    return;
+    this.props.dispatch(startSearchFetchMaybeAsycFetch());
   },
 
   _isWrappedResults () {
@@ -291,7 +286,7 @@ function mapStateToProps(_state) {
     query: state.query,
     url: `${_state.routing.location.pathname}${_state.routing.location.search}`,
     queryParams: _state.routing.location.query,
-    geneMode: (_state.routing.location.query.geneMode || 'list')
+    geneMode: state.geneMode
   };
 };
 
