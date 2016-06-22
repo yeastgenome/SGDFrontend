@@ -94,7 +94,8 @@ const Search = React.createClass({
   _renderSearchContent () {
     if (this.props.isPending) return <Loader />;
     // only render second paginator if num results is >= amount per page
-    let secondPaginateNode = (this.props.results.length >= this.props.resultsPerPage) ? this._renderControls() : null;
+    let isSecondPaginator = (this.props.results.length >= this.props.resultsPerPage && !this._isWrappedResults());
+    let secondPaginateNode = isSecondPaginator ? this._renderControls() : null;
     return (
       <div>
         {this._renderResults()}
@@ -131,16 +132,31 @@ const Search = React.createClass({
   },
 
   _renderWrappedControls () {
+    // show progress bar if still downloading results, otherise download / analyze buttons
+    let actionProgressNode = this.props.isAsyncPending ?
+      this._renderProgressNode() : <SearchDownloadAnalyze results={this.props.results} query={this.props.query}  url={this.props.url}/>;
     return (
       <div className='row'>
         <div className='columns small-6'>
-          <SearchDownloadAnalyze results={this.props.results} query={this.props.query}  url={this.props.url}/>
+          {actionProgressNode}
         </div>
         <div className='columns small-6 text-right'>
           {this._renderViewAs()}
         </div>
       </div>
     );      
+  },
+
+  _renderProgressNode () {
+    let strWidth = `${Math.round(this.props.asyncProgress * 100)}%`;
+    return (
+      <div style={[style.progressBar]}>
+        <label>Downloading ...</label>
+        <div className='progress'>
+          <span className='meter' style={{ width:strWidth }} />
+        </div>
+      </div>
+    );
   },
 
   _renderPageSizeSelector () {
@@ -263,6 +279,9 @@ const style = {
   resultsWraper: {
     minHeight: 1000,
   },
+  progressBar: {
+    marginTop: '1.25rem'
+  },
   wrappedResult: {
     display: 'inline-block',
     padding: '0.25rem',
@@ -278,6 +297,8 @@ function mapStateToProps(_state) {
     activeCategory: state.activeCategory,
     canSortByAnnotation: (CATS_SORTED_BY_ANNOTATION.indexOf(state.activeCategory) > -1),
     isPending: state.isPending,
+    isAsyncPending: state.isAsyncPending,
+    asyncProgress: state.asyncProgress,
     currentPage: state.currentPage,
     totalPages: state.totalPages,
     resultsPerPage: state.resultsPerPage,

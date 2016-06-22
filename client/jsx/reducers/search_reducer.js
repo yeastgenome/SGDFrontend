@@ -18,6 +18,7 @@ const DEFAULT_STATE = {
   query: '',
   isPending: false,
   isAsyncPending: false,
+  asyncProgress: 0.00,
   isPaginatePending: false, // if the only change is the page, note special state for rendering total
   apiError: null,
   isHydrated: false,
@@ -99,6 +100,7 @@ const searchResultsReducer = function (_state, action) {
     case 'START_ASYNC_FETCH':
       state.asyncResults = [];
       state.isAsyncPending = true;
+      state.asyncProgress = 0.00;
       return state;
       break;
     case 'ASYNC_SEARCH_RESPONSE':
@@ -106,6 +108,7 @@ const searchResultsReducer = function (_state, action) {
         d.categoryName = getCategoryDisplayName(d.category);
         return d;
       });
+      state.asyncProgress = state.asyncResults.length / state.total;
       return state;
       break;
     case 'FINISH_ASYNC':
