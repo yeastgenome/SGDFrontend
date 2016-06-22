@@ -3,15 +3,38 @@ import { getCategoryDisplayName, createPath } from '../lib/search_helpers';
 import _ from 'underscore';
 
 const RESULTS_URL = '/backend/get_search_results';
+const WRAPPED_PAGE_SIZE = 500;
 
 // helper methods
-const fetchFromApi = function (url) {
+function fetchFromApi (url) {
   return fetch(url)
     .then(function(response) {
       if (response.status >= 400) {
         throw new Error('API error.');
       }
       return response.json();
+    });
+};
+// fetches large page recursively until downloaded
+function fetchPaginated (qp, onResponse, onComplete, page, allResults) {
+  page = page || 0;
+  allResults = allResults || [];
+  let _offset = page * WRAPPED_PAGE_SIZE; 
+  let _limit = WRAPPED_PAGE_SIZE;
+  let newQp = _.clone(qp);
+  newQp.limit = _limit;
+  newQp.offset = _offset;
+  let url = createPath({ pathname: RESULTS_URL, query: newQp });
+  fetchFromApi(url)
+    .then( response => {
+      let newResults = allResults.concat(response.results);
+      if (typeof onResponse === 'function') onResponse(newResults);
+      if (newResults.length < response.total) {
+        return fetchPaginated(qp, onResponse, onComplete, page + 1, newResults);
+      } else {
+        if (typeof onComplete === 'function') onComplete(newResults);
+        return;
+      }
     });
 };
 
@@ -25,6 +48,22 @@ export function setUserInput (newValue) {
 export function startSearchFetch () {
   return {
     type: 'START_SEARCH_FETCH',
+  };
+};
+
+export function startAsyncFetch () {
+  return function (dispatch, getState) {
+    dispatch({ type: 'START_ASYNC_FETCH' });
+    const state = getState();
+    const searchState = state.searchResults; 
+    const qp = (state.routing.location.query);
+    function onResponse (results) {
+      dispatch(receiveAsyncResponse(results));
+    };
+    function onComplete (results) {
+      dispatch(finishAsync());
+    }
+    fetchPaginated(qp, onResponse, onComplete);
   };
 };
 
@@ -57,13 +96,26 @@ export function fetchSearchResults () {
       // .catch(function(err) {
       //   return dispatch(setApiError(true));
       // });
-  }
+  };
 };
 
 export function receiveSearchResponse (_response) {
   return {
     type: 'SEARCH_RESPONSE',
     response: _response
+  };
+};
+
+export function receiveAsyncResponse (_results) {
+  return {
+    type: 'ASYNC_SEARCH_RESPONSE',
+    results: _results
+  };
+};
+
+export function finishAsync () {
+  return {
+    type: 'FINISH_ASYNC',
   };
 };
 

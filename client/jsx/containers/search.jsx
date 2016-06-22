@@ -13,7 +13,7 @@ import Collapser from '../components/widgets/collapser.jsx';
 import ErrorMessage from '../components/widgets/error_message.jsx';
 import Loader from '../components/widgets/loader.jsx';
 import Paginator from '../components/widgets/paginator.jsx';
-import { startSearchFetch, fetchSearchResults, toggleGeneWrap } from '../actions/search_actions';
+import { startSearchFetch, fetchSearchResults, toggleGeneWrap, startAsyncFetch } from '../actions/search_actions';
 import { createPath } from '../lib/search_helpers';
 
 const SEARCH_URL = '/search';
@@ -104,7 +104,7 @@ const Search = React.createClass({
   },
 
   _renderControls () {
-    if (this.props.wrapResults) return this._renderWrappedControls();
+    if (this._isWrappedResults()) return this._renderWrappedControls();
     if (this.props.total === 0) return null;
     const _onPaginate = newPage => {
       let urlParams = this.props.location.query;
@@ -114,13 +114,13 @@ const Search = React.createClass({
     };
     return (
       <div className='row'>
-        <div className='columns large-2 medium-4 small-6'>
+        <div className='columns large-3 medium-4 small-6'>
           <Paginator currentPage={this.props.currentPage} totalPages={this.props.totalPages} onPaginate={_onPaginate} />
         </div>
         <div className='columns large-2 medium-4 hide-for-small'>
           {this._renderPageSizeSelector()}
         </div>
-        <div className='columns large-3 medium-4 small-6'>
+        <div className='columns large-2 medium-4 small-6'>
           {this._renderSortBySelector()}
         </div>
         <div className='columns large-5 small-12 text-right'>
@@ -133,10 +133,10 @@ const Search = React.createClass({
   _renderWrappedControls () {
     return (
       <div className='row'>
-        <div className='columns small-8'>
+        <div className='columns small-6'>
           <SearchDownloadAnalyze results={this.props.results} query={this.props.query}  url={this.props.url}/>
         </div>
-        <div className='columns small-4 text-right'>
+        <div className='columns small-6 text-right'>
           {this._renderViewAs()}
         </div>
       </div>
@@ -233,11 +233,14 @@ const Search = React.createClass({
     // dispatch actions
     this.props.dispatch(startSearchFetch());
     this.props.dispatch(fetchSearchResults());
+    if (this._isWrappedResults()) {
+      this.props.dispatch(startAsyncFetch());
+    }
     return;
   },
 
   _isWrappedResults () {
-    return (this.props.activeCategory === 'locus' && this.props.wrapResults);
+    return (this.props.activeCategory === 'locus' && this.props.geneMode !== 'list');
   },
 
   // updates google analytics, depends on global 'ga' object. Does nothing if not present

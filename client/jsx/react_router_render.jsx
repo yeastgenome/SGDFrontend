@@ -1,4 +1,3 @@
-import 'babel/polyfill'; // allow promise
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createHistory, useQueries } from 'history'

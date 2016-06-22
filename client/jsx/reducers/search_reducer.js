@@ -4,7 +4,6 @@ import { getCategoryDisplayName } from '../lib/search_helpers';
 const FILTERED_FACET_VALUES = ['cellular component', 'biological process', 'molecular function'];
 const DEFAULT_RESULTS_PER_PAGE = 25;
 const DEFAULT_SORT_BY = 'relevance';
-const WRAPPED_PAGE_SIZE = 500;
 const DEFAULT_STATE = {
   userInput: '',
   results: [],
@@ -17,6 +16,7 @@ const DEFAULT_STATE = {
   resultsPerPage: DEFAULT_RESULTS_PER_PAGE,
   query: '',
   isPending: false,
+  isAsyncPending: false,
   isPaginatePending: false, // if the only change is the page, note special state for rendering total
   apiError: null,
   isHydrated: false,
@@ -24,6 +24,7 @@ const DEFAULT_STATE = {
 };
 
 const searchResultsReducer = function (_state, action) {
+  console.log(action)
   let state = _.clone(_state);
   if (typeof state === 'undefined') {
     return DEFAULT_STATE;
@@ -45,10 +46,7 @@ const searchResultsReducer = function (_state, action) {
     // if changing cat, set isAggPending to true before setting active cat
     if (state.activeCategory !== activeCat) state.isAggPending = true;
     state.activeCategory = activeCat;
-    // if wrapResults and on genes, allow large request size, otherwise look for param size, or just default
-    let unwrappedPageSize = params.page_size || DEFAULT_RESULTS_PER_PAGE;
-    state.resultsPerPage = (state.activeCategory === 'locus' && params.wrapResults === 'true') ?
-      WRAPPED_PAGE_SIZE : unwrappedPageSize;
+    state.resultsPerPage = params.page_size || DEFAULT_RESULTS_PER_PAGE;
     // set sortBy
     state.sortBy = params.sort_by || DEFAULT_SORT_BY;
     return state;
@@ -97,11 +95,19 @@ const searchResultsReducer = function (_state, action) {
       break;
 
     case 'START_ASYNC_FETCH':
-      state.isPending = true;
+      state.isAsyncPending = true;
       return state;
       break;
     case 'ASYNC_SEARCH_RESPONSE':
-      
+      state.asyncResults = action.results.map( d => {
+        d.categoryName = getCategoryDisplayName(d.category);
+        return d;
+      });
+      return state;
+      break;
+    case 'FINISH_ASYNC':
+      state.isAsyncPending = false;
+      return state;
       break;
     case 'SET_USER_INPUT':
       state.userInput = action.value;
