@@ -77,16 +77,13 @@ const Search = React.createClass({
     const qp = _.clone(this.props.queryParams);
     const isList = (this.props.geneMode === 'list');
     const isWrap = (this.props.geneMode === 'wrap');
-    const isViz = (this.props.geneMode === 'viz');
     const listPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, geneMode: 'list' }) });
     const wrapPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, geneMode: 'wrap' }) });
-    const vizPath = createPath({ pathname: SEARCH_URL, query: _.extend(qp, { page: 0, geneMode: 'viz' }) });
     
     return (
       <ul className='button-group' style={[style.viewAs]}>
         <Link to={listPath} className={`button tiny${!isList ? ' secondary':''}`}><i className='fa fa-reorder'/> <span>List</span></Link>
         <Link to={wrapPath} className={`button tiny${!isWrap ? ' secondary':''}`}><i className='fa fa-th'/> <span>Wrapped</span></Link>
-        <Link to={vizPath} className={`button tiny${!isViz ? ' secondary':''}`}><i className='fa fa-bar-chart'/> <span>Visualize</span></Link>
       </ul>
     );
   },
@@ -214,8 +211,6 @@ const Search = React.createClass({
     // maybe render special result types
     if (this.props.geneMode === 'wrap') {
       return this._renderWrappedResults();
-    } else if (this.props.geneMode === 'viz') {
-      return this._renderVizResults();
     }
     // if not wrapped or analyzed, just render regular results
     let results = this.props.results;
@@ -235,12 +230,6 @@ const Search = React.createClass({
       <div>
         {nodes}
       </div>
-    );
-  },
-
-  _renderVizResults () {
-    return (
-      <FlexyScatterplot />
     );
   },
 

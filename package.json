@@ -46,8 +46,7 @@
     "sgd_visualization": "^1.0.12",
     "tcomb-form": "^0.8.0",
     "tcomb-json-schema": "^0.2.3",
-    "underscore": "~1.6.0",
-    "vega-lite": "^1.0.12"
+    "underscore": "~1.6.0"
   },
   "devDependencies": {
     "babel": "^6.5.2",
