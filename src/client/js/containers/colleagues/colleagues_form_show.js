@@ -2,14 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Loader from '../../components/widgets/loader';
+import apiRequst from '../../lib/api_request';
 import { StringField, CheckField, ListField, MultiSelectField } from '../../components/widgets/form_helpers';
 
 const COLLEAGUE_GET_URL = '/colleagues';
+const COLLEAGUE_POST_URL = '/colleagues';
 const COLLEAGUES_AUTOCOMPLETE_URL = '/colleagues_auto';
 const GENES_URL = '/genes';
 const TOPICS_URL = '/topics';
 
-const ColleagesFormShow = React.createClass({
+const ColleaguesFormShow = React.createClass({
   propTypes: {
     isReadOnly: React.PropTypes.bool,
     isUpdate: React.PropTypes.bool,
@@ -46,7 +48,7 @@ const ColleagesFormShow = React.createClass({
     let data = this.state.data;
     return (
       <div className='row'>
-        <form>
+        <form ref='form' onSubmit={this._submitData}>
           <div className='column small-3'>
             <StringField isReadOnly={this.props.isReadOnly} displayName='First Name' paramName='first_name' defaultValue={data.first_name} />
           </div>
@@ -80,6 +82,7 @@ const ColleagesFormShow = React.createClass({
             <CheckField displayName='Show Email' paramName='show_email' defaultValue={data.show_email} />
             <CheckField displayName='Receive Newsletter' paramName='newsletter' defaultValue={data.newsletter} />
             {this._renderOrcid()}
+            {this._renderControls()}
           </div>
         </form>
       </div>
@@ -176,12 +179,40 @@ const ColleagesFormShow = React.createClass({
 
   _getIdsFromArray (original) {
     return original.map( d => { return d.id; });
+  },
+
+  _renderControls () {
+    if (this.props.isReadOnly) return null;
+    let classSuffix = this.state.isUpdatePending ? ' disabled secondary' : '';
+    let label = this.state.isUpdatePending ? 'Saving...' : 'Save';
+    return (
+      <div className='text-right'>
+        <input className={`button ${classSuffix}`} type='submit' value={label} />
+      </div>
+    );
+  },
+
+  _submitData (e) {
+    e.preventDefault();
+    let _method = this.props.isUpdate ? 'PUT' : 'POST';
+    let _data = new FormData(this.refs.form);
+    let url = this.props.isUpdate ? `${COLLEAGUE_POST_URL}/${this.props.colleagueDisplayName}` : COLLEAGUE_POST_URL;
+    let options = {
+      crsfToken: this.props.crsfToken,
+      data: _data,
+      method: _method
+    };
+    apiRequst(url, options).then( response => {
+      console.log(response);
+    });
   }
 });
 
 function mapStateToProps(_state) {
+  let state = _state.auth;
   return {
+    csrfToken: state.csrfToken,
   };
 }
 
-export default connect(mapStateToProps)(ColleagesFormShow);
+export default connect(mapStateToProps)(ColleaguesFormShow);
