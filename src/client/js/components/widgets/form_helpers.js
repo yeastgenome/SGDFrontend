@@ -9,7 +9,8 @@ export const CheckField = React.createClass({
     displayName: React.PropTypes.string,
     paramName: React.PropTypes.string,
     defaultChecked: React.PropTypes.bool,
-    iconClass: React.PropTypes.string
+    iconClass: React.PropTypes.string,
+    isReadOnly: React.PropTypes.bool
   },
 
   render () {
@@ -30,15 +31,18 @@ export const StringField = React.createClass({
     paramName: React.PropTypes.string,
     defaultValue: React.PropTypes.string,
     iconClass: React.PropTypes.string,
-    placeholder: React.PropTypes.string
+    placeholder: React.PropTypes.string,
+    isReadOnly: React.PropTypes.bool
   },
 
   render () {
     let iconNode = this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
+    let node = this.props.isReadOnly ?
+      <p>{this.props.defaultValue}</p> : <input type='text' name={this.props.paramName} placeholder={this.props.placeholder} defaultValue={this.props.defaultValue} />;
     return (
       <div>
         <label>{iconNode}{this.props.displayName}</label>
-        <input type='text' name={this.props.paramName} placeholder={this.props.placeholder} defaultValue={this.props.defaultValue} />
+        {node}
       </div>
     );
   }
@@ -50,7 +54,8 @@ export const ListField = React.createClass({
     paramName: React.PropTypes.string,
     iconClass: React.PropTypes.string,
     placeholder: React.PropTypes.string,
-    defaultValues: React.PropTypes.array
+    defaultValues: React.PropTypes.array,
+    isReadOnly: React.PropTypes.bool
   },
 
   getInitialState () {
@@ -61,10 +66,11 @@ export const ListField = React.createClass({
 
   render () {
     let iconNode = this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
+    let editNode = this.props.isReadOnly ? null : <EditableList onUpdate={this._onUpdate} placeholder={this.props.placeholder} />;
     return (
       <div>
         <label>{iconNode}{this.props.displayName}</label>
-        <EditableList onUpdate={this._onUpdate} placeholder={this.props.placeholder} />
+        {editNode}
         <input type='hidden' name={this.props.paramName} value={JSON.stringify(this.state.values)} />
       </div>
     );
@@ -82,7 +88,8 @@ export const MultiSelectField = React.createClass({
     paramName: React.PropTypes.string,
     defaultValues: React.PropTypes.array,
     iconClass: React.PropTypes.string,
-    defaultOptions: React.PropTypes.array
+    defaultOptions: React.PropTypes.array,
+    isReadOnly: React.PropTypes.bool
   },
 
   getInitialState () {
