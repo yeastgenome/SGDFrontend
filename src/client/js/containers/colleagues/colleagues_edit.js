@@ -1,9 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import EditableList from '../../components/widgets/editable_list';
 import Loader from '../../components/widgets/loader';
-import { StringField, CheckField } from '../../components/widgets/form_helpers';
+import { StringField, CheckField, ListField } from '../../components/widgets/form_helpers';
 
 const COLLEAGUE_GET_URL = '/colleagues';
 
@@ -129,10 +128,7 @@ const ColleaguesEdit = React.createClass({
 
   _renderNotes () {
     return (
-      <div>
-        <label>Notes</label>
-        <EditableList defaultValues={this.state.data.notes} placeholder='new note' />
-      </div>
+      <ListField displayName='Notes' paramName='notes' defaultValues={this.state.data.notes} placeholder='new note' />
     );
   },
 
