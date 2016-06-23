@@ -133,7 +133,7 @@ def build_search_query(query, multi_match_fields, category, category_filters, re
     
 def build_es_search_query(query, multi_match_fields):
     if query == '':
-        return { 'match_all': {} }
+        return {'match_all': {}}
     
     es_query = {
         "bool": {
