@@ -115,7 +115,11 @@ const ColleaguesEdit = React.createClass({
   },
 
   _renderAssociates () {
-    return null;
+    return (
+      <div>
+        
+      </div>
+    );
   },
 
   _renderGenes () {
@@ -123,13 +127,11 @@ const ColleaguesEdit = React.createClass({
   },
 
   _renderComments () {
-    return null;
+    return <ListField displayName='Comments' paramName='comments' defaultValues={this.state.data.comments} placeholder='new comment' />;
   },
 
   _renderNotes () {
-    return (
-      <ListField displayName='Notes' paramName='notes' defaultValues={this.state.data.notes} placeholder='new note' />
-    );
+    return <ListField displayName='Notes' paramName='notes' defaultValues={this.state.data.notes} placeholder='new note' />;
   },
 
   _renderOrcid () {
