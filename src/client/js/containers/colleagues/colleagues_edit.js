@@ -5,6 +5,8 @@ import Loader from '../../components/widgets/loader';
 import { StringField, CheckField, ListField, MultiSelectField } from '../../components/widgets/form_helpers';
 
 const COLLEAGUE_GET_URL = '/colleagues';
+const COLLEAGUES_AUTOCOMPLETE_URL = '/colleagues_auto';
+const GENES_URL = '/genes';
 const TOPICS_URL = '/topics';
 
 const ColleaguesEdit = React.createClass({
@@ -116,16 +118,19 @@ const ColleaguesEdit = React.createClass({
   },
 
   _renderAssociates () {
+    let supervisors = this.state.data.supervisors || [];
+    let labMembers = this.state.data.lab_members || [];
     return (
       <div>
-
+        <MultiSelectField displayName='Supervisor(s)' paramName='supervisors_display_names' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL} defaultValues={this._getIdsFromArray(supervisors)} defaultOptions={supervisors}/>
+        <MultiSelectField displayName='Lab Members' paramName='lab_members_display_names' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL} defaultValues={this._getIdsFromArray(labMembers)} defaultOptions={labMembers}/>
       </div>
     );
   },
 
   _renderGenes () {
     let data = this.state.data.associated_genes || [];
-    return <MultiSelectField displayName='Associated Genes' paramName='associated_gene_ds' optionsUrl='/genes' defaultValues={this._getIdsFromArray(data)} defaultOptions={data}/>;
+    return <MultiSelectField displayName='Associated Genes' paramName='associated_gene_ids' optionsUrl={GENES_URL} defaultValues={this._getIdsFromArray(data)} defaultOptions={data}/>;
   },
 
   _renderComments () {

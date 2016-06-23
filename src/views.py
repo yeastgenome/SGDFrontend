@@ -292,6 +292,11 @@ def topics(request):
 def genes(request):
     return {'options': []}
 
+# TEMP
+@view_config(route_name='colleagues_auto', renderer='json', request_method='GET')
+def colleagues_auto(request):
+    return {'options': []}
+
 @view_config(route_name='extensions', renderer='json', request_method='GET')
 def extensions(request):
     return {'options': [{'id': e, 'name': e} for e in FILE_EXTENSIONS]}

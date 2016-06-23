@@ -22,13 +22,14 @@ def main(global_config, **settings):
     config.add_route('colleagues', '/colleagues')
     config.add_route('research_interests', '/research_interests')
     config.add_route('genes', '/genes')
+    config.add_route('colleagues_auto', '/colleagues_auto')
     config.add_route('keywords', '/keywords')
     config.add_route('formats', '/formats')
     config.add_route('topics', '/topics')
     config.add_route('extensions', '/extensions')
     config.add_route('sign_in', '/signin')
     config.add_route('sign_out', '/signout')
-
+    
     #NEX endpoints
     config.add_route('reference_list', '/reference_list')
     config.add_route('chemical', '/chemical/{id}/overview')

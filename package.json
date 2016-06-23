@@ -23,7 +23,7 @@
     "react-redux": "^4.0.6",
     "react-router": "^2.4.0",
     "react-router-redux": "^4.0.4 ",
-    "react-select": "^1.0.0-beta12",
+    "react-select": "git@github.com:JedWatson/react-select.git#2fee64c808cd3932376abe049f7a73560183eb3f",
     "redux": "^3.5.2",
     "redux-thunk": "^1.0.0",
     "underscore": "^1.8.3"

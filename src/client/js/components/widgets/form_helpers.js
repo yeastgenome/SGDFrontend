@@ -114,14 +114,14 @@ export const MultiSelectField = React.createClass({
   // from a URL, returns the fetch function needed to get the options
   _getAsyncOptions () {
     return (input, cb) => {
-      return fetch(this.props.optionsUrl)
+      fetch(this.props.optionsUrl)
         .then( response => {
           return response.json();
         }).then( optionsObj => {
           // add defaultOptions to results and remove duplicated
           let defaultOptions = this.props.defaultOptions || [];
-          optionsObj.options = _.uniq(optionsObj.options.concat(defaultOptions))
-          return optionsObj;
+          optionsObj.options = _.uniq(optionsObj.options.concat(defaultOptions));
+          return cb(null, optionsObj);
         });
     };
   },
