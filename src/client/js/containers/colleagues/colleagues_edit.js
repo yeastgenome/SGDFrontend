@@ -111,19 +111,21 @@ const ColleaguesEdit = React.createClass({
   },
 
   _renderTopics () {
-    return <MultiSelectField displayName='Topics' paramName='topics_ids' optionsUrl={TOPICS_URL} />;
+    let data = this.state.data.topics || [];
+    return <MultiSelectField displayName='Topics' paramName='topic_ids' optionsUrl={TOPICS_URL} defaultValues={this._getIdsFromArray(data)} defaultOptions={data} />;
   },
 
   _renderAssociates () {
     return (
       <div>
-        
+
       </div>
     );
   },
 
   _renderGenes () {
-    return null;
+    let data = this.state.data.associated_genes || [];
+    return <MultiSelectField displayName='Associated Genes' paramName='associated_gene_ds' optionsUrl='/genes' defaultValues={this._getIdsFromArray(data)} defaultOptions={data}/>;
   },
 
   _renderComments () {
@@ -153,6 +155,10 @@ const ColleaguesEdit = React.createClass({
     }).then( json => {
       this.setState({ data: json, isLoadPending: false });
     });
+  },
+
+  _getIdsFromArray (original) {
+    return original.map( d => { return d.id; });
   },
 
   // true if edit page,not /new
