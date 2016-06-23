@@ -1,7 +1,7 @@
 import React from 'react';
 
 const EditableList = React.createClass({
-	propTypes: {
+  propTypes: {
     defaultValues: React.PropTypes.array,
     onUpdate: React.PropTypes.func, // onUpdate(values)
     placeholder: React.PropTypes.string
