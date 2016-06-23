@@ -2,9 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Loader from '../../components/widgets/loader';
-import { StringField, CheckField, ListField } from '../../components/widgets/form_helpers';
+import { StringField, CheckField, ListField, MultiSelectField } from '../../components/widgets/form_helpers';
 
 const COLLEAGUE_GET_URL = '/colleagues';
+const TOPICS_URL = '/topics';
 
 const ColleaguesEdit = React.createClass({
   getInitialState () {
@@ -109,9 +110,8 @@ const ColleaguesEdit = React.createClass({
     );
   },
 
-  // TODO, controlled vocab
   _renderTopics () {
-    return null;
+    return <MultiSelectField displayName='Topics' paramName='topics_ids' optionsUrl={TOPICS_URL} />;
   },
 
   _renderAssociates () {
