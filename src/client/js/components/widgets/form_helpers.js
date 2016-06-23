@@ -1,5 +1,6 @@
 import React from 'react';
 import { Async } from 'react-select';
+import _ from 'underscore';
 
 import EditableList from './editable_list';
 
@@ -81,6 +82,7 @@ export const MultiSelectField = React.createClass({
     paramName: React.PropTypes.string,
     defaultValues: React.PropTypes.array,
     iconClass: React.PropTypes.string,
+    defaultOptions: React.PropTypes.array
   },
 
   getInitialState () {
@@ -115,6 +117,11 @@ export const MultiSelectField = React.createClass({
       return fetch(this.props.optionsUrl)
         .then( response => {
           return response.json();
+        }).then( optionsObj => {
+          // add defaultOptions to results and remove duplicated
+          let defaultOptions = this.props.defaultOptions || [];
+          optionsObj.options = _.uniq(optionsObj.options.concat(defaultOptions))
+          return optionsObj;
         });
     };
   },

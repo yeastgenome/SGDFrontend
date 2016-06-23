@@ -133,6 +133,11 @@ def topics(request):
     topics_db = DBSession.query(Edam).filter(Edam.edam_namespace == 'topic').all()
     return {'options': [t.to_dict() for t in topics_db]}
 
+# TEMP
+@view_config(route_name='genes', renderer='json', request_method='GET')
+def genes(request):
+    return {'options': []}
+
 @view_config(route_name='extensions', renderer='json', request_method='GET')
 def extensions(request):
     return {'options': [{'id': e, 'name': e} for e in FILE_EXTENSIONS]}
