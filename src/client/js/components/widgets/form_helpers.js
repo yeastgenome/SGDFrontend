@@ -1,4 +1,5 @@
 import React from 'react';
+import { Async } from 'react-select';
 
 import EditableList from './editable_list';
 
@@ -46,13 +47,12 @@ export const ListField = React.createClass({
   propTypes: {
     displayName: React.PropTypes.string,
     paramName: React.PropTypes.string,
-    defaultValue: React.PropTypes.string,
     iconClass: React.PropTypes.string,
     placeholder: React.PropTypes.string,
     defaultValues: React.PropTypes.array
   },
 
-  getInitialState() {
+  getInitialState () {
     return {
       values: this.props.defaultValues || []
     };
@@ -67,6 +67,56 @@ export const ListField = React.createClass({
         <input type='hidden' name={this.props.paramName} value={JSON.stringify(this.state.values)} />
       </div>
     );
+  },
+
+  _onUpdate (newValues) {
+    this.setState({ values: newValues });
+  }
+});
+
+export const MultiSelectField = React.createClass({
+  propTypes: {
+    displayName: React.PropTypes.string,
+    optionsUrl: React.PropTypes.string,
+    paramName: React.PropTypes.string,
+    defaultValues: React.PropTypes.array,
+    iconClass: React.PropTypes.string,
+  },
+
+  getInitialState () {
+    return {
+      values: this.props.defaultValues || []
+    };
+  },
+
+  render () {
+    let iconNode = this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
+    return (
+      <div>
+        <label>{iconNode}{this.props.displayName}</label>
+        <Async multi simpleValue joinValues
+          name={this.props.paramName} value={this.state.values}
+          loadOptions={this._getAsyncOptions()}
+          labelKey='name' valueKey='id'
+          onChange={this._onChange} 
+        />
+      </div>
+    );
+  },
+
+  _onChange (newValues) {
+    newValues = newValues ? newValues.split(',').map( d => { return parseInt(d); }) : [];
+    this.setState({ values: newValues });
+  },
+
+  // from a URL, returns the fetch function needed to get the options
+  _getAsyncOptions () {
+    return (input, cb) => {
+      return fetch(this.props.optionsUrl)
+        .then( response => {
+          return response.json();
+        });
+    };
   },
 
   _onUpdate (newValues) {
