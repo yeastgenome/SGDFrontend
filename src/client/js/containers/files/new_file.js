@@ -73,7 +73,9 @@ const NewFile = React.createClass({
             <StringField displayName='README name' paramName='readme_name' />
             <StringField displayName='PMIDs' paramName='pmids' placeholder='Comma-separated lis of PMIDs' />
             {this._renderErrors()}
-            {buttonNode}
+            <div className='text-right'>
+              {buttonNode}
+            </div>
           </form>
         </div>
         <div className='large-6 columns'>
