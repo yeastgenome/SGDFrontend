@@ -29,7 +29,7 @@ const EditableList = React.createClass({
   // call onUpdate prop if defined and values changed
   componentDidUpdate(prevProps, prevState) {
     if (this.state.values !== prevState.values && typeof this.props.onUpdate === 'function') {
-      this.props.onUpdate(newValues);
+      this.props.onUpdate(this.state.values);
     }
   },
 
@@ -45,7 +45,8 @@ const EditableList = React.createClass({
   _onAddValue (e) {
     e.preventDefault();
     let content = this.refs.inputText.value;
-    let newValues = this.state.values;
+    if (content === '') return; // ignore blank
+    let newValues = this.state.values.slice();
     newValues.push(content);
     this.setState({ values: newValues });
     // clear input
