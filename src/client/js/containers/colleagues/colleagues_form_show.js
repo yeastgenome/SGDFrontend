@@ -178,7 +178,7 @@ const ColleaguesFormShow = React.createClass({
   },
 
   _getIdsFromArray (original) {
-    return original.map( d => { return d.id; });
+    return original.map( d => d.id );
   },
 
   _renderControls () {
@@ -192,6 +192,7 @@ const ColleaguesFormShow = React.createClass({
     );
   },
 
+  // saves form data to server, if new makes 
   _submitData (e) {
     e.preventDefault();
     let _method = this.props.isUpdate ? 'PUT' : 'POST';
