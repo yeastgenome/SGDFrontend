@@ -31,6 +31,7 @@ export function logoutAndRedirect () {
 
 export function sendAuthRequest (googleToken) {
   return function (dispatch, getState) {
+    dispatch(startAuthentication());
     let state = getState().auth;
     // format params as JSON string without wrapping brackets
     let paramObj = { google_token: googleToken };
@@ -73,6 +74,10 @@ export function setCSRFToken (token) {
   };
 };
 
+export function startAuthentication () {
+  return { type: 'START_AUTH' };
+};
+
 export function receiveAuthResponseAndRedirect () {
   return function (dispatch, getState) {
     dispatch(receiveAuthenticationResponse());
@@ -83,13 +88,9 @@ export function receiveAuthResponseAndRedirect () {
 };
 
 export function receiveAuthenticationResponse () {
-  return {
-    type: 'RECEIVE_AUTH_RESPONSE'
-  };
+  return { type: 'RECEIVE_AUTH_RESPONSE' };
 };
 
 export function setLoginError () {
-  return {
-    type: 'SET_LOGIN_ERROR'
-  };
+  return { type: 'SET_LOGIN_ERROR' };
 };

@@ -7,12 +7,6 @@ import Loader from '../components/widgets/loader';
 const GOOGLE_PLATFORM_URL = 'https://apis.google.com/js/platform.js';
 
 const Login = React.createClass({
-  getInitialState () {
-    return {
-      isPending: false
-    };
-  },
-
   render () {
     return (
       <div>
@@ -20,7 +14,7 @@ const Login = React.createClass({
         <h1>Login</h1>
         <hr />
         {this._renderLoginButton()}
-        {this.state.isPending ? <Loader /> : null}
+        {this.props.isAuthenticating ? <Loader /> : null}
       </div>
     );
   },
@@ -62,7 +56,8 @@ const Login = React.createClass({
 
 function mapStateToProps(_state) {
   return {
-    loginError: _state.auth.loginError
+    loginError: _state.auth.loginError,
+    isAuthenticating: _state.auth.isAuthenticating
   };
 }
 
