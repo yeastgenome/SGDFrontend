@@ -40,7 +40,7 @@ const Navbar = React.createClass({
     }
 
     var _position = this.state.backToTopVisible ? 'fixed' : 'absolute';
-    var _style = { position: _position, top: '0.5rem' };
+    var _style = { position: _position, top: '0.7rem' };
     var _ulStyle = this.props.title ? {} : { borderTop: 'none' };
     return (<div>
       <div className='sgd-navbar' style={_style}>

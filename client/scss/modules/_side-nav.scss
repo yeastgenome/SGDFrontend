@@ -69,6 +69,9 @@ http://smacss.com/book/type-module
 }
 
 // Overwrite a couple magellan settings - need to make these case specific though
+#sidebar .magellan-target {
+    margin-top: 0.7rem;
+}
 
 .fixed {
     left: auto; // a Foundation update added a 0 value to this, restoring to default
