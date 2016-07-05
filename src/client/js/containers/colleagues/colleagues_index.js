@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import _ from 'underscore';
 
 import ColleaguesSearchResults from './search_results';
+import Loader from '../../components/widgets/loader';
 
 const COLLEAGUE_SEARCH_URL = '/colleagues';
 
@@ -45,13 +46,14 @@ const ColleaguesIndex = React.createClass({
   },
 
   _renderSearchResultsNodes() {
-    if (this.state.isPending) return <div className='sgd-loader-container'><div className='sgd-loader'></div></div>;
+    if (this.state.isPending) return <Loader />;
     if (this.state.searchResults) return <ColleaguesSearchResults query={this.state.query} results={this.state.searchResults} />;
     return null;
   },
 
   _onSubmit (e) {
     if (e) e.preventDefault();
+    this.setState({ isPending: true });
     var query = this.refs.name.value.trim();
     // no blank query
     if (query === '') return;
