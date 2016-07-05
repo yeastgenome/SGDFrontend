@@ -12,6 +12,7 @@ import { setUserInput } from '../actions/search_actions';
 import { getCategoryDisplayName } from '../lib/search_helpers';
 
 const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
+const AUTOCOMPLETE_FETCH_DEBOUNCE_WAIT = 200;
 
 const SearchOption = React.createClass({
   render () {
@@ -58,6 +59,7 @@ const AppSearchBar = React.createClass({
   },
 
   render() {
+    let debouncedOnChange = null;
     return (
       <div className='sgd-search-container'> 
         <Typeahead
@@ -87,8 +89,16 @@ const AppSearchBar = React.createClass({
   _onChange(e) {
     let newValue = e.target.value;
     this._setUserInput(newValue);
-    let url = `${this.props.resultsUrl}?q=${newValue}`;
-    fetch(url)
+    // debounce autocomplete fetching for fast typers, save to instance variable
+    if (!this._debouncedFetch) {
+      this._debouncedFetch =  _.debounce(this._fetchAutocompleteResults, AUTOCOMPLETE_FETCH_DEBOUNCE_WAIT);
+    }
+    this._debouncedFetch(newValue);
+  },
+
+  _fetchAutocompleteResults (query) {
+    let url = `${this.props.resultsUrl}?q=${query}`;
+    this.f = fetch(url)
       .then( function (response) {
           if (response.status >= 400) {
             throw new Error('API error.');
