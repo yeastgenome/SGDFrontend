@@ -40,15 +40,14 @@ const Login = React.createClass({
       // expose onSignIn to global window so google API can find
       if (window) window.onSignIn = this.onSignIn;
       // manually add google sign in script
-      // let scriptTag = document.createElement('script');
-      // scriptTag.type = 'text/javascript';
-      // scriptTag.src = GOOGLE_PLATFORM_URL;
-      // document.head.appendChild(scriptTag);
+      let scriptTag = document.createElement('script');
+      scriptTag.type = 'text/javascript';
+      scriptTag.src = GOOGLE_PLATFORM_URL;
+      document.head.appendChild(scriptTag);
     }
   },
 
   onSignIn (googleUser) {
-    console.log(googleUser)
     let sendAuthAction = AuthActions.sendAuthRequest(googleUser.getAuthResponse().id_token);
     this.setState({ isPending: true });
     this.props.dispatch(sendAuthAction);
