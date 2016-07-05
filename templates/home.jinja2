@@ -24,6 +24,8 @@
             window.CSRF_TOKEN = '{{ request.session.get_csrf_token() }}';
         </script>
         <div id="j-application"></div>
+        <!-- google auth -->
+        <script src="https://apis.google.com/js/platform.js"></script>
         <!-- custom app js bundled -->
         <script src="/static/js/application.js"></script>
     </body>
