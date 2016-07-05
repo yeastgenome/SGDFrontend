@@ -99,6 +99,14 @@ def upload_file(request):
     log.info('File ' + request.POST.get('display_name') + ' was successfully uploaded.')
     return Response({ 'success': True })
 
+# TEMP 
+@view_config(route_name='triaged_colleagues', renderer='json', request_method='GET')
+def triaged_colleagues(request):
+     return [
+        { "first_name": "J. Michael", "last_name": "Cherry", "work_phone": "(650) 723-7541", "fax": "(650) 725-1534", "format_name": "J._Michael_Cherry_960", "organization": "Stanford University", "email": "cherry@stanford.edu" },
+        { "first_name": "Joel R.", "last_name": "Cherry", "work_phone": None, "fax": None, "format_name": "Joel_R._Cherry_961", "organization": None, "email": None }
+     ]
+
 @view_config(route_name='colleagues', renderer='json', request_method='GET')
 def colleagues_by_last_name(request):
     if request.params.get('last_name') is None:
