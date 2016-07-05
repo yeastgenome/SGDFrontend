@@ -2,7 +2,7 @@ namespace :deploy do
   desc 'Build application'
   task :build do
     on roles(:app), in: :sequence do
-      execute "export WORKON_HOME=~/envs/ && source virtualenvwrapper.sh && cd #{current_path} && workon sgd && make build"
+      execute "export WORKON_HOME=/data/envs/ && export NODE_ENV=production && source virtualenvwrapper.sh && cd #{current_path} && workon sgd && make prod-build"
     end
   end
 
@@ -18,16 +18,18 @@ namespace :deploy do
     end
   end
 
-  desc 'Start pyramid'
+  desc 'Restart pyramid'
   task :restart do
     on roles(:app), in: :sequence do
-      execute "cd #{current_path} && source #{current_path}/prod_variables.sh && export WORKON_HOME=~/envs/ && source virtualenvwrapper.sh && workon sgd && make stop-prod && make run-prod"
+      execute "cd #{current_path} && export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && workon sgd && . prod_variables.sh && make stop-prod && make run-prod && cat /var/run/pyramid/backend.pid"
     end
   end
 
   desc 'Copy js build'
   task :copy_js do
     on roles(:app), in: :sequence do
+      execute "mkdir -p #{current_path}/static/js/"
+      
       js_build_path = "static/js/application.js"
       upload!("./#{js_build_path}", "#{current_path}/#{js_build_path}")
     end

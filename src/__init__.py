@@ -14,9 +14,13 @@ def main(global_config, **settings):
 
     config.add_route('home', '/')
     config.add_route('upload', '/upload')
-    
+
+    config.add_route('search', '/get_search_results')
+    config.add_route('search_colleagues', '/search_colleagues')
+    config.add_route('search_colleagues_autocomplete', '/search_colleagues_autocomplete')
     config.add_route('colleague', '/colleagues/{format_name}')
     config.add_route('colleagues', '/colleagues')
+    config.add_route('research_interests', '/research_interests')
     config.add_route('genes', '/genes')
     config.add_route('colleagues_auto', '/colleagues_auto')
     config.add_route('keywords', '/keywords')
@@ -29,6 +33,7 @@ def main(global_config, **settings):
     #NEX endpoints
     config.add_route('reference_list', '/reference_list')
     config.add_route('chemical', '/chemical/{id}/overview')
+    config.add_route('chemical_phenotype_details', '/chemical/{id}/phenotype_details')
 
     config.scan()
     config.add_static_view(name='static', path='../static')

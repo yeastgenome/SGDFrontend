@@ -5,7 +5,7 @@ import mock
 import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
-from src.views import colleagues_by_last_name, colleague_by_format_name
+from src.views import colleagues_by_last_name, colleague_by_format_name, search_colleagues, search_colleagues_autocomplete
 from src.models import Colleague, ColleagueAssociation, ColleagueKeyword, Keyword
 
 class ColleaguesTest(unittest.TestCase):    
@@ -30,6 +30,122 @@ class ColleaguesTest(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
+    @mock.patch('src.models.ESearch.search')
+    def test_should_return_all_results_for_no_query_param_on_search(self, mock_es):
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        request.registry.settings['elasticsearch.index'] = 'searchable_items'
+        response = search_colleagues(request)
+
+        mock_es.assert_called_with(body={
+            'query': {
+                'filtered': {
+                    'filter': {
+                        'bool': {
+                            'must': [{
+                                'term': {'category': 'colleagues'}
+                            }]
+                        }
+                    },
+                    'query': {'match_all': {}}
+                }
+            }
+        },from_=0, index='searchable_items', size=10)    
+        
+    @mock.patch('src.models.ESearch.search')
+    def test_should_return_results_by_offset_and_limit(self, mock_es):
+        request = testing.DummyRequest(params={'limit': 100, 'offset': 25})
+        request.context = testing.DummyResource()
+        request.registry.settings['elasticsearch.index'] = 'searchable_items'
+        response = search_colleagues(request)
+
+        mock_es.assert_called_with(body={
+            'query': {
+                'filtered': {
+                    'filter': {
+                        'bool': {
+                            'must': [{
+                                'term': {'category': 'colleagues'}
+                            }]
+                        }
+                    },
+                    'query': {'match_all': {}}
+                }
+            }
+        },from_=25, index='searchable_items', size=100)
+
+    @mock.patch('src.models.ESearch.search')
+    def test_should_query_by_param_on_search(self, mock_es):
+        request = testing.DummyRequest(params={'q': 'Dr. Frankstein'})
+        request.context = testing.DummyResource()
+        request.registry.settings['elasticsearch.index'] = 'searchable_items'
+        response = search_colleagues(request)
+
+        mock_es.assert_called_with(body={
+            'query': {
+                'filtered': {
+                    'filter': {
+                        'bool': {
+                            'must': [{'term': {'category': 'colleagues'}}]
+                        }
+                    },
+                    'query': {
+                        'bool': {
+                            'should': [{
+                                'match_phrase_prefix': {
+                                    'name': {
+                                        'query': 'Dr. Frankstein',
+                                        'boost': 4,
+                                        'analyzer': 'standard',
+                                        'max_expansions': 30
+                                    }
+                                }
+                            }, {
+                                'match_phrase': {
+                                    'name': {
+                                        'query': 'Dr. Frankstein',
+                                        'boost': 10,
+                                        'analyzer': 'standard'
+                                    }
+                                }
+                            }]
+                        }
+                    }
+                }
+            }
+        },from_=0, index='searchable_items', size=10)
+
+    def test_should_return_400_for_missing_argument_on_autocomplete(self):
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        response = search_colleagues_autocomplete(request)
+
+        self.assertEqual(response.status_code, 400)
+
+    @mock.patch('src.models.ESearch.search')
+    def test_should_return_autocomplete_results(self, mock_es):
+        request = testing.DummyRequest(params={'q': "frank"})
+        request.context = testing.DummyResource()
+        request.registry.settings['elasticsearch.index'] = 'searchable_items'
+        response = search_colleagues_autocomplete(request)
+
+        mock_es.assert_called_with(body={
+            'query': {
+                'bool': {
+                    'must': [{
+                        'match': {
+                            'name': {
+                                'query': 'frank',
+                                'analyzer': 'standard'
+                            }
+                        }
+                    }, {
+                        'match': {'category': 'colleagues'}
+                    }]
+                }
+            }, 'fields': ['name', 'href']
+        }, index='searchable_items')
+        
     def test_should_return_400_for_missing_last_name_arg(self):
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
