@@ -32,7 +32,7 @@ run-prod:
 	pserve production.ini --daemon --pid-file=/var/run/pyramid/backend.pid
 
 stop-prod:
-	-pserve production.ini --stop-daemon --pid-file=/var/run/pyramid/pyramid.pid
+	-pserve production.ini --stop-daemon --pid-file=/var/run/pyramid/backend.pid
 
 lint:
 	eslint src/client/js/
