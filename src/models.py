@@ -2,10 +2,12 @@ from sqlalchemy import Column, DateTime, ForeignKey, Index, Numeric, String, Tex
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
-
+from elasticsearch import Elasticsearch
+import os
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
+ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
 
 class Allele(Base):
@@ -975,6 +977,14 @@ class Dbentity(Base):
         'polymorphic_on':subclass
     }
 
+    def to_dict(self):
+        return {
+            'id': self.dbentity_id,
+            'format_name': self.format_name,
+            'display_name': self.display_name,
+            'link': '/' + self.subclass.lower()  + '/' + self.format_name + '/overview'
+        }
+
 
 class Dbuser(Base):
     __tablename__ = 'dbuser'
@@ -1859,6 +1869,10 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Numeric(1, 0, asdecimal=False), nullable=False)
     has_sequence_section = Column(Numeric(1, 0, asdecimal=False), nullable=False)
 
+    __mapper_args__ = {
+        'polymorphic_identity': 'LOCUS',
+    }
+
 
 class Locusnoteannotation(Base):
     __tablename__ = 'locusnoteannotation'
@@ -2119,19 +2133,23 @@ class Phenotypeannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict(self):
+        return {
+            'locus': self.dbentity.to_dict() # TODO: add missing fields
+        }
 
 class PhenotypeannotationCond(Base):
     __tablename__ = 'phenotypeannotation_cond'
     __table_args__ = (
-        Index('phenotypeannotation_cond_uk', 'annotation_id', 'condition_type', 'condition_name', 'condition_value', unique=True),
+        Index('phenotypeannotation_cond_uk', 'annotation_id', 'condition_class', 'condition_name', 'condition_value', unique=True),
         {u'schema': 'NEX'}
     )
 
     condition_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
     annotation_id = Column(ForeignKey(u'NEX.phenotypeannotation.annotation_id'), nullable=False)
-    condition_type = Column(String(40), nullable=False)
+    condition_class = Column(String(40), nullable=False)
     condition_name = Column(String(500), nullable=False)
-    condition_value = Column(String(25))
+    condition_value = Column(String(150))
     condition_unit = Column(String(25))
     date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
     created_by = Column(String(12), nullable=False, server_default=FetchedValue())

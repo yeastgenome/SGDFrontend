@@ -84,5 +84,3 @@ class ChemicalTest(unittest.TestCase):
         })
         self.assertTrue(mock_chebi._query_filter._params.compare(Chebi.format_name == self.chebi.format_name))
         self.assertTrue(mock_chebi_url._query_filter._params.compare(ChebiUrl.chebi_id == self.chebi.chebi_id))
-
-    
