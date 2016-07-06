@@ -1,10 +1,6 @@
 // styles applied to pages created by wordpress
-ul.blog {
+ul.blog, ul.subblog {
 	list-style-type: none;
-}
-
-.colored-bg-wp {
-	margin-top: 0.75rem;
 }
 
 .content-wp p {
