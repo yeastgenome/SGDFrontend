@@ -90,10 +90,11 @@ const FacetSelector = React.createClass({
 
   _renderAgg (name, total, _key, href, isActive, isCategory) {
     let activityStyle = isActive ? style.activeAgg: style.inactiveAgg;
+    let klass = isActive ? 'search-agg active' : 'search-agg';
     let catIconNode = isCategory ? <span className={`search-cat ${_key}`}></span> : null;
     return (
       <Link to={href} key={_key}>
-        <div key={`aggA${_key}`} style={[style.agg, activityStyle]}>
+        <div key={`aggA${_key}`} style={[style.agg, activityStyle]} className={klass}>
           <span>{catIconNode}{name}</span>
           <span>{total.toLocaleString()}</span>
         </div>
@@ -179,9 +180,10 @@ const FacetList = Radium(React.createClass({
 
   _renderAgg (name, total, _key, href, isActive) {
     let activityStyle = isActive ? style.activeAgg: style.inactiveAgg;
+    let klass = isActive ? 'search-agg active' : 'search-agg';
     return (
       <Link to={href} key={_key}>
-        <div key={`aggA${_key}`} style={[style.agg, activityStyle]}>        
+        <div key={`aggA${_key}`} style={[style.agg, activityStyle]} className={klass}>        
           <span>{name}</span>
           <span>{total.toLocaleString()}</span>
         </div>
@@ -211,20 +213,12 @@ const style = {
     transition: 'background-color 300ms ease-out'
   },
   activeAgg: {
-    background: LINK_COLOR,
     color: 'white',
-    border: `1px solid ${HOVER_COLOR}`,
-    ':hover': {
-      background: LINK_COLOR
-    }
+    border: `1px solid ${HOVER_COLOR}`
   },
   inactiveAgg: {
-    background: 'none',
     color: LINK_COLOR,
-    border: '1px solid transparent',
-    ':hover': {
-      background: HOVER_COLOR
-    }
+    border: '1px solid transparent'
   },
   panel: {
     marginTop: '0.5rem'

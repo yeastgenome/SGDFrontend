@@ -51,3 +51,14 @@
 .search-result em {
   background: yellow;
 }
+
+.search-agg:hover {
+	background: #e6e6e6;
+}
+
+.search-agg.active {
+	background: #6582A6;
+	&:hover {
+		background: #6582A6;
+	}
+}
