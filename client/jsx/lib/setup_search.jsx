@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import AppSearchBar from '../containers/app_search_bar.jsx';
 import ConfigureStore from '../store/configure_store.js';
-import { createHistory, useQueries } from 'history'
+import { createHistory, useQueries } from 'history';
 
 const SetupSearch = function () {
   // configure store, with history in redux state
