@@ -1,4 +1,5 @@
 import React from 'react';
+import Radium from 'radium';
 import { Link } from 'react-router';
 import _ from 'underscore';
 
@@ -11,7 +12,8 @@ const ColleaguesIndex = React.createClass({
   getInitialState() {
     return {
       searchResults: null,
-      isPending: false
+      isPending: false,
+      isTriageMode: true
     };
   },
 
@@ -23,6 +25,37 @@ const ColleaguesIndex = React.createClass({
         <Link to='/curate/colleagues/new' className='button small'>
           <i className='fa fa-plus' /> Add New Colleague
         </Link>
+        {this._renderTabsNode()}
+        {this.state.isTriageMode ? this._renderTriageMode() : this._renderSearchMode()}
+      </div>
+    );
+  },
+
+  _renderTabsNode () {
+    return (
+      <ul style={[styles.tabList]}>
+        <li style={[styles.tab, (this.state.isTriageMode ? styles.activeTab : null)]}><a onClick={this._onToggleTriageMode}><i className='fa fa-check'/> Triaged</a></li>
+        <li style={[styles.tab, (!this.state.isTriageMode ? styles.activeTab : null)]}><a onClick={this._onToggleTriageMode}><i className='fa fa-search'/> Search</a></li>
+      </ul>
+    );
+  },
+
+  _onToggleTriageMode (e) {
+    e.preventDefault();
+    this.setState({ isTriageMode: !this.state.isTriageMode });
+  },
+
+  _renderTriageMode () {
+    return (
+      <div className=''>
+        <p>0 triaged updates</p>
+      </div>
+    );
+  },
+
+  _renderSearchMode () {
+    return (
+      <div>
         {this._renderFormNode()}
         {this._renderSearchResultsNodes()}
       </div>
@@ -53,10 +86,10 @@ const ColleaguesIndex = React.createClass({
 
   _onSubmit (e) {
     if (e) e.preventDefault();
-    this.setState({ isPending: true });
     var query = this.refs.name.value.trim();
     // no blank query
     if (query === '') return;
+    this.setState({ isPending: true });
     fetch(`${COLLEAGUE_SEARCH_URL}?last_name=${query}`, {
       credentials: 'same-origin',
     }).then( response => {
@@ -70,4 +103,21 @@ const ColleaguesIndex = React.createClass({
   }
 });
 
-export default ColleaguesIndex;
+const GRAY = '#cacaca';
+const styles = {
+  tabList: {
+    marginTop: '1rem',
+    marginLeft: 0,
+    paddingBottom: '0.5rem',
+    borderBottom: `1px solid ${GRAY}`
+  },
+  tab: {
+    display: 'inline',
+    padding: '0.75rem',
+  },
+  activeTab: {
+    background: GRAY
+  }
+};
+
+export default Radium(ColleaguesIndex);

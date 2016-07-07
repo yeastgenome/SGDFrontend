@@ -20,7 +20,6 @@ export default function apiRequst(url, options) {
     if ([200, 400].indexOf(response.status) < 0) {
       throw new Error('Upload API error.');
     } else {
-      console.log('all goood')
       return response.json();
     }
   }).catch( e => {

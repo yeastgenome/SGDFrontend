@@ -203,6 +203,7 @@ const ColleaguesFormShow = React.createClass({
       data: _data,
       method: _method
     };
+    // TEMP
     apiRequst(url, options).then( response => {
       console.log(response);
     });
