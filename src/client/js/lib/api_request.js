@@ -1,7 +1,8 @@
 const DEFAULT_REQUEST_TIMEOUT = 5000;
 // options { method, data, crsfToken, timeout }
 export default function apiRequst(url, options) {
-  let _method = options.method || 'POST';
+  options = options || {};
+  let _method = options.method || 'GET';
   let _data = options.data || {};
   let timeout = options.timeout || DEFAULT_REQUEST_TIMEOUT;
   let p = Promise.race([
@@ -14,11 +15,10 @@ export default function apiRequst(url, options) {
     new Promise(function (resolve, reject) {
       setTimeout(() => reject(new Error('request timeout')), timeout);
     })
-  ]);
-  p.then( response => {
+  ]).then( response => {
     // if not 200 or 400 throw unknown error
     if ([200, 400].indexOf(response.status) < 0) {
-      throw new Error('Upload API error.');
+      throw new Error('API error.');
     } else {
       return response.json();
     }

@@ -5,8 +5,10 @@ import _ from 'underscore';
 
 import ColleaguesSearchResults from './search_results';
 import Loader from '../../components/widgets/loader';
+import apiRequest from '../../lib/api_request';
 
 const COLLEAGUE_SEARCH_URL = '/colleagues';
+const TRIAGED_COLLEAGUE_URL = '/triaged_colleagues';
 
 const ColleaguesIndex = React.createClass({
   getInitialState() {
@@ -31,6 +33,10 @@ const ColleaguesIndex = React.createClass({
     );
   },
 
+  componentDidMount() {
+    this._fetchData();
+  },
+
   _renderTabsNode () {
     return (
       <ul style={[styles.tabList]}>
@@ -42,13 +48,15 @@ const ColleaguesIndex = React.createClass({
 
   _onToggleTriageMode (e) {
     e.preventDefault();
-    this.setState({ isTriageMode: !this.state.isTriageMode });
+    this.setState({ isTriageMode: !this.state.isTriageMode }, () =>{
+      this._fetchData();
+    });
   },
 
   _renderTriageMode () {
     return (
       <div className=''>
-        <p>0 triaged updates</p>
+        {this._renderSearchResultsNodes()}
       </div>
     );
   },
@@ -62,7 +70,7 @@ const ColleaguesIndex = React.createClass({
     );
   },
 
-  _renderFormNode() {
+  _renderFormNode () {
     return (
       <div>
         <p>Search for a colleague by last name.</p>
@@ -78,26 +86,34 @@ const ColleaguesIndex = React.createClass({
     );
   },
 
-  _renderSearchResultsNodes() {
+  _renderSearchResultsNodes () {
     if (this.state.isPending) return <Loader />;
-    if (this.state.searchResults) return <ColleaguesSearchResults query={this.state.query} results={this.state.searchResults} />;
+    if (this.state.searchResults) return <ColleaguesSearchResults results={this.state.searchResults} />;
     return null;
   },
 
   _onSubmit (e) {
     if (e) e.preventDefault();
-    var query = this.refs.name.value.trim();
-    // no blank query
-    if (query === '') return;
+    this._fetchData();
+  },
+
+  _fetchData () {
+    
+    let url;
+    if (this.state.isTriageMode) {
+      url = TRIAGED_COLLEAGUE_URL;
+    } else {
+      this.setState({ searchResults: [] });
+      let query = this.refs.name.value.trim();
+      // no blank query
+      if (query === '') return;
+      url = `${COLLEAGUE_SEARCH_URL}?last_name=${query}`;
+    }
     this.setState({ isPending: true });
-    fetch(`${COLLEAGUE_SEARCH_URL}?last_name=${query}`, {
-      credentials: 'same-origin',
-    }).then( response => {
-      return response.json();
-    }).then( json => {
+    apiRequest(url).then( response => {
       this.setState({
         isPending: false,
-        searchResults: json
+        searchResults: response
       });
     });
   }

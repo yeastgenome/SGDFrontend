@@ -18,9 +18,7 @@ const ColleagueSearchResults = React.createClass({
         </div>
       );
     });
-
     var colleaguesFound = (<label className='number-results'>{this.props.results.length} {this.props.results.length > 1 ? 'colleagues' : 'colleague'} {this.props.results.length > 1 ? 'were' : 'was'} found:</label>);
-
     var colleaguesNotFound = (<label className='number-results'>No colleagues were found.</label>);
 
     return (
