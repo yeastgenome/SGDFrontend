@@ -144,7 +144,7 @@ module.exports = function(grunt) {
                     browserifyOptions: {
                         debug: true
                     },
-                    transform: ["babelify"]
+                    transform: ["babelify", ["loose-envify", { "NODE_ENV": "development" }]]
                 }
             },
             production: {
@@ -154,7 +154,7 @@ module.exports = function(grunt) {
                     browserifyOptions: {
                         debug: false
                     },
-                    transform: ["babelify"]
+                    transform: ["babelify", ["loose-envify", { "NODE_ENV": "production" }]]
                 }
             }
         },
