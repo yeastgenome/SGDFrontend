@@ -48,6 +48,29 @@ export const StringField = React.createClass({
   }
 });
 
+export const TextField = React.createClass({
+  propTypes: {
+    displayName: React.PropTypes.string,
+    paramName: React.PropTypes.string,
+    defaultValue: React.PropTypes.string,
+    iconClass: React.PropTypes.string,
+    placeholder: React.PropTypes.string,
+    isReadOnly: React.PropTypes.bool
+  },
+
+  render () {
+    let iconNode = this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
+    let node = this.props.isReadOnly ?
+      <p>{this.props.defaultValue}</p> : <textarea type='text' name={this.props.paramName} placeholder={this.props.placeholder}>{this.props.defaultValue}</textarea>;
+    return (
+      <div>
+        <label>{iconNode}{this.props.displayName}</label>
+        {node}
+      </div>
+    );
+  }
+});
+
 export const ListField = React.createClass({
   propTypes: {
     displayName: React.PropTypes.string,
