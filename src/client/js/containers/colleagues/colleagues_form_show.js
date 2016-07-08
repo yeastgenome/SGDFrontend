@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Loader from '../../components/widgets/loader';
-import apiRequst from '../../lib/api_request';
-import { StringField, CheckField, ListField, MultiSelectField } from '../../components/widgets/form_helpers';
+import apiRequest from '../../lib/api_request';
+import { StringField, CheckField, TextField, MultiSelectField } from '../../components/widgets/form_helpers';
 
 const COLLEAGUE_GET_URL = '/colleagues';
 const COLLEAGUE_POST_URL = '/colleagues';
@@ -77,7 +77,6 @@ const ColleaguesFormShow = React.createClass({
             {this._renderAssociates()}
             {this._renderGenes()}
             {this._renderComments()}
-            {this._renderNotes()}
             <CheckField displayName='Beta Tester' paramName='beta_tester' defaultValue={data.beta_tester} />
             <CheckField displayName='Show Email' paramName='show_email' defaultValue={data.show_email} />
             <CheckField displayName='Receive Newsletter' paramName='newsletter' defaultValue={data.newsletter} />
@@ -147,11 +146,7 @@ const ColleaguesFormShow = React.createClass({
   },
 
   _renderComments () {
-    return <ListField isReadOnly={this.props.isReadOnly} displayName='Comments' paramName='comments' defaultValues={this.state.data.comments} placeholder='new comment' />;
-  },
-
-  _renderNotes () {
-    return <ListField isReadOnly={this.props.isReadOnly} displayName='Notes' paramName='notes' defaultValues={this.state.data.notes} placeholder='new note' />;
+    return <TextField isReadOnly={this.props.isReadOnly} displayName='Comments' paramName='comments' defaultValue={this.state.data.comments} placeholder='comments' />;
   },
 
   _renderOrcid () {
@@ -168,11 +163,7 @@ const ColleaguesFormShow = React.createClass({
   _fetchData () {
     this.setState({ isLoadPending: true });
     let displayName = this.props.colleagueDisplayName;
-    fetch(`${COLLEAGUE_GET_URL}/${displayName}`, {
-      credentials: 'same-origin',
-    }).then( response => {
-      return response.json();
-    }).then( json => {
+    apiRequest(`${COLLEAGUE_GET_URL}/${displayName}`).then( json => {
       this.setState({ data: json, isLoadPending: false });
     });
   },
@@ -204,7 +195,7 @@ const ColleaguesFormShow = React.createClass({
       method: _method
     };
     // TEMP
-    apiRequst(url, options).then( response => {
+    apiRequest(url, options).then( response => {
       console.log(response);
     });
   }
@@ -213,7 +204,7 @@ const ColleaguesFormShow = React.createClass({
 function mapStateToProps(_state) {
   let state = _state.auth;
   return {
-    csrfToken: state.csrfToken,
+    csrfToken: state.csrfToken
   };
 }
 

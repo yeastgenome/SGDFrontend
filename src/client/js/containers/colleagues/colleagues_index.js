@@ -98,7 +98,6 @@ const ColleaguesIndex = React.createClass({
   },
 
   _fetchData () {
-    
     let url;
     if (this.state.isTriageMode) {
       url = TRIAGED_COLLEAGUE_URL;
