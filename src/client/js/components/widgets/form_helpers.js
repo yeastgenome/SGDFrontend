@@ -1,5 +1,5 @@
 import React from 'react';
-import { Async } from 'react-select';
+import Select from 'react-select';
 import _ from 'underscore';
 
 import EditableList from './editable_list';
@@ -127,9 +127,9 @@ export const MultiSelectField = React.createClass({
     return (
       <div>
         <label>{iconNode}{this.props.displayName}</label>
-        <Async multi simpleValue joinValues
+        <Select multi simpleValue joinValues
           name={this.props.paramName} value={this.state.values}
-          loadOptions={this._getAsyncOptions()}
+          asyncOptions={this._getAsyncOptions()}
           labelKey='name' valueKey='id'
           onChange={this._onChange} 
         />
@@ -167,12 +167,9 @@ export const MultiSelectField = React.createClass({
           // add defaultOptions to results and remove duplicated
           let defaultOptions = this.props.defaultOptions || [];
           optionsObj.options = _.uniq(optionsObj.options.concat(defaultOptions));
+          if (!this.isMounted()) return;
           return cb(null, optionsObj);
         });
     };
-  },
-
-  _onUpdate (newValues) {
-    this.setState({ values: newValues });
   }
 });

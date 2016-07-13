@@ -105,9 +105,9 @@ const NewFile = React.createClass({
     return (
       <div>
         <label>{displayName}</label>
-        <Select.Async
+        <Select
           name={paramName} value={this.state[paramName]}
-          loadOptions={this._getAsyncOptions(optionsUrl)}
+          asyncOptions={this._getAsyncOptions(optionsUrl)}
           labelKey='name' valueKey='id'
           onChange={_onChange}
         />
@@ -125,9 +125,9 @@ const NewFile = React.createClass({
     return (
       <div>
         <label>{displayName}</label>
-        <Select.Async multi simpleValue joinValues
+        <Select multi simpleValue joinValues
           name={paramName} value={this.state[paramName]}
-          loadOptions={this._getAsyncOptions(optionsUrl)}
+          asyncOptions={this._getAsyncOptions(optionsUrl)}
           labelKey='name' valueKey='id'
           onChange={_onChange} 
         />
