@@ -79,10 +79,7 @@ const ColleaguesFormShow = React.createClass({
               <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Keywords' paramName='keywords' optionsUrl={KEYWORDS_AUTOCOMPLETE_URL} defaultValues={data.keywords} />
               {this._renderAssociates()}
               {this._renderGenes()}
-              {this._renderComments()}
-              <CheckField isReadOnly={this.props.isReadOnly} displayName='Beta Tester' paramName='beta_tester' defaultValue={data.beta_tester} />
-              <CheckField isReadOnly={this.props.isReadOnly} displayName='Show Email' paramName='show_email' defaultValue={data.show_email} />
-              <CheckField isReadOnly={this.props.isReadOnly} displayName='Receive Newsletter' paramName='newsletter' defaultValue={data.newsletter} />
+              {this._renderCuratorControls()}
               {this._renderOrcid()}
               {this._renderControls()}
             </div>
@@ -144,6 +141,20 @@ const ColleaguesFormShow = React.createClass({
         <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Lab Members' paramName='lab_members_display_names' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL} defaultValues={this._getIdsFromArray(labMembers)} defaultOptions={labMembers}/>
       </div>
     );
+  },
+
+  _renderCuratorControls () {
+    if (!this.props.isCurator) return null;
+    let data = this.state.data;
+    return (
+      <div>
+        {this._renderComments()}
+        <CheckField isReadOnly={this.props.isReadOnly} displayName='Beta Tester' paramName='beta_tester' defaultValue={data.beta_tester} />
+        <CheckField isReadOnly={this.props.isReadOnly} displayName='Show Email' paramName='show_email' defaultValue={data.show_email} />
+        <CheckField isReadOnly={this.props.isReadOnly} displayName='Receive Newsletter' paramName='newsletter' defaultValue={data.newsletter} />
+      </div>
+    );
+
   },
 
   _renderGenes () {
