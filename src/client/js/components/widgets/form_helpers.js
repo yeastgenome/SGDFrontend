@@ -184,3 +184,50 @@ export const MultiSelectField = React.createClass({
     };
   }
 });
+
+export const SelectField = React.createClass({
+  propTypes: {
+    displayName: React.PropTypes.string,
+    paramName: React.PropTypes.string,
+    defaultValue: React.PropTypes.array,
+    iconClass: React.PropTypes.string,
+    options: React.PropTypes.array,
+    isReadOnly: React.PropTypes.bool
+  },
+
+  getInitialState () {
+    return {
+      value: this.props.defaultValue || ''
+    };
+  },
+
+  render () {
+    if (this.props.isReadOnly) return this._renderReadOnly();
+    let iconNode = this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
+    return (
+      <div>
+        <label>{iconNode}{this.props.displayName}</label>
+        <Select
+          name={this.props.paramName} value={this.state.value}
+          options={this.props.options}
+          labelKey='name' valueKey='id'
+          onChange={this._onChange} 
+        />
+      </div>
+    );
+  },
+
+  _renderReadOnly () {
+    let iconNode = this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
+    return (
+      <div>
+        <label>{iconNode}{this.props.displayName}</label>
+        <p>this.props.defaultValue</p>
+      </div>
+    );
+  },
+
+  _onChange (newValue) {
+    this.setState({ value: newValue });
+  }
+});
