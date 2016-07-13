@@ -14,12 +14,23 @@ export const CheckField = React.createClass({
   },
 
   render () {
+    if (this.props.isReadOnly) return this._renderReadOnly();
     let _id = `sgd-c-check-${this.props.paramName}`;
     let iconNode = this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
     return (
       <div>
         <input id={_id} type='checkbox' name={this.props.paramName} defaultChecked={this.props.defaultChecked} />
         <label htmlFor={_id}>{iconNode}{this.props.displayName}</label>
+      </div>
+    );
+  },
+
+  _renderReadOnly () {
+    let iconNode = this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
+    let iconClass = this.props.defaultChecked ? 'check-square-o' : 'square-o';
+    return (
+      <div>
+        <label><i className={`fa fa-${iconClass}`} /> {iconNode}{this.props.displayName}</label>
       </div>
     );
   }

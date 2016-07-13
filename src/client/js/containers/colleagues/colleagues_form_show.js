@@ -76,9 +76,9 @@ const ColleaguesFormShow = React.createClass({
             {this._renderAssociates()}
             {this._renderGenes()}
             {this._renderComments()}
-            <CheckField displayName='Beta Tester' paramName='beta_tester' defaultValue={data.beta_tester} />
-            <CheckField displayName='Show Email' paramName='show_email' defaultValue={data.show_email} />
-            <CheckField displayName='Receive Newsletter' paramName='newsletter' defaultValue={data.newsletter} />
+            <CheckField isReadOnly={this.props.isReadOnly} displayName='Beta Tester' paramName='beta_tester' defaultValue={data.beta_tester} />
+            <CheckField isReadOnly={this.props.isReadOnly} displayName='Show Email' paramName='show_email' defaultValue={data.show_email} />
+            <CheckField isReadOnly={this.props.isReadOnly} displayName='Receive Newsletter' paramName='newsletter' defaultValue={data.newsletter} />
             {this._renderOrcid()}
             {this._renderControls()}
           </div>
