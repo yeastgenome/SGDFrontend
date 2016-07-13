@@ -13,7 +13,7 @@ const ColleaguesShow = React.createClass({
           <li><Link to={`/curate/colleagues/${this.props.routeParams.colleagueDisplayName}/edit`}><i className='fa fa-edit' /> Edit</Link></li>
         </ul>
         <ColleaguesFormShow
-          isReadOnly={true}
+          isReadOnly={true} isCurator={true} 
           colleagueDisplayName={this.props.routeParams.colleagueDisplayName}
         />
       </div>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import Loader from '../../components/widgets/loader';
 import apiRequest from '../../lib/api_request';
-import { StringField, CheckField, TextField, MultiSelectField } from '../../components/widgets/form_helpers';
+import { StringField, CheckField, TextField, SelectField, MultiSelectField } from '../../components/widgets/form_helpers';
 
 const COLLEAGUE_GET_URL = '/colleagues';
 const COLLEAGUE_POST_URL = '/colleagues';
@@ -14,6 +14,7 @@ const KEYWORDS_AUTOCOMPLETE_URL = '/keywords';
 const ColleaguesFormShow = React.createClass({
   propTypes: {
     isReadOnly: React.PropTypes.bool,
+    isCurator: React.PropTypes.bool,
     isUpdate: React.PropTypes.bool,
     colleagueDisplayName: React.PropTypes.string
   },
@@ -47,42 +48,60 @@ const ColleaguesFormShow = React.createClass({
     if (this.state.isLoadPending) return <Loader />;
     let data = this.state.data;
     return (
-      <div className='row'>
         <form ref='form' onSubmit={this._submitData}>
-          <div className='column small-3'>
-            <StringField isReadOnly={this.props.isReadOnly} displayName='First Name' paramName='first_name' defaultValue={data.first_name} />
+          {this._renderStatusSelector()}
+          <div className='row'>
+            <div className='column small-3'>
+              <StringField isReadOnly={this.props.isReadOnly} displayName='First Name' paramName='first_name' defaultValue={data.first_name} />
+            </div>
+            <div className='column small-2'>
+              <StringField isReadOnly={this.props.isReadOnly} displayName='Middle Name' paramName='middle_name' defaultValue={data.middle_name} />
+            </div>
+            <div className='column small-5'>
+              <StringField isReadOnly={this.props.isReadOnly} displayName='Last Name' paramName='last_name' defaultValue={data.last_name} />
+            </div>
+            <div className='column small-2'>
+              <StringField isReadOnly={this.props.isReadOnly} displayName='Suffix' paramName='suffix' defaultValue={data.suffix} />
+            </div>
           </div>
-          <div className='column small-2'>
-            <StringField isReadOnly={this.props.isReadOnly} displayName='Middle Name' paramName='middle_name' defaultValue={data.middle_name} />
-          </div>
-          <div className='column small-5'>
-            <StringField isReadOnly={this.props.isReadOnly} displayName='Last Name' paramName='last_name' defaultValue={data.last_name} />
-          </div>
-          <div className='column small-2'>
-            <StringField isReadOnly={this.props.isReadOnly} displayName='Suffix' paramName='suffix' defaultValue={data.suffix} />
-          </div>
-          <div className='column small-12'>
-            <StringField isReadOnly={this.props.isReadOnly} displayName='Email' paramName='email' defaultValue={data.email} />
-            <StringField isReadOnly={this.props.isReadOnly} displayName='Position' paramName='position' defaultValue={data.position} />
-            <StringField isReadOnly={this.props.isReadOnly} displayName='Profession' paramName='profession' defaultValue={data.profession} />
-            <StringField isReadOnly={this.props.isReadOnly} displayName='Organization' paramName='organization' defaultValue={data.organization} />
-            <StringField isReadOnly={this.props.isReadOnly} displayName='Work Phone' paramName='work_phone' defaultValue={data.work_phone} />
-            <StringField isReadOnly={this.props.isReadOnly} displayName='Other Phone' paramName='other_phone' defaultValue={data.other_phone} />
-            {this._renderAddress()}
-            <StringField isReadOnly={this.props.isReadOnly} displayName='Lab Webpage' paramName='lab_page' defaultValue={data.lab_page} />
-            <StringField isReadOnly={this.props.isReadOnly} displayName='Research Summary Webpage' paramName='research_page' defaultValue={data.research_page} />
-            <StringField isReadOnly={this.props.isReadOnly} displayName='Research Interests' paramName='research_interests' defaultValue={data.research_interests} />
-            <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Keywords' paramName='keywords' optionsUrl={KEYWORDS_AUTOCOMPLETE_URL} defaultValues={data.keywords} />
-            {this._renderAssociates()}
-            {this._renderGenes()}
-            {this._renderComments()}
-            <CheckField isReadOnly={this.props.isReadOnly} displayName='Beta Tester' paramName='beta_tester' defaultValue={data.beta_tester} />
-            <CheckField isReadOnly={this.props.isReadOnly} displayName='Show Email' paramName='show_email' defaultValue={data.show_email} />
-            <CheckField isReadOnly={this.props.isReadOnly} displayName='Receive Newsletter' paramName='newsletter' defaultValue={data.newsletter} />
-            {this._renderOrcid()}
-            {this._renderControls()}
+          <div className='row'>
+            <div className='column small-12'>
+              <StringField isReadOnly={this.props.isReadOnly} displayName='Email' paramName='email' defaultValue={data.email} />
+              <StringField isReadOnly={this.props.isReadOnly} displayName='Position' paramName='position' defaultValue={data.position} />
+              <StringField isReadOnly={this.props.isReadOnly} displayName='Profession' paramName='profession' defaultValue={data.profession} />
+              <StringField isReadOnly={this.props.isReadOnly} displayName='Organization' paramName='organization' defaultValue={data.organization} />
+              <StringField isReadOnly={this.props.isReadOnly} displayName='Work Phone' paramName='work_phone' defaultValue={data.work_phone} />
+              <StringField isReadOnly={this.props.isReadOnly} displayName='Other Phone' paramName='other_phone' defaultValue={data.other_phone} />
+              {this._renderAddress()}
+              <StringField isReadOnly={this.props.isReadOnly} displayName='Lab Webpage' paramName='lab_page' defaultValue={data.lab_page} />
+              <StringField isReadOnly={this.props.isReadOnly} displayName='Research Summary Webpage' paramName='research_page' defaultValue={data.research_page} />
+              <StringField isReadOnly={this.props.isReadOnly} displayName='Research Interests' paramName='research_interests' defaultValue={data.research_interests} />
+              <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Keywords' paramName='keywords' optionsUrl={KEYWORDS_AUTOCOMPLETE_URL} defaultValues={data.keywords} />
+              {this._renderAssociates()}
+              {this._renderGenes()}
+              {this._renderComments()}
+              <CheckField isReadOnly={this.props.isReadOnly} displayName='Beta Tester' paramName='beta_tester' defaultValue={data.beta_tester} />
+              <CheckField isReadOnly={this.props.isReadOnly} displayName='Show Email' paramName='show_email' defaultValue={data.show_email} />
+              <CheckField isReadOnly={this.props.isReadOnly} displayName='Receive Newsletter' paramName='newsletter' defaultValue={data.newsletter} />
+              {this._renderOrcid()}
+              {this._renderControls()}
+            </div>
           </div>
         </form>
+    );
+  },
+
+  _renderStatusSelector () {
+    if (!this.props.isCurator) return null;
+    const _options = [
+      { id: 'triaged', name: 'Triaged' },
+      { id: 'approved', name: 'Approved' }
+    ];
+    return (
+      <div className='row'>
+        <div className='column small-3'>
+          <SelectField isReadOnly={this.props.isReadOnly} displayName='Status' paramName='status' defaultValue={this.state.data.status} options={_options} />
+        </div>
       </div>
     );
   },

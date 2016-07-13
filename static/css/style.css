@@ -193,6 +193,9 @@ h1, h2, h3, h3, h4, h5 {
   outline: none;
   text-decoration: underline;
 }
+.has-value > .Select-control .Select-placeholder {
+  color: black;
+}
 .Select-input {
   height: 34px;
   padding-left: 10px;

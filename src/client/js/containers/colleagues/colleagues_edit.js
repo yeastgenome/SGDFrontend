@@ -7,7 +7,7 @@ import ColleaguesFormShow from './colleagues_form_show';
 const ColleaguesEdit = React.createClass({
   render () {
     return (
-      <ColleaguesFormShow isUpdate={this._isUpdate()} colleagueDisplayName={this.props.routeParams.colleagueDisplayName} />
+      <ColleaguesFormShow isUpdate={this._isUpdate()} colleagueDisplayName={this.props.routeParams.colleagueDisplayName} isCurator={true} />
     );
   },
 
