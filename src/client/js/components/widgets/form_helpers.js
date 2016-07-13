@@ -122,6 +122,7 @@ export const MultiSelectField = React.createClass({
   },
 
   render () {
+    if (this.props.isReadOnly) return this._renderReadOnly();
     let iconNode = this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
     return (
       <div>
@@ -132,6 +133,21 @@ export const MultiSelectField = React.createClass({
           labelKey='name' valueKey='id'
           onChange={this._onChange} 
         />
+      </div>
+    );
+  },
+
+  _renderReadOnly () {
+    let displayValuesStr = this.state.values.reduce( (prev, d, i) => {
+      let maybeComma = (i === this.state.values.length) ? '' : ', ';
+      prev += `${d.name}${maybeComma}`;
+      return prev;
+    }, '');
+    let iconNode = this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
+    return (
+      <div>
+        <label>{iconNode}{this.props.displayName}</label>
+        <p>{displayValuesStr}</p>
       </div>
     );
   },

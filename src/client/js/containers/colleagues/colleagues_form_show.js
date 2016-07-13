@@ -9,7 +9,7 @@ const COLLEAGUE_GET_URL = '/colleagues';
 const COLLEAGUE_POST_URL = '/colleagues';
 const COLLEAGUES_AUTOCOMPLETE_URL = '/colleagues_auto';
 const GENES_URL = '/genes';
-const TOPICS_URL = '/topics';
+const KEYWORDS_AUTOCOMPLETE_URL = '/keywords';
 
 const ColleaguesFormShow = React.createClass({
   propTypes: {
@@ -72,8 +72,7 @@ const ColleaguesFormShow = React.createClass({
             <StringField isReadOnly={this.props.isReadOnly} displayName='Lab Webpage' paramName='lab_page' defaultValue={data.lab_page} />
             <StringField isReadOnly={this.props.isReadOnly} displayName='Research Summary Webpage' paramName='research_page' defaultValue={data.research_page} />
             <StringField isReadOnly={this.props.isReadOnly} displayName='Research Interests' paramName='research_interests' defaultValue={data.research_interests} />
-            <StringField isReadOnly={this.props.isReadOnly} displayName='Keywords' paramName='keywords' defaultValue={data.keywords} />
-            {this._renderTopics()}
+            <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Keywords' paramName='keywords' optionsUrl={KEYWORDS_AUTOCOMPLETE_URL} defaultValues={data.keywords} />
             {this._renderAssociates()}
             {this._renderGenes()}
             {this._renderComments()}
@@ -86,13 +85,6 @@ const ColleaguesFormShow = React.createClass({
         </form>
       </div>
     );
-    // associates/collaborators - separates out lab members from supervisors/PIs
-    // non-lab collaborators
-    // comments
-    // curator Note -- combine this and 'Add a new note' into single section -- to show note and add a new one
-    // associated genes
-    // delay submission (make into a button at top and bottom with a space for reason)
-    // delete submission check box (make a button at top and bottom)
   },
 
   _renderAddress () {
@@ -122,11 +114,6 @@ const ColleaguesFormShow = React.createClass({
         </div>
       </div>
     );
-  },
-
-  _renderTopics () {
-    let data = this.state.data.topics || [];
-    return <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Topics' paramName='topic_ids' optionsUrl={TOPICS_URL} defaultValues={this._getIdsFromArray(data)} defaultOptions={data} />;
   },
 
   _renderAssociates () {

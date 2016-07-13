@@ -40,8 +40,8 @@ const ColleaguesIndex = React.createClass({
   _renderTabsNode () {
     return (
       <ul style={[styles.tabList]}>
-        <li style={[styles.tab, (this.state.isTriageMode ? styles.activeTab : null)]}><a onClick={this._onToggleTriageMode}><i className='fa fa-check'/> Triaged</a></li>
-        <li style={[styles.tab, (!this.state.isTriageMode ? styles.activeTab : null)]}><a onClick={this._onToggleTriageMode}><i className='fa fa-search'/> Search</a></li>
+        <li onClick={this._onToggleTriageMode} style={[styles.tab, (this.state.isTriageMode ? styles.activeTab : null)]}><a><i className='fa fa-check'/> Triaged</a></li>
+        <li onClick={this._onToggleTriageMode} style={[styles.tab, (!this.state.isTriageMode ? styles.activeTab : null)]}><a><i className='fa fa-search'/> Search</a></li>
       </ul>
     );
   },
@@ -129,6 +129,7 @@ const styles = {
   tab: {
     display: 'inline',
     padding: '0.75rem',
+    cursor: 'pointer'
   },
   activeTab: {
     background: GRAY
