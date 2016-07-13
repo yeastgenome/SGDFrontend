@@ -222,7 +222,7 @@ export const SelectField = React.createClass({
     return (
       <div>
         <label>{iconNode}{this.props.displayName}</label>
-        <p>this.props.defaultValue</p>
+        <p>{this.props.defaultValue}</p>
       </div>
     );
   },
