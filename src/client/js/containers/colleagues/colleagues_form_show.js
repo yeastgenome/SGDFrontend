@@ -238,7 +238,7 @@ const ColleaguesFormShow = React.createClass({
     if (!this.state.error) return null;
     return (
       <div className='callout warning'>
-          <p>{this.state.error}</p>
+        <p>{this.state.error}</p>
       </div>
     );
   }
