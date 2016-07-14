@@ -23,7 +23,8 @@ const ColleaguesFormShow = React.createClass({
     return {
       data: {},
       isLoadPending: false, // loading existing data
-      isUpdatePending: false // sending update to server
+      isUpdatePending: false, // sending update to server
+      error: null
     };
   },
 
@@ -48,6 +49,8 @@ const ColleaguesFormShow = React.createClass({
     if (this.state.isLoadPending) return <Loader />;
     let data = this.state.data;
     return (
+      <div>
+        {this._renderControls()}
         <form ref='form' onSubmit={this._submitData}>
           {this._renderStatusSelector()}
           <div className='row'>
@@ -79,12 +82,13 @@ const ColleaguesFormShow = React.createClass({
               <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Keywords' paramName='keywords' optionsUrl={KEYWORDS_AUTOCOMPLETE_URL} defaultValues={data.keywords} />
               {this._renderAssociates()}
               {this._renderGenes()}
-              {this._renderCuratorControls()}
               {this._renderOrcid()}
-              {this._renderControls()}
+              {this._renderCuratorInput()}
             </div>
           </div>
         </form>
+        {this._renderControls()}
+      </div>
     );
   },
 
@@ -143,8 +147,8 @@ const ColleaguesFormShow = React.createClass({
     );
   },
 
-  _renderCuratorControls () {
-    if (!this.props.isCurator) return null;
+  _renderCuratorInput () {
+    if (!this.props.isCurator && this.props.isReadOnly) return null;
     let data = this.state.data;
     return (
       <div>
@@ -163,6 +167,7 @@ const ColleaguesFormShow = React.createClass({
   },
 
   _renderComments () {
+    if (!this.props.isCurator) return null;
     return <TextField isReadOnly={this.props.isReadOnly} displayName='Comments' paramName='comments' defaultValue={this.state.data.comments} placeholder='comments' />;
   },
 
@@ -193,16 +198,25 @@ const ColleaguesFormShow = React.createClass({
     if (this.props.isReadOnly) return null;
     let classSuffix = this.state.isUpdatePending ? ' disabled secondary' : '';
     let label = this.state.isUpdatePending ? 'Saving...' : 'Save';
+    let saveIconNode = this.state.isUpdatePending ? null : <span><i className='fa fa-floppy-o' /> </span>;
+    let _onClick = e => {
+      e.preventDefault();
+      this._submitData();
+    };
     return (
-      <div className='text-right'>
-        <input className={`button ${classSuffix}`} type='submit' value={label} />
+      <div>
+        {this._renderError()}
+        <div className='button-group'>
+          <a onClick={_onClick} className={`button ${classSuffix}`}>{saveIconNode}{label}</a>
+          <a className={'button alert'}><i className='fa fa-times' /> Delete</a>
+        </div>
       </div>
     );
   },
 
-  // saves form data to server, if new makes 
+  // saves form data to server, if new makes POST
   _submitData (e) {
-    e.preventDefault();
+    if (e) e.preventDefault();
     let _method = this.props.isUpdate ? 'PUT' : 'POST';
     let _data = new FormData(this.refs.form);
     let url = this.props.isUpdate ? `${COLLEAGUE_POST_URL}/${this.props.colleagueDisplayName}` : COLLEAGUE_POST_URL;
@@ -214,7 +228,19 @@ const ColleaguesFormShow = React.createClass({
     // TEMP
     apiRequest(url, options).then( response => {
       console.log(response);
+      this.setState({ error: null });
+    }).catch( e => {
+      this.setState({ error: e.message });
     });
+  },
+
+  _renderError () {
+    if (!this.state.error) return null;
+    return (
+      <div className='callout warning'>
+          <p>{this.state.error}</p>
+      </div>
+    );
   }
 });
 
