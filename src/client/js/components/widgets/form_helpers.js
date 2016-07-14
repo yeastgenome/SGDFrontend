@@ -209,7 +209,7 @@ export const SelectField = React.createClass({
         <label>{iconNode}{this.props.displayName}</label>
         <Select
           name={this.props.paramName} value={this.state.value}
-          options={this.props.options}
+          options={this.props.options} clearable={false}
           labelKey='name' valueKey='id'
           onChange={this._onChange} 
         />
