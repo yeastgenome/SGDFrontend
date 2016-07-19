@@ -20,7 +20,6 @@ var views = {
   protein: require('./views/protein_view.jsx'),
   summary: require('./views/summary_view.jsx'),
   variantViewer: require('./views/variant_viewer_view.jsx'),
-  styleGuide: require('./views/style_guide_view.jsx'),
   router: require('./react_router_render.jsx')
 };
 

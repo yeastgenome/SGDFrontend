@@ -1,6 +1,10 @@
+import { match } from 'react-router';
+
 const $ = require('jquery');
 const attachFastClick = require('fastclick');
 const setupSearch = require('./setup_search.jsx');
+const routes = require('../routes.jsx');
+
 require('foundation');
 
 module.exports = function () {
@@ -22,16 +26,18 @@ module.exports = function () {
 	}
 
 	// does the following only after DOM completely loads
-	
 	$(document).ready(function(){
 		// if the url contains an anchor        
 		if (window.location.hash) {
 			var anchor = window.location.hash;
 			window.location.hash = anchor;
 		}
-		// exec search setup script, don't do if on the search page, or any redux page (just search for now)
-		if (!window.location.href.match(/\/search/)) {
-			setupSearch();
-		}
+		// exec search setup script, don't do if on any redux page
+		// necessary to prevent react re-rending twice on client
+		match({ routes, location: window.location.pathname }, (error, redirectLocation, renderProps) => {
+			if (!renderProps) {
+				setupSearch();
+			}
+		});
 	});
 };
