@@ -17,7 +17,7 @@ $(document).ready(function() {
         }
     });
 
-  	$.getJSON('/backend/contig/' + contig['id'] + '/sequence_details?callback=?', function(data) {
+  	$.getJSON('/backend/contig/' + contig['id'] + '/sequence_details', function(data) {
         var feature_table = create_feature_table(data['genomic_dna']);
         create_download_button("chromosomal_coord_table_download", feature_table, contig['display_name'] + '_features');
         create_analyze_button("chromosomal_coord_table_analyze", feature_table, "<a href='" + contig['link'] + "' class='gene_name'>" + contig['display_name'] + "</a> genes", true);

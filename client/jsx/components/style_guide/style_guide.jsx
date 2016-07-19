@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom';
 import Radium from 'radium';
 
 // internal dependencies
-const DataTable = require('../components/widgets/data_table.jsx');
-const DownloadButton = require('../components/widgets/download_button.jsx');
-const HelpIcon = require('../components/widgets/help_icon.jsx');
-const Legend = require('../components/viz/legend.jsx');
-const NavBar = require('../components/widgets/navbar.jsx');
-const SequenceToggler = require('../components/sequence/sequence_toggler.jsx');
-const Statics = require('../statics.jsx');
-const TForm = require('../components/widgets/t_form.jsx');
+const DataTable = require('../widgets/data_table.jsx');
+const DownloadButton = require('../widgets/download_button.jsx');
+const HelpIcon = require('../widgets/help_icon.jsx');
+const Legend = require('../viz/legend.jsx');
+const NavBar = require('../widgets/navbar.jsx');
+const SequenceToggler = require('../sequence/sequence_toggler.jsx');
+const Statics = require('../../statics.jsx');
+const TForm = require('../widgets/t_form.jsx');
 
 const StyleGuide = React.createClass({
 	render () {
@@ -225,11 +225,4 @@ const style = {
   button: { margin: '0 1rem 1rem 0' }
 };
 
-const StyledStyleGuide = Radium(StyleGuide);
-
-const styleGuideView = {};
-styleGuideView.render = function () {
-	ReactDOM.render(<StyledStyleGuide />, document.getElementById('j-main'));
-};
-
-module.exports = styleGuideView;
+export default Radium(StyleGuide);

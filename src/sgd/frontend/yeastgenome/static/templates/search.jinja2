@@ -1,0 +1,19 @@
+{% extends "lite_layout.jinja2" %}
+
+{% block title %}Search{% endblock %}
+
+{% block body %}
+
+<div class="sgd-loader-container">
+	<div class="sgd-loader">
+	</div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script>
+	window.bootstrappedSearchResults = {{ bootstrapped_search_results_json|safe }};
+	views.router.render();
+</script>
+{% endblock scripts %}

@@ -35,19 +35,19 @@ summaryView.render = function () {
     document.getElementById("navbar-container")
   );
 
-  var fetchAndRenderHistory = () => {
-    $.getJSON('/backend/locus/' + bootstrappedData.locusId + '/expression_details?callback=?', function(data) {
-      if (data.datasets.length) {
-        var _onExpressionClick = () => {
-          window.location.href = "/locus/" + bootstrappedData.locusId + "/expression";
-        };
-        ReactDOM.render(
-          <ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} onClick={_onExpressionClick} />,
-          document.getElementById("two_channel_expression_chart")
-        );
-      }
-      });
-  };
+	var fetchAndRenderHistory = () => {
+		$.getJSON('/backend/locus/' + bootstrappedData.locusId + '/expression_details', function(data) {
+			if (data.datasets.length) {
+				var _onExpressionClick = () => {
+					window.location.href = "/locus/" + bootstrappedData.locusId + "/expression";
+				};
+				ReactDOM.render(
+					<ExpressionChart data={data.overview} minValue={data.min_value} maxValue={data.max_value} onClick={_onExpressionClick} />,
+					document.getElementById("two_channel_expression_chart")
+				);
+			}
+	  	});
+	};
 
   // async sequence (if needed)
   if (bootstrappedData.tabs && bootstrappedData.tabs.sequence_section) {

@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-  	$.getJSON('/backend/references/this_week?callback=?', function(data) {
+  	$.getJSON('/backend/references/this_week', function(data) {
         $("#dates").html(data['start'] + ' to ' + data['end']);
         set_up_reference_list("references", "references_list", "references_list_empty_message", "references_list_wrapper", "references_list_download", "citations_for_week_of_" + data['start'].replace('-', '_'), data['references']);
     });

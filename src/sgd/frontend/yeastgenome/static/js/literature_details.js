@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-  	$.getJSON('/backend/locus/' + locus['id'] + '/literature_details?callback=?', function(data) {
+  	$.getJSON('/backend/locus/' + locus['id'] + '/literature_details', function(data) {
   	    set_up_reference_list("primary", "primary_list", "primary_list_empty_message", "primary_list_wrapper", "primary_list_download", locus['display_name'] + "_primary_citations", data['primary']);
         set_up_reference_list("additional", "additional_list", "additional_list_empty_message", "additional_list_wrapper", "additional_list_download", locus['display_name'] + "_additional_citations", data['additional']);
   		set_up_reference_list("review", "review_list", "review_list_empty_message", "review_list_wrapper", "review_list_download", locus['display_name'] + "_review_citations", data['review']);
@@ -11,7 +11,7 @@ $(document).ready(function() {
   		set_up_reference_list("regulation", "regulation_list", "regulation_list_empty_message", "regulation_list_wrapper", "regulation_list_download", locus['display_name'] + "_regulation_citations", data['regulation']);
     });
 
-  	$.getJSON('/backend/locus/' + locus['id'] + '/literature_graph?callback=?', function(data) {
+  	$.getJSON('/backend/locus/' + locus['id'] + '/literature_graph', function(data) {
   		if(data['nodes'].length > 1) {
   			var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "literature");
             create_cy_download_button(graph, "cy_download", locus['display_name'] + '_literature_graph')

@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Lato|Droid+Serif:400,700);
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700|Droid+Serif:400,700);
 // Make sure the charset is set appropriately
 @charset "UTF-8";
 
@@ -37,11 +37,11 @@
     "../../bower_components/foundation/scss/foundation/components/tooltips",
     "../../bower_components/foundation/scss/foundation/components/top-bar",
     "../../bower_components/foundation/scss/foundation/components/type",
-    "../../bower_components/foundation/scss/foundation/components/visibility";
+    "../../bower_components/foundation/scss/foundation/components/visibility",
+    "../../bower_components/foundation/scss/foundation/components/progress-bars";
      //"../../bower_components/foundation/scss/foundation/components/flex-video",
      //"../../bower_components/foundation/scss/foundation/components/joyride",
      //"../../bower_components/foundation/scss/foundation/components/pricing-tables",
-    //"../../bower_components/foundation/scss/foundation/components/progress-bars",
      //"../../bower_components/foundation/scss/foundation/components/offcanvas",
 
 // Compass mixins
@@ -62,7 +62,6 @@
     "../../bower_components/font-awesome/scss/fixed-width",
     "../../bower_components/font-awesome/scss/list",
     "../../bower_components/font-awesome/scss/bordered-pulled",
-    "../../bower_components/font-awesome/scss/spinning",
     "../../bower_components/font-awesome/scss/rotated-flipped",
     "../../bower_components/font-awesome/scss/stacked",
     "../../bower_components/font-awesome/scss/icons";
@@ -82,6 +81,7 @@
     "layout",
     "modules/animations",
     "modules/autocomplete",
+     "modules/blog",
     "modules/header",
     "modules/footer",
     "modules/side-nav",
@@ -98,6 +98,8 @@
     "modules/viz",
     "modules/tabs",
     "modules/table_alternative",
+    "modules/search_bar",
+    "modules/search_results",
     "nextgen_theme",
     "state",
     "theme",

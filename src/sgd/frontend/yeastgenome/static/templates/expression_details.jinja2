@@ -23,7 +23,7 @@
     <!-- Includes navbar.html into template -->
     {% include "navbar.jinja2" %}
 
-    <div class="small-12 large-10 columns content-column">
+    <div class="small-12 medium-10 columns content-column">
 
         <script>
             add_navbar_title("<span>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }}/{{ locus.format_name }}{% endif %}</span>");
@@ -153,5 +153,4 @@
 <script src="{{asset_root}}/js/local.js"></script>
 <script src="{{asset_root}}/js/evidence.js"></script>
 <script src="{{asset_root}}/js/expression_details.js"></script>
-<script src="{{asset_root}}/js/application.js"></script>
 {% endblock scripts %}

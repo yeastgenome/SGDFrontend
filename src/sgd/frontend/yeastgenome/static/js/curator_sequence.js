@@ -13,7 +13,7 @@ var can_color2 = false;
 $(document).ready(function() {
 
     $("#subfeature_table_analyze").hide();
-  	$.getJSON('/backend/locus/' + locus['id'] + '/sequence_details?callback=?', function(data) {
+  	$.getJSON('/backend/locus/' + locus['id'] + '/sequence_details', function(data) {
         var dna_data = data['genomic_dna'];
         var strain_selection1 = $("#strain_selection1");
         var strain_selection2 = $("#strain_selection2");
@@ -128,7 +128,7 @@ $(document).ready(function() {
         });
     });
 
-    $.getJSON('/backend/locus/' + locus['id'] + '/neighbor_sequence_details?callback=?', function(data) {
+    $.getJSON('/backend/locus/' + locus['id'] + '/neighbor_sequence_details', function(data) {
         strain_to_neighbors = data;
 
         draw_label_chart('label_chart1', $("#strain_selection1").val());

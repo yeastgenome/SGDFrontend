@@ -1,5 +1,6 @@
 var crypto = require("crypto");
 var fs = require("fs");
+var path = require("path");
 
 // cache assets on browser for 1 month
 var CACHE_TTL = 2629740;
@@ -143,7 +144,7 @@ module.exports = function(grunt) {
                     browserifyOptions: {
                         debug: true
                     },
-                    transform: ["babelify"]
+                    transform: ["babelify", ["loose-envify", { "NODE_ENV": "development" }]]
                 }
             },
             production: {
@@ -153,7 +154,7 @@ module.exports = function(grunt) {
                     browserifyOptions: {
                         debug: false
                     },
-                    transform: ["babelify"]
+                    transform: ["babelify", ["loose-envify", { "NODE_ENV": "production" }]]
                 }
             }
         },

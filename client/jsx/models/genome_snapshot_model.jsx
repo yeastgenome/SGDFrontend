@@ -10,7 +10,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 	constructor (options) {
 		var options = options || {};
-		options.url = options.url || "/backend/snapshot?callback=?";
+		options.url = options.url || "/backend/snapshot";
 		super(options);
 	}
 

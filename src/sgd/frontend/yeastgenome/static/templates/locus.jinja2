@@ -22,10 +22,10 @@
 
 <div class="row">
 	
-    <div id="navbar-container" class="large-2 columns hide-for-medium-down">
+    <div id="navbar-container" class="large-2 columns hide-for-small-down">
     </div>
 
-    <div class="small-12 large-10 columns content-column">
+    <div class="small-12 medium-10 columns content-column">
 
 <!-- Overview
 ================================================== -->
@@ -688,13 +688,11 @@
         </div>
     </section>
     {% endif %}{% endfor %}
-
     </div>
 </div>
 {% endblock body %}
 
 {% block scripts %}
-<script src="{{asset_root}}/js/application.js"></script>
 <script>
     views.summary.render();
 </script>
