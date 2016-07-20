@@ -46,9 +46,9 @@ def search(request):
     # if param is_quick = true and the first result has is_quick: true then direct to that URL
     parsed_results = json.loads(json_bootstrapped_search_results)['results']
     if (request.params.get('is_quick') == 'true' and len(parsed_results) > 0):
-        first_result = parsed_results[0]
-        if (first_result.get('is_quick')):
-            return HTTPFound(first_result['href'])
+        for result in parsed_results:
+            if (result.get('is_quick')):
+                return HTTPFound(result['href'])
     # if wrapped, or page > 0, just make bootstrapped results None to avoid pagination logic in python and fetch on client
     page = 0 if request.params.get('page') is None else int(request.params.get('page'))
     if request.params.get('wrapResults') == 'true' or page > 0:
