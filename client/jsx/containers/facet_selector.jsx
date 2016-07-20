@@ -18,7 +18,7 @@ const FacetSelector = React.createClass({
   render() {
     if (this.props.isAggPending) return null;
     return (
-      <div style={[style.panel]}>
+      <div>
         {this.props.activeCategory ? this._renderCatAggs() : this._renderCatSelector()}
       </div>
     );
@@ -34,7 +34,7 @@ const FacetSelector = React.createClass({
     });
     return (
       <div>
-        <p>Categories</p>
+        <p style={[style.catLabel]}>Categories</p>
         {aggNodes}
       </div>
     );
@@ -216,12 +216,12 @@ const style = {
     color: 'white',
     border: `1px solid ${HOVER_COLOR}`
   },
+  catLabel: {
+    marginBottom: '0.25rem'
+  },
   inactiveAgg: {
     color: LINK_COLOR,
     border: '1px solid transparent'
-  },
-  panel: {
-    marginTop: '0.5rem'
   },
   aggLabel: {
     margin: '0 0 0.5rem 0',
