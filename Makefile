@@ -27,13 +27,13 @@ prod2-deploy:
 	. prod_deploy_variables.sh && cap prod2 deploy
 
 build: bootstrap dependencies grunt
-	.bin/buildout
+	./bin/buildout
 
 build-deploy: bootstrap
 	./bin/buildout -c $(BUILDOUT_DEPLOY)
 
 bootstrap:
-	/data/tools/python/current/bin/python $(BOOTSTRAP)
+	python $(BOOTSTRAP)
 
 grunt:
 	grunt
