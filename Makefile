@@ -41,8 +41,7 @@ grunt:
 dependencies:
 	npm install
 	npm install -g grunt-cli
-	sudo gem install sass
-	sudo gem install compass -v 0.12.7
+	bundle install
 
 run:
 	bin/pserve sgdfrontend_development.ini
