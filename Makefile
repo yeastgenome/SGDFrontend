@@ -34,7 +34,7 @@ build-deploy: bootstrap-deploy
 	./bin/buildout -c $(BUILDOUT_DEPLOY)
 
 bootstrap:
-	ptyhon $(BOOTSTRAP)
+	python $(BOOTSTRAP)
 
 bootstrap-deploy:
 	$(SERVER_PYTHON) $(BOOTSTRAP)
