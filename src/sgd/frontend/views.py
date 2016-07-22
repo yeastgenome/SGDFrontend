@@ -2,7 +2,7 @@
 from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from src.sgd.frontend import config
 import datetime
 import json
@@ -21,6 +21,17 @@ def blast_sgd(request):
 @view_config(route_name='interaction_search')
 def interaction_search(request):
     return render_to_response(TEMPLATE_ROOT + 'interaction_search.jinja2', {}, request=request)
+
+@view_config(route_name='locus')
+def locus(request):
+    backend_locus_url = config.backend_url + '/locus/' + request.matchdict['identifier'] + '/overview'
+    locus_response = requests.get(backend_locus_url)
+    if locus_response.status_code != 200:
+        return HTTPNotFound()
+    locus = json.loads(locus_response.text)
+    tabs =  json.loads(requests.get(config.backend_url + '/locus/' + str(locus['id']) + '/tabs').text)
+    obj = { 'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs, 'tabs_js': json.dumps(tabs) }
+    return render_to_response(TEMPLATE_ROOT + 'locus.jinja2', obj, request=request)
 
 @view_config(route_name='download_list') 
 def download_list(request):

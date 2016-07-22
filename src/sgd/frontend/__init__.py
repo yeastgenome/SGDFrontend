@@ -11,6 +11,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('blast_fungal', '/blast-fungal')
     config.add_route('blast_sgd', '/blast-sgd')
     config.add_route('interaction_search', '/interaction-search')
+    config.add_route('locus', '/locus/{identifier}/overview')
     config.add_route('download_list', '/download-list')
     config.add_route('snapshot', '/genomesnapshot')
     config.add_route('style_guide', '/style-guide')
@@ -47,13 +48,7 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: getattr(chosen_frontend, 'redirect')(page=request.matchdict['page'], params=request.GET),
                     renderer=chosen_frontend.get_renderer('redirect'),
                     route_name='redirect')
-    
-    # TEMP, render homepage here for prototype
-    # config.add_route('home', '/')
-    # config.add_view(lambda request: chosen_frontend.response_wrapper('home', request)(getattr(chosen_frontend, 'home')()),
-    #                 renderer=chosen_frontend.get_renderer('home'),
-    #                 route_name='home')
-    
+        
     config.add_route('header', '/header')
     config.add_view(lambda request: {'header': render('static/templates/header.jinja2', {})},
                     renderer=chosen_frontend.get_renderer('header'),
@@ -231,11 +226,6 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: chosen_frontend.response_wrapper('experiment', request)(getattr(chosen_frontend, 'experiment')(experiment_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('experiment'),
                     route_name='experiment')
-
-    config.add_route('locus', '/locus/{identifier}/overview')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('locus', request)(getattr(chosen_frontend, 'locus')(bioent_repr=request.matchdict['identifier'].lower())),
-                    renderer=chosen_frontend.get_renderer('locus'),
-                    route_name='locus')
 
     config.add_route('backend', '/backend/*url')
     config.add_view(lambda request: chosen_frontend.response_wrapper('backend', request)(getattr(chosen_frontend, 'backend')(url_repr=request.matchdict['url'], args=request.GET)),
