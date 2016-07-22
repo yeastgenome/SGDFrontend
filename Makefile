@@ -50,12 +50,15 @@ dependencies:
 run:
 	bin/pserve sgdfrontend_development.ini
 
-local-test:
+tests:
+	nosetests test/
+
+ghost-local:
 	. dev_deploy_variables.sh && bin/py lib/ghost/run_local_ghost.py && open $$GHOST_SUITE_BROWSER_URL
 
-silent-test:
+ghost-silent:
 	. dev_deploy_variables.sh && bin/py lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
 
 # add START_URL env variable to point at non-production environment
-prod-test:
+ghost-with-alert:
 	. prod_deploy_variables.sh && bin/py lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
