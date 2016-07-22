@@ -69,15 +69,6 @@ module.exports = function(grunt) {
         },
 
         uglify: {
-            staticJs: {
-                files: {
-                    "src/sgd/frontend/yeastgenome/static/js/build/modernizr.min.js": ["bower_components/modernizr/modernizr.js"],
-                    "src/sgd/frontend/yeastgenome/static/js/build/datatables/datatables.min.js": ["bower_components/datatables/media/js/jquery.dataTables.js"],
-                    "src/sgd/frontend/yeastgenome/static/js/build/datatables/datatables.foundation.min.js": ["bower_components/datatables-plugins/integration/foundation/dataTables.foundation.js"],
-                    "src/sgd/frontend/yeastgenome/static/js/build/fastclick.min.js": ["bower_components/fastclick/lib/fastclick.js"],
-                    "src/sgd/frontend/yeastgenome/static/js/build/foundation.min.js": ["bower_components/foundation/js/foundation.js"]
-                }
-            },
             dynamicJs: {
                 files: {
                     "src/sgd/frontend/yeastgenome/static/js/application.js": ["src/sgd/frontend/yeastgenome/static/js/application.js"],
@@ -86,40 +77,37 @@ module.exports = function(grunt) {
         },
 
         bowercopy: {
-            js: {
-                options: {
-                    destPrefix: "src/sgd/frontend/yeastgenome/static/js/build"
+            refresh: {
+                js: {
+                    options: {
+                        destPrefix: "src/sgd/frontend/yeastgenome/static/js/build"
+                    },
+                    files: {
+                        "cytoscape.min.js": "cytoscape/dist/cytoscape.min.js",
+                        "arbor.js": "cytoscape/lib/arbor.js",
+                        "jquery.min.js": "jquery/dist/jquery.min.js",
+                        "kinetic.min.js": "kineticjs/kinetic.min.js",
+                        "respond.min.js": "respond/dest/respond.min.js",
+                        "rem.min.js": "rem-unit-polyfill/js/rem.min.js",
+                        "nouislider.min.js": "nouislider/jquery.nouislider.min.js"
+                    }
                 },
-                files: {
-                    "cytoscape.min.js": "cytoscape/dist/cytoscape.min.js",
-                    "arbor.js": "cytoscape/lib/arbor.js",
-                    "jquery.min.js": "jquery/dist/jquery.min.js",
-                    "kinetic.min.js": "kineticjs/kinetic.min.js",
-                    "respond.min.js": "respond/dest/respond.min.js",
-                    "rem.min.js": "rem-unit-polyfill/js/rem.min.js",
-                    "nouislider.min.js": "nouislider/jquery.nouislider.min.js"
-                }
-            },
-            scss: {
-                options: {
-                    destPrefix: "client/scss"
+                scss: {
+                    options: {
+                        destPrefix: "client/scss"
+                    },
+                    files: {
+                        "build/_nouislider.scss": "nouislider/jquery.nouislider.css",
+                        "build/_dataTables.foundation.scss": "datatables-plugins/integration/foundation/dataTables.foundation.css"
+                    }
                 },
-                files: {
-                    "build/_nouislider.scss": "nouislider/jquery.nouislider.css",
-                    "build/_dataTables.foundation.scss": "datatables-plugins/integration/foundation/dataTables.foundation.css"
-                }
             },
-            fonts: {
+            build: {
                 files: {
-                    "src/sgd/frontend/yeastgenome/static/fonts": "font-awesome/fonts"
-                }
-            },
-            images: {
-                files: {
+                    "src/sgd/frontend/yeastgenome/static/fonts": "font-awesome/fonts",
                     "src/sgd/frontend/yeastgenome/static/img": "datatables-plugins/integration/foundation/images"
                 }
             }
-            
         },
 
         compass: {
@@ -216,7 +204,7 @@ module.exports = function(grunt) {
 
     // production helper tasks
     grunt.registerTask("dynamicJs:production", ["browserify:production", "uglify:dynamicJs"]);
-    grunt.registerTask("static", ["replace", "concat", "uglify:staticJs"]);
+    grunt.registerTask("static", ["replace", "concat", "bowercopy:build"]);
 
     // dev helper task
     grunt.registerTask("compileDev", ["static", "concurrent:dev"]);
