@@ -53,12 +53,17 @@ run:
 tests:
 	nosetests test/
 
+# add START_URL env variable to point at non-production environment
+ghost:
+	. dev_deploy_variables.sh && bin/py lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
+
+ghost-dev:
+	. dev_deploy_variables.sh  && START_URL=http://$$SERVER bin/py lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
+
+ghost-with-alert:
+	. prod_deploy_variables.sh && bin/py lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
+
 ghost-local:
 	. dev_deploy_variables.sh && bin/py lib/ghost/run_local_ghost.py && open $$GHOST_SUITE_BROWSER_URL
 
-ghost-silent:
-	. dev_deploy_variables.sh && bin/py lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
-
-# add START_URL env variable to point at non-production environment
-ghost-with-alert:
-	. prod_deploy_variables.sh && bin/py lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
+dev-deploy-ghost: dev-deploy ghost-dev

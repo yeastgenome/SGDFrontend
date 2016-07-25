@@ -47,23 +47,23 @@ Some pages are written using the [react](http://facebook.github.io/react/) frame
 
 ##Testing
 
+Unit tests are in the test directory, and can be run with
+
+	$ make tests
+
 Integration tests are run using ghost inspector.  The tests are configured using their service.
 
-Make sure the ghost inspector variables are in dev_deploy_variables.sh
+Make sure the ghost inspector variables are in dev_deploy_variables.sh.  To run the tests on a remote server, run
 
-### Test Production
+    $ make ghost
 
-By running
+By default, it will run with the start URL set to http://yeastgenome.org.  To run against another URL
 
-    $ make prod-test
+	$ START_URL=http://myserver.com make ghost
 
-This command will email all the developers if a test fails.  To run a silent test that sends no emails, run
+This task will not send any alerts if it fails.  If you want to run with alerts (like maybe after a production deploy).  For this task, the credentials are configured in prod_deploy_variables.sh.
 
-    $ make silent-test
-
-the test suite will run against http://yeastgenome.org.  To run on a different server (such as staging) run
-
-    $ START_URL=http://your-server.edu make remote-test
+    $ make ghost-with-alert
 
 ### Test Locally
 
@@ -71,4 +71,4 @@ First, download ngrok (add URL) and start your ngrok server [https://ngrok.com/d
 
 Then, run
 
-    $ make local-test
+    $ make ghost-local
