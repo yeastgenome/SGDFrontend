@@ -13,9 +13,11 @@ requires = [
     'simplejson==3.5.2',
     'requests==2.3.0',
     'elasticsearch==1.4.0'
-    ]
+]
 
 tests_require = [
+    'pyramid==1.5',
+    'pyramid_jinja2==2.1',
     'nose'
 ]
 
