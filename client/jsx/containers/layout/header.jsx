@@ -20,7 +20,7 @@ const Header = React.createClass({
               <a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Yeastmine</a>
               <a href="/suggestion" target="_blank" id="email-header" className="webicon mail small">Email Us</a>
               <a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter" className="webicon twitter small">Twitter</a>
-              <a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" className="webicon facebook small" id="facebook">Facebook</a>
+              <a href="https://www.facebook.com/yeastgenome" target="_blank" className="webicon facebook small" id="facebook">Facebook</a>
               <a href="https://www.linkedin.com/company/saccharomyces-genome-database" target="_blank" className="webicon linkedin small" id="linkedin">Linkedin</a>
               <a href="https://www.youtube.com/SaccharomycesGenomeDatabase" target="_blank" id="youtube" className="webicon youtube small">YouTube</a>
             </div>
