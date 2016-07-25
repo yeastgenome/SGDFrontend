@@ -5,6 +5,7 @@ from pyramid import testing
 class SGDViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
+        self.config.include('pyramid_jinja2')
 
     def tearDown(self):
         testing.tearDown()
@@ -14,4 +15,4 @@ class SGDViewTests(unittest.TestCase):
         req = testing.DummyRequest()
         req.matchdict = { 'identifier': 'rad54' }
         res = locus(req)
-        self.assertEqual(res.status_code, 500)
+        self.assertEqual(res.status_code, 200)
