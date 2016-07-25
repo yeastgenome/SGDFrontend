@@ -4,4 +4,6 @@ python:
 install:
   - python bootstrap.py
   - bin/buildout
+  - pip install pyramid
+  - pip install pyramid_jinja2
 script: make tests
