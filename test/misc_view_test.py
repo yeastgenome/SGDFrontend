@@ -9,14 +9,7 @@ class SGDViewTests(unittest.TestCase):
 
     def tearDown(self):
         testing.tearDown()
-
-    def test_locus_summary_page(self):
-        from src.sgd.frontend.views import locus
-        req = testing.DummyRequest()
-        req.matchdict = { 'identifier': 'rad54' }
-        res = locus(req)
-        self.assertEqual(res.status_code, 200)
-
+        
     def test_blast(self):
         from src.sgd.frontend.views import blast_sgd
         req = testing.DummyRequest()

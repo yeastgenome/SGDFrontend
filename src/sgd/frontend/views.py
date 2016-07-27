@@ -24,14 +24,10 @@ def interaction_search(request):
 
 @view_config(route_name='locus')
 def locus(request):
-    backend_locus_url = config.backend_url + '/locus/' + request.matchdict['identifier'] + '/overview'
-    locus_response = requests.get(backend_locus_url)
-    if locus_response.status_code != 200:
+    locus_obj = get_locus_obj(request.matchdict['identifier'])
+    if locus_obj == None:
         return HTTPNotFound()
-    locus = json.loads(locus_response.text)
-    tabs =  json.loads(requests.get(config.backend_url + '/locus/' + str(locus['id']) + '/tabs').text)
-    obj = { 'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs, 'tabs_js': json.dumps(tabs) }
-    return render_to_response(TEMPLATE_ROOT + 'locus.jinja2', obj, request=request)
+    return render_to_response(TEMPLATE_ROOT + 'locus.jinja2', locus_obj, request=request)
 
 @view_config(route_name='download_list') 
 def download_list(request):
@@ -154,3 +150,12 @@ def home(request):
 # @view_config(route_name='example') 
 # def example(request):
 #     return render_to_response(TEMPLATE_ROOT + 'example.jinja2', {}, request=request)
+
+def get_locus_obj(identifier):
+    backend_locus_url = config.backend_url + '/locus/' + identifier + '/overview'
+    locus_response = requests.get(backend_locus_url)
+    if locus_response.status_code != 200:
+        return None
+    locus = json.loads(locus_response.text)
+    tabs =  json.loads(requests.get(config.backend_url + '/locus/' + str(locus['id']) + '/tabs').text)
+    return { 'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs, 'tabs_js': json.dumps(tabs) }
