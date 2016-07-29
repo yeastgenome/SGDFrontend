@@ -11,7 +11,6 @@ def prep_views(chosen_frontend, config):
     config.add_route('blast_fungal', '/blast-fungal')
     config.add_route('blast_sgd', '/blast-sgd')
     config.add_route('interaction_search', '/interaction-search')
-    config.add_route('locus', '/locus/{identifier}/overview')
     config.add_route('download_list', '/download-list')
     config.add_route('snapshot', '/genomesnapshot')
     config.add_route('style_guide', '/style-guide')
@@ -19,6 +18,17 @@ def prep_views(chosen_frontend, config):
     config.add_route('variant_viewer', '/variant-viewer')
     config.add_route('search', '/search')
     # config.add_route('example', '/example')
+    # locus pages
+    config.add_route('locus', '/locus/{identifier}/overview')
+    config.add_route('sequence_details', '/locus/{identifier}/sequence')
+    config.add_route('protein_details', '/locus/{identifier}/protein')
+    config.add_route('go_details', '/locus/{identifier}/go')
+    config.add_route('phenotype_details', '/locus/{identifier}/phenotype')
+    config.add_route('interaction_details', '/locus/{identifier}/interaction')
+    config.add_route('regulation_details', '/locus/{identifier}/regulation')
+    config.add_route('expression_details', '/locus/{identifier}/expression')
+    config.add_route('literature_details', '/locus/{identifier}/literature')
+    config.add_route('curator_sequence', '/curator/locus/{identifier}/sequence')
     
     # TEMP, render homepage here for prototype
     config.add_route('home', '/')
@@ -111,51 +121,6 @@ def prep_views(chosen_frontend, config):
                                         bioent_ids = None if 'bioent_ids' not in request.json_body else request.json_body['bioent_ids'])),
                     renderer=chosen_frontend.get_renderer('enrichment'),
                     route_name='enrichment')
-    
-    config.add_route('interaction_details', '/locus/{identifier}/interaction')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('interaction_details', request)(getattr(chosen_frontend, 'interaction_details')(bioent_repr=request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('interaction_details'),
-                    route_name='interaction_details')
-    
-    config.add_route('literature_details', '/locus/{identifier}/literature')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('literature_details', request)(getattr(chosen_frontend, 'literature_details')(bioent_repr=request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('literature_details'),
-                    route_name='literature_details')
-    
-    config.add_route('regulation_details', '/locus/{identifier}/regulation')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('regulation_details', request)(getattr(chosen_frontend, 'regulation_details')(bioent_repr=request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('regulation_details'),
-                    route_name='regulation_details')
-    
-    config.add_route('phenotype_details', '/locus/{identifier}/phenotype')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('phenotype_details', request)(getattr(chosen_frontend, 'phenotype_details')(bioent_repr=request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('phenotype_details'),
-                    route_name='phenotype_details')
-
-    config.add_route('expression_details', '/locus/{identifier}/expression')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('expression_details', request)(getattr(chosen_frontend, 'expression_details')(bioent_repr=request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('expression_details'),
-                    route_name='expression_details')
-    
-    config.add_route('go_details', '/locus/{identifier}/go')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('go_details', request)(getattr(chosen_frontend, 'go_details')(bioent_repr=request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('go_details'),
-                    route_name='go_details')
-    
-    config.add_route('protein_details', '/locus/{identifier}/protein')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('protein_details', request)(getattr(chosen_frontend, 'protein_details')(bioent_repr=request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('protein_details'),
-                    route_name='protein_details')
-
-    config.add_route('sequence_details', '/locus/{identifier}/sequence')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('sequence_details', request)(getattr(chosen_frontend, 'sequence_details')(bioent_repr= request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('sequence_details'),
-                    route_name='sequence_details')
-
-    config.add_route('curator_sequence', '/curator/locus/{identifier}/sequence')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('curator_sequence', request)(getattr(chosen_frontend, 'curator_sequence')(bioent_repr= request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('curator_sequence'),
-                    route_name='curator_sequence')
 
     config.add_route('phenotype', '/phenotype/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('phenotype', request)(getattr(chosen_frontend, 'phenotype')(biocon_repr= request.matchdict['identifier'].lower())),

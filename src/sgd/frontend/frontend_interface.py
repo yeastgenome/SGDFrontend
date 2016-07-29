@@ -22,36 +22,7 @@ class FrontendInterface:
     @abstractmethod
     def redirect(self, page, params):
         return None
-    
-    #Tabs
-    @abstractmethod
-    def interaction_details(self, bioent_repr):
-        return None
-    
-    @abstractmethod
-    def literature_details(self, bioent_repr):
-        return None
-    
-    @abstractmethod
-    def regulation_details(self, bioent_repr):
-        return None
-    
-    @abstractmethod
-    def phenotype_details(self, bioent_repr):
-        return None
-    
-    @abstractmethod
-    def go_details(self, bioent_repr):
-        return None
-
-    @abstractmethod
-    def sequence_details(self, bioent_repr):
-        return None
-
-    @abstractmethod
-    def protein_details(self, bioent_repr):
-        return None
-    
+        
     @abstractmethod
     def go(self, biocon_repr):
         return None

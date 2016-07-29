@@ -61,55 +61,9 @@ class YeastgenomeFrontend(FrontendInterface):
             self.now = new_time
         return True
 
-    def locus(self, bioent_repr):
-        backend_url = self.backend_url
-        if self.check_date() and bioent_repr.lower() in self.locuses:
-            return_value = self.locuses[bioent_repr.lower()]
-        else:
-            locus = get_json(backend_url + '/locus/' + bioent_repr + '/overview')
-            if locus is None:
-                return_value = None
-            else:
-                tabs = get_json(backend_url + '/locus/' + str(locus['id']) + '/tabs')
-                return_value = {'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs, 'tabs_js': json.dumps(tabs)}
-            if locus is not None:
-                self.locuses[bioent_repr.lower()] = return_value
-
-        return return_value
-
     def locus_list(self, list_name):
         return self.get_obj('locus_list', None, obj_url=self.backend_url + '/locus/' + list_name)
-
-    def interaction_details(self, bioent_repr):
-        return self.locus(bioent_repr)
-
-    def literature_details(self, bioent_repr):
-        return self.locus(bioent_repr)
-    
-    def regulation_details(self, bioent_repr):
-        return self.locus(bioent_repr)
-    
-    def phenotype_details(self, bioent_repr):
-        return self.locus(bioent_repr)
-
-    def expression_details(self, bioent_repr):
-        return self.locus(bioent_repr)
-    
-    def go_details(self, bioent_repr):
-        return self.locus(bioent_repr)
-
-    def protein_details(self, bioent_repr):
-        return self.locus(bioent_repr)
-
-    def sequence_details(self, bioent_repr):
-        obj = self.locus(bioent_repr)
-        history = { 'history_js': json.dumps(obj.get('locus').get('history')) }
-        obj.update(history)
-        return obj
-
-    def curator_sequence(self, bioent_repr):
-        return self.locus(bioent_repr)
-
+        
     def get_obj(self, obj_type, obj_repr, obj_url=None):
         if obj_url is None:
             obj_url = self.backend_url + '/' + obj_type + '/' + obj_repr + '/overview'

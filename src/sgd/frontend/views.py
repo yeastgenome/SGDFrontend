@@ -22,13 +22,6 @@ def blast_sgd(request):
 def interaction_search(request):
     return render_to_response(TEMPLATE_ROOT + 'interaction_search.jinja2', {}, request=request)
 
-@view_config(route_name='locus')
-def locus(request):
-    locus_obj = get_locus_obj(request.matchdict['identifier'])
-    if locus_obj == None:
-        return HTTPNotFound()
-    return render_to_response(TEMPLATE_ROOT + 'locus.jinja2', locus_obj, request=request)
-
 @view_config(route_name='download_list') 
 def download_list(request):
     date = datetime.datetime.now().strftime("%m/%d/%Y")
@@ -151,6 +144,7 @@ def home(request):
 # def example(request):
 #     return render_to_response(TEMPLATE_ROOT + 'example.jinja2', {}, request=request)
 
+# locus views
 def get_locus_obj(identifier):
     backend_locus_url = config.backend_url + '/locus/' + identifier + '/overview'
     locus_response = requests.get(backend_locus_url)
@@ -159,3 +153,75 @@ def get_locus_obj(identifier):
     locus = json.loads(locus_response.text)
     tabs =  json.loads(requests.get(config.backend_url + '/locus/' + str(locus['id']) + '/tabs').text)
     return { 'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs, 'tabs_js': json.dumps(tabs) }
+
+@view_config(route_name='locus')
+def locus(request):
+    locus_obj = get_locus_obj(request.matchdict['identifier'])
+    if locus_obj == None:
+        return HTTPNotFound()
+    return render_to_response(TEMPLATE_ROOT + 'locus.jinja2', locus_obj, request=request)
+
+@view_config(route_name='sequence_details')
+def sequence_details(request):
+    locus_obj = get_locus_obj(request.matchdict['identifier'])
+    if locus_obj == None:
+        return HTTPNotFound()
+    history = { 'history_js': json.dumps(locus_obj.get('locus').get('history')) }
+    locus_obj.update(history)
+    return render_to_response(TEMPLATE_ROOT + 'sequence_details.jinja2', locus_obj, request=request)
+
+@view_config(route_name='protein_details')
+def protein_details(request):
+    locus_obj = get_locus_obj(request.matchdict['identifier'])
+    if locus_obj == None:
+        return HTTPNotFound()
+    return render_to_response(TEMPLATE_ROOT + 'protein_details.jinja2', locus_obj, request=request)
+
+@view_config(route_name='go_details')
+def go_details(request):
+    locus_obj = get_locus_obj(request.matchdict['identifier'])
+    if locus_obj == None:
+        return HTTPNotFound()
+    return render_to_response(TEMPLATE_ROOT + 'go_details.jinja2', locus_obj, request=request)
+
+@view_config(route_name='phenotype_details')
+def phenotype_details(request):
+    locus_obj = get_locus_obj(request.matchdict['identifier'])
+    if locus_obj == None:
+        return HTTPNotFound()
+    return render_to_response(TEMPLATE_ROOT + 'phenotype_details.jinja2', locus_obj, request=request)
+
+@view_config(route_name='interaction_details')
+def interaction_details(request):
+    locus_obj = get_locus_obj(request.matchdict['identifier'])
+    if locus_obj == None:
+        return HTTPNotFound()
+    return render_to_response(TEMPLATE_ROOT + 'interaction_details.jinja2', locus_obj, request=request)
+
+@view_config(route_name='regulation_details')
+def regulation_details(request):
+    locus_obj = get_locus_obj(request.matchdict['identifier'])
+    if locus_obj == None:
+        return HTTPNotFound()
+    return render_to_response(TEMPLATE_ROOT + 'regulation_details.jinja2', locus_obj, request=request)
+
+@view_config(route_name='expression_details')
+def expression_details(request):
+    locus_obj = get_locus_obj(request.matchdict['identifier'])
+    if locus_obj == None:
+        return HTTPNotFound()
+    return render_to_response(TEMPLATE_ROOT + 'expression_details.jinja2', locus_obj, request=request)
+
+@view_config(route_name='literature_details')
+def literature_details(request):
+    locus_obj = get_locus_obj(request.matchdict['identifier'])
+    if locus_obj == None:
+        return HTTPNotFound()
+    return render_to_response(TEMPLATE_ROOT + 'literature_details.jinja2', locus_obj, request=request)
+
+@view_config(route_name='curator_sequence')
+def curator_sequence(request):
+    locus_obj = get_locus_obj(request.matchdict['identifier'])
+    if locus_obj == None:
+        return HTTPNotFound()
+    return render_to_response(TEMPLATE_ROOT + 'curator_sequence.jinja2', locus_obj, request=request)
