@@ -1,5 +1,4 @@
 import unittest
-
 from pyramid import testing
 
 EXAMPLE_IDENTIFIER = 'rad54'

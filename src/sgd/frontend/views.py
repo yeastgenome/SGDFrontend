@@ -154,15 +154,15 @@ def get_locus_obj(identifier):
     tabs =  json.loads(requests.get(config.backend_url + '/locus/' + str(locus['id']) + '/tabs').text)
     return { 'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs, 'tabs_js': json.dumps(tabs) }
 
-def render_locus_page(identifier, template_name, request):
-    locus_obj = get_locus_obj(identifier)
+def render_locus_page(request, template_name):
+    locus_obj = get_locus_obj(request.matchdict['identifier'])
     if locus_obj == None:
         return HTTPNotFound()
     return render_to_response(TEMPLATE_ROOT + template_name + '.jinja2', locus_obj, request=request)
 
 @view_config(route_name='locus')
 def locus(request):
-    return render_locus_page(request.matchdict['identifier'], 'locus', request)
+    return render_locus_page(request, 'locus')
 
 @view_config(route_name='sequence_details')
 def sequence_details(request):
@@ -175,32 +175,32 @@ def sequence_details(request):
 
 @view_config(route_name='protein_details')
 def protein_details(request):
-    return render_locus_page(request.matchdict['identifier'], 'protein_details', request)
+    return render_locus_page(request, 'protein_details')
 
 @view_config(route_name='go_details')
 def go_details(request):
-    return render_locus_page(request.matchdict['identifier'], 'go_details', request)
+    return render_locus_page(request, 'go_details')
 
 @view_config(route_name='phenotype_details')
 def phenotype_details(request):
-    return render_locus_page(request.matchdict['identifier'], 'phenotype_details', request)
+    return render_locus_page(request, 'phenotype_details')
 
 @view_config(route_name='interaction_details')
 def interaction_details(request):
-    return render_locus_page(request.matchdict['identifier'], 'interaction_details', request)
+    return render_locus_page(request, 'interaction_details')
 
 @view_config(route_name='regulation_details')
 def regulation_details(request):
-    return render_locus_page(request.matchdict['identifier'], 'regulation_details', request)
+    return render_locus_page(request, 'regulation_details')
 
 @view_config(route_name='expression_details')
 def expression_details(request):
-    return render_locus_page(request.matchdict['identifier'], 'expression_details', request)
+    return render_locus_page(request, 'expression_details')
 
 @view_config(route_name='literature_details')
 def literature_details(request):
-    return render_locus_page(request.matchdict['identifier'], 'literature_details', request)
+    return render_locus_page(request, 'literature_details')
 
 @view_config(route_name='curator_sequence')
 def curator_sequence(request):
-    return render_locus_page(request.matchdict['identifier'], 'curator_sequence', request)
+    return render_locus_page(request, 'curator_sequence')

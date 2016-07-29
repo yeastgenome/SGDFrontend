@@ -1,5 +1,4 @@
 import unittest
-
 from pyramid import testing
 
 class SGDViewTests(unittest.TestCase):
