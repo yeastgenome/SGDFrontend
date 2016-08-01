@@ -1,11 +1,13 @@
 #SGD Website Project
 
+[![Build Status](https://travis-ci.org/yeastgenome/SGDFrontend.svg?branch=development)](https://travis-ci.org/yeastgenome/SGDFrontend)
+
 This project is a frontend webaplication used for the SGD Nextgen Redesign. It retreives data in JSON format from
 SGDBackend, then creates the pages of the website.
 
 ##Building the app
 
-To build the application (make sure you have node.js > 4.20 and python 2.7.x):
+To build the application (make sure you have node.js > 4.2.0 and python 2.7.x):
 
     $ make build
 
