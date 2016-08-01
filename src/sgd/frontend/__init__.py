@@ -7,7 +7,8 @@ from src.sgd.tools.blast import do_blast
 
 def prep_views(chosen_frontend, config):
     # some logic (NOT all) has been moved to views to be more 'pyramid-y'
-    config.scan('src.sgd.frontend.views')
+    config.scan('src.sgd.frontend.yeastgenome.views.misc_views')
+    config.scan('src.sgd.frontend.yeastgenome.views.locus_views')
     config.add_route('blast_fungal', '/blast-fungal')
     config.add_route('blast_sgd', '/blast-sgd')
     config.add_route('interaction_search', '/interaction-search')
