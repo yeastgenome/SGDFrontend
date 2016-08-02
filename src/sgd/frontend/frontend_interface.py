@@ -66,11 +66,7 @@ class FrontendInterface:
     @abstractmethod
     def references_this_week(self):
         return None
-    
-    @abstractmethod
-    def home(self):
-        return None
-    
+            
     @abstractmethod
     def header(self):
         return None

@@ -9,6 +9,8 @@ def prep_views(chosen_frontend, config):
     # some logic (NOT all) has been moved to views to be more 'pyramid-y'
     config.scan('src.sgd.frontend.yeastgenome.views.misc_views')
     config.scan('src.sgd.frontend.yeastgenome.views.locus_views')
+    # misc pages from misc_views
+    config.add_route('home', '/')
     config.add_route('blast_fungal', '/blast-fungal')
     config.add_route('blast_sgd', '/blast-sgd')
     config.add_route('interaction_search', '/interaction-search')
@@ -19,7 +21,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('variant_viewer', '/variant-viewer')
     config.add_route('search', '/search')
     # config.add_route('example', '/example')
-    # locus pages
+    # locus pages from locus_views
     config.add_route('locus', '/locus/{identifier}/overview')
     config.add_route('sequence_details', '/locus/{identifier}/sequence')
     config.add_route('protein_details', '/locus/{identifier}/protein')
@@ -30,9 +32,6 @@ def prep_views(chosen_frontend, config):
     config.add_route('expression_details', '/locus/{identifier}/expression')
     config.add_route('literature_details', '/locus/{identifier}/literature')
     config.add_route('curator_sequence', '/curator/locus/{identifier}/sequence')
-    
-    # TEMP, render homepage here for prototype
-    config.add_route('home', '/')
 
     #Reference views
     config.add_route('references_this_week', '/reference/recent')

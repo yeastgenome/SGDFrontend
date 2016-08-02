@@ -137,14 +137,7 @@ class YeastgenomeFrontend(FrontendInterface):
     def references_this_week(self):
         page = {}
         return page
-    
-    def home(self):
-        if self.heritage_url is None:
-            return Response('Temporary.')
-        else:
-            page = urllib.urlopen(self.heritage_url).read()
-            return Response(page)
-        
+            
     def redirect(self, page, params):
         if page == 'interaction':
             if len(params) > 0:

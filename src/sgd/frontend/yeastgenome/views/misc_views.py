@@ -4,6 +4,7 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from src.sgd.frontend import config
+import urllib
 import datetime
 import json
 import requests
@@ -75,6 +76,10 @@ def variant_viewer(request):
 # hardcode meetings and blog posts
 @view_config(route_name='home') 
 def home(request):
+    # TODO restore rendering of heritage url
+    # page = urllib.urlopen(config.heritage_url).read()
+    # return Response(page)
+    
     meetings = [
         {
             'name': 'Gene transcription in yeast: From chromatin to RNA and back',
