@@ -9,6 +9,7 @@ import datetime
 import json
 import requests
 
+SEARCH_URL = config.backend_url + '/get_search_results'
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 
 @view_config(route_name='blast_fungal')
@@ -35,26 +36,46 @@ def download_list(request):
         response_text += (locus_name + '\n')
     return Response(body=response_text, content_type='text/plain', charset='utf-8', content_disposition='attachment; filename=search_results.txt')
 
+# helper method that goes through responses, and returns a redirect URL if is_quick is true for just 1, otherwise returns false
+def get_redirect_url_from_results(results):
+    quick_results = [x for x in results if x.get('is_quick')]
+    if len(quick_results) == 1:
+        return quick_results[0]['href']
+    return False
+
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results in script tag and let client js do the rest.
 @view_config(route_name='search') 
 def search(request):
     # get limit, default to 25
     limit = '25' if request.params.get('page_size') is None else request.params.get('page_size')
     # get search results
-    search_url = config.backend_url + '/get_search_results' + '?' + request.query_string + '&limit=' + limit
-    json_bootstrapped_search_results = requests.get(search_url).text
-    # if param is_quick = true and the first result has is_quick: true then direct to that URL
-    parsed_results = json.loads(json_bootstrapped_search_results)['results']
-    if (request.params.get('is_quick') == 'true' and len(parsed_results) > 0):
-        for result in parsed_results:
-            if (result.get('is_quick')):
-                return HTTPFound(result['href'])
+    search_url = SEARCH_URL + '?' + request.query_string + '&limit=' + limit
+    print search_url
+    json_results = requests.get(search_url).text
+    # if param is_quick = true, try to do some redirecting
+    if request.params.get('is_quick'):
+        query = request.params.get('q').lower()
+        parsed_results = json.loads(json_results)['results']
+        # if query ends in "p", try to search for protein page by executing a second search without the "p"
+        if query.endswith('p'):
+            temp_query = query[:-1]
+            temp_query_url = SEARCH_URL + '?q=' + temp_query
+            temp_json_results = requests.get(temp_query_url).text
+            temp_parsed_results = json.loads(temp_json_results)['results']
+            redirect_url = get_redirect_url_from_results(temp_parsed_results)
+            if redirect_url:
+                protein_url = redirect_url.replace('overview', 'protein')
+                return HTTPFound(protein_url)
+        # no protein search or no protein page redirect applicable
+        redirect_url  = get_redirect_url_from_results(parsed_results)
+        if redirect_url:
+           return HTTPFound(redirect_url) 
     # if wrapped, or page > 0, just make bootstrapped results None to avoid pagination logic in python and fetch on client
     page = 0 if request.params.get('page') is None else int(request.params.get('page'))
     if request.params.get('wrapResults') == 'true' or page > 0:
-        json_bootstrapped_search_results = 'false'    
+        json_results = 'false'    
     # otherwise, render results page and put results in script tag
-    return render_to_response(TEMPLATE_ROOT + 'search.jinja2', { 'bootstrapped_search_results_json': json_bootstrapped_search_results }, request=request)
+    return render_to_response(TEMPLATE_ROOT + 'search.jinja2', { 'bootstrapped_search_results_json': json_results }, request=request)
 
 @view_config(route_name='snapshot') 
 def snapshot(request):

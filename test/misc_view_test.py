@@ -50,16 +50,3 @@ class SGDViewTests(unittest.TestCase):
         req = testing.DummyRequest()
         res = variant_viewer(req)
         self.assertEqual(res.status_code, 200)
-
-    # TODO enable when search backend in production
-    # def test_search(self):
-    #     from src.sgd.frontend.yeastgenome.views.misc_views import search
-    #     # test that gene names get a redirect
-    #     req = testing.DummyRequest(params={ 'q': 'rad54', 'is_quick': 'true' })
-    #     req.query_string = 'q=rad54&is_quick=true'
-    #     res = search(req)
-    #     self.assertEqual(res.status_code, 302)
-    #     # no query, aka "explore"
-    #     req = testing.DummyRequest()
-    #     res = search(req)
-    #     self.assertEqual(res.status_code, 200)
