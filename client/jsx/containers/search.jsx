@@ -4,7 +4,6 @@ import Radium from 'radium';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 
-import FlexyScatterplot from '../components/viz/flexy_scatterplot.jsx';
 import SearchResult from '../components/search/search_result.jsx';
 import SearchDownloadAnalyze from '../components/search/search_download_analyze.jsx';
 import SearchBreadcrumb from './search_breadcrumb.jsx';

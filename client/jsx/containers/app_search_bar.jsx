@@ -97,7 +97,7 @@ const AppSearchBar = React.createClass({
   },
 
   _fetchAutocompleteResults (query) {
-    let url = `${this.props.resultsUrl}?q=${query}`;
+    let url = `${this.props.resultsUrl}?q=${encodeURIComponent(query)}`;
     this.f = fetch(url)
       .then( function (response) {
           if (response.status >= 400) {
@@ -138,7 +138,7 @@ const AppSearchBar = React.createClass({
     if (typeof this.state.redirectHref === 'string') {
       return this._hardRedirect(this.state.redirectHref)
     }
-    let newQuery = this.props.userInput;
+    let newQuery = encodeURIComponent(this.props.userInput);
     if (this.props.redirectOnSearch) {
       // format query param, use isShowAll is to append
       let newUrl = `/search?q=${newQuery}&is_quick=${this.state.isShowAll ? 'false' : 'true'}`;

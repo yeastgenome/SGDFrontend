@@ -73,9 +73,11 @@ const searchResultsReducer = function (_state, action) {
         });
         // sort to try to put relevant (mathces query) facet value on top
         if (state.query !== '') {
+          // escape regex special characters http://stackoverflow.com/questions/3115150/how-to-escape-regular-expression-special-characters-using-javascript
+          let regexQuery = state.query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
           d.values = d.values.sort( (a, b) => {
-            let aMatch = a.key.toLowerCase().match(state.query);
-            let bMatch = b.key.toLowerCase().match(state.query);
+            let aMatch = a.key.toLowerCase().match(regexQuery);
+            let bMatch = b.key.toLowerCase().match(regexQuery);
             let totalIndex = (a.total > b.total) ? -1 : 1;
             if (aMatch && bMatch) {
               return totalIndex;
