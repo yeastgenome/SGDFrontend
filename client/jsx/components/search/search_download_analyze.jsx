@@ -55,6 +55,7 @@ const SearchDownloadAnalyze = React.createClass({
   },
 
   _getStringResults (useBioentityId) {
+    console.log(this.props.results.length)
     let arrResults = this.props.results.reduce( (prev, current) => {
       let identifier = (useBioentityId) ? current.bioentity_id : current.name.split(' / ')[0];
       prev.push(identifier);

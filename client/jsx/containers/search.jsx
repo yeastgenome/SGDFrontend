@@ -131,7 +131,7 @@ const Search = React.createClass({
   _renderWrappedControls () {
     // show progress bar if still downloading results, otherise download / analyze buttons
     let actionProgressNode = this.props.isAsyncPending ?
-      this._renderProgressNode() : <SearchDownloadAnalyze results={this.props.results} query={this.props.query}  url={this.props.url}/>;
+      this._renderProgressNode() : <SearchDownloadAnalyze results={this.props.asyncResults} query={this.props.query}  url={this.props.url}/>;
     return (
       <div className='row'>
         <div className='columns small-6'>
