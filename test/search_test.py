@@ -18,6 +18,13 @@
 #         req = testing.DummyRequest()
 #         res = search(req)
 #         self.assertEqual(res.status_code, 200)
+
+#     def test_show_all_results(self):
+#         from src.sgd.frontend.yeastgenome.views.misc_views import search
+#         req = testing.DummyRequest(params={ 'q': 'rad54', 'is_quick': 'false' })
+#         req.query_string = 'q=rad54&is_quick=false'
+#         res = search(req)
+#         self.assertEqual(res.status_code, 200)
     
 #     def test_gene_name_search(self):
 #         res = get_response_with_query('act1')
