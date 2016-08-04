@@ -60,19 +60,26 @@ const AppSearchBar = React.createClass({
 
   render() {
     let debouncedOnChange = null;
+    const _onSubmit = e => {
+      e.preventDefault();
+    };
     return (
-      <div className='sgd-search-container'> 
-        <Typeahead
-          inputValue={this.props.userInput}
-          placeholder='Search'
-          optionTemplate={SearchOption}
-          options={this.state.autocompleteResults}
-          onChange={this._onChange}
-          onOptionChange={this._onOptionChange}
-          onOptionClick={this._onOptionClick}
-          onKeyDown={this._onKeyDown}
-          autoFocus={true}
-        />
+      <div className='sgd-search-container'>
+        <form action='/search' onSubmit={_onSubmit} autoComplete='off'>
+          <Typeahead
+            inputValue={this.props.userInput}
+            placeholder='Search'
+            optionTemplate={SearchOption}
+            options={this.state.autocompleteResults}
+            onChange={this._onChange}
+            onOptionChange={this._onOptionChange}
+            onOptionClick={this._onOptionClick}
+            onKeyDown={this._onKeyDown}
+            autoFocus={true}
+            inputName='q'
+          />
+        <input type='submit' style={{ display: 'none' }} />
+        </form>
         <span className='search-icon'><i className='fa fa-search'/></span>
       </div>
     );

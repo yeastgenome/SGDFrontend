@@ -40,6 +40,7 @@ module.exports = React.createClass({
             <input
                 {..._this.props}
                 onChange={_this.handleChange}
+                autoComplete='off'
             />
         );
     },

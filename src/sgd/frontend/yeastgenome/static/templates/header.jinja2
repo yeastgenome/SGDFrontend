@@ -263,13 +263,18 @@
         <div class="sgd-menu-divider right show-for-large-up"></div>
         <div class="menu-search-container" id="j-search-container">
             <div class="sgd-search-container">
-                <div style="position:relative;" class="react-typeahead-container ">
-                    <div style="position:relative;" class="react-typeahead-input-container">
-                        <input disabled="" role="presentation" aria-hidden="true" class="react-typeahead-input react-typeahead-hint" style="color:silver;-webkit-text-fill-color:silver;position:absolute;" />
-                        <input autocomplete="false" role="combobox" placeholder="Search" style="position:relative;background:transparent;" spellcheck="false" value="" aria-owns="react-typeahead-options-1" aria-autocomplete="both" autocorrect="false" aria-expanded="false" aria-activedescendant="react-typeahead-activedescendant-1" class="react-typeahead-input react-typeahead-usertext" />
-                    </div><span role="status" aria-live="polite" style="left:-9999px;position:absolute;"></span><span role="status" aria-live="polite" style="left:-9999px;position:absolute;"></span>
-                </div><span class="search-icon"><i class="fa fa-search"></i></span>
+                <form action='/search' autocomplete='off'>
+                    <div style="position:relative;" class="react-typeahead-container ">
+                        <div style="position:relative;" class="react-typeahead-input-container">
+                            <input disabled="" role="presentation" aria-hidden="true" class="react-typeahead-input react-typeahead-hint" style="color:silver;-webkit-text-fill-color:silver;position:absolute;" />
+                            <input autocomplete="false" role="combobox" placeholder="Search" style="position:relative;background:transparent;" spellcheck="false" value="" aria-owns="react-typeahead-options-1" aria-autocomplete="both" autocorrect="false" aria-expanded="false" aria-activedescendant="react-typeahead-activedescendant-1" class="react-typeahead-input react-typeahead-usertext" name="q" autocomplete="off" />
+                        </div><span role="status" aria-live="polite" style="left:-9999px;position:absolute;"></span><span role="status" aria-live="polite" style="left:-9999px;position:absolute;"></span>
+                    </div>
+                    <input type="submit" style="display:none;">
+                </form>
+                <span class="search-icon"><i class="fa fa-search"></i></span>
             </div>
+
         </div>
         </div>
     </section>
