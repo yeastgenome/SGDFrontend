@@ -103,7 +103,7 @@ const FacetSelector = React.createClass({
   },
 
   _getRawUrl () {
-    return `${SEARCH_URL}?q=${this.props.query}`;
+    return `${SEARCH_URL}?q=${encodeURIComponent(this.props.query)}`;
   },
 
   _getToggledHref (aggKey, value, currentValues, isReset) {
