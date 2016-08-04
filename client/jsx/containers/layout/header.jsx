@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import AppSearchBar from "../app_search_bar.jsx";
 
 const Header = React.createClass({
-  render() {
+  render () {
     return (
       <header id="layout-page-header" ref="wrapper">
         {/* top black section */}
@@ -18,11 +18,13 @@ const Header = React.createClass({
               <a href="/download-data">Download</a>
               <a href="/help">Help</a>
               <a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Yeastmine</a>
-              <a href="/suggestion" target="_blank" id="email-header" className="webicon mail small">Email Us</a>
-              <a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter" className="webicon twitter small">Twitter</a>
-              <a href="https://www.facebook.com/yeastgenome" target="_blank" className="webicon facebook small" id="facebook">Facebook</a>
-              <a href="https://www.linkedin.com/company/saccharomyces-genome-database" target="_blank" className="webicon linkedin small" id="linkedin">Linkedin</a>
-              <a href="https://www.youtube.com/SaccharomycesGenomeDatabase" target="_blank" id="youtube" className="webicon youtube small">YouTube</a>
+              <div className="social-media-links">
+                <a href="/suggestion" target="_blank" id="email-header" className="webicon mail small">Email Us</a>
+                <a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter" className="webicon twitter small">Twitter</a>
+                <a href="https://www.facebook.com/yeastgenome" target="_blank" className="webicon facebook small" id="facebook">Facebook</a>
+                <a href="https://www.linkedin.com/company/saccharomyces-genome-database" target="_blank" className="webicon linkedin small" id="linkedin">Linkedin</a>
+                <a href="https://www.youtube.com/SaccharomycesGenomeDatabase" target="_blank" id="youtube" className="webicon youtube small">YouTube</a>
+              </div>
             </div>
           </div>
         </div>
@@ -48,7 +50,7 @@ const Header = React.createClass({
     );
   },
 
-  _renderMenu() {
+  _renderMenu () {
     return (
       <nav className="top-bar" data-topbar role="navigation">
         <ul className="title-area">
