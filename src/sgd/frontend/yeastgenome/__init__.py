@@ -215,7 +215,7 @@ class YeastgenomeFrontend(FrontendInterface):
         headers = response.headers
 
         date = datetime.datetime.now().strftime("%m/%d/%Y")
-        description = "!\n!Date: " + date + '\n' + "!From: Saccharomyces Genome Database (SGD) \n!URL: http://www.yeastgenome.org/ \n!Contact Email: sgd-helpdesk@lists.stanford.edu \n!Funding: NHGRI at US NIH, grant number 5-P41-HG001315 \n!"
+        description = "!\n!Date: " + date + '\n' + "!From: Saccharomyces Genome Database (SGD) \n!URL: http://www.yeastgenome.org/ \n!Contact Email: sgd-helpdesk@lists.stanford.edu \n!Funding: NHGRI at US NIH, grant number 5-U41-HG001315 \n!"
 
         cutoff = 1
         if header_info[1] == 'Analyze ID':
