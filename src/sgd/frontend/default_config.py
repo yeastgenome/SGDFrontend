@@ -1,4 +1,4 @@
-heritage_url = ''
+heritage_url = None
 backend_url = 'http://www.yeastgenome.org/webservice'
 secret_key = 'secret key here'
 sender = 'email address here'

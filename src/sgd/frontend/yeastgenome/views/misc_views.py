@@ -98,8 +98,9 @@ def variant_viewer(request):
 @view_config(route_name='home') 
 def home(request):
     # TODO restore rendering of heritage url
-    page = urllib.urlopen(config.heritage_url).read()
-    return Response(page)
+    if config.heritage_url:
+        page = urllib.urlopen(config.heritage_url).read()
+        return Response(page)
     
     meetings = [
         {
