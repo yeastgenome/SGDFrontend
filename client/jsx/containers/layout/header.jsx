@@ -10,7 +10,7 @@ const Header = React.createClass({
         <div className="hide-for-small">
           <div className="top-header">
             <div>
-              <span className="header-notice">Thanks for using our beta search. <a href="https://www.surveymonkey.com/r/5M2QQSW" target="_blank">Tell us what you think.</a></span>
+              <span className="header-notice">Thanks for using our new search. <a href="https://www.surveymonkey.com/r/5M2QQSW" target="_blank">Tell us what you think.</a></span>
             </div>
             <div className="site-links">
               <a href="/about">About</a>
