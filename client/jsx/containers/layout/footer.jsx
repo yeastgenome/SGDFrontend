@@ -17,7 +17,6 @@ const Footer = React.createClass({
               <li className="sgd-link"><a href="http://www.yeastgenome.org">SGD</a></li>
               <li><a href="http://www.yeastgenome.org/about"><span>About</span></a></li>
               <li><a href="http://www.yeastgenome.org/blog"><span>Blog</span></a></li>
-              <li><a href="http://www.yeastgenome.org/site-map"><span>Site Map</span></a></li>
               <li><a href="http://www.yeastgenome.org/help"><span>Help</span></a></li>
               <li><a href="http://www.stanford.edu/site/terms.html"><span>Terms of Use</span></a></li>
               <li id="social-footer">

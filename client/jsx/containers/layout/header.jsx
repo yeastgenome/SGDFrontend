@@ -17,7 +17,7 @@ const Header = React.createClass({
               <a href="/blog">Blog</a>
               <a href="/download-data">Download</a>
               <a href="/help">Help</a>
-              <a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">Yeastmine</a>
+              <a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">YeastMine</a>
               <div className="social-media-links">
                 <a href="/suggestion" target="_blank" id="email-header" className="webicon mail small">Email Us</a>
                 <a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter" className="webicon twitter small">Twitter</a>
