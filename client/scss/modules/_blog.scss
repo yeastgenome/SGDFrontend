@@ -6,3 +6,33 @@ ul.blog, ul.subblog {
 .content-wp p {
 	font-size: 14px;
 }
+
+#slide-show {
+	margin-bottom: 1.5rem;
+}
+
+.blog-bottom-header {
+	margin-bottom: 0;
+}
+
+.advanced-recent-posts .date {
+	display: block;
+	margin: 0.5rem 0;
+}
+
+.advanced-recent-posts br {
+	display: none;
+}
+
+#upcoming-events {
+	margin-left: 0;
+}
+
+#upcoming-events li {
+	list-style-type: none;
+}
+
+#upcoming-events .future-event h4 a {
+	font-family: Lato, sans-serif;
+	font-size: 1rem;
+}

@@ -10,7 +10,7 @@ $logo-width: 220px;
 $logo-height: 40px;
 $top-header-text-font-size: 14px;
 $header-text-font-size: 14px;
-$search-width: 200px;
+$search-width: 224px;
 $large-search-width : 390px;
 $top-header-font-color: #CCC;
 
@@ -134,6 +134,7 @@ $top-header-font-color: #CCC;
 .top-bar-section ul li > a {
     font-size: $header-text-font-size;
     font-family: Lato, sans-serif;
+    padding: 0 0.65rem !important;
 }
 
 .top-bar .toggle-topbar.menu-icon {
