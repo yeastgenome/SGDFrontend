@@ -1,5 +1,10 @@
 // styles applied to pages created by wordpress
-ul.blog, ul.subblog {
+.orbit-container .orbit-slides-container>* .orbit-caption {
+	font-size: 0.75rem;
+	padding: 0.4rem 0.5rem;
+}
+
+ul.subblog {
 	list-style-type: none;
 }
 
