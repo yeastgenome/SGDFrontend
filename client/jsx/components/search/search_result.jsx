@@ -10,6 +10,7 @@ const SearchResult = React.createClass({
     highlights: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
     href: React.PropTypes.string,
+    loci: React.PropTypes.array // i.e. [{ name: 'rad54', href: '/locus/S000003131/overview' }, ...]
   },
 
   render () {
@@ -31,13 +32,25 @@ const SearchResult = React.createClass({
           </h2>
           <span><span className={`search-cat ${this.props.category}`}/> {this.props.categoryName}</span>
         </div>
-        {this._getHighlightsNode()}
+        {this._renderHighlightsNode()}
+        {this._renderDisplayedLoci()}
       </div>
     );
   },
 
+  _renderDisplayedLoci () {
+    let loci = this.props.loci;
+    if (!loci || loci.length === 0) return null;
+    let labelSuffix = (loci.length > 1) ? 's' : '';
+    let nodes = loci.map( (d, i) => {
+      let separatorNode = (i === loci.length - 1) ? null : <span> | </span>;
+      return <span key={`${this.props.href}.searchLocusLink${i}`}><a href={d.href}>{d.name}</a>{separatorNode}</span>;
+    });
+    return <p style={[style.geneList]}>Associated Gene{labelSuffix}: {nodes}</p>;
+  },
+
   // if highlights, returns highlighted HTML in <dl>, otherise description
-  _getHighlightsNode () {
+  _renderHighlightsNode () {
     // format highlights
     let highlightKeys = this.props.highlights ? Object.keys(this.props.highlights) : [];
     let highlightNodes = highlightKeys.map( (d, i) => {
@@ -80,6 +93,9 @@ const style = {
   },
   primaryDescription: {
     marginBottom: '0.5rem'
+  },
+  geneList: {
+    marginBottom: 0
   },
   highlightKey: {
     fontWeight: 'bold'
