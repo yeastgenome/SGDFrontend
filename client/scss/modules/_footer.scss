@@ -12,7 +12,7 @@ http://smacss.com/book/type-module
 footer { // should be in states
 	color: #fff;
 	a, a:hover, a:active { 
-		color: #fff;
+		color: #fff !important;
 		font-size: em-calc(14);
 	}
 	a:hover { text-decoration: underline; }
