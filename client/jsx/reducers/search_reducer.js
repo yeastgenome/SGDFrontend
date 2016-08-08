@@ -63,6 +63,16 @@ const searchResultsReducer = function (_state, action) {
       state.total = action.response.total;
       state.results = action.response.results.map( d => {
         d.categoryName = getCategoryDisplayName(d.category);
+        // make list of loci from 3 possible types
+        if (d.go_loci) {
+          d.loci = d.go_loci;
+        } else if (d.phenotype_loci) {
+          d.loci = d.phenotype_loci;
+        } else if (d.reference_loci) {
+          d.loci = d.reference_loci;
+        } else {
+          d.loci = null;
+        }
         return d;
       });
       state.aggregations = action.response.aggregations.map( d => {

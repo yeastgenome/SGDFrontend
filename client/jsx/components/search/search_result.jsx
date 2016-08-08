@@ -3,6 +3,8 @@ const _ = require('underscore');
 const Radium = require('radium');
 const DownloadButton = require('../widgets/download_button.jsx');
 
+const CROPPED_LOCI_SIZE = 100;
+
 const SearchResult = React.createClass({
   propTypes: {
     category: React.PropTypes.string.isRequired,
@@ -10,7 +12,13 @@ const SearchResult = React.createClass({
     highlights: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
     href: React.PropTypes.string,
-    loci: React.PropTypes.array // i.e. [{ name: 'rad54', href: '/locus/S000003131/overview' }, ...]
+    loci: React.PropTypes.array // i.e. ['rad54', ...]
+  },
+
+  getInitialState() {
+    return {
+      isLociCropped: true
+    };
   },
 
   render () {
@@ -40,13 +48,40 @@ const SearchResult = React.createClass({
 
   _renderDisplayedLoci () {
     let loci = this.props.loci;
+    let totalLoci = this.props.loci;
     if (!loci || loci.length === 0) return null;
-    let labelSuffix = (loci.length > 1) ? 's' : '';
+    const labelSuffix = (loci.length > 1) ? 's' : '';
+    const onToggleCrop = e => {
+      e.preventDefault();
+      this.setState({ isLociCropped: !this.state.isLociCropped });
+    };
+    // crop loci if necessary and show a message for UI
+    let cropMessage;
+    let actionMessageNode;
+    if (totalLoci.length <= CROPPED_LOCI_SIZE) {
+      cropMessage =  `${totalLoci.length.toLocaleString()} associated gene${labelSuffix}`;
+      actionMessageNode = null;
+    } else if (this.state.isLociCropped) {
+      loci = loci.slice(0, CROPPED_LOCI_SIZE);
+      cropMessage = `Showing ${CROPPED_LOCI_SIZE} of ${totalLoci.length.toLocaleString()} associated gene${labelSuffix}`;
+      actionMessageNode = <a onClick={onToggleCrop}>Show All</a>;
+    } else {
+      cropMessage = `Showing all ${totalLoci.length.toLocaleString()} associated gene${labelSuffix}`;
+      actionMessageNode = <a onClick={onToggleCrop}>Show {CROPPED_LOCI_SIZE}</a>;
+    }
+    
     let nodes = loci.map( (d, i) => {
       let separatorNode = (i === loci.length - 1) ? null : <span> | </span>;
-      return <span key={`${this.props.href}.searchLocusLink${i}`}><a href={d.href}>{d.name}</a>{separatorNode}</span>;
+      let href = `/locus/${d}/overview`;
+      return <span key={`${this.props.href}.searchLocusLink${i}`}><a href={href}>{d}</a>{separatorNode}</span>;
     });
-    return <p style={[style.geneList]}>Associated Gene{labelSuffix}: {nodes}</p>;
+
+    return (
+      <div>
+        <div><span>{cropMessage} {actionMessageNode}</span></div>
+        <p style={[style.geneList]}>{nodes}</p>
+      </div>
+    );
   },
 
   // if highlights, returns highlighted HTML in <dl>, otherise description
