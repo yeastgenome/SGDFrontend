@@ -1,9 +1,41 @@
-const React = require('react');
-const _ = require('underscore');
-const Radium = require('radium');
-const DownloadButton = require('../widgets/download_button.jsx');
+import React from 'react';
+import _ from 'underscore';
+import Radium from 'radium';
+import Clipboard from 'clipboard';
 
-const CROPPED_LOCI_SIZE = 100;
+import DownloadButton from '../widgets/download_button.jsx';
+
+const CopyToClipButton = React.createClass({
+  propTypes: {
+    domId: React.PropTypes.string.isRequired,
+    copiedText: React.PropTypes.string.isRequired
+  },
+
+  render () {
+    return (
+      <span>
+        <a id={this._getButtonDomId()} data-clipboard-target={`#${this._getTextDomId()}`}><i className='fa fa-clipboard' /> Copy to Clipboard</a>
+        <input id={this._getTextDomId()} defaultValue={this.props.copiedText} />
+      </span>
+    );
+  },
+
+  componentDidMount() {
+    this._clip = new Clipboard(`#${this._getButtonDomId()}`);
+  },
+
+  componentWillUnmount() {
+    this._clip.destroy();
+  },
+
+  _getButtonDomId () {
+    return `sgd-copy-btn-${this.props.domId}`;
+  },
+
+  _getTextDomId () {
+    return `sgd-copy-${this.props.domId}`;
+  }
+});
 
 const SearchResult = React.createClass({
   propTypes: {
@@ -17,7 +49,7 @@ const SearchResult = React.createClass({
 
   getInitialState() {
     return {
-      isLociCropped: true
+      isLociVisible: false
     };
   },
 
@@ -26,6 +58,7 @@ const SearchResult = React.createClass({
     return (
       <div className='search-result' style={[style.wrapper]}>
         {innerNode}
+       
       </div>
     );
   },
@@ -52,38 +85,40 @@ const SearchResult = React.createClass({
     //
     
     let loci = this.props.loci;
-    let totalLoci = this.props.loci;
     if (!loci || loci.length === 0) return null;
     const labelSuffix = (loci.length > 1) ? 's' : '';
-    const onToggleCrop = e => {
+    const onToggleLociVisible = e => {
       e.preventDefault();
-      this.setState({ isLociCropped: !this.state.isLociCropped });
+      this.setState({ isLociVisible: !this.state.isLociVisible });
     };
     // crop loci if necessary and show a message for UI
-    let cropMessage;
-    let actionMessageNode;
-    if (totalLoci.length <= CROPPED_LOCI_SIZE) {
-      cropMessage =  `${totalLoci.length.toLocaleString()} associated gene${labelSuffix}`;
-      actionMessageNode = null;
-    } else if (this.state.isLociCropped) {
-      loci = loci.slice(0, CROPPED_LOCI_SIZE);
-      cropMessage = `Showing ${CROPPED_LOCI_SIZE} of ${totalLoci.length.toLocaleString()} associated gene${labelSuffix}`;
-      actionMessageNode = <a onClick={onToggleCrop}>Show All</a>;
+    let actionMessage;
+    let nodes;
+    if (this.state.isLociVisible) {
+      nodes = loci.map( (d, i) => {
+        let separatorNode = (i === loci.length - 1) ? null : <span> | </span>;
+        let href = `/locus/${d}/overview`;
+        return <span key={`${this.props.href}.searchLocusLink${i}`}><a href={href}>{d}</a>{separatorNode}</span>;
+      });
+      actionMessage = 'Hide';
     } else {
-      cropMessage = `Showing all ${totalLoci.length.toLocaleString()} associated gene${labelSuffix}`;
-      actionMessageNode = <a onClick={onToggleCrop}>Show {CROPPED_LOCI_SIZE}</a>;
+      nodes = null;
+      actionMessage = 'Show All';
     }
+    // render to clipboard button
+    let lociStr = loci.reduce( (prev, d, i) => {
+      let separator = (i === loci.length - 1) ? '' : '|';
+      prev += `${d}${separator}`;
+      return prev;
+    }, '');
+    let domIdStr = this.props.href.replace(/[\/]/g, '-');
     
-    let nodes = loci.map( (d, i) => {
-      let separatorNode = (i === loci.length - 1) ? null : <span> | </span>;
-      let href = `/locus/${d}/overview`;
-      return <span key={`${this.props.href}.searchLocusLink${i}`}><a href={href}>{d}</a>{separatorNode}</span>;
-    });
-
     return (
       <div>
-        <div><span>{cropMessage} {actionMessageNode}</span></div>
-        <p style={[style.geneList]}>{nodes}</p>
+        <div>
+          <span>{loci.length.toLocaleString()} associated gene{labelSuffix} | <CopyToClipButton domId={domIdStr} copiedText={lociStr} /> | <a onClick={onToggleLociVisible}>{actionMessage}</a></span>
+        </div>
+        <div>{nodes}</div>
       </div>
     );
   },
