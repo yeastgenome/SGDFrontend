@@ -120,8 +120,8 @@ const SearchResult = React.createClass({
       null : <span style={[style.inlineItem]}><CopyToClipButton domId={domIdStr} copiedText={lociStr} /></span>;
     return (
       <div>
-          <div>
-            <span style={[style.inlineItem]}>{loci.length.toLocaleString()} Associated Gene{labelSuffix}</span>
+          <div style={[style.lociContainer]}>
+            <span style={[style.inlineItem]}>{loci.length.toLocaleString()} Associated Gene{labelSuffix}:</span>
             {clipNode}
             <span style={[style.inlineItem]}><a onClick={onToggleLociVisible}>{actionMessage}</a></span>
           </div>
@@ -181,8 +181,11 @@ const style = {
   highlightKey: {
     fontWeight: 'bold'
   },
+  lociContainer: {
+    marginTop: '1rem'
+  },
   inlineItem: {
-    marginRight: '1.5rem'
+    marginRight: '1rem'
   }
 };
 
