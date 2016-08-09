@@ -115,11 +115,14 @@ const SearchResult = React.createClass({
       return prev;
     }, '');
     let domIdStr = this.props.keyStr;
+    // disable clipboard thing in safari
+    let clipNode = (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) ?
+      null : <span style={[style.inlineItem]}><CopyToClipButton domId={domIdStr} copiedText={lociStr} /></span>;
     return (
       <div>
           <div>
             <span style={[style.inlineItem]}>{loci.length.toLocaleString()} Associated Gene{labelSuffix}</span>
-            <span style={[style.inlineItem]}><CopyToClipButton domId={domIdStr} copiedText={lociStr} /></span>
+            {clipNode}
             <span style={[style.inlineItem]}><a onClick={onToggleLociVisible}>{actionMessage}</a></span>
           </div>
         <div>{nodes}</div>
