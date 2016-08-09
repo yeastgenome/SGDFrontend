@@ -103,10 +103,10 @@ const SearchResult = React.createClass({
         let href = `/locus/${d}/overview`;
         return <span key={`${this.props.href}.searchLocusLink${i}`}><a href={href}>{d}</a>{separatorNode}</span>;
       });
-      actionMessage = 'Hide';
+      actionMessage = <span>Hide</span>;
     } else {
       nodes = null;
-      actionMessage = 'Show All';
+      actionMessage = <span><i className='fa fa-chevron-down' /> Show All</span>;
     }
     // render to clipboard button
     let lociStr = loci.reduce( (prev, d, i) => {
