@@ -215,7 +215,8 @@ const Search = React.createClass({
     let results = this.props.results;
     return results.map( (d, i) => {
       let id = d.id || i;
-      return <SearchResult key={'searchResults' + id} {...d} />;
+      let _key = 'searchResults' + id;
+      return <SearchResult key={_key} keyStr={_key} {...d} />;
     });
   },
 

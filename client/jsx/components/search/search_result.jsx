@@ -15,7 +15,9 @@ const CopyToClipButton = React.createClass({
     return (
       <span>
         <a id={this._getButtonDomId()} data-clipboard-target={`#${this._getTextDomId()}`}><i className='fa fa-clipboard' /> Copy to Clipboard</a>
-        <input id={this._getTextDomId()} defaultValue={this.props.copiedText} />
+        <span style={{ width: 1, height: 1, overflow: 'hidden', display: 'inline-block' }}>
+          <input id={this._getTextDomId()} defaultValue={this.props.copiedText} />
+        </span>
       </span>
     );
   },
@@ -44,7 +46,8 @@ const SearchResult = React.createClass({
     highlights: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
     href: React.PropTypes.string,
-    loci: React.PropTypes.array // i.e. ['rad54', ...]
+    loci: React.PropTypes.array, // i.e. ['rad54', ...]
+    keyStr: React.PropTypes.string // same as key to give a unique str
   },
 
   getInitialState() {
@@ -111,13 +114,14 @@ const SearchResult = React.createClass({
       prev += `${d}${separator}`;
       return prev;
     }, '');
-    let domIdStr = this.props.href.replace(/[\/]/g, '-');
-    
+    let domIdStr = this.props.keyStr;
     return (
       <div>
-        <div>
-          <span>{loci.length.toLocaleString()} associated gene{labelSuffix} | <CopyToClipButton domId={domIdStr} copiedText={lociStr} /> | <a onClick={onToggleLociVisible}>{actionMessage}</a></span>
-        </div>
+          <div>
+            <span style={[style.inlineItem]}>{loci.length.toLocaleString()} Associated Gene{labelSuffix}</span>
+            <span style={[style.inlineItem]}><CopyToClipButton domId={domIdStr} copiedText={lociStr} /></span>
+            <span style={[style.inlineItem]}><a onClick={onToggleLociVisible}>{actionMessage}</a></span>
+          </div>
         <div>{nodes}</div>
       </div>
     );
@@ -174,9 +178,8 @@ const style = {
   highlightKey: {
     fontWeight: 'bold'
   },
-  resourceList: {
-    marginTop: '0.25rem',
-    marginBottom: '0.25rem'
+  inlineItem: {
+    marginRight: '1.5rem'
   }
 };
 
