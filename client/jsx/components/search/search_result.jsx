@@ -47,6 +47,10 @@ const SearchResult = React.createClass({
   },
 
   _renderDisplayedLoci () {
+    // TEMP
+    return null;
+    //
+    
     let loci = this.props.loci;
     let totalLoci = this.props.loci;
     if (!loci || loci.length === 0) return null;

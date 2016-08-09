@@ -74,8 +74,7 @@ const Header = React.createClass({
           <ul className="left">
             <li className="has-dropdown"><a href="#">Analyze</a>
               <ul className="dropdown">
-                <li><a className="disabled-header-a" href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Gene Lists</a></li>
-                <li><a className="disabled-header-a" href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Yeastmine</a></li>
+                <li><a className="disabled-header-a" href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">YeastMine</a></li>
                 <li><a className="disabled-header-a" href="/blast-sgd">BLAST</a></li>
                 <li><a className="disabled-header-a" href="/blast-fungal">Fungal BLAST</a></li>
                 <li><a className="disabled-header-a" href="/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
@@ -161,7 +160,7 @@ const Header = React.createClass({
               <ul className="dropdown">
                 <li><a className="disabled-header-a" href="http://textpresso.yeastgenome.org/">Full-text Search</a></li>
                 <li><a className="disabled-header-a" href="/reference/recent">New Yeast Papers</a></li>
-                <li><a className="disabled-header-a" href="http://www.genetics.org/site/misc/yeastbook.xhtml">YeastBook</a></li>
+                <li><a className="disabled-header-a" href="http://www.genetics.org/content/yeastbook">YeastBook</a></li>
                 <li><a className="disabled-header-a" href="/cache/genome-wide-analysis.html">Genome-wide Analysis Papers</a></li>
                 <li className="has-dropdown">
                   <a href="#">Resources</a>
