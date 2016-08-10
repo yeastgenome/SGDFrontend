@@ -80,10 +80,10 @@ $top-header-font-color: #CCC;
 }
 // adjust for mobile screen
 @media (max-width: 48em) {
-	.sgd-search-container {
+	.menu-search-container, .sgd-search-container {
 		position: relative;
 		right: 0;
-		width: auto;
+		width: 100%;
 	}
 }
 // adjust for larger screens
