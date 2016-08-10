@@ -2,40 +2,42 @@ import React from 'react';
 import _ from 'underscore';
 import Radium from 'radium';
 import Clipboard from 'clipboard';
+import $ from 'jquery';
+import 'foundation'; 
 
 import DownloadButton from '../widgets/download_button.jsx';
 
 const CopyToClipButton = React.createClass({
   propTypes: {
-    domId: React.PropTypes.string.isRequired,
     copiedText: React.PropTypes.string.isRequired
   },
 
+  getInitialState() {
+    return { isCopied: false };
+  },
+
   render () {
+    let tooltipAttr = this.state.isCopied ? { 'data-tooltip': true } : {};
+    let hoverText = this.state.isCopied ? 'Copied!' : '';
     return (
-      <span>
-        <a id={this._getButtonDomId()} data-clipboard-target={`#${this._getTextDomId()}`}><i className='fa fa-clipboard' /> Copy to Clipboard</a>
-        <span style={{ width: 1, height: 1, overflow: 'hidden', display: 'inline-block' }}>
-          <input id={this._getTextDomId()} defaultValue={this.props.copiedText} />
-        </span>
+      <span {...tooltipAttr} ref='tooltip' aria-haspopup='true' title={hoverText}>
+        <a ref='actionButton' data-clipboard-text={this.props.copiedText}><i className='fa fa-clipboard' /> Copy to Clipboard</a>
       </span>
     );
   },
 
   componentDidMount() {
-    this._clip = new Clipboard(`#${this._getButtonDomId()}`);
+    this._clip = new Clipboard(this.refs.actionButton);
+    this._clip.on('success', e => {
+      this.setState({ isCopied: true }, () => {
+        $(document).foundation('tooltip', 'reflow');
+        $(this.refs.tooltip).trigger('mouseenter');
+      });
+    })
   },
 
   componentWillUnmount() {
     this._clip.destroy();
-  },
-
-  _getButtonDomId () {
-    return `sgd-copy-btn-${this.props.domId}`;
-  },
-
-  _getTextDomId () {
-    return `sgd-copy-${this.props.domId}`;
   }
 });
 
@@ -110,10 +112,9 @@ const SearchResult = React.createClass({
       prev += `${d}${separator}`;
       return prev;
     }, '');
-    let domIdStr = this.props.keyStr;
     // disable clipboard thing in safari
     let clipNode = (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) ?
-      null : <span style={[style.inlineItem]}><CopyToClipButton domId={domIdStr} copiedText={lociStr} /></span>;
+      null : <span style={[style.inlineItem]}><CopyToClipButton copiedText={lociStr} /></span>;
     return (
       <div>
           <div style={[style.lociContainer]}>
