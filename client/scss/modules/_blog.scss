@@ -41,3 +41,19 @@ ul.subblog {
 	font-family: Lato, sans-serif;
 	font-size: 1rem;
 }
+
+#leftnav {
+	margin-top: 1.5rem;
+}
+
+#leftnav-container ul.menu li.menu-item {
+	list-style-type: none;
+}
+
+#leftnav-container > div > ul.menu > li.menu-item {
+	display: none;
+}
+
+#leftnav-container > div > ul.menu > li.menu-item.current-menu-item {
+	display: block;
+}
