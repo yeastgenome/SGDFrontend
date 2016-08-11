@@ -78,20 +78,7 @@ $top-header-font-color: #CCC;
 	right: 0.5rem;
 	width: $search-width
 }
-// adjust for mobile screen
-@media (max-width: 48em) {
-	.menu-search-container, .sgd-search-container {
-		position: relative;
-		right: 0;
-		width: 100%;
-	}
-}
-// adjust for larger screens
-@media (min-width: 74.5em) {
-	.menu-search-container, .sgd-search-container {
-		width: $large-search-width;
-	}
-}
+
 
 #sgd-mini-logo {
 	margin: 8px;
@@ -165,4 +152,43 @@ $top-header-font-color: #CCC;
 
 .header-update p a {
 	text-decoration: underline;
+}
+
+// screen size adjustments
+// medium and down
+@media (max-width: 63.75em) {
+	.logo.small-logo {
+		margin-top: 2px;
+	}
+	.menu-bar-container {
+		justify-content: space-between;
+		-webkit-justify-content: space-between;
+	}
+	.top-menu-container {
+		flex-grow: 1;
+		-webkit-flex-grow: 1;
+	}
+	.top-bar {
+		width: 100%;
+	}
+	.menu-search-container, .sgd-search-container {
+		width: $large-search-width;
+	}
+}
+// small
+@media (max-width: 48em) {
+	.menu-search-container, .sgd-search-container {
+		position: relative;
+		right: 0;
+		width: 100%;
+	}
+	.top-bar {
+		min-width: 20rem;
+	}
+}
+// large and up
+@media (min-width: 74.5em) {
+	.menu-search-container, .sgd-search-container {
+		width: $large-search-width;
+	}
 }
