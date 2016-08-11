@@ -161,7 +161,7 @@ const Header = React.createClass({
                 <li><a className="disabled-header-a" href="http://textpresso.yeastgenome.org/">Full-text Search</a></li>
                 <li><a className="disabled-header-a" href="/reference/recent">New Yeast Papers</a></li>
                 <li><a className="disabled-header-a" href="http://www.genetics.org/content/yeastbook">YeastBook</a></li>
-                <li><a className="disabled-header-a" href="/cache/genome-wide-analysis.html">Genome-wide Analysis Papers</a></li>
+                <li><a className="disabled-header-a" href="http://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=GenomeWide_Papers&scope=all&method=results&format=tab">Genome-wide Analysis Papers</a></li>
                 <li className="has-dropdown">
                   <a href="#">Resources</a>
                   <ul className="dropdown">
