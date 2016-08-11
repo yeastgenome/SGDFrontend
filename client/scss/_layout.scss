@@ -7,8 +7,9 @@ http://smacss.com/book/type-layout
 	overflow: hidden;
 	padding-bottom: 92px;
 	margin-top: 1rem;
-	@media only screen and (max-width: 40em) {
+	@media only screen and (max-width: 47.5em) {
 		padding-bottom: 250px;
+		margin-top: 0
 	}
 }
 

@@ -112,10 +112,10 @@ $top-header-font-color: #CCC;
 	}
 }
 
-.top-bar {
+.top-menu-container .top-bar {
 	margin-top: 6px;
 	display: inline-block;
-	min-width: 21rem;
+	min-width: 19.5rem;
 }
 
 .top-bar-section ul li > a {
@@ -168,7 +168,7 @@ $top-header-font-color: #CCC;
 		flex-grow: 1;
 		-webkit-flex-grow: 1;
 	}
-	.top-bar {
+	.top-menu-container .top-bar {
 		width: 100%;
 	}
 	.menu-search-container, .sgd-search-container {
@@ -176,14 +176,14 @@ $top-header-font-color: #CCC;
 	}
 }
 // small
-@media (max-width: 48em) {
+@media (max-width: 47.5em) {
 	.menu-search-container, .sgd-search-container {
 		position: relative;
 		right: 0;
 		width: 100%;
 	}
-	.top-bar {
-		min-width: 20rem;
+	.top-menu-container .top-bar {
+		min-width: 19.5rem;
 	}
 }
 // large and up
