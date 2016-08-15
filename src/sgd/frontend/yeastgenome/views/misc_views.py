@@ -93,14 +93,13 @@ def suggestion(request):
 def variant_viewer(request):
     return render_to_response(TEMPLATE_ROOT + 'variant_viewer.jinja2', {}, request=request)
     
-# TEMP, render homepage here for prototype
-# hardcode meetings and blog posts
+# hardcode meetings and blog posts to allow this app to render (instead of heritage)
+# if config.heritage_url defined, use that
 @view_config(route_name='home') 
 def home(request):
-    # TODO restore rendering of heritage url
-    # if config.heritage_url:
-    #     page = urllib.urlopen(config.heritage_url).read()
-    #     return Response(page)
+    if config.heritage_url:
+        page = urllib.urlopen(config.heritage_url).read()
+        return Response(page)
     
     meetings = [
         {
