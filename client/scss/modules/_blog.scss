@@ -20,15 +20,6 @@ ul.subblog {
 	margin-bottom: 1rem;
 }
 
-.advanced-recent-posts .date {
-	display: block;
-	margin: 0.5rem 0;
-}
-
-.advanced-recent-posts br {
-	display: none;
-}
-
 #upcoming-events {
 	margin-left: 0;
 }
@@ -58,6 +49,20 @@ ul.subblog {
 	display: block;
 }
 
-.news-container p {
+.news-container p, ul.advanced-recent-posts li {
 	font-size: 14px;
 }
+
+ul.advanced-recent-posts li a:first-child {
+	font-size: 16px;
+}
+
+.advanced-recent-posts .date {
+	display: block;
+	margin: 0.5rem 0;
+}
+
+.advanced-recent-posts br {
+	display: none;
+}
+
