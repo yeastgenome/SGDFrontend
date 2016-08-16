@@ -1,4 +1,4 @@
-# some logic (NOT all) has been moved to views to be more 'pyramid-y'
+f# some logic (NOT all) has been moved to views to be more 'pyramid-y'
 from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
@@ -97,9 +97,9 @@ def variant_viewer(request):
 # if config.heritage_url defined, use that
 @view_config(route_name='home') 
 def home(request):
-    if config.heritage_url:
-        page = urllib.urlopen(config.heritage_url).read()
-        return Response(page)
+    # if config.heritage_url:
+    #     page = urllib.urlopen(config.heritage_url).read()
+    #     return Response(page)
     
     meetings = [
         {
