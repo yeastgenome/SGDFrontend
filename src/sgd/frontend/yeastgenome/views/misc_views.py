@@ -1,4 +1,4 @@
-f# some logic (NOT all) has been moved to views to be more 'pyramid-y'
+# some logic (NOT all) has been moved to views to be more 'pyramid-y'
 from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
