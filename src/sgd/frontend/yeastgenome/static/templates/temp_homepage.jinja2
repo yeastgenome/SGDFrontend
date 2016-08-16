@@ -149,7 +149,7 @@ anti-Fpr3 antibody courtesy of Jeremy Thorner, Ph.D., UC Berkeley</span>
             <h2>About SGD</h2>
             <p>The <em>Saccharomyces</em> Genome Database (SGD) provides comprehensive integrated biological information for the budding yeast <em>Saccharomyces cerevisiae</em> along with search and analysis tools to explore these data, enabling the discovery of functional relationships between sequence and gene products in fungi and higher organisms.</p>
             <div class="text-center">
-                <a class="button large explore-btn" href="/search">Explore <i class="fa fa-chevron-right"></i></a>
+                <a class="button large explore-btn" href="/search" id="j-try-btn">Try this?</i></a>
             </div>
         </div>
     </div>
@@ -188,5 +188,16 @@ anti-Fpr3 antibody courtesy of Jeremy Thorner, Ph.D., UC Berkeley</span>
     setTimeout(function () {
         $('#slide-show').css({ visibility: 'visible' });
     }, 300);
+    // randomize "try this"
+    var queryUrls = [
+        '/search?q=polymerase',
+        '/search?q=cell%20cycle',
+        '/search?q=nuclear',
+        '/search?q=phosphate',
+        '/search?q=ethanol',
+        '/search?q=oxidative'
+    ];
+    var randomQueryUrl = queryUrls[Math.floor(queryUrls.length * Math.random())];
+    document.getElementById('j-try-btn').href = randomQueryUrl;
 </script>
 {% endblock scripts %}
