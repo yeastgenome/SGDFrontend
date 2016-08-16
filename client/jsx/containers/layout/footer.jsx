@@ -12,7 +12,7 @@ const Footer = React.createClass({
     return (
       <footer id="layout-document-footer" className="page-footer">
         <div className="row">
-          <div className="small-7 large-7 columns">
+          <div className="small-6 columns">
             <ul id="footer-links">
               <li className="sgd-link"><a href="http://www.yeastgenome.org">SGD</a></li>
               <li><a href="http://www.yeastgenome.org/about"><span>About</span></a></li>
@@ -32,7 +32,7 @@ const Footer = React.createClass({
             </ul>
             <div id="copyright">&copy; Stanford University, Stanford, CA 94305.</div>
           </div>
-          <div className="small-5 large-5 columns">
+          <div className="small-6 columns">
             <ul className="logo-list">
               <li><a href="http://genetics.stanford.edu">
                 <img height="45" width="102" src={`${assetRoot}/img/genetics-logo@2x.png`} id="genetics-logo" />
