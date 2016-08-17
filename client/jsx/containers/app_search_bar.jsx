@@ -68,7 +68,7 @@ const AppSearchBar = React.createClass({
         <form action='/search' onSubmit={_onSubmit} autoComplete='off'>
           <Typeahead
             inputValue={this.props.userInput}
-            placeholder='actin, kinase, glucose'
+            placeholder='search: actin, kinase, glucose'
             optionTemplate={SearchOption}
             options={this.state.autocompleteResults}
             onChange={this._onChange}
