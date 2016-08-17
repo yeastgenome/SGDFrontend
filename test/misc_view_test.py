@@ -39,11 +39,11 @@ class SGDViewTests(unittest.TestCase):
         res = snapshot(req)
         self.assertEqual(res.status_code, 200)
 
-    # def test_suggestion(self):
-    #     from src.sgd.frontend.yeastgenome.views.misc_views import suggestion
-    #     req = testing.DummyRequest()
-    #     res = suggestion(req)
-    #     self.assertEqual(res.status_code, 200)
+    def test_suggestion(self):
+        from src.sgd.frontend.yeastgenome.views.misc_views import suggestion
+        req = testing.DummyRequest()
+        res = suggestion(req)
+        self.assertEqual(res.status_code, 200)
 
     def test_variant_viewer(self):
         from src.sgd.frontend.yeastgenome.views.misc_views import variant_viewer
