@@ -97,9 +97,9 @@ def variant_viewer(request):
 # if config.heritage_url defined, use that
 @view_config(route_name='home') 
 def home(request):
-    # if config.heritage_url:
-    #     page = urllib.urlopen(config.heritage_url).read()
-    #     return Response(page)
+    if config.heritage_url:
+        page = urllib.urlopen(config.heritage_url).read()
+        return Response(page)
     
     meetings = [
         {
