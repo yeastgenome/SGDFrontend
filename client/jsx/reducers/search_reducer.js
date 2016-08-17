@@ -76,6 +76,28 @@ const searchResultsReducer = function (_state, action) {
         return d;
       });
       state.aggregations = action.response.aggregations.map( d => {
+        // correct the go and phenotype locus categoriesto prepend "go_" or "phenotype_" to "locus"
+        if (d.key === 'locus') {
+          switch(state.activeCategory) {
+            case 'phenotype':
+              d.key = 'phenotype_locus';
+              break
+            case 'reference':
+              d.key = 'reference_locus';
+              break
+            case 'molecular_function':
+              d.key = 'go_locus';
+              break
+            case 'cellular_component':
+              d.key = 'go_locus';
+              break
+            case 'biological_process':
+              d.key = 'go_locus';
+              break
+            default:
+              d.key = 'locus';
+          }
+        }
         d.name = d.key;
         // filter out root terms from values
         d.values = d.values.filter( d => {
