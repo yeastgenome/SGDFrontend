@@ -87,6 +87,9 @@ def style_guide(request):
 
 @view_config(route_name='suggestion')
 def suggestion(request):
+    # TEMP redirect to production
+    return HTTPFound('http://yeastgenome.org/suggestion')
+
     return render_to_response(TEMPLATE_ROOT + 'suggestion.jinja2', {}, request=request)
 
 @view_config(route_name='variant_viewer')
