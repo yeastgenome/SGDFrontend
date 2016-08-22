@@ -12,14 +12,15 @@ class SearchTest(unittest.TestCase):
         testing.setUp()
 
         self.category_filters = {
-        "locus": [('feature type', 'feature_type'), ('molecular function', 'molecular_function'), ('phenotype', 'phenotypes'), ('cellular component', 'cellular_component'), ('biological process', 'biological_process')],
-        "phenotype": [("observable", "observable"), ("qualifier", "qualifier"), ("references", "references"), ("phenotype_locus", "phenotype_loci"), ("chemical", "chemical"), ("mutant_type", "mutant_type")],
-        "biological_process": [("go_locus", "go_loci")],
-        "cellular_component": [("go_locus", "go_loci")],
-        "molecular_function": [("go_locus", "go_loci")],
-        "reference": [("author", "author"), ("journal", "journal"), ("year", "year"), ("reference_locus", "reference_loci")]
+            "locus": [('feature type', 'feature_type'), ('molecular function', 'molecular_function'), ('phenotype', 'phenotypes'), ('cellular component', 'cellular_component'), ('biological process', 'biological_process')],
+            "phenotype": [("observable", "observable"), ("qualifier", "qualifier"), ("references", "references"), ("phenotype_locus", "phenotype_loci"), ("chemical", "chemical"), ("mutant_type", "mutant_type")],
+            "biological_process": [("go_locus", "go_loci")],
+            "cellular_component": [("go_locus", "go_loci")],
+            "molecular_function": [("go_locus", "go_loci")],
+            "reference": [("author", "author"), ("journal", "journal"), ("year", "year"), ("reference_locus", "reference_loci")],
+            "contig": [("strain", "strain")]
     }
-
+        
     
     def tearDown(self):
         testing.tearDown()
@@ -56,7 +57,7 @@ class SearchTest(unittest.TestCase):
         mock_es.assert_called_with(body={
             'highlight': {
                 'fields': {
-                    'observable': {}, 'mutant_type': {}, 'name': {}, 'author': {}, 'year': {}, 'journal': {}, 'molecular_function': {}, 'cellular_component': {}, 'phenotypes': {}, 'qualifier': {}, 'summary': {}, 'chemical': {}, 'go_loci': {}, 'references': {}, 'reference_loci': {}, 'phenotype_loci': {}, 'biological_process': {}, 'name_description': {}, 'description': {}}},
+                    'gene_history': {}, 'reference_loci': {}, 'strain': {}, 'synonyms': {}, 'references': {}, 'year': {}, 'secondary_sgdid': {}, 'name_description': {}, 'description': {}, 'mutant_type': {}, 'author': {}, 'cellular_component': {}, 'ec_number': {}, 'chemical': {}, 'go_loci': {}, 'phenotype_loci': {}, 'biological_process': {}, 'qualifier': {}, 'journal': {}, 'molecular_function': {}, 'phenotypes': {}, 'observable': {}, 'name': {}, 'tc_number': {}, 'sequence_history': {}, 'summary': {}}},
             'query': {
                 'filtered': {
                     'filter': {
@@ -105,12 +106,12 @@ class SearchTest(unittest.TestCase):
                                     'query': 'eu gene',
                                     'boost': 3,
                                     'type': 'best_fields',
-                                    'fields': ['summary', 'name_description', 'phenotypes', 'cellular_component', 'biological_process', 'molecular_function', 'observable', 'qualifier', 'references', 'phenotype_loci', 'chemical', 'mutant_type', 'go_loci', 'author', 'journal', 'year', 'reference_loci']
+                                    'fields': ['summary', 'name_description', 'phenotypes', 'cellular_component', 'biological_process', 'molecular_function', 'observable', 'qualifier', 'references', 'phenotype_loci', 'chemical', 'mutant_type', 'go_loci', 'author', 'journal', 'year', 'reference_loci', 'synonyms', 'ec_number', 'gene_history', 'sequence_history', 'secondary_sgdid', 'tc_number', 'strain']
                                 }
                             }]
                         }
                     }
-                }}, '_source': ['name', 'href', 'description', 'category', 'bioentity_id', 'keys']}, from_=25, index='searchable_items', size=10)
+                }}, '_source': ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci', 'keys']}, from_=25, index='searchable_items', size=10)
 
     @mock.patch('src.models.ESearch.search')
     @mock.patch('src.views.format_aggregation_results')
