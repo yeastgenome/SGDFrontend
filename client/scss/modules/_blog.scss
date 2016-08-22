@@ -49,6 +49,14 @@ ul.subblog {
 	display: block;
 }
 
+#leftnav-container > div > ul.menu > li.menu-item.current-menu-ancestor {
+	display: block;
+}
+
+#leftnav-container > div > ul.menu > li.menu-item > ul.sub-menu > li.menu-item.current-menu-item {
+	display: block;
+}
+
 .news-container p, ul.advanced-recent-posts li {
 	font-size: 14px;
 }
