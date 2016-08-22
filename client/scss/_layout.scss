@@ -3,8 +3,18 @@ Layout rules - SMACSS
 http://smacss.com/book/type-layout
 ************************************************/
 
-#layout-document {
+#layout-document, #contentbody-responsive, #content {
 	overflow: hidden;
+	padding-bottom: 92px;
+	margin-top: 1rem;
+	@media only screen and (max-width: 47.5em) {
+		padding-bottom: 250px;
+		margin-top: 0
+	}
+}
+
+#content {
+	padding-bottom: 120px;
 }
 
 /* Main page header, with global navigation */
@@ -23,9 +33,25 @@ http://smacss.com/book/type-layout
 	//height: 45px;
 }
 
+.explore-btn {
+	background: #D4001F;
+	&:hover {
+		background: #65000C;
+	}
+}
+
+.news-container {
+	padding-top: 1rem;
+	min-height: 30rem;
+	background: #EBEBEB;
+}
+
 /* PAGE FOOTER */
 #layout-document-footer {
 	padding: 22px 0 22px;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
 }
 
 .content-column section {

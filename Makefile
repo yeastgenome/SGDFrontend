@@ -1,5 +1,6 @@
 BOOTSTRAP = bootstrap.py
 BUILDOUT_DEPLOY = buildout_deploy.cfg
+SERVER_PYTHON = /data/tools/python/current/bin/python
 
 deploy-assets:
 	. dev_deploy_variables.sh && grunt deployAssets
@@ -11,7 +12,7 @@ qa-deploy:
 	. dev_deploy_variables.sh && cap qa deploy
 
 beta-deploy:
-	. prod_deploy_variables.sh && cap beta deploy
+	. dev_deploy_variables.sh && cap beta deploy
 
 staging-deploy:
 	. prod_deploy_variables.sh && cap staging deploy
@@ -27,31 +28,42 @@ prod2-deploy:
 	. prod_deploy_variables.sh && cap prod2 deploy
 
 build: bootstrap dependencies grunt
-	.bin/buildout
+	./bin/buildout
 
-build-deploy: bootstrap
+build-deploy: bootstrap-deploy
 	./bin/buildout -c $(BUILDOUT_DEPLOY)
 
 bootstrap:
-	/data/tools/python/current/bin/python $(BOOTSTRAP)
+	python $(BOOTSTRAP)
+
+bootstrap-deploy:
+	$(SERVER_PYTHON) $(BOOTSTRAP)
 
 grunt:
 	grunt
 
 dependencies:
+	npm install
 	npm install -g grunt-cli
-	sudo gem install sass
-	sudo gem install compass -v 0.12.7
+	bundle install
 
 run:
 	bin/pserve sgdfrontend_development.ini
 
-local-test:
-	. dev_deploy_variables.sh && bin/py lib/ghost/run_local_ghost.py && open $$GHOST_SUITE_BROWSER_URL
-
-silent-test:
-	. dev_deploy_variables.sh && bin/py lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
+tests:
+	nosetests test/
 
 # add START_URL env variable to point at non-production environment
-prod-test:
+ghost:
+	. dev_deploy_variables.sh && bin/py lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
+
+ghost-dev:
+	. dev_deploy_variables.sh  && START_URL=http://$$SERVER bin/py lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
+
+ghost-with-alert:
 	. prod_deploy_variables.sh && bin/py lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
+
+ghost-local:
+	. dev_deploy_variables.sh && bin/py lib/ghost/run_local_ghost.py && open $$GHOST_SUITE_BROWSER_URL
+
+dev-deploy-ghost: dev-deploy ghost-dev

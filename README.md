@@ -1,77 +1,33 @@
 #SGD Website Project
 
+[![Build Status](https://travis-ci.org/yeastgenome/SGDFrontend.svg?branch=development)](https://travis-ci.org/yeastgenome/SGDFrontend)
+
 This project is a frontend webaplication used for the SGD Nextgen Redesign. It retreives data in JSON format from
 SGDBackend, then creates the pages of the website.
 
-There is only one package in this project...
-
-1. **sgdfrontend**
-
- This package contains the templates and code for the SGDNextGen site.
- 
-##Dependencies
-
-###Python
-
-* Pyramid
-* Waitress
-* simplejson
-* requests
-
-
-###Build Dependencies
-
-There are a few development dependencies used to build assets, but not needed at runtime.  They are:
-
-* [Node](http://nodejs.org/)
-* [Grunt](http://gruntjs.com/)
-* [Compass](http://compass-style.org/)
-
-To install node:
-
-    $ brew install node
-
-Grunt:
-
-    $ npm install -g grunt-cli
-
-Compass:
-
-    $ gem install compass -v 0.12.7
-
-The build installs several node packages.  All of them are development, or build time dependencies.
-
-For details, see files: package.json, Gruntfile.js, bower.json
-
-###Deploying Production Assets
-
-In production, assets are served from Amazon Cloudfront.  Before deploying to a production server, be sure to run 
-
-    $ grunt deployAssets
-
-and then commit changes to git.
-
-This task requires the environmental variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY be set on the machine pushing the assets.  This will change a few files checked into git, so these changes must be committed.
-
 ##Building the app
 
-To build the application:
+To build the application (make sure you have node.js > 4.2.0 and python 2.7.x):
 
-    $ python bootstrap.py
-    $ bin/buildout
+    $ make build
+
+Set configuration variables in `src/sgd/frontend/config.py`, which doesn't exist at first, and is in the .gitignore.  To create with default values, run
+
+    $ cp src/sgd/frontend/default_config.py src/sgd/frontend/config.py
+
+To run off of a different backend: Set the backend_url parameter in the config file to the URL of the new backend. 
     
 To start the application:
 
-    $ bin/pserve sgdfrontend_development.ini
+    $ make run
 
-To run off of a different backend:
-Set the backend_url parameter in the config file to the URL of the new backend.
+##Deploying Assets
 
-##Grunt
+In production, assets are served from Amazon Cloudfront.  Before deploying to a server, be sure to run 
 
-The buildout uses grunt to compile JavaScript and CSS assets from JSX and SASS, respectively.  In the buildout, the default grunt task runs all the necessary compilation, minification, and copying.  To run this rask separately, run:
+    $ make deploy-assets
 
-    $ grunt
+and then commit changes to git.
 
 ##Using the Development Task
 
@@ -93,23 +49,23 @@ Some pages are written using the [react](http://facebook.github.io/react/) frame
 
 ##Testing
 
+Unit tests are in the test directory, and can be run with
+
+	$ make tests
+
 Integration tests are run using ghost inspector.  The tests are configured using their service.
 
-Make sure the ghost inspector variables are in dev_deploy_variables.sh
+Make sure the ghost inspector variables are in dev_deploy_variables.sh.  To run the tests on a remote server, run
 
-### Test Production
+    $ make ghost
 
-By running
+By default, it will run with the start URL set to http://yeastgenome.org.  To run against another URL
 
-    $ make prod-test
+	$ START_URL=http://myserver.com make ghost
 
-This command will email all the developers if a test fails.  To run a silent test that sends no emails, run
+This task will not send any alerts if it fails.  If you want to run with alerts (like maybe after a production deploy).  For this task, the credentials are configured in prod_deploy_variables.sh.
 
-    $ make silent-test
-
-the test suite will run against http://yeastgenome.org.  To run on a different server (such as staging) run
-
-    $ START_URL=http://your-server.edu make remote-test
+    $ make ghost-with-alert
 
 ### Test Locally
 
@@ -117,4 +73,4 @@ First, download ngrok (add URL) and start your ngrok server [https://ngrok.com/d
 
 Then, run
 
-    $ make local-test
+    $ make ghost-local

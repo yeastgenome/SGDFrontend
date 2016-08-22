@@ -1,0 +1,59 @@
+$border-radius: 5px;
+$border-color: #d9d9d9;
+
+.search-icon {
+  position: absolute;
+  top: 9px;
+  left: 0.5rem;
+}
+
+.react-typeahead-input {
+    width: 100%;
+    padding: 0.25rem;
+    outline: 0;
+    border-radius: $border-radius;
+    border: 1px solid $border-color;
+    font-size: 18px;  
+    margin-top: 6px;
+    padding-left: 1.75rem;
+}
+
+.react-typeahead-options {
+    margin: 0;
+    border-radius: 0 0 $border-radius $border-radius;
+    border: 1px solid $border-color;
+    z-index: 100;
+    margin-top: -3px;
+}
+
+.react-typeahead-options > li {
+    list-style-type: none;
+    width: 100%;
+}
+
+.react-typeahead-option {
+  padding: 0.25rem;
+  &.active {
+    background: #E8F2FE;
+  }
+}
+
+.react-typeahead-option > p {
+  margin-bottom: 0;
+}
+
+// TEMP homepage stuff
+#slide-show {
+  margin-top: 0.5rem;
+}
+.advanced-recent-posts {
+  margin-left: 0;
+}
+.advanced-recent-posts > li {
+  border-bottom: 1px solid $border-color;
+  padding: 1rem 0;
+  list-style: none;
+}
+.explore-btn {
+  margin: 2.15rem 0 1rem 0;
+}

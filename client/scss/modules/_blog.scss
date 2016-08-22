@@ -1,0 +1,69 @@
+// styles applied to pages created by wordpress
+.orbit-container .orbit-slides-container>* .orbit-caption {
+	font-size: 0.75rem;
+	padding: 0.4rem 0.5rem;
+}
+
+ul.subblog {
+	list-style-type: none;
+}
+
+.content-wp p {
+	font-size: 14px;
+}
+
+.blog-bottom-header {
+	margin-bottom: 0;
+}
+
+.blog-bottom-header.blog-meetings-header {
+	margin-bottom: 1rem;
+}
+
+#upcoming-events {
+	margin-left: 0;
+}
+
+#upcoming-events li {
+	list-style-type: none;
+}
+
+#upcoming-events .future-event h4 a {
+	font-family: Lato, sans-serif;
+	font-size: 1rem;
+}
+
+#leftnav {
+	margin-top: 1.5rem;
+}
+
+#leftnav-container ul.menu li.menu-item {
+	list-style-type: none;
+}
+
+#leftnav-container > div > ul.menu > li.menu-item {
+	display: none;
+}
+
+#leftnav-container > div > ul.menu > li.menu-item.current-menu-item {
+	display: block;
+}
+
+.news-container p, ul.advanced-recent-posts li {
+	font-size: 14px;
+}
+
+ul.advanced-recent-posts li a:first-child {
+	font-size: 16px;
+}
+
+.advanced-recent-posts .date {
+	display: block;
+	margin: 0;
+	font-size: 16px;
+}
+
+.advanced-recent-posts br {
+	display: none;
+}
+

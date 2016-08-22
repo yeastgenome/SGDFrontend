@@ -17,12 +17,10 @@ src/sgd/frontend/yeastgenome/static/img/sort_*.png
 src/sgd/frontend/yeastgenome/static/css/normalize.css
 src/sgd/frontend/yeastgenome/static/css/style.css
 src/sgd/frontend/yeastgenome/static/js/application.js
-src/sgd/frontend/yeastgenome/static/scss/build/
 src/sgd/frontend/yeastgenome/static/fonts/
 src/sgd/frontend/config.py
 bower_components/
 node_modules/
-client/scss/build/
 client/lib/sgd_visualization/node_modules/
 client/lib/sgd_visualization/.git
 dev_deploy_variables.sh

@@ -77,10 +77,10 @@
 
     <div class="row" id="search-layout">
       <div class="small-12 large-6 large-centered columns">
-            <form method="get" class="no-margins" id="searchform" autocomplete="off" action="http://www.yeastgenome.org/cgi-bin/search/luceneQS.fpl">      
+            <form method="get" class="no-margins" id="searchform" autocomplete="off" action="/search">      
                 <div class="row collapse">
                     <div class="large-10 columns">
-                        <input type="text" aria-haspopup="true" aria-autocomplete="list" role="textbox" autocomplete="off" placeholder="Search SGD" class="search-query radius prefix-input no-margins ui-autocomplete-input" name="query" id="txt_search">    
+                        <input type="text" aria-haspopup="true" aria-autocomplete="list" role="textbox" autocomplete="off" placeholder="Search SGD" class="search-query radius prefix-input no-margins ui-autocomplete-input" name="q" id="txt_search">    
                     </div>
                     <div class="large-2 columns">
                         <a onclick="document.getElementById('searchform').submit();" class="secondary button postfix radius" href="#"><i class="fa fa-search"></i></a>

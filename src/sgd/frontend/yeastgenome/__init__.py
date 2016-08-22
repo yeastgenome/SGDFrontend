@@ -14,6 +14,7 @@ from pyramid.config import Configurator
 from pyramid.renderers import JSONP, render
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.view import view_config
 from src.sgd.frontend.frontend_interface import FrontendInterface
 from src.sgd.frontend.yeastgenome.backendless.load_data_from_file import get_data
 
@@ -31,9 +32,9 @@ class YeastgenomeFrontend(FrontendInterface):
         self.now = datetime.datetime.now()
         
     def get_renderer(self, method_name):
-        if method_name in {'home', 'download_table', 'download_citations'}:
+        if method_name in ['home', 'download_table', 'download_citations']:
             return None
-        elif method_name in {'header', 'footer', 'enrichment'}:
+        elif method_name in ['header', 'footer', 'enrichment']:
             return 'jsonp'
         else:
             return 'src:sgd/frontend/yeastgenome/static/templates/' + method_name + '.jinja2'
@@ -60,54 +61,9 @@ class YeastgenomeFrontend(FrontendInterface):
             self.now = new_time
         return True
 
-    def locus(self, bioent_repr):
-        if self.check_date() and bioent_repr.lower() in self.locuses:
-            return_value = self.locuses[bioent_repr.lower()]
-        else:
-            locus = get_json(self.backend_url + '/locus/' + bioent_repr + '/overview')
-            if locus is None:
-                return_value = None
-            else:
-                tabs = get_json(self.backend_url + '/locus/' + str(locus['id']) + '/tabs')
-                return_value = {'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs, 'tabs_js': json.dumps(tabs)}
-            if locus is not None:
-                self.locuses[bioent_repr.lower()] = return_value
-
-        return return_value
-
     def locus_list(self, list_name):
         return self.get_obj('locus_list', None, obj_url=self.backend_url + '/locus/' + list_name)
-
-    def interaction_details(self, bioent_repr):
-        return self.locus(bioent_repr)
-
-    def literature_details(self, bioent_repr):
-        return self.locus(bioent_repr)
-    
-    def regulation_details(self, bioent_repr):
-        return self.locus(bioent_repr)
-    
-    def phenotype_details(self, bioent_repr):
-        return self.locus(bioent_repr)
-
-    def expression_details(self, bioent_repr):
-        return self.locus(bioent_repr)
-    
-    def go_details(self, bioent_repr):
-        return self.locus(bioent_repr)
-
-    def protein_details(self, bioent_repr):
-        return self.locus(bioent_repr)
-
-    def sequence_details(self, bioent_repr):
-        obj = self.locus(bioent_repr)
-        history = { 'history_js': json.dumps(obj.get('locus').get('history')) }
-        obj.update(history)
-        return obj
-
-    def curator_sequence(self, bioent_repr):
-        return self.locus(bioent_repr)
-
+        
     def get_obj(self, obj_type, obj_repr, obj_url=None):
         if obj_url is None:
             obj_url = self.backend_url + '/' + obj_type + '/' + obj_repr + '/overview'
@@ -181,14 +137,7 @@ class YeastgenomeFrontend(FrontendInterface):
     def references_this_week(self):
         page = {}
         return page
-    
-    def home(self):
-        if self.heritage_url is None:
-            return Response('Temporary.')
-        else:
-            page = urllib.urlopen(self.heritage_url).read()
-            return Response(page)
-        
+            
     def redirect(self, page, params):
         if page == 'interaction':
             if len(params) > 0:
@@ -266,7 +215,7 @@ class YeastgenomeFrontend(FrontendInterface):
         headers = response.headers
 
         date = datetime.datetime.now().strftime("%m/%d/%Y")
-        description = "!\n!Date: " + date + '\n' + "!From: Saccharomyces Genome Database (SGD) \n!URL: http://www.yeastgenome.org/ \n!Contact Email: sgd-helpdesk@lists.stanford.edu \n!Funding: NHGRI at US NIH, grant number 5-P41-HG001315 \n!"
+        description = "!\n!Date: " + date + '\n' + "!From: Saccharomyces Genome Database (SGD) \n!URL: http://www.yeastgenome.org/ \n!Contact Email: sgd-helpdesk@lists.stanford.edu \n!Funding: NHGRI at US NIH, grant number 5-U41-HG001315 \n!"
 
         cutoff = 1
         if header_info[1] == 'Analyze ID':
@@ -350,42 +299,64 @@ class YeastgenomeFrontend(FrontendInterface):
         enrichment_results = get_json(self.backend_url + '/go_enrichment', data={'bioent_ids': bioent_ids})
         return enrichment_results
 
+    # variant viewer ES endpoints, will eventually move to backend
 
-    # elasticsearch endpoint
-    def search(self, params):
-        # try elastic search, if 1 response, redirect there
-        raw_query = params['query']
-        query = raw_query.lower()
-        obj = {
-            'query': {
-                'filtered': {
-                    'filter': {
-                        'bool': {
-                            'must': [
-                                {
-                                    'term': {
-                                        'term.raw': query
-                                    }
-                                },
-                                {
-                                    'terms': {
-                                        'type': ['gene_name', 'paper', 'go']
-                                    }
-                                }
-                                
-                            ]
+    # es search for sequence objects
+    def search_sequence_objects(self, params):
+        query = params['query'] if 'query' in params.keys() else ''
+        query = query.lower()
+        offset = int(params['offset']) if 'offset' in params.keys() else 0
+        limit = int(params['limit']) if 'limit' in params.keys() else 1000
+
+        query_type = 'wildcard' if '*' in query else 'match_phrase'
+        if query == '':
+            search_body = {
+                'query': { 'match_all': {} },
+                'sort': { 'absolute_genetic_start': { 'order': 'asc' }}
+            }
+        elif ',' in query:
+            original_query_list = query.split(',')
+            query_list = []
+            for item in original_query_list:
+                query_list.append(item.strip())
+            print query_list
+            search_body = {
+                'query': {
+                    'filtered': {
+                        'filter': {
+                            'terms': {
+                                '_all': query_list
+                            }
                         }
                     }
                 }
             }
-        }
-        res = es.search(index='sgdlite', body=obj)
-        if (res['hits']['total'] == 1):
-            url = res['hits']['hits'][0]['_source']['link_url']
-            return HTTPFound(url)
-        # otherwise try existing
         else:
-            return HTTPFound("/cgi-bin/search/luceneQS.fpl?query=" + urllib.quote(raw_query))
+            search_body = {
+                'query': {
+                    query_type: {
+                        '_all': query
+                    }
+                }
+            }
+
+        search_body['_source'] = ['sgdid', 'name', 'href', 'absolute_genetic_start', 'format_name', 'dna_scores', 'protein_scores', 'snp_seqs']
+        res = es.search(index='sequence_objects', body=search_body, size=limit, from_=offset)
+        simple_hits = []
+        for hit in res['hits']['hits']:
+            simple_hits.append(hit['_source'])
+        formatted_response = {
+            'loci': simple_hits,
+            'total': res['hits']['total'],
+            'offset': offset
+        }
+        return Response(body=json.dumps(formatted_response), content_type='application/json')
+
+    # get individual feature
+    def get_sequence_object(self, locus_repr):
+        id = locus_repr.upper()
+        res = es.get(index='sequence_objects', id=id)['_source']
+        return Response(body=json.dumps(res), content_type='application/json')
 
     # elasticsearch autocomplete results
     def autocomplete_results(self, params):
@@ -501,12 +472,13 @@ class YeastgenomeFrontend(FrontendInterface):
         if self.backend_url == 'backendless':
             return json.dumps(get_data(url_repr))
         else:
-            full_url = self.backend_url + '/' + ('/'.join(url_repr))
+            relative_url = '/' + ('/'.join(url_repr))
+            backend_url = self.backend_url
+            full_url = backend_url + relative_url
             if args is not None and len(args) > 0:
                 full_url += '?' + ('&'.join([key + '=' + value for key, value in args.items() if key != 'callback']))
             self.log.info(full_url)
             return json.dumps(get_json(full_url))
-
     
 def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     chosen_frontend = YeastgenomeFrontend(backend_url, heritage_url, log_directory)

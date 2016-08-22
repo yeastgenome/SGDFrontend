@@ -4,7 +4,7 @@ $(document).ready(function() {
     var expression_table = create_expression_table(tag['bioitems']);
     create_download_button("expression_table_download", expression_table, tag['display_name'] + '_datasets');
 
-    $.getJSON('/backend/tag?callback=?', function(data) {
+    $.getJSON('/backend/tag', function(data) {
         var tag_links = [];
         for (var i=0; i < data.length; i++) {
             if(data[i]['display_name'] != tag['display_name']) {

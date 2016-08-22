@@ -4,7 +4,7 @@ var _ = require("underscore");
 var $ = require("jquery");
 
 var ClusterStrainsWorker = require("./cluster_strains.jsx");
-var staticStrainMetadata = require("./strain_metadata");
+var staticStrainMetadata = require("./strain_metadata.jsx");
 var work = require("webworkify");
 
 var LOCI_SEARCH_BASE_URL = "/search_sequence_objects";

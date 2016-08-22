@@ -5,14 +5,14 @@ http://smacss.com/book/type-module
 
 /* Footer Stylings */
 #layout-document-footer {
-	background: #696599;  //615F8F
+	background: $topbar-bg-color;  //615F8F
 	// @include background-image(linear-gradient(center top , #9190B7 0%, #615F8F 100%));
 }
 
 footer { // should be in states
 	color: #fff;
 	a, a:hover, a:active { 
-		color: #fff;
+		color: #fff !important;
 		font-size: em-calc(14);
 	}
 	a:hover { text-decoration: underline; }

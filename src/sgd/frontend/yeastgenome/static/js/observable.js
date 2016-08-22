@@ -1,13 +1,13 @@
 
 $(document).ready(function() {
 
-	$.getJSON('/backend/observable/' + observable['id'] + '/locus_details?callback=?', function(data) {
+	$.getJSON('/backend/observable/' + observable['id'] + '/locus_details', function(data) {
         var phenotype_table = create_phenotype_table(data);
         create_analyze_button("phenotype_table_analyze", phenotype_table, "<a href='" + observable['link'] + "' class='gene_name'>" + observable['display_name'] + "</a> genes", true);
         create_download_button("phenotype_table_download", phenotype_table, observable['display_name'] + "_annotations");
 
         if(observable['descendant_locus_count'] > observable['locus_count']) {
-            create_show_child_button("phenotype_table_show_children", phenotype_table, data, '/backend/observable/' + observable['id'] + '/locus_details_all?callback=?', phenotype_data_to_table, function(table_data) {
+            create_show_child_button("phenotype_table_show_children", phenotype_table, data, '/backend/observable/' + observable['id'] + '/locus_details_all', phenotype_data_to_table, function(table_data) {
 
                 var genes = {};
                 for (var i=0; i < table_data.length; i++) {
@@ -18,7 +18,7 @@ $(document).ready(function() {
         }
 	});
 
-	$.getJSON('/backend/observable/' + observable['id'] + '/ontology_graph?callback=?', function(data) {
+	$.getJSON('/backend/observable/' + observable['id'] + '/ontology_graph', function(data) {
   		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "observable");
         create_cy_download_button(cy, "cy_download", observable['display_name'] + '_ontology')
 

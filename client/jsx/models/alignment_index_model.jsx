@@ -9,7 +9,7 @@ module.exports = class AlignmentIndexModel extends BaseModel {
 
 	constructor (options) {
 		var options = options || {};
-		options.url = options.url || "/backend/alignments?callback=?";
+		options.url = options.url || "/backend/alignments";
 		super(options);
 	}
 

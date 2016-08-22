@@ -19,7 +19,7 @@
     <!-- Includes navbar.html into template -->
     {% include "navbar.jinja2" %}
 
-    <div class="small-12 large-10 columns content-column">
+    <div class="small-12 medium-10 columns content-column">
         <div id="title">
             {%  if reference.journal != none %}
                 <h2>Reference: <span class="gene_name">{{ (reference.citation|replace(reference.journal.med_abbr, "<em>" + reference.journal.med_abbr + "</em>")|replace(reference.display_name, reference.display_name + "<span class='subheader'>") + "</span>")|safe }}</span></h2>

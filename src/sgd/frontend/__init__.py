@@ -7,15 +7,31 @@ from src.sgd.tools.blast import do_blast
 
 def prep_views(chosen_frontend, config):
     # some logic (NOT all) has been moved to views to be more 'pyramid-y'
-    config.scan('src.sgd.frontend.views')
+    config.scan('src.sgd.frontend.yeastgenome.views.misc_views')
+    config.scan('src.sgd.frontend.yeastgenome.views.locus_views')
+    # misc pages from misc_views
+    config.add_route('home', '/')
     config.add_route('blast_fungal', '/blast-fungal')
     config.add_route('blast_sgd', '/blast-sgd')
     config.add_route('interaction_search', '/interaction-search')
+    config.add_route('download_list', '/download-list')
     config.add_route('snapshot', '/genomesnapshot')
     config.add_route('style_guide', '/style-guide')
     config.add_route('suggestion', '/suggestion')
     config.add_route('variant_viewer', '/variant-viewer')
+    config.add_route('search', '/search')
     # config.add_route('example', '/example')
+    # locus pages from locus_views
+    config.add_route('locus', '/locus/{identifier}/overview')
+    config.add_route('sequence_details', '/locus/{identifier}/sequence')
+    config.add_route('protein_details', '/locus/{identifier}/protein')
+    config.add_route('go_details', '/locus/{identifier}/go')
+    config.add_route('phenotype_details', '/locus/{identifier}/phenotype')
+    config.add_route('interaction_details', '/locus/{identifier}/interaction')
+    config.add_route('regulation_details', '/locus/{identifier}/regulation')
+    config.add_route('expression_details', '/locus/{identifier}/expression')
+    config.add_route('literature_details', '/locus/{identifier}/literature')
+    config.add_route('curator_sequence', '/curator/locus/{identifier}/sequence')
 
     #Reference views
     config.add_route('references_this_week', '/reference/recent')
@@ -43,11 +59,6 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('redirect'),
                     route_name='redirect')
         
-    config.add_route('home', '/')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('home', request)(getattr(chosen_frontend, 'home')()),
-                    renderer=chosen_frontend.get_renderer('home'),
-                    route_name='home')
-    
     config.add_route('header', '/header')
     config.add_view(lambda request: {'header': render('static/templates/header.jinja2', {})},
                     renderer=chosen_frontend.get_renderer('header'),
@@ -110,51 +121,6 @@ def prep_views(chosen_frontend, config):
                                         bioent_ids = None if 'bioent_ids' not in request.json_body else request.json_body['bioent_ids'])),
                     renderer=chosen_frontend.get_renderer('enrichment'),
                     route_name='enrichment')
-    
-    config.add_route('interaction_details', '/locus/{identifier}/interaction')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('interaction_details', request)(getattr(chosen_frontend, 'interaction_details')(bioent_repr=request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('interaction_details'),
-                    route_name='interaction_details')
-    
-    config.add_route('literature_details', '/locus/{identifier}/literature')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('literature_details', request)(getattr(chosen_frontend, 'literature_details')(bioent_repr=request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('literature_details'),
-                    route_name='literature_details')
-    
-    config.add_route('regulation_details', '/locus/{identifier}/regulation')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('regulation_details', request)(getattr(chosen_frontend, 'regulation_details')(bioent_repr=request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('regulation_details'),
-                    route_name='regulation_details')
-    
-    config.add_route('phenotype_details', '/locus/{identifier}/phenotype')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('phenotype_details', request)(getattr(chosen_frontend, 'phenotype_details')(bioent_repr=request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('phenotype_details'),
-                    route_name='phenotype_details')
-
-    config.add_route('expression_details', '/locus/{identifier}/expression')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('expression_details', request)(getattr(chosen_frontend, 'expression_details')(bioent_repr=request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('expression_details'),
-                    route_name='expression_details')
-    
-    config.add_route('go_details', '/locus/{identifier}/go')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('go_details', request)(getattr(chosen_frontend, 'go_details')(bioent_repr=request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('go_details'),
-                    route_name='go_details')
-    
-    config.add_route('protein_details', '/locus/{identifier}/protein')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('protein_details', request)(getattr(chosen_frontend, 'protein_details')(bioent_repr=request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('protein_details'),
-                    route_name='protein_details')
-
-    config.add_route('sequence_details', '/locus/{identifier}/sequence')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('sequence_details', request)(getattr(chosen_frontend, 'sequence_details')(bioent_repr= request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('sequence_details'),
-                    route_name='sequence_details')
-
-    config.add_route('curator_sequence', '/curator/locus/{identifier}/sequence')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('curator_sequence', request)(getattr(chosen_frontend, 'curator_sequence')(bioent_repr= request.matchdict['identifier'].upper())),
-                    renderer=chosen_frontend.get_renderer('curator_sequence'),
-                    route_name='curator_sequence')
 
     config.add_route('phenotype', '/phenotype/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('phenotype', request)(getattr(chosen_frontend, 'phenotype')(biocon_repr= request.matchdict['identifier'].lower())),
@@ -226,15 +192,13 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('experiment'),
                     route_name='experiment')
 
-    config.add_route('search', '/search')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('search', request)(getattr(chosen_frontend, 'search')(params=request.GET)),
-                    renderer=chosen_frontend.get_renderer('search'),
-                    route_name='search')
+    config.add_route('backend', '/backend/*url')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('backend', request)(getattr(chosen_frontend, 'backend')(url_repr=request.matchdict['url'], args=request.GET)),
+                    renderer='string',
+                    route_name='backend')
 
-    config.add_route('autocomplete_results', '/autocomplete_results')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('autocomplete_results', request)(getattr(chosen_frontend, 'autocomplete_results')(params=request.GET)),
-                    renderer=chosen_frontend.get_renderer('autocomplete_results'),
-                    route_name='autocomplete_results')
+    config.add_route('send_email', '/send_data')
+    config.add_view(send_message, route_name='send_email')   
 
     config.add_route('search_sequence_objects', '/search_sequence_objects')
     config.add_view(lambda request: chosen_frontend.response_wrapper('search_sequence_objects', request)(getattr(chosen_frontend, 'search_sequence_objects')(params=request.GET)),
@@ -245,24 +209,11 @@ def prep_views(chosen_frontend, config):
     config.add_view(lambda request: chosen_frontend.response_wrapper('get_sequence_object', request)(getattr(chosen_frontend, 'get_sequence_object')(locus_repr=request.matchdict['id'].lower())),
                     renderer=chosen_frontend.get_renderer('get_sequence_object'),
                     route_name='get_sequence_object')
-
-    config.add_route('locus', '/locus/{identifier}/overview')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('locus', request)(getattr(chosen_frontend, 'locus')(bioent_repr=request.matchdict['identifier'].lower())),
-                    renderer=chosen_frontend.get_renderer('locus'),
-                    route_name='locus')
-
-    config.add_route('backend', '/backend/*url')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('backend', request)(getattr(chosen_frontend, 'backend')(url_repr=request.matchdict['url'], args=request.GET)),
-                    renderer='string',
-                    route_name='backend')
-
-    config.add_route('send_email', '/send_data')
-    config.add_view(send_message, route_name='send_email')   
-    
+        
     config.add_route('do_blast', '/run_blast')
     config.add_view(do_blast, route_name='do_blast')
 
-    
+
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':
         from src.sgd.frontend.yeastgenome import yeastgenome_frontend

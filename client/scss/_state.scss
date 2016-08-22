@@ -26,14 +26,8 @@ http://smacss.com/book/type-state
 // Sidebar
 // hide on small screens
 #sidebar {
-	@extend .show-for-large-up;
+	@extend .show-for-medium-up;
 }
-
-
-// Footer
-@media only screen and (min-width: 1000px) {
-	// Sticky footer on large screens
-	@include sticky-footer(90px, "#layout-document", "#layout-document-footer-pusher", "#layout-document-footer");
 
 #footer-links {
 	display: block;
@@ -43,17 +37,16 @@ http://smacss.com/book/type-state
 	li { 
 		float: left;
 		margin-right: em-calc(20);
-		}
 	}
+}
 
-	.logo-list {
-		list-style: none;
-		float: right;
-		li {
-			float: left;
-			margin-left: 20px;
-			margin-bottom: 0;
-		}
+.logo-list {
+	list-style: none;
+	float: right;
+	li {
+		float: left;
+		margin-left: 20px;
+		margin-bottom: 0;
 	}
 }
 

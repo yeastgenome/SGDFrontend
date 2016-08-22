@@ -1,11 +1,11 @@
 
 $(document).ready(function() {
-	$.getJSON('/backend/go/' + ontology['id'] + '/ontology_graph?callback=?', function(data) {
+	$.getJSON('/backend/go/' + ontology['id'] + '/ontology_graph', function(data) {
   		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "goOntology");
         create_cy_download_button(cy, "cy_download", ontology['display_name'] + '_go_ontology_graph')
 	});
 
-    $.getJSON('/backend/go/' + ontology['id'] + '/locus_details?callback=?', function(data) {
+    $.getJSON('/backend/go/' + ontology['id'] + '/locus_details', function(data) {
 	  	var go_table = create_go_table(data);
 	  	create_analyze_button("go_table_analyze", go_table, "<a href='" + ontology['link'] + "' class='gene_name'>" + ontology['display_name'] + "</a> genes", true);
   	    create_download_button("go_table_download", go_table, ontology['display_name'] + "_annotations");

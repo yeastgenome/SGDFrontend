@@ -29,7 +29,7 @@ $(document).ready(function() {
     $("#atomic_table_analyze").hide();
     $("#atomic_table_download").hide();
 
-    $.getJSON('/backend/locus/' + locus['id'] + '/sequence_details?callback=?', function(sequence_data) {
+    $.getJSON('/backend/locus/' + locus['id'] + '/sequence_details', function(sequence_data) {
         var protein_data = sequence_data['protein'];
         var alt_strain_protein_data = [];
 
@@ -76,7 +76,7 @@ $(document).ready(function() {
         }
 
         //Get domain info
-        $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_details?callback=?', function(protein_domain_data) {
+        $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_details', function(protein_domain_data) {
             var domain_table = create_domain_table(protein_domain_data);
             create_download_button("domain_table_download", domain_table, locus['display_name'] + "_domains");
             
@@ -92,7 +92,7 @@ $(document).ready(function() {
                 $("#domain_locations").hide();
             }
 
-            $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_graph?callback=?', function(protein_domain_graph_data) {
+            $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_graph', function(protein_domain_graph_data) {
                 if(protein_domain_graph_data['nodes'].length > 1) {
                     var graph_style = prep_style();
                     var graph = create_cytoscape_vis("cy", layout, graph_style, protein_domain_graph_data, null, false, "protein");
@@ -116,14 +116,14 @@ $(document).ready(function() {
         });
 	});
 
-    $.getJSON('/backend/locus/' + locus['id'] + '/posttranslational_details?callback=?', function(data) {
+    $.getJSON('/backend/locus/' + locus['id'] + '/posttranslational_details', function(data) {
         phosphodata = data;
         allPtmData = data;
         create_phosphorylation_table(data);
         draw_phosphodata();
 	});
 
-    $.getJSON('/backend/locus/' + locus['id'] + '/ecnumber_details?callback=?', function(data) {
+    $.getJSON('/backend/locus/' + locus['id'] + '/ecnumber_details', function(data) {
         if(data.length > 0) {
             $("#protein_overview").append('<dt>EC Number</dt>');
 
@@ -138,7 +138,7 @@ $(document).ready(function() {
         }
 	});
 
-    $.getJSON('/backend/locus/' + locus['id'] + '/protein_experiment_details?callback=?', function(data) {
+    $.getJSON('/backend/locus/' + locus['id'] + '/protein_experiment_details', function(data) {
         if(data.length > 0) {
             var protein_experiment_table = create_protein_experiment_table(data);
             create_download_button("protein_experiment_table_download", protein_experiment_table, locus['display_name'] + "_experimental_data");

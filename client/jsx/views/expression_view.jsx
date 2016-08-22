@@ -7,7 +7,7 @@ var ExpressionChart = require("../components/viz/expression_chart.jsx");
 
 var expressionView = {};
 expressionView.render = function () {
-  $.getJSON('/backend/locus/' + locus['id'] + '/expression_details?callback=?', (data) => {
+  $.getJSON('/backend/locus/' + locus['id'] + '/expression_details', (data) => {
     if (data.datasets.length) {
 
       // use filter_table(minValue, maxValue) method from expression_details.js

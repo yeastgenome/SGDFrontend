@@ -5,12 +5,12 @@ http://smacss.com/book/type-module
 
 // Sticky Side navigation
 #side-nav-sticky {
-	width: 150px;
+	max-width: 150px;
 	padding: 0;
 }
 
 .side-nav { //extending Foundation
-    width: 150px;
+    max-width: 150px;
 	border: 1px #ccc solid;
 	@include border-radius(4px);
 	margin-top: 0;
@@ -18,6 +18,12 @@ http://smacss.com/book/type-module
 	list-style-type: disc;
 	list-style-position: outside;
 	overflow: hidden;
+}
+// adjust for small screens
+@media (max-width: 72em) {
+    .side-nav, #side-nav-sticky {
+        max-width: 115px;
+    }
 }
 
 #nav-title {
@@ -63,6 +69,9 @@ http://smacss.com/book/type-module
 }
 
 // Overwrite a couple magellan settings - need to make these case specific though
+#sidebar .magellan-target {
+    margin-top: 0.7rem;
+}
 
 .fixed {
     left: auto; // a Foundation update added a 0 value to this, restoring to default

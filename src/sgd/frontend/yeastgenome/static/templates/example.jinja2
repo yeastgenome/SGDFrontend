@@ -1,24 +1,18 @@
 {% extends "lite_layout.jinja2" %}
 
-{% block title %}SGD{% endblock %}
+{% block title %}Style Guide{% endblock %}
 
 {% block body %}
 
-<div class="row">
-	<div id="j-main" class="small-12 columns content-column sgd-viz s-nextgen s-nextgen-col">
-		<div class="sgd-loader-container">
-			<div class="sgd-loader">
-			</div>
-		</div>
+<div class="sgd-loader-container">
+	<div class="sgd-loader">
 	</div>
 </div>
 
 {% endblock body %}
 
 {% block scripts %}
-<script src="{{asset_root}}/js/application.js"></script>
 <script>
-	// add js view logic and un-comment
-	// views.example.render();
+	views.router.render();
 </script>
 {% endblock scripts %}
