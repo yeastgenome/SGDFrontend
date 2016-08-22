@@ -97,7 +97,7 @@ def upload_file(request):
     upload_to_s3.delay(temp_file_path, fdb_sgdid, fdb_file_extension, os.environ['S3_ACCESS_KEY'], os.environ['S3_SECRET_KEY'], os.environ['S3_BUCKET'])
 
     log.info('File ' + request.POST.get('display_name') + ' was successfully uploaded.')
-    return Response({ 'success': True })
+    return Response({'success': True})
 
 @view_config(route_name='colleagues', renderer='json', request_method='GET')
 def colleagues_by_last_name(request):
@@ -128,19 +128,20 @@ def search(request):
     category = request.params.get('category', '')
     sort_by = request.params.get('sort_by', '')
 
-    # subcategory filters. Map: (request GET param name from frontend, indexed ES param name)
+    # subcategory filters. Map: (request GET param name from frontend, ElasticSearch field name)
     category_filters = {
         "locus": [('feature type', 'feature_type'), ('molecular function', 'molecular_function'), ('phenotype', 'phenotypes'), ('cellular component', 'cellular_component'), ('biological process', 'biological_process')],
         "phenotype": [("observable", "observable"), ("qualifier", "qualifier"), ("references", "references"), ("phenotype_locus", "phenotype_loci"), ("chemical", "chemical"), ("mutant_type", "mutant_type")],
         "biological_process": [("go_locus", "go_loci")],
         "cellular_component": [("go_locus", "go_loci")],
         "molecular_function": [("go_locus", "go_loci")],
-        "reference": [("author", "author"), ("journal", "journal"), ("year", "year"), ("reference_locus", "reference_loci")]
+        "reference": [("author", "author"), ("journal", "journal"), ("year", "year"), ("reference_locus", "reference_loci")],
+        "contig": [("strain", "strain")]
     }
 
-    response_fields = ['name', 'href', 'description', 'category', 'bioentity_id']
+    response_fields = ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci']
     
-    multi_match_fields = ["summary", "name_description", "phenotypes", "cellular_component", "biological_process", "molecular_function", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "go_loci", "author", "journal", "year", "reference_loci"]
+    multi_match_fields = ["summary", "name_description", "phenotypes", "cellular_component", "biological_process", "molecular_function", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "go_loci", "author", "journal", "year", "reference_loci", "synonyms", "ec_number", "gene_history", "sequence_history", "secondary_sgdid", "tc_number", "strain"]
 
     es_query = build_search_query(query, multi_match_fields, category, category_filters, request)
 
