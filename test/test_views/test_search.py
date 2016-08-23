@@ -68,47 +68,63 @@ class SearchTest(unittest.TestCase):
                     'query': {
                         'bool': {
                             'minimum_should_match': 1,
-                            'should': [{
-                                'match_phrase_prefix': {
-                                    'name': {
-                                        'query': 'eu gene',
-                                        'boost': 4,
-                                        'analyzer': 'standard',
-                                        'max_expansions': 30
+                            'should': [
+                                {
+                                    "match_phrase_prefix": {
+                                        "name": {
+                                            "query": "eu gene",
+                                            "boost": 3,
+                                            "max_expansions": 30,
+                                            "analyzer": "standard"
+                                        }
+                                    }
+                                },
+                                {
+                                    "match_phrase_prefix": {
+                                        "keys": {
+                                            "query": "eu gene",
+                                            "boost": 35,
+                                            "max_expansions": 12,
+                                            "analyzer": "standard"
+                                        }
+                                    }
+                                },
+                                {
+                                    "match_phrase": {
+                                        "name": {
+                                            "query": "eu gene",
+                                            "boost": 80,
+                                            "analyzer": "standard"
+                                        }
+                                    }
+                                },                        
+                                {
+                                    "match": {
+                                        "description": {
+                                            "query": "eu gene",
+                                            "boost": 1,
+                                            "analyzer": "standard"
+                                        }
+                                    }
+                                },
+                                {
+                                    "match_phrase": {
+                                        "keys": {
+                                            "query": "eu gene",
+                                            "boost": 50,
+                                            "analyzer": "standard"
+                                        }
+                                    }
+                                },
+                                {
+                                    "multi_match": {
+                                        "query": "eu gene",
+                                        "type": "best_fields",
+                                        "fields": ['summary', 'name_description', 'phenotypes', 'cellular_component', 'biological_process', 'molecular_function', 'observable', 'qualifier', 'references', 'phenotype_loci', 'chemical', 'mutant_type', 'go_loci', 'author', 'journal', 'year', 'reference_loci', 'synonyms', 'ec_number', 'gene_history', 'sequence_history', 'secondary_sgdid', 'tc_number', 'strain'],
+                                        "boost": 1
                                     }
                                 }
-                            }, {
-                                'match_phrase': {
-                                    'name': {
-                                        'query': 'eu gene',
-                                        'boost': 10,
-                                        'analyzer': 'standard'
-                                    }
-                                }
-                            }, {
-                                'match': {
-                                    'description': {
-                                        'query': 'eu gene',
-                                        'boost': 3,
-                                        'analyzer': 'standard'
-                                    }
-                                }
-                            }, {
-                                'match_phrase': {
-                                    'keys': {
-                                        'query': 'eu gene',
-                                        'boost': 20,
-                                        'analyzer': 'standard'
-                                    }
-                                }
-                            }, {
-                                'multi_match': {
-                                    'query': 'eu gene',
-                                    'boost': 3,
-                                    'type': 'best_fields',
-                                    'fields': ['summary', 'name_description', 'phenotypes', 'cellular_component', 'biological_process', 'molecular_function', 'observable', 'qualifier', 'references', 'phenotype_loci', 'chemical', 'mutant_type', 'go_loci', 'author', 'journal', 'year', 'reference_loci', 'synonyms', 'ec_number', 'gene_history', 'sequence_history', 'secondary_sgdid', 'tc_number', 'strain']
-                                }
-                            }]
+                            ]
                         }
                     }
                 }}, '_source': ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci', 'keys']}, from_=25, index='searchable_items', size=10)
