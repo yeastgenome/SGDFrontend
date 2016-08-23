@@ -63,9 +63,9 @@ def format_aggregation_results(aggregation_results, category, category_filters):
 
 def search_is_quick(query, search_results):
     if search_results['hits']['hits'][0].get('_source').get('keys'):
-        if query and query.lower().strip() in search_results['hits']['hits'][0].get('_source').get('keys'):
+        if query and query.replace('"', '').lower().strip() in search_results['hits']['hits'][0].get('_source').get('keys'):
             if len(search_results['hits']['hits']) > 1:
-                if (query.lower().strip() not in search_results['hits']['hits'][1].get('_source').get('keys')):
+                if (query.replace('"', '').lower().strip() not in search_results['hits']['hits'][1].get('_source').get('keys')):
                     return True
             else:
                 return True
@@ -132,6 +132,11 @@ def build_search_query(query, multi_match_fields, category, category_filters, re
     return query
     
 def build_es_search_query(query, multi_match_fields):
+    for special_char in ['-', '.']:
+        if special_char in query:
+            query = "\"" + query + "\""
+            break
+    
     if query == '':
         return {'match_all': {}}
     
@@ -142,8 +147,18 @@ def build_es_search_query(query, multi_match_fields):
                     "match_phrase_prefix": {
                         "name": {
                             "query": query,
-                            "boost": 4,
+                            "boost": 3,
                             "max_expansions": 30,
+                            "analyzer": "standard"
+                        }
+                    }
+                },
+                {
+                    "match_phrase_prefix": {
+                        "keys": {
+                            "query": query,
+                            "boost": 35,
+                            "max_expansions": 12,
                             "analyzer": "standard"
                         }
                     }
@@ -152,7 +167,7 @@ def build_es_search_query(query, multi_match_fields):
                     "match_phrase": {
                         "name": {
                             "query": query,
-                            "boost": 10,
+                            "boost": 80,
                             "analyzer": "standard"
                         }
                     }
@@ -161,7 +176,7 @@ def build_es_search_query(query, multi_match_fields):
                     "match": {
                         "description": {
                             "query": query,
-                            "boost": 3,
+                            "boost": 1,
                             "analyzer": "standard"
                         }
                     }
@@ -170,7 +185,7 @@ def build_es_search_query(query, multi_match_fields):
                     "match_phrase": {
                         "keys": {
                             "query": query,
-                            "boost": 20,
+                            "boost": 50,
                             "analyzer": "standard"
                         }
                     }
@@ -180,9 +195,9 @@ def build_es_search_query(query, multi_match_fields):
                         "query": query,
                         "type": "best_fields",
                         "fields": multi_match_fields,
-                        "boost": 3
+                        "boost": 1
                     }
-                },
+                }
             ],
             "minimum_should_match": 1
         }
