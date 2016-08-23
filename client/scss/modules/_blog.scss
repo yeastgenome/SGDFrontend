@@ -37,26 +37,6 @@ ul.subblog {
 	margin-top: 1.5rem;
 }
 
-#leftnav-container ul.menu li.menu-item {
-	list-style-type: none;
-}
-
-#leftnav-container > div > ul.menu > li.menu-item {
-	display: none;
-}
-
-#leftnav-container > div > ul.menu > li.menu-item.current-menu-item {
-	display: block;
-}
-
-#leftnav-container > div > ul.menu > li.menu-item.current-menu-ancestor {
-	display: block;
-}
-
-#leftnav-container > div > ul.menu > li.menu-item > ul.sub-menu > li.menu-item.current-menu-item {
-	display: block;
-}
-
 .news-container p, ul.advanced-recent-posts li {
 	font-size: 14px;
 }
