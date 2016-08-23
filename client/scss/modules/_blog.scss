@@ -55,3 +55,12 @@ ul.advanced-recent-posts li a:first-child {
 	display: none;
 }
 
+#content .wp-caption.alignleft {
+	float: left;
+	margin-right: 1.5rem;
+}
+
+#content .wp-caption.alignright {
+	float: right;
+	margin-left: 1.5rem;
+}
