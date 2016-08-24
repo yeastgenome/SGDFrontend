@@ -136,12 +136,13 @@ def search(request):
         "cellular_component": [("go_locus", "go_loci")],
         "molecular_function": [("go_locus", "go_loci")],
         "reference": [("author", "author"), ("journal", "journal"), ("year", "year"), ("reference_locus", "reference_loci")],
-        "contig": [("strain", "strain")]
+        "contig": [("strain", "strain")],
+        "colleague": [("first_name", "first_name"), ("last_name", "last_name"), ("institution", "institution"), ("position", "position"), ("country", "country"), ("colleague_loci", "colleague_loci"), ("keywords", "keywords")]
     }
 
     response_fields = ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci']
     
-    multi_match_fields = ["summary", "name_description", "phenotypes", "cellular_component", "biological_process", "molecular_function", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "go_loci", "author", "journal", "year", "reference_loci", "synonyms", "ec_number", "gene_history", "sequence_history", "secondary_sgdid", "tc_number", "strain"]
+    multi_match_fields = ["summary", "name_description", "phenotypes", "cellular_component", "biological_process", "molecular_function", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "go_loci", "author", "journal", "year", "reference_loci", "synonyms", "ec_number", "gene_history", "sequence_history", "secondary_sgdid", "tc_number", "strain", "first_name", "last_name", "institution", "position", "country", "colleague_loci", "keywords"]
 
     es_query = build_search_query(query, multi_match_fields, category, category_filters, request)
 
