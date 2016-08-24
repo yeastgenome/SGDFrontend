@@ -26,7 +26,8 @@ class SearchHelpersTest(unittest.TestCase):
             "cellular_component": [("go_locus", "go_loci")],
             "molecular_function": [("go_locus", "go_loci")],
             "reference": [("author", "author"), ("journal", "journal"), ("year", "year"), ("reference_locus", "reference_loci")],
-            "contig": [("strain", "strain")]
+            "contig": [("strain", "strain")],
+            "colleague": [("first_name", "first_name"), ("last_name", "last_name"), ("institution", "institution"), ("position", "position"), ("country", "country"), ("colleague_loci", "colleague_loci"), ("keywords", "keywords")]
         }
 
     def tearDown(self):
