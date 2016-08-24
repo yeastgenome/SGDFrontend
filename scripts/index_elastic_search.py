@@ -9,7 +9,7 @@ engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
 Base.metadata.bind = engine
 
-INDEX_NAME = 'searchable_items_blue'
+INDEX_NAME = 'searchable_items_green'
 
 DOC_TYPE = 'searchable_item'
 es = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -20,7 +20,7 @@ def delete_mapping():
     if response.status_code != 200:
         print "ERROR: " + str(response.json())
     else:
-        print "SUCESS"        
+        print "SUCCESS"        
 
 def put_mapping():
     print "Putting mapping... "
@@ -28,7 +28,7 @@ def put_mapping():
     if response.status_code != 200:
         print "ERROR: " + str(response.json())
     else:
-        print "SUCESS"
+        print "SUCCESS"
 
 def index_colleagues():
     colleagues = DBSession.query(Colleague).all()
@@ -36,10 +36,12 @@ def index_colleagues():
     print "Indexing " + str(len(colleagues)) + " colleagues"
     
     for c in colleagues:
-        description = ""
-        if c.institution:
-            description += "Institution: " + c.institution
-
+        description_fields = []
+        for field in [c.institution, c.country]:
+            if field:
+                description_fields.append(field)
+        description = ", ".join(description_fields)
+                        
         position = "Lab Member"
         if c.is_pi == 1:
             position = "Head of Lab"
@@ -58,23 +60,22 @@ def index_colleagues():
         obj = {
             'name': c.first_name + " " + c.last_name,
             'category': 'colleague',
-            'href': '/colleagues/' + c.format_name,
+            'href': '/cgi-bin/colleague/colleagueSearch?rm=colleague_page&id=' + c.format_name.split('_')[-1],
             'description': description,
             
             'first_name': c.first_name,
             'last_name': c.last_name,
             'institution': c.institution,
-            'work_phone': c.work_phone,
             'position': position,
             'country': c.country,
-            'locus': list(locus)
+            'colleague_loci': list(locus)
         }
 
-        c._include_keywords_to_dict(obj)
+        c._include_keywords_to_dict(obj) # adds 'keywords' to obj
 
         es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=obj, id=c.format_name)
 
 #delete_mapping()
-#put_mapping()
+put_mapping()
 
 index_colleagues()
