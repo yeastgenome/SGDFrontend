@@ -443,7 +443,7 @@ class SearchHelpersTest(unittest.TestCase):
                             }
                         }
                     },
-                    "must_not": { "match": { "category": "reference" }, "match": { "category": "download" }},
+                    "must_not": [{ "match": { "category": "reference" }}, {"match": { "category": "download" }}],
                     "should": [
                         {
                             "match": {

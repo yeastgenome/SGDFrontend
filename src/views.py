@@ -123,6 +123,8 @@ def colleague_by_format_name(request):
 @view_config(route_name='autocomplete_results', renderer='json', request_method='GET')
 def search_autocomplete(request):
     query = request.params.get('q', '')
+    category = request.params.get('colleague', '')
+    field = request.params.get('field', '')
 
     if query is '':
         return {"results": None}
