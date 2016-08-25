@@ -82,27 +82,23 @@ class SearchTest(unittest.TestCase):
         self.assertEqual(response, self.autocomplete_response)
         
     @mock.patch('src.models.ESearch.search')
-    def test_should_return_all_results_for_no_query_param_on_search(self, mock_es):
+    def test_should_return_all_results_randomized_for_no_query_param_on_search(self, mock_es):
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
         request.registry.settings['elasticsearch.index'] = 'searchable_items'
+
         response = search(request)
 
-        mock_es.assert_called_with(body={
-            'query': {'match_all': {}},
-            'aggs': {
-                'feature_type': {
-                    'terms': {
-                        'field': 'feature_type'
-                    }
-                },
-                'categories': {
-                    'terms': {
-                        'field': 'category'
-                    }
-                }
-            }, 'size': 0}, index='searchable_items')
-
+        mock_es.assert_has_calls([mock.call(body={
+            'highlight': {
+                'fields': {'last_name': {}, 'gene_history': {}, 'reference_loci': {}, 'strain': {}, 'synonyms': {}, 'references': {}, 'year': {}, 'keywords': {}, 'secondary_sgdid': {}, 'name_description': {}, 'description': {}, 'first_name': {}, 'mutant_type': {}, 'author': {}, 'cellular_component': {}, 'ec_number': {}, 'chemical': {}, 'go_loci': {}, 'phenotype_loci': {}, 'biological_process': {}, 'qualifier': {}, 'journal': {}, 'molecular_function': {}, 'phenotypes': {}, 'colleague_loci': {}, 'institution': {}, 'observable': {}, 'name': {}, 'tc_number': {}, 'country': {}, 'sequence_history': {}, 'summary': {}, 'position': {}}},
+            'query': {
+                'function_score': {
+                    'query': {'match_all': {}},
+                    'random_score': {'seed': 12345}
+                }},
+            '_source': ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci', 'keys']},from_=0, index='searchable_items', size=10)])
+        
     @mock.patch('src.models.ESearch.search')
     def test_should_apply_pagination(self, mock_es):
         request = testing.DummyRequest(params={'q': 'eu gene', 'limit': 10, 'offset': 25, 'category': 'unknown'})
@@ -111,6 +107,7 @@ class SearchTest(unittest.TestCase):
         response = search(request)
 
         mock_es.assert_called_with(body={
+            'sort': ['_score', {'number_annotations': {'order': 'desc'}}],
             'highlight': {
                 'fields': {
                     'gene_history': {}, 'reference_loci': {}, 'strain': {}, 'synonyms': {}, 'references': {}, 'year': {}, 'secondary_sgdid': {}, 'name_description': {}, 'description': {}, 'mutant_type': {}, 'author': {}, 'cellular_component': {}, 'ec_number': {}, 'chemical': {}, 'go_loci': {}, 'phenotype_loci': {}, 'biological_process': {}, 'qualifier': {}, 'journal': {}, 'molecular_function': {}, 'phenotypes': {}, 'observable': {}, 'name': {}, 'tc_number': {}, 'sequence_history': {}, 'summary': {}, 'first_name': {}, 'last_name': {}, 'institution': {}, 'position': {}, 'country': {}, 'colleague_loci': {}, 'keywords': {}}},

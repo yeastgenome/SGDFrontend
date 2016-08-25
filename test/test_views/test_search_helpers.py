@@ -4,7 +4,7 @@ import unittest
 import mock
 from pyramid import testing
 
-from src.search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, search_is_quick, add_exact_match, build_aggregation_query, build_search_query, build_es_search_query, build_autocomplete_search_query, format_autocomplete_results
+from src.search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, search_is_quick, add_exact_match, build_aggregation_query, build_search_query, build_es_search_query, build_es_search_body, build_autocomplete_search_query, format_autocomplete_results
 
 
 class SearchHelpersTest(unittest.TestCase):
@@ -395,6 +395,40 @@ class SearchHelpersTest(unittest.TestCase):
                      ]
             }})
 
+    def test_build_es_search_body_with_empty_query_not_empty_category(self):
+        self.assertEqual(build_es_search_body("", "category", {}, ["name"]), {
+            '_source': ["name"],
+            'highlight': {
+                'fields' : {}
+            },
+            'query': {},
+            'sort': ['_score', {'number_annotations': {'order': 'desc'}}]
+        })
+        
+    def test_build_es_search_body_with_empty_query_and_category(self):
+        self.assertEqual(build_es_search_body("", "", {}, ["name"]), {
+            '_source': ["name"],
+            'highlight': {
+                'fields' : {}
+            },
+            'query': {
+                "function_score": {
+                    "query": {},
+                    "random_score": {"seed" : 12345}
+                }
+            }
+        })
+        
+    def test_build_es_search_body_with_not_empty_query_and_not_empty_category(self):
+        self.assertEqual(build_es_search_body("query", "category", {}, ["name"]), {
+            '_source': ["name"],
+            'highlight': {
+                'fields' : {}
+            },
+            'query': {},
+            'sort': ['_score', {'number_annotations': {'order': 'desc'}}]
+        })            
+        
     def test_build_autocomplete_search_query(self):
         query = "act"
         es_query = build_autocomplete_search_query(query)
