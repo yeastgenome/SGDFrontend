@@ -216,63 +216,7 @@ def search_colleagues_autocomplete(request):
             obj[f] = r['fields'][f][0]
         json_response.append(obj)
 
-    return {"results": json_response}
-    
-@view_config(route_name='search_colleagues', renderer='json', request_method='GET')
-def search_colleagues(request):
-    q = request.params.get('q')
-    limit = request.params.get('limit', 10)
-    offset = request.params.get('offset', 0)
-    
-    if q is None:
-        query = {'match_all': {}}
-    else:
-        query = {
-            "bool": {
-                "should": [
-                    {
-                        "match_phrase_prefix": {
-                            "name": {
-                                "query": q,
-                                "boost": 4,
-                                "max_expansions": 30,
-                                "analyzer": "standard"
-                            }
-                        }
-                    },
-                    {
-                        "match_phrase": {
-                            "name": {
-                                "query": q,
-                                "boost": 10,
-                                "analyzer": "standard"
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-    
-    es_query = {
-        'query': {
-            'filtered': {
-                'query': query,
-                'filter': {
-                    'bool': {
-                        'must': [{'term': { 'category': 'colleagues'}}]
-                    }
-                }
-            }
-        }
-    }
-
-    search_results = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=es_query, size=limit, from_=offset)
-
-    json_response = []
-    for r in search_results['hits']['hits']:
-        json_response.append(r['_source'])
-
-    return {'results': json_response, 'total': search_results['hits']['total']}
+    return {"results": json_response}    
 
 @view_config(route_name='keywords', renderer='json', request_method='GET')
 def keywords(request):
