@@ -11,7 +11,7 @@ from .models import DBSession, ESearch, Colleague, Filedbentity, Filepath, Dbent
 from .celery_tasks import upload_to_s3
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
-from .search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, build_search_query, build_aggregation_query, build_autocomplete_search_query, format_autocomplete_results
+from .search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, build_search_query, build_aggregation_query, build_es_search_body, build_autocomplete_search_query, format_autocomplete_results
 
 import transaction
 
@@ -128,7 +128,6 @@ def search_autocomplete(request):
         return {"results": None}
 
     search_body = build_autocomplete_search_query(query)
-
     es_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=search_body)
 
     return {"results": format_autocomplete_results(es_response)}
@@ -159,13 +158,7 @@ def search(request):
 
     es_query = build_search_query(query, multi_match_fields, category, category_filters, request)
 
-    search_body = {
-        '_source': response_fields + ['keys'],
-        'query': es_query,
-        'highlight': {
-            'fields': {}
-        }
-    }
+    search_body = build_es_search_body(query, category, es_query, response_fields + ['keys'])
     
     add_sort_by(sort_by, search_body)
     add_highlighting(['name', 'description'] + multi_match_fields, search_body)

@@ -106,7 +106,31 @@ def build_aggregation_query(es_query, category, category_filters):
             agg_query_body['aggs'][c[1]] = {'terms': {'field': c[1] + '.raw', 'size': 999}}
 
     return agg_query_body
+
+def build_es_search_body(query, category, es_query, returning_fields):
+    results_search_body = {
+        '_source': returning_fields,
+        'highlight': {
+            'fields' : {}
+        },
+        'query': es_query
+    }
     
+    if query == '' and category == '':
+        results_search_body["query"] = {
+            "function_score": {
+                "query": es_query,
+                "random_score": {"seed" : 12345}
+            }
+        }
+    else:
+        results_search_body["sort"] = [
+            '_score',
+            {'number_annotations': {'order': 'desc'}}
+        ]
+
+    return results_search_body
+
 def build_search_query(query, multi_match_fields, category, category_filters, request):
     es_query = build_es_search_query(query, multi_match_fields)
 
