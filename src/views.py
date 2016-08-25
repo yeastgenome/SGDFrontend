@@ -11,7 +11,7 @@ from .models import DBSession, ESearch, Colleague, Filedbentity, Filepath, Dbent
 from .celery_tasks import upload_to_s3
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
-from .search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, build_search_query, build_aggregation_query
+from .search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, build_search_query, build_aggregation_query, build_autocomplete_search_query, format_autocomplete_results
 
 import transaction
 
@@ -92,7 +92,7 @@ def upload_file(request):
     fdb_file_extension = fdb.file_extension
     
     transaction.commit() # this commit must be synchronous because the upload_to_s3 task expects the row in the DB
-        
+
     temp_file_path = secure_save_file(file, filename)
     upload_to_s3.delay(temp_file_path, fdb_sgdid, fdb_file_extension, os.environ['S3_ACCESS_KEY'], os.environ['S3_SECRET_KEY'], os.environ['S3_BUCKET'])
 
@@ -119,7 +119,20 @@ def colleague_by_format_name(request):
         return colleague.to_info_dict()
     else:
         return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
+    
+@view_config(route_name='autocomplete_results', renderer='json', request_method='GET')
+def search_autocomplete(request):
+    query = request.params.get('q', '')
 
+    if query is '':
+        return {"results": None}
+
+    search_body = build_autocomplete_search_query(query)
+
+    es_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=search_body)
+
+    return {"results": format_autocomplete_results(es_response)}
+    
 @view_config(route_name='search', renderer='json', request_method='GET')
 def search(request):
     query = request.params.get('q', '')

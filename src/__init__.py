@@ -16,6 +16,8 @@ def main(global_config, **settings):
     config.add_route('upload', '/upload')
 
     config.add_route('search', '/get_search_results')
+    config.add_route('autocomplete_results', '/autocomplete_results')
+    
     config.add_route('colleague', '/colleagues/{format_name}')
     config.add_route('colleagues', '/colleagues')
     config.add_route('research_interests', '/research_interests')

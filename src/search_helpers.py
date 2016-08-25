@@ -207,3 +207,42 @@ def build_es_search_query(query, multi_match_fields):
         add_exact_match(es_query, query, multi_match_fields)
 
     return es_query
+
+def build_autocomplete_search_query(query):
+    return {
+        "query": {
+            "bool": {
+                "must": {
+                    "match": {
+                        "name": {
+                            "query": query,
+                            "analyzer": "standard"
+                        }
+                    }
+                },
+                "must_not": { "match": { "category": "reference" }, "match": { "category": "download" }},
+                "should": [
+                    {
+                        "match": {
+                            "category": {
+                                "query": "locus",
+                                "boost": 4
+                            }
+                        }
+                    }
+                ]
+            }
+        }, '_source': ['name', 'href', 'category']
+    }
+
+def format_autocomplete_results(es_response):
+    formatted_results = []
+    for hit in es_response['hits']['hits']:
+        obj = {
+            'name': hit['_source']['name'],
+            'href': hit['_source']['href'],
+            'category': hit['_source']['category']
+        }
+        formatted_results.append(obj)
+    return formatted_results
+
