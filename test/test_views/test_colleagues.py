@@ -5,7 +5,7 @@ import mock
 import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
-from src.views import colleagues_by_last_name, colleague_by_format_name, search_colleagues_autocomplete
+from src.views import colleagues_by_last_name, colleague_by_format_name
 from src.models import Colleague, ColleagueAssociation, ColleagueKeyword, Keyword
 
 class ColleaguesTest(unittest.TestCase):    
@@ -29,37 +29,6 @@ class ColleaguesTest(unittest.TestCase):
 
     def tearDown(self):
         testing.tearDown()
-
-    def test_should_return_400_for_missing_argument_on_autocomplete(self):
-        request = testing.DummyRequest()
-        request.context = testing.DummyResource()
-        response = search_colleagues_autocomplete(request)
-
-        self.assertEqual(response.status_code, 400)
-
-    @mock.patch('src.models.ESearch.search')
-    def test_should_return_autocomplete_results(self, mock_es):
-        request = testing.DummyRequest(params={'q': "frank"})
-        request.context = testing.DummyResource()
-        request.registry.settings['elasticsearch.index'] = 'searchable_items'
-        response = search_colleagues_autocomplete(request)
-
-        mock_es.assert_called_with(body={
-            'query': {
-                'bool': {
-                    'must': [{
-                        'match': {
-                            'name': {
-                                'query': 'frank',
-                                'analyzer': 'standard'
-                            }
-                        }
-                    }, {
-                        'match': {'category': 'colleagues'}
-                    }]
-                }
-            }, 'fields': ['name', 'href']
-        }, index='searchable_items')
         
     def test_should_return_400_for_missing_last_name_arg(self):
         request = testing.DummyRequest()
