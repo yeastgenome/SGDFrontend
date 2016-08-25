@@ -233,7 +233,7 @@ def build_es_search_query(query, multi_match_fields):
     return es_query
 
 def build_autocomplete_search_query(query):
-    return {
+    es_query = {
         "query": {
             "bool": {
                 "must": {
@@ -244,7 +244,11 @@ def build_autocomplete_search_query(query):
                         }
                     }
                 },
-                "must_not": { "match": { "category": "reference" }, "match": { "category": "download" }},
+                "must_not": [{
+                    "match": { "category": "reference" }
+                }, {
+                    "match": { "category": "download" }
+                }],
                 "should": [
                     {
                         "match": {
@@ -258,6 +262,8 @@ def build_autocomplete_search_query(query):
             }
         }, '_source': ['name', 'href', 'category']
     }
+
+    return es_query
 
 def format_autocomplete_results(es_response):
     formatted_results = []
