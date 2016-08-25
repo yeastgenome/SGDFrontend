@@ -177,46 +177,6 @@ def search(request):
         'results': format_search_results(search_results, query, response_fields),
         'aggregations': format_aggregation_results(aggregation_response, category, category_filters)
     }
-    
-@view_config(route_name='search_colleagues_autocomplete', renderer='json', request_method='GET')
-def search_colleagues_autocomplete(request):
-    query = request.params.get('q')
-    
-    if query is None:
-        return Response(status_code=400)
-
-    fields = ["name", "href"]
-    
-    search_body = {
-        "query": {
-            "bool": {
-                "must": [{
-                    "match": {
-                        "name": {
-                            "query": query,
-                            "analyzer": "standard"
-                        }
-                    }
-                },{
-                    "match": {
-                        "category": "colleagues"
-                    }
-                }]
-            }
-        },
-        "fields": fields
-    }
-    
-    search_results = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=search_body)
-
-    json_response = []
-    for r in search_results['hits']['hits']:
-        obj = {}
-        for f in fields:
-            obj[f] = r['fields'][f][0]
-        json_response.append(obj)
-
-    return {"results": json_response}    
 
 @view_config(route_name='keywords', renderer='json', request_method='GET')
 def keywords(request):
