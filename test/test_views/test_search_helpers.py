@@ -4,7 +4,7 @@ import unittest
 import mock
 from pyramid import testing
 
-from src.search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, search_is_quick, add_exact_match, build_aggregation_query, build_search_query, build_es_search_query
+from src.search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, search_is_quick, add_exact_match, build_aggregation_query, build_search_query, build_es_search_query, build_autocomplete_search_query, format_autocomplete_results
 
 
 class SearchHelpersTest(unittest.TestCase):
@@ -29,6 +29,10 @@ class SearchHelpersTest(unittest.TestCase):
             "contig": [("strain", "strain")],
             "colleague": [("first_name", "first_name"), ("last_name", "last_name"), ("institution", "institution"), ("position", "position"), ("country", "country"), ("colleague_loci", "colleague_loci"), ("keywords", "keywords")]
         }
+
+        self.autocomplete_query_result = {"took":4,"timed_out":False,"_shards":{"total":5,"successful":5,"failed":0},"hits":{"total":3016,"max_score":3.8131394,"hits":[{"_index":"searchable_items_green","_type":"searchable_item","_id":"S000001855","_score":3.8131394,"_source":{"name":"ACT1 / YFL039C","href":"/locus/S000001855/overview","category":"locus"}},{"_index":"searchable_items_green","_type":"searchable_item","_id":"GO:0000185","_score":0.46771955,"_source":{"name":"activation of MAPKKK activity","href":"/go/GO:0000185/overview","category":"biological_process"}},{"_index":"searchable_items_green","_type":"searchable_item","_id":"GO:0007256","_score":0.46771955,"_source":{"name":"activation of JNKK activity","href":"/go/GO:0007256/overview","category":"biological_process"}},{"_index":"searchable_items_green","_type":"searchable_item","_id":"GO:0000187","_score":0.46180964,"_source":{"name":"activation of MAPK activity","href":"/go/GO:0000187/overview","category":"biological_process"}},{"_index":"searchable_items_green","_type":"searchable_item","_id":"GO:0008494","_score":0.46180964,"_source":{"name":"translation activator activity","href":"/go/GO:0008494/overview","category":"molecular_function"}},{"_index":"searchable_items_green","_type":"searchable_item","_id":"GO:0005096","_score":0.45729372,"_source":{"name":"GTPase activator activity","href":"/go/GO:0005096/overview","category":"molecular_function"}},{"_index":"searchable_items_green","_type":"searchable_item","_id":"GO:0001648","_score":0.45445517,"_source":{"name":"proteinase activated receptor activity","href":"/go/GO:0001648/overview","category":"molecular_function"}},{"_index":"searchable_items_green","_type":"searchable_item","_id":"GO:1990583","_score":0.4461447,"_source":{"name":"phospholipase D activator activity","href":"/go/GO:1990583/overview","category":"molecular_function"}},{"_index":"searchable_items_green","_type":"searchable_item","_id":"GO:0000186","_score":0.4461447,"_source":{"name":"activation of MAPKK activity","href":"/go/GO:0000186/overview","category":"biological_process"}},{"_index":"searchable_items_green","_type":"searchable_item","_id":"GO:0001671","_score":0.4461447,"_source":{"name":"ATPase activator activity","href":"/go/GO:0001671/overview","category":"molecular_function"}}]}}
+
+        self.autocomplete_response = {"results": [{"category": "locus", "href": "/locus/S000001855/overview", "name": "ACT1 / YFL039C"}, {"category": "biological_process", "href": "/go/GO:0000185/overview", "name": "activation of MAPKKK activity"}, {"category": "biological_process", "href": "/go/GO:0007256/overview", "name": "activation of JNKK activity"}, {"category": "biological_process", "href": "/go/GO:0000187/overview", "name": "activation of MAPK activity"}, {"category": "molecular_function", "href": "/go/GO:0008494/overview", "name": "translation activator activity"}, {"category": "molecular_function", "href": "/go/GO:0005096/overview", "name": "GTPase activator activity"}, {"category": "molecular_function", "href": "/go/GO:0001648/overview", "name": "proteinase activated receptor activity"}, {"category": "molecular_function", "href": "/go/GO:1990583/overview", "name": "phospholipase D activator activity"}, {"category": "biological_process", "href": "/go/GO:0000186/overview", "name": "activation of MAPKK activity"}, {"category": "molecular_function", "href": "/go/GO:0001671/overview", "name": "ATPase activator activity"}]}
 
     def tearDown(self):
         pass
@@ -390,3 +394,35 @@ class SearchHelpersTest(unittest.TestCase):
                      }
                      ]
             }})
+
+    def test_build_autocomplete_search_query(self):
+        query = "act"
+        es_query = build_autocomplete_search_query(query)
+        self.assertEqual(es_query, {
+            "query": {
+                "bool": {
+                    "must": {
+                        "match": {
+                            "name": {
+                                "query": query,
+                                "analyzer": "standard"
+                            }
+                        }
+                    },
+                    "must_not": { "match": { "category": "reference" }, "match": { "category": "download" }},
+                    "should": [
+                        {
+                            "match": {
+                                "category": {
+                                    "query": "locus",
+                                    "boost": 4
+                                }
+                            }
+                        }
+                    ]
+                }
+            }, '_source': ['name', 'href', 'category']
+        })
+
+    def test_format_autocomplete_results(self):
+        self.assertEqual(format_autocomplete_results(self.autocomplete_query_result), self.autocomplete_response["results"])
