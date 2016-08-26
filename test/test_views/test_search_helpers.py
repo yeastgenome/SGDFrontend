@@ -431,7 +431,7 @@ class SearchHelpersTest(unittest.TestCase):
         
     def test_build_autocomplete_search_query(self):
         query = "act"
-        es_query = build_autocomplete_search_query(query)
+        es_query = build_autocomplete_search_query(query, '')
         self.assertEqual(es_query, {
             "query": {
                 "bool": {
@@ -454,6 +454,25 @@ class SearchHelpersTest(unittest.TestCase):
                             }
                         }
                     ]
+                }
+            }, '_source': ['name', 'href', 'category']
+        })
+
+        es_query = build_autocomplete_search_query(query, 'colleague')
+        self.assertEqual(es_query, {
+            "query": {
+                "bool": {
+                    "must": [{
+                        "match": {
+                            "name": {
+                                "query": query,
+                                "analyzer": "standard"
+                            }
+                        }
+                    }, {
+                        "match": {"category": "colleague"}
+                    }],
+                    "must_not": [{ "match": { "category": "reference" }}, {"match": { "category": "download" }}]
                 }
             }, '_source': ['name', 'href', 'category']
         })
