@@ -72,92 +72,110 @@ es_mapping = {
                 },
                 "chemical": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "mutant_type": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "go_loci": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "strain": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "author": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "journal": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "year": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "first_name": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "last_name": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "institution": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "position": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "country": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "colleague_loci": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "keywords": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "reference_loci": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "ec_number": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "tc_number": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "cellular_component": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "description": {
@@ -174,7 +192,8 @@ es_mapping = {
                 },
                 "feature_type": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "href": {
@@ -182,13 +201,15 @@ es_mapping = {
                 },
                 "molecular_function": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 },
                 "name": {
                     "type": "string",
                     "analyzer": "autocomplete",
-                    "fields": {"raw": {"type": "string","analyzer": "raw"}
+                    "fields": {
+                        "raw": {"type": "string","analyzer": "raw"}
                     }
                 },
                 "go_id": {
@@ -205,7 +226,8 @@ es_mapping = {
                 },
                 "phenotypes": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"}
                     }
                 }
             }
