@@ -129,7 +129,7 @@ def search_autocomplete(request):
     if query is '':
         return {"results": None}
 
-    search_body = build_autocomplete_search_query(query)
+    search_body = build_autocomplete_search_query(query, category)
     es_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=search_body)
 
     return {"results": format_autocomplete_results(es_response)}
@@ -176,7 +176,7 @@ def search(request):
     
     if category in category_filters.keys() + ['']:
         agg_query_body = build_aggregation_query(es_query, category, category_filters)
-        aggregation_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=agg_query_body)        
+        aggregation_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=agg_query_body)      
     else:
         aggregation_response = []
 

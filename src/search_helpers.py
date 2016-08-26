@@ -232,7 +232,7 @@ def build_es_search_query(query, multi_match_fields):
 
     return es_query
 
-def build_autocomplete_search_query(query):
+def build_autocomplete_search_query(query, category):
     es_query = {
         "query": {
             "bool": {
@@ -262,7 +262,12 @@ def build_autocomplete_search_query(query):
             }
         }, '_source': ['name', 'href', 'category']
     }
-    
+
+    if category != '':
+        es_query["query"]["bool"]["must"].append({"match": {"category": category}})
+        if category != "locus":
+            es_query["query"]["bool"].pop("should")
+
     return es_query
 
 def format_autocomplete_results(es_response):
