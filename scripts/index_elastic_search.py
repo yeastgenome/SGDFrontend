@@ -60,7 +60,7 @@ def index_colleagues():
         obj = {
             'name': c.first_name + " " + c.last_name,
             'category': 'colleague',
-            'href': '/cgi-bin/colleague/colleagueSearch?rm=colleague_page&id=' + c.format_name.split('_')[-1],
+            'href': '/colleague/' + c.format_name + '/overview',
             'description': description,
             
             'first_name': c.first_name,
@@ -76,6 +76,6 @@ def index_colleagues():
         es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=obj, id=c.format_name)
 
 #delete_mapping()
-put_mapping()
+#put_mapping()
 
 index_colleagues()
