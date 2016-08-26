@@ -435,14 +435,14 @@ class SearchHelpersTest(unittest.TestCase):
         self.assertEqual(es_query, {
             "query": {
                 "bool": {
-                    "must": {
+                    "must": [{
                         "match": {
                             "name": {
                                 "query": query,
                                 "analyzer": "standard"
                             }
                         }
-                    },
+                    }],
                     "must_not": [{ "match": { "category": "reference" }}, {"match": { "category": "download" }}],
                     "should": [
                         {

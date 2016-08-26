@@ -236,14 +236,14 @@ def build_autocomplete_search_query(query):
     es_query = {
         "query": {
             "bool": {
-                "must": {
+                "must": [{
                     "match": {
                         "name": {
                             "query": query,
                             "analyzer": "standard"
                         }
                     }
-                },
+                }],
                 "must_not": [{
                     "match": { "category": "reference" }
                 }, {
@@ -262,7 +262,7 @@ def build_autocomplete_search_query(query):
             }
         }, '_source': ['name', 'href', 'category']
     }
-
+    
     return es_query
 
 def format_autocomplete_results(es_response):
@@ -275,4 +275,3 @@ def format_autocomplete_results(es_response):
         }
         formatted_results.append(obj)
     return formatted_results
-

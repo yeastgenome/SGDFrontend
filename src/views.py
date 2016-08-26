@@ -123,7 +123,7 @@ def colleague_by_format_name(request):
 @view_config(route_name='autocomplete_results', renderer='json', request_method='GET')
 def search_autocomplete(request):
     query = request.params.get('q', '')
-    category = request.params.get('colleague', '')
+    category = request.params.get('category', '')
     field = request.params.get('field', '')
 
     if query is '':
@@ -151,7 +151,7 @@ def search(request):
         "molecular_function": [("go_locus", "go_loci")],
         "reference": [("author", "author"), ("journal", "journal"), ("year", "year"), ("reference_locus", "reference_loci")],
         "contig": [("strain", "strain")],
-        "colleague": [("first_name", "first_name"), ("last_name", "last_name"), ("institution", "institution"), ("position", "position"), ("country", "country"), ("colleague_loci", "colleague_loci"), ("keywords", "keywords")]
+        "colleague": [("last_name", "last_name"), ("position", "position"), ("institution", "institution"), ("country", "country"), ("keywords", "keywords"), ("colleague_loci", "colleague_loci")]
     }
 
     response_fields = ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci']
