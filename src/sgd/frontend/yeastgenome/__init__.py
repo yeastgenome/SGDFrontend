@@ -468,17 +468,14 @@ class YeastgenomeFrontend(FrontendInterface):
         res = es.get(index='sequence_objects', id=id)['_source']
         return Response(body=json.dumps(res), content_type='application/json')
 
-    def backend(self, url_repr, args=None):
-        if self.backend_url == 'backendless':
-            return json.dumps(get_data(url_repr))
-        else:
-            relative_url = '/' + ('/'.join(url_repr))
-            backend_url = self.backend_url
-            full_url = backend_url + relative_url
-            if args is not None and len(args) > 0:
-                full_url += '?' + ('&'.join([key + '=' + value for key, value in args.items() if key != 'callback']))
-            self.log.info(full_url)
-            return json.dumps(get_json(full_url))
+    def backend(self, url_repr, request, args=None):
+        relative_url = '/' + ('/'.join(url_repr))
+        backend_url = self.backend_url
+        full_url = backend_url + relative_url
+        if args is not None and len(args) > 0:
+            full_url += '?' + request.query_string
+        self.log.info(full_url)
+        return json.dumps(get_json(full_url))
     
 def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     chosen_frontend = YeastgenomeFrontend(backend_url, heritage_url, log_directory)
