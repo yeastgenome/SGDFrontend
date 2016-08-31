@@ -16,7 +16,6 @@ from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 from src.sgd.frontend.frontend_interface import FrontendInterface
-from src.sgd.frontend.yeastgenome.backendless.load_data_from_file import get_data
 
 # setup elastic search
 from src.sgd.frontend import config
@@ -508,14 +507,11 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     return chosen_frontend, configurator
 
 def get_json(url, data=None):
-    if url.startswith('backendless'):
-        return get_data(url[12:].split('/'))
+    if data is not None:
+        headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
+        r = requests.post(url, data=json.dumps(data), headers=headers)
     else:
-        if data is not None:
-            headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
-            r = requests.post(url, data=json.dumps(data), headers=headers)
-        else:
-            r = requests.get(url)
+        r = requests.get(url)
 
     try:
         return r.json()
