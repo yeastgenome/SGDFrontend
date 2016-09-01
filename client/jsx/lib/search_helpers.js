@@ -47,3 +47,19 @@ export function getHrefWithoutAgg (queryParamsObject, aggKey, thisValue, current
   const tempHistory = useQueries(createMemoryHistory)()
   return createPath({ pathname: SEARCH_URL, query: newQp });
 };
+
+// Allow some facets to have different names than the key.  If it's not one of the whitelisted changes, just returns the key without _.
+export function getFacetName (key) {
+  switch (key) {
+    case 'colleague_loci':
+      return 'Genes of Interest';
+      break;
+    case 'go_locus':
+    case 'reference_locus':
+    case 'phenotype_locus': 
+      return 'loci';
+      break;
+    default:
+      return key.replace('_', ' ');
+  }
+};
