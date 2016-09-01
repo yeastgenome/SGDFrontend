@@ -33,7 +33,7 @@ const SearchBreadcrumb = React.createClass({
       if (SKIPPED_PARAMS.indexOf(key) >= 0 || qp[key] === '') return;
       // if category, give a really simple URL that returns to the initial results page (no filters)
       if (key === 'category') {
-        let newHref = `${SEARCH_URL}?q=${this.props.queryParams.q}`;
+        let newHref = `${SEARCH_URL}?q=${this.props.query}`;
         let name = getCategoryDisplayName(qp.category);
         nodes.push(this._renderCrumb(name, newHref));
       // if single value, append the link
@@ -71,7 +71,7 @@ const SearchBreadcrumb = React.createClass({
       return `... results for `;
     // everything done
     } else {
-      return `${totalString} results for `
+      return `${totalString} results for `;
     }
   }
 });
