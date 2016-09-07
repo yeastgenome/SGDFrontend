@@ -130,7 +130,7 @@ const Header = React.createClass({
             <li className="has-dropdown"><a href="">Function</a>
               <ul className="dropdown">
                 <li className="has-dropdown">
-                  <a href="#">GO</a>
+                  <a href="#">Gene Ontology</a>
                   <ul className="dropdown">
                     <li><a className="disabled-header-a" href="/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
                     <li><a className="disabled-header-a" href="/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a></li>
