@@ -57,7 +57,7 @@ export function getFacetName (key) {
     case 'go_locus':
     case 'reference_locus':
     case 'phenotype_locus': 
-      return 'loci';
+      return 'Associated Genes';
       break;
     default:
       return key.replace('_', ' ');
