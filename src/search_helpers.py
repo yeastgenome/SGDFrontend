@@ -95,10 +95,10 @@ def build_aggregation_query(es_query, category, category_filters):
     if category == '':
         agg_query_body['aggs'] = {
             'categories': {
-                'terms': {'field': 'category'}
+                'terms': {'field': 'category', 'size': 50}
             },
             'feature_type': {
-                'terms': {'field': 'feature_type'}
+                'terms': {'field': 'feature_type', 'size': 50}
             }
         }
     else:

@@ -324,10 +324,10 @@ class SearchHelpersTest(unittest.TestCase):
             'size': 0,
             'aggs': {
                 'categories': {
-                    'terms': {'field': 'category'}
+                    'terms': {'field': 'category', 'size': 50}
                 },
                 'feature_type': {
-                    'terms': {'field': 'feature_type'}
+                    'terms': {'field': 'feature_type', 'size': 50}
                 }
             }
         }, build_aggregation_query(es_query, category, self.category_filters))
