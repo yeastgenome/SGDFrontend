@@ -124,15 +124,15 @@ def colleague_by_format_name(request):
 def search_autocomplete(request):
     query = request.params.get('q', '')
     category = request.params.get('category', '')
-    field = request.params.get('field', '')
+    field = request.params.get('field', 'name')
 
     if query is '':
         return {"results": None}
 
-    search_body = build_autocomplete_search_query(query, category)
+    search_body = build_autocomplete_search_query(query, category, field)
     es_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=search_body)
 
-    return {"results": format_autocomplete_results(es_response)}
+    return {"results": format_autocomplete_results(es_response, field)}
     
 @view_config(route_name='search', renderer='json', request_method='GET')
 def search(request):
