@@ -232,7 +232,7 @@ def build_es_search_query(query, multi_match_fields):
 
     return es_query
 
-def build_autocomplete_search_query(query, category):
+def build_autocomplete_search_query(query, category, field):
     es_query = {
         "query": {
             "bool": {
@@ -260,7 +260,8 @@ def build_autocomplete_search_query(query, category):
                     }
                 ]
             }
-        }, '_source': ['name', 'href', 'category']
+        },
+        '_source': ['name', 'href', 'category']
     }
 
     if category != '':
@@ -268,15 +269,39 @@ def build_autocomplete_search_query(query, category):
         if category != "locus":
             es_query["query"]["bool"].pop("should")
 
+    if field != 'name':
+        es_query['aggs'] = {}
+        es_query['aggs'][field] = {
+            'terms': {'field': field + '.raw', 'size': 999}
+        }
+
+        es_query['query']['bool']['must'][0]['match'] = {}
+        es_query['query']['bool']['must'][0]['match'][field + '.autocomplete'] = {
+            'query': query,
+            'analyzer': 'standard'
+        }
+
+        es_query['_source'] = [field]
+
     return es_query
 
-def format_autocomplete_results(es_response):
+def format_autocomplete_results(es_response, field):
     formatted_results = []
-    for hit in es_response['hits']['hits']:
-        obj = {
-            'name': hit['_source']['name'],
-            'href': hit['_source']['href'],
-            'category': hit['_source']['category']
-        }
-        formatted_results.append(obj)
+    
+    if field != 'name':
+        results = es_response['aggregations'][field]['buckets']
+        for r in results:
+            obj = {
+                'name': r['key']
+            }
+            formatted_results.append(obj)
+    else:
+        for hit in es_response['hits']['hits']:
+            obj = {
+                'name': hit['_source']['name'],
+                'href': hit['_source']['href'],
+                'category': hit['_source']['category']
+            }
+            formatted_results.append(obj)
+
     return formatted_results
