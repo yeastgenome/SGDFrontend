@@ -232,7 +232,7 @@ def build_es_search_query(query, multi_match_fields):
 
     return es_query
 
-def build_autocomplete_search_query(query, category, field):
+def build_autocomplete_search_query(query, category, field='name'):
     es_query = {
         "query": {
             "bool": {
@@ -285,7 +285,7 @@ def build_autocomplete_search_query(query, category, field):
 
     return es_query
 
-def format_autocomplete_results(es_response, field):
+def format_autocomplete_results(es_response, field='name'):
     formatted_results = []
     
     if field != 'name':
