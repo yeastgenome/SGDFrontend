@@ -11,7 +11,7 @@ from .models import DBSession, ESearch, Colleague, Filedbentity, Filepath, Dbent
 from .celery_tasks import upload_to_s3
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
-from .search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, build_search_query, build_aggregation_query
+from .search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, build_search_query, build_aggregation_query, build_es_search_body, build_autocomplete_search_query, format_autocomplete_results
 
 import transaction
 
@@ -92,12 +92,12 @@ def upload_file(request):
     fdb_file_extension = fdb.file_extension
     
     transaction.commit() # this commit must be synchronous because the upload_to_s3 task expects the row in the DB
-        
+
     temp_file_path = secure_save_file(file, filename)
     upload_to_s3.delay(temp_file_path, fdb_sgdid, fdb_file_extension, os.environ['S3_ACCESS_KEY'], os.environ['S3_SECRET_KEY'], os.environ['S3_BUCKET'])
 
     log.info('File ' + request.POST.get('display_name') + ' was successfully uploaded.')
-    return Response({ 'success': True })
+    return Response({'success': True})
 
 # TEMP 
 @view_config(route_name='triaged_colleagues', renderer='json', request_method='GET')
@@ -127,7 +127,21 @@ def colleague_by_format_name(request):
         return colleague.to_info_dict()
     else:
         return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
+    
+@view_config(route_name='autocomplete_results', renderer='json', request_method='GET')
+def search_autocomplete(request):
+    query = request.params.get('q', '')
+    category = request.params.get('category', '')
+    field = request.params.get('field', 'name')
 
+    if query is '':
+        return {"results": None}
+
+    search_body = build_autocomplete_search_query(query, category, field)
+    es_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=search_body)
+
+    return {"results": format_autocomplete_results(es_response, field)}
+    
 @view_config(route_name='search', renderer='json', request_method='GET')
 def search(request):
     query = request.params.get('q', '')
@@ -136,29 +150,25 @@ def search(request):
     category = request.params.get('category', '')
     sort_by = request.params.get('sort_by', '')
 
-    # subcategory filters. Map: (request GET param name from frontend, indexed ES param name)
+    # subcategory filters. Map: (request GET param name from frontend, ElasticSearch field name)
     category_filters = {
         "locus": [('feature type', 'feature_type'), ('molecular function', 'molecular_function'), ('phenotype', 'phenotypes'), ('cellular component', 'cellular_component'), ('biological process', 'biological_process')],
         "phenotype": [("observable", "observable"), ("qualifier", "qualifier"), ("references", "references"), ("phenotype_locus", "phenotype_loci"), ("chemical", "chemical"), ("mutant_type", "mutant_type")],
         "biological_process": [("go_locus", "go_loci")],
         "cellular_component": [("go_locus", "go_loci")],
         "molecular_function": [("go_locus", "go_loci")],
-        "reference": [("author", "author"), ("journal", "journal"), ("year", "year"), ("reference_locus", "reference_loci")]
+        "reference": [("author", "author"), ("journal", "journal"), ("year", "year"), ("reference_locus", "reference_loci")],
+        "contig": [("strain", "strain")],
+        "colleague": [("last_name", "last_name"), ("position", "position"), ("institution", "institution"), ("country", "country"), ("keywords", "keywords"), ("colleague_loci", "colleague_loci")]
     }
 
-    response_fields = ['name', 'href', 'description', 'category', 'bioentity_id']
+    response_fields = ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci']
     
-    multi_match_fields = ["summary", "name_description", "phenotypes", "cellular_component", "biological_process", "molecular_function", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "go_loci", "author", "journal", "year", "reference_loci"]
+    multi_match_fields = ["summary", "name_description", "phenotypes", "cellular_component", "biological_process", "molecular_function", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "go_loci", "author", "journal", "year", "reference_loci", "synonyms", "ec_number", "gene_history", "sequence_history", "secondary_sgdid", "tc_number", "strain", "first_name", "last_name", "institution", "position", "country", "colleague_loci", "keywords"]
 
     es_query = build_search_query(query, multi_match_fields, category, category_filters, request)
 
-    search_body = {
-        '_source': response_fields + ['keys'],
-        'query': es_query,
-        'highlight': {
-            'fields': {}
-        }
-    }
+    search_body = build_es_search_body(query, category, es_query, response_fields + ['keys'])
     
     add_sort_by(sort_by, search_body)
     add_highlighting(['name', 'description'] + multi_match_fields, search_body)
@@ -174,7 +184,7 @@ def search(request):
     
     if category in category_filters.keys() + ['']:
         agg_query_body = build_aggregation_query(es_query, category, category_filters)
-        aggregation_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=agg_query_body)        
+        aggregation_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=agg_query_body)      
     else:
         aggregation_response = []
 
@@ -183,102 +193,6 @@ def search(request):
         'results': format_search_results(search_results, query, response_fields),
         'aggregations': format_aggregation_results(aggregation_response, category, category_filters)
     }
-    
-@view_config(route_name='search_colleagues_autocomplete', renderer='json', request_method='GET')
-def search_colleagues_autocomplete(request):
-    query = request.params.get('q')
-    
-    if query is None:
-        return Response(status_code=400)
-
-    fields = ["name", "href"]
-    
-    search_body = {
-        "query": {
-            "bool": {
-                "must": [{
-                    "match": {
-                        "name": {
-                            "query": query,
-                            "analyzer": "standard"
-                        }
-                    }
-                },{
-                    "match": {
-                        "category": "colleagues"
-                    }
-                }]
-            }
-        },
-        "fields": fields
-    }
-    
-    search_results = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=search_body)
-
-    json_response = []
-    for r in search_results['hits']['hits']:
-        obj = {}
-        for f in fields:
-            obj[f] = r['fields'][f][0]
-        json_response.append(obj)
-
-    return {"results": json_response}
-    
-@view_config(route_name='search_colleagues', renderer='json', request_method='GET')
-def search_colleagues(request):
-    q = request.params.get('q')
-    limit = request.params.get('limit', 10)
-    offset = request.params.get('offset', 0)
-    
-    if q is None:
-        query = {'match_all': {}}
-    else:
-        query = {
-            "bool": {
-                "should": [
-                    {
-                        "match_phrase_prefix": {
-                            "name": {
-                                "query": q,
-                                "boost": 4,
-                                "max_expansions": 30,
-                                "analyzer": "standard"
-                            }
-                        }
-                    },
-                    {
-                        "match_phrase": {
-                            "name": {
-                                "query": q,
-                                "boost": 10,
-                                "analyzer": "standard"
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-    
-    es_query = {
-        'query': {
-            'filtered': {
-                'query': query,
-                'filter': {
-                    'bool': {
-                        'must': [{'term': { 'category': 'colleagues'}}]
-                    }
-                }
-            }
-        }
-    }
-
-    search_results = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=es_query, size=limit, from_=offset)
-
-    json_response = []
-    for r in search_results['hits']['hits']:
-        json_response.append(r['_source'])
-
-    return {'results': json_response, 'total': search_results['hits']['total']}
 
 @view_config(route_name='keywords', renderer='json', request_method='GET')
 def keywords(request):

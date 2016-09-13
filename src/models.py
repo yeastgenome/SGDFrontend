@@ -532,7 +532,6 @@ class Colleague(Base):
             keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(ids_query)).all()
             colleague_dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
 
-                
     def to_search_results_dict(self):
         colleague_dict = {
             'format_name': self.format_name,
@@ -623,7 +622,7 @@ class ColleagueKeyword(Base):
     source = relationship(u'Source')
 
 
-class ColleagueLocu(Base):
+class ColleagueLocus(Base):
     __tablename__ = 'colleague_locus'
     __table_args__ = (
         Index('colleague_locus_uk', 'colleague_id', 'locus_id', unique=True),
