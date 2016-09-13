@@ -9,7 +9,7 @@ engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
 Base.metadata.bind = engine
 
-INDEX_NAME = 'searchable_items_green'
+INDEX_NAME = 'searchable_items_red'
 
 DOC_TYPE = 'searchable_item'
 es = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -34,7 +34,9 @@ def index_colleagues():
     colleagues = DBSession.query(Colleague).all()
 
     print "Indexing " + str(len(colleagues)) + " colleagues"
-    
+
+    bulk_data = []
+    indexed = 0
     for c in colleagues:
         description_fields = []
         for field in [c.institution, c.country]:
@@ -58,7 +60,7 @@ def index_colleagues():
                     locus.add(l[1])
         
         obj = {
-            'name': c.first_name + " " + c.last_name,
+            'name': c.last_name + ", " + c.first_name,
             'category': 'colleague',
             'href': '/colleague/' + c.format_name + '/overview',
             'description': description,
@@ -68,14 +70,30 @@ def index_colleagues():
             'institution': c.institution,
             'position': position,
             'country': c.country,
-            'colleague_loci': list(locus)
+            'state': c.state,
+            'colleague_loci': sorted(list(locus))
         }
 
         c._include_keywords_to_dict(obj) # adds 'keywords' to obj
 
-        es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=obj, id=c.format_name)
+        bulk_data.append({
+            'index': {
+                '_index': INDEX_NAME,
+                '_type': DOC_TYPE,
+                '_id': c.format_name
+            }
+        })
+
+        bulk_data.append(obj)
+
+        if indexed % 500 == 0:
+            es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+            bulk_data = 0;
+
+    if len(bulk_data) > 0:
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 #delete_mapping()
 #put_mapping()
 
-index_colleagues()
+#index_colleagues()
