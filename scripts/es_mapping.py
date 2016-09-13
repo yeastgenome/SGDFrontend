@@ -115,19 +115,22 @@ es_mapping = {
                 "first_name": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {"type": "string", "index": "not_analyzed"},
+                        "autocomplete": {"type": "string", "analyzer": "autocomplete"}
                     }
                 },
                 "last_name": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {"type": "string", "index": "not_analyzed"},
+                        "autocomplete": {"type": "string", "analyzer": "autocomplete"}
                     }
                 },
                 "institution": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {"type": "string", "index": "not_analyzed"},
+                        "autocomplete": {"type": "string", "analyzer": "autocomplete"}
                     }
                 },
                 "position": {
@@ -139,7 +142,15 @@ es_mapping = {
                 "country": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {"type": "string", "index": "not_analyzed"},
+                        "autocomplete": {"type": "string", "analyzer": "autocomplete"}
+                    }
+                },
+                "state": {
+                    "type": "string",
+                    "fields": {
+                        "raw": {"type": "string", "index": "not_analyzed"},
+                        "autocomplete": {"type": "string", "analyzer": "autocomplete"}
                     }
                 },
                 "colleague_loci": {
@@ -151,7 +162,8 @@ es_mapping = {
                 "keywords": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {"type": "string", "index": "not_analyzed"},
+                        "autocomplete": {"type": "string", "analyzer": "autocomplete"}
                     }
                 },
                 "reference_loci": {
@@ -207,9 +219,10 @@ es_mapping = {
                 },
                 "name": {
                     "type": "string",
-                    "analyzer": "autocomplete",
                     "fields": {
-                        "raw": {"type": "string","analyzer": "raw"}
+                        "raw": {"type": "string","analyzer": "raw"},
+                        "autocomplete": {"type": "string", "analyzer": "autocomplete"},
+                        "search": {"type": "string","analyzer": "default"},
                     }
                 },
                 "go_id": {
