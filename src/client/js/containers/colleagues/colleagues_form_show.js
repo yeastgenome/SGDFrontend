@@ -1,15 +1,15 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import Radium from 'radium';
 
-import Loader from '../../components/widgets/loader';
 import apiRequest from '../../lib/api_request';
 import { StringField, CheckField, TextField, SelectField, MultiSelectField } from '../../components/widgets/form_helpers';
 
 const COLLEAGUE_GET_URL = '/colleagues';
-const COLLEAGUE_POST_URL = '/colleagues';
-const COLLEAGUES_AUTOCOMPLETE_URL = '/colleagues_auto';
-const GENES_URL = '/genes';
-const KEYWORDS_AUTOCOMPLETE_URL = '/keywords';
+const COLLEAGUE_UPDATE_URL = '/colleague_triage';
+const COLLEAGUES_AUTOCOMPLETE_URL = '/autocomplete_results?category=colleague&q=';
+const GENES_URL = '/autocomplete_results?category=locus&q=';
+const KEYWORDS_AUTOCOMPLETE_URL = '/autocomplete_results?category=colleague&field=keywords&q=';
+const INSTITUTION_URL = '/autocomplete_results?category=colleague&field=institution&q=';
 
 const ColleaguesFormShow = React.createClass({
   propTypes: {
@@ -35,7 +35,6 @@ const ColleaguesFormShow = React.createClass({
     return (
       <div>
         <h1>{label}</h1>
-        <hr />
         {this._renderForm()}
       </div>
     );
@@ -46,33 +45,21 @@ const ColleaguesFormShow = React.createClass({
   },
 
   _renderForm () {
-    if (this.state.isLoadPending) return <Loader />;
+    if (this.state.isLoadPending) return <div className='sgd-loader-container'><div className='sgd-loader'></div></div>;
     let data = this.state.data;
     return (
-      <div>
+      <div style={[style.container]}>
         {this._renderControls()}
+        {this._renderCaptcha()}
         <form ref='form' onSubmit={this._submitData}>
-          {this._renderStatusSelector()}
-          <div className='row'>
-            <div className='column small-3'>
-              <StringField isReadOnly={this.props.isReadOnly} displayName='First Name' paramName='first_name' defaultValue={data.first_name} />
-            </div>
-            <div className='column small-2'>
-              <StringField isReadOnly={this.props.isReadOnly} displayName='Middle Name' paramName='middle_name' defaultValue={data.middle_name} />
-            </div>
-            <div className='column small-5'>
-              <StringField isReadOnly={this.props.isReadOnly} displayName='Last Name' paramName='last_name' defaultValue={data.last_name} />
-            </div>
-            <div className='column small-2'>
-              <StringField isReadOnly={this.props.isReadOnly} displayName='Suffix' paramName='suffix' defaultValue={data.suffix} />
-            </div>
-          </div>
           <div className='row'>
             <div className='column small-12'>
+              {this._renderStatusSelector()}
+              {this._renderName()}
               <StringField isReadOnly={this.props.isReadOnly} displayName='Email' paramName='email' defaultValue={data.email} />
               <StringField isReadOnly={this.props.isReadOnly} displayName='Position' paramName='position' defaultValue={data.position} />
               <StringField isReadOnly={this.props.isReadOnly} displayName='Profession' paramName='profession' defaultValue={data.profession} />
-              <StringField isReadOnly={this.props.isReadOnly} displayName='Organization' paramName='organization' defaultValue={data.organization} />
+              <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Institution' paramName='institution' defaultValue={data.institution} optionsUrl={INSTITUTION_URL} isMulti={false} allowCreate={true} />
               <StringField isReadOnly={this.props.isReadOnly} displayName='Work Phone' paramName='work_phone' defaultValue={data.work_phone} />
               <StringField isReadOnly={this.props.isReadOnly} displayName='Other Phone' paramName='other_phone' defaultValue={data.other_phone} />
               {this._renderAddress()}
@@ -90,6 +77,36 @@ const ColleaguesFormShow = React.createClass({
         {this._renderControls()}
       </div>
     );
+    // TEMP put keywords here
+    // <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Keywords' paramName='keywords' optionsUrl={KEYWORDS_AUTOCOMPLETE_URL} defaultValues={data.keywords} />
+  },
+
+  _renderName () {
+    let data = this.state.data;
+    if (this.props.isReadOnly) {
+      return [
+        <StringField isReadOnly={this.props.isReadOnly} displayName='First Name' paramName='first_name' defaultValue={data.first_name} key='name0'/>,
+        <StringField isReadOnly={this.props.isReadOnly} displayName='Middle Name' paramName='middle_name' defaultValue={data.middle_name} key='name1'/>,
+        <StringField isReadOnly={this.props.isReadOnly} displayName='Last Name' paramName='last_name' defaultValue={data.last_name} key='name2'/>,
+        <StringField isReadOnly={this.props.isReadOnly} displayName='Suffix' paramName='suffix' defaultValue={data.suffix} key='name3'/>
+      ];
+    }
+    return (
+      <div className='row'>
+        <div className='columns small-3'>
+          <StringField isReadOnly={this.props.isReadOnly} displayName='First Name' paramName='first_name' defaultValue={data.first_name} />
+        </div>
+        <div className='columns small-2'>
+          <StringField isReadOnly={this.props.isReadOnly} displayName='Middle Name' paramName='middle_name' defaultValue={data.middle_name} />
+        </div>
+        <div className='columns small-5'>
+          <StringField isReadOnly={this.props.isReadOnly} displayName='Last Name' paramName='last_name' defaultValue={data.last_name} />
+        </div>
+        <div className='columns small-2'>
+          <StringField isReadOnly={this.props.isReadOnly} displayName='Suffix' paramName='suffix' defaultValue={data.suffix} />
+        </div>
+      </div>
+    );
   },
 
   _renderStatusSelector () {
@@ -98,28 +115,21 @@ const ColleaguesFormShow = React.createClass({
       { id: 'triaged', name: 'Triaged' },
       { id: 'approved', name: 'Approved' }
     ];
-    return (
-      <div className='row'>
-        <div className='column small-3'>
-          <SelectField isReadOnly={this.props.isReadOnly} displayName='Status' paramName='status' defaultValue={this.state.data.status} options={_options} />
-        </div>
-      </div>
-    );
+    return <SelectField isReadOnly={this.props.isReadOnly} displayName='Status' paramName='status' defaultValue={this.state.data.status} options={_options} />;
   },
 
   _renderAddress () {
     let data = this.state.data;
-    let addOneNode = this.props.isReadOnly ? <p>{data.address_0}</p> :  <input type='text' name='address_0' defaultValue={data.address_0} />;
-    let addTwoNode = this.props.isReadOnly ? <p>{data.address_1}</p> :  <input placeholder='street' type='text' name='address_1' defaultValue={data.address_1} />;
-    let addThreeNode = this.props.isReadOnly ? <p>{data.address_2}</p> :  <input placeholder='suite #' type='text' name='address_2' defaultValue={data.address_2} />;
+    if (this.props.isReadOnly) {
+      return [
+        <StringField isReadOnly={this.props.isReadOnly} displayName='City' paramName='city' defaultValue={data.city} key='address0' />,
+        <StringField isReadOnly={this.props.isReadOnly} displayName='State / Region' paramName='state' defaultValue={data.state} key='address1' />,
+        <StringField isReadOnly={this.props.isReadOnly} displayName='Postal Code' paramName='postal_code' defaultValue={data.postal_code} key='address2' />,
+        <StringField isReadOnly={this.props.isReadOnly} displayName='Country' paramName='country' defaultValue={data.country} key='address3' />
+      ];
+    }
     return (
       <div className='row'>
-        <div className='column small-12'>
-          <label>Address</label>
-          {addOneNode}
-          {addTwoNode}
-          {addThreeNode}
-        </div>
         <div className='column small-3'>
           <StringField isReadOnly={this.props.isReadOnly} displayName='City' paramName='city' defaultValue={data.city} />
         </div>
@@ -139,12 +149,20 @@ const ColleaguesFormShow = React.createClass({
   _renderAssociates () {
     let supervisors = this.state.data.supervisors || [];
     let labMembers = this.state.data.lab_members || [];
-    return (
-      <div>
-        <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Supervisor(s)' paramName='supervisors_display_names' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL} defaultValues={this._getIdsFromArray(supervisors)} defaultOptions={supervisors}/>
-        <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Lab Members' paramName='lab_members_display_names' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL} defaultValues={this._getIdsFromArray(labMembers)} defaultOptions={labMembers}/>
-      </div>
-    );
+    return [
+      <MultiSelectField
+        isReadOnly={this.props.isReadOnly} displayName='Supervisor(s)'
+        paramName='supervisors_display_names' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL}
+        defaultValues={this._getIdsFromArray(supervisors)} defaultOptions={supervisors}
+        allowCreate={true} key='associate0'
+      />,
+      <MultiSelectField
+        isReadOnly={this.props.isReadOnly} displayName='Lab Members'
+        paramName='lab_members_display_names' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL}
+        defaultValues={this._getIdsFromArray(labMembers)} defaultOptions={labMembers}
+        allowCreate={true} key='associate1'
+      />
+    ];
   },
 
   _renderCuratorInput () {
@@ -158,7 +176,6 @@ const ColleaguesFormShow = React.createClass({
         <CheckField isReadOnly={this.props.isReadOnly} displayName='Receive Newsletter' paramName='newsletter' defaultValue={data.newsletter} />
       </div>
     );
-
   },
 
   _renderGenes () {
@@ -173,19 +190,22 @@ const ColleaguesFormShow = React.createClass({
 
   _renderOrcid () {
     let orcid = this.state.data.orcid || '';
-    let node = this.props.isReadOnly ? <p>{orcid}</p> :  <input type='text' name='orcid' defaultValue={orcid} />;
-    return (
-      <div>
-        <label>ORCID iD.  Get one at <a href='https://orcid.org/register'>https://orcid.org/register</a>.</label>
-        {node}
-      </div>
-    );
+    if (this.props.isReadOnly) {
+      return <StringField isReadOnly={this.props.isReadOnly} displayName='ORCID iD' paramName='orcid' defaultValue={orcid} />;
+    } else {
+      return (
+        <div>
+          <StringField isReadOnly={this.props.isReadOnly} displayName='ORCID iD' paramName='orcid' defaultValue={orcid} />
+          <p>Get an ORCID iD at <a href='https://orcid.org/register'>https://orcid.org/register</a>.</p>
+        </div>
+      );
+    }
   },
 
   _fetchData () {
     this.setState({ isLoadPending: true });
-    let displayName = this.props.colleagueDisplayName;
-    apiRequest(`${COLLEAGUE_GET_URL}/${displayName}`).then( json => {
+    let url = `${COLLEAGUE_GET_URL}/${this.props.colleagueDisplayName}`;
+    apiRequest(url).then( json => {
       this.setState({ data: json, isLoadPending: false });
     });
   },
@@ -196,9 +216,9 @@ const ColleaguesFormShow = React.createClass({
 
   _renderControls () {
     if (this.props.isReadOnly) return null;
-    let classSuffix = this.state.isUpdatePending ? ' disabled secondary' : '';
-    let label = this.state.isUpdatePending ? 'Saving...' : 'Save';
-    let saveIconNode = this.state.isUpdatePending ? null : <span><i className='fa fa-floppy-o' /> </span>;
+    let classSuffix = this.state.isUpdatePending ? ' disabled ' : '';
+    let label = this.state.isUpdatePending ? 'Saving...' : 'Send Update';
+    let saveIconNode = this.state.isUpdatePending ? null : <span><i className='fa fa-upload' /> </span>;
     let _onClick = e => {
       e.preventDefault();
       this._submitData();
@@ -206,10 +226,19 @@ const ColleaguesFormShow = React.createClass({
     return (
       <div>
         {this._renderError()}
-        <div className='button-group'>
-          <a onClick={_onClick} className={`button ${classSuffix}`}>{saveIconNode}{label}</a>
-          <a className={'button alert'}><i className='fa fa-times' /> Delete</a>
+        <div className='button-group' style={[style.controlContainer]}>
+          <a onClick={_onClick} className={`button small secondary ${classSuffix}`}style={[style.controlButton]}>{saveIconNode}{label}</a>
+          <a href='/search?category=colleague' className='button small secondary'style={[style.controlButton]}><i className='fa fa-search' /> Search Colleagues</a>
         </div>
+      </div>
+    );
+  },
+
+  _renderCaptcha() {
+    if (this.props.isReadOnly || this.props.isCurator) return null;
+    return (
+      <div style={[style.controlContainer]}>
+        <Captcha onComplete={() => {}}/>
       </div>
     );
   },
@@ -219,15 +248,13 @@ const ColleaguesFormShow = React.createClass({
     if (e) e.preventDefault();
     let _method = this.props.isUpdate ? 'PUT' : 'POST';
     let _data = new FormData(this.refs.form);
-    let url = this.props.isUpdate ? `${COLLEAGUE_POST_URL}/${this.props.colleagueDisplayName}` : COLLEAGUE_POST_URL;
+    let url = this.props.isUpdate ? `${COLLEAGUE_UPDATE_URL}/${this.props.colleagueDisplayName}` : COLLEAGUE_POST_URL;
     let options = {
-      crsfToken: this.props.crsfToken,
       data: _data,
       method: _method
     };
     // TEMP
     apiRequest(url, options).then( response => {
-      console.log(response);
       this.setState({ error: null });
     }).catch( e => {
       this.setState({ error: e.message });
@@ -244,11 +271,16 @@ const ColleaguesFormShow = React.createClass({
   }
 });
 
-function mapStateToProps(_state) {
-  let state = _state.auth;
-  return {
-    csrfToken: state.csrfToken
-  };
-}
+const style = {
+  container: {
+    marginBottom: '2rem'
+  },
+  controlContainer: {
+    marginBottom: '1rem'
+  },
+  controlButton: {
+    marginRight: '0.5rem'
+  }
+};
 
-export default connect(mapStateToProps)(ColleaguesFormShow);
+export default Radium(ColleaguesFormShow);
