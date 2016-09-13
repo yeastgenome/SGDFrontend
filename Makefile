@@ -38,4 +38,4 @@ lint:
 	eslint src/client/js/
 
 index-es:
-	python scripts/index_elastic_search.py
+	source dev_variables.sh && python scripts/index_elastic_search.py
