@@ -16,9 +16,10 @@ export function getCategoryDisplayName (key) {
     resource: 'Resource',
     contig: 'Contig',
     colleague: 'Colleague',
-    observable: 'Observable'
+    observable: 'Observable',
+    reserved_name: 'Reserved Gene Names'
   };
-  return labels[key] || key;
+  return labels[key] || key.replace('_', ' ');
 };
 
 // proxy the history createPath, but create a temp history object.  Ideally, this would be a class method import, but it's not.
