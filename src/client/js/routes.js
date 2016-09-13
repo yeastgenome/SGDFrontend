@@ -28,8 +28,8 @@ export default (
       <Route path='colleagues'>
         <IndexRoute component={ColleaguesIndex}/>
         <Route path='new' component={ColleaguesEdit} />
-        <Route path=':colleagueDisplayName/edit' component={ColleaguesEdit} />
-        <Route path=':colleagueDisplayName' component={ColleaguesShow} />
+        <Route path=':formatName/edit' component={ColleaguesEdit} />
+        <Route path=':formatName' component={ColleaguesShow} />
       </Route>
     </Route>
     <Route path='*' component={NotFound} />
