@@ -5,7 +5,7 @@ import apiRequest from '../../lib/api_request';
 import { StringField, CheckField, TextField, SelectField, MultiSelectField } from '../../components/widgets/form_helpers';
 
 const COLLEAGUE_GET_URL = '/colleagues';
-const COLLEAGUE_UPDATE_URL = '/colleague_triage';
+const COLLEAGUE_UPDATE_URL = '/colleagues';
 const COLLEAGUES_AUTOCOMPLETE_URL = '/autocomplete_results?category=colleague&q=';
 const GENES_URL = '/autocomplete_results?category=locus&q=';
 const KEYWORDS_AUTOCOMPLETE_URL = '/autocomplete_results?category=colleague&field=keywords&q=';
