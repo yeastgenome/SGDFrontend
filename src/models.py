@@ -560,7 +560,7 @@ class Colleague(Base):
             colleague_dict['email'] = self.email
         
         self._include_urls_to_dict(colleague_dict)
-        self._include_associates_to_dict(colleague_dict)
+#        self._include_associates_to_dict(colleague_dict)
         self._include_keywords_to_dict(colleague_dict)
         return colleague_dict
 
@@ -684,6 +684,11 @@ class Colleaguetriage(Base):
             'comments': self.curator_comments,
             'data': json.loads(self.colleague_data)
         }
+
+    def apply_to_colleague(self):
+        colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == self.colleague_id).one_or_none()
+        data = json.loads(self.colleague_data)
+        # TODO: apply ...
 
 class Contig(Base):
     __tablename__ = 'contig'
