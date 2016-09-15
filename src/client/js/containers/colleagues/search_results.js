@@ -3,11 +3,17 @@ import Radium from 'radium';
 import { Link } from 'react-router';
 
 const ColleagueSearchResults = React.createClass({
-  render: function() {
-    let rows = this.props.results.map(function(r, i) {
+  propTypes: {
+    isTriage: React.PropTypes.bool
+  },
+
+  render () {
+    let rows = this.props.results.map( (r, i) => {
+      let urlSeg = this.props.isTriage ? '/triage' : '';
+      let url = `/curate/colleagues${urlSeg}/${r.format_name}`;
       return (
         <div className='colleaguesSearchResult column row' key={`cSearchRes${i}`}>
-          <h3><Link to={`/curate/colleagues/${r.format_name}`}>{r.last_name}, {r.first_name}</Link></h3>		    
+          <h3><Link to={url}>{r.last_name}, {r.first_name}</Link></h3>		    
           {r.organization ? <span style={[style.listItem]}>{r.organization}</span> : null}
           {r.email ? <span style={[style.listItem]}><i className='fa fa-envelope'></i> {r.email}</span> : null}
           {r.work_phone ? <span style={[style.listItem]}><i className='fa fa-phone'></i> {r.work_phone}</span> : null}

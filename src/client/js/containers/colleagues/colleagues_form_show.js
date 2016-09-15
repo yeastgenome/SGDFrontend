@@ -1,8 +1,13 @@
 import React from 'react';
 import Radium from 'radium';
+import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
+import _ from 'underscore';
 
 import apiRequest from '../../lib/api_request';
 import { StringField, CheckField, TextField, SelectField, MultiSelectField } from '../../components/widgets/form_helpers';
+import Loader from '../../components/widgets/loader';
 
 const COLLEAGUE_GET_URL = '/colleagues';
 const COLLEAGUE_UPDATE_URL = '/colleagues';
@@ -10,13 +15,15 @@ const COLLEAGUES_AUTOCOMPLETE_URL = '/autocomplete_results?category=colleague&q=
 const GENES_URL = '/autocomplete_results?category=locus&q=';
 const KEYWORDS_AUTOCOMPLETE_URL = '/autocomplete_results?category=colleague&field=keywords&q=';
 const INSTITUTION_URL = '/autocomplete_results?category=colleague&field=institution&q=';
+const TRIAGED_COLLEAGUE_URL = '/triaged_colleagues';
 
 const ColleaguesFormShow = React.createClass({
   propTypes: {
     isReadOnly: React.PropTypes.bool,
     isCurator: React.PropTypes.bool,
     isUpdate: React.PropTypes.bool,
-    colleagueDisplayName: React.PropTypes.string
+    colleagueDisplayName: React.PropTypes.string,
+    isTriage: React.PropTypes.bool
   },
 
   getInitialState () {
@@ -35,6 +42,7 @@ const ColleaguesFormShow = React.createClass({
     return (
       <div>
         <h1>{label}</h1>
+        {this._renderTriageNode()}
         {this._renderForm()}
       </div>
     );
@@ -44,17 +52,28 @@ const ColleaguesFormShow = React.createClass({
     if (this.props.isUpdate || this.props.isReadOnly) this._fetchData();
   },
 
+  _renderTriageNode () {
+    let onApprove = this._submitData;
+    if (!this.props.isTriage || !this.props.isCurator) return null;
+    return (
+      <div className='button-group' style={[style.controlContainer]}>
+        <a onClick={onApprove} className='button small' style={[style.controlButton]}><i className='fa fa-check'/> Approve Update</a>
+        <Link to='/curate/colleagues' className='button small secondary' style={[style.controlButton]}><i className='fa fa-times'/> Cancel Update</Link>
+      </div>
+    );
+  },
+
   _renderForm () {
-    if (this.state.isLoadPending) return <div className='sgd-loader-container'><div className='sgd-loader'></div></div>;
+    if (this.state.isLoadPending) return <Loader />;
     let data = this.state.data;
     return (
       <div style={[style.container]}>
+        {this._renderError()}
         {this._renderControls()}
         {this._renderCaptcha()}
         <form ref='form' onSubmit={this._submitData}>
           <div className='row'>
             <div className='column small-12'>
-              {this._renderStatusSelector()}
               {this._renderName()}
               <StringField isReadOnly={this.props.isReadOnly} displayName='Email' paramName='email' defaultValue={data.email} />
               <StringField isReadOnly={this.props.isReadOnly} displayName='Position' paramName='position' defaultValue={data.position} />
@@ -77,8 +96,6 @@ const ColleaguesFormShow = React.createClass({
         {this._renderControls()}
       </div>
     );
-    // TEMP put keywords here
-    // <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Keywords' paramName='keywords' optionsUrl={KEYWORDS_AUTOCOMPLETE_URL} defaultValues={data.keywords} />
   },
 
   _renderName () {
@@ -107,15 +124,6 @@ const ColleaguesFormShow = React.createClass({
         </div>
       </div>
     );
-  },
-
-  _renderStatusSelector () {
-    if (!this.props.isCurator) return null;
-    const _options = [
-      { id: 'triaged', name: 'Triaged' },
-      { id: 'approved', name: 'Approved' }
-    ];
-    return <SelectField isReadOnly={this.props.isReadOnly} displayName='Status' paramName='status' defaultValue={this.state.data.status} options={_options} />;
   },
 
   _renderAddress () {
@@ -204,10 +212,19 @@ const ColleaguesFormShow = React.createClass({
 
   _fetchData () {
     this.setState({ isLoadPending: true });
-    let url = `${COLLEAGUE_GET_URL}/${this.props.colleagueDisplayName}`;
-    apiRequest(url).then( json => {
-      this.setState({ data: json, isLoadPending: false });
-    });
+    if (this.props.isTriage) {
+      let url = TRIAGED_COLLEAGUE_URL;
+      let name = this.props.colleagueDisplayName;
+      apiRequest(url).then( json => {
+        let _data = _.findWhere(json, { format_name: name });
+        this.setState({ data: _data, isLoadPending: false });
+      });
+    } else {
+      let url = `${COLLEAGUE_GET_URL}/${this.props.colleagueDisplayName}`;
+      apiRequest(url).then( json => {
+        this.setState({ data: json, isLoadPending: false });
+      });
+    }
   },
 
   _getIdsFromArray (original) {
@@ -225,7 +242,6 @@ const ColleaguesFormShow = React.createClass({
     };
     return (
       <div>
-        {this._renderError()}
         <div className='button-group' style={[style.controlContainer]}>
           <a onClick={_onClick} className={`button small secondary ${classSuffix}`}style={[style.controlButton]}>{saveIconNode}{label}</a>
           <a href='/search?category=colleague' className='button small secondary'style={[style.controlButton]}><i className='fa fa-search' /> Search Colleagues</a>
@@ -248,14 +264,20 @@ const ColleaguesFormShow = React.createClass({
     if (e) e.preventDefault();
     let _method = this.props.isUpdate ? 'PUT' : 'POST';
     let _data = new FormData(this.refs.form);
-    let url = this.props.isUpdate ? `${COLLEAGUE_UPDATE_URL}/${this.props.colleagueDisplayName}` : COLLEAGUE_POST_URL;
+    let url = this.props.isUpdate ? `${COLLEAGUE_UPDATE_URL}/${this.props.colleagueDisplayName}` : COLLEAGUE_UPDATE_URL;
     let options = {
       data: _data,
       method: _method
     };
-    // TEMP
     apiRequest(url, options).then( response => {
+      // is complete
       this.setState({ error: null });
+      // let curator redirect to index
+      if (this.props.isCurator) {
+        this.props.dispatch(push('/curate/colleagues'));
+      } else {
+        this.setState({ isComplete: true });
+      }
     }).catch( e => {
       this.setState({ error: e.message });
     });
@@ -283,4 +305,9 @@ const style = {
   }
 };
 
-export default Radium(ColleaguesFormShow);
+function mapStateToProps(_state) {
+  return {
+  };
+}
+
+export default connect(mapStateToProps)(Radium(ColleaguesFormShow));

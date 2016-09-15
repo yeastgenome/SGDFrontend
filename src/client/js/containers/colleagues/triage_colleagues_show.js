@@ -13,7 +13,8 @@ const ColleaguesShow = React.createClass({
         </p>
         <ColleaguesFormShow
           isReadOnly={true} isCurator={true} 
-          colleagueDisplayName={this.props.routeParams.formatName}
+          colleagueDisplayName={this.props.routeParams.formatName} isTriage={true}
+          isUpdate={true}
         />
       </div>
     );
