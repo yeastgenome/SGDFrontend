@@ -7,7 +7,7 @@ from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword, ReferenceDocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword, ReferenceDocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation
 from .celery_tasks import upload_to_s3
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
@@ -98,35 +98,6 @@ def upload_file(request):
 
     log.info('File ' + request.POST.get('display_name') + ' was successfully uploaded.')
     return Response({'success': True})
-
-# TEMP 
-@view_config(route_name='triaged_colleagues', renderer='json', request_method='GET')
-def triaged_colleagues(request):
-     return [
-        { "first_name": "J. Michael", "last_name": "Cherry", "work_phone": "(650) 723-7541", "fax": "(650) 725-1534", "format_name": "J._Michael_Cherry_960", "organization": "Stanford University", "email": "cherry@stanford.edu" },
-        { "first_name": "Joel R.", "last_name": "Cherry", "work_phone": None, "fax": None, "format_name": "Joel_R._Cherry_961", "organization": None, "email": None }
-     ]
-
-@view_config(route_name='colleagues', renderer='json', request_method='GET')
-def colleagues_by_last_name(request):
-    if request.params.get('last_name') is None:
-        return HTTPBadRequest(body=json.dumps({'error':'Query string field is missing: last_name'}))
-
-    last_name = request.params['last_name']
-    colleagues = DBSession.query(Colleague).filter(Colleague.last_name.like(last_name.capitalize() + '%')).all()
-
-    return [c.to_search_results_dict() for c in colleagues]
-
-@view_config(route_name='colleague', renderer='json', request_method='GET')
-def colleague_by_format_name(request):
-    format_name = request.matchdict['format_name']
-
-    colleague = DBSession.query(Colleague).filter(Colleague.format_name == format_name).one_or_none()
-    
-    if colleague:
-        return colleague.to_info_dict()
-    else:
-        return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
     
 @view_config(route_name='autocomplete_results', renderer='json', request_method='GET')
 def search_autocomplete(request):
@@ -336,3 +307,4 @@ def sign_in(request):
 def sign_out(request):
     request.session.invalidate()
     return HTTPOk()
+    

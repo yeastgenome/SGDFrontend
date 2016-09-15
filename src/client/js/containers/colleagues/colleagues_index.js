@@ -8,7 +8,7 @@ import Loader from '../../components/widgets/loader';
 import apiRequest from '../../lib/api_request';
 
 const COLLEAGUE_SEARCH_URL = '/colleagues';
-const TRIAGED_COLLEAGUE_URL = '/triaged_colleagues';
+const TRIAGED_COLLEAGUE_URL = '/colleagues/triage';
 
 const ColleaguesIndex = React.createClass({
   getInitialState() {
