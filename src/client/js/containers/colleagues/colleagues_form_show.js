@@ -9,13 +9,16 @@ import apiRequest from '../../lib/api_request';
 import { StringField, CheckField, TextField, SelectField, MultiSelectField } from '../../components/widgets/form_helpers';
 import Loader from '../../components/widgets/loader';
 
-const COLLEAGUE_GET_URL = '/colleagues';
-const COLLEAGUE_UPDATE_URL = '/colleagues';
 const COLLEAGUES_AUTOCOMPLETE_URL = '/autocomplete_results?category=colleague&q=';
 const GENES_URL = '/autocomplete_results?category=locus&q=';
 const KEYWORDS_AUTOCOMPLETE_URL = '/autocomplete_results?category=colleague&field=keywords&q=';
 const INSTITUTION_URL = '/autocomplete_results?category=colleague&field=institution&q=';
+
 const TRIAGED_COLLEAGUE_URL = '/triaged_colleagues';
+// const TRIAGED_COLLEAGUE_URL = '/colleagues/triage';
+const COLLEAGUE_GET_URL = '/colleagues';
+const USER_COLLEAGUE_UPDATE_URL = '/backend/colleagues';
+const CURATOR_COLLEAGUE_UPDATE_URL = TRIAGED_COLLEAGUE_URL;
 
 const ColleaguesFormShow = React.createClass({
   propTypes: {
@@ -262,9 +265,14 @@ const ColleaguesFormShow = React.createClass({
   // saves form data to server, if new makes POST
   _submitData (e) {
     if (e) e.preventDefault();
-    let _method = this.props.isUpdate ? 'PUT' : 'POST';
     let _data = new FormData(this.refs.form);
-    let url = this.props.isUpdate ? `${COLLEAGUE_UPDATE_URL}/${this.props.colleagueDisplayName}` : COLLEAGUE_UPDATE_URL;
+    let _method = this.props.isUpdate ? 'PUT' : 'POST';
+    let url;
+    if (this.props.isCurator) {
+      url = `${CURATOR_COLLEAGUE_UPDATE_URL}/${this.props.colleagueDisplayName}`;
+    } else {
+      url = this.props.isUpdate ? `${USER_COLLEAGUE_UPDATE_URL}/${this.props.colleagueDisplayName}` : USER_COLLEAGUE_UPDATE_URL;
+    }
     let options = {
       data: _data,
       method: _method
