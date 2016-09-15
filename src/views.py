@@ -98,44 +98,6 @@ def upload_file(request):
 
     log.info('File ' + request.POST.get('display_name') + ' was successfully uploaded.')
     return Response({'success': True})
-
-@view_config(route_name='colleague_triage', renderer='json', request_method='POST')
-def colleague_triage(request):
-    format_name = request.matchdict['format_name']
-    if format_name is None:
-        return HTTPBadRequest(body=json.dumps({'error': 'No format name provided'}))
-    
-    colleague = DBSession.query(Colleague).filter(Colleague.format_name == format_name).one_or_none()
-    
-    if colleague:
-        colleague_data = {}
-        for p in request.params:
-            colleague_data[p] = request.params[p]
-
-        
-        ct = Colleaguetriage(triage_type='Update', colleague_data=json.dumps(colleague_data), colleague_id=int(colleague.colleague_id), created_by="OTTO")
-        DBSession.add(ct)
-        transaction.commit()
-    else:
-        return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
-
-    return {'sucess': True}
-
-@view_config(route_name='colleague_triage_all', renderer='json', request_method='GET')
-def colleague_triage_all(request):
-    colleague_triage = DBSession.query(Colleaguetriage).all()
-    return [triage.to_json() for triage in colleague_triage]
-
-@view_config(route_name='colleague', renderer='json', request_method='GET')
-def colleague_by_format_name(request):
-    format_name = request.matchdict['format_name']
-
-    colleague = DBSession.query(Colleague).filter(Colleague.format_name == format_name).one_or_none()
-    
-    if colleague:
-        return colleague.to_info_dict()
-    else:
-        return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
     
 @view_config(route_name='autocomplete_results', renderer='json', request_method='GET')
 def search_autocomplete(request):
