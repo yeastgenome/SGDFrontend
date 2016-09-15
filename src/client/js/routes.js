@@ -8,6 +8,8 @@ import PublicIndex from './containers/public_index';
 import ColleaguesIndex from './containers/colleagues/colleagues_index';
 import ColleaguesEdit from './containers/colleagues/colleagues_edit';
 import ColleaguesShow from './containers/colleagues/colleagues_show';
+import TriageColleaguesEdit from './containers/colleagues/triage_colleagues_edit';
+import TriageColleaguesShow from './containers/colleagues/triage_colleagues_show';
 import Dashboard from './containers/dashboard';
 import DashboardIndex from './containers/dashboard_index';
 import ExampleContainer from './containers/example_container';
@@ -30,6 +32,8 @@ export default (
         <Route path='new' component={ColleaguesEdit} />
         <Route path=':formatName/edit' component={ColleaguesEdit} />
         <Route path=':formatName' component={ColleaguesShow} />
+        <Route path='triage/:formatName/edit' component={TriageColleaguesEdit} />
+        <Route path='triage/:formatName' component={TriageColleaguesShow} />
       </Route>
     </Route>
     <Route path='*' component={NotFound} />

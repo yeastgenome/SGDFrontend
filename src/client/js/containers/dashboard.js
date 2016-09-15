@@ -11,9 +11,6 @@ const Dashboard = React.createClass({
               <Link to='/curate' className='btn btn-default'><i className='fa fa-home' /> Home</Link>
             </li>
             <li>
-              <Link to='/curate/files/new' className='btn btn-default'><i className='fa fa-upload' /> Upload</Link>
-            </li>
-            <li>
               <Link to='/curate/colleagues' className='btn btn-default'><i className='fa fa-users' /> Colleagues</Link>
             </li>
           </ul>

@@ -56,7 +56,7 @@ const ColleaguesIndex = React.createClass({
   _renderTriageMode () {
     return (
       <div className=''>
-        {this._renderSearchResultsNodes()}
+        {this._renderSearchResultsNodes(true)}
       </div>
     );
   },
@@ -86,9 +86,9 @@ const ColleaguesIndex = React.createClass({
     );
   },
 
-  _renderSearchResultsNodes () {
+  _renderSearchResultsNodes (isTriage) {
     if (this.state.isPending) return <Loader />;
-    if (this.state.searchResults) return <ColleaguesSearchResults results={this.state.searchResults} />;
+    if (this.state.searchResults) return <ColleaguesSearchResults isTriage={isTriage} results={this.state.searchResults} />;
     return null;
   },
 
