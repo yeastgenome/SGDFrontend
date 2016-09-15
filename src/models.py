@@ -509,20 +509,32 @@ class Colleague(Base):
             elif url.url_type == "Research summary":
                 colleague_dict['research_page'] = url.obj_url
 
+    def _include_associated_genes(self, colleague_dict):
+        locus_ids = DBSession.query(ColleagueLocus.locus_id).filter(ColleagueLocus.colleague_id == self.colleague_id).all()
+        if len(locus_ids) > 0:
+            locus_ids = [l[0] for l in locus_ids]
+            locus = DBSession.query(Locusdbentity.gene_name, Locusdbentity.systematic_name).filter(Locusdbentity.dbentity_id.in_(locus_ids)).all()
+            colleague_dict['associated_genes'] = [l[0] + " / " + l[1] for l in locus]
+
     def _include_associates_to_dict(self, colleague_dict):
-        supervisors = {}
-        
         for associate_id, association_type in DBSession.query(ColleagueAssociation.associate_id, ColleagueAssociation.association_type).filter(ColleagueAssociation.colleague_id == self.colleague_id).all():
             colleague = DBSession.query(Colleague.first_name, Colleague.last_name, Colleague.format_name).filter(Colleague.colleague_id == associate_id).one_or_none()
             if colleague is not None:
+                colleague_info = {
+                    'name': colleague.last_name + ", " + colleague.first_name,
+                    'format_name': colleague.format_name
+                }
                 
-                if obj.get(association_type) is None:
-                    obj[association_type] = [colleague]
+                if association_type == "Head of Lab":
+                    if colleague_dict.get("supervisors"):
+                        colleague_dict["supervisors"].append(colleague_info)
+                    else:
+                        colleague_dict["supervisors"] = [colleague_info]
                 else:
-                    obj[association_type].append(colleague)
-
-        if obj != {}:
-            colleague_dict['associations'] = obj
+                    if colleague_dict.get("lab_members"):
+                        colleague_dict["lab_members"].append(colleague_info)
+                    else:
+                        colleague_dict["lab_members"] = [colleague_info]
 
     def _include_keywords_to_dict(self, colleague_dict):
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
@@ -560,10 +572,10 @@ class Colleague(Base):
             colleague_dict['email'] = self.email
         
         self._include_urls_to_dict(colleague_dict)
-#        self._include_associates_to_dict(colleague_dict)
+        self._include_associates_to_dict(colleague_dict)
         self._include_keywords_to_dict(colleague_dict)
+        self._include_associated_genes(colleague_dict)
         return colleague_dict
-
 
 class ColleagueAssociation(Base):
     __tablename__ = 'colleague_association'
