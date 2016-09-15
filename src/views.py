@@ -7,7 +7,7 @@ from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword, ReferenceDocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword, ReferenceDocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation
 from .celery_tasks import upload_to_s3
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
@@ -99,15 +99,32 @@ def upload_file(request):
     log.info('File ' + request.POST.get('display_name') + ' was successfully uploaded.')
     return Response({'success': True})
 
-@view_config(route_name='colleagues', renderer='json', request_method='GET')
-def colleagues_by_last_name(request):
-    if request.params.get('last_name') is None:
-        return HTTPBadRequest(body=json.dumps({'error':'Query string field is missing: last_name'}))
+@view_config(route_name='colleague_triage', renderer='json', request_method='POST')
+def colleague_triage(request):
+    format_name = request.matchdict['format_name']
+    if format_name is None:
+        return HTTPBadRequest(body=json.dumps({'error': 'No format name provided'}))
+    
+    colleague = DBSession.query(Colleague).filter(Colleague.format_name == format_name).one_or_none()
+    
+    if colleague:
+        colleague_data = {}
+        for p in request.params:
+            colleague_data[p] = request.params[p]
 
-    last_name = request.params['last_name']
-    colleagues = DBSession.query(Colleague).filter(Colleague.last_name.like(last_name.capitalize() + '%')).all()
+        
+        ct = Colleaguetriage(triage_type='Update', colleague_data=json.dumps(colleague_data), colleague_id=int(colleague.colleague_id), created_by="OTTO")
+        DBSession.add(ct)
+        transaction.commit()
+    else:
+        return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
 
-    return [c.to_search_results_dict() for c in colleagues]
+    return {'sucess': True}
+
+@view_config(route_name='colleague_triage_all', renderer='json', request_method='GET')
+def colleague_triage_all(request):
+    colleague_triage = DBSession.query(Colleaguetriage).all()
+    return [triage.to_json() for triage in colleague_triage]
 
 @view_config(route_name='colleague', renderer='json', request_method='GET')
 def colleague_by_format_name(request):
@@ -318,3 +335,4 @@ def sign_in(request):
 def sign_out(request):
     request.session.invalidate()
     return HTTPOk()
+    
