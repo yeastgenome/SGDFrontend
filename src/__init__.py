@@ -19,7 +19,9 @@ def main(global_config, **settings):
     config.add_route('autocomplete_results', '/autocomplete_results')
     
     config.add_route('colleague', '/colleagues/{format_name}')
-    config.add_route('colleagues', '/colleagues')
+    config.add_route('colleague_triage', '/colleague_triage/{format_name}')
+    config.add_route('colleague_triage_all', '/colleague_triage')
+
     config.add_route('research_interests', '/research_interests')
     config.add_route('keywords', '/keywords')
     config.add_route('formats', '/formats')
