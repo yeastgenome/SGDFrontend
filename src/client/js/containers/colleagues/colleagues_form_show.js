@@ -13,8 +13,7 @@ const COLLEAGUES_AUTOCOMPLETE_URL = '/autocomplete_results?category=colleague&q=
 const GENES_URL = '/autocomplete_results?category=locus&q=';
 const KEYWORDS_AUTOCOMPLETE_URL = '/autocomplete_results?category=colleague&field=keywords&q=';
 const INSTITUTION_URL = '/autocomplete_results?category=colleague&field=institution&q=';
-const TRIAGED_COLLEAGUE_URL = '/triaged_colleagues';
-// const TRIAGED_COLLEAGUE_URL = '/colleagues/triage';
+const TRIAGED_COLLEAGUE_URL = '/colleagues/triage';
 const COLLEAGUE_GET_URL = '/colleagues';
 const USER_COLLEAGUE_UPDATE_URL = '/backend/colleagues';
 const CURATOR_COLLEAGUE_UPDATE_URL = TRIAGED_COLLEAGUE_URL;
