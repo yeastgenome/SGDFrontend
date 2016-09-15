@@ -4,6 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
 from elasticsearch import Elasticsearch
 import os
+import json
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
@@ -503,20 +504,18 @@ class Colleague(Base):
 
     def _include_urls_to_dict(self, colleague_dict):
         for url in self.urls:
-            if colleague_dict.get('webpages') is None:
-                colleague_dict['webpages'] = {}
-
             if url.url_type == "Lab":
-                colleague_dict['webpages']['lab_url'] = url.obj_url
+                colleague_dict['lab_page'] = url.obj_url
             elif url.url_type == "Research summary":
-                colleague_dict['webpages']['research_summary_url'] = url.obj_url
+                colleague_dict['research_page'] = url.obj_url
 
     def _include_associates_to_dict(self, colleague_dict):
-        obj = {}
+        supervisors = {}
         
         for associate_id, association_type in DBSession.query(ColleagueAssociation.associate_id, ColleagueAssociation.association_type).filter(ColleagueAssociation.colleague_id == self.colleague_id).all():
             colleague = DBSession.query(Colleague.first_name, Colleague.last_name, Colleague.format_name).filter(Colleague.colleague_id == associate_id).one_or_none()
             if colleague is not None:
+                
                 if obj.get(association_type) is None:
                     obj[association_type] = [colleague]
                 else:
@@ -532,22 +531,6 @@ class Colleague(Base):
             keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(ids_query)).all()
             colleague_dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
 
-    def to_search_results_dict(self):
-        colleague_dict = {
-            'format_name': self.format_name,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'organization': self.institution,
-            'work_phone': self.work_phone,
-            'fax': self.fax
-        }
-
-        if self.display_email:
-            colleague_dict['email'] = self.email
-
-        self._include_urls_to_dict(colleague_dict)
-        return colleague_dict
-
     def to_info_dict(self):
         colleague_dict = {
             'orcid': self.orcid,
@@ -555,7 +538,7 @@ class Colleague(Base):
             'last_name': self.last_name,
             'position': self.job_title,
             'profession': self.profession,
-            'organization': self.institution,
+            'institution': self.institution,
             'city': self.city,
             'state': self.state,
             'country': self.country,
@@ -577,7 +560,7 @@ class Colleague(Base):
             colleague_dict['email'] = self.email
         
         self._include_urls_to_dict(colleague_dict)
-        self._include_associates_to_dict(colleague_dict)
+#        self._include_associates_to_dict(colleague_dict)
         self._include_keywords_to_dict(colleague_dict)
         return colleague_dict
 
@@ -691,7 +674,21 @@ class Colleaguetriage(Base):
     colleague_data = Column(Text)
     date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
     created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    curator_comments = Column(String(500))
 
+    def to_json(self):
+        return {
+            'triage_id': int(self.curation_id),
+            'created_at': str(self.date_created),
+            'colleague': (DBSession.query(Colleague.format_name).filter(Colleague.colleague_id == self.colleague_id).one_or_none())[0],
+            'comments': self.curator_comments,
+            'data': json.loads(self.colleague_data)
+        }
+
+    def apply_to_colleague(self):
+        colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == self.colleague_id).one_or_none()
+        data = json.loads(self.colleague_data)
+        # TODO: apply ...
 
 class Contig(Base):
     __tablename__ = 'contig'
