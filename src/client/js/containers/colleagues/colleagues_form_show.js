@@ -6,14 +6,13 @@ import { push } from 'react-router-redux';
 import _ from 'underscore';
 
 import apiRequest from '../../lib/api_request';
-import { StringField, CheckField, TextField, SelectField, MultiSelectField } from '../../components/widgets/form_helpers';
 import Loader from '../../components/widgets/loader';
+import { StringField, CheckField, TextField, SelectField, MultiSelectField } from '../../components/widgets/form_helpers';
 
 const COLLEAGUES_AUTOCOMPLETE_URL = '/autocomplete_results?category=colleague&q=';
 const GENES_URL = '/autocomplete_results?category=locus&q=';
 const KEYWORDS_AUTOCOMPLETE_URL = '/autocomplete_results?category=colleague&field=keywords&q=';
 const INSTITUTION_URL = '/autocomplete_results?category=colleague&field=institution&q=';
-
 const TRIAGED_COLLEAGUE_URL = '/triaged_colleagues';
 // const TRIAGED_COLLEAGUE_URL = '/colleagues/triage';
 const COLLEAGUE_GET_URL = '/colleagues';
@@ -223,7 +222,8 @@ const ColleaguesFormShow = React.createClass({
         this.setState({ data: _data, isLoadPending: false });
       });
     } else {
-      let url = `${COLLEAGUE_GET_URL}/${this.props.colleagueDisplayName}`;
+      let backendSegment = this.props.isCurator ? '' : '/backend';
+      let url = `${backendSegment}${COLLEAGUE_GET_URL}/${this.props.colleagueDisplayName}`;
       apiRequest(url).then( json => {
         this.setState({ data: json, isLoadPending: false });
       });
