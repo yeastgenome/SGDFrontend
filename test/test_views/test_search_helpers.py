@@ -432,6 +432,7 @@ class SearchHelpersTest(unittest.TestCase):
     def test_build_autocomplete_search_query(self):
         query = "act"
         es_query = build_autocomplete_search_query(query, '')
+
         self.assertEqual(es_query, {
             "query": {
                 "bool": {
@@ -475,6 +476,30 @@ class SearchHelpersTest(unittest.TestCase):
                     "must_not": [{ "match": { "category": "reference" }}, {"match": { "category": "download" }}]
                 }
             }, '_source': ['name', 'href', 'category']
+        })
+
+        es_query = build_autocomplete_search_query(query, 'colleague', 'keywords')
+        self.maxDiff = None
+        self.assertEqual(es_query, {
+            "query": {
+                "bool": {
+                    "must": [{
+                        "match": {
+                            "keywords.autocomplete": {
+                                "query": query,
+                                "analyzer": "standard"
+                            }
+                        }
+                    }, {
+                        "match": {"category": "colleague"}
+                    }],
+                    "must_not": [{ "match": { "category": "reference" }}, {"match": { "category": "download" }}]
+                }
+            }, 'aggs': {
+                'keywords': {
+                    'terms': {'field': 'keywords.raw', 'size': 999}
+                }
+            }, '_source': ['keywords']
         })
 
     def test_format_autocomplete_results(self):
