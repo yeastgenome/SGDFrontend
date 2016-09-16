@@ -217,7 +217,7 @@ const ColleaguesFormShow = React.createClass({
       let url = TRIAGED_COLLEAGUE_URL;
       let name = this.props.colleagueDisplayName;
       apiRequest(url).then( json => {
-        let _data = _.findWhere(json, { format_name: name });
+        let _data = _.findWhere(json, { triage_id: parseInt(name) }).data;
         this.setState({ data: _data, isLoadPending: false });
       });
     } else {
