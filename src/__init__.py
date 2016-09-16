@@ -27,9 +27,6 @@ def main(global_config, **settings):
     config.add_route('colleague_update', '/colleagues/{format_name}', request_method='PUT')
     config.add_route('colleague_get', '/colleagues/{format_name}', request_method='GET')
     
-    config.add_route('research_interests', '/research_interests')
-    config.add_route('genes', '/genes')
-    config.add_route('colleagues_auto', '/colleagues_auto')
     config.add_route('keywords', '/keywords')
     config.add_route('formats', '/formats')
     config.add_route('topics', '/topics')
