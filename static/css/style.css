@@ -1,5 +1,6 @@
 body {
   font-family: Lato, Helvetica, sans-serif;
+  min-height: 105%;
 }
 h1, h2, h3, h3, h4, h5 {
   font-family: 'Droid Serif', serif;
@@ -8,6 +9,12 @@ h1, h2, h3, h3, h4, h5 {
   border: none;
   margin-top: 0;
   padding: 0;
+}
+.wrapper {
+  margin-top: 1rem;
+}
+.button-group .button {
+  margin-right: 0.5rem;
 }
 
 /* react-select adjustments */
@@ -20,6 +27,75 @@ h1, h2, h3, h3, h4, h5 {
   color: white;
   margin: 6px 0.25rem;
   padding: 0 0.25rem;
+}
+
+/* CSS loader from http://projects.lukehaas.me/css-loaders/ */
+.loader,
+.loader:before,
+.loader:after {
+  border-radius: 50%;
+}
+.loader:before,
+.loader:after {
+  position: absolute;
+  content: '';
+}
+.loader:before {
+  width: 5.2em;
+  height: 10.2em;
+  background: #FFFFFF;
+  border-radius: 10.2em 0 0 10.2em;
+  top: -0.1em;
+  left: -0.1em;
+  -webkit-transform-origin: 5.2em 5.1em;
+  transform-origin: 5.2em 5.1em;
+  -webkit-animation: load2 2s infinite ease 1.5s;
+  animation: load2 2s infinite ease 1.5s;
+}
+.loader {
+  color: #696599;
+  font-size: 11px;
+  text-indent: -99999em;
+  margin: 55px auto;
+  position: relative;
+  width: 10em;
+  height: 10em;
+  box-shadow: inset 0 0 0 1em;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+}
+.loader:after {
+  width: 5.2em;
+  height: 10.2em;
+  background: #FFFFFF;
+  border-radius: 0 10.2em 10.2em 0;
+  top: -0.1em;
+  left: 5.1em;
+  -webkit-transform-origin: 0px 5.1em;
+  transform-origin: 0px 5.1em;
+  -webkit-animation: load2 2s infinite ease;
+  animation: load2 2s infinite ease;
+}
+@-webkit-keyframes load2 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load2 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }
 
 /**
@@ -87,9 +163,9 @@ h1, h2, h3, h3, h4, h5 {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(0, 126, 255, 0.1);
 }
 .Select-placeholder,
-:not(.Select--multi) > .Select-control .Select-value {
+.Select--single > .Select-control .Select-value {
   bottom: 0;
-  color: black;
+  color: #aaa;
   left: 0;
   line-height: 34px;
   padding-left: 10px;
@@ -102,22 +178,25 @@ h1, h2, h3, h3, h4, h5 {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.has-value:not(.Select--multi) > .Select-control > .Select-value .Select-value-label,
-.has-value.is-pseudo-focused:not(.Select--multi) > .Select-control > .Select-value .Select-value-label {
+.has-value.Select--single > .Select-control > .Select-value .Select-value-label,
+.has-value.is-pseudo-focused.Select--single > .Select-control > .Select-value .Select-value-label {
   color: #333;
 }
-.has-value:not(.Select--multi) > .Select-control > .Select-value a.Select-value-label,
-.has-value.is-pseudo-focused:not(.Select--multi) > .Select-control > .Select-value a.Select-value-label {
+.has-value.Select--single > .Select-control > .Select-value a.Select-value-label,
+.has-value.is-pseudo-focused.Select--single > .Select-control > .Select-value a.Select-value-label {
   cursor: pointer;
   text-decoration: none;
 }
-.has-value:not(.Select--multi) > .Select-control > .Select-value a.Select-value-label:hover,
-.has-value.is-pseudo-focused:not(.Select--multi) > .Select-control > .Select-value a.Select-value-label:hover,
-.has-value:not(.Select--multi) > .Select-control > .Select-value a.Select-value-label:focus,
-.has-value.is-pseudo-focused:not(.Select--multi) > .Select-control > .Select-value a.Select-value-label:focus {
+.has-value.Select--single > .Select-control > .Select-value a.Select-value-label:hover,
+.has-value.is-pseudo-focused.Select--single > .Select-control > .Select-value a.Select-value-label:hover,
+.has-value.Select--single > .Select-control > .Select-value a.Select-value-label:focus,
+.has-value.is-pseudo-focused.Select--single > .Select-control > .Select-value a.Select-value-label:focus {
   color: #007eff;
   outline: none;
   text-decoration: underline;
+}
+.has-value > .Select-control .Select-placeholder {
+  color: black;
 }
 .Select-input {
   height: 34px;
@@ -134,10 +213,12 @@ h1, h2, h3, h3, h4, h5 {
   display: inline-block;
   font-family: inherit;
   font-size: inherit;
-  height: 34px;
   margin: 0;
   outline: none;
-  padding: 0;
+  line-height: 14px;
+  /* For IE 8 compatibility */
+  padding: 8px 0 12px;
+  /* For IE 8 compatibility */
   -webkit-appearance: none;
 }
 .is-focused .Select-input > input {
@@ -263,7 +344,15 @@ h1, h2, h3, h3, h4, h5 {
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 4px;
 }
+.Select-option.is-selected {
+  background-color: #f5faff;
+  /* Fallback color for IE 8 */
+  background-color: rgba(0, 126, 255, 0.04);
+  color: #333;
+}
 .Select-option.is-focused {
+  background-color: #ebf5ff;
+  /* Fallback color for IE 8 */
   background-color: rgba(0, 126, 255, 0.08);
   color: #333;
 }
@@ -287,7 +376,10 @@ h1, h2, h3, h3, h4, h5 {
   margin-left: 5px;
 }
 .Select--multi .Select-value {
+  background-color: #ebf5ff;
+  /* Fallback color for IE 8 */
   background-color: rgba(0, 126, 255, 0.08);
+  border-radius: 2px;
   border: 1px solid rgba(0, 126, 255, 0.24);
   color: #007eff;
   display: inline-block;
@@ -320,15 +412,21 @@ h1, h2, h3, h3, h4, h5 {
   cursor: pointer;
   border-bottom-left-radius: 2px;
   border-top-left-radius: 2px;
+  border-right: 1px solid #c2e0ff;
+  /* Fallback color for IE 8 */
   border-right: 1px solid rgba(0, 126, 255, 0.24);
   padding: 1px 5px 3px;
 }
 .Select--multi .Select-value-icon:hover,
 .Select--multi .Select-value-icon:focus {
+  background-color: #d8eafd;
+  /* Fallback color for IE 8 */
   background-color: rgba(0, 113, 230, 0.08);
   color: #0071e6;
 }
 .Select--multi .Select-value-icon:active {
+  background-color: #c2e0ff;
+  /* Fallback color for IE 8 */
   background-color: rgba(0, 126, 255, 0.24);
 }
 .Select--multi.is-disabled .Select-value {
@@ -355,3 +453,244 @@ h1, h2, h3, h3, h4, h5 {
     -webkit-transform: rotate(1turn);
   }
 }
+
+/* react-datepicker stuff from https://raw.githubusercontent.com/Hacker0x01/react-react-datepicker/master/docs-site/style.css */
+.react-datepicker__tether-element-attached-top .react-datepicker__triangle, .react-datepicker__tether-element-attached-bottom .react-datepicker__triangle, .react-datepicker__year-read-view--down-arrow {
+  margin-left: -8px;
+  position: absolute; }
+  .react-datepicker__tether-element-attached-top .react-datepicker__triangle, .react-datepicker__tether-element-attached-bottom .react-datepicker__triangle, .react-datepicker__year-read-view--down-arrow, .react-datepicker__tether-element-attached-top .react-datepicker__triangle::before, .react-datepicker__tether-element-attached-bottom .react-datepicker__triangle::before, .react-datepicker__year-read-view--down-arrow::before {
+    box-sizing: content-box;
+    position: absolute;
+    border: 8px solid transparent;
+    height: 0;
+    width: 1px; }
+  .react-datepicker__tether-element-attached-top .react-datepicker__triangle::before, .react-datepicker__tether-element-attached-bottom .react-datepicker__triangle::before, .react-datepicker__year-read-view--down-arrow::before {
+    content: "";
+    z-index: -1;
+    border-width: 8px;
+    left: -8px;
+    border-bottom-color: #aeaeae; }
+
+.react-datepicker__tether-element-attached-top .react-datepicker__triangle {
+  top: 0;
+  margin-top: -8px; }
+  .react-datepicker__tether-element-attached-top .react-datepicker__triangle, .react-datepicker__tether-element-attached-top .react-datepicker__triangle::before {
+    border-top: none;
+    border-bottom-color: #f0f0f0; }
+  .react-datepicker__tether-element-attached-top .react-datepicker__triangle::before {
+    top: -1px;
+    border-bottom-color: #aeaeae; }
+
+.react-datepicker__tether-element-attached-bottom .react-datepicker__triangle, .react-datepicker__year-read-view--down-arrow {
+  bottom: 0;
+  margin-bottom: -8px; }
+  .react-datepicker__tether-element-attached-bottom .react-datepicker__triangle, .react-datepicker__year-read-view--down-arrow, .react-datepicker__tether-element-attached-bottom .react-datepicker__triangle::before, .react-datepicker__year-read-view--down-arrow::before {
+    border-bottom: none;
+    border-top-color: #fff; }
+  .react-datepicker__tether-element-attached-bottom .react-datepicker__triangle::before, .react-datepicker__year-read-view--down-arrow::before {
+    bottom: -1px;
+    border-top-color: #aeaeae; }
+
+.react-datepicker {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #aeaeae;
+  border-radius: 4px;
+  display: inline-block;
+  position: relative; }
+
+.react-datepicker__triangle {
+  position: absolute;
+  left: 50px; }
+
+.react-datepicker__tether-element-attached-bottom.react-datepicker__tether-element {
+  margin-top: -20px; }
+
+.react-datepicker__header {
+  text-align: center;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #aeaeae;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  padding-top: 8px;
+  position: relative; }
+
+.react-datepicker__current-month {
+  margin-top: 0;
+  color: #000;
+  font-weight: bold;
+  font-size: 13px; }
+  .react-datepicker__current-month--hasYearDropdown {
+    margin-bottom: 16px; }
+
+.react-datepicker__navigation {
+  line-height: 24px;
+  text-align: center;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  width: 0;
+  border: 6px solid transparent; }
+  .react-datepicker__navigation--previous {
+    left: 10px;
+    border-right-color: #ccc; }
+    .react-datepicker__navigation--previous:hover {
+      border-right-color: #b3b3b3; }
+  .react-datepicker__navigation--next {
+    right: 10px;
+    border-left-color: #ccc; }
+    .react-datepicker__navigation--next:hover {
+      border-left-color: #b3b3b3; }
+  .react-datepicker__navigation--years {
+    position: relative;
+    top: 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto; }
+    .react-datepicker__navigation--years-previous {
+      top: 4px;
+      border-top-color: #ccc; }
+      .react-datepicker__navigation--years-previous:hover {
+        border-top-color: #b3b3b3; }
+    .react-datepicker__navigation--years-upcoming {
+      top: -4px;
+      border-bottom-color: #ccc; }
+      .react-datepicker__navigation--years-upcoming:hover {
+        border-bottom-color: #b3b3b3; }
+
+.react-datepicker__month {
+  margin: 5px;
+  text-align: center; }
+
+.react-datepicker__day-name,
+.react-datepicker__day {
+  color: #000;
+  display: inline-block;
+  width: 24px;
+  line-height: 24px;
+  text-align: center;
+  margin: 2px; }
+
+.react-datepicker__day {
+  cursor: pointer; }
+  .react-datepicker__day:hover {
+    border-radius: 4px;
+    background-color: #f0f0f0; }
+  .react-datepicker__day--today {
+    font-weight: bold; }
+  .react-datepicker__day--selected, .react-datepicker__day--in-range {
+    border-radius: 4px;
+    background-color: #216ba5;
+    color: #fff; }
+    .react-datepicker__day--selected:hover, .react-datepicker__day--in-range:hover {
+      background-color: #1d5d90; }
+  .react-datepicker__day--disabled {
+    cursor: default;
+    color: #ccc; }
+    .react-datepicker__day--disabled:hover {
+      background-color: transparent; }
+
+.react-datepicker__input-container {
+  position: relative;
+  display: inline-block; }
+
+.react-datepicker__year-read-view {
+  width: 50%;
+  left: 25%;
+  position: absolute;
+  bottom: 25px;
+  border: 1px solid transparent;
+  border-radius: 4px; }
+  .react-datepicker__year-read-view:hover {
+    cursor: pointer; }
+    .react-datepicker__year-read-view:hover .react-datepicker__year-read-view--down-arrow {
+      border-top-color: #b3b3b3; }
+  .react-datepicker__year-read-view--down-arrow {
+    border-top-color: #ccc;
+    margin-bottom: 3px;
+    left: 5px;
+    top: 9px;
+    position: relative;
+    border-width: 6px; }
+  .react-datepicker__year-read-view--selected-year {
+    right: 6px;
+    position: relative; }
+
+.react-datepicker__year-dropdown {
+  background-color: #f0f0f0;
+  position: absolute;
+  width: 50%;
+  left: 25%;
+  top: 30px;
+  text-align: center;
+  border-radius: 4px;
+  border: 1px solid #aeaeae; }
+  .react-datepicker__year-dropdown:hover {
+    cursor: pointer; }
+
+.react-datepicker__year-option {
+  line-height: 20px;
+  width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto; }
+  .react-datepicker__year-option:first-of-type {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px; }
+  .react-datepicker__year-option:last-of-type {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px; }
+  .react-datepicker__year-option:hover {
+    background-color: #ccc; }
+    .react-datepicker__year-option:hover .react-datepicker__navigation--years-upcoming {
+      border-bottom-color: #b3b3b3; }
+    .react-datepicker__year-option:hover .react-datepicker__navigation--years-previous {
+      border-top-color: #b3b3b3; }
+  .react-datepicker__year-option--selected {
+    position: absolute;
+    left: 30px; }
+
+.react-datepicker__close-icon {
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  display: inline-block;
+  height: 0;
+  outline: 0;
+  padding: 0;
+  vertical-align: middle; }
+  .react-datepicker__close-icon::after {
+    background-color: #216ba5;
+    border-radius: 50%;
+    bottom: 0;
+    box-sizing: border-box;
+    color: #fff;
+    content: "\D7";
+    cursor: pointer;
+    font-size: 12px;
+    height: 16px;
+    width: 16px;
+    line-height: 1;
+    margin: -8px auto 0;
+    padding: 2px;
+    position: absolute;
+    right: 7px;
+    text-align: center;
+    top: 50%; }
+
+.react-datepicker__today-button {
+  background: #f0f0f0;
+  border-top: 1px solid #aeaeae;
+  cursor: pointer;
+  text-align: center;
+  font-weight: bold;
+  padding: 5px 0; }
+
+.react-datepicker__tether-element {
+  z-index: 2147483647; }

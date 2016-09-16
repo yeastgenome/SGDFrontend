@@ -2,7 +2,7 @@ import React from 'react';
 
 const Loader = React.createClass({
   render () {
-    return <p>working...</p>;
+    return <div className='loader' />;
   }
 });
 
