@@ -689,13 +689,17 @@ class Colleaguetriage(Base):
     curator_comments = Column(String(500))
 
     def to_json(self):
-        return {
+        response = {
             'triage_id': int(self.curation_id),
-            'created_at': str(self.date_created),
-            'colleague': (DBSession.query(Colleague.format_name).filter(Colleague.colleague_id == self.colleague_id).one_or_none())[0],
+            'created_at': str(self.date_created),            
             'comments': self.curator_comments,
             'data': json.loads(self.colleague_data)
         }
+        
+        if self.colleague_id:
+            response['colleague'] = (DBSession.query(Colleague.format_name).filter(Colleague.colleague_id == self.colleague_id).one_or_none())[0]
+        
+        return response
 
     def apply_to_colleague(self):
         colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == self.colleague_id).one_or_none()
