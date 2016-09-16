@@ -2,14 +2,20 @@ import Radium from 'radium';
 import React from 'react';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
+import moment from 'moment';
+import DatePicker from 'react-datepicker';
 const Select = require('react-select');
 import 'isomorphic-fetch';
+
+import { StringField, CheckField } from '../../components/widgets/form_helpers';
 
 const UPLOAD_URL = '/upload';
 const KEYWORDS_URL = '/keywords';
 const TOPICS_URL = '/topics';
 const FORMATS_URL = '/formats';
 const EXTENSIONS_URL = '/extensions';
+const REQUEST_TIMEOUT = 5000;
+const DATE_FORMAT = 'YYYY/MM/DD hh:mm:ss';
 
 const NewFile = React.createClass({
   getInitialState () {
@@ -17,7 +23,8 @@ const NewFile = React.createClass({
       files: null,
       isPending: false,
       isComplete: false,
-      error: false
+      error: false,
+      rawFileDate: moment(),
     };
   },
 
@@ -45,33 +52,30 @@ const NewFile = React.createClass({
   },
 
   _renderForm () {
-    // get today's date in SGD format
-    let now = new Date();
-    let strMonth = ("0" + (now.getMonth() + 1)).slice(-2);
-    let strDate = ("0" + now.getDate()).slice(-2);
-    let strToday = `${now.getYear() + 1900}-${strMonth}-${strDate}`;
     let buttonNode = this.state.isPending ? <a className='button disabled secondary'>Uploading</a> : <input type='submit' className='button' value='Upload' />;
     return (
       <div className='row'>
         <div className='large-6 columns'>
           <form ref='form' onSubmit={this._onFormSubmit}>
-            {this._renderStringField('Name', 'display_name')}
+            <StringField displayName='Name' paramName='display_name' />
             {this._renderStatusSelector()}
-            {this._renderStringField('Previous Name', 'previous_file_name')}
-            {this._renderStringField('Path', 'new_filepath')}
-            {this._renderStringField('Old File Path', 'old_filepath')}
+            <StringField displayName='Previous Name' paramName='previous_file_name' />
+            <StringField displayName='Path' paramName='new_filepath' />
+            <StringField displayName='Old File Path' paramName='old_filepath' />
             {this._renderMultiSelectField('Keyword(s)', 'keyword_ids', KEYWORDS_URL)}
             {this._renderSingleSelectField('Topic', 'topic_id', TOPICS_URL)}
             {this._renderSingleSelectField('Format', 'format_id', FORMATS_URL)}
-            {this._renderSingleSelectField('Extension', 'extension_id', EXTENSIONS_URL)}
-            {this._renderStringField('Date', 'file_date', strToday, 'YYYY-MM-DD')}
-            {this._renderCheckField('Public', 'is_public')}
-            {this._renderCheckField('For SPELL', 'for_spell')}
-            {this._renderCheckField('For Browser', 'for_browser')}
-            {this._renderStringField('README name', 'readme_name')}
-            {this._renderStringField('PMIDs', 'pmids', '', 'Comma-separated list of PMIDs')}
+            {this._renderSingleSelectField('Extension', 'extension', EXTENSIONS_URL)}
+            {this._renderDateSelector()}
+            <CheckField displayName='Public' paramName='is_public' />
+            <CheckField displayName='For SPELL' paramName='for_spell' />
+            <CheckField displayName='For Browser' paramName='for_browser' />
+            <StringField displayName='README name' paramName='readme_name' />
+            <StringField displayName='PMIDs' paramName='pmids' placeholder='Comma-separated lis of PMIDs' />
             {this._renderErrors()}
-            {buttonNode}
+            <div className='text-right'>
+              {buttonNode}
+            </div>
           </form>
         </div>
         <div className='large-6 columns'>
@@ -92,26 +96,7 @@ const NewFile = React.createClass({
     );
   },
 
-  _renderStringField(displayName, paramName, defaultValue, placeholder) {
-    return (
-      <div>
-        <label>{displayName}</label>
-        <input type='text' name={paramName} placeholder={placeholder} defaultValue={defaultValue} />
-      </div>
-    );
-  },
-
-  _renderCheckField(displayName, paramName, isChecked) {
-    let _id = `sgd-c-check-${paramName}`;
-    return (
-      <div>
-        <input id={_id} type='checkbox' name={paramName} />
-        <label htmlFor={_id}>{displayName}</label>
-      </div>
-    );
-  },
-
-  _renderSingleSelectField(displayName, paramName, optionsUrl) {
+  _renderSingleSelectField (displayName, paramName, optionsUrl) {
     const _onChange = newValue => {
       let obj = {};
       obj[paramName] = newValue;
@@ -120,9 +105,9 @@ const NewFile = React.createClass({
     return (
       <div>
         <label>{displayName}</label>
-        <Select.Async
+        <Select
           name={paramName} value={this.state[paramName]}
-          loadOptions={this._getAsyncOptions(optionsUrl)}
+          asyncOptions={this._getAsyncOptions(optionsUrl)}
           labelKey='name' valueKey='id'
           onChange={_onChange}
         />
@@ -130,7 +115,7 @@ const NewFile = React.createClass({
     );
   },
 
-  _renderMultiSelectField(displayName, paramName, optionsUrl) {
+  _renderMultiSelectField (displayName, paramName, optionsUrl) {
     const _onChange = newValue => {
       newValue = newValue ? newValue.split(',').map( d => { return parseInt(d); }) : [];
       let obj = {};
@@ -140,12 +125,25 @@ const NewFile = React.createClass({
     return (
       <div>
         <label>{displayName}</label>
-        <Select.Async multi simpleValue joinValues
+        <Select multi simpleValue joinValues
           name={paramName} value={this.state[paramName]}
-          loadOptions={this._getAsyncOptions(optionsUrl)}
+          asyncOptions={this._getAsyncOptions(optionsUrl)}
           labelKey='name' valueKey='id'
           onChange={_onChange} 
         />
+      </div>
+    );
+  },
+
+  _renderDateSelector () {
+    const _onDateChange = newDate => {
+      this.setState({ rawFileDate: newDate });
+    };
+    return (
+      <div>
+        <label>Date</label>
+        <DatePicker selected={this.state.rawFileDate} onChange={_onDateChange} dateFormat='YYYY/MM/DD' />
+        <input type='hidden' name='file_date' value={this._getFormattedTime()} />
       </div>
     );
   },
@@ -196,12 +194,20 @@ const NewFile = React.createClass({
 
   _uploadFile (formData) {
     this.setState({ isPending: true });
-    fetch(UPLOAD_URL, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: { 'X-CSRF-Token': this.props.csrfToken },
-      body: formData
-    }).then( response => {
+    // timeout isomorphic fetch per https://github.com/whatwg/fetch/issues/20
+    let p = Promise.race([
+      fetch(UPLOAD_URL, {
+        method: 'POST',
+        timeout: REQUEST_TIMEOUT,
+        credentials: 'same-origin',
+        headers: { 'X-CSRF-Token': this.props.csrfToken },
+        body: formData
+      }),
+      new Promise(function (resolve, reject) {
+        setTimeout(() => reject(new Error('request timeout')), REQUEST_TIMEOUT);
+      })
+    ]);
+    p.then( response => {
       this.setState({ isPending: false });
       // if not 200 or 400 throw unkown error
       if ([200, 400].indexOf(response.status) < 0) throw new Error('Upload API error.');
@@ -216,9 +222,18 @@ const NewFile = React.createClass({
           this.setState({ isComplete: true, error: false });
         }
       }
-    }).catch( e => {
-      this.setState({ error: 'There was an uknown problem with your upload.  Please try again.  If you continue to see this message, please contact sgd-programmers@lists.stanford.edu' });
     });
+    p.catch( e => {
+      this.setState({
+        isPending: false,
+        isComplete: false,
+        error: 'There was an uknown problem with your upload.  Please try again.  If you continue to see this message, please contact sgd-programmers@lists.stanford.edu'
+      });
+    });
+  },
+
+  _getFormattedTime () {
+    return this.state.rawFileDate.format(DATE_FORMAT);
   }
 });
 

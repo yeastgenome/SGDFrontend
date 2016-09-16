@@ -34,5 +34,8 @@ run-prod:
 stop-prod:
 	-pserve production.ini --stop-daemon --pid-file=/var/run/pyramid/backend.pid
 
+lint:
+	eslint src/client/js/
+
 index-es:
 	source dev_variables.sh && python scripts/index_elastic_search.py

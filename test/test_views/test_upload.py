@@ -123,7 +123,7 @@ class UploadTest(unittest.TestCase):
         response = upload_file(request.context, request)
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(json.loads(response.body), {'error': 'Invalid or nonexistent Keyword: keyword_1'})
+        self.assertEqual(json.loads(response.body), {'error': 'Invalid or nonexistent Keyword ID: keyword_1'})
 
     @mock.patch('src.models.DBSession.query')
     def test_inexistent_topic_should_return_400(self, mock_search):

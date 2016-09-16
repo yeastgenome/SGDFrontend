@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 const ExampleContainer = React.createClass({
-  render() {
-    return <h1>Example</h1>
+  render () {
+    return <h1>Example</h1>;
   }
 });
 

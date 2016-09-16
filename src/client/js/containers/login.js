@@ -2,36 +2,25 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as AuthActions from '../actions/auth_actions';
 
+import Loader from '../components/widgets/loader';
+
 const GOOGLE_PLATFORM_URL = 'https://apis.google.com/js/platform.js';
 
 const Login = React.createClass({
-  // hide google login button by default to prevent auto login
-  getInitialState() {
-    return {
-      googleLoginVisible: true
-    };
-  },
-
-  render() {
+  render () {
     return (
       <div>
         {this._renderLoginError()}
         <h1>Login</h1>
         <hr />
         {this._renderLoginButton()}
+        {this.props.isAuthenticating ? <Loader /> : null}
       </div>
     );
   },
 
   _renderLoginButton () {
-    if (this.state.googleLoginVisible) {
-      return <div id='g-login' className="g-signin2" data-onsuccess="onSignIn"></div>;
-    }
-    const _onClick = e => {
-      e.preventDefault();
-      this.setState({ googleLoginVisible: true });
-    }
-    return <a className='button' onClick={_onClick}>Login with Google</a>
+    return <div id='g-login' className='g-signin2' data-onsuccess='onSignIn'></div>;
   },
 
   _renderLoginError () {
@@ -58,24 +47,17 @@ const Login = React.createClass({
     }
   },
 
-  // render google button if just toggled visible
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.googleLoginVisible) {
-      gapi.signin2.render('g-login', {
-        'onsuccess': this.onSignIn
-      });
-    }
-  },
-
   onSignIn (googleUser) {
     let sendAuthAction = AuthActions.sendAuthRequest(googleUser.getAuthResponse().id_token);
+    this.setState({ isPending: true });
     this.props.dispatch(sendAuthAction);
   }
 });
 
 function mapStateToProps(_state) {
   return {
-    loginError: _state.auth.loginError
+    loginError: _state.auth.loginError,
+    isAuthenticating: _state.auth.isAuthenticating
   };
 }
 

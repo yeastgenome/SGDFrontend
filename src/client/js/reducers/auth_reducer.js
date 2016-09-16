@@ -15,6 +15,10 @@ export default function authReducer(_state, action) {
       state.csrfToken = action.payload;
       return state;
       break;
+    case 'START_AUTH':
+      state.isAuthenticating = true;
+      return state;
+      break;
     case 'RECEIVE_AUTH_RESPONSE':
       state.isAuthenticated = true;
       state.isAuthenticating = false;
@@ -28,6 +32,7 @@ export default function authReducer(_state, action) {
       break;
     case 'SET_LOGIN_ERROR':
       state.loginError = true;
+      state.isAuthenticating = false;
       return state;
       break;
     default:
