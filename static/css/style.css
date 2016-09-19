@@ -17,6 +17,43 @@ h1, h2, h3, h3, h4, h5 {
   margin-right: 0.5rem;
 }
 
+/* dl tag stuff */
+.key-value dt, dd {
+  display: inline-block;
+}
+
+.key-value dt {
+  min-width: 160px;
+}
+
+.key-value dt::after {
+  content: ':';
+}
+
+.form-read-field {
+  border-bottom: 1px solid #e1e1e1;
+  padding: 0.5rem 0 0.5rem 0.5rem;
+}
+
+.form-read-field:nth-of-type(odd) {
+  background: #f9f9f9;
+}
+
+.form-read-field:first-child {
+  border-top: 1px solid #e1e1e1;
+}
+
+.form-read-field .key-value {
+  margin-bottom: 0;
+  dt, dd {
+      margin-bottom: 0;
+  }
+}
+
+.form-read-field dt, dd {
+  margin-bottom: 0;
+}
+
 /* react-select adjustments */
 .Select {
   margin-bottom: 1rem;
