@@ -162,13 +162,13 @@ const ColleaguesFormShow = React.createClass({
     return [
       <MultiSelectField
         isReadOnly={this.props.isReadOnly} displayName='Supervisor(s)'
-        paramName='supervisors_display_names' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL}
+        paramName='supervisors' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL}
         defaultValues={supervisors} defaultOptions={supervisors}
         allowCreate={true} key='associate0'
       />,
       <MultiSelectField
         isReadOnly={this.props.isReadOnly} displayName='Lab Members'
-        paramName='lab_members_display_names' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL}
+        paramName='lab_members' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL}
         defaultValues={labMembers} defaultOptions={labMembers}
         allowCreate={true} key='associate1'
       />
