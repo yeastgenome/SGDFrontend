@@ -55,11 +55,12 @@ const ColleaguesFormShow = React.createClass({
 
   _renderTriageNode () {
     let onApprove = this._submitData;
+    let onDelete = this._deleteTriageEntry;
     if (!this.props.isTriage || !this.props.isCurator) return null;
     return (
       <div className='button-group' style={[style.controlContainer]}>
         <a onClick={onApprove} className='button small' style={[style.controlButton]}><i className='fa fa-check'/> Approve Update</a>
-        <Link to='/curate/colleagues' className='button small secondary' style={[style.controlButton]}><i className='fa fa-times'/> Cancel Update</Link>
+        <a onClick={onDelete} className='button small secondary' style={[style.controlButton]}><i className='fa fa-times'/> Delete Update</a>
       </div>
     );
   },
@@ -281,6 +282,18 @@ const ColleaguesFormShow = React.createClass({
       } else {
         this.setState({ isComplete: true });
       }
+    }).catch( e => {
+      this.setState({ error: e.message });
+    });
+  },
+
+  _deleteTriageEntry (e) {
+    let options = { method: 'DELETE' };
+    let url = `${TRIAGED_COLLEAGUE_URL}/${this.props.colleagueDisplayName}`;
+    apiRequest(url, options).then( response => {
+      // is complete
+      this.setState({ error: null });
+      this.props.dispatch(push('/curate/colleagues'));
     }).catch( e => {
       this.setState({ error: e.message });
     });
