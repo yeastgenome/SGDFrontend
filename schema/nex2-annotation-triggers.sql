@@ -50,7 +50,7 @@ BEGIN
     v_row := OLD.annotation_id || '[:]' || OLD.dbentity_id || '[:]' ||
              OLD.source_id || '[:]' || OLD.taxonomy_id || '[:]' ||
              coalesce(OLD.reference_id,0) || '[:]' || OLD.obj_url || '[:]' ||
-	     OLD.motif_id || '[:]' || OLD.logo_url || '[:]' ||
+	         OLD.motif_id || '[:]' || OLD.logo_url || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
            PERFORM insertdeletelog('BINDINGMOTIFANNOTATION', OLD.annotation_id, v_row, USER);
@@ -149,9 +149,9 @@ BEGIN
 
     v_row := OLD.annotation_id || '[:]' || OLD.dbentity_id || '[:]' ||
              OLD.source_id || '[:]' || OLD.taxonomy_id || '[:]' ||
-	     OLD.reference_id || '[:]' || OLD.disease_id || '[:]' ||
-	     OLD.eco_id || '[:]' || OLD.annotation_type || '[:]' ||
-	     OLD.disease_qualifier || '[:]' || OLD.date_assigned || '[:]' ||
+	         OLD.reference_id || '[:]' || OLD.disease_id || '[:]' ||
+	         OLD.eco_id || '[:]' || OLD.annotation_type || '[:]' ||
+	         OLD.disease_qualifier || '[:]' || OLD.date_assigned || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
            PERFORM insertdeletelog('DISEASEANNOTATION', OLD.annotation_id, v_row, USER);
@@ -233,7 +233,7 @@ BEGIN
 
     v_row := OLD.annotation_id || '[:]' || OLD.dbentity_id || '[:]' ||
              OLD.source_id || '[:]' || OLD.taxonomy_id || '[:]' ||
-	     coalesce(OLD.reference_id,0) || '[:]' || OLD.diseasesubset_id || '[:]' ||
+             coalesce(OLD.reference_id,0) || '[:]' || OLD.diseasesubset_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
         PERFORM insertdeletelog('DISEASESUBSETANNOTATION', OLD.annotation_id, v_row, USER);
@@ -340,7 +340,7 @@ BEGIN
 
        RETURN NEW;
 
-  ELSIF (TG_OP = 'DELETE') THEN
+  ELSIF (TG_OP = 'UPDATE') THEN
 
     IF (NEW.diseasesupportingevidence_id != OLD.diseasesupportingevidence_id) THEN
         RAISE EXCEPTION 'Primary key cannot be updated';
@@ -591,9 +591,9 @@ BEGIN
              OLD.relative_start_index || '[:]' || OLD.relative_end_index || '[:]' ||
              OLD.contig_start_index || '[:]' || OLD.contig_end_index || '[:]' ||
              coalesce(OLD.seq_version,'') || '[:]' || coalesce(OLD.coord_version,'') || '[:]' ||
-	     coalesce(OLD.genomerelease_id,'') || '[:]' || OLD.file_header || '[:]' ||
-	     OLD.download_filename || '[:]' || coalesce(OLD.file_id,0) || '[:]' ||
-	     OLD.residues || '[:]' ||
+             coalesce(OLD.genomerelease_id,'') || '[:]' || OLD.file_header || '[:]' ||
+             OLD.download_filename || '[:]' || coalesce(OLD.file_id,0) || '[:]' ||
+             OLD.residues || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
            PERFORM insertdeletelog('DNASUBSEQUENCE', OLD.dnasubsequence_id, v_row, USER);
@@ -969,9 +969,9 @@ BEGIN
 
     v_row := OLD.annotation_id || '[:]' || OLD.dbentity_id || '[:]' ||
              OLD.source_id || '[:]' || OLD.taxonomy_id || '[:]' ||
-	     OLD.reference_id || '[:]' || OLD.go_id || '[:]' ||
-	     OLD.eco_id || '[:]' || OLD.annotation_type || '[:]' ||
-	     OLD.go_qualifier || '[:]' || OLD.date_assigned || '[:]' ||
+             OLD.reference_id || '[:]' || OLD.go_id || '[:]' ||
+             OLD.eco_id || '[:]' || OLD.annotation_type || '[:]' ||
+             OLD.go_qualifier || '[:]' || OLD.date_assigned || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
           PERFORM insertdeletelog('GOANNOTATION', OLD.annotation_id, v_row, USER);
@@ -1217,7 +1217,7 @@ BEGIN
 
     v_row := OLD.annotation_id || '[:]' || OLD.dbentity_id || '[:]' ||
              OLD.source_id || '[:]' || OLD.taxonomy_id || '[:]' ||
-	     coalesce(OLD.reference_id,0) || '[:]' || OLD.goslim_id || '[:]' ||
+             coalesce(OLD.reference_id,0) || '[:]' || OLD.goslim_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
           PERFORM insertdeletelog('GOSLIMANNOTATION', OLD.annotation_id, v_row, USER);
@@ -1933,7 +1933,7 @@ BEGIN
 
        RETURN NEW;
 
-  ELSIF (TG_OP = 'DELETE') THEN
+  ELSIF (TG_OP = 'UPDATE') THEN
 
     IF (NEW.annotation_id != OLD.annotation_id) THEN
         RAISE EXCEPTION 'Primary key cannot be updated';
@@ -2638,7 +2638,7 @@ BEGIN
 
        RETURN NEW;
 
-  ELSIF (TG_OP = 'DELETE') THEN
+  ELSIF (TG_OP = 'UPDATE') THEN
 
     IF (NEW.detail_id != OLD.detail_id) THEN
         RAISE EXCEPTION 'Primary key cannot be updated';
@@ -2661,3 +2661,110 @@ $BODY$ LANGUAGE 'plpgsql';
 CREATE TRIGGER proteinsequencedetail_biur
 BEFORE INSERT OR UPDATE ON proteinsequence_detail FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteinsequencedetail_biur();
+
+
+DROP TRIGGER IF EXISTS regulationannotation_audr ON regulationannotation CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_regulationannotation_audr() RETURNS trigger AS $BODY$
+DECLARE
+    v_row       delete_log.deleted_row%TYPE;
+BEGIN
+  IF (TG_OP = 'UPDATE') THEN
+
+    IF (OLD.target_id != NEW.target_id) THEN
+        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'TARGET_ID', OLD.annotation_id, OLD.target_id, NEW.target_id, USER);
+    END IF;
+
+    IF (OLD.regulator_id != NEW.regulator_id) THEN
+        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'REGULATOR_ID', OLD.annotation_id, OLD.regulator_id, NEW.regulator_id, USER);
+    END IF;
+
+     IF (OLD.source_id != NEW.source_id) THEN
+        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+    END IF;
+
+    IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
+        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+    END IF;
+
+    IF  (OLD.reference_id != NEW.reference_id) THEN
+        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+    END IF;
+
+    IF (OLD.eco_id != NEW.eco_id) THEN
+        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'ECO_ID', OLD.annotation_id, OLD.eco_id, NEW.eco_id, USER);
+    END IF;
+
+    IF (OLD.regulator_type != NEW.regulator_type) THEN
+        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'REGULATOR_TYPE', OLD.annotation_id, OLD.regulator_type, NEW.regulator_type, USER);
+    END IF;
+
+    IF (OLD.regulation_type != NEW.regulation_type) THEN
+        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'REGULATION_TYPE', OLD.annotation_id, OLD.regulation_type, NEW.regulation_type, USER);
+    END IF;
+
+    IF (((OLD.direction IS NULL) AND (NEW.direction IS NOT NULL)) OR ((OLD.direction IS NOT NULL) AND (NEW.direction IS NULL)) OR (OLD.direction != NEW.direction)) THEN
+        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'DIRECTION', OLD.annotation_id, OLD.direction, NEW.direction, USER);
+    END IF;
+
+    IF (((OLD.happens_during IS NULL) AND (NEW.happens_during IS NOT NULL)) OR ((OLD.happens_during IS NOT NULL) AND (NEW.happens_during IS NULL)) OR (OLD.happens_during != NEW.happens_during)) THEN
+        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'HAPPENS_DURING', OLD.annotation_id, OLD.happens_during, NEW.happens_during, USER);
+    END IF;
+
+    RETURN NEW;
+
+  ELSIF (TG_OP = 'DELETE') THEN
+
+    v_row := OLD.annotation_id || '[:]' || OLD.target_id || '[:]' ||
+             OLD.regulator_id || '[:]' || OLD.source_id || '[:]' ||
+             OLD.taxonomy_id || '[:]' || OLD.reference_id || '[:]' ||
+             OLD.eco_id || '[:]' || OLD.regulator_type || '[:]' ||
+             OLD.regulation_type || '[:]' || coalesce(OLD.direction,'') || '[:]' ||
+             coalesce(OLD.happens_during,'') || '[:]' ||
+             OLD.date_created || '[:]' || OLD.created_by;
+
+          PERFORM auditlog.insertdeletelog('REGULATIONANNOTATION', OLD.annotation_id, v_row, USER);
+
+     RETURN OLD;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql' SECURITY DEFINER;
+
+CREATE TRIGGER regulationannotation_audr
+AFTER UPDATE OR DELETE ON regulationannotation FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_regulationannotation_audr();
+
+DROP TRIGGER IF EXISTS regulationannotation_biur ON regulationannotation CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_regulationannotation_biur() RETURNS trigger AS $BODY$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+
+       NEW.created_by := UPPER(NEW.created_by);
+       PERFORM nex.checkuser(NEW.created_by);
+
+       RETURN NEW;
+
+  ELSIF (TG_OP = 'UPDATE') THEN
+
+    IF (NEW.annotation_id != OLD.annotation_id) THEN
+        RAISE EXCEPTION 'Primary key cannot be updated';
+    END IF;
+
+    IF (NEW.date_created != OLD.date_created) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    IF (NEW.created_by != OLD.created_by) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    RETURN NEW;
+
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql' SECURITY DEFINER;
+
+CREATE TRIGGER regulationannotation_biur
+BEFORE INSERT OR UPDATE ON regulationannotation FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_regulationannotation_biur();

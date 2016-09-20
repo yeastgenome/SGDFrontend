@@ -528,6 +528,14 @@ ALTER TABLE proteinsequenceannotation ADD CONSTRAINT proteinsequenceanno_genomer
 
 ALTER TABLE proteinsequence_detail ADD CONSTRAINT proteinsequencedetail_anno_fk FOREIGN KEY (annotation_id) REFERENCES proteinsequenceannotation(annotation_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
 
+ALTER TABLE regulationannotation ADD CONSTRAINT regulationanno_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE regulationannotation ADD CONSTRAINT regulationanno_tax_fk FOREIGN KEY (taxonomy_id) REFERENCES taxonomy(taxonomy_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE regulationannotation ADD CONSTRAINT regulationanno_ref_fk FOREIGN KEY (reference_id) REFERENCES referencedbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE regulationannotation ADD CONSTRAINT regulationanno_target_fk FOREIGN KEY (target_id) REFERENCES dbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE regulationannotation ADD CONSTRAINT regulationanno_happensduring_fk FOREIGN KEY (happens_during) REFERENCES go(go_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE regulationannotation ADD CONSTRAINT regulationanno_eco_fk FOREIGN KEY (eco_id) REFERENCES eco(eco_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE regulationannotation ADD CONSTRAINT regulationanno_regulator_fk FOREIGN KEY (regulator_id) REFERENCES dbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+
 
 ALTER TABLE curation ADD CONSTRAINT curation_locus_fk FOREIGN KEY (locus_id) REFERENCES locusdbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE curation ADD CONSTRAINT curation_dbentity_fk FOREIGN KEY (dbentity_id) REFERENCES dbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;

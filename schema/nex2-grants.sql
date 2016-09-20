@@ -867,6 +867,13 @@ REVOKE ALL ON reference_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON reference_url TO curator;
 GRANT SELECT ON reference_url TO PUBLIC;
 
+-- Set priviledge on TABLE REGULATIONANNOTATION  
+ALTER TABLE regulationannotation OWNER TO nex;
+GRANT ALL ON  regulationannotation TO nex;
+REVOKE ALL ON regulationannotation FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON regulationannotation TO curator;
+GRANT SELECT ON regulationannotation TO PUBLIC;
+
 -- Set priviledge on TABLE REPORTER
 ALTER TABLE reporter OWNER TO nex;
 GRANT ALL ON  reporter TO nex;
