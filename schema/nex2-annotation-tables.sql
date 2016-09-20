@@ -938,3 +938,44 @@ COMMENT ON COLUMN proteinsequence_detail.annotation_id IS 'FK to PROTEINSEQUENCE
 COMMENT ON COLUMN proteinsequence_detail.ile IS 'Number of isoleucines in the protein.';
 COMMENT ON COLUMN proteinsequence_detail.carbon IS 'Number of carbon atoms in the protein atomic composition.';
 ALTER TABLE proteinsequence_detail ADD CONSTRAINT proteinsequence_detail_uk UNIQUE (annotation_id);
+
+
+CREATE TABLE regulationannotation (
+    annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
+    target_id bigint NOT NULL,
+    regulator_id bigint NOT NULL,
+    source_id bigint NOT NULL,
+    taxonomy_id bigint NOT NULL,
+    reference_id bigint NOT NULL,
+    eco_id bigint NOT NULL,
+    regulator_type varchar(40) NOT NULL,
+    regulation_type varchar(100) NOT NULL,
+    direction varchar(10),
+    happens_during bigint,
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    created_by varchar(12) NOT NULL,
+    CONSTRAINT regulationannotation_pk PRIMARY KEY (annotation_id)
+) ;
+COMMENT ON TABLE regulationannotation IS 'Target and regulator annotation information.';
+COMMENT ON COLUMN regulationannotation.target_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN regulationannotation.regulation_type IS 'Type of regulation (transcription, RNA stability, protein activity, protein stability).';
+COMMENT ON COLUMN regulationannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN regulationannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN regulationannotation.happens_during IS 'Cell cycle phase of the regulation using Gene Ontology biological process terms.';
+COMMENT ON COLUMN regulationannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN regulationannotation.direction IS 'Direction (positive or negative) of the regulation.';
+COMMENT ON COLUMN regulationannotation.regulator_type IS 'Type of regulator (transcription factor, chromatin modifier, protein modifier, RNA binder, RNA modifier, protein binder).';
+COMMENT ON COLUMN regulationannotation.annotation_id IS 'Unique identifier (Oracle sequence).';
+COMMENT ON COLUMN regulationannotation.regulator_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN regulationannotation.eco_id IS 'FK to ECO.ECO_ID.';
+COMMENT ON COLUMN regulationannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN regulationannotation.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE regulationannotation ADD CONSTRAINT regulationannotation_uk UNIQUE (target_id,regulator_id,eco_id,reference_id);
+ALTER TABLE regulationannotation ADD CONSTRAINT regulationanno_regulator_type_ck CHECK (REGULATOR_TYPE in ('transcription factor', 'chromatin modifier', 'protein modifier', 'RNA binder', 'RNA modifier', 'protein binder'));
+ALTER TABLE regulationannotation ADD CONSTRAINT regulationanno_regulation_type_ck CHECK (REGULATION_TYPE in ('transcription', 'RNA stability', 'protein activity', 'protein stability'));
+CREATE INDEX regulationanno_source_fk_index ON regulationannotation (source_id);
+CREATE INDEX regulationanno_tax_fk_index ON regulationannotation (taxonomy_id);
+CREATE INDEX regulationanno_regulator_fk_index ON regulationannotation (regulator_id);
+CREATE INDEX regulationanno_happpensduring_fk_index ON regulationannotation (happens_during);
+CREATE INDEX regulationanno_ref_fk_index ON regulationannotation (reference_id);
+CREATE INDEX regulationanno_eco_fk_index ON regulationannotation (eco_id);

@@ -209,7 +209,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.relation_id || '[:]' || OLD.source_id || '[:]' ||
-	     OLD.parent_id || '[:]' ||
+             OLD.parent_id || '[:]' ||
              OLD.child_id || '[:]' || OLD.ro_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
@@ -291,7 +291,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
      v_row := OLD.url_id || '[:]' ||
- 	      OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
+              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
               OLD.source_id || '[:]' || 
               OLD.apo_id || '[:]' || OLD.url_type || '[:]' ||
               OLD.date_created || '[:]' || OLD.created_by;
@@ -379,7 +379,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.chebi_id || '[:]' || OLD.format_name || '[:]' ||
-  	     OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
+  	         OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || 
              OLD.chebiid || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
@@ -536,7 +536,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.relation_id || '[:]' || OLD.source_id || '[:]' ||
-	     OLD.parent_id || '[:]' ||
+             OLD.parent_id || '[:]' ||
              OLD.child_id || '[:]' || OLD.ro_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
@@ -705,7 +705,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.disease_id || '[:]' || OLD.format_name || '[:]' ||
-	     OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
+             OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || 
              OLD.doid || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
@@ -862,7 +862,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.relation_id || '[:]' || OLD.source_id || '[:]' ||
-	     OLD.parent_id || '[:]' ||
+             OLD.parent_id || '[:]' ||
              OLD.child_id || '[:]' || OLD.ro_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
@@ -1031,7 +1031,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.ec_id || '[:]' || OLD.format_name || '[:]' ||
-	     OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
+             OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' ||
              OLD.ecid || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
@@ -1279,7 +1279,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.eco_id || '[:]' || OLD.format_name || '[:]' ||
-	     OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
+             OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || 
              OLD.ecoid || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
@@ -1433,10 +1433,10 @@ BEGIN
 
      RETURN NEW;
 
-  ELSIF (TG_OP = 'UPDATE') THEN
+  ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.relation_id || '[:]' || OLD.source_id || '[:]' ||
-	     OLD.parent_id || '[:]' ||
+             OLD.parent_id || '[:]' ||
              OLD.child_id || '[:]' || OLD.ro_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
@@ -1611,7 +1611,7 @@ BEGIN
     v_row := OLD.edam_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || OLD.edamid || '[:]' ||
-	     OLD.edam_namespace || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.edam_namespace || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
              PERFORM nex.insertdeletelog('EDAM', OLD.edam_id, v_row, USER);
@@ -1941,7 +1941,7 @@ BEGIN
     v_row := OLD.go_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || OLD.goid || '[:]' ||
-	     OLD.go_namespace || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.go_namespace || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
              PERFORM nex.insertdeletelog('GO', OLD.go_id, v_row, USER);
@@ -2019,7 +2019,7 @@ BEGIN
 
      v_row := OLD.alias_id || '[:]' || OLD.display_name || '[:]' ||
               OLD.source_id || '[:]' || OLD.go_id || '[:]' ||
-	      OLD.alias_type || '[:]' ||
+              OLD.alias_type || '[:]' ||
               OLD.date_created || '[:]' || OLD.created_by;
 
               PERFORM insertdeletelog('GO_ALIAS', OLD.alias_id, v_row, USER);
@@ -2096,7 +2096,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.relation_id || '[:]' || OLD.source_id || '[:]' ||
-	     OLD.parent_id || '[:]' ||
+             OLD.parent_id || '[:]' ||
              OLD.child_id || '[:]' || OLD.ro_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
@@ -2345,7 +2345,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.obi_id || '[:]' || OLD.format_name || '[:]' ||
-	     OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
+             OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || 
              OLD.obiid || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
@@ -2424,7 +2424,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.relation_id || '[:]' || OLD.source_id || '[:]' ||
-	     OLD.parent_id || '[:]' ||
+             OLD.parent_id || '[:]' ||
              OLD.child_id || '[:]' || OLD.ro_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
@@ -2593,7 +2593,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.psimod_id || '[:]' || OLD.format_name || '[:]' ||
-	     OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
+             OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || 
              OLD.psimodid || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
@@ -2672,7 +2672,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.relation_id || '[:]' || OLD.source_id || '[:]' ||
-	     OLD.parent_id || '[:]' ||
+             OLD.parent_id || '[:]' ||
              OLD.child_id || '[:]' || OLD.ro_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
@@ -2840,7 +2840,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.ro_id || '[:]' || OLD.format_name || '[:]' ||
-	     OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
+             OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || 
              OLD.ro_id || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
@@ -2919,7 +2919,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.relation_id || '[:]' || OLD.source_id || '[:]' ||
-	     OLD.parent_id || '[:]' ||
+             OLD.parent_id || '[:]' ||
              OLD.child_id || '[:]' || OLD.relation_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
@@ -3242,7 +3242,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.relation_id || '[:]' || OLD.source_id || '[:]' ||
-	     OLD.parent_id || '[:]' ||
+             OLD.parent_id || '[:]' ||
              OLD.child_id || '[:]' || OLD.ro_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
@@ -3572,7 +3572,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.relation_id || '[:]' || OLD.source_id || '[:]' ||
-	     OLD.parent_id || '[:]' ||
+             OLD.parent_id || '[:]' ||
              OLD.child_id || '[:]' || OLD.ro_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
