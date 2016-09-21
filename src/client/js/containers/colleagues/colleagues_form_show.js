@@ -231,7 +231,26 @@ const ColleaguesFormShow = React.createClass({
   },
   
   _renderControls () {
-    if (this.props.isReadOnly) return null;
+    let editNode;
+    let controlNode = null;
+    // if read only, show links to edit form and triage controls for triage
+    if (this.props.isReadOnly) {
+      let editUrl;
+      if (this.props.isCurator && this.props.isTriage) {
+        editUrl = `/curate/colleagues/triage/${this.props.colleagueDisplayName}/edit`;
+        controlNode = <span>Triage Stuff</span>;
+      } else if (this.props.isCurator) {
+        editUrl = `/curate/colleagues/${this.props.colleagueDisplayName}/edit`;
+      } else {
+        editUrl = `/colleague/${this.props.colleagueDisplayName}/edit`;
+      }
+      editNode = <p><Link to={editUrl}><i className='fa fa-edit'/> Edit</Link></p>;
+    // edit form, show update
+    } else {
+      // user edit
+      // triage edit
+      // colleague edit
+    }
     let classSuffix = this.state.isUpdatePending ? ' disabled ' : '';
     let label = this.state.isUpdatePending ? 'Saving...' : 'Send Update';
     let saveIconNode = this.state.isUpdatePending ? null : <span><i className='fa fa-upload' /> </span>;

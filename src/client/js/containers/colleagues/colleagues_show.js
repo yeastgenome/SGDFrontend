@@ -8,9 +8,6 @@ const ColleaguesShow = React.createClass({
   render () {
     return (
       <div>
-        <p>
-          <Link to={`/curate/colleagues/${this.props.routeParams.formatName}/edit`}><i className='fa fa-edit' /> Colleague Update Form</Link>
-        </p>
         <ColleaguesFormShow
           isReadOnly={true} isCurator={true} 
           colleagueDisplayName={this.props.routeParams.formatName}
