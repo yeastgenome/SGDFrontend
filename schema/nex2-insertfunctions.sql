@@ -15,7 +15,7 @@ BEGIN
     INSERT INTO nex.deletelog
         (tab_name, primary_key, deleted_row, created_by)
     VALUES
-        (upper(p_table), p_key, p_row, p_user);
+        (upper(p_table), p_key, p_row, upper(p_user));
 
 END;
 
@@ -33,7 +33,7 @@ BEGIN
     INSERT INTO nex.updatelog
         (tab_name, col_name, primary_key, old_value, new_value, created_by)
     VALUES
-        (upper(p_table), upper(p_column), p_key, p_old, p_new, p_user);
+        (upper(p_table), upper(p_column), p_key, p_old, p_new, upper(p_user));
 
 END;
 
@@ -45,27 +45,30 @@ REVOKE ALL ON FUNCTION insertupdatelog (p_table text, p_column text, p_key bigin
 --
 -- Automatic insert into the arch_locuschange table for gene_names and qualifiers
 --
-CREATE OR REPLACE FUNCTION insertlocuschange (p_dbentityId text, p_sourceName text, p_changeType text, p_oldValue text, p_newValue text, p_changeDate timestamp, p_user text) RETURNS VOID AS $body$
+CREATE OR REPLACE FUNCTION insertlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user text) RETURNS VOID AS $body$
 DECLARE
 
-   v_sourceID   source.source_id%TYPE;
+   v_source_id   nex.arch_locuschange.source_id%TYPE;
+   v_change_date nex.arch_locuschange.date_changed%TYPE;
 
 BEGIN
 
-    SELECT source_id INTO v_sourceID
-    FROM SOURCE
+    SELECT source_id INTO v_source_id
+    FROM nex.source
     WHERE display_name = p_sourceName;
 
-    INSERT INTO arch_locuschange
+    SELECT LOCALTIMESTAMP INTO v_change_date;
+    
+    INSERT INTO nex.arch_locuschange
         (dbentity_id, source_id, change_type, old_value, new_value, date_changed, changed_by)
     VALUES
-        (p_dbentityID, v_sourceID, p_changeType, p_oldValue, p_newValue, p_changeDate, p_user);
+        (p_dbentityID, v_source_id, p_changeType, p_old, p_new, v_change_date, upper(p_user));
 
 END;
 
 $body$ LANGUAGE PLPGSQL;
-GRANT EXECUTE on FUNCTION insertlocuschange (p_dbentityId text, p_sourceName text, p_changeType text, p_oldValue text, p_newValue text, p_changeDate timestamp, p_user text) to CURATOR;
-REVOKE ALL ON FUNCTION insertlocuschange (p_dbentityId text, p_sourceName text, p_changeType text, p_oldValue text, p_newValue text, p_changeDate timestamp, p_user text) FROM PUBLIC;
+GRANT EXECUTE on FUNCTION insertlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user text) to CURATOR;
+REVOKE ALL ON FUNCTION insertlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user text) FROM PUBLIC;
 
 
 --
@@ -74,21 +77,21 @@ REVOKE ALL ON FUNCTION insertlocuschange (p_dbentityId text, p_sourceName text, 
 CREATE OR REPLACE FUNCTION insertsgdid (p_sgdid text, p_source text, p_sgdidClass text, p_sgdidStatus text, p_user text) RETURNS VOID AS $body$
 DECLARE
 
-    v_source_id   sgdid.source_id%TYPE;
-    v_objurl      sgdid.obj_url%TYPE;
+    v_source_id   nex.sgdid.source_id%TYPE;
+    v_objurl      nex.sgdid.obj_url%TYPE;
 
 BEGIN
 
     select source_id INTO v_source_id
-    from source
+    from nex.source
     where display_name = p_source;
 
     v_objurl := CONCAT('/sgdid/', p_sgdid);
 
-    INSERT INTO sgdid
+    INSERT INTO nex.sgdid
         (format_name, display_name, obj_url, source_id, subclass, sgdid_status, created_by)
     VALUES
-        (p_sgdid, p_sgdid, v_objurl, v_source_id, p_sgdidClass, p_sgdidStatus, p_user);
+        (p_sgdid, p_sgdid, v_objurl, v_source_id, p_sgdidClass, p_sgdidStatus, upper(p_user));
 
 END;
 

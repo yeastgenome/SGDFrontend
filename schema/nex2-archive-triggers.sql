@@ -12,7 +12,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_archcontigchange_bir() RETURNS trigger AS
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -30,8 +30,8 @@ CREATE OR REPLACE FUNCTION trigger_fct_archcontig_bir() RETURNS trigger AS $BODY
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
-       PERFORM nex.checkuser(NEW.created_by);
+       NEW.changed_by := upper(NEW.changed_by);
+       PERFORM nex.checkuser(NEW.changed_by);
 
        RETURN NEW;
   END IF;
@@ -48,7 +48,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_archdnasequenceannotation_bir() RETURNS t
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -66,7 +66,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_archdnasubsequence_bir() RETURNS trigger 
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -84,7 +84,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_archliteratureannotation_bir() RETURNS tr
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -102,8 +102,8 @@ CREATE OR REPLACE FUNCTION trigger_fct_archlocuschange_bir() RETURNS trigger AS 
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
-       PERFORM nex.checkuser(NEW.created_by);
+       NEW.changed_by := upper(NEW.changed_by);
+       PERFORM nex.checkuser(NEW.changed_by);
 
        RETURN NEW;
   END IF;
@@ -120,7 +120,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_archproteinsequenceannotation_bir() RETUR
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;       

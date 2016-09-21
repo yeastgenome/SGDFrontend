@@ -160,15 +160,15 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('SGDID', 'BUD_ID', OLD.sgdid_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('SGDID', 'BUD_ID', OLD.sgdid_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (OLD.sgdid_status != NEW.sgdid_status) THEN
-        PERFORM insertupdatelog('SGDID', 'SGDID_STATUS', OLD.sgdid_id, OLD.sgdid_status, NEW.sgdid_status, USER);
+        PERFORM nex.insertupdatelog('SGDID', 'SGDID_STATUS', OLD.sgdid_id, OLD.sgdid_status, NEW.sgdid_status, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
-        PERFORM insertupdatelog('SGDID', 'DESCRIPTION', OLD.sgdid_id, OLD.description, NEW.description, USER);
+        PERFORM nex.insertupdatelog('SGDID', 'DESCRIPTION', OLD.sgdid_id, OLD.description, NEW.description, USER);
     END IF;
 
     RETURN NEW;

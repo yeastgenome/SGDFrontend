@@ -13,38 +13,38 @@ SET client_encoding TO 'UTF8';
 CREATE OR REPLACE FUNCTION makesgdid () RETURNS varchar AS $body$
 DECLARE
 
-    v_Sgdid	dbentity.sgdid%TYPE;
-    v_SgdidNo   integer ;
+    v_Sgdid	nex.dbentity.sgdid%TYPE;
+    v_SgdidNo   text;
 
 BEGIN
 
-   SELECT nextval('sgdid_seq') INTO v_SgdidNo ;
+   SELECT nextval('nex.sgdid_seq') INTO v_SgdidNo ;
 
-   IF (LENGTH(v_SgdidNo) = 9) THEN
+   IF (length(v_SgdidNo) = 9) THEN
         v_Sgdid := CONCAT('S',v_SgdidNo);
         RETURN (v_Sgdid);
-   ELSIF (LENGTH(v_SgdidNo) = 8) THEN
+   ELSIF (length(v_SgdidNo) = 8) THEN
         v_Sgdid := CONCAT('S0',v_SgdidNo);
         RETURN (v_Sgdid);
-   ELSIF (LENGTH(v_SgdidNo) = 7) THEN
+   ELSIF (length(v_SgdidNo) = 7) THEN
         v_Sgdid := CONCAT('S00',v_SgdidNo);
         RETURN (v_Sgdid);
-   ELSIF (LENGTH(v_SgdidNo) = 6) THEN
+   ELSIF (length(v_SgdidNo) = 6) THEN
         v_Sgdid := CONCAT('S000',v_SgdidNo);
         RETURN (v_Sgdid);
-   ELSIF (LENGTH(v_SgdidNo) = 5) THEN
+   ELSIF (length(v_SgdidNo) = 5) THEN
         v_Sgdid := CONCAT('S0000',v_SgdidNo);
         RETURN (v_Sgdid);
-   ELSIF (LENGTH(v_SgdidNo) = 4) THEN
+   ELSIF (length(v_SgdidNo) = 4) THEN
         v_Sgdid := CONCAT('S00000',v_SgdidNo);
         RETURN (v_Sgdid);
-   ELSIF (LENGTH(v_SgdidNo) = 3) THEN
+   ELSIF (length(v_SgdidNo) = 3) THEN
         v_Sgdid := CONCAT('S000000',v_SgdidNo);
         RETURN (v_Sgdid);
-   ELSIF (LENGTH(v_SgdidNo) = 2) THEN
+   ELSIF (length(v_SgdidNo) = 2) THEN
         v_Sgdid := CONCAT('S0000000',v_SgdidNo);
         RETURN (v_Sgdid);
-   ELSIF (LENGTH(v_SgdidNo) = 1) THEN
+   ELSIF (length(v_SgdidNo) = 1) THEN
         v_Sgdid := CONCAT('S00000000',v_SgdidNo);
         RETURN (v_Sgdid);
    ELSE
