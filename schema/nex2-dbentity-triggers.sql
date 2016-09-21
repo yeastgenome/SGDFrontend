@@ -10,50 +10,55 @@ SET client_encoding TO 'UTF8';
 DROP TRIGGER IF EXISTS dbentity_aiudr ON dbentity CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_dbentity_aiudr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       PERFORM managesgdid.insertsgdid(NEW.sgdid, 'SGD', NEW.subclass, 'Primary', NEW.created_by);
+       IF NOT EXISTS (SELECT display_name
+                      FROM nex.sgdid
+		      WHERE display_name = NEW.SGDID) THEN
 
+            PERFORM nex.insertsgdid(NEW.sgdid, 'SGD', NEW.subclass, 'Primary', NEW.created_by);
+
+       END IF;
        RETURN NEW;
        
   ELSIF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.format_name != NEW.format_name) THEN
-        PERFORM insertupdatelog('DBENTITY', 'FORMAT_NAME', OLD.dbentity_id, OLD.format_name, NEW.format_name, USER);
+        PERFORM nex.insertupdatelog('DBENTITY', 'FORMAT_NAME', OLD.dbentity_id, OLD.format_name, NEW.format_name, USER);
     END IF;
 
     IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('DBENTITY', 'DISPLAY_NAME', OLD.dbentity_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('DBENTITY', 'DISPLAY_NAME', OLD.dbentity_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM insertupdatelog('DBENTITY', 'OBJ_URL', OLD.dbentity_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('DBENTITY', 'OBJ_URL', OLD.dbentity_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
     IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('DBENTITY', 'SOURCE_ID', OLD.dbentity_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('DBENTITY', 'SOURCE_ID', OLD.dbentity_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('DBENTITY', 'BUD_ID', OLD.dbentity_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('DBENTITY', 'BUD_ID', OLD.dbentity_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (OLD.subclass != NEW.subclass) THEN
-       PERFORM insertupdatelog('DBENTITY', 'SUBCLASS', OLD.dbentity_id, OLD.subclass, NEW.subclass, USER);
+       PERFORM nex.insertupdatelog('DBENTITY', 'SUBCLASS', OLD.dbentity_id, OLD.subclass, NEW.subclass, USER);
     END IF;
 
     IF (OLD.dbentity_status != NEW.dbentity_status) THEN
-        PERFORM insertupdatelog('DBENTITY', 'DBENTITY_STATUS', OLD.dbentity_id, OLD.dbentity_status, NEW.dbentity_status, USER);
-        PERFORM insertarchive.insertlocuschange(OLD.dbentity_id, 'SGD', 'Status', OLD.dbentity_status, NEW.dbentity_status, LOCALTIMESTAMP, USER);
+        PERFORM nex.insertupdatelog('DBENTITY', 'DBENTITY_STATUS', OLD.dbentity_id, OLD.dbentity_status, NEW.dbentity_status, USER);
+        PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD', 'Status', OLD.dbentity_status, NEW.dbentity_status, USER);
     END IF;
 
     RETURN NEW;
     
   ELSIF (TG_OP = 'DELETE') THEN
 
-    UPDATE sgdid SET sgdid_status = 'Deleted'
+    UPDATE nex.sgdid SET sgdid_status = 'Deleted'
     WHERE display_name = OLD.sgdid;
 
     v_row := OLD.dbentity_id || '[:]' || OLD.format_name || '[:]' ||
@@ -63,7 +68,7 @@ BEGIN
              OLD.dbentity_status || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-     PERFORM insertdeletelog('DBENTITY', OLD.dbentity_id, v_row, USER);
+     PERFORM nex.insertdeletelog('DBENTITY', OLD.dbentity_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -81,15 +86,14 @@ BEGIN
   IF (TG_OP = 'INSERT') THEN
 
     IF (NEW.sgdid IS NULL) THEN
-        NEW.sgdid := MakeSgdid;
+        NEW.sgdid := nex.makesgdid();
     ELSE
-        NEW.sgdid := UPPER(NEW.sgdid);
-        PERFORM managesgdid.checksgdid(NEW.sgdid);
+        NEW.sgdid := upper(NEW.sgdid);
+        PERFORM nex.checksgdid(NEW.sgdid);
     END IF;
 
    IF (NEW.obj_url is NULL) THEN
-        NEW.subclass := LOWER(NEW.subclass);
-        NEW.obj_url := CONCAT('/'||NEW.subclass||'/', NEW.sgdid);
+        NEW.obj_url := CONCAT('/'||lower(NEW.subclass)||'/', NEW.sgdid);
    END IF;
 
     IF (NEW.subclass = 'LOCUS') THEN
@@ -106,7 +110,7 @@ BEGIN
       	END IF;
     END IF;
 
-    NEW.created_by := UPPER(NEW.created_by);
+    NEW.created_by := upper(NEW.created_by);
     PERFORM nex.checkuser(NEW.created_by);
 
     RETURN NEW;
@@ -155,7 +159,7 @@ BEGIN
 
   ELSIF (TG_OP = 'DELETE') THEN
 
-    IF ((NEW.subclass = 'LOCUS') OR (NEW.subclass = 'STRAIN')) THEN
+    IF ((OLD.subclass = 'LOCUS') OR (OLD.subclass = 'STRAIN')) THEN
        RAISE EXCEPTION 'This dbentity subclass can not be deleted.';
     END	IF;
 
@@ -172,82 +176,82 @@ EXECUTE PROCEDURE trigger_fct_dbentity_biudr();
 DROP TRIGGER IF EXISTS locusdbentity_audr ON locusdbentity CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_locusdbentity_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.systematic_name != NEW.systematic_name) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'SYSTEMATIC_NAME', OLD.dbentity_id, OLD.systematic_name, NEW.systematic_name, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'SYSTEMATIC_NAME', OLD.dbentity_id, OLD.systematic_name, NEW.systematic_name, USER);
     END IF;
 
     IF (((OLD.gene_name IS NULL) AND (NEW.gene_name IS NOT NULL)) OR ((OLD.gene_name IS NOT NULL) AND (NEW.gene_name IS NULL)) OR (OLD.gene_name != NEW.gene_name)) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'GENE_NAME', OLD.dbentity_id, OLD.gene_name, NEW.gene_name, USER);
-        PERFORM insertarchive.insertlocuschange(OLD.dbentity_id, 'SGD', 'Gene name', OLD.gene_name, NEW.gene_name, LOCALTIMESTAMP, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'GENE_NAME', OLD.dbentity_id, OLD.gene_name, NEW.gene_name, USER);
+        PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD', 'Gene name', OLD.gene_name, NEW.gene_name, USER);
     END IF;
 
     IF (((OLD.qualifier IS NULL) AND (NEW.qualifier IS NOT NULL)) OR ((OLD.qualifier IS NOT NULL) AND (NEW.qualifier IS NULL)) OR (OLD.qualifier != NEW.qualifier)) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'QUALIFIER', OLD.dbentity_id, OLD.qualifier, NEW.qualifier, USER);
-	PERFORM insertarchive.insertlocuschange(OLD.dbentity_id, 'SGD', 'Qualifier', OLD.qualifier, NEW.qualifier, LOCALTIMESTAMP, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'QUALIFIER', OLD.dbentity_id, OLD.qualifier, NEW.qualifier, USER);
+	PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD', 'Qualifier', OLD.qualifier, NEW.qualifier, USER);
     END IF;
 
     IF (((OLD.genetic_position IS NULL) AND (NEW.genetic_position IS NOT NULL)) OR ((OLD.genetic_position IS NOT NULL) AND (NEW.genetic_position IS NULL)) OR (OLD.genetic_position != NEW.genetic_position)) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'GENETIC_POSITION', OLD.dbentity_id, OLD.genetic_position, NEW.genetic_position, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'GENETIC_POSITION', OLD.dbentity_id, OLD.genetic_position, NEW.genetic_position, USER);
     END IF;
 
     IF (((OLD.name_description IS NULL) AND (NEW.name_description IS NOT NULL)) OR ((OLD.name_description IS NOT NULL) AND (NEW.name_description IS NULL)) OR (OLD.name_description != NEW.name_description)) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'NAME_DESCRIPTION', OLD.dbentity_id, OLD.name_description, NEW.name_description, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'NAME_DESCRIPTION', OLD.dbentity_id, OLD.name_description, NEW.name_description, USER);
     END IF;
 
     IF (((OLD.headline IS NULL) AND (NEW.headline IS NOT NULL)) OR ((OLD.headline IS NOT NULL) AND (NEW.headline IS NULL)) OR (OLD.headline != NEW.headline)) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'HEADLINE', OLD.dbentity_id, OLD.headline, NEW.headline, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HEADLINE', OLD.dbentity_id, OLD.headline, NEW.headline, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'DESCRIPTION', OLD.dbentity_id, OLD.description, NEW.description, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'DESCRIPTION', OLD.dbentity_id, OLD.description, NEW.description, USER);
     END IF;
 
     IF (OLD.has_summary != NEW.has_summary) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'HAS_SUMMARY', OLD.dbentity_id, OLD.has_summary, NEW.has_summary, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_SUMMARY', OLD.dbentity_id, OLD.has_summary, NEW.has_summary, USER);
     END IF;
 
     IF (OLD.has_sequence != NEW.has_sequence) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'HAS_SEQUENCE', OLD.dbentity_id, OLD.has_sequence, NEW.has_sequence, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_SEQUENCE', OLD.dbentity_id, OLD.has_sequence, NEW.has_sequence, USER);
     END IF;
 
     IF (OLD.has_history != NEW.has_history) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'HAS_HISTORY', OLD.dbentity_id, OLD.has_history, NEW.has_history, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_HISTORY', OLD.dbentity_id, OLD.has_history, NEW.has_history, USER);
     END IF;
 
     IF (OLD.has_literature != NEW.has_literature) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'HAS_LITERATURE', OLD.dbentity_id, OLD.has_literature, NEW.has_literature, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_LITERATURE', OLD.dbentity_id, OLD.has_literature, NEW.has_literature, USER);
     END IF;
 
     IF (OLD.has_go != NEW.has_go) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'HAS_GO', OLD.dbentity_id, OLD.has_go, NEW.has_go, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_GO', OLD.dbentity_id, OLD.has_go, NEW.has_go, USER);
     END IF;
 
     IF (OLD.has_phenotype != NEW.has_phenotype) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'HAS_PHENOTYPE', OLD.dbentity_id, OLD.has_phenotype, NEW.has_phenotype, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_PHENOTYPE', OLD.dbentity_id, OLD.has_phenotype, NEW.has_phenotype, USER);
     END IF;
 
     IF (OLD.has_interaction != NEW.has_interaction) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'HAS_INTERACTION', OLD.dbentity_id, OLD.has_interaction, NEW.has_interaction, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_INTERACTION', OLD.dbentity_id, OLD.has_interaction, NEW.has_interaction, USER);
     END IF;
 
     IF (OLD.has_expression != NEW.has_expression) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'HAS_EXPRESSION', OLD.dbentity_id, OLD.has_expression, NEW.has_expression, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_EXPRESSION', OLD.dbentity_id, OLD.has_expression, NEW.has_expression, USER);
     END IF;
 
     IF (OLD.has_regulation != NEW.has_regulation) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'HAS_REGULATION', OLD.dbentity_id, OLD.has_regulation, NEW.has_regulation, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_REGULATION', OLD.dbentity_id, OLD.has_regulation, NEW.has_regulation, USER);
     END IF;
 
     IF (OLD.has_protein != NEW.has_protein) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'HAS_PROTEIN', OLD.dbentity_id, OLD.has_protein, NEW.has_protein, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_PROTEIN', OLD.dbentity_id, OLD.has_protein, NEW.has_protein, USER);
     END IF;
 
     IF (OLD.has_sequence_section != NEW.has_sequence_section) THEN
-        PERFORM insertupdatelog('LOCUSDBENTITY', 'HAS_SEQUENCE_SECTION', OLD.dbentity_id, OLD.has_sequence_section, NEW.has_sequence_section, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_SEQUENCE_SECTION', OLD.dbentity_id, OLD.has_sequence_section, NEW.has_sequence_section, USER);
     END IF;
 
     RETURN NEW;
@@ -265,7 +269,7 @@ BEGIN
              OLD.has_regulation || '[:]' || OLD.has_protein || '[:]' ||
              OLD.has_sequence_section;
 
-            PERFORM insertdeletelog('LOCUSDBENTITY', OLD.dbentity_id, v_row, USER);
+            PERFORM nex.insertdeletelog('LOCUSDBENTITY', OLD.dbentity_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -283,7 +287,7 @@ BEGIN
   IF (TG_OP = 'INSERT') THEN
 
     IF (NEW.gene_name IS NOT NULL) THEN
-        NEW.gene_name := UPPER(NEW.gene_name);
+        NEW.gene_name := upper(NEW.gene_name);
     END IF;
 
     RETURN NEW;
@@ -295,7 +299,7 @@ BEGIN
     END IF;
 
     IF (NEW.gene_name IS NOT NULL) THEN
-        NEW.gene_name := UPPER(NEW.gene_name);
+        NEW.gene_name := upper(NEW.gene_name);
     END IF;
 
     RETURN NEW;
@@ -311,36 +315,36 @@ EXECUTE PROCEDURE trigger_fct_locusdbentity_biur();
 DROP TRIGGER IF EXISTS locusalias_audr ON locus_alias CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_locusalias_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('LOCUS_ALIAS', 'DISPLAY_NAME', OLD.alias_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('LOCUS_ALIAS', 'DISPLAY_NAME', OLD.alias_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (((OLD.obj_url IS NULL) AND (NEW.obj_url IS NOT NULL)) OR ((OLD.obj_url IS NOT NULL) AND (NEW.obj_url IS NULL)) OR (OLD.obj_url != NEW.obj_url)) THEN
-        PERFORM insertupdatelog('LOCUS_ALIAS', 'OBJ_URL', OLD.alias_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('LOCUS_ALIAS', 'OBJ_URL', OLD.alias_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('LOCUS_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('LOCUS_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('LOCUS_ALIAS', 'BUD_ID', OLD.alias_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('LOCUS_ALIAS', 'BUD_ID', OLD.alias_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (OLD.locus_id != NEW.locus_id) THEN
-        PERFORM insertupdatelog('LOCUS_ALIAS', 'LOCUS_ID', OLD.alias_id, OLD.locus_id, NEW.locus_id, USER);
+        PERFORM nex.insertupdatelog('LOCUS_ALIAS', 'LOCUS_ID', OLD.alias_id, OLD.locus_id, NEW.locus_id, USER);
     END IF;
 
     IF (OLD.has_external_id_section != NEW.has_external_id_section) THEN
-        PERFORM insertupdatelog('LOCUS_ALIAS', 'HAS_EXTERNAL_ID_SECTION', OLD.alias_id, OLD.has_external_id_section, NEW.has_external_id_section, USER);
+        PERFORM nex.insertupdatelog('LOCUS_ALIAS', 'HAS_EXTERNAL_ID_SECTION', OLD.alias_id, OLD.has_external_id_section, NEW.has_external_id_section, USER);
     END IF;
 
     IF (OLD.alias_type != NEW.alias_type) THEN
-        PERFORM insertupdatelog('LOCUS_ALIAS', 'ALIAS_TYPE', OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
+        PERFORM nex.insertupdatelog('LOCUS_ALIAS', 'ALIAS_TYPE', OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
     END IF;
 
     RETURN NEW;
@@ -353,7 +357,7 @@ BEGIN
 	     OLD.has_external_id_section || '[:]' || OLD.alias_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('LOCUS_ALIAS', OLD.alias_id, v_row, USER);
+          PERFORM nex.insertdeletelog('LOCUS_ALIAS', OLD.alias_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -370,7 +374,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_locusalias_biur() RETURNS trigger AS $BOD
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-    NEW.created_by := UPPER(NEW.created_by);
+    NEW.created_by := upper(NEW.created_by);
     PERFORM nex.checkuser(NEW.created_by);
 
     RETURN NEW;
@@ -402,28 +406,28 @@ EXECUTE PROCEDURE trigger_fct_locusalias_biur();
 DROP TRIGGER IF EXISTS locusrelation_audr ON locus_relation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_locusrelation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('LOCUS_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('LOCUS_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('LOCUS_RELATION', 'BUD_ID', OLD.relation_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('LOCUS_RELATION', 'BUD_ID', OLD.relation_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM insertupdatelog('LOCUS_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id, NEW.parent_id, USER);
+        PERFORM nex.insertupdatelog('LOCUS_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id, NEW.parent_id, USER);
     END IF;
 
      IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM insertupdatelog('LOCUS_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id, NEW.child_id, USER);
+        PERFORM nex.insertupdatelog('LOCUS_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id, NEW.child_id, USER);
     END IF;
 
     IF (OLD.ro_id != NEW.ro_id) THEN
-        PERFORM insertupdatelog('LOCUS_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id, NEW.ro_id, USER);
+        PERFORM nex.insertupdatelog('LOCUS_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id, NEW.ro_id, USER);
     END IF;
 
     RETURN NEW;
@@ -435,7 +439,7 @@ BEGIN
              OLD.child_id || '[:]' || OLD.ro_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM insertdeletelog('LOCUS_RELATION', OLD.relation_id, v_row, USER);
+         PERFORM nex.insertdeletelog('LOCUS_RELATION', OLD.relation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -452,7 +456,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_locusrelation_biur() RETURNS trigger AS $
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -484,36 +488,36 @@ EXECUTE PROCEDURE trigger_fct_locusrelation_biur();
 DROP TRIGGER IF EXISTS locusurl_audr ON locus_url CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_locusurl_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('LOCUS_URL', 'DISPLAY_NAME', OLD.url_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('LOCUS_URL', 'DISPLAY_NAME', OLD.url_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM insertupdatelog('LOCUS_URL', 'OBJ_URL', OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('LOCUS_URL', 'OBJ_URL', OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('LOCUS_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('LOCUS_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('LOCUS_URL', 'BUD_ID', OLD.url_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('LOCUS_URL', 'BUD_ID', OLD.url_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (OLD.locus_id != NEW.locus_id) THEN
-        PERFORM insertupdatelog('LOCUS_URL', 'LOCUS_ID', OLD.url_id, OLD.locus_id, NEW.locus_id, USER);
+        PERFORM nex.insertupdatelog('LOCUS_URL', 'LOCUS_ID', OLD.url_id, OLD.locus_id, NEW.locus_id, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
-        PERFORM insertupdatelog('LOCUS_URL', 'URL_TYPE', OLD.url_id, OLD.url_type, NEW.url_type, USER);
+        PERFORM nex.insertupdatelog('LOCUS_URL', 'URL_TYPE', OLD.url_id, OLD.url_type, NEW.url_type, USER);
     END IF;
 
     IF (OLD.placement != NEW.placement) THEN
-        PERFORM insertupdatelog('LOCUS_URL', 'PLACEMENT', OLD.url_id, OLD.placement, NEW.placement, USER);
+        PERFORM nex.insertupdatelog('LOCUS_URL', 'PLACEMENT', OLD.url_id, OLD.placement, NEW.placement, USER);
     END IF;
 
     RETURN NEW;
@@ -526,7 +530,7 @@ BEGIN
 	     OLD.url_type || '[:]' || OLD.placement || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM insertdeletelog('LOCUS_URL', OLD.url_id, v_row, USER);
+         PERFORM nex.insertdeletelog('LOCUS_URL', OLD.url_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -543,7 +547,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_locusurl_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -575,36 +579,36 @@ EXECUTE PROCEDURE trigger_fct_locusurl_biur();
 DROP TRIGGER IF EXISTS locussummary_audr ON locussummary CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_locussummary_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('LOCUSSUMMARY', 'SOURCE_ID', OLD.summary_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY', 'SOURCE_ID', OLD.summary_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('LOCUSSUMMARY', 'BUD_ID', OLD.summary_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY', 'BUD_ID', OLD.summary_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (OLD.locus_id != NEW.locus_id) THEN
-        PERFORM insertupdatelog('LOCUSSUMMARY', 'LOCUS_ID', OLD.summary_id, OLD.locus_id, NEW.locus_id, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY', 'LOCUS_ID', OLD.summary_id, OLD.locus_id, NEW.locus_id, USER);
     END IF;
 
     IF (OLD.summary_type != NEW.summary_type) THEN
-        PERFORM insertupdatelog('LOCUSSUMMARY', 'SUMMARY_TYPE', OLD.summary_id, OLD.summary_type, NEW.summary_type, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY', 'SUMMARY_TYPE', OLD.summary_id, OLD.summary_type, NEW.summary_type, USER);
     END IF;
 
     IF (OLD.summary_order != NEW.summary_order) THEN
-        PERFORM insertupdatelog('LOCUSSUMMARY', 'SUMMARY_ORDER', OLD.summary_id, OLD.summary_order, NEW.summary_order, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY', 'SUMMARY_ORDER', OLD.summary_id, OLD.summary_order, NEW.summary_order, USER);
     END IF;
 
     IF (OLD.text != NEW.text) THEN
-        PERFORM insertupdatelog('LOCUSSUMMARY', 'TEXT', OLD.summary_id, OLD.text, NEW.text, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY', 'TEXT', OLD.summary_id, OLD.text, NEW.text, USER);
     END IF;
 
     IF (OLD.html != NEW.html) THEN
-        PERFORM insertupdatelog('LOCUSSUMMARY', 'HTML', OLD.summary_id, OLD.html, NEW.html, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY', 'HTML', OLD.summary_id, OLD.html, NEW.html, USER);
     END IF;
 
     RETURN NEW;
@@ -617,7 +621,7 @@ BEGIN
              OLD.text || '[:]' || OLD.html || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-             PERFORM insertdeletelog('LOCUSSUMMARY', OLD.summary_id, v_row, USER);
+             PERFORM nex.insertdeletelog('LOCUSSUMMARY', OLD.summary_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -634,7 +638,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_locussummary_biur() RETURNS trigger AS $B
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -666,24 +670,24 @@ EXECUTE PROCEDURE trigger_fct_locussummary_biur();
 DROP TRIGGER IF EXISTS locussummaryreference_audr ON locussummary_reference CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_locussummaryreference_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.summary_id != NEW.summary_id) THEN
-        PERFORM insertupdatelog('SUMMARY_REFERENCE', 'SUMMARY_ID', OLD.summary_reference_id, OLD.summary_id, NEW.summary_id, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'SUMMARY_ID', OLD.summary_reference_id, OLD.summary_id, NEW.summary_id, USER);
     END IF;
 
      IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ID', OLD.summary_reference_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ID', OLD.summary_reference_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
      IF (OLD.reference_order != NEW.reference_order) THEN
-        PERFORM insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ORDER', OLD.summary_reference_id, OLD.reference_order, NEW.reference_order, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ORDER', OLD.summary_reference_id, OLD.reference_order, NEW.reference_order, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('SUMMARY_REFERENCE', 'SOURCE_ID', OLD.summary_reference_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'SOURCE_ID', OLD.summary_reference_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     RETURN NEW;
@@ -695,7 +699,7 @@ BEGIN
              OLD.source_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-             PERFORM insertdeletelog('SUMMARY_REFERENCE', OLD.summary_reference_id, v_row, USER);
+             PERFORM nex.insertdeletelog('SUMMARY_REFERENCE', OLD.summary_reference_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -712,7 +716,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_locussummaryreference_biur() RETURNS trig
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -745,48 +749,48 @@ EXECUTE PROCEDURE trigger_fct_locussummaryreference_biur();
 DROP TRIGGER IF EXISTS straindbentity_audr ON straindbentity CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_straindbentity_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('STRAINDBENTITY', 'TAXONOMY_ID', OLD.dbentity_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'TAXONOMY_ID', OLD.dbentity_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF (OLD.strain_type != NEW.strain_type) THEN
-        PERFORM insertupdatelog('STRAINDBENTITY', 'STRAIN_TYPE', OLD.dbentity_id, OLD.strain_type, NEW.strain_type, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'STRAIN_TYPE', OLD.dbentity_id, OLD.strain_type, NEW.strain_type, USER);
     END IF;
 
     IF (((OLD.genotype IS NULL) AND (NEW.genotype IS NOT NULL)) OR ((OLD.genotype IS NOT NULL) AND (NEW.genotype IS NULL)) OR (OLD.genotype != NEW.genotype)) THEN
-        PERFORM insertupdatelog('STRAINDBENTITY', 'GENOTYPE', OLD.dbentity_id, OLD.genotype, NEW.genotype, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'GENOTYPE', OLD.dbentity_id, OLD.genotype, NEW.genotype, USER);
     END IF;
 
     IF (((OLD.genbank_id IS NULL) AND (NEW.genbank_id IS NOT NULL)) OR ((OLD.genbank_id IS NOT NULL) AND (NEW.genbank_id IS NULL)) OR (OLD.genbank_id != NEW.genbank_id)) THEN
-        PERFORM insertupdatelog('STRAINDBENTITY', 'GENBANK_ID', OLD.dbentity_id, OLD.genbank_id, NEW.genbank_id, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'GENBANK_ID', OLD.dbentity_id, OLD.genbank_id, NEW.genbank_id, USER);
     END IF;
 
     IF (((OLD.assembly_size IS NULL) AND (NEW.assembly_size IS NOT NULL)) OR ((OLD.assembly_size IS NOT NULL) AND (NEW.assembly_size IS NULL)) OR (OLD.assembly_size != NEW.assembly_size)) THEN
-        PERFORM insertupdatelog('STRAINDBENTITY', 'ASSEMBLY_SIZE', OLD.dbentity_id, OLD.assembly_size, NEW.assembly_size, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'ASSEMBLY_SIZE', OLD.dbentity_id, OLD.assembly_size, NEW.assembly_size, USER);
     END IF;
 
     IF (((OLD.fold_coverage IS NULL) AND (NEW.fold_coverage IS NOT NULL)) OR ((OLD.fold_coverage IS NOT NULL) AND (NEW.fold_coverage IS NULL)) OR (OLD.fold_coverage != NEW.fold_coverage)) THEN
-        PERFORM insertupdatelog('STRAINDBENTITY', 'FOLD_COVERAGE', OLD.dbentity_id, OLD.fold_coverage, NEW.fold_coverage, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'FOLD_COVERAGE', OLD.dbentity_id, OLD.fold_coverage, NEW.fold_coverage, USER);
     END IF;
 
     IF (((OLD.scaffold_number IS NULL) AND (NEW.scaffold_number IS NOT NULL)) OR ((OLD.scaffold_number IS NOT NULL) AND (NEW.scaffold_number IS NULL)) OR (OLD.scaffold_number != NEW.scaffold_number)) THEN
-        PERFORM insertupdatelog('STRAINDBENTITY', 'SCAFFOLD_NUMBER', OLD.dbentity_id, OLD.scaffold_number, NEW.scaffold_number, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'SCAFFOLD_NUMBER', OLD.dbentity_id, OLD.scaffold_number, NEW.scaffold_number, USER);
     END IF;
 
     IF (((OLD.longest_scaffold IS NULL) AND (NEW.longest_scaffold IS NOT NULL)) OR ((OLD.longest_scaffold IS NOT NULL) AND (NEW.longest_scaffold IS NULL)) OR (OLD.longest_scaffold != NEW.longest_scaffold)) THEN
-        PERFORM insertupdatelog('STRAINDBENTITY', 'LONGEST_SCAFFOLD', OLD.dbentity_id, OLD.longest_scaffold, NEW.longest_scaffold, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'LONGEST_SCAFFOLD', OLD.dbentity_id, OLD.longest_scaffold, NEW.longest_scaffold, USER);
     END IF;
 
     IF (((OLD.scaffold_nfifty IS NULL) AND (NEW.scaffold_nfifty IS NOT NULL)) OR ((OLD.scaffold_nfifty IS NOT NULL) AND (NEW.scaffold_nfifty IS NULL)) OR (OLD.scaffold_nfifty != NEW.scaffold_nfifty)) THEN
-        PERFORM insertupdatelog('STRAINDBENTITY', 'SCAFFOLD_NFIFTY', OLD.dbentity_id, OLD.scaffold_nfifty, NEW.scaffold_nfifty, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'SCAFFOLD_NFIFTY', OLD.dbentity_id, OLD.scaffold_nfifty, NEW.scaffold_nfifty, USER);
     END IF;
 
     IF (((OLD.feature_count IS NULL) AND (NEW.feature_count IS NOT NULL)) OR ((OLD.feature_count IS NOT NULL) AND (NEW.feature_count IS NULL)) OR (OLD.feature_count != NEW.feature_count)) THEN
-        PERFORM insertupdatelog('STRAINDBENTITY', 'FEATURE_COUNT', OLD.dbentity_id, OLD.feature_count, NEW.feature_count, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'FEATURE_COUNT', OLD.dbentity_id, OLD.feature_count, NEW.feature_count, USER);
     END IF;
 
     RETURN NEW;
@@ -800,7 +804,7 @@ BEGIN
              coalesce(OLD.scaffold_number,'') || '[:]' || coalesce(OLD.longest_scaffold,'') || '[:]' ||
              coalesce(OLD.scaffold_nfifty,'') || '[:]' || coalesce(OLD.feature_count,'');
 
-            PERFORM insertdeletelog('STRAINDBENTITY', OLD.dbentity_id, v_row, USER);
+            PERFORM nex.insertdeletelog('STRAINDBENTITY', OLD.dbentity_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -831,28 +835,28 @@ EXECUTE PROCEDURE trigger_fct_straindbentity_bur();
 DROP TRIGGER IF EXISTS strainurl_audr ON strain_url CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_strainurl_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('STRAIN_URL', 'DISPLAY_NAME', OLD.url_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('STRAIN_URL', 'DISPLAY_NAME', OLD.url_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM insertupdatelog('STRAIN_URL', 'OBJ_URL', OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('STRAIN_URL', 'OBJ_URL', OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('STRAIN_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('STRAIN_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.strain_id != NEW.strain_id) THEN
-        PERFORM insertupdatelog('STRAIN_URL', 'STRAIN_ID', OLD.url_id, OLD.strain_id, NEW.strain_id, USER);
+        PERFORM nex.insertupdatelog('STRAIN_URL', 'STRAIN_ID', OLD.url_id, OLD.strain_id, NEW.strain_id, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
-        PERFORM insertupdatelog('STRAIN_URL', 'URL_TYPE', OLD.url_id, OLD.url_type, NEW.url_type, USER);
+        PERFORM nex.insertupdatelog('STRAIN_URL', 'URL_TYPE', OLD.url_id, OLD.url_type, NEW.url_type, USER);
     END IF;
 
     RETURN NEW;
@@ -864,7 +868,7 @@ BEGIN
              OLD.strain_id || '[:]' || OLD.url_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('STRAIN_URL', OLD.url_id, v_row, USER);
+          PERFORM nex.insertdeletelog('STRAIN_URL', OLD.url_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -881,7 +885,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_strainurl_biur() RETURNS trigger AS $BODY
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -913,28 +917,28 @@ EXECUTE PROCEDURE trigger_fct_strainurl_biur();
 DROP TRIGGER IF EXISTS strainsummary_audr ON strainsummary CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_strainsummary_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('STRAINSUMMARY', 'SOURCE_ID', OLD.summary_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('STRAINSUMMARY', 'SOURCE_ID', OLD.summary_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.strain_id != NEW.strain_id) THEN
-        PERFORM insertupdatelog('STRAINSUMMARY', 'STRAIN_ID', OLD.summary_id, OLD.strain_id, NEW.strain_id, USER);
+        PERFORM nex.insertupdatelog('STRAINSUMMARY', 'STRAIN_ID', OLD.summary_id, OLD.strain_id, NEW.strain_id, USER);
     END IF;
 
     IF (OLD.summary_type != NEW.summary_type) THEN
-        PERFORM insertupdatelog('STRAINSUMMARY', 'SUMMARY_TYPE', OLD.summary_id, OLD.summary_type, NEW.summary_type, USER);
+        PERFORM nex.insertupdatelog('STRAINSUMMARY', 'SUMMARY_TYPE', OLD.summary_id, OLD.summary_type, NEW.summary_type, USER);
     END IF;
 
     IF (OLD.text != NEW.text) THEN
-        PERFORM insertupdatelog('STRAINSUMMARY', 'TEXT', OLD.summary_id, OLD.text, NEW.text, USER);
+        PERFORM nex.insertupdatelog('STRAINSUMMARY', 'TEXT', OLD.summary_id, OLD.text, NEW.text, USER);
     END IF;
 
     IF (OLD.html != NEW.html) THEN
-        PERFORM insertupdatelog('STRAINSUMMARY', 'HTML', OLD.summary_id, OLD.html, NEW.html, USER);
+        PERFORM nex.insertupdatelog('STRAINSUMMARY', 'HTML', OLD.summary_id, OLD.html, NEW.html, USER);
     END IF;
 
     RETURN NEW;
@@ -946,7 +950,7 @@ BEGIN
              OLD.text || '[:]' || OLD.html || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM insertdeletelog('STRAINSUMMARY', OLD.summary_id, v_row, USER);
+           PERFORM nex.insertdeletelog('STRAINSUMMARY', OLD.summary_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -963,7 +967,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_strainsummary_biur() RETURNS trigger AS $
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -996,24 +1000,24 @@ EXECUTE PROCEDURE trigger_fct_strainsummary_biur();
 DROP TRIGGER IF EXISTS strainsummaryreference_audr ON strainsummary_reference CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_strainsummaryreference_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.summary_id != NEW.summary_id)    THEN
-        PERFORM insertupdatelog('SUMMARY_REFERENCE', 'SUMMARY_ID', OLD.summary_reference_id, OLD.summary_id, NEW.summary_id, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'SUMMARY_ID', OLD.summary_reference_id, OLD.summary_id, NEW.summary_id, USER);
     END IF;
 
      IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ID', OLD.summary_reference_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ID', OLD.summary_reference_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
      IF (OLD.reference_order != NEW.reference_order) THEN
-        PERFORM insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ORDER', OLD.summary_reference_id, OLD.reference_order, NEW.reference_order, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ORDER', OLD.summary_reference_id, OLD.reference_order, NEW.reference_order, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('SUMMARY_REFERENCE', 'SOURCE_ID', OLD.summary_reference_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'SOURCE_ID', OLD.summary_reference_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     RETURN NEW;
@@ -1025,7 +1029,7 @@ BEGIN
              OLD.source_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-             PERFORM insertdeletelog('SUMMARY_REFERENCE', OLD.summary_reference_id, v_row, USER);
+             PERFORM nex.insertdeletelog('SUMMARY_REFERENCE', OLD.summary_reference_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -1042,7 +1046,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_strainsummaryreference_biur() RETURNS tri
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -1075,21 +1079,24 @@ EXECUTE PROCEDURE trigger_fct_strainsummaryreference_biur();
 DROP TRIGGER IF EXISTS pathwaydbentity_audr ON pathwaydbentity CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_pathwaydbentity_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (((OLD.biocyc_id IS NULL) AND (NEW.biocyc_id IS NOT NULL)) OR ((OLD.biocyc_id IS NOT NULL) AND (NEW.biocyc_id IS NULL)) OR (OLD.biocyc_id != NEW.biocyc_id)) THEN
-        PERFORM insertupdatelog('PATHWAYDBENTITY', 'BIOCYC_ID', OLD.dbentity_id, OLD.biocyc_id, NEW.biocyc_id, USER);
+        PERFORM nex.insertupdatelog('PATHWAYDBENTITY', 'BIOCYC_ID', OLD.dbentity_id, OLD.biocyc_id, NEW.biocyc_id, USER);
     END IF;
 
     RETURN NEW;
 
   ELSIF (TG_OP = 'DELETE') THEN
 
-    v_row := OLD.dbentity_id || '[:]' || coalesce(OLD.biocyc_id,'');
+        UPDATE nex.sgdid SET sgdid_status = 'Deleted'
+	WHERE display_name = OLD.sgdid;
+	       
+        v_row := OLD.dbentity_id || '[:]' || coalesce(OLD.biocyc_id,'');
 
-            PERFORM insertdeletelog('PATHWAYDBENTITY', OLD.dbentity_id, v_row, USER);
+            PERFORM nex.insertdeletelog('PATHWAYDBENTITY', OLD.dbentity_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -1120,24 +1127,24 @@ EXECUTE PROCEDURE trigger_fct_pathwaydbentity_bur();
 DROP TRIGGER IF EXISTS pathwayalias_audr ON pathway_alias CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_pathwayalias_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('PATHWAY_ALIAS', 'DISPLAY_NAME', OLD.alias_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_ALIAS', 'DISPLAY_NAME', OLD.alias_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('PATHWAY_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.pathway_id != NEW.pathway_id) THEN
-        PERFORM insertupdatelog('PATHWAY_ALIAS', 'PATHWAY_ID', OLD.alias_id, OLD.pathway_id, NEW.pathway_id, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_ALIAS', 'PATHWAY_ID', OLD.alias_id, OLD.pathway_id, NEW.pathway_id, USER);
     END IF;
 
     IF (OLD.alias_type != NEW.alias_type) THEN
-        PERFORM insertupdatelog('PATHWAY_ALIAS', 'ALIAS_TYPE', OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_ALIAS', 'ALIAS_TYPE', OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
     END IF;
 
     RETURN NEW;
@@ -1148,7 +1155,7 @@ BEGIN
              OLD.pathway_id || '[:]' || OLD.alias_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM insertdeletelog('PATHWAY_ALIAS', OLD.alias_id, v_row, USER);
+           PERFORM nex.insertdeletelog('PATHWAY_ALIAS', OLD.alias_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1165,7 +1172,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_pathwayalias_biur() RETURNS trigger AS $B
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -1197,28 +1204,28 @@ EXECUTE PROCEDURE trigger_fct_pathwayalias_biur();
 DROP TRIGGER IF EXISTS pathwayurl_audr ON pathway_url CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_pathwayurl_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('PATHWAY_URL', 'DISPLAY_NAME', OLD.url_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_URL', 'DISPLAY_NAME', OLD.url_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM insertupdatelog('PATHWAY_URL', 'OBJ_URL', OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_URL', 'OBJ_URL', OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('PATHWAY_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.pathway_id != NEW.pathway_id) THEN
-        PERFORM insertupdatelog('PATHWAY_URL', 'PATHWAY_ID', OLD.url_id, OLD.pathway_id, NEW.pathway_id, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_URL', 'PATHWAY_ID', OLD.url_id, OLD.pathway_id, NEW.pathway_id, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
-        PERFORM insertupdatelog('PATHWAY_URL', 'URL_TYPE', OLD.url_id, OLD.url_type, NEW.url_type, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_URL', 'URL_TYPE', OLD.url_id, OLD.url_type, NEW.url_type, USER);
     END IF;
 
     RETURN NEW;
@@ -1230,7 +1237,7 @@ BEGIN
              OLD.pathway_id || '[:]' || OLD.url_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-            PERFORM insertdeletelog('PATHWAY_URL', OLD.url_id, v_row, USER);
+            PERFORM nex.insertdeletelog('PATHWAY_URL', OLD.url_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1247,7 +1254,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_pathwayurl_biur() RETURNS trigger AS $BOD
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -1279,28 +1286,28 @@ EXECUTE PROCEDURE trigger_fct_pathwayurl_biur();
 DROP TRIGGER IF EXISTS pathwaysummary_audr ON pathwaysummary CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_pathwaysummary_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('PATHWAYSUMMARY', 'SOURCE_ID', OLD.summary_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('PATHWAYSUMMARY', 'SOURCE_ID', OLD.summary_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.pathway_id != NEW.pathway_id) THEN
-        PERFORM insertupdatelog('PATHWAYSUMMARY', 'PATHWAY_ID', OLD.summary_id, OLD.pathway_id, NEW.pathway_id, USER);
+        PERFORM nex.insertupdatelog('PATHWAYSUMMARY', 'PATHWAY_ID', OLD.summary_id, OLD.pathway_id, NEW.pathway_id, USER);
     END IF;
 
     IF (OLD.summary_type != NEW.summary_type) THEN
-        PERFORM insertupdatelog('PATHWAYSUMMARY', 'SUMMARY_TYPE', OLD.summary_id, OLD.summary_type, NEW.summary_type, USER);
+        PERFORM nex.insertupdatelog('PATHWAYSUMMARY', 'SUMMARY_TYPE', OLD.summary_id, OLD.summary_type, NEW.summary_type, USER);
     END IF;
 
     IF (OLD.text != NEW.text) THEN
-        PERFORM insertupdatelog('PATHWAYSUMMARY', 'TEXT', OLD.summary_id, OLD.text, NEW.text, USER);
+        PERFORM nex.insertupdatelog('PATHWAYSUMMARY', 'TEXT', OLD.summary_id, OLD.text, NEW.text, USER);
     END IF;
 
     IF (OLD.html != NEW.html) THEN
-        PERFORM insertupdatelog('PATHWAYSUMMARY', 'HTML', OLD.summary_id, OLD.html, NEW.html, USER);
+        PERFORM nex.insertupdatelog('PATHWAYSUMMARY', 'HTML', OLD.summary_id, OLD.html, NEW.html, USER);
     END IF;
 
     RETURN NEW;
@@ -1312,7 +1319,7 @@ BEGIN
              OLD.text || '[:]' || OLD.html || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-            PERFORM insertdeletelog('PATHWAYSUMMARY', OLD.summary_id, v_row, USER);
+            PERFORM nex.insertdeletelog('PATHWAYSUMMARY', OLD.summary_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1329,7 +1336,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_pathwaysummary_biur() RETURNS trigger AS 
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -1361,24 +1368,24 @@ EXECUTE PROCEDURE trigger_fct_pathwaysummary_biur();
 DROP TRIGGER IF EXISTS pathwaysummaryreference_audr ON pathwaysummary_reference CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_pathwaysummaryreference_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.summary_id != NEW.summary_id) THEN
-        PERFORM insertupdatelog('SUMMARY_REFERENCE', 'SUMMARY_ID', OLD.summary_reference_id, OLD.summary_id, NEW.summary_id, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'SUMMARY_ID', OLD.summary_reference_id, OLD.summary_id, NEW.summary_id, USER);
     END IF;
 
      IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ID', OLD.summary_reference_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ID', OLD.summary_reference_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
      IF (OLD.reference_order != NEW.reference_order) THEN
-        PERFORM insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ORDER', OLD.summary_reference_id, OLD.reference_order, NEW.reference_order, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ORDER', OLD.summary_reference_id, OLD.reference_order, NEW.reference_order, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('SUMMARY_REFERENCE', 'SOURCE_ID', OLD.summary_reference_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'SOURCE_ID', OLD.summary_reference_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     RETURN NEW;
@@ -1390,7 +1397,7 @@ BEGIN
              OLD.source_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-            PERFORM insertdeletelog('SUMMARY_REFERENCE', OLD.summary_reference_id, v_row, USER);
+            PERFORM nex.insertdeletelog('SUMMARY_REFERENCE', OLD.summary_reference_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1407,7 +1414,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_pathwaysummaryreference_biur() RETURNS tr
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -1440,16 +1447,16 @@ EXECUTE PROCEDURE trigger_fct_pathwaysummaryreference_biur();
 DROP TRIGGER IF EXISTS filepath_audr ON filepath CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_filepath_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('FILEPATH', 'SOURCE_ID', OLD.filepath_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('FILEPATH', 'SOURCE_ID', OLD.filepath_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.filepath != NEW.filepath) THEN
-        PERFORM insertupdatelog('FILEPATH', 'FILEPATH', OLD.filepath_id, OLD.filepath, NEW.filepath, USER);
+        PERFORM nex.insertupdatelog('FILEPATH', 'FILEPATH', OLD.filepath_id, OLD.filepath, NEW.filepath, USER);
     END IF;
 
     RETURN NEW;
@@ -1460,7 +1467,7 @@ BEGIN
 	     OLD.filepath || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-            PERFORM insertdeletelog('FILEPATH', OLD.filepath_id, v_row, USER);
+            PERFORM nex.insertdeletelog('FILEPATH', OLD.filepath_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1477,7 +1484,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_filepath_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -1509,70 +1516,73 @@ EXECUTE PROCEDURE trigger_fct_filepath_biur();
 DROP TRIGGER IF EXISTS filedbentity_audr ON filedbentity CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_filedbentity_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.topic_id != NEW.topic_id) THEN
-        PERFORM insertupdatelog('FILEDBENTITY', 'TOPIC_ID', OLD.dbentity_id, OLD.topic_id, NEW.topic_id, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY', 'TOPIC_ID', OLD.dbentity_id, OLD.topic_id, NEW.topic_id, USER);
     END IF;
 
     IF (OLD.data_id != NEW.data_id) THEN
-        PERFORM insertupdatelog('FILEDBENTITY', 'DATA_ID', OLD.dbentity_id, OLD.data_id, NEW.data_id, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY', 'DATA_ID', OLD.dbentity_id, OLD.data_id, NEW.data_id, USER);
     END IF;
 
     IF (OLD.format_id != NEW.format_id) THEN
-        PERFORM insertupdatelog('FILEDBENTITY', 'FORMAT_ID', OLD.dbentity_id, OLD.format_id, NEW.format_id, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY', 'FORMAT_ID', OLD.dbentity_id, OLD.format_id, NEW.format_id, USER);
     END IF;
 
     IF (OLD.file_extension != NEW.file_extension) THEN
-        PERFORM insertupdatelog('FILEDBENTITY', 'FILE_EXTENSION', OLD.dbentity_id, OLD.file_extension, NEW.file_extension, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY', 'FILE_EXTENSION', OLD.dbentity_id, OLD.file_extension, NEW.file_extension, USER);
     END IF;
 
     IF (OLD.file_date != NEW.file_date) THEN
-        PERFORM insertupdatelog('FILEDBENTITY', 'FILE_DATE', OLD.dbentity_id, OLD.file_date, NEW.file_date, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY', 'FILE_DATE', OLD.dbentity_id, OLD.file_date, NEW.file_date, USER);
     END IF;
 
     IF (OLD.is_public != NEW.is_public) THEN
-        PERFORM insertupdatelog('FILEDBENTITY', 'IS_PUBLIC', OLD.dbentity_id, OLD.is_public, NEW.is_public, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY', 'IS_PUBLIC', OLD.dbentity_id, OLD.is_public, NEW.is_public, USER);
     END IF;
 
     IF (OLD.is_in_spell != NEW.is_in_spell) THEN
-        PERFORM insertupdatelog('FILEDBENTITY', 'IS_IN_SPELL', OLD.dbentity_id, OLD.is_in_spell, NEW.is_in_spell, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY', 'IS_IN_SPELL', OLD.dbentity_id, OLD.is_in_spell, NEW.is_in_spell, USER);
     END IF;
 
     IF (OLD.is_in_browser != NEW.is_in_browser) THEN
-        PERFORM insertupdatelog('FILEDBENTITY', 'IS_IN_BROWSER', OLD.dbentity_id, OLD.is_in_browser, NEW.is_in_browser, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY', 'IS_IN_BROWSER', OLD.dbentity_id, OLD.is_in_browser, NEW.is_in_browser, USER);
     END IF;
 
      IF (((OLD.md5sum IS NULL) AND (NEW.md5sum IS NOT NULL)) OR ((OLD.md5sum IS NOT NULL) AND (NEW.md5sum IS NULL)) OR (OLD.md5sum != NEW.md5sum)) THEN
-        PERFORM insertupdatelog('FILEDBENTITY', 'MD5SUM', OLD.dbentity_id, OLD.md5sum, NEW.md5sum, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY', 'MD5SUM', OLD.dbentity_id, OLD.md5sum, NEW.md5sum, USER);
     END IF;
 
      IF (((OLD.s3_url IS NULL) AND (NEW.s3_url IS NOT NULL)) OR ((OLD.s3_url IS NOT NULL) AND (NEW.s3_url IS NULL)) OR (OLD.s3_url != NEW.s3_url)) THEN
-        PERFORM insertupdatelog('FILEDBENTITY', 'S3_URL', OLD.dbentity_id, OLD.s3_url, NEW.s3_url, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY', 'S3_URL', OLD.dbentity_id, OLD.s3_url, NEW.s3_url, USER);
     END IF;
 
      IF (((OLD.filepath_id IS NULL) AND (NEW.filepath_id IS NOT NULL)) OR ((OLD.filepath_id IS NOT NULL) AND (NEW.filepath_id IS NULL)) OR (OLD.filepath_id != NEW.filepath_id)) THEN
-        PERFORM insertupdatelog('FILEDBENTITY', 'FILEPATH_ID', OLD.dbentity_id, OLD.filepath_id, NEW.filepath_id, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY', 'FILEPATH_ID', OLD.dbentity_id, OLD.filepath_id, NEW.filepath_id, USER);
     END IF;
 
      IF (((OLD.previous_file_name IS NULL) AND (NEW.previous_file_name IS NOT NULL)) OR ((OLD.previous_file_name IS NOT NULL) AND (NEW.previous_file_name IS NULL)) OR (OLD.previous_file_name != NEW.previous_file_name)) THEN
-        PERFORM insertupdatelog('FILEDBENTITY', 'PREVIOUS_FILE_NAME', OLD.dbentity_id, OLD.previous_file_name, NEW.previous_file_name, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY', 'PREVIOUS_FILE_NAME', OLD.dbentity_id, OLD.previous_file_name, NEW.previous_file_name, USER);
     END IF;
 
      IF (((OLD.readme_file_id IS NULL) AND (NEW.readme_file_id IS NOT NULL)) OR ((OLD.readme_file_id IS NOT NULL) AND (NEW.readme_file_id IS NULL)) OR (OLD.readme_file_id != NEW.readme_file_id)) THEN
-        PERFORM insertupdatelog('FILEDBENTITY', 'README_FILE_ID', OLD.dbentity_id, OLD.readme_file_id, NEW.readme_file_id, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY', 'README_FILE_ID', OLD.dbentity_id, OLD.readme_file_id, NEW.readme_file_id, USER);
     END IF;
 
      IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
-        PERFORM insertupdatelog('FILEDBENTITY', 'DESCRIPTION', OLD.dbentity_id, OLD.description, NEW.description, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY', 'DESCRIPTION', OLD.dbentity_id, OLD.description, NEW.description, USER);
     END IF;
 
     RETURN NEW;
 
   ELSIF (TG_OP = 'DELETE') THEN
 
+    UPDATE nex.sgdid SET sgdid_status = 'Deleted'
+    WHERE display_name = OLD.sgdid;
+	       
     v_row := OLD.dbentity_id || '[:]' || OLD.topic_id || '[:]' ||
              OLD.data_id || '[:]' || OLD.format_id || '[:]' ||
              OLD.file_extension || '[:]' || OLD.file_date || '[:]' ||
@@ -1582,7 +1592,7 @@ BEGIN
              OLD.previous_file_name || '[:]' || OLD.s3_url || '[:]' ||
              OLD.description;
 
-             PERFORM insertdeletelog('FILEDBENTITY', OLD.dbentity_id, v_row, USER);
+             PERFORM nex.insertdeletelog('FILEDBENTITY', OLD.dbentity_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1613,20 +1623,20 @@ EXECUTE PROCEDURE trigger_fct_filedbentity_bur();
 DROP TRIGGER IF EXISTS filekeyword_audr ON file_keyword CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_filekeyword_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.file_id != NEW.file_id) THEN
-        PERFORM insertupdatelog('FILE_KEYWORD', 'FILE_ID', OLD.file_keyword_id, OLD.file_id, NEW.file_id, USER);
+        PERFORM nex.insertupdatelog('FILE_KEYWORD', 'FILE_ID', OLD.file_keyword_id, OLD.file_id, NEW.file_id, USER);
     END IF;
 
      IF (OLD.keyword_id != NEW.keyword_id) THEN
-        PERFORM insertupdatelog('FILE_KEYWORD', 'KEYWORD_ID', OLD.file_keyword_id, OLD.keyword_id, NEW.keyword_id, USER);
+        PERFORM nex.insertupdatelog('FILE_KEYWORD', 'KEYWORD_ID', OLD.file_keyword_id, OLD.keyword_id, NEW.keyword_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('FILE_KEYWORD', 'SOURCE_ID', OLD.file_keyword_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('FILE_KEYWORD', 'SOURCE_ID', OLD.file_keyword_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     RETURN NEW;
@@ -1637,7 +1647,7 @@ BEGIN
              OLD.keyword_id || '[:]' || OLD.source_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM insertdeletelog('FILE_KEYWORD', OLD.file_keyword_id, v_row, USER);
+         PERFORM nex.insertdeletelog('FILE_KEYWORD', OLD.file_keyword_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1654,7 +1664,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_filekeyword_biur() RETURNS trigger AS $BO
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -1687,48 +1697,48 @@ EXECUTE PROCEDURE trigger_fct_filekeyword_biur();
 DROP TRIGGER IF EXISTS book_audr ON book CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_book_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.format_name != NEW.format_name) THEN
-        PERFORM insertupdatelog('BOOK', 'FORMAT_NAME', OLD.book_id, OLD.format_name, NEW.format_name, USER);
+        PERFORM nex.insertupdatelog('BOOK', 'FORMAT_NAME', OLD.book_id, OLD.format_name, NEW.format_name, USER);
     END IF;
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('BOOK', 'DISPLAY_NAME', OLD.book_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('BOOK', 'DISPLAY_NAME', OLD.book_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM insertupdatelog('BOOK', 'OBJ_URL', OLD.book_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('BOOK', 'OBJ_URL', OLD.book_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('BOOK', 'SOURCE_ID', OLD.book_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('BOOK', 'SOURCE_ID', OLD.book_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('BOOK', 'BUD_ID', OLD.book_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('BOOK', 'BUD_ID', OLD.book_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (OLD.title != NEW.title) THEN
-        PERFORM insertupdatelog('BOOK', 'TITLE', OLD.book_id, OLD.title, NEW.title, USER);
+        PERFORM nex.insertupdatelog('BOOK', 'TITLE', OLD.book_id, OLD.title, NEW.title, USER);
     END IF;
 
     IF (((OLD.volume_title IS NULL) AND (NEW.volume_title IS NOT NULL)) OR ((OLD.volume_title IS NOT NULL) AND (NEW.volume_title IS NULL)) OR (OLD.volume_title != NEW.volume_title)) THEN
-        PERFORM insertupdatelog('BOOK', 'VOLUME_TITLE', OLD.book_id, OLD.volume_title, NEW.volume_title, USER);
+        PERFORM nex.insertupdatelog('BOOK', 'VOLUME_TITLE', OLD.book_id, OLD.volume_title, NEW.volume_title, USER);
     END IF;
 
     IF (((OLD.isbn IS NULL) AND (NEW.isbn IS NOT NULL)) OR ((OLD.isbn IS NOT NULL) AND (NEW.isbn IS NULL)) OR (OLD.isbn != NEW.isbn)) THEN
-        PERFORM insertupdatelog('BOOK', 'ISBN', OLD.book_id, OLD.isbn, NEW.isbn, USER);
+        PERFORM nex.insertupdatelog('BOOK', 'ISBN', OLD.book_id, OLD.isbn, NEW.isbn, USER);
     END IF;
 
     IF (((OLD.total_pages IS NULL) AND (NEW.total_pages IS NOT NULL)) OR ((OLD.total_pages IS NOT NULL) AND (NEW.total_pages IS NULL)) OR (OLD.total_pages != NEW.total_pages)) THEN
-        PERFORM insertupdatelog('BOOK', 'TOTAL_PAGES', OLD.book_id, OLD.total_pages, NEW.total_pages, USER);
+        PERFORM nex.insertupdatelog('BOOK', 'TOTAL_PAGES', OLD.book_id, OLD.total_pages, NEW.total_pages, USER);
     END IF;
 
     IF (((OLD.publisher IS NULL) AND (NEW.publisher IS NOT NULL)) OR ((OLD.publisher IS NOT NULL) AND (NEW.publisher IS NULL)) OR (OLD.publisher != NEW.publisher)) THEN
-        PERFORM insertupdatelog('BOOK', 'PUBLISHER', OLD.book_id, OLD.publisher, NEW.publisher, USER);
+        PERFORM nex.insertupdatelog('BOOK', 'PUBLISHER', OLD.book_id, OLD.publisher, NEW.publisher, USER);
     END IF;
 
     RETURN NEW;
@@ -1743,7 +1753,7 @@ BEGIN
              coalesce(OLD.publisher,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('BOOK', OLD.book_id, v_row, USER);
+          PERFORM nex.insertdeletelog('BOOK', OLD.book_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1760,7 +1770,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_book_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -1792,44 +1802,44 @@ EXECUTE PROCEDURE trigger_fct_book_biur();
 DROP TRIGGER IF EXISTS journal_audr ON journal CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_journal_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.format_name != NEW.format_name) THEN
-        PERFORM insertupdatelog('JOURNAL', 'FORMAT_NAME', OLD.journal_id, OLD.format_name, NEW.format_name, USER);
+        PERFORM nex.insertupdatelog('JOURNAL', 'FORMAT_NAME', OLD.journal_id, OLD.format_name, NEW.format_name, USER);
     END IF;
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('JOURNAL', 'DISPLAY_NAME', OLD.journal_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('JOURNAL', 'DISPLAY_NAME', OLD.journal_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM insertupdatelog('JOURNAL', 'OBJ_URL', OLD.journal_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('JOURNAL', 'OBJ_URL', OLD.journal_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('JOURNAL', 'SOURCE_ID', OLD.journal_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('JOURNAL', 'SOURCE_ID', OLD.journal_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('JOURNAL', 'BUD_ID', OLD.journal_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('JOURNAL', 'BUD_ID', OLD.journal_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (((OLD.med_abbr IS NULL) AND (NEW.med_abbr IS NOT NULL)) OR ((OLD.med_abbr IS NOT NULL) AND (NEW.med_abbr IS NULL)) OR (OLD.med_abbr != NEW.med_abbr)) THEN
-        PERFORM insertupdatelog('Journal', 'MED_ABBR', OLD.journal_id, OLD.med_abbr, NEW.med_abbr, USER);
+        PERFORM nex.insertupdatelog('Journal', 'MED_ABBR', OLD.journal_id, OLD.med_abbr, NEW.med_abbr, USER);
     END IF;
 
     IF (((OLD.title IS NULL) AND (NEW.title IS NOT NULL)) OR ((OLD.title IS NOT NULL) AND (NEW.title IS NULL)) OR (OLD.title != NEW.title)) THEN
-        PERFORM insertupdatelog('Journal', 'TITLE', OLD.journal_id, OLD.title, NEW.title, USER);
+        PERFORM nex.insertupdatelog('Journal', 'TITLE', OLD.journal_id, OLD.title, NEW.title, USER);
     END IF;
 
     IF (((OLD.issn_print IS NULL) AND (NEW.issn_print IS NOT NULL)) OR ((OLD.issn_print IS NOT NULL) AND (NEW.issn_print IS NULL)) OR (OLD.issn_print != NEW.issn_print)) THEN
-        PERFORM insertupdatelog('Journal', 'ISSN_PRINT', OLD.journal_id, OLD.issn_print, NEW.issn_print, USER);
+        PERFORM nex.insertupdatelog('Journal', 'ISSN_PRINT', OLD.journal_id, OLD.issn_print, NEW.issn_print, USER);
     END IF;
 
     IF (((OLD.issn_electronic IS NULL) AND (NEW.issn_electronic IS NOT NULL)) OR ((OLD.issn_electronic IS NOT NULL) AND (NEW.issn_electronic IS NULL)) OR (OLD.issn_electronic != NEW.issn_electronic)) THEN
-        PERFORM insertupdatelog('Journal', 'ISSN_ELECTRONIC', OLD.journal_id, OLD.issn_electronic, NEW.issn_electronic, USER);
+        PERFORM nex.insertupdatelog('Journal', 'ISSN_ELECTRONIC', OLD.journal_id, OLD.issn_electronic, NEW.issn_electronic, USER);
     END IF;
 
     RETURN NEW;
@@ -1843,7 +1853,7 @@ BEGIN
              coalesce(OLD.issn_print,'') || '[:]' || coalesce(OLD.issn_electronic,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM insertdeletelog('JOURNAL', OLD.journal_id, v_row, USER);
+           PERFORM nex.insertdeletelog('JOURNAL', OLD.journal_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1860,7 +1870,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_journal_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -1892,89 +1902,92 @@ EXECUTE PROCEDURE trigger_fct_journal_biur();
 DROP TRIGGER IF EXISTS referencedbentity_audr ON referencedbentity CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referencedbentity_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   If (TG_OP = 'UPDATE') THEN
 
     IF (OLD.method_obtained != NEW.method_obtained) THEN
-        PERFORM insertupdatelog('REFERENCE', 'METHOD_OBTAINED', OLD.dbentity_id, OLD.method_obtained, NEW.method_obtained, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'METHOD_OBTAINED', OLD.dbentity_id, OLD.method_obtained, NEW.method_obtained, USER);
     END IF;
 
     IF (OLD.publication_status != NEW.publication_status) THEN
-        PERFORM insertupdatelog('REFERENCE', 'PUBLICATION_STATUS', OLD.dbentity_id, OLD.publication_status, NEW.publication_status, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'PUBLICATION_STATUS', OLD.dbentity_id, OLD.publication_status, NEW.publication_status, USER);
     END IF;
 
     IF (OLD.fulltext_status != NEW.fulltext_status) THEN
-        PERFORM insertupdatelog('REFERENCE', 'FULLTEXT_STATUS', OLD.dbentity_id, OLD.fulltext_status, NEW.fulltext_status, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'FULLTEXT_STATUS', OLD.dbentity_id, OLD.fulltext_status, NEW.fulltext_status, USER);
     END IF;
 
     IF (OLD.citation != NEW.citation) THEN
-        PERFORM insertupdatelog('REFERENCE', 'CITATION', OLD.dbentity_id, OLD.citation, NEW.citation, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'CITATION', OLD.dbentity_id, OLD.citation, NEW.citation, USER);
     END IF;
 
     IF (OLD.year != NEW.year) THEN
-        PERFORM insertupdatelog('REFERENCE', 'YEAR', OLD.dbentity_id, OLD.year, NEW.year, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'YEAR', OLD.dbentity_id, OLD.year, NEW.year, USER);
     END IF;
 
     IF (((OLD.pmid IS NULL) AND (NEW.pmid IS NOT NULL)) OR ((OLD.pmid IS NOT NULL) AND (NEW.pmid IS NULL)) OR (OLD.pmid != NEW.pmid)) THEN
-        PERFORM insertupdatelog('REFERENCE', 'PMID', OLD.dbentity_id, OLD.pmid, NEW.pmid, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'PMID', OLD.dbentity_id, OLD.pmid, NEW.pmid, USER);
     END IF;
 
     IF (((OLD.pmcid IS NULL) AND (NEW.pmcid IS NOT NULL)) OR ((OLD.pmcid IS NOT NULL) AND (NEW.pmcid IS NULL)) OR (OLD.pmcid != NEW.pmcid)) THEN
-        PERFORM insertupdatelog('REFERENCE', 'PMCID', OLD.dbentity_id, OLD.pmcid, NEW.pmcid, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'PMCID', OLD.dbentity_id, OLD.pmcid, NEW.pmcid, USER);
     END IF;
 
     IF (((OLD.date_published IS NULL) AND (NEW.date_published IS NOT NULL)) OR ((OLD.date_published IS NOT NULL) AND (NEW.date_published IS NULL)) OR (OLD.date_published != NEW.date_published)) THEN
-        PERFORM insertupdatelog('REFERENCE', 'DATE_PUBLISHED', OLD.dbentity_id, OLD.date_published, NEW.date_published, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'DATE_PUBLISHED', OLD.dbentity_id, OLD.date_published, NEW.date_published, USER);
     END IF;
 
     IF (((OLD.date_revised IS NULL) AND (NEW.date_revised IS NOT NULL)) OR ((OLD.date_revised IS NOT NULL) AND (NEW.date_revised IS NULL)) OR (OLD.date_revised != NEW.date_revised)) THEN
-        PERFORM insertupdatelog('REFERENCE', 'DATE_REVISED', OLD.dbentity_id, OLD.date_revised, NEW.date_revised, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'DATE_REVISED', OLD.dbentity_id, OLD.date_revised, NEW.date_revised, USER);
     END IF;
 
     IF (((OLD.issue IS NULL) AND (NEW.issue IS NOT NULL)) OR ((OLD.issue IS NOT NULL) AND (NEW.issue IS NULL)) OR (OLD.issue != NEW.issue)) THEN
-        PERFORM insertupdatelog('REFERENCE', 'ISSUE', OLD.dbentity_id, OLD.issue, NEW.issue, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'ISSUE', OLD.dbentity_id, OLD.issue, NEW.issue, USER);
     END IF;
 
     IF (((OLD.page IS NULL) AND (NEW.page IS NOT NULL)) OR ((OLD.page IS NOT NULL) AND (NEW.page IS NULL)) OR (OLD.page != NEW.page)) THEN
-        PERFORM insertupdatelog('REFERENCE', 'PAGE', OLD.dbentity_id, OLD.page, NEW.page, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'PAGE', OLD.dbentity_id, OLD.page, NEW.page, USER);
     END IF;
 
     IF (((OLD.volume IS NULL) AND (NEW.volume IS NOT NULL)) OR ((OLD.volume IS NOT NULL) AND (NEW.volume IS NULL)) OR (OLD.volume != NEW.volume)) THEN
-        PERFORM insertupdatelog('REFERENCE', 'VOLUME', OLD.dbentity_id, OLD.volume, NEW.volume, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'VOLUME', OLD.dbentity_id, OLD.volume, NEW.volume, USER);
     END IF;
 
     IF (((OLD.title IS NULL) AND (NEW.title IS NOT NULL)) OR ((OLD.title IS NOT NULL) AND (NEW.title IS NULL)) OR (OLD.title != NEW.title)) THEN
-        PERFORM insertupdatelog('REFERENCE', 'TITLE', OLD.dbentity_id, OLD.title, NEW.title, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'TITLE', OLD.dbentity_id, OLD.title, NEW.title, USER);
     END IF;
 
     IF (((OLD.doi IS NULL) AND (NEW.doi IS NOT NULL)) OR ((OLD.doi IS NOT NULL) AND (NEW.doi IS NULL)) OR (OLD.doi != NEW.doi)) THEN
-        PERFORM insertupdatelog('REFERENCE', 'DOI', OLD.dbentity_id, OLD.doi, NEW.doi, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'DOI', OLD.dbentity_id, OLD.doi, NEW.doi, USER);
     END IF;
 
     IF (((OLD.journal_id IS NULL) AND (NEW.journal_id IS NOT NULL)) OR ((OLD.journal_id IS NOT NULL) AND (NEW.journal_id IS NULL)) OR (OLD.journal_id != NEW.journal_id)) THEN
-        PERFORM insertupdatelog('REFERENCE', 'JOURNAL_ID', OLD.dbentity_id, OLD.journal_id, NEW.journal_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'JOURNAL_ID', OLD.dbentity_id, OLD.journal_id, NEW.journal_id, USER);
     END IF;
 
     IF (((OLD.book_id IS NULL) AND (NEW.book_id IS NOT NULL)) OR ((OLD.book_id IS NOT NULL) AND (NEW.book_id IS NULL)) OR (OLD.book_id != NEW.book_id)) THEN
-        PERFORM insertupdatelog('REFERENCE', 'BOOK_ID', OLD.dbentity_id, OLD.book_id, NEW.book_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCE', 'BOOK_ID', OLD.dbentity_id, OLD.book_id, NEW.book_id, USER);
     END IF;
 
     RETURN NEW;
 
   ELSIF (TG_OP = 'DELETE') THEN
 
-  v_row := OLD.dbentity_id || '[:]' || OLD.method_obtained || '[:]' ||
-           OLD.publication_status || '[:]' ||
-           OLD.fulltext_status || '[:]' || OLD.citation || '[:]' ||
-           OLD.year || '[:]' || coalesce(OLD.pmid,0) || '[:]' ||
-           coalesce(OLD.pmcid,'') || '[:]' || coalesce(OLD.date_published,'') || '[:]' ||
-           coalesce(OLD.date_revised,'') || '[:]' || coalesce(OLD.issue,'') || '[:]' ||
-           coalesce(OLD.page,'') || '[:]' || coalesce(OLD.volume,'') || '[:]' ||
-           coalesce(OLD.title,'') || '[:]' || coalesce(OLD.doi,'') || '[:]' ||
-           coalesce(OLD.journal_id,0) || '[:]' || coalesce(OLD.book_id,0);
+        UPDATE nex.sgdid SET sgdid_status = 'Deleted'
+        WHERE display_name = OLD.sgdid;
+	
+       v_row := OLD.dbentity_id || '[:]' || OLD.method_obtained || '[:]' ||
+                OLD.publication_status || '[:]' ||
+                OLD.fulltext_status || '[:]' || OLD.citation || '[:]' ||
+                OLD.year || '[:]' || coalesce(OLD.pmid,0) || '[:]' ||
+                coalesce(OLD.pmcid,'') || '[:]' || coalesce(OLD.date_published,'') || '[:]' ||
+                coalesce(OLD.date_revised,'1000-01-01') || '[:]' || coalesce(OLD.issue,'') || '[:]' ||
+                coalesce(OLD.page,'') || '[:]' || coalesce(OLD.volume,'') || '[:]' ||
+                coalesce(OLD.title,'') || '[:]' || coalesce(OLD.doi,'') || '[:]' ||
+                coalesce(OLD.journal_id,0) || '[:]' || coalesce(OLD.book_id,0);
 
-           PERFORM insertdeletelog('REFERENCE', OLD.dbentity_id, v_row, USER);
+           PERFORM nex.insertdeletelog('REFERENCE', OLD.dbentity_id, v_row, USER);
 
        RETURN OLD;
   END IF;
@@ -2032,28 +2045,28 @@ EXECUTE PROCEDURE trigger_fct_referencedbentity_biur();
 DROP TRIGGER IF EXISTS referencealias_audr ON reference_alias CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referencealias_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('REFERENCE_ALIAS', 'DISPLAY_NAME', OLD.alias_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_ALIAS', 'DISPLAY_NAME', OLD.alias_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('REFERENCE_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('REFERENCE_ALIAS', 'BUD_ID', OLD.alias_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_ALIAS', 'BUD_ID', OLD.alias_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('REFERENCE_ALIAS', 'REFERENCE_ID', OLD.alias_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_ALIAS', 'REFERENCE_ID', OLD.alias_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.alias_type != NEW.alias_type) THEN
-        PERFORM insertupdatelog('REFERENCE_ALIAS', 'ALIAS_TYPE', OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_ALIAS', 'ALIAS_TYPE', OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
     END IF;
 
     RETURN NEW;
@@ -2065,7 +2078,7 @@ BEGIN
              OLD.reference_id || '[:]' || OLD.alias_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM insertdeletelog('REFERENCE_ALIAS', OLD.alias_id, v_row, USER);
+         PERFORM nex.insertdeletelog('REFERENCE_ALIAS', OLD.alias_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2082,7 +2095,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_referencealias_biur() RETURNS trigger AS 
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -2114,24 +2127,24 @@ EXECUTE PROCEDURE trigger_fct_referencealias_biur();
 DROP TRIGGER IF EXISTS referencerelation_audr ON reference_relation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referencerelation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('REFERENCE_RELATION', 'SOURCE_ID', OLD.reference_relation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_RELATION', 'SOURCE_ID', OLD.reference_relation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
      IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM insertupdatelog('REFERENCE_RELATION', 'PARENT_ID', OLD.reference_relation_id, OLD.parent_id, NEW.parent_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_RELATION', 'PARENT_ID', OLD.reference_relation_id, OLD.parent_id, NEW.parent_id, USER);
     END IF;
 
      IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM insertupdatelog('REFERENCE_RELATION', 'CHILD_ID', OLD.reference_relation_id, OLD.child_id, NEW.child_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_RELATION', 'CHILD_ID', OLD.reference_relation_id, OLD.child_id, NEW.child_id, USER);
     END IF;
 
     IF (OLD.correction_type != NEW.correction_type) THEN
-        PERFORM insertupdatelog('REFERENCE_RELATION', 'CORRECTION_TYPE', OLD.reference_relation_id, OLD.correction_type, NEW.correction_type, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_RELATION', 'CORRECTION_TYPE', OLD.reference_relation_id, OLD.correction_type, NEW.correction_type, USER);
     END IF;
 
     RETURN NEW;
@@ -2143,7 +2156,7 @@ BEGIN
              OLD.correction_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('REFERENCE_RELATION', OLD.reference_relation_id, v_row, USER);
+          PERFORM nex.insertdeletelog('REFERENCE_RELATION', OLD.reference_relation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2160,7 +2173,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_referencerelation_biur() RETURNS trigger 
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -2192,32 +2205,32 @@ EXECUTE PROCEDURE trigger_fct_referencerelation_biur();
 DROP TRIGGER IF EXISTS referenceurl_audr ON reference_url CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referenceurl_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('REFERENCE_URL', 'DISPLAY_NAME', OLD.url_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_URL', 'DISPLAY_NAME', OLD.url_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM insertupdatelog('REFERENCE_URL', 'OBJ_URL', OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_URL', 'OBJ_URL', OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('REFERENCE_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('REFERENCE_URL', 'BUD_ID', OLD.url_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_URL', 'BUD_ID', OLD.url_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('REFERENCE_URL', 'REFERENCE_ID', OLD.url_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_URL', 'REFERENCE_ID', OLD.url_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
-        PERFORM insertupdatelog('REFERENCE_URL', 'URL_TYPE', OLD.url_id, OLD.url_type, NEW.url_type, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_URL', 'URL_TYPE', OLD.url_id, OLD.url_type, NEW.url_type, USER);
     END IF;
 
     RETURN NEW;
@@ -2230,7 +2243,7 @@ BEGIN
              OLD.reference_id || '[:]' || OLD.url_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('REFERENCE_URL', OLD.url_id, v_row, USER);
+          PERFORM nex.insertdeletelog('REFERENCE_URL', OLD.url_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2247,7 +2260,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_referenceurl_biur() RETURNS trigger AS $B
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -2278,40 +2291,40 @@ EXECUTE PROCEDURE trigger_fct_referenceurl_biur();
 DROP TRIGGER IF EXISTS referenceauthor_audr ON referenceauthor CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referenceauthor_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('REFERENCEAUTHOR', 'DISPLAY_NAME', OLD.referenceauthor_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'DISPLAY_NAME', OLD.referenceauthor_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM insertupdatelog('REFERENCEAUTHOR', 'OBJ_URL', OLD.referenceauthor_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'OBJ_URL', OLD.referenceauthor_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('REFERENCEAUTHOR', 'SOURCE_ID', OLD.referenceauthor_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'SOURCE_ID', OLD.referenceauthor_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('REFERENCEAUTHOR', 'BUD_ID', OLD.referenceauthor_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'BUD_ID', OLD.referenceauthor_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('REFERENCEAUTHOR', 'REFERENCE_ID', OLD.referenceauthor_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'REFERENCE_ID', OLD.referenceauthor_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (((OLD.orcid IS NULL) AND (NEW.orcid IS NOT NULL)) OR ((OLD.orcid IS NOT NULL) AND (NEW.orcid IS NULL)) OR (OLD.orcid != NEW.orcid)) THEN
-        PERFORM insertupdatelog('REFERENCEAUTHOR', 'ORCID', OLD.referenceauthor_id, OLD.orcid, NEW.orcid, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'ORCID', OLD.referenceauthor_id, OLD.orcid, NEW.orcid, USER);
     END IF;
 
      IF (OLD.author_order != NEW.author_order) THEN
-        PERFORM insertupdatelog('REFERENCEAUTHOR', 'AUTHOR_ORDER', OLD.referenceauthor_id, OLD.author_order, NEW.author_order, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'AUTHOR_ORDER', OLD.referenceauthor_id, OLD.author_order, NEW.author_order, USER);
     END IF;
 
      IF (OLD.author_type != NEW.author_type) THEN
-        PERFORM insertupdatelog('REFERENCEAUTHOR', 'AUTHOR_TYPE', OLD.referenceauthor_id, OLD.author_type, NEW.author_type, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'AUTHOR_TYPE', OLD.referenceauthor_id, OLD.author_type, NEW.author_type, USER);
     END IF;
 
     RETURN NEW;
@@ -2325,7 +2338,7 @@ BEGIN
              OLD.author_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-        PERFORM insertdeletelog('REFERENCEAUTHOR', OLD.referenceauthor_id, v_row, USER);
+        PERFORM nex.insertdeletelog('REFERENCEAUTHOR', OLD.referenceauthor_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -2342,7 +2355,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_referenceauthor_biur() RETURNS trigger AS
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -2374,21 +2387,21 @@ EXECUTE PROCEDURE trigger_fct_referenceauthor_biur();
 DROP TRIGGER IF EXISTS referencedeleted_audr ON referencedeleted CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referencedeleted_audr() RETURNS trigger AS $BODY$
 DECLARE
-  v_row		deletelog.deleted_row%TYPE;
+  v_row		nex.deletelog.deleted_row%TYPE;
 BEGIN
 
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.pmid != NEW.pmid) THEN
-        PERFORM insertupdatelog('REFERENCEDELETED', 'PMID', OLD.referencedeleted_id, OLD.pmid, NEW.pmid, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDELETED', 'PMID', OLD.referencedeleted_id, OLD.pmid, NEW.pmid, USER);
     END IF;
 
     IF (((OLD.sgdid IS NULL) AND (NEW.sgdid IS NOT NULL)) OR ((OLD.sgdid IS NOT NULL) AND (NEW.sgdid IS NULL)) OR (OLD.sgdid != NEW.sgdid)) THEN
-        PERFORM insertupdatelog('REFERENCEDELETED', 'SGDID', OLD.referencedeleted_id, OLD.sgdid, NEW.sgdid, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDELETED', 'SGDID', OLD.referencedeleted_id, OLD.sgdid, NEW.sgdid, USER);
     END IF;
 
     IF (((OLD.reason_deleted IS NULL) AND (NEW.reason_deleted IS NOT NULL)) OR ((OLD.reason_deleted IS NOT NULL) AND (NEW.reason_deleted IS NULL)) OR (OLD.reason_deleted != NEW.reason_deleted)) THEN
-        PERFORM insertupdatelog('REFERENCEDELETED', 'REASON_DELETED', OLD.referencedeleted_id, OLD.reason_deleted, NEW.reason_deleted, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDELETED', 'REASON_DELETED', OLD.referencedeleted_id, OLD.reason_deleted, NEW.reason_deleted, USER);
     END IF;
 
     RETURN NEW;
@@ -2399,7 +2412,7 @@ BEGIN
               OLD.sgdid || '[:]' || OLD.reason_deleted || '[:]' ||
               OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM insertdeletelog('REFERENCEDELETED', OLD.referencedeleted_id, v_row, USER);
+           PERFORM nex.insertdeletelog('REFERENCEDELETED', OLD.referencedeleted_id, v_row, USER);
 
      RETURN OLD;
 
@@ -2417,13 +2430,13 @@ CREATE OR REPLACE FUNCTION trigger_fct_referencedeleted_biur() RETURNS trigger A
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-    PERFORM checkpubmed(NEW.pmid);
+    PERFORM nex.checkpubmed(NEW.pmid);
 
     IF (NEW.sgdid IS NOT NULL) THEN
-      PERFORM managesgdid.checksgdid(NEW.sgdid);
+      PERFORM nex.checksgdid(NEW.sgdid);
     END IF;
 
-    NEW.created_by := UPPER(NEW.created_by);
+    NEW.created_by := upper(NEW.created_by);
     PERFORM nex.checkuser(NEW.created_by);
 
     RETURN NEW;
@@ -2434,10 +2447,10 @@ BEGIN
         RAISE EXCEPTION 'Primary key cannot be updated';
     END IF;
 
-    PERFORM checkpubmed(NEW.pmid);
+    PERFORM nex.checkpubmed(NEW.pmid);
 
     IF (NEW.sgdid IS NOT NULL) THEN
-      PERFORM managesgdid.checksgdid(NEW.sgdid);
+      PERFORM nex.checksgdid(NEW.sgdid);
     END IF;
 
     IF (NEW.date_created != OLD.date_created) THEN
@@ -2461,28 +2474,28 @@ EXECUTE PROCEDURE trigger_fct_referencedeleted_biur();
 DROP TRIGGER IF EXISTS referencedocument_audr ON referencedocument CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referencedocument_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.document_type != NEW.document_type) THEN
-        PERFORM insertupdatelog('REFERENCEDOCUMENT', 'DOCUMENT_TYPE', OLD.referencedocument_id, OLD.document_type, NEW.document_type, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT', 'DOCUMENT_TYPE', OLD.referencedocument_id, OLD.document_type, NEW.document_type, USER);
     END IF;
 
      IF (OLD.text != NEW.text) THEN
-        PERFORM insertupdatelog('REFERENCEDOCUMENT', 'TEXT', OLD.referencedocument_id, OLD.text, NEW.text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT', 'TEXT', OLD.referencedocument_id, OLD.text, NEW.text, USER);
     END IF;
 
     IF (OLD.html != NEW.html) THEN
-        PERFORM insertupdatelog('REFERENCEDOCUMENT', 'HTML', OLD.referencedocument_id, OLD.html, NEW.html, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT', 'HTML', OLD.referencedocument_id, OLD.html, NEW.html, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('REFERENCEDOCUMENT', 'SOURCE_ID', OLD.referencedocument_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT', 'SOURCE_ID', OLD.referencedocument_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
      IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('REFERENCEDOCUMENT', 'REFERENCE_ID', OLD.referencedocument_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT', 'REFERENCE_ID', OLD.referencedocument_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     RETURN NEW;
@@ -2494,7 +2507,7 @@ BEGIN
              OLD.source_id || '[:]' || OLD.reference_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('REFERENCEDOCUMENT', OLD.referencedocument_id, v_row, USER);
+          PERFORM nex.insertdeletelog('REFERENCEDOCUMENT', OLD.referencedocument_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2511,7 +2524,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_referencedocument_biur() RETURNS trigger 
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -2543,28 +2556,28 @@ EXECUTE PROCEDURE trigger_fct_referencedocument_biur();
 DROP TRIGGER IF EXISTS referencetype_audr ON referencetype CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referencetype_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('REFERENCETYPE', 'DISPLAY_NAME', OLD.referencetype_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('REFERENCETYPE', 'DISPLAY_NAME', OLD.referencetype_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM insertupdatelog('REFERENCETYPE', 'OBJ_URL', OLD.referencetype_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('REFERENCETYPE', 'OBJ_URL', OLD.referencetype_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('REFERENCETYPE', 'SOURCE_ID', OLD.referencetype_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCETYPE', 'SOURCE_ID', OLD.referencetype_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('REFERENCETYPE', 'BUD_ID', OLD.referencetype_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCETYPE', 'BUD_ID', OLD.referencetype_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('REFERENCETYPE', 'REFERENCE_ID', OLD.referencetype_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCETYPE', 'REFERENCE_ID', OLD.referencetype_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     RETURN NEW;
@@ -2576,7 +2589,7 @@ BEGIN
              coalesce(OLD.bud_id,0) || '[:]' || OLD.reference_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('REFERENCETYPE', OLD.referencetype_id, v_row, USER);
+          PERFORM nex.insertdeletelog('REFERENCETYPE', OLD.referencetype_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2593,7 +2606,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_referencetype_biur() RETURNS trigger AS $
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -2625,20 +2638,20 @@ EXECUTE PROCEDURE trigger_fct_referencetype_biur();
 DROP TRIGGER IF EXISTS referenceunlink_audr ON referenceunlink CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referenceunlink_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.reference_id != NEW.reference_id ) THEN
-        PERFORM insertupdatelog('REFERENCEUNLINK', 'REFERENCE_ID', OLD.referenceunlink_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCEUNLINK', 'REFERENCE_ID', OLD.referenceunlink_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('REFERENCEUNLINK', 'DBENTITY_ID', OLD.referenceunlink_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCEUNLINK', 'DBENTITY_ID', OLD.referenceunlink_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('REFERENCEUNLINK', 'BUD_ID', OLD.referenceunlink_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCEUNLINK', 'BUD_ID', OLD.referenceunlink_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     RETURN NEW;
@@ -2649,7 +2662,7 @@ BEGIN
              OLD.dbentity_id || '[:]' || coalesce(OLD.bud_id,0) || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('REFERENCEUNLINK', OLD.referenceunlink_id, v_row, USER);
+          PERFORM nex.insertdeletelog('REFERENCEUNLINK', OLD.referenceunlink_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2666,7 +2679,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_referenceunlink_biur() RETURNS trigger AS
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;
@@ -2698,20 +2711,20 @@ EXECUTE PROCEDURE trigger_fct_referenceunlink_biur();
 DROP TRIGGER IF EXISTS referencefile_audr ON reference_file CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referencefile_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('REFERENCE_FILE', 'REFERENCE_ID', OLD.reference_file_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_FILE', 'REFERENCE_ID', OLD.reference_file_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.file_id != NEW.file_id) THEN
-        PERFORM insertupdatelog('REFERENCE_FILE', 'FILE_ID', OLD.reference_file_id, OLD.file_id, NEW.file_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_FILE', 'FILE_ID', OLD.reference_file_id, OLD.file_id, NEW.file_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('REFERENCE_FILE', 'SOURCE_ID', OLD.reference_file_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_FILE', 'SOURCE_ID', OLD.reference_file_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     RETURN  NEW;
@@ -2722,7 +2735,7 @@ BEGIN
              OLD.file_id || '[:]' || OLD.source_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('REFERENCE_FILE', OLD.reference_file_id, v_row, USER);
+          PERFORM nex.insertdeletelog('REFERENCE_FILE', OLD.reference_file_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2739,7 +2752,7 @@ CREATE OR REPLACE FUNCTION trigger_fct_referencefile_biur() RETURNS trigger AS $
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.created_by := UPPER(NEW.created_by);
+       NEW.created_by := upper(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
        RETURN NEW;

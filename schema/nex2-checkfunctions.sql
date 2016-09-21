@@ -14,7 +14,7 @@ CREATE OR REPLACE FUNCTION checkchebi (p_chebi text) RETURNS VOID AS $body$
 BEGIN
 
     IF NOT EXISTS (SELECT chebiid
-                   FROM chebi
+                   FROM nex.chebi
 	           WHERE chebiid = p_chebi)
     THEN
        RAISE EXCEPTION 'CHEBIID "%" does NOT exist in the CHEBI table.', p_chebi;
@@ -33,7 +33,7 @@ CREATE OR REPLACE FUNCTION checkchemical (p_chemical text) RETURNS VOID AS $body
 BEGIN
 
     IF NOT EXISTS (SELECT display_name
-                   FROM chebi
+                   FROM nex.chebi
 	           WHERE display_name = p_chemical)
     THEN
        RAISE EXCEPTION 'CHEBI name "%" does NOT exist in the CHEBI table.', p_chemical;
@@ -52,7 +52,7 @@ CREATE OR REPLACE FUNCTION checkphenotype (p_phenotype text, p_namespace text) R
 BEGIN
 
    IF NOT EXISTS (SELECT apo_id
-                  FROM apo
+                  FROM nex.apo
 	          WHERE apo_id = p_phenotype
                   AND apo_namespace = lower(p_namespace))
    THEN
@@ -67,21 +67,22 @@ REVOKE ALL ON FUNCTION checkphenotype (p_phenotype text, p_namespace text) FROM 
 
 --
 -- Checks to see if a PMID exists in the referencedbentity table
+-- If yes, prevents row from being inserted into REFERENCEDELETED table
 --
-CREATE OR REPLACE FUNCTION checkpubmed (p_pubmed text)  RETURNS VOID AS $body$
+CREATE OR REPLACE FUNCTION checkpubmed (p_pubmed bigint)  RETURNS VOID AS $body$
 BEGIN
 
-    IF NOT EXISTS (SELECT pmid
-                   FROM referencedbentity
-	           WHERE pmid = p_pubmed)
+    IF EXISTS (SELECT pmid
+               FROM nex.referencedbentity
+               WHERE pmid = p_pubmed)
     THEN
        RAISE EXCEPTION 'PMID "%" exists in the REFERENCEDBENTITY table.', p_pubmed;
     END IF;
 
 END;
 $body$ LANGUAGE PLPGSQL;
-GRANT EXECUTE on FUNCTION checkpubmed (p_pubmed text) to CURATOR;
-REVOKE ALL ON FUNCTION checkpubmed (p_pubmed text) FROM PUBLIC;   
+GRANT EXECUTE on FUNCTION checkpubmed (p_pubmed bigint) to CURATOR;
+REVOKE ALL ON FUNCTION checkpubmed (p_pubmed bigint) FROM PUBLIC;   
 
 
 --
@@ -91,7 +92,7 @@ CREATE OR REPLACE FUNCTION checksgdid (p_sgdid text)  RETURNS VOID AS $body$
 BEGIN
 
     IF NOT EXISTS (SELECT display_name
-                   FROM sgdid
+                   FROM nex.sgdid
 	           WHERE display_name = p_sgdid)
     THEN
        RAISE EXCEPTION 'SGDID "%" does NOT exists in the SGDID table.', p_sgdid;

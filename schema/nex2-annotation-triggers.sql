@@ -10,37 +10,37 @@ SET client_encoding TO 'UTF8';
 DROP TRIGGER IF EXISTS bindingmotifannotation_audr ON bindingmotifannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_bindingmotifannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('BINDINGMOTIFANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('BINDINGMOTIFANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('BINDINGMOTIFANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('BINDINGMOTIFANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('BINDINGMOTIFANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('BINDINGMOTIFANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF  (((OLD.reference_id IS NULL) AND (NEW.reference_id IS NOT NULL)) OR ((OLD.reference_id IS NOT NULL) AND (NEW.reference_id IS NULL)) OR (OLD.reference_id != NEW.reference_id)) THEN
-        PERFORM insertupdatelog('BINDINGMOTIFANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('BINDINGMOTIFANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM insertupdatelog('BINDINGMOTIFANNOTATION', 'OBJ_URL', OLD.annotation_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('BINDINGMOTIFANNOTATION', 'OBJ_URL', OLD.annotation_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
     IF (OLD.motif_id != NEW.motif_id) THEN
-        PERFORM insertupdatelog('BINDINGMOTIFANNOTATION', 'MOTIF_ID', OLD.annotation_id, OLD.motif_id, NEW.motif_id, USER);
+        PERFORM nex.insertupdatelog('BINDINGMOTIFANNOTATION', 'MOTIF_ID', OLD.annotation_id, OLD.motif_id, NEW.motif_id, USER);
     END IF;
 
     IF (OLD.logo_url != NEW.logo_url)
     THEN
-        PERFORM insertupdatelog('BINDINGMOTIFANNOTATION', 'LOGO_URL', OLD.annotation_id, OLD.logo_url, NEW.logo_url, USER);
+        PERFORM nex.insertupdatelog('BINDINGMOTIFANNOTATION', 'LOGO_URL', OLD.annotation_id, OLD.logo_url, NEW.logo_url, USER);
     END IF;
 
     RETURN NEW;
@@ -53,7 +53,7 @@ BEGIN
 	         OLD.motif_id || '[:]' || OLD.logo_url || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM insertdeletelog('BINDINGMOTIFANNOTATION', OLD.annotation_id, v_row, USER);
+           PERFORM nex.insertdeletelog('BINDINGMOTIFANNOTATION', OLD.annotation_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -103,44 +103,44 @@ EXECUTE PROCEDURE trigger_fct_bindingmotifannotation_biur();
 DROP TRIGGER IF EXISTS diseaseannotation_audr ON diseaseannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_diseaseannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('DISEASEANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('DISEASEANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('DISEASEANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('DISEASEANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
      IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('DISEASEANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('DISEASEANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('DISEASEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('DISEASEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.disease_id != NEW.disease_id) THEN
-        PERFORM insertupdatelog('DISEASEANNOTATION', 'DISEASE_ID', OLD.annotation_id, OLD.disease_id, NEW.disease_id, USER);
+        PERFORM nex.insertupdatelog('DISEASEANNOTATION', 'DISEASE_ID', OLD.annotation_id, OLD.disease_id, NEW.disease_id, USER);
     END IF;
 
     IF (OLD.eco_id != NEW.eco_id) THEN
-        PERFORM insertupdatelog('DISEASEANNOTATION', 'ECO_ID', OLD.annotation_id, OLD.eco_id, NEW.eco_id, USER);
+        PERFORM nex.insertupdatelog('DISEASEANNOTATION', 'ECO_ID', OLD.annotation_id, OLD.eco_id, NEW.eco_id, USER);
     END IF;
 
     IF (OLD.annotation_type != NEW.annotation_type) THEN
-        PERFORM insertupdatelog('DISEASEANNOTATION', 'ANNOTATION_TYPE', OLD.annotation_id, OLD.annotation_type, NEW.annotation_type, USER);
+        PERFORM nex.insertupdatelog('DISEASEANNOTATION', 'ANNOTATION_TYPE', OLD.annotation_id, OLD.annotation_type, NEW.annotation_type, USER);
     END IF;
 
     IF (OLD.disease_qualifier != NEW.disease_qualifier) THEN
-        PERFORM insertupdatelog('DISEASEANNOTATION', 'DISEASE_QUALIFIER', OLD.annotation_id, OLD.disease_qualifier, NEW.disease_qualifier, USER);
+        PERFORM nex.insertupdatelog('DISEASEANNOTATION', 'DISEASE_QUALIFIER', OLD.annotation_id, OLD.disease_qualifier, NEW.disease_qualifier, USER);
     END IF;
 
     IF (OLD.date_assigned != NEW.date_assigned) THEN
-        PERFORM insertupdatelog('DISEASEANNOTATION', 'DATE_ASSIGNED', OLD.annotation_id, OLD.date_assigned, NEW.date_assigned, USER);
+        PERFORM nex.insertupdatelog('DISEASEANNOTATION', 'DATE_ASSIGNED', OLD.annotation_id, OLD.date_assigned, NEW.date_assigned, USER);
     END IF;
 
     RETURN NEW;
@@ -154,7 +154,7 @@ BEGIN
 	         OLD.disease_qualifier || '[:]' || OLD.date_assigned || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM insertdeletelog('DISEASEANNOTATION', OLD.annotation_id, v_row, USER);
+           PERFORM nex.insertdeletelog('DISEASEANNOTATION', OLD.annotation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -203,28 +203,28 @@ EXECUTE PROCEDURE trigger_fct_diseaseannotation_biur();
 DROP TRIGGER IF EXISTS diseasesubsetannotation_audr ON diseasesubsetannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_diseasesubsetannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('DISEASESUBSETANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('DISEASESUBSETANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('DISEASESUBSETANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('DISEASESUBSETANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('DISEASESUBSETANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('DISEASESUBSETANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF (((OLD.reference_id IS NULL) AND (NEW.reference_id IS NOT NULL)) OR ((OLD.reference_id IS NOT NULL) AND (NEW.reference_id IS NULL)) OR (OLD.reference_id != NEW.reference_id)) THEN
-        PERFORM insertupdatelog('DISEASESUBSETANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('DISEASESUBSETANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.diseasesubset_id != NEW.diseasesubset_id) THEN
-        PERFORM insertupdatelog('DISEASESUBSETANNOTATION', 'DISEASESUBSET_ID', OLD.annotation_id, OLD.diseasesubset_id, NEW.diseasesubset_id, USER);
+        PERFORM nex.insertupdatelog('DISEASESUBSETANNOTATION', 'DISEASESUBSET_ID', OLD.annotation_id, OLD.diseasesubset_id, NEW.diseasesubset_id, USER);
     END IF;
 
     RETURN NEW;
@@ -236,7 +236,7 @@ BEGIN
              coalesce(OLD.reference_id,0) || '[:]' || OLD.diseasesubset_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-        PERFORM insertdeletelog('DISEASESUBSETANNOTATION', OLD.annotation_id, v_row, USER);
+        PERFORM nex.insertdeletelog('DISEASESUBSETANNOTATION', OLD.annotation_id, v_row, USER);
 
     RETURN NEW;
   END IF;
@@ -285,28 +285,28 @@ EXECUTE PROCEDURE trigger_fct_diseasesubsetannotation_biur();
 DROP TRIGGER IF EXISTS diseasesupportingevidence_audr ON diseasesupportingevidence CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_diseasesupportingevidence_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.annotation_id != NEW.annotation_id) THEN
-        PERFORM insertupdatelog('DISEASESUPPORTINGEVIDENCE', 'ANNOTATION_ID', OLD.diseasesupportingevidence_id, OLD.annotation_id, NEW.annotation_id, USER);
+        PERFORM nex.insertupdatelog('DISEASESUPPORTINGEVIDENCE', 'ANNOTATION_ID', OLD.diseasesupportingevidence_id, OLD.annotation_id, NEW.annotation_id, USER);
     END IF;
 
      IF (OLD.group_id != NEW.group_id) THEN
-        PERFORM insertupdatelog('DISEASESUPPORTINGEVIDENCE', 'GROUP_ID', OLD.diseasesupportingevidence_id, OLD.group_id, NEW.group_id, USER);
+        PERFORM nex.insertupdatelog('DISEASESUPPORTINGEVIDENCE', 'GROUP_ID', OLD.diseasesupportingevidence_id, OLD.group_id, NEW.group_id, USER);
     END IF;
 
      IF (OLD.dbxref_id != NEW.dbxref_id) THEN
-        PERFORM insertupdatelog('DISEASESUPPORTINGEVIDENCE', 'DBXREF_ID', OLD.diseasesupportingevidence_id, OLD.dbxref_id, NEW.dbxref_id, USER);
+        PERFORM nex.insertupdatelog('DISEASESUPPORTINGEVIDENCE', 'DBXREF_ID', OLD.diseasesupportingevidence_id, OLD.dbxref_id, NEW.dbxref_id, USER);
     END IF;
 
      IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM insertupdatelog('DISEASESUPPORTINGEVIDENCE', 'OBJ_URL', OLD.diseasesupportingevidence_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('DISEASESUPPORTINGEVIDENCE', 'OBJ_URL', OLD.diseasesupportingevidence_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.evidence_type != NEW.evidence_type) THEN
-        PERFORM insertupdatelog('DISEASESUPPORTINGEVIDENCE', 'EVIDENCE_TYPE', OLD.diseasesupportingevidence_id, OLD.evidence_type, NEW.evidence_type, USER);
+        PERFORM nex.insertupdatelog('DISEASESUPPORTINGEVIDENCE', 'EVIDENCE_TYPE', OLD.diseasesupportingevidence_id, OLD.evidence_type, NEW.evidence_type, USER);
     END IF;
 
     RETURN NEW;
@@ -318,7 +318,7 @@ BEGIN
              OLD.obj_url || '[:]' || OLD.evidence_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM insertdeletelog('DISEASESUPPORTINGEVIDENCE', OLD.diseasesupportingevidence_id, v_row, USER);
+         PERFORM nex.insertdeletelog('DISEASESUPPORTINGEVIDENCE', OLD.diseasesupportingevidence_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -368,81 +368,81 @@ EXECUTE PROCEDURE trigger_fct_diseasesupportingevidence_biur();
 DROP TRIGGER IF EXISTS dnasequenceannotation_audr ON dnasequenceannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_dnasequenceannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
      IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF (((OLD.reference_id IS NULL) AND (NEW.reference_id IS NOT NULL)) OR ((OLD.reference_id IS NOT NULL) AND (NEW.reference_id IS NULL)) OR (OLD.reference_id != NEW.reference_id)) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'BUD_ID', OLD.annotation_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'BUD_ID', OLD.annotation_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
      IF (OLD.so_id != NEW.so_id) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'SO_ID', OLD.annotation_id, OLD.so_id, NEW.so_id, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'SO_ID', OLD.annotation_id, OLD.so_id, NEW.so_id, USER);
     END IF;
 
     IF (OLD.dna_type != NEW.dna_type) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'DNA_TYPE', OLD.annotation_id, OLD.dna_type, NEW.dna_type, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'DNA_TYPE', OLD.annotation_id, OLD.dna_type, NEW.dna_type, USER);
     END IF;
 
     IF (OLD.contig_id != NEW.contig_id) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'CONTIG_ID', OLD.annotation_id, OLD.contig_id, NEW.contig_id, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'CONTIG_ID', OLD.annotation_id, OLD.contig_id, NEW.contig_id, USER);
     END IF;
 
     IF (((OLD.seq_version IS NULL) AND (NEW.seq_version IS NOT NULL)) OR ((OLD.seq_version IS NOT NULL) AND (NEW.seq_version IS NULL)) OR (OLD.seq_version != NEW.seq_version)) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'SEQ_VERSION', OLD.annotation_id, OLD.seq_version, NEW.seq_version, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'SEQ_VERSION', OLD.annotation_id, OLD.seq_version, NEW.seq_version, USER);
     END IF;
 
     IF (((OLD.coord_version IS NULL) AND (NEW.coord_version IS NOT NULL)) OR ((OLD.coord_version IS NOT NULL) AND (NEW.coord_version IS NULL)) OR (OLD.coord_version != NEW.coord_version)) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'COORD_VERSION', OLD.annotation_id, OLD.coord_version, NEW.coord_version, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'COORD_VERSION', OLD.annotation_id, OLD.coord_version, NEW.coord_version, USER);
     END IF;
 
     IF (((OLD.genomerelease_id IS NULL) AND (NEW.genomerelease_id IS NOT NULL)) OR ((OLD.genomerelease_id IS NOT NULL) AND (NEW.genomerelease_id IS NULL)) OR (OLD.genomerelease_id != NEW.genomerelease_id)) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'GENOMERELEASE_ID', OLD.annotation_id, OLD.genomerelease_id, NEW.genomerelease_id, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'GENOMERELEASE_ID', OLD.annotation_id, OLD.genomerelease_id, NEW.genomerelease_id, USER);
     END IF;
 
     IF (OLD.start_index != NEW.start_index) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'START_INDEX', OLD.annotation_id, OLD.start_index, NEW.start_index, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'START_INDEX', OLD.annotation_id, OLD.start_index, NEW.start_index, USER);
     END IF;
 
     IF (OLD.end_index != NEW.end_index) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'END_INDEX', OLD.annotation_id, OLD.end_index, NEW.end_index, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'END_INDEX', OLD.annotation_id, OLD.end_index, NEW.end_index, USER);
     END IF;
 
     IF (OLD.strand != NEW.strand) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'STRAND', OLD.annotation_id, OLD.strand, NEW.strand, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'STRAND', OLD.annotation_id, OLD.strand, NEW.strand, USER);
     END IF;
 
     IF (OLD.file_header != NEW.file_header) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'FILE_HEADER', OLD.annotation_id, OLD.file_header, NEW.file_header, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'FILE_HEADER', OLD.annotation_id, OLD.file_header, NEW.file_header, USER);
     END IF;
 
     IF (OLD.download_filename != NEW.download_filename)
     THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'DOWNLOAD_FILENAME', OLD.annotation_id, OLD.download_filename, NEW.download_filename, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'DOWNLOAD_FILENAME', OLD.annotation_id, OLD.download_filename, NEW.download_filename, USER);
     END IF;
 
     IF (((OLD.file_id IS NULL) AND (NEW.file_id IS NOT NULL)) OR ((OLD.file_id IS NOT NULL) AND (NEW.file_id IS NULL)) OR (OLD.file_id != NEW.file_id)) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'FILE_ID', OLD.annotation_id, OLD.file_id, NEW.file_id, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'FILE_ID', OLD.annotation_id, OLD.file_id, NEW.file_id, USER);
     END IF;
 
      IF (OLD.residues != NEW.residues) THEN
-        PERFORM insertupdatelog('DNASEQUENCEANNOTATION', 'RESIDUES', OLD.annotation_id, OLD.residues, NEW.residues, USER);
+        PERFORM nex.insertupdatelog('DNASEQUENCEANNOTATION', 'RESIDUES', OLD.annotation_id, OLD.residues, NEW.residues, USER);
     END IF;
 
     RETURN NEW;
@@ -461,7 +461,7 @@ BEGIN
              coalesce(OLD.file_id,0) || '[:]' || OLD.residues || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM insertdeletelog('DNASEQUENCEANNOTATION', OLD.annotation_id, v_row, USER);
+           PERFORM nex.insertdeletelog('DNASEQUENCEANNOTATION', OLD.annotation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -512,73 +512,73 @@ EXECUTE PROCEDURE trigger_fct_dnasequenceannotation_biur();
 DROP TRIGGER IF EXISTS dnasubsequence_audr ON dnasubsequence CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_dnasubsequence_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.annotation_id != NEW.annotation_id) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'ANNOTATION_ID', OLD.dnasubsequence_id, OLD.annotation_id, NEW.annotation_id, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'ANNOTATION_ID', OLD.dnasubsequence_id, OLD.annotation_id, NEW.annotation_id, USER);
     END IF;
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'DBENTITY_ID', OLD.dnasubsequence_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'DBENTITY_ID', OLD.dnasubsequence_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'DISPLAY_NAME', OLD.dnasubsequence_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'DISPLAY_NAME', OLD.dnasubsequence_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'BUD_ID', OLD.dnasubsequence_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'BUD_ID', OLD.dnasubsequence_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
      IF (OLD.so_id != NEW.so_id) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'SO_ID', OLD.dnasubsequence_id, OLD.so_id, NEW.so_id, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'SO_ID', OLD.dnasubsequence_id, OLD.so_id, NEW.so_id, USER);
     END IF;
 
     IF (OLD.relative_start_index != NEW.relative_start_index) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'RELATIVE_START_INDEX', OLD.dnasubsequence_id, OLD.relative_start_index, NEW.relative_start_index, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'RELATIVE_START_INDEX', OLD.dnasubsequence_id, OLD.relative_start_index, NEW.relative_start_index, USER);
     END IF;
 
     IF (OLD.relative_end_index != NEW.relative_end_index) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'RELATIVE_END_INDEX', OLD.dnasubsequence_id, OLD.relative_end_index, NEW.relative_end_index, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'RELATIVE_END_INDEX', OLD.dnasubsequence_id, OLD.relative_end_index, NEW.relative_end_index, USER);
     END IF;
 
     IF (OLD.contig_start_index != NEW.contig_start_index) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'CONTIG_START_INDEX', OLD.dnasubsequence_id, OLD.contig_start_index, NEW.contig_start_index, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'CONTIG_START_INDEX', OLD.dnasubsequence_id, OLD.contig_start_index, NEW.contig_start_index, USER);
     END IF;
 
     IF (OLD.contig_end_index != NEW.contig_end_index) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'CONTIG_END_INDEX', OLD.dnasubsequence_id, OLD.contig_end_index, NEW.contig_end_index, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'CONTIG_END_INDEX', OLD.dnasubsequence_id, OLD.contig_end_index, NEW.contig_end_index, USER);
     END IF;
 
     IF (((OLD.seq_version IS NULL) AND (NEW.seq_version IS NOT NULL)) OR ((OLD.seq_version IS NOT NULL) AND (NEW.seq_version IS NULL)) OR (OLD.seq_version != NEW.seq_version)) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'SEQ_VERSION', OLD.dnasubsequence_id, OLD.seq_version, NEW.seq_version, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'SEQ_VERSION', OLD.dnasubsequence_id, OLD.seq_version, NEW.seq_version, USER);
     END IF;
 
     IF (((OLD.coord_version IS NULL) AND (NEW.coord_version IS NOT NULL)) OR ((OLD.coord_version IS NOT NULL) AND (NEW.coord_version IS NULL)) OR (OLD.coord_version != NEW.coord_version)) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'COORD_VERSION', OLD.dnasubsequence_id, OLD.coord_version, NEW.coord_version, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'COORD_VERSION', OLD.dnasubsequence_id, OLD.coord_version, NEW.coord_version, USER);
     END IF;
 
     IF (((OLD.genomerelease_id IS NULL) AND (NEW.genomerelease_id IS NOT NULL)) OR ((OLD.genomerelease_id IS NOT NULL) AND (NEW.genomerelease_id IS NULL)) OR (OLD.genomerelease_id != NEW.genomerelease_id)) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'GENOMERELEASE_ID', OLD.dnasubsequence_id, OLD.genomerelease_id, NEW.genomerelease_id, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'GENOMERELEASE_ID', OLD.dnasubsequence_id, OLD.genomerelease_id, NEW.genomerelease_id, USER);
     END IF;
     
     IF (OLD.file_header != NEW.file_header) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'FILE_HEADER', OLD.dnasubsequence_id, OLD.file_header, NEW.file_header, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'FILE_HEADER', OLD.dnasubsequence_id, OLD.file_header, NEW.file_header, USER);
     END IF;
 
     IF (OLD.download_filename != NEW.download_filename)
     THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'DOWNLOAD_FILENAME', OLD.dnasubsequence_id, OLD.download_filename, NEW.download_filename, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'DOWNLOAD_FILENAME', OLD.dnasubsequence_id, OLD.download_filename, NEW.download_filename, USER);
     END IF;
 
     IF (((OLD.file_id IS NULL) AND (NEW.file_id IS NOT NULL)) OR ((OLD.file_id IS NOT NULL) AND (NEW.file_id IS NULL)) OR (OLD.file_id != NEW.file_id)) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'FILE_ID', OLD.dnasubsequence_id, OLD.file_id, NEW.file_id, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'FILE_ID', OLD.dnasubsequence_id, OLD.file_id, NEW.file_id, USER);
     END IF;
 
      IF (OLD.residues != NEW.residues) THEN
-        PERFORM insertupdatelog('DNASUBSEQUENCE', 'RESIDUES', OLD.dnasubsequence_id, OLD.residues, NEW.residues, USER);
+        PERFORM nex.insertupdatelog('DNASUBSEQUENCE', 'RESIDUES', OLD.dnasubsequence_id, OLD.residues, NEW.residues, USER);
     END IF;
 
     RETURN NEW;
@@ -596,7 +596,7 @@ BEGIN
              OLD.residues || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM insertdeletelog('DNASUBSEQUENCE', OLD.dnasubsequence_id, v_row, USER);
+           PERFORM nex.insertdeletelog('DNASUBSEQUENCE', OLD.dnasubsequence_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -646,28 +646,28 @@ EXECUTE PROCEDURE trigger_fct_dnasubsequence_biur();
 DROP TRIGGER IF EXISTS enzymeannotation_audr ON enzymeannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_enzymeannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('ENZYMEANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('ENZYMEANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('ENZYMEANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('ENZYMEANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('ENZYMEANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('ENZYMEANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF  (((OLD.reference_id IS NULL) AND (NEW.reference_id IS NOT NULL)) OR ((OLD.reference_id IS NOT NULL) AND (NEW.reference_id IS NULL)) OR (OLD.reference_id != NEW.reference_id)) THEN
-        PERFORM insertupdatelog('ENZYMEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('ENZYMEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.ec_id != NEW.ec_id) THEN
-        PERFORM insertupdatelog('ENZYMEANNOTATION', 'EC_ID', OLD.annotation_id, OLD.ec_id, NEW.ec_id, USER);
+        PERFORM nex.insertupdatelog('ENZYMEANNOTATION', 'EC_ID', OLD.annotation_id, OLD.ec_id, NEW.ec_id, USER);
     END IF;
 
     RETURN NEW;
@@ -679,7 +679,7 @@ BEGIN
              coalesce(OLD.reference_id,0) || '[:]' ||  OLD.ec_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM insertdeletelog('ENZYMEANNOTATION', OLD.annotation_id, v_row, USER);
+         PERFORM nex.insertdeletelog('ENZYMEANNOTATION', OLD.annotation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -729,32 +729,32 @@ EXECUTE PROCEDURE trigger_fct_enzymeannotation_biur();
 DROP TRIGGER IF EXISTS expressionannotation_audr ON expressionannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_expressionannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('EXPRESSIONANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('EXPRESSIONANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('EXPRESSIONANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('EXPRESSIONANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('EXPRESSIONANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('EXPRESSIONANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF  (((OLD.reference_id IS NULL) AND (NEW.reference_id IS NOT NULL)) OR ((OLD.reference_id IS NOT NULL) AND (NEW.reference_id IS NULL)) OR (OLD.reference_id != NEW.reference_id)) THEN
-        PERFORM insertupdatelog('EXPRESSIONANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('EXPRESSIONANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.datasetsample_id != NEW.datasetsample_id) THEN
-        PERFORM insertupdatelog('EXPRESSIONANNOTATION', 'DATASETSAMPLE_ID', OLD.annotation_id, OLD.datasetsample_id, NEW.datasetsample_id, USER);
+        PERFORM nex.insertupdatelog('EXPRESSIONANNOTATION', 'DATASETSAMPLE_ID', OLD.annotation_id, OLD.datasetsample_id, NEW.datasetsample_id, USER);
     END IF;
 
     IF (OLD.expression_value != NEW.expression_value) THEN
-        PERFORM insertupdatelog('EXPRESSIONANNOTATION', 'EXPRESSION_VALUE', OLD.annotation_id, OLD.expression_value, NEW.expression_value, USER);
+        PERFORM nex.insertupdatelog('EXPRESSIONANNOTATION', 'EXPRESSION_VALUE', OLD.annotation_id, OLD.expression_value, NEW.expression_value, USER);
     END IF;
 
     RETURN NEW;
@@ -767,7 +767,7 @@ BEGIN
              OLD.datasetsample_id || '[:]' || OLD.expression_value || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-            PERFORM insertdeletelog('EXPRESSIONANNOTATION', OLD.annotation_id, v_row, USER);
+            PERFORM nex.insertdeletelog('EXPRESSIONANNOTATION', OLD.annotation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -817,48 +817,48 @@ EXECUTE PROCEDURE trigger_fct_expressionannotation_biur();
 DROP TRIGGER IF EXISTS geninteractionannotation_audr ON geninteractionannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_geninteractionannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity1_id != NEW.dbentity1_id) THEN
-        PERFORM insertupdatelog('GENINTERACTIONANNOTATION', 'DBENTITY1_ID', OLD.annotation_id, OLD.dbentity1_id, NEW.dbentity1_id, USER);
+        PERFORM nex.insertupdatelog('GENINTERACTIONANNOTATION', 'DBENTITY1_ID', OLD.annotation_id, OLD.dbentity1_id, NEW.dbentity1_id, USER);
     END IF;
 
     IF (OLD.dbentity2_id != NEW.dbentity2_id) THEN
-        PERFORM insertupdatelog('GENINTERACTIONANNOTATION', 'DBENTITY2_ID', OLD.annotation_id, OLD.dbentity2_id, NEW.dbentity2_id, USER);
+        PERFORM nex.insertupdatelog('GENINTERACTIONANNOTATION', 'DBENTITY2_ID', OLD.annotation_id, OLD.dbentity2_id, NEW.dbentity2_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('GENINTERACTIONANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('GENINTERACTIONANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('GENINTERACTIONANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('GENINTERACTIONANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
      IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('GENINTERACTIONANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('GENINTERACTIONANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF (((OLD.phenotype_id IS NULL) AND (NEW.phenotype_id IS NOT NULL)) OR ((OLD.phenotype_id IS NOT NULL) AND (NEW.phenotype_id IS NULL)) OR (OLD.phenotype_id != NEW.phenotype_id)) THEN
-        PERFORM insertupdatelog('GENINTERACTIONANNOTATION', 'PHENOTYPE_ID', OLD.annotation_id, OLD.phenotype_id, NEW.phenotype_id, USER);
+        PERFORM nex.insertupdatelog('GENINTERACTIONANNOTATION', 'PHENOTYPE_ID', OLD.annotation_id, OLD.phenotype_id, NEW.phenotype_id, USER);
     END IF;
 
     IF (OLD.biogrid_experimental_system != NEW.biogrid_experimental_system) THEN
-        PERFORM insertupdatelog('GENINTERACTIONANNOTATION', 'BIOGRID_EXPERIMENTAL_SYSTEM', OLD.annotation_id, OLD.biogrid_experimental_system, NEW.biogrid_experimental_system, USER);
+        PERFORM nex.insertupdatelog('GENINTERACTIONANNOTATION', 'BIOGRID_EXPERIMENTAL_SYSTEM', OLD.annotation_id, OLD.biogrid_experimental_system, NEW.biogrid_experimental_system, USER);
     END IF;
 
     IF (OLD.annotation_type != NEW.annotation_type) THEN
-        PERFORM insertupdatelog('GENINTERACTIONANNOTATION', 'ANNOTATION_TYPE', OLD.annotation_id, OLD.annotation_type, NEW.annotation_type, USER);
+        PERFORM nex.insertupdatelog('GENINTERACTIONANNOTATION', 'ANNOTATION_TYPE', OLD.annotation_id, OLD.annotation_type, NEW.annotation_type, USER);
     END IF;
 
     IF (OLD.bait_hit != NEW.bait_hit) THEN
-        PERFORM insertupdatelog('GENINTERACTIONANNOTATION', 'BAIT_HIT', OLD.annotation_id, OLD.bait_hit, NEW.bait_hit, USER);
+        PERFORM nex.insertupdatelog('GENINTERACTIONANNOTATION', 'BAIT_HIT', OLD.annotation_id, OLD.bait_hit, NEW.bait_hit, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
-        PERFORM insertupdatelog('GENINTERACTIONANNOTATION', 'DESCRIPTION', OLD.annotation_id, OLD.description, NEW.description, USER);
+        PERFORM nex.insertupdatelog('GENINTERACTIONANNOTATION', 'DESCRIPTION', OLD.annotation_id, OLD.description, NEW.description, USER);
     END IF;
 
     RETURN NEW;
@@ -873,7 +873,7 @@ BEGIN
              OLD.bait_hit || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('GENINTERACTIONANNOTATION', OLD.annotation_id, v_row, USER);
+          PERFORM nex.insertdeletelog('GENINTERACTIONANNOTATION', OLD.annotation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -923,44 +923,44 @@ EXECUTE PROCEDURE trigger_fct_geninteractionannotation_biur();
 DROP TRIGGER IF EXISTS goannotation_audr ON goannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_goannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('GOANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('GOANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('GOANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('GOANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
      IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('GOANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('GOANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('GOANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('GOANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.go_id != NEW.go_id) THEN
-        PERFORM insertupdatelog('GOANNOTATION', 'GO_ID', OLD.annotation_id, OLD.go_id, NEW.go_id, USER);
+        PERFORM nex.insertupdatelog('GOANNOTATION', 'GO_ID', OLD.annotation_id, OLD.go_id, NEW.go_id, USER);
     END IF;
 
     IF (OLD.eco_id != NEW.eco_id) THEN
-        PERFORM insertupdatelog('GOANNOTATION', 'ECO_ID', OLD.annotation_id, OLD.eco_id, NEW.eco_id, USER);
+        PERFORM nex.insertupdatelog('GOANNOTATION', 'ECO_ID', OLD.annotation_id, OLD.eco_id, NEW.eco_id, USER);
     END IF;
 
     IF (OLD.annotation_type != NEW.annotation_type) THEN
-        PERFORM insertupdatelog('GOANNOTATION', 'ANNOTATION_TYPE', OLD.annotation_id, OLD.annotation_type, NEW.annotation_type, USER);
+        PERFORM nex.insertupdatelog('GOANNOTATION', 'ANNOTATION_TYPE', OLD.annotation_id, OLD.annotation_type, NEW.annotation_type, USER);
     END IF;
 
     IF (OLD.go_qualifier != NEW.go_qualifier) THEN
-        PERFORM insertupdatelog('GOANNOTATION', 'GO_QUALIFIER', OLD.annotation_id, OLD.go_qualifier, NEW.go_qualifier, USER);
+        PERFORM nex.insertupdatelog('GOANNOTATION', 'GO_QUALIFIER', OLD.annotation_id, OLD.go_qualifier, NEW.go_qualifier, USER);
     END IF;
 
     IF (OLD.date_assigned != NEW.date_assigned) THEN
-        PERFORM insertupdatelog('GOANNOTATION', 'DATE_ASSIGNED', OLD.annotation_id, OLD.date_assigned, NEW.date_assigned, USER);
+        PERFORM nex.insertupdatelog('GOANNOTATION', 'DATE_ASSIGNED', OLD.annotation_id, OLD.date_assigned, NEW.date_assigned, USER);
     END IF;
 
     RETURN NEW;
@@ -974,7 +974,7 @@ BEGIN
              OLD.go_qualifier || '[:]' || OLD.date_assigned || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('GOANNOTATION', OLD.annotation_id, v_row, USER);
+          PERFORM nex.insertdeletelog('GOANNOTATION', OLD.annotation_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -1023,28 +1023,28 @@ EXECUTE PROCEDURE trigger_fct_goannotation_biur();
 DROP TRIGGER IF EXISTS goextension_audr ON goextension CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_goextension_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.annotation_id != NEW.annotation_id) THEN
-        PERFORM insertupdatelog('GOEXTENSION', 'ANNOTATION_ID', OLD.goextension_id, OLD.annotation_id, NEW.annotation_id, USER);
+        PERFORM nex.insertupdatelog('GOEXTENSION', 'ANNOTATION_ID', OLD.goextension_id, OLD.annotation_id, NEW.annotation_id, USER);
     END IF;
 
      IF (OLD.group_id != NEW.group_id) THEN
-        PERFORM insertupdatelog('GOEXTENSION', 'GROUP_ID', OLD.goextension_id, OLD.group_id, NEW.group_id, USER);
+        PERFORM nex.insertupdatelog('GOEXTENSION', 'GROUP_ID', OLD.goextension_id, OLD.group_id, NEW.group_id, USER);
     END IF;
 
      IF (OLD.dbxref_id != NEW.dbxref_id) THEN
-        PERFORM insertupdatelog('GOEXTENSION', 'DBXREF_ID', OLD.goextension_id, OLD.dbxref_id, NEW.dbxref_id, USER);
+        PERFORM nex.insertupdatelog('GOEXTENSION', 'DBXREF_ID', OLD.goextension_id, OLD.dbxref_id, NEW.dbxref_id, USER);
     END IF;
 
      IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM insertupdatelog('GOEXTENSION', 'OBJ_URL', OLD.goextension_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('GOEXTENSION', 'OBJ_URL', OLD.goextension_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.ro_id != NEW.ro_id) THEN
-        PERFORM insertupdatelog('GOEXTENSION', 'RO_ID', OLD.goextension_id, OLD.ro_id, NEW.ro_id, USER);
+        PERFORM nex.insertupdatelog('GOEXTENSION', 'RO_ID', OLD.goextension_id, OLD.ro_id, NEW.ro_id, USER);
     END IF;
 
    RETURN NEW;
@@ -1056,7 +1056,7 @@ BEGIN
              OLD.obj_url || '[:]' || OLD.ro_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM insertdeletelog('GOEXTENSION', OLD.goextension_id, v_row, USER);
+         PERFORM nex.insertdeletelog('GOEXTENSION', OLD.goextension_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -1105,28 +1105,28 @@ EXECUTE PROCEDURE trigger_fct_goextension_biur();
 DROP TRIGGER IF EXISTS gosupportingevidence_audr ON gosupportingevidence CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_gosupportingevidence_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.annotation_id != NEW.annotation_id) THEN
-        PERFORM insertupdatelog('GOSUPPORTINGEVIDENCE', 'ANNOTATION_ID', OLD.gosupportingevidence_id, OLD.annotation_id, NEW.annotation_id, USER);
+        PERFORM nex.insertupdatelog('GOSUPPORTINGEVIDENCE', 'ANNOTATION_ID', OLD.gosupportingevidence_id, OLD.annotation_id, NEW.annotation_id, USER);
     END IF;
 
      IF (OLD.group_id != NEW.group_id) THEN
-        PERFORM insertupdatelog('GOSUPPORTINGEVIDENCE', 'GROUP_ID', OLD.gosupportingevidence_id, OLD.group_id, NEW.group_id, USER);
+        PERFORM nex.insertupdatelog('GOSUPPORTINGEVIDENCE', 'GROUP_ID', OLD.gosupportingevidence_id, OLD.group_id, NEW.group_id, USER);
     END IF;
 
      IF (OLD.dbxref_id != NEW.dbxref_id) THEN
-        PERFORM insertupdatelog('GOSUPPORTINGEVIDENCE', 'DBXREF_ID', OLD.gosupportingevidence_id, OLD.dbxref_id, NEW.dbxref_id, USER);
+        PERFORM nex.insertupdatelog('GOSUPPORTINGEVIDENCE', 'DBXREF_ID', OLD.gosupportingevidence_id, OLD.dbxref_id, NEW.dbxref_id, USER);
     END IF;
 
      IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM insertupdatelog('GOSUPPORTINGEVIDENCE', 'OBJ_URL', OLD.gosupportingevidence_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('GOSUPPORTINGEVIDENCE', 'OBJ_URL', OLD.gosupportingevidence_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.evidence_type != NEW.evidence_type) THEN
-        PERFORM insertupdatelog('GOSUPPORTINGEVIDENCE', 'EVIDENCE_TYPE', OLD.gosupportingevidence_id, OLD.evidence_type, NEW.evidence_type, USER);
+        PERFORM nex.insertupdatelog('GOSUPPORTINGEVIDENCE', 'EVIDENCE_TYPE', OLD.gosupportingevidence_id, OLD.evidence_type, NEW.evidence_type, USER);
     END IF;
 
     RETURN NEW;
@@ -1138,7 +1138,7 @@ BEGIN
              OLD.obj_url || '[:]' || OLD.evidence_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM insertdeletelog('GOSUPPORTINGEVIDENCE', OLD.gosupportingevidence_id, v_row, USER);
+         PERFORM nex.insertdeletelog('GOSUPPORTINGEVIDENCE', OLD.gosupportingevidence_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -1187,28 +1187,28 @@ EXECUTE PROCEDURE trigger_fct_gosupportingevidence_biur();
 DROP TRIGGER IF EXISTS goslimannotation_audr ON goslimannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_goslimannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('GOSLIMANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('GOSLIMANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('GOSLIMANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('GOSLIMANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('GOSLIMANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('GOSLIMANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF (((OLD.reference_id IS NULL) AND (NEW.reference_id IS NOT NULL)) OR ((OLD.reference_id IS NOT NULL) AND (NEW.reference_id IS NULL)) OR (OLD.reference_id != NEW.reference_id)) THEN
-        PERFORM insertupdatelog('GOSLIMANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('GOSLIMANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.goslim_id != NEW.goslim_id) THEN
-        PERFORM insertupdatelog('GOSLIMANNOTATION', 'GOSLIM_ID', OLD.annotation_id, OLD.goslim_id, NEW.goslim_id, USER);
+        PERFORM nex.insertupdatelog('GOSLIMANNOTATION', 'GOSLIM_ID', OLD.annotation_id, OLD.goslim_id, NEW.goslim_id, USER);
     END IF;
 
     RETURN NEW;
@@ -1220,7 +1220,7 @@ BEGIN
              coalesce(OLD.reference_id,0) || '[:]' || OLD.goslim_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('GOSLIMANNOTATION', OLD.annotation_id, v_row, USER);
+          PERFORM nex.insertdeletelog('GOSLIMANNOTATION', OLD.annotation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1270,33 +1270,33 @@ EXECUTE PROCEDURE trigger_fct_goslimannotation_biur();
 DROP TRIGGER IF EXISTS literatureannotation_audr ON literatureannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_literatureannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('LITERATUREANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('LITERATUREANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('LITERATUREANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('LITERATUREANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id))
     THEN
-        PERFORM insertupdatelog('LITERATUREANNOTATION', 'BUD_ID', OLD.annotation_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('LITERATUREANNOTATION', 'BUD_ID', OLD.annotation_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF  (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('LITERATUREANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('LITERATUREANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('LITERATUREANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('LITERATUREANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.topic != NEW.topic) THEN
-        PERFORM insertupdatelog('LITERATUREANNOTATION', 'TOPIC', OLD.annotation_id, OLD.topic, NEW.topic, USER);
+        PERFORM nex.insertupdatelog('LITERATUREANNOTATION', 'TOPIC', OLD.annotation_id, OLD.topic, NEW.topic, USER);
     END IF;
 
     RETURN NEW;
@@ -1309,7 +1309,7 @@ BEGIN
              OLD.topic || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-       PERFORM insertdeletelog('LITERATUREANNOTATION', OLD.annotation_id, v_row, USER);
+       PERFORM nex.insertdeletelog('LITERATUREANNOTATION', OLD.annotation_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -1359,40 +1359,40 @@ EXECUTE PROCEDURE trigger_fct_literatureannotation_biur();
 DROP TRIGGER IF EXISTS contignoteannotation_audr ON contignoteannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_contignoteannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.contig_id != NEW.contig_id) THEN
-        PERFORM insertupdatelog('CONTIGNOTEANNOTATION', 'CONTIG_ID', OLD.annotation_id, OLD.contig_id, NEW.contig_id, USER);
+        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION', 'CONTIG_ID', OLD.annotation_id, OLD.contig_id, NEW.contig_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('CONTIGNOTEANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF  (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('CONTIGNOTEANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF (((OLD.reference_id IS NULL) AND (NEW.reference_id IS NOT NULL)) OR ((OLD.reference_id IS NOT NULL) AND (NEW.reference_id IS NULL)) OR (OLD.reference_id != NEW.reference_id)) THEN
-        PERFORM insertupdatelog('CONTIGNOTEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('CONTIGNOTEANNOTATION', 'BUD_ID', OLD.annotation_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION', 'BUD_ID', OLD.annotation_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (OLD.note_type != NEW.note_type) THEN
-        PERFORM insertupdatelog('CONTIGNOTEANNOTATION', 'NOTE_TYPE', OLD.annotation_id, OLD.note_type, NEW.note_type, USER);
+        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION', 'NOTE_TYPE', OLD.annotation_id, OLD.note_type, NEW.note_type, USER);
     END IF;
 
     IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('CONTIGNOTEANNOTATION', 'DISPLAY_NAME', OLD.annotation_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION', 'DISPLAY_NAME', OLD.annotation_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.note != NEW.note) THEN
-        PERFORM insertupdatelog('CONTIGNOTEANNOTATION', 'NOTE', OLD.annotation_id, OLD.note, NEW.note, USER);
+        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION', 'NOTE', OLD.annotation_id, OLD.note, NEW.note, USER);
     END IF;
 
     RETURN NEW;
@@ -1406,7 +1406,7 @@ BEGIN
              OLD.display_name || '[:]' || OLD.note || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-        PERFORM insertdeletelog('CONTIGNOTEANNOTATION', OLD.annotation_id, v_row, USER);
+        PERFORM nex.insertdeletelog('CONTIGNOTEANNOTATION', OLD.annotation_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -1455,40 +1455,40 @@ EXECUTE PROCEDURE trigger_fct_contignoteannotation_biur();
 DROP TRIGGER IF EXISTS locusnoteannotation_audr ON locusnoteannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_locusnoteannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('LOCUSNOTEANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('LOCUSNOTEANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF  (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('LOCUSNOTEANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF (((OLD.reference_id IS NULL) AND (NEW.reference_id IS NOT NULL)) OR ((OLD.reference_id IS NOT NULL) AND (NEW.reference_id IS NULL)) OR (OLD.reference_id != NEW.reference_id)) THEN
-        PERFORM insertupdatelog('LOCUSNOTEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('LOCUSNOTEANNOTATION', 'BUD_ID', OLD.annotation_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION', 'BUD_ID', OLD.annotation_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (OLD.note_type != NEW.note_type) THEN
-        PERFORM insertupdatelog('LOCUSNOTEANNOTATION', 'NOTE_TYPE', OLD.annotation_id, OLD.note_type, NEW.note_type, USER);
+        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION', 'NOTE_TYPE', OLD.annotation_id, OLD.note_type, NEW.note_type, USER);
     END IF;
 
     IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM insertupdatelog('LOCUSNOTEANNOTATION', 'DISPLAY_NAME', OLD.annotation_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION', 'DISPLAY_NAME', OLD.annotation_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.note != NEW.note) THEN
-        PERFORM insertupdatelog('LOCUSNOTEANNOTATION', 'NOTE', OLD.annotation_id, OLD.note, NEW.note, USER);
+        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION', 'NOTE', OLD.annotation_id, OLD.note, NEW.note, USER);
     END IF;
 
     RETURN NEW;
@@ -1502,7 +1502,7 @@ BEGIN
              OLD.display_name || '[:]' || OLD.note || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM insertdeletelog('LOCUSNOTEANNOTATION', OLD.annotation_id, v_row, USER);
+         PERFORM nex.insertdeletelog('LOCUSNOTEANNOTATION', OLD.annotation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1552,32 +1552,32 @@ EXECUTE PROCEDURE trigger_fct_locusnoteannotation_biur();
 DROP TRIGGER IF EXISTS pathwayannotation_audr ON pathwayannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_pathwayannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('PATHWAYANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('PATHWAYANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('PATHWAYANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('PATHWAYANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF  (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('PATHWAYANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('PATHWAYANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF (((OLD.reference_id IS NULL) AND (NEW.reference_id IS NOT NULL)) OR ((OLD.reference_id IS NOT NULL) AND (NEW.reference_id IS NULL)) OR (OLD.reference_id != NEW.reference_id)) THEN
-        PERFORM insertupdatelog('PATHWAYANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('PATHWAYANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.pathway_id != NEW.pathway_id) THEN
-        PERFORM insertupdatelog('PATHWAYANNOTATION', 'PATHWAY_ID', OLD.annotation_id, OLD.pathway_id, NEW.pathway_id, USER);
+        PERFORM nex.insertupdatelog('PATHWAYANNOTATION', 'PATHWAY_ID', OLD.annotation_id, OLD.pathway_id, NEW.pathway_id, USER);
     END IF;
 
     IF (((OLD.ec_id IS NULL) AND (NEW.ec_id IS NOT NULL)) OR ((OLD.ec_id IS NOT NULL) AND (NEW.ec_id IS NULL)) OR (OLD.ec_id != NEW.ec_id)) THEN
-        PERFORM insertupdatelog('PATHWAYANNOTATION', 'EC_ID', OLD.annotation_id, OLD.ec_id, NEW.ec_id, USER);
+        PERFORM nex.insertupdatelog('PATHWAYANNOTATION', 'EC_ID', OLD.annotation_id, OLD.ec_id, NEW.ec_id, USER);
     END IF;
 
     RETURN NEW;
@@ -1590,7 +1590,7 @@ BEGIN
              OLD.pathway_id || '[:]' || coalesce(OLD.ec_id,0) || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM insertdeletelog('PATHWAYANNOTATION', OLD.annotation_id, v_row, USER);
+         PERFORM nex.insertdeletelog('PATHWAYANNOTATION', OLD.annotation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1640,60 +1640,60 @@ EXECUTE PROCEDURE trigger_fct_pathwayannotation_biur();
 DROP TRIGGER IF EXISTS phenotypeannotation_audr ON phenotypeannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_phenotypeannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION', 'BUD_ID', OLD.annotation_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION', 'BUD_ID', OLD.annotation_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF  (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.phenotype_id != NEW.phenotype_id) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION', 'PHENOTYPE_ID', OLD.annotation_id, OLD.phenotype_id, NEW.phenotype_id, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION', 'PHENOTYPE_ID', OLD.annotation_id, OLD.phenotype_id, NEW.phenotype_id, USER);
     END IF;
 
     IF (OLD.experiment_id != NEW.experiment_id) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION', 'EXPERIMENT_ID', OLD.annotation_id, OLD.experiment_id, NEW.experiment_id, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION', 'EXPERIMENT_ID', OLD.annotation_id, OLD.experiment_id, NEW.experiment_id, USER);
     END IF;
 
     IF (OLD.mutant_id != NEW.mutant_id) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION', 'MUTANT_ID', OLD.annotation_id, OLD.mutant_id, NEW.mutant_id, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION', 'MUTANT_ID', OLD.annotation_id, OLD.mutant_id, NEW.mutant_id, USER);
     END IF;
 
     IF  (((OLD.allele_id IS NULL) AND (NEW.allele_id IS NOT NULL)) OR ((OLD.allele_id IS NOT NULL) AND (NEW.allele_id IS NULL)) OR (OLD.allele_id != NEW.allele_id)) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION', 'ALLELE_ID', OLD.annotation_id, OLD.allele_id, NEW.allele_id, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION', 'ALLELE_ID', OLD.annotation_id, OLD.allele_id, NEW.allele_id, USER);
     END IF;
 
     IF  (((OLD.reporter_id IS NULL) AND (NEW.reporter_id IS NOT NULL)) OR ((OLD.reporter_id IS NOT NULL) AND (NEW.reporter_id IS NULL)) OR (OLD.reporter_id != NEW.reporter_id)) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION', 'REPORTER_ID', OLD.annotation_id, OLD.reporter_id, NEW.reporter_id, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION', 'REPORTER_ID', OLD.annotation_id, OLD.reporter_id, NEW.reporter_id, USER);
     END IF;
 
     IF  (((OLD.assay_id IS NULL) AND (NEW.assay_id IS NOT NULL)) OR ((OLD.assay_id IS NOT NULL) AND (NEW.assay_id IS NULL)) OR (OLD.assay_id != NEW.assay_id)) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION', 'ASSAY_ID', OLD.annotation_id, OLD.assay_id, NEW.assay_id, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION', 'ASSAY_ID', OLD.annotation_id, OLD.assay_id, NEW.assay_id, USER);
     END IF;
 
     IF  (((OLD.strain_name IS NULL) AND (NEW.strain_name IS NOT NULL)) OR ((OLD.strain_name IS NOT NULL) AND (NEW.strain_name IS NULL)) OR (OLD.strain_name != NEW.strain_name)) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION', 'STRAIN_NAME', OLD.annotation_id, OLD.strain_name, NEW.strain_name, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION', 'STRAIN_NAME', OLD.annotation_id, OLD.strain_name, NEW.strain_name, USER);
     END IF;
 
     IF  (((OLD.details IS NULL) AND (NEW.details IS NOT NULL)) OR ((OLD.details IS NOT NULL) AND (NEW.details IS NULL)) OR (OLD.details != NEW.details)) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION', 'DETAILS', OLD.annotation_id, OLD.details, NEW.details, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION', 'DETAILS', OLD.annotation_id, OLD.details, NEW.details, USER);
     END IF;
 
     RETURN NEW;
@@ -1709,7 +1709,7 @@ BEGIN
              coalesce(OLD.strain_name,'') || '[:]' || coalesce(OLD.details,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM insertdeletelog('PHENOTYPEANNOTATION', OLD.annotation_id, v_row, USER);
+           PERFORM nex.insertdeletelog('PHENOTYPEANNOTATION', OLD.annotation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1764,28 +1764,28 @@ EXECUTE PROCEDURE trigger_fct_phenotypeannotation_biur();
 DROP TRIGGER IF EXISTS phenotypeannotationcond_audr ON phenotypeannotation_cond CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_phenotypeannotationcond_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.annotation_id != NEW.annotation_id) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION_COND', 'ANNOTATION_ID', OLD.condition_id, OLD.annotation_id, NEW.annotation_id, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION_COND', 'ANNOTATION_ID', OLD.condition_id, OLD.annotation_id, NEW.annotation_id, USER);
     END IF;
 
      IF (OLD.condition_class != NEW.condition_class) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION_COND', 'CONDITION_CLASS', OLD.condition_id, OLD.condition_class, NEW.condition_class, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION_COND', 'CONDITION_CLASS', OLD.condition_id, OLD.condition_class, NEW.condition_class, USER);
     END IF;
 
      IF (OLD.condition_name != NEW.condition_name) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION_COND', 'CONDITION_NAME', OLD.condition_id, OLD.condition_name, NEW.condition_name, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION_COND', 'CONDITION_NAME', OLD.condition_id, OLD.condition_name, NEW.condition_name, USER);
     END IF;
 
      IF (((OLD.condition_value IS NULL) AND (NEW.condition_value IS NOT NULL)) OR ((OLD.condition_value IS NOT NULL) AND (NEW.condition_value IS NULL)) OR (OLD.condition_value != NEW.condition_value)) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION_COND', 'CONDITION_VALUE', OLD.condition_id, OLD.condition_value, NEW.condition_value, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION_COND', 'CONDITION_VALUE', OLD.condition_id, OLD.condition_value, NEW.condition_value, USER);
     END IF;
 
      IF (((OLD.condition_unit IS NULL) AND (NEW.condition_unit IS NOT NULL)) OR ((OLD.condition_unit IS NOT NULL) AND (NEW.condition_unit IS NULL)) OR (OLD.condition_unit != NEW.condition_unit)) THEN
-        PERFORM insertupdatelog('PHENOTYPEANNOTATION_COND', 'CONDITION_UNIT', OLD.condition_id, OLD.condition_unit, NEW.condition_unit, USER);
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION_COND', 'CONDITION_UNIT', OLD.condition_id, OLD.condition_unit, NEW.condition_unit, USER);
     END IF;
 
     RETURN NEW;
@@ -1797,7 +1797,7 @@ BEGIN
              coalesce(OLD.condition_value,'') || '[:]' || coalesce(OLD.condition_unit,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('PHENOTYPEANNOTATION_COND', OLD.condition_id, v_row, USER);
+          PERFORM nex.insertdeletelog('PHENOTYPEANNOTATION_COND', OLD.condition_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1815,7 +1815,7 @@ BEGIN
   IF (TG_OP = 'INSERT') THEN
 
     IF (NEW.condition_class = 'chemical') THEN
-        PERFORM checkchemical(NEW.condition_name);
+        PERFORM nex.checkchemical(NEW.condition_name);
     END IF;
 
        NEW.created_by := UPPER(NEW.created_by);
@@ -1830,7 +1830,7 @@ BEGIN
     END IF;
 
     IF (NEW.condition_class = 'chemical') THEN
-        PERFORM checkchemical(NEW.condition_name);
+        PERFORM nex.checkchemical(NEW.condition_name);
     END IF;
 
     IF (NEW.date_created != OLD.date_created) THEN
@@ -1855,48 +1855,48 @@ EXECUTE PROCEDURE trigger_fct_phenotypeannotationcond_biur();
 DROP TRIGGER IF EXISTS physinteractionannotation_audr ON physinteractionannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_physinteractionannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity1_id != NEW.dbentity1_id) THEN
-        PERFORM insertupdatelog('PHYSINTERACTIONANNOTATION', 'DBENTITY1_ID', OLD.annotation_id, OLD.dbentity1_id, NEW.dbentity1_id, USER);
+        PERFORM nex.insertupdatelog('PHYSINTERACTIONANNOTATION', 'DBENTITY1_ID', OLD.annotation_id, OLD.dbentity1_id, NEW.dbentity1_id, USER);
     END IF;
 
     IF (OLD.dbentity2_id != NEW.dbentity2_id) THEN
-        PERFORM insertupdatelog('PHYSINTERACTIONANNOTATION', 'DBENTITY2_ID', OLD.annotation_id, OLD.dbentity2_id, NEW.dbentity2_id, USER);
+        PERFORM nex.insertupdatelog('PHYSINTERACTIONANNOTATION', 'DBENTITY2_ID', OLD.annotation_id, OLD.dbentity2_id, NEW.dbentity2_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('PHYSINTERACTIONANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('PHYSINTERACTIONANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('PHYSINTERACTIONANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('PHYSINTERACTIONANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
      IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('PHYSINTERACTIONANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('PHYSINTERACTIONANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF  (((OLD.psimod_id IS NULL) AND (NEW.psimod_id IS NOT NULL)) OR ((OLD.psimod_id IS NOT NULL) AND (NEW.psimod_id IS NULL)) OR (OLD.psimod_id != NEW.psimod_id)) THEN
-        PERFORM insertupdatelog('PHYSINTERACTIONANNOTATION', 'PSIMOD_ID', OLD.annotation_id, OLD.psimod_id, NEW.psimod_id, USER);
+        PERFORM nex.insertupdatelog('PHYSINTERACTIONANNOTATION', 'PSIMOD_ID', OLD.annotation_id, OLD.psimod_id, NEW.psimod_id, USER);
     END IF;
 
     IF (OLD.biogrid_experimental_system != NEW.biogrid_experimental_system) THEN
-        PERFORM insertupdatelog('PHYSINTERACTIONANNOTATION', 'BIOGRID_EXPERIMENTAL_SYSTEM', OLD.annotation_id, OLD.biogrid_experimental_system, NEW.biogrid_experimental_system, USER);
+        PERFORM nex.insertupdatelog('PHYSINTERACTIONANNOTATION', 'BIOGRID_EXPERIMENTAL_SYSTEM', OLD.annotation_id, OLD.biogrid_experimental_system, NEW.biogrid_experimental_system, USER);
     END IF;
 
     IF (OLD.annotation_type != NEW.annotation_type) THEN
-        PERFORM insertupdatelog('PHYSINTERACTIONANNOTATION', 'ANNOTATION_TYPE', OLD.annotation_id, OLD.annotation_type, NEW.annotation_type, USER);
+        PERFORM nex.insertupdatelog('PHYSINTERACTIONANNOTATION', 'ANNOTATION_TYPE', OLD.annotation_id, OLD.annotation_type, NEW.annotation_type, USER);
     END IF;
 
     IF (OLD.bait_hit != NEW.bait_hit) THEN
-        PERFORM insertupdatelog('PHYSINTERACTIONANNOTATION', 'BAIT_HIT', OLD.annotation_id, OLD.bait_hit, NEW.bait_hit, USER);
+        PERFORM nex.insertupdatelog('PHYSINTERACTIONANNOTATION', 'BAIT_HIT', OLD.annotation_id, OLD.bait_hit, NEW.bait_hit, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
-        PERFORM insertupdatelog('PHYSINTERACTIONANNOTATION', 'DESCRIPTION', OLD.annotation_id, OLD.description, NEW.description, USER);
+        PERFORM nex.insertupdatelog('PHYSINTERACTIONANNOTATION', 'DESCRIPTION', OLD.annotation_id, OLD.description, NEW.description, USER);
     END IF;
 
     RETURN NEW;
@@ -1911,7 +1911,7 @@ BEGIN
              OLD.bait_hit || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-        PERFORM insertdeletelog('PHYSINTERACTIONANNOTATION', OLD.annotation_id, v_row, USER);
+        PERFORM nex.insertdeletelog('PHYSINTERACTIONANNOTATION', OLD.annotation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1961,40 +1961,40 @@ EXECUTE PROCEDURE trigger_fct_physinteractionannotation_biur();
 DROP TRIGGER IF EXISTS posttranslationannotation_audr ON posttranslationannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_posttranslationannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('POSTTRANSLATIONANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('POSTTRANSLATIONANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('POSTTRANSLATIONANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('POSTTRANSLATIONANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('POSTTRANSLATIONANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('POSTTRANSLATIONANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('POSTTRANSLATIONANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('POSTTRANSLATIONANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.site_index != NEW.site_index) THEN
-        PERFORM insertupdatelog('POSTTRANSLATIONANNOTATION', 'SITE_INDEX', OLD.annotation_id, OLD.site_index, NEW.site_index, USER);
+        PERFORM nex.insertupdatelog('POSTTRANSLATIONANNOTATION', 'SITE_INDEX', OLD.annotation_id, OLD.site_index, NEW.site_index, USER);
     END IF;
 
     IF (OLD.site_residue != NEW.site_residue) THEN
-        PERFORM insertupdatelog('POSTTRANSLATIONANNOTATION', 'SITE_RESIDUE', OLD.annotation_id, OLD.site_residue, NEW.site_residue, USER);
+        PERFORM nex.insertupdatelog('POSTTRANSLATIONANNOTATION', 'SITE_RESIDUE', OLD.annotation_id, OLD.site_residue, NEW.site_residue, USER);
     END IF;
 
     IF (OLD.psimod_id != NEW.psimod_id) THEN
-        PERFORM insertupdatelog('POSTTRANSLATIONANNOTATION', 'PSIMOD_ID', OLD.annotation_id, OLD.psimod_id, NEW.psimod_id, USER);
+        PERFORM nex.insertupdatelog('POSTTRANSLATIONANNOTATION', 'PSIMOD_ID', OLD.annotation_id, OLD.psimod_id, NEW.psimod_id, USER);
     END IF;
 
     IF (((OLD.modifier_id IS NULL) AND (NEW.modifier_id IS NOT NULL)) OR ((OLD.modifier_id IS NOT NULL) AND (NEW.modifier_id IS NULL)) OR (OLD.modifier_id != NEW.modifier_id)) THEN
-        PERFORM insertupdatelog('POSTTRANSLATIONANNOTATION', 'MODIFIER_ID', OLD.annotation_id, OLD.modifier_id, NEW.modifier_id, USER);
+        PERFORM nex.insertupdatelog('POSTTRANSLATIONANNOTATION', 'MODIFIER_ID', OLD.annotation_id, OLD.modifier_id, NEW.modifier_id, USER);
     END IF;
 
     RETURN NEW;
@@ -2008,7 +2008,7 @@ BEGIN
              OLD.psimod_id || '[:]' || coalesce(OLD.modifier_id,0) || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('POSTTRANSLATIONANNOTATION', OLD.annotation_id, v_row, USER);
+          PERFORM nex.insertdeletelog('POSTTRANSLATIONANNOTATION', OLD.annotation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2058,40 +2058,40 @@ EXECUTE PROCEDURE trigger_fct_posttranslationannotation_biur();
 DROP TRIGGER IF EXISTS proteindomainannotation_audr ON proteindomainannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteindomainannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('PROTEINDOMAINANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINDOMAINANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('PROTEINDOMAINANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINDOMAINANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('PROTEINDOMAINANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINDOMAINANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF  (((OLD.reference_id IS NULL) AND (NEW.reference_id IS NOT NULL)) OR ((OLD.reference_id IS NOT NULL) AND (NEW.reference_id IS NULL)) OR (OLD.reference_id != NEW.reference_id)) THEN
-        PERFORM insertupdatelog('PROTEINDOMAINANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINDOMAINANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.proteindomain_id != NEW.proteindomain_id) THEN
-        PERFORM insertupdatelog('PROTEINDOMAINANNOTATION', 'PROTEINDOMAIN_ID', OLD.annotation_id, OLD.proteindomain_id, NEW.proteindomain_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINDOMAINANNOTATION', 'PROTEINDOMAIN_ID', OLD.annotation_id, OLD.proteindomain_id, NEW.proteindomain_id, USER);
     END IF;
 
     IF (OLD.start_index != NEW.start_index) THEN
-        PERFORM insertupdatelog('PROTEINDOMAINANNOTATION', 'START_INDEX', OLD.annotation_id, OLD.start_index, NEW.start_index, USER);
+        PERFORM nex.insertupdatelog('PROTEINDOMAINANNOTATION', 'START_INDEX', OLD.annotation_id, OLD.start_index, NEW.start_index, USER);
     END IF;
 
     IF (OLD.end_index != NEW.end_index) THEN
-        PERFORM insertupdatelog('PROTEINDOMAINANNOTATION', 'END_INDEX', OLD.annotation_id, OLD.end_index, NEW.end_index, USER);
+        PERFORM nex.insertupdatelog('PROTEINDOMAINANNOTATION', 'END_INDEX', OLD.annotation_id, OLD.end_index, NEW.end_index, USER);
     END IF;
 
     IF (OLD.date_of_run != NEW.date_of_run) THEN
-        PERFORM insertupdatelog('PROTEINDOMAINANNOTATION', 'DATE_OF_RUN', OLD.annotation_id, OLD.date_of_run, NEW.date_of_run, USER);
+        PERFORM nex.insertupdatelog('PROTEINDOMAINANNOTATION', 'DATE_OF_RUN', OLD.annotation_id, OLD.date_of_run, NEW.date_of_run, USER);
     END IF;
 
     RETURN NEW;
@@ -2105,7 +2105,7 @@ BEGIN
              OLD.end_index || '[:]' || OLD.date_of_run || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM insertdeletelog('PROTEINDOMAINANNOTATION', OLD.annotation_id, v_row, USER);
+         PERFORM nex.insertdeletelog('PROTEINDOMAINANNOTATION', OLD.annotation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2155,40 +2155,40 @@ EXECUTE PROCEDURE trigger_fct_proteindomainannotation_biur();
 DROP TRIGGER IF EXISTS proteinexptannotation_audr ON proteinexptannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteinexptannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('PROTEINEXPTANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINEXPTANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('PROTEINEXPTANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINEXPTANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('PROTEINEXPTANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINEXPTANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF  (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('PROTEINEXPTANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINEXPTANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.experiment_type != NEW.experiment_type) THEN
-        PERFORM insertupdatelog('PROTEINEXPTANNOTATION', 'EXPERIMENT_TYPE', OLD.annotation_id, OLD.experiment_type, NEW.experiment_type, USER);
+        PERFORM nex.insertupdatelog('PROTEINEXPTANNOTATION', 'EXPERIMENT_TYPE', OLD.annotation_id, OLD.experiment_type, NEW.experiment_type, USER);
     END IF;
 
     IF (OLD.data_value != NEW.data_value) THEN
-        PERFORM insertupdatelog('PROTEINEXPTANNOTATION', 'DATA_VALUE', OLD.annotation_id, OLD.data_value, NEW.data_value, USER);
+        PERFORM nex.insertupdatelog('PROTEINEXPTANNOTATION', 'DATA_VALUE', OLD.annotation_id, OLD.data_value, NEW.data_value, USER);
     END IF;
 
     IF (OLD.data_unit != NEW.data_unit) THEN
-        PERFORM insertupdatelog('PROTEINEXPTANNOTATION', 'DATA_UNIT', OLD.annotation_id, OLD.data_unit, NEW.data_unit, USER);
+        PERFORM nex.insertupdatelog('PROTEINEXPTANNOTATION', 'DATA_UNIT', OLD.annotation_id, OLD.data_unit, NEW.data_unit, USER);
     END IF;
 
     IF (((OLD.assay_id IS NULL) AND (NEW.assay_id IS NOT NULL)) OR ((OLD.assay_id IS NOT NULL) AND (NEW.assay_id IS NULL)) OR (OLD.assay_id != NEW.assay_id)) THEN
-        PERFORM insertupdatelog('PROTEINEXPTANNOTATION', 'ASSAY_ID', OLD.annotation_id, OLD.assay_id, NEW.assay_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINEXPTANNOTATION', 'ASSAY_ID', OLD.annotation_id, OLD.assay_id, NEW.assay_id, USER);
     END IF;
 
     RETURN NEW;
@@ -2202,7 +2202,7 @@ BEGIN
              OLD.data_unit || '[:]' || coalesce(OLD.assay_id,0) || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM insertdeletelog('PROTEINEXPTANNOTATION', OLD.annotation_id, v_row, USER);
+         PERFORM nex.insertdeletelog('PROTEINEXPTANNOTATION', OLD.annotation_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -2251,28 +2251,28 @@ EXECUTE PROCEDURE trigger_fct_proteinexptannotation_biur();
 DROP TRIGGER IF EXISTS proteinexptannotationcond_audr ON proteinexptannotation_cond CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteinexptannotationcond_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.annotation_id != NEW.annotation_id) THEN
-        PERFORM insertupdatelog('PROTEINEXPTANNOTATION_COND', 'ANNOTATION_ID', OLD.condition_id, OLD.annotation_id, NEW.annotation_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINEXPTANNOTATION_COND', 'ANNOTATION_ID', OLD.condition_id, OLD.annotation_id, NEW.annotation_id, USER);
     END IF;
 
      IF (OLD.condition_class != NEW.condition_class) THEN
-        PERFORM insertupdatelog('PROTEINEXPTANNOTATION_COND', 'CONDITION_CLASS', OLD.condition_id, OLD.condition_class, NEW.condition_class, USER);
+        PERFORM nex.insertupdatelog('PROTEINEXPTANNOTATION_COND', 'CONDITION_CLASS', OLD.condition_id, OLD.condition_class, NEW.condition_class, USER);
     END IF;
 
      IF (OLD.condition_name != NEW.condition_name) THEN
-        PERFORM insertupdatelog('PROTEINEXPTANNOTATION_COND', 'CONDITION_NAME', OLD.condition_id, OLD.condition_name, NEW.condition_name, USER);
+        PERFORM nex.insertupdatelog('PROTEINEXPTANNOTATION_COND', 'CONDITION_NAME', OLD.condition_id, OLD.condition_name, NEW.condition_name, USER);
     END IF;
 
     IF (((OLD.condition_value IS NULL) AND (NEW.condition_value IS NOT NULL)) OR ((OLD.condition_value IS NOT NULL) AND (NEW.condition_value IS NULL)) OR (OLD.condition_value != NEW.condition_value)) THEN
-        PERFORM insertupdatelog('PROTEINEXPTANNOTATION_COND', 'CONDITION_VALUE', OLD.condition_id, OLD.condition_value, NEW.condition_value, USER);
+        PERFORM nex.insertupdatelog('PROTEINEXPTANNOTATION_COND', 'CONDITION_VALUE', OLD.condition_id, OLD.condition_value, NEW.condition_value, USER);
     END IF;
 
     IF (((OLD.condition_unit IS NULL) AND (NEW.condition_unit IS NOT NULL)) OR ((OLD.condition_unit IS NOT NULL) AND (NEW.condition_unit IS NULL)) OR (OLD.condition_unit != NEW.condition_unit)) THEN
-        PERFORM insertupdatelog('PROTEINEXPTANNOTATION_COND', 'CONDITION_UNIT', OLD.condition_id, OLD.condition_unit, NEW.condition_unit, USER);
+        PERFORM nex.insertupdatelog('PROTEINEXPTANNOTATION_COND', 'CONDITION_UNIT', OLD.condition_id, OLD.condition_unit, NEW.condition_unit, USER);
     END IF;
 
     RETURN NEW;
@@ -2284,7 +2284,7 @@ BEGIN
              coalesce(OLD.condition_value,'') || '[:]' || coalesce(OLD.condition_unit,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM insertdeletelog('PROTEINEXPTANNOTATION_COND', OLD.condition_id, v_row, USER);
+         PERFORM nex.insertdeletelog('PROTEINEXPTANNOTATION_COND', OLD.condition_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -2342,56 +2342,56 @@ EXECUTE PROCEDURE trigger_fct_proteinexptannotationcond_biur();
 DROP TRIGGER IF EXISTS proteinsequenceannotation_audr ON proteinsequenceannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteinsequenceannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCEANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCEANNOTATION', 'DBENTITY_ID', OLD.annotation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCEANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCEANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
      IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCEANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCEANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF (((OLD.reference_id IS NULL) AND (NEW.reference_id IS NOT NULL)) OR ((OLD.reference_id IS NOT NULL) AND (NEW.reference_id IS NULL)) OR (OLD.reference_id != NEW.reference_id)) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCEANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.contig_id != NEW.contig_id) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCEANNOTATION', 'CONTIG_ID', OLD.annotation_id, OLD.contig_id, NEW.contig_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCEANNOTATION', 'CONTIG_ID', OLD.annotation_id, OLD.contig_id, NEW.contig_id, USER);
     END IF;
 
     IF (((OLD.seq_version IS NULL) AND (NEW.seq_version IS NOT NULL)) OR ((OLD.seq_version IS NOT NULL) AND (NEW.seq_version IS NULL)) OR (OLD.seq_version != NEW.seq_version)) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCEANNOTATION', 'SEQ_VERSION', OLD.annotation_id, OLD.seq_version, NEW.seq_version, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCEANNOTATION', 'SEQ_VERSION', OLD.annotation_id, OLD.seq_version, NEW.seq_version, USER);
     END IF;
 
     IF (((OLD.genomerelease_id IS NULL) AND (NEW.genomerelease_id IS NOT NULL)) OR ((OLD.genomerelease_id IS NOT NULL) AND (NEW.genomerelease_id IS NULL)) OR (OLD.genomerelease_id != NEW.genomerelease_id)) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCEANNOTATION', 'GENOMERELEASE_ID', OLD.annotation_id, OLD.genomerelease_id, NEW.genomerelease_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCEANNOTATION', 'GENOMERELEASE_ID', OLD.annotation_id, OLD.genomerelease_id, NEW.genomerelease_id, USER);
     END IF;
 
     IF (OLD.file_header != NEW.file_header) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCEANNOTATION', 'FILE_HEADER', OLD.annotation_id, OLD.file_header, NEW.file_header, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCEANNOTATION', 'FILE_HEADER', OLD.annotation_id, OLD.file_header, NEW.file_header, USER);
     END IF;
 
     IF (OLD.download_filename != NEW.download_filename) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCEANNOTATION', 'DOWNLOAD_FILENAME', OLD.annotation_id, OLD.download_filename, NEW.download_filename, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCEANNOTATION', 'DOWNLOAD_FILENAME', OLD.annotation_id, OLD.download_filename, NEW.download_filename, USER);
     END IF;
 
     IF (((OLD.file_id IS NULL) AND (NEW.file_id IS NOT NULL)) OR ((OLD.file_id IS NOT NULL) AND (NEW.file_id IS NULL)) OR (OLD.file_id != NEW.file_id)) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCEANNOTATION', 'FILE_ID', OLD.annotation_id, OLD.file_id, NEW.file_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCEANNOTATION', 'FILE_ID', OLD.annotation_id, OLD.file_id, NEW.file_id, USER);
     END IF;
 
      IF (OLD.residues != NEW.residues) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCEANNOTATION', 'RESIDUES', OLD.annotation_id, OLD.residues, NEW.residues, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCEANNOTATION', 'RESIDUES', OLD.annotation_id, OLD.residues, NEW.residues, USER);
     END IF;
 
     RETURN NEW;
@@ -2407,7 +2407,7 @@ BEGIN
              OLD.residues || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM insertdeletelog('PROTEINSEQUENCEANNOTATION', OLD.annotation_id, v_row, USER);
+           PERFORM nex.insertdeletelog('PROTEINSEQUENCEANNOTATION', OLD.annotation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2456,140 +2456,140 @@ EXECUTE PROCEDURE trigger_fct_proteinsequenceannotation_biur();
 DROP TRIGGER IF EXISTS proteinsequencedetail_audr ON proteinsequence_detail CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteinsequencedetail_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.annotation_id != NEW.annotation_id) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'ANNOTATION_ID', OLD.detail_id, OLD.ANNOTATION_ID, NEW.annotation_id, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'ANNOTATION_ID', OLD.detail_id, OLD.ANNOTATION_ID, NEW.annotation_id, USER);
     END IF;
 
     IF (OLD.molecular_weight != NEW.molecular_weight) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'MOLECULAR_WEIGHT', OLD.detail_id, OLD.MOLECULAR_WEIGHT, NEW.molecular_weight, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'MOLECULAR_WEIGHT', OLD.detail_id, OLD.MOLECULAR_WEIGHT, NEW.molecular_weight, USER);
     END IF;
 
     IF (OLD.protein_length != NEW.protein_length) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'PROTEIN_LENGTH', OLD.detail_id, OLD.PROTEIN_LENGTH, NEW.protein_length, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'PROTEIN_LENGTH', OLD.detail_id, OLD.PROTEIN_LENGTH, NEW.protein_length, USER);
     END IF;
 
     IF (OLD.n_term_seq != NEW.n_term_seq) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'N_TERM_SEQ', OLD.detail_id, OLD.N_TERM_SEQ, NEW.n_term_seq, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'N_TERM_SEQ', OLD.detail_id, OLD.N_TERM_SEQ, NEW.n_term_seq, USER);
     END IF;
 
     IF (OLD.c_term_seq != NEW.c_term_seq) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'C_TERM_SEQ', OLD.detail_id, OLD.C_TERM_SEQ, NEW.c_term_seq, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'C_TERM_SEQ', OLD.detail_id, OLD.C_TERM_SEQ, NEW.c_term_seq, USER);
     END IF;
 
     IF (((OLD.pi IS NULL) AND (NEW.pi IS NOT NULL)) OR ((OLD.pi IS NOT NULL) AND (NEW.pi IS NULL)) OR (OLD.pi != NEW.pi)) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'PI', OLD.detail_id, OLD.PI, NEW.pi, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'PI', OLD.detail_id, OLD.PI, NEW.pi, USER);
     END IF;
 
     IF (((OLD.cai IS NULL) AND (NEW.cai IS NOT NULL)) OR ((OLD.cai IS NOT NULL) AND (NEW.cai IS NULL)) OR (OLD.cai != NEW.cai)) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'CAI', OLD.detail_id, OLD.CAI, NEW.cai, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'CAI', OLD.detail_id, OLD.CAI, NEW.cai, USER);
     END IF;
 
     IF (((OLD.codon_bias IS NULL) AND (NEW.codon_bias IS NOT NULL)) OR ((OLD.codon_bias IS NOT NULL) AND (NEW.codon_bias IS NULL)) OR (OLD.codon_bias != NEW.codon_bias)) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'CODON_BIAS', OLD.detail_id, OLD.CODON_BIAS, NEW.codon_bias, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'CODON_BIAS', OLD.detail_id, OLD.CODON_BIAS, NEW.codon_bias, USER);
     END IF;
 
     IF (((OLD.fop_score IS NULL) AND (NEW.fop_score IS NOT NULL)) OR ((OLD.fop_score IS NOT NULL) AND (NEW.fop_score IS NULL)) OR (OLD.fop_score != NEW.fop_score)) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'FOP_SCORE', OLD.detail_id, OLD.FOP_SCORE, NEW.fop_score, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'FOP_SCORE', OLD.detail_id, OLD.FOP_SCORE, NEW.fop_score, USER);
     END IF;
 
     IF (((OLD.gravy_score IS NULL) AND (NEW.gravy_score IS NOT NULL)) OR ((OLD.gravy_score IS NOT NULL) AND (NEW.gravy_score IS NULL)) OR (OLD.gravy_score != NEW.gravy_score)) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'GRAVY_SCORE', OLD.detail_id, OLD.GRAVY_SCORE, NEW.gravy_score, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'GRAVY_SCORE', OLD.detail_id, OLD.GRAVY_SCORE, NEW.gravy_score, USER);
     END IF;
 
     IF (((OLD.aromaticity_score IS NULL) AND (NEW.aromaticity_score IS NOT NULL)) OR ((OLD.aromaticity_score IS NOT NULL) AND (NEW.aromaticity_score IS NULL)) OR (OLD.aromaticity_score != NEW.aromaticity_score)) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'AROMATICITY_SCORE', OLD.detail_id, OLD.AROMATICITY_SCORE, NEW.aromaticity_score, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'AROMATICITY_SCORE', OLD.detail_id, OLD.AROMATICITY_SCORE, NEW.aromaticity_score, USER);
     END IF;
 
     IF (((OLD.aliphatic_index IS NULL) AND (NEW.aliphatic_index IS NOT NULL)) OR ((OLD.aliphatic_index IS NOT NULL) AND (NEW.aliphatic_index IS NULL)) OR (OLD.aliphatic_index != NEW.aliphatic_index)) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'ALIPHATIC_INDEX', OLD.detail_id, OLD.ALIPHATIC_INDEX, NEW.aliphatic_index, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'ALIPHATIC_INDEX', OLD.detail_id, OLD.ALIPHATIC_INDEX, NEW.aliphatic_index, USER);
     END IF;
 
     IF (((OLD.instability_index IS NULL) AND (NEW.instability_index IS NOT NULL)) OR ((OLD.instability_index IS NOT NULL) AND (NEW.instability_index IS NULL)) OR (OLD.instability_index != NEW.instability_index)) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'INSTABILITY_INDEX', OLD.detail_id, OLD.INSTABILITY_INDEX, NEW.instability_index, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'INSTABILITY_INDEX', OLD.detail_id, OLD.INSTABILITY_INDEX, NEW.instability_index, USER);
     END IF;
 
     IF (OLD.ala != NEW.ala) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'ALA', OLD.detail_id, OLD.ALA, NEW.ala, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'ALA', OLD.detail_id, OLD.ALA, NEW.ala, USER);
     END IF;
 
     IF (OLD.arg != NEW.arg) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'ARG', OLD.detail_id, OLD.ARG, NEW.arg, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'ARG', OLD.detail_id, OLD.ARG, NEW.arg, USER);
     END IF;
 
     IF (OLD.asn != NEW.asn) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'ASN', OLD.detail_id, OLD.ASN, NEW.asn, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'ASN', OLD.detail_id, OLD.ASN, NEW.asn, USER);
     END IF;
 
     IF (OLD.asp != NEW.asp) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'ASP', OLD.detail_id, OLD.ASP, NEW.asp, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'ASP', OLD.detail_id, OLD.ASP, NEW.asp, USER);
     END IF;
 
     IF (OLD.cys != NEW.cys) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'CYS', OLD.detail_id, OLD.CYS, NEW.cys, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'CYS', OLD.detail_id, OLD.CYS, NEW.cys, USER);
     END IF;
 
     IF (OLD.gln != NEW.gln) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'GLN', OLD.detail_id, OLD.GLN, NEW.gln, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'GLN', OLD.detail_id, OLD.GLN, NEW.gln, USER);
     END IF;
 
     IF (OLD.glu != NEW.glu) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'GLU', OLD.detail_id, OLD.GLU, NEW.glu, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'GLU', OLD.detail_id, OLD.GLU, NEW.glu, USER);
     END IF;
 
     IF (OLD.gly != NEW.gly) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'GLY', OLD.detail_id, OLD.GLY, NEW.gly, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'GLY', OLD.detail_id, OLD.GLY, NEW.gly, USER);
     END IF;
 
     IF (OLD.his != NEW.his) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'HIS', OLD.detail_id, OLD.HIS, NEW.his, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'HIS', OLD.detail_id, OLD.HIS, NEW.his, USER);
     END IF;
 
     IF (OLD.ile != NEW.ile) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'ILE', OLD.detail_id, OLD.ILE, NEW.ile, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'ILE', OLD.detail_id, OLD.ILE, NEW.ile, USER);
     END IF;
 
     IF (OLD.leu != NEW.leu) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'LEU', OLD.detail_id, OLD.LEU, NEW.leu, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'LEU', OLD.detail_id, OLD.LEU, NEW.leu, USER);
     END IF;
 
     IF (OLD.lys != NEW.lys) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'LYS', OLD.detail_id, OLD.LYS, NEW.lys, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'LYS', OLD.detail_id, OLD.LYS, NEW.lys, USER);
     END IF;
 
     IF (OLD.met != NEW.met) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'MET', OLD.detail_id, OLD.MET, NEW.met, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'MET', OLD.detail_id, OLD.MET, NEW.met, USER);
     END IF;
 
     IF (OLD.phe != NEW.phe) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'PHE', OLD.detail_id, OLD.PHE, NEW.phe, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'PHE', OLD.detail_id, OLD.PHE, NEW.phe, USER);
     END IF;
 
     IF (OLD.pro != NEW.pro) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'PRO', OLD.detail_id, OLD.PRO, NEW.pro, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'PRO', OLD.detail_id, OLD.PRO, NEW.pro, USER);
     END IF;
 
     IF (OLD.ser != NEW.ser) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'SER', OLD.detail_id, OLD.SER, NEW.ser, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'SER', OLD.detail_id, OLD.SER, NEW.ser, USER);
     END IF;
 
     IF (OLD.thr != NEW.thr) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'THR', OLD.detail_id, OLD.THR, NEW.thr, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'THR', OLD.detail_id, OLD.THR, NEW.thr, USER);
     END IF;
 
     IF (OLD.trp != NEW.trp) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'TRP', OLD.detail_id, OLD.TRP, NEW.trp, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'TRP', OLD.detail_id, OLD.TRP, NEW.trp, USER);
     END IF;
 
     IF (OLD.tyr != NEW.tyr) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'TYR', OLD.detail_id, OLD.TYR, NEW.tyr, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'TYR', OLD.detail_id, OLD.TYR, NEW.tyr, USER);
     END IF;
 
     IF (OLD.val != NEW.val) THEN
-        PERFORM insertupdatelog('PROTEINSEQUENCE_DETAIL', 'VAL', OLD.detail_id, OLD.VAL, NEW.val, USER);
+        PERFORM nex.insertupdatelog('PROTEINSEQUENCE_DETAIL', 'VAL', OLD.detail_id, OLD.VAL, NEW.val, USER);
     END IF;
 
     RETURN NEW;
@@ -2616,7 +2616,7 @@ BEGIN
              coalesce(OLD.all_cys_ext_coeff,0) || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM insertdeletelog('PROTEINSEQUENCE_DETAIL', OLD.detail_id, v_row, USER);
+           PERFORM nex.insertdeletelog('PROTEINSEQUENCE_DETAIL', OLD.detail_id, v_row, USER);
 
       RETURN OLD;
   END IF;
