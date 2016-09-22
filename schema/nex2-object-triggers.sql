@@ -6,7 +6,7 @@ SET client_encoding TO 'UTF8';
 
 \set ON_ERROR_STOP ON
 
-DROP TRIGGER IF EXISTS allele_audr ON allele CASCADE;
+DROP TRIGGER IF EXISTS allele_audr ON nex.allele CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_allele_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -56,10 +56,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER allele_audr
-AFTER UPDATE OR DELETE ON allele FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.allele FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_allele_audr();
 
-DROP TRIGGER IF EXISTS allele_biur ON allele CASCADE;
+DROP TRIGGER IF EXISTS allele_biur ON nex.allele CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_allele_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -90,11 +90,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER allele_biur
-BEFORE INSERT OR UPDATE ON allele FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.allele FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_allele_biur();
 
 
-DROP TRIGGER IF EXISTS colleague_audr ON colleague CASCADE;
+DROP TRIGGER IF EXISTS colleague_audr ON nex.colleague CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleague_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -256,10 +256,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleague_audr
-AFTER UPDATE OR DELETE ON colleague FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.colleague FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleague_audr();
 
-DROP TRIGGER IF EXISTS colleague_biur ON colleague CASCADE;
+DROP TRIGGER IF EXISTS colleague_biur ON nex.colleague CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleague_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -314,10 +314,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleague_biur
-BEFORE INSERT OR UPDATE ON colleague FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.colleague FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleague_biur();
 
-DROP TRIGGER IF EXISTS colleaguerelation_audr ON colleague_relation CASCADE;
+DROP TRIGGER IF EXISTS colleaguerelation_audr ON nex.colleague_relation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleaguerelation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -362,10 +362,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleaguerelation_audr
-AFTER UPDATE OR DELETE ON colleague_relation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.colleague_relation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguerelation_audr();
 
-DROP TRIGGER IF EXISTS colleaguerelation_biur ON colleague_relation CASCADE;
+DROP TRIGGER IF EXISTS colleaguerelation_biur ON nex.colleague_relation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleaguerelation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -396,10 +396,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleaguerelation_biur
-BEFORE INSERT OR UPDATE ON colleague_relation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.colleague_relation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguerelation_biur();
 
-DROP TRIGGER IF EXISTS colleagueurl_audr ON colleague_url CASCADE;
+DROP TRIGGER IF EXISTS colleagueurl_audr ON nex.colleague_url CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleagueurl_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -449,10 +449,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleagueurl_audr
-AFTER UPDATE OR DELETE ON colleague_url FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.colleague_url FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleagueurl_audr();
 
-DROP TRIGGER IF EXISTS colleagueurl_biur ON colleague_url CASCADE;
+DROP TRIGGER IF EXISTS colleagueurl_biur ON nex.colleague_url CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleagueurl_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -483,10 +483,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleagueurl_biur
-BEFORE INSERT OR UPDATE ON colleague_url FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.colleague_url FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleagueurl_biur();
 
-DROP TRIGGER IF EXISTS colleaguekeyword_audr ON colleague_keyword CASCADE;
+DROP TRIGGER IF EXISTS colleaguekeyword_audr ON nex.colleague_keyword CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleaguekeyword_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -522,10 +522,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleaguekeyword_audr
-AFTER UPDATE OR DELETE ON colleague_keyword FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.colleague_keyword FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguekeyword_audr();
 
-DROP TRIGGER IF EXISTS colleaguekeyword_biur ON colleague_keyword CASCADE;
+DROP TRIGGER IF EXISTS colleaguekeyword_biur ON nex.colleague_keyword CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleaguekeyword_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -556,10 +556,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleaguekeyword_biur
-BEFORE INSERT OR UPDATE ON colleague_keyword FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.colleague_keyword FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguekeyword_biur();
 
-DROP TRIGGER IF EXISTS colleaguelocus_audr ON colleague_locus CASCADE;
+DROP TRIGGER IF EXISTS colleaguelocus_audr ON nex.colleague_locus CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleaguelocus_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -595,10 +595,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleaguelocus_audr
-AFTER UPDATE OR DELETE ON colleague_locus FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.colleague_locus FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguelocus_audr();
 
-DROP TRIGGER IF EXISTS colleaguelocus_biur ON colleague_locus CASCADE;
+DROP TRIGGER IF EXISTS colleaguelocus_biur ON nex.colleague_locus CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleaguelocus_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -629,10 +629,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleaguelocus_biur
-BEFORE INSERT OR UPDATE ON colleague_locus FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.colleague_locus FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguelocus_biur();
 
-DROP TRIGGER IF EXISTS colleaguereference_audr ON colleague_reference CASCADE;
+DROP TRIGGER IF EXISTS colleaguereference_audr ON nex.colleague_reference CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleaguereference_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -668,10 +668,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleaguereference_audr
-AFTER UPDATE OR DELETE ON colleague_reference FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.colleague_reference FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguereference_audr();
 
-DROP TRIGGER IF EXISTS colleaguereference_biur ON colleague_reference CASCADE;
+DROP TRIGGER IF EXISTS colleaguereference_biur ON nex.colleague_reference CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleaguereference_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -702,11 +702,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleaguereference_biur
-BEFORE INSERT OR UPDATE ON colleague_reference FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.colleague_reference FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguereference_biur();
 
 
-DROP TRIGGER IF EXISTS contig_audr ON contig CASCADE;
+DROP TRIGGER IF EXISTS contig_audr ON nex.contig CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_contig_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -833,10 +833,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER contig_audr
-AFTER UPDATE OR DELETE ON contig FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.contig FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_contig_audr();
 
-DROP TRIGGER IF EXISTS contig_biur ON contig CASCADE;
+DROP TRIGGER IF EXISTS contig_biur ON nex.contig CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_contig_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -867,10 +867,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER contig_biur
-BEFORE INSERT OR UPDATE ON contig FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.contig FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_contig_biur();
 
-DROP TRIGGER IF EXISTS contigurl_audr ON contig_url CASCADE;
+DROP TRIGGER IF EXISTS contigurl_audr ON nex.contig_url CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_contigurl_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -915,10 +915,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER contigurl_audr
-AFTER UPDATE OR DELETE ON contig_url FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.contig_url FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_contigurl_audr();
 
-DROP TRIGGER IF EXISTS contigurl_biur ON contig_url CASCADE;
+DROP TRIGGER IF EXISTS contigurl_biur ON nex.contig_url CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_contigurl_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -949,11 +949,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER contigurl_biur
-BEFORE INSERT OR UPDATE ON contig_url FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.contig_url FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_contigurl_biur();
 
 
-DROP TRIGGER IF EXISTS dataset_audr ON dataset CASCADE;
+DROP TRIGGER IF EXISTS dataset_audr ON nex.dataset CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_dataset_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1039,10 +1039,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER dataset_audr
-AFTER UPDATE OR DELETE ON dataset FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.dataset FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_dataset_audr();
 
-DROP TRIGGER IF EXISTS dataset_biur ON dataset CASCADE;
+DROP TRIGGER IF EXISTS dataset_biur ON nex.dataset CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_dataset_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1073,10 +1073,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER dataset_biur
-BEFORE INSERT OR UPDATE ON dataset FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.dataset FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_dataset_biur();
 
-DROP TRIGGER IF EXISTS datasetlab_audr ON datasetlab CASCADE;
+DROP TRIGGER IF EXISTS datasetlab_audr ON nex.datasetlab CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_datasetlab_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1121,10 +1121,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER datasetlab_audr
-AFTER UPDATE OR DELETE ON datasetlab FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.datasetlab FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_datasetlab_audr();
 
-DROP TRIGGER IF EXISTS datasetlab_biur ON datasetlab CASCADE;
+DROP TRIGGER IF EXISTS datasetlab_biur ON nex.datasetlab CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_datasetlab_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1155,10 +1155,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER datasetlab_biur
-BEFORE INSERT OR UPDATE ON datasetlab FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.datasetlab FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_datasetlab_biur();
 
-DROP TRIGGER IF EXISTS dataseturl_audr ON dataset_url CASCADE;
+DROP TRIGGER IF EXISTS dataseturl_audr ON nex.dataset_url CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_dataseturl_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1203,10 +1203,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER dataseturl_audr
-AFTER UPDATE OR DELETE ON dataset_url FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.dataset_url FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_dataseturl_audr();
 
-DROP TRIGGER IF EXISTS dataseturl_biur ON dataset_url CASCADE;
+DROP TRIGGER IF EXISTS dataseturl_biur ON nex.dataset_url CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_dataseturl_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1237,10 +1237,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER dataseturl_biur
-BEFORE INSERT OR UPDATE ON dataset_url FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.dataset_url FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_dataseturl_biur();
 
-DROP TRIGGER IF EXISTS datasetfile_audr ON dataset_file CASCADE;
+DROP TRIGGER IF EXISTS datasetfile_audr ON nex.dataset_file CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_datasetfile_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1276,10 +1276,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER datasetfile_audr
-AFTER UPDATE OR DELETE ON dataset_file FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.dataset_file FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_datasetfile_audr();
 
-DROP TRIGGER IF EXISTS datasetfile_biur ON dataset_file CASCADE;
+DROP TRIGGER IF EXISTS datasetfile_biur ON nex.dataset_file CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_datasetfile_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1310,10 +1310,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER datasetfile_biur
-BEFORE INSERT OR UPDATE ON dataset_file FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.dataset_file FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_datasetfile_biur();
 
-DROP TRIGGER IF EXISTS datasetkeyword_audr ON dataset_keyword CASCADE;
+DROP TRIGGER IF EXISTS datasetkeyword_audr ON nex.dataset_keyword CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_datasetkeyword_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1349,10 +1349,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER datasetkeyword_audr
-AFTER UPDATE OR DELETE ON dataset_keyword FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.dataset_keyword FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_datasetkeyword_audr();
 
-DROP TRIGGER IF EXISTS datasetkeyword_biur ON dataset_keyword CASCADE;
+DROP TRIGGER IF EXISTS datasetkeyword_biur ON nex.dataset_keyword CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_datasetkeyword_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1383,10 +1383,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER datasetkeyword_biur
-BEFORE INSERT OR UPDATE ON dataset_keyword FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.dataset_keyword FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_datasetkeyword_biur();
 
-DROP TRIGGER IF EXISTS datasetreference_audr ON dataset_reference CASCADE;
+DROP TRIGGER IF EXISTS datasetreference_audr ON nex.dataset_reference CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_datasetreference_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1422,10 +1422,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER datasetreference_audr
-AFTER UPDATE OR DELETE ON dataset_reference FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.dataset_reference FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_datasetreference_audr();
 
-DROP TRIGGER IF EXISTS datasetreference_biur ON dataset_reference CASCADE;
+DROP TRIGGER IF EXISTS datasetreference_biur ON nex.dataset_reference CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_datasetreference_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1456,10 +1456,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER datasetreference_biur
-BEFORE INSERT OR UPDATE ON dataset_reference FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.dataset_reference FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_datasetreference_biur();
 
-DROP TRIGGER IF EXISTS datasetsample_audr ON datasetsample CASCADE;
+DROP TRIGGER IF EXISTS datasetsample_audr ON nex.datasetsample CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_datasetsample_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1536,10 +1536,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER datasetsample_audr
-AFTER UPDATE OR DELETE ON datasetsample FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.datasetsample FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_datasetsample_audr();
 
-DROP TRIGGER IF EXISTS datasetsample_biur ON datasetsample CASCADE;
+DROP TRIGGER IF EXISTS datasetsample_biur ON nex.datasetsample CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_datasetsample_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1570,10 +1570,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER datasetsample_biur
-BEFORE INSERT OR UPDATE ON datasetsample FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.datasetsample FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_datasetsample_biur();
 
-DROP TRIGGER IF EXISTS datasettrack_audr ON datasettrack CASCADE;
+DROP TRIGGER IF EXISTS datasettrack_audr ON nex.datasettrack CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_datasettrack_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1623,10 +1623,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER datasettrack_audr
-AFTER UPDATE OR DELETE ON datasettrack FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.datasettrack FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_datasettrack_audr();
 
-DROP TRIGGER IF EXISTS datasettrack_biur ON datasettrack CASCADE;
+DROP TRIGGER IF EXISTS datasettrack_biur ON nex.datasettrack CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_datasettrack_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1657,11 +1657,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER datasettrack_biur
-BEFORE INSERT OR UPDATE ON datasettrack FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.datasettrack FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_datasettrack_biur();
 
 
-DROP TRIGGER IF EXISTS diseasesubset_audr ON diseasesubset CASCADE;
+DROP TRIGGER IF EXISTS diseasesubset_audr ON nex.diseasesubset CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_diseasesubset_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1720,10 +1720,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER diseasesubset_audr
-AFTER UPDATE OR DELETE ON diseasesubset FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.diseasesubset FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_diseasesubset_audr();
 
-DROP TRIGGER IF EXISTS diseasesubset_biur ON diseasesubset CASCADE;
+DROP TRIGGER IF EXISTS diseasesubset_biur ON nex.diseasesubset CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_diseasesubset_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1754,11 +1754,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER diseasesubset_biur
-BEFORE INSERT OR UPDATE ON diseasesubset FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.diseasesubset FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_diseasesubset_biur();
 
 
-DROP TRIGGER IF EXISTS genomerelease_audr ON genomerelease CASCADE;
+DROP TRIGGER IF EXISTS genomerelease_audr ON nex.genomerelease CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_genomerelease_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1826,10 +1826,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER genomerelease_audr
-AFTER UPDATE OR DELETE ON genomerelease FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.genomerelease FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_genomerelease_audr();
 
-DROP TRIGGER IF EXISTS genomerelease_biur ON genomerelease CASCADE;
+DROP TRIGGER IF EXISTS genomerelease_biur ON nex.genomerelease CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_genomerelease_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1860,11 +1860,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER genomerelease_biur
-BEFORE INSERT OR UPDATE ON genomerelease FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.genomerelease FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_genomerelease_biur();
 
 
-DROP TRIGGER IF EXISTS goslim_audr ON goslim CASCADE;
+DROP TRIGGER IF EXISTS goslim_audr ON nex.goslim CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_goslim_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1927,10 +1927,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER goslim_audr
-AFTER UPDATE OR DELETE ON goslim FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.goslim FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_goslim_audr();
 
-DROP TRIGGER IF EXISTS goslim_biur ON goslim CASCADE;
+DROP TRIGGER IF EXISTS goslim_biur ON nex.goslim CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_goslim_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1961,11 +1961,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER goslim_biur
-BEFORE INSERT OR UPDATE ON goslim FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.goslim FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_goslim_biur();
 
 
-DROP TRIGGER IF EXISTS phenotype_audr ON phenotype CASCADE;
+DROP TRIGGER IF EXISTS phenotype_audr ON nex.phenotype CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_phenotype_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -2024,10 +2024,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER phenotype_audr
-AFTER UPDATE OR DELETE ON phenotype FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.phenotype FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_phenotype_audr();
 
-DROP TRIGGER IF EXISTS phenotype_biur ON phenotype CASCADE;
+DROP TRIGGER IF EXISTS phenotype_biur ON nex.phenotype CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_phenotype_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -2070,11 +2070,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER phenotype_biur
-BEFORE INSERT OR UPDATE ON phenotype FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.phenotype FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_phenotype_biur();
 
 
-DROP TRIGGER IF EXISTS proteindomain_audr ON proteindomain CASCADE;
+DROP TRIGGER IF EXISTS proteindomain_audr ON nex.proteindomain CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteindomain_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -2124,10 +2124,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER proteindomain_audr
-AFTER UPDATE OR DELETE ON proteindomain FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.proteindomain FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteindomain_audr();
 
-DROP TRIGGER IF EXISTS proteindomain_biur ON proteindomain CASCADE;
+DROP TRIGGER IF EXISTS proteindomain_biur ON nex.proteindomain CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteindomain_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -2158,10 +2158,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER proteindomain_biur
-BEFORE INSERT OR UPDATE ON proteindomain FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.proteindomain FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteindomain_biur();
 
-DROP TRIGGER IF EXISTS proteindomainurl_audr ON proteindomain_url CASCADE;
+DROP TRIGGER IF EXISTS proteindomainurl_audr ON nex.proteindomain_url CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteindomainurl_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -2206,10 +2206,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER proteindomainurl_audr
-AFTER UPDATE OR DELETE ON proteindomain_url FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.proteindomain_url FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteindomainurl_audr();
 
-DROP TRIGGER IF EXISTS proteindomainurl_biur ON proteindomain_url CASCADE;
+DROP TRIGGER IF EXISTS proteindomainurl_biur ON nex.proteindomain_url CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteindomainurl_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -2240,11 +2240,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER proteindomainurl_biur
-BEFORE INSERT OR UPDATE ON proteindomain_url FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.proteindomain_url FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteindomainurl_biur();
 
 
-DROP TRIGGER IF EXISTS reporter_audr ON reporter CASCADE;
+DROP TRIGGER IF EXISTS reporter_audr ON nex.reporter CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_reporter_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -2294,10 +2294,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER reporter_audr
-AFTER UPDATE OR DELETE ON reporter FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.reporter FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_reporter_audr();
 
-DROP TRIGGER IF EXISTS reporter_biur ON reporter CASCADE;
+DROP TRIGGER IF EXISTS reporter_biur ON nex.reporter CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_reporter_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -2328,11 +2328,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER reporter_biur
-BEFORE INSERT OR UPDATE ON reporter FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.reporter FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_reporter_biur();
 
 
-DROP TRIGGER IF EXISTS reservedname_audr ON reservedname CASCADE;
+DROP TRIGGER IF EXISTS reservedname_audr ON nex.reservedname CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_reservedname_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -2404,10 +2404,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER reservedname_audr
-AFTER UPDATE OR DELETE ON reservedname FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.reservedname FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_reservedname_audr();
 
-DROP TRIGGER IF EXISTS reservedname_biur ON reservedname CASCADE;
+DROP TRIGGER IF EXISTS reservedname_biur ON nex.reservedname CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_reservedname_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -2438,5 +2438,5 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER reservedname_biur
-BEFORE INSERT OR UPDATE ON reservedname FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.reservedname FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_reservedname_biur();

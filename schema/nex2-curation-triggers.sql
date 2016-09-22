@@ -7,7 +7,7 @@ SET client_encoding TO 'UTF8';
 \set ON_ERROR_STOP ON
 
 
-DROP TRIGGER IF EXISTS authorresponse_audr ON authorresponse CASCADE;
+DROP TRIGGER IF EXISTS authorresponse_audr ON nex.authorresponse CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_authorresponse_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -93,10 +93,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER authorresponse_audr
-AFTER UPDATE OR DELETE ON authorresponse FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.authorresponse FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_authorresponse_audr();
 
-DROP TRIGGER IF EXISTS authorresponse_biur ON authorresponse CASCADE;
+DROP TRIGGER IF EXISTS authorresponse_biur ON nex.authorresponse CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_authorresponse_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -127,11 +127,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER authorresponse_biur
-BEFORE INSERT OR UPDATE ON authorresponse FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.authorresponse FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_authorresponse_biur();
 
 
-DROP TRIGGER IF EXISTS colleaguetriage_audr ON colleaguetriage CASCADE;
+DROP TRIGGER IF EXISTS colleaguetriage_audr ON nex.colleaguetriage CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleaguetriage_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -172,10 +172,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleaguetriage_audr
-AFTER UPDATE OR DELETE ON colleaguetriage FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.colleaguetriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguetriage_audr();
 
-DROP TRIGGER IF EXISTS colleaguetriage_biur ON colleaguetriage CASCADE;
+DROP TRIGGER IF EXISTS colleaguetriage_biur ON nex.colleaguetriage CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleaguetriage_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -206,11 +206,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleaguetriage_biur
-BEFORE INSERT OR UPDATE ON colleaguetriage FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.colleaguetriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguetriage_biur();
 
 
-DROP TRIGGER IF EXISTS curation_audr ON curation CASCADE;
+DROP TRIGGER IF EXISTS curation_audr ON nex.curation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_curation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -260,10 +260,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER curation_audr
-AFTER UPDATE OR DELETE ON curation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.curation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_curation_audr();
 
-DROP TRIGGER IF EXISTS curation_biur ON curation CASCADE;
+DROP TRIGGER IF EXISTS curation_biur ON nex.curation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_curation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -302,11 +302,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER curation_biur
-BEFORE INSERT OR UPDATE ON curation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.curation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_curation_biur();
 
 
-DROP TRIGGER IF EXISTS referencetriage_audr ON referencetriage CASCADE;
+DROP TRIGGER IF EXISTS referencetriage_audr ON nex.referencetriage CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referencetriage_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -347,10 +347,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER referencetriage_audr
-AFTER UPDATE OR DELETE ON referencetriage FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.referencetriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_referencetriage_audr();
 
-DROP TRIGGER IF EXISTS referencetriage_biur ON referencetriage CASCADE;
+DROP TRIGGER IF EXISTS referencetriage_biur ON nex.referencetriage CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referencetriage_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -381,6 +381,6 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER referencetriage_biur
-BEFORE INSERT OR UPDATE ON referencetriage FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.referencetriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_referencetriage_biur();
 

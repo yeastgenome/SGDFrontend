@@ -7,29 +7,11 @@ SET client_encoding TO 'UTF8';
 \set ON_ERROR_STOP ON
 
 
-DROP TRIGGER IF EXISTS archcontigchange_bir ON arch_contigchange CASCADE;
+DROP TRIGGER IF EXISTS archcontigchange_bir ON nex.arch_contigchange CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_archcontigchange_bir() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
-
-       NEW.created_by := upper(NEW.created_by);
-       PERFORM nex.checkuser(NEW.created_by);
-
-       RETURN NEW;
-  END IF;
-
-END;
-$BODY$ LANGUAGE 'plpgsql';
-
-CREATE TRIGGER archcontigchange_bir
-BEFORE INSERT OR UPDATE OR DELETE ON arch_contigchange FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_archcontigchange_bir();
-
-DROP TRIGGER IF EXISTS archcontig_bir ON arch_contig CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_archcontig_bir() RETURNS trigger AS $BODY$
-BEGIN
-  IF (TG_OP = 'INSERT') THEN
-
+ 
        NEW.changed_by := upper(NEW.changed_by);
        PERFORM nex.checkuser(NEW.changed_by);
 
@@ -39,47 +21,11 @@ BEGIN
 END;
 $BODY$ LANGUAGE 'plpgsql';
 
-CREATE TRIGGER archcontig_bir
-BEFORE INSERT OR UPDATE OR DELETE ON arch_contig FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_archcontig_bir();
+CREATE TRIGGER archcontigchange_bir
+BEFORE INSERT OR UPDATE OR DELETE ON nex.arch_contigchange FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_archcontigchange_bir();
 
-DROP TRIGGER IF EXISTS archdnasequenceannotation_bir ON arch_dnasequenceannotation CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_archdnasequenceannotation_bir() RETURNS trigger AS $BODY$
-BEGIN
-  IF (TG_OP = 'INSERT') THEN
-
-       NEW.created_by := upper(NEW.created_by);
-       PERFORM nex.checkuser(NEW.created_by);
-
-       RETURN NEW;
-  END IF;
-
-END;
-$BODY$ LANGUAGE 'plpgsql';
-
-CREATE TRIGGER archdnasequenceannotation_bir
-BEFORE INSERT OR UPDATE OR DELETE ON arch_dnasequenceannotation FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_archdnasequenceannotation_bir();
-
-DROP TRIGGER IF EXISTS archdnasubsequence_bir ON arch_dnasubsequence CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_archdnasubsequence_bir() RETURNS trigger AS $BODY$
-BEGIN
-  IF (TG_OP = 'INSERT') THEN
-
-       NEW.created_by := upper(NEW.created_by);
-       PERFORM nex.checkuser(NEW.created_by);
-
-       RETURN NEW;
-  END IF;
-
-END;
-$BODY$ LANGUAGE 'plpgsql';
-
-CREATE TRIGGER archdnasubsequence_bir
-BEFORE INSERT OR UPDATE OR DELETE ON arch_dnasubsequence FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_archdnasubsequence_bir();
-
-DROP TRIGGER IF EXISTS archliteratureannotation_bir ON arch_literatureannotation CASCADE;
+DROP TRIGGER IF EXISTS archliteratureannotation_bir ON nex.arch_literatureannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_archliteratureannotation_bir() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -94,10 +40,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER archliteratureannotation_bir
-BEFORE INSERT OR UPDATE OR DELETE ON arch_literatureannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE OR DELETE ON nex.arch_literatureannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_archliteratureannotation_bir();
 
-DROP TRIGGER IF EXISTS archlocuschange_bir ON arch_locuschange CASCADE;
+DROP TRIGGER IF EXISTS archlocuschange_bir ON nex.arch_locuschange CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_archlocuschange_bir() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -112,24 +58,5 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER archlocuschange_bir
-BEFORE INSERT OR UPDATE OR DELETE ON arch_locuschange FOR EACH ROW
+BEFORE INSERT OR UPDATE OR DELETE ON nex.arch_locuschange FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_archlocuschange_bir();
-
-DROP TRIGGER IF EXISTS archproteinsequenceannotation_bir ON arch_proteinsequenceannotation CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_archproteinsequenceannotation_bir() RETURNS trigger AS $BODY$
-BEGIN
-  IF (TG_OP = 'INSERT') THEN
-
-       NEW.created_by := upper(NEW.created_by);
-       PERFORM nex.checkuser(NEW.created_by);
-
-       RETURN NEW;       
-  END IF;
-
-END;
-$BODY$ LANGUAGE 'plpgsql';
-
-CREATE TRIGGER archproteinsequenceannotation_bir
-BEFORE INSERT OR UPDATE OR DELETE ON arch_proteinsequenceannotation FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_archproteinsequenceannotation_bir();
-

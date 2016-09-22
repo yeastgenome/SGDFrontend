@@ -8,8 +8,8 @@ SET client_encoding TO 'UTF8';
 
 -- Data objects
 
-DROP TABLE IF EXISTS allele CASCADE;
-CREATE TABLE allele (
+DROP TABLE IF EXISTS nex.allele CASCADE;
+CREATE TABLE nex.allele (
 	allele_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -21,21 +21,21 @@ CREATE TABLE allele (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT allele_pk PRIMARY KEY (allele_id)
 ) ;
-COMMENT ON TABLE allele IS 'Gene variants or alleles that show observable phenotypic traits.';
-COMMENT ON COLUMN allele.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN allele.description IS 'Description or comment.';
-COMMENT ON COLUMN allele.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN allele.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN allele.allele_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN allele.bud_id IS 'PK from BUD.EXPT_PROPERTY.EXPT_PROPERTY_NO';
-COMMENT ON COLUMN allele.display_name IS 'Public display name.';
-COMMENT ON COLUMN allele.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN allele.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-ALTER TABLE allele ADD CONSTRAINT allele_uk UNIQUE (format_name);
-CREATE INDEX allele_source_fk_index ON allele (source_id);
+COMMENT ON TABLE nex.allele IS 'Gene variants or alleles that show observable phenotypic traits.';
+COMMENT ON COLUMN nex.allele.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.allele.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.allele.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.allele.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.allele.allele_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.allele.bud_id IS 'PK from BUD.EXPT_PROPERTY.EXPT_PROPERTY_NO';
+COMMENT ON COLUMN nex.allele.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.allele.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.allele.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+ALTER TABLE nex.allele ADD CONSTRAINT allele_uk UNIQUE (format_name);
+CREATE INDEX allele_source_fk_index ON nex.allele (source_id);
 
-DROP TABLE IF EXISTS colleague CASCADE;
-CREATE TABLE colleague (
+DROP TABLE IF EXISTS nex.colleague CASCADE;
+CREATE TABLE nex.colleague (
 	colleague_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -72,46 +72,46 @@ CREATE TABLE colleague (
 	research_interest varchar(4000),
 	CONSTRAINT colleague_pk PRIMARY KEY (colleague_id)
 ) ;
-COMMENT ON TABLE colleague IS 'A researcher or associate who registered with the database.';
-COMMENT ON COLUMN colleague.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN colleague.other_phone IS 'Another phone number for the colleague.';
-COMMENT ON COLUMN colleague.job_title IS 'Position (e.g., Professor, Post-doc, Staff scientist),';
-COMMENT ON COLUMN colleague.is_pi IS 'Whether the colleague is a PI.';
-COMMENT ON COLUMN colleague.email IS 'Email address.';
-COMMENT ON COLUMN colleague.orcid IS 'Unique Author Open Researcher and Contributor ID.';
-COMMENT ON COLUMN colleague.postal_code IS 'Postal or zip code.';
-COMMENT ON COLUMN colleague.other_last_name IS 'Maiden or other last name used.';
-COMMENT ON COLUMN colleague.institution IS 'University, company, or organization of the colleague.';
-COMMENT ON COLUMN colleague.address2 IS 'Second line of street address.';
-COMMENT ON COLUMN colleague.country IS 'Country (Coded).';
-COMMENT ON COLUMN colleague.date_last_modified IS 'Date the record was last updated.';
-COMMENT ON COLUMN colleague.profession IS 'Profession (e.g., yeast molecular biologist, bioinformaticist).';
-COMMENT ON COLUMN colleague.colleague_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN colleague.research_interest IS 'Research interests of the colleague.';
-COMMENT ON COLUMN colleague.colleague_note IS 'Note or comment about the colleague.';
-COMMENT ON COLUMN colleague.last_name IS 'Last name of the colleague.';
-COMMENT ON COLUMN colleague.city IS 'City.';
-COMMENT ON COLUMN colleague.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN colleague.display_name IS 'Public display name.';
-COMMENT ON COLUMN colleague.bud_id IS 'PK from BUD.COLLEAGUE.COLLEAGUE_NO.';
-COMMENT ON COLUMN colleague.display_email IS 'Whether to display the colleague email address.';
-COMMENT ON COLUMN colleague.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN colleague.first_name IS 'First name of the colleague, including middle name if any.';
-COMMENT ON COLUMN colleague.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN colleague.state IS 'State or region (US and Canada coded).';
-COMMENT ON COLUMN colleague.suffix IS 'Name suffix (II, III, IV, Jr., Sr.).';
-COMMENT ON COLUMN colleague.is_contact IS 'Whether the colleague is a contact for SGD.';
-COMMENT ON COLUMN colleague.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN colleague.work_phone IS 'Colleague work phone number.';
-COMMENT ON COLUMN colleague.address1 IS 'First line of street address.';
-COMMENT ON COLUMN colleague.address3 IS 'Third line of street address.';
-ALTER TABLE colleague ADD CONSTRAINT colleague_uk UNIQUE (format_name);
-ALTER TABLE colleague ADD CONSTRAINT colleague_suffix_ck CHECK (SUFFIX IN ('II','III','IV','Jr.','Sr.'));
-CREATE INDEX colleague_source_fk_index ON colleague (source_id);
-CREATE UNIQUE INDEX orcid_uk_index ON colleague (orcid);
+COMMENT ON TABLE nex.colleague IS 'A researcher or associate who registered with the database.';
+COMMENT ON COLUMN nex.colleague.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.colleague.other_phone IS 'Another phone number for the colleague.';
+COMMENT ON COLUMN nex.colleague.job_title IS 'Position (e.g., Professor, Post-doc, Staff scientist),';
+COMMENT ON COLUMN nex.colleague.is_pi IS 'Whether the colleague is a PI.';
+COMMENT ON COLUMN nex.colleague.email IS 'Email address.';
+COMMENT ON COLUMN nex.colleague.orcid IS 'Unique Author Open Researcher and Contributor ID.';
+COMMENT ON COLUMN nex.colleague.postal_code IS 'Postal or zip code.';
+COMMENT ON COLUMN nex.colleague.other_last_name IS 'Maiden or other last name used.';
+COMMENT ON COLUMN nex.colleague.institution IS 'University, company, or organization of the colleague.';
+COMMENT ON COLUMN nex.colleague.address2 IS 'Second line of street address.';
+COMMENT ON COLUMN nex.colleague.country IS 'Country (Coded).';
+COMMENT ON COLUMN nex.colleague.date_last_modified IS 'Date the record was last updated.';
+COMMENT ON COLUMN nex.colleague.profession IS 'Profession (e.g., yeast molecular biologist, bioinformaticist).';
+COMMENT ON COLUMN nex.colleague.colleague_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.colleague.research_interest IS 'Research interests of the colleague.';
+COMMENT ON COLUMN nex.colleague.colleague_note IS 'Note or comment about the colleague.';
+COMMENT ON COLUMN nex.colleague.last_name IS 'Last name of the colleague.';
+COMMENT ON COLUMN nex.colleague.city IS 'City.';
+COMMENT ON COLUMN nex.colleague.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.colleague.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.colleague.bud_id IS 'PK from BUD.COLLEAGUE.COLLEAGUE_NO.';
+COMMENT ON COLUMN nex.colleague.display_email IS 'Whether to display the colleague email address.';
+COMMENT ON COLUMN nex.colleague.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.colleague.first_name IS 'First name of the colleague, including middle name if any.';
+COMMENT ON COLUMN nex.colleague.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.colleague.state IS 'State or region (US and Canada coded).';
+COMMENT ON COLUMN nex.colleague.suffix IS 'Name suffix (II, III, IV, Jr., Sr.).';
+COMMENT ON COLUMN nex.colleague.is_contact IS 'Whether the colleague is a contact for SGD.';
+COMMENT ON COLUMN nex.colleague.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.colleague.work_phone IS 'Colleague work phone number.';
+COMMENT ON COLUMN nex.colleague.address1 IS 'First line of street address.';
+COMMENT ON COLUMN nex.colleague.address3 IS 'Third line of street address.';
+ALTER TABLE nex.colleague ADD CONSTRAINT colleague_uk UNIQUE (format_name);
+ALTER TABLE nex.colleague ADD CONSTRAINT colleague_suffix_ck CHECK (SUFFIX IN ('II','III','IV','Jr.','Sr.'));
+CREATE INDEX colleague_source_fk_index ON nex.colleague (source_id);
+CREATE UNIQUE INDEX orcid_uk_index ON nex.colleague (orcid);
 
-DROP TABLE IF EXISTS colleague_relation CASCADE;
-CREATE TABLE colleague_relation (
+DROP TABLE IF EXISTS nex.colleague_relation CASCADE;
+CREATE TABLE nex.colleague_relation (
 	colleague_relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
 	source_id bigint NOT NULL,
 	bud_id integer,
@@ -122,22 +122,22 @@ CREATE TABLE colleague_relation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT colleague_relation_pk PRIMARY KEY (colleague_relation_id)
 ) ;
-COMMENT ON TABLE colleague_relation IS 'Association between two colleagues.';
-COMMENT ON COLUMN colleague_relation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN colleague_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN colleague_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN colleague_relation.colleague_relation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN colleague_relation.associate_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
-COMMENT ON COLUMN colleague_relation.association_type IS 'Type of association or relationship (Associate, Lab member, Head of Lab).';
-COMMENT ON COLUMN colleague_relation.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
-COMMENT ON COLUMN colleague_relation.bud_id IS 'PK from BUD.COLL_RELATIONSHIP.COLL_RELATIONSHIP_NO.';
-ALTER TABLE colleague_relation ADD CONSTRAINT colleague_relation_uk UNIQUE (colleague_id,associate_id,association_type);
-ALTER TABLE colleague_relation ADD CONSTRAINT colleague_relation_type_ck CHECK (association_type in ('Associate','Lab member', 'Head of Lab'));
-CREATE INDEX colleaguerelation_associate_fk_index ON colleague_relation (associate_id);
-CREATE INDEX colleaguerelation_source_fk_index ON colleague_relation (source_id);
+COMMENT ON TABLE nex.colleague_relation IS 'Association between two colleagues.';
+COMMENT ON COLUMN nex.colleague_relation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.colleague_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.colleague_relation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.colleague_relation.colleague_relation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.colleague_relation.associate_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
+COMMENT ON COLUMN nex.colleague_relation.association_type IS 'Type of association or relationship (Associate, Lab member, Head of Lab).';
+COMMENT ON COLUMN nex.colleague_relation.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
+COMMENT ON COLUMN nex.colleague_relation.bud_id IS 'PK from BUD.COLL_RELATIONSHIP.COLL_RELATIONSHIP_NO.';
+ALTER TABLE nex.colleague_relation ADD CONSTRAINT colleague_relation_uk UNIQUE (colleague_id,associate_id,association_type);
+ALTER TABLE nex.colleague_relation ADD CONSTRAINT colleague_relation_type_ck CHECK (association_type in ('Associate','Lab member', 'Head of Lab'));
+CREATE INDEX colleaguerelation_associate_fk_index ON nex.colleague_relation (associate_id);
+CREATE INDEX colleaguerelation_source_fk_index ON nex.colleague_relation (source_id);
 
-DROP TABLE IF EXISTS colleague_url CASCADE;
-CREATE TABLE colleague_url (
+DROP TABLE IF EXISTS nex.colleague_url CASCADE;
+CREATE TABLE nex.colleague_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -149,22 +149,22 @@ CREATE TABLE colleague_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT colleague_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE colleague_url IS 'URLs associated with colleagues.';
-COMMENT ON COLUMN colleague_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN colleague_url.url_type IS 'Type of URL (Lab, Research summary).';
-COMMENT ON COLUMN colleague_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN colleague_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN colleague_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN colleague_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN colleague_url.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
-COMMENT ON COLUMN colleague_url.display_name IS 'Public display name.';
-COMMENT ON COLUMN colleague_url.bud_id IS 'PK from BUD.URL.URL_NO.';
-ALTER TABLE colleague_url ADD CONSTRAINT colleague_url_uk UNIQUE (colleague_id,display_name,obj_url);
-ALTER TABLE colleague_url ADD CONSTRAINT colleagueurl_type_ck CHECK (URL_TYPE IN ('Lab','Research summary'));
-CREATE INDEX colleagueurl_source_fk_index ON colleague_url (source_id);
+COMMENT ON TABLE nex.colleague_url IS 'URLs associated with colleagues.';
+COMMENT ON COLUMN nex.colleague_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.colleague_url.url_type IS 'Type of URL (Lab, Research summary).';
+COMMENT ON COLUMN nex.colleague_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.colleague_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.colleague_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.colleague_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.colleague_url.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
+COMMENT ON COLUMN nex.colleague_url.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.colleague_url.bud_id IS 'PK from BUD.URL.URL_NO.';
+ALTER TABLE nex.colleague_url ADD CONSTRAINT colleague_url_uk UNIQUE (colleague_id,display_name,obj_url);
+ALTER TABLE nex.colleague_url ADD CONSTRAINT colleagueurl_type_ck CHECK (URL_TYPE IN ('Lab','Research summary'));
+CREATE INDEX colleagueurl_source_fk_index ON nex.colleague_url (source_id);
 
-DROP TABLE IF EXISTS colleague_keyword CASCADE;
-CREATE TABLE colleague_keyword (
+DROP TABLE IF EXISTS nex.colleague_keyword CASCADE;
+CREATE TABLE nex.colleague_keyword (
 	colleague_keyword_id bigint NOT NULL DEFAULT nextval('link_seq'),
 	colleague_id bigint NOT NULL,
 	keyword_id bigint NOT NULL,
@@ -173,18 +173,18 @@ CREATE TABLE colleague_keyword (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT colleague_keyword_pk PRIMARY KEY (colleague_keyword_id)
 ) ;
-COMMENT ON TABLE colleague_keyword IS 'Keywords associated with a colleague.';
-COMMENT ON COLUMN colleague_keyword.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
-COMMENT ON COLUMN colleague_keyword.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN colleague_keyword.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN colleague_keyword.colleague_keyword_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN colleague_keyword.keyword_id IS 'FK to KEYWORD.KEYWORD_ID.';
-COMMENT ON COLUMN colleague_keyword.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE colleague_keyword ADD CONSTRAINT colleague_keyword_uk UNIQUE (keyword_id,colleague_id);
-CREATE INDEX colleaguekeyword_coll_fk_index ON colleague_keyword (colleague_id);
+COMMENT ON TABLE nex.colleague_keyword IS 'Keywords associated with a colleague.';
+COMMENT ON COLUMN nex.colleague_keyword.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
+COMMENT ON COLUMN nex.colleague_keyword.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.colleague_keyword.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.colleague_keyword.colleague_keyword_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.colleague_keyword.keyword_id IS 'FK to KEYWORD.KEYWORD_ID.';
+COMMENT ON COLUMN nex.colleague_keyword.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.colleague_keyword ADD CONSTRAINT colleague_keyword_uk UNIQUE (keyword_id,colleague_id);
+CREATE INDEX colleaguekeyword_coll_fk_index ON nex.colleague_keyword (colleague_id);
 
-DROP TABLE IF EXISTS colleague_locus CASCADE;
-CREATE TABLE colleague_locus (
+DROP TABLE IF EXISTS nex.colleague_locus CASCADE;
+CREATE TABLE nex.colleague_locus (
 	colleague_locus_id bigint NOT NULL DEFAULT nextval('link_seq'),
 	colleague_id bigint NOT NULL,
 	locus_id bigint NOT NULL,
@@ -193,19 +193,19 @@ CREATE TABLE colleague_locus (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT colleague_locus_pk PRIMARY KEY (colleague_locus_id)
 ) ;
-COMMENT ON TABLE colleague_locus IS 'Links a colleague with a locus of research interest.';
-COMMENT ON COLUMN colleague_locus.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN colleague_locus.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN colleague_locus.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
-COMMENT ON COLUMN colleague_locus.locus_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN colleague_locus.colleague_locus_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN colleague_locus.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE colleague_locus ADD CONSTRAINT colleague_locus_uk UNIQUE (colleague_id,locus_id);
-CREATE INDEX colleaguelocus_source_fk_index ON colleague_locus (source_id);
-CREATE INDEX colleaguelocus_locus_fk_index ON colleague_locus (locus_id);
+COMMENT ON TABLE nex.colleague_locus IS 'Links a colleague with a locus of research interest.';
+COMMENT ON COLUMN nex.colleague_locus.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.colleague_locus.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.colleague_locus.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
+COMMENT ON COLUMN nex.colleague_locus.locus_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.colleague_locus.colleague_locus_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.colleague_locus.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.colleague_locus ADD CONSTRAINT colleague_locus_uk UNIQUE (colleague_id,locus_id);
+CREATE INDEX colleaguelocus_source_fk_index ON nex.colleague_locus (source_id);
+CREATE INDEX colleaguelocus_locus_fk_index ON nex.colleague_locus (locus_id);
 
-DROP TABLE IF EXISTS colleague_reference CASCADE;
-CREATE TABLE colleague_reference (
+DROP TABLE IF EXISTS nex.colleague_reference CASCADE;
+CREATE TABLE nex.colleague_reference (
 	colleague_reference_id bigint NOT NULL DEFAULT nextval('link_seq'),
 	colleague_id bigint NOT NULL,
 	reference_id bigint NOT NULL,
@@ -214,19 +214,19 @@ CREATE TABLE colleague_reference (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT colleague_reference_pk PRIMARY KEY (colleague_reference_id)
 ) ;
-COMMENT ON TABLE colleague_reference IS 'Links a colleague with a reference, primarily through ORCIDs.';
-COMMENT ON COLUMN colleague_reference.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
-COMMENT ON COLUMN colleague_reference.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN colleague_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN colleague_reference.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN colleague_reference.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN colleague_reference.colleague_reference_id IS 'Unique identifier (serial number).';
-ALTER TABLE colleague_reference ADD CONSTRAINT colleague_reference_uk UNIQUE (colleague_id,reference_id);
-CREATE INDEX colleaguereference_ref_fk_index ON colleague_reference (reference_id);
-CREATE INDEX colleaguereference_source_fk_index ON colleague_reference (source_id);
+COMMENT ON TABLE nex.colleague_reference IS 'Links a colleague with a reference, primarily through ORCIDs.';
+COMMENT ON COLUMN nex.colleague_reference.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
+COMMENT ON COLUMN nex.colleague_reference.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.colleague_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.colleague_reference.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.colleague_reference.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.colleague_reference.colleague_reference_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.colleague_reference ADD CONSTRAINT colleague_reference_uk UNIQUE (colleague_id,reference_id);
+CREATE INDEX colleaguereference_ref_fk_index ON nex.colleague_reference (reference_id);
+CREATE INDEX colleaguereference_source_fk_index ON nex.colleague_reference (source_id);
 
-DROP TABLE IF EXISTS contig CASCADE;
-CREATE TABLE contig (
+DROP TABLE IF EXISTS nex.contig CASCADE;
+CREATE TABLE nex.contig (
 	contig_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -255,42 +255,42 @@ CREATE TABLE contig (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT contig_pk PRIMARY KEY (contig_id)
 ) ;
-COMMENT ON TABLE contig IS 'Whole chromosome or contig sequences.';
-COMMENT ON COLUMN contig.reference_end IS 'End coordinate relative to the reference sequence S288C.';
-COMMENT ON COLUMN contig.contig_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN contig.file_id IS 'FK to FILEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN contig.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN contig.residues IS 'DNA sequence of the contig, chromosome or plasmid.';
-COMMENT ON COLUMN contig.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN contig.download_filename IS 'User interface download filename.';
-COMMENT ON COLUMN contig.reference_alignment_length IS 'Length of the sequence alignment to the reference sequence S288C.';
-COMMENT ON COLUMN contig.genbank_accession IS 'GenBank Accession id including version number (e.g., BK006939.2).';
-COMMENT ON COLUMN contig.file_header IS 'Header line of the download file.';
-COMMENT ON COLUMN contig.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN contig.display_name IS 'Public display name.';
-COMMENT ON COLUMN contig.reference_start IS 'Start coordinate relative to the reference sequence S288C.';
-COMMENT ON COLUMN contig.centromere_start IS 'Start coordinate of the centromere.';
-COMMENT ON COLUMN contig.coord_version IS 'From BUD.FEAT_LOCATION.COORD_VERSION.';
-COMMENT ON COLUMN contig.so_id IS 'FK to SO.SO_ID (contig, chromosome, plasmid).';
-COMMENT ON COLUMN contig.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN contig.genomerelease_id IS 'FK to GENOMERELEASE.GENOMERELEASE_ID.';
-COMMENT ON COLUMN contig.reference_percent_identity IS 'Percent identify to the reference sequence S288C.';
-COMMENT ON COLUMN contig.reference_chromosome_id IS 'FK to CONTIG.CONTIG_ID.';
-COMMENT ON COLUMN contig.gi_number IS 'GenInfo identifier assigned by NCBI.';
-COMMENT ON COLUMN contig.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN contig.refseq_id IS 'REFerence SEQuence identifier assigned by NCBI.';
-COMMENT ON COLUMN contig.centromere_end IS 'End coordinate of the centromere.';
-COMMENT ON COLUMN contig.seq_version IS 'From BUD.SEQ.SEQ_VERSION.';
-COMMENT ON COLUMN contig.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE contig ADD CONSTRAINT contig_uk UNIQUE (format_name);
-CREATE INDEX contig_genrel_fk_index ON contig (genomerelease_id);
-CREATE INDEX contig_file_fk_index ON contig (file_id);
-CREATE INDEX contig_tax_fk_index ON contig (taxonomy_id);
-CREATE INDEX contig_source_fk_index ON contig (source_id);
-CREATE INDEX contig_so_fk_index ON contig (so_id);
+COMMENT ON TABLE nex.contig IS 'Whole chromosome or contig sequences.';
+COMMENT ON COLUMN nex.contig.reference_end IS 'End coordinate relative to the reference sequence S288C.';
+COMMENT ON COLUMN nex.contig.contig_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.contig.file_id IS 'FK to FILEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.contig.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.contig.residues IS 'DNA sequence of the contig, chromosome or plasmid.';
+COMMENT ON COLUMN nex.contig.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.contig.download_filename IS 'User interface download filename.';
+COMMENT ON COLUMN nex.contig.reference_alignment_length IS 'Length of the sequence alignment to the reference sequence S288C.';
+COMMENT ON COLUMN nex.contig.genbank_accession IS 'GenBank Accession id including version number (e.g., BK006939.2).';
+COMMENT ON COLUMN nex.contig.file_header IS 'Header line of the download file.';
+COMMENT ON COLUMN nex.contig.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.contig.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.contig.reference_start IS 'Start coordinate relative to the reference sequence S288C.';
+COMMENT ON COLUMN nex.contig.centromere_start IS 'Start coordinate of the centromere.';
+COMMENT ON COLUMN nex.contig.coord_version IS 'From BUD.FEAT_LOCATION.COORD_VERSION.';
+COMMENT ON COLUMN nex.contig.so_id IS 'FK to SO.SO_ID (contig, chromosome, plasmid).';
+COMMENT ON COLUMN nex.contig.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.contig.genomerelease_id IS 'FK to GENOMERELEASE.GENOMERELEASE_ID.';
+COMMENT ON COLUMN nex.contig.reference_percent_identity IS 'Percent identify to the reference sequence S288C.';
+COMMENT ON COLUMN nex.contig.reference_chromosome_id IS 'FK to CONTIG.CONTIG_ID.';
+COMMENT ON COLUMN nex.contig.gi_number IS 'GenInfo identifier assigned by NCBI.';
+COMMENT ON COLUMN nex.contig.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.contig.refseq_id IS 'REFerence SEQuence identifier assigned by NCBI.';
+COMMENT ON COLUMN nex.contig.centromere_end IS 'End coordinate of the centromere.';
+COMMENT ON COLUMN nex.contig.seq_version IS 'From BUD.SEQ.SEQ_VERSION.';
+COMMENT ON COLUMN nex.contig.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.contig ADD CONSTRAINT contig_uk UNIQUE (format_name);
+CREATE INDEX contig_genrel_fk_index ON nex.contig (genomerelease_id);
+CREATE INDEX contig_file_fk_index ON nex.contig (file_id);
+CREATE INDEX contig_tax_fk_index ON nex.contig (taxonomy_id);
+CREATE INDEX contig_source_fk_index ON nex.contig (source_id);
+CREATE INDEX contig_so_fk_index ON nex.contig (so_id);
 
-DROP TABLE IF EXISTS contig_url CASCADE;
-CREATE TABLE contig_url (
+DROP TABLE IF EXISTS nex.contig_url CASCADE;
+CREATE TABLE nex.contig_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -301,21 +301,21 @@ CREATE TABLE contig_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT contig_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE contig_url IS 'URLs associated with chromosomes or contigs.';
-COMMENT ON COLUMN contig_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN contig_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN contig_url.url_type IS 'Type of URL (GenBank).';
-COMMENT ON COLUMN contig_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN contig_url.display_name IS 'Public display name.';
-COMMENT ON COLUMN contig_url.contig_id IS 'FK to CONTIG.CONTIG_ID.';
-COMMENT ON COLUMN contig_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN contig_url.url_id IS 'Unique identifier (serial number).';
-ALTER TABLE contig_url ADD CONSTRAINT contig_url_uk UNIQUE (contig_id,display_name,obj_url);
-ALTER TABLE contig_url ADD CONSTRAINT contig_url_type_ck CHECK (URL_TYPE IN ('GenBank'));
-CREATE INDEX contig_url_source_fk_index ON contig_url (source_id);
+COMMENT ON TABLE nex.contig_url IS 'URLs associated with chromosomes or contigs.';
+COMMENT ON COLUMN nex.contig_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.contig_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.contig_url.url_type IS 'Type of URL (GenBank).';
+COMMENT ON COLUMN nex.contig_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.contig_url.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.contig_url.contig_id IS 'FK to CONTIG.CONTIG_ID.';
+COMMENT ON COLUMN nex.contig_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.contig_url.url_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.contig_url ADD CONSTRAINT contig_url_uk UNIQUE (contig_id,display_name,obj_url);
+ALTER TABLE nex.contig_url ADD CONSTRAINT contig_url_type_ck CHECK (URL_TYPE IN ('GenBank'));
+CREATE INDEX contig_url_source_fk_index ON nex.contig_url (source_id);
 
-DROP TABLE IF EXISTS dataset CASCADE;
-CREATE TABLE dataset (
+DROP TABLE IF EXISTS nex.dataset CASCADE;
+CREATE TABLE nex.dataset (
 	dataset_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -335,31 +335,31 @@ CREATE TABLE dataset (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT dataset_pk PRIMARY KEY (dataset_id)
 ) ;
-COMMENT ON TABLE dataset IS 'High throughput gene expression data from NCBI’s GEO database and displayed using SPELL.';
-COMMENT ON COLUMN dataset.is_in_browser IS 'Whether this dataset has been loaded into a genome browser, such as JBrowse.';
-COMMENT ON COLUMN dataset.is_in_spell IS 'Whether this dataset has been loaded into SPELL.';
-COMMENT ON COLUMN dataset.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN dataset.date_public IS 'Date the dataset was made public or released.';
-COMMENT ON COLUMN dataset.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN dataset.description IS 'Description or summary.';
-COMMENT ON COLUMN dataset.sample_count IS 'Number of samples in the experiment.';
-COMMENT ON COLUMN dataset.dbxref_type IS 'Type of database cross reference (GEO, ArrayExpress, SRA, Publication).';
-COMMENT ON COLUMN dataset.dbxref_id IS 'GEO Series ID (GSE), ArrayExpress ID, or Sequence Read Archive ID.';
-COMMENT ON COLUMN dataset.display_name IS 'Public display name.';
-COMMENT ON COLUMN dataset.assay_id IS 'FK to OBI.OBI_ID.';
-COMMENT ON COLUMN dataset.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN dataset.channel_count IS 'Number of channels (1 or 2) in the experiment.';
-COMMENT ON COLUMN dataset.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN dataset.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN dataset.dataset_id IS 'Unique identifier (serial number).';
-ALTER TABLE dataset ADD CONSTRAINT dataset_uk UNIQUE (format_name);
-ALTER TABLE dataset ADD CONSTRAINT dataset_dbxref_type_ck CHECK (dbxref_type IN ('GEO','ArrayExpress','SRA', 'Publication'));
-CREATE INDEX dataset_source_fk_index ON dataset (source_id);
-CREATE INDEX dataset_assay_fk_index ON dataset (assay_id);
-CREATE INDEX dataset_parent_fk_index ON dataset (parent_dataset_id);
+COMMENT ON TABLE nex.dataset IS 'High throughput gene expression data from NCBI’s GEO database and displayed using SPELL.';
+COMMENT ON COLUMN nex.dataset.is_in_browser IS 'Whether this dataset has been loaded into a genome browser, such as JBrowse.';
+COMMENT ON COLUMN nex.dataset.is_in_spell IS 'Whether this dataset has been loaded into SPELL.';
+COMMENT ON COLUMN nex.dataset.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.dataset.date_public IS 'Date the dataset was made public or released.';
+COMMENT ON COLUMN nex.dataset.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.dataset.description IS 'Description or summary.';
+COMMENT ON COLUMN nex.dataset.sample_count IS 'Number of samples in the experiment.';
+COMMENT ON COLUMN nex.dataset.dbxref_type IS 'Type of database cross reference (GEO, ArrayExpress, SRA, Publication).';
+COMMENT ON COLUMN nex.dataset.dbxref_id IS 'GEO Series ID (GSE), ArrayExpress ID, or Sequence Read Archive ID.';
+COMMENT ON COLUMN nex.dataset.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.dataset.assay_id IS 'FK to OBI.OBI_ID.';
+COMMENT ON COLUMN nex.dataset.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.dataset.channel_count IS 'Number of channels (1 or 2) in the experiment.';
+COMMENT ON COLUMN nex.dataset.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.dataset.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.dataset.dataset_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.dataset ADD CONSTRAINT dataset_uk UNIQUE (format_name);
+ALTER TABLE nex.dataset ADD CONSTRAINT dataset_dbxref_type_ck CHECK (dbxref_type IN ('GEO','ArrayExpress','SRA', 'Publication'));
+CREATE INDEX dataset_source_fk_index ON nex.dataset (source_id);
+CREATE INDEX dataset_assay_fk_index ON nex.dataset (assay_id);
+CREATE INDEX dataset_parent_fk_index ON nex.dataset (parent_dataset_id);
 
-DROP TABLE IF EXISTS datasetlab CASCADE;
-CREATE TABLE datasetlab (
+DROP TABLE IF EXISTS nex.datasetlab CASCADE;
+CREATE TABLE nex.datasetlab (
 	datasetlab_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	dataset_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -370,21 +370,21 @@ CREATE TABLE datasetlab (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT datasetlab_pk PRIMARY KEY (datasetlab_id)
 ) ;
-COMMENT ON TABLE datasetlab IS 'Laboratory which conducted the dataset experiment.';
-COMMENT ON COLUMN datasetlab.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
-COMMENT ON COLUMN datasetlab.lab_location IS 'Institution or location of the PI.';
-COMMENT ON COLUMN datasetlab.datasetlab_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN datasetlab.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN datasetlab.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN datasetlab.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN datasetlab.dataset_id IS 'FK to DATASET.DATASET_ID.';
-COMMENT ON COLUMN datasetlab.lab_name IS 'PI last name.';
-ALTER TABLE datasetlab ADD CONSTRAINT datasetlab_uk UNIQUE (lab_name,dataset_id);
-CREATE INDEX datasetlab_dataset_fk_index ON datasetlab (dataset_id);
-CREATE INDEX datasetlab_coll_fk_index ON datasetlab (colleague_id);
+COMMENT ON TABLE nex.datasetlab IS 'Laboratory which conducted the dataset experiment.';
+COMMENT ON COLUMN nex.datasetlab.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
+COMMENT ON COLUMN nex.datasetlab.lab_location IS 'Institution or location of the PI.';
+COMMENT ON COLUMN nex.datasetlab.datasetlab_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.datasetlab.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.datasetlab.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.datasetlab.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.datasetlab.dataset_id IS 'FK to DATASET.DATASET_ID.';
+COMMENT ON COLUMN nex.datasetlab.lab_name IS 'PI last name.';
+ALTER TABLE nex.datasetlab ADD CONSTRAINT datasetlab_uk UNIQUE (lab_name,dataset_id);
+CREATE INDEX datasetlab_dataset_fk_index ON nex.datasetlab (dataset_id);
+CREATE INDEX datasetlab_coll_fk_index ON nex.datasetlab (colleague_id);
 
-DROP TABLE IF EXISTS dataset_url CASCADE;
-CREATE TABLE dataset_url (
+DROP TABLE IF EXISTS nex.dataset_url CASCADE;
+CREATE TABLE nex.dataset_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -395,21 +395,21 @@ CREATE TABLE dataset_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT dataset_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE dataset_url IS 'URLs associated with a dataset.';
-COMMENT ON COLUMN dataset_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN dataset_url.dataset_id IS 'FK to DATASET.DATASET_ID.';
-COMMENT ON COLUMN dataset_url.url_type IS 'Type of URL (GSO, ArrayExpress, SRA, Lab website, Archive website).';
-COMMENT ON COLUMN dataset_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN dataset_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN dataset_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN dataset_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN dataset_url.display_name IS 'Public display name.';
-ALTER TABLE dataset_url ADD CONSTRAINT dataset_url_uk UNIQUE (dataset_id,display_name,obj_url);
-ALTER TABLE dataset_url ADD CONSTRAINT dataseturl_type_ck CHECK (URL_TYPE in ('GEO', 'ArrayExpress', 'SRA', 'Lab website', 'Archive website'));
-CREATE INDEX dataseturl_source_fk_index ON dataset_url (source_id);
+COMMENT ON TABLE nex.dataset_url IS 'URLs associated with a dataset.';
+COMMENT ON COLUMN nex.dataset_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.dataset_url.dataset_id IS 'FK to DATASET.DATASET_ID.';
+COMMENT ON COLUMN nex.dataset_url.url_type IS 'Type of URL (GSO, ArrayExpress, SRA, Lab website, Archive website).';
+COMMENT ON COLUMN nex.dataset_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.dataset_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.dataset_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.dataset_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.dataset_url.display_name IS 'Public display name.';
+ALTER TABLE nex.dataset_url ADD CONSTRAINT dataset_url_uk UNIQUE (dataset_id,display_name,obj_url);
+ALTER TABLE nex.dataset_url ADD CONSTRAINT dataseturl_type_ck CHECK (URL_TYPE in ('GEO', 'ArrayExpress', 'SRA', 'Lab website', 'Archive website'));
+CREATE INDEX dataseturl_source_fk_index ON nex.dataset_url (source_id);
 
-DROP TABLE IF EXISTS dataset_file CASCADE;
-CREATE TABLE dataset_file (
+DROP TABLE IF EXISTS nex.dataset_file CASCADE;
+CREATE TABLE nex.dataset_file (
 	dataset_file_id bigint NOT NULL DEFAULT nextval('link_seq'),
 	dataset_id bigint NOT NULL,
 	file_id bigint NOT NULL,
@@ -418,19 +418,19 @@ CREATE TABLE dataset_file (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT dataset_file_pk PRIMARY KEY (dataset_file_id)
 ) ;
-COMMENT ON TABLE dataset_file IS 'Files associated with a dataset.';
-COMMENT ON COLUMN dataset_file.dataset_id IS 'FK to DATASET.DATASET_ID.';
-COMMENT ON COLUMN dataset_file.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN dataset_file.file_id IS 'FK to FILEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN dataset_file.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN dataset_file.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN dataset_file.dataset_file_id IS 'Unique identifier (serial number).';
-ALTER TABLE dataset_file ADD CONSTRAINT dataset_file_uk UNIQUE (dataset_id,file_id);
-CREATE INDEX datasetfile_source_fk_index ON dataset_file (source_id);
-CREATE INDEX datasetfile_file_fk_index ON dataset_file (file_id);
+COMMENT ON TABLE nex.dataset_file IS 'Files associated with a dataset.';
+COMMENT ON COLUMN nex.dataset_file.dataset_id IS 'FK to DATASET.DATASET_ID.';
+COMMENT ON COLUMN nex.dataset_file.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.dataset_file.file_id IS 'FK to FILEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.dataset_file.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.dataset_file.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.dataset_file.dataset_file_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.dataset_file ADD CONSTRAINT dataset_file_uk UNIQUE (dataset_id,file_id);
+CREATE INDEX datasetfile_source_fk_index ON nex.dataset_file (source_id);
+CREATE INDEX datasetfile_file_fk_index ON nex.dataset_file (file_id);
 
-DROP TABLE IF EXISTS dataset_keyword CASCADE;
-CREATE TABLE dataset_keyword (
+DROP TABLE IF EXISTS nex.dataset_keyword CASCADE;
+CREATE TABLE nex.dataset_keyword (
 	dataset_keyword_id bigint NOT NULL DEFAULT nextval('link_seq'),
 	keyword_id bigint NOT NULL,
 	dataset_id bigint NOT NULL,
@@ -439,19 +439,19 @@ CREATE TABLE dataset_keyword (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT dataset_keyword_pk PRIMARY KEY (dataset_keyword_id)
 ) ;
-COMMENT ON TABLE dataset_keyword IS 'A category or keyword that describes the whole dataset.';
-COMMENT ON COLUMN dataset_keyword.dataset_id IS 'FK to DATASET.DATASET_ID.';
-COMMENT ON COLUMN dataset_keyword.keyword_id IS 'FK to KEYWORD.KEYWORD_ID.';
-COMMENT ON COLUMN dataset_keyword.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN dataset_keyword.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN dataset_keyword.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN dataset_keyword.dataset_keyword_id IS 'Unique identifier (serial number).';
-ALTER TABLE dataset_keyword ADD CONSTRAINT dataset_keyword_uk UNIQUE (keyword_id,dataset_id);
-CREATE INDEX datasetkeyword_dataset_fk_index ON dataset_keyword (dataset_id);
-CREATE INDEX datasetkeyword_source_fk_index ON dataset_keyword (source_id);
+COMMENT ON TABLE nex.dataset_keyword IS 'A category or keyword that describes the whole dataset.';
+COMMENT ON COLUMN nex.dataset_keyword.dataset_id IS 'FK to DATASET.DATASET_ID.';
+COMMENT ON COLUMN nex.dataset_keyword.keyword_id IS 'FK to KEYWORD.KEYWORD_ID.';
+COMMENT ON COLUMN nex.dataset_keyword.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.dataset_keyword.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.dataset_keyword.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.dataset_keyword.dataset_keyword_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.dataset_keyword ADD CONSTRAINT dataset_keyword_uk UNIQUE (keyword_id,dataset_id);
+CREATE INDEX datasetkeyword_dataset_fk_index ON nex.dataset_keyword (dataset_id);
+CREATE INDEX datasetkeyword_source_fk_index ON nex.dataset_keyword (source_id);
 
-DROP TABLE IF EXISTS dataset_reference CASCADE;
-CREATE TABLE dataset_reference (
+DROP TABLE IF EXISTS nex.dataset_reference CASCADE;
+CREATE TABLE nex.dataset_reference (
 	dataset_reference_id bigint NOT NULL DEFAULT nextval('link_seq'),
 	reference_id bigint NOT NULL,
 	dataset_id bigint NOT NULL,
@@ -460,19 +460,19 @@ CREATE TABLE dataset_reference (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT dataset_reference_pk PRIMARY KEY (dataset_reference_id)
 ) ;
-COMMENT ON TABLE dataset_reference IS 'References associated with a dataset.';
-COMMENT ON COLUMN dataset_reference.dataset_reference_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN dataset_reference.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN dataset_reference.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN dataset_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN dataset_reference.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN dataset_reference.dataset_id IS 'FK to DATASET.DATASET_ID.';
-ALTER TABLE dataset_reference ADD CONSTRAINT dataset_reference_uk UNIQUE (reference_id,dataset_id);
-CREATE INDEX datasetreference_source_fk_index ON dataset_reference (source_id);
-CREATE INDEX datasetreference_dataset_fk_index ON dataset_reference (dataset_id);
+COMMENT ON TABLE nex.dataset_reference IS 'References associated with a dataset.';
+COMMENT ON COLUMN nex.dataset_reference.dataset_reference_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.dataset_reference.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.dataset_reference.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.dataset_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.dataset_reference.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.dataset_reference.dataset_id IS 'FK to DATASET.DATASET_ID.';
+ALTER TABLE nex.dataset_reference ADD CONSTRAINT dataset_reference_uk UNIQUE (reference_id,dataset_id);
+CREATE INDEX datasetreference_source_fk_index ON nex.dataset_reference (source_id);
+CREATE INDEX datasetreference_dataset_fk_index ON nex.dataset_reference (dataset_id);
 
-DROP TABLE IF EXISTS datasetsample CASCADE;
-CREATE TABLE datasetsample (
+DROP TABLE IF EXISTS nex.datasetsample CASCADE;
+CREATE TABLE nex.datasetsample (
 	datasetsample_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -490,28 +490,28 @@ CREATE TABLE datasetsample (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT datasetsample_pk PRIMARY KEY (datasetsample_id)
 ) ;
-COMMENT ON TABLE datasetsample IS 'Samples or experiments in a dataset.';
-COMMENT ON COLUMN datasetsample.dataset_id IS 'FK to DATASET.DATASET_ID.';
-COMMENT ON COLUMN datasetsample.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN datasetsample.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN datasetsample.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN datasetsample.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN datasetsample.display_name IS 'Public display name.';
-COMMENT ON COLUMN datasetsample.datasetsample_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN datasetsample.dbxref_id IS 'GEO Sample identifier (GSM) or other identifier.';
-COMMENT ON COLUMN datasetsample.sample_order IS 'Order to display the samples.';
-COMMENT ON COLUMN datasetsample.dbxref_type IS 'Type of database cross reference (GEO, ArrayExpress).';
-COMMENT ON COLUMN datasetsample.description IS 'Description or summary of the sample.';
-COMMENT ON COLUMN datasetsample.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN datasetsample.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-ALTER TABLE datasetsample ADD CONSTRAINT datasetsample_uk UNIQUE (format_name);
-ALTER TABLE datasetsample ADD CONSTRAINT datasetsample_dbxref_type_ck CHECK (dbxref_type in ('GEO','ArrayExpress'));
-CREATE INDEX datasetsample_dataset_fk_index ON datasetsample (dataset_id);
-CREATE INDEX datasetsample_tax_fk_index ON datasetsample (taxonomy_id);
-CREATE INDEX datasetsample_source_fk_index ON datasetsample (source_id);
+COMMENT ON TABLE nex.datasetsample IS 'Samples or experiments in a dataset.';
+COMMENT ON COLUMN nex.datasetsample.dataset_id IS 'FK to DATASET.DATASET_ID.';
+COMMENT ON COLUMN nex.datasetsample.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.datasetsample.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.datasetsample.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.datasetsample.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.datasetsample.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.datasetsample.datasetsample_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.datasetsample.dbxref_id IS 'GEO Sample identifier (GSM) or other identifier.';
+COMMENT ON COLUMN nex.datasetsample.sample_order IS 'Order to display the samples.';
+COMMENT ON COLUMN nex.datasetsample.dbxref_type IS 'Type of database cross reference (GEO, ArrayExpress).';
+COMMENT ON COLUMN nex.datasetsample.description IS 'Description or summary of the sample.';
+COMMENT ON COLUMN nex.datasetsample.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.datasetsample.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+ALTER TABLE nex.datasetsample ADD CONSTRAINT datasetsample_uk UNIQUE (format_name);
+ALTER TABLE nex.datasetsample ADD CONSTRAINT datasetsample_dbxref_type_ck CHECK (dbxref_type in ('GEO','ArrayExpress'));
+CREATE INDEX datasetsample_dataset_fk_index ON nex.datasetsample (dataset_id);
+CREATE INDEX datasetsample_tax_fk_index ON nex.datasetsample (taxonomy_id);
+CREATE INDEX datasetsample_source_fk_index ON nex.datasetsample (source_id);
 
-DROP TABLE IF EXISTS datasettrack CASCADE;
-CREATE TABLE datasettrack (
+DROP TABLE IF EXISTS nex.datasettrack CASCADE;
+CREATE TABLE nex.datasettrack (
 	datasettrack_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -523,22 +523,22 @@ CREATE TABLE datasettrack (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT datasettrack_pk PRIMARY KEY (datasettrack_id)
 ) ;
-COMMENT ON TABLE datasettrack IS 'Genome browser tracks derived from a dataset.';
-COMMENT ON COLUMN datasettrack.track_order IS 'Order to display the tracks in the browser.';
-COMMENT ON COLUMN datasettrack.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN datasettrack.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN datasettrack.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN datasettrack.datasettrack_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN datasettrack.dataset_id IS 'FK to DATASET.DATASET_ID.';
-COMMENT ON COLUMN datasettrack.display_name IS 'Public display name.';
-COMMENT ON COLUMN datasettrack.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN datasettrack.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-ALTER TABLE datasettrack ADD CONSTRAINT datasettrack_uk UNIQUE (format_name);
-CREATE INDEX datasettrack_source_fk_index ON datasettrack (source_id);
-CREATE INDEX datasettrack_dataset_fk_index ON datasettrack (dataset_id);
+COMMENT ON TABLE nex.datasettrack IS 'Genome browser tracks derived from a dataset.';
+COMMENT ON COLUMN nex.datasettrack.track_order IS 'Order to display the tracks in the browser.';
+COMMENT ON COLUMN nex.datasettrack.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.datasettrack.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.datasettrack.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.datasettrack.datasettrack_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.datasettrack.dataset_id IS 'FK to DATASET.DATASET_ID.';
+COMMENT ON COLUMN nex.datasettrack.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.datasettrack.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.datasettrack.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+ALTER TABLE nex.datasettrack ADD CONSTRAINT datasettrack_uk UNIQUE (format_name);
+CREATE INDEX datasettrack_source_fk_index ON nex.datasettrack (source_id);
+CREATE INDEX datasettrack_dataset_fk_index ON nex.datasettrack (dataset_id);
 
-DROP TABLE IF EXISTS diseasesubset CASCADE;
-CREATE TABLE diseasesubset (
+DROP TABLE IF EXISTS nex.diseasesubset CASCADE;
+CREATE TABLE nex.diseasesubset (
 	diseasesubset_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -552,25 +552,25 @@ CREATE TABLE diseasesubset (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT diseasesubset_pk PRIMARY KEY (diseasesubset_id)
 ) ;
-COMMENT ON TABLE diseasesubset IS 'Broad groups or sub-sets of disease ontology terms.';
-COMMENT ON COLUMN diseasesubset.subset_name IS 'Name of the subset of DO terms (DO_cancer_slim,DO_MGI_slim,DO_rare_slim,GOLD,gram-negative_bacterial_infectious_disease,gram-positive_bacterial_infectious_disease,NCIthesaurus,sexually_transmitted_infectious_disease,tick-borne_infectious_disease,TopNodes_DOcancerslim,zoonotic_infectious_disease).';
-COMMENT ON COLUMN diseasesubset.genome_count IS 'Number of dbentities assigned to this DO subset.';
-COMMENT ON COLUMN diseasesubset.display_name IS 'Public display name.';
-COMMENT ON COLUMN diseasesubset.diseasesubset_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN diseasesubset.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN diseasesubset.disease_id IS 'FK to DISEASE.DISEASE_ID.';
-COMMENT ON COLUMN diseasesubset.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN diseasesubset.description IS 'Description or comment.';
-COMMENT ON COLUMN diseasesubset.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN diseasesubset.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN diseasesubset.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE diseasesubset ADD CONSTRAINT diseasesubset_uk UNIQUE (format_name);
-ALTER TABLE diseasesubset ADD CONSTRAINT diseasesubset_name_ck CHECK (SUBSET_NAME IN ('DO_cancer_slim','DO_MGI_slim','DO_rare_slim','GOLD','gram-negative_bacterial_infectious_disease','gram-positive_bacterial_infectious_disease','NCIthesaurus','sexually_transmitted_infectious_disease','tick-borne_infectious_disease','TopNodes_DOcancerslim','zoonotic_infectious_disease'));
-CREATE INDEX diseasesubset_source_fk_index ON diseasesubset (source_id);
-CREATE INDEX diseasesubset_disease_fk_index ON diseasesubset (disease_id);
+COMMENT ON TABLE nex.diseasesubset IS 'Broad groups or sub-sets of disease ontology terms.';
+COMMENT ON COLUMN nex.diseasesubset.subset_name IS 'Name of the subset of DO terms (DO_cancer_slim,DO_MGI_slim,DO_rare_slim,GOLD,gram-negative_bacterial_infectious_disease,gram-positive_bacterial_infectious_disease,NCIthesaurus,sexually_transmitted_infectious_disease,tick-borne_infectious_disease,TopNodes_DOcancerslim,zoonotic_infectious_disease).';
+COMMENT ON COLUMN nex.diseasesubset.genome_count IS 'Number of dbentities assigned to this DO subset.';
+COMMENT ON COLUMN nex.diseasesubset.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.diseasesubset.diseasesubset_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.diseasesubset.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.diseasesubset.disease_id IS 'FK to DISEASE.DISEASE_ID.';
+COMMENT ON COLUMN nex.diseasesubset.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.diseasesubset.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.diseasesubset.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.diseasesubset.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.diseasesubset.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.diseasesubset ADD CONSTRAINT diseasesubset_uk UNIQUE (format_name);
+ALTER TABLE nex.diseasesubset ADD CONSTRAINT diseasesubset_name_ck CHECK (SUBSET_NAME IN ('DO_cancer_slim','DO_MGI_slim','DO_rare_slim','GOLD','gram-negative_bacterial_infectious_disease','gram-positive_bacterial_infectious_disease','NCIthesaurus','sexually_transmitted_infectious_disease','tick-borne_infectious_disease','TopNodes_DOcancerslim','zoonotic_infectious_disease'));
+CREATE INDEX diseasesubset_source_fk_index ON nex.diseasesubset (source_id);
+CREATE INDEX diseasesubset_disease_fk_index ON nex.diseasesubset (disease_id);
 
-DROP TABLE IF EXISTS genomerelease CASCADE;
-CREATE TABLE genomerelease (
+DROP TABLE IF EXISTS nex.genomerelease CASCADE;
+CREATE TABLE nex.genomerelease (
 	genomerelease_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -586,26 +586,26 @@ CREATE TABLE genomerelease (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT genomerelease_pk PRIMARY KEY (genomerelease_id)
 ) ;
-COMMENT ON TABLE genomerelease IS 'S288C reference genome release numbers, in the format R[sequence release]-[annotation release]-[curation release] (e.g., R64-1-1).';
-COMMENT ON COLUMN genomerelease.release_date IS 'Date the genome release was made.';
-COMMENT ON COLUMN genomerelease.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN genomerelease.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN genomerelease.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN genomerelease.description IS 'Description or comment.';
-COMMENT ON COLUMN genomerelease.sequence_release IS 'Release or version number of the sequence.';
-COMMENT ON COLUMN genomerelease.file_id IS 'FK to FILEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN genomerelease.genomerelease_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN genomerelease.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN genomerelease.curation_release IS 'Incremented when new annotation files added to the Download Server.';
-COMMENT ON COLUMN genomerelease.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN genomerelease.display_name IS 'Public display name.';
-COMMENT ON COLUMN genomerelease.annotation_release IS 'Annotation release associated with a particular sequence release, incremented when feature coordinates change or features are added, merged or deleted.';
-ALTER TABLE genomerelease ADD CONSTRAINT genomerelease_uk UNIQUE (format_name);
-CREATE INDEX genomerelease_file_fk_index ON genomerelease (file_id);
-CREATE INDEX genomerelease_source_fk_index ON genomerelease (source_id);
+COMMENT ON TABLE nex.genomerelease IS 'S288C reference genome release numbers, in the format R[sequence release]-[annotation release]-[curation release] (e.g., R64-1-1).';
+COMMENT ON COLUMN nex.genomerelease.release_date IS 'Date the genome release was made.';
+COMMENT ON COLUMN nex.genomerelease.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.genomerelease.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.genomerelease.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.genomerelease.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.genomerelease.sequence_release IS 'Release or version number of the sequence.';
+COMMENT ON COLUMN nex.genomerelease.file_id IS 'FK to FILEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.genomerelease.genomerelease_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.genomerelease.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.genomerelease.curation_release IS 'Incremented when new annotation files added to the Download Server.';
+COMMENT ON COLUMN nex.genomerelease.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.genomerelease.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.genomerelease.annotation_release IS 'Annotation release associated with a particular sequence release, incremented when feature coordinates change or features are added, merged or deleted.';
+ALTER TABLE nex.genomerelease ADD CONSTRAINT genomerelease_uk UNIQUE (format_name);
+CREATE INDEX genomerelease_file_fk_index ON nex.genomerelease (file_id);
+CREATE INDEX genomerelease_source_fk_index ON nex.genomerelease (source_id);
 
-DROP TABLE IF EXISTS goslim CASCADE;
-CREATE TABLE goslim (
+DROP TABLE IF EXISTS nex.goslim CASCADE;
+CREATE TABLE nex.goslim (
 	goslim_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -620,26 +620,26 @@ CREATE TABLE goslim (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT goslim_pk PRIMARY KEY (goslim_id)
 ) ;
-COMMENT ON TABLE goslim IS 'Broader upper level GO terms grouped into useful sub-sets.';
-COMMENT ON COLUMN goslim.display_name IS 'Public display name.';
-COMMENT ON COLUMN goslim.goslim_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN goslim.go_id IS 'FK to GO.GO_ID.';
-COMMENT ON COLUMN goslim.bud_id IS 'PK from BUD.GO_SET.GO_SET_NO.';
-COMMENT ON COLUMN goslim.genome_count IS 'Number of dbentities assigned to this GO slim term, used by the GO Tools.';
-COMMENT ON COLUMN goslim.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN goslim.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN goslim.slim_name IS 'Name of the grouping of GO terms (Yeast GO-Slim, Macromolecular complex terms, Generic GO-Slim).';
-COMMENT ON COLUMN goslim.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN goslim.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN goslim.description IS 'Description or comment.';
-COMMENT ON COLUMN goslim.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE goslim ADD CONSTRAINT goslim_uk UNIQUE (format_name);
-ALTER TABLE goslim ADD CONSTRAINT goslim_name_ck CHECK (SLIM_NAME IN ('Macromolecular complex terms', 'Yeast GO-Slim', 'Generic GO-Slim'));
-CREATE INDEX goslim_source_fk_index ON goslim (source_id);
-CREATE INDEX goslim_go_fk_index ON goslim (go_id);
+COMMENT ON TABLE nex.goslim IS 'Broader upper level GO terms grouped into useful sub-sets.';
+COMMENT ON COLUMN nex.goslim.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.goslim.goslim_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.goslim.go_id IS 'FK to GO.GO_ID.';
+COMMENT ON COLUMN nex.goslim.bud_id IS 'PK from BUD.GO_SET.GO_SET_NO.';
+COMMENT ON COLUMN nex.goslim.genome_count IS 'Number of dbentities assigned to this GO slim term, used by the GO Tools.';
+COMMENT ON COLUMN nex.goslim.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.goslim.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.goslim.slim_name IS 'Name of the grouping of GO terms (Yeast GO-Slim, Macromolecular complex terms, Generic GO-Slim).';
+COMMENT ON COLUMN nex.goslim.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.goslim.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.goslim.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.goslim.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.goslim ADD CONSTRAINT goslim_uk UNIQUE (format_name);
+ALTER TABLE nex.goslim ADD CONSTRAINT goslim_name_ck CHECK (SLIM_NAME IN ('Macromolecular complex terms', 'Yeast GO-Slim', 'Generic GO-Slim'));
+CREATE INDEX goslim_source_fk_index ON nex.goslim (source_id);
+CREATE INDEX goslim_go_fk_index ON nex.goslim (go_id);
 
-DROP TABLE IF EXISTS phenotype CASCADE;
-CREATE TABLE phenotype (
+DROP TABLE IF EXISTS nex.phenotype CASCADE;
+CREATE TABLE nex.phenotype (
 	phenotype_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -653,25 +653,25 @@ CREATE TABLE phenotype (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT phenotype_pk PRIMARY KEY (phenotype_id)
 ) ;
-COMMENT ON TABLE phenotype IS 'Phenotypes defined by the Ascomycete Phenotype Ontology (APO) as an observable:qualifier combination.';
-COMMENT ON COLUMN phenotype.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN phenotype.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN phenotype.description IS 'Description or comment.';
-COMMENT ON COLUMN phenotype.phenotype_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN phenotype.qualifier_id IS 'FK to APO.APO_ID.';
-COMMENT ON COLUMN phenotype.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN phenotype.bud_id IS 'From BUD.PHENOTYPE.PHENOTYPE_NO.';
-COMMENT ON COLUMN phenotype.display_name IS 'Public display name.';
-COMMENT ON COLUMN phenotype.observable_id IS 'FK to APO.APO_ID.';
-COMMENT ON COLUMN phenotype.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN phenotype.format_name IS 'Unique name to create download files.';
-ALTER TABLE phenotype ADD CONSTRAINT phenotype_uk UNIQUE (format_name);
-CREATE INDEX phenotype_source_fk_index ON phenotype (source_id);
-CREATE INDEX phenotype_qualifier_fk_index ON phenotype (qualifier_id);
-CREATE INDEX phenotype_observable_fk_index ON phenotype (observable_id);
+COMMENT ON TABLE nex.phenotype IS 'Phenotypes defined by the Ascomycete Phenotype Ontology (APO) as an observable:qualifier combination.';
+COMMENT ON COLUMN nex.phenotype.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.phenotype.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.phenotype.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.phenotype.phenotype_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.phenotype.qualifier_id IS 'FK to APO.APO_ID.';
+COMMENT ON COLUMN nex.phenotype.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.phenotype.bud_id IS 'From BUD.PHENOTYPE.PHENOTYPE_NO.';
+COMMENT ON COLUMN nex.phenotype.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.phenotype.observable_id IS 'FK to APO.APO_ID.';
+COMMENT ON COLUMN nex.phenotype.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.phenotype.format_name IS 'Unique name to create download files.';
+ALTER TABLE nex.phenotype ADD CONSTRAINT phenotype_uk UNIQUE (format_name);
+CREATE INDEX phenotype_source_fk_index ON nex.phenotype (source_id);
+CREATE INDEX phenotype_qualifier_fk_index ON nex.phenotype (qualifier_id);
+CREATE INDEX phenotype_observable_fk_index ON nex.phenotype (observable_id);
 
-DROP TABLE IF EXISTS proteindomain CASCADE;
-CREATE TABLE proteindomain (
+DROP TABLE IF EXISTS nex.proteindomain CASCADE;
+CREATE TABLE nex.proteindomain (
 	proteindomain_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -683,21 +683,21 @@ CREATE TABLE proteindomain (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT proteindomain_pk PRIMARY KEY (proteindomain_id)
 ) ;
-COMMENT ON TABLE proteindomain IS 'Collection of computationally identified domains and motifs, determined by InterProScan analysis.';
-COMMENT ON COLUMN proteindomain.proteindomain_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN proteindomain.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN proteindomain.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN proteindomain.description IS 'Description or comment.';
-COMMENT ON COLUMN proteindomain.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN proteindomain.interpro_id IS 'InterPro Identifier from EBI.';
-COMMENT ON COLUMN proteindomain.display_name IS 'Public display name.';
-COMMENT ON COLUMN proteindomain.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN proteindomain.format_name IS 'Unique name to create download files.';
-ALTER TABLE proteindomain ADD CONSTRAINT proteindomain_uk UNIQUE (format_name);
-CREATE INDEX proteindomain_source_fk_index ON proteindomain (source_id);
+COMMENT ON TABLE nex.proteindomain IS 'Collection of computationally identified domains and motifs, determined by InterProScan analysis.';
+COMMENT ON COLUMN nex.proteindomain.proteindomain_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.proteindomain.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.proteindomain.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.proteindomain.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.proteindomain.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.proteindomain.interpro_id IS 'InterPro Identifier from EBI.';
+COMMENT ON COLUMN nex.proteindomain.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.proteindomain.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.proteindomain.format_name IS 'Unique name to create download files.';
+ALTER TABLE nex.proteindomain ADD CONSTRAINT proteindomain_uk UNIQUE (format_name);
+CREATE INDEX proteindomain_source_fk_index ON nex.proteindomain (source_id);
 
-DROP TABLE IF EXISTS proteindomain_url CASCADE;
-CREATE TABLE proteindomain_url (
+DROP TABLE IF EXISTS nex.proteindomain_url CASCADE;
+CREATE TABLE nex.proteindomain_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -708,21 +708,21 @@ CREATE TABLE proteindomain_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT proteindomain_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE proteindomain_url IS 'URLs associated with protein domains.';
-COMMENT ON COLUMN proteindomain_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN proteindomain_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN proteindomain_url.display_name IS 'Public display name.';
-COMMENT ON COLUMN proteindomain_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN proteindomain_url.url_type IS 'Type of URL (InterPro,PROSITE,HAMAP,Pfam,PRINTS,ProDom,SMART,TIGRFAM,PIRSF,SUPERFAMILY,GENE3D,PANTHER).';
-COMMENT ON COLUMN proteindomain_url.proteindomain_id IS 'FK to PROTEINDOMAIN.PROTEINDOMAIN_ID.';
-COMMENT ON COLUMN proteindomain_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN proteindomain_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-ALTER TABLE proteindomain_url ADD CONSTRAINT proteindomain_url_uk UNIQUE (proteindomain_id,display_name,url_type);
-ALTER TABLE proteindomain_url ADD CONSTRAINT proteindomainurl_type_ck CHECK (URL_TYPE IN ('InterPro','PROSITE','HAMAP','Pfam','PRINTS','ProDom','SMART','TIGRFAM','PIRSF','SUPERFAMILY','GENE3D','PANTHER', 'JASPAR'));
-CREATE INDEX proteindomainurl_source_fk_index ON proteindomain_url (source_id);
+COMMENT ON TABLE nex.proteindomain_url IS 'URLs associated with protein domains.';
+COMMENT ON COLUMN nex.proteindomain_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.proteindomain_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.proteindomain_url.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.proteindomain_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.proteindomain_url.url_type IS 'Type of URL (InterPro,PROSITE,HAMAP,Pfam,PRINTS,ProDom,SMART,TIGRFAM,PIRSF,SUPERFAMILY,GENE3D,PANTHER).';
+COMMENT ON COLUMN nex.proteindomain_url.proteindomain_id IS 'FK to PROTEINDOMAIN.PROTEINDOMAIN_ID.';
+COMMENT ON COLUMN nex.proteindomain_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.proteindomain_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+ALTER TABLE nex.proteindomain_url ADD CONSTRAINT proteindomain_url_uk UNIQUE (proteindomain_id,display_name,url_type);
+ALTER TABLE nex.proteindomain_url ADD CONSTRAINT proteindomainurl_type_ck CHECK (URL_TYPE IN ('InterPro','PROSITE','HAMAP','Pfam','PRINTS','ProDom','SMART','TIGRFAM','PIRSF','SUPERFAMILY','GENE3D','PANTHER', 'JASPAR'));
+CREATE INDEX proteindomainurl_source_fk_index ON nex.proteindomain_url (source_id);
 
-DROP TABLE IF EXISTS reporter CASCADE;
-CREATE TABLE reporter (
+DROP TABLE IF EXISTS nex.reporter CASCADE;
+CREATE TABLE nex.reporter (
 	reporter_id bigint NOT NULL,
 	format_name varchar(100) NOT NULL DEFAULT nextval('object_seq'),
 	display_name varchar(500) NOT NULL,
@@ -734,21 +734,21 @@ CREATE TABLE reporter (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT reporter_pk PRIMARY KEY (reporter_id)
 ) ;
-COMMENT ON TABLE reporter IS 'Gene variants or alleles that show observable phenotypic traits.';
-COMMENT ON COLUMN reporter.bud_id IS 'PK from BUD.EXPT_PROPERTY.EXPT_PROPERTY_NO';
-COMMENT ON COLUMN reporter.display_name IS 'Public display name.';
-COMMENT ON COLUMN reporter.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN reporter.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN reporter.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN reporter.reporter_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN reporter.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN reporter.description IS 'Description or comment.';
-COMMENT ON COLUMN reporter.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE reporter ADD CONSTRAINT reporter_uk UNIQUE (format_name);
-CREATE INDEX reporter_source_fk_index ON reporter (source_id);
+COMMENT ON TABLE nex.reporter IS 'Gene variants or alleles that show observable phenotypic traits.';
+COMMENT ON COLUMN nex.reporter.bud_id IS 'PK from BUD.EXPT_PROPERTY.EXPT_PROPERTY_NO';
+COMMENT ON COLUMN nex.reporter.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.reporter.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.reporter.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.reporter.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.reporter.reporter_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.reporter.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.reporter.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.reporter.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.reporter ADD CONSTRAINT reporter_uk UNIQUE (format_name);
+CREATE INDEX reporter_source_fk_index ON nex.reporter (source_id);
 
-DROP TABLE IF EXISTS reservedname CASCADE;
-CREATE TABLE reservedname (
+DROP TABLE IF EXISTS nex.reservedname CASCADE;
+CREATE TABLE nex.reservedname (
 	reservedname_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -765,23 +765,23 @@ CREATE TABLE reservedname (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT reservedname_pk PRIMARY KEY (reservedname_id)
 ) ;
-COMMENT ON TABLE reservedname IS 'Reserved gene names according to the Gene Registration Guidelines.';
-COMMENT ON COLUMN reservedname.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN reservedname.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN reservedname.description IS 'Description or comment.';
-COMMENT ON COLUMN reservedname.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN reservedname.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN reservedname.bud_id IS 'From BUD.GENE_RESERVATION.FEATURE_NO.';
-COMMENT ON COLUMN reservedname.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
-COMMENT ON COLUMN reservedname.display_name IS 'Public display name.';
-COMMENT ON COLUMN reservedname.expiration_date IS 'Date the gene reservation expires (default = RESERVATION_DATE + 365 days).';
-COMMENT ON COLUMN reservedname.locus_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN reservedname.reservedname_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN reservedname.reservation_date IS 'Date the gene reservation was made.';
-COMMENT ON COLUMN reservedname.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN reservedname.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-ALTER TABLE reservedname ADD CONSTRAINT reservedname_uk UNIQUE (format_name);
-CREATE INDEX reservedname_locus_fk_index ON reservedname (locus_id);
-CREATE INDEX reservedname_ref_fk_index ON reservedname (reference_id);
-CREATE INDEX reservedname_coll_fk_index ON reservedname (colleague_id);
-CREATE INDEX reservedname_source_fk_index ON reservedname (source_id);
+COMMENT ON TABLE nex.reservedname IS 'Reserved gene names according to the Gene Registration Guidelines.';
+COMMENT ON COLUMN nex.reservedname.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.reservedname.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.reservedname.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.reservedname.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.reservedname.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.reservedname.bud_id IS 'From BUD.GENE_RESERVATION.FEATURE_NO.';
+COMMENT ON COLUMN nex.reservedname.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
+COMMENT ON COLUMN nex.reservedname.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.reservedname.expiration_date IS 'Date the gene reservation expires (default = RESERVATION_DATE + 365 days).';
+COMMENT ON COLUMN nex.reservedname.locus_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.reservedname.reservedname_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.reservedname.reservation_date IS 'Date the gene reservation was made.';
+COMMENT ON COLUMN nex.reservedname.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.reservedname.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+ALTER TABLE nex.reservedname ADD CONSTRAINT reservedname_uk UNIQUE (format_name);
+CREATE INDEX reservedname_locus_fk_index ON nex.reservedname (locus_id);
+CREATE INDEX reservedname_ref_fk_index ON nex.reservedname (reference_id);
+CREATE INDEX reservedname_coll_fk_index ON nex.reservedname (colleague_id);
+CREATE INDEX reservedname_source_fk_index ON nex.reservedname (source_id);

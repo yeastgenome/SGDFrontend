@@ -8,8 +8,8 @@ SET client_encoding TO 'UTF8';
 
 -- Archive tables
 
-DROP TABLE IF EXISTS arch_contig CASCADE; 
-CREATE TABLE arch_contig (
+DROP TABLE IF EXISTS nex.arch_contig CASCADE; 
+CREATE TABLE nex.arch_contig (
 	contig_id bigint NOT NULL,
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -40,43 +40,43 @@ CREATE TABLE arch_contig (
 	date_archived timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	CONSTRAINT arch_contig_pk PRIMARY KEY (contig_id)
 ) ;
-COMMENT ON TABLE arch_contig IS 'Archived whole chromosome or contig sequences.';
-COMMENT ON COLUMN arch_contig.refseq_id IS 'REFerence SEQuence identifier assigned by NCBI.';
-COMMENT ON COLUMN arch_contig.gi_number IS 'GenInfo identifier assigned by NCBI.';
-COMMENT ON COLUMN arch_contig.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN arch_contig.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN arch_contig.seq_version IS 'From BUD.SEQ.SEQ_VERSION.';
-COMMENT ON COLUMN arch_contig.centromere_end IS 'End coordinate of the centromere.';
-COMMENT ON COLUMN arch_contig.reference_start IS 'Start coordinate relative to the reference sequence S288C.';
-COMMENT ON COLUMN arch_contig.display_name IS 'Public display name.';
-COMMENT ON COLUMN arch_contig.taxonomy_id IS 'From TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN arch_contig.file_header IS 'Header line of the download file.';
-COMMENT ON COLUMN arch_contig.reference_percent_identity IS 'Percent identify to the reference sequence S288C.';
-COMMENT ON COLUMN arch_contig.reference_chromosome_id IS 'From CONTIG.CONTIG_ID.';
-COMMENT ON COLUMN arch_contig.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN arch_contig.so_id IS 'From SO.SO_ID (contig, chromosome, plasmid).';
-COMMENT ON COLUMN arch_contig.coord_version IS 'From BUD.FEAT_LOCATION.COORD_VERSION.';
-COMMENT ON COLUMN arch_contig.genomerelease_id IS 'From GENOMERELEASE.GENOMERELEASE_ID.';
-COMMENT ON COLUMN arch_contig.centromere_start IS 'Start coordinate of the centromere.';
-COMMENT ON COLUMN arch_contig.download_filename IS 'User interface download filename.';
-COMMENT ON COLUMN arch_contig.source_id IS 'From SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN arch_contig.genbank_accession IS 'GenBank Accession id including version number (e.g., BK006939.2).';
-COMMENT ON COLUMN arch_contig.reference_alignment_length IS 'Length of the sequence alignment to the reference sequence S288C.';
-COMMENT ON COLUMN arch_contig.reference_end IS 'End coordinate relative to the reference sequence S288C.';
-COMMENT ON COLUMN arch_contig.date_archived IS 'Date the record was archived.';
-COMMENT ON COLUMN arch_contig.residues IS 'DNA sequence of the contig, chromosome or plasmid.';
-COMMENT ON COLUMN arch_contig.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN arch_contig.file_id IS 'From FILEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN arch_contig.contig_id IS 'From CONTIG.CONTIG_ID.';
-ALTER TABLE arch_contig ADD CONSTRAINT arch_contig_uk UNIQUE (format_name);
-CREATE INDEX archcontig_genomerelease_index ON arch_contig (genomerelease_id);
-CREATE INDEX archcontig_source_index ON arch_contig (source_id);
-CREATE INDEX archcontig_tax_index ON arch_contig (taxonomy_id);
-CREATE INDEX archcontig_so_index ON arch_contig (so_id);
-CREATE INDEX archcontig_file_index ON arch_contig (file_id);
+COMMENT ON TABLE nex.arch_contig IS 'Archived whole chromosome or contig sequences.';
+COMMENT ON COLUMN nex.arch_contig.refseq_id IS 'REFerence SEQuence identifier assigned by NCBI.';
+COMMENT ON COLUMN nex.arch_contig.gi_number IS 'GenInfo identifier assigned by NCBI.';
+COMMENT ON COLUMN nex.arch_contig.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.arch_contig.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.arch_contig.seq_version IS 'From BUD.SEQ.SEQ_VERSION.';
+COMMENT ON COLUMN nex.arch_contig.centromere_end IS 'End coordinate of the centromere.';
+COMMENT ON COLUMN nex.arch_contig.reference_start IS 'Start coordinate relative to the reference sequence S288C.';
+COMMENT ON COLUMN nex.arch_contig.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.arch_contig.taxonomy_id IS 'From TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.arch_contig.file_header IS 'Header line of the download file.';
+COMMENT ON COLUMN nex.arch_contig.reference_percent_identity IS 'Percent identify to the reference sequence S288C.';
+COMMENT ON COLUMN nex.arch_contig.reference_chromosome_id IS 'From CONTIG.CONTIG_ID.';
+COMMENT ON COLUMN nex.arch_contig.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.arch_contig.so_id IS 'From SO.SO_ID (contig, chromosome, plasmid).';
+COMMENT ON COLUMN nex.arch_contig.coord_version IS 'From BUD.FEAT_LOCATION.COORD_VERSION.';
+COMMENT ON COLUMN nex.arch_contig.genomerelease_id IS 'From GENOMERELEASE.GENOMERELEASE_ID.';
+COMMENT ON COLUMN nex.arch_contig.centromere_start IS 'Start coordinate of the centromere.';
+COMMENT ON COLUMN nex.arch_contig.download_filename IS 'User interface download filename.';
+COMMENT ON COLUMN nex.arch_contig.source_id IS 'From SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.arch_contig.genbank_accession IS 'GenBank Accession id including version number (e.g., BK006939.2).';
+COMMENT ON COLUMN nex.arch_contig.reference_alignment_length IS 'Length of the sequence alignment to the reference sequence S288C.';
+COMMENT ON COLUMN nex.arch_contig.reference_end IS 'End coordinate relative to the reference sequence S288C.';
+COMMENT ON COLUMN nex.arch_contig.date_archived IS 'Date the record was archived.';
+COMMENT ON COLUMN nex.arch_contig.residues IS 'DNA sequence of the contig, chromosome or plasmid.';
+COMMENT ON COLUMN nex.arch_contig.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.arch_contig.file_id IS 'From FILEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.arch_contig.contig_id IS 'From CONTIG.CONTIG_ID.';
+ALTER TABLE nex.arch_contig ADD CONSTRAINT arch_contig_uk UNIQUE (format_name);
+CREATE INDEX archcontig_genomerelease_index ON nex.arch_contig (genomerelease_id);
+CREATE INDEX archcontig_source_index ON nex.arch_contig (source_id);
+CREATE INDEX archcontig_tax_index ON nex.arch_contig (taxonomy_id);
+CREATE INDEX archcontig_so_index ON nex.arch_contig (so_id);
+CREATE INDEX archcontig_file_index ON nex.arch_contig (file_id);
 
-DROP TABLE IF EXISTS arch_contigchange CASCADE; 
-CREATE TABLE arch_contigchange (
+DROP TABLE IF EXISTS nex.arch_contigchange CASCADE; 
+CREATE TABLE nex.arch_contigchange (
 	archive_id bigint NOT NULL DEFAULT nextval('archive_seq'),
 	contig_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -92,25 +92,25 @@ CREATE TABLE arch_contigchange (
 	date_archived timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	CONSTRAINT arch_contigchange_pk PRIMARY KEY (archive_id)
 ) ;
-COMMENT ON TABLE arch_contigchange IS 'Archived individual changes to the S288C reference chromosome sequence.';
-COMMENT ON COLUMN arch_contigchange.date_changed IS 'Date the change was made.';
-COMMENT ON COLUMN arch_contigchange.date_archived IS 'Date the record was archived.';
-COMMENT ON COLUMN arch_contigchange.bud_id IS 'From BUD.SEQ_CHANGE_ARCHIVE.SEQ_CHANGE_ARCHIVE_NO.';
-COMMENT ON COLUMN arch_contigchange.genomerelease_id IS 'From GENOMERELEASE.GENOMERELEASE_ID.';
-COMMENT ON COLUMN arch_contigchange.change_min_coord IS 'Minimum coordinate of the change relative to the whole chromosome.';
-COMMENT ON COLUMN arch_contigchange.changed_by IS 'Username of the person who made the change.';
-COMMENT ON COLUMN arch_contigchange.contig_id IS 'From CONTIG.CONTIG_ID.';
-COMMENT ON COLUMN arch_contigchange.old_value IS 'Sequence prior to the change.';
-COMMENT ON COLUMN arch_contigchange.change_max_coord IS 'Maximum coordinate of the change relative to the whole chromosome.';
-COMMENT ON COLUMN arch_contigchange.new_value IS 'Sequence after the change.';
-COMMENT ON COLUMN arch_contigchange.change_type IS 'Type of sequence change (Deletion, Insertion, Substitution).';
-COMMENT ON COLUMN arch_contigchange.archive_id IS 'Unique identifier (serial number).';
-ALTER TABLE arch_contigchange ADD CONSTRAINT arch_contigchange_uk UNIQUE (contig_id,genomerelease_id,change_type,change_min_coord,change_max_coord);
-ALTER TABLE arch_contigchange ADD CONSTRAINT archcontigchange_type_ck CHECK (CHANGE_TYPE IN ('Deletion', 'Insertion', 'Substitution'));
-CREATE INDEX archcontigchange_genomerelease_index ON arch_contigchange (genomerelease_id);
+COMMENT ON TABLE nex.arch_contigchange IS 'Archived individual changes to the S288C reference chromosome sequence.';
+COMMENT ON COLUMN nex.arch_contigchange.date_changed IS 'Date the change was made.';
+COMMENT ON COLUMN nex.arch_contigchange.date_archived IS 'Date the record was archived.';
+COMMENT ON COLUMN nex.arch_contigchange.bud_id IS 'From BUD.SEQ_CHANGE_ARCHIVE.SEQ_CHANGE_ARCHIVE_NO.';
+COMMENT ON COLUMN nex.arch_contigchange.genomerelease_id IS 'From GENOMERELEASE.GENOMERELEASE_ID.';
+COMMENT ON COLUMN nex.arch_contigchange.change_min_coord IS 'Minimum coordinate of the change relative to the whole chromosome.';
+COMMENT ON COLUMN nex.arch_contigchange.changed_by IS 'Username of the person who made the change.';
+COMMENT ON COLUMN nex.arch_contigchange.contig_id IS 'From CONTIG.CONTIG_ID.';
+COMMENT ON COLUMN nex.arch_contigchange.old_value IS 'Sequence prior to the change.';
+COMMENT ON COLUMN nex.arch_contigchange.change_max_coord IS 'Maximum coordinate of the change relative to the whole chromosome.';
+COMMENT ON COLUMN nex.arch_contigchange.new_value IS 'Sequence after the change.';
+COMMENT ON COLUMN nex.arch_contigchange.change_type IS 'Type of sequence change (Deletion, Insertion, Substitution).';
+COMMENT ON COLUMN nex.arch_contigchange.archive_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.arch_contigchange ADD CONSTRAINT arch_contigchange_uk UNIQUE (contig_id,genomerelease_id,change_type,change_min_coord,change_max_coord);
+ALTER TABLE nex.arch_contigchange ADD CONSTRAINT archcontigchange_type_ck CHECK (CHANGE_TYPE IN ('Deletion', 'Insertion', 'Substitution'));
+CREATE INDEX archcontigchange_genomerelease_index ON nex.arch_contigchange (genomerelease_id);
 
-DROP TABLE IF EXISTS arch_dnasequenceannotation CASCADE; 
-CREATE TABLE arch_dnasequenceannotation (
+DROP TABLE IF EXISTS nex.arch_dnasequenceannotation CASCADE; 
+CREATE TABLE nex.arch_dnasequenceannotation (
 	annotation_id bigint NOT NULL,
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -135,42 +135,42 @@ CREATE TABLE arch_dnasequenceannotation (
 	date_archived timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	CONSTRAINT arch_dnasequenceannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE arch_dnasequenceannotation IS 'Archived DNA sequence details for contig, chromosomal, or plasmid features.';
-COMMENT ON COLUMN arch_dnasequenceannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN arch_dnasequenceannotation.start_index IS 'Start coordinate.';
-COMMENT ON COLUMN arch_dnasequenceannotation.seq_version IS 'Date of the sequence version.';
-COMMENT ON COLUMN arch_dnasequenceannotation.end_index IS 'End coordinate.';
-COMMENT ON COLUMN arch_dnasequenceannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN arch_dnasequenceannotation.coord_version IS 'Date of the coordinate version.';
-COMMENT ON COLUMN arch_dnasequenceannotation.so_id IS 'From SO.SO_ID.';
-COMMENT ON COLUMN arch_dnasequenceannotation.genomerelease_id IS 'From GENOMERELEASE.GENOMERELEASE_ID.';
-COMMENT ON COLUMN arch_dnasequenceannotation.taxonomy_id IS 'From TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN arch_dnasequenceannotation.file_header IS 'Fasta header line of the download file.';
-COMMENT ON COLUMN arch_dnasequenceannotation.bud_id IS 'From BUD.SEQ.SEQ_NO.';
-COMMENT ON COLUMN arch_dnasequenceannotation.strand IS 'Which strand the sequence is on (Watson = +, Crick = -, None = 0).';
-COMMENT ON COLUMN arch_dnasequenceannotation.download_filename IS 'User interface download filename.';
-COMMENT ON COLUMN arch_dnasequenceannotation.dna_type IS 'Type of DNA sequence (CODING, 1KB, GENOMIC).';
-COMMENT ON COLUMN arch_dnasequenceannotation.annotation_id IS 'From DNASEQUENCEANNOTATION.ANNOTATION_ID.';
-COMMENT ON COLUMN arch_dnasequenceannotation.source_id IS 'From SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN arch_dnasequenceannotation.dbentity_id IS 'From DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN arch_dnasequenceannotation.residues IS 'DNA sequence of the feature.';
-COMMENT ON COLUMN arch_dnasequenceannotation.file_id IS 'From FILE.FILE_ID.';
-COMMENT ON COLUMN arch_dnasequenceannotation.contig_id IS 'From CONTIG.CONTIG_ID.';
-COMMENT ON COLUMN arch_dnasequenceannotation.reference_id IS 'From REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN arch_dnasequenceannotation.date_archived IS 'Date the record was archived.';
-ALTER TABLE arch_dnasequenceannotation ADD CONSTRAINT arch_dnasequenceannotation_uk UNIQUE (dbentity_id,taxonomy_id,contig_id,genomerelease_id,so_id,dna_type);
-ALTER TABLE arch_dnasequenceannotation ADD CONSTRAINT archdnasequenceanno_type_ck CHECK (DNA_TYPE IN ('CODING', '1KB', 'GENOMIC'));
-ALTER TABLE arch_dnasequenceannotation ADD CONSTRAINT archdnasequenceanno_strand_ck CHECK (STRAND IN ('+', '-', '0'));
-CREATE INDEX archdnasequenceanno_contig_fk_index ON arch_dnasequenceannotation (contig_id);
-CREATE INDEX archdnasequenceanno_so_index ON arch_dnasequenceannotation (so_id);
-CREATE INDEX archdnasequenceanno_source_index ON arch_dnasequenceannotation (source_id);
-CREATE INDEX archdnasequenceanno_file_index ON arch_dnasequenceannotation (file_id);
-CREATE INDEX archdnasequenceanno_genomerelease_index ON arch_dnasequenceannotation (genomerelease_id);
-CREATE INDEX archdnasequenceanno_tax_index ON arch_dnasequenceannotation (taxonomy_id);
-CREATE INDEX archdnasequenceanno_ref_index ON arch_dnasequenceannotation (reference_id);
+COMMENT ON TABLE nex.arch_dnasequenceannotation IS 'Archived DNA sequence details for contig, chromosomal, or plasmid features.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.start_index IS 'Start coordinate.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.seq_version IS 'Date of the sequence version.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.end_index IS 'End coordinate.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.coord_version IS 'Date of the coordinate version.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.so_id IS 'From SO.SO_ID.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.genomerelease_id IS 'From GENOMERELEASE.GENOMERELEASE_ID.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.taxonomy_id IS 'From TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.file_header IS 'Fasta header line of the download file.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.bud_id IS 'From BUD.SEQ.SEQ_NO.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.strand IS 'Which strand the sequence is on (Watson = +, Crick = -, None = 0).';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.download_filename IS 'User interface download filename.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.dna_type IS 'Type of DNA sequence (CODING, 1KB, GENOMIC).';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.annotation_id IS 'From DNASEQUENCEANNOTATION.ANNOTATION_ID.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.source_id IS 'From SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.dbentity_id IS 'From DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.residues IS 'DNA sequence of the feature.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.file_id IS 'From FILE.FILE_ID.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.contig_id IS 'From CONTIG.CONTIG_ID.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.reference_id IS 'From REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.arch_dnasequenceannotation.date_archived IS 'Date the record was archived.';
+ALTER TABLE nex.arch_dnasequenceannotation ADD CONSTRAINT arch_dnasequenceannotation_uk UNIQUE (dbentity_id,taxonomy_id,contig_id,genomerelease_id,so_id,dna_type);
+ALTER TABLE nex.arch_dnasequenceannotation ADD CONSTRAINT archdnasequenceanno_type_ck CHECK (DNA_TYPE IN ('CODING', '1KB', 'GENOMIC'));
+ALTER TABLE nex.arch_dnasequenceannotation ADD CONSTRAINT archdnasequenceanno_strand_ck CHECK (STRAND IN ('+', '-', '0'));
+CREATE INDEX archdnasequenceanno_contig_fk_index ON nex.arch_dnasequenceannotation (contig_id);
+CREATE INDEX archdnasequenceanno_so_index ON nex.arch_dnasequenceannotation (so_id);
+CREATE INDEX archdnasequenceanno_source_index ON nex.arch_dnasequenceannotation (source_id);
+CREATE INDEX archdnasequenceanno_file_index ON nex.arch_dnasequenceannotation (file_id);
+CREATE INDEX archdnasequenceanno_genomerelease_index ON nex.arch_dnasequenceannotation (genomerelease_id);
+CREATE INDEX archdnasequenceanno_tax_index ON nex.arch_dnasequenceannotation (taxonomy_id);
+CREATE INDEX archdnasequenceanno_ref_index ON nex.arch_dnasequenceannotation (reference_id);
 
-DROP TABLE IF EXISTS arch_dnasubsequence CASCADE; 
-CREATE TABLE arch_dnasubsequence (
+DROP TABLE IF EXISTS nex.arch_dnasubsequence CASCADE; 
+CREATE TABLE nex.arch_dnasubsequence (
 	dnasubsequence_id bigint NOT NULL,
 	annotation_id bigint NOT NULL,
 	dbentity_id bigint NOT NULL,
@@ -193,35 +193,35 @@ CREATE TABLE arch_dnasubsequence (
 	date_archived timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	CONSTRAINT arch_dnasubsequence_pk PRIMARY KEY (dnasubsequence_id)
 ) ;
-COMMENT ON TABLE arch_dnasubsequence IS 'Archived DNA sequence details for subfeatures.';
-COMMENT ON COLUMN arch_dnasubsequence.relative_end_index IS 'Relative stop coordinate based on the dbentity (feature).';
-COMMENT ON COLUMN arch_dnasubsequence.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN arch_dnasubsequence.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN arch_dnasubsequence.relative_start_index IS 'Relative start coordinate based on the dbentity (feature).';
-COMMENT ON COLUMN arch_dnasubsequence.seq_version IS 'Date of the sequence version.';
-COMMENT ON COLUMN arch_dnasubsequence.display_name IS 'Public display name.';
-COMMENT ON COLUMN arch_dnasubsequence.bud_id IS 'From BUD.SEQ.SEQ_NO.';
-COMMENT ON COLUMN arch_dnasubsequence.file_header IS 'Fasta header line of the download file.';
-COMMENT ON COLUMN arch_dnasubsequence.so_id IS 'From SO.SO_ID.';
-COMMENT ON COLUMN arch_dnasubsequence.coord_version IS 'Date of the coordinate version.';
-COMMENT ON COLUMN arch_dnasubsequence.genomerelease_id IS 'From GENOMERELEASE.GENOMERELEASE_ID.';
-COMMENT ON COLUMN arch_dnasubsequence.download_filename IS 'User interface download filename.';
-COMMENT ON COLUMN arch_dnasubsequence.annotation_id IS 'From DNASEQUENCEANNOTATION.ANNOTATION_ID.';
-COMMENT ON COLUMN arch_dnasubsequence.contig_start_index IS 'Start coordinate based on the contig.';
-COMMENT ON COLUMN arch_dnasubsequence.date_archived IS 'Date the record was archived.';
-COMMENT ON COLUMN arch_dnasubsequence.dnasubsequence_id IS 'From DNASUBSEQUENCE.DNASUBSEQUENCE_ID.';
-COMMENT ON COLUMN arch_dnasubsequence.contig_end_index IS 'Stop coordinate based on the contig.';
-COMMENT ON COLUMN arch_dnasubsequence.dbentity_id IS 'From DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN arch_dnasubsequence.residues IS 'DNA subfeature sequence.';
-COMMENT ON COLUMN arch_dnasubsequence.file_id IS 'From FILE.FILE_ID.';
-ALTER TABLE arch_dnasubsequence ADD CONSTRAINT arch_dnasubsequence_uk UNIQUE (annotation_id,dbentity_id,genomerelease_id,relative_start_index,relative_end_index);
-CREATE INDEX archdnasubsequence_file_index ON arch_dnasubsequence (file_id);
-CREATE INDEX archdnasubsequence_genomerelease_index ON arch_dnasubsequence (genomerelease_id);
-CREATE INDEX archdnasubsequence_dbentity_index ON arch_dnasubsequence (dbentity_id);
-CREATE INDEX archdnasubsequence_so_index ON arch_dnasubsequence (so_id);
+COMMENT ON TABLE nex.arch_dnasubsequence IS 'Archived DNA sequence details for subfeatures.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.relative_end_index IS 'Relative stop coordinate based on the dbentity (feature).';
+COMMENT ON COLUMN nex.arch_dnasubsequence.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.relative_start_index IS 'Relative start coordinate based on the dbentity (feature).';
+COMMENT ON COLUMN nex.arch_dnasubsequence.seq_version IS 'Date of the sequence version.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.bud_id IS 'From BUD.SEQ.SEQ_NO.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.file_header IS 'Fasta header line of the download file.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.so_id IS 'From SO.SO_ID.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.coord_version IS 'Date of the coordinate version.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.genomerelease_id IS 'From GENOMERELEASE.GENOMERELEASE_ID.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.download_filename IS 'User interface download filename.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.annotation_id IS 'From DNASEQUENCEANNOTATION.ANNOTATION_ID.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.contig_start_index IS 'Start coordinate based on the contig.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.date_archived IS 'Date the record was archived.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.dnasubsequence_id IS 'From DNASUBSEQUENCE.DNASUBSEQUENCE_ID.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.contig_end_index IS 'Stop coordinate based on the contig.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.dbentity_id IS 'From DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.residues IS 'DNA subfeature sequence.';
+COMMENT ON COLUMN nex.arch_dnasubsequence.file_id IS 'From FILE.FILE_ID.';
+ALTER TABLE nex.arch_dnasubsequence ADD CONSTRAINT arch_dnasubsequence_uk UNIQUE (annotation_id,dbentity_id,genomerelease_id,relative_start_index,relative_end_index);
+CREATE INDEX archdnasubsequence_file_index ON nex.arch_dnasubsequence (file_id);
+CREATE INDEX archdnasubsequence_genomerelease_index ON nex.arch_dnasubsequence (genomerelease_id);
+CREATE INDEX archdnasubsequence_dbentity_index ON nex.arch_dnasubsequence (dbentity_id);
+CREATE INDEX archdnasubsequence_so_index ON nex.arch_dnasubsequence (so_id);
 
-DROP TABLE IF EXISTS arch_literatureannotation CASCADE; 
-CREATE TABLE arch_literatureannotation (
+DROP TABLE IF EXISTS nex.arch_literatureannotation CASCADE; 
+CREATE TABLE nex.arch_literatureannotation (
 	archive_id bigint NOT NULL DEFAULT nextval('archive_seq'),
 	reference_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -234,21 +234,21 @@ CREATE TABLE arch_literatureannotation (
 	date_archived timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	CONSTRAINT arch_literatureannotation_pk PRIMARY KEY (archive_id)
 ) ;
-COMMENT ON TABLE arch_literatureannotation IS 'Archived literature topics or categories assigned to references from BUD.';
-COMMENT ON COLUMN arch_literatureannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN arch_literatureannotation.archive_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN arch_literatureannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN arch_literatureannotation.source_id IS 'From SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN arch_literatureannotation.topic IS 'Topic or category assigned to a reference.';
-COMMENT ON COLUMN arch_literatureannotation.locus_id IS 'From LOCUSDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN arch_literatureannotation.reference_id IS 'From REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN arch_literatureannotation.date_archived IS 'Date the record was archived.';
-COMMENT ON COLUMN arch_literatureannotation.bud_id IS 'From BUD.LIT_GUIDE.LIT_GUIDE_NO.';
-COMMENT ON COLUMN arch_literatureannotation.taxonomy_id IS 'From TAXONOMY.TAXONOMY_ID.';
-ALTER TABLE arch_literatureannotation ADD CONSTRAINT arch_literatureannotation_uk UNIQUE (reference_id,topic,locus_id);
+COMMENT ON TABLE nex.arch_literatureannotation IS 'Archived literature topics or categories assigned to references from BUD.';
+COMMENT ON COLUMN nex.arch_literatureannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.arch_literatureannotation.archive_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.arch_literatureannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.arch_literatureannotation.source_id IS 'From SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.arch_literatureannotation.topic IS 'Topic or category assigned to a reference.';
+COMMENT ON COLUMN nex.arch_literatureannotation.locus_id IS 'From LOCUSDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.arch_literatureannotation.reference_id IS 'From REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.arch_literatureannotation.date_archived IS 'Date the record was archived.';
+COMMENT ON COLUMN nex.arch_literatureannotation.bud_id IS 'From BUD.LIT_GUIDE.LIT_GUIDE_NO.';
+COMMENT ON COLUMN nex.arch_literatureannotation.taxonomy_id IS 'From TAXONOMY.TAXONOMY_ID.';
+ALTER TABLE nex.arch_literatureannotation ADD CONSTRAINT arch_literatureannotation_uk UNIQUE (reference_id,topic,locus_id);
 
-DROP TABLE IF EXISTS arch_locuschange CASCADE; 
-CREATE TABLE arch_locuschange (
+DROP TABLE IF EXISTS nex.arch_locuschange CASCADE; 
+CREATE TABLE nex.arch_locuschange (
         archive_id bigint NOT NULL DEFAULT nextval('archive_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -261,22 +261,22 @@ CREATE TABLE arch_locuschange (
 	date_archived timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	CONSTRAINT arch_locuschange_pk PRIMARY KEY (archive_id)
 ) ;
-COMMENT ON TABLE arch_locuschange IS 'Archived changes to a locus that have historical significance.';
-COMMENT ON COLUMN arch_locuschange.change_type IS 'Type of locus change (Status, Qualifier, Gene name).';
-COMMENT ON COLUMN arch_locuschange.source_id IS 'From SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN arch_locuschange.archive_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN arch_locuschange.new_value IS 'New value after change.';
-COMMENT ON COLUMN arch_locuschange.date_archived IS 'Date the record was archived.';
-COMMENT ON COLUMN arch_locuschange.bud_id IS 'From BUD.ARCHIVE.ARCHIVE_NO.';
-COMMENT ON COLUMN arch_locuschange.date_changed IS 'Date the change was made.';
-COMMENT ON COLUMN arch_locuschange.old_value IS 'Previous value before change.';
-COMMENT ON COLUMN arch_locuschange.changed_by IS 'Username of the person who made the change.';
-COMMENT ON COLUMN arch_locuschange.dbentity_id IS 'From DBENTITY.DBENTITY_ID.';
-ALTER TABLE arch_locuschange ADD CONSTRAINT arch_locuschange_uk UNIQUE (dbentity_id,change_type,old_value,new_value,date_changed);
-ALTER TABLE arch_locuschange ADD CONSTRAINT archlocuschange_type_ck CHECK (CHANGE_TYPE IN ('Status', 'Qualifier', 'Gene name'));
+COMMENT ON TABLE nex.arch_locuschange IS 'Archived changes to a locus that have historical significance.';
+COMMENT ON COLUMN nex.arch_locuschange.change_type IS 'Type of locus change (Status, Qualifier, Gene name).';
+COMMENT ON COLUMN nex.arch_locuschange.source_id IS 'From SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.arch_locuschange.archive_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.arch_locuschange.new_value IS 'New value after change.';
+COMMENT ON COLUMN nex.arch_locuschange.date_archived IS 'Date the record was archived.';
+COMMENT ON COLUMN nex.arch_locuschange.bud_id IS 'From BUD.ARCHIVE.ARCHIVE_NO.';
+COMMENT ON COLUMN nex.arch_locuschange.date_changed IS 'Date the change was made.';
+COMMENT ON COLUMN nex.arch_locuschange.old_value IS 'Previous value before change.';
+COMMENT ON COLUMN nex.arch_locuschange.changed_by IS 'Username of the person who made the change.';
+COMMENT ON COLUMN nex.arch_locuschange.dbentity_id IS 'From DBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.arch_locuschange ADD CONSTRAINT arch_locuschange_uk UNIQUE (dbentity_id,change_type,old_value,new_value,date_changed);
+ALTER TABLE nex.arch_locuschange ADD CONSTRAINT archlocuschange_type_ck CHECK (CHANGE_TYPE IN ('Status', 'Qualifier', 'Gene name'));
 
-DROP TABLE IF EXISTS arch_proteinsequenceannotation CASCADE; 
-CREATE TABLE arch_proteinsequenceannotation (
+DROP TABLE IF EXISTS nex.arch_proteinsequenceannotation CASCADE; 
+CREATE TABLE nex.arch_proteinsequenceannotation (
 	annotation_id bigint NOT NULL,
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -295,27 +295,27 @@ CREATE TABLE arch_proteinsequenceannotation (
 	date_archived timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	CONSTRAINT arch_proteinsequenceannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE arch_proteinsequenceannotation IS 'Archived protein sequence information.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.annotation_id IS 'FROM PROTEINSEQUENCEANNOTATION.ANNOTATION_ID.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.source_id IS 'From SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.download_filename IS 'User interface download filename.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.reference_id IS 'From REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.date_archived IS 'Date the record was archived.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.file_id IS 'From FILE.FILE_ID.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.contig_id IS 'From CONTIG.CONTIG_ID.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.dbentity_id IS 'From DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.residues IS 'Sequence of the protein.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.seq_version IS 'Date of the protein sequence release.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.file_header IS 'Fasta header line of the download file.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.bud_id IS 'From BUD.PROTEIN.INFO.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.taxonomy_id IS 'From TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN arch_proteinsequenceannotation.genomerelease_id IS 'From GENOMERELEASE.GENOMERELEASE_ID.';
-ALTER TABLE arch_proteinsequenceannotation ADD CONSTRAINT arch_proteinsequenceannotation_uk UNIQUE (dbentity_id,taxonomy_id,contig_id,genomerelease_id);
+COMMENT ON TABLE nex.arch_proteinsequenceannotation IS 'Archived protein sequence information.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.annotation_id IS 'FROM PROTEINSEQUENCEANNOTATION.ANNOTATION_ID.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.source_id IS 'From SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.download_filename IS 'User interface download filename.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.reference_id IS 'From REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.date_archived IS 'Date the record was archived.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.file_id IS 'From FILE.FILE_ID.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.contig_id IS 'From CONTIG.CONTIG_ID.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.dbentity_id IS 'From DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.residues IS 'Sequence of the protein.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.seq_version IS 'Date of the protein sequence release.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.file_header IS 'Fasta header line of the download file.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.bud_id IS 'From BUD.PROTEIN.INFO.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.taxonomy_id IS 'From TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.arch_proteinsequenceannotation.genomerelease_id IS 'From GENOMERELEASE.GENOMERELEASE_ID.';
+ALTER TABLE nex.arch_proteinsequenceannotation ADD CONSTRAINT arch_proteinsequenceannotation_uk UNIQUE (dbentity_id,taxonomy_id,contig_id,genomerelease_id);
 CREATE INDEX archproteinsequenceanno_genomerelease_idx ON arch_proteinsequenceannotation (genomerelease_id);
-CREATE INDEX archproteinsequenceanno_tax_index ON arch_proteinsequenceannotation (taxonomy_id);
-CREATE INDEX archproteinsequenceanno_contig_fk_index ON arch_proteinsequenceannotation (contig_id);
-CREATE INDEX archproteinsequenceanno_source_index ON arch_proteinsequenceannotation (source_id);
-CREATE INDEX archproteinsequenceanno_file_index ON arch_proteinsequenceannotation (file_id);
-CREATE INDEX archproteinsequenceanno_ref_index ON arch_proteinsequenceannotation (reference_id);
+CREATE INDEX archproteinsequenceanno_tax_index ON nex.arch_proteinsequenceannotation (taxonomy_id);
+CREATE INDEX archproteinsequenceanno_contig_fk_index ON nex.arch_proteinsequenceannotation (contig_id);
+CREATE INDEX archproteinsequenceanno_source_index ON nex.arch_proteinsequenceannotation (source_id);
+CREATE INDEX archproteinsequenceanno_file_index ON nex.arch_proteinsequenceannotation (file_id);
+CREATE INDEX archproteinsequenceanno_ref_index ON nex.arch_proteinsequenceannotation (reference_id);
