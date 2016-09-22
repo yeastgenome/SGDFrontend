@@ -7,7 +7,7 @@ SET client_encoding TO 'UTF8';
 \set ON_ERROR_STOP ON
 
 
-DROP TRIGGER IF EXISTS bindingmotifannotation_audr ON bindingmotifannotation CASCADE;
+DROP TRIGGER IF EXISTS bindingmotifannotation_audr ON nex.bindingmotifannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_bindingmotifannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -62,10 +62,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER bindingmotifannotation_audr
-AFTER UPDATE OR DELETE ON bindingmotifannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.bindingmotifannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_bindingmotifannotation_audr();
 
-DROP TRIGGER IF EXISTS bindingmotifannotation_biur ON bindingmotifannotation CASCADE;
+DROP TRIGGER IF EXISTS bindingmotifannotation_biur ON nex.bindingmotifannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_bindingmotifannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -96,11 +96,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER bindingmotifannotation_biur
-BEFORE INSERT OR UPDATE ON bindingmotifannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.bindingmotifannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_bindingmotifannotation_biur();
 
 
-DROP TRIGGER IF EXISTS diseaseannotation_audr ON diseaseannotation CASCADE;
+DROP TRIGGER IF EXISTS diseaseannotation_audr ON nex.diseaseannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_diseaseannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -163,10 +163,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER diseaseannotation_audr
-AFTER UPDATE OR DELETE ON diseaseannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.diseaseannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_diseaseannotation_audr();
 
-DROP TRIGGER IF EXISTS diseaseannotation_biur ON diseaseannotation CASCADE;
+DROP TRIGGER IF EXISTS diseaseannotation_biur ON nex.diseaseannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_diseaseannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -197,10 +197,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER diseaseannotation_biur
-BEFORE INSERT OR UPDATE ON diseaseannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.diseaseannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_diseaseannotation_biur();
 
-DROP TRIGGER IF EXISTS diseasesubsetannotation_audr ON diseasesubsetannotation CASCADE;
+DROP TRIGGER IF EXISTS diseasesubsetannotation_audr ON nex.diseasesubsetannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_diseasesubsetannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -245,10 +245,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER diseasesubsetannotation_audr
-AFTER UPDATE OR DELETE ON diseasesubsetannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.diseasesubsetannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_diseasesubsetannotation_audr();
 
-DROP TRIGGER IF EXISTS diseasesubsetannotation_biur ON diseasesubsetannotation CASCADE;
+DROP TRIGGER IF EXISTS diseasesubsetannotation_biur ON nex.diseasesubsetannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_diseasesubsetannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -279,10 +279,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER diseasesubsetannotation_biur
-BEFORE INSERT OR UPDATE ON diseasesubsetannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.diseasesubsetannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_diseasesubsetannotation_biur();
 
-DROP TRIGGER IF EXISTS diseasesupportingevidence_audr ON diseasesupportingevidence CASCADE;
+DROP TRIGGER IF EXISTS diseasesupportingevidence_audr ON nex.diseasesupportingevidence CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_diseasesupportingevidence_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -327,10 +327,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER diseasesupportingevidence_audr
-AFTER UPDATE OR DELETE ON diseasesupportingevidence FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.diseasesupportingevidence FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_diseasesupportingevidence_audr();
 
-DROP TRIGGER IF EXISTS diseasesupportingevidence_biur ON diseasesupportingevidence CASCADE;
+DROP TRIGGER IF EXISTS diseasesupportingevidence_biur ON nex.diseasesupportingevidence CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_diseasesupportingevidence_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -361,11 +361,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER diseasesupportingevidence_biur
-BEFORE INSERT OR UPDATE ON diseasesupportingevidence FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.diseasesupportingevidence FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_diseasesupportingevidence_biur();
 
 
-DROP TRIGGER IF EXISTS dnasequenceannotation_audr ON dnasequenceannotation CASCADE;
+DROP TRIGGER IF EXISTS dnasequenceannotation_audr ON nex.dnasequenceannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_dnasequenceannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -470,10 +470,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER dnasequenceannotation_audr
-AFTER UPDATE OR DELETE ON dnasequenceannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.dnasequenceannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_dnasequenceannotation_audr();
 
-DROP TRIGGER IF EXISTS dnasequenceannotation_biur ON dnasequenceannotation CASCADE;
+DROP TRIGGER IF EXISTS dnasequenceannotation_biur ON nex.dnasequenceannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_dnasequenceannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -504,12 +504,12 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER dnasequenceannotation_biur
-BEFORE INSERT OR UPDATE ON dnasequenceannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.dnasequenceannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_dnasequenceannotation_biur();
 
 
 
-DROP TRIGGER IF EXISTS dnasubsequence_audr ON dnasubsequence CASCADE;
+DROP TRIGGER IF EXISTS dnasubsequence_audr ON nex.dnasubsequence CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_dnasubsequence_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -605,10 +605,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER dnasubsequence_audr
-AFTER UPDATE OR DELETE ON dnasubsequence FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.dnasubsequence FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_dnasubsequence_audr();
 
-DROP TRIGGER IF EXISTS dnasubsequence_biur ON dnasubsequence CASCADE;
+DROP TRIGGER IF EXISTS dnasubsequence_biur ON nex.dnasubsequence CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_dnasubsequence_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -639,11 +639,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER dnasubsequence_biur
-BEFORE INSERT OR UPDATE ON dnasubsequence FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.dnasubsequence FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_dnasubsequence_biur();
 
 
-DROP TRIGGER IF EXISTS enzymeannotation_audr ON enzymeannotation CASCADE;
+DROP TRIGGER IF EXISTS enzymeannotation_audr ON nex.enzymeannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_enzymeannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -688,10 +688,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER enzymeannotation_audr
-AFTER UPDATE OR DELETE ON enzymeannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.enzymeannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_enzymeannotation_audr();
 
-DROP TRIGGER IF EXISTS enzymeannotation_biur ON enzymeannotation CASCADE;
+DROP TRIGGER IF EXISTS enzymeannotation_biur ON nex.enzymeannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_enzymeannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -722,11 +722,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER enzymeannotation_biur
-BEFORE INSERT OR UPDATE ON enzymeannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.enzymeannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_enzymeannotation_biur();
 
 
-DROP TRIGGER IF EXISTS expressionannotation_audr ON expressionannotation CASCADE;
+DROP TRIGGER IF EXISTS expressionannotation_audr ON nex.expressionannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_expressionannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -776,10 +776,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER expressionannotation_audr
-AFTER UPDATE OR DELETE ON expressionannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.expressionannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_expressionannotation_audr();
 
-DROP TRIGGER IF EXISTS expressionannotation_biur ON expressionannotation CASCADE;
+DROP TRIGGER IF EXISTS expressionannotation_biur ON nex.expressionannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_expressionannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -810,11 +810,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER expressionannotation_biur
-BEFORE INSERT OR UPDATE ON expressionannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.expressionannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_expressionannotation_biur();
 
 
-DROP TRIGGER IF EXISTS geninteractionannotation_audr ON geninteractionannotation CASCADE;
+DROP TRIGGER IF EXISTS geninteractionannotation_audr ON nex.geninteractionannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_geninteractionannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -882,10 +882,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER geninteractionannotation_audr
-AFTER UPDATE OR DELETE ON geninteractionannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.geninteractionannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_geninteractionannotation_audr();
 
-DROP TRIGGER IF EXISTS geninteractionannotation_biur ON geninteractionannotation CASCADE;
+DROP TRIGGER IF EXISTS geninteractionannotation_biur ON nex.geninteractionannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_geninteractionannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -916,11 +916,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER geninteractionannotation_biur
-BEFORE INSERT OR UPDATE ON geninteractionannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.geninteractionannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_geninteractionannotation_biur();
 
 
-DROP TRIGGER IF EXISTS goannotation_audr ON goannotation CASCADE;
+DROP TRIGGER IF EXISTS goannotation_audr ON nex.goannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_goannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -983,10 +983,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER goannotation_audr
-AFTER UPDATE OR DELETE ON goannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.goannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_goannotation_audr();
 
-DROP TRIGGER IF EXISTS goannotation_biur ON goannotation CASCADE;
+DROP TRIGGER IF EXISTS goannotation_biur ON nex.goannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_goannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1017,10 +1017,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER goannotation_biur
-BEFORE INSERT OR UPDATE ON goannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.goannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_goannotation_biur();
 
-DROP TRIGGER IF EXISTS goextension_audr ON goextension CASCADE;
+DROP TRIGGER IF EXISTS goextension_audr ON nex.goextension CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_goextension_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1065,10 +1065,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER goextension_audr
-AFTER UPDATE OR DELETE ON goextension FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.goextension FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_goextension_audr();
 
-DROP TRIGGER IF EXISTS goextension_biur ON goextension CASCADE;
+DROP TRIGGER IF EXISTS goextension_biur ON nex.goextension CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_goextension_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1099,10 +1099,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER goextension_biur
-BEFORE INSERT OR UPDATE ON goextension FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.goextension FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_goextension_biur();
 
-DROP TRIGGER IF EXISTS gosupportingevidence_audr ON gosupportingevidence CASCADE;
+DROP TRIGGER IF EXISTS gosupportingevidence_audr ON nex.gosupportingevidence CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_gosupportingevidence_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1147,10 +1147,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER gosupportingevidence_audr
-AFTER UPDATE OR DELETE ON gosupportingevidence FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.gosupportingevidence FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_gosupportingevidence_audr();
 
-DROP TRIGGER IF EXISTS gosupportingevidence_biur ON gosupportingevidence CASCADE;
+DROP TRIGGER IF EXISTS gosupportingevidence_biur ON nex.gosupportingevidence CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_gosupportingevidence_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1181,10 +1181,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER gosupportingevidence_biur
-BEFORE INSERT OR UPDATE ON gosupportingevidence FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.gosupportingevidence FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_gosupportingevidence_biur();
 
-DROP TRIGGER IF EXISTS goslimannotation_audr ON goslimannotation CASCADE;
+DROP TRIGGER IF EXISTS goslimannotation_audr ON nex.goslimannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_goslimannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1229,10 +1229,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER goslimannotation_audr
-AFTER UPDATE OR DELETE ON goslimannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.goslimannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_goslimannotation_audr();
 
-DROP TRIGGER IF EXISTS goslimannotation_biur ON goslimannotation CASCADE;
+DROP TRIGGER IF EXISTS goslimannotation_biur ON nex.goslimannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_goslimannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1263,11 +1263,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER goslimannotation_biur
-BEFORE INSERT OR UPDATE ON goslimannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.goslimannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_goslimannotation_biur();
 
 
-DROP TRIGGER IF EXISTS literatureannotation_audr ON literatureannotation CASCADE;
+DROP TRIGGER IF EXISTS literatureannotation_audr ON nex.literatureannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_literatureannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1318,10 +1318,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER literatureannotation_audr
-AFTER UPDATE OR DELETE ON literatureannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.literatureannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_literatureannotation_audr();
 
-DROP TRIGGER IF EXISTS literatureannotation_biur ON literatureannotation CASCADE;
+DROP TRIGGER IF EXISTS literatureannotation_biur ON nex.literatureannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_literatureannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1352,11 +1352,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER literatureannotation_biur
-BEFORE INSERT OR UPDATE ON literatureannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.literatureannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_literatureannotation_biur();
 
 
-DROP TRIGGER IF EXISTS contignoteannotation_audr ON contignoteannotation CASCADE;
+DROP TRIGGER IF EXISTS contignoteannotation_audr ON nex.contignoteannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_contignoteannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1415,10 +1415,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER contignoteannotation_audr
-AFTER UPDATE OR DELETE ON contignoteannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.contignoteannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_contignoteannotation_audr();
 
-DROP TRIGGER IF EXISTS contignoteannotation_biur ON contignoteannotation CASCADE;
+DROP TRIGGER IF EXISTS contignoteannotation_biur ON nex.contignoteannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_contignoteannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1449,10 +1449,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER contignoteannotation_biur
-BEFORE INSERT OR UPDATE ON contignoteannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.contignoteannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_contignoteannotation_biur();
 
-DROP TRIGGER IF EXISTS locusnoteannotation_audr ON locusnoteannotation CASCADE;
+DROP TRIGGER IF EXISTS locusnoteannotation_audr ON nex.locusnoteannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_locusnoteannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1511,10 +1511,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER locusnoteannotation_audr
-AFTER UPDATE OR DELETE ON locusnoteannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.locusnoteannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_locusnoteannotation_audr();
 
-DROP TRIGGER IF EXISTS locusnoteannotation_biur ON locusnoteannotation CASCADE;
+DROP TRIGGER IF EXISTS locusnoteannotation_biur ON nex.locusnoteannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_locusnoteannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1545,11 +1545,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER locusnoteannotation_biur
-BEFORE INSERT OR UPDATE ON locusnoteannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.locusnoteannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_locusnoteannotation_biur();
 
 
-DROP TRIGGER IF EXISTS pathwayannotation_audr ON pathwayannotation CASCADE;
+DROP TRIGGER IF EXISTS pathwayannotation_audr ON nex.pathwayannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_pathwayannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1599,10 +1599,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER pathwayannotation_audr
-AFTER UPDATE OR DELETE ON pathwayannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.pathwayannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_pathwayannotation_audr();
 
-DROP TRIGGER IF EXISTS pathwayannotation_biur ON pathwayannotation CASCADE;
+DROP TRIGGER IF EXISTS pathwayannotation_biur ON nex.pathwayannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_pathwayannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1633,11 +1633,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER pathwayannotation_biur
-BEFORE INSERT OR UPDATE ON pathwayannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.pathwayannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_pathwayannotation_biur();
 
 
-DROP TRIGGER IF EXISTS phenotypeannotation_audr ON phenotypeannotation CASCADE;
+DROP TRIGGER IF EXISTS phenotypeannotation_audr ON nex.phenotypeannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_phenotypeannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1718,10 +1718,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER phenotypeannotation_audr
-AFTER UPDATE OR DELETE ON phenotypeannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.phenotypeannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_phenotypeannotation_audr();
 
-DROP TRIGGER IF EXISTS phenotypeannotation_biur ON phenotypeannotation CASCADE;
+DROP TRIGGER IF EXISTS phenotypeannotation_biur ON nex.phenotypeannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_phenotypeannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1758,10 +1758,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER phenotypeannotation_biur
-BEFORE INSERT OR UPDATE ON phenotypeannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.phenotypeannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_phenotypeannotation_biur();
 
-DROP TRIGGER IF EXISTS phenotypeannotationcond_audr ON phenotypeannotation_cond CASCADE;
+DROP TRIGGER IF EXISTS phenotypeannotationcond_audr ON nex.phenotypeannotation_cond CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_phenotypeannotationcond_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1806,10 +1806,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER phenotypeannotationcond_audr
-AFTER UPDATE OR DELETE ON phenotypeannotation_cond FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.phenotypeannotation_cond FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_phenotypeannotationcond_audr();
 
-DROP TRIGGER IF EXISTS phenotypeannotationcond_biur ON phenotypeannotation_cond CASCADE;
+DROP TRIGGER IF EXISTS phenotypeannotationcond_biur ON nex.phenotypeannotation_cond CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_phenotypeannotationcond_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1848,11 +1848,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER phenotypeannotationcond_biur
-BEFORE INSERT OR UPDATE ON phenotypeannotation_cond FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.phenotypeannotation_cond FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_phenotypeannotationcond_biur();
 
 
-DROP TRIGGER IF EXISTS physinteractionannotation_audr ON physinteractionannotation CASCADE;
+DROP TRIGGER IF EXISTS physinteractionannotation_audr ON nex.physinteractionannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_physinteractionannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -1920,10 +1920,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER physinteractionannotation_audr
-AFTER UPDATE OR DELETE ON physinteractionannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.physinteractionannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_physinteractionannotation_audr();
 
-DROP TRIGGER IF EXISTS physinteractionannotation_biur ON physinteractionannotation CASCADE;
+DROP TRIGGER IF EXISTS physinteractionannotation_biur ON nex.physinteractionannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_physinteractionannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -1954,11 +1954,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER physinteractionannotation_biur
-BEFORE INSERT OR UPDATE ON physinteractionannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.physinteractionannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_physinteractionannotation_biur();
 
 
-DROP TRIGGER IF EXISTS posttranslationannotation_audr ON posttranslationannotation CASCADE;
+DROP TRIGGER IF EXISTS posttranslationannotation_audr ON nex.posttranslationannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_posttranslationannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -2017,10 +2017,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER posttranslationannotation_audr
-AFTER UPDATE OR DELETE ON posttranslationannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.posttranslationannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_posttranslationannotation_audr();
 
-DROP TRIGGER IF EXISTS posttranslationannotation_biur ON posttranslationannotation CASCADE;
+DROP TRIGGER IF EXISTS posttranslationannotation_biur ON nex.posttranslationannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_posttranslationannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -2051,11 +2051,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER posttranslationannotation_biur
-BEFORE INSERT OR UPDATE ON posttranslationannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.posttranslationannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_posttranslationannotation_biur();
 
 
-DROP TRIGGER IF EXISTS proteindomainannotation_audr ON proteindomainannotation CASCADE;
+DROP TRIGGER IF EXISTS proteindomainannotation_audr ON nex.proteindomainannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteindomainannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -2114,10 +2114,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER proteindomainannotation_audr
-AFTER UPDATE OR DELETE ON proteindomainannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.proteindomainannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteindomainannotation_audr();
 
-DROP TRIGGER IF EXISTS proteindomainannotation_biur ON proteindomainannotation CASCADE;
+DROP TRIGGER IF EXISTS proteindomainannotation_biur ON nex.proteindomainannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteindomainannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -2148,11 +2148,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER proteindomainannotation_biur
-BEFORE INSERT OR UPDATE ON proteindomainannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.proteindomainannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteindomainannotation_biur();
 
 
-DROP TRIGGER IF EXISTS proteinexptannotation_audr ON proteinexptannotation CASCADE;
+DROP TRIGGER IF EXISTS proteinexptannotation_audr ON nex.proteinexptannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteinexptannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -2211,10 +2211,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER proteinexptannotation_audr
-AFTER UPDATE OR DELETE ON proteinexptannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.proteinexptannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteinexptannotation_audr();
 
-DROP TRIGGER IF EXISTS proteinexptannotation_biur ON proteinexptannotation CASCADE;
+DROP TRIGGER IF EXISTS proteinexptannotation_biur ON nex.proteinexptannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteinexptannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -2245,10 +2245,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER proteinexptannotation_biur
-BEFORE INSERT OR UPDATE ON proteinexptannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.proteinexptannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteinexptannotation_biur();
 
-DROP TRIGGER IF EXISTS proteinexptannotationcond_audr ON proteinexptannotation_cond CASCADE;
+DROP TRIGGER IF EXISTS proteinexptannotationcond_audr ON nex.proteinexptannotation_cond CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteinexptannotationcond_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -2293,10 +2293,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER proteinexptannotationcond_audr
-AFTER UPDATE OR DELETE ON proteinexptannotation_cond FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.proteinexptannotation_cond FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteinexptannotationcond_audr();
 
-DROP TRIGGER IF EXISTS proteinexptannotationcond_biur ON proteinexptannotation_cond CASCADE;
+DROP TRIGGER IF EXISTS proteinexptannotationcond_biur ON nex.proteinexptannotation_cond CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteinexptannotationcond_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -2335,11 +2335,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER proteinexptannotationcond_biur
-BEFORE INSERT OR UPDATE ON proteinexptannotation_cond FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.proteinexptannotation_cond FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteinexptannotationcond_biur();
 
 
-DROP TRIGGER IF EXISTS proteinsequenceannotation_audr ON proteinsequenceannotation CASCADE;
+DROP TRIGGER IF EXISTS proteinsequenceannotation_audr ON nex.proteinsequenceannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteinsequenceannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -2416,10 +2416,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER proteinsequenceannotation_audr
-AFTER UPDATE OR DELETE ON proteinsequenceannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.proteinsequenceannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteinsequenceannotation_audr();
 
-DROP TRIGGER IF EXISTS proteinsequenceannotation_biur ON proteinsequenceannotation CASCADE;
+DROP TRIGGER IF EXISTS proteinsequenceannotation_biur ON nex.proteinsequenceannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteinsequenceannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -2450,10 +2450,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER proteinsequenceannotation_biur
-BEFORE INSERT OR UPDATE ON proteinsequenceannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.proteinsequenceannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteinsequenceannotation_biur();
 
-DROP TRIGGER IF EXISTS proteinsequencedetail_audr ON proteinsequence_detail CASCADE;
+DROP TRIGGER IF EXISTS proteinsequencedetail_audr ON nex.proteinsequence_detail CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteinsequencedetail_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -2625,10 +2625,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER proteinsequencedetail_audr
-AFTER UPDATE OR DELETE ON proteinsequence_detail FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.proteinsequence_detail FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteinsequencedetail_audr();
 
-DROP TRIGGER IF EXISTS proteinsequencedetail_biur ON proteinsequence_detail CASCADE;
+DROP TRIGGER IF EXISTS proteinsequencedetail_biur ON nex.proteinsequence_detail CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteinsequencedetail_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -2659,55 +2659,55 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER proteinsequencedetail_biur
-BEFORE INSERT OR UPDATE ON proteinsequence_detail FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.proteinsequence_detail FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_proteinsequencedetail_biur();
 
 
-DROP TRIGGER IF EXISTS regulationannotation_audr ON regulationannotation CASCADE;
+DROP TRIGGER IF EXISTS regulationannotation_audr ON nex.regulationannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_regulationannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       delete_log.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.target_id != NEW.target_id) THEN
-        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'TARGET_ID', OLD.annotation_id, OLD.target_id, NEW.target_id, USER);
+        PERFORM nex.insertupdatelog('REGULATIONANNOTATION', 'TARGET_ID', OLD.annotation_id, OLD.target_id, NEW.target_id, USER);
     END IF;
 
     IF (OLD.regulator_id != NEW.regulator_id) THEN
-        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'REGULATOR_ID', OLD.annotation_id, OLD.regulator_id, NEW.regulator_id, USER);
+        PERFORM nex.insertupdatelog('REGULATIONANNOTATION', 'REGULATOR_ID', OLD.annotation_id, OLD.regulator_id, NEW.regulator_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('REGULATIONANNOTATION', 'SOURCE_ID', OLD.annotation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('REGULATIONANNOTATION', 'TAXONOMY_ID', OLD.annotation_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
     END IF;
 
     IF  (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('REGULATIONANNOTATION', 'REFERENCE_ID', OLD.annotation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
     IF (OLD.eco_id != NEW.eco_id) THEN
-        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'ECO_ID', OLD.annotation_id, OLD.eco_id, NEW.eco_id, USER);
+        PERFORM nex.insertupdatelog('REGULATIONANNOTATION', 'ECO_ID', OLD.annotation_id, OLD.eco_id, NEW.eco_id, USER);
     END IF;
 
     IF (OLD.regulator_type != NEW.regulator_type) THEN
-        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'REGULATOR_TYPE', OLD.annotation_id, OLD.regulator_type, NEW.regulator_type, USER);
+        PERFORM nex.insertupdatelog('REGULATIONANNOTATION', 'REGULATOR_TYPE', OLD.annotation_id, OLD.regulator_type, NEW.regulator_type, USER);
     END IF;
 
     IF (OLD.regulation_type != NEW.regulation_type) THEN
-        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'REGULATION_TYPE', OLD.annotation_id, OLD.regulation_type, NEW.regulation_type, USER);
+        PERFORM nex.insertupdatelog('REGULATIONANNOTATION', 'REGULATION_TYPE', OLD.annotation_id, OLD.regulation_type, NEW.regulation_type, USER);
     END IF;
 
     IF (((OLD.direction IS NULL) AND (NEW.direction IS NOT NULL)) OR ((OLD.direction IS NOT NULL) AND (NEW.direction IS NULL)) OR (OLD.direction != NEW.direction)) THEN
-        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'DIRECTION', OLD.annotation_id, OLD.direction, NEW.direction, USER);
+        PERFORM nex.insertupdatelog('REGULATIONANNOTATION', 'DIRECTION', OLD.annotation_id, OLD.direction, NEW.direction, USER);
     END IF;
 
     IF (((OLD.happens_during IS NULL) AND (NEW.happens_during IS NOT NULL)) OR ((OLD.happens_during IS NOT NULL) AND (NEW.happens_during IS NULL)) OR (OLD.happens_during != NEW.happens_during)) THEN
-        PERFORM auditlog.insertupdatelog('REGULATIONANNOTATION', 'HAPPENS_DURING', OLD.annotation_id, OLD.happens_during, NEW.happens_during, USER);
+        PERFORM nex.insertupdatelog('REGULATIONANNOTATION', 'HAPPENS_DURING', OLD.annotation_id, OLD.happens_during, NEW.happens_during, USER);
     END IF;
 
     RETURN NEW;
@@ -2722,19 +2722,19 @@ BEGIN
              coalesce(OLD.happens_during,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM auditlog.insertdeletelog('REGULATIONANNOTATION', OLD.annotation_id, v_row, USER);
+          PERFORM nex.insertdeletelog('REGULATIONANNOTATION', OLD.annotation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
 
 END;
-$BODY$ LANGUAGE 'plpgsql' SECURITY DEFINER;
+$BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER regulationannotation_audr
-AFTER UPDATE OR DELETE ON regulationannotation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.regulationannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_regulationannotation_audr();
 
-DROP TRIGGER IF EXISTS regulationannotation_biur ON regulationannotation CASCADE;
+DROP TRIGGER IF EXISTS regulationannotation_biur ON nex.regulationannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_regulationannotation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -2759,12 +2759,11 @@ BEGIN
     END IF;
 
     RETURN NEW;
-
   END IF;
 
 END;
-$BODY$ LANGUAGE 'plpgsql' SECURITY DEFINER;
+$BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER regulationannotation_biur
-BEFORE INSERT OR UPDATE ON regulationannotation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.regulationannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_regulationannotation_biur();

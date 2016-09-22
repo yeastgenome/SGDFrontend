@@ -8,8 +8,8 @@ SET client_encoding TO 'UTF8';
 
 -- Annotation tables
 
-DROP TABLE IF EXISTS bindingmotifannotation CASCADE;
-CREATE TABLE bindingmotifannotation (
+DROP TABLE IF EXISTS nex.bindingmotifannotation CASCADE;
+CREATE TABLE nex.bindingmotifannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -22,24 +22,24 @@ CREATE TABLE bindingmotifannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT bindingmotifannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE bindingmotifannotation IS 'Transcription factor motif logos from the YeTFaSCo database.';
-COMMENT ON COLUMN bindingmotifannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN bindingmotifannotation.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN bindingmotifannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN bindingmotifannotation.motif_id IS 'Motif ID from the YeTFaSCo database.';
-COMMENT ON COLUMN bindingmotifannotation.logo_url IS 'URL to the motif logo.';
-COMMENT ON COLUMN bindingmotifannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN bindingmotifannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN bindingmotifannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN bindingmotifannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN bindingmotifannotation.created_by IS 'Username of the person who entered the record into the database.';
-ALTER TABLE bindingmotifannotation ADD CONSTRAINT bindingmotifannotation_uk UNIQUE (dbentity_id,motif_id);
-CREATE INDEX bindingmotifannotation_source_fk_index ON bindingmotifannotation (source_id);
-CREATE INDEX bindingmotifannotation_ref_fk_index ON bindingmotifannotation (reference_id);
-CREATE INDEX bindingmotifannotation_tax_fk_index ON bindingmotifannotation (taxonomy_id);
+COMMENT ON TABLE nex.bindingmotifannotation IS 'Transcription factor motif logos from the YeTFaSCo database.';
+COMMENT ON COLUMN nex.bindingmotifannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.bindingmotifannotation.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.bindingmotifannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.bindingmotifannotation.motif_id IS 'Motif ID from the YeTFaSCo database.';
+COMMENT ON COLUMN nex.bindingmotifannotation.logo_url IS 'URL to the motif logo.';
+COMMENT ON COLUMN nex.bindingmotifannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.bindingmotifannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.bindingmotifannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.bindingmotifannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.bindingmotifannotation.created_by IS 'Username of the person who entered the record into the database.';
+ALTER TABLE nex.bindingmotifannotation ADD CONSTRAINT bindingmotifannotation_uk UNIQUE (dbentity_id,motif_id);
+CREATE INDEX bindingmotifannotation_source_fk_index ON nex.bindingmotifannotation (source_id);
+CREATE INDEX bindingmotifannotation_ref_fk_index ON nex.bindingmotifannotation (reference_id);
+CREATE INDEX bindingmotifannotation_tax_fk_index ON nex.bindingmotifannotation (taxonomy_id);
 
-DROP TABLE IF EXISTS diseaseannotation CASCADE;
-CREATE TABLE diseaseannotation (
+DROP TABLE IF EXISTS nex.diseaseannotation CASCADE;
+CREATE TABLE nex.diseaseannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -54,30 +54,30 @@ CREATE TABLE diseaseannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT diseaseannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE diseaseannotation IS 'Disease Ontology annotations.';
-COMMENT ON COLUMN diseaseannotation.annotation_type IS 'Type of disease annotation (high-throughput, manually curated, computational).';
-COMMENT ON COLUMN diseaseannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN diseaseannotation.eco_id IS 'FK to ECO.ECO_ID.';
-COMMENT ON COLUMN diseaseannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN diseaseannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN diseaseannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN diseaseannotation.disease_qualifier IS 'Qualifier of the disease annotation (enables, involved in, contributed_to).';
-COMMENT ON COLUMN diseaseannotation.date_assigned IS 'Date the disease annotation was assigned or last reviewed.';
-COMMENT ON COLUMN diseaseannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN diseaseannotation.disease_id IS 'FK to DISEASE.DISEASE_ID.';
-COMMENT ON COLUMN diseaseannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN diseaseannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-ALTER TABLE diseaseannotation ADD CONSTRAINT diseaseannotation_uk UNIQUE (dbentity_id,disease_id,eco_id,reference_id,annotation_type,disease_qualifier,source_id);
-ALTER TABLE diseaseannotation ADD CONSTRAINT diseaseanno_qualifier_ck CHECK (DISEASE_QUALIFIER IN ('enables', 'involved in', 'contributes_to'));
-ALTER TABLE diseaseannotation ADD CONSTRAINT diseaseanno_annotation_type CHECK (ANNOTATION_TYPE IN ('high-throughput', 'manually curated', 'computational'));
-CREATE INDEX diseaseanno_tax_fk_index ON diseaseannotation (taxonomy_id);
-CREATE INDEX diseaseanno_disease_fk_index ON diseaseannotation (disease_id);
-CREATE INDEX diseaseanno_ref_fk_index ON diseaseannotation (reference_id);
-CREATE INDEX diseaseanno_eco_fk_index ON diseaseannotation (eco_id);
-CREATE INDEX diseaseanno_source_fk_index ON diseaseannotation (source_id);
+COMMENT ON TABLE nex.diseaseannotation IS 'Disease Ontology annotations.';
+COMMENT ON COLUMN nex.diseaseannotation.annotation_type IS 'Type of disease annotation (high-throughput, manually curated, computational).';
+COMMENT ON COLUMN nex.diseaseannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.diseaseannotation.eco_id IS 'FK to ECO.ECO_ID.';
+COMMENT ON COLUMN nex.diseaseannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.diseaseannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.diseaseannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.diseaseannotation.disease_qualifier IS 'Qualifier of the disease annotation (enables, involved in, contributed_to).';
+COMMENT ON COLUMN nex.diseaseannotation.date_assigned IS 'Date the disease annotation was assigned or last reviewed.';
+COMMENT ON COLUMN nex.diseaseannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.diseaseannotation.disease_id IS 'FK to DISEASE.DISEASE_ID.';
+COMMENT ON COLUMN nex.diseaseannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.diseaseannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+ALTER TABLE nex.diseaseannotation ADD CONSTRAINT diseaseannotation_uk UNIQUE (dbentity_id,disease_id,eco_id,reference_id,annotation_type,disease_qualifier,source_id);
+ALTER TABLE nex.diseaseannotation ADD CONSTRAINT diseaseanno_qualifier_ck CHECK (DISEASE_QUALIFIER IN ('enables', 'involved in', 'contributes_to'));
+ALTER TABLE nex.diseaseannotation ADD CONSTRAINT diseaseanno_annotation_type CHECK (ANNOTATION_TYPE IN ('high-throughput', 'manually curated', 'computational'));
+CREATE INDEX diseaseanno_tax_fk_index ON nex.diseaseannotation (taxonomy_id);
+CREATE INDEX diseaseanno_disease_fk_index ON nex.diseaseannotation (disease_id);
+CREATE INDEX diseaseanno_ref_fk_index ON nex.diseaseannotation (reference_id);
+CREATE INDEX diseaseanno_eco_fk_index ON nex.diseaseannotation (eco_id);
+CREATE INDEX diseaseanno_source_fk_index ON nex.diseaseannotation (source_id);
 
-DROP TABLE IF EXISTS diseasesupportingevidence CASCADE;
-CREATE TABLE diseasesupportingevidence (
+DROP TABLE IF EXISTS nex.diseasesupportingevidence CASCADE;
+CREATE TABLE nex.diseasesupportingevidence (
 	diseasesupportingevidence_id bigint NOT NULL DEFAULT nextval('detail_seq'),
 	annotation_id bigint NOT NULL,
 	group_id bigint NOT NULL,
@@ -88,20 +88,20 @@ CREATE TABLE diseasesupportingevidence (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT diseasesupportingevidence_pk PRIMARY KEY (diseasesupportingevidence_id)
 ) ;
-COMMENT ON TABLE diseasesupportingevidence IS 'Evidence to support the disease annotation.';
-COMMENT ON COLUMN diseasesupportingevidence.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN diseasesupportingevidence.evidence_type IS 'How the supporting evidence is associated with the disease annotation (with, from).';
-COMMENT ON COLUMN diseasesupportingevidence.diseasesupportingevidence_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN diseasesupportingevidence.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN diseasesupportingevidence.dbxref_id IS 'External cross reference identifier.';
-COMMENT ON COLUMN diseasesupportingevidence.group_id IS 'A grouping number.';
-COMMENT ON COLUMN diseasesupportingevidence.annotation_id IS 'FK to DISEASEANNOTATION.ANNOTATION_ID.';
-COMMENT ON COLUMN diseasesupportingevidence.created_by IS 'Username of the person who entered the record into the database.';
-ALTER TABLE diseasesupportingevidence ADD CONSTRAINT diseasesupportingevidence_uk UNIQUE (annotation_id,dbxref_id,group_id,evidence_type);
-ALTER TABLE diseasesupportingevidence ADD CONSTRAINT diseasesupportingevidence_type_ck CHECK (EVIDENCE_TYPE IN ('with', 'from'));
+COMMENT ON TABLE nex.diseasesupportingevidence IS 'Evidence to support the disease annotation.';
+COMMENT ON COLUMN nex.diseasesupportingevidence.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.diseasesupportingevidence.evidence_type IS 'How the supporting evidence is associated with the disease annotation (with, from).';
+COMMENT ON COLUMN nex.diseasesupportingevidence.diseasesupportingevidence_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.diseasesupportingevidence.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.diseasesupportingevidence.dbxref_id IS 'External cross reference identifier.';
+COMMENT ON COLUMN nex.diseasesupportingevidence.group_id IS 'A grouping number.';
+COMMENT ON COLUMN nex.diseasesupportingevidence.annotation_id IS 'FK to DISEASEANNOTATION.ANNOTATION_ID.';
+COMMENT ON COLUMN nex.diseasesupportingevidence.created_by IS 'Username of the person who entered the record into the database.';
+ALTER TABLE nex.diseasesupportingevidence ADD CONSTRAINT diseasesupportingevidence_uk UNIQUE (annotation_id,dbxref_id,group_id,evidence_type);
+ALTER TABLE nex.diseasesupportingevidence ADD CONSTRAINT diseasesupportingevidence_type_ck CHECK (EVIDENCE_TYPE IN ('with', 'from'));
 
-DROP TABLE IF EXISTS diseasesubsetannotation CASCADE;
-CREATE TABLE diseasesubsetannotation (
+DROP TABLE IF EXISTS nex.diseasesubsetannotation CASCADE;
+CREATE TABLE nex.diseasesubsetannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -112,23 +112,23 @@ CREATE TABLE diseasesubsetannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT diseasesubsetannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE diseasesubsetannotation IS 'A subset of disease annotations that provide a broad overview, often used to summarize results.';
-COMMENT ON COLUMN diseasesubsetannotation.diseasesubset_id IS 'FK to DISEASESUBSET.DISEASESUBSET_ID.';
-COMMENT ON COLUMN diseasesubsetannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN diseasesubsetannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN diseasesubsetannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN diseasesubsetannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN diseasesubsetannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN diseasesubsetannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN diseasesubsetannotation.annotation_id IS 'Unique identifier (serial number).';
-ALTER TABLE diseasesubsetannotation ADD CONSTRAINT diseasesubsetannotation_uk UNIQUE (dbentity_id,diseasesubset_id);
-CREATE INDEX diseasesubsetanno_tax_fk_index ON diseasesubsetannotation (taxonomy_id);
-CREATE INDEX diseasesubsetanno_source_fk_index ON diseasesubsetannotation (source_id);
-CREATE INDEX diseasesubsetanno_diseasesubset_fk_index ON diseasesubsetannotation (diseasesubset_id);
-CREATE INDEX diseasesubsetanno_ref_fk_index ON diseasesubsetannotation (reference_id);
+COMMENT ON TABLE nex.diseasesubsetannotation IS 'A subset of disease annotations that provide a broad overview, often used to summarize results.';
+COMMENT ON COLUMN nex.diseasesubsetannotation.diseasesubset_id IS 'FK to DISEASESUBSET.DISEASESUBSET_ID.';
+COMMENT ON COLUMN nex.diseasesubsetannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.diseasesubsetannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.diseasesubsetannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.diseasesubsetannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.diseasesubsetannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.diseasesubsetannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.diseasesubsetannotation.annotation_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.diseasesubsetannotation ADD CONSTRAINT diseasesubsetannotation_uk UNIQUE (dbentity_id,diseasesubset_id);
+CREATE INDEX diseasesubsetanno_tax_fk_index ON nex.diseasesubsetannotation (taxonomy_id);
+CREATE INDEX diseasesubsetanno_source_fk_index ON nex.diseasesubsetannotation (source_id);
+CREATE INDEX diseasesubsetanno_diseasesubset_fk_index ON nex.diseasesubsetannotation (diseasesubset_id);
+CREATE INDEX diseasesubsetanno_ref_fk_index ON nex.diseasesubsetannotation (reference_id);
 
-DROP TABLE IF EXISTS dnasequenceannotation CASCADE;
-CREATE TABLE dnasequenceannotation (
+DROP TABLE IF EXISTS nex.dnasequenceannotation CASCADE;
+CREATE TABLE nex.dnasequenceannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -152,41 +152,41 @@ CREATE TABLE dnasequenceannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT dnasequenceannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE dnasequenceannotation IS 'Current DNA sequence details for contig, chromosomal, or plasmid features.';
-COMMENT ON COLUMN dnasequenceannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN dnasequenceannotation.contig_id IS 'FK to CONTIG.CONTIG_ID.';
-COMMENT ON COLUMN dnasequenceannotation.file_id IS 'FK to FILE.FILE_ID.';
-COMMENT ON COLUMN dnasequenceannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN dnasequenceannotation.residues IS 'DNA sequence.';
-COMMENT ON COLUMN dnasequenceannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN dnasequenceannotation.dna_type IS 'Type of DNA sequence (CODING, 1KB, GENOMIC).';
-COMMENT ON COLUMN dnasequenceannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN dnasequenceannotation.strand IS 'Which strand the sequence is on (Watson = +, Crick = -, None = 0).';
-COMMENT ON COLUMN dnasequenceannotation.download_filename IS 'User interface download filename.';
-COMMENT ON COLUMN dnasequenceannotation.bud_id IS 'From BUD.SEQ.SEQ_NO.';
-COMMENT ON COLUMN dnasequenceannotation.file_header IS 'Fasta header line of the download file.';
-COMMENT ON COLUMN dnasequenceannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN dnasequenceannotation.coord_version IS 'Date of the coordinate version.';
-COMMENT ON COLUMN dnasequenceannotation.genomerelease_id IS 'FK to GENOMERELEASE.GENOMERELEASE_ID.';
-COMMENT ON COLUMN dnasequenceannotation.so_id IS 'FK to SO.SO_ID.';
-COMMENT ON COLUMN dnasequenceannotation.end_index IS 'End coordinate.';
-COMMENT ON COLUMN dnasequenceannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN dnasequenceannotation.seq_version IS 'Date of the sequence version.';
-COMMENT ON COLUMN dnasequenceannotation.start_index IS 'Start coordinate.';
-COMMENT ON COLUMN dnasequenceannotation.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE dnasequenceannotation ADD CONSTRAINT dnasequenceannotation_uk UNIQUE (dbentity_id,taxonomy_id,contig_id,so_id,dna_type);
-ALTER TABLE dnasequenceannotation ADD CONSTRAINT dnasequenceanno_type_ck CHECK (DNA_TYPE IN ('CODING', '1KB', 'GENOMIC'));
-ALTER TABLE dnasequenceannotation ADD CONSTRAINT dnasequenceanno_strand_ck CHECK (STRAND IN ('+', '-', '0'));
-CREATE INDEX dnasequenceanno_tax_fk_index ON dnasequenceannotation (taxonomy_id);
-CREATE INDEX dnasequenceanno_contig_fk_index ON dnasequenceannotation (contig_id);
-CREATE INDEX dnasequenceanno_file_fk_index ON dnasequenceannotation (file_id);
-CREATE INDEX dnasequenceanno_ref_fk_index ON dnasequenceannotation (reference_id);
-CREATE INDEX dnasequenceanno_source_fk_index ON dnasequenceannotation (source_id);
-CREATE INDEX dnasequenceanno_so_fk_index ON dnasequenceannotation (so_id);
-CREATE INDEX dnasequenceanno_genomerelease_fk_index ON dnasequenceannotation (genomerelease_id);
+COMMENT ON TABLE nex.dnasequenceannotation IS 'Current DNA sequence details for contig, chromosomal, or plasmid features.';
+COMMENT ON COLUMN nex.dnasequenceannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.dnasequenceannotation.contig_id IS 'FK to CONTIG.CONTIG_ID.';
+COMMENT ON COLUMN nex.dnasequenceannotation.file_id IS 'FK to FILE.FILE_ID.';
+COMMENT ON COLUMN nex.dnasequenceannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.dnasequenceannotation.residues IS 'DNA sequence.';
+COMMENT ON COLUMN nex.dnasequenceannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.dnasequenceannotation.dna_type IS 'Type of DNA sequence (CODING, 1KB, GENOMIC).';
+COMMENT ON COLUMN nex.dnasequenceannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.dnasequenceannotation.strand IS 'Which strand the sequence is on (Watson = +, Crick = -, None = 0).';
+COMMENT ON COLUMN nex.dnasequenceannotation.download_filename IS 'User interface download filename.';
+COMMENT ON COLUMN nex.dnasequenceannotation.bud_id IS 'From BUD.SEQ.SEQ_NO.';
+COMMENT ON COLUMN nex.dnasequenceannotation.file_header IS 'Fasta header line of the download file.';
+COMMENT ON COLUMN nex.dnasequenceannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.dnasequenceannotation.coord_version IS 'Date of the coordinate version.';
+COMMENT ON COLUMN nex.dnasequenceannotation.genomerelease_id IS 'FK to GENOMERELEASE.GENOMERELEASE_ID.';
+COMMENT ON COLUMN nex.dnasequenceannotation.so_id IS 'FK to SO.SO_ID.';
+COMMENT ON COLUMN nex.dnasequenceannotation.end_index IS 'End coordinate.';
+COMMENT ON COLUMN nex.dnasequenceannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.dnasequenceannotation.seq_version IS 'Date of the sequence version.';
+COMMENT ON COLUMN nex.dnasequenceannotation.start_index IS 'Start coordinate.';
+COMMENT ON COLUMN nex.dnasequenceannotation.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.dnasequenceannotation ADD CONSTRAINT dnasequenceannotation_uk UNIQUE (dbentity_id,taxonomy_id,contig_id,so_id,dna_type);
+ALTER TABLE nex.dnasequenceannotation ADD CONSTRAINT dnasequenceanno_type_ck CHECK (DNA_TYPE IN ('CODING', '1KB', 'GENOMIC'));
+ALTER TABLE nex.dnasequenceannotation ADD CONSTRAINT dnasequenceanno_strand_ck CHECK (STRAND IN ('+', '-', '0'));
+CREATE INDEX dnasequenceanno_tax_fk_index ON nex.dnasequenceannotation (taxonomy_id);
+CREATE INDEX dnasequenceanno_contig_fk_index ON nex.dnasequenceannotation (contig_id);
+CREATE INDEX dnasequenceanno_file_fk_index ON nex.dnasequenceannotation (file_id);
+CREATE INDEX dnasequenceanno_ref_fk_index ON nex.dnasequenceannotation (reference_id);
+CREATE INDEX dnasequenceanno_source_fk_index ON nex.dnasequenceannotation (source_id);
+CREATE INDEX dnasequenceanno_so_fk_index ON nex.dnasequenceannotation (so_id);
+CREATE INDEX dnasequenceanno_genomerelease_fk_index ON nex.dnasequenceannotation (genomerelease_id);
 
-DROP TABLE IF EXISTS dnasubsequence CASCADE;
-CREATE TABLE dnasubsequence (
+DROP TABLE IF EXISTS nex.dnasubsequence CASCADE;
+CREATE TABLE nex.dnasubsequence (
 	dnasubsequence_id bigint NOT NULL DEFAULT nextval('detail_seq'),
 	annotation_id bigint NOT NULL,
 	dbentity_id bigint NOT NULL,
@@ -208,34 +208,34 @@ CREATE TABLE dnasubsequence (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT dnasubsequence_pk PRIMARY KEY (dnasubsequence_id)
 ) ;
-COMMENT ON TABLE dnasubsequence IS 'Current DNA sequence details for subfeatures.';
-COMMENT ON COLUMN dnasubsequence.file_id IS 'FK to FILE.FILE_ID.';
-COMMENT ON COLUMN dnasubsequence.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN dnasubsequence.residues IS 'DNA sequence.';
-COMMENT ON COLUMN dnasubsequence.dnasubsequence_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN dnasubsequence.contig_end_index IS 'Stop coordinate based on the contig.';
-COMMENT ON COLUMN dnasubsequence.contig_start_index IS 'Start coordinate based on the contig.';
-COMMENT ON COLUMN dnasubsequence.annotation_id IS 'FK to DNASEQUENCEANNOTATION.ANNOTATION_ID.';
-COMMENT ON COLUMN dnasubsequence.download_filename IS 'User interface download filename.';
-COMMENT ON COLUMN dnasubsequence.genomerelease_id IS 'FK to GENOMERELEASE.GENOMERELEASE_ID.';
-COMMENT ON COLUMN dnasubsequence.coord_version IS 'Date of the coordinate version.';
-COMMENT ON COLUMN dnasubsequence.so_id IS 'FK to the SO.SO_ID.';
-COMMENT ON COLUMN dnasubsequence.bud_id IS 'From BUD.SEQ.SEQ_NO.';
-COMMENT ON COLUMN dnasubsequence.file_header IS 'Fasta header line of the download file.';
-COMMENT ON COLUMN dnasubsequence.display_name IS 'Public display name.';
-COMMENT ON COLUMN dnasubsequence.relative_start_index IS 'Relative start coordinate based on the dbentity (feature).';
-COMMENT ON COLUMN dnasubsequence.seq_version IS 'Date of the sequence version.';
-COMMENT ON COLUMN dnasubsequence.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN dnasubsequence.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN dnasubsequence.relative_end_index IS 'Relative stop coordinate based on the dbentity (feature).';
-ALTER TABLE dnasubsequence ADD CONSTRAINT dnasubsequence_uk UNIQUE (annotation_id,dbentity_id,relative_start_index,relative_end_index);
-CREATE INDEX dnasubsequence_genomerelease_fk_index ON dnasubsequence (genomerelease_id);
-CREATE INDEX dnasubsequence_so_fk_index ON dnasubsequence (so_id);
-CREATE INDEX dnasubsequence_dbentity_fk_index ON dnasubsequence (dbentity_id);
-CREATE INDEX dnasubsequence_file_fk_index ON dnasubsequence (file_id);
+COMMENT ON TABLE nex.dnasubsequence IS 'Current DNA sequence details for subfeatures.';
+COMMENT ON COLUMN nex.dnasubsequence.file_id IS 'FK to FILE.FILE_ID.';
+COMMENT ON COLUMN nex.dnasubsequence.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.dnasubsequence.residues IS 'DNA sequence.';
+COMMENT ON COLUMN nex.dnasubsequence.dnasubsequence_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.dnasubsequence.contig_end_index IS 'Stop coordinate based on the contig.';
+COMMENT ON COLUMN nex.dnasubsequence.contig_start_index IS 'Start coordinate based on the contig.';
+COMMENT ON COLUMN nex.dnasubsequence.annotation_id IS 'FK to DNASEQUENCEANNOTATION.ANNOTATION_ID.';
+COMMENT ON COLUMN nex.dnasubsequence.download_filename IS 'User interface download filename.';
+COMMENT ON COLUMN nex.dnasubsequence.genomerelease_id IS 'FK to GENOMERELEASE.GENOMERELEASE_ID.';
+COMMENT ON COLUMN nex.dnasubsequence.coord_version IS 'Date of the coordinate version.';
+COMMENT ON COLUMN nex.dnasubsequence.so_id IS 'FK to the SO.SO_ID.';
+COMMENT ON COLUMN nex.dnasubsequence.bud_id IS 'From BUD.SEQ.SEQ_NO.';
+COMMENT ON COLUMN nex.dnasubsequence.file_header IS 'Fasta header line of the download file.';
+COMMENT ON COLUMN nex.dnasubsequence.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.dnasubsequence.relative_start_index IS 'Relative start coordinate based on the dbentity (feature).';
+COMMENT ON COLUMN nex.dnasubsequence.seq_version IS 'Date of the sequence version.';
+COMMENT ON COLUMN nex.dnasubsequence.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.dnasubsequence.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.dnasubsequence.relative_end_index IS 'Relative stop coordinate based on the dbentity (feature).';
+ALTER TABLE nex.dnasubsequence ADD CONSTRAINT dnasubsequence_uk UNIQUE (annotation_id,dbentity_id,relative_start_index,relative_end_index);
+CREATE INDEX dnasubsequence_genomerelease_fk_index ON nex.dnasubsequence (genomerelease_id);
+CREATE INDEX dnasubsequence_so_fk_index ON nex.dnasubsequence (so_id);
+CREATE INDEX dnasubsequence_dbentity_fk_index ON nex.dnasubsequence (dbentity_id);
+CREATE INDEX dnasubsequence_file_fk_index ON nex.dnasubsequence (file_id);
 
-DROP TABLE IF EXISTS enzymeannotation CASCADE;
-CREATE TABLE enzymeannotation (
+DROP TABLE IF EXISTS nex.enzymeannotation CASCADE;
+CREATE TABLE nex.enzymeannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -246,23 +246,23 @@ CREATE TABLE enzymeannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT enzymeannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE enzymeannotation IS 'EC number annotations.';
-COMMENT ON COLUMN enzymeannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN enzymeannotation.ec_id IS 'FK to EC.EC_ID.';
-COMMENT ON COLUMN enzymeannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN enzymeannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN enzymeannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN enzymeannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN enzymeannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN enzymeannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-ALTER TABLE enzymeannotation ADD CONSTRAINT enzymeannotation_uk UNIQUE (dbentity_id,ec_id);
-CREATE INDEX enzymeanno_ref_fk_index ON enzymeannotation (reference_id);
-CREATE INDEX enzymeanno_ec_fk_index ON enzymeannotation (ec_id);
-CREATE INDEX enzymeanno_source_fk_index ON enzymeannotation (source_id);
-CREATE INDEX enzymeanno_tax_fk_index ON enzymeannotation (taxonomy_id);
+COMMENT ON TABLE nex.enzymeannotation IS 'EC number annotations.';
+COMMENT ON COLUMN nex.enzymeannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.enzymeannotation.ec_id IS 'FK to EC.EC_ID.';
+COMMENT ON COLUMN nex.enzymeannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.enzymeannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.enzymeannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.enzymeannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.enzymeannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.enzymeannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.enzymeannotation ADD CONSTRAINT enzymeannotation_uk UNIQUE (dbentity_id,ec_id);
+CREATE INDEX enzymeanno_ref_fk_index ON nex.enzymeannotation (reference_id);
+CREATE INDEX enzymeanno_ec_fk_index ON nex.enzymeannotation (ec_id);
+CREATE INDEX enzymeanno_source_fk_index ON nex.enzymeannotation (source_id);
+CREATE INDEX enzymeanno_tax_fk_index ON nex.enzymeannotation (taxonomy_id);
 
-DROP TABLE IF EXISTS expressionannotation CASCADE;
-CREATE TABLE expressionannotation (
+DROP TABLE IF EXISTS nex.expressionannotation CASCADE;
+CREATE TABLE nex.expressionannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -274,24 +274,24 @@ CREATE TABLE expressionannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT expressionannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE expressionannotation IS 'High throughput gene expression annotations from GEO.';
-COMMENT ON COLUMN expressionannotation.datasetsample_id IS 'FK to DATASAMPLE.DATASAMPLE_ID.';
-COMMENT ON COLUMN expressionannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN expressionannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN expressionannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN expressionannotation.expression_value IS 'Numerical value of the expression annotation.';
-COMMENT ON COLUMN expressionannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN expressionannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN expressionannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN expressionannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-ALTER TABLE expressionannotation ADD CONSTRAINT expressionannotation_uk UNIQUE (datasetsample_id,dbentity_id);
-CREATE INDEX expressionanno_source_fk_index ON expressionannotation (source_id);
-CREATE INDEX expressionanno_tax_fk_index ON expressionannotation (taxonomy_id);
-CREATE INDEX expressionanno_ref_fk_index ON expressionannotation (reference_id);
-CREATE INDEX expressionanno_dbentity_fk_index ON expressionannotation (dbentity_id);
+COMMENT ON TABLE nex.expressionannotation IS 'High throughput gene expression annotations from GEO.';
+COMMENT ON COLUMN nex.expressionannotation.datasetsample_id IS 'FK to DATASAMPLE.DATASAMPLE_ID.';
+COMMENT ON COLUMN nex.expressionannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.expressionannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.expressionannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.expressionannotation.expression_value IS 'Numerical value of the expression annotation.';
+COMMENT ON COLUMN nex.expressionannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.expressionannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.expressionannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.expressionannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+ALTER TABLE nex.expressionannotation ADD CONSTRAINT expressionannotation_uk UNIQUE (datasetsample_id,dbentity_id);
+CREATE INDEX expressionanno_source_fk_index ON nex.expressionannotation (source_id);
+CREATE INDEX expressionanno_tax_fk_index ON nex.expressionannotation (taxonomy_id);
+CREATE INDEX expressionanno_ref_fk_index ON nex.expressionannotation (reference_id);
+CREATE INDEX expressionanno_dbentity_fk_index ON nex.expressionannotation (dbentity_id);
 
-DROP TABLE IF EXISTS goannotation CASCADE;
-CREATE TABLE goannotation (
+DROP TABLE IF EXISTS nex.goannotation CASCADE;
+CREATE TABLE nex.goannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -306,30 +306,30 @@ CREATE TABLE goannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT goannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE goannotation IS 'Gene Ontology annotations.';
-COMMENT ON COLUMN goannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN goannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN goannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN goannotation.eco_id IS 'FK to ECO.ECO_ID.';
-COMMENT ON COLUMN goannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN goannotation.annotation_type IS 'Type of GO annotation (high-throughput, manually curated, computational).';
-COMMENT ON COLUMN goannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN goannotation.go_id IS 'FK to GO.GO_ID.';
-COMMENT ON COLUMN goannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN goannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN goannotation.go_qualifier IS 'Qualifier of the GO annotation (enables, involved in, part of, NOT, colocalizes_with, contributed_to).';
-COMMENT ON COLUMN goannotation.date_assigned IS 'Date the GO annotation was assigned or last reviewed.';
-ALTER TABLE goannotation ADD CONSTRAINT goannotation_uk UNIQUE (dbentity_id,go_id,eco_id,reference_id,annotation_type,go_qualifier,source_id);
-ALTER TABLE goannotation ADD CONSTRAINT goanno_qualifier_ck CHECK (GO_QUALIFIER IN ('enables', 'involved in', 'part of', 'NOT', 'colocalizes_with', 'contributes_to'));
-ALTER TABLE goannotation ADD CONSTRAINT goanno_annotation_type_ck CHECK (ANNOTATION_TYPE IN ('high-throughput', 'manually curated', 'computational'));
-CREATE INDEX goanno_eco_fk_index ON goannotation (eco_id);
-CREATE INDEX goanno_tax_fk_index ON goannotation (taxonomy_id);
-CREATE INDEX goanno_ref_fk_index ON goannotation (reference_id);
-CREATE INDEX goanno_source_fk_index ON goannotation (source_id);
-CREATE INDEX goanno_go_fk_index ON goannotation (go_id);
+COMMENT ON TABLE nex.goannotation IS 'Gene Ontology annotations.';
+COMMENT ON COLUMN nex.goannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.goannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.goannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.goannotation.eco_id IS 'FK to ECO.ECO_ID.';
+COMMENT ON COLUMN nex.goannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.goannotation.annotation_type IS 'Type of GO annotation (high-throughput, manually curated, computational).';
+COMMENT ON COLUMN nex.goannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.goannotation.go_id IS 'FK to GO.GO_ID.';
+COMMENT ON COLUMN nex.goannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.goannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.goannotation.go_qualifier IS 'Qualifier of the GO annotation (enables, involved in, part of, NOT, colocalizes_with, contributed_to).';
+COMMENT ON COLUMN nex.goannotation.date_assigned IS 'Date the GO annotation was assigned or last reviewed.';
+ALTER TABLE nex.goannotation ADD CONSTRAINT goannotation_uk UNIQUE (dbentity_id,go_id,eco_id,reference_id,annotation_type,go_qualifier,source_id);
+ALTER TABLE nex.goannotation ADD CONSTRAINT goanno_qualifier_ck CHECK (GO_QUALIFIER IN ('enables', 'involved in', 'part of', 'NOT', 'colocalizes_with', 'contributes_to'));
+ALTER TABLE nex.goannotation ADD CONSTRAINT goanno_annotation_type_ck CHECK (ANNOTATION_TYPE IN ('high-throughput', 'manually curated', 'computational'));
+CREATE INDEX goanno_eco_fk_index ON nex.goannotation (eco_id);
+CREATE INDEX goanno_tax_fk_index ON nex.goannotation (taxonomy_id);
+CREATE INDEX goanno_ref_fk_index ON nex.goannotation (reference_id);
+CREATE INDEX goanno_source_fk_index ON nex.goannotation (source_id);
+CREATE INDEX goanno_go_fk_index ON nex.goannotation (go_id);
 
-DROP TABLE IF EXISTS gosupportingevidence CASCADE;
-CREATE TABLE gosupportingevidence (
+DROP TABLE IF EXISTS nex.gosupportingevidence CASCADE;
+CREATE TABLE nex.gosupportingevidence (
 	gosupportingevidence_id bigint NOT NULL DEFAULT nextval('detail_seq'),
 	annotation_id bigint NOT NULL,
 	group_id bigint NOT NULL,
@@ -340,20 +340,20 @@ CREATE TABLE gosupportingevidence (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT gosupportingevidence_pk PRIMARY KEY (gosupportingevidence_id)
 ) ;
-COMMENT ON TABLE gosupportingevidence IS 'Evidence to support the GO annotation (column 8 of the GAF file).';
-COMMENT ON COLUMN gosupportingevidence.gosupportingevidence_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN gosupportingevidence.evidence_type IS 'How the supporting evidence is associated with the GO annotation (with, from).';
-COMMENT ON COLUMN gosupportingevidence.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN gosupportingevidence.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN gosupportingevidence.annotation_id IS 'FK to GOANNOTATION.ANNOTATION_ID.';
-COMMENT ON COLUMN gosupportingevidence.group_id IS 'A grouping number.';
-COMMENT ON COLUMN gosupportingevidence.dbxref_id IS 'External cross reference identifier.';
-COMMENT ON COLUMN gosupportingevidence.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE gosupportingevidence ADD CONSTRAINT gosupportingevidence_uk UNIQUE (annotation_id,dbxref_id,group_id,evidence_type);
-ALTER TABLE gosupportingevidence ADD CONSTRAINT gosupportingevidence_type_ck CHECK (EVIDENCE_TYPE IN ('with', 'from'));
+COMMENT ON TABLE nex.gosupportingevidence IS 'Evidence to support the GO annotation (column 8 of the GAF file).';
+COMMENT ON COLUMN nex.gosupportingevidence.gosupportingevidence_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.gosupportingevidence.evidence_type IS 'How the supporting evidence is associated with the GO annotation (with, from).';
+COMMENT ON COLUMN nex.gosupportingevidence.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.gosupportingevidence.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.gosupportingevidence.annotation_id IS 'FK to GOANNOTATION.ANNOTATION_ID.';
+COMMENT ON COLUMN nex.gosupportingevidence.group_id IS 'A grouping number.';
+COMMENT ON COLUMN nex.gosupportingevidence.dbxref_id IS 'External cross reference identifier.';
+COMMENT ON COLUMN nex.gosupportingevidence.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.gosupportingevidence ADD CONSTRAINT gosupportingevidence_uk UNIQUE (annotation_id,dbxref_id,group_id,evidence_type);
+ALTER TABLE nex.gosupportingevidence ADD CONSTRAINT gosupportingevidence_type_ck CHECK (EVIDENCE_TYPE IN ('with', 'from'));
 
-DROP TABLE IF EXISTS goextension CASCADE;
-CREATE TABLE goextension (
+DROP TABLE IF EXISTS nex.goextension CASCADE;
+CREATE TABLE nex.goextension (
 	goextension_id bigint NOT NULL DEFAULT nextval('detail_seq'),
 	annotation_id bigint NOT NULL,
 	group_id bigint NOT NULL,
@@ -364,20 +364,20 @@ CREATE TABLE goextension (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT goextension_pk PRIMARY KEY (goextension_id)
 ) ;
-COMMENT ON TABLE goextension IS 'Cross references used to qualify or enhance the GO annotation (column 16 of the GAF file).';
-COMMENT ON COLUMN goextension.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN goextension.ro_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN goextension.annotation_id IS 'FK to GOANNOTATION.ANNOTATION_ID.';
-COMMENT ON COLUMN goextension.group_id IS 'A grouping number.';
-COMMENT ON COLUMN goextension.dbxref_id IS 'External cross reference identifier.';
-COMMENT ON COLUMN goextension.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN goextension.goextension_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN goextension.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-ALTER TABLE goextension ADD CONSTRAINT goextension_uk UNIQUE (annotation_id,dbxref_id,group_id,ro_id);
-CREATE INDEX goext_ro_fk_index ON goextension (ro_id);
+COMMENT ON TABLE nex.goextension IS 'Cross references used to qualify or enhance the GO annotation (column 16 of the GAF file).';
+COMMENT ON COLUMN nex.goextension.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.goextension.ro_id IS 'FK to RO.RO_ID.';
+COMMENT ON COLUMN nex.goextension.annotation_id IS 'FK to GOANNOTATION.ANNOTATION_ID.';
+COMMENT ON COLUMN nex.goextension.group_id IS 'A grouping number.';
+COMMENT ON COLUMN nex.goextension.dbxref_id IS 'External cross reference identifier.';
+COMMENT ON COLUMN nex.goextension.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.goextension.goextension_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.goextension.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+ALTER TABLE nex.goextension ADD CONSTRAINT goextension_uk UNIQUE (annotation_id,dbxref_id,group_id,ro_id);
+CREATE INDEX goext_ro_fk_index ON nex.goextension (ro_id);
 
-DROP TABLE IF EXISTS goslimannotation CASCADE;
-CREATE TABLE goslimannotation (
+DROP TABLE IF EXISTS nex.goslimannotation CASCADE;
+CREATE TABLE nex.goslimannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -388,23 +388,23 @@ CREATE TABLE goslimannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT goslimannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE goslimannotation IS 'A subset of GO annotations that provide a broad overview, often used to summarize results.';
-COMMENT ON COLUMN goslimannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN goslimannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN goslimannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN goslimannotation.goslim_id IS 'FK to GOSLIM.GOSLIM_ID.';
-COMMENT ON COLUMN goslimannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN goslimannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN goslimannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN goslimannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-ALTER TABLE goslimannotation ADD CONSTRAINT goslimannotation_uk UNIQUE (dbentity_id,goslim_id);
-CREATE INDEX goslimanno_tax_fk_index ON goslimannotation (taxonomy_id);
-CREATE INDEX goslimanno_source_fk_index ON goslimannotation (source_id);
-CREATE INDEX goslimanno_ref_fk_index ON goslimannotation (reference_id);
-CREATE INDEX goslimanno_goslim_fk_index ON goslimannotation (goslim_id);
+COMMENT ON TABLE nex.goslimannotation IS 'A subset of GO annotations that provide a broad overview, often used to summarize results.';
+COMMENT ON COLUMN nex.goslimannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.goslimannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.goslimannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.goslimannotation.goslim_id IS 'FK to GOSLIM.GOSLIM_ID.';
+COMMENT ON COLUMN nex.goslimannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.goslimannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.goslimannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.goslimannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+ALTER TABLE nex.goslimannotation ADD CONSTRAINT goslimannotation_uk UNIQUE (dbentity_id,goslim_id);
+CREATE INDEX goslimanno_tax_fk_index ON nex.goslimannotation (taxonomy_id);
+CREATE INDEX goslimanno_source_fk_index ON nex.goslimannotation (source_id);
+CREATE INDEX goslimanno_ref_fk_index ON nex.goslimannotation (reference_id);
+CREATE INDEX goslimanno_goslim_fk_index ON nex.goslimannotation (goslim_id);
 
-DROP TABLE IF EXISTS geninteractionannotation CASCADE;
-CREATE TABLE geninteractionannotation (
+DROP TABLE IF EXISTS nex.geninteractionannotation CASCADE;
+CREATE TABLE nex.geninteractionannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity1_id bigint NOT NULL,
 	dbentity2_id bigint NOT NULL,
@@ -420,31 +420,31 @@ CREATE TABLE geninteractionannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT geninteractionannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE geninteractionannotation IS 'Genetic interaction annotations from BioGRID.';
-COMMENT ON COLUMN geninteractionannotation.biogrid_experimental_system IS 'Experimental system as defined by BIOGRID.';
-COMMENT ON COLUMN geninteractionannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN geninteractionannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN geninteractionannotation.dbentity2_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN geninteractionannotation.bait_hit IS 'Direction of the genetic interaction (Bait-Hit, Hit-Bait).';
-COMMENT ON COLUMN geninteractionannotation.annotation_type IS 'Type of annotation (high-throughput, manually curated).';
-COMMENT ON COLUMN geninteractionannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN geninteractionannotation.description IS 'Extended description or note.';
-COMMENT ON COLUMN geninteractionannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN geninteractionannotation.dbentity1_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN geninteractionannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN geninteractionannotation.phenotype_id IS 'FK to PHENOTYPE.PHENOTYPE_ID.';
-COMMENT ON COLUMN geninteractionannotation.annotation_id IS 'Unique identifier (serial number).';
-ALTER TABLE geninteractionannotation ADD CONSTRAINT geninteractionannotation_uk UNIQUE (dbentity1_id,dbentity2_id,bait_hit,biogrid_experimental_system,reference_id);
-ALTER TABLE geninteractionannotation ADD CONSTRAINT geninteractionanno_bait_hit_ck CHECK (BAIT_HIT IN ('Bait-Hit', 'Hit-Bait'));
-ALTER TABLE geninteractionannotation ADD CONSTRAINT geninteractionanno_annotation_type_ck CHECK (ANNOTATION_TYPE IN ('high-throughput', 'manually curated'));
-CREATE INDEX geninteractionanno_ref_fk_index ON geninteractionannotation (reference_id);
-CREATE INDEX geninteractionanno_pheno_fk_index ON geninteractionannotation (phenotype_id);
-CREATE INDEX geninteractionanno_dbentity2_index ON geninteractionannotation (dbentity2_id);
-CREATE INDEX geninteractionanno_tax_fk_index ON geninteractionannotation (taxonomy_id);
-CREATE INDEX geninteractionanno_source_fk_index ON geninteractionannotation (source_id);
+COMMENT ON TABLE nex.geninteractionannotation IS 'Genetic interaction annotations from BioGRID.';
+COMMENT ON COLUMN nex.geninteractionannotation.biogrid_experimental_system IS 'Experimental system as defined by BIOGRID.';
+COMMENT ON COLUMN nex.geninteractionannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.geninteractionannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.geninteractionannotation.dbentity2_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.geninteractionannotation.bait_hit IS 'Direction of the genetic interaction (Bait-Hit, Hit-Bait).';
+COMMENT ON COLUMN nex.geninteractionannotation.annotation_type IS 'Type of annotation (high-throughput, manually curated).';
+COMMENT ON COLUMN nex.geninteractionannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.geninteractionannotation.description IS 'Extended description or note.';
+COMMENT ON COLUMN nex.geninteractionannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.geninteractionannotation.dbentity1_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.geninteractionannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.geninteractionannotation.phenotype_id IS 'FK to PHENOTYPE.PHENOTYPE_ID.';
+COMMENT ON COLUMN nex.geninteractionannotation.annotation_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionannotation_uk UNIQUE (dbentity1_id,dbentity2_id,bait_hit,biogrid_experimental_system,reference_id);
+ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionanno_bait_hit_ck CHECK (BAIT_HIT IN ('Bait-Hit', 'Hit-Bait'));
+ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionanno_annotation_type_ck CHECK (ANNOTATION_TYPE IN ('high-throughput', 'manually curated'));
+CREATE INDEX geninteractionanno_ref_fk_index ON nex.geninteractionannotation (reference_id);
+CREATE INDEX geninteractionanno_pheno_fk_index ON nex.geninteractionannotation (phenotype_id);
+CREATE INDEX geninteractionanno_dbentity2_index ON nex.geninteractionannotation (dbentity2_id);
+CREATE INDEX geninteractionanno_tax_fk_index ON nex.geninteractionannotation (taxonomy_id);
+CREATE INDEX geninteractionanno_source_fk_index ON nex.geninteractionannotation (source_id);
 
-DROP TABLE IF EXISTS literatureannotation CASCADE;
-CREATE TABLE literatureannotation (
+DROP TABLE IF EXISTS nex.literatureannotation CASCADE;
+CREATE TABLE nex.literatureannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -456,24 +456,24 @@ CREATE TABLE literatureannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT literatureannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE literatureannotation IS 'Literature topics or categories assigned to references.';
-COMMENT ON COLUMN literatureannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN literatureannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN literatureannotation.topic IS 'Topic or category assigned to a reference (Additional Literature, Omics, Primary Literature, Reviews).';
-COMMENT ON COLUMN literatureannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN literatureannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN literatureannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN literatureannotation.bud_id IS 'From BUD.LIT_GUIDE.LIT_GUIDE_NO.';
-COMMENT ON COLUMN literatureannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN literatureannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-ALTER TABLE literatureannotation ADD CONSTRAINT literatureannotation_uk UNIQUE (dbentity_id,reference_id,topic);
-ALTER TABLE literatureannotation ADD CONSTRAINT literatureanno_topic_ck CHECK (TOPIC IN ('Additional Literature', 'Omics', 'Primary Literature', 'Reviews'));
-CREATE INDEX literatureanno_ref_fk_index ON literatureannotation (reference_id);
-CREATE INDEX literatureanno_tax_fk_index ON literatureannotation (taxonomy_id);
-CREATE INDEX literatureanno_source_fk_index ON literatureannotation (source_id);
+COMMENT ON TABLE nex.literatureannotation IS 'Literature topics or categories assigned to references.';
+COMMENT ON COLUMN nex.literatureannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.literatureannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.literatureannotation.topic IS 'Topic or category assigned to a reference (Additional Literature, Omics, Primary Literature, Reviews).';
+COMMENT ON COLUMN nex.literatureannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.literatureannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.literatureannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.literatureannotation.bud_id IS 'From BUD.LIT_GUIDE.LIT_GUIDE_NO.';
+COMMENT ON COLUMN nex.literatureannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.literatureannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.literatureannotation ADD CONSTRAINT literatureannotation_uk UNIQUE (dbentity_id,reference_id,topic);
+ALTER TABLE nex.literatureannotation ADD CONSTRAINT literatureanno_topic_ck CHECK (TOPIC IN ('Additional Literature', 'Omics', 'Primary Literature', 'Reviews'));
+CREATE INDEX literatureanno_ref_fk_index ON nex.literatureannotation (reference_id);
+CREATE INDEX literatureanno_tax_fk_index ON nex.literatureannotation (taxonomy_id);
+CREATE INDEX literatureanno_source_fk_index ON nex.literatureannotation (source_id);
 
-DROP TABLE IF EXISTS contignoteannotation CASCADE;
-CREATE TABLE contignoteannotation (
+DROP TABLE IF EXISTS nex.contignoteannotation CASCADE;
+CREATE TABLE nex.contignoteannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	contig_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -487,26 +487,26 @@ CREATE TABLE contignoteannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT contignoteannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE contignoteannotation IS 'Notes about chromosomes or contigs.';
-COMMENT ON COLUMN contignoteannotation.note_type IS 'What type of data the note is about (Chromosome).';
-COMMENT ON COLUMN contignoteannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN contignoteannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN contignoteannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN contignoteannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN contignoteannotation.contig_id IS 'FK to CONTIG.CONTIG_ID.';
-COMMENT ON COLUMN contignoteannotation.note IS 'Note or comment.';
-COMMENT ON COLUMN contignoteannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN contignoteannotation.display_name IS 'Public display name.';
-COMMENT ON COLUMN contignoteannotation.bud_id IS 'From BUD.NOTE.NOTE_NO for SEQ_CHANGE_ARCHIVE.';
-COMMENT ON COLUMN contignoteannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-ALTER TABLE contignoteannotation ADD CONSTRAINT contignoteannotation_uk UNIQUE (contig_id,note_type,display_name,note);
-ALTER TABLE contignoteannotation ADD CONSTRAINT contignoteanno_type_ck CHECK (NOTE_TYPE IN ('Chromosome'));
-CREATE INDEX contignoteanno_source_fk_index ON contignoteannotation (source_id);
-CREATE INDEX contignoteanno_tax_fk_index ON contignoteannotation (taxonomy_id);
-CREATE INDEX contignoteanno_ref_fk_index ON contignoteannotation (reference_id);
+COMMENT ON TABLE nex.contignoteannotation IS 'Notes about chromosomes or contigs.';
+COMMENT ON COLUMN nex.contignoteannotation.note_type IS 'What type of data the note is about (Chromosome).';
+COMMENT ON COLUMN nex.contignoteannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.contignoteannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.contignoteannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.contignoteannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.contignoteannotation.contig_id IS 'FK to CONTIG.CONTIG_ID.';
+COMMENT ON COLUMN nex.contignoteannotation.note IS 'Note or comment.';
+COMMENT ON COLUMN nex.contignoteannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.contignoteannotation.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.contignoteannotation.bud_id IS 'From BUD.NOTE.NOTE_NO for SEQ_CHANGE_ARCHIVE.';
+COMMENT ON COLUMN nex.contignoteannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.contignoteannotation ADD CONSTRAINT contignoteannotation_uk UNIQUE (contig_id,note_type,display_name,note);
+ALTER TABLE nex.contignoteannotation ADD CONSTRAINT contignoteanno_type_ck CHECK (NOTE_TYPE IN ('Chromosome'));
+CREATE INDEX contignoteanno_source_fk_index ON nex.contignoteannotation (source_id);
+CREATE INDEX contignoteanno_tax_fk_index ON nex.contignoteannotation (taxonomy_id);
+CREATE INDEX contignoteanno_ref_fk_index ON nex.contignoteannotation (reference_id);
 
-DROP TABLE IF EXISTS locusnoteannotation CASCADE;
-CREATE TABLE locusnoteannotation (
+DROP TABLE IF EXISTS nex.locusnoteannotation CASCADE;
+CREATE TABLE nex.locusnoteannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -520,26 +520,26 @@ CREATE TABLE locusnoteannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT locusnoteannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE locusnoteannotation IS 'Historical and informative notes about loci and their sequences.';
-COMMENT ON COLUMN locusnoteannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN locusnoteannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN locusnoteannotation.bud_id IS 'From BUD.NOTE.NOTE_NO.';
-COMMENT ON COLUMN locusnoteannotation.display_name IS 'Public display name.';
-COMMENT ON COLUMN locusnoteannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN locusnoteannotation.note IS 'Note or comment.';
-COMMENT ON COLUMN locusnoteannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN locusnoteannotation.note_type IS 'What type of data the note is about (Locus, Sequence).';
-COMMENT ON COLUMN locusnoteannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN locusnoteannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN locusnoteannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-ALTER TABLE locusnoteannotation ADD CONSTRAINT locusnoteannotation_uk UNIQUE (dbentity_id,note_type,display_name,note);
-ALTER TABLE locusnoteannotation ADD CONSTRAINT locusnoteanno_type_ck CHECK (NOTE_TYPE IN ('Locus', 'Sequence'));
-CREATE INDEX locusnoteanno_ref_fk_index ON locusnoteannotation (reference_id);
-CREATE INDEX locusnoteanno_tax_fk_index ON locusnoteannotation (taxonomy_id);
-CREATE INDEX locusnoteanno_source_fk_index ON locusnoteannotation (source_id);
+COMMENT ON TABLE nex.locusnoteannotation IS 'Historical and informative notes about loci and their sequences.';
+COMMENT ON COLUMN nex.locusnoteannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.locusnoteannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.locusnoteannotation.bud_id IS 'From BUD.NOTE.NOTE_NO.';
+COMMENT ON COLUMN nex.locusnoteannotation.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.locusnoteannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.locusnoteannotation.note IS 'Note or comment.';
+COMMENT ON COLUMN nex.locusnoteannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.locusnoteannotation.note_type IS 'What type of data the note is about (Locus, Sequence).';
+COMMENT ON COLUMN nex.locusnoteannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.locusnoteannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.locusnoteannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+ALTER TABLE nex.locusnoteannotation ADD CONSTRAINT locusnoteannotation_uk UNIQUE (dbentity_id,note_type,display_name,note);
+ALTER TABLE nex.locusnoteannotation ADD CONSTRAINT locusnoteanno_type_ck CHECK (NOTE_TYPE IN ('Locus', 'Sequence'));
+CREATE INDEX locusnoteanno_ref_fk_index ON nex.locusnoteannotation (reference_id);
+CREATE INDEX locusnoteanno_tax_fk_index ON nex.locusnoteannotation (taxonomy_id);
+CREATE INDEX locusnoteanno_source_fk_index ON nex.locusnoteannotation (source_id);
 
-DROP TABLE IF EXISTS pathwayannotation CASCADE;
-CREATE TABLE pathwayannotation (
+DROP TABLE IF EXISTS nex.pathwayannotation CASCADE;
+CREATE TABLE nex.pathwayannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -551,25 +551,25 @@ CREATE TABLE pathwayannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT pathwayannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE pathwayannotation IS 'Annotations associated with a pathway.';
-COMMENT ON COLUMN pathwayannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN pathwayannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN pathwayannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN pathwayannotation.pathway_id IS 'FK to PATHWAYDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN pathwayannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN pathwayannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN pathwayannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN pathwayannotation.ec_id IS 'FK to EC.EC_ID.';
-COMMENT ON COLUMN pathwayannotation.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE pathwayannotation ADD CONSTRAINT pathwayannotation_uk UNIQUE (dbentity_id,pathway_id,reference_id,ec_id);
-CREATE INDEX pathwayanno_ref_fk_index ON pathwayannotation (reference_id);
-CREATE INDEX pathwayanno_pathway_fk_index ON pathwayannotation (pathway_id);
-CREATE INDEX pathwayanno_source_fk_index ON pathwayannotation (source_id);
-CREATE INDEX pathwayanno_ec_fk_index ON pathwayannotation (ec_id);
-CREATE INDEX pathwayanno_tax_fk_index ON pathwayannotation (taxonomy_id);
+COMMENT ON TABLE nex.pathwayannotation IS 'Annotations associated with a pathway.';
+COMMENT ON COLUMN nex.pathwayannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.pathwayannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.pathwayannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.pathwayannotation.pathway_id IS 'FK to PATHWAYDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.pathwayannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.pathwayannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.pathwayannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.pathwayannotation.ec_id IS 'FK to EC.EC_ID.';
+COMMENT ON COLUMN nex.pathwayannotation.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.pathwayannotation ADD CONSTRAINT pathwayannotation_uk UNIQUE (dbentity_id,pathway_id,reference_id,ec_id);
+CREATE INDEX pathwayanno_ref_fk_index ON nex.pathwayannotation (reference_id);
+CREATE INDEX pathwayanno_pathway_fk_index ON nex.pathwayannotation (pathway_id);
+CREATE INDEX pathwayanno_source_fk_index ON nex.pathwayannotation (source_id);
+CREATE INDEX pathwayanno_ec_fk_index ON nex.pathwayannotation (ec_id);
+CREATE INDEX pathwayanno_tax_fk_index ON nex.pathwayannotation (taxonomy_id);
 
-DROP TABLE IF EXISTS phenotypeannotation CASCADE;
-CREATE TABLE phenotypeannotation (
+DROP TABLE IF EXISTS nex.phenotypeannotation CASCADE;
+CREATE TABLE nex.phenotypeannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -588,36 +588,36 @@ CREATE TABLE phenotypeannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT phenotypeannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE phenotypeannotation IS 'Annotations associated with a phenotype.';
-COMMENT ON COLUMN phenotypeannotation.assay_id IS 'FK to OBI.OBI_ID.';
-COMMENT ON COLUMN phenotypeannotation.strain_name IS 'Additional information about the strain background.';
-COMMENT ON COLUMN phenotypeannotation.experiment_id IS 'FK to APO.APO_ID.';
-COMMENT ON COLUMN phenotypeannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN phenotypeannotation.allele_id IS 'FK to ALLELE.ALLELE_ID.';
-COMMENT ON COLUMN phenotypeannotation.bud_id IS 'From BUD.PHENO_ANNOTATION.PHENO_ANNOTATION_NO.';
-COMMENT ON COLUMN phenotypeannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN phenotypeannotation.reporter_id IS 'FK to REPORTER.REPORTER_ID.';
-COMMENT ON COLUMN phenotypeannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN phenotypeannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN phenotypeannotation.details IS 'Details about the phenotype that are not related to the experimental conditions.';
-COMMENT ON COLUMN phenotypeannotation.mutant_id IS 'FK to APO.APO_ID.';
-COMMENT ON COLUMN phenotypeannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN phenotypeannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN phenotypeannotation.phenotype_id IS 'FK to PHENOTYPE.PHENOTYPE_ID.';
-COMMENT ON COLUMN phenotypeannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-ALTER TABLE phenotypeannotation ADD CONSTRAINT phenotypeannotation_uk UNIQUE (dbentity_id,phenotype_id,experiment_id,mutant_id,reference_id,taxonomy_id);
-CREATE INDEX phenotypeanno_phenotype_fk_index ON phenotypeannotation (phenotype_id);
-CREATE INDEX phenotypeanno_taxonomy_fk_index ON phenotypeannotation (taxonomy_id);
-CREATE INDEX phenotypeanno_ref_fk_index ON phenotypeannotation (reference_id);
-CREATE INDEX phenotypeanno_assay_fk_index ON phenotypeannotation (assay_id);
-CREATE INDEX phenotypeanno_experiment_fk_index ON phenotypeannotation (experiment_id);
-CREATE INDEX phenotypeanno_source_fk_index ON phenotypeannotation (source_id);
-CREATE INDEX phenotypeanno_reporter_fk_index ON phenotypeannotation (reporter_id);
-CREATE INDEX phenotypeanno_allele_fk_index ON phenotypeannotation (allele_id);
-CREATE INDEX phenotypeanno_mutant_fk_index ON phenotypeannotation (mutant_id);
+COMMENT ON TABLE nex.phenotypeannotation IS 'Annotations associated with a phenotype.';
+COMMENT ON COLUMN nex.phenotypeannotation.assay_id IS 'FK to OBI.OBI_ID.';
+COMMENT ON COLUMN nex.phenotypeannotation.strain_name IS 'Additional information about the strain background.';
+COMMENT ON COLUMN nex.phenotypeannotation.experiment_id IS 'FK to APO.APO_ID.';
+COMMENT ON COLUMN nex.phenotypeannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.phenotypeannotation.allele_id IS 'FK to ALLELE.ALLELE_ID.';
+COMMENT ON COLUMN nex.phenotypeannotation.bud_id IS 'From BUD.PHENO_ANNOTATION.PHENO_ANNOTATION_NO.';
+COMMENT ON COLUMN nex.phenotypeannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.phenotypeannotation.reporter_id IS 'FK to REPORTER.REPORTER_ID.';
+COMMENT ON COLUMN nex.phenotypeannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.phenotypeannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.phenotypeannotation.details IS 'Details about the phenotype that are not related to the experimental conditions.';
+COMMENT ON COLUMN nex.phenotypeannotation.mutant_id IS 'FK to APO.APO_ID.';
+COMMENT ON COLUMN nex.phenotypeannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.phenotypeannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.phenotypeannotation.phenotype_id IS 'FK to PHENOTYPE.PHENOTYPE_ID.';
+COMMENT ON COLUMN nex.phenotypeannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+ALTER TABLE nex.phenotypeannotation ADD CONSTRAINT phenotypeannotation_uk UNIQUE (dbentity_id,phenotype_id,experiment_id,mutant_id,reference_id,taxonomy_id);
+CREATE INDEX phenotypeanno_phenotype_fk_index ON nex.phenotypeannotation (phenotype_id);
+CREATE INDEX phenotypeanno_taxonomy_fk_index ON nex.phenotypeannotation (taxonomy_id);
+CREATE INDEX phenotypeanno_ref_fk_index ON nex.phenotypeannotation (reference_id);
+CREATE INDEX phenotypeanno_assay_fk_index ON nex.phenotypeannotation (assay_id);
+CREATE INDEX phenotypeanno_experiment_fk_index ON nex.phenotypeannotation (experiment_id);
+CREATE INDEX phenotypeanno_source_fk_index ON nex.phenotypeannotation (source_id);
+CREATE INDEX phenotypeanno_reporter_fk_index ON nex.phenotypeannotation (reporter_id);
+CREATE INDEX phenotypeanno_allele_fk_index ON nex.phenotypeannotation (allele_id);
+CREATE INDEX phenotypeanno_mutant_fk_index ON nex.phenotypeannotation (mutant_id);
 
-DROP TABLE IF EXISTS phenotypeannotation_cond CASCADE;
-CREATE TABLE phenotypeannotation_cond (
+DROP TABLE IF EXISTS nex.phenotypeannotation_cond CASCADE;
+CREATE TABLE nex.phenotypeannotation_cond (
 	condition_id bigint NOT NULL DEFAULT nextval('condition_seq'),
 	annotation_id bigint NOT NULL,
 	condition_class varchar(40) NOT NULL,
@@ -628,20 +628,20 @@ CREATE TABLE phenotypeannotation_cond (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT phenotypeannotation_cond_pk PRIMARY KEY (condition_id)
 ) ;
-COMMENT ON TABLE phenotypeannotation_cond IS 'Conditions associated with a phenotype annotation.';
-COMMENT ON COLUMN phenotypeannotation_cond.condition_unit IS 'Unit associated with a numerical condition value (C, hr, %, mM, etc.).';
-COMMENT ON COLUMN phenotypeannotation_cond.condition_value IS 'Value of the condition, often numeric.';
-COMMENT ON COLUMN phenotypeannotation_cond.condition_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN phenotypeannotation_cond.condition_name IS 'Specific name of the condition.';
-COMMENT ON COLUMN phenotypeannotation_cond.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN phenotypeannotation_cond.condition_class IS 'Type of the condition (Temperature, Chemical, Media, Phase, etc.).';
-COMMENT ON COLUMN phenotypeannotation_cond.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN phenotypeannotation_cond.annotation_id IS 'FK to PHENOTYPEANNOTATION.ANNOTATION_ID.';
-ALTER TABLE phenotypeannotation_cond ADD CONSTRAINT phenotypeannotation_cond_uk UNIQUE (annotation_id,condition_class,condition_name,condition_value);
-ALTER TABLE phenotypeannotation_cond ADD CONSTRAINT phenotypeannocond_class_ck CHECK (CONDITION_CLASS IN ('assay', 'media', 'phase', 'radiation', 'temperature', 'treatment', 'chemical'));
+COMMENT ON TABLE nex.phenotypeannotation_cond IS 'Conditions associated with a phenotype annotation.';
+COMMENT ON COLUMN nex.phenotypeannotation_cond.condition_unit IS 'Unit associated with a numerical condition value (C, hr, %, mM, etc.).';
+COMMENT ON COLUMN nex.phenotypeannotation_cond.condition_value IS 'Value of the condition, often numeric.';
+COMMENT ON COLUMN nex.phenotypeannotation_cond.condition_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.phenotypeannotation_cond.condition_name IS 'Specific name of the condition.';
+COMMENT ON COLUMN nex.phenotypeannotation_cond.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.phenotypeannotation_cond.condition_class IS 'Type of the condition (Temperature, Chemical, Media, Phase, etc.).';
+COMMENT ON COLUMN nex.phenotypeannotation_cond.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.phenotypeannotation_cond.annotation_id IS 'FK to PHENOTYPEANNOTATION.ANNOTATION_ID.';
+ALTER TABLE nex.phenotypeannotation_cond ADD CONSTRAINT phenotypeannotation_cond_uk UNIQUE (annotation_id,condition_class,condition_name,condition_value);
+ALTER TABLE nex.phenotypeannotation_cond ADD CONSTRAINT phenotypeannocond_class_ck CHECK (CONDITION_CLASS IN ('assay', 'media', 'phase', 'radiation', 'temperature', 'treatment', 'chemical'));
 
-DROP TABLE IF EXISTS physinteractionannotation CASCADE;
-CREATE TABLE physinteractionannotation (
+DROP TABLE IF EXISTS nex.physinteractionannotation CASCADE;
+CREATE TABLE nex.physinteractionannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity1_id bigint NOT NULL,
 	dbentity2_id bigint NOT NULL,
@@ -657,31 +657,31 @@ CREATE TABLE physinteractionannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT physinteractionannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE physinteractionannotation IS 'Physical interaction annotations from BioGRID.';
-COMMENT ON COLUMN physinteractionannotation.annotation_type IS 'Type of annotation (high-throughput, manually curated).';
-COMMENT ON COLUMN physinteractionannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN physinteractionannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN physinteractionannotation.dbentity1_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN physinteractionannotation.description IS 'Extended description or note.';
-COMMENT ON COLUMN physinteractionannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN physinteractionannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN physinteractionannotation.biogrid_experimental_system IS 'Experimental system as defined by BIOGRID.';
-COMMENT ON COLUMN physinteractionannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN physinteractionannotation.psimod_id IS 'FK to PSIMOD.PSIMOD_ID.';
-COMMENT ON COLUMN physinteractionannotation.bait_hit IS 'Direction of the genetic interaction (Bait-Hit, Hit-Bait).';
-COMMENT ON COLUMN physinteractionannotation.dbentity2_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN physinteractionannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-ALTER TABLE physinteractionannotation ADD CONSTRAINT physinteractionannotation_uk UNIQUE (dbentity1_id,dbentity2_id,bait_hit,biogrid_experimental_system,reference_id);
-ALTER TABLE physinteractionannotation ADD CONSTRAINT physinteractionanno_annotation_type_ck CHECK (ANNOTATION_TYPE IN ('high-throughput', 'manually curated'));
-ALTER TABLE physinteractionannotation ADD CONSTRAINT physinteractionanno_bait_hit_ck CHECK (BAIT_HIT IN ('Bait-Hit', 'Hit-Bait'));
-CREATE INDEX physinteractionanno_psimod_fk_index ON physinteractionannotation (psimod_id);
-CREATE INDEX physinteractionanno_dbentity2_index ON physinteractionannotation (dbentity2_id);
-CREATE INDEX physinteractionanno_ref_fk_index ON physinteractionannotation (reference_id);
-CREATE INDEX physinteractionanno_tax_fk_index ON physinteractionannotation (taxonomy_id);
-CREATE INDEX physinteractionanno_source_fk_index ON physinteractionannotation (source_id);
+COMMENT ON TABLE nex.physinteractionannotation IS 'Physical interaction annotations from BioGRID.';
+COMMENT ON COLUMN nex.physinteractionannotation.annotation_type IS 'Type of annotation (high-throughput, manually curated).';
+COMMENT ON COLUMN nex.physinteractionannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.physinteractionannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.physinteractionannotation.dbentity1_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.physinteractionannotation.description IS 'Extended description or note.';
+COMMENT ON COLUMN nex.physinteractionannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.physinteractionannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.physinteractionannotation.biogrid_experimental_system IS 'Experimental system as defined by BIOGRID.';
+COMMENT ON COLUMN nex.physinteractionannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.physinteractionannotation.psimod_id IS 'FK to PSIMOD.PSIMOD_ID.';
+COMMENT ON COLUMN nex.physinteractionannotation.bait_hit IS 'Direction of the genetic interaction (Bait-Hit, Hit-Bait).';
+COMMENT ON COLUMN nex.physinteractionannotation.dbentity2_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.physinteractionannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+ALTER TABLE nex.physinteractionannotation ADD CONSTRAINT physinteractionannotation_uk UNIQUE (dbentity1_id,dbentity2_id,bait_hit,biogrid_experimental_system,reference_id);
+ALTER TABLE nex.physinteractionannotation ADD CONSTRAINT physinteractionanno_annotation_type_ck CHECK (ANNOTATION_TYPE IN ('high-throughput', 'manually curated'));
+ALTER TABLE nex.physinteractionannotation ADD CONSTRAINT physinteractionanno_bait_hit_ck CHECK (BAIT_HIT IN ('Bait-Hit', 'Hit-Bait'));
+CREATE INDEX physinteractionanno_psimod_fk_index ON nex.physinteractionannotation (psimod_id);
+CREATE INDEX physinteractionanno_dbentity2_index ON nex.physinteractionannotation (dbentity2_id);
+CREATE INDEX physinteractionanno_ref_fk_index ON nex.physinteractionannotation (reference_id);
+CREATE INDEX physinteractionanno_tax_fk_index ON nex.physinteractionannotation (taxonomy_id);
+CREATE INDEX physinteractionanno_source_fk_index ON nex.physinteractionannotation (source_id);
 
-DROP TABLE IF EXISTS posttranslationannotation CASCADE;
-CREATE TABLE posttranslationannotation (
+DROP TABLE IF EXISTS nex.posttranslationannotation CASCADE;
+CREATE TABLE nex.posttranslationannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -695,27 +695,27 @@ CREATE TABLE posttranslationannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT posttranslationannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE posttranslationannotation IS 'Post-translational protein modification annotations.';
-COMMENT ON COLUMN posttranslationannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN posttranslationannotation.modifier_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN posttranslationannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN posttranslationannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN posttranslationannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN posttranslationannotation.site_residue IS 'Residue of the PTM.';
-COMMENT ON COLUMN posttranslationannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN posttranslationannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN posttranslationannotation.site_index IS 'Start coordinate of the PTM.';
-COMMENT ON COLUMN posttranslationannotation.psimod_id IS 'FK to PSIMOD.PSIMOD_ID.';
-COMMENT ON COLUMN posttranslationannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-ALTER TABLE posttranslationannotation ADD CONSTRAINT posttranslationannotation_uk UNIQUE (dbentity_id,psimod_id,site_residue,site_index,reference_id,modifier_id);
-CREATE INDEX posttranslationanno_ref_fk_index ON posttranslationannotation (reference_id);
-CREATE INDEX posttranslationanno_tax_fk_index ON posttranslationannotation (taxonomy_id);
-CREATE INDEX posttranslationanno_modifier_fk_index ON posttranslationannotation (modifier_id);
-CREATE INDEX posttranslationanno_source_fk_index ON posttranslationannotation (source_id);
-CREATE INDEX posttranslationanno_psimod_fk_index ON posttranslationannotation (psimod_id);
+COMMENT ON TABLE nex.posttranslationannotation IS 'Post-translational protein modification annotations.';
+COMMENT ON COLUMN nex.posttranslationannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.posttranslationannotation.modifier_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.posttranslationannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.posttranslationannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.posttranslationannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.posttranslationannotation.site_residue IS 'Residue of the PTM.';
+COMMENT ON COLUMN nex.posttranslationannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.posttranslationannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.posttranslationannotation.site_index IS 'Start coordinate of the PTM.';
+COMMENT ON COLUMN nex.posttranslationannotation.psimod_id IS 'FK to PSIMOD.PSIMOD_ID.';
+COMMENT ON COLUMN nex.posttranslationannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.posttranslationannotation ADD CONSTRAINT posttranslationannotation_uk UNIQUE (dbentity_id,psimod_id,site_residue,site_index,reference_id,modifier_id);
+CREATE INDEX posttranslationanno_ref_fk_index ON nex.posttranslationannotation (reference_id);
+CREATE INDEX posttranslationanno_tax_fk_index ON nex.posttranslationannotation (taxonomy_id);
+CREATE INDEX posttranslationanno_modifier_fk_index ON nex.posttranslationannotation (modifier_id);
+CREATE INDEX posttranslationanno_source_fk_index ON nex.posttranslationannotation (source_id);
+CREATE INDEX posttranslationanno_psimod_fk_index ON nex.posttranslationannotation (psimod_id);
 
-DROP TABLE IF EXISTS proteindomainannotation CASCADE;
-CREATE TABLE proteindomainannotation (
+DROP TABLE IF EXISTS nex.proteindomainannotation CASCADE;
+CREATE TABLE nex.proteindomainannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -729,26 +729,26 @@ CREATE TABLE proteindomainannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT proteindomainannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE proteindomainannotation IS 'Protein domains as predicted by InterProScan.';
-COMMENT ON COLUMN proteindomainannotation.end_index IS 'End coordinate of the protein domain relative to the locus.';
-COMMENT ON COLUMN proteindomainannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN proteindomainannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN proteindomainannotation.date_of_run IS 'When the InterProScan analysis was run.';
-COMMENT ON COLUMN proteindomainannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN proteindomainannotation.proteindomain_id IS 'FK to PROTEINDOMAIN.PROTEINDOMAIN_ID.';
-COMMENT ON COLUMN proteindomainannotation.start_index IS 'Start coordinate of the protein domain relative to the locus.';
-COMMENT ON COLUMN proteindomainannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN proteindomainannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN proteindomainannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN proteindomainannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-ALTER TABLE proteindomainannotation ADD CONSTRAINT proteindomainannotation_uk UNIQUE (dbentity_id,proteindomain_id,start_index,end_index);
-CREATE INDEX proteindomainanno_tax_fk_index ON proteindomainannotation (taxonomy_id);
-CREATE INDEX proteindomainanno_ref_fk_index ON proteindomainannotation (reference_id);
-CREATE INDEX proteindomainanno_source_fk_index ON proteindomainannotation (source_id);
-CREATE INDEX proteindomainanno_domain_fk_index ON proteindomainannotation (proteindomain_id);
+COMMENT ON TABLE nex.proteindomainannotation IS 'Protein domains as predicted by InterProScan.';
+COMMENT ON COLUMN nex.proteindomainannotation.end_index IS 'End coordinate of the protein domain relative to the locus.';
+COMMENT ON COLUMN nex.proteindomainannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.proteindomainannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.proteindomainannotation.date_of_run IS 'When the InterProScan analysis was run.';
+COMMENT ON COLUMN nex.proteindomainannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.proteindomainannotation.proteindomain_id IS 'FK to PROTEINDOMAIN.PROTEINDOMAIN_ID.';
+COMMENT ON COLUMN nex.proteindomainannotation.start_index IS 'Start coordinate of the protein domain relative to the locus.';
+COMMENT ON COLUMN nex.proteindomainannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.proteindomainannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.proteindomainannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.proteindomainannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.proteindomainannotation ADD CONSTRAINT proteindomainannotation_uk UNIQUE (dbentity_id,proteindomain_id,start_index,end_index);
+CREATE INDEX proteindomainanno_tax_fk_index ON nex.proteindomainannotation (taxonomy_id);
+CREATE INDEX proteindomainanno_ref_fk_index ON nex.proteindomainannotation (reference_id);
+CREATE INDEX proteindomainanno_source_fk_index ON nex.proteindomainannotation (source_id);
+CREATE INDEX proteindomainanno_domain_fk_index ON nex.proteindomainannotation (proteindomain_id);
 
-DROP TABLE IF EXISTS proteinexptannotation CASCADE;
-CREATE TABLE proteinexptannotation (
+DROP TABLE IF EXISTS nex.proteinexptannotation CASCADE;
+CREATE TABLE nex.proteinexptannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -762,27 +762,27 @@ CREATE TABLE proteinexptannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT proteinexptannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE proteinexptannotation IS 'Protein experiment data gathered from literature.';
-COMMENT ON COLUMN proteinexptannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN proteinexptannotation.assay_id IS 'FK to OBI.OBI_ID.';
-COMMENT ON COLUMN proteinexptannotation.data_unit IS 'Units for the protein experimental value.';
-COMMENT ON COLUMN proteinexptannotation.data_value IS 'Protein experimental value.';
-COMMENT ON COLUMN proteinexptannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN proteinexptannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN proteinexptannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN proteinexptannotation.experiment_type IS 'Type of protein experiment (abundance, localization).';
-COMMENT ON COLUMN proteinexptannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN proteinexptannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN proteinexptannotation.annotation_id IS 'Unique identifier (serial number).';
-ALTER TABLE proteinexptannotation ADD CONSTRAINT proteinexptannotation_uk UNIQUE (dbentity_id,reference_id,experiment_type);
-ALTER TABLE proteinexptannotation ADD CONSTRAINT proteinexptanno_type_ck CHECK (EXPERIMENT_TYPE IN ('abundance', 'localization'));
-CREATE INDEX proteinexptanno_source_fk_index ON proteinexptannotation (source_id);
-CREATE INDEX proteinexptanno_tax_fk_index ON proteinexptannotation (taxonomy_id);
-CREATE INDEX proteinexptanno_ref_fk_index ON proteinexptannotation (reference_id);
-CREATE INDEX proteinexptanno_assay_fk_index ON proteinexptannotation (assay_id);
+COMMENT ON TABLE nex.proteinexptannotation IS 'Protein experiment data gathered from literature.';
+COMMENT ON COLUMN nex.proteinexptannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.proteinexptannotation.assay_id IS 'FK to OBI.OBI_ID.';
+COMMENT ON COLUMN nex.proteinexptannotation.data_unit IS 'Units for the protein experimental value.';
+COMMENT ON COLUMN nex.proteinexptannotation.data_value IS 'Protein experimental value.';
+COMMENT ON COLUMN nex.proteinexptannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.proteinexptannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.proteinexptannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.proteinexptannotation.experiment_type IS 'Type of protein experiment (abundance, localization).';
+COMMENT ON COLUMN nex.proteinexptannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.proteinexptannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.proteinexptannotation.annotation_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.proteinexptannotation ADD CONSTRAINT proteinexptannotation_uk UNIQUE (dbentity_id,reference_id,experiment_type);
+ALTER TABLE nex.proteinexptannotation ADD CONSTRAINT proteinexptanno_type_ck CHECK (EXPERIMENT_TYPE IN ('abundance', 'localization'));
+CREATE INDEX proteinexptanno_source_fk_index ON nex.proteinexptannotation (source_id);
+CREATE INDEX proteinexptanno_tax_fk_index ON nex.proteinexptannotation (taxonomy_id);
+CREATE INDEX proteinexptanno_ref_fk_index ON nex.proteinexptannotation (reference_id);
+CREATE INDEX proteinexptanno_assay_fk_index ON nex.proteinexptannotation (assay_id);
 
-DROP TABLE IF EXISTS proteinexptannotation_cond CASCADE;
-CREATE TABLE proteinexptannotation_cond (
+DROP TABLE IF EXISTS nex.proteinexptannotation_cond CASCADE;
+CREATE TABLE nex.proteinexptannotation_cond (
 	condition_id bigint NOT NULL DEFAULT nextval('condition_seq'),
 	annotation_id bigint NOT NULL,
 	condition_class varchar(40) NOT NULL,
@@ -793,19 +793,19 @@ CREATE TABLE proteinexptannotation_cond (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT proteinexptannotation_cond_pk PRIMARY KEY (condition_id)
 ) ;
-COMMENT ON TABLE proteinexptannotation_cond IS 'Conditions associated with a protein experiment annotation.';
-COMMENT ON COLUMN proteinexptannotation_cond.condition_value IS 'Value of the condition, often numeric.';
-COMMENT ON COLUMN proteinexptannotation_cond.condition_name IS 'Specific name of the condition.';
-COMMENT ON COLUMN proteinexptannotation_cond.condition_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN proteinexptannotation_cond.condition_unit IS 'Unit associated with a numerical condition value (C, hr, %, mM, etc.).';
-COMMENT ON COLUMN proteinexptannotation_cond.annotation_id IS 'FK to PROTEINEXPTANNOTATION.ANNOTATION_ID.';
-COMMENT ON COLUMN proteinexptannotation_cond.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN proteinexptannotation_cond.condition_class IS 'Type of the condition (Temperature, Chemical, Media, Phase, etc.).';
-COMMENT ON COLUMN proteinexptannotation_cond.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE proteinexptannotation_cond ADD CONSTRAINT proteinexptannotation_cond_uk UNIQUE (annotation_id,condition_class,condition_name,condition_value);
+COMMENT ON TABLE nex.proteinexptannotation_cond IS 'Conditions associated with a protein experiment annotation.';
+COMMENT ON COLUMN nex.proteinexptannotation_cond.condition_value IS 'Value of the condition, often numeric.';
+COMMENT ON COLUMN nex.proteinexptannotation_cond.condition_name IS 'Specific name of the condition.';
+COMMENT ON COLUMN nex.proteinexptannotation_cond.condition_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.proteinexptannotation_cond.condition_unit IS 'Unit associated with a numerical condition value (C, hr, %, mM, etc.).';
+COMMENT ON COLUMN nex.proteinexptannotation_cond.annotation_id IS 'FK to PROTEINEXPTANNOTATION.ANNOTATION_ID.';
+COMMENT ON COLUMN nex.proteinexptannotation_cond.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.proteinexptannotation_cond.condition_class IS 'Type of the condition (Temperature, Chemical, Media, Phase, etc.).';
+COMMENT ON COLUMN nex.proteinexptannotation_cond.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.proteinexptannotation_cond ADD CONSTRAINT proteinexptannotation_cond_uk UNIQUE (annotation_id,condition_class,condition_name,condition_value);
 
-DROP TABLE IF EXISTS proteinsequenceannotation CASCADE;
-CREATE TABLE proteinsequenceannotation (
+DROP TABLE IF EXISTS nex.proteinsequenceannotation CASCADE;
+CREATE TABLE nex.proteinsequenceannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
@@ -823,31 +823,31 @@ CREATE TABLE proteinsequenceannotation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT proteinsequenceannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE proteinsequenceannotation IS 'Current protein sequence information.';
-COMMENT ON COLUMN proteinsequenceannotation.download_filename IS 'User interface download filename.';
-COMMENT ON COLUMN proteinsequenceannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN proteinsequenceannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN proteinsequenceannotation.annotation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN proteinsequenceannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN proteinsequenceannotation.seq_version IS 'Date of the protein sequence release.';
-COMMENT ON COLUMN proteinsequenceannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN proteinsequenceannotation.bud_id IS 'From BUD.PROTEIN.INFO.';
-COMMENT ON COLUMN proteinsequenceannotation.file_header IS 'Fasta header line of the download file.';
-COMMENT ON COLUMN proteinsequenceannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN proteinsequenceannotation.genomerelease_id IS 'FK to GENOMERELEASE.GENOMERELEASE_ID.';
-COMMENT ON COLUMN proteinsequenceannotation.residues IS 'Current sequence of the protein.';
-COMMENT ON COLUMN proteinsequenceannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN proteinsequenceannotation.contig_id IS 'FK to CONTIG.CONTIG_ID.';
-COMMENT ON COLUMN proteinsequenceannotation.file_id IS 'FK to FILE.FILE_ID.';
-ALTER TABLE proteinsequenceannotation ADD CONSTRAINT proteinsequenceannotation_uk UNIQUE (dbentity_id,taxonomy_id,contig_id);
-CREATE INDEX proteinsequenceanno_genomerelease_fk_index ON proteinsequenceannotation (genomerelease_id);
-CREATE INDEX proteinsequenceanno_tax_fk_index ON proteinsequenceannotation (taxonomy_id);
-CREATE INDEX proteinsequenceanno_ref_fk_index ON proteinsequenceannotation (reference_id);
-CREATE INDEX proteinsequenceanno_source_fk_index ON proteinsequenceannotation (source_id);
-CREATE INDEX proteinsequenceanno_contig_fk_index ON proteinsequenceannotation (contig_id);
+COMMENT ON TABLE nex.proteinsequenceannotation IS 'Current protein sequence information.';
+COMMENT ON COLUMN nex.proteinsequenceannotation.download_filename IS 'User interface download filename.';
+COMMENT ON COLUMN nex.proteinsequenceannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.proteinsequenceannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.proteinsequenceannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.proteinsequenceannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.proteinsequenceannotation.seq_version IS 'Date of the protein sequence release.';
+COMMENT ON COLUMN nex.proteinsequenceannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.proteinsequenceannotation.bud_id IS 'From BUD.PROTEIN.INFO.';
+COMMENT ON COLUMN nex.proteinsequenceannotation.file_header IS 'Fasta header line of the download file.';
+COMMENT ON COLUMN nex.proteinsequenceannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.proteinsequenceannotation.genomerelease_id IS 'FK to GENOMERELEASE.GENOMERELEASE_ID.';
+COMMENT ON COLUMN nex.proteinsequenceannotation.residues IS 'Current sequence of the protein.';
+COMMENT ON COLUMN nex.proteinsequenceannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.proteinsequenceannotation.contig_id IS 'FK to CONTIG.CONTIG_ID.';
+COMMENT ON COLUMN nex.proteinsequenceannotation.file_id IS 'FK to FILE.FILE_ID.';
+ALTER TABLE nex.proteinsequenceannotation ADD CONSTRAINT proteinsequenceannotation_uk UNIQUE (dbentity_id,taxonomy_id,contig_id);
+CREATE INDEX proteinsequenceanno_genomerelease_fk_index ON nex.proteinsequenceannotation (genomerelease_id);
+CREATE INDEX proteinsequenceanno_tax_fk_index ON nex.proteinsequenceannotation (taxonomy_id);
+CREATE INDEX proteinsequenceanno_ref_fk_index ON nex.proteinsequenceannotation (reference_id);
+CREATE INDEX proteinsequenceanno_source_fk_index ON nex.proteinsequenceannotation (source_id);
+CREATE INDEX proteinsequenceanno_contig_fk_index ON nex.proteinsequenceannotation (contig_id);
 
-DROP TABLE IF EXISTS proteinsequence_detail CASCADE;
-CREATE TABLE proteinsequence_detail (
+DROP TABLE IF EXISTS nex.proteinsequence_detail CASCADE;
+CREATE TABLE nex.proteinsequence_detail (
 	detail_id bigint NOT NULL DEFAULT nextval('detail_seq'),
 	annotation_id bigint NOT NULL,
 	molecular_weight numeric NOT NULL,
@@ -893,54 +893,54 @@ CREATE TABLE proteinsequence_detail (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT proteinsequence_detail_pk PRIMARY KEY (detail_id)
 ) ;
-COMMENT ON TABLE proteinsequence_detail IS 'Properties of the protein sequence.';
-COMMENT ON COLUMN proteinsequence_detail.ala IS 'Number of alanines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.gln IS 'Number of glutamines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.cai IS 'Codon adaptation index.';
-COMMENT ON COLUMN proteinsequence_detail.codon_bias IS 'Codon bias of the protein.';
-COMMENT ON COLUMN proteinsequence_detail.molecular_weight IS 'Molecular weight of the protein.';
-COMMENT ON COLUMN proteinsequence_detail.nitrogen IS 'Number of nitrogen atoms in the protein atomic composition.';
-COMMENT ON COLUMN proteinsequence_detail.thr IS 'Number of thereonines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.protein_length IS 'Length of the protein.';
-COMMENT ON COLUMN proteinsequence_detail.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN proteinsequence_detail.gravy_score IS 'General average hydropathicity score for the hypothetical translated gene product.';
-COMMENT ON COLUMN proteinsequence_detail.all_cys_ext_coeff IS 'All Cys residues appear as half cystines.';
-COMMENT ON COLUMN proteinsequence_detail.phe IS 'Number of phenylalanines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.pro IS 'Number of prolines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.fop_score IS 'Frequency of optimal condons (ratio of optimal codons to synonymous codons).';
-COMMENT ON COLUMN proteinsequence_detail.gly IS 'Number of glycines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.glu IS 'Number of glutamic acids in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.oxygen IS 'Number of oxygen atoms in the protein atomic composition.';
-COMMENT ON COLUMN proteinsequence_detail.pi IS 'Isoelectric point of the protein.';
-COMMENT ON COLUMN proteinsequence_detail.instability_index IS 'Correlation between stability of a protein and its dipeptide composition.';
-COMMENT ON COLUMN proteinsequence_detail.aromaticity_score IS 'Frequency of aromatic amino acids (Phe, Tyr, Trp) in the hypothetical translated gene product.';
-COMMENT ON COLUMN proteinsequence_detail.lys IS 'Number of lysines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.asn IS 'Number of asparagines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.arg IS 'Number of arginines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.leu IS 'Number of leucines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.cys IS 'Number of cysteines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.detail_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN proteinsequence_detail.his IS 'Number of histidines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.hydrogen IS 'Number of hydrogen atoms in the protein atomic composition.';
-COMMENT ON COLUMN proteinsequence_detail.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN proteinsequence_detail.aliphatic_index IS 'Relative volume occupied by aliphatic side chains (alanine, valine, isoleucine, and leucine).';
-COMMENT ON COLUMN proteinsequence_detail.trp IS 'Number of tryptophans in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.ser IS 'Number of serines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.c_term_seq IS 'C terminal sequence of the protein.';
-COMMENT ON COLUMN proteinsequence_detail.n_term_seq IS 'N terminal sequence of the protein.';
-COMMENT ON COLUMN proteinsequence_detail.met IS 'Number of methionines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.asp IS 'Number of aspartic acids in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.sulfur IS 'Number of sulfur atoms in the protein atomic composition.';
-COMMENT ON COLUMN proteinsequence_detail.tyr IS 'Number of tyrosines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.no_cys_ext_coeff IS 'No Cys residues appear as half cystines.';
-COMMENT ON COLUMN proteinsequence_detail.val IS 'Number of valines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.annotation_id IS 'FK to PROTEINSEQUENCEANNOTATION.ANNOTATION_ID.';
-COMMENT ON COLUMN proteinsequence_detail.ile IS 'Number of isoleucines in the protein.';
-COMMENT ON COLUMN proteinsequence_detail.carbon IS 'Number of carbon atoms in the protein atomic composition.';
-ALTER TABLE proteinsequence_detail ADD CONSTRAINT proteinsequence_detail_uk UNIQUE (annotation_id);
+COMMENT ON TABLE nex.proteinsequence_detail IS 'Properties of the protein sequence.';
+COMMENT ON COLUMN nex.proteinsequence_detail.ala IS 'Number of alanines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.gln IS 'Number of glutamines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.cai IS 'Codon adaptation index.';
+COMMENT ON COLUMN nex.proteinsequence_detail.codon_bias IS 'Codon bias of the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.molecular_weight IS 'Molecular weight of the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.nitrogen IS 'Number of nitrogen atoms in the protein atomic composition.';
+COMMENT ON COLUMN nex.proteinsequence_detail.thr IS 'Number of thereonines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.protein_length IS 'Length of the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.proteinsequence_detail.gravy_score IS 'General average hydropathicity score for the hypothetical translated gene product.';
+COMMENT ON COLUMN nex.proteinsequence_detail.all_cys_ext_coeff IS 'All Cys residues appear as half cystines.';
+COMMENT ON COLUMN nex.proteinsequence_detail.phe IS 'Number of phenylalanines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.pro IS 'Number of prolines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.fop_score IS 'Frequency of optimal condons (ratio of optimal codons to synonymous codons).';
+COMMENT ON COLUMN nex.proteinsequence_detail.gly IS 'Number of glycines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.glu IS 'Number of glutamic acids in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.oxygen IS 'Number of oxygen atoms in the protein atomic composition.';
+COMMENT ON COLUMN nex.proteinsequence_detail.pi IS 'Isoelectric point of the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.instability_index IS 'Correlation between stability of a protein and its dipeptide composition.';
+COMMENT ON COLUMN nex.proteinsequence_detail.aromaticity_score IS 'Frequency of aromatic amino acids (Phe, Tyr, Trp) in the hypothetical translated gene product.';
+COMMENT ON COLUMN nex.proteinsequence_detail.lys IS 'Number of lysines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.asn IS 'Number of asparagines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.arg IS 'Number of arginines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.leu IS 'Number of leucines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.cys IS 'Number of cysteines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.detail_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.proteinsequence_detail.his IS 'Number of histidines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.hydrogen IS 'Number of hydrogen atoms in the protein atomic composition.';
+COMMENT ON COLUMN nex.proteinsequence_detail.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.proteinsequence_detail.aliphatic_index IS 'Relative volume occupied by aliphatic side chains (alanine, valine, isoleucine, and leucine).';
+COMMENT ON COLUMN nex.proteinsequence_detail.trp IS 'Number of tryptophans in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.ser IS 'Number of serines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.c_term_seq IS 'C terminal sequence of the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.n_term_seq IS 'N terminal sequence of the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.met IS 'Number of methionines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.asp IS 'Number of aspartic acids in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.sulfur IS 'Number of sulfur atoms in the protein atomic composition.';
+COMMENT ON COLUMN nex.proteinsequence_detail.tyr IS 'Number of tyrosines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.no_cys_ext_coeff IS 'No Cys residues appear as half cystines.';
+COMMENT ON COLUMN nex.proteinsequence_detail.val IS 'Number of valines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.annotation_id IS 'FK to PROTEINSEQUENCEANNOTATION.ANNOTATION_ID.';
+COMMENT ON COLUMN nex.proteinsequence_detail.ile IS 'Number of isoleucines in the protein.';
+COMMENT ON COLUMN nex.proteinsequence_detail.carbon IS 'Number of carbon atoms in the protein atomic composition.';
+ALTER TABLE nex.proteinsequence_detail ADD CONSTRAINT proteinsequence_detail_uk UNIQUE (annotation_id);
 
-
-CREATE TABLE regulationannotation (
+DROP TABLE IF EXISTS nex.regulationannotation CASCADE;
+CREATE TABLE nex.regulationannotation (
     annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
     target_id bigint NOT NULL,
     regulator_id bigint NOT NULL,
@@ -956,26 +956,26 @@ CREATE TABLE regulationannotation (
     created_by varchar(12) NOT NULL,
     CONSTRAINT regulationannotation_pk PRIMARY KEY (annotation_id)
 ) ;
-COMMENT ON TABLE regulationannotation IS 'Target and regulator annotation information.';
-COMMENT ON COLUMN regulationannotation.target_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN regulationannotation.regulation_type IS 'Type of regulation (transcription, RNA stability, protein activity, protein stability).';
-COMMENT ON COLUMN regulationannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN regulationannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN regulationannotation.happens_during IS 'Cell cycle phase of the regulation using Gene Ontology biological process terms.';
-COMMENT ON COLUMN regulationannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN regulationannotation.direction IS 'Direction (positive or negative) of the regulation.';
-COMMENT ON COLUMN regulationannotation.regulator_type IS 'Type of regulator (transcription factor, chromatin modifier, protein modifier, RNA binder, RNA modifier, protein binder).';
-COMMENT ON COLUMN regulationannotation.annotation_id IS 'Unique identifier (Oracle sequence).';
-COMMENT ON COLUMN regulationannotation.regulator_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN regulationannotation.eco_id IS 'FK to ECO.ECO_ID.';
-COMMENT ON COLUMN regulationannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN regulationannotation.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE regulationannotation ADD CONSTRAINT regulationannotation_uk UNIQUE (target_id,regulator_id,eco_id,reference_id);
-ALTER TABLE regulationannotation ADD CONSTRAINT regulationanno_regulator_type_ck CHECK (REGULATOR_TYPE in ('transcription factor', 'chromatin modifier', 'protein modifier', 'RNA binder', 'RNA modifier', 'protein binder'));
-ALTER TABLE regulationannotation ADD CONSTRAINT regulationanno_regulation_type_ck CHECK (REGULATION_TYPE in ('transcription', 'RNA stability', 'protein activity', 'protein stability'));
-CREATE INDEX regulationanno_source_fk_index ON regulationannotation (source_id);
-CREATE INDEX regulationanno_tax_fk_index ON regulationannotation (taxonomy_id);
-CREATE INDEX regulationanno_regulator_fk_index ON regulationannotation (regulator_id);
-CREATE INDEX regulationanno_happpensduring_fk_index ON regulationannotation (happens_during);
-CREATE INDEX regulationanno_ref_fk_index ON regulationannotation (reference_id);
-CREATE INDEX regulationanno_eco_fk_index ON regulationannotation (eco_id);
+COMMENT ON TABLE nex.regulationannotation IS 'Target and regulator annotation information.';
+COMMENT ON COLUMN nex.regulationannotation.target_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.regulationannotation.regulation_type IS 'Type of regulation (transcription, RNA stability, protein activity, protein stability).';
+COMMENT ON COLUMN nex.regulationannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.regulationannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.regulationannotation.happens_during IS 'Cell cycle phase of the regulation using Gene Ontology biological process terms.';
+COMMENT ON COLUMN nex.regulationannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.regulationannotation.direction IS 'Direction (positive or negative) of the regulation.';
+COMMENT ON COLUMN nex.regulationannotation.regulator_type IS 'Type of regulator (transcription factor, chromatin modifier, protein modifier, RNA binder, RNA modifier, protein binder).';
+COMMENT ON COLUMN nex.regulationannotation.annotation_id IS 'Unique identifier (Oracle sequence).';
+COMMENT ON COLUMN nex.regulationannotation.regulator_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.regulationannotation.eco_id IS 'FK to ECO.ECO_ID.';
+COMMENT ON COLUMN nex.regulationannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.regulationannotation.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationannotation_uk UNIQUE (target_id,regulator_id,eco_id,reference_id);
+ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationanno_regulator_type_ck CHECK (REGULATOR_TYPE in ('transcription factor', 'chromatin modifier', 'protein modifier', 'RNA binder', 'RNA modifier', 'protein binder'));
+ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationanno_regulation_type_ck CHECK (REGULATION_TYPE in ('transcription', 'RNA stability', 'protein activity', 'protein stability'));
+CREATE INDEX regulationanno_source_fk_index ON nex.regulationannotation (source_id);
+CREATE INDEX regulationanno_tax_fk_index ON nex.regulationannotation (taxonomy_id);
+CREATE INDEX regulationanno_regulator_fk_index ON nex.regulationannotation (regulator_id);
+CREATE INDEX regulationanno_happpensduring_fk_index ON nex.regulationannotation (happens_during);
+CREATE INDEX regulationanno_ref_fk_index ON nex.regulationannotation (reference_id);
+CREATE INDEX regulationanno_eco_fk_index ON nex.regulationannotation (eco_id);
