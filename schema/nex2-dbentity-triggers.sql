@@ -1080,6 +1080,7 @@ DROP TRIGGER IF EXISTS pathwaydbentity_audr ON nex.pathwaydbentity CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_pathwaydbentity_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
+   v_sgdid   	nex.dbentity.sgdid%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
@@ -1091,12 +1092,16 @@ BEGIN
 
   ELSIF (TG_OP = 'DELETE') THEN
 
+        SELECT sgdid INTO v_sgdid
+        FROM nex.dbentity
+        WHERE dbentity_id = OLD.dbentity_id;
+	
         UPDATE nex.sgdid SET sgdid_status = 'Deleted'
-	WHERE display_name = OLD.sgdid;
+	WHERE display_name = v_sgdid;
 	       
         v_row := OLD.dbentity_id || '[:]' || coalesce(OLD.biocyc_id,'');
 
-            PERFORM nex.insertdeletelog('PATHWAYDBENTITY', OLD.dbentity_id, v_row, USER);
+        PERFORM nex.insertdeletelog('PATHWAYDBENTITY', OLD.dbentity_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -1517,6 +1522,7 @@ DROP TRIGGER IF EXISTS filedbentity_audr ON nex.filedbentity CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_filedbentity_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
+    v_sgdid     nex.dbentity.sgdid%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
@@ -1580,8 +1586,12 @@ BEGIN
 
   ELSIF (TG_OP = 'DELETE') THEN
 
+        SELECT sgdid INTO v_sgdid
+	FROM nex.dbentity
+	WHERE dbentity_id = OLD.dbentity_id;
+
     UPDATE nex.sgdid SET sgdid_status = 'Deleted'
-    WHERE display_name = OLD.sgdid;
+    WHERE display_name = v_sgdid;
 	       
     v_row := OLD.dbentity_id || '[:]' || OLD.topic_id || '[:]' ||
              OLD.data_id || '[:]' || OLD.format_id || '[:]' ||
@@ -1903,6 +1913,7 @@ DROP TRIGGER IF EXISTS referencedbentity_audr ON nex.referencedbentity CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referencedbentity_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
+   v_sgdid   	nex.dbentity.sgdid%TYPE;
 BEGIN
   If (TG_OP = 'UPDATE') THEN
 
@@ -1974,8 +1985,12 @@ BEGIN
 
   ELSIF (TG_OP = 'DELETE') THEN
 
+        SELECT sgdid INTO v_sgdid
+	FROM nex.dbentity
+	WHERE dbentity_id = OLD.dbentity_id;
+
         UPDATE nex.sgdid SET sgdid_status = 'Deleted'
-        WHERE display_name = OLD.sgdid;
+        WHERE display_name = v_sgdid;
 	
        v_row := OLD.dbentity_id || '[:]' || OLD.method_obtained || '[:]' ||
                 OLD.publication_status || '[:]' ||
