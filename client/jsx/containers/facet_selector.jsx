@@ -6,7 +6,7 @@ import Radium from 'radium';
 import _ from 'underscore';
 import pluralize from 'pluralize';
 
-import { getHrefWithoutAgg, getCategoryDisplayName } from '../lib/search_helpers';
+import { getHrefWithoutAgg, getCategoryDisplayName, getFacetName } from '../lib/search_helpers';
 
 const DEFAULT_FACET_LENGTH = 5;
 const MEDIUM_FACET_LENGTH = 20;
@@ -77,7 +77,7 @@ const FacetSelector = React.createClass({
           break;
       };
       return (
-        <FacetList aggKey={d.key} values={d.values} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key}/>
+        <FacetList aggKey={d.key} values={d.values} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key} name={getFacetName(d.key)}/>
       );
     });
 

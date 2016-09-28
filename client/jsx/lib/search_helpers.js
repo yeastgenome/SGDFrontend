@@ -15,9 +15,11 @@ export function getCategoryDisplayName (key) {
     download: 'Download',
     resource: 'Resource',
     contig: 'Contig',
-    colleagues: 'Colleague'
+    colleague: 'Colleague',
+    observable: 'Observable',
+    reserved_name: 'Reserved Gene Names'
   };
-  return labels[key] || key;
+  return labels[key] || key.replace('_', ' ');
 };
 
 // proxy the history createPath, but create a temp history object.  Ideally, this would be a class method import, but it's not.
@@ -44,6 +46,21 @@ export function getHrefWithoutAgg (queryParamsObject, aggKey, thisValue, current
   // reset pagintion
   newQp.page = 0;
   // Create a little history object to use the createPath method. 
-  const tempHistory = useQueries(createMemoryHistory)()
   return createPath({ pathname: SEARCH_URL, query: newQp });
+};
+
+// Allow some facets to have different names than the key.  If it's not one of the whitelisted changes, just returns the key without _.
+export function getFacetName (key) {
+  switch (key) {
+    case 'colleague_loci':
+      return 'Genes of Interest';
+      break;
+    case 'go_locus':
+    case 'reference_locus':
+    case 'phenotype_locus': 
+      return 'Associated Genes';
+      break;
+    default:
+      return key.replace('_', ' ');
+  }
 };

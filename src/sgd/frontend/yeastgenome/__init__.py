@@ -16,7 +16,6 @@ from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 from src.sgd.frontend.frontend_interface import FrontendInterface
-from src.sgd.frontend.yeastgenome.backendless.load_data_from_file import get_data
 
 # setup elastic search
 from src.sgd.frontend import config
@@ -468,17 +467,14 @@ class YeastgenomeFrontend(FrontendInterface):
         res = es.get(index='sequence_objects', id=id)['_source']
         return Response(body=json.dumps(res), content_type='application/json')
 
-    def backend(self, url_repr, args=None):
-        if self.backend_url == 'backendless':
-            return json.dumps(get_data(url_repr))
-        else:
-            relative_url = '/' + ('/'.join(url_repr))
-            backend_url = self.backend_url
-            full_url = backend_url + relative_url
-            if args is not None and len(args) > 0:
-                full_url += '?' + ('&'.join([key + '=' + value for key, value in args.items() if key != 'callback']))
-            self.log.info(full_url)
-            return json.dumps(get_json(full_url))
+    def backend(self, url_repr, request, args=None):
+        relative_url = '/' + ('/'.join(url_repr))
+        backend_url = self.backend_url
+        full_url = backend_url + relative_url
+        if args is not None and len(args) > 0:
+            full_url += '?' + request.query_string
+        self.log.info(full_url)
+        return json.dumps(get_json(full_url))
     
 def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     chosen_frontend = YeastgenomeFrontend(backend_url, heritage_url, log_directory)
@@ -511,14 +507,11 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     return chosen_frontend, configurator
 
 def get_json(url, data=None):
-    if url.startswith('backendless'):
-        return get_data(url[12:].split('/'))
+    if data is not None:
+        headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
+        r = requests.post(url, data=json.dumps(data), headers=headers)
     else:
-        if data is not None:
-            headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
-            r = requests.post(url, data=json.dumps(data), headers=headers)
-        else:
-            r = requests.get(url)
+        r = requests.get(url)
 
     try:
         return r.json()

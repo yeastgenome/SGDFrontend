@@ -193,7 +193,7 @@ def prep_views(chosen_frontend, config):
                     route_name='experiment')
 
     config.add_route('backend', '/backend/*url')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('backend', request)(getattr(chosen_frontend, 'backend')(url_repr=request.matchdict['url'], args=request.GET)),
+    config.add_view(lambda request: chosen_frontend.response_wrapper('backend', request)(getattr(chosen_frontend, 'backend')(url_repr=request.matchdict['url'], args=request.GET, request=request)),
                     renderer='string',
                     route_name='backend')
 
