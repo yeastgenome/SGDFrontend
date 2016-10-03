@@ -54,7 +54,7 @@ def search(request):
     json_results = requests.get(search_url).text
     # if param is_quick = true, try to do some redirecting
     if request.params.get('is_quick') == 'true':
-        query = request.params.get('q').lower()
+        query = request.params.get('q', '').lower()
         parsed_results = json.loads(json_results)['results']
         # if query ends in "p", try to search for protein page by executing a second search without the "p"
         if query.endswith('p'):
