@@ -1993,7 +1993,7 @@ EXECUTE PROCEDURE trigger_fct_go_biur();
 DROP TRIGGER IF EXISTS goalias_audr ON nex.go_alias CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_goalias_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
     IF (TG_OP = 'UPDATE') THEN
 
