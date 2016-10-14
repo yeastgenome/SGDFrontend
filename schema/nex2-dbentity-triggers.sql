@@ -260,7 +260,7 @@ BEGIN
 
     v_row := OLD.dbentity_id || '[:]' || OLD.systematic_name || '[:]' ||
              coalesce(OLD.gene_name,'') || '[:]' || coalesce(OLD.qualifier,'') || '[:]' ||
-             coalesce(OLD.genetic_position,'') || '[:]' || coalesce(OLD.name_description,'') || '[:]' ||
+             coalesce(OLD.genetic_position,0) || '[:]' || coalesce(OLD.name_description,'') || '[:]' ||
              coalesce(OLD.headline,'') || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.has_summary || '[:]' || OLD.has_sequence || '[:]' ||
              OLD.has_history || '[:]' || OLD.has_literature || '[:]' ||
