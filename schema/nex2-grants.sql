@@ -126,11 +126,11 @@ GRANT SELECT,INSERT,UPDATE,DELETE ON nex.chebi_alias TO curator;
 GRANT SELECT ON nex.chebi_alias TO PUBLIC;
 
 -- Set priviledge on TABLE CHEBI_RELATION
-ALTER TABLE nex.chebi_relation OWNER TO nex;
-GRANT ALL ON nex. chebi_relation TO nex;
-REVOKE ALL ON nex.chebi_relation FROM PUBLIC;
-GRANT SELECT,INSERT,UPDATE,DELETE ON nex.chebi_relation TO curator;
-GRANT SELECT ON nex.chebi_relation TO PUBLIC;
+--ALTER TABLE nex.chebi_relation OWNER TO nex;
+--GRANT ALL ON nex. chebi_relation TO nex;
+--REVOKE ALL ON nex.chebi_relation FROM PUBLIC;
+--GRANT SELECT,INSERT,UPDATE,DELETE ON nex.chebi_relation TO curator;
+--GRANT SELECT ON nex.chebi_relation TO PUBLIC;
 
 -- Set priviledge on TABLE CHEBI_URL
 ALTER TABLE nex.chebi_url OWNER TO nex;
