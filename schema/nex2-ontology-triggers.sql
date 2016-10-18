@@ -508,83 +508,83 @@ CREATE TRIGGER chebialias_biur
 	BEFORE INSERT OR UPDATE ON nex.chebi_alias FOR EACH ROW
 	EXECUTE PROCEDURE trigger_fct_chebialias_biur();
 
-DROP TRIGGER IF EXISTS chebirelation_audr ON nex.chebi_relation CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_chebirelation_audr() RETURNS trigger AS $BODY$
-DECLARE
-    v_row       nex.deletelog.deleted_row%TYPE;
-BEGIN
-  IF TG_OP = 'UPDATE' THEN
+--DROP TRIGGER IF EXISTS chebirelation_audr ON nex.chebi_relation CASCADE;
+--CREATE OR REPLACE FUNCTION trigger_fct_chebirelation_audr() RETURNS trigger AS $BODY$
+--DECLARE
+--    v_row       nex.deletelog.deleted_row%TYPE;
+--BEGIN
+--  IF TG_OP = 'UPDATE' THEN
+--
+--     IF (OLD.source_id != NEW.source_id) THEN
+--        PERFORM nex.insertupdatelog('CHEBI_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id, NEW.source_id, USER);
+--    END IF;
+--
+--    IF (OLD.parent_id != NEW.parent_id) THEN
+--        PERFORM nex.insertupdatelog('CHEBI_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id, NEW.parent_id, USER);
+--    END IF;
+--
+--     IF (OLD.child_id != NEW.child_id) THEN
+--        PERFORM nex.insertupdatelog('CHEBI_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id, NEW.child_id, USER);
+--    END IF;
+--
+--    IF (OLD.ro_id != NEW.ro_id) THEN
+--        PERFORM nex.insertupdatelog('CHEBI_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id, NEW.ro_id, USER);
+--    END IF;
+--
+--    RETURN NEW;
+--
+--  ELSIF (TG_OP = 'DELETE') THEN
+--
+--    v_row := OLD.relation_id || '[:]' || OLD.source_id || '[:]' ||
+--             OLD.parent_id || '[:]' ||
+--             OLD.child_id || '[:]' || OLD.ro_id || '[:]' ||
+--             OLD.date_created || '[:]' || OLD.created_by;
+--
+--            PERFORM nex.insertdeletelog('CHEBI_RELATION', OLD.relation_id, v_row, USER);
+--
+--     RETURN OLD;
+--  END IF;
+--
+--END;
+--$BODY$ LANGUAGE 'plpgsql';
 
-     IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('CHEBI_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id, NEW.source_id, USER);
-    END IF;
+--CREATE TRIGGER chebirelation_audr
+--AFTER UPDATE OR DELETE ON nex.chebi_relation FOR EACH ROW
+--EXECUTE PROCEDURE trigger_fct_chebirelation_audr();
 
-    IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM nex.insertupdatelog('CHEBI_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id, NEW.parent_id, USER);
-    END IF;
+--DROP TRIGGER IF EXISTS chebirelation_biur ON nex.chebi_relation CASCADE;
+--CREATE OR REPLACE FUNCTION trigger_fct_chebirelation_biur() RETURNS trigger AS $BODY$
+--BEGIN
+--  IF (TG_OP = 'INSERT') THEN
+--
+--       NEW.created_by := UPPER(NEW.created_by);
+--       PERFORM nex.checkuser(NEW.created_by);
+--
+--       RETURN NEW;
+--
+--  ELSIF (TG_OP = 'UPDATE') THEN
+--
+--    IF (NEW.relation_id != OLD.relation_id) THEN
+--        RAISE EXCEPTION 'Primary key cannot be updated';
+--    END IF;
+--
+--    IF (NEW.date_created != OLD.date_created) THEN
+--        RAISE EXCEPTION 'Audit columns cannot be updated.';
+--    END IF;
+--
+--    IF (NEW.created_by != OLD.created_by) THEN
+--        RAISE EXCEPTION 'Audit columns cannot be updated.';
+--    END IF;
+--
+--    RETURN NEW;
+--  END IF;
+--
+--END;
+--$BODY$ LANGUAGE 'plpgsql';
 
-     IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM nex.insertupdatelog('CHEBI_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id, NEW.child_id, USER);
-    END IF;
-
-    IF (OLD.ro_id != NEW.ro_id) THEN
-        PERFORM nex.insertupdatelog('CHEBI_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id, NEW.ro_id, USER);
-    END IF;
-
-    RETURN NEW;
-
-  ELSIF (TG_OP = 'DELETE') THEN
-
-    v_row := OLD.relation_id || '[:]' || OLD.source_id || '[:]' ||
-             OLD.parent_id || '[:]' ||
-             OLD.child_id || '[:]' || OLD.ro_id || '[:]' ||
-             OLD.date_created || '[:]' || OLD.created_by;
-
-             PERFORM nex.insertdeletelog('CHEBI_RELATION', OLD.relation_id, v_row, USER);
-
-     RETURN OLD;
-  END IF;
-
-END;
-$BODY$ LANGUAGE 'plpgsql';
-
-CREATE TRIGGER chebirelation_audr
-AFTER UPDATE OR DELETE ON nex.chebi_relation FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_chebirelation_audr();
-
-DROP TRIGGER IF EXISTS chebirelation_biur ON nex.chebi_relation CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_chebirelation_biur() RETURNS trigger AS $BODY$
-BEGIN
-  IF (TG_OP = 'INSERT') THEN
-
-       NEW.created_by := UPPER(NEW.created_by);
-       PERFORM nex.checkuser(NEW.created_by);
-
-       RETURN NEW;
-
-  ELSIF (TG_OP = 'UPDATE') THEN
-
-    IF (NEW.relation_id != OLD.relation_id) THEN
-        RAISE EXCEPTION 'Primary key cannot be updated';
-    END IF;
-
-    IF (NEW.date_created != OLD.date_created) THEN
-        RAISE EXCEPTION 'Audit columns cannot be updated.';
-    END IF;
-
-    IF (NEW.created_by != OLD.created_by) THEN
-        RAISE EXCEPTION 'Audit columns cannot be updated.';
-    END IF;
-
-    RETURN NEW;
-  END IF;
-
-END;
-$BODY$ LANGUAGE 'plpgsql';
-
-CREATE TRIGGER chebirelation_biur
-BEFORE INSERT OR UPDATE ON nex.chebi_relation FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_chebirelation_biur();
+--CREATE TRIGGER chebirelation_biur
+--BEFORE INSERT OR UPDATE ON nex.chebi_relation FOR EACH ROW
+--EXECUTE PROCEDURE trigger_fct_chebirelation_biur();
 
 DROP TRIGGER IF EXISTS chebiurl_audr ON nex.chebi_url CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_chebiurl_audr() RETURNS trigger AS $BODY$

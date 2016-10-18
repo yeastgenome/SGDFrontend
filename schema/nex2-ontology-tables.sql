@@ -164,29 +164,29 @@ ALTER TABLE nex.chebi_alias ADD CONSTRAINT chebi_alias_uk UNIQUE (chebi_id,displ
 ALTER TABLE nex.chebi_alias ADD CONSTRAINT chebialias_type_ck CHECK (ALIAS_TYPE IN ('EXACT','RELATED','Secondary ChEBI ID','IUPAC name'));
 CREATE INDEX chebialias_source_fk_index ON nex.chebi_alias (source_id);
 
-DROP TABLE IF EXISTS nex.chebi_relation CASCADE;
-CREATE TABLE nex.chebi_relation (
-	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
-	source_id bigint NOT NULL,
-	parent_id bigint NOT NULL,
-	child_id bigint NOT NULL,
-	ro_id bigint NOT NULL,
-	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	created_by varchar(12) NOT NULL,
-	CONSTRAINT chebi_relation_pk PRIMARY KEY (relation_id)
-) ;
-COMMENT ON TABLE nex.chebi_relation IS 'Relationship between two chemicals.';
-COMMENT ON COLUMN nex.chebi_relation.ro_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN nex.chebi_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN nex.chebi_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN nex.chebi_relation.relation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN nex.chebi_relation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN nex.chebi_relation.parent_id IS 'FK to CHEBI_ID.';
-COMMENT ON COLUMN nex.chebi_relation.child_id IS 'FK to CHEBI_ID.';
-ALTER TABLE nex.chebi_relation ADD CONSTRAINT chebi_relation_uk UNIQUE (parent_id,child_id,ro_id);
-CREATE INDEX chebirelation_ro_fk_index ON nex.chebi_relation (ro_id);
-CREATE INDEX chebirelation_source_fk_index ON nex.chebi_relation (source_id);
-CREATE INDEX chebirelation_child_fk_index ON nex.chebi_relation (child_id);
+--DROP TABLE IF EXISTS nex.chebi_relation CASCADE;
+--CREATE TABLE nex.chebi_relation (
+--	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
+--	source_id bigint NOT NULL,
+--	parent_id bigint NOT NULL,
+--	child_id bigint NOT NULL,
+--	ro_id bigint NOT NULL,
+--	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+--	created_by varchar(12) NOT NULL,
+--	CONSTRAINT chebi_relation_pk PRIMARY KEY (relation_id)
+--) ;
+--COMMENT ON TABLE nex.chebi_relation IS 'Relationship between two chemicals.';
+--COMMENT ON COLUMN nex.chebi_relation.ro_id IS 'FK to RO.RO_ID.';
+--COMMENT ON COLUMN nex.chebi_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+--COMMENT ON COLUMN nex.chebi_relation.created_by IS 'Username of the person who entered the record into the database.';
+--COMMENT ON COLUMN nex.chebi_relation.relation_id IS 'Unique identifier (serial number).';
+--COMMENT ON COLUMN nex.chebi_relation.date_created IS 'Date the record was entered into the database.';
+--COMMENT ON COLUMN nex.chebi_relation.parent_id IS 'FK to CHEBI_ID.';
+--COMMENT ON COLUMN nex.chebi_relation.child_id IS 'FK to CHEBI_ID.';
+--ALTER TABLE nex.chebi_relation ADD CONSTRAINT chebi_relation_uk UNIQUE (parent_id,child_id,ro_id);
+--CREATE INDEX chebirelation_ro_fk_index ON nex.chebi_relation (ro_id);
+--CREATE INDEX chebirelation_source_fk_index ON nex.chebi_relation (source_id);
+--CREATE INDEX chebirelation_child_fk_index ON nex.chebi_relation (child_id);
 
 DROP TABLE IF EXISTS nex.chebi_url cascade;
 CREATE TABLE nex.chebi_url (

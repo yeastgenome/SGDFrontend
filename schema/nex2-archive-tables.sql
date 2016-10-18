@@ -313,7 +313,7 @@ COMMENT ON COLUMN nex.arch_proteinsequenceannotation.bud_id IS 'From BUD.PROTEIN
 COMMENT ON COLUMN nex.arch_proteinsequenceannotation.taxonomy_id IS 'From TAXONOMY.TAXONOMY_ID.';
 COMMENT ON COLUMN nex.arch_proteinsequenceannotation.genomerelease_id IS 'From GENOMERELEASE.GENOMERELEASE_ID.';
 ALTER TABLE nex.arch_proteinsequenceannotation ADD CONSTRAINT arch_proteinsequenceannotation_uk UNIQUE (dbentity_id,taxonomy_id,contig_id,genomerelease_id);
-CREATE INDEX archproteinsequenceanno_genomerelease_idx ON arch_proteinsequenceannotation (genomerelease_id);
+CREATE INDEX archproteinsequenceanno_genomerelease_index ON arch_proteinsequenceannotation (genomerelease_id);
 CREATE INDEX archproteinsequenceanno_tax_index ON nex.arch_proteinsequenceannotation (taxonomy_id);
 CREATE INDEX archproteinsequenceanno_contig_fk_index ON nex.arch_proteinsequenceannotation (contig_id);
 CREATE INDEX archproteinsequenceanno_source_index ON nex.arch_proteinsequenceannotation (source_id);

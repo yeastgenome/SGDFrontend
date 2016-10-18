@@ -723,8 +723,8 @@ CREATE INDEX proteindomainurl_source_fk_index ON nex.proteindomain_url (source_i
 
 DROP TABLE IF EXISTS nex.reporter CASCADE;
 CREATE TABLE nex.reporter (
-	reporter_id bigint NOT NULL,
-	format_name varchar(100) NOT NULL DEFAULT nextval('object_seq'),
+	reporter_id bigint NOT NULL DEFAULT nextval('object_seq'),
+	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
