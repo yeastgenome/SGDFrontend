@@ -800,9 +800,9 @@ BEGIN
     v_row := OLD.dbentity_id || '[:]' ||
              OLD.taxonomy_id || '[:]' || OLD.strain_type || '[:]' ||
              coalesce(OLD.genotype,'') || '[:]' || coalesce(OLD.genbank_id,'') || '[:]' ||
-             coalesce(OLD.assembly_size,'') || '[:]' || coalesce(OLD.fold_coverage,'') || '[:]' ||
-             coalesce(OLD.scaffold_number,'') || '[:]' || coalesce(OLD.longest_scaffold,'') || '[:]' ||
-             coalesce(OLD.scaffold_nfifty,'') || '[:]' || coalesce(OLD.feature_count,'');
+             coalesce(OLD.assembly_size,0) || '[:]' || coalesce(OLD.fold_coverage,0) || '[:]' ||
+             coalesce(OLD.scaffold_number,0) || '[:]' || coalesce(OLD.longest_scaffold,0) || '[:]' ||
+             coalesce(OLD.scaffold_nfifty,0) || '[:]' || coalesce(OLD.feature_count,0);
 
             PERFORM nex.insertdeletelog('STRAINDBENTITY', OLD.dbentity_id, v_row, USER);
 
