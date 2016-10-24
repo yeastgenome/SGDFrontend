@@ -10,7 +10,7 @@ SET client_encoding TO 'UTF8';
 
 DROP TABLE IF EXISTS nex.arch_contig CASCADE; 
 CREATE TABLE nex.arch_contig (
-	contig_id bigint NOT NULL,
+	contig_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500),
@@ -111,7 +111,7 @@ CREATE INDEX archcontigchange_genomerelease_index ON nex.arch_contigchange (geno
 
 DROP TABLE IF EXISTS nex.arch_dnasequenceannotation CASCADE; 
 CREATE TABLE nex.arch_dnasequenceannotation (
-	annotation_id bigint NOT NULL,
+	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
 	taxonomy_id bigint NOT NULL,
@@ -171,7 +171,7 @@ CREATE INDEX archdnasequenceanno_ref_index ON nex.arch_dnasequenceannotation (re
 
 DROP TABLE IF EXISTS nex.arch_dnasubsequence CASCADE; 
 CREATE TABLE nex.arch_dnasubsequence (
-	dnasubsequence_id bigint NOT NULL,
+	dnasubsequence_id bigint NOT NULL DEFAULT nextval('detail_seq'),
 	annotation_id bigint NOT NULL,
 	dbentity_id bigint NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -277,7 +277,7 @@ ALTER TABLE nex.arch_locuschange ADD CONSTRAINT archlocuschange_type_ck CHECK (C
 
 DROP TABLE IF EXISTS nex.arch_proteinsequenceannotation CASCADE; 
 CREATE TABLE nex.arch_proteinsequenceannotation (
-	annotation_id bigint NOT NULL,
+	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
 	taxonomy_id bigint NOT NULL,
