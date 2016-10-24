@@ -4,7 +4,7 @@ var path = require("path");
 
 // cache assets on browser for 1 month
 var CACHE_TTL = 2629740;
-var CLOUDFRONT_ROOT = "https://d1dx7s2t1jbvin.cloudfront.net/";
+var CLOUDFRONT_ROOT = "https://d1x6jdqbvd5dr.cloudfront.net/";
 
 module.exports = function(grunt) {
     var BUILD_PATH = "src/sgd/frontend/yeastgenome/static/";
@@ -16,7 +16,7 @@ module.exports = function(grunt) {
             options: {
                 accessKeyId: "<%= awsKey %>",
                 secretAccessKey: "<%= awsSecret %>",
-                bucket: "sgd-assets",
+                bucket: "sgd-prod-assets",
                 headers: {
                     "CacheControl": CACHE_TTL
                 },

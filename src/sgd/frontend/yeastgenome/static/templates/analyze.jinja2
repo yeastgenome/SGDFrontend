@@ -26,7 +26,6 @@
             add_navbar_title(list_name_html);
             add_navbar_element('Tools', 'tools');
             add_navbar_element('Genes', 'gene_list');
-            add_navbar_element('GO Process Enrichment', 'enrichment');
         </script>
 
 <!-- Analyze
@@ -59,7 +58,7 @@
 
 <!-- Gene List
 ================================================== -->
-        <section id="gene_list" data-magellan-destination="gene_list">
+        <section id="gene_list" class="analyze-gene-list" data-magellan-destination="gene_list">
                 <h2>Genes</h2>
                 <hr />
                 <!-- Includes gene_list_table into template -->
@@ -67,18 +66,6 @@
                 {% set table_title = list_name %}
                 {% include "gene_list_table.jinja2" %}
         </section>
-
-<!-- Enrichment
-================================================== -->
-        <section id="enrichment" data-magellan-destination="enrichment">
-                <h2>Shared GO Processes</h2>
-                <hr />
-                <!-- Includes gene_list_table into template -->
-                {% set table_id = "enrichment_table" %}
-                {% set table_title = 'Biological Process Enrichment for ' + list_name %}
-                {% include "enrichment_table.jinja2" %}
-        </section>
-
     </div>
 </div>
 

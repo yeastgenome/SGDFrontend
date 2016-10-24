@@ -3,12 +3,7 @@ $(document).ready(function() {
 
     var gene_table = create_gene_table(bioents);
     create_download_button("gene_list_table_download", gene_table, list_name);
-    $("#gene_list_table_analyze").hide()
-
-    var enrichment_table = create_enrichment_table("enrichment_table", gene_table, null);
-    create_download_button("enrichment_table_download", enrichment_table, list_name + "_go_enrichment");
-    $("#enrichment_table_analyze").hide()
-
+    $("#gene_list_table_analyze").hide();
     set_up_tools(gene_table, "go_term_finder", "go_slim_mapper", "spell", "yeastmine");
 
 });

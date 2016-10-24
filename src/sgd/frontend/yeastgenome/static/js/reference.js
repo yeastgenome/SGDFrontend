@@ -18,6 +18,7 @@ $(document).ready(function() {
         create_literature_list('review', data, 'Reviews')
     });
 
+    var download_link = '/download_citations';
     $("#download_citation").click(function() {post_to_url(download_link, {"display_name":reference['display_name'].replace(' ', '_') + '_citation.nbib', "reference_ids": [reference['id']]});})
 
     if(reference['counts']['interaction'] > 0) {

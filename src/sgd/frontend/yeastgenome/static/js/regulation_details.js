@@ -21,7 +21,7 @@ $(document).ready(function() {
 	  	$.getJSON('/backend/locus/' + locus['id'] + '/binding_site_details', function(data) {
             // manually change binding site motif locations to s3 locations
             data.forEach( function (d) {
-                d.link = d.link.replace('/static/img/yetfasco', 'https://s3-us-west-2.amazonaws.com/sgd-binding-site-motifs')
+                d.link = d.link.replace('/static/img/yetfasco', 'https://s3-us-west-2.amazonaws.com/sgd-prod-binding-site-motifs')
             });
 	        create_binding_site_table(data);
 	    });
