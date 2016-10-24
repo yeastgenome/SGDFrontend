@@ -92,7 +92,7 @@ BEGIN
         PERFORM nex.checksgdid(NEW.sgdid);
     END IF;
 
-   IF (NEW.obj_url is NULL) THEN
+   IF (NEW.obj_url IS NULL) THEN
         NEW.obj_url := CONCAT('/'||lower(NEW.subclass)||'/', NEW.sgdid);
    END IF;
 
