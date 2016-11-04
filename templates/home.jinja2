@@ -22,6 +22,8 @@
         </script>
         <div id="j-application"></div>
         <!-- custom app js bundled -->
-        <script src="/static/js/application.js"></script>
+        {% webpack 'main' %}
+          <script type="text/javascript" src="{{ ASSET.url }}"></script>
+        {% endwebpack %}
     </body>
 </html>
