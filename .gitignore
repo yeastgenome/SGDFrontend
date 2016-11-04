@@ -76,3 +76,4 @@ static/js/application.js.map
 *.DS_Store
 
 dump.rdb
+.tmp
