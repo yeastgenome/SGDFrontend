@@ -64,7 +64,7 @@ def main(global_config, **settings):
     config.add_route('reference_list', '/reference_list')
 
     config.scan()
-    config.add_static_view(name='static', path='../static')
+    config.add_static_view(name='assets', path='./build')
 
     config.configure_celery(global_config['__file__'])
 
