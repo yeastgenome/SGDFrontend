@@ -11,7 +11,7 @@ prod-build:
 	python setup.py develop
 
 run:
-	source dev_variables.sh && webpack && pserve development.ini --reload
+	source dev_variables.sh && pserve development.ini --reload
 
 celery:
 	source dev_variables.sh && celery worker -A pyramid_celery.celery_app --ini development.ini
