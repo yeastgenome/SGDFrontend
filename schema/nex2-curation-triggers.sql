@@ -7,67 +7,67 @@ SET client_encoding TO 'UTF8';
 \set ON_ERROR_STOP ON
 
 
-DROP TRIGGER IF EXISTS authorresponse_audr ON authorresponse CASCADE;
+DROP TRIGGER IF EXISTS authorresponse_audr ON nex.authorresponse CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_authorresponse_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM insertupdatelog('AUTHORRESPONSE', 'REFERENCE_ID', OLD.curation_id, OLD.reference_id, NEW.reference_id, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'REFERENCE_ID', OLD.curation_id, OLD.reference_id, NEW.reference_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('AUTHORRESPONSE', 'SOURCE_ID', OLD.curation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'SOURCE_ID', OLD.curation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.colleague_id IS NULL) AND (NEW.colleague_id IS NOT NULL)) OR ((OLD.colleague_id IS NOT NULL) AND (NEW.colleague_id IS NULL)) OR (OLD.colleague_id != NEW.colleague_id)) THEN
-        PERFORM insertupdatelog('AUTHORRESPONSE', 'COLLEAGUE_ID', OLD.curation_id, OLD.colleague_id, NEW.colleague_id, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'COLLEAGUE_ID', OLD.curation_id, OLD.colleague_id, NEW.colleague_id, USER);
     END IF;
 
     IF (OLD.author_email != NEW.author_email) THEN
-        PERFORM insertupdatelog('AUTHORRESPONSE', 'AUTHOR_EMAIL', OLD.curation_id, OLD.author_email, NEW.author_email, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'AUTHOR_EMAIL', OLD.curation_id, OLD.author_email, NEW.author_email, USER);
     END IF;
 
     IF (OLD.has_novel_research != NEW.has_novel_research) THEN
-        PERFORM insertupdatelog('AUTHORRESPONSE', 'HAS_NOVEL_RESEARCH', OLD.curation_id, OLD.has_novel_research, NEW.has_novel_research, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'HAS_NOVEL_RESEARCH', OLD.curation_id, OLD.has_novel_research, NEW.has_novel_research, USER);
     END IF;
 
     IF (OLD.has_large_scale_data != NEW.has_large_scale_data) THEN
-        PERFORM insertupdatelog('AUTHORRESPONSE', 'HAS_LARGE_SCALE_DATA', OLD.curation_id, OLD.has_large_scale_data, NEW.has_large_scale_data, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'HAS_LARGE_SCALE_DATA', OLD.curation_id, OLD.has_large_scale_data, NEW.has_large_scale_data, USER);
     END IF;
 
     IF (OLD.has_fast_track_tag != NEW.has_fast_track_tag) THEN
-        PERFORM insertupdatelog('AUTHORRESPONSE', 'HAS_FAST_TRACK_TAG', OLD.curation_id, OLD.has_fast_track_tag, NEW.has_fast_track_tag, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'HAS_FAST_TRACK_TAG', OLD.curation_id, OLD.has_fast_track_tag, NEW.has_fast_track_tag, USER);
     END IF;
 
     IF (OLD.curator_checked_datasets != NEW.curator_checked_datasets) THEN
-        PERFORM insertupdatelog('AUTHORRESPONSE', 'CURATOR_CHECKED_DATASETS', OLD.curation_id, OLD.curator_checked_datasets, NEW.curator_checked_datasets, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'CURATOR_CHECKED_DATASETS', OLD.curation_id, OLD.curator_checked_datasets, NEW.curator_checked_datasets, USER);
     END IF;
 
     IF (OLD.curator_checked_genelist != NEW.curator_checked_genelist) THEN
-        PERFORM insertupdatelog('AUTHORRESPONSE', 'CURATOR_CHECKED_GENELIST', OLD.curation_id, OLD.curator_checked_genelist, NEW.curator_checked_genelist, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'CURATOR_CHECKED_GENELIST', OLD.curation_id, OLD.curator_checked_genelist, NEW.curator_checked_genelist, USER);
     END IF;
 
     IF (OLD.no_action_required != NEW.no_action_required) THEN
-        PERFORM insertupdatelog('AUTHORRESPONSE', 'NO_ACTION_REQUIRED', OLD.curation_id, OLD.no_action_required, NEW.no_action_required, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'NO_ACTION_REQUIRED', OLD.curation_id, OLD.no_action_required, NEW.no_action_required, USER);
     END IF;
 
     IF (((OLD.research_results IS NULL) AND (NEW.research_results IS NOT NULL)) OR ((OLD.research_results IS NOT NULL) AND (NEW.research_results IS NULL)) OR (OLD.research_results != NEW.research_results)) THEN
-        PERFORM insertupdatelog('AUTHORRESPONSE', 'RESEARCH_RESULTS', OLD.curation_id, OLD.research_results, NEW.research_results, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'RESEARCH_RESULTS', OLD.curation_id, OLD.research_results, NEW.research_results, USER);
     END IF;
 
     IF (((OLD.gene_list IS NULL) AND (NEW.gene_list IS NOT NULL)) OR ((OLD.gene_list IS NOT NULL) AND (NEW.gene_list IS NULL)) OR (OLD.gene_list != NEW.gene_list)) THEN
-        PERFORM insertupdatelog('AUTHORRESPONSE', 'GENE_LIST', OLD.curation_id, OLD.gene_list, NEW.gene_list, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'GENE_LIST', OLD.curation_id, OLD.gene_list, NEW.gene_list, USER);
     END IF;
 
     IF (((OLD.dataset_description IS NULL) AND (NEW.dataset_description IS NOT NULL)) OR ((OLD.dataset_description IS NOT NULL) AND (NEW.dataset_description IS NULL)) OR (OLD.dataset_description != NEW.dataset_description)) THEN
-        PERFORM insertupdatelog('AUTHORRESPONSE', 'DATASET_DESCRIPTION', OLD.curation_id, OLD.dataset_description, NEW.dataset_description, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'DATASET_DESCRIPTION', OLD.curation_id, OLD.dataset_description, NEW.dataset_description, USER);
     END IF;
 
     IF (((OLD.other_description IS NULL) AND (NEW.other_description IS NOT NULL)) OR ((OLD.other_description IS NOT NULL) AND (NEW.other_description IS NULL)) OR (OLD.other_description != NEW.other_description)) THEN
-        PERFORM insertupdatelog('AUTHORRESPONSE', 'OTHER_DESCRIPTION', OLD.curation_id, OLD.other_description, NEW.other_description, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'OTHER_DESCRIPTION', OLD.curation_id, OLD.other_description, NEW.other_description, USER);
     END IF;
 
     RETURN NEW;
@@ -84,7 +84,7 @@ BEGIN
              coalesce(OLD.dataset_description,'') || '[:]' || coalesce(OLD.other_description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('AUTHORRESPONSE', OLD.curation_id, v_row, USER);
+          PERFORM nex.insertdeletelog('AUTHORRESPONSE', OLD.curation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -93,10 +93,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER authorresponse_audr
-AFTER UPDATE OR DELETE ON authorresponse FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.authorresponse FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_authorresponse_audr();
 
-DROP TRIGGER IF EXISTS authorresponse_biur ON authorresponse CASCADE;
+DROP TRIGGER IF EXISTS authorresponse_biur ON nex.authorresponse CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_authorresponse_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -127,31 +127,31 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER authorresponse_biur
-BEFORE INSERT OR UPDATE ON authorresponse FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.authorresponse FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_authorresponse_biur();
 
 
-DROP TRIGGER IF EXISTS colleaguetriage_audr ON colleaguetriage CASCADE;
+DROP TRIGGER IF EXISTS colleaguetriage_audr ON nex.colleaguetriage CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleaguetriage_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.triage_type != NEW.triage_type) THEN
-        PERFORM insertupdatelog('COLLEAGUETRIAGE', 'TRIAGE_TYPE', OLD.curation_id, OLD.triage_type, NEW.triage_type, USER);
+        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE', 'TRIAGE_TYPE', OLD.curation_id, OLD.triage_type, NEW.triage_type, USER);
     END IF;
 
     IF (((OLD.colleague_id IS NULL) AND (NEW.colleague_id IS NOT NULL)) OR ((OLD.colleague_id IS NOT NULL) AND (NEW.colleague_id IS NULL)) OR (OLD.colleague_id != NEW.colleague_id)) THEN
-        PERFORM insertupdatelog('COLLEAGUETRIAGE', 'COLLEAGUE_ID', OLD.curation_id, OLD.colleague_id, NEW.colleague_id, USER);
+        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE', 'COLLEAGUE_ID', OLD.curation_id, OLD.colleague_id, NEW.colleague_id, USER);
     END IF;
 
     IF (OLD.colleague_data != NEW.colleague_data) THEN
-        PERFORM insertupdatelog('COLLEAGUETRIAGE', 'COLLEAGUE_DATA', OLD.curation_id, OLD.colleague_data, NEW.colleague_data, USER);
+        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE', 'COLLEAGUE_DATA', OLD.curation_id, OLD.colleague_data, NEW.colleague_data, USER);
     END IF;
 
     IF (((OLD.colleague_comment IS NULL) AND (NEW.colleague_comment IS NOT NULL)) OR ((OLD.colleague_comment IS NOT NULL) AND (NEW.colleague_comment IS NULL)) OR (OLD.colleague_comment != NEW.colleague_comment)) THEN
-        PERFORM insertupdatelog('COLLEAGUETRIAGE', 'COLLEAGUE_COMMENT', OLD.curation_id, OLD.colleague_comment, NEW.colleague_comment, USER);
+        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE', 'COLLEAGUE_COMMENT', OLD.curation_id, OLD.colleague_comment, NEW.colleague_comment, USER);
     END IF;
 
     RETURN NEW;
@@ -163,7 +163,7 @@ BEGIN
 	     coalesce(OLD.colleague_comment,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-             PERFORM insertdeletelog('COLLEAGUETRIAGE', OLD.curation_id, v_row, USER);
+             PERFORM nex.insertdeletelog('COLLEAGUETRIAGE', OLD.curation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -172,10 +172,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleaguetriage_audr
-AFTER UPDATE OR DELETE ON colleaguetriage FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.colleaguetriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguetriage_audr();
 
-DROP TRIGGER IF EXISTS colleaguetriage_biur ON colleaguetriage CASCADE;
+DROP TRIGGER IF EXISTS colleaguetriage_biur ON nex.colleaguetriage CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleaguetriage_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -206,39 +206,39 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleaguetriage_biur
-BEFORE INSERT OR UPDATE ON colleaguetriage FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.colleaguetriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguetriage_biur();
 
 
-DROP TRIGGER IF EXISTS curation_audr ON curation CASCADE;
+DROP TRIGGER IF EXISTS curation_audr ON nex.curation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_curation_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM insertupdatelog('CURATION', 'DBENTITY_ID', OLD.curation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
+        PERFORM nex.insertupdatelog('CURATION', 'DBENTITY_ID', OLD.curation_id, OLD.dbentity_id, NEW.dbentity_id, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM insertupdatelog('CURATION', 'SOURCE_ID', OLD.curation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('CURATION', 'SOURCE_ID', OLD.curation_id, OLD.source_id, NEW.source_id, USER);
     END IF;
 
     IF (((OLD.locus_id IS NULL) AND (NEW.locus_id IS NOT NULL)) OR ((OLD.locus_id IS NOT NULL) AND (NEW.locus_id IS NULL)) OR (OLD.locus_id != NEW.locus_id)) THEN
-        PERFORM insertupdatelog('CURATION', 'LOCUS_ID', OLD.curation_id, OLD.locus_id, NEW.locus_id, USER);
+        PERFORM nex.insertupdatelog('CURATION', 'LOCUS_ID', OLD.curation_id, OLD.locus_id, NEW.locus_id, USER);
     END IF;
 
     IF (OLD.subclass != NEW.subclass) THEN
-        PERFORM insertupdatelog('CURATION', 'SUBCLASS', OLD.curation_id, OLD.subclass, NEW.subclass, USER);
+        PERFORM nex.insertupdatelog('CURATION', 'SUBCLASS', OLD.curation_id, OLD.subclass, NEW.subclass, USER);
     END IF;
 
     IF (OLD.curation_task != NEW.curation_task) THEN
-        PERFORM insertupdatelog('CURATION', 'CURATION_TASK', OLD.curation_id, OLD.curation_task, NEW.curation_task, USER);
+        PERFORM nex.insertupdatelog('CURATION', 'CURATION_TASK', OLD.curation_id, OLD.curation_task, NEW.curation_task, USER);
     END IF;
 
     IF (((OLD.curator_comment IS NULL) AND (NEW.curator_comment IS NOT NULL)) OR ((OLD.curator_comment IS NOT NULL) AND (NEW.curator_comment IS NULL)) OR (OLD.curator_comment != NEW.curator_comment)) THEN
-        PERFORM insertupdatelog('CURATION', 'CURATOR_COMMENT', OLD.curation_id, OLD.curator_comment, NEW.curator_comment, USER);
+        PERFORM nex.insertupdatelog('CURATION', 'CURATOR_COMMENT', OLD.curation_id, OLD.curator_comment, NEW.curator_comment, USER);
     END IF;
 
     RETURN NEW;
@@ -251,7 +251,7 @@ BEGIN
              OLD.curation_task || '[:]' || OLD.curator_comment || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM insertdeletelog('CURATION', OLD.curation_id, v_row, USER);
+          PERFORM nex.insertdeletelog('CURATION', OLD.curation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -260,10 +260,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER curation_audr
-AFTER UPDATE OR DELETE ON curation FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.curation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_curation_audr();
 
-DROP TRIGGER IF EXISTS curation_biur ON curation CASCADE;
+DROP TRIGGER IF EXISTS curation_biur ON nex.curation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_curation_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -302,31 +302,31 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER curation_biur
-BEFORE INSERT OR UPDATE ON curation FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.curation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_curation_biur();
 
 
-DROP TRIGGER IF EXISTS referencetriage_audr ON referencetriage CASCADE;
+DROP TRIGGER IF EXISTS referencetriage_audr ON nex.referencetriage CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referencetriage_audr() RETURNS trigger AS $BODY$
 DECLARE
-    v_row       deletelog.deleted_row%TYPE;
+    v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.pmid != NEW.pmid) THEN
-        PERFORM insertupdatelog('REFERENCETRIAGE', 'PMID', OLD.curation_id, OLD.pmid, NEW.pmid, USER);
+        PERFORM nex.insertupdatelog('REFERENCETRIAGE', 'PMID', OLD.curation_id, OLD.pmid, NEW.pmid, USER);
     END IF;
 
      IF (OLD.citation != NEW.citation) THEN
-        PERFORM insertupdatelog('REFERENCETRIAGE', 'CITATION', OLD.curation_id, OLD.citation, NEW.citation, USER);
+        PERFORM nex.insertupdatelog('REFERENCETRIAGE', 'CITATION', OLD.curation_id, OLD.citation, NEW.citation, USER);
     END IF;
 
     IF (((OLD.fulltext_url IS NULL) AND (NEW.fulltext_url IS NOT NULL)) OR ((OLD.fulltext_url IS NOT NULL) AND (NEW.fulltext_url IS NULL)) OR (OLD.fulltext_url != NEW.fulltext_url)) THEN
-        PERFORM insertupdatelog('REFERENCETRIAGE', 'FULLTEXT_URL', OLD.curation_id, OLD.fulltext_url, NEW.fulltext_url, USER);
+        PERFORM nex.insertupdatelog('REFERENCETRIAGE', 'FULLTEXT_URL', OLD.curation_id, OLD.fulltext_url, NEW.fulltext_url, USER);
     END IF;
 
     IF (((OLD.abstract IS NULL) AND (NEW.abstract IS NOT NULL)) OR ((OLD.abstract IS NOT NULL) AND (NEW.abstract IS NULL)) OR (OLD.abstract != NEW.abstract)) THEN
-        PERFORM insertupdatelog('REFERENCETRIAGE', 'ABSTRACT', OLD.curation_id, OLD.abstract, NEW.abstract, USER);
+        PERFORM nex.insertupdatelog('REFERENCETRIAGE', 'ABSTRACT', OLD.curation_id, OLD.abstract, NEW.abstract, USER);
     END IF;
 
     RETURN NEW;
@@ -338,7 +338,7 @@ BEGIN
              coalesce(OLD.abstract,'') || '[:]' || 
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM insertdeletelog('REFERENCETRIAGE', OLD.curation_id, v_row, USER);
+           PERFORM nex.insertdeletelog('REFERENCETRIAGE', OLD.curation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -347,10 +347,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER referencetriage_audr
-AFTER UPDATE OR DELETE ON referencetriage FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.referencetriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_referencetriage_audr();
 
-DROP TRIGGER IF EXISTS referencetriage_biur ON referencetriage CASCADE;
+DROP TRIGGER IF EXISTS referencetriage_biur ON nex.referencetriage CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referencetriage_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -381,6 +381,6 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER referencetriage_biur
-BEFORE INSERT OR UPDATE ON referencetriage FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.referencetriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_referencetriage_biur();
 

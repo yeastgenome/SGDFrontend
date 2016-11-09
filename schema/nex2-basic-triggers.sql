@@ -6,7 +6,7 @@ SET client_encoding TO 'UTF8';
 
 \set ON_ERROR_STOP ON
 
-DROP TRIGGER IF EXISTS dbuser_aur ON dbuser CASCADE;
+DROP TRIGGER IF EXISTS dbuser_aur ON nex.dbuser CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_dbuser_aur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
@@ -42,10 +42,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER dbuser_aur
-AFTER UPDATE ON dbuser FOR EACH ROW
+AFTER UPDATE ON nex.dbuser FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_dbuser_aur();
 
-DROP TRIGGER IF EXISTS dbuser_biur ON dbuser CASCADE;
+DROP TRIGGER IF EXISTS dbuser_biur ON nex.dbuser CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_dbuser_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
@@ -71,11 +71,11 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER dbuser_biur
-BEFORE INSERT OR UPDATE ON dbuser FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.dbuser FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_dbuser_biur();
 
 
-DROP TRIGGER IF EXISTS source_audr ON source CASCADE;
+DROP TRIGGER IF EXISTS source_audr ON nex.source CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_source_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
@@ -116,10 +116,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER source_audr
-AFTER UPDATE OR DELETE ON source FOR EACH ROW
+AFTER UPDATE OR DELETE ON nex.source FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_source_audr();
 
-DROP TRIGGER IF EXISTS source_biur ON source CASCADE;
+DROP TRIGGER IF EXISTS source_biur ON nex.source CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_source_biur() RETURNS trigger AS $BODY$
 BEGIN
    IF (TG_OP = 'INSERT') THEN
@@ -150,25 +150,25 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER source_biur
-BEFORE INSERT OR UPDATE ON source FOR EACH ROW
+BEFORE INSERT OR UPDATE ON nex.source FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_source_biur();
 
 
-DROP TRIGGER IF EXISTS sgdid_aur ON sgdid CASCADE;
+DROP TRIGGER IF EXISTS sgdid_aur ON nex.sgdid CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_sgdid_aur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM insertupdatelog('SGDID', 'BUD_ID', OLD.sgdid_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('SGDID', 'BUD_ID', OLD.sgdid_id, OLD.bud_id, NEW.bud_id, USER);
     END IF;
 
     IF (OLD.sgdid_status != NEW.sgdid_status) THEN
-        PERFORM insertupdatelog('SGDID', 'SGDID_STATUS', OLD.sgdid_id, OLD.sgdid_status, NEW.sgdid_status, USER);
+        PERFORM nex.insertupdatelog('SGDID', 'SGDID_STATUS', OLD.sgdid_id, OLD.sgdid_status, NEW.sgdid_status, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
-        PERFORM insertupdatelog('SGDID', 'DESCRIPTION', OLD.sgdid_id, OLD.description, NEW.description, USER);
+        PERFORM nex.insertupdatelog('SGDID', 'DESCRIPTION', OLD.sgdid_id, OLD.description, NEW.description, USER);
     END IF;
 
     RETURN NEW;
@@ -178,10 +178,10 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER sgdid_aur
-AFTER UPDATE ON sgdid FOR EACH ROW
+AFTER UPDATE ON nex.sgdid FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_sgdid_aur();
 
-DROP TRIGGER IF EXISTS sgdid_biur ON sgdid CASCADE;
+DROP TRIGGER IF EXISTS sgdid_biur ON nex.sgdid CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_sgdid_biur() RETURNS trigger AS $BODY$
 BEGIN
    IF (TG_OP = 'INSERT') THEN
@@ -232,6 +232,6 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER sgdid_biur
-BEFORE INSERT OR UPDATE OR DELETE ON sgdid FOR EACH ROW
+BEFORE INSERT OR UPDATE OR DELETE ON nex.sgdid FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_sgdid_biur();
 		
