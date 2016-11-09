@@ -9,8 +9,8 @@ SET client_encoding TO 'UTF8';
 
 -- Ontology tables
 
-DROP TABLE IF EXISTS apo CASCADE; 
-CREATE TABLE apo (
+DROP TABLE IF EXISTS nex.apo CASCADE; 
+CREATE TABLE nex.apo (
 	apo_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -24,25 +24,25 @@ CREATE TABLE apo (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT apo_pk PRIMARY KEY (apo_id)
 ) ;
-COMMENT ON TABLE apo IS 'Ascomycete Phenotype Ontology (APO) created and maintained SGD.';
-COMMENT ON COLUMN apo.apo_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN apo.description IS 'Description or comment.';
-COMMENT ON COLUMN apo.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN apo.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN apo.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN apo.apo_namespace IS 'Aspect or vocabulary groupings (observable, qualifier, experiment_type, mutant_type).';
-COMMENT ON COLUMN apo.display_name IS 'Public display name.';
-COMMENT ON COLUMN apo.namespace_group IS 'A way to group terms within a namespace together.';
-COMMENT ON COLUMN apo.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN apo.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN apo.apoid IS 'Phenotype identifier (e.g., APO:0000009) or new term requests (NTR).';
-ALTER TABLE apo ADD CONSTRAINT apo_uk UNIQUE (format_name);
-ALTER TABLE apo ADD CONSTRAINT apo_namespace_ck CHECK (APO_NAMESPACE IN ('observable','qualifier','experiment_type','mutant_type'));
-CREATE INDEX apo_source_fk_index ON apo (source_id);
-CREATE UNIQUE INDEX apoid_uk_index ON apo (apoid);
+COMMENT ON TABLE nex.apo IS 'Ascomycete Phenotype Ontology (APO) created and maintained SGD.';
+COMMENT ON COLUMN nex.apo.apo_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.apo.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.apo.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.apo.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.apo.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.apo.apo_namespace IS 'Aspect or vocabulary groupings (observable, qualifier, experiment_type, mutant_type).';
+COMMENT ON COLUMN nex.apo.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.apo.namespace_group IS 'A way to group terms within a namespace together.';
+COMMENT ON COLUMN nex.apo.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.apo.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.apo.apoid IS 'Phenotype identifier (e.g., APO:0000009) or new term requests (NTR).';
+ALTER TABLE nex.apo ADD CONSTRAINT apo_uk UNIQUE (format_name);
+ALTER TABLE nex.apo ADD CONSTRAINT apo_namespace_ck CHECK (APO_NAMESPACE IN ('observable','qualifier','experiment_type','mutant_type'));
+CREATE INDEX apo_source_fk_index ON nex.apo (source_id);
+CREATE UNIQUE INDEX apoid_uk_index ON nex.apo (apoid);
 
-DROP TABLE IF EXISTS apo_alias CASCADE;
-CREATE TABLE apo_alias (
+DROP TABLE IF EXISTS nex.apo_alias CASCADE;
+CREATE TABLE nex.apo_alias (
 	alias_id bigint NOT NULL DEFAULT nextval('alias_seq'),
 	display_name varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
@@ -52,20 +52,20 @@ CREATE TABLE apo_alias (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT apo_alias_pk PRIMARY KEY (alias_id)
 ) ;
-COMMENT ON TABLE apo_alias IS 'Other names or synonyms for the phenotype.';
-COMMENT ON COLUMN apo_alias.display_name IS 'Public display name.';
-COMMENT ON COLUMN apo_alias.apo_id IS 'FK to APO.APO_ID.';
-COMMENT ON COLUMN apo_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN apo_alias.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN apo_alias.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN apo_alias.alias_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN apo_alias.alias_type IS 'Type of alias (EXACT, RELATED).';
-ALTER TABLE apo_alias ADD CONSTRAINT apo_alias_uk UNIQUE (apo_id,display_name,alias_type);
-ALTER TABLE apo_alias ADD CONSTRAINT apoalias_type_ck CHECK (ALIAS_TYPE IN ('EXACT','RELATED'));
-CREATE INDEX apoalias_source_fk_index ON apo_alias (source_id);
+COMMENT ON TABLE nex.apo_alias IS 'Other names or synonyms for the phenotype.';
+COMMENT ON COLUMN nex.apo_alias.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.apo_alias.apo_id IS 'FK to APO.APO_ID.';
+COMMENT ON COLUMN nex.apo_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.apo_alias.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.apo_alias.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.apo_alias.alias_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.apo_alias.alias_type IS 'Type of alias (EXACT, RELATED).';
+ALTER TABLE nex.apo_alias ADD CONSTRAINT apo_alias_uk UNIQUE (apo_id,display_name,alias_type);
+ALTER TABLE nex.apo_alias ADD CONSTRAINT apoalias_type_ck CHECK (ALIAS_TYPE IN ('EXACT','RELATED'));
+CREATE INDEX apoalias_source_fk_index ON nex.apo_alias (source_id);
 
-DROP TABLE IF EXISTS apo_relation CASCADE;
-CREATE TABLE apo_relation (
+DROP TABLE IF EXISTS nex.apo_relation CASCADE;
+CREATE TABLE nex.apo_relation (
 	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
 	source_id bigint NOT NULL,
 	parent_id bigint NOT NULL,
@@ -75,21 +75,21 @@ CREATE TABLE apo_relation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT apo_relation_pk PRIMARY KEY (relation_id)
 ) ;
-COMMENT ON TABLE apo_relation IS 'Relationship between two phenotypes.';
-COMMENT ON COLUMN apo_relation.child_id IS 'FK to APO.APO_ID.';
-COMMENT ON COLUMN apo_relation.parent_id IS 'FK to APO.APO_ID.';
-COMMENT ON COLUMN apo_relation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN apo_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN apo_relation.ro_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN apo_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN apo_relation.relation_id IS 'Unique identifier (serial number).';
-ALTER TABLE apo_relation ADD CONSTRAINT apo_relation_uk UNIQUE (parent_id,child_id,ro_id);
-CREATE INDEX aporelation_source_fk_index ON apo_relation (source_id);
-CREATE INDEX aporelation_child_fk_index ON apo_relation (child_id);
-CREATE INDEX aporelation_ro_fk_index ON apo_relation (ro_id);
+COMMENT ON TABLE nex.apo_relation IS 'Relationship between two phenotypes.';
+COMMENT ON COLUMN nex.apo_relation.child_id IS 'FK to APO.APO_ID.';
+COMMENT ON COLUMN nex.apo_relation.parent_id IS 'FK to APO.APO_ID.';
+COMMENT ON COLUMN nex.apo_relation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.apo_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.apo_relation.ro_id IS 'FK to RO.RO_ID.';
+COMMENT ON COLUMN nex.apo_relation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.apo_relation.relation_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.apo_relation ADD CONSTRAINT apo_relation_uk UNIQUE (parent_id,child_id,ro_id);
+CREATE INDEX aporelation_source_fk_index ON nex.apo_relation (source_id);
+CREATE INDEX aporelation_child_fk_index ON nex.apo_relation (child_id);
+CREATE INDEX aporelation_ro_fk_index ON nex.apo_relation (ro_id);
 
-DROP TABLE IF EXISTS apo_url CASCADE;
-CREATE TABLE apo_url (
+DROP TABLE IF EXISTS nex.apo_url CASCADE;
+CREATE TABLE nex.apo_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -100,22 +100,22 @@ CREATE TABLE apo_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT apo_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE apo_url IS 'URLs associated with phenotype.';
-COMMENT ON COLUMN apo_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN apo_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN apo_url.display_name IS 'Public display name (BioPortal, OLS, Ontobee).';
-COMMENT ON COLUMN apo_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN apo_url.apo_id IS 'FK to APO.APO_ID.';
-COMMENT ON COLUMN apo_url.url_type IS 'Type of URL (BioPortal, OLS, Ontobee).';
-COMMENT ON COLUMN apo_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN apo_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-ALTER TABLE apo_url ADD CONSTRAINT apo_url_uk UNIQUE (apo_id,display_name,obj_url);
-ALTER TABLE apo_url ADD CONSTRAINT apourl_display_name_ck CHECK (DISPLAY_NAME IN ('BioPortal','OLS', 'Ontobee'));
-ALTER TABLE apo_url ADD CONSTRAINT apourl_type_ck CHECK (URL_TYPE IN ('BioPortal','OLS', 'Ontobee'));
-CREATE INDEX apourl_source_fk_index ON apo_url (source_id);
+COMMENT ON TABLE nex.apo_url IS 'URLs associated with phenotype.';
+COMMENT ON COLUMN nex.apo_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.apo_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.apo_url.display_name IS 'Public display name (BioPortal, OLS, Ontobee).';
+COMMENT ON COLUMN nex.apo_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.apo_url.apo_id IS 'FK to APO.APO_ID.';
+COMMENT ON COLUMN nex.apo_url.url_type IS 'Type of URL (BioPortal, OLS, Ontobee).';
+COMMENT ON COLUMN nex.apo_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.apo_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+ALTER TABLE nex.apo_url ADD CONSTRAINT apo_url_uk UNIQUE (apo_id,display_name,obj_url);
+ALTER TABLE nex.apo_url ADD CONSTRAINT apourl_display_name_ck CHECK (DISPLAY_NAME IN ('BioPortal','OLS', 'Ontobee'));
+ALTER TABLE nex.apo_url ADD CONSTRAINT apourl_type_ck CHECK (URL_TYPE IN ('BioPortal','OLS', 'Ontobee'));
+CREATE INDEX apourl_source_fk_index ON nex.apo_url (source_id);
 
-DROP TABLE IF EXISTS chebi CASCADE;
-CREATE TABLE chebi (
+DROP TABLE IF EXISTS nex.chebi CASCADE;
+CREATE TABLE nex.chebi (
 	chebi_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -127,22 +127,22 @@ CREATE TABLE chebi (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT chebi_pk PRIMARY KEY (chebi_id)
 ) ;
-COMMENT ON TABLE chebi IS 'Chemical Entities of Biological Interest (ChEBI) from the EBI.';
-COMMENT ON COLUMN chebi.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN chebi.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN chebi.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN chebi.description IS 'Description or comment.';
-COMMENT ON COLUMN chebi.chebi_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN chebi.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN chebi.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN chebi.chebiid IS 'Chemical identifier from the EBI (e.g., CHEBI:58471) or new term requests (NTR).';
-COMMENT ON COLUMN chebi.display_name IS 'Public display name.';
-ALTER TABLE chebi ADD CONSTRAINT chebi_uk UNIQUE (format_name);
-CREATE UNIQUE INDEX chebiid_uk_index ON chebi (chebiid);
-CREATE INDEX chebi_source_fk_index ON chebi (source_id);
+COMMENT ON TABLE nex.chebi IS 'Chemical Entities of Biological Interest (ChEBI) from the EBI.';
+COMMENT ON COLUMN nex.chebi.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.chebi.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.chebi.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.chebi.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.chebi.chebi_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.chebi.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.chebi.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.chebi.chebiid IS 'Chemical identifier from the EBI (e.g., CHEBI:58471) or new term requests (NTR).';
+COMMENT ON COLUMN nex.chebi.display_name IS 'Public display name.';
+ALTER TABLE nex.chebi ADD CONSTRAINT chebi_uk UNIQUE (format_name);
+CREATE UNIQUE INDEX chebiid_uk_index ON nex.chebi (chebiid);
+CREATE INDEX chebi_source_fk_index ON nex.chebi (source_id);
 
-DROP TABLE IF EXISTS chebi_alias CASCADE;
-CREATE TABLE chebi_alias (
+DROP TABLE IF EXISTS nex.chebi_alias CASCADE;
+CREATE TABLE nex.chebi_alias (
 	alias_id bigint NOT NULL DEFAULT nextval('alias_seq'),
 	display_name varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
@@ -152,44 +152,44 @@ CREATE TABLE chebi_alias (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT chebi_alias_pk PRIMARY KEY (alias_id)
 ) ;
-COMMENT ON TABLE chebi_alias IS 'Other names or synonyms for the chemical.';
-COMMENT ON COLUMN chebi_alias.chebi_id IS 'FK to CHEBI.CHEBI_ID.';
-COMMENT ON COLUMN chebi_alias.display_name IS 'Public display name.';
-COMMENT ON COLUMN chebi_alias.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN chebi_alias.alias_type IS 'Type of alias (EXACT, RELATED, Secondary ChEBI ID, IUPAC name).';
-COMMENT ON COLUMN chebi_alias.alias_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN chebi_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN chebi_alias.created_by IS 'Username of the person who entered the record into the database.';
-ALTER TABLE chebi_alias ADD CONSTRAINT chebi_alias_uk UNIQUE (chebi_id,display_name,alias_type);
-ALTER TABLE chebi_alias ADD CONSTRAINT chebialias_type_ck CHECK (ALIAS_TYPE IN ('EXACT','RELATED','Secondary ChEBI ID','IUPAC name'));
-CREATE INDEX chebialias_source_fk_index ON chebi_alias (source_id);
+COMMENT ON TABLE nex.chebi_alias IS 'Other names or synonyms for the chemical.';
+COMMENT ON COLUMN nex.chebi_alias.chebi_id IS 'FK to CHEBI.CHEBI_ID.';
+COMMENT ON COLUMN nex.chebi_alias.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.chebi_alias.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.chebi_alias.alias_type IS 'Type of alias (EXACT, RELATED, Secondary ChEBI ID, IUPAC name).';
+COMMENT ON COLUMN nex.chebi_alias.alias_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.chebi_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.chebi_alias.created_by IS 'Username of the person who entered the record into the database.';
+ALTER TABLE nex.chebi_alias ADD CONSTRAINT chebi_alias_uk UNIQUE (chebi_id,display_name,alias_type);
+ALTER TABLE nex.chebi_alias ADD CONSTRAINT chebialias_type_ck CHECK (ALIAS_TYPE IN ('EXACT','RELATED','Secondary ChEBI ID','IUPAC name'));
+CREATE INDEX chebialias_source_fk_index ON nex.chebi_alias (source_id);
 
-DROP TABLE IF EXISTS chebi_relation CASCADE;
-CREATE TABLE chebi_relation (
-	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
-	source_id bigint NOT NULL,
-	parent_id bigint NOT NULL,
-	child_id bigint NOT NULL,
-	ro_id bigint NOT NULL,
-	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	created_by varchar(12) NOT NULL,
-	CONSTRAINT chebi_relation_pk PRIMARY KEY (relation_id)
-) ;
-COMMENT ON TABLE chebi_relation IS 'Relationship between two chemicals.';
-COMMENT ON COLUMN chebi_relation.ro_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN chebi_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN chebi_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN chebi_relation.relation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN chebi_relation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN chebi_relation.parent_id IS 'FK to CHEBI_ID.';
-COMMENT ON COLUMN chebi_relation.child_id IS 'FK to CHEBI_ID.';
-ALTER TABLE chebi_relation ADD CONSTRAINT chebi_relation_uk UNIQUE (parent_id,child_id,ro_id);
-CREATE INDEX chebirelation_ro_fk_index ON chebi_relation (ro_id);
-CREATE INDEX chebirelation_source_fk_index ON chebi_relation (source_id);
-CREATE INDEX chebirelation_child_fk_index ON chebi_relation (child_id);
+--DROP TABLE IF EXISTS nex.chebi_relation CASCADE;
+--CREATE TABLE nex.chebi_relation (
+--	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
+--	source_id bigint NOT NULL,
+--	parent_id bigint NOT NULL,
+--	child_id bigint NOT NULL,
+--	ro_id bigint NOT NULL,
+--	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+--	created_by varchar(12) NOT NULL,
+--	CONSTRAINT chebi_relation_pk PRIMARY KEY (relation_id)
+--) ;
+--COMMENT ON TABLE nex.chebi_relation IS 'Relationship between two chemicals.';
+--COMMENT ON COLUMN nex.chebi_relation.ro_id IS 'FK to RO.RO_ID.';
+--COMMENT ON COLUMN nex.chebi_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+--COMMENT ON COLUMN nex.chebi_relation.created_by IS 'Username of the person who entered the record into the database.';
+--COMMENT ON COLUMN nex.chebi_relation.relation_id IS 'Unique identifier (serial number).';
+--COMMENT ON COLUMN nex.chebi_relation.date_created IS 'Date the record was entered into the database.';
+--COMMENT ON COLUMN nex.chebi_relation.parent_id IS 'FK to CHEBI_ID.';
+--COMMENT ON COLUMN nex.chebi_relation.child_id IS 'FK to CHEBI_ID.';
+--ALTER TABLE nex.chebi_relation ADD CONSTRAINT chebi_relation_uk UNIQUE (parent_id,child_id,ro_id);
+--CREATE INDEX chebirelation_ro_fk_index ON nex.chebi_relation (ro_id);
+--CREATE INDEX chebirelation_source_fk_index ON nex.chebi_relation (source_id);
+--CREATE INDEX chebirelation_child_fk_index ON nex.chebi_relation (child_id);
 
-DROP TABLE IF EXISTS chebi_url cascade;
-CREATE TABLE chebi_url (
+DROP TABLE IF EXISTS nex.chebi_url cascade;
+CREATE TABLE nex.chebi_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -200,22 +200,22 @@ CREATE TABLE chebi_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT chebi_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE chebi_url IS 'URLs associated with chemicals.';
-COMMENT ON COLUMN chebi_url.url_type IS 'Type of URL (ChEBI).';
-COMMENT ON COLUMN chebi_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN chebi_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN chebi_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN chebi_url.display_name IS 'Public display name (ChEBI).';
-COMMENT ON COLUMN chebi_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN chebi_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN chebi_url.chebi_id IS 'FK to CHEBI.CHEBI_ID.';
-ALTER TABLE chebi_url ADD CONSTRAINT chebi_url_uk UNIQUE (chebi_id,display_name,obj_url);
-ALTER TABLE chebi_url ADD CONSTRAINT chebiurl_display_name_ck CHECK (DISPLAY_NAME IN ('ChEBI'));
-ALTER TABLE chebi_url ADD CONSTRAINT chebiurl_type_ck CHECK (URL_TYPE IN ('ChEBI'));
-CREATE INDEX chebiurl_source_fk_index ON chebi_url (source_id);
+COMMENT ON TABLE nex.chebi_url IS 'URLs associated with chemicals.';
+COMMENT ON COLUMN nex.chebi_url.url_type IS 'Type of URL (ChEBI).';
+COMMENT ON COLUMN nex.chebi_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.chebi_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.chebi_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.chebi_url.display_name IS 'Public display name (ChEBI).';
+COMMENT ON COLUMN nex.chebi_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.chebi_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.chebi_url.chebi_id IS 'FK to CHEBI.CHEBI_ID.';
+ALTER TABLE nex.chebi_url ADD CONSTRAINT chebi_url_uk UNIQUE (chebi_id,display_name,obj_url);
+ALTER TABLE nex.chebi_url ADD CONSTRAINT chebiurl_display_name_ck CHECK (DISPLAY_NAME IN ('ChEBI'));
+ALTER TABLE nex.chebi_url ADD CONSTRAINT chebiurl_type_ck CHECK (URL_TYPE IN ('ChEBI'));
+CREATE INDEX chebiurl_source_fk_index ON nex.chebi_url (source_id);
 
-DROP TABLE IF EXISTS disease CASCADE;
-CREATE TABLE disease (
+DROP TABLE IF EXISTS nex.disease CASCADE;
+CREATE TABLE nex.disease (
 	disease_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -227,22 +227,22 @@ CREATE TABLE disease (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT do_pk PRIMARY KEY (disease_id)
 ) ;
-COMMENT ON TABLE disease IS 'Disease Ontology (DO).';
-COMMENT ON COLUMN disease.display_name IS 'Public display name.';
-COMMENT ON COLUMN disease.doid IS 'Disease ontology identifier (e.g., DOID:4159).';
-COMMENT ON COLUMN disease.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN disease.disease_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN disease.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN disease.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN disease.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN disease.description IS 'Description or comment.';
-COMMENT ON COLUMN disease.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE disease ADD CONSTRAINT do_uk UNIQUE (format_name);
-CREATE UNIQUE INDEX doid_uk_index ON disease (doid);
-CREATE INDEX disease_source_fk_index ON disease (source_id);
+COMMENT ON TABLE nex.disease IS 'Disease Ontology (DO).';
+COMMENT ON COLUMN nex.disease.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.disease.doid IS 'Disease ontology identifier (e.g., DOID:4159).';
+COMMENT ON COLUMN nex.disease.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.disease.disease_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.disease.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.disease.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.disease.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.disease.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.disease.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.disease ADD CONSTRAINT do_uk UNIQUE (format_name);
+CREATE UNIQUE INDEX doid_uk_index ON nex.disease (doid);
+CREATE INDEX disease_source_fk_index ON nex.disease (source_id);
 
-DROP TABLE IF EXISTS disease_alias CASCADE;
-CREATE TABLE disease_alias (
+DROP TABLE IF EXISTS nex.disease_alias CASCADE;
+CREATE TABLE nex.disease_alias (
 	alias_id bigint NOT NULL DEFAULT nextval('alias_seq'),
 	display_name varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
@@ -252,20 +252,20 @@ CREATE TABLE disease_alias (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT disease_alias_pk PRIMARY KEY (alias_id)
 ) ;
-COMMENT ON TABLE disease_alias IS 'Other names, synonyms or cross references for the disease.';
-COMMENT ON COLUMN disease_alias.alias_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN disease_alias.alias_type IS 'Type of alias (EXACT, RELATED, Alternate ID, DBXREF).';
-COMMENT ON COLUMN disease_alias.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN disease_alias.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN disease_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN disease_alias.disease_id IS 'FK to DISEASE.DISEASE_ID.';
-COMMENT ON COLUMN disease_alias.display_name IS 'Public display name.';
-ALTER TABLE disease_alias ADD CONSTRAINT disease_alias_uk UNIQUE (disease_id,display_name,alias_type);
-ALTER TABLE disease_alias ADD CONSTRAINT diseasealias_type_ck CHECK (ALIAS_TYPE IN ('EXACT','RELATED','Alternate ID','DBXREF'));
-CREATE INDEX diseasealias_source_fk_index ON disease_alias (source_id);
+COMMENT ON TABLE nex.disease_alias IS 'Other names, synonyms or cross references for the disease.';
+COMMENT ON COLUMN nex.disease_alias.alias_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.disease_alias.alias_type IS 'Type of alias (EXACT, RELATED, Alternate ID, DBXREF).';
+COMMENT ON COLUMN nex.disease_alias.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.disease_alias.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.disease_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.disease_alias.disease_id IS 'FK to DISEASE.DISEASE_ID.';
+COMMENT ON COLUMN nex.disease_alias.display_name IS 'Public display name.';
+ALTER TABLE nex.disease_alias ADD CONSTRAINT disease_alias_uk UNIQUE (disease_id,display_name,alias_type);
+ALTER TABLE nex.disease_alias ADD CONSTRAINT diseasealias_type_ck CHECK (ALIAS_TYPE IN ('EXACT','RELATED','Alternate ID','DBXREF'));
+CREATE INDEX diseasealias_source_fk_index ON nex.disease_alias (source_id);
 
-DROP TABLE IF EXISTS disease_relation CASCADE;
-CREATE TABLE disease_relation (
+DROP TABLE IF EXISTS nex.disease_relation CASCADE;
+CREATE TABLE nex.disease_relation (
 	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
 	source_id bigint NOT NULL,
 	parent_id bigint NOT NULL,
@@ -275,21 +275,21 @@ CREATE TABLE disease_relation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT disease_relation_pk PRIMARY KEY (relation_id)
 ) ;
-COMMENT ON TABLE disease_relation IS 'Relationship between two diseases.';
-COMMENT ON COLUMN disease_relation.child_id IS 'FK to DISEASE_ID.';
-COMMENT ON COLUMN disease_relation.parent_id IS 'FK to DISEASE_ID.';
-COMMENT ON COLUMN disease_relation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN disease_relation.ro_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN disease_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN disease_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN disease_relation.relation_id IS 'Unique identifier (serial number).';
-ALTER TABLE disease_relation ADD CONSTRAINT disease_relation_uk UNIQUE (parent_id,child_id,ro_id);
-CREATE INDEX diseaserelation_source_fk_index ON disease_relation (source_id);
-CREATE INDEX diseaserelation_child_fk_index ON disease_relation (child_id);
-CREATE INDEX diseaserelation_ro_fk_index ON disease_relation (ro_id);
+COMMENT ON TABLE nex.disease_relation IS 'Relationship between two diseases.';
+COMMENT ON COLUMN nex.disease_relation.child_id IS 'FK to DISEASE_ID.';
+COMMENT ON COLUMN nex.disease_relation.parent_id IS 'FK to DISEASE_ID.';
+COMMENT ON COLUMN nex.disease_relation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.disease_relation.ro_id IS 'FK to RO.RO_ID.';
+COMMENT ON COLUMN nex.disease_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.disease_relation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.disease_relation.relation_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.disease_relation ADD CONSTRAINT disease_relation_uk UNIQUE (parent_id,child_id,ro_id);
+CREATE INDEX diseaserelation_source_fk_index ON nex.disease_relation (source_id);
+CREATE INDEX diseaserelation_child_fk_index ON nex.disease_relation (child_id);
+CREATE INDEX diseaserelation_ro_fk_index ON nex.disease_relation (ro_id);
 
-DROP TABLE IF EXISTS disease_url CASCADE;
-CREATE TABLE disease_url (
+DROP TABLE IF EXISTS nex.disease_url CASCADE;
+CREATE TABLE nex.disease_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -300,22 +300,22 @@ CREATE TABLE disease_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT disease_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE disease_url IS 'URLs associated with diseases.';
-COMMENT ON COLUMN disease_url.display_name IS 'Public display name (DO, BioPortal, OLS, Ontobee).';
-COMMENT ON COLUMN disease_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN disease_url.disease_id IS 'FK to DISEASE.DISEASE_ID.';
-COMMENT ON COLUMN disease_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN disease_url.url_type IS 'Type of URL (DO, BioPortal, OLS, Ontobee).';
-COMMENT ON COLUMN disease_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN disease_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN disease_url.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE disease_url ADD CONSTRAINT disease_url_uk UNIQUE (disease_id,display_name,obj_url);
-ALTER TABLE disease_url ADD CONSTRAINT diseaseurl_display_name_ck CHECK (DISPLAY_NAME IN ('DO', 'BioPortal', 'OLS', 'Ontobee'));
-ALTER TABLE disease_url ADD CONSTRAINT diseaseurl_type_ck CHECK (URL_TYPE IN ('DO', 'BioPortal', 'OLS', 'Ontobee'));
-CREATE INDEX diseaseurl_source_fk_index ON disease_url (source_id);
+COMMENT ON TABLE nex.disease_url IS 'URLs associated with diseases.';
+COMMENT ON COLUMN nex.disease_url.display_name IS 'Public display name (DO, BioPortal, OLS, Ontobee).';
+COMMENT ON COLUMN nex.disease_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.disease_url.disease_id IS 'FK to DISEASE.DISEASE_ID.';
+COMMENT ON COLUMN nex.disease_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.disease_url.url_type IS 'Type of URL (DO, BioPortal, OLS, Ontobee).';
+COMMENT ON COLUMN nex.disease_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.disease_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.disease_url.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.disease_url ADD CONSTRAINT disease_url_uk UNIQUE (disease_id,display_name,obj_url);
+ALTER TABLE nex.disease_url ADD CONSTRAINT diseaseurl_display_name_ck CHECK (DISPLAY_NAME IN ('DO', 'BioPortal', 'OLS', 'Ontobee'));
+ALTER TABLE nex.disease_url ADD CONSTRAINT diseaseurl_type_ck CHECK (URL_TYPE IN ('DO', 'BioPortal', 'OLS', 'Ontobee'));
+CREATE INDEX diseaseurl_source_fk_index ON nex.disease_url (source_id);
 
-DROP TABLE IF EXISTS ec CASCADE;
-CREATE TABLE ec (
+DROP TABLE IF EXISTS nex.ec CASCADE;
+CREATE TABLE nex.ec (
 	ec_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -327,22 +327,22 @@ CREATE TABLE ec (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT ec_pk PRIMARY KEY (ec_id)
 ) ;
-COMMENT ON TABLE ec IS 'Enzyme Commission (EC) numbers based on chemical reactions catalyzed by enzymes.';
-COMMENT ON COLUMN ec.display_name IS 'Public display name (e.g., 3.1.26.5).';
-COMMENT ON COLUMN ec.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN ec.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN ec.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN ec.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN ec.description IS 'Description or comment.';
-COMMENT ON COLUMN ec.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN ec.ec_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN ec.ecid IS 'Enzyme Commission number (e.g., EC 3.1.26.5).';
-ALTER TABLE ec ADD CONSTRAINT ec_uk UNIQUE (format_name);
-CREATE INDEX ec_source_fk_index ON ec (source_id);
-CREATE UNIQUE INDEX ecnumber_uk_index ON ec (ecid);
+COMMENT ON TABLE nex.ec IS 'Enzyme Commission (EC) numbers based on chemical reactions catalyzed by enzymes.';
+COMMENT ON COLUMN nex.ec.display_name IS 'Public display name (e.g., 3.1.26.5).';
+COMMENT ON COLUMN nex.ec.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.ec.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.ec.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.ec.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.ec.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.ec.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.ec.ec_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.ec.ecid IS 'Enzyme Commission number (e.g., EC 3.1.26.5).';
+ALTER TABLE nex.ec ADD CONSTRAINT ec_uk UNIQUE (format_name);
+CREATE INDEX ec_source_fk_index ON nex.ec (source_id);
+CREATE UNIQUE INDEX ecnumber_uk_index ON nex.ec (ecid);
 
-DROP TABLE IF EXISTS ec_alias CASCADE;
-CREATE TABLE ec_alias (
+DROP TABLE IF EXISTS nex.ec_alias CASCADE;
+CREATE TABLE nex.ec_alias (
 	alias_id bigint NOT NULL DEFAULT nextval('alias_seq'),
 	display_name varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
@@ -352,20 +352,20 @@ CREATE TABLE ec_alias (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT ec_alias_pk PRIMARY KEY (alias_id)
 ) ;
-COMMENT ON TABLE ec_alias IS 'Other names or synonyms for an enzyme.';
-COMMENT ON COLUMN ec_alias.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN ec_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN ec_alias.alias_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN ec_alias.alias_type IS 'Type of alias (Synonym).';
-COMMENT ON COLUMN ec_alias.ec_id IS 'FK to EC.EC_ID.';
-COMMENT ON COLUMN ec_alias.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN ec_alias.display_name IS 'Public display name.';
-ALTER TABLE ec_alias ADD CONSTRAINT ec_alias_uk UNIQUE (ec_id,display_name,alias_type);
-ALTER TABLE ec_alias ADD CONSTRAINT ecalias_type_ck CHECK (ALIAS_TYPE IN ('Synonym'));
-CREATE INDEX ecalias_source_fk_index ON ec_alias (source_id);
+COMMENT ON TABLE nex.ec_alias IS 'Other names or synonyms for an enzyme.';
+COMMENT ON COLUMN nex.ec_alias.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.ec_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.ec_alias.alias_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.ec_alias.alias_type IS 'Type of alias (Synonym).';
+COMMENT ON COLUMN nex.ec_alias.ec_id IS 'FK to EC.EC_ID.';
+COMMENT ON COLUMN nex.ec_alias.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.ec_alias.display_name IS 'Public display name.';
+ALTER TABLE nex.ec_alias ADD CONSTRAINT ec_alias_uk UNIQUE (ec_id,display_name,alias_type);
+ALTER TABLE nex.ec_alias ADD CONSTRAINT ecalias_type_ck CHECK (ALIAS_TYPE IN ('Synonym'));
+CREATE INDEX ecalias_source_fk_index ON nex.ec_alias (source_id);
 
-DROP TABLE IF EXISTS ec_url CASCADE;
-CREATE TABLE ec_url (
+DROP TABLE IF EXISTS nex.ec_url CASCADE;
+CREATE TABLE nex.ec_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -376,22 +376,22 @@ CREATE TABLE ec_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT ec_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE ec_url IS 'URLs associated with enzyzmes.';
-COMMENT ON COLUMN ec_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN ec_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN ec_url.url_type IS 'Type of URL (ExPASy, BRENDA).';
-COMMENT ON COLUMN ec_url.ec_id IS 'FK to EC.EC_ID.';
-COMMENT ON COLUMN ec_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN ec_url.display_name IS 'Public display name (ExPASy, BRENDA).';
-COMMENT ON COLUMN ec_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN ec_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-ALTER TABLE ec_url ADD CONSTRAINT ec_url_uk UNIQUE (ec_id,display_name,obj_url);
-ALTER TABLE ec_url ADD CONSTRAINT ecurl_type_ck CHECK (URL_TYPE IN ('ExPASy','BRENDA'));
-ALTER TABLE ec_url ADD CONSTRAINT ecurl_display_name_ck CHECK (DISPLAY_NAME IN ('ExPASy','BRENDA'));
-CREATE INDEX ecurl_source_fk_index ON ec_url (source_id);
+COMMENT ON TABLE nex.ec_url IS 'URLs associated with enzyzmes.';
+COMMENT ON COLUMN nex.ec_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.ec_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.ec_url.url_type IS 'Type of URL (ExPASy, BRENDA).';
+COMMENT ON COLUMN nex.ec_url.ec_id IS 'FK to EC.EC_ID.';
+COMMENT ON COLUMN nex.ec_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.ec_url.display_name IS 'Public display name (ExPASy, BRENDA).';
+COMMENT ON COLUMN nex.ec_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.ec_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+ALTER TABLE nex.ec_url ADD CONSTRAINT ec_url_uk UNIQUE (ec_id,display_name,obj_url);
+ALTER TABLE nex.ec_url ADD CONSTRAINT ecurl_type_ck CHECK (URL_TYPE IN ('ExPASy','BRENDA'));
+ALTER TABLE nex.ec_url ADD CONSTRAINT ecurl_display_name_ck CHECK (DISPLAY_NAME IN ('ExPASy','BRENDA'));
+CREATE INDEX ecurl_source_fk_index ON nex.ec_url (source_id);
 
-DROP TABLE IF EXISTS eco CASCADE;
-CREATE TABLE eco (
+DROP TABLE IF EXISTS nex.eco CASCADE;
+CREATE TABLE nex.eco (
 	eco_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -403,22 +403,22 @@ CREATE TABLE eco (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT eco_pk PRIMARY KEY (eco_id)
 ) ;
-COMMENT ON TABLE eco IS 'Evidence Ontology (ECO) describes types of scientific evidence.';
-COMMENT ON COLUMN eco.eco_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN eco.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN eco.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN eco.description IS 'Description or comment.';
-COMMENT ON COLUMN eco.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN eco.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN eco.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN eco.ecoid IS 'Evidence ontology identifier (e.g. ECO:0000168).';
-COMMENT ON COLUMN eco.display_name IS 'Public display name.';
-ALTER TABLE eco ADD CONSTRAINT eco_uk UNIQUE (format_name);
-CREATE UNIQUE INDEX ecoid_uk_index ON eco (ecoid);
-CREATE INDEX eco_source_fk_index ON eco (source_id);
+COMMENT ON TABLE nex.eco IS 'Evidence Ontology (ECO) describes types of scientific evidence.';
+COMMENT ON COLUMN nex.eco.eco_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.eco.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.eco.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.eco.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.eco.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.eco.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.eco.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.eco.ecoid IS 'Evidence ontology identifier (e.g. ECO:0000168).';
+COMMENT ON COLUMN nex.eco.display_name IS 'Public display name.';
+ALTER TABLE nex.eco ADD CONSTRAINT eco_uk UNIQUE (format_name);
+CREATE UNIQUE INDEX ecoid_uk_index ON nex.eco (ecoid);
+CREATE INDEX eco_source_fk_index ON nex.eco (source_id);
 
-DROP TABLE IF EXISTS eco_alias CASCADE;
-CREATE TABLE eco_alias (
+DROP TABLE IF EXISTS nex.eco_alias CASCADE;
+CREATE TABLE nex.eco_alias (
 	alias_id bigint NOT NULL DEFAULT nextval('alias_seq'),
 	display_name varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
@@ -428,20 +428,20 @@ CREATE TABLE eco_alias (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT eco_alias_pk PRIMARY KEY (alias_id)
 ) ;
-COMMENT ON TABLE eco_alias IS 'Other names or synonyms for types of evidence.';
-COMMENT ON COLUMN eco_alias.alias_type IS 'Type of alias (BROAD, EXACT, RELATED, NARROW).';
-COMMENT ON COLUMN eco_alias.alias_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN eco_alias.eco_id IS 'FK to ECO.ECO_ID.';
-COMMENT ON COLUMN eco_alias.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN eco_alias.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN eco_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN eco_alias.display_name IS 'Public display name.';
-ALTER TABLE eco_alias ADD CONSTRAINT eco_alias_uk UNIQUE (eco_id,display_name,alias_type);
-ALTER TABLE eco_alias ADD CONSTRAINT ecoalias_type_ck CHECK (ALIAS_TYPE IN ('BROAD','EXACT','RELATED','NARROW'));
-CREATE INDEX ecoalias_source_fk_index ON eco_alias (source_id);
+COMMENT ON TABLE nex.eco_alias IS 'Other names or synonyms for types of evidence.';
+COMMENT ON COLUMN nex.eco_alias.alias_type IS 'Type of alias (BROAD, EXACT, RELATED, NARROW).';
+COMMENT ON COLUMN nex.eco_alias.alias_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.eco_alias.eco_id IS 'FK to ECO.ECO_ID.';
+COMMENT ON COLUMN nex.eco_alias.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.eco_alias.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.eco_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.eco_alias.display_name IS 'Public display name.';
+ALTER TABLE nex.eco_alias ADD CONSTRAINT eco_alias_uk UNIQUE (eco_id,display_name,alias_type);
+ALTER TABLE nex.eco_alias ADD CONSTRAINT ecoalias_type_ck CHECK (ALIAS_TYPE IN ('BROAD','EXACT','RELATED','NARROW'));
+CREATE INDEX ecoalias_source_fk_index ON nex.eco_alias (source_id);
 
-DROP TABLE IF EXISTS eco_relation CASCADE;
-CREATE TABLE eco_relation (
+DROP TABLE IF EXISTS nex.eco_relation CASCADE;
+CREATE TABLE nex.eco_relation (
 	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
 	source_id bigint NOT NULL,
 	parent_id bigint NOT NULL,
@@ -451,21 +451,21 @@ CREATE TABLE eco_relation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT eco_relation_pk PRIMARY KEY (relation_id)
 ) ;
-COMMENT ON TABLE eco_relation IS 'Relationship between two evidence types.';
-COMMENT ON COLUMN eco_relation.relation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN eco_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN eco_relation.ro_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN eco_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN eco_relation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN eco_relation.child_id IS 'FK to ECO.ECO_ID.';
-COMMENT ON COLUMN eco_relation.parent_id IS 'FK to ECO.ECO_ID.';
-ALTER TABLE eco_relation ADD CONSTRAINT eco_relation_uk UNIQUE (parent_id,child_id,ro_id);
-CREATE INDEX ecorelation_ro_fk_index ON eco_relation (ro_id);
-CREATE INDEX ecorelation_source_fk_index ON eco_relation (source_id);
-CREATE INDEX ecorelation_child_fk_index ON eco_relation (child_id);
+COMMENT ON TABLE nex.eco_relation IS 'Relationship between two evidence types.';
+COMMENT ON COLUMN nex.eco_relation.relation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.eco_relation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.eco_relation.ro_id IS 'FK to RO.RO_ID.';
+COMMENT ON COLUMN nex.eco_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.eco_relation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.eco_relation.child_id IS 'FK to ECO.ECO_ID.';
+COMMENT ON COLUMN nex.eco_relation.parent_id IS 'FK to ECO.ECO_ID.';
+ALTER TABLE nex.eco_relation ADD CONSTRAINT eco_relation_uk UNIQUE (parent_id,child_id,ro_id);
+CREATE INDEX ecorelation_ro_fk_index ON nex.eco_relation (ro_id);
+CREATE INDEX ecorelation_source_fk_index ON nex.eco_relation (source_id);
+CREATE INDEX ecorelation_child_fk_index ON nex.eco_relation (child_id);
 
-DROP TABLE IF EXISTS eco_url CASCADE;
-CREATE TABLE eco_url (
+DROP TABLE IF EXISTS nex.eco_url CASCADE;
+CREATE TABLE nex.eco_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -476,22 +476,22 @@ CREATE TABLE eco_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT eco_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE eco_url IS 'URLs associated with evidence types.';
-COMMENT ON COLUMN eco_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN eco_url.eco_id IS 'FK to ECO.ECO_ID.';
-COMMENT ON COLUMN eco_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN eco_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN eco_url.url_type IS 'Type of URL (BioPortal, OLS, Ontobee).';
-COMMENT ON COLUMN eco_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN eco_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN eco_url.display_name IS 'Public display name (BioPortal, OLS, Ontobee).';
-ALTER TABLE eco_url ADD CONSTRAINT eco_url_uk UNIQUE (eco_id,display_name,obj_url);
-ALTER TABLE eco_url ADD CONSTRAINT ecourl_display_name_ck CHECK (DISPLAY_NAME IN ('BioPortal','OLS', 'Ontobee'));
-ALTER TABLE eco_url ADD CONSTRAINT ecourl_type_ck CHECK (URL_TYPE IN ('BioPortal','OLS', 'Ontobee'));
-CREATE INDEX ecourl_source_fk_index ON eco_url (source_id);
+COMMENT ON TABLE nex.eco_url IS 'URLs associated with evidence types.';
+COMMENT ON COLUMN nex.eco_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.eco_url.eco_id IS 'FK to ECO.ECO_ID.';
+COMMENT ON COLUMN nex.eco_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.eco_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.eco_url.url_type IS 'Type of URL (BioPortal, OLS, Ontobee).';
+COMMENT ON COLUMN nex.eco_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.eco_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.eco_url.display_name IS 'Public display name (BioPortal, OLS, Ontobee).';
+ALTER TABLE nex.eco_url ADD CONSTRAINT eco_url_uk UNIQUE (eco_id,display_name,obj_url);
+ALTER TABLE nex.eco_url ADD CONSTRAINT ecourl_display_name_ck CHECK (DISPLAY_NAME IN ('BioPortal','OLS', 'Ontobee'));
+ALTER TABLE nex.eco_url ADD CONSTRAINT ecourl_type_ck CHECK (URL_TYPE IN ('BioPortal','OLS', 'Ontobee'));
+CREATE INDEX ecourl_source_fk_index ON nex.eco_url (source_id);
 
-DROP TABLE IF EXISTS edam CASCADE;
-CREATE TABLE edam (
+DROP TABLE IF EXISTS nex.edam CASCADE;
+CREATE TABLE nex.edam (
 	edam_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -504,24 +504,24 @@ CREATE TABLE edam (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT edam_pk PRIMARY KEY (edam_id)
 ) ;
-COMMENT ON TABLE edam IS 'EDAM is an ontology of bioinformatics topics, operations, types of data including identifiers, and data formats.';
-COMMENT ON COLUMN edam.edam_namespace IS 'Four separate domains or namespaces (data, format, operation, topic).';
-COMMENT ON COLUMN edam.edam_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN edam.edamid IS 'EDAM identifier (e.g. EDAM:0928).';
-COMMENT ON COLUMN edam.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN edam.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN edam.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN edam.description IS 'Description or comment.';
-COMMENT ON COLUMN edam.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN edam.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN edam.display_name IS 'Public display name.';
-ALTER TABLE edam ADD CONSTRAINT edam_uk UNIQUE (format_name);
-ALTER TABLE edam ADD CONSTRAINT edam_namespace_ck CHECK (EDAM_NAMESPACE IN ('data','format','operation','topic'));
-CREATE UNIQUE INDEX edamid_uk_index ON edam (edamid);
-CREATE INDEX edam_source_index ON edam (source_id);
+COMMENT ON TABLE nex.edam IS 'EDAM is an ontology of bioinformatics topics, operations, types of data including identifiers, and data formats.';
+COMMENT ON COLUMN nex.edam.edam_namespace IS 'Four separate domains or namespaces (data, format, operation, topic).';
+COMMENT ON COLUMN nex.edam.edam_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.edam.edamid IS 'EDAM identifier (e.g. EDAM:0928).';
+COMMENT ON COLUMN nex.edam.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.edam.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.edam.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.edam.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.edam.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.edam.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.edam.display_name IS 'Public display name.';
+ALTER TABLE nex.edam ADD CONSTRAINT edam_uk UNIQUE (format_name);
+ALTER TABLE nex.edam ADD CONSTRAINT edam_namespace_ck CHECK (EDAM_NAMESPACE IN ('data','format','operation','topic'));
+CREATE UNIQUE INDEX edamid_uk_index ON nex.edam (edamid);
+CREATE INDEX edam_source_index ON nex.edam (source_id);
 
-DROP TABLE IF EXISTS edam_alias CASCADE;
-CREATE TABLE edam_alias (
+DROP TABLE IF EXISTS nex.edam_alias CASCADE;
+CREATE TABLE nex.edam_alias (
 	alias_id bigint NOT NULL DEFAULT nextval('alias_seq'),
 	display_name varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
@@ -531,20 +531,20 @@ CREATE TABLE edam_alias (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT edam_alias_pk PRIMARY KEY (alias_id)
 ) ;
-COMMENT ON TABLE edam_alias IS 'Other names or synonyms for a EDAM term.';
-COMMENT ON COLUMN edam_alias.display_name IS 'Public display name.';
-COMMENT ON COLUMN edam_alias.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN edam_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN edam_alias.alias_type IS 'Type of alias (BROAD, EXACT, RELATED, NARROW).';
-COMMENT ON COLUMN edam_alias.edam_id IS 'FK to EDAM.EDAM_ID.';
-COMMENT ON COLUMN edam_alias.alias_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN edam_alias.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE edam_alias ADD CONSTRAINT edam_alias_uk UNIQUE (edam_id,display_name,alias_type);
-ALTER TABLE edam_alias ADD CONSTRAINT edamalias_type_ck CHECK (ALIAS_TYPE IN ('BROAD','EXACT','RELATED','NARROW'));
-CREATE INDEX edamalias_source_fk_index ON edam_alias (source_id);
+COMMENT ON TABLE nex.edam_alias IS 'Other names or synonyms for a EDAM term.';
+COMMENT ON COLUMN nex.edam_alias.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.edam_alias.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.edam_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.edam_alias.alias_type IS 'Type of alias (BROAD, EXACT, RELATED, NARROW).';
+COMMENT ON COLUMN nex.edam_alias.edam_id IS 'FK to EDAM.EDAM_ID.';
+COMMENT ON COLUMN nex.edam_alias.alias_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.edam_alias.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.edam_alias ADD CONSTRAINT edam_alias_uk UNIQUE (edam_id,display_name,alias_type);
+ALTER TABLE nex.edam_alias ADD CONSTRAINT edamalias_type_ck CHECK (ALIAS_TYPE IN ('BROAD','EXACT','RELATED','NARROW'));
+CREATE INDEX edamalias_source_fk_index ON nex.edam_alias (source_id);
 
-DROP TABLE IF EXISTS edam_relation CASCADE;
-CREATE TABLE edam_relation (
+DROP TABLE IF EXISTS nex.edam_relation CASCADE;
+CREATE TABLE nex.edam_relation (
 	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
 	source_id bigint NOT NULL,
 	parent_id bigint NOT NULL,
@@ -554,21 +554,21 @@ CREATE TABLE edam_relation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT edam_relation_pk PRIMARY KEY (relation_id)
 ) ;
-COMMENT ON TABLE edam_relation IS 'Relationship between two EDAM terms.';
-COMMENT ON COLUMN edam_relation.parent_id IS 'FK to EDAM.EDAM_ID.';
-COMMENT ON COLUMN edam_relation.child_id IS 'FK to EDAM.EDAM_ID.';
-COMMENT ON COLUMN edam_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN edam_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN edam_relation.ro_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN edam_relation.relation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN edam_relation.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE edam_relation ADD CONSTRAINT edam_relation_uk UNIQUE (parent_id,child_id,ro_id);
-CREATE INDEX edamrelation_source_fk_index ON edam_relation (source_id);
-CREATE INDEX edamrelation_child_fk_index ON edam_relation (child_id);
-CREATE INDEX edamrelation_ro_fk_index ON edam_relation (ro_id);
+COMMENT ON TABLE nex.edam_relation IS 'Relationship between two EDAM terms.';
+COMMENT ON COLUMN nex.edam_relation.parent_id IS 'FK to EDAM.EDAM_ID.';
+COMMENT ON COLUMN nex.edam_relation.child_id IS 'FK to EDAM.EDAM_ID.';
+COMMENT ON COLUMN nex.edam_relation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.edam_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.edam_relation.ro_id IS 'FK to RO.RO_ID.';
+COMMENT ON COLUMN nex.edam_relation.relation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.edam_relation.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.edam_relation ADD CONSTRAINT edam_relation_uk UNIQUE (parent_id,child_id,ro_id);
+CREATE INDEX edamrelation_source_fk_index ON nex.edam_relation (source_id);
+CREATE INDEX edamrelation_child_fk_index ON nex.edam_relation (child_id);
+CREATE INDEX edamrelation_ro_fk_index ON nex.edam_relation (ro_id);
 
-DROP TABLE IF EXISTS edam_url CASCADE;
-CREATE TABLE edam_url (
+DROP TABLE IF EXISTS nex.edam_url CASCADE;
+CREATE TABLE nex.edam_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -579,21 +579,21 @@ CREATE TABLE edam_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT edam_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE edam_url IS 'URLs associated with EDAM terms.';
-COMMENT ON COLUMN edam_url.display_name IS 'Public display name.';
-COMMENT ON COLUMN edam_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN edam_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN edam_url.url_type IS 'Type of URL (BioPortal, OLS, Ontobee).';
-COMMENT ON COLUMN edam_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN edam_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN edam_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN edam_url.edam_id IS 'FK to EDAM.EDAM_ID.';
-ALTER TABLE edam_url ADD CONSTRAINT edam_url_uk UNIQUE (edam_id,display_name,obj_url);
-ALTER TABLE edam_url ADD CONSTRAINT edamurl_ck CHECK (URL_TYPE IN ('BioPortal', 'Ontobee', 'OLS'));
-CREATE INDEX edam_url_source_fk_index ON edam_url (source_id);
+COMMENT ON TABLE nex.edam_url IS 'URLs associated with EDAM terms.';
+COMMENT ON COLUMN nex.edam_url.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.edam_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.edam_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.edam_url.url_type IS 'Type of URL (BioPortal, OLS, Ontobee).';
+COMMENT ON COLUMN nex.edam_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.edam_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.edam_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.edam_url.edam_id IS 'FK to EDAM.EDAM_ID.';
+ALTER TABLE nex.edam_url ADD CONSTRAINT edam_url_uk UNIQUE (edam_id,display_name,obj_url);
+ALTER TABLE nex.edam_url ADD CONSTRAINT edamurl_ck CHECK (URL_TYPE IN ('BioPortal', 'Ontobee', 'OLS'));
+CREATE INDEX edam_url_source_fk_index ON nex.edam_url (source_id);
 
-DROP TABLE IF EXISTS go CASCADE;
-CREATE TABLE go (
+DROP TABLE IF EXISTS nex.go CASCADE;
+CREATE TABLE nex.go (
 	go_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -606,24 +606,24 @@ CREATE TABLE go (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT go_pk PRIMARY KEY (go_id)
 ) ;
-COMMENT ON TABLE go IS 'Gene Ontology (GO) terms used to describe genes and gene products.';
-COMMENT ON COLUMN go.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN go.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN go.description IS 'Description or comment.';
-COMMENT ON COLUMN go.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN go.goid IS 'Gene Ontology identifier (e.g. GO:0016233).';
-COMMENT ON COLUMN go.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN go.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN go.go_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN go.go_namespace IS 'Three separate domains to describe gene products  (cellular component, biological process, molecular function).';
-COMMENT ON COLUMN go.display_name IS 'Public display name.';
-ALTER TABLE go ADD CONSTRAINT go_uk UNIQUE (format_name);
-ALTER TABLE go ADD CONSTRAINT go_namespace_ck CHECK (GO_NAMESPACE IN ('cellular component','biological process','molecular function'));
-CREATE UNIQUE INDEX goid_uk_index ON go (goid);
-CREATE INDEX go_source_index ON go (source_id);
+COMMENT ON TABLE nex.go IS 'Gene Ontology (GO) terms used to describe genes and gene products.';
+COMMENT ON COLUMN nex.go.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.go.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.go.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.go.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.go.goid IS 'Gene Ontology identifier (e.g. GO:0016233).';
+COMMENT ON COLUMN nex.go.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.go.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.go.go_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.go.go_namespace IS 'Three separate domains to describe gene products  (cellular component, biological process, molecular function).';
+COMMENT ON COLUMN nex.go.display_name IS 'Public display name.';
+ALTER TABLE nex.go ADD CONSTRAINT go_uk UNIQUE (format_name);
+ALTER TABLE nex.go ADD CONSTRAINT go_namespace_ck CHECK (GO_NAMESPACE IN ('cellular component','biological process','molecular function'));
+CREATE UNIQUE INDEX goid_uk_index ON nex.go (goid);
+CREATE INDEX go_source_index ON nex.go (source_id);
 
-DROP TABLE IF EXISTS go_alias CASCADE;
-CREATE TABLE go_alias (
+DROP TABLE IF EXISTS nex.go_alias CASCADE;
+CREATE TABLE nex.go_alias (
 	alias_id bigint NOT NULL DEFAULT nextval('alias_seq'),
 	display_name varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
@@ -633,20 +633,20 @@ CREATE TABLE go_alias (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT go_alias_pk PRIMARY KEY (alias_id)
 ) ;
-COMMENT ON TABLE go_alias IS 'Other names or synonyms for a GO term.';
-COMMENT ON COLUMN go_alias.alias_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN go_alias.alias_type IS 'Type of alias (BROAD, EXACT, RELATED, NARROW).';
-COMMENT ON COLUMN go_alias.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN go_alias.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN go_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN go_alias.go_id IS 'FK to GO.GO_ID.';
-COMMENT ON COLUMN go_alias.display_name IS 'Public display name.';
-ALTER TABLE go_alias ADD CONSTRAINT go_alias_uk UNIQUE (go_id,display_name,alias_type);
-ALTER TABLE go_alias ADD CONSTRAINT goalias_type_ck CHECK (ALIAS_TYPE IN ('BROAD','EXACT','RELATED','NARROW'));
-CREATE INDEX goalias_source_fk_index ON go_alias (source_id);
+COMMENT ON TABLE nex.go_alias IS 'Other names or synonyms for a GO term.';
+COMMENT ON COLUMN nex.go_alias.alias_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.go_alias.alias_type IS 'Type of alias (BROAD, EXACT, RELATED, NARROW).';
+COMMENT ON COLUMN nex.go_alias.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.go_alias.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.go_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.go_alias.go_id IS 'FK to GO.GO_ID.';
+COMMENT ON COLUMN nex.go_alias.display_name IS 'Public display name.';
+ALTER TABLE nex.go_alias ADD CONSTRAINT go_alias_uk UNIQUE (go_id,display_name,alias_type);
+ALTER TABLE nex.go_alias ADD CONSTRAINT goalias_type_ck CHECK (ALIAS_TYPE IN ('BROAD','EXACT','RELATED','NARROW'));
+CREATE INDEX goalias_source_fk_index ON nex.go_alias (source_id);
 
-DROP TABLE IF EXISTS go_relation CASCADE;
-CREATE TABLE go_relation (
+DROP TABLE IF EXISTS nex.go_relation CASCADE;
+CREATE TABLE nex.go_relation (
 	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
 	source_id bigint NOT NULL,
 	parent_id bigint NOT NULL,
@@ -656,21 +656,21 @@ CREATE TABLE go_relation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT go_relation_pk PRIMARY KEY (relation_id)
 ) ;
-COMMENT ON TABLE go_relation IS 'Relationship between two GO terms.';
-COMMENT ON COLUMN go_relation.relation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN go_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN go_relation.ro_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN go_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN go_relation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN go_relation.child_id IS 'FK to GO.GO_ID.';
-COMMENT ON COLUMN go_relation.parent_id IS 'FK to GO.GO_ID.';
-ALTER TABLE go_relation ADD CONSTRAINT go_relation_uk UNIQUE (parent_id,child_id,ro_id);
-CREATE INDEX gorelation_child_fk_index ON go_relation (child_id);
-CREATE INDEX gorelation_ro_fk_index ON go_relation (ro_id);
-CREATE INDEX gorelation_source_fk_index ON go_relation (source_id);
+COMMENT ON TABLE nex.go_relation IS 'Relationship between two GO terms.';
+COMMENT ON COLUMN nex.go_relation.relation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.go_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.go_relation.ro_id IS 'FK to RO.RO_ID.';
+COMMENT ON COLUMN nex.go_relation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.go_relation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.go_relation.child_id IS 'FK to GO.GO_ID.';
+COMMENT ON COLUMN nex.go_relation.parent_id IS 'FK to GO.GO_ID.';
+ALTER TABLE nex.go_relation ADD CONSTRAINT go_relation_uk UNIQUE (parent_id,child_id,ro_id);
+CREATE INDEX gorelation_child_fk_index ON nex.go_relation (child_id);
+CREATE INDEX gorelation_ro_fk_index ON nex.go_relation (ro_id);
+CREATE INDEX gorelation_source_fk_index ON nex.go_relation (source_id);
 
-DROP TABLE IF EXISTS go_url CASCADE;
-CREATE TABLE go_url (
+DROP TABLE IF EXISTS nex.go_url CASCADE;
+CREATE TABLE nex.go_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -681,21 +681,21 @@ CREATE TABLE go_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT go_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE go_url IS 'URLs associated with GO terms.';
-COMMENT ON COLUMN go_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN go_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN go_url.display_name IS 'Public display name (GO, Amigo).';
-COMMENT ON COLUMN go_url.go_id IS 'FK to GO.GO_ID.';
-COMMENT ON COLUMN go_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN go_url.url_type IS 'Type of URL (GO, Amigo).';
-COMMENT ON COLUMN go_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN go_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-ALTER TABLE go_url ADD CONSTRAINT go_url_uk UNIQUE (go_id,display_name,obj_url);
-ALTER TABLE go_url ADD CONSTRAINT gourl_type_ck CHECK (URL_TYPE IN ('Amigo','GO'));
-CREATE INDEX gourl_source_fk_index ON go_url (source_id);
+COMMENT ON TABLE nex.go_url IS 'URLs associated with GO terms.';
+COMMENT ON COLUMN nex.go_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.go_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.go_url.display_name IS 'Public display name (GO, Amigo).';
+COMMENT ON COLUMN nex.go_url.go_id IS 'FK to GO.GO_ID.';
+COMMENT ON COLUMN nex.go_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.go_url.url_type IS 'Type of URL (GO, Amigo).';
+COMMENT ON COLUMN nex.go_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.go_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+ALTER TABLE nex.go_url ADD CONSTRAINT go_url_uk UNIQUE (go_id,display_name,obj_url);
+ALTER TABLE nex.go_url ADD CONSTRAINT gourl_type_ck CHECK (URL_TYPE IN ('Amigo','GO'));
+CREATE INDEX gourl_source_fk_index ON nex.go_url (source_id);
 
-DROP TABLE IF EXISTS keyword CASCADE;
-CREATE TABLE keyword (
+DROP TABLE IF EXISTS nex.keyword CASCADE;
+CREATE TABLE nex.keyword (
 	keyword_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -706,21 +706,21 @@ CREATE TABLE keyword (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT keyword_pk PRIMARY KEY (keyword_id)
 ) ;
-COMMENT ON TABLE keyword IS 'Controlled vocabulary to describe broad categories of biology, used to filter or group data.';
-COMMENT ON COLUMN keyword.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN keyword.description IS 'Description or comment.';
-COMMENT ON COLUMN keyword.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN keyword.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN keyword.keyword_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN keyword.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN keyword.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN keyword.display_name IS 'Public display name.';
-ALTER TABLE keyword ADD CONSTRAINT keyword_uk UNIQUE (format_name);
+COMMENT ON TABLE nex.keyword IS 'Controlled vocabulary to describe broad categories of biology, used to filter or group data.';
+COMMENT ON COLUMN nex.keyword.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.keyword.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.keyword.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.keyword.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.keyword.keyword_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.keyword.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.keyword.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.keyword.display_name IS 'Public display name.';
+ALTER TABLE nex.keyword ADD CONSTRAINT keyword_uk UNIQUE (format_name);
 CREATE INDEX keyword_source_fk ON keyword (source_id);
 CREATE INDEX keyword_display_name ON keyword (display_name);
 
-DROP TABLE IF EXISTS obi CASCADE;
-CREATE TABLE obi (
+DROP TABLE IF EXISTS nex.obi CASCADE;
+CREATE TABLE nex.obi (
 	obi_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -732,22 +732,22 @@ CREATE TABLE obi (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT obi_pk PRIMARY KEY (obi_id)
 ) ;
-COMMENT ON TABLE obi IS 'Ontology for Biomedical Investigations (OBI) describes biomedical studies.';
-COMMENT ON COLUMN obi.obiid IS 'Biomedical investigations identifier (e.g. OBI:0000185).';
-COMMENT ON COLUMN obi.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN obi.obi_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN obi.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN obi.display_name IS 'Public display name.';
-COMMENT ON COLUMN obi.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN obi.description IS 'Description or comment.';
-COMMENT ON COLUMN obi.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN obi.created_by IS 'Username of the person who entered the record into the database.';
-ALTER TABLE obi ADD CONSTRAINT obi_uk UNIQUE (format_name);
-CREATE INDEX obi_source_fk_index ON obi (source_id);
-CREATE UNIQUE INDEX obiid_uk_index ON obi (obiid);
+COMMENT ON TABLE nex.obi IS 'Ontology for Biomedical Investigations (OBI) describes biomedical studies.';
+COMMENT ON COLUMN nex.obi.obiid IS 'Biomedical investigations identifier (e.g. OBI:0000185).';
+COMMENT ON COLUMN nex.obi.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.obi.obi_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.obi.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.obi.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.obi.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.obi.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.obi.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.obi.created_by IS 'Username of the person who entered the record into the database.';
+ALTER TABLE nex.obi ADD CONSTRAINT obi_uk UNIQUE (format_name);
+CREATE INDEX obi_source_fk_index ON nex.obi (source_id);
+CREATE UNIQUE INDEX obiid_uk_index ON nex.obi (obiid);
 
-DROP TABLE IF EXISTS obi_relation CASCADE;
-CREATE TABLE obi_relation (
+DROP TABLE IF EXISTS nex.obi_relation CASCADE;
+CREATE TABLE nex.obi_relation (
 	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
 	source_id bigint NOT NULL,
 	parent_id bigint NOT NULL,
@@ -757,21 +757,21 @@ CREATE TABLE obi_relation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT obi_relation_pk PRIMARY KEY (relation_id)
 ) ;
-COMMENT ON TABLE obi_relation IS 'Relationship between two biomedical investigation ontology terms.';
-COMMENT ON COLUMN obi_relation.child_id IS 'FK to OBI.OBI_ID.';
-COMMENT ON COLUMN obi_relation.parent_id IS 'FK to OBI.OBI_ID.';
-COMMENT ON COLUMN obi_relation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN obi_relation.ro_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN obi_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN obi_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN obi_relation.relation_id IS 'Unique identifier (serial number).';
-ALTER TABLE obi_relation ADD CONSTRAINT obi_relation_uk UNIQUE (parent_id,child_id,ro_id);
-CREATE INDEX obirelation_child_fk_index ON obi_relation (child_id);
-CREATE INDEX obirelation_source_fk_index ON obi_relation (source_id);
-CREATE INDEX obirelation_ro_fk_index ON obi_relation (ro_id);
+COMMENT ON TABLE nex.obi_relation IS 'Relationship between two biomedical investigation ontology terms.';
+COMMENT ON COLUMN nex.obi_relation.child_id IS 'FK to OBI.OBI_ID.';
+COMMENT ON COLUMN nex.obi_relation.parent_id IS 'FK to OBI.OBI_ID.';
+COMMENT ON COLUMN nex.obi_relation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.obi_relation.ro_id IS 'FK to RO.RO_ID.';
+COMMENT ON COLUMN nex.obi_relation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.obi_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.obi_relation.relation_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.obi_relation ADD CONSTRAINT obi_relation_uk UNIQUE (parent_id,child_id,ro_id);
+CREATE INDEX obirelation_child_fk_index ON nex.obi_relation (child_id);
+CREATE INDEX obirelation_source_fk_index ON nex.obi_relation (source_id);
+CREATE INDEX obirelation_ro_fk_index ON nex.obi_relation (ro_id);
 
-DROP TABLE IF EXISTS obi_url CASCADE;
-CREATE TABLE obi_url (
+DROP TABLE IF EXISTS nex.obi_url CASCADE;
+CREATE TABLE nex.obi_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -782,22 +782,22 @@ CREATE TABLE obi_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT obi_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE obi_url IS 'URLs associated with biomedical investigations.';
-COMMENT ON COLUMN obi_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN obi_url.obi_id IS 'FK to OBI.OBI_ID.';
-COMMENT ON COLUMN obi_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN obi_url.display_name IS 'Public display name (Ontobee, OLS, BioPortal).';
-COMMENT ON COLUMN obi_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN obi_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN obi_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN obi_url.url_type IS 'Type of URL (Ontobee, OLS, BioPortal).';
-ALTER TABLE obi_url ADD CONSTRAINT obi_url_uk UNIQUE (obi_id,display_name,obj_url);
-ALTER TABLE obi_url ADD CONSTRAINT obiurl_type_ck CHECK (URL_TYPE IN ('Ontobee', 'OLS', 'BioPortal'));
-ALTER TABLE obi_url ADD CONSTRAINT obiurl_display_name_ck CHECK (DISPLAY_NAME IN ('Ontobee', 'OLS', 'BioPortal'));
-CREATE INDEX obiurl_source_fk_index ON obi_url (source_id);
+COMMENT ON TABLE nex.obi_url IS 'URLs associated with biomedical investigations.';
+COMMENT ON COLUMN nex.obi_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.obi_url.obi_id IS 'FK to OBI.OBI_ID.';
+COMMENT ON COLUMN nex.obi_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.obi_url.display_name IS 'Public display name (Ontobee, OLS, BioPortal).';
+COMMENT ON COLUMN nex.obi_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.obi_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.obi_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.obi_url.url_type IS 'Type of URL (Ontobee, OLS, BioPortal).';
+ALTER TABLE nex.obi_url ADD CONSTRAINT obi_url_uk UNIQUE (obi_id,display_name,obj_url);
+ALTER TABLE nex.obi_url ADD CONSTRAINT obiurl_type_ck CHECK (URL_TYPE IN ('Ontobee', 'OLS', 'BioPortal'));
+ALTER TABLE nex.obi_url ADD CONSTRAINT obiurl_display_name_ck CHECK (DISPLAY_NAME IN ('Ontobee', 'OLS', 'BioPortal'));
+CREATE INDEX obiurl_source_fk_index ON nex.obi_url (source_id);
 
-DROP TABLE IF EXISTS psimod CASCADE;
-CREATE TABLE psimod (
+DROP TABLE IF EXISTS nex.psimod CASCADE;
+CREATE TABLE nex.psimod (
 	psimod_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -809,22 +809,22 @@ CREATE TABLE psimod (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT psimod_pk PRIMARY KEY (psimod_id)
 ) ;
-COMMENT ON TABLE psimod IS 'Protein modification ontology (PSI-MOD) developed by the Proteomics Standards Initiative (PSI).';
-COMMENT ON COLUMN psimod.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN psimod.description IS 'Description or comment.';
-COMMENT ON COLUMN psimod.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN psimod.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN psimod.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN psimod.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN psimod.psimod_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN psimod.psimodid IS 'Protein modification ontology identifier (e.g., MOD:01152).';
-COMMENT ON COLUMN psimod.display_name IS 'Public display name.';
-ALTER TABLE psimod ADD CONSTRAINT psimod_uk UNIQUE (format_name);
-CREATE UNIQUE INDEX psimodid_uk_index ON psimod (psimodid);
-CREATE INDEX psimod_source_fk_index ON psimod (source_id);
+COMMENT ON TABLE nex.psimod IS 'Protein modification ontology (PSI-MOD) developed by the Proteomics Standards Initiative (PSI).';
+COMMENT ON COLUMN nex.psimod.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.psimod.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.psimod.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.psimod.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.psimod.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.psimod.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.psimod.psimod_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.psimod.psimodid IS 'Protein modification ontology identifier (e.g., MOD:01152).';
+COMMENT ON COLUMN nex.psimod.display_name IS 'Public display name.';
+ALTER TABLE nex.psimod ADD CONSTRAINT psimod_uk UNIQUE (format_name);
+CREATE UNIQUE INDEX psimodid_uk_index ON nex.psimod (psimodid);
+CREATE INDEX psimod_source_fk_index ON nex.psimod (source_id);
 
-DROP TABLE IF EXISTS psimod_relation CASCADE;
-CREATE TABLE psimod_relation (
+DROP TABLE IF EXISTS nex.psimod_relation CASCADE;
+CREATE TABLE nex.psimod_relation (
 	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
 	source_id bigint NOT NULL,
 	parent_id bigint NOT NULL,
@@ -834,21 +834,21 @@ CREATE TABLE psimod_relation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT psimod_relation_pk PRIMARY KEY (relation_id)
 ) ;
-COMMENT ON TABLE psimod_relation IS 'Relationship between two protein modification ontology terms.';
-COMMENT ON COLUMN psimod_relation.relation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN psimod_relation.ro_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN psimod_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN psimod_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN psimod_relation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN psimod_relation.child_id IS 'FK to PSIMOD.PSIMOD_ID.';
-COMMENT ON COLUMN psimod_relation.parent_id IS 'FK to PSIMOD.PSIMOD_ID.';
-ALTER TABLE psimod_relation ADD CONSTRAINT psimod_relation_uk UNIQUE (parent_id,child_id,ro_id);
-CREATE INDEX psimodrelation_ro_fk_index ON psimod_relation (ro_id);
-CREATE INDEX psimodrelation_child_fk_index ON psimod_relation (child_id);
-CREATE INDEX psimodrelation_source_fk_index ON psimod_relation (source_id);
+COMMENT ON TABLE nex.psimod_relation IS 'Relationship between two protein modification ontology terms.';
+COMMENT ON COLUMN nex.psimod_relation.relation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.psimod_relation.ro_id IS 'FK to RO.RO_ID.';
+COMMENT ON COLUMN nex.psimod_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.psimod_relation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.psimod_relation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.psimod_relation.child_id IS 'FK to PSIMOD.PSIMOD_ID.';
+COMMENT ON COLUMN nex.psimod_relation.parent_id IS 'FK to PSIMOD.PSIMOD_ID.';
+ALTER TABLE nex.psimod_relation ADD CONSTRAINT psimod_relation_uk UNIQUE (parent_id,child_id,ro_id);
+CREATE INDEX psimodrelation_ro_fk_index ON nex.psimod_relation (ro_id);
+CREATE INDEX psimodrelation_child_fk_index ON nex.psimod_relation (child_id);
+CREATE INDEX psimodrelation_source_fk_index ON nex.psimod_relation (source_id);
 
-DROP TABLE IF EXISTS psimod_url CASCADE;
-CREATE TABLE psimod_url (
+DROP TABLE IF EXISTS nex.psimod_url CASCADE;
+CREATE TABLE nex.psimod_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -859,22 +859,22 @@ CREATE TABLE psimod_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT psimod_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE psimod_url IS 'URLs associated with the protein modification ontology.';
-COMMENT ON COLUMN psimod_url.display_name IS 'Public display name (BioPortal, OLS, Ontobee).';
-COMMENT ON COLUMN psimod_url.psimod_id IS 'FK to PSIMOD.PSIMOD_ID.';
-COMMENT ON COLUMN psimod_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN psimod_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN psimod_url.url_type IS 'Type of URL (BioPortal, OLS, Ontobee).';
-COMMENT ON COLUMN psimod_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN psimod_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN psimod_url.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE psimod_url ADD CONSTRAINT psimod_url_uk UNIQUE (psimod_id,display_name,obj_url);
-ALTER TABLE psimod_url ADD CONSTRAINT psimodurl_type_ck CHECK (URL_TYPE IN ('BioPortal', 'OLS', 'Ontobee'));
-ALTER TABLE psimod_url ADD CONSTRAINT psimodurl_display_name_ck CHECK (DISPLAY_NAME IN ('BioPortal', 'OLS', 'Ontobee'));
-CREATE INDEX psimodurl_source_fk_index ON psimod_url (source_id);
+COMMENT ON TABLE nex.psimod_url IS 'URLs associated with the protein modification ontology.';
+COMMENT ON COLUMN nex.psimod_url.display_name IS 'Public display name (BioPortal, OLS, Ontobee).';
+COMMENT ON COLUMN nex.psimod_url.psimod_id IS 'FK to PSIMOD.PSIMOD_ID.';
+COMMENT ON COLUMN nex.psimod_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.psimod_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.psimod_url.url_type IS 'Type of URL (BioPortal, OLS, Ontobee).';
+COMMENT ON COLUMN nex.psimod_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.psimod_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.psimod_url.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.psimod_url ADD CONSTRAINT psimod_url_uk UNIQUE (psimod_id,display_name,obj_url);
+ALTER TABLE nex.psimod_url ADD CONSTRAINT psimodurl_type_ck CHECK (URL_TYPE IN ('BioPortal', 'OLS', 'Ontobee'));
+ALTER TABLE nex.psimod_url ADD CONSTRAINT psimodurl_display_name_ck CHECK (DISPLAY_NAME IN ('BioPortal', 'OLS', 'Ontobee'));
+CREATE INDEX psimodurl_source_fk_index ON nex.psimod_url (source_id);
 
-DROP TABLE IF EXISTS ro CASCADE;
-CREATE TABLE ro (
+DROP TABLE IF EXISTS nex.ro CASCADE;
+CREATE TABLE nex.ro (
 	ro_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -886,22 +886,22 @@ CREATE TABLE ro (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT ro_pk PRIMARY KEY (ro_id)
 ) ;
-COMMENT ON TABLE ro IS 'Relation Ontology (RO) used to describe data relationships.';
-COMMENT ON COLUMN ro.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN ro.description IS 'Description or comment.';
-COMMENT ON COLUMN ro.ro_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN ro.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN ro.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN ro.roid IS 'Relation identifier  (e.g., RO:0002434).';
-COMMENT ON COLUMN ro.display_name IS 'Public display name.';
-COMMENT ON COLUMN ro.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN ro.format_name IS 'Unique name to create download files.';
-ALTER TABLE ro ADD CONSTRAINT ro_uk UNIQUE (format_name);
-CREATE UNIQUE INDEX roid_uk_index ON ro (roid);
-CREATE INDEX ro_source_fk_index ON ro (source_id);
+COMMENT ON TABLE nex.ro IS 'Relation Ontology (RO) used to describe data relationships.';
+COMMENT ON COLUMN nex.ro.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.ro.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.ro.ro_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.ro.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.ro.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.ro.roid IS 'Relation identifier  (e.g., RO:0002434).';
+COMMENT ON COLUMN nex.ro.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.ro.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.ro.format_name IS 'Unique name to create download files.';
+ALTER TABLE nex.ro ADD CONSTRAINT ro_uk UNIQUE (format_name);
+CREATE UNIQUE INDEX roid_uk_index ON nex.ro (roid);
+CREATE INDEX ro_source_fk_index ON nex.ro (source_id);
 
-DROP TABLE IF EXISTS ro_relation CASCADE;
-CREATE TABLE ro_relation (
+DROP TABLE IF EXISTS nex.ro_relation CASCADE;
+CREATE TABLE nex.ro_relation (
 	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
 	source_id bigint NOT NULL,
 	parent_id bigint NOT NULL,
@@ -911,21 +911,21 @@ CREATE TABLE ro_relation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT ro_relation_pk PRIMARY KEY (relation_id)
 ) ;
-COMMENT ON TABLE ro_relation IS 'Relationship between two relations.';
-COMMENT ON COLUMN ro_relation.relation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN ro_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN ro_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN ro_relation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN ro_relation.relation_type IS 'Type of relation (is a).';
-COMMENT ON COLUMN ro_relation.parent_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN ro_relation.child_id IS 'FK to RO.RO_ID.';
-ALTER TABLE ro_relation ADD CONSTRAINT ro_relation_uk UNIQUE (parent_id,child_id,relation_type);
-ALTER TABLE ro_relation ADD CONSTRAINT rorelation_type_ck CHECK (RELATION_TYPE IN ('is a'));
-CREATE INDEX rorelation_source_fk_index ON ro_relation (source_id);
-CREATE INDEX rorelation_child_fk_index ON ro_relation (child_id);
+COMMENT ON TABLE nex.ro_relation IS 'Relationship between two relations.';
+COMMENT ON COLUMN nex.ro_relation.relation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.ro_relation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.ro_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.ro_relation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.ro_relation.relation_type IS 'Type of relation (is a).';
+COMMENT ON COLUMN nex.ro_relation.parent_id IS 'FK to RO.RO_ID.';
+COMMENT ON COLUMN nex.ro_relation.child_id IS 'FK to RO.RO_ID.';
+ALTER TABLE nex.ro_relation ADD CONSTRAINT ro_relation_uk UNIQUE (parent_id,child_id,relation_type);
+ALTER TABLE nex.ro_relation ADD CONSTRAINT rorelation_type_ck CHECK (RELATION_TYPE IN ('is a'));
+CREATE INDEX rorelation_source_fk_index ON nex.ro_relation (source_id);
+CREATE INDEX rorelation_child_fk_index ON nex.ro_relation (child_id);
 
-DROP TABLE IF EXISTS ro_url CASCADE;
-CREATE TABLE ro_url (
+DROP TABLE IF EXISTS nex.ro_url CASCADE;
+CREATE TABLE nex.ro_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -936,22 +936,22 @@ CREATE TABLE ro_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT ro_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE ro_url IS 'URLs associated with the relation ontology.';
-COMMENT ON COLUMN ro_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN ro_url.ro_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN ro_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN ro_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN ro_url.url_type IS 'Type of URL (Ontobee, OLS).';
-COMMENT ON COLUMN ro_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN ro_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN ro_url.display_name IS 'Public display name (Ontobee, OLS).';
-ALTER TABLE ro_url ADD CONSTRAINT ro_url_uk UNIQUE (ro_id,display_name,obj_url);
-ALTER TABLE ro_url ADD CONSTRAINT rourl_display_name_ck CHECK (DISPLAY_NAME IN ('Ontobee', 'OLS'));
-ALTER TABLE ro_url ADD CONSTRAINT rourl_type_ck CHECK (URL_TYPE IN ('Ontobee', 'OLS'));
-CREATE INDEX rourl_source_fk_index ON ro_url (source_id);
+COMMENT ON TABLE nex.ro_url IS 'URLs associated with the relation ontology.';
+COMMENT ON COLUMN nex.ro_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.ro_url.ro_id IS 'FK to RO.RO_ID.';
+COMMENT ON COLUMN nex.ro_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.ro_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.ro_url.url_type IS 'Type of URL (Ontobee, OLS).';
+COMMENT ON COLUMN nex.ro_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.ro_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.ro_url.display_name IS 'Public display name (Ontobee, OLS).';
+ALTER TABLE nex.ro_url ADD CONSTRAINT ro_url_uk UNIQUE (ro_id,display_name,obj_url);
+ALTER TABLE nex.ro_url ADD CONSTRAINT rourl_display_name_ck CHECK (DISPLAY_NAME IN ('Ontobee', 'OLS'));
+ALTER TABLE nex.ro_url ADD CONSTRAINT rourl_type_ck CHECK (URL_TYPE IN ('Ontobee', 'OLS'));
+CREATE INDEX rourl_source_fk_index ON nex.ro_url (source_id);
 
-DROP TABLE IF EXISTS so CASCADE;
-CREATE TABLE so (
+DROP TABLE IF EXISTS nex.so CASCADE;
+CREATE TABLE nex.so (
 	so_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -963,22 +963,22 @@ CREATE TABLE so (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT so_pk PRIMARY KEY (so_id)
 ) ;
-COMMENT ON TABLE so IS 'Sequence features as defined by the Sequence Ontology (SO).';
-COMMENT ON COLUMN so.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN so.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN so.so_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN so.display_name IS 'Public display name.';
-COMMENT ON COLUMN so.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN so.soid IS 'Sequence Ontology identifier (e.g., SO:0000368).';
-COMMENT ON COLUMN so.description IS 'Description or comment.';
-COMMENT ON COLUMN so.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN so.source_id IS 'FK to SOURCE.SOURCE_ID.';
-ALTER TABLE so ADD CONSTRAINT so_uk UNIQUE (format_name);
-CREATE UNIQUE INDEX soid_uk_index ON so (soid);
-CREATE INDEX so_source_fk_index ON so (source_id);
+COMMENT ON TABLE nex.so IS 'Sequence features as defined by the Sequence Ontology (SO).';
+COMMENT ON COLUMN nex.so.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.so.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.so.so_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.so.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.so.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.so.soid IS 'Sequence Ontology identifier (e.g., SO:0000368).';
+COMMENT ON COLUMN nex.so.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.so.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.so.source_id IS 'FK to SOURCE.SOURCE_ID.';
+ALTER TABLE nex.so ADD CONSTRAINT so_uk UNIQUE (format_name);
+CREATE UNIQUE INDEX soid_uk_index ON nex.so (soid);
+CREATE INDEX so_source_fk_index ON nex.so (source_id);
 
-DROP TABLE IF EXISTS so_alias CASCADE;
-CREATE TABLE so_alias (
+DROP TABLE IF EXISTS nex.so_alias CASCADE;
+CREATE TABLE nex.so_alias (
 	alias_id bigint NOT NULL DEFAULT nextval('alias_seq'),
 	display_name varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
@@ -988,20 +988,20 @@ CREATE TABLE so_alias (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT so_alias_pk PRIMARY KEY (alias_id)
 ) ;
-COMMENT ON TABLE so_alias IS 'Other names or synonyms for the sequence feature.';
-COMMENT ON COLUMN so_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN so_alias.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN so_alias.alias_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN so_alias.alias_type IS 'Type of alias (BROAD, EXACT, RELATED, NARROW).';
-COMMENT ON COLUMN so_alias.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN so_alias.display_name IS 'Public display name.';
-COMMENT ON COLUMN so_alias.so_id IS 'FK to SO.SO_ID.';
-ALTER TABLE so_alias ADD CONSTRAINT so_alias_uk UNIQUE (so_id,display_name,alias_type);
-ALTER TABLE so_alias ADD CONSTRAINT soalias_type_ck CHECK (ALIAS_TYPE IN ('BROAD','EXACT','RELATED','NARROW'));
-CREATE INDEX soalias_source_fk_index ON so_alias (source_id);
+COMMENT ON TABLE nex.so_alias IS 'Other names or synonyms for the sequence feature.';
+COMMENT ON COLUMN nex.so_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.so_alias.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.so_alias.alias_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.so_alias.alias_type IS 'Type of alias (BROAD, EXACT, RELATED, NARROW).';
+COMMENT ON COLUMN nex.so_alias.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.so_alias.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.so_alias.so_id IS 'FK to SO.SO_ID.';
+ALTER TABLE nex.so_alias ADD CONSTRAINT so_alias_uk UNIQUE (so_id,display_name,alias_type);
+ALTER TABLE nex.so_alias ADD CONSTRAINT soalias_type_ck CHECK (ALIAS_TYPE IN ('BROAD','EXACT','RELATED','NARROW'));
+CREATE INDEX soalias_source_fk_index ON nex.so_alias (source_id);
 
-DROP TABLE IF EXISTS so_relation CASCADE;
-CREATE TABLE so_relation (
+DROP TABLE IF EXISTS nex.so_relation CASCADE;
+CREATE TABLE nex.so_relation (
 	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
 	source_id bigint NOT NULL,
 	parent_id bigint NOT NULL,
@@ -1011,21 +1011,21 @@ CREATE TABLE so_relation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT so_relation_pk PRIMARY KEY (relation_id)
 ) ;
-COMMENT ON TABLE so_relation IS 'Relationship between two sequence features.';
-COMMENT ON COLUMN so_relation.parent_id IS 'FK to SO.SO_ID.';
-COMMENT ON COLUMN so_relation.child_id IS 'FK to SO.SO_ID.';
-COMMENT ON COLUMN so_relation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN so_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN so_relation.ro_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN so_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN so_relation.relation_id IS 'Unique identifier (serial number).';
-ALTER TABLE so_relation ADD CONSTRAINT so_relation_uk UNIQUE (parent_id,child_id,ro_id);
-CREATE INDEX sorelation_ro_fk_index ON so_relation (ro_id);
-CREATE INDEX sorelation_source_fk_index ON so_relation (source_id);
-CREATE INDEX sorelation_child_fk_index ON so_relation (child_id);
+COMMENT ON TABLE nex.so_relation IS 'Relationship between two sequence features.';
+COMMENT ON COLUMN nex.so_relation.parent_id IS 'FK to SO.SO_ID.';
+COMMENT ON COLUMN nex.so_relation.child_id IS 'FK to SO.SO_ID.';
+COMMENT ON COLUMN nex.so_relation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.so_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.so_relation.ro_id IS 'FK to RO.RO_ID.';
+COMMENT ON COLUMN nex.so_relation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.so_relation.relation_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.so_relation ADD CONSTRAINT so_relation_uk UNIQUE (parent_id,child_id,ro_id);
+CREATE INDEX sorelation_ro_fk_index ON nex.so_relation (ro_id);
+CREATE INDEX sorelation_source_fk_index ON nex.so_relation (source_id);
+CREATE INDEX sorelation_child_fk_index ON nex.so_relation (child_id);
 
-DROP TABLE IF EXISTS so_url CASCADE;
-CREATE TABLE so_url (
+DROP TABLE IF EXISTS nex.so_url CASCADE;
+CREATE TABLE nex.so_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -1036,22 +1036,22 @@ CREATE TABLE so_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT so_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE so_url IS 'URLs associated with sequence features.';
-COMMENT ON COLUMN so_url.so_id IS 'FK to SO.SO_ID.';
-COMMENT ON COLUMN so_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN so_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN so_url.display_name IS 'Public display name (MISO, OLS, Ontobee, BioBortal).';
-COMMENT ON COLUMN so_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN so_url.url_type IS 'Type of URL (MISO, OLS, Ontobee, BioPortal).';
-COMMENT ON COLUMN so_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN so_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-ALTER TABLE so_url ADD CONSTRAINT so_url_uk UNIQUE (so_id,display_name,obj_url);
-ALTER TABLE so_url ADD CONSTRAINT sourl_type_ck CHECK (URL_TYPE IN ('MISO','OLS', 'Ontobee', 'BioPortal'));
-ALTER TABLE so_url ADD CONSTRAINT sourl_display_name_ck CHECK (DISPLAY_NAME IN ('MISO','OLS', 'Ontobee', 'BioPortal'));
-CREATE INDEX sourl_source_fk_index ON so_url (source_id);
+COMMENT ON TABLE nex.so_url IS 'URLs associated with sequence features.';
+COMMENT ON COLUMN nex.so_url.so_id IS 'FK to SO.SO_ID.';
+COMMENT ON COLUMN nex.so_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.so_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.so_url.display_name IS 'Public display name (MISO, OLS, Ontobee, BioBortal).';
+COMMENT ON COLUMN nex.so_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.so_url.url_type IS 'Type of URL (MISO, OLS, Ontobee, BioPortal).';
+COMMENT ON COLUMN nex.so_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.so_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+ALTER TABLE nex.so_url ADD CONSTRAINT so_url_uk UNIQUE (so_id,display_name,obj_url);
+ALTER TABLE nex.so_url ADD CONSTRAINT sourl_type_ck CHECK (URL_TYPE IN ('MISO','OLS', 'Ontobee', 'BioPortal'));
+ALTER TABLE nex.so_url ADD CONSTRAINT sourl_display_name_ck CHECK (DISPLAY_NAME IN ('MISO','OLS', 'Ontobee', 'BioPortal'));
+CREATE INDEX sourl_source_fk_index ON nex.so_url (source_id);
 
-DROP TABLE IF EXISTS taxonomy CASCADE;
-CREATE TABLE taxonomy (
+DROP TABLE IF EXISTS nex.taxonomy CASCADE;
+CREATE TABLE nex.taxonomy (
 	taxonomy_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -1064,23 +1064,23 @@ CREATE TABLE taxonomy (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT taxonomy_pk PRIMARY KEY (taxonomy_id)
 ) ;
-COMMENT ON TABLE taxonomy IS 'Taxonomy information descended from the family Saccharomycetaceae from NCBI.';
-COMMENT ON COLUMN taxonomy.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN taxonomy.taxid IS 'Taxonomy identifier assigned by NCBI (from BUD.TAXONOMY.TAXON_ID).';
-COMMENT ON COLUMN taxonomy.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN taxonomy.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN taxonomy.rank IS 'Rank of the taxonomy term from NCBI (e.g., Saccharomyces cerevisiae = species).';
-COMMENT ON COLUMN taxonomy.common_name IS 'First common name from NCBI.';
-COMMENT ON COLUMN taxonomy.obj_url IS 'Relative URL of the object.';
-COMMENT ON COLUMN taxonomy.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN taxonomy.taxonomy_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN taxonomy.display_name IS 'Public display name.';
-ALTER TABLE taxonomy ADD CONSTRAINT taxonomy_uk UNIQUE (format_name);
-CREATE UNIQUE INDEX taxid_uk_index ON taxonomy (taxid);
-CREATE INDEX taxonomy_source_fk_index ON taxonomy (source_id);
+COMMENT ON TABLE nex.taxonomy IS 'Taxonomy information descended from the family Saccharomycetaceae from NCBI.';
+COMMENT ON COLUMN nex.taxonomy.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.taxonomy.taxid IS 'Taxonomy identifier assigned by NCBI (from BUD.TAXONOMY.TAXON_ID).';
+COMMENT ON COLUMN nex.taxonomy.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.taxonomy.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.taxonomy.rank IS 'Rank of the taxonomy term from NCBI (e.g., Saccharomyces cerevisiae = species).';
+COMMENT ON COLUMN nex.taxonomy.common_name IS 'First common name from NCBI.';
+COMMENT ON COLUMN nex.taxonomy.obj_url IS 'Relative URL of the object.';
+COMMENT ON COLUMN nex.taxonomy.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.taxonomy.taxonomy_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.taxonomy.display_name IS 'Public display name.';
+ALTER TABLE nex.taxonomy ADD CONSTRAINT taxonomy_uk UNIQUE (format_name);
+CREATE UNIQUE INDEX taxid_uk_index ON nex.taxonomy (taxid);
+CREATE INDEX taxonomy_source_fk_index ON nex.taxonomy (source_id);
 
-DROP TABLE IF EXISTS taxonomy_alias CASCADE;
-CREATE TABLE taxonomy_alias (
+DROP TABLE IF EXISTS nex.taxonomy_alias CASCADE;
+CREATE TABLE nex.taxonomy_alias (
 	alias_id bigint NOT NULL DEFAULT nextval('alias_seq'),
 	display_name varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
@@ -1090,20 +1090,20 @@ CREATE TABLE taxonomy_alias (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT taxonomy_alias_pk PRIMARY KEY (alias_id)
 ) ;
-COMMENT ON TABLE taxonomy_alias IS 'Synonym or other name of a the taxonomy term from NCBI.';
-COMMENT ON COLUMN taxonomy_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN taxonomy_alias.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN taxonomy_alias.alias_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN taxonomy_alias.alias_type IS 'Type of alias (Synonym, Secondary common name).';
-COMMENT ON COLUMN taxonomy_alias.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN taxonomy_alias.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN taxonomy_alias.display_name IS 'Public display name.';
-ALTER TABLE taxonomy_alias ADD CONSTRAINT taxonomy_alias_uk UNIQUE (taxonomy_id,display_name,alias_type);
-ALTER TABLE taxonomy_alias ADD CONSTRAINT taxonomyalias_type_ck CHECK (ALIAS_TYPE IN ('Synonym','Secondary common name'));
-CREATE INDEX taxonomyalias_source_fk_index ON taxonomy_alias (source_id);
+COMMENT ON TABLE nex.taxonomy_alias IS 'Synonym or other name of a the taxonomy term from NCBI.';
+COMMENT ON COLUMN nex.taxonomy_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.taxonomy_alias.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.taxonomy_alias.alias_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.taxonomy_alias.alias_type IS 'Type of alias (Synonym, Secondary common name).';
+COMMENT ON COLUMN nex.taxonomy_alias.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.taxonomy_alias.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.taxonomy_alias.display_name IS 'Public display name.';
+ALTER TABLE nex.taxonomy_alias ADD CONSTRAINT taxonomy_alias_uk UNIQUE (taxonomy_id,display_name,alias_type);
+ALTER TABLE nex.taxonomy_alias ADD CONSTRAINT taxonomyalias_type_ck CHECK (ALIAS_TYPE IN ('Synonym','Secondary common name'));
+CREATE INDEX taxonomyalias_source_fk_index ON nex.taxonomy_alias (source_id);
 
-DROP TABLE IF EXISTS taxonomy_relation CASCADE;
-CREATE TABLE taxonomy_relation (
+DROP TABLE IF EXISTS nex.taxonomy_relation CASCADE;
+CREATE TABLE nex.taxonomy_relation (
 	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
 	source_id bigint NOT NULL,
 	parent_id bigint NOT NULL,
@@ -1113,21 +1113,21 @@ CREATE TABLE taxonomy_relation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT taxonomy_relation_pk PRIMARY KEY (relation_id)
 ) ;
-COMMENT ON TABLE taxonomy_relation IS 'Relationship between the taxonomy terms from NCBI.';
-COMMENT ON COLUMN taxonomy_relation.relation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN taxonomy_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN taxonomy_relation.ro_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN taxonomy_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN taxonomy_relation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN taxonomy_relation.child_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN taxonomy_relation.parent_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-ALTER TABLE taxonomy_relation ADD CONSTRAINT taxonomy_relation_uk UNIQUE (parent_id,child_id,ro_id);
-CREATE INDEX taxonomyrelation_ro_fk_index ON taxonomy_relation (ro_id);
-CREATE INDEX taxonomyrelation_child_fk_index ON taxonomy_relation (child_id);
-CREATE INDEX taxonomyrelation_source_fk_index ON taxonomy_relation (source_id);
+COMMENT ON TABLE nex.taxonomy_relation IS 'Relationship between the taxonomy terms from NCBI.';
+COMMENT ON COLUMN nex.taxonomy_relation.relation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.taxonomy_relation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.taxonomy_relation.ro_id IS 'FK to RO.RO_ID.';
+COMMENT ON COLUMN nex.taxonomy_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.taxonomy_relation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.taxonomy_relation.child_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.taxonomy_relation.parent_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+ALTER TABLE nex.taxonomy_relation ADD CONSTRAINT taxonomy_relation_uk UNIQUE (parent_id,child_id,ro_id);
+CREATE INDEX taxonomyrelation_ro_fk_index ON nex.taxonomy_relation (ro_id);
+CREATE INDEX taxonomyrelation_child_fk_index ON nex.taxonomy_relation (child_id);
+CREATE INDEX taxonomyrelation_source_fk_index ON nex.taxonomy_relation (source_id);
 
-DROP TABLE IF EXISTS taxonomy_url CASCADE;
-CREATE TABLE taxonomy_url (
+DROP TABLE IF EXISTS nex.taxonomy_url CASCADE;
+CREATE TABLE nex.taxonomy_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -1138,15 +1138,15 @@ CREATE TABLE taxonomy_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT taxonomy_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE taxonomy_url IS 'URLs associated with taxonomy.';
-COMMENT ON COLUMN taxonomy_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN taxonomy_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN taxonomy_url.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN taxonomy_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN taxonomy_url.url_type IS 'Type of URL (NCBI Taxonomy).';
-COMMENT ON COLUMN taxonomy_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN taxonomy_url.created_by IS 'Username of the person who entered the record into the database.';
-ALTER TABLE taxonomy_url ADD CONSTRAINT taxonomy_url_uk UNIQUE (taxonomy_id,display_name,obj_url);
-ALTER TABLE taxonomy_url ADD CONSTRAINT taxonomyurl_display_name_ck CHECK (DISPLAY_NAME IN ('NCBI Taxonomy'));
-ALTER TABLE taxonomy_url ADD CONSTRAINT taxonomyurl_type_ck CHECK (URL_TYPE IN ('NCBI Taxonomy'));
-CREATE INDEX taxonomyurl_source_fk_index ON taxonomy_url (source_id);
+COMMENT ON TABLE nex.taxonomy_url IS 'URLs associated with taxonomy.';
+COMMENT ON COLUMN nex.taxonomy_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.taxonomy_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.taxonomy_url.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.taxonomy_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.taxonomy_url.url_type IS 'Type of URL (NCBI Taxonomy).';
+COMMENT ON COLUMN nex.taxonomy_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.taxonomy_url.created_by IS 'Username of the person who entered the record into the database.';
+ALTER TABLE nex.taxonomy_url ADD CONSTRAINT taxonomy_url_uk UNIQUE (taxonomy_id,display_name,obj_url);
+ALTER TABLE nex.taxonomy_url ADD CONSTRAINT taxonomyurl_display_name_ck CHECK (DISPLAY_NAME IN ('NCBI Taxonomy'));
+ALTER TABLE nex.taxonomy_url ADD CONSTRAINT taxonomyurl_type_ck CHECK (URL_TYPE IN ('NCBI Taxonomy'));
+CREATE INDEX taxonomyurl_source_fk_index ON nex.taxonomy_url (source_id);

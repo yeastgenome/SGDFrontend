@@ -1,18 +1,17 @@
 # Had to change /etc/postgresql/9.5/main/pg_hba.conf line from md50->password
+host     sgd             nex                  192.168.22.1/32         password
 local   all             all                                     password
 
 psql -c "CREATE USER nex WITH PASSWORD '[passwd]'"
 
 psql -U postgres postgres -c "CREATE DATABASE sgd WITH OWNER nex ENCODING 'UTF8'"
-psql -U postgres postgres -c "CREATE ROLE CURATOR"
+psql -U postgres sgd -c "CREATE ROLE CURATOR"
 
-psql -U postgres postgres -c "CREATE USER otto WITH PASSWORD '[passwd]'"
-psql -U postgres postgres -c "GRANT CURATOR to otto"
+psql -U postgres sgd -c "CREATE USER OTTO WITH PASSWORD '[passwd]'"
+psql -U postgres sgd -c "GRANT CURATOR to OTTO"
 
-psql -U postgres postgres -c "CREATE SCHEMA AUTHORIZATION nex"
-
-psql -U postgres postgres -c "GRANT USAGE ON SCHEMA nex TO CURATOR"
-psql -U postgres postgres -c "ALTER DEFAULT PRIVILEGES FOR ROLE nex GRANT EXECUTE ON FUNCTIONS to CURATOR"
+psql -U postgres sgd -c "CREATE SCHEMA nex AUTHORIZATION nex"
+psql -U postgres sgd -c "GRANT USAGE ON SCHEMA nex TO CURATOR"
 
 psql -d sgd -U nex
 

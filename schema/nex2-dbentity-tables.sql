@@ -8,8 +8,8 @@ SET client_encoding TO 'UTF8';
 
 -- Dbentity (Locus, Strain, File, Pathway, Reference)
 
-DROP TABLE IF EXISTS dbentity cascade;
-CREATE TABLE dbentity (
+DROP TABLE IF EXISTS nex.dbentity cascade;
+CREATE TABLE nex.dbentity (
 	dbentity_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -23,26 +23,26 @@ CREATE TABLE dbentity (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT dbentity_pk PRIMARY KEY (dbentity_id)
 ) ;
-COMMENT ON TABLE dbentity IS 'Primary objects that are the focus of curation. They are strain independent and require an SGDID.';
-COMMENT ON COLUMN dbentity.display_name IS 'Public display name.';
-COMMENT ON COLUMN dbentity.bud_id IS 'PK from BUD.FEATURE.FEATURE_NO.';
-COMMENT ON COLUMN dbentity.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN dbentity.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN dbentity.sgdid IS 'SGD accession identifier.';
-COMMENT ON COLUMN dbentity.dbentity_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN dbentity.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN dbentity.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN dbentity.dbentity_status IS 'Current state of the dbentity (Active, Merged, Deleted, Archived).';
-COMMENT ON COLUMN dbentity.subclass IS 'What object inherits from DBENTITY (DBENTITY, FILE, LOCUS, REFERENCE, STRAIN).';
-COMMENT ON COLUMN dbentity.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE dbentity ADD CONSTRAINT dbentity_uk UNIQUE (format_name,subclass);
-ALTER TABLE dbentity ADD CONSTRAINT dbentity_subclass_ck CHECK (SUBCLASS IN ('FILE','LOCUS','REFERENCE','STRAIN', 'PATHWAY'));
-ALTER TABLE dbentity ADD CONSTRAINT dbentity_status_ck CHECK (DBENTITY_STATUS IN ('Active','Merged','Deleted','Archived'));
-CREATE INDEX dbentity_source_fk_index ON dbentity (source_id);
-CREATE UNIQUE INDEX dbentity_sgdid_index ON dbentity (sgdid);
+COMMENT ON TABLE nex.dbentity IS 'Primary objects that are the focus of curation. They are strain independent and require an SGDID.';
+COMMENT ON COLUMN nex.dbentity.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.dbentity.bud_id IS 'PK from BUD.FEATURE.FEATURE_NO.';
+COMMENT ON COLUMN nex.dbentity.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.dbentity.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.dbentity.sgdid IS 'SGD accession identifier.';
+COMMENT ON COLUMN nex.dbentity.dbentity_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.dbentity.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.dbentity.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.dbentity.dbentity_status IS 'Current state of the dbentity (Active, Merged, Deleted, Archived).';
+COMMENT ON COLUMN nex.dbentity.subclass IS 'What object inherits from DBENTITY (DBENTITY, FILE, LOCUS, REFERENCE, STRAIN).';
+COMMENT ON COLUMN nex.dbentity.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.dbentity ADD CONSTRAINT dbentity_uk UNIQUE (format_name,subclass);
+ALTER TABLE nex.dbentity ADD CONSTRAINT dbentity_subclass_ck CHECK (SUBCLASS IN ('FILE','LOCUS','REFERENCE','STRAIN', 'PATHWAY'));
+ALTER TABLE nex.dbentity ADD CONSTRAINT dbentity_status_ck CHECK (DBENTITY_STATUS IN ('Active','Merged','Deleted','Archived'));
+CREATE INDEX dbentity_source_fk_index ON nex.dbentity (source_id);
+CREATE UNIQUE INDEX dbentity_sgdid_index ON nex.dbentity (sgdid);
 
-DROP TABLE IF EXISTS locusdbentity CASCADE; 
-CREATE TABLE locusdbentity (
+DROP TABLE IF EXISTS nex.locusdbentity CASCADE; 
+CREATE TABLE nex.locusdbentity (
 	dbentity_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	systematic_name varchar(40) NOT NULL,
 	gene_name varchar(20),
@@ -64,31 +64,31 @@ CREATE TABLE locusdbentity (
 	has_sequence_section boolean NOT NULL,
 	CONSTRAINT locusdbentity_pk PRIMARY KEY (dbentity_id)
 ) ;
-COMMENT ON TABLE locusdbentity IS 'Features located on a sequence, that are associate with a locus. Inherits from DBENTITY.';
-COMMENT ON COLUMN locusdbentity.genetic_position IS 'Genetic position of the locus.';
-COMMENT ON COLUMN locusdbentity.qualifier IS 'Categorization of the gene (Verified, Uncharacterized, Dubious).';
-COMMENT ON COLUMN locusdbentity.gene_name IS 'Registered gene name consisting of 3 letters followed by an integer (e.g., ADE12).';
-COMMENT ON COLUMN locusdbentity.headline IS 'An abbreviated version of the LOCUSDBENTITY.DESCRIPTION.';
-COMMENT ON COLUMN locusdbentity.has_summary IS 'Has a Locus web page.';
-COMMENT ON COLUMN locusdbentity.has_phenotype IS 'Has a Phenotype tab page.';
-COMMENT ON COLUMN locusdbentity.dbentity_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN locusdbentity.has_regulation IS 'Has a Regulation tab page.';
-COMMENT ON COLUMN locusdbentity.has_go IS 'Has a Gene Ontology tab page.';
-COMMENT ON COLUMN locusdbentity.description IS 'Brief description of the gene product or role the feature plays in the cell.';
-COMMENT ON COLUMN locusdbentity.has_protein IS 'Has a Protein tab page.';
-COMMENT ON COLUMN locusdbentity.has_sequence IS 'Has a Sequence tab page.';
-COMMENT ON COLUMN locusdbentity.has_expression IS 'Has an Expression tab page.';
-COMMENT ON COLUMN locusdbentity.systematic_name IS 'Unique name for the dbentity. Subfeatures have a number appended after the systematic name.';
-COMMENT ON COLUMN locusdbentity.has_literature IS 'Has a Literature tab page.';
-COMMENT ON COLUMN locusdbentity.has_history IS 'Has a History section on the Locus page.';
-COMMENT ON COLUMN locusdbentity.name_description IS 'Description of the gene name acronym.';
-COMMENT ON COLUMN locusdbentity.has_interaction IS 'Has an Interaction tab page.';
-COMMENT ON COLUMN locusdbentity.has_sequence_section IS 'Has a Sequence section on the Locus page.';
-ALTER TABLE locusdbentity ADD CONSTRAINT locusdbentity_uk UNIQUE (systematic_name);
-ALTER TABLE locusdbentity ADD CONSTRAINT locusdbentity_qualifier_ck CHECK (QUALIFIER IN ('Verified','Uncharacterized','Dubious'));
+COMMENT ON TABLE nex.locusdbentity IS 'Features located on a sequence, that are associate with a locus. Inherits from DBENTITY.';
+COMMENT ON COLUMN nex.locusdbentity.genetic_position IS 'Genetic position of the locus.';
+COMMENT ON COLUMN nex.locusdbentity.qualifier IS 'Categorization of the gene (Verified, Uncharacterized, Dubious).';
+COMMENT ON COLUMN nex.locusdbentity.gene_name IS 'Registered gene name consisting of 3 letters followed by an integer (e.g., ADE12).';
+COMMENT ON COLUMN nex.locusdbentity.headline IS 'An abbreviated version of the LOCUSDBENTITY.DESCRIPTION.';
+COMMENT ON COLUMN nex.locusdbentity.has_summary IS 'Has a Locus web page.';
+COMMENT ON COLUMN nex.locusdbentity.has_phenotype IS 'Has a Phenotype tab page.';
+COMMENT ON COLUMN nex.locusdbentity.dbentity_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.locusdbentity.has_regulation IS 'Has a Regulation tab page.';
+COMMENT ON COLUMN nex.locusdbentity.has_go IS 'Has a Gene Ontology tab page.';
+COMMENT ON COLUMN nex.locusdbentity.description IS 'Brief description of the gene product or role the feature plays in the cell.';
+COMMENT ON COLUMN nex.locusdbentity.has_protein IS 'Has a Protein tab page.';
+COMMENT ON COLUMN nex.locusdbentity.has_sequence IS 'Has a Sequence tab page.';
+COMMENT ON COLUMN nex.locusdbentity.has_expression IS 'Has an Expression tab page.';
+COMMENT ON COLUMN nex.locusdbentity.systematic_name IS 'Unique name for the dbentity. Subfeatures have a number appended after the systematic name.';
+COMMENT ON COLUMN nex.locusdbentity.has_literature IS 'Has a Literature tab page.';
+COMMENT ON COLUMN nex.locusdbentity.has_history IS 'Has a History section on the Locus page.';
+COMMENT ON COLUMN nex.locusdbentity.name_description IS 'Description of the gene name acronym.';
+COMMENT ON COLUMN nex.locusdbentity.has_interaction IS 'Has an Interaction tab page.';
+COMMENT ON COLUMN nex.locusdbentity.has_sequence_section IS 'Has a Sequence section on the Locus page.';
+ALTER TABLE nex.locusdbentity ADD CONSTRAINT locusdbentity_uk UNIQUE (systematic_name);
+ALTER TABLE nex.locusdbentity ADD CONSTRAINT locusdbentity_qualifier_ck CHECK (QUALIFIER IN ('Verified','Uncharacterized','Dubious'));
 
-DROP TABLE IF EXISTS locus_alias CASCADE; 
-CREATE TABLE locus_alias (
+DROP TABLE IF EXISTS nex.locus_alias CASCADE; 
+CREATE TABLE nex.locus_alias (
 	alias_id bigint NOT NULL DEFAULT nextval('alias_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500),
@@ -101,22 +101,22 @@ CREATE TABLE locus_alias (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT locus_alias_pk PRIMARY KEY (alias_id)
 ) ;
-COMMENT ON TABLE locus_alias IS 'Other names, synonyms, or dbxrefs for a feature or gene.';
-COMMENT ON COLUMN locus_alias.has_external_id_section IS 'Whether the alias is displayed in the Protein tab External Identifier section.';
-COMMENT ON COLUMN locus_alias.display_name IS 'Public display name.';
-COMMENT ON COLUMN locus_alias.bud_id IS 'PK from BUD.ALIAS.ALIAS_NO or BUD.DBXREF.DBXREF_NO.';
-COMMENT ON COLUMN locus_alias.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN locus_alias.locus_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN locus_alias.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN locus_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN locus_alias.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN locus_alias.alias_type IS 'Type of alias or dbxref.';
-COMMENT ON COLUMN locus_alias.alias_id IS 'Unique identifier (serial number).';
-ALTER TABLE locus_alias ADD CONSTRAINT locus_alias_uk UNIQUE (locus_id,display_name,alias_type);
-CREATE INDEX locusalias_source_fk_index ON locus_alias (source_id);
+COMMENT ON TABLE nex.locus_alias IS 'Other names, synonyms, or dbxrefs for a feature or gene.';
+COMMENT ON COLUMN nex.locus_alias.has_external_id_section IS 'Whether the alias is displayed in the Protein tab External Identifier section.';
+COMMENT ON COLUMN nex.locus_alias.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.locus_alias.bud_id IS 'PK from BUD.ALIAS.ALIAS_NO or BUD.DBXREF.DBXREF_NO.';
+COMMENT ON COLUMN nex.locus_alias.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.locus_alias.locus_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.locus_alias.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.locus_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.locus_alias.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.locus_alias.alias_type IS 'Type of alias or dbxref.';
+COMMENT ON COLUMN nex.locus_alias.alias_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.locus_alias ADD CONSTRAINT locus_alias_uk UNIQUE (locus_id,display_name,alias_type);
+CREATE INDEX locusalias_source_fk_index ON nex.locus_alias (source_id);
 
-DROP TABLE IF EXISTS locus_relation CASCADE; 
-CREATE TABLE locus_relation (
+DROP TABLE IF EXISTS nex.locus_relation CASCADE; 
+CREATE TABLE nex.locus_relation (
 	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
 	source_id bigint NOT NULL,
 	bud_id integer,
@@ -127,22 +127,22 @@ CREATE TABLE locus_relation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT locus_relation_pk PRIMARY KEY (relation_id)
 ) ;
-COMMENT ON TABLE locus_relation IS 'Relationship between two locus dbentities or features.';
-COMMENT ON COLUMN locus_relation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN locus_relation.relation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN locus_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN locus_relation.ro_id IS 'FK to RO.RO_ID.';
-COMMENT ON COLUMN locus_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN locus_relation.parent_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN locus_relation.bud_id IS 'PK from BUD.FEAT_RELATIONSHIP.FEAT_RELATIONSHIP_NO.';
-COMMENT ON COLUMN locus_relation.child_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
-ALTER TABLE locus_relation ADD CONSTRAINT locus_relation_uk UNIQUE (parent_id,child_id,ro_id);
-CREATE INDEX locusrelation_child_fk_index ON locus_relation (child_id);
-CREATE INDEX locusrelation_ro_fk_index ON locus_relation (ro_id);
-CREATE INDEX locusrelation_source_fk_index ON locus_relation (source_id);
+COMMENT ON TABLE nex.locus_relation IS 'Relationship between two locus dbentities or features.';
+COMMENT ON COLUMN nex.locus_relation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.locus_relation.relation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.locus_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.locus_relation.ro_id IS 'FK to RO.RO_ID.';
+COMMENT ON COLUMN nex.locus_relation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.locus_relation.parent_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.locus_relation.bud_id IS 'PK from BUD.FEAT_RELATIONSHIP.FEAT_RELATIONSHIP_NO.';
+COMMENT ON COLUMN nex.locus_relation.child_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.locus_relation ADD CONSTRAINT locus_relation_uk UNIQUE (parent_id,child_id,ro_id);
+CREATE INDEX locusrelation_child_fk_index ON nex.locus_relation (child_id);
+CREATE INDEX locusrelation_ro_fk_index ON nex.locus_relation (ro_id);
+CREATE INDEX locusrelation_source_fk_index ON nex.locus_relation (source_id);
 
-DROP TABLE IF EXISTS locus_url CASCADE; 
-CREATE TABLE locus_url (
+DROP TABLE IF EXISTS nex.locus_url CASCADE; 
+CREATE TABLE nex.locus_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -155,23 +155,23 @@ CREATE TABLE locus_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT locus_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE locus_url IS 'URLs associated with locus dbentities or features.';
-COMMENT ON COLUMN locus_url.display_name IS 'Public display name.';
-COMMENT ON COLUMN locus_url.bud_id IS 'PK from BUD.URL.URL_NO.';
-COMMENT ON COLUMN locus_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN locus_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN locus_url.locus_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN locus_url.url_type IS 'Type of URL (Internal web service, External id, Systematic name, SGDID).';
-COMMENT ON COLUMN locus_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN locus_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN locus_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN locus_url.placement IS 'Location of the URL on the web page.';
-ALTER TABLE locus_url ADD CONSTRAINT locus_url_uk UNIQUE (locus_id,display_name,obj_url,placement);
-ALTER TABLE locus_url ADD CONSTRAINT locusurl_type_ck CHECK (URL_TYPE IN ('External id','SGDID','Systematic name','Internal web service'));
-CREATE INDEX locusurl_source_fk_index ON locus_url (source_id);
+COMMENT ON TABLE nex.locus_url IS 'URLs associated with locus dbentities or features.';
+COMMENT ON COLUMN nex.locus_url.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.locus_url.bud_id IS 'PK from BUD.URL.URL_NO.';
+COMMENT ON COLUMN nex.locus_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.locus_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.locus_url.locus_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.locus_url.url_type IS 'Type of URL (Internal web service, External id, Systematic name, SGDID).';
+COMMENT ON COLUMN nex.locus_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.locus_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.locus_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.locus_url.placement IS 'Location of the URL on the web page.';
+ALTER TABLE nex.locus_url ADD CONSTRAINT locus_url_uk UNIQUE (locus_id,display_name,obj_url,placement);
+ALTER TABLE nex.locus_url ADD CONSTRAINT locusurl_type_ck CHECK (URL_TYPE IN ('External id','SGDID','Systematic name','Internal web service'));
+CREATE INDEX locusurl_source_fk_index ON nex.locus_url (source_id);
 
-DROP TABLE IF EXISTS locussummary CASCADE; 
-CREATE TABLE locussummary (
+DROP TABLE IF EXISTS nex.locussummary CASCADE; 
+CREATE TABLE nex.locussummary (
 	summary_id bigint NOT NULL DEFAULT nextval('summary_seq'),
 	source_id bigint NOT NULL,
 	bud_id integer,
@@ -184,23 +184,23 @@ CREATE TABLE locussummary (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT locussummary_pk PRIMARY KEY (summary_id)
 ) ;
-COMMENT ON TABLE locussummary IS 'Summaries or paragraphs associated with locus features.';
-COMMENT ON COLUMN locussummary.summary_order IS 'Order of summaries when composed of multiple paragraphs (default = 1).';
-COMMENT ON COLUMN locussummary.bud_id IS 'PK from BUD.PARAGRAPH.PARAGRAPH_NO.';
-COMMENT ON COLUMN locussummary.summary_type IS 'Type of summary (Gene, Function, Phenotype, Regulation).';
-COMMENT ON COLUMN locussummary.locus_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN locussummary.text IS 'Summary plain text.';
-COMMENT ON COLUMN locussummary.summary_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN locussummary.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN locussummary.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN locussummary.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN locussummary.html IS 'Summary HTML mark-up.';
-ALTER TABLE locussummary ADD CONSTRAINT locussummary_uk UNIQUE (locus_id,summary_type,summary_order);
-ALTER TABLE locussummary ADD CONSTRAINT locussummary_type_ck CHECK (SUMMARY_TYPE IN ('Gene','Function','Phenotype','Regulation'));
-CREATE INDEX locussummary_source_fk_index ON locussummary (source_id);
+COMMENT ON TABLE nex.locussummary IS 'Summaries or paragraphs associated with locus features.';
+COMMENT ON COLUMN nex.locussummary.summary_order IS 'Order of summaries when composed of multiple paragraphs (default = 1).';
+COMMENT ON COLUMN nex.locussummary.bud_id IS 'PK from BUD.PARAGRAPH.PARAGRAPH_NO.';
+COMMENT ON COLUMN nex.locussummary.summary_type IS 'Type of summary (Gene, Function, Phenotype, Regulation).';
+COMMENT ON COLUMN nex.locussummary.locus_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.locussummary.text IS 'Summary plain text.';
+COMMENT ON COLUMN nex.locussummary.summary_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.locussummary.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.locussummary.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.locussummary.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.locussummary.html IS 'Summary HTML mark-up.';
+ALTER TABLE nex.locussummary ADD CONSTRAINT locussummary_uk UNIQUE (locus_id,summary_type,summary_order);
+ALTER TABLE nex.locussummary ADD CONSTRAINT locussummary_type_ck CHECK (SUMMARY_TYPE IN ('Gene','Function','Phenotype','Regulation'));
+CREATE INDEX locussummary_source_fk_index ON nex.locussummary (source_id);
 
-DROP TABLE IF EXISTS locussummary_reference CASCADE; 
-CREATE TABLE locussummary_reference (
+DROP TABLE IF EXISTS nex.locussummary_reference CASCADE; 
+CREATE TABLE nex.locussummary_reference (
 	summary_reference_id bigint NOT NULL DEFAULT nextval('link_seq'),
 	summary_id bigint NOT NULL,
 	reference_id bigint NOT NULL,
@@ -210,20 +210,20 @@ CREATE TABLE locussummary_reference (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT locussummary_reference_pk PRIMARY KEY (summary_reference_id)
 ) ;
-COMMENT ON TABLE locussummary_reference IS 'References associated with a locus summary.';
-COMMENT ON COLUMN locussummary_reference.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN locussummary_reference.summary_id IS 'FK to LOCUSSUMMARY.SUMMARY_ID.';
-COMMENT ON COLUMN locussummary_reference.summary_reference_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN locussummary_reference.reference_order IS 'Order of the references in the summary.';
-COMMENT ON COLUMN locussummary_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN locussummary_reference.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN locussummary_reference.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
-ALTER TABLE locussummary_reference ADD CONSTRAINT locussummary_reference_uk UNIQUE (summary_id,reference_id);
-CREATE INDEX locussummaryreference_source_fk_index ON locussummary_reference (source_id);
-CREATE INDEX locussummaryreference_ref_fk_index ON locussummary_reference (reference_id);
+COMMENT ON TABLE nex.locussummary_reference IS 'References associated with a locus summary.';
+COMMENT ON COLUMN nex.locussummary_reference.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.locussummary_reference.summary_id IS 'FK to LOCUSSUMMARY.SUMMARY_ID.';
+COMMENT ON COLUMN nex.locussummary_reference.summary_reference_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.locussummary_reference.reference_order IS 'Order of the references in the summary.';
+COMMENT ON COLUMN nex.locussummary_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.locussummary_reference.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.locussummary_reference.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.locussummary_reference ADD CONSTRAINT locussummary_reference_uk UNIQUE (summary_id,reference_id);
+CREATE INDEX locussummaryreference_source_fk_index ON nex.locussummary_reference (source_id);
+CREATE INDEX locussummaryreference_ref_fk_index ON nex.locussummary_reference (reference_id);
 
-DROP TABLE IF EXISTS straindbentity CASCADE; 
-CREATE TABLE straindbentity (
+DROP TABLE IF EXISTS nex.straindbentity CASCADE; 
+CREATE TABLE nex.straindbentity (
 	dbentity_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	taxonomy_id bigint NOT NULL,
 	strain_type varchar(40) NOT NULL,
@@ -237,23 +237,23 @@ CREATE TABLE straindbentity (
 	feature_count integer,
 	CONSTRAINT straindbentity_pk PRIMARY KEY (dbentity_id)
 ) ;
-COMMENT ON TABLE straindbentity IS 'A yeast strain which has sequence data. Inherits from DBENTITY';
-COMMENT ON COLUMN straindbentity.feature_count IS 'Number of features identified in this strain.';
-COMMENT ON COLUMN straindbentity.strain_type IS 'Strain designation assigned by SGD (Reference, Alternative Reference, Other).';
-COMMENT ON COLUMN straindbentity.assembly_size IS 'Total number of nucleotides in the assembly.';
-COMMENT ON COLUMN straindbentity.scaffold_number IS 'Number of scaffolds in the assembly.';
-COMMENT ON COLUMN straindbentity.dbentity_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN straindbentity.scaffold_nfifty IS 'Weighted median statistic such that 50% of the entire assembly is contained in scaffolds equal to or larger than this value';
-COMMENT ON COLUMN straindbentity.longest_scaffold IS 'Length of the longest scaffold.';
-COMMENT ON COLUMN straindbentity.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN straindbentity.genbank_id IS 'GenBank accession ID of the strain (e.g., JRII00000000).';
-COMMENT ON COLUMN straindbentity.genotype IS 'Genotype of the strain.';
-COMMENT ON COLUMN straindbentity.fold_coverage IS 'Average number of reads per nucleotide in the assembly.';
-ALTER TABLE straindbentity ADD CONSTRAINT straindbentity_type_ck CHECK (STRAIN_TYPE IN ('Reference','Alternative Reference','Other'));
-CREATE INDEX straindbentity_tax_fk_index ON straindbentity (taxonomy_id);
+COMMENT ON TABLE nex.straindbentity IS 'A yeast strain which has sequence data. Inherits from DBENTITY';
+COMMENT ON COLUMN nex.straindbentity.feature_count IS 'Number of features identified in this strain.';
+COMMENT ON COLUMN nex.straindbentity.strain_type IS 'Strain designation assigned by SGD (Reference, Alternative Reference, Other).';
+COMMENT ON COLUMN nex.straindbentity.assembly_size IS 'Total number of nucleotides in the assembly.';
+COMMENT ON COLUMN nex.straindbentity.scaffold_number IS 'Number of scaffolds in the assembly.';
+COMMENT ON COLUMN nex.straindbentity.dbentity_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.straindbentity.scaffold_nfifty IS 'Weighted median statistic such that 50% of the entire assembly is contained in scaffolds equal to or larger than this value';
+COMMENT ON COLUMN nex.straindbentity.longest_scaffold IS 'Length of the longest scaffold.';
+COMMENT ON COLUMN nex.straindbentity.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.straindbentity.genbank_id IS 'GenBank accession ID of the strain (e.g., JRII00000000).';
+COMMENT ON COLUMN nex.straindbentity.genotype IS 'Genotype of the strain.';
+COMMENT ON COLUMN nex.straindbentity.fold_coverage IS 'Average number of reads per nucleotide in the assembly.';
+ALTER TABLE nex.straindbentity ADD CONSTRAINT straindbentity_type_ck CHECK (STRAIN_TYPE IN ('Reference','Alternative Reference','Other'));
+CREATE INDEX straindbentity_tax_fk_index ON nex.straindbentity (taxonomy_id);
 
-DROP TABLE IF EXISTS strain_url CASCADE; 
-CREATE TABLE strain_url (
+DROP TABLE IF EXISTS nex.strain_url CASCADE; 
+CREATE TABLE nex.strain_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -264,21 +264,21 @@ CREATE TABLE strain_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT strain_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE strain_url IS 'URLs associated with a strain.';
-COMMENT ON COLUMN strain_url.display_name IS 'Public display name.';
-COMMENT ON COLUMN strain_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN strain_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN strain_url.url_type IS 'Type of URL (External id, Wiki, PubMed, GenBank, Download).';
-COMMENT ON COLUMN strain_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN strain_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN strain_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN strain_url.strain_id IS 'FK to STRAINDBENTITY.DBENTITY_ID.';
-ALTER TABLE strain_url ADD CONSTRAINT strain_url_uk UNIQUE (strain_id,display_name,url_type);
-ALTER TABLE strain_url ADD CONSTRAINT strainurl_type_ck CHECK (URL_TYPE IN ('Download','GenBank','PubMed','External id','Wiki'));
-CREATE INDEX strainurl_source_fk_index ON strain_url (source_id);
+COMMENT ON TABLE nex.strain_url IS 'URLs associated with a strain.';
+COMMENT ON COLUMN nex.strain_url.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.strain_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.strain_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.strain_url.url_type IS 'Type of URL (External id, Wiki, PubMed, GenBank, Download).';
+COMMENT ON COLUMN nex.strain_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.strain_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.strain_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.strain_url.strain_id IS 'FK to STRAINDBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.strain_url ADD CONSTRAINT strain_url_uk UNIQUE (strain_id,display_name,url_type);
+ALTER TABLE nex.strain_url ADD CONSTRAINT strainurl_type_ck CHECK (URL_TYPE IN ('Download','GenBank','PubMed','External id','Wiki'));
+CREATE INDEX strainurl_source_fk_index ON nex.strain_url (source_id);
 
-DROP TABLE IF EXISTS strainsummary CASCADE; 
-CREATE TABLE strainsummary (
+DROP TABLE IF EXISTS nex.strainsummary CASCADE; 
+CREATE TABLE nex.strainsummary (
 	summary_id bigint NOT NULL DEFAULT nextval('summary_seq'),
 	source_id bigint NOT NULL,
 	strain_id bigint NOT NULL,
@@ -289,21 +289,21 @@ CREATE TABLE strainsummary (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT strainsummary_pk PRIMARY KEY (summary_id)
 ) ;
-COMMENT ON TABLE strainsummary IS 'Summaries or paragraphs associated with strains.';
-COMMENT ON COLUMN strainsummary.summary_type IS 'Type of summary (Strain).';
-COMMENT ON COLUMN strainsummary.strain_id IS 'FK to STRAINDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN strainsummary.html IS 'Summary HTML mark-up.';
-COMMENT ON COLUMN strainsummary.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN strainsummary.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN strainsummary.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN strainsummary.summary_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN strainsummary.text IS 'Summary plain text.';
-ALTER TABLE strainsummary ADD CONSTRAINT strainsummary_uk UNIQUE (strain_id,summary_type);
-ALTER TABLE strainsummary ADD CONSTRAINT strainsummary_type_ck CHECK (SUMMARY_TYPE IN ('Strain'));
-CREATE INDEX strainsummary_source_fk_index ON strainsummary (source_id);
+COMMENT ON TABLE nex.strainsummary IS 'Summaries or paragraphs associated with strains.';
+COMMENT ON COLUMN nex.strainsummary.summary_type IS 'Type of summary (Strain).';
+COMMENT ON COLUMN nex.strainsummary.strain_id IS 'FK to STRAINDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.strainsummary.html IS 'Summary HTML mark-up.';
+COMMENT ON COLUMN nex.strainsummary.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.strainsummary.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.strainsummary.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.strainsummary.summary_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.strainsummary.text IS 'Summary plain text.';
+ALTER TABLE nex.strainsummary ADD CONSTRAINT strainsummary_uk UNIQUE (strain_id,summary_type);
+ALTER TABLE nex.strainsummary ADD CONSTRAINT strainsummary_type_ck CHECK (SUMMARY_TYPE IN ('Strain'));
+CREATE INDEX strainsummary_source_fk_index ON nex.strainsummary (source_id);
 
-DROP TABLE IF EXISTS strainsummary_reference CASCADE; 
-CREATE TABLE strainsummary_reference (
+DROP TABLE IF EXISTS nex.strainsummary_reference CASCADE; 
+CREATE TABLE nex.strainsummary_reference (
 	summary_reference_id bigint NOT NULL DEFAULT nextval('link_seq'),
 	summary_id bigint NOT NULL,
 	reference_id bigint NOT NULL,
@@ -313,30 +313,30 @@ CREATE TABLE strainsummary_reference (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT strainsummary_reference_pk PRIMARY KEY (summary_reference_id)
 ) ;
-COMMENT ON TABLE strainsummary_reference IS 'References associatd with a strain summary.';
-COMMENT ON COLUMN strainsummary_reference.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN strainsummary_reference.reference_order IS 'Order of the references in the summary.';
-COMMENT ON COLUMN strainsummary_reference.summary_id IS 'FK to STRAINSUMMARY.SUMMARY_ID.';
-COMMENT ON COLUMN strainsummary_reference.summary_reference_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN strainsummary_reference.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN strainsummary_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN strainsummary_reference.created_by IS 'Username of the person who entered the record into the database.';
-ALTER TABLE strainsummary_reference ADD CONSTRAINT strainsummary_reference_uk UNIQUE (summary_id,reference_id);
-CREATE INDEX strainsummaryreference_ref_fk_index ON strainsummary_reference (reference_id);
-CREATE INDEX strainsummaryreference_source_fk_index ON strainsummary_reference (source_id);
+COMMENT ON TABLE nex.strainsummary_reference IS 'References associatd with a strain summary.';
+COMMENT ON COLUMN nex.strainsummary_reference.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.strainsummary_reference.reference_order IS 'Order of the references in the summary.';
+COMMENT ON COLUMN nex.strainsummary_reference.summary_id IS 'FK to STRAINSUMMARY.SUMMARY_ID.';
+COMMENT ON COLUMN nex.strainsummary_reference.summary_reference_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.strainsummary_reference.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.strainsummary_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.strainsummary_reference.created_by IS 'Username of the person who entered the record into the database.';
+ALTER TABLE nex.strainsummary_reference ADD CONSTRAINT strainsummary_reference_uk UNIQUE (summary_id,reference_id);
+CREATE INDEX strainsummaryreference_ref_fk_index ON nex.strainsummary_reference (reference_id);
+CREATE INDEX strainsummaryreference_source_fk_index ON nex.strainsummary_reference (source_id);
 
-DROP TABLE IF EXISTS pathwaydbentity CASCADE; 
-CREATE TABLE pathwaydbentity (
+DROP TABLE IF EXISTS nex.pathwaydbentity CASCADE; 
+CREATE TABLE nex.pathwaydbentity (
 	dbentity_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	biocyc_id varchar(40),
 	CONSTRAINT pathwaydbentity_pk PRIMARY KEY (dbentity_id)
 ) ;
-COMMENT ON TABLE pathwaydbentity IS 'A biochemical pathway. Inherits from DBENTITY';
-COMMENT ON COLUMN pathwaydbentity.dbentity_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN pathwaydbentity.biocyc_id IS 'Unique identifier for the pathway from BioCyc.';
+COMMENT ON TABLE nex.pathwaydbentity IS 'A biochemical pathway. Inherits from DBENTITY';
+COMMENT ON COLUMN nex.pathwaydbentity.dbentity_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.pathwaydbentity.biocyc_id IS 'Unique identifier for the pathway from BioCyc.';
 
-DROP TABLE IF EXISTS pathway_alias CASCADE; 
-CREATE TABLE pathway_alias (
+DROP TABLE IF EXISTS nex.pathway_alias CASCADE; 
+CREATE TABLE nex.pathway_alias (
 	alias_id bigint NOT NULL DEFAULT nextval('alias_seq'),
 	display_name varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
@@ -346,20 +346,20 @@ CREATE TABLE pathway_alias (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT pathway_alias_pk PRIMARY KEY (alias_id)
 ) ;
-COMMENT ON TABLE pathway_alias IS 'Other names, synonyms, or dbxrefs for a pathway.';
-COMMENT ON COLUMN pathway_alias.display_name IS 'Public display name.';
-COMMENT ON COLUMN pathway_alias.alias_type IS 'Type of alias or dbxref (Synonym).';
-COMMENT ON COLUMN pathway_alias.alias_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN pathway_alias.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN pathway_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN pathway_alias.pathway_id IS 'FK to PATHWAYDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN pathway_alias.created_by IS 'Username of the person who entered the record into the database.';
-ALTER TABLE pathway_alias ADD CONSTRAINT pathway_alias_uk UNIQUE (pathway_id,display_name,alias_type);
-ALTER TABLE pathway_alias ADD CONSTRAINT pathwayalias_type_ck CHECK (ALIAS_TYPE IN ('Synonym'));
-CREATE INDEX pathwayalias_source_fk_index ON pathway_alias (source_id);
+COMMENT ON TABLE nex.pathway_alias IS 'Other names, synonyms, or dbxrefs for a pathway.';
+COMMENT ON COLUMN nex.pathway_alias.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.pathway_alias.alias_type IS 'Type of alias or dbxref (Synonym).';
+COMMENT ON COLUMN nex.pathway_alias.alias_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.pathway_alias.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.pathway_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.pathway_alias.pathway_id IS 'FK to PATHWAYDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.pathway_alias.created_by IS 'Username of the person who entered the record into the database.';
+ALTER TABLE nex.pathway_alias ADD CONSTRAINT pathway_alias_uk UNIQUE (pathway_id,display_name,alias_type);
+ALTER TABLE nex.pathway_alias ADD CONSTRAINT pathwayalias_type_ck CHECK (ALIAS_TYPE IN ('Synonym'));
+CREATE INDEX pathwayalias_source_fk_index ON nex.pathway_alias (source_id);
 
-DROP TABLE IF EXISTS pathway_url CASCADE; 
-CREATE TABLE pathway_url (
+DROP TABLE IF EXISTS nex.pathway_url CASCADE; 
+CREATE TABLE nex.pathway_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -370,21 +370,21 @@ CREATE TABLE pathway_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT pathway_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE pathway_url IS 'URLs associated with a pathway.';
-COMMENT ON COLUMN pathway_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN pathway_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN pathway_url.display_name IS 'Public display name.';
-COMMENT ON COLUMN pathway_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN pathway_url.url_type IS 'Type of URL (BioCyc, Yeastpathways).';
-COMMENT ON COLUMN pathway_url.pathway_id IS 'FK to PATHWAYDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN pathway_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN pathway_url.created_by IS 'Username of the person who entered the record into the database.';
-ALTER TABLE pathway_url ADD CONSTRAINT pathway_url_uk UNIQUE (pathway_id,display_name,obj_url);
-ALTER TABLE pathway_url ADD CONSTRAINT pathwayurl_type_ck CHECK (URL_TYPE IN ('BioCyc', 'YeastPathways'));
-CREATE INDEX pathwayurl_source_fk_index ON pathway_url (source_id);
+COMMENT ON TABLE nex.pathway_url IS 'URLs associated with a pathway.';
+COMMENT ON COLUMN nex.pathway_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.pathway_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.pathway_url.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.pathway_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.pathway_url.url_type IS 'Type of URL (BioCyc, Yeastpathways).';
+COMMENT ON COLUMN nex.pathway_url.pathway_id IS 'FK to PATHWAYDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.pathway_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.pathway_url.created_by IS 'Username of the person who entered the record into the database.';
+ALTER TABLE nex.pathway_url ADD CONSTRAINT pathway_url_uk UNIQUE (pathway_id,display_name,obj_url);
+ALTER TABLE nex.pathway_url ADD CONSTRAINT pathwayurl_type_ck CHECK (URL_TYPE IN ('BioCyc', 'YeastPathways'));
+CREATE INDEX pathwayurl_source_fk_index ON nex.pathway_url (source_id);
 
-DROP TABLE IF EXISTS pathwaysummary CASCADE; 
-CREATE TABLE pathwaysummary (
+DROP TABLE IF EXISTS nex.pathwaysummary CASCADE; 
+CREATE TABLE nex.pathwaysummary (
 	summary_id bigint NOT NULL DEFAULT nextval('summary_seq'),
 	source_id bigint NOT NULL,
 	pathway_id bigint NOT NULL,
@@ -395,21 +395,21 @@ CREATE TABLE pathwaysummary (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT pathwaysummary_pk PRIMARY KEY (summary_id)
 ) ;
-COMMENT ON TABLE pathwaysummary IS 'Summaries or paragraphs associated with pathways.';
-COMMENT ON COLUMN pathwaysummary.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN pathwaysummary.html IS 'Summary HTML mark-up.';
-COMMENT ON COLUMN pathwaysummary.summary_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN pathwaysummary.text IS 'Summary plain text.';
-COMMENT ON COLUMN pathwaysummary.pathway_id IS 'FK to PATHWAYDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN pathwaysummary.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN pathwaysummary.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN pathwaysummary.summary_type IS 'Type of summary (Metabolic).';
-ALTER TABLE pathwaysummary ADD CONSTRAINT pathwaysummary_uk UNIQUE (pathway_id,summary_type);
-ALTER TABLE pathwaysummary ADD CONSTRAINT pathwaysummary_type_ck CHECK (SUMMARY_TYPE IN ('Metabolic'));
-CREATE INDEX pathwaysummary_source_fk_index ON pathwaysummary (source_id);
+COMMENT ON TABLE nex.pathwaysummary IS 'Summaries or paragraphs associated with pathways.';
+COMMENT ON COLUMN nex.pathwaysummary.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.pathwaysummary.html IS 'Summary HTML mark-up.';
+COMMENT ON COLUMN nex.pathwaysummary.summary_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.pathwaysummary.text IS 'Summary plain text.';
+COMMENT ON COLUMN nex.pathwaysummary.pathway_id IS 'FK to PATHWAYDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.pathwaysummary.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.pathwaysummary.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.pathwaysummary.summary_type IS 'Type of summary (Metabolic).';
+ALTER TABLE nex.pathwaysummary ADD CONSTRAINT pathwaysummary_uk UNIQUE (pathway_id,summary_type);
+ALTER TABLE nex.pathwaysummary ADD CONSTRAINT pathwaysummary_type_ck CHECK (SUMMARY_TYPE IN ('Metabolic'));
+CREATE INDEX pathwaysummary_source_fk_index ON nex.pathwaysummary (source_id);
 
-DROP TABLE IF EXISTS pathwaysummary_reference CASCADE; 
-CREATE TABLE pathwaysummary_reference (
+DROP TABLE IF EXISTS nex.pathwaysummary_reference CASCADE; 
+CREATE TABLE nex.pathwaysummary_reference (
 	summary_reference_id bigint NOT NULL DEFAULT nextval('link_seq'),
 	summary_id bigint NOT NULL,
 	reference_id bigint NOT NULL,
@@ -419,20 +419,20 @@ CREATE TABLE pathwaysummary_reference (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT pathwaysummary_reference_pk PRIMARY KEY (summary_reference_id)
 ) ;
-COMMENT ON TABLE pathwaysummary_reference IS 'References associatd with a paragraph summary.';
-COMMENT ON COLUMN pathwaysummary_reference.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN pathwaysummary_reference.reference_order IS 'Order of the references in the summary.';
-COMMENT ON COLUMN pathwaysummary_reference.summary_reference_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN pathwaysummary_reference.summary_id IS 'FK to PATHWAYSUMMARY.SUMMARY_ID.';
-COMMENT ON COLUMN pathwaysummary_reference.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN pathwaysummary_reference.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN pathwaysummary_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
-ALTER TABLE pathwaysummary_reference ADD CONSTRAINT pathwaysummary_reference_uk UNIQUE (summary_id,reference_id);
-CREATE INDEX pathwaysummaryreference_ref_fk_index ON pathwaysummary_reference (reference_id);
-CREATE INDEX pathwaysummaryreference_source_fk_index ON pathwaysummary_reference (source_id);
+COMMENT ON TABLE nex.pathwaysummary_reference IS 'References associatd with a paragraph summary.';
+COMMENT ON COLUMN nex.pathwaysummary_reference.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.pathwaysummary_reference.reference_order IS 'Order of the references in the summary.';
+COMMENT ON COLUMN nex.pathwaysummary_reference.summary_reference_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.pathwaysummary_reference.summary_id IS 'FK to PATHWAYSUMMARY.SUMMARY_ID.';
+COMMENT ON COLUMN nex.pathwaysummary_reference.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.pathwaysummary_reference.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.pathwaysummary_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
+ALTER TABLE nex.pathwaysummary_reference ADD CONSTRAINT pathwaysummary_reference_uk UNIQUE (summary_id,reference_id);
+CREATE INDEX pathwaysummaryreference_ref_fk_index ON nex.pathwaysummary_reference (reference_id);
+CREATE INDEX pathwaysummaryreference_source_fk_index ON nex.pathwaysummary_reference (source_id);
 
-DROP TABLE IF EXISTS filepath CASCADE; 
-CREATE TABLE filepath (
+DROP TABLE IF EXISTS nex.filepath CASCADE; 
+CREATE TABLE nex.filepath (
 	filepath_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	source_id bigint NOT NULL,
 	filepath varchar(500) NOT NULL,
@@ -440,17 +440,17 @@ CREATE TABLE filepath (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT filepath_pk PRIMARY KEY (filepath_id)
 ) ;
-COMMENT ON TABLE filepath IS 'Virtual path to a file for browsing purposes.';
-COMMENT ON COLUMN filepath.filepath_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN filepath.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN filepath.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN filepath.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN filepath.filepath IS 'Virtual path to a file for browsing purposes.';
-ALTER TABLE filepath ADD CONSTRAINT filepath_uk UNIQUE (filepath);
-CREATE INDEX filepath_source_fk_index ON filepath (source_id);
+COMMENT ON TABLE nex.filepath IS 'Virtual path to a file for browsing purposes.';
+COMMENT ON COLUMN nex.filepath.filepath_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.filepath.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.filepath.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.filepath.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.filepath.filepath IS 'Virtual path to a file for browsing purposes.';
+ALTER TABLE nex.filepath ADD CONSTRAINT filepath_uk UNIQUE (filepath);
+CREATE INDEX filepath_source_fk_index ON nex.filepath (source_id);
 
-DROP TABLE IF EXISTS filedbentity CASCADE; 
-CREATE TABLE filedbentity (
+DROP TABLE IF EXISTS nex.filedbentity CASCADE; 
+CREATE TABLE nex.filedbentity (
 	dbentity_id bigint NOT NULL DEFAULT nextval('object_seq'),
         topic_id bigint NOT NULL,
 	data_id bigint NOT NULL,
@@ -468,31 +468,31 @@ CREATE TABLE filedbentity (
 	description varchar(4000),
 	CONSTRAINT filedbentity_pk PRIMARY KEY (dbentity_id)
 ) ;
-COMMENT ON TABLE filedbentity IS 'Details about files loaded into or dumped from the database or associated with the Download Server.';
-COMMENT ON COLUMN filedbentity.topic_id IS 'A broad domain or category of the file, FK to EDAM topic namespace.';
-COMMENT ON COLUMN filedbentity.file_date IS 'Release date or date the file was created.';
-COMMENT ON COLUMN filedbentity.format_id IS 'Standard file format, FK to EDAM format namespace.';
-COMMENT ON COLUMN filedbentity.filepath_id IS 'FK to FILEPATH.FILEPATH_ID.';
-COMMENT ON COLUMN filedbentity.file_extension IS 'File name extension.';
-COMMENT ON COLUMN filedbentity.data_id IS 'Type of data in the file, FK to EDAM data namespace.';
-COMMENT ON COLUMN filedbentity.is_public IS 'Whether the file is viewable to the public.';
-COMMENT ON COLUMN filedbentity.description IS 'A description or comment about the file not included elsewhere.';
-COMMENT ON COLUMN filedbentity.dbentity_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN filedbentity.s3_url IS 'Amazon S3 URL of the file.';
-COMMENT ON COLUMN filedbentity.previous_file_name IS 'File name on the Download Server.';
-COMMENT ON COLUMN filedbentity.readme_file_id IS 'The README associated with this file, FK to FILEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN filedbentity.md5sum IS 'The 128-bit MD5 hash or checksum of the file.';
-COMMENT ON COLUMN filedbentity.is_in_spell IS 'Whether the file was loaded into SPELL.';
-COMMENT ON COLUMN filedbentity.is_in_browser IS 'Whether the file was loaded into a genome browser, such as JBrowse.';
-CREATE INDEX filedbentity_format_fk_index ON filedbentity (format_id);
-CREATE INDEX filedbentity_topic_fk_index ON filedbentity (topic_id);
-CREATE INDEX filedbentity_data_fk_index ON filedbentity (data_id);
-CREATE INDEX filedbentity_file_fk_index ON filedbentity (readme_file_id);
-CREATE INDEX filedbentity_md5sum_index ON filedbentity (md5sum);
-CREATE INDEX filedbentity_filepath_fk_index ON filedbentity (filepath_id);
+COMMENT ON TABLE nex.filedbentity IS 'Details about files loaded into or dumped from the database or associated with the Download Server.';
+COMMENT ON COLUMN nex.filedbentity.topic_id IS 'A broad domain or category of the file, FK to EDAM topic namespace.';
+COMMENT ON COLUMN nex.filedbentity.file_date IS 'Release date or date the file was created.';
+COMMENT ON COLUMN nex.filedbentity.format_id IS 'Standard file format, FK to EDAM format namespace.';
+COMMENT ON COLUMN nex.filedbentity.filepath_id IS 'FK to FILEPATH.FILEPATH_ID.';
+COMMENT ON COLUMN nex.filedbentity.file_extension IS 'File name extension.';
+COMMENT ON COLUMN nex.filedbentity.data_id IS 'Type of data in the file, FK to EDAM data namespace.';
+COMMENT ON COLUMN nex.filedbentity.is_public IS 'Whether the file is viewable to the public.';
+COMMENT ON COLUMN nex.filedbentity.description IS 'A description or comment about the file not included elsewhere.';
+COMMENT ON COLUMN nex.filedbentity.dbentity_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.filedbentity.s3_url IS 'Amazon S3 URL of the file.';
+COMMENT ON COLUMN nex.filedbentity.previous_file_name IS 'File name on the Download Server.';
+COMMENT ON COLUMN nex.filedbentity.readme_file_id IS 'The README associated with this file, FK to FILEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.filedbentity.md5sum IS 'The 128-bit MD5 hash or checksum of the file.';
+COMMENT ON COLUMN nex.filedbentity.is_in_spell IS 'Whether the file was loaded into SPELL.';
+COMMENT ON COLUMN nex.filedbentity.is_in_browser IS 'Whether the file was loaded into a genome browser, such as JBrowse.';
+CREATE INDEX filedbentity_format_fk_index ON nex.filedbentity (format_id);
+CREATE INDEX filedbentity_topic_fk_index ON nex.filedbentity (topic_id);
+CREATE INDEX filedbentity_data_fk_index ON nex.filedbentity (data_id);
+CREATE INDEX filedbentity_file_fk_index ON nex.filedbentity (readme_file_id);
+CREATE INDEX filedbentity_md5sum_index ON nex.filedbentity (md5sum);
+CREATE INDEX filedbentity_filepath_fk_index ON nex.filedbentity (filepath_id);
 
-DROP TABLE IF EXISTS file_keyword CASCADE; 
-CREATE TABLE file_keyword (
+DROP TABLE IF EXISTS nex.file_keyword CASCADE; 
+CREATE TABLE nex.file_keyword (
 	file_keyword_id bigint NOT NULL DEFAULT nextval('link_seq'),
 	file_id bigint NOT NULL,
 	keyword_id bigint NOT NULL,
@@ -501,20 +501,20 @@ CREATE TABLE file_keyword (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT file_keyword_pk PRIMARY KEY (file_keyword_id)
 ) ;
-COMMENT ON TABLE file_keyword IS 'Keywords associated with a file.';
-COMMENT ON COLUMN file_keyword.keyword_id IS 'FK to KEYWORD.KEYWORD_ID.';
-COMMENT ON COLUMN file_keyword.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN file_keyword.file_keyword_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN file_keyword.file_id IS 'FK to FILEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN file_keyword.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN file_keyword.created_by IS 'Username of the person who entered the record into the database.';
-ALTER TABLE file_keyword ADD CONSTRAINT file_keyword_uk UNIQUE (file_id,keyword_id);
-CREATE INDEX filekeyword_key_fk_index ON file_keyword (keyword_id);
-CREATE INDEX filekeywork_source_fk_index ON file_keyword (source_id);
+COMMENT ON TABLE nex.file_keyword IS 'Keywords associated with a file.';
+COMMENT ON COLUMN nex.file_keyword.keyword_id IS 'FK to KEYWORD.KEYWORD_ID.';
+COMMENT ON COLUMN nex.file_keyword.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.file_keyword.file_keyword_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.file_keyword.file_id IS 'FK to FILEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.file_keyword.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.file_keyword.created_by IS 'Username of the person who entered the record into the database.';
+ALTER TABLE nex.file_keyword ADD CONSTRAINT file_keyword_uk UNIQUE (file_id,keyword_id);
+CREATE INDEX filekeyword_key_fk_index ON nex.file_keyword (keyword_id);
+CREATE INDEX filekeywork_source_fk_index ON nex.file_keyword (source_id);
 
 
-DROP TABLE IF EXISTS book CASCADE; 
-CREATE TABLE book (
+DROP TABLE IF EXISTS nex.book CASCADE; 
+CREATE TABLE nex.book (
 	book_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -530,25 +530,25 @@ CREATE TABLE book (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT book_pk PRIMARY KEY (book_id)
 ) ;
-COMMENT ON TABLE book IS 'Details about book references.';
-COMMENT ON COLUMN book.isbn IS 'International Standard Book Number.';
-COMMENT ON COLUMN book.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN book.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN book.bud_id IS 'PK from BUD.BOOK.BOOK_NO.';
-COMMENT ON COLUMN book.book_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN book.display_name IS 'Public display name.';
-COMMENT ON COLUMN book.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN book.total_pages IS 'Total number of pages in the book.';
-COMMENT ON COLUMN book.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN book.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN book.title IS 'Title of the book.';
-COMMENT ON COLUMN book.volume_title IS 'Title if the book is part of a volume.';
-COMMENT ON COLUMN book.publisher IS 'Publisher of the book.';
-ALTER TABLE book ADD CONSTRAINT book_uk UNIQUE (title,volume_title);
-CREATE INDEX book_source_fk_index ON book (source_id);
+COMMENT ON TABLE nex.book IS 'Details about book references.';
+COMMENT ON COLUMN nex.book.isbn IS 'International Standard Book Number.';
+COMMENT ON COLUMN nex.book.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.book.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.book.bud_id IS 'PK from BUD.BOOK.BOOK_NO.';
+COMMENT ON COLUMN nex.book.book_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.book.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.book.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.book.total_pages IS 'Total number of pages in the book.';
+COMMENT ON COLUMN nex.book.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.book.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.book.title IS 'Title of the book.';
+COMMENT ON COLUMN nex.book.volume_title IS 'Title if the book is part of a volume.';
+COMMENT ON COLUMN nex.book.publisher IS 'Publisher of the book.';
+ALTER TABLE nex.book ADD CONSTRAINT book_uk UNIQUE (title,volume_title);
+CREATE INDEX book_source_fk_index ON nex.book (source_id);
 
-DROP TABLE IF EXISTS journal CASCADE; 
-CREATE TABLE journal (
+DROP TABLE IF EXISTS nex.journal CASCADE; 
+CREATE TABLE nex.journal (
 	journal_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	format_name varchar(100) NOT NULL,
 	display_name varchar(500) NOT NULL,
@@ -563,24 +563,24 @@ CREATE TABLE journal (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT journal_pk PRIMARY KEY (journal_id)
 ) ;
-COMMENT ON TABLE journal IS 'Details about journal references.';
-COMMENT ON COLUMN journal.title IS 'Full name of the journal.';
-COMMENT ON COLUMN journal.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN journal.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN journal.issn_electronic IS 'Electronic International Standard Serial Number.';
-COMMENT ON COLUMN journal.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN journal.journal_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN journal.bud_id IS 'PK from BUD.JOURNAL.JOURNAL_NO.';
-COMMENT ON COLUMN journal.display_name IS 'Public display name.';
-COMMENT ON COLUMN journal.med_abbr IS 'NLM abbreviation of the journal name.';
-COMMENT ON COLUMN journal.issn_print IS 'International Standard Serial Number.';
-COMMENT ON COLUMN journal.format_name IS 'Unique name to create download files.';
-COMMENT ON COLUMN journal.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-ALTER TABLE journal ADD CONSTRAINT journal_uk UNIQUE (med_abbr,title);
-CREATE INDEX journal_source_fk_index ON journal (source_id);
+COMMENT ON TABLE nex.journal IS 'Details about journal references.';
+COMMENT ON COLUMN nex.journal.title IS 'Full name of the journal.';
+COMMENT ON COLUMN nex.journal.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.journal.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.journal.issn_electronic IS 'Electronic International Standard Serial Number.';
+COMMENT ON COLUMN nex.journal.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.journal.journal_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.journal.bud_id IS 'PK from BUD.JOURNAL.JOURNAL_NO.';
+COMMENT ON COLUMN nex.journal.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.journal.med_abbr IS 'NLM abbreviation of the journal name.';
+COMMENT ON COLUMN nex.journal.issn_print IS 'International Standard Serial Number.';
+COMMENT ON COLUMN nex.journal.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.journal.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+ALTER TABLE nex.journal ADD CONSTRAINT journal_uk UNIQUE (med_abbr,title);
+CREATE INDEX journal_source_fk_index ON nex.journal (source_id);
 
-DROP TABLE IF EXISTS referencedbentity CASCADE; 
-CREATE TABLE referencedbentity (
+DROP TABLE IF EXISTS nex.referencedbentity CASCADE; 
+CREATE TABLE nex.referencedbentity (
 	dbentity_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	method_obtained varchar(40) NOT NULL,
 	publication_status varchar(40) NOT NULL,
@@ -600,35 +600,35 @@ CREATE TABLE referencedbentity (
 	book_id bigint,
 	CONSTRAINT reference_pk PRIMARY KEY (dbentity_id)
 ) ;
-COMMENT ON TABLE referencedbentity IS 'Details about references associated with annotations. Inherits from DBENTITY';
-COMMENT ON COLUMN referencedbentity.book_id IS 'FK to BOOK.BOOK_ID.';
-COMMENT ON COLUMN referencedbentity.issue IS 'Issue of the reference.';
-COMMENT ON COLUMN referencedbentity.fulltext_status IS 'State of the full text for the reference (N, NAA, NAM, NAP, Y, YF, YT).';
-COMMENT ON COLUMN referencedbentity.year IS 'Year the reference was published.';
-COMMENT ON COLUMN referencedbentity.page IS 'Page numbers of the reference.';
-COMMENT ON COLUMN referencedbentity.method_obtained IS 'How the reference was obtained (Curator PubMed reference, Curator triage, Curator non-PubMed reference, Gene registry, PDB script, PubMed script, SacchDB, YPD)';
-COMMENT ON COLUMN referencedbentity.doi IS 'Digital Object Identifier from the International DOI Foundation.';
-COMMENT ON COLUMN referencedbentity.date_revised IS 'Date if the reference was updated by NCBI.';
-COMMENT ON COLUMN referencedbentity.pmid IS 'PMID of the reference from NCBI.';
-COMMENT ON COLUMN referencedbentity.pmcid IS 'PMCID of the reference from NCBI.';
-COMMENT ON COLUMN referencedbentity.publication_status IS 'Publication state of the reference (Epub ahead of print, In preparation, In press, Published, Submitted, Unpublished).';
-COMMENT ON COLUMN referencedbentity.journal_id IS 'FK to JOURNAL.JOURNAL_ID.';
-COMMENT ON COLUMN referencedbentity.volume IS 'Volume of the reference.';
-COMMENT ON COLUMN referencedbentity.dbentity_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN referencedbentity.title IS 'Title of the reference.';
-COMMENT ON COLUMN referencedbentity.date_published IS 'Full date the reference was published.';
-COMMENT ON COLUMN referencedbentity.citation IS 'Full citation of the reference.';
-ALTER TABLE referencedbentity ADD CONSTRAINT reference_citation_uk UNIQUE (citation);
-ALTER TABLE referencedbentity ADD CONSTRAINT referencedbentity_method_obtained_ck CHECK (METHOD_OBTAINED IN ('Curator PubMed reference','Curator triage','Curator non-PubMed reference','Gene registry','PDB script','PubMed script','SacchDB','YPD'));
-ALTER TABLE referencedbentity ADD CONSTRAINT referencedbentity_fulltext_status_ck CHECK (FULLTEXT_STATUS IN ('N', 'NAA', 'NAM', 'NAP', 'Y', 'YF', 'YT'));
-ALTER TABLE referencedbentity ADD CONSTRAINT referencedbentity_pub_status_ck CHECK (PUBLICATION_STATUS IN ('Epub ahead of print','In preparation','In press','Published','Submitted','Unpublished'));
-CREATE INDEX referencedbentity_book_fk_index ON referencedbentity (book_id);
-CREATE INDEX referencedbentity_journal_fk_index ON referencedbentity (journal_id);
-CREATE UNIQUE INDEX referencedbentity_pmid_index ON referencedbentity (pmid);
-CREATE UNIQUE INDEX referencedbentity_pmcid_index ON referencedbentity (pmcid);
+COMMENT ON TABLE nex.referencedbentity IS 'Details about references associated with annotations. Inherits from DBENTITY';
+COMMENT ON COLUMN nex.referencedbentity.book_id IS 'FK to BOOK.BOOK_ID.';
+COMMENT ON COLUMN nex.referencedbentity.issue IS 'Issue of the reference.';
+COMMENT ON COLUMN nex.referencedbentity.fulltext_status IS 'State of the full text for the reference (N, NAA, NAM, NAP, Y, YF, YT).';
+COMMENT ON COLUMN nex.referencedbentity.year IS 'Year the reference was published.';
+COMMENT ON COLUMN nex.referencedbentity.page IS 'Page numbers of the reference.';
+COMMENT ON COLUMN nex.referencedbentity.method_obtained IS 'How the reference was obtained (Curator PubMed reference, Curator triage, Curator non-PubMed reference, Gene registry, PDB script, PubMed script, SacchDB, YPD)';
+COMMENT ON COLUMN nex.referencedbentity.doi IS 'Digital Object Identifier from the International DOI Foundation.';
+COMMENT ON COLUMN nex.referencedbentity.date_revised IS 'Date if the reference was updated by NCBI.';
+COMMENT ON COLUMN nex.referencedbentity.pmid IS 'PMID of the reference from NCBI.';
+COMMENT ON COLUMN nex.referencedbentity.pmcid IS 'PMCID of the reference from NCBI.';
+COMMENT ON COLUMN nex.referencedbentity.publication_status IS 'Publication state of the reference (Epub ahead of print, In preparation, In press, Published, Submitted, Unpublished).';
+COMMENT ON COLUMN nex.referencedbentity.journal_id IS 'FK to JOURNAL.JOURNAL_ID.';
+COMMENT ON COLUMN nex.referencedbentity.volume IS 'Volume of the reference.';
+COMMENT ON COLUMN nex.referencedbentity.dbentity_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.referencedbentity.title IS 'Title of the reference.';
+COMMENT ON COLUMN nex.referencedbentity.date_published IS 'Full date the reference was published.';
+COMMENT ON COLUMN nex.referencedbentity.citation IS 'Full citation of the reference.';
+ALTER TABLE nex.referencedbentity ADD CONSTRAINT reference_citation_uk UNIQUE (citation);
+ALTER TABLE nex.referencedbentity ADD CONSTRAINT referencedbentity_method_obtained_ck CHECK (METHOD_OBTAINED IN ('Curator PubMed reference','Curator triage','Curator non-PubMed reference','Gene registry','PDB script','PubMed script','SacchDB','YPD'));
+ALTER TABLE nex.referencedbentity ADD CONSTRAINT referencedbentity_fulltext_status_ck CHECK (FULLTEXT_STATUS IN ('N', 'NAA', 'NAM', 'NAP', 'Y', 'YF', 'YT'));
+ALTER TABLE nex.referencedbentity ADD CONSTRAINT referencedbentity_pub_status_ck CHECK (PUBLICATION_STATUS IN ('Epub ahead of print','In preparation','In press','Published','Submitted','Unpublished'));
+CREATE INDEX referencedbentity_book_fk_index ON nex.referencedbentity (book_id);
+CREATE INDEX referencedbentity_journal_fk_index ON nex.referencedbentity (journal_id);
+CREATE UNIQUE INDEX referencedbentity_pmid_index ON nex.referencedbentity (pmid);
+CREATE UNIQUE INDEX referencedbentity_pmcid_index ON nex.referencedbentity (pmcid);
 
-DROP TABLE IF EXISTS reference_alias CASCADE; 
-CREATE TABLE reference_alias (
+DROP TABLE IF EXISTS nex.reference_alias CASCADE; 
+CREATE TABLE nex.reference_alias (
 	alias_id bigint NOT NULL DEFAULT nextval('alias_seq'),
 	display_name varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
@@ -639,21 +639,21 @@ CREATE TABLE reference_alias (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT reference_alias_pk PRIMARY KEY (alias_id)
 ) ;
-COMMENT ON TABLE reference_alias IS 'Other names or synonyms for the reference.';
-COMMENT ON COLUMN reference_alias.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN reference_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN reference_alias.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN reference_alias.alias_type IS 'Type of alias (Secondary SGDID).';
-COMMENT ON COLUMN reference_alias.alias_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN reference_alias.display_name IS 'Public display name.';
-COMMENT ON COLUMN reference_alias.bud_id IS 'PK from BUD.DBXREF.DBXREF_NO.';
-COMMENT ON COLUMN reference_alias.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
-ALTER TABLE reference_alias ADD CONSTRAINT reference_alias_uk UNIQUE (reference_id,display_name,alias_type);
-ALTER TABLE reference_alias ADD CONSTRAINT referencealias_type_ck CHECK (ALIAS_TYPE IN ('Secondary SGDID'));
-CREATE INDEX referencealias_source_fk_index ON reference_alias (source_id);
+COMMENT ON TABLE nex.reference_alias IS 'Other names or synonyms for the reference.';
+COMMENT ON COLUMN nex.reference_alias.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.reference_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.reference_alias.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.reference_alias.alias_type IS 'Type of alias (Secondary SGDID).';
+COMMENT ON COLUMN nex.reference_alias.alias_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.reference_alias.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.reference_alias.bud_id IS 'PK from BUD.DBXREF.DBXREF_NO.';
+COMMENT ON COLUMN nex.reference_alias.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.reference_alias ADD CONSTRAINT reference_alias_uk UNIQUE (reference_id,display_name,alias_type);
+ALTER TABLE nex.reference_alias ADD CONSTRAINT referencealias_type_ck CHECK (ALIAS_TYPE IN ('Secondary SGDID'));
+CREATE INDEX referencealias_source_fk_index ON nex.reference_alias (source_id);
 
-DROP TABLE IF EXISTS reference_relation CASCADE; 
-CREATE TABLE reference_relation (
+DROP TABLE IF EXISTS nex.reference_relation CASCADE; 
+CREATE TABLE nex.reference_relation (
 	reference_relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
 	source_id bigint NOT NULL,
 	parent_id bigint NOT NULL,
@@ -663,22 +663,22 @@ CREATE TABLE reference_relation (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT reference_relation_pk PRIMARY KEY (reference_relation_id)
 ) ;
-COMMENT ON TABLE reference_relation IS 'Relationship between two references, used for published errata, comments, retractions, etc.';
-COMMENT ON COLUMN reference_relation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN reference_relation.reference_relation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN reference_relation.correction_type IS 'Type of correction or comment (Corrigendum, Comment, None).';
-COMMENT ON COLUMN reference_relation.child_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN reference_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN reference_relation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN reference_relation.parent_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
-ALTER TABLE reference_relation ADD CONSTRAINT reference_relation_uk UNIQUE (parent_id,child_id,correction_type);
-ALTER TABLE reference_relation ADD CONSTRAINT referencerelation_type_ck CHECK (CORRECTION_TYPE IN ('Corrigendum', 'Comment', 'None'));
-CREATE INDEX referencerelation_source_fk_index ON reference_relation (source_id);
-CREATE INDEX referencerelation_parent_fk_index ON reference_relation (parent_id);
-CREATE INDEX referencerelation_child_fk_index ON reference_relation (child_id);
+COMMENT ON TABLE nex.reference_relation IS 'Relationship between two references, used for published errata, comments, retractions, etc.';
+COMMENT ON COLUMN nex.reference_relation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.reference_relation.reference_relation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.reference_relation.correction_type IS 'Type of correction or comment (Corrigendum, Comment, None).';
+COMMENT ON COLUMN nex.reference_relation.child_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.reference_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.reference_relation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.reference_relation.parent_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.reference_relation ADD CONSTRAINT reference_relation_uk UNIQUE (parent_id,child_id,correction_type);
+ALTER TABLE nex.reference_relation ADD CONSTRAINT referencerelation_type_ck CHECK (CORRECTION_TYPE IN ('Corrigendum', 'Comment', 'None'));
+CREATE INDEX referencerelation_source_fk_index ON nex.reference_relation (source_id);
+CREATE INDEX referencerelation_parent_fk_index ON nex.reference_relation (parent_id);
+CREATE INDEX referencerelation_child_fk_index ON nex.reference_relation (child_id);
 
-DROP TABLE IF EXISTS reference_url CASCADE; 
-CREATE TABLE reference_url (
+DROP TABLE IF EXISTS nex.reference_url CASCADE; 
+CREATE TABLE nex.reference_url (
 	url_id bigint NOT NULL DEFAULT nextval('url_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -690,22 +690,22 @@ CREATE TABLE reference_url (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT reference_url_pk PRIMARY KEY (url_id)
 ) ;
-COMMENT ON TABLE reference_url IS 'URLs associated with references.';
-COMMENT ON COLUMN reference_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN reference_url.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN reference_url.url_type IS 'Type of URL (DOI full text, PMC full text, PubMed, PubMedCentral, Reference supplement).';
-COMMENT ON COLUMN reference_url.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN reference_url.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN reference_url.bud_id IS 'PK from BUD.URL.URL_NO.';
-COMMENT ON COLUMN reference_url.display_name IS 'Public display name.';
-COMMENT ON COLUMN reference_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN reference_url.url_id IS 'Unique identifier (serial number).';
-ALTER TABLE reference_url ADD CONSTRAINT reference_url_uk UNIQUE (reference_id,display_name,obj_url);
-ALTER TABLE reference_url ADD CONSTRAINT referenceurl_type_ck CHECK (URL_TYPE IN ('DOI full text','PMC full text','PubMed','PubMedCentral','Reference supplement'));
-CREATE INDEX referenceurl_source_fk_index ON reference_url (source_id);
+COMMENT ON TABLE nex.reference_url IS 'URLs associated with references.';
+COMMENT ON COLUMN nex.reference_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.reference_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.reference_url.url_type IS 'Type of URL (DOI full text, PMC full text, PubMed, PubMedCentral, Reference supplement).';
+COMMENT ON COLUMN nex.reference_url.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.reference_url.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.reference_url.bud_id IS 'PK from BUD.URL.URL_NO.';
+COMMENT ON COLUMN nex.reference_url.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.reference_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.reference_url.url_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.reference_url ADD CONSTRAINT reference_url_uk UNIQUE (reference_id,display_name,obj_url);
+ALTER TABLE nex.reference_url ADD CONSTRAINT referenceurl_type_ck CHECK (URL_TYPE IN ('DOI full text','PMC full text','PubMed','PubMedCentral','Reference supplement'));
+CREATE INDEX referenceurl_source_fk_index ON nex.reference_url (source_id);
 
-DROP TABLE IF EXISTS referenceauthor CASCADE; 
-CREATE TABLE referenceauthor (
+DROP TABLE IF EXISTS nex.referenceauthor CASCADE; 
+CREATE TABLE nex.referenceauthor (
 	referenceauthor_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -719,24 +719,24 @@ CREATE TABLE referenceauthor (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT referenceauthor_pk PRIMARY KEY (referenceauthor_id)
 ) ;
-COMMENT ON TABLE referenceauthor IS 'Links authors with references.';
-COMMENT ON COLUMN referenceauthor.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN referenceauthor.referenceauthor_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN referenceauthor.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN referenceauthor.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN referenceauthor.display_name IS 'Public display name.';
-COMMENT ON COLUMN referenceauthor.bud_id IS 'PK from BUD.AUTHOR_EDITOR.AUTHOR_EDITOR_NO.';
-COMMENT ON COLUMN referenceauthor.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN referenceauthor.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-COMMENT ON COLUMN referenceauthor.author_type IS 'Type of author (Author, Editor).';
-COMMENT ON COLUMN referenceauthor.orcid IS 'Author Open Researcher and Contributor ID.';
-COMMENT ON COLUMN referenceauthor.author_order IS 'Order of the authors.';
-ALTER TABLE referenceauthor ADD CONSTRAINT referenceauthor_uk UNIQUE (reference_id,display_name,author_order);
-ALTER TABLE referenceauthor ADD CONSTRAINT referenceauthor_type_ck CHECK (AUTHOR_TYPE IN ('Author','Editor'));
-CREATE INDEX referanceauthor_source_fk_index ON referenceauthor (source_id);
+COMMENT ON TABLE nex.referenceauthor IS 'Links authors with references.';
+COMMENT ON COLUMN nex.referenceauthor.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.referenceauthor.referenceauthor_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.referenceauthor.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.referenceauthor.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.referenceauthor.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.referenceauthor.bud_id IS 'PK from BUD.AUTHOR_EDITOR.AUTHOR_EDITOR_NO.';
+COMMENT ON COLUMN nex.referenceauthor.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.referenceauthor.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.referenceauthor.author_type IS 'Type of author (Author, Editor).';
+COMMENT ON COLUMN nex.referenceauthor.orcid IS 'Author Open Researcher and Contributor ID.';
+COMMENT ON COLUMN nex.referenceauthor.author_order IS 'Order of the authors.';
+ALTER TABLE nex.referenceauthor ADD CONSTRAINT referenceauthor_uk UNIQUE (reference_id,display_name,author_order);
+ALTER TABLE nex.referenceauthor ADD CONSTRAINT referenceauthor_type_ck CHECK (AUTHOR_TYPE IN ('Author','Editor'));
+CREATE INDEX referanceauthor_source_fk_index ON nex.referenceauthor (source_id);
 
-DROP TABLE IF EXISTS referencedeleted CASCADE; 
-CREATE TABLE referencedeleted (
+DROP TABLE IF EXISTS nex.referencedeleted CASCADE; 
+CREATE TABLE nex.referencedeleted (
 	referencedeleted_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	pmid bigint NOT NULL,
 	sgdid varchar(20),
@@ -745,17 +745,17 @@ CREATE TABLE referencedeleted (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT referencedeleted_pk PRIMARY KEY (referencedeleted_id)
 ) ;
-COMMENT ON TABLE referencedeleted IS 'References permanently removed from the database via curator triage.';
-COMMENT ON COLUMN referencedeleted.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN referencedeleted.pmid IS 'PubMed ID of the reference from NCBI.';
-COMMENT ON COLUMN referencedeleted.referencedeleted_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN referencedeleted.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN referencedeleted.sgdid IS 'SGDID of the reference assigned before removal from the database.';
-ALTER TABLE referencedeleted ADD CONSTRAINT referencedeleted_sgdid_uk UNIQUE (sgdid);
-ALTER TABLE referencedeleted ADD CONSTRAINT referencedeleted_pubmed_uk UNIQUE (pmid);
+COMMENT ON TABLE nex.referencedeleted IS 'References permanently removed from the database via curator triage.';
+COMMENT ON COLUMN nex.referencedeleted.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.referencedeleted.pmid IS 'PubMed ID of the reference from NCBI.';
+COMMENT ON COLUMN nex.referencedeleted.referencedeleted_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.referencedeleted.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.referencedeleted.sgdid IS 'SGDID of the reference assigned before removal from the database.';
+ALTER TABLE nex.referencedeleted ADD CONSTRAINT referencedeleted_sgdid_uk UNIQUE (sgdid);
+ALTER TABLE nex.referencedeleted ADD CONSTRAINT referencedeleted_pubmed_uk UNIQUE (pmid);
 
-DROP TABLE IF EXISTS referencedocument CASCADE; 
-CREATE TABLE referencedocument (
+DROP TABLE IF EXISTS nex.referencedocument CASCADE; 
+CREATE TABLE nex.referencedocument (
 	referencedocument_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	document_type varchar(40) NOT NULL,
 	text text NOT NULL,
@@ -766,22 +766,22 @@ CREATE TABLE referencedocument (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT referencedocument_pk PRIMARY KEY (referencedocument_id)
 ) ;
-COMMENT ON TABLE referencedocument IS 'Abstract or Medline entry associated with references.';
-COMMENT ON COLUMN referencedocument.referencedocument_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN referencedocument.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN referencedocument.text IS 'Plain text of the document.';
-COMMENT ON COLUMN referencedocument.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN referencedocument.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN referencedocument.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN referencedocument.html IS 'HTML mark-up of the document.';
-COMMENT ON COLUMN referencedocument.document_type IS 'Type of document (Abstract, Medline).';
-ALTER TABLE referencedocument ADD CONSTRAINT referencedocument_uk UNIQUE (reference_id,document_type);
-ALTER TABLE referencedocument ADD CONSTRAINT referencedocument_type_ck CHECK (DOCUMENT_TYPE IN ('Abstract','Medline'));
-CREATE INDEX referencedocument_source_fk_index ON referencedocument (source_id);
-CREATE INDEX referencedocument_ref_fk_index ON referencedocument (reference_id);
+COMMENT ON TABLE nex.referencedocument IS 'Abstract or Medline entry associated with references.';
+COMMENT ON COLUMN nex.referencedocument.referencedocument_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.referencedocument.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.referencedocument.text IS 'Plain text of the document.';
+COMMENT ON COLUMN nex.referencedocument.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.referencedocument.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.referencedocument.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.referencedocument.html IS 'HTML mark-up of the document.';
+COMMENT ON COLUMN nex.referencedocument.document_type IS 'Type of document (Abstract, Medline).';
+ALTER TABLE nex.referencedocument ADD CONSTRAINT referencedocument_uk UNIQUE (reference_id,document_type);
+ALTER TABLE nex.referencedocument ADD CONSTRAINT referencedocument_type_ck CHECK (DOCUMENT_TYPE IN ('Abstract','Medline'));
+CREATE INDEX referencedocument_source_fk_index ON nex.referencedocument (source_id);
+CREATE INDEX referencedocument_ref_fk_index ON nex.referencedocument (reference_id);
 
-DROP TABLE IF EXISTS referencetype CASCADE; 
-CREATE TABLE referencetype (
+DROP TABLE IF EXISTS nex.referencetype CASCADE; 
+CREATE TABLE nex.referencetype (
 	referencetype_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
@@ -792,20 +792,20 @@ CREATE TABLE referencetype (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT referencetype_pk PRIMARY KEY (referencetype_id)
 ) ;
-COMMENT ON TABLE referencetype IS 'Links a reference with a reftype.';
-COMMENT ON COLUMN referencetype.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN referencetype.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN referencetype.referencetype_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN referencetype.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN referencetype.bud_id IS 'PK from BUD.REF_REFTYPE.REF_REFTYPE_NO.';
-COMMENT ON COLUMN referencetype.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN referencetype.display_name IS 'Public display name.';
-COMMENT ON COLUMN referencetype.obj_url IS 'URL of the object (relative for local links or complete for external links).';
-ALTER TABLE referencetype ADD CONSTRAINT referencetype_uk UNIQUE (reference_id,display_name,obj_url);
-CREATE INDEX referencetype_source_fk_index ON referencetype (source_id);
+COMMENT ON TABLE nex.referencetype IS 'Links a reference with a reftype.';
+COMMENT ON COLUMN nex.referencetype.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.referencetype.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.referencetype.referencetype_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.referencetype.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.referencetype.bud_id IS 'PK from BUD.REF_REFTYPE.REF_REFTYPE_NO.';
+COMMENT ON COLUMN nex.referencetype.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.referencetype.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.referencetype.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+ALTER TABLE nex.referencetype ADD CONSTRAINT referencetype_uk UNIQUE (reference_id,display_name,obj_url);
+CREATE INDEX referencetype_source_fk_index ON nex.referencetype (source_id);
 
-DROP TABLE IF EXISTS referenceunlink CASCADE; 
-CREATE TABLE referenceunlink (
+DROP TABLE IF EXISTS nex.referenceunlink CASCADE; 
+CREATE TABLE nex.referenceunlink (
 	referenceunlink_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	reference_id bigint NOT NULL,
 	dbentity_id bigint NOT NULL,
@@ -814,18 +814,18 @@ CREATE TABLE referenceunlink (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT referenceunlink_pk PRIMARY KEY (referenceunlink_id)
 ) ;
-COMMENT ON TABLE referenceunlink IS 'References that should not be associated with a specific locus, but should remain in the database.';
-COMMENT ON COLUMN referenceunlink.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN referenceunlink.referenceunlink_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN referenceunlink.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN referenceunlink.bud_id IS 'PK from BUD.REF_UNLINK.REF_UNLINK_NO.';
-COMMENT ON COLUMN referenceunlink.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN referenceunlink.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
-ALTER TABLE referenceunlink ADD CONSTRAINT referenceunlink_uk UNIQUE (reference_id,dbentity_id);
-CREATE INDEX referenceunlink_dbentity_fk_index ON referenceunlink (dbentity_id);
+COMMENT ON TABLE nex.referenceunlink IS 'References that should not be associated with a specific locus, but should remain in the database.';
+COMMENT ON COLUMN nex.referenceunlink.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.referenceunlink.referenceunlink_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.referenceunlink.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.referenceunlink.bud_id IS 'PK from BUD.REF_UNLINK.REF_UNLINK_NO.';
+COMMENT ON COLUMN nex.referenceunlink.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.referenceunlink.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.referenceunlink ADD CONSTRAINT referenceunlink_uk UNIQUE (reference_id,dbentity_id);
+CREATE INDEX referenceunlink_dbentity_fk_index ON nex.referenceunlink (dbentity_id);
 
-DROP TABLE IF EXISTS reference_file CASCADE; 
-CREATE TABLE reference_file (
+DROP TABLE IF EXISTS nex.reference_file CASCADE; 
+CREATE TABLE nex.reference_file (
 	reference_file_id bigint NOT NULL DEFAULT nextval('link_seq'),
 	reference_id bigint NOT NULL,
 	file_id bigint NOT NULL,
@@ -834,13 +834,13 @@ CREATE TABLE reference_file (
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT reference_file_pk PRIMARY KEY (reference_file_id)
 ) ;
-COMMENT ON TABLE reference_file IS 'Files associated with a reference.';
-COMMENT ON COLUMN reference_file.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN reference_file.reference_file_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN reference_file.file_id IS 'FK to FILEDBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN reference_file.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN reference_file.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN reference_file.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
-ALTER TABLE reference_file ADD CONSTRAINT reference_file_uk UNIQUE (reference_id,file_id);
-CREATE INDEX referencefile_file_fk_index ON reference_file (file_id);
-CREATE INDEX referencefile_source_fk_index ON reference_file (source_id);
+COMMENT ON TABLE nex.reference_file IS 'Files associated with a reference.';
+COMMENT ON COLUMN nex.reference_file.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.reference_file.reference_file_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.reference_file.file_id IS 'FK to FILEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.reference_file.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.reference_file.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.reference_file.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.reference_file ADD CONSTRAINT reference_file_uk UNIQUE (reference_id,file_id);
+CREATE INDEX referencefile_file_fk_index ON nex.reference_file (file_id);
+CREATE INDEX referencefile_source_fk_index ON nex.reference_file (source_id);
