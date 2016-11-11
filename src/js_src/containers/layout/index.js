@@ -1,47 +1,41 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
 
+// import * as AuthActions from '../actions/auth_actions';
 import style from './style.css';
-import Loader from './loader/index';
-import logo from './agrLogo.png';
-import SearchBar from './searchBar';
-
-import { SMALL_COL_CLASS, LARGE_COL_CLASS } from '../../constants';
+// import SearchBar from './searchBar';
 
 class Layout extends Component {
   render() {
+    console.log('layout');
+    let onClickLogout = e => {
+      e.preventDefault();
+      // this.props.dispatch(AuthActions.logoutAndRedirect());
+    };
+    // init auth nodes, either login or logout links
+    let authNodes = this.props.isAuthenticated ?
+      <ul className={`menu ${style.authMenu}`}><li><a className={style.navLink} onClick={onClickLogout} href='#'><i className='fa fa-sign-out'></i> Logout</a></li></ul> :
+      <ul className={`menu ${style.authMenu}`}><li><Link className={style.navLink} to='/login'><i className='fa fa-sign-in'></i> Login</Link></li></ul>;
     return (
-      <div className={style.appContainer}>
-        <div className={`alert alert-info ${style.appAlert}`} role='alert'>
-          This website is a prototype and information may not be verified.
-        </div>
-        <div className={style.topHeader}>
-          <div className='row'>
-            <div className={SMALL_COL_CLASS}>
-              <Link to='/'>
-                <img className={style.logo} src={logo} />
-              </Link>
-            </div>
-            <div className={LARGE_COL_CLASS} />
+      <div>
+        <nav className={`top-bar ${style.navWrapper}`}>
+          <div className='top-bar-left'>
+            <ul className={`menu ${style.menu}`}>
+              <li>
+                <Link to='curate' className={style.indexLink}>
+                  <img src='/static/img/sgd_logo.png' className={style.imgLogo} />
+                  <span className={`${style.logoText} ${style.navLink}`}>Curator</span>
+                </Link>
+              </li>
+            </ul>
           </div>
-        </div>
-        <nav className={`navbar navbar-light bg-faded ${style.midHeader}`}>
-          <div className='row'>
-            <div className={SMALL_COL_CLASS}>
-              <div className={style.nav}>
-                <Link className={`nav-link ${style.navLink}`} to='/'><i className='fa fa-home' /> Home</Link>
-                <Link className={`nav-link ${style.navLink}`} to='/about'><i className='fa fa-info-circle' /> About</Link>
-                <Link className={`nav-link ${style.navLink}`} to='/help'><i className='fa fa-question-circle' /> Help</Link>
-              </div>
-            </div>
-            <div className={LARGE_COL_CLASS}>
-              <SearchBar />
-            </div>
+          <div className='top-bar-right'>
+            {authNodes}
           </div>
         </nav>
-        <div className={style.loaderContentContainer}>
-          <Loader />
-          <div className={style.contentContainer}>
+        <div className='row full-width wrapper'>
+          <div className='large-12 columns'>
             {this.props.children}
           </div>
         </div>
@@ -51,7 +45,16 @@ class Layout extends Component {
 }
 
 Layout.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
+  dispatch: React.PropTypes.func,
+  isAuthenticated: React.PropTypes.bool
 };
 
-export default Layout;
+function mapStateToProps(_state) {
+  let state = _state.auth;
+  return {
+    isAuthenticated: state.isAuthenticated
+  };
+}
+
+export default connect(mapStateToProps)(Layout);

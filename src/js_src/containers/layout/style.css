@@ -1,54 +1,32 @@
-.appAlert {
-	margin-bottom: 0;
-	border-radius: 0;
-	padding-top: 0.5rem;
-	padding-bottom: 0.5rem;
+.imgLogo {
+  width: 250px;
 }
-
-.logo {
-	width: 100%;
+.logoText {
+  font-weight: bold;
+  margin-left: 1rem;
 }
-
-.appContainer {
-	font-family: Lato, Helvetica, sans-serif;
+.messageText {
+  margin-bottom: 0.25rem;
 }
-
-.topHeader {
-	padding: 1rem;
+.menu {
+  background: none;
+  font-size: 18px;
 }
-
-.midHeader {
-	border-radius: 0;
-	background: black;
-	padding: 0.75rem 1rem;
+.authMenu {
+  background: none;
+  font-size: 18px;
+  margin-top: 0.2rem;
 }
-
-.nav {
-	display: flex;
-	justify-content: space-between;
-	padding: 0.5rem 0;
-	min-width: 185px;
+.vWrapper {
+  background: purple;
 }
-
 .navLink {
-	color: #e2e2e2 !important;
+  color: white;
 }
-
-.loaderContentContainer {
-	position: relative;
+.indexLink {
+  color: white;
+  padding: 0.25rem;
 }
-
-.contentContainer {
-	min-height: 400px;
-	padding: 0.75rem 1rem 0.5rem 1rem;
-}
-
-.footer {
-	position: absolute;
-	bottom: 0;
-	padding: 0.5rem 1rem;
-}
-
-.footer p {
-	margin-bottom: 0
+.indexText {
+  font-size: 28px;
 }
