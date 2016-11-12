@@ -21,7 +21,7 @@ export function logoutAndRedirect () {
         'X-CSRF-Token': state.csrfToken,        
       }
     })
-    .then(function handleAuthResponse (response) {
+    .then(function handleAuthResponse () {
       dispatch(logout());
       // use http redirect to root
       if (window) window.location.href = '/';
@@ -47,7 +47,7 @@ export function sendAuthRequest (googleToken) {
         error.response = response;
         throw error;
       }
-    };
+    }
     // send POST request to server to get credentials, dispatch reception action
     fetch(AUTH_URL, {
       method: 'POST',
@@ -59,9 +59,9 @@ export function sendAuthRequest (googleToken) {
       body: paramStr
     })
     .then(checkStatus)  
-    .then(function handleAuthResponse (response) {
+    .then(function handleAuthResponse () {
       dispatch(receiveAuthResponseAndRedirect());
-    }).catch(function handleAuthRequestError (error) {
+    }).catch(function handleAuthRequestError () {
       dispatch(setLoginError());
     });
   };

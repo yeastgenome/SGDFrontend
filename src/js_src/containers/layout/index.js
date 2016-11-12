@@ -8,23 +8,22 @@ import style from './style.css';
 
 class Layout extends Component {
   render() {
-    console.log('layout');
     let onClickLogout = e => {
       e.preventDefault();
       // this.props.dispatch(AuthActions.logoutAndRedirect());
     };
     // init auth nodes, either login or logout links
     let authNodes = this.props.isAuthenticated ?
-      <ul className={`menu ${style.authMenu}`}><li><a className={style.navLink} onClick={onClickLogout} href='#'><i className='fa fa-sign-out'></i> Logout</a></li></ul> :
-      <ul className={`menu ${style.authMenu}`}><li><Link className={style.navLink} to='/login'><i className='fa fa-sign-in'></i> Login</Link></li></ul>;
+      <ul className={`menu ${style.authMenu}`}><li><a className={style.navLink} href='#' onClick={onClickLogout}><i className='fa fa-sign-out' /> Logout</a></li></ul> :
+      <ul className={`menu ${style.authMenu}`}><li><Link className={style.navLink} to='/login'><i className='fa fa-sign-in' /> Login</Link></li></ul>;
     return (
       <div>
         <nav className={`top-bar ${style.navWrapper}`}>
           <div className='top-bar-left'>
             <ul className={`menu ${style.menu}`}>
               <li>
-                <Link to='curate' className={style.indexLink}>
-                  <img src='/static/img/sgd_logo.png' className={style.imgLogo} />
+                <Link className={style.indexLink} to='curate'>
+                  <img className={style.imgLogo} src='/static/img/sgd_logo.png' />
                   <span className={`${style.logoText} ${style.navLink}`}>Curator</span>
                 </Link>
               </li>
