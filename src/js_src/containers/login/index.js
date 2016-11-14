@@ -1,9 +1,14 @@
 /* eslint-disable react/no-set-state */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as AuthActions from '../../actions/authActions';
 
+import fetchData from '../../lib/fetchData';
+// import * as AuthActions from '../../actions/authActions';
+
+const AUTH_URL = '/signin';
 const GOOGLE_PLATFORM_URL = 'https://apis.google.com/js/platform.js';
+
+let _this;
 
 class Login extends Component {
   // google login setup, adjusted for react
@@ -16,17 +21,33 @@ class Login extends Component {
       scriptTag.type = 'text/javascript';
       scriptTag.src = GOOGLE_PLATFORM_URL;
       document.head.appendChild(scriptTag);
+      // hack to let onSignIn work
+      _this = this;
     }
+  }
+
+  fetchAuth(googleToken) {
+    let params = JSON.stringify({ google_token: googleToken });
+    let fetchOptions = {
+      type: 'POST',
+      headers: {
+        'X-CSRF-Token': window.CSRF_TOKEN,        
+        'Content-Type': 'application/json'
+      },
+      data: params
+    };
+    fetchData(AUTH_URL, fetchOptions).then( (data) => {
+      console.log(data);
+    });
   }
   
   onSignIn (googleUser) {
-    let sendAuthAction = AuthActions.sendAuthRequest(googleUser.getAuthResponse().id_token);
-    this.setState({ isPending: true });
-    this.props.dispatch(sendAuthAction);
+    _this.setState({ isPending: true });
+    _this.fetchAuth(googleUser.getAuthResponse().id_token);
   }
 
   _renderLoginButton () {
-    return <div className='g-signin2' data-onsuccess={this.onSignIn.bind(this)} id='g-login' />;
+    return <div className='g-signin2' data-onsuccess='onSignIn' id='g-login' />;
   }
 
   _renderLoginError () {
@@ -54,7 +75,7 @@ class Login extends Component {
 
 Login.propTypes = {
   dispatch: React.PropTypes.func,
-  loginError: React.PropTypes.string
+  loginError: React.PropTypes.bool
 };
 
 function mapStateToProps(_state) {

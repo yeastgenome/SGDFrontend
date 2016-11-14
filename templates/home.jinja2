@@ -9,8 +9,6 @@
         <title>SGD Curator</title>
         <!-- foundation 6 core CSS -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.1.2/foundation.css" rel="stylesheet">
-        <!-- custom CSS -->
-        <link href="/static/css/style.css" rel='stylesheet' type='text/css'>
         <!-- Custom Fonts -->
         <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Droid+Serif:400,700' rel='stylesheet' type='text/css'>
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -21,6 +19,7 @@
             window.CSRF_TOKEN = '{{ request.session.get_csrf_token() }}';
         </script>
         <div id="j-application"></div>
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
         <!-- custom app js bundled -->
         {% webpack 'main' %}
             <script type="text/javascript" src="{{ ASSET.url }}"></script>
