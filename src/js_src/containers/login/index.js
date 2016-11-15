@@ -1,9 +1,10 @@
 /* eslint-disable react/no-set-state */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 
 import fetchData from '../../lib/fetchData';
-// import * as AuthActions from '../../actions/authActions';
+import { authenticateUser, setLoginError } from '../../actions/authActions';
 
 const AUTH_URL = '/signin';
 const GOOGLE_PLATFORM_URL = 'https://apis.google.com/js/platform.js';
@@ -36,8 +37,11 @@ class Login extends Component {
       },
       data: params
     };
-    fetchData(AUTH_URL, fetchOptions).then( (data) => {
-      console.log(data);
+    fetchData(AUTH_URL, fetchOptions).then( () => {
+      this.props.dispatch(authenticateUser());
+      this.props.dispatch(push('/'));
+    }).catch( () => {
+      this.props.dispatch(setLoginError());
     });
   }
   

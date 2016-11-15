@@ -37,7 +37,7 @@ export function requireAuthentication(Component) {
     dispatch: React.PropTypes.func,
     isAuthenticated: React.PropTypes.bool,
     location: React.PropTypes.object
-  }
+  };
 
   const mapStateToProps = state => ({
     token: state.auth.token,
