@@ -1,29 +1,11 @@
 .container {
-	float: right;
 	width: 100%;
+	position: relative;
 }
 
 .container form {
 	float: right;
 	margin-top: -1px;
-}
-
-.dropdown {
-	border-radius: 0.25rem 0 0 0.25rem;
-	min-width: 6rem;
-}
-
-.dropdownItem {
-	padding-left: 0.5rem;
-	opacity: 0.75;
-}
-
-.dropdownItem:hover {
-	opacity: 1;
-}
-
-.dropdownItem a {
-	text-decoration: none;
 }
 
 .autoContainer {
@@ -36,6 +18,7 @@
 	border: none;
 	padding: 7px;
 	width: 25.25rem;
+	padding-left: 1.75rem;
 }
 
 .autoInput:focus {
@@ -50,6 +33,12 @@
 	border-radius: 0 0 0.25rem 0.25rem;
 	width: 100%;
 	z-index: 1;
+}
+
+.searchIcon {
+	position: absolute;
+	left: 0.5rem;
+    top: 0.8rem;
 }
 
 .suggestionsList {

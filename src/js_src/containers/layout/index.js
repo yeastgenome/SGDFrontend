@@ -4,18 +4,40 @@ import { connect } from 'react-redux';
 
 // import * as AuthActions from '../actions/auth_actions';
 import style from './style.css';
-// import SearchBar from './searchBar';
+import SearchBar from './searchBar';
 
 class Layout extends Component {
-  render() {
+  renderAuthedMenu() {
     let onClickLogout = e => {
       e.preventDefault();
       // this.props.dispatch(AuthActions.logoutAndRedirect());
     };
+    return (
+      <div>
+        
+        <ul className={`menu ${style.authMenu}`}>
+          <li><a className={style.navLink} href='#' onClick={onClickLogout}>
+            <i className='fa fa-sign-out' /> Logout</a>
+          </li>
+          <li><SearchBar /></li>
+        </ul>
+      </div>
+    );
+  }
+
+  renderPublicMenu() {
+    return (
+      <ul className={`menu ${style.authMenu}`}>
+        <li>
+          <Link className={style.navLink} to='/login'><i className='fa fa-sign-in' /> Login</Link>
+        </li>
+      </ul>
+    );
+  }
+
+  render() {
     // init auth nodes, either login or logout links
-    let authNodes = this.props.isAuthenticated ?
-      <ul className={`menu ${style.authMenu}`}><li><a className={style.navLink} href='#' onClick={onClickLogout}><i className='fa fa-sign-out' /> Logout</a></li></ul> :
-      <ul className={`menu ${style.authMenu}`}><li><Link className={style.navLink} to='/login'><i className='fa fa-sign-in' /> Login</Link></li></ul>;
+    let authNodes = this.props.isAuthenticated ? this.renderAuthedMenu() : this.renderPublicMenu();
     return (
       <div>
         <nav className={`top-bar ${style.navWrapper}`}>
