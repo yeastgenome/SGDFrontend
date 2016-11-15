@@ -17,7 +17,7 @@ export default function authReducer(_state, action) {
   case 'START_AUTH':
     state.isAuthenticating = true;
     return state;
-  case 'RECEIVE_AUTH_RESPONSE':
+  case 'AUTHENTICATE_USER':
     state.isAuthenticated = true;
     state.isAuthenticating = false;
     state.loginError = false;
