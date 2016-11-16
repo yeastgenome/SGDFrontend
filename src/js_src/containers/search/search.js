@@ -28,7 +28,7 @@ import {
   selectPageSize
 } from '../../selectors/searchSelectors';
 
-const BASE_SEARCH_URL = '/api/search';
+const BASE_SEARCH_URL = '/get_search_results';
 
 class SearchComponent extends Component {
   // fetch data at start
