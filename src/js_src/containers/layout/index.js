@@ -14,7 +14,6 @@ class Layout extends Component {
     };
     return (
       <div>
-        
         <ul className={`menu ${style.authMenu}`}>
           <li><a className={style.navLink} href='#' onClick={onClickLogout}>
             <i className='fa fa-sign-out' /> Logout</a>
@@ -56,7 +55,7 @@ class Layout extends Component {
           </div>
         </nav>
         <div className='row full-width wrapper'>
-          <div className='large-12 columns'>
+          <div className={`large-12 columns ${style.contentContainer}`}>
             {this.props.children}
           </div>
         </div>

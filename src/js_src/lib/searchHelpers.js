@@ -5,34 +5,23 @@ const CLEARING_FIELDS = ['category'];
 
 export function makeFieldDisplayName(unformattedName) {
   unformattedName = unformattedName || '';
-  switch(unformattedName) {
-  case 'go':
-    return 'Gene Ontology';
-  case 'go_type':
-  case 'go_branch':
-    return 'GO Branch';
-  case 'omim_id':
-    return 'OMIM ID';
-  case 'biological_process':
-  case 'gene_biological_process':
-    return 'Biological Process';
-  case 'cellular_component':
-  case 'gene_cellular_component':
-    return 'Cellular Component';
-  case 'molecular_function':
-  case 'gene_molecular_function':
-    return 'Molecular Function';
-  case 'geneType':
-    return 'Gene Type';
-  case 'disease_genes':
-  case 'go_genes':
-    return 'Associated Genes';
-  case 'disease_species':
-  case 'go_species':
-    return 'Associated Species';
-  default:
-    return unformattedName.replace(/_/g, ' ');
-  }
+  const labels = {
+    locus: 'Gene',
+    reference: 'Reference',
+    cellular_component: 'Cellular Component',
+    molecular_function: 'Molecular Function',
+    biological_process: 'Biological Process',
+    phenotype: 'Phenotype',
+    strain: 'Strain',
+    author: 'Author',
+    download: 'Download',
+    resource: 'Resource',
+    contig: 'Contig',
+    colleague: 'Colleague',
+    observable: 'Observable',
+    reserved_name: 'Reserved Gene Names'
+  };
+  return labels[unformattedName] || unformattedName.replace('_', ' ');
 }
 
 export function getQueryParamWithValueChanged(key, val, queryParams, isClear=false) {

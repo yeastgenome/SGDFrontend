@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import style from './style.css';
 import DetailList from './detailList';
-import LogList from './logList';
 import { makeFieldDisplayName } from '../../lib/searchHelpers';
 import { NON_HIGHLIGHTED_FIELDS } from '../../constants';
 
@@ -94,20 +93,14 @@ class ResultsTable extends Component {
     );
   }
 
-  renderHighlight(highlight, homologs) {
+  renderHighlight(highlight) {
     let _data = highlight;
     let _fields = Object.keys(_data).filter( d => {
       return (NON_HIGHLIGHTED_FIELDS.indexOf(d) < 0);
     });
-    let logHighlight = highlight['homologs.symbol'] || highlight['homologs.panther_family'];
-    let homologNode = null;
-    if (homologs.length && logHighlight) {
-      homologNode = <LogList label='Homologs' logs={homologs} rawHighlight={logHighlight} />;
-    }
     return (
       <div>
         <DetailList data={_data} fields={_fields} />
-        {homologNode}
       </div>
     );
   }

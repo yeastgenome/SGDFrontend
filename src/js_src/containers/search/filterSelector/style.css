@@ -7,10 +7,6 @@
 }
 
 
-.aggValContainer a {
-	padding: 0.25rem 0.5rem !important;
-}
-
 .filterLabel {
 	margin-bottom: 0.5rem;
 	text-transform: capitalize;
@@ -32,4 +28,25 @@
 
 .selectContainer {
 	position: relative;
+}
+
+
+.filter {
+	padding: 0.5rem;	
+}
+
+.activeFilter {
+	background: #2199e8;
+}
+
+.activeFilter a {
+	color: white;
+}
+
+.inactiveFilter:hover {
+	background: #e2e2e2;
+}
+
+.activeFilter: hover {
+	background: #2199e8;
 }

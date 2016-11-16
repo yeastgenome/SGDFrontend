@@ -1,27 +1,18 @@
 import React, { Component } from 'react';
 
 import style from './style.css';
-import { CATEGORIES } from '../../constants';
-
+import { makeFieldDisplayName } from '../../lib/searchHelpers';
 
 class CategoryLabel extends Component {
-  getCurrentOption() {
-    let current = CATEGORIES.filter( d => d.name === this.props.category )[0];
-    return current;
-  }
-
-  renderSprite() {
-    let current = this.getCurrentOption();
-    let offset = Math.max(0, CATEGORIES.indexOf(current)) - 1;
-    let offsetStyle = `-${offset}rem`;
-    return <span className={`${this.props.category} ${style.sprite}`} style={{ backgroundPositionY: offsetStyle }} />;
+  renderIcon() {
+    let color = CAT_COLORS[this.props.category];
+    return <span className={style.catIcon} style={{ backgroundColor: color }} />;
   }
 
   render() {
-    let current = this.getCurrentOption();
-    let label = current ? current.displayName : '';
+    let label = makeFieldDisplayName(this.props.category);
     let labelNode = this.props.hideLabel ? null : <span className={style.catLabel}> {label}</span>;
-    return <span>{this.renderSprite()}{labelNode}</span>;
+    return <span>{this.renderIcon()}{labelNode}</span>;
   }
 }
 
@@ -31,3 +22,19 @@ CategoryLabel.propTypes = {
 };
 
 export default CategoryLabel;
+
+const CAT_COLORS = {
+  locus: '#1f77b4',
+  reference: '#ff7f0e',
+  biological_process: '#2ca02c',
+  cellular_component: '#9467bd',
+  molecular_function: '#8c564b',
+  phenotype: '#e377c2',
+  strain: '#bcbd22',
+  resource: '#17becf',
+  contig: '#7f7f7f',
+  download: '#d62728',
+  colleague: '#ff9896',
+  observable: '#f7b6d2',
+  reserved_name: '#aec7e8'
+};

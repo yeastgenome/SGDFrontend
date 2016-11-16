@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { DropdownButton, MenuItem } from 'react-bootstrap';
 
 import style from './style.css';
 import { getQueryParamWithValueChanged } from '../../lib/searchHelpers';
@@ -23,9 +22,9 @@ class SearchControlsComponent extends Component {
     return (
       <div className={style.control}>
         <label className={style.searchLabel}>View As</label>
-        <div className='btn-group' role='group'>
-          <Link className={`btn btn-${!this.props.isTable ? 'primary': 'secondary'}`} to={listHref}><i className='fa fa-list' /> List</Link>
-          <Link className={`btn btn-${this.props.isTable ? 'primary': 'secondary'}`} to={tableHref}><i className='fa fa-table' /> Table</Link>
+        <div className='button-group' role='group'>
+          <Link className={`button ${!this.props.isTable ? '': 'hollow'}`} to={listHref}><i className='fa fa-list' /> List</Link>
+          <Link className={`button ${this.props.isTable ? '': 'hollow'}`} to={tableHref}><i className='fa fa-table' /> Table</Link>
         </div>
       </div>
     );
@@ -45,9 +44,9 @@ class SearchControlsComponent extends Component {
     return (
       <div className={style.control}>
         <label className={`${style.searchLabel}`}>Page {curPage.toLocaleString()} of {totPage.toLocaleString()}</label>
-        <div className='btn-group' role='group'>
-          <Link className={`btn btn-secondary${isPrevDisabled ? ' disabled' : ''}`} to={prevHef}><i className='fa fa-chevron-left' /></Link>
-          <Link className={`btn btn-secondary${isNextDisabled ? ' disabled' : ''}`} to={nextHef}><i className='fa fa-chevron-right' /></Link>
+        <div className='button-group' role='group'>
+          <Link className={`button ${isPrevDisabled ? ' disabled' : ''}`} to={prevHef}><i className='fa fa-chevron-left' /></Link>
+          <Link className={`button ${isNextDisabled ? ' disabled' : ''}`} to={nextHef}><i className='fa fa-chevron-right' /></Link>
         </div>
       </div>
     );
@@ -58,24 +57,6 @@ class SearchControlsComponent extends Component {
     return (
       <div className={style.controlContainer}>
         {this.renderPaginator()}
-        <div className={style.control}>
-          <label className={style.searchLabel}>Sort By</label>
-          <DropdownButton className='btn-secondary' id='bg-nested-dropdown' title='Relevance'>
-            <MenuItem eventKey='1'>Dropdown link</MenuItem>
-            <MenuItem eventKey='2'>Dropdown link</MenuItem>
-          </DropdownButton>
-        </div>
-        <div className={style.control}>
-          <label className={style.searchLabel}>Page Size</label>
-          <DropdownButton className='btn-secondary' id='bg-nested-dropdown' title='50'>
-            <MenuItem eventKey='1'>Dropdown link</MenuItem>
-            <MenuItem eventKey='2'>Dropdown link</MenuItem>
-          </DropdownButton>
-        </div>
-        <div>
-          <label className={style.searchLabel}>&nbsp;</label>
-          <a className={`btn btn-secondary ${style.agrDownloadBtn}`} href='#'><i className='fa fa-download' /> Download</a>
-        </div>
       </div>
     );
   }

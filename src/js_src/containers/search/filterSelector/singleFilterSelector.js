@@ -10,8 +10,8 @@ import { getQueryParamWithValueChanged } from '../../../lib/searchHelpers';
 import CategoryLabel from '../categoryLabel';
 
 const DELIMITER = '@@';
-const SMALL_NUM_VISIBLE = 5;
-const MED_NUM_VISIBLE = 20;
+const SMALL_NUM_VISIBLE = 10;
+const MED_NUM_VISIBLE = 25;
 const MAX_NUM_VISIBLE = 1000;
 const SEARCH_PATH = '/search';
 
@@ -34,7 +34,7 @@ class SingleFilterSelector extends Component {
   renderFilterValues() {
     let values = this.props.values.slice(0, this.state.numVisible);
     return values.map( d => {
-      let classSuffix = d.isActive ? ' active' : '';
+      let classSuffix = d.isActive ? style.activeFilter : style.inactiveFilter;
       let _key = `fv.${this.props.name}.${d.name}`;
       let nameNode;
       if (this.props.name.match('species')) {
@@ -46,13 +46,13 @@ class SingleFilterSelector extends Component {
       }
       let newQueryObj = getQueryParamWithValueChanged(this.props.name, d.key, this.props.queryParams);
       return (
-        <li className='nav-item' key={_key}>
-          <Link className={`nav-link${classSuffix}`} to={{ pathname: SEARCH_PATH, query: newQueryObj }}>
+        <div className={`${style.filter} ${classSuffix}`} key={_key}>
+          <Link to={{ pathname: SEARCH_PATH, query: newQueryObj }}>
             <span className={style.aggLink}>
               <span className={style.aggLinkLabel}>{nameNode}</span><span>{d.total.toLocaleString()}</span>
             </span>
           </Link>
-        </li>
+        </div>
       );
     });
   }
@@ -113,9 +113,9 @@ class SingleFilterSelector extends Component {
 
   renderListNode() {
     return (
-      <ul className='nav nav-pills nav-stacked'>
+      <div>
         {this.renderFilterValues(this.props)}
-      </ul>
+      </div>
     );
   }
 

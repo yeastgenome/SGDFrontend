@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router';
 
 import style from './style.css';
 import CategoryLabel from './categoryLabel';
 import DetailList from './detailList';
-import LogList from './logList';
 import { NON_HIGHLIGHTED_FIELDS } from '../../constants';
 
 const DEFAULT_FIELDS = ['symbol', 'gene_symbol', 'name', 'gene_synonyms', 'synonyms', 'sourceHref', 'id', 'species', 'type'];
@@ -32,32 +32,17 @@ class ResultsList extends Component {
     return <DetailList data={d} fields={fields} />;
   }
 
-  renderNonGeneEntry(d, i, fields) {
+  renderEntry(d, i, fields) {
+    let publicUrl = `http://yeastgenome.org${d.href}`;
     return (
       <div className={style.resultContainer} key={`sr${i}`}>
         {this.renderHeader(d)}
         {this.renderDetailFromFields(d, fields)}
         {this.renderHighlightedValues(d.highlight)}
-        <hr />
-      </div>
-    );
-  }
-
-  renderGeneEntry(d, i) {
-    let topFields = ['name', 'synonyms'];
-    let bottomFields = ['species', 'gene_type'];
-    let logHighlight = d.highlight['homologs.symbol'] || d.highlight['homologs.panther_family'];
-    return (
-      <div className={style.resultContainer} key={`sr${i}`}>
-        {this.renderHeader(d)}
-          {this.renderDetailFromFields(d, topFields)}
-          <div className={style.detailContainer}>
-            <span className={style.detailLabel}><strong>Source:</strong> </span>
-            <span><a dangerouslySetInnerHTML={{ __html: d.id }} href={d.sourceHref} target='_new' /></span>
-          </div>
-          {this.renderDetailFromFields(d, bottomFields)}
-          <LogList label='Homologs' logs={d.homologs} rawHighlight={logHighlight} />
-          {this.renderHighlightedValues(d.highlight)}
+        <div className='button-group'>
+          <Link className='button' to={d.href}><i className='fa fa-edit' /> Curate</Link>
+          <a className='button hollow' href={publicUrl} target='_new'>View on SGD</a>
+        </div>
         <hr />
       </div>
     );
@@ -65,16 +50,8 @@ class ResultsList extends Component {
 
   renderRows() {
     return this.props.entries.map( (d, i) => {
-      if (d.category === 'gene') {
-        return this.renderGeneEntry(d, i);
-      } else {
-        let fieldVals = {
-          'disease': ['synonyms', 'omim_id'],
-          'go': ['synonyms', 'go_branch'],
-        };
-        let fields = fieldVals[d.category] || [];
-        return this.renderNonGeneEntry(d, i, fields);
-      }
+      let fields = [];
+      return this.renderEntry(d, i, fields);
     });
   }
 

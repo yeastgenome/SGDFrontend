@@ -9,7 +9,7 @@ import Login from './containers/login';
 
 export default (
   <Route component={Layout} path='/'>
-    <IndexRoute component={requireAuthentication(Home)} />
+    <IndexRoute component={Home} />
     <Route component={requireAuthentication(Search)} path='search' />
     <Route component={Login} path='login' />
   </Route>
