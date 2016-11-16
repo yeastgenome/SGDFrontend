@@ -38,8 +38,9 @@ class Login extends Component {
       data: params
     };
     fetchData(AUTH_URL, fetchOptions).then( () => {
+      let nextUrl = this.props.queryParams.next || '/';
       this.props.dispatch(authenticateUser());
-      this.props.dispatch(push('/'));
+      this.props.dispatch(push(nextUrl));
     }).catch( () => {
       this.props.dispatch(setLoginError());
     });
@@ -79,13 +80,14 @@ class Login extends Component {
 
 Login.propTypes = {
   dispatch: React.PropTypes.func,
-  loginError: React.PropTypes.bool
+  loginError: React.PropTypes.bool,
+  queryParams: React.PropTypes.object
 };
 
 function mapStateToProps(_state) {
   return {
     loginError: _state.auth.loginError,
-    isAuthenticating: _state.auth.isAuthenticating
+    queryParams: _state.routing.locationBeforeTransitions.query
   };
 }
 
