@@ -6,7 +6,6 @@ import _ from 'underscore';
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
 import FilterSelector from './filterSelector/filterSelector';
-import MultiTable from './multiTable';
 import SearchBreadcrumbs from './searchBreadcrumbs';
 import SearchControls from './searchControls';
 import ResultsList from './resultsList';
@@ -78,10 +77,8 @@ class SearchComponent extends Component {
   }
 
   renderResultsNode() {
-    if (this.props.isMultiTable) {
-      return <MultiTable />;
-    } else if (this.props.isTable) {
-      return <ResultsTable activeCategory={this.props.activeCategory} entries={this.props.results} />;
+    if (this.props.isTable) {
+      return <ResultsTable entries={this.props.results} />;
     } else {
       return <ResultsList entries={this.props.results} />;      
     }
@@ -127,7 +124,6 @@ SearchComponent.propTypes = {
   errorMessage: React.PropTypes.string,
   history: React.PropTypes.object,
   isError: React.PropTypes.bool,
-  isMultiTable: React.PropTypes.bool,
   isReady: React.PropTypes.bool,
   isTable: React.PropTypes.bool,
   pageSize: React.PropTypes.number,
@@ -140,13 +136,11 @@ function mapStateToProps(state) {
   let _isTable = (_queryParams.mode === 'table');
   let _currentPage = parseInt(_queryParams.page) || 1;
   let _activeCategory = selectActiveCategory(state);
-  let _isMultiTable = (_isTable && _activeCategory === 'none') ;
   return {
     activeCategory: _activeCategory,
     currentPage: _currentPage,
     errorMessage: selectErrorMessage(state),
     isError: selectIsError(state),
-    isMultiTable: _isMultiTable,
     isReady: selectIsReady(state),
     isTable: _isTable,
     pageSize: selectPageSize(state),
