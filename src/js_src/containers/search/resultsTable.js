@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router';
 
 import style from './style.css';
+import CategoryLabel from './categoryLabel';
 import DetailList from './detailList';
 import { makeFieldDisplayName } from '../../lib/searchHelpers';
 import { NON_HIGHLIGHTED_FIELDS } from '../../constants';
@@ -10,21 +12,7 @@ const MAX_CHAR = 100;
 
 class ResultsTable extends Component {
   getFields() {
-    let fields;
-    switch(this.props.activeCategory) {
-    case 'gene':
-      fields = ['display_name', 'name', 'synonyms', 'source', 'species', 'gene_type', 'genomic_coordinates'];
-      break;
-    case 'go':
-      fields = ['display_name', 'synonyms', 'go_branch'];
-      break;
-    case 'disease':
-      fields = ['display_name', 'omim_id', 'synonyms'];
-      break;
-    default:
-      fields = ['display_name', 'synonyms'];
-    }
-    fields.push(MATCH_LABEL);
+    let fields = ['display_name', MATCH_LABEL, 'actions'];
     return fields;
   }
 
@@ -32,9 +20,7 @@ class ResultsTable extends Component {
     let fields = this.getFields();
     let nodes = fields.map( (d) => {
       let processedName;
-      if (this.props.activeCategory === 'gene' && d === 'display_name') {
-        processedName = 'symbol';
-      } else if (d === 'display_name') {
+      if (d === 'display_name') {
         processedName = 'name';
       } else {
         processedName = d;
@@ -60,6 +46,16 @@ class ResultsTable extends Component {
     }
   }
 
+  renderActions(href) {
+    let publicUrl = `http://yeastgenome.org${href}`;
+    return (
+      <div className={`button-group ${style.actionMenu}`}>
+        <Link className='button' to={href}><i className='fa fa-edit' /> Curate</Link>
+        <a className='button hollow' href={publicUrl} target='_new'>View on SGD</a>
+      </div>
+    );
+  }
+
   renderRows() {
     let entries = this.props.entries;
     let fields = this.getFields();
@@ -69,13 +65,15 @@ class ResultsTable extends Component {
         switch(field) {
         case 'display_name':
         case 'symbol':
-          return <td key={_key}><a dangerouslySetInnerHTML={{ __html: d[field] }} href={d.href} target='_new' /></td>;
+          return <td key={_key}><CategoryLabel category={d.category} hideLabel /> <a dangerouslySetInnerHTML={{ __html: d[field] }} href={d.href} target='_new' /></td>;
         case 'source':
           return <td key={_key}><a dangerouslySetInnerHTML={{ __html: d.id }} href={d.href} target='_new' /></td>;
         case MATCH_LABEL:
           return <td key={_key}>{this.renderHighlight(d.highlight, d.homologs)}</td>;
         case 'species':
           return <td key={_key}><i dangerouslySetInnerHTML={{ __html: d.species }} /></td>;
+        case 'actions':
+          return this.renderActions(d.href);
         default:
           return <td dangerouslySetInnerHTML={{ __html: this.renderTruncatedContent(d[field]) }} key={_key} />;
         }
@@ -122,7 +120,6 @@ class ResultsTable extends Component {
 }
 
 ResultsTable.propTypes = {
-  activeCategory: React.PropTypes.string,
   entries: React.PropTypes.array
 };
 

@@ -83,3 +83,8 @@ td > .detailContainer {
 	border-radius: 0.5rem;
 	display: inline-block;
 }
+
+.actionMenu {
+	min-width: 13.5rem;
+	margin-top: 0.5rem;
+}
