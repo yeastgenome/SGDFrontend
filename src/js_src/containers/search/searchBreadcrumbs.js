@@ -21,7 +21,7 @@ class SearchBreadcrumbsComponent extends Component {
         labelNode = <i>{labelNode}</i>;
       }
       return (
-        <Link className={`btn btn-primary ${style.sortLabel}`} key={`bc${key}.${i}`} to={newPath}><span>{labelNode} <i className='fa fa-times' /></span></Link>
+        <Link className={`button ${style.sortLabel}`} key={`bc${key}.${i}`} to={newPath}><span>{labelNode} <i className='fa fa-times' /></span></Link>
       );
     });
   }
@@ -46,7 +46,7 @@ class SearchBreadcrumbsComponent extends Component {
   render() {
     return (
       <div>
-        <p>{this.renderTotalNode()} results for {this.renderCrumbs()}</p>
+        <p><span className={style.breadText}>{this.renderTotalNode()} results for </span>{this.renderCrumbs()}</p>
       </div>
     );
   }

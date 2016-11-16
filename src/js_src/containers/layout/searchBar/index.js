@@ -8,9 +8,7 @@ import style from './style.css';
 import CategoryLabel from '../../search/categoryLabel';
 // import fetchData from '../../../lib/fetchData';
 
-import { CATEGORIES } from '../../../constants';
 // const AUTO_BASE_URL = '/api/search_autocomplete';
-const DEFAULT_CAT = CATEGORIES[0];
 
 class SearchBarComponent extends Component {
   constructor(props) {
@@ -18,7 +16,6 @@ class SearchBarComponent extends Component {
     let initValue = this.props.queryParams.q || '';
     this.state = {
       autoOptions: [],
-      catOption: DEFAULT_CAT,
       value: initValue
     };
   }
@@ -31,18 +28,16 @@ class SearchBarComponent extends Component {
     this.dispatchSearchFromQuery(selected);
   }
 
-  handleSelect(eventKey) {
-    let newCatOption = CATEGORIES.filter( d => d.name === eventKey )[0];
-    this.setState({ catOption: newCatOption });
+  handleSelect() {
+    // let newCatOption = CATEGORIES.filter( d => d.name === eventKey )[0];
+    // this.setState({ catOption: newCatOption });
   }
 
   handleSubmit(e) {
     if (e) e.preventDefault();
     let query = this.state.value;
-    let newCat = this.state.catOption.name;
     let newQp = { q: query };
     if (query === '') newQp = {};
-    if (newCat !== 'all') newQp.category = newCat;
     this.props.dispatch(push({ pathname: 'search', query: newQp }));
   }
 
