@@ -15,6 +15,11 @@ class Layout extends Component {
           <li><a className={style.navLink} href='/'>
             <i className='fa fa-sign-out' /> Logout</a>
           </li>
+          <li className={style.lastItem}>
+            <Link className={style.navLink} to='batch'>
+              <i className='fa fa-shopping-cart' /> Batch <span className='label'>1</span>
+            </Link>
+          </li>
           <li><SearchBar /></li>
         </ul>
       </div>
@@ -42,7 +47,7 @@ class Layout extends Component {
               <li>
                 <Link className={style.indexLink} to='curate'>
                   <img className={style.imgLogo} src={sgdMiniLogo} />
-                  <span className={`${style.logoText} ${style.navLink}`}>Curator</span>
+                  <span className={`${style.logoText} ${style.navLink}`}>SGD Curator</span>
                 </Link>
               </li>
             </ul>
@@ -51,7 +56,7 @@ class Layout extends Component {
             {authNodes}
           </div>
         </nav>
-        <div className='row full-width wrapper'>
+        <div className={`row ${style.contentRow}`}>
           <div className={`large-12 columns ${style.contentContainer}`}>
             {this.props.children}
           </div>

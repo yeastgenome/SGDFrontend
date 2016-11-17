@@ -5,11 +5,7 @@ import { connect } from 'react-redux';
 import style from './style.css';
 import { getQueryParamWithValueChanged } from '../../lib/searchHelpers';
 
-import {
-  selectActiveCategory,
-  selectTotalPages,
-  selectQueryParams
-} from '../../selectors/searchSelectors';
+import { selectTotalPages, selectQueryParams } from '../../selectors/searchSelectors';
 
 const SEARCH_PATH = '/search';
 
@@ -53,7 +49,6 @@ class SearchControlsComponent extends Component {
   }
 
   renderNonViewAs() {
-    if (this.props.isMultiTable) return null;
     return (
       <div className={style.controlContainer}>
         {this.renderPaginator()}
@@ -73,7 +68,6 @@ class SearchControlsComponent extends Component {
 
 SearchControlsComponent.propTypes = {
   currentPage: React.PropTypes.number,
-  isMultiTable: React.PropTypes.bool,
   isTable: React.PropTypes.bool,
   queryParams: React.PropTypes.object,
   totalPages: React.PropTypes.number
@@ -81,13 +75,10 @@ SearchControlsComponent.propTypes = {
 
 function mapStateToProps(state) {
   let _queryParams = selectQueryParams(state);
-  let activeCategory = selectActiveCategory(state);
   let _isTable = (_queryParams.mode === 'table');
-  let _isMultiTable = (_isTable && activeCategory === 'none') ;
   return {
     currentPage: parseInt(_queryParams.page) || 1,
     isTable: _isTable,
-    isMultiTable: _isMultiTable,
     queryParams: _queryParams,
     totalPages: selectTotalPages(state)
   };
