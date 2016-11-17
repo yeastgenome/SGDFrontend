@@ -19,7 +19,7 @@
         </style>
     </head>
     <body>
-        {# expose token to client JS so it can use in XHR requests #}
+        {# expose token to client JS so it can be used in XHR requests #}
         <script type="text/javascript">
             window.CSRF_TOKEN = '{{ request.session.get_csrf_token() }}';
         </script>

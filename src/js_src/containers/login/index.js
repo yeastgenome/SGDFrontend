@@ -8,6 +8,7 @@ import { authenticateUser, setLoginError } from '../../actions/authActions';
 
 const AUTH_URL = '/signin';
 const GOOGLE_PLATFORM_URL = 'https://apis.google.com/js/platform.js';
+const DEFAULT_AUTH_LANDING = '/curate';
 
 let _this;
 
@@ -38,7 +39,7 @@ class Login extends Component {
       data: params
     };
     fetchData(AUTH_URL, fetchOptions).then( () => {
-      let nextUrl = this.props.queryParams.next || '/';
+      let nextUrl = this.props.queryParams.next || DEFAULT_AUTH_LANDING;
       this.props.dispatch(authenticateUser());
       this.props.dispatch(push(nextUrl));
     }).catch( () => {
