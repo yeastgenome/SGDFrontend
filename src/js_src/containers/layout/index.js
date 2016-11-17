@@ -5,17 +5,14 @@ import { connect } from 'react-redux';
 // import * as AuthActions from '../actions/auth_actions';
 import style from './style.css';
 import SearchBar from './searchBar';
+import sgdMiniLogo from './sgdMiniLogo.png';
 
 class Layout extends Component {
   renderAuthedMenu() {
-    let onClickLogout = e => {
-      e.preventDefault();
-      // this.props.dispatch(AuthActions.logoutAndRedirect());
-    };
     return (
       <div>
         <ul className={`menu ${style.authMenu}`}>
-          <li><a className={style.navLink} href='#' onClick={onClickLogout}>
+          <li><a className={style.navLink} href='/'>
             <i className='fa fa-sign-out' /> Logout</a>
           </li>
           <li><SearchBar /></li>
@@ -44,7 +41,7 @@ class Layout extends Component {
             <ul className={`menu ${style.menu}`}>
               <li>
                 <Link className={style.indexLink} to='curate'>
-                  <img className={style.imgLogo} src='/static/img/sgd_logo.png' />
+                  <img className={style.imgLogo} src={sgdMiniLogo} />
                   <span className={`${style.logoText} ${style.navLink}`}>Curator</span>
                 </Link>
               </li>

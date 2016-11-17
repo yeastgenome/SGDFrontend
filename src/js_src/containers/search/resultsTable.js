@@ -65,7 +65,7 @@ class ResultsTable extends Component {
         switch(field) {
         case 'display_name':
         case 'symbol':
-          return <td key={_key}><CategoryLabel category={d.category} hideLabel /> <a dangerouslySetInnerHTML={{ __html: d[field] }} href={d.href} target='_new' /></td>;
+          return <td key={_key}><CategoryLabel category={d.category} hideLabel /> <Link dangerouslySetInnerHTML={{ __html: d[field] }} to={d.href} /></td>;
         case 'source':
           return <td key={_key}><a dangerouslySetInnerHTML={{ __html: d.id }} href={d.href} target='_new' /></td>;
         case MATCH_LABEL:
@@ -73,7 +73,7 @@ class ResultsTable extends Component {
         case 'species':
           return <td key={_key}><i dangerouslySetInnerHTML={{ __html: d.species }} /></td>;
         case 'actions':
-          return this.renderActions(d.href);
+          return <td key={_key}>{this.renderActions(d.href)}</td>;
         default:
           return <td dangerouslySetInnerHTML={{ __html: this.renderTruncatedContent(d[field]) }} key={_key} />;
         }

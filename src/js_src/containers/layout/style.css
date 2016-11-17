@@ -1,5 +1,9 @@
+.navWrapper {
+  background: #0581C2;
+}
+
 .imgLogo {
-  width: 250px;
+  width: 3rem;
 }
 .logoText {
   font-weight: bold;
@@ -9,23 +13,31 @@
   margin-bottom: 0.25rem;
 }
 .menu {
-  background: none;
+  background: #0581C2;
   font-size: 18px;
 }
 .authMenu {
-  background: none;
   font-size: 18px;
   margin-top: 0.2rem;
+  background: #0581C2;
+}
+.authMenu li {
+  background: #0581C2;
 }
 .vWrapper {
   background: purple;
 }
 .navLink {
   color: white;
+  background: #0581C2;
+}
+.navLink:hover {
+  color: white;
 }
 .indexLink {
   color: white;
   padding: 0.25rem;
+  background: #0581C2;
 }
 .indexText {
   font-size: 28px;
