@@ -5,6 +5,7 @@ import style from './style.css';
 import CategoryLabel from './categoryLabel';
 import DetailList from './detailList';
 import { NON_HIGHLIGHTED_FIELDS } from '../../constants';
+import ActionList from './actionList';
 
 const DEFAULT_FIELDS = ['symbol', 'gene_symbol', 'name', 'gene_synonyms', 'synonyms', 'sourceHref', 'id', 'species', 'type'];
 
@@ -33,16 +34,12 @@ class ResultsList extends Component {
   }
 
   renderEntry(d, i, fields) {
-    let publicUrl = `http://yeastgenome.org${d.href}`;
     return (
       <div className={style.resultContainer} key={`sr${i}`}>
         {this.renderHeader(d)}
         {this.renderDetailFromFields(d, fields)}
         {this.renderHighlightedValues(d.highlight)}
-        <div className='button-group'>
-          <Link className='button' to={d.href}><i className='fa fa-edit' /> Curate</Link>
-          <a className='button hollow' href={publicUrl} target='_new'>View on SGD</a>
-        </div>
+        <ActionList href={d.href} id={d.id} />
         <hr />
       </div>
     );

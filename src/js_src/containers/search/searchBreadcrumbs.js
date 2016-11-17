@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import style from './style.css';
 import { getQueryParamWithValueChanged, makeFieldDisplayName } from '../../lib/searchHelpers';
 
-import { selectIsPending, selectQueryParams, selectTotal } from '../../selectors/searchSelectors.js';
+import { selectQueryParams, selectTotal } from '../../selectors/searchSelectors.js';
 
 const IGNORED_PARAMS = ['page', 'mode'];
 const SORT_PRIORITY = ['category', 'q'];
@@ -60,7 +60,7 @@ SearchBreadcrumbsComponent.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    isPending: selectIsPending(state),
+    isPending: false,
     queryParams: selectQueryParams(state),
     total: selectTotal(state)
   };

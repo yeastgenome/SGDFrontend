@@ -6,6 +6,7 @@ import CategoryLabel from './categoryLabel';
 import DetailList from './detailList';
 import { makeFieldDisplayName } from '../../lib/searchHelpers';
 import { NON_HIGHLIGHTED_FIELDS } from '../../constants';
+import ActionList from './actionList';
 
 const MATCH_LABEL = 'match_by';
 const MAX_CHAR = 100;
@@ -46,14 +47,8 @@ class ResultsTable extends Component {
     }
   }
 
-  renderActions(href) {
-    let publicUrl = `http://yeastgenome.org${href}`;
-    return (
-      <div className={`button-group ${style.actionMenu}`}>
-        <Link className='button' to={href}><i className='fa fa-edit' /> Curate</Link>
-        <a className='button hollow' href={publicUrl} target='_new'>View on SGD</a>
-      </div>
-    );
+  renderActions(d) {
+    return <ActionList href={d.href} id={d.id} />;
   }
 
   renderRows() {
@@ -73,7 +68,7 @@ class ResultsTable extends Component {
         case 'species':
           return <td key={_key}><i dangerouslySetInnerHTML={{ __html: d.species }} /></td>;
         case 'actions':
-          return <td key={_key}>{this.renderActions(d.href)}</td>;
+          return <td key={_key}>{this.renderActions(d)}</td>;
         default:
           return <td dangerouslySetInnerHTML={{ __html: this.renderTruncatedContent(d[field]) }} key={_key} />;
         }
