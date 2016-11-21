@@ -9,3 +9,16 @@
 .loadingHeader {
 	height: 2rem;
 }
+
+
+.detailList mark, em {
+	background: yellow;
+}
+
+.detailContainer {
+	margin-left: 1rem;
+}
+
+.detailLabel {
+	text-transform: capitalize;
+}

@@ -42,24 +42,12 @@
 	text-align: center;
 }
 
-.detailList mark, em {
-	background: yellow;
-}
-
-.detailContainer {
-	margin-left: 1rem;
-}
-
 .evidenceFootnote {
 	font-size: 0.65rem;
 }
 
 td > .detailContainer {
 	margin-left: 0;
-}
-
-.detailLabel {
-	text-transform: capitalize;
 }
 
 .resultCatLabel {

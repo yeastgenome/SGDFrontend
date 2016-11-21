@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 
 import style from './style.css';
 import CategoryLabel from './categoryLabel';
-import DetailList from './detailList';
+import DetailList from '../../components/detailList';
 import { NON_HIGHLIGHTED_FIELDS } from '../../constants';
 import ActionList from './actionList';
 
