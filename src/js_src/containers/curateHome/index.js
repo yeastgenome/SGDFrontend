@@ -15,9 +15,9 @@ class CurateHome extends Component {
       <div className='row'>
         <div className={SMALL_COL_CLASS}>
           <ul className='vertical menu'>
+            <li><Link to='literature'><i className='fa fa-book' />Literature {this.renderNumMaybe(this.props.numLit)}</Link></li>
             <li><Link><i className='fa fa-users' /> Colleague Updates {this.renderNumMaybe(this.props.numColleagues)}</Link></li>
             <li><Link><i className='fa fa-sticky-note' /> Gene Name Registrations {this.renderNumMaybe(this.props.numGeneReg)}</Link></li>
-            <li><Link><i className='fa fa-book' /> New Literature {this.renderNumMaybe(this.props.numLit)}</Link></li>
           </ul>
         </div>
         <div className={LARGE_COL_CLASS}>

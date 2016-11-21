@@ -17,7 +17,7 @@ class Layout extends Component {
           </li>
           <li className={style.lastItem}>
             <Link className={style.navLink} to='batch'>
-              <i className='fa fa-shopping-cart' /> Batch <span className='label'>1</span>
+              <i className='fa fa-shopping-cart' /> Batch <span className='badge'>1</span>
             </Link>
           </li>
           <li><SearchBar /></li>
