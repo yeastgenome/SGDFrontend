@@ -5,8 +5,8 @@ class CurateLitOverview extends Component {
   render() {
     return (
       <div>
-        <p>3 annotations</p>
-        <h5><CategoryLabel category='locus' /></h5>
+        <h5>3 annotations associated with this reference</h5>
+        <p><CategoryLabel category='locus' /></p>
         <ul>
           <li>
             <p>summary paragraph for <a>RAD54</a></p>
@@ -15,7 +15,7 @@ class CurateLitOverview extends Component {
             </blockquote>
           </li>
         </ul>
-        <h5><CategoryLabel category='phenotype' /></h5>
+        <p><CategoryLabel category='phenotype' /></p>
         <ul>
           <li>
             <p><a>RAD54</a> to <a>bud morphology: abnormal</a></p>

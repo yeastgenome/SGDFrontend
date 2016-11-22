@@ -22,9 +22,9 @@ class ResultsList extends Component {
     return (
       <div>
         <span className={style.resultCatLabel}><CategoryLabel category={d.category} /></span>
-        <h4>
+        <h5>
           <Link dangerouslySetInnerHTML={{ __html: d.display_name }} to={d.href} />
-        </h4>
+        </h5>
       </div>
     );
   }

@@ -7,18 +7,18 @@ import DetailList from '../../components/detailList';
 import thumbA from './fixtureFig0.jpg';
 import thumbB from './fixtureFig1.jpg';
 
-const RENDERED_FIELDS = ['author', 'journal', 'abstract'];
+const RENDERED_FIELDS = ['title', 'author', 'journal'];
 const BASE_CURATE_URL = '/curate_literature';
 
 class LitList extends Component {
   renderHeader(d) {
     let href = `${BASE_CURATE_URL}/${d.id}`;
     return (
-      <div>
-        <span className={style.resultCatLabel}>status <span className='label secondary'>{d.status}</span></span>
-        <h4>
-          <Link to={href}>{d.title}</Link>
-        </h4>
+      <div>  
+        <h5 className={style.listHeader}>
+          <Link to={href}>{d.citation}</Link>
+        </h5>
+        <span className={`label secondary ${style.statusLabel}`}>status: {d.status}</span>
       </div>
     );
   }
@@ -38,9 +38,9 @@ class LitList extends Component {
   renderEntry(d, i, fields) {
     return (
       <div className={style.resultContainer} key={`sr${i}`}>
+        {this.renderThumb()}
         {this.renderHeader(d)}
         <div className={style.detailContainer}>
-          {this.renderThumb()}
           {this.renderDetailFromFields(d, fields)}
         </div>
         <hr />

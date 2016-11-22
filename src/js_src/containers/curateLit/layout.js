@@ -36,7 +36,7 @@ class CurateLitLayout extends Component {
     return (
       <div>
         <h3>{d.citation}</h3>
-        <span className='label secondary'>{d.status}</span>
+        <span className='label secondary'>status: {d.status}</span>
         <hr />
         <div className='row'>
           <div className='columns small-6'>
