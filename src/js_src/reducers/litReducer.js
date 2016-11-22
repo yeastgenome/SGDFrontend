@@ -1,7 +1,7 @@
-import _ from 'underscore';
+import { fromJS } from 'immutable';
 
 // temp fixture
-const DEFAULT_STATE = {
+const DEFAULT_STATE = fromJS({
   activeEntries: [
     {
       id: '12345abc',
@@ -36,11 +36,9 @@ const DEFAULT_STATE = {
     abstract: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
     status: 'untriaged'
   }
-};
+});
 
-export default function litReducer(_state, action) {
-  if (typeof _state === 'undefined') return DEFAULT_STATE;
-  let state = _.clone(_state);
+export default function litReducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
   default:
     return state;

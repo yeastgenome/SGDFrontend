@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 
 import LitList from './litList';
 
+import { selectActiveEntries } from '../../selectors/litSelectors';
+
 class LiteratureIndexComponent extends Component {
   formatEntries() {
     return this.props.entries;
@@ -29,7 +31,7 @@ LiteratureIndexComponent.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    entries: state.lit.activeEntries
+    entries: selectActiveEntries(state)
   };
 }
 
