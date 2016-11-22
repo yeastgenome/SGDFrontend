@@ -15,3 +15,11 @@
 	float: right;
 	margin-bottom: 1rem;
 }
+
+.listHeader {
+	margin-bottom: 0;
+}
+
+.statusLabel {
+	margin-bottom: 0.25rem;
+}
