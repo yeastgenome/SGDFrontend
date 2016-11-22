@@ -14,6 +14,7 @@ import LocusShow from './containers/locus/show';
 import RefShow from './containers/reference/show';
 import LitIndex from './containers/literature';
 import CurateLit from './containers/curateLit/layout';
+import CurateLitBasic from './containers/curateLit/basic';
 import CurateLitOverview from './containers/curateLit/index';
 
 export default (
@@ -27,7 +28,7 @@ export default (
     <Route component={requireAuthentication(RefShow)} path='reference/:id/overview' />
     <Route component={requireAuthentication(LitIndex)} path='literature' />
     <Route component={requireAuthentication(CurateLit)} path='curate_literature/:id'>
-      <IndexRoute component={requireAuthentication(CurateLitOverview)} />
+      <IndexRoute component={requireAuthentication(CurateLitBasic)} />
       <Route component={requireAuthentication(CurateLitOverview)} path='loci' />
       <Route component={requireAuthentication(CurateLitOverview)} path='protein' />
       <Route component={requireAuthentication(CurateLitOverview)} path='phenotypes' />

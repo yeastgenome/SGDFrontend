@@ -63,15 +63,6 @@ td > .detailContainer {
     top: 0.2rem;
 }
 
-.catIcon {
-	width: 1rem;
-	height: 1rem;
-	position: relative;
-	top: 0.15rem;
-	border-radius: 0.5rem;
-	display: inline-block;
-}
-
 .actionMenu {
 	min-width: 13.5rem;
 	margin-top: 0.5rem;
