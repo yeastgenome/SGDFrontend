@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 
 import style from './style.css';
-import CategoryLabel from './categoryLabel';
+import CategoryLabel from '../../components/categoryLabel';
 import DetailList from '../../components/detailList';
 import { makeFieldDisplayName } from '../../lib/searchHelpers';
 import { NON_HIGHLIGHTED_FIELDS } from '../../constants';

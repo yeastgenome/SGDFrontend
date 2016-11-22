@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import style from './style.css';
-import { makeFieldDisplayName } from '../../lib/searchHelpers';
+import { makeFieldDisplayName } from '../lib/searchHelpers';
 
 class CategoryLabel extends Component {
   renderIcon() {

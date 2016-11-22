@@ -12,6 +12,11 @@ export const selectCurrentSection = (state) => {
   return section;
 };
 
+export const selectActiveLitEntry = createSelector(
+  [selectLitDomain],
+  (litDomain) => litDomain.get('activeLitEntry').toJS()
+);
+
 export const selectActiveLitId = createSelector(
   [selectLitDomain],
   (litDomain) => litDomain.get('activeLitEntry').toJS().id

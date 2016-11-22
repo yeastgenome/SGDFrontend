@@ -7,7 +7,7 @@ import { push } from 'react-router-redux';
 
 import style from './style.css';
 import { getQueryParamWithValueChanged } from '../../../lib/searchHelpers';
-import CategoryLabel from '../categoryLabel';
+import CategoryLabel from '../../../components/categoryLabel';
 
 const DELIMITER = '@@';
 const SMALL_NUM_VISIBLE = 10;

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import style from './style.css';
 import SingleFilterSelector from './singleFilterSelector';
 import { getQueryParamWithValueChanged } from '../../../lib/searchHelpers';
-import CategoryLabel from '../categoryLabel';
+import CategoryLabel from '../../../components/categoryLabel';
 
 import {
   selectActiveCategory,

@@ -5,7 +5,7 @@ import Autosuggest from 'react-autosuggest';
 import { push } from 'react-router-redux';
 
 import style from './style.css';
-import CategoryLabel from '../../search/categoryLabel';
+import CategoryLabel from '../../../components/categoryLabel';
 // import fetchData from '../../../lib/fetchData';
 
 // const AUTO_BASE_URL = '/api/search_autocomplete';

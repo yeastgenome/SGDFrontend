@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
 import { SMALL_COL_CLASS, LARGE_COL_CLASS } from '../../constants';
-import { selectActiveLitId, selectCurrentSection } from '../../selectors/litSelectors';
+import { selectActiveLitEntry, selectActiveLitId, selectCurrentSection } from '../../selectors/litSelectors';
 import style from './style.css';
 
 const BASE_CURATE_URL = '/curate_literature';
@@ -20,11 +20,32 @@ const SECTIONS = [
 ];
 
 class CurateLitLayout extends Component {
-  renderHeader() {
+  renderActions() {
+    let current = this.props.currentSection;
+    if (current !== 'actions') return null;
     return (
       <div>
-        <h1>Lorem Ipsum dalor it Clylin Dependent Protein Serine</h1>
+        <a className='button success' href='#'><i className='fa fa-globe' /> Publish Annotations</a>
+        <a className='button secondary' href='#'><i className='fa fa-trash' /> Archive</a>
+      </div>
+    );
+  }
+
+  renderHeader() {
+    let d = this.props.activeEntry;
+    return (
+      <div>
+        <h3>{d.citation}</h3>
+        <span className='label secondary'>{d.status}</span>
         <hr />
+        <div className='row'>
+          <div className='columns small-6'>
+            {this.renderActions()}
+          </div>
+          <div className='columns small-6 text-right'>
+            <a className='button' href='#'><i className='fa fa-save' /> Save</a>
+          </div>
+        </div>
       </div>
     );
   }
@@ -32,7 +53,6 @@ class CurateLitLayout extends Component {
   renderSectionsNav() {
     let baseUrl = `${BASE_CURATE_URL}/${this.props.activeId}`;
     let current = this.props.currentSection;
-    console.log(current);
     return SECTIONS.map( (d) => {
       let relative = d;
       if (relative === 'basic') relative = '';
@@ -63,6 +83,7 @@ class CurateLitLayout extends Component {
 }
 
 CurateLitLayout.propTypes = {
+  activeEntry: React.PropTypes.object,
   activeId: React.PropTypes.string,
   children: React.PropTypes.node,
   currentSection: React.PropTypes.string
@@ -70,6 +91,7 @@ CurateLitLayout.propTypes = {
 
 function mapStateToProps(state) {
   return {
+    activeEntry: selectActiveLitEntry(state),
     activeId: selectActiveLitId(state),
     currentSection: selectCurrentSection(state)
   };
