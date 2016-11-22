@@ -8,14 +8,16 @@ import thumbA from './fixtureFig0.jpg';
 import thumbB from './fixtureFig1.jpg';
 
 const RENDERED_FIELDS = ['author', 'journal', 'abstract'];
+const BASE_CURATE_URL = '/curate_literature';
 
 class LitList extends Component {
   renderHeader(d) {
+    let href = `${BASE_CURATE_URL}/${d.id}`;
     return (
       <div>
         <span className={style.resultCatLabel}>status <span className='label secondary'>{d.status}</span></span>
         <h4>
-          <Link to={d.href}>{d.title}</Link>
+          <Link to={href}>{d.title}</Link>
         </h4>
       </div>
     );
