@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import EditableList from '../../components/editableList/authorList';
 import StringField from '../../components/forms/stringField';
 import { selectActiveLitEntry } from '../../selectors/litSelectors';
 
@@ -28,7 +29,8 @@ class CurateLitBasic extends Component {
           </div>
         </div>
         <StringField defaultValue={d.citation} displayName='Citation' paramName='citation' />
-
+        <label>Authors</label>
+        <EditableList />
       </div>
     );
   }

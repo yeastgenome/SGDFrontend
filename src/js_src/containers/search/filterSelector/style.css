@@ -6,7 +6,6 @@
 	margin-bottom: 1rem;
 }
 
-
 .filterLabel {
 	margin-bottom: 0.5rem;
 	text-transform: capitalize;
@@ -30,9 +29,8 @@
 	position: relative;
 }
 
-
 .filter {
-	padding: 0.5rem;	
+	padding: 0.5rem;
 }
 
 .activeFilter {
@@ -47,6 +45,6 @@
 	background: #e2e2e2;
 }
 
-.activeFilter: hover {
+.activeFilter:hover {
 	background: #2199e8;
 }

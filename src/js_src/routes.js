@@ -15,6 +15,7 @@ import RefShow from './containers/reference/show';
 import LitIndex from './containers/literature';
 import CurateLit from './containers/curateLit/layout';
 import CurateLitBasic from './containers/curateLit/basic';
+import CurateLitPhenotype from './containers/curateLit/phenotype';
 import CurateLitOverview from './containers/curateLit/index';
 
 export default (
@@ -31,7 +32,7 @@ export default (
       <IndexRoute component={requireAuthentication(CurateLitBasic)} />
       <Route component={requireAuthentication(CurateLitOverview)} path='loci' />
       <Route component={requireAuthentication(CurateLitOverview)} path='protein' />
-      <Route component={requireAuthentication(CurateLitOverview)} path='phenotypes' />
+      <Route component={requireAuthentication(CurateLitPhenotype)} path='phenotypes' />
       <Route component={requireAuthentication(CurateLitOverview)} path='go' />
       <Route component={requireAuthentication(CurateLitOverview)} path='datasets' />
       <Route component={requireAuthentication(CurateLitOverview)} path='regulation' />
