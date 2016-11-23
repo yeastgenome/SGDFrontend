@@ -238,7 +238,6 @@ def sign_in(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
 
-    print request.json_body['google_token']
     if request.json_body['google_token'] is None:
         return HTTPForbidden(body=json.dumps({'error': 'Expected authentication token not found'}))
     
