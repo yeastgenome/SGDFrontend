@@ -162,13 +162,13 @@ const ColleaguesFormShow = React.createClass({
       <MultiSelectField
         isReadOnly={this.props.isReadOnly} displayName='Supervisor(s)'
         paramName='supervisors_display_names' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL}
-        defaultValues={this._getIdsFromArray(supervisors)} defaultOptions={supervisors}
+        defaultValues={supervisors} defaultOptions={supervisors}
         allowCreate={true} key='associate0'
       />,
       <MultiSelectField
         isReadOnly={this.props.isReadOnly} displayName='Lab Members'
         paramName='lab_members_display_names' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL}
-        defaultValues={this._getIdsFromArray(labMembers)} defaultOptions={labMembers}
+        defaultValues={labMembers} defaultOptions={labMembers}
         allowCreate={true} key='associate1'
       />
     ];
@@ -189,7 +189,7 @@ const ColleaguesFormShow = React.createClass({
 
   _renderGenes () {
     let data = this.state.data.associated_genes || [];
-    return <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Associated Genes' paramName='associated_gene_ids' optionsUrl={GENES_URL} defaultValues={this._getIdsFromArray(data)} defaultOptions={data}/>;
+    return <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Associated Genes' paramName='associated_gene_ids' optionsUrl={GENES_URL} defaultValues={data} defaultOptions={data}/>;
   },
 
   _renderComments () {
@@ -217,7 +217,7 @@ const ColleaguesFormShow = React.createClass({
       let url = TRIAGED_COLLEAGUE_URL;
       let name = this.props.colleagueDisplayName;
       apiRequest(url).then( json => {
-        let _data = _.findWhere(json, { format_name: name });
+        let _data = _.findWhere(json, { triage_id: parseInt(name) }).data;
         this.setState({ data: _data, isLoadPending: false });
       });
     } else {
@@ -228,11 +228,7 @@ const ColleaguesFormShow = React.createClass({
       });
     }
   },
-
-  _getIdsFromArray (original) {
-    return original.map( d => d.id );
-  },
-
+  
   _renderControls () {
     if (this.props.isReadOnly) return null;
     let classSuffix = this.state.isUpdatePending ? ' disabled ' : '';

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue
+from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -13,36 +13,36 @@ ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
 class Allele(Base):
     __tablename__ = 'allele'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    allele_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    allele_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
     description = Column(String(500))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
 
 class Apo(Base):
     __tablename__ = 'apo'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    apo_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    apo_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     apoid = Column(String(20), nullable=False, unique=True)
     apo_namespace = Column(String(20), nullable=False)
+    namespace_group = Column(String(40))
     description = Column(String(1000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
@@ -50,19 +50,17 @@ class Apo(Base):
 class ApoAlia(Base):
     __tablename__ = 'apo_alias'
     __table_args__ = (
-        Index('apo_alias_uk', 'apo_id', 'display_name', 'alias_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('apo_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
     )
 
-    alias_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
-    obj_url = Column(String(500))
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    apo_id = Column(ForeignKey(u'NEX.apo.apo_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    apo_id = Column(ForeignKey(u'nex.apo.apo_id', ondelete=u'CASCADE'), nullable=False)
     alias_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     apo = relationship(u'Apo')
     source = relationship(u'Source')
@@ -71,18 +69,17 @@ class ApoAlia(Base):
 class ApoRelation(Base):
     __tablename__ = 'apo_relation'
     __table_args__ = (
-        Index('apo_relation_uk', 'parent_id', 'child_id', 'ro_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('parent_id', 'child_id', 'ro_id'),
+        {u'schema': 'nex'}
     )
 
-    relation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    parent_id = Column(ForeignKey(u'NEX.apo.apo_id'), nullable=False)
-    child_id = Column(ForeignKey(u'NEX.apo.apo_id'), nullable=False, index=True)
-    ro_id = Column(ForeignKey(u'NEX.ro.ro_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    parent_id = Column(ForeignKey(u'nex.apo.apo_id', ondelete=u'CASCADE'), nullable=False)
+    child_id = Column(ForeignKey(u'nex.apo.apo_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ro_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     child = relationship(u'Apo', primaryjoin='ApoRelation.child_id == Apo.apo_id')
     parent = relationship(u'Apo', primaryjoin='ApoRelation.parent_id == Apo.apo_id')
@@ -93,19 +90,18 @@ class ApoRelation(Base):
 class ApoUrl(Base):
     __tablename__ = 'apo_url'
     __table_args__ = (
-        Index('apo_url_uk', 'apo_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('apo_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    apo_id = Column(ForeignKey(u'NEX.apo.apo_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    apo_id = Column(ForeignKey(u'nex.apo.apo_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     apo = relationship(u'Apo')
     source = relationship(u'Source')
@@ -113,95 +109,91 @@ class ApoUrl(Base):
 
 class ArchContig(Base):
     __tablename__ = 'arch_contig'
-    __table_args__ = (
-        Index('arch_contig_uk', 'format_name', 'genomerelease_id', unique=True),
-        {u'schema': 'NEX'}
-    )
+    __table_args__ = {u'schema': 'nex'}
 
-    contig_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    format_name = Column(String(100), nullable=False)
+    contig_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500))
-    source_id = Column(Numeric(scale=0, asdecimal=False), nullable=False, index=True)
-    taxonomy_id = Column(Numeric(scale=0, asdecimal=False), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    so_id = Column(Numeric(scale=0, asdecimal=False), nullable=False, index=True)
-    centromere_start = Column(Numeric(scale=0, asdecimal=False))
-    centromere_end = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(BigInteger, nullable=False, index=True)
+    taxonomy_id = Column(BigInteger, nullable=False, index=True)
+    so_id = Column(BigInteger, nullable=False, index=True)
+    centromere_start = Column(Integer)
+    centromere_end = Column(Integer)
     genbank_accession = Column(String(40))
     gi_number = Column(String(40))
     refseq_id = Column(String(40))
-    reference_chromosome_id = Column(Numeric(scale=0, asdecimal=False))
-    reference_start = Column(Numeric(scale=0, asdecimal=False))
-    reference_end = Column(Numeric(scale=0, asdecimal=False))
-    reference_percent_identity = Column(Numeric(7, 3))
-    reference_alignment_length = Column(Numeric(scale=0, asdecimal=False))
+    reference_chromosome_id = Column(BigInteger)
+    reference_start = Column(Integer)
+    reference_end = Column(Integer)
+    reference_percent_identity = Column(Float(53))
+    reference_alignment_length = Column(Integer)
     seq_version = Column(DateTime)
     coord_version = Column(DateTime)
-    genomerelease_id = Column(Numeric(scale=0, asdecimal=False), index=True)
+    genomerelease_id = Column(BigInteger, index=True)
     file_header = Column(String(200))
     download_filename = Column(String(200))
-    file_id = Column(Numeric(scale=0, asdecimal=False), index=True)
+    file_id = Column(BigInteger, index=True)
     description = Column(String(500))
     residues = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False)
     created_by = Column(String(12), nullable=False)
-    date_archived = Column(DateTime, nullable=False, server_default=FetchedValue())
+    date_archived = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
 
 
 class ArchContigchange(Base):
     __tablename__ = 'arch_contigchange'
     __table_args__ = (
-        Index('arch_contigchange_uk', 'contig_id', 'genomerelease_id', 'change_type', 'change_min_coord', 'change_max_coord', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('contig_id', 'genomerelease_id', 'change_type', 'change_min_coord', 'change_max_coord'),
+        {u'schema': 'nex'}
     )
 
-    archive_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    contig_id = Column(ForeignKey(u'NEX.arch_contig.contig_id'), nullable=False)
-    source_id = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    genomerelease_id = Column(Numeric(scale=0, asdecimal=False), nullable=False, index=True)
+    archive_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.archive_seq'::regclass)"))
+    contig_id = Column(ForeignKey(u'nex.arch_contig.contig_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(BigInteger, nullable=False)
+    bud_id = Column(BigInteger)
+    genomerelease_id = Column(BigInteger, nullable=False, index=True)
     change_type = Column(String(40), nullable=False)
-    change_min_coord = Column(Numeric(10, 0, asdecimal=False), nullable=False)
-    change_max_coord = Column(Numeric(10, 0, asdecimal=False), nullable=False)
+    change_min_coord = Column(Integer, nullable=False)
+    change_max_coord = Column(Integer, nullable=False)
     old_value = Column(String(1000))
     new_value = Column(String(1000))
     date_changed = Column(DateTime, nullable=False)
     changed_by = Column(String(12), nullable=False)
-    date_archived = Column(DateTime, nullable=False, server_default=FetchedValue())
+    date_archived = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
 
     contig = relationship(u'ArchContig')
 
 
-class ArchDnaseqannotation(Base):
-    __tablename__ = 'arch_dnaseqannotation'
+class ArchDnasequenceannotation(Base):
+    __tablename__ = 'arch_dnasequenceannotation'
     __table_args__ = (
-        Index('arch_dnaseqannotation_uk', 'dbentity_id', 'taxonomy_id', 'contig_id', 'genomerelease_id', 'so_id', 'dna_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'taxonomy_id', 'contig_id', 'genomerelease_id', 'so_id', 'dna_type'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    source_id = Column(Numeric(scale=0, asdecimal=False), nullable=False, index=True)
-    taxonomy_id = Column(Numeric(scale=0, asdecimal=False), nullable=False, index=True)
-    reference_id = Column(Numeric(scale=0, asdecimal=False), index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    so_id = Column(Numeric(scale=0, asdecimal=False), nullable=False, index=True)
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(BigInteger, nullable=False)
+    source_id = Column(BigInteger, nullable=False, index=True)
+    taxonomy_id = Column(BigInteger, nullable=False, index=True)
+    reference_id = Column(BigInteger, index=True)
+    bud_id = Column(BigInteger)
+    so_id = Column(BigInteger, nullable=False, index=True)
     dna_type = Column(String(50), nullable=False)
-    contig_id = Column(ForeignKey(u'NEX.arch_contig.contig_id'), index=True)
+    contig_id = Column(ForeignKey(u'nex.arch_contig.contig_id', ondelete=u'CASCADE'), index=True)
     seq_version = Column(DateTime)
     coord_version = Column(DateTime)
-    genomerelease_id = Column(Numeric(scale=0, asdecimal=False), index=True)
-    start_index = Column(Numeric(scale=0, asdecimal=False))
-    end_index = Column(Numeric(scale=0, asdecimal=False))
+    genomerelease_id = Column(BigInteger, index=True)
+    start_index = Column(Integer)
+    end_index = Column(Integer)
     strand = Column(String(1), nullable=False)
     file_header = Column(String(200))
     download_filename = Column(String(200))
-    file_id = Column(Numeric(scale=0, asdecimal=False), index=True)
+    file_id = Column(BigInteger, index=True)
     residues = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False)
     created_by = Column(String(12), nullable=False)
-    date_archived = Column(DateTime, nullable=False, server_default=FetchedValue())
+    date_archived = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
 
     contig = relationship(u'ArchContig')
 
@@ -209,145 +201,143 @@ class ArchDnaseqannotation(Base):
 class ArchDnasubsequence(Base):
     __tablename__ = 'arch_dnasubsequence'
     __table_args__ = (
-        Index('arch_dnasubsequence_uk', 'annotation_id', 'dbentity_id', 'genomerelease_id', 'relative_start_index', 'relative_end_index', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('annotation_id', 'dbentity_id', 'genomerelease_id', 'relative_start_index', 'relative_end_index'),
+        {u'schema': 'nex'}
     )
 
-    dnasubsequence_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    annotation_id = Column(ForeignKey(u'NEX.arch_dnaseqannotation.annotation_id'), nullable=False)
-    dbentity_id = Column(Numeric(scale=0, asdecimal=False), nullable=False, index=True)
+    dnasubsequence_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.detail_seq'::regclass)"))
+    annotation_id = Column(ForeignKey(u'nex.arch_dnasequenceannotation.annotation_id', ondelete=u'CASCADE'), nullable=False)
+    dbentity_id = Column(BigInteger, nullable=False, index=True)
     display_name = Column(String(500), nullable=False)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    so_id = Column(Numeric(scale=0, asdecimal=False), nullable=False, index=True)
-    relative_start_index = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    relative_end_index = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    contig_start_index = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    contig_end_index = Column(Numeric(scale=0, asdecimal=False), nullable=False)
+    bud_id = Column(BigInteger)
+    so_id = Column(BigInteger, nullable=False, index=True)
+    relative_start_index = Column(Integer, nullable=False)
+    relative_end_index = Column(Integer, nullable=False)
+    contig_start_index = Column(Integer, nullable=False)
+    contig_end_index = Column(Integer, nullable=False)
     seq_version = Column(DateTime)
     coord_version = Column(DateTime)
-    genomerelease_id = Column(Numeric(scale=0, asdecimal=False), index=True)
+    genomerelease_id = Column(BigInteger, index=True)
     file_header = Column(String(200), nullable=False)
     download_filename = Column(String(100), nullable=False)
-    file_id = Column(Numeric(scale=0, asdecimal=False), index=True)
+    file_id = Column(BigInteger, index=True)
     residues = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False)
     created_by = Column(String(12), nullable=False)
-    date_archived = Column(DateTime, nullable=False, server_default=FetchedValue())
+    date_archived = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
 
-    annotation = relationship(u'ArchDnaseqannotation')
+    annotation = relationship(u'ArchDnasequenceannotation')
 
 
 class ArchLiteratureannotation(Base):
     __tablename__ = 'arch_literatureannotation'
     __table_args__ = (
-        Index('arch_literatureannotation_uk', 'reference_id', 'topic', 'locus_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('reference_id', 'topic', 'locus_id'),
+        {u'schema': 'nex'}
     )
 
-    archive_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    reference_id = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    source_id = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    taxonomy_id = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    locus_id = Column(Numeric(scale=0, asdecimal=False))
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    archive_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.archive_seq'::regclass)"))
+    reference_id = Column(BigInteger, nullable=False)
+    source_id = Column(BigInteger, nullable=False)
+    taxonomy_id = Column(BigInteger, nullable=False)
+    locus_id = Column(BigInteger)
+    bud_id = Column(BigInteger)
     topic = Column(String(42), nullable=False)
     date_created = Column(DateTime, nullable=False)
     created_by = Column(String(12), nullable=False)
-    date_archived = Column(DateTime, nullable=False, server_default=FetchedValue())
+    date_archived = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
 
 
 class ArchLocuschange(Base):
     __tablename__ = 'arch_locuschange'
     __table_args__ = (
-        Index('arch_locuschange_uk', 'dbentity_id', 'change_type', 'old_value', 'new_value', 'date_changed', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'change_type', 'old_value', 'new_value', 'date_changed'),
+        {u'schema': 'nex'}
     )
 
-    archive_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    source_id = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    archive_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.archive_seq'::regclass)"))
+    dbentity_id = Column(BigInteger, nullable=False)
+    source_id = Column(BigInteger, nullable=False)
+    bud_id = Column(BigInteger)
     change_type = Column(String(100), nullable=False)
     old_value = Column(String(40))
     new_value = Column(String(40))
     date_changed = Column(DateTime, nullable=False)
     changed_by = Column(String(12), nullable=False)
-    date_archived = Column(DateTime, nullable=False, server_default=FetchedValue())
+    date_archived = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
 
 
-class ArchProteinseqannotation(Base):
-    __tablename__ = 'arch_proteinseqannotation'
+class ArchProteinsequenceannotation(Base):
+    __tablename__ = 'arch_proteinsequenceannotation'
     __table_args__ = (
-        Index('arch_proteinseqannotation_uk', 'dbentity_id', 'taxonomy_id', 'contig_id', 'genomerelease_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'taxonomy_id', 'contig_id', 'genomerelease_id'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    source_id = Column(Numeric(scale=0, asdecimal=False), nullable=False, index=True)
-    taxonomy_id = Column(Numeric(scale=0, asdecimal=False), nullable=False, index=True)
-    reference_id = Column(Numeric(scale=0, asdecimal=False), index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    contig_id = Column(ForeignKey(u'NEX.arch_contig.contig_id'), nullable=False, index=True)
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(BigInteger, nullable=False)
+    source_id = Column(BigInteger, nullable=False, index=True)
+    taxonomy_id = Column(BigInteger, nullable=False, index=True)
+    reference_id = Column(BigInteger, index=True)
+    bud_id = Column(BigInteger)
+    contig_id = Column(ForeignKey(u'nex.arch_contig.contig_id', ondelete=u'CASCADE'), nullable=False, index=True)
     seq_version = Column(DateTime)
-    genomerelease_id = Column(Numeric(scale=0, asdecimal=False), index=True)
+    genomerelease_id = Column(BigInteger, index=True)
     file_header = Column(String(200))
     download_filename = Column(String(200))
-    file_id = Column(Numeric(scale=0, asdecimal=False), index=True)
+    file_id = Column(BigInteger, index=True)
     residues = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False)
     created_by = Column(String(12), nullable=False)
-    date_archived = Column(DateTime, nullable=False, server_default=FetchedValue())
+    date_archived = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
 
     contig = relationship(u'ArchContig')
 
 
 class Authorresponse(Base):
     __tablename__ = 'authorresponse'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    curation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    reference_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False, unique=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    colleague_id = Column(ForeignKey(u'NEX.colleague.colleague_id'), index=True)
+    curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.curation_seq'::regclass)"))
+    reference_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, unique=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), index=True)
     author_email = Column(String(100), nullable=False)
-    has_novel_research = Column(Numeric(1, 0, asdecimal=False))
-    has_large_scale_data = Column(Numeric(1, 0, asdecimal=False))
-    has_fast_track_tag = Column(Numeric(1, 0, asdecimal=False))
-    curator_checked_datasets = Column(Numeric(1, 0, asdecimal=False))
-    curator_checked_genelist = Column(Numeric(1, 0, asdecimal=False))
-    no_action_required = Column(Numeric(1, 0, asdecimal=False))
+    has_novel_research = Column(Boolean, nullable=False)
+    has_large_scale_data = Column(Boolean, nullable=False)
+    has_fast_track_tag = Column(Boolean, nullable=False)
+    curator_checked_datasets = Column(Boolean, nullable=False)
+    curator_checked_genelist = Column(Boolean, nullable=False)
+    no_action_required = Column(Boolean, nullable=False)
     research_results = Column(Text)
     gene_list = Column(String(4000))
     dataset_description = Column(String(4000))
     other_description = Column(String(4000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     colleague = relationship(u'Colleague')
-    reference = relationship(u'Dbentity')
+    reference = relationship(u'Dbentity', uselist=False)
     source = relationship(u'Source')
 
 
 class Bindingmotifannotation(Base):
     __tablename__ = 'bindingmotifannotation'
     __table_args__ = (
-        Index('bindingmotifannotation_uk', 'dbentity_id', 'motif_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'motif_id'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
     obj_url = Column(String(500), nullable=False)
-    motif_id = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    motif_id = Column(BigInteger, nullable=False)
     logo_url = Column(String(500), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dbentity = relationship(u'Dbentity')
     reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
@@ -358,41 +348,40 @@ class Bindingmotifannotation(Base):
 class Book(Base):
     __tablename__ = 'book'
     __table_args__ = (
-        Index('book_uk', 'title', 'volume_title', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('title', 'volume_title'),
+        {u'schema': 'nex'}
     )
 
-    book_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    book_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
     title = Column(String(200), nullable=False)
     volume_title = Column(String(200))
     isbn = Column(String(20))
-    total_pages = Column(Numeric(scale=0, asdecimal=False))
+    total_pages = Column(Integer)
     publisher = Column(String(100))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
 
 class Chebi(Base):
     __tablename__ = 'chebi'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    chebi_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    chebi_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     chebiid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
@@ -400,62 +389,37 @@ class Chebi(Base):
 class ChebiAlia(Base):
     __tablename__ = 'chebi_alias'
     __table_args__ = (
-        Index('chebi_alias_uk', 'chebi_id', 'display_name', 'alias_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('chebi_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
     )
 
-    alias_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
-    obj_url = Column(String(500))
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    chebi_id = Column(ForeignKey(u'NEX.chebi.chebi_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    chebi_id = Column(ForeignKey(u'nex.chebi.chebi_id', ondelete=u'CASCADE'), nullable=False)
     alias_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     chebi = relationship(u'Chebi')
-    source = relationship(u'Source')
-
-
-class ChebiRelation(Base):
-    __tablename__ = 'chebi_relation'
-    __table_args__ = (
-        Index('chebi_relation_uk', 'parent_id', 'child_id', 'ro_id', unique=True),
-        {u'schema': 'NEX'}
-    )
-
-    relation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    parent_id = Column(ForeignKey(u'NEX.chebi.chebi_id'), nullable=False)
-    child_id = Column(ForeignKey(u'NEX.chebi.chebi_id'), nullable=False, index=True)
-    ro_id = Column(ForeignKey(u'NEX.ro.ro_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-
-    child = relationship(u'Chebi', primaryjoin='ChebiRelation.child_id == Chebi.chebi_id')
-    parent = relationship(u'Chebi', primaryjoin='ChebiRelation.parent_id == Chebi.chebi_id')
-    ro = relationship(u'Ro')
     source = relationship(u'Source')
 
 
 class ChebiUrl(Base):
     __tablename__ = 'chebi_url'
     __table_args__ = (
-        Index('chebi_url_uk', 'chebi_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('chebi_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    chebi_id = Column(ForeignKey(u'NEX.chebi.chebi_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    chebi_id = Column(ForeignKey(u'nex.chebi.chebi_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     chebi = relationship(u'Chebi')
     source = relationship(u'Source')
@@ -463,17 +427,18 @@ class ChebiUrl(Base):
 
 class Colleague(Base):
     __tablename__ = 'colleague'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    colleague_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    colleague_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
     orcid = Column(String(20), unique=True)
-    last_name = Column(String(40), nullable=False)
     first_name = Column(String(40), nullable=False)
+    middle_name = Column(String(20))
+    last_name = Column(String(40), nullable=False)
     suffix = Column(String(4))
     other_last_name = Column(String(40))
     profession = Column(String(100))
@@ -488,53 +453,18 @@ class Colleague(Base):
     postal_code = Column(String(40))
     work_phone = Column(String(40))
     other_phone = Column(String(40))
-    fax = Column(String(40))
     email = Column(String(100))
-    research_interest = Column(String(4000))
-    is_pi = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    is_contact = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    display_email = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    date_last_modified = Column(DateTime, nullable=False, server_default=FetchedValue())
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    is_pi = Column(Boolean, nullable=False)
+    is_contact = Column(Boolean, nullable=False)
+    is_beta_tester = Column(Boolean, nullable=False)
+    display_email = Column(Boolean, nullable=False)
+    date_last_modified = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
     colleague_note = Column(String(1000))
+    research_interest = Column(String(4000))
 
     source = relationship(u'Source')
-    urls = relationship(u'ColleagueUrl')
-
-    def _include_urls_to_dict(self, colleague_dict):
-        for url in self.urls:
-            if url.url_type == "Lab":
-                colleague_dict['lab_page'] = url.obj_url
-            elif url.url_type == "Research summary":
-                colleague_dict['research_page'] = url.obj_url
-
-    def _include_associated_genes(self, colleague_dict):
-        locus_ids = DBSession.query(ColleagueLocus.locus_id).filter(ColleagueLocus.colleague_id == self.colleague_id).all()
-        if len(locus_ids) > 0:
-            locus_ids = [l[0] for l in locus_ids]
-            locus = DBSession.query(Locusdbentity.gene_name, Locusdbentity.systematic_name).filter(Locusdbentity.dbentity_id.in_(locus_ids)).all()
-            colleague_dict['associated_genes'] = [l[0] + " / " + l[1] for l in locus]
-
-    def _include_associates_to_dict(self, colleague_dict):
-        for associate_id, association_type in DBSession.query(ColleagueAssociation.associate_id, ColleagueAssociation.association_type).filter(ColleagueAssociation.colleague_id == self.colleague_id).all():
-            colleague = DBSession.query(Colleague.first_name, Colleague.last_name, Colleague.format_name).filter(Colleague.colleague_id == associate_id).one_or_none()
-            if colleague is not None:
-                colleague_info = {
-                    'name': colleague.last_name + ", " + colleague.first_name,
-                    'format_name': colleague.format_name
-                }
-                
-                if association_type == "Head of Lab":
-                    if colleague_dict.get("supervisors"):
-                        colleague_dict["supervisors"].append(colleague_info)
-                    else:
-                        colleague_dict["supervisors"] = [colleague_info]
-                else:
-                    if colleague_dict.get("lab_members"):
-                        colleague_dict["lab_members"].append(colleague_info)
-                    else:
-                        colleague_dict["lab_members"] = [colleague_info]
 
     def _include_keywords_to_dict(self, colleague_dict):
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
@@ -542,75 +472,21 @@ class Colleague(Base):
             ids_query = [k[0] for k in keyword_ids]
             keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(ids_query)).all()
             colleague_dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
-
-    def to_info_dict(self):
-        colleague_dict = {
-            'orcid': self.orcid,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'position': self.job_title,
-            'profession': self.profession,
-            'institution': self.institution,
-            'city': self.city,
-            'state': self.state,
-            'country': self.country,
-            'postal_code': self.postal_code,
-            'work_phone': self.work_phone,
-            'fax': self.fax,
-            'research_interests': self.research_interest,
-            'last_update': str(self.date_last_modified)
-        }
-
-        colleague_dict['address'] = []
-        for addr in [self.address1, self.address2, self.address3]:
-            if addr is not None:
-                colleague_dict['address'].append(addr)
-        if len(colleague_dict['address']) == 0:
-            colleague_dict['address'] = None
-        
-        if self.display_email:
-            colleague_dict['email'] = self.email
-        
-        self._include_urls_to_dict(colleague_dict)
-        self._include_associates_to_dict(colleague_dict)
-        self._include_keywords_to_dict(colleague_dict)
-        self._include_associated_genes(colleague_dict)
-        return colleague_dict
-
-class ColleagueAssociation(Base):
-    __tablename__ = 'colleague_association'
-    __table_args__ = (
-        Index('colleague_association_uk', 'colleague_id', 'associate_id', 'association_type', unique=True),
-        {u'schema': 'NEX'}
-    )
-
-    colleague_association_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    colleague_id = Column(ForeignKey(u'NEX.colleague.colleague_id'), nullable=False)
-    associate_id = Column(ForeignKey(u'NEX.colleague.colleague_id'), nullable=False, index=True)
-    association_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-
-    associate = relationship(u'Colleague', primaryjoin='ColleagueAssociation.associate_id == Colleague.colleague_id')
-    colleague = relationship(u'Colleague', primaryjoin='ColleagueAssociation.colleague_id == Colleague.colleague_id')
-    source = relationship(u'Source')
-
+    
 
 class ColleagueKeyword(Base):
     __tablename__ = 'colleague_keyword'
     __table_args__ = (
-        Index('colleague_keyword_uk', 'keyword_id', 'colleague_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('keyword_id', 'colleague_id'),
+        {u'schema': 'nex'}
     )
 
-    colleague_keyword_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    colleague_id = Column(ForeignKey(u'NEX.colleague.colleague_id'), nullable=False, index=True)
-    keyword_id = Column(ForeignKey(u'NEX.keyword.keyword_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    colleague_keyword_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    keyword_id = Column(ForeignKey(u'nex.keyword.keyword_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     colleague = relationship(u'Colleague')
     keyword = relationship(u'Keyword')
@@ -620,16 +496,16 @@ class ColleagueKeyword(Base):
 class ColleagueLocus(Base):
     __tablename__ = 'colleague_locus'
     __table_args__ = (
-        Index('colleague_locus_uk', 'colleague_id', 'locus_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('colleague_id', 'locus_id'),
+        {u'schema': 'nex'}
     )
 
-    colleague_locus_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    colleague_id = Column(ForeignKey(u'NEX.colleague.colleague_id'), nullable=False)
-    locus_id = Column(ForeignKey(u'NEX.locusdbentity.dbentity_id'), nullable=False, index=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    colleague_locus_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), nullable=False)
+    locus_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     colleague = relationship(u'Colleague')
     locus = relationship(u'Locusdbentity')
@@ -639,38 +515,59 @@ class ColleagueLocus(Base):
 class ColleagueReference(Base):
     __tablename__ = 'colleague_reference'
     __table_args__ = (
-        Index('colleague_reference_uk', 'colleague_id', 'reference_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('colleague_id', 'reference_id'),
+        {u'schema': 'nex'}
     )
 
-    colleague_reference_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    colleague_id = Column(ForeignKey(u'NEX.colleague.colleague_id'), nullable=False)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False, index=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    colleague_reference_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), nullable=False)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     colleague = relationship(u'Colleague')
     reference = relationship(u'Referencedbentity')
     source = relationship(u'Source')
 
 
+class ColleagueRelation(Base):
+    __tablename__ = 'colleague_relation'
+    __table_args__ = (
+        UniqueConstraint('colleague_id', 'associate_id', 'association_type'),
+        {u'schema': 'nex'}
+    )
+
+    colleague_relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), nullable=False)
+    associate_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    association_type = Column(String(40), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    associate = relationship(u'Colleague', primaryjoin='ColleagueRelation.associate_id == Colleague.colleague_id')
+    colleague = relationship(u'Colleague', primaryjoin='ColleagueRelation.colleague_id == Colleague.colleague_id')
+    source = relationship(u'Source')
+
+
 class ColleagueUrl(Base):
     __tablename__ = 'colleague_url'
     __table_args__ = (
-        Index('colleague_url_uk', 'colleague_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('colleague_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    colleague_id = Column(ForeignKey(u'NEX.colleague.colleague_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     colleague = relationship(u'Colleague')
     source = relationship(u'Source')
@@ -678,65 +575,47 @@ class ColleagueUrl(Base):
 
 class Colleaguetriage(Base):
     __tablename__ = 'colleaguetriage'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    curation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.curation_seq'::regclass)"))
     triage_type = Column(String(10), nullable=False)
-    colleague_id = Column(Numeric(scale=0, asdecimal=False))
-    colleague_data = Column(Text)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-    curator_comments = Column(String(500))
+    colleague_id = Column(BigInteger)
+    colleague_data = Column(Text, nullable=False)
+    curator_comment = Column(String(500))
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
-    def to_json(self):
-        response = {
-            'triage_id': int(self.curation_id),
-            'created_at': str(self.date_created),            
-            'comments': self.curator_comments,
-            'data': json.loads(self.colleague_data)
-        }
-        
-        if self.colleague_id:
-            response['colleague'] = (DBSession.query(Colleague.format_name).filter(Colleague.colleague_id == self.colleague_id).one_or_none())[0]
-        
-        return response
-
-    def apply_to_colleague(self):
-        colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == self.colleague_id).one_or_none()
-        data = json.loads(self.colleague_data)
-        # TODO: apply ...
 
 class Contig(Base):
     __tablename__ = 'contig'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    contig_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    contig_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    so_id = Column(ForeignKey(u'NEX.so.so_id'), nullable=False, index=True)
-    centromere_start = Column(Numeric(scale=0, asdecimal=False))
-    centromere_end = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    so_id = Column(ForeignKey(u'nex.so.so_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    centromere_start = Column(Integer)
+    centromere_end = Column(Integer)
     genbank_accession = Column(String(40), nullable=False)
     gi_number = Column(String(40))
     refseq_id = Column(String(40))
-    reference_chromosome_id = Column(Numeric(scale=0, asdecimal=False))
-    reference_start = Column(Numeric(scale=0, asdecimal=False))
-    reference_end = Column(Numeric(scale=0, asdecimal=False))
-    reference_percent_identity = Column(Numeric(7, 3))
-    reference_alignment_length = Column(Numeric(scale=0, asdecimal=False))
+    reference_chromosome_id = Column(BigInteger)
+    reference_start = Column(Integer)
+    reference_end = Column(Integer)
+    reference_percent_identity = Column(Float(53))
+    reference_alignment_length = Column(Integer)
     seq_version = Column(DateTime)
     coord_version = Column(DateTime)
-    genomerelease_id = Column(ForeignKey(u'NEX.genomerelease.genomerelease_id'), index=True)
+    genomerelease_id = Column(ForeignKey(u'nex.genomerelease.genomerelease_id', ondelete=u'CASCADE'), index=True)
     file_header = Column(String(200), nullable=False)
     download_filename = Column(String(100), nullable=False)
-    file_id = Column(ForeignKey(u'NEX.filedbentity.dbentity_id'), index=True)
+    file_id = Column(ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
     residues = Column(Text, nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     file = relationship(u'Filedbentity')
     genomerelease = relationship(u'Genomerelease')
@@ -748,19 +627,18 @@ class Contig(Base):
 class ContigUrl(Base):
     __tablename__ = 'contig_url'
     __table_args__ = (
-        Index('contig_url_uk', 'contig_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('contig_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    contig_id = Column(ForeignKey(u'NEX.contig.contig_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    contig_id = Column(ForeignKey(u'nex.contig.contig_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     contig = relationship(u'Contig')
     source = relationship(u'Source')
@@ -769,21 +647,21 @@ class ContigUrl(Base):
 class Contignoteannotation(Base):
     __tablename__ = 'contignoteannotation'
     __table_args__ = (
-        Index('contignoteannotation_uk', 'contig_id', 'note_type', 'display_name', 'note', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('contig_id', 'note_type', 'display_name', 'note'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    contig_id = Column(ForeignKey(u'NEX.contig.contig_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    contig_id = Column(ForeignKey(u'nex.contig.contig_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    bud_id = Column(Integer)
     note_type = Column(String(40), nullable=False)
     display_name = Column(String(500), nullable=False)
     note = Column(String(2000), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     contig = relationship(u'Contig')
     reference = relationship(u'Referencedbentity')
@@ -794,20 +672,19 @@ class Contignoteannotation(Base):
 class Curation(Base):
     __tablename__ = 'curation'
     __table_args__ = (
-        Index('curation_uk', 'dbentity_id', 'subclass', 'curation_task', 'locus_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'subclass', 'curation_task', 'locus_id'),
+        {u'schema': 'nex'}
     )
 
-    curation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    locus_id = Column(ForeignKey(u'NEX.locusdbentity.dbentity_id'), index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.curation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    locus_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
     subclass = Column(String(40), nullable=False)
     curation_task = Column(String(40), nullable=False)
     curator_comment = Column(String(2000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dbentity = relationship(u'Dbentity')
     locus = relationship(u'Locusdbentity', foreign_keys=[locus_id])
@@ -816,44 +693,44 @@ class Curation(Base):
 
 class Dataset(Base):
     __tablename__ = 'dataset'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    dataset_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    dataset_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     dbxref_id = Column(String(40))
     dbxref_type = Column(String(40))
-    assay_id = Column(ForeignKey(u'NEX.obi.obi_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), index=True)
-    channel_count = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    sample_count = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    description = Column(String(500))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-    is_in_spell = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    is_in_browser = Column(Numeric(1, 0, asdecimal=False), nullable=False)
+    date_public = Column(DateTime)
+    parent_dataset_id = Column(ForeignKey(u'nex.dataset.dataset_id', ondelete=u'CASCADE'), index=True)
+    assay_id = Column(ForeignKey(u'nex.obi.obi_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    channel_count = Column(SmallInteger)
+    sample_count = Column(Integer, nullable=False)
+    is_in_spell = Column(Boolean, nullable=False)
+    is_in_browser = Column(Boolean, nullable=False)
+    description = Column(String(4000))
+    date_created = Column(DateTime, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     assay = relationship(u'Obi')
+    parent_dataset = relationship(u'Dataset', remote_side=[dataset_id])
     source = relationship(u'Source')
-    taxonomy = relationship(u'Taxonomy')
 
 
 class DatasetFile(Base):
     __tablename__ = 'dataset_file'
     __table_args__ = (
-        Index('dataset_file_uk', 'dataset_id', 'file_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dataset_id', 'file_id'),
+        {u'schema': 'nex'}
     )
 
-    dataset_file_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dataset_id = Column(ForeignKey(u'NEX.dataset.dataset_id'), nullable=False)
-    file_id = Column(ForeignKey(u'NEX.filedbentity.dbentity_id'), nullable=False, index=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    dataset_file_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    dataset_id = Column(ForeignKey(u'nex.dataset.dataset_id', ondelete=u'CASCADE'), nullable=False)
+    file_id = Column(ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dataset = relationship(u'Dataset')
     file = relationship(u'Filedbentity')
@@ -863,16 +740,16 @@ class DatasetFile(Base):
 class DatasetKeyword(Base):
     __tablename__ = 'dataset_keyword'
     __table_args__ = (
-        Index('dataset_keyword_uk', 'keyword_id', 'dataset_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('keyword_id', 'dataset_id'),
+        {u'schema': 'nex'}
     )
 
-    dataset_keyword_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    keyword_id = Column(ForeignKey(u'NEX.keyword.keyword_id'), nullable=False)
-    dataset_id = Column(ForeignKey(u'NEX.dataset.dataset_id'), nullable=False, index=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    dataset_keyword_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    keyword_id = Column(ForeignKey(u'nex.keyword.keyword_id', ondelete=u'CASCADE'), nullable=False)
+    dataset_id = Column(ForeignKey(u'nex.dataset.dataset_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dataset = relationship(u'Dataset')
     keyword = relationship(u'Keyword')
@@ -882,16 +759,16 @@ class DatasetKeyword(Base):
 class DatasetReference(Base):
     __tablename__ = 'dataset_reference'
     __table_args__ = (
-        Index('dataset_reference_uk', 'reference_id', 'dataset_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('reference_id', 'dataset_id'),
+        {u'schema': 'nex'}
     )
 
-    dataset_reference_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False)
-    dataset_id = Column(ForeignKey(u'NEX.dataset.dataset_id'), nullable=False, index=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    dataset_reference_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    dataset_id = Column(ForeignKey(u'nex.dataset.dataset_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dataset = relationship(u'Dataset')
     reference = relationship(u'Referencedbentity')
@@ -901,19 +778,18 @@ class DatasetReference(Base):
 class DatasetUrl(Base):
     __tablename__ = 'dataset_url'
     __table_args__ = (
-        Index('dataset_url_uk', 'dataset_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dataset_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    dataset_id = Column(ForeignKey(u'NEX.dataset.dataset_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    dataset_id = Column(ForeignKey(u'nex.dataset.dataset_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dataset = relationship(u'Dataset')
     source = relationship(u'Source')
@@ -922,18 +798,18 @@ class DatasetUrl(Base):
 class Datasetlab(Base):
     __tablename__ = 'datasetlab'
     __table_args__ = (
-        Index('datasetlab_uk', 'lab_name', 'dataset_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('lab_name', 'dataset_id'),
+        {u'schema': 'nex'}
     )
 
-    datasetlab_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dataset_id = Column(ForeignKey(u'NEX.dataset.dataset_id'), nullable=False, index=True)
-    source_id = Column(Numeric(scale=0, asdecimal=False), nullable=False)
+    datasetlab_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    dataset_id = Column(ForeignKey(u'nex.dataset.dataset_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(BigInteger, nullable=False)
     lab_name = Column(String(40), nullable=False)
     lab_location = Column(String(100), nullable=False)
-    colleague_id = Column(ForeignKey(u'NEX.colleague.colleague_id'), index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     colleague = relationship(u'Colleague')
     dataset = relationship(u'Dataset')
@@ -941,23 +817,42 @@ class Datasetlab(Base):
 
 class Datasetsample(Base):
     __tablename__ = 'datasetsample'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    datasetsample_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    datasetsample_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    dataset_id = Column(ForeignKey(u'NEX.dataset.dataset_id'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), index=True)
+    dataset_id = Column(ForeignKey(u'nex.dataset.dataset_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    sample_order = Column(Integer, nullable=False)
     dbxref_id = Column(String(40))
     dbxref_type = Column(String(40))
-    sample_order = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    description = Column(String(500))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
     biosample = Column(String(500))
     strain_name = Column(String(500))
+    description = Column(String(500))
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    dataset = relationship(u'Dataset')
+    source = relationship(u'Source')
+    taxonomy = relationship(u'Taxonomy')
+
+
+class Datasettrack(Base):
+    __tablename__ = 'datasettrack'
+    __table_args__ = {u'schema': 'nex'}
+
+    datasettrack_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    format_name = Column(String(100), nullable=False, unique=True)
+    display_name = Column(String(500), nullable=False)
+    obj_url = Column(String(500))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    dataset_id = Column(ForeignKey(u'nex.dataset.dataset_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    track_order = Column(BigInteger, nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dataset = relationship(u'Dataset')
     source = relationship(u'Source')
@@ -966,94 +861,352 @@ class Datasetsample(Base):
 class Dbentity(Base):
     __tablename__ = 'dbentity'
     __table_args__ = (
-        Index('dbentity_uk', 'format_name', 'subclass', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('format_name', 'subclass'),
+        {u'schema': 'nex'}
     )
 
-    dbentity_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    dbentity_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id'), nullable=False, index=True)
+    bud_id = Column(Integer)
     sgdid = Column(String(20), nullable=False, unique=True)
     subclass = Column(String(40), nullable=False)
     dbentity_status = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
-    __mapper_args__ = {
-        'polymorphic_identity':'dbentity',
-        'polymorphic_on':subclass
-    }
 
-    def to_dict(self):
-        return {
-            'id': self.dbentity_id,
-            'format_name': self.format_name,
-            'display_name': self.display_name,
-            'link': '/' + self.subclass.lower()  + '/' + self.format_name + '/overview'
-        }
+class Pathwaydbentity(Dbentity):
+    __tablename__ = 'pathwaydbentity'
+    __table_args__ = {u'schema': 'nex'}
+
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    biocyc_id = Column(String(40))
+
+
+class Referencedbentity(Dbentity):
+    __tablename__ = 'referencedbentity'
+    __table_args__ = {u'schema': 'nex'}
+
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    method_obtained = Column(String(40), nullable=False)
+    publication_status = Column(String(40), nullable=False)
+    fulltext_status = Column(String(40), nullable=False)
+    citation = Column(String(500), nullable=False, unique=True)
+    year = Column(SmallInteger, nullable=False)
+    pmid = Column(BigInteger, unique=True)
+    pmcid = Column(String(20), unique=True)
+    date_published = Column(String(40))
+    date_revised = Column(DateTime)
+    issue = Column(String(100))
+    page = Column(String(40))
+    volume = Column(String(40))
+    title = Column(String(400))
+    doi = Column(String(100))
+    journal_id = Column(ForeignKey(u'nex.journal.journal_id', ondelete=u'SET NULL'), index=True)
+    book_id = Column(ForeignKey(u'nex.book.book_id', ondelete=u'SET NULL'), index=True)
+
+    book = relationship(u'Book')
+    journal = relationship(u'Journal')
+
+
+class Filedbentity(Dbentity):
+    __tablename__ = 'filedbentity'
+    __table_args__ = {u'schema': 'nex'}
+
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    topic_id = Column(ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    data_id = Column(ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    format_id = Column(ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    file_extension = Column(String(10), nullable=False)
+    file_date = Column(DateTime, nullable=False)
+    is_public = Column(Boolean, nullable=False)
+    is_in_spell = Column(Boolean, nullable=False)
+    is_in_browser = Column(Boolean, nullable=False)
+    md5sum = Column(String(32), index=True)
+    filepath_id = Column(ForeignKey(u'nex.filepath.filepath_id', ondelete=u'CASCADE'), index=True)
+    readme_file_id = Column(ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    previous_file_name = Column(String(100))
+    s3_url = Column(String(500))
+    description = Column(String(4000))
+
+    data = relationship(u'Edam', primaryjoin='Filedbentity.data_id == Edam.edam_id')
+    filepath = relationship(u'Filepath')
+    format = relationship(u'Edam', primaryjoin='Filedbentity.format_id == Edam.edam_id')
+    readme_file = relationship(u'Filedbentity', foreign_keys=[dbentity_id])
+    topic = relationship(u'Edam', primaryjoin='Filedbentity.topic_id == Edam.edam_id')
+
+
+class Locusdbentity(Dbentity):
+    __tablename__ = 'locusdbentity'
+    __table_args__ = {u'schema': 'nex'}
+
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    systematic_name = Column(String(40), nullable=False, unique=True)
+    gene_name = Column(String(20))
+    qualifier = Column(String(40))
+    genetic_position = Column(Float)
+    name_description = Column(String(100))
+    headline = Column(String(70))
+    description = Column(String(500))
+    has_summary = Column(Boolean, nullable=False)
+    has_sequence = Column(Boolean, nullable=False)
+    has_history = Column(Boolean, nullable=False)
+    has_literature = Column(Boolean, nullable=False)
+    has_go = Column(Boolean, nullable=False)
+    has_phenotype = Column(Boolean, nullable=False)
+    has_interaction = Column(Boolean, nullable=False)
+    has_expression = Column(Boolean, nullable=False)
+    has_regulation = Column(Boolean, nullable=False)
+    has_protein = Column(Boolean, nullable=False)
+    has_sequence_section = Column(Boolean, nullable=False)
+
+
+class Straindbentity(Dbentity):
+    __tablename__ = 'straindbentity'
+    __table_args__ = {u'schema': 'nex'}
+
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    strain_type = Column(String(40), nullable=False)
+    genotype = Column(String(500))
+    genbank_id = Column(String(40))
+    assembly_size = Column(Integer)
+    fold_coverage = Column(SmallInteger)
+    scaffold_number = Column(Integer)
+    longest_scaffold = Column(Integer)
+    scaffold_nfifty = Column(Integer)
+    feature_count = Column(Integer)
+
+    taxonomy = relationship(u'Taxonomy')
 
 
 class Dbuser(Base):
     __tablename__ = 'dbuser'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    dbuser_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    dbuser_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     username = Column(String(12), nullable=False, unique=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
     first_name = Column(String(40), nullable=False)
     last_name = Column(String(40), nullable=False)
     status = Column(String(40), nullable=False)
+    is_curator = Column(Boolean, nullable=False)
     email = Column(String(100), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    is_curator = Column(Numeric(1, 0, asdecimal=False), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
 
 
-class DeleteLog(Base):
-    __tablename__ = 'delete_log'
-    __table_args__ = {u'schema': 'NEX'}
+class Deletelog(Base):
+    __tablename__ = 'deletelog'
+    __table_args__ = {u'schema': 'nex'}
 
-    delete_log_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    tab_name = Column(String(30), nullable=False)
-    primary_key = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    deletelog_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.deletelog_seq'::regclass)"))
+    bud_id = Column(Integer)
+    tab_name = Column(String(60), nullable=False)
+    primary_key = Column(BigInteger, nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
     deleted_row = Column(Text, nullable=False)
+
+
+class Disease(Base):
+    __tablename__ = 'disease'
+    __table_args__ = {u'schema': 'nex'}
+
+    disease_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    format_name = Column(String(100), nullable=False, unique=True)
+    display_name = Column(String(500), nullable=False)
+    obj_url = Column(String(500), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    doid = Column(String(20), nullable=False, unique=True)
+    description = Column(String(2000))
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    source = relationship(u'Source')
+
+
+class DiseaseAlia(Base):
+    __tablename__ = 'disease_alias'
+    __table_args__ = (
+        UniqueConstraint('disease_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
+    )
+
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
+    display_name = Column(String(500), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    disease_id = Column(ForeignKey(u'nex.disease.disease_id', ondelete=u'CASCADE'), nullable=False)
+    alias_type = Column(String(40), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    disease = relationship(u'Disease')
+    source = relationship(u'Source')
+
+
+class DiseaseRelation(Base):
+    __tablename__ = 'disease_relation'
+    __table_args__ = (
+        UniqueConstraint('parent_id', 'child_id', 'ro_id'),
+        {u'schema': 'nex'}
+    )
+
+    relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    parent_id = Column(ForeignKey(u'nex.disease.disease_id', ondelete=u'CASCADE'), nullable=False)
+    child_id = Column(ForeignKey(u'nex.disease.disease_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ro_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    child = relationship(u'Disease', primaryjoin='DiseaseRelation.child_id == Disease.disease_id')
+    parent = relationship(u'Disease', primaryjoin='DiseaseRelation.parent_id == Disease.disease_id')
+    ro = relationship(u'Ro')
+    source = relationship(u'Source')
+
+
+class DiseaseUrl(Base):
+    __tablename__ = 'disease_url'
+    __table_args__ = (
+        UniqueConstraint('disease_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
+    )
+
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
+    display_name = Column(String(500), nullable=False)
+    obj_url = Column(String(500), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    disease_id = Column(ForeignKey(u'nex.disease.disease_id', ondelete=u'CASCADE'), nullable=False)
+    url_type = Column(String(40), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    disease = relationship(u'Disease')
+    source = relationship(u'Source')
+
+
+class Diseaseannotation(Base):
+    __tablename__ = 'diseaseannotation'
+    __table_args__ = (
+        UniqueConstraint('dbentity_id', 'disease_id', 'eco_id', 'reference_id', 'annotation_type', 'disease_qualifier', 'source_id'),
+        {u'schema': 'nex'}
+    )
+
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    disease_id = Column(ForeignKey(u'nex.disease.disease_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    eco_id = Column(ForeignKey(u'nex.eco.eco_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    annotation_type = Column(String(40), nullable=False)
+    disease_qualifier = Column(String(40), nullable=False)
+    date_assigned = Column(DateTime, nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    dbentity = relationship(u'Dbentity')
+    disease = relationship(u'Disease')
+    eco = relationship(u'Eco')
+    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    source = relationship(u'Source')
+    taxonomy = relationship(u'Taxonomy')
+
+
+class Diseasesubset(Base):
+    __tablename__ = 'diseasesubset'
+    __table_args__ = {u'schema': 'nex'}
+
+    diseasesubset_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    format_name = Column(String(100), nullable=False, unique=True)
+    display_name = Column(String(500), nullable=False)
+    obj_url = Column(String(500), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    disease_id = Column(ForeignKey(u'nex.disease.disease_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    subset_name = Column(String(50), nullable=False)
+    genome_count = Column(Integer, nullable=False)
+    description = Column(String(500))
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    disease = relationship(u'Disease')
+    source = relationship(u'Source')
+
+
+class Diseasesubsetannotation(Base):
+    __tablename__ = 'diseasesubsetannotation'
+    __table_args__ = (
+        UniqueConstraint('dbentity_id', 'diseasesubset_id'),
+        {u'schema': 'nex'}
+    )
+
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    diseasesubset_id = Column(ForeignKey(u'nex.diseasesubset.diseasesubset_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    dbentity = relationship(u'Dbentity')
+    diseasesubset = relationship(u'Diseasesubset')
+    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    source = relationship(u'Source')
+    taxonomy = relationship(u'Taxonomy')
+
+
+class Diseasesupportingevidence(Base):
+    __tablename__ = 'diseasesupportingevidence'
+    __table_args__ = (
+        UniqueConstraint('annotation_id', 'dbxref_id', 'group_id', 'evidence_type'),
+        {u'schema': 'nex'}
+    )
+
+    diseasesupportingevidence_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.detail_seq'::regclass)"))
+    annotation_id = Column(ForeignKey(u'nex.diseaseannotation.annotation_id', ondelete=u'CASCADE'), nullable=False)
+    group_id = Column(BigInteger, nullable=False)
+    dbxref_id = Column(String(40), nullable=False)
+    obj_url = Column(String(500), nullable=False)
+    evidence_type = Column(String(10), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    annotation = relationship(u'Diseaseannotation')
 
 
 class Dnasequenceannotation(Base):
     __tablename__ = 'dnasequenceannotation'
     __table_args__ = (
-        Index('dnasequenceannotation_uk', 'dbentity_id', 'taxonomy_id', 'contig_id', 'so_id', 'dna_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'taxonomy_id', 'contig_id', 'so_id', 'dna_type'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    so_id = Column(ForeignKey(u'NEX.so.so_id'), nullable=False, index=True)
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    bud_id = Column(Integer)
+    so_id = Column(ForeignKey(u'nex.so.so_id', ondelete=u'CASCADE'), nullable=False, index=True)
     dna_type = Column(String(50), nullable=False)
-    contig_id = Column(ForeignKey(u'NEX.contig.contig_id'), nullable=False, index=True)
+    contig_id = Column(ForeignKey(u'nex.contig.contig_id', ondelete=u'CASCADE'), nullable=False, index=True)
     seq_version = Column(DateTime)
     coord_version = Column(DateTime)
-    genomerelease_id = Column(ForeignKey(u'NEX.genomerelease.genomerelease_id'), index=True)
-    start_index = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    end_index = Column(Numeric(scale=0, asdecimal=False), nullable=False)
+    genomerelease_id = Column(ForeignKey(u'nex.genomerelease.genomerelease_id', ondelete=u'CASCADE'), index=True)
+    start_index = Column(Integer, nullable=False)
+    end_index = Column(Integer, nullable=False)
     strand = Column(String(1), nullable=False)
     file_header = Column(String(200), nullable=False)
     download_filename = Column(String(100), nullable=False)
-    file_id = Column(ForeignKey(u'NEX.filedbentity.dbentity_id'), index=True)
+    file_id = Column(ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
     residues = Column(Text, nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     contig = relationship(u'Contig')
     dbentity = relationship(u'Dbentity')
@@ -1068,29 +1221,29 @@ class Dnasequenceannotation(Base):
 class Dnasubsequence(Base):
     __tablename__ = 'dnasubsequence'
     __table_args__ = (
-        Index('dnasubsequence_uk', 'annotation_id', 'dbentity_id', 'relative_start_index', 'relative_end_index', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('annotation_id', 'dbentity_id', 'relative_start_index', 'relative_end_index'),
+        {u'schema': 'nex'}
     )
 
-    dnasubsequence_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    annotation_id = Column(ForeignKey(u'NEX.dnasequenceannotation.annotation_id'), nullable=False)
-    dbentity_id = Column(ForeignKey(u'NEX.locusdbentity.dbentity_id'), nullable=False, index=True)
+    dnasubsequence_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.detail_seq'::regclass)"))
+    annotation_id = Column(ForeignKey(u'nex.dnasequenceannotation.annotation_id', ondelete=u'CASCADE'), nullable=False)
+    dbentity_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
     display_name = Column(String(500), nullable=False)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    so_id = Column(ForeignKey(u'NEX.so.so_id'), nullable=False, index=True)
-    relative_start_index = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    relative_end_index = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    contig_start_index = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    contig_end_index = Column(Numeric(scale=0, asdecimal=False), nullable=False)
+    bud_id = Column(Integer)
+    so_id = Column(ForeignKey(u'nex.so.so_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    relative_start_index = Column(Integer, nullable=False)
+    relative_end_index = Column(Integer, nullable=False)
+    contig_start_index = Column(Integer, nullable=False)
+    contig_end_index = Column(Integer, nullable=False)
     seq_version = Column(DateTime)
     coord_version = Column(DateTime)
-    genomerelease_id = Column(ForeignKey(u'NEX.genomerelease.genomerelease_id'), index=True)
+    genomerelease_id = Column(ForeignKey(u'nex.genomerelease.genomerelease_id', ondelete=u'CASCADE'), index=True)
     file_header = Column(String(200), nullable=False)
     download_filename = Column(String(100), nullable=False)
-    file_id = Column(ForeignKey(u'NEX.filedbentity.dbentity_id'), index=True)
+    file_id = Column(ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
     residues = Column(Text, nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     annotation = relationship(u'Dnasequenceannotation')
     dbentity = relationship(u'Locusdbentity')
@@ -1101,18 +1254,17 @@ class Dnasubsequence(Base):
 
 class Ec(Base):
     __tablename__ = 'ec'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    ec_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    ec_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     ecid = Column(String(20), nullable=False, unique=True)
     description = Column(String(1000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
@@ -1120,19 +1272,17 @@ class Ec(Base):
 class EcAlia(Base):
     __tablename__ = 'ec_alias'
     __table_args__ = (
-        Index('ec_alias_uk', 'ec_id', 'display_name', 'alias_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('ec_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
     )
 
-    alias_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
-    obj_url = Column(String(500))
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    ec_id = Column(ForeignKey(u'NEX.ec.ec_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ec_id = Column(ForeignKey(u'nex.ec.ec_id', ondelete=u'CASCADE'), nullable=False)
     alias_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     ec = relationship(u'Ec')
     source = relationship(u'Source')
@@ -1141,19 +1291,18 @@ class EcAlia(Base):
 class EcUrl(Base):
     __tablename__ = 'ec_url'
     __table_args__ = (
-        Index('ec_url_uk', 'ec_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('ec_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    ec_id = Column(ForeignKey(u'NEX.ec.ec_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ec_id = Column(ForeignKey(u'nex.ec.ec_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     ec = relationship(u'Ec')
     source = relationship(u'Source')
@@ -1161,18 +1310,17 @@ class EcUrl(Base):
 
 class Eco(Base):
     __tablename__ = 'eco'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    eco_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    eco_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     ecoid = Column(String(20), nullable=False, unique=True)
     description = Column(String(1000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
@@ -1180,19 +1328,17 @@ class Eco(Base):
 class EcoAlia(Base):
     __tablename__ = 'eco_alias'
     __table_args__ = (
-        Index('eco_alias_uk', 'eco_id', 'display_name', 'alias_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('eco_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
     )
 
-    alias_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
-    obj_url = Column(String(500))
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    eco_id = Column(ForeignKey(u'NEX.eco.eco_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    eco_id = Column(ForeignKey(u'nex.eco.eco_id', ondelete=u'CASCADE'), nullable=False)
     alias_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     eco = relationship(u'Eco')
     source = relationship(u'Source')
@@ -1201,18 +1347,17 @@ class EcoAlia(Base):
 class EcoRelation(Base):
     __tablename__ = 'eco_relation'
     __table_args__ = (
-        Index('eco_relation_uk', 'parent_id', 'child_id', 'ro_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('parent_id', 'child_id', 'ro_id'),
+        {u'schema': 'nex'}
     )
 
-    relation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    parent_id = Column(ForeignKey(u'NEX.eco.eco_id'), nullable=False)
-    child_id = Column(ForeignKey(u'NEX.eco.eco_id'), nullable=False, index=True)
-    ro_id = Column(ForeignKey(u'NEX.ro.ro_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    parent_id = Column(ForeignKey(u'nex.eco.eco_id', ondelete=u'CASCADE'), nullable=False)
+    child_id = Column(ForeignKey(u'nex.eco.eco_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ro_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     child = relationship(u'Eco', primaryjoin='EcoRelation.child_id == Eco.eco_id')
     parent = relationship(u'Eco', primaryjoin='EcoRelation.parent_id == Eco.eco_id')
@@ -1223,19 +1368,18 @@ class EcoRelation(Base):
 class EcoUrl(Base):
     __tablename__ = 'eco_url'
     __table_args__ = (
-        Index('eco_url_uk', 'eco_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('eco_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    eco_id = Column(ForeignKey(u'NEX.eco.eco_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    eco_id = Column(ForeignKey(u'nex.eco.eco_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     eco = relationship(u'Eco')
     source = relationship(u'Source')
@@ -1243,41 +1387,36 @@ class EcoUrl(Base):
 
 class Edam(Base):
     __tablename__ = 'edam'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    edam_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    edam_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     edamid = Column(String(20), nullable=False, unique=True)
     edam_namespace = Column(String(20), nullable=False)
     description = Column(String(2000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
-    def to_dict(self):
-        return {'id': int(self.edam_id), 'name': self.format_name}
 
 class EdamAlia(Base):
     __tablename__ = 'edam_alias'
     __table_args__ = (
-        Index('edam_alias_uk', 'edam_id', 'display_name', 'alias_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('edam_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
     )
 
-    alias_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
-    obj_url = Column(String(500))
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    edam_id = Column(ForeignKey(u'NEX.edam.edam_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    edam_id = Column(ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'), nullable=False)
     alias_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     edam = relationship(u'Edam')
     source = relationship(u'Source')
@@ -1286,18 +1425,17 @@ class EdamAlia(Base):
 class EdamRelation(Base):
     __tablename__ = 'edam_relation'
     __table_args__ = (
-        Index('edam_relation_uk', 'parent_id', 'child_id', 'ro_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('parent_id', 'child_id', 'ro_id'),
+        {u'schema': 'nex'}
     )
 
-    relation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    parent_id = Column(ForeignKey(u'NEX.edam.edam_id'), nullable=False)
-    child_id = Column(ForeignKey(u'NEX.edam.edam_id'), nullable=False, index=True)
-    ro_id = Column(ForeignKey(u'NEX.ro.ro_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    parent_id = Column(ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'), nullable=False)
+    child_id = Column(ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ro_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     child = relationship(u'Edam', primaryjoin='EdamRelation.child_id == Edam.edam_id')
     parent = relationship(u'Edam', primaryjoin='EdamRelation.parent_id == Edam.edam_id')
@@ -1308,19 +1446,18 @@ class EdamRelation(Base):
 class EdamUrl(Base):
     __tablename__ = 'edam_url'
     __table_args__ = (
-        Index('edam_url_uk', 'edam_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('edam_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    edam_id = Column(ForeignKey(u'NEX.edam.edam_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    edam_id = Column(ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     edam = relationship(u'Edam')
     source = relationship(u'Source')
@@ -1329,19 +1466,18 @@ class EdamUrl(Base):
 class Enzymeannotation(Base):
     __tablename__ = 'enzymeannotation'
     __table_args__ = (
-        Index('enzymeannotation_uk', 'dbentity_id', 'ec_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'ec_id'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    ec_id = Column(ForeignKey(u'NEX.ec.ec_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    ec_id = Column(ForeignKey(u'nex.ec.ec_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dbentity = relationship(u'Dbentity')
     ec = relationship(u'Ec')
@@ -1353,20 +1489,19 @@ class Enzymeannotation(Base):
 class Expressionannotation(Base):
     __tablename__ = 'expressionannotation'
     __table_args__ = (
-        Index('expressionannotation_uk', 'datasetsample_id', 'dbentity_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('datasetsample_id', 'dbentity_id'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False, index=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    datasetsample_id = Column(ForeignKey(u'NEX.datasetsample.datasetsample_id'), nullable=False)
-    expression_value = Column(Numeric(7, 3), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    datasetsample_id = Column(ForeignKey(u'nex.datasetsample.datasetsample_id', ondelete=u'CASCADE'), nullable=False)
+    expression_value = Column(Float(53), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     datasetsample = relationship(u'Datasetsample')
     dbentity = relationship(u'Dbentity')
@@ -1378,58 +1513,31 @@ class Expressionannotation(Base):
 class FileKeyword(Base):
     __tablename__ = 'file_keyword'
     __table_args__ = (
-        Index('file_keyword_uk', 'file_id', 'keyword_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('file_id', 'keyword_id'),
+        {u'schema': 'nex'}
     )
 
-    file_keyword_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    file_id = Column(ForeignKey(u'NEX.filedbentity.dbentity_id'), nullable=False)
-    keyword_id = Column(ForeignKey(u'NEX.keyword.keyword_id'), nullable=False, index=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    file_keyword_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    file_id = Column(ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    keyword_id = Column(ForeignKey(u'nex.keyword.keyword_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     file = relationship(u'Filedbentity')
     keyword = relationship(u'Keyword')
     source = relationship(u'Source')
 
 
-class Filedbentity(Dbentity):
-    __tablename__ = 'filedbentity'
-    __table_args__ = {u'schema': 'NEX'}
-
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), primary_key=True)
-    md5sum = Column(String(32), index=True)
-    previous_file_name = Column(String(100))
-    topic_id = Column(ForeignKey(u'NEX.edam.edam_id'), nullable=False, index=True)
-    format_id = Column(ForeignKey(u'NEX.edam.edam_id'), nullable=False, index=True)
-    file_date = Column(DateTime, nullable=False)
-    is_public = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    is_in_spell = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    is_in_browser = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    filepath_id = Column(ForeignKey(u'NEX.filepath.filepath_id'), index=True)
-    readme_url = Column(String(500))
-    file_extension = Column(String(20), nullable=False)
-    s3_url = Column(String(500))
-
-    filepath = relationship(u'Filepath')
-    format = relationship(u'Edam', primaryjoin='Filedbentity.format_id == Edam.edam_id')
-    topic = relationship(u'Edam', primaryjoin='Filedbentity.topic_id == Edam.edam_id')
-
-    __mapper_args__ = {
-        'polymorphic_identity':'FILE',
-    }
-
-
 class Filepath(Base):
     __tablename__ = 'filepath'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    filepath_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
+    filepath_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     filepath = Column(String(500), nullable=False, unique=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
@@ -1437,24 +1545,23 @@ class Filepath(Base):
 class Geninteractionannotation(Base):
     __tablename__ = 'geninteractionannotation'
     __table_args__ = (
-        Index('geninteractionannotation_uk', 'dbentity1_id', 'dbentity2_id', 'bait_hit', 'biogrid_experimental_system', 'reference_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity1_id', 'dbentity2_id', 'bait_hit', 'biogrid_experimental_system', 'reference_id'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity1_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    dbentity2_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False, index=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    phenotype_id = Column(ForeignKey(u'NEX.phenotype.phenotype_id'), index=True)
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity1_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    dbentity2_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    phenotype_id = Column(ForeignKey(u'nex.phenotype.phenotype_id', ondelete=u'CASCADE'), index=True)
     biogrid_experimental_system = Column(String(100), nullable=False)
     annotation_type = Column(String(20), nullable=False)
     bait_hit = Column(String(10), nullable=False)
     description = Column(String(1000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dbentity1 = relationship(u'Dbentity', primaryjoin='Geninteractionannotation.dbentity1_id == Dbentity.dbentity_id')
     dbentity2 = relationship(u'Dbentity', primaryjoin='Geninteractionannotation.dbentity2_id == Dbentity.dbentity_id')
@@ -1466,22 +1573,21 @@ class Geninteractionannotation(Base):
 
 class Genomerelease(Base):
     __tablename__ = 'genomerelease'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    genomerelease_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    genomerelease_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    file_id = Column(ForeignKey(u'NEX.filedbentity.dbentity_id'), index=True)
-    sequence_release = Column(Numeric(4, 0, asdecimal=False), nullable=False)
-    annotation_release = Column(Numeric(4, 0, asdecimal=False), nullable=False)
-    curation_release = Column(Numeric(4, 0, asdecimal=False), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    file_id = Column(ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    sequence_release = Column(SmallInteger, nullable=False)
+    annotation_release = Column(SmallInteger, nullable=False)
+    curation_release = Column(SmallInteger, nullable=False)
     release_date = Column(DateTime, nullable=False)
     description = Column(String(500))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     file = relationship(u'Filedbentity')
     source = relationship(u'Source')
@@ -1489,39 +1595,36 @@ class Genomerelease(Base):
 
 class Go(Base):
     __tablename__ = 'go'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    go_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    go_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     goid = Column(String(20), nullable=False, unique=True)
     go_namespace = Column(String(20), nullable=False)
     description = Column(String(2000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
 
-class GoAlia(Base):
+class GoAlias(Base):
     __tablename__ = 'go_alias'
     __table_args__ = (
-        Index('go_alias_uk', 'go_id', 'display_name', 'alias_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('go_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
     )
 
-    alias_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
-    obj_url = Column(String(500))
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    go_id = Column(ForeignKey(u'NEX.go.go_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    go_id = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), nullable=False)
     alias_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     go = relationship(u'Go')
     source = relationship(u'Source')
@@ -1530,18 +1633,17 @@ class GoAlia(Base):
 class GoRelation(Base):
     __tablename__ = 'go_relation'
     __table_args__ = (
-        Index('go_relation_uk', 'parent_id', 'child_id', 'ro_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('parent_id', 'child_id', 'ro_id'),
+        {u'schema': 'nex'}
     )
 
-    relation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    parent_id = Column(ForeignKey(u'NEX.go.go_id'), nullable=False)
-    child_id = Column(ForeignKey(u'NEX.go.go_id'), nullable=False, index=True)
-    ro_id = Column(ForeignKey(u'NEX.ro.ro_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    parent_id = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), nullable=False)
+    child_id = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ro_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     child = relationship(u'Go', primaryjoin='GoRelation.child_id == Go.go_id')
     parent = relationship(u'Go', primaryjoin='GoRelation.parent_id == Go.go_id')
@@ -1552,19 +1654,18 @@ class GoRelation(Base):
 class GoUrl(Base):
     __tablename__ = 'go_url'
     __table_args__ = (
-        Index('go_url_uk', 'go_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('go_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    go_id = Column(ForeignKey(u'NEX.go.go_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    go_id = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     go = relationship(u'Go')
     source = relationship(u'Source')
@@ -1573,23 +1674,22 @@ class GoUrl(Base):
 class Goannotation(Base):
     __tablename__ = 'goannotation'
     __table_args__ = (
-        Index('goannotation_uk', 'dbentity_id', 'go_id', 'eco_id', 'reference_id', 'annotation_type', 'go_qualifier', 'source_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'go_id', 'eco_id', 'reference_id', 'annotation_type', 'go_qualifier', 'source_id'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False, index=True)
-    go_id = Column(ForeignKey(u'NEX.go.go_id'), nullable=False, index=True)
-    eco_id = Column(ForeignKey(u'NEX.eco.eco_id'), nullable=False, index=True)
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    go_id = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    eco_id = Column(ForeignKey(u'nex.eco.eco_id', ondelete=u'CASCADE'), nullable=False, index=True)
     annotation_type = Column(String(40), nullable=False)
     go_qualifier = Column(String(40), nullable=False)
     date_assigned = Column(DateTime, nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dbentity = relationship(u'Dbentity')
     eco = relationship(u'Eco')
@@ -1602,18 +1702,18 @@ class Goannotation(Base):
 class Goextension(Base):
     __tablename__ = 'goextension'
     __table_args__ = (
-        Index('goextension_uk', 'annotation_id', 'dbxref_id', 'group_id', 'ro_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('annotation_id', 'dbxref_id', 'group_id', 'ro_id'),
+        {u'schema': 'nex'}
     )
 
-    goextension_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    annotation_id = Column(ForeignKey(u'NEX.goannotation.annotation_id'), nullable=False)
-    group_id = Column(Numeric(scale=0, asdecimal=False), nullable=False)
+    goextension_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.detail_seq'::regclass)"))
+    annotation_id = Column(ForeignKey(u'nex.goannotation.annotation_id', ondelete=u'CASCADE'), nullable=False)
+    group_id = Column(BigInteger, nullable=False)
     dbxref_id = Column(String(40), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    ro_id = Column(ForeignKey(u'NEX.ro.ro_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    ro_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     annotation = relationship(u'Goannotation')
     ro = relationship(u'Ro')
@@ -1621,20 +1721,20 @@ class Goextension(Base):
 
 class Goslim(Base):
     __tablename__ = 'goslim'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    goslim_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    goslim_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    go_id = Column(ForeignKey(u'NEX.go.go_id'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    go_id = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), nullable=False, index=True)
     slim_name = Column(String(40), nullable=False)
-    genome_count = Column(Numeric(scale=0, asdecimal=False), nullable=False)
+    genome_count = Column(Integer, nullable=False)
     description = Column(String(500))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     go = relationship(u'Go')
     source = relationship(u'Source')
@@ -1643,19 +1743,18 @@ class Goslim(Base):
 class Goslimannotation(Base):
     __tablename__ = 'goslimannotation'
     __table_args__ = (
-        Index('goslimannotation_uk', 'dbentity_id', 'goslim_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'goslim_id'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), index=True)
-    goslim_id = Column(ForeignKey(u'NEX.goslim.goslim_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    goslim_id = Column(ForeignKey(u'nex.goslim.goslim_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dbentity = relationship(u'Dbentity')
     goslim = relationship(u'Goslim')
@@ -1667,18 +1766,18 @@ class Goslimannotation(Base):
 class Gosupportingevidence(Base):
     __tablename__ = 'gosupportingevidence'
     __table_args__ = (
-        Index('gosupportingevidence_uk', 'annotation_id', 'dbxref_id', 'group_id', 'evidence_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('annotation_id', 'dbxref_id', 'group_id', 'evidence_type'),
+        {u'schema': 'nex'}
     )
 
-    gosupportingevidence_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    annotation_id = Column(ForeignKey(u'NEX.goannotation.annotation_id'), nullable=False)
-    group_id = Column(Numeric(scale=0, asdecimal=False), nullable=False)
+    gosupportingevidence_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.detail_seq'::regclass)"))
+    annotation_id = Column(ForeignKey(u'nex.goannotation.annotation_id', ondelete=u'CASCADE'), nullable=False)
+    group_id = Column(BigInteger, nullable=False)
     dbxref_id = Column(String(40), nullable=False)
     obj_url = Column(String(500), nullable=False)
     evidence_type = Column(String(10), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     annotation = relationship(u'Goannotation')
 
@@ -1686,62 +1785,58 @@ class Gosupportingevidence(Base):
 class Journal(Base):
     __tablename__ = 'journal'
     __table_args__ = (
-        Index('journal_uk', 'med_abbr', 'title', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('med_abbr', 'title'),
+        {u'schema': 'nex'}
     )
 
-    journal_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    journal_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
     med_abbr = Column(String(100))
     title = Column(String(200))
     issn_print = Column(String(10))
     issn_electronic = Column(String(10))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
 
 class Keyword(Base):
     __tablename__ = 'keyword'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    keyword_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    keyword_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
-    display_name = Column(String(500), nullable=False)
+    display_name = Column(String(500), nullable=False, index=True)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     description = Column(String(500))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
-
-    def to_dict(self):
-        return {'name': self.display_name, 'id': int(self.keyword_id)}
 
 
 class Literatureannotation(Base):
     __tablename__ = 'literatureannotation'
     __table_args__ = (
-        Index('literatureannotation_uk', 'dbentity_id', 'reference_id', 'topic', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'reference_id', 'topic'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False, index=True)
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
     topic = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dbentity = relationship(u'Dbentity')
     reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
@@ -1749,23 +1844,23 @@ class Literatureannotation(Base):
     taxonomy = relationship(u'Taxonomy')
 
 
-class LocusAlia(Base):
+class LocusAlias(Base):
     __tablename__ = 'locus_alias'
     __table_args__ = (
-        Index('locus_alias_uk', 'locus_id', 'display_name', 'alias_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('locus_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
     )
 
-    alias_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500))
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    locus_id = Column(ForeignKey(u'NEX.locusdbentity.dbentity_id'), nullable=False)
-    has_external_id_section = Column(Numeric(1, 0, asdecimal=False), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    locus_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    has_external_id_section = Column(Boolean, nullable=False)
     alias_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     locus = relationship(u'Locusdbentity')
     source = relationship(u'Source')
@@ -1774,18 +1869,18 @@ class LocusAlia(Base):
 class LocusRelation(Base):
     __tablename__ = 'locus_relation'
     __table_args__ = (
-        Index('locus_relation_uk', 'parent_id', 'child_id', 'ro_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('parent_id', 'child_id', 'ro_id'),
+        {u'schema': 'nex'}
     )
 
-    relation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    parent_id = Column(ForeignKey(u'NEX.locusdbentity.dbentity_id'), nullable=False)
-    child_id = Column(ForeignKey(u'NEX.locusdbentity.dbentity_id'), nullable=False, index=True)
-    ro_id = Column(ForeignKey(u'NEX.ro.ro_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    parent_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    child_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ro_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     child = relationship(u'Locusdbentity', primaryjoin='LocusRelation.child_id == Locusdbentity.dbentity_id')
     parent = relationship(u'Locusdbentity', primaryjoin='LocusRelation.parent_id == Locusdbentity.dbentity_id')
@@ -1793,117 +1888,46 @@ class LocusRelation(Base):
     source = relationship(u'Source')
 
 
-class LocusSummary(Base):
-    __tablename__ = 'locus_summary'
-    __table_args__ = (
-        Index('locus_summary_uk', 'locus_id', 'summary_type', 'summary_order', unique=True),
-        {u'schema': 'NEX'}
-    )
-
-    summary_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    locus_id = Column(ForeignKey(u'NEX.locusdbentity.dbentity_id'), nullable=False)
-    summary_type = Column(String(40), nullable=False)
-    summary_order = Column(Numeric(scale=0, asdecimal=False), nullable=False, server_default=FetchedValue())
-    text = Column(Text, nullable=False)
-    html = Column(Text, nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-
-    locus = relationship(u'Locusdbentity')
-    source = relationship(u'Source')
-
-
-class LocusSummaryReference(Base):
-    __tablename__ = 'locus_summary_reference'
-    __table_args__ = (
-        Index('locus_summary_reference_uk', 'summary_id', 'reference_id', unique=True),
-        {u'schema': 'NEX'}
-    )
-
-    summary_reference_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    summary_id = Column(ForeignKey(u'NEX.locus_summary.summary_id'), nullable=False)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False, index=True)
-    reference_order = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-
-    reference = relationship(u'Referencedbentity')
-    source = relationship(u'Source')
-    summary = relationship(u'LocusSummary')
-
-
 class LocusUrl(Base):
     __tablename__ = 'locus_url'
     __table_args__ = (
-        Index('locus_url_uk', 'locus_id', 'display_name', 'obj_url', 'placement', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('locus_id', 'display_name', 'obj_url', 'placement'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    locus_id = Column(ForeignKey(u'NEX.locusdbentity.dbentity_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    locus_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    placement = Column(String(100))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    placement = Column(String(100), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     locus = relationship(u'Locusdbentity')
     source = relationship(u'Source')
-
-
-class Locusdbentity(Dbentity):
-    __tablename__ = 'locusdbentity'
-    __table_args__ = {u'schema': 'NEX'}
-
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), primary_key=True)
-    systematic_name = Column(String(40), nullable=False, unique=True)
-    gene_name = Column(String(20))
-    qualifier = Column(String(40))
-    genetic_position = Column(Numeric(5, 2))
-    name_description = Column(String(100))
-    headline = Column(String(70))
-    description = Column(String(500))
-    has_summary = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    has_sequence = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    has_history = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    has_literature = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    has_go = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    has_phenotype = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    has_interaction = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    has_expression = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    has_regulation = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    has_protein = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-    has_sequence_section = Column(Numeric(1, 0, asdecimal=False), nullable=False)
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'LOCUS',
-    }
 
 
 class Locusnoteannotation(Base):
     __tablename__ = 'locusnoteannotation'
     __table_args__ = (
-        Index('locusnoteannotation_uk', 'dbentity_id', 'note_type', 'display_name', 'note', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'note_type', 'display_name', 'note'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    bud_id = Column(Integer)
     note_type = Column(String(40), nullable=False)
     display_name = Column(String(500), nullable=False)
     note = Column(String(2000), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dbentity = relationship(u'Dbentity')
     reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
@@ -1911,20 +1935,61 @@ class Locusnoteannotation(Base):
     taxonomy = relationship(u'Taxonomy')
 
 
+class Locussummary(Base):
+    __tablename__ = 'locussummary'
+    __table_args__ = (
+        UniqueConstraint('locus_id', 'summary_type', 'summary_order'),
+        {u'schema': 'nex'}
+    )
+
+    summary_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.summary_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    locus_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    summary_type = Column(String(40), nullable=False)
+    summary_order = Column(SmallInteger, nullable=False, server_default=text("1"))
+    text = Column(Text, nullable=False)
+    html = Column(Text, nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
+    created_by = Column(String(12), nullable=False)
+
+    locus = relationship(u'Locusdbentity')
+    source = relationship(u'Source')
+
+
+class LocussummaryReference(Base):
+    __tablename__ = 'locussummary_reference'
+    __table_args__ = (
+        UniqueConstraint('summary_id', 'reference_id'),
+        {u'schema': 'nex'}
+    )
+
+    summary_reference_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    summary_id = Column(ForeignKey(u'nex.locussummary.summary_id', ondelete=u'CASCADE'), nullable=False)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_order = Column(SmallInteger, nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    reference = relationship(u'Referencedbentity')
+    source = relationship(u'Source')
+    summary = relationship(u'Locussummary')
+
+
 class Obi(Base):
     __tablename__ = 'obi'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    obi_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    obi_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     obiid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
@@ -1932,18 +1997,17 @@ class Obi(Base):
 class ObiRelation(Base):
     __tablename__ = 'obi_relation'
     __table_args__ = (
-        Index('obi_relation_uk', 'parent_id', 'child_id', 'ro_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('parent_id', 'child_id', 'ro_id'),
+        {u'schema': 'nex'}
     )
 
-    relation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    parent_id = Column(ForeignKey(u'NEX.obi.obi_id'), nullable=False)
-    child_id = Column(ForeignKey(u'NEX.obi.obi_id'), nullable=False, index=True)
-    ro_id = Column(ForeignKey(u'NEX.ro.ro_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    parent_id = Column(ForeignKey(u'nex.obi.obi_id', ondelete=u'CASCADE'), nullable=False)
+    child_id = Column(ForeignKey(u'nex.obi.obi_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ro_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     child = relationship(u'Obi', primaryjoin='ObiRelation.child_id == Obi.obi_id')
     parent = relationship(u'Obi', primaryjoin='ObiRelation.parent_id == Obi.obi_id')
@@ -1954,19 +2018,18 @@ class ObiRelation(Base):
 class ObiUrl(Base):
     __tablename__ = 'obi_url'
     __table_args__ = (
-        Index('obi_url_uk', 'obi_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('obi_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    obi_id = Column(ForeignKey(u'NEX.obi.obi_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    obi_id = Column(ForeignKey(u'nex.obi.obi_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     obi = relationship(u'Obi')
     source = relationship(u'Source')
@@ -1975,81 +2038,37 @@ class ObiUrl(Base):
 class PathwayAlia(Base):
     __tablename__ = 'pathway_alias'
     __table_args__ = (
-        Index('pathway_alias_uk', 'pathway_id', 'display_name', 'alias_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('pathway_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
     )
 
-    alias_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
-    obj_url = Column(String(500))
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    pathway_id = Column(ForeignKey(u'NEX.pathwaydbentity.dbentity_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    pathway_id = Column(ForeignKey(u'nex.pathwaydbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
     alias_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     pathway = relationship(u'Pathwaydbentity')
     source = relationship(u'Source')
-
-
-class PathwaySummary(Base):
-    __tablename__ = 'pathway_summary'
-    __table_args__ = (
-        Index('pathway_summary_uk', 'pathway_id', 'summary_type', unique=True),
-        {u'schema': 'NEX'}
-    )
-
-    summary_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    pathway_id = Column(ForeignKey(u'NEX.pathwaydbentity.dbentity_id'), nullable=False)
-    summary_type = Column(String(40), nullable=False)
-    text = Column(Text, nullable=False)
-    html = Column(Text, nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-
-    pathway = relationship(u'Pathwaydbentity')
-    source = relationship(u'Source')
-
-
-class PathwaySummaryReference(Base):
-    __tablename__ = 'pathway_summary_reference'
-    __table_args__ = (
-        Index('pathway_summary_reference_uk', 'summary_id', 'reference_id', unique=True),
-        {u'schema': 'NEX'}
-    )
-
-    summary_reference_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    summary_id = Column(ForeignKey(u'NEX.pathway_summary.summary_id'), nullable=False)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False, index=True)
-    reference_order = Column(Numeric(scale=0, asdecimal=False))
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-
-    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
-    source = relationship(u'Source')
-    summary = relationship(u'PathwaySummary')
 
 
 class PathwayUrl(Base):
     __tablename__ = 'pathway_url'
     __table_args__ = (
-        Index('pathway_url_uk', 'pathway_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('pathway_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    pathway_id = Column(ForeignKey(u'NEX.pathwaydbentity.dbentity_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    pathway_id = Column(ForeignKey(u'nex.pathwaydbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     pathway = relationship(u'Pathwaydbentity')
     source = relationship(u'Source')
@@ -2058,20 +2077,19 @@ class PathwayUrl(Base):
 class Pathwayannotation(Base):
     __tablename__ = 'pathwayannotation'
     __table_args__ = (
-        Index('pathwayannotation_uk', 'dbentity_id', 'pathway_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'pathway_id', 'reference_id', 'ec_id'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    pathway_id = Column(ForeignKey(u'NEX.pathwaydbentity.dbentity_id'), nullable=False, index=True)
-    ec_id = Column(ForeignKey(u'NEX.ec.ec_id'), index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    pathway_id = Column(ForeignKey(u'nex.pathwaydbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ec_id = Column(ForeignKey(u'nex.ec.ec_id', ondelete=u'CASCADE'), index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dbentity = relationship(u'Dbentity')
     ec = relationship(u'Ec')
@@ -2081,29 +2099,61 @@ class Pathwayannotation(Base):
     taxonomy = relationship(u'Taxonomy')
 
 
-class Pathwaydbentity(Dbentity):
-    __tablename__ = 'pathwaydbentity'
-    __table_args__ = {u'schema': 'NEX'}
+class Pathwaysummary(Base):
+    __tablename__ = 'pathwaysummary'
+    __table_args__ = (
+        UniqueConstraint('pathway_id', 'summary_type'),
+        {u'schema': 'nex'}
+    )
 
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), primary_key=True)
-    biocyc_id = Column(String(40))
+    summary_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.summary_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    pathway_id = Column(ForeignKey(u'nex.pathwaydbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    summary_type = Column(String(40), nullable=False)
+    text = Column(Text, nullable=False)
+    html = Column(Text, nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
+    created_by = Column(String(12), nullable=False)
+
+    pathway = relationship(u'Pathwaydbentity')
+    source = relationship(u'Source')
+
+
+class PathwaysummaryReference(Base):
+    __tablename__ = 'pathwaysummary_reference'
+    __table_args__ = (
+        UniqueConstraint('summary_id', 'reference_id'),
+        {u'schema': 'nex'}
+    )
+
+    summary_reference_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    summary_id = Column(ForeignKey(u'nex.pathwaysummary.summary_id', ondelete=u'CASCADE'), nullable=False)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_order = Column(BigInteger, nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    reference = relationship(u'Referencedbentity')
+    source = relationship(u'Source')
+    summary = relationship(u'Pathwaysummary')
 
 
 class Phenotype(Base):
     __tablename__ = 'phenotype'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    phenotype_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    phenotype_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    observable_id = Column(ForeignKey(u'NEX.apo.apo_id'), nullable=False, index=True)
-    qualifier_id = Column(ForeignKey(u'NEX.apo.apo_id'), index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    observable_id = Column(ForeignKey(u'nex.apo.apo_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    qualifier_id = Column(ForeignKey(u'nex.apo.apo_id', ondelete=u'CASCADE'), index=True)
     description = Column(String(500))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     observable = relationship(u'Apo', primaryjoin='Phenotype.observable_id == Apo.apo_id')
     qualifier = relationship(u'Apo', primaryjoin='Phenotype.qualifier_id == Apo.apo_id')
@@ -2113,26 +2163,26 @@ class Phenotype(Base):
 class Phenotypeannotation(Base):
     __tablename__ = 'phenotypeannotation'
     __table_args__ = (
-        Index('phenotypeannotation_uk', 'dbentity_id', 'phenotype_id', 'experiment_id', 'mutant_id', 'reference_id', 'taxonomy_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'phenotype_id', 'experiment_id', 'mutant_id', 'reference_id', 'taxonomy_id'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False, index=True)
-    phenotype_id = Column(ForeignKey(u'NEX.phenotype.phenotype_id'), nullable=False, index=True)
-    experiment_id = Column(ForeignKey(u'NEX.apo.apo_id'), nullable=False, index=True)
-    mutant_id = Column(ForeignKey(u'NEX.apo.apo_id'), nullable=False, index=True)
-    allele_id = Column(ForeignKey(u'NEX.allele.allele_id'), index=True)
-    reporter_id = Column(ForeignKey(u'NEX.reporter.reporter_id'), index=True)
-    assay_id = Column(ForeignKey(u'NEX.obi.obi_id'), index=True)
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    phenotype_id = Column(ForeignKey(u'nex.phenotype.phenotype_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    experiment_id = Column(ForeignKey(u'nex.apo.apo_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    mutant_id = Column(ForeignKey(u'nex.apo.apo_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    allele_id = Column(ForeignKey(u'nex.allele.allele_id', ondelete=u'CASCADE'), index=True)
+    reporter_id = Column(BigInteger, index=True)
+    assay_id = Column(ForeignKey(u'nex.obi.obi_id', ondelete=u'CASCADE'), index=True)
     strain_name = Column(String(100))
     details = Column(String(500))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     allele = relationship(u'Allele')
     assay = relationship(u'Obi')
@@ -2141,30 +2191,25 @@ class Phenotypeannotation(Base):
     mutant = relationship(u'Apo', primaryjoin='Phenotypeannotation.mutant_id == Apo.apo_id')
     phenotype = relationship(u'Phenotype')
     reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
-    reporter = relationship(u'Reporter')
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
-    def to_dict(self):
-        return {
-            'locus': self.dbentity.to_dict() # TODO: add missing fields
-        }
 
 class PhenotypeannotationCond(Base):
     __tablename__ = 'phenotypeannotation_cond'
     __table_args__ = (
-        Index('phenotypeannotation_cond_uk', 'annotation_id', 'condition_class', 'condition_name', 'condition_value', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('annotation_id', 'condition_class', 'condition_name', 'condition_value'),
+        {u'schema': 'nex'}
     )
 
-    condition_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    annotation_id = Column(ForeignKey(u'NEX.phenotypeannotation.annotation_id'), nullable=False)
+    condition_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.condition_seq'::regclass)"))
+    annotation_id = Column(ForeignKey(u'nex.phenotypeannotation.annotation_id', ondelete=u'CASCADE'), nullable=False)
     condition_class = Column(String(40), nullable=False)
     condition_name = Column(String(500), nullable=False)
     condition_value = Column(String(150))
     condition_unit = Column(String(25))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     annotation = relationship(u'Phenotypeannotation')
 
@@ -2172,24 +2217,23 @@ class PhenotypeannotationCond(Base):
 class Physinteractionannotation(Base):
     __tablename__ = 'physinteractionannotation'
     __table_args__ = (
-        Index('physinteractionannotation_uk', 'dbentity1_id', 'dbentity2_id', 'bait_hit', 'biogrid_experimental_system', 'reference_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity1_id', 'dbentity2_id', 'bait_hit', 'biogrid_experimental_system', 'reference_id'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity1_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    dbentity2_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False, index=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    psimod_id = Column(ForeignKey(u'NEX.psimod.psimod_id'), index=True)
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity1_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    dbentity2_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    psimod_id = Column(ForeignKey(u'nex.psimod.psimod_id', ondelete=u'CASCADE'), index=True)
     biogrid_experimental_system = Column(String(100), nullable=False)
     annotation_type = Column(String(20), nullable=False)
     bait_hit = Column(String(10), nullable=False)
     description = Column(String(1000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dbentity1 = relationship(u'Dbentity', primaryjoin='Physinteractionannotation.dbentity1_id == Dbentity.dbentity_id')
     dbentity2 = relationship(u'Dbentity', primaryjoin='Physinteractionannotation.dbentity2_id == Dbentity.dbentity_id')
@@ -2202,22 +2246,21 @@ class Physinteractionannotation(Base):
 class Posttranslationannotation(Base):
     __tablename__ = 'posttranslationannotation'
     __table_args__ = (
-        Index('posttranslationannotation_uk', 'dbentity_id', 'psimod_id', 'site_residue', 'site_index', 'reference_id', 'modifier_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'psimod_id', 'site_residue', 'site_index', 'reference_id', 'modifier_id'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    site_index = Column(Numeric(scale=0, asdecimal=False), nullable=False)
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    site_index = Column(Integer, nullable=False)
     site_residue = Column(String(1), nullable=False)
-    psimod_id = Column(ForeignKey(u'NEX.psimod.psimod_id'), nullable=False, index=True)
-    modifier_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    psimod_id = Column(ForeignKey(u'nex.psimod.psimod_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    modifier_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dbentity = relationship(u'Dbentity', primaryjoin='Posttranslationannotation.dbentity_id == Dbentity.dbentity_id')
     modifier = relationship(u'Dbentity', primaryjoin='Posttranslationannotation.modifier_id == Dbentity.dbentity_id')
@@ -2229,18 +2272,17 @@ class Posttranslationannotation(Base):
 
 class Proteindomain(Base):
     __tablename__ = 'proteindomain'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    proteindomain_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    proteindomain_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     interpro_id = Column(String(20))
     description = Column(String(500))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
@@ -2248,19 +2290,18 @@ class Proteindomain(Base):
 class ProteindomainUrl(Base):
     __tablename__ = 'proteindomain_url'
     __table_args__ = (
-        Index('proteindomain_url_uk', 'proteindomain_id', 'display_name', 'url_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('proteindomain_id', 'display_name', 'url_type'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    proteindomain_id = Column(ForeignKey(u'NEX.proteindomain.proteindomain_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    proteindomain_id = Column(ForeignKey(u'nex.proteindomain.proteindomain_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     proteindomain = relationship(u'Proteindomain')
     source = relationship(u'Source')
@@ -2269,22 +2310,21 @@ class ProteindomainUrl(Base):
 class Proteindomainannotation(Base):
     __tablename__ = 'proteindomainannotation'
     __table_args__ = (
-        Index('proteindomainannotation_uk', 'dbentity_id', 'proteindomain_id', 'start_index', 'end_index', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'proteindomain_id', 'start_index', 'end_index'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    proteindomain_id = Column(ForeignKey(u'NEX.proteindomain.proteindomain_id'), nullable=False, index=True)
-    start_index = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    end_index = Column(Numeric(scale=0, asdecimal=False), nullable=False)
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    proteindomain_id = Column(ForeignKey(u'nex.proteindomain.proteindomain_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    start_index = Column(Integer, nullable=False)
+    end_index = Column(Integer, nullable=False)
     date_of_run = Column(DateTime, nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     dbentity = relationship(u'Dbentity')
     proteindomain = relationship(u'Proteindomain')
@@ -2296,22 +2336,21 @@ class Proteindomainannotation(Base):
 class Proteinexptannotation(Base):
     __tablename__ = 'proteinexptannotation'
     __table_args__ = (
-        Index('proteinexptannotation_uk', 'dbentity_id', 'reference_id', 'experiment_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'reference_id', 'experiment_type'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
     experiment_type = Column(String(40), nullable=False)
     data_value = Column(String(25), nullable=False)
     data_unit = Column(String(25), nullable=False)
-    assay_id = Column(ForeignKey(u'NEX.obi.obi_id'), index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    assay_id = Column(ForeignKey(u'nex.obi.obi_id', ondelete=u'CASCADE'), index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     assay = relationship(u'Obi')
     dbentity = relationship(u'Dbentity')
@@ -2323,96 +2362,95 @@ class Proteinexptannotation(Base):
 class ProteinexptannotationCond(Base):
     __tablename__ = 'proteinexptannotation_cond'
     __table_args__ = (
-        Index('proteinexptannotation_cond_uk', 'annotation_id', 'condition_type', 'condition_name', 'condition_value', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('annotation_id', 'condition_class', 'condition_name', 'condition_value'),
+        {u'schema': 'nex'}
     )
 
-    condition_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    annotation_id = Column(ForeignKey(u'NEX.proteinexptannotation.annotation_id'), nullable=False)
-    condition_type = Column(String(40), nullable=False)
+    condition_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.condition_seq'::regclass)"))
+    annotation_id = Column(ForeignKey(u'nex.proteinexptannotation.annotation_id', ondelete=u'CASCADE'), nullable=False)
+    condition_class = Column(String(40), nullable=False)
     condition_name = Column(String(500), nullable=False)
     condition_value = Column(String(25))
     condition_unit = Column(String(25))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     annotation = relationship(u'Proteinexptannotation')
 
 
 class ProteinsequenceDetail(Base):
     __tablename__ = 'proteinsequence_detail'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    detail_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    annotation_id = Column(ForeignKey(u'NEX.proteinsequenceannotation.annotation_id'), nullable=False, unique=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    molecular_weight = Column(Numeric(scale=2), nullable=False)
-    protein_length = Column(Numeric(asdecimal=False), nullable=False)
+    detail_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.detail_seq'::regclass)"))
+    annotation_id = Column(ForeignKey(u'nex.proteinsequenceannotation.annotation_id', ondelete=u'CASCADE'), nullable=False, unique=True)
+    molecular_weight = Column(Numeric, nullable=False)
+    protein_length = Column(BigInteger, nullable=False)
     n_term_seq = Column(String(10), nullable=False)
     c_term_seq = Column(String(10), nullable=False)
-    pi = Column(Numeric(scale=2))
-    cai = Column(Numeric(scale=2))
-    codon_bias = Column(Numeric(scale=2))
-    fop_score = Column(Numeric(scale=2))
-    gravy_score = Column(Numeric(scale=2))
-    aromaticity_score = Column(Numeric(scale=2))
-    aliphatic_index = Column(Numeric(scale=2))
-    instability_index = Column(Numeric(scale=2))
-    ala = Column(Numeric(asdecimal=False), nullable=False)
-    arg = Column(Numeric(asdecimal=False), nullable=False)
-    asn = Column(Numeric(asdecimal=False), nullable=False)
-    asp = Column(Numeric(asdecimal=False), nullable=False)
-    cys = Column(Numeric(asdecimal=False), nullable=False)
-    gln = Column(Numeric(asdecimal=False), nullable=False)
-    glu = Column(Numeric(asdecimal=False), nullable=False)
-    gly = Column(Numeric(asdecimal=False), nullable=False)
-    his = Column(Numeric(asdecimal=False), nullable=False)
-    ile = Column(Numeric(asdecimal=False), nullable=False)
-    leu = Column(Numeric(asdecimal=False), nullable=False)
-    lys = Column(Numeric(asdecimal=False), nullable=False)
-    met = Column(Numeric(asdecimal=False), nullable=False)
-    phe = Column(Numeric(asdecimal=False), nullable=False)
-    pro = Column(Numeric(asdecimal=False), nullable=False)
-    ser = Column(Numeric(asdecimal=False), nullable=False)
-    thr = Column(Numeric(asdecimal=False), nullable=False)
-    trp = Column(Numeric(asdecimal=False), nullable=False)
-    tyr = Column(Numeric(asdecimal=False), nullable=False)
-    val = Column(Numeric(asdecimal=False), nullable=False)
-    hydrogen = Column(Numeric(asdecimal=False))
-    sulfur = Column(Numeric(asdecimal=False))
-    nitrogen = Column(Numeric(asdecimal=False))
-    oxygen = Column(Numeric(asdecimal=False))
-    carbon = Column(Numeric(asdecimal=False))
-    no_cys_ext_coeff = Column(Numeric(asdecimal=False))
-    all_cys_ext_coeff = Column(Numeric(asdecimal=False))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    pi = Column(Numeric)
+    cai = Column(Numeric)
+    codon_bias = Column(Numeric)
+    fop_score = Column(Numeric)
+    gravy_score = Column(Numeric)
+    aromaticity_score = Column(Numeric)
+    aliphatic_index = Column(Numeric)
+    instability_index = Column(Numeric)
+    ala = Column(Integer, nullable=False)
+    arg = Column(Integer, nullable=False)
+    asn = Column(Integer, nullable=False)
+    asp = Column(Integer, nullable=False)
+    cys = Column(Integer, nullable=False)
+    gln = Column(Integer, nullable=False)
+    glu = Column(Integer, nullable=False)
+    gly = Column(Integer, nullable=False)
+    his = Column(Integer, nullable=False)
+    ile = Column(Integer, nullable=False)
+    leu = Column(Integer, nullable=False)
+    lys = Column(Integer, nullable=False)
+    met = Column(Integer, nullable=False)
+    phe = Column(Integer, nullable=False)
+    pro = Column(Integer, nullable=False)
+    ser = Column(Integer, nullable=False)
+    thr = Column(Integer, nullable=False)
+    trp = Column(Integer, nullable=False)
+    tyr = Column(Integer, nullable=False)
+    val = Column(Integer, nullable=False)
+    hydrogen = Column(Integer)
+    sulfur = Column(Integer)
+    nitrogen = Column(Integer)
+    oxygen = Column(Integer)
+    carbon = Column(Integer)
+    no_cys_ext_coeff = Column(Integer)
+    all_cys_ext_coeff = Column(Integer)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
-    annotation = relationship(u'Proteinsequenceannotation')
+    annotation = relationship(u'Proteinsequenceannotation', uselist=False)
 
 
 class Proteinsequenceannotation(Base):
     __tablename__ = 'proteinsequenceannotation'
     __table_args__ = (
-        Index('proteinsequenceannotation_uk', 'dbentity_id', 'taxonomy_id', 'contig_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('dbentity_id', 'taxonomy_id', 'contig_id'),
+        {u'schema': 'nex'}
     )
 
-    annotation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    contig_id = Column(ForeignKey(u'NEX.contig.contig_id'), nullable=False, index=True)
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    bud_id = Column(Integer)
+    contig_id = Column(ForeignKey(u'nex.contig.contig_id', ondelete=u'CASCADE'), nullable=False, index=True)
     seq_version = Column(DateTime)
-    genomerelease_id = Column(ForeignKey(u'NEX.genomerelease.genomerelease_id'), index=True)
+    genomerelease_id = Column(ForeignKey(u'nex.genomerelease.genomerelease_id', ondelete=u'CASCADE'), index=True)
     file_header = Column(String(200), nullable=False)
     download_filename = Column(String(100), nullable=False)
-    file_id = Column(Numeric(scale=0, asdecimal=False))
+    file_id = Column(BigInteger)
     residues = Column(Text, nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     contig = relationship(u'Contig')
     dbentity = relationship(u'Dbentity')
@@ -2424,18 +2462,17 @@ class Proteinsequenceannotation(Base):
 
 class Psimod(Base):
     __tablename__ = 'psimod'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    psimod_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    psimod_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     psimodid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
@@ -2443,18 +2480,17 @@ class Psimod(Base):
 class PsimodRelation(Base):
     __tablename__ = 'psimod_relation'
     __table_args__ = (
-        Index('psimod_relation_uk', 'parent_id', 'child_id', 'ro_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('parent_id', 'child_id', 'ro_id'),
+        {u'schema': 'nex'}
     )
 
-    relation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    parent_id = Column(ForeignKey(u'NEX.psimod.psimod_id'), nullable=False)
-    child_id = Column(ForeignKey(u'NEX.psimod.psimod_id'), nullable=False, index=True)
-    ro_id = Column(ForeignKey(u'NEX.ro.ro_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    parent_id = Column(ForeignKey(u'nex.psimod.psimod_id', ondelete=u'CASCADE'), nullable=False)
+    child_id = Column(ForeignKey(u'nex.psimod.psimod_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ro_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     child = relationship(u'Psimod', primaryjoin='PsimodRelation.child_id == Psimod.psimod_id')
     parent = relationship(u'Psimod', primaryjoin='PsimodRelation.parent_id == Psimod.psimod_id')
@@ -2465,278 +2501,274 @@ class PsimodRelation(Base):
 class PsimodUrl(Base):
     __tablename__ = 'psimod_url'
     __table_args__ = (
-        Index('psimod_url_uk', 'psimod_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('psimod_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    psimod_id = Column(ForeignKey(u'NEX.psimod.psimod_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    psimod_id = Column(ForeignKey(u'nex.psimod.psimod_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     psimod = relationship(u'Psimod')
     source = relationship(u'Source')
 
 
-class ReferenceAlia(Base):
+class ReferenceAlias(Base):
     __tablename__ = 'reference_alias'
     __table_args__ = (
-        Index('reference_alias_uk', 'reference_id', 'display_name', 'alias_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('reference_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
     )
 
-    alias_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
-    obj_url = Column(String(500))
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
     alias_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
-    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
-    source = relationship(u'Source')
-
-
-class ReferenceAuthor(Base):
-    __tablename__ = 'reference_author'
-    __table_args__ = (
-        Index('reference_author_uk', 'reference_id', 'display_name', 'author_order', unique=True),
-        {u'schema': 'NEX'}
-    )
-
-    reference_author_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    display_name = Column(String(500), nullable=False)
-    obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False)
-    orcid = Column(String(20))
-    author_order = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    author_type = Column(String(10), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-
-    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
-    source = relationship(u'Source')
-
-
-class ReferenceCorrection(Base):
-    __tablename__ = 'reference_correction'
-    __table_args__ = (
-        Index('reference_correction_uk', 'parent_id', 'child_id', 'correction_type', unique=True),
-        {u'schema': 'NEX'}
-    )
-
-    reference_correction_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    parent_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False, index=True)
-    child_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False, index=True)
-    correction_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-
-    child = relationship(u'Referencedbentity', primaryjoin='ReferenceCorrection.child_id == Referencedbentity.dbentity_id')
-    parent = relationship(u'Referencedbentity', primaryjoin='ReferenceCorrection.parent_id == Referencedbentity.dbentity_id')
-    source = relationship(u'Source')
-
-
-class ReferenceDeleted(Base):
-    __tablename__ = 'reference_deleted'
-    __table_args__ = {u'schema': 'NEX'}
-
-    reference_deleted_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    pmid = Column(Numeric(scale=0, asdecimal=False), nullable=False, unique=True)
-    sgdid = Column(String(20), unique=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-    reason_deleted = Column(String(500))
-
-
-class ReferenceDocument(Base):
-    __tablename__ = 'reference_document'
-    __table_args__ = (
-        Index('reference_document_uk', 'reference_id', 'document_type', unique=True),
-        {u'schema': 'NEX'}
-    )
-
-    reference_document_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    document_type = Column(String(40), nullable=False)
-    text = Column(Text, nullable=False)
-    html = Column(Text, nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-
-    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    reference = relationship(u'Referencedbentity')
     source = relationship(u'Source')
 
 
 class ReferenceFile(Base):
     __tablename__ = 'reference_file'
     __table_args__ = (
-        Index('reference_file_uk', 'reference_id', 'file_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('reference_id', 'file_id'),
+        {u'schema': 'nex'}
     )
 
-    reference_file_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False)
-    file_id = Column(ForeignKey(u'NEX.filedbentity.dbentity_id'), nullable=False, index=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    reference_file_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    file_id = Column(ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     file = relationship(u'Filedbentity')
-    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    reference = relationship(u'Referencedbentity')
     source = relationship(u'Source')
 
 
-class ReferenceReftype(Base):
-    __tablename__ = 'reference_reftype'
+class ReferenceRelation(Base):
+    __tablename__ = 'reference_relation'
     __table_args__ = (
-        Index('reference_reftype_uk', 'reference_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('parent_id', 'child_id', 'correction_type'),
+        {u'schema': 'nex'}
     )
 
-    reference_reftype_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    display_name = Column(String(500), nullable=False)
-    obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    reference_relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    parent_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    child_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    correction_type = Column(String(40), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
-    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    child = relationship(u'Referencedbentity', primaryjoin='ReferenceRelation.child_id == Referencedbentity.dbentity_id')
+    parent = relationship(u'Referencedbentity', primaryjoin='ReferenceRelation.parent_id == Referencedbentity.dbentity_id')
     source = relationship(u'Source')
-
-
-class ReferenceUnlink(Base):
-    __tablename__ = 'reference_unlink'
-    __table_args__ = (
-        Index('reference_unlink_uk', 'reference_id', 'dbentity_id', unique=True),
-        {u'schema': 'NEX'}
-    )
-
-    reference_unlink_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False)
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-
-    dbentity = relationship(u'Dbentity')
-    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
 
 
 class ReferenceUrl(Base):
     __tablename__ = 'reference_url'
     __table_args__ = (
-        Index('reference_url_uk', 'reference_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('reference_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     reference = relationship(u'Referencedbentity')
     source = relationship(u'Source')
 
 
-class Referencedbentity(Dbentity):
-    __tablename__ = 'referencedbentity'
-    __table_args__ = {u'schema': 'NEX'}
+class Referenceauthor(Base):
+    __tablename__ = 'referenceauthor'
+    __table_args__ = (
+        UniqueConstraint('reference_id', 'display_name', 'author_order'),
+        {u'schema': 'nex'}
+    )
 
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), primary_key=True)
-    method_obtained = Column(String(40), nullable=False)
-    publication_status = Column(String(40), nullable=False)
-    fulltext_status = Column(String(40), nullable=False)
-    citation = Column(String(500), nullable=False, unique=True)
-    year = Column(Numeric(4, 0, asdecimal=False), nullable=False)
-    pmid = Column(Numeric(scale=0, asdecimal=False), unique=True)
-    pmcid = Column(String(20), unique=True)
-    date_published = Column(String(40))
-    date_revised = Column(DateTime)
-    issue = Column(String(100))
-    page = Column(String(40))
-    volume = Column(String(40))
-    title = Column(String(400))
-    doi = Column(String(100))
-    journal_id = Column(ForeignKey(u'NEX.journal.journal_id'), index=True)
-    book_id = Column(ForeignKey(u'NEX.book.book_id'), index=True)
+    referenceauthor_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    display_name = Column(String(500), nullable=False)
+    obj_url = Column(String(500), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    orcid = Column(String(20))
+    author_order = Column(SmallInteger, nullable=False)
+    author_type = Column(String(10), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
-    book = relationship(u'Book')
-    journal = relationship(u'Journal')
+    reference = relationship(u'Referencedbentity')
+    source = relationship(u'Source')
 
-    __mapper_args__ = {
-        'polymorphic_identity':'REFERENCE',
-    }
+
+class Referencedeleted(Base):
+    __tablename__ = 'referencedeleted'
+    __table_args__ = {u'schema': 'nex'}
+
+    referencedeleted_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    pmid = Column(BigInteger, nullable=False, unique=True)
+    sgdid = Column(String(20), unique=True)
+    reason_deleted = Column(String(500))
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+
+class Referencedocument(Base):
+    __tablename__ = 'referencedocument'
+    __table_args__ = (
+        UniqueConstraint('reference_id', 'document_type'),
+        {u'schema': 'nex'}
+    )
+
+    referencedocument_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    document_type = Column(String(40), nullable=False)
+    text = Column(Text, nullable=False)
+    html = Column(Text, nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
+    created_by = Column(String(12), nullable=False)
+
+    reference = relationship(u'Referencedbentity')
+    source = relationship(u'Source')
 
 
 class Referencetriage(Base):
     __tablename__ = 'referencetriage'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    curation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    pmid = Column(Numeric(scale=0, asdecimal=False), nullable=False, unique=True)
+    curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.curation_seq'::regclass)"))
+    pmid = Column(BigInteger, nullable=False, unique=True)
     citation = Column(String(500), nullable=False)
     fulltext_url = Column(String(500))
     abstract = Column(Text)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+
+class Referencetype(Base):
+    __tablename__ = 'referencetype'
+    __table_args__ = (
+        UniqueConstraint('reference_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
+    )
+
+    referencetype_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    display_name = Column(String(500), nullable=False)
+    obj_url = Column(String(500), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    reference = relationship(u'Referencedbentity')
+    source = relationship(u'Source')
+
+
+class Referenceunlink(Base):
+    __tablename__ = 'referenceunlink'
+    __table_args__ = (
+        UniqueConstraint('reference_id', 'dbentity_id'),
+        {u'schema': 'nex'}
+    )
+
+    referenceunlink_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    dbentity = relationship(u'Dbentity')
+    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+
+
+class Regulationannotation(Base):
+    __tablename__ = 'regulationannotation'
+    __table_args__ = (
+        UniqueConstraint('target_id', 'regulator_id', 'eco_id', 'reference_id'),
+        {u'schema': 'nex'}
+    )
+
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    target_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    regulator_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    eco_id = Column(ForeignKey(u'nex.eco.eco_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    regulator_type = Column(String(40), nullable=False)
+    regulation_type = Column(String(100), nullable=False)
+    direction = Column(String(10))
+    happens_during = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    eco = relationship(u'Eco')
+    go = relationship(u'Go')
+    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    regulator = relationship(u'Dbentity', primaryjoin='Regulationannotation.regulator_id == Dbentity.dbentity_id')
+    source = relationship(u'Source')
+    target = relationship(u'Dbentity', primaryjoin='Regulationannotation.target_id == Dbentity.dbentity_id')
+    taxonomy = relationship(u'Taxonomy')
 
 
 class Reporter(Base):
     __tablename__ = 'reporter'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    reporter_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    reporter_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
     description = Column(String(500))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
 
 class Reservedname(Base):
     __tablename__ = 'reservedname'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    reservedname_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    reservedname_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    locus_id = Column(ForeignKey(u'NEX.locusdbentity.dbentity_id'), index=True)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), index=True)
-    colleague_id = Column(ForeignKey(u'NEX.colleague.colleague_id'), nullable=False, index=True)
-    reservation_date = Column(DateTime, nullable=False, server_default=FetchedValue())
-    expiration_date = Column(DateTime, nullable=False, server_default=FetchedValue())
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
+    locus_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reservation_date = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    expiration_date = Column(DateTime, nullable=False, server_default=text("(('now'::text)::timestamp without time zone + '365 days'::interval)"))
     description = Column(String(500))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     colleague = relationship(u'Colleague')
     locus = relationship(u'Locusdbentity')
@@ -2746,18 +2778,17 @@ class Reservedname(Base):
 
 class Ro(Base):
     __tablename__ = 'ro'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    ro_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    ro_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     roid = Column(String(20), nullable=False, unique=True)
     description = Column(String(1000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
@@ -2765,18 +2796,17 @@ class Ro(Base):
 class RoRelation(Base):
     __tablename__ = 'ro_relation'
     __table_args__ = (
-        Index('ro_relation_uk', 'parent_id', 'child_id', 'relation_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('parent_id', 'child_id', 'relation_type'),
+        {u'schema': 'nex'}
     )
 
-    relation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    parent_id = Column(ForeignKey(u'NEX.ro.ro_id'), nullable=False)
-    child_id = Column(ForeignKey(u'NEX.ro.ro_id'), nullable=False, index=True)
+    relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    parent_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False)
+    child_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False, index=True)
     relation_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     child = relationship(u'Ro', primaryjoin='RoRelation.child_id == Ro.ro_id')
     parent = relationship(u'Ro', primaryjoin='RoRelation.parent_id == Ro.ro_id')
@@ -2786,19 +2816,18 @@ class RoRelation(Base):
 class RoUrl(Base):
     __tablename__ = 'ro_url'
     __table_args__ = (
-        Index('ro_url_uk', 'ro_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('ro_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    ro_id = Column(ForeignKey(u'NEX.ro.ro_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ro_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     ro = relationship(u'Ro')
     source = relationship(u'Source')
@@ -2806,37 +2835,36 @@ class RoUrl(Base):
 
 class Sgdid(Base):
     __tablename__ = 'sgdid'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    sgdid_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    sgdid_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    bud_id = Column(Integer)
     subclass = Column(String(40), nullable=False)
     sgdid_status = Column(String(40), nullable=False)
     description = Column(String(1000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-    format_name = Column(String(100), nullable=False, unique=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
 
 class So(Base):
     __tablename__ = 'so'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    so_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    so_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     soid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
@@ -2844,19 +2872,17 @@ class So(Base):
 class SoAlia(Base):
     __tablename__ = 'so_alias'
     __table_args__ = (
-        Index('so_alias_uk', 'so_id', 'display_name', 'alias_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('so_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
     )
 
-    alias_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
-    obj_url = Column(String(500))
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    so_id = Column(ForeignKey(u'NEX.so.so_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    so_id = Column(ForeignKey(u'nex.so.so_id', ondelete=u'CASCADE'), nullable=False)
     alias_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     so = relationship(u'So')
     source = relationship(u'Source')
@@ -2865,18 +2891,17 @@ class SoAlia(Base):
 class SoRelation(Base):
     __tablename__ = 'so_relation'
     __table_args__ = (
-        Index('so_relation_uk', 'parent_id', 'child_id', 'ro_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('parent_id', 'child_id', 'ro_id'),
+        {u'schema': 'nex'}
     )
 
-    relation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    parent_id = Column(ForeignKey(u'NEX.so.so_id'), nullable=False)
-    child_id = Column(ForeignKey(u'NEX.so.so_id'), nullable=False, index=True)
-    ro_id = Column(ForeignKey(u'NEX.ro.ro_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    parent_id = Column(ForeignKey(u'nex.so.so_id', ondelete=u'CASCADE'), nullable=False)
+    child_id = Column(ForeignKey(u'nex.so.so_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ro_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     child = relationship(u'So', primaryjoin='SoRelation.child_id == So.so_id')
     parent = relationship(u'So', primaryjoin='SoRelation.parent_id == So.so_id')
@@ -2887,19 +2912,18 @@ class SoRelation(Base):
 class SoUrl(Base):
     __tablename__ = 'so_url'
     __table_args__ = (
-        Index('so_url_uk', 'so_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('so_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    so_id = Column(ForeignKey(u'NEX.so.so_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    so_id = Column(ForeignKey(u'nex.so.so_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     so = relationship(u'So')
     source = relationship(u'Source')
@@ -2907,113 +2931,91 @@ class SoUrl(Base):
 
 class Source(Base):
     __tablename__ = 'source'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    source_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    source_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
-    obj_url = Column(String(500))
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
+    bud_id = Column(Integer)
     description = Column(String(500))
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-
-
-class StrainSummary(Base):
-    __tablename__ = 'strain_summary'
-    __table_args__ = (
-        Index('strain_summary_uk', 'strain_id', 'summary_type', unique=True),
-        {u'schema': 'NEX'}
-    )
-
-    summary_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    strain_id = Column(ForeignKey(u'NEX.straindbentity.dbentity_id'), nullable=False)
-    summary_type = Column(String(40), nullable=False)
-    text = Column(Text, nullable=False)
-    html = Column(Text, nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-
-    source = relationship(u'Source')
-    strain = relationship(u'Straindbentity')
-
-
-class StrainSummaryReference(Base):
-    __tablename__ = 'strain_summary_reference'
-    __table_args__ = (
-        Index('strain_summary_reference_uk', 'summary_id', 'reference_id', unique=True),
-        {u'schema': 'NEX'}
-    )
-
-    summary_reference_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    summary_id = Column(ForeignKey(u'NEX.strain_summary.summary_id'), nullable=False)
-    reference_id = Column(ForeignKey(u'NEX.referencedbentity.dbentity_id'), nullable=False, index=True)
-    reference_order = Column(Numeric(scale=0, asdecimal=False))
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
-
-    reference = relationship(u'Referencedbentity')
-    source = relationship(u'Source')
-    summary = relationship(u'StrainSummary')
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
 
 class StrainUrl(Base):
     __tablename__ = 'strain_url'
     __table_args__ = (
-        Index('strain_url_uk', 'strain_id', 'display_name', 'url_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('strain_id', 'display_name', 'url_type'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    strain_id = Column(ForeignKey(u'NEX.straindbentity.dbentity_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    strain_id = Column(ForeignKey(u'nex.straindbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
     strain = relationship(u'Straindbentity')
 
 
-class Straindbentity(Dbentity):
-    __tablename__ = 'straindbentity'
-    __table_args__ = {u'schema': 'NEX'}
+class Strainsummary(Base):
+    __tablename__ = 'strainsummary'
+    __table_args__ = (
+        UniqueConstraint('strain_id', 'summary_type'),
+        {u'schema': 'nex'}
+    )
 
-    dbentity_id = Column(ForeignKey(u'NEX.dbentity.dbentity_id'), primary_key=True)
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    strain_type = Column(String(40), nullable=False)
-    genotype = Column(String(500))
-    genbank_id = Column(String(40))
-    assembly_size = Column(Numeric(scale=0, asdecimal=False))
-    fold_coverage = Column(Numeric(scale=0, asdecimal=False))
-    scaffold_number = Column(Numeric(scale=0, asdecimal=False))
-    longest_scaffold = Column(Numeric(scale=0, asdecimal=False))
-    scaffold_nfifty = Column(Numeric(scale=0, asdecimal=False))
-    feature_count = Column(Numeric(scale=0, asdecimal=False))
+    summary_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.summary_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    strain_id = Column(ForeignKey(u'nex.straindbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    summary_type = Column(String(40), nullable=False)
+    text = Column(Text, nullable=False)
+    html = Column(Text, nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
+    created_by = Column(String(12), nullable=False)
 
-    taxonomy = relationship(u'Taxonomy')
+    source = relationship(u'Source')
+    strain = relationship(u'Straindbentity')
+
+
+class StrainsummaryReference(Base):
+    __tablename__ = 'strainsummary_reference'
+    __table_args__ = (
+        UniqueConstraint('summary_id', 'reference_id'),
+        {u'schema': 'nex'}
+    )
+
+    summary_reference_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    summary_id = Column(ForeignKey(u'nex.strainsummary.summary_id', ondelete=u'CASCADE'), nullable=False)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_order = Column(SmallInteger, nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    reference = relationship(u'Referencedbentity')
+    source = relationship(u'Source')
+    summary = relationship(u'Strainsummary')
 
 
 class Taxonomy(Base):
     __tablename__ = 'taxonomy'
-    __table_args__ = {u'schema': 'NEX'}
+    __table_args__ = {u'schema': 'nex'}
 
-    taxonomy_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    taxonomy_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     format_name = Column(String(100), nullable=False, unique=True)
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     taxid = Column(String(20), nullable=False, unique=True)
     common_name = Column(String(100))
     rank = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
 
@@ -3021,19 +3023,17 @@ class Taxonomy(Base):
 class TaxonomyAlia(Base):
     __tablename__ = 'taxonomy_alias'
     __table_args__ = (
-        Index('taxonomy_alias_uk', 'taxonomy_id', 'display_name', 'alias_type', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('taxonomy_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
     )
 
-    alias_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
-    obj_url = Column(String(500))
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False)
     alias_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
@@ -3042,18 +3042,17 @@ class TaxonomyAlia(Base):
 class TaxonomyRelation(Base):
     __tablename__ = 'taxonomy_relation'
     __table_args__ = (
-        Index('taxonomy_relation_uk', 'parent_id', 'child_id', 'ro_id', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('parent_id', 'child_id', 'ro_id'),
+        {u'schema': 'nex'}
     )
 
-    relation_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    parent_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False)
-    child_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False, index=True)
-    ro_id = Column(ForeignKey(u'NEX.ro.ro_id'), nullable=False, index=True)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    parent_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False)
+    child_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ro_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     child = relationship(u'Taxonomy', primaryjoin='TaxonomyRelation.child_id == Taxonomy.taxonomy_id')
     parent = relationship(u'Taxonomy', primaryjoin='TaxonomyRelation.parent_id == Taxonomy.taxonomy_id')
@@ -3064,35 +3063,33 @@ class TaxonomyRelation(Base):
 class TaxonomyUrl(Base):
     __tablename__ = 'taxonomy_url'
     __table_args__ = (
-        Index('taxonomy_url_uk', 'taxonomy_id', 'display_name', 'obj_url', unique=True),
-        {u'schema': 'NEX'}
+        UniqueConstraint('taxonomy_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
     )
 
-    url_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     display_name = Column(String(500), nullable=False)
     obj_url = Column(String(500), nullable=False)
-    source_id = Column(ForeignKey(u'NEX.source.source_id'), nullable=False, index=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    taxonomy_id = Column(ForeignKey(u'NEX.taxonomy.taxonomy_id'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False)
     url_type = Column(String(40), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
 
-class UpdateLog(Base):
-    __tablename__ = 'update_log'
-    __table_args__ = {u'schema': 'NEX'}
+class Updatelog(Base):
+    __tablename__ = 'updatelog'
+    __table_args__ = {u'schema': 'nex'}
 
-    update_log_id = Column(Numeric(scale=0, asdecimal=False), primary_key=True)
-    bud_id = Column(Numeric(scale=0, asdecimal=False))
-    tab_name = Column(String(30), nullable=False)
-    col_name = Column(String(30), nullable=False)
-    primary_key = Column(Numeric(scale=0, asdecimal=False), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=FetchedValue())
-    created_by = Column(String(12), nullable=False, server_default=FetchedValue())
+    updatelog_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.updatelog_seq'::regclass)"))
+    bud_id = Column(Integer)
+    tab_name = Column(String(60), nullable=False)
+    col_name = Column(String(60), nullable=False)
+    primary_key = Column(BigInteger, nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
     old_value = Column(Text)
     new_value = Column(Text)
-

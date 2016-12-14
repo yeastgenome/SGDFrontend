@@ -7,28 +7,23 @@ import ColleaguesSearchResults from './search_results';
 import Loader from '../../components/widgets/loader';
 import apiRequest from '../../lib/api_request';
 
-const COLLEAGUE_SEARCH_URL = '/colleagues';
 const TRIAGED_COLLEAGUE_URL = '/colleagues/triage';
 
 const ColleaguesIndex = React.createClass({
   getInitialState() {
     return {
-      searchResults: null,
+      data: null,
       isPending: false,
-      isTriageMode: true
     };
   },
 
   render () {
     return (
       <div>
-        <h1>Colleagues</h1>
+        <h1>Triaged Colleague Updates</h1>
         <hr />
-        <Link to='/curate/colleagues/new' className='button small'>
-          <i className='fa fa-plus' /> Add New Colleague
-        </Link>
-        {this._renderTabsNode()}
-        {this.state.isTriageMode ? this._renderTriageMode() : this._renderSearchMode()}
+        <a className='button' onClick={this._fetchData}><i className='fa fa-refresh' /> Refresh</a>
+        {this._renderTable()}
       </div>
     );
   },
@@ -37,82 +32,53 @@ const ColleaguesIndex = React.createClass({
     this._fetchData();
   },
 
-  _renderTabsNode () {
-    return (
-      <ul style={[styles.tabList]}>
-        <li onClick={this._onToggleTriageMode} style={[styles.tab, (this.state.isTriageMode ? styles.activeTab : null)]}><a><i className='fa fa-check'/> Triaged</a></li>
-        <li onClick={this._onToggleTriageMode} style={[styles.tab, (!this.state.isTriageMode ? styles.activeTab : null)]}><a><i className='fa fa-search'/> Search</a></li>
-      </ul>
-    );
-  },
-
-  _onToggleTriageMode (e) {
-    e.preventDefault();
-    this.setState({ isTriageMode: !this.state.isTriageMode }, () =>{
-      this._fetchData();
-    });
-  },
-
-  _renderTriageMode () {
-    return (
-      <div className=''>
-        {this._renderSearchResultsNodes(true)}
-      </div>
-    );
-  },
-
-  _renderSearchMode () {
-    return (
-      <div>
-        {this._renderFormNode()}
-        {this._renderSearchResultsNodes()}
-      </div>
-    );
-  },
-
-  _renderFormNode () {
-    return (
-      <div>
-        <p>Search for a colleague by last name.</p>
-        <form className='searchForm' autoComplete='off' onSubmit={this._onSubmit}>
-          <div className='input-group'>
-            <input className='input-group-field' type='text' ref='name' autoComplete='off' placeholder='Last Name (e.g.  "Jones")'/>
-            <div className='input-group-button' >
-              <input type='submit' className='button secondary' value='Search' />
-            </div>
-          </div> 
-        </form>
-      </div>
-    );
-  },
-
-  _renderSearchResultsNodes (isTriage) {
+  _renderTable () {
     if (this.state.isPending) return <Loader />;
-    if (this.state.searchResults) return <ColleaguesSearchResults isTriage={isTriage} results={this.state.searchResults} />;
-    return null;
-  },
-
-  _onSubmit (e) {
-    if (e) e.preventDefault();
-    this._fetchData();
+    if (!this.state.data) return null;
+    let rowNodes = this.state.data.map( d => {
+      let url = `curate/colleagues/triage/${d.id}`;
+      return (
+        <tr key={`ctr${d.id}`}>
+          <td><Link to={url}>{d.name}</Link></td>
+          <td>{d.receivedAt.toDateString()} {d.receivedAt.toLocaleTimeString()}</td>
+        </tr>
+      );
+    });
+    return (
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Time Received</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rowNodes}
+        </tbody>
+      </table>
+    );
   },
 
   _fetchData () {
-    let url;
-    if (this.state.isTriageMode) {
-      url = TRIAGED_COLLEAGUE_URL;
-    } else {
-      this.setState({ searchResults: [] });
-      let query = this.refs.name.value.trim();
-      // no blank query
-      if (query === '') return;
-      url = `${COLLEAGUE_SEARCH_URL}?last_name=${query}`;
-    }
     this.setState({ isPending: true });
-    apiRequest(url).then( response => {
+    apiRequest(TRIAGED_COLLEAGUE_URL).then( response => {
+      let formattedData = response.map( d => {
+        let formattedName;
+        if (d.data.last_name && d.data.first_name) {
+          formattedName = `${d.data.last_name}, ${d.data.first_name}`;
+        } else {
+          formattedName = '(no name provided)';
+        }
+        return {
+          name: formattedName,
+          receivedAt: new Date(d.created_at),
+          id: d.triage_id
+        };
+      });
       this.setState({
         isPending: false,
-        searchResults: response
+        data: formattedData,
+
       });
     });
   }
