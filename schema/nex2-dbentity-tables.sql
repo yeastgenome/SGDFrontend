@@ -227,6 +227,7 @@ CREATE TABLE nex.straindbentity (
 	dbentity_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	taxonomy_id bigint NOT NULL,
 	strain_type varchar(40) NOT NULL,
+    headline varchar(70) NOT NULL,
 	genotype varchar(500),
 	genbank_id varchar(40),
 	assembly_size integer,
@@ -245,6 +246,7 @@ COMMENT ON COLUMN nex.straindbentity.scaffold_number IS 'Number of scaffolds in 
 COMMENT ON COLUMN nex.straindbentity.dbentity_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.straindbentity.scaffold_nfifty IS 'Weighted median statistic such that 50% of the entire assembly is contained in scaffolds equal to or larger than this value';
 COMMENT ON COLUMN nex.straindbentity.longest_scaffold IS 'Length of the longest scaffold.';
+COMMENT ON COLUMN nex.straindbentity.headline IS 'A short description about the strain.';
 COMMENT ON COLUMN nex.straindbentity.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
 COMMENT ON COLUMN nex.straindbentity.genbank_id IS 'GenBank accession ID of the strain (e.g., JRII00000000).';
 COMMENT ON COLUMN nex.straindbentity.genotype IS 'Genotype of the strain.';
