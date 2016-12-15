@@ -54,11 +54,7 @@ class FrontendInterface:
     @abstractmethod
     def contig(self, contig_repr):
         return None
-
-    @abstractmethod
-    def reference(self, reference_repr):
-        return None
-
+        
     @abstractmethod
     def author(self, author_repr):
         return None

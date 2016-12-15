@@ -22,7 +22,8 @@ def prep_views(chosen_frontend, config):
     config.add_route('search', '/search')
     # config.add_route('example', '/example')
     # locus pages from locus_views
-    config.add_route('locus', '/locus/{identifier}/overview')
+    config.add_route('locus_o', '/locus/{identifier}/overview')
+    config.add_route('locus', '/locus/{identifier}')
     config.add_route('sequence_details', '/locus/{identifier}/sequence')
     config.add_route('protein_details', '/locus/{identifier}/protein')
     config.add_route('go_details', '/locus/{identifier}/go')
@@ -32,18 +33,16 @@ def prep_views(chosen_frontend, config):
     config.add_route('expression_details', '/locus/{identifier}/expression')
     config.add_route('literature_details', '/locus/{identifier}/literature')
     config.add_route('curator_sequence', '/curator/locus/{identifier}/sequence')
+    # references
+    config.add_route('reference_o', '/reference/{identifier}/overview')
+    config.add_route('reference', '/reference/{identifier}')
 
     #Reference views
     config.add_route('references_this_week', '/reference/recent')
     config.add_view(lambda request: chosen_frontend.response_wrapper('references_this_week', request)(getattr(chosen_frontend, 'references_this_week')()),
                     renderer=chosen_frontend.get_renderer('references_this_week'),
                     route_name='references_this_week')
-
-    config.add_route('reference', '/reference/{identifier}/overview')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('reference', request)(getattr(chosen_frontend, 'reference')(request.matchdict['identifier'])),
-                    renderer=chosen_frontend.get_renderer('reference'),
-                    route_name='reference')
-
+    
     config.add_route('author', '/author/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('author', request)(getattr(chosen_frontend, 'author')(request.matchdict['identifier'])),
                     renderer=chosen_frontend.get_renderer('author'),

@@ -26,6 +26,7 @@ def render_locus_page(request, template_name):
     return render_to_response(TEMPLATE_ROOT + template_name + '.jinja2', locus_obj, request=request)
 
 @view_config(route_name='locus')
+@view_config(route_name='locus_o')
 def locus(request):
     return render_locus_page(request, 'locus')
 

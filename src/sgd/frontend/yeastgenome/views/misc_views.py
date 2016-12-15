@@ -43,6 +43,13 @@ def get_redirect_url_from_results(results):
         return quick_results[0]['href']
     return False
 
+@view_config(route_name='reference_o') 
+@view_config(route_name='reference') 
+def reference(request):
+    ref_id = request.matchdict['identifier']
+    ref_obj = get_obj(ref_id, 'reference')
+    return render_to_response(TEMPLATE_ROOT + 'reference.jinja2', ref_obj, request=request)
+
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results in script tag and let client js do the rest.
 @view_config(route_name='search') 
 def search(request):
@@ -150,6 +157,17 @@ def home(request):
         }
     ]
     return render_to_response(TEMPLATE_ROOT + 'temp_homepage.jinja2', { 'meetings': meetings, 'blog_posts': blog_posts }, request=request)
+
+def get_obj(identifier, obj_type):
+    backend_url = config.backend_url + '/' + obj_type + '/' + identifier + '/overview'
+    backend_response = requests.get(backend_url)
+    if backend_response.status_code != 200:
+        return None
+    obj = json.loads(backend_response.text)
+    return {
+        obj_type: obj,
+        obj_type + '_js': json.dumps(obj)
+    }
 
 # example
 # @view_config(route_name='example') 

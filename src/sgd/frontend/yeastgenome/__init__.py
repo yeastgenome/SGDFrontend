@@ -123,10 +123,7 @@ class YeastgenomeFrontend(FrontendInterface):
 
     def reserved_name(self, reserved_name_repr):
         return self.get_obj('reserved_name', reserved_name_repr)
-
-    def reference(self, reference_repr):
-        return self.get_obj('reference', reference_repr)
-
+        
     def author(self, author_repr):
         return self.get_obj('author', author_repr)
 
