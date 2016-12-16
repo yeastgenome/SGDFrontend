@@ -913,6 +913,27 @@ class Referencedbentity(Dbentity):
     book = relationship(u'Book')
     journal = relationship(u'Journal')
 
+    def to_dict(self):
+        obj = {
+            "display_name": self.display_name,
+            "citation": self.citation,
+            "link": self.obj_url,
+            "pubmed_id": self.pmid,
+            "journal": self.journal.display_name,
+            "year": self.year
+        }
+
+        ref_urls = DBSession.query(ReferenceUrl).filter_by(reference_id=self.dbentity_id).all()
+        ref_urls_obj = []
+        for url in ref_urls:
+            ref_urls_obj.append({
+                "display_name": url.display_name,
+                "link": url.obj_url,                            
+            })
+        obj["urls"] = ref_urls_obj
+
+        return obj
+
 
 class Filedbentity(Dbentity):
     __tablename__ = 'filedbentity'
@@ -981,8 +1002,54 @@ class Straindbentity(Dbentity):
     longest_scaffold = Column(Integer)
     scaffold_nfifty = Column(Integer)
     feature_count = Column(Integer)
+    headline = Column(String(70), nullable=False)
 
     taxonomy = relationship(u'Taxonomy')
+
+    def to_dict(self):
+        obj = {
+            "display_name": self.display_name,
+            "urls": [],
+            "status": self.strain_type,
+            "description": self.headline,
+            "assembly_size": self.assembly_size,
+            "genbank_id": self.genbank_id,
+            "fold_coverage": self.fold_coverage,
+            "scaffold_number": self.scaffold_number,
+            "longest_scaffold": self.longest_scaffold,
+            "scaffold_n50": self.scaffold_nfifty,
+            "feature_count": self.feature_count,
+            "paragraph": None
+        }
+
+        if self.genotype == "":
+            obj["genotype"] = None
+
+        urls = DBSession.query(StrainUrl.display_name, StrainUrl.url_type, StrainUrl.obj_url).filter_by(strain_id=self.dbentity_id).all()
+        obj["urls"] = [{
+            "display_name": u[0],
+            "category": u[1].lower(),
+            "link": u[2]
+        } for u in urls]
+
+        paragraph = DBSession.query(Strainsummary.summary_id, Strainsummary.html).filter_by(strain_id=self.dbentity_id).one_or_none()
+        if paragraph:
+            reference_ids = DBSession.query(StrainsummaryReference.reference_id).filter_by(summary_id=paragraph[0]).order_by(StrainsummaryReference.reference_order).all()
+
+            references = []
+            if len(reference_ids):
+                reference_ids = [r[0] for r in reference_ids]
+                references = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reference_ids)).all()
+                
+            obj["paragraph"] = {
+                "text": paragraph[1],
+                "references": [r.to_dict() for r in references]
+            }
+
+        if self.display_name == "S288C":
+            obj["contig"] = None
+            
+        return obj
 
 
 class Dbuser(Base):
@@ -2775,6 +2842,28 @@ class Reservedname(Base):
     reference = relationship(u'Referencedbentity')
     source = relationship(u'Source')
 
+    def to_dict(self):
+        obj = {
+            "display_name": self.display_name,
+            "reservation_date": self.reservation_date.strftime("%Y-%m-%d"),
+            "expiration_date": self.expiration_date.strftime("%Y-%m-%d"),
+            "locus": None,
+            "reference": None
+        }
+
+        if self.locus:
+            obj["locus"] = {
+                "display_name": self.locus.display_name,
+                "link": self.locus.obj_url + "/overview"
+            }
+
+        if self.reference:
+            obj["reference"] = {
+                "display_name": self.reference.display_name,
+                "link": self.reference.obj_url
+            }
+
+        return obj
 
 class Ro(Base):
     __tablename__ = 'ro'
