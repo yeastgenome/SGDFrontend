@@ -14,8 +14,7 @@ import LocusShow from './containers/locus/show';
 import RefShow from './containers/reference/show';
 
 // TEMP
-// import LitIndex from './containers/literature';
-import LitIndex from './containers/literature/triage';
+import LitIndex from './containers/literature';
 
 import CurateLit from './containers/curateLit/layout';
 import CurateLitBasic from './containers/curateLit/basic';
@@ -33,6 +32,7 @@ export default (
     <Route component={requireAuthentication(LocusShow)} path='locus/:id/overview' />
     <Route component={requireAuthentication(RefShow)} path='reference/:id/overview' />
     <Route component={requireAuthentication(LitIndex)} path='literature' />
+    <Route component={requireAuthentication(LitIndex)} path='triage_literature' />
     <Route component={requireAuthentication(CurateLit)} path='curate_literature/:id'>
       <IndexRoute component={requireAuthentication(CurateLitBasic)} />
       <Route component={requireAuthentication(CurateLitOverview)} path='loci' />
