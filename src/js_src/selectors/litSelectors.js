@@ -22,6 +22,11 @@ export const selectActiveLitId = createSelector(
   (litDomain) => litDomain.get('activeLitEntry').toJS().id
 );
 
+export const selectTriageEntries = createSelector(
+  [selectLitDomain],
+  (litDomain) => litDomain.get('triageEntries').toJS()
+);
+
 export const selectActiveEntries = createSelector(
   [selectLitDomain],
   (litDomain) => litDomain.get('activeEntries').toJS()

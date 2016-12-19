@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import LitList from './litList';
+// import LitList from './litList';
 
-import { selectActiveEntries } from '../../selectors/litSelectors';
+import style from './style.css';
+import LitTable from './LitTable';
+import { selectTriageEntries } from '../../selectors/litSelectors';
 
-class LiteratureIndexComponent extends Component {
+class TriageLit extends Component {
   formatEntries() {
     return this.props.entries;
   }
@@ -25,23 +27,25 @@ class LiteratureIndexComponent extends Component {
       <div>
         <h1>Literature in Curation</h1>
         {this.renderTabs()}
-        <LitList entries={entries} />
+        <div className={style.litTableContainer}>
+          <LitTable entries={entries} fields={['citation', 'tags', 'assignees']} />
+        </div>
       </div>
     );
   }
 }
 
-LiteratureIndexComponent.propTypes = {
+TriageLit.propTypes = {
   entries: React.PropTypes.array
 };
 
 
 function mapStateToProps(state) {
   return {
-    entries: selectActiveEntries(state)
+    entries: selectTriageEntries(state)
   };
 }
 
 
-export { LiteratureIndexComponent as LiteratureIndexComponent };
-export default connect(mapStateToProps)(LiteratureIndexComponent);
+export { TriageLit as TriageLit };
+export default connect(mapStateToProps)(TriageLit);

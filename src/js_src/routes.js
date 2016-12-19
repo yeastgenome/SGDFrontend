@@ -12,11 +12,16 @@ import Batch from './containers/batch';
 import Search from './containers/search';
 import LocusShow from './containers/locus/show';
 import RefShow from './containers/reference/show';
-import LitIndex from './containers/literature';
+
+// TEMP
+// import LitIndex from './containers/literature';
+import LitIndex from './containers/literature/triage';
+
 import CurateLit from './containers/curateLit/layout';
 import CurateLitBasic from './containers/curateLit/basic';
 import CurateLitPhenotype from './containers/curateLit/phenotype';
 import CurateLitOverview from './containers/curateLit/index';
+
 
 export default (
   <Route component={Layout} path='/'>
