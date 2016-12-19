@@ -1,20 +1,29 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 
-import LitList from './litList';
+import style from './style.css';
+import LitTable from './LitTable';
+import { selectActiveEntries, selectTriageEntries } from '../../selectors/litSelectors';
 
-import { selectActiveEntries } from '../../selectors/litSelectors';
-
-class LiteratureIndexComponent extends Component {
+class LitList extends Component {
   formatEntries() {
-    return this.props.entries;
+    return this.props.isTriage ? this.props.triageEntries : this.props.curateEntries;
+  }
+
+  renderSingleTab(label, href, isActive) {
+    if (isActive) {
+      return <li className='tabs-title is-active'><Link aria-selected='true' to={href}>{label}</Link></li>;
+    } else {
+      return <li className='tabs-title'><Link to={href}>{label}</Link></li>;
+    }
   }
 
   renderTabs() {
     return (
       <ul className='tabs'>
-        <li className='tabs-title is-active'><a aria-selected='true'>Triage</a></li>
-        <li className='tabs-title'><a>Curating</a></li>
+        {this.renderSingleTab('Curate', 'literature', !this.props.isTriage)}
+        {this.renderSingleTab('Triage', 'triage_literature', this.props.isTriage)}
       </ul>
     );
   }
@@ -25,23 +34,28 @@ class LiteratureIndexComponent extends Component {
       <div>
         <h1>Literature in Curation</h1>
         {this.renderTabs()}
-        <LitList entries={entries} />
+        <div className={style.litTableContainer}>
+          <LitTable entries={entries} fields={['citation', 'tags', 'assignees']} />
+        </div>
       </div>
     );
   }
 }
 
-LiteratureIndexComponent.propTypes = {
-  entries: React.PropTypes.array
+LitList.propTypes = {
+  curateEntries: React.PropTypes.array,
+  isTriage: React.PropTypes.bool,
+  triageEntries: React.PropTypes.array
 };
 
-
 function mapStateToProps(state) {
+  let _isTriage = state.routing.locationBeforeTransitions.pathname.search('triage') >= 0;
   return {
-    entries: selectActiveEntries(state)
+    curateEntries: selectActiveEntries(state),
+    isTriage: _isTriage,
+    triageEntries: selectTriageEntries(state)
   };
 }
 
-
-export { LiteratureIndexComponent as LiteratureIndexComponent };
-export default connect(mapStateToProps)(LiteratureIndexComponent);
+export { LitList as LitList };
+export default connect(mapStateToProps)(LitList);
