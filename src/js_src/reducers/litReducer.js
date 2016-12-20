@@ -57,17 +57,37 @@ const DEFAULT_STATE = fromJS({
     tags: ['Pathways', 'Phenotype needs review'],
     assignees: [
       {
-        username: 'user2',
-        name: 'Harriet Tubman'
+        name: 'Curator A',
+        username: 'curate_a123'
       }
-    ]
-  }
+    ],
+    lastUpdated: new Date() // /now
+  },
+  allCuratorUsers: [
+    {
+      name: 'Curator A',
+      username: 'curate_a123'
+    },
+    {
+      name: 'Curator B',
+      username: 'curate_b123'
+    },
+    {
+      name: 'Curator C',
+      username: 'curate_c123'
+    }
+  ]
 });
 
 export default function litReducer(state = DEFAULT_STATE, action) {
+  let updatedLitEntry;
   switch (action.type) {
+  case 'UPDATE_ASSIGNEES':
+    updatedLitEntry = state.get('activeLitEntry').toJS();
+    updatedLitEntry.assignees = action.payload;
+    return state.set('activeLitEntry', fromJS(updatedLitEntry));
   case 'UPDATE_TAGS':
-    let updatedLitEntry = state.get('activeLitEntry').toJS();
+    updatedLitEntry = state.get('activeLitEntry').toJS();
     updatedLitEntry.tags = action.payload;
     return state.set('activeLitEntry', fromJS(updatedLitEntry));
   default:
