@@ -8,15 +8,14 @@ import { selectActiveLitEntry, selectUsers } from '../../selectors/litSelectors'
 import { updateAssignees, updateTags } from '../../actions/litActions';
 
 class LitStatus extends Component {
+  renderMoveButton() {
+    if (this.props.isTriage) {
+      return <a className='button primary' href='#'><i className='fa fa-check-circle-o' /> Move to Curation</a>;
+    }
+    return null;
+  }
+
   render() {
-    // TEMP
-    // let d = {
-    //   id: '#12345abc',
-    //   pmid: '123456',
-    //   title: 'Lorem Ipsum',
-    //   citation: 'Kang MS, et al. (2013) Yeast RAD2, a homolog of human XPG, plays a key role in the regulation of the cell cycle and actin dynamics. Biol Open',
-    //   tags: ['tag A', 'tag B']
-    // };
     let tagOptions = allTags.map( d => { 
       return { label: d, value: d };
     });
@@ -47,7 +46,10 @@ class LitStatus extends Component {
         />
         <div className={`row ${style.actionContainer}`}>
           <div className='columns small-6'>
-            <a className='button primary' href='#'><i className='fa fa-check-circle-o' /> Move to Curation</a>
+            <div>
+              {this.renderMoveButton()}
+              <a className='button secondary' href='#'><i className='fa fa-trash' /> Archive</a>
+            </div>           
           </div>
           <div className='columns small-6 text-right'>
             <span className={style.updateTime}>Updated {this.props.activeEntry.lastUpdated.toLocaleString()}</span>
@@ -61,6 +63,7 @@ class LitStatus extends Component {
 
 LitStatus.propTypes = {
   activeEntry: React.PropTypes.object,
+  isTriage: React.PropTypes.bool,
   dispatch: React.PropTypes.func,
   users: React.PropTypes.array
 };

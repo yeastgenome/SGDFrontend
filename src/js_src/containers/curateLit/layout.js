@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { SMALL_COL_CLASS, LARGE_COL_CLASS } from '../../constants';
 import { selectActiveLitEntry, selectActiveLitId, selectCurrentSection } from '../../selectors/litSelectors';
 import style from './style.css';
+import LitStatus from '../triageLit/litStatus';
 
 const BASE_CURATE_URL = '/curate_literature';
 const SECTIONS = [
@@ -20,32 +21,12 @@ const SECTIONS = [
 ];
 
 class CurateLitLayout extends Component {
-  renderActions() {
-    let current = this.props.currentSection;
-    if (current !== 'actions') return null;
-    return (
-      <div>
-        <a className='button success' href='#'><i className='fa fa-globe' /> Publish Annotations</a>
-        <a className='button secondary' href='#'><i className='fa fa-trash' /> Archive</a>
-      </div>
-    );
-  }
-
   renderHeader() {
     let d = this.props.activeEntry;
     return (
       <div>
         <h3>{d.citation}</h3>
-        <span className='label secondary'>status: {d.status}</span>
-        <hr />
-        <div className='row'>
-          <div className='columns small-6'>
-            {this.renderActions()}
-          </div>
-          <div className='columns small-6 text-right'>
-            <a className='button' href='#'><i className='fa fa-save' /> Save</a>
-          </div>
-        </div>
+        <LitStatus />
       </div>
     );
   }

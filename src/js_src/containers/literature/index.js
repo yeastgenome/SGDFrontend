@@ -11,19 +11,20 @@ class LitList extends Component {
     return this.props.isTriage ? this.props.triageEntries : this.props.curateEntries;
   }
 
-  renderSingleTab(label, href, isActive) {
+  renderSingleTab(label, href, isActive, total) {
+    let totalNode = <span className='badge'>{total.toLocaleString()}</span>;
     if (isActive) {
-      return <li className='tabs-title is-active'><Link aria-selected='true' to={href}>{label}</Link></li>;
+      return <li className='tabs-title is-active'><Link aria-selected='true' to={href}>{label} {totalNode}</Link></li>;
     } else {
-      return <li className='tabs-title'><Link to={href}>{label}</Link></li>;
+      return <li className='tabs-title'><Link to={href}>{label} {totalNode}</Link></li>;
     }
   }
 
   renderTabs() {
     return (
       <ul className='tabs'>
-        {this.renderSingleTab('Triage', 'triage_literature', this.props.isTriage)}
-        {this.renderSingleTab('Curate', 'literature', !this.props.isTriage)}
+        {this.renderSingleTab('Triage', 'triage_literature', this.props.isTriage, this.props.triageEntries.length)}
+        {this.renderSingleTab('Curate', 'literature', !this.props.isTriage, this.props.curateEntries.length)}
       </ul>
     );
   }
