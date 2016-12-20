@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 
 import style from './style.css';
 import { allTags } from '../curateLit/litConstants';
-import { selectActiveLitEntry } from '../../selectors/litSelectors';
-import { updateTags } from '../../actions/litActions';
+import { selectActiveLitEntry, selectUsers } from '../../selectors/litSelectors';
+import { updateAssignees, updateTags } from '../../actions/litActions';
 
 class LitStatus extends Component {
   render() {
@@ -24,6 +24,10 @@ class LitStatus extends Component {
       let updateAction = updateTags(newTags);
       this.props.dispatch(updateAction);
     };
+    let onChangeAssignees = (curators) => {
+      let updateAction = updateAssignees(curators);
+      this.props.dispatch(updateAction);
+    };
     return (
       <div className={style.statusContainer}>
         <label>Tags</label>
@@ -35,14 +39,18 @@ class LitStatus extends Component {
         />
         <label>Assignees</label>
         <Select
-          options={[]}
+          onChange={onChangeAssignees}
+          options={this.props.users}
+          value={this.props.activeEntry.assignees}
+          labelKey='name' valueKey='username'
           multi
         />
         <div className={`row ${style.actionContainer}`}>
           <div className='columns small-6'>
+            <a className='button primary' href='#'><i className='fa fa-check-circle-o' /> Move to Curation</a>
           </div>
           <div className='columns small-6 text-right'>
-            <span>Updated 1/1/17</span>
+            <span>Updated {this.props.activeEntry.lastUpdated.toLocaleString()}</span>
             <a className='button' href='#'><i className='fa fa-save' /> Save</a>
           </div>
         </div>
@@ -53,12 +61,14 @@ class LitStatus extends Component {
 
 LitStatus.propTypes = {
   activeEntry: React.PropTypes.object,
-  dispatch: React.PropTypes.func
+  dispatch: React.PropTypes.func,
+  users: React.PropTypes.array
 };
 
 function mapStateToProps(state) {
   return {
-    activeEntry: selectActiveLitEntry(state)
+    activeEntry: selectActiveLitEntry(state),
+    users: selectUsers(state)
   };
 }
 export default connect(mapStateToProps)(LitStatus);
