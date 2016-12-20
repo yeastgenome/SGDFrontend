@@ -1,15 +1,33 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+// import Select from 'react-select';
 
 import EditableList from '../../components/editableList/authorList';
 import StringField from '../../components/forms/stringField';
 import { selectActiveLitEntry } from '../../selectors/litSelectors';
 
 class CurateLitBasic extends Component {
+  renderSelectors() {
+    // let _options = [
+    //   { name: 'Alpha' },
+    //   { name: 'Beta' },
+    //   { name: 'Gamma' }
+    // ];
+    // return (
+    //   <div>
+    //     <Select
+    //       labelKey='name' multi
+    //       options={_options} valueKey='name'
+    //     />
+    //   </div>
+    // );
+  }
+
   render() {
     let d = this.props.data;
     return (
       <div>
+        {this.renderSelectors()}
         <StringField defaultValue={d.title} displayName='Title' paramName='title' />
         <div className='row'>
           <div className='columns small-3'>
