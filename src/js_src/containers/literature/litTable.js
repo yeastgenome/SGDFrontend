@@ -6,7 +6,7 @@ import Table from '../../components/table';
 
 class LitTable extends Table {
   renderCitation(d) {
-    let urlSegment = d.isTrage ? 'triage_lit' : 'curate_lit';
+    let urlSegment = d.isTriage ? '/triage_literature' : '/curate_literature';
     let url = `${urlSegment}/${d.id}`;
     return <Link to={url}>{d.citation}</Link>;
   }
