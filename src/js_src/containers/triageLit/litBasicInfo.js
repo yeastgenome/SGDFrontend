@@ -4,14 +4,6 @@ import React, { Component } from 'react';
 
 class LitBasicInfo extends Component {
   render() {
-    // // TEMP
-    // let d = {
-    //   id: '#12345abc',
-    //   pmid: '123456',
-    //   title: 'Lorem Ipsum',
-    //   citation: 'Kang MS, et al. (2013) Yeast RAD2, a homolog of human XPG, plays a key role in the regulation of the cell cycle and actin dynamics. Biol Open'
-    // };
-    // let _fields = ['title'];
     return (
       <div>
         <label><strong>Basic Info</strong> <a href='#'><i className='fa fa-edit' /> Edit</a></label>

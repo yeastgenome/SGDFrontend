@@ -14,9 +14,13 @@ import LocusShow from './containers/locus/show';
 import RefShow from './containers/reference/show';
 import LitIndex from './containers/literature';
 import CurateLit from './containers/curateLit/layout';
-import CurateLitBasic from './containers/curateLit/basic';
+// TEMP
+import CurateLitBasic from './containers/triageLit/litBasicInfo';
+// import CurateLitBasic from './containers/curateLit/basic';
+
 import CurateLitPhenotype from './containers/curateLit/phenotype';
 import CurateLitOverview from './containers/curateLit/index';
+import CurateLitActions from './containers/curateLit/actions';
 import TriageLit from './containers/triageLit/index';
 
 
@@ -40,7 +44,7 @@ export default (
       <Route component={requireAuthentication(CurateLitOverview)} path='datasets' />
       <Route component={requireAuthentication(CurateLitOverview)} path='regulation' />
       <Route component={requireAuthentication(CurateLitOverview)} path='interaction' />
-      <Route component={requireAuthentication(CurateLitOverview)} path='actions' />
+      <Route component={requireAuthentication(CurateLitActions)} path='actions' />
     </Route>
     <Route component={requireAuthentication(TriageLit)} path='triage_literature/:id' />
   </Route>
