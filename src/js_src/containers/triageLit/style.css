@@ -5,3 +5,9 @@
 .actionContainer {
 	margin-top: 1rem;
 }
+
+.updateTime {
+	position: relative;
+	top: -0.37rem;
+	margin-right: 0.5rem;
+}

@@ -50,7 +50,7 @@ class LitStatus extends Component {
             <a className='button primary' href='#'><i className='fa fa-check-circle-o' /> Move to Curation</a>
           </div>
           <div className='columns small-6 text-right'>
-            <span>Updated {this.props.activeEntry.lastUpdated.toLocaleString()}</span>
+            <span className={style.updateTime}>Updated {this.props.activeEntry.lastUpdated.toLocaleString()}</span>
             <a className='button' href='#'><i className='fa fa-save' /> Save</a>
           </div>
         </div>

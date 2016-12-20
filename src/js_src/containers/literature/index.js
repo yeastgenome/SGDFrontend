@@ -22,8 +22,8 @@ class LitList extends Component {
   renderTabs() {
     return (
       <ul className='tabs'>
-        {this.renderSingleTab('Curate', 'literature', !this.props.isTriage)}
         {this.renderSingleTab('Triage', 'triage_literature', this.props.isTriage)}
+        {this.renderSingleTab('Curate', 'literature', !this.props.isTriage)}
       </ul>
     );
   }
