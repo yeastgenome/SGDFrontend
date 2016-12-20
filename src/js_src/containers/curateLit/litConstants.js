@@ -17,7 +17,7 @@ export const allTags = [
   'Paragraph not needed', 
   'Pathways', 
   'Phenotype needs review', 
-  'Phenotype uncuratable'
+  'Phenotype uncuratable',
   'Post-translational modifications', 
   'Regulation information'
 ];

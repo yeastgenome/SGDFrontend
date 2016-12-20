@@ -12,14 +12,12 @@ import Batch from './containers/batch';
 import Search from './containers/search';
 import LocusShow from './containers/locus/show';
 import RefShow from './containers/reference/show';
-
-// TEMP
 import LitIndex from './containers/literature';
-
 import CurateLit from './containers/curateLit/layout';
 import CurateLitBasic from './containers/curateLit/basic';
 import CurateLitPhenotype from './containers/curateLit/phenotype';
 import CurateLitOverview from './containers/curateLit/index';
+import TriageLit from './containers/triageLit/index';
 
 
 export default (
@@ -44,5 +42,6 @@ export default (
       <Route component={requireAuthentication(CurateLitOverview)} path='interaction' />
       <Route component={requireAuthentication(CurateLitOverview)} path='actions' />
     </Route>
+    <Route component={requireAuthentication(TriageLit)} path='triage_literature/:id' />
   </Route>
 );
