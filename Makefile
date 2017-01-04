@@ -1,6 +1,6 @@
 BOOTSTRAP = bootstrap.py
 BUILDOUT_DEPLOY = buildout_deploy.cfg
-SERVER_PYTHON = /data/tools/python/current/bin/python
+SERVER_PYTHON = python
 
 deploy-assets:
 	. dev_deploy_variables.sh && grunt deployAssets
