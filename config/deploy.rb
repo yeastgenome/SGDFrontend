@@ -23,8 +23,8 @@ set :log_level, :debug
 namespace :deploy do
   after :finishing, :write_config
   if IS_AWS_ENV
-  	after :finishing, :restart_aws
   	after :finishing, :build_aws
+  	after :finishing, :restart_aws
   else
   	after :finishing, :verify_symlink
   	after :finishing, :restart
