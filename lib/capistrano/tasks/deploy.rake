@@ -9,7 +9,13 @@ namespace :deploy do
   desc 'Restart Apache'
   task :restart do
     on roles(:app), in: :sequence do
-      # execute "sudo /usr/sbin/apachectl graceful"
+      execute "sudo /usr/sbin/apachectl graceful"
+    end
+  end
+
+  desc 'Restart AWS'
+  task :restart_aws do
+    on roles(:app), in: :sequence do
       execute "cd #{current_path} && make stop-prod && make run-prod"
     end
   end
