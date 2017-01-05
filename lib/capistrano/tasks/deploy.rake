@@ -5,6 +5,13 @@ namespace :deploy do
       execute "cd #{release_path} && make build-deploy"
     end
   end
+
+  desc 'Build AWS env application'
+  task :build_aws do
+    on roles(:app), in: :sequence do
+      execute "cd #{release_path} && make build-deploy-aws"
+    end
+  end
   
   desc 'Restart Apache'
   task :restart do
