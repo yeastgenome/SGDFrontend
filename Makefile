@@ -22,7 +22,7 @@ staging-deploy:
 #	. prod_deploy_variables.sh && cap prod deploy
 
 aws-dev-deploy:
-	. dev_deploy_variables.sh && cap aws_dev deploy
+	. dev_deploy_variables.sh && AWS_ENV=true cap aws_dev deploy
 
 run-prod:
 	bin/pserve sgdfrontend_production.ini --daemon --pid-file=/var/run/pyramid/frontend.pid
