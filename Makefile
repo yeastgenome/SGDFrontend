@@ -43,7 +43,7 @@ build-deploy: bootstrap-deploy
 	./bin/buildout -c $(BUILDOUT_DEPLOY)
 
 build-deploy-aws:
-	./bin/buildout -c $(BUILDOUT_DEPLOY) && python $(BOOTSTRAP)
+	python $(BOOTSTRAP) && ./bin/buildout -c $(BUILDOUT_DEPLOY)
 
 bootstrap:
 	python $(BOOTSTRAP)
