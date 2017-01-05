@@ -25,10 +25,10 @@ aws-dev-deploy:
 	. dev_deploy_variables.sh && AWS_ENV=true cap aws_dev deploy
 
 run-prod:
-	bin/pserve sgdfrontend_production.ini --daemon --pid-file=/var/run/pyramid/frontend.pid
+	bin/pserve sgdfrontend_aws.ini --daemon --pid-file=/var/run/pyramid/frontend.pid
 
 stop-prod:
-	bin/pserve sgdfrontend_production.ini --stop-daemon --pid-file=/var/run/pyramid/frontend.pid
+	bin/pserve sgdfrontend_aws.ini --stop-daemon --pid-file=/var/run/pyramid/frontend.pid
 
 prod1-deploy:
 	. prod_deploy_variables.sh && cap prod1 deploy
