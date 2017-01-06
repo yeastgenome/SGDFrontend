@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import LitBasicInfo from './litBasicInfo';
 import LitStatus from './litStatus';
+import TagList from './tagList';
 
 class TriageLit extends Component {
   render() {
@@ -10,8 +11,9 @@ class TriageLit extends Component {
       <div>
         <h3>{d.citation}</h3>
         <div>
-          <LitStatus isTriage={true} />
+          <LitStatus isTriage />
           <LitBasicInfo />
+          <TagList />
         </div>
       </div>
     );

@@ -1,7 +1,6 @@
 .navWrapper {
   background: #0581C2;
 }
-
 .imgLogo {
   width: 3rem;
 }
@@ -41,6 +40,7 @@
   color: white;
   padding: 0.25rem;
   background: #0581C2;
+  padding-left: 0.5rem !important;
 }
 .indexText {
   font-size: 28px;
