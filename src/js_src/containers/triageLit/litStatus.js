@@ -3,9 +3,8 @@ import Select from 'react-select';
 import { connect } from 'react-redux';
 
 import style from './style.css';
-import { allTags } from '../curateLit/litConstants';
 import { selectActiveLitEntry, selectUsers } from '../../selectors/litSelectors';
-import { updateAssignees, updateTags } from '../../actions/litActions';
+import { updateAssignees } from '../../actions/litActions';
 
 class LitStatus extends Component {
   renderMoveButton() {
@@ -16,26 +15,12 @@ class LitStatus extends Component {
   }
 
   render() {
-    let tagOptions = allTags.map( d => { 
-      return { label: d, value: d };
-    });
-    let onChangeTags = (newTags) => {
-      let updateAction = updateTags(newTags);
-      this.props.dispatch(updateAction);
-    };
     let onChangeAssignees = (curators) => {
       let updateAction = updateAssignees(curators);
       this.props.dispatch(updateAction);
     };
     return (
       <div className={style.statusContainer}>
-        <label>Tags</label>
-        <Select
-          onChange={onChangeTags}
-          options={tagOptions}
-          value={this.props.activeEntry.tags}
-          multi
-        />
         <label>Assignees</label>
         <Select
           onChange={onChangeAssignees}

@@ -1,23 +1,86 @@
 export const allTags = [
-  'Classical phenotype information', 
-  'Delay', 
-  'Fast Track', 
-  'GO information', 
-  'GO needs review', 
-  'Gene model', 
-  'Headline needs review', 
-  'Headline reviewed', 
-  'Headline information', 
-  'High Priority',
-  'Homology/Disease', 
-  'HTP phenotype', 
-  'Non-phenotype HTP', 
-  'Not yet curated', 
-  'Paragraph needs review', 
-  'Paragraph not needed', 
-  'Pathways', 
-  'Phenotype needs review', 
-  'Phenotype uncuratable',
-  'Post-translational modifications', 
-  'Regulation information'
+  {
+    name: 'Classical phenotype information',
+    hasGenes: false
+  },
+  {
+    name: 'Delay',
+    hasGenes: false
+  },
+  {
+    name: 'Fast Track',
+    hasGenes: false
+  },
+  {
+    name: 'GO information',
+    hasGenes: false
+  },
+  {
+    name: 'GO needs review',
+    hasGenes: false
+  },
+  {
+    name: 'Gene model',
+    hasGenes: false
+  },
+  {
+    name: 'Headline needs review',
+    hasGenes: false
+  },
+  {
+    name: 'Headline reviewed',
+    hasGenes: false
+  },
+  {
+    name: 'Headline information',
+    hasGenes: false
+  },
+  {
+    name: 'High Priority',
+    hasGenes: false
+  },
+  {
+    name: 'Homology/Disease',
+    hasGenes: false
+  },
+  {
+    name: 'HTP phenotype',
+    hasGenes: false
+  },
+  {
+    name: 'Non-phenotype HTP',
+    hasGenes: false
+  },
+  {
+    name: 'Not yet curated',
+    hasGenes: false
+  },
+  {
+    name: 'Paragraph needs review',
+    hasGenes: false
+  },
+  {
+    name: 'Paragraph not needed',
+    hasGenes: false
+  },
+  {
+    name: 'Pathways',
+    hasGenes: false
+  },
+  {
+    name: 'Phenotype needs review',
+    hasGenes: false
+  },
+  {
+    name: 'Phenotype uncuratable',
+    hasGenes: false
+  },
+  {
+    name: 'Post-translational modifications',
+    hasGenes: false
+  },
+  {
+    name: 'Regulation information',
+    hasGenes: false
+  },
 ];
