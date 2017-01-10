@@ -13,11 +13,20 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
 
     config.add_route('home', '/')
-    config.add_route('upload', '/upload')
 
+    #search
     config.add_route('search', '/get_search_results')
     config.add_route('autocomplete_results', '/autocomplete_results')
 
+    #variant viewer
+    config.add_route('search_sequence_objects', '/search_sequence_objects', request_method='GET')
+    config.add_route('get_sequence_object', '/get_sequence_object/{id}', request_method='GET')
+
+    # nex2
+    config.add_route('reserved_name', '/reservedname/{id}', request_method='GET')
+    config.add_route('strain', '/strain/{id}', request_method='GET')
+
+    # curator interfaces
     config.add_route('colleague_triage_all', '/colleagues/triage', request_method='GET')
     config.add_route('colleague_triage_accept', '/colleagues/triage/{id}', request_method='POST')
     config.add_route('colleague_triage_update', '/colleagues/triage/{id}', request_method='PUT')
@@ -31,6 +40,8 @@ def main(global_config, **settings):
     config.add_route('formats', '/formats')
     config.add_route('topics', '/topics')
     config.add_route('extensions', '/extensions')
+    config.add_route('upload', '/upload')
+    
     config.add_route('sign_in', '/signin')
     config.add_route('sign_out', '/signout')
     
