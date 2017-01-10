@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
-import { SMALL_COL_CLASS, LARGE_COL_CLASS } from '../../constants';
-import { selectActiveLitEntry, selectActiveLitId, selectCurrentSection } from '../../selectors/litSelectors';
 import style from './style.css';
+import { SMALL_COL_CLASS, LARGE_COL_CLASS } from '../../constants';
+import AuthorResponseDrawer from './authorResponseDrawer';
+import { selectActiveLitEntry, selectActiveLitId, selectCurrentSection } from '../../selectors/litSelectors';
 import LitStatus from '../triageLit/litStatus';
 
 const BASE_CURATE_URL = '/curate_literature';
@@ -26,6 +27,7 @@ class CurateLitLayout extends Component {
     return (
       <div>
         <h3>{d.citation}</h3>
+        <AuthorResponseDrawer />
         <LitStatus />
       </div>
     );

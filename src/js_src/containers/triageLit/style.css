@@ -11,3 +11,7 @@
 	margin-right: 0.5rem;
 	top: -0.37rem;
 }
+
+.commentBox {
+	min-height: 5rem;
+}

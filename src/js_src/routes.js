@@ -22,7 +22,7 @@ import CurateLitPhenotype from './containers/curateLit/phenotype';
 import CurateLitOverview from './containers/curateLit/index';
 import CurateLitActions from './containers/curateLit/actions';
 import TriageLit from './containers/triageLit/index';
-
+import AuthorResponse from './containers/authorResponse/index';
 
 export default (
   <Route component={Layout} path='/'>
@@ -47,5 +47,6 @@ export default (
       <Route component={requireAuthentication(CurateLitActions)} path='actions' />
     </Route>
     <Route component={requireAuthentication(TriageLit)} path='triage_literature/:id' />
+    <Route component={requireAuthentication(AuthorResponse)} path='author_response' />
   </Route>
 );
