@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import style from './style.css';
 import LitBasicInfo from './litBasicInfo';
 import LitStatus from './litStatus';
 import TagList from './tagList';
@@ -14,6 +15,9 @@ class TriageLit extends Component {
           <LitStatus isTriage />
           <LitBasicInfo />
           <TagList />
+          <label>Comments</label>
+          <input className={style.commentBox} type='text' />
+          <a className='button' href='#'>Submit</a>
         </div>
       </div>
     );
