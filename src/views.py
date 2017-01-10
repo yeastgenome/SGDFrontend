@@ -7,11 +7,13 @@ from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword, ReferenceDocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity
+
 from .celery_tasks import upload_to_s3
+
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
-from .search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, build_search_query, build_aggregation_query, build_es_search_body, build_autocomplete_search_query, format_autocomplete_results
+from .search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, build_search_query, build_aggregation_query, build_es_search_body, build_autocomplete_search_query, format_autocomplete_results, build_sequence_objects_search_query
 
 import transaction
 
@@ -112,7 +114,7 @@ def search_autocomplete(request):
     es_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=search_body)
 
     return {"results": format_autocomplete_results(es_response, field)}
-    
+
 @view_config(route_name='search', renderer='json', request_method='GET')
 def search(request):
     query = request.params.get('q', '')
@@ -144,7 +146,7 @@ def search(request):
     add_sort_by(sort_by, search_body)
     add_highlighting(['name', 'description'] + multi_match_fields, search_body)
         
-    search_results = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=search_body, size=limit, from_=offset)
+    search_results = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=search_body, size=limit, from_=offset, preference='pref_' + query)
 
     if search_results['hits']['total'] == 0:
         return {
@@ -155,7 +157,7 @@ def search(request):
     
     if category in category_filters.keys() + ['']:
         agg_query_body = build_aggregation_query(es_query, category, category_filters)
-        aggregation_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=agg_query_body)      
+        aggregation_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=agg_query_body, preference='pref_' + query)
     else:
         aggregation_response = []
 
@@ -193,7 +195,7 @@ def reference_list(request):
     else:
         try:
             reference_ids = [int(r) for r in reference_ids]
-            references = DBSession.query(ReferenceDocument.reference_id, ReferenceDocument.text).filter(ReferenceDocument.reference_id.in_(reference_ids), ReferenceDocument.document_type == 'Medline').all()
+            references = DBSession.query(Referencedocument.reference_id, Referencedocument.text).filter(Referencedocument.reference_id.in_(reference_ids), Referencedocument.document_type == 'Medline').all()
 
             if len(references) == 0:
                 return HTTPNotFound(body=json.dumps({'error': "Reference_ids do not exist."}))
@@ -289,7 +291,6 @@ def sign_in(request):
         log.info('User ' + idinfo['email'] + ' was successfuly authenticated.')
 
         return HTTPOk()
-
     except crypt.AppIdentityError:
         return HTTPForbidden(body=json.dumps({'error': 'Authentication token is invalid'}))
 
@@ -297,4 +298,63 @@ def sign_in(request):
 def sign_out(request):
     request.session.invalidate()
     return HTTPOk()
+
+@view_config(route_name='search_sequence_objects', request_method='GET')
+def search_sequence_objects(request):
+    query = request.params.get('query', '').lower()
+    offset = request.params.get('offset', 0)
+    limit = request.params.get('limit', 1000)
+
+    search_body = build_sequence_objects_search_query(query)
+
+    res = ESearch.search(index=request.registry.settings['elasticsearch.variant_viewer_index'], body=search_body, size=limit, from_=offset)
+
+    simple_hits = []
+    for hit in res['hits']['hits']:
+        simple_hits.append(hit['_source'])
+
+    formatted_response = {
+        'loci': simple_hits,
+        'total': res['hits']['total'],
+        'offset': offset
+    }
     
+    return Response(body=json.dumps(formatted_response), content_type='application/json')
+
+@view_config(route_name='get_sequence_object', renderer='json', request_method='GET')
+def get_sequence_object(request):
+    id = request.matchdict['id'].upper()
+
+    return ESearch.get(index=request.registry.settings['elasticsearch.variant_viewer_index'], id=id)['_source']
+
+@view_config(route_name='reserved_name', renderer='json', request_method='GET')
+def reserved_name(request):
+    id = request.matchdict['id'].upper()
+
+    try:
+        reserved_name = DBSession.query(Reservedname).filter_by(format_name=id).one_or_none()
+    
+        if reserved_name:
+            return reserved_name.to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.err("Database failure querying reserved names.")
+        return HTTPNotFound()
+
+@view_config(route_name='strain', renderer='json', request_method='GET')
+def strain(request):
+    id = request.matchdict['id'].upper()
+
+    try:
+        strain = DBSession.query(Straindbentity).filter_by(sgdid=id).one_or_none()
+    
+        if strain:
+            return strain.to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.err("Database failure querying strain.")
+        return HTTPNotFound()
+
+
