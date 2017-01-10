@@ -55,17 +55,12 @@ def colleague_triage_accept(request):
     if triage_id is None:
         return HTTPBadRequest(body=json.dumps({'error': 'No triage id provided'}))
 
-    triage = DBSession.query(Colleaguetriage).filter(Colleaguetriage.curation_id == id).one_or_none()
+    triage = DBSession.query(Colleaguetriage).filter(Colleaguetriage.curation_id == triage_id).one_or_none()
 
     if triage:
-        colleague_data = {}
-        for p in request.params:
-            colleague_data[p] = request.params[p]
-
-        triage.colleague_data = json.dumps(colleague_data)
         triage.apply_to_colleague()
-        triage.delete()
-        transaction.commit()
+#        triage.delete()
+#        transaction.commit()
     else:
         return HTTPNotFound(body=json.dumps({'error': 'Colleague triage not found'}))
 
