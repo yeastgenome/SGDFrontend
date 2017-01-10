@@ -761,6 +761,10 @@ BEGIN
         PERFORM nex.insertupdatelog('STRAINDBENTITY', 'STRAIN_TYPE', OLD.dbentity_id, OLD.strain_type, NEW.strain_type, USER);
     END IF;
 
+    IF (OLD.headline != NEW.headline) THEN
+        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'HEADLINE', OLD.dbentity_id, OLD.headline, NEW.headline, USER);
+    END IF;
+
     IF (((OLD.genotype IS NULL) AND (NEW.genotype IS NOT NULL)) OR ((OLD.genotype IS NOT NULL) AND (NEW.genotype IS NULL)) OR (OLD.genotype != NEW.genotype)) THEN
         PERFORM nex.insertupdatelog('STRAINDBENTITY', 'GENOTYPE', OLD.dbentity_id, OLD.genotype, NEW.genotype, USER);
     END IF;
@@ -797,8 +801,8 @@ BEGIN
 
   ELSIF (TG_OP = 'DELETE') THEN
 
-    v_row := OLD.dbentity_id || '[:]' ||
-             OLD.taxonomy_id || '[:]' || OLD.strain_type || '[:]' ||
+    v_row := OLD.dbentity_id || '[:]' || OLD.taxonomy_id || '[:]' || 
+             OLD.strain_type || '[:]' || OLD.headline || '[:]' ||
              coalesce(OLD.genotype,'') || '[:]' || coalesce(OLD.genbank_id,'') || '[:]' ||
              coalesce(OLD.assembly_size,0) || '[:]' || coalesce(OLD.fold_coverage,0) || '[:]' ||
              coalesce(OLD.scaffold_number,0) || '[:]' || coalesce(OLD.longest_scaffold,0) || '[:]' ||
