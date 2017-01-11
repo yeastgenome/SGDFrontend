@@ -6,7 +6,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
-    'markupsafe<0.16',
+    'markupsafe>=0.23',
     'pyramid==1.5',
     'pyramid_jinja2==2.1',
     'waitress==0.8.10',
