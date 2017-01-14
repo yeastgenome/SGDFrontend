@@ -8,7 +8,7 @@ class AuthorResponseDrawer extends Component {
     return (
       <div>
         <Dropdown>
-          <DropdownTrigger className='button tiny'>Author Response <i className='fa fa-caret-down'/></DropdownTrigger>
+          <DropdownTrigger className='button tiny'>Author Response <i className='fa fa-caret-down' /></DropdownTrigger>
           <DropdownContent className='dropdownContent'>
             <label>Citation</label>
             <p>Kang MS, et al. (2013) Yeast RAD2, a homolog of human XPG, plays a key role in the regulation of the cell cycle and actin dynamics. Biol Open</p>

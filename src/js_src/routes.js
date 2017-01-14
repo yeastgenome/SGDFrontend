@@ -7,6 +7,7 @@ import PublicHome from './containers/publicHome';
 import Login from './containers/login';
 // authenticated curate inputs
 import { requireAuthentication } from './containers/authenticateComponent';
+import CurateLayout from './containers/curateHome/layout';
 import CurateHome from './containers/curateHome';
 import Batch from './containers/batch';
 import Search from './containers/search';
@@ -23,13 +24,17 @@ import CurateLitOverview from './containers/curateLit/index';
 import CurateLitActions from './containers/curateLit/actions';
 import TriageLit from './containers/triageLit/index';
 import AuthorResponse from './containers/authorResponse/index';
+import SpreadsheetUpload from './containers/spreadsheetUpload/index';
 
 export default (
   <Route component={Layout} path='/'>
     <IndexRoute component={PublicHome} />
     <Route component={requireAuthentication(Search)} path='search' />
     <Route component={Login} path='login' />
-    <Route component={requireAuthentication(CurateHome)} path='curate' />
+    <Route component={requireAuthentication(CurateLayout)} path='curate'>
+      <IndexRoute component={requireAuthentication(CurateHome)} />
+      <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
+    </Route>
     <Route component={requireAuthentication(Batch)} path='batch' />
     <Route component={requireAuthentication(LocusShow)} path='locus/:id/overview' />
     <Route component={requireAuthentication(RefShow)} path='reference/:id/overview' />
