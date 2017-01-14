@@ -2,11 +2,11 @@ import assert from 'assert';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 
-import { CurateLayout } from './index';
+import { SpreadsheetUpload } from './index';
 
-describe('CurateLayout', () => {
+describe('SpreadsheetUpload', () => {
   it('should be able to render to an HTML string', () => {
-    let htmlString = renderToString(<CurateLayout />);
+    let htmlString = renderToString(<SpreadsheetUpload />);
     assert.equal(typeof htmlString, 'string');
   });
 });
