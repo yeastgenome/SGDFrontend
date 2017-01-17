@@ -30,8 +30,11 @@ def home_view(request):
 # @authenticate
 @view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')
 def upload_spreadsheet(request):
-    file = request.POST['file'].file
-    return { 'annotations': [] }
+    csv_file = request.POST['file'].file
+    template_type = request.POST['template']
+    annotations = parse_csv_annotations(csv_file, template_type)
+    
+    return { 'annotations': annotations }
 
 @view_config(route_name='upload', request_method='POST', renderer='json')
 @authenticate
