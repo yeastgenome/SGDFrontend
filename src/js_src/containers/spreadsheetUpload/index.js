@@ -38,10 +38,14 @@ class SpreadsheetUpload extends Component {
 
   uploadData(formData) {
     fetchData(UPLOAD_URL, {
-      method: 'POST',
+      type: 'POST',
       credentials: 'same-origin',
-      headers: { 'X-CSRF-Token': this.props.csrfToken },
-      body: formData
+      headers: {
+        'X-CSRF-Token': this.props.csrfToken
+      },
+      data: formData,
+      processData: false,
+      contentType: false
     }).then( data => {
       console.log(data);
     });
