@@ -26,14 +26,15 @@ import TriageLit from './containers/triageLit/index';
 import AuthorResponse from './containers/authorResponse/index';
 import SpreadsheetUpload from './containers/spreadsheetUpload/index';
 
+// <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
 export default (
   <Route component={Layout} path='/'>
     <IndexRoute component={PublicHome} />
     <Route component={requireAuthentication(Search)} path='search' />
     <Route component={Login} path='login' />
-    <Route component={requireAuthentication(CurateLayout)} path='curate'>
+    <Route component={CurateLayout} path='curate'>
       <IndexRoute component={requireAuthentication(CurateHome)} />
-      <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
+      <Route component={SpreadsheetUpload} path='spreadsheet_upload' />
     </Route>
     <Route component={requireAuthentication(Batch)} path='batch' />
     <Route component={requireAuthentication(LocusShow)} path='locus/:id/overview' />

@@ -5,57 +5,108 @@ import Select from 'react-select';
 import _ from 'underscore';
 
 import style from './style.css';
+import fetchData from '../../lib/fetchData';
+
+const UPLOAD_URL = '/upload_spreadsheet';
 
 class SpreadsheetUpload extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      files: [],
+      isPending: false,
       templateValue: DEFAULT_VALUE
     };
+  }
+
+  handleDrop (_files) {
+    this.setState({ files: _files });
   }
 
   handleSelectChange(newVal) {
     this.setState({ templateValue: newVal.value });
   }
 
+  handleSubmit(e) {
+    e.preventDefault();
+    let formData = new FormData(this.refs.form);
+    if (this.state.files) {
+      formData.append('file', this.state.files[0]);
+    }
+    this.uploadData(formData);
+  }
+
+  uploadData(formData) {
+    fetchData(UPLOAD_URL, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'X-CSRF-Token': this.props.csrfToken },
+      body: formData
+    }).then( data => {
+      console.log(data);
+    });
+  }
+
   getActiveTemplate() {
     return _.findWhere(TEMPLATE_OPTIONS, { value: this.state.templateValue });
+  }
+
+  renderFileDrop() {
+    if (this.state.files.length) {
+      let fileName = this.state.files[0].name;
+      return (
+        <div className={style.fileContainer}>
+          <p>{fileName}</p>
+        </div>
+      );
+    }
+    return (
+      <Dropzone onDrop={this.handleDrop.bind(this)} multiple={false}>
+        <p className={style.uploadMsg}>Drop file here or click to select.</p>
+        <h3 className={style.uploadIcon}><i className='fa fa-upload' /></h3>
+      </Dropzone>
+    );
   }
 
   render() {
     let activeTemplate = this.getActiveTemplate();
     return (
       <div>
-        <h1>Spreadsheet Upload</h1>
-        <p>Directions: Select a template type (refer to examples), upload your file by dragging into box or clicking box, then click "submit."</p>
-        <div className='row'>
-          <div className='columns small-3'>
-            <label>Template</label>
-            <Select
-              onChange={this.handleSelectChange.bind(this)}
-              options={TEMPLATE_OPTIONS}
-              value={this.state.templateValue}
-            />
-            <label><a href={activeTemplate.tempalateUrl} target='_new'>See example {activeTemplate.label} template</a></label>
+        <form ref='form' onSubmit={this.handleSubmit.bind(this)}>
+          <h1>Spreadsheet Upload</h1>
+          <p>Directions: Select a template type (refer to examples), upload your file by dragging into box or clicking box, then click "submit."</p>
+          <div className='row'>
+            <div className='columns small-3'>
+              <label>Template</label>
+              <Select
+                onChange={this.handleSelectChange.bind(this)}
+                options={TEMPLATE_OPTIONS}
+                name='template'
+                value={this.state.templateValue}
+              />
+              <label><a href={activeTemplate.tempalateUrl} target='_new'>See example {activeTemplate.label} template</a></label>
+            </div>
           </div>
-        </div>
-        <div className='row'>
-          <div className='columns small-4'>
-            <label>Upload File</label>
-            <Dropzone>
-              <p className={style.uploadMsg}>Drop file here or click to select.</p>
-              <h3 className={style.uploadIcon}><i className='fa fa-upload' /></h3>
-            </Dropzone>
+          <div className='row'>
+            <div className='columns small-4'>
+              <label>Upload File</label>
+              {this.renderFileDrop()}
+            </div>
           </div>
-        </div>
-        <a className={`button ${style.submitButton}`} href='#'>Submit</a>
+          <input className={`button ${style.submitButton}`} type='submit' value='Submit' />
+        </form>
       </div>
     );
   }
 }
 
-function mapStateToProps() {
+SpreadsheetUpload.propTypes = {
+  csrfToken: React.PropTypes.string
+};
+
+function mapStateToProps(state) {
   return {
+    csrfToken: state.auth.csrfToken
   };
 }
 
