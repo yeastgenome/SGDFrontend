@@ -27,7 +27,7 @@ BEGIN
     END IF;
 
     IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('APO', 'SOURCE_ID', OLD.apo_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('APO', 'SOURCE_ID', OLD.apo_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.apoid != NEW.apoid) THEN
@@ -115,11 +115,11 @@ BEGIN
     END IF;
 
     IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('APO_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('APO_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.apo_id != NEW.apo_id) THEN
-        PERFORM nex.insertupdatelog('APO_ALIAS', 'APO_ID', OLD.alias_id, OLD.apo_id, NEW.apo_id, USER);
+        PERFORM nex.insertupdatelog('APO_ALIAS', 'APO_ID', OLD.alias_id, OLD.apo_id::text, NEW.apo_id::text, USER);
     END IF;
 
     IF (OLD.alias_type != NEW.alias_type) THEN
@@ -189,19 +189,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('APO_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('APO_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
      IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM nex.insertupdatelog('APO_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id, NEW.parent_id, USER);
+        PERFORM nex.insertupdatelog('APO_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
     END IF;
 
      IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM nex.insertupdatelog('APO_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id, NEW.child_id, USER);
+        PERFORM nex.insertupdatelog('APO_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id::text, NEW.child_id::text, USER);
     END IF;
 
     IF (OLD.ro_id != NEW.ro_id) THEN
-        PERFORM nex.insertupdatelog('APO_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id, NEW.ro_id, USER);
+        PERFORM nex.insertupdatelog('APO_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id::text, NEW.ro_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -275,11 +275,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('APO_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('APO_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
      END IF;
 
      IF (OLD.apo_id != NEW.apo_id) THEN
-        PERFORM nex.insertupdatelog('APO_URL', 'APO_ID', OLD.url_id, OLD.apo_id, NEW.apo_id, USER);
+        PERFORM nex.insertupdatelog('APO_URL', 'APO_ID', OLD.url_id, OLD.apo_id::text, NEW.apo_id::text, USER);
      END IF;
 
      IF (OLD.url_type != NEW.url_type) THEN
@@ -363,7 +363,7 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('CHEBI', 'SOURCE_ID', OLD.chebi_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('CHEBI', 'SOURCE_ID', OLD.chebi_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.chebiid != NEW.chebiid) THEN
@@ -442,11 +442,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('CHEBI_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('CHEBI_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.chebi_id != NEW.chebi_id) THEN
-        PERFORM nex.insertupdatelog('CHEBI_ALIAS', 'CHEBI_ID', OLD.alias_id, OLD.chebi_id, NEW.chebi_id, USER);
+        PERFORM nex.insertupdatelog('CHEBI_ALIAS', 'CHEBI_ID', OLD.alias_id, OLD.chebi_id::text, NEW.chebi_id::text, USER);
     END IF;
 
     IF (OLD.alias_type != NEW.alias_type) THEN
@@ -602,11 +602,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('CHEBI_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('CHEBI_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.chebi_id != NEW.chebi_id) THEN
-        PERFORM nex.insertupdatelog('CHEBI_URL', 'CHEBI_ID', OLD.url_id, OLD.chebi_id, NEW.chebi_id, USER);
+        PERFORM nex.insertupdatelog('CHEBI_URL', 'CHEBI_ID', OLD.url_id, OLD.chebi_id::text, NEW.chebi_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
@@ -689,7 +689,7 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('DISEASE', 'SOURCE_ID', OLD.disease_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('DISEASE', 'SOURCE_ID', OLD.disease_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.doid != NEW.doid) THEN
@@ -768,11 +768,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('DISEASE_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('DISEASE_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.disease_id != NEW.disease_id) THEN
-        PERFORM nex.insertupdatelog('DISEASE_ALIAS', 'DISEASE_ID', OLD.alias_id, OLD.disease_id, NEW.disease_id, USER);
+        PERFORM nex.insertupdatelog('DISEASE_ALIAS', 'DISEASE_ID', OLD.alias_id, OLD.disease_id::text, NEW.disease_id::text, USER);
     END IF;
 
     IF (OLD.alias_type != NEW.alias_type) THEN
@@ -842,19 +842,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('DISEASE_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('DISEASE_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
      IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM nex.insertupdatelog('DISEASE_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id, NEW.parent_id, USER);
+        PERFORM nex.insertupdatelog('DISEASE_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
     END IF;
 
      IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM nex.insertupdatelog('DISEASE_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id, NEW.child_id, USER);
+        PERFORM nex.insertupdatelog('DISEASE_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id::text, NEW.child_id::text, USER);
     END IF;
 
     IF (OLD.ro_id != NEW.ro_id) THEN
-        PERFORM nex.insertupdatelog('DISEASE_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id, NEW.ro_id, USER);
+        PERFORM nex.insertupdatelog('DISEASE_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id::text, NEW.ro_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -927,11 +927,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('DISEASE_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('DISEASE_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.disease_id != NEW.disease_id) THEN
-        PERFORM nex.insertupdatelog('DISEASE_URL', 'DISEASE_ID', OLD.url_id, OLD.disease_id, NEW.disease_id, USER);
+        PERFORM nex.insertupdatelog('DISEASE_URL', 'DISEASE_ID', OLD.url_id, OLD.disease_id::text, NEW.disease_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
@@ -1015,7 +1015,7 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('EC', 'SOURCE_ID', OLD.ec_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('EC', 'SOURCE_ID', OLD.ec_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
      IF (OLD.ecid != NEW.ecid) THEN
@@ -1094,11 +1094,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('EC_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('EC_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.ec_id != NEW.ec_id) THEN
-        PERFORM nex.insertupdatelog('EC_ALIAS', 'EC_ID', OLD.alias_id, OLD.ec_id, NEW.ec_id, USER);
+        PERFORM nex.insertupdatelog('EC_ALIAS', 'EC_ID', OLD.alias_id, OLD.ec_id::text, NEW.ec_id::text, USER);
     END IF;
 
     IF (OLD.alias_type != NEW.alias_type) THEN
@@ -1176,11 +1176,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('EC_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('EC_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.ec_id != NEW.ec_id) THEN
-        PERFORM nex.insertupdatelog('EC_URL', 'EC_ID', OLD.url_id, OLD.ec_id, NEW.ec_id, USER);
+        PERFORM nex.insertupdatelog('EC_URL', 'EC_ID', OLD.url_id, OLD.ec_id::text, NEW.ec_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
@@ -1263,7 +1263,7 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('ECO', 'SOURCE_ID', OLD.eco_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('ECO', 'SOURCE_ID', OLD.eco_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.ecoid != NEW.ecoid) THEN
@@ -1342,11 +1342,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('ECO_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('ECO_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.eco_id != NEW.eco_id) THEN
-        PERFORM nex.insertupdatelog('ECO_ALIAS', 'ECO_ID', OLD.alias_id, OLD.eco_id, NEW.eco_id, USER);
+        PERFORM nex.insertupdatelog('ECO_ALIAS', 'ECO_ID', OLD.alias_id, OLD.eco_id::text, NEW.eco_id::text, USER);
     END IF;
 
     IF (OLD.alias_type != NEW.alias_type) THEN
@@ -1416,19 +1416,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('ECO_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('ECO_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
      IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM nex.insertupdatelog('ECO_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id, NEW.parent_id, USER);
+        PERFORM nex.insertupdatelog('ECO_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
     END IF;
 
      IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM nex.insertupdatelog('ECO_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id, NEW.child_id, USER);
+        PERFORM nex.insertupdatelog('ECO_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id::text, NEW.child_id::text, USER);
     END IF;
 
     IF (OLD.ro_id != NEW.ro_id) THEN
-        PERFORM nex.insertupdatelog('ECO_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id, NEW.ro_id, USER);
+        PERFORM nex.insertupdatelog('ECO_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id::text, NEW.ro_id::text, USER);
     END IF;
 
      RETURN NEW;
@@ -1502,11 +1502,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('ECO_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('ECO_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.eco_id != NEW.eco_id) THEN
-        PERFORM nex.insertupdatelog('ECO_URL', 'ECO_ID', OLD.url_id, OLD.eco_id, NEW.eco_id, USER);
+        PERFORM nex.insertupdatelog('ECO_URL', 'ECO_ID', OLD.url_id, OLD.eco_id::text, NEW.eco_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
@@ -1589,7 +1589,7 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('EDAM', 'SOURCE_ID', OLD.edam_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('EDAM', 'SOURCE_ID', OLD.edam_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
      IF (OLD.edamid != NEW.edamid) THEN
@@ -1672,11 +1672,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('EDAM_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('EDAM_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.edam_id != NEW.edam_id) THEN
-        PERFORM nex.insertupdatelog('EDAM_ALIAS', 'EDAM_ID', OLD.alias_id, OLD.edam_id, NEW.edam_id, USER);
+        PERFORM nex.insertupdatelog('EDAM_ALIAS', 'EDAM_ID', OLD.alias_id, OLD.edam_id::text, NEW.edam_id::text, USER);
     END IF;
 
     IF (OLD.alias_type != NEW.alias_type) THEN
@@ -1746,19 +1746,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('EDAM_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('EDAM_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
      IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM nex.insertupdatelog('EDAM_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id, NEW.parent_id, USER);
+        PERFORM nex.insertupdatelog('EDAM_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
     END IF;
 
      IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM nex.insertupdatelog('EDAM_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id, NEW.child_id, USER);
+        PERFORM nex.insertupdatelog('EDAM_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id::text, NEW.child_id::text, USER);
     END IF;
 
      IF (OLD.ro_id != NEW.ro_id) THEN
-        PERFORM nex.insertupdatelog('EDAM_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id, NEW.ro_id, USER);
+        PERFORM nex.insertupdatelog('EDAM_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id::text, NEW.ro_id::text, USER);
      END IF;
 
      RETURN NEW;
@@ -1832,11 +1832,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('EDAM_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('EDAM_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.edam_id != NEW.edam_id) THEN
-        PERFORM nex.insertupdatelog('EDAM_URL', 'EDAM_ID', OLD.url_id, OLD.edam_id, NEW.edam_id, USER);
+        PERFORM nex.insertupdatelog('EDAM_URL', 'EDAM_ID', OLD.url_id, OLD.edam_id::text, NEW.edam_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
@@ -1919,7 +1919,7 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('GO', 'SOURCE_ID', OLD.go_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('GO', 'SOURCE_ID', OLD.go_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
      IF (OLD.goid != NEW.goid) THEN
@@ -2002,11 +2002,11 @@ BEGIN
       END IF;
 
       IF (OLD.source_id != NEW.source_id) THEN
-	  PERFORM insertupdatelog('GO_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
+	  PERFORM insertupdatelog('GO_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
      END IF;
 
       IF (OLD.go_id != NEW.go_id) THEN
-	 PERFORM insertupdatelog('GO_ALIAS', 'GO_ID', OLD.alias_id, OLD.go_id, NEW.go_id, USER);
+	 PERFORM insertupdatelog('GO_ALIAS', 'GO_ID', OLD.alias_id, OLD.go_id::text, NEW.go_id::text, USER);
       END IF;
 
      IF (OLD.alias_type != NEW.alias_type) THEN
@@ -2076,19 +2076,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('GO_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('GO_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
      IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM nex.insertupdatelog('GO_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id, NEW.parent_id, USER);
+        PERFORM nex.insertupdatelog('GO_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
     END IF;
 
      IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM nex.insertupdatelog('GO_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id, NEW.child_id, USER);
+        PERFORM nex.insertupdatelog('GO_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id::text, NEW.child_id::text, USER);
     END IF;
 
     IF (OLD.ro_id != NEW.ro_id) THEN
-        PERFORM nex.insertupdatelog('GO_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id, NEW.ro_id, USER);
+        PERFORM nex.insertupdatelog('GO_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id::text, NEW.ro_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -2162,11 +2162,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('GO_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('GO_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.go_id != NEW.go_id) THEN
-        PERFORM nex.insertupdatelog('GO_URL', 'GO_ID', OLD.url_id, OLD.go_id, NEW.go_id, USER);
+        PERFORM nex.insertupdatelog('GO_URL', 'GO_ID', OLD.url_id, OLD.go_id::text, NEW.go_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
@@ -2249,7 +2249,7 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('KEYWORD', 'SOURCE_ID', OLD.keyword_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('KEYWORD', 'SOURCE_ID', OLD.keyword_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
@@ -2329,7 +2329,7 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('OBI', 'SOURCE_ID', OLD.obi_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('OBI', 'SOURCE_ID', OLD.obi_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.obiid != NEW.obiid) THEN
@@ -2404,19 +2404,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('OBI_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('OBI_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
      IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM nex.insertupdatelog('OBI_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id, NEW.parent_id, USER);
+        PERFORM nex.insertupdatelog('OBI_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
     END IF;
 
      IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM nex.insertupdatelog('OBI_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id, NEW.child_id, USER);
+        PERFORM nex.insertupdatelog('OBI_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id::text, NEW.child_id::text, USER);
     END IF;
 
     IF (OLD.ro_id != NEW.ro_id) THEN
-        PERFORM nex.insertupdatelog('OBI_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id, NEW.ro_id, USER);
+        PERFORM nex.insertupdatelog('OBI_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id::text, NEW.ro_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -2490,11 +2490,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('OBI_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('OBI_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.obi_id != NEW.obi_id) THEN
-        PERFORM nex.insertupdatelog('OBI_URL', 'OBI_ID', OLD.url_id, OLD.obi_id, NEW.obi_id, USER);
+        PERFORM nex.insertupdatelog('OBI_URL', 'OBI_ID', OLD.url_id, OLD.obi_id::text, NEW.obi_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
@@ -2577,7 +2577,7 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('PSIMOD', 'SOURCE_ID', OLD.psimod_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('PSIMOD', 'SOURCE_ID', OLD.psimod_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.psimodid != NEW.psimodid) THEN
@@ -2652,19 +2652,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('PSIMOD_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('PSIMOD_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
      IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM nex.insertupdatelog('PSIMOD_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id, NEW.parent_id, USER);
+        PERFORM nex.insertupdatelog('PSIMOD_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
     END IF;
 
      IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM nex.insertupdatelog('PSIMOD_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id, NEW.child_id, USER);
+        PERFORM nex.insertupdatelog('PSIMOD_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id::text, NEW.child_id::text, USER);
     END IF;
 
     IF (OLD.ro_id != NEW.ro_id) THEN
-        PERFORM nex.insertupdatelog('PSIMOD_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id, NEW.ro_id, USER);
+        PERFORM nex.insertupdatelog('PSIMOD_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id::text, NEW.ro_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -2738,11 +2738,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('PSIMOD_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('PSIMOD_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.psimod_id != NEW.psimod_id) THEN
-        PERFORM nex.insertupdatelog('PSIMOD_URL', 'PSIMOD_ID', OLD.url_id, OLD.psimod_id, NEW.psimod_id, USER);
+        PERFORM nex.insertupdatelog('PSIMOD_URL', 'PSIMOD_ID', OLD.url_id, OLD.psimod_id::text, NEW.psimod_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
@@ -2824,7 +2824,7 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('RO', 'SOURCE_ID', OLD.ro_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('RO', 'SOURCE_ID', OLD.ro_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.roid != NEW.roid) THEN
@@ -2899,15 +2899,15 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('RO_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('RO_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
      IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM nex.insertupdatelog('RO_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id, NEW.parent_id, USER);
+        PERFORM nex.insertupdatelog('RO_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
     END IF;
 
      IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM nex.insertupdatelog('RO_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id, NEW.child_id, USER);
+        PERFORM nex.insertupdatelog('RO_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id::text, NEW.child_id::text, USER);
     END IF;
 
     IF (OLD.relation_type != NEW.relation_type) THEN
@@ -2984,11 +2984,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('RO_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('RO_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.ro_id != NEW.ro_id) THEN
-        PERFORM nex.insertupdatelog('RO_URL', 'RO_ID', OLD.url_id, OLD.ro_id, NEW.ro_id, USER);
+        PERFORM nex.insertupdatelog('RO_URL', 'RO_ID', OLD.url_id, OLD.ro_id::text, NEW.ro_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
@@ -3071,7 +3071,7 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('SO', 'SOURCE_ID', OLD.so_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('SO', 'SOURCE_ID', OLD.so_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.soid != NEW.soid) THEN
@@ -3150,11 +3150,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('SO_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('SO_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.so_id != NEW.so_id) THEN
-        PERFORM nex.insertupdatelog('SO_ALIAS', 'SO_ID', OLD.alias_id, OLD.so_id, NEW.so_id, USER);
+        PERFORM nex.insertupdatelog('SO_ALIAS', 'SO_ID', OLD.alias_id, OLD.so_id::text, NEW.so_id::text, USER);
     END IF;
 
     IF (OLD.alias_type != NEW.alias_type) THEN
@@ -3222,19 +3222,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('SO_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('SO_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM nex.insertupdatelog('SO_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id, NEW.parent_id, USER);
+        PERFORM nex.insertupdatelog('SO_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
     END IF;
 
      IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM nex.insertupdatelog('SO_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id, NEW.child_id, USER);
+        PERFORM nex.insertupdatelog('SO_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id::text, NEW.child_id::text, USER);
     END IF;
 
     IF (OLD.ro_id != NEW.ro_id) THEN
-        PERFORM nex.insertupdatelog('SO_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id, NEW.ro_id, USER);
+        PERFORM nex.insertupdatelog('SO_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id::text, NEW.ro_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -3308,11 +3308,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('SO_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('SO_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.so_id != NEW.so_id) THEN
-        PERFORM nex.insertupdatelog('SO_URL', 'SO_ID', OLD.url_id, OLD.so_id, NEW.so_id, USER);
+        PERFORM nex.insertupdatelog('SO_URL', 'SO_ID', OLD.url_id, OLD.so_id::text, NEW.so_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
@@ -3395,7 +3395,7 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('TAXONOMY', 'SOURCE_ID', OLD.taxonomy_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('TAXONOMY', 'SOURCE_ID', OLD.taxonomy_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.taxid != NEW.taxid) THEN
@@ -3478,11 +3478,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('TAXONOMY_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('TAXONOMY_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM nex.insertupdatelog('TAXONOMY_ALIAS', 'TAXONOMY_ID', OLD.alias_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('TAXONOMY_ALIAS', 'TAXONOMY_ID', OLD.alias_id, OLD.taxonomy_id::text, NEW.taxonomy_id::text, USER);
     END IF;
 
     IF (OLD.alias_type != NEW.alias_type) THEN
@@ -3552,19 +3552,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('TAXONOMY_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('TAXONOMY_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
      IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM nex.insertupdatelog('TAXONOMY_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id, NEW.parent_id, USER);
+        PERFORM nex.insertupdatelog('TAXONOMY_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
     END IF;
 
      IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM nex.insertupdatelog('TAXONOMY_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id, NEW.child_id, USER);
+        PERFORM nex.insertupdatelog('TAXONOMY_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id::text, NEW.child_id::text, USER);
     END IF;
 
     IF (OLD.ro_id != NEW.ro_id) THEN
-        PERFORM nex.insertupdatelog('TAXONOMY_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id, NEW.ro_id, USER);
+        PERFORM nex.insertupdatelog('TAXONOMY_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id::text, NEW.ro_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -3638,11 +3638,11 @@ BEGIN
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('TAXONOMY_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id, NEW.source_id, USER);
+        PERFORM nex.insertupdatelog('TAXONOMY_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM nex.insertupdatelog('TAXONOMY_URL', 'TAXONOMY_ID', OLD.url_id, OLD.taxonomy_id, NEW.taxonomy_id, USER);
+        PERFORM nex.insertupdatelog('TAXONOMY_URL', 'TAXONOMY_ID', OLD.url_id, OLD.taxonomy_id::text, NEW.taxonomy_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type)  THEN
