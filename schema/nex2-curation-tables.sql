@@ -108,10 +108,10 @@ DROP TABLE IF EXISTS nex.colleaguetriage CASCADE;
 CREATE TABLE nex.colleaguetriage (
 	curation_id bigint NOT NULL DEFAULT nextval('curation_seq'),
 	triage_type varchar(10) NOT NULL,
-        colleague_id bigint,
-        colleague_data text NOT NULL,
-        curator_comment varchar(500),
-        date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    colleague_id bigint,
+    colleague_data text NOT NULL,
+    curator_comment varchar(500),
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT colleaguetriage_pk PRIMARY KEY (curation_id)
 ) ;

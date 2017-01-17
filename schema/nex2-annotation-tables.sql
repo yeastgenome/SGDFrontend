@@ -290,6 +290,46 @@ CREATE INDEX expressionanno_tax_fk_index ON nex.expressionannotation (taxonomy_i
 CREATE INDEX expressionanno_ref_fk_index ON nex.expressionannotation (reference_id);
 CREATE INDEX expressionanno_dbentity_fk_index ON nex.expressionannotation (dbentity_id);
 
+DROP TABLE IF EXISTS nex.geninteractionannotation CASCADE;
+CREATE TABLE nex.geninteractionannotation (
+	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
+	dbentity1_id bigint NOT NULL,
+	dbentity2_id bigint NOT NULL,
+	source_id bigint NOT NULL,
+	reference_id bigint NOT NULL,
+	taxonomy_id bigint NOT NULL,
+	phenotype_id bigint,
+	biogrid_experimental_system varchar(100) NOT NULL,
+	annotation_type varchar(20) NOT NULL,
+	bait_hit varchar(10) NOT NULL,
+	description varchar(1000),
+	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+	created_by varchar(12) NOT NULL,
+	CONSTRAINT geninteractionannotation_pk PRIMARY KEY (annotation_id)
+) ;
+COMMENT ON TABLE nex.geninteractionannotation IS 'Genetic interaction annotations from BioGRID.';
+COMMENT ON COLUMN nex.geninteractionannotation.biogrid_experimental_system IS 'Experimental system as defined by BIOGRID.';
+COMMENT ON COLUMN nex.geninteractionannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.geninteractionannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.geninteractionannotation.dbentity2_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.geninteractionannotation.bait_hit IS 'Direction of the genetic interaction (Bait-Hit, Hit-Bait).';
+COMMENT ON COLUMN nex.geninteractionannotation.annotation_type IS 'Type of annotation (high-throughput, manually curated).';
+COMMENT ON COLUMN nex.geninteractionannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.geninteractionannotation.description IS 'Extended description or note.';
+COMMENT ON COLUMN nex.geninteractionannotation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.geninteractionannotation.dbentity1_id IS 'FK to DBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.geninteractionannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.geninteractionannotation.phenotype_id IS 'FK to PHENOTYPE.PHENOTYPE_ID.';
+COMMENT ON COLUMN nex.geninteractionannotation.annotation_id IS 'Unique identifier (serial number).';
+ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionannotation_uk UNIQUE (dbentity1_id,dbentity2_id,bait_hit,biogrid_experimental_system,reference_id);
+ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionanno_bait_hit_ck CHECK (BAIT_HIT IN ('Bait-Hit', 'Hit-Bait'));
+ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionanno_annotation_type_ck CHECK (ANNOTATION_TYPE IN ('high-throughput', 'manually curated'));
+CREATE INDEX geninteractionanno_ref_fk_index ON nex.geninteractionannotation (reference_id);
+CREATE INDEX geninteractionanno_pheno_fk_index ON nex.geninteractionannotation (phenotype_id);
+CREATE INDEX geninteractionanno_dbentity2_index ON nex.geninteractionannotation (dbentity2_id);
+CREATE INDEX geninteractionanno_tax_fk_index ON nex.geninteractionannotation (taxonomy_id);
+CREATE INDEX geninteractionanno_source_fk_index ON nex.geninteractionannotation (source_id);
+
 DROP TABLE IF EXISTS nex.goannotation CASCADE;
 CREATE TABLE nex.goannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
@@ -402,46 +442,6 @@ CREATE INDEX goslimanno_tax_fk_index ON nex.goslimannotation (taxonomy_id);
 CREATE INDEX goslimanno_source_fk_index ON nex.goslimannotation (source_id);
 CREATE INDEX goslimanno_ref_fk_index ON nex.goslimannotation (reference_id);
 CREATE INDEX goslimanno_goslim_fk_index ON nex.goslimannotation (goslim_id);
-
-DROP TABLE IF EXISTS nex.geninteractionannotation CASCADE;
-CREATE TABLE nex.geninteractionannotation (
-	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
-	dbentity1_id bigint NOT NULL,
-	dbentity2_id bigint NOT NULL,
-	source_id bigint NOT NULL,
-	reference_id bigint NOT NULL,
-	taxonomy_id bigint NOT NULL,
-	phenotype_id bigint,
-	biogrid_experimental_system varchar(100) NOT NULL,
-	annotation_type varchar(20) NOT NULL,
-	bait_hit varchar(10) NOT NULL,
-	description varchar(1000),
-	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	created_by varchar(12) NOT NULL,
-	CONSTRAINT geninteractionannotation_pk PRIMARY KEY (annotation_id)
-) ;
-COMMENT ON TABLE nex.geninteractionannotation IS 'Genetic interaction annotations from BioGRID.';
-COMMENT ON COLUMN nex.geninteractionannotation.biogrid_experimental_system IS 'Experimental system as defined by BIOGRID.';
-COMMENT ON COLUMN nex.geninteractionannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN nex.geninteractionannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN nex.geninteractionannotation.dbentity2_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN nex.geninteractionannotation.bait_hit IS 'Direction of the genetic interaction (Bait-Hit, Hit-Bait).';
-COMMENT ON COLUMN nex.geninteractionannotation.annotation_type IS 'Type of annotation (high-throughput, manually curated).';
-COMMENT ON COLUMN nex.geninteractionannotation.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN nex.geninteractionannotation.description IS 'Extended description or note.';
-COMMENT ON COLUMN nex.geninteractionannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN nex.geninteractionannotation.dbentity1_id IS 'FK to DBENTITY.DBENTITY_ID.';
-COMMENT ON COLUMN nex.geninteractionannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN nex.geninteractionannotation.phenotype_id IS 'FK to PHENOTYPE.PHENOTYPE_ID.';
-COMMENT ON COLUMN nex.geninteractionannotation.annotation_id IS 'Unique identifier (serial number).';
-ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionannotation_uk UNIQUE (dbentity1_id,dbentity2_id,bait_hit,biogrid_experimental_system,reference_id);
-ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionanno_bait_hit_ck CHECK (BAIT_HIT IN ('Bait-Hit', 'Hit-Bait'));
-ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionanno_annotation_type_ck CHECK (ANNOTATION_TYPE IN ('high-throughput', 'manually curated'));
-CREATE INDEX geninteractionanno_ref_fk_index ON nex.geninteractionannotation (reference_id);
-CREATE INDEX geninteractionanno_pheno_fk_index ON nex.geninteractionannotation (phenotype_id);
-CREATE INDEX geninteractionanno_dbentity2_index ON nex.geninteractionannotation (dbentity2_id);
-CREATE INDEX geninteractionanno_tax_fk_index ON nex.geninteractionannotation (taxonomy_id);
-CREATE INDEX geninteractionanno_source_fk_index ON nex.geninteractionannotation (source_id);
 
 DROP TABLE IF EXISTS nex.literatureannotation CASCADE;
 CREATE TABLE nex.literatureannotation (
