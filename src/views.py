@@ -71,7 +71,7 @@ def upload_file(request):
         is_in_spell=request.POST.get('for_spell', 0),
         is_in_browser=request.POST.get('for_browser', 0),
         filepath_id=filepath.filepath_id,
-        readme_url=request.POST.get('readme_name'),
+        # TODO: missing readme_file_id
         file_extension=request.POST.get('extension'),        
 
         # DBentity params
