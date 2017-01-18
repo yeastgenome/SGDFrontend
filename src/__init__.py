@@ -15,7 +15,6 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     config.add_route('upload', '/upload')
     config.add_route('upload_spreadsheet', '/upload_spreadsheet')
-
     #search
     config.add_route('search', '/get_search_results')
     config.add_route('autocomplete_results', '/autocomplete_results')
@@ -58,6 +57,8 @@ def main(global_config, **settings):
     config.add_route('topics', '/topics')
     config.add_route('extensions', '/extensions')
     config.add_route('upload', '/upload')
+    config.add_route('upload_spreadsheet', '/upload_spreadsheet')
+
     
     config.add_route('sign_in', '/signin')
     config.add_route('sign_out', '/signout')
