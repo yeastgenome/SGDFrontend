@@ -7,7 +7,7 @@ from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation
 
 from .celery_tasks import upload_to_s3
 
@@ -357,4 +357,49 @@ def strain(request):
         log.err("Database failure querying strain.")
         return HTTPNotFound()
 
+@view_config(route_name='reference', renderer='json', request_method='GET')
+def reference(request):
+    id = request.matchdict['id'].upper()
 
+    try:
+        reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    
+        if reference:
+            return reference.to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.err("Database failure querying reference.")
+        return HTTPNotFound()
+
+@view_config(route_name='reference_literature_details', renderer='json', request_method='GET')
+def reference_literature_details(request):
+    id = request.matchdict['id'].upper()
+
+    try:
+        reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+
+        if reference:
+            return reference.annotations_to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.err("Database failure querying reference.")
+        return HTTPNotFound()
+
+@view_config(route_name='reference_interaction_details', renderer='json', request_method='GET')
+def reference_interaction_details(request):
+    id = request.matchdict['id'].upper()
+
+    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+
+    if reference:
+        return reference.interactions_to_dict()
+    else:
+        return HTTPNotFound()
+
+    
+#    try:
+#    except:
+#        log.err("Database failure querying reference.")
+#        return HTTPNotFound()
