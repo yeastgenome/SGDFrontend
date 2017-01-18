@@ -623,6 +623,41 @@ class Contig(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict(self, chromosome_cache):
+        obj = {
+            "display_name": self.display_name,
+            "format_name": self.format_name,
+            "genbank_accession": self.genbank_accession,
+            "link": self.obj_url,
+            "reference_alignment": None,
+            "centromere_end": self.centromere_end,
+            "centromere_start": self.centromere_start,
+            "length": self.reference_alignment_length,
+            "id": self.contig_id,
+            "refseq_id": self.refseq_id
+        }
+
+        if self.reference_chromosome_id != None:
+            if chromosome_cache.get(self.reference_chromosome_id):
+                chromosome = chromosome_cache.get(self.reference_chromosome_id)
+            else:
+                chromosome = DBSession.query(Contig.format_name, Contig.obj_url).filter_by(contig_id=self.reference_chromosome_id).one_or_none()
+                chromosome_cache[self.reference_chromosome_id] = chromosome
+            
+            if chromosome:
+                obj['reference_alignment'] = {
+                    "percent_identity": self.reference_percent_identity,
+                    "start": self.reference_start,
+                    "end": self.reference_end,
+                    "alignment_length": self.reference_alignment_length,
+                    "chromosome": {
+                        "format_name": chromosome[0],
+                        "link": chromosome[1]
+                    }
+                }
+
+        return obj
+
 
 class ContigUrl(Base):
     __tablename__ = 'contig_url'
@@ -913,15 +948,56 @@ class Referencedbentity(Dbentity):
     book = relationship(u'Book')
     journal = relationship(u'Journal')
 
+    def to_dict_reference_related(self):
+        obj = {
+            "display_name": self.display_name,
+            "link": self.obj_url,
+            "citation": self.citation,
+            "pubmed_id": self.pmid,
+            "abstract": None,
+            "urls": []
+        }
+
+        ref_urls = DBSession.query(ReferenceUrl).filter_by(reference_id=self.dbentity_id).all()
+        for url in ref_urls:
+            obj["urls"].append({
+                "display_name": url.display_name,
+                "link": url.obj_url,                            
+            })
+
+        abstract = DBSession.query(Referencedocument.text).filter_by(reference_id=self.dbentity_id, document_type="Abstract").one_or_none()
+        if abstract:
+            obj["abstract"] = {
+                "text": abstract[0]
+            }
+
+        return obj
+    
     def to_dict(self):
+        journal = self.journal
+        
         obj = {
             "display_name": self.display_name,
             "citation": self.citation,
+            "abstract": None,
             "link": self.obj_url,
             "pubmed_id": self.pmid,
-            "journal": self.journal.display_name,
-            "year": self.year
+            "sgdid": self.sgdid,
+            "journal": {
+                "med_abbr": journal.med_abbr,
+            },
+            "year": self.year,
+            "id": self.dbentity_id,
+
+            "related_references": [],
+            "expression_datasets": [] ## TODO!!!
         }
+
+        abstract = DBSession.query(Referencedocument.text).filter_by(reference_id=self.dbentity_id, document_type="Abstract").one_or_none()
+        if abstract:
+            obj["abstract"] = {
+                "text": abstract[0]
+            }
 
         ref_urls = DBSession.query(ReferenceUrl).filter_by(reference_id=self.dbentity_id).all()
         ref_urls_obj = []
@@ -932,8 +1008,58 @@ class Referencedbentity(Dbentity):
             })
         obj["urls"] = ref_urls_obj
 
+        reference_types = DBSession.query(Referencetype.display_name).filter_by(reference_id=self.dbentity_id).all()
+        obj["reftypes"] = []
+        for typ in reference_types:
+            obj["reftypes"].append({
+                "display_name": typ[0]
+            })
+
+        authors = DBSession.query(Referenceauthor.display_name, Referenceauthor.obj_url).filter_by(reference_id=self.dbentity_id).order_by(Referenceauthor.author_order).all()
+        obj["authors"] = []
+        for author in authors:
+            obj["authors"].append({
+                "display_name": author[0],
+                "link": author[1]
+            })
+
+        reference_relation_parent = DBSession.query(ReferenceRelation).filter_by(parent_id=self.dbentity_id).all()
+        for ref in reference_relation_parent:
+            obj["related_references"].append(ref.child.to_dict_reference_related())
+
+        reference_relation_child = DBSession.query(ReferenceRelation).filter_by(child_id=self.dbentity_id).all()
+        for ref in reference_relation_child:
+            obj["related_references"].append(ref.parent.to_dict_reference_related())
+
+        count_interactions = DBSession.query(Physinteractionannotation).filter_by(reference_id=self.dbentity_id).count() + DBSession.query(Geninteractionannotation).filter_by(reference_id=self.dbentity_id).count()
+
+        obj["counts"] = {
+            "interaction": count_interactions,
+            "go": 10,
+            "phenotype": 10,
+            "regulation": 10
+        }
+
         return obj
 
+    def annotations_to_dict(self):
+        obj = []
+
+        annotations = DBSession.query(Literatureannotation).filter_by(reference_id=self.dbentity_id).all()
+        for a in annotations:
+            obj.append(a.to_dict())
+
+        return obj
+
+    def interactions_to_dict(self):
+        obj = []
+
+        interactions = DBSession.query(Physinteractionannotation).filter_by(reference_id=self.dbentity_id).all() + DBSession.query(Geninteractionannotation).filter_by(reference_id=self.dbentity_id).all()
+        for i in interactions:
+            obj.append(i.to_dict(self))
+
+        return obj
+            
 
 class Filedbentity(Dbentity):
     __tablename__ = 'filedbentity'
@@ -1011,6 +1137,7 @@ class Straindbentity(Dbentity):
             "display_name": self.display_name,
             "urls": [],
             "status": self.strain_type,
+            "genotype": self.genotype,
             "description": self.headline,
             "assembly_size": self.assembly_size,
             "genbank_id": self.genbank_id,
@@ -1021,9 +1148,6 @@ class Straindbentity(Dbentity):
             "feature_count": self.feature_count,
             "paragraph": None
         }
-
-        if self.genotype == "":
-            obj["genotype"] = None
 
         urls = DBSession.query(StrainUrl.display_name, StrainUrl.url_type, StrainUrl.obj_url).filter_by(strain_id=self.dbentity_id).all()
         obj["urls"] = [{
@@ -1046,9 +1170,13 @@ class Straindbentity(Dbentity):
                 "references": [r.to_dict() for r in references]
             }
 
-        if self.display_name == "S288C":
-            obj["contig"] = None
-            
+        contigs = DBSession.query(Contig).filter_by(taxonomy_id=self.taxonomy_id).all()
+        obj["contigs"] = []
+        
+        chromosome_cache = {}
+        for co in contigs:
+            obj["contigs"].append(co.to_dict(chromosome_cache))
+
         return obj
 
 
@@ -1637,6 +1765,56 @@ class Geninteractionannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict(self, reference):
+        dbentity1 = self.dbentity1
+        dbentity2 = self.dbentity2
+        phenotype = self.phenotype
+        
+        obj = {
+            "id": self.annotation_id,
+            "note": self.description,
+            "bait_hit": self.bait_hit,
+            "locus1": {
+                "id": self.dbentity1_id,
+                "display_name": dbentity1.display_name,
+                "link": dbentity1.obj_url,
+                "format_name": dbentity1.format_name
+            },
+            "locus2": {
+                "id": self.dbentity2_id,
+                "display_name": dbentity2.display_name,
+                "link": dbentity2.obj_url,
+                "format_name": dbentity2.format_name
+            },
+            "experiment": {
+                "display_name": self.biogrid_experimental_system,
+                "link": None
+            },
+            "phenotype": None,
+            
+            "mutant_type": None, # If you find a phenoytpe, use the mutant_type. GAIL: how to get it? reference_id = reference.dbentity_id and phenotype_id = phenotype_id?
+            
+            "interaction_type": "Genetic",
+            "annotation_type": self.annotation_type,
+            "source": {
+                "display_name": self.source.display_name
+            },
+            "reference": {
+                "display_name": reference.display_name,
+                "pubmed_id": reference.pmid,
+                "link": reference.obj_url
+            }
+        }
+
+        if phenotype:
+            obj["phenotype"] = {
+                "display_name": phenotype.display_name,
+                "link": phenotype.obj_url
+            }
+            import pdb; pdb.set_trace()
+
+        return obj
+
 
 class Genomerelease(Base):
     __tablename__ = 'genomerelease'
@@ -1910,6 +2088,16 @@ class Literatureannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict(self):
+        entity = self.dbentity
+        
+        return {
+            "topic": self.topic,
+            "locus": {
+                "display_name": entity.display_name,
+                "link": entity.obj_url
+            }
+        }
 
 class LocusAlias(Base):
     __tablename__ = 'locus_alias'
@@ -2308,6 +2496,53 @@ class Physinteractionannotation(Base):
     reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
+
+    def to_dict(self, reference):
+        dbentity1 = self.dbentity1
+        dbentity2 = self.dbentity2
+
+        modification = "No Modification"
+        if self.psimod:
+            modification = self.psimod.display_name
+            import pdb; pdb.set_trace()
+        
+        return {
+            "id": self.annotation_id,
+            "note": self.description,
+            "bait_hit": self.bait_hit,
+            "locus1": {
+                "id": self.dbentity1_id,
+                "display_name": dbentity1.display_name,
+                "link": dbentity1.obj_url,
+                "format_name": dbentity1.format_name
+            },
+            "locus2": {
+                "id": self.dbentity2_id,
+                "display_name": dbentity2.display_name,
+                "link": dbentity2.obj_url,
+                "format_name": dbentity2.format_name
+            },
+            "experiment": {
+                "display_name": self.biogrid_experimental_system,
+                "link": None
+            },
+            "phenotype": None, # { # GAIL: more than one phenotype?  -->> JUST FOR GENETIC INTERACTIONS!!!! This should be null.
+#                "display_name": None,
+#                "link": None
+#            },
+            "mutant_type": None, # If you find a phenoytpe, use the mutant_type
+            "modification": modification,
+            "interaction_type": "Physical", # Physical for this one. For genetic interaction use "Genetic"
+            "annotation_type": self.annotation_type,
+            "source": {
+                "display_name": self.source.display_name
+            },
+            "reference": {
+                "display_name": reference.display_name,
+                "pubmed_id": reference.pmid,
+                "link": reference.obj_url
+            }
+        }
 
 
 class Posttranslationannotation(Base):
