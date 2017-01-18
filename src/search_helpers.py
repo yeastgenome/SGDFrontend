@@ -71,20 +71,6 @@ def search_is_quick(query, search_results):
                 return True
     return False
 
-def add_exact_match(es_query, query, multi_match_fields):
-    new_conditions = []
-    for cond in es_query['bool']['should'][2:4]:
-        new_conditions.append({'match_phrase_prefix': cond.pop(cond.keys()[0])})
-    multi_fields = {
-        "multi_match": {
-            "query": query,
-            "type": "phrase_prefix",
-            "fields": multi_match_fields,
-            "boost": 3
-        }
-    }
-    es_query['bool']['should'] = [es_query['bool']['should'][0]] + new_conditions + [multi_fields]
-
 def build_aggregation_query(es_query, category, category_filters):
     agg_query_body = {
         'query': es_query,
@@ -155,80 +141,40 @@ def build_search_query(query, multi_match_fields, category, category_filters, re
 
     return query
     
-def build_es_search_query(query, multi_match_fields):
-    for special_char in ['-', '.']:
-        if special_char in query:
-            query = "\"" + query + "\""
-            break
-    
-    if query == '':
-        return {'match_all': {}}
-    
-    es_query = {
-        "bool": {
-            "should": [
-                {
-                    "match_phrase_prefix": {
-                        "name": {
-                            "query": query,
-                            "boost": 3,
-                            "max_expansions": 30,
-                            "analyzer": "standard"
-                        }
-                    }
-                },
-                {
-                    "match_phrase_prefix": {
-                        "keys": {
-                            "query": query,
-                            "boost": 35,
-                            "max_expansions": 12,
-                            "analyzer": "standard"
-                        }
-                    }
-                },
-                {
-                    "match_phrase": {
-                        "name": {
-                            "query": query,
-                            "boost": 80,
-                            "analyzer": "standard"
-                        }
-                    }
-                },                        
-                {
-                    "match": {
-                        "description": {
-                            "query": query,
-                            "boost": 1,
-                            "analyzer": "standard"
-                        }
-                    }
-                },
-                {
-                    "match_phrase": {
-                        "keys": {
-                            "query": query,
-                            "boost": 50,
-                            "analyzer": "standard"
-                        }
-                    }
-                },
-                {
-                    "multi_match": {
-                        "query": query,
-                        "type": "best_fields",
-                        "fields": multi_match_fields,
-                        "boost": 1
-                    }
-                }
-            ],
-            "minimum_should_match": 1
-        }
-    }
+def build_es_search_query(query, search_fields):
+    if query == "":
+        es_query = {"match_all": {}}
+    else:
+        es_query = {'dis_max': {'queries': []}}
 
-    if (query[0] in ('"', "'") and query[-1] in ('"', "'")):
-        add_exact_match(es_query, query, multi_match_fields)
+        if (query[0] in ('"', "'") and query[-1] in ('"', "'")):
+            query = query[1:-1]
+
+        es_query['dis_max']['queries'] = []
+
+        custom_boosts = {
+            "name": 200,
+            "name.symbol": 300,
+        }
+
+        fields = search_fields + [
+            "name.symbol"
+        ]
+
+        for field in fields:
+            match = {}
+            match[field] = {
+                'query': query,
+                'boost': custom_boosts.get(field, 50)
+            }
+
+            partial_match = {}
+            partial_match[field.split(".")[0]] = {
+                'query': query
+            }
+
+            es_query['dis_max']['queries'].append({'match': match})
+            es_query['dis_max']['queries'].append({'match_phrase_prefix': partial_match})
 
     return es_query
 
@@ -305,3 +251,37 @@ def format_autocomplete_results(es_response, field='name'):
             formatted_results.append(obj)
 
     return formatted_results
+
+def build_sequence_objects_search_query(query):
+    if query == '':
+        search_body = {
+            'query': { 'match_all': {} },
+            'sort': { 'absolute_genetic_start': { 'order': 'asc' }}
+        }
+    elif ',' in query:
+        search_body = {
+            'query': {
+                'filtered': {
+                    'filter': {
+                        'terms': {
+                            '_all': [q.strip() for q in query.split(',')]
+                        }
+                    }
+                }
+            }
+        }
+    else:
+        query_type = 'wildcard' if '*' in query else 'match_phrase'
+        
+        search_body = {
+            'query': {
+                query_type: {
+                    '_all': query
+                }
+            }
+        }
+
+    search_body['_source'] = ['sgdid', 'name', 'href', 'absolute_genetic_start', 'format_name', 'dna_scores', 'protein_scores', 'snp_seqs']
+
+    return search_body
+    
