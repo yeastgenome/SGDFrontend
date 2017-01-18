@@ -28,7 +28,7 @@ BEGIN
     END IF;
 
     IF (OLD.is_curator <> NEW.is_curator) THEN
-	PERFORM nex.insertupdatelog('DBUSER', 'IS_CURATOR', OLD.dbuser_id, OLD.is_curator, NEW.is_curator, USER);
+	PERFORM nex.insertupdatelog('DBUSER', 'IS_CURATOR', OLD.dbuser_id, OLD.is_curator::text, NEW.is_curator::text, USER);
     END IF;
 
     IF (OLD.email <> NEW.email) THEN
@@ -91,7 +91,7 @@ BEGIN
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id <> NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('SOURCE', 'BUD_ID', OLD.source_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('SOURCE', 'BUD_ID', OLD.source_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description <> NEW.description)) THEN
@@ -160,7 +160,7 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('SGDID', 'BUD_ID', OLD.sgdid_id, OLD.bud_id, NEW.bud_id, USER);
+        PERFORM nex.insertupdatelog('SGDID', 'BUD_ID', OLD.sgdid_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (OLD.sgdid_status != NEW.sgdid_status) THEN

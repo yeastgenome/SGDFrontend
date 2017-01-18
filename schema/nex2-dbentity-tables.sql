@@ -454,17 +454,17 @@ CREATE INDEX filepath_source_fk_index ON nex.filepath (source_id);
 DROP TABLE IF EXISTS nex.filedbentity CASCADE; 
 CREATE TABLE nex.filedbentity (
 	dbentity_id bigint NOT NULL DEFAULT nextval('object_seq'),
-        topic_id bigint NOT NULL,
+    topic_id bigint NOT NULL,
 	data_id bigint NOT NULL,
 	format_id bigint NOT NULL,
-        file_extension varchar(10) NOT NULL,
+    file_extension varchar(10) NOT NULL,
 	file_date timestamp NOT NULL,
 	is_public boolean NOT NULL,
 	is_in_spell boolean NOT NULL,
 	is_in_browser boolean NOT NULL,
 	md5sum varchar(32),
 	filepath_id bigint,
-        readme_file_id bigint,
+    readme_file_id bigint,
 	previous_file_name varchar(100),
 	s3_url varchar(500),
 	description varchar(4000),
@@ -742,8 +742,8 @@ CREATE TABLE nex.referencedeleted (
 	referencedeleted_id bigint NOT NULL DEFAULT nextval('object_seq'),
 	pmid bigint NOT NULL,
 	sgdid varchar(20),
-        reason_deleted varchar(500),
-        date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    reason_deleted varchar(500),
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT referencedeleted_pk PRIMARY KEY (referencedeleted_id)
 ) ;
