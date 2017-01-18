@@ -6,7 +6,7 @@ import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
 from src.views import reference_list
-from src.models import ReferenceDocument
+from src.models import Referencedocument
 
 class ReferencesTest(unittest.TestCase):
     def setUp(self):
@@ -71,8 +71,8 @@ class ReferencesTest(unittest.TestCase):
         book = factory.BookFactory()
         refdbentity = factory.ReferencedbentityFactory()
 
-        refdoc = factory.ReferenceDocumentFactory(reference_document_id=1)
-        refdoc_2 = factory.ReferenceDocumentFactory(reference_document_id=2)
+        refdoc = factory.ReferenceDocumentFactory(referencedocument_id=1)
+        refdoc_2 = factory.ReferenceDocumentFactory(referencedocument_id=2)
 
         mock_search.return_value = MockQuery([refdoc, refdoc_2])
 
