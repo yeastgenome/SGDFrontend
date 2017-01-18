@@ -4,7 +4,7 @@ import unittest
 import mock
 from pyramid import testing
 
-from src.search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, search_is_quick, add_exact_match, build_aggregation_query, build_search_query, build_es_search_query, build_es_search_body, build_autocomplete_search_query, format_autocomplete_results
+from src.search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, search_is_quick, build_aggregation_query, build_search_query, build_es_search_query, build_es_search_body, build_autocomplete_search_query, format_autocomplete_results
 
 
 class SearchHelpersTest(unittest.TestCase):
@@ -245,22 +245,6 @@ class SearchHelpersTest(unittest.TestCase):
         query = ""
         self.assertEqual({'match_all': {}}, build_es_search_query("", []))
         
-    @mock.patch('src.search_helpers.add_exact_match')
-    def test_add_exact_match_for_single_comma_queries(self, mock_exact):
-        query = "'eu gene'"
-        multi_match_fields = [1,2,3]
-        
-        build_es_search_query(query, multi_match_fields)
-        self.assertTrue(mock_exact.called)
-
-    @mock.patch('src.search_helpers.add_exact_match')
-    def test_add_exact_match_for_double_comma_queries(self, mock_exact):
-        query = "\"eu gene\""
-        multi_match_fields = [1,2,3]
-        
-        build_es_search_query(query, multi_match_fields)
-        self.assertTrue(mock_exact.called)
-
     def test_build_search_query_with_empty_category(self):
         query = "eu gene"
         multi_match_fields = [1,2,3]
@@ -349,51 +333,6 @@ class SearchHelpersTest(unittest.TestCase):
             'size': 0,
             'aggs': aggs
         }, build_aggregation_query(es_query, category, self.category_filters))
-
-    def test_add_exact_match(self):
-        query = "eu gene"
-        multi_match_fields = [1,2]
-        es_query = build_es_search_query(query, multi_match_fields)
-        
-        add_exact_match(es_query, query, multi_match_fields)
-
-        es_query_original = build_es_search_query(query, multi_match_fields)
-
-        self.assertEqual(es_query, {
-            'bool': {'minimum_should_match': 1,
-                     'should': [{
-                         'match_phrase_prefix': {
-                             'name': {
-                                 'analyzer': 'standard',
-                                 'boost': 3,
-                                 'max_expansions': 30,
-                                 'query': 'eu gene'}}
-                     }, {
-                         'match_phrase_prefix': {
-                             'name': {
-                                 'analyzer': 'standard',
-                                 'boost': 80,
-                                 'query': 'eu gene'
-                             }
-                         }
-                     }, {
-                         'match_phrase_prefix': {
-                             'description': {
-                                 'analyzer': 'standard',
-                                 'boost': 1,
-                                 'query': 'eu gene'
-                             }
-                         }
-                     }, {
-                         'multi_match': {
-                             'boost': 3,
-                             'fields': [1, 2],
-                             'query': 'eu gene',
-                             'type': 'phrase_prefix'
-                         }
-                     }
-                     ]
-            }})
 
     def test_build_es_search_body_with_empty_query_not_empty_category(self):
         self.assertEqual(build_es_search_body("", "category", {}, ["name"]), {

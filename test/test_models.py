@@ -1,6 +1,6 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
-from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, ReferenceDocument, Chebi, ChebiUrl, Phenotypeannotation, PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi
+from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi
 import fixtures as factory
 import os
 
@@ -108,8 +108,8 @@ class ModelsTest(unittest.TestCase):
         colleague_url_2 = factory.ColleagueUrlFactory(colleague_id=colleague.colleague_id, url_type="Lab")
 
         colleague_2 = factory.ColleagueFactory(colleague_id=113699)
-        factory.ColleagueAssociationFactory(colleague_id=colleague.colleague_id, associate_id=colleague_2.colleague_id, association_type="Lab member")
-        factory.ColleagueAssociationFactory(colleague_id=colleague.colleague_id, associate_id=colleague_2.colleague_id, association_type="Associate")
+        factory.ColleagueRelationFactory(colleague_id=colleague.colleague_id, associate_id=colleague_2.colleague_id, association_type="Lab member")
+        factory.ColleagueRelationFactory(colleague_id=colleague.colleague_id, associate_id=colleague_2.colleague_id, association_type="Associate")
 
         keyword = factory.KeywordFactory()
         factory.ColleagueKeywordFactory(colleague_id=colleague.colleague_id, keyword_id=keyword.keyword_id)
@@ -210,11 +210,11 @@ class ModelsTest(unittest.TestCase):
         colleague = factory.ColleagueFactory()
         colleague = factory.ColleagueFactory(colleague_id=113699)
         
-        instances = DBSession.query(ColleagueAssociation).all()
+        instances = DBSession.query(ColleagueRelation).all()
         self.assertEqual(0, len(instances))
 
-        association = factory.ColleagueAssociationFactory()
-        instances = DBSession.query(ColleagueAssociation).all()
+        association = factory.ColleagueRelationFactory()
+        instances = DBSession.query(ColleagueRelation).all()
 
         self.assertEqual(1, len(instances))
         self.assertEqual(association, instances[0])
@@ -225,9 +225,9 @@ class ModelsTest(unittest.TestCase):
         colleague_1 = factory.ColleagueFactory()
         colleague_2 = factory.ColleagueFactory(colleague_id=113699)
 
-        association_1_2 = factory.ColleagueAssociationFactory(colleague_id=colleague_1.colleague_id, associate_id=colleague_2.colleague_id, association_type="Lab member")
+        association_1_2 = factory.ColleagueRelationFactory(colleague_id=colleague_1.colleague_id, associate_id=colleague_2.colleague_id, association_type="Lab member")
 
-        association_2_1 = factory.ColleagueAssociationFactory(colleague_id=colleague_2.colleague_id, associate_id=colleague_1.colleague_id, association_type="Head of the lab")
+        association_2_1 = factory.ColleagueRelationFactory(colleague_id=colleague_2.colleague_id, associate_id=colleague_1.colleague_id, association_type="Head of the lab")
 
         colleague_dict = {}
         colleague_1._include_associates_to_dict(colleague_dict)
@@ -405,12 +405,12 @@ class ModelsTest(unittest.TestCase):
         book = factory.BookFactory()
         refdbentity = factory.ReferencedbentityFactory()
 
-        instances = DBSession.query(ReferenceDocument).all()
+        instances = DBSession.query(Referencedocument).all()
         self.assertEqual(0, len(instances))
 
         refdoc = factory.ReferenceDocumentFactory()
         
-        instances = DBSession.query(ReferenceDocument).all()
+        instances = DBSession.query(Referencedocument).all()
 
         self.assertEqual(1, len(instances))
         self.assertEqual(refdoc, instances[0])
