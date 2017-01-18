@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 // import * as AuthActions from '../actions/auth_actions';
 import style from './style.css';
 import SearchBar from './searchBar';
-import sgdMiniLogo from './sgdMiniLogo.png';
+import curateLogo from './curateLogo.png';
 import { clearError } from '../../actions/metaActions';
 
 class Layout extends Component {
@@ -63,8 +63,8 @@ class Layout extends Component {
             <ul className={`menu ${style.menu}`}>
               <li>
                 <Link className={style.indexLink} to='curate'>
-                  <img className={style.imgLogo} src={sgdMiniLogo} />
-                  <span className={`${style.logoText} ${style.navLink}`}>SGD Curator</span>
+                  <img className={style.imgLogo} src={curateLogo} />
+                  <span className={`${style.logoText} ${style.navLink}`}>Curator</span>
                 </Link>
               </li>
             </ul>
