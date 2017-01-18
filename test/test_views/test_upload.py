@@ -234,7 +234,6 @@ class UploadTest(unittest.TestCase):
             is_in_spell=self.complete_params['for_spell'],
             is_in_browser=self.complete_params['for_browser'],
             filepath_id=filepath.filepath_id,
-            readme_url=self.complete_params['readme_name'],
             file_extension=self.complete_params['extension'],
 
             # DBentity params

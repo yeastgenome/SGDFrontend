@@ -125,7 +125,6 @@ class KeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
     display_name = factory.Sequence(lambda n: 'protein traffcking {0}'.format(n))
     obj_url = "/keyword/protein_trafficking,_localization_and_degradation"
     source_id = 1
-    bud_id = 1
     description = "my description"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
@@ -235,10 +234,9 @@ class FiledbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     is_in_spell = 1
     is_in_browser = 1
     filepath_id = 1
-    readme_url = "http://example.org/readme"
     file_extension = "txt"
     s3_url = "http://example.org/s3"
-
+    readme_file_id = 1
     format_name = factory.Sequence(lambda n: 'format_{0}'.format(n))
     display_name = "My entity"
     obj_url = "http://example.org/entity"

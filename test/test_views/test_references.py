@@ -83,7 +83,7 @@ class ReferencesTest(unittest.TestCase):
 
         self.assertEqual(response, [{'id': refdoc.reference_id, 'text': refdoc.text}, {'id': refdoc.reference_id, 'text': refdoc_2.text}])
 
-        self.assertTrue(mock_search.return_value._full_params[0].compare(ReferenceDocument.reference_id.in_([refdoc.reference_id, refdoc_2.reference_id])))
-        self.assertTrue(mock_search.return_value._full_params[1].compare(ReferenceDocument.document_type == 'Medline'))
+        self.assertTrue(mock_search.return_value._full_params[0].compare(Referencedocument.reference_id.in_([refdoc.reference_id, refdoc_2.reference_id])))
+        self.assertTrue(mock_search.return_value._full_params[1].compare(Referencedocument.document_type == 'Medline'))
 
                         
