@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import style from './style.css';
 import SearchBar from './searchBar';
 import sgdMiniLogo from './sgdMiniLogo.png';
+import { clearError } from '../../actions/metaActions';
 
 class Layout extends Component {
   renderAuthedMenu() {
@@ -36,11 +37,27 @@ class Layout extends Component {
     );
   }
 
+  renderError() {
+    if (!this.props.error) return null;
+    let handleClick = () => {
+      this.props.dispatch(clearError());
+    };
+    return (
+      <div className={`alert callout ${style.errorContainer}`}>
+        <h3 className={style.closeIcon} onClick={handleClick}><i className='fa fa-close' /></h3>
+        <p>
+          {this.props.error}
+        </p>
+      </div>
+    );
+  }
+
   render() {
     // init auth nodes, either login or logout links
     let authNodes = this.props.isAuthenticated ? this.renderAuthedMenu() : this.renderPublicMenu();
     return (
       <div>
+        {this.renderError()}
         <nav className={`top-bar ${style.navWrapper}`}>
           <div className='top-bar-left'>
             <ul className={`menu ${style.menu}`}>
@@ -68,12 +85,14 @@ class Layout extends Component {
 
 Layout.propTypes = {
   children: PropTypes.node,
+  error: React.PropTypes.string,
   dispatch: React.PropTypes.func,
   isAuthenticated: React.PropTypes.bool
 };
 
 function mapStateToProps(state) {
   return {
+    error: state.meta.get('error'),
     isAuthenticated: state.auth.get('isAuthenticated')
   };
 }

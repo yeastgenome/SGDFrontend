@@ -9,7 +9,3 @@ export function logout () {
 export function startAuthentication () {
   return { type: 'START_AUTH' };
 }
-
-export function setLoginError () {
-  return { type: 'SET_LOGIN_ERROR' };
-}

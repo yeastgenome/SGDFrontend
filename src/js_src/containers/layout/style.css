@@ -52,3 +52,12 @@
 .contentContainer {
   margin-top: 1rem;
 }
+.errorContainer {
+  margin-bottom: 0;
+}
+.closeIcon {
+  float: right;
+  cursor: pointer;
+  position: relative;
+  top: -0.5rem;
+}
