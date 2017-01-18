@@ -1,6 +1,6 @@
 import datetime
 import factory
-from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueAssociation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, ReferenceDocument, Chebi, ChebiUrl, Phenotypeannotation, PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi
+from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -11,7 +11,6 @@ class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
     source_id = 1
     format_name = "Addgene"
     display_name = "Addgene"
-    obj_url = None
     bud_id = 1035
     description = "Plasmid Repository"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
@@ -64,7 +63,6 @@ class DbuserFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     dbuser_id = 1
     username = "mr_curator"
-    bud_id = None
     first_name = "Curator"
     last_name = "X"
     status = "Current"
@@ -89,12 +87,12 @@ class ColleagueUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     created_by = "TOTO"
 
 
-class ColleagueAssociationFactory(factory.alchemy.SQLAlchemyModelFactory):
+class ColleagueRelationFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
-        model = ColleagueAssociation
+        model = ColleagueRelation
         sqlalchemy_session = DBSession
 
-    colleague_association_id = factory.Sequence(lambda n: n)
+    colleague_relation_id = factory.Sequence(lambda n: n)
     source_id = 1
     bud_id = 1
     colleague_id = 113698
@@ -143,7 +141,6 @@ class EdamFactory(factory.alchemy.SQLAlchemyModelFactory):
     display_name = "display_name"
     obj_url = "/url"
     source_id = 1
-    bud_id = None
     edamid = factory.Sequence(lambda n: 'protein_{0}'.format(n))
     edam_namespace = "namespace"
     description = "This is my description"
@@ -278,15 +275,14 @@ class FilepathFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 class ReferenceDocumentFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
-        model = ReferenceDocument
+        model = Referencedocument
         sqlalchemy_session = DBSession
 
-    reference_document_id = 1
+    referencedocument_id = 1
     document_type = "Medline"
     text = "Bla bla bla"
     html = "<bla></bla>"
     source_id = 1
-    bud_id = 1
     reference_id = 1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
@@ -301,7 +297,6 @@ class ChebiFactory(factory.alchemy.SQLAlchemyModelFactory):
     display_name = "Mon chebi"
     obj_url = "/chebi"
     source_id = 1
-    bud_id = None
     chebiid = "CHEBI:8466"
     description = "This is a Chebi"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
@@ -316,7 +311,6 @@ class ChebiUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     display_name = "chebi_url"
     obj_url = "/chebi_url"
     source_id = 1
-    bud_id = 1
     chebi_id = 1
     url_type = "ChEBI"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
@@ -351,7 +345,6 @@ class LocusdbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     display_name = "My entity"
     obj_url = "http://example.org/entity"
     source_id = 1
-    bud_id = None
     sgdid = "S000001"
     dbentity_status = "ACTIVE"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
