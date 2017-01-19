@@ -955,6 +955,7 @@ class Referencedbentity(Dbentity):
             "citation": self.citation,
             "pubmed_id": self.pmid,
             "abstract": None,
+            "reftypes": [],
             "urls": []
         }
 
@@ -970,6 +971,12 @@ class Referencedbentity(Dbentity):
             obj["abstract"] = {
                 "text": abstract[0]
             }
+
+        reftypes = DBSession.query(Referencetype.display_name).filter_by(reference_id=self.dbentity_id).all()
+        for ref in reftypes:
+            obj["reftypes"].append({
+                "display_name": ref[0]
+            })
 
         return obj
     
@@ -1769,7 +1776,7 @@ class Geninteractionannotation(Base):
         dbentity1 = self.dbentity1
         dbentity2 = self.dbentity2
         phenotype = self.phenotype
-        
+
         obj = {
             "id": self.annotation_id,
             "note": self.description,
@@ -1791,9 +1798,7 @@ class Geninteractionannotation(Base):
                 "link": None
             },
             "phenotype": None,
-            
-            "mutant_type": None, # If you find a phenoytpe, use the mutant_type. GAIL: how to get it? reference_id = reference.dbentity_id and phenotype_id = phenotype_id?
-            
+            "mutant_type": "unspecified", # This column exists in NEX, but doesn't in NEX2. In NEX they are "unspecified" for the whole table. It was asked to removed it.
             "interaction_type": "Genetic",
             "annotation_type": self.annotation_type,
             "source": {
@@ -1811,7 +1816,6 @@ class Geninteractionannotation(Base):
                 "display_name": phenotype.display_name,
                 "link": phenotype.obj_url
             }
-            import pdb; pdb.set_trace()
 
         return obj
 
@@ -2526,13 +2530,10 @@ class Physinteractionannotation(Base):
                 "display_name": self.biogrid_experimental_system,
                 "link": None
             },
-            "phenotype": None, # { # GAIL: more than one phenotype?  -->> JUST FOR GENETIC INTERACTIONS!!!! This should be null.
-#                "display_name": None,
-#                "link": None
-#            },
-            "mutant_type": None, # If you find a phenoytpe, use the mutant_type
+            "phenotype": None, # None for physical interactions
+            "mutant_type": None, # None for physical interactions
             "modification": modification,
-            "interaction_type": "Physical", # Physical for this one. For genetic interaction use "Genetic"
+            "interaction_type": "Physical",
             "annotation_type": self.annotation_type,
             "source": {
                 "display_name": self.source.display_name
