@@ -53,7 +53,7 @@ class SpreadsheetUpload extends Component {
     }).then( data => {
       this.setState({
         isPending: false,
-        annotationData: data
+        annotationData: data.annotations
       });
     }).catch( () => {
       this.setState({ isPending: false });
