@@ -87,7 +87,7 @@ class SpreadsheetUpload extends Component {
       <form ref='form' onSubmit={this.handleSubmit.bind(this)}>
         <p>Directions: Select a template type (refer to examples), upload your file by dragging into box or clicking box, then click "submit."</p>
         <div className='row'>
-          <div className='columns small-3'>
+          <div className={`columns small-3 ${style.selectContainer}`}>
             <label>Template</label>
             <Select
               onChange={this.handleSelectChange.bind(this)}

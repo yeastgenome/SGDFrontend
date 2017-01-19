@@ -63,8 +63,7 @@ class Layout extends Component {
             <ul className={`menu ${style.menu}`}>
               <li>
                 <Link className={style.indexLink} to='curate'>
-                  <img className={style.imgLogo} src={curateLogo} />
-                  <span className={`${style.logoText} ${style.navLink}`}>Curator</span>
+                  <img className={style.imgLogo} src={curateLogo} /> SGD Curator
                 </Link>
               </li>
             </ul>

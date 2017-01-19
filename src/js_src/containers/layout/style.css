@@ -1,9 +1,6 @@
 .navWrapper {
   background: #0581C2;
 }
-.imgLogo {
-  width: 14rem;
-}
 .logoText {
   font-weight: bold;
   margin-left: 0.25rem;
@@ -38,9 +35,11 @@
 }
 .indexLink {
   color: white;
-  padding: 0.25rem;
   background: #0581C2;
-  padding: 0.2rem 0.25rem 0 0.25rem !important;
+  font-weight: bold;
+}
+.indexLink:hover {
+  color: white;
 }
 .indexText {
   font-size: 28px;
