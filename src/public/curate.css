@@ -6,6 +6,9 @@
  * MIT License: https://github.com/JedWatson/react-select
 */
 
+.Select {
+  position: relative;
+}
 .selectContainer {
   .Select {
     position: relative;
