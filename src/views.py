@@ -391,15 +391,28 @@ def reference_literature_details(request):
 def reference_interaction_details(request):
     id = request.matchdict['id'].upper()
 
-    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    try:
+        reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
 
-    if reference:
-        return reference.interactions_to_dict()
-    else:
+        if reference:
+            return reference.interactions_to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.err("Database failure querying reference.")
         return HTTPNotFound()
 
-    
-#    try:
-#    except:
-#        log.err("Database failure querying reference.")
-#        return HTTPNotFound()
+@view_config(route_name='reference_go_details', renderer='json', request_method='GET')
+def reference_go_details(request):
+    id = request.matchdict['id'].upper()
+
+    try:
+        reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+
+        if reference:
+            return reference.go_to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.err("Database failure querying reference.")
+        return HTTPNotFound()

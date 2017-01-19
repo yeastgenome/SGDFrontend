@@ -28,6 +28,7 @@ def main(global_config, **settings):
     config.add_route('reference', '/reference/{id}', request_method='GET')
     config.add_route('reference_literature_details', '/reference/{id}/literature_details', request_method='GET')
     config.add_route('reference_interaction_details', '/reference/{id}/interaction_details', request_method='GET')
+    config.add_route('reference_go_details', '/reference/{id}/go_details', request_method='GET')
 
     # curator interfaces
     config.add_route('colleague_triage_all', '/colleagues/triage', request_method='GET')
