@@ -2,7 +2,7 @@
   background: #0581C2;
 }
 .imgLogo {
-  width: 11rem;
+  width: 14rem;
 }
 .logoText {
   font-weight: bold;
@@ -40,7 +40,7 @@
   color: white;
   padding: 0.25rem;
   background: #0581C2;
-  padding-left: 0.5rem !important;
+  padding: 0.2rem 0.25rem 0 0.25rem !important;
 }
 .indexText {
   font-size: 28px;

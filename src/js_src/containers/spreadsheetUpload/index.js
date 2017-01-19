@@ -6,6 +6,7 @@ import _ from 'underscore';
 
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
+import Loader from '../../components/loader';
 
 const UPLOAD_URL = '/upload_spreadsheet';
 
@@ -15,6 +16,7 @@ class SpreadsheetUpload extends Component {
     this.state = {
       files: [],
       isPending: false,
+      annotationData: null,
       templateValue: DEFAULT_VALUE
     };
   }
@@ -37,6 +39,7 @@ class SpreadsheetUpload extends Component {
   }
 
   uploadData(formData) {
+    this.setState({ isPending: true });
     fetchData(UPLOAD_URL, {
       type: 'POST',
       credentials: 'same-origin',
@@ -47,7 +50,12 @@ class SpreadsheetUpload extends Component {
       processData: false,
       contentType: false
     }).then( data => {
-      console.log(data);
+      this.setState({
+        isPending: false,
+        annotationData: data
+      });
+    }).catch( () => {
+      this.setState({ isPending: false });
     });
   }
 
@@ -72,33 +80,48 @@ class SpreadsheetUpload extends Component {
     );
   }
 
-  render() {
+  renderForm() {
     let activeTemplate = this.getActiveTemplate();
     return (
+      <form ref='form' onSubmit={this.handleSubmit.bind(this)}>
+        <h1>Spreadsheet Upload</h1>
+        <p>Directions: Select a template type (refer to examples), upload your file by dragging into box or clicking box, then click "submit."</p>
+        <div className='row'>
+          <div className='columns small-3'>
+            <label>Template</label>
+            <Select
+              onChange={this.handleSelectChange.bind(this)}
+              options={TEMPLATE_OPTIONS}
+              name='template'
+              value={this.state.templateValue}
+            />
+            <label><a href={activeTemplate.tempalateUrl} target='_new'>See example {activeTemplate.label} template</a></label>
+          </div>
+        </div>
+        <div className='row'>
+          <div className='columns small-4'>
+            <label>Upload File</label>
+            {this.renderFileDrop()}
+          </div>
+        </div>
+        <input className={`button ${style.submitButton}`} type='submit' value='Submit' />
+      </form>
+    );
+  }
+
+  render() {
+    let node;
+    if (this.state.isPending) {
+      node = <Loader />;
+    } else if (this.state.annotationData) {
+      node = <p>Done!!!</p>;
+    } else {
+      node = this.renderForm();
+    }
+    return (
       <div>
-        <form ref='form' onSubmit={this.handleSubmit.bind(this)}>
-          <h1>Spreadsheet Upload</h1>
-          <p>Directions: Select a template type (refer to examples), upload your file by dragging into box or clicking box, then click "submit."</p>
-          <div className='row'>
-            <div className='columns small-3'>
-              <label>Template</label>
-              <Select
-                onChange={this.handleSelectChange.bind(this)}
-                options={TEMPLATE_OPTIONS}
-                name='template'
-                value={this.state.templateValue}
-              />
-              <label><a href={activeTemplate.tempalateUrl} target='_new'>See example {activeTemplate.label} template</a></label>
-            </div>
-          </div>
-          <div className='row'>
-            <div className='columns small-4'>
-              <label>Upload File</label>
-              {this.renderFileDrop()}
-            </div>
-          </div>
-          <input className={`button ${style.submitButton}`} type='submit' value='Submit' />
-        </form>
+        <h1>Spreadsheet Upload</h1>
+        {node}
       </div>
     );
   }
@@ -122,12 +145,7 @@ const TEMPLATE_OPTIONS = [
   {
     label: 'Locus Summaries',
     value: 'locus_summaries',
-    tempalateUrl: 'http://yeastgenome.org'
-  },
-  {
-    label: 'Phenotype Annotations',
-    value: 'phenotype_annotations',
-    tempalateUrl: 'http://yeastgenome.org'
+    tempalateUrl: 'https://docs.google.com/spreadsheets/d/1GwirBge5wrKBv5mDOnHMOrf7nxLydBQOIojaf5wd3QE/edit#gid=0'
   }
 ];
 const DEFAULT_VALUE = TEMPLATE_OPTIONS[0].value;

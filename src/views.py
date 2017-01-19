@@ -14,6 +14,7 @@ from .celery_tasks import upload_to_s3
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results
+from .tsv_parser import parse_tsv_annotations
 
 import transaction
 
@@ -30,9 +31,9 @@ def home_view(request):
 # @authenticate
 @view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')
 def upload_spreadsheet(request):
-    csv_file = request.POST['file'].file
+    tsv_file = request.POST['file'].file
     template_type = request.POST['template']
-    annotations = parse_csv_annotations(csv_file, template_type)
+    annotations = parse_tsv_annotations(tsv_file, template_type)
     
     return { 'annotations': annotations }
 
