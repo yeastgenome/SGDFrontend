@@ -6,6 +6,7 @@ import _ from 'underscore';
 
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
+import AnnotationSummary from '../../components/annotationSummary';
 import Loader from '../../components/loader';
 
 const UPLOAD_URL = '/upload_spreadsheet';
@@ -84,7 +85,6 @@ class SpreadsheetUpload extends Component {
     let activeTemplate = this.getActiveTemplate();
     return (
       <form ref='form' onSubmit={this.handleSubmit.bind(this)}>
-        <h1>Spreadsheet Upload</h1>
         <p>Directions: Select a template type (refer to examples), upload your file by dragging into box or clicking box, then click "submit."</p>
         <div className='row'>
           <div className='columns small-3'>
@@ -110,11 +110,12 @@ class SpreadsheetUpload extends Component {
   }
 
   render() {
+    let state = this.state;
     let node;
-    if (this.state.isPending) {
+    if (state.isPending) {
       node = <Loader />;
-    } else if (this.state.annotationData) {
-      node = <p>Done!!!</p>;
+    } else if (state.annotationData) {
+      node = <AnnotationSummary annotations={state.annotationData} />;
     } else {
       node = this.renderForm();
     }
