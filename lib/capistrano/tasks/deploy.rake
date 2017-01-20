@@ -28,7 +28,7 @@ namespace :deploy do
   desc 'Copy js build'
   task :copy_js do
     on roles(:app), in: :sequence do
-      static_build_path = "src/static/build"
+      static_build_path = "src/build"
       execute "mkdir -p #{current_path}/#{static_build_path}"
       upload!("./#{static_build_path}", "#{current_path}/#{static_build_path}")
     end
