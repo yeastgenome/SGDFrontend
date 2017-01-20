@@ -759,7 +759,7 @@ CREATE TABLE nex.proteinexptannotation (
 	taxonomy_id bigint NOT NULL,
 	experiment_type varchar(40) NOT NULL,
 	data_value varchar(25) NOT NULL,
-	data_unit varchar(25) NOT NULL,
+	data_unit varchar(40) NOT NULL,
 	assay_id bigint,
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
