@@ -34,15 +34,10 @@ def prep_views(chosen_frontend, config):
     config.add_route('literature_details', '/locus/{identifier}/literature')
     config.add_route('curator_sequence', '/curator/locus/{identifier}/sequence')
     # references
+    config.add_route('references_this_week', '/reference/recent')
     config.add_route('reference_o', '/reference/{identifier}/overview')
     config.add_route('reference', '/reference/{identifier}')
-
-    #Reference views
-    config.add_route('references_this_week', '/reference/recent')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('references_this_week', request)(getattr(chosen_frontend, 'references_this_week')()),
-                    renderer=chosen_frontend.get_renderer('references_this_week'),
-                    route_name='references_this_week')
-    
+        
     config.add_route('author', '/author/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('author', request)(getattr(chosen_frontend, 'author')(request.matchdict['identifier'])),
                     renderer=chosen_frontend.get_renderer('author'),
