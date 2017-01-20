@@ -778,7 +778,7 @@ COMMENT ON COLUMN nex.proteinexptannotation.created_by IS 'Username of the perso
 COMMENT ON COLUMN nex.proteinexptannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.proteinexptannotation.annotation_id IS 'Unique identifier (serial number).';
 ALTER TABLE nex.proteinexptannotation ADD CONSTRAINT proteinexptannotation_uk UNIQUE (dbentity_id,reference_id,experiment_type);
-ALTER TABLE nex.proteinexptannotation ADD CONSTRAINT proteinexptanno_type_ck CHECK (EXPERIMENT_TYPE IN ('abundance', 'localization'));
+ALTER TABLE nex.proteinexptannotation ADD CONSTRAINT proteinexptanno_type_ck CHECK (EXPERIMENT_TYPE IN ('abundance', 'localization','half-life'));
 CREATE INDEX proteinexptanno_source_fk_index ON nex.proteinexptannotation (source_id);
 CREATE INDEX proteinexptanno_tax_fk_index ON nex.proteinexptannotation (taxonomy_id);
 CREATE INDEX proteinexptanno_ref_fk_index ON nex.proteinexptannotation (reference_id);
