@@ -1,7 +1,7 @@
 .PHONY: test lib config
 
 build:
-	npm install --production
+	npm install
 	npm run build
 	pip install -r requirements.txt
 	python setup.py develop

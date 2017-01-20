@@ -2,7 +2,7 @@ namespace :deploy do
   desc 'Build application'
   task :build do
     on roles(:app), in: :sequence do
-      execute "export WORKON_HOME=/data/envs/ && export NODE_ENV=production && source virtualenvwrapper.sh && cd #{current_path} && workon sgd && make prod-build"
+      execute "export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && cd #{current_path} && workon sgd && make prod-build"
     end
   end
 
@@ -28,7 +28,7 @@ namespace :deploy do
   desc 'Copy js build'
   task :copy_js do
     on roles(:app), in: :sequence do
-      static_build_path = "src/build"
+      static_build_path = "src"
       execute "mkdir -p #{current_path}/#{static_build_path}"
       upload!("./#{static_build_path}", "#{current_path}/#{static_build_path}", { recursive: true })
     end
