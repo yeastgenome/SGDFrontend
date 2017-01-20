@@ -30,7 +30,7 @@ namespace :deploy do
     on roles(:app), in: :sequence do
       execute "mkdir -p #{current_path}/static/js/"
       
-      js_build_path = "static/js/application.js"
+      js_build_path = "static/build/js/application.js"
       upload!("./#{js_build_path}", "#{current_path}/#{js_build_path}")
     end
   end
