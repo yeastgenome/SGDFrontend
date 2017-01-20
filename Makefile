@@ -2,7 +2,7 @@
 
 build:
 	npm install --production
-	webpack
+	npm run build
 	pip install -r requirements.txt
 	python setup.py develop
 
@@ -23,10 +23,10 @@ tests:
 	source test_variables.sh && nosetests -s
 
 deploy:
-	source dev_variables.sh && cap dev deploy
+	npm run build && source dev_variables.sh && cap dev deploy
 
 prod-deploy:
-	source prod_variables.sh && cap prod deploy
+	npm run build && source prod_variables.sh && cap prod deploy
 
 run-prod:
 	pserve production.ini --daemon --pid-file=/var/run/pyramid/backend.pid
