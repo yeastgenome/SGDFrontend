@@ -302,6 +302,7 @@ CREATE TABLE nex.geninteractionannotation (
 	biogrid_experimental_system varchar(100) NOT NULL,
 	annotation_type varchar(20) NOT NULL,
 	bait_hit varchar(10) NOT NULL,
+    mutant_id bigint,
 	description varchar(1000),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -320,6 +321,7 @@ COMMENT ON COLUMN nex.geninteractionannotation.created_by IS 'Username of the pe
 COMMENT ON COLUMN nex.geninteractionannotation.dbentity1_id IS 'FK to DBENTITY.DBENTITY_ID.';
 COMMENT ON COLUMN nex.geninteractionannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.geninteractionannotation.phenotype_id IS 'FK to PHENOTYPE.PHENOTYPE_ID.';
+COMMENT ON COLUMN nex.geninteractionannotation.mutant_id IS 'FK to APO.APO_ID.';
 COMMENT ON COLUMN nex.geninteractionannotation.annotation_id IS 'Unique identifier (serial number).';
 ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionannotation_uk UNIQUE (dbentity1_id,dbentity2_id,bait_hit,biogrid_experimental_system,reference_id);
 ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionanno_bait_hit_ck CHECK (BAIT_HIT IN ('Bait-Hit', 'Hit-Bait'));
@@ -329,6 +331,7 @@ CREATE INDEX geninteractionanno_pheno_fk_index ON nex.geninteractionannotation (
 CREATE INDEX geninteractionanno_dbentity2_index ON nex.geninteractionannotation (dbentity2_id);
 CREATE INDEX geninteractionanno_tax_fk_index ON nex.geninteractionannotation (taxonomy_id);
 CREATE INDEX geninteractionanno_source_fk_index ON nex.geninteractionannotation (source_id);
+CREATE INDEX geninteractionanno_mutant_fk_index ON nex.geninteractionannotation (mutant_id);
 
 DROP TABLE IF EXISTS nex.goannotation CASCADE;
 CREATE TABLE nex.goannotation (
