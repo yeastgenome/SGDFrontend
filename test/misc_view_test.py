@@ -1,6 +1,8 @@
 import unittest
 from pyramid import testing
 
+EXAMPLE_LIT_IDENTIFIER = 'S000185877'
+
 class SGDViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
@@ -13,6 +15,19 @@ class SGDViewTests(unittest.TestCase):
         from src.sgd.frontend.yeastgenome.views.misc_views import home
         req = testing.DummyRequest()
         res = home(req)
+        self.assertEqual(res.status_code, 200)
+
+    def test_lit_page(self):
+        from src.sgd.frontend.yeastgenome.views.misc_views import reference
+        req = testing.DummyRequest()
+        req.matchdict = { 'identifier': EXAMPLE_LIT_IDENTIFIER }
+        res = reference(req)
+        self.assertEqual(res.status_code, 200)
+
+    def test_ref_this_week(self):
+        from src.sgd.frontend.yeastgenome.views.misc_views import references_this_week
+        req = testing.DummyRequest()
+        res = references_this_week(req)
         self.assertEqual(res.status_code, 200)
 
     def test_blast(self):

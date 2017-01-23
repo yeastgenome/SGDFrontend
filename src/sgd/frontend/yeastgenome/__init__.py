@@ -129,11 +129,7 @@ class YeastgenomeFrontend(FrontendInterface):
 
     def contig(self, contig_repr):
         return self.get_obj('contig', contig_repr)
-    
-    def references_this_week(self):
-        page = {}
-        return page
-            
+                
     def redirect(self, page, params):
         if page == 'interaction':
             if len(params) > 0:

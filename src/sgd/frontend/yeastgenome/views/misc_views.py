@@ -36,12 +36,10 @@ def download_list(request):
         response_text += (locus_name + '\n')
     return Response(body=response_text, content_type='text/plain', charset='utf-8', content_disposition='attachment; filename=search_results.txt')
 
-# helper method that goes through responses, and returns a redirect URL if is_quick is true for just 1, otherwise returns false
-def get_redirect_url_from_results(results):
-    quick_results = [x for x in results if x.get('is_quick')]
-    if len(quick_results) == 1:
-        return quick_results[0]['href']
-    return False
+@view_config(route_name='references_this_week') 
+def references_this_week(request):
+    page = {}
+    return render_to_response(TEMPLATE_ROOT + 'references_this_week.jinja2', page, request=request)
 
 @view_config(route_name='reference_o') 
 @view_config(route_name='reference') 
@@ -158,6 +156,11 @@ def home(request):
     ]
     return render_to_response(TEMPLATE_ROOT + 'temp_homepage.jinja2', { 'meetings': meetings, 'blog_posts': blog_posts }, request=request)
 
+# # example
+# @view_config(route_name='example') 
+# def example(request):
+#     return render_to_response(TEMPLATE_ROOT + 'example.jinja2', {}, request=request)
+
 def get_obj(identifier, obj_type):
     backend_url = config.backend_url + '/' + obj_type + '/' + identifier + '/overview'
     backend_response = requests.get(backend_url)
@@ -169,7 +172,10 @@ def get_obj(identifier, obj_type):
         obj_type + '_js': json.dumps(obj)
     }
 
-# example
-# @view_config(route_name='example') 
-# def example(request):
-#     return render_to_response(TEMPLATE_ROOT + 'example.jinja2', {}, request=request)
+
+# helper method that goes through responses, and returns a redirect URL if is_quick is true for just 1, otherwise returns false
+def get_redirect_url_from_results(results):
+    quick_results = [x for x in results if x.get('is_quick')]
+    if len(quick_results) == 1:
+        return quick_results[0]['href']
+    return False
