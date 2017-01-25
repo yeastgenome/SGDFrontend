@@ -753,26 +753,23 @@ class Dataset(Base):
     source = relationship(u'Source')
 
     def to_dict(self, reference):
-        tags = {
-            "display_name": None,
-            "link": None
-        }
+        keywords = DBSession.query(DatasetKeyword).filter_by(dataset_id=self.dataset_id).all()
+
+        tags = [keyword.to_dict() for keyword in keywords]
 
         return {
             "id": self.dataset_id,
             "display_name": self.display_name,
             "link": self.obj_url,
             "short_description": self.description,
-            "condition_count": [],
+            "condition_count": self.sample_count,
             "reference": {
                 "display_name": reference.display_name,
                 "link": reference.obj_url,
                 "pubmed_id": reference.pmid
             },
-            "tags": [],
-            "hist_values": []
+            "tags": tags
         }
-
 
 
 class DatasetFile(Base):
@@ -811,6 +808,12 @@ class DatasetKeyword(Base):
     dataset = relationship(u'Dataset')
     keyword = relationship(u'Keyword')
     source = relationship(u'Source')
+
+    def to_dict(self):
+        return {
+            "display_name": self.keyword.display_name,
+            "link": self.keyword.obj_url
+        }
 
 
 class DatasetReference(Base):
