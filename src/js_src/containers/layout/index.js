@@ -16,11 +16,6 @@ class Layout extends Component {
           <li><a className={style.navLink} href='/'>
             <i className='fa fa-sign-out' /> Logout</a>
           </li>
-          <li className={style.lastItem}>
-            <Link className={style.navLink} to='batch'>
-              <i className='fa fa-shopping-cart' /> Batch <span className='label'>1</span>
-            </Link>
-          </li>
           <li><SearchBar /></li>
         </ul>
       </div>

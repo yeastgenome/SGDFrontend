@@ -9,7 +9,6 @@ import Login from './containers/login';
 import { requireAuthentication } from './containers/authenticateComponent';
 import CurateLayout from './containers/curateHome/layout';
 import CurateHome from './containers/curateHome';
-import Batch from './containers/batch';
 import Search from './containers/search';
 import LocusShow from './containers/locus/show';
 import RefShow from './containers/reference/show';
@@ -34,9 +33,8 @@ export default (
     <Route component={Login} path='login' />
     <Route component={CurateLayout} path='curate'>
       <IndexRoute component={requireAuthentication(CurateHome)} />
-      <Route component={SpreadsheetUpload} path='spreadsheet_upload' />
+      <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
     </Route>
-    <Route component={requireAuthentication(Batch)} path='batch' />
     <Route component={requireAuthentication(LocusShow)} path='locus/:id/overview' />
     <Route component={requireAuthentication(RefShow)} path='reference/:id/overview' />
     <Route component={requireAuthentication(LitIndex)} path='literature' />
