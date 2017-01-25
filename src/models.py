@@ -752,6 +752,28 @@ class Dataset(Base):
     parent_dataset = relationship(u'Dataset', remote_side=[dataset_id])
     source = relationship(u'Source')
 
+    def to_dict(self, reference):
+        tags = {
+            "display_name": None,
+            "link": None
+        }
+
+        return {
+            "id": self.dataset_id,
+            "display_name": self.display_name,
+            "link": self.obj_url,
+            "short_description": self.description,
+            "condition_count": [],
+            "reference": {
+                "display_name": reference.display_name,
+                "link": reference.obj_url,
+                "pubmed_id": reference.pmid
+            },
+            "tags": [],
+            "hist_values": []
+        }
+
+
 
 class DatasetFile(Base):
     __tablename__ = 'dataset_file'
@@ -981,8 +1003,6 @@ class Referencedbentity(Dbentity):
         return obj
     
     def to_dict(self):
-        journal = self.journal
-        
         obj = {
             "display_name": self.display_name,
             "citation": self.citation,
@@ -991,15 +1011,18 @@ class Referencedbentity(Dbentity):
             "pubmed_id": self.pmid,
             "sgdid": self.sgdid,
             "journal": {
-                "med_abbr": journal.med_abbr,
+                "med_abbr": self.journal.med_abbr,
             },
             "year": self.year,
             "id": self.dbentity_id,
 
             "related_references": [],
-            "expression_datasets": [] ## TODO!!!
+            "expression_datasets": []
         }
 
+        datasets = DBSession.query(DatasetReference).filter_by(reference_id=self.dbentity_id).all()
+        obj["expression_datasets"] = [data.dataset.to_dict(self) for data in datasets]
+        
         abstract = DBSession.query(Referencedocument.text).filter_by(reference_id=self.dbentity_id, document_type="Abstract").one_or_none()
         if abstract:
             obj["abstract"] = {
@@ -1038,13 +1061,11 @@ class Referencedbentity(Dbentity):
         for ref in reference_relation_child:
             obj["related_references"].append(ref.parent.to_dict_reference_related())
 
-        count_interactions = DBSession.query(Physinteractionannotation).filter_by(reference_id=self.dbentity_id).count() + DBSession.query(Geninteractionannotation).filter_by(reference_id=self.dbentity_id).count()
-
         obj["counts"] = {
-            "interaction": count_interactions,
-            "go": 10,
-            "phenotype": 10,
-            "regulation": 10
+            "interaction": DBSession.query(Physinteractionannotation).filter_by(reference_id=self.dbentity_id).count() + DBSession.query(Geninteractionannotation).filter_by(reference_id=self.dbentity_id).count(),
+            "go": DBSession.query(Goannotation).filter_by(reference_id=self.dbentity_id).count(),
+            "phenotype": DBSession.query(Phenotypeannotation).filter_by(reference_id=self.dbentity_id).count(),
+            "regulation": DBSession.query(Regulationannotation).filter_by(reference_id=self.dbentity_id).count()
         }
 
         return obj
@@ -1053,21 +1074,37 @@ class Referencedbentity(Dbentity):
         obj = []
 
         annotations = DBSession.query(Literatureannotation).filter_by(reference_id=self.dbentity_id).all()
-        for a in annotations:
-            obj.append(a.to_dict())
 
-        return obj
+        return [annotation.to_dict() for annotation in annotations]
 
     def interactions_to_dict(self):
         obj = []
 
         interactions = DBSession.query(Physinteractionannotation).filter_by(reference_id=self.dbentity_id).all() + DBSession.query(Geninteractionannotation).filter_by(reference_id=self.dbentity_id).all()
-        for i in interactions:
-            obj.append(i.to_dict(self))
 
-        return obj
-            
+        return [interaction.to_dict(self) for interaction in interactions]
 
+    def go_to_dict(self):
+        obj = []
+
+        gos = DBSession.query(Goannotation).filter_by(reference_id=self.dbentity_id).all()
+        return [go.to_dict() for go in gos]
+
+    def phenotype_to_dict(self):
+        obj = []
+
+        phenotypes = DBSession.query(Phenotypeannotation).filter_by(reference_id=self.dbentity_id).all()
+        
+        return [phenotype.to_dict(self) for phenotype in phenotypes]
+
+    def regulation_to_dict(self):
+        obj = []
+
+        regulations = DBSession.query(Regulationannotation).filter_by(reference_id=self.dbentity_id).all()
+        
+        return [regulation.to_dict(self) for regulation in regulations]
+
+    
 class Filedbentity(Dbentity):
     __tablename__ = 'filedbentity'
     __table_args__ = {u'schema': 'nex'}
@@ -1527,7 +1564,7 @@ class Eco(Base):
     source = relationship(u'Source')
 
 
-class EcoAlia(Base):
+class EcoAlias(Base):
     __tablename__ = 'eco_alias'
     __table_args__ = (
         UniqueConstraint('eco_id', 'display_name', 'alias_type'),
@@ -1603,6 +1640,12 @@ class Edam(Base):
     created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
+
+    def to_dict(self):
+        return {
+            "id": self.edam_id,
+            "name": self.format_name
+        }
 
 
 class EdamAlia(Base):
@@ -1947,6 +1990,90 @@ class Goannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict(self):
+        alias = DBSession.query(EcoAlias).filter_by(eco_id=self.eco.eco_id).all()
+        experiment_name = alias[0].display_name
+
+        for alia in alias:
+            if len(experiment_name) > len(alia.display_name):
+                experiment_name = alia.display_name
+
+        alias_url = DBSession.query(EcoUrl).filter_by(eco_id=self.eco.eco_id).all()
+        
+        experiment_url = None
+        for url in alias_url:
+            if url.display_name == "OntoBee":
+                experiment_url = url.obj_url
+                break
+        if experiment_url == None and len(alias_url) > 0:
+            experiment_url = alias_url[0].obj_url
+
+        properties = []
+            
+        extensions = DBSession.query(Goextension).filter_by(annotation_id=self.annotation_id).all()
+
+        for extension in extensions:
+            split_dbxref = extension.dbxref_id.split("SGD:")
+            if len(split_dbxref) == 2:
+                sgdid = split_dbxref[1]
+                dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
+                properties.append({
+                    "bioentity": {
+                        "display_name": dbentity.display_name,
+                        "link": dbentity.obj_url,
+                        "class_type": dbentity.subclass
+                    },
+                    "role": extension.ro.display_name
+                })
+
+        supporting_evidences = DBSession.query(Gosupportingevidence).filter_by(annotation_id=self.annotation_id).all()
+
+        for se in supporting_evidences:
+            split_dbxref = se.dbxref_id.split("SGD:")
+            if len(split_dbxref) == 2:
+                sgdid = split_dbxref[1]
+                dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
+                properties.append({
+                    "bioentity": {
+                        "display_name": dbentity.display_name,
+                        "link": dbentity.obj_url,
+                        "class_type": dbentity.subclass
+                    },
+                    "role": se.evidence_type
+                })
+        
+        return {
+            "id": self.annotation_id,
+            "annotation_type": self.annotation_type,
+            "date_created": self.date_created.strftime("%Y-%m-%d"),
+            "qualifier": self.go_qualifier,
+            "locus": {
+                "display_name": self.dbentity.display_name,
+                "link": self.dbentity.obj_url,
+                "id": self.dbentity.dbentity_id,
+                "format_name": self.dbentity.format_name
+            },
+            "go": {
+                "display_name": self.go.display_name,
+                "link": self.go.obj_url,
+                "go_id": self.go.go_id,
+                "go_aspect": self.go.go_namespace
+            },
+            "reference": {
+                "display_name": self.reference.display_name,
+                "link": self.reference.obj_url,
+                "pubmed_id": self.reference.pmid
+            },
+            "source": {
+                "display_name": self.source.display_name
+            },
+            "experiment": {
+                "display_name": experiment_name,
+                "link": experiment_url
+            },
+            "properties": properties
+        }
+
 
 class Goextension(Base):
     __tablename__ = 'goextension'
@@ -2068,6 +2195,12 @@ class Keyword(Base):
     created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
+
+    def to_dict(self):
+        return {
+            "id": self.keyword_id,
+            "name": self.display_name
+        }
 
 
 class Literatureannotation(Base):
@@ -2436,7 +2569,7 @@ class Phenotypeannotation(Base):
     experiment_id = Column(ForeignKey(u'nex.apo.apo_id', ondelete=u'CASCADE'), nullable=False, index=True)
     mutant_id = Column(ForeignKey(u'nex.apo.apo_id', ondelete=u'CASCADE'), nullable=False, index=True)
     allele_id = Column(ForeignKey(u'nex.allele.allele_id', ondelete=u'CASCADE'), index=True)
-    reporter_id = Column(BigInteger, index=True)
+    reporter_id = Column(ForeignKey(u'nex.reporter.reporter_id', ondelete=u'CASCADE'), index=True)
     assay_id = Column(ForeignKey(u'nex.obi.obi_id', ondelete=u'CASCADE'), index=True)
     strain_name = Column(String(100))
     details = Column(String(500))
@@ -2450,8 +2583,113 @@ class Phenotypeannotation(Base):
     mutant = relationship(u'Apo', primaryjoin='Phenotypeannotation.mutant_id == Apo.apo_id')
     phenotype = relationship(u'Phenotype')
     reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    reporter = relationship(u'Reporter')
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
+
+    def to_dict(self, reference):
+        properties = []
+        
+        if self.reporter:
+            note = None
+            if self.reporter.description and len(self.reporter.description) > 0:
+                note = self.reporter.description
+            properties.append({
+                "class_type": "BIOITEM",
+                "bioitem": {
+                    "display_name": self.reporter.display_name
+                },
+                "note": note,
+                "role": "Reporter"
+            })
+                
+
+        if self.allele:
+            note = None
+            if self.allele.description and len(self.allele.description) > 0:
+                note = self.allele.description
+
+            properties.append({
+                "class_type": "BIOITEM",
+                "bioitem": {
+                    "display_name": self.allele.display_name
+                },
+                "note": note,
+                "role": "Allele"
+            })
+
+        # to be replaced by assay_id but data is not yet curated
+        chemicals = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id,condition_class="chemical").all()
+        for chemical in chemicals:
+            chebi = DBSession.query(Chebi).filter_by(display_name=chemical.condition_name).one_or_none()
+            link = None
+            if chebi:
+                link = chebi.obj_url
+
+            properties.append({
+                "class_type": "CHEMICAL",
+                "concentration": chemical.condition_value,
+                "bioitem": {
+                    "link": link,
+                    "display_name": chemical.condition_name
+                },
+                "note": None,
+                "role": "CHEMICAL"
+            })
+
+        strain = DBSession.query(Straindbentity).filter_by(taxonomy_id=self.taxonomy_id).all()
+        strain_obj = None
+        if len(strain) > 1:
+            strain_obj = {
+                "display_name": "Other",
+                "link": "/strain/S000203479"
+            }
+        else:
+            strain_obj = {
+                "display_name": strain[0].display_name,
+                "link": strain[0].obj_url
+            }
+
+        note = None
+        if self.details and len(self.details) > 0:
+            note = self.details
+            
+        experiment = None
+        experiment_details = None
+        if self.experiment:
+            experiment = {
+                "display_name": self.experiment.display_name,
+                "link": None, # self.experiment.obj_url -> no page yet
+                "category": self.experiment.apo_namespace
+            }
+            experiment_details = self.experiment.description
+        
+        obj = {
+            "id": self.annotation_id,
+            "mutant_type": self.mutant.display_name,
+            "locus": {
+                "display_name": self.dbentity.display_name,
+                "id": self.dbentity.dbentity_id,
+                "link": self.dbentity.obj_url,
+                "format_name": self.dbentity.format_name
+            },
+            "experiment": experiment,
+            "experiment_details": experiment_details,
+            "strain": strain_obj,
+            "properties": properties,
+            "note": note,
+            "phenotype": {
+                "display_name": self.phenotype.display_name,
+                "link": self.phenotype.obj_url
+            },
+            "reference": {
+                "display_name": reference.display_name,
+                "link": reference.obj_url,
+                "pubmed_id": reference.pmid
+            }
+        }
+
+        return obj
 
 
 class PhenotypeannotationCond(Base):
@@ -3036,6 +3274,52 @@ class Regulationannotation(Base):
     target = relationship(u'Dbentity', primaryjoin='Regulationannotation.target_id == Dbentity.dbentity_id')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict(self, reference):
+        experiment = None
+        if self.eco:
+            experiment = {
+                "display_name": self.eco.display_name,
+                "link": self.eco.obj_url
+            }
+        
+        strain = DBSession.query(Straindbentity).filter_by(taxonomy_id=self.taxonomy_id).all()
+        strain_obj = None
+        if len(strain) > 1:
+            strain_obj = {
+                "display_name": "Other",
+                "link": "/strain/S000203479"
+            }
+        else:
+            strain_obj = {
+                "display_name": strain[0].display_name,
+                "link": strain[0].obj_url
+            }
+        
+        return {
+            "id": self.annotation_id,
+            "locus2": {
+                "display_name": self.target.display_name,
+                "link": self.target.obj_url,
+                "id": self.target.dbentity_id,
+                "format_name": self.target.format_name                
+            },
+            "locus1": {
+                "display_name": self.regulator.display_name,
+                "link": self.regulator.obj_url,
+                "id": self.regulator.dbentity_id,
+                "format_name": self.regulator.format_name
+            },
+            "reference": {
+                "display_name": reference.display_name,
+                "link": reference.obj_url,
+                "pubmed_id": reference.pmid
+            },
+            "strain": strain_obj,
+            "experiment": experiment,
+            "properties": [], #dropped
+            "assay": None, #dropped
+            "construct": None #dropped
+        }
 
 class Reporter(Base):
     __tablename__ = 'reporter'
