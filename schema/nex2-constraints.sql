@@ -449,6 +449,8 @@ ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionanno_dbent
 ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionanno_ref_fk FOREIGN KEY (reference_id) REFERENCES referencedbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionanno_pheno_fk FOREIGN KEY (phenotype_id) REFERENCES phenotype(phenotype_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionanno_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.geninteractionannotation ADD CONSTRAINT geninteractionanno_mutant_fk FOREIGN KEY (mutant_id) REFERENCES apo(apo_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+
 
 ALTER TABLE nex.physinteractionannotation ADD CONSTRAINT physinteractionanno_dbentity1_fk FOREIGN KEY (dbentity1_id) REFERENCES dbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.physinteractionannotation ADD CONSTRAINT physinteractionanno_tax_fk FOREIGN KEY (taxonomy_id) REFERENCES taxonomy(taxonomy_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
