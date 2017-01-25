@@ -1,6 +1,6 @@
 import datetime
 import factory
-from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi
+from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -485,5 +485,26 @@ class ObiFactory(factory.alchemy.SQLAlchemyModelFactory):
     source_id = 1
     obiid = 1
     description = "the obi"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class ReservedNameFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Reservedname
+        sqlalchemy_session = DBSession
+
+    reservedname_id = 1
+    format_name = "AIP5"
+    display_name = "AIP5"
+    obj_url = "/reservedname/AIP5"
+    source_id = 1
+    bud_id = 750
+    locus_id = 1
+    reference_id = 1
+    colleague_id = 1
+    reservation_date = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    expiration_date = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    description = "blahblah"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
