@@ -608,7 +608,7 @@ COMMENT ON COLUMN nex.phenotypeannotation.reference_id IS 'FK to REFERENCEBENTIT
 COMMENT ON COLUMN nex.phenotypeannotation.annotation_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.phenotypeannotation.phenotype_id IS 'FK to PHENOTYPE.PHENOTYPE_ID.';
 COMMENT ON COLUMN nex.phenotypeannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-ALTER TABLE nex.phenotypeannotation ADD CONSTRAINT phenotypeannotation_uk UNIQUE (dbentity_id,phenotype_id,experiment_id,mutant_id,reference_id,taxonomy_id, allele_id, reporter_id, details);
+ALTER TABLE nex.phenotypeannotation ADD CONSTRAINT phenotypeannotation_uk UNIQUE (dbentity_id,phenotype_id,experiment_id,mutant_id,reference_id,taxonomy_id,allele_id,reporter_id,strain_name,details);
 CREATE INDEX phenotypeanno_phenotype_fk_index ON nex.phenotypeannotation (phenotype_id);
 CREATE INDEX phenotypeanno_taxonomy_fk_index ON nex.phenotypeannotation (taxonomy_id);
 CREATE INDEX phenotypeanno_ref_fk_index ON nex.phenotypeannotation (reference_id);
