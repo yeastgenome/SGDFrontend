@@ -9,7 +9,7 @@ import { updateAssignees } from '../../actions/litActions';
 class LitStatus extends Component {
   renderMoveButton() {
     if (this.props.isTriage) {
-      return <a className='button primary' href='#'><i className='fa fa-check-circle-o' /> Move to Curation</a>;
+      return <a className='button primary' href='#'><i className='fa fa-check-circle-o' /> Add to Database</a>;
     }
     return null;
   }
@@ -38,7 +38,6 @@ class LitStatus extends Component {
           </div>
           <div className='columns small-6 text-right'>
             <span className={style.updateTime}>Updated {this.props.activeEntry.lastUpdated.toLocaleString()}</span>
-            <a className='button' href='#'><i className='fa fa-save' /> Save</a>
           </div>
         </div>
       </div>

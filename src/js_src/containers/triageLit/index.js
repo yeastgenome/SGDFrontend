@@ -17,7 +17,6 @@ class TriageLit extends Component {
           <TagList />
           <label>Comments</label>
           <input className={style.commentBox} type='text' />
-          <a className='button' href='#'>Submit</a>
         </div>
       </div>
     );
