@@ -18,7 +18,7 @@ BEGIN
                       FROM nex.sgdid
 		      WHERE display_name = NEW.SGDID) THEN
 
-            PERFORM nex.insertsgdid(NEW.sgdid, 'SGD', NEW.subclass, 'Primary', NEW.created_by);
+            PERFORM nex.insertsgdid(NEW.sgdid, 'SGD'::text, NEW.subclass, 'Primary'::text, NEW.created_by);
 
        END IF;
        RETURN NEW;
@@ -26,32 +26,32 @@ BEGIN
   ELSIF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.format_name != NEW.format_name) THEN
-        PERFORM nex.insertupdatelog('DBENTITY', 'FORMAT_NAME', OLD.dbentity_id, OLD.format_name, NEW.format_name, USER);
+        PERFORM nex.insertupdatelog('DBENTITY'::text, 'FORMAT_NAME'::text, OLD.dbentity_id, OLD.format_name, NEW.format_name, USER);
     END IF;
 
     IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('DBENTITY', 'DISPLAY_NAME', OLD.dbentity_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('DBENTITY'::text, 'DISPLAY_NAME'::text, OLD.dbentity_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM nex.insertupdatelog('DBENTITY', 'OBJ_URL', OLD.dbentity_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('DBENTITY'::text, 'OBJ_URL'::text, OLD.dbentity_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
     IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('DBENTITY', 'SOURCE_ID', OLD.dbentity_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('DBENTITY'::text, 'SOURCE_ID'::text, OLD.dbentity_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('DBENTITY', 'BUD_ID', OLD.dbentity_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+        PERFORM nex.insertupdatelog('DBENTITY'::text, 'BUD_ID'::text, OLD.dbentity_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (OLD.subclass != NEW.subclass) THEN
-       PERFORM nex.insertupdatelog('DBENTITY', 'SUBCLASS', OLD.dbentity_id, OLD.subclass, NEW.subclass, USER);
+       PERFORM nex.insertupdatelog('DBENTITY'::text, 'SUBCLASS'::text, OLD.dbentity_id, OLD.subclass, NEW.subclass, USER);
     END IF;
 
     IF (OLD.dbentity_status != NEW.dbentity_status) THEN
-        PERFORM nex.insertupdatelog('DBENTITY', 'DBENTITY_STATUS', OLD.dbentity_id, OLD.dbentity_status, NEW.dbentity_status, USER);
-        PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD', 'Status', OLD.dbentity_status, NEW.dbentity_status, USER);
+        PERFORM nex.insertupdatelog('DBENTITY'::text, 'DBENTITY_STATUS'::text, OLD.dbentity_id, OLD.dbentity_status, NEW.dbentity_status, USER);
+        PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD'::text, 'Status'::text, OLD.dbentity_status, NEW.dbentity_status, USER);
     END IF;
 
     RETURN NEW;
@@ -68,7 +68,7 @@ BEGIN
              OLD.dbentity_status || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-     PERFORM nex.insertdeletelog('DBENTITY', OLD.dbentity_id, v_row, USER);
+     PERFORM nex.insertdeletelog('DBENTITY'::text, OLD.dbentity_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -159,9 +159,9 @@ BEGIN
 
   ELSIF (TG_OP = 'DELETE') THEN
 
---    IF ((OLD.subclass = 'LOCUS') OR (OLD.subclass = 'STRAIN')) THEN
---       RAISE EXCEPTION 'This dbentity subclass can not be deleted.';
---    END	IF;
+    IF ((OLD.subclass = 'LOCUS') OR (OLD.subclass = 'STRAIN')) THEN
+       RAISE EXCEPTION 'This dbentity subclass can not be deleted.';
+    END	IF;
 
     RETURN OLD;
   END IF;
@@ -181,77 +181,77 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.systematic_name != NEW.systematic_name) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'SYSTEMATIC_NAME', OLD.dbentity_id, OLD.systematic_name, NEW.systematic_name, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'SYSTEMATIC_NAME'::text, OLD.dbentity_id, OLD.systematic_name, NEW.systematic_name, USER);
     END IF;
 
     IF (((OLD.gene_name IS NULL) AND (NEW.gene_name IS NOT NULL)) OR ((OLD.gene_name IS NOT NULL) AND (NEW.gene_name IS NULL)) OR (OLD.gene_name != NEW.gene_name)) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'GENE_NAME', OLD.dbentity_id, OLD.gene_name, NEW.gene_name, USER);
-        PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD', 'Gene name', OLD.gene_name, NEW.gene_name, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'GENE_NAME'::text, OLD.dbentity_id, OLD.gene_name, NEW.gene_name, USER);
+        PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD'::text, 'Gene name'::text, OLD.gene_name, NEW.gene_name, USER);
     END IF;
 
     IF (((OLD.qualifier IS NULL) AND (NEW.qualifier IS NOT NULL)) OR ((OLD.qualifier IS NOT NULL) AND (NEW.qualifier IS NULL)) OR (OLD.qualifier != NEW.qualifier)) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'QUALIFIER', OLD.dbentity_id, OLD.qualifier, NEW.qualifier, USER);
-	PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD', 'Qualifier', OLD.qualifier, NEW.qualifier, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'QUALIFIER'::text, OLD.dbentity_id, OLD.qualifier, NEW.qualifier, USER);
+	PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD'::text, 'Qualifier'::text, OLD.qualifier, NEW.qualifier, USER);
     END IF;
 
     IF (((OLD.genetic_position IS NULL) AND (NEW.genetic_position IS NOT NULL)) OR ((OLD.genetic_position IS NOT NULL) AND (NEW.genetic_position IS NULL)) OR (OLD.genetic_position != NEW.genetic_position)) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'GENETIC_POSITION', OLD.dbentity_id, OLD.genetic_position::text, NEW.genetic_position::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'GENETIC_POSITION'::text, OLD.dbentity_id, OLD.genetic_position::text, NEW.genetic_position::text, USER);
     END IF;
 
     IF (((OLD.name_description IS NULL) AND (NEW.name_description IS NOT NULL)) OR ((OLD.name_description IS NOT NULL) AND (NEW.name_description IS NULL)) OR (OLD.name_description != NEW.name_description)) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'NAME_DESCRIPTION', OLD.dbentity_id, OLD.name_description, NEW.name_description, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'NAME_DESCRIPTION'::text, OLD.dbentity_id, OLD.name_description, NEW.name_description, USER);
     END IF;
 
     IF (((OLD.headline IS NULL) AND (NEW.headline IS NOT NULL)) OR ((OLD.headline IS NOT NULL) AND (NEW.headline IS NULL)) OR (OLD.headline != NEW.headline)) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HEADLINE', OLD.dbentity_id, OLD.headline, NEW.headline, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HEADLINE'::text, OLD.dbentity_id, OLD.headline, NEW.headline, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'DESCRIPTION', OLD.dbentity_id, OLD.description, NEW.description, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'DESCRIPTION'::text, OLD.dbentity_id, OLD.description, NEW.description, USER);
     END IF;
 
     IF (OLD.has_summary != NEW.has_summary) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_SUMMARY', OLD.dbentity_id, OLD.has_summary::text, NEW.has_summary::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_SUMMARY'::text, OLD.dbentity_id, OLD.has_summary::text, NEW.has_summary::text, USER);
     END IF;
 
     IF (OLD.has_sequence != NEW.has_sequence) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_SEQUENCE', OLD.dbentity_id, OLD.has_sequence::text, NEW.has_sequence::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_SEQUENCE'::text, OLD.dbentity_id, OLD.has_sequence::text, NEW.has_sequence::text, USER);
     END IF;
 
     IF (OLD.has_history != NEW.has_history) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_HISTORY', OLD.dbentity_id, OLD.has_history::text, NEW.has_history::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_HISTORY'::text, OLD.dbentity_id, OLD.has_history::text, NEW.has_history::text, USER);
     END IF;
 
     IF (OLD.has_literature != NEW.has_literature) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_LITERATURE', OLD.dbentity_id, OLD.has_literature::text, NEW.has_literature::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_LITERATURE'::text, OLD.dbentity_id, OLD.has_literature::text, NEW.has_literature::text, USER);
     END IF;
 
     IF (OLD.has_go != NEW.has_go) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_GO', OLD.dbentity_id, OLD.has_go::text, NEW.has_go::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_GO'::text, OLD.dbentity_id, OLD.has_go::text, NEW.has_go::text, USER);
     END IF;
 
     IF (OLD.has_phenotype != NEW.has_phenotype) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_PHENOTYPE', OLD.dbentity_id, OLD.has_phenotype::text, NEW.has_phenotype::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_PHENOTYPE'::text, OLD.dbentity_id, OLD.has_phenotype::text, NEW.has_phenotype::text, USER);
     END IF;
 
     IF (OLD.has_interaction != NEW.has_interaction) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_INTERACTION', OLD.dbentity_id, OLD.has_interaction::text, NEW.has_interaction::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_INTERACTION'::text, OLD.dbentity_id, OLD.has_interaction::text, NEW.has_interaction::text, USER);
     END IF;
 
     IF (OLD.has_expression != NEW.has_expression) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_EXPRESSION', OLD.dbentity_id, OLD.has_expression::text, NEW.has_expression::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_EXPRESSION'::text, OLD.dbentity_id, OLD.has_expression::text, NEW.has_expression::text, USER);
     END IF;
 
     IF (OLD.has_regulation != NEW.has_regulation) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_REGULATION', OLD.dbentity_id, OLD.has_regulation::text, NEW.has_regulation::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_REGULATION'::text, OLD.dbentity_id, OLD.has_regulation::text, NEW.has_regulation::text, USER);
     END IF;
 
     IF (OLD.has_protein != NEW.has_protein) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_PROTEIN', OLD.dbentity_id, OLD.has_protein::text, NEW.has_protein::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_PROTEIN'::text, OLD.dbentity_id, OLD.has_protein::text, NEW.has_protein::text, USER);
     END IF;
 
     IF (OLD.has_sequence_section != NEW.has_sequence_section) THEN
-        PERFORM nex.insertupdatelog('LOCUSDBENTITY', 'HAS_SEQUENCE_SECTION', OLD.dbentity_id, OLD.has_sequence_section::text, NEW.has_sequence_section::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_SEQUENCE_SECTION'::text, OLD.dbentity_id, OLD.has_sequence_section::text, NEW.has_sequence_section::text, USER);
     END IF;
 
     RETURN NEW;
@@ -269,7 +269,7 @@ BEGIN
              OLD.has_regulation || '[:]' || OLD.has_protein || '[:]' ||
              OLD.has_sequence_section;
 
-            PERFORM nex.insertdeletelog('LOCUSDBENTITY', OLD.dbentity_id, v_row, USER);
+            PERFORM nex.insertdeletelog('LOCUSDBENTITY'::text, OLD.dbentity_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -320,31 +320,31 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('LOCUS_ALIAS', 'DISPLAY_NAME', OLD.alias_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('LOCUS_ALIAS'::text, 'DISPLAY_NAME'::text, OLD.alias_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (((OLD.obj_url IS NULL) AND (NEW.obj_url IS NOT NULL)) OR ((OLD.obj_url IS NOT NULL) AND (NEW.obj_url IS NULL)) OR (OLD.obj_url != NEW.obj_url)) THEN
-        PERFORM nex.insertupdatelog('LOCUS_ALIAS', 'OBJ_URL', OLD.alias_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('LOCUS_ALIAS'::text, 'OBJ_URL'::text, OLD.alias_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('LOCUS_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUS_ALIAS'::text, 'SOURCE_ID'::text, OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('LOCUS_ALIAS', 'BUD_ID', OLD.alias_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUS_ALIAS'::text, 'BUD_ID'::text, OLD.alias_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (OLD.locus_id != NEW.locus_id) THEN
-        PERFORM nex.insertupdatelog('LOCUS_ALIAS', 'LOCUS_ID', OLD.alias_id, OLD.locus_id::text, NEW.locus_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUS_ALIAS'::text, 'LOCUS_ID'::text, OLD.alias_id, OLD.locus_id::text, NEW.locus_id::text, USER);
     END IF;
 
     IF (OLD.has_external_id_section != NEW.has_external_id_section) THEN
-        PERFORM nex.insertupdatelog('LOCUS_ALIAS', 'HAS_EXTERNAL_ID_SECTION', OLD.alias_id, OLD.has_external_id_section::text, NEW.has_external_id_section::text, USER);
+        PERFORM nex.insertupdatelog('LOCUS_ALIAS'::text, 'HAS_EXTERNAL_ID_SECTION'::text, OLD.alias_id, OLD.has_external_id_section::text, NEW.has_external_id_section::text, USER);
     END IF;
 
     IF (OLD.alias_type != NEW.alias_type) THEN
-        PERFORM nex.insertupdatelog('LOCUS_ALIAS', 'ALIAS_TYPE', OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
+        PERFORM nex.insertupdatelog('LOCUS_ALIAS'::text, 'ALIAS_TYPE'::text, OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
     END IF;
 
     RETURN NEW;
@@ -357,7 +357,7 @@ BEGIN
 	     OLD.has_external_id_section || '[:]' || OLD.alias_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM nex.insertdeletelog('LOCUS_ALIAS', OLD.alias_id, v_row, USER);
+          PERFORM nex.insertdeletelog('LOCUS_ALIAS'::text, OLD.alias_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -411,23 +411,23 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('LOCUS_RELATION', 'SOURCE_ID', OLD.relation_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUS_RELATION'::text, 'SOURCE_ID'::text, OLD.relation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('LOCUS_RELATION', 'BUD_ID', OLD.relation_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUS_RELATION'::text, 'BUD_ID'::text, OLD.relation_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM nex.insertupdatelog('LOCUS_RELATION', 'PARENT_ID', OLD.relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUS_RELATION'::text, 'PARENT_ID'::text, OLD.relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
     END IF;
 
      IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM nex.insertupdatelog('LOCUS_RELATION', 'CHILD_ID', OLD.relation_id, OLD.child_id::text, NEW.child_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUS_RELATION'::text, 'CHILD_ID'::text, OLD.relation_id, OLD.child_id::text, NEW.child_id::text, USER);
     END IF;
 
     IF (OLD.ro_id != NEW.ro_id) THEN
-        PERFORM nex.insertupdatelog('LOCUS_RELATION', 'RO_ID', OLD.relation_id, OLD.ro_id::text, NEW.ro_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUS_RELATION'::text, 'RO_ID'::text, OLD.relation_id, OLD.ro_id::text, NEW.ro_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -439,7 +439,7 @@ BEGIN
              OLD.child_id || '[:]' || OLD.ro_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM nex.insertdeletelog('LOCUS_RELATION', OLD.relation_id, v_row, USER);
+         PERFORM nex.insertdeletelog('LOCUS_RELATION'::text, OLD.relation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -493,31 +493,31 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('LOCUS_URL', 'DISPLAY_NAME', OLD.url_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('LOCUS_URL'::text, 'DISPLAY_NAME'::text, OLD.url_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM nex.insertupdatelog('LOCUS_URL', 'OBJ_URL', OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('LOCUS_URL'::text, 'OBJ_URL'::text, OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('LOCUS_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUS_URL'::text, 'SOURCE_ID'::text, OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('LOCUS_URL', 'BUD_ID', OLD.url_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUS_URL'::text, 'BUD_ID'::text, OLD.url_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (OLD.locus_id != NEW.locus_id) THEN
-        PERFORM nex.insertupdatelog('LOCUS_URL', 'LOCUS_ID', OLD.url_id, OLD.locus_id::text, NEW.locus_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUS_URL'::text, 'LOCUS_ID'::text, OLD.url_id, OLD.locus_id::text, NEW.locus_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
-        PERFORM nex.insertupdatelog('LOCUS_URL', 'URL_TYPE', OLD.url_id, OLD.url_type, NEW.url_type, USER);
+        PERFORM nex.insertupdatelog('LOCUS_URL'::text, 'URL_TYPE'::text, OLD.url_id, OLD.url_type, NEW.url_type, USER);
     END IF;
 
     IF (OLD.placement != NEW.placement) THEN
-        PERFORM nex.insertupdatelog('LOCUS_URL', 'PLACEMENT', OLD.url_id, OLD.placement, NEW.placement, USER);
+        PERFORM nex.insertupdatelog('LOCUS_URL'::text, 'PLACEMENT'::text, OLD.url_id, OLD.placement, NEW.placement, USER);
     END IF;
 
     RETURN NEW;
@@ -530,7 +530,7 @@ BEGIN
 	         OLD.url_type || '[:]' || OLD.placement || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM nex.insertdeletelog('LOCUS_URL', OLD.url_id, v_row, USER);
+         PERFORM nex.insertdeletelog('LOCUS_URL'::text, OLD.url_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -584,31 +584,31 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('LOCUSSUMMARY', 'SOURCE_ID', OLD.summary_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY'::text, 'SOURCE_ID'::text, OLD.summary_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('LOCUSSUMMARY', 'BUD_ID', OLD.summary_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY'::text, 'BUD_ID'::text, OLD.summary_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (OLD.locus_id != NEW.locus_id) THEN
-        PERFORM nex.insertupdatelog('LOCUSSUMMARY', 'LOCUS_ID', OLD.summary_id, OLD.locus_id::text, NEW.locus_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY'::text, 'LOCUS_ID'::text, OLD.summary_id, OLD.locus_id::text, NEW.locus_id::text, USER);
     END IF;
 
     IF (OLD.summary_type != NEW.summary_type) THEN
-        PERFORM nex.insertupdatelog('LOCUSSUMMARY', 'SUMMARY_TYPE', OLD.summary_id, OLD.summary_type, NEW.summary_type, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY'::text, 'SUMMARY_TYPE'::text, OLD.summary_id, OLD.summary_type, NEW.summary_type, USER);
     END IF;
 
     IF (OLD.summary_order != NEW.summary_order) THEN
-        PERFORM nex.insertupdatelog('LOCUSSUMMARY', 'SUMMARY_ORDER', OLD.summary_id, OLD.summary_order::text, NEW.summary_order::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY'::text, 'SUMMARY_ORDER'::text, OLD.summary_id, OLD.summary_order::text, NEW.summary_order::text, USER);
     END IF;
 
     IF (OLD.text != NEW.text) THEN
-        PERFORM nex.insertupdatelog('LOCUSSUMMARY', 'TEXT', OLD.summary_id, OLD.text, NEW.text, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY'::text, 'TEXT'::text, OLD.summary_id, OLD.text, NEW.text, USER);
     END IF;
 
     IF (OLD.html != NEW.html) THEN
-        PERFORM nex.insertupdatelog('LOCUSSUMMARY', 'HTML', OLD.summary_id, OLD.html, NEW.html, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY'::text, 'HTML'::text, OLD.summary_id, OLD.html, NEW.html, USER);
     END IF;
 
     RETURN NEW;
@@ -621,7 +621,7 @@ BEGIN
              OLD.text || '[:]' || OLD.html || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-             PERFORM nex.insertdeletelog('LOCUSSUMMARY', OLD.summary_id, v_row, USER);
+             PERFORM nex.insertdeletelog('LOCUSSUMMARY'::text, OLD.summary_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -675,19 +675,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.summary_id != NEW.summary_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'SUMMARY_ID', OLD.summary_reference_id, OLD.summary_id::text, NEW.summary_id::text, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'SUMMARY_ID'::text, OLD.summary_reference_id, OLD.summary_id::text, NEW.summary_id::text, USER);
     END IF;
 
      IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ID', OLD.summary_reference_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'REFERENCE_ID'::text, OLD.summary_reference_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
      IF (OLD.reference_order != NEW.reference_order) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ORDER', OLD.summary_reference_id, OLD.reference_order::text, NEW.reference_order::text, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'REFERENCE_ORDER'::text, OLD.summary_reference_id, OLD.reference_order::text, NEW.reference_order::text, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'SOURCE_ID', OLD.summary_reference_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'SOURCE_ID'::text, OLD.summary_reference_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -699,7 +699,7 @@ BEGIN
              OLD.source_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-             PERFORM nex.insertdeletelog('SUMMARY_REFERENCE', OLD.summary_reference_id, v_row, USER);
+             PERFORM nex.insertdeletelog('SUMMARY_REFERENCE'::text, OLD.summary_reference_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -754,47 +754,47 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'TAXONOMY_ID', OLD.dbentity_id, OLD.taxonomy_id::text, NEW.taxonomy_id::text, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY'::text, 'TAXONOMY_ID'::text, OLD.dbentity_id, OLD.taxonomy_id::text, NEW.taxonomy_id::text, USER);
     END IF;
 
     IF (OLD.strain_type != NEW.strain_type) THEN
-        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'STRAIN_TYPE', OLD.dbentity_id, OLD.strain_type, NEW.strain_type, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY'::text, 'STRAIN_TYPE'::text, OLD.dbentity_id, OLD.strain_type, NEW.strain_type, USER);
     END IF;
 
     IF (OLD.headline != NEW.headline) THEN
-        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'HEADLINE', OLD.dbentity_id, OLD.headline, NEW.headline, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY'::text, 'HEADLINE'::text, OLD.dbentity_id, OLD.headline, NEW.headline, USER);
     END IF;
 
     IF (((OLD.genotype IS NULL) AND (NEW.genotype IS NOT NULL)) OR ((OLD.genotype IS NOT NULL) AND (NEW.genotype IS NULL)) OR (OLD.genotype != NEW.genotype)) THEN
-        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'GENOTYPE', OLD.dbentity_id, OLD.genotype, NEW.genotype, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY'::text, 'GENOTYPE'::text, OLD.dbentity_id, OLD.genotype, NEW.genotype, USER);
     END IF;
 
     IF (((OLD.genbank_id IS NULL) AND (NEW.genbank_id IS NOT NULL)) OR ((OLD.genbank_id IS NOT NULL) AND (NEW.genbank_id IS NULL)) OR (OLD.genbank_id != NEW.genbank_id)) THEN
-        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'GENBANK_ID', OLD.dbentity_id, OLD.genbank_id, NEW.genbank_id, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY'::text, 'GENBANK_ID'::text, OLD.dbentity_id, OLD.genbank_id, NEW.genbank_id, USER);
     END IF;
 
     IF (((OLD.assembly_size IS NULL) AND (NEW.assembly_size IS NOT NULL)) OR ((OLD.assembly_size IS NOT NULL) AND (NEW.assembly_size IS NULL)) OR (OLD.assembly_size != NEW.assembly_size)) THEN
-        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'ASSEMBLY_SIZE', OLD.dbentity_id, OLD.assembly_size::text, NEW.assembly_size::text, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY'::text, 'ASSEMBLY_SIZE'::text, OLD.dbentity_id, OLD.assembly_size::text, NEW.assembly_size::text, USER);
     END IF;
 
     IF (((OLD.fold_coverage IS NULL) AND (NEW.fold_coverage IS NOT NULL)) OR ((OLD.fold_coverage IS NOT NULL) AND (NEW.fold_coverage IS NULL)) OR (OLD.fold_coverage != NEW.fold_coverage)) THEN
-        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'FOLD_COVERAGE', OLD.dbentity_id, OLD.fold_coverage::text, NEW.fold_coverage::text, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY'::text, 'FOLD_COVERAGE'::text, OLD.dbentity_id, OLD.fold_coverage::text, NEW.fold_coverage::text, USER);
     END IF;
 
     IF (((OLD.scaffold_number IS NULL) AND (NEW.scaffold_number IS NOT NULL)) OR ((OLD.scaffold_number IS NOT NULL) AND (NEW.scaffold_number IS NULL)) OR (OLD.scaffold_number != NEW.scaffold_number)) THEN
-        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'SCAFFOLD_NUMBER', OLD.dbentity_id, OLD.scaffold_number::text, NEW.scaffold_number::text, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY'::text, 'SCAFFOLD_NUMBER'::text, OLD.dbentity_id, OLD.scaffold_number::text, NEW.scaffold_number::text, USER);
     END IF;
 
     IF (((OLD.longest_scaffold IS NULL) AND (NEW.longest_scaffold IS NOT NULL)) OR ((OLD.longest_scaffold IS NOT NULL) AND (NEW.longest_scaffold IS NULL)) OR (OLD.longest_scaffold != NEW.longest_scaffold)) THEN
-        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'LONGEST_SCAFFOLD', OLD.dbentity_id, OLD.longest_scaffold::text, NEW.longest_scaffold::text, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY'::text, 'LONGEST_SCAFFOLD'::text, OLD.dbentity_id, OLD.longest_scaffold::text, NEW.longest_scaffold::text, USER);
     END IF;
 
     IF (((OLD.scaffold_nfifty IS NULL) AND (NEW.scaffold_nfifty IS NOT NULL)) OR ((OLD.scaffold_nfifty IS NOT NULL) AND (NEW.scaffold_nfifty IS NULL)) OR (OLD.scaffold_nfifty != NEW.scaffold_nfifty)) THEN
-        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'SCAFFOLD_NFIFTY', OLD.dbentity_id, OLD.scaffold_nfifty::text, NEW.scaffold_nfifty::text, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY'::text, 'SCAFFOLD_NFIFTY'::text, OLD.dbentity_id, OLD.scaffold_nfifty::text, NEW.scaffold_nfifty::text, USER);
     END IF;
 
     IF (((OLD.feature_count IS NULL) AND (NEW.feature_count IS NOT NULL)) OR ((OLD.feature_count IS NOT NULL) AND (NEW.feature_count IS NULL)) OR (OLD.feature_count != NEW.feature_count)) THEN
-        PERFORM nex.insertupdatelog('STRAINDBENTITY', 'FEATURE_COUNT', OLD.dbentity_id, OLD.feature_count::text, NEW.feature_count::text, USER);
+        PERFORM nex.insertupdatelog('STRAINDBENTITY'::text, 'FEATURE_COUNT'::text, OLD.dbentity_id, OLD.feature_count::text, NEW.feature_count::text, USER);
     END IF;
 
     RETURN NEW;
@@ -808,7 +808,7 @@ BEGIN
              coalesce(OLD.scaffold_number,0) || '[:]' || coalesce(OLD.longest_scaffold,0) || '[:]' ||
              coalesce(OLD.scaffold_nfifty,0) || '[:]' || coalesce(OLD.feature_count,0);
 
-            PERFORM nex.insertdeletelog('STRAINDBENTITY', OLD.dbentity_id, v_row, USER);
+            PERFORM nex.insertdeletelog('STRAINDBENTITY'::text, OLD.dbentity_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -844,23 +844,23 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('STRAIN_URL', 'DISPLAY_NAME', OLD.url_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('STRAIN_URL'::text, 'DISPLAY_NAME'::text, OLD.url_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM nex.insertupdatelog('STRAIN_URL', 'OBJ_URL', OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('STRAIN_URL'::text, 'OBJ_URL'::text, OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('STRAIN_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('STRAIN_URL'::text, 'SOURCE_ID'::text, OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.strain_id != NEW.strain_id) THEN
-        PERFORM nex.insertupdatelog('STRAIN_URL', 'STRAIN_ID', OLD.url_id, OLD.strain_id::text, NEW.strain_id::text, USER);
+        PERFORM nex.insertupdatelog('STRAIN_URL'::text, 'STRAIN_ID'::text, OLD.url_id, OLD.strain_id::text, NEW.strain_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
-        PERFORM nex.insertupdatelog('STRAIN_URL', 'URL_TYPE', OLD.url_id, OLD.url_type, NEW.url_type, USER);
+        PERFORM nex.insertupdatelog('STRAIN_URL'::text, 'URL_TYPE'::text, OLD.url_id, OLD.url_type, NEW.url_type, USER);
     END IF;
 
     RETURN NEW;
@@ -872,7 +872,7 @@ BEGIN
              OLD.strain_id || '[:]' || OLD.url_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM nex.insertdeletelog('STRAIN_URL', OLD.url_id, v_row, USER);
+          PERFORM nex.insertdeletelog('STRAIN_URL'::text, OLD.url_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -926,23 +926,23 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('STRAINSUMMARY', 'SOURCE_ID', OLD.summary_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('STRAINSUMMARY'::text, 'SOURCE_ID'::text, OLD.summary_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.strain_id != NEW.strain_id) THEN
-        PERFORM nex.insertupdatelog('STRAINSUMMARY', 'STRAIN_ID', OLD.summary_id, OLD.strain_id::text, NEW.strain_id::text, USER);
+        PERFORM nex.insertupdatelog('STRAINSUMMARY'::text, 'STRAIN_ID'::text, OLD.summary_id, OLD.strain_id::text, NEW.strain_id::text, USER);
     END IF;
 
     IF (OLD.summary_type != NEW.summary_type) THEN
-        PERFORM nex.insertupdatelog('STRAINSUMMARY', 'SUMMARY_TYPE', OLD.summary_id, OLD.summary_type, NEW.summary_type, USER);
+        PERFORM nex.insertupdatelog('STRAINSUMMARY'::text, 'SUMMARY_TYPE'::text, OLD.summary_id, OLD.summary_type, NEW.summary_type, USER);
     END IF;
 
     IF (OLD.text != NEW.text) THEN
-        PERFORM nex.insertupdatelog('STRAINSUMMARY', 'TEXT', OLD.summary_id, OLD.text, NEW.text, USER);
+        PERFORM nex.insertupdatelog('STRAINSUMMARY'::text, 'TEXT'::text, OLD.summary_id, OLD.text, NEW.text, USER);
     END IF;
 
     IF (OLD.html != NEW.html) THEN
-        PERFORM nex.insertupdatelog('STRAINSUMMARY', 'HTML', OLD.summary_id, OLD.html, NEW.html, USER);
+        PERFORM nex.insertupdatelog('STRAINSUMMARY'::text, 'HTML'::text, OLD.summary_id, OLD.html, NEW.html, USER);
     END IF;
 
     RETURN NEW;
@@ -954,7 +954,7 @@ BEGIN
              OLD.text || '[:]' || OLD.html || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM nex.insertdeletelog('STRAINSUMMARY', OLD.summary_id, v_row, USER);
+           PERFORM nex.insertdeletelog('STRAINSUMMARY'::text, OLD.summary_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1009,19 +1009,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.summary_id != NEW.summary_id)    THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'SUMMARY_ID', OLD.summary_reference_id, OLD.summary_id::text, NEW.summary_id::text, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'SUMMARY_ID'::text, OLD.summary_reference_id, OLD.summary_id::text, NEW.summary_id::text, USER);
     END IF;
 
      IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ID', OLD.summary_reference_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'REFERENCE_ID'::text, OLD.summary_reference_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
      IF (OLD.reference_order != NEW.reference_order) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ORDER', OLD.summary_reference_id, OLD.reference_order::text, NEW.reference_order::text, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'REFERENCE_ORDER'::text, OLD.summary_reference_id, OLD.reference_order::text, NEW.reference_order::text, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'SOURCE_ID', OLD.summary_reference_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'SOURCE_ID'::text, OLD.summary_reference_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -1033,7 +1033,7 @@ BEGIN
              OLD.source_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-             PERFORM nex.insertdeletelog('SUMMARY_REFERENCE', OLD.summary_reference_id, v_row, USER);
+             PERFORM nex.insertdeletelog('SUMMARY_REFERENCE'::text, OLD.summary_reference_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -1089,7 +1089,7 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (((OLD.biocyc_id IS NULL) AND (NEW.biocyc_id IS NOT NULL)) OR ((OLD.biocyc_id IS NOT NULL) AND (NEW.biocyc_id IS NULL)) OR (OLD.biocyc_id != NEW.biocyc_id)) THEN
-        PERFORM nex.insertupdatelog('PATHWAYDBENTITY', 'BIOCYC_ID', OLD.dbentity_id, OLD.biocyc_id, NEW.biocyc_id, USER);
+        PERFORM nex.insertupdatelog('PATHWAYDBENTITY'::text, 'BIOCYC_ID'::text, OLD.dbentity_id, OLD.biocyc_id, NEW.biocyc_id, USER);
     END IF;
 
     RETURN NEW;
@@ -1105,7 +1105,7 @@ BEGIN
 	       
         v_row := OLD.dbentity_id || '[:]' || coalesce(OLD.biocyc_id,'');
 
-        PERFORM nex.insertdeletelog('PATHWAYDBENTITY', OLD.dbentity_id, v_row, USER);
+        PERFORM nex.insertdeletelog('PATHWAYDBENTITY'::text, OLD.dbentity_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -1141,19 +1141,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('PATHWAY_ALIAS', 'DISPLAY_NAME', OLD.alias_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_ALIAS'::text, 'DISPLAY_NAME'::text, OLD.alias_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('PATHWAY_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_ALIAS'::text, 'SOURCE_ID'::text, OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.pathway_id != NEW.pathway_id) THEN
-        PERFORM nex.insertupdatelog('PATHWAY_ALIAS', 'PATHWAY_ID', OLD.alias_id, OLD.pathway_id::text, NEW.pathway_id::text, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_ALIAS'::text, 'PATHWAY_ID'::text, OLD.alias_id, OLD.pathway_id::text, NEW.pathway_id::text, USER);
     END IF;
 
     IF (OLD.alias_type != NEW.alias_type) THEN
-        PERFORM nex.insertupdatelog('PATHWAY_ALIAS', 'ALIAS_TYPE', OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_ALIAS'::text, 'ALIAS_TYPE'::text, OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
     END IF;
 
     RETURN NEW;
@@ -1164,7 +1164,7 @@ BEGIN
              OLD.pathway_id || '[:]' || OLD.alias_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM nex.insertdeletelog('PATHWAY_ALIAS', OLD.alias_id, v_row, USER);
+           PERFORM nex.insertdeletelog('PATHWAY_ALIAS'::text, OLD.alias_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1218,23 +1218,23 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('PATHWAY_URL', 'DISPLAY_NAME', OLD.url_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_URL'::text, 'DISPLAY_NAME'::text, OLD.url_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM nex.insertupdatelog('PATHWAY_URL', 'OBJ_URL', OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_URL'::text, 'OBJ_URL'::text, OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('PATHWAY_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_URL'::text, 'SOURCE_ID'::text, OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.pathway_id != NEW.pathway_id) THEN
-        PERFORM nex.insertupdatelog('PATHWAY_URL', 'PATHWAY_ID', OLD.url_id, OLD.pathway_id::text, NEW.pathway_id::text, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_URL'::text, 'PATHWAY_ID'::text, OLD.url_id, OLD.pathway_id::text, NEW.pathway_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
-        PERFORM nex.insertupdatelog('PATHWAY_URL', 'URL_TYPE', OLD.url_id, OLD.url_type, NEW.url_type, USER);
+        PERFORM nex.insertupdatelog('PATHWAY_URL'::text, 'URL_TYPE'::text, OLD.url_id, OLD.url_type, NEW.url_type, USER);
     END IF;
 
     RETURN NEW;
@@ -1246,7 +1246,7 @@ BEGIN
              OLD.pathway_id || '[:]' || OLD.url_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-            PERFORM nex.insertdeletelog('PATHWAY_URL', OLD.url_id, v_row, USER);
+            PERFORM nex.insertdeletelog('PATHWAY_URL'::text, OLD.url_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1300,23 +1300,23 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('PATHWAYSUMMARY', 'SOURCE_ID', OLD.summary_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('PATHWAYSUMMARY'::text, 'SOURCE_ID'::text, OLD.summary_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.pathway_id != NEW.pathway_id) THEN
-        PERFORM nex.insertupdatelog('PATHWAYSUMMARY', 'PATHWAY_ID', OLD.summary_id, OLD.pathway_id::text, NEW.pathway_id::text, USER);
+        PERFORM nex.insertupdatelog('PATHWAYSUMMARY'::text, 'PATHWAY_ID'::text, OLD.summary_id, OLD.pathway_id::text, NEW.pathway_id::text, USER);
     END IF;
 
     IF (OLD.summary_type != NEW.summary_type) THEN
-        PERFORM nex.insertupdatelog('PATHWAYSUMMARY', 'SUMMARY_TYPE', OLD.summary_id, OLD.summary_type, NEW.summary_type, USER);
+        PERFORM nex.insertupdatelog('PATHWAYSUMMARY'::text, 'SUMMARY_TYPE'::text, OLD.summary_id, OLD.summary_type, NEW.summary_type, USER);
     END IF;
 
     IF (OLD.text != NEW.text) THEN
-        PERFORM nex.insertupdatelog('PATHWAYSUMMARY', 'TEXT', OLD.summary_id, OLD.text, NEW.text, USER);
+        PERFORM nex.insertupdatelog('PATHWAYSUMMARY'::text, 'TEXT'::text, OLD.summary_id, OLD.text, NEW.text, USER);
     END IF;
 
     IF (OLD.html != NEW.html) THEN
-        PERFORM nex.insertupdatelog('PATHWAYSUMMARY', 'HTML', OLD.summary_id, OLD.html, NEW.html, USER);
+        PERFORM nex.insertupdatelog('PATHWAYSUMMARY'::text, 'HTML'::text, OLD.summary_id, OLD.html, NEW.html, USER);
     END IF;
 
     RETURN NEW;
@@ -1328,7 +1328,7 @@ BEGIN
              OLD.text || '[:]' || OLD.html || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-            PERFORM nex.insertdeletelog('PATHWAYSUMMARY', OLD.summary_id, v_row, USER);
+            PERFORM nex.insertdeletelog('PATHWAYSUMMARY'::text, OLD.summary_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1382,19 +1382,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.summary_id != NEW.summary_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'SUMMARY_ID', OLD.summary_reference_id, OLD.summary_id::text, NEW.summary_id::text, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'SUMMARY_ID'::text, OLD.summary_reference_id, OLD.summary_id::text, NEW.summary_id::text, USER);
     END IF;
 
      IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ID', OLD.summary_reference_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'REFERENCE_ID'::text, OLD.summary_reference_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
      IF (OLD.reference_order != NEW.reference_order) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'REFERENCE_ORDER', OLD.summary_reference_id, OLD.reference_order::text, NEW.reference_order::text, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'REFERENCE_ORDER'::text, OLD.summary_reference_id, OLD.reference_order::text, NEW.reference_order::text, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE', 'SOURCE_ID', OLD.summary_reference_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'SOURCE_ID'::text, OLD.summary_reference_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -1406,7 +1406,7 @@ BEGIN
              OLD.source_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-            PERFORM nex.insertdeletelog('SUMMARY_REFERENCE', OLD.summary_reference_id, v_row, USER);
+            PERFORM nex.insertdeletelog('SUMMARY_REFERENCE'::text, OLD.summary_reference_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1461,11 +1461,11 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('FILEPATH', 'SOURCE_ID', OLD.filepath_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('FILEPATH'::text, 'SOURCE_ID'::text, OLD.filepath_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (OLD.filepath != NEW.filepath) THEN
-        PERFORM nex.insertupdatelog('FILEPATH', 'FILEPATH', OLD.filepath_id, OLD.filepath, NEW.filepath, USER);
+        PERFORM nex.insertupdatelog('FILEPATH'::text, 'FILEPATH'::text, OLD.filepath_id, OLD.filepath, NEW.filepath, USER);
     END IF;
 
     RETURN NEW;
@@ -1476,7 +1476,7 @@ BEGIN
 	         OLD.filepath || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-            PERFORM nex.insertdeletelog('FILEPATH', OLD.filepath_id, v_row, USER);
+            PERFORM nex.insertdeletelog('FILEPATH'::text, OLD.filepath_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1531,59 +1531,59 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.topic_id != NEW.topic_id) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY', 'TOPIC_ID', OLD.dbentity_id, OLD.topic_id::text, NEW.topic_id::text, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'TOPIC_ID'::text, OLD.dbentity_id, OLD.topic_id::text, NEW.topic_id::text, USER);
     END IF;
 
     IF (OLD.data_id != NEW.data_id) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY', 'DATA_ID', OLD.dbentity_id, OLD.data_id::text, NEW.data_id::text, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'DATA_ID'::text, OLD.dbentity_id, OLD.data_id::text, NEW.data_id::text, USER);
     END IF;
 
     IF (OLD.format_id != NEW.format_id) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY', 'FORMAT_ID', OLD.dbentity_id, OLD.format_id::text, NEW.format_id::text, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'FORMAT_ID'::text, OLD.dbentity_id, OLD.format_id::text, NEW.format_id::text, USER);
     END IF;
 
     IF (OLD.file_extension != NEW.file_extension) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY', 'FILE_EXTENSION', OLD.dbentity_id, OLD.file_extension, NEW.file_extension, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'FILE_EXTENSION'::text, OLD.dbentity_id, OLD.file_extension, NEW.file_extension, USER);
     END IF;
 
     IF (OLD.file_date != NEW.file_date) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY', 'FILE_DATE', OLD.dbentity_id, OLD.file_date::text, NEW.file_date::text, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'FILE_DATE'::text, OLD.dbentity_id, OLD.file_date::text, NEW.file_date::text, USER);
     END IF;
 
     IF (OLD.is_public != NEW.is_public) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY', 'IS_PUBLIC', OLD.dbentity_id, OLD.is_public::text, NEW.is_public::text, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'IS_PUBLIC'::text, OLD.dbentity_id, OLD.is_public::text, NEW.is_public::text, USER);
     END IF;
 
     IF (OLD.is_in_spell != NEW.is_in_spell) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY', 'IS_IN_SPELL', OLD.dbentity_id, OLD.is_in_spell::text, NEW.is_in_spell::text, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'IS_IN_SPELL'::text, OLD.dbentity_id, OLD.is_in_spell::text, NEW.is_in_spell::text, USER);
     END IF;
 
     IF (OLD.is_in_browser != NEW.is_in_browser) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY', 'IS_IN_BROWSER', OLD.dbentity_id, OLD.is_in_browser::text, NEW.is_in_browser::text, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'IS_IN_BROWSER'::text, OLD.dbentity_id, OLD.is_in_browser::text, NEW.is_in_browser::text, USER);
     END IF;
 
      IF (((OLD.md5sum IS NULL) AND (NEW.md5sum IS NOT NULL)) OR ((OLD.md5sum IS NOT NULL) AND (NEW.md5sum IS NULL)) OR (OLD.md5sum != NEW.md5sum)) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY', 'MD5SUM', OLD.dbentity_id, OLD.md5sum, NEW.md5sum, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'MD5SUM'::text, OLD.dbentity_id, OLD.md5sum, NEW.md5sum, USER);
     END IF;
 
      IF (((OLD.s3_url IS NULL) AND (NEW.s3_url IS NOT NULL)) OR ((OLD.s3_url IS NOT NULL) AND (NEW.s3_url IS NULL)) OR (OLD.s3_url != NEW.s3_url)) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY', 'S3_URL', OLD.dbentity_id, OLD.s3_url, NEW.s3_url, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'S3_URL'::text, OLD.dbentity_id, OLD.s3_url, NEW.s3_url, USER);
     END IF;
 
      IF (((OLD.filepath_id IS NULL) AND (NEW.filepath_id IS NOT NULL)) OR ((OLD.filepath_id IS NOT NULL) AND (NEW.filepath_id IS NULL)) OR (OLD.filepath_id != NEW.filepath_id)) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY', 'FILEPATH_ID', OLD.dbentity_id, OLD.filepath_id::text, NEW.filepath_id::text, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'FILEPATH_ID'::text, OLD.dbentity_id, OLD.filepath_id::text, NEW.filepath_id::text, USER);
     END IF;
 
      IF (((OLD.previous_file_name IS NULL) AND (NEW.previous_file_name IS NOT NULL)) OR ((OLD.previous_file_name IS NOT NULL) AND (NEW.previous_file_name IS NULL)) OR (OLD.previous_file_name != NEW.previous_file_name)) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY', 'PREVIOUS_FILE_NAME', OLD.dbentity_id, OLD.previous_file_name, NEW.previous_file_name, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'PREVIOUS_FILE_NAME'::text, OLD.dbentity_id, OLD.previous_file_name, NEW.previous_file_name, USER);
     END IF;
 
      IF (((OLD.readme_file_id IS NULL) AND (NEW.readme_file_id IS NOT NULL)) OR ((OLD.readme_file_id IS NOT NULL) AND (NEW.readme_file_id IS NULL)) OR (OLD.readme_file_id != NEW.readme_file_id)) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY', 'README_FILE_ID', OLD.dbentity_id, OLD.readme_file_id::text, NEW.readme_file_id::text, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'README_FILE_ID'::text, OLD.dbentity_id, OLD.readme_file_id::text, NEW.readme_file_id::text, USER);
     END IF;
 
      IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY', 'DESCRIPTION', OLD.dbentity_id, OLD.description, NEW.description, USER);
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'DESCRIPTION'::text, OLD.dbentity_id, OLD.description, NEW.description, USER);
     END IF;
 
     RETURN NEW;
@@ -1606,7 +1606,7 @@ BEGIN
              OLD.previous_file_name || '[:]' || OLD.s3_url || '[:]' ||
              OLD.description;
 
-             PERFORM nex.insertdeletelog('FILEDBENTITY', OLD.dbentity_id, v_row, USER);
+             PERFORM nex.insertdeletelog('FILEDBENTITY'::text, OLD.dbentity_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1642,15 +1642,15 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.file_id != NEW.file_id) THEN
-        PERFORM nex.insertupdatelog('FILE_KEYWORD', 'FILE_ID', OLD.file_keyword_id, OLD.file_id::text, NEW.file_id::text, USER);
+        PERFORM nex.insertupdatelog('FILE_KEYWORD'::text, 'FILE_ID'::text, OLD.file_keyword_id, OLD.file_id::text, NEW.file_id::text, USER);
     END IF;
 
      IF (OLD.keyword_id != NEW.keyword_id) THEN
-        PERFORM nex.insertupdatelog('FILE_KEYWORD', 'KEYWORD_ID', OLD.file_keyword_id, OLD.keyword_id::text, NEW.keyword_id::text, USER);
+        PERFORM nex.insertupdatelog('FILE_KEYWORD'::text, 'KEYWORD_ID'::text, OLD.file_keyword_id, OLD.keyword_id::text, NEW.keyword_id::text, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('FILE_KEYWORD', 'SOURCE_ID', OLD.file_keyword_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('FILE_KEYWORD'::text, 'SOURCE_ID'::text, OLD.file_keyword_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -1661,7 +1661,7 @@ BEGIN
              OLD.keyword_id || '[:]' || OLD.source_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM nex.insertdeletelog('FILE_KEYWORD', OLD.file_keyword_id, v_row, USER);
+         PERFORM nex.insertdeletelog('FILE_KEYWORD'::text, OLD.file_keyword_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1716,43 +1716,43 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.format_name != NEW.format_name) THEN
-        PERFORM nex.insertupdatelog('BOOK', 'FORMAT_NAME', OLD.book_id, OLD.format_name, NEW.format_name, USER);
+        PERFORM nex.insertupdatelog('BOOK'::text, 'FORMAT_NAME'::text, OLD.book_id, OLD.format_name, NEW.format_name, USER);
     END IF;
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('BOOK', 'DISPLAY_NAME', OLD.book_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('BOOK'::text, 'DISPLAY_NAME'::text, OLD.book_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM nex.insertupdatelog('BOOK', 'OBJ_URL', OLD.book_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('BOOK'::text, 'OBJ_URL'::text, OLD.book_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('BOOK', 'SOURCE_ID', OLD.book_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('BOOK'::text, 'SOURCE_ID'::text, OLD.book_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('BOOK', 'BUD_ID', OLD.book_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+        PERFORM nex.insertupdatelog('BOOK'::text, 'BUD_ID'::text, OLD.book_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (OLD.title != NEW.title) THEN
-        PERFORM nex.insertupdatelog('BOOK', 'TITLE', OLD.book_id, OLD.title, NEW.title, USER);
+        PERFORM nex.insertupdatelog('BOOK'::text, 'TITLE'::text, OLD.book_id, OLD.title, NEW.title, USER);
     END IF;
 
     IF (((OLD.volume_title IS NULL) AND (NEW.volume_title IS NOT NULL)) OR ((OLD.volume_title IS NOT NULL) AND (NEW.volume_title IS NULL)) OR (OLD.volume_title != NEW.volume_title)) THEN
-        PERFORM nex.insertupdatelog('BOOK', 'VOLUME_TITLE', OLD.book_id, OLD.volume_title, NEW.volume_title, USER);
+        PERFORM nex.insertupdatelog('BOOK'::text, 'VOLUME_TITLE'::text, OLD.book_id, OLD.volume_title, NEW.volume_title, USER);
     END IF;
 
     IF (((OLD.isbn IS NULL) AND (NEW.isbn IS NOT NULL)) OR ((OLD.isbn IS NOT NULL) AND (NEW.isbn IS NULL)) OR (OLD.isbn != NEW.isbn)) THEN
-        PERFORM nex.insertupdatelog('BOOK', 'ISBN', OLD.book_id, OLD.isbn, NEW.isbn, USER);
+        PERFORM nex.insertupdatelog('BOOK'::text, 'ISBN'::text, OLD.book_id, OLD.isbn, NEW.isbn, USER);
     END IF;
 
     IF (((OLD.total_pages IS NULL) AND (NEW.total_pages IS NOT NULL)) OR ((OLD.total_pages IS NOT NULL) AND (NEW.total_pages IS NULL)) OR (OLD.total_pages != NEW.total_pages)) THEN
-        PERFORM nex.insertupdatelog('BOOK', 'TOTAL_PAGES', OLD.book_id, OLD.total_pages::text, NEW.total_pages::text, USER);
+        PERFORM nex.insertupdatelog('BOOK'::text, 'TOTAL_PAGES'::text, OLD.book_id, OLD.total_pages::text, NEW.total_pages::text, USER);
     END IF;
 
     IF (((OLD.publisher IS NULL) AND (NEW.publisher IS NOT NULL)) OR ((OLD.publisher IS NOT NULL) AND (NEW.publisher IS NULL)) OR (OLD.publisher != NEW.publisher)) THEN
-        PERFORM nex.insertupdatelog('BOOK', 'PUBLISHER', OLD.book_id, OLD.publisher, NEW.publisher, USER);
+        PERFORM nex.insertupdatelog('BOOK'::text, 'PUBLISHER'::text, OLD.book_id, OLD.publisher, NEW.publisher, USER);
     END IF;
 
     RETURN NEW;
@@ -1767,7 +1767,7 @@ BEGIN
              coalesce(OLD.publisher,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM nex.insertdeletelog('BOOK', OLD.book_id, v_row, USER);
+          PERFORM nex.insertdeletelog('BOOK'::text, OLD.book_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1821,39 +1821,39 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.format_name != NEW.format_name) THEN
-        PERFORM nex.insertupdatelog('JOURNAL', 'FORMAT_NAME', OLD.journal_id, OLD.format_name, NEW.format_name, USER);
+        PERFORM nex.insertupdatelog('JOURNAL'::text, 'FORMAT_NAME'::text, OLD.journal_id, OLD.format_name, NEW.format_name, USER);
     END IF;
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('JOURNAL', 'DISPLAY_NAME', OLD.journal_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('JOURNAL'::text, 'DISPLAY_NAME'::text, OLD.journal_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM nex.insertupdatelog('JOURNAL', 'OBJ_URL', OLD.journal_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('JOURNAL'::text, 'OBJ_URL'::text, OLD.journal_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('JOURNAL', 'SOURCE_ID', OLD.journal_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('JOURNAL'::text, 'SOURCE_ID'::text, OLD.journal_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('JOURNAL', 'BUD_ID', OLD.journal_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+        PERFORM nex.insertupdatelog('JOURNAL'::text, 'BUD_ID'::text, OLD.journal_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (((OLD.med_abbr IS NULL) AND (NEW.med_abbr IS NOT NULL)) OR ((OLD.med_abbr IS NOT NULL) AND (NEW.med_abbr IS NULL)) OR (OLD.med_abbr != NEW.med_abbr)) THEN
-        PERFORM nex.insertupdatelog('Journal', 'MED_ABBR', OLD.journal_id, OLD.med_abbr, NEW.med_abbr, USER);
+        PERFORM nex.insertupdatelog('Journal'::text, 'MED_ABBR'::text, OLD.journal_id, OLD.med_abbr, NEW.med_abbr, USER);
     END IF;
 
     IF (((OLD.title IS NULL) AND (NEW.title IS NOT NULL)) OR ((OLD.title IS NOT NULL) AND (NEW.title IS NULL)) OR (OLD.title != NEW.title)) THEN
-        PERFORM nex.insertupdatelog('Journal', 'TITLE', OLD.journal_id, OLD.title, NEW.title, USER);
+        PERFORM nex.insertupdatelog('Journal'::text, 'TITLE'::text, OLD.journal_id, OLD.title, NEW.title, USER);
     END IF;
 
     IF (((OLD.issn_print IS NULL) AND (NEW.issn_print IS NOT NULL)) OR ((OLD.issn_print IS NOT NULL) AND (NEW.issn_print IS NULL)) OR (OLD.issn_print != NEW.issn_print)) THEN
-        PERFORM nex.insertupdatelog('Journal', 'ISSN_PRINT', OLD.journal_id, OLD.issn_print, NEW.issn_print, USER);
+        PERFORM nex.insertupdatelog('Journal'::text, 'ISSN_PRINT'::text, OLD.journal_id, OLD.issn_print, NEW.issn_print, USER);
     END IF;
 
     IF (((OLD.issn_electronic IS NULL) AND (NEW.issn_electronic IS NOT NULL)) OR ((OLD.issn_electronic IS NOT NULL) AND (NEW.issn_electronic IS NULL)) OR (OLD.issn_electronic != NEW.issn_electronic)) THEN
-        PERFORM nex.insertupdatelog('Journal', 'ISSN_ELECTRONIC', OLD.journal_id, OLD.issn_electronic, NEW.issn_electronic, USER);
+        PERFORM nex.insertupdatelog('Journal'::text, 'ISSN_ELECTRONIC'::text, OLD.journal_id, OLD.issn_electronic, NEW.issn_electronic, USER);
     END IF;
 
     RETURN NEW;
@@ -1867,7 +1867,7 @@ BEGIN
              coalesce(OLD.issn_print,'') || '[:]' || coalesce(OLD.issn_electronic,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM nex.insertdeletelog('JOURNAL', OLD.journal_id, v_row, USER);
+           PERFORM nex.insertdeletelog('JOURNAL'::text, OLD.journal_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1922,67 +1922,67 @@ BEGIN
   If (TG_OP = 'UPDATE') THEN
 
     IF (OLD.method_obtained != NEW.method_obtained) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'METHOD_OBTAINED', OLD.dbentity_id, OLD.method_obtained, NEW.method_obtained, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'METHOD_OBTAINED'::text, OLD.dbentity_id, OLD.method_obtained, NEW.method_obtained, USER);
     END IF;
 
     IF (OLD.publication_status != NEW.publication_status) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'PUBLICATION_STATUS', OLD.dbentity_id, OLD.publication_status, NEW.publication_status, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'PUBLICATION_STATUS'::text, OLD.dbentity_id, OLD.publication_status, NEW.publication_status, USER);
     END IF;
 
     IF (OLD.fulltext_status != NEW.fulltext_status) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'FULLTEXT_STATUS', OLD.dbentity_id, OLD.fulltext_status, NEW.fulltext_status, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'FULLTEXT_STATUS'::text, OLD.dbentity_id, OLD.fulltext_status, NEW.fulltext_status, USER);
     END IF;
 
     IF (OLD.citation != NEW.citation) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'CITATION', OLD.dbentity_id, OLD.citation, NEW.citation, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'CITATION'::text, OLD.dbentity_id, OLD.citation, NEW.citation, USER);
     END IF;
 
     IF (OLD.year != NEW.year) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'YEAR', OLD.dbentity_id, OLD.year::text, NEW.year::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'YEAR'::text, OLD.dbentity_id, OLD.year::text, NEW.year::text, USER);
     END IF;
 
     IF (((OLD.pmid IS NULL) AND (NEW.pmid IS NOT NULL)) OR ((OLD.pmid IS NOT NULL) AND (NEW.pmid IS NULL)) OR (OLD.pmid != NEW.pmid)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'PMID', OLD.dbentity_id, OLD.pmid::text, NEW.pmid::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'PMID'::text, OLD.dbentity_id, OLD.pmid::text, NEW.pmid::text, USER);
     END IF;
 
     IF (((OLD.pmcid IS NULL) AND (NEW.pmcid IS NOT NULL)) OR ((OLD.pmcid IS NOT NULL) AND (NEW.pmcid IS NULL)) OR (OLD.pmcid != NEW.pmcid)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'PMCID', OLD.dbentity_id, OLD.pmcid, NEW.pmcid, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'PMCID'::text, OLD.dbentity_id, OLD.pmcid, NEW.pmcid, USER);
     END IF;
 
     IF (((OLD.date_published IS NULL) AND (NEW.date_published IS NOT NULL)) OR ((OLD.date_published IS NOT NULL) AND (NEW.date_published IS NULL)) OR (OLD.date_published != NEW.date_published)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'DATE_PUBLISHED', OLD.dbentity_id, OLD.date_published, NEW.date_published, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'DATE_PUBLISHED'::text, OLD.dbentity_id, OLD.date_published, NEW.date_published, USER);
     END IF;
 
     IF (((OLD.date_revised IS NULL) AND (NEW.date_revised IS NOT NULL)) OR ((OLD.date_revised IS NOT NULL) AND (NEW.date_revised IS NULL)) OR (OLD.date_revised != NEW.date_revised)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'DATE_REVISED', OLD.dbentity_id, OLD.date_revised::text, NEW.date_revised::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'DATE_REVISED'::text, OLD.dbentity_id, OLD.date_revised::text, NEW.date_revised::text, USER);
     END IF;
 
     IF (((OLD.issue IS NULL) AND (NEW.issue IS NOT NULL)) OR ((OLD.issue IS NOT NULL) AND (NEW.issue IS NULL)) OR (OLD.issue != NEW.issue)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'ISSUE', OLD.dbentity_id, OLD.issue, NEW.issue, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'ISSUE'::text, OLD.dbentity_id, OLD.issue, NEW.issue, USER);
     END IF;
 
     IF (((OLD.page IS NULL) AND (NEW.page IS NOT NULL)) OR ((OLD.page IS NOT NULL) AND (NEW.page IS NULL)) OR (OLD.page != NEW.page)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'PAGE', OLD.dbentity_id, OLD.page, NEW.page, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'PAGE'::text, OLD.dbentity_id, OLD.page, NEW.page, USER);
     END IF;
 
     IF (((OLD.volume IS NULL) AND (NEW.volume IS NOT NULL)) OR ((OLD.volume IS NOT NULL) AND (NEW.volume IS NULL)) OR (OLD.volume != NEW.volume)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'VOLUME', OLD.dbentity_id, OLD.volume, NEW.volume, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'VOLUME'::text, OLD.dbentity_id, OLD.volume, NEW.volume, USER);
     END IF;
 
     IF (((OLD.title IS NULL) AND (NEW.title IS NOT NULL)) OR ((OLD.title IS NOT NULL) AND (NEW.title IS NULL)) OR (OLD.title != NEW.title)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'TITLE', OLD.dbentity_id, OLD.title, NEW.title, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'TITLE'::text, OLD.dbentity_id, OLD.title, NEW.title, USER);
     END IF;
 
     IF (((OLD.doi IS NULL) AND (NEW.doi IS NOT NULL)) OR ((OLD.doi IS NOT NULL) AND (NEW.doi IS NULL)) OR (OLD.doi != NEW.doi)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'DOI', OLD.dbentity_id, OLD.doi, NEW.doi, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'DOI'::text, OLD.dbentity_id, OLD.doi, NEW.doi, USER);
     END IF;
 
     IF (((OLD.journal_id IS NULL) AND (NEW.journal_id IS NOT NULL)) OR ((OLD.journal_id IS NOT NULL) AND (NEW.journal_id IS NULL)) OR (OLD.journal_id != NEW.journal_id)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'JOURNAL_ID', OLD.dbentity_id, OLD.journal_id::text, NEW.journal_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'JOURNAL_ID'::text, OLD.dbentity_id, OLD.journal_id::text, NEW.journal_id::text, USER);
     END IF;
 
     IF (((OLD.book_id IS NULL) AND (NEW.book_id IS NOT NULL)) OR ((OLD.book_id IS NOT NULL) AND (NEW.book_id IS NULL)) OR (OLD.book_id != NEW.book_id)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE', 'BOOK_ID', OLD.dbentity_id, OLD.book_id::text, NEW.book_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE'::text, 'BOOK_ID'::text, OLD.dbentity_id, OLD.book_id::text, NEW.book_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -2006,7 +2006,7 @@ BEGIN
                 coalesce(OLD.title,'') || '[:]' || coalesce(OLD.doi,'') || '[:]' ||
                 coalesce(OLD.journal_id,0) || '[:]' || coalesce(OLD.book_id,0);
 
-           PERFORM nex.insertdeletelog('REFERENCE', OLD.dbentity_id, v_row, USER);
+           PERFORM nex.insertdeletelog('REFERENCE'::text, OLD.dbentity_id, v_row, USER);
 
        RETURN OLD;
   END IF;
@@ -2069,23 +2069,23 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_ALIAS', 'DISPLAY_NAME', OLD.alias_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_ALIAS'::text, 'DISPLAY_NAME'::text, OLD.alias_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_ALIAS', 'SOURCE_ID', OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_ALIAS'::text, 'SOURCE_ID'::text, OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_ALIAS', 'BUD_ID', OLD.alias_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_ALIAS'::text, 'BUD_ID'::text, OLD.alias_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_ALIAS', 'REFERENCE_ID', OLD.alias_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_ALIAS'::text, 'REFERENCE_ID'::text, OLD.alias_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
     IF (OLD.alias_type != NEW.alias_type) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_ALIAS', 'ALIAS_TYPE', OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_ALIAS'::text, 'ALIAS_TYPE'::text, OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
     END IF;
 
     RETURN NEW;
@@ -2097,7 +2097,7 @@ BEGIN
              OLD.reference_id || '[:]' || OLD.alias_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-         PERFORM nex.insertdeletelog('REFERENCE_ALIAS', OLD.alias_id, v_row, USER);
+         PERFORM nex.insertdeletelog('REFERENCE_ALIAS'::text, OLD.alias_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2151,19 +2151,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_RELATION', 'SOURCE_ID', OLD.reference_relation_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_RELATION'::text, 'SOURCE_ID'::text, OLD.reference_relation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
      IF (OLD.parent_id != NEW.parent_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_RELATION', 'PARENT_ID', OLD.reference_relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_RELATION'::text, 'PARENT_ID'::text, OLD.reference_relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
     END IF;
 
      IF (OLD.child_id != NEW.child_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_RELATION', 'CHILD_ID', OLD.reference_relation_id, OLD.child_id::text, NEW.child_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_RELATION'::text, 'CHILD_ID'::text, OLD.reference_relation_id, OLD.child_id::text, NEW.child_id::text, USER);
     END IF;
 
     IF (OLD.correction_type != NEW.correction_type) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_RELATION', 'CORRECTION_TYPE', OLD.reference_relation_id, OLD.correction_type, NEW.correction_type, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_RELATION'::text, 'CORRECTION_TYPE'::text, OLD.reference_relation_id, OLD.correction_type, NEW.correction_type, USER);
     END IF;
 
     RETURN NEW;
@@ -2175,7 +2175,7 @@ BEGIN
              OLD.correction_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM nex.insertdeletelog('REFERENCE_RELATION', OLD.reference_relation_id, v_row, USER);
+          PERFORM nex.insertdeletelog('REFERENCE_RELATION'::text, OLD.reference_relation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2229,27 +2229,27 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_URL', 'DISPLAY_NAME', OLD.url_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_URL'::text, 'DISPLAY_NAME'::text, OLD.url_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_URL', 'OBJ_URL', OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_URL'::text, 'OBJ_URL'::text, OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_URL', 'SOURCE_ID', OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_URL'::text, 'SOURCE_ID'::text, OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_URL', 'BUD_ID', OLD.url_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_URL'::text, 'BUD_ID'::text, OLD.url_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_URL', 'REFERENCE_ID', OLD.url_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_URL'::text, 'REFERENCE_ID'::text, OLD.url_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
     IF (OLD.url_type != NEW.url_type) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_URL', 'URL_TYPE', OLD.url_id, OLD.url_type, NEW.url_type, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_URL'::text, 'URL_TYPE'::text, OLD.url_id, OLD.url_type, NEW.url_type, USER);
     END IF;
 
     RETURN NEW;
@@ -2262,7 +2262,7 @@ BEGIN
              OLD.reference_id || '[:]' || OLD.url_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM nex.insertdeletelog('REFERENCE_URL', OLD.url_id, v_row, USER);
+          PERFORM nex.insertdeletelog('REFERENCE_URL'::text, OLD.url_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2315,35 +2315,35 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'DISPLAY_NAME', OLD.referenceauthor_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR'::text, 'DISPLAY_NAME'::text, OLD.referenceauthor_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'OBJ_URL', OLD.referenceauthor_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR'::text, 'OBJ_URL'::text, OLD.referenceauthor_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'SOURCE_ID', OLD.referenceauthor_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR'::text, 'SOURCE_ID'::text, OLD.referenceauthor_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'BUD_ID', OLD.referenceauthor_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR'::text, 'BUD_ID'::text, OLD.referenceauthor_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'REFERENCE_ID', OLD.referenceauthor_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR'::text, 'REFERENCE_ID'::text, OLD.referenceauthor_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
     IF (((OLD.orcid IS NULL) AND (NEW.orcid IS NOT NULL)) OR ((OLD.orcid IS NOT NULL) AND (NEW.orcid IS NULL)) OR (OLD.orcid != NEW.orcid)) THEN
-        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'ORCID', OLD.referenceauthor_id, OLD.orcid, NEW.orcid, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR'::text, 'ORCID'::text, OLD.referenceauthor_id, OLD.orcid, NEW.orcid, USER);
     END IF;
 
      IF (OLD.author_order != NEW.author_order) THEN
-        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'AUTHOR_ORDER', OLD.referenceauthor_id, OLD.author_order::text, NEW.author_order::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR'::text, 'AUTHOR_ORDER'::text, OLD.referenceauthor_id, OLD.author_order::text, NEW.author_order::text, USER);
     END IF;
 
      IF (OLD.author_type != NEW.author_type) THEN
-        PERFORM nex.insertupdatelog('REFERENCEAUTHOR', 'AUTHOR_TYPE', OLD.referenceauthor_id, OLD.author_type, NEW.author_type, USER);
+        PERFORM nex.insertupdatelog('REFERENCEAUTHOR'::text, 'AUTHOR_TYPE'::text, OLD.referenceauthor_id, OLD.author_type, NEW.author_type, USER);
     END IF;
 
     RETURN NEW;
@@ -2357,7 +2357,7 @@ BEGIN
              OLD.author_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-        PERFORM nex.insertdeletelog('REFERENCEAUTHOR', OLD.referenceauthor_id, v_row, USER);
+        PERFORM nex.insertdeletelog('REFERENCEAUTHOR'::text, OLD.referenceauthor_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -2412,15 +2412,15 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.pmid != NEW.pmid) THEN
-        PERFORM nex.insertupdatelog('REFERENCEDELETED', 'PMID', OLD.referencedeleted_id, OLD.pmid::text, NEW.pmid::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDELETED'::text, 'PMID'::text, OLD.referencedeleted_id, OLD.pmid::text, NEW.pmid::text, USER);
     END IF;
 
     IF (((OLD.sgdid IS NULL) AND (NEW.sgdid IS NOT NULL)) OR ((OLD.sgdid IS NOT NULL) AND (NEW.sgdid IS NULL)) OR (OLD.sgdid != NEW.sgdid)) THEN
-        PERFORM nex.insertupdatelog('REFERENCEDELETED', 'SGDID', OLD.referencedeleted_id, OLD.sgdid, NEW.sgdid, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDELETED'::text, 'SGDID'::text, OLD.referencedeleted_id, OLD.sgdid, NEW.sgdid, USER);
     END IF;
 
     IF (((OLD.reason_deleted IS NULL) AND (NEW.reason_deleted IS NOT NULL)) OR ((OLD.reason_deleted IS NOT NULL) AND (NEW.reason_deleted IS NULL)) OR (OLD.reason_deleted != NEW.reason_deleted)) THEN
-        PERFORM nex.insertupdatelog('REFERENCEDELETED', 'REASON_DELETED', OLD.referencedeleted_id, OLD.reason_deleted, NEW.reason_deleted, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDELETED'::text, 'REASON_DELETED'::text, OLD.referencedeleted_id, OLD.reason_deleted, NEW.reason_deleted, USER);
     END IF;
 
     RETURN NEW;
@@ -2431,7 +2431,7 @@ BEGIN
               OLD.sgdid || '[:]' || OLD.reason_deleted || '[:]' ||
               OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM nex.insertdeletelog('REFERENCEDELETED', OLD.referencedeleted_id, v_row, USER);
+           PERFORM nex.insertdeletelog('REFERENCEDELETED'::text, OLD.referencedeleted_id, v_row, USER);
 
      RETURN OLD;
 
@@ -2498,23 +2498,23 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.document_type != NEW.document_type) THEN
-        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT', 'DOCUMENT_TYPE', OLD.referencedocument_id, OLD.document_type, NEW.document_type, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT'::text, 'DOCUMENT_TYPE'::text, OLD.referencedocument_id, OLD.document_type, NEW.document_type, USER);
     END IF;
 
      IF (OLD.text != NEW.text) THEN
-        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT', 'TEXT', OLD.referencedocument_id, OLD.text, NEW.text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT'::text, 'TEXT'::text, OLD.referencedocument_id, OLD.text, NEW.text, USER);
     END IF;
 
     IF (OLD.html != NEW.html) THEN
-        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT', 'HTML', OLD.referencedocument_id, OLD.html, NEW.html, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT'::text, 'HTML'::text, OLD.referencedocument_id, OLD.html, NEW.html, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT', 'SOURCE_ID', OLD.referencedocument_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT'::text, 'SOURCE_ID'::text, OLD.referencedocument_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
      IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT', 'REFERENCE_ID', OLD.referencedocument_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDOCUMENT'::text, 'REFERENCE_ID'::text, OLD.referencedocument_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -2526,7 +2526,7 @@ BEGIN
              OLD.source_id || '[:]' || OLD.reference_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM nex.insertdeletelog('REFERENCEDOCUMENT', OLD.referencedocument_id, v_row, USER);
+          PERFORM nex.insertdeletelog('REFERENCEDOCUMENT'::text, OLD.referencedocument_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2580,23 +2580,23 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('REFERENCETYPE', 'DISPLAY_NAME', OLD.referencetype_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('REFERENCETYPE'::text, 'DISPLAY_NAME'::text, OLD.referencetype_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (OLD.obj_url != NEW.obj_url) THEN
-        PERFORM nex.insertupdatelog('REFERENCETYPE', 'OBJ_URL', OLD.referencetype_id, OLD.obj_url, NEW.obj_url, USER);
+        PERFORM nex.insertupdatelog('REFERENCETYPE'::text, 'OBJ_URL'::text, OLD.referencetype_id, OLD.obj_url, NEW.obj_url, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCETYPE', 'SOURCE_ID', OLD.referencetype_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCETYPE'::text, 'SOURCE_ID'::text, OLD.referencetype_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('REFERENCETYPE', 'BUD_ID', OLD.referencetype_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCETYPE'::text, 'BUD_ID'::text, OLD.referencetype_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCETYPE', 'REFERENCE_ID', OLD.referencetype_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCETYPE'::text, 'REFERENCE_ID'::text, OLD.referencetype_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -2608,7 +2608,7 @@ BEGIN
              coalesce(OLD.bud_id,0) || '[:]' || OLD.reference_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM nex.insertdeletelog('REFERENCETYPE', OLD.referencetype_id, v_row, USER);
+          PERFORM nex.insertdeletelog('REFERENCETYPE'::text, OLD.referencetype_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2662,15 +2662,15 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.reference_id != NEW.reference_id ) THEN
-        PERFORM nex.insertupdatelog('REFERENCEUNLINK', 'REFERENCE_ID', OLD.referenceunlink_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEUNLINK'::text, 'REFERENCE_ID'::text, OLD.referenceunlink_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCEUNLINK', 'DBENTITY_ID', OLD.referenceunlink_id, OLD.dbentity_id::text, NEW.dbentity_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEUNLINK'::text, 'DBENTITY_ID'::text, OLD.referenceunlink_id, OLD.dbentity_id::text, NEW.dbentity_id::text, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('REFERENCEUNLINK', 'BUD_ID', OLD.referenceunlink_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEUNLINK'::text, 'BUD_ID'::text, OLD.referenceunlink_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -2681,7 +2681,7 @@ BEGIN
              OLD.dbentity_id || '[:]' || coalesce(OLD.bud_id,0) || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM nex.insertdeletelog('REFERENCEUNLINK', OLD.referenceunlink_id, v_row, USER);
+          PERFORM nex.insertdeletelog('REFERENCEUNLINK'::text, OLD.referenceunlink_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -2735,15 +2735,15 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
      IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_FILE', 'REFERENCE_ID', OLD.reference_file_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_FILE'::text, 'REFERENCE_ID'::text, OLD.reference_file_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
     IF (OLD.file_id != NEW.file_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_FILE', 'FILE_ID', OLD.reference_file_id, OLD.file_id::text, NEW.file_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_FILE'::text, 'FILE_ID'::text, OLD.reference_file_id, OLD.file_id::text, NEW.file_id::text, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_FILE', 'SOURCE_ID', OLD.reference_file_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCE_FILE'::text, 'SOURCE_ID'::text, OLD.reference_file_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     RETURN  NEW;
@@ -2754,7 +2754,7 @@ BEGIN
              OLD.file_id || '[:]' || OLD.source_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM nex.insertdeletelog('REFERENCE_FILE', OLD.reference_file_id, v_row, USER);
+          PERFORM nex.insertdeletelog('REFERENCE_FILE'::text, OLD.reference_file_id, v_row, USER);
 
      RETURN OLD;
   END IF;
