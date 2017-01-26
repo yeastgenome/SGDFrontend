@@ -642,6 +642,7 @@ COMMENT ON COLUMN nex.phenotypeannotation_cond.created_by IS 'Username of the pe
 COMMENT ON COLUMN nex.phenotypeannotation_cond.annotation_id IS 'FK to PHENOTYPEANNOTATION.ANNOTATION_ID.';
 ALTER TABLE nex.phenotypeannotation_cond ADD CONSTRAINT phenotypeannotation_cond_uk UNIQUE (annotation_id,condition_class,condition_name,condition_value);
 ALTER TABLE nex.phenotypeannotation_cond ADD CONSTRAINT phenotypeannocond_class_ck CHECK (CONDITION_CLASS IN ('assay', 'media', 'phase', 'radiation', 'temperature', 'treatment', 'chemical'));
+CREATE INDEX phenotypeannocond_condition_name_index ON nex.phenotypeannotation_cond (condition_name);
 
 DROP TABLE IF EXISTS nex.physinteractionannotation CASCADE;
 CREATE TABLE nex.physinteractionannotation (
