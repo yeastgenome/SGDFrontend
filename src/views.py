@@ -7,7 +7,7 @@ from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype
 
 from .celery_tasks import upload_to_s3
 
@@ -204,57 +204,29 @@ def reference_list(request):
         except ValueError:
             return HTTPBadRequest(body=json.dumps({'error': "IDs must be string format of integers. Example JSON object expected: {\"reference_ids\": [\"1\", \"2\"]}"}))
 
-@view_config(route_name='chemical', renderer='json', request_method='GET')
-def chemical(request):
-    id = request.matchdict['id']
+# @view_config(route_name='chemical_phenotype_details', renderer='json', request_method='GET')
+# def chemical_phenotype_details(request):
+#     id = request.matchdict['id']
     
-    try:
-        float(id)
-        filter_by = Chebi.chebi_id == id
-    except ValueError:
-        filter_by = Chebi.format_name == id
+#     try:
+#         float(id)
+#         filter_by = Chebi.chebi_id == id
+#     except ValueError:
+#         filter_by = Chebi.format_name == id
 
-    chemical = DBSession.query(Chebi.chebi_id, Chebi.display_name, Chebi.chebiid, Chebi.format_name).filter(filter_by).one_or_none()
+#     chemical_name = DBSession.query(Chebi.display_name).filter(filter_by).one_or_none()
+
+#     if chemical:
+#         phenotype_annotation_conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter(PhenotypeannotationCond.condition_name == chemical_name.display_name, PhenotypeannotationCond.condition_class == 'chemical').all()
         
-    if chemical:
-        chemical_url = DBSession.query(ChebiUrl.obj_url).filter(ChebiUrl.chebi_id == chemical[0]).one_or_none()
-        urls = []
-        if chemical_url:
-            urls = [{'link': chemical_url[0]}]
-
-        return {
-            'display_name': chemical[1],
-            'chebi_id': chemical[2],
-            'id': int(chemical[0]),
-            'link': '/chemical/' + chemical[3] + '/overview/',
-            'urls': urls
-        }
-    else:
-        return HTTPNotFound(body=json.dumps({'error': 'Chemical not found'}))
-
-@view_config(route_name='chemical_phenotype_details', renderer='json', request_method='GET')
-def chemical_phenotype_details(request):
-    id = request.matchdict['id']
-    
-    try:
-        float(id)
-        filter_by = Chebi.chebi_id == id
-    except ValueError:
-        filter_by = Chebi.format_name == id
-
-    chemical_name = DBSession.query(Chebi.display_name).filter(filter_by).one_or_none()
-
-    if chemical:
-        phenotype_annotation_conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter(PhenotypeannotationCond.condition_name == chemical_name.display_name, PhenotypeannotationCond.condition_class == 'chemical').all()
-        
-        if len(phenotype_annotation_conditions) == 0:
-            return []
-        else:
-            annotation_ids = [id[0] for id in phenotype_annotation_conditions]
-            phenotype_annotation = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(annotation_ids)).all()
-            return [p.to_dict() for p in phenotype_annotation]
-    else:
-        return HTTPNotFound(body=json.dumps({'error': 'Chemical not found'}))
+#         if len(phenotype_annotation_conditions) == 0:
+#             return []
+#         else:
+#             annotation_ids = [id[0] for id in phenotype_annotation_conditions]
+#             phenotype_annotation = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(annotation_ids)).all()
+#             return [p.to_dict() for p in phenotype_annotation]
+#     else:
+#         return HTTPNotFound(body=json.dumps({'error': 'Chemical not found'}))
 
 @view_config(route_name='sign_in', request_method='POST')
 def sign_in(request):
@@ -339,7 +311,7 @@ def reserved_name(request):
         else:
             return HTTPNotFound()
     except:
-        log.err("Database failure querying reserved names.")
+        log.error("Database failure querying reserved names.")
         return HTTPNotFound()
 
 @view_config(route_name='strain', renderer='json', request_method='GET')
@@ -354,15 +326,12 @@ def strain(request):
         else:
             return HTTPNotFound()
     except:
-        log.err("Database failure querying strain.")
+        log.error("Database failure querying strain.")
         return HTTPNotFound()
 
 @view_config(route_name='reference', renderer='json', request_method='GET')
 def reference(request):
     id = request.matchdict['id'].upper()
-
-    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
-    return reference.to_dict()
 
     try:
         reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
@@ -371,7 +340,7 @@ def reference(request):
         else:
             return HTTPNotFound()
     except:
-        log.err("Database failure querying reference.")
+        log.error("Database failure querying reference.")
         return HTTPNotFound()
 
 @view_config(route_name='reference_literature_details', renderer='json', request_method='GET')
@@ -380,13 +349,12 @@ def reference_literature_details(request):
 
     try:
         reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
-
         if reference:
             return reference.annotations_to_dict()
         else:
             return HTTPNotFound()
     except:
-        log.err("Database failure querying reference.")
+        log.error("Database failure querying reference.")
         return HTTPNotFound()
 
 @view_config(route_name='reference_interaction_details', renderer='json', request_method='GET')
@@ -395,13 +363,12 @@ def reference_interaction_details(request):
 
     try:
         reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
-
         if reference:
             return reference.interactions_to_dict()
         else:
             return HTTPNotFound()
     except:
-        log.err("Database failure querying reference.")
+        log.error("Database failure querying reference.")
         return HTTPNotFound()
 
 @view_config(route_name='reference_go_details', renderer='json', request_method='GET')
@@ -410,40 +377,107 @@ def reference_go_details(request):
 
     try:
         reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
-
         if reference:
             return reference.go_to_dict()
         else:
             return HTTPNotFound()
     except:
-        log.err("Database failure querying reference.")
+        log.error("Database failure querying reference.")
         return HTTPNotFound()
 
 @view_config(route_name='reference_phenotype_details', renderer='json', request_method='GET')
 def reference_phenotype_details(request):
     id = request.matchdict['id'].upper()
 
-    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
-    return reference.phenotype_to_dict()
     try:
+        reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
         if reference:
             return reference.phenotype_to_dict()
         else:
             return HTTPNotFound()
     except:
-        log.err("Database failure querying reference.")
+        log.error("Database failure querying reference.")
         return HTTPNotFound()
 
 @view_config(route_name='reference_regulation_details', renderer='json', request_method='GET')
 def reference_regulation_details(request):
     id = request.matchdict['id'].upper()
 
-    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
     try:
+        reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
         if reference:
             return reference.regulation_to_dict()
         else:
             return HTTPNotFound()
     except:
-        log.err("Database failure querying reference.")
+        log.error("Database failure querying reference.")
+        return HTTPNotFound()
+
+@view_config(route_name='author', renderer='json', request_method='GET')
+def author(request):
+    format_name = request.matchdict['format_name']
+
+    key = "/author/"+format_name
+    
+    try:
+        authors_ref = DBSession.query(Referenceauthor).filter_by(obj_url=key).all()
+        if len(authors_ref) > 0:
+            return {
+                "display_name": authors_ref[0].display_name,
+                "references": [author_ref.reference.to_dict_reference_related() for author_ref in authors_ref]
+            }
+        else:
+            return HTTPNotFound()
+    except:
+        log.error("Database failure querying reference author.")
+        return HTTPNotFound()
+
+@view_config(route_name='chemical', renderer='json', request_method='GET')
+def chemical(request):
+    format_name = request.matchdict['format_name'].upper()
+    
+    try:
+        chebi = DBSession.query(Chebi).filter_by(format_name=format_name).one_or_none()
+        if chebi:
+            return chebi.to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.error("Database failure querying reference chemical.")
+        return HTTPNotFound()
+
+@view_config(route_name='chemical_phenotype_details', renderer='json', request_method='GET')
+def chemical_phenotype_details(request):
+    id = request.matchdict['id'].upper()
+
+    chebi = DBSession.query(Chebi).filter_by(chebi_id=id).one_or_none()
+    if chebi:
+        return chebi.phenotype_to_dict()
+    
+    try:
+        chebi = DBSession.query(Chebi).filter_by(chebi_id=id).one_or_none()
+        if chebi:
+            return chebi.phenotype_to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.error("Database failure querying chemical.")
+        return HTTPNotFound()    
+
+@view_config(route_name='phenotype', renderer='json', request_method='GET')
+def phenotype(request):
+    format_name = request.matchdict['format_name']
+
+    phenotype = DBSession.query(Phenotype).filter_by(format_name=format_name).one_or_none()
+    if phenotype:
+        return phenotype.to_dict()
+    
+    try:
+        phenotype = DBSession.query(Phenotype).filter_by(format_name=format_name).one_or_none()
+        if phenotype:
+            return phenotype.to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.error("Database failure querying phenotype.")
         return HTTPNotFound()

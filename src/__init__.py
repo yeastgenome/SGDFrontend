@@ -34,6 +34,13 @@ def main(global_config, **settings):
     config.add_route('reference_phenotype_details', '/reference/{id}/phenotype_details', request_method='GET')
     config.add_route('reference_regulation_details', '/reference/{id}/regulation_details', request_method='GET')
 
+    config.add_route('author', '/author/{format_name}', request_method='GET')
+
+    config.add_route('chemical', '/chemical/{format_name}', request_method='GET')
+    config.add_route('chemical_phenotype_details', '/chemical/{id}/phenotype_details', request_method='GET')
+
+    config.add_route('phenotype', '/phenotype/{format_name}', request_method='GET')
+
     # curator interfaces
     config.add_route('colleague_triage_all', '/colleagues/triage', request_method='GET')
     config.add_route('colleague_triage_accept', '/colleagues/triage/{id}', request_method='POST')
@@ -55,8 +62,6 @@ def main(global_config, **settings):
     
     #NEX endpoints
     config.add_route('reference_list', '/reference_list')
-    config.add_route('chemical', '/chemical/{id}/overview')
-    config.add_route('chemical_phenotype_details', '/chemical/{id}/phenotype_details')
 
     config.scan()
     config.add_static_view(name='static', path='../static')

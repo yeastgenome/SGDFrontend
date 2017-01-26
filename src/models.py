@@ -385,6 +385,25 @@ class Chebi(Base):
 
     source = relationship(u'Source')
 
+    def to_dict(self):
+        urls = DBSession.query(ChebiUrl).filter_by(chebi_id=self.chebi_id).all()
+        
+        obj = {
+            "id": self.chebi_id,
+            "display_name": self.display_name,
+            "chebi_id": self.chebiid,
+            "urls": [url.to_dict() for url in urls]
+        }
+
+        return obj
+
+    def phenotype_to_dict(self):
+        conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter_by(condition_name=self.display_name).all()
+        annotation_ids = [condition[0] for condition in conditions]
+
+        phenotype_annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(annotation_ids)).all()
+
+        return [annotation.to_dict(chemical=self) for annotation in phenotype_annotations]
 
 class ChebiAlia(Base):
     __tablename__ = 'chebi_alias'
@@ -424,7 +443,11 @@ class ChebiUrl(Base):
     chebi = relationship(u'Chebi')
     source = relationship(u'Source')
 
-
+    def to_dict(self):
+        return {
+            "link": self.obj_url
+        }
+    
 class Colleague(Base):
     __tablename__ = 'colleague'
     __table_args__ = {u'schema': 'nex'}
@@ -975,6 +998,7 @@ class Referencedbentity(Dbentity):
 
     def to_dict_reference_related(self):
         obj = {
+            "id": self.dbentity_id,
             "display_name": self.display_name,
             "link": self.obj_url,
             "citation": self.citation,
@@ -1098,7 +1122,7 @@ class Referencedbentity(Dbentity):
 
         phenotypes = DBSession.query(Phenotypeannotation).filter_by(reference_id=self.dbentity_id).all()
         
-        return [phenotype.to_dict(self) for phenotype in phenotypes]
+        return [phenotype.to_dict(reference=self) for phenotype in phenotypes]
 
     def regulation_to_dict(self):
         obj = []
@@ -2554,6 +2578,17 @@ class Phenotype(Base):
     qualifier = relationship(u'Apo', primaryjoin='Phenotype.qualifier_id == Apo.apo_id')
     source = relationship(u'Source')
 
+    def to_dict(self):
+        obj = {
+            "display_name": self.display_name,
+            "observable": {
+                "display_name": self.observable.display_name,
+                "link": self.observable.obj_url
+            },
+            "qualifier": self.qualifier.display_name
+        }
+
+        return obj
 
 class Phenotypeannotation(Base):
     __tablename__ = 'phenotypeannotation'
@@ -2590,7 +2625,10 @@ class Phenotypeannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
-    def to_dict(self, reference):
+    def to_dict(self, reference=None, chemical=None):
+        if reference == None:
+            reference = self.reference
+        
         properties = []
         
         if self.reporter:
@@ -2605,7 +2643,6 @@ class Phenotypeannotation(Base):
                 "note": note,
                 "role": "Reporter"
             })
-                
 
         if self.allele:
             note = None
@@ -2621,20 +2658,24 @@ class Phenotypeannotation(Base):
                 "role": "Allele"
             })
 
-        # to be replaced by assay_id but data is not yet curated
+        # to be replaced by assay_id but data is not yet curated        
         chemicals = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id,condition_class="chemical").all()
-        for chemical in chemicals:
-            chebi = DBSession.query(Chebi).filter_by(display_name=chemical.condition_name).one_or_none()
+        for chem in chemicals:
+            if chemical is not None and (chemical.display_name == chem.condition_name):
+                chebi = chemical
+            else:
+                chebi = DBSession.query(Chebi).filter_by(display_name=chem.condition_name).one_or_none()
+
             link = None
             if chebi:
                 link = chebi.obj_url
 
             properties.append({
                 "class_type": "CHEMICAL",
-                "concentration": chemical.condition_value,
+                "concentration": chem.condition_value,
                 "bioitem": {
                     "link": link,
-                    "display_name": chemical.condition_name
+                    "display_name": chem.condition_name
                 },
                 "note": None,
                 "role": "CHEMICAL"
