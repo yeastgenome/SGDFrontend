@@ -15,59 +15,59 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'REFERENCE_ID', OLD.curation_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE'::text, 'REFERENCE_ID'::text, OLD.curation_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'SOURCE_ID', OLD.curation_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE'::text, 'SOURCE_ID'::text, OLD.curation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (((OLD.colleague_id IS NULL) AND (NEW.colleague_id IS NOT NULL)) OR ((OLD.colleague_id IS NOT NULL) AND (NEW.colleague_id IS NULL)) OR (OLD.colleague_id != NEW.colleague_id)) THEN
-        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'COLLEAGUE_ID', OLD.curation_id, OLD.colleague_id::text, NEW.colleague_id::text, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE'::text, 'COLLEAGUE_ID'::text, OLD.curation_id, OLD.colleague_id::text, NEW.colleague_id::text, USER);
     END IF;
 
     IF (OLD.author_email != NEW.author_email) THEN
-        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'AUTHOR_EMAIL', OLD.curation_id, OLD.author_email, NEW.author_email, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE'::text, 'AUTHOR_EMAIL'::text, OLD.curation_id, OLD.author_email, NEW.author_email, USER);
     END IF;
 
     IF (OLD.has_novel_research != NEW.has_novel_research) THEN
-        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'HAS_NOVEL_RESEARCH', OLD.curation_id, OLD.has_novel_research::text, NEW.has_novel_research::text, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE'::text, 'HAS_NOVEL_RESEARCH'::text, OLD.curation_id, OLD.has_novel_research::text, NEW.has_novel_research::text, USER);
     END IF;
 
     IF (OLD.has_large_scale_data != NEW.has_large_scale_data) THEN
-        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'HAS_LARGE_SCALE_DATA', OLD.curation_id, OLD.has_large_scale_data::text, NEW.has_large_scale_data::text, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE'::text, 'HAS_LARGE_SCALE_DATA'::text, OLD.curation_id, OLD.has_large_scale_data::text, NEW.has_large_scale_data::text, USER);
     END IF;
 
     IF (OLD.has_fast_track_tag != NEW.has_fast_track_tag) THEN
-        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'HAS_FAST_TRACK_TAG', OLD.curation_id, OLD.has_fast_track_tag::text, NEW.has_fast_track_tag::text, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE'::text, 'HAS_FAST_TRACK_TAG'::text, OLD.curation_id, OLD.has_fast_track_tag::text, NEW.has_fast_track_tag::text, USER);
     END IF;
 
     IF (OLD.curator_checked_datasets != NEW.curator_checked_datasets) THEN
-        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'CURATOR_CHECKED_DATASETS', OLD.curation_id, OLD.curator_checked_datasets::text, NEW.curator_checked_datasets::text, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE'::text, 'CURATOR_CHECKED_DATASETS'::text, OLD.curation_id, OLD.curator_checked_datasets::text, NEW.curator_checked_datasets::text, USER);
     END IF;
 
     IF (OLD.curator_checked_genelist != NEW.curator_checked_genelist) THEN
-        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'CURATOR_CHECKED_GENELIST', OLD.curation_id, OLD.curator_checked_genelist::text, NEW.curator_checked_genelist::text, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE'::text, 'CURATOR_CHECKED_GENELIST'::text, OLD.curation_id, OLD.curator_checked_genelist::text, NEW.curator_checked_genelist::text, USER);
     END IF;
 
     IF (OLD.no_action_required != NEW.no_action_required) THEN
-        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'NO_ACTION_REQUIRED', OLD.curation_id, OLD.no_action_required::text, NEW.no_action_required::text, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE'::text, 'NO_ACTION_REQUIRED'::text, OLD.curation_id, OLD.no_action_required::text, NEW.no_action_required::text, USER);
     END IF;
 
     IF (((OLD.research_results IS NULL) AND (NEW.research_results IS NOT NULL)) OR ((OLD.research_results IS NOT NULL) AND (NEW.research_results IS NULL)) OR (OLD.research_results != NEW.research_results)) THEN
-        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'RESEARCH_RESULTS', OLD.curation_id, OLD.research_results, NEW.research_results, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE'::text, 'RESEARCH_RESULTS'::text, OLD.curation_id, OLD.research_results, NEW.research_results, USER);
     END IF;
 
     IF (((OLD.gene_list IS NULL) AND (NEW.gene_list IS NOT NULL)) OR ((OLD.gene_list IS NOT NULL) AND (NEW.gene_list IS NULL)) OR (OLD.gene_list != NEW.gene_list)) THEN
-        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'GENE_LIST', OLD.curation_id, OLD.gene_list, NEW.gene_list, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE'::text, 'GENE_LIST'::text, OLD.curation_id, OLD.gene_list, NEW.gene_list, USER);
     END IF;
 
     IF (((OLD.dataset_description IS NULL) AND (NEW.dataset_description IS NOT NULL)) OR ((OLD.dataset_description IS NOT NULL) AND (NEW.dataset_description IS NULL)) OR (OLD.dataset_description != NEW.dataset_description)) THEN
-        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'DATASET_DESCRIPTION', OLD.curation_id, OLD.dataset_description, NEW.dataset_description, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE'::text, 'DATASET_DESCRIPTION'::text, OLD.curation_id, OLD.dataset_description, NEW.dataset_description, USER);
     END IF;
 
     IF (((OLD.other_description IS NULL) AND (NEW.other_description IS NOT NULL)) OR ((OLD.other_description IS NOT NULL) AND (NEW.other_description IS NULL)) OR (OLD.other_description != NEW.other_description)) THEN
-        PERFORM nex.insertupdatelog('AUTHORRESPONSE', 'OTHER_DESCRIPTION', OLD.curation_id, OLD.other_description, NEW.other_description, USER);
+        PERFORM nex.insertupdatelog('AUTHORRESPONSE'::text, 'OTHER_DESCRIPTION'::text, OLD.curation_id, OLD.other_description, NEW.other_description, USER);
     END IF;
 
     RETURN NEW;
@@ -84,7 +84,7 @@ BEGIN
              coalesce(OLD.dataset_description,'') || '[:]' || coalesce(OLD.other_description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM nex.insertdeletelog('AUTHORRESPONSE', OLD.curation_id, v_row, USER);
+          PERFORM nex.insertdeletelog('AUTHORRESPONSE'::text, OLD.curation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -139,19 +139,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.triage_type != NEW.triage_type) THEN
-        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE', 'TRIAGE_TYPE', OLD.curation_id, OLD.triage_type, NEW.triage_type, USER);
+        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE'::text, 'TRIAGE_TYPE'::text, OLD.curation_id, OLD.triage_type, NEW.triage_type, USER);
     END IF;
 
     IF (((OLD.colleague_id IS NULL) AND (NEW.colleague_id IS NOT NULL)) OR ((OLD.colleague_id IS NOT NULL) AND (NEW.colleague_id IS NULL)) OR (OLD.colleague_id != NEW.colleague_id)) THEN
-        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE', 'COLLEAGUE_ID', OLD.curation_id, OLD.colleague_id::text, NEW.colleague_id::text, USER);
+        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE'::text, 'COLLEAGUE_ID'::text, OLD.curation_id, OLD.colleague_id::text, NEW.colleague_id::text, USER);
     END IF;
 
     IF (OLD.colleague_data != NEW.colleague_data) THEN
-        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE', 'COLLEAGUE_DATA', OLD.curation_id, OLD.colleague_data, NEW.colleague_data, USER);
+        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE'::text, 'COLLEAGUE_DATA'::text, OLD.curation_id, OLD.colleague_data, NEW.colleague_data, USER);
     END IF;
 
     IF (((OLD.colleague_comment IS NULL) AND (NEW.colleague_comment IS NOT NULL)) OR ((OLD.colleague_comment IS NOT NULL) AND (NEW.colleague_comment IS NULL)) OR (OLD.colleague_comment != NEW.colleague_comment)) THEN
-        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE', 'COLLEAGUE_COMMENT', OLD.curation_id, OLD.colleague_comment, NEW.colleague_comment, USER);
+        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE'::text, 'COLLEAGUE_COMMENT'::text, OLD.curation_id, OLD.colleague_comment, NEW.colleague_comment, USER);
     END IF;
 
     RETURN NEW;
@@ -163,7 +163,7 @@ BEGIN
 	         coalesce(OLD.colleague_comment,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-             PERFORM nex.insertdeletelog('COLLEAGUETRIAGE', OLD.curation_id, v_row, USER);
+             PERFORM nex.insertdeletelog('COLLEAGUETRIAGE'::text, OLD.curation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -218,27 +218,27 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM nex.insertupdatelog('CURATION', 'DBENTITY_ID', OLD.curation_id, OLD.dbentity_id::text, NEW.dbentity_id::text, USER);
+        PERFORM nex.insertupdatelog('CURATION'::text, 'DBENTITY_ID'::text, OLD.curation_id, OLD.dbentity_id::text, NEW.dbentity_id::text, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('CURATION', 'SOURCE_ID', OLD.curation_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('CURATION'::text, 'SOURCE_ID'::text, OLD.curation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     IF (((OLD.locus_id IS NULL) AND (NEW.locus_id IS NOT NULL)) OR ((OLD.locus_id IS NOT NULL) AND (NEW.locus_id IS NULL)) OR (OLD.locus_id != NEW.locus_id)) THEN
-        PERFORM nex.insertupdatelog('CURATION', 'LOCUS_ID', OLD.curation_id, OLD.locus_id::text, NEW.locus_id::text, USER);
+        PERFORM nex.insertupdatelog('CURATION'::text, 'LOCUS_ID'::text, OLD.curation_id, OLD.locus_id::text, NEW.locus_id::text, USER);
     END IF;
 
     IF (OLD.subclass != NEW.subclass) THEN
-        PERFORM nex.insertupdatelog('CURATION', 'SUBCLASS', OLD.curation_id, OLD.subclass, NEW.subclass, USER);
+        PERFORM nex.insertupdatelog('CURATION'::text, 'SUBCLASS'::text, OLD.curation_id, OLD.subclass, NEW.subclass, USER);
     END IF;
 
     IF (OLD.curation_task != NEW.curation_task) THEN
-        PERFORM nex.insertupdatelog('CURATION', 'CURATION_TASK', OLD.curation_id, OLD.curation_task, NEW.curation_task, USER);
+        PERFORM nex.insertupdatelog('CURATION'::text, 'CURATION_TASK'::text, OLD.curation_id, OLD.curation_task, NEW.curation_task, USER);
     END IF;
 
     IF (((OLD.curator_comment IS NULL) AND (NEW.curator_comment IS NOT NULL)) OR ((OLD.curator_comment IS NOT NULL) AND (NEW.curator_comment IS NULL)) OR (OLD.curator_comment != NEW.curator_comment)) THEN
-        PERFORM nex.insertupdatelog('CURATION', 'CURATOR_COMMENT', OLD.curation_id, OLD.curator_comment, NEW.curator_comment, USER);
+        PERFORM nex.insertupdatelog('CURATION'::text, 'CURATOR_COMMENT'::text, OLD.curation_id, OLD.curator_comment, NEW.curator_comment, USER);
     END IF;
 
     RETURN NEW;
@@ -251,7 +251,7 @@ BEGIN
              OLD.curation_task || '[:]' || OLD.curator_comment || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-          PERFORM nex.insertdeletelog('CURATION', OLD.curation_id, v_row, USER);
+          PERFORM nex.insertdeletelog('CURATION'::text, OLD.curation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -314,19 +314,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.pmid != NEW.pmid) THEN
-        PERFORM nex.insertupdatelog('REFERENCETRIAGE', 'PMID', OLD.curation_id, OLD.pmid::text, NEW.pmid::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCETRIAGE'::text, 'PMID'::text, OLD.curation_id, OLD.pmid::text, NEW.pmid::text, USER);
     END IF;
 
      IF (OLD.citation != NEW.citation) THEN
-        PERFORM nex.insertupdatelog('REFERENCETRIAGE', 'CITATION', OLD.curation_id, OLD.citation, NEW.citation, USER);
+        PERFORM nex.insertupdatelog('REFERENCETRIAGE'::text, 'CITATION'::text, OLD.curation_id, OLD.citation, NEW.citation, USER);
     END IF;
 
     IF (((OLD.fulltext_url IS NULL) AND (NEW.fulltext_url IS NOT NULL)) OR ((OLD.fulltext_url IS NOT NULL) AND (NEW.fulltext_url IS NULL)) OR (OLD.fulltext_url != NEW.fulltext_url)) THEN
-        PERFORM nex.insertupdatelog('REFERENCETRIAGE', 'FULLTEXT_URL', OLD.curation_id, OLD.fulltext_url, NEW.fulltext_url, USER);
+        PERFORM nex.insertupdatelog('REFERENCETRIAGE'::text, 'FULLTEXT_URL'::text, OLD.curation_id, OLD.fulltext_url, NEW.fulltext_url, USER);
     END IF;
 
     IF (((OLD.abstract IS NULL) AND (NEW.abstract IS NOT NULL)) OR ((OLD.abstract IS NOT NULL) AND (NEW.abstract IS NULL)) OR (OLD.abstract != NEW.abstract)) THEN
-        PERFORM nex.insertupdatelog('REFERENCETRIAGE', 'ABSTRACT', OLD.curation_id, OLD.abstract, NEW.abstract, USER);
+        PERFORM nex.insertupdatelog('REFERENCETRIAGE'::text, 'ABSTRACT'::text, OLD.curation_id, OLD.abstract, NEW.abstract, USER);
     END IF;
 
     RETURN NEW;
@@ -338,7 +338,7 @@ BEGIN
              coalesce(OLD.abstract,'') || '[:]' || 
              OLD.date_created || '[:]' || OLD.created_by;
 
-           PERFORM nex.insertdeletelog('REFERENCETRIAGE', OLD.curation_id, v_row, USER);
+           PERFORM nex.insertdeletelog('REFERENCETRIAGE'::text, OLD.curation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -383,4 +383,3 @@ $BODY$ LANGUAGE 'plpgsql';
 CREATE TRIGGER referencetriage_biur
 BEFORE INSERT OR UPDATE ON nex.referencetriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_referencetriage_biur();
-
