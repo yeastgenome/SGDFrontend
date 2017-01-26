@@ -24,11 +24,15 @@ def main(global_config, **settings):
 
     # nex2
     config.add_route('reserved_name', '/reservedname/{id}', request_method='GET')
+    
     config.add_route('strain', '/strain/{id}', request_method='GET')
+    
     config.add_route('reference', '/reference/{id}', request_method='GET')
     config.add_route('reference_literature_details', '/reference/{id}/literature_details', request_method='GET')
     config.add_route('reference_interaction_details', '/reference/{id}/interaction_details', request_method='GET')
     config.add_route('reference_go_details', '/reference/{id}/go_details', request_method='GET')
+    config.add_route('reference_phenotype_details', '/reference/{id}/phenotype_details', request_method='GET')
+    config.add_route('reference_regulation_details', '/reference/{id}/regulation_details', request_method='GET')
 
     # curator interfaces
     config.add_route('colleague_triage_all', '/colleagues/triage', request_method='GET')
