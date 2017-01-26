@@ -23,7 +23,7 @@ namespace :deploy do
   desc 'Restart AWS'
   task :restart_aws do
     on roles(:app), in: :sequence do
-      execute "cd #{current_path} && make stop-prod && make run-prod"
+      execute "cd #{current_path} && export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && workon sgdf && make stop-prod && make run-prod"
     end
   end
 
