@@ -25,6 +25,11 @@ class MockQuery(object):
     def __init__(self, query_result):
         self._query_result = query_result
 
+    def filter_by(self, **query_params):
+        self._query_filter = MockQueryFilter(query_params, self._query_result)
+        self._full_params = query_params
+        return self._query_filter
+
     def filter(self, *query_params):
         self._query_filter = MockQueryFilter(query_params[0], self._query_result)
         self._full_params = query_params
