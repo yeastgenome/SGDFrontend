@@ -162,7 +162,7 @@ def home(request):
 #     return render_to_response(TEMPLATE_ROOT + 'example.jinja2', {}, request=request)
 
 def get_obj(identifier, obj_type):
-    backend_url = config.backend_url + '/' + obj_type + '/' + identifier + '/overview'
+    backend_url = config.backend_url + '/' + obj_type + '/' + identifier
     backend_response = requests.get(backend_url)
     if backend_response.status_code != 200:
         return None

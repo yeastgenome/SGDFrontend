@@ -65,7 +65,7 @@ class YeastgenomeFrontend(FrontendInterface):
         
     def get_obj(self, obj_type, obj_repr, obj_url=None):
         if obj_url is None:
-            obj_url = self.backend_url + '/' + obj_type + '/' + obj_repr + '/overview'
+            obj_url = self.backend_url + '/' + obj_type + '/' + obj_repr
 
         obj = get_json(obj_url)
 
