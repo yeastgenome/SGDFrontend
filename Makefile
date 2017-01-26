@@ -39,8 +39,9 @@ prod2-deploy:
 build: bootstrap dependencies grunt
 	./bin/buildout
 
-build-deploy: bootstrap-deploy
-	./bin/buildout -c $(BUILDOUT_DEPLOY)
+build-deploy:
+	python -r requirements.txt
+	python setup.py develop
 
 build-deploy-aws:
 	python $(BOOTSTRAP) && ./bin/buildout -c $(BUILDOUT_DEPLOY)

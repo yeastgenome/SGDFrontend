@@ -9,7 +9,7 @@ namespace :deploy do
   desc 'Build AWS env application'
   task :build_aws do
     on roles(:app), in: :sequence do
-      execute "cd #{release_path} && make build-deploy-aws"
+      execute "export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && cd #{release_path} && workon sgdf && make build-deploy-aws"
     end
   end
   
