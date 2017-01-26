@@ -33,11 +33,11 @@ prod2-deploy:
 	. prod_deploy_variables.sh && cap prod2 deploy
 
 build: dependencies grunt
-	python -r requirements.txt
+	pip install -r requirements.txt
 	python setup.py develop
 
 build-deploy:
-	python -r requirements.txt
+	pip install -r requirements.txt
 	python setup.py develop
 
 grunt:
