@@ -140,6 +140,7 @@ COMMENT ON COLUMN nex.chebi.display_name IS 'Public display name.';
 ALTER TABLE nex.chebi ADD CONSTRAINT chebi_uk UNIQUE (format_name);
 CREATE UNIQUE INDEX chebiid_uk_index ON nex.chebi (chebiid);
 CREATE INDEX chebi_source_fk_index ON nex.chebi (source_id);
+CREATE INDEX chebi_display_name_index ON nex.chebi (display_name);
 
 DROP TABLE IF EXISTS nex.chebi_alias CASCADE;
 CREATE TABLE nex.chebi_alias (
