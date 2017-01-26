@@ -361,9 +361,11 @@ def strain(request):
 def reference(request):
     id = request.matchdict['id'].upper()
 
+    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    return reference.to_dict()
+
     try:
         reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
-    
         if reference:
             return reference.to_dict()
         else:
@@ -411,6 +413,35 @@ def reference_go_details(request):
 
         if reference:
             return reference.go_to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.err("Database failure querying reference.")
+        return HTTPNotFound()
+
+@view_config(route_name='reference_phenotype_details', renderer='json', request_method='GET')
+def reference_phenotype_details(request):
+    id = request.matchdict['id'].upper()
+
+    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    return reference.phenotype_to_dict()
+    try:
+        if reference:
+            return reference.phenotype_to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.err("Database failure querying reference.")
+        return HTTPNotFound()
+
+@view_config(route_name='reference_regulation_details', renderer='json', request_method='GET')
+def reference_regulation_details(request):
+    id = request.matchdict['id'].upper()
+
+    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    try:
+        if reference:
+            return reference.regulation_to_dict()
         else:
             return HTTPNotFound()
     except:
