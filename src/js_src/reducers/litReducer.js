@@ -3,21 +3,6 @@ import { fromJS } from 'immutable';
 
 // temp fixture
 const DEFAULT_STATE = fromJS({
-  activeEntries: [
-    {
-      id: '12345abc',
-      isTriage: false,
-      citation: 'Kang MS, et al. (2013) Yeast RAD2, a homolog of human XPG, plays a key role in the regulation of the cell cycle and actin dynamics. Biol Open',
-      title: 'Lorem Ipsum dalor it Clylin Dependent Protein Serine',
-      tags: ['Pathways', 'Phenotype needs review'],
-      assignees: [
-        {
-          username: 'user2',
-          name: 'Harriet Tubman'
-        }
-      ]
-    }
-  ],
   triageEntries: [
     {
       id: '12345abc',

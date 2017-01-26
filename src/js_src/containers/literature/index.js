@@ -4,13 +4,9 @@ import { Link } from 'react-router';
 
 import style from './style.css';
 import LitTable from './LitTable';
-import { selectActiveEntries, selectTriageEntries } from '../../selectors/litSelectors';
+import { selectTriageEntries } from '../../selectors/litSelectors';
 
 class LitList extends Component {
-  formatEntries() {
-    return this.props.isTriage ? this.props.triageEntries : this.props.curateEntries;
-  }
-
   renderSingleTab(label, href, isActive, total) {
     let totalNode = <span className='badge'>{total.toLocaleString()}</span>;
     if (isActive) {
@@ -20,21 +16,11 @@ class LitList extends Component {
     }
   }
 
-  renderTabs() {
-    return (
-      <ul className='tabs'>
-        {this.renderSingleTab('Triage', 'triage_literature', this.props.isTriage, this.props.triageEntries.length)}
-        {this.renderSingleTab('Curate', 'literature', !this.props.isTriage, this.props.curateEntries.length)}
-      </ul>
-    );
-  }
-
   render() {
-    let entries = this.formatEntries();
+    let entries = this.props.triageEntries;
     return (
       <div>
-        <h1>Literature in Curation</h1>
-        {this.renderTabs()}
+        <h1>Literature Triage</h1>
         <div className={style.litTableContainer}>
           <LitTable entries={entries} fields={['citation', 'tags', 'assignees']} />
         </div>
@@ -44,7 +30,6 @@ class LitList extends Component {
 }
 
 LitList.propTypes = {
-  curateEntries: React.PropTypes.array,
   isTriage: React.PropTypes.bool,
   triageEntries: React.PropTypes.array
 };
@@ -52,7 +37,6 @@ LitList.propTypes = {
 function mapStateToProps(state) {
   let _isTriage = state.routing.locationBeforeTransitions.pathname.search('triage') >= 0;
   return {
-    curateEntries: selectActiveEntries(state),
     isTriage: _isTriage,
     triageEntries: selectTriageEntries(state)
   };

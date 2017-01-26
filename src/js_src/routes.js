@@ -33,12 +33,12 @@ export default (
     <Route component={Login} path='login' />
     <Route component={CurateLayout} path='curate'>
       <IndexRoute component={requireAuthentication(CurateHome)} />
+      <Route component={requireAuthentication(LitIndex)} path='lit_triage' />
       <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
     </Route>
     <Route component={requireAuthentication(LocusShow)} path='locus/:id/overview' />
     <Route component={requireAuthentication(RefShow)} path='reference/:id/overview' />
     <Route component={requireAuthentication(LitIndex)} path='literature' />
-    <Route component={requireAuthentication(LitIndex)} path='triage_literature' />
     <Route component={requireAuthentication(CurateLit)} path='curate_literature/:id'>
       <IndexRoute component={requireAuthentication(CurateLitBasic)} />
       <Route component={requireAuthentication(CurateLitOverview)} path='loci' />

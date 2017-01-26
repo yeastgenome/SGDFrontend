@@ -27,11 +27,6 @@ export const selectTriageEntries = createSelector(
   (litDomain) => litDomain.get('triageEntries').toJS()
 );
 
-export const selectActiveEntries = createSelector(
-  [selectLitDomain],
-  (litDomain) => litDomain.get('activeEntries').toJS()
-);
-
 export const selectUsers = createSelector(
   [selectLitDomain],
   (litDomain) => litDomain.get('allCuratorUsers').toJS()
