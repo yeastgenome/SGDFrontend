@@ -13,8 +13,6 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
 
     config.add_route('home', '/')
-    config.add_route('upload', '/upload')
-    config.add_route('upload_spreadsheet', '/upload_spreadsheet')
     #search
     config.add_route('search', '/get_search_results')
     config.add_route('autocomplete_results', '/autocomplete_results')
