@@ -12,27 +12,27 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.username <> NEW.username) THEN
-	PERFORM nex.insertupdatelog('DBUSER', 'USERNAME', OLD.dbuser_id, OLD.username, NEW.username, USER);
+	PERFORM nex.insertupdatelog('DBUSER'::text, 'USERNAME'::text, OLD.dbuser_id, OLD.username, NEW.username, USER);
     END IF;
 
     IF (OLD.first_name <> NEW.first_name) THEN
-        PERFORM nex.insertupdatelog('DBUSER', 'FIRST_NAME', OLD.dbuser_id, OLD.first_name, NEW.first_name, USER);
+        PERFORM nex.insertupdatelog('DBUSER'::text, 'FIRST_NAME'::text, OLD.dbuser_id, OLD.first_name, NEW.first_name, USER);
     END IF;
 
     IF (OLD.last_name <> NEW.last_name) THEN
-	PERFORM nex.insertupdatelog('DBUSER', 'LAST_NAME', OLD.dbuser_id, OLD.last_name, NEW.last_name, USER);
+	PERFORM nex.insertupdatelog('DBUSER'::text, 'LAST_NAME'::text, OLD.dbuser_id, OLD.last_name, NEW.last_name, USER);
     END IF;
 
     IF (OLD.status <> NEW.status) THEN
-	PERFORM nex.insertupdatelog('DBUSER', 'STATUS', OLD.dbuser_id, OLD.status, NEW.status, USER);
+	PERFORM nex.insertupdatelog('DBUSER'::text, 'STATUS'::text, OLD.dbuser_id, OLD.status, NEW.status, USER);
     END IF;
 
     IF (OLD.is_curator <> NEW.is_curator) THEN
-	PERFORM nex.insertupdatelog('DBUSER', 'IS_CURATOR', OLD.dbuser_id, OLD.is_curator::text, NEW.is_curator::text, USER);
+	PERFORM nex.insertupdatelog('DBUSER'::text, 'IS_CURATOR'::text, OLD.dbuser_id, OLD.is_curator::text, NEW.is_curator::text, USER);
     END IF;
 
     IF (OLD.email <> NEW.email) THEN
-	PERFORM nex.insertupdatelog('DBUSER', 'EMAIL', OLD.dbuser_id, OLD.email, NEW.email, USER);
+	PERFORM nex.insertupdatelog('DBUSER'::text, 'EMAIL'::text, OLD.dbuser_id, OLD.email, NEW.email, USER);
     END IF;
 
     RETURN NEW;
@@ -83,19 +83,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.format_name <> NEW.format_name) THEN
-        PERFORM nex.insertupdatelog('SOURCE', 'FORMAT_NAME', OLD.source_id, OLD.format_name, NEW.format_name, USER);
+        PERFORM nex.insertupdatelog('SOURCE'::text, 'FORMAT_NAME'::text, OLD.source_id, OLD.format_name, NEW.format_name, USER);
     END IF;
 
     IF (OLD.display_name <> NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('SOURCE', 'DISPLAY_NAME', OLD.source_id, OLD.display_name, NEW.display_name, USER);
+        PERFORM nex.insertupdatelog('SOURCE'::text, 'DISPLAY_NAME'::text, OLD.source_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id <> NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('SOURCE', 'BUD_ID', OLD.source_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+        PERFORM nex.insertupdatelog('SOURCE'::text, 'BUD_ID'::text, OLD.source_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description <> NEW.description)) THEN
-        PERFORM nex.insertupdatelog('SOURCE', 'DESCRIPTION', OLD.source_id, OLD.description, NEW.description, USER);
+        PERFORM nex.insertupdatelog('SOURCE'::text, 'DESCRIPTION'::text, OLD.source_id, OLD.description, NEW.description, USER);
     END IF;
 
     RETURN NEW;
@@ -107,7 +107,7 @@ BEGIN
              coalesce(OLD.bud_id,0) || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-    PERFORM nex.insertdeletelog('SOURCE', OLD.source_id, v_row, USER);
+    PERFORM nex.insertdeletelog('SOURCE'::text, OLD.source_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -160,15 +160,15 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('SGDID', 'BUD_ID', OLD.sgdid_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+        PERFORM nex.insertupdatelog('SGDID'::text, 'BUD_ID'::text, OLD.sgdid_id, OLD.bud_id::text, NEW.bud_id::text, USER);
     END IF;
 
     IF (OLD.sgdid_status != NEW.sgdid_status) THEN
-        PERFORM nex.insertupdatelog('SGDID', 'SGDID_STATUS', OLD.sgdid_id, OLD.sgdid_status, NEW.sgdid_status, USER);
+        PERFORM nex.insertupdatelog('SGDID'::text, 'SGDID_STATUS'::text, OLD.sgdid_id, OLD.sgdid_status, NEW.sgdid_status, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
-        PERFORM nex.insertupdatelog('SGDID', 'DESCRIPTION', OLD.sgdid_id, OLD.description, NEW.description, USER);
+        PERFORM nex.insertupdatelog('SGDID'::text, 'DESCRIPTION'::text, OLD.sgdid_id, OLD.description, NEW.description, USER);
     END IF;
 
     RETURN NEW;
@@ -234,4 +234,3 @@ $BODY$ LANGUAGE 'plpgsql';
 CREATE TRIGGER sgdid_biur
 BEFORE INSERT OR UPDATE OR DELETE ON nex.sgdid FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_sgdid_biur();
-		

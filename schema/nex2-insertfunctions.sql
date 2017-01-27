@@ -9,7 +9,7 @@ SET client_encoding TO 'UTF8';
 --
 -- Insert into deletelog table whenever a row is deleted from a table
 --
-CREATE OR REPLACE FUNCTION insertdeletelog (p_table text, p_key bigint, p_row text, p_user text)  RETURNS VOID AS $body$
+CREATE OR REPLACE FUNCTION insertdeletelog (p_table text, p_key bigint, p_row text, p_user name)  RETURNS VOID AS $body$
 BEGIN
 
     INSERT INTO nex.deletelog
@@ -19,15 +19,17 @@ BEGIN
 
 END;
 
-$body$ LANGUAGE PLPGSQL;
-GRANT EXECUTE on FUNCTION insertdeletelog (p_table text, p_key bigint, p_row text, p_user text) to CURATOR;
-REVOKE ALL ON FUNCTION insertdeletelog (p_table text, p_key bigint, p_row text, p_user text) FROM PUBLIC;
+$body$ LANGUAGE PLPGSQL
+       SECURITY DEFINER
+       SET search_path = nex, pg_temp;
+GRANT EXECUTE on FUNCTION insertdeletelog (p_table text, p_key bigint, p_row text, p_user name) to CURATOR;
+REVOKE ALL ON FUNCTION insertdeletelog (p_table text, p_key bigint, p_row text, p_user name) FROM PUBLIC;
 
 
 --
 -- Insert into updatelog table whenever a row is updated in a table
 --
-CREATE OR REPLACE FUNCTION insertupdatelog (p_table text, p_column text, p_key bigint, p_old text, p_new text, p_user text)  RETURNS VOID AS $body$
+CREATE OR REPLACE FUNCTION insertupdatelog (p_table text, p_column text, p_key bigint, p_old text, p_new text, p_user name)  RETURNS VOID AS $body$
 BEGIN
 
     INSERT INTO nex.updatelog
@@ -37,15 +39,17 @@ BEGIN
 
 END;
 
-$body$ LANGUAGE PLPGSQL;
-GRANT EXECUTE on FUNCTION insertupdatelog (p_table text, p_column text, p_key bigint, p_old text, p_new text, p_user text) to CURATOR;
-REVOKE ALL ON FUNCTION insertupdatelog (p_table text, p_column text, p_key bigint, p_old text, p_new text, p_user text) FROM PUBLIC;
+$body$ LANGUAGE PLPGSQL
+       SECURITY DEFINER
+       SET search_path = nex, pg_temp;
+GRANT EXECUTE on FUNCTION insertupdatelog (p_table text, p_column text, p_key bigint, p_old text, p_new text, p_user name) to CURATOR;
+REVOKE ALL ON FUNCTION insertupdatelog (p_table text, p_column text, p_key bigint, p_old text, p_new text, p_user name) FROM PUBLIC;
 
 
 --
 -- Automatic insert into the arch_locuschange table for gene_names and qualifiers
 --
-CREATE OR REPLACE FUNCTION insertlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user text) RETURNS VOID AS $body$
+CREATE OR REPLACE FUNCTION insertlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user name) RETURNS VOID AS $body$
 DECLARE
 
    v_source_id   nex.arch_locuschange.source_id%TYPE;
@@ -66,15 +70,17 @@ BEGIN
 
 END;
 
-$body$ LANGUAGE PLPGSQL;
-GRANT EXECUTE on FUNCTION insertlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user text) to CURATOR;
-REVOKE ALL ON FUNCTION insertlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user text) FROM PUBLIC;
+$body$ LANGUAGE PLPGSQL
+       SECURITY DEFINER
+       SET search_path = nex, pg_temp;
+GRANT EXECUTE on FUNCTION insertlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user name) to CURATOR;
+REVOKE ALL ON FUNCTION insertlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user name) FROM PUBLIC;
 
 
 --
 -- Automatic insert into SGDID table
 --
-CREATE OR REPLACE FUNCTION insertsgdid (p_sgdid text, p_source text, p_sgdidClass text, p_sgdidStatus text, p_user text) RETURNS VOID AS $body$
+CREATE OR REPLACE FUNCTION insertsgdid (p_sgdid varchar, p_source text, p_sgdidClass varchar, p_sgdidStatus text, p_user name) RETURNS VOID AS $body$
 DECLARE
 
     v_source_id   nex.sgdid.source_id%TYPE;
@@ -95,6 +101,8 @@ BEGIN
 
 END;
 
-$body$ LANGUAGE PLPGSQL;
-GRANT EXECUTE on FUNCTION insertsgdid (p_sgdid text, p_source text, p_sgdidClass text, p_sgdidStatus text, p_user text) to CURATOR;
-REVOKE ALL ON FUNCTION insertsgdid (p_sgdid text, p_source text, p_sgdidClass text, p_sgdidStatus text, p_user text) FROM PUBLIC;      
+$body$ LANGUAGE PLPGSQL
+       SECURITY DEFINER
+       SET search_path = nex, pg_temp;
+GRANT EXECUTE on FUNCTION insertsgdid (p_sgdid varchar, p_source text, p_sgdidClass varchar, p_sgdidStatus text, p_user name) to CURATOR;
+REVOKE ALL ON FUNCTION insertsgdid (p_sgdid varchar, p_source text, p_sgdidClass varchar, p_sgdidStatus text, p_user name) FROM PUBLIC;      

@@ -52,6 +52,8 @@ BEGIN
    END IF;
 
 END;
-$body$ LANGUAGE PLPGSQL;
+$body$ LANGUAGE PLPGSQL
+       SECURITY DEFINER
+       SET search_path = nex, pg_temp;
 GRANT EXECUTE on FUNCTION makesgdid () to CURATOR;
 REVOKE ALL ON FUNCTION makesgdid () FROM PUBLIC;

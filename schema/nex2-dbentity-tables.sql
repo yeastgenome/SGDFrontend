@@ -736,6 +736,7 @@ COMMENT ON COLUMN nex.referenceauthor.author_order IS 'Order of the authors.';
 ALTER TABLE nex.referenceauthor ADD CONSTRAINT referenceauthor_uk UNIQUE (reference_id,display_name,author_order);
 ALTER TABLE nex.referenceauthor ADD CONSTRAINT referenceauthor_type_ck CHECK (AUTHOR_TYPE IN ('Author','Editor'));
 CREATE INDEX referanceauthor_source_fk_index ON nex.referenceauthor (source_id);
+CREATE INDEX referanceauthor_objurl_index ON nex.referenceauthor (obj_url);
 
 DROP TABLE IF EXISTS nex.referencedeleted CASCADE; 
 CREATE TABLE nex.referencedeleted (

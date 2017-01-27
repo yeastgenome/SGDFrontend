@@ -10,7 +10,7 @@ SET client_encoding TO 'UTF8';
 --
 -- Checks to see if a chebiid exists in the CHEBI table
 --
-CREATE OR REPLACE FUNCTION checkchebi (p_chebi text) RETURNS VOID AS $body$
+CREATE OR REPLACE FUNCTION checkchebi (p_chebi varchar) RETURNS VOID AS $body$
 BEGIN
 
     IF NOT EXISTS (SELECT chebiid
@@ -21,15 +21,17 @@ BEGIN
     END IF;
 
 END;
-$body$ LANGUAGE PLPGSQL;
-GRANT EXECUTE on FUNCTION checkchebi (p_chebi text) to CURATOR;
-REVOKE ALL ON FUNCTION checkchebi (p_chebi text) FROM PUBLIC;             
+$body$ LANGUAGE PLPGSQL
+       SECURITY DEFINER
+       SET search_path = nex, pg_temp;
+GRANT EXECUTE on FUNCTION checkchebi (p_chebi varchar) to CURATOR;
+REVOKE ALL ON FUNCTION checkchebi (p_chebi varchar) FROM PUBLIC;             
 
 
 --
 -- Checks to see if a particular Chemical name exists in the CHEBI table
 --
-CREATE OR REPLACE FUNCTION checkchemical (p_chemical text) RETURNS VOID AS $body$
+CREATE OR REPLACE FUNCTION checkchemical (p_chemical varchar) RETURNS VOID AS $body$
 BEGIN
 
     IF NOT EXISTS (SELECT display_name
@@ -40,15 +42,17 @@ BEGIN
     END IF;
 
 END;
-$body$ LANGUAGE PLPGSQL;
-GRANT EXECUTE on FUNCTION checkchemical (p_chemical text) to CURATOR;
-REVOKE ALL ON FUNCTION checkchemical (p_chemical text) FROM PUBLIC;
+$body$ LANGUAGE PLPGSQL
+       SECURITY DEFINER
+       SET search_path = nex, pg_temp;
+GRANT EXECUTE on FUNCTION checkchemical (p_chemical varchar) to CURATOR;
+REVOKE ALL ON FUNCTION checkchemical (p_chemical varchar) FROM PUBLIC;
 
 
 --
 -- Checks to see if a phenotype:namespace exists in the APO table
 --
-CREATE OR REPLACE FUNCTION checkphenotype (p_phenotype text, p_namespace text) RETURNS VOID AS $body$
+CREATE OR REPLACE FUNCTION checkphenotype (p_phenotype bigint, p_namespace varchar) RETURNS VOID AS $body$
 BEGIN
 
    IF NOT EXISTS (SELECT apo_id
@@ -60,9 +64,11 @@ BEGIN
    END IF;
 
 END;
-$body$ LANGUAGE PLPGSQL;
-GRANT EXECUTE on FUNCTION checkphenotype (p_phenotype text, p_namespace text) to CURATOR;
-REVOKE ALL ON FUNCTION checkphenotype (p_phenotype text, p_namespace text) FROM PUBLIC;         
+$body$ LANGUAGE PLPGSQL
+       SECURITY DEFINER
+       SET search_path = nex, pg_temp;
+GRANT EXECUTE on FUNCTION checkphenotype (p_phenotype bigint, p_namespace varchar) to CURATOR;
+REVOKE ALL ON FUNCTION checkphenotype (p_phenotype bigint, p_namespace varchar) FROM PUBLIC;         
 
 
 --
@@ -80,7 +86,9 @@ BEGIN
     END IF;
 
 END;
-$body$ LANGUAGE PLPGSQL;
+$body$ LANGUAGE PLPGSQL
+       SECURITY DEFINER
+       SET search_path = nex, pg_temp;
 GRANT EXECUTE on FUNCTION checkpubmed (p_pubmed bigint) to CURATOR;
 REVOKE ALL ON FUNCTION checkpubmed (p_pubmed bigint) FROM PUBLIC;   
 
@@ -88,7 +96,7 @@ REVOKE ALL ON FUNCTION checkpubmed (p_pubmed bigint) FROM PUBLIC;
 --
 -- Checks to see if a SGDID exists in the sgdid table
 --
-CREATE OR REPLACE FUNCTION checksgdid (p_sgdid text)  RETURNS VOID AS $body$
+CREATE OR REPLACE FUNCTION checksgdid (p_sgdid varchar)  RETURNS VOID AS $body$
 BEGIN
 
     IF NOT EXISTS (SELECT display_name
@@ -99,15 +107,17 @@ BEGIN
     END IF;
 
 END;
-$body$ LANGUAGE PLPGSQL;
-GRANT EXECUTE on FUNCTION checksgdid (p_sgdid text) to CURATOR;
-REVOKE ALL ON FUNCTION checksgdid (p_sgdid text) FROM PUBLIC;
+$body$ LANGUAGE PLPGSQL
+       SECURITY DEFINER
+       SET search_path = nex, pg_temp;
+GRANT EXECUTE on FUNCTION checksgdid (p_sgdid varchar) to CURATOR;
+REVOKE ALL ON FUNCTION checksgdid (p_sgdid varchar) FROM PUBLIC;
 
 
 --
 -- Checks to see if a username exists in the dbuser table
 --
-CREATE OR REPLACE FUNCTION checkuser(p_username text)  RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION checkuser(p_username varchar)  RETURNS VOID AS $$
 BEGIN
     
     IF NOT EXISTS (SELECT username
@@ -118,7 +128,9 @@ BEGIN
     END IF;
 
 END;
-$$ LANGUAGE PLPGSQL;
-GRANT EXECUTE on FUNCTION checkuser(p_username text) to CURATOR;
-REVOKE ALL ON FUNCTION checkuser(p_username text) FROM PUBLIC;
+$$ LANGUAGE PLPGSQL
+       SECURITY DEFINER
+       SET search_path = nex, pg_temp;
+GRANT EXECUTE on FUNCTION checkuser(p_username varchar) to CURATOR;
+REVOKE ALL ON FUNCTION checkuser(p_username varchar) FROM PUBLIC;
 
