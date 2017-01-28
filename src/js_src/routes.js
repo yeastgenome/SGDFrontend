@@ -36,10 +36,11 @@ export default (
       <Route component={requireAuthentication(LitIndex)} path='lit_triage' />
       <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
     </Route>
+    <Route component={requireAuthentication(TriageLit)} path='triage_literature/:id' />
     <Route component={requireAuthentication(LocusShow)} path='locus/:id/overview' />
     <Route component={requireAuthentication(RefShow)} path='reference/:id/overview' />
     <Route component={requireAuthentication(LitIndex)} path='literature' />
-    <Route component={requireAuthentication(CurateLit)} path='curate_literature/:id'>
+    <Route component={requireAuthentication(CurateLit)} path='annotate/reference/:id'>
       <IndexRoute component={requireAuthentication(CurateLitBasic)} />
       <Route component={requireAuthentication(CurateLitOverview)} path='loci' />
       <Route component={requireAuthentication(CurateLitOverview)} path='protein' />
@@ -50,7 +51,6 @@ export default (
       <Route component={requireAuthentication(CurateLitOverview)} path='interaction' />
       <Route component={requireAuthentication(CurateLitActions)} path='actions' />
     </Route>
-    <Route component={requireAuthentication(TriageLit)} path='triage_literature/:id' />
     <Route component={requireAuthentication(AuthorResponse)} path='author_response' />
   </Route>
 );

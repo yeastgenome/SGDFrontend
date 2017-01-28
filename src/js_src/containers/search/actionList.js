@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 class ActionList extends Component {
   render() {
     if (this.props.category === 'locus' || this.props.category === 'reference') {
-      let href = `curate${this.props.href}`;
+      let href = `annotate${this.props.href}`;
       return <Link to={href}><i className='fa fa-edit' /> Curate</Link>;
     }
     return null;
