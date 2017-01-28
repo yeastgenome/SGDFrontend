@@ -49,6 +49,10 @@ mapping = {
                         "raw": {
                             "type": "string",
                             "index": "not_analyzed"
+                        },
+                        "autocomplete": {
+                            "type": "string",
+                            "analyzer": "autocomplete"
                         }
                     }
                 },
@@ -64,15 +68,6 @@ mapping = {
                     "type": "string"
                 },
                 "first_name": {
-                    "type": "string",
-                    "fields": {
-                        "raw": {
-                            "type": "string",
-                            "index": "not_analyzed"
-                        }
-                    }
-                },
-                "last_name": {
                     "type": "string",
                     "fields": {
                         "raw": {
