@@ -1,6 +1,6 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
-from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi
+from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity
 import fixtures as factory
 import os
 
@@ -514,3 +514,34 @@ class ModelsTest(unittest.TestCase):
 
         self.assertEqual(1, len(instances))
         self.assertEqual(obi, instances[0])
+
+    def test_reservedname_model(self):
+        source = factory.SourceFactory()
+        locus = factory.LocusdbentityFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        reference = factory.ReferencedbentityFactory(dbentity_id=2, sgdid='S99999')
+        colleague = factory.ColleagueFactory()
+
+        instances = DBSession.query(Reservedname).all()
+        self.assertEqual(0, len(instances))
+
+        rname = factory.ReservedNameFactory(reference_id=2)
+
+        instances = DBSession.query(Reservedname).all()
+        self.assertEqual(1, len(instances))
+        self.assertEqual(rname, instances[0])
+
+    def test_strain_model(self):
+        source = factory.SourceFactory()
+        locus = factory.LocusdbentityFactory(dbentity_id=2)
+        taxonomy = factory.TaxonomyFactory()
+
+        instances = DBSession.query(Straindbentity).all()
+        self.assertEqual(0, len(instances))
+
+        strain = factory.StraindbentityFactory()
+
+        instances = DBSession.query(Straindbentity).all()
+        self.assertEqual(1, len(instances))
+        self.assertEqual(strain, instances[0])
