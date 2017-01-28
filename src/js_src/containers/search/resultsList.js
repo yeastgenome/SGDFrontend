@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
 
 import style from './style.css';
 import CategoryLabel from '../../components/categoryLabel';
@@ -8,6 +7,7 @@ import { NON_HIGHLIGHTED_FIELDS } from '../../constants';
 import ActionList from './actionList';
 
 const DEFAULT_FIELDS = ['symbol', 'gene_symbol', 'name', 'gene_synonyms', 'synonyms', 'sourceHref', 'id', 'species', 'type'];
+const LINK_URL = 'http://yeastgenome.org';
 
 class ResultsList extends Component {
   renderHighlightedValues(highlight) {
@@ -19,11 +19,12 @@ class ResultsList extends Component {
   }
 
   renderHeader(d) {
+    let href = `${LINK_URL}${d.href}`;
     return (
       <div>
         <span className={style.resultCatLabel}><CategoryLabel category={d.category} /></span>
         <h5>
-          <Link dangerouslySetInnerHTML={{ __html: d.display_name }} to={d.href} />
+          <a href={href} target='_new'>{d.display_name}</a>
         </h5>
       </div>
     );
@@ -39,7 +40,7 @@ class ResultsList extends Component {
         {this.renderHeader(d)}
         {this.renderDetailFromFields(d, fields)}
         {this.renderHighlightedValues(d.highlight)}
-        <ActionList href={d.href} id={d.id} />
+        <ActionList category={d.category} href={d.href} />
         <hr />
       </div>
     );
