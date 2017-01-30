@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
 
-// import style from './style.css';
-
 class AuthorResponseDrawer extends Component {
   render() {
     return (
