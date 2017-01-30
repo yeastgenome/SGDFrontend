@@ -8,6 +8,7 @@ class LitBasicInfo extends Component {
       <div>
         <label><strong>Basic Info</strong> <a href='#'><i className='fa fa-edit' /> Edit</a></label>
         <div className='callout'>
+          <p><a>Full Text</a></p>
           <label><strong>Citation</strong></label>
           <p>Kang MS, et al. (2013) Yeast RAD2, a homolog of human XPG, plays a key role in the regulation of the cell cycle and actin dynamics. Biol Open</p>
           <label><strong>Abstract</strong></label>
