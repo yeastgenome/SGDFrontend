@@ -13,7 +13,7 @@ from .celery_tasks import upload_to_s3
 
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
-from .search_helpers import add_sort_by, add_highlighting, format_search_results, format_aggregation_results, build_search_query, build_aggregation_query, build_es_search_body, build_autocomplete_search_query, format_autocomplete_results, build_sequence_objects_search_query
+from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results
 
 import transaction
 
@@ -107,19 +107,25 @@ def search_autocomplete(request):
     category = request.params.get('category', '')
     field = request.params.get('field', 'name')
 
-    if query is '':
-        return {"results": None}
+    if query == '':
+        return {
+            "results": None
+        }
 
-    search_body = build_autocomplete_search_query(query, category, field)
-    es_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=search_body)
+    autocomplete_results = ESearch.search(
+        index=request.registry.settings['elasticsearch.index'],
+        body=build_autocomplete_search_body_request(query, category, field)
+    )
 
-    return {"results": format_autocomplete_results(es_response, field)}
+    return {
+        "results": format_autocomplete_results(autocomplete_results, field)
+    }
 
 @view_config(route_name='search', renderer='json', request_method='GET')
 def search(request):
     query = request.params.get('q', '')
-    limit = request.params.get('limit', 10)
-    offset = request.params.get('offset', 0)
+    limit = int(request.params.get('limit', 10))
+    offset = int(request.params.get('offset', 0))
     category = request.params.get('category', '')
     sort_by = request.params.get('sort_by', '')
 
@@ -135,18 +141,31 @@ def search(request):
         "colleague": [("last_name", "last_name"), ("position", "position"), ("institution", "institution"), ("country", "country"), ("keywords", "keywords"), ("colleague_loci", "colleague_loci")]
     }
 
-    response_fields = ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci']
-    
-    multi_match_fields = ["summary", "name_description", "phenotypes", "cellular_component", "biological_process", "molecular_function", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "go_loci", "author", "journal", "year", "reference_loci", "synonyms", "ec_number", "gene_history", "sequence_history", "secondary_sgdid", "tc_number", "strain", "first_name", "last_name", "institution", "position", "country", "colleague_loci", "keywords"]
+    search_fields = ["name", "description", "first_name", "last_name", "institution", "colleague_loci", "feature_type", "name_description", "summary", "phenotypes", "cellular_component", "biological_process", "molecular_function", "ec_number", "protein", "tc_number", "secondary_sgdid", "sequence_history", "gene_history", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "synonyms", "go_id", "go_loci", "author", "journal", "reference_loci"] # year not inserted, have to change to str in mapping
 
-    es_query = build_search_query(query, multi_match_fields, category, category_filters, request)
+    json_response_fields = ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci']
 
-    search_body = build_es_search_body(query, category, es_query, response_fields + ['keys'])
-    
-    add_sort_by(sort_by, search_body)
-    add_highlighting(['name', 'description'] + multi_match_fields, search_body)
-        
-    search_results = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=search_body, size=limit, from_=offset, preference='pref_' + query)
+    args = {}
+    for key in request.params.keys():
+        args[key] = request.params.getall(key)
+
+    es_query = build_search_query(query, search_fields, category,
+                                  category_filters, args)
+
+    search_body = build_es_search_body_request(query,
+                                               category,
+                                               es_query,
+                                               json_response_fields,
+                                               search_fields,
+                                               sort_by)
+
+    search_results = ESearch.search(
+        index=request.registry.settings['elasticsearch.index'],
+        body=search_body,
+        size=limit,
+        from_=offset,
+        preference='p_'+query
+    )
 
     if search_results['hits']['total'] == 0:
         return {
@@ -154,18 +173,79 @@ def search(request):
             'results': [],
             'aggregations': []
         }
-    
-    if category in category_filters.keys() + ['']:
-        agg_query_body = build_aggregation_query(es_query, category, category_filters)
-        aggregation_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=agg_query_body, preference='pref_' + query)
-    else:
-        aggregation_response = []
+
+    aggregation_body = build_es_aggregation_body_request(
+        es_query,
+        category,
+        category_filters
+    )
+
+    aggregation_results = ESearch.search(
+        index=request.registry.settings['elasticsearch.index'],
+        body=aggregation_body,
+        preference='p_'+query
+    )
 
     return {
         'total': search_results['hits']['total'],
-        'results': format_search_results(search_results, query, response_fields),
-        'aggregations': format_aggregation_results(aggregation_response, category, category_filters)
+        'results': format_search_results(search_results, json_response_fields),
+        'aggregations': format_aggregation_results(     # DEBUG HERE!!!
+            aggregation_results,
+            category,
+            category_filters
+        )
     }
+
+# def searcho(request):
+#     query = request.params.get('q', '')
+#     limit = request.params.get('limit', 10)
+#     offset = request.params.get('offset', 0)
+#     category = request.params.get('category', '')
+#     sort_by = request.params.get('sort_by', '')
+
+#     # subcategory filters. Map: (request GET param name from frontend, ElasticSearch field name)
+#     category_filters = {
+#         "locus": [('feature type', 'feature_type'), ('molecular function', 'molecular_function'), ('phenotype', 'phenotypes'), ('cellular component', 'cellular_component'), ('biological process', 'biological_process')],
+#         "phenotype": [("observable", "observable"), ("qualifier", "qualifier"), ("references", "references"), ("phenotype_locus", "phenotype_loci"), ("chemical", "chemical"), ("mutant_type", "mutant_type")],
+#         "biological_process": [("go_locus", "go_loci")],
+#         "cellular_component": [("go_locus", "go_loci")],
+#         "molecular_function": [("go_locus", "go_loci")],
+#         "reference": [("author", "author"), ("journal", "journal"), ("year", "year"), ("reference_locus", "reference_loci")],
+#         "contig": [("strain", "strain")],
+#         "colleague": [("last_name", "last_name"), ("position", "position"), ("institution", "institution"), ("country", "country"), ("keywords", "keywords"), ("colleague_loci", "colleague_loci")]
+#     }
+
+#     response_fields = ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci']
+    
+#     multi_match_fields = ["summary", "name_description", "phenotypes", "cellular_component", "biological_process", "molecular_function", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "go_loci", "author", "journal", "year", "reference_loci", "synonyms", "ec_number", "gene_history", "sequence_history", "secondary_sgdid", "tc_number", "strain", "first_name", "last_name", "institution", "position", "country", "colleague_loci", "keywords"]
+
+#     es_query = build_search_query(query, multi_match_fields, category, category_filters, request)
+
+#     search_body = build_es_search_body(query, category, es_query, response_fields + ['keys'])
+    
+#     add_sort_by(sort_by, search_body)
+#     add_highlighting(['name', 'description'] + multi_match_fields, search_body)
+        
+#     search_results = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=search_body, size=limit, from_=offset, preference='pref_' + query)
+
+#     if search_results['hits']['total'] == 0:
+#         return {
+#             'total': 0,
+#             'results': [],
+#             'aggregations': []
+#         }
+    
+#     if category in category_filters.keys() + ['']:
+#         agg_query_body = build_aggregation_query(es_query, category, category_filters)
+#         aggregation_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=agg_query_body, preference='pref_' + query)
+#     else:
+#         aggregation_response = []
+
+#     return {
+#         'total': search_results['hits']['total'],
+#         'results': format_search_results(search_results, query, response_fields),
+#         'aggregations': format_aggregation_results(aggregation_response, category, category_filters)
+#     }
 
 @view_config(route_name='keywords', renderer='json', request_method='GET')
 def keywords(request):
