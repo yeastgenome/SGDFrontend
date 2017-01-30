@@ -8,7 +8,7 @@ import AuthorResponseDrawer from './authorResponseDrawer';
 import { selectActiveLitEntry, selectActiveLitId, selectCurrentSection } from '../../selectors/litSelectors';
 import LitStatus from '../triageLit/litStatus';
 
-const BASE_CURATE_URL = '/curate_literature';
+const BASE_CURATE_URL = '/annotate/reference';
 const SECTIONS = [
   'basic',
   'loci',

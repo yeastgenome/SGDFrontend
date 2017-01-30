@@ -24,7 +24,7 @@ class ResultsList extends Component {
       <div>
         <span className={style.resultCatLabel}><CategoryLabel category={d.category} /></span>
         <h5>
-          <a href={href} target='_new'>{d.display_name}</a>
+          <a dangerouslySetInnerHTML={{ __html: d.display_name }} href={href} target='_new' />
         </h5>
       </div>
     );
