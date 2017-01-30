@@ -196,57 +196,6 @@ def search(request):
         )
     }
 
-# def searcho(request):
-#     query = request.params.get('q', '')
-#     limit = request.params.get('limit', 10)
-#     offset = request.params.get('offset', 0)
-#     category = request.params.get('category', '')
-#     sort_by = request.params.get('sort_by', '')
-
-#     # subcategory filters. Map: (request GET param name from frontend, ElasticSearch field name)
-#     category_filters = {
-#         "locus": [('feature type', 'feature_type'), ('molecular function', 'molecular_function'), ('phenotype', 'phenotypes'), ('cellular component', 'cellular_component'), ('biological process', 'biological_process')],
-#         "phenotype": [("observable", "observable"), ("qualifier", "qualifier"), ("references", "references"), ("phenotype_locus", "phenotype_loci"), ("chemical", "chemical"), ("mutant_type", "mutant_type")],
-#         "biological_process": [("go_locus", "go_loci")],
-#         "cellular_component": [("go_locus", "go_loci")],
-#         "molecular_function": [("go_locus", "go_loci")],
-#         "reference": [("author", "author"), ("journal", "journal"), ("year", "year"), ("reference_locus", "reference_loci")],
-#         "contig": [("strain", "strain")],
-#         "colleague": [("last_name", "last_name"), ("position", "position"), ("institution", "institution"), ("country", "country"), ("keywords", "keywords"), ("colleague_loci", "colleague_loci")]
-#     }
-
-#     response_fields = ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci']
-    
-#     multi_match_fields = ["summary", "name_description", "phenotypes", "cellular_component", "biological_process", "molecular_function", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "go_loci", "author", "journal", "year", "reference_loci", "synonyms", "ec_number", "gene_history", "sequence_history", "secondary_sgdid", "tc_number", "strain", "first_name", "last_name", "institution", "position", "country", "colleague_loci", "keywords"]
-
-#     es_query = build_search_query(query, multi_match_fields, category, category_filters, request)
-
-#     search_body = build_es_search_body(query, category, es_query, response_fields + ['keys'])
-    
-#     add_sort_by(sort_by, search_body)
-#     add_highlighting(['name', 'description'] + multi_match_fields, search_body)
-        
-#     search_results = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=search_body, size=limit, from_=offset, preference='pref_' + query)
-
-#     if search_results['hits']['total'] == 0:
-#         return {
-#             'total': 0,
-#             'results': [],
-#             'aggregations': []
-#         }
-    
-#     if category in category_filters.keys() + ['']:
-#         agg_query_body = build_aggregation_query(es_query, category, category_filters)
-#         aggregation_response = ESearch.search(index=request.registry.settings['elasticsearch.index'], body=agg_query_body, preference='pref_' + query)
-#     else:
-#         aggregation_response = []
-
-#     return {
-#         'total': search_results['hits']['total'],
-#         'results': format_search_results(search_results, query, response_fields),
-#         'aggregations': format_aggregation_results(aggregation_response, category, category_filters)
-#     }
-
 @view_config(route_name='keywords', renderer='json', request_method='GET')
 def keywords(request):
     keywords_db = DBSession.query(Keyword).all()
@@ -283,30 +232,6 @@ def reference_list(request):
             return [{'id': r.reference_id, 'text': r.text} for r in references]
         except ValueError:
             return HTTPBadRequest(body=json.dumps({'error': "IDs must be string format of integers. Example JSON object expected: {\"reference_ids\": [\"1\", \"2\"]}"}))
-
-# @view_config(route_name='chemical_phenotype_details', renderer='json', request_method='GET')
-# def chemical_phenotype_details(request):
-#     id = request.matchdict['id']
-    
-#     try:
-#         float(id)
-#         filter_by = Chebi.chebi_id == id
-#     except ValueError:
-#         filter_by = Chebi.format_name == id
-
-#     chemical_name = DBSession.query(Chebi.display_name).filter(filter_by).one_or_none()
-
-#     if chemical:
-#         phenotype_annotation_conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter(PhenotypeannotationCond.condition_name == chemical_name.display_name, PhenotypeannotationCond.condition_class == 'chemical').all()
-        
-#         if len(phenotype_annotation_conditions) == 0:
-#             return []
-#         else:
-#             annotation_ids = [id[0] for id in phenotype_annotation_conditions]
-#             phenotype_annotation = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(annotation_ids)).all()
-#             return [p.to_dict() for p in phenotype_annotation]
-#     else:
-#         return HTTPNotFound(body=json.dumps({'error': 'Chemical not found'}))
 
 @view_config(route_name='sign_in', request_method='POST')
 def sign_in(request):
