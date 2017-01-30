@@ -1,6 +1,6 @@
 import datetime
 import factory
-from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname
+from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -316,6 +316,7 @@ class ChebiUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+
 class LocusdbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Locusdbentity
@@ -502,9 +503,35 @@ class ReservedNameFactory(factory.alchemy.SQLAlchemyModelFactory):
     bud_id = 750
     locus_id = 1
     reference_id = 1
-    colleague_id = 1
+    colleague_id = 113698
     reservation_date = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     expiration_date = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     description = "blahblah"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class StraindbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Straindbentity
+        sqlalchemy_session = DBSession
+
+    dbentity_id = 1
+    taxonomy_id = 1
+    source_id = 1
+    strain_type = "Alternative Reference"
+    genotype = "genotype"
+    genbank_id = "genbank id"
+    format_name = "some name"
+    display_name = "some name"
+    obj_url = "/strain/SK3"
+    sgdid = "S0011111"
+    assembly_size = 10
+    subclass = "STRAIN"
+    fold_coverage = 5
+    scaffold_number = 1
+    longest_scaffold = 1000000000
+    scaffold_nfifty = 10
+    feature_count = 50
+    headline = "some headline"
+    dbentity_status = "Active"
     created_by = "TOTO"
