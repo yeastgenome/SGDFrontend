@@ -1,77 +1,78 @@
-def add_sort_by(sort_by, search_body):
-    if sort_by == 'alphabetical':
-        search_body['sort'] = [
-            {
-                "name.raw": {
-                    "order": "asc"
-                }
+def build_autocomplete_search_body_request(query, category='locus', field='name'):
+    es_query = {
+        "query": {
+            "bool": {
+                "must": [{
+                    "match": {
+                        "name.autocomplete": {
+                            "query": query
+                        }
+                    }
+                }],
+                "should": [
+                    {
+                        "match": {
+                            "category": {
+                                "query": "locus",
+                                "boost": 2
+                            }
+                        }
+                    }
+                ]
             }
-        ]
-    elif sort_by == 'annotation':
-        search_body['sort'] = [
-            {
-                "number_annotations": {
-                    "order": "desc"
-                }
-            }
-        ]
+        },
+        '_source': ['name', 'href', 'category', 'gene_symbol']
+    }
 
-def add_highlighting(fields, search_body):
-    for field in fields:
-        search_body['highlight']['fields'][field] = {}
+    if category != '':
+        es_query["query"]["bool"]["must"].append({"match": {"category": category}})
+        if category != "locus":
+            es_query["query"]["bool"].pop("should")
 
-def format_search_results(search_results, query, response_fields):
+    if field != 'name':
+        es_query['aggs'] = {}
+        es_query['aggs'][field] = {
+            'terms': {'field': field + '.raw', 'size': 999}
+        }
+
+        es_query['query']['bool']['must'][0]['match'] = {}
+        es_query['query']['bool']['must'][0]['match'][field + '.autocomplete'] = {
+            'query': query,
+            'analyzer': 'standard'
+        }
+
+        es_query['_source'] = [field, 'href', 'category']
+
+    return es_query
+
+
+def format_autocomplete_results(es_response, field='name'):
     formatted_results = []
 
-    for r in search_results['hits']['hits']:
-        raw_obj = r.get('_source')
+    if field != 'name':
+        results = es_response['aggregations'][field]['buckets']
+        for r in results:
+            obj = {
+                'name': r['key']
+            }
+            formatted_results.append(obj)
+    else:
+        for hit in es_response['hits']['hits']:
+            obj = {
+                'name': hit['_source']['name'],
+                'href': hit['_source']['href'],
+                'category': hit['_source']['category']
+            }
 
-        obj = {}
-        for field in response_fields:
-            obj[field] = raw_obj.get(field)
-                
-        obj['highlights'] = r.get('highlight')
+            if hit['_source'].get('gene_symbol') and hit['_source']['category'] == "locus":
+                obj['name'] = hit['_source']['gene_symbol'].upper()
 
-        formatted_results.append(obj)
-
-    if search_is_quick(query, search_results):
-        formatted_results[0]['is_quick'] = True
+            formatted_results.append(obj)
 
     return formatted_results
 
-def format_aggregation_results(aggregation_results, category, category_filters):
-    if category == '':
-        category_obj = {'values': [], 'key': 'category'}
-        for bucket in aggregation_results['aggregations']['categories']['buckets']:
-            category_obj['values'].append({'key': bucket['key'], 'total': bucket['doc_count']})
-        return [category_obj]
-    
-    elif category in category_filters.keys():
-        formatted_agg = []
-        
-        for agg_info in category_filters[category]:
-            agg_obj = {'key': agg_info[0], 'values': []}
-            if agg_info[1] in aggregation_results['aggregations']:
-                for agg in aggregation_results['aggregations'][agg_info[1]]['buckets']:
-                    agg_obj['values'].append({'key': agg['key'], 'total': agg['doc_count']})
-            formatted_agg.append(agg_obj)
-            
-        return formatted_agg
-    
-    else:
-        return []
 
-def search_is_quick(query, search_results):
-    if search_results['hits']['hits'][0].get('_source').get('keys'):
-        if query and query.replace('"', '').lower().strip() in search_results['hits']['hits'][0].get('_source').get('keys'):
-            if len(search_results['hits']['hits']) > 1:
-                if (query.replace('"', '').lower().strip() not in search_results['hits']['hits'][1].get('_source').get('keys')):
-                    return True
-            else:
-                return True
-    return False
-
-def build_aggregation_query(es_query, category, category_filters):
+def build_es_aggregation_body_request(es_query, category, category_filters):
     agg_query_body = {
         'query': es_query,
         'size': 0,
@@ -82,47 +83,98 @@ def build_aggregation_query(es_query, category, category_filters):
         agg_query_body['aggs'] = {
             'categories': {
                 'terms': {'field': 'category', 'size': 50}
-            },
-            'feature_type': {
-                'terms': {'field': 'feature_type', 'size': 50}
             }
         }
+    elif category in category_filters.keys():
+        for subcategory in category_filters[category]:
+            agg_query_body['aggs'][subcategory[1]] = {
+                'terms': {
+                    'field': subcategory[1] + '.raw',
+                    'size': 999
+                }
+            }
     else:
-        for c in category_filters[category]:
-            agg_query_body['aggs'][c[1]] = {'terms': {'field': c[1] + '.raw', 'size': 999}}
+        return {}
 
     return agg_query_body
 
-def build_es_search_body(query, category, es_query, returning_fields):
-    results_search_body = {
-        '_source': returning_fields,
+
+def format_aggregation_results(aggregation_results, category, category_filters):
+    if category == '':
+        category_obj = {
+            'values': [],
+            'key': 'category'
+        }
+
+        for bucket in aggregation_results['aggregations']['categories']['buckets']:
+            category_obj['values'].append({
+                'key': bucket['key'],
+                'total': bucket['doc_count']
+            })
+
+        return [category_obj]
+    elif category in category_filters.keys():
+        formatted_agg = []
+
+        for subcategory in category_filters[category]:
+            agg_obj = {
+                'key': subcategory[1],
+                'values': []
+            }
+
+            if subcategory[1] in aggregation_results['aggregations']:
+                for agg in aggregation_results['aggregations'][subcategory[1]]['buckets']:
+                    agg_obj['values'].append({
+                        'key': agg['key'],
+                        'total': agg['doc_count']
+                    })
+            formatted_agg.append(agg_obj)
+
+        return formatted_agg
+    else:
+        return []
+
+
+def build_es_search_body_request(query, category, es_query, json_response_fields, search_fields, sort_by):
+    es_search_body = {
+        '_source': json_response_fields,
         'highlight': {
-            'fields' : {}
+            'fields': {}
         },
-        'query': es_query
+        'query': {}
     }
-    
+
     if query == '' and category == '':
-        results_search_body["query"] = {
+        es_search_body["query"] = {
             "function_score": {
                 "query": es_query,
-                "random_score": {"seed" : 12345}
+                "random_score": {"seed": 12345}
             }
         }
     else:
-        results_search_body["sort"] = [
-            '_score',
-            {'number_annotations': {'order': 'desc'}}
+        es_search_body["query"] = es_query
+
+    for field in search_fields:
+        es_search_body['highlight']['fields'][field] = {}
+
+    if sort_by == 'alphabetical':
+        es_search_body['sort'] = [
+            {
+                "name.raw": {
+                    "order": "asc"
+                }
+            }
         ]
 
-    return results_search_body
+    return es_search_body
 
-def build_search_query(query, multi_match_fields, category, category_filters, request):
-    es_query = build_es_search_query(query, multi_match_fields)
+
+def build_search_query(query, search_fields, category, category_filters, args):
+    es_query = build_search_params(query, search_fields)
 
     if category == '':
         return es_query
-    
+
     query = {
         'filtered': {
             'query': es_query,
@@ -133,15 +185,21 @@ def build_search_query(query, multi_match_fields, category, category_filters, re
             }
         }
     }
-    
+
     if category in category_filters.keys():
         for item in category_filters[category]:
-            if request.params.get(item[0]):
-                query['filtered']['filter']['bool']['must'].append({'term': {(item[1]+".raw"): request.params.get(item[0])}})
+            if args.get(item[0]):
+                for param in args.get(item[0]):
+                    query['filtered']['filter']['bool']['must'].append({
+                        'term': {
+                            (item[1] + ".raw"): param
+                        }
+                    })
 
     return query
-    
-def build_es_search_query(query, search_fields):
+
+
+def build_search_params(query, search_fields):
     if query == "":
         es_query = {"match_all": {}}
     else:
@@ -153,8 +211,10 @@ def build_es_search_query(query, search_fields):
         es_query['dis_max']['queries'] = []
 
         custom_boosts = {
-            "name": 200,
-            "name.symbol": 300,
+            "name": 400,
+            "name.symbol": 500,
+            "gene_history": 100,
+            "keys": 1000
         }
 
         fields = search_fields + [
@@ -178,79 +238,38 @@ def build_es_search_query(query, search_fields):
 
     return es_query
 
-def build_autocomplete_search_query(query, category, field='name'):
-    es_query = {
-        "query": {
-            "bool": {
-                "must": [{
-                    "match": {
-                        "name": {
-                            "query": query,
-                            "analyzer": "standard"
-                        }
-                    }
-                }],
-                "must_not": [{
-                    "match": { "category": "reference" }
-                }, {
-                    "match": { "category": "download" }
-                }],
-                "should": [
-                    {
-                        "match": {
-                            "category": {
-                                "query": "locus",
-                                "boost": 4
-                            }
-                        }
-                    }
-                ]
-            }
-        },
-        '_source': ['name', 'href', 'category']
-    }
 
-    if category != '':
-        es_query["query"]["bool"]["must"].append({"match": {"category": category}})
-        if category != "locus":
-            es_query["query"]["bool"].pop("should")
+def filter_highlighting(highlight):
+    if highlight is None:
+        return None
 
-    if field != 'name':
-        es_query['aggs'] = {}
-        es_query['aggs'][field] = {
-            'terms': {'field': field + '.raw', 'size': 999}
-        }
+    for k in highlight.keys():
+        if k.endswith(".symbol") and k.split(".")[0] in highlight:
+            if highlight[k] == highlight[k.split(".")[0]]:
+                highlight.pop(k, None)
+            else:
+                highlight[k.split(".")[0]] = highlight[k]
+                highlight.pop(k, None)
+    return highlight
 
-        es_query['query']['bool']['must'][0]['match'] = {}
-        es_query['query']['bool']['must'][0]['match'][field + '.autocomplete'] = {
-            'query': query,
-            'analyzer': 'standard'
-        }
 
-        es_query['_source'] = [field]
-
-    return es_query
-
-def format_autocomplete_results(es_response, field='name'):
+def format_search_results(search_results, json_response_fields):
     formatted_results = []
-    
-    if field != 'name':
-        results = es_response['aggregations'][field]['buckets']
-        for r in results:
-            obj = {
-                'name': r['key']
-            }
-            formatted_results.append(obj)
-    else:
-        for hit in es_response['hits']['hits']:
-            obj = {
-                'name': hit['_source']['name'],
-                'href': hit['_source']['href'],
-                'category': hit['_source']['category']
-            }
-            formatted_results.append(obj)
+
+    for r in search_results['hits']['hits']:
+        raw_obj = r.get('_source')
+
+        obj = {}
+        for field in json_response_fields:
+            obj[field] = raw_obj.get(field)
+
+        obj['highlights'] = filter_highlighting(r.get('highlight'))
+        obj['id'] = r.get('_id')
+
+        formatted_results.append(obj)
 
     return formatted_results
+
 
 def build_sequence_objects_search_query(query):
     if query == '':
