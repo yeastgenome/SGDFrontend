@@ -62,6 +62,7 @@ CREATE TABLE nex.locusdbentity (
 	has_regulation boolean NOT NULL,
 	has_protein boolean NOT NULL,
 	has_sequence_section boolean NOT NULL,
+    not_in_s288c boolean NOT NULL,
 	CONSTRAINT locusdbentity_pk PRIMARY KEY (dbentity_id)
 ) ;
 COMMENT ON TABLE nex.locusdbentity IS 'Features located on a sequence, that are associate with a locus. Inherits from DBENTITY.';
@@ -84,6 +85,7 @@ COMMENT ON COLUMN nex.locusdbentity.has_history IS 'Has a History section on the
 COMMENT ON COLUMN nex.locusdbentity.name_description IS 'Description of the gene name acronym.';
 COMMENT ON COLUMN nex.locusdbentity.has_interaction IS 'Has an Interaction tab page.';
 COMMENT ON COLUMN nex.locusdbentity.has_sequence_section IS 'Has a Sequence section on the Locus page.';
+COMMENT ON COLUMN nex.locusdbentity.not_in_s288c IS 'If the feature is NOT found in S288C.';
 ALTER TABLE nex.locusdbentity ADD CONSTRAINT locusdbentity_uk UNIQUE (systematic_name);
 ALTER TABLE nex.locusdbentity ADD CONSTRAINT locusdbentity_qualifier_ck CHECK (QUALIFIER IN ('Verified','Uncharacterized','Dubious'));
 
