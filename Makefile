@@ -49,7 +49,7 @@ dependencies:
 	bundle install
 
 run:
-	bin/pserve sgdfrontend_development.ini --reload
+	pserve sgdfrontend_development.ini --reload
 
 tests:
 	nosetests test/
