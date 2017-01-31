@@ -57,6 +57,7 @@ function drawChart() {
     }
 
     if(phenotype_overview['strains'].length > 1) {
+	var label = 'Annotations';
         var strain_data = google.visualization.arrayToDataTable(phenotype_overview['strains']);
         var strain_options = {
             'legend': {'position': 'none'},

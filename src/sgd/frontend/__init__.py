@@ -43,7 +43,7 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('author'),
                     route_name='author')
 
-    config.add_route('strain', '/strain/{identifier}/overview')
+    config.add_route('strain', '/strain/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('strain', request)(getattr(chosen_frontend, 'strain')(request.matchdict['identifier'])),
                     renderer=chosen_frontend.get_renderer('strain'),
                     route_name='strain')
@@ -156,7 +156,7 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('domain'),
                     route_name='domain')
 
-    config.add_route('reserved_name', '/reserved_name/{identifier}/overview')
+    config.add_route('reserved_name', '/reservedname/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('reserved_name', request)(getattr(chosen_frontend, 'reserved_name')(reserved_name_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('reserved_name'),
                     route_name='reserved_name')

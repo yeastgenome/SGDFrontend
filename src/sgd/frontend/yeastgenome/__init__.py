@@ -17,11 +17,6 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 from src.sgd.frontend.frontend_interface import FrontendInterface
 
-# setup elastic search
-from src.sgd.frontend import config
-from elasticsearch import Elasticsearch
-es = Elasticsearch(config.elasticsearch_address, timeout=5, retry_on_timeout=True)
-
 class YeastgenomeFrontend(FrontendInterface):
     def __init__(self, backend_url, heritage_url, log_directory):
         self.backend_url = backend_url
@@ -122,8 +117,8 @@ class YeastgenomeFrontend(FrontendInterface):
         return self.get_obj('domain', domain_repr)
 
     def reserved_name(self, reserved_name_repr):
-        return self.get_obj('reserved_name', reserved_name_repr)
-        
+        return self.get_obj('reservedname', reserved_name_repr)
+
     def author(self, author_repr):
         return self.get_obj('author', author_repr)
 
@@ -290,175 +285,6 @@ class YeastgenomeFrontend(FrontendInterface):
     def enrichment(self, bioent_ids):
         enrichment_results = get_json(self.backend_url + '/go_enrichment', data={'bioent_ids': bioent_ids})
         return enrichment_results
-
-    # variant viewer ES endpoints, will eventually move to backend
-
-    # es search for sequence objects
-    def search_sequence_objects(self, params):
-        query = params['query'] if 'query' in params.keys() else ''
-        query = query.lower()
-        offset = int(params['offset']) if 'offset' in params.keys() else 0
-        limit = int(params['limit']) if 'limit' in params.keys() else 1000
-
-        query_type = 'wildcard' if '*' in query else 'match_phrase'
-        if query == '':
-            search_body = {
-                'query': { 'match_all': {} },
-                'sort': { 'absolute_genetic_start': { 'order': 'asc' }}
-            }
-        elif ',' in query:
-            original_query_list = query.split(',')
-            query_list = []
-            for item in original_query_list:
-                query_list.append(item.strip())
-            print query_list
-            search_body = {
-                'query': {
-                    'filtered': {
-                        'filter': {
-                            'terms': {
-                                '_all': query_list
-                            }
-                        }
-                    }
-                }
-            }
-        else:
-            search_body = {
-                'query': {
-                    query_type: {
-                        '_all': query
-                    }
-                }
-            }
-
-        search_body['_source'] = ['sgdid', 'name', 'href', 'absolute_genetic_start', 'format_name', 'dna_scores', 'protein_scores', 'snp_seqs']
-        res = es.search(index='sequence_objects', body=search_body, size=limit, from_=offset)
-        simple_hits = []
-        for hit in res['hits']['hits']:
-            simple_hits.append(hit['_source'])
-        formatted_response = {
-            'loci': simple_hits,
-            'total': res['hits']['total'],
-            'offset': offset
-        }
-        return Response(body=json.dumps(formatted_response), content_type='application/json')
-
-    # get individual feature
-    def get_sequence_object(self, locus_repr):
-        id = locus_repr.upper()
-        res = es.get(index='sequence_objects', id=id)['_source']
-        return Response(body=json.dumps(res), content_type='application/json')
-
-    # elasticsearch autocomplete results
-    def autocomplete_results(self, params):
-        query = params['term']
-        search_body = {
-            'query': {
-                'bool': {
-                    'must': {
-                        'match': {
-                            'term': {
-                                'query': query,
-                                'analyzer': 'standard'
-                            }
-                        }
-                    },
-                    'must_not': { 'match': { 'type': 'paper' }},
-                    'should': [
-                        {
-                            'match': {
-                                'type': {
-                                    'query': 'gene_name',
-                                    'boost': 4
-                                }
-                            }
-                        },
-                        { 'match': { 'type': 'GO' }},
-                        { 'match': { 'type': 'phenotyoe' }},
-                        { 'match': { 'type': 'strain' }},
-                        { 'match': { 'type': 'paper' }},
-                        { 'match': { 'type': 'description' }},
-                    ]
-                }
-            }
-        }
-        res = es.search(index='sgdlite', body=search_body)
-        simplified_results = []
-        for hit in res['hits']['hits']:
-            # add matching words from description, not whole description
-            if hit['_source']['type'] == 'description':
-                for word in hit['_source']['term'].split(" "):
-                    if word.lower().find(query.lower()) > -1:
-                        simplified_results.append(re.sub('[;,.]', '', word))
-                        break
-            else:
-                simplified_results.append(hit['_source']['term'])
-
-        # filter duplicates
-        unique = []
-        for hit in simplified_results:
-            if hit not in unique:
-                unique.append(hit)
-
-        return Response(body=json.dumps(unique), content_type='application/json')
-
-    # es search for sequence objects
-    def search_sequence_objects(self, params):
-        query = params['query'] if 'query' in params.keys() else ''
-        query = query.lower()
-        offset = int(params['offset']) if 'offset' in params.keys() else 0
-        limit = int(params['limit']) if 'limit' in params.keys() else 1000
-
-        query_type = 'wildcard' if '*' in query else 'match_phrase'
-        if query == '':
-            search_body = {
-                'query': { 'match_all': {} },
-                'sort': { 'absolute_genetic_start': { 'order': 'asc' }}
-            }
-        elif ',' in query:
-            original_query_list = query.split(',')
-            query_list = []
-            for item in original_query_list:
-                query_list.append(item.strip())
-            print query_list
-            search_body = {
-                'query': {
-                    'filtered': {
-                        'filter': {
-                            'terms': {
-                                '_all': query_list
-                            }
-                        }
-                    }
-                }
-            }
-        else:
-            search_body = {
-                'query': {
-                    query_type: {
-                        '_all': query
-                    }
-                }
-            }
-
-        search_body['_source'] = ['sgdid', 'name', 'href', 'absolute_genetic_start', 'format_name', 'dna_scores', 'protein_scores', 'snp_seqs']
-        res = es.search(index='sequence_objects', body=search_body, size=limit, from_=offset)
-        simple_hits = []
-        for hit in res['hits']['hits']:
-            simple_hits.append(hit['_source'])
-        formatted_response = {
-            'loci': simple_hits,
-            'total': res['hits']['total'],
-            'offset': offset
-        }
-        return Response(body=json.dumps(formatted_response), content_type='application/json')
-
-    # get individual feature
-    def get_sequence_object(self, locus_repr):
-        id = locus_repr.upper()
-        res = es.get(index='sequence_objects', id=id)['_source']
-        return Response(body=json.dumps(res), content_type='application/json')
 
     def backend(self, url_repr, request, args=None):
         relative_url = '/' + ('/'.join(url_repr))
