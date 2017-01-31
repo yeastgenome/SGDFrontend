@@ -2,7 +2,7 @@
 from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPInternalServerError
 from src.sgd.frontend import config
 import urllib
 import datetime
@@ -11,6 +11,16 @@ import requests
 
 SEARCH_URL = config.backend_url + '/get_search_results'
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
+
+@view_config(context=HTTPNotFound)
+def not_found(self, request):
+    request.response.status = 404
+    return render_to_response(TEMPLATE_ROOT + 'lost.jinja2', {}, request=request)
+
+@view_config(context=HTTPInternalServerError)
+def error(self, request):
+    request.response.status = 500
+    return render_to_response(TEMPLATE_ROOT + 'error.jinja2', {}, request=request)
 
 @view_config(route_name='blast_fungal')
 def blast_fungal(request):
