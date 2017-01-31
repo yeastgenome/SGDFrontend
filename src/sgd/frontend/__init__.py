@@ -39,7 +39,7 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('references_this_week'),
                     route_name='references_this_week')
 
-    config.add_route('reference', '/reference/{identifier}/overview')
+    config.add_route('reference', '/reference/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('reference', request)(getattr(chosen_frontend, 'reference')(request.matchdict['identifier'])),
                     renderer=chosen_frontend.get_renderer('reference'),
                     route_name='reference')
@@ -49,7 +49,6 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('author'),
                     route_name='author')
 
-    # CONVERTING TO NEX2...
     config.add_route('strain', '/strain/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('strain', request)(getattr(chosen_frontend, 'strain')(request.matchdict['identifier'])),
                     renderer=chosen_frontend.get_renderer('strain'),
@@ -163,7 +162,6 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('domain'),
                     route_name='domain')
 
-    # CONVERTED TO NEX2!
     config.add_route('reserved_name', '/reservedname/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('reserved_name', request)(getattr(chosen_frontend, 'reserved_name')(reserved_name_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('reserved_name'),
