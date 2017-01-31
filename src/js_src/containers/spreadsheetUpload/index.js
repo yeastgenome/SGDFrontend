@@ -147,6 +147,16 @@ const TEMPLATE_OPTIONS = [
     label: 'Locus Summaries',
     value: 'locus_summaries',
     tempalateUrl: 'https://docs.google.com/spreadsheets/d/1GwirBge5wrKBv5mDOnHMOrf7nxLydBQOIojaf5wd3QE/edit#gid=0'
+  },
+  {
+    label: 'Locus Information',
+    value: 'locus_info',
+    tempalateUrl: 'http://downloads.yeastgenome.org/curation/chromosomal_feature/SGD_features.tab'
+  },
+  {
+    label: 'Literature',
+    value: 'literature',
+    tempalateUrl: 'http://downloads.yeastgenome.org/curation/literature/gene_literature.tab'
   }
 ];
 const DEFAULT_VALUE = TEMPLATE_OPTIONS[0].value;
