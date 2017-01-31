@@ -38,7 +38,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('reference_o', '/reference/{identifier}/overview')
     config.add_route('reference', '/reference/{identifier}')
         
-    config.add_route('author', '/author/{identifier}/overview')
+    config.add_route('author', '/author/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('author', request)(getattr(chosen_frontend, 'author')(request.matchdict['identifier'])),
                     renderer=chosen_frontend.get_renderer('author'),
                     route_name='author')
