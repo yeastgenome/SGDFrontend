@@ -10,6 +10,8 @@ def prep_views(chosen_frontend, config):
     config.scan('src.sgd.frontend.yeastgenome.views.misc_views')
     config.scan('src.sgd.frontend.yeastgenome.views.locus_views')
     # misc pages from misc_views
+    config.add_route('redirect_no_overview', '/{ignore}/overview')
+    config.add_route('redirect_no_overview_long', '/{ignore_a}/{ignore_b}/overview')
     config.add_route('home', '/')
     config.add_route('blast_fungal', '/blast-fungal')
     config.add_route('blast_sgd', '/blast-sgd')
@@ -22,7 +24,6 @@ def prep_views(chosen_frontend, config):
     config.add_route('search', '/search')
     # config.add_route('example', '/example')
     # locus pages from locus_views
-    config.add_route('locus_o', '/locus/{identifier}/overview')
     config.add_route('locus', '/locus/{identifier}')
     config.add_route('sequence_details', '/locus/{identifier}/sequence')
     config.add_route('protein_details', '/locus/{identifier}/protein')
@@ -35,10 +36,8 @@ def prep_views(chosen_frontend, config):
     config.add_route('curator_sequence', '/curator/locus/{identifier}/sequence')
     # references
     config.add_route('references_this_week', '/reference/recent')
-    config.add_route('reference_o', '/reference/{identifier}/overview')
     config.add_route('reference', '/reference/{identifier}')
     config.add_route('phenotype', '/phenotype/{identifier}')
-    config.add_route('phenotype_o', '/phenotype/{identifier}/overview')
         
     config.add_route('author', '/author/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('author', request)(getattr(chosen_frontend, 'author')(request.matchdict['identifier'])),
@@ -118,37 +117,37 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('enrichment'),
                     route_name='enrichment')
 
-    config.add_route('observable', '/observable/{identifier}/overview')
+    config.add_route('observable', '/observable/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('observable', request)(getattr(chosen_frontend, 'observable')(biocon_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('observable'),
                     route_name='observable')
     
-    config.add_route('phenotype_ontology', '/ontology/phenotype/ypo/overview')
+    config.add_route('phenotype_ontology', '/ontology/phenotype/ypo')
     config.add_view(lambda request: chosen_frontend.response_wrapper('phenotype_ontology', request)(getattr(chosen_frontend, 'phenotype_ontology')()),
                     renderer=chosen_frontend.get_renderer('phenotype_ontology'),
                     route_name='phenotype_ontology')
 
-    config.add_route('ecnumber', '/ecnumber/{identifier}/overview')
+    config.add_route('ecnumber', '/ecnumber/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('ecnumber', request)(getattr(chosen_frontend, 'ecnumber')(biocon_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('ecnumber'),
                     route_name='ecnumber')
     
-    config.add_route('go', '/go/{identifier}/overview')
+    config.add_route('go', '/go/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('go', request)(getattr(chosen_frontend, 'go')(biocon_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('go'),
                     route_name='go')
     
-    config.add_route('go_ontology', '/ontology/go/{identifier}/overview')
+    config.add_route('go_ontology', '/ontology/go/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('go_ontology', request)(getattr(chosen_frontend, 'go_ontology')(biocon_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('go_ontology'),
                     route_name='go_ontology')
 
-    config.add_route('chemical', '/chemical/{identifier}/overview')
+    config.add_route('chemical', '/chemical/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('chemical', request)(getattr(chosen_frontend, 'chemical')(chemical_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('chemical'),
                     route_name='chemical')
 
-    config.add_route('domain', '/domain/{identifier}/overview')
+    config.add_route('domain', '/domain/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('domain', request)(getattr(chosen_frontend, 'domain')(domain_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('domain'),
                     route_name='domain')
@@ -158,17 +157,17 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('reserved_name'),
                     route_name='reserved_name')
 
-    config.add_route('dataset', '/dataset/{identifier}/overview')
+    config.add_route('dataset', '/dataset/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('dataset', request)(getattr(chosen_frontend, 'dataset')(bioitem_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('dataset'),
                     route_name='dataset')
 
-    config.add_route('contig', '/contig/{identifier}/overview')
+    config.add_route('contig', '/contig/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('contig', request)(getattr(chosen_frontend, 'contig')(contig_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('contig'),
                     route_name='contig')
 
-    config.add_route('tag', '/tag/{identifier}/overview')
+    config.add_route('tag', '/tag/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('tag', request)(getattr(chosen_frontend, 'tag')(tag_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('tag'),
                     route_name='tag')
@@ -178,7 +177,7 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('locus_list'),
                     route_name='locus_list')
 
-    config.add_route('experiment', '/experiment/{identifier}/overview')
+    config.add_route('experiment', '/experiment/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('experiment', request)(getattr(chosen_frontend, 'experiment')(experiment_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('experiment'),
                     route_name='experiment')

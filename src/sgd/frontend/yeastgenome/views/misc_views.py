@@ -12,6 +12,12 @@ import requests
 SEARCH_URL = config.backend_url + '/get_search_results'
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 
+@view_config(route_name='redirect_no_overview')
+@view_config(route_name='redirect_no_overview_long')
+def redirect_no_overview(request):
+    new_url = request.path.replace('/overview', '')
+    return HTTPFound(new_url)
+
 @view_config(context=HTTPNotFound)
 def not_found(self, request):
     request.response.status = 404
@@ -51,14 +57,12 @@ def references_this_week(request):
     page = {}
     return render_to_response(TEMPLATE_ROOT + 'references_this_week.jinja2', page, request=request)
 
-@view_config(route_name='reference_o') 
 @view_config(route_name='reference') 
 def reference(request):
     ref_id = request.matchdict['identifier']
     ref_obj = get_obj(ref_id, 'reference')
     return render_to_response(TEMPLATE_ROOT + 'reference.jinja2', ref_obj, request=request)
 
-@view_config(route_name='phenotype_o') 
 @view_config(route_name='phenotype') 
 def phenotype(request):
     ref_id = request.matchdict['identifier']
