@@ -37,6 +37,8 @@ def prep_views(chosen_frontend, config):
     config.add_route('references_this_week', '/reference/recent')
     config.add_route('reference_o', '/reference/{identifier}/overview')
     config.add_route('reference', '/reference/{identifier}')
+    config.add_route('phenotype', '/phenotype/{identifier}')
+    config.add_route('phenotype_o', '/phenotype/{identifier}/overview')
         
     config.add_route('author', '/author/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('author', request)(getattr(chosen_frontend, 'author')(request.matchdict['identifier'])),
@@ -116,11 +118,6 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('enrichment'),
                     route_name='enrichment')
 
-    config.add_route('phenotype', '/phenotype/{identifier}/overview')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('phenotype', request)(getattr(chosen_frontend, 'phenotype')(biocon_repr= request.matchdict['identifier'].lower())),
-                    renderer=chosen_frontend.get_renderer('phenotype'),
-                    route_name='phenotype')
-    
     config.add_route('observable', '/observable/{identifier}/overview')
     config.add_view(lambda request: chosen_frontend.response_wrapper('observable', request)(getattr(chosen_frontend, 'observable')(biocon_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('observable'),

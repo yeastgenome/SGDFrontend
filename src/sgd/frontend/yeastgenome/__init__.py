@@ -95,9 +95,6 @@ class YeastgenomeFrontend(FrontendInterface):
     def experiment(self, experiment_repr):
         return self.get_obj('experiment', experiment_repr)
     
-    def phenotype(self, biocon_repr):
-        return self.get_obj('phenotype', biocon_repr)
-    
     def observable(self, biocon_repr):
         return self.get_obj('observable', biocon_repr)
     
