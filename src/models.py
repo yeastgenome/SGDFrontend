@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue
+from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -2579,16 +2579,69 @@ class Phenotype(Base):
     source = relationship(u'Source')
 
     def to_dict(self):
+        strains = []
+        counts = DBSession.query(Phenotypeannotation.taxonomy_id, func.count(Phenotypeannotation.taxonomy_id)).filter_by(phenotype_id=self.phenotype_id).group_by(Phenotypeannotation.taxonomy_id).all()
+
+        for count in counts:
+            strain = DBSession.query(Straindbentity.display_name).filter_by(taxonomy_id=count[0]).all()
+            if len(strain) > 1:
+                strain = "Other"
+            elif len(strain) == 1:
+                strain = strain[0][0]
+            else:
+                continue
+
+            strains.append([strain, count[1]])
+
+        strains = sorted(strains, key=lambda strain: -1 * strain[1])
+
+        experiments = []
+        counts_mutant_type = DBSession.query(Phenotypeannotation.mutant_id, func.count(Phenotypeannotation.mutant_id)).filter_by(phenotype_id=self.phenotype_id).group_by(Phenotypeannotation.mutant_id).all()
+
+        annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
+
+        mt = {}
+        for annotation in annotations:
+            if annotation.mutant.display_name not in mt:
+                mt[annotation.mutant.display_name] = {
+                    "classical genetics": 0,
+                    "large-scale survey": 0
+                }
+
+            if annotation.experiment.display_name in mt[annotation.mutant.display_name]:
+                mt[annotation.mutant.display_name][annotation.experiment.display_name] += 1
+            else:
+                mt[annotation.mutant.display_name]["large-scale survey"] += 1
+                
+        experiment_categories = []
+        for key in mt.keys():
+            experiment_categories.append([key, mt[key]["classical genetics"], mt[key]["large-scale survey"]])
+
+        experiment_categories = sorted(experiment_categories, key=lambda k: k[1] + k[2], reverse=True)
+                
         obj = {
+            "id": self.phenotype_id,
             "display_name": self.display_name,
             "observable": {
                 "display_name": self.observable.display_name,
                 "link": self.observable.obj_url
             },
-            "qualifier": self.qualifier.display_name
+            "qualifier": self.qualifier.display_name,
+            "overview": {
+                "strains": [["Strain", "Annotations"]] + strains,
+                "experiment_categories": [["Mutant Type", "classical genetics", "large-scale survey"]] + experiment_categories
+            }
         }
 
         return obj
+
+    def annotations_to_dict(self):
+        obj = []
+
+        phenotypes = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
+        
+        return [phenotype.to_dict(phenotype=self) for phenotype in phenotypes]
+
 
 class Phenotypeannotation(Base):
     __tablename__ = 'phenotypeannotation'
@@ -2625,7 +2678,7 @@ class Phenotypeannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
-    def to_dict(self, reference=None, chemical=None):
+    def to_dict(self, reference=None, chemical=None, phenotype=None):
         if reference == None:
             reference = self.reference
         
@@ -2657,29 +2710,36 @@ class Phenotypeannotation(Base):
                 "note": note,
                 "role": "Allele"
             })
+        
+        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).all()
 
-        # to be replaced by assay_id but data is not yet curated        
-        chemicals = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id,condition_class="chemical").all()
-        for chem in chemicals:
-            if chemical is not None and (chemical.display_name == chem.condition_name):
-                chebi = chemical
+        for condition in conditions:
+            if condition.condition_class == "chemical":
+                for chem in chemicals:
+                    if chemical is not None and (chemical.display_name == chem.condition_name):
+                        chebi = chemical
+                    else:
+                        chebi = DBSession.query(Chebi).filter_by(display_name=chem.condition_name).one_or_none()
+
+                    link = None
+                    if chebi:
+                        link = chebi.obj_url
+
+                    properties.append({
+                        "class_type": "CHEMICAL",
+                        "concentration": chem.condition_value,
+                        "bioitem": {
+                            "link": link,
+                            "display_name": chem.condition_name
+                        },
+                        "note": None,
+                        "role": "CHEMICAL"
+                    })
             else:
-                chebi = DBSession.query(Chebi).filter_by(display_name=chem.condition_name).one_or_none()
-
-            link = None
-            if chebi:
-                link = chebi.obj_url
-
-            properties.append({
-                "class_type": "CHEMICAL",
-                "concentration": chem.condition_value,
-                "bioitem": {
-                    "link": link,
-                    "display_name": chem.condition_name
-                },
-                "note": None,
-                "role": "CHEMICAL"
-            })
+                properties.append({
+                    "class_type": condition.condition_class,
+                    "note": [(condition.condition_name or ""), (condition.condition_value or "") + " " + (condition.condition_unit or "")].join(", ")
+                })
 
         strain = DBSession.query(Straindbentity).filter_by(taxonomy_id=self.taxonomy_id).all()
         strain_obj = None
@@ -2707,7 +2767,18 @@ class Phenotypeannotation(Base):
                 "category": self.experiment.apo_namespace
             }
             experiment_details = self.experiment.description
-        
+
+        if phenotype:
+            phenotype_obj = {
+                "display_name": phenotype.display_name,
+                "link": phenotype.obj_url
+            }
+        else:
+            phenotype_obj = {
+                "display_name": self.phenotype.display_name,
+                "link": self.phenotype.obj_url
+            }
+            
         obj = {
             "id": self.annotation_id,
             "mutant_type": self.mutant.display_name,
@@ -2722,10 +2793,7 @@ class Phenotypeannotation(Base):
             "strain": strain_obj,
             "properties": properties,
             "note": note,
-            "phenotype": {
-                "display_name": self.phenotype.display_name,
-                "link": self.phenotype.obj_url
-            },
+            "phenotype": phenotype_obj,
             "reference": {
                 "display_name": reference.display_name,
                 "link": reference.obj_url,
@@ -2734,7 +2802,6 @@ class Phenotypeannotation(Base):
         }
 
         return obj
-
 
 class PhenotypeannotationCond(Base):
     __tablename__ = 'phenotypeannotation_cond'
