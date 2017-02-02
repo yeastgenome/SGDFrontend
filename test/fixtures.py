@@ -523,8 +523,8 @@ class StraindbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     genbank_id = "genbank id"
     format_name = "some name"
     display_name = "some name"
-    obj_url = "/strain/SK3"
-    sgdid = "S0011111"
+    obj_url = "/strain/S000203483"
+    sgdid = "S000203483"
     assembly_size = 10
     subclass = "STRAIN"
     fold_coverage = 5
