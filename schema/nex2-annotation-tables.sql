@@ -564,7 +564,7 @@ COMMENT ON COLUMN nex.pathwayannotation.created_by IS 'Username of the person wh
 COMMENT ON COLUMN nex.pathwayannotation.annotation_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.pathwayannotation.ec_id IS 'FK to EC.EC_ID.';
 COMMENT ON COLUMN nex.pathwayannotation.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE nex.pathwayannotation ADD CONSTRAINT pathwayannotation_uk UNIQUE (dbentity_id,pathway_id,reference_id,ec_id);
+CREAT UNIQUE INDEX pathwayannotation_uk_index on nex.pathwayannotation(dbentity_id,pathway_id,coalesce(reference_id,0),coalesce(ec_id,0));
 CREATE INDEX pathwayanno_ref_fk_index ON nex.pathwayannotation (reference_id);
 CREATE INDEX pathwayanno_pathway_fk_index ON nex.pathwayannotation (pathway_id);
 CREATE INDEX pathwayanno_source_fk_index ON nex.pathwayannotation (source_id);
@@ -608,7 +608,7 @@ COMMENT ON COLUMN nex.phenotypeannotation.reference_id IS 'FK to REFERENCEBENTIT
 COMMENT ON COLUMN nex.phenotypeannotation.annotation_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.phenotypeannotation.phenotype_id IS 'FK to PHENOTYPE.PHENOTYPE_ID.';
 COMMENT ON COLUMN nex.phenotypeannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-ALTER TABLE nex.phenotypeannotation ADD CONSTRAINT phenotypeannotation_uk UNIQUE (dbentity_id,phenotype_id,experiment_id,mutant_id,reference_id,taxonomy_id,allele_id,reporter_id,strain_name,details);
+CREATE UNIQUE INDEX phenotypeannotation_uk_index on nex.phenotypeannotation(dbentity_id,phenotype_id,experiment_id,mutant_id,reference_id,taxonomy_id,coalesce(allele_id,0),coalesce(reporter_id,0),coalesce(strain_name,'0'),coalesce(details,'0'));
 CREATE INDEX phenotypeanno_phenotype_fk_index ON nex.phenotypeannotation (phenotype_id);
 CREATE INDEX phenotypeanno_taxonomy_fk_index ON nex.phenotypeannotation (taxonomy_id);
 CREATE INDEX phenotypeanno_ref_fk_index ON nex.phenotypeannotation (reference_id);
@@ -640,7 +640,7 @@ COMMENT ON COLUMN nex.phenotypeannotation_cond.date_created IS 'Date the record 
 COMMENT ON COLUMN nex.phenotypeannotation_cond.condition_class IS 'Type of the condition (Temperature, Chemical, Media, Phase, etc.).';
 COMMENT ON COLUMN nex.phenotypeannotation_cond.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.phenotypeannotation_cond.annotation_id IS 'FK to PHENOTYPEANNOTATION.ANNOTATION_ID.';
-ALTER TABLE nex.phenotypeannotation_cond ADD CONSTRAINT phenotypeannotation_cond_uk UNIQUE (annotation_id,condition_class,condition_name,condition_value);
+CREATE UNIQUE INDEX phenotypeannotation_cond_uk_index on nex.phenotypeannotation_cond(annotation_id,condition_class,condition_name,coalesce(condition_value,'0'));
 ALTER TABLE nex.phenotypeannotation_cond ADD CONSTRAINT phenotypeannocond_class_ck CHECK (CONDITION_CLASS IN ('assay', 'media', 'phase', 'radiation', 'temperature', 'treatment', 'chemical'));
 CREATE INDEX phenotypeannocond_condition_name_index ON nex.phenotypeannotation_cond (condition_name);
 
@@ -806,7 +806,7 @@ COMMENT ON COLUMN nex.proteinexptannotation_cond.annotation_id IS 'FK to PROTEIN
 COMMENT ON COLUMN nex.proteinexptannotation_cond.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.proteinexptannotation_cond.condition_class IS 'Type of the condition (Temperature, Chemical, Media, Phase, etc.).';
 COMMENT ON COLUMN nex.proteinexptannotation_cond.date_created IS 'Date the record was entered into the database.';
-ALTER TABLE nex.proteinexptannotation_cond ADD CONSTRAINT proteinexptannotation_cond_uk UNIQUE (annotation_id,condition_class,condition_name,condition_value);
+CREATE UNIQUE INDEX proteinexptannotation_cond_uk_index on nex.proteinexptannotation_cond(annotation_id,condition_class,condition_name,coalesce(condition_value,'0'));
 
 DROP TABLE IF EXISTS nex.proteinsequenceannotation CASCADE;
 CREATE TABLE nex.proteinsequenceannotation (
