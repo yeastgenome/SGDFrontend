@@ -254,6 +254,10 @@ BEGIN
         PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_SEQUENCE_SECTION'::text, OLD.dbentity_id, OLD.has_sequence_section::text, NEW.has_sequence_section::text, USER);
     END IF;
 
+    IF (OLD.not_in_s288c != NEW.not_in_s288c) THEN
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'NOT_IN_S288C'::text, OLD.dbentity_id, OLD.not_in_s288c::text, NEW.not_in_s288c::text, USER);
+    END IF;
+
     RETURN NEW;
     
   ELSIF (TG_OP = 'DELETE') THEN
@@ -267,7 +271,7 @@ BEGIN
              OLD.has_go || '[:]' || OLD.has_phenotype || '[:]' ||
              OLD.has_interaction || '[:]' || OLD.has_expression || '[:]' ||
              OLD.has_regulation || '[:]' || OLD.has_protein || '[:]' ||
-             OLD.has_sequence_section;
+             OLD.has_sequence_section || '[:]' || OLD.not_in_s288c;
 
             PERFORM nex.insertdeletelog('LOCUSDBENTITY'::text, OLD.dbentity_id, v_row, USER);
 
