@@ -32,6 +32,21 @@ def error(self, request):
 def blast_fungal(request):
     return render_to_response(TEMPLATE_ROOT + 'blast_fungal.jinja2', {}, request=request)
 
+@view_config(route_name='blog_list')
+def error(self, request):
+    return render_to_response(TEMPLATE_ROOT + 'blog_list.jinja2', {}, request=request)
+
+@view_config(route_name='blog_post')
+def blog_post(request):
+    # TEMP
+    TEMP_API_URL = 'http://127.0.0.1:6545/fake_blog_api'
+    api_url = TEMP_API_URL
+    response = requests.get(api_url)
+    if response.status_code == 404:
+        return HTTPNotFound()
+    post = json.loads(response.text)
+    return render_to_response(TEMPLATE_ROOT + 'blog_post.jinja2', { 'post': post }, request=request)    
+
 @view_config(route_name='blast_sgd')
 def blast_sgd(request):
     return render_to_response(TEMPLATE_ROOT + 'blast_sgd.jinja2', {}, request=request)
@@ -77,7 +92,6 @@ def search(request):
     limit = '25' if request.params.get('page_size') is None else request.params.get('page_size')
     # get search results
     search_url = SEARCH_URL + '?' + request.query_string + '&limit=' + limit
-    print search_url
     json_results = requests.get(search_url).text
     # if param is_quick = true, try to do some redirecting
     if request.params.get('is_quick') == 'true':

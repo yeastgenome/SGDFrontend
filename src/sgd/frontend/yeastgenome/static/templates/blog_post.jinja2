@@ -1,0 +1,29 @@
+{% extends "lite_layout.jinja2" %}
+
+{% block title %}Blog{% endblock %}
+
+{% block body %}
+
+<div class="row">
+	<div class="columns small-2">
+		<p>Recent Posts</p>
+		<ul>
+		{% for entry in post['recent_posts'] %}
+			<li><a href="{{ entry['url'] }}">{{ entry['title'] }}</a></li>
+		{% endfor %}
+		</ul>
+		<p>Categories</p>
+		<ul>
+		{% for entry in post['categories'] %}
+			<li><a href="{{ entry['url'] }}">{{ entry['name'] }}</a></li>
+		{% endfor %}
+		</ul>
+	</div>
+	<div class="columns small-10">
+		<h1>{{ post['title']}}</h1>
+		<hr />
+		{{ post['content']|safe }}
+	</div>
+</div>
+
+{% endblock body %}
