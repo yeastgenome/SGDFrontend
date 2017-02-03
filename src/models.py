@@ -2735,9 +2735,15 @@ class Phenotypeannotation(Base):
                     "role": "CHEMICAL"
                 })
             else:
+                note = condition.condition_name
+                if condition.condition_value:
+                    note += ", " + condition.condition_value
+                    if condition.condition_unit:
+                        note += " " + condition_unit
+                
                 properties.append({
                     "class_type": condition.condition_class,
-                    "note": ", ".join([(condition.condition_name or ""), (condition.condition_value or "") + " " + (condition.condition_unit or "")])
+                    "note": note
                 })
 
         strain = DBSession.query(Straindbentity).filter_by(taxonomy_id=self.taxonomy_id).all()
