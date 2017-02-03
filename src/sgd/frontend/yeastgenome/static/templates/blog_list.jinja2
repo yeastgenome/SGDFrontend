@@ -7,10 +7,12 @@
 <div class="row">
 	<div class="columns small-12">
 		<h1>New & Noteworthy</h1>
-		<h2>{{ post['title']}}</h2>
-		<hr />
-		<p>{{ post['simple_date'] }}</p>
-		{{ post['content']|safe }}
+		{% for post in posts %}
+			<h2><a href="/blog/{{ post['slug'] }}">{{ post['title']}}</a></h2>
+			<p>{{ post['simple_date'] }}</p>
+			<hr />
+			{{ post['content']|safe }}
+		{% endfor %}
 	</div>
 </div>
 

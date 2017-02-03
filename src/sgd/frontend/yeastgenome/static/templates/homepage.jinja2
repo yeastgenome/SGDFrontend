@@ -171,11 +171,11 @@ anti-Fpr3 antibody courtesy of Jeremy Thorner, Ph.D., UC Berkeley</span>
             <h1>News</h1>
             {% for post in blog_posts %}
                 <div>
-                    <h3><a href="{{post.url}}" target="_new">{{post.title}}</a> - <span>{{post.date}}</h3>
-                    <p>{{post.excerpt}} <a href="{{post.url}}" target="_new">Read More</a></p>
+                    <h3><a href="/blog/{{post.slug}}" target="_new">{{post.title}}</a> - <span>{{post.simple_date}}</h3>
+                    <p>{{post.excerpt|safe}} <a href="/blog/{{post.slug}}" target="_new">Read More</a></p>
                 </div>
             {% endfor %}
-            <p><a href='http://yeastgenome.org/blog/page/2'>More Articles</a></p>
+            <p><a href="/blog">More Articles</a></p>
         </div>
     </div>
 </div>
