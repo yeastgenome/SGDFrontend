@@ -314,7 +314,9 @@ function phenotype_data_to_table(evidence, index) {
             }
         }
         else {
-            note = note + '<strong>Condition: </strong>' + evidence['properties'][j]['note'] + '<br>';
+	    var classType = evidence['properties'][j]['class_type'];
+	    var label = classType.charAt(0).toUpperCase() + classType.slice(1) + ": ";
+	    note = note + '<strong>' + label + '</strong>' + evidence['properties'][j]['note'] + '<br>';
         }
     }
     if(evidence['note'] != null) {
