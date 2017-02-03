@@ -564,7 +564,7 @@ COMMENT ON COLUMN nex.pathwayannotation.created_by IS 'Username of the person wh
 COMMENT ON COLUMN nex.pathwayannotation.annotation_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.pathwayannotation.ec_id IS 'FK to EC.EC_ID.';
 COMMENT ON COLUMN nex.pathwayannotation.date_created IS 'Date the record was entered into the database.';
-CREAT UNIQUE INDEX pathwayannotation_uk_index on nex.pathwayannotation(dbentity_id,pathway_id,coalesce(reference_id,0),coalesce(ec_id,0));
+CREATE UNIQUE INDEX pathwayannotation_uk_index on nex.pathwayannotation(dbentity_id,pathway_id,coalesce(reference_id,0),coalesce(ec_id,0));
 CREATE INDEX pathwayanno_ref_fk_index ON nex.pathwayannotation (reference_id);
 CREATE INDEX pathwayanno_pathway_fk_index ON nex.pathwayannotation (pathway_id);
 CREATE INDEX pathwayanno_source_fk_index ON nex.pathwayannotation (source_id);
@@ -711,7 +711,7 @@ COMMENT ON COLUMN nex.posttranslationannotation.reference_id IS 'FK to REFERENCE
 COMMENT ON COLUMN nex.posttranslationannotation.site_index IS 'Start coordinate of the PTM.';
 COMMENT ON COLUMN nex.posttranslationannotation.psimod_id IS 'FK to PSIMOD.PSIMOD_ID.';
 COMMENT ON COLUMN nex.posttranslationannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-ALTER TABLE nex.posttranslationannotation ADD CONSTRAINT posttranslationannotation_uk UNIQUE (dbentity_id,psimod_id,site_residue,site_index,reference_id,modifier_id);
+CREATE UNIQUE INDEX posttranslationannotation_uk_index on nex.posttranslationannotation(dbentity_id,psimod_id,site_residue,site_index,reference_id,coalesce(modifier_id,0));
 CREATE INDEX posttranslationanno_ref_fk_index ON nex.posttranslationannotation (reference_id);
 CREATE INDEX posttranslationanno_tax_fk_index ON nex.posttranslationannotation (taxonomy_id);
 CREATE INDEX posttranslationanno_modifier_fk_index ON nex.posttranslationannotation (modifier_id);
