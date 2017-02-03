@@ -532,6 +532,34 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(1, len(instances))
         self.assertEqual(rname, instances[0])
 
+
+    def test_reservedname_model_no_locus(self):
+             source = factory.SourceFactory()
+             locus = factory.LocusdbentityFactory()
+             journal = factory.JournalFactory()
+             book = factory.BookFactory()
+             colleague = factory.ColleagueFactory()
+             reference = factory.ReferencedbentityFactory(dbentity_id=2, sgdid='S99999')
+
+             rname = factory.ReservedNameFactory(locus_id=None, reference_id=2)
+             instances = DBSession.query(Reservedname).all()
+
+             self.assertNotIn('locus_id', rname.to_dict().keys())
+
+    def test_reservedname_model_no_reference(self):
+        source = factory.SourceFactory()
+        locus = factory.LocusdbentityFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        colleague = factory.ColleagueFactory()
+        reference = factory.ReferencedbentityFactory(dbentity_id=2, sgdid='S99999')
+
+        rname = factory.ReservedNameFactory(reference_id=None)
+        instances = DBSession.query(Reservedname).all()
+
+        self.assertNotIn('reference_id', rname.to_dict().keys())
+
+
     def test_strain_model(self):
         source = factory.SourceFactory()
         locus = factory.LocusdbentityFactory(dbentity_id=2)

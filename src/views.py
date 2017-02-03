@@ -486,3 +486,22 @@ def phenotype(request):
     except:
         log.error("Database failure querying phenotype.")
         return HTTPNotFound()
+
+@view_config(route_name='phenotype_locus_details', renderer='json', request_method='GET')
+def phenotype_locus_details(request):
+    id = request.matchdict['id']
+
+    phenotype = DBSession.query(Phenotype).filter_by(phenotype_id=id).one_or_none()
+    if phenotype:
+        return phenotype.annotations_to_dict()
+
+    try:
+        phenotype = DBSession.query(Phenotype).filter_by(phenotype_id=id).one_or_none()
+        if phenotype:
+            return phenotype.annotations_to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.error("Database failure querying phenotype.")
+        return HTTPNotFound()
+
