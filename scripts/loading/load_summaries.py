@@ -6,14 +6,13 @@ sys.path.insert(0, '../src/')
 
 from models import DBSession, Base, Locusdbentity ##
 
-import pdb; pdb.set_trace()
-engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
+engine = create_engine("postgresql://otto:db4auto@54.70.240.102:5432/sgd", pool_recycle=3600)
 DBSession.configure(bind=engine)
 Base.metadata.bind = engine
 
-loci = DBSession.query(Locusdbentity).filter_by(dbentity_id=10).all() 
+loci = DBSession.query(Locusdbentity).filter_by(dbentity_id=1266440).all() 
 
-print loci
+print loci[0].display_name
 
 exit
 
