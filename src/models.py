@@ -2715,30 +2715,29 @@ class Phenotypeannotation(Base):
 
         for condition in conditions:
             if condition.condition_class == "chemical":
-                for chem in chemicals:
-                    if chemical is not None and (chemical.display_name == chem.condition_name):
-                        chebi = chemical
-                    else:
-                        chebi = DBSession.query(Chebi).filter_by(display_name=chem.condition_name).one_or_none()
+                if chemical is not None and (chemical.display_name == condition.condition_name):
+                    chebi = chemical
+                else:
+                    chebi = DBSession.query(Chebi).filter_by(display_name=condition.condition_name).one_or_none()
 
-                    link = None
-                    if chebi:
-                        link = chebi.obj_url
+                link = None
+                if chebi:
+                    link = chebi.obj_url
 
-                    properties.append({
-                        "class_type": "CHEMICAL",
-                        "concentration": chem.condition_value,
-                        "bioitem": {
-                            "link": link,
-                            "display_name": chem.condition_name
-                        },
-                        "note": None,
-                        "role": "CHEMICAL"
-                    })
+                properties.append({
+                    "class_type": "CHEMICAL",
+                    "concentration": condition.condition_value,
+                    "bioitem": {
+                        "link": link,
+                        "display_name": condition.condition_name
+                    },
+                    "note": None,
+                    "role": "CHEMICAL"
+                })
             else:
                 properties.append({
                     "class_type": condition.condition_class,
-                    "note": [(condition.condition_name or ""), (condition.condition_value or "") + " " + (condition.condition_unit or "")].join(", ")
+                    "note": ", ".join([(condition.condition_name or ""), (condition.condition_value or "") + " " + (condition.condition_unit or "")])
                 })
 
         strain = DBSession.query(Straindbentity).filter_by(taxonomy_id=self.taxonomy_id).all()
