@@ -14,6 +14,7 @@ from .celery_tasks import upload_to_s3
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results
+from .tsv_parser import parse_tsv_annotations
 
 import transaction
 
@@ -26,6 +27,15 @@ log = logging.getLogger(__name__)
 @view_config(route_name='home', request_method='GET', renderer='home.jinja2')
 def home_view(request):
     return {'google_client_id': os.environ['GOOGLE_CLIENT_ID']}
+
+# @authenticate
+@view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')
+def upload_spreadsheet(request):
+    tsv_file = request.POST['file'].file
+    template_type = request.POST['template']
+    annotations = parse_tsv_annotations(tsv_file, template_type)
+    
+    return { 'annotations': annotations }
 
 @view_config(route_name='upload', request_method='POST', renderer='json')
 @authenticate
@@ -238,11 +248,11 @@ def sign_in(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
 
-    if request.POST.get('google_token') is None:
+    if request.json_body['google_token'] is None:
         return HTTPForbidden(body=json.dumps({'error': 'Expected authentication token not found'}))
     
     try:
-        idinfo = client.verify_id_token(request.POST.get('google_token'), os.environ['GOOGLE_CLIENT_ID'])
+        idinfo = client.verify_id_token(request.json_body['google_token'], os.environ['GOOGLE_CLIENT_ID'])
 
         if idinfo.get('iss') not in ['accounts.google.com', 'https://accounts.google.com']:
             return HTTPForbidden(body=json.dumps({'error': 'Authentication token has an invalid ISS'}))

@@ -1,0 +1,69 @@
+.controlContainer {
+	float: right;
+	margin-top: 0.25rem;
+	width: 548px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.breadText {
+	position: relative;
+	top: -0.5rem;
+}
+
+.sortLabel {
+	margin-right: 0.5rem;
+}
+
+.searchLabel {
+	display: block;
+	margin-bottom: 0.25rem;
+}
+
+.control {
+	margin-right: 1rem;
+	display: inline-block;
+}
+
+.resultContainer {
+	margin-top: 1rem;
+}
+
+.tableContainer {
+	margin-top: 1rem;
+}
+
+.tableHeadCell {
+	text-transform: capitalize;
+}
+
+.tableEmpty {
+	padding: 1rem;
+	text-align: center;
+}
+
+.evidenceFootnote {
+	font-size: 0.65rem;
+}
+
+td > .detailContainer {
+	margin-left: 0;
+}
+
+.resultCatLabel {
+	float: right;
+}
+
+.totalPending {
+    width: 2rem;
+    height: 1rem;
+    background: #e2e2e2;
+    display: inline-block;
+    position: relative;
+    top: 0.2rem;
+}
+
+.actionMenu {
+	min-width: 13.5rem;
+	margin-top: 0.5rem;
+}
