@@ -1,0 +1,59 @@
+.navWrapper {
+  background: #0581C2;
+}
+.logoText {
+  font-weight: bold;
+  margin-left: 0.25rem;
+}
+.messageText {
+  margin-bottom: 0.25rem;
+}
+.menu {
+  background: #0581C2;
+  font-size: 18px;
+}
+.authMenu {
+  font-size: 18px;
+  margin-top: 0.2rem;
+  background: #0581C2;
+}
+.authMenu li {
+  background: #0581C2;
+}
+.vWrapper {
+  background: purple;
+}
+.navLink {
+  color: white !important;
+  background: #0581C2;
+}
+.navLink:hover {
+  color: white;
+}
+.indexLink {
+  color: white;
+  background: #0581C2;
+  font-weight: bold;
+}
+.indexLink:hover {
+  color: white;
+}
+.indexText {
+  font-size: 28px;
+}
+.contentRow {
+  width: 100%;
+  max-width: none;
+}
+.contentContainer {
+  margin-top: 1rem;
+}
+.errorContainer {
+  margin-bottom: 0;
+}
+.closeIcon {
+  float: right;
+  cursor: pointer;
+  position: relative;
+  top: -0.5rem;
+}
