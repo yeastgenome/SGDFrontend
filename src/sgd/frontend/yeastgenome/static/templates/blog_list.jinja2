@@ -5,13 +5,29 @@
 {% block body %}
 
 <div class="row">
-	<div class="columns small-12">
+	<div class="columns small-2">
+		<div class="simple-list">
+			<p>Categories</p>
+			<ul>
+				{% for category in categories %}
+					<li><a href="/blog/category/{{ category['slug'] }}">{{ category['name'] }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="columns small-10">
 		<h1>New & Noteworthy</h1>
 		{% for post in posts %}
 			<h2><a href="/blog/{{ post['slug'] }}">{{ post['title']}}</a></h2>
 			<p>{{ post['simple_date'] }}</p>
 			<hr />
 			{{ post['content']|safe }}
+			<p>
+				Categories:
+				{% for key, value in post['categories'].iteritems() %}
+					<span> <a href="/blog/category/{{ value['slug'] }}">{{ value['name']}}</a></span>
+				{% endfor %}
+			</p>
 		{% endfor %}
 	</div>
 </div>
