@@ -9,11 +9,6 @@ def prep_views(chosen_frontend, config):
     # some logic (NOT all) has been moved to views to be more 'pyramid-y'
     config.scan('src.sgd.frontend.yeastgenome.views.misc_views')
     config.scan('src.sgd.frontend.yeastgenome.views.locus_views')
-
-    # TEMP
-    config.scan('src.sgd.frontend.yeastgenome.views.fake_api_views')    
-    config.add_route('blog_api', '/fake_blog_api')
-
     # misc pages from misc_views
     config.add_route('redirect_no_overview', '/{ignore}/overview')
     config.add_route('redirect_no_overview_long', '/{ignore_a}/{ignore_b}/overview')
