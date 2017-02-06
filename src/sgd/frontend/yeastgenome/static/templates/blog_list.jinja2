@@ -18,7 +18,7 @@
 	<div class="columns small-10">
 		<h1>New & Noteworthy</h1>
 		{% for post in posts %}
-			<h2><a href="/blog/{{ post['slug'] }}">{{ post['title']}}</a></h2>
+			<h2><a href="/blog/{{ post['slug'] }}">{{ post['title'] }}</a></h2>
 			<p>{{ post['simple_date'] }}</p>
 			<hr />
 			{{ post['content']|safe }}

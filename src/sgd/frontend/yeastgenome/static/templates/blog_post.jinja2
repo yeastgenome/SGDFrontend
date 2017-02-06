@@ -1,6 +1,6 @@
 {% extends "lite_layout.jinja2" %}
 
-{% block title %}Blog{% endblock %}
+{% block title %}{{ post['title'] }}{% endblock %}
 
 {% block body %}
 
@@ -17,7 +17,7 @@
 	</div>
 	<div class="columns small-10">
 		<h1>New & Noteworthy</h1>
-		<h2>{{ post['title']}}</h2>
+		<h2>{{ post['title'] }}</h2>
 		<hr />
 		<p>{{ post['simple_date'] }}</p>
 		{{ post['content']|safe }}
