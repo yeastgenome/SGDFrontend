@@ -38,7 +38,11 @@ def blast_fungal(request):
 @view_config(route_name='blog_category')
 @view_config(route_name='blog_index')
 def blog_list(self, request):
-    wp_url = BLOG_BASE_URL
+    try:
+        url_suffix = '?category=' + request.matchdict['category']
+    except Exception, e:
+        url_suffix = ''
+    wp_url = BLOG_BASE_URL + url_suffix
     response = requests.get(wp_url)
     posts = json.loads(response.text)['posts']
     for post in posts:
