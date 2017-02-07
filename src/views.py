@@ -7,7 +7,7 @@ from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo
 
 from .celery_tasks import upload_to_s3
 
@@ -491,10 +491,6 @@ def phenotype(request):
 def phenotype_locus_details(request):
     id = request.matchdict['id']
 
-    phenotype = DBSession.query(Phenotype).filter_by(phenotype_id=id).one_or_none()
-    if phenotype:
-        return phenotype.annotations_to_dict()
-
     try:
         phenotype = DBSession.query(Phenotype).filter_by(phenotype_id=id).one_or_none()
         if phenotype:
@@ -505,3 +501,48 @@ def phenotype_locus_details(request):
         log.error("Database failure querying phenotype.")
         return HTTPNotFound()
 
+@view_config(route_name='observable', renderer='json', request_method='GET')
+def observable(request):
+    format_name = request.matchdict['format_name'].upper()
+
+    try:
+        observable = DBSession.query(Apo).filter_by(format_name=format_name).one_or_none()
+        if observable:
+            return observable.to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.error("Database failure querying observable.")
+        return HTTPNotFound()
+
+@view_config(route_name='observable_locus_details', renderer='json', request_method='GET')
+def observable_locus_details(request):
+    id = request.matchdict['id']
+
+    observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
+    if observable:
+        return observable.annotations_to_dict()
+    
+    try:
+        observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
+        if observable:
+            return observable.annotations_to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.error("Database failure querying observable locus details.")
+        return HTTPNotFound()
+
+@view_config(route_name='observable_ontology_graph', renderer='json', request_method='GET')
+def observable_ontology_graph(request):
+    id = request.matchdict['id']
+
+    try:
+        observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
+        if observable:
+            return observable.ontology_graph()
+        else:
+            return HTTPNotFound()
+    except:
+        log.error("Database failure querying observable locus details.")
+        return HTTPNotFound()

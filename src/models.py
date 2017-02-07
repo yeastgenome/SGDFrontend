@@ -46,6 +46,52 @@ class Apo(Base):
 
     source = relationship(u'Source')
 
+    db_cache = {}
+
+    @staticmethod
+    def get_apo_by_id(apo_id):
+        if apo_id in Apo.db_cache:
+            return Apo.db_cache[apo_id]
+        else:
+            apo = DBSession.query(Apo).filter_by(apo_id=apo_id).one_or_none()
+            Apo.db_cache[apo_id] = apo
+            return apo
+
+    #observables
+    def to_dict(self):
+        phenotypes = DBSession.query(Phenotype.obj_url, Phenotype.qualifier_id, Phenotype.phenotype_id).filter_by(observable_id=self.apo_id).all()
+
+        qualifiers = []
+        for phenotype in phenotypes:
+            qualifier_name = DBSession.query(Apo.display_name).filter_by(apo_id=phenotype[1]).one_or_none()
+            if qualifier_name:
+                qualifiers.append({
+                    "link": phenotype[0],
+                    "qualifier":qualifier_name[0]
+                })
+        
+        return {
+            "id": self.apo_id,
+            "display_name": self.display_name,
+            "description": self.description,
+            "phenotypes": qualifiers,
+            "overview": Phenotypeannotation.create_count_overview([p[2] for p in phenotypes])
+        }
+
+    def annotations_to_dict(self):
+        phenotypes = DBSession.query(Phenotype).filter_by(observable_id=self.apo_id).all()
+
+        obj = []
+
+        for phenotype in phenotypes:
+            annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=phenotype.phenotype_id).all()
+
+            obj += [a.to_dict(phenotype=phenotype) for a in annotations]
+
+        return obj
+
+    def ontology_graph(self):
+        return None
 
 class ApoAlia(Base):
     __tablename__ = 'apo_alias'
@@ -1203,6 +1249,17 @@ class Straindbentity(Dbentity):
 
     taxonomy = relationship(u'Taxonomy')
 
+    db_cache = {}
+
+    @staticmethod
+    def get_strains_by_taxon_id(taxon_id):
+        if taxon_id in Straindbentity.db_cache:
+            return Straindbentity.db_cache[taxon_id]
+        else:
+            strain = DBSession.query(Straindbentity).filter_by(taxonomy_id=taxon_id).all()
+            Straindbentity.db_cache[taxon_id] = strain
+            return strain
+    
     def to_dict(self):
         obj = {
             "display_name": self.display_name,
@@ -2579,47 +2636,7 @@ class Phenotype(Base):
     source = relationship(u'Source')
 
     def to_dict(self):
-        strains = []
-        counts = DBSession.query(Phenotypeannotation.taxonomy_id, func.count(Phenotypeannotation.taxonomy_id)).filter_by(phenotype_id=self.phenotype_id).group_by(Phenotypeannotation.taxonomy_id).all()
-
-        for count in counts:
-            strain = DBSession.query(Straindbentity.display_name).filter_by(taxonomy_id=count[0]).all()
-            if len(strain) > 1:
-                strain = "Other"
-            elif len(strain) == 1:
-                strain = strain[0][0]
-            else:
-                continue
-
-            strains.append([strain, count[1]])
-
-        strains = sorted(strains, key=lambda strain: -1 * strain[1])
-
-        experiments = []
-        counts_mutant_type = DBSession.query(Phenotypeannotation.mutant_id, func.count(Phenotypeannotation.mutant_id)).filter_by(phenotype_id=self.phenotype_id).group_by(Phenotypeannotation.mutant_id).all()
-
-        annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
-
-        mt = {}
-        for annotation in annotations:
-            if annotation.mutant.display_name not in mt:
-                mt[annotation.mutant.display_name] = {
-                    "classical genetics": 0,
-                    "large-scale survey": 0
-                }
-
-            if annotation.experiment.display_name in mt[annotation.mutant.display_name]:
-                mt[annotation.mutant.display_name][annotation.experiment.display_name] += 1
-            else:
-                mt[annotation.mutant.display_name]["large-scale survey"] += 1
-                
-        experiment_categories = []
-        for key in mt.keys():
-            experiment_categories.append([key, mt[key]["classical genetics"], mt[key]["large-scale survey"]])
-
-        experiment_categories = sorted(experiment_categories, key=lambda k: k[1] + k[2], reverse=True)
-                
-        obj = {
+        return {
             "id": self.phenotype_id,
             "display_name": self.display_name,
             "observable": {
@@ -2627,17 +2644,12 @@ class Phenotype(Base):
                 "link": self.observable.obj_url
             },
             "qualifier": self.qualifier.display_name,
-            "overview": {
-                "strains": [["Strain", "Annotations"]] + strains,
-                "experiment_categories": [["Mutant Type", "classical genetics", "large-scale survey"]] + experiment_categories
-            }
+            "overview": Phenotypeannotation.create_count_overview([self.phenotype_id])
         }
 
         return obj
 
     def annotations_to_dict(self):
-        obj = []
-
         phenotypes = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
         
         return [phenotype.to_dict(phenotype=self) for phenotype in phenotypes]
@@ -2678,6 +2690,55 @@ class Phenotypeannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    @staticmethod
+    def count_strains(phenotype_ids):
+        strains_result = []
+        
+        counts = DBSession.query(Phenotypeannotation.taxonomy_id, func.count(Phenotypeannotation.taxonomy_id)).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).group_by(Phenotypeannotation.taxonomy_id).all()
+
+        for count in counts:
+            strains = Straindbentity.get_strains_by_taxon_id(count[0])
+            
+            if len(strains) > 1:
+                strains_result.append(["Other", count[1]])
+            elif len(strains) == 1:
+                strains_result.append([strains[0].display_name, count[1]])
+            else:
+                continue            
+
+        return sorted(strains_result, key=lambda strain: -1 * strain[1])
+
+    @staticmethod
+    def count_experiment_categories(phenotype_ids):
+        annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).all()
+
+        mt = {}
+        for annotation in annotations:
+            if annotation.mutant.display_name not in mt:
+                mt[annotation.mutant.display_name] = {
+                    "classical genetics": 0,
+                    "large-scale survey": 0
+                }
+
+            if annotation.experiment.display_name in mt[annotation.mutant.display_name]:
+                mt[annotation.mutant.display_name][annotation.experiment.display_name] += 1
+            else:
+                mt[annotation.mutant.display_name]["large-scale survey"] += 1
+                
+        experiment_categories = []
+        for key in mt.keys():
+            experiment_categories.append([key, mt[key]["classical genetics"], mt[key]["large-scale survey"]])
+
+        return sorted(experiment_categories, key=lambda k: k[1] + k[2], reverse=True)
+    
+    # method for graphs counting annotations
+    @staticmethod
+    def create_count_overview(phenotype_ids):
+        return {
+            "strains": [["Strain", "Annotations"]] + Phenotypeannotation.count_strains(phenotype_ids),
+            "experiment_categories": [["Mutant Type", "classical genetics", "large-scale survey"]] +  Phenotypeannotation.count_experiment_categories(phenotype_ids)
+        }
+    
     def to_dict(self, reference=None, chemical=None, phenotype=None):
         if reference == None:
             reference = self.reference
@@ -2746,9 +2807,10 @@ class Phenotypeannotation(Base):
                     "note": note
                 })
 
-        strain = DBSession.query(Straindbentity).filter_by(taxonomy_id=self.taxonomy_id).all()
+        strain = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
         strain_obj = None
-        if len(strain) > 1:
+
+        if len(strain) == 0 or len(strain) > 1:
             strain_obj = {
                 "display_name": "Other",
                 "link": "/strain/S000203479"
@@ -2763,15 +2825,19 @@ class Phenotypeannotation(Base):
         if self.details and len(self.details) > 0:
             note = self.details
             
-        experiment = None
+        experiment = Apo.get_apo_by_id(self.experiment_id)
+        mutant = Apo.get_apo_by_id(self.mutant_id)
+            
+        experiment_obj = None
         experiment_details = None
-        if self.experiment:
-            experiment = {
-                "display_name": self.experiment.display_name,
+        
+        if experiment:
+            experiment_obj = {
+                "display_name": experiment.display_name,
                 "link": None, # self.experiment.obj_url -> no page yet
-                "category": self.experiment.apo_namespace
+                "category": experiment.apo_namespace
             }
-            experiment_details = self.experiment.description
+            experiment_details = experiment.description
 
         if phenotype:
             phenotype_obj = {
@@ -2786,14 +2852,14 @@ class Phenotypeannotation(Base):
             
         obj = {
             "id": self.annotation_id,
-            "mutant_type": self.mutant.display_name,
+            "mutant_type": mutant.display_name,
             "locus": {
                 "display_name": self.dbentity.display_name,
                 "id": self.dbentity.dbentity_id,
                 "link": self.dbentity.obj_url,
                 "format_name": self.dbentity.format_name
             },
-            "experiment": experiment,
+            "experiment": experiment_obj,
             "experiment_details": experiment_details,
             "strain": strain_obj,
             "properties": properties,
@@ -3397,10 +3463,11 @@ class Regulationannotation(Base):
                 "display_name": self.eco.display_name,
                 "link": self.eco.obj_url
             }
-        
-        strain = DBSession.query(Straindbentity).filter_by(taxonomy_id=self.taxonomy_id).all()
+
+        strain = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
+
         strain_obj = None
-        if len(strain) > 1:
+        if len(strain) == 0 or len(strain) > 1:
             strain_obj = {
                 "display_name": "Other",
                 "link": "/strain/S000203479"
