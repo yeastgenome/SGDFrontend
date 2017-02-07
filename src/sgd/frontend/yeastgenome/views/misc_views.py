@@ -4,7 +4,7 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPInternalServerError
 from src.sgd.frontend import config
-from src.sgd.frontend.yeastgenome.views.cms_helpers import wp_categories
+from src.sgd.frontend.yeastgenome.views.cms_helpers import get_meetings_html, wp_categories
 from dateutil import parser
 import urllib
 import datetime
@@ -144,28 +144,7 @@ def variant_viewer(request):
     
 @view_config(route_name='home') 
 def home(request):
-    meetings = [
-        {
-            'name': 'ICY 2016: 14th International Congress on Yeasts',
-            'url': 'http://icy2016.com/',
-            'date': 'September 11, 2016',
-            'location': 'Awaji Yumebutai International Conference Center, Hyogo, Japa',
-            'deadline_description': ''
-        },
-        {
-            'name': '12th International Meeting on Yeast Apoptosis (IMYA12)',
-            'url': 'http://fems-microbiology.org/opportunities/12th-international-meeting-yeast-apoptosis-imya12/',
-            'date': 'May 14, 2017 ',
-            'location': 'Bari, Italy',
-            'deadline_description': ''
-        },
-        {
-            'name': '13th Yeast Lipid Conference',
-            'url': 'http://yeastlipidconference.inra.fr/',
-            'date': 'May 17, 2017',
-            'location': 'Paris, France'
-        }
-    ]
+    meetings_html = get_meetings_html()
     # fetch recent blog posts
     wp_url = BLOG_BASE_URL + '?number=5'
     try:
@@ -175,7 +154,7 @@ def home(request):
             post = add_simple_date_to_post(post)
     except Exception, e:
         blog_posts = []
-    return render_to_response(TEMPLATE_ROOT + 'homepage.jinja2', { 'meetings': meetings, 'blog_posts': blog_posts }, request=request)
+    return render_to_response(TEMPLATE_ROOT + 'homepage.jinja2', { 'meetings_html': meetings_html, 'blog_posts': blog_posts }, request=request)
 
 # # example
 # @view_config(route_name='example') 

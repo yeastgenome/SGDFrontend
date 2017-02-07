@@ -158,21 +158,15 @@ anti-Fpr3 antibody courtesy of Jeremy Thorner, Ph.D., UC Berkeley</span>
     <div class="row">
         <div class="columns medium-6">
             <h1>Meetings</h1>
-            {% for meeting in meetings %}
-                <div>
-                    <h3><a href="{{meeting.url}}">{{meeting.name}}</a></h3>
-                    <p><span>{{meeting.date}}</span> - <span>{{meeting.location}}</span></p>
-                    <p><i>{{meeting.deadline_description}}</i></p>
-                </div>
-            {% endfor %}
+            {{ meetings_html|safe }}
             <p><a href='http://wiki.yeastgenome.org/index.php/Meetings#Upcoming_Conferences_.26_Courses'>View all Meetings</a></p>
         </div>
         <div class="columns medium-6">
             <h1>News</h1>
             {% for post in blog_posts %}
                 <div>
-                    <h3><a href="/blog/{{post.slug}}" target="_new">{{post.title}}</a> - <span>{{post.simple_date}}</h3>
-                    <p>{{post.excerpt|safe}} <a href="/blog/{{post.slug}}" target="_new">Read More</a></p>
+                    <h3><a href="/blog/{{post.slug}}" target="_new">{{ post.title }}</a> - <span>{{ post.simple_date }}</h3>
+                    <p>{{ post.excerpt|safe }} <a href="/blog/{{ post.slug }}" target="_new">Read More</a></p>
                 </div>
             {% endfor %}
             <p><a href="/blog">More Articles</a></p>
