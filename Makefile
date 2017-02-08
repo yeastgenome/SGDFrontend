@@ -21,10 +21,10 @@ aws-dev-deploy:
 	. dev_deploy_variables.sh && AWS_ENV=true cap aws_dev deploy
 
 run-prod:
-	pserve sgdfrontend_aws.ini --daemon --pid-file=/var/run/pyramid/frontend.pid
+	pserve sgdfrontend_aws.ini --daemon --pid-file=/var/run/frontend.pid
 
 stop-prod:
-	pserve sgdfrontend_aws.ini --stop-daemon --pid-file=/var/run/pyramid/frontend.pid
+	pserve sgdfrontend_aws.ini --stop-daemon --pid-file=/var/run/frontend.pid
 
 prod1-deploy:
 	. prod_deploy_variables.sh && cap prod1 deploy
