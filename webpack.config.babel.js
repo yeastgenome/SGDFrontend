@@ -19,7 +19,7 @@ let config = {
   ],
   output: {
     path: buildOutputPath,
-    publicPath: publicHost + '/assets/',
+    publicPath: publicHost + 'assets/',
     filename: '[name].[hash].js',
     chunkFilename: '[id].[hash].js'
   },
