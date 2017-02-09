@@ -64,3 +64,12 @@ ul.advanced-recent-posts li a:first-child {
 	float: right;
 	margin-left: 1.5rem;
 }
+
+.simple-list > p {
+	margin-top: 0.4rem;
+	margin-bottom: 0;
+}
+
+.simple-list > ul {
+	list-style-type: none;
+}

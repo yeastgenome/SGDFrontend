@@ -4,11 +4,14 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPInternalServerError
 from src.sgd.frontend import config
+from src.sgd.frontend.yeastgenome.views.cms_helpers import get_meetings_html, wp_categories
+from dateutil import parser
 import urllib
 import datetime
 import json
 import requests
 
+BLOG_BASE_URL = 'https://public-api.wordpress.com/rest/v1.1/sites/sgdblogtest.wordpress.com/posts'
 SEARCH_URL = config.backend_url + '/get_search_results'
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 
@@ -31,6 +34,30 @@ def error(self, request):
 @view_config(route_name='blast_fungal')
 def blast_fungal(request):
     return render_to_response(TEMPLATE_ROOT + 'blast_fungal.jinja2', {}, request=request)
+
+@view_config(route_name='blog_category')
+@view_config(route_name='blog_index')
+def blog_list(self, request):
+    try:
+        url_suffix = '?category=' + request.matchdict['category']
+    except Exception, e:
+        url_suffix = ''
+    wp_url = BLOG_BASE_URL + url_suffix
+    response = requests.get(wp_url)
+    posts = json.loads(response.text)['posts']
+    for post in posts:
+        post = add_simple_date_to_post(post)
+    return render_to_response(TEMPLATE_ROOT + 'blog_list.jinja2', { 'posts': posts, 'categories': wp_categories }, request=request)
+
+@view_config(route_name='blog_post')
+def blog_post(self, request):
+    slug = request.matchdict['slug']
+    wp_url = BLOG_BASE_URL + '/slug:' + slug
+    response = requests.get(wp_url)
+    if response.status_code == 404:
+        return not_found(self, request)
+    post = add_simple_date_to_post(json.loads(response.text))
+    return render_to_response(TEMPLATE_ROOT + 'blog_post.jinja2', { 'post': post, 'categories': wp_categories }, request=request)    
 
 @view_config(route_name='blast_sgd')
 def blast_sgd(request):
@@ -77,7 +104,6 @@ def search(request):
     limit = '25' if request.params.get('page_size') is None else request.params.get('page_size')
     # get search results
     search_url = SEARCH_URL + '?' + request.query_string + '&limit=' + limit
-    print search_url
     json_results = requests.get(search_url).text
     # if param is_quick = true, try to do some redirecting
     if request.params.get('is_quick') == 'true':
@@ -120,63 +146,19 @@ def suggestion(request):
 def variant_viewer(request):
     return render_to_response(TEMPLATE_ROOT + 'variant_viewer.jinja2', {}, request=request)
     
-# hardcode meetings and blog posts to allow this app to render (instead of heritage)
-# if config.heritage_url defined, use that
 @view_config(route_name='home') 
 def home(request):
-    if config.heritage_url:
-        page = urllib.urlopen(config.heritage_url).read()
-        return Response(page)
-    
-    meetings = [
-        {
-            'name': 'ICY 2016: 14th International Congress on Yeasts',
-            'url': 'http://icy2016.com/',
-            'date': 'September 11, 2016',
-            'location': 'Awaji Yumebutai International Conference Center, Hyogo, Japa',
-            'deadline_description': ''
-        },
-        {
-            'name': '12th International Meeting on Yeast Apoptosis (IMYA12)',
-            'url': 'http://fems-microbiology.org/opportunities/12th-international-meeting-yeast-apoptosis-imya12/',
-            'date': 'May 14, 2017 ',
-            'location': 'Bari, Italy',
-            'deadline_description': ''
-        },
-        {
-            'name': '13th Yeast Lipid Conference',
-            'url': 'http://yeastlipidconference.inra.fr/',
-            'date': 'May 17, 2017',
-            'location': 'Paris, France'
-        }
-    ]
-    blog_posts = [
-        {
-            'title': "Friends with Benefits ",
-            'url': 'http://www.yeastgenome.org/friends-with-benefits',
-            'date': '08/10/2016',
-            'excerpt': "A 2013 poll identified the top 20 modern necessities British people couldn't live without. Some we can all relate to like smartphones, daily showers, and the internet, while others are more British-specific like a cup of tea or a full English breakfast. Of course none of these are true necessities like food, water or air. We wouldn't be as happy, nor as competitive, without some of these modern necessities, but we'd obviously still be alive. (But..."
-        },
-        {
-            'title': "New SGD Help Video: Exploring Expression Datasets with SPELL",
-            'url': 'http://www.yeastgenome.org/new-sgd-help-video-exploring-expression-datasets-with-spell',
-            'date': '08/09/2016',
-            'excerpt': "Trying to find relevant expression datasets or genes with similar expression profiles for your favorite genes? Look no further than SPELL the Serial Pattern of Expression Levels Locator. Given a set of genes, SGDs instance of SPELL locates informative expression datasets from over 270 published studies and pairs the genes in your query with additional coexpressed genes."
-        },
-        {
-            'title': 'Sign Up Now for the Next SGD Webinar: August 3, 2016',
-            'url': 'http://www.yeastgenome.org/sign-up-now-for-the-next-sgd-webinar-august-3-2016',
-            'date': '07/28/2016',
-            'excerpt': "SGD's Variant Viewer is an easy-to-learn web application that allows visualization of differences in both gene and protein sequences. With Variant Viewer, you can compare the nucleotide and amino acid sequences of your favorite genes in twelve widely-used S. cerevisiae strains. Our upcoming webinar on August 3rd, 9:30 AM PDT will provide a quick 10 minute tutorial on how to use Variant Viewer. We will demonstrate how to compare nucleotide and amino acid sequences of..."
-        },
-        {
-            'title': "Alliance of Genome Resources - Survey",
-            'url': 'http://www.yeastgenome.org/alliance-of-genome-resources-survey',
-            'date': '07/21/2016',
-            'excerpt': "Please help the Alliance by completing the short survey at Six of the founding members of the Alliance of Genome Resources Saccharomyces Genome Database, WormBase, FlyBase, ZFIN, MGI, and the Gene Ontology Consortium attended the GSAs The Allied Genetics Conference in Orlando from July 13 to 17. It was a great opportunity for staff of each of these individual resources to talk about their new collaboration to integrate their content and software into a single resource..."
-        }
-    ]
-    return render_to_response(TEMPLATE_ROOT + 'temp_homepage.jinja2', { 'meetings': meetings, 'blog_posts': blog_posts }, request=request)
+    meetings_html = get_meetings_html()
+    # fetch recent blog posts
+    wp_url = BLOG_BASE_URL + '?number=5'
+    try:
+        response = requests.get(wp_url)
+        blog_posts = json.loads(response.text)['posts']
+        for post in blog_posts:
+            post = add_simple_date_to_post(post)
+    except Exception, e:
+        blog_posts = []
+    return render_to_response(TEMPLATE_ROOT + 'homepage.jinja2', { 'meetings_html': meetings_html, 'blog_posts': blog_posts }, request=request)
 
 # # example
 # @view_config(route_name='example') 
@@ -201,3 +183,8 @@ def get_redirect_url_from_results(results):
     if len(quick_results) == 1:
         return quick_results[0]['href']
     return False
+
+def add_simple_date_to_post(raw):
+    simple_date = parser.parse(raw['date']).strftime("%B %d, %Y")
+    raw['simple_date'] = simple_date
+    return raw
