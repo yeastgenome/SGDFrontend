@@ -27,6 +27,12 @@
 				<span> <a href="/blog/category/{{ value['slug'] }}">{{ value['name']}}</a></span>
 			{% endfor %}
 		</p>
+		<p>
+			Tags:
+			{% for key, value in post['tags'].iteritems() %}
+				<span> <a href="/blog/tag/{{ value['slug'] }}">{{ value['name']}}</a></span>
+			{% endfor %}
+		</p>
 	</div>
 </div>
 

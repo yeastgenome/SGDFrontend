@@ -36,11 +36,15 @@ def blast_fungal(request):
     return render_to_response(TEMPLATE_ROOT + 'blast_fungal.jinja2', {}, request=request)
 
 @view_config(route_name='blog_category')
+@view_config(route_name='blog_tag')
 @view_config(route_name='blog_index')
 def blog_list(self, request):
-    try:
-        url_suffix = '?category=' + request.matchdict['category']
-    except Exception, e:
+    params = request.matchdict
+    if params.has_key('category'): 
+        url_suffix = '?category=' + params['category']
+    elif params.has_key('tag'):
+        url_suffix = '?tag=' + params['tag']
+    else:
         url_suffix = ''
     wp_url = BLOG_BASE_URL + url_suffix
     response = requests.get(wp_url)
