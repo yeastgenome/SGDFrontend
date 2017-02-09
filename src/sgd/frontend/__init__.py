@@ -116,8 +116,8 @@ def prep_views(chosen_frontend, config):
                                         bioent_ids = None if 'bioent_ids' not in request.json_body else request.json_body['bioent_ids'])),
                     renderer=chosen_frontend.get_renderer('enrichment'),
                     route_name='enrichment')
-
-    config.add_route('observable', '/observable/{identifier}')
+    
+    config.add_route('observable', '/apo/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('observable', request)(getattr(chosen_frontend, 'observable')(biocon_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('observable'),
                     route_name='observable')
