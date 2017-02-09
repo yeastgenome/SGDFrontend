@@ -537,6 +537,10 @@ def observable_locus_details(request):
 def observable_ontology_graph(request):
     id = request.matchdict['id']
 
+    observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
+    if observable:
+        return observable.ontology_graph()
+    
     try:
         observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
         if observable:
@@ -544,5 +548,5 @@ def observable_ontology_graph(request):
         else:
             return HTTPNotFound()
     except:
-        log.error("Database failure querying observable locus details.")
+        log.error("Database failure querying observable ontology graph.")
         return HTTPNotFound()

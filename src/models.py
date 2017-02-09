@@ -91,7 +91,48 @@ class Apo(Base):
         return obj
 
     def ontology_graph(self):
-        return None
+        phenotypes = DBSession.query(Phenotype).filter_by(observable_id=self.apo_id).all()
+
+        annotations = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([p.phenotype_id for p in phenotypes])).group_by(Phenotypeannotation.dbentity_id).count()
+
+        nodes = [{
+            "data": {
+                "link": self.obj_url,
+                "sub_type": "FOCUS",
+                "name": self.display_name + "(" + str(annotations) + ")",
+                "id": str(self.apo_id)
+            }
+        }]
+
+        edges = []
+        all_children = []
+
+        level = 0
+        children_relation = DBSession.query(ApoRelation).filter_by(parent_id=self.apo_id).all()
+        for child_relation in children_relation:
+            child_relation.to_graph(nodes, edges, add_child=True)
+            
+            if level < 3:
+                children_relation += DBSession.query(ApoRelation).filter_by(parent_id=child_relation.child.apo_id).all()
+                level += 1
+
+        level = 0
+        parents_relation = DBSession.query(ApoRelation).filter_by(child_id=self.apo_id).all()
+        for parent_relation in parents_relation:
+            parent_relation.to_graph(nodes, edges, add_parent=True)            
+
+            if level < 3:
+                parents_relation += DBSession.query(ApoRelation).filter_by(child_id=parent_relation.parent.apo_id).all()
+                level += 1
+
+        
+        graph = {
+            "edges": edges,
+            "nodes": nodes,
+            "all_children": []
+        }
+        
+        return graph
 
 class ApoAlia(Base):
     __tablename__ = 'apo_alias'
@@ -132,6 +173,43 @@ class ApoRelation(Base):
     ro = relationship(u'Ro')
     source = relationship(u'Source')
 
+    def to_graph(self, nodes, edges, add_parent=False, add_child=False):
+        adding_nodes = []
+        if add_parent:
+            adding_nodes.append(self.parent)
+
+        if add_child:
+            adding_nodes.append(self.child)
+
+        for node in adding_nodes:
+            if node.display_name == "observable":
+                type = "observable"
+                name = "Yeast Phenotype Ontology"
+            else:
+                phenotypes = DBSession.query(Phenotype).filter_by(observable_id=node.apo_id).all()
+
+                annotations = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([p.phenotype_id for p in phenotypes])).group_by(Phenotypeannotation.dbentity_id).count()
+
+                type = "development"
+                name = node.display_name + "(" + str(annotations) + ")"
+                
+            nodes.append({
+                "data": {
+                    "link": node.obj_url,
+                    "sub_type": type,
+                    "name": name,
+                    "id": str(node.apo_id)
+                }
+            })
+        
+        edges.append({
+            "data": {
+                "name": self.ro.display_name,
+                "target": str(self.child.apo_id),
+                "source": str(self.parent.apo_id)
+            }
+        })
+        
 
 class ApoUrl(Base):
     __tablename__ = 'apo_url'
