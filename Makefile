@@ -1,8 +1,8 @@
 .PHONY: test lib config
 
 build:
-	npm install --production
-	webpack
+	npm install
+	npm run build
 	pip install -r requirements.txt
 	python setup.py develop
 
@@ -11,7 +11,7 @@ prod-build:
 	python setup.py develop
 
 run:
-	source dev_variables.sh && webpack && pserve development.ini --reload
+	source dev_variables.sh && pserve development.ini --reload
 
 celery:
 	source dev_variables.sh && celery worker -A pyramid_celery.celery_app --ini development.ini
@@ -23,10 +23,10 @@ tests:
 	source test_variables.sh && nosetests -s
 
 deploy:
-	source dev_variables.sh && cap dev deploy
+	npm run build && source dev_variables.sh && cap dev deploy
 
 prod-deploy:
-	source prod_variables.sh && cap prod deploy
+	npm run build && source prod_variables.sh && cap prod deploy
 
 run-prod:
 	pserve production.ini --daemon --pid-file=/var/run/pyramid/backend.pid

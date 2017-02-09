@@ -1,0 +1,14 @@
+.navLink {
+	text-transform: capitalize;
+}
+
+.navLink:hover {
+	background: #e2e2e2;	
+}
+
+.activeNavLink {
+	color: white !important;
+	background: #2199e8;
+	text-transform: capitalize;
+}
+
