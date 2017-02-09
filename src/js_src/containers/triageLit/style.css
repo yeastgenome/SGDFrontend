@@ -1,0 +1,17 @@
+.statusContainer {
+	margin-bottom: 1rem;
+}
+
+.actionContainer {
+	margin-top: 1rem;
+}
+
+.updateTime {
+	position: relative;
+	margin-right: 0.5rem;
+	top: -0.37rem;
+}
+
+.commentBox {
+	min-height: 5rem;
+}
