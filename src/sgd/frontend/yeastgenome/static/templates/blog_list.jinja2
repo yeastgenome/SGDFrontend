@@ -26,6 +26,7 @@
 		{% for post in posts %}
 			<h2><a href="/blog/{{ post['slug'] }}">{{ post['title'] }}</a></h2>
 			<p>{{ post['simple_date'] }}</p>
+			<div class="addthis_inline_share_toolbox"></div>
 			<hr />
 			{{ post['content']|safe }}
 			<p>
