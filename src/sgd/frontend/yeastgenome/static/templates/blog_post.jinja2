@@ -24,7 +24,9 @@
 	<div class="columns small-10">
 		<h1>New & Noteworthy</h1>
 		<h2>{{ post['title'] }}</h2>
-		<div class="addthis_inline_share_toolbox"></div>
+		<div class="addthis_toolbox addthis_default_style">
+			<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a><a class="addthis_button_tweet"></a>
+		</div>
 		<hr />
 		<p>{{ post['simple_date'] }}</p>
 		{{ post['content']|safe }}

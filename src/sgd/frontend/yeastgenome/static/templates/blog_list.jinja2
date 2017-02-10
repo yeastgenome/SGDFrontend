@@ -26,7 +26,9 @@
 		{% for post in posts %}
 			<h2><a href="/blog/{{ post['slug'] }}">{{ post['title'] }}</a></h2>
 			<p>{{ post['simple_date'] }}</p>
-			<div class="addthis_inline_share_toolbox"></div>
+			<div class="addthis_toolbox addthis_default_style">
+				<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a><a class="addthis_button_tweet"></a>
+			</div>
 			<hr />
 			{{ post['content']|safe }}
 			<p>
