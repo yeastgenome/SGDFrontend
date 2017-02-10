@@ -17,6 +17,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('blast_sgd', '/blast-sgd')
     config.add_route('blog_post', '/blog/{slug}')
     config.add_route('blog_index', '/blog')
+    config.add_route('blog_archive', '/blog/archive/{year}')
     config.add_route('blog_category', '/blog/category/{category}')
     config.add_route('blog_tag', '/blog/tag/{tag}')
     config.add_route('interaction_search', '/interaction-search')

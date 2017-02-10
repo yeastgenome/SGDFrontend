@@ -4,7 +4,7 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPInternalServerError
 from src.sgd.frontend import config
-from src.sgd.frontend.yeastgenome.views.cms_helpers import get_meetings_html, wp_categories
+from src.sgd.frontend.yeastgenome.views.cms_helpers import get_archive_years, get_meetings_html, wp_categories
 from dateutil import parser
 import urllib
 import datetime
@@ -36,6 +36,7 @@ def error(self, request):
 def blast_fungal(request):
     return render_to_response(TEMPLATE_ROOT + 'blast_fungal.jinja2', {}, request=request)
 
+@view_config(route_name='blog_archive')
 @view_config(route_name='blog_category')
 @view_config(route_name='blog_tag')
 @view_config(route_name='blog_index')
@@ -53,6 +54,11 @@ def blog_list(self, request):
         url_suffix = '?category=' + url_params['category'] + '&' + offset_expression
     elif url_params.has_key('tag'):
         url_suffix = '?tag=' + url_params['tag'] + '&' + offset_expression
+    elif url_params.has_key('year'):
+        year = url_params['year']
+        start_date = year + '-01-01'
+        end_date = year + '-12-31'
+        url_suffix = '?before=' + end_date + '&after=' + start_date
     else:
         url_suffix = '?' + offset_expression
     wp_url = BLOG_BASE_URL + url_suffix
@@ -60,7 +66,7 @@ def blog_list(self, request):
     posts = json.loads(response.text)['posts']
     for post in posts:
         post = add_simple_date_to_post(post)
-    return render_to_response(TEMPLATE_ROOT + 'blog_list.jinja2', { 'posts': posts, 'categories': wp_categories, 'next_url': next_url }, request=request)
+    return render_to_response(TEMPLATE_ROOT + 'blog_list.jinja2', { 'posts': posts, 'categories': wp_categories, 'next_url': next_url, 'years': get_archive_years() }, request=request)
 
 @view_config(route_name='blog_post')
 def blog_post(self, request):
@@ -70,7 +76,7 @@ def blog_post(self, request):
     if response.status_code == 404:
         return not_found(self, request)
     post = add_simple_date_to_post(json.loads(response.text))
-    return render_to_response(TEMPLATE_ROOT + 'blog_post.jinja2', { 'post': post, 'categories': wp_categories }, request=request)    
+    return render_to_response(TEMPLATE_ROOT + 'blog_post.jinja2', { 'post': post, 'categories': wp_categories, 'years': get_archive_years() }, request=request)    
 
 @view_config(route_name='blast_sgd')
 def blast_sgd(request):
