@@ -6,22 +6,25 @@ from gpad_config import curator_id, computational_created_by,  \
     go_db_code_mapping, go_ref_mapping, current_go_qualifier, email_receiver, \
     email_subject
 
+import sys
+sys.path.insert(0, '../../src/')
 
 __author__ = 'sweng66'
 
-def prepare_schema_connection(model_cls, dbtype, dbhost, dbname, schema, dbuser, dbpass):
+def prepare_schema_connection(dbtype, dbhost, dbname, schema, dbuser, dbpass):
     class Base(object):
         __table_args__ = {'schema': schema, 'extend_existing':True}
 
-    model_cls.Base = declarative_base(cls=Base)
-    model_cls.Base.schema = schema
-    model_cls.metadata = model_cls.Base.metadata
+    Base = declarative_base(cls=Base)
+    Base.schema = schema
+    metadata = Base.metadata
     engine_key = "%s://%s:%s@%s/%s" % (dbtype, dbuser, dbpass, dbhost, dbname)
     engine = create_engine(engine_key, pool_recycle=3600)
-    model_cls.Base.metadata.bind = engine
+    Base.metadata.bind = engine
     session_maker = sessionmaker(bind=engine)
 
     return session_maker
+
 
 def float_approx_equal(x, y, tol=1e-18, rel=1e-7):
     #http://code.activestate.com/recipes/577124-approximately-equal/
@@ -302,24 +305,19 @@ def get_strain_taxid_mapping():
 
 def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_sgdid_list, get_extension=None, get_support=None, new_pmids=None, dbentity_with_new_pmid=None, dbentity_with_uniprot=None, bad_ref=None):
 
-    from src.sgd.model.nex.reference import Reference
-    from src.sgd.model.nex.locus import Locus
-    from src.sgd.model.nex.go import Go
-    from src.sgd.model.nex.eco import EcoAlias
-    
-    from src.sgd.model import nex
-    from src.sgd.convert import config
+    from models import Referencedbentity, Locusdbentity, Go, EcoAlias
+    import config
 
     goid_to_go_id = dict([(x.goid, x.id) for x in nex_session.query(Go).all()])
     evidence_to_eco_id = dict([(x.display_name, x.eco_id) for x in nex_session.query(EcoAlias).all()])
 
     pmid_to_reference_id = {}
     sgdid_to_reference_id = {}
-    for x in nex_session.query(Reference).all():
-        pmid_to_reference_id[x.pmid] = x.id
-        sgdid_to_reference_id[x.sgdid] = x.id
+    for x in nex_session.query(Referencedbentity).all():
+        pmid_to_reference_id[x.pmid] = x.dbentity_id
+        sgdid_to_reference_id[x.sgdid] = x.dbentity_id
 
-    sgdid_to_locus_id = dict([(x.sgdid, x.id) for x in nex_session.query(Locus).all()])
+    sgdid_to_locus_id = dict([(x.sgdid, x.dbentity_id) for x in nex_session.query(Locusdbentity).all()])
 
     f = open(filename)
     
@@ -758,28 +756,28 @@ number_to_roman = {'01': 'I', '1': 'I',
                    }
 
 def get_word_to_dbentity_id(word, nex_session):
-    from src.sgd.model.nex.locus import Locus
+    from models import Locusdbentity
 
     global word_to_dbentity_id
     if word_to_dbentity_id is None:
         word_to_dbentity_id = {}
-        for locus in nex_session.query(Locus).all():
-            word_to_dbentity_id[locus.format_name.lower()] = locus.id
-            word_to_dbentity_id[locus.display_name.lower()] = locus.id
-            word_to_dbentity_id[locus.format_name.lower() + 'p'] = locus.id
-            word_to_dbentity_id[locus.display_name.lower() + 'p'] = locus.id
+        for locus in nex_session.query(Locusdbentity).all():
+            word_to_dbentity_id[locus.format_name.lower()] = locus.dbentity_id
+            word_to_dbentity_id[locus.display_name.lower()] = locus.dbentity_id
+            word_to_dbentity_id[locus.format_name.lower() + 'p'] = locus.dbentity_id
+            word_to_dbentity_id[locus.display_name.lower() + 'p'] = locus.dbentity_id
 
     word = word.lower()
     return None if word not in word_to_dbentity_id else word_to_dbentity_id[word]
 
 def get_dbentity_by_name(dbentity_name, to_ignore, nex_session):
-    from src.sgd.model.nex.locus import Locus
+    from models import Locusdbentity
     if dbentity_name not in to_ignore:
         try:
             int(dbentity_name)
         except ValueError:
             dbentity_id = get_word_to_dbentity_id(dbentity_name, nex_session)
-            return None if dbentity_id is None else nex_session.query(Locus).filter_by(id=dbentity_id).first()
+            return None if dbentity_id is None else nex_session.query(Locusdbentity).filter_by(dbentity_id=dbentity_id).first()
     return None
 
 def link_gene_names(text, to_ignore, nex_session):
@@ -802,7 +800,7 @@ def link_gene_names(text, to_ignore, nex_session):
             new_chunks.append(text[chunk_start: i])
             chunk_start = i + len(word) + 1
 
-            new_chunk = "<a href='" + dbentity.link + "'>" + dbentity_name + "</a>"
+            new_chunk = "<a href='" + dbentity.obj_url + "'>" + dbentity_name + "</a>"
             if word[-2] == ')':
                 new_chunk = new_chunk + word[-2]
             if word.endswith('.') or word.endswith(',') or word.endswith('?') or word.endswith('-') or word.endswith(')'):
@@ -818,63 +816,21 @@ def link_gene_names(text, to_ignore, nex_session):
         print text
         return text
 
-
-sgdid_to_reference_id = None
-
-def get_sgdid_to_reference_id(sgdid, nex_session=None):
-    from src.sgd.model.nex.reference import Reference
-    global sgdid_to_reference_id
-    if sgdid_to_reference_id is None:
-        if nex_session is None:
-            from src.sgd.model import nex
-            from src.sgd.convert import config
-            nex_session_maker = prepare_schema_connection(nex, config.NEX_DBTYPE, config.NEX_HOST, config.NEX_DBNAME, config.NEX_SCHEMA, config.NEX_DBUSER, config.NEX_DBPASS)
-            nex_session = nex_session_maker()
-        sgdid_to_reference_id = {}
-        for ref in nex_session.query(Reference).all():
-            sgdid_to_reference_id[ref.sgdid] = ref.id
-    return None if sgdid not in sgdid_to_reference_id else sgdid_to_reference_id[sgdid]
-
 relation_to_ro_id = None
 
 def get_relation_to_ro_id(relation_type, nex_session=None):
-    from src.sgd.model.nex.ro import Ro
+    from models import Ro
     global relation_to_ro_id
     if relation_to_ro_id is None:
         if nex_session is None:
-            from src.sgd.model import nex
-            from src.sgd.convert import config
-            nex_session_maker = prepare_schema_connection(nex, config.NEX_DBTYPE, config.NEX_HOST, config.NEX_DBNAME, config.NEX_SCHEMA, config.NEX_DBUSER, config.NEX_DBPASS)
+            import config
+            nex_session_maker = prepare_schema_connection(config.NEX_DBTYPE, config.NEX_HOST, config.NEX_DBNAME, config.NEX_SCHEMA, config.NEX_DBUSER, config.NEX_DBPASS)
             nex_session = nex_session_maker()
         relation_to_ro_id = {}
         for relation in nex_session.query(Ro).all():
             relation_to_ro_id[relation.display_name] = relation.id
     return None if relation_type not in relation_to_ro_id else relation_to_ro_id[relation_type]
 
-word_to_strain_id = None
-
-def get_word_to_strain_id(word, nex_session):
-    from src.sgd.model.nex.misc import Strain
-
-    global word_to_strain_id
-    if word_to_strain_id is None:
-        word_to_strain_id = {}
-        for strain in nex_session.query(Strain).all():
-            if strain.link is not None:
-                word_to_strain_id[strain.display_name.lower()] = strain.id
-
-    word = word.lower()
-    return None if word not in word_to_strain_id else word_to_strain_id[word]
-
-def get_strain_by_name(strain_name, to_ignore, nex_session):
-    from src.sgd.model.nex.misc import Strain
-    if strain_name not in to_ignore:
-        try:
-            int(strain_name)
-        except ValueError:
-            strain_id = get_word_to_strain_id(strain_name, nex_session)
-            return None if strain_id is None else nex_session.query(Strain).filter_by(id=strain_id).first()
-    return None
 
 def link_strain_names(text, to_ignore, nex_session):
     words = text.split(' ')
