@@ -13,6 +13,12 @@
 					<li><a href="/blog/category/{{ category['slug'] }}">{{ category['name'] }}</a></li>
 				{% endfor %}
 			</ul>
+			<p>Archives</p>
+			<ul>
+				{% for year in years %}
+					<li><a href="/blog/archive/{{ year }}">{{ year }}</a></li>
+				{% endfor %}
+			</ul>
 		</div>
 	</div>
 	<div class="columns small-10">
@@ -35,6 +41,7 @@
 				{% endfor %}
 			</p>
 		{% endfor %}
+		<p><a href="{{ next_url }}">Next</a></p>
 	</div>
 </div>
 

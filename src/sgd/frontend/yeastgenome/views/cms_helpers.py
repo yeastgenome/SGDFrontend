@@ -1,6 +1,7 @@
 import json
 import re
 import requests
+import datetime
 
 MEETINGS_WIKI_URL = 'http://wiki.yeastgenome.org/api.php/?action=parse&page=Meetings&format=json'
 # from https://public-api.wordpress.com/rest/v1.1/sites/sgdblogtest.wordpress.com/categories
@@ -55,6 +56,14 @@ wp_categories = [
     }
 ]
 
+def get_archive_years():
+    now = datetime.datetime.now()
+    this_year = now.year
+    archive_years = []
+    for i in range(5):
+        archive_years.append(this_year - i)
+    return archive_years
+
 def get_meetings_html():
     try:
         response = requests.get(MEETINGS_WIKI_URL)
@@ -69,4 +78,3 @@ def get_meetings_html():
         return unicode(filtered_text, 'utf-8')
     except Exception, e:
         return ''
-
