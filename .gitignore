@@ -64,6 +64,12 @@ config.py
 dev_variables.sh
 prod_variables.sh
 test_variables.sh
+dev_aws_variables.sh
+
+#temp files
+logs
+backup
+data
 
 Gemfile.lock
 
