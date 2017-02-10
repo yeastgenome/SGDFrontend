@@ -40,7 +40,7 @@ def blast_fungal(request):
 @view_config(route_name='blog_category')
 @view_config(route_name='blog_tag')
 @view_config(route_name='blog_index')
-def blog_list(self, request):
+def blog_list(request):
     url_params = request.matchdict
     page = request.params.get('page')
     if page is None:
