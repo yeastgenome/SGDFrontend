@@ -45,7 +45,7 @@ class YeastgenomeFrontend(FrontendInterface):
                 if data is not None:
                     return data
                 else:
-                    return Response(status='404', content_type='text/html', body=open(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "system/404.html")), "r").read())
+                    return HTTPNotFound()
         return f
 
     def check_date(self):
