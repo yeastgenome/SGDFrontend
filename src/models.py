@@ -61,6 +61,16 @@ class Apo(Base):
     def to_dict(self):
         phenotypes = DBSession.query(Phenotype.obj_url, Phenotype.qualifier_id, Phenotype.phenotype_id).filter_by(observable_id=self.apo_id).all()
 
+        annotations_count = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([p.phenotype_id for p in phenotypes])).group_by(Phenotypeannotation.dbentity_id).count()
+
+        children_relation = DBSession.query(ApoRelation).filter_by(parent_id=self.apo_id).all()
+        if len(children_relation) > 0:
+            children_phenotype_ids = DBSession.query(Phenotype.phenotype_id).filter(Phenotype.observable_id.in_([c.child_id for c in children_relation])).all()
+            children_phenotype_ids = [i[0] for i in children_phenotype_ids]
+            children_annotation_count = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_(children_phenotype_ids)).group_by(Phenotypeannotation.dbentity_id).count()
+        else:
+            children_annotation_count = 0
+
         qualifiers = []
         for phenotype in phenotypes:
             qualifier_name = DBSession.query(Apo.display_name).filter_by(apo_id=phenotype[1]).one_or_none()
@@ -69,13 +79,15 @@ class Apo(Base):
                     "link": phenotype[0],
                     "qualifier":qualifier_name[0]
                 })
-        
+
         return {
             "id": self.apo_id,
             "display_name": self.display_name,
             "description": self.description,
             "phenotypes": qualifiers,
-            "overview": Phenotypeannotation.create_count_overview([p[2] for p in phenotypes])
+            "overview": Phenotypeannotation.create_count_overview([p[2] for p in phenotypes]),
+            "locus_count": annotations_count,
+            "descendant_locus_count": annotations_count + children_annotation_count
         }
 
     def annotations_to_dict(self):
@@ -105,21 +117,15 @@ class Apo(Base):
         }]
 
         edges = []
-        all_children = []
 
-        level = 0
         children_relation = DBSession.query(ApoRelation).filter_by(parent_id=self.apo_id).all()
         for child_relation in children_relation:
             child_relation.to_graph(nodes, edges, add_child=True)
-            
-            if level < 3:
-                children_relation += DBSession.query(ApoRelation).filter_by(parent_id=child_relation.child.apo_id).all()
-                level += 1
 
         level = 0
         parents_relation = DBSession.query(ApoRelation).filter_by(child_id=self.apo_id).all()
         for parent_relation in parents_relation:
-            parent_relation.to_graph(nodes, edges, add_parent=True)            
+            parent_relation.to_graph(nodes, edges, add_parent=True)
 
             if level < 3:
                 parents_relation += DBSession.query(ApoRelation).filter_by(child_id=parent_relation.parent.apo_id).all()
