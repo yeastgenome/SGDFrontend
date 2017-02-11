@@ -529,10 +529,6 @@ def observable(request):
 def observable_locus_details(request):
     id = request.matchdict['id']
 
-    observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
-    if observable:
-        return observable.annotations_to_dict()
-    
     try:
         observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
         if observable:
@@ -547,10 +543,6 @@ def observable_locus_details(request):
 def observable_ontology_graph(request):
     id = request.matchdict['id']
 
-    observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
-    if observable:
-        return observable.ontology_graph()
-    
     try:
         observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
         if observable:
@@ -559,4 +551,18 @@ def observable_ontology_graph(request):
             return HTTPNotFound()
     except:
         log.error("Database failure querying observable ontology graph.")
+        return HTTPNotFound()
+
+@view_config(route_name='observable_locus_details_all', renderer='json', request_method='GET')
+def observable_locus_details_all(request):
+    id = request.matchdict['id']
+
+    try:
+        observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
+        if observable:
+            return observable.annotations_to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.error("Database failure querying observable locus details all.")
         return HTTPNotFound()

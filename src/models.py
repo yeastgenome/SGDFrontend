@@ -66,8 +66,7 @@ class Apo(Base):
         children_relation = DBSession.query(ApoRelation).filter_by(parent_id=self.apo_id).all()
         if len(children_relation) > 0:
             children_phenotype_ids = DBSession.query(Phenotype.phenotype_id).filter(Phenotype.observable_id.in_([c.child_id for c in children_relation])).all()
-            children_phenotype_ids = [i[0] for i in children_phenotype_ids]
-            children_annotation_count = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_(children_phenotype_ids)).group_by(Phenotypeannotation.dbentity_id).count()
+            children_annotation_count = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([i[0] for i in children_phenotype_ids])).group_by(Phenotypeannotation.dbentity_id).count()
         else:
             children_annotation_count = 0
 
@@ -102,6 +101,23 @@ class Apo(Base):
 
         return obj
 
+    def annotations_and_children_to_dict(self):        
+        phenotypes = DBSession.query(Phenotype).filter_by(observable_id=self.apo_id).all()
+
+        children_relation = DBSession.query(ApoRelation).filter_by(parent_id=self.apo_id).all()
+        if len(children_relation) > 0:
+            children_phenotypes = DBSession.query(Phenotype).filter(Phenotype.observable_id.in_([c.child_id for c in children_relation])).all()
+            phenotypes += children_phenotypes
+
+        obj = []
+
+        for phenotype in phenotypes:
+            annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=phenotype.phenotype_id).all()
+
+            obj += [a.to_dict(phenotype=phenotype) for a in annotations]
+
+        return obj
+
     def ontology_graph(self):
         phenotypes = DBSession.query(Phenotype).filter_by(observable_id=self.apo_id).all()
 
@@ -117,10 +133,15 @@ class Apo(Base):
         }]
 
         edges = []
+        all_children = []
 
         children_relation = DBSession.query(ApoRelation).filter_by(parent_id=self.apo_id).all()
         for child_relation in children_relation:
-            child_relation.to_graph(nodes, edges, add_child=True)
+            child_node = child_relation.to_graph(nodes, edges, add_child=True)
+            all_children.append({
+                "display_name": child_node.display_name,
+                "link": child_node.obj_url
+            })
 
         level = 0
         parents_relation = DBSession.query(ApoRelation).filter_by(child_id=self.apo_id).all()
@@ -135,7 +156,7 @@ class Apo(Base):
         graph = {
             "edges": edges,
             "nodes": nodes,
-            "all_children": []
+            "all_children": all_children
         }
         
         return graph
@@ -215,6 +236,8 @@ class ApoRelation(Base):
                 "source": str(self.parent.apo_id)
             }
         })
+
+        return self.child
         
 
 class ApoUrl(Base):
