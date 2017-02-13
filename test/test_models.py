@@ -1,6 +1,8 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
-from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity
+from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, \
+    Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, \
+    PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity, StrainUrl, Strainsummary, StrainsummaryReference
 import fixtures as factory
 import os
 
@@ -569,7 +571,54 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(0, len(instances))
 
         strain = factory.StraindbentityFactory()
-
         instances = DBSession.query(Straindbentity).all()
+
         self.assertEqual(1, len(instances))
         self.assertEqual(strain, instances[0])
+
+    def test_strainurl_model(self):
+        source = factory.SourceFactory()
+        taxonomy = factory.TaxonomyFactory()
+        strain = factory.StraindbentityFactory()
+
+        instances = DBSession.query(StrainUrl).all()
+        self.assertEqual(0, len(instances))
+
+        strainurl = factory.StrainUrlFactory()
+        instances = DBSession.query(StrainUrl).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(strainurl, instances[0])
+
+    def test_strainsummary_model(self):
+        source = factory.SourceFactory()
+        taxonomy = factory.TaxonomyFactory()
+        strain = factory.StraindbentityFactory()
+
+        instances = DBSession.query(Strainsummary).all()
+        self.assertEqual(0, len(instances))
+
+        strainsummary = factory.StrainsummaryFactory()
+        instances = DBSession.query(Strainsummary).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(strainsummary, instances[0])
+
+    def test_strainsummary_reference_model(self):
+        source = factory.SourceFactory()
+        taxonomy = factory.TaxonomyFactory()
+        strain = factory.StraindbentityFactory()
+        strainsummary = factory.StrainsummaryFactory()
+
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        reference = factory.ReferencedbentityFactory(dbentity_id=2, sgdid='S99999')
+
+        instances = DBSession.query(StrainsummaryReference).all()
+        self.assertEqual(0, len(instances))
+
+        strainsummary_reference = factory.StrainsummaryReferenceFactory()
+        instances = DBSession.query(StrainsummaryReference).all()
+
+        self.assertEqual(1, len(instances))
+        self.assertEqual(strainsummary_reference, instances[0])
