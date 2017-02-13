@@ -31,7 +31,7 @@ COMMENT ON COLUMN nex.curation.created_by IS 'Username of the person who entered
 COMMENT ON COLUMN nex.curation.subclass IS 'Type of curation (LOCUS, REFERENCE).';
 COMMENT ON COLUMN nex.curation.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.curation.curation_task IS 'Type of curation task (Classical phenotype information,Delay,Fast Track,GO information,GO needs review,Gene model,Headline needs review,Headline reviewed,Headline information,High Priority,Homology/Disease,HTP phenotype,Non-phenotype HTP,Not yet curated,Paragraph needs review,Paragraph not needed,Pathways,Phenotype needs review,Phenotype uncuratable,Post-translational modifications,Regulation information).';
-ALTER TABLE nex.curation ADD CONSTRAINT curation_uk UNIQUE (dbentity_id,subclass,curation_task,locus_id);
+CREATE UNIQUE INDEX curation_uk_index on nex.curation(dbentity_id,subclass,curation_task,coalesce(locus_id,0));
 ALTER TABLE nex.curation ADD CONSTRAINT curation_task_ck CHECK (CURATION_TASK IN ('Classical phenotype information','Delay','Fast Track','GO information',
 'GO needs review','Gene model','Headline needs review','Headline reviewed','Headline information','High Priority','Homology/Disease',
 'HTP phenotype','Non-phenotype HTP','Not yet curated','Paragraph needs review','Paragraph not needed','Pathways','Phenotype needs review',

@@ -1,0 +1,50 @@
+.aggContainer {
+	margin-top: 0.25rem;
+}
+
+.aggValContainer {
+	margin-bottom: 1rem;
+}
+
+.filterLabel {
+	margin-bottom: 0.5rem;
+	text-transform: capitalize;
+}
+
+.aggLink {
+	display: flex;
+	justify-content: space-between;
+}
+
+.aggLinkLabel {
+	margin-right: 1rem;
+}
+
+.singleFacetControl {
+	display: flex;
+	justify-content: space-between;
+}
+
+.selectContainer {
+	position: relative;
+}
+
+.filter {
+	padding: 0.5rem;
+}
+
+.activeFilter {
+	background: #2199e8;
+}
+
+.activeFilter a {
+	color: white;
+}
+
+.inactiveFilter:hover {
+	background: #e2e2e2;
+}
+
+.activeFilter:hover {
+	background: #2199e8;
+}
