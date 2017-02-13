@@ -99,13 +99,13 @@ class YeastgenomeFrontend(FrontendInterface):
         return self.get_obj('observable', biocon_repr)
     
     def phenotype_ontology(self):
-        return self.get_obj('ontology', None, obj_url=self.backend_url + '/observable/ypo/overview')
+        return self.get_obj('ontology', None, obj_url=self.backend_url + '/observable/ypo')
     
     def go(self, biocon_repr):
-        return self.get_obj('go_term', None, obj_url=self.backend_url + '/go/' + biocon_repr + '/overview')
+        return self.get_obj('go_term', None, obj_url=self.backend_url + '/go/' + biocon_repr)
 
     def go_ontology(self, biocon_repr):
-        return self.get_obj('ontology', None, obj_url=self.backend_url + '/go/' + biocon_repr + '/overview')
+        return self.get_obj('ontology', None, obj_url=self.backend_url + '/go/' + biocon_repr)
     
     def chemical(self, chemical_repr):
         return self.get_obj('chemical', chemical_repr)
@@ -141,7 +141,7 @@ class YeastgenomeFrontend(FrontendInterface):
                 return HTTPFound('/locus/' + params.values()[0] + '/expression')
         elif page == 'locus':
             if len(params) > 0:
-                return HTTPFound('/locus/' + params.values()[0] + '/overview')
+                return HTTPFound('/locus/' + params.values()[0])
         elif page == 'phenotype':
             if 'phenotype' in params:
                 old_phenotype = params['phenotype'].split(':')
@@ -154,25 +154,25 @@ class YeastgenomeFrontend(FrontendInterface):
                             new_phenotype = new_phenotype.replace('chemical_compound', params['property_value'].replace(' ', '_'))
                 else:
                     new_phenotype = old_phenotype[0]
-                return HTTPFound('/phenotype/' + new_phenotype + '/overview')
+                return HTTPFound('/phenotype/' + new_phenotype)
             elif 'dbid' in params:
                 return HTTPFound('/locus/' + params['dbid'] + '/phenotype')
             elif 'observable' in params:
-                return HTTPFound('/observable/' + params['observable'].replace(' ', '_') + '/overview')
+                return HTTPFound('/observable/' + params['observable'].replace(' ', '_'))
             elif 'property_value' in params:
-                return HTTPFound('/chemical/' + params['property_value'].replace(' ', '_') + '/overview')
+                return HTTPFound('/chemical/' + params['property_value'].replace(' ', '_'))
         elif page == 'go':
             if len(params) > 0:
                 return HTTPFound('/locus/' + params.values()[0] + '/go')
         elif page == 'go_term':
             if len(params) > 0:
                 if params.values()[0].startswith('GO:'):
-                    return HTTPFound('/go/' + params.values()[0] + '/overview')
+                    return HTTPFound('/go/' + params.values()[0])
                 else:
-                    return HTTPFound('/go/GO:' + str(int(params.values()[0])).zfill(7) + '/overview')
+                    return HTTPFound('/go/GO:' + str(int(params.values()[0])).zfill(7))
         elif page == 'reference':
             if 'author' in params:
-                return HTTPFound('/author/' + params.values()[0].replace(' ', '_') + '/overview')
+                return HTTPFound('/author/' + params.values()[0].replace(' ', '_'))
             elif 'topic' in params:
                 topic = params.values()[0]
                 page = urllib.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?topic=' + topic + '&rm=multi_ref_result').read()
@@ -181,9 +181,9 @@ class YeastgenomeFrontend(FrontendInterface):
                 page = urllib.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?rm=' + params['rm'] + '&topic_group=' + params['topic_group'] + '&page=' + params['page']).read()
                 return Response(page)
             elif 'doi' in params:
-                return HTTPFound('/reference/doi:' + params.values()[0].replace(' ', '_').replace('/', '-').lower() + '/overview')
+                return HTTPFound('/reference/doi:' + params.values()[0].replace(' ', '_').replace('/', '-').lower())
             elif len(params) > 0:
-                return HTTPFound('/reference/' + params.values()[0].replace(' ', '_').replace('/', '-') + '/overview')
+                return HTTPFound('/reference/' + params.values()[0].replace(' ', '_').replace('/', '-'))
         else:
             return Response(status_int=500, body='Invalid URL.')
     
