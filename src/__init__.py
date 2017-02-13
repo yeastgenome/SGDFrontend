@@ -13,7 +13,6 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
 
     config.add_route('home', '/')
-
     #search
     config.add_route('search', '/get_search_results')
     config.add_route('autocomplete_results', '/autocomplete_results')
@@ -38,10 +37,15 @@ def main(global_config, **settings):
 
     config.add_route('chemical', '/chemical/{format_name}', request_method='GET')
     config.add_route('chemical_phenotype_details', '/chemical/{id}/phenotype_details', request_method='GET')
-
+    
     config.add_route('phenotype', '/phenotype/{format_name}', request_method='GET')
     config.add_route('phenotype_locus_details', '/phenotype/{id}/locus_details', request_method='GET')
 
+    config.add_route('observable', '/observable/{format_name}', request_method='GET')
+    config.add_route('observable_locus_details', '/observable/{id}/locus_details', request_method='GET')
+    config.add_route('observable_ontology_graph', '/observable/{id}/ontology_graph', request_method='GET')
+    config.add_route('observable_locus_details_all', '/observable/{id}/locus_details_all', request_method='GET')
+    
     # curator interfaces
     config.add_route('colleague_triage_all', '/colleagues/triage', request_method='GET')
     config.add_route('colleague_triage_accept', '/colleagues/triage/{id}', request_method='POST')
@@ -57,6 +61,8 @@ def main(global_config, **settings):
     config.add_route('topics', '/topics')
     config.add_route('extensions', '/extensions')
     config.add_route('upload', '/upload')
+    config.add_route('upload_spreadsheet', '/upload_spreadsheet')
+
     
     config.add_route('sign_in', '/signin')
     config.add_route('sign_out', '/signout')
@@ -65,7 +71,7 @@ def main(global_config, **settings):
     config.add_route('reference_list', '/reference_list')
 
     config.scan()
-    config.add_static_view(name='static', path='../static')
+    config.add_static_view(name='assets', path='./build')
 
     config.configure_celery(global_config['__file__'])
 
