@@ -34,15 +34,20 @@
 			<p>
 				Categories:
 				{% for key, value in post['categories'].iteritems() %}
-					<span> <a href="/blog/category/{{ value['slug'] }}">{{ value['name']}}</a></span>
+					<span> <a href="/blog/category/{{ value['slug'] }}">{{ value['name'] }}</a></span>
 				{% endfor %}
 			</p>
-			<p>
-				Tags:
-				{% for key, value in post['tags'].iteritems() %}
-					<span> <a href="/blog/tag/{{ value['slug'] }}">{{ value['name']}}</a></span>
-				{% endfor %}
-			</p>
+			{% if post['tags'] %}
+				<p>
+					Tags:
+					{% for key, value in post['tags'].iteritems() %}
+						<span> <a href="/blog/tag/{{ value['slug'] }}">{{ value['name'] }}</a></span>
+						{% if not loop.last %}
+							<span>,</span>
+						{% endif %}
+					{% endfor %}
+				</p>
+			{% endif %}
 		{% endfor %}
 		<p><a href="{{ next_url }}">Next</a></p>
 	</div>
