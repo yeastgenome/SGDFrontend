@@ -1,6 +1,9 @@
 import datetime
 import factory
-from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity
+from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, \
+    Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, \
+    PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity, StrainUrl, \
+    Strainsummary, StrainsummaryReference
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -534,4 +537,45 @@ class StraindbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     feature_count = 50
     headline = "some headline"
     dbentity_status = "Active"
+    created_by = "TOTO"
+
+class StrainUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = StrainUrl
+        sqlalchemy_session = DBSession
+
+    url_id = 1269391
+    display_name = "Sigma1278b"
+    obj_url = "http://downloads.yeastgenome.org/sequence/strains/Sigma1278b"
+    source_id = 1
+    strain_id = 1
+    url_type = "GenBank"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class StrainsummaryFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Strainsummary
+        sqlalchemy_session = DBSession
+
+    summary_id = 1
+    source_id = 1
+    strain_id = 1
+    summary_type = "Strain"
+    text = "this is summary"
+    html = "this is html text"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class StrainsummaryReferenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = StrainsummaryReference
+        sqlalchemy_session = DBSession
+
+    summary_reference_id = 1
+    summary_id = 1
+    reference_id = 2
+    reference_order = 1
+    source_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
