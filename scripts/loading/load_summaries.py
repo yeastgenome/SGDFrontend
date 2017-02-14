@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 import sys
 from database_session import get_dev_session
 sys.path.insert(0, '../../src/')
@@ -31,11 +32,10 @@ def load_summaries(summary_type, summary_file, log_file):
 
     fw = open(log_file,"w")
     
-
     fw.write(str(datetime.now()) + "\n")
     fw.write("reading data from summary_file...\n")
 
-    data = read_summary_file(nex_session, fw, summary_type, summary_file, log_file)
+    [data, data_to_return] = read_summary_file(nex_session, fw, summary_type, summary_file, log_file)
 
     fw.write(str(datetime.now()) + "\n")
     fw.write("retriveing data from database and store the data in dictionary...\n")
@@ -95,6 +95,8 @@ def load_summaries(summary_type, summary_file, log_file):
     write_summary_and_send_email(load_summary_holder, fw, summary_type)
 
     fw.close()
+
+    return data_to_return
 
 
 def insert_summary_reference(nex_session, fw, load_summary_holder, source_id, summary_id, y):
@@ -172,7 +174,7 @@ def read_summary_file(nex_session, fw, summary_type, summary_file, log_file):
     pmid_to_reference_id = dict([(x.pmid, x.dbentity_id) for x in nex_session.query(Referencedbentity).all()]) 
     
     data = []
-
+    data_to_return = []
     if summary_type == 'Phenotype':
         f = open(summary_file, 'U')
         for line in f:
@@ -185,6 +187,14 @@ def read_summary_file(nex_session, fw, summary_type, summary_file, log_file):
                          'html': link_gene_names(pieces[1], {dbentity.display_name, dbentity.format_name, dbentity.display_name + 'P', dbentity.format_name + 'P'}, nex_session),
                          'summary_type': summary_type,
                          'summary_order': 1 })
+            name = dbentity.gene_name
+            if name is None:
+                name = dbentity.systematic_name
+            data_to_return.append({'category': 'locus',
+                                   'name': name,
+                                   'href': 'http://www.yeastgenome.org/locus/'+name+'/overview',
+                                   'type': 'phenotype summary',
+                                   'value': pieces[1]})
         
     elif summary_type == 'Regulation':
         f = open(summary_file, 'U')
@@ -214,6 +224,16 @@ def read_summary_file(nex_session, fw, summary_type, summary_file, log_file):
                          'summary_type': summary_type,
                          'summary_order': 1,
                          'references': references})
+
+            name = dbentity.gene_name
+            if name is None:
+                name = dbentity.systematic_name
+            data_to_return.append({'category': 'locus',
+                                   'name': name,
+                                   'href': 'http://www.yeastgenome.org/locus/'+name+'/overview',
+                                   'type': 'regulation summary',
+                                   'value': pieces[2]})
+
     elif summary_type == 'Function':
         f = open(summary_file, 'U')
         for line in f:
@@ -235,7 +255,7 @@ def read_summary_file(nex_session, fw, summary_type, summary_file, log_file):
         fw.write("Unknown summary_type: " + summary_type+ "\n")
         exit()
     
-    return data
+    return [data, data_to_return]
 
 def write_summary_and_send_email(load_summary_holder, fw, summary_type):
 
@@ -273,5 +293,7 @@ if __name__ == "__main__":
 
     log_file = "logs/" + summary_type + "summary_loading.log"
 
-    load_summaries(summary_type, summary_file, log_file)
+    data_to_return = load_summaries(summary_type, summary_file, log_file)
 
+    print json.dumps(data_to_return, sort_keys=True, indent=4)
+    
