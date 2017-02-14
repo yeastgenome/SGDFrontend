@@ -1149,6 +1149,25 @@ class Referencedbentity(Dbentity):
     book = relationship(u'Book')
     journal = relationship(u'Journal')
 
+    def to_dict_citation(self):
+        obj = {
+            "id": self.dbentity_id,
+            "display_name": self.display_name,
+            "citation": self.citation,
+            "pubmed_id": self.pmid,
+            "link": self.obj_url,
+            "urls": []
+        }
+
+        ref_urls = DBSession.query(ReferenceUrl).filter_by(reference_id=self.dbentity_id).all()
+        for url in ref_urls:
+            obj["urls"].append({
+                "display_name": url.display_name,
+                "link": url.obj_url,
+            })
+
+        return obj
+    
     def to_dict_reference_related(self):
         obj = {
             "id": self.dbentity_id,
@@ -1402,7 +1421,7 @@ class Straindbentity(Dbentity):
                 
             obj["paragraph"] = {
                 "text": paragraph[1],
-                "references": [r.to_dict() for r in references]
+                "references": [r.to_dict_citation() for r in references]
             }
 
         contigs = DBSession.query(Contig).filter_by(taxonomy_id=self.taxonomy_id).all()
@@ -2093,6 +2112,86 @@ class Go(Base):
 
     source = relationship(u'Source')
 
+    def to_dict(self):
+        obj = {
+            "display_name": self.display_name,
+            "urls": [],
+            "go_id": self.goid,
+            "go_aspect": self.go_namespace,
+            "description": self.description,
+            "aliases": [],
+            "id": self.go_id,
+            "link": self.obj_url,
+            "descendant_locus_count": 0,
+            "locus_count": 0
+        }
+
+        urls = DBSession.query(GoUrl).filter_by(go_id=self.go_id).all()
+        for url in urls:
+            obj["urls"].append({
+                "display_name": url.display_name,
+                "link": url.obj_url,
+                "category": url.url_type
+            })
+
+        synonyms = DBSession.query(GoAlias).filter_by(go_id=self.go_id).all()
+        for synonym in synonyms:
+            obj["aliases"].append(synonym.display_name)
+            
+        obj["locus_count"] = DBSession.query(Goannotation.dbentity_id, func.count(Goannotation.dbentity_id)).filter_by(go_id=self.go_id).group_by(Goannotation.dbentity_id).count()
+
+        return obj
+
+    def ontology_graph(self):
+        annotations = DBSession.query(Goannotation.dbentity_id, func.count(Goannotation.dbentity_id)).filter_by(go_id=self.go_id).group_by(Goannotation.dbentity_id).count()
+
+        nodes = [{
+            "data": {
+                "link": self.obj_url,
+                "sub_type": "FOCUS",
+                "name": self.display_name + "(" + str(annotations) + ")",
+                "id": str(self.go_id)
+            }
+        }]
+
+        edges = []
+        all_children = []
+
+        children_relation = DBSession.query(GoRelation).filter_by(parent_id=self.go_id).all()
+
+        for child_relation in children_relation[:6]:
+            child_node = child_relation.to_graph(nodes, edges, add_child=True)
+            all_children.append({
+                "display_name": child_node.display_name,
+                "link": child_node.obj_url
+            })
+            
+        nodes.append({
+            "data": {
+                "name": str(len(children_relation) - 7) + " more children",
+                "sub_type": "",
+                "link": None,
+                "id": "NodeMoreChildren"
+            }
+        })
+            
+        level = 0
+        parents_relation = DBSession.query(GoRelation).filter_by(child_id=self.go_id).all()
+        for parent_relation in parents_relation:
+            parent_relation.to_graph(nodes, edges, add_parent=True)
+
+            if level < 4:
+                parents_relation += DBSession.query(GoRelation).filter_by(child_id=parent_relation.parent.go_id).all()
+                level += 1
+
+        
+        graph = {
+            "edges": edges,
+            "nodes": nodes,
+            "all_children": all_children
+        }
+        
+        return graph
 
 class GoAlias(Base):
     __tablename__ = 'go_alias'
@@ -2132,6 +2231,39 @@ class GoRelation(Base):
     parent = relationship(u'Go', primaryjoin='GoRelation.parent_id == Go.go_id')
     ro = relationship(u'Ro')
     source = relationship(u'Source')
+
+    def to_graph(self, nodes, edges, add_parent=False, add_child=False):
+        adding_nodes = []
+        if add_parent:
+            adding_nodes.append(self.parent)
+
+        if add_child:
+            adding_nodes.append(self.child)
+
+        for node in adding_nodes:
+            annotations = DBSession.query(Goannotation.dbentity_id, func.count(Goannotation.dbentity_id)).filter_by(go_id=node.go_id).group_by(Goannotation.dbentity_id).count()
+
+            type = "development"
+            name = node.display_name + "(" + str(annotations) + ")"
+                
+            nodes.append({
+                "data": {
+                    "link": node.obj_url,
+                    "sub_type": type,
+                    "name": name,
+                    "id": str(node.go_id)
+                }
+            })
+        
+        edges.append({
+            "data": {
+                "name": self.ro.display_name,
+                "target": str(self.child.go_id),
+                "source": str(self.parent.go_id)
+            }
+        })
+
+        return self.child
 
 
 class GoUrl(Base):
@@ -3495,6 +3627,15 @@ class Referencetriage(Base):
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
+    def to_dict(self):
+        return {
+            "pmid": self.pmid,
+            "citation": self.citation,
+            "fulltext_url": self.fulltext_url,
+            "abstract": self.abstract,
+            "date_created": self.date_created,
+            "created_by": self.created_by
+        }
 
 class Referencetype(Base):
     __tablename__ = 'referencetype'

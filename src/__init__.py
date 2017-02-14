@@ -25,7 +25,9 @@ def main(global_config, **settings):
     config.add_route('reserved_name', '/reservedname/{id}', request_method='GET')
     
     config.add_route('strain', '/strain/{id}', request_method='GET')
-    
+
+    config.add_route('reference_triage', '/reference/triage', request_method='GET')
+    config.add_route('reference_triage_id', '/reference/triage/{id}', request_method='GET')
     config.add_route('reference', '/reference/{id}', request_method='GET')
     config.add_route('reference_literature_details', '/reference/{id}/literature_details', request_method='GET')
     config.add_route('reference_interaction_details', '/reference/{id}/interaction_details', request_method='GET')
@@ -45,6 +47,9 @@ def main(global_config, **settings):
     config.add_route('observable_locus_details', '/observable/{id}/locus_details', request_method='GET')
     config.add_route('observable_ontology_graph', '/observable/{id}/ontology_graph', request_method='GET')
     config.add_route('observable_locus_details_all', '/observable/{id}/locus_details_all', request_method='GET')
+
+    config.add_route('go', '/go/{format_name}', request_method='GET')
+    config.add_route('go_ontology_graph', '/go/{id}/ontology_graph', request_method='GET')
     
     # curator interfaces
     config.add_route('colleague_triage_all', '/colleagues/triage', request_method='GET')
