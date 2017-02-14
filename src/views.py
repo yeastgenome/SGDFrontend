@@ -7,7 +7,7 @@ from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage
 
 from .celery_tasks import upload_to_s3
 
@@ -428,6 +428,16 @@ def reference_regulation_details(request):
         log.error("Database failure querying reference.")
         return HTTPNotFound()
 
+@view_config(route_name='reference_triage', renderer='json', request_method='GET')
+def reference_triage(request):
+    triages = DBSession.query(Referencetriage).all()
+    return [t.to_dict() for t in triages]
+
+@view_config(route_name='reference_triage_id', renderer='json', request_method='GET')
+def reference_triage(request):
+    triages = DBSession.query(Referencetriage).all()
+    return [t.to_dict() for t in triages]
+
 @view_config(route_name='author', renderer='json', request_method='GET')
 def author(request):
     format_name = request.matchdict['format_name']
@@ -565,4 +575,37 @@ def observable_locus_details_all(request):
             return HTTPNotFound()
     except:
         log.error("Database failure querying observable locus details all.")
+        return HTTPNotFound()
+
+@view_config(route_name='go', renderer='json', request_method='GET')
+def go(request):
+    format_name = request.matchdict['format_name'].upper()
+
+    try:
+        go = DBSession.query(Go).filter_by(format_name=format_name).one_or_none()
+        if observable:
+            return go.to_dict()
+        else:
+            return HTTPNotFound()
+    except:
+        log.error("Database failure querying GO.")
+        return HTTPNotFound()
+
+@view_config(route_name='go_ontology_graph', renderer='json', request_method='GET')
+def go_ontology_graph(request):
+    id = request.matchdict['id']
+
+    go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
+    if observable:
+        return go.ontology_graph()
+
+    
+    try:
+        go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
+        if observable:
+            return go.ontology_graph()
+        else:
+            return HTTPNotFound()
+    except:
+        log.error("Database failure querying GO ontology graph.")
         return HTTPNotFound()
