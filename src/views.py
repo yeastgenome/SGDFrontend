@@ -318,114 +318,82 @@ def get_sequence_object(request):
 def reserved_name(request):
     id = request.matchdict['id'].upper()
 
-    try:
-        reserved_name = DBSession.query(Reservedname).filter_by(format_name=id).one_or_none()
+    reserved_name = DBSession.query(Reservedname).filter_by(format_name=id).one_or_none()
     
-        if reserved_name:
-            return reserved_name.to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying reserved names.")
+    if reserved_name:
+        return reserved_name.to_dict()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='strain', renderer='json', request_method='GET')
 def strain(request):
     id = request.matchdict['id'].upper()
 
-    try:
-        strain = DBSession.query(Straindbentity).filter_by(sgdid=id).one_or_none()
+    strain = DBSession.query(Straindbentity).filter_by(sgdid=id).one_or_none()
     
-        if strain:
-            return strain.to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying strain.")
+    if strain:
+        return strain.to_dict()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='reference', renderer='json', request_method='GET')
 def reference(request):
     id = request.matchdict['id'].upper()
 
-    try:
-        reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
-        if reference:
-            return reference.to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying reference.")
+    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    if reference:
+        return reference.to_dict()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='reference_literature_details', renderer='json', request_method='GET')
 def reference_literature_details(request):
     id = request.matchdict['id'].upper()
 
-    try:
-        reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
-        if reference:
-            return reference.annotations_to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying reference.")
+    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    if reference:
+        return reference.annotations_to_dict()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='reference_interaction_details', renderer='json', request_method='GET')
 def reference_interaction_details(request):
     id = request.matchdict['id'].upper()
 
-    try:
-        reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
-        if reference:
-            return reference.interactions_to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying reference.")
+    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    if reference:
+        return reference.interactions_to_dict()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='reference_go_details', renderer='json', request_method='GET')
 def reference_go_details(request):
     id = request.matchdict['id'].upper()
 
-    try:
-        reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
-        if reference:
-            return reference.go_to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying reference.")
+    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    if reference:
+        return reference.go_to_dict()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='reference_phenotype_details', renderer='json', request_method='GET')
 def reference_phenotype_details(request):
     id = request.matchdict['id'].upper()
 
-    try:
-        reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
-        if reference:
-            return reference.phenotype_to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying reference.")
+    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    if reference:
+        return reference.phenotype_to_dict()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='reference_regulation_details', renderer='json', request_method='GET')
 def reference_regulation_details(request):
     id = request.matchdict['id'].upper()
 
-    try:
-        reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
-        if reference:
-            return reference.regulation_to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying reference.")
+    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    if reference:
+        return reference.regulation_to_dict()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='reference_triage', renderer='json', request_method='GET')
@@ -444,31 +412,23 @@ def author(request):
 
     key = "/author/"+format_name
     
-    try:
-        authors_ref = DBSession.query(Referenceauthor).filter_by(obj_url=key).all()
-        if len(authors_ref) > 0:
-            return {
-                "display_name": authors_ref[0].display_name,
-                "references": [author_ref.reference.to_dict_reference_related() for author_ref in authors_ref]
-            }
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying reference author.")
+    authors_ref = DBSession.query(Referenceauthor).filter_by(obj_url=key).all()
+    if len(authors_ref) > 0:
+        return {
+            "display_name": authors_ref[0].display_name,
+            "references": [author_ref.reference.to_dict_reference_related() for author_ref in authors_ref]
+        }
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='chemical', renderer='json', request_method='GET')
 def chemical(request):
     format_name = request.matchdict['format_name'].upper()
     
-    try:
-        chebi = DBSession.query(Chebi).filter_by(format_name=format_name).one_or_none()
-        if chebi:
-            return chebi.to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying reference chemical.")
+    chebi = DBSession.query(Chebi).filter_by(format_name=format_name).one_or_none()
+    if chebi:
+        return chebi.to_dict()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='chemical_phenotype_details', renderer='json', request_method='GET')
@@ -478,16 +438,8 @@ def chemical_phenotype_details(request):
     chebi = DBSession.query(Chebi).filter_by(chebi_id=id).one_or_none()
     if chebi:
         return chebi.phenotype_to_dict()
-    
-    try:
-        chebi = DBSession.query(Chebi).filter_by(chebi_id=id).one_or_none()
-        if chebi:
-            return chebi.phenotype_to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying chemical.")
-        return HTTPNotFound()    
+    else:
+        return HTTPNotFound()
 
 @view_config(route_name='phenotype', renderer='json', request_method='GET')
 def phenotype(request):
@@ -496,99 +448,67 @@ def phenotype(request):
     phenotype = DBSession.query(Phenotype).filter_by(format_name=format_name).one_or_none()
     if phenotype:
         return phenotype.to_dict()
-    
-    try:
-        phenotype = DBSession.query(Phenotype).filter_by(format_name=format_name).one_or_none()
-        if phenotype:
-            return phenotype.to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying phenotype.")
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='phenotype_locus_details', renderer='json', request_method='GET')
 def phenotype_locus_details(request):
     id = request.matchdict['id']
 
-    try:
-        phenotype = DBSession.query(Phenotype).filter_by(phenotype_id=id).one_or_none()
-        if phenotype:
-            return phenotype.annotations_to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying phenotype.")
+    phenotype = DBSession.query(Phenotype).filter_by(phenotype_id=id).one_or_none()
+    if phenotype:
+        return phenotype.annotations_to_dict()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='observable', renderer='json', request_method='GET')
 def observable(request):
     format_name = request.matchdict['format_name'].upper()
 
-    try:
-        observable = DBSession.query(Apo).filter_by(format_name=format_name).one_or_none()
-        if observable:
-            return observable.to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying observable.")
+    observable = DBSession.query(Apo).filter_by(format_name=format_name).one_or_none()
+    if observable:
+        return observable.to_dict()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='observable_locus_details', renderer='json', request_method='GET')
 def observable_locus_details(request):
     id = request.matchdict['id']
 
-    try:
-        observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
-        if observable:
-            return observable.annotations_to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying observable locus details.")
+    observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
+    if observable:
+        return observable.annotations_to_dict()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='observable_ontology_graph', renderer='json', request_method='GET')
 def observable_ontology_graph(request):
     id = request.matchdict['id']
 
-    try:
-        observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
-        if observable:
-            return observable.ontology_graph()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying observable ontology graph.")
+    observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
+    if observable:
+        return observable.ontology_graph()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='observable_locus_details_all', renderer='json', request_method='GET')
 def observable_locus_details_all(request):
     id = request.matchdict['id']
 
-    try:
-        observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
-        if observable:
-            return observable.annotations_to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying observable locus details all.")
+    observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
+    if observable:
+        return observable.annotations_to_dict()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='go', renderer='json', request_method='GET')
 def go(request):
     format_name = request.matchdict['format_name'].upper()
 
-    try:
-        go = DBSession.query(Go).filter_by(format_name=format_name).one_or_none()
-        if observable:
-            return go.to_dict()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying GO.")
+    go = DBSession.query(Go).filter_by(format_name=format_name).one_or_none()
+    if observable:
+        return go.to_dict()
+    else:
         return HTTPNotFound()
 
 @view_config(route_name='go_ontology_graph', renderer='json', request_method='GET')
@@ -598,14 +518,5 @@ def go_ontology_graph(request):
     go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
     if observable:
         return go.ontology_graph()
-
-    
-    try:
-        go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
-        if observable:
-            return go.ontology_graph()
-        else:
-            return HTTPNotFound()
-    except:
-        log.error("Database failure querying GO ontology graph.")
+    else:
         return HTTPNotFound()
