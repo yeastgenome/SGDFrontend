@@ -39,7 +39,6 @@ export default (
     <Route component={requireAuthentication(TriageLit)} path='triage_literature/:id' />
     <Route component={requireAuthentication(LocusShow)} path='locus/:id/overview' />
     <Route component={requireAuthentication(RefShow)} path='reference/:id/overview' />
-    <Route component={requireAuthentication(LitIndex)} path='literature' />
     <Route component={requireAuthentication(CurateLit)} path='annotate/reference/:id'>
       <IndexRoute component={requireAuthentication(CurateLitBasic)} />
       <Route component={requireAuthentication(CurateLitOverview)} path='loci' />
