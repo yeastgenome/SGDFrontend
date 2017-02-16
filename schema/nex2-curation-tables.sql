@@ -90,6 +90,7 @@ CREATE TABLE nex.referencetriage (
 	citation varchar(500) NOT NULL,
 	fulltext_url varchar(500),
 	abstract text,
+    json text,
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT referencetriage_pk PRIMARY KEY (curation_id)
@@ -102,6 +103,7 @@ COMMENT ON COLUMN nex.referencetriage.date_created IS 'Date the record was enter
 COMMENT ON COLUMN nex.referencetriage.citation IS 'Full citation of the paper.';
 COMMENT ON COLUMN nex.referencetriage.curation_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.referencetriage.pmid IS 'Pubmed identifier for the paper.';
+COMMENT ON COLUMN nex.referencetriage.json IS 'JSON object of the reference data.';
 ALTER TABLE nex.referencetriage ADD CONSTRAINT referencetriage_uk UNIQUE (pmid);
 
 DROP TABLE IF EXISTS nex.colleaguetriage CASCADE;
@@ -109,7 +111,7 @@ CREATE TABLE nex.colleaguetriage (
 	curation_id bigint NOT NULL DEFAULT nextval('curation_seq'),
 	triage_type varchar(10) NOT NULL,
     colleague_id bigint,
-    colleague_data text NOT NULL,
+    json text NOT NULL,
     curator_comment varchar(500),
     date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -119,7 +121,7 @@ COMMENT ON TABLE nex.colleaguetriage IS 'New and update colleague submissions.';
 COMMENT ON COLUMN nex.colleaguetriage.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
 COMMENT ON COLUMN nex.colleaguetriage.triage_type IS 'Type of colleague submission (New, Update, Stalled).';
 COMMENT ON COLUMN nex.colleaguetriage.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN nex.colleaguetriage.colleague_data IS 'JSON object of the submitted colleague information.';
+COMMENT ON COLUMN nex.colleaguetriage.json IS 'JSON object of the colleague data.';
 COMMENT ON COLUMN nex.colleaguetriage.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.colleaguetriage.curation_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.colleaguetriage.curator_comment IS 'Notes or comments about this colleague entry by the curators.';

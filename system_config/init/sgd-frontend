@@ -1,0 +1,37 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          SGDFrontend
+# Required-Start:    $network $named
+# Required-Stop:     $network $named
+# Should-Start:      nginx
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: SGD Frontend
+# Description:       Front end to SGD web site
+### END INIT INFO                                                                                                                                          
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+PIDFILE="/var/run/pyramid/frontend.pid"
+
+if [ ! -d /var/run/pyramid ]; then
+        /bin/mkdir -p /var/run/pyramid
+        /bin/chown -R deploy:deploy /var/run/pyramid
+fi
+
+case "$1" in
+    start)
+        /bin/su deploy -c "cd /data/www/SGDFrontend/current && export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && workon sgdf && /usr/bin/make run-prod"
+        ;;
+    stop)
+        /bin/kill `/bin/cat $PIDFILE`
+        if [ $? -eq 0 ]; then
+                /bin/rm $PIDFILE
+        else
+                echo "Error stopping SGDFrontend"
+                exit 1
+        fi
+        ;;
+  *)
+        echo "Usage: $0 {start|stop}" >&2
+        exit 1
+        ;;
+esac

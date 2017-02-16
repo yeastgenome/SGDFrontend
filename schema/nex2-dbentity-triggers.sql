@@ -2432,7 +2432,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
      v_row := OLD.referencedeleted_id || '[:]' || OLD.pmid || '[:]' ||
-              OLD.sgdid || '[:]' || OLD.reason_deleted || '[:]' ||
+              coalesce(OLD.sgdid,'') || '[:]' || coalesce(OLD.reason_deleted,'') || '[:]' ||
               OLD.date_created || '[:]' || OLD.created_by;
 
            PERFORM nex.insertdeletelog('REFERENCEDELETED'::text, OLD.referencedeleted_id, v_row, USER);
