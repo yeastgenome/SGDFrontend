@@ -146,8 +146,8 @@ BEGIN
         PERFORM nex.insertupdatelog('COLLEAGUETRIAGE'::text, 'COLLEAGUE_ID'::text, OLD.curation_id, OLD.colleague_id::text, NEW.colleague_id::text, USER);
     END IF;
 
-    IF (OLD.colleague_data != NEW.colleague_data) THEN
-        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE'::text, 'COLLEAGUE_DATA'::text, OLD.curation_id, OLD.colleague_data, NEW.colleague_data, USER);
+    IF (OLD.json != NEW.json) THEN
+        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE'::text, 'JSON'::text, OLD.curation_id, OLD.json, NEW.json, USER);
     END IF;
 
     IF (((OLD.colleague_comment IS NULL) AND (NEW.colleague_comment IS NOT NULL)) OR ((OLD.colleague_comment IS NOT NULL) AND (NEW.colleague_comment IS NULL)) OR (OLD.colleague_comment != NEW.colleague_comment)) THEN
@@ -159,7 +159,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.curation_id || '[:]' || OLD.triage_type || '[:]' ||
-             coalesce(OLD.colleague_id,0) || '[:]' || OLD.colleague_data || '[:]' ||
+             coalesce(OLD.colleague_id,0) || '[:]' || OLD.json || '[:]' ||
 	         coalesce(OLD.colleague_comment,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
@@ -329,13 +329,17 @@ BEGIN
         PERFORM nex.insertupdatelog('REFERENCETRIAGE'::text, 'ABSTRACT'::text, OLD.curation_id, OLD.abstract, NEW.abstract, USER);
     END IF;
 
+    IF (((OLD.json IS NULL) AND (NEW.json IS NOT NULL)) OR ((OLD.json IS NOT NULL) AND (NEW.json IS NULL)) OR (OLD.json != NEW.json)) THEN
+        PERFORM nex.insertupdatelog('REFERENCETRIAGE'::text, 'JSON'::text, OLD.curation_id, OLD.json, NEW.json, USER);
+    END IF;
+
     RETURN NEW;
 
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.curation_id || '[:]' || OLD.pmid || '[:]' ||
              OLD.citation || '[:]' || coalesce(OLD.fulltext_url,'') || '[:]' ||
-             coalesce(OLD.abstract,'') || '[:]' || 
+             coalesce(OLD.abstract,'') || '[:]' || coalesce(OLD.json,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
            PERFORM nex.insertdeletelog('REFERENCETRIAGE'::text, OLD.curation_id, v_row, USER);
