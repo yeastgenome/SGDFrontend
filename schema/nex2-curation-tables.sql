@@ -90,6 +90,7 @@ CREATE TABLE nex.referencetriage (
 	citation varchar(500) NOT NULL,
 	fulltext_url varchar(500),
 	abstract text,
+    json text,
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT referencetriage_pk PRIMARY KEY (curation_id)
@@ -102,6 +103,7 @@ COMMENT ON COLUMN nex.referencetriage.date_created IS 'Date the record was enter
 COMMENT ON COLUMN nex.referencetriage.citation IS 'Full citation of the paper.';
 COMMENT ON COLUMN nex.referencetriage.curation_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.referencetriage.pmid IS 'Pubmed identifier for the paper.';
+COMMENT ON COLUMN nex.referencetriage.json IS 'JSON object of the reference data.';
 ALTER TABLE nex.referencetriage ADD CONSTRAINT referencetriage_uk UNIQUE (pmid);
 
 DROP TABLE IF EXISTS nex.colleaguetriage CASCADE;
