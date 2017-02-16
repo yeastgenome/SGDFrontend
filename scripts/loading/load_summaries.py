@@ -2,7 +2,8 @@ from datetime import datetime
 import json
 import sys
 from database_session import get_dev_session
-sys.path.insert(0, '../../src/')
+# sys.path.insert(0, '../../src/')
+sys.path.insert(0, '../src/')  
 from config import CREATED_BY
 from models import Locussummary, LocussummaryReference, Source
 from util import sendmail
@@ -26,9 +27,11 @@ __author__ = 'sweng66'
          LOCUSSUMMARY_REFERENCE table
 '''  
 
-def load_summaries(summary_type, summary_file, log_file):
+def load_summaries(summary_type, summary_file):
 
     nex_session = get_dev_session()
+    
+    log_file = "loading/logs/" + summary_type + "_summary_loading.log"
 
     fw = open(log_file,"w")
     
@@ -180,8 +183,10 @@ def read_summary_file(nex_session, fw, summary_type, summary_file, log_file):
         for line in f:
             pieces = line.strip().split('\t')
             dbentity = name_to_dbentity.get(pieces[0])
+
             if dbentity is None:
                 continue
+
             data.append({'locus_id': dbentity.dbentity_id,
                          'text': pieces[1],
                          'html': link_gene_names(pieces[1], {dbentity.display_name, dbentity.format_name, dbentity.display_name + 'P', dbentity.format_name + 'P'}, nex_session),
@@ -273,9 +278,7 @@ def write_summary_and_send_email(load_summary_holder, fw, summary_type):
 
 
 if __name__ == "__main__":
-    
-    log_file = "logs/summary_loading.log"
-    
+        
     summary_file = ""
     summary_type = ""
     if len(sys.argv) >= 3:
@@ -291,9 +294,7 @@ if __name__ == "__main__":
         print "Example: load_summaries.py gp_information.559292_sgd Function"
         exit()
 
-    log_file = "logs/" + summary_type + "summary_loading.log"
-
-    data_to_return = load_summaries(summary_type, summary_file, log_file)
+    data_to_return = load_summaries(summary_type, summary_file)
 
     print json.dumps(data_to_return, sort_keys=True, indent=4)
     
