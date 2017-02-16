@@ -7,7 +7,7 @@ import BundleTracker from 'webpack-bundle-tracker';
 let isProduction = process.env.NODE_ENV === 'production';
 
 // Development asset host, asset location and build output path.
-const publicHost = isProduction ? '': 'http://localhost:2992';
+const publicHost = isProduction ? '': 'http://localhost:2992/';
 const rootAssetPath = './assets';
 const buildOutputPath = './src/build';
 
@@ -19,7 +19,7 @@ let config = {
   ],
   output: {
     path: buildOutputPath,
-    publicPath: publicHost + '/assets/',
+    publicPath: publicHost + 'assets/',
     filename: '[name].[hash].js',
     chunkFilename: '[id].[hash].js'
   },
