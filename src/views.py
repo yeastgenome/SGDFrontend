@@ -7,7 +7,7 @@ from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted
 
 from .celery_tasks import upload_to_s3
 
@@ -399,13 +399,79 @@ def reference_regulation_details(request):
 @view_config(route_name='reference_triage', renderer='json', request_method='GET')
 def reference_triage(request):
     triages = DBSession.query(Referencetriage).all()
-    return [t.to_dict() for t in triages]
+
+    return {'entries': [t.to_dict() for t in triages]}
 
 @view_config(route_name='reference_triage_id', renderer='json', request_method='GET')
-def reference_triage(request):
-    triages = DBSession.query(Referencetriage).all()
-    return [t.to_dict() for t in triages]
+def reference_triage_id(request):
+    id = request.matchdict['id'].upper()
+    
+    triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
+    if triage:
+        return triage.to_dict()
+    else:
+        return HTTPNotFound()
 
+@view_config(route_name='reference_triage_id_update', renderer='json', request_method='PUT')
+def reference_triage_id_update(request):
+    id = request.matchdict['id'].upper()
+
+    triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
+    if triage:
+        try:
+            triage.update_from_json(request.json)
+        except ValueError:
+            return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
+
+        try:
+            transaction.commit()
+        except:
+            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify if pmid is valid and not already present.'}))
+        
+        return HTTPOk()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='reference_triage_promote', renderer='json', request_method='GET')
+def reference_triage_promote(request):
+    id = request.matchdict['id'].upper()
+
+    triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
+    if triage:
+        reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=reason, created_by="OTTO")
+        
+        DBSession.add(reference_deleted)
+        DBSession.delete(triage)
+        
+        transaction.commit()
+        return HTTPOk()
+    else:
+        return HTTPNotFound()
+    
+@view_config(route_name='reference_triage_id_delete', renderer='json', request_method='DELETE')
+def reference_triage_id_delete(request):
+    id = request.matchdict['id'].upper()
+
+    triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
+    if triage:
+        try:
+            reason = request.json.get('reason')
+        except ValueError:
+            return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
+        
+        if reason is None:
+            return HTTPBadRequest(body=json.dumps({'error': 'Field \'reason\' is missing'}))
+
+        reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=reason, created_by="OTTO")
+        
+        DBSession.add(reference_deleted)
+        DBSession.delete(triage)
+        
+        transaction.commit()
+        return HTTPOk()
+    else:
+        return HTTPNotFound()
+    
 @view_config(route_name='author', renderer='json', request_method='GET')
 def author(request):
     format_name = request.matchdict['format_name']
