@@ -23,7 +23,7 @@ tests:
 	source test_variables.sh && nosetests -s
 
 qa-deploy:
-	npm run build && source dev_variables.sh && NEX2_URI=$$QA_NEX2_URI && cap curate_dev qa
+	npm run build && source dev_variables.sh && NEX2_URI=$$QA_NEX2_URI && cap qa deploy
 
 curate-deploy:
 	npm run build && source dev_variables.sh && NEX2_URI=$$CURATE_NEX2_URI && cap curate_dev deploy
