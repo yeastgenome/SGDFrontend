@@ -196,7 +196,7 @@ def read_summary_file(nex_session, fw, summary_type, summary_file_reader, log_fi
                 name = dbentity.systematic_name
             data_to_return.append({'category': 'locus',
                                    'name': name,
-                                   'href': 'http://www.yeastgenome.org/locus/'+name+'/overview',
+                                   'href': 'http://www.yeastgenome.org/locus/'+dbentity.sgdid+'/overview',
                                    'type': 'phenotype summary',
                                    'value': pieces[1]})
         
@@ -226,13 +226,12 @@ def read_summary_file(nex_session, fw, summary_type, summary_file_reader, log_fi
                          'summary_type': summary_type,
                          'summary_order': 1,
                          'references': references})
-
             name = dbentity.gene_name
             if name is None:
                 name = dbentity.systematic_name
             data_to_return.append({'category': 'locus',
                                    'name': name,
-                                   'href': 'http://www.yeastgenome.org/locus/'+name+'/overview',
+                                   'href': 'http://www.yeastgenome.org/locus/' + dbentity.sgdid + '/overview',
                                    'type': 'regulation summary',
                                    'value': pieces[2]})
 
