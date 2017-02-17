@@ -29,7 +29,7 @@ prod-deploy:
 	npm run build && source prod_variables.sh && cap prod deploy
 
 run-prod:
-	. prod_variables.sh && pserve production.ini --daemon --pid-file=/var/run/pyramid/backend.pid
+	pserve production.ini --daemon --pid-file=/var/run/pyramid/backend.pid
 
 stop-prod:
 	-pserve production.ini --stop-daemon --pid-file=/var/run/pyramid/backend.pid
