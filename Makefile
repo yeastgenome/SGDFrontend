@@ -22,6 +22,9 @@ flower:
 tests:
 	source test_variables.sh && nosetests -s
 
+curate-deploy:
+	npm run build && source dev_variables.sh && NEX2_URI=$CURATE_NEX2_URI && cap curate_dev deploy
+
 deploy:
 	npm run build && source dev_variables.sh && cap dev deploy
 
