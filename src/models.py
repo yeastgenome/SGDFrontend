@@ -1243,7 +1243,6 @@ class Referencedbentity(Dbentity):
             obj["reftypes"].append({
                 "display_name": typ[0]
             })
-
         authors = DBSession.query(Referenceauthor.display_name, Referenceauthor.obj_url).filter_by(reference_id=self.dbentity_id).order_by(Referenceauthor.author_order).all()
         obj["authors"] = []
         for author in authors:
@@ -3626,16 +3625,33 @@ class Referencetriage(Base):
     abstract = Column(Text)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    json = Column(Text)
 
     def to_dict(self):
         return {
-            "pmid": self.pmid,
-            "citation": self.citation,
-            "fulltext_url": self.fulltext_url,
-            "abstract": self.abstract,
-            "date_created": self.date_created,
-            "created_by": self.created_by
+            "curation_id": self.curation_id,
+            "basic": {
+                "pmid": self.pmid,
+                "citation": self.citation,
+                "fulltext_url": self.fulltext_url,
+                "abstract": self.abstract,
+                "date_created": self.date_created.strftime("%Y-%m-%d")
+            },
+            "data": json.loads(self.json or "{}")
         }
+
+    def update_from_json(self, json_obj):
+        if 'basic' in json_obj:
+            if 'pmid' in json_obj['basic']:
+                self.pmid = json_obj['basic']['pmid']
+            if 'citation' in json_obj['basic']:
+                self.citation = json_obj['basic']['citation']
+            if 'fulltext_url' in json_obj['basic']:
+                self.fulltext_url = json_obj['basic']['fulltext_url']
+            if 'abstract' in json_obj['basic']:
+                self.abstract = json_obj['basic']['abstract']
+        if 'data' in json_obj:
+            self.json = json.dumps(json_obj['data'])
 
 class Referencetype(Base):
     __tablename__ = 'referencetype'
