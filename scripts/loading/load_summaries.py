@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import csv
 import sys
 from database_session import get_dev_session
 # sys.path.insert(0, '../../src/')
@@ -27,7 +28,7 @@ __author__ = 'sweng66'
          LOCUSSUMMARY_REFERENCE table
 '''  
 
-def load_summaries(summary_type, summary_file):
+def load_summaries(summary_type, summary_file_reader):
 
     nex_session = get_dev_session()
     
@@ -36,9 +37,9 @@ def load_summaries(summary_type, summary_file):
     fw = open(log_file,"w")
     
     fw.write(str(datetime.now()) + "\n")
-    fw.write("reading data from summary_file...\n")
+    fw.write("reading data from summary_file_reader...\n")
 
-    [data, data_to_return] = read_summary_file(nex_session, fw, summary_type, summary_file, log_file)
+    [data, data_to_return] = read_summary_file(nex_session, fw, summary_type, summary_file_reader, log_file)
 
     fw.write(str(datetime.now()) + "\n")
     fw.write("retriveing data from database and store the data in dictionary...\n")
@@ -167,7 +168,7 @@ def update_references(nex_session, fw, load_summary_holder, source_id, summary_i
         #    # nex_session.delete(x)
         #    # print "The LOCUSSUMMARY_REFERENCE row for summary_id=", summary_id, " and reference_id=", x.reference_id, " has been deleted from the database."
 
-def read_summary_file(nex_session, fw, summary_type, summary_file, log_file):
+def read_summary_file(nex_session, fw, summary_type, summary_file_reader, log_file):
 
     from util import link_gene_names
     from models import Locusdbentity, Referencedbentity
@@ -179,9 +180,7 @@ def read_summary_file(nex_session, fw, summary_type, summary_file, log_file):
     data = []
     data_to_return = []
     if summary_type == 'Phenotype':
-        f = open(summary_file, 'U')
-        for line in f:
-            pieces = line.strip().split('\t')
+        for pieces in summary_file_reader:
             dbentity = name_to_dbentity.get(pieces[0])
 
             if dbentity is None:
@@ -202,9 +201,7 @@ def read_summary_file(nex_session, fw, summary_type, summary_file, log_file):
                                    'value': pieces[1]})
         
     elif summary_type == 'Regulation':
-        f = open(summary_file, 'U')
-        for line in f:
-            pieces = line.strip().split('\t')
+        for pieces in summary_file_reader:
             dbentity = name_to_dbentity.get(pieces[0])
             if dbentity is None:
                 continue
@@ -240,9 +237,7 @@ def read_summary_file(nex_session, fw, summary_type, summary_file, log_file):
                                    'value': pieces[2]})
 
     elif summary_type == 'Function':
-        f = open(summary_file, 'U')
-        for line in f:
-            pieces = line.split('\t')
+        for pieces in summary_file_reader:
             if len(pieces) >= 8:
                 sgdid = pieces[8]
                 if sgdid.startswith('SGD:'):
@@ -294,7 +289,11 @@ if __name__ == "__main__":
         print "Example: load_summaries.py gp_information.559292_sgd Function"
         exit()
 
-    data_to_return = load_summaries(summary_type, summary_file)
+    f = open(summary_file, 'r')
+
+    summary_file_reader = csv.reader(f, delimiter='\t')
+
+    data_to_return = load_summaries(summary_type, summary_file_reader)
 
     print json.dumps(data_to_return, sort_keys=True, indent=4)
     
