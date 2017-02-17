@@ -12,7 +12,7 @@ import CurateHome from './containers/curateHome';
 import Search from './containers/search';
 import LocusShow from './containers/locus/show';
 import RefShow from './containers/reference/show';
-import LitIndex from './containers/literature';
+import TriageIndex from './containers/triage';
 import CurateLit from './containers/curateLit/layout';
 // TEMP
 import CurateLitBasic from './containers/triageLit/litBasicInfo';
@@ -33,7 +33,7 @@ export default (
     <Route component={Login} path='login' />
     <Route component={CurateLayout} path='curate'>
       <IndexRoute component={requireAuthentication(CurateHome)} />
-      <Route component={requireAuthentication(LitIndex)} path='lit_triage' />
+      <Route component={requireAuthentication(TriageIndex)} path='triage' />
       <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
     </Route>
     <Route component={requireAuthentication(TriageLit)} path='triage_literature/:id' />

@@ -3,34 +3,7 @@ import { fromJS } from 'immutable';
 
 // temp fixture
 const DEFAULT_STATE = fromJS({
-  triageEntries: [
-    {
-      id: '12345abc',
-      isTriage: true,
-      citation: 'Kang MS, et al. (2013) Yeast RAD2, a homolog of human XPG, plays a key role in the regulation of the cell cycle and actin dynamics. Biol Open',
-      title: 'Lorem Ipsum dalor it Clylin Dependent Protein Serine',
-      tags: ['Fast Track'],
-      assignees: [
-        {
-          username: 'user1',
-          name: 'Thomas Dewey'
-        }
-      ]
-    },
-    {
-      id: '12345abc',
-      isTriage: true,
-      citation: 'Kang MS, et al. (2013) Yeast RAD2, a homolog of human XPG, plays a key role in the regulation of the cell cycle and actin dynamics. Biol Open',
-      title: 'Lorem Ipsum dalor it Clylin Dependent Protein Serine',
-      tags: ['Pathways', 'Phenotype needs review'],
-      assignees: [
-        {
-          username: 'user2',
-          name: 'Harriet Tubman'
-        }
-      ]
-    }
-  ],
+  triageEntries: [],
   activeLitEntry: {
     id: '12345abc',
     title: 'Yeast RAD2, a homolog of human XPG, plays a key role in the regulation of the cell cycle and actin dynamics. Biol Open',
@@ -75,6 +48,8 @@ export default function litReducer(state = DEFAULT_STATE, action) {
     updatedLitEntry = state.get('activeLitEntry').toJS();
     updatedLitEntry.tags = action.payload;
     return state.set('activeLitEntry', fromJS(updatedLitEntry));
+  case 'UPDATE_TRIAGE_ENTRIES':
+    return state.set('triageEntries', fromJS(action.payload));
   default:
     return state;
   }

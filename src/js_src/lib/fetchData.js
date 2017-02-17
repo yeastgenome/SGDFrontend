@@ -1,5 +1,4 @@
 /*eslint-disable no-undef */
-
 const TIMEOUT = 5000;
 
 export default function fetchData(_url, options={}) {
