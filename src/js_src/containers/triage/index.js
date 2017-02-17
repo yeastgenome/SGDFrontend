@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
-import LitList from './litList';
 import { selectTriageEntries } from '../../selectors/litSelectors';
 import { updateTriageEntries } from './triageActions';
 
@@ -20,13 +19,29 @@ class LitTriageIndex extends Component {
     });
   }
 
+  renderEntries() {
+    let nodes = this.props.triageEntries.map( (d) => {
+      return (
+        <div key={'te' + d.curation_id}>
+          <h5>{d.basic.citation}</h5>
+          <a className='button secondary small'><i className='fa fa-trash' /> Discard</a>
+          <p dangerouslySetInnerHTML={{ __html: d.basic.abstract }} />
+        </div>
+      );
+    });
+    return (
+      <div>
+        {nodes}
+      </div>
+    );
+  }
+
   render() {
-    let entries = this.props.triageEntries;
     return (
       <div>
         <h1>Literature Triage</h1>
         <div className={style.litTableContainer}>
-          <LitList entries={entries} />
+          {this.renderEntries()}
         </div>
       </div>
     );
