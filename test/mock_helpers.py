@@ -9,6 +9,9 @@ class MockQueryFilter(object):
     def first(self):
         return self._return
 
+    def order_by(self, *args, **kwargs):
+        return self
+
     def all(self):
         if self._return is None:
             return []
