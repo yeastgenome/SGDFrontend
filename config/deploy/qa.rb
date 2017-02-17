@@ -1,3 +1,3 @@
 set :stage, :dev
 
-server ENV['QA_DEV_SERVER'], user: fetch(:user), port: 22, roles: %w{app}
+server ENV['QA_SERVER'], user: fetch(:user), port: 22, roles: %w{app}
