@@ -2157,26 +2157,42 @@ class Go(Base):
         all_children = []
 
         children_relation = DBSession.query(GoRelation).filter_by(parent_id=self.go_id).all()
-
+        
         for child_relation in children_relation[:6]:
             child_node = child_relation.to_graph(nodes, edges, add_child=True)
             all_children.append({
                 "display_name": child_node.display_name,
                 "link": child_node.obj_url
             })
-            
-        nodes.append({
-            "data": {
-                "name": str(len(children_relation) - 7) + " more children",
-                "sub_type": "",
-                "link": None,
-                "id": "NodeMoreChildren"
-            }
-        })
+
+        for child_relation in children_relation[7:]:
+            child_node = child_relation.child
+            all_children.append({
+                "display_name": child_node.display_name,
+                "link": child_node.obj_url
+            })
+
+        if len(children_relation) - 7 > 0:
+            nodes.append({
+                "data": {
+                    "name": str(len(children_relation) - 7) + " more children",
+                    "sub_type": "",
+                    "link": None,
+                    "id": "NodeMoreChildren"
+                }
+            })
+            edges.append({
+                "data": {
+                    "name": "",
+                    "target": "NodeMoreChildren",
+                    "source": str(self.go_id)
+                }
+            })
             
         level = 0
         parents_relation = DBSession.query(GoRelation).filter_by(child_id=self.go_id).all()
-        for parent_relation in parents_relation:
+        while len(parents_relation) > 0:
+            parent_relation = parents_relation.pop()
             parent_relation.to_graph(nodes, edges, add_parent=True)
 
             if level < 4:
