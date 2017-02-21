@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
 
+import style from './style.css';
 // import fetchData from '../../lib/fetchData';
 import { removeEntry } from './triageActions';
+import TagList from './tagList';
 
 // const TRIAGE_URL = '/reference/triage';
 // const PROMOTE_URL_SUFFIX = 'promote';
@@ -40,11 +43,27 @@ class TriageControls extends Component {
     // });
   }
 
+  renderTags() {
+    return (
+      <Dropdown>
+        <DropdownTrigger className='button small'>Tags <i className='fa fa-caret-down' /></DropdownTrigger>
+        <DropdownContent className={`dropdownContent ${style.tagList}`}>
+          <TagList id={this.props.id} />
+        </DropdownContent>
+      </Dropdown>
+    );
+  }
+
   render() {
     return (
-      <div>
-        <a className='button secondary small' onClick={this.handleDiscardEntry.bind(this)}><i className='fa fa-trash' /> Discard</a>
-        <a className='button small' onClick={this.handlePromoteEntry.bind(this)}><i className='fa fa-check' /> Add to Database</a>
+      <div className='row'>
+        <div className='column small-6'>
+          {this.renderTags()}
+        </div>
+        <div className='column small-6 text-right'>
+          <a className='button small' onClick={this.handlePromoteEntry.bind(this)}><i className='fa fa-check' /> Add to Database</a>
+          <a className='button secondary small' onClick={this.handleDiscardEntry.bind(this)}><i className='fa fa-trash' /> Discard</a>
+        </div>
       </div>
     );
   }

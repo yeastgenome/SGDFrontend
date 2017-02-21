@@ -1,5 +1,9 @@
 .dropdown .dropdownContent {
   display: none;
+  position: absolute;
+  background: white;
+  border: 1px solid #e2e2e2;
+  padding: 1rem;
 }
 
 .dropdown.dropdown--active .dropdownContent {
