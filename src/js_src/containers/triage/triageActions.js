@@ -1,5 +1,5 @@
-export function promoteEntry (id) {
-  return { type: 'PROMOTE_TRIAGE', payload: id };
+export function removeEntry (id) {
+  return { type: 'REMOVE_TRIAGE', payload: id };
 }
 
 export function updateTags (newTags) {

@@ -41,7 +41,7 @@ const DEFAULT_STATE = fromJS({
 export default function litReducer(state = DEFAULT_STATE, action) {
   let updatedLitEntry;
   switch (action.type) {
-  case 'PROMOTE_TRIAGE':
+  case 'REMOVE_TRIAGE':
     let triageEntries = state.get('triageEntries').toJS();
     let deletedEntry = _.findWhere(triageEntries, { curation_id: action.payload });
     let updatedTriageEntries = _.without(triageEntries, deletedEntry);
