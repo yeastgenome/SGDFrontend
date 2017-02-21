@@ -1,5 +1,6 @@
 /*eslint-disable no-case-declarations */
 import { fromJS } from 'immutable';
+import _ from 'underscore';
 
 // temp fixture
 const DEFAULT_STATE = fromJS({
@@ -40,6 +41,11 @@ const DEFAULT_STATE = fromJS({
 export default function litReducer(state = DEFAULT_STATE, action) {
   let updatedLitEntry;
   switch (action.type) {
+  case 'PROMOTE_TRIAGE':
+    let triageEntries = state.get('triageEntries').toJS();
+    let deletedEntry = _.findWhere(triageEntries, { curation_id: action.payload });
+    let updatedTriageEntries = _.without(triageEntries, deletedEntry);
+    return state.set('triageEntries', fromJS(updatedTriageEntries));
   case 'UPDATE_ASSIGNEES':
     updatedLitEntry = state.get('activeLitEntry').toJS();
     updatedLitEntry.assignees = action.payload;

@@ -1,3 +1,7 @@
+export function promoteEntry (id) {
+  return { type: 'PROMOTE_TRIAGE', payload: id };
+}
+
 export function updateTags (newTags) {
   newTags = newTags.map( d => d.value );
   return { type: 'UPDATE_TAGS', payload: newTags };
