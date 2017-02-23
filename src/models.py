@@ -2112,6 +2112,15 @@ class Go(Base):
     source = relationship(u'Source')
 
     def to_dict(self):
+        annotations_count = DBSession.query(Goannotation.dbentity_id, func.count(Goannotation.dbentity_id)).filter_by(go_id=self.go_id).group_by(Goannotation.dbentity_id).count()
+
+        children_relation = DBSession.query(GoRelation).filter_by(parent_id=self.go_id).all()
+        if len(children_relation) > 0:
+            children_go_ids = DBSession.query(Go.go_id).filter()
+            children_annotations = DBSession.query(Goannotation.dbentity_id, func.count(Goannotation.dbentity_id)).filter(Goannotation.go_id.in_([c[0] for c in children_go_ids])).group_by(Goannotation.dbentity_id).count()
+        else:
+            children_annotations = 0
+        
         obj = {
             "display_name": self.display_name,
             "urls": [],
@@ -2122,7 +2131,8 @@ class Go(Base):
             "id": self.go_id,
             "link": self.obj_url,
             "descendant_locus_count": 0,
-            "locus_count": 0
+            "locus_count": annotations_count,
+            "descendant_locus_count": annotations_count + children_annotations
         }
 
         urls = DBSession.query(GoUrl).filter_by(go_id=self.go_id).all()
@@ -2207,6 +2217,23 @@ class Go(Base):
         }
         
         return graph
+
+    def annotations_to_dict(self):
+        annotations = DBSession.query(Goannotation).filter_by(go_id=self.go_id).all()
+
+        return [a.to_dict(go=self) for a in annotations]
+
+    def annotations_and_children_to_dict(self):
+        annotations = DBSession.query(Goannotation).filter_by(go_id=self.go_id).all()
+        obj = [a.to_dict(go=self) for a in annotations]
+
+        children_relation = DBSession.query(GoRelation).filter_by(parent_id=self.go_id).all()
+        children = [c.child for c in children_relation]
+        for child in children:
+            annotations = DBSession.query(Goannotation).filter_by(go_id=child.go_id).all()
+            obj += [a.to_dict(go=child) for a in annotations]
+
+        return obj
 
 class GoAlias(Base):
     __tablename__ = 'go_alias'
@@ -2328,7 +2355,10 @@ class Goannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
-    def to_dict(self):
+    def to_dict(self, go=None):
+        if go == None:
+            go = self.go
+        
         alias = DBSession.query(EcoAlias).filter_by(eco_id=self.eco.eco_id).all()
         experiment_name = alias[0].display_name
 
@@ -2392,10 +2422,10 @@ class Goannotation(Base):
                 "format_name": self.dbentity.format_name
             },
             "go": {
-                "display_name": self.go.display_name,
-                "link": self.go.obj_url,
-                "go_id": self.go.go_id,
-                "go_aspect": self.go.go_namespace
+                "display_name": go.display_name,
+                "link": go.obj_url,
+                "go_id": go.go_id,
+                "go_aspect": go.go_namespace
             },
             "reference": {
                 "display_name": self.reference.display_name,

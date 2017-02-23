@@ -35,7 +35,7 @@ def upload_spreadsheet(request):
     template_type = request.POST['template']
     annotations = parse_tsv_annotations(tsv_file, template_type)
     
-    return { 'annotations': annotations }
+    return {'annotations': annotations}
 
 @view_config(route_name='upload', request_method='POST', renderer='json')
 @authenticate
@@ -563,7 +563,7 @@ def observable_locus_details_all(request):
 
     observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
     if observable:
-        return observable.annotations_to_dict()
+        return observable.annotations_and_children_to_dict()
     else:
         return HTTPNotFound()
 
@@ -594,6 +594,16 @@ def go_locus_details(request):
     go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
     if observable:
         return go.annotations_to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='go_locus_details_all', renderer='json', request_method='GET')
+def go_locus_details_all(request):
+    id = request.matchdict['id']
+
+    go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
+    if observable:
+        return go.annotations_and_children_to_dict()
     else:
         return HTTPNotFound()
 
