@@ -23,10 +23,11 @@ class LitTriageIndex extends Component {
   renderEntries() {
     let nodes = this.props.triageEntries.map( (d) => {
       return (
-        <div key={'te' + d.curation_id}>
-          <h5 dangerouslySetInnerHTML={{ __html: d.basic.citation }} />
+        <div className={style.triageEntryContiner} key={'te' + d.curation_id}>
+          <h4 dangerouslySetInnerHTML={{ __html: d.basic.citation }} />
           <TriageControls citation={d.basic.citation} id={d.curation_id} />
           <p dangerouslySetInnerHTML={{ __html: d.basic.abstract }} />
+          <a href={d.basic.fulltext_url} target='_new'>Full Text</a>
         </div>
       );
     });
