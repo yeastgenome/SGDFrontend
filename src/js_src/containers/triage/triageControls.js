@@ -5,6 +5,7 @@ import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdow
 import style from './style.css';
 // import fetchData from '../../lib/fetchData';
 import { removeEntry } from './triageActions';
+import { setMessage } from '../../actions/metaActions';
 import TagList from './tagList';
 
 // const TRIAGE_URL = '/reference/triage';
@@ -15,6 +16,8 @@ class TriageControls extends Component {
     e.preventDefault();
     let id = this.props.id;
     this.props.dispatch(removeEntry(id));
+    let message = `${this.props.citation} discarded.`;
+    this.props.dispatch(setMessage(message));
     // let url = `${TRIAGE_URL}/${id}`;
     // let fetchOptions = {
     //   type: 'DELETE',
@@ -31,6 +34,8 @@ class TriageControls extends Component {
     e.preventDefault();
     let id = this.props.id;
     this.props.dispatch(removeEntry(id));
+    let message = `${this.props.citation} added to database.`;
+    this.props.dispatch(setMessage(message));
     // let url = `${TRIAGE_URL}/${id}/${PROMOTE_URL_SUFFIX}`;
     // let fetchOptions = {
     //   type: 'PUT',
@@ -70,6 +75,7 @@ class TriageControls extends Component {
 }
 
 TriageControls.propTypes = {
+  citation: React.PropTypes.string,
   dispatch: React.PropTypes.func,
   id: React.PropTypes.number
 };

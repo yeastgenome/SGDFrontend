@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import style from './style.css';
 import SearchBar from './searchBar';
 import curateLogo from './curateLogo.png';
-import { clearError } from '../../actions/metaActions';
+import { clearError, clearMessage } from '../../actions/metaActions';
 
 class Layout extends Component {
   renderAuthedMenu() {
@@ -47,11 +47,25 @@ class Layout extends Component {
     );
   }
 
+  renderMessage() {
+    if (!this.props.message) return null;
+    let handleClick = () => {
+      this.props.dispatch(clearMessage());
+    };
+    return (
+      <div className={`primary callout ${style.errorContainer}`}>
+        <h3 className={style.closeIcon} onClick={handleClick}><i className='fa fa-close' /></h3>
+        <p dangerouslySetInnerHTML={{ __html: this.props.message}} />
+      </div>
+    );
+  }
+
   render() {
     // init auth nodes, either login or logout links
     let authNodes = this.props.isAuthenticated ? this.renderAuthedMenu() : this.renderPublicMenu();
     return (
       <div>
+        {this.renderMessage()}
         {this.renderError()}
         <nav className={`top-bar ${style.navWrapper}`}>
           <div className='top-bar-left'>
@@ -80,6 +94,7 @@ class Layout extends Component {
 Layout.propTypes = {
   children: PropTypes.node,
   error: React.PropTypes.string,
+  message: React.PropTypes.string,
   dispatch: React.PropTypes.func,
   isAuthenticated: React.PropTypes.bool
 };
@@ -87,6 +102,7 @@ Layout.propTypes = {
 function mapStateToProps(state) {
   return {
     error: state.meta.get('error'),
+    message: state.meta.get('message'),
     isAuthenticated: state.auth.get('isAuthenticated')
   };
 }
