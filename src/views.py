@@ -454,13 +454,13 @@ def reference_triage_id_delete(request):
 
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
-        try:
-            reason = request.json.get('reason')
-        except ValueError:
-            return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
-        
-        if reason is None:
-            return HTTPBadRequest(body=json.dumps({'error': 'Field \'reason\' is missing'}))
+        reason = None
+
+        if request.body != '':
+            try:
+                reason = request.json.get('reason')
+            except ValueError:
+                return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
 
         reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=reason, created_by="OTTO")
         
@@ -586,3 +586,16 @@ def go_ontology_graph(request):
         return go.ontology_graph()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='go_locus_details', renderer='json', request_method='GET')
+def go_locus_details(request):
+    id = request.matchdict['id']
+
+    go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
+    if observable:
+        return go.annotations_to_dict()
+    else:
+        return HTTPNotFound()
+
+
+
