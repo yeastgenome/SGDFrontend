@@ -21,7 +21,8 @@ TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 def redirect_no_overview(request):
     new_url_relative_url = request.path.replace('/overview', '')
     full_url = request.scheme + '://' + request.host + new_url_relative_url
-    return HTTPMovedPermanently(full_url)
+    headers = { 'location': full_url }
+    return HTTPMovedPermanently(location=full_url, headers=headers)
 
 @view_config(context=HTTPNotFound)
 def not_found(self, request):
