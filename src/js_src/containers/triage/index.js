@@ -25,7 +25,7 @@ class LitTriageIndex extends Component {
       return (
         <div key={'te' + d.curation_id}>
           <h5 dangerouslySetInnerHTML={{ __html: d.basic.citation }} />
-          <TriageControls id={d.curation_id} />
+          <TriageControls citation={d.basic.citation} id={d.curation_id} />
           <p dangerouslySetInnerHTML={{ __html: d.basic.abstract }} />
         </div>
       );
