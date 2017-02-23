@@ -4,7 +4,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, \
     PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity, StrainUrl, \
     Strainsummary, StrainsummaryReference, Dataset, DatasetReference, Referencetype, ReferenceRelation, ReferenceUrl, Referenceauthor, \
-    Physinteractionannotation, Goannotation, Regulationannotation
+    Physinteractionannotation, Goannotation, Regulationannotation, Contig
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -196,7 +196,7 @@ class ReferencedbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     method_obtained = "Curator triage"
     publication_status = "Published"
     fulltext_status = "Y"
-    citation = factory.Sequence(lambda n: 'citation_{0}'.format(n))
+    citation = 1
     year = 2016
     pmid = 1
     pmcid = factory.Sequence(lambda n: 'pmcid_{0}'.format(n))
@@ -672,7 +672,7 @@ class StrainsummaryReferenceFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     summary_reference_id = 1
     summary_id = 1
-    reference_id = 2
+    reference_id =  2
     reference_order = 1
     source_id = 1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
@@ -681,13 +681,13 @@ class StrainsummaryReferenceFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 class ContigFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
-        model = StrainsummaryReference
+        model = Contig
         sqlalchemy_session = DBSession
 
     contig_id = 1
     format_name = "contig name"
     display_name = "contig display name"
-    obj_url = "contig obj url"
+    obj_url = "/contig/1"
     source_id = 1
     taxonomy_id = 1
     so_id = 1
