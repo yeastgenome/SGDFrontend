@@ -2,7 +2,7 @@
 from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPInternalServerError
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPInternalServerError, HTTPMovedPermanently
 from src.sgd.frontend import config
 from src.sgd.frontend.yeastgenome.views.cms_helpers import get_archive_years, get_meetings_html, wp_categories
 from dateutil import parser
@@ -20,7 +20,7 @@ TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 @view_config(route_name='redirect_no_overview_long')
 def redirect_no_overview(request):
     new_url = request.path.replace('/overview', '')
-    return HTTPFound(new_url)
+    return HTTPMovedPermanently(new_url)
 
 @view_config(context=HTTPNotFound)
 def not_found(self, request):
