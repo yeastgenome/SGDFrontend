@@ -54,6 +54,8 @@ def main(global_config, **settings):
 
     config.add_route('go', '/go/{format_name}', request_method='GET')
     config.add_route('go_ontology_graph', '/go/{id}/ontology_graph', request_method='GET')
+    config.add_route('go_locus_details', '/go/{id}/locus_details', request_method='GET')
+    config.add_route('go_locus_details_all', '/go/{id}/locus_details_all', request_method='GET')
     
     # curator interfaces
     config.add_route('colleague_triage_all', '/colleagues/triage', request_method='GET')
