@@ -1709,7 +1709,7 @@ BEGIN
              OLD.taxonomy_id || '[:]' || OLD.reference_id || '[:]' ||
              OLD.phenotype_id || '[:]' || OLD.experiment_id || '[:]' ||
              OLD.mutant_id || '[:]' || coalesce(OLD.allele_id,0) || '[:]' ||
-             OLD.coalesce(reporter_id,0) || '[:]' || coalesce(OLD.assay_id,0) || '[:]' ||
+             coalesce(OLD.reporter_id,0) || '[:]' || coalesce(OLD.assay_id,0) || '[:]' ||
              coalesce(OLD.strain_name,'') || '[:]' || coalesce(OLD.details,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
