@@ -219,7 +219,8 @@ def build_search_params(query, search_fields):
         }
 
         fields = search_fields + [
-            "name.symbol"
+            "name.symbol",
+            "keys"
         ]
 
         for field in fields:
