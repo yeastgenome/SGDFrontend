@@ -124,6 +124,7 @@ def format_aggregation_results(aggregation_results, category, category_filters):
 
             if subcategory[1] in aggregation_results['aggregations']:
                 for agg in aggregation_results['aggregations'][subcategory[1]]['buckets']:
+                    
                     agg_obj['values'].append({
                         'key': agg['key'],
                         'total': agg['doc_count']
@@ -188,14 +189,14 @@ def build_search_query(query, search_fields, category, category_filters, args):
 
     if category in category_filters.keys():
         for item in category_filters[category]:
-            if args.get(item[0]):
-                for param in args.get(item[0]):
+            if args.get(item[1]):
+                for param in args.get(item[1]):
                     query['filtered']['filter']['bool']['must'].append({
                         'term': {
                             (item[1] + ".raw"): param
                         }
                     })
-
+                    
     return query
 
 
