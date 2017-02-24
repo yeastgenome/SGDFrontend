@@ -74,7 +74,7 @@ def blog_post(self, request):
     wp_url = BLOG_BASE_URL + '/slug:' + slug
     response = requests.get(wp_url)
     if response.status_code == 404:
-        return not_found(self, request)
+        return not_found(request)
     post = add_simple_date_to_post(json.loads(response.text))
     return render_to_response(TEMPLATE_ROOT + 'blog_post.jinja2', { 'post': post, 'categories': wp_categories, 'years': get_archive_years() }, request=request)    
 
