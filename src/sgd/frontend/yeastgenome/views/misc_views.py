@@ -23,7 +23,7 @@ def redirect_no_overview(request):
     return HTTPMovedPermanently(new_url)
 
 @view_config(context=HTTPNotFound)
-def not_found(self, request):
+def not_found(request):
     request.response.status = 404
     return render_to_response(TEMPLATE_ROOT + 'lost.jinja2', {}, request=request)
 
@@ -107,13 +107,17 @@ def references_this_week(request):
 def reference(request):
     ref_id = request.matchdict['identifier']
     ref_obj = get_obj(ref_id, 'reference')
+    if ref_obj is None:
+        return not_found(request)
     return render_to_response(TEMPLATE_ROOT + 'reference.jinja2', ref_obj, request=request)
 
 @view_config(route_name='phenotype') 
 def phenotype(request):
-    ref_id = request.matchdict['identifier']
-    ref_obj = get_obj(ref_id, 'phenotype')
-    return render_to_response(TEMPLATE_ROOT + 'phenotype.jinja2', ref_obj, request=request)
+    pheno_id = request.matchdict['identifier']
+    pheno_obj = get_obj(pheno_id, 'phenotype')
+    if pheno_obj is None:
+        return not_found(request)
+    return render_to_response(TEMPLATE_ROOT + 'phenotype.jinja2', pheno_obj, request=request)
 
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results in script tag and let client js do the rest.
 @view_config(route_name='search') 
