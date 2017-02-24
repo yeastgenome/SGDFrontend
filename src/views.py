@@ -7,7 +7,7 @@ from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity
 
 from .celery_tasks import upload_to_s3
 
@@ -183,7 +183,7 @@ def search(request):
             'results': [],
             'aggregations': []
         }
-
+    
     aggregation_body = build_es_aggregation_body_request(
         es_query,
         category,
@@ -195,11 +195,11 @@ def search(request):
         body=aggregation_body,
         preference='p_'+query
     )
-
+    
     return {
         'total': search_results['hits']['total'],
-        'results': format_search_results(search_results, json_response_fields),
-        'aggregations': format_aggregation_results(     # DEBUG HERE!!!
+        'results': format_search_results(search_results, json_response_fields, query),
+        'aggregations': format_aggregation_results(
             aggregation_results,
             category,
             category_filters
@@ -572,7 +572,7 @@ def go(request):
     format_name = request.matchdict['format_name'].upper()
 
     go = DBSession.query(Go).filter_by(format_name=format_name).one_or_none()
-    if observable:
+    if go:
         return go.to_dict()
     else:
         return HTTPNotFound()
@@ -582,7 +582,7 @@ def go_ontology_graph(request):
     id = request.matchdict['id']
 
     go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
-    if observable:
+    if go:
         return go.ontology_graph()
     else:
         return HTTPNotFound()
@@ -592,7 +592,7 @@ def go_locus_details(request):
     id = request.matchdict['id']
 
     go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
-    if observable:
+    if go:
         return go.annotations_to_dict()
     else:
         return HTTPNotFound()
@@ -602,10 +602,27 @@ def go_locus_details_all(request):
     id = request.matchdict['id']
 
     go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
-    if observable:
+    if go:
         return go.annotations_and_children_to_dict()
     else:
         return HTTPNotFound()
 
+@view_config(route_name='locus', renderer='json', request_method='GET')
+def locus(request):
+    sgdid = request.matchdict['sgdid'].upper()
 
+    locus = DBSession.query(Locusdbentity).filter_by(sgdid=sgdid).one_or_none()
+    if locus:
+        return locus.to_dict()
+    else:
+        return HTTPNotFound()
 
+@view_config(route_name='locus_tabs', renderer='json', request_method='GET')
+def locus_tabs(request):
+    sgdid = request.matchdict['id'].upper()
+
+    locus = DBSession.query(Locusdbentity).filter_by(sgdid=sgdid).one_or_none()
+    if locus:
+        return locus.tabs()
+    else:
+        return HTTPNotFound()

@@ -138,7 +138,7 @@ def format_aggregation_results(aggregation_results, category, category_filters):
 
 def build_es_search_body_request(query, category, es_query, json_response_fields, search_fields, sort_by):
     es_search_body = {
-        '_source': json_response_fields,
+        '_source': json_response_fields + ["keys"],
         'highlight': {
             'fields': {}
         },
@@ -254,7 +254,7 @@ def filter_highlighting(highlight):
     return highlight
 
 
-def format_search_results(search_results, json_response_fields):
+def format_search_results(search_results, json_response_fields, query):
     formatted_results = []
 
     for r in search_results['hits']['hits']:
@@ -266,6 +266,10 @@ def format_search_results(search_results, json_response_fields):
 
         obj['highlights'] = filter_highlighting(r.get('highlight'))
         obj['id'] = r.get('_id')
+
+        if raw_obj.get('keys'): # colleagues don't have keys
+            if query.replace('"','').lower().strip() in raw_obj.get('keys'):
+                obj['is_quick'] = True
 
         formatted_results.append(obj)
 
