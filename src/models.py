@@ -1510,11 +1510,17 @@ class Straindbentity(Dbentity):
             obj["genotype"] = obj["genotype"][1:len(obj["genotype"])-1]
 
         urls = DBSession.query(StrainUrl.display_name, StrainUrl.url_type, StrainUrl.obj_url).filter_by(strain_id=self.dbentity_id).all()
-        obj["urls"] = [{
-            "display_name": u[0],
-            "category": u[1].lower(),
-            "link": u[2]
-        } for u in urls]
+
+        for u in urls:
+            category = u[1].lower()
+            if category == "external id":
+                category = "source"
+
+            obj["urls"].append({
+                "display_name": u[0],
+                "category": category,
+                "link": u[2]
+            })
 
         paragraph = DBSession.query(Strainsummary.summary_id, Strainsummary.html).filter_by(strain_id=self.dbentity_id).one_or_none()
         if paragraph:
