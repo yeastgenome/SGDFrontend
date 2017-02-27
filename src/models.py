@@ -1187,7 +1187,7 @@ class Referencedbentity(Dbentity):
                 "link": url.obj_url,                            
             })
 
-        abstract = DBSession.query(Referencedocument.text).filter_by(reference_id=self.dbentity_id, document_type="Abstract").one_or_none()
+        abstract = DBSession.query(Referencedocument.html).filter_by(reference_id=self.dbentity_id, document_type="Abstract").one_or_none()
         if abstract:
             obj["abstract"] = {
                 "text": abstract[0]
@@ -1222,7 +1222,7 @@ class Referencedbentity(Dbentity):
         datasets = DBSession.query(DatasetReference).filter_by(reference_id=self.dbentity_id).all()
         obj["expression_datasets"] = [data.dataset.to_dict(self) for data in datasets]
         
-        abstract = DBSession.query(Referencedocument.text).filter_by(reference_id=self.dbentity_id, document_type="Abstract").one_or_none()
+        abstract = DBSession.query(Referencedocument.html).filter_by(reference_id=self.dbentity_id, document_type="Abstract").one_or_none()
         if abstract:
             obj["abstract"] = {
                 "text": abstract[0]
@@ -1354,6 +1354,34 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def to_dict(self):
+        obj = {
+            "id": self.dbentity_id,
+            "display_name": self.display_name,
+            "format_name": self.format_name,
+            "link": self.obj_url,
+            
+        }
+
+        return obj
+
+    def tabs(self):
+        return {
+            "id": self.dbentity_id,
+            "protein_tab": self.has_protein,
+            "interaction_tab": self.has_interaction,
+            "summary_tab": self.has_summary,
+            "go_tab": self.has_go,
+            "sequence_section": self.has_sequence_section,
+            "expression_tab": self.has_expression,
+            "phenotype_tab": self.has_phenotype,
+            "literature_tab": self.has_literature,
+            "wiki_tab": False,
+            "regulation_tab": self.has_regulation,
+            "sequence_tab": self.has_sequence,
+            "history_tab": self.has_history,
+            "protein_tab": self.has_protein
+        }
 
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
