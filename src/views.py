@@ -619,10 +619,27 @@ def locus(request):
 
 @view_config(route_name='locus_tabs', renderer='json', request_method='GET')
 def locus_tabs(request):
-    sgdid = request.matchdict['id'].upper()
+    id = request.matchdict['id'].upper()
 
-    locus = DBSession.query(Locusdbentity).filter_by(sgdid=sgdid).one_or_none()
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
         return locus.tabs()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='bioentity_list', renderer='json', request_method='POST')
+def analyze(request):
+    try:
+        data = request.json
+    except ValueError:
+        return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
+        
+    if "bioent_ids" not in data:
+        return HTTPBadRequest(body=json.dumps({'error': 'Key \"bioent_ids\" missing'}))
+
+    loci = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(data['bioent_ids'])).all()
+    
+    return [locus.to_dict_analyze() for locus in loci]
+
+    
+        

@@ -1354,14 +1354,90 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def to_dict_analyze(self):
+        return {
+            "id": self.dbentity_id,
+            "display_name": self.display_name,
+            "link": self.obj_url,
+            "description": self.description,
+            "format_name": self.format_name
+        }
+    
     def to_dict(self):
         obj = {
             "id": self.dbentity_id,
             "display_name": self.display_name,
             "format_name": self.format_name,
             "link": self.obj_url,
+            "sgdid": self.sgdid,
+            "aliases": [],
+            "references": [],
+            "locus_type": None,
+            "qualifier": self.qualifier,
+            "bioent_status": None,
+            "description": self.description,
+            "name_description": self.name_description,
+            "paralogs": [],
+            "urls": [],
+            "protein_overview": {
+                "length": 0,
+                "molecular_weight": 0,
+                "pi": 3.14
+            },
+            "go_overview": {
+                "manual_molecular_function_terms": [],
+                "manual_biological_process_terms": [],
+                "manual_cellular_component_terms": [],
+                "htp_molecular_function_terms": [],
+                "htp_biological_process_terms": [],
+                "htp_cellular_component_terms": [],
+                "computational_annotation_count": 0
+            },
+            "pathways": [],
+            "phenotype_overview": {
+                "classical_phenotypes": [],
+                "large_scale_phenotypes": []
+            },
+            "interaction_overview": {
+                "total_interactions": 0,
+                "num_phys_interactors": 0,
+                "physical_experiments": {},
+                "num_gen_interactors": 0,
+                "genetic_experiments": {}
+            },
+            "regulation_overview": {
+                "regulator_count": 0,
+                "target_count": 0
+            },
+            "paragraph": {
+                "date_edited": "Today lalala"
+            },
+            "literature_overview": {
+                "primary_count": 0,
+                "additional_count": 0,
+                "review_count": 0
+            }
             
+            
+            
+            #"reserved_name": {"link": None, "display_name": None, "reference": None}
+            #"qualities": {"gene_name": None, "references": None, "feature_type": {"references": []}}
         }
+
+        aliases = DBSession.query(LocusAlias.display_name, LocusAlias.alias_type).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type.in_(["Uniform", "Non-uniform", "NCBI protein name"])).all()
+        for alias in aliases:
+            category = ""
+            
+            if alias[1] == "Uniform" or alias[1] == "Non-uniform":
+                category = "Alias"
+            elif alias[1] == "NCBI protein name":
+                category = "Gene product"
+                
+            obj["aliases"].append({
+                "display_name": alias[0],
+                "category": category,
+                "references": []
+            })
 
         return obj
 

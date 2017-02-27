@@ -59,6 +59,8 @@ def main(global_config, **settings):
 
     config.add_route('locus', '/locus/{sgdid}', request_method='GET')
     config.add_route('locus_tabs', '/locus/{id}/tabs', request_method='GET')
+
+    config.add_route('bioentity_list', '/bioentity_list', request_method='POST')
     
     # curator interfaces
     config.add_route('colleague_triage_all', '/colleagues/triage', request_method='GET')
