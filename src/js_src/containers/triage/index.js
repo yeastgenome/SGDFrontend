@@ -20,14 +20,24 @@ class LitTriageIndex extends Component {
     });
   }
 
+  renderLinks(d) {
+    let pubmedUrl = `https://www.ncbi.nlm.nih.gov/pubmed/${d.basic.pmid}`;
+    return (
+      <div>
+        <a href={d.basic.fulltext_url} target='_new'>Full Text</a>
+        <a href={pubmedUrl} target='_new'>Pubmed</a>
+      </div>
+    );
+  }
+
   renderEntries() {
     let nodes = this.props.triageEntries.map( (d) => {
       return (
         <div className={style.triageEntryContiner} key={'te' + d.curation_id}>
           <h4 dangerouslySetInnerHTML={{ __html: d.basic.citation }} />
-          <TriageControls citation={d.basic.citation} id={d.curation_id} />
           <p dangerouslySetInnerHTML={{ __html: d.basic.abstract }} />
-          <a href={d.basic.fulltext_url} target='_new'>Full Text</a>
+          {this.renderLinks(d)}
+          <TriageControls citation={d.basic.citation} id={d.curation_id} />
         </div>
       );
     });
