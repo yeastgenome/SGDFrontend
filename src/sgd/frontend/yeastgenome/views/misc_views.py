@@ -174,7 +174,7 @@ def home(request):
     # fetch recent blog posts
     wp_url = BLOG_BASE_URL + '?number=5'
     try:
-        response = requests.get(wp_url)
+        response = requests.get(wp_url, timeout=2)
         blog_posts = json.loads(response.text)['posts']
         for post in blog_posts:
             post = add_simple_date_to_post(post)
