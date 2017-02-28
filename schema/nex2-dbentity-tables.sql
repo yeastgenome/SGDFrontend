@@ -117,6 +117,29 @@ COMMENT ON COLUMN nex.locus_alias.alias_id IS 'Unique identifier (serial number)
 ALTER TABLE nex.locus_alias ADD CONSTRAINT locus_alias_uk UNIQUE (locus_id,display_name,alias_type);
 CREATE INDEX locusalias_source_fk_index ON nex.locus_alias (source_id);
 
+DROP TABLE IF EXISTS nex.locusalias_reference CASCADE;
+CREATE TABLE nex.locusalias_reference (
+    locusalias_reference_id bigint NOT NULL DEFAULT nextval('link_seq'),
+    alias_id bigint NOT NULL,
+    reference_id bigint NOT NULL,
+    reference_order smallint NOT NULL,
+    source_id bigint NOT NULL,
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    created_by varchar(12) NOT NULL,
+    CONSTRAINT locusalias_reference_pk PRIMARY KEY (locusalias_reference_id)
+) ;
+COMMENT ON TABLE nex.locusalias_reference IS 'References associated with a locus alias.';
+COMMENT ON COLUMN nex.locusalias_reference.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.locusalias_reference.summary_id IS 'FK to LOCUSALIAS.ALIAS_ID.';
+COMMENT ON COLUMN nex.locusalias_reference.summary_reference_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.locusalias_reference.reference_order IS 'Order of the references.';
+COMMENT ON COLUMN nex.locusalias_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.locusalias_reference.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.locusalias_reference.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.locusalias_reference ADD CONSTRAINT locusalias_reference_uk UNIQUE (alias_id,reference_id);
+CREATE INDEX locusaliasreference_source_fk_index ON nex.locusalias_reference (source_id);
+CREATE INDEX locusaliasreference_ref_fk_index ON nex.locusalias_reference (reference_id);
+
 DROP TABLE IF EXISTS nex.locus_relation CASCADE; 
 CREATE TABLE nex.locus_relation (
 	relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
