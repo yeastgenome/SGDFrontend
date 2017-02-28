@@ -130,7 +130,7 @@ BEGIN
     END IF;
 
    IF (NEW.subclass = 'REFERENCE') THEN
-       IF (NEW.format_name := OLD.format_name) THEN
+       IF (NEW.format_name = OLD.format_name) THEN
           RAISE EXCEPTION 'This column cannot be updated.';
    END IF;
 
