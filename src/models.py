@@ -1506,7 +1506,7 @@ class Straindbentity(Dbentity):
             "paragraph": None
         }
 
-        if (obj["genotype"][0] == "\"" and obj["genotype"][-1] == "\""):
+        if (len(obj["genotype"]) > 1 and obj["genotype"][0] == "\"" and obj["genotype"][-1] == "\""):
             obj["genotype"] = obj["genotype"][1:len(obj["genotype"])-1]
 
         urls = DBSession.query(StrainUrl.display_name, StrainUrl.url_type, StrainUrl.obj_url).filter_by(strain_id=self.dbentity_id).all()
