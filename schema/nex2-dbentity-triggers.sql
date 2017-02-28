@@ -92,6 +92,10 @@ BEGIN
         PERFORM nex.checksgdid(NEW.sgdid);
     END IF;
 
+   IF (NEW.subclass = 'REFERENCE') THEN
+       NEW.format_name := NEW.sgdid);
+   END IF;
+
    IF (NEW.obj_url IS NULL) THEN
         NEW.obj_url := CONCAT('/'||lower(NEW.subclass)||'/', NEW.sgdid);
    END IF;
@@ -125,6 +129,11 @@ BEGIN
         RAISE EXCEPTION 'This column cannot be updated.';
     END IF;
 
+   IF (NEW.subclass = 'REFERENCE') THEN
+       IF (NEW.format_name := OLD.format_name) THEN
+          RAISE EXCEPTION 'This column cannot be updated.';
+   END IF;
+
     IF (NEW.subclass != OLD.subclass) THEN
         RAISE EXCEPTION 'This column cannot be updated.';
     END IF;
@@ -138,11 +147,11 @@ BEGIN
               RAISE EXCEPTION 'Allowable values are Active, Merged, Deleted.';
         END IF;
     ELSIF (NEW.subclass = 'FILE') THEN
-	IF (NEW.dbentity_status = 'Merged') OR (NEW.dbentity_status = 'Deleted') THEN
+	    IF (NEW.dbentity_status = 'Merged') OR (NEW.dbentity_status = 'Deleted') THEN
             RAISE EXCEPTION 'Allowable values are Active or Archived.';
-	END IF;
+	    END IF;
     ELSIF (NEW.subclass = 'STRAIN') OR (NEW.subclass = 'REFERENCE') OR (NEW.subclass = 'PATHWAY') THEN
-	IF (NEW.dbentity_status != 'Active') THEN
+	    IF (NEW.dbentity_status != 'Active') THEN
             RAISE EXCEPTION 'Only allowable value is Active.';
         END IF;
     END IF;
