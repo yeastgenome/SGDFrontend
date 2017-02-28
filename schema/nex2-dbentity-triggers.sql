@@ -417,8 +417,6 @@ CREATE TRIGGER locusalias_biur
 BEFORE INSERT OR UPDATE ON nex.locus_alias FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_locusalias_biur();
 
-
-
 DROP TRIGGER IF EXISTS locusaliasreference_audr ON nex.locusalias_reference CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_locusaliasreference_audr() RETURNS trigger AS $BODY$
 DECLARE
@@ -427,7 +425,7 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.alias_id != NEW.alias_id) THEN
-	PERFORM nex.insertupdatelog('LOCUSALIAS_REFERENCE'::text, 'ALIAS_ID'::text, OLD.locusalias_reference_id, OLD.alias_id::text, NEW.alias_id::text, USER);
+	    PERFORM nex.insertupdatelog('LOCUSALIAS_REFERENCE'::text, 'ALIAS_ID'::text, OLD.locusalias_reference_id, OLD.alias_id::text, NEW.alias_id::text, USER);
     END IF;
 
      IF (OLD.reference_id != NEW.reference_id) THEN

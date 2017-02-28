@@ -130,8 +130,8 @@ CREATE TABLE nex.locusalias_reference (
 ) ;
 COMMENT ON TABLE nex.locusalias_reference IS 'References associated with a locus alias.';
 COMMENT ON COLUMN nex.locusalias_reference.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN nex.locusalias_reference.summary_id IS 'FK to LOCUSALIAS.ALIAS_ID.';
-COMMENT ON COLUMN nex.locusalias_reference.summary_reference_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.locusalias_reference.alias_id IS 'FK to LOCUSALIAS.ALIAS_ID.';
+COMMENT ON COLUMN nex.locusalias_reference.locusalias_reference_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.locusalias_reference.reference_order IS 'Order of the references.';
 COMMENT ON COLUMN nex.locusalias_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.locusalias_reference.created_by IS 'Username of the person who entered the record into the database.';
