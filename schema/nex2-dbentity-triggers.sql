@@ -93,7 +93,7 @@ BEGIN
     END IF;
 
    IF (NEW.subclass = 'REFERENCE') THEN
-       NEW.format_name := NEW.sgdid);
+       NEW.format_name := NEW.sgdid;
    END IF;
 
    IF (NEW.obj_url IS NULL) THEN
