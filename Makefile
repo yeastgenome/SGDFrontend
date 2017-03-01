@@ -5,7 +5,7 @@ dev-deploy:
 	. dev_deploy_variables.sh && cap dev deploy
 
 qa-deploy:
-	. dev_deploy_variables.sh && cap qa deploy
+	. dev_deploy_variables.sh && AWS_ENV=true cap qa deploy
 
 beta-deploy:
 	. dev_deploy_variables.sh && cap beta deploy
