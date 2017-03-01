@@ -625,6 +625,7 @@ DROP TABLE IF EXISTS nex.phenotypeannotation_cond CASCADE;
 CREATE TABLE nex.phenotypeannotation_cond (
 	condition_id bigint NOT NULL DEFAULT nextval('condition_seq'),
 	annotation_id bigint NOT NULL,
+    group_id bigint NOT NULL,
 	condition_class varchar(40) NOT NULL,
 	condition_name varchar(500) NOT NULL,
 	condition_value varchar(150),
@@ -642,7 +643,8 @@ COMMENT ON COLUMN nex.phenotypeannotation_cond.date_created IS 'Date the record 
 COMMENT ON COLUMN nex.phenotypeannotation_cond.condition_class IS 'Type of the condition (Temperature, Chemical, Media, Phase, etc.).';
 COMMENT ON COLUMN nex.phenotypeannotation_cond.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.phenotypeannotation_cond.annotation_id IS 'FK to PHENOTYPEANNOTATION.ANNOTATION_ID.';
-CREATE UNIQUE INDEX phenotypeannotation_cond_uk_index on nex.phenotypeannotation_cond(annotation_id,condition_class,condition_name,coalesce(condition_value,'0'));
+COMMENT ON COLUMN nex.phenotypeannotation_cond.group_id IS 'A grouping number.';
+CREATE UNIQUE INDEX phenotypeannotation_cond_uk_index on nex.phenotypeannotation_cond(annotation_id,group_id,condition_class,condition_name,coalesce(condition_value,'0'));
 ALTER TABLE nex.phenotypeannotation_cond ADD CONSTRAINT phenotypeannocond_class_ck CHECK (CONDITION_CLASS IN ('assay', 'media', 'phase', 'radiation', 'temperature', 'treatment', 'chemical'));
 CREATE INDEX phenotypeannocond_condition_name_index ON nex.phenotypeannotation_cond (condition_name);
 

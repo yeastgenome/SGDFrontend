@@ -1781,6 +1781,10 @@ BEGIN
         PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION_COND'::text, 'ANNOTATION_ID'::text, OLD.condition_id, OLD.annotation_id::text, NEW.annotation_id::text, USER);
     END IF;
 
+    IF (OLD.group_id != NEW.group_id) THEN
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION_COND'::text, 'GROUP_ID'::text, OLD.condition_id, OLD.group_id::text, NEW.group_id::text, USER);
+    END IF;
+
      IF (OLD.condition_class != NEW.condition_class) THEN
         PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION_COND'::text, 'CONDITION_CLASS'::text, OLD.condition_id, OLD.condition_class, NEW.condition_class, USER);
     END IF;
@@ -1802,6 +1806,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.condition_id || '[:]' || OLD.annotation_id || '[:]' ||
+             OLD.group_id || '[:]' ||
              OLD.condition_class || '[:]' || OLD.condition_name || '[:]' ||
              coalesce(OLD.condition_value,'') || '[:]' || coalesce(OLD.condition_unit,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
