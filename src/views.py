@@ -482,7 +482,7 @@ def author(request):
     if len(authors_ref) > 0:
         return {
             "display_name": authors_ref[0].display_name,
-            "references": [author_ref.reference.to_dict_reference_related() for author_ref in authors_ref]
+            "references": sorted([author_ref.reference.to_dict_reference_related() for author_ref in authors_ref], key=lambda r: r["year"], reverse=True)
         }
     else:
         return HTTPNotFound()
