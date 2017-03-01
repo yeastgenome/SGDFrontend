@@ -243,7 +243,7 @@ def reference_list(request):
         except ValueError:
             return HTTPBadRequest(body=json.dumps({'error': "IDs must be string format of integers. Example JSON object expected: {\"reference_ids\": [\"1\", \"2\"]}"}))
 
-@view_config(route_name='sign_in', request_method='POST')
+@view_config(route_name='sign_in', request_method='POST', renderer='json')
 def sign_in(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
@@ -277,7 +277,7 @@ def sign_in(request):
 
         log.info('User ' + idinfo['email'] + ' was successfuly authenticated.')
 
-        return HTTPOk()
+        return { 'username': curator.username }
     except crypt.AppIdentityError:
         return HTTPForbidden(body=json.dumps({'error': 'Authentication token is invalid'}))
 

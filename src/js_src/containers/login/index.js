@@ -39,9 +39,9 @@ class Login extends Component {
       },
       data: params
     };
-    fetchData(AUTH_URL, fetchOptions).then( () => {
+    fetchData(AUTH_URL, fetchOptions).then( (data) => {
       let nextUrl = this.props.queryParams.next || DEFAULT_AUTH_LANDING;
-      this.props.dispatch(authenticateUser());
+      this.props.dispatch(authenticateUser(data.username));
       this.props.dispatch(push(nextUrl));
     }).catch( () => {
       this.props.dispatch(setError('There was an error with your login. Make sure that you are logged into Google with your Stanford email address. You may need to refresh the page.'));
