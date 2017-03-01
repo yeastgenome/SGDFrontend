@@ -586,6 +586,7 @@ CREATE TABLE nex.phenotypeannotation (
 	reporter_id bigint,
 	assay_id bigint,
 	strain_name varchar(100),
+    experiment_comment varchar(200),
 	details varchar(500),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -608,7 +609,8 @@ COMMENT ON COLUMN nex.phenotypeannotation.reference_id IS 'FK to REFERENCEBENTIT
 COMMENT ON COLUMN nex.phenotypeannotation.annotation_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.phenotypeannotation.phenotype_id IS 'FK to PHENOTYPE.PHENOTYPE_ID.';
 COMMENT ON COLUMN nex.phenotypeannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-CREATE UNIQUE INDEX phenotypeannotation_uk_index on nex.phenotypeannotation(dbentity_id,phenotype_id,experiment_id,mutant_id,reference_id,taxonomy_id,coalesce(allele_id,0),coalesce(reporter_id,0),coalesce(strain_name,'0'),coalesce(details,'0'));
+COMMENT ON COLUMN nex.phenotypeannotation.experiment_comment IS 'Additional description of the phenotype experiment.';
+CREATE UNIQUE INDEX phenotypeannotation_uk_index on nex.phenotypeannotation(dbentity_id,phenotype_id,experiment_id,mutant_id,reference_id,taxonomy_id,coalesce(allele_id,0),coalesce(reporter_id,0),coalesce(strain_name,'0'),coalesce(experiment_comment,'0'),coalesce(details,'0'));
 CREATE INDEX phenotypeanno_phenotype_fk_index ON nex.phenotypeannotation (phenotype_id);
 CREATE INDEX phenotypeanno_taxonomy_fk_index ON nex.phenotypeannotation (taxonomy_id);
 CREATE INDEX phenotypeanno_ref_fk_index ON nex.phenotypeannotation (reference_id);

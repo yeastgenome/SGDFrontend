@@ -1696,6 +1696,10 @@ BEGIN
         PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION'::text, 'STRAIN_NAME'::text, OLD.annotation_id, OLD.strain_name, NEW.strain_name, USER);
     END IF;
 
+    IF  (((OLD.experiment_comment IS NULL) AND (NEW.experiment_comment IS NOT NULL)) OR ((OLD.experiment_comment IS NOT NULL) AND (NEW.experiment_comment IS NULL)) OR (OLD.experiment_comment != NEW.experiment_comment)) THEN
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION'::text, 'EXPERIMENT_COMMENT'::text, OLD.annotation_id, OLD.experiment_comment, NEW.experiment_comment, USER);
+    END IF;
+
     IF  (((OLD.details IS NULL) AND (NEW.details IS NOT NULL)) OR ((OLD.details IS NOT NULL) AND (NEW.details IS NULL)) OR (OLD.details != NEW.details)) THEN
         PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION'::text, 'DETAILS'::text, OLD.annotation_id, OLD.details, NEW.details, USER);
     END IF;
@@ -1710,7 +1714,8 @@ BEGIN
              OLD.phenotype_id || '[:]' || OLD.experiment_id || '[:]' ||
              OLD.mutant_id || '[:]' || coalesce(OLD.allele_id,0) || '[:]' ||
              coalesce(OLD.reporter_id,0) || '[:]' || coalesce(OLD.assay_id,0) || '[:]' ||
-             coalesce(OLD.strain_name,'') || '[:]' || coalesce(OLD.details,'') || '[:]' ||
+             coalesce(OLD.strain_name,'') || '[:]' || coalesce(OLD.experiment_comment,'') || '[:]' ||
+             coalesce(OLD.details,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
            PERFORM nex.insertdeletelog('PHENOTYPEANNOTATION'::text, OLD.annotation_id, v_row, USER);
