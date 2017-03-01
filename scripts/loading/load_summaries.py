@@ -28,13 +28,14 @@ __author__ = 'sweng66'
          LOCUSSUMMARY_REFERENCE table
 '''  
 
-def load_summaries(summary_type, summary_file_reader):
-
-    nex_session = get_dev_session()
+def load_summaries(nex_session, summary_file_reader, summary_type=None):
     
+    if summary_type is None:
+        summary_type = "Phenotype_Regulation"
+
     log_file = "loading/logs/" + summary_type + "_summary_loading.log"
 
-    fw = open(log_file,"w")
+    fw = open(log_file, "w")
     
     fw.write(str(datetime.now()) + "\n")
     fw.write("reading data from summary_file_reader...\n")
@@ -179,46 +180,33 @@ def read_summary_file(nex_session, fw, summary_type, summary_file_reader, log_fi
     
     data = []
     data_to_return = []
-    if summary_type == 'Phenotype':
-        for pieces in summary_file_reader:
-            dbentity = name_to_dbentity.get(pieces[0])
-
-            if dbentity is None:
-                continue
-
-            data.append({'locus_id': dbentity.dbentity_id,
-                         'text': pieces[1],
-                         'html': link_gene_names(pieces[1], {dbentity.display_name, dbentity.format_name, dbentity.display_name + 'P', dbentity.format_name + 'P'}, nex_session),
-                         'summary_type': summary_type,
-                         'summary_order': 1 })
-            name = dbentity.gene_name
-            if name is None:
-                name = dbentity.systematic_name
-            data_to_return.append({'category': 'locus',
-                                   'name': name,
-                                   'href': 'http://www.yeastgenome.org/locus/'+dbentity.sgdid+'/overview',
-                                   'type': 'phenotype summary',
-                                   'value': pieces[1]})
         
-    elif summary_type == 'Regulation':
+    if summary_type == 'Phenotype_Regulation':
+
         for pieces in summary_file_reader:
             dbentity = name_to_dbentity.get(pieces[0])
             if dbentity is None:
                 continue
 
             references = []
+            if len(pieces) > 3:
+                pmid_list = pieces[3].replace(' ', '')
+                pmids = pmid_list.split('|')
+                order = 0
 
-            pmid_list = pieces[3].replace(' ', '')
-            pmids = pmid_list.split('|')
-            order = 0
+                for pmid in pmids:
+                    reference_id = pmid_to_reference_id.get(int(pmid))
+                    if reference_id is None:
+                        print "PMID=", pmid, " is not in the database"
+                        continue
+                    order = order + 1
+                    references.append({'reference_id': reference_id, 'reference_order': order})
 
-            for pmid in pmids:
-                reference_id = pmid_to_reference_id.get(int(pmid))
-                if reference_id is None:
-                    print "PMID=", pmid, " is not in the database"
-                    continue
-                order = order + 1
-                references.append({'reference_id': reference_id, 'reference_order': order})
+            summary_type = pieces[1]
+            if summary_type in ['Phenotype', 'phenotype', 'PHENOTYPE']:
+                summary_type = 'Phenotype'
+            elif summary_type in ['Regulation', 'regulation', 'REGULATION']:
+                summary_type = 'Regulation'
 
             data.append({'locus_id': dbentity.dbentity_id,
                          'text': pieces[2],
@@ -231,8 +219,8 @@ def read_summary_file(nex_session, fw, summary_type, summary_file_reader, log_fi
                 name = dbentity.systematic_name
             data_to_return.append({'category': 'locus',
                                    'name': name,
-                                   'href': 'http://www.yeastgenome.org/locus/' + dbentity.sgdid + '/overview',
-                                   'type': 'regulation summary',
+                                   'href': 'http://www.yeastgenome.org/locus/' + dbentity.sgdid,
+                                   'type': summary_type + ' summary',
                                    'value': pieces[2]})
 
     elif summary_type == 'Function':
@@ -255,6 +243,7 @@ def read_summary_file(nex_session, fw, summary_type, summary_file_reader, log_fi
         exit()
     
     return [data, data_to_return]
+
 
 def write_summary_and_send_email(load_summary_holder, fw, summary_type):
 
@@ -280,11 +269,9 @@ if __name__ == "__main__":
         summary_type = sys.argv[2]
     elif len(sys.argv) >= 2:
         summary_file = sys.argv[1]
-        summary_type = "Phenotype"
     else:
-        print "Usage: load_summaries.py summary_file_name_with_path summary_type[Phenotype|Regulation|Function]"
-        print "Example: load_summaries.py 16-11phenoSummaries.txt Phenotype"
-        print "Example: load_summaries.py 16-5regulationSummaries.txt Regulation"
+        print "Usage: load_summaries.py summary_file_name_with_path summary_type[Phenotype_Regulation|Function]"
+        print "Example: load_summaries.py summary_test.txt Phenotype_Regulation"
         print "Example: load_summaries.py gp_information.559292_sgd Function"
         exit()
 
@@ -292,7 +279,9 @@ if __name__ == "__main__":
 
     summary_file_reader = csv.reader(f, delimiter='\t')
 
-    data_to_return = load_summaries(summary_type, summary_file_reader)
+    nex_session = get_dev_session
+
+    data_to_return = load_summaries(nex_session, summary_file_reader, summary_type)
 
     print json.dumps(data_to_return, sort_keys=True, indent=4)
     
