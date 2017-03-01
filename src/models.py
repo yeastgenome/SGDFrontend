@@ -1176,6 +1176,7 @@ class Referencedbentity(Dbentity):
             "citation": self.citation,
             "pubmed_id": self.pmid,
             "abstract": None,
+            "year": self.year,
             "reftypes": [],
             "urls": []
         }
@@ -1438,6 +1439,10 @@ class Locusdbentity(Dbentity):
                 "category": category,
                 "references": []
             })
+
+        sos = DBSession.query(Dnasequenceannotation.so_id).filter_by(dbentity_id=self.dbentity_id).group_by(Dnasequenceannotation.so_id).all()
+        locus_type = DBSession.query(So.display_name).filter(So.so_id.in_([so[0] for so in sos])).all()
+        obj["locus_type"] = ",".join([l[0] for l in locus_type])
 
         return obj
 
