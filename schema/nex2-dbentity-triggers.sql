@@ -417,6 +417,84 @@ CREATE TRIGGER locusalias_biur
 BEFORE INSERT OR UPDATE ON nex.locus_alias FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_locusalias_biur();
 
+DROP TRIGGER IF EXISTS locusaliasreference_audr ON nex.locusalias_reference CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_locusaliasreference_audr() RETURNS trigger AS $BODY$
+DECLARE
+    v_row       nex.deletelog.deleted_row%TYPE;
+BEGIN
+  IF (TG_OP = 'UPDATE') THEN
+
+    IF (OLD.alias_id != NEW.alias_id) THEN
+	    PERFORM nex.insertupdatelog('LOCUSALIAS_REFERENCE'::text, 'ALIAS_ID'::text, OLD.locusalias_reference_id, OLD.alias_id::text, NEW.alias_id::text, USER);
+    END IF;
+
+     IF (OLD.reference_id != NEW.reference_id) THEN
+        PERFORM nex.insertupdatelog('LOCUSALIAS_REFERENCE'::text, 'REFERENCE_ID'::text, OLD.locusalias_reference_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+    END IF;
+
+     IF (OLD.reference_order != NEW.reference_order) THEN
+        PERFORM nex.insertupdatelog('LOCUSALIAS_REFERENCE'::text, 'REFERENCE_ORDER'::text, OLD.locusalias_reference_id, OLD.reference_order::text, NEW.reference_order::text, USER);
+    END IF;
+
+     IF (OLD.source_id != NEW.source_id) THEN
+	 PERFORM nex.insertupdatelog('LOCUSALIAS_REFERENCE'::text, 'SOURCE_ID'::text, OLD.locusalias_reference_id, OLD.source_id::text, NEW.source_id::text, USER);
+    END IF;
+
+    RETURN NEW;
+
+  ELSIF (TG_OP = 'DELETE') THEN
+
+    v_row := OLD.locusalias_reference_id || '[:]' || OLD.alias_id || '[:]' ||
+             OLD.reference_id || '[:]' || OLD.reference_order || '[:]' ||
+             OLD.source_id || '[:]' ||
+             OLD.date_created || '[:]' || OLD.created_by;
+
+             PERFORM nex.insertdeletelog('LOCUSALIAS_REFERENCE'::text, OLD.locusalias_reference_id, v_row, USER);
+
+     RETURN OLD;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER locusaliasreference_audr
+AFTER UPDATE OR DELETE ON nex.locusalias_reference FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_locusaliasreference_audr();
+
+DROP TRIGGER IF EXISTS locusaliasreference_biur ON nex.locusalias_reference CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_locusaliasreference_biur() RETURNS trigger AS $BODY$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+
+       NEW.created_by := upper(NEW.created_by);
+       PERFORM nex.checkuser(NEW.created_by);
+
+       RETURN NEW;
+
+  ELSIF (TG_OP = 'UPDATE') THEN
+
+    IF (NEW.locusalias_reference_id != OLD.locusalias_reference_id) THEN
+        RAISE EXCEPTION 'Primary key cannot be updated';
+    END IF;
+
+    IF (NEW.date_created != OLD.date_created) THEN
+	RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    IF (NEW.created_by != OLD.created_by) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    RETURN NEW;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER locusaliasreference_biur
+BEFORE INSERT OR UPDATE ON nex.locusalias_reference FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_locusaliasreference_biur();
+
 DROP TRIGGER IF EXISTS locusrelation_audr ON nex.locus_relation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_locusrelation_audr() RETURNS trigger AS $BODY$
 DECLARE
