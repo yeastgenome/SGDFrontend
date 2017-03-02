@@ -699,6 +699,10 @@ BEGIN
 END;
 $BODY$ LANGUAGE 'plpgsql';
 
+CREATE TRIGGER locusarelationreference_biur
+BEFORE INSERT OR UPDATE ON nex.locusrelation_reference FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_locusrelationreference_biur();
+
 DROP TRIGGER IF EXISTS locusrelationreference_biur ON nex.locusrelation_reference CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_locusrelationreference_biur() RETURNS trigger AS $BODY$
 BEGIN
