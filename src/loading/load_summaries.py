@@ -2,7 +2,8 @@ from datetime import datetime
 import json
 import csv
 import sys
-from src.models import Locussummary, LocussummaryReference, Source
+import transaction
+from src.models import Locussummary, LocussummaryReference, Locusdbentity, Referencedbentity, Source
                              
 __author__ = 'sweng66'
 
@@ -27,7 +28,7 @@ def load_summaries(nex_session, summary_file_reader, summary_type=None):
     if summary_type is None:
         summary_type = "Phenotype_Regulation"
 
-    [data, data_to_return] = read_summary_file(nex_session, fw, summary_type, summary_file_reader, log_file)
+    [data, data_to_return] = read_summary_file(nex_session, summary_type, summary_file_reader)
 
     # not sure if need to write to file?
     # fw.write(str(datetime.now()) + "\n")
@@ -67,23 +68,21 @@ def load_summaries(nex_session, summary_file_reader, summary_type=None):
                 # fw.write("SUMMARY is in DB\n")
                 summary_id = key_to_summary[key].summary_id
                 update_references(nex_session,
-                                  fw,
                                   load_summary_holder,
                                   source_id, 
                                   summary_id, 
                                   summary_id_to_references.get(summary_id), 
                                   x.get('references'))
         else:
-            summary_id = insert_summary(nex_session, fw, load_summary_holder, source_id, x)
+            summary_id = insert_summary(nex_session, load_summary_holder, source_id, x)
             if x.get('references'):
                 for y in x['references']:
-                    insert_summary_reference(nex_session, fw, load_summary_holder, source_id, summary_id, y)
+                    insert_summary_reference(nex_session, load_summary_holder, source_id, summary_id, y)
 
-    nex_session.commit()
-    nex_session.close()
+    transaction.commit()
     return data_to_return
 
-def insert_summary_reference(nex_session, fw, load_summary_holder, source_id, summary_id, y):
+def insert_summary_reference(nex_session, load_summary_holder, source_id, summary_id, y):
     x = LocussummaryReference(summary_id = summary_id, 
                               reference_id = y['reference_id'], 
                               reference_order = y['reference_order'], 
@@ -95,7 +94,7 @@ def insert_summary_reference(nex_session, fw, load_summary_holder, source_id, su
 
     # fw.write("insert new summary reference:" + str(summary_id) + ", " + str(y['reference_id']) + ", " + str(y['reference_order']))
 
-def insert_summary(nex_session, fw, load_summary_holder, source_id, x):
+def insert_summary(nex_session, load_summary_holder, source_id, x):
     x = Locussummary(locus_id = x['locus_id'], 
                      summary_type = x['summary_type'], 
                      summary_order = x['summary_order'], 
@@ -113,12 +112,12 @@ def insert_summary(nex_session, fw, load_summary_holder, source_id, x):
     return x.summary_id
 
     
-def update_references(nex_session, fw, load_summary_holder, source_id, summary_id, old_references, new_references):
+def update_references(nex_session, load_summary_holder, source_id, summary_id, old_references, new_references):
     if old_references is None and new_references is None:
         return
     if old_references is None:
         for y in new_references:
-            insert_summary_reference(nex_session, fw, load_summary_holder, source_id, summary_id, y)
+            insert_summary_reference(nex_session, load_summary_holder, source_id, summary_id, y)
     elif new_references is None:
         for y in old_references:
             nex_session.delete(y)
@@ -136,7 +135,7 @@ def update_references(nex_session, fw, load_summary_holder, source_id, summary_i
                 else:
                     nex_session.query(LocussummaryReference).filter_by(summary_id=summary_id,reference_id=y['reference_id']).update({'reference_order': y['reference_order']})
             else:
-                insert_summary_reference(nex_session, fw, load_summary_holder, source_id, summary_id, y)
+                insert_summary_reference(nex_session, load_summary_holder, source_id, summary_id, y)
             ref_new[y['reference_id']] = 1
 
         ## clean up old refs
@@ -147,11 +146,7 @@ def update_references(nex_session, fw, load_summary_holder, source_id, summary_i
         #    # nex_session.delete(x)
         #    # print "The LOCUSSUMMARY_REFERENCE row for summary_id=", summary_id, " and reference_id=", x.reference_id, " has been deleted from the database."
 
-def read_summary_file(nex_session, fw, summary_type, summary_file_reader, log_file):
-
-    from util import link_gene_names
-    from models import Locusdbentity, Referencedbentity
-
+def read_summary_file(nex_session, summary_type, summary_file_reader):
     name_to_dbentity = dict([(x.systematic_name, x) for x in nex_session.query(Locusdbentity).all()])
     sgdid_to_dbentity_id = dict([(x.sgdid, x.dbentity_id) for x in nex_session.query(Locusdbentity).all()])
     pmid_to_reference_id = dict([(x.pmid, x.dbentity_id) for x in nex_session.query(Referencedbentity).all()]) 
@@ -169,7 +164,10 @@ def read_summary_file(nex_session, fw, summary_type, summary_file_reader, log_fi
             references = []
             if len(pieces) > 3:
                 pmid_list = pieces[3].replace(' ', '')
-                pmids = pmid_list.split('|')
+                if pmid_list is '':
+                    pmids = []
+                else:
+                    pmids = pmid_list.split('|')
                 order = 0
 
                 for pmid in pmids:
@@ -221,3 +219,63 @@ def read_summary_file(nex_session, fw, summary_type, summary_file_reader, log_fi
         exit()
     
     return [data, data_to_return]
+
+def link_gene_names(text, to_ignore, nex_session):
+    words = text.split(' ')
+    new_chunks = []
+    chunk_start = 0
+    i = 0
+    for word in words:
+        dbentity_name = word
+        if dbentity_name.endswith('.') or dbentity_name.endswith(',') or dbentity_name.endswith('?') or dbentity_name.endswith('-'):
+            dbentity_name = dbentity_name[:-1]
+        if dbentity_name.endswith(')'):
+            dbentity_name = dbentity_name[:-1]
+        if dbentity_name.startswith('('):
+            dbentity_name = dbentity_name[1:]
+
+        dbentity = get_dbentity_by_name(dbentity_name.upper(), to_ignore, nex_session)
+
+        if dbentity is not None:
+            new_chunks.append(text[chunk_start: i])
+            chunk_start = i + len(word) + 1
+
+            new_chunk = "<a href='" + dbentity.obj_url + "'>" + dbentity_name + "</a>"
+            if word[-2] == ')':
+                new_chunk = new_chunk + word[-2]
+            if word.endswith('.') or word.endswith(',') or word.endswith('?') or word.endswith('-') or word.endswith(')'):
+                new_chunk = new_chunk + word[-1]
+            if word.startswith('('):
+                new_chunk = word[0] + new_chunk
+            new_chunks.append(new_chunk)
+        i = i + len(word) + 1
+    new_chunks.append(text[chunk_start: i])
+    try:
+        return ' '.join(new_chunks)
+    except:
+        return text
+
+
+def get_dbentity_by_name(dbentity_name, to_ignore, nex_session):
+    if dbentity_name not in to_ignore:
+        try:
+            int(dbentity_name)
+        except ValueError:
+            dbentity_id = get_word_to_dbentity_id(dbentity_name, nex_session)
+            return None if dbentity_id is None else nex_session.query(Locusdbentity).filter_by(dbentity_id=dbentity_id).first()
+    return None
+
+word_to_dbentity_id = None
+
+def get_word_to_dbentity_id(word, nex_session):
+    global word_to_dbentity_id
+    if word_to_dbentity_id is None:
+        word_to_dbentity_id = {}
+        for locus in nex_session.query(Locusdbentity).all():
+            word_to_dbentity_id[locus.format_name.lower()] = locus.dbentity_id
+            word_to_dbentity_id[locus.display_name.lower()] = locus.dbentity_id
+            word_to_dbentity_id[locus.format_name.lower() + 'p'] = locus.dbentity_id
+            word_to_dbentity_id[locus.display_name.lower() + 'p'] = locus.dbentity_id
+
+    word = word.lower()
+    return None if word not in word_to_dbentity_id else word_to_dbentity_id[word]
