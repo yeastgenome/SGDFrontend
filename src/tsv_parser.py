@@ -1,6 +1,6 @@
 import csv
 
-from scripts.loading import load_summaries
+from loading.load_summaries import load_summaries
 
 # takes a TSV file and returns an array of annotations
 def parse_tsv_annotations(db_session, tsv_file, template_type):
