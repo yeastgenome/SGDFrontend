@@ -699,7 +699,7 @@ BEGIN
 END;
 $BODY$ LANGUAGE 'plpgsql';
 
-CREATE TRIGGER locusarelationreference_biur
+CREATE TRIGGER locusrelationreference_biur
 BEFORE INSERT OR UPDATE ON nex.locusrelation_reference FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_locusrelationreference_biur();
 
