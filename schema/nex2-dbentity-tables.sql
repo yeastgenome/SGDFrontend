@@ -89,6 +89,32 @@ COMMENT ON COLUMN nex.locusdbentity.not_in_s288c IS 'If the feature is NOT found
 ALTER TABLE nex.locusdbentity ADD CONSTRAINT locusdbentity_uk UNIQUE (systematic_name);
 ALTER TABLE nex.locusdbentity ADD CONSTRAINT locusdbentity_qualifier_ck CHECK (QUALIFIER IN ('Verified','Uncharacterized','Dubious'));
 
+DROP TABLE IF EXISTS nex.locus_reference CASCADE;
+CREATE TABLE nex.locus_reference (
+    locus_reference_id bigint NOT NULL DEFAULT nextval('link_seq'),
+    locus_id bigint NOT NULL,
+    reference_id bigint NOT NULL,
+    reference_order smallint NOT NULL,
+    reference_class varchar(40) NOT NULL,
+    source_id bigint NOT NULL,
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    created_by varchar(12) NOT NULL,
+    CONSTRAINT locus_reference_pk PRIMARY KEY (locus_reference_id)
+) ;
+COMMENT ON TABLE nex.locus_reference IS 'References associated with a locus.';
+COMMENT ON COLUMN nex.locus_reference.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.locus_reference.locus_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.locus_reference.locus_reference_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.locus_reference.reference_order IS 'Order of the references.';
+COMMENT ON COLUMN nex.locus_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.locus_reference.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.locus_reference.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.locus_reference.reference_class IS 'The column in LOCUSDBENTITY that is associated with the reference.'; 
+ALTER TABLE nex.locus_reference ADD CONSTRAINT locus_reference_uk UNIQUE (locus_id,reference_id);
+ALTER TABLE nex.locus_reference ADD CONSTRAINT locusreference_class_ck CHECK (REFERENCE_CLASS IN ('systematic_name','gene_name','qualifier','description','name_description'));
+CREATE INDEX locusreference_source_fk_index ON nex.locus_reference (source_id);
+CREATE INDEX locusreference_ref_fk_index ON nex.locus_reference (reference_id);
+
 DROP TABLE IF EXISTS nex.locus_alias CASCADE; 
 CREATE TABLE nex.locus_alias (
 	alias_id bigint NOT NULL DEFAULT nextval('alias_seq'),
@@ -165,6 +191,29 @@ ALTER TABLE nex.locus_relation ADD CONSTRAINT locus_relation_uk UNIQUE (parent_i
 CREATE INDEX locusrelation_child_fk_index ON nex.locus_relation (child_id);
 CREATE INDEX locusrelation_ro_fk_index ON nex.locus_relation (ro_id);
 CREATE INDEX locusrelation_source_fk_index ON nex.locus_relation (source_id);
+
+DROP TABLE IF EXISTS nex.locusrelation_reference CASCADE;
+CREATE TABLE nex.locusrelation_reference (
+    locusrelation_reference_id bigint NOT NULL DEFAULT nextval('link_seq'),
+    relation_id bigint NOT NULL,
+    reference_id bigint NOT NULL,
+    reference_order smallint NOT NULL,
+    source_id bigint NOT NULL,
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    created_by varchar(12) NOT NULL,
+    CONSTRAINT locusrelation_reference_pk PRIMARY KEY (locusrelation_reference_id)
+) ;
+COMMENT ON TABLE nex.locusrelation_reference IS 'References associated with a locus relation.';
+COMMENT ON COLUMN nex.locusrelation_reference.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.locusrelation_reference.relation_id IS 'FK to LOCUSRELATION.relation_ID.';
+COMMENT ON COLUMN nex.locusrelation_reference.locusrelation_reference_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.locusrelation_reference.reference_order IS 'Order of the references.';
+COMMENT ON COLUMN nex.locusrelation_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.locusrelation_reference.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.locusrelation_reference.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.locusrelation_reference ADD CONSTRAINT locusrelation_reference_uk UNIQUE (relation_id,reference_id);
+CREATE INDEX locusrelationreference_source_fk_index ON nex.locusrelation_reference (source_id);
+CREATE INDEX locusrelationreference_ref_fk_index ON nex.locusrelation_reference (reference_id);
 
 DROP TABLE IF EXISTS nex.locus_url CASCADE; 
 CREATE TABLE nex.locus_url (
