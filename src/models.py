@@ -1371,11 +1371,28 @@ class Locusdbentity(Dbentity):
             "format_name": self.format_name,
             "link": self.obj_url,
             "sgdid": self.sgdid,
+            "qualities": {
+                "gene_name": {
+                    "references": []
+                },
+                "feature_type": {
+                    "references": []
+                },
+                "qualifier": {
+                    "references": []
+                },
+                "description": {
+                    "references": []
+                },
+                "name_description": {
+                    "references": []
+                }
+            },
             "aliases": [],
             "references": [],
             "locus_type": None,
             "qualifier": self.qualifier,
-            "bioent_status": None,
+            "bioent_status": "Active", #TODO: where is this in NEX2?
             "description": self.description,
             "name_description": self.name_description,
             "paralogs": [],
@@ -1411,18 +1428,14 @@ class Locusdbentity(Dbentity):
                 "target_count": 0
             },
             "paragraph": {
-                "date_edited": "Today lalala"
+                "date_edited": None
             },
             "literature_overview": {
                 "primary_count": 0,
                 "additional_count": 0,
                 "review_count": 0
             }
-            
-            
-            
             #"reserved_name": {"link": None, "display_name": None, "reference": None}
-            #"qualities": {"gene_name": None, "references": None, "feature_type": {"references": []}}
         }
 
         aliases = DBSession.query(LocusAlias.display_name, LocusAlias.alias_type).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type.in_(["Uniform", "Non-uniform", "NCBI protein name"])).all()
@@ -1444,6 +1457,16 @@ class Locusdbentity(Dbentity):
         locus_type = DBSession.query(So.display_name).filter(So.so_id.in_([so[0] for so in sos])).all()
         obj["locus_type"] = ",".join([l[0] for l in locus_type])
 
+        summary = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type="Gene").one_or_none()
+        if summary:
+            obj["paragraph"] = {
+                "text": summary[1],
+                "date_edited": summary[2].strftime("%Y-%m-%d")
+            }
+
+        summary_references = DBSession.query(LocussummaryReference).filter_by(summary_id=summary[0]).order_by(LocussummaryReference.reference_order).all()
+        obj["references"] = [s.reference.to_dict_citation() for s in summary_references]
+        
         return obj
 
     def tabs(self):
