@@ -28,8 +28,8 @@ log = logging.getLogger(__name__)
 def home_view(request):
     return {'google_client_id': os.environ['GOOGLE_CLIENT_ID']}
 
-# @authenticate
 @view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')
+@authenticate
 def upload_spreadsheet(request):
     tsv_file = request.POST['file'].file
     template_type = request.POST['template']
