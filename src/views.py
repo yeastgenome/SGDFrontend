@@ -33,8 +33,7 @@ def home_view(request):
 def upload_spreadsheet(request):
     tsv_file = request.POST['file'].file
     template_type = request.POST['template']
-    annotations = parse_tsv_annotations(tsv_file, template_type)
-    
+    annotations = parse_tsv_annotations(DBSession, tsv_file, template_type)
     return {'annotations': annotations}
 
 @view_config(route_name='upload', request_method='POST', renderer='json')
