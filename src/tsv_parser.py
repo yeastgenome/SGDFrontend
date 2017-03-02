@@ -1,16 +1,9 @@
 import csv
-import time
+
+from scripts.loading import load_summaries
 
 # takes a TSV file and returns an array of annotations
-def parse_tsv_annotations(tsv_file, template_type):
-    time.sleep(1)
-    raw_content = csv.reader(tsv_file, delimiter='\t')
-    return [
-        {
-            'category': 'locus',
-            'name': 'RAD54',
-            'href': 'http://www.yeastgenome.org/locus/rad54/overview',
-            'type': 'protein summary',
-            'value': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-        }
-    ]
+def parse_tsv_annotations(db_session, tsv_file, template_type):
+    raw_file_content = csv.reader(tsv_file, delimiter='\t')
+    annotations = load_summaries(db_session, raw_file_content)
+    return annotations
