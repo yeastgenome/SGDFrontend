@@ -110,7 +110,7 @@ COMMENT ON COLUMN nex.locus_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.locus_reference.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.locus_reference.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
 COMMENT ON COLUMN nex.locus_reference.reference_class IS 'The column in LOCUSDBENTITY that is associated with the reference.'; 
-ALTER TABLE nex.locus_reference ADD CONSTRAINT locus_reference_uk UNIQUE (locus_id,reference_id);
+ALTER TABLE nex.locus_reference ADD CONSTRAINT locus_reference_uk UNIQUE (locus_id,reference_id,reference_class);
 ALTER TABLE nex.locus_reference ADD CONSTRAINT locusreference_class_ck CHECK (REFERENCE_CLASS IN ('systematic_name','gene_name','qualifier','description','name_description'));
 CREATE INDEX locusreference_source_fk_index ON nex.locus_reference (source_id);
 CREATE INDEX locusreference_ref_fk_index ON nex.locus_reference (reference_id);
