@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
 
-import style from './style.css';
 import fetchData from '../../lib/fetchData';
 import { assignTriageEntry, removeEntry } from './triageActions';
 import { setMessage } from '../../actions/metaActions';
@@ -83,12 +81,10 @@ class TriageControls extends Component {
 
   renderTags() {
     return (
-      <Dropdown>
-        <DropdownTrigger className='button'>Tags <i className='fa fa-caret-down' /></DropdownTrigger>
-        <DropdownContent className={`dropdownContent ${style.tagList}`}>
-          <TagList id={this.props.entry.curation_id} />
-        </DropdownContent>
-      </Dropdown>
+      <div>
+        <a className='button secondary small'>Get list of genes from abstract</a>
+        <TagList id={this.props.entry.curation_id} />
+      </div>
     );
   }
 
