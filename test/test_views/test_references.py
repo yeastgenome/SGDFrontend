@@ -5,8 +5,9 @@ import mock
 import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
-from src.views import reference_list
-from src.models import Referencedocument
+from test.mock_helpers import reference_side_effect
+from src.views import reference_list, reference
+from src.models import Referencedocument, Referencedbentity
 
 class ReferencesTest(unittest.TestCase):
     def setUp(self):
@@ -71,8 +72,8 @@ class ReferencesTest(unittest.TestCase):
         book = factory.BookFactory()
         refdbentity = factory.ReferencedbentityFactory()
 
-        refdoc = factory.ReferenceDocumentFactory(referencedocument_id=1)
-        refdoc_2 = factory.ReferenceDocumentFactory(referencedocument_id=2)
+        refdoc = factory.ReferencedocumentFactory(referencedocument_id=1)
+        refdoc_2 = factory.ReferencedocumentFactory(referencedocument_id=2)
 
         mock_search.return_value = MockQuery([refdoc, refdoc_2])
 
@@ -86,4 +87,15 @@ class ReferencesTest(unittest.TestCase):
         self.assertTrue(mock_search.return_value._full_params[0].compare(Referencedocument.reference_id.in_([refdoc.reference_id, refdoc_2.reference_id])))
         self.assertTrue(mock_search.return_value._full_params[1].compare(Referencedocument.document_type == 'Medline'))
 
-                        
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_reference(self, mock_search):
+        mock_search.side_effect = reference_side_effect
+
+        r_name = factory.ReferencedbentityFactory()
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        request.matchdict['id'] = "S000114259"
+        response = reference(request)
+
+        self.assertEqual(response, r_name.to_dict())
