@@ -4,7 +4,7 @@ import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdow
 
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
-import { assignTriageEntry, promoteEntry, removeEntry } from './triageActions';
+import { assignTriageEntry, removeEntry } from './triageActions';
 import { setMessage } from '../../actions/metaActions';
 import TagList from './tagList';
 
@@ -12,12 +12,8 @@ const TRIAGE_URL = '/reference/triage';
 const PROMOTE_URL_SUFFIX = 'promote';
 
 class TriageControls extends Component {
-  componentDidUpdate(prevProps) {
-    // change is current user
-    if (this.props.entry.data.assignee === this.props.username) {
-      console.log(this.props.entry);
-      if (this.props.entry !== prevProps.entry) this.updateEntry();
-    }
+  getAssignee() {
+    return this.props.entry.data.assignee;
   }
 
   updateEntry() {
@@ -49,7 +45,7 @@ class TriageControls extends Component {
       }
     };
     fetchData(url, fetchOptions).then( () => {
-      this.props.dispatch(promoteEntry(id));
+      this.props.dispatch(removeEntry(id));
     });
   }
 
@@ -67,35 +63,20 @@ class TriageControls extends Component {
       }
     };
     fetchData(url, fetchOptions).then( () => {
-      this.props.dispatch(promoteEntry(id));
+      this.props.dispatch(removeEntry(id));
     });
   }
 
-  renderAssign() {
-    let assignee = this.props.entry.data.assignee;
-    let node;
-    if (assignee) {
-      node = (
-        <div>
-          <span>{assignee}</span>
-        </div>
-      ); 
-    } else {
-      let handleClaim = (e) => {
-        e.preventDefault();
-        let action = assignTriageEntry(this.props.entry.curation_id, this.props.username);
-        this.props.dispatch(action);
-      };
-      node = (
-        <div>
-          <span>No Assignee <a onClick={handleClaim}>Claim</a></span>
-        </div>
-      );
-    }
+  renderOpenClaim() {
+    let handleClaim = (e) => {
+      e.preventDefault();
+      let action = assignTriageEntry(this.props.entry.curation_id, this.props.username);
+      this.props.dispatch(action);
+    };
     return (
       <div>
-        <label>Assignee</label>
-        {node}
+        <label>Unclaimed</label>
+        <a className='button' onClick={handleClaim}>Claim</a>
       </div>
     );
   }
@@ -112,15 +93,28 @@ class TriageControls extends Component {
   }
 
   render() {
+    let aUser = this.getAssignee();
+    if (!aUser) {
+      return this.renderOpenClaim();
+    } else if (aUser !== this.props.username) {
+      return <p>Claimed by {aUser}</p>;
+    }
+    let handleUnclaim = (e) => {
+      e.preventDefault();
+      let action = assignTriageEntry(this.props.entry.curation_id, null);
+      this.props.dispatch(action);
+    };
     return (
-      <div className='row'>
-        {this.renderAssign()}
-        <div className='column small-6'>
-          {this.renderTags()}
-        </div>
-        <div className='column small-6 text-right'>
-          <a className='button small' onClick={this.handlePromoteEntry.bind(this)}><i className='fa fa-check' /> Add to Database</a>
-          <a className='button secondary small' onClick={this.handleDiscardEntry.bind(this)}><i className='fa fa-trash' /> Discard</a>
+      <div>
+        <p>You have claimed this reference. <a onClick={handleUnclaim}>Unclaim</a></p>
+        <div className='row'>
+          <div className='column small-6'>
+            {this.renderTags()}
+          </div>
+          <div className='column small-6 text-right'>
+            <a className='button small' onClick={this.handlePromoteEntry.bind(this)}><i className='fa fa-check' /> Add to Database</a>
+            <a className='button secondary small' onClick={this.handleDiscardEntry.bind(this)}><i className='fa fa-trash' /> Discard</a>
+          </div>
         </div>
       </div>
     );

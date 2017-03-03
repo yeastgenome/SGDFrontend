@@ -24,8 +24,7 @@ class LitTriageIndex extends Component {
     let pubmedUrl = `https://www.ncbi.nlm.nih.gov/pubmed/${d.basic.pmid}`;
     return (
       <div>
-        <a href={d.basic.fulltext_url} target='_new'>Full Text</a>
-        <a href={pubmedUrl} target='_new'>Pubmed</a>
+        <span><a href={d.basic.fulltext_url} target='_new'>Full Text</a> PubMed: <a href={pubmedUrl} target='_new'>{d.basic.pmid}</a></span>
       </div>
     );
   }
