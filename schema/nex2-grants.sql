@@ -580,6 +580,13 @@ REVOKE ALL ON nex.locusdbentity FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locusdbentity TO curator;
 GRANT SELECT ON nex.locusdbentity TO PUBLIC;
 
+-- Set priviledge on TABLE LOCUS_REFERENCE                                                                                                                                                                                                 
+ALTER TABLE nex.locus_reference OWNER TO nex;
+GRANT ALL ON nex.locus_reference TO nex;
+REVOKE ALL ON nex.locus_reference FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locus_reference TO curator;
+GRANT SELECT ON nex.locus_reference TO PUBLIC;
+
 -- Set priviledge on TABLE LOCUSNOTEANNOTATION
 ALTER TABLE nex.locusnoteannotation OWNER TO nex;
 GRANT ALL ON nex.locusnoteannotation TO nex;
@@ -594,12 +601,26 @@ REVOKE ALL ON nex.locus_alias FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locus_alias TO curator;
 GRANT SELECT ON nex.locus_alias TO PUBLIC;
 
+-- Set priviledge on TABLE LOCUSALIAS_REFERENCE                                                                                                                                                   
+ALTER TABLE nex.locusalias_reference OWNER TO nex;
+GRANT ALL ON nex.locusalias_reference TO nex;
+REVOKE ALL ON nex.locusalias_reference FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locusalias_reference TO curator;
+GRANT SELECT ON nex.locusalias_reference TO PUBLIC;
+
 -- Set priviledge on TABLE LOCUS_RELATION
 ALTER TABLE nex.locus_relation OWNER TO nex;
 GRANT ALL ON nex.locus_relation TO nex;
 REVOKE ALL ON nex.locus_relation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locus_relation TO curator;
 GRANT SELECT ON nex.locus_relation TO PUBLIC;
+
+-- Set priviledge on TABLE LOCUSRELATION_REFERENCE                                                                                                                                                                                                 
+ALTER TABLE nex.locusrelation_reference OWNER TO nex;
+GRANT ALL ON nex.locusrelation_reference TO nex;
+REVOKE ALL ON nex.locusrelation_reference FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locusrelation_reference TO curator;
+GRANT SELECT ON nex.locusrelation_reference TO PUBLIC;
 
 -- Set priviledge on TABLE LOCUSSUMMARY
 ALTER TABLE nex.locussummary OWNER TO nex;

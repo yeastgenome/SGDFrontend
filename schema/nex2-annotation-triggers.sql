@@ -1696,6 +1696,10 @@ BEGIN
         PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION'::text, 'STRAIN_NAME'::text, OLD.annotation_id, OLD.strain_name, NEW.strain_name, USER);
     END IF;
 
+    IF  (((OLD.experiment_comment IS NULL) AND (NEW.experiment_comment IS NOT NULL)) OR ((OLD.experiment_comment IS NOT NULL) AND (NEW.experiment_comment IS NULL)) OR (OLD.experiment_comment != NEW.experiment_comment)) THEN
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION'::text, 'EXPERIMENT_COMMENT'::text, OLD.annotation_id, OLD.experiment_comment, NEW.experiment_comment, USER);
+    END IF;
+
     IF  (((OLD.details IS NULL) AND (NEW.details IS NOT NULL)) OR ((OLD.details IS NOT NULL) AND (NEW.details IS NULL)) OR (OLD.details != NEW.details)) THEN
         PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION'::text, 'DETAILS'::text, OLD.annotation_id, OLD.details, NEW.details, USER);
     END IF;
@@ -1709,8 +1713,9 @@ BEGIN
              OLD.taxonomy_id || '[:]' || OLD.reference_id || '[:]' ||
              OLD.phenotype_id || '[:]' || OLD.experiment_id || '[:]' ||
              OLD.mutant_id || '[:]' || coalesce(OLD.allele_id,0) || '[:]' ||
-             OLD.coalesce(reporter_id,0) || '[:]' || coalesce(OLD.assay_id,0) || '[:]' ||
-             coalesce(OLD.strain_name,'') || '[:]' || coalesce(OLD.details,'') || '[:]' ||
+             coalesce(OLD.reporter_id,0) || '[:]' || coalesce(OLD.assay_id,0) || '[:]' ||
+             coalesce(OLD.strain_name,'') || '[:]' || coalesce(OLD.experiment_comment,'') || '[:]' ||
+             coalesce(OLD.details,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
            PERFORM nex.insertdeletelog('PHENOTYPEANNOTATION'::text, OLD.annotation_id, v_row, USER);
@@ -1776,6 +1781,10 @@ BEGIN
         PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION_COND'::text, 'ANNOTATION_ID'::text, OLD.condition_id, OLD.annotation_id::text, NEW.annotation_id::text, USER);
     END IF;
 
+    IF (OLD.group_id != NEW.group_id) THEN
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION_COND'::text, 'GROUP_ID'::text, OLD.condition_id, OLD.group_id::text, NEW.group_id::text, USER);
+    END IF;
+
      IF (OLD.condition_class != NEW.condition_class) THEN
         PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION_COND'::text, 'CONDITION_CLASS'::text, OLD.condition_id, OLD.condition_class, NEW.condition_class, USER);
     END IF;
@@ -1797,6 +1806,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.condition_id || '[:]' || OLD.annotation_id || '[:]' ||
+             OLD.group_id || '[:]' ||
              OLD.condition_class || '[:]' || OLD.condition_name || '[:]' ||
              coalesce(OLD.condition_value,'') || '[:]' || coalesce(OLD.condition_unit,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
