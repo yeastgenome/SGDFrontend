@@ -37,7 +37,7 @@ class LitTriageIndex extends Component {
           <h4 dangerouslySetInnerHTML={{ __html: d.basic.citation }} />
           <p dangerouslySetInnerHTML={{ __html: d.basic.abstract }} />
           {this.renderLinks(d)}
-          <TriageControls citation={d.basic.citation} data={d.data} id={d.curation_id} />
+          <TriageControls entry={d} />
         </div>
       );
     });

@@ -3,53 +3,76 @@ import { connect } from 'react-redux';
 import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
 
 import style from './style.css';
-// import fetchData from '../../lib/fetchData';
-import { removeEntry } from './triageActions';
+import fetchData from '../../lib/fetchData';
+import { assignTriageEntry, promoteEntry, removeEntry } from './triageActions';
 import { setMessage } from '../../actions/metaActions';
 import TagList from './tagList';
 
-// const TRIAGE_URL = '/reference/triage';
-// const PROMOTE_URL_SUFFIX = 'promote';
+const TRIAGE_URL = '/reference/triage';
+const PROMOTE_URL_SUFFIX = 'promote';
 
 class TriageControls extends Component {
+  componentDidUpdate(prevProps) {
+    // change is current user
+    if (this.props.entry.data.assignee === this.props.username) {
+      console.log(this.props.entry);
+      if (this.props.entry !== prevProps.entry) this.updateEntry();
+    }
+  }
+
+  updateEntry() {
+    let entry = this.props.entry;
+    let url = `${TRIAGE_URL}/${entry.curation_id}`;
+    let fetchOptions = {
+      type: 'PUT',
+      data: JSON.stringify(entry),
+      contentType: 'application/json',
+      processData: false,
+      headers: {
+        'X-CSRF-Token': window.CSRF_TOKEN,        
+      }
+    };
+    fetchData(url, fetchOptions);
+  }
+
   handleDiscardEntry(e) {
     e.preventDefault();
-    let id = this.props.id;
+    let id = this.props.entry.curation_id;
     this.props.dispatch(removeEntry(id));
-    let message = `${this.props.citation} discarded.`;
+    let message = `${this.props.entry.basic.citation} discarded.`;
     this.props.dispatch(setMessage(message));
-    // let url = `${TRIAGE_URL}/${id}`;
-    // let fetchOptions = {
-    //   type: 'DELETE',
-    //   headers: {
-    //     'X-CSRF-Token': window.CSRF_TOKEN,        
-    //   }
-    // };
-    // fetchData(url, fetchOptions).then( () => {
-    //   this.props.dispatch(promoteEntry(id));
-    // });
+    let url = `${TRIAGE_URL}/${id}`;
+    let fetchOptions = {
+      type: 'DELETE',
+      headers: {
+        'X-CSRF-Token': window.CSRF_TOKEN,        
+      }
+    };
+    fetchData(url, fetchOptions).then( () => {
+      this.props.dispatch(promoteEntry(id));
+    });
   }
 
   handlePromoteEntry(e) {
     e.preventDefault();
-    let id = this.props.id;
+    let id = this.props.entry.curation_id;
     this.props.dispatch(removeEntry(id));
-    let message = `${this.props.citation} added to database.`;
+    let message = `${this.props.entry.basic.citation} added to database.`;
     this.props.dispatch(setMessage(message));
-    // let url = `${TRIAGE_URL}/${id}/${PROMOTE_URL_SUFFIX}`;
-    // let fetchOptions = {
-    //   type: 'PUT',
-    //   headers: {
-    //     'X-CSRF-Token': window.CSRF_TOKEN,        
-    //   }
-    // };
-    // fetchData(url, fetchOptions).then( () => {
-    //   this.props.dispatch(promoteEntry(id));
-    // });
+    let url = `${TRIAGE_URL}/${id}/${PROMOTE_URL_SUFFIX}`;
+    let fetchOptions = {
+      type: 'PUT',
+      headers: {
+        'X-CSRF-Token': window.CSRF_TOKEN,        
+      }
+    };
+    fetchData(url, fetchOptions).then( () => {
+      this.props.dispatch(promoteEntry(id));
+    });
   }
 
   renderAssign() {
-    let assignee = this.props.data.assignee;
+    let assignee = this.props.entry.data.assignee;
     let node;
     if (assignee) {
       node = (
@@ -58,10 +81,14 @@ class TriageControls extends Component {
         </div>
       ); 
     } else {
-      // let onClaim 
+      let handleClaim = (e) => {
+        e.preventDefault();
+        let action = assignTriageEntry(this.props.entry.curation_id, this.props.username);
+        this.props.dispatch(action);
+      };
       node = (
         <div>
-          <span>{assignee}</span>
+          <span>No Assignee <a onClick={handleClaim}>Claim</a></span>
         </div>
       );
     }
@@ -78,7 +105,7 @@ class TriageControls extends Component {
       <Dropdown>
         <DropdownTrigger className='button small'>Tags <i className='fa fa-caret-down' /></DropdownTrigger>
         <DropdownContent className={`dropdownContent ${style.tagList}`}>
-          <TagList id={this.props.id} />
+          <TagList id={this.props.entry.curation_id} />
         </DropdownContent>
       </Dropdown>
     );
@@ -101,14 +128,15 @@ class TriageControls extends Component {
 }
 
 TriageControls.propTypes = {
-  citation: React.PropTypes.string,
-  data: React.PropTypes.object,
+  entry: React.PropTypes.object,
   dispatch: React.PropTypes.func,
-  id: React.PropTypes.number
+  username: React.PropTypes.string
 };
 
-function mapStateToProps() {
-  return {};
+function mapStateToProps(state) {
+  return {
+    username: state.auth.get('username')
+  };
 }
 
 export default connect(mapStateToProps)(TriageControls);
