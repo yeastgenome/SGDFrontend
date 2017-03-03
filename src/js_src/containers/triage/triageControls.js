@@ -84,7 +84,7 @@ class TriageControls extends Component {
   renderTags() {
     return (
       <Dropdown>
-        <DropdownTrigger className='button small'>Tags <i className='fa fa-caret-down' /></DropdownTrigger>
+        <DropdownTrigger className='button'>Tags <i className='fa fa-caret-down' /></DropdownTrigger>
         <DropdownContent className={`dropdownContent ${style.tagList}`}>
           <TagList id={this.props.entry.curation_id} />
         </DropdownContent>
@@ -106,14 +106,14 @@ class TriageControls extends Component {
     };
     return (
       <div>
-        <p>You have claimed this reference. <a onClick={handleUnclaim}>Unclaim</a></p>
+        <label>You have claimed this reference. <a onClick={handleUnclaim}>Unclaim</a></label>
         <div className='row'>
           <div className='column small-6'>
             {this.renderTags()}
           </div>
           <div className='column small-6 text-right'>
-            <a className='button small' onClick={this.handlePromoteEntry.bind(this)}><i className='fa fa-check' /> Add to Database</a>
-            <a className='button secondary small' onClick={this.handleDiscardEntry.bind(this)}><i className='fa fa-trash' /> Discard</a>
+            <a className='button' onClick={this.handlePromoteEntry.bind(this)}><i className='fa fa-check' /> Add to Database</a>
+            <a className='button secondary' onClick={this.handleDiscardEntry.bind(this)}><i className='fa fa-trash' /> Discard</a>
           </div>
         </div>
       </div>
