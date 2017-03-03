@@ -48,6 +48,31 @@ class TriageControls extends Component {
     // });
   }
 
+  renderAssign() {
+    let assignee = this.props.data.assignee;
+    let node;
+    if (assignee) {
+      node = (
+        <div>
+          <span>{assignee}</span>
+        </div>
+      ); 
+    } else {
+      // let onClaim 
+      node = (
+        <div>
+          <span>{assignee}</span>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <label>Assignee</label>
+        {node}
+      </div>
+    );
+  }
+
   renderTags() {
     return (
       <Dropdown>
@@ -62,6 +87,7 @@ class TriageControls extends Component {
   render() {
     return (
       <div className='row'>
+        {this.renderAssign()}
         <div className='column small-6'>
           {this.renderTags()}
         </div>
@@ -76,6 +102,7 @@ class TriageControls extends Component {
 
 TriageControls.propTypes = {
   citation: React.PropTypes.string,
+  data: React.PropTypes.object,
   dispatch: React.PropTypes.func,
   id: React.PropTypes.number
 };
