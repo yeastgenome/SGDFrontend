@@ -7,7 +7,7 @@ from pyramid.session import check_csrf_token
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity
 
 from .celery_tasks import upload_to_s3
 
@@ -35,7 +35,7 @@ def upload_spreadsheet(request):
     template_type = request.POST['template']
     annotations = parse_tsv_annotations(tsv_file, template_type)
     
-    return { 'annotations': annotations }
+    return {'annotations': annotations}
 
 @view_config(route_name='upload', request_method='POST', renderer='json')
 @authenticate
@@ -183,7 +183,7 @@ def search(request):
             'results': [],
             'aggregations': []
         }
-
+    
     aggregation_body = build_es_aggregation_body_request(
         es_query,
         category,
@@ -195,11 +195,11 @@ def search(request):
         body=aggregation_body,
         preference='p_'+query
     )
-
+    
     return {
         'total': search_results['hits']['total'],
-        'results': format_search_results(search_results, json_response_fields),
-        'aggregations': format_aggregation_results(     # DEBUG HERE!!!
+        'results': format_search_results(search_results, json_response_fields, query),
+        'aggregations': format_aggregation_results(
             aggregation_results,
             category,
             category_filters
@@ -454,13 +454,13 @@ def reference_triage_id_delete(request):
 
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
-        try:
-            reason = request.json.get('reason')
-        except ValueError:
-            return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
-        
-        if reason is None:
-            return HTTPBadRequest(body=json.dumps({'error': 'Field \'reason\' is missing'}))
+        reason = None
+
+        if request.body != '':
+            try:
+                reason = request.json.get('reason')
+            except ValueError:
+                return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
 
         reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=reason, created_by="OTTO")
         
@@ -482,7 +482,7 @@ def author(request):
     if len(authors_ref) > 0:
         return {
             "display_name": authors_ref[0].display_name,
-            "references": [author_ref.reference.to_dict_reference_related() for author_ref in authors_ref]
+            "references": sorted([author_ref.reference.to_dict_reference_related() for author_ref in authors_ref], key=lambda r: r["year"], reverse=True)
         }
     else:
         return HTTPNotFound()
@@ -563,7 +563,7 @@ def observable_locus_details_all(request):
 
     observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
     if observable:
-        return observable.annotations_to_dict()
+        return observable.annotations_and_children_to_dict()
     else:
         return HTTPNotFound()
 
@@ -572,7 +572,7 @@ def go(request):
     format_name = request.matchdict['format_name'].upper()
 
     go = DBSession.query(Go).filter_by(format_name=format_name).one_or_none()
-    if observable:
+    if go:
         return go.to_dict()
     else:
         return HTTPNotFound()
@@ -582,7 +582,64 @@ def go_ontology_graph(request):
     id = request.matchdict['id']
 
     go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
-    if observable:
+    if go:
         return go.ontology_graph()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='go_locus_details', renderer='json', request_method='GET')
+def go_locus_details(request):
+    id = request.matchdict['id']
+
+    go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
+    if go:
+        return go.annotations_to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='go_locus_details_all', renderer='json', request_method='GET')
+def go_locus_details_all(request):
+    id = request.matchdict['id']
+
+    go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
+    if go:
+        return go.annotations_and_children_to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='locus', renderer='json', request_method='GET')
+def locus(request):
+    sgdid = request.matchdict['sgdid'].upper()
+
+    locus = DBSession.query(Locusdbentity).filter_by(sgdid=sgdid).one_or_none()
+    if locus:
+        return locus.to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='locus_tabs', renderer='json', request_method='GET')
+def locus_tabs(request):
+    id = request.matchdict['id'].upper()
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    if locus:
+        return locus.tabs()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='bioentity_list', renderer='json', request_method='POST')
+def analyze(request):
+    try:
+        data = request.json
+    except ValueError:
+        return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
+        
+    if "bioent_ids" not in data:
+        return HTTPBadRequest(body=json.dumps({'error': 'Key \"bioent_ids\" missing'}))
+
+    loci = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(data['bioent_ids'])).all()
+    
+    return [locus.to_dict_analyze() for locus in loci]
+
+    
+        

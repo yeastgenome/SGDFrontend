@@ -124,6 +124,7 @@ def format_aggregation_results(aggregation_results, category, category_filters):
 
             if subcategory[1] in aggregation_results['aggregations']:
                 for agg in aggregation_results['aggregations'][subcategory[1]]['buckets']:
+                    
                     agg_obj['values'].append({
                         'key': agg['key'],
                         'total': agg['doc_count']
@@ -137,7 +138,7 @@ def format_aggregation_results(aggregation_results, category, category_filters):
 
 def build_es_search_body_request(query, category, es_query, json_response_fields, search_fields, sort_by):
     es_search_body = {
-        '_source': json_response_fields,
+        '_source': json_response_fields + ["keys"],
         'highlight': {
             'fields': {}
         },
@@ -188,14 +189,14 @@ def build_search_query(query, search_fields, category, category_filters, args):
 
     if category in category_filters.keys():
         for item in category_filters[category]:
-            if args.get(item[0]):
-                for param in args.get(item[0]):
+            if args.get(item[1]):
+                for param in args.get(item[1]):
                     query['filtered']['filter']['bool']['must'].append({
                         'term': {
                             (item[1] + ".raw"): param
                         }
                     })
-
+                    
     return query
 
 
@@ -218,7 +219,8 @@ def build_search_params(query, search_fields):
         }
 
         fields = search_fields + [
-            "name.symbol"
+            "name.symbol",
+            "keys"
         ]
 
         for field in fields:
@@ -253,7 +255,7 @@ def filter_highlighting(highlight):
     return highlight
 
 
-def format_search_results(search_results, json_response_fields):
+def format_search_results(search_results, json_response_fields, query):
     formatted_results = []
 
     for r in search_results['hits']['hits']:
@@ -265,6 +267,10 @@ def format_search_results(search_results, json_response_fields):
 
         obj['highlights'] = filter_highlighting(r.get('highlight'))
         obj['id'] = r.get('_id')
+
+        if raw_obj.get('keys'): # colleagues don't have keys
+            if query.replace('"','').lower().strip() in raw_obj.get('keys'):
+                obj['is_quick'] = True
 
         formatted_results.append(obj)
 

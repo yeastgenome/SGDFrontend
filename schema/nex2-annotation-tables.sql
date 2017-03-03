@@ -586,6 +586,7 @@ CREATE TABLE nex.phenotypeannotation (
 	reporter_id bigint,
 	assay_id bigint,
 	strain_name varchar(100),
+    experiment_comment varchar(200),
 	details varchar(500),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -608,7 +609,8 @@ COMMENT ON COLUMN nex.phenotypeannotation.reference_id IS 'FK to REFERENCEBENTIT
 COMMENT ON COLUMN nex.phenotypeannotation.annotation_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.phenotypeannotation.phenotype_id IS 'FK to PHENOTYPE.PHENOTYPE_ID.';
 COMMENT ON COLUMN nex.phenotypeannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-CREATE UNIQUE INDEX phenotypeannotation_uk_index on nex.phenotypeannotation(dbentity_id,phenotype_id,experiment_id,mutant_id,reference_id,taxonomy_id,coalesce(allele_id,0),coalesce(reporter_id,0),coalesce(strain_name,'0'),coalesce(details,'0'));
+COMMENT ON COLUMN nex.phenotypeannotation.experiment_comment IS 'Additional description of the phenotype experiment.';
+CREATE UNIQUE INDEX phenotypeannotation_uk_index on nex.phenotypeannotation(dbentity_id,phenotype_id,experiment_id,mutant_id,reference_id,taxonomy_id,coalesce(allele_id,0),coalesce(reporter_id,0),coalesce(strain_name,'0'),coalesce(experiment_comment,'0'),coalesce(details,'0'));
 CREATE INDEX phenotypeanno_phenotype_fk_index ON nex.phenotypeannotation (phenotype_id);
 CREATE INDEX phenotypeanno_taxonomy_fk_index ON nex.phenotypeannotation (taxonomy_id);
 CREATE INDEX phenotypeanno_ref_fk_index ON nex.phenotypeannotation (reference_id);
@@ -623,6 +625,7 @@ DROP TABLE IF EXISTS nex.phenotypeannotation_cond CASCADE;
 CREATE TABLE nex.phenotypeannotation_cond (
 	condition_id bigint NOT NULL DEFAULT nextval('condition_seq'),
 	annotation_id bigint NOT NULL,
+    group_id bigint NOT NULL,
 	condition_class varchar(40) NOT NULL,
 	condition_name varchar(500) NOT NULL,
 	condition_value varchar(150),
@@ -640,7 +643,8 @@ COMMENT ON COLUMN nex.phenotypeannotation_cond.date_created IS 'Date the record 
 COMMENT ON COLUMN nex.phenotypeannotation_cond.condition_class IS 'Type of the condition (Temperature, Chemical, Media, Phase, etc.).';
 COMMENT ON COLUMN nex.phenotypeannotation_cond.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.phenotypeannotation_cond.annotation_id IS 'FK to PHENOTYPEANNOTATION.ANNOTATION_ID.';
-CREATE UNIQUE INDEX phenotypeannotation_cond_uk_index on nex.phenotypeannotation_cond(annotation_id,condition_class,condition_name,coalesce(condition_value,'0'));
+COMMENT ON COLUMN nex.phenotypeannotation_cond.group_id IS 'A grouping number.';
+CREATE UNIQUE INDEX phenotypeannotation_cond_uk_index on nex.phenotypeannotation_cond(annotation_id,group_id,condition_class,condition_name,coalesce(condition_value,'0'));
 ALTER TABLE nex.phenotypeannotation_cond ADD CONSTRAINT phenotypeannocond_class_ck CHECK (CONDITION_CLASS IN ('assay', 'media', 'phase', 'radiation', 'temperature', 'treatment', 'chemical'));
 CREATE INDEX phenotypeannocond_condition_name_index ON nex.phenotypeannotation_cond (condition_name);
 
