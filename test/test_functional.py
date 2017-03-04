@@ -48,15 +48,15 @@ class SGDFunctionalTests(unittest.TestCase):
         
     #     self.assertEqual(res.status, '200 OK')
 
-    @mock.patch('src.views.curator_or_none') #TODO: setup testing DB
-    @mock.patch('oauth2client.client.verify_id_token')
-    @mock.patch('src.views.check_csrf_token', return_value=True) #TODO: insert csrf in the session
-    def test_sign_in(self, csrf_token, token_validator, curator_or_none):
-        token_validator.return_value = {'iss': 'accounts.google.com', 'email': 'curator@example.org'}
-        curator_or_none.return_value = factory.DbuserFactory.build()
-        
-        res = self.testapp.post('/signin', {'google_token': 'abcdef'}, {'X-CSRF-Token': 'csrf'})
-        self.assertEqual(res.status, '200 OK')
+    # @mock.patch('src.views.curator_or_none') #TODO: setup testing DB
+    # @mock.patch('oauth2client.client.verify_id_token')
+    # @mock.patch('src.views.check_csrf_token', return_value=True) #TODO: insert csrf in the session
+    # def test_sign_in(self, csrf_token, token_validator, curator_or_none):
+    #     token_validator.return_value = {'iss': 'accounts.google.com', 'email': 'curator@example.org'}
+    #     curator_or_none.return_value = factory.DbuserFactory.build()
+    #
+    #     res = self.testapp.post('/signin', {'google_token': 'abcdef'}, {'X-CSRF-Token': 'csrf'})
+    #     self.assertEqual(res.status, '200 OK')
 
     def test_sign_out(self):
         res = self.testapp.delete('/signout')

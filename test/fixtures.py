@@ -96,7 +96,7 @@ class DatasetFactory(factory.alchemy.SQLAlchemyModelFactory):
     obj_url = "/dataset/Artemisinic_Acid_Production_Stress_in_Yeast"
     source_id = 1
     dbxref_id = 1
-    dbxref_type = "type"
+    dbxref_type = "GEO"
     date_public = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     parent_dataset_id = 1
     assay_id = 1
@@ -347,7 +347,7 @@ class ReferencedocumentFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = DBSession
 
     referencedocument_id = 1
-    document_type = "Medline"
+    document_type = "Abstract"
     text = "Bla bla bla"
     html = "<bla></bla>"
     source_id = 1

@@ -1,7 +1,7 @@
 import unittest
 from sqlalchemy import create_engine, Column, String
 from src.models import DBSession, Base, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, Dbentity, \
-    Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, \
+    Dataset, DatasetReference, DatasetKeyword, Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, \
     PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity, StrainUrl, Strainsummary, StrainsummaryReference
 import fixtures as factory
 import os
@@ -357,7 +357,7 @@ class ModelsTest(unittest.TestCase):
         instances = DBSession.query(Referencedocument).all()
         self.assertEqual(0, len(instances))
 
-        refdoc = factory.ReferenceDocumentFactory()
+        refdoc = factory.ReferencedocumentFactory()
         
         instances = DBSession.query(Referencedocument).all()
 
@@ -622,3 +622,47 @@ class ModelsTest(unittest.TestCase):
 
         self.assertEqual(1, len(instances))
         self.assertEqual(strainsummary_reference, instances[0])
+
+    # def test_dataset_model(self):
+    #     obi = factory.ObiFactory()
+    #     source = factory.SourceFactory()
+    #     instances = DBSession.query(Dataset).all()
+    #     self.assertEqual(0, len(instances))
+    #
+    #     dataset = factory.DatasetFactory()
+    #     instances = DBSession.query(Dataset).all()
+    #
+    #     self.assertEqual(1, len(instances))
+    #     self.assertEqual(dataset, instances[0])
+    #
+    # def test_dataset_reference_model(self):
+    #
+    #     source = factory.SourceFactory()
+    #     dataset = factory.DatasetFactory(dataset_id=1)
+    #
+    #     journal = factory.JournalFactory()
+    #     book = factory.BookFactory()
+    #     reference = factory.ReferencedbentityFactory(dbentity_id=2, sgdid='S99999')
+    #
+    #     instances = DBSession.query(DatasetReference).all()
+    #     self.assertEqual(0, len(instances))
+    #
+    #     datasetref = factory.DatasetReferenceFactory()
+    #     instances = DBSession.query(DatasetReference).all()
+    #
+    #     self.assertEqual(1, len(instances))
+    #     self.assertEqual(datasetref, instances[0])
+    #
+    # def test_dataset_keyword_model(self):
+    #
+    #     source = factory.SourceFactory()
+    #     dataset = factory.DatasetFactory(dataset_id=1)
+    #
+    #     instances = DBSession.query(DatasetKeyword).all()
+    #     self.assertEqual(0, len(instances))
+    #
+    #     datasetkw = factory.DatasetKeywordFactory()
+    #     instances = DBSession.query(DatasetKeyword).all()
+    #
+    #     self.assertEqual(1, len(instances))
+    #     self.assertEqual(datasetkw, instances[0])
