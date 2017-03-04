@@ -22,6 +22,9 @@ class MockQueryFilter(object):
         else:
             return [self._return]
 
+    def count(self):
+        return 7
+
     def query_params(self):
         return self._params
     
@@ -85,8 +88,8 @@ def side_effect(*args, **kwargs):
 
 
 def reference_side_effect(*args, **kwargs):
-            #import pdb;
-            #pdb.set_trace()
+            # import pdb;
+            # pdb.set_trace()
             if len(args) == 1 and str(args[0]) == "<class 'src.models.Referencedbentity'>":
                 source = factory.SourceFactory()
                 journal = factory.JournalFactory()
@@ -96,20 +99,28 @@ def reference_side_effect(*args, **kwargs):
                 return MockQuery(refdbentity)
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.DatasetReference'>":
                 datasetref = factory.DatasetReferenceFactory()
+                datasetf = factory.DatasetFactory()
+                datasetref.dataset = datasetf
                 return MockQuery(datasetref)
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.Dataset'>":
                 dataset = factory.DatasetFactory()
                 return MockQuery(dataset)
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.DatasetKeyword'>":
                 datasetkw = factory.DatasetKeywordFactory()
+                datasetkw.keyword = factory.KeywordFactory()
                 return MockQuery(datasetkw)
-            elif len(args) == 1 and str(args[0]) == "<class 'src.models.ReferenceDocument'>":
+            elif len(args) == 1 and str(args[0]) == 'Referencedocument.html':
+                source = factory.SourceFactory()
+                journal = factory.JournalFactory()
+                book = factory.BookFactory()
+                refdb = factory.ReferencedbentityFactory()
+                refdb.journal = journal
                 refdoc = factory.ReferencedocumentFactory()
-                return MockQuery(refdoc.text)
+                return MockQuery(refdoc.html)
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.ReferenceUrl'>":
                 refurl = factory.ReferenceUrlFactory()
                 return MockQuery(refurl)
-            elif len(args) == 1 and str(args[0]) == "<class 'src.models.Referencetype'>":
+            elif len(args) == 1 and str(args[0]) == 'Referencetype.display_name':
                 reftype = factory.ReferencetypeFactory()
                 return MockQuery((reftype.display_name))
             elif len(args) == 2 and str(args[0]) == 'Referenceauthor.display_name' and str(args[1]) == 'Referenceauthor.obj_url':
@@ -117,7 +128,12 @@ def reference_side_effect(*args, **kwargs):
                 return MockQuery((refauthor.display_name, refauthor.obj_url))
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.ReferenceRelation'>":
                 refrel = factory.ReferenceRelationFactory()
+                refrel.child = factory.ReferencedbentityFactory()
+                refrel.parent = factory.ReferencedbentityFactory()
                 return MockQuery((refrel))
+            elif len(args) == 1 and str(args[0]) == "<class 'src.models.ReferenceUrl'>":
+                refurl = factory.ReferenceUrlFactory()
+                return MockQuery(refurl)
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.Physinteractionannotation'>":
                 intannot = factory.PhysinteractionannotationFactory()
                 return MockQuery((intannot))
@@ -125,11 +141,11 @@ def reference_side_effect(*args, **kwargs):
                 genannot = factory.GeninteractionannotationFactory()
                 return MockQuery((genannot))
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.Goannotation'>":
-                goannot = factory.GOannotationFactory()
+                goannot = factory.GoannotationFactory()
                 return MockQuery((goannot))
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.Phenotypeannotation'>":
                 phenoannot = factory.PhenotypeannotationFactory()
                 return MockQuery((phenoannot))
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.Regulationannotation'>":
-                regannot = factory.RegulationAnnotationFactory()
+                regannot = factory.RegulationannotationFactory()
                 return MockQuery((regannot))
