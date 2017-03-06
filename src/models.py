@@ -1392,7 +1392,7 @@ class Locusdbentity(Dbentity):
             "references": [],
             "locus_type": None,
             "qualifier": self.qualifier,
-            "bioent_status": "Active", #TODO: where is this in NEX2?
+            "bioent_status": self.dbentity_status,
             "description": self.description,
             "name_description": self.name_description,
             "paralogs": [],
@@ -1400,9 +1400,10 @@ class Locusdbentity(Dbentity):
             "protein_overview": {
                 "length": 0,
                 "molecular_weight": 0,
-                "pi": 3.14
+                "pi": 0
             },
             "go_overview": {
+                "paragraph": None,
                 "manual_molecular_function_terms": [],
                 "manual_biological_process_terms": [],
                 "manual_cellular_component_terms": [],
@@ -1464,8 +1465,63 @@ class Locusdbentity(Dbentity):
                 "date_edited": summary[2].strftime("%Y-%m-%d")
             }
 
+        literature_counts = DBSession.query(Literatureannotation.topic, func.count(Literatureannotation.annotation_id)).filter_by(dbentity_id=self.dbentity_id).group_by(Literatureannotation.topic).all()
+
+        total_count = 0
+        for lit_count in literature_counts:
+            if lit_count[0] == "Additional Literature":
+                obj["literature_overview"]["additional_count"] = lit_count[1]
+            elif lit_count[0] == "Reviews":
+                obj["literature_overview"]["review_count"] = lit_count[1]
+            elif lit_count[0] == "Primary Literature":
+                obj["literature_overview"]["primary_count"] = lit_count[1]
+            total_count += lit_count[1]
+        obj["literature_overview"]["total_count"] = total_count
+                
         summary_references = DBSession.query(LocussummaryReference).filter_by(summary_id=summary[0]).order_by(LocussummaryReference.reference_order).all()
         obj["references"] = [s.reference.to_dict_citation() for s in summary_references]
+        
+        urls = DBSession.query(LocusUrl).filter(LocusUrl.locus_id==self.dbentity_id).filter(LocusUrl.placement.in_(["LOCUS_SEQUENCE_S288C", "LOCUS_SEQUENCE_OTHER_SPECIES", "LOCUS_SEQUENCE_OTHER_STRAINS", "LOCUS_LSP", "LOCUS_LSP_RESOURCES"])).all()
+        obj["urls"] = [u.to_dict() for u in urls]
+
+        protein = DBSession.query(Proteinsequenceannotation.annotation_id).filter_by(dbentity_id=self.dbentity_id, taxonomy_id=274901).one_or_none()
+        if protein:
+            protein_sequence = DBSession.query(ProteinsequenceDetail).filter_by(annotation_id=protein[0]).one_or_none()
+            obj["protein_overview"] = protein_sequence.to_dict_lsp()
+
+        go_annotations_mc = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="manually curated").all()
+
+        go = {}
+        for namespace in ("cellular component", "molecular function", "biological process"):
+            go[namespace] = {}
+        
+        for annotation in go_annotations_mc:
+            json = annotation.to_dict_lsp()
+            
+            namespace = json["namespace"]
+            term = json["term"]["display_name"]
+
+            if term in go[namespace]:
+                for ec in json["evidence_codes"]:
+                    if ec["display_name"] not in [e["display_name"] for e in go[namespace][term]["evidence_codes"]]:
+                        go[namespace][term]["evidence_codes"].append(ec)
+            else:
+                go[namespace][term] = json
+
+        for namespace in go.keys():
+            terms = sorted(go[namespace].keys(), key=lambda k : k.lower())
+            
+            if namespace == "cellular component":
+                obj["go_overview"]["manual_cellular_component_terms"] = [go[namespace][term] for term in terms]
+            elif namespace == "molecular function":
+                obj["go_overview"]["manual_molecular_function_terms"] = [go[namespace][term] for term in terms]
+            elif namespace == "biological process":
+                obj["go_overview"]["manual_biological_process_terms"] = [go[namespace][term] for term in terms]
+        
+        obj["go_overview"]["computational_annotation_count"] = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="computational").count()
+
+        go_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id, summary_type="Function").one_or_none()
+        obj["go_overview"]["paragraph"] = go_summary[0]
         
         return obj
 
@@ -2496,18 +2552,53 @@ class Goannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict_lsp(self):
+        obj = {
+            "namespace": self.go.go_namespace,
+            "qualifiers": [self.go_qualifier.replace("_", " ")],
+            "term":{
+                "link": self.go.obj_url,
+                "display_name": self.go.display_name
+            },
+            "evidence_codes": []
+        }
+
+        alias = DBSession.query(EcoAlias).filter_by(eco_id=self.eco_id).all()
+
+        experiment_name = alias[0].display_name
+        for alia in alias:
+            if len(experiment_name) > len(alia.display_name):
+                experiment_name = alia.display_name
+
+        alias_url = DBSession.query(EcoUrl).filter_by(eco_id=self.eco_id).all()
+
+        experiment_url = None
+        for url in alias_url:
+            if url.display_name == "OntoBee":
+                experiment_url = url.obj_url
+                break
+        if experiment_url == None and len(alias_url) > 0:
+            experiment_url = alias_url[0].obj_url
+
+        obj["evidence_codes"] = [{
+            "display_name": experiment_name,
+            "link": experiment_url
+        }]
+        
+        return obj
+    
     def to_dict(self, go=None):
         if go == None:
             go = self.go
         
-        alias = DBSession.query(EcoAlias).filter_by(eco_id=self.eco.eco_id).all()
+        alias = DBSession.query(EcoAlias).filter_by(eco_id=self.eco_id).all()
         experiment_name = alias[0].display_name
 
         for alia in alias:
             if len(experiment_name) > len(alia.display_name):
                 experiment_name = alia.display_name
 
-        alias_url = DBSession.query(EcoUrl).filter_by(eco_id=self.eco.eco_id).all()
+        alias_url = DBSession.query(EcoUrl).filter_by(eco_id=self.eco_id).all()
         
         experiment_url = None
         for url in alias_url:
@@ -2809,6 +2900,13 @@ class LocusUrl(Base):
 
     locus = relationship(u'Locusdbentity')
     source = relationship(u'Source')
+
+    def to_dict(self):
+        return {
+            "category": self.placement,
+            "link": self.obj_url,
+            "display_name": self.display_name
+        }
 
 
 class Locusnoteannotation(Base):
@@ -3576,6 +3674,12 @@ class ProteinsequenceDetail(Base):
 
     annotation = relationship(u'Proteinsequenceannotation', uselist=False)
 
+    def to_dict_lsp(self):
+        return {
+            "length": int(self.protein_length),
+            "molecular_weight": float(self.molecular_weight),
+            "pi": float(self.pi)
+        }
 
 class Proteinsequenceannotation(Base):
     __tablename__ = 'proteinsequenceannotation'
