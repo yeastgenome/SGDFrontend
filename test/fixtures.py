@@ -3,8 +3,8 @@ import factory
 from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, \
     Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, \
     PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity, StrainUrl, \
-    Strainsummary, StrainsummaryReference, Dataset, DatasetReference, Referencetype, ReferenceRelation, ReferenceUrl, Referenceauthor, \
-    Physinteractionannotation, Goannotation, Regulationannotation, Contig
+    Strainsummary, StrainsummaryReference, Dataset, DatasetReference, DatasetKeyword, Referencetype, ReferenceRelation, ReferenceUrl, Referenceauthor, \
+    Physinteractionannotation, Geninteractionannotation, Goannotation, Regulationannotation, Contig
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -72,6 +72,19 @@ class DatasetReferenceFactory(factory.alchemy.SQLAlchemyModelFactory):
     created_by = "TOTO"
 
 
+class DatasetKeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = DatasetKeyword
+        sqlalchemy_session = DBSession
+
+    dataset_keyword_id = 1
+    keyword_id = 1
+    dataset_id = 1
+    source_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
 class DatasetFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Dataset
@@ -83,7 +96,7 @@ class DatasetFactory(factory.alchemy.SQLAlchemyModelFactory):
     obj_url = "/dataset/Artemisinic_Acid_Production_Stress_in_Yeast"
     source_id = 1
     dbxref_id = 1
-    dbxref_type = "type"
+    dbxref_type = "GEO"
     date_public = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     parent_dataset_id = 1
     assay_id = 1
@@ -334,7 +347,7 @@ class ReferencedocumentFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = DBSession
 
     referencedocument_id = 1
-    document_type = "Medline"
+    document_type = "Abstract"
     text = "Bla bla bla"
     html = "<bla></bla>"
     source_id = 1
@@ -362,7 +375,7 @@ class ReferenceauthorFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = DBSession
 
     referenceauthor_id = 1
-    display_name = "display name"
+    display_name = "Ninzima_S"
     obj_url = 'Obj url'
     source_id = 1
     bud_id = 1
@@ -725,6 +738,26 @@ class PhysinteractionannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     reference_id = 1
     taxonomy_id = 1
     psimod_id = 1
+    biogrid_experimental_system = "experiment"
+    annotation_type = "annot type"
+    bait_hit = "bait"
+    description = "description"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class GeninteractionannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Geninteractionannotation
+        sqlalchemy_session = DBSession
+
+
+    annotation_id = 1
+    dbentity1_id = 1
+    dbentity2_id = 2
+    source_id = 1
+    reference_id = 1
+    taxonomy_id = 1
+    phenotype_id = 1
     biogrid_experimental_system = "experiment"
     annotation_type = "annot type"
     bait_hit = "bait"
