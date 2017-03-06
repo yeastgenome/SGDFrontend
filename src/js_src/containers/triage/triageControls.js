@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import fetchData from '../../lib/fetchData';
-import { assignTriageEntry, removeEntry } from './triageActions';
+import { updateTriageEntry, removeEntry } from './triageActions';
 import { setMessage } from '../../actions/metaActions';
 import TagList from './tagList';
 
@@ -14,12 +14,11 @@ class TriageControls extends Component {
     return this.props.entry.data.assignee;
   }
 
-  updateEntry() {
-    let entry = this.props.entry;
-    let url = `${TRIAGE_URL}/${entry.curation_id}`;
+  saveUpdatedEntry(updatedEntry) {
+    let url = `${TRIAGE_URL}/${updatedEntry.curation_id}`;
     let fetchOptions = {
       type: 'PUT',
-      data: JSON.stringify(entry),
+      data: JSON.stringify(updatedEntry),
       contentType: 'application/json',
       processData: false,
       headers: {
@@ -68,8 +67,10 @@ class TriageControls extends Component {
   renderOpenClaim() {
     let handleClaim = (e) => {
       e.preventDefault();
-      let action = assignTriageEntry(this.props.entry.curation_id, this.props.username);
-      this.props.dispatch(action);
+      let updatedEntry = this.props.entry;
+      updatedEntry.data.assignee = this.props.username;
+      this.props.dispatch(updateTriageEntry(updatedEntry));
+      this.saveUpdatedEntry(updatedEntry);
     };
     return (
       <div>
@@ -97,8 +98,10 @@ class TriageControls extends Component {
     }
     let handleUnclaim = (e) => {
       e.preventDefault();
-      let action = assignTriageEntry(this.props.entry.curation_id, null);
-      this.props.dispatch(action);
+      let updatedEntry = this.props.entry;
+      updatedEntry.data.assignee = null;
+      this.props.dispatch(updateTriageEntry(updatedEntry));
+      this.saveUpdatedEntry(updatedEntry);
     };
     return (
       <div>
