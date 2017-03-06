@@ -1407,15 +1407,16 @@ class Locusdbentity(Dbentity):
                 "manual_molecular_function_terms": [],
                 "manual_biological_process_terms": [],
                 "manual_cellular_component_terms": [],
-                "htp_molecular_function_terms": [],
-                "htp_biological_process_terms": [],
-                "htp_cellular_component_terms": [],
+                "htp_molecular_function_terms": [], # TODO
+                "htp_biological_process_terms": [], # TODO
+                "htp_cellular_component_terms": [], # TODO
                 "computational_annotation_count": 0
             },
             "pathways": [],
             "phenotype_overview": {
-                "classical_phenotypes": [],
-                "large_scale_phenotypes": []
+                "paragraph": None,
+                "classical_phenotypes": {},
+                "large_scale_phenotypes": {}
             },
             "interaction_overview": {
                 "total_interactions": 0,
@@ -1481,7 +1482,7 @@ class Locusdbentity(Dbentity):
         summary_references = DBSession.query(LocussummaryReference).filter_by(summary_id=summary[0]).order_by(LocussummaryReference.reference_order).all()
         obj["references"] = [s.reference.to_dict_citation() for s in summary_references]
         
-        urls = DBSession.query(LocusUrl).filter(LocusUrl.locus_id==self.dbentity_id).filter(LocusUrl.placement.in_(["LOCUS_SEQUENCE_S288C", "LOCUS_SEQUENCE_OTHER_SPECIES", "LOCUS_SEQUENCE_OTHER_STRAINS", "LOCUS_LSP", "LOCUS_LSP_RESOURCES"])).all()
+        urls = DBSession.query(LocusUrl).filter_by(locus_id=self.dbentity_id).all()
         obj["urls"] = [u.to_dict() for u in urls]
 
         protein = DBSession.query(Proteinsequenceannotation.annotation_id).filter_by(dbentity_id=self.dbentity_id, taxonomy_id=274901).one_or_none()
@@ -1522,6 +1523,19 @@ class Locusdbentity(Dbentity):
 
         go_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id, summary_type="Function").one_or_none()
         obj["go_overview"]["paragraph"] = go_summary[0]
+
+        phenotype_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id, summary_type="Phenotype").one_or_none()
+        obj["phenotype_overview"]["paragraph"] = phenotype_summary[0]
+
+        phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        for annotation in phenotype_annotations:
+            json = annotation.to_dict_lsp()
+            
+            if json["mutant"] in obj["phenotype_overview"][json["experiment_category"]]:
+                if json["phenotype"]["display_name"] not in [p["display_name"] for p in obj["phenotype_overview"][json["experiment_category"]][json["mutant"]]]:
+                    obj["phenotype_overview"][json["experiment_category"]][json["mutant"]].append(json["phenotype"])
+            else:
+                obj["phenotype_overview"][json["experiment_category"]][json["mutant"]] = [json["phenotype"]]
         
         return obj
 
@@ -3260,6 +3274,21 @@ class Phenotypeannotation(Base):
         return {
             "strains": [["Strain", "Annotations"]] + Phenotypeannotation.count_strains(phenotype_ids),
             "experiment_categories": [["Mutant Type", "classical genetics", "large-scale survey"]] +  Phenotypeannotation.count_experiment_categories(phenotype_ids)
+        }
+
+    def to_dict_lsp(self):
+        if self.experiment.display_name == "classical genetics":
+            experiment_category = "classical_phenotypes"
+        else:
+            experiment_category = "large_scale_phenotypes"
+            
+        return {
+            "experiment_category": experiment_category,
+            "mutant": self.mutant.display_name,
+            "phenotype": {
+                "display_name": self.phenotype.display_name,
+                "link": self.phenotype.obj_url
+            }
         }
     
     def to_dict(self, reference=None, chemical=None, phenotype=None):
