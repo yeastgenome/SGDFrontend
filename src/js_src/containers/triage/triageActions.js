@@ -1,10 +1,7 @@
-export function assignTriageEntry (_id, _username) {
+export function updateTriageEntry (updatedEntry) {
   return {
-    type: 'ASSIGN_TRIAGE_ENTRY',
-    payload: {
-      id: _id,
-      username: _username
-    }
+    type: 'UPDATE_TRIAGE_ENTRY',
+    payload: updatedEntry
   };
 }
 
