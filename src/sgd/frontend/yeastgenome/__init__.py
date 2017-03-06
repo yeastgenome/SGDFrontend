@@ -13,8 +13,9 @@ import re
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP, render
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
+from src.sgd.frontend.yeastgenome.views.misc_views import not_found
 from src.sgd.frontend.frontend_interface import FrontendInterface
 
 class YeastgenomeFrontend(FrontendInterface):
@@ -45,7 +46,7 @@ class YeastgenomeFrontend(FrontendInterface):
                 if data is not None:
                     return data
                 else:
-                    return HTTPNotFound()
+                    return not_found(request)
         return f
 
     def check_date(self):

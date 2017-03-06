@@ -4,6 +4,7 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from src.sgd.frontend import config
+from src.sgd.frontend.yeastgenome.views.misc_views import not_found
 import datetime
 import json
 import requests
@@ -22,7 +23,7 @@ def get_locus_obj(identifier):
 def render_locus_page(request, template_name):
     locus_obj = get_locus_obj(request.matchdict['identifier'])
     if locus_obj == None:
-        return HTTPNotFound()
+        return not_found(request)
     return render_to_response(TEMPLATE_ROOT + template_name + '.jinja2', locus_obj, request=request)
 
 @view_config(route_name='locus')
@@ -33,7 +34,7 @@ def locus(request):
 def sequence_details(request):
     locus_obj = get_locus_obj(request.matchdict['identifier'])
     if locus_obj == None:
-        return HTTPNotFound()
+        return not_found(request)
     history = { 'history_js': json.dumps(locus_obj.get('locus').get('history')) }
     locus_obj.update(history)
     return render_to_response(TEMPLATE_ROOT + 'sequence_details.jinja2', locus_obj, request=request)

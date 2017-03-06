@@ -66,7 +66,7 @@ def get_archive_years():
 
 def get_meetings_html():
     try:
-        response = requests.get(MEETINGS_WIKI_URL)
+        response = requests.get(MEETINGS_WIKI_URL, timeout=2)
         text = json.loads(response.text)['parse']['text']['*']
         text = text.encode('utf8')
         start_expr = 'Upcoming Conferences &amp; Courses </span></h1>'
