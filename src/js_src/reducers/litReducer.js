@@ -22,28 +22,9 @@ export default function litReducer(state = DEFAULT_STATE, action) {
     triageEntries = _.without(triageEntries, deletedEntry);
     return state.set('triageEntries', fromJS(triageEntries));
   case 'UPDATE_TRIAGE_ENTRIES':
-    // update old array
-    triageEntries = state.get('triageEntries').toJS();
     let newTriageEntries = action.payload.entries;
-    newTriageEntries.forEach( (d) => {
-      triageEntries = updateTriage(triageEntries, d, action.payload.username);
-    });
-    return state.set('triageEntries', fromJS(triageEntries));
+    return state.set('triageEntries', fromJS(newTriageEntries));
   default:
     return state;
-  }
-}
-
-// update or add entry unless the assignee is currentUser
-function updateTriage(allEntries, updatedEntry, currentUser) {
-  let thisEntry = _.findWhere(allEntries, { curation_id: updatedEntry.curation_id });
-  if (!thisEntry) {
-    allEntries.push(updatedEntry);
-    return allEntries;
-  } else if (thisEntry.data.assignee === currentUser) {
-    return allEntries;
-  } else {
-    thisEntry = updatedEntry;
-    return allEntries;
   }
 }
