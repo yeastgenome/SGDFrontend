@@ -397,8 +397,7 @@ def reference_regulation_details(request):
 
 @view_config(route_name='reference_triage', renderer='json', request_method='GET')
 def reference_triage(request):
-    triages = DBSession.query(Referencetriage).all()
-
+    triages = DBSession.query(Referencetriage).order_by(Referencetriage.date_created.asc()).all()
     return {'entries': [t.to_dict() for t in triages]}
 
 @view_config(route_name='reference_triage_id', renderer='json', request_method='GET')
