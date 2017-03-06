@@ -1536,7 +1536,10 @@ class Locusdbentity(Dbentity):
                     obj["phenotype_overview"][json["experiment_category"]][json["mutant"]].append(json["phenotype"])
             else:
                 obj["phenotype_overview"][json["experiment_category"]][json["mutant"]] = [json["phenotype"]]
-        
+
+        obj["regulation_overview"]["regulator_count"] = DBSession.query(Regulationannotation).filter_by(target_id=self.dbentity_id).count()
+        obj["regulation_overview"]["target_count"] = DBSession.query(Regulationannotation).filter_by(regulator_id=self.dbentity_id).count()
+                
         return obj
 
     def tabs(self):
