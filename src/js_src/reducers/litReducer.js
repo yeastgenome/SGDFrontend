@@ -5,20 +5,6 @@ import _ from 'underscore';
 // temp fixture
 const DEFAULT_STATE = fromJS({
   triageEntries: [],
-  allCuratorUsers: [
-    {
-      name: 'Curator A',
-      username: 'curate_a123'
-    },
-    {
-      name: 'Curator B',
-      username: 'curate_b123'
-    },
-    {
-      name: 'Curator C',
-      username: 'curate_c123'
-    }
-  ]
 });
 
 export default function litReducer(state = DEFAULT_STATE, action) {
@@ -35,8 +21,28 @@ export default function litReducer(state = DEFAULT_STATE, action) {
     triageEntries = _.without(triageEntries, deletedEntry);
     return state.set('triageEntries', fromJS(triageEntries));
   case 'UPDATE_TRIAGE_ENTRIES':
-    return state.set('triageEntries', fromJS(action.payload));
+    // update old array
+    triageEntries = state.get('triageEntries').toJS();
+    let newTriageEntries = action.payload.entries;
+    newTriageEntries.forEach( (d) => {
+      triageEntries = updateTriage(triageEntries, d, action.payload.username);
+    });
+    return state.set('triageEntries', fromJS(triageEntries));
   default:
     return state;
+  }
+}
+
+// update or add entry unless the assignee is currentUser
+function updateTriage(allEntries, entry, currentUser) {
+  let thisEntry = _.findWhere(allEntries, { curation_id: entry.curation_id });
+  if (!thisEntry) {
+    allEntries.push(entry);
+    return allEntries;
+  } else if (thisEntry.data.assignee === currentUser) {
+    return allEntries;
+  } else {
+    thisEntry = entry;
+    return allEntries;
   }
 }

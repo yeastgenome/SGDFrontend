@@ -17,6 +17,12 @@ export function updateTags (newTags) {
   return { type: 'UPDATE_TAGS', payload: newTags };
 }
 
-export function updateTriageEntries (newEntries) {
-  return { type: 'UPDATE_TRIAGE_ENTRIES', payload: newEntries };
+export function updateTriageEntries (newEntries, username) {
+  return {
+    type: 'UPDATE_TRIAGE_ENTRIES',
+    payload: {
+      entries: newEntries,
+      username: username
+    }
+  };
 }
