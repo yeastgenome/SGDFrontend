@@ -8,15 +8,28 @@ import { updateTriageEntries } from './triageActions';
 import TriageControls from './triageControls';
 
 const TRIAGE_URL = '/reference/triage';
+const REFRESH_INTERVAL = 7000;
+const TIME_VAR = 'refreshTimeout';
 
 class LitTriageIndex extends Component {
   componentDidMount() {
     this.fetchData();
+    // create the refresh timer
+    this.clearRefreshTimer();
+    this[TIME_VAR] = setInterval(this.fetchData.bind(this), REFRESH_INTERVAL);
+  }
+
+  componentWillUnmount() {
+    this.clearRefreshTimer();
+  }
+
+  clearRefreshTimer() {
+    if (this[TIME_VAR]) clearInterval(this[TIME_VAR]);
   }
 
   fetchData() {
     fetchData(TRIAGE_URL).then( (data) => {
-      this.props.dispatch(updateTriageEntries(data.entries));
+      this.props.dispatch(updateTriageEntries(data.entries, this.props.username));
     });
   }
 
@@ -63,12 +76,14 @@ class LitTriageIndex extends Component {
 
 LitTriageIndex.propTypes = {
   dispatch: React.PropTypes.func,
-  triageEntries: React.PropTypes.array
+  triageEntries: React.PropTypes.array,
+  username: React.PropTypes.string
 };
 
 function mapStateToProps(state) {
   return {
-    triageEntries: selectTriageEntries(state)
+    triageEntries: selectTriageEntries(state),
+    username: state.auth.get('username')
   };
 }
 
