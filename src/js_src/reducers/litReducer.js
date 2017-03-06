@@ -35,15 +35,15 @@ export default function litReducer(state = DEFAULT_STATE, action) {
 }
 
 // update or add entry unless the assignee is currentUser
-function updateTriage(allEntries, entry, currentUser) {
-  let thisEntry = _.findWhere(allEntries, { curation_id: entry.curation_id });
+function updateTriage(allEntries, updatedEntry, currentUser) {
+  let thisEntry = _.findWhere(allEntries, { curation_id: updatedEntry.curation_id });
   if (!thisEntry) {
-    allEntries.push(entry);
+    allEntries.push(updatedEntry);
     return allEntries;
   } else if (thisEntry.data.assignee === currentUser) {
     return allEntries;
   } else {
-    thisEntry = entry;
+    thisEntry = updatedEntry;
     return allEntries;
   }
 }
