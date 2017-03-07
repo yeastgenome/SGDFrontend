@@ -4,18 +4,22 @@ import _ from 'underscore';
 import { allTags } from '../curateLit/litConstants';
 
 class TagList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: allTags
-    }; 
+  getData() {
+    let tagData = this.props.entry.data.tags || [];
+    console.log(tagData);
+    return allTags.map( (d) => {
+      let existing = _.findWhere(tagData, { name: d.name });
+      if (existing) {
+        d.isSelected = true;
+        // create a string of genes
+      } else {
+        d.isSelected = false;
+      }
+      return d;
+    });
   }
 
-  toggleSelected(_name) {
-    let newState = this.state;
-    let targetEntry = _.findWhere(newState.data, { name:  _name });
-    targetEntry.isSelected = !targetEntry.isSelected;
-    this.setState(newState);
+  toggleSelected() {
   }
 
   renderCommentSection(d) {
@@ -47,7 +51,7 @@ class TagList extends Component {
   }
 
   renderChecks() {
-    return this.state.data.map( (d, i) => {
+    return this.getData().map( (d, i) => {
       return (
         <div key={'check' + i}>
           {this.renderSingleCheck(d)}
@@ -66,5 +70,10 @@ class TagList extends Component {
     );
   }
 }
+
+TagList.propTypes = {
+  entry: React.PropTypes.object,
+  onChange: React.PropTypes.func
+};
 
 export default TagList;

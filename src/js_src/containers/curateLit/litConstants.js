@@ -1,107 +1,107 @@
 export const allTags = [
   {
-    name: 'Classical phenotype information',
-    value: 'classical_phenotype',
+    name: 'classical_phenotype',
+    label: 'Classical phenotype information',
     hasGenes: false
   },
   {
-    name: 'Delay',
-    value: 'delay',
+    name: 'delay',
+    label: 'Delay',
     hasGenes: false
   },
   {
-    name: 'Fast Track',
-    value: 'fast_track',
+    name: 'fast_track',
+    label: 'Fast Track',
     hasGenes: false
   },
   {
-    name: 'GO information',
-    value: 'go',
+    name: 'go',
+    label: 'GO information',
     hasGenes: false
   },
   {
-    name: 'GO needs review',
-    value: 'go_needs_review',
+    name: 'go_needs_review',
+    label: 'GO needs review',
     hasGenes: false
   },
   {
-    name: 'Gene model',
-    value: 'classical_phenotype',
+    name: 'classical_phenotype',
+    label: 'Gene model',
     hasGenes: false
   },
   {
-    name: 'Headline needs review',
-    value: 'headline_needs_review',
+    name: 'headline_needs_review',
+    label: 'Headline needs review',
     hasGenes: false
   },
   {
-    name: 'Headline reviewed',
-    value: 'headline_reviewed',
+    name: 'headline_reviewed',
+    label: 'Headline reviewed',
     hasGenes: false
   },
   {
-    name: 'Headline information',
-    value: 'haedline_information',
+    name: 'haedline_information',
+    label: 'Headline information',
     hasGenes: false
   },
   {
-    name: 'High Priority',
-    value: 'high_priority',
+    name: 'high_priority',
+    label: 'High Priority',
     hasGenes: false
   },
   {
-    name: 'Homology/Disease',
-    value: 'homology_disease',
+    name: 'homology_disease',
+    label: 'Homology/Disease',
     hasGenes: false
   },
   {
-    name: 'HTP phenotype',
-    value: 'htp_phenotype',
+    name: 'htp_phenotype',
+    label: 'HTP phenotype',
     hasGenes: false
   },
   {
-    name: 'Non-phenotype HTP',
-    value: 'non_phenotype_htp',
+    name: 'non_phenotype_htp',
+    label: 'Non-phenotype HTP',
     hasGenes: false
   },
   {
-    name: 'Not yet curated',
-    value: 'not_yet_curated',
+    name: 'not_yet_curated',
+    label: 'Not yet curated',
     hasGenes: false
   },
   {
-    name: 'Paragraph needs review',
-    value: 'paragraph_needs_review',
+    name: 'paragraph_needs_review',
+    label: 'Paragraph needs review',
     hasGenes: false
   },
   {
-    name: 'Paragraph not needed',
-    value: 'paragraph_not_needed',
+    name: 'paragraph_not_needed',
+    label: 'Paragraph not needed',
     hasGenes: false
   },
   {
-    name: 'Pathways',
-    value: 'pathways',
+    name: 'pathways',
+    label: 'Pathways',
     hasGenes: false
   },
   {
-    name: 'Phenotype needs review',
-    value: 'phenotype_needs_review',
+    name: 'phenotype_needs_review',
+    label: 'Phenotype needs review',
     hasGenes: false
   },
   {
-    name: 'Phenotype uncuratable',
-    value: 'phenotype_uncuratable',
+    name: 'phenotype_uncuratable',
+    label: 'Phenotype uncuratable',
     hasGenes: false
   },
   {
-    name: 'Post-translational modifications',
-    value: 'ptm',
+    name: 'ptm',
+    label: 'Post-translational modifications',
     hasGenes: false
   },
   {
-    name: 'Regulation information',
-    value: 'regulation_information',
+    name: 'regulation_information',
+    label: 'Regulation information',
     hasGenes: false
   },
 ];

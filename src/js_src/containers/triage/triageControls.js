@@ -15,6 +15,7 @@ class TriageControls extends Component {
   }
 
   saveUpdatedEntry(updatedEntry) {
+    this.props.dispatch(updateTriageEntry(updatedEntry));
     let url = `${TRIAGE_URL}/${updatedEntry.curation_id}`;
     let fetchOptions = {
       type: 'PUT',
@@ -69,7 +70,6 @@ class TriageControls extends Component {
       e.preventDefault();
       let updatedEntry = this.props.entry;
       updatedEntry.data.assignee = this.props.username;
-      this.props.dispatch(updateTriageEntry(updatedEntry));
       this.saveUpdatedEntry(updatedEntry);
     };
     return (
@@ -84,7 +84,7 @@ class TriageControls extends Component {
     return (
       <div>
         <a className='button secondary small'>Get list of genes from abstract</a>
-        <TagList id={this.props.entry.curation_id} />
+        <TagList entry={this.props.entry} onUpdate={this.saveUpdatedEntry.bind(this)} />
       </div>
     );
   }
@@ -100,7 +100,6 @@ class TriageControls extends Component {
       e.preventDefault();
       let updatedEntry = this.props.entry;
       updatedEntry.data.assignee = null;
-      this.props.dispatch(updateTriageEntry(updatedEntry));
       this.saveUpdatedEntry(updatedEntry);
     };
     return (
