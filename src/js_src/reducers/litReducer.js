@@ -1,8 +1,7 @@
-/*eslint-disable no-case-declarations, no-redeclare */
+/*eslint-disable no-case-declarations */
 import { fromJS } from 'immutable';
 import _ from 'underscore';
 
-// temp fixture
 const DEFAULT_STATE = fromJS({
   triageEntries: [],
 });
@@ -22,9 +21,23 @@ export default function litReducer(state = DEFAULT_STATE, action) {
     triageEntries = _.without(triageEntries, deletedEntry);
     return state.set('triageEntries', fromJS(triageEntries));
   case 'UPDATE_TRIAGE_ENTRIES':
-    let newTriageEntries = action.payload.entries;
+    triageEntries = state.get('triageEntries').toJS();
+    let newTriageEntries = replaceTriage(triageEntries, action.payload.entries, action.payload.username);
     return state.set('triageEntries', fromJS(newTriageEntries));
   default:
     return state;
   }
+}
+
+function replaceTriage(oldEntries, newEntries, currentUsername) {
+  newEntries.forEach( (d, i) => {
+    let oldEntry = _.findWhere(oldEntries, { curation_id: d.curation_id });
+    if (!oldEntry) {
+      oldEntries.push(d);
+    // replace if assignee changes and current version not claimed to self
+    } else if (oldEntry.data.assignee !== d.data.assignee && oldEntry.data.assignee !== currentUsername) {
+      oldEntries[i] = d;
+    }
+  });
+  return oldEntries;
 }
