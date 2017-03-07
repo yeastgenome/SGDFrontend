@@ -6,8 +6,8 @@ import style from './style.css';
 class Home extends Component {
   render() {
     return (
-      <div className={`callout ${style.loginContainer}`}>
-        <Link to='/login'>Click here to begin login.</Link>
+      <div className={`${style.loginContainer}`}>
+        <Link className={`${style.beginLoginButton} button`} to='/login'>Login</Link>
       </div>
     );
   }

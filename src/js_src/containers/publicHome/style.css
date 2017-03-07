@@ -2,4 +2,16 @@
 	width: 50rem;
 	height: 15rem;
 	margin: 0 auto;
+	text-align: center;
+}
+
+.beginLoginButton {
+	display: inline-block;
+	margin: 0 auto;
+	margin-top: 3rem;
+}
+
+.gButton {
+	margin: 0 auto;
+	width: 120px;
 }
