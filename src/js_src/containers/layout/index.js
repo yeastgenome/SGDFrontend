@@ -21,17 +21,7 @@ class Layout extends Component {
       </div>
     );
   }
-
-  renderPublicMenu() {
-    return (
-      <ul className={`menu ${style.authMenu}`}>
-        <li>
-          <Link className={style.navLink} to='/login'><i className='fa fa-sign-in' /> Login</Link>
-        </li>
-      </ul>
-    );
-  }
-
+  
   renderError() {
     if (!this.props.error) return null;
     let handleClick = () => {
@@ -62,7 +52,7 @@ class Layout extends Component {
 
   render() {
     // init auth nodes, either login or logout links
-    let authNodes = this.props.isAuthenticated ? this.renderAuthedMenu() : this.renderPublicMenu();
+    let authNodes = this.props.isAuthenticated ? this.renderAuthedMenu() : null;
     return (
       <div>
         {this.renderMessage()}

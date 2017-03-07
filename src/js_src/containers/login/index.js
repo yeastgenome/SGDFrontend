@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
+import style from '../publicHome/style.css';
 import fetchData from '../../lib/fetchData';
 import Loader from '../../components/loader';
 import { authenticateUser } from '../../actions/authActions';
@@ -72,8 +73,7 @@ class Login extends Component {
 
   render () {
     return (
-      <div>
-        <h1>Login</h1>
+      <div className={`callout ${style.loginContainer}`}>
         <p>You must login to Google with your Stanford email address. You may need to refresh after changing accounts.</p>
         {this._renderLoginButton()}
       </div>
