@@ -68,7 +68,7 @@ class Login extends Component {
     if (this.state.isPending) {
       return <Loader />;
     }
-    return <div className='g-signin2' data-onsuccess='onSignIn' data-theme='dark' id='g-login' />;
+    return <div className={`g-signin2 ${style.gButton}`} data-onsuccess='onSignIn' data-theme='dark' id='g-login' />;
   }
 
   render () {
