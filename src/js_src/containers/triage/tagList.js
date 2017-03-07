@@ -1,41 +1,57 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import _ from 'underscore';
 
 import { allTags } from '../curateLit/litConstants';
 
 class TagList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: allTags
-    }; 
+  updateTags(newTags) {
+    let newEntry = this.props.entry;
+    newEntry.data.tags = newTags;
+    this.props.onUpdate(newEntry);
   }
 
-  componentDidUpdate() {
+  getTagData() {
+    return this.props.entry.data.tags || [];
   }
 
-  toggleSelected(_value) {
-    let newState = this.state;
-    let targetEntry = _.findWhere(newState.data, { value:  _value });
-    targetEntry.isSelected = !targetEntry.isSelected;
-    this.setState(newState);
+  getData() {
+    let tagData = this.getTagData();
+    return allTags.map( (d) => {
+      let existing = _.findWhere(tagData, { name: d.name });
+      if (existing) {
+        d.isSelected = true;
+        // create a string of genes
+      } else {
+        d.isSelected = false;
+      }
+      return d;
+    });
+  }
+
+  toggleSelected(_name) {
+    let tagData = this.getTagData();
+    let isExisting = _.findWhere(tagData, { name: _name });
+    if (isExisting) {
+      tagData = tagData.filter( d => d.name !== _name );
+    } else {
+      let newEntry = { name: _name, genes: [] };
+      tagData.push(newEntry);
+    }
+    this.updateTags(tagData);
   }
 
   renderCommentSection(d) {
     if (!d.isSelected) return null;
-    let onTypeGenes = (e) => {
-      let newVal = e.currentTarget.value;
-      let newState = this.state;
-      let targetEntry = _.findWhere(newState.data, { value:  d.value });
-      targetEntry.genes = newVal;
-      this.setState(newState);
+    // let tagData = this.getTagData();
+    // let tagEntry = _.findWhere(tagData, { name: d.name });
+    let _onChange = () => {
+      // e.target.value;
     };
     return (
       <div className='row'>
         <div className='column small-6'>
           <label>Genes</label>
-          <input onChange={onTypeGenes} type='text' />
+          <input type='text' onChange={_onChange} />
         </div>
         <div className='column small-6'>
           <label>Comment</label>
@@ -47,18 +63,18 @@ class TagList extends Component {
 
   renderSingleCheck(d) {
     let _onChange = () => {
-      this.toggleSelected(d.value);
+      this.toggleSelected(d.name);
     };
     return (
       <label>
-        <input type='checkbox' onChange={_onChange} value={d.isSelected} />
-        {d.name}
+        <input type='checkbox' onChange={_onChange} checked={d.isSelected} />
+        {d.label}
       </label>
     );
   }
 
   renderChecks() {
-    return this.state.data.map( (d, i) => {
+    return this.getData().map( (d, i) => {
       return (
         <div key={'check' + i}>
           {this.renderSingleCheck(d)}
@@ -79,12 +95,8 @@ class TagList extends Component {
 }
 
 TagList.propTypes = {
-  dispatch: React.PropTypes.func,
-  id: React.PropTypes.number
+  entry: React.PropTypes.object,
+  onUpdate: React.PropTypes.func
 };
 
-function mapStateToProps() {
-  return {};
-}
-
-export default connect(mapStateToProps)(TagList);
+export default TagList;
