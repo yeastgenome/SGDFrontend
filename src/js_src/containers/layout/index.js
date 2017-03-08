@@ -57,13 +57,24 @@ class Layout extends Component {
       <div>
         {this.renderMessage()}
         {this.renderError()}
-        <h1>Title</h1>
+        <div className='row'>
+          <div className='columns small-12'>
+            <Link className={style.indexLink} to='curate'>
+              <img className={style.imgLogo} src={curateLogo} /><i>Saccharomyces</i> Genome Database <span className='label'>Curator</span>
+            </Link>
+          </div>
+        </div>
         <nav className={`top-bar ${style.navWrapper}`}>
           <div className='top-bar-left'>
-            <ul className={`menu ${style.menu}`}>
+            <ul className={`menu ${style.topMenu}`}>
               <li>
-                <Link className={style.indexLink} to='curate'>
-                  <img className={style.imgLogo} src={curateLogo} /> SGD Curator
+                <Link to='curate'>
+                  <span><i className='fa fa-home' /> Home</span>
+                </Link>
+              </li>
+              <li>
+                <Link to='curate'>
+                  <span><i className='fa fa-question-circle' /> Help</span>
                 </Link>
               </li>
             </ul>
