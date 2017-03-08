@@ -4,6 +4,7 @@ import { IndexRoute, Route  } from 'react-router';
 // public routes and layout
 import Layout from './containers/layout';
 import PublicHome from './containers/publicHome';
+import Help from './containers/help';
 import Login from './containers/login';
 // authenticated curate inputs
 import { requireAuthentication } from './containers/authenticateComponent';
@@ -29,6 +30,7 @@ import SpreadsheetUpload from './containers/spreadsheetUpload/index';
 export default (
   <Route component={Layout} path='/'>
     <IndexRoute component={PublicHome} />
+    <Route component={Help} path='help' />
     <Route component={requireAuthentication(Search)} path='search' />
     <Route component={Login} path='login' />
     <Route component={CurateLayout} path='curate'>

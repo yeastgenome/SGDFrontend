@@ -62,7 +62,6 @@ class TriageControls extends Component {
           type: geneTagType
         });
       });
-      console.log(el.value, el.dataset.tagType);
     }
     // e.preventDefault();
     // let id = this.props.entry.curation_id;
