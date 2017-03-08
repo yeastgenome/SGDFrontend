@@ -6,7 +6,6 @@ import { allTags } from '../curateLit/litConstants';
 class TagList extends Component {
   getData() {
     let tagData = this.props.entry.data.tags || [];
-    console.log(tagData);
     return allTags.map( (d) => {
       let existing = _.findWhere(tagData, { name: d.name });
       if (existing) {

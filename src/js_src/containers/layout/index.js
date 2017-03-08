@@ -73,7 +73,7 @@ class Layout extends Component {
                 </Link>
               </li>
               <li>
-                <Link to='curate'>
+                <Link to='help'>
                   <span><i className='fa fa-question-circle' /> Help</span>
                 </Link>
               </li>

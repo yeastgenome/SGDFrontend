@@ -74,7 +74,7 @@ class Login extends Component {
   render () {
     return (
       <div className={`callout ${style.loginContainer}`}>
-        <p>You must login to Google with your Stanford email address. You may need to refresh after changing accounts.</p>
+        <p>Click the button below to verify your Google account.</p>
         {this._renderLoginButton()}
       </div>
     );
