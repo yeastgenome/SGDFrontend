@@ -1,7 +1,7 @@
 export const allTags = [
   {
-    name: 'classical_phenotype',
-    label: 'Classical phenotype information',
+    name: 'high_priority',
+    label: 'High Priority',
     hasGenes: false
   },
   {
@@ -10,14 +10,52 @@ export const allTags = [
     hasGenes: false
   },
   {
-    name: 'fast_track',
-    label: 'Fast Track',
+    name: 'htp_phenotype',
+    label: 'HTP phenotype Data (Omics)',
     hasGenes: false
+  },
+  {
+    name: 'non_phenotype_htp',
+    label: 'Non-phenotype HTP',
+    hasGenes: false
+  },
+  {
+    name: 'homology_disease',
+    label: 'Homology/Disease',
+    hasGenes: true
   },
   {
     name: 'go',
     label: 'GO information',
-    hasGenes: false
+    hasGenes: true,
+    sectionLabel: 'Primary Literature'
+  },
+  {
+    name: 'classical_phenotype',
+    label: 'Classical phenotype information',
+    hasGenes: true
+  },
+  {
+    name: 'headline_information',
+    label: 'Headline information',
+    hasGenes: true
+  },
+  {
+    name: 'other_primary',
+    label: 'Other Primary Literature',
+    hasGenes: true
+  },
+  {
+    name: 'Reviews',
+    label: 'Reviews',
+    hasGenes: true,
+    sectionLabel: 'reviews'
+  },
+  {
+    name: 'additional_literature',
+    label: 'Additional_literature information',
+    hasGenes: true,
+    sectionLabel: 'Additional Literature'
   },
   {
     name: 'go_needs_review',
@@ -25,7 +63,7 @@ export const allTags = [
     hasGenes: false
   },
   {
-    name: 'classical_phenotype',
+    name: 'gene_model',
     label: 'Gene model',
     hasGenes: false
   },
@@ -37,31 +75,6 @@ export const allTags = [
   {
     name: 'headline_reviewed',
     label: 'Headline reviewed',
-    hasGenes: false
-  },
-  {
-    name: 'headline_information',
-    label: 'Headline information',
-    hasGenes: false
-  },
-  {
-    name: 'high_priority',
-    label: 'High Priority',
-    hasGenes: false
-  },
-  {
-    name: 'homology_disease',
-    label: 'Homology/Disease',
-    hasGenes: false
-  },
-  {
-    name: 'htp_phenotype',
-    label: 'HTP phenotype',
-    hasGenes: false
-  },
-  {
-    name: 'non_phenotype_htp',
-    label: 'Non-phenotype HTP',
     hasGenes: false
   },
   {
@@ -104,4 +117,9 @@ export const allTags = [
     label: 'Regulation information',
     hasGenes: false
   },
+  {
+    name: 'fast_track',
+    label: 'Fast Track',
+    hasGenes: false
+  }
 ];

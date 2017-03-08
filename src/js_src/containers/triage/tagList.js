@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
+// import Select from 'react-select';
 import _ from 'underscore';
 
+import style from './style.css';
 import { allTags } from '../curateLit/litConstants';
 
 class TagList extends Component {
@@ -62,33 +63,60 @@ class TagList extends Component {
     );
   }
 
-  renderSingleCheck(d) {
-    let _onChange = () => {
-      this.toggleSelected(d.name);
-    };
+  renderTags() {
+    let entryTags = this.getData();
+    let nodes = entryTags.map( (d, i) => {
+      let classSuffix = d.isSelected ? '' : style.inactive;
+      let suffixNode = d.isSelected ? <span> <i className='fa fa-close' /></span> : null;
+      let geneSuffixNode = (d.isSelected && d.hasGenes) ? <input type='text' /> : null;
+      let commentSuffixNode = d.isSelected ? <input type='text' /> : null;
+      let sectionLabelNode = d.sectionLabel ? <h5>{d.sectionLabel}</h5> : null;
+      let _onClick = (e) => {
+        e.preventDefault();
+        this.toggleSelected(d.name);
+      };
+      return (
+        <div className='row' key={`sTag${i}`}>
+          <div className='columns small-4'>
+            {sectionLabelNode}
+            <a className={`button small ${classSuffix}`} onClick={_onClick}>
+              {d.label}
+              {suffixNode}
+            </a>
+          </div>
+          <div className='columns small-4'>
+            {geneSuffixNode}
+          </div>
+          <div className='columns small-4'>
+            {commentSuffixNode}
+          </div>
+        </div>
+      );
+    });
     return (
-      <label>
-        <input type='checkbox' onChange={_onChange} checked={d.isSelected} />
-        {d.label}
-      </label>
+      <div>
+        <div className='row'>
+          <div className='columns small-4'>
+            Tag
+          </div>
+          <div className='columns small-4'>
+            Genes
+          </div>
+          <div className='columns small-4'>
+            Comment
+          </div>
+        </div>
+        <div>
+          {nodes}
+        </div>>
+      </div>
     );
   }
 
   render() {
     return (
       <div>
-        <span>Tags</span>
-        <p>No tags for this reference</p>
-        <label>Add New Tag</label>
-        <div className='input-group'>
-          <div className='input-group-field'>
-            <Select />
-          </div>
-          <input className='input-group-field' type='text' />
-          <div className='input-group-button'>
-            <input className='button' type='submit' value='Tag' />
-          </div>
-        </div>
+        {this.renderTags()}
       </div>
     );
   }
