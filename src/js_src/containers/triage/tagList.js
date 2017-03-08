@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Select from 'react-select';
 import _ from 'underscore';
 
 import { allTags } from '../curateLit/litConstants';
@@ -73,22 +74,21 @@ class TagList extends Component {
     );
   }
 
-  renderChecks() {
-    return this.getData().map( (d, i) => {
-      return (
-        <div key={'check' + i}>
-          {this.renderSingleCheck(d)}
-          {this.renderCommentSection(d)}
-        </div>
-      );
-    });
-  }
-
   render() {
     return (
       <div>
         <span>Tags</span>
-        {this.renderChecks()}
+        <p>No tags for this reference</p>
+        <label>Add New Tag</label>
+        <div className='input-group'>
+          <div className='input-group-field'>
+            <Select />
+          </div>
+          <input className='input-group-field' type='text' />
+          <div className='input-group-button'>
+            <input className='button' type='submit' value='Tag' />
+          </div>
+        </div>
       </div>
     );
   }
