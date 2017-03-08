@@ -3,12 +3,17 @@ import { fromJS } from 'immutable';
 import _ from 'underscore';
 
 const DEFAULT_STATE = fromJS({
+  activeLitEntry: {
+    lastUpdated: (new Date())
+  },
   triageEntries: [],
 });
 
 export default function litReducer(state = DEFAULT_STATE, action) {
   let triageEntries;
   switch (action.type) {
+  case 'UPDATE_ACTIVE_ENTRY':
+    return state.set('activeLitEntry', fromJS(action.payload));
   case 'UPDATE_TRIAGE_ENTRY':
     triageEntries = state.get('triageEntries').toJS();
     let targetEntry = _.findWhere(triageEntries, { curation_id: action.payload.curation_id });
