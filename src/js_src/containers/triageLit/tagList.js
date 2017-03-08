@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Select from 'react-select';
 import _ from 'underscore';
 
 import { allTags } from '../curateLit/litConstants';
@@ -63,6 +64,7 @@ class TagList extends Component {
   render() {
     return (
       <div>
+        <Select />
         <span>Tags</span>
         {this.renderChecks()}
       </div>

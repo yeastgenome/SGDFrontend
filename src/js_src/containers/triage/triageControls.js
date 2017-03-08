@@ -98,7 +98,8 @@ class TriageControls extends Component {
   renderTags() {
     return (
       <div ref='tagList'>
-        <a className='button secondary small'>Get list of genes from abstract</a>
+        <a className='button secondary disabled'>Get list of genes from abstract</a>
+        <input type='text' />
         <TagList entry={this.props.entry} onUpdate={this.saveUpdatedEntry.bind(this)} />
       </div>
     );
