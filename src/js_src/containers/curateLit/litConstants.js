@@ -53,7 +53,7 @@ export const allTags = [
   },
   {
     name: 'additional_literature',
-    label: 'Additional_literature information',
+    label: 'Additional literature information',
     hasGenes: true,
     sectionLabel: 'Additional Literature'
   },
