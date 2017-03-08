@@ -57,6 +57,7 @@ class Layout extends Component {
       <div>
         {this.renderMessage()}
         {this.renderError()}
+        <h1>Title</h1>
         <nav className={`top-bar ${style.navWrapper}`}>
           <div className='top-bar-left'>
             <ul className={`menu ${style.menu}`}>

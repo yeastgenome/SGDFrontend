@@ -7,7 +7,7 @@ class TagList extends Component {
   updateTags(newTags) {
     let newEntry = this.props.entry;
     newEntry.data.tags = newTags;
-    this.props.onUpdate(newEntry);
+    this.props.onUpdate(newEntry, true);
   }
 
   getTagData() {
@@ -51,7 +51,7 @@ class TagList extends Component {
       <div className='row'>
         <div className='column small-6'>
           <label>Genes</label>
-          <input type='text' onChange={_onChange} />
+          <input className='sgd-geneList' data-tag-label={d.label} data-tag-name={d.name} type='text' onChange={_onChange} />
         </div>
         <div className='column small-6'>
           <label>Comment</label>

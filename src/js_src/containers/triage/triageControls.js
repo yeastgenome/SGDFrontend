@@ -7,15 +7,16 @@ import { setMessage } from '../../actions/metaActions';
 import TagList from './tagList';
 
 const TRIAGE_URL = '/reference/triage';
-const PROMOTE_URL_SUFFIX = 'promote';
+// const PROMOTE_URL_SUFFIX = 'promote';
 
 class TriageControls extends Component {
   getAssignee() {
     return this.props.entry.data.assignee;
   }
 
-  saveUpdatedEntry(updatedEntry) {
+  saveUpdatedEntry(updatedEntry, ignoreServerUpdate=false) {
     this.props.dispatch(updateTriageEntry(updatedEntry));
+    if (ignoreServerUpdate) return;
     let url = `${TRIAGE_URL}/${updatedEntry.curation_id}`;
     let fetchOptions = {
       type: 'PUT',
@@ -47,22 +48,34 @@ class TriageControls extends Component {
     });
   }
 
-  handlePromoteEntry(e) {
-    e.preventDefault();
-    let id = this.props.entry.curation_id;
-    this.props.dispatch(removeEntry(id));
-    let message = `${this.props.entry.basic.citation} added to database.`;
-    this.props.dispatch(setMessage(message));
-    let url = `${TRIAGE_URL}/${id}/${PROMOTE_URL_SUFFIX}`;
-    let fetchOptions = {
-      type: 'PUT',
-      headers: {
-        'X-CSRF-Token': window.CSRF_TOKEN,        
-      }
-    };
-    fetchData(url, fetchOptions).then( () => {
-      this.props.dispatch(removeEntry(id));
-    });
+  handlePromoteEntry() {
+    let geneListEls = this.refs.tagList.getElementsByClassName('sgd-geneList');
+    let tagData = [];
+    for (var i = geneListEls.length - 1; i >= 0; i--) {
+      let el = geneListEls[i];
+      let geneTagType = el.dataset.tagType;
+      let simpleValue = el.value || '';
+      let arrValue = simpleValue.split(',')
+      arrValue.forEach( (d) => {
+        tagData.push({ })
+      });
+      console.log(el.value, el.dataset.tagType);
+    }
+    // e.preventDefault();
+    // let id = this.props.entry.curation_id;
+    // this.props.dispatch(removeEntry(id));
+    // let message = `${this.props.entry.basic.citation} added to database.`;
+    // this.props.dispatch(setMessage(message));
+    // let url = `${TRIAGE_URL}/${id}/${PROMOTE_URL_SUFFIX}`;
+    // let fetchOptions = {
+    //   type: 'PUT',
+    //   headers: {
+    //     'X-CSRF-Token': window.CSRF_TOKEN,        
+    //   }
+    // };
+    // fetchData(url, fetchOptions).then( () => {
+    //   this.props.dispatch(removeEntry(id));
+    // });
   }
 
   renderOpenClaim() {
@@ -82,7 +95,7 @@ class TriageControls extends Component {
 
   renderTags() {
     return (
-      <div>
+      <div ref='tagList'>
         <a className='button secondary small'>Get list of genes from abstract</a>
         <TagList entry={this.props.entry} onUpdate={this.saveUpdatedEntry.bind(this)} />
       </div>
