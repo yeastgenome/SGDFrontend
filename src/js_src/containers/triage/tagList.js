@@ -76,19 +76,21 @@ class TagList extends Component {
         this.toggleSelected(d.name);
       };
       return (
-        <div className='row' key={`sTag${i}`}>
-          <div className='columns small-4'>
-            {sectionLabelNode}
-            <a className={`button small ${classSuffix}`} onClick={_onClick}>
-              {d.label}
-              {suffixNode}
-            </a>
-          </div>
-          <div className='columns small-4'>
-            {geneSuffixNode}
-          </div>
-          <div className='columns small-4'>
-            {commentSuffixNode}
+        <div key={`sTag${i}`}>
+          {sectionLabelNode}
+          <div className='row'>
+            <div className='columns small-4'>
+              <a className={`button small ${classSuffix}`} onClick={_onClick}>
+                {d.label}
+                {suffixNode}
+              </a>
+            </div>
+            <div className='columns small-4'>
+              {geneSuffixNode}
+            </div>
+            <div className='columns small-4'>
+              {commentSuffixNode}
+            </div>
           </div>
         </div>
       );
