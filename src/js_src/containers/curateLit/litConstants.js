@@ -40,7 +40,7 @@ export const allTags = [
     hasGenes: false
   },
   {
-    name: 'haedline_information',
+    name: 'headline_information',
     label: 'Headline information',
     hasGenes: false
   },
