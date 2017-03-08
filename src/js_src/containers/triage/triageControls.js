@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import fetchData from '../../lib/fetchData';
-import { updateTriageEntry, removeEntry } from './triageActions';
+import { updateTriageEntry, updateActiveTags, removeEntry } from './triageActions';
 import { setMessage } from '../../actions/metaActions';
 import TagList from './tagList';
 
@@ -48,7 +48,8 @@ class TriageControls extends Component {
     });
   }
 
-  handlePromoteEntry() {
+  handlePromoteEntry(e) {
+    e.preventDefault();
     let geneListEls = this.refs.tagList.getElementsByClassName('sgd-geneList');
     let tagData = [];
     for (var i = geneListEls.length - 1; i >= 0; i--) {
@@ -58,11 +59,14 @@ class TriageControls extends Component {
       let arrValue = simpleValue.split(',');
       arrValue.forEach( (d) => {
         tagData.push({
-          name: d,
-          type: geneTagType
+          value: d,
+          na: geneTagType
         });
       });
     }
+    this.props.dispatch(updateActiveTags(this.props.entry));
+    // scroll to top of page
+    window.scrollTo(0, 0);
     // e.preventDefault();
     // let id = this.props.entry.curation_id;
     // this.props.dispatch(removeEntry(id));
