@@ -55,9 +55,12 @@ class TriageControls extends Component {
       let el = geneListEls[i];
       let geneTagType = el.dataset.tagType;
       let simpleValue = el.value || '';
-      let arrValue = simpleValue.split(',')
+      let arrValue = simpleValue.split(',');
       arrValue.forEach( (d) => {
-        tagData.push({ })
+        tagData.push({
+          name: d,
+          type: geneTagType
+        });
       });
       console.log(el.value, el.dataset.tagType);
     }
