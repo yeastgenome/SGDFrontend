@@ -5,6 +5,19 @@ export function updateTriageEntry (updatedEntry) {
   };
 }
 
+export function updateActiveTags (updatedEntry) {
+  return {
+    type: 'UPDATE_ACTIVE_TAGS',
+    payload: updatedEntry
+  };
+}
+
+export function clearActiveTags () {
+  return {
+    type: 'CLEAR_ACTIVE_TAGS'
+  };
+}
+
 export function removeEntry (id) {
   return { type: 'REMOVE_TRIAGE', payload: id };
 }

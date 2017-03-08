@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
 import { selectTriageEntries } from '../../selectors/litSelectors';
-import { updateTriageEntries } from './triageActions';
+import { updateTriageEntries, clearActiveTags } from './triageActions';
+import TagList from './tagList';
 import TriageControls from './triageControls';
 
 const TRIAGE_URL = '/reference/triage';
@@ -62,10 +63,27 @@ class LitTriageIndex extends Component {
     );
   }
 
+  renderMessage() {
+    if (!this.props.isTagVisible) return null;
+    let onClear = () => {
+      this.props.dispatch(clearActiveTags());
+    };
+    return (
+      <div className='callout success'>
+        <p className='text-right'><i className='fa fa-close' onClick={onClear} /></p>
+        <p><i className='fa fa-check' /> Reference Added To Database</p>
+        <h5><a>{this.props.activeTagData.basic.citation}</a></h5>
+        <a className='button' onClick={onClear}>Ok</a>
+        <TagList entry={this.props.activeTagData} isReadOnly />
+      </div>
+    );
+  }
+
   render() {
     return (
       <div>
         <h1>Literature Triage</h1>
+        {this.renderMessage()}
         <div className={style.litTableContainer}>
           {this.renderEntries()}
         </div>
@@ -77,13 +95,17 @@ class LitTriageIndex extends Component {
 LitTriageIndex.propTypes = {
   dispatch: React.PropTypes.func,
   triageEntries: React.PropTypes.array,
-  username: React.PropTypes.string
+  username: React.PropTypes.string,
+  isTagVisible: React.PropTypes.bool,
+  activeTagData: React.PropTypes.object
 };
 
 function mapStateToProps(state) {
   return {
     triageEntries: selectTriageEntries(state),
-    username: state.auth.get('username')
+    username: state.auth.get('username'),
+    activeTagData: state.lit.get('activeTagData').toJS(),
+    isTagVisible: state.lit.get('isTagVisible')
   };
 }
 

@@ -146,7 +146,7 @@ export default connect(mapStateToProps)(SpreadsheetUpload);
 // TEMP
 const TEMPLATE_OPTIONS = [
   {
-    label: 'Locus Summaries',
+    label: 'Summaries',
     value: 'locus_summaries',
     tempalateUrl: 'https://docs.google.com/spreadsheets/d/1GwirBge5wrKBv5mDOnHMOrf7nxLydBQOIojaf5wd3QE/edit#gid=0'
   },

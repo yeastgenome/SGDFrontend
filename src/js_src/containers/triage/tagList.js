@@ -18,7 +18,7 @@ class TagList extends Component {
 
   getData() {
     let tagData = this.getTagData();
-    return allTags.map( (d) => {
+    let tags = allTags.map( (d) => {
       let existing = _.findWhere(tagData, { name: d.name });
       if (existing) {
         d.isSelected = true;
@@ -28,6 +28,10 @@ class TagList extends Component {
       }
       return d;
     });
+    if (this.props.isReadOnly) {
+      tags = tags.filter( d => d.isSelected );
+    }
+    return tags;
   }
 
   toggleSelected(_name) {
@@ -68,7 +72,7 @@ class TagList extends Component {
     let nodes = entryTags.map( (d, i) => {
       let classSuffix = d.isSelected ? '' : style.inactive;
       let suffixNode = d.isSelected ? <span> <i className='fa fa-close' /></span> : null;
-      let geneSuffixNode = (d.isSelected && d.hasGenes) ? <input type='text' /> : null;
+      let geneSuffixNode = (d.isSelected && d.hasGenes) ? <input className='sgd-geneList' data-name={d.name} type='text' /> : null;
       let commentSuffixNode = d.isSelected ? <input type='text' /> : null;
       let sectionLabelNode = d.sectionLabel ? <h5>{d.sectionLabel}</h5> : null;
       let _onClick = (e) => {
@@ -110,7 +114,7 @@ class TagList extends Component {
         </div>
         <div>
           {nodes}
-        </div>>
+        </div>
       </div>
     );
   }
@@ -126,7 +130,8 @@ class TagList extends Component {
 
 TagList.propTypes = {
   entry: React.PropTypes.object,
-  onUpdate: React.PropTypes.func
+  onUpdate: React.PropTypes.func,
+  isReadOnly: React.PropTypes.bool
 };
 
 export default TagList;

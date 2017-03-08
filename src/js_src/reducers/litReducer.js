@@ -6,6 +6,8 @@ const DEFAULT_STATE = fromJS({
   activeLitEntry: {
     lastUpdated: (new Date())
   },
+  activeTagData: {},
+  isTagVisible: false,
   triageEntries: [],
 });
 
@@ -14,6 +16,12 @@ export default function litReducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
   case 'UPDATE_ACTIVE_ENTRY':
     return state.set('activeLitEntry', fromJS(action.payload));
+  case 'UPDATE_ACTIVE_TAGS':
+    return state
+      .set('isTagVisible', fromJS(true))
+      .set('activeTagData', fromJS(action.payload));
+  case 'CLEAR_ACTIVE_TAGS':
+    return state.set('isTagVisible', fromJS(false));
   case 'UPDATE_TRIAGE_ENTRY':
     triageEntries = state.get('triageEntries').toJS();
     let targetEntry = _.findWhere(triageEntries, { curation_id: action.payload.curation_id });
