@@ -1,10 +1,11 @@
 import datetime
 import factory
-from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Edam, \
+from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Dbentity, Edam, \
     Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, \
     PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity, StrainUrl, \
     Strainsummary, StrainsummaryReference, Dataset, DatasetReference, DatasetKeyword, Referencetype, ReferenceRelation, ReferenceUrl, Referenceauthor, \
-    Physinteractionannotation, Geninteractionannotation, Goannotation, Regulationannotation, Contig
+    Physinteractionannotation, Geninteractionannotation, Goannotation, Regulationannotation, Literatureannotation, Contig, EcoAlias, EcoUrl, Goextension, \
+    Gosupportingevidence, Eco, Ro, Go
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -123,6 +124,22 @@ class DbuserFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     is_curator = False
 
+class DbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Dbentity
+        sqlalchemy_session = DBSession
+
+    dbentity_id = 1
+    format_name = "format name"
+    display_name = "display name"
+    obj_url = "/reference/S000185012"
+    source_id = 1
+    bud_id = 1
+    sgdid = 1
+    subclass = "REFERENCE"
+    dbentity_status = "Active"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
 
 class ColleagueUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -175,7 +192,8 @@ class KeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     keyword_id = 1
     format_name = factory.Sequence(lambda n: 'protein_{0}'.format(n))
-    display_name = factory.Sequence(lambda n: 'protein traffcking {0}'.format(n))
+    #display_name = factory.Sequence(lambda n: 'protein traffcking {0}'.format(n))
+    display_name = "protein trafficking 7"
     obj_url = "/keyword/protein_trafficking,_localization_and_degradation"
     source_id = 1
     description = "my description"
@@ -260,7 +278,8 @@ class JournalFactory(factory.alchemy.SQLAlchemyModelFactory):
     obj_url = "http://example.org/journal"
     source_id = 1
     bud_id = None
-    med_abbr = factory.Sequence(lambda n: 'med_{0}'.format(n))
+    #med_abbr = factory.Sequence(lambda n: 'med_{0}'.format(n))
+    med_abbr = "med_10"
     title = factory.Sequence(lambda n: 'Title {0}'.format(n))
     issn_print = "123"
     issn_electronic = "213"
@@ -823,5 +842,124 @@ class RegulationannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     regulation_type = "regulation type"
     direction = "forward"
     happens_during = "condition"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class LiteratureannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Literatureannotation
+        sqlalchemy_session = DBSession
+
+    annotation_id = 1
+    dbentity_id = 1
+    source_id = 1
+    bud_id = 1
+    taxonomy_id = 1
+    reference_id = 1
+    topic = "some topic"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class EcoFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Eco
+        sqlalchemy_session = DBSession
+
+    eco_id = 1
+    format_name = "format name"
+    display_name = "display name"
+    obj_url = "obj url"
+    source_id = 1
+    ecoid = 1
+    description = "description"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class EcoAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = EcoAlias
+        sqlalchemy_session = DBSession
+
+    alias_id = 1
+    display_name = "eco alias display name"
+    source_id = 1
+    eco_id = 1
+    alias_type = "eco alias type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class EcoUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = EcoUrl
+        sqlalchemy_session = DBSession
+
+    url_id = 1
+    display_name = "eco url display name"
+    obj_url = "obj url"
+    source_id = 1
+    eco_id = 1
+    url_type = "url type"
+    date_created =  factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class GoextensionFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Goextension
+        sqlalchemy_session = DBSession
+
+    goextension_id = 1
+    annotation_id = 1
+    group_id = 1
+    dbxref_id = "SGD:100000"
+    obj_url = "obj url"
+    ro_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class GosupportingevidenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Gosupportingevidence
+        sqlalchemy_session = DBSession
+
+    gosupportingevidence_id = 1
+    annotation_id = 1
+    group_id = 1
+    dbxref_id = "SGD:100000"
+    obj_url = "obj url"
+    evidence_type = "evidence type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class RoFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Ro
+        sqlalchemy_session = DBSession
+
+    ro_id = 1
+    format_name = "format name"
+    display_name = "display name"
+    obj_url = "obj url"
+    source_id = 1
+    roid = 1
+    description = "description"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class GoFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Go
+        sqlalchemy_session = DBSession
+
+    go_id = 1
+    format_name = "format name"
+    display_name = "display name"
+    obj_url = "obj url"
+    source_id = 1
+    goid = 1
+    go_namespace = "namepsace"
+    description = "description"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
