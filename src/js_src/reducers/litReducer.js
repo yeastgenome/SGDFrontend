@@ -1,81 +1,56 @@
 /*eslint-disable no-case-declarations */
 import { fromJS } from 'immutable';
+import _ from 'underscore';
 
-// temp fixture
 const DEFAULT_STATE = fromJS({
-  triageEntries: [
-    {
-      id: '12345abc',
-      isTriage: true,
-      citation: 'Kang MS, et al. (2013) Yeast RAD2, a homolog of human XPG, plays a key role in the regulation of the cell cycle and actin dynamics. Biol Open',
-      title: 'Lorem Ipsum dalor it Clylin Dependent Protein Serine',
-      tags: ['Fast Track'],
-      assignees: [
-        {
-          username: 'user1',
-          name: 'Thomas Dewey'
-        }
-      ]
-    },
-    {
-      id: '12345abc',
-      isTriage: true,
-      citation: 'Kang MS, et al. (2013) Yeast RAD2, a homolog of human XPG, plays a key role in the regulation of the cell cycle and actin dynamics. Biol Open',
-      title: 'Lorem Ipsum dalor it Clylin Dependent Protein Serine',
-      tags: ['Pathways', 'Phenotype needs review'],
-      assignees: [
-        {
-          username: 'user2',
-          name: 'Harriet Tubman'
-        }
-      ]
-    }
-  ],
   activeLitEntry: {
-    id: '12345abc',
-    title: 'Yeast RAD2, a homolog of human XPG, plays a key role in the regulation of the cell cycle and actin dynamics. Biol Open',
-    author: 'Lorem et al.',
-    citation: 'Kang MS, et al. (2013) Yeast RAD2, a homolog of human XPG, plays a key role in the regulation of the cell cycle and actin dynamics. Biol Open',
-    journal: 'Nucleic Acids Research',
-    abstract: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
-    status: 'reviewing',
-    tags: ['Pathways', 'Phenotype needs review'],
-    assignees: [
-      {
-        name: 'Curator A',
-        username: 'curate_a123'
-      }
-    ],
-    lastUpdated: new Date() // /now
+    lastUpdated: (new Date())
   },
-  allCuratorUsers: [
-    {
-      name: 'Curator A',
-      username: 'curate_a123'
-    },
-    {
-      name: 'Curator B',
-      username: 'curate_b123'
-    },
-    {
-      name: 'Curator C',
-      username: 'curate_c123'
-    }
-  ]
+  activeTagData: {},
+  isTagVisible: false,
+  triageEntries: [],
 });
 
 export default function litReducer(state = DEFAULT_STATE, action) {
-  let updatedLitEntry;
+  let triageEntries;
   switch (action.type) {
-  case 'UPDATE_ASSIGNEES':
-    updatedLitEntry = state.get('activeLitEntry').toJS();
-    updatedLitEntry.assignees = action.payload;
-    return state.set('activeLitEntry', fromJS(updatedLitEntry));
-  case 'UPDATE_TAGS':
-    updatedLitEntry = state.get('activeLitEntry').toJS();
-    updatedLitEntry.tags = action.payload;
-    return state.set('activeLitEntry', fromJS(updatedLitEntry));
+  case 'UPDATE_ACTIVE_ENTRY':
+    return state.set('activeLitEntry', fromJS(action.payload));
+  case 'UPDATE_ACTIVE_TAGS':
+    return state
+      .set('isTagVisible', fromJS(true))
+      .set('activeTagData', fromJS(action.payload));
+  case 'CLEAR_ACTIVE_TAGS':
+    return state.set('isTagVisible', fromJS(false));
+  case 'UPDATE_TRIAGE_ENTRY':
+    triageEntries = state.get('triageEntries').toJS();
+    let targetEntry = _.findWhere(triageEntries, { curation_id: action.payload.curation_id });
+    let targetI = _.indexOf(triageEntries, targetEntry);
+    triageEntries[targetI] = action.payload;
+    return state.set('triageEntries', fromJS(triageEntries));
+  case 'REMOVE_TRIAGE':
+    triageEntries = state.get('triageEntries').toJS();
+    let deletedEntry = _.findWhere(triageEntries, { curation_id: action.payload });
+    triageEntries = _.without(triageEntries, deletedEntry);
+    return state.set('triageEntries', fromJS(triageEntries));
+  case 'UPDATE_TRIAGE_ENTRIES':
+    triageEntries = state.get('triageEntries').toJS();
+    let newTriageEntries = replaceTriage(triageEntries, action.payload.entries, action.payload.username);
+    return state.set('triageEntries', fromJS(newTriageEntries));
   default:
     return state;
   }
+}
+
+function replaceTriage(oldEntries, newEntries, currentUsername) {
+  newEntries.forEach( (d, i) => {
+    let oldEntry = _.findWhere(oldEntries, { curation_id: d.curation_id });
+    if (!oldEntry) {
+      oldEntries.push(d);
+    // replace if assignee changes and current version not claimed to self
+    } else if (oldEntry.data.assignee !== d.data.assignee && oldEntry.data.assignee !== currentUsername) {
+      oldEntries[i] = d;
+    }
+  });
+  return oldEntries;
 }

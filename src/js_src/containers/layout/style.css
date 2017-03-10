@@ -5,6 +5,9 @@
   font-weight: bold;
   margin-left: 0.25rem;
 }
+.imgLogo {
+  width: 4rem;
+}
 .messageText {
   margin-bottom: 0.25rem;
 }
@@ -31,9 +34,10 @@
   color: white;
 }
 .indexLink {
-  color: white;
-  background: #0581C2;
+  color: black !important;
   font-weight: bold;
+  display: block;
+  padding: 0.5rem 0;
 }
 .indexLink:hover {
   color: white;
@@ -57,3 +61,12 @@
   position: relative;
   top: -0.5rem;
 }
+
+.topMenu {
+  background: none !important;
+}
+
+.topMenu a {
+  color: white;
+}
+

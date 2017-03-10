@@ -28,13 +28,12 @@ log = logging.getLogger(__name__)
 def home_view(request):
     return {'google_client_id': os.environ['GOOGLE_CLIENT_ID']}
 
-# @authenticate
 @view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')
+@authenticate
 def upload_spreadsheet(request):
     tsv_file = request.POST['file'].file
     template_type = request.POST['template']
-    annotations = parse_tsv_annotations(tsv_file, template_type)
-    
+    annotations = parse_tsv_annotations(DBSession, tsv_file, template_type)
     return {'annotations': annotations}
 
 @view_config(route_name='upload', request_method='POST', renderer='json')
@@ -243,7 +242,7 @@ def reference_list(request):
         except ValueError:
             return HTTPBadRequest(body=json.dumps({'error': "IDs must be string format of integers. Example JSON object expected: {\"reference_ids\": [\"1\", \"2\"]}"}))
 
-@view_config(route_name='sign_in', request_method='POST')
+@view_config(route_name='sign_in', request_method='POST', renderer='json')
 def sign_in(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
@@ -277,7 +276,7 @@ def sign_in(request):
 
         log.info('User ' + idinfo['email'] + ' was successfuly authenticated.')
 
-        return HTTPOk()
+        return { 'username': curator.username }
     except crypt.AppIdentityError:
         return HTTPForbidden(body=json.dumps({'error': 'Authentication token is invalid'}))
 
@@ -398,8 +397,7 @@ def reference_regulation_details(request):
 
 @view_config(route_name='reference_triage', renderer='json', request_method='GET')
 def reference_triage(request):
-    triages = DBSession.query(Referencetriage).all()
-
+    triages = DBSession.query(Referencetriage).order_by(Referencetriage.date_created.asc()).all()
     return {'entries': [t.to_dict() for t in triages]}
 
 @view_config(route_name='reference_triage_id', renderer='json', request_method='GET')

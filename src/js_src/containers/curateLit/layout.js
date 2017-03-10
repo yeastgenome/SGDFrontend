@@ -4,8 +4,10 @@ import { connect } from 'react-redux';
 
 import style from './style.css';
 import { SMALL_COL_CLASS, LARGE_COL_CLASS } from '../../constants';
-import AuthorResponseDrawer from './authorResponseDrawer';
+import fetchData from '../../lib/fetchData';
+// import AuthorResponseDrawer from './authorResponseDrawer';
 import { selectActiveLitEntry, selectActiveLitId, selectCurrentSection } from '../../selectors/litSelectors';
+import { updateActiveEntry } from '../../actions/litActions';
 import LitStatus from '../triageLit/litStatus';
 
 const BASE_CURATE_URL = '/annotate/reference';
@@ -22,12 +24,23 @@ const SECTIONS = [
 ];
 
 class CurateLitLayout extends Component {
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData() {
+    let id = this.props.params.id;
+    let url = `/reference/${id}`;
+    fetchData(url).then( (data) => {
+      this.props.dispatch(updateActiveEntry(data));
+    });
+  }
+
   renderHeader() {
     let d = this.props.activeEntry;
     return (
       <div>
         <h3>{d.citation}</h3>
-        <AuthorResponseDrawer />
         <LitStatus />
       </div>
     );
@@ -69,7 +82,9 @@ CurateLitLayout.propTypes = {
   activeEntry: React.PropTypes.object,
   activeId: React.PropTypes.string,
   children: React.PropTypes.node,
-  currentSection: React.PropTypes.string
+  currentSection: React.PropTypes.string,
+  dispatch: React.PropTypes.func,
+  params: React.PropTypes.object
 };
 
 function mapStateToProps(state) {
