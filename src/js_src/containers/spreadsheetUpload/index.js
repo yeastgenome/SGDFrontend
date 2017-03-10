@@ -10,6 +10,7 @@ import AnnotationSummary from '../../components/annotationSummary';
 import Loader from '../../components/loader';
 
 const UPLOAD_URL = '/upload_spreadsheet';
+const UPLOAD_TIMEOUT = 120000;
 
 class SpreadsheetUpload extends Component {
   constructor(props) {
@@ -49,7 +50,8 @@ class SpreadsheetUpload extends Component {
       },
       data: formData,
       processData: false,
-      contentType: false
+      contentType: false,
+      timeout: UPLOAD_TIMEOUT,
     }).then( data => {
       this.setState({
         isPending: false,
@@ -144,7 +146,7 @@ export default connect(mapStateToProps)(SpreadsheetUpload);
 // TEMP
 const TEMPLATE_OPTIONS = [
   {
-    label: 'Locus Summaries',
+    label: 'Summaries',
     value: 'locus_summaries',
     tempalateUrl: 'https://docs.google.com/spreadsheets/d/1GwirBge5wrKBv5mDOnHMOrf7nxLydBQOIojaf5wd3QE/edit#gid=0'
   },

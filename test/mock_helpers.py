@@ -50,6 +50,101 @@ class MockQuery(object):
 class MockFileStorage(object):
     pass
 
+# def ref_details_side_effect(*args, **kwargs):
+#     import pdb;
+#     pdb.set_trahce()
+#     if len(args) == 1 and str(args[0]) == "<class 'src.models.Referencedbentity'>":
+#         source = factory.SourceFactory()
+#         journal = factory.JournalFactory()
+#         book = factory.BookFactory()
+#         refdbentity = factory.ReferencedbentityFactory()
+#         refdbentity.journal = journal
+#         return MockQuery(refdbentity)
+#     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Literatureannotation'>":
+#         source = factory.SourceFactory()
+#         journal = factory.JournalFactory()
+#         book = factory.BookFactory()
+#         refdbentity = factory.ReferencedbentityFactory()
+#         refdbentity.journal = journal
+#         litannot = factory.LiteratureannotationFactory()
+#         litannot.dbentity = refdbentity
+#         return MockQuery(litannot)
+
+
+def go_details_side_effect(*args, **kwargs):
+    # import pdb;
+    # pdb.set_trace()
+
+    if len(args) == 1 and str(args[0]) == "<class 'src.models.Referencedbentity'>":
+        source = factory.SourceFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        refdbentity = factory.ReferencedbentityFactory()
+        refdbentity.journal = journal
+        return MockQuery(refdbentity)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Goannotation'>":
+        source = factory.SourceFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        refdbentity = factory.ReferencedbentityFactory()
+        refdbentity.journal = journal
+        ecof = factory.EcoFactory()
+        go = factory.GoFactory()
+        db = factory.DbentityFactory()
+        goannot = factory.GoannotationFactory()
+        goannot.reference = refdbentity
+        goannot.dbentity = db
+        goannot.eco = ecof
+        goannot.go = go
+        goannot.source = source
+        return MockQuery(goannot)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.EcoAlias'>":
+        #ecof = factory.EcoFactory()
+        ecoalias = factory.EcoAliasFactory()
+        #ecoalias.eco = ecof
+        return MockQuery(ecoalias)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.EcoUrl'>":
+        ecourl = factory.EcoUrlFactory()
+        return MockQuery(ecourl)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Goextension'>":
+        ro = factory.RoFactory()
+        goext = factory.GoextensionFactory()
+        goext.ro = ro
+        return MockQuery(goext)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Dbentity'>":
+        db = factory.DbentityFactory()
+        return MockQuery(db)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Gosupportingevidence'>":
+        goev= factory.GosupportingevidenceFactory()
+        return MockQuery(goev)
+
+
+def author_side_effect(*args, **kwargs):
+    # import pdb;
+    # pdb.set_trace()
+    if len(args) == 1 and str(args[0]) == "<class 'src.models.Referenceauthor'>":
+        source = factory.SourceFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        refdb = factory.ReferencedbentityFactory()
+        refauth = factory.ReferenceauthorFactory()
+        refauth.reference = refdb
+        return MockQuery(refauth)
+    elif len(args) == 1 and str(args[0]) == 'Referencedocument.html':
+        source = factory.SourceFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        refdb = factory.ReferencedbentityFactory()
+        refdb.journal = journal
+        refdoc = factory.ReferencedocumentFactory()
+        return MockQuery(refdoc.html)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.ReferenceUrl'>":
+        refurl = factory.ReferenceUrlFactory()
+        return MockQuery(refurl)
+    elif len(args) == 1 and str(args[0]) == 'Referencetype.display_name':
+        reftype = factory.ReferencetypeFactory()
+        return MockQuery((reftype.display_name))
+
 
 def side_effect(*args, **kwargs):
     #import pdb;
@@ -87,9 +182,9 @@ def side_effect(*args, **kwargs):
         return MockQuery((c_name.format_name, c_name.obj_url))
 
 
+
 def reference_side_effect(*args, **kwargs):
-            # import pdb;
-            # pdb.set_trace()
+
             if len(args) == 1 and str(args[0]) == "<class 'src.models.Referencedbentity'>":
                 source = factory.SourceFactory()
                 journal = factory.JournalFactory()
@@ -135,7 +230,18 @@ def reference_side_effect(*args, **kwargs):
                 refurl = factory.ReferenceUrlFactory()
                 return MockQuery(refurl)
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.Physinteractionannotation'>":
+                source = factory.SourceFactory()
+                journal = factory.JournalFactory()
+                book = factory.BookFactory()
+                refdbentity = factory.ReferencedbentityFactory()
+                refdbentity.journal = journal
+                db1 = factory.DbentityFactory(dbentity_id=1)
+                db2 = factory.DbentityFactory(dbentity_id=2)
                 intannot = factory.PhysinteractionannotationFactory()
+                intannot.dbentity1 = db1
+                intannot.dbentity2= db2
+                intannot.reference = refdbentity
+                intannot.source = source
                 return MockQuery((intannot))
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.Geninteractionannotation'>":
                 genannot = factory.GeninteractionannotationFactory()
@@ -147,5 +253,21 @@ def reference_side_effect(*args, **kwargs):
                 phenoannot = factory.PhenotypeannotationFactory()
                 return MockQuery((phenoannot))
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.Regulationannotation'>":
+                target = factory.DbentityFactory()
+                regulator = factory.DbentityFactory()
                 regannot = factory.RegulationannotationFactory()
+                regannot.target = target
+                regannot.regulator = regulator
                 return MockQuery((regannot))
+            elif len(args) == 1 and str(args[0]) == "<class 'src.models.Literatureannotation'>":
+                source = factory.SourceFactory()
+                journal = factory.JournalFactory()
+                book = factory.BookFactory()
+                refdbentity = factory.ReferencedbentityFactory()
+                refdbentity.journal = journal
+                litannot = factory.LiteratureannotationFactory()
+                litannot.dbentity = refdbentity
+                return MockQuery(litannot)
+            elif len(args) == 1 and str(args[0]) == "<class 'src.models.Straindbentity'>":
+                s_name = factory.StraindbentityFactory()
+                return MockQuery(s_name)

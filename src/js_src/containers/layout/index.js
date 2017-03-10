@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import style from './style.css';
 import SearchBar from './searchBar';
 import curateLogo from './curateLogo.png';
-import { clearError } from '../../actions/metaActions';
+import { clearError, clearMessage } from '../../actions/metaActions';
 
 class Layout extends Component {
   renderAuthedMenu() {
@@ -21,17 +21,7 @@ class Layout extends Component {
       </div>
     );
   }
-
-  renderPublicMenu() {
-    return (
-      <ul className={`menu ${style.authMenu}`}>
-        <li>
-          <Link className={style.navLink} to='/login'><i className='fa fa-sign-in' /> Login</Link>
-        </li>
-      </ul>
-    );
-  }
-
+  
   renderError() {
     if (!this.props.error) return null;
     let handleClick = () => {
@@ -47,18 +37,44 @@ class Layout extends Component {
     );
   }
 
+  renderMessage() {
+    if (!this.props.message) return null;
+    let handleClick = () => {
+      this.props.dispatch(clearMessage());
+    };
+    return (
+      <div className={`primary callout ${style.errorContainer}`}>
+        <h3 className={style.closeIcon} onClick={handleClick}><i className='fa fa-close' /></h3>
+        <p dangerouslySetInnerHTML={{ __html: this.props.message}} />
+      </div>
+    );
+  }
+
   render() {
     // init auth nodes, either login or logout links
-    let authNodes = this.props.isAuthenticated ? this.renderAuthedMenu() : this.renderPublicMenu();
+    let authNodes = this.props.isAuthenticated ? this.renderAuthedMenu() : null;
     return (
       <div>
+        {this.renderMessage()}
         {this.renderError()}
+        <div className='row'>
+          <div className='columns small-12'>
+            <Link className={style.indexLink} to='curate'>
+              <img className={style.imgLogo} src={curateLogo} /><i>Saccharomyces</i> Genome Database <span className='label'>Curator</span>
+            </Link>
+          </div>
+        </div>
         <nav className={`top-bar ${style.navWrapper}`}>
           <div className='top-bar-left'>
-            <ul className={`menu ${style.menu}`}>
+            <ul className={`menu ${style.topMenu}`}>
               <li>
-                <Link className={style.indexLink} to='curate'>
-                  <img className={style.imgLogo} src={curateLogo} /> SGD Curator
+                <Link to='curate'>
+                  <span><i className='fa fa-home' /> Home</span>
+                </Link>
+              </li>
+              <li>
+                <Link to='help'>
+                  <span><i className='fa fa-question-circle' /> Help</span>
                 </Link>
               </li>
             </ul>
@@ -80,6 +96,7 @@ class Layout extends Component {
 Layout.propTypes = {
   children: PropTypes.node,
   error: React.PropTypes.string,
+  message: React.PropTypes.string,
   dispatch: React.PropTypes.func,
   isAuthenticated: React.PropTypes.bool
 };
@@ -87,6 +104,7 @@ Layout.propTypes = {
 function mapStateToProps(state) {
   return {
     error: state.meta.get('error'),
+    message: state.meta.get('message'),
     isAuthenticated: state.auth.get('isAuthenticated')
   };
 }
