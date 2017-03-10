@@ -8,7 +8,6 @@ import fetchData from '../../lib/fetchData';
 // import AuthorResponseDrawer from './authorResponseDrawer';
 import { selectActiveLitEntry, selectActiveLitId, selectCurrentSection } from '../../selectors/litSelectors';
 import { updateActiveEntry } from '../../actions/litActions';
-import LitStatus from '../triageLit/litStatus';
 
 const BASE_CURATE_URL = '/annotate/reference';
 const SECTIONS = [
@@ -41,7 +40,6 @@ class CurateLitLayout extends Component {
     return (
       <div>
         <h3>{d.citation}</h3>
-        <LitStatus />
       </div>
     );
   }
