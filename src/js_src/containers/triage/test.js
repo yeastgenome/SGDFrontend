@@ -2,11 +2,11 @@ import assert from 'assert';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 
-import Help from './index';
+import { LitTriageIndex } from './index';
 
-describe('Help', () => {
+describe('LitTriageIndex', () => {
   it('should be able to render to an HTML string', () => {
-    let htmlString = renderToString(<Help />);
+    let htmlString = renderToString(<LitTriageIndex entries={[]} />);
     assert.equal(typeof htmlString, 'string');
   });
 });

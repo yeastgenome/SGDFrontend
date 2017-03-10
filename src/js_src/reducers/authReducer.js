@@ -1,9 +1,10 @@
 import { fromJS } from 'immutable';
 
 const DEFAULT_STATE = fromJS({
+  csrfToken: null,
   isAuthenticated: false,
   isAuthenticating: false,
-  csrfToken: null
+  username: null
 });
 
 export default function authReducer(state = DEFAULT_STATE, action) {
@@ -16,7 +17,8 @@ export default function authReducer(state = DEFAULT_STATE, action) {
     return state
       .set('isAuthenticated', true)
       .set('isAuthenticating', false)
-      .set('loginError', false);
+      .set('loginError', false)
+      .set('username', action.payload);
   case 'LOGOUT':
     return state
       .set('isAuthenticated', false)

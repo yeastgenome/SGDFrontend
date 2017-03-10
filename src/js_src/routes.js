@@ -4,6 +4,7 @@ import { IndexRoute, Route  } from 'react-router';
 // public routes and layout
 import Layout from './containers/layout';
 import PublicHome from './containers/publicHome';
+import Help from './containers/help';
 import Login from './containers/login';
 // authenticated curate inputs
 import { requireAuthentication } from './containers/authenticateComponent';
@@ -12,7 +13,7 @@ import CurateHome from './containers/curateHome';
 import Search from './containers/search';
 import LocusShow from './containers/locus/show';
 import RefShow from './containers/reference/show';
-import LitIndex from './containers/literature';
+import TriageIndex from './containers/triage';
 import CurateLit from './containers/curateLit/layout';
 // TEMP
 import CurateLitBasic from './containers/triageLit/litBasicInfo';
@@ -29,11 +30,12 @@ import SpreadsheetUpload from './containers/spreadsheetUpload/index';
 export default (
   <Route component={Layout} path='/'>
     <IndexRoute component={PublicHome} />
+    <Route component={Help} path='help' />
     <Route component={requireAuthentication(Search)} path='search' />
     <Route component={Login} path='login' />
     <Route component={CurateLayout} path='curate'>
       <IndexRoute component={requireAuthentication(CurateHome)} />
-      <Route component={requireAuthentication(LitIndex)} path='lit_triage' />
+      <Route component={requireAuthentication(TriageIndex)} path='triage' />
       <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
     </Route>
     <Route component={requireAuthentication(TriageLit)} path='triage_literature/:id' />
