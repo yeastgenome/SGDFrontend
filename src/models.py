@@ -1406,9 +1406,9 @@ class Locusdbentity(Dbentity):
                 "manual_molecular_function_terms": [],
                 "manual_biological_process_terms": [],
                 "manual_cellular_component_terms": [],
-                "htp_molecular_function_terms": [], # TODO
-                "htp_biological_process_terms": [], # TODO
-                "htp_cellular_component_terms": [], # TODO
+                "htp_molecular_function_terms": [],
+                "htp_biological_process_terms": [],
+                "htp_cellular_component_terms": [], 
                 "computational_annotation_count": 0
             },
             "pathways": [],
@@ -1492,13 +1492,42 @@ class Locusdbentity(Dbentity):
             protein_sequence = DBSession.query(ProteinsequenceDetail).filter_by(annotation_id=protein[0]).one_or_none()
             obj["protein_overview"] = protein_sequence.to_dict_lsp()
 
+        go = {}
+        for namespace in ("cellular component", "molecular function", "biological process"):
+            go[namespace] = {}
+
         go_annotations_mc = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="manually curated").all()
+        for annotation in go_annotations_mc:
+            json = annotation.to_dict_lsp()
+            
+            namespace = json["namespace"]
+            term = json["term"]["display_name"]
+
+            if term in go[namespace]:
+                for ec in json["evidence_codes"]:
+                    if ec["display_name"] not in [e["display_name"] for e in go[namespace][term]["evidence_codes"]]:
+                        go[namespace][term]["evidence_codes"].append(ec)
+            else:
+                go[namespace][term] = json
+                
+        for namespace in go.keys():
+            terms = sorted(go[namespace].keys(), key=lambda k : k.lower())
+            
+            if namespace == "cellular component":
+                obj["go_overview"]["manual_cellular_component_terms"] = [go[namespace][term] for term in terms]
+            elif namespace == "molecular function":
+                obj["go_overview"]["manual_molecular_function_terms"] = [go[namespace][term] for term in terms]
+            elif namespace == "biological process":
+                obj["go_overview"]["manual_biological_process_terms"] = [go[namespace][term] for term in terms]
+        
+        obj["go_overview"]["computational_annotation_count"] = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="computational").count()
 
         go = {}
         for namespace in ("cellular component", "molecular function", "biological process"):
             go[namespace] = {}
         
-        for annotation in go_annotations_mc:
+        go_annotations_computational = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="computational").all()
+        for annotation in go_annotations_computational:
             json = annotation.to_dict_lsp()
             
             namespace = json["namespace"]
@@ -1515,13 +1544,11 @@ class Locusdbentity(Dbentity):
             terms = sorted(go[namespace].keys(), key=lambda k : k.lower())
             
             if namespace == "cellular component":
-                obj["go_overview"]["manual_cellular_component_terms"] = [go[namespace][term] for term in terms]
+                obj["go_overview"]["htp_cellular_component_terms"] = [go[namespace][term] for term in terms]
             elif namespace == "molecular function":
-                obj["go_overview"]["manual_molecular_function_terms"] = [go[namespace][term] for term in terms]
+                obj["go_overview"]["htp_molecular_function_terms"] = [go[namespace][term] for term in terms]
             elif namespace == "biological process":
-                obj["go_overview"]["manual_biological_process_terms"] = [go[namespace][term] for term in terms]
-        
-        obj["go_overview"]["computational_annotation_count"] = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="computational").count()
+                obj["go_overview"]["htp_biological_process_terms"] = [go[namespace][term] for term in terms]
 
         go_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id, summary_type="Function").one_or_none()
         if go_summary:
