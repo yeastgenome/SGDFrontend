@@ -1403,7 +1403,6 @@ class Locusdbentity(Dbentity):
                 "pi": 0
             },
             "go_overview": {
-                "paragraph": None,
                 "manual_molecular_function_terms": [],
                 "manual_biological_process_terms": [],
                 "manual_cellular_component_terms": [],
@@ -1458,12 +1457,15 @@ class Locusdbentity(Dbentity):
         sos = DBSession.query(Dnasequenceannotation.so_id).filter_by(dbentity_id=self.dbentity_id).group_by(Dnasequenceannotation.so_id).all()
         locus_type = DBSession.query(So.display_name).filter(So.so_id.in_([so[0] for so in sos])).all()
         obj["locus_type"] = ",".join([l[0] for l in locus_type])
-
-        summary = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type="Gene").one_or_none()
-        if summary:
+        
+        summary = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type="Gene").all()
+        if len(summary) > 0:
+            text = ""
+            for s in summary:
+                text += s[1]
             obj["paragraph"] = {
-                "text": summary[1],
-                "date_edited": summary[2].strftime("%Y-%m-%d")
+                "text": text,
+                "date_edited": summary[-1][2].strftime("%Y-%m-%d")
             }
 
         literature_counts = DBSession.query(Literatureannotation.topic, func.count(Literatureannotation.annotation_id)).filter_by(dbentity_id=self.dbentity_id).group_by(Literatureannotation.topic).all()
@@ -1479,7 +1481,7 @@ class Locusdbentity(Dbentity):
             total_count += lit_count[1]
         obj["literature_overview"]["total_count"] = total_count
                 
-        summary_references = DBSession.query(LocussummaryReference).filter_by(summary_id=summary[0]).order_by(LocussummaryReference.reference_order).all()
+        summary_references = DBSession.query(LocussummaryReference).filter(LocussummaryReference.summary_id.in_([s[0] for s in summary])).order_by(LocussummaryReference.reference_order).all()
         obj["references"] = [s.reference.to_dict_citation() for s in summary_references]
         
         urls = DBSession.query(LocusUrl).filter_by(locus_id=self.dbentity_id).all()
@@ -1522,7 +1524,8 @@ class Locusdbentity(Dbentity):
         obj["go_overview"]["computational_annotation_count"] = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="computational").count()
 
         go_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id, summary_type="Function").one_or_none()
-        obj["go_overview"]["paragraph"] = go_summary[0]
+        if go_summary:
+            obj["go_overview"]["paragraph"] = go_summary[0]
 
         phenotype_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id, summary_type="Phenotype").one_or_none()
         obj["phenotype_overview"]["paragraph"] = phenotype_summary[0]
@@ -3483,7 +3486,6 @@ class Physinteractionannotation(Base):
         modification = "No Modification"
         if self.psimod:
             modification = self.psimod.display_name
-            import pdb; pdb.set_trace()
         
         return {
             "id": self.annotation_id,
