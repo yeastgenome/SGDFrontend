@@ -12,6 +12,11 @@
 	border: 1px solid #e2e2e2;
 }
 
+.tagButton {
+	padding: 0.35rem;
+	margin-bottom: 0.25rem;
+}
+
 .triageEntryContiner {
 	margin-bottom: 2rem;
 }

@@ -46,34 +46,29 @@ class TagList extends Component {
     this.updateTags(tagData);
   }
 
-  renderCommentSection(d) {
-    if (!d.isSelected) return null;
-    // let tagData = this.getTagData();
-    // let tagEntry = _.findWhere(tagData, { name: d.name });
-    let _onChange = () => {
-      // e.target.value;
-    };
-    return (
-      <div className='row'>
-        <div className='column small-6'>
-          <label>Genes</label>
-          <input className='sgd-geneList' data-tag-label={d.label} data-tag-name={d.name} type='text' onChange={_onChange} />
-        </div>
-        <div className='column small-6'>
-          <label>Comment</label>
-          <input type='text' />
-        </div>
-      </div>
-    );
+  renderGenes(name, value) {
+    if (this.props.isReadOnly) {
+      return <span>{value}</span>;
+    } else {
+      return <input  className='sgd-geneList' data-name={name} type='text' initialValue={value} />;
+    }
+  }
+
+  renderComments(name, value) {
+    if (this.props.isReadOnly) {
+      return <span>{value}</span>;
+    } else {
+      return <input  className='sgd-comment' data-name={name} type='text' initialValue={value} />;
+    }
   }
 
   renderTags() {
     let entryTags = this.getData();
     let nodes = entryTags.map( (d, i) => {
       let classSuffix = d.isSelected ? '' : style.inactive;
-      let suffixNode = d.isSelected ? <span> <i className='fa fa-close' /></span> : null;
-      let geneSuffixNode = (d.isSelected && d.hasGenes) ? <input className='sgd-geneList' data-name={d.name} type='text' /> : null;
-      let commentSuffixNode = d.isSelected ? <input type='text' /> : null;
+      let suffixNode = (d.isSelected && !this.props.isReadOnly) ? <span> <i className='fa fa-close' /></span> : null;
+      let geneSuffixNode = (d.isSelected && d.hasGenes) ? this.renderGenes(d.name, d.value) : null;
+      let commentSuffixNode = d.isSelected ? this.renderComments(d.name, d.comment) : null;
       let sectionLabelNode = d.sectionLabel ? <h5>{d.sectionLabel}</h5> : null;
       let _onClick = (e) => {
         e.preventDefault();
@@ -84,7 +79,7 @@ class TagList extends Component {
           {sectionLabelNode}
           <div className='row'>
             <div className='columns small-4'>
-              <a className={`button small ${classSuffix}`} onClick={_onClick}>
+              <a className={`button small ${style.tagButton} ${classSuffix}`} onClick={_onClick}>
                 {d.label}
                 {suffixNode}
               </a>
