@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import _ from 'underscore';
 
 import fetchData from '../../lib/fetchData';
 import { updateTriageEntry, updateActiveTags, removeEntry } from './triageActions';
@@ -48,23 +49,33 @@ class TriageControls extends Component {
     });
   }
 
-  handlePromoteEntry(e) {
-    e.preventDefault();
-    let geneListEls = this.refs.tagList.getElementsByClassName('sgd-geneList');
+  getDataFromTagInputs(tagClassName) {
+    let geneListEls = this.refs.tagList.getElementsByClassName(tagClassName);
     let tagData = [];
     for (var i = geneListEls.length - 1; i >= 0; i--) {
       let el = geneListEls[i];
-      let geneTagType = el.dataset.tagType;
+      let geneTagType = el.dataset.type;
       let simpleValue = el.value || '';
-      let arrValue = simpleValue.split(',');
-      arrValue.forEach( (d) => {
-        tagData.push({
-          value: d,
-          na: geneTagType
-        });
+      tagData.push({
+        value: simpleValue,
+        type: geneTagType
       });
     }
-    this.props.dispatch(updateActiveTags(this.props.entry));
+    return tagData;
+  }
+
+  handlePromoteEntry(e) {
+    e.preventDefault();
+    let tagGeneData = this.getDataFromTagInputs('sgd-geneList');
+    let tagCommentData = this.getDataFromTagInputs('sgd-comment');
+    let tempEntry = this.props.entry;
+    tempEntry.data.tags.forEach( (d) => {
+      let thisGenes = _.findWhere(tagGeneData, { type: d.name });
+      if (thisGenes) d.genes = thisGenes.value;
+      let thisComments = _.findWhere(tagCommentData, { type: d.name });
+      if (thisComments) d.comment = thisComments.value;
+    });
+    this.props.dispatch(updateActiveTags(tempEntry));
     // scroll to top of page
     window.scrollTo(0, 0);
     // e.preventDefault();
