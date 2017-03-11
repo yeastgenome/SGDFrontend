@@ -21,6 +21,7 @@ class TagList extends Component {
     let tags = allTags.map( (d) => {
       let existing = _.findWhere(tagData, { name: d.name });
       if (existing) {
+        d = _.extend(d, existing);
         d.isSelected = true;
         // create a string of genes
       } else {
@@ -40,7 +41,7 @@ class TagList extends Component {
     if (isExisting) {
       tagData = tagData.filter( d => d.name !== _name );
     } else {
-      let newEntry = { name: _name, genes: [] };
+      let newEntry = { name: _name, genes: '', comment: '' };
       tagData.push(newEntry);
     }
     this.updateTags(tagData);
@@ -50,7 +51,7 @@ class TagList extends Component {
     if (this.props.isReadOnly) {
       return <span>{value}</span>;
     } else {
-      return <input  className='sgd-geneList' data-name={name} type='text' initialValue={value} />;
+      return <input className='sgd-geneList' data-type={name} type='text' defaultValue={value} />;
     }
   }
 
@@ -58,7 +59,7 @@ class TagList extends Component {
     if (this.props.isReadOnly) {
       return <span>{value}</span>;
     } else {
-      return <input  className='sgd-comment' data-name={name} type='text' initialValue={value} />;
+      return <input className='sgd-comment' data-type={name} type='text' defaultValue={value} />;
     }
   }
 
@@ -67,7 +68,7 @@ class TagList extends Component {
     let nodes = entryTags.map( (d, i) => {
       let classSuffix = d.isSelected ? '' : style.inactive;
       let suffixNode = (d.isSelected && !this.props.isReadOnly) ? <span> <i className='fa fa-close' /></span> : null;
-      let geneSuffixNode = (d.isSelected && d.hasGenes) ? this.renderGenes(d.name, d.value) : null;
+      let geneSuffixNode = (d.isSelected && d.hasGenes) ? this.renderGenes(d.name, d.genes) : null;
       let commentSuffixNode = d.isSelected ? this.renderComments(d.name, d.comment) : null;
       let sectionLabelNode = d.sectionLabel ? <h5>{d.sectionLabel}</h5> : null;
       let _onClick = (e) => {

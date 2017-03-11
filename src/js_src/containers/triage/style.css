@@ -24,3 +24,7 @@
 .triageControls {
 	margin-top: 1rem;
 }
+
+.closeIcon {
+	cursor: pointer;
+}
