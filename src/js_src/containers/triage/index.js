@@ -6,7 +6,7 @@ import fetchData from '../../lib/fetchData';
 import { selectTriageEntries } from '../../selectors/litSelectors';
 import CategoryLabel from '../../components/categoryLabel';
 import { updateTriageEntries, clearActiveTags } from './triageActions';
-import TagList from './tagList';
+import TagList from '../../components/tagList';
 import TriageControls from './triageControls';
 
 const TRIAGE_URL = '/reference/triage';

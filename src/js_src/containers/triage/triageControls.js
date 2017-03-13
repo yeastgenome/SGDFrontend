@@ -5,7 +5,7 @@ import _ from 'underscore';
 import fetchData from '../../lib/fetchData';
 import { updateTriageEntry, updateActiveTags, removeEntry } from './triageActions';
 import { setMessage } from '../../actions/metaActions';
-import TagList from './tagList';
+import TagList from '../../components/tagList';
 
 const TRIAGE_URL = '/reference/triage';
 // const PROMOTE_URL_SUFFIX = 'promote';
