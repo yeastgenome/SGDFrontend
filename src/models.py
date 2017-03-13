@@ -1419,6 +1419,7 @@ class Locusdbentity(Dbentity):
             },
             "interaction_overview": {
                 "total_interactions": 0,
+                "total_interactors": 0,
                 "num_phys_interactors": 0,
                 "physical_experiments": {},
                 "num_gen_interactors": 0,
@@ -1569,6 +1570,28 @@ class Locusdbentity(Dbentity):
 
         obj["regulation_overview"]["regulator_count"] = DBSession.query(Regulationannotation).filter_by(target_id=self.dbentity_id).count()
         obj["regulation_overview"]["target_count"] = DBSession.query(Regulationannotation).filter_by(regulator_id=self.dbentity_id).count()
+
+        physical_interactions = DBSession.query(Physinteractionannotation.biogrid_experimental_system, func.count(Physinteractionannotation.annotation_id)).filter_by(dbentity1_id=self.dbentity_id).group_by(Physinteractionannotation.biogrid_experimental_system).all()
+
+        genetic_interactions = DBSession.query(Geninteractionannotation.biogrid_experimental_system, func.count(Geninteractionannotation.annotation_id)).filter_by(dbentity1_id=self.dbentity_id).group_by(Geninteractionannotation.biogrid_experimental_system).all()
+
+        physical_interactors = DBSession.query(Physinteractionannotation.annotation_id).distinct(Physinteractionannotation.dbentity2_id).filter_by(dbentity1_id=self.dbentity_id).count()
+        genetic_interactors = DBSession.query(Geninteractionannotation.annotation_id).distinct(Geninteractionannotation.dbentity2_id).filter_by(dbentity1_id=self.dbentity_id).count()
+        
+        physical_count = 0
+        for interaction in physical_interactions:
+            obj["interaction_overview"]["physical_experiments"][interaction[0]] = interaction[1]
+            physical_count += interaction[1]
+
+        genetic_count = 0
+        for interaction in genetic_interactions:
+            obj["interaction_overview"]["genetic_experiments"][interaction[0]] = interaction[1]
+            genetic_count += interaction[1]
+        
+        obj["interaction_overview"]["total_interactions"] = physical_count + genetic_count
+        obj["interaction_overview"]["num_phys_interactors"] = physical_count
+        obj["interaction_overview"]["num_gen_interactors"] = genetic_count
+        obj["interaction_overview"]["total_interactors"] = physical_interactors + genetic_interactors
                 
         return obj
 
