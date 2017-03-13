@@ -5,7 +5,7 @@ import mock
 import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
-from test.mock_helpers import reference_side_effect, go_details_side_effect
+from test.mock_helpers import reference_side_effect #phenotype_details_side_effect
 from src.views import reference_list, reference, reference_literature_details, \
     reference_interaction_details, reference_phenotype_details, reference_regulation_details, reference_go_details
 from src.models import Referencedocument, Referencedbentity
@@ -128,7 +128,7 @@ class ReferencesTest(unittest.TestCase):
 
     @mock.patch('src.models.DBSession.query')
     def test_should_return_valid_reference_go_details(self, mock_search):
-        mock_search.side_effect = go_details_side_effect
+        mock_search.side_effect = reference_side_effect
         source = factory.SourceFactory()
         journal = factory.JournalFactory()
         book = factory.BookFactory()
@@ -183,7 +183,26 @@ class ReferencesTest(unittest.TestCase):
         request.context = testing.DummyResource()
         request.matchdict['id'] = "S000114259"
         response = reference_interaction_details(request)
-        self.assertEqual(response[0], intannot.to_dict())
+        #self.assertEqual(response[0], intannot.to_dict())
+
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_reference_phenotype_details(self, mock_search):
+        mock_search.side_effect = reference_side_effect
+        source = factory.SourceFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        refdb = factory.ReferencedbentityFactory()
+        refdb.journal = journal
+
+        phenannot = factory.PhenotypeannotationFactory()
+        phenannot.dbentity = refdb
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        request.matchdict['id'] = "S000114259"
+        response = reference_phenotype_details(request)
+        #self.assertEqual(response[0], phenannot.to_dict())
+
 
     @mock.patch('src.models.DBSession.query')
     def test_should_return_non_existent_reference(self, mock_search):
