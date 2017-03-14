@@ -20,6 +20,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('blog_archive', '/blog/archive/{year}')
     config.add_route('blog_category', '/blog/category/{category}')
     config.add_route('blog_tag', '/blog/tag/{tag}')
+    config.add_route('new_colleague', '/new_colleague')
     config.add_route('interaction_search', '/interaction-search')
     config.add_route('download_list', '/download-list')
     config.add_route('snapshot', '/genomesnapshot')

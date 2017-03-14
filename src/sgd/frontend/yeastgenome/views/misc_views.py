@@ -80,6 +80,10 @@ def blog_post(self, request):
 def blast_sgd(request):
     return render_to_response(TEMPLATE_ROOT + 'blast_sgd.jinja2', {}, request=request)
 
+@view_config(route_name='new_colleague')
+def new_colleague(request):
+    return render_to_response(TEMPLATE_ROOT + 'new_colleague.jinja2', {}, request=request)
+
 @view_config(route_name='interaction_search')
 def interaction_search(request):
     return render_to_response(TEMPLATE_ROOT + 'interaction_search.jinja2', {}, request=request)
