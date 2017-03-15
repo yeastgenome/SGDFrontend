@@ -51,6 +51,32 @@ class MockFileStorage(object):
     pass
 
 
+def go_side_effect(*args, **kwargs):
+    import pdb;
+    pdb.set_trace()
+    if len(args) == 1 and str(args[0]) == "<class 'src.models.Go'>":
+        go = factory.GoFactory()
+        return MockQuery(go)
+    if len(args) == 1 and str(args[0]) == 'Goannotation.dbentity_id' and str(args[1]) == 'Goannotation.dbentity_id':
+        go = factory.GoFactory()
+        goannot = factory.GoannotationFactory()
+        goannot.go = go
+        return MockQuery(goannot)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.GoRelation'>":
+        gorel = factory.GoRelationFactory()
+        return MockQuery(gorel)
+    elif len(args) == 1 and str(args[0]) == 'src.models.Go.go_id':
+        gochild = factory.GoFactory()
+        return MockQuery(gochild)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.GoUrl'>":
+        gourl = factory.GoUrlFactory()
+        return MockQuery(gourl)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.GoAlias'>":
+        goalias = factory.GoAliasFactory()
+        return MockQuery(goalias)
+
+
+
 def author_side_effect(*args, **kwargs):
     # import pdb;
     # pdb.set_trace()
