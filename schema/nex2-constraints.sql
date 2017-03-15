@@ -189,10 +189,6 @@ ALTER TABLE nex.locus_relation ADD CONSTRAINT locusrelation_source_fk FOREIGN KE
 ALTER TABLE nex.locus_relation ADD CONSTRAINT locusrelation_parent_fk FOREIGN KEY (parent_id) REFERENCES locusdbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.locus_relation ADD CONSTRAINT locusrelation_child_fk FOREIGN KEY (child_id) REFERENCES locusdbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
 
-ALTER TABLE nex.locusrelation_reference ADD CONSTRAINT locusrelationreference_ref_fk FOREIGN KEY (reference_id) REFERENCES referencedbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
-ALTER TABLE nex.locusrelation_reference ADD CONSTRAINT locusrelationreference_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
-ALTER TABLE nex.locusrelation_reference ADD CONSTRAINT locusrelationreference_rel_fk FOREIGN KEY (relation_id) REFERENCES locus_relation(relation_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
-
 ALTER TABLE nex.locus_url ADD CONSTRAINT locusurl_locus_fk FOREIGN KEY (locus_id) REFERENCES locusdbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.locus_url ADD CONSTRAINT locusurl_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
 

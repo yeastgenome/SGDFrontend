@@ -6,16 +6,14 @@
 	background-color: none !important;
 }
 
-.inactive {
-	color: black !important;
-	background: none !important;
-	border: 1px solid #e2e2e2;
-}
-
 .triageEntryContiner {
 	margin-bottom: 2rem;
 }
 
 .triageControls {
 	margin-top: 1rem;
+}
+
+.closeIcon {
+	cursor: pointer;
 }

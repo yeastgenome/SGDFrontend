@@ -6,9 +6,10 @@ import style from './style.css';
 import { SMALL_COL_CLASS, LARGE_COL_CLASS } from '../../constants';
 import fetchData from '../../lib/fetchData';
 // import AuthorResponseDrawer from './authorResponseDrawer';
+import CategoryLabel from '../../components/categoryLabel';
+import TagList from '../../components/tagList';
 import { selectActiveLitEntry, selectActiveLitId, selectCurrentSection } from '../../selectors/litSelectors';
 import { updateActiveEntry } from '../../actions/litActions';
-import LitStatus from '../triageLit/litStatus';
 
 const BASE_CURATE_URL = '/annotate/reference';
 const SECTIONS = [
@@ -40,8 +41,8 @@ class CurateLitLayout extends Component {
     let d = this.props.activeEntry;
     return (
       <div>
-        <h3>{d.citation}</h3>
-        <LitStatus />
+        <h3><CategoryLabel category='reference' hideLabel /> {d.citation}</h3>
+        <TagList entry={this.props.activeTagData} isReadOnly />
       </div>
     );
   }
@@ -80,6 +81,7 @@ class CurateLitLayout extends Component {
 
 CurateLitLayout.propTypes = {
   activeEntry: React.PropTypes.object,
+  activeTagData: React.PropTypes.object,
   activeId: React.PropTypes.string,
   children: React.PropTypes.node,
   currentSection: React.PropTypes.string,
@@ -90,6 +92,7 @@ CurateLitLayout.propTypes = {
 function mapStateToProps(state) {
   return {
     activeEntry: selectActiveLitEntry(state),
+    activeTagData: state.lit.get('activeTagData').toJS(),
     activeId: selectActiveLitId(state),
     currentSection: selectCurrentSection(state)
   };
