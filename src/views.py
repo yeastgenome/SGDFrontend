@@ -579,6 +579,11 @@ def go(request):
 def go_ontology_graph(request):
     id = request.matchdict['id']
 
+    try:
+        id = int(id)
+    except ValueError:
+        return HTTPNotFound(body=json.dumps({'error': 'This endpoint expects a DB ID'}))
+
     go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
     if go:
         return go.ontology_graph()
@@ -589,6 +594,11 @@ def go_ontology_graph(request):
 def go_locus_details(request):
     id = request.matchdict['id']
 
+    try:
+        id = int(id)
+    except ValueError:
+        return HTTPNotFound(body=json.dumps({'error': 'This endpoint expects a DB ID'}))
+        
     go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
     if go:
         return go.annotations_to_dict()
@@ -598,6 +608,11 @@ def go_locus_details(request):
 @view_config(route_name='go_locus_details_all', renderer='json', request_method='GET')
 def go_locus_details_all(request):
     id = request.matchdict['id']
+
+    try:
+        id = int(id)
+    except ValueError:
+        return HTTPNotFound(body=json.dumps({'error': 'This endpoint expects a DB ID'}))
 
     go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
     if go:
