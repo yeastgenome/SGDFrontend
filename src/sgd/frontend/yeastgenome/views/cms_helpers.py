@@ -64,7 +64,7 @@ wp_categories = [
 ]
 
 def get_archive_years():
-    now = datetime.datetime.now()
+    now = datetime.now()
     this_year = now.year
     archive_years = []
     for i in range(5):
@@ -82,11 +82,14 @@ def get_recent_blog_posts():
         blog_posts = []
     return blog_posts
 
+# fetch "SGD Public Events" google calendar data and format as needed for homepage
 def get_meetings():
     try:
         calendar_url = config.google_calendar_api_url
         response = requests.get(calendar_url, timeout=HOMEPAGE_REQUEST_TIMEOUT)
         meetings = json.loads(response.text)['items']
+        # only get "add day" events
+        meetings = [d for d in meetings if 'date' in d['start'].keys()]
         for meeting in meetings:
             # get URL from description and remove URLs from description
             urls = re.findall(URL_REGEX, meeting['description'])
@@ -99,6 +102,7 @@ def get_meetings():
             # format date as a string which is either a single day or range of dates
             start_date = datetime.strptime(meeting['start']['date'], '%Y-%m-%d')
             end_date = datetime.strptime(meeting['end']['date'], '%Y-%m-%d')
+            meeting['start_date'] = start_date
             days_delta = (end_date - start_date).days
             if (days_delta > 1):
                 start_desc = start_date.strftime('%B %d')
@@ -107,6 +111,11 @@ def get_meetings():
             else:
                 date_description = start_date.strftime('%B %d, %Y')
             meeting['date_description'] = date_description
+        # filter to only show future events
+        now = datetime.now()
+        meetings = [d for d in meetings if d['start_date'] > now]
+        # sort by start date
+        meetings = sorted(meetings, key=lambda d: d['start_date'])
     except Exception, e:
         meetings = []
     return meetings
