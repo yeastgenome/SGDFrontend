@@ -2,7 +2,7 @@ deploy-assets:
 	. dev_deploy_variables.sh && grunt deployAssets
 
 dev-deploy:
-	. dev_deploy_variables.sh && cap dev deploy
+	. dev_deploy_variables.sh && AWS_ENV=true cap dev deploy
 
 qa-deploy:
 	. dev_deploy_variables.sh && AWS_ENV=true cap qa deploy
@@ -52,7 +52,7 @@ dependencies:
 	bundle install
 
 run:
-	pserve sgdfrontend_development.ini --reload
+	. dev_deploy_variables.sh && pserve sgdfrontend_development.ini --reload
 
 tests:
 	nosetests test/
