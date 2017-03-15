@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func
+from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -1437,7 +1437,6 @@ class Locusdbentity(Dbentity):
                 "additional_count": 0,
                 "review_count": 0
             }
-            #"reserved_name": {"link": None, "display_name": None, "reference": None}
         }
 
         aliases = DBSession.query(LocusAlias.display_name, LocusAlias.alias_type).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type.in_(["Uniform", "Non-uniform", "NCBI protein name"])).all()
@@ -1527,8 +1526,8 @@ class Locusdbentity(Dbentity):
         for namespace in ("cellular component", "molecular function", "biological process"):
             go[namespace] = {}
         
-        go_annotations_computational = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="computational").all()
-        for annotation in go_annotations_computational:
+        go_annotations_htp = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="high-throughput").all()
+        for annotation in go_annotations_htp:
             json = annotation.to_dict_lsp()
             
             namespace = json["namespace"]
@@ -1571,12 +1570,12 @@ class Locusdbentity(Dbentity):
         obj["regulation_overview"]["regulator_count"] = DBSession.query(Regulationannotation).filter_by(target_id=self.dbentity_id).count()
         obj["regulation_overview"]["target_count"] = DBSession.query(Regulationannotation).filter_by(regulator_id=self.dbentity_id).count()
 
-        physical_interactions = DBSession.query(Physinteractionannotation.biogrid_experimental_system, func.count(Physinteractionannotation.annotation_id)).filter_by(dbentity1_id=self.dbentity_id).group_by(Physinteractionannotation.biogrid_experimental_system).all()
+        physical_interactions = DBSession.query(Physinteractionannotation.biogrid_experimental_system, func.count(Physinteractionannotation.annotation_id)).filter(or_(Physinteractionannotation.dbentity1_id == self.dbentity_id, Physinteractionannotation.dbentity2_id == self.dbentity_id)).group_by(Physinteractionannotation.biogrid_experimental_system).all()
 
-        genetic_interactions = DBSession.query(Geninteractionannotation.biogrid_experimental_system, func.count(Geninteractionannotation.annotation_id)).filter_by(dbentity1_id=self.dbentity_id).group_by(Geninteractionannotation.biogrid_experimental_system).all()
-
-        physical_interactors = DBSession.query(Physinteractionannotation.annotation_id).distinct(Physinteractionannotation.dbentity2_id).filter_by(dbentity1_id=self.dbentity_id).count()
-        genetic_interactors = DBSession.query(Geninteractionannotation.annotation_id).distinct(Geninteractionannotation.dbentity2_id).filter_by(dbentity1_id=self.dbentity_id).count()
+        genetic_interactions = DBSession.query(Geninteractionannotation.biogrid_experimental_system, func.count(Geninteractionannotation.annotation_id)).filter(or_(Geninteractionannotation.dbentity1_id == self.dbentity_id, Geninteractionannotation.dbentity2_id == self.dbentity_id)).group_by(Geninteractionannotation.biogrid_experimental_system).all()
+        
+        physical_interactors = DBSession.query(Physinteractionannotation.annotation_id).filter(or_(Physinteractionannotation.dbentity1_id==self.dbentity_id, Physinteractionannotation.dbentity2_id==self.dbentity_id)).count()
+        genetic_interactors = DBSession.query(Geninteractionannotation.annotation_id).filter(or_(Geninteractionannotation.dbentity1_id==self.dbentity_id, Geninteractionannotation.dbentity2_id==self.dbentity_id)).count()
         
         physical_count = 0
         for interaction in physical_interactions:
@@ -1592,7 +1591,21 @@ class Locusdbentity(Dbentity):
         obj["interaction_overview"]["num_phys_interactors"] = physical_count
         obj["interaction_overview"]["num_gen_interactors"] = genetic_count
         obj["interaction_overview"]["total_interactors"] = physical_interactors + genetic_interactors
-                
+
+        locus_notes = DBSession.query(Locusnoteannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        if len(locus_notes) > 0:
+            obj["history"] = []
+        for note in locus_notes:
+            obj["history"].append({
+                "note": note.note,
+                "date_created": note.date_created.strftime("%Y-%m-%d"),
+                "references": [{
+                    "display_name": note.reference.display_name,
+                    "link": note.reference.obj_url,
+                    "pubmed_id": note.reference.pmid
+                }]
+            })
+        
         return obj
 
     def tabs(self):
@@ -2383,8 +2396,7 @@ class Go(Base):
 
         children_relation = DBSession.query(GoRelation).filter_by(parent_id=self.go_id).all()
         if len(children_relation) > 0:
-            children_go_ids = DBSession.query(Go.go_id).filter()
-            children_annotations = DBSession.query(Goannotation.dbentity_id, func.count(Goannotation.dbentity_id)).filter(Goannotation.go_id.in_([c[0] for c in children_go_ids])).group_by(Goannotation.dbentity_id).count()
+            children_annotations = len(set([c.child_id for c in children_relation]))
         else:
             children_annotations = 0
         
