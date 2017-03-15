@@ -12,17 +12,12 @@ import CurateLayout from './containers/curateHome/layout';
 import CurateHome from './containers/curateHome';
 import Search from './containers/search';
 import LocusShow from './containers/locus/show';
-import RefShow from './containers/reference/show';
 import TriageIndex from './containers/triage';
 import CurateLit from './containers/curateLit/layout';
-// TEMP
-import CurateLitBasic from './containers/triageLit/litBasicInfo';
-// import CurateLitBasic from './containers/curateLit/basic';
-
+import CurateLitBasic from './containers/curateLit/litBasicInfo';
 import CurateLitPhenotype from './containers/curateLit/phenotype';
 import CurateLitOverview from './containers/curateLit/index';
 import CurateLitActions from './containers/curateLit/actions';
-import TriageLit from './containers/triageLit/index';
 import AuthorResponse from './containers/authorResponse/index';
 import SpreadsheetUpload from './containers/spreadsheetUpload/index';
 
@@ -38,10 +33,8 @@ export default (
       <Route component={requireAuthentication(TriageIndex)} path='triage' />
       <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
     </Route>
-    <Route component={requireAuthentication(TriageLit)} path='triage_literature/:id' />
-    <Route component={requireAuthentication(LocusShow)} path='locus/:id/overview' />
-    <Route component={requireAuthentication(RefShow)} path='reference/:id/overview' />
-    <Route component={requireAuthentication(CurateLit)} path='annotate/reference/:id'>
+    <Route component={requireAuthentication(LocusShow)} path='curate/locus/:id' />
+    <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
       <IndexRoute component={requireAuthentication(CurateLitBasic)} />
       <Route component={requireAuthentication(CurateLitOverview)} path='loci' />
       <Route component={requireAuthentication(CurateLitOverview)} path='protein' />

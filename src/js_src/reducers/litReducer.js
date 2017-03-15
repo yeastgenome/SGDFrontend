@@ -6,7 +6,9 @@ const DEFAULT_STATE = fromJS({
   activeLitEntry: {
     lastUpdated: (new Date())
   },
-  activeTagData: {},
+  activeTagData: {
+    data: { tags: [] }
+  },
   isTagVisible: false,
   triageEntries: [],
 });

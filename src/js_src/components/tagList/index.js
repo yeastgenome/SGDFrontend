@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import _ from 'underscore';
 
 import style from './style.css';
-import { allTags } from '../curateLit/litConstants';
+import { allTags } from '../../containers/curateLit/litConstants';
 
 class TagList extends Component {
   updateTags(newTags) {
