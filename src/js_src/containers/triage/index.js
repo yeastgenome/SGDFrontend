@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
 import { selectTriageEntries } from '../../selectors/litSelectors';
+import CategoryLabel from '../../components/categoryLabel';
 import { updateTriageEntries, clearActiveTags } from './triageActions';
-import TagList from './tagList';
+import TagList from '../../components/tagList';
 import TriageControls from './triageControls';
 
 const TRIAGE_URL = '/reference/triage';
@@ -70,10 +71,10 @@ class LitTriageIndex extends Component {
     };
     return (
       <div className='callout success'>
-        <p className='text-right'><i className='fa fa-close' onClick={onClear} /></p>
-        <p><i className='fa fa-check' /> Reference Added To Database</p>
-        <h5><a>{this.props.activeTagData.basic.citation}</a></h5>
-        <a className='button' onClick={onClear}>Ok</a>
+        <div>
+          <h3 className='text-right'><i className={`fa fa-close ${style.closeIcon}`} onClick={onClear} /></h3>
+        </div>
+        <h5><a><CategoryLabel category='reference' hideLabel /> {this.props.activeTagData.basic.citation}</a> added to database.</h5>
         <TagList entry={this.props.activeTagData} isReadOnly />
       </div>
     );
