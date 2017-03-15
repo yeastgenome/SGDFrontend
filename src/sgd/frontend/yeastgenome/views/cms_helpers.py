@@ -88,7 +88,7 @@ def get_meetings():
         calendar_url = config.google_calendar_api_url
         response = requests.get(calendar_url, timeout=HOMEPAGE_REQUEST_TIMEOUT)
         meetings = json.loads(response.text)['items']
-        # only get "add day" events
+        # only get "all day" events
         meetings = [d for d in meetings if 'date' in d['start'].keys()]
         for meeting in meetings:
             # get URL from description and remove URLs from description
