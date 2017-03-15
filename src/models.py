@@ -1574,8 +1574,12 @@ class Locusdbentity(Dbentity):
 
         genetic_interactions = DBSession.query(Geninteractionannotation.biogrid_experimental_system, func.count(Geninteractionannotation.annotation_id)).filter(or_(Geninteractionannotation.dbentity1_id == self.dbentity_id, Geninteractionannotation.dbentity2_id == self.dbentity_id)).group_by(Geninteractionannotation.biogrid_experimental_system).all()
         
-        physical_interactors = DBSession.query(Physinteractionannotation.annotation_id).filter(or_(Physinteractionannotation.dbentity1_id==self.dbentity_id, Physinteractionannotation.dbentity2_id==self.dbentity_id)).count()
-        genetic_interactors = DBSession.query(Geninteractionannotation.annotation_id).filter(or_(Geninteractionannotation.dbentity1_id==self.dbentity_id, Geninteractionannotation.dbentity2_id==self.dbentity_id)).count()
+        physical_interactors_1 = DBSession.query(Physinteractionannotation.dbentity2_id).distinct(Physinteractionannotation.dbentity2_id).filter_by(dbentity1_id=self.dbentity_id).all()
+        physical_interactors_2 = DBSession.query(Physinteractionannotation.dbentity1_id).distinct(Physinteractionannotation.dbentity1_id).filter_by(dbentity2_id=self.dbentity_id).all()
+        genetic_interactors_1 = DBSession.query(Geninteractionannotation.dbentity2_id).distinct(Geninteractionannotation.dbentity2_id).filter(Geninteractionannotation.dbentity1_id==self.dbentity_id).all()
+        genetic_interactors_2 = DBSession.query(Geninteractionannotation.dbentity1_id).distinct(Geninteractionannotation.dbentity1_id).filter(Geninteractionannotation.dbentity2_id==self.dbentity_id).all()
+
+        interactors = set(physical_interactors_1 + physical_interactors_2 + genetic_interactors_1 + genetic_interactors_2)
         
         physical_count = 0
         for interaction in physical_interactions:
@@ -1590,7 +1594,7 @@ class Locusdbentity(Dbentity):
         obj["interaction_overview"]["total_interactions"] = physical_count + genetic_count
         obj["interaction_overview"]["num_phys_interactors"] = physical_count
         obj["interaction_overview"]["num_gen_interactors"] = genetic_count
-        obj["interaction_overview"]["total_interactors"] = physical_interactors + genetic_interactors
+        obj["interaction_overview"]["total_interactors"] = len(interactors)
 
         locus_notes = DBSession.query(Locusnoteannotation).filter_by(dbentity_id=self.dbentity_id).all()
         if len(locus_notes) > 0:
