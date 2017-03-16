@@ -519,6 +519,11 @@ def phenotype(request):
 def phenotype_locus_details(request):
     id = request.matchdict['id']
 
+    try:
+        id = int(id)
+    except ValueError:
+        return HTTPNotFound(body=json.dumps({'error': 'This endpoint expects a DB ID'}))
+
     phenotype = DBSession.query(Phenotype).filter_by(phenotype_id=id).one_or_none()
     if phenotype:
         return phenotype.annotations_to_dict()
