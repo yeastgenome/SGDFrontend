@@ -2449,7 +2449,8 @@ class Go(Base):
         edges = []
         all_children = []
 
-        children_relation = DBSession.query(GoRelation).filter_by(parent_id=self.go_id).all()
+        # ro_id = 169782 for 'is_a' relationship 
+        children_relation = DBSession.query(GoRelation).filter_by(parent_id=self.go_id, ro_id=169782).all()
         
         for child_relation in children_relation[:6]:
             child_node = child_relation.to_graph(nodes, edges, add_child=True)
@@ -2483,12 +2484,13 @@ class Go(Base):
             })
             
         level = 0
-        parents_relation = DBSession.query(GoRelation).filter_by(child_id=self.go_id).all()
+        # ro_id = 169782 for 'is_a' relationship 
+        parents_relation = DBSession.query(GoRelation).filter_by(child_id=self.go_id, ro_id=169782).all()
         while len(parents_relation) > 0:
             parent_relation = parents_relation.pop()
             parent_relation.to_graph(nodes, edges, add_parent=True)
 
-            if level < 4:
+            if level < 3:
                 parents_relation += DBSession.query(GoRelation).filter_by(child_id=parent_relation.parent.go_id).all()
                 level += 1
 
