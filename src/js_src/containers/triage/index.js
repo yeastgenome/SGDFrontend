@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
+import getPusherClient from '../../lib/getPusherClient';
 import { selectTriageEntries } from '../../selectors/litSelectors';
 import CategoryLabel from '../../components/categoryLabel';
 import { updateTriageEntries, clearActiveTags } from './triageActions';
@@ -10,23 +11,25 @@ import TagList from '../../components/tagList';
 import TriageControls from './triageControls';
 
 const TRIAGE_URL = '/reference/triage';
-const REFRESH_INTERVAL = 7000;
-const TIME_VAR = 'refreshTimeout';
+const CHANNEL = 'sgd';
+const EVENT = 'triageUpdate';
 
 class LitTriageIndex extends Component {
   componentDidMount() {
     this.fetchData();
-    // create the refresh timer
-    this.clearRefreshTimer();
-    this[TIME_VAR] = setInterval(this.fetchData.bind(this), REFRESH_INTERVAL);
+    this.listenForUpdates();
   }
 
   componentWillUnmount() {
-    this.clearRefreshTimer();
+    this.channel.unbind(EVENT);
   }
 
-  clearRefreshTimer() {
-    if (this[TIME_VAR]) clearInterval(this[TIME_VAR]);
+  listenForUpdates() {
+    let pusher = getPusherClient();
+    this.channel = pusher.subscribe(CHANNEL);
+    this.channel.bind(EVENT, () => {
+      this.fetchData();
+    });
   }
 
   fetchData() {
