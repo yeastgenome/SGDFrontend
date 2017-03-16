@@ -27,8 +27,10 @@
         {# expose token to client JS so it can be used in XHR requests #}
         <script type="text/javascript">
             window.CSRF_TOKEN = '{{ request.session.get_csrf_token() }}';
+            window.PUSHER_KEY = '{{ pusher_key }}';
         </script>
         <div id="j-application"></div>
+        <script src="https://js.pusher.com/4.0/pusher.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
         <!-- custom app js bundled -->
         {% webpack 'main' %}
