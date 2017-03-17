@@ -51,7 +51,6 @@ Loader.propTypes = {
   isPending: React.PropTypes.bool
 };
 
-
 function mapStateToProps(state) {
   return { isPending: selectIsPending(state) };
 }

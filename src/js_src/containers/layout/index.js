@@ -8,7 +8,7 @@ import SearchBar from './searchBar';
 import curateLogo from './curateLogo.png';
 import { clearError, clearMessage } from '../../actions/metaActions';
 
-class Layout extends Component {
+class LayoutComponent extends Component {
   renderAuthedMenu() {
     return (
       <div>
@@ -93,7 +93,7 @@ class Layout extends Component {
   }
 }
 
-Layout.propTypes = {
+LayoutComponent.propTypes = {
   children: PropTypes.node,
   error: React.PropTypes.string,
   message: React.PropTypes.string,
@@ -109,4 +109,5 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Layout);
+export { LayoutComponent as LayoutComponent };
+export default connect(mapStateToProps)(LayoutComponent);
