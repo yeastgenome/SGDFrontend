@@ -127,7 +127,7 @@ class Apo(Base):
             "data": {
                 "link": self.obj_url,
                 "sub_type": "FOCUS",
-                "name": self.display_name + "(" + str(annotations) + ")",
+                "name": self.display_name + " (" + str(annotations) + ")",
                 "id": str(self.apo_id)
             }
         }]
@@ -218,7 +218,7 @@ class ApoRelation(Base):
                 annotations = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([p.phenotype_id for p in phenotypes])).group_by(Phenotypeannotation.dbentity_id).count()
 
                 type = "development"
-                name = node.display_name + "(" + str(annotations) + ")"
+                name = node.display_name + " (" + str(annotations) + ")"
                 
             nodes.append({
                 "data": {
@@ -2441,7 +2441,7 @@ class Go(Base):
             "data": {
                 "link": self.obj_url,
                 "sub_type": "FOCUS",
-                "name": self.display_name + "(" + str(annotations) + ")",
+                "name": self.display_name + " (" + str(annotations) + ")",
                 "id": str(self.go_id)
             }
         }]
@@ -2450,7 +2450,7 @@ class Go(Base):
         all_children = []
 
         # ro_id = 169782 for 'is_a' relationship 
-        children_relation = DBSession.query(GoRelation).filter_by(parent_id=self.go_id, ro_id=169782).all()
+        children_relation = DBSession.query(GoRelation).filter_by(parent_id=self.go_id).all()
         
         for child_relation in children_relation[:6]:
             child_node = child_relation.to_graph(nodes, edges, add_child=True)
@@ -2484,21 +2484,30 @@ class Go(Base):
             })
             
         level = 0
-        # ro_id = 169782 for 'is_a' relationship 
-        parents_relation = DBSession.query(GoRelation).filter_by(child_id=self.go_id, ro_id=169782).all()
+        # ro_id = 169782 for 'is_a' relationship
+#        parents_relation = DBSession.query(GoRelation).filter_by(child_id=self.go_id, ro_id=169782).all()
+        parents_relation = DBSession.query(GoRelation).filter_by(child_id=self.go_id).all()
+
+        # breath-first-search stopping at level 3
+        parents_at_level = len(parents_relation)
         while len(parents_relation) > 0:
-            parent_relation = parents_relation.pop()
+            parent_relation = parents_relation[0]
             parent_relation.to_graph(nodes, edges, add_parent=True)
+            
+            del parents_relation[0]
 
             if level < 3:
                 parents_relation += DBSession.query(GoRelation).filter_by(child_id=parent_relation.parent.go_id).all()
-                level += 1
 
+                parents_at_level -= 1
+                if parents_at_level == 0:
+                    level += 1
+                    parents_at_level = len(parents_relation)
         
         graph = {
             "edges": edges,
             "nodes": nodes,
-            "all_children": all_children
+            "all_children": sorted(all_children, key=lambda f: f["display_name"])
         }
         
         return graph
@@ -2571,7 +2580,7 @@ class GoRelation(Base):
             annotations = DBSession.query(Goannotation.dbentity_id, func.count(Goannotation.dbentity_id)).filter_by(go_id=node.go_id).group_by(Goannotation.dbentity_id).count()
 
             type = "development"
-            name = node.display_name + "(" + str(annotations) + ")"
+            name = node.display_name + " (" + str(annotations) + ")"
                 
             nodes.append({
                 "data": {
