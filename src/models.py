@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_
+from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_, and_
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -2449,8 +2449,12 @@ class Go(Base):
         edges = []
         all_children = []
 
-        # ro_id = 169782 for 'is_a' relationship 
-        children_relation = DBSession.query(GoRelation).filter_by(parent_id=self.go_id).all()
+        # Allowed relationships (ro_ids)
+        # 169782 'is_a', 169466 'regulates', 169299 'part of', 169468 'positively regulates', 169467 'negatively regulates'
+
+        allowed_relationships = (169782, 169466, 169299, 169468, 169467)
+        
+        children_relation = DBSession.query(GoRelation).filter(and_(GoRelation.parent_id == self.go_id, GoRelation.ro_id.in_(allowed_relationships))).all()
         
         for child_relation in children_relation[:6]:
             child_node = child_relation.to_graph(nodes, edges, add_child=True)
@@ -2484,9 +2488,7 @@ class Go(Base):
             })
             
         level = 0
-        # ro_id = 169782 for 'is_a' relationship
-#       parents_relation = DBSession.query(GoRelation).filter_by(child_id=self.go_id, ro_id=169782).all()
-        parents_relation = DBSession.query(GoRelation).filter_by(child_id=self.go_id).all()
+        parents_relation = DBSession.query(GoRelation).filter(and_(GoRelation.child_id == self.go_id, GoRelation.ro_id.in_(allowed_relationships))).all()
 
         # breath-first-search stopping at level 3
         parents_at_level = len(parents_relation)
@@ -2497,7 +2499,7 @@ class Go(Base):
             del parents_relation[0]
 
             if level < 3:
-                new_parents = DBSession.query(GoRelation).filter_by(child_id=parent_relation.parent.go_id).all()
+                new_parents = DBSession.query(GoRelation).filter(and_(GoRelation.child_id == parent_relation.parent.go_id, GoRelation.ro_id.in_(allowed_relationships))).all()
                 
                 parents_relation_ids = [p.relation_id for p in parents_relation]
                 for p in new_parents:
