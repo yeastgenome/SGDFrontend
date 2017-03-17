@@ -4,6 +4,8 @@ A restful web service for the Saccharomyces Genome Database (SGD) NEX 2, as well
 
 ## Setup
 
+Prerequisites: node.js 6.0.0+ and Python 2.7.x.  To simplify Python setup, virtualenv is highly suggested.
+
 Make sure you have the needed environmental variables configured in dev_variables.sh, then
 
     $ make build
