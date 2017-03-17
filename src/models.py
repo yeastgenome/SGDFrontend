@@ -2485,7 +2485,7 @@ class Go(Base):
             
         level = 0
         # ro_id = 169782 for 'is_a' relationship
-#        parents_relation = DBSession.query(GoRelation).filter_by(child_id=self.go_id, ro_id=169782).all()
+#       parents_relation = DBSession.query(GoRelation).filter_by(child_id=self.go_id, ro_id=169782).all()
         parents_relation = DBSession.query(GoRelation).filter_by(child_id=self.go_id).all()
 
         # breath-first-search stopping at level 3
@@ -2497,7 +2497,12 @@ class Go(Base):
             del parents_relation[0]
 
             if level < 3:
-                parents_relation += DBSession.query(GoRelation).filter_by(child_id=parent_relation.parent.go_id).all()
+                new_parents = DBSession.query(GoRelation).filter_by(child_id=parent_relation.parent.go_id).all()
+                
+                parents_relation_ids = [p.relation_id for p in parents_relation]
+                for p in new_parents:
+                    if p.relation_id not in parents_relation_ids:
+                        parents_relation.append(p)
 
                 parents_at_level -= 1
                 if parents_at_level == 0:
@@ -2581,7 +2586,7 @@ class GoRelation(Base):
 
             type = "development"
             name = node.display_name + " (" + str(annotations) + ")"
-                
+
             nodes.append({
                 "data": {
                     "link": node.obj_url,
