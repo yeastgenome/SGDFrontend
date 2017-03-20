@@ -2694,7 +2694,7 @@ class Goannotation(Base):
     def to_dict(self, go=None):
         if go == None:
             go = self.go
-        
+
         alias = DBSession.query(EcoAlias).filter_by(eco_id=self.eco_id).all()
         experiment_name = alias[0].display_name
 
@@ -2713,7 +2713,7 @@ class Goannotation(Base):
             experiment_url = alias_url[0].obj_url
 
         properties = []
-            
+        
         extensions = DBSession.query(Goextension).filter_by(annotation_id=self.annotation_id).all()
 
         for extension in extensions:
@@ -2733,9 +2733,10 @@ class Goannotation(Base):
         supporting_evidences = DBSession.query(Gosupportingevidence).filter_by(annotation_id=self.annotation_id).all()
 
         for se in supporting_evidences:
-            split_dbxref = se.dbxref_id.split("SGD:")
-            if len(split_dbxref) == 2:
-                sgdid = split_dbxref[1]
+            source_id = se.dbxref_id.split(":")
+
+            if source_id[0] == "SGD":
+                sgdid = source_id[1]
                 dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
                 properties.append({
                     "bioentity": {
@@ -2745,7 +2746,25 @@ class Goannotation(Base):
                     },
                     "role": se.evidence_type.capitalize()
                 })
-        
+            elif source_id[0] == "GO":
+                go_evidence = DBSession.query(Go).filter_by(goid=se.dbxref_id).one_or_none()
+                if go_evidence:
+                    properties.append({
+                        "bioentity": {
+                            "display_name": go_evidence.display_name,
+                            "link": go_evidence.obj_url
+                        },
+                        "role": se.evidence_type.capitalize()
+                    })
+            else:
+                properties.append({
+                    "bioentity": {
+                        "display_name": source_id[1],
+                        "link": se.obj_url
+                    },
+                    "role": se.evidence_type.capitalize()
+                })
+                    
         return {
             "id": self.annotation_id,
             "annotation_type": self.annotation_type,
