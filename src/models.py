@@ -2514,7 +2514,7 @@ class Go(Base):
         graph = {
             "edges": edges,
             "nodes": nodes,
-            "all_children": sorted(all_children, key=lambda f: f["display_name"])
+            "all_children": sorted(all_children, key=lambda f: str(f["display_name"]).lower())
         }
         
         return graph
