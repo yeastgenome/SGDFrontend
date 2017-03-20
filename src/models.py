@@ -2725,9 +2725,9 @@ class Goannotation(Base):
                     "bioentity": {
                         "display_name": dbentity.display_name,
                         "link": dbentity.obj_url,
-                        "class_type": dbentity.subclass
+                        "class_type": dbentity.subclass,
                     },
-                    "role": extension.ro.display_name
+                    "role": extension.ro.display_name.capitalize()
                 })
 
         supporting_evidences = DBSession.query(Gosupportingevidence).filter_by(annotation_id=self.annotation_id).all()
@@ -2743,7 +2743,7 @@ class Goannotation(Base):
                         "link": dbentity.obj_url,
                         "class_type": dbentity.subclass
                     },
-                    "role": se.evidence_type
+                    "role": se.evidence_type.capitalize()
                 })
         
         return {
