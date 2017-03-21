@@ -2539,9 +2539,16 @@ class Go(Base):
 
         children_relation = DBSession.query(GoRelation).filter(and_(GoRelation.parent_id == self.go_id, GoRelation.ro_id.in_(Go.allowed_relationships))).all()
         children = [c.child for c in children_relation]
+        children_ids = [c.child_id for c in children_relation]
         for child in children:
             annotations = DBSession.query(Goannotation).filter_by(go_id=child.go_id).all()
             obj += [a.to_dict(go=child) for a in annotations]
+
+            children_relation = DBSession.query(GoRelation).filter(and_(GoRelation.parent_id == child.go_id, GoRelation.ro_id.in_(Go.allowed_relationships))).all()
+            for c in children_relation:
+                if c.child_id not in children_ids:
+                    children.append(c.child)
+                    children_ids.append(c.child_id)
 
         return obj
 
