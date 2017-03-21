@@ -4054,6 +4054,7 @@ class Referencetriage(Base):
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
     json = Column(Text)
+    abstract_genes = Column(String(500))
 
     def to_dict(self):
         return {
