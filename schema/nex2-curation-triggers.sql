@@ -325,6 +325,10 @@ BEGIN
         PERFORM nex.insertupdatelog('REFERENCETRIAGE'::text, 'FULLTEXT_URL'::text, OLD.curation_id, OLD.fulltext_url, NEW.fulltext_url, USER);
     END IF;
 
+    IF (((OLD.abstract_genes IS NULL) AND (NEW.abstract_genes IS NOT NULL)) OR ((OLD.abstract_genes IS NOT NULL) AND (NEW.abstract_genes IS NULL)) OR (OLD.abstract_genes != NEW.abstract_genes)) THEN
+        PERFORM nex.insertupdatelog('REFERENCETRIAGE'::text, 'ABSTRACT_GENES'::text, OLD.curation_id, OLD.abstract_genes, NEW.abstract_genes, USER);
+    END IF;
+
     IF (((OLD.abstract IS NULL) AND (NEW.abstract IS NOT NULL)) OR ((OLD.abstract IS NOT NULL) AND (NEW.abstract IS NULL)) OR (OLD.abstract != NEW.abstract)) THEN
         PERFORM nex.insertupdatelog('REFERENCETRIAGE'::text, 'ABSTRACT'::text, OLD.curation_id, OLD.abstract, NEW.abstract, USER);
     END IF;
@@ -339,6 +343,7 @@ BEGIN
 
     v_row := OLD.curation_id || '[:]' || OLD.pmid || '[:]' ||
              OLD.citation || '[:]' || coalesce(OLD.fulltext_url,'') || '[:]' ||
+             coalesce(OLD.abstract_genes,'') || '[:]' ||
              coalesce(OLD.abstract,'') || '[:]' || coalesce(OLD.json,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
