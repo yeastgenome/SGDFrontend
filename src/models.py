@@ -2395,6 +2395,10 @@ class Go(Base):
 
     source = relationship(u'Source')
 
+    # Allowed relationships (ro_ids) for graphs
+    # 169782 'is_a', 169466 'regulates', 169299 'part of', 169468 'positively regulates', 169467 'negatively regulates'
+    allowed_relationships = (169782, 169466, 169299, 169468, 169467)
+
     def to_dict(self):
         annotations_count = DBSession.query(Goannotation.dbentity_id, func.count(Goannotation.dbentity_id)).filter_by(go_id=self.go_id).group_by(Goannotation.dbentity_id).count()
 
@@ -2449,12 +2453,7 @@ class Go(Base):
         edges = []
         all_children = []
 
-        # Allowed relationships (ro_ids)
-        # 169782 'is_a', 169466 'regulates', 169299 'part of', 169468 'positively regulates', 169467 'negatively regulates'
-
-        allowed_relationships = (169782, 169466, 169299, 169468, 169467)
-        
-        children_relation = DBSession.query(GoRelation).filter(and_(GoRelation.parent_id == self.go_id, GoRelation.ro_id.in_(allowed_relationships))).all()
+        children_relation = DBSession.query(GoRelation).filter(and_(GoRelation.parent_id == self.go_id, GoRelation.ro_id.in_(Go.allowed_relationships))).all()
         
         for child_relation in children_relation[:6]:
             child_node = child_relation.to_graph(nodes, edges, add_child=True)
@@ -2486,20 +2485,35 @@ class Go(Base):
                     "source": str(self.go_id)
                 }
             })
-            
-        level = 0
-        parents_relation = DBSession.query(GoRelation).filter(and_(GoRelation.child_id == self.go_id, GoRelation.ro_id.in_(allowed_relationships))).all()
 
+        parent_relations = self.parent_tree()
+        for relation in parent_relations:
+            relation.to_graph(nodes, edges, add_parent=True)
+        
+        graph = {
+            "edges": edges,
+            "nodes": nodes,
+            "all_children": sorted(all_children, key=lambda f: str(f["display_name"]).lower())
+        }
+        
+        return graph
+
+    def parent_tree(self, max_level=3):
+        relations = []
+        
+        level = 0
+        parents_relation = DBSession.query(GoRelation).filter(and_(GoRelation.child_id == self.go_id, GoRelation.ro_id.in_(Go.allowed_relationships))).all()
+        
         # breath-first-search stopping at level 3
         parents_at_level = len(parents_relation)
         while len(parents_relation) > 0:
             parent_relation = parents_relation[0]
-            parent_relation.to_graph(nodes, edges, add_parent=True)
-            
+            relations.append(parent_relation)
+
             del parents_relation[0]
 
-            if level < 3:
-                new_parents = DBSession.query(GoRelation).filter(and_(GoRelation.child_id == parent_relation.parent.go_id, GoRelation.ro_id.in_(allowed_relationships))).all()
+            if level < max_level:
+                new_parents = DBSession.query(GoRelation).filter(and_(GoRelation.child_id == parent_relation.parent.go_id, GoRelation.ro_id.in_(Go.allowed_relationships))).all()
                 
                 parents_relation_ids = [p.relation_id for p in parents_relation]
                 for p in new_parents:
@@ -2510,14 +2524,9 @@ class Go(Base):
                 if parents_at_level == 0:
                     level += 1
                     parents_at_level = len(parents_relation)
-        
-        graph = {
-            "edges": edges,
-            "nodes": nodes,
-            "all_children": sorted(all_children, key=lambda f: str(f["display_name"]).lower())
-        }
-        
-        return graph
+
+        return relations
+
 
     def annotations_to_dict(self):
         annotations = DBSession.query(Goannotation).filter_by(go_id=self.go_id).all()
@@ -2528,7 +2537,7 @@ class Go(Base):
         annotations = DBSession.query(Goannotation).filter_by(go_id=self.go_id).all()
         obj = [a.to_dict(go=self) for a in annotations]
 
-        children_relation = DBSession.query(GoRelation).filter_by(parent_id=self.go_id).all()
+        children_relation = DBSession.query(GoRelation).filter(and_(GoRelation.parent_id == self.go_id, GoRelation.ro_id.in_(Go.allowed_relationships))).all()
         children = [c.child for c in children_relation]
         for child in children:
             annotations = DBSession.query(Goannotation).filter_by(go_id=child.go_id).all()
