@@ -1287,7 +1287,11 @@ class Referencedbentity(Dbentity):
         obj = []
 
         gos = DBSession.query(Goannotation).filter_by(reference_id=self.dbentity_id).all()
-        return [go.to_dict() for go in gos]
+
+        for go in gos:
+            obj += go.to_dict()
+            
+        return obj
 
     def phenotype_to_dict(self):
         obj = []
@@ -2531,18 +2535,28 @@ class Go(Base):
     def annotations_to_dict(self):
         annotations = DBSession.query(Goannotation).filter_by(go_id=self.go_id).all()
 
-        return [a.to_dict(go=self) for a in annotations]
+        annotations_dict = []
+        for a in annotations:
+            annotations_dict += a.to_dict(go=self)
+
+        return annotations_dict
 
     def annotations_and_children_to_dict(self):
+        annotations_dict = []
+        
         annotations = DBSession.query(Goannotation).filter_by(go_id=self.go_id).all()
-        obj = [a.to_dict(go=self) for a in annotations]
+        for a in annotations:
+            annotations_dict += a.to_dict(go=self)
 
         children_relation = DBSession.query(GoRelation).filter(and_(GoRelation.parent_id == self.go_id, GoRelation.ro_id.in_(Go.allowed_relationships))).all()
         children = [c.child for c in children_relation]
         children_ids = [c.child_id for c in children_relation]
+
         for child in children:
             annotations = DBSession.query(Goannotation).filter_by(go_id=child.go_id).all()
-            obj += [a.to_dict(go=child) for a in annotations]
+
+            for a in annotations:
+                annotations_dict += a.to_dict(go=child)
 
             children_relation = DBSession.query(GoRelation).filter(and_(GoRelation.parent_id == child.go_id, GoRelation.ro_id.in_(Go.allowed_relationships))).all()
             for c in children_relation:
@@ -2550,7 +2564,7 @@ class Go(Base):
                     children.append(c.child)
                     children_ids.append(c.child_id)
 
-        return obj
+        return annotations_dict
 
 class GoAlias(Base):
     __tablename__ = 'go_alias'
@@ -2706,7 +2720,9 @@ class Goannotation(Base):
         }]
         
         return obj
-    
+
+    # a Go annotation can be duplicated based on the Gosupportingevidence group id
+    # so its to_dict method must return an array of dictionaries
     def to_dict(self, go=None):
         if go == None:
             go = self.go
@@ -2781,7 +2797,7 @@ class Goannotation(Base):
                     "role": se.evidence_type.capitalize()
                 })
                     
-        return {
+        return [{
             "id": self.annotation_id,
             "annotation_type": self.annotation_type,
             "date_created": self.date_created.strftime("%Y-%m-%d"),
@@ -2811,7 +2827,7 @@ class Goannotation(Base):
                 "link": experiment_url
             },
             "properties": properties
-        }
+        }]
 
 
 class Goextension(Base):
