@@ -477,10 +477,13 @@ def author(request):
     key = "/author/"+format_name
     
     authors_ref = DBSession.query(Referenceauthor).filter_by(obj_url=key).all()
+
+    references_dict = sorted([author_ref.reference.to_dict_reference_related() for author_ref in authors_ref], key=lambda r: r["display_name"])
+    
     if len(authors_ref) > 0:
         return {
             "display_name": authors_ref[0].display_name,
-            "references": sorted([author_ref.reference.to_dict_reference_related() for author_ref in authors_ref], key=lambda r: r["year"], reverse=True)
+            "references": sorted(references_dict, key=lambda r: r["year"], reverse=True)
         }
     else:
         return HTTPNotFound()
