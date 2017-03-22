@@ -5,6 +5,7 @@ from zope.sqlalchemy import ZopeTransactionExtension
 from elasticsearch import Elasticsearch
 import os
 import json
+import copy
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
@@ -2744,60 +2745,7 @@ class Goannotation(Base):
         if experiment_url == None and len(alias_url) > 0:
             experiment_url = alias_url[0].obj_url
 
-        properties = []
-        
-        extensions = DBSession.query(Goextension).filter_by(annotation_id=self.annotation_id).all()
-
-        for extension in extensions:
-            split_dbxref = extension.dbxref_id.split("SGD:")
-            if len(split_dbxref) == 2:
-                sgdid = split_dbxref[1]
-                dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
-                properties.append({
-                    "bioentity": {
-                        "display_name": dbentity.display_name,
-                        "link": dbentity.obj_url,
-                        "class_type": dbentity.subclass,
-                    },
-                    "role": extension.ro.display_name.capitalize()
-                })
-
-        supporting_evidences = DBSession.query(Gosupportingevidence).filter_by(annotation_id=self.annotation_id).all()
-
-        for se in supporting_evidences:
-            source_id = se.dbxref_id.split(":")
-
-            if source_id[0] == "SGD":
-                sgdid = source_id[1]
-                dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
-                properties.append({
-                    "bioentity": {
-                        "display_name": dbentity.display_name,
-                        "link": dbentity.obj_url,
-                        "class_type": dbentity.subclass
-                    },
-                    "role": se.evidence_type.capitalize()
-                })
-            elif source_id[0] == "GO":
-                go_evidence = DBSession.query(Go).filter_by(goid=se.dbxref_id).one_or_none()
-                if go_evidence:
-                    properties.append({
-                        "bioentity": {
-                            "display_name": go_evidence.display_name,
-                            "link": go_evidence.obj_url
-                        },
-                        "role": se.evidence_type.capitalize()
-                    })
-            else:
-                properties.append({
-                    "bioentity": {
-                        "display_name": source_id[1],
-                        "link": se.obj_url
-                    },
-                    "role": se.evidence_type.capitalize()
-                })
-                    
-        return [{
+        go_obj = {
             "id": self.annotation_id,
             "annotation_type": self.annotation_type,
             "date_created": self.date_created.strftime("%Y-%m-%d"),
@@ -2826,8 +2774,54 @@ class Goannotation(Base):
                 "display_name": experiment_name,
                 "link": experiment_url
             },
-            "properties": properties
-        }]
+            "properties": []
+        }
+            
+        properties = []
+        
+        extensions = DBSession.query(Goextension).filter_by(annotation_id=self.annotation_id).all()
+        extension_groups = {}
+        for extension in extensions:
+            extension_dict = extension.to_dict()
+            if extension_dict:
+                if extension.group_id not in extension_groups:
+                    extension_groups[extension.group_id] = [extension_dict]
+                else:
+                    extension_groups[extension.group_id].append(extension_dict)
+
+        supporting_evidences = DBSession.query(Gosupportingevidence).filter_by(annotation_id=self.annotation_id).all()
+        se_groups = {}
+        for se in supporting_evidences:
+            evidence_dict = se.to_dict()
+            if evidence_dict:
+                if se.group_id not in se_groups:
+                    se_groups[se.group_id] = [evidence_dict]
+                else:
+                    se_groups[se.group_id].append(evidence_dict)
+
+        go_obj_extensions = []
+        for group_id in extension_groups:
+            obj = copy.deepcopy(go_obj)
+            obj["properties"] = extension_groups[group_id]
+            go_obj_extensions.append(obj)
+
+        if len(go_obj_extensions) == 0:
+            go_obj_extensions = [go_obj]   
+            
+        final_obj = []
+        for group_id in se_groups:
+            for c in go_obj_extensions:
+                obj = copy.deepcopy(c)
+                obj["properties"] += se_groups[group_id]
+                final_obj.append(obj)
+
+        if len(final_obj) == 0:
+            if len(go_obj_extensions) == 0:
+                final_obj = [go_obj]
+            else:
+                final_obj = go_obj_extensions
+
+        return final_obj
 
 
 class Goextension(Base):
@@ -2848,6 +2842,42 @@ class Goextension(Base):
 
     annotation = relationship(u'Goannotation')
     ro = relationship(u'Ro')
+
+    def to_dict(self):
+        source_id = self.dbxref_id.split(":")
+        
+        if source_id[0] == "SGD":
+            sgdid = source_id[1]
+            dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
+            return {
+                "bioentity": {
+                    "display_name": dbentity.display_name,
+                    "link": dbentity.obj_url,
+                    "class_type": dbentity.subclass
+                },
+                "role": self.ro.display_name.capitalize()
+            }
+        elif source_id[0] == "GO":
+            go_evidence = DBSession.query(Go).filter_by(goid=self.dbxref_id).one_or_none()
+            if go_evidence:
+                return {
+                    "bioentity": {
+                        "display_name": go_evidence.display_name,
+                        "link": go_evidence.obj_url
+                    },
+                    "role": self.ro.display_name.capitalize()
+                }
+        else:
+            return {
+                "bioentity": {
+                    "display_name": source_id[1],
+                    "link": self.obj_url
+                },
+                "role": self.ro.display_name.capitalize()
+            }
+        
+        return None
+
 
 
 class Goslim(Base):
@@ -2912,6 +2942,40 @@ class Gosupportingevidence(Base):
 
     annotation = relationship(u'Goannotation')
 
+    def to_dict(self):
+        source_id = self.dbxref_id.split(":")
+        
+        if source_id[0] == "SGD":
+            sgdid = source_id[1]
+            dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
+            return {
+                "bioentity": {
+                    "display_name": dbentity.display_name,
+                    "link": dbentity.obj_url,
+                    "class_type": dbentity.subclass
+                },
+                "role": self.evidence_type.capitalize()
+            }
+        elif source_id[0] == "GO":
+            go_evidence = DBSession.query(Go).filter_by(goid=self.dbxref_id).one_or_none()
+            if go_evidence:
+                return {
+                    "bioentity": {
+                        "display_name": go_evidence.display_name,
+                        "link": go_evidence.obj_url
+                    },
+                    "role": self.evidence_type.capitalize()
+                }
+        else:
+            return {
+                "bioentity": {
+                    "display_name": source_id[1],
+                    "link": self.obj_url
+                },
+                "role": self.evidence_type.capitalize()
+            }
+        
+        return None
 
 class Journal(Base):
     __tablename__ = 'journal'
