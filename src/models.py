@@ -1210,16 +1210,19 @@ class Referencedbentity(Dbentity):
             "abstract": None,
             "link": self.obj_url,
             "pubmed_id": self.pmid,
+            "journal": None,
             "sgdid": self.sgdid,
-            "journal": {
-                "med_abbr": self.journal.med_abbr,
-            },
             "year": self.year,
             "id": self.dbentity_id,
 
             "related_references": [],
             "expression_datasets": []
         }
+
+        if self.pmid != None:
+            obj["journal"] = {
+                "med_abbr": self.journal.med_abbr
+            }
 
         datasets = DBSession.query(DatasetReference).filter_by(reference_id=self.dbentity_id).all()
         obj["expression_datasets"] = [data.dataset.to_dict(self) for data in datasets]
