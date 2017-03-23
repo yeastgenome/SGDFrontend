@@ -4,15 +4,12 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPInternalServerError, HTTPMovedPermanently
 from src.sgd.frontend import config
-from src.sgd.frontend.yeastgenome.views.cms_helpers import get_archive_years, get_meetings_html, wp_categories
-from dateutil import parser
+from src.sgd.frontend.yeastgenome.views.cms_helpers import BLOG_BASE_URL, BLOG_PAGE_SIZE, add_simple_date_to_post, get_archive_years, get_meetings, get_recent_blog_posts, wp_categories
 import urllib
 import datetime
 import json
 import requests
 
-BLOG_BASE_URL = 'https://public-api.wordpress.com/rest/v1.1/sites/sgdblogtest.wordpress.com/posts'
-BLOG_PAGE_SIZE = 10
 SEARCH_URL = config.backend_url + '/get_search_results'
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 
@@ -170,17 +167,9 @@ def variant_viewer(request):
     
 @view_config(route_name='home') 
 def home(request):
-    meetings_html = get_meetings_html()
-    # fetch recent blog posts
-    wp_url = BLOG_BASE_URL + '?number=5'
-    try:
-        response = requests.get(wp_url, timeout=2)
-        blog_posts = json.loads(response.text)['posts']
-        for post in blog_posts:
-            post = add_simple_date_to_post(post)
-    except Exception, e:
-        blog_posts = []
-    return render_to_response(TEMPLATE_ROOT + 'homepage.jinja2', { 'meetings_html': meetings_html, 'blog_posts': blog_posts }, request=request)
+    blog_posts = get_recent_blog_posts()
+    meetings = get_meetings()
+    return render_to_response(TEMPLATE_ROOT + 'homepage.jinja2', { 'meetings': meetings, 'blog_posts': blog_posts }, request=request)
 
 # # example
 # @view_config(route_name='example') 
@@ -204,8 +193,3 @@ def get_redirect_url_from_results(results):
     if len(quick_results) == 1:
         return quick_results[0]['href']
     return False
-
-def add_simple_date_to_post(raw):
-    simple_date = parser.parse(raw['date']).strftime("%B %d, %Y")
-    raw['simple_date'] = simple_date
-    return raw

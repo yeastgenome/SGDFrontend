@@ -7,7 +7,9 @@ SGDBackend, then creates the pages of the website.
 
 ##Building the app
 
-To build the application (make sure you have node.js > 4.2.0 and python 2.7.x):
+Prerequisities, node.js > 4.2.0 and python 2.7.x. o manage python dependencies, configure a virtualenv for this project. See [virtualenv guide](http://docs.python-guide.org/en/latest/dev/virtualenvs/).
+
+To build the application and install dependencies.
 
     $ make build
 
@@ -51,7 +53,7 @@ Some pages are written using the [react](http://facebook.github.io/react/) frame
 
 Unit tests are in the test directory, and can be run with
 
-	$ make tests
+    $ make tests
 
 Integration tests are run using ghost inspector.  The tests are configured using their service.
 
@@ -61,7 +63,7 @@ Make sure the ghost inspector variables are in dev_deploy_variables.sh.  To run 
 
 By default, it will run with the start URL set to http://yeastgenome.org.  To run against another URL
 
-	$ START_URL=http://myserver.com make ghost
+    $ START_URL=http://myserver.com make ghost
 
 This task will not send any alerts if it fails.  If you want to run with alerts (like maybe after a production deploy).  For this task, the credentials are configured in prod_deploy_variables.sh.
 

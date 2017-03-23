@@ -31,7 +31,7 @@ namespace :deploy do
   task :write_config do
     on roles(:app), in: :sequence do
       config_file_content = ""
-      ["HERITAGE_URL", "BACKEND_URL", "SECRET_KEY", "SENDER", "AUTHOR_RESPONSE_FILE", "COMPUTE_URL", "LOG_DIRECTORY", "ELASTICSEARCH_ADDRESS"].each do |key|
+      ["HERITAGE_URL", "BACKEND_URL", "SECRET_KEY", "SENDER", "AUTHOR_RESPONSE_FILE", "COMPUTE_URL", "LOG_DIRECTORY", "ELASTICSEARCH_ADDRESS", "GOOGLE_CALENDAR_API_URL"].each do |key|
         config_file_content += "#{key.downcase} = '#{ENV[key]}'\n"
       end
       config_file_content += "log_directory = None\n"
