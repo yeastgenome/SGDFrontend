@@ -92,7 +92,7 @@ BEGIN
         PERFORM nex.checksgdid(NEW.sgdid);
     END IF;
 
-   IF (NEW.subclass = 'REFERENCE') THEN
+   IF (NEW.subclass = 'REFERENCE') OR (NEW.subclass = 'FILE') THEN
        NEW.format_name := NEW.sgdid;
    END IF;
 
