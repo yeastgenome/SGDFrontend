@@ -1496,7 +1496,8 @@ class Locusdbentity(Dbentity):
         }
 
         phenotype_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id, summary_type="Phenotype").one_or_none()
-        obj["paragraph"] = phenotype_summary[0]
+        if phenotype_summary:
+            obj["paragraph"] = phenotype_summary[0]
 
         phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
         for annotation in phenotype_annotations:
@@ -3583,7 +3584,7 @@ class Phenotypeannotation(Base):
                 "role": "Allele"
             })
         
-        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).distinct(PhenotypeannotationCond.condition_name, PhenotypeannotationCond.condition_value).all()
+        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).distinct(PhenotypeannotationCond.condition_name, PhenotypeannotationCond.condition_value).all()  ### TODO: consider only conditions that are part of the same group_id as the chemical
 
         for condition in conditions:
             if condition.condition_class == "chemical":
@@ -4400,7 +4401,7 @@ class Reservedname(Base):
         if self.locus:
             obj["locus"] = {
                 "display_name": self.locus.display_name,
-                "link": self.locus.obj_url + "/overview"
+                "link": self.locus.obj_url
             }
 
         if self.reference:
