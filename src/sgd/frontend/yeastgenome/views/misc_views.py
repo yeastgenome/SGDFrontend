@@ -122,10 +122,10 @@ def phenotype(request):
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results in script tag and let client js do the rest.
 @view_config(route_name='search') 
 def search(request):
-    log.info(request.headers.keys())
+    log.info(request.host)
     HEADER = 'X-Forwarded-Proto'
-    if HEADER in request.headers.keys():
-        log.info(request.headers.get(HEADER))
+    LOCATION = 'https://curate.qa.yeastgenome.org'
+    print 
     # get limit, default to 25
     limit = '25' if request.params.get('page_size') is None else request.params.get('page_size')
     # get search results
@@ -144,11 +144,11 @@ def search(request):
             redirect_url = get_redirect_url_from_results(temp_parsed_results)
             if redirect_url:
                 protein_url = redirect_url.replace('overview', 'protein')
-                return HTTPFound(protein_url)
+                return HTTPFound(LOCATION + protein_url)
         # no protein search or no protein page redirect applicable
         redirect_url  = get_redirect_url_from_results(parsed_results)
         if redirect_url:
-           return HTTPFound(redirect_url) 
+           return HTTPFound(LOCATION + redirect_url) 
     # if wrapped, or page > 0, just make bootstrapped results None to avoid pagination logic in python and fetch on client
     page = 0 if request.params.get('page') is None else int(request.params.get('page'))
     if request.params.get('wrapResults') == 'true' or page > 0:
