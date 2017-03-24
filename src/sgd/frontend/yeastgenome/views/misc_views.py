@@ -9,6 +9,9 @@ import urllib
 import datetime
 import json
 import requests
+import logging
+
+log = logging.getLogger(__name__)
 
 SEARCH_URL = config.backend_url + '/get_search_results'
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
@@ -119,7 +122,7 @@ def phenotype(request):
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results in script tag and let client js do the rest.
 @view_config(route_name='search') 
 def search(request):
-    print request.headers.keys()
+    log.info(request.headers.keys())
     # get limit, default to 25
     limit = '25' if request.params.get('page_size') is None else request.params.get('page_size')
     # get search results
