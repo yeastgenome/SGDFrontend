@@ -62,7 +62,7 @@ class Apo(Base):
     def to_dict(self):
         phenotypes = DBSession.query(Phenotype.obj_url, Phenotype.qualifier_id, Phenotype.phenotype_id).filter_by(observable_id=self.apo_id).all()
 
-        annotations_count = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([p.phenotype_id for p in phenotypes])).group_by(Phenotypeannotation.dbentity_id).count()
+        annotations_count = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([p[2] for p in phenotypes])).group_by(Phenotypeannotation.dbentity_id).count()
 
         children_relation = DBSession.query(ApoRelation).filter_by(parent_id=self.apo_id).all()
         if len(children_relation) > 0:
@@ -553,9 +553,9 @@ class Chebi(Base):
 
     def phenotype_to_dict(self):
         conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter_by(condition_name=self.display_name).all()
-        annotation_ids = [condition[0] for condition in conditions]
+        annotation_ids = set([condition[0] for condition in conditions])
 
-        phenotype_annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(annotation_ids)).all()
+        phenotype_annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(list(annotation_ids))).all()
 
         return [annotation.to_dict(chemical=self) for annotation in phenotype_annotations]
 
@@ -3583,7 +3583,7 @@ class Phenotypeannotation(Base):
                 "role": "Allele"
             })
         
-        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).all()
+        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).distinct(PhenotypeannotationCond.condition_name, PhenotypeannotationCond.condition_value).all()
 
         for condition in conditions:
             if condition.condition_class == "chemical":
