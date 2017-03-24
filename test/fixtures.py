@@ -5,7 +5,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity, StrainUrl, \
     Strainsummary, StrainsummaryReference, Dataset, DatasetReference, DatasetKeyword, Referencetype, ReferenceRelation, ReferenceUrl, Referenceauthor, \
     Physinteractionannotation, Geninteractionannotation, Goannotation, Regulationannotation, Literatureannotation, Contig, EcoAlias, EcoUrl, Goextension, \
-    Gosupportingevidence, Eco, Ro, Go
+    Gosupportingevidence, Eco, Ro, Go, GoRelation, GoUrl, GoAlias, ApoRelation
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -574,6 +574,18 @@ class ApoFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+class ApoRelationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ApoRelation
+        sqlalchemy_session = DBSession
+
+    relation_id = 1
+    source_id = 1
+    parent_id = 1
+    child_id = 1
+    ro_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
 
 class AlleleFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -782,6 +794,48 @@ class GeninteractionannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     bait_hit = "bait"
     description = "description"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class GoUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = GoUrl
+        sqlalchemy_session = DBSession
+
+    url_id = 1
+    display_name = "go rel display name"
+    obj_url = 1
+    source_id = 1
+    go_id = 1
+    url_type = "url type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class GoAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = GoAlias
+        sqlalchemy_session = DBSession
+
+    alias_id = 1
+    display_name = "display name"
+    source_id = 1
+    go_id = 1
+    alias_type = "alias type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+
+class GoRelationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = GoRelation
+        sqlalchemy_session = DBSession
+
+    relation_id = 1
+    source_id = 1
+    parent_id = 1
+    child_id = 1
+    ro_id = 1
+    date_created =  factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
 

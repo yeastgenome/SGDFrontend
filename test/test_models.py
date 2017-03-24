@@ -623,6 +623,20 @@ class ModelsTest(unittest.TestCase):
         self.assertEqual(1, len(instances))
         self.assertEqual(strainsummary_reference, instances[0])
 
+    # def test_chemical_model(self):
+    #     source = factory.SourceFactory()
+    #     chebi = factory.ChebiFactory()
+    #     chebi_url = factory.ChebiUrlFactory()
+    #
+    #     instances = DBSession.query(Chebi).all()
+    #     self.assertEqual(0, len(instances))
+    #
+    #     chebi = factory.ChebiFactory()
+    #     instances = DBSession.query(Chebi).all()
+    #
+    #     self.assertEqual(1, len(instances))
+    #     self.assertEqual(chebi, instances[0])
+
     # def test_dataset_model(self):
     #     obi = factory.ObiFactory()
     #     source = factory.SourceFactory()
