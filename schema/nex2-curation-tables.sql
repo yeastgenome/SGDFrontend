@@ -89,6 +89,7 @@ CREATE TABLE nex.referencetriage (
 	pmid bigint NOT NULL,
 	citation varchar(500) NOT NULL,
 	fulltext_url varchar(500),
+    abstract_genes varchar(500),
 	abstract text,
     json text,
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
@@ -99,6 +100,7 @@ COMMENT ON TABLE nex.referencetriage IS 'Papers obtained via the reference triag
 COMMENT ON COLUMN nex.referencetriage.abstract IS 'Paper abstract.';
 COMMENT ON COLUMN nex.referencetriage.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.referencetriage.fulltext_url IS 'URL to the fulltext of the paper.';
+COMMENT ON COLUMN nex.referencetriage.abstract_genes IS 'Comma separated list of gene or systematic names identified in the abstract.';
 COMMENT ON COLUMN nex.referencetriage.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.referencetriage.citation IS 'Full citation of the paper.';
 COMMENT ON COLUMN nex.referencetriage.curation_id IS 'Unique identifier (serial number).';
