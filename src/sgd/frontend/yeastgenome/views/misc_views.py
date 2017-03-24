@@ -20,7 +20,8 @@ TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 @view_config(route_name='redirect_no_overview_long')
 def redirect_no_overview(request):
     new_url = request.path.replace('/overview', '')
-    return HTTPMovedPermanently(new_url)
+
+    return HTTPMovedPermanently(get_https_url(new_url, request))
 
 @view_config(context=HTTPNotFound)
 def not_found(request):
@@ -122,10 +123,7 @@ def phenotype(request):
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results in script tag and let client js do the rest.
 @view_config(route_name='search') 
 def search(request):
-    log.info(request.host)
-    HEADER = 'X-Forwarded-Proto'
-    LOCATION = 'https://curate.qa.yeastgenome.org'
-    print 
+    log.info(request.host_url)
     # get limit, default to 25
     limit = '25' if request.params.get('page_size') is None else request.params.get('page_size')
     # get search results
@@ -144,11 +142,11 @@ def search(request):
             redirect_url = get_redirect_url_from_results(temp_parsed_results)
             if redirect_url:
                 protein_url = redirect_url.replace('overview', 'protein')
-                return HTTPFound(LOCATION + protein_url)
+                return HTTPFound(get_https_url(protein_url, request))
         # no protein search or no protein page redirect applicable
         redirect_url  = get_redirect_url_from_results(parsed_results)
         if redirect_url:
-           return HTTPFound(LOCATION + redirect_url) 
+           return HTTPFound(get_https_url(redirect_url, request)) 
     # if wrapped, or page > 0, just make bootstrapped results None to avoid pagination logic in python and fetch on client
     page = 0 if request.params.get('page') is None else int(request.params.get('page'))
     if request.params.get('wrapResults') == 'true' or page > 0:
@@ -200,3 +198,9 @@ def get_redirect_url_from_results(results):
     if len(quick_results) == 1:
         return quick_results[0]['href']
     return False
+
+# needed to force https redirects on reverse proxy LB
+def get_https_url(url, request):
+    PROTO_STR = 'https://'
+    host = request.host_url
+    return PROTO_STR + host + url
