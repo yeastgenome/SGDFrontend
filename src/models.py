@@ -1,10 +1,11 @@
-from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_
+from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_, and_
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
 from elasticsearch import Elasticsearch
 import os
 import json
+import copy
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
@@ -61,7 +62,7 @@ class Apo(Base):
     def to_dict(self):
         phenotypes = DBSession.query(Phenotype.obj_url, Phenotype.qualifier_id, Phenotype.phenotype_id).filter_by(observable_id=self.apo_id).all()
 
-        annotations_count = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([p.phenotype_id for p in phenotypes])).group_by(Phenotypeannotation.dbentity_id).count()
+        annotations_count = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([p[2] for p in phenotypes])).group_by(Phenotypeannotation.dbentity_id).count()
 
         children_relation = DBSession.query(ApoRelation).filter_by(parent_id=self.apo_id).all()
         if len(children_relation) > 0:
@@ -127,7 +128,7 @@ class Apo(Base):
             "data": {
                 "link": self.obj_url,
                 "sub_type": "FOCUS",
-                "name": self.display_name + "(" + str(annotations) + ")",
+                "name": self.display_name + " (" + str(annotations) + ")",
                 "id": str(self.apo_id)
             }
         }]
@@ -218,7 +219,7 @@ class ApoRelation(Base):
                 annotations = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([p.phenotype_id for p in phenotypes])).group_by(Phenotypeannotation.dbentity_id).count()
 
                 type = "development"
-                name = node.display_name + "(" + str(annotations) + ")"
+                name = node.display_name + " (" + str(annotations) + ")"
                 
             nodes.append({
                 "data": {
@@ -552,9 +553,9 @@ class Chebi(Base):
 
     def phenotype_to_dict(self):
         conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter_by(condition_name=self.display_name).all()
-        annotation_ids = [condition[0] for condition in conditions]
+        annotation_ids = set([condition[0] for condition in conditions])
 
-        phenotype_annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(annotation_ids)).all()
+        phenotype_annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(list(annotation_ids))).all()
 
         return [annotation.to_dict(chemical=self) for annotation in phenotype_annotations]
 
@@ -1209,16 +1210,19 @@ class Referencedbentity(Dbentity):
             "abstract": None,
             "link": self.obj_url,
             "pubmed_id": self.pmid,
+            "journal": None,
             "sgdid": self.sgdid,
-            "journal": {
-                "med_abbr": self.journal.med_abbr,
-            },
             "year": self.year,
             "id": self.dbentity_id,
 
             "related_references": [],
             "expression_datasets": []
         }
+
+        if self.pmid != None:
+            obj["journal"] = {
+                "med_abbr": self.journal.med_abbr
+            }
 
         datasets = DBSession.query(DatasetReference).filter_by(reference_id=self.dbentity_id).all()
         obj["expression_datasets"] = [data.dataset.to_dict(self) for data in datasets]
@@ -1287,7 +1291,11 @@ class Referencedbentity(Dbentity):
         obj = []
 
         gos = DBSession.query(Goannotation).filter_by(reference_id=self.dbentity_id).all()
-        return [go.to_dict() for go in gos]
+
+        for go in gos:
+            obj += go.to_dict()
+            
+        return obj
 
     def phenotype_to_dict(self):
         obj = []
@@ -1397,46 +1405,16 @@ class Locusdbentity(Dbentity):
             "name_description": self.name_description,
             "paralogs": [],
             "urls": [],
-            "protein_overview": {
-                "length": 0,
-                "molecular_weight": 0,
-                "pi": 0
-            },
-            "go_overview": {
-                "manual_molecular_function_terms": [],
-                "manual_biological_process_terms": [],
-                "manual_cellular_component_terms": [],
-                "htp_molecular_function_terms": [],
-                "htp_biological_process_terms": [],
-                "htp_cellular_component_terms": [], 
-                "computational_annotation_count": 0
-            },
+            "protein_overview": self.protein_overview_to_dict(),
+            "go_overview": self.go_overview_to_dict(),
             "pathways": [],
-            "phenotype_overview": {
-                "paragraph": None,
-                "classical_phenotypes": {},
-                "large_scale_phenotypes": {}
-            },
-            "interaction_overview": {
-                "total_interactions": 0,
-                "total_interactors": 0,
-                "num_phys_interactors": 0,
-                "physical_experiments": {},
-                "num_gen_interactors": 0,
-                "genetic_experiments": {}
-            },
-            "regulation_overview": {
-                "regulator_count": 0,
-                "target_count": 0
-            },
+            "phenotype_overview": self.phenotype_overview_to_dict(),
+            "interaction_overview": self.interaction_overview_to_dict(),
+            "regulation_overview": self.regulation_overview_to_dict(),
             "paragraph": {
                 "date_edited": None
             },
-            "literature_overview": {
-                "primary_count": 0,
-                "additional_count": 0,
-                "review_count": 0
-            }
+            "literature_overview": self.literature_overview_to_dict()
         }
 
         aliases = DBSession.query(LocusAlias.display_name, LocusAlias.alias_type).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type.in_(["Uniform", "Non-uniform", "NCBI protein name"])).all()
@@ -1468,33 +1446,146 @@ class Locusdbentity(Dbentity):
                 "date_edited": summary[-1][2].strftime("%Y-%m-%d")
             }
 
-        literature_counts = DBSession.query(Literatureannotation.topic, func.count(Literatureannotation.annotation_id)).filter_by(dbentity_id=self.dbentity_id).group_by(Literatureannotation.topic).all()
-
-        total_count = 0
-        for lit_count in literature_counts:
-            if lit_count[0] == "Additional Literature":
-                obj["literature_overview"]["additional_count"] = lit_count[1]
-            elif lit_count[0] == "Reviews":
-                obj["literature_overview"]["review_count"] = lit_count[1]
-            elif lit_count[0] == "Primary Literature":
-                obj["literature_overview"]["primary_count"] = lit_count[1]
-            total_count += lit_count[1]
-        obj["literature_overview"]["total_count"] = total_count
-                
         summary_references = DBSession.query(LocussummaryReference).filter(LocussummaryReference.summary_id.in_([s[0] for s in summary])).order_by(LocussummaryReference.reference_order).all()
         obj["references"] = [s.reference.to_dict_citation() for s in summary_references]
         
         urls = DBSession.query(LocusUrl).filter_by(locus_id=self.dbentity_id).all()
         obj["urls"] = [u.to_dict() for u in urls]
 
+        locus_notes = DBSession.query(Locusnoteannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        if len(locus_notes) > 0:
+            obj["history"] = []
+        for note in locus_notes:
+            obj["history"].append({
+                "note": note.note,
+                "date_created": note.date_created.strftime("%Y-%m-%d"),
+                "references": [{
+                    "display_name": note.reference.display_name,
+                    "link": note.reference.obj_url,
+                    "pubmed_id": note.reference.pmid
+                }]
+            })
+        
+        return obj
+
+    def regulation_overview_to_dict(self):
+        return {
+            "regulator_count": DBSession.query(Regulationannotation).filter_by(target_id=self.dbentity_id).count(),
+            "target_count": DBSession.query(Regulationannotation).filter_by(regulator_id=self.dbentity_id).count()
+        }
+
+    def protein_overview_to_dict(self):
+        obj = {
+            "length": 0,
+            "molecular_weight": 0,
+            "pi": 0
+        }
+
         protein = DBSession.query(Proteinsequenceannotation.annotation_id).filter_by(dbentity_id=self.dbentity_id, taxonomy_id=274901).one_or_none()
         if protein:
             protein_sequence = DBSession.query(ProteinsequenceDetail).filter_by(annotation_id=protein[0]).one_or_none()
-            obj["protein_overview"] = protein_sequence.to_dict_lsp()
+            obj = protein_sequence.to_dict_lsp()
 
-        go = {}
-        for namespace in ("cellular component", "molecular function", "biological process"):
-            go[namespace] = {}
+        return obj
+
+    def phenotype_overview_to_dict(self):
+        obj = {
+            "paragraph": None,
+            "classical_phenotypes": {},
+            "large_scale_phenotypes": {}
+        }
+
+        phenotype_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id, summary_type="Phenotype").one_or_none()
+        obj["paragraph"] = phenotype_summary[0]
+
+        phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        for annotation in phenotype_annotations:
+            json = annotation.to_dict_lsp()
+            
+            if json["mutant"] in obj[json["experiment_category"]]:
+                if json["phenotype"]["display_name"] not in [p["display_name"] for p in obj[json["experiment_category"]][json["mutant"]]]:
+                    obj[json["experiment_category"]][json["mutant"]].append(json["phenotype"])
+            else:
+                obj[json["experiment_category"]][json["mutant"]] = [json["phenotype"]]
+
+        return obj
+
+    def literature_overview_to_dict(self):
+        obj = {
+            "primary_count": 0,
+            "additional_count": 0,
+            "review_count": 0
+        }
+
+        literature_counts = DBSession.query(Literatureannotation.topic, func.count(Literatureannotation.annotation_id)).filter_by(dbentity_id=self.dbentity_id).group_by(Literatureannotation.topic).all()
+
+        total_count = 0
+        for lit_count in literature_counts:
+            if lit_count[0] == "Additional Literature":
+                obj["additional_count"] = lit_count[1]
+            elif lit_count[0] == "Reviews":
+                obj["review_count"] = lit_count[1]
+            elif lit_count[0] == "Primary Literature":
+                obj["primary_count"] = lit_count[1]
+            total_count += lit_count[1]
+        obj["total_count"] = total_count
+
+        return obj
+    
+    def interaction_overview_to_dict(self):
+        obj = {
+            "total_interactions": 0,
+            "total_interactors": 0,
+            "num_phys_interactors": 0,
+            "physical_experiments": {},
+            "num_gen_interactors": 0,
+            "genetic_experiments": {}
+        }
+
+        physical_interactions = DBSession.query(Physinteractionannotation.biogrid_experimental_system, func.count(Physinteractionannotation.annotation_id)).filter(or_(Physinteractionannotation.dbentity1_id == self.dbentity_id, Physinteractionannotation.dbentity2_id == self.dbentity_id)).group_by(Physinteractionannotation.biogrid_experimental_system).all()
+
+        genetic_interactions = DBSession.query(Geninteractionannotation.biogrid_experimental_system, func.count(Geninteractionannotation.annotation_id)).filter(or_(Geninteractionannotation.dbentity1_id == self.dbentity_id, Geninteractionannotation.dbentity2_id == self.dbentity_id)).group_by(Geninteractionannotation.biogrid_experimental_system).all()
+        
+        physical_interactors_1 = DBSession.query(Physinteractionannotation.dbentity2_id).distinct(Physinteractionannotation.dbentity2_id).filter_by(dbentity1_id=self.dbentity_id).all()
+        physical_interactors_2 = DBSession.query(Physinteractionannotation.dbentity1_id).distinct(Physinteractionannotation.dbentity1_id).filter_by(dbentity2_id=self.dbentity_id).all()
+        genetic_interactors_1 = DBSession.query(Geninteractionannotation.dbentity2_id).distinct(Geninteractionannotation.dbentity2_id).filter(Geninteractionannotation.dbentity1_id==self.dbentity_id).all()
+        genetic_interactors_2 = DBSession.query(Geninteractionannotation.dbentity1_id).distinct(Geninteractionannotation.dbentity1_id).filter(Geninteractionannotation.dbentity2_id==self.dbentity_id).all()
+
+        interactors = set(physical_interactors_1 + physical_interactors_2 + genetic_interactors_1 + genetic_interactors_2)
+        
+        physical_count = 0
+        for interaction in physical_interactions:
+            obj["physical_experiments"][interaction[0]] = interaction[1]
+            physical_count += interaction[1]
+
+        genetic_count = 0
+        for interaction in genetic_interactions:
+            obj["genetic_experiments"][interaction[0]] = interaction[1]
+            genetic_count += interaction[1]
+        
+        obj["total_interactions"] = physical_count + genetic_count
+        obj["num_phys_interactors"] = physical_count
+        obj["num_gen_interactors"] = genetic_count
+        obj["total_interactors"] = len(interactors)
+        
+        return obj
+
+    def go_overview_to_dict(self):
+        obj = {
+            "manual_molecular_function_terms": [],
+            "manual_biological_process_terms": [],
+            "manual_cellular_component_terms": [],
+            "htp_molecular_function_terms": [],
+            "htp_biological_process_terms": [],
+            "htp_cellular_component_terms": [], 
+            "computational_annotation_count": 0
+        }
+        
+        go = {
+            "cellular component": {},
+            "molecular function": {},
+            "biological process": {}
+        }
 
         go_annotations_mc = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="manually curated").all()
         for annotation in go_annotations_mc:
@@ -1514,17 +1605,19 @@ class Locusdbentity(Dbentity):
             terms = sorted(go[namespace].keys(), key=lambda k : k.lower())
             
             if namespace == "cellular component":
-                obj["go_overview"]["manual_cellular_component_terms"] = [go[namespace][term] for term in terms]
+                obj["manual_cellular_component_terms"] = [go[namespace][term] for term in terms]
             elif namespace == "molecular function":
-                obj["go_overview"]["manual_molecular_function_terms"] = [go[namespace][term] for term in terms]
+                obj["manual_molecular_function_terms"] = [go[namespace][term] for term in terms]
             elif namespace == "biological process":
-                obj["go_overview"]["manual_biological_process_terms"] = [go[namespace][term] for term in terms]
+                obj["manual_biological_process_terms"] = [go[namespace][term] for term in terms]
         
-        obj["go_overview"]["computational_annotation_count"] = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="computational").count()
+        obj["computational_annotation_count"] = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="computational").count()
 
-        go = {}
-        for namespace in ("cellular component", "molecular function", "biological process"):
-            go[namespace] = {}
+        go = {
+            "cellular component": {},
+            "molecular function": {},
+            "biological process": {}
+        }
         
         go_annotations_htp = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="high-throughput").all()
         for annotation in go_annotations_htp:
@@ -1544,70 +1637,18 @@ class Locusdbentity(Dbentity):
             terms = sorted(go[namespace].keys(), key=lambda k : k.lower())
             
             if namespace == "cellular component":
-                obj["go_overview"]["htp_cellular_component_terms"] = [go[namespace][term] for term in terms]
+                obj["htp_cellular_component_terms"] = [go[namespace][term] for term in terms]
             elif namespace == "molecular function":
-                obj["go_overview"]["htp_molecular_function_terms"] = [go[namespace][term] for term in terms]
+                obj["htp_molecular_function_terms"] = [go[namespace][term] for term in terms]
             elif namespace == "biological process":
-                obj["go_overview"]["htp_biological_process_terms"] = [go[namespace][term] for term in terms]
+                obj["htp_biological_process_terms"] = [go[namespace][term] for term in terms]
 
         go_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id, summary_type="Function").one_or_none()
         if go_summary:
-            obj["go_overview"]["paragraph"] = go_summary[0]
+            obj["paragraph"] = go_summary[0]
 
-        phenotype_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id, summary_type="Phenotype").one_or_none()
-        obj["phenotype_overview"]["paragraph"] = phenotype_summary[0]
-
-        phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
-        for annotation in phenotype_annotations:
-            json = annotation.to_dict_lsp()
-            
-            if json["mutant"] in obj["phenotype_overview"][json["experiment_category"]]:
-                if json["phenotype"]["display_name"] not in [p["display_name"] for p in obj["phenotype_overview"][json["experiment_category"]][json["mutant"]]]:
-                    obj["phenotype_overview"][json["experiment_category"]][json["mutant"]].append(json["phenotype"])
-            else:
-                obj["phenotype_overview"][json["experiment_category"]][json["mutant"]] = [json["phenotype"]]
-
-        obj["regulation_overview"]["regulator_count"] = DBSession.query(Regulationannotation).filter_by(target_id=self.dbentity_id).count()
-        obj["regulation_overview"]["target_count"] = DBSession.query(Regulationannotation).filter_by(regulator_id=self.dbentity_id).count()
-
-        physical_interactions = DBSession.query(Physinteractionannotation.biogrid_experimental_system, func.count(Physinteractionannotation.annotation_id)).filter(or_(Physinteractionannotation.dbentity1_id == self.dbentity_id, Physinteractionannotation.dbentity2_id == self.dbentity_id)).group_by(Physinteractionannotation.biogrid_experimental_system).all()
-
-        genetic_interactions = DBSession.query(Geninteractionannotation.biogrid_experimental_system, func.count(Geninteractionannotation.annotation_id)).filter(or_(Geninteractionannotation.dbentity1_id == self.dbentity_id, Geninteractionannotation.dbentity2_id == self.dbentity_id)).group_by(Geninteractionannotation.biogrid_experimental_system).all()
-        
-        physical_interactors = DBSession.query(Physinteractionannotation.annotation_id).filter(or_(Physinteractionannotation.dbentity1_id==self.dbentity_id, Physinteractionannotation.dbentity2_id==self.dbentity_id)).count()
-        genetic_interactors = DBSession.query(Geninteractionannotation.annotation_id).filter(or_(Geninteractionannotation.dbentity1_id==self.dbentity_id, Geninteractionannotation.dbentity2_id==self.dbentity_id)).count()
-        
-        physical_count = 0
-        for interaction in physical_interactions:
-            obj["interaction_overview"]["physical_experiments"][interaction[0]] = interaction[1]
-            physical_count += interaction[1]
-
-        genetic_count = 0
-        for interaction in genetic_interactions:
-            obj["interaction_overview"]["genetic_experiments"][interaction[0]] = interaction[1]
-            genetic_count += interaction[1]
-        
-        obj["interaction_overview"]["total_interactions"] = physical_count + genetic_count
-        obj["interaction_overview"]["num_phys_interactors"] = physical_count
-        obj["interaction_overview"]["num_gen_interactors"] = genetic_count
-        obj["interaction_overview"]["total_interactors"] = physical_interactors + genetic_interactors
-
-        locus_notes = DBSession.query(Locusnoteannotation).filter_by(dbentity_id=self.dbentity_id).all()
-        if len(locus_notes) > 0:
-            obj["history"] = []
-        for note in locus_notes:
-            obj["history"].append({
-                "note": note.note,
-                "date_created": note.date_created.strftime("%Y-%m-%d"),
-                "references": [{
-                    "display_name": note.reference.display_name,
-                    "link": note.reference.obj_url,
-                    "pubmed_id": note.reference.pmid
-                }]
-            })
-        
         return obj
-
+    
     def tabs(self):
         return {
             "id": self.dbentity_id,
@@ -1673,7 +1714,9 @@ class Straindbentity(Dbentity):
             "paragraph": None
         }
 
-        if (len(obj["genotype"]) > 1 and obj["genotype"][0] == "\"" and obj["genotype"][-1] == "\""):
+        if obj["genotype"] == '':
+            obj["genotype"] = None
+        elif (len(obj["genotype"]) > 1 and obj["genotype"][0] == "\"" and obj["genotype"][-1] == "\""):
             obj["genotype"] = obj["genotype"][1:len(obj["genotype"])-1]
 
         urls = DBSession.query(StrainUrl.display_name, StrainUrl.url_type, StrainUrl.obj_url).filter_by(strain_id=self.dbentity_id).all()
@@ -1696,7 +1739,7 @@ class Straindbentity(Dbentity):
             references = []
             if len(reference_ids):
                 reference_ids = [r[0] for r in reference_ids]
-                references = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reference_ids)).all()
+                references = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reference_ids)).order_by(Referencedbentity.year.desc()).all()
                 
             obj["paragraph"] = {
                 "text": paragraph[1],
@@ -1708,7 +1751,8 @@ class Straindbentity(Dbentity):
         
         chromosome_cache = {}
         for co in contigs:
-            obj["contigs"].append(co.to_dict(chromosome_cache))
+            if co.display_name != "2-micron plasmid":
+                obj["contigs"].append(co.to_dict(chromosome_cache))
 
         return obj
 
@@ -2391,6 +2435,10 @@ class Go(Base):
 
     source = relationship(u'Source')
 
+    # Allowed relationships (ro_ids) for graphs
+    # 169782 'is_a', 169466 'regulates', 169299 'part of', 169468 'positively regulates', 169467 'negatively regulates'
+    allowed_relationships = (169782, 169466, 169299, 169468, 169467)
+
     def to_dict(self):
         annotations_count = DBSession.query(Goannotation.dbentity_id, func.count(Goannotation.dbentity_id)).filter_by(go_id=self.go_id).group_by(Goannotation.dbentity_id).count()
 
@@ -2437,7 +2485,7 @@ class Go(Base):
             "data": {
                 "link": self.obj_url,
                 "sub_type": "FOCUS",
-                "name": self.display_name + "(" + str(annotations) + ")",
+                "name": self.display_name + " (" + str(annotations) + ")",
                 "id": str(self.go_id)
             }
         }]
@@ -2445,7 +2493,7 @@ class Go(Base):
         edges = []
         all_children = []
 
-        children_relation = DBSession.query(GoRelation).filter_by(parent_id=self.go_id).all()
+        children_relation = DBSession.query(GoRelation).filter(and_(GoRelation.parent_id == self.go_id, GoRelation.ro_id.in_(Go.allowed_relationships))).all()
         
         for child_relation in children_relation[:6]:
             child_node = child_relation.to_graph(nodes, edges, add_child=True)
@@ -2477,42 +2525,82 @@ class Go(Base):
                     "source": str(self.go_id)
                 }
             })
-            
-        level = 0
-        parents_relation = DBSession.query(GoRelation).filter_by(child_id=self.go_id).all()
-        while len(parents_relation) > 0:
-            parent_relation = parents_relation.pop()
-            parent_relation.to_graph(nodes, edges, add_parent=True)
 
-            if level < 4:
-                parents_relation += DBSession.query(GoRelation).filter_by(child_id=parent_relation.parent.go_id).all()
-                level += 1
-
+        parent_relations = self.parent_tree()
+        for relation in parent_relations:
+            relation.to_graph(nodes, edges, add_parent=True)
         
         graph = {
             "edges": edges,
             "nodes": nodes,
-            "all_children": all_children
+            "all_children": sorted(all_children, key=lambda f: str(f["display_name"]).lower())
         }
         
         return graph
 
+    def parent_tree(self, max_level=3):
+        relations = []
+        
+        level = 0
+        parents_relation = DBSession.query(GoRelation).filter(and_(GoRelation.child_id == self.go_id, GoRelation.ro_id.in_(Go.allowed_relationships))).all()
+        
+        # breath-first-search stopping at level 3
+        parents_at_level = len(parents_relation)
+        while len(parents_relation) > 0:
+            parent_relation = parents_relation[0]
+            relations.append(parent_relation)
+
+            del parents_relation[0]
+
+            if level < max_level:
+                new_parents = DBSession.query(GoRelation).filter(and_(GoRelation.child_id == parent_relation.parent.go_id, GoRelation.ro_id.in_(Go.allowed_relationships))).all()
+                
+                parents_relation_ids = [p.relation_id for p in parents_relation]
+                for p in new_parents:
+                    if p.relation_id not in parents_relation_ids:
+                        parents_relation.append(p)
+
+                parents_at_level -= 1
+                if parents_at_level == 0:
+                    level += 1
+                    parents_at_level = len(parents_relation)
+
+        return relations
+
+
     def annotations_to_dict(self):
         annotations = DBSession.query(Goannotation).filter_by(go_id=self.go_id).all()
 
-        return [a.to_dict(go=self) for a in annotations]
+        annotations_dict = []
+        for a in annotations:
+            annotations_dict += a.to_dict(go=self)
+
+        return annotations_dict
 
     def annotations_and_children_to_dict(self):
+        annotations_dict = []
+        
         annotations = DBSession.query(Goannotation).filter_by(go_id=self.go_id).all()
-        obj = [a.to_dict(go=self) for a in annotations]
+        for a in annotations:
+            annotations_dict += a.to_dict(go=self)
 
-        children_relation = DBSession.query(GoRelation).filter_by(parent_id=self.go_id).all()
+        children_relation = DBSession.query(GoRelation).filter(and_(GoRelation.parent_id == self.go_id, GoRelation.ro_id.in_(Go.allowed_relationships))).all()
         children = [c.child for c in children_relation]
+        children_ids = [c.child_id for c in children_relation]
+
         for child in children:
             annotations = DBSession.query(Goannotation).filter_by(go_id=child.go_id).all()
-            obj += [a.to_dict(go=child) for a in annotations]
 
-        return obj
+            for a in annotations:
+                annotations_dict += a.to_dict(go=child)
+
+            children_relation = DBSession.query(GoRelation).filter(and_(GoRelation.parent_id == child.go_id, GoRelation.ro_id.in_(Go.allowed_relationships))).all()
+            for c in children_relation:
+                if c.child_id not in children_ids:
+                    children.append(c.child)
+                    children_ids.append(c.child_id)
+
+        return annotations_dict
 
 class GoAlias(Base):
     __tablename__ = 'go_alias'
@@ -2565,8 +2653,8 @@ class GoRelation(Base):
             annotations = DBSession.query(Goannotation.dbentity_id, func.count(Goannotation.dbentity_id)).filter_by(go_id=node.go_id).group_by(Goannotation.dbentity_id).count()
 
             type = "development"
-            name = node.display_name + "(" + str(annotations) + ")"
-                
+            name = node.display_name + " (" + str(annotations) + ")"
+
             nodes.append({
                 "data": {
                     "link": node.obj_url,
@@ -2668,11 +2756,13 @@ class Goannotation(Base):
         }]
         
         return obj
-    
+
+    # a Go annotation can be duplicated based on the Gosupportingevidence group id
+    # so its to_dict method must return an array of dictionaries
     def to_dict(self, go=None):
         if go == None:
             go = self.go
-        
+
         alias = DBSession.query(EcoAlias).filter_by(eco_id=self.eco_id).all()
         experiment_name = alias[0].display_name
 
@@ -2690,41 +2780,7 @@ class Goannotation(Base):
         if experiment_url == None and len(alias_url) > 0:
             experiment_url = alias_url[0].obj_url
 
-        properties = []
-            
-        extensions = DBSession.query(Goextension).filter_by(annotation_id=self.annotation_id).all()
-
-        for extension in extensions:
-            split_dbxref = extension.dbxref_id.split("SGD:")
-            if len(split_dbxref) == 2:
-                sgdid = split_dbxref[1]
-                dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
-                properties.append({
-                    "bioentity": {
-                        "display_name": dbentity.display_name,
-                        "link": dbentity.obj_url,
-                        "class_type": dbentity.subclass
-                    },
-                    "role": extension.ro.display_name
-                })
-
-        supporting_evidences = DBSession.query(Gosupportingevidence).filter_by(annotation_id=self.annotation_id).all()
-
-        for se in supporting_evidences:
-            split_dbxref = se.dbxref_id.split("SGD:")
-            if len(split_dbxref) == 2:
-                sgdid = split_dbxref[1]
-                dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
-                properties.append({
-                    "bioentity": {
-                        "display_name": dbentity.display_name,
-                        "link": dbentity.obj_url,
-                        "class_type": dbentity.subclass
-                    },
-                    "role": se.evidence_type
-                })
-        
-        return {
+        go_obj = {
             "id": self.annotation_id,
             "annotation_type": self.annotation_type,
             "date_created": self.date_created.strftime("%Y-%m-%d"),
@@ -2753,8 +2809,54 @@ class Goannotation(Base):
                 "display_name": experiment_name,
                 "link": experiment_url
             },
-            "properties": properties
+            "properties": []
         }
+            
+        properties = []
+        
+        extensions = DBSession.query(Goextension).filter_by(annotation_id=self.annotation_id).all()
+        extension_groups = {}
+        for extension in extensions:
+            extension_dict = extension.to_dict()
+            if extension_dict:
+                if extension.group_id not in extension_groups:
+                    extension_groups[extension.group_id] = [extension_dict]
+                else:
+                    extension_groups[extension.group_id].append(extension_dict)
+
+        supporting_evidences = DBSession.query(Gosupportingevidence).filter_by(annotation_id=self.annotation_id).all()
+        se_groups = {}
+        for se in supporting_evidences:
+            evidence_dict = se.to_dict()
+            if evidence_dict:
+                if se.group_id not in se_groups:
+                    se_groups[se.group_id] = [evidence_dict]
+                else:
+                    se_groups[se.group_id].append(evidence_dict)
+
+        go_obj_extensions = []
+        for group_id in extension_groups:
+            obj = copy.deepcopy(go_obj)
+            obj["properties"] = extension_groups[group_id]
+            go_obj_extensions.append(obj)
+
+        if len(go_obj_extensions) == 0:
+            go_obj_extensions = [go_obj]   
+            
+        final_obj = []
+        for group_id in se_groups:
+            for c in go_obj_extensions:
+                obj = copy.deepcopy(c)
+                obj["properties"] += se_groups[group_id]
+                final_obj.append(obj)
+
+        if len(final_obj) == 0:
+            if len(go_obj_extensions) == 0:
+                final_obj = [go_obj]
+            else:
+                final_obj = go_obj_extensions
+
+        return final_obj
 
 
 class Goextension(Base):
@@ -2775,6 +2877,51 @@ class Goextension(Base):
 
     annotation = relationship(u'Goannotation')
     ro = relationship(u'Ro')
+
+    def to_dict(self):
+        source_id = self.dbxref_id.split(":")
+        
+        if source_id[0] == "SGD":
+            sgdid = source_id[1]
+            dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
+            return {
+                "bioentity": {
+                    "display_name": dbentity.display_name,
+                    "link": dbentity.obj_url,
+                    "class_type": dbentity.subclass
+                },
+                "role": self.ro.display_name.capitalize()
+            }
+        elif source_id[0] == "GO":
+            go_evidence = DBSession.query(Go).filter_by(goid=self.dbxref_id).one_or_none()
+            if go_evidence:
+                return {
+                    "bioentity": {
+                        "display_name": go_evidence.display_name,
+                        "link": go_evidence.obj_url
+                    },
+                    "role": self.ro.display_name.capitalize()
+                }
+        elif source_id[0] == "CHEBI":
+            chebi = DBSession.query(Chebi).filter_by(chebiid=self.dbxref_id).one_or_none()
+            if chebi:
+                return {
+                    "bioentity": {
+                        "display_name": chebi.display_name,
+                        "link": chebi.obj_url
+                    },
+                    "role": self.ro.display_name.capitalize()
+                }
+        else:
+            return {
+                "bioentity": {
+                    "display_name": source_id[1],
+                    "link": self.obj_url
+                },
+                "role": self.ro.display_name.capitalize()
+            }
+        
+        return None
 
 
 class Goslim(Base):
@@ -2839,6 +2986,50 @@ class Gosupportingevidence(Base):
 
     annotation = relationship(u'Goannotation')
 
+    def to_dict(self):
+        source_id = self.dbxref_id.split(":")
+        
+        if source_id[0] == "SGD":
+            sgdid = source_id[1]
+            dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
+            return {
+                "bioentity": {
+                    "display_name": dbentity.display_name,
+                    "link": dbentity.obj_url,
+                    "class_type": dbentity.subclass
+                },
+                "role": self.evidence_type.capitalize()
+            }
+        elif source_id[0] == "GO":
+            go_evidence = DBSession.query(Go).filter_by(goid=self.dbxref_id).one_or_none()
+            if go_evidence:
+                return {
+                    "bioentity": {
+                        "display_name": go_evidence.display_name,
+                        "link": go_evidence.obj_url
+                    },
+                    "role": self.evidence_type.capitalize()
+                }
+        elif source_id[0] == "CHEBI":
+            chebi = DBSession.query(Chebi).filter_by(chebiid=self.dbxref_id).one_or_none()
+            if chebi:
+                return {
+                    "bioentity": {
+                        "display_name": chebi.display_name,
+                        "link": chebi.obj_url
+                    },
+                    "role": self.evidence_type.capitalize()
+                }
+        else:
+            return {
+                "bioentity": {
+                    "display_name": source_id[1],
+                    "link": self.obj_url
+                },
+                "role": self.evidence_type.capitalize()
+            }
+        
+        return None
 
 class Journal(Base):
     __tablename__ = 'journal'
@@ -3392,7 +3583,7 @@ class Phenotypeannotation(Base):
                 "role": "Allele"
             })
         
-        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).all()
+        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).distinct(PhenotypeannotationCond.condition_name, PhenotypeannotationCond.condition_value).all()
 
         for condition in conditions:
             if condition.condition_class == "chemical":
@@ -4013,6 +4204,7 @@ class Referencetriage(Base):
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
     json = Column(Text)
+    abstract_genes = Column(String(500))
 
     def to_dict(self):
         return {
