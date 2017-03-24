@@ -123,7 +123,7 @@ def phenotype(request):
 @view_config(route_name='search') 
 def search(request):
     log.info(request.headers.keys())
-    HEADER = 'X-Forwarded-For'
+    HEADER = 'X-Forwarded-Proto'
     if HEADER in request.headers.keys():
         log.info(request.headers.get(HEADER))
     # get limit, default to 25
