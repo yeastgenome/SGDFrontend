@@ -123,7 +123,7 @@ def phenotype(request):
 @view_config(route_name='search') 
 def search(request):
     if 'X-Forwarded-For' in request.headers.keys():
-        log.info(request['X-Forwarded-For'])
+        log.info(request.headers.get('X-Forwarded-For'))
     # get limit, default to 25
     limit = '25' if request.params.get('page_size') is None else request.params.get('page_size')
     # get search results
