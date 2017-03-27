@@ -3589,13 +3589,13 @@ class Phenotypeannotation(Base):
         for condition in conditions:
             if condition.condition_class == "chemical":
                 if chemical is not None and (chemical.display_name == condition.condition_name):
-                    chebi = chemical
+                    chebi_url = chemical.obj_url
                 else:
-                    chebi = DBSession.query(Chebi).filter_by(display_name=condition.condition_name).one_or_none()
+                    chebi_url = DBSession.query(Chebi.obj_url).filter_by(display_name=condition.condition_name).one_or_none()
 
                 link = None
                 if chebi:
-                    link = chebi.obj_url
+                    link = chebi_url
 
                 properties.append({
                     "class_type": "CHEMICAL",
