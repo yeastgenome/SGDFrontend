@@ -510,7 +510,7 @@ def chemical_phenotype_details(request):
 
 @view_config(route_name='phenotype', renderer='json', request_method='GET')
 def phenotype(request):
-    format_name = request.matchdict['format_name']
+    format_name = request.matchdict['format_name'].lower()
 
     phenotype = DBSession.query(Phenotype).filter_by(format_name=format_name).one_or_none()
     if phenotype:
