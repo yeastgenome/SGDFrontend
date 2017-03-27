@@ -3584,7 +3584,7 @@ class Phenotypeannotation(Base):
                 "role": "Allele"
             })
         
-        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).distinct(PhenotypeannotationCond.condition_name, PhenotypeannotationCond.condition_value).all()  ### TODO: consider only conditions that are part of the same group_id as the chemical
+        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).all() ### TODO: consider only conditions that are part of the same group_id as the chemical
 
         for condition in conditions:
             if condition.condition_class == "chemical":
@@ -3594,7 +3594,7 @@ class Phenotypeannotation(Base):
                     chebi_url = DBSession.query(Chebi.obj_url).filter_by(display_name=condition.condition_name).one_or_none()
 
                 link = None
-                if chebi:
+                if chebi_url:
                     link = chebi_url
 
                 properties.append({
