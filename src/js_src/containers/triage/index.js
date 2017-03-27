@@ -8,6 +8,7 @@ import { selectTriageEntries } from '../../selectors/litSelectors';
 import CategoryLabel from '../../components/categoryLabel';
 import { updateTriageEntries, clearActiveTags } from './triageActions';
 import TagList from '../../components/tagList';
+import Abstract from './abstract';
 import TriageControls from './triageControls';
 
 const TRIAGE_URL = '/reference/triage';
@@ -52,7 +53,7 @@ class LitTriageIndex extends Component {
       return (
         <div className={`callout ${style.triageEntryContiner}`} key={'te' + d.curation_id}>
           <h4 dangerouslySetInnerHTML={{ __html: d.basic.citation }} />
-          <p dangerouslySetInnerHTML={{ __html: d.basic.abstract }} />
+          <Abstract abstract={d.basic.abstract} geneList={d.basic.abstract_genes} />
           {this.renderLinks(d)}
           <div className={style.triageControls}>
             <TriageControls entry={d} />
