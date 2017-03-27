@@ -3475,6 +3475,7 @@ class Phenotypeannotation(Base):
     details = Column(String(500))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    experiment_comment = Column(String(200))
 
     allele = relationship(u'Allele')
     assay = relationship(u'Obi')
@@ -3583,7 +3584,7 @@ class Phenotypeannotation(Base):
                 "note": note,
                 "role": "Allele"
             })
-        
+
         conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).all() ### TODO: consider only conditions that are part of the same group_id as the chemical
 
         for condition in conditions:
@@ -3641,7 +3642,6 @@ class Phenotypeannotation(Base):
         mutant = Apo.get_apo_by_id(self.mutant_id)
             
         experiment_obj = None
-        experiment_details = None
         
         if experiment:
             experiment_obj = {
@@ -3649,7 +3649,6 @@ class Phenotypeannotation(Base):
                 "link": None, # self.experiment.obj_url -> no page yet
                 "category": experiment.apo_namespace
             }
-            experiment_details = experiment.description
 
         if phenotype:
             phenotype_obj = {
@@ -3672,7 +3671,7 @@ class Phenotypeannotation(Base):
                 "format_name": self.dbentity.format_name
             },
             "experiment": experiment_obj,
-            "experiment_details": experiment_details,
+            "experiment_details": self.experiment_comment,
             "strain": strain_obj,
             "properties": properties,
             "note": note,
