@@ -4,6 +4,8 @@ from pyramid.view import view_config
 from pyramid.compat import escape
 from pyramid.session import check_csrf_token
 
+from sqlalchemy import func
+
 from oauth2client import client, crypt
 import os
 
@@ -510,9 +512,9 @@ def chemical_phenotype_details(request):
 
 @view_config(route_name='phenotype', renderer='json', request_method='GET')
 def phenotype(request):
-    format_name = request.matchdict['format_name'].lower()
+    format_name = request.matchdict['format_name']
 
-    phenotype = DBSession.query(Phenotype).filter_by(format_name=format_name).one_or_none()
+    phenotype = DBSession.query(Phenotype).filter(func.lower(Phenotype.format_name) == func.lower(format_name)).one_or_none()
     if phenotype:
         return phenotype.to_dict()
     else:
