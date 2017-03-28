@@ -3608,42 +3608,7 @@ class Phenotypeannotation(Base):
                 "display_name": strain[0].display_name,
                 "link": strain[0].obj_url
             }
-
-        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).all() ### TODO: consider only conditions that are part of the same group_id as the chemical. If annotation has multiple group_ids, it should return an array!!!
-
-        for condition in conditions:
-            if condition.condition_class == "chemical":
-                if chemical is not None and (chemical.display_name == condition.condition_name):
-                    chebi_url = chemical.obj_url
-                else:
-                    chebi_url = DBSession.query(Chebi.obj_url).filter_by(display_name=condition.condition_name).one_or_none()
-
-                link = None
-                if chebi_url:
-                    link = chebi_url
-
-                properties.append({
-                    "class_type": "CHEMICAL",
-                    "concentration": condition.condition_value,
-                    "bioitem": {
-                        "link": link,
-                        "display_name": condition.condition_name
-                    },
-                    "note": None,
-                    "role": "CHEMICAL"
-                })
-            else:
-                note = condition.condition_name
-                if condition.condition_value:
-                    note += ", " + condition.condition_value
-                    if condition.condition_unit:
-                        note += " " + condition_unit
-                
-                properties.append({
-                    "class_type": condition.condition_class,
-                    "note": note
-                })
-
+            
         note = None
         if self.details and len(self.details) > 0:
             note = self.details
@@ -3692,8 +3657,61 @@ class Phenotypeannotation(Base):
                 "pubmed_id": reference.pmid
             }
         }
+            
+        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).all()
 
-        return [obj]
+        groups = {}
+        
+        for condition in conditions:
+            if condition.condition_class == "chemical":
+                if chemical is not None and (chemical.display_name == condition.condition_name):
+                    chebi_url = chemical.obj_url
+                else:
+                    chebi_url = DBSession.query(Chebi.obj_url).filter_by(display_name=condition.condition_name).one_or_none()
+
+                link = None
+                if chebi_url:
+                    link = chebi_url
+
+                if condition.group_id not in groups:
+                    groups[condition.group_id] = []
+                    
+                groups[condition.group_id].append({
+                    "class_type": "CHEMICAL",
+                    "concentration": condition.condition_value,
+                    "bioitem": {
+                        "link": link,
+                        "display_name": condition.condition_name
+                    },
+                    "note": None,
+                    "role": "CHEMICAL"
+                })
+            else:
+                note = condition.condition_name
+                if condition.condition_value:
+                    note += ", " + condition.condition_value
+                    if condition.condition_unit:
+                        note += " " + condition_unit
+
+                if condition.group_id not in groups:
+                    groups[condition.group_id] = []
+
+                groups[condition.group_id].append({
+                    "class_type": condition.condition_class,
+                    "note": note
+                })
+
+        final_obj = []
+        for group_id in groups:
+            obj_group = copy.deepcopy(obj)
+            obj_group["properties"] += groups[group_id]
+            final_obj.append(obj_group)
+
+        if len(final_obj) == 0:
+            final_obj = [obj]
+                
+        return final_obj
+
 
 class PhenotypeannotationCond(Base):
     __tablename__ = 'phenotypeannotation_cond'
