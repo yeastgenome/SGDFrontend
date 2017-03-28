@@ -98,7 +98,8 @@ class Apo(Base):
         for phenotype in phenotypes:
             annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=phenotype.phenotype_id).all()
 
-            obj += [a.to_dict(phenotype=phenotype) for a in annotations]
+            for a in annotations:
+                obj += a.to_dict(phenotype=phenotype)
 
         return obj
 
@@ -115,7 +116,8 @@ class Apo(Base):
         for phenotype in phenotypes:
             annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=phenotype.phenotype_id).all()
 
-            obj += [a.to_dict(phenotype=phenotype) for a in annotations]
+            for a in annotations:
+                obj += a.to_dict(phenotype=phenotype)
 
         return obj
 
@@ -553,11 +555,15 @@ class Chebi(Base):
 
     def phenotype_to_dict(self):
         conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter_by(condition_name=self.display_name).all()
-        annotation_ids = set([condition[0] for condition in conditions])
 
-        phenotype_annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(list(annotation_ids))).all()
+        phenotype_annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(conditions)).all()
 
-        return [annotation.to_dict(chemical=self) for annotation in phenotype_annotations]
+        obj = []
+        
+        for annotation in phenotype_annotations:
+            obj += annotation.to_dict(chemical=self)
+
+        return obj
 
 class ChebiAlia(Base):
     __tablename__ = 'chebi_alias'
@@ -1298,11 +1304,12 @@ class Referencedbentity(Dbentity):
         return obj
 
     def phenotype_to_dict(self):
-        obj = []
-
         phenotypes = DBSession.query(Phenotypeannotation).filter_by(reference_id=self.dbentity_id).all()
-        
-        return [phenotype.to_dict(reference=self) for phenotype in phenotypes]
+
+        obj = []
+        for phenotype in phenotypes:
+            obj += phenotype.to_dict(reference=self)
+        return obj
 
     def regulation_to_dict(self):
         obj = []
@@ -3448,8 +3455,11 @@ class Phenotype(Base):
 
     def annotations_to_dict(self):
         phenotypes = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
-        
-        return [phenotype.to_dict(phenotype=self) for phenotype in phenotypes]
+
+        obj = []
+        for phenotype in phenotypes:
+            obj += phenotype.to_dict(phenotype=self)
+        return obj
 
 
 class Phenotypeannotation(Base):
@@ -3585,7 +3595,21 @@ class Phenotypeannotation(Base):
                 "role": "Allele"
             })
 
-        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).all() ### TODO: consider only conditions that are part of the same group_id as the chemical
+        strain = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
+        strain_obj = None
+
+        if len(strain) == 0 or len(strain) > 1:
+            strain_obj = {
+                "display_name": "Other",
+                "link": "/strain/S000203479"
+            }
+        else:
+            strain_obj = {
+                "display_name": strain[0].display_name,
+                "link": strain[0].obj_url
+            }
+
+        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).all() ### TODO: consider only conditions that are part of the same group_id as the chemical. If annotation has multiple group_ids, it should return an array!!!
 
         for condition in conditions:
             if condition.condition_class == "chemical":
@@ -3619,20 +3643,6 @@ class Phenotypeannotation(Base):
                     "class_type": condition.condition_class,
                     "note": note
                 })
-
-        strain = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
-        strain_obj = None
-
-        if len(strain) == 0 or len(strain) > 1:
-            strain_obj = {
-                "display_name": "Other",
-                "link": "/strain/S000203479"
-            }
-        else:
-            strain_obj = {
-                "display_name": strain[0].display_name,
-                "link": strain[0].obj_url
-            }
 
         note = None
         if self.details and len(self.details) > 0:
@@ -3683,7 +3693,7 @@ class Phenotypeannotation(Base):
             }
         }
 
-        return obj
+        return [obj]
 
 class PhenotypeannotationCond(Base):
     __tablename__ = 'phenotypeannotation_cond'
@@ -3700,6 +3710,7 @@ class PhenotypeannotationCond(Base):
     condition_unit = Column(String(25))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    group_id = Column(Integer, nullable=False)
 
     annotation = relationship(u'Phenotypeannotation')
 
