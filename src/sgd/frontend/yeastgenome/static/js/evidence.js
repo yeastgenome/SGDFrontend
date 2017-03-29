@@ -287,17 +287,20 @@ function phenotype_data_to_table(evidence, index) {
 	var reporter = '';
     var note = '';
     for (var j=0; j < evidence['properties'].length; j++) {
+        var entry = evidence['properties'][j];
         if(evidence['properties'][j]['class_type'] == 'CHEMICAL') {
+            var newChemical = '';
             if(evidence['properties'][j]['concentration'] != null) {
-                chemical = evidence['properties'][j]['concentration'] + ' ' + create_link(evidence['properties'][j]['bioitem']['display_name'], evidence['properties'][j]['bioitem']['link']);
+                newChemical = evidence['properties'][j]['concentration'] + ' ' + create_link(evidence['properties'][j]['bioitem']['display_name'], evidence['properties'][j]['bioitem']['link']);
             }
             else {
-                chemical = create_link(evidence['properties'][j]['bioitem']['display_name'], evidence['properties'][j]['bioitem']['link']);
+                newChemical = create_link(evidence['properties'][j]['bioitem']['display_name'], evidence['properties'][j]['bioitem']['link']);
             }
             var chemical_icon = create_note_icon('chemical_icon' + index, evidence['properties'][j]['note']);
             if(chemical_icon != '') {
-                chemical = chemical + ' ' + chemical_icon;
+                newChemical = newChemical + ' ' + chemical_icon;
             }
+            chemical = chemical + newChemical;
         }
         else if(evidence['properties'][j]['role'] == 'Allele') {
             allele = '<br><strong>Allele: </strong>' + evidence['properties'][j]['bioitem']['display_name'];
