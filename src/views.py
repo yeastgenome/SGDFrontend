@@ -13,7 +13,7 @@ from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity
 
 from .celery_tasks import upload_to_s3
 
-from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
+from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, get_pusher_client, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results
 from .tsv_parser import parse_tsv_annotations
@@ -28,7 +28,10 @@ log = logging.getLogger(__name__)
 
 @view_config(route_name='home', request_method='GET', renderer='home.jinja2')
 def home_view(request):
-    return {'google_client_id': os.environ['GOOGLE_CLIENT_ID']}
+    return {
+        'google_client_id': os.environ['GOOGLE_CLIENT_ID'],
+        'pusher_key': os.environ['PUSHER_KEY']
+    }
 
 @view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')
 @authenticate
@@ -427,7 +430,8 @@ def reference_triage_id_update(request):
             transaction.commit()
         except:
             return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify if pmid is valid and not already present.'}))
-        
+        pusher = get_pusher_client()
+        pusher.trigger('sgd', 'triageUpdate', {})
         return HTTPOk()
     else:
         return HTTPNotFound()
@@ -444,6 +448,8 @@ def reference_triage_promote(request):
         DBSession.delete(triage)
         
         transaction.commit()
+        pusher = get_pusher_client()
+        pusher.trigger('sgd', 'triageUpdate', {})
         return HTTPOk()
     else:
         return HTTPNotFound()
@@ -468,6 +474,8 @@ def reference_triage_id_delete(request):
         DBSession.delete(triage)
         
         transaction.commit()
+        pusher = get_pusher_client()
+        pusher.trigger('sgd', 'triageUpdate', {})
         return HTTPOk()
     else:
         return HTTPNotFound()

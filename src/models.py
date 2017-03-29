@@ -4243,8 +4243,8 @@ class Referencetriage(Base):
                 "citation": self.citation,
                 "fulltext_url": self.fulltext_url,
                 "abstract": self.abstract,
-                "date_created": self.date_created.strftime("%Y-%m-%d"),
-                "abstract_genes": self.abstract_genes
+                "abstract_genes": self.abstract_genes,
+                "date_created": self.date_created.strftime("%Y-%m-%d")
             },
             "data": json.loads(self.json or "{}")
         }

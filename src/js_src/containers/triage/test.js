@@ -6,7 +6,7 @@ import { LitTriageIndex } from './index';
 
 describe('LitTriageIndex', () => {
   it('should be able to render to an HTML string', () => {
-    let htmlString = renderToString(<LitTriageIndex entries={[]} />);
+    let htmlString = renderToString(<LitTriageIndex triageEntries={[]} />);
     assert.equal(typeof htmlString, 'string');
   });
 });
