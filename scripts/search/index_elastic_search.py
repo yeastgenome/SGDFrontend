@@ -128,7 +128,7 @@ def index_colleagues():
         obj = {
             'name': c.last_name + ", " + c.first_name,
             'category': 'colleague',
-            'href': '/colleague/' + c.format_name + '/overview',
+            'href': '/colleague/' + c.format_name,
             'description': description,
             
             'first_name': c.first_name,
@@ -454,7 +454,7 @@ def load_go_id_blacklist(list_filename):
     return go_id_blacklist
         
 def index_go_terms():
-    go_id_blacklist = load_go_id_blacklist('scripts/go_id_blacklist.lst')
+    go_id_blacklist = load_go_id_blacklist('scripts/search/go_id_blacklist.lst')
     
     gos = DBSession.query(Go).all()
 
@@ -585,24 +585,25 @@ def index_references():
 #delete_mapping()
 #put_mapping()
 
-def index_part_1():
-#    index_reserved_names()
-#    index_toolbar_links()
-    index_strains()
+index_observables()
+
+#def index_part_1():
+#    pass
+#    index_strains()
 #    index_genes()
+#    index_colleagues()
 #    index_phenotypes()
 
 def index_part_2():
     pass
+#    index_reserved_names()
+#    index_toolbar_links()
 #    index_observables()
-#    index_colleagues()
 #    index_go_terms()
 #    index_references()
 
-t1 = Thread(target=index_part_1)
-t2 = Thread(target=index_part_2)
+#t1 = Thread(target=index_part_1)
+#t2 = Thread(target=index_part_2)
 
-t1.start()
-t2.start()
-
-
+#t1.start()
+#t2.start()

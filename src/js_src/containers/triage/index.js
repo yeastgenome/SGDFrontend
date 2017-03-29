@@ -3,30 +3,34 @@ import { connect } from 'react-redux';
 
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
+import getPusherClient from '../../lib/getPusherClient';
 import { selectTriageEntries } from '../../selectors/litSelectors';
 import CategoryLabel from '../../components/categoryLabel';
 import { updateTriageEntries, clearActiveTags } from './triageActions';
 import TagList from '../../components/tagList';
+import Abstract from './abstract';
 import TriageControls from './triageControls';
 
 const TRIAGE_URL = '/reference/triage';
-const REFRESH_INTERVAL = 7000;
-const TIME_VAR = 'refreshTimeout';
+const CHANNEL = 'sgd';
+const EVENT = 'triageUpdate';
 
 class LitTriageIndex extends Component {
   componentDidMount() {
     this.fetchData();
-    // create the refresh timer
-    this.clearRefreshTimer();
-    this[TIME_VAR] = setInterval(this.fetchData.bind(this), REFRESH_INTERVAL);
+    this.listenForUpdates();
   }
 
   componentWillUnmount() {
-    this.clearRefreshTimer();
+    this.channel.unbind(EVENT);
   }
 
-  clearRefreshTimer() {
-    if (this[TIME_VAR]) clearInterval(this[TIME_VAR]);
+  listenForUpdates() {
+    let pusher = getPusherClient();
+    this.channel = pusher.subscribe(CHANNEL);
+    this.channel.bind(EVENT, () => {
+      this.fetchData();
+    });
   }
 
   fetchData() {
@@ -49,7 +53,7 @@ class LitTriageIndex extends Component {
       return (
         <div className={`callout ${style.triageEntryContiner}`} key={'te' + d.curation_id}>
           <h4 dangerouslySetInnerHTML={{ __html: d.basic.citation }} />
-          <p dangerouslySetInnerHTML={{ __html: d.basic.abstract }} />
+          <Abstract abstract={d.basic.abstract} geneList={d.basic.abstract_genes} />
           {this.renderLinks(d)}
           <div className={style.triageControls}>
             <TriageControls entry={d} />
