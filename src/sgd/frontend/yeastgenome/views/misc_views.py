@@ -13,11 +13,14 @@ import requests
 SEARCH_URL = config.backend_url + '/get_search_results'
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 
+@view_config(route_name='healthcheck')
+def healthcheck(request):
+    return Response(body='sgd ok', content_type='text/plain', charset='utf-8')
+
 @view_config(route_name='redirect_no_overview')
 @view_config(route_name='redirect_no_overview_long')
 def redirect_no_overview(request):
     new_url = request.path.replace('/overview', '')
-
     return HTTPMovedPermanently(get_https_url(new_url, request))
 
 @view_config(context=HTTPNotFound)

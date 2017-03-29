@@ -10,6 +10,7 @@ def prep_views(chosen_frontend, config):
     config.scan('src.sgd.frontend.yeastgenome.views.misc_views')
     config.scan('src.sgd.frontend.yeastgenome.views.locus_views')
     # misc pages from misc_views
+    config.add_route('healthcheck', '/healthcheck')
     config.add_route('redirect_no_overview', '/{ignore}/overview')
     config.add_route('redirect_no_overview_long', '/{ignore_a}/{ignore_b}/overview')
     config.add_route('home', '/')
