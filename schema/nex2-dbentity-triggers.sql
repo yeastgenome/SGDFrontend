@@ -1751,6 +1751,10 @@ BEGIN
         PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'DESCRIPTION'::text, OLD.dbentity_id, OLD.description, NEW.description, USER);
     END IF;
 
+     IF (((OLD.json IS NULL) AND (NEW.json IS NOT NULL)) OR ((OLD.json IS NOT NULL) AND (NEW.json IS NULL)) OR (OLD.json != NEW.json)) THEN
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'JSON'::text, OLD.dbentity_id, OLD.json::text, NEW.json::text, USER);
+    END IF;
+
     RETURN NEW;
 
   ELSIF (TG_OP = 'DELETE') THEN
@@ -1766,10 +1770,10 @@ BEGIN
              OLD.data_id || '[:]' || OLD.format_id || '[:]' ||
              OLD.file_extension || '[:]' || OLD.file_date || '[:]' ||
              OLD.is_public || '[:]' || OLD.is_in_spell || '[:]' ||
-             OLD.is_in_browser || '[:]' || OLD.md5sum || '[:]' ||
-             OLD.filepath_id || '[:]' || OLD.readme_file_id || '[:]' ||
-             OLD.previous_file_name || '[:]' || OLD.s3_url || '[:]' ||
-             OLD.description;
+             OLD.is_in_browser || '[:]' || coalesce(OLD.md5sum,'') || '[:]' ||
+             coalesce(OLD.filepath_id,0) || '[:]' || coalesce(OLD.readme_file_id,0) || '[:]' ||
+             coalesce(OLD.previous_file_name,'') || '[:]' || coalesce(OLD.s3_url,'') || '[:]' ||
+             coalesce(OLD.description,'') || '[:]' || coalesce(OLD.json,'');
 
              PERFORM nex.insertdeletelog('FILEDBENTITY'::text, OLD.dbentity_id, v_row, USER);
 
@@ -2006,19 +2010,19 @@ BEGIN
     END IF;
 
     IF (((OLD.med_abbr IS NULL) AND (NEW.med_abbr IS NOT NULL)) OR ((OLD.med_abbr IS NOT NULL) AND (NEW.med_abbr IS NULL)) OR (OLD.med_abbr != NEW.med_abbr)) THEN
-        PERFORM nex.insertupdatelog('Journal'::text, 'MED_ABBR'::text, OLD.journal_id, OLD.med_abbr, NEW.med_abbr, USER);
+        PERFORM nex.insertupdatelog('JOURNAL'::text, 'MED_ABBR'::text, OLD.journal_id, OLD.med_abbr, NEW.med_abbr, USER);
     END IF;
 
     IF (((OLD.title IS NULL) AND (NEW.title IS NOT NULL)) OR ((OLD.title IS NOT NULL) AND (NEW.title IS NULL)) OR (OLD.title != NEW.title)) THEN
-        PERFORM nex.insertupdatelog('Journal'::text, 'TITLE'::text, OLD.journal_id, OLD.title, NEW.title, USER);
+        PERFORM nex.insertupdatelog('JOURNAL'::text, 'TITLE'::text, OLD.journal_id, OLD.title, NEW.title, USER);
     END IF;
 
     IF (((OLD.issn_print IS NULL) AND (NEW.issn_print IS NOT NULL)) OR ((OLD.issn_print IS NOT NULL) AND (NEW.issn_print IS NULL)) OR (OLD.issn_print != NEW.issn_print)) THEN
-        PERFORM nex.insertupdatelog('Journal'::text, 'ISSN_PRINT'::text, OLD.journal_id, OLD.issn_print, NEW.issn_print, USER);
+        PERFORM nex.insertupdatelog('JOURNAL'::text, 'ISSN_PRINT'::text, OLD.journal_id, OLD.issn_print, NEW.issn_print, USER);
     END IF;
 
     IF (((OLD.issn_electronic IS NULL) AND (NEW.issn_electronic IS NOT NULL)) OR ((OLD.issn_electronic IS NOT NULL) AND (NEW.issn_electronic IS NULL)) OR (OLD.issn_electronic != NEW.issn_electronic)) THEN
-        PERFORM nex.insertupdatelog('Journal'::text, 'ISSN_ELECTRONIC'::text, OLD.journal_id, OLD.issn_electronic, NEW.issn_electronic, USER);
+        PERFORM nex.insertupdatelog('JOURNAL'::text, 'ISSN_ELECTRONIC'::text, OLD.journal_id, OLD.issn_electronic, NEW.issn_electronic, USER);
     END IF;
 
     RETURN NEW;
@@ -2087,67 +2091,67 @@ BEGIN
   If (TG_OP = 'UPDATE') THEN
 
     IF (OLD.method_obtained != NEW.method_obtained) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'METHOD_OBTAINED'::text, OLD.dbentity_id, OLD.method_obtained, NEW.method_obtained, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'METHOD_OBTAINED'::text, OLD.dbentity_id, OLD.method_obtained, NEW.method_obtained, USER);
     END IF;
 
     IF (OLD.publication_status != NEW.publication_status) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'PUBLICATION_STATUS'::text, OLD.dbentity_id, OLD.publication_status, NEW.publication_status, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'PUBLICATION_STATUS'::text, OLD.dbentity_id, OLD.publication_status, NEW.publication_status, USER);
     END IF;
 
     IF (OLD.fulltext_status != NEW.fulltext_status) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'FULLTEXT_STATUS'::text, OLD.dbentity_id, OLD.fulltext_status, NEW.fulltext_status, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'FULLTEXT_STATUS'::text, OLD.dbentity_id, OLD.fulltext_status, NEW.fulltext_status, USER);
     END IF;
 
     IF (OLD.citation != NEW.citation) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'CITATION'::text, OLD.dbentity_id, OLD.citation, NEW.citation, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'CITATION'::text, OLD.dbentity_id, OLD.citation, NEW.citation, USER);
     END IF;
 
     IF (OLD.year != NEW.year) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'YEAR'::text, OLD.dbentity_id, OLD.year::text, NEW.year::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'YEAR'::text, OLD.dbentity_id, OLD.year::text, NEW.year::text, USER);
     END IF;
 
     IF (((OLD.pmid IS NULL) AND (NEW.pmid IS NOT NULL)) OR ((OLD.pmid IS NOT NULL) AND (NEW.pmid IS NULL)) OR (OLD.pmid != NEW.pmid)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'PMID'::text, OLD.dbentity_id, OLD.pmid::text, NEW.pmid::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'PMID'::text, OLD.dbentity_id, OLD.pmid::text, NEW.pmid::text, USER);
     END IF;
 
     IF (((OLD.pmcid IS NULL) AND (NEW.pmcid IS NOT NULL)) OR ((OLD.pmcid IS NOT NULL) AND (NEW.pmcid IS NULL)) OR (OLD.pmcid != NEW.pmcid)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'PMCID'::text, OLD.dbentity_id, OLD.pmcid, NEW.pmcid, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'PMCID'::text, OLD.dbentity_id, OLD.pmcid, NEW.pmcid, USER);
     END IF;
 
     IF (((OLD.date_published IS NULL) AND (NEW.date_published IS NOT NULL)) OR ((OLD.date_published IS NOT NULL) AND (NEW.date_published IS NULL)) OR (OLD.date_published != NEW.date_published)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'DATE_PUBLISHED'::text, OLD.dbentity_id, OLD.date_published, NEW.date_published, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'DATE_PUBLISHED'::text, OLD.dbentity_id, OLD.date_published, NEW.date_published, USER);
     END IF;
 
     IF (((OLD.date_revised IS NULL) AND (NEW.date_revised IS NOT NULL)) OR ((OLD.date_revised IS NOT NULL) AND (NEW.date_revised IS NULL)) OR (OLD.date_revised != NEW.date_revised)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'DATE_REVISED'::text, OLD.dbentity_id, OLD.date_revised::text, NEW.date_revised::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'DATE_REVISED'::text, OLD.dbentity_id, OLD.date_revised::text, NEW.date_revised::text, USER);
     END IF;
 
     IF (((OLD.issue IS NULL) AND (NEW.issue IS NOT NULL)) OR ((OLD.issue IS NOT NULL) AND (NEW.issue IS NULL)) OR (OLD.issue != NEW.issue)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'ISSUE'::text, OLD.dbentity_id, OLD.issue, NEW.issue, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'ISSUE'::text, OLD.dbentity_id, OLD.issue, NEW.issue, USER);
     END IF;
 
     IF (((OLD.page IS NULL) AND (NEW.page IS NOT NULL)) OR ((OLD.page IS NOT NULL) AND (NEW.page IS NULL)) OR (OLD.page != NEW.page)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'PAGE'::text, OLD.dbentity_id, OLD.page, NEW.page, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'PAGE'::text, OLD.dbentity_id, OLD.page, NEW.page, USER);
     END IF;
 
     IF (((OLD.volume IS NULL) AND (NEW.volume IS NOT NULL)) OR ((OLD.volume IS NOT NULL) AND (NEW.volume IS NULL)) OR (OLD.volume != NEW.volume)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'VOLUME'::text, OLD.dbentity_id, OLD.volume, NEW.volume, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'VOLUME'::text, OLD.dbentity_id, OLD.volume, NEW.volume, USER);
     END IF;
 
     IF (((OLD.title IS NULL) AND (NEW.title IS NOT NULL)) OR ((OLD.title IS NOT NULL) AND (NEW.title IS NULL)) OR (OLD.title != NEW.title)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'TITLE'::text, OLD.dbentity_id, OLD.title, NEW.title, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'TITLE'::text, OLD.dbentity_id, OLD.title, NEW.title, USER);
     END IF;
 
     IF (((OLD.doi IS NULL) AND (NEW.doi IS NOT NULL)) OR ((OLD.doi IS NOT NULL) AND (NEW.doi IS NULL)) OR (OLD.doi != NEW.doi)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'DOI'::text, OLD.dbentity_id, OLD.doi, NEW.doi, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'DOI'::text, OLD.dbentity_id, OLD.doi, NEW.doi, USER);
     END IF;
 
     IF (((OLD.journal_id IS NULL) AND (NEW.journal_id IS NOT NULL)) OR ((OLD.journal_id IS NOT NULL) AND (NEW.journal_id IS NULL)) OR (OLD.journal_id != NEW.journal_id)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'JOURNAL_ID'::text, OLD.dbentity_id, OLD.journal_id::text, NEW.journal_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'JOURNAL_ID'::text, OLD.dbentity_id, OLD.journal_id::text, NEW.journal_id::text, USER);
     END IF;
 
     IF (((OLD.book_id IS NULL) AND (NEW.book_id IS NOT NULL)) OR ((OLD.book_id IS NOT NULL) AND (NEW.book_id IS NULL)) OR (OLD.book_id != NEW.book_id)) THEN
-        PERFORM nex.insertupdatelog('REFERENCE'::text, 'BOOK_ID'::text, OLD.dbentity_id, OLD.book_id::text, NEW.book_id::text, USER);
+        PERFORM nex.insertupdatelog('REFERENCEDBENTITY'::text, 'BOOK_ID'::text, OLD.dbentity_id, OLD.book_id::text, NEW.book_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -2171,7 +2175,7 @@ BEGIN
                 coalesce(OLD.title,'') || '[:]' || coalesce(OLD.doi,'') || '[:]' ||
                 coalesce(OLD.journal_id,0) || '[:]' || coalesce(OLD.book_id,0);
 
-           PERFORM nex.insertdeletelog('REFERENCE'::text, OLD.dbentity_id, v_row, USER);
+           PERFORM nex.insertdeletelog('REFERENCEDBENTITY'::text, OLD.dbentity_id, v_row, USER);
 
        RETURN OLD;
   END IF;
