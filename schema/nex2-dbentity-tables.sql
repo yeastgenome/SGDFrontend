@@ -515,6 +515,7 @@ CREATE TABLE nex.filedbentity (
 	previous_file_name varchar(100),
 	s3_url varchar(500),
 	description varchar(4000),
+    json text,
 	CONSTRAINT filedbentity_pk PRIMARY KEY (dbentity_id)
 ) ;
 COMMENT ON TABLE nex.filedbentity IS 'Details about files loaded into or dumped from the database or associated with the Download Server.';
@@ -533,6 +534,7 @@ COMMENT ON COLUMN nex.filedbentity.readme_file_id IS 'The README associated with
 COMMENT ON COLUMN nex.filedbentity.md5sum IS 'The 128-bit MD5 hash or checksum of the file.';
 COMMENT ON COLUMN nex.filedbentity.is_in_spell IS 'Whether the file was loaded into SPELL.';
 COMMENT ON COLUMN nex.filedbentity.is_in_browser IS 'Whether the file was loaded into a genome browser, such as JBrowse.';
+COMMENT ON COLUMN nex.filedbentity.json IS 'JSON object of the data and file metadata.';
 CREATE INDEX filedbentity_format_fk_index ON nex.filedbentity (format_id);
 CREATE INDEX filedbentity_topic_fk_index ON nex.filedbentity (topic_id);
 CREATE INDEX filedbentity_data_fk_index ON nex.filedbentity (data_id);
