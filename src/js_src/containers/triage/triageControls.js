@@ -113,8 +113,6 @@ class TriageControls extends Component {
   renderTags() {
     return (
       <div ref='tagList'>
-        <input type='text' />
-        <a className='button secondary disabled'>Auto-extract gene names from abstract</a>
         <TagList entry={this.props.entry} onUpdate={this.saveUpdatedEntry.bind(this)} />
       </div>
     );
@@ -135,10 +133,14 @@ class TriageControls extends Component {
     };
     return (
       <div>
-        <label>You have claimed this reference. <a onClick={handleUnclaim}>Unclaim</a></label>
-        <div className='text-right'>
-          <a className='button' onClick={this.handlePromoteEntry.bind(this)}><i className='fa fa-check' /> Add to Database</a>
-          <a className='button secondary' onClick={this.handleDiscardEntry.bind(this)}><i className='fa fa-trash' /> Discard</a>
+        <div className='row'>
+          <div className='columns small-6'>
+            <p>You have claimed this reference. <a onClick={handleUnclaim}>Unclaim</a></p>
+          </div>
+          <div className='columns small-6 text-right'>
+            <a className='button' onClick={this.handlePromoteEntry.bind(this)}><i className='fa fa-check' /> Add to Database</a>
+            <a className='button secondary' onClick={this.handleDiscardEntry.bind(this)}><i className='fa fa-trash' /> Discard</a>
+          </div>
         </div>
         {this.renderTags()}
       </div>
