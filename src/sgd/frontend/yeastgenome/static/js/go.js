@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
 	$.getJSON('/backend/go/' + go_term['id'] + '/locus_details', function(data) {
 	  	var go_table = create_go_table(data);

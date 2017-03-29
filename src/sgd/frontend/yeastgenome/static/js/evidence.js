@@ -397,6 +397,7 @@ function go_data_to_table(evidence, index) {
   				relationship_entry = relationship_entry + ', ' + new_rel_entry
   			}
 	  	}
+        
 
   	}
   	if(with_entry != null) {
@@ -407,6 +408,6 @@ function go_data_to_table(evidence, index) {
     if(qualifier == 'involved in' || qualifier == 'enables' || qualifier == 'part of') {
         qualifier = '';
     }
-
+    relationship_entry = relationship_entry || ''; // prevent null value so that GO table can sort
   	return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], biocon, evidence['go']['go_id'], qualifier, evidence['go']['go_aspect'], evidence['annotation_type'], evidence_code, evidence['source']['display_name'], evidence['date_created'], relationship_entry, reference];
 }
