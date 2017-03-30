@@ -18,6 +18,8 @@ from .helpers import allowed_file, secure_save_file, curator_or_none, authentica
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results
 from .tsv_parser import parse_tsv_annotations
 
+from .loading.promote_reference_triage import add_paper
+
 import transaction
 
 import datetime
@@ -442,6 +444,8 @@ def reference_triage_promote(request):
 
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
+        add_paper(triage.pmid, DBSession)
+        
         reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=reason, created_by="OTTO")
         
         DBSession.add(reference_deleted)
