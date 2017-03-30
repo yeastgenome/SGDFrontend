@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import style from './style.css';
 import SearchBar from './searchBar';
 import curateLogo from './curateLogo.png';
+import Loader from './loader/index';
+import LoadingPage from '../../components/loadingPage';
 import { clearError, clearMessage } from '../../actions/metaActions';
 
 class LayoutComponent extends Component {
@@ -50,6 +52,11 @@ class LayoutComponent extends Component {
     );
   }
 
+  renderBody() {
+    if (!this.props.isReady) return <LoadingPage />;
+    return this.props.children;
+  }
+
   render() {
     // init auth nodes, either login or logout links
     let authNodes = this.props.isAuthenticated ? this.renderAuthedMenu() : null;
@@ -84,8 +91,9 @@ class LayoutComponent extends Component {
           </div>
         </nav>
         <div className={`row ${style.contentRow}`}>
+          <Loader />
           <div className={`large-12 columns ${style.contentContainer}`}>
-            {this.props.children}
+            {this.renderBody()}
           </div>
         </div>
       </div>
@@ -98,14 +106,16 @@ LayoutComponent.propTypes = {
   error: React.PropTypes.string,
   message: React.PropTypes.string,
   dispatch: React.PropTypes.func,
-  isAuthenticated: React.PropTypes.bool
+  isAuthenticated: React.PropTypes.bool,
+  isReady: React.PropTypes.bool,
 };
 
 function mapStateToProps(state) {
   return {
     error: state.meta.get('error'),
     message: state.meta.get('message'),
-    isAuthenticated: state.auth.get('isAuthenticated')
+    isAuthenticated: state.auth.get('isAuthenticated'),
+    isReady: state.meta.get('isReady')
   };
 }
 
