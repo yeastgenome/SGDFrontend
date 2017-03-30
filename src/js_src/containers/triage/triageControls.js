@@ -4,13 +4,21 @@ import _ from 'underscore';
 
 import fetchData from '../../lib/fetchData';
 import { updateTriageEntry, updateActiveTags, removeEntry } from './triageActions';
-import { setMessage } from '../../actions/metaActions';
+import { setMessage, setError } from '../../actions/metaActions';
 import TagList from '../../components/tagList';
+import Loader from '../../components/loader';
 
 const TRIAGE_URL = '/reference/triage';
-// const PROMOTE_URL_SUFFIX = 'promote';
+const PROMOTE_URL_SUFFIX = 'promote';
 
 class TriageControls extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isPending: false
+    };
+  }
+
   getAssignee() {
     return this.props.entry.data.assignee;
   }
@@ -66,33 +74,42 @@ class TriageControls extends Component {
 
   handlePromoteEntry(e) {
     e.preventDefault();
+    // generate tag data from DOM
     let tagGeneData = this.getDataFromTagInputs('sgd-geneList');
     let tagCommentData = this.getDataFromTagInputs('sgd-comment');
     let tempEntry = this.props.entry;
-    tempEntry.data.tags.forEach( (d) => {
+    let tags = tempEntry.data.tags || [];
+    tags.forEach( (d) => {
       let thisGenes = _.findWhere(tagGeneData, { type: d.name });
       if (thisGenes) d.genes = thisGenes.value;
       let thisComments = _.findWhere(tagCommentData, { type: d.name });
       if (thisComments) d.comment = thisComments.value;
     });
-    this.props.dispatch(updateActiveTags(tempEntry));
-    // scroll to top of page
-    window.scrollTo(0, 0);
-    // e.preventDefault();
-    // let id = this.props.entry.curation_id;
-    // this.props.dispatch(removeEntry(id));
-    // let message = `${this.props.entry.basic.citation} added to database.`;
-    // this.props.dispatch(setMessage(message));
-    // let url = `${TRIAGE_URL}/${id}/${PROMOTE_URL_SUFFIX}`;
-    // let fetchOptions = {
-    //   type: 'PUT',
-    //   headers: {
-    //     'X-CSRF-Token': window.CSRF_TOKEN,        
-    //   }
-    // };
-    // fetchData(url, fetchOptions).then( () => {
-    //   this.props.dispatch(removeEntry(id));
-    // });
+    tempEntry.data.tags = tags;
+    // promotion request
+    this.setState({ isPending: true });
+    let id = this.props.entry.curation_id;
+    let url = `${TRIAGE_URL}/${id}/${PROMOTE_URL_SUFFIX}`;
+    let fetchOptions = {
+      type: 'PUT',
+      data: tempEntry,
+      headers: {
+        'X-CSRF-Token': window.CSRF_TOKEN,        
+      }
+    };
+    fetchData(url, fetchOptions).then( () => {
+      let message = `${this.props.entry.basic.citation} added to database.`;
+      this.props.dispatch(removeEntry(id));
+      this.props.dispatch(setMessage(message));
+      this.props.dispatch(updateActiveTags(tempEntry));
+      // scroll to top of page
+      window.scrollTo(0, 0);
+    }).catch( () => {
+      this.props.dispatch(setError('There was an error adding the reference.'));
+      this.setState({ isPending: false });
+      // scroll to top of page
+      window.scrollTo(0, 0);
+    });
   }
 
   renderOpenClaim() {
@@ -119,6 +136,7 @@ class TriageControls extends Component {
   }
 
   render() {
+    if (this.state.isPending) return <Loader />;
     let aUser = this.getAssignee();
     if (!aUser) {
       return this.renderOpenClaim();
