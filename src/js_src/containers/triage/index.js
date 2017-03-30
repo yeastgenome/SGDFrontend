@@ -7,6 +7,7 @@ import getPusherClient from '../../lib/getPusherClient';
 import { selectTriageEntries } from '../../selectors/litSelectors';
 import CategoryLabel from '../../components/categoryLabel';
 import { updateTriageEntries, clearActiveTags } from './triageActions';
+import { setPending, finishPending } from '../../actions/metaActions';
 import TagList from '../../components/tagList';
 import Abstract from './abstract';
 import TriageControls from './triageControls';
@@ -17,6 +18,7 @@ const EVENT = 'triageUpdate';
 
 class LitTriageIndex extends Component {
   componentDidMount() {
+    this.props.dispatch(setPending());
     this.fetchData();
     this.listenForUpdates();
   }
@@ -36,6 +38,7 @@ class LitTriageIndex extends Component {
   fetchData() {
     fetchData(TRIAGE_URL).then( (data) => {
       this.props.dispatch(updateTriageEntries(data.entries, this.props.username));
+      this.props.dispatch(finishPending());
     });
   }
 
