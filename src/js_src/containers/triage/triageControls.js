@@ -92,7 +92,8 @@ class TriageControls extends Component {
     let url = `${TRIAGE_URL}/${id}/${PROMOTE_URL_SUFFIX}`;
     let fetchOptions = {
       type: 'PUT',
-      data: tempEntry,
+      data: JSON.stringify(tempEntry),
+      contentType: 'application/json',
       headers: {
         'X-CSRF-Token': window.CSRF_TOKEN,        
       }
