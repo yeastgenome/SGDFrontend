@@ -44,10 +44,12 @@ class Abstract extends Component {
     let genes = this.getGenesAsArray();
     let aliasGenes = this.getAliasGenesAsArray();
     genes.forEach( (d) => {
-      abstract = abstract.replace(d, `<span style="background:${GENE_COLOR}; color: white; font-weight: bold;">${d}</span>`);
+      let geneRegex = new RegExp(d, 'g');
+      abstract = abstract.replace(geneRegex, `<span style="background:${GENE_COLOR}; color: white; font-weight: bold;">${d}</span>`);
     });
     aliasGenes.forEach( (d) => {
-      abstract = abstract.replace(d, `<span style="background:${ALIAS_COLOR}; color: white; font-weight: bold;">${d}</span>`);
+      let geneRegex = new RegExp(d, 'g');
+      abstract = abstract.replace(geneRegex, `<span style="background:${ALIAS_COLOR}; color: white; font-weight: bold;">${d}</span>`);
     });
     return abstract;
   }
