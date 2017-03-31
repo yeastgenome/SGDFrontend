@@ -2331,8 +2331,8 @@ BEGIN
         PERFORM nex.insertupdatelog('REFERENCE_RELATION'::text, 'CHILD_ID'::text, OLD.reference_relation_id, OLD.child_id::text, NEW.child_id::text, USER);
     END IF;
 
-    IF (OLD.correction_type != NEW.correction_type) THEN
-        PERFORM nex.insertupdatelog('REFERENCE_RELATION'::text, 'CORRECTION_TYPE'::text, OLD.reference_relation_id, OLD.correction_type, NEW.correction_type, USER);
+    IF (OLD.relation_type != NEW.relation_type) THEN
+        PERFORM nex.insertupdatelog('REFERENCE_RELATION'::text, 'RELATION_TYPE'::text, OLD.reference_relation_id, OLD.relation_type, NEW.relation_type, USER);
     END IF;
 
     RETURN NEW;
@@ -2341,7 +2341,7 @@ BEGIN
 
     v_row := OLD.reference_relation_id || '[:]' || OLD.source_id || '[:]' ||
              OLD.parent_id || '[:]' || OLD.child_id || '[:]' ||
-             OLD.correction_type || '[:]' ||
+             OLD.relation_type || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
           PERFORM nex.insertdeletelog('REFERENCE_RELATION'::text, OLD.reference_relation_id, v_row, USER);
