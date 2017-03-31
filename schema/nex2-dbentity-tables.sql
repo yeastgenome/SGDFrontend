@@ -709,21 +709,20 @@ CREATE TABLE nex.reference_relation (
 	source_id bigint NOT NULL,
 	parent_id bigint NOT NULL,
 	child_id bigint NOT NULL,
-	correction_type varchar(40) NOT NULL,
+	relation_type varchar(40) NOT NULL,
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT reference_relation_pk PRIMARY KEY (reference_relation_id)
 ) ;
-COMMENT ON TABLE nex.reference_relation IS 'Relationship between two references, used for published errata, comments, retractions, etc.';
+COMMENT ON TABLE nex.reference_relation IS 'Relationship between two references from PubMed, used for published errata, comments, retractions, etc.';
 COMMENT ON COLUMN nex.reference_relation.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.reference_relation.reference_relation_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN nex.reference_relation.correction_type IS 'Type of correction or comment (Corrigendum, Comment, None).';
+COMMENT ON COLUMN nex.reference_relation.relation_type IS 'Type of paper relationship as defined by PubMed.';
 COMMENT ON COLUMN nex.reference_relation.child_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
 COMMENT ON COLUMN nex.reference_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.reference_relation.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.reference_relation.parent_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
-ALTER TABLE nex.reference_relation ADD CONSTRAINT reference_relation_uk UNIQUE (parent_id,child_id,correction_type);
-ALTER TABLE nex.reference_relation ADD CONSTRAINT referencerelation_type_ck CHECK (CORRECTION_TYPE IN ('Corrigendum', 'Comment', 'None'));
+ALTER TABLE nex.reference_relation ADD CONSTRAINT reference_relation_uk UNIQUE (parent_id,child_id,relation_type);
 CREATE INDEX referencerelation_source_fk_index ON nex.reference_relation (source_id);
 CREATE INDEX referencerelation_parent_fk_index ON nex.reference_relation (parent_id);
 CREATE INDEX referencerelation_child_fk_index ON nex.reference_relation (child_id);
