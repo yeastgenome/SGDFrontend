@@ -4128,7 +4128,7 @@ class ReferenceFile(Base):
 class ReferenceRelation(Base):
     __tablename__ = 'reference_relation'
     __table_args__ = (
-        UniqueConstraint('parent_id', 'child_id', 'correction_type'),
+        UniqueConstraint('parent_id', 'child_id', 'relation_type'),
         {u'schema': 'nex'}
     )
 
