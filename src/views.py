@@ -30,11 +30,17 @@ log = logging.getLogger(__name__)
 
 @view_config(route_name='home', request_method='GET', renderer='home.jinja2')
 def home_view(request):
+    # only provide pusher key if authenticated
+    if 'email' not in request.session or 'username' not in request.session:
+        pusher_key = ''
+    else:
+        pusher_key = os.environ['PUSHER_KEY']
+
     return {
         'google_client_id': os.environ['GOOGLE_CLIENT_ID'],
-        'pusher_key': os.environ['PUSHER_KEY']
+        'pusher_key': pusher_key
     }
-
+    
 @view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')
 @authenticate
 def upload_spreadsheet(request):
