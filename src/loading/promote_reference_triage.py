@@ -161,7 +161,6 @@ def insert_authors(reference_id, authors, source_id):
     
 
 def insert_referencedbentity(pmid, source_id, record):
-    
     pubstatus, date_revised = get_pubstatus_date_revised(record)
     journal_id, journal, journal_title, issn_print = get_journal_id(record)
     pubdate = record.get('DP', '')
@@ -269,40 +268,39 @@ def get_journal_id(record, source_id=None):
     DBSession.refresh(x)
     return j.journal_id, j.med_abbr, journal_full_name, issn_print
 
+tag_to_type = {
+    "CON":  "Comment",
+    "CIN":  "Comment",
+    "EIN":  "Erratum",
+    "EFR":  "Erratum",
+    "CRI":  "Corrected and Republished",
+    "CRF":  "Corrected and Republished",
+    "PRIN": "Partial retraction",
+    "PROF": "Partial retraction",
+    "RPI":  "Republished", 
+    "RPF":  "Republished",
+    "RIN":  "Retraction", 
+    "ROF":  "Retraction",    
+    "UIN":  "Update", 
+    "UOF":  "Update",
+    "SPIN": "Summary for patients",
+    "ORI":  "Original report"
+}
 
 def insert_relations(pmid, reference_id, record):
-    #      CON       Comment on
-    #      CIN       Comment in
-    #      EIN       Erratum in
-    #      EFR       Erratum for
-    #      CRI       Corrected and Republished in 
-    #      CRF       Corrected and Republished from                                                             
-    #      PRIN      Partial retraction in
-    #      PROF      Partial retraction of
-    #      RPI       Republished in 
-    #      RPF       Republished from
-    #      RIN       Retraction in
-    #      ROF       Retraction of 
-    #      UIN       Update in 
-    #      UOF       Update of
-    #      SPIN      Summary for patients in 
-    #      ORI       Original report in
-
     inText = None
     onText = None
     type = None
     for tag in ['CIN', 'EIN', 'CRI', 'PRIN', 'RPI', 'RIN', 'UIN', 'SPIN', 'ORI']:
         if record.get(tag):
             inText = record[tag]
-            if tag == 'CIN':
-                type = 'Comment'
+            type = tag_to_type[tag]
             break
 
     for tag in ['CON', 'EFR', 'CRF', 'PROF', 'RPF', 'ROF', 'UOF']:
         if record.get(tag):
             onText = record[tag]
-            if tag == 'CON':
-                type = 'Comment'
+            type = tag_to_type[tag]
             break
 
     if inText is None and onText is None:
@@ -348,7 +346,6 @@ def get_reference_id(pmid):
         return None
 
 def get_pubstatus_date_revised(record):
-
     pubstatus = record.get('PST', '')  # 'aheadofprint', 'epublish'                               
            
     date_revised = record.get('LR', '')
