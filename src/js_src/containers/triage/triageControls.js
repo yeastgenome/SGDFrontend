@@ -93,6 +93,7 @@ class TriageControls extends Component {
     let fetchOptions = {
       type: 'PUT',
       data: JSON.stringify(tempEntry),
+      timeout: 20000,
       contentType: 'application/json',
       headers: {
         'X-CSRF-Token': window.CSRF_TOKEN,        
