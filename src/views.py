@@ -9,7 +9,7 @@ from sqlalchemy import func
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference
 
 from .celery_tasks import upload_to_s3
 
@@ -501,6 +501,18 @@ def reference_triage_id_delete(request):
         return HTTPOk()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='reference_triage_tags', renderer='json', request_method='GET')
+def reference_triage_tags(request):
+    id = request.matchdict['id'].upper()
+
+    obj = []
+
+    tags = DBSession.query(CurationReference).filter_by(reference_id=id).all()
+    for tag in tags:
+        obj.append(tag.to_dict())
+
+    return obj
     
 @view_config(route_name='author', renderer='json', request_method='GET')
 def author(request):
