@@ -209,12 +209,19 @@ REVOKE ALL ON nex.contig_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.contig_url TO curator;
 GRANT SELECT ON nex.contig_url TO PUBLIC;
 
--- Set privilege on TABLE CURATION
-ALTER TABLE nex.curation OWNER TO nex;
-GRANT ALL ON nex.curation TO nex;
-REVOKE ALL ON nex.curation FROM PUBLIC;
-GRANT SELECT,INSERT,UPDATE,DELETE ON nex.curation TO curator;
-GRANT SELECT ON nex.curation TO PUBLIC;
+-- Set privilege on TABLE CURATION_LOCUS
+ALTER TABLE nex.curation_locus OWNER TO nex;
+GRANT ALL ON nex.curation_locus TO nex;
+REVOKE ALL ON nex.curation_locus FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.curation_locus TO curator;
+GRANT SELECT ON nex.curation_locus TO PUBLIC;
+
+-- Set privilege on TABLE CURATION_REFERENCE                                                                                                                                                                    
+ALTER TABLE nex.curation_reference OWNER TO nex;
+GRANT ALL ON nex.curation_reference TO nex;
+REVOKE ALL ON nex.curation_reference FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.curation_reference TO curator;
+GRANT SELECT ON nex.curation_reference TO PUBLIC;
 
 -- Set privilege on TABLE DATASET
 ALTER TABLE nex.dataset OWNER TO nex;
