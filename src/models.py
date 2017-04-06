@@ -909,6 +909,57 @@ class Curation(Base):
     source = relationship(u'Source')
 
 
+class CurationLocus(Base):
+    __tablename__ = 'curation_locus'
+    __table_args__ = (
+        UniqueConstraint('curation_tag', 'locus_id'),
+        {u'schema': 'nex'}
+    )
+
+    curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.curation_seq'::regclass)"))
+    locus_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    curation_tag = Column(String(40), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+    curator_comment = Column(String(2000))
+    json = Column(Text)
+
+    locus = relationship(u'Locusdbentity', foreign_keys=[locus_id])
+    source = relationship(u'Source')
+
+
+class CurationReference(Base):
+    __tablename__ = 'curation_reference'
+    __table_args__ = (
+        UniqueConstraint('reference_id', 'curation_tag', 'locus_id'),
+        {u'schema': 'nex'}
+    )
+
+    curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.curation_seq'::regclass)"))
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    locus_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    curation_tag = Column(String(40), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+    curator_comment = Column(String(2000))
+    json = Column(Text)
+
+    locus = relationship(u'Locusdbentity', foreign_keys=[locus_id])
+    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    source = relationship(u'Source')
+
+    def to_dict(self):
+        return {
+            "tag": self.curation_tag,
+            "locus": {
+                "display_name": self.locus.display_name,
+                "link": self.locus.obj_url
+            },
+            "comment": self.curator_comment
+        }
+
 class Dataset(Base):
     __tablename__ = 'dataset'
     __table_args__ = {u'schema': 'nex'}
