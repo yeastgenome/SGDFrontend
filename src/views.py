@@ -433,7 +433,6 @@ def reference_triage_id_update(request):
             triage.update_from_json(request.json)
         except ValueError:
             return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
-
         try:
             transaction.commit()
         except:
@@ -448,6 +447,8 @@ def reference_triage_id_update(request):
 def reference_triage_promote(request):
     id = request.matchdict['id'].upper()
 
+#    import pdb; pdb.set_trace()
+    
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
         try:
@@ -504,11 +505,16 @@ def reference_triage_id_delete(request):
 
 @view_config(route_name='reference_triage_tags', renderer='json', request_method='GET')
 def reference_triage_tags(request):
-    id = request.matchdict['id'].upper()
+    sgdid = request.matchdict['id'].upper()
 
+    dbentity_id = DBSession.query(Dbentity.dbentity_id).filter_by(sgdid=sgdid).one_or_none()
+
+    if dbentity_id is None:
+        return HTTPNotFound()
+    
     obj = []
 
-    tags = DBSession.query(CurationReference).filter_by(reference_id=id).all()
+    tags = DBSession.query(CurationReference).filter_by(reference_id=dbentity_id[0]).all()
     for tag in tags:
         obj.append(tag.to_dict())
 
