@@ -210,48 +210,46 @@ BEFORE INSERT OR UPDATE ON nex.colleaguetriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguetriage_biur();
 
 
-DROP TRIGGER IF EXISTS curation_audr ON nex.curation CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_curation_audr() RETURNS trigger AS $BODY$
+
+
+
+DROP TRIGGER IF EXISTS curationlocus_audr ON nex.curation_locus CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_curationlocus_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
-    IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM nex.insertupdatelog('CURATION'::text, 'DBENTITY_ID'::text, OLD.curation_id, OLD.dbentity_id::text, NEW.dbentity_id::text, USER);
+    IF (OLD.locus_id != NEW.locus_id) THEN
+        PERFORM nex.insertupdatelog('CURATION_LOCUS'::text, 'LOCUS_ID'::text, OLD.curation_id, OLD.locus_id::text, NEW.locus_id::text, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('CURATION'::text, 'SOURCE_ID'::text, OLD.curation_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('CURATION_LOCUS'::text, 'SOURCE_ID'::text, OLD.curation_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
-    IF (((OLD.locus_id IS NULL) AND (NEW.locus_id IS NOT NULL)) OR ((OLD.locus_id IS NOT NULL) AND (NEW.locus_id IS NULL)) OR (OLD.locus_id != NEW.locus_id)) THEN
-        PERFORM nex.insertupdatelog('CURATION'::text, 'LOCUS_ID'::text, OLD.curation_id, OLD.locus_id::text, NEW.locus_id::text, USER);
-    END IF;
-
-    IF (OLD.subclass != NEW.subclass) THEN
-        PERFORM nex.insertupdatelog('CURATION'::text, 'SUBCLASS'::text, OLD.curation_id, OLD.subclass, NEW.subclass, USER);
-    END IF;
-
-    IF (OLD.curation_task != NEW.curation_task) THEN
-        PERFORM nex.insertupdatelog('CURATION'::text, 'CURATION_TASK'::text, OLD.curation_id, OLD.curation_task, NEW.curation_task, USER);
+    IF (OLD.curation_tag != NEW.curation_tag) THEN
+        PERFORM nex.insertupdatelog('CURATION_LOCUS'::text, 'CURATION_TAG'::text, OLD.curation_id, OLD.curation_tag, NEW.curation_tag, USER);
     END IF;
 
     IF (((OLD.curator_comment IS NULL) AND (NEW.curator_comment IS NOT NULL)) OR ((OLD.curator_comment IS NOT NULL) AND (NEW.curator_comment IS NULL)) OR (OLD.curator_comment != NEW.curator_comment)) THEN
-        PERFORM nex.insertupdatelog('CURATION'::text, 'CURATOR_COMMENT'::text, OLD.curation_id, OLD.curator_comment, NEW.curator_comment, USER);
+        PERFORM nex.insertupdatelog('CURATION_LOCUS'::text, 'CURATOR_COMMENT'::text, OLD.curation_id, OLD.curator_comment, NEW.curator_comment, USER);
+    END IF;
+
+    IF (((OLD.json IS NULL) AND (NEW.json IS NOT NULL)) OR ((OLD.json IS NOT NULL) AND (NEW.json IS NULL)) OR (OLD.json != NEW.json)) THEN
+        PERFORM nex.insertupdatelog('CURATION_LOCUS'::text, 'JSON'::text, OLD.curation_id, OLD.json, NEW.json, USER);
     END IF;
 
     RETURN NEW;
 
   ELSIF (TG_OP = 'DELETE') THEN
 
-    v_row := OLD.curation_id || '[:]' || OLD.dbentity_id || '[:]' ||
-             OLD.source_id || '[:]' || OLD.locus_id || '[:]' ||
-             OLD.bud_id || '[:]' || OLD.subclass || '[:]' ||
-             OLD.curation_task || '[:]' || OLD.curator_comment || '[:]' ||
-             OLD.date_created || '[:]' || OLD.created_by;
+    v_row := OLD.curation_id || '[:]' || OLD.locus_id || '[:]' ||
+             OLD.source_id || '[:]' || OLD.curation_tag || '[:]' ||
+             OLD.date_created || '[:]' || OLD.created_by  || '[:]' ||
+             OLD.curator_comment || '[:]' || OLD.json;
 
-          PERFORM nex.insertdeletelog('CURATION'::text, OLD.curation_id, v_row, USER);
+          PERFORM nex.insertdeletelog('CURATION_LOCUS'::text, OLD.curation_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -259,18 +257,14 @@ BEGIN
 END;
 $BODY$ LANGUAGE 'plpgsql';
 
-CREATE TRIGGER curation_audr
-AFTER UPDATE OR DELETE ON nex.curation FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_curation_audr();
+CREATE TRIGGER curationlocus_audr
+AFTER UPDATE OR DELETE ON nex.curation_locus FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_curationlocus_audr();
 
-DROP TRIGGER IF EXISTS curation_biur ON nex.curation CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_curation_biur() RETURNS trigger AS $BODY$
+DROP TRIGGER IF EXISTS curationlocus_biur ON nex.curation_locus CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_curationlocus_biur() RETURNS trigger AS $BODY$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
-
-    IF ((NEW.subclass = 'LOCUS') AND (NEW.locus_id IS NOT NULL)) THEN
-         RAISE EXCEPTION 'LOCUS_ID is NOT NULL only when subclass = REFERENCE.';
-    END IF;
 
      NEW.created_by := UPPER(NEW.created_by);
           PERFORM nex.checkuser(NEW.created_by);
@@ -282,10 +276,6 @@ BEGIN
     IF (NEW.curation_id != OLD.curation_id) THEN
         RAISE EXCEPTION 'Primary key cannot be updated';
     END IF;
-
-    IF ((NEW.subclass = 'LOCUS') AND (NEW.locus_id IS	NOT NULL)) THEN
-        RAISE EXCEPTION 'LOCUS_ID is NOT NULL only when subclass = REFERENCE.';
-    END		  IF;
 
     IF (NEW.date_created != OLD.date_created) THEN
         RAISE EXCEPTION 'Audit columns cannot be updated.';
@@ -301,9 +291,98 @@ BEGIN
 END;
 $BODY$ LANGUAGE 'plpgsql';
 
-CREATE TRIGGER curation_biur
-BEFORE INSERT OR UPDATE ON nex.curation FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_curation_biur();
+CREATE TRIGGER curationlocus_biur
+BEFORE INSERT OR UPDATE ON nex.curation_locus FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_curationlocus_biur();
+
+
+
+DROP TRIGGER IF EXISTS curationreference_audr ON nex.curation_reference CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_curationreference_audr() RETURNS trigger AS $BODY$
+DECLARE
+    v_row       nex.deletelog.deleted_row%TYPE;
+BEGIN
+  IF (TG_OP = 'UPDATE') THEN
+
+    IF (OLD.reference_id != NEW.reference_id) THEN
+        PERFORM nex.insertupdatelog('CURATION_REFERENCE'::text, 'REFERENCE_ID'::text, OLD.curation_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+    END IF;
+
+     IF (OLD.source_id != NEW.source_id) THEN
+        PERFORM nex.insertupdatelog('CURATION_REFERENCE'::text, 'SOURCE_ID'::text, OLD.curation_id, OLD.source_id::text, NEW.source_id::text, USER);
+    END IF;
+
+    IF (((OLD.locus_id IS NULL) AND (NEW.locus_id IS NOT NULL)) OR ((OLD.locus_id IS NOT NULL) AND (NEW.locus_id IS NULL)) OR (OLD.locus_id != NEW.locus_id)) THEN
+        PERFORM nex.insertupdatelog('CURATION_REFERENCE'::text, 'LOCUS_ID'::text, OLD.curation_id, OLD.locus_id::text, NEW.locus_id::text, USER);
+    END IF;
+
+    IF (OLD.curation_tag != NEW.curation_tag) THEN
+        PERFORM nex.insertupdatelog('CURATION_REFERENCE'::text, 'CURATION_TAG'::text, OLD.curation_id, OLD.curation_tag, NEW.curation_tag, USER);
+    END IF;
+
+    IF (((OLD.curator_comment IS NULL) AND (NEW.curator_comment IS NOT NULL)) OR ((OLD.curator_comment IS NOT NULL) AND (NEW.curator_comment IS NULL)) OR (OLD.curator_comment != NEW.curator_comment)) THEN
+        PERFORM nex.insertupdatelog('CURATION_REFERENCE'::text, 'CURATOR_COMMENT'::text, OLD.curation_id, OLD.curator_comment, NEW.curator_comment, USER);
+    END IF;
+
+    IF (((OLD.json IS NULL) AND (NEW.json IS NOT NULL)) OR ((OLD.json IS NOT NULL) AND (NEW.json IS NULL)) OR (OLD.json != NEW.json)) THEN
+        PERFORM nex.insertupdatelog('CURATION_REFERENCE'::text, 'JSON'::text, OLD.curation_id, OLD.json, NEW.json, USER);
+    END IF;
+
+    RETURN NEW;
+
+  ELSIF (TG_OP = 'DELETE') THEN
+
+    v_row := OLD.curation_id || '[:]' || OLD.reference_id || '[:]' ||
+             OLD.source_id || '[:]' || OLD.locus_id || '[:]' ||
+             OLD.curation_tag || '[:]' || OLD.date_created || '[:]' || 
+             OLD.created_by  || '[:]' || OLD.curator_comment || '[:]' ||
+             OLD.json;
+
+          PERFORM nex.insertdeletelog('CURATION_REFERENCE'::text, OLD.curation_id, v_row, USER);
+
+     RETURN OLD;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER curationreference_audr
+AFTER UPDATE OR DELETE ON nex.curation_reference FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_curationreference_audr();
+
+DROP TRIGGER IF EXISTS curationreference_biur ON nex.curation_reference CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_curationreference_biur() RETURNS trigger AS $BODY$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+
+     NEW.created_by := UPPER(NEW.created_by);
+          PERFORM nex.checkuser(NEW.created_by);
+
+     RETURN NEW;
+
+  ELSIF (TG_OP = 'UPDATE') THEN
+
+    IF (NEW.curation_id != OLD.curation_id) THEN
+        RAISE EXCEPTION 'Primary key cannot be updated';
+    END IF;
+
+    IF (NEW.date_created != OLD.date_created) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    IF (NEW.created_by != OLD.created_by) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    RETURN NEW;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER curationreference_biur
+BEFORE INSERT OR UPDATE ON nex.curation_reference FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_curationreference_biur();
 
 
 DROP TRIGGER IF EXISTS referencetriage_audr ON nex.referencetriage CASCADE;
