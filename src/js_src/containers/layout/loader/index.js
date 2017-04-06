@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import style from './style.css';
-import { selectIsPending } from '../../../selectors/searchSelectors';
 
 const FINISH_INTERVAL = 250;
 
@@ -52,7 +51,9 @@ Loader.propTypes = {
 };
 
 function mapStateToProps(state) {
-  return { isPending: selectIsPending(state) };
+  return {
+    isPending: state.meta.get('isPending')
+  };
 }
 
 export default connect(mapStateToProps)(Loader);

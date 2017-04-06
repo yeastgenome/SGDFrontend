@@ -7,6 +7,7 @@ import getPusherClient from '../../lib/getPusherClient';
 import { selectTriageEntries } from '../../selectors/litSelectors';
 import CategoryLabel from '../../components/categoryLabel';
 import { updateTriageEntries, clearActiveTags } from './triageActions';
+import { setPending, finishPending } from '../../actions/metaActions';
 import TagList from '../../components/tagList';
 import Abstract from './abstract';
 import TriageControls from './triageControls';
@@ -17,6 +18,7 @@ const EVENT = 'triageUpdate';
 
 class LitTriageIndex extends Component {
   componentDidMount() {
+    this.props.dispatch(setPending());
     this.fetchData();
     this.listenForUpdates();
   }
@@ -36,13 +38,14 @@ class LitTriageIndex extends Component {
   fetchData() {
     fetchData(TRIAGE_URL).then( (data) => {
       this.props.dispatch(updateTriageEntries(data.entries, this.props.username));
+      this.props.dispatch(finishPending());
     });
   }
 
   renderLinks(d) {
     let pubmedUrl = `https://www.ncbi.nlm.nih.gov/pubmed/${d.basic.pmid}`;
     return (
-      <div>
+      <div className={style.linkContainer}>
         <span><a href={d.basic.fulltext_url} target='_new'>Full Text</a> PubMed: <a href={pubmedUrl} target='_new'>{d.basic.pmid}</a></span>
       </div>
     );
@@ -53,8 +56,8 @@ class LitTriageIndex extends Component {
       return (
         <div className={`callout ${style.triageEntryContiner}`} key={'te' + d.curation_id}>
           <h4 dangerouslySetInnerHTML={{ __html: d.basic.citation }} />
-          <Abstract abstract={d.basic.abstract} geneList={d.basic.abstract_genes} />
           {this.renderLinks(d)}
+          <Abstract abstract={d.basic.abstract} geneList={d.basic.abstract_genes} />
           <div className={style.triageControls}>
             <TriageControls entry={d} />
           </div>

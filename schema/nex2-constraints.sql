@@ -547,9 +547,12 @@ ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationanno_eco_fk FOREIG
 ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationanno_regulator_fk FOREIGN KEY (regulator_id) REFERENCES dbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 
-ALTER TABLE nex.curation ADD CONSTRAINT curation_locus_fk FOREIGN KEY (locus_id) REFERENCES locusdbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
-ALTER TABLE nex.curation ADD CONSTRAINT curation_dbentity_fk FOREIGN KEY (dbentity_id) REFERENCES dbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
-ALTER TABLE nex.curation ADD CONSTRAINT curation_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.curation_locus ADD CONSTRAINT curationlocus_locus_fk FOREIGN KEY (locus_id) REFERENCES locusdbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.curation_locus ADD CONSTRAINT curationlocus_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+ALTER TABLE nex.curation_reference ADD CONSTRAINT curationref_locus_fk FOREIGN KEY (locus_id) REFERENCES locusdbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.curation_reference ADD CONSTRAINT curationref_reference_fk FOREIGN KEY (reference_id) REFERENCES referencedbentity(dbentity_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.curation_reference ADD CONSTRAINT curationref_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 ALTER TABLE nex.authorresponse ADD CONSTRAINT authorresponse_coll_fk FOREIGN KEY (colleague_id) REFERENCES colleague(colleague_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.authorresponse ADD CONSTRAINT authorresponse_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;

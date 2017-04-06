@@ -5,6 +5,17 @@ const ALIAS_COLOR = '#d62728';
 const ALIAS_CHAR = '=';
 
 class Abstract extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isGenesVisible: true
+    }; 
+  }
+
+  handleToggleShowGenes() {
+    this.setState({ isGenesVisible: !this.state.isGenesVisible });
+  }
+
   getGenesAsArray() {
     let gl = this.props.geneList;
     if (gl.length === 0) return [];
@@ -28,22 +39,45 @@ class Abstract extends Component {
   }
 
   getHighlightedAbstract() {
+    let abstract = this.props.abstract;
+    if (!this.state.isGenesVisible) return abstract;
     let genes = this.getGenesAsArray();
     let aliasGenes = this.getAliasGenesAsArray();
-    let abstract = this.props.abstract;
     genes.forEach( (d) => {
-      abstract = abstract.replace(d, `<span style="background:${GENE_COLOR}; color: white; font-weight: bold;">${d}</span>`);
+      let geneRegex = new RegExp(d, 'g');
+      abstract = abstract.replace(geneRegex, `<span style="background:${GENE_COLOR}; color: white; font-weight: bold;">${d}</span>`);
     });
     aliasGenes.forEach( (d) => {
-      abstract = abstract.replace(d, `<span style="background:${ALIAS_COLOR}; color: white; font-weight: bold;">${d}</span>`);
+      let geneRegex = new RegExp(d, 'g');
+      abstract = abstract.replace(geneRegex, `<span style="background:${ALIAS_COLOR}; color: white; font-weight: bold;">${d}</span>`);
     });
     return abstract;
+  }
+
+  renderGenesText() {
+    if (!this.state.isGenesVisible) return null;
+    if (this.props.geneList === '') return <p className='label secondary'>No gene names in abstract</p>;
+    return <textarea defaultValue={this.props.geneList} />;
+  }
+
+  renderCheck() {
+    if (this.props.geneList === '') return null;
+    return (
+      <div>
+        <input type='checkbox' onChange={this.handleToggleShowGenes.bind(this)} checked={this.state.isGenesVisible} />
+        <label onClick={this.handleToggleShowGenes.bind(this)}>Show Gene Names in Abstract</label>
+      </div>
+    );
   }
 
   render() {
     let abstract = this.getHighlightedAbstract();
     return (
-      <p dangerouslySetInnerHTML={{ __html: abstract }} />
+      <div>
+        <p dangerouslySetInnerHTML={{ __html: abstract }} />
+        {this.renderGenesText()}
+        {this.renderCheck()}
+      </div>
     );
   }
 }
@@ -51,7 +85,6 @@ class Abstract extends Component {
 Abstract.propTypes = {
   abstract: React.PropTypes.string,
   geneList: React.PropTypes.string,
-  isHighlightVisible: React.PropTypes.bool
 };
 
 export default Abstract;

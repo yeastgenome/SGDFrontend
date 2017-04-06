@@ -22,19 +22,25 @@ from .loading.promote_reference_triage import add_paper
 
 import transaction
 
+import traceback
 import datetime
-import math
 import logging
 import json
 log = logging.getLogger(__name__)
 
 @view_config(route_name='home', request_method='GET', renderer='home.jinja2')
 def home_view(request):
+    # only provide pusher key if authenticated
+    if 'email' not in request.session or 'username' not in request.session:
+        pusher_key = ''
+    else:
+        pusher_key = os.environ['PUSHER_KEY']
+
     return {
         'google_client_id': os.environ['GOOGLE_CLIENT_ID'],
-        'pusher_key': os.environ['PUSHER_KEY']
+        'pusher_key': pusher_key
     }
-
+    
 @view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')
 @authenticate
 def upload_spreadsheet(request):
@@ -438,23 +444,35 @@ def reference_triage_id_update(request):
     else:
         return HTTPNotFound()
 
-@view_config(route_name='reference_triage_promote', renderer='json', request_method='GET')
+@view_config(route_name='reference_triage_promote', renderer='json', request_method='PUT')
 def reference_triage_promote(request):
     id = request.matchdict['id'].upper()
 
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
-        add_paper(triage.pmid, DBSession)
-        
-        reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=reason, created_by="OTTO")
-        
-        DBSession.add(reference_deleted)
+        try:
+            sgdid = add_paper(triage.pmid)
+        except:
+            traceback.print_exc()
+            return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
+
+        if sgdid is None:
+            return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
+
+        try:
+            transaction.commit()
+        except:
+            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify if pmid is valid and not already present.'}))
+
         DBSession.delete(triage)
-        
         transaction.commit()
+        
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
-        return HTTPOk()
+        
+        return {
+            "sgdid": sgdid
+        }
     else:
         return HTTPNotFound()
     
