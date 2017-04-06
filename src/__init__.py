@@ -27,10 +27,10 @@ def main(global_config, **settings):
     config.add_route('strain', '/strain/{id}', request_method='GET')
 
     config.add_route('reference_triage', '/reference/triage', request_method='GET')
+    config.add_route('reference_triage_promote', '/reference/triage/{id}/promote', request_method='PUT')
     config.add_route('reference_triage_id', '/reference/triage/{id}', request_method='GET')
     config.add_route('reference_triage_id_update', '/reference/triage/{id}', request_method='PUT')
     config.add_route('reference_triage_id_delete', '/reference/triage/{id}', request_method='DELETE')
-    config.add_route('reference_triage_promote', '/reference/triage/{id}/promote', request_method='GET')
     
     config.add_route('reference', '/reference/{id}', request_method='GET')
     config.add_route('reference_literature_details', '/reference/{id}/literature_details', request_method='GET')

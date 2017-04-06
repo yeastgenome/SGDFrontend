@@ -9,8 +9,6 @@ from ..models import DBSession, Dbentity, Referencedbentity, Referencedocument, 
                    Referencetype, ReferenceUrl, ReferenceRelation, Source, \
                    Journal, Locusdbentity
 
-__author___ = 'sweng66'
-
 doi_root = 'http://dx.doi.org/'
 pubmed_root = 'http://www.ncbi.nlm.nih.gov/pubmed/'
 pmc_root = 'http://www.ncbi.nlm.nih.gov/pmc/articles/'
@@ -21,23 +19,22 @@ epub_pdf_status = 'NAP'
 
 CREATED_BY = "OTTO"
 
+_all_genes = {}
+
 def add_paper(pmid):
-
-    records = get_pubmed_record(str(pmid))
-
-    rec_file = StringIO(records[0])
-    record = Medline.read(rec_file)
-
+    record = Medline.read(Entrez.efetch(db="pubmed", id=str(pmid), rettype='medline'))
+    
     source_id = 799 # 'NCBI'
 
     ## insert into DBENTITY/REFERENCEDBENTITY/REFERENCEDOCUMENT
-    [reference_id, authors, doi_url, pmc_url] = insert_referencedbentity(pmid, source_id, record)
+    [reference_id, authors, doi_url, pmc_url, sgdid] = insert_referencedbentity(pmid, source_id, record)
     
     insert_authors(reference_id, authors, source_id)
     insert_pubtypes(pmid, reference_id, record.get('PT', []), source_id)
     insert_urls(pmid, reference_id, doi_url, pmc_url, source_id)
     insert_relations(pmid, reference_id, record)
-    return reference_id
+    
+    return sgdid
 
 def insert_urls(pmid, reference_id, doi_url, pmc_url, source_id):
     x = ReferenceUrl(display_name = 'PubMed',
@@ -161,7 +158,6 @@ def insert_authors(reference_id, authors, source_id):
     
 
 def insert_referencedbentity(pmid, source_id, record):
-    
     pubstatus, date_revised = get_pubstatus_date_revised(record)
     journal_id, journal, journal_title, issn_print = get_journal_id(record)
     pubdate = record.get('DP', '')
@@ -190,8 +186,8 @@ def insert_referencedbentity(pmid, source_id, record):
                           publication_status = publication_status,
                           fulltext_status = fulltext_status,
                           citation = citation,
-                          year = year,
-                          pmid = pmid,
+                          year = int(year),
+                          pmid = long(pmid),
                           pmcid = pmcid,
                           date_published = pubdate,
                           date_revised = date_revised,
@@ -200,7 +196,7 @@ def insert_referencedbentity(pmid, source_id, record):
                           volume = volume,
                           title = title,
                           doi = doi,
-                          journal_id = journal_id,
+                          journal_id = long(journal_id),
                           created_by = CREATED_BY)
 
     DBSession.add(x)
@@ -208,11 +204,11 @@ def insert_referencedbentity(pmid, source_id, record):
     DBSession.refresh(x)
     dbentity_id = x.dbentity_id
 
-    ## insert into REFERENCEDOCUMENT                                                                                     
-    insert_abstract(pmid, dbentity_id, record,  
+    ## insert into REFERENCEDOCUMENT
+    insert_abstract(pmid, dbentity_id, record,
                     source_id, journal, journal_title, issn_print)
 
-    return [dbentity_id, authors, doi_url, pmc_url]
+    return [dbentity_id, authors, doi_url, pmc_url, x.sgdid]
 
 
 def get_doi(record):
@@ -254,55 +250,55 @@ def get_journal_id(record, source_id=None):
     if source_id is None:
         source_id = 824 # 'PubMed'
 
-    format_name = journal_full_name.replace(' ', '_') + journal.replace(' ', '_')
+    format_name = journal_full_name.replace(' ', '_') + journal_abbr.replace(' ', '_')
     j = Journal(issn_print = issn_print,
                 issn_electronic = issn_electronic,
                 display_name = journal_full_name,
                 format_name = format_name,
                 title = journal_full_name,
-                med_abbr = journal,
+                med_abbr = journal_abbr,
                 source_id = source_id,
                 obj_url = '/journal/'+format_name,
                 created_by = CREATED_BY)
     DBSession.add(j)
     DBSession.flush()
-    DBSession.refresh(x)
+    DBSession.refresh(j)
+    
     return j.journal_id, j.med_abbr, journal_full_name, issn_print
 
-
 def insert_relations(pmid, reference_id, record):
-    #      CON       Comment on
-    #      CIN       Comment in
-    #      EIN       Erratum in
-    #      EFR       Erratum for
-    #      CRI       Corrected and Republished in 
-    #      CRF       Corrected and Republished from                                                             
-    #      PRIN      Partial retraction in
-    #      PROF      Partial retraction of
-    #      RPI       Republished in 
-    #      RPF       Republished from
-    #      RIN       Retraction in
-    #      ROF       Retraction of 
-    #      UIN       Update in 
-    #      UOF       Update of
-    #      SPIN      Summary for patients in 
-    #      ORI       Original report in
-
+    tag_to_type = {
+        "CON":  "Comment",
+        "CIN":  "Comment",
+        "EIN":  "Erratum",
+        "EFR":  "Erratum",
+        "CRI":  "Corrected and Republished",
+        "CRF":  "Corrected and Republished",
+        "PRIN": "Partial retraction",
+        "PROF": "Partial retraction",
+        "RPI":  "Republished", 
+        "RPF":  "Republished",
+        "RIN":  "Retraction", 
+        "ROF":  "Retraction",    
+        "UIN":  "Update", 
+        "UOF":  "Update",
+        "SPIN": "Summary for patients",
+        "ORI":  "Original report"
+    }
+    
     inText = None
     onText = None
     type = None
     for tag in ['CIN', 'EIN', 'CRI', 'PRIN', 'RPI', 'RIN', 'UIN', 'SPIN', 'ORI']:
         if record.get(tag):
             inText = record[tag]
-            if tag == 'CIN':
-                type = 'Comment'
+            type = tag_to_type[tag]
             break
 
     for tag in ['CON', 'EFR', 'CRF', 'PROF', 'RPF', 'ROF', 'UOF']:
         if record.get(tag):
             onText = record[tag]
-            if tag == 'CON':
-                type = 'Comment'
+            type = tag_to_type[tag]
             break
 
     if inText is None and onText is None:
@@ -348,7 +344,6 @@ def get_reference_id(pmid):
         return None
 
 def get_pubstatus_date_revised(record):
-
     pubstatus = record.get('PST', '')  # 'aheadofprint', 'epublish'                               
            
     date_revised = record.get('LR', '')
@@ -377,7 +372,7 @@ def link_gene_names(text):
             chunk_start = i + len(word) + 1
 
             new_chunk = "<a href='" + dbentity.obj_url + "'>" + dbentity_name + "</a>"
-            if word[-2] == ')':
+            if len(word) > 1 and word[-2] == ')':
                 new_chunk = new_chunk + word[-2]
             if word.endswith('.') or word.endswith(',') or word.endswith('?') or word.endswith('-') or word.endswith(')'):
                 new_chunk = new_chunk + word[-1]
@@ -392,23 +387,17 @@ def link_gene_names(text):
         return text
 
 def get_dbentity_by_name(dbentity_name):
-    possibilities = [dbentity_name]
-    if dbentity_name[-1] == 'p':
-        possibilities.append(dbentity_name[:-1])
+    global _all_genes
+    
+    if _all_genes is None:
+        _all_genes = {}
+        for locus in DBSession.query(Locusdbentity).all():
+            _all_genes[locus.display_name.lower()] = locus
+            _all_genes[locus.format_name.lower()] = locus
+            _all_genes[locus.display_name.lower() + 'p'] = locus
+            _all_genes[locus.format_name.lower() + 'p'] = locus
 
-    for p in possibilities:
-        by_display_name = DBSession.query(Locusdbentity).filter(func.lower(Locusdbentity.display_name) == func.lower(dbentity_name)).one_or_none()
-        if by_display_name:
-            return by_display_name
-        else:
-            by_format_name = DBSession.query(Locusdbentity).filter(func.lower(Locusdbentity.format_name) == func.lower(dbentity_name)).one_or_none()
-            return by_format_name
-
-def get_pubmed_record(pmid_list):
-    handle = Entrez.esummary(db="pubmed", id=pmid_list) 
-    records = Entrez.read(handle)
-    return records
-
+    return _all_genes.get(dbentity_name.lower())
 
 def set_cite(title, author_list, year, journal, volume, issue, pages):
     author_etc = get_author_etc(author_list)
