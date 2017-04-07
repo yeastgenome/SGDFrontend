@@ -6,7 +6,7 @@ export const selectRoutingDomain = (state) => state.routing;
 export const selectCurrentSection = (state) => {
   let routing = selectRoutingDomain(state);
   let id = selectActiveLitId(state);
-  let baseUrl = `/curate_literature/${id}/`;
+  let baseUrl = `/curate/reference/${id}`;
   let path = routing.locationBeforeTransitions.pathname;
   let section = path.replace(baseUrl, '');
   return section;
@@ -19,7 +19,7 @@ export const selectActiveLitEntry = createSelector(
 
 export const selectActiveLitId = createSelector(
   [selectLitDomain],
-  (litDomain) => litDomain.get('activeLitEntry').toJS().id
+  (litDomain) => litDomain.get('activeLitEntry').toJS().sgdid
 );
 
 export const selectTriageEntries = createSelector(

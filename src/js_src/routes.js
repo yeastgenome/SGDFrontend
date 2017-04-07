@@ -1,7 +1,7 @@
 import React  from 'react';
 import { IndexRoute, Route  } from 'react-router';
 
-// public routes and layout
+// unauthenticated routes and layout
 import Layout from './containers/layout';
 import PublicHome from './containers/publicHome';
 import Help from './containers/help';
@@ -13,11 +13,13 @@ import CurateHome from './containers/curateHome';
 import Search from './containers/search';
 import LocusShow from './containers/locus/show';
 import TriageIndex from './containers/triage';
+// curate lit biz
 import CurateLit from './containers/curateLit/layout';
 import CurateLitBasic from './containers/curateLit/litBasicInfo';
 import CurateLitPhenotype from './containers/curateLit/phenotype';
 import CurateLitOverview from './containers/curateLit/index';
 import CurateLitActions from './containers/curateLit/actions';
+// public interfaces with no layout
 import AuthorResponse from './containers/authorResponse/index';
 import SpreadsheetUpload from './containers/spreadsheetUpload/index';
 

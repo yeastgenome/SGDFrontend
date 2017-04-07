@@ -7,7 +7,7 @@ import { SMALL_COL_CLASS, LARGE_COL_CLASS } from '../../constants';
 import fetchData from '../../lib/fetchData';
 // import AuthorResponseDrawer from './authorResponseDrawer';
 import CategoryLabel from '../../components/categoryLabel';
-import TagList from '../../components/tagList';
+// import TagList from '../../components/tagList';
 import { selectActiveLitEntry, selectActiveLitId, selectCurrentSection } from '../../selectors/litSelectors';
 import { updateActiveEntry } from '../../actions/litActions';
 
@@ -39,10 +39,10 @@ class CurateLitLayout extends Component {
 
   renderHeader() {
     let d = this.props.activeEntry;
+    // <TagList entry={this.props.activeTagData} isReadOnly />
     return (
       <div>
         <h3><CategoryLabel category='reference' hideLabel /> {d.citation}</h3>
-        <TagList entry={this.props.activeTagData} isReadOnly />
       </div>
     );
   }
@@ -62,16 +62,18 @@ class CurateLitLayout extends Component {
 
   render() {
     return (
-      <div className='row'>
-        <div className={SMALL_COL_CLASS}>
-          <ul className='vertical menu'>
-            {this.renderSectionsNav()}
-          </ul>
-        </div>
-        <div className={LARGE_COL_CLASS}>
-          {this.renderHeader()}
-          <div>
-            {this.props.children}
+      <div>
+        {this.renderHeader()}
+        <div className='row'>
+          <div className={SMALL_COL_CLASS}>
+            <ul className='vertical menu'>
+              {this.renderSectionsNav()}
+            </ul>
+          </div>
+          <div className={LARGE_COL_CLASS}>
+            <div>
+              {this.props.children}
+            </div>
           </div>
         </div>
       </div>
