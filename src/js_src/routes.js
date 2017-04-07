@@ -15,8 +15,8 @@ import LocusShow from './containers/locus/show';
 import TriageIndex from './containers/triage';
 // curate lit biz
 import Blank from './components/blank';
+import Tags from './containers/curateLit/tags';
 import CurateLit from './containers/curateLit/layout';
-import CurateLitBasic from './containers/curateLit/litBasicInfo';
 import CurateLitPhenotype from './containers/curateLit/phenotype';
 // import CurateLitOverview from './containers/curateLit/index';
 // public interfaces with no layout
@@ -37,8 +37,8 @@ export default (
     </Route>
     <Route component={requireAuthentication(LocusShow)} path='curate/locus/:id' />
     <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
-      <IndexRoute component={requireAuthentication(CurateLitBasic)} />
-      <Route component={requireAuthentication(Blank)} path='tags' />
+      <IndexRoute component={requireAuthentication(Blank)} />
+      <Route component={requireAuthentication(Tags)} path='tags' />
       <Route component={requireAuthentication(Blank)} path='protein' />
       <Route component={requireAuthentication(CurateLitPhenotype)} path='phenotypes' />
       <Route component={requireAuthentication(Blank)} path='go' />
