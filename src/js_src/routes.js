@@ -14,11 +14,11 @@ import Search from './containers/search';
 import LocusShow from './containers/locus/show';
 import TriageIndex from './containers/triage';
 // curate lit biz
+import Blank from './components/blank';
 import CurateLit from './containers/curateLit/layout';
 import CurateLitBasic from './containers/curateLit/litBasicInfo';
 import CurateLitPhenotype from './containers/curateLit/phenotype';
-import CurateLitOverview from './containers/curateLit/index';
-import CurateLitActions from './containers/curateLit/actions';
+// import CurateLitOverview from './containers/curateLit/index';
 // public interfaces with no layout
 import AuthorResponse from './containers/authorResponse/index';
 import SpreadsheetUpload from './containers/spreadsheetUpload/index';
@@ -38,14 +38,13 @@ export default (
     <Route component={requireAuthentication(LocusShow)} path='curate/locus/:id' />
     <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
       <IndexRoute component={requireAuthentication(CurateLitBasic)} />
-      <Route component={requireAuthentication(CurateLitOverview)} path='loci' />
-      <Route component={requireAuthentication(CurateLitOverview)} path='protein' />
+      <Route component={requireAuthentication(Blank)} path='tags' />
+      <Route component={requireAuthentication(Blank)} path='protein' />
       <Route component={requireAuthentication(CurateLitPhenotype)} path='phenotypes' />
-      <Route component={requireAuthentication(CurateLitOverview)} path='go' />
-      <Route component={requireAuthentication(CurateLitOverview)} path='datasets' />
-      <Route component={requireAuthentication(CurateLitOverview)} path='regulation' />
-      <Route component={requireAuthentication(CurateLitOverview)} path='interaction' />
-      <Route component={requireAuthentication(CurateLitActions)} path='actions' />
+      <Route component={requireAuthentication(Blank)} path='go' />
+      <Route component={requireAuthentication(Blank)} path='datasets' />
+      <Route component={requireAuthentication(Blank)} path='regulation' />
+      <Route component={requireAuthentication(Blank)} path='interaction' />
     </Route>
     <Route component={requireAuthentication(AuthorResponse)} path='author_response' />
   </Route>
