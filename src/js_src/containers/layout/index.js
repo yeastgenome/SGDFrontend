@@ -7,7 +7,6 @@ import style from './style.css';
 import SearchBar from './searchBar';
 import curateLogo from './curateLogo.png';
 import Loader from './loader/index';
-import LoadingPage from '../../components/loadingPage';
 import { clearError, clearMessage } from '../../actions/metaActions';
 
 class LayoutComponent extends Component {
@@ -53,7 +52,6 @@ class LayoutComponent extends Component {
   }
 
   renderBody() {
-    if (!this.props.isReady) return <LoadingPage />;
     return this.props.children;
   }
 
@@ -107,7 +105,6 @@ LayoutComponent.propTypes = {
   message: React.PropTypes.string,
   dispatch: React.PropTypes.func,
   isAuthenticated: React.PropTypes.bool,
-  isReady: React.PropTypes.bool,
 };
 
 function mapStateToProps(state) {
@@ -115,7 +112,6 @@ function mapStateToProps(state) {
     error: state.meta.get('error'),
     message: state.meta.get('message'),
     isAuthenticated: state.auth.get('isAuthenticated'),
-    isReady: state.meta.get('isReady')
   };
 }
 

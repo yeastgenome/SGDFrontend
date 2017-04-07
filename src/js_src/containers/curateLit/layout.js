@@ -5,27 +5,29 @@ import { connect } from 'react-redux';
 import style from './style.css';
 import { SMALL_COL_CLASS, LARGE_COL_CLASS } from '../../constants';
 import fetchData from '../../lib/fetchData';
+import LoadingPage from '../../components/loadingPage';
 // import AuthorResponseDrawer from './authorResponseDrawer';
 import CategoryLabel from '../../components/categoryLabel';
 // import TagList from '../../components/tagList';
 import { selectActiveLitEntry, selectActiveLitId, selectCurrentSection } from '../../selectors/litSelectors';
 import { updateActiveEntry } from '../../actions/litActions';
+import { setNotReady, finishPending } from '../../actions/metaActions';
 
-const BASE_CURATE_URL = '/annotate/reference';
+const BASE_CURATE_URL = '/curate/reference';
 const SECTIONS = [
   'basic',
-  'loci',
+  'tags',
   'protein',
   'phenotypes',
   'go',
   'datasets',
   'regulation',
   'interaction',
-  'actions'
 ];
 
 class CurateLitLayout extends Component {
   componentDidMount() {
+    this.props.dispatch(setNotReady());
     this.fetchData();
   }
 
@@ -34,6 +36,7 @@ class CurateLitLayout extends Component {
     let url = `/reference/${id}`;
     fetchData(url).then( (data) => {
       this.props.dispatch(updateActiveEntry(data));
+      this.props.dispatch(finishPending());
     });
   }
 
@@ -51,16 +54,21 @@ class CurateLitLayout extends Component {
     let baseUrl = `${BASE_CURATE_URL}/${this.props.activeId}`;
     let current = this.props.currentSection;
     return SECTIONS.map( (d) => {
-      let relative = d;
-      if (relative === 'basic') relative = '';
+      let relative;
+      if (d === 'basic') {
+        relative = '';
+      } else {
+        relative = `/${d}`;
+      }
       let isActive = (current === relative);
-      let url = `${baseUrl}/${relative}`;
+      let url = `${baseUrl}${relative}`;
       let _className = isActive ? style.activeNavLink : style.navLink;
       return <li key={`lit${d}`}><Link className={_className} to={url}>{d}</Link></li>;
     });
   }
 
   render() {
+    if (!this.props.isReady) return <LoadingPage />;
     return (
       <div>
         {this.renderHeader()}
@@ -88,7 +96,8 @@ CurateLitLayout.propTypes = {
   children: React.PropTypes.node,
   currentSection: React.PropTypes.string,
   dispatch: React.PropTypes.func,
-  params: React.PropTypes.object
+  params: React.PropTypes.object,
+  isReady: React.PropTypes.bool
 };
 
 function mapStateToProps(state) {
@@ -96,7 +105,8 @@ function mapStateToProps(state) {
     activeEntry: selectActiveLitEntry(state),
     activeTagData: state.lit.get('activeTagData').toJS(),
     activeId: selectActiveLitId(state),
-    currentSection: selectCurrentSection(state)
+    currentSection: selectCurrentSection(state),
+    isReady: state.meta.get('isReady')
   };
 }
 
