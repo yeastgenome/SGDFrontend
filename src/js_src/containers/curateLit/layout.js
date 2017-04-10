@@ -9,14 +9,13 @@ import LoadingPage from '../../components/loadingPage';
 // import AuthorResponseDrawer from './authorResponseDrawer';
 import CategoryLabel from '../../components/categoryLabel';
 // import TagList from '../../components/tagList';
-import { selectActiveLitEntry, selectActiveLitId, selectCurrentSection } from '../../selectors/litSelectors';
+import { selectActiveLitEntry } from '../../selectors/litSelectors';
 import { updateActiveEntry } from '../../actions/litActions';
 import { setNotReady, finishPending } from '../../actions/metaActions';
 
 const BASE_CURATE_URL = '/curate/reference';
 const SECTIONS = [
   'basic',
-  'tags',
   'protein',
   'phenotypes',
   'go',
@@ -42,7 +41,6 @@ class CurateLitLayout extends Component {
 
   renderHeader() {
     let d = this.props.activeEntry;
-    // <TagList entry={this.props.activeTagData} isReadOnly />
     return (
       <div>
         <h3><CategoryLabel category='reference' hideLabel /> {d.citation}</h3>
@@ -51,8 +49,8 @@ class CurateLitLayout extends Component {
   }
 
   renderSectionsNav() {
-    let baseUrl = `${BASE_CURATE_URL}/${this.props.activeId}`;
-    let current = this.props.currentSection;
+    let baseUrl = `${BASE_CURATE_URL}/${this.props.params.id}`;
+    let current = this.props.pathname.replace(baseUrl, '');
     return SECTIONS.map( (d) => {
       let relative;
       if (d === 'basic') {
@@ -92,11 +90,10 @@ class CurateLitLayout extends Component {
 CurateLitLayout.propTypes = {
   activeEntry: React.PropTypes.object,
   activeTagData: React.PropTypes.object,
-  activeId: React.PropTypes.string,
   children: React.PropTypes.node,
-  currentSection: React.PropTypes.string,
   dispatch: React.PropTypes.func,
   params: React.PropTypes.object,
+  pathname: React.PropTypes.string,
   isReady: React.PropTypes.bool
 };
 
@@ -104,8 +101,7 @@ function mapStateToProps(state) {
   return {
     activeEntry: selectActiveLitEntry(state),
     activeTagData: state.lit.get('activeTagData').toJS(),
-    activeId: selectActiveLitId(state),
-    currentSection: selectCurrentSection(state),
+    pathname: state.routing.locationBeforeTransitions.pathname,
     isReady: state.meta.get('isReady')
   };
 }

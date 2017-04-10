@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import TagList from '../../components/tagList';
-import { selectActiveLitId } from '../../selectors/litSelectors';
 
 class Tags extends Component {
   render() {
@@ -21,12 +20,10 @@ class Tags extends Component {
 }
 
 Tags.propTypes = {
-  id: React.PropTypes.string
 };
 
-function mapStateToProps(state) {
+function mapStateToProps() {
   return {
-    id: selectActiveLitId(state),
   };
 }
 
