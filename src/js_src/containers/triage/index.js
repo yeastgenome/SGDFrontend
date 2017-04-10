@@ -6,10 +6,10 @@ import fetchData from '../../lib/fetchData';
 import getPusherClient from '../../lib/getPusherClient';
 import { selectTriageEntries } from '../../selectors/litSelectors';
 import CategoryLabel from '../../components/categoryLabel';
+import LitBasicInfo from '../../components/litBasicInfo';
 import { updateTriageEntries, clearActiveTags } from './triageActions';
 import { setPending, finishPending } from '../../actions/metaActions';
 import TagList from '../../components/tagList';
-import Abstract from './abstract';
 import TriageControls from './triageControls';
 
 const TRIAGE_URL = '/reference/triage';
@@ -42,12 +42,15 @@ class LitTriageIndex extends Component {
     });
   }
 
-  renderLinks(d) {
-    let pubmedUrl = `https://www.ncbi.nlm.nih.gov/pubmed/${d.basic.pmid}`;
+  renderBasicRef(d) {
     return (
-      <div className={style.linkContainer}>
-        <span><a href={d.basic.fulltext_url} target='_new'>Full Text</a> PubMed: <a href={pubmedUrl} target='_new'>{d.basic.pmid}</a></span>
-      </div>
+      <LitBasicInfo
+        abstract={d.basic.abstract}
+        citation={d.basic.citation}
+        fulltextUrl={d.basic.fulltext_url}
+        geneList={d.basic.abstract_genes}
+        pmid={d.basic.pmid}
+      />
     );
   }
 
@@ -55,9 +58,7 @@ class LitTriageIndex extends Component {
     let nodes = this.props.triageEntries.map( (d) => {
       return (
         <div className={`callout ${style.triageEntryContiner}`} key={'te' + d.curation_id}>
-          <h4 dangerouslySetInnerHTML={{ __html: d.basic.citation }} />
-          {this.renderLinks(d)}
-          <Abstract abstract={d.basic.abstract} geneList={d.basic.abstract_genes} />
+          {this.renderBasicRef(d)}
           <div className={style.triageControls}>
             <TriageControls entry={d} />
           </div>

@@ -3,9 +3,7 @@ import { fromJS } from 'immutable';
 import _ from 'underscore';
 
 const DEFAULT_STATE = fromJS({
-  activeLitEntry: {
-    lastUpdated: (new Date())
-  },
+  activeLitEntry: {},
   activeTagData: {
     data: { tags: [] }
   },
