@@ -1310,7 +1310,7 @@ BEGIN
 
     v_row := OLD.annotation_id || '[:]' || coalesce(OLD.dbentity_id,0) || '[:]' ||
              OLD.source_id || '[:]' || coalesce(OLD.bud_id,0) || '[:]' ||
-             OLD.taxonomy_id || '[:]' || OLD.reference || '[:]' || 
+             OLD.taxonomy_id || '[:]' || OLD.reference_id || '[:]' || 
              OLD.topic || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
