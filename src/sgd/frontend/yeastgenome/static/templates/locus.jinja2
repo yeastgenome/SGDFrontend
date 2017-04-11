@@ -675,13 +675,13 @@
 
     <!-- Resources
 ================================================== -->
-    {% for url in locus.urls if url.category == 'LOCUS_LSP' %}{% if loop.first %}
+    {% for url in locus.urls if url.category == 'LOCUS_LSP_RESOURCES' %}{% if loop.first %}
     <section id="resources">
         <h2>Resources</h2>
         <hr />
         <div class="panel">
             <p>
-                {% for url in locus.urls if url.category == 'LOCUS_LSP'%}
+                {% for url in locus.urls if url.category == 'LOCUS_LSP_RESOURCES'%}
                     <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                 {% endfor %}
             </p>

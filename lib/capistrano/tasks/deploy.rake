@@ -5,6 +5,13 @@ namespace :deploy do
       execute "cd #{release_path} && make build-deploy"
     end
   end
+
+  desc 'Build AWS env application'
+  task :build_aws do
+    on roles(:app), in: :sequence do
+      execute "export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && cd #{release_path} && workon sgdf && make build-deploy"
+    end
+  end
   
   desc 'Restart Apache'
   task :restart do
@@ -13,11 +20,18 @@ namespace :deploy do
     end
   end
 
+  desc 'Restart AWS'
+  task :restart_aws do
+    on roles(:app), in: :sequence do
+      execute "cd #{current_path} && export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && workon sgdf && make stop-prod && make run-prod"
+    end
+  end
+
   desc 'Write config file'
   task :write_config do
     on roles(:app), in: :sequence do
       config_file_content = ""
-      ["HERITAGE_URL", "BACKEND_URL", "SECRET_KEY", "SENDER", "AUTHOR_RESPONSE_FILE", "COMPUTE_URL", "LOG_DIRECTORY", "ELASTICSEARCH_ADDRESS"].each do |key|
+      ["HERITAGE_URL", "BACKEND_URL", "SECRET_KEY", "SENDER", "AUTHOR_RESPONSE_FILE", "COMPUTE_URL", "LOG_DIRECTORY", "ELASTICSEARCH_ADDRESS", "GOOGLE_CALENDAR_API_URL"].each do |key|
         config_file_content += "#{key.downcase} = '#{ENV[key]}'\n"
       end
       config_file_content += "log_directory = None\n"

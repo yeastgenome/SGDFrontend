@@ -13,14 +13,10 @@ import re
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP, render
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
+from src.sgd.frontend.yeastgenome.views.misc_views import not_found
 from src.sgd.frontend.frontend_interface import FrontendInterface
-
-# setup elastic search
-from src.sgd.frontend import config
-from elasticsearch import Elasticsearch
-es = Elasticsearch(config.elasticsearch_address, timeout=5, retry_on_timeout=True)
 
 class YeastgenomeFrontend(FrontendInterface):
     def __init__(self, backend_url, heritage_url, log_directory):
@@ -50,7 +46,7 @@ class YeastgenomeFrontend(FrontendInterface):
                 if data is not None:
                     return data
                 else:
-                    return Response(status='404', content_type='text/html', body=open(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "system/404.html")), "r").read())
+                    return not_found(request)
         return f
 
     def check_date(self):
@@ -65,7 +61,7 @@ class YeastgenomeFrontend(FrontendInterface):
         
     def get_obj(self, obj_type, obj_repr, obj_url=None):
         if obj_url is None:
-            obj_url = self.backend_url + '/' + obj_type + '/' + obj_repr + '/overview'
+            obj_url = self.backend_url + '/' + obj_type + '/' + obj_repr
 
         obj = get_json(obj_url)
 
@@ -100,20 +96,17 @@ class YeastgenomeFrontend(FrontendInterface):
     def experiment(self, experiment_repr):
         return self.get_obj('experiment', experiment_repr)
     
-    def phenotype(self, biocon_repr):
-        return self.get_obj('phenotype', biocon_repr)
-    
     def observable(self, biocon_repr):
         return self.get_obj('observable', biocon_repr)
     
     def phenotype_ontology(self):
-        return self.get_obj('ontology', None, obj_url=self.backend_url + '/observable/ypo/overview')
+        return self.get_obj('ontology', None, obj_url=self.backend_url + '/observable/ypo')
     
     def go(self, biocon_repr):
-        return self.get_obj('go_term', None, obj_url=self.backend_url + '/go/' + biocon_repr + '/overview')
+        return self.get_obj('go_term', None, obj_url=self.backend_url + '/go/' + biocon_repr)
 
     def go_ontology(self, biocon_repr):
-        return self.get_obj('ontology', None, obj_url=self.backend_url + '/go/' + biocon_repr + '/overview')
+        return self.get_obj('ontology', None, obj_url=self.backend_url + '/go/' + biocon_repr)
     
     def chemical(self, chemical_repr):
         return self.get_obj('chemical', chemical_repr)
@@ -122,8 +115,8 @@ class YeastgenomeFrontend(FrontendInterface):
         return self.get_obj('domain', domain_repr)
 
     def reserved_name(self, reserved_name_repr):
-        return self.get_obj('reserved_name', reserved_name_repr)
-        
+        return self.get_obj('reservedname', reserved_name_repr)
+
     def author(self, author_repr):
         return self.get_obj('author', author_repr)
 
@@ -149,7 +142,7 @@ class YeastgenomeFrontend(FrontendInterface):
                 return HTTPFound('/locus/' + params.values()[0] + '/expression')
         elif page == 'locus':
             if len(params) > 0:
-                return HTTPFound('/locus/' + params.values()[0] + '/overview')
+                return HTTPFound('/locus/' + params.values()[0])
         elif page == 'phenotype':
             if 'phenotype' in params:
                 old_phenotype = params['phenotype'].split(':')
@@ -162,25 +155,25 @@ class YeastgenomeFrontend(FrontendInterface):
                             new_phenotype = new_phenotype.replace('chemical_compound', params['property_value'].replace(' ', '_'))
                 else:
                     new_phenotype = old_phenotype[0]
-                return HTTPFound('/phenotype/' + new_phenotype + '/overview')
+                return HTTPFound('/phenotype/' + new_phenotype)
             elif 'dbid' in params:
                 return HTTPFound('/locus/' + params['dbid'] + '/phenotype')
             elif 'observable' in params:
-                return HTTPFound('/observable/' + params['observable'].replace(' ', '_') + '/overview')
+                return HTTPFound('/observable/' + params['observable'].replace(' ', '_'))
             elif 'property_value' in params:
-                return HTTPFound('/chemical/' + params['property_value'].replace(' ', '_') + '/overview')
+                return HTTPFound('/chemical/' + params['property_value'].replace(' ', '_'))
         elif page == 'go':
             if len(params) > 0:
                 return HTTPFound('/locus/' + params.values()[0] + '/go')
         elif page == 'go_term':
             if len(params) > 0:
                 if params.values()[0].startswith('GO:'):
-                    return HTTPFound('/go/' + params.values()[0] + '/overview')
+                    return HTTPFound('/go/' + params.values()[0])
                 else:
-                    return HTTPFound('/go/GO:' + str(int(params.values()[0])).zfill(7) + '/overview')
+                    return HTTPFound('/go/GO:' + str(int(params.values()[0])).zfill(7))
         elif page == 'reference':
             if 'author' in params:
-                return HTTPFound('/author/' + params.values()[0].replace(' ', '_') + '/overview')
+                return HTTPFound('/author/' + params.values()[0].replace(' ', '_'))
             elif 'topic' in params:
                 topic = params.values()[0]
                 page = urllib.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?topic=' + topic + '&rm=multi_ref_result').read()
@@ -189,9 +182,9 @@ class YeastgenomeFrontend(FrontendInterface):
                 page = urllib.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?rm=' + params['rm'] + '&topic_group=' + params['topic_group'] + '&page=' + params['page']).read()
                 return Response(page)
             elif 'doi' in params:
-                return HTTPFound('/reference/doi:' + params.values()[0].replace(' ', '_').replace('/', '-').lower() + '/overview')
+                return HTTPFound('/reference/doi:' + params.values()[0].replace(' ', '_').replace('/', '-').lower())
             elif len(params) > 0:
-                return HTTPFound('/reference/' + params.values()[0].replace(' ', '_').replace('/', '-') + '/overview')
+                return HTTPFound('/reference/' + params.values()[0].replace(' ', '_').replace('/', '-'))
         else:
             return Response(status_int=500, body='Invalid URL.')
     
@@ -290,175 +283,6 @@ class YeastgenomeFrontend(FrontendInterface):
     def enrichment(self, bioent_ids):
         enrichment_results = get_json(self.backend_url + '/go_enrichment', data={'bioent_ids': bioent_ids})
         return enrichment_results
-
-    # variant viewer ES endpoints, will eventually move to backend
-
-    # es search for sequence objects
-    def search_sequence_objects(self, params):
-        query = params['query'] if 'query' in params.keys() else ''
-        query = query.lower()
-        offset = int(params['offset']) if 'offset' in params.keys() else 0
-        limit = int(params['limit']) if 'limit' in params.keys() else 1000
-
-        query_type = 'wildcard' if '*' in query else 'match_phrase'
-        if query == '':
-            search_body = {
-                'query': { 'match_all': {} },
-                'sort': { 'absolute_genetic_start': { 'order': 'asc' }}
-            }
-        elif ',' in query:
-            original_query_list = query.split(',')
-            query_list = []
-            for item in original_query_list:
-                query_list.append(item.strip())
-            print query_list
-            search_body = {
-                'query': {
-                    'filtered': {
-                        'filter': {
-                            'terms': {
-                                '_all': query_list
-                            }
-                        }
-                    }
-                }
-            }
-        else:
-            search_body = {
-                'query': {
-                    query_type: {
-                        '_all': query
-                    }
-                }
-            }
-
-        search_body['_source'] = ['sgdid', 'name', 'href', 'absolute_genetic_start', 'format_name', 'dna_scores', 'protein_scores', 'snp_seqs']
-        res = es.search(index='sequence_objects', body=search_body, size=limit, from_=offset)
-        simple_hits = []
-        for hit in res['hits']['hits']:
-            simple_hits.append(hit['_source'])
-        formatted_response = {
-            'loci': simple_hits,
-            'total': res['hits']['total'],
-            'offset': offset
-        }
-        return Response(body=json.dumps(formatted_response), content_type='application/json')
-
-    # get individual feature
-    def get_sequence_object(self, locus_repr):
-        id = locus_repr.upper()
-        res = es.get(index='sequence_objects', id=id)['_source']
-        return Response(body=json.dumps(res), content_type='application/json')
-
-    # elasticsearch autocomplete results
-    def autocomplete_results(self, params):
-        query = params['term']
-        search_body = {
-            'query': {
-                'bool': {
-                    'must': {
-                        'match': {
-                            'term': {
-                                'query': query,
-                                'analyzer': 'standard'
-                            }
-                        }
-                    },
-                    'must_not': { 'match': { 'type': 'paper' }},
-                    'should': [
-                        {
-                            'match': {
-                                'type': {
-                                    'query': 'gene_name',
-                                    'boost': 4
-                                }
-                            }
-                        },
-                        { 'match': { 'type': 'GO' }},
-                        { 'match': { 'type': 'phenotyoe' }},
-                        { 'match': { 'type': 'strain' }},
-                        { 'match': { 'type': 'paper' }},
-                        { 'match': { 'type': 'description' }},
-                    ]
-                }
-            }
-        }
-        res = es.search(index='sgdlite', body=search_body)
-        simplified_results = []
-        for hit in res['hits']['hits']:
-            # add matching words from description, not whole description
-            if hit['_source']['type'] == 'description':
-                for word in hit['_source']['term'].split(" "):
-                    if word.lower().find(query.lower()) > -1:
-                        simplified_results.append(re.sub('[;,.]', '', word))
-                        break
-            else:
-                simplified_results.append(hit['_source']['term'])
-
-        # filter duplicates
-        unique = []
-        for hit in simplified_results:
-            if hit not in unique:
-                unique.append(hit)
-
-        return Response(body=json.dumps(unique), content_type='application/json')
-
-    # es search for sequence objects
-    def search_sequence_objects(self, params):
-        query = params['query'] if 'query' in params.keys() else ''
-        query = query.lower()
-        offset = int(params['offset']) if 'offset' in params.keys() else 0
-        limit = int(params['limit']) if 'limit' in params.keys() else 1000
-
-        query_type = 'wildcard' if '*' in query else 'match_phrase'
-        if query == '':
-            search_body = {
-                'query': { 'match_all': {} },
-                'sort': { 'absolute_genetic_start': { 'order': 'asc' }}
-            }
-        elif ',' in query:
-            original_query_list = query.split(',')
-            query_list = []
-            for item in original_query_list:
-                query_list.append(item.strip())
-            print query_list
-            search_body = {
-                'query': {
-                    'filtered': {
-                        'filter': {
-                            'terms': {
-                                '_all': query_list
-                            }
-                        }
-                    }
-                }
-            }
-        else:
-            search_body = {
-                'query': {
-                    query_type: {
-                        '_all': query
-                    }
-                }
-            }
-
-        search_body['_source'] = ['sgdid', 'name', 'href', 'absolute_genetic_start', 'format_name', 'dna_scores', 'protein_scores', 'snp_seqs']
-        res = es.search(index='sequence_objects', body=search_body, size=limit, from_=offset)
-        simple_hits = []
-        for hit in res['hits']['hits']:
-            simple_hits.append(hit['_source'])
-        formatted_response = {
-            'loci': simple_hits,
-            'total': res['hits']['total'],
-            'offset': offset
-        }
-        return Response(body=json.dumps(formatted_response), content_type='application/json')
-
-    # get individual feature
-    def get_sequence_object(self, locus_repr):
-        id = locus_repr.upper()
-        res = es.get(index='sequence_objects', id=id)['_source']
-        return Response(body=json.dumps(res), content_type='application/json')
 
     def backend(self, url_repr, request, args=None):
         relative_url = '/' + ('/'.join(url_repr))

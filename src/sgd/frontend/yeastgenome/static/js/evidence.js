@@ -287,17 +287,20 @@ function phenotype_data_to_table(evidence, index) {
 	var reporter = '';
     var note = '';
     for (var j=0; j < evidence['properties'].length; j++) {
+        var entry = evidence['properties'][j];
         if(evidence['properties'][j]['class_type'] == 'CHEMICAL') {
+            var newChemical = '';
             if(evidence['properties'][j]['concentration'] != null) {
-                chemical = evidence['properties'][j]['concentration'] + ' ' + create_link(evidence['properties'][j]['bioitem']['display_name'], evidence['properties'][j]['bioitem']['link']);
+                newChemical = evidence['properties'][j]['concentration'] + ' ' + create_link(evidence['properties'][j]['bioitem']['display_name'], evidence['properties'][j]['bioitem']['link']);
             }
             else {
-                chemical = create_link(evidence['properties'][j]['bioitem']['display_name'], evidence['properties'][j]['bioitem']['link']);
+                newChemical = create_link(evidence['properties'][j]['bioitem']['display_name'], evidence['properties'][j]['bioitem']['link']);
             }
             var chemical_icon = create_note_icon('chemical_icon' + index, evidence['properties'][j]['note']);
             if(chemical_icon != '') {
-                chemical = chemical + ' ' + chemical_icon;
+                newChemical = newChemical + ' ' + chemical_icon;
             }
+            chemical = chemical + newChemical;
         }
         else if(evidence['properties'][j]['role'] == 'Allele') {
             allele = '<br><strong>Allele: </strong>' + evidence['properties'][j]['bioitem']['display_name'];
@@ -314,7 +317,9 @@ function phenotype_data_to_table(evidence, index) {
             }
         }
         else {
-            note = note + '<strong>Condition: </strong>' + evidence['properties'][j]['note'] + '<br>';
+	    var classType = evidence['properties'][j]['class_type'];
+	    var label = classType.charAt(0).toUpperCase() + classType.slice(1) + ": ";
+	    note = note + '<strong>' + label + '</strong>' + evidence['properties'][j]['note'] + '<br>';
         }
     }
     if(evidence['note'] != null) {
@@ -395,6 +400,7 @@ function go_data_to_table(evidence, index) {
   				relationship_entry = relationship_entry + ', ' + new_rel_entry
   			}
 	  	}
+        
 
   	}
   	if(with_entry != null) {
@@ -405,6 +411,6 @@ function go_data_to_table(evidence, index) {
     if(qualifier == 'involved in' || qualifier == 'enables' || qualifier == 'part of') {
         qualifier = '';
     }
-
+    relationship_entry = relationship_entry || ''; // prevent null value so that GO table can sort
   	return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], biocon, evidence['go']['go_id'], qualifier, evidence['go']['go_aspect'], evidence['annotation_type'], evidence_code, evidence['source']['display_name'], evidence['date_created'], relationship_entry, reference];
 }

@@ -1,0 +1,57 @@
+{% extends "lite_layout.jinja2" %}
+
+{% block title %}{{ post['title'] }}{% endblock %}
+
+{% block body %}
+
+<div class="row">
+	<div class="columns small-2">
+		<div class="simple-list">
+			<p>Categories</p>
+			<ul>
+				{% for category in categories %}
+					<li><a href="/blog/category/{{ category['slug'] }}">{{ category['name'] }}</a></li>
+				{% endfor %}
+			</ul>
+			<p>Archives</p>
+			<ul>
+				{% for year in years %}
+					<li><a href="/blog/archive/{{ year }}">{{ year }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="columns small-10">
+		<h1>New & Noteworthy</h1>
+		<h2>{{ post['title'] }}</h2>
+		<div class="addthis_toolbox addthis_default_style">
+			<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a><a class="addthis_button_tweet"></a>
+		</div>
+		<hr />
+		<p>{{ post['simple_date'] }}</p>
+		{{ post['content']|safe }}
+		<p>
+			Categories:
+			{% for key, value in post['categories'].iteritems() %}
+				<span><a href="/blog/category/{{ value['slug'] }}">{{ value['name'] }}</a></span>
+			{% endfor %}
+		</p>
+		{% if post['tags'] %}
+			<p>
+				Tags:
+				{% for key, value in post['tags'].iteritems() %}
+					<span><a href="/blog/tag/{{ value['slug'] }}">{{ value['name'] }}</a></span>
+					{% if not loop.last %}
+						<span>,</span>
+					{% endif %}
+				{% endfor %}
+			</p>
+		{% endif %}
+	</div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-589e356ccacdcbaf"></script> 
+{% endblock scripts %}

@@ -7,8 +7,8 @@ var ClusterStrainsWorker = require("./cluster_strains.jsx");
 var staticStrainMetadata = require("./strain_metadata.jsx");
 var work = require("webworkify");
 
-var LOCI_SEARCH_BASE_URL = "/search_sequence_objects";
-var LOCUS_SHOW_BASE_URL = "/get_sequence_object";
+var LOCI_SEARCH_BASE_URL = "/backend/search_sequence_objects";
+var LOCUS_SHOW_BASE_URL = "/backend/get_sequence_object";
 var REFERENCE_STRAIN_ID = 1;
 
 // internal data, initial state
