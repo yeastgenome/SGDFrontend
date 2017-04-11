@@ -8,7 +8,7 @@ import fetchData from '../../lib/fetchData';
 import LoadingPage from '../../components/loadingPage';
 // import AuthorResponseDrawer from './authorResponseDrawer';
 import CategoryLabel from '../../components/categoryLabel';
-// import TagList from '../../components/tagList';
+import updateTitle from '../../lib/updateTitle';
 import { selectActiveLitEntry } from '../../selectors/litSelectors';
 import { updateActiveEntry } from './litActions';
 import { setNotReady, finishPending } from '../../actions/metaActions';
@@ -34,6 +34,7 @@ class CurateLitLayout extends Component {
     let id = this.props.params.id;
     let url = `/reference/${id}`;
     fetchData(url).then( (data) => {
+      updateTitle(data.citation);
       this.props.dispatch(updateActiveEntry(data));
       this.props.dispatch(finishPending());
     });
