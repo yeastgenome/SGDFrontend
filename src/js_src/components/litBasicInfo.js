@@ -23,7 +23,7 @@ class LitBasicInfo extends Component {
       <div>
         {this.renderCitation()}
         {this.renderLinks()}
-        <Abstract abstract={this.props.abstract} geneList={this.props.geneList} />
+        <Abstract abstract={this.props.abstract} geneList={this.props.geneList} hideGeneList={this.props.hideGeneList} />
       </div>
     );
   }
@@ -33,6 +33,7 @@ LitBasicInfo.propTypes = {
   abstract: React.PropTypes.string,
   citation: React.PropTypes.string,
   hideCitation: React.PropTypes.bool,
+  hideGeneList: React.PropTypes.bool,
   fulltextUrl: React.PropTypes.string,
   geneList: React.PropTypes.string,
   pmid: React.PropTypes.string,

@@ -40,7 +40,7 @@ class Abstract extends Component {
 
   getHighlightedAbstract() {
     let abstract = this.props.abstract;
-    if (!this.state.isGenesVisible) return abstract;
+    if (this.props.hideGeneList || !this.state.isGenesVisible) return abstract;
     let genes = this.getGenesAsArray();
     let aliasGenes = this.getAliasGenesAsArray();
     genes.forEach( (d) => {
@@ -55,13 +55,13 @@ class Abstract extends Component {
   }
 
   renderGenesText() {
-    if (!this.state.isGenesVisible) return null;
+    if (this.props.hideGeneList || !this.state.isGenesVisible) return null;
     if (this.props.geneList === '') return <p className='label secondary'>No gene names in abstract</p>;
     return <textarea defaultValue={this.props.geneList} />;
   }
 
   renderCheck() {
-    if (this.props.geneList === '') return null;
+    if (this.props.hideGeneList || this.props.geneList === '') return null;
     return (
       <div>
         <input type='checkbox' onChange={this.handleToggleShowGenes.bind(this)} checked={this.state.isGenesVisible} />
@@ -85,6 +85,7 @@ class Abstract extends Component {
 Abstract.propTypes = {
   abstract: React.PropTypes.string,
   geneList: React.PropTypes.string,
+  hideGeneList: React.PropTypes.bool
 };
 
 export default Abstract;
