@@ -19,7 +19,7 @@ class CurateLitBasic extends Component {
           <LitBasicInfo
             abstract={_abstract}
             citation={d.citation}
-            geneList=''
+            hideGeneList
             fulltextUrl={''}
             pmid={d.pubmed_id.toString()}
           />

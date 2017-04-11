@@ -49,7 +49,7 @@ class LitTriageIndex extends Component {
         citation={d.basic.citation}
         fulltextUrl={d.basic.fulltext_url}
         geneList={d.basic.abstract_genes}
-        pmid={d.basic.pmid}
+        pmid={d.basic.pmid.toString()}
       />
     );
   }
