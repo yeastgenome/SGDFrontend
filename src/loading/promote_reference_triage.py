@@ -17,64 +17,62 @@ epub_status = 'Epub ahead of print'
 pdf_status = 'N'
 epub_pdf_status = 'NAP'
 
-CREATED_BY = "OTTO"
+_all_genes = None
 
-_all_genes = {}
-
-def add_paper(pmid):
+def add_paper(pmid, created_by="OTTO"):
     record = Medline.read(Entrez.efetch(db="pubmed", id=str(pmid), rettype='medline'))
     
     source_id = 799 # 'NCBI'
 
     ## insert into DBENTITY/REFERENCEDBENTITY/REFERENCEDOCUMENT
-    [reference_id, authors, doi_url, pmc_url, sgdid] = insert_referencedbentity(pmid, source_id, record)
+    [reference_id, authors, doi_url, pmc_url, sgdid] = insert_referencedbentity(pmid, source_id, record, created_by)
     
-    insert_authors(reference_id, authors, source_id)
-    insert_pubtypes(pmid, reference_id, record.get('PT', []), source_id)
-    insert_urls(pmid, reference_id, doi_url, pmc_url, source_id)
+    insert_authors(reference_id, authors, source_id, created_by)
+    insert_pubtypes(pmid, reference_id, record.get('PT', []), source_id, created_by)
+    insert_urls(pmid, reference_id, doi_url, pmc_url, source_id, created_by)
     insert_relations(pmid, reference_id, record)
     
-    return sgdid
+    return (reference_id, sgdid)
 
-def insert_urls(pmid, reference_id, doi_url, pmc_url, source_id):
+def insert_urls(pmid, reference_id, doi_url, pmc_url, source_id, created_by):
     x = ReferenceUrl(display_name = 'PubMed',
                      obj_url = pubmed_root + str(pmid),
                      reference_id = reference_id,
                      url_type = 'PubMed',
                      source_id = source_id,
-                     created_by = CREATED_BY)
+                     created_by = created_by)
     DBSession.add(x)
     x = ReferenceUrl(display_name = 'DOI full text',
                      obj_url = doi_url,
                      reference_id = reference_id,
                      url_type = 'DOI full text',
                      source_id = source_id,
-                     created_by= CREATED_BY)
+                     created_by= created_by)
     DBSession.add(x)
     x =ReferenceUrl(display_name = 'PMC full text',
                      obj_url = pmc_url,
                      reference_id = reference_id,
                      url_type = 'PMC full text',
                      source_id = source_id,
-                     created_by= CREATED_BY)
+                     created_by= created_by)
     DBSession.add(x)
     DBSession.flush()
     DBSession.refresh(x)
 
 
-def insert_pubtypes(pmid, reference_id, pubtypes, source_id):
+def insert_pubtypes(pmid, reference_id, pubtypes, source_id, created_by):
     for type in pubtypes:
         x = Referencetype(display_name = type,
-                          obj_url = '/reference/'+ type.replace(' ', '_'),
+                          obj_url = '/referencetype/'+ type.replace(' ', '_'),
                           source_id = source_id,
                           reference_id = reference_id,
-                          created_by = CREATED_BY)
+                          created_by = created_by)
         DBSession.add(x)
     DBSession.flush()
     DBSession.refresh(x)
 
 
-def insert_abstract(pmid, reference_id, record, source_id, journal_abbrev, journal_title, issn_print):
+def insert_abstract(pmid, reference_id, record, source_id, journal_abbrev, journal_title, issn_print, created_by):
     text = record.get('AB', '')
 
     if text == '':
@@ -85,7 +83,7 @@ def insert_abstract(pmid, reference_id, record, source_id, journal_abbrev, journ
                           reference_id = reference_id,
                           text = text,
                           html = link_gene_names(text),
-                          created_by = CREATED_BY)
+                          created_by = created_by)
     DBSession.add(x)
     
     entries = create_bibentry(pmid, record, journal_abbrev, journal_title, issn_print)
@@ -94,7 +92,7 @@ def insert_abstract(pmid, reference_id, record, source_id, journal_abbrev, journ
                           reference_id = reference_id,
                           text = '\n'.join([key + ' - ' + str(value) for key, value in entries if value is not None]),
                           html = '\n'.join([key + ' - ' + str(value) for key, value in entries if value is not None]),
-                          created_by = CREATED_BY)
+                          created_by = created_by)
     DBSession.add(y)
     DBSession.flush()
     DBSession.refresh(x)
@@ -138,7 +136,7 @@ def create_bibentry(pmid, record, journal_abbrev, journal_title, issn_print):
     return entries
 
 
-def insert_authors(reference_id, authors, source_id):
+def insert_authors(reference_id, authors, source_id, created_by):
     if len(authors) == 0:
         return
 
@@ -151,15 +149,15 @@ def insert_authors(reference_id, authors, source_id):
                             reference_id = reference_id,
                             author_order = i,
                             author_type = 'Author', 
-                            created_by = CREATED_BY)
+                            created_by = created_by)
         DBSession.add(x)
     DBSession.flush()
     DBSession.refresh(x)
     
 
-def insert_referencedbentity(pmid, source_id, record):
+def insert_referencedbentity(pmid, source_id, record, created_by):
     pubstatus, date_revised = get_pubstatus_date_revised(record)
-    journal_id, journal, journal_title, issn_print = get_journal_id(record)
+    journal_id, journal, journal_title, issn_print = get_journal_id(record, created_by)
     pubdate = record.get('DP', '')
     year = pubdate.split(' ')[0]
     title = record.get('TI', '')
@@ -197,7 +195,7 @@ def insert_referencedbentity(pmid, source_id, record):
                           title = title,
                           doi = doi,
                           journal_id = long(journal_id),
-                          created_by = CREATED_BY)
+                          created_by = created_by)
 
     DBSession.add(x)
     DBSession.flush()
@@ -206,7 +204,7 @@ def insert_referencedbentity(pmid, source_id, record):
 
     ## insert into REFERENCEDOCUMENT
     insert_abstract(pmid, dbentity_id, record,
-                    source_id, journal, journal_title, issn_print)
+                    source_id, journal, journal_title, issn_print, created_by)
 
     return [dbentity_id, authors, doi_url, pmc_url, x.sgdid]
 
@@ -224,7 +222,7 @@ def get_doi(record):
     return doi, doi_url
 
 
-def get_journal_id(record, source_id=None):
+def get_journal_id(record, created_by):
     journal_abbr = record.get('TA', '')
     journal_full_name = record.get('JT', '')
 
@@ -247,8 +245,7 @@ def get_journal_id(record, source_id=None):
         if len(journals) > 0:
             return journals[0].journal_id, journals[0].med_abbr, journal_full_name, issn_print
 
-    if source_id is None:
-        source_id = 824 # 'PubMed'
+    source_id = 824 # 'PubMed'
 
     format_name = journal_full_name.replace(' ', '_') + journal_abbr.replace(' ', '_')
     j = Journal(issn_print = issn_print,
@@ -259,14 +256,14 @@ def get_journal_id(record, source_id=None):
                 med_abbr = journal_abbr,
                 source_id = source_id,
                 obj_url = '/journal/'+format_name,
-                created_by = CREATED_BY)
+                created_by = created_by)
     DBSession.add(j)
     DBSession.flush()
     DBSession.refresh(j)
     
     return j.journal_id, j.med_abbr, journal_full_name, issn_print
 
-def insert_relations(pmid, reference_id, record):
+def insert_relations(pmid, reference_id, record, created_by):
     tag_to_type = {
         "CON":  "Comment",
         "CIN":  "Comment",
@@ -318,7 +315,7 @@ def insert_relations(pmid, reference_id, record):
                                   child_id = child_reference_id,
                                   source_id = source_id,
                                   correction_type = type,
-                                  created_by = CREATED_BY)
+                                  created_by = created_by)
             DBSession.add(x)
 
     if onText is not None and "PMID:" in onText:
@@ -330,7 +327,7 @@ def insert_relations(pmid, reference_id, record):
                                   child_id = child_reference_id,
                                   source_id = source_id,
                                   correction_type = type,
-                                  created_by = CREATED_BY)
+                                  created_by = created_by)
             DBSession.add(x)
 
     DBSession.flush()
