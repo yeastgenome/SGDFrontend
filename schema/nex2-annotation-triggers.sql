@@ -1278,7 +1278,8 @@ DECLARE
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
-    IF (OLD.dbentity_id != NEW.dbentity_id) THEN
+    IF (((OLD.dbentity_id IS NULL) AND (NEW.dbentity_id IS NOT NULL)) OR ((OLD.dbentity_id IS NOT NULL) AND (NEW.dbentity_id IS NULL)) OR (OLD.dbentity_id != NEW.dbentity_id)) 
+    THEN
         PERFORM nex.insertupdatelog('LITERATUREANNOTATION'::text, 'DBENTITY_ID'::text, OLD.annotation_id, OLD.dbentity_id::text, NEW.dbentity_id::text, USER);
     END IF;
 
@@ -1307,9 +1308,9 @@ BEGIN
  
   ELSIF (TG_OP = 'DELETE') THEN
 
-    v_row := OLD.annotation_id || '[:]' || OLD.dbentity_id || '[:]' ||
+    v_row := OLD.annotation_id || '[:]' || coalesce(OLD.dbentity_id,0) || '[:]' ||
              OLD.source_id || '[:]' || coalesce(OLD.bud_id,0) || '[:]' ||
-             OLD.taxonomy_id || '[:]' || OLD.reference_id || '[:]' ||
+             OLD.taxonomy_id || '[:]' || OLD.reference_id || '[:]' || 
              OLD.topic || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
