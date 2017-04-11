@@ -887,28 +887,6 @@ class Contignoteannotation(Base):
     taxonomy = relationship(u'Taxonomy')
 
 
-class Curation(Base):
-    __tablename__ = 'curation'
-    __table_args__ = (
-        UniqueConstraint('dbentity_id', 'subclass', 'curation_task', 'locus_id'),
-        {u'schema': 'nex'}
-    )
-
-    curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.curation_seq'::regclass)"))
-    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
-    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    locus_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
-    subclass = Column(String(40), nullable=False)
-    curation_task = Column(String(40), nullable=False)
-    curator_comment = Column(String(2000))
-    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
-    created_by = Column(String(12), nullable=False)
-
-    dbentity = relationship(u'Dbentity')
-    locus = relationship(u'Locusdbentity', foreign_keys=[locus_id])
-    source = relationship(u'Source')
-
-
 class CurationLocus(Base):
     __tablename__ = 'curation_locus'
     __table_args__ = (
@@ -927,6 +905,31 @@ class CurationLocus(Base):
 
     locus = relationship(u'Locusdbentity', foreign_keys=[locus_id])
     source = relationship(u'Source')
+
+    acceptable_tags = {
+        'go_needs_review': 'GO needs review',
+        'headline_reviewed': 'Headline reviewed',
+        'paragraph_not_needed': 'Paragraph not needed',
+        'phenotype_uncuratable': 'Phenotype uncuratable'
+    }
+
+    @staticmethod
+    def factory(tag, gene_id_list, comment, created_by, source_id=824, json=None):
+        if tag not in acceptable_tags:
+            return None
+        
+        obj = []
+        for dbentity_id in gene_id_list:
+            obj.append(
+                CurationLocus(
+                    locus_id=dbentity_id,
+                    source_id=source_id,
+                    curation_tag=acceptable_tags[tag],
+                    created_by=created_by,
+                    json=json
+                )
+            )
+        return obj
 
 
 class CurationReference(Base):
@@ -949,6 +952,39 @@ class CurationReference(Base):
     locus = relationship(u'Locusdbentity', foreign_keys=[locus_id])
     reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
     source = relationship(u'Source')
+
+    acceptable_tags = {
+        'high_priority': 'High Priority',
+        'delay': 'Delay',
+        'homology_disease': 'Homology/Disease',
+        'go': 'GO information',
+        'classical_phenotype': 'Classical phenotype information',
+        'headline_information': 'Headline information',
+        'gene_model': 'Gene model',
+        'headline_needs_review': 'Headline needs review',
+        'not_yet_curated': 'Not yet curated',
+        'paragraph_needs_review': 'Paragraph needs review',
+        'pathways': 'Pathways',
+        'phenotype_needs_review': 'Phenotype needs review',
+        'ptm': 'Post-translational modifications',
+        'regulation_information': 'Regulation information',
+        'fast_track': 'Fast Track'
+    }
+    
+    @staticmethod
+    def factory(reference_id, tag, comment, dbentity_id, created_by, source_id=824, json=None):
+        if tag not in CurationReference.acceptable_tags:
+            return None
+
+        return CurationReference(
+            reference_id=reference_id,
+            source_id=source_id,
+            locus_id=dbentity_id,
+            curation_tag=CurationReference.acceptable_tags[tag],
+            created_by=created_by,
+            curator_comment=comment,
+            json=json
+        )
 
     def to_dict(self):
         return {
@@ -3157,6 +3193,28 @@ class Literatureannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    acceptable_tags = {
+        'htp_phenotype': 'Omics',
+        'non_phenotype_htp': 'Omics',
+        'other_primary': 'Primary Literature',
+        'Reviews': 'Reviews',
+        'additional_literature': 'Additional Literature'
+    }
+
+    @staticmethod
+    def factory(reference_id, tag, dbentity_id, created_by, source_id=824, taxonomy_id=274803):
+        if tag not in Literatureannotation.acceptable_tags:
+            return None
+
+        return Literatureannotation(
+            dbentity_id=dbentity_id,
+            source_id=source_id,
+            taxonomy_id=taxonomy_id,
+            reference_id=reference_id,
+            topic=Literatureannotation.acceptable_tags[tag],
+            created_by=created_by
+        )
+    
     def to_dict(self):
         entity = self.dbentity
         
