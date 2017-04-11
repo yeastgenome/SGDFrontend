@@ -987,14 +987,19 @@ class CurationReference(Base):
         )
 
     def to_dict(self):
-        return {
+        obj = {
             "tag": self.curation_tag,
-            "locus": {
-                "display_name": self.locus.display_name,
-                "link": self.locus.obj_url
-            },
+            "locus": None,
             "comment": self.curator_comment
         }
+
+        if self.locus:
+            obj['locus'] = {
+                "display_name": self.locus.display_name,
+                "link": self.locus.obj_url
+            }
+
+        return obj
 
 class Dataset(Base):
     __tablename__ = 'dataset'
