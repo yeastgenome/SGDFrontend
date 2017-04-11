@@ -24,7 +24,7 @@ class CurateLitBasic extends Component {
             pmid={d.pubmed_id.toString()}
           />
         </div>
-        <Tags />
+        <Tags id={d.sgdid} />
       </div>
     );
   }
