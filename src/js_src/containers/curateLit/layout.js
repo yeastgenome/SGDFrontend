@@ -10,7 +10,7 @@ import LoadingPage from '../../components/loadingPage';
 import CategoryLabel from '../../components/categoryLabel';
 // import TagList from '../../components/tagList';
 import { selectActiveLitEntry } from '../../selectors/litSelectors';
-import { updateActiveEntry } from '../../actions/litActions';
+import { updateActiveEntry } from './litActions';
 import { setNotReady, finishPending } from '../../actions/metaActions';
 
 const BASE_CURATE_URL = '/curate/reference';
