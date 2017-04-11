@@ -1,43 +1,70 @@
 upstream frontend {
-        server 127.0.0.1:6545;
+    server 127.0.0.1:6545;
 }
 
 upstream backend {
-         server 127.0.0.1:6543;
+    server 127.0.0.1:6543;
 }
 
 server {
-       listen 80;
+    listen 80;
 
-       server_name _;
-       access_log /var/log/sgd-backend.log;
-       location / {
-                proxy_set_header        Host $host:$server_port;
-                proxy_set_header        X-Real-IP $remote_addr;
-                proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+    server_name _;
 
-                client_max_body_size    10m;
-                client_body_buffer_size 128k;
-                proxy_connect_timeout   60s;
-                proxy_send_timeout      90s;
-                proxy_read_timeout      90s;
-                proxy_buffering         off;
-                proxy_temp_file_write_size 64k;
-                proxy_pass http://frontend/;
-                proxy_redirect          off;
+    location /elb-status {
+        access_log off;
+        return 200 'OK';
+        # because default content-type is application/octet-stream,
+        # browser will offer to "save the file"...
+        # the next line allows you to see it in the browser
+        # so you can test
+        add_header Content-Type text/plain;
+    }
 
-                # remove trailing slashes
-                rewrite ^/(.*)/$ https://$host/$1 permanent;
+    location / {
+        access_log /var/log/sgd-frontend-access.log;
+        error_log /var/log/sgd-frontend-error.log;
 
-                # force traffic from client to LB to use https
-                if ($http_x_forwarded_proto != "https") {
-                        rewrite ^(.*)$ https://$host$1 permanent;
-                }
-       }
+        add_header Strict-Transport-Security "max-age=120; includeSubDomains" always;
 
-       location /webservice/ {
-                proxy_pass http://localhost:6543/;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-       }
+        proxy_set_header        Host $host:$server_port;
+        proxy_set_header        X-Real-IP $remote_addr;
+        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        client_max_body_size    10m;
+        client_body_buffer_size 128k;
+        proxy_connect_timeout   60s;
+        proxy_send_timeout      90s;
+        proxy_read_timeout      90s;
+        proxy_buffering         off;
+        proxy_temp_file_write_size 64k;
+        proxy_pass http://frontend/;
+        proxy_redirect          off;
+
+        # force traffic from client to LB to use https
+        if ($http_x_forwarded_proto != "https") {
+            return 301 https://$host$request_uri;
+        }
+
+        # remove trailing slashes
+        rewrite ^/(.*)/$ https://$host/$1 permanent;
+    }
+
+    location /webservice/ {
+        access_log /var/log/sgd-backend-access.log;
+        error_log /var/log/sgd-backend-error.log;
+
+        add_header Strict-Transport-Security "max-age=120; includeSubDomains" always;
+        proxy_pass http://localhost:6543/;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        # force traffic from client to LB to use https
+        if ($http_x_forwarded_proto != "https") {
+            return 301 https://$host$request_uri;
+        }
+
+        # remove trailing slashes
+        rewrite ^/(.*)/$ https://$host/$1 permanent;
+    }
 }
