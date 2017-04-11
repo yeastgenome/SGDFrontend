@@ -17,12 +17,20 @@ class Tags extends Component {
     let url = `/reference/${id}/tags`;
     fetchData(url).then( (data) => {
       // translate API format into that expected by TagList component
-      let clientData = data.map( (d) => {
-        let tagName = _.findWhere(allTags, { label: d.tag }).name;
-        let _genes = d.locus ? d.locus.display_name : '';
+      let grouped = _.groupBy(data, 'tag');
+      let tagNames = Object.keys(grouped);
+      let clientData = tagNames.map( (d) => {
+        let tagName = _.findWhere(allTags, { label: d }).name;
+        let theseTags = grouped[d];
+        let reducedGeneNames = theseTags.reduce( (acc, d, i) => {
+          let isLast = (i === theseTags.length - 1);
+          let suffix = isLast ? '' : ', ';
+          acc += `${d.locus.display_name}${suffix}`;
+          return acc;
+        }, '');
         return {
           name: tagName,
-          genes: _genes
+          genes: reducedGeneNames
         };
       });
       let newActive = { data: { tags: clientData }};
