@@ -18,7 +18,7 @@ from .helpers import allowed_file, secure_save_file, curator_or_none, authentica
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results
 from .tsv_parser import parse_tsv_annotations
 
-from .loading.promote_reference_triage import add_paper
+from .loading.promote_reference_triage import add_paper, get_dbentity_by_name
 
 import transaction
 
@@ -446,13 +446,24 @@ def reference_triage_id_update(request):
 @view_config(route_name='reference_triage_promote', renderer='json', request_method='PUT')
 def reference_triage_promote(request):
     id = request.matchdict['id'].upper()
-
-#    import pdb; pdb.set_trace()
     
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
+
+        tags = []
+        for tag in request.json['data']['tags']:
+            if tag.get('genes'):
+                genes = tag.get('genes').split(',')
+                for g in genes:
+                    locus = get_dbentity_by_name(g.strip())
+                    if locus is None:
+                        return HTTPBadRequest(body=json.dumps({'error': 'Invalid gene name ' + g}))
+                    tags.append((tag['name'], tag['comment'], locus.dbentity_id))
+            else:
+                tags.append((tag['name'], tag['comment'], None))
+
         try:
-            sgdid = add_paper(triage.pmid)
+            reference_id, sgdid = add_paper(triage.pmid, request.json['data']['assignee'])
         except:
             traceback.print_exc()
             return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
@@ -464,8 +475,21 @@ def reference_triage_promote(request):
             transaction.commit()
         except:
             return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify if pmid is valid and not already present.'}))
-
+        
         DBSession.delete(triage)
+
+        for i in xrange(len(tags)):
+            curation = CurationReference.factory(reference_id, tags[i][0], tags[i][1], tags[i][2], request.json['data']['assignee'])
+            if curation is None:
+                tags[i] = Literatureannotation.factory(reference_id, tags[i][0], tags[i][2], request.json['data']['assignee'])
+            else:
+                tags[i] = curation
+
+        for tag in tags:
+            if tag:
+                DBSession.add(tag)
+
+        DBSession.flush()                
         transaction.commit()
         
         pusher = get_pusher_client()
