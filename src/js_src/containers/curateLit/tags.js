@@ -5,7 +5,7 @@ import _ from 'underscore';
 import TagList from '../../components/tagList';
 import fetchData from '../../lib/fetchData';
 import { allTags } from './litConstants';
-import { updateActiveTags } from './litActions';
+import { clearActiveTags, updateActiveTags } from './litActions';
 
 class Tags extends Component {
   componentDidMount() {
@@ -15,6 +15,7 @@ class Tags extends Component {
   fetchData() {
     let id = this.props.id;
     let url = `/reference/${id}/tags`;
+    this.props.dispatch(clearActiveTags());
     fetchData(url).then( (data) => {
       // translate API format into that expected by TagList component
       let grouped = _.groupBy(data, 'tag');

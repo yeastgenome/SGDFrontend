@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
@@ -12,6 +13,7 @@ import { setPending, finishPending } from '../../actions/metaActions';
 import TagList from '../../components/tagList';
 import TriageControls from './triageControls';
 
+const REF_BASE_URL = '/curate/reference';
 const TRIAGE_URL = '/reference/triage';
 const CHANNEL = 'sgd';
 const EVENT = 'triageUpdate';
@@ -77,12 +79,13 @@ class LitTriageIndex extends Component {
     let onClear = () => {
       this.props.dispatch(clearActiveTags());
     };
+    let d = this.props.activeTagData;
     return (
       <div className='callout success'>
         <div>
           <h3 className='text-right'><i className={`fa fa-close ${style.closeIcon}`} onClick={onClear} /></h3>
         </div>
-        <h5><a><CategoryLabel category='reference' hideLabel /> {this.props.activeTagData.basic.citation}</a> added to database.</h5>
+        <h5><Link to={`${REF_BASE_URL}/${d.sgdid}`}><CategoryLabel category='reference' hideLabel /> {d.basic.citation}</Link> added to database.</h5>
         <TagList entry={this.props.activeTagData} isReadOnly />
       </div>
     );
