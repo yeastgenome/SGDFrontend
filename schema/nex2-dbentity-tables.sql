@@ -480,24 +480,6 @@ ALTER TABLE nex.pathwaysummary_reference ADD CONSTRAINT pathwaysummary_reference
 CREATE INDEX pathwaysummaryreference_ref_fk_index ON nex.pathwaysummary_reference (reference_id);
 CREATE INDEX pathwaysummaryreference_source_fk_index ON nex.pathwaysummary_reference (source_id);
 
-DROP TABLE IF EXISTS nex.filepath CASCADE; 
-CREATE TABLE nex.filepath (
-	filepath_id bigint NOT NULL DEFAULT nextval('object_seq'),
-	source_id bigint NOT NULL,
-	filepath varchar(500) NOT NULL,
-	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	created_by varchar(12) NOT NULL,
-	CONSTRAINT filepath_pk PRIMARY KEY (filepath_id)
-) ;
-COMMENT ON TABLE nex.filepath IS 'Virtual path to a file for browsing purposes.';
-COMMENT ON COLUMN nex.filepath.filepath_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN nex.filepath.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN nex.filepath.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN nex.filepath.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN nex.filepath.filepath IS 'Virtual path to a file for browsing purposes.';
-ALTER TABLE nex.filepath ADD CONSTRAINT filepath_uk UNIQUE (filepath);
-CREATE INDEX filepath_source_fk_index ON nex.filepath (source_id);
-
 DROP TABLE IF EXISTS nex.filedbentity CASCADE; 
 CREATE TABLE nex.filedbentity (
 	dbentity_id bigint NOT NULL DEFAULT nextval('object_seq'),
@@ -506,11 +488,11 @@ CREATE TABLE nex.filedbentity (
 	format_id bigint NOT NULL,
     file_extension varchar(10) NOT NULL,
 	file_date timestamp NOT NULL,
+    year int NOT NULL,
 	is_public boolean NOT NULL,
 	is_in_spell boolean NOT NULL,
 	is_in_browser boolean NOT NULL,
 	md5sum varchar(32),
-	filepath_id bigint,
     readme_file_id bigint,
 	previous_file_name varchar(100),
 	s3_url varchar(500),
@@ -522,7 +504,6 @@ COMMENT ON TABLE nex.filedbentity IS 'Details about files loaded into or dumped 
 COMMENT ON COLUMN nex.filedbentity.topic_id IS 'A broad domain or category of the file, FK to EDAM topic namespace.';
 COMMENT ON COLUMN nex.filedbentity.file_date IS 'Release date or date the file was created.';
 COMMENT ON COLUMN nex.filedbentity.format_id IS 'Standard file format, FK to EDAM format namespace.';
-COMMENT ON COLUMN nex.filedbentity.filepath_id IS 'FK to FILEPATH.FILEPATH_ID.';
 COMMENT ON COLUMN nex.filedbentity.file_extension IS 'File name extension.';
 COMMENT ON COLUMN nex.filedbentity.data_id IS 'Type of data in the file, FK to EDAM data namespace.';
 COMMENT ON COLUMN nex.filedbentity.is_public IS 'Whether the file is viewable to the public.';
@@ -535,22 +516,63 @@ COMMENT ON COLUMN nex.filedbentity.md5sum IS 'The 128-bit MD5 hash or checksum o
 COMMENT ON COLUMN nex.filedbentity.is_in_spell IS 'Whether the file was loaded into SPELL.';
 COMMENT ON COLUMN nex.filedbentity.is_in_browser IS 'Whether the file was loaded into a genome browser, such as JBrowse.';
 COMMENT ON COLUMN nex.filedbentity.json IS 'JSON object of the data and file metadata.';
+COMMENT ON COLUMN nex.filedbentity.year IS 'Year the file was created for filtering purposes.';
 CREATE INDEX filedbentity_format_fk_index ON nex.filedbentity (format_id);
 CREATE INDEX filedbentity_topic_fk_index ON nex.filedbentity (topic_id);
 CREATE INDEX filedbentity_data_fk_index ON nex.filedbentity (data_id);
 CREATE INDEX filedbentity_file_fk_index ON nex.filedbentity (readme_file_id);
 CREATE INDEX filedbentity_md5sum_index ON nex.filedbentity (md5sum);
-CREATE INDEX filedbentity_filepath_fk_index ON nex.filedbentity (filepath_id);
 
-DROP TABLE IF EXISTS nex.file_keyword CASCADE; 
-CREATE TABLE nex.file_keyword (
-	file_keyword_id bigint NOT NULL DEFAULT nextval('link_seq'),
+DROP TABLE IF EXISTS nex.path CASCADE; 
+CREATE TABLE nex.path (
+	path_id bigint NOT NULL DEFAULT nextval('object_seq'),
+	source_id bigint NOT NULL,
+	path varchar(500) NOT NULL,
+    description varchar(1000) NOT NULL,
+	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+	created_by varchar(12) NOT NULL,
+	CONSTRAINT path_pk PRIMARY KEY (path_id)
+) ;
+COMMENT ON TABLE nex.path IS 'Virtual path to a file for browsing purposes.';
+COMMENT ON COLUMN nex.path.path_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.path.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.path.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.path.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.path.path IS 'Virtual path to a file for browsing purposes.';
+COMMENT ON COLUMN nex.path.description IS 'A description about the file path.';
+ALTER TABLE nex.path ADD CONSTRAINT path_uk UNIQUE (path);
+CREATE INDEX path_source_fk_index ON nex.path (source_id);
+
+DROP TABLE IF EXISTS nex.file_path CASCADE; 
+CREATE TABLE nex.file_path (
+	file_path_id bigint NOT NULL DEFAULT nextval('link_seq'),
 	file_id bigint NOT NULL,
-	keyword_id bigint NOT NULL,
+	path_id bigint NOT NULL,
 	source_id bigint NOT NULL,
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
-	CONSTRAINT file_keyword_pk PRIMARY KEY (file_keyword_id)
+	CONSTRAINT file_path_pk PRIMARY KEY (file_path_id)
+) ;
+COMMENT ON TABLE nex.file_path IS 'Paths associated with a file.';
+COMMENT ON COLUMN nex.file_path.path_id IS 'FK to PATH.PATH_ID.';
+COMMENT ON COLUMN nex.file_path.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.file_path.file_path_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.file_path.file_id IS 'FK to FILEDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.file_path.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.file_path.created_by IS 'Username of the person who entered the record into the database.';
+ALTER TABLE nex.file_path ADD CONSTRAINT file_path_uk UNIQUE (file_id,path_id);
+CREATE INDEX filepath_path_fk_index ON nex.file_path (path_id);
+CREATE INDEX filepath_source_fk_index ON nex.file_path (source_id);
+
+DROP TABLE IF EXISTS nex.file_keyword CASCADE;
+CREATE TABLE nex.file_keyword (
+    file_keyword_id bigint NOT NULL DEFAULT nextval('link_seq'),
+    file_id bigint NOT NULL,
+    keyword_id bigint NOT NULL,
+    source_id bigint NOT NULL,
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    created_by varchar(12) NOT NULL,
+    CONSTRAINT file_keyword_pk PRIMARY KEY (file_keyword_id)
 ) ;
 COMMENT ON TABLE nex.file_keyword IS 'Keywords associated with a file.';
 COMMENT ON COLUMN nex.file_keyword.keyword_id IS 'FK to KEYWORD.KEYWORD_ID.';
@@ -561,7 +583,7 @@ COMMENT ON COLUMN nex.file_keyword.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.file_keyword.created_by IS 'Username of the person who entered the record into the database.';
 ALTER TABLE nex.file_keyword ADD CONSTRAINT file_keyword_uk UNIQUE (file_id,keyword_id);
 CREATE INDEX filekeyword_key_fk_index ON nex.file_keyword (keyword_id);
-CREATE INDEX filekeywork_source_fk_index ON nex.file_keyword (source_id);
+CREATE INDEX filekeyword_source_fk_index ON nex.file_keyword (source_id);
 
 
 DROP TABLE IF EXISTS nex.book CASCADE; 
