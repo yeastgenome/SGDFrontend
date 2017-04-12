@@ -408,7 +408,7 @@ def set_cite(title, author_list, year, journal, volume, issue, pages):
             'issue': issue,
             'pages': pages
     }
-    citation = "{authors} ({year}). {title} {journal}".format(**citation_data)
+    citation = "{authors} ({year}) {title} {journal}".format(**citation_data)
     if volume and issue and pages:
         citation += " {volume}({issue}): {pages}.".format(**citation_data)
     elif volume and issue:
