@@ -99,10 +99,9 @@ class TriageControls extends Component {
         'X-CSRF-Token': window.CSRF_TOKEN,        
       }
     };
-    fetchData(url, fetchOptions).then( () => {
-      let message = `${this.props.entry.basic.citation} added to database.`;
+    fetchData(url, fetchOptions).then( (data) => {
+      tempEntry.sgdid = data.sgdid;
       this.props.dispatch(removeEntry(id));
-      this.props.dispatch(setMessage(message));
       this.props.dispatch(updateActiveTags(tempEntry));
       // scroll to top of page
       window.scrollTo(0, 0);
