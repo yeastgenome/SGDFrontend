@@ -1,9 +1,9 @@
 upstream frontend {
-	server 127.0.0.1:6545;
+        server 127.0.0.1:6545;
 }
 
 upstream backend {
-	server 127.0.0.1:6543;
+         server 127.0.0.1:6543;
 }
 
 server {
@@ -17,9 +17,10 @@ server {
 		# because default content-type is application/octet-stream,
 		# browser will offer to "save the file"...
 		# the next line allows you to see it in the browser
-		# so you can test
+		# so you can test 
 		add_header Content-Type text/plain;
 	}
+
 
 	location / {
 		access_log /var/log/sgd-frontend-access.log;
@@ -48,7 +49,8 @@ server {
 
 		# remove trailing slashes
 		rewrite ^/(.*)/$ https://$host/$1 permanent;
-	}
+
+       }
 
 	location /webservice/ {
 		access_log /var/log/sgd-backend-access.log;
@@ -59,12 +61,25 @@ server {
 		proxy_set_header X-Real-IP $remote_addr;
 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
+		set $test  ""
+
 		# force traffic from client to LB to use https
+		# unless connection is from localhost
 		if ($http_x_forwarded_proto != "https") {
+#			return 301 https://$host$request_uri;
+			set $test  "http"
+		}
+
+		if ($remote_addr != "127.0.0.1") {
+			set $test  "${test}-not-local"
+		}
+
+		if ($test = "http-not-local") {
 			return 301 https://$host$request_uri;
 		}
 
 		# remove trailing slashes
 		rewrite ^/(.*)/$ https://$host/$1 permanent;
+
 	}
 }
