@@ -468,12 +468,19 @@ REVOKE ALL ON nex.filedbentity FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.filedbentity TO curator;
 GRANT SELECT ON nex.filedbentity TO PUBLIC;
 
--- Set privilege on TABLE FILEPATH
-ALTER TABLE nex.filepath OWNER TO nex;
-GRANT ALL ON nex.filepath TO nex;
-REVOKE ALL ON nex.filepath FROM PUBLIC;
-GRANT SELECT,INSERT,UPDATE,DELETE ON nex.filepath TO curator;
-GRANT SELECT ON nex.filepath TO PUBLIC;
+-- Set privilege on TABLE PATH
+ALTER TABLE nex.path OWNER TO nex;
+GRANT ALL ON nex.path TO nex;
+REVOKE ALL ON nex.path FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.path TO curator;
+GRANT SELECT ON nex.path TO PUBLIC;
+
+-- Set privilege on TABLE FILE_PATH
+ALTER TABLE nex.file_path OWNER TO nex;
+GRANT ALL ON nex.file_path TO nex;
+REVOKE ALL ON nex.file_path FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.file_path TO curator;
+GRANT SELECT ON nex.file_path TO PUBLIC;
 
 -- Set privilege on TABLE FILE_KEYWORD
 ALTER TABLE nex.file_keyword OWNER TO nex;
