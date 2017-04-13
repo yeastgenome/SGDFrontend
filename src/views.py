@@ -722,6 +722,26 @@ def locus_tabs(request):
     else:
         return HTTPNotFound()
 
+@view_config(route_name='locus_phenotype_details', renderer='json', request_method='GET')
+def locus_phenotype_details(request):
+    id = request.matchdict['id'].upper()
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    if locus:
+        return locus.phenotype_to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='locus_phenotype_graph', renderer='json', request_method='GET')
+def locus_phenotype_graph(request):
+    id = request.matchdict['id'].upper()
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    if locus:
+        return locus.phenotype_graph()
+    else:
+        return HTTPNotFound()
+
 @view_config(route_name='bioentity_list', renderer='json', request_method='POST')
 def analyze(request):
     try:
