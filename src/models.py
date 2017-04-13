@@ -3742,7 +3742,8 @@ class Phenotypeannotation(Base):
             "mutant": self.mutant.display_name,
             "phenotype": {
                 "display_name": self.phenotype.display_name,
-                "link": self.phenotype.obj_url
+                "link": self.phenotype.obj_url,
+                "id": self.phenotype.phenotype_id
             }
         }
     
@@ -3815,12 +3816,14 @@ class Phenotypeannotation(Base):
         if phenotype:
             phenotype_obj = {
                 "display_name": phenotype.display_name,
-                "link": phenotype.obj_url
+                "link": phenotype.obj_url,
+                "id": phenotype.phenotype_id
             }
         else:
             phenotype_obj = {
                 "display_name": self.phenotype.display_name,
-                "link": self.phenotype.obj_url
+                "link": self.phenotype.obj_url,
+                "id": self.phenotype.phenotype_id
             }
             
         obj = {
