@@ -1462,6 +1462,53 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def phenotype_graph(self):
+        nodes = [{
+            "data": {
+                "name": self.display_name,
+                "id": self.format_name,
+                "type": "BIOENTITY",
+                "sub_type": "FOCUS"
+            }
+        }]
+
+        edges = []
+        
+        phenotype_ids = DBSession.query(Phenotypeannotation.phenotype_id).filter_by(dbentity_id=self.dbentity_id).all()
+        
+        observable_ids = set([(DBSession.query(Phenotype.observable_id).filter_by(phenotype_id=p[0]).one_or_none())[0] for p in phenotype_ids])
+
+        for o in observable_ids:
+            observable = Apo.get_apo_by_id(o)
+            nodes.append({
+                "data": {
+                    "name": observable.display_name,
+                    "id": observable.format_name,
+                    "type": "OBSERVABLE"
+                }
+            })
+            edges.append({
+                "data": {
+                    "source": observable.format_name,
+                    "target": self.format_name
+                }
+            })
+            
+        return {
+#            "min_cutoff": 1,
+#            "max_cutoff": 11,
+            "nodes": nodes,
+            "edges": edges
+        }
+    
+    def phenotype_to_dict(self):
+        phenotypes = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
+        obj = []
+        for phenotype in phenotypes:
+            obj += phenotype.to_dict(locus=self)
+        return obj
+    
     def to_dict_analyze(self):
         return {
             "id": self.dbentity_id,
@@ -1599,6 +1646,7 @@ class Locusdbentity(Dbentity):
             obj["paragraph"] = phenotype_summary[0]
 
         phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
         for annotation in phenotype_annotations:
             json = annotation.to_dict_lsp()
             
@@ -1607,6 +1655,10 @@ class Locusdbentity(Dbentity):
                     obj[json["experiment_category"]][json["mutant"]].append(json["phenotype"])
             else:
                 obj[json["experiment_category"]][json["mutant"]] = [json["phenotype"]]
+
+        counts = Phenotypeannotation.create_count_overview(None, phenotype_annotations=phenotype_annotations)
+        obj["strains"] = counts["strains"]
+        obj["experiment_categories"] = counts["experiment_categories"]
 
         return obj
 
@@ -3613,10 +3665,21 @@ class Phenotypeannotation(Base):
     taxonomy = relationship(u'Taxonomy')
 
     @staticmethod
-    def count_strains(phenotype_ids):
+    def count_strains(phenotype_ids=None, annotations=None):
         strains_result = []
-        
-        counts = DBSession.query(Phenotypeannotation.taxonomy_id, func.count(Phenotypeannotation.taxonomy_id)).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).group_by(Phenotypeannotation.taxonomy_id).all()
+
+        if annotations is None:
+            counts = DBSession.query(Phenotypeannotation.taxonomy_id, func.count(Phenotypeannotation.taxonomy_id)).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).group_by(Phenotypeannotation.taxonomy_id).all()
+        else:
+            counts_dict = {}
+            for annotation in annotations:
+                if annotation.taxonomy_id in counts_dict:
+                    counts_dict[annotation.taxonomy_id] += 1
+                else:
+                    counts_dict[annotation.taxonomy_id] = 1
+            counts = []
+            for taxonomy in counts_dict:
+                counts.append((taxonomy, counts_dict[taxonomy]))
 
         for count in counts:
             strains = Straindbentity.get_strains_by_taxon_id(count[0])
@@ -3626,13 +3689,14 @@ class Phenotypeannotation(Base):
             elif len(strains) == 1:
                 strains_result.append([strains[0].display_name, count[1]])
             else:
-                continue            
+                continue
 
         return sorted(strains_result, key=lambda strain: -1 * strain[1])
 
     @staticmethod
-    def count_experiment_categories(phenotype_ids):
-        annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).all()
+    def count_experiment_categories(phenotype_ids=None, annotations=None):
+        if annotations is None:
+            annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).all()
 
         mt = {}
         for annotation in annotations:
@@ -3655,11 +3719,17 @@ class Phenotypeannotation(Base):
     
     # method for graphs counting annotations
     @staticmethod
-    def create_count_overview(phenotype_ids):
-        return {
-            "strains": [["Strain", "Annotations"]] + Phenotypeannotation.count_strains(phenotype_ids),
-            "experiment_categories": [["Mutant Type", "classical genetics", "large-scale survey"]] +  Phenotypeannotation.count_experiment_categories(phenotype_ids)
-        }
+    def create_count_overview(phenotype_ids, phenotype_annotations=None):
+        if phenotype_annotations is None:
+            return {
+                "strains": [["Strain", "Annotations"]] + Phenotypeannotation.count_strains(phenotype_ids=phenotype_ids),
+                "experiment_categories": [["Mutant Type", "classical genetics", "large-scale survey"]] +  Phenotypeannotation.count_experiment_categories(phenotype_ids=phenotype_ids)
+            }
+        else:
+            return {
+                "strains": [["Strain", "Annotations"]] + Phenotypeannotation.count_strains(annotations=phenotype_annotations),
+                "experiment_categories": [["Mutant Type", "classical genetics", "large-scale survey"]] +  Phenotypeannotation.count_experiment_categories(annotations=phenotype_annotations)
+            }
 
     def to_dict_lsp(self):
         if self.experiment.display_name == "classical genetics":
@@ -3676,9 +3746,12 @@ class Phenotypeannotation(Base):
             }
         }
     
-    def to_dict(self, reference=None, chemical=None, phenotype=None):
+    def to_dict(self, reference=None, chemical=None, phenotype=None, locus=None):
         if reference == None:
             reference = self.reference
+
+        if locus == None:
+            locus = self.dbentity
         
         properties = []
         
@@ -3754,10 +3827,10 @@ class Phenotypeannotation(Base):
             "id": self.annotation_id,
             "mutant_type": mutant.display_name,
             "locus": {
-                "display_name": self.dbentity.display_name,
-                "id": self.dbentity.dbentity_id,
-                "link": self.dbentity.obj_url,
-                "format_name": self.dbentity.format_name
+                "display_name": locus.display_name,
+                "id": locus.dbentity_id,
+                "link": locus.obj_url,
+                "format_name": locus.format_name
             },
             "experiment": experiment_obj,
             "experiment_details": self.experiment_comment,
