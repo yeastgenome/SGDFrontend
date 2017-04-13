@@ -26,7 +26,8 @@ class Tags extends Component {
         let reducedGeneNames = theseTags.reduce( (acc, d, i) => {
           let isLast = (i === theseTags.length - 1);
           let suffix = isLast ? '' : ', ';
-          acc += `${d.locus.display_name}${suffix}`;
+          let locusName = d.locus ? d.locus.display_name : '';
+          acc += `${locusName}${suffix}`;
           return acc;
         }, '');
         return {
