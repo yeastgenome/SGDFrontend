@@ -1605,11 +1605,11 @@ class Locusdbentity(Dbentity):
             obj["history"].append({
                 "note": note.note,
                 "date_created": note.date_created.strftime("%Y-%m-%d"),
-                "references": [{
-                    "display_name": note.reference.display_name,
-                    "link": note.reference.obj_url,
-                    "pubmed_id": note.reference.pmid
-                }]
+#                "references": [{
+#                    "display_name": note.reference.display_name,
+#                    "link": note.reference.obj_url,
+#                    "pubmed_id": note.reference.pmid
+#                }]
             })
         
         return obj
