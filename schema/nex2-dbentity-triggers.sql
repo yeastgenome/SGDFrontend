@@ -1618,74 +1618,6 @@ BEFORE INSERT OR UPDATE ON nex.pathwaysummary_reference FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_pathwaysummaryreference_biur();
 
 
-DROP TRIGGER IF EXISTS filepath_audr ON nex.filepath CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_filepath_audr() RETURNS trigger AS $BODY$
-DECLARE
-    v_row       nex.deletelog.deleted_row%TYPE;
-BEGIN
-  IF (TG_OP = 'UPDATE') THEN
-
-     IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('FILEPATH'::text, 'SOURCE_ID'::text, OLD.filepath_id, OLD.source_id::text, NEW.source_id::text, USER);
-    END IF;
-
-    IF (OLD.filepath != NEW.filepath) THEN
-        PERFORM nex.insertupdatelog('FILEPATH'::text, 'FILEPATH'::text, OLD.filepath_id, OLD.filepath, NEW.filepath, USER);
-    END IF;
-
-    RETURN NEW;
-    
-  ELSIF (TG_OP = 'DELETE') THEN
-
-    v_row := OLD.filepath_id || '[:]' || OLD.source_id || '[:]' ||
-	         OLD.filepath || '[:]' ||
-             OLD.date_created || '[:]' || OLD.created_by;
-
-            PERFORM nex.insertdeletelog('FILEPATH'::text, OLD.filepath_id, v_row, USER);
-
-     RETURN OLD;
-  END IF;
-
-END;
-$BODY$ LANGUAGE 'plpgsql';
-
-CREATE TRIGGER filepath_audr
-AFTER UPDATE OR DELETE ON nex.filepath FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_filepath_audr();
-
-DROP TRIGGER IF EXISTS filepath_biur ON nex.filepath CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_filepath_biur() RETURNS trigger AS $BODY$
-BEGIN
-  IF (TG_OP = 'INSERT') THEN
-
-       NEW.created_by := upper(NEW.created_by);
-       PERFORM nex.checkuser(NEW.created_by);
-
-       RETURN NEW;
-
-  ELSIF (TG_OP = 'UPDATE') THEN
-
-    IF (NEW.filepath_id != OLD.filepath_id) THEN
-        RAISE EXCEPTION 'Primary key cannot be updated';
-    END IF;
-
-    IF (NEW.date_created != OLD.date_created) THEN
-        RAISE EXCEPTION 'Audit columns cannot be updated.';
-    END IF;
-
-    IF (NEW.created_by != OLD.created_by) THEN
-        RAISE EXCEPTION 'Audit columns cannot be updated.';
-    END IF;
-
-    RETURN NEW;
-  END IF;
-
-END;
-$BODY$ LANGUAGE 'plpgsql';
-
-CREATE TRIGGER filepath_biur
-BEFORE INSERT OR UPDATE ON nex.filepath FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_filepath_biur();
 
 DROP TRIGGER IF EXISTS filedbentity_audr ON nex.filedbentity CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_filedbentity_audr() RETURNS trigger AS $BODY$
@@ -1715,6 +1647,10 @@ BEGIN
         PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'FILE_DATE'::text, OLD.dbentity_id, OLD.file_date::text, NEW.file_date::text, USER);
     END IF;
 
+    IF (OLD.year != NEW.year) THEN
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'YEAR'::text, OLD.dbentity_id, OLD.year::text, NEW.year::text, USER);
+    END IF;
+
     IF (OLD.is_public != NEW.is_public) THEN
         PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'IS_PUBLIC'::text, OLD.dbentity_id, OLD.is_public::text, NEW.is_public::text, USER);
     END IF;
@@ -1733,10 +1669,6 @@ BEGIN
 
      IF (((OLD.s3_url IS NULL) AND (NEW.s3_url IS NOT NULL)) OR ((OLD.s3_url IS NOT NULL) AND (NEW.s3_url IS NULL)) OR (OLD.s3_url != NEW.s3_url)) THEN
         PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'S3_URL'::text, OLD.dbentity_id, OLD.s3_url, NEW.s3_url, USER);
-    END IF;
-
-     IF (((OLD.filepath_id IS NULL) AND (NEW.filepath_id IS NOT NULL)) OR ((OLD.filepath_id IS NOT NULL) AND (NEW.filepath_id IS NULL)) OR (OLD.filepath_id != NEW.filepath_id)) THEN
-        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'FILEPATH_ID'::text, OLD.dbentity_id, OLD.filepath_id::text, NEW.filepath_id::text, USER);
     END IF;
 
      IF (((OLD.previous_file_name IS NULL) AND (NEW.previous_file_name IS NOT NULL)) OR ((OLD.previous_file_name IS NOT NULL) AND (NEW.previous_file_name IS NULL)) OR (OLD.previous_file_name != NEW.previous_file_name)) THEN
@@ -1769,9 +1701,10 @@ BEGIN
     v_row := OLD.dbentity_id || '[:]' || OLD.topic_id || '[:]' ||
              OLD.data_id || '[:]' || OLD.format_id || '[:]' ||
              OLD.file_extension || '[:]' || OLD.file_date || '[:]' ||
+             OLD.year || '[:]' ||
              OLD.is_public || '[:]' || OLD.is_in_spell || '[:]' ||
              OLD.is_in_browser || '[:]' || coalesce(OLD.md5sum,'') || '[:]' ||
-             coalesce(OLD.filepath_id,0) || '[:]' || coalesce(OLD.readme_file_id,0) || '[:]' ||
+             coalesce(OLD.readme_file_id,0) || '[:]' ||
              coalesce(OLD.previous_file_name,'') || '[:]' || coalesce(OLD.s3_url,'') || '[:]' ||
              coalesce(OLD.description,'') || '[:]' || coalesce(OLD.json,'');
 
@@ -1802,6 +1735,152 @@ $BODY$ LANGUAGE 'plpgsql';
 CREATE TRIGGER filedbentity_bur
 BEFORE UPDATE ON nex.filedbentity FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_filedbentity_bur();
+
+DROP TRIGGER IF EXISTS path_audr ON nex.path CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_path_audr() RETURNS trigger AS $BODY$
+DECLARE
+    v_row       nex.deletelog.deleted_row%TYPE;
+BEGIN
+  IF (TG_OP = 'UPDATE') THEN
+
+     IF (OLD.source_id != NEW.source_id) THEN
+        PERFORM nex.insertupdatelog('PATH'::text, 'SOURCE_ID'::text, OLD.path_id, OLD.source_id::text, NEW.source_id::text, USER);
+    END IF;
+
+    IF (OLD.path != NEW.path) THEN
+        PERFORM nex.insertupdatelog('PATH'::text, 'PATH'::text, OLD.path_id, OLD.path, NEW.path, USER);
+    END IF;
+
+    IF (OLD.description != NEW.description) THEN
+        PERFORM nex.insertupdatelog('PATH'::text, 'DESCRIPTION'::text, OLD.path_id, OLD.description, NEW.description, USER);
+    END IF;
+
+    RETURN NEW;
+    
+  ELSIF (TG_OP = 'DELETE') THEN
+
+    v_row := OLD.path_id || '[:]' || OLD.source_id || '[:]' ||
+	         OLD.path || '[:]' || OLD.description || '[:]' ||
+             OLD.date_created || '[:]' || OLD.created_by;
+
+            PERFORM nex.insertdeletelog('PATH'::text, OLD.path_id, v_row, USER);
+
+     RETURN OLD;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER path_audr
+AFTER UPDATE OR DELETE ON nex.path FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_path_audr();
+
+DROP TRIGGER IF EXISTS path_biur ON nex.path CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_path_biur() RETURNS trigger AS $BODY$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+
+       NEW.created_by := upper(NEW.created_by);
+       PERFORM nex.checkuser(NEW.created_by);
+
+       RETURN NEW;
+
+  ELSIF (TG_OP = 'UPDATE') THEN
+
+    IF (NEW.path_id != OLD.path_id) THEN
+        RAISE EXCEPTION 'Primary key cannot be updated';
+    END IF;
+
+    IF (NEW.date_created != OLD.date_created) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    IF (NEW.created_by != OLD.created_by) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    RETURN NEW;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER path_biur
+BEFORE INSERT OR UPDATE ON nex.path FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_path_biur();
+
+DROP TRIGGER IF EXISTS filepath_audr ON nex.file_path CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_filepath_audr() RETURNS trigger AS $BODY$
+DECLARE
+    v_row       nex.deletelog.deleted_row%TYPE;
+BEGIN
+  IF (TG_OP = 'UPDATE') THEN
+
+    IF (OLD.file_id != NEW.file_id) THEN
+        PERFORM nex.insertupdatelog('FILE_PATH'::text, 'FILE_ID'::text, OLD.file_path_id, OLD.file_id::text, NEW.file_id::text, USER);
+    END IF;
+
+     IF (OLD.path_id != NEW.path_id) THEN
+        PERFORM nex.insertupdatelog('FILE_PATH'::text, 'PATH_ID'::text, OLD.file_path_id, OLD.path_id::text, NEW.path_id::text, USER);
+    END IF;
+
+     IF (OLD.source_id != NEW.source_id) THEN
+        PERFORM nex.insertupdatelog('FILE_PATH'::text, 'SOURCE_ID'::text, OLD.file_path_id, OLD.source_id::text, NEW.source_id::text, USER);
+    END IF;
+
+    RETURN NEW;
+
+  ELSIF (TG_OP = 'DELETE') THEN
+
+    v_row := OLD.file_path_id || '[:]' || OLD.file_id || '[:]' ||
+             OLD.path_id || '[:]' || OLD.source_id || '[:]' ||
+             OLD.date_created || '[:]' || OLD.created_by;
+
+         PERFORM nex.insertdeletelog('FILE_PATH'::text, OLD.file_path_id, v_row, USER);
+
+     RETURN OLD;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER filepath_audr
+AFTER UPDATE OR DELETE ON nex.file_path FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_filepath_audr();
+
+DROP TRIGGER IF EXISTS filepath_biur ON nex.file_path CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_filepath_biur() RETURNS trigger AS $BODY$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+
+       NEW.created_by := upper(NEW.created_by);
+       PERFORM nex.checkuser(NEW.created_by);
+
+       RETURN NEW;
+
+  ELSIF (TG_OP = 'UPDATE') THEN
+
+    IF (NEW.file_path_id != OLD.file_path_id) THEN
+        RAISE EXCEPTION 'Primary key cannot be updated';
+    END IF;
+
+    IF (NEW.date_created != OLD.date_created) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    IF (NEW.created_by != OLD.created_by) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    RETURN NEW;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER filepath_biur
+BEFORE INSERT OR UPDATE ON nex.file_path FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_filepath_biur();
 
 DROP TRIGGER IF EXISTS filekeyword_audr ON nex.file_keyword CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_filekeyword_audr() RETURNS trigger AS $BODY$

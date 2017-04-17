@@ -31,6 +31,7 @@ def main(global_config, **settings):
     config.add_route('reference_triage_id', '/reference/triage/{id}', request_method='GET')
     config.add_route('reference_triage_id_update', '/reference/triage/{id}', request_method='PUT')
     config.add_route('reference_triage_id_delete', '/reference/triage/{id}', request_method='DELETE')
+    config.add_route('reference_triage_tags', '/reference/{id}/tags', request_method='GET')
     
     config.add_route('reference', '/reference/{id}', request_method='GET')
     config.add_route('reference_literature_details', '/reference/{id}/literature_details', request_method='GET')
@@ -59,6 +60,8 @@ def main(global_config, **settings):
 
     config.add_route('locus', '/locus/{sgdid}', request_method='GET')
     config.add_route('locus_tabs', '/locus/{id}/tabs', request_method='GET')
+    config.add_route('locus_phenotype_details', '/locus/{id}/phenotype_details', request_method='GET')
+    config.add_route('locus_phenotype_graph', '/locus/{id}/phenotype_graph', request_method='GET')
 
     config.add_route('bioentity_list', '/bioentity_list', request_method='POST')
     

@@ -449,12 +449,12 @@ CREATE INDEX goslimanno_goslim_fk_index ON nex.goslimannotation (goslim_id);
 DROP TABLE IF EXISTS nex.literatureannotation CASCADE;
 CREATE TABLE nex.literatureannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
-	dbentity_id bigint NOT NULL,
+	reference_id bigint NOT NULL,
 	source_id bigint NOT NULL,
 	bud_id integer,
 	taxonomy_id bigint NOT NULL,
-	reference_id bigint NOT NULL,
 	topic varchar(40) NOT NULL,
+	dbentity_id bigint,
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT literatureannotation_pk PRIMARY KEY (annotation_id)
@@ -469,9 +469,9 @@ COMMENT ON COLUMN nex.literatureannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONO
 COMMENT ON COLUMN nex.literatureannotation.bud_id IS 'From BUD.LIT_GUIDE.LIT_GUIDE_NO.';
 COMMENT ON COLUMN nex.literatureannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
 COMMENT ON COLUMN nex.literatureannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
-ALTER TABLE nex.literatureannotation ADD CONSTRAINT literatureannotation_uk UNIQUE (dbentity_id,reference_id,topic);
+CREATE UNIQUE INDEX literatureannotation_uk on nex.literatureannotation (reference_id,topic,coalesce(dbentity_id,0));
 ALTER TABLE nex.literatureannotation ADD CONSTRAINT literatureanno_topic_ck CHECK (TOPIC IN ('Additional Literature', 'Omics', 'Primary Literature', 'Reviews'));
-CREATE INDEX literatureanno_ref_fk_index ON nex.literatureannotation (reference_id);
+CREATE INDEX literatureanno_dbentity_fk_index ON nex.literatureannotation (dbentity_id);
 CREATE INDEX literatureanno_tax_fk_index ON nex.literatureannotation (taxonomy_id);
 CREATE INDEX literatureanno_source_fk_index ON nex.literatureannotation (source_id);
 
