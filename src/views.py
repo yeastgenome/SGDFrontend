@@ -9,7 +9,7 @@ from sqlalchemy import func
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference
 
 from .celery_tasks import upload_to_s3
 
@@ -18,7 +18,7 @@ from .helpers import allowed_file, secure_save_file, curator_or_none, authentica
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results
 from .tsv_parser import parse_tsv_annotations
 
-from .loading.promote_reference_triage import add_paper
+from .loading.promote_reference_triage import add_paper, get_dbentity_by_name
 
 import transaction
 
@@ -433,7 +433,6 @@ def reference_triage_id_update(request):
             triage.update_from_json(request.json)
         except ValueError:
             return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
-
         try:
             transaction.commit()
         except:
@@ -447,11 +446,24 @@ def reference_triage_id_update(request):
 @view_config(route_name='reference_triage_promote', renderer='json', request_method='PUT')
 def reference_triage_promote(request):
     id = request.matchdict['id'].upper()
-
+    
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
+
+        tags = []
+        for tag in request.json['data']['tags']:
+            if tag.get('genes'):
+                genes = tag.get('genes').split(',')
+                for g in genes:
+                    locus = get_dbentity_by_name(g.strip())
+                    if locus is None:
+                        return HTTPBadRequest(body=json.dumps({'error': 'Invalid gene name ' + g}))
+                    tags.append((tag['name'], tag['comment'], locus.dbentity_id))
+            else:
+                tags.append((tag['name'], tag['comment'], None))
+
         try:
-            sgdid = add_paper(triage.pmid)
+            reference_id, sgdid = add_paper(triage.pmid, request.json['data']['assignee'])
         except:
             traceback.print_exc()
             return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
@@ -463,8 +475,21 @@ def reference_triage_promote(request):
             transaction.commit()
         except:
             return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify if pmid is valid and not already present.'}))
-
+        
         DBSession.delete(triage)
+
+        for i in xrange(len(tags)):
+            curation = CurationReference.factory(reference_id, tags[i][0], tags[i][1], tags[i][2], request.json['data']['assignee'])
+            if curation is None:
+                tags[i] = Literatureannotation.factory(reference_id, tags[i][0], tags[i][2], request.json['data']['assignee'])
+            else:
+                tags[i] = curation
+
+        for tag in tags:
+            if tag:
+                DBSession.add(tag)
+
+        DBSession.flush()                
         transaction.commit()
         
         pusher = get_pusher_client()
@@ -501,6 +526,23 @@ def reference_triage_id_delete(request):
         return HTTPOk()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='reference_triage_tags', renderer='json', request_method='GET')
+def reference_triage_tags(request):
+    sgdid = request.matchdict['id'].upper()
+
+    dbentity_id = DBSession.query(Dbentity.dbentity_id).filter_by(sgdid=sgdid).one_or_none()
+
+    if dbentity_id is None:
+        return HTTPNotFound()
+    
+    obj = []
+
+    tags = DBSession.query(CurationReference).filter_by(reference_id=dbentity_id[0]).all()
+    for tag in tags:
+        obj.append(tag.to_dict())
+
+    return obj
     
 @view_config(route_name='author', renderer='json', request_method='GET')
 def author(request):
@@ -677,6 +719,26 @@ def locus_tabs(request):
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
         return locus.tabs()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='locus_phenotype_details', renderer='json', request_method='GET')
+def locus_phenotype_details(request):
+    id = request.matchdict['id'].upper()
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    if locus:
+        return locus.phenotype_to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='locus_phenotype_graph', renderer='json', request_method='GET')
+def locus_phenotype_graph(request):
+    id = request.matchdict['id'].upper()
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    if locus:
+        return locus.phenotype_graph()
     else:
         return HTTPNotFound()
 

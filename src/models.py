@@ -887,27 +887,119 @@ class Contignoteannotation(Base):
     taxonomy = relationship(u'Taxonomy')
 
 
-class Curation(Base):
-    __tablename__ = 'curation'
+class CurationLocus(Base):
+    __tablename__ = 'curation_locus'
     __table_args__ = (
-        UniqueConstraint('dbentity_id', 'subclass', 'curation_task', 'locus_id'),
+        UniqueConstraint('curation_tag', 'locus_id'),
         {u'schema': 'nex'}
     )
 
     curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.curation_seq'::regclass)"))
-    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
-    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     locus_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
-    subclass = Column(String(40), nullable=False)
-    curation_task = Column(String(40), nullable=False)
-    curator_comment = Column(String(2000))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    curation_tag = Column(String(40), nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    curator_comment = Column(String(2000))
+    json = Column(Text)
 
-    dbentity = relationship(u'Dbentity')
     locus = relationship(u'Locusdbentity', foreign_keys=[locus_id])
     source = relationship(u'Source')
 
+    acceptable_tags = {
+        'go_needs_review': 'GO needs review',
+        'headline_reviewed': 'Headline reviewed',
+        'paragraph_not_needed': 'Paragraph not needed',
+        'phenotype_uncuratable': 'Phenotype uncuratable'
+    }
+
+    @staticmethod
+    def factory(tag, gene_id_list, comment, created_by, source_id=824, json=None):
+        if tag not in acceptable_tags:
+            return None
+        
+        obj = []
+        for dbentity_id in gene_id_list:
+            obj.append(
+                CurationLocus(
+                    locus_id=dbentity_id,
+                    source_id=source_id,
+                    curation_tag=acceptable_tags[tag],
+                    created_by=created_by,
+                    json=json
+                )
+            )
+        return obj
+
+
+class CurationReference(Base):
+    __tablename__ = 'curation_reference'
+    __table_args__ = (
+        UniqueConstraint('reference_id', 'curation_tag', 'locus_id'),
+        {u'schema': 'nex'}
+    )
+
+    curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.curation_seq'::regclass)"))
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    locus_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    curation_tag = Column(String(40), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+    curator_comment = Column(String(2000))
+    json = Column(Text)
+
+    locus = relationship(u'Locusdbentity', foreign_keys=[locus_id])
+    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    source = relationship(u'Source')
+
+    acceptable_tags = {
+        'high_priority': 'High Priority',
+        'delay': 'Delay',
+        'homology_disease': 'Homology/Disease',
+        'go': 'GO information',
+        'classical_phenotype': 'Classical phenotype information',
+        'headline_information': 'Headline information',
+        'gene_model': 'Gene model',
+        'headline_needs_review': 'Headline needs review',
+        'not_yet_curated': 'Not yet curated',
+        'paragraph_needs_review': 'Paragraph needs review',
+        'pathways': 'Pathways',
+        'phenotype_needs_review': 'Phenotype needs review',
+        'ptm': 'Post-translational modifications',
+        'regulation_information': 'Regulation information',
+        'fast_track': 'Fast Track'
+    }
+    
+    @staticmethod
+    def factory(reference_id, tag, comment, dbentity_id, created_by, source_id=824, json=None):
+        if tag not in CurationReference.acceptable_tags:
+            return None
+
+        return CurationReference(
+            reference_id=reference_id,
+            source_id=source_id,
+            locus_id=dbentity_id,
+            curation_tag=CurationReference.acceptable_tags[tag],
+            created_by=created_by,
+            curator_comment=comment,
+            json=json
+        )
+
+    def to_dict(self):
+        obj = {
+            "tag": self.curation_tag,
+            "locus": None,
+            "comment": self.curator_comment
+        }
+
+        if self.locus:
+            obj['locus'] = {
+                "display_name": self.locus.display_name,
+                "link": self.locus.obj_url
+            }
+
+        return obj
 
 class Dataset(Base):
     __tablename__ = 'dataset'
@@ -1370,6 +1462,53 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def phenotype_graph(self):
+        nodes = [{
+            "data": {
+                "name": self.display_name,
+                "id": self.format_name,
+                "type": "BIOENTITY",
+                "sub_type": "FOCUS"
+            }
+        }]
+
+        edges = []
+        
+        phenotype_ids = DBSession.query(Phenotypeannotation.phenotype_id).filter_by(dbentity_id=self.dbentity_id).all()
+        
+        observable_ids = set([(DBSession.query(Phenotype.observable_id).filter_by(phenotype_id=p[0]).one_or_none())[0] for p in phenotype_ids])
+
+        for o in observable_ids:
+            observable = Apo.get_apo_by_id(o)
+            nodes.append({
+                "data": {
+                    "name": observable.display_name,
+                    "id": observable.format_name,
+                    "type": "OBSERVABLE"
+                }
+            })
+            edges.append({
+                "data": {
+                    "source": observable.format_name,
+                    "target": self.format_name
+                }
+            })
+            
+        return {
+#            "min_cutoff": 1,
+#            "max_cutoff": 11,
+            "nodes": nodes,
+            "edges": edges
+        }
+    
+    def phenotype_to_dict(self):
+        phenotypes = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
+        obj = []
+        for phenotype in phenotypes:
+            obj += phenotype.to_dict(locus=self)
+        return obj
+    
     def to_dict_analyze(self):
         return {
             "id": self.dbentity_id,
@@ -1466,11 +1605,11 @@ class Locusdbentity(Dbentity):
             obj["history"].append({
                 "note": note.note,
                 "date_created": note.date_created.strftime("%Y-%m-%d"),
-                "references": [{
-                    "display_name": note.reference.display_name,
-                    "link": note.reference.obj_url,
-                    "pubmed_id": note.reference.pmid
-                }]
+#                "references": [{
+#                    "display_name": note.reference.display_name,
+#                    "link": note.reference.obj_url,
+#                    "pubmed_id": note.reference.pmid
+#                }]
             })
         
         return obj
@@ -1507,6 +1646,7 @@ class Locusdbentity(Dbentity):
             obj["paragraph"] = phenotype_summary[0]
 
         phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
         for annotation in phenotype_annotations:
             json = annotation.to_dict_lsp()
             
@@ -1515,6 +1655,10 @@ class Locusdbentity(Dbentity):
                     obj[json["experiment_category"]][json["mutant"]].append(json["phenotype"])
             else:
                 obj[json["experiment_category"]][json["mutant"]] = [json["phenotype"]]
+
+        counts = Phenotypeannotation.create_count_overview(None, phenotype_annotations=phenotype_annotations)
+        obj["strains"] = counts["strains"]
+        obj["experiment_categories"] = counts["experiment_categories"]
 
         return obj
 
@@ -3106,6 +3250,28 @@ class Literatureannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    acceptable_tags = {
+        'htp_phenotype': 'Omics',
+        'non_phenotype_htp': 'Omics',
+        'other_primary': 'Primary Literature',
+        'Reviews': 'Reviews',
+        'additional_literature': 'Additional Literature'
+    }
+
+    @staticmethod
+    def factory(reference_id, tag, dbentity_id, created_by, source_id=824, taxonomy_id=274803):
+        if tag not in Literatureannotation.acceptable_tags:
+            return None
+
+        return Literatureannotation(
+            dbentity_id=dbentity_id,
+            source_id=source_id,
+            taxonomy_id=taxonomy_id,
+            reference_id=reference_id,
+            topic=Literatureannotation.acceptable_tags[tag],
+            created_by=created_by
+        )
+    
     def to_dict(self):
         entity = self.dbentity
         
@@ -3499,10 +3665,21 @@ class Phenotypeannotation(Base):
     taxonomy = relationship(u'Taxonomy')
 
     @staticmethod
-    def count_strains(phenotype_ids):
+    def count_strains(phenotype_ids=None, annotations=None):
         strains_result = []
-        
-        counts = DBSession.query(Phenotypeannotation.taxonomy_id, func.count(Phenotypeannotation.taxonomy_id)).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).group_by(Phenotypeannotation.taxonomy_id).all()
+
+        if annotations is None:
+            counts = DBSession.query(Phenotypeannotation.taxonomy_id, func.count(Phenotypeannotation.taxonomy_id)).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).group_by(Phenotypeannotation.taxonomy_id).all()
+        else:
+            counts_dict = {}
+            for annotation in annotations:
+                if annotation.taxonomy_id in counts_dict:
+                    counts_dict[annotation.taxonomy_id] += 1
+                else:
+                    counts_dict[annotation.taxonomy_id] = 1
+            counts = []
+            for taxonomy in counts_dict:
+                counts.append((taxonomy, counts_dict[taxonomy]))
 
         for count in counts:
             strains = Straindbentity.get_strains_by_taxon_id(count[0])
@@ -3512,13 +3689,14 @@ class Phenotypeannotation(Base):
             elif len(strains) == 1:
                 strains_result.append([strains[0].display_name, count[1]])
             else:
-                continue            
+                continue
 
         return sorted(strains_result, key=lambda strain: -1 * strain[1])
 
     @staticmethod
-    def count_experiment_categories(phenotype_ids):
-        annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).all()
+    def count_experiment_categories(phenotype_ids=None, annotations=None):
+        if annotations is None:
+            annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).all()
 
         mt = {}
         for annotation in annotations:
@@ -3541,11 +3719,17 @@ class Phenotypeannotation(Base):
     
     # method for graphs counting annotations
     @staticmethod
-    def create_count_overview(phenotype_ids):
-        return {
-            "strains": [["Strain", "Annotations"]] + Phenotypeannotation.count_strains(phenotype_ids),
-            "experiment_categories": [["Mutant Type", "classical genetics", "large-scale survey"]] +  Phenotypeannotation.count_experiment_categories(phenotype_ids)
-        }
+    def create_count_overview(phenotype_ids, phenotype_annotations=None):
+        if phenotype_annotations is None:
+            return {
+                "strains": [["Strain", "Annotations"]] + Phenotypeannotation.count_strains(phenotype_ids=phenotype_ids),
+                "experiment_categories": [["Mutant Type", "classical genetics", "large-scale survey"]] +  Phenotypeannotation.count_experiment_categories(phenotype_ids=phenotype_ids)
+            }
+        else:
+            return {
+                "strains": [["Strain", "Annotations"]] + Phenotypeannotation.count_strains(annotations=phenotype_annotations),
+                "experiment_categories": [["Mutant Type", "classical genetics", "large-scale survey"]] +  Phenotypeannotation.count_experiment_categories(annotations=phenotype_annotations)
+            }
 
     def to_dict_lsp(self):
         if self.experiment.display_name == "classical genetics":
@@ -3558,13 +3742,17 @@ class Phenotypeannotation(Base):
             "mutant": self.mutant.display_name,
             "phenotype": {
                 "display_name": self.phenotype.display_name,
-                "link": self.phenotype.obj_url
+                "link": self.phenotype.obj_url,
+                "id": self.phenotype.phenotype_id
             }
         }
     
-    def to_dict(self, reference=None, chemical=None, phenotype=None):
+    def to_dict(self, reference=None, chemical=None, phenotype=None, locus=None):
         if reference == None:
             reference = self.reference
+
+        if locus == None:
+            locus = self.dbentity
         
         properties = []
         
@@ -3628,22 +3816,24 @@ class Phenotypeannotation(Base):
         if phenotype:
             phenotype_obj = {
                 "display_name": phenotype.display_name,
-                "link": phenotype.obj_url
+                "link": phenotype.obj_url,
+                "id": phenotype.phenotype_id
             }
         else:
             phenotype_obj = {
                 "display_name": self.phenotype.display_name,
-                "link": self.phenotype.obj_url
+                "link": self.phenotype.obj_url,
+                "id": self.phenotype.phenotype_id
             }
             
         obj = {
             "id": self.annotation_id,
             "mutant_type": mutant.display_name,
             "locus": {
-                "display_name": self.dbentity.display_name,
-                "id": self.dbentity.dbentity_id,
-                "link": self.dbentity.obj_url,
-                "format_name": self.dbentity.format_name
+                "display_name": locus.display_name,
+                "id": locus.dbentity_id,
+                "link": locus.obj_url,
+                "format_name": locus.format_name
             },
             "experiment": experiment_obj,
             "experiment_details": self.experiment_comment,
