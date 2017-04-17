@@ -1,0 +1,49 @@
+upstream frontend {
+        server 127.0.0.1:6545;
+}
+
+upstream backend {
+         server 127.0.0.1:6543;
+}
+
+server {
+	listen 80;
+
+	server_name _;
+
+	location / {
+		access_log /var/log/nginx/sgd-frontend-access.log;
+		error_log /var/log/nginx/sgd-frontend-error.log;
+
+		proxy_set_header        Host $host:$server_port;
+		proxy_set_header        X-Real-IP $remote_addr;
+		proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+
+		client_max_body_size    10m;
+		client_body_buffer_size 128k;
+		proxy_connect_timeout   60s;
+		proxy_send_timeout      90s;
+		proxy_read_timeout      90s;
+		proxy_buffering         off;
+		proxy_temp_file_write_size 64k;
+		proxy_pass http://frontend/;
+		proxy_redirect          off;
+
+		# remove trailing slashes
+		rewrite ^/(.*)/$ http://$host/$1 permanent;
+
+       }
+
+	location /webservice/ {
+		access_log /var/log/nginx/sgd-backend-access.log;
+		error_log /var/log/nginx/sgd-backend-error.log;
+
+		proxy_pass http://localhost:6543/;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+		# remove trailing slashes
+		rewrite ^/(.*)/$ http://$host/$1 permanent;
+
+	}
+}
