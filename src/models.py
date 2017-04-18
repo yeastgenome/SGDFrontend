@@ -3706,8 +3706,8 @@ class Phenotypeannotation(Base):
                     "large-scale survey": 0
                 }
 
-            if annotation.experiment.display_name in mt[annotation.mutant.display_name]:
-                mt[annotation.mutant.display_name][annotation.experiment.display_name] += 1
+            if annotation.experiment.display_name in ("classical genetics", "aneuploid, classical genetics", "haploid, classical genetics", "heterozygous diploid, classical genetics", "heterozygous diploid", "homozygous diploid", "homozygous diploid, classical genetics", "unknown ploidy, classical genetics"):
+                mt[annotation.mutant.display_name]["classical genetics"] += 1
             else:
                 mt[annotation.mutant.display_name]["large-scale survey"] += 1
                 
