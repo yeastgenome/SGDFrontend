@@ -1463,6 +1463,30 @@ class Locusdbentity(Dbentity):
     has_sequence_section = Column(Boolean, nullable=False)
 
     def phenotype_graph(self):
+        phenotype_to_observable = {}
+        
+        phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
+        phenotypes = {}
+        observable_ids = set([])
+        for annotation in phenotype_annotations:
+            phenotypes[annotation.phenotype_id] = annotation.phenotype
+            observable_ids.add(annotation.phenotype.observable_id)
+
+        phenotype_annotations = DBSession.query(Phenotypeannotation).filter( (Phenotypeannotation.phenotype_id.in_(phenotypes.keys())) & (Phenotypeannotation.dbentity_id != self.dbentity_id)).all()
+        
+        genes = {}
+        for annotation in phenotype_annotations:
+            if annotation.dbentity_id in genes:
+                genes[annotation.dbentity_id].add(phenotypes[annotation.phenotype_id].observable_id)
+            else:
+                genes[annotation.dbentity_id] = set([phenotypes[annotation.phenotype_id].observable_id])
+
+        genes_observables = []
+        for gene in genes:
+            genes_observables.append([gene, genes[gene]])
+        genes_observables = sorted(genes_observables, key=lambda x: len(x[1]), reverse=True)
+
         nodes = [{
             "data": {
                 "name": self.display_name,
@@ -1473,30 +1497,54 @@ class Locusdbentity(Dbentity):
         }]
 
         edges = []
-        
-        phenotype_ids = DBSession.query(Phenotypeannotation.phenotype_id).filter_by(dbentity_id=self.dbentity_id).all()
-        
-        observable_ids = set([(DBSession.query(Phenotype.observable_id).filter_by(phenotype_id=p[0]).one_or_none())[0] for p in phenotype_ids])
 
-        for o in observable_ids:
-            observable = Apo.get_apo_by_id(o)
+        limit_number_genes = 3
+        
+        observables_in_the_graph = set()
+        min_cut_off = len(genes_observables[limit_number_genes - 1][1])
+        max_cut_off = len(genes_observables[0][1])
+        
+        for gene in genes_observables[:limit_number_genes]:
+            gene_name = DBSession.query(Dbentity.display_name, Dbentity.format_name).filter_by(dbentity_id=gene[0]).one_or_none()
+            
             nodes.append({
                 "data": {
-                    "name": observable.display_name,
-                    "id": observable.format_name,
-                    "type": "OBSERVABLE"
+                    "name": gene_name[0],
+                    "id": gene_name[1],
+                    "type": "BIOENTITY"
                 }
             })
-            edges.append({
-                "data": {
-                    "source": observable.format_name,
-                    "target": self.format_name
-                }
-            })
-            
+
+            for apo in gene[1]:
+                observable = Apo.get_apo_by_id(apo)
+
+                if apo not in observables_in_the_graph:
+                    observables_in_the_graph.add(apo)
+                    
+                    nodes.append({
+                        "data": {
+                            "name": observable.display_name,
+                            "id": observable.format_name,
+                            "type": "OBSERVABLE"
+                        }
+                    })
+                    edges.append({
+                        "data": {
+                            "source": observable.format_name,
+                            "target": self.format_name
+                        }
+                    })
+                    
+                edges.append({
+                    "data": {
+                        "source": observable.format_name,
+                        "target": gene_name[1]
+                    }
+                })
+        
         return {
-#            "min_cutoff": 1,
-#            "max_cutoff": 11,
+            "min_cutoff": min_cut_off,
+            "max_cutoff": max_cut_off,
             "nodes": nodes,
             "edges": edges
         }
