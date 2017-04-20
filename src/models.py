@@ -1543,8 +1543,8 @@ class Locusdbentity(Dbentity):
                 })
         
         return {
-            "min_cutoff": min_cut_off,
-            "max_cutoff": max_cut_off,
+#            "min_cutoff": min_cut_off,
+#            "max_cutoff": max_cut_off,
             "nodes": nodes,
             "edges": edges
         }
