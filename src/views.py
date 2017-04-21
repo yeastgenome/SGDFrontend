@@ -742,6 +742,16 @@ def locus_phenotype_graph(request):
     else:
         return HTTPNotFound()
 
+@view_config(route_name='locus_literature_details', renderer='json', request_method='GET')
+def locus_literature_details(request):
+    id = request.matchdict['id'].upper()
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    if locus:
+        return locus.literature_to_dict()
+    else:
+        return HTTPNotFound()
+
 @view_config(route_name='bioentity_list', renderer='json', request_method='POST')
 def analyze(request):
     try:
