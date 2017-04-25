@@ -63,6 +63,8 @@ def main(global_config, **settings):
     config.add_route('locus_phenotype_details', '/locus/{id}/phenotype_details', request_method='GET')
     config.add_route('locus_phenotype_graph', '/locus/{id}/phenotype_graph', request_method='GET')
     config.add_route('locus_literature_details', '/locus/{id}/literature_details', request_method='GET')
+    config.add_route('locus_literature_graph', '/locus/{id}/literature_graph', request_method='GET')
+    config.add_route('locus_go_details', '/locus/{id}/go_details', request_method='GET')
 
     config.add_route('bioentity_list', '/bioentity_list', request_method='POST')
     

@@ -1463,6 +1463,116 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def go_to_dict(self):
+        go_annotations = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
+        obj = []
+        
+        for go_annotation in go_annotations:
+            obj += go_annotation.to_dict()
+        
+        return obj
+    
+    def literature_graph(self):
+        primary_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Primary Literature")).all()
+        primary_lit = DBSession.query(Literatureannotation.reference_id, Literatureannotation.dbentity_id).filter((Literatureannotation.reference_id.in_(primary_ids)) & (Literatureannotation.dbentity_id != self.dbentity_id)).all()
+
+        genes_to_refs = {}
+        for lit in primary_lit:
+            if lit[1] in genes_to_refs:
+                genes_to_refs[lit[1]].append(lit[0])
+            else:
+                genes_to_refs[lit[1]] = [lit[0]]
+
+        to_delete = []
+        for gene in genes_to_refs:
+            if len(genes_to_refs[gene]) < 2:
+                to_delete.append(gene)
+
+        for gene in to_delete:
+            del genes_to_refs[gene]
+
+        refs_to_genes = {}
+        for gene in genes_to_refs:
+            for ref in genes_to_refs[gene]:
+                if ref in refs_to_genes:
+                    refs_to_genes[ref].append(gene)
+                else:
+                    refs_to_genes[ref] = [gene]
+
+        to_delete = []
+        for reference in refs_to_genes:
+            if len(refs_to_genes[reference]) < 2:
+                to_delete.append(reference)
+
+        for ref in to_delete:
+            del refs_to_genes[ref]
+
+
+        geness = sorted(genes_to_refs.keys(), key=lambda g: len(genes_to_refs[g]), reverse=True)
+
+        import pdb; pdb.set_trace()
+
+        references = sorted(refs_to_genes.keys(), key=lambda r: len(refs_to_genes[r]), reverse=True)
+
+        limit_number_references = 2
+
+        nodes = [{
+            "data": {
+                "name": self.display_name,
+                "id": self.format_name,
+                "link": self.obj_url,
+                "type": "BIOENTITY",
+                "sub_type": "FOCUS"
+            }
+        }]
+
+        edges = []
+
+        for ref in references[:limit_number_references]:
+            reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=ref).one_or_none()
+
+            nodes.append({
+                "data": {
+                    "name": reference.display_name,
+                    "id": reference.format_name,
+                    "link": reference.obj_url,
+                    "type": "REFERENCE",
+                }
+            })
+
+            edges.append({
+                "data": {
+                    "source": self.format_name,
+                    "target": reference.format_name,
+                }
+            })
+            
+            genes = refs_to_genes[ref]
+            for gene in genes:
+                dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=gene).one_or_none()
+
+                nodes.append({
+                    "data": {
+                        "name": dbentity.display_name,
+                        "id": dbentity.format_name,
+                        "link": dbentity.obj_url,
+                        "type": "BIOENTITY",
+                    }
+                })
+
+                edges.append({
+                    "data": {
+                        "source": dbentity.format_name,
+                        "target": reference.format_name,
+                    }
+                })                
+
+        return {
+            "nodes": nodes,
+            "edges": edges
+        }
+    
     def literature_to_dict(self):
         primary_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Primary Literature")).all()
         primary_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(primary_ids)).all()
@@ -1552,6 +1662,7 @@ class Locusdbentity(Dbentity):
             "data": {
                 "name": self.display_name,
                 "id": self.format_name,
+                "link": self.obj_url,
                 "type": "BIOENTITY",
                 "sub_type": "FOCUS"
             }
@@ -1566,12 +1677,13 @@ class Locusdbentity(Dbentity):
         max_cut_off = len(genes_observables[0][1])
         
         for gene in genes_observables[:limit_number_genes]:
-            gene_name = DBSession.query(Dbentity.display_name, Dbentity.format_name).filter_by(dbentity_id=gene[0]).one_or_none()
+            dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=gene[0]).one_or_none()
             
             nodes.append({
                 "data": {
-                    "name": gene_name[0],
-                    "id": gene_name[1],
+                    "name": dbentity[0],
+                    "id": dbentity[1],
+                    "link": dbentity[2],
                     "type": "BIOENTITY"
                 }
             })
@@ -1599,7 +1711,7 @@ class Locusdbentity(Dbentity):
                 edges.append({
                     "data": {
                         "source": observable.format_name,
-                        "target": gene_name[1]
+                        "target": dbentity[1]
                     }
                 })
         
@@ -3956,7 +4068,7 @@ class Phenotypeannotation(Base):
                 "pubmed_id": reference.pmid
             }
         }
-            
+        
         conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).all()
 
         groups = {}
@@ -4008,9 +4120,22 @@ class Phenotypeannotation(Base):
 
         if len(final_obj) == 0:
             final_obj = [obj]
+
+        for obj in final_obj:
+            Phenotypeannotation.adjust_phenotype_name_with_chemical(obj)
                 
         return final_obj
 
+    @staticmethod
+    def adjust_phenotype_name_with_chemical(obj):
+        phenotype = obj["phenotype"]["display_name"]
+        if phenotype.startswith("resistance to chemicals"):
+            chemical = None
+            for prop in obj["properties"]:
+                if prop["class_type"] == "CHEMICAL":
+                    chemical = prop["bioitem"]["display_name"]
+                    break
+            obj["phenotype"]["display_name"] = phenotype.replace("chemicals", chemical, 1)
 
 class PhenotypeannotationCond(Base):
     __tablename__ = 'phenotypeannotation_cond'
