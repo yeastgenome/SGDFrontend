@@ -3181,8 +3181,9 @@ class Goannotation(Base):
             "go": {
                 "display_name": go.display_name,
                 "link": go.obj_url,
-                "go_id": go.go_id,
-                "go_aspect": go.go_namespace
+                "go_id": go.goid,
+                "go_aspect": go.go_namespace,
+                "id": go.go_id
             },
             "reference": {
                 "display_name": self.reference.display_name,
