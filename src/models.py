@@ -1952,12 +1952,15 @@ class Locusdbentity(Dbentity):
             "htp_biological_process_terms": [],
             "htp_cellular_component_terms": [], 
             "computational_annotation_count": 0,
-            "go_slim": []
+            "go_slim": [],
+            "date_last_reviewed": "1900-01-01"
         }
 
         go_slims = DBSession.query(Goslimannotation).filter_by(dbentity_id=self.dbentity_id).all()
         for go_slim in go_slims:
-            obj["go_slim"].append(go_slim.to_dict())
+            go_slim_dict = go_slim.to_dict()
+            if go_slim_dict:
+                obj["go_slim"].append(go_slim_dict)
         
         go = {
             "cellular component": {},
@@ -1967,6 +1970,9 @@ class Locusdbentity(Dbentity):
 
         go_annotations_mc = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="manually curated").all()
         for annotation in go_annotations_mc:
+            if annotation.date_assigned.strftime("%Y-%m-%d") > obj["date_last_reviewed"]:
+                obj["date_last_reviewed"] = annotation.date_assigned.strftime("%Y-%m-%d")
+            
             json = annotation.to_dict_lsp()
             
             namespace = json["namespace"]
@@ -1999,6 +2005,9 @@ class Locusdbentity(Dbentity):
         
         go_annotations_htp = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="high-throughput").all()
         for annotation in go_annotations_htp:
+            if annotation.date_assigned.strftime("%Y-%m-%d") > obj["date_last_reviewed"]:
+                obj["date_last_reviewed"] = annotation.date_assigned.strftime("%Y-%m-%d")
+            
             json = annotation.to_dict_lsp()
             
             namespace = json["namespace"]
@@ -3323,10 +3332,13 @@ class Goslim(Base):
     source = relationship(u'Source')
 
     def to_dict(self):
-        return {
-            "link": self.obj_url,
-            "display_name": self.display_name
-        }
+        if self.slim_name == "Yeast GO-Slim":
+            return {
+                "link": self.obj_url,
+                "display_name": self.display_name
+            }
+        else:
+            return None
 
 
 class Goslimannotation(Base):
