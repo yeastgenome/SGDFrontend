@@ -7,11 +7,18 @@ import os
 from math import floor
 import json
 import copy
+import requests
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
+# get list of URLs to visit from comma-separated ENV variable cache_urls 'url1, url2'
+cache_urls = None
+if 'CACHE_URLS' in os.environ.keys():
+    cache_urls = os.environ['CACHE_URLS'].split(',')
+else:
+    cache_urls = ['http://localhost:6545']
 
 class Allele(Base):
     __tablename__ = 'allele'
@@ -1250,6 +1257,16 @@ class Referencedbentity(Dbentity):
     book = relationship(u'Book')
     journal = relationship(u'Journal')
 
+    def refresh_cache(self):
+        for base_url in cache_urls:
+            base_target_url = base_url + '/reference/' + self.sgdid
+            # list all dependent urls to ping, like secondary requests
+            details_url = base_url + '/backend/reference/' + self.sgdid + '/literature_details'
+            target_urls = [base_target_url, details_url]
+            for url in target_urls:
+                response = requests.get(url)
+                print url, response.status_code
+
     def to_dict_citation(self):
         obj = {
             "id": self.dbentity_id,
@@ -1792,6 +1809,15 @@ class Locusdbentity(Dbentity):
         for phenotype in phenotypes:
             obj += phenotype.to_dict(locus=self)
         return obj
+
+    def refresh_cache(self):
+        for base_url in cache_urls:
+            base_target_url = base_url + '/locus/' + self.sgdid
+            # list all dependent urls to ping, like secondary requests
+            target_urls = [base_target_url]
+            for url in target_urls:
+                response = requests.get(url)
+                print url, response.status_code
     
     def to_dict_analyze(self):
         return {

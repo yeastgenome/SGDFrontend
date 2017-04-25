@@ -50,5 +50,8 @@ stop-prod:
 lint:
 	eslint src/client/js/
 
+refresh-cache:
+	source dev_variables.sh && python src/loading/refresh.py
+
 index-es:
 	source dev_variables.sh && python scripts/search/index_elastic_search.py
