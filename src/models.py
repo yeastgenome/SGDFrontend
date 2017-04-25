@@ -1223,6 +1223,25 @@ class Dbentity(Base):
 
     source = relationship(u'Source')
 
+    def get_secondary_cache_urls(self):
+        return []
+
+    def refresh_cache(self):
+        url_segment = '/locus/'
+        if self.__url_segment__:
+            url_segment = self.__url_segment__
+
+        for base_url in cache_urls:
+            base_target_url = base_url + url_segment + self.sgdid
+            # list all dependent urls to ping, like secondary requests
+            # example
+            # details_url = base_url + '/backend/reference/' + self.sgdid + '/literature_details'
+            target_urls = [base_target_url]
+            details_urls = self.get_secondary_cache_urls()
+            target_urls = target_urls + details_urls
+            for url in target_urls:
+                response = requests.get(url)
+                # print response.status_code, url
 
 class Pathwaydbentity(Dbentity):
     __tablename__ = 'pathwaydbentity'
@@ -1265,7 +1284,6 @@ class Referencedbentity(Dbentity):
             target_urls = [base_target_url, details_url]
             for url in target_urls:
                 response = requests.get(url)
-                print url, response.status_code
 
     def to_dict_citation(self):
         obj = {
@@ -1461,6 +1479,7 @@ class Filedbentity(Dbentity):
 class Locusdbentity(Dbentity):
     __tablename__ = 'locusdbentity'
     __table_args__ = {u'schema': 'nex'}
+    __url_segment__ = '/locus/'
 
     dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     systematic_name = Column(String(40), nullable=False, unique=True)
@@ -1810,15 +1829,6 @@ class Locusdbentity(Dbentity):
             obj += phenotype.to_dict(locus=self)
         return obj
 
-    def refresh_cache(self):
-        for base_url in cache_urls:
-            base_target_url = base_url + '/locus/' + self.sgdid
-            # list all dependent urls to ping, like secondary requests
-            target_urls = [base_target_url]
-            for url in target_urls:
-                response = requests.get(url)
-                print url, response.status_code
-    
     def to_dict_analyze(self):
         return {
             "id": self.dbentity_id,
