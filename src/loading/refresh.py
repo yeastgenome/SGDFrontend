@@ -21,7 +21,7 @@ def log(message):
 
 def refresh_references():
     start_time = datetime.datetime.now()
-    references = DBSession.query(Referencedbentity).limit(500).all()
+    references = DBSession.query(Referencedbentity).all()
     log('REFRESHING ' + str(len(references)) + ' REFERENCES at ' + start_time.strftime('%a, %x %X'))
     for ref in references:
         ref.refresh_cache()
