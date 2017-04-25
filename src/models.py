@@ -1951,8 +1951,13 @@ class Locusdbentity(Dbentity):
             "htp_molecular_function_terms": [],
             "htp_biological_process_terms": [],
             "htp_cellular_component_terms": [], 
-            "computational_annotation_count": 0
+            "computational_annotation_count": 0,
+            "go_slim": []
         }
+
+        go_slims = DBSession.query(Goslimannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        for go_slim in go_slims:
+            obj["go_slim"].append(go_slim.to_dict())
         
         go = {
             "cellular component": {},
@@ -3317,6 +3322,12 @@ class Goslim(Base):
     go = relationship(u'Go')
     source = relationship(u'Source')
 
+    def to_dict(self):
+        return {
+            "link": self.obj_url,
+            "display_name": self.display_name
+        }
+
 
 class Goslimannotation(Base):
     __tablename__ = 'goslimannotation'
@@ -3339,6 +3350,9 @@ class Goslimannotation(Base):
     reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
+
+    def to_dict(self):
+        return self.goslim.to_dict()
 
 
 class Gosupportingevidence(Base):
