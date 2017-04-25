@@ -172,6 +172,21 @@ class Apo(Base):
         
         return graph
 
+    def get_secondary_cache_urls(self):
+        return []
+
+    def refresh_cache(self):
+        url_segment = ''
+        for base_url in cache_urls:
+            base_target_url = base_url + url_segment + self.obj_url
+            # list all dependent urls to ping, like secondary requests
+            target_urls = [base_target_url]
+            details_urls = self.get_secondary_cache_urls()
+            target_urls = target_urls + details_urls
+            for url in target_urls:
+                response = requests.get(url)
+                # print response.status_code, url
+
 class ApoAlia(Base):
     __tablename__ = 'apo_alias'
     __table_args__ = (
@@ -2165,6 +2180,7 @@ class Locusdbentity(Dbentity):
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
     __table_args__ = {u'schema': 'nex'}
+    __url_segment__ = '/strain/'
 
     dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
@@ -3103,6 +3119,21 @@ class Go(Base):
 
         return annotations_dict
 
+    def get_secondary_cache_urls(self):
+        return []
+
+    def refresh_cache(self):
+        url_segment = ''
+        for base_url in cache_urls:
+            base_target_url = base_url + url_segment + self.obj_url
+            # list all dependent urls to ping, like secondary requests
+            target_urls = [base_target_url]
+            details_urls = self.get_secondary_cache_urls()
+            target_urls = target_urls + details_urls
+            for url in target_urls:
+                response = requests.get(url)
+                # print response.status_code, url
+
 class GoAlias(Base):
     __tablename__ = 'go_alias'
     __table_args__ = (
@@ -3992,6 +4023,22 @@ class Phenotype(Base):
         for phenotype in phenotypes:
             obj += phenotype.to_dict(phenotype=self)
         return obj
+
+    def get_secondary_cache_urls(self):
+        return []
+
+    def refresh_cache(self):
+        url_segment = '/phenotype/'
+
+        for base_url in cache_urls:
+            base_target_url = base_url + url_segment + self.format_name
+            # list all dependent urls to ping, like secondary requests
+            target_urls = [base_target_url]
+            details_urls = self.get_secondary_cache_urls()
+            target_urls = target_urls + details_urls
+            for url in target_urls:
+                response = requests.get(url)
+                # print response.status_code, url
 
 
 class Phenotypeannotation(Base):
