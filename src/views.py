@@ -771,7 +771,17 @@ def locus_go_details(request):
         return locus.go_to_dict()
     else:
         return HTTPNotFound()
+    
+@view_config(route_name='locus_interaction_details', renderer='json', request_method='GET')
+def locus_interaction_details(request):
+    id = request.matchdict['id'].upper()
 
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    if locus:
+        return locus.interactions_to_dict()
+    else:
+        return HTTPNotFound()
+    
     
 @view_config(route_name='bioentity_list', renderer='json', request_method='POST')
 def analyze(request):

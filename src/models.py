@@ -1463,6 +1463,17 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def interactions_to_dict(self):
+        physical_interactions = DBSession.query(Physinteractionannotation).filter(or_(Physinteractionannotation.dbentity1_id == self.dbentity_id, Physinteractionannotation.dbentity2_id == self.dbentity_id)).all()
+
+        genetic_interactions = DBSession.query(Geninteractionannotation).filter(or_(Geninteractionannotation.dbentity1_id == self.dbentity_id, Geninteractionannotation.dbentity2_id == self.dbentity_id)).all()
+
+        obj = []
+        for interaction in physical_interactions + genetic_interactions:
+            obj.append(interaction.to_dict())
+        
+        return obj
+    
     def go_to_dict(self):
         go_annotations = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
@@ -1906,13 +1917,20 @@ class Locusdbentity(Dbentity):
         return obj
     
     def interaction_overview_to_dict(self):
+        from .helpers import calc_venn_measurements
+        
         obj = {
             "total_interactions": 0,
             "total_interactors": 0,
             "num_phys_interactors": 0,
-            "physical_experiments": {},
             "num_gen_interactors": 0,
-            "genetic_experiments": {}
+            "num_both_interactors": 0,
+            "physical_experiments": {},
+            "genetic_experiments": {},
+            "total_interactions": 0,
+            "gen_circle_size": 0,
+            "phys_circle_size": 0,
+            "circle_distance": 0
         }
 
         physical_interactions = DBSession.query(Physinteractionannotation.biogrid_experimental_system, func.count(Physinteractionannotation.annotation_id)).filter(or_(Physinteractionannotation.dbentity1_id == self.dbentity_id, Physinteractionannotation.dbentity2_id == self.dbentity_id)).group_by(Physinteractionannotation.biogrid_experimental_system).all()
@@ -1923,23 +1941,25 @@ class Locusdbentity(Dbentity):
         physical_interactors_2 = DBSession.query(Physinteractionannotation.dbentity1_id).distinct(Physinteractionannotation.dbentity1_id).filter_by(dbentity2_id=self.dbentity_id).all()
         genetic_interactors_1 = DBSession.query(Geninteractionannotation.dbentity2_id).distinct(Geninteractionannotation.dbentity2_id).filter(Geninteractionannotation.dbentity1_id==self.dbentity_id).all()
         genetic_interactors_2 = DBSession.query(Geninteractionannotation.dbentity1_id).distinct(Geninteractionannotation.dbentity1_id).filter(Geninteractionannotation.dbentity2_id==self.dbentity_id).all()
-
-        interactors = set(physical_interactors_1 + physical_interactors_2 + genetic_interactors_1 + genetic_interactors_2)
         
-        physical_count = 0
         for interaction in physical_interactions:
             obj["physical_experiments"][interaction[0]] = interaction[1]
-            physical_count += interaction[1]
+            obj["total_interactions"] += interaction[1]
 
-        genetic_count = 0
         for interaction in genetic_interactions:
             obj["genetic_experiments"][interaction[0]] = interaction[1]
-            genetic_count += interaction[1]
-        
-        obj["total_interactions"] = physical_count + genetic_count
-        obj["num_phys_interactors"] = physical_count
-        obj["num_gen_interactors"] = genetic_count
-        obj["total_interactors"] = len(interactors)
+            obj["total_interactions"] += interaction[1]
+
+        physical_interactors = set(physical_interactors_1 + physical_interactors_2)
+        genetic_interactors = set(genetic_interactors_1 + genetic_interactors_2)
+
+        obj["num_both_interactors"] = len(physical_interactors.intersection(genetic_interactors))
+        obj["num_phys_interactors"] = len(physical_interactors)
+        obj["num_gen_interactors"] = len(genetic_interactors)
+        obj["total_interactors"] =  obj["num_phys_interactors"] + obj["num_gen_interactors"] - obj["num_both_interactors"]
+
+        x, y, z = calc_venn_measurements(obj["num_gen_interactors"], obj["num_phys_interactors"], obj["num_both_interactors"])
+        obj["gen_circle_size"], obj["phys_circle_size"], obj["circle_distance"] = x, y, z
         
         return obj
 
@@ -2735,10 +2755,13 @@ class Geninteractionannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
-    def to_dict(self, reference):
+    def to_dict(self, reference=None):
         dbentity1 = self.dbentity1
         dbentity2 = self.dbentity2
         phenotype = self.phenotype
+
+        if reference is None:
+            reference = self.reference
 
         obj = {
             "id": self.annotation_id,
@@ -3597,8 +3620,12 @@ class LocusUrl(Base):
     source = relationship(u'Source')
 
     def to_dict(self):
+        placement = self.placement
+        if placement.endswith('INTERACTION_RESOURCES') or placement.endswith('EXPRESSION_RESOURCES'):
+            placement = self.placement.replace("_RESOURCES", "", 1)
+        
         return {
-            "category": self.placement,
+            "category": placement,
             "link": self.obj_url,
             "display_name": self.display_name
         }
@@ -4212,9 +4239,12 @@ class Physinteractionannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
-    def to_dict(self, reference):
+    def to_dict(self, reference=None):
         dbentity1 = self.dbentity1
         dbentity2 = self.dbentity2
+
+        if reference is None:
+            reference = self.reference
 
         modification = "No Modification"
         if self.psimod:
