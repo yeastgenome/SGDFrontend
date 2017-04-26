@@ -122,28 +122,28 @@ def refresh_genes():
 # run on 4 threads
 def refresh_all_cache():
     def index_part_1():
-        refresh_phenotypes()
-        refresh_strains()
         refresh_genes()
     def index_part_2():
-        refresh_references()
+        refresh_phenotypes()
+        refresh_observables()
+        refresh_strains()
     def index_part_3():
         refresh_go()
     def index_part_4():
-        refresh_observables()
-    # serial
-    index_part_1()
-    index_part_2()
-    index_part_3()
-    index_part_4()
+        refresh_references()
+    # # serial
+    # index_part_1()
+    # index_part_2()
+    # index_part_3()
+    # index_part_4()
     # parallel
-    # t1 = Thread(target=index_part_1)
-    # t2 = Thread(target=index_part_2)
-    # t3 = Thread(target=index_part_3)
-    # t4 = Thread(target=index_part_4)
-    # t1.start()
-    # t2.start()
-    # t3.start()
+    t1 = Thread(target=index_part_1)
+    t2 = Thread(target=index_part_2)
+    t3 = Thread(target=index_part_3)
+    t4 = Thread(target=index_part_4)
+    t1.start()
+    t2.start()
+    t3.start()
     t4.start()
 
 if __name__ == '__main__':

@@ -1255,6 +1255,11 @@ class Dbentity(Base):
             details_urls = self.get_secondary_cache_urls()
             target_urls = target_urls + details_urls
             for url in target_urls:
+                try:
+                    response = requests.get(url)
+                    # print response.status_code, url
+                except Exception, e:
+                    print 'error fetching ' + self.sgdid
                 response = requests.get(url)
                 # print response.status_code, url
 
