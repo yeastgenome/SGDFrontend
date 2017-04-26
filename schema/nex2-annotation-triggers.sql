@@ -2737,6 +2737,10 @@ BEGIN
         PERFORM nex.insertupdatelog('REGULATIONANNOTATION'::text, 'ECO_ID'::text, OLD.annotation_id, OLD.eco_id::text, NEW.eco_id::text, USER);
     END IF;
 
+    IF (OLD.annotation_type != NEW.annotation_type) THEN
+        PERFORM nex.insertupdatelog('REGULATIONANNOTATION'::text, 'ANNOTATION_TYPE'::text, OLD.annotation_id, OLD.annotation_type, NEW.annotation_type, USER);
+    END IF;
+
     IF (OLD.regulator_type != NEW.regulator_type) THEN
         PERFORM nex.insertupdatelog('REGULATIONANNOTATION'::text, 'REGULATOR_TYPE'::text, OLD.annotation_id, OLD.regulator_type, NEW.regulator_type, USER);
     END IF;
@@ -2760,9 +2764,9 @@ BEGIN
     v_row := OLD.annotation_id || '[:]' || OLD.target_id || '[:]' ||
              OLD.regulator_id || '[:]' || OLD.source_id || '[:]' ||
              OLD.taxonomy_id || '[:]' || OLD.reference_id || '[:]' ||
-             OLD.eco_id || '[:]' || OLD.regulator_type || '[:]' ||
-             OLD.regulation_type || '[:]' || coalesce(OLD.direction,'') || '[:]' ||
-             coalesce(OLD.happens_during,'') || '[:]' ||
+             OLD.eco_id || '[:]' || OLD.annotation_type || '[:]' ||
+             OLD.regulator_type || '[:]' || OLD.regulation_type || '[:]' || 
+             coalesce(OLD.direction,'') || '[:]' || coalesce(OLD.happens_during,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
           PERFORM nex.insertdeletelog('REGULATIONANNOTATION'::text, OLD.annotation_id, v_row, USER);
