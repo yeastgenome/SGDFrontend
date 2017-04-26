@@ -956,6 +956,7 @@ CREATE TABLE nex.regulationannotation (
     taxonomy_id bigint NOT NULL,
     reference_id bigint NOT NULL,
     eco_id bigint NOT NULL,
+    annotation_type varchar(40) NOT NULL,
     regulator_type varchar(40) NOT NULL,
     regulation_type varchar(100) NOT NULL,
     direction varchar(10),
@@ -978,9 +979,11 @@ COMMENT ON COLUMN nex.regulationannotation.regulator_id IS 'FK to DBENTITY.DBENT
 COMMENT ON COLUMN nex.regulationannotation.eco_id IS 'FK to ECO.ECO_ID.';
 COMMENT ON COLUMN nex.regulationannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.regulationannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.regulationannotation.annotation_type IS 'Type of regulation annotation (high-throughput, manually curated, computational).';
 ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationannotation_uk UNIQUE (target_id,regulator_id,eco_id,reference_id);
 ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationanno_regulator_type_ck CHECK (REGULATOR_TYPE in ('transcription factor', 'chromatin modifier', 'protein modifier', 'RNA binder', 'RNA modifier', 'protein binder'));
 ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationanno_regulation_type_ck CHECK (REGULATION_TYPE in ('transcription', 'RNA stability', 'protein activity', 'protein stability'));
+ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationanno_annotation_type CHECK (ANNOTATION_TYPE IN ('high-throughput', 'manually curated', 'computational'));
 CREATE INDEX regulationanno_source_fk_index ON nex.regulationannotation (source_id);
 CREATE INDEX regulationanno_tax_fk_index ON nex.regulationannotation (taxonomy_id);
 CREATE INDEX regulationanno_regulator_fk_index ON nex.regulationannotation (regulator_id);
