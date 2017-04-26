@@ -66,6 +66,7 @@ def main(global_config, **settings):
     config.add_route('locus_literature_graph', '/locus/{id}/literature_graph', request_method='GET')
     config.add_route('locus_go_details', '/locus/{id}/go_details', request_method='GET')
     config.add_route('locus_interaction_details', '/locus/{id}/interaction_details', request_method='GET')
+    config.add_route('locus_expression_details', '/locus/{id}/expression_details', request_method='GET')
 
     config.add_route('bioentity_list', '/bioentity_list', request_method='POST')
     

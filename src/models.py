@@ -1041,7 +1041,8 @@ class Dataset(Base):
             "reference": {
                 "display_name": reference.display_name,
                 "link": reference.obj_url,
-                "pubmed_id": reference.pmid
+                "pubmed_id": reference.pmid,
+                "id": reference.dbentity_id
             },
             "tags": tags
         }
@@ -1463,6 +1464,26 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def expression_to_dict(self):
+        expression_annotations = DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
+        reference_ids = {}
+        dataset_ids = set()
+        for annotation in expression_annotations:
+            dataset_ids.add(annotation.datasetsample.dataset_id)
+            reference_ids[annotation.datasetsample.dataset_id] = annotation.reference_id
+
+        datasets = DBSession.query(Dataset).filter(Dataset.dataset_id.in_(list(dataset_ids))).all()
+
+        obj = {
+            "datasets": []
+        }
+        
+        for dataset in datasets:
+            obj["datasets"].append(dataset.to_dict(DBSession.query(Referencedbentity).filter_by(dbentity_id=reference_ids[dataset.dataset_id]).one_or_none()))
+
+        return obj
+    
     def interactions_to_dict(self):
         physical_interactions = DBSession.query(Physinteractionannotation).filter(or_(Physinteractionannotation.dbentity1_id == self.dbentity_id, Physinteractionannotation.dbentity2_id == self.dbentity_id)).all()
 
@@ -1478,7 +1499,6 @@ class Locusdbentity(Dbentity):
         go_annotations = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
         obj = []
-        
         for go_annotation in go_annotations:
             obj += go_annotation.to_dict()
         
@@ -2693,6 +2713,9 @@ class Expressionannotation(Base):
     reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
+
+    def to_dict(self):
+        return self.datasetsample.dataset.to_dict(self.reference)
 
 
 class FileKeyword(Base):
