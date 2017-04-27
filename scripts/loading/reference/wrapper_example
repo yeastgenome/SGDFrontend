@@ -1,9 +1,0 @@
-/tools/sgd/venv/bin/python /tools/sgd/BudORM/loading_scripts/load_go_annotation\
-s.py > /tools/sgd/BudORM/loading_scripts/logs/load_go_annotations.out 2>&1 &
-
-sleep 600
-
-/tools/sgd/venv/bin/python /tools/sgd/BudORM/loading_scripts/load_go_annotation\
-s.py computational > /tools/sgd/BudORM/loading_scripts/logs/load_go_annotations\
-_computational.out 2>&1 &
-
