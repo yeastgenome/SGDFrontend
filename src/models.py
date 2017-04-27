@@ -4,6 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
 from elasticsearch import Elasticsearch
 import os
+from math import floor
 import json
 import copy
 
@@ -1031,7 +1032,7 @@ class Dataset(Base):
         keywords = DBSession.query(DatasetKeyword).filter_by(dataset_id=self.dataset_id).all()
 
         tags = [keyword.to_dict() for keyword in keywords]
-
+        
         return {
             "id": self.dataset_id,
             "display_name": self.display_name,
@@ -1467,20 +1468,53 @@ class Locusdbentity(Dbentity):
     def expression_to_dict(self):
         expression_annotations = DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
+        dataset_expression_values = {}
+        
         reference_ids = {}
         dataset_ids = set()
+
+        histogram_expression_value = {}
+        min_expression_value = 0
+        max_expression_value = 0
+        
         for annotation in expression_annotations:
             dataset_ids.add(annotation.datasetsample.dataset_id)
             reference_ids[annotation.datasetsample.dataset_id] = annotation.reference_id
 
+            value = float(annotation.expression_value)
+            rounded = floor(value)
+            if value - rounded >= .5:
+                rounded += .5
+
+            if rounded < min_expression_value:
+                min_expression_value = rounded
+            if rounded > max_expression_value:
+                max_expression_value = rounded
+
+            rounded = max(-5.5, min(5, rounded))
+            if rounded in histogram_expression_value:
+                histogram_expression_value[rounded] += 1
+            else:
+                histogram_expression_value[rounded] = 1
+
+            if annotation.datasetsample.dataset_id in dataset_expression_values:
+                dataset_expression_values[annotation.datasetsample.dataset_id].add(rounded)
+            else:
+                dataset_expression_values[annotation.datasetsample.dataset_id] = set([rounded])
+    
         datasets = DBSession.query(Dataset).filter(Dataset.dataset_id.in_(list(dataset_ids))).all()
 
         obj = {
+            "min_value": min_expression_value,
+            "max_value": max_expression_value,
+            "overview": histogram_expression_value,
             "datasets": []
         }
         
         for dataset in datasets:
-            obj["datasets"].append(dataset.to_dict(DBSession.query(Referencedbentity).filter_by(dbentity_id=reference_ids[dataset.dataset_id]).one_or_none()))
+            dataset_dict = dataset.to_dict(DBSession.query(Referencedbentity).filter_by(dbentity_id=reference_ids[dataset.dataset_id]).one_or_none())
+            dataset_dict["hist_values"] = sorted(dataset_expression_values[dataset.dataset_id])
+            obj["datasets"].append(dataset_dict)
 
         return obj
     
