@@ -1458,6 +1458,10 @@ class Referencedbentity(Dbentity):
         
         return [regulation.to_dict(self) for regulation in regulations]
 
+    def get_secondary_cache_urls(self):
+        base_url = self.get_base_url()
+        url1 = base_url + '/literature_details'
+        return [url1]
     
 class Filedbentity(Dbentity):
     __tablename__ = 'filedbentity'
@@ -2171,6 +2175,47 @@ class Locusdbentity(Dbentity):
             "history_tab": self.has_history,
             "protein_tab": self.has_protein
         }
+
+    # clears the URLs for all tabbed pages and secondary XHR requests on tabbed pages
+    def clear_tabbed_page_cache(self):
+        backend_urls_by_tab = {
+            'protein_tab': ['sequence_details', 'posttranslational_details', 'ecnumber_details', 'protein_experiment_details', 'protein_domain_details', 'protein_domain_details'],
+            'interaction_tab': ['interaction_details', 'interaction_graph'],
+            'summary_tab': ['expression_details'],
+            'go_tab': ['go_details', 'go_graph'],
+            'sequence_section': ['neighbor_sequence_details', 'sequence_details'],
+            'expression_tab': ['expression_details', 'expression_graph'],
+            'phenotype_tab': ['phenotype_details', 'phenotype_graph'],
+            'literature_tab': ['literature_details', 'literature_graph'],
+            'regulation_tab': ['regulation_details', 'regulation_graph'],
+            'sequence_tab': ['neighbor_sequence_details', 'sequence_details'],
+            'history_tab':[],
+        }
+        base_url = self.get_base_url() + '/'
+        backend_base_segment = '/backend/locus/' + str(self.dbentity_id) + '/'
+        urls = []
+        tabs = self.tabs()
+        # get all the urls
+        for key in tabs:
+            if key is 'sequence_section' or key is 'id':
+                continue
+            # if the tab is present, append all the needed urls to urls
+            if tabs[key]:
+                tab_name = key.replace('_tab', '')
+                tab_url = base_url + tab_name
+                urls.append(tab_url)
+                for d in backend_urls_by_tab[key]:
+                    secondary_url = backend_base_segment + d
+                    urls.append(secondary_url)
+        target_urls = list(set(urls))
+        for relative_url in target_urls:
+            for base_url in cache_urls:
+                url = base_url + relative_url
+                try:
+                    # purge
+                    requests.request('PURGE', url)
+                except Exception, e:
+                    print 'error fetching ' + self.display_name
 
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
