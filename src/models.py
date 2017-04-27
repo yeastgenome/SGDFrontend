@@ -1576,8 +1576,6 @@ class Locusdbentity(Dbentity):
 
         geness = sorted(genes_to_refs.keys(), key=lambda g: len(genes_to_refs[g]), reverse=True)
 
-        import pdb; pdb.set_trace()
-
         references = sorted(refs_to_genes.keys(), key=lambda r: len(refs_to_genes[r]), reverse=True)
 
         limit_number_references = 2
