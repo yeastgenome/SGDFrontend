@@ -77,7 +77,7 @@ def refresh_strains():
     strains = DBSession.query(Straindbentity).all()
     refresh_and_debug_entity_list(strains, 'strains')
 
-def refresh_genes():
+def get_genes():
     # get S288C genes
     gene_ids_so = DBSession.query(Dnasequenceannotation.dbentity_id, Dnasequenceannotation.so_id).filter(Dnasequenceannotation.taxonomy_id == 274901).all()
     dbentity_ids_to_so = {}
@@ -88,25 +88,29 @@ def refresh_genes():
         so_ids.add(gis[1])
         dbentity_ids_to_so[gis[0]] = gis[1]
     all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').all()
-    refresh_and_debug_entity_list(all_genes, 'genes')
+    return all_genes
 
-    # def index_part_1():
-
-    # t1 = Thread(target=index_part_1)
-    # t1.start()
+def refresh_genes_a():
+    g = get_genes()
+    refresh_and_debug_entity_list(g[:len(g)/2], 'genes')
+    
+def refresh_genes_b():
+    g = get_genes()
+    refresh_and_debug_entity_list(g[len(g)/2:], 'genes')
 
 # run on 4 threads
 def refresh_all_cache():
     def index_part_1():
-        refresh_genes()
+        refresh_genes_a()
     def index_part_2():
-        refresh_phenotypes()
-        refresh_observables()
-        refresh_strains()
+        refresh_genes_b()
     def index_part_3():
         refresh_go()
     def index_part_4():
-        refresh_references()
+        refresh_phenotypes()
+        refresh_observables()
+        refresh_strains()
+        # refresh_references()
     # # serial
     # index_part_1()
     # index_part_2()
