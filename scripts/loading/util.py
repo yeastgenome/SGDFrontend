@@ -257,7 +257,6 @@ def get_strain_taxid_mapping():
              "W303":            "TAX:580240",
              "Y55":             "TAX:580230",
              "Sigma1278b":      "TAX:658763",
-             "sigma1278b":      "TAX:658763",
              "AWRI1631":        "TAX:545124",
              "AWRI796":         "TAX:764097",
              "BY4741":          "TAX:1247190",
@@ -302,9 +301,7 @@ def get_strain_taxid_mapping():
              "BC187":           "NTR:113",
              "UWOPSS":          "NTR:114",
              "CENPK":           "NTR:115",
-             "CEN.PK":          "NTR:115",
-             'Other':           "TAX:4932",
-             'other':           "TAX:4932" }
+             'Other':           "TAX:4932" }
 
 def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_sgdid_list, get_extension=None, get_support=None, new_pmids=None, dbentity_with_new_pmid=None, dbentity_with_uniprot=None, bad_ref=None):
 
@@ -348,10 +345,10 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
 
         ## uniprot ID & SGDIDs                                                                              
         uniprotID = field[1]
-        # sgdid_list = uniprot_to_sgdid_list.get(uniprotID)
-        # if sgdid_list is None:
-        #    print "The UniProt ID = ", uniprotID, " is not mapped to any SGDID."
-        #    continue
+        sgdid_list = uniprot_to_sgdid_list.get(uniprotID)
+        if sgdid_list is None:
+            print "The UniProt ID = ", uniprotID, " is not mapped to any SGDID."
+            continue
 
         ## go_qualifier                                                                                     
         go_qualifier = field[2]
@@ -407,7 +404,6 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
 
         ## reference_id                                                                                     
         reference_id = None
-        pmid = None
         if field[4].startswith('PMID:'):
             pmid = field[4][5:]    # PMID:1234567; need to be 1234567                                       
             reference_id = pmid_to_reference_id.get(int(pmid))
@@ -420,9 +416,6 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
                 continue
             reference_id = sgdid_to_reference_id.get(ref_sgdid)
         if reference_id is None:
-            if pmid is None:
-                print "NO REFERENCE: line=", line
-                continue
             print "The PMID = " + str(pmid) + " is not in the REFERENCEDBENTITY table."
             if new_pmids is not None:
                 if pmid not in new_pmids:
@@ -443,8 +436,22 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
         else:
             date_assigned = date_created
             annotation_type = 'computational'
-            
-        for locus_id in dbentity_ids: 
+        
+        # sgdid_list = uniprot_to_sgdid_list.get(uniprotID)
+        # if sgdid_list is None:
+        #    print "UniProt ID ", uniprotID, " is not in GPI file."
+        #    continue
+
+        # for sgdid in sgdid_list:
+        #    if sgdid == '':
+        #        continue
+        #    locus_id = sgdid_to_locus_id.get(sgdid)
+        #    if locus_id is None:
+        #        print "The sgdid = ", sgdid, " is not in LOCUSDBENTITY table."
+        #        continue
+    
+        for locus_id in dbentity_ids:
+
             entry = { 'source': source,
                       'dbentity_id': locus_id,
                       'reference_id': reference_id,
@@ -495,8 +502,7 @@ def read_gpi_file(filename):
         sgdidlist = field[8].replace('SGD:', '')
         sgdid_list = [] if uniprot_to_sgdid_list.get(uniprotID) is None else uniprot_to_sgdid_list.get(uniprotID)
         for sgdid in sgdidlist.split('|'):
-            if sgdid not in sgdid_list:
-                sgdid_list.append(sgdid)
+            sgdid_list.append(sgdid)
         uniprot_to_sgdid_list[uniprotID] = sgdid_list
 
         for pair in field[9].split('|'):
@@ -857,7 +863,7 @@ def get_relation_to_ro_id(relation_type, nex_session=None):
             nex_session = nex_session_maker()
         relation_to_ro_id = {}
         for relation in nex_session.query(Ro).all():
-            relation_to_ro_id[relation.display_name] = relation.ro_id
+            relation_to_ro_id[relation.display_name] = relation.id
     return None if relation_type not in relation_to_ro_id else relation_to_ro_id[relation_type]
 
 

@@ -7,7 +7,6 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-venv/
 env/
 build/
 develop-eggs/
@@ -61,6 +60,7 @@ target/
 
 # Config files
 config.py
+gpad_config.py
 dev_variables.sh
 prod_variables.sh
 test_variables.sh
@@ -68,6 +68,7 @@ dev_aws_variables.sh
 
 #temp files
 logs
+zz_logs
 backup
 data
 
