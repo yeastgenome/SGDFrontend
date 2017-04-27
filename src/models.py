@@ -10,7 +10,6 @@ import copy
 import requests
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
-Base = declarative_base()
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
 # get list of URLs to visit from comma-separated ENV variable cache_urls 'url1, url2'
@@ -18,7 +17,38 @@ cache_urls = None
 if 'CACHE_URLS' in os.environ.keys():
     cache_urls = os.environ['CACHE_URLS'].split(',')
 else:
-    cache_urls = ['http://localhost:6545']
+    cache_urls = ['http://localhost:5000']
+
+class CacheBase(object):
+    def get_base_url(self):
+        url_segment = '/locus/'
+        if self.__url_segment__:
+            url_segment = self.__url_segment__
+        return url_segment + self.sgdid
+
+    # list all dependent urls to ping, like secondary requests
+    def get_secondary_cache_urls(self):
+        return []
+
+    def refresh_cache(self):
+        base_target_url = self.get_base_url()
+        target_urls = [base_target_url]
+        details_urls = self.get_secondary_cache_urls()
+        target_urls = target_urls + details_urls
+        for relative_url in target_urls:
+            for base_url in cache_urls:
+                url = base_url + relative_url
+                try:
+                    # purge
+                    requests.request('PURGE', url)
+                    # prime
+                    response = requests.get(url)
+                    if (response.status_code != 200):
+                        raise('Error fetching ')
+                except Exception, e:
+                    print 'error fetching ' + self.display_name
+
+Base = declarative_base(cls=CacheBase)
 
 class Allele(Base):
     __tablename__ = 'allele'
@@ -172,20 +202,13 @@ class Apo(Base):
         
         return graph
 
-    def get_secondary_cache_urls(self):
-        return []
+    def get_base_url(self):
+        return '/observable/' + self.format_name
 
-    def refresh_cache(self):
-        url_segment = ''
-        for base_url in cache_urls:
-            base_target_url = base_url + url_segment + self.obj_url
-            # list all dependent urls to ping, like secondary requests
-            target_urls = [base_target_url]
-            details_urls = self.get_secondary_cache_urls()
-            target_urls = target_urls + details_urls
-            for url in target_urls:
-                response = requests.get(url)
-                # print response.status_code, url
+    def get_secondary_cache_urls(self):
+        base_url = self.get_base_url()
+        url1 = '/backend' + base_url + '/' + str(self.apo_id) + '/locus_details'
+        return [url1]
 
 class ApoAlia(Base):
     __tablename__ = 'apo_alias'
@@ -1238,31 +1261,6 @@ class Dbentity(Base):
 
     source = relationship(u'Source')
 
-    def get_secondary_cache_urls(self):
-        return []
-
-    def refresh_cache(self):
-        url_segment = '/locus/'
-        if self.__url_segment__:
-            url_segment = self.__url_segment__
-
-        for base_url in cache_urls:
-            base_target_url = base_url + url_segment + self.sgdid
-            # list all dependent urls to ping, like secondary requests
-            # example
-            # details_url = base_url + '/backend/reference/' + self.sgdid + '/literature_details'
-            target_urls = [base_target_url]
-            details_urls = self.get_secondary_cache_urls()
-            target_urls = target_urls + details_urls
-            for url in target_urls:
-                try:
-                    response = requests.get(url)
-                    # print response.status_code, url
-                except Exception, e:
-                    print 'error fetching ' + self.sgdid
-                response = requests.get(url)
-                # print response.status_code, url
-
 class Pathwaydbentity(Dbentity):
     __tablename__ = 'pathwaydbentity'
     __table_args__ = {u'schema': 'nex'}
@@ -1274,6 +1272,7 @@ class Pathwaydbentity(Dbentity):
 class Referencedbentity(Dbentity):
     __tablename__ = 'referencedbentity'
     __table_args__ = {u'schema': 'nex'}
+    __url_segment__ = '/reference/'
 
     dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     method_obtained = Column(String(40), nullable=False)
@@ -1295,15 +1294,6 @@ class Referencedbentity(Dbentity):
 
     book = relationship(u'Book')
     journal = relationship(u'Journal')
-
-    def refresh_cache(self):
-        for base_url in cache_urls:
-            base_target_url = base_url + '/reference/' + self.sgdid
-            # list all dependent urls to ping, like secondary requests
-            details_url = base_url + '/backend/reference/' + self.sgdid + '/literature_details'
-            target_urls = [base_target_url, details_url]
-            for url in target_urls:
-                response = requests.get(url)
 
     def to_dict_citation(self):
         obj = {
@@ -3124,20 +3114,13 @@ class Go(Base):
 
         return annotations_dict
 
-    def get_secondary_cache_urls(self):
-        return []
+    def get_base_url(self):
+        return self.obj_url
 
-    def refresh_cache(self):
-        url_segment = ''
-        for base_url in cache_urls:
-            base_target_url = base_url + url_segment + self.obj_url
-            # list all dependent urls to ping, like secondary requests
-            target_urls = [base_target_url]
-            details_urls = self.get_secondary_cache_urls()
-            target_urls = target_urls + details_urls
-            for url in target_urls:
-                response = requests.get(url)
-                # print response.status_code, url
+    def get_secondary_cache_urls(self):
+        base_url = self.get_base_url()
+        url1 = '/backend' + base_url + '/' + str(self.go_id) + '/locus_details'
+        return [url1]
 
 class GoAlias(Base):
     __tablename__ = 'go_alias'
@@ -4029,22 +4012,13 @@ class Phenotype(Base):
             obj += phenotype.to_dict(phenotype=self)
         return obj
 
+    def get_base_url(self):
+        return '/phenotype/' + self.format_name
+
     def get_secondary_cache_urls(self):
-        return []
-
-    def refresh_cache(self):
-        url_segment = '/phenotype/'
-
-        for base_url in cache_urls:
-            base_target_url = base_url + url_segment + self.format_name
-            # list all dependent urls to ping, like secondary requests
-            target_urls = [base_target_url]
-            details_urls = self.get_secondary_cache_urls()
-            target_urls = target_urls + details_urls
-            for url in target_urls:
-                response = requests.get(url)
-                # print response.status_code, url
-
+        base_url = self.get_base_url()
+        url1 = '/backend' + base_url + '/' + str(self.phenotype_id) + '/locus_details'
+        return [url1]
 
 class Phenotypeannotation(Base):
     __tablename__ = 'phenotypeannotation'
