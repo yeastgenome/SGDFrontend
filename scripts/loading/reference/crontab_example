@@ -1,0 +1,17 @@
+MAILTO=sweng@stanford.edu,gail.binkley@stanford.edu,stacia@stanford.edu
+00 20 * * 0,1,2,3,4,5 cd SGDBackend && bin/py src/sgd/convert/convert_basic.py
+00 20 * * 0,1,2,3,4,5 cd SGDBackend && bin/py src/sgd/convert/convert_reference.py
+30 20 * * 0,1,2,3,4,5 cd SGDBackend && bin/py src/sgd/convert/convert_evidence_nex.py
+30 23 * * 0,1,2,3,4,5 cd SGDBackend && bin/py src/sgd/convert/convert_evidence_perf.py
+30 23 * * 0,1,2,3,4,5 cd SGDBackend && bin/py src/sgd/convert/convert_perf.py
+30 23 * * 0,1,2,3,4,5 cd SGDBackend && bin/py src/sgd/convert/convert_evidence_perf2.py
+00 03 * * 0,1,2,3,4,5 cd SGDBackend && bin/py src/sgd/convert/convert_perf2.py
+
+*     *     *   *    *        command to be executed
+-     -     -   -    -
+|     |     |   |    |
+|     |     |   |    +----- day of week (0 - 6) (Sunday=0)
+|     |     |   +------- month (1 - 12)
+|     |     +--------- day of        month (1 - 31)
+|     +----------- hour (0 - 23)
++------------- min (0 - 59)
