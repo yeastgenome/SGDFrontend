@@ -70,14 +70,14 @@ var SearchForm = React.createClass({
 
 		if (this.props.blastType == 'sgd') {
 		        return (<div>
-			       <span style={{ textAlign: "center" }}><h1><i>S. cerevisiae</i> WU-BLAST2 Search <a href="http://www.yeastgenome.org/help/analyze/blast"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png"></img></a></h1>
+			       <span style={{ textAlign: "center" }}><h1><i>S. cerevisiae</i> WU-BLAST2 Search <a href="https://sites.google.com/view/yeastgenome-help/analyze-help/blast"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png"></img></a></h1>
 			       <hr /></span>
 			       {formNode}
 			</div>);
 		}
 		else {
 		        return (<div>
-                               <span style={{ textAlign: "center" }}><h1>Fungal Genomes Search using WU-BLAST2 <a href="http://www.yeastgenome.org/help/analyze/fungal-blast"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png"></img></a></h1>
+                               <span style={{ textAlign: "center" }}><h1>Fungal Genomes Search using WU-BLAST2 <a href="https://sites.google.com/view/yeastgenome-help/analyze-help/fungal-blast"><img src="http://www.yeastgenome.org/images/icon_help_circle_dark.png"></img></a></h1>
 			       <hr /></span>
                                {formNode}
                         </div>);
