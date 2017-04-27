@@ -53,5 +53,8 @@ lint:
 refresh-cache:
 	source dev_variables.sh && python src/loading/refresh.py
 
+refresh-prod-cache:
+	source prod_variables.sh && python src/loading/refresh.py
+
 index-es:
 	source dev_variables.sh && python scripts/search/index_elastic_search.py
