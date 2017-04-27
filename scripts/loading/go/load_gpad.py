@@ -173,9 +173,8 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
                 ## but no need to update created_by and date_created
                 #####  date_assigned_in_db = str(getattr(thisAnnot, 'date_assigned'))
                 date_assigned_in_db = thisAnnot.date_assigned
-                date_assigned_db = str(date_assigned_in_db).split(" ")[0]
-                if date_assigned_db != str(x['date_assigned']):
-                    fw.write("UPDATE GOANNOTATION: key=" + str(key) + " OLD date_assigned=" + date_assigned_db + ", NEW date_assigned=" + str(x['date_assigned']) + "\n")
+                if str(date_assigned_in_db) != str(x['date_assigned']):
+                    fw.write("UPDATE GOANNOTATION: key=" + str(key) + " OLD date_assignedd=" + str(date_assigned_in_db) + ", NEW date_assigned=" + str(x['date_assigned']) + "\n")
                     # nex_session.query(Goannotation).filter_by(id=thisAnnot.annotation_id).update({"date_assigned": x['date_assigned']})
                     thisAnnot.date_assigned = x['date_assigned']
                     nex_session.add(thisAnnot)
@@ -205,13 +204,11 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
                                          created_by = created_by)
                 nex_session.add(thisAnnot)
                 nex_session.flush()
-                # nex_session.refresh(x)
-                nex_session.commit()
                 annotation_id = thisAnnot.annotation_id
                 count_key= (x['annotation_type'], 'annotation_added')
                 annotation_update_log[count_key] = annotation_update_log[count_key] + 1
 
-            nex_session.commit()
+            # nex_session.commit()
             
             created_by = x['created_by']
             if created_by == '<NULL>' or created_by is None:
@@ -467,9 +464,6 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
                 continue
             elif dbentity_id_with_uniprot.get(x.dbentity_id):
                 ## don't want to delete the annotations that are not in GPAD file yet
-                ## delete goextension and gosupportingevidence first
-                nex_session.query(Goextension).filter_by(annotation_id=x.annotation_id).delete()
-                nex_session.query(Gosupportingevidence).filter_by(annotation_id=x.annotation_id).delete()
                 nex_session.delete(x)
                 nex_session.commit()
                 fw.write("DELETE GOANNOTATION: row=" + str(x) + "\n")
@@ -478,13 +472,15 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
     finally:
         nex_session.close()
     
+
+### WORK FROM HERE
                                          
 def write_summary_and_send_email(annotation_update_log, new_pmids, bad_ref, fw):
 
     summary = ''
     
     if len(new_pmids) > 0:
-        summary = "The following Pubmed ID(s) are not in the database. Please add them into the database so the missing annotations can be added @next run." + "\n" + ", ".join(new_pmids) + "\n\n"
+        summary = "The following Pubmed ID(s) are not in the oracle database. Please add them into the database so the missing annotations can be added @next run." + "\n" + ", ".join(new_pmids) + "\n\n"
 
     if len(bad_ref) > 0:
         summary = summary + "The following new GO_Reference(s) don't have a corresponding SGDID yet." + "\n" + ', '.join(bad_ref) + "\n"
@@ -519,17 +515,13 @@ def write_summary_and_send_email(annotation_update_log, new_pmids, bad_ref, fw):
 
 
 if __name__ == "__main__":
-        
+    
+    log_file = "logs/GPAD_loading.log"
+    
     if len(sys.argv) >= 2:
         annotation_type = sys.argv[1]
     else:
-        # annotation_type = "manually curated"
-        print "Usage:         python load_gpad.py annotation_type[manually curated|computational]"
-        print "Usage example: python load_gpad.py 'manually curated'"
-        print "Usage example: python load_gpad.py computational"
-        exit()
-    
-    log_file = "logs/GPAD_loading_" + annotation_type.replace(" ", "-") + ".log"
+        annotation_type = "manually curated"
 
     load_go_annotations(annotation_type, log_file)
 
