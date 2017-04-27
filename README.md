@@ -27,3 +27,11 @@ This command runs both the JavaScript tests as well as the Python tests.  To run
 Or the python tests
 
     $ source test_variables.sh && nosetests -s
+
+### Varnish Cache and Rebuilding the cache
+
+Caching uses [varnish](https://varnish-cache.org/).  To rebuild the cache, run
+
+    $ make refresh-cache
+
+using environmental variable `CACHE_URLS`, a comma-sepratated list of varshish host URLs (or a single one) such as `http://locahost:5000`.
