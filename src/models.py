@@ -1028,25 +1028,69 @@ class Dataset(Base):
     parent_dataset = relationship(u'Dataset', remote_side=[dataset_id])
     source = relationship(u'Source')
 
-    def to_dict(self, reference):
+    def to_dict(self, reference=None, add_conditions=False, add_resources=False):
         keywords = DBSession.query(DatasetKeyword).filter_by(dataset_id=self.dataset_id).all()
 
         tags = [keyword.to_dict() for keyword in keywords]
-        
-        return {
+
+        obj = {
             "id": self.dataset_id,
             "display_name": self.display_name,
             "link": self.obj_url,
             "short_description": self.description,
             "condition_count": self.sample_count,
-            "reference": {
+            "channel_count": self.channel_count,
+            "geo_id": self.dbxref_id,
+            "tags": tags
+        }
+
+        if reference:
+            obj["reference"] = {
                 "display_name": reference.display_name,
                 "link": reference.obj_url,
                 "pubmed_id": reference.pmid,
                 "id": reference.dbentity_id
-            },
-            "tags": tags
-        }
+            }
+        else:
+            references = DBSession.query(DatasetReference).filter_by(dataset_id=self.dataset_id).all()
+
+            reference = references[0].reference
+
+            obj["reference"] = {
+                "display_name": reference.display_name,
+                "link": reference.obj_url,
+                "pubmed_id": reference.pmid,
+                "id": reference.dbentity_id
+            }
+            
+            abstract = DBSession.query(Referencedocument.html).filter_by(reference_id=reference.dbentity_id, document_type="Abstract").one_or_none()
+            if abstract:
+                obj["reference"]["abstract"] = {
+                    "text": abstract[0]
+                }
+
+        if add_conditions:
+            conditions = DBSession.query(Datasetsample).filter_by(dataset_id=self.dataset_id).all()
+
+            obj["datasetcolumns"] = []
+            for condition in conditions:
+                obj["datasetcolumns"].append({
+                    "display_name": condition.display_name,
+                    "geo_id": condition.dbxref_id,
+                    "link": condition.obj_url
+                })
+
+        if add_resources:
+            urls = DBSession.query(DatasetUrl).filter_by(dataset_id=self.dataset_id).all()
+
+            obj["urls"] = []
+            for url in urls:
+                obj["urls"].append({
+                    "link": url.obj_url,
+                    "display_name": url.display_name
+                })
+
+        return obj
 
 
 class DatasetFile(Base):
