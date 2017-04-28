@@ -5,7 +5,7 @@ import mock
 import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
-from test.mock_helpers import phenotype_side_effect
+from test.mock_helpers import phenotype_side_effect, locus_side_effect
 from src.views import phenotype_locus_details, phenotype
 
 
@@ -15,6 +15,9 @@ class PhenotypeTest(unittest.TestCase):
 
     def tearDown(self):
         testing.tearDown()
+
+    def __eq__(self, other):
+        return self.a == other.a and self.b == other.b
 
 
     @mock.patch('src.models.DBSession.query')
@@ -41,10 +44,11 @@ class PhenotypeTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "1760982"
+        request.matchdict['id'] = "1355362"
         response = phenotype_locus_details(request)
 
         self.assertEqual(response, pheno.annotations_to_dict())
+
 
     @mock.patch('src.models.DBSession.query')
     def test_should_return_non_existent_phenotype(self, mock_search):
