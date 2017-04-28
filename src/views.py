@@ -9,7 +9,7 @@ from sqlalchemy import func
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset
 
 from .celery_tasks import upload_to_s3
 
@@ -805,6 +805,16 @@ def analyze(request):
     loci = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(data['bioent_ids'])).all()
     
     return [locus.to_dict_analyze() for locus in loci]
+
+@view_config(route_name='dataset', renderer='json', request_method='GET')
+def dataset(request):
+    format_name = request.matchdict['id'].upper()
+
+    dataset = DBSession.query(Dataset).filter_by(format_name=format_name).one_or_none()
+    if dataset:
+        return dataset.to_dict(add_conditions=True, add_resources=True)
+    else:
+        return HTTPNotFound()
 
     
         
