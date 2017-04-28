@@ -7,11 +7,48 @@ import os
 from math import floor
 import json
 import copy
+import requests
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
-Base = declarative_base()
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
+# get list of URLs to visit from comma-separated ENV variable cache_urls 'url1, url2'
+cache_urls = None
+if 'CACHE_URLS' in os.environ.keys():
+    cache_urls = os.environ['CACHE_URLS'].split(',')
+else:
+    cache_urls = ['http://localhost:5000']
+
+class CacheBase(object):
+    def get_base_url(self):
+        url_segment = '/locus/'
+        if self.__url_segment__:
+            url_segment = self.__url_segment__
+        return url_segment + self.sgdid
+
+    # list all dependent urls to ping, like secondary requests
+    def get_secondary_cache_urls(self):
+        return []
+
+    def refresh_cache(self):
+        base_target_url = self.get_base_url()
+        target_urls = [base_target_url]
+        details_urls = self.get_secondary_cache_urls()
+        target_urls = target_urls + details_urls
+        for relative_url in target_urls:
+            for base_url in cache_urls:
+                url = base_url + relative_url
+                try:
+                    # purge
+                    requests.request('PURGE', url)
+                    # prime
+                    response = requests.get(url)
+                    if (response.status_code != 200):
+                        raise('Error fetching ')
+                except Exception, e:
+                    print 'error fetching ' + self.display_name
+
+Base = declarative_base(cls=CacheBase)
 
 class Allele(Base):
     __tablename__ = 'allele'
@@ -164,6 +201,14 @@ class Apo(Base):
         }
         
         return graph
+
+    def get_base_url(self):
+        return '/observable/' + self.format_name
+
+    def get_secondary_cache_urls(self):
+        base_url = self.get_base_url()
+        url1 = '/backend' + base_url + '/' + str(self.apo_id) + '/locus_details'
+        return [url1]
 
 class ApoAlia(Base):
     __tablename__ = 'apo_alias'
@@ -1260,7 +1305,6 @@ class Dbentity(Base):
 
     source = relationship(u'Source')
 
-
 class Pathwaydbentity(Dbentity):
     __tablename__ = 'pathwaydbentity'
     __table_args__ = {u'schema': 'nex'}
@@ -1272,6 +1316,7 @@ class Pathwaydbentity(Dbentity):
 class Referencedbentity(Dbentity):
     __tablename__ = 'referencedbentity'
     __table_args__ = {u'schema': 'nex'}
+    __url_segment__ = '/reference/'
 
     dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     method_obtained = Column(String(40), nullable=False)
@@ -1457,6 +1502,10 @@ class Referencedbentity(Dbentity):
         
         return [regulation.to_dict(self) for regulation in regulations]
 
+    def get_secondary_cache_urls(self):
+        base_url = self.get_base_url()
+        url1 = base_url + '/literature_details'
+        return [url1]
     
 class Filedbentity(Dbentity):
     __tablename__ = 'filedbentity'
@@ -1488,6 +1537,7 @@ class Filedbentity(Dbentity):
 class Locusdbentity(Dbentity):
     __tablename__ = 'locusdbentity'
     __table_args__ = {u'schema': 'nex'}
+    __url_segment__ = '/locus/'
 
     dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     systematic_name = Column(String(40), nullable=False, unique=True)
@@ -1836,7 +1886,7 @@ class Locusdbentity(Dbentity):
         for phenotype in phenotypes:
             obj += phenotype.to_dict(locus=self)
         return obj
-    
+
     def to_dict_analyze(self):
         return {
             "id": self.dbentity_id,
@@ -2170,9 +2220,51 @@ class Locusdbentity(Dbentity):
             "protein_tab": self.has_protein
         }
 
+    # clears the URLs for all tabbed pages and secondary XHR requests on tabbed pages
+    def clear_tabbed_page_cache(self):
+        backend_urls_by_tab = {
+            'protein_tab': ['sequence_details', 'posttranslational_details', 'ecnumber_details', 'protein_experiment_details', 'protein_domain_details', 'protein_domain_details'],
+            'interaction_tab': ['interaction_details', 'interaction_graph'],
+            'summary_tab': ['expression_details'],
+            'go_tab': ['go_details', 'go_graph'],
+            'sequence_section': ['neighbor_sequence_details', 'sequence_details'],
+            'expression_tab': ['expression_details', 'expression_graph'],
+            'phenotype_tab': ['phenotype_details', 'phenotype_graph'],
+            'literature_tab': ['literature_details', 'literature_graph'],
+            'regulation_tab': ['regulation_details', 'regulation_graph'],
+            'sequence_tab': ['neighbor_sequence_details', 'sequence_details'],
+            'history_tab':[],
+        }
+        base_url = self.get_base_url() + '/'
+        backend_base_segment = '/backend/locus/' + str(self.dbentity_id) + '/'
+        urls = []
+        tabs = self.tabs()
+        # get all the urls
+        for key in tabs:
+            if key is 'sequence_section' or key is 'id':
+                continue
+            # if the tab is present, append all the needed urls to urls
+            if tabs[key]:
+                tab_name = key.replace('_tab', '')
+                tab_url = base_url + tab_name
+                urls.append(tab_url)
+                for d in backend_urls_by_tab[key]:
+                    secondary_url = backend_base_segment + d
+                    urls.append(secondary_url)
+        target_urls = list(set(urls))
+        for relative_url in target_urls:
+            for base_url in cache_urls:
+                url = base_url + relative_url
+                try:
+                    # purge
+                    requests.request('PURGE', url)
+                except Exception, e:
+                    print 'error fetching ' + self.display_name
+
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
     __table_args__ = {u'schema': 'nex'}
+    __url_segment__ = '/strain/'
 
     dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
@@ -3111,6 +3203,14 @@ class Go(Base):
 
         return annotations_dict
 
+    def get_base_url(self):
+        return self.obj_url
+
+    def get_secondary_cache_urls(self):
+        base_url = self.get_base_url()
+        url1 = '/backend' + base_url + '/' + str(self.go_id) + '/locus_details'
+        return [url1]
+
 class GoAlias(Base):
     __tablename__ = 'go_alias'
     __table_args__ = (
@@ -4001,6 +4101,13 @@ class Phenotype(Base):
             obj += phenotype.to_dict(phenotype=self)
         return obj
 
+    def get_base_url(self):
+        return '/phenotype/' + self.format_name
+
+    def get_secondary_cache_urls(self):
+        base_url = self.get_base_url()
+        url1 = '/backend' + base_url + '/' + str(self.phenotype_id) + '/locus_details'
+        return [url1]
 
 class Phenotypeannotation(Base):
     __tablename__ = 'phenotypeannotation'
