@@ -38,6 +38,9 @@ curate-qa-deploy:
 deploy:
 	npm run build && source dev_variables.sh && cap dev deploy
 
+staging-deploy:
+	npm run build && source prod_variables.sh && cap staging deploy
+
 prod-deploy:
 	npm run build && source prod_variables.sh && cap prod deploy
 
