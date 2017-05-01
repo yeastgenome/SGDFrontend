@@ -17,7 +17,7 @@ cache_urls = None
 if 'CACHE_URLS' in os.environ.keys():
     cache_urls = os.environ['CACHE_URLS'].split(',')
 else:
-    cache_urls = ['http://localhost:5000']
+    cache_urls = ['http://localhost:6545']
 
 class CacheBase(object):
     def get_base_url(self):
@@ -2221,7 +2221,7 @@ class Locusdbentity(Dbentity):
         }
 
     # clears the URLs for all tabbed pages and secondary XHR requests on tabbed pages
-    def clear_tabbed_page_cache(self):
+    def refresh_tabbed_page_cache(self):
         backend_urls_by_tab = {
             'protein_tab': ['sequence_details', 'posttranslational_details', 'ecnumber_details', 'protein_experiment_details', 'protein_domain_details', 'protein_domain_details'],
             'interaction_tab': ['interaction_details', 'interaction_graph'],
@@ -2258,6 +2258,8 @@ class Locusdbentity(Dbentity):
                 try:
                     # purge
                     requests.request('PURGE', url)
+                    # prime
+                    response = requests.get(url)
                 except Exception, e:
                     print 'error fetching ' + self.display_name
 
