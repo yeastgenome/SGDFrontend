@@ -72,6 +72,7 @@ def main(global_config, **settings):
 
     config.add_route('dataset', '/dataset/{id}', request_method='GET')
     config.add_route('keyword', '/keyword/{id}', request_method='GET')
+    config.add_route('keywords', '/keywords', request_method='GET')
     
     # curator interfaces
     config.add_route('colleague_triage_all', '/colleagues/triage', request_method='GET')
@@ -83,13 +84,11 @@ def main(global_config, **settings):
     config.add_route('colleague_update', '/colleagues/{format_name}', request_method='PUT')
     config.add_route('colleague_get', '/colleagues/{format_name}', request_method='GET')
     
-    config.add_route('keywords', '/keywords')
     config.add_route('formats', '/formats')
     config.add_route('topics', '/topics')
     config.add_route('extensions', '/extensions')
     config.add_route('upload', '/upload')
     config.add_route('upload_spreadsheet', '/upload_spreadsheet')
-
     
     config.add_route('sign_in', '/signin')
     config.add_route('sign_out', '/signout')
