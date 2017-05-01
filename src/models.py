@@ -3691,10 +3691,17 @@ class Keyword(Base):
 
     source = relationship(u'Source')
 
-    def to_dict(self):
+    def to_simple_dict(self):
         return {
             "id": self.keyword_id,
             "name": self.display_name
+        }
+
+    def to_dict(self):
+        return {
+            "display_name": self.display_name,
+            "description": self.description,
+            "bioitems": [] #HERE
         }
 
 

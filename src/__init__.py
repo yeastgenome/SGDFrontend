@@ -71,6 +71,7 @@ def main(global_config, **settings):
     config.add_route('bioentity_list', '/bioentity_list', request_method='POST')
 
     config.add_route('dataset', '/dataset/{id}', request_method='GET')
+    config.add_route('keyword', '/keyword/{id}', request_method='GET')
     
     # curator interfaces
     config.add_route('colleague_triage_all', '/colleagues/triage', request_method='GET')
