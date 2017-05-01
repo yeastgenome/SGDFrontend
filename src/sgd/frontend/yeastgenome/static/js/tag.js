@@ -1,10 +1,11 @@
 
 $(document).ready(function() {
     $("#expression_table_analyze").hide();
+    var tag = keyword;
     var expression_table = create_expression_table(tag['bioitems']);
     create_download_button("expression_table_download", expression_table, tag['display_name'] + '_datasets');
 
-    $.getJSON('/backend/tag', function(data) {
+    $.getJSON('/backend/keywords', function(data) {
         var tag_links = [];
         for (var i=0; i < data.length; i++) {
             if(data[i]['display_name'] != tag['display_name']) {
@@ -19,6 +20,7 @@ $(document).ready(function() {
 });
 
 function create_expression_table(data) {
+    var tag = keyword;
     var options = {
         'bPaginate': true,
         'aaSorting': [[3, "asc"]],

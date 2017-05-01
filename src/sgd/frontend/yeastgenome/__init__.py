@@ -90,8 +90,8 @@ class YeastgenomeFrontend(FrontendInterface):
     def dataset(self, bioitem_repr):
         return self.get_obj('dataset', bioitem_repr)
 
-    def tag(self, tag_repr):
-        return self.get_obj('tag', tag_repr)
+    def keyword(self, keyword_repr):
+        return self.get_obj('keyword', keyword_repr)
 
     def experiment(self, experiment_repr):
         return self.get_obj('experiment', experiment_repr)
