@@ -218,11 +218,6 @@ def search(request):
         )
     }
 
-@view_config(route_name='keywords', renderer='json', request_method='GET')
-def keywords(request):
-    keywords_db = DBSession.query(Keyword).all()
-    return {'options': [k.to_simple_dict() for k in keywords_db]}
-
 @view_config(route_name='formats', renderer='json', request_method='GET')
 def formats(request):
     formats_db = DBSession.query(Edam).filter(Edam.edam_namespace == 'format').all()
@@ -826,3 +821,9 @@ def keyword(request):
         return keyword.to_dict()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='keywords', renderer='json', request_method='GET')
+def keywords(request):
+    keywords = DBSession.query(Keyword).all()
+
+    return [k.to_simple_dict() for k in keywords]
