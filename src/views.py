@@ -221,7 +221,7 @@ def search(request):
 @view_config(route_name='keywords', renderer='json', request_method='GET')
 def keywords(request):
     keywords_db = DBSession.query(Keyword).all()
-    return {'options': [k.to_dict() for k in keywords_db]}
+    return {'options': [k.to_simple_dict() for k in keywords_db]}
 
 @view_config(route_name='formats', renderer='json', request_method='GET')
 def formats(request):
@@ -816,5 +816,13 @@ def dataset(request):
     else:
         return HTTPNotFound()
 
+@view_config(route_name='keyword', renderer='json', request_method='GET')
+def keyword(request):
+    format_name = request.matchdict['id']
+
+    keyword = DBSession.query(Keyword).filter_by(format_name=format_name).one_or_none()
     
-        
+    if keyword:
+        return keyword.to_dict()
+    else:
+        return HTTPNotFound()
