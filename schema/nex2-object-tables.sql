@@ -398,14 +398,14 @@ CREATE TABLE nex.dataset_url (
 COMMENT ON TABLE nex.dataset_url IS 'URLs associated with a dataset.';
 COMMENT ON COLUMN nex.dataset_url.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.dataset_url.dataset_id IS 'FK to DATASET.DATASET_ID.';
-COMMENT ON COLUMN nex.dataset_url.url_type IS 'Type of URL (GSO, ArrayExpress, SRA, Lab website, Archive website).';
+COMMENT ON COLUMN nex.dataset_url.url_type IS 'Type of URL (GEO, GEO supplementary data, ArrayExpress, SRA, Lab website, Archive website).';
 COMMENT ON COLUMN nex.dataset_url.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.dataset_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.dataset_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
 COMMENT ON COLUMN nex.dataset_url.url_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.dataset_url.display_name IS 'Public display name.';
 ALTER TABLE nex.dataset_url ADD CONSTRAINT dataset_url_uk UNIQUE (dataset_id,display_name,obj_url);
-ALTER TABLE nex.dataset_url ADD CONSTRAINT dataseturl_type_ck CHECK (URL_TYPE in ('GEO', 'ArrayExpress', 'SRA', 'Lab website', 'Archive website'));
+ALTER TABLE nex.dataset_url ADD CONSTRAINT dataseturl_type_ck CHECK (URL_TYPE in ('GEO', 'ArrayExpress', 'SRA', 'Lab website', 'Archive website', 'GEO supplementary data'));
 CREATE INDEX dataseturl_source_fk_index ON nex.dataset_url (source_id);
 
 DROP TABLE IF EXISTS nex.dataset_file CASCADE;
