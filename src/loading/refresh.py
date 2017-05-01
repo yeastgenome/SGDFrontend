@@ -33,14 +33,17 @@ def chunk_list(seq, num):
         last += avg
     return out
 
-def refresh_in_batches(dbentity_list):
+def refresh_in_batches(dbentity_list, is_tabbed_page_refresh):
     total = len(dbentity_list)
     chunked_sets = chunk_list(dbentity_list, BATCHES)
     i = 0
     for small_dbentity_list in chunked_sets:
         batch_start_time = time.time()
         for d in small_dbentity_list:
-            d.refresh_cache()
+            if is_tabbed_page_refresh:
+                d.refresh_tabbed_page_cache()
+            else:
+                d.refresh_cache()
         i += 1
         elapsed_time = time.time() - batch_start_time
         finished = i * len(small_dbentity_list)
@@ -49,11 +52,11 @@ def refresh_in_batches(dbentity_list):
             class_name = small_dbentity_list[0].__class__.__name__
             log(finished_percent + ' complete ' + class_name + ' ' + str(len(small_dbentity_list)) + ' of ' + str(total) + ' ' + class_name + ' in ' + str(elapsed_time) + ' seconds')
 
-def refresh_and_debug_entity_list(list, name):
+def refresh_and_debug_entity_list(list, name, is_tabbed_page_refresh=False):
     start_time = localtime()
     i_start_time = time.time()
     log('REFRESHING ' + str(len(list)) + ' ' + name + ' at ' + strftime("%a, %d %b %Y %H:%M:%S +0000", start_time))
-    refresh_in_batches(list)
+    refresh_in_batches(list, is_tabbed_page_refresh)
     elapsed_time = time.time() - i_start_time
     log('FINISHED ' + str(len(list)) + ' ' + name + ' in ' + str(elapsed_time / 60.0) + ' minutes')
 
@@ -98,12 +101,22 @@ def refresh_genes_b():
     g = get_genes()
     refresh_and_debug_entity_list(g[len(g)/2:], 'genes')
 
+def refresh_tab_pages_a():
+    g = get_genes()
+    refresh_and_debug_entity_list(g[:len(g)/2], 'gene tab pages', True)
+
+def refresh_tab_pages_b():
+    g = get_genes()
+    refresh_and_debug_entity_list(g[len(g)/2:], 'gene tab pages', True)
+
 # run on 4 threads
 def refresh_all_cache():
     def index_part_1():
         refresh_genes_a()
+        refresh_tab_pages_a()
     def index_part_2():
         refresh_genes_b()
+        refresh_tab_pages_b()
     def index_part_3():
         refresh_go()
     def index_part_4():
@@ -111,11 +124,13 @@ def refresh_all_cache():
         refresh_observables()
         refresh_strains()
         # refresh_references()
+
     # # serial
     # index_part_1()
     # index_part_2()
     # index_part_3()
     # index_part_4()
+
     # parallel
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
