@@ -1073,7 +1073,7 @@ class Dataset(Base):
     parent_dataset = relationship(u'Dataset', remote_side=[dataset_id])
     source = relationship(u'Source')
 
-    def to_dict(self, reference=None, add_conditions=False, add_resources=False):
+    def to_dict(self, reference=None, dataset_keywords=None, add_conditions=False, add_resources=False):
         keywords = DBSession.query(DatasetKeyword).filter_by(dataset_id=self.dataset_id).all()
 
         tags = [keyword.to_dict() for keyword in keywords]
@@ -1099,20 +1099,24 @@ class Dataset(Base):
         else:
             references = DBSession.query(DatasetReference).filter_by(dataset_id=self.dataset_id).all()
 
-            reference = references[0].reference
+            if len(references) < 1:
+                obj["reference"] = {}
 
-            obj["reference"] = {
-                "display_name": reference.display_name,
-                "link": reference.obj_url,
-                "pubmed_id": reference.pmid,
-                "id": reference.dbentity_id
-            }
-            
-            abstract = DBSession.query(Referencedocument.html).filter_by(reference_id=reference.dbentity_id, document_type="Abstract").one_or_none()
-            if abstract:
-                obj["reference"]["abstract"] = {
-                    "text": abstract[0]
+            else:
+                reference = references[0].reference
+
+                obj["reference"] = {
+                    "display_name": reference.display_name,
+                    "link": reference.obj_url,
+                    "pubmed_id": reference.pmid,
+                    "id": reference.dbentity_id
                 }
+            
+                abstract = DBSession.query(Referencedocument.html).filter_by(reference_id=reference.dbentity_id, document_type="Abstract").one_or_none()
+                if abstract:
+                    obj["reference"]["abstract"] = {
+                        "text": abstract[0]
+                    }
 
         if add_conditions:
             conditions = DBSession.query(Datasetsample).filter_by(dataset_id=self.dataset_id).all()
@@ -3693,17 +3697,25 @@ class Keyword(Base):
 
     def to_simple_dict(self):
         return {
-            "id": self.keyword_id,
-            "name": self.display_name
+            "link": self.obj_url,
+            "display_name": self.display_name
         }
 
     def to_dict(self):
-        return {
+        obj = {
             "display_name": self.display_name,
             "description": self.description,
-            "bioitems": [] #HERE
+            "bioitems": []
         }
 
+        dataset_keywords = DBSession.query(DatasetKeyword).filter_by(keyword_id=self.keyword_id).all()
+
+        dataset_ids = [d.dataset_id for d in dataset_keywords]
+        datasets = DBSession.query(Dataset).filter(Dataset.dataset_id.in_(list(dataset_ids))).all()
+        for dataset in datasets:
+            obj["bioitems"].append(dataset.to_dict())
+
+        return obj
 
 class Literatureannotation(Base):
     __tablename__ = 'literatureannotation'
