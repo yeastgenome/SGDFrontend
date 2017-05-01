@@ -175,7 +175,7 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('contig'),
                     route_name='contig')
 
-    config.add_route('tag', '/tag/{identifier}')
+    config.add_route('keyword', '/keyword/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('tag', request)(getattr(chosen_frontend, 'tag')(tag_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('tag'),
                     route_name='tag')
