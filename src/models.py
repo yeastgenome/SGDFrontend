@@ -4099,16 +4099,21 @@ class Phenotype(Base):
     source = relationship(u'Source')
 
     def to_dict(self):
-        return {
+        obj = {
             "id": self.phenotype_id,
             "display_name": self.display_name,
             "observable": {
                 "display_name": self.observable.display_name,
                 "link": self.observable.obj_url
             },
-            "qualifier": self.qualifier.display_name,
+            
             "overview": Phenotypeannotation.create_count_overview([self.phenotype_id])
         }
+
+        if self.qualifier:
+            obj["qualifier"] = self.qualifier.display_name
+        else:
+            obj["qualifier"] = "None"
 
         return obj
 
