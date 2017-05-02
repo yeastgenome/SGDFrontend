@@ -1,7 +1,8 @@
 import json
-from pyramid.response import Response
-from src.sgd.frontend import config
 from urllib2 import Request, urlopen, URLError
+from pyramid.response import Response
+
+from src.sgd.frontend import config
 
 def do_blast(request):
     
