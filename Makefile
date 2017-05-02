@@ -2,10 +2,10 @@ deploy-assets:
 	. dev_deploy_variables.sh && grunt deployAssets
 
 dev-deploy:
-	. dev_deploy_variables.sh && AWS_ENV=true cap dev deploy
+	. dev_deploy_variables.sh && cap dev deploy
 
 qa-deploy:
-	. dev_deploy_variables.sh && AWS_ENV=true cap qa deploy
+	. dev_deploy_variables.sh && cap qa deploy
 
 beta-deploy:
 	. dev_deploy_variables.sh && cap beta deploy
@@ -18,10 +18,10 @@ staging-deploy:
 #	. prod_deploy_variables.sh && cap prod deploy
 
 aws-dev-deploy:
-	. dev_deploy_variables.sh && AWS_ENV=true cap aws_dev deploy
+	. dev_deploy_variables.sh && cap aws_dev deploy
 
 curate-qa-deploy:
-	. dev_deploy_variables.sh && AWS_ENV=true cap aws_curate_qa deploy
+	. dev_deploy_variables.sh && cap aws_curate_qa deploy
 
 run-prod:
 	pserve sgdfrontend_aws.ini --daemon --pid-file=/var/run/pyramid/frontend.pid
