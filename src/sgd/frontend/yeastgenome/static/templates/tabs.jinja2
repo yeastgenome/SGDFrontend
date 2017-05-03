@@ -2,7 +2,7 @@
 <div class="row hide-for-small">
 	<nav class="small-12 columns">
 		<ul class="tabs sgd-tabs">
-			<li id="summary_tab" class="tab-title" {% if not tabs['summary_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/overview"><span>Summary</span></a></li>
+			<li id="summary_tab" class="tab-title" {% if not tabs['summary_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}"><span>Summary</span></a></li>
             <li id="sequence_tab" class="tab-title" {% if not tabs['sequence_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/sequence"><span>Sequence</span></a></li>
 			<li id="protein_tab" class="tab-title" {% if not tabs['protein_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/protein"><span>Protein</span></a></li>
 			<li id="go_tab" class="tab-title" {% if not tabs['go_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/go"><span>Gene Ontology</span></a></li>
@@ -26,7 +26,7 @@
 	</ul>
 	<section class="top-bar-section">
 		<ul class="right">
-			<li id="summary_tab" {% if not tabs['summary_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/overview"><span>Summary</span></a></li>
+			<li id="summary_tab" {% if not tabs['summary_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}"><span>Summary</span></a></li>
             <li id="sequence_tab" {% if not tabs['sequence_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/sequence"><span>Sequence</span></a></li>
 			<li id="protein_tab" {% if not tabs['protein_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/protein"><span>Protein</span></a></li>
 			<li id="go_tab" {% if not tabs['go_tab'] %} style="display:none" {% endif %}><a href="/locus/{{ locus.sgdid }}/go"><span>Gene Ontology</span></a></li>
