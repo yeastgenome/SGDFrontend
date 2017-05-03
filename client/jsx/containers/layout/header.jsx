@@ -16,7 +16,7 @@ const Header = React.createClass({
               <a href="/about">About</a>
               <a href="/blog">Blog</a>
               <a href="/download-data">Download</a>
-              <a href="https://sites.google.com/view/yeastgenome-help/">Help</a>
+              <a className="hide-external-link-icon" target="_blank" href="https://sites.google.com/view/yeastgenome-help/">Help</a>
               <a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">YeastMine</a>
               <div className="social-media-links">
                 <a href="/suggestion" target="_blank" id="email-header" className="webicon mail small">Email Us</a>
@@ -194,8 +194,8 @@ const Header = React.createClass({
                   <a href="#">Nomenclature</a>
                   <ul className="dropdown">
                     <li><a className="disabled-header-a" href="/cgi-bin/registry/geneRegistry">Submit a Gene Registration</a></li>
-                    <li><a className="disabled-header-a" href="https://sites.google.com/view/yeastgenome-help/community-help/gene-registry">Gene Registry</a></li>
-                    <li><a className="disabled-header-a" href="https://sites.google.com/view/yeastgenome-help/community-help/nomenclature-conventions">Nomenclature Conventions</a></li>
+                    <li><a className="disabled-header-a"target="_blank" href="https://sites.google.com/view/yeastgenome-help/community-help/gene-registry">Gene Registry</a></li>
+                    <li><a className="disabled-header-a"target="_blank" href="https://sites.google.com/view/yeastgenome-help/community-help/nomenclature-conventions">Nomenclature Conventions</a></li>
                     <li><a className="disabled-header-a" href="/cgi-bin/geneHunter">Global Gene Hunter</a></li>
                   </ul>
                 </li>

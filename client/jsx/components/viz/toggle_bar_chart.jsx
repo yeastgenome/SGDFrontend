@@ -53,7 +53,7 @@ module.exports = React.createClass({
 		}
 
 		var _colorScale = d => { return d.isRoot ? "#DF8B93" : "#18AB2F"; };
-		var _helpText = "Features that are annotated to the ‘root’ terms are considered ‘unknown’ and are shown in red.  More information on GO and GO slims can be found on SGD’s <a href='https://sites.google.com/view/yeastgenome-help/function-help/gene-ontology-go'>GO help page</a>.  Please use the <a href='http://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl'>GO Slim Mapper</a> or download the <a href='http://www.yeastgenome.org/download-data/curation'>go_slim_mapping.tab</a> file to obtain the GO data summarized in these graphs.";
+		var _helpText = "Features that are annotated to the ‘root’ terms are considered ‘unknown’ and are shown in red.  More information on GO and GO slims can be found on SGD’s <atarget='_blank' href='https://sites.google.com/view/yeastgenome-help/function-help/gene-ontology-go'>GO help page</a>.  Please use the <a href='http://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl'>GO Slim Mapper</a> or download the <a href='http://www.yeastgenome.org/download-data/curation'>go_slim_mapping.tab</a> file to obtain the GO data summarized in these graphs.";
 		return (
 			<div className="toggle-bar-chart">
 				<h3 style={{ position: "absolute", top: "1rem", right: "1rem" }}><HelpIcon isInfo={true} orientation="left" text={_helpText}/></h3>
