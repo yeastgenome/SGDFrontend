@@ -716,13 +716,13 @@ COMMENT ON TABLE nex.reference_alias IS 'Other names or synonyms for the referen
 COMMENT ON COLUMN nex.reference_alias.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.reference_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.reference_alias.date_created IS 'Date the record was entered into the database.';
-COMMENT ON COLUMN nex.reference_alias.alias_type IS 'Type of alias (Secondary SGDID).';
+COMMENT ON COLUMN nex.reference_alias.alias_type IS 'Type of alias (Secondary SGDID, GO reference ID).';
 COMMENT ON COLUMN nex.reference_alias.alias_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.reference_alias.display_name IS 'Public display name.';
 COMMENT ON COLUMN nex.reference_alias.bud_id IS 'PK from BUD.DBXREF.DBXREF_NO.';
 COMMENT ON COLUMN nex.reference_alias.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
 ALTER TABLE nex.reference_alias ADD CONSTRAINT reference_alias_uk UNIQUE (reference_id,display_name,alias_type);
-ALTER TABLE nex.reference_alias ADD CONSTRAINT referencealias_type_ck CHECK (ALIAS_TYPE IN ('Secondary SGDID'));
+ALTER TABLE nex.reference_alias ADD CONSTRAINT referencealias_type_ck CHECK (ALIAS_TYPE IN ('Secondary SGDID','GO reference ID'));
 CREATE INDEX referencealias_source_fk_index ON nex.reference_alias (source_id);
 
 DROP TABLE IF EXISTS nex.reference_relation CASCADE; 
