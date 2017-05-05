@@ -160,7 +160,11 @@ anti-Fpr3 antibody courtesy of Jeremy Thorner, Ph.D., UC Berkeley</span>
             <h1>Meetings</h1>
             {% for meeting in meetings %}
                 <div class="homepage-blog-entry">
-                    <span class="homepage-blog-title"><a href="{{meeting.url}}" target="_new">{{ meeting.summary }}</a></span>
+                    {% if meeting.url %}
+                        <span class="homepage-blog-title"><a href="{{meeting.url}}" target="_new">{{ meeting.summary }}</a></span>
+                    {% else %}
+                        <span class="homepage-blog-title">{{ meeting.summary }}</span>
+                    {% endif %}
                     <br />
                     <span>{{ meeting.date_description }} - {{ meeting.location }}</span>
                     <p>{{ meeting.description }}</p>

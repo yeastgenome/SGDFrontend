@@ -175,10 +175,10 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('contig'),
                     route_name='contig')
 
-    config.add_route('tag', '/tag/{identifier}')
-    config.add_view(lambda request: chosen_frontend.response_wrapper('tag', request)(getattr(chosen_frontend, 'tag')(tag_repr=request.matchdict['identifier'].lower())),
-                    renderer=chosen_frontend.get_renderer('tag'),
-                    route_name='tag')
+    config.add_route('keyword', '/keyword/{identifier}')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('keyword', request)(getattr(chosen_frontend, 'keyword')(keyword_repr=request.matchdict['identifier'].lower())),
+                    renderer=chosen_frontend.get_renderer('keyword'),
+                    route_name='keyword')
 
     config.add_route('locus_list', '/locus/{list_name}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('locus_list', request)(getattr(chosen_frontend, 'locus_list')(list_name=request.matchdict['list_name'])),

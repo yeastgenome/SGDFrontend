@@ -1,10 +1,10 @@
 {% extends "global_layout.jinja2" %}
 
-{% block title %}{{ tag.display_name }}{% endblock %}
+{% block title %}{{ keyword.display_name }}{% endblock %}
 
 {% block head %}
 <script>
-	var tag = {{ tag_js|safe }};
+	var keyword = {{ keyword_js|safe }};
 </script>
 {% endblock %}
 
@@ -21,7 +21,7 @@
     <div class="small-12 medium-10 columns content-column">
 
         <script>
-            add_navbar_title('Category: <span class="gene_name">{{ tag.display_name }}</span>');
+            add_navbar_title('Category: <span class="gene_name">{{ keyword.display_name }}</span>');
             add_navbar_element('Overview', 'overview');
             add_navbar_element('Datasets', 'datasets');
             add_navbar_element('Additional Categories', 'additional_categories');
@@ -31,12 +31,12 @@
         ================================================== -->
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Category: {{ tag.display_name }}</h1>
+                <h1>Category: {{ keyword.display_name }}</h1>
                 <hr />
                 <div class="">
                     <dl class="key-value">
                         <dt>Description</dt>
-                        <dd>{{ tag.description }}</dd>
+                        <dd>{{ keyword.description }}</dd>
                      </dl>
                 </div>
             </div>
@@ -57,7 +57,7 @@
             </div>
         </section>
 
-         <!-- Other Tags
+         <!-- Other keywords
 ================================================== -->
         <section id="additional_categories" data-magellan-destination="additional_categories">
             <h2>Additional Categories</h2>
