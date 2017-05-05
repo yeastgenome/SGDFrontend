@@ -91,6 +91,8 @@ def get_meetings():
         # only get "all day" events
         meetings = [d for d in meetings if 'date' in d['start'].keys()]
         for meeting in meetings:
+            if 'description' not in meeting.keys():
+                meeting['description'] = ''
             # get URL from description and remove URLs from description
             urls = re.findall(URL_REGEX, meeting['description'])
             if len(urls) > 0:
