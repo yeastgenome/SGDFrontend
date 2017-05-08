@@ -125,13 +125,6 @@ REVOKE ALL ON nex.chebi_alias FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.chebi_alias TO curator;
 GRANT SELECT ON nex.chebi_alias TO PUBLIC;
 
--- Set privilege on TABLE CHEBI_RELATION
---ALTER TABLE nex.chebi_relation OWNER TO nex;
---GRANT ALL ON nex.chebi_relation TO nex;
---REVOKE ALL ON nex.chebi_relation FROM PUBLIC;
---GRANT SELECT,INSERT,UPDATE,DELETE ON nex.chebi_relation TO curator;
---GRANT SELECT ON nex.chebi_relation TO PUBLIC;
-
 -- Set privilege on TABLE CHEBI_URL
 ALTER TABLE nex.chebi_url OWNER TO nex;
 GRANT ALL ON nex.chebi_url TO nex;
@@ -922,13 +915,6 @@ GRANT ALL ON nex.ro TO nex;
 REVOKE ALL ON nex.ro FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.ro TO curator;
 GRANT SELECT ON nex.ro TO PUBLIC;
-
--- Set privilege on TABLE RO_RELATION
-ALTER TABLE nex.ro_relation OWNER TO nex;
-GRANT ALL ON nex.ro_relation TO nex;
-REVOKE ALL ON nex.ro_relation FROM PUBLIC;
-GRANT SELECT,INSERT,UPDATE,DELETE ON nex.ro_relation TO curator;
-GRANT SELECT ON nex.ro_relation TO PUBLIC;
 
 -- Set privilege on TABLE RO_URL
 ALTER TABLE nex.ro_url OWNER TO nex;
