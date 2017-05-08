@@ -2711,7 +2711,8 @@ class Dnasequenceannotation(Base):
                 "format_name": strains[0].format_name
             },
             "locus": locus.to_dict_sequence_widget(),
-            "strand": self.strand
+            "strand": self.strand,
+            "dna_type": self.dna_type
         }
 
 class Dnasubsequence(Base):
@@ -3902,15 +3903,20 @@ class Literatureannotation(Base):
         )
     
     def to_dict(self):
-        entity = self.dbentity
-        
-        return {
+        obj = {
             "topic": self.topic,
-            "locus": {
+            "locus": None
+        }
+        
+        entity = self.dbentity
+
+        if entity:
+            obj["locus"] = {
                 "display_name": entity.display_name,
                 "link": entity.obj_url
             }
-        }
+        
+        return obj
 
 class LocusAlias(Base):
     __tablename__ = 'locus_alias'
