@@ -17,11 +17,16 @@ BATCHES = 100
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
-pyramid_log = logging.getLogger(__name__)
+
+if 'WORKER_LOG_FILE' in os.environ.keys():
+    LOG_FILE = os.environ['WORKER_LOG_FILE']
+    logging.basicConfig(filename=LOG_FILE)
+logger = logging.getLogger(__name__)
+logger.setLevel(level=logging.INFO)
 
 def log(message):
     print message
-    pyramid_log.info(message)
+    logger.info(message)
 
 # a la http://stackoverflow.com/questions/2130016/splitting-a-list-of-arbitrary-size-into-only-roughly-n-equal-parts
 def chunk_list(seq, num):
@@ -125,21 +130,21 @@ def refresh_all_cache():
         refresh_strains()
         # refresh_references()
 
-    # # serial
-    # index_part_1()
+    # serial
+    index_part_1()
     # index_part_2()
     # index_part_3()
     # index_part_4()
 
-    # parallel
-    t1 = Thread(target=index_part_1)
-    t2 = Thread(target=index_part_2)
-    t3 = Thread(target=index_part_3)
-    t4 = Thread(target=index_part_4)
-    t1.start()
-    t2.start()
-    t3.start()
-    t4.start()
+    # # parallel
+    # t1 = Thread(target=index_part_1)
+    # t2 = Thread(target=index_part_2)
+    # t3 = Thread(target=index_part_3)
+    # t4 = Thread(target=index_part_4)
+    # t1.start()
+    # t2.start()
+    # t3.start()
+    # t4.start()
 
 if __name__ == '__main__':
     refresh_all_cache()
