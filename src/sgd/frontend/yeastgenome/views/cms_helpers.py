@@ -1,7 +1,7 @@
 import json
 import re
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 from dateutil import parser
 from src.sgd.frontend import config
@@ -91,6 +91,8 @@ def get_meetings():
         # only get "all day" events
         meetings = [d for d in meetings if 'date' in d['start'].keys()]
         for meeting in meetings:
+            if 'description' not in meeting.keys():
+                meeting['description'] = ''
             # get URL from description and remove URLs from description
             urls = re.findall(URL_REGEX, meeting['description'])
             if len(urls) > 0:
@@ -101,7 +103,7 @@ def get_meetings():
             meeting['description'] = re.sub(URL_REGEX, '', meeting['description'])
             # format date as a string which is either a single day or range of dates
             start_date = datetime.strptime(meeting['start']['date'], '%Y-%m-%d')
-            end_date = datetime.strptime(meeting['end']['date'], '%Y-%m-%d')
+            end_date = datetime.strptime(meeting['end']['date'], '%Y-%m-%d') - timedelta(days=1)
             meeting['start_date'] = start_date
             days_delta = (end_date - start_date).days
             if (days_delta > 1):

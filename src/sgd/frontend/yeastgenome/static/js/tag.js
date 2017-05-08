@@ -43,12 +43,15 @@ function create_expression_table(data) {
         var datatable = [];
         var reference_ids = {};
         for (var i=0; i < data.length; i++) {
+            if (Object.keys(data[i].reference).length === 0) {
+                data[i].reference = null;
+            }
             datatable.push(dataset_datat_to_table(data[i], i));
-            if(data[i]['reference'] != null) {
+
+            if(data[i]['reference'] !== null) {
                 reference_ids[data[i]['reference']['id']] = true;
             }
         }
-
         set_up_header('expression_table', datatable.length, 'dataset', 'datasets', Object.keys(reference_ids).length, 'reference', 'references');
 
         options["oLanguage"] = {"sEmptyTable": "No expression data for " + tag['display_name']};
