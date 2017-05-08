@@ -1142,6 +1142,14 @@ class Dataset(Base):
             urls = DBSession.query(DatasetUrl).filter_by(dataset_id=self.dataset_id).all()
 
             obj["urls"] = []
+
+            files = DBSession.query(DatasetFile).filter_by(dataset_id=self.dataset_id).all()
+            for f in files:
+                obj["urls"].append({
+                    "link": f.file.s3_url,
+                    "display_name": "Download data"
+                })
+            
             for url in urls:
                 url_obj = {
                     "link": url.obj_url,
@@ -1171,7 +1179,7 @@ class DatasetFile(Base):
     created_by = Column(String(12), nullable=False)
 
     dataset = relationship(u'Dataset')
-    file = relationship(u'Filedbentity')
+    file = relationship(u'Filedbentity', primaryjoin='Filedbentity.dbentity_id == DatasetFile.file_id')
     source = relationship(u'Source')
 
 
@@ -1540,14 +1548,14 @@ class Filedbentity(Dbentity):
     is_in_spell = Column(Boolean, nullable=False)
     is_in_browser = Column(Boolean, nullable=False)
     md5sum = Column(String(32), index=True)
-    filepath_id = Column(ForeignKey(u'nex.filepath.filepath_id', ondelete=u'CASCADE'), index=True)
     readme_file_id = Column(ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
     previous_file_name = Column(String(100))
     s3_url = Column(String(500))
     description = Column(String(4000))
+    json = Column(Text)
+    year = Column(SmallInteger, nullable=False)
 
     data = relationship(u'Edam', primaryjoin='Filedbentity.data_id == Edam.edam_id')
-    filepath = relationship(u'Filepath')
     format = relationship(u'Edam', primaryjoin='Filedbentity.format_id == Edam.edam_id')
     readme_file = relationship(u'Filedbentity', foreign_keys=[dbentity_id])
     topic = relationship(u'Edam', primaryjoin='Filedbentity.topic_id == Edam.edam_id')
