@@ -1502,6 +1502,10 @@ BEGIN
        PERFORM nex.insertupdatelog('DATASETSAMPLE'::text, 'DBXREF_TYPE'::text, OLD.datasetsample_id, OLD.dbxref_type, NEW.dbxref_type, USER);
     END IF;
 
+    IF (((OLD.dbxref_url IS NULL) AND (NEW.dbxref_url IS NOT NULL)) OR ((OLD.dbxref_url IS NOT NULL) AND (NEW.dbxref_url IS NULL)) OR (OLD.dbxref_url != NEW.dbxref_url)) THEN
+       PERFORM nex.insertupdatelog('DATASETSAMPLE'::text, 'DBXREF_URL'::text, OLD.datasetsample_id, OLD.dbxref_url, NEW.dbxref_url, USER);
+    END IF;
+
     IF (((OLD.biosample IS NULL) AND (NEW.biosample IS NOT NULL)) OR ((OLD.biosample IS NOT NULL) AND (NEW.biosample IS NULL)) OR (OLD.biosample != NEW.biosample)) THEN
        PERFORM nex.insertupdatelog('DATASETSAMPLE'::text, 'BIOSAMPLE'::text, OLD.datasetsample_id, OLD.biosample, NEW.biosample, USER);
     END IF;
@@ -1523,8 +1527,8 @@ BEGIN
              OLD.source_id || '[:]' || coalesce(OLD.taxonomy_id,0) || '[:]' ||
              OLD.dataset_id || '[:]' || OLD.sample_order || '[:]' ||
              coalesce(OLD.dbxref_id,'') || '[:]' || coalesce(OLD.dbxref_type,'') || '[:]' ||
-             coalesce(OLD.biosample,'') || '[:]' || coalesce(OLD.strain_name,'') || '[:]' ||
-             coalesce(OLD.description,'') || '[:]' ||
+             coalesce(OLD.dbxref_url,'') || '[:]' || coalesce(OLD.biosample,'') || '[:]' || 
+             coalesce(OLD.strain_name,'') || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
            PERFORM nex.insertdeletelog('DATASETSAMPLE'::text, OLD.datasetsample_id, v_row, USER);
