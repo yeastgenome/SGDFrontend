@@ -786,6 +786,26 @@ def locus_expression_details(request):
         return locus.expression_to_dict()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='locus_neighbor_sequence_details', renderer='json', request_method='GET')
+def locus_neighbor_sequence_details(request):
+    id = request.matchdict['id'].upper()
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    if locus:
+        return locus.neighbor_sequence_details()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='locus_sequence_details', renderer='json', request_method='GET')
+def locus_sequence_details(request):
+    id = request.matchdict['id'].upper()
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    if locus:
+        return locus.sequence_details()
+    else:
+        return HTTPNotFound()
     
 @view_config(route_name='bioentity_list', renderer='json', request_method='POST')
 def analyze(request):
@@ -803,9 +823,9 @@ def analyze(request):
 
 @view_config(route_name='dataset', renderer='json', request_method='GET')
 def dataset(request):
-    format_name = request.matchdict['id'].upper()
+    format_name = request.matchdict['id']
 
-    dataset = DBSession.query(Dataset).filter_by(format_name=format_name).one_or_none()
+    dataset = DBSession.query(Dataset).filter(func.lower(Dataset.format_name) == func.lower(format_name)).one_or_none()
     if dataset:
         return dataset.to_dict(add_conditions=True, add_resources=True)
     else:

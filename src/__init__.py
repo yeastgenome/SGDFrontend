@@ -67,6 +67,8 @@ def main(global_config, **settings):
     config.add_route('locus_go_details', '/locus/{id}/go_details', request_method='GET')
     config.add_route('locus_interaction_details', '/locus/{id}/interaction_details', request_method='GET')
     config.add_route('locus_expression_details', '/locus/{id}/expression_details', request_method='GET')
+    config.add_route('locus_neighbor_sequence_details', '/locus/{id}/neighbor_sequence_details', request_method='GET')
+    config.add_route('locus_sequence_details', '/locus/{id}/sequence_details', request_method='GET')
 
     config.add_route('bioentity_list', '/bioentity_list', request_method='POST')
 
