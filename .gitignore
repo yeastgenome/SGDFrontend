@@ -30,5 +30,6 @@ asset_version.json
 settings.json
 launch.json
 .vscode
+*.rdb
 
 
