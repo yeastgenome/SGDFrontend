@@ -88,7 +88,10 @@ class YeastgenomeFrontend(FrontendInterface):
         return self.get_obj('ecnumber', biocon_repr)
 
     def dataset(self, bioitem_repr):
-        return self.get_obj('dataset', bioitem_repr)
+        dataset = self.get_obj('dataset', bioitem_repr)
+        if len(dataset['dataset']['reference'].keys()) == 0:
+            dataset['dataset']['reference']['abstract'] = None
+        return dataset
 
     def keyword(self, keyword_repr):
         return self.get_obj('keyword', keyword_repr)
