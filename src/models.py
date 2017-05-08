@@ -12,6 +12,8 @@ import requests
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
+QUERY_LIMIT = 25000
+
 # get list of URLs to visit from comma-separated ENV variable cache_urls 'url1, url2'
 cache_urls = None
 if 'CACHE_URLS' in os.environ.keys():
@@ -852,6 +854,13 @@ class Contig(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict_sequence_widget(self):        
+        return {
+            "display_name": self.display_name,
+            "format_name": self.format_name,
+            "is_chromosome": self.so_id == 264265 # soid = SO:0000340 = Chromosome
+        }
+    
     def to_dict(self, chromosome_cache):
         obj = {
             "display_name": self.display_name,
@@ -1126,7 +1135,7 @@ class Dataset(Base):
                 obj["datasetcolumns"].append({
                     "display_name": condition.display_name,
                     "geo_id": condition.dbxref_id,
-                    "link": condition.obj_url
+                    "link": condition.dbxref_url
                 })
 
         if add_resources:
@@ -1134,10 +1143,15 @@ class Dataset(Base):
 
             obj["urls"] = []
             for url in urls:
-                obj["urls"].append({
+                url_obj = {
                     "link": url.obj_url,
                     "display_name": url.display_name
-                })
+                }
+
+                if url.url_type == "GEO":
+                    url_obj["category"] = "External"
+                
+                obj["urls"].append(url_obj)
 
         return obj
 
@@ -1264,6 +1278,7 @@ class Datasetsample(Base):
     description = Column(String(500))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    dbxref_url = Column(String(12), nullable=False)
 
     dataset = relationship(u'Dataset')
     source = relationship(u'Source')
@@ -1563,6 +1578,63 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def sequence_details(self):
+        dnas = DBSession.query(Dnasequenceannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
+        obj = {
+            "genomic_dna": [],
+            "coding_dna": [],
+            "protein": [],
+            "1kb": []
+        }
+
+        for dna in dnas:
+            dna_dict = dna.to_dict()
+
+            if dna_dict:
+                if dna.dna_type == "GENOMIC":
+                    obj["genomic_dna"].append(dna_dict)
+                elif dna.dna_type == "CODING":
+                    obj["coding_dna"].append(dna_dict)
+                elif dna.dna_type == "1KB":
+                    obj["1kb"].append(dna_dict)
+
+        protein_dnas = DBSession.query(Proteinsequenceannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        for protein_dna in protein_dnas:
+            protein_dna_dict = protein_dna.to_dict()
+            if protein_dna_dict:
+                obj["protein"].append(protein_dna_dict)
+
+        return obj
+    
+    def neighbor_sequence_details(self):
+        dnas = DBSession.query(Dnasequenceannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
+        obj = {}
+        
+        for dna in dnas:
+            strain = Straindbentity.get_strains_by_taxon_id(dna.taxonomy_id)
+
+            if len(strain) < 1:
+                continue
+
+            start = dna.start_index
+            end = dna.end_index
+            
+            midpoint = int(round((start + (end - start)/2)/1000))*1000
+            start = max(1, midpoint - 5000)
+            end = min(len(dna.contig.residues), start + 10000)
+
+            neighbors = DBSession.query(Dnasequenceannotation).filter_by(dna_type='GENOMIC').filter_by(contig_id=dna.contig_id).filter(Dnasequenceannotation.end_index >= start).filter(Dnasequenceannotation.start_index <= end).all()
+
+            obj[strain[0].display_name] = {
+                "start": start,
+                "end": end,
+                "neighbors": [n.to_dict() for n in neighbors]
+            }
+
+        return obj
+    
     def expression_to_dict(self):
         expression_annotations = DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
@@ -1631,9 +1703,12 @@ class Locusdbentity(Dbentity):
         go_annotations = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
         obj = []
+
         for go_annotation in go_annotations:
-            obj += go_annotation.to_dict()
-        
+            for annotation in go_annotation.to_dict():
+                if annotation not in obj:
+                    obj.append(annotation)
+
         return obj
     
     def literature_graph(self):
@@ -1899,6 +1974,22 @@ class Locusdbentity(Dbentity):
             "description": self.description,
             "format_name": self.format_name
         }
+
+    def to_dict_sequence_widget(self):
+        obj = {
+            "id": self.dbentity_id,
+            "display_name": self.display_name,
+            "format_name": self.format_name,
+            "headline": self.headline,
+            "link": self.obj_url
+        }
+        
+        sos = DBSession.query(Dnasequenceannotation.so_id).filter_by(dbentity_id=self.dbentity_id).group_by(Dnasequenceannotation.so_id).all()
+        locus_type = DBSession.query(So.display_name).filter(So.so_id.in_([so[0] for so in sos])).all()
+        obj["locus_type"] = ",".join([l[0] for l in locus_type])
+
+        return obj
+        
     
     def to_dict(self):
         obj = {
@@ -2172,7 +2263,7 @@ class Locusdbentity(Dbentity):
             "molecular function": {},
             "biological process": {}
         }
-        
+
         go_annotations_htp = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="high-throughput").all()
         for annotation in go_annotations_htp:
             if annotation.date_assigned.strftime("%Y-%m-%d") > obj["date_last_reviewed"]:
@@ -2590,6 +2681,30 @@ class Dnasequenceannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict(self):
+        strains = Straindbentity.get_strains_by_taxon_id(self.contig.taxonomy_id)
+
+        if len(strains) == 0:
+            return None
+
+        locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=self.dbentity_id).one_or_none()
+
+        tags = DBSession.query(Dnasubsequence).filter_by(annotation_id=self.annotation_id).all()
+
+        return {
+            "start": self.start_index,
+            "end": self.end_index,
+            "residues": self.residues,
+            "contig": self.contig.to_dict_sequence_widget(),
+            "tags": [t.to_dict() for t in tags],
+            "strain": {
+                "display_name": strains[0].display_name,
+                "status": strains[0].strain_type,
+                "format_name": strains[0].format_name
+            },
+            "locus": locus.to_dict_sequence_widget(),
+            "strand": self.strand
+        }
 
 class Dnasubsequence(Base):
     __tablename__ = 'dnasubsequence'
@@ -2623,6 +2738,21 @@ class Dnasubsequence(Base):
     file = relationship(u'Filedbentity')
     genomerelease = relationship(u'Genomerelease')
     so = relationship(u'So')
+
+    def to_dict(self):
+        seq_version = self.seq_version
+        if seq_version:
+            seq_version = seq_version.strftime("%Y-%m-%d")
+        
+        return {
+            "relative_end": self.relative_end_index,
+            "relative_start": self.relative_start_index,
+            "display_name": self.display_name,
+            "chromosomal_start": self.contig_start_index,
+            "chromosomal_end": self.contig_end_index,
+            "seq_version": seq_version,
+            "class_type": self.display_name.upper()
+        }
 
 
 class Ec(Base):
@@ -4740,6 +4870,22 @@ class Proteinsequenceannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict(self):
+        locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=self.dbentity_id).one_or_none()
+        strains = Straindbentity.get_strains_by_taxon_id(self.contig.taxonomy_id)
+
+        if len(strains) == 0:
+            return None
+        
+        return {
+            "residues": self.residues,
+            "locus": locus.to_dict_sequence_widget(),
+            "strain": {
+                "display_name": strains[0].display_name,
+                "status": strains[0].strain_type,
+                "format_name": strains[0].format_name
+            }
+        }
 
 class Psimod(Base):
     __tablename__ = 'psimod'
