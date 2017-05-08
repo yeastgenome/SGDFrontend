@@ -483,6 +483,7 @@ CREATE TABLE nex.datasetsample (
 	sample_order integer NOT NULL,
 	dbxref_id varchar(40),
 	dbxref_type varchar(40),
+    dbxref_url varchar(500),
     biosample varchar(500),
 	strain_name varchar(500),
 	description varchar(500),
@@ -504,6 +505,7 @@ COMMENT ON COLUMN nex.datasetsample.dbxref_type IS 'Type of database cross refer
 COMMENT ON COLUMN nex.datasetsample.description IS 'Description or summary of the sample.';
 COMMENT ON COLUMN nex.datasetsample.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.datasetsample.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.datasetsample.dbxref_url IS 'URL of the dbxref_id.';
 ALTER TABLE nex.datasetsample ADD CONSTRAINT datasetsample_uk UNIQUE (format_name);
 ALTER TABLE nex.datasetsample ADD CONSTRAINT datasetsample_dbxref_type_ck CHECK (dbxref_type in ('GEO','ArrayExpress'));
 CREATE INDEX datasetsample_dataset_fk_index ON nex.datasetsample (dataset_id);
