@@ -1,12 +1,13 @@
 .navWrapper {
   background: #0581C2;
+  padding: 0;
 }
 .logoText {
   font-weight: bold;
   margin-left: 0.25rem;
 }
 .imgLogo {
-  width: 4rem;
+  width: 13rem;
 }
 .messageText {
   margin-bottom: 0.25rem;
@@ -17,7 +18,8 @@
 }
 .authMenu {
   font-size: 18px;
-  margin-top: 0.2rem;
+  margin-top: 0.9rem;
+  margin-right: 0.75rem;
   background: #0581C2;
 }
 .authMenu li {
