@@ -130,25 +130,25 @@ class LocusTest(unittest.TestCase):
         response = locus_literature_details(request)
         self.assertEqual(response.status_code, 404)
 
-    # @mock.patch('src.models.DBSession.query')
-    # def test_should_return_valid_locus_expression_details(self, mock_search):
-    #     mock_search.side_effect = locus_expression_side_effect
-    #
-    #     locus = factory.LocusdbentityFactory()
-    #
-    #     request = testing.DummyRequest()
-    #     request.context = testing.DummyResource()
-    #     request.matchdict['id'] = "S000114259"
-    #     response = locus_expression_details(request)
-    #     self.assertEqual(response, locus.expression_to_dict())
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_locus_expression_details(self, mock_search):
+        mock_search.side_effect = locus_expression_side_effect
+
+        locus = factory.LocusdbentityFactory()
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        request.matchdict['id'] = "S000114259"
+        response = locus_expression_details(request)
+        self.assertEqual(response, locus.expression_to_dict())
 
 
-    # @mock.patch('src.models.DBSession.query')
-    # def test_should_return_non_existent_locus_expression_details(self, mock_search):
-    #      mock_search.return_value = MockQuery(None)
-    #
-    #      request = testing.DummyRequest()
-    #      request.context = testing.DummyResource()
-    #      request.matchdict['id'] = 'nonexistent_id'
-    #      response = locus_expression_details(request)
-    #      self.assertEqual(response.status_code, 404)
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_non_existent_locus_expression_details(self, mock_search):
+         mock_search.return_value = MockQuery(None)
+
+         request = testing.DummyRequest()
+         request.context = testing.DummyResource()
+         request.matchdict['id'] = 'nonexistent_id'
+         response = locus_expression_details(request)
+         self.assertEqual(response.status_code, 404)
