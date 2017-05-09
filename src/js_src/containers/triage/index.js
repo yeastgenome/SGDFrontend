@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
 
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
@@ -13,10 +12,12 @@ import { setPending, finishPending } from '../../actions/metaActions';
 import TagList from '../../components/tagList';
 import TriageControls from './triageControls';
 
-const REF_BASE_URL = '/curate/reference';
+// const REF_BASE_URL = '/curate/reference';
 const TRIAGE_URL = '/reference/triage';
 const CHANNEL = 'sgd';
 const EVENT = 'triageUpdate';
+
+const PREVIEW_BASE_URL = 'https://curate.qa.yeastgenome.org';
 
 class LitTriageIndex extends Component {
   componentDidMount() {
@@ -85,7 +86,7 @@ class LitTriageIndex extends Component {
         <div>
           <h3 className='text-right'><i className={`fa fa-close ${style.closeIcon}`} onClick={onClear} /></h3>
         </div>
-        <h5><Link to={`${REF_BASE_URL}/${d.sgdid}`}><CategoryLabel category='reference' hideLabel /> {d.basic.citation}</Link> added to database.</h5>
+        <h5><a href={`${PREVIEW_BASE_URL}/reference/${d.sgdid}`} target='_new'><CategoryLabel category='reference' hideLabel /> {d.basic.citation}</a> added to database.</h5>
         <TagList entry={this.props.activeTagData} isReadOnly />
       </div>
     );
