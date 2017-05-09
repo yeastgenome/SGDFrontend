@@ -469,6 +469,7 @@ def reference_triage_promote(request):
         try:
             transaction.commit()
         except:
+            DBSession.rollback()
             return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify if pmid is valid and not already present.'}))
         
         DBSession.delete(triage)
