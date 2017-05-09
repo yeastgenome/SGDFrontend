@@ -59,12 +59,19 @@ def load_summaries(nex_session, summary_file_reader, summary_type=None):
         key = (x['locus_id'], x['summary_type'], x['summary_order'])
         summary_id = None
         if key in key_to_summary:
-            if x['text'] != key_to_summary[key].text.strip():
+            print key_to_summary[key].html
+            print x['text']
+            print x['html']
+            if x['text'] != key_to_summary[key].text.strip() and x['html'] != key_to_summary[key].html.strip():
                 # fw.write("OLD:" + key_to_summary[key].text + ":\n")
                 # fw.write("NEW:" + x['text'] + ":\n")
-                nex_session.query(Locussummary).filter_by(summary_id=key_to_summary[key].summary_id).update({'text': x['text']})
+                print 'processing'
+                print x
+                print x.keys()
+                nex_session.query(Locussummary).filter_by(summary_id=key_to_summary[key].summary_id).update({'text': x['text'], 'html': x['html']})
                 load_summary_holder['summary_updated'] = load_summary_holder['summary_updated'] + 1
             else:
+                print 'not updated'
                 # fw.write("SUMMARY is in DB\n")
                 summary_id = key_to_summary[key].summary_id
                 update_references(nex_session,
