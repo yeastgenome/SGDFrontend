@@ -510,9 +510,9 @@ def reference_triage_id_delete(request):
             except ValueError:
                 return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
 
-        reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=reason, created_by="OTTO")
-        
-        DBSession.add(reference_deleted)
+        # better way to delete triage? travis
+        # reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=reason, created_by="OTTO")
+        # DBSession.add(reference_deleted)
         DBSession.delete(triage)
         
         transaction.commit()
