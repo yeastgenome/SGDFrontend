@@ -4505,6 +4505,9 @@ class Phenotypeannotation(Base):
         
         for condition in conditions:
             if condition.condition_class == "chemical":
+                if chemical and chemical.display_name != condition.condition_name:
+                    continue
+                
                 if chemical is not None and (chemical.display_name == condition.condition_name):
                     chebi_url = chemical.obj_url
                 else:
