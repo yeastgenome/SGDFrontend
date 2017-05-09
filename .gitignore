@@ -30,3 +30,4 @@ asset_version.json
 .vscode/
 .idea/
 *.rdb
+.vscode/settings.json
