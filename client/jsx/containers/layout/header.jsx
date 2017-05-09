@@ -13,7 +13,7 @@ const Header = React.createClass({
               {/* put announcements here */}
             </div>
             <div className="site-links">
-              <a href="/about">About</a>
+              <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/about" className="hide-external-link-icon">About</a>
               <a href="/blog">Blog</a>
               <a href="/download-data">Download</a>
               <a className="hide-external-link-icon" target="_blank" href="https://sites.google.com/view/yeastgenome-help/">Help</a>
@@ -223,7 +223,7 @@ const Header = React.createClass({
             </li>
             <li className="has-dropdown" id="info-menu"><a href="#">Info &amp; Downloads</a>
               <ul className="dropdown">
-                <li><a className="disabled-header-a" href="/about">About</a></li>
+                <li><a className="disabled-header-a" href="https://sites.google.com/view/yeastgenome-help/about">About</a></li>
                 <li><a className="disabled-header-a" href="/blog">Blog</a></li>
                 <li><a className="disabled-header-a" href="/download-data">Downloads</a></li>
                 <li><a className="disabled-header-a" href="/site-map">Site Map</a></li>
