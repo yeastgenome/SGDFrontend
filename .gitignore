@@ -27,6 +27,7 @@ dev_deploy_variables.sh
 prod_deploy_variables.sh
 asset_version.json
 .idea/
+.vscode
 .vscode/
 *.rdb
 
