@@ -16,6 +16,7 @@ import TriageControls from './triageControls';
 const TRIAGE_URL = '/reference/triage';
 const CHANNEL = 'sgd';
 const EVENT = 'triageUpdate';
+const MAX_TRIAGE_NODES = 100;
 
 const PREVIEW_BASE_URL = 'https://curate.qa.yeastgenome.org';
 
@@ -58,7 +59,8 @@ class LitTriageIndex extends Component {
   }
 
   renderEntries() {
-    let nodes = this.props.triageEntries.map( (d) => {
+    let triageEntries = this.props.triageEntries.slice(0, MAX_TRIAGE_NODES);
+    let nodes = triageEntries.map( (d) => {
       return (
         <div className={`callout ${style.triageEntryContiner}`} key={'te' + d.curation_id}>
           {this.renderBasicRef(d)}
@@ -71,6 +73,7 @@ class LitTriageIndex extends Component {
     return (
       <div>
         {nodes}
+        <p>Showing {MAX_TRIAGE_NODES} of {this.props.triageEntries.length}. To show more, remove some items from above.</p>
       </div>
     );
   }

@@ -52,5 +52,6 @@ function replaceTriage(oldEntries, newEntries, currentUsername) {
       oldEntries[i] = d;
     }
   });
+  // TODO remove items from old if not in new
   return oldEntries;
 }

@@ -4,7 +4,12 @@ from pyramid.view import view_config
 from pyramid.compat import escape
 from pyramid.session import check_csrf_token
 
+<<<<<<< HEAD
 from sqlalchemy import func, distinct
+=======
+from sqlalchemy import func
+from sqlalchemy.exc import IntegrityError
+>>>>>>> slight triage changes clip to 100
 
 from oauth2client import client, crypt
 import os
@@ -453,6 +458,9 @@ def reference_triage_promote(request):
 
         try:
             reference_id, sgdid = add_paper(triage.pmid, request.json['data']['assignee'])
+        except IntegrityError:
+            traceback.print_exc()
+            return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
         except:
             traceback.print_exc()
             return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
@@ -463,7 +471,6 @@ def reference_triage_promote(request):
         try:
             transaction.commit()
         except:
-            DBSession.rollback()
             return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify if pmid is valid and not already present.'}))
         
         DBSession.delete(triage)
@@ -494,7 +501,6 @@ def reference_triage_promote(request):
 @view_config(route_name='reference_triage_id_delete', renderer='json', request_method='DELETE')
 def reference_triage_id_delete(request):
     id = request.matchdict['id'].upper()
-
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
         reason = None
@@ -505,7 +511,7 @@ def reference_triage_id_delete(request):
             except ValueError:
                 return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
 
-        # better way to delete triage? travis
+        # Do we need this? travis
         # reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=reason, created_by="OTTO")
         # DBSession.add(reference_deleted)
         DBSession.delete(triage)
