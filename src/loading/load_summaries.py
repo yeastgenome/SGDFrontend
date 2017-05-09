@@ -23,7 +23,8 @@ __author__ = 'sweng66'
          LOCUSSUMMARY_REFERENCE table
 '''  
 
-def load_summaries(nex_session, summary_file_reader, summary_type=None):
+def load_summaries(nex_session, summary_file_reader, username, summary_type=None, ):
+    CREATED_BY = username
     
     if summary_type is None:
         summary_type = "Phenotype_Regulation"
@@ -41,6 +42,7 @@ def load_summaries(nex_session, summary_file_reader, summary_type=None):
     source_id = source_to_id.get('SGD')
 
     summary_id_to_references = {}
+
     for x in nex_session.query(LocussummaryReference).all():
         references = []
         if x.summary_id in summary_id_to_references:
@@ -65,7 +67,6 @@ def load_summaries(nex_session, summary_file_reader, summary_type=None):
                 nex_session.query(Locussummary).filter_by(summary_id=key_to_summary[key].summary_id).update({'text': x['text'], 'html': x['html']})
                 load_summary_holder['summary_updated'] = load_summary_holder['summary_updated'] + 1
             else:
-                print 'not updated'
                 # fw.write("SUMMARY is in DB\n")
                 summary_id = key_to_summary[key].summary_id
                 update_references(nex_session,
@@ -75,34 +76,34 @@ def load_summaries(nex_session, summary_file_reader, summary_type=None):
                                   summary_id_to_references.get(summary_id), 
                                   x.get('references'))
         else:
-            summary_id = insert_summary(nex_session, load_summary_holder, source_id, x)
+            summary_id = insert_summary(nex_session, load_summary_holder, source_id, x, CREATED_BY)
             if x.get('references'):
                 for y in x['references']:
-                    insert_summary_reference(nex_session, load_summary_holder, source_id, summary_id, y)
+                    insert_summary_reference(nex_session, load_summary_holder, source_id, summary_id, y, CREATED_BY)
 
     transaction.commit()
     return data_to_return
 
-def insert_summary_reference(nex_session, load_summary_holder, source_id, summary_id, y):
+def insert_summary_reference(nex_session, load_summary_holder, source_id, summary_id, y, created_by):
     x = LocussummaryReference(summary_id = summary_id, 
                               reference_id = y['reference_id'], 
                               reference_order = y['reference_order'], 
                               source_id = source_id, 
-                              created_by = CREATED_BY)
+                              created_by = created_by)
     nex_session.add(x)
     
     load_summary_holder['summary_reference_added'] = load_summary_holder['summary_reference_added'] + 1
 
     # fw.write("insert new summary reference:" + str(summary_id) + ", " + str(y['reference_id']) + ", " + str(y['reference_order']))
 
-def insert_summary(nex_session, load_summary_holder, source_id, x):
+def insert_summary(nex_session, load_summary_holder, source_id, x, created_by):
     x = Locussummary(locus_id = x['locus_id'], 
                      summary_type = x['summary_type'], 
                      summary_order = x['summary_order'], 
                      text = x['text'], 
                      html = x['html'], 
                      source_id = source_id, 
-                     created_by = CREATED_BY)
+                     created_by = created_by)
     nex_session.add(x)
     nex_session.commit()
 
