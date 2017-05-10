@@ -23,11 +23,13 @@ __author__ = 'sweng66'
          LOCUSSUMMARY_REFERENCE table
 '''  
 
+all_Locusdbentity = None
 def load_summaries(nex_session, summary_file_reader, username, summary_type=None, ):
     CREATED_BY = username
     if summary_type is None:
         summary_type = "Phenotype_Regulation"
     # load lots of data into memory, perhaps could be filtered
+    global all_Locusdbentity
     all_Locusdbentity = nex_session.query(Locusdbentity).all()
     all_Referencedbentity = nex_session.query(Referencedbentity).all()
     all_locus_summary_reference = nex_session.query(LocussummaryReference).all()
@@ -273,9 +275,10 @@ word_to_dbentity_id = None
 
 def get_word_to_dbentity_id(word, nex_session):
     global word_to_dbentity_id
+    global all_Locusdbentity
     if word_to_dbentity_id is None:
         word_to_dbentity_id = {}
-        for locus in nex_session.query(Locusdbentity).all():
+        for locus in all_Locusdbentity:
             word_to_dbentity_id[locus.format_name.lower()] = locus.dbentity_id
             word_to_dbentity_id[locus.display_name.lower()] = locus.dbentity_id
             word_to_dbentity_id[locus.format_name.lower() + 'p'] = locus.dbentity_id
