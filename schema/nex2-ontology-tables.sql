@@ -231,14 +231,14 @@ CREATE TABLE nex.disease_alias (
 ) ;
 COMMENT ON TABLE nex.disease_alias IS 'Other names, synonyms or cross references for the disease.';
 COMMENT ON COLUMN nex.disease_alias.alias_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN nex.disease_alias.alias_type IS 'Type of alias (EXACT, RELATED, Alternate ID, DBXREF).';
+COMMENT ON COLUMN nex.disease_alias.alias_type IS 'Type of alias (EXACT, RELATED, BROAD, NARROW, Alternate ID, DBXREF).';
 COMMENT ON COLUMN nex.disease_alias.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.disease_alias.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.disease_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.disease_alias.disease_id IS 'FK to DISEASE.DISEASE_ID.';
 COMMENT ON COLUMN nex.disease_alias.display_name IS 'Public display name.';
 ALTER TABLE nex.disease_alias ADD CONSTRAINT disease_alias_uk UNIQUE (disease_id,display_name,alias_type);
-ALTER TABLE nex.disease_alias ADD CONSTRAINT diseasealias_type_ck CHECK (ALIAS_TYPE IN ('EXACT','RELATED','Alternate ID','DBXREF'));
+ALTER TABLE nex.disease_alias ADD CONSTRAINT diseasealias_type_ck CHECK (ALIAS_TYPE IN ('EXACT','RELATED','BROAD','NARROW','Alternate ID','DBXREF'));
 CREATE INDEX diseasealias_source_fk_index ON nex.disease_alias (source_id);
 
 DROP TABLE IF EXISTS nex.disease_relation CASCADE;
