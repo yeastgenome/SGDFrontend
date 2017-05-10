@@ -604,6 +604,9 @@ def phenotype_locus_details(request):
 
 @view_config(route_name='observable', renderer='json', request_method='GET')
 def observable(request):
+    if request.matchdict['format_name'].upper() == "YPO": # /ontology/phenotype/ypo -> root of APOs
+        return Apo.root_to_dict()
+    
     format_name = request.matchdict['format_name'].upper()
 
     observable = DBSession.query(Apo).filter_by(format_name=format_name).one_or_none()
