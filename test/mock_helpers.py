@@ -404,6 +404,11 @@ def dataset_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.DatasetUrl'>":
         dsurl = factory.DatasetUrlFactory()
         return MockQuery(dsurl)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.DatasetFile'>":
+        dsf = factory.DatasetFileFactory()
+        f = factory.FiledbentityFactory()
+        dsf.file = f
+        return MockQuery(dsf)
 
 
 def side_effect(*args, **kwargs):

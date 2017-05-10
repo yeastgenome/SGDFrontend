@@ -6,7 +6,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Strainsummary, StrainsummaryReference, Dataset, DatasetReference, DatasetKeyword, Referencetype, ReferenceRelation, ReferenceUrl, Referenceauthor, \
     Physinteractionannotation, Geninteractionannotation, Goannotation, Regulationannotation, Literatureannotation, Contig, EcoAlias, EcoUrl, Goextension, \
     Gosupportingevidence, Eco, Ro, Go, GoRelation, GoUrl, GoAlias, ApoRelation, Referencetriage, Proteinsequenceannotation, ProteinsequenceDetail, \
-    Goslimannotation, Expressionannotation, Datasetsample, DatasetUrl
+    Goslimannotation, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -322,7 +322,6 @@ class FiledbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     is_public = True
     is_in_spell = True
     is_in_browser = True
-    filepath_id = 1
     file_extension = "txt"
     data_id = 1
     s3_url = "http://example.org/s3"
@@ -1171,5 +1170,18 @@ class DatasetUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     source_id = 1
     dataset_id = 1
     url_type = "url type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class DatasetFileFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = DatasetFile
+        sqlalchemy_session = DBSession
+
+    dataset_file_id = 1
+    dataset_id = 1
+    file_id = 1
+    source_id = 1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
