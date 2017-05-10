@@ -200,6 +200,7 @@ class Apo(Base):
         children_relation = DBSession.query(ApoRelation).filter_by(parent_id=self.apo_id).all()
 
         add_parent_type = False
+        children_level = 0
         if self.apo_id == Apo.ROOT_ID:
             children_level = len(children_relation)
             add_parent_type = True
