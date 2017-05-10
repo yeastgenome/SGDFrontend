@@ -25,25 +25,27 @@ __author__ = 'sweng66'
 
 def load_summaries(nex_session, summary_file_reader, username, summary_type=None, ):
     CREATED_BY = username
-    
     if summary_type is None:
         summary_type = "Phenotype_Regulation"
-
-    [data, data_to_return] = read_summary_file(nex_session, summary_type, summary_file_reader)
-
+    # load lots of data into memory, perhaps could be filtered
+    all_Locusdbentity = nex_session.query(Locusdbentity).all()
+    all_Referencedbentity = nex_session.query(Referencedbentity).all()
+    all_locus_summary_reference = nex_session.query(LocussummaryReference).all()
+    all_Locussummary = nex_session.query(Locussummary).all()
+    all_Source = nex_session.query(Source).all()
+    # done with large requests, parse the file
+    [data, data_to_return] = read_summary_file(nex_session, summary_type, summary_file_reader, all_Locusdbentity, all_Referencedbentity)
     # not sure if need to write to file?
     # fw.write(str(datetime.now()) + "\n")
     # fw.write("retriveing data from database and store the data in dictionary...\n")
-    
-    key_to_summary = dict([((x.locus_id, x.summary_type, x.summary_order), x) for x in nex_session.query(Locussummary).all()])
-    key_to_summaryref = dict([((x.summary_id, x.reference_id, x.reference_order), x) for x in nex_session.query(LocussummaryReference).all()])
-    
-    source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
+    key_to_summary = dict([((x.locus_id, x.summary_type, x.summary_order), x) for x in all_Locussummary])
+    key_to_summaryref = dict([((x.summary_id, x.reference_id, x.reference_order), x) for x in all_locus_summary_reference])
+    source_to_id = dict([(x.display_name, x.source_id) for x in all_Source])
     source_id = source_to_id.get('SGD')
 
     summary_id_to_references = {}
 
-    for x in nex_session.query(LocussummaryReference).all():
+    for x in all_locus_summary_reference:
         references = []
         if x.summary_id in summary_id_to_references:
             references = summary_id_to_references[x.summary_id]
@@ -54,9 +56,9 @@ def load_summaries(nex_session, summary_file_reader, username, summary_type=None
                             "summary_updated": 0,
                             "summary_reference_added": 0 }
 
+    # update entries
     # fw.write(str(datetime.now()) + "\n")
     # fw.write("updating the database...\n")
-
     for x in data:
         key = (x['locus_id'], x['summary_type'], x['summary_order'])
         summary_id = None
@@ -148,10 +150,10 @@ def update_references(nex_session, load_summary_holder, source_id, summary_id, o
         #    # nex_session.delete(x)
         #    # print "The LOCUSSUMMARY_REFERENCE row for summary_id=", summary_id, " and reference_id=", x.reference_id, " has been deleted from the database."
 
-def read_summary_file(nex_session, summary_type, summary_file_reader):
-    name_to_dbentity = dict([(x.systematic_name, x) for x in nex_session.query(Locusdbentity).all()])
-    sgdid_to_dbentity_id = dict([(x.sgdid, x.dbentity_id) for x in nex_session.query(Locusdbentity).all()])
-    pmid_to_reference_id = dict([(x.pmid, x.dbentity_id) for x in nex_session.query(Referencedbentity).all()]) 
+def read_summary_file(nex_session, summary_type, summary_file_reader, all_Locusdbentity, all_Referencedbentity):
+    name_to_dbentity = dict([(x.systematic_name, x) for x in all_Locusdbentity])
+    sgdid_to_dbentity_id = dict([(x.sgdid, x.dbentity_id) for x in all_Locusdbentity])
+    pmid_to_reference_id = dict([(x.pmid, x.dbentity_id) for x in all_Referencedbentity]) 
     
     data = []
     data_to_return = []
