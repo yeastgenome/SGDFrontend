@@ -2296,7 +2296,7 @@ class Locusdbentity(Dbentity):
             "htp_cellular_component_terms": [], 
             "computational_annotation_count": 0,
             "go_slim": [],
-            "date_last_reviewed": "1900-01-01"
+            "date_last_reviewed": None
         }
 
         go_slims = DBSession.query(Goslimannotation).filter_by(dbentity_id=self.dbentity_id).all()
@@ -2313,7 +2313,7 @@ class Locusdbentity(Dbentity):
 
         go_annotations_mc = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="manually curated").all()
         for annotation in go_annotations_mc:
-            if annotation.date_assigned.strftime("%Y-%m-%d") > obj["date_last_reviewed"]:
+            if obj["date_last_reviewed"] is None or annotation.date_assigned.strftime("%Y-%m-%d") > obj["date_last_reviewed"]:
                 obj["date_last_reviewed"] = annotation.date_assigned.strftime("%Y-%m-%d")
             
             json = annotation.to_dict_lsp()
@@ -2327,7 +2327,7 @@ class Locusdbentity(Dbentity):
                         go[namespace][term]["evidence_codes"].append(ec)
             else:
                 go[namespace][term] = json
-                
+
         for namespace in go.keys():
             terms = sorted(go[namespace].keys(), key=lambda k : k.lower())
             
@@ -2348,9 +2348,6 @@ class Locusdbentity(Dbentity):
 
         go_annotations_htp = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="high-throughput").all()
         for annotation in go_annotations_htp:
-            if annotation.date_assigned.strftime("%Y-%m-%d") > obj["date_last_reviewed"]:
-                obj["date_last_reviewed"] = annotation.date_assigned.strftime("%Y-%m-%d")
-            
             json = annotation.to_dict_lsp()
             
             namespace = json["namespace"]
@@ -3612,7 +3609,7 @@ class Goannotation(Base):
             "id": self.annotation_id,
             "annotation_type": self.annotation_type,
             "date_created": self.date_created.strftime("%Y-%m-%d"),
-            "qualifier": self.go_qualifier,
+            "qualifier": self.go_qualifier.replace("_", " "),
             "locus": {
                 "display_name": self.dbentity.display_name,
                 "link": self.dbentity.obj_url,
@@ -3620,7 +3617,7 @@ class Goannotation(Base):
                 "format_name": self.dbentity.format_name
             },
             "go": {
-                "display_name": go.display_name,
+                "display_name": go.display_name.replace("_", " "),
                 "link": go.obj_url,
                 "go_id": go.goid,
                 "go_aspect": go.go_namespace,
@@ -3719,7 +3716,7 @@ class Goextension(Base):
                     "link": dbentity.obj_url,
                     "class_type": dbentity.subclass
                 },
-                "role": self.ro.display_name.capitalize()
+                "role": self.ro.display_name
             }
         elif source_id[0] == "GO":
             go_evidence = DBSession.query(Go).filter_by(goid=self.dbxref_id).one_or_none()
@@ -3729,7 +3726,7 @@ class Goextension(Base):
                         "display_name": go_evidence.display_name,
                         "link": go_evidence.obj_url
                     },
-                    "role": self.ro.display_name.capitalize()
+                    "role": self.ro.display_name
                 }
         elif source_id[0] == "CHEBI":
             chebi = DBSession.query(Chebi).filter_by(chebiid=self.dbxref_id).one_or_none()
@@ -3739,7 +3736,7 @@ class Goextension(Base):
                         "display_name": chebi.display_name,
                         "link": chebi.obj_url
                     },
-                    "role": self.ro.display_name.capitalize()
+                    "role": self.ro.display_name
                 }
         else:
             return {
@@ -3747,7 +3744,7 @@ class Goextension(Base):
                     "display_name": source_id[1],
                     "link": self.obj_url
                 },
-                "role": self.ro.display_name.capitalize()
+                "role": self.ro.display_name
             }
         
         return None
@@ -3839,7 +3836,7 @@ class Gosupportingevidence(Base):
                     "link": dbentity.obj_url,
                     "class_type": dbentity.subclass
                 },
-                "role": self.evidence_type.capitalize()
+                "role": self.evidence_type
             }
         elif source_id[0] == "GO":
             go_evidence = DBSession.query(Go).filter_by(goid=self.dbxref_id).one_or_none()
@@ -3849,7 +3846,7 @@ class Gosupportingevidence(Base):
                         "display_name": go_evidence.display_name,
                         "link": go_evidence.obj_url
                     },
-                    "role": self.evidence_type.capitalize()
+                    "role": self.evidence_type
                 }
         elif source_id[0] == "CHEBI":
             chebi = DBSession.query(Chebi).filter_by(chebiid=self.dbxref_id).one_or_none()
@@ -3859,7 +3856,7 @@ class Gosupportingevidence(Base):
                         "display_name": chebi.display_name,
                         "link": chebi.obj_url
                     },
-                    "role": self.evidence_type.capitalize()
+                    "role": self.evidence_type
                 }
         else:
             return {
@@ -3867,7 +3864,7 @@ class Gosupportingevidence(Base):
                     "display_name": source_id[1],
                     "link": self.obj_url
                 },
-                "role": self.evidence_type.capitalize()
+                "role": self.evidence_type
             }
         
         return None
