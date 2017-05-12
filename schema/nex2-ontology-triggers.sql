@@ -2178,6 +2178,8 @@ BEGIN
         PERFORM nex.insertupdatelog('KEYWORD'::text, 'DESCRIPTION'::text, OLD.keyword_id, OLD.description, NEW.description, USER);
     END IF;
 
+    RETURN NEW;
+
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.keyword_id || '[:]' || OLD.format_name || '[:]' ||
@@ -3005,6 +3007,8 @@ BEGIN
     IF (OLD.alias_type != NEW.alias_type) THEN
         PERFORM nex.insertupdatelog('SO_ALIAS'::text, 'ALIAS_TYPE'::text, OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
     END IF;
+
+    RETURN NEW;
 
   ELSIF (TG_OP = 'DELETE') THEN
 
