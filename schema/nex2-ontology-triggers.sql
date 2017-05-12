@@ -42,6 +42,10 @@ BEGIN
         PERFORM nex.insertupdatelog('APO'::text, 'NAMESPACE_GROUP'::text, OLD.apo_id, OLD.namespace_group, NEW.namespace_group, USER);
     END IF;
 
+    IF (OLD.is_obsolete != NEW.is_obsolete) THEN
+        PERFORM nex.insertupdatelog('APO'::text, 'IS_OBSOLETE'::text, OLD.apo_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+    END IF;
+
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
         PERFORM nex.insertupdatelog('APO'::text, 'DESCRIPTION'::text, OLD.apo_id, OLD.description, NEW.description, USER);
     END IF;
@@ -52,9 +56,9 @@ BEGIN
 
     v_row := OLD.apo_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
-             OLD.source_id || '[:]' || 
-             OLD.apo_id || '[:]' || OLD.apo_namespace || '[:]' ||
-             coalesce(OLD.namespace_group,'') || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.source_id || '[:]' || OLD.apo_id || '[:]' || 
+             OLD.apo_namespace || '[:]' || coalesce(OLD.namespace_group,'') || '[:]' || 
+             OLD.is_obsolete || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
     PERFORM nex.insertdeletelog('APO'::text, OLD.apo_id, v_row, USER);
@@ -370,6 +374,10 @@ BEGIN
         PERFORM nex.insertupdatelog('CHEBI'::text, 'CHEBIID'::text, OLD.chebi_id, OLD.chebiid, NEW.chebiid, USER);
     END IF;
 
+    IF (OLD.is_obsolete != NEW.is_obsolete) THEN
+	PERFORM nex.insertupdatelog('CHEBI'::text, 'IS_OBSOLETE'::text, OLD.chebi_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+    END IF;
+
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
         PERFORM nex.insertupdatelog('CHEBI'::text, 'DESCRIPTION'::text, OLD.chebi_id, OLD.description, NEW.description, USER);
     END IF;
@@ -379,9 +387,9 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.chebi_id || '[:]' || OLD.format_name || '[:]' ||
-  	     OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
-             OLD.source_id || '[:]' || 
-             OLD.chebiid || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+  	         OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
+             OLD.source_id || '[:]' || OLD.chebiid || '[:]' || 
+             OLD.is_obsolete || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
     PERFORM nex.insertdeletelog('CHEBI'::text, OLD.chebi_id, v_row, USER);
@@ -618,6 +626,10 @@ BEGIN
         PERFORM nex.insertupdatelog('DISEASE'::text, 'DOID'::text, OLD.disease_id, OLD.doid, NEW.doid, USER);
     END IF;
 
+    IF (OLD.is_obsolete != NEW.is_obsolete) THEN
+	PERFORM nex.insertupdatelog('DISEASE'::text, 'IS_OBSOLETE'::text, OLD.disease_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+    END IF;
+
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
         PERFORM nex.insertupdatelog('DISEASE'::text, 'DESCRIPTION'::text, OLD.disease_id, OLD.description, NEW.description, USER);
     END IF;
@@ -628,8 +640,8 @@ BEGIN
 
     v_row := OLD.disease_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
-             OLD.source_id || '[:]' || 
-             OLD.doid || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.source_id || '[:]' || OLD.doid || '[:]' || 
+             OLD.is_obsolete || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
              PERFORM nex.insertdeletelog('DISEASE'::text, OLD.disease_id, v_row, USER);
@@ -944,6 +956,10 @@ BEGIN
         PERFORM nex.insertupdatelog('EC'::text, 'ECID'::text, OLD.ec_id, OLD.ecid, NEW.ecid, USER);
     END IF;
 
+    IF (OLD.is_obsolete != NEW.is_obsolete) THEN
+	PERFORM nex.insertupdatelog('EC'::text, 'IS_OBSOLETE'::text, OLD.ec_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+    END IF;
+
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
         PERFORM nex.insertupdatelog('EC'::text, 'DESCRIPTION'::text, OLD.ec_id, OLD.description, NEW.description, USER);
     END IF;
@@ -954,8 +970,8 @@ BEGIN
 
     v_row := OLD.ec_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
-             OLD.source_id || '[:]' ||
-             OLD.ecid || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.source_id || '[:]' || OLD.ecid || '[:]' || 
+             OLD.is_obsolete || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
              PERFORM nex.insertdeletelog('EC'::text, OLD.ec_id, v_row, USER);
@@ -1192,6 +1208,10 @@ BEGIN
         PERFORM nex.insertupdatelog('ECO'::text, 'ECOID'::text, OLD.eco_id, OLD.ecoid, NEW.ecoid, USER);
     END IF;
 
+    IF (OLD.is_obsolete != NEW.is_obsolete) THEN
+	PERFORM nex.insertupdatelog('ECO'::text, 'IS_OBSOLETE'::text, OLD.eco_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+    END IF;
+
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
         PERFORM nex.insertupdatelog('ECO'::text, 'DESCRIPTION'::text, OLD.eco_id, OLD.description, NEW.description, USER);
     END IF;
@@ -1202,8 +1222,8 @@ BEGIN
 
     v_row := OLD.eco_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
-             OLD.source_id || '[:]' || 
-             OLD.ecoid || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.source_id || '[:]' || OLD.ecoid || '[:]' || 
+             OLD.is_obsolete || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
             PERFORM nex.insertdeletelog('ECO'::text, OLD.eco_id, v_row, USER);
@@ -1522,6 +1542,10 @@ BEGIN
         PERFORM nex.insertupdatelog('EDAM'::text, 'EDAM_NAMESPACE'::text, OLD.edam_id, OLD.edam_namespace, NEW.edam_namespace, USER);
     END IF;
 
+    IF (OLD.is_obsolete != NEW.is_obsolete) THEN
+	    PERFORM nex.insertupdatelog('EDAM'::text, 'IS_OBSOLETE'::text, OLD.edam_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+    END IF;
+
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
         PERFORM nex.insertupdatelog('EDAM'::text, 'DESCRIPTION'::text, OLD.edam_id, OLD.description, NEW.description, USER);
     END IF;
@@ -1533,7 +1557,8 @@ BEGIN
     v_row := OLD.edam_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || OLD.edamid || '[:]' ||
-             OLD.edam_namespace || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.edam_namespace || '[:]' || OLD.is_obsolete || '[:]' || 
+             coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
              PERFORM nex.insertdeletelog('EDAM'::text, OLD.edam_id, v_row, USER);
@@ -1852,6 +1877,10 @@ BEGIN
         PERFORM nex.insertupdatelog('GO'::text, 'GO_NAMESPACE'::text, OLD.go_id, OLD.go_namespace, NEW.go_namespace, USER);
     END IF;
 
+    IF (OLD.is_obsolete != NEW.is_obsolete) THEN
+	    PERFORM nex.insertupdatelog('GO'::text, 'IS_OBSOLETE'::text, OLD.go_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+    END IF;
+
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
         PERFORM nex.insertupdatelog('GO'::text, 'DESCRIPTION'::text, OLD.go_id, OLD.description, NEW.description, USER);
     END IF;
@@ -1863,7 +1892,8 @@ BEGIN
     v_row := OLD.go_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || OLD.goid || '[:]' ||
-             OLD.go_namespace || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.go_namespace || '[:]' || OLD.is_obsolete || '[:]' ||
+             coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
              PERFORM nex.insertdeletelog('GO'::text, OLD.go_id, v_row, USER);
@@ -2174,6 +2204,10 @@ BEGIN
         PERFORM nex.insertupdatelog('KEYWORD'::text, 'SOURCE_ID'::text, OLD.keyword_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
+    IF (OLD.is_obsolete != NEW.is_obsolete) THEN
+	     PERFORM nex.insertupdatelog('KEYWORD'::text, 'IS_OBSOLETE'::text, OLD.keyword_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+    END IF;
+
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
         PERFORM nex.insertupdatelog('KEYWORD'::text, 'DESCRIPTION'::text, OLD.keyword_id, OLD.description, NEW.description, USER);
     END IF;
@@ -2184,7 +2218,8 @@ BEGIN
 
     v_row := OLD.keyword_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
-             OLD.source_id || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.source_id || '[:]' || OLD.is_obsolete || '[:]' ||
+             coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
             PERFORM nex.insertdeletelog('KEYWORD'::text, OLD.keyword_id, v_row, USER);
@@ -2260,6 +2295,10 @@ BEGIN
         PERFORM nex.insertupdatelog('OBI'::text, 'OBIID'::text, OLD.obi_id, OLD.obiid, NEW.obiid, USER);
     END IF;
 
+    IF (OLD.is_obsolete != NEW.is_obsolete) THEN
+	     PERFORM nex.insertupdatelog('OBI'::text, 'IS_OBSOLETE'::text, OLD.obi_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+    END IF;
+
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
         PERFORM nex.insertupdatelog('OBI'::text, 'DESCRIPTION'::text, OLD.obi_id, OLD.description, NEW.description, USER);
     END IF;
@@ -2270,8 +2309,8 @@ BEGIN
 
     v_row := OLD.obi_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
-             OLD.source_id || '[:]' || 
-             OLD.obiid || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.source_id || '[:]' || OLD.obiid || '[:]' || 
+             OLD.is_obsolete || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
              PERFORM nex.insertdeletelog('OBI'::text, OLD.obi_id, v_row, USER);
@@ -2508,6 +2547,10 @@ BEGIN
         PERFORM nex.insertupdatelog('PSIMOD'::text, 'PSIMODID'::text, OLD.psimod_id, OLD.psimodid, NEW.psimodid, USER);
     END IF;
 
+    IF (OLD.is_obsolete != NEW.is_obsolete) THEN
+	    PERFORM nex.insertupdatelog('PSIMOD'::text, 'IS_OBSOLETE'::text, OLD.psimod_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+    END IF;
+
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
         PERFORM nex.insertupdatelog('PSIMOD'::text, 'DESCRIPTION'::text, OLD.psimod_id, OLD.description, NEW.description, USER);
     END IF;
@@ -2518,8 +2561,8 @@ BEGIN
 
     v_row := OLD.psimod_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
-             OLD.source_id || '[:]' || 
-             OLD.psimodid || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.source_id || '[:]' || OLD.psimodid || '[:]' || 
+             coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
              PERFORM nex.insertdeletelog('PSIMOD'::text, OLD.psimod_id, v_row, USER);
@@ -2755,6 +2798,10 @@ BEGIN
         PERFORM nex.insertupdatelog('RO'::text, 'ROID'::text, OLD.ro_id, OLD.roid, NEW.roid, USER);
     END IF;
 
+    IF (OLD.is_obsolete != NEW.is_obsolete) THEN
+	    PERFORM nex.insertupdatelog('RO'::text, 'IS_OBSOLETE'::text, OLD.ro_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+    END IF;
+
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
         PERFORM nex.insertupdatelog('RO'::text, 'DESCRIPTION'::text, OLD.ro_id, OLD.description, NEW.description, USER);
     END IF;
@@ -2765,8 +2812,8 @@ BEGIN
 
     v_row := OLD.ro_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
-             OLD.source_id || '[:]' || 
-             OLD.ro_id || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.source_id || '[:]' || OLD.ro_id || '[:]' || 
+             OLD.is_obsolete || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
              PERFORM nex.insertdeletelog('RO'::text, OLD.ro_id, v_row, USER);
@@ -2925,6 +2972,10 @@ BEGIN
         PERFORM nex.insertupdatelog('SO'::text, 'SOID'::text, OLD.so_id, OLD.soid, NEW.soid, USER);
     END IF;
 
+    IF (OLD.is_obsolete != NEW.is_obsolete) THEN
+	    PERFORM nex.insertupdatelog('SO'::text, 'IS_OBSOLETE'::text, OLD.so_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+    END IF;
+
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
         PERFORM nex.insertupdatelog('SO'::text, 'DESCRIPTION'::text, OLD.so_id, OLD.description, NEW.description, USER);
     END IF;
@@ -2935,8 +2986,8 @@ BEGIN
 
     v_row := OLD.so_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
-             OLD.source_id || '[:]' || 
-             OLD.soid || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.source_id || '[:]' || OLD.soid || '[:]' || 
+             OLD.is_obsolete || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
              PERFORM nex.insertdeletelog('SO'::text, OLD.so_id, v_row, USER);
@@ -3259,6 +3310,10 @@ BEGIN
         PERFORM nex.insertupdatelog('TAXONOMY'::text, 'RANK'::text, OLD.taxonomy_id, OLD.rank, NEW.rank, USER);
     END IF;
 
+    IF (OLD.is_obsolete != NEW.is_obsolete) THEN
+	    PERFORM nex.insertupdatelog('TAXONOMY'::text, 'IS_OBSOLETE'::text, OLD.taxonomy_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+    END IF;
+
     RETURN NEW;
  
   ELSIF (TG_OP = 'DELETE') THEN
@@ -3267,6 +3322,7 @@ BEGIN
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || OLD.taxid || '[:]' ||
              coalesce(OLD.common_name,'') || '[:]' || OLD.rank || '[:]' ||
+             OLD.is_obsolete || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
              PERFORM nex.insertdeletelog('TAXONOMY'::text, OLD.taxonomy_id, v_row, USER);
