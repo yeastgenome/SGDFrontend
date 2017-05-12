@@ -89,6 +89,8 @@ class Apo(Base):
 
     db_cache = {}
 
+    ROOT_ID = 169833
+
     @staticmethod
     def get_apo_by_id(apo_id):
         if apo_id in Apo.db_cache:
@@ -98,7 +100,14 @@ class Apo(Base):
             Apo.db_cache[apo_id] = apo
             return apo
 
-    #observables
+    @staticmethod
+    def root_to_dict():
+        return {
+            "display_name": "Yeast Phenotype Ontology",
+            "description": "Features of Saccharomyces cerevisiae cells, cultures, or colonies that can be detected, observed, measured, or monitored.",
+            "id": Apo.ROOT_ID
+        }
+
     def to_dict(self):
         phenotypes = DBSession.query(Phenotype.obj_url, Phenotype.qualifier_id, Phenotype.phenotype_id).filter_by(observable_id=self.apo_id).all()
 
@@ -166,32 +175,55 @@ class Apo(Base):
 
         annotations = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([p.phenotype_id for p in phenotypes])).group_by(Phenotypeannotation.dbentity_id).count()
 
-        nodes = [{
-            "data": {
-                "link": self.obj_url,
-                "sub_type": "FOCUS",
-                "name": self.display_name + " (" + str(annotations) + ")",
-                "id": str(self.apo_id)
-            }
-        }]
+        if self.apo_id == Apo.ROOT_ID:
+            nodes = [{
+                "data": {
+                    "link": "/ontology/phenotype/ypo",
+                    "sub_type": "FOCUS",
+                    "name": "Yeast Phenotype Ontology",
+                    "id": str(self.apo_id)
+                }
+            }]
+        else:
+            nodes = [{
+                "data": {
+                    "link": self.obj_url,
+                    "sub_type": "FOCUS",
+                    "name": self.display_name + " (" + str(annotations) + ")",
+                    "id": str(self.apo_id)
+                }
+            }]
 
         edges = []
         all_children = []
 
         children_relation = DBSession.query(ApoRelation).filter_by(parent_id=self.apo_id).all()
+
+        add_parent_type = False
+        children_level = 0
+        if self.apo_id == Apo.ROOT_ID:
+            children_level = len(children_relation)
+            add_parent_type = True
+        level = 0
+        
         for child_relation in children_relation:
-            child_node = child_relation.to_graph(nodes, edges, add_child=True)
+            child_node = child_relation.to_graph(nodes, edges, add_child=True, add_parent_type=add_parent_type)
             all_children.append({
                 "display_name": child_node.display_name,
                 "link": child_node.obj_url
             })
 
+            if level < children_level:
+                children_relation += DBSession.query(ApoRelation).filter_by(parent_id=child_node.apo_id).all()
+                level += 1
+
         level = 0
+        parent_level = 3
         parents_relation = DBSession.query(ApoRelation).filter_by(child_id=self.apo_id).all()
         for parent_relation in parents_relation:
             parent_relation.to_graph(nodes, edges, add_parent=True)
 
-            if level < 3:
+            if level < parent_level:
                 parents_relation += DBSession.query(ApoRelation).filter_by(child_id=parent_relation.parent.apo_id).all()
                 level += 1
 
@@ -201,8 +233,42 @@ class Apo(Base):
             "nodes": nodes,
             "all_children": all_children
         }
+
+        if self.apo_id == Apo.ROOT_ID:
+            graph["full_ontology"] = Apo.get_full_ontology()
         
         return graph
+
+    @staticmethod
+    def get_full_ontology():
+        node_ids = [Apo.ROOT_ID]
+
+        root = Apo.get_apo_by_id(Apo.ROOT_ID)
+        
+        ontology = {
+            "child_to_parent": {},
+            "elements": [{
+                "display_name": "Yeast Phenotype Ontology",
+                "id": root.apo_id,
+                "link": root.obj_url
+            }]
+        }
+
+        apos = DBSession.query(Apo).all()
+        relations = DBSession.query(ApoRelation).all()
+
+        for apo in apos:
+            if apo.apo_id != Apo.ROOT_ID:
+                ontology["elements"].append({
+                    "display_name": apo.display_name,
+                    "id": apo.apo_id,
+                    "link": apo.obj_url
+                })
+        
+        for relation in relations:
+            ontology["child_to_parent"][relation.child_id] = relation.parent_id
+  
+        return ontology
 
     def get_base_url(self):
         return '/observable/' + self.format_name
@@ -251,13 +317,16 @@ class ApoRelation(Base):
     ro = relationship(u'Ro')
     source = relationship(u'Source')
 
-    def to_graph(self, nodes, edges, add_parent=False, add_child=False):
+    def to_graph(self, nodes, edges, add_parent=False, add_child=False, add_parent_type=False):
+        parent = Apo.get_apo_by_id(self.parent_id)
+
         adding_nodes = []
         if add_parent:
-            adding_nodes.append(self.parent)
+            adding_nodes.append(parent)
 
         if add_child:
-            adding_nodes.append(self.child)
+            child = Apo.get_apo_by_id(self.child_id)
+            adding_nodes.append(child)
 
         for node in adding_nodes:
             if node.display_name == "observable":
@@ -268,7 +337,12 @@ class ApoRelation(Base):
 
                 annotations = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([p.phenotype_id for p in phenotypes])).group_by(Phenotypeannotation.dbentity_id).count()
 
-                type = "development"
+                if add_parent_type:
+                    type = parent.display_name
+                    if type == "observable":
+                        type = node.display_name
+                else:
+                    type = "development"
                 name = node.display_name + " (" + str(annotations) + ")"
                 
             nodes.append({
@@ -283,8 +357,8 @@ class ApoRelation(Base):
         edges.append({
             "data": {
                 "name": self.ro.display_name,
-                "target": str(self.child.apo_id),
-                "source": str(self.parent.apo_id)
+                "target": str(self.child_id),
+                "source": str(self.parent_id)
             }
         })
 
@@ -2222,7 +2296,7 @@ class Locusdbentity(Dbentity):
             "htp_cellular_component_terms": [], 
             "computational_annotation_count": 0,
             "go_slim": [],
-            "date_last_reviewed": "1900-01-01"
+            "date_last_reviewed": None
         }
 
         go_slims = DBSession.query(Goslimannotation).filter_by(dbentity_id=self.dbentity_id).all()
@@ -2239,7 +2313,7 @@ class Locusdbentity(Dbentity):
 
         go_annotations_mc = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="manually curated").all()
         for annotation in go_annotations_mc:
-            if annotation.date_assigned.strftime("%Y-%m-%d") > obj["date_last_reviewed"]:
+            if obj["date_last_reviewed"] is None or annotation.date_assigned.strftime("%Y-%m-%d") > obj["date_last_reviewed"]:
                 obj["date_last_reviewed"] = annotation.date_assigned.strftime("%Y-%m-%d")
             
             json = annotation.to_dict_lsp()
@@ -2253,7 +2327,7 @@ class Locusdbentity(Dbentity):
                         go[namespace][term]["evidence_codes"].append(ec)
             else:
                 go[namespace][term] = json
-                
+
         for namespace in go.keys():
             terms = sorted(go[namespace].keys(), key=lambda k : k.lower())
             
@@ -2274,9 +2348,6 @@ class Locusdbentity(Dbentity):
 
         go_annotations_htp = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="high-throughput").all()
         for annotation in go_annotations_htp:
-            if annotation.date_assigned.strftime("%Y-%m-%d") > obj["date_last_reviewed"]:
-                obj["date_last_reviewed"] = annotation.date_assigned.strftime("%Y-%m-%d")
-            
             json = annotation.to_dict_lsp()
             
             namespace = json["namespace"]
@@ -3538,7 +3609,7 @@ class Goannotation(Base):
             "id": self.annotation_id,
             "annotation_type": self.annotation_type,
             "date_created": self.date_created.strftime("%Y-%m-%d"),
-            "qualifier": self.go_qualifier,
+            "qualifier": self.go_qualifier.replace("_", " "),
             "locus": {
                 "display_name": self.dbentity.display_name,
                 "link": self.dbentity.obj_url,
@@ -3546,7 +3617,7 @@ class Goannotation(Base):
                 "format_name": self.dbentity.format_name
             },
             "go": {
-                "display_name": go.display_name,
+                "display_name": go.display_name.replace("_", " "),
                 "link": go.obj_url,
                 "go_id": go.goid,
                 "go_aspect": go.go_namespace,
@@ -3645,7 +3716,7 @@ class Goextension(Base):
                     "link": dbentity.obj_url,
                     "class_type": dbentity.subclass
                 },
-                "role": self.ro.display_name.capitalize()
+                "role": self.ro.display_name
             }
         elif source_id[0] == "GO":
             go_evidence = DBSession.query(Go).filter_by(goid=self.dbxref_id).one_or_none()
@@ -3655,7 +3726,7 @@ class Goextension(Base):
                         "display_name": go_evidence.display_name,
                         "link": go_evidence.obj_url
                     },
-                    "role": self.ro.display_name.capitalize()
+                    "role": self.ro.display_name
                 }
         elif source_id[0] == "CHEBI":
             chebi = DBSession.query(Chebi).filter_by(chebiid=self.dbxref_id).one_or_none()
@@ -3665,7 +3736,7 @@ class Goextension(Base):
                         "display_name": chebi.display_name,
                         "link": chebi.obj_url
                     },
-                    "role": self.ro.display_name.capitalize()
+                    "role": self.ro.display_name
                 }
         else:
             return {
@@ -3673,7 +3744,7 @@ class Goextension(Base):
                     "display_name": source_id[1],
                     "link": self.obj_url
                 },
-                "role": self.ro.display_name.capitalize()
+                "role": self.ro.display_name
             }
         
         return None
@@ -3765,7 +3836,7 @@ class Gosupportingevidence(Base):
                     "link": dbentity.obj_url,
                     "class_type": dbentity.subclass
                 },
-                "role": self.evidence_type.capitalize()
+                "role": self.evidence_type
             }
         elif source_id[0] == "GO":
             go_evidence = DBSession.query(Go).filter_by(goid=self.dbxref_id).one_or_none()
@@ -3775,7 +3846,7 @@ class Gosupportingevidence(Base):
                         "display_name": go_evidence.display_name,
                         "link": go_evidence.obj_url
                     },
-                    "role": self.evidence_type.capitalize()
+                    "role": self.evidence_type
                 }
         elif source_id[0] == "CHEBI":
             chebi = DBSession.query(Chebi).filter_by(chebiid=self.dbxref_id).one_or_none()
@@ -3785,7 +3856,7 @@ class Gosupportingevidence(Base):
                         "display_name": chebi.display_name,
                         "link": chebi.obj_url
                     },
-                    "role": self.evidence_type.capitalize()
+                    "role": self.evidence_type
                 }
         else:
             return {
@@ -3793,7 +3864,7 @@ class Gosupportingevidence(Base):
                     "display_name": source_id[1],
                     "link": self.obj_url
                 },
-                "role": self.evidence_type.capitalize()
+                "role": self.evidence_type
             }
         
         return None
@@ -4404,6 +4475,9 @@ class Phenotypeannotation(Base):
 
         if locus == None:
             locus = self.dbentity
+
+        if phenotype == None:
+            phenotype = self.phenotype
         
         properties = []
         
@@ -4461,22 +4535,9 @@ class Phenotypeannotation(Base):
             experiment_obj = {
                 "display_name": experiment.display_name,
                 "link": None, # self.experiment.obj_url -> no page yet
-                "category": experiment.apo_namespace
+                "category": experiment.namespace_group
             }
 
-        if phenotype:
-            phenotype_obj = {
-                "display_name": phenotype.display_name,
-                "link": phenotype.obj_url,
-                "id": phenotype.phenotype_id
-            }
-        else:
-            phenotype_obj = {
-                "display_name": self.phenotype.display_name,
-                "link": self.phenotype.obj_url,
-                "id": self.phenotype.phenotype_id
-            }
-            
         obj = {
             "id": self.annotation_id,
             "mutant_type": mutant.display_name,
@@ -4491,7 +4552,11 @@ class Phenotypeannotation(Base):
             "strain": strain_obj,
             "properties": properties,
             "note": note,
-            "phenotype": phenotype_obj,
+            "phenotype": {
+                "display_name": self.phenotype.display_name,
+                "link": self.phenotype.obj_url,
+                "id": self.phenotype.phenotype_id
+            },
             "reference": {
                 "display_name": reference.display_name,
                 "link": reference.obj_url,
@@ -4504,10 +4569,7 @@ class Phenotypeannotation(Base):
         groups = {}
         
         for condition in conditions:
-            if condition.condition_class == "chemical":
-                if chemical and chemical.display_name != condition.condition_name:
-                    continue
-                
+            if condition.condition_class == "chemical":                
                 if chemical is not None and (chemical.display_name == condition.condition_name):
                     chebi_url = chemical.obj_url
                 else:
@@ -4545,6 +4607,19 @@ class Phenotypeannotation(Base):
                     "note": note
                 })
 
+        if chemical:
+            groups_to_delete = []
+            for group_id in groups:
+                chemical_present_in_group = False
+                for condition in groups[group_id]:
+                    if condition["class_type"] == "CHEMICAL" and condition["bioitem"]["display_name"] == chemical.display_name:
+                        chemical_present_in_group = True
+                if not chemical_present_in_group:
+                    groups_to_delete.append(group_id)
+
+            for group_id in groups_to_delete:
+                del groups[group_id]
+
         final_obj = []
         for group_id in groups:
             obj_group = copy.deepcopy(obj)
@@ -4554,21 +4629,8 @@ class Phenotypeannotation(Base):
         if len(final_obj) == 0:
             final_obj = [obj]
 
-        for obj in final_obj:
-            Phenotypeannotation.adjust_phenotype_name_with_chemical(obj)
-                
         return final_obj
 
-    @staticmethod
-    def adjust_phenotype_name_with_chemical(obj):
-        phenotype = obj["phenotype"]["display_name"]
-        if phenotype.startswith("resistance to chemicals"):
-            chemical = None
-            for prop in obj["properties"]:
-                if prop["class_type"] == "CHEMICAL":
-                    chemical = prop["bioitem"]["display_name"]
-                    break
-            obj["phenotype"]["display_name"] = phenotype.replace("chemicals", chemical, 1)
 
 class PhenotypeannotationCond(Base):
     __tablename__ = 'phenotypeannotation_cond'
