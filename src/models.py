@@ -4409,17 +4409,24 @@ class Phenotypeannotation(Base):
         strains_result = []
 
         if annotations is None:
-            counts = DBSession.query(Phenotypeannotation.taxonomy_id, func.count(Phenotypeannotation.taxonomy_id)).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).group_by(Phenotypeannotation.taxonomy_id).all()
-        else:
-            counts_dict = {}
-            for annotation in annotations:
-                if annotation.taxonomy_id in counts_dict:
-                    counts_dict[annotation.taxonomy_id] += 1
-                else:
-                    counts_dict[annotation.taxonomy_id] = 1
-            counts = []
-            for taxonomy in counts_dict:
-                counts.append((taxonomy, counts_dict[taxonomy]))
+            annotations = DBSession.query(Phenotypeannotation.taxonomy_id, Phenotypeannotation.annotation_id).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).all()
+                    
+        counts_dict = {}
+        for annotation in annotations:
+            add = 1
+                
+            number_conditions = DBSession.query(PhenotypeannotationCond).distinct(PhenotypeannotationCond.group_id).filter_by(annotation_id=annotation.annotation_id).count()
+            if number_conditions > 1:
+                add = number_conditions
+                
+            if annotation.taxonomy_id in counts_dict:
+                counts_dict[annotation.taxonomy_id] += add
+            else:
+                counts_dict[annotation.taxonomy_id] = add
+                
+        counts = []
+        for taxonomy in counts_dict:
+            counts.append((taxonomy, counts_dict[taxonomy]))
 
         for count in counts:
             strains = Straindbentity.get_strains_by_taxon_id(count[0])
@@ -4446,10 +4453,12 @@ class Phenotypeannotation(Base):
                     "large-scale survey": 0
                 }
 
-            if annotation.experiment.display_name in ("classical genetics", "aneuploid, classical genetics", "haploid, classical genetics", "heterozygous diploid, classical genetics", "heterozygous diploid", "homozygous diploid", "homozygous diploid, classical genetics", "unknown ploidy, classical genetics"):
-                mt[annotation.mutant.display_name]["classical genetics"] += 1
-            else:
-                mt[annotation.mutant.display_name]["large-scale survey"] += 1
+            add = 1
+            number_conditions = DBSession.query(PhenotypeannotationCond).distinct(PhenotypeannotationCond.group_id).filter_by(annotation_id=annotation.annotation_id).count()
+            if number_conditions > 1:
+                add = number_conditions
+                
+            mt[annotation.mutant.display_name][annotation.experiment.namespace_group] += add
                 
         experiment_categories = []
         for key in mt.keys():
