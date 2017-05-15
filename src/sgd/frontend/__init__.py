@@ -125,11 +125,17 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('enrichment'),
                     route_name='enrichment')
     
+    # observable root of the ontology, must be redirected to the ypo page
+    config.add_route('phenotype_ontology_apo', '/observable/APO:0000017')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('phenotype_ontology', request)(getattr(chosen_frontend, 'phenotype_ontology')()),
+                    renderer=chosen_frontend.get_renderer('phenotype_ontology'),
+                    route_name='phenotype_ontology_apo')
+    
     config.add_route('observable', '/observable/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('observable', request)(getattr(chosen_frontend, 'observable')(biocon_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('observable'),
                     route_name='observable')
-    
+
     config.add_route('phenotype_ontology', '/ontology/phenotype/ypo')
     config.add_view(lambda request: chosen_frontend.response_wrapper('phenotype_ontology', request)(getattr(chosen_frontend, 'phenotype_ontology')()),
                     renderer=chosen_frontend.get_renderer('phenotype_ontology'),
