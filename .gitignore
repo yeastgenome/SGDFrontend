@@ -26,8 +26,8 @@ client/lib/sgd_visualization/.git
 dev_deploy_variables.sh
 prod_deploy_variables.sh
 asset_version.json
-.idea/
-settings.json
-launch.json
 .vscode
-
+.vscode/
+.idea/
+*.rdb
+.vscode/settings.json
