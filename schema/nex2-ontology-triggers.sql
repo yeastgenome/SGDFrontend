@@ -43,7 +43,7 @@ BEGIN
     END IF;
 
     IF (OLD.is_obsolete != NEW.is_obsolete) THEN
-        PERFORM nex.insertupdatelog('APO'::text, 'IS_OBSOLETE'::text, OLD.apo_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+        PERFORM nex.insertupdatelog('APO'::text, 'IS_OBSOLETE'::text, OLD.apo_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
@@ -375,7 +375,7 @@ BEGIN
     END IF;
 
     IF (OLD.is_obsolete != NEW.is_obsolete) THEN
-	PERFORM nex.insertupdatelog('CHEBI'::text, 'IS_OBSOLETE'::text, OLD.chebi_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+	PERFORM nex.insertupdatelog('CHEBI'::text, 'IS_OBSOLETE'::text, OLD.chebi_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
@@ -627,7 +627,7 @@ BEGIN
     END IF;
 
     IF (OLD.is_obsolete != NEW.is_obsolete) THEN
-	PERFORM nex.insertupdatelog('DISEASE'::text, 'IS_OBSOLETE'::text, OLD.disease_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+	PERFORM nex.insertupdatelog('DISEASE'::text, 'IS_OBSOLETE'::text, OLD.disease_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
@@ -957,7 +957,7 @@ BEGIN
     END IF;
 
     IF (OLD.is_obsolete != NEW.is_obsolete) THEN
-	PERFORM nex.insertupdatelog('EC'::text, 'IS_OBSOLETE'::text, OLD.ec_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+	PERFORM nex.insertupdatelog('EC'::text, 'IS_OBSOLETE'::text, OLD.ec_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
@@ -1209,7 +1209,7 @@ BEGIN
     END IF;
 
     IF (OLD.is_obsolete != NEW.is_obsolete) THEN
-	PERFORM nex.insertupdatelog('ECO'::text, 'IS_OBSOLETE'::text, OLD.eco_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+	PERFORM nex.insertupdatelog('ECO'::text, 'IS_OBSOLETE'::text, OLD.eco_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
@@ -1543,7 +1543,7 @@ BEGIN
     END IF;
 
     IF (OLD.is_obsolete != NEW.is_obsolete) THEN
-	    PERFORM nex.insertupdatelog('EDAM'::text, 'IS_OBSOLETE'::text, OLD.edam_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+	    PERFORM nex.insertupdatelog('EDAM'::text, 'IS_OBSOLETE'::text, OLD.edam_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
@@ -1878,7 +1878,7 @@ BEGIN
     END IF;
 
     IF (OLD.is_obsolete != NEW.is_obsolete) THEN
-	    PERFORM nex.insertupdatelog('GO'::text, 'IS_OBSOLETE'::text, OLD.go_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+	    PERFORM nex.insertupdatelog('GO'::text, 'IS_OBSOLETE'::text, OLD.go_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
@@ -2205,7 +2205,7 @@ BEGIN
     END IF;
 
     IF (OLD.is_obsolete != NEW.is_obsolete) THEN
-	     PERFORM nex.insertupdatelog('KEYWORD'::text, 'IS_OBSOLETE'::text, OLD.keyword_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+	     PERFORM nex.insertupdatelog('KEYWORD'::text, 'IS_OBSOLETE'::text, OLD.keyword_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
@@ -2296,7 +2296,7 @@ BEGIN
     END IF;
 
     IF (OLD.is_obsolete != NEW.is_obsolete) THEN
-	     PERFORM nex.insertupdatelog('OBI'::text, 'IS_OBSOLETE'::text, OLD.obi_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+	     PERFORM nex.insertupdatelog('OBI'::text, 'IS_OBSOLETE'::text, OLD.obi_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
@@ -2548,7 +2548,7 @@ BEGIN
     END IF;
 
     IF (OLD.is_obsolete != NEW.is_obsolete) THEN
-	    PERFORM nex.insertupdatelog('PSIMOD'::text, 'IS_OBSOLETE'::text, OLD.psimod_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+	    PERFORM nex.insertupdatelog('PSIMOD'::text, 'IS_OBSOLETE'::text, OLD.psimod_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
@@ -2799,7 +2799,7 @@ BEGIN
     END IF;
 
     IF (OLD.is_obsolete != NEW.is_obsolete) THEN
-	    PERFORM nex.insertupdatelog('RO'::text, 'IS_OBSOLETE'::text, OLD.ro_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+	    PERFORM nex.insertupdatelog('RO'::text, 'IS_OBSOLETE'::text, OLD.ro_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
@@ -2973,7 +2973,7 @@ BEGIN
     END IF;
 
     IF (OLD.is_obsolete != NEW.is_obsolete) THEN
-	    PERFORM nex.insertupdatelog('SO'::text, 'IS_OBSOLETE'::text, OLD.so_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+	    PERFORM nex.insertupdatelog('SO'::text, 'IS_OBSOLETE'::text, OLD.so_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
     END IF;
 
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
@@ -3311,7 +3311,7 @@ BEGIN
     END IF;
 
     IF (OLD.is_obsolete != NEW.is_obsolete) THEN
-	    PERFORM nex.insertupdatelog('TAXONOMY'::text, 'IS_OBSOLETE'::text, OLD.taxonomy_id, OLD.is_obsolete, NEW.is_obsolete, USER);
+	    PERFORM nex.insertupdatelog('TAXONOMY'::text, 'IS_OBSOLETE'::text, OLD.taxonomy_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
     END IF;
 
     RETURN NEW;
