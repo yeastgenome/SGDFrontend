@@ -15,9 +15,9 @@ const Footer = React.createClass({
           <div className="small-6 columns">
             <ul id="footer-links">
               <li className="sgd-link"><a href="http://www.yeastgenome.org">SGD</a></li>
-              <li><a href="http://www.yeastgenome.org/about"><span>About</span></a></li>
+              <li><a target="_blank" className="hide-external-link-icon" href="https://sites.google.com/view/yeastgenome-help/about"><span>About</span></a></li>
               <li><a href="http://www.yeastgenome.org/blog"><span>Blog</span></a></li>
-              <li><a href="http://www.yeastgenome.org/help"><span>Help</span></a></li>
+              <li><a target="_blank" className="hide-external-link-icon" href="https://sites.google.com/view/yeastgenome-help/"><span>Help</span></a></li>
               <li><a href="http://www.stanford.edu/site/terms.html"><span>Terms of Use</span></a></li>
               <li id="social-footer">
                 <ul className="social-links">
