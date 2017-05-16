@@ -117,7 +117,7 @@ def refresh_tab_pages_b():
 # run on 4 threads
 def refresh_all_cache():
     def index_part_1():
-        refresh_genes_a()
+        # refresh_genes_a()
         refresh_tab_pages_a()
     def index_part_2():
         refresh_genes_b()
@@ -130,21 +130,21 @@ def refresh_all_cache():
         refresh_strains()
         # refresh_references()
 
-    # # serial
-    # index_part_1()
+    # serial
+    index_part_1()
     # index_part_2()
     # index_part_3()
     # index_part_4()
 
-    # parallel
-    t1 = Thread(target=index_part_1)
-    t2 = Thread(target=index_part_2)
-    t3 = Thread(target=index_part_3)
-    t4 = Thread(target=index_part_4)
-    t1.start()
-    t2.start()
-    t3.start()
-    t4.start()
+    # # parallel
+    # t1 = Thread(target=index_part_1)
+    # t2 = Thread(target=index_part_2)
+    # t3 = Thread(target=index_part_3)
+    # t4 = Thread(target=index_part_4)
+    # t1.start()
+    # t2.start()
+    # t3.start()
+    # t4.start()
 
 if __name__ == '__main__':
     refresh_all_cache()
