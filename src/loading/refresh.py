@@ -118,10 +118,10 @@ def refresh_tab_pages_b():
 def refresh_all_cache():
     def index_part_1():
         refresh_genes_a()
-        refresh_tab_pages_a()
+        # refresh_tab_pages_a()
     def index_part_2():
         refresh_genes_b()
-        refresh_tab_pages_b()
+        # refresh_tab_pages_b()
     def index_part_3():
         refresh_go()
     def index_part_4():
