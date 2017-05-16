@@ -60,7 +60,7 @@ refresh-cache:
 	source dev_variables.sh && python src/loading/refresh.py
 
 refresh-prod-cache:
-	WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && workon sgd && source prod_variables.sh && python src/loading/refresh.py
+	source /data/envs/sgd/bin/activate && source prod_variables.sh && python src/loading/refresh.py
 
 index-es:
 	source dev_variables.sh && python scripts/search/index_elastic_search.py
