@@ -32,6 +32,6 @@ Or the python tests
 
 Caching uses [varnish](https://varnish-cache.org/).  To rebuild the cache, run
 
-    $ make refresh-cache
+    $ source /data/envs/sgd/bin/activate && source prod_variables.sh && python src/loading/refresh.py
 
 using environmental variable `CACHE_URLS`, a comma-sepratated list of varshish host URLs (or a single one) such as `http://locahost:5000`.
