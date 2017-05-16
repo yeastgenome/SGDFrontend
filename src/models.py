@@ -3196,7 +3196,7 @@ class Locusdbentity(Dbentity):
         }
 
     # clears the URLs for all tabbed pages and secondary XHR requests on tabbed pages
-    def refresh_tabbed_page_cache(self):
+    def get_tabbed_page_cache_urls(self):
         backend_urls_by_tab = {
             'protein_tab': ['sequence_details', 'posttranslational_details', 'ecnumber_details', 'protein_experiment_details', 'protein_domain_details', 'protein_domain_details'],
             'interaction_tab': ['interaction_details', 'interaction_graph'],
@@ -3219,24 +3219,28 @@ class Locusdbentity(Dbentity):
             if key is 'sequence_section' or key is 'id':
                 continue
             # if the tab is present, append all the needed urls to urls
-            if tabs[key]:
+            elif tabs[key]:
                 tab_name = key.replace('_tab', '')
                 tab_url = base_url + tab_name
+                tab_url = tab_url.replace('/summary', '')
                 urls.append(tab_url)
                 for d in backend_urls_by_tab[key]:
                     secondary_url = backend_base_segment + d
                     urls.append(secondary_url)
         target_urls = list(set(urls))
+        all_target_urls = []
         for relative_url in target_urls:
             for base_url in cache_urls:
                 url = base_url + relative_url
-                try:
-                    # purge
-                    requests.request('PURGE', url)
-                    # prime
-                    response = requests.get(url)
-                except Exception, e:
-                    print 'error fetching ' + self.display_name
+                all_target_urls.append(url)
+        return all_target_urls
+                # try:
+                #     # purge
+                #     requests.request('PURGE', url)
+                #     # prime
+                #     response = requests.get(url)
+                # except Exception, e:
+                #     print 'error fetching ' + self.display_name
 
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
