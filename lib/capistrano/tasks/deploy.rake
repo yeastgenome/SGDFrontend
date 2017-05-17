@@ -10,7 +10,7 @@ namespace :deploy do
   task :config do
     on roles(:app), in: :sequence do
       variables = "'"
-      ["NEX2_URI", "S3_ACCESS_KEY", "S3_SECRET_KEY", "S3_BUCKET", "GOOGLE_CLIENT_ID", "ES_URI", "GOOGLE_CAPTCHA_SECRET", "PUSHER_APP_ID", "PUSHER_KEY", "PUSHER_SECRET"].each do |k|
+      ["NEX2_URI", "S3_ACCESS_KEY", "S3_SECRET_KEY", "S3_BUCKET", "GOOGLE_CLIENT_ID", "ES_URI", "GOOGLE_CAPTCHA_SECRET", "PUSHER_APP_ID", "PUSHER_KEY", "PUSHER_SECRET", "CACHE_URLS", "WORKER_LOG_FILE"].each do |k|
         variables += "export #{k}=\"#{ENV[k]}\"\n"
       end
       variables += "'"
