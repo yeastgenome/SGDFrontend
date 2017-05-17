@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_, and_
+from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_, and_, distinct
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -128,7 +128,7 @@ class Apo(Base):
                     "link": phenotype[0],
                     "qualifier":qualifier_name[0]
                 })
-
+            
         return {
             "id": self.apo_id,
             "display_name": self.display_name,
@@ -4422,20 +4422,27 @@ class Phenotypeannotation(Base):
 
         if annotations is None:
             annotations = DBSession.query(Phenotypeannotation.taxonomy_id, Phenotypeannotation.annotation_id).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).all()
-                    
+
+        annotation_ids = [a.annotation_id for a in annotations]
+
+        number_conditions_tuples = DBSession.query(PhenotypeannotationCond.annotation_id, func.count(distinct(PhenotypeannotationCond.group_id))).filter(PhenotypeannotationCond.annotation_id.in_(annotation_ids)).group_by(PhenotypeannotationCond.annotation_id).all()
+
+        number_conditions = {}
+        for t in number_conditions_tuples:
+            number_conditions[t[0]] = t[1]
+
         counts_dict = {}
         for annotation in annotations:
             add = 1
                 
-            number_conditions = DBSession.query(PhenotypeannotationCond).distinct(PhenotypeannotationCond.group_id).filter_by(annotation_id=annotation.annotation_id).count()
-            if number_conditions > 1:
-                add = number_conditions
+            if number_conditions.get(annotation.annotation_id, 0) > 1:
+                add = number_conditions.get(annotation.annotation_id, 0)
                 
             if annotation.taxonomy_id in counts_dict:
                 counts_dict[annotation.taxonomy_id] += add
             else:
                 counts_dict[annotation.taxonomy_id] = add
-                
+
         counts = []
         for taxonomy in counts_dict:
             counts.append((taxonomy, counts_dict[taxonomy]))
@@ -4457,6 +4464,14 @@ class Phenotypeannotation(Base):
         if annotations is None:
             annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).all()
 
+        annotation_ids = [a.annotation_id for a in annotations]
+
+        number_conditions_tuples = DBSession.query(PhenotypeannotationCond.annotation_id, func.count(distinct(PhenotypeannotationCond.group_id))).filter(PhenotypeannotationCond.annotation_id.in_(annotation_ids)).group_by(PhenotypeannotationCond.annotation_id).all()
+
+        number_conditions = {}
+        for t in number_conditions_tuples:
+            number_conditions[t[0]] = t[1]
+            
         mt = {}
         for annotation in annotations:
             if annotation.mutant.display_name not in mt:
@@ -4466,9 +4481,9 @@ class Phenotypeannotation(Base):
                 }
 
             add = 1
-            number_conditions = DBSession.query(PhenotypeannotationCond).distinct(PhenotypeannotationCond.group_id).filter_by(annotation_id=annotation.annotation_id).count()
-            if number_conditions > 1:
-                add = number_conditions
+
+            if number_conditions.get(annotation.annotation_id, 0) > 1:
+                add = number_conditions.get(annotation.annotation_id, 0)
                 
             mt[annotation.mutant.display_name][annotation.experiment.namespace_group] += add
                 
