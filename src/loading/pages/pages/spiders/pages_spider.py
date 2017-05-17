@@ -24,7 +24,7 @@ def get_genes():
         dbentity_ids.add(gis[0])
         so_ids.add(gis[1])
         dbentity_ids_to_so[gis[0]] = gis[1]
-    all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').limit(10).all()
+    all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').all()
     return all_genes
 
 class PagesSpider(scrapy.Spider):
