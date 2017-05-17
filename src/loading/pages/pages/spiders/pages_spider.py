@@ -1,11 +1,18 @@
 import scrapy
 from sqlalchemy import create_engine, and_
 import os
+import logging
 
 from src.models import Apo, DBSession, Dnasequenceannotation, Go, Locusdbentity, Phenotype, Referencedbentity, Straindbentity
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
+
+if 'WORKER_LOG_FILE' in os.environ.keys():
+    LOG_FILE = os.environ['WORKER_LOG_FILE']
+    logging.basicConfig(filename=LOG_FILE)
+logger = logging.getLogger(__name__)
+logger.setLevel(level=logging.INFO)
 
 def get_genes():
     # get S288C genes
