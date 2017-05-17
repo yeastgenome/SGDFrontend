@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
 from elasticsearch import Elasticsearch
 import os
-from math import floor
+from math import floor, log
 import json
 import copy
 import requests
@@ -259,11 +259,12 @@ class Apo(Base):
 
         for apo in apos:
             if apo.apo_id != Apo.ROOT_ID:
-                ontology["elements"].append({
-                    "display_name": apo.display_name,
-                    "id": apo.apo_id,
-                    "link": apo.obj_url
-                })
+                if apo.obj_url.split("/")[1] == "observable":
+                    ontology["elements"].append({
+                        "display_name": apo.display_name,
+                        "id": apo.apo_id,
+                        "link": apo.obj_url
+                    })
         
         for relation in relations:
             ontology["child_to_parent"][relation.child_id] = relation.parent_id
@@ -1725,7 +1726,7 @@ class Locusdbentity(Dbentity):
             }
 
         return obj
-    
+
     def expression_to_dict(self):
         expression_annotations = DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
@@ -1739,11 +1740,19 @@ class Locusdbentity(Dbentity):
         max_expression_value = 0
         
         for annotation in expression_annotations:
-            dataset_ids.add(annotation.datasetsample.dataset_id)
-            reference_ids[annotation.datasetsample.dataset_id] = annotation.reference_id
+            dataset = annotation.datasetsample.dataset
+            
+            dataset_ids.add(dataset.dataset_id)
+            reference_ids[dataset.dataset_id] = annotation.reference_id
 
-            # channel 1 needs log2, channel 2 is ok
-            value = float(annotation.expression_value)
+            if dataset.channel_count == 1:
+                try:
+                    value = log(annotation.expression_value, 2)
+                except ValueError:
+                    import pdb; pdb.set_trace()
+            else:
+                value = float(annotation.expression_value)
+
             rounded = floor(value)
             if value - rounded >= .5:
                 rounded += .5
@@ -1760,9 +1769,9 @@ class Locusdbentity(Dbentity):
                 histogram_expression_value[rounded] = 1
 
             if annotation.datasetsample.dataset_id in dataset_expression_values:
-                dataset_expression_values[annotation.datasetsample.dataset_id].add(rounded)
+                dataset_expression_values[dataset.dataset_id].add(rounded)
             else:
-                dataset_expression_values[annotation.datasetsample.dataset_id] = set([rounded])
+                dataset_expression_values[dataset.dataset_id] = set([rounded])
     
         datasets = DBSession.query(Dataset).filter(Dataset.dataset_id.in_(list(dataset_ids))).all()
 
@@ -2185,14 +2194,17 @@ class Locusdbentity(Dbentity):
     def protein_overview_to_dict(self):
         obj = {
             "length": 0,
-            "molecular_weight": 0,
-            "pi": 0
+            "molecular_weight": None,
+            "pi": None
         }
 
-        protein = DBSession.query(Proteinsequenceannotation.annotation_id).filter_by(dbentity_id=self.dbentity_id, taxonomy_id=274901).one_or_none()
+        protein = DBSession.query(Proteinsequenceannotation).filter_by(dbentity_id=self.dbentity_id, taxonomy_id=274901).one_or_none()
         if protein:
-            protein_sequence = DBSession.query(ProteinsequenceDetail).filter_by(annotation_id=protein[0]).one_or_none()
-            obj = protein_sequence.to_dict_lsp()
+            protein_sequence = DBSession.query(ProteinsequenceDetail).filter_by(annotation_id=protein.annotation_id).one_or_none()
+            if protein_sequence:
+                obj = protein_sequence.to_dict_lsp()
+            else:
+                obj["length"] = len(protein.residues) - 1
 
         return obj
 
@@ -4548,7 +4560,7 @@ class Phenotypeannotation(Base):
                 "display_name": strain[0].display_name,
                 "link": strain[0].obj_url
             }
-            
+
         note = None
         if self.details and len(self.details) > 0:
             note = self.details
