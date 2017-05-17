@@ -1749,7 +1749,7 @@ class Locusdbentity(Dbentity):
                 try:
                     value = log(annotation.expression_value, 2)
                 except ValueError:
-                    import pdb; pdb.set_trace()
+                    value = float(annotation.expression_value) # THIS EXCEPTION SHOULD'T HAPPEN!
             else:
                 value = float(annotation.expression_value)
 
