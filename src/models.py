@@ -145,10 +145,7 @@ class Apo(Base):
         obj = []
 
         for phenotype in phenotypes:
-            annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=phenotype.phenotype_id).all()
-
-            for a in annotations:
-                obj += a.to_dict(phenotype=phenotype)
+            obj += phenotype.annotations_to_dict()
 
         return obj
 
@@ -2057,11 +2054,26 @@ class Locusdbentity(Dbentity):
         }
     
     def phenotype_to_dict(self):
-        phenotypes = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
+        conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_([p.annotation_id for p in phenotype_annotations])).all()
+        condition_names = set([c.condition_name for c in conditions])
+
+        conditions_dict = {}
+        for condition in conditions:
+            if condition.annotation_id in conditions_dict:
+                conditions_dict[condition.annotation_id].append(condition)
+            else:
+                conditions_dict[condition.annotation_id] = [condition]
+
+        urls = DBSession.query(Chebi.display_name, Chebi.obj_url).filter(Chebi.display_name.in_(list(condition_names))).all()
+        chebi_urls = {}
+        for url in urls:
+            chebi_urls[url[0]] = url[1]
+        
         obj = []
-        for phenotype in phenotypes:
-            obj += phenotype.to_dict(locus=self)
+        for annotation in phenotype_annotations:
+            obj += annotation.to_dict(locus=self, conditions=conditions_dict.get(annotation.annotation_id, []), chebi_urls=chebi_urls)
         return obj
 
     def to_dict_analyze(self):
@@ -4365,11 +4377,26 @@ class Phenotype(Base):
         return obj
 
     def annotations_to_dict(self):
-        phenotypes = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
+        phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
 
+        conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_([p.annotation_id for p in phenotype_annotations])).all()
+        condition_names = set([c.condition_name for c in conditions])
+
+        conditions_dict = {}
+        for condition in conditions:
+            if condition.annotation_id in conditions_dict:
+                conditions_dict[condition.annotation_id].append(condition)
+            else:
+                conditions_dict[condition.annotation_id] = [condition]
+                
+        urls = DBSession.query(Chebi.display_name, Chebi.obj_url).filter(Chebi.display_name.in_(list(condition_names))).all()
+        chebi_urls = {}
+        for url in urls:
+            chebi_urls[url[0]] = url[1]
+        
         obj = []
-        for phenotype in phenotypes:
-            obj += phenotype.to_dict(phenotype=self)
+        for annotation in phenotype_annotations:
+            obj += annotation.to_dict(phenotype=self, conditions=conditions_dict.get(annotation.annotation_id, []), chebi_urls=chebi_urls)
         return obj
 
     def get_base_url(self):
@@ -4523,7 +4550,7 @@ class Phenotypeannotation(Base):
             }
         }
     
-    def to_dict(self, reference=None, chemical=None, phenotype=None, locus=None):
+    def to_dict(self, reference=None, chemical=None, phenotype=None, locus=None, conditions=None, chebi_urls=None):
         if reference == None:
             reference = self.reference
 
@@ -4617,9 +4644,10 @@ class Phenotypeannotation(Base):
                 "pubmed_id": reference.pmid
             }
         }
-        
-        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).all()
 
+        if conditions == None:
+            conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).all()
+            
         groups = {}
         
         for condition in conditions:
@@ -4627,7 +4655,10 @@ class Phenotypeannotation(Base):
                 if chemical is not None and (chemical.display_name == condition.condition_name):
                     chebi_url = chemical.obj_url
                 else:
-                    chebi_url = DBSession.query(Chebi.obj_url).filter_by(display_name=condition.condition_name).one_or_none()
+                    if chebi_urls == None:
+                        chebi_url = DBSession.query(Chebi.obj_url).filter_by(display_name=condition.condition_name).one_or_none()
+                    else:
+                        chebi_url = chebi_urls.get(condition.condition_name)
 
                 link = None
                 if chebi_url:
