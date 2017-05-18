@@ -1,4 +1,5 @@
 import scrapy
+from scrapy.crawler import CrawlerProcess
 from sqlalchemy import create_engine, and_
 import os
 import logging
@@ -16,8 +17,6 @@ if 'WORKER_LOG_FILE' in os.environ.keys():
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.INFO)
 
-
-
 def get_genes():
     # get S288C genes
     gene_ids_so = DBSession.query(Dnasequenceannotation.dbentity_id, Dnasequenceannotation.so_id).filter(Dnasequenceannotation.taxonomy_id == 274901).all()
@@ -28,11 +27,12 @@ def get_genes():
         dbentity_ids.add(gis[0])
         so_ids.add(gis[1])
         dbentity_ids_to_so[gis[0]] = gis[1]
-    all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').limit(10).all()
+    all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').limit(100).all()
     return all_genes
 
-class PagesSpider(scrapy.Spider):
-    name = "pages"
+# init spiders
+class GenesSpider(scrapy.Spider):
+    name = 'genes'
     def start_requests(self):
         genes = get_genes()
         urls = []
@@ -45,3 +45,10 @@ class PagesSpider(scrapy.Spider):
     def parse(self, response):
         if response.status != 200:
             self.log('error on ' + response.url)
+
+
+process = CrawlerProcess({
+    'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+})
+process.crawl(GenesSpider)
+process.start()
