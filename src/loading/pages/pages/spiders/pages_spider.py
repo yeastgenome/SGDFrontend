@@ -5,6 +5,8 @@ import logging
 
 from src.models import Apo, DBSession, Dnasequenceannotation, Go, Locusdbentity, Phenotype, Referencedbentity, Straindbentity
 
+HEADER_OBJ = { 'X-Forwarded-Proto': 'https' }
+
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
 
@@ -13,6 +15,8 @@ if 'WORKER_LOG_FILE' in os.environ.keys():
     logging.basicConfig(filename=LOG_FILE)
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.INFO)
+
+
 
 def get_genes():
     # get S288C genes
@@ -24,7 +28,7 @@ def get_genes():
         dbentity_ids.add(gis[0])
         so_ids.add(gis[1])
         dbentity_ids_to_so[gis[0]] = gis[1]
-    all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').all()
+    all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').limit(10).all()
     return all_genes
 
 class PagesSpider(scrapy.Spider):
@@ -35,9 +39,9 @@ class PagesSpider(scrapy.Spider):
         for locus in genes:
             urls += locus.get_tabbed_page_cache_urls()
         for url in urls:
-            yield scrapy.Request(url=url, callback=self.parse)
+            yield scrapy.Request(url=url, headers=HEADER_OBJ, method='PURGE')
+            yield scrapy.Request(url=url, headers=HEADER_OBJ, callback=self.parse)
 
     def parse(self, response):
-        self.log(response.url)
         if response.status != 200:
             self.log('error on ' + response.url)
