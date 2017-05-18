@@ -280,8 +280,7 @@ class Apo(Base):
         return '/observable/' + self.format_name
 
     def get_secondary_cache_urls(self):
-        base_url = self.get_base_url()
-        url1 = '/backend' + base_url + '/' + str(self.apo_id) + '/locus_details'
+        url1 = '/backend/observable/' + str(self.apo_id) + '/locus_details'
         return [url1]
 
 class ApoAlia(Base):
@@ -4250,8 +4249,7 @@ class Go(Base):
         return self.obj_url
 
     def get_secondary_cache_urls(self):
-        base_url = self.get_base_url()
-        url1 = '/backend' + base_url + '/' + str(self.go_id) + '/locus_details'
+        url1 = '/backend/go/' + str(self.go_id) + '/locus_details'
         return [url1]
 
 class GoAlias(Base):
@@ -5238,8 +5236,7 @@ class Phenotype(Base):
         return '/phenotype/' + self.format_name
 
     def get_secondary_cache_urls(self):
-        base_url = self.get_base_url()
-        url1 = '/backend' + base_url + '/' + str(self.phenotype_id) + '/locus_details'
+        url1 = '/backend/phenotype/' + str(self.phenotype_id) + '/locus_details'
         return [url1]
 
 class Phenotypeannotation(Base):

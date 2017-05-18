@@ -1,6 +1,8 @@
 import scrapy
-from scrapy.crawler import CrawlerProcess
+from scrapy.crawler import CrawlerRunner
 from scrapy.utils.project import get_project_settings
+from scrapy.utils.log import configure_logging
+from twisted.internet import reactor, defer
 from sqlalchemy import create_engine, and_
 import os
 import logging
@@ -43,6 +45,7 @@ class BaseSpider(scrapy.Spider):
 class GenesSpider(BaseSpider):
     name = 'genes'
     def get_entities(self):
+        self.log('getting genes')
         # get S288C genes
         gene_ids_so = DBSession.query(Dnasequenceannotation.dbentity_id, Dnasequenceannotation.so_id).filter(Dnasequenceannotation.taxonomy_id == 274901).all()
         dbentity_ids_to_so = {}
@@ -52,28 +55,37 @@ class GenesSpider(BaseSpider):
             dbentity_ids.add(gis[0])
             so_ids.add(gis[1])
             dbentity_ids_to_so[gis[0]] = gis[1]
-        all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').limit(3).all()
+        all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').limit(500).all()
         return all_genes
 
 class GoSpider(BaseSpider):
     name = 'go'
     def get_entities(self):
-        return DBSession.query(Go).all()
+        self.log('getting gos')
+        return DBSession.query(Go).limit(20).all()
 
 class ObservableSpider(BaseSpider):
     name = 'observable'
     def get_entities(self):
-        return DBSession.query(Apo).filter_by(apo_namespace="observable").all()
+        self.log('getting observables')
+        return DBSession.query(Apo).filter_by(apo_namespace="observable").limit(20).all()
 
 class PhenotypeSpider(BaseSpider):
     name = 'phenotype'
     def get_entities(self):
-        return DBSession.query(Phenotype).all()
+        self.log('getting phenotypes')
+        return DBSession.query(Phenotype).limit(20).offset(100).all()
 
-# start crawling
-process = CrawlerProcess(get_project_settings())
-process.crawl(GoSpider)
-process.crawl(ObservableSpider)
-process.crawl(PhenotypeSpider)
-# process.crawl(GenesSpider)
-process.start()
+# configure_logging()
+runner = CrawlerRunner(get_project_settings())
+
+@defer.inlineCallbacks
+def crawl():
+    yield runner.crawl(GenesSpider)
+    yield runner.crawl(GoSpider)
+    yield runner.crawl(ObservableSpider)
+    yield runner.crawl(PhenotypeSpider)
+    reactor.stop()
+
+crawl()
+reactor.run()
