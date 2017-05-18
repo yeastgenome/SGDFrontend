@@ -3234,10 +3234,7 @@ class Locusdbentity(Dbentity):
                     secondary_url = backend_base_segment + d
                     urls.append(secondary_url)
         target_urls = list(set(urls))
-        all_target_urls = []
-        for relative_url in target_urls:
-            all_target_urls.append(relative_url)
-        return all_target_urls
+        return target_urls
 
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'

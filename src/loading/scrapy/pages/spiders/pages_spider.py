@@ -39,9 +39,6 @@ class BaseSpider(scrapy.Spider):
             if (index % 100 == 0):
                 percent_done = str(float(index) / float(len(urls)) * 100)
                 self.log('CHECKIN STATS: ' + percent_done + '% of current index complete')
-            # some debug
-            # if (i % 10 == 0):
-            #     self.log(urls.index(url))
             yield scrapy.Request(url=url, headers=HEADER_OBJ, method='PURGE')
             yield scrapy.Request(url=url, headers=HEADER_OBJ, callback=self.parse)
 
