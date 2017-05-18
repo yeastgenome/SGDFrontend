@@ -35,6 +35,13 @@ class BaseSpider(scrapy.Spider):
         entities = self.get_entities()
         urls = get_all_urls_from_list(entities)
         for url in urls:
+            index = urls.index(url)
+            if (index % 100 == 0):
+                percent_done = str(float(index) / float(len(urls)) * 100)
+                self.log('CHECKIN STATS: ' + percent_done + '% of current index complete')
+            # some debug
+            # if (i % 10 == 0):
+            #     self.log(urls.index(url))
             yield scrapy.Request(url=url, headers=HEADER_OBJ, method='PURGE')
             yield scrapy.Request(url=url, headers=HEADER_OBJ, callback=self.parse)
 
@@ -55,28 +62,28 @@ class GenesSpider(BaseSpider):
             dbentity_ids.add(gis[0])
             so_ids.add(gis[1])
             dbentity_ids_to_so[gis[0]] = gis[1]
-        all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').limit(500).all()
+        all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').all()
         return all_genes
 
 class GoSpider(BaseSpider):
     name = 'go'
     def get_entities(self):
         self.log('getting gos')
-        return DBSession.query(Go).limit(20).all()
+        return DBSession.query(Go).all()
 
 class ObservableSpider(BaseSpider):
     name = 'observable'
     def get_entities(self):
         self.log('getting observables')
-        return DBSession.query(Apo).filter_by(apo_namespace="observable").limit(20).all()
+        return DBSession.query(Apo).filter_by(apo_namespace="observable").all()
 
 class PhenotypeSpider(BaseSpider):
     name = 'phenotype'
     def get_entities(self):
         self.log('getting phenotypes')
-        return DBSession.query(Phenotype).limit(20).offset(100).all()
+        return DBSession.query(Phenotype).all()
 
-# configure_logging()
+configure_logging()
 runner = CrawlerRunner(get_project_settings())
 
 @defer.inlineCallbacks
