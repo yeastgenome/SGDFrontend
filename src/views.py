@@ -4,12 +4,12 @@ from pyramid.view import view_config
 from pyramid.compat import escape
 from pyramid.session import check_csrf_token
 
-from sqlalchemy import func
+from sqlalchemy import func, distinct
 
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword
 
 from .celery_tasks import upload_to_s3
 
@@ -838,7 +838,7 @@ def dataset(request):
 def keyword(request):
     format_name = request.matchdict['id']
 
-    keyword = DBSession.query(Keyword).filter_by(format_name=format_name).one_or_none()
+    keyword = DBSession.query(Keyword).filter(func.lower(Keyword.format_name) == func.lower(format_name)).one_or_none()
     
     if keyword:
         return keyword.to_dict()
@@ -847,6 +847,8 @@ def keyword(request):
 
 @view_config(route_name='keywords', renderer='json', request_method='GET')
 def keywords(request):
-    keywords = DBSession.query(Keyword).all()
+    keyword_ids = DBSession.query(distinct(DatasetKeyword.keyword_id)).all()
+    
+    keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(keyword_ids)).all()
 
     return [k.to_simple_dict() for k in keywords]
