@@ -3194,10 +3194,7 @@ class Locusdbentity(Dbentity):
         genetic = DBSession.query(Geninteractionannotation).filter(or_(Geninteractionannotation.dbentity1_id == self.dbentity_id, Geninteractionannotation.dbentity2_id == self.dbentity_id)).count()
         return phys + genetic
 
-    def get_expression_count(self):
-        return DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).count()
-
-    def get_lit_count(self):
+    def get_literature_count(self):
         return DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id)).count()
     
     def tabs(self):
@@ -3218,16 +3215,44 @@ class Locusdbentity(Dbentity):
             "protein_tab": self.has_protein
         }
 
+    # make some tabs false if the data is small, to return a smaller set of URLs for tab priming
+    def get_quick_tabs(self):
+        tabs = self.tabs()
+        if tabs['go_tab']:
+            gos = self.get_go_count()
+            if (gos < 15):
+                tabs['go_tab'] = False
+        if tabs['interaction_tab']:
+            interactions = self.get_interaction_count()
+            if (interactions < 100):
+                tabs['interaction_tab'] = False
+        if tabs['literature_tab']:
+            literatures = self.get_literature_count()
+            if (literatures < 30):
+                tabs['literature_tab'] = False
+        return tabs
+
     # clears the URLs for all tabbed pages and secondary XHR requests on tabbed pages
     def get_secondary_cache_urls(self, is_quick=False):
+        phenotype_items = ['phenotype_details', 'phenotype_graph']
+        if is_quick:
+            tabs = self.get_quick_tabs()
+            protein_items = []
+            if tabs['phenotype_tab']:
+                phenotype_count = self.get_phenotype_count()
+                if (phenotype_count < 15):
+                    phenotype_items = []
+        else:
+            tabs = self.tabs()
+            protein_items = ['sequence_details', 'posttranslational_details', 'ecnumber_details', 'protein_experiment_details', 'protein_domain_details', 'protein_domain_details']
         backend_urls_by_tab = {
-            'protein_tab': [],
+            'protein_tab': protein_items,
             'interaction_tab': ['interaction_details', 'interaction_graph'],
             'summary_tab': ['expression_details'],
             'go_tab': ['go_details', 'go_graph'],
             'sequence_section': ['neighbor_sequence_details', 'sequence_details'],
             'expression_tab': ['expression_details', 'expression_graph'],
-            'phenotype_tab': ['phenotype_details', 'phenotype_graph'],
+            'phenotype_tab': phenotype_items,
             'literature_tab': ['literature_details', 'literature_graph'],
             'regulation_tab': ['regulation_details', 'regulation_graph'],
             'sequence_tab': ['neighbor_sequence_details', 'sequence_details'],
@@ -3236,16 +3261,15 @@ class Locusdbentity(Dbentity):
         base_url = self.get_base_url() + '/'
         backend_base_segment = '/backend/locus/' + str(self.dbentity_id) + '/'
         urls = []
-        tabs = self.tabs()
+        
         # get all the urls
         for key in tabs:
-            if key is 'sequence_section' or key is 'id':
+            if key in ['sequence_section', 'id', 'summary_tab']:
                 continue
             # if the tab is present, append all the needed urls to urls
             elif tabs[key]:
                 tab_name = key.replace('_tab', '')
                 tab_url = base_url + tab_name
-                tab_url = tab_url.replace('/summary', '')
                 urls.append(tab_url)
                 for d in backend_urls_by_tab[key]:
                     secondary_url = backend_base_segment + d

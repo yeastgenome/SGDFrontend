@@ -20,12 +20,6 @@ if 'WORKER_LOG_FILE' in os.environ.keys():
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.INFO)
 
-def get_all_urls_from_list(entitylist):
-    all_urls = []
-    for entity in entitylist:
-        all_urls = all_urls + entity.get_all_cache_urls()
-    return all_urls
-
 # init spiders
 class BaseSpider(scrapy.Spider):
     def get_entities(self):
@@ -33,14 +27,15 @@ class BaseSpider(scrapy.Spider):
 
     def start_requests(self):
         entities = self.get_entities()
-        urls = get_all_urls_from_list(entities)
-        for url in urls:
-            index = urls.index(url)
+        for entity in entities:
+            index = entities.index(entity)
             if (index % 100 == 0):
-                percent_done = str(float(index) / float(len(urls)) * 100)
+                percent_done = str(float(index) / float(len(entities)) * 100)
                 self.log('CHECKIN STATS: ' + percent_done + '% of current index complete')
-            # yield scrapy.Request(url=url, headers=HEADER_OBJ, method='PURGE')
-            # yield scrapy.Request(url=url, headers=HEADER_OBJ, callback=self.parse)
+            urls = entity.get_all_cache_urls(True)
+            for url in urls:
+                yield scrapy.Request(url=url, headers=HEADER_OBJ, method='PURGE')
+                yield scrapy.Request(url=url, headers=HEADER_OBJ, callback=self.parse)
 
     def parse(self, response):
         if response.status != 200:
@@ -59,15 +54,7 @@ class GenesSpider(BaseSpider):
             dbentity_ids.add(gis[0])
             so_ids.add(gis[1])
             dbentity_ids_to_so[gis[0]] = gis[1]
-        all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').limit(20).all()
-        for gene in all_genes:
-            print gene.sgdid
-            print 'go ' + str(gene.get_go_count())
-            print 'phenotype ' + str(gene.get_phenotype_count())
-            print 'interaction ' + str(gene.get_interaction_count())
-            print 'expression ' + str(gene.get_expression_count())
-            print 'lit ' + str(gene.get_lit_count())
-            print len(gene.get_all_cache_urls())
+        all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').all()
         return all_genes
 
 class GoSpider(BaseSpider):
@@ -93,10 +80,10 @@ runner = CrawlerRunner(get_project_settings())
 
 @defer.inlineCallbacks
 def crawl():
-    yield runner.crawl(GenesSpider)
     # yield runner.crawl(GoSpider)
     # yield runner.crawl(ObservableSpider)
     # yield runner.crawl(PhenotypeSpider)
+    yield runner.crawl(GenesSpider)
     reactor.stop()
 
 crawl()
