@@ -24,7 +24,7 @@ tests:
 	source test_variables.sh && nosetests -s
 
 qa-deploy:
-	npm run build && source dev_variables.sh && NEX2_URI=$$QA_NEX2_URI && cap qa deploy
+	source dev_variables.sh && NEX2_URI=$$QA_NEX2_URI && cap qa deploy
 
 qa-restart:
 	source dev_variables.sh && NEX2_URI=$$QA_NEX2_URI && cap qa deploy:restart
@@ -33,13 +33,16 @@ curate-deploy:
 	npm run build && source dev_variables.sh && NEX2_URI=$$CURATE_NEX2_URI && cap curate_dev deploy
 
 curate-qa-deploy:
-	npm run build && source dev_variables.sh && NEX2_URI=$$CURATE_NEX2_URI && cap curate_qa deploy
+	source dev_variables.sh && NEX2_URI=$$CURATE_NEX2_URI && cap curate_qa deploy
 
 deploy:
 	npm run build && source dev_variables.sh && cap dev deploy
 
 staging-deploy:
-	npm run build && source prod_variables.sh && cap staging deploy
+	source prod_variables.sh && cap staging deploy
+
+curate-staging-deploy:
+	npm run build && source prod_variables.sh && NEX2_URI=$$CURATE_NEX2_URI && cap curate_staging deploy
 
 prod-deploy:
 	npm run build && source prod_variables.sh && cap prod deploy
@@ -57,7 +60,7 @@ refresh-cache:
 	source dev_variables.sh && python src/loading/refresh.py
 
 refresh-prod-cache:
-	export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && workon sgd && source prod_variables.sh && python src/loading/refresh.py
+	source /data/envs/sgd/bin/activate && source prod_variables.sh && python src/loading/refresh.py
 
 index-es:
 	source dev_variables.sh && python scripts/search/index_elastic_search.py

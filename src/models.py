@@ -1,10 +1,10 @@
-from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_, and_
+from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_, and_, distinct
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
 from elasticsearch import Elasticsearch
 import os
-from math import floor
+from math import floor, log
 import json
 import copy
 import requests
@@ -128,7 +128,7 @@ class Apo(Base):
                     "link": phenotype[0],
                     "qualifier":qualifier_name[0]
                 })
-
+            
         return {
             "id": self.apo_id,
             "display_name": self.display_name,
@@ -145,10 +145,7 @@ class Apo(Base):
         obj = []
 
         for phenotype in phenotypes:
-            annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=phenotype.phenotype_id).all()
-
-            for a in annotations:
-                obj += a.to_dict(phenotype=phenotype)
+            obj += phenotype.annotations_to_dict()
 
         return obj
 
@@ -259,11 +256,12 @@ class Apo(Base):
 
         for apo in apos:
             if apo.apo_id != Apo.ROOT_ID:
-                ontology["elements"].append({
-                    "display_name": apo.display_name,
-                    "id": apo.apo_id,
-                    "link": apo.obj_url
-                })
+                if apo.obj_url.split("/")[1] == "observable":
+                    ontology["elements"].append({
+                        "display_name": apo.display_name,
+                        "id": apo.apo_id,
+                        "link": apo.obj_url
+                    })
         
         for relation in relations:
             ontology["child_to_parent"][relation.child_id] = relation.parent_id
@@ -1440,6 +1438,15 @@ class Referencedbentity(Dbentity):
     book = relationship(u'Book')
     journal = relationship(u'Journal')
 
+    go_blacklist = None
+
+    @staticmethod
+    def get_go_blacklist_ids():
+        if Referencedbentity.go_blacklist is None:
+            Referencedbentity.go_blacklist = DBSession.query(ReferenceAlias.reference_id).filter_by(alias_type="GO reference ID").all()
+
+        return Referencedbentity.go_blacklist
+
     def to_dict_citation(self):
         obj = {
             "id": self.dbentity_id,
@@ -1716,7 +1723,7 @@ class Locusdbentity(Dbentity):
             }
 
         return obj
-    
+
     def expression_to_dict(self):
         expression_annotations = DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
@@ -1730,10 +1737,19 @@ class Locusdbentity(Dbentity):
         max_expression_value = 0
         
         for annotation in expression_annotations:
-            dataset_ids.add(annotation.datasetsample.dataset_id)
-            reference_ids[annotation.datasetsample.dataset_id] = annotation.reference_id
+            dataset = annotation.datasetsample.dataset
+            
+            dataset_ids.add(dataset.dataset_id)
+            reference_ids[dataset.dataset_id] = annotation.reference_id
 
-            value = float(annotation.expression_value)
+            if dataset.channel_count == 1:
+                try:
+                    value = log(annotation.expression_value, 2)
+                except ValueError:
+                    value = float(annotation.expression_value) # THIS EXCEPTION SHOULD'T HAPPEN!
+            else:
+                value = float(annotation.expression_value)
+
             rounded = floor(value)
             if value - rounded >= .5:
                 rounded += .5
@@ -1750,9 +1766,9 @@ class Locusdbentity(Dbentity):
                 histogram_expression_value[rounded] = 1
 
             if annotation.datasetsample.dataset_id in dataset_expression_values:
-                dataset_expression_values[annotation.datasetsample.dataset_id].add(rounded)
+                dataset_expression_values[dataset.dataset_id].add(rounded)
             else:
-                dataset_expression_values[annotation.datasetsample.dataset_id] = set([rounded])
+                dataset_expression_values[dataset.dataset_id] = set([rounded])
     
         datasets = DBSession.query(Dataset).filter(Dataset.dataset_id.in_(list(dataset_ids))).all()
 
@@ -1892,27 +1908,6 @@ class Locusdbentity(Dbentity):
         }
     
     def literature_to_dict(self):
-        primary_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Primary Literature")).all()
-        primary_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(primary_ids)).all()
-
-        additional_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Additional Literature")).all()
-        additional_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(additional_ids)).all()
-
-        reviews_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Reviews")).all()
-        reviews_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reviews_ids)).all()
-
-        interaction_ids = DBSession.query(Geninteractionannotation.reference_id).filter(or_(Geninteractionannotation.dbentity1_id == self.dbentity_id, Geninteractionannotation.dbentity2_id == self.dbentity_id)).all() + DBSession.query(Physinteractionannotation.reference_id).filter(or_(Physinteractionannotation.dbentity1_id == self.dbentity_id, Physinteractionannotation.dbentity2_id == self.dbentity_id)).all()
-        interaction_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(interaction_ids)).all()
-
-        regulation_ids = DBSession.query(Regulationannotation.reference_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
-        regulation_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(regulation_ids)).all()
-
-        phenotype_ids = DBSession.query(Phenotypeannotation.reference_id).filter_by(dbentity_id= self.dbentity_id).all()
-        phenotype_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(phenotype_ids)).all()
-
-        go_ids = DBSession.query(Goannotation.reference_id).filter_by(dbentity_id=self.dbentity_id).all()
-        go_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(go_ids)).all()
-
         obj = {
             "interaction": [],
             "additional": [],
@@ -1923,30 +1918,48 @@ class Locusdbentity(Dbentity):
             "go": []
         }
         
+        primary_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Primary Literature")).all()
+        primary_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(primary_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+
         for lit in primary_lit:
             obj["primary"].append(lit.to_dict_citation())
 
+        additional_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Additional Literature")).all()
+        additional_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(additional_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        
         for lit in additional_lit:
             obj["additional"].append(lit.to_dict_citation())
+
+        reviews_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Reviews")).all()
+        reviews_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reviews_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
 
         for lit in reviews_lit:
             obj["review"].append(lit.to_dict_citation())
 
+        interaction_ids = DBSession.query(Geninteractionannotation.reference_id).filter(or_(Geninteractionannotation.dbentity1_id == self.dbentity_id, Geninteractionannotation.dbentity2_id == self.dbentity_id)).all() + DBSession.query(Physinteractionannotation.reference_id).filter(or_(Physinteractionannotation.dbentity1_id == self.dbentity_id, Physinteractionannotation.dbentity2_id == self.dbentity_id)).all()
+        interaction_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(interaction_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+
         for lit in interaction_lit:
             obj["interaction"].append(lit.to_dict_citation())
+
+        regulation_ids = DBSession.query(Regulationannotation.reference_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
+        regulation_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(regulation_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
 
         for lit in regulation_lit:
             obj["regulation"].append(lit.to_dict_citation())
 
+        phenotype_ids = DBSession.query(Phenotypeannotation.reference_id).filter_by(dbentity_id= self.dbentity_id).all()
+        phenotype_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(phenotype_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+
         for lit in phenotype_lit:
             obj["phenotype"].append(lit.to_dict_citation())
 
+        go_ids = DBSession.query(Goannotation.reference_id).filter_by(dbentity_id=self.dbentity_id).all()
+        go_ids = set(go_ids) - set(Referencedbentity.get_go_blacklist_ids())
+        go_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(go_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+
         for lit in go_lit:
             obj["go"].append(lit.to_dict_citation())
-
-        for k in obj.keys():
-            obj[k] = sorted(obj[k], key=lambda r: r["display_name"], reverse=True)
-            obj[k] = sorted(obj[k], key=lambda r: r["year"])
 
         return obj
 
@@ -2041,11 +2054,26 @@ class Locusdbentity(Dbentity):
         }
     
     def phenotype_to_dict(self):
-        phenotypes = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
+        conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_([p.annotation_id for p in phenotype_annotations])).all()
+        condition_names = set([c.condition_name for c in conditions])
+
+        conditions_dict = {}
+        for condition in conditions:
+            if condition.annotation_id in conditions_dict:
+                conditions_dict[condition.annotation_id].append(condition)
+            else:
+                conditions_dict[condition.annotation_id] = [condition]
+
+        urls = DBSession.query(Chebi.display_name, Chebi.obj_url).filter(Chebi.display_name.in_(list(condition_names))).all()
+        chebi_urls = {}
+        for url in urls:
+            chebi_urls[url[0]] = url[1]
+        
         obj = []
-        for phenotype in phenotypes:
-            obj += phenotype.to_dict(locus=self)
+        for annotation in phenotype_annotations:
+            obj += annotation.to_dict(locus=self, conditions=conditions_dict.get(annotation.annotation_id, []), chebi_urls=chebi_urls)
         return obj
 
     def to_dict_analyze(self):
@@ -2178,14 +2206,17 @@ class Locusdbentity(Dbentity):
     def protein_overview_to_dict(self):
         obj = {
             "length": 0,
-            "molecular_weight": 0,
-            "pi": 0
+            "molecular_weight": None,
+            "pi": None
         }
 
-        protein = DBSession.query(Proteinsequenceannotation.annotation_id).filter_by(dbentity_id=self.dbentity_id, taxonomy_id=274901).one_or_none()
+        protein = DBSession.query(Proteinsequenceannotation).filter_by(dbentity_id=self.dbentity_id, taxonomy_id=274901).one_or_none()
         if protein:
-            protein_sequence = DBSession.query(ProteinsequenceDetail).filter_by(annotation_id=protein[0]).one_or_none()
-            obj = protein_sequence.to_dict_lsp()
+            protein_sequence = DBSession.query(ProteinsequenceDetail).filter_by(annotation_id=protein.annotation_id).one_or_none()
+            if protein_sequence:
+                obj = protein_sequence.to_dict_lsp()
+            else:
+                obj["length"] = len(protein.residues) - 1
 
         return obj
 
@@ -2221,12 +2252,12 @@ class Locusdbentity(Dbentity):
         obj = {
             "primary_count": 0,
             "additional_count": 0,
-            "review_count": 0
+            "review_count": 0,
+            "total_count": 0
         }
 
         literature_counts = DBSession.query(Literatureannotation.topic, func.count(Literatureannotation.annotation_id)).filter_by(dbentity_id=self.dbentity_id).group_by(Literatureannotation.topic).all()
 
-        total_count = 0
         for lit_count in literature_counts:
             if lit_count[0] == "Additional Literature":
                 obj["additional_count"] = lit_count[1]
@@ -2234,8 +2265,19 @@ class Locusdbentity(Dbentity):
                 obj["review_count"] = lit_count[1]
             elif lit_count[0] == "Primary Literature":
                 obj["primary_count"] = lit_count[1]
-            total_count += lit_count[1]
-        obj["total_count"] = total_count
+
+        literature_ids = DBSession.query(Literatureannotation.reference_id).filter_by(dbentity_id=self.dbentity_id).all()
+
+        interaction_ids = DBSession.query(Geninteractionannotation.reference_id).filter(or_(Geninteractionannotation.dbentity1_id == self.dbentity_id, Geninteractionannotation.dbentity2_id == self.dbentity_id)).all() + DBSession.query(Physinteractionannotation.reference_id).filter(or_(Physinteractionannotation.dbentity1_id == self.dbentity_id, Physinteractionannotation.dbentity2_id == self.dbentity_id)).all()
+
+        regulation_ids = DBSession.query(Regulationannotation.reference_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
+
+        phenotype_ids = DBSession.query(Phenotypeannotation.reference_id).filter_by(dbentity_id= self.dbentity_id).all()
+        
+        go_ids = DBSession.query(Goannotation.reference_id).filter_by(dbentity_id=self.dbentity_id).all()
+        go_ids = set(go_ids) - set(Referencedbentity.get_go_blacklist_ids())
+            
+        obj["total_count"] = len(set(literature_ids + interaction_ids + regulation_ids + phenotype_ids + list(go_ids)))
 
         return obj
     
@@ -4335,11 +4377,26 @@ class Phenotype(Base):
         return obj
 
     def annotations_to_dict(self):
-        phenotypes = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
+        phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
 
+        conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_([p.annotation_id for p in phenotype_annotations])).all()
+        condition_names = set([c.condition_name for c in conditions])
+
+        conditions_dict = {}
+        for condition in conditions:
+            if condition.annotation_id in conditions_dict:
+                conditions_dict[condition.annotation_id].append(condition)
+            else:
+                conditions_dict[condition.annotation_id] = [condition]
+                
+        urls = DBSession.query(Chebi.display_name, Chebi.obj_url).filter(Chebi.display_name.in_(list(condition_names))).all()
+        chebi_urls = {}
+        for url in urls:
+            chebi_urls[url[0]] = url[1]
+        
         obj = []
-        for phenotype in phenotypes:
-            obj += phenotype.to_dict(phenotype=self)
+        for annotation in phenotype_annotations:
+            obj += annotation.to_dict(phenotype=self, conditions=conditions_dict.get(annotation.annotation_id, []), chebi_urls=chebi_urls)
         return obj
 
     def get_base_url(self):
@@ -4391,17 +4448,31 @@ class Phenotypeannotation(Base):
         strains_result = []
 
         if annotations is None:
-            counts = DBSession.query(Phenotypeannotation.taxonomy_id, func.count(Phenotypeannotation.taxonomy_id)).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).group_by(Phenotypeannotation.taxonomy_id).all()
-        else:
-            counts_dict = {}
-            for annotation in annotations:
-                if annotation.taxonomy_id in counts_dict:
-                    counts_dict[annotation.taxonomy_id] += 1
-                else:
-                    counts_dict[annotation.taxonomy_id] = 1
-            counts = []
-            for taxonomy in counts_dict:
-                counts.append((taxonomy, counts_dict[taxonomy]))
+            annotations = DBSession.query(Phenotypeannotation.taxonomy_id, Phenotypeannotation.annotation_id).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).all()
+
+        annotation_ids = [a.annotation_id for a in annotations]
+
+        number_conditions_tuples = DBSession.query(PhenotypeannotationCond.annotation_id, func.count(distinct(PhenotypeannotationCond.group_id))).filter(PhenotypeannotationCond.annotation_id.in_(annotation_ids)).group_by(PhenotypeannotationCond.annotation_id).all()
+
+        number_conditions = {}
+        for t in number_conditions_tuples:
+            number_conditions[t[0]] = t[1]
+
+        counts_dict = {}
+        for annotation in annotations:
+            add = 1
+                
+            if number_conditions.get(annotation.annotation_id, 0) > 1:
+                add = number_conditions.get(annotation.annotation_id, 0)
+                
+            if annotation.taxonomy_id in counts_dict:
+                counts_dict[annotation.taxonomy_id] += add
+            else:
+                counts_dict[annotation.taxonomy_id] = add
+
+        counts = []
+        for taxonomy in counts_dict:
+            counts.append((taxonomy, counts_dict[taxonomy]))
 
         for count in counts:
             strains = Straindbentity.get_strains_by_taxon_id(count[0])
@@ -4413,13 +4484,21 @@ class Phenotypeannotation(Base):
             else:
                 continue
 
-        return sorted(strains_result, key=lambda strain: -1 * strain[1])
+        return sorted(strains_result, key=lambda strain: (-1 * strain[1], strain[0]))
 
     @staticmethod
     def count_experiment_categories(phenotype_ids=None, annotations=None):
         if annotations is None:
             annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.phenotype_id.in_(phenotype_ids)).all()
 
+        annotation_ids = [a.annotation_id for a in annotations]
+
+        number_conditions_tuples = DBSession.query(PhenotypeannotationCond.annotation_id, func.count(distinct(PhenotypeannotationCond.group_id))).filter(PhenotypeannotationCond.annotation_id.in_(annotation_ids)).group_by(PhenotypeannotationCond.annotation_id).all()
+
+        number_conditions = {}
+        for t in number_conditions_tuples:
+            number_conditions[t[0]] = t[1]
+            
         mt = {}
         for annotation in annotations:
             if annotation.mutant.display_name not in mt:
@@ -4428,10 +4507,12 @@ class Phenotypeannotation(Base):
                     "large-scale survey": 0
                 }
 
-            if annotation.experiment.display_name in ("classical genetics", "aneuploid, classical genetics", "haploid, classical genetics", "heterozygous diploid, classical genetics", "heterozygous diploid", "homozygous diploid", "homozygous diploid, classical genetics", "unknown ploidy, classical genetics"):
-                mt[annotation.mutant.display_name]["classical genetics"] += 1
-            else:
-                mt[annotation.mutant.display_name]["large-scale survey"] += 1
+            add = 1
+
+            if number_conditions.get(annotation.annotation_id, 0) > 1:
+                add = number_conditions.get(annotation.annotation_id, 0)
+                
+            mt[annotation.mutant.display_name][annotation.experiment.namespace_group] += add
                 
         experiment_categories = []
         for key in mt.keys():
@@ -4469,7 +4550,7 @@ class Phenotypeannotation(Base):
             }
         }
     
-    def to_dict(self, reference=None, chemical=None, phenotype=None, locus=None):
+    def to_dict(self, reference=None, chemical=None, phenotype=None, locus=None, conditions=None, chebi_urls=None):
         if reference == None:
             reference = self.reference
 
@@ -4521,7 +4602,7 @@ class Phenotypeannotation(Base):
                 "display_name": strain[0].display_name,
                 "link": strain[0].obj_url
             }
-            
+
         note = None
         if self.details and len(self.details) > 0:
             note = self.details
@@ -4563,9 +4644,10 @@ class Phenotypeannotation(Base):
                 "pubmed_id": reference.pmid
             }
         }
-        
-        conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).all()
 
+        if conditions == None:
+            conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=self.annotation_id).all()
+            
         groups = {}
         
         for condition in conditions:
@@ -4573,7 +4655,10 @@ class Phenotypeannotation(Base):
                 if chemical is not None and (chemical.display_name == condition.condition_name):
                     chebi_url = chemical.obj_url
                 else:
-                    chebi_url = DBSession.query(Chebi.obj_url).filter_by(display_name=condition.condition_name).one_or_none()
+                    if chebi_urls == None:
+                        chebi_url = DBSession.query(Chebi.obj_url).filter_by(display_name=condition.condition_name).one_or_none()
+                    else:
+                        chebi_url = chebi_urls.get(condition.condition_name)
 
                 link = None
                 if chebi_url:
