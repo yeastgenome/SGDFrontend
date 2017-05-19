@@ -1810,100 +1810,103 @@ class Locusdbentity(Dbentity):
         return obj
     
     def literature_graph(self):
-        primary_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Primary Literature")).all()
-        primary_lit = DBSession.query(Literatureannotation.reference_id, Literatureannotation.dbentity_id).filter((Literatureannotation.reference_id.in_(primary_ids)) & (Literatureannotation.dbentity_id != self.dbentity_id)).all()
+        main_gene_lit_annotations = DBSession.query(Literatureannotation).filter((Literatureannotation.dbentity_id==self.dbentity_id) & (Literatureannotation.topic == "Primary Literature")).all()
+        main_gene_reference_ids = [a.reference_id for a in main_gene_lit_annotations]
 
-        genes_to_refs = {}
-        for lit in primary_lit:
-            if lit[1] in genes_to_refs:
-                genes_to_refs[lit[1]].append(lit[0])
+        genes_sharing_references = DBSession.query(Literatureannotation).filter((Literatureannotation.reference_id.in_(main_gene_reference_ids)) & (Literatureannotation.dbentity_id != self.dbentity_id)).all()
+        genes_to_references = {}
+        for annotation in genes_sharing_references:
+            gene = annotation.dbentity_id
+            reference = annotation.reference_id
+            if gene in genes_to_references:
+                genes_to_references[gene].add(reference)
             else:
-                genes_to_refs[lit[1]] = [lit[0]]
+                genes_to_references[gene] = set([reference])
+        
+        list_genes_to_references = sorted([(g, genes_to_references[g]) for g in genes_to_references], key=lambda x: len(x[1]), reverse=True)
+        
+        edges = []
+        nodes = {}
 
-        to_delete = []
-        for gene in genes_to_refs:
-            if len(genes_to_refs[gene]) < 2:
-                to_delete.append(gene)
-
-        for gene in to_delete:
-            del genes_to_refs[gene]
-
-        refs_to_genes = {}
-        for gene in genes_to_refs:
-            for ref in genes_to_refs[gene]:
-                if ref in refs_to_genes:
-                    refs_to_genes[ref].append(gene)
-                else:
-                    refs_to_genes[ref] = [gene]
-
-        to_delete = []
-        for reference in refs_to_genes:
-            if len(refs_to_genes[reference]) < 2:
-                to_delete.append(reference)
-
-        for ref in to_delete:
-            del refs_to_genes[ref]
-
-
-        geness = sorted(genes_to_refs.keys(), key=lambda g: len(genes_to_refs[g]), reverse=True)
-
-        references = sorted(refs_to_genes.keys(), key=lambda r: len(refs_to_genes[r]), reverse=True)
-
-        limit_number_references = 2
-
-        nodes = [{
+        nodes[self.format_name] = {
             "data": {
                 "name": self.display_name,
                 "id": self.format_name,
                 "link": self.obj_url,
                 "type": "BIOENTITY",
-                "sub_type": "FOCUS"
+                "sub_type": "FOCUS",
             }
-        }]
+        }
 
-        edges = []
+        edges_added = set([])
 
-        for ref in references[:limit_number_references]:
-            reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=ref).one_or_none()
+        min_cutoff = 99999999
+        max_cutoff = 0
 
-            nodes.append({
-                "data": {
-                    "name": reference.display_name,
-                    "id": reference.format_name,
-                    "link": reference.obj_url,
-                    "type": "REFERENCE",
-                }
-            })
+        i = 0
+        while i < len(list_genes_to_references) and len(nodes) <= 20 and len(edges) <= 50:
+            dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=list_genes_to_references[i][0]).one_or_none()
+            reference_ids = list_genes_to_references[i][1]
 
-            edges.append({
-                "data": {
-                    "source": self.format_name,
-                    "target": reference.format_name,
-                }
-            })
+            if len(reference_ids) > max_cutoff:
+                max_cutoff = len(reference_ids)
+
+            if len(reference_ids) < min_cutoff:
+                min_cutoff = len(reference_ids)
             
-            genes = refs_to_genes[ref]
-            for gene in genes:
-                dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=gene).one_or_none()
-
-                nodes.append({
+            if dbentity[1] not in nodes:
+                nodes[dbentity[1]] = {
                     "data": {
-                        "name": dbentity.display_name,
-                        "id": dbentity.format_name,
-                        "link": dbentity.obj_url,
+                        "name": dbentity[0],
+                        "id": dbentity[1],
+                        "link": dbentity[2],
                         "type": "BIOENTITY",
+                        "gene_count": len(reference_ids)
                     }
-                })
+                }                    
 
-                edges.append({
-                    "data": {
-                        "source": dbentity.format_name,
-                        "target": reference.format_name,
+            for reference_id in list(reference_ids)[:2]:
+                reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=reference_id).one_or_none()
+
+                if reference.format_name not in nodes:
+                    nodes[reference.format_name] = {
+                        "data": {
+                            "name": reference.display_name,
+                            "id": reference.format_name,
+                            "type": "REFERENCE",
+                            "gene_count": len(reference_ids)
+                        }
                     }
-                })                
+                
+                if (reference.format_name + " " + dbentity[1]) not in edges_added:
+                    edges.append({
+                        "data": {
+                            "source": reference.format_name,
+                            "target": dbentity[1]
+                        }
+                    })
+                    edges_added.add(reference.format_name + " " + dbentity[1])
 
+                if (reference.format_name + " " + self.format_name) not in edges_added:
+                    edges.append({
+                        "data": {
+                            "source": reference.format_name,
+                            "target": self.format_name
+                        }
+                    })
+                    edges_added.add(reference.format_name + " " + self.format_name)
+
+            i += 1
+
+        nodes[self.format_name]["gene_count"] = max_cutoff
+
+        if len(list_genes_to_references) == 0:
+            min_cutoff = max_cutoff
+            
         return {
-            "nodes": nodes,
+            "min_cutoff": min_cutoff,
+            "max_cutoff": max_cutoff,
+            "nodes": [nodes[n] for n in nodes],
             "edges": edges
         }
     
@@ -1962,94 +1965,106 @@ class Locusdbentity(Dbentity):
             obj["go"].append(lit.to_dict_citation())
 
         return obj
-
         
     def phenotype_graph(self):
-        phenotype_to_observable = {}
-        
-        phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        main_gene_phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        main_gene_phenotype_ids = [a.phenotype_id for a in main_gene_phenotype_annotations]
 
-        phenotypes = {}
-        observable_ids = set([])
-        for annotation in phenotype_annotations:
-            phenotypes[annotation.phenotype_id] = annotation.phenotype
-            observable_ids.add(annotation.phenotype.observable_id)
-
-        phenotype_annotations = DBSession.query(Phenotypeannotation).filter( (Phenotypeannotation.phenotype_id.in_(phenotypes.keys())) & (Phenotypeannotation.dbentity_id != self.dbentity_id)).all()
-        
-        genes = {}
-        for annotation in phenotype_annotations:
-            if annotation.dbentity_id in genes:
-                genes[annotation.dbentity_id].add(phenotypes[annotation.phenotype_id].observable_id)
+        genes_sharing_phenotypes = DBSession.query(Phenotypeannotation).filter((Phenotypeannotation.phenotype_id.in_(main_gene_phenotype_ids)) & (Phenotypeannotation.dbentity_id != self.dbentity_id)).all()
+        genes_to_phenotypes = {}
+        for annotation in genes_sharing_phenotypes:
+            gene = annotation.dbentity_id
+            phenotype = annotation.phenotype_id
+            if gene in genes_to_phenotypes:
+                genes_to_phenotypes[gene].add(phenotype)
             else:
-                genes[annotation.dbentity_id] = set([phenotypes[annotation.phenotype_id].observable_id])
+                genes_to_phenotypes[gene] = set([phenotype])
+        
+        list_genes_to_phenotypes = sorted([(g, genes_to_phenotypes[g]) for g in genes_to_phenotypes], key=lambda x: len(x[1]), reverse=True)
+        
+        edges = []
+        nodes = {}
 
-        genes_observables = []
-        for gene in genes:
-            genes_observables.append([gene, genes[gene]])
-        genes_observables = sorted(genes_observables, key=lambda x: len(x[1]), reverse=True)
+        edges_added = set([])
 
-        nodes = [{
+        nodes[self.format_name] = {
             "data": {
                 "name": self.display_name,
                 "id": self.format_name,
                 "link": self.obj_url,
                 "type": "BIOENTITY",
-                "sub_type": "FOCUS"
+                "sub_type": "FOCUS",
             }
-        }]
-
-        edges = []
-
-        limit_number_genes = 3
+        }
         
-        observables_in_the_graph = set()
-        min_cut_off = len(genes_observables[limit_number_genes - 1][1])
-        max_cut_off = len(genes_observables[0][1])
+        min_cutoff = 99999999
+        max_cutoff = 0
         
-        for gene in genes_observables[:limit_number_genes]:
-            dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=gene[0]).one_or_none()
+        i = 0
+        while i < len(list_genes_to_phenotypes) and len(nodes) <= 20 and len(edges) <= 50:
+            dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=list_genes_to_phenotypes[i][0]).one_or_none()
+
+            observable_ids = DBSession.query(distinct(Phenotype.observable_id)).filter(Phenotype.phenotype_id.in_(list_genes_to_phenotypes[i][1])).all()
+
+            if len(observable_ids) > max_cutoff:
+                max_cutoff = len(observable_ids)
+
+            if len(observable_ids) < min_cutoff:
+                min_cutoff = len(observable_ids)
             
-            nodes.append({
-                "data": {
-                    "name": dbentity[0],
-                    "id": dbentity[1],
-                    "link": dbentity[2],
-                    "type": "BIOENTITY"
-                }
-            })
+            if dbentity[1] not in nodes:
+                nodes[dbentity[1]] = {
+                    "data": {
+                        "name": dbentity[0],
+                        "id": dbentity[1],
+                        "link": dbentity[2],
+                        "type": "BIOENTITY",
+                        "gene_count": len(observable_ids)
+                    }
+                }                    
+                
+            for observable_id in observable_ids:
+                observable = Apo.get_apo_by_id(observable_id[0])
 
-            for apo in gene[1]:
-                observable = Apo.get_apo_by_id(apo)
-
-                if apo not in observables_in_the_graph:
-                    observables_in_the_graph.add(apo)
-                    
-                    nodes.append({
+                if observable.format_name not in nodes:
+                    nodes[observable.format_name] = {
                         "data": {
                             "name": observable.display_name,
                             "id": observable.format_name,
-                            "type": "OBSERVABLE"
+                            "type": "OBSERVABLE",
+                            "gene_count": len(observable_ids)
+                        }
+                    }
+                
+                if (observable.format_name + " " + dbentity[1]) not in edges_added:
+                    edges.append({
+                        "data": {
+                            "source": observable.format_name,
+                            "target": dbentity[1]
                         }
                     })
+                    edges_added.add(observable.format_name + " " + dbentity[1])
+
+                if (observable.format_name + " " + self.format_name) not in edges_added:
                     edges.append({
                         "data": {
                             "source": observable.format_name,
                             "target": self.format_name
                         }
                     })
-                    
-                edges.append({
-                    "data": {
-                        "source": observable.format_name,
-                        "target": dbentity[1]
-                    }
-                })
-        
+                    edges_added.add(observable.format_name + " " + self.format_name)
+
+            i += 1
+
+        nodes[self.format_name]["gene_count"] = max_cutoff
+
+        if len(list_genes_to_phenotypes) == 0:
+            min_cutoff = max_cutoff
+            
         return {
-#            "min_cutoff": min_cut_off,
-#            "max_cutoff": max_cut_off,
-            "nodes": nodes,
+            "min_cutoff": min_cutoff,
+            "max_cutoff": max_cutoff,
+            "nodes": [nodes[n] for n in nodes],
             "edges": edges
         }
     
