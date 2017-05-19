@@ -24,7 +24,7 @@ sub vcl_recv {
     if (vsthrottle.is_denied(client.identity, 100, 10s)) {
        return (synth(429, "Too Many Requests"));
     }
-
+    req.http.host = 'www.yeastgenome.org';
     unset req.http.Cookie;
 }
 
