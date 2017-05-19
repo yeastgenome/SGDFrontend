@@ -18,7 +18,8 @@ sub vcl_recv {
       if (!client.ip ~ purgers) {
         return (synth(405));
       }
-      return (purge);
+      ban("req.url ~ "+req.url);
+      error 200 "Ban added";
     }
 
     if (vsthrottle.is_denied(client.identity, 100, 10s)) {

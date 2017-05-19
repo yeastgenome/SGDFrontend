@@ -29,9 +29,24 @@ class CacheBase(object):
             url_segment = self.__url_segment__
         return url_segment + self.sgdid
 
+    def get_secondary_base_url(self):
+        return ''
+
     # list all dependent urls to ping, like secondary requests
     def get_secondary_cache_urls(self, is_quick=False):
         return []
+
+    # gets base URLs that can be used to purge, which varnish uses to purge all other URLs by ~ match
+    def get_cache_base_urls(self):
+        base_url = self.get_base_url()
+        secondary_base_url = self.get_secondary_base_url()
+        urls = []
+        for cache_base_url in cache_urls:
+            url = cache_base_url + base_url
+            secondary_url = cache_base_url + secondary_base_url
+            urls.append(url)
+            urls.append(secondary_url)
+        return urls
 
     def get_all_cache_urls(self, is_quick=False):
         base_target_url = self.get_base_url()
@@ -280,8 +295,11 @@ class Apo(Base):
         return '/observable/' + self.format_name
 
     def get_secondary_cache_urls(self, is_quick=False):
-        url1 = '/backend/observable/' + str(self.apo_id) + '/locus_details'
+        url1 = self.get_secondary_base_url() + '/locus_details'
         return [url1]
+
+    def get_secondary_base_url(self):
+        return '/backend/observable/' + str(self.apo_id)
 
 class ApoAlia(Base):
     __tablename__ = 'apo_alias'
@@ -3259,7 +3277,7 @@ class Locusdbentity(Dbentity):
             'history_tab':[],
         }
         base_url = self.get_base_url() + '/'
-        backend_base_segment = '/backend/locus/' + str(self.dbentity_id) + '/'
+        backend_base_segment = self.get_secondary_base_url() + '/'
         urls = []
         
         # get all the urls
@@ -3276,6 +3294,9 @@ class Locusdbentity(Dbentity):
                     urls.append(secondary_url)
         target_urls = list(set(urls))
         return target_urls
+
+    def get_secondary_base_url(self):
+        return '/backend/locus/' + str(self.dbentity_id)
 
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
@@ -4287,8 +4308,11 @@ class Go(Base):
         return self.obj_url
 
     def get_secondary_cache_urls(self, is_quick=False):
-        url1 = '/backend/go/' + str(self.go_id) + '/locus_details'
+        url1 = self.get_secondary_base_url() + '/locus_details'
         return [url1]
+
+    def get_secondary_base_url(self):
+        return '/backend/go/' + str(self.go_id)
 
 class GoAlias(Base):
     __tablename__ = 'go_alias'
@@ -5274,8 +5298,11 @@ class Phenotype(Base):
         return '/phenotype/' + self.format_name
 
     def get_secondary_cache_urls(self, is_quick=False):
-        url1 = '/backend/phenotype/' + str(self.phenotype_id) + '/locus_details'
+        url1 = self.get_secondary_base_url() + '/locus_details'
         return [url1]
+
+    def get_secondary_base_url(self):
+        return '/backend/phenotype/' + str(self.phenotype_id)
 
 class Phenotypeannotation(Base):
     __tablename__ = 'phenotypeannotation'
