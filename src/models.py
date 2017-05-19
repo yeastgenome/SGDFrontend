@@ -1898,7 +1898,7 @@ class Locusdbentity(Dbentity):
 
             i += 1
 
-        nodes[self.format_name]["gene_count"] = max_cutoff
+        nodes[self.format_name]["data"]["gene_count"] = max_cutoff
 
         if len(list_genes_to_references) == 0:
             min_cutoff = max_cutoff
@@ -1993,7 +1993,7 @@ class Locusdbentity(Dbentity):
                 "id": self.format_name,
                 "link": self.obj_url,
                 "type": "BIOENTITY",
-                "sub_type": "FOCUS",
+                "sub_type": "FOCUS"
             }
         }
         
@@ -2056,7 +2056,7 @@ class Locusdbentity(Dbentity):
 
             i += 1
 
-        nodes[self.format_name]["gene_count"] = max_cutoff
+        nodes[self.format_name]["data"]["gene_count"] = max_cutoff
 
         if len(list_genes_to_phenotypes) == 0:
             min_cutoff = max_cutoff
