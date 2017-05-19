@@ -19,6 +19,7 @@ CREATE TABLE nex.apo (
 	apoid varchar(20) NOT NULL,
 	apo_namespace varchar(20) NOT NULL,
 	namespace_group varchar(40),
+    is_obsolete boolean NOT NULL,
 	description varchar(1000),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -32,6 +33,7 @@ COMMENT ON COLUMN nex.apo.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.apo.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.apo.apo_namespace IS 'Aspect or vocabulary groupings (observable, qualifier, experiment_type, mutant_type).';
 COMMENT ON COLUMN nex.apo.display_name IS 'Public display name.';
+COMMENT ON COLUMN nex.apo.is_obsolete IS 'Whether the ontology term is obsolete.';
 COMMENT ON COLUMN nex.apo.namespace_group IS 'A way to group terms within a namespace together.';
 COMMENT ON COLUMN nex.apo.format_name IS 'Unique name to create download files.';
 COMMENT ON COLUMN nex.apo.obj_url IS 'URL of the object (relative for local links or complete for external links).';
@@ -122,6 +124,7 @@ CREATE TABLE nex.chebi (
 	obj_url varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
 	chebiid varchar(20) NOT NULL,
+    is_obsolete boolean NOT NULL,
 	description varchar(2000),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -133,6 +136,7 @@ COMMENT ON COLUMN nex.chebi.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.chebi.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.chebi.description IS 'Description or comment.';
 COMMENT ON COLUMN nex.chebi.chebi_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.chebi.is_obsolete IS 'Whether the ontology term is obsolete.';
 COMMENT ON COLUMN nex.chebi.obj_url IS 'URL of the object (relative for local links or complete for external links).';
 COMMENT ON COLUMN nex.chebi.format_name IS 'Unique name to create download files.';
 COMMENT ON COLUMN nex.chebi.chebiid IS 'Chemical identifier from the EBI (e.g., CHEBI:58471) or new term requests (NTR).';
@@ -199,6 +203,7 @@ CREATE TABLE nex.disease (
 	obj_url varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
 	doid varchar(20) NOT NULL,
+    is_obsolete boolean NOT NULL,
 	description varchar(2000),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -212,6 +217,7 @@ COMMENT ON COLUMN nex.disease.disease_id IS 'Unique identifier (serial number).'
 COMMENT ON COLUMN nex.disease.format_name IS 'Unique name to create download files.';
 COMMENT ON COLUMN nex.disease.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.disease.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.disease.is_obsolete IS 'Whether the ontology term is obsolete.';
 COMMENT ON COLUMN nex.disease.description IS 'Description or comment.';
 COMMENT ON COLUMN nex.disease.date_created IS 'Date the record was entered into the database.';
 ALTER TABLE nex.disease ADD CONSTRAINT do_uk UNIQUE (format_name);
@@ -299,6 +305,7 @@ CREATE TABLE nex.ec (
 	obj_url varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
 	ecid varchar(20) NOT NULL,
+    is_obsolete boolean NOT NULL,
 	description varchar(1000),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -312,6 +319,7 @@ COMMENT ON COLUMN nex.ec.created_by IS 'Username of the person who entered the r
 COMMENT ON COLUMN nex.ec.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.ec.description IS 'Description or comment.';
 COMMENT ON COLUMN nex.ec.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.ec.is_obsolete IS 'Whether the ontology term is obsolete.';
 COMMENT ON COLUMN nex.ec.ec_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.ec.ecid IS 'Enzyme Commission number (e.g., EC 3.1.26.5).';
 ALTER TABLE nex.ec ADD CONSTRAINT ec_uk UNIQUE (format_name);
@@ -375,6 +383,7 @@ CREATE TABLE nex.eco (
 	obj_url varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
 	ecoid varchar(20) NOT NULL,
+    is_obsolete boolean NOT NULL,
 	description varchar(1000),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -389,6 +398,7 @@ COMMENT ON COLUMN nex.eco.created_by IS 'Username of the person who entered the 
 COMMENT ON COLUMN nex.eco.obj_url IS 'URL of the object (relative for local links or complete for external links).';
 COMMENT ON COLUMN nex.eco.format_name IS 'Unique name to create download files.';
 COMMENT ON COLUMN nex.eco.ecoid IS 'Evidence ontology identifier (e.g. ECO:0000168).';
+COMMENT ON COLUMN nex.eco.is_obsolete IS 'Whether the ontology term is obsolete.';
 COMMENT ON COLUMN nex.eco.display_name IS 'Public display name.';
 ALTER TABLE nex.eco ADD CONSTRAINT eco_uk UNIQUE (format_name);
 CREATE UNIQUE INDEX ecoid_uk_index ON nex.eco (ecoid);
@@ -476,6 +486,7 @@ CREATE TABLE nex.edam (
 	source_id bigint NOT NULL,
 	edamid varchar(20) NOT NULL,
 	edam_namespace varchar(20) NOT NULL,
+    is_obsolete boolean NOT NULL,
 	description varchar(2000),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -488,6 +499,7 @@ COMMENT ON COLUMN nex.edam.edamid IS 'EDAM identifier (e.g. EDAM:0928).';
 COMMENT ON COLUMN nex.edam.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.edam.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.edam.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.edam.is_obsolete IS 'Whether the ontology term is obsolete.';
 COMMENT ON COLUMN nex.edam.description IS 'Description or comment.';
 COMMENT ON COLUMN nex.edam.obj_url IS 'URL of the object (relative for local links or complete for external links).';
 COMMENT ON COLUMN nex.edam.format_name IS 'Unique name to create download files.';
@@ -578,6 +590,7 @@ CREATE TABLE nex.go (
 	source_id bigint NOT NULL,
 	goid varchar(20) NOT NULL,
 	go_namespace varchar(20) NOT NULL,
+    is_obsolete boolean NOT NULL,
 	description varchar(2000),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -592,6 +605,7 @@ COMMENT ON COLUMN nex.go.goid IS 'Gene Ontology identifier (e.g. GO:0016233).';
 COMMENT ON COLUMN nex.go.format_name IS 'Unique name to create download files.';
 COMMENT ON COLUMN nex.go.obj_url IS 'URL of the object (relative for local links or complete for external links).';
 COMMENT ON COLUMN nex.go.go_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.go.is_obsolete IS 'Whether the ontology term is obsolete.';
 COMMENT ON COLUMN nex.go.go_namespace IS 'Three separate domains to describe gene products  (cellular component, biological process, molecular function).';
 COMMENT ON COLUMN nex.go.display_name IS 'Public display name.';
 ALTER TABLE nex.go ADD CONSTRAINT go_uk UNIQUE (format_name);
@@ -678,6 +692,7 @@ CREATE TABLE nex.keyword (
 	display_name varchar(500) NOT NULL,
 	obj_url varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
+    is_obsolete boolean NOT NULL,
 	description varchar(500),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -689,6 +704,7 @@ COMMENT ON COLUMN nex.keyword.description IS 'Description or comment.';
 COMMENT ON COLUMN nex.keyword.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.keyword.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.keyword.keyword_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.keyword.is_obsolete IS 'Whether the term is obsolete.';
 COMMENT ON COLUMN nex.keyword.format_name IS 'Unique name to create download files.';
 COMMENT ON COLUMN nex.keyword.obj_url IS 'URL of the object (relative for local links or complete for external links).';
 COMMENT ON COLUMN nex.keyword.display_name IS 'Public display name.';
@@ -704,6 +720,7 @@ CREATE TABLE nex.obi (
 	obj_url varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
 	obiid varchar(20) NOT NULL,
+    is_obsolete boolean NOT NULL,
 	description varchar(2000),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -717,6 +734,7 @@ COMMENT ON COLUMN nex.obi.obj_url IS 'URL of the object (relative for local link
 COMMENT ON COLUMN nex.obi.display_name IS 'Public display name.';
 COMMENT ON COLUMN nex.obi.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.obi.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.obi.is_obsolete IS 'Whether the ontology term is obsolete.';
 COMMENT ON COLUMN nex.obi.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.obi.created_by IS 'Username of the person who entered the record into the database.';
 ALTER TABLE nex.obi ADD CONSTRAINT obi_uk UNIQUE (format_name);
@@ -781,6 +799,7 @@ CREATE TABLE nex.psimod (
 	obj_url varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
 	psimodid varchar(20) NOT NULL,
+    is_obsolete boolean NOT NULL,
 	description varchar(2000),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -794,6 +813,7 @@ COMMENT ON COLUMN nex.psimod.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.psimod.obj_url IS 'URL of the object (relative for local links or complete for external links).';
 COMMENT ON COLUMN nex.psimod.format_name IS 'Unique name to create download files.';
 COMMENT ON COLUMN nex.psimod.psimod_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.psimod.is_obsolete IS 'Whether the ontology term is obsolete.';
 COMMENT ON COLUMN nex.psimod.psimodid IS 'Protein modification ontology identifier (e.g., MOD:01152).';
 COMMENT ON COLUMN nex.psimod.display_name IS 'Public display name.';
 ALTER TABLE nex.psimod ADD CONSTRAINT psimod_uk UNIQUE (format_name);
@@ -858,6 +878,7 @@ CREATE TABLE nex.ro (
 	obj_url varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
 	roid varchar(20) NOT NULL,
+    is_obsolete boolean NOT NULL,
 	description varchar(1000),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -870,6 +891,7 @@ COMMENT ON COLUMN nex.ro.ro_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.ro.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.ro.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.ro.roid IS 'Relation identifier  (e.g., RO:0002434).';
+COMMENT ON COLUMN nex.ro.is_obsolete IS 'Whether the ontology term is obsolete.';
 COMMENT ON COLUMN nex.ro.display_name IS 'Public display name.';
 COMMENT ON COLUMN nex.ro.obj_url IS 'URL of the object (relative for local links or complete for external links).';
 COMMENT ON COLUMN nex.ro.format_name IS 'Unique name to create download files.';
@@ -911,6 +933,7 @@ CREATE TABLE nex.so (
 	obj_url varchar(500) NOT NULL,
 	source_id bigint NOT NULL,
 	soid varchar(20) NOT NULL,
+    is_obsolete boolean NOT NULL,
 	description varchar(2000),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -923,6 +946,7 @@ COMMENT ON COLUMN nex.so.so_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.so.display_name IS 'Public display name.';
 COMMENT ON COLUMN nex.so.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.so.soid IS 'Sequence Ontology identifier (e.g., SO:0000368).';
+COMMENT ON COLUMN nex.so.is_obsolete IS 'Whether the ontology term is obsolete.';
 COMMENT ON COLUMN nex.so.description IS 'Description or comment.';
 COMMENT ON COLUMN nex.so.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.so.source_id IS 'FK to SOURCE.SOURCE_ID.';
@@ -1013,6 +1037,7 @@ CREATE TABLE nex.taxonomy (
 	taxid varchar(20) NOT NULL,
 	common_name varchar(100),
 	rank varchar(40) NOT NULL,
+    is_obsolete boolean NOT NULL,
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT taxonomy_pk PRIMARY KEY (taxonomy_id)
@@ -1021,6 +1046,7 @@ COMMENT ON TABLE nex.taxonomy IS 'Taxonomy information descended from the family
 COMMENT ON COLUMN nex.taxonomy.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.taxonomy.taxid IS 'Taxonomy identifier assigned by NCBI (from BUD.TAXONOMY.TAXON_ID).';
 COMMENT ON COLUMN nex.taxonomy.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.taxonomy.is_obsolete IS 'Whether the taxonomy term is obsolete.';
 COMMENT ON COLUMN nex.taxonomy.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.taxonomy.rank IS 'Rank of the taxonomy term from NCBI (e.g., Saccharomyces cerevisiae = species).';
 COMMENT ON COLUMN nex.taxonomy.common_name IS 'First common name from NCBI.';
