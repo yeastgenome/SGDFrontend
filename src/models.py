@@ -1965,7 +1965,110 @@ class Locusdbentity(Dbentity):
             obj["go"].append(lit.to_dict_citation())
 
         return obj
+
+    def go_graph(self):
+        main_gene_go_annotations = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        main_gene_go_ids = [a.go_id for a in main_gene_go_annotations]
+
+        genes_sharing_go = DBSession.query(Goannotation).filter((Goannotation.go_id.in_(main_gene_go_ids)) & (Goannotation.dbentity_id != self.dbentity_id)).all()
+        genes_to_go = {}
+        for annotation in genes_sharing_go:
+            gene = annotation.dbentity_id
+            go = annotation.go_id
+            if gene in genes_to_go:
+                genes_to_go[gene].add(go)
+            else:
+                genes_to_go[gene] = set([go])
         
+        list_genes_to_go = sorted([(g, genes_to_go[g]) for g in genes_to_go], key=lambda x: len(x[1]), reverse=True)
+        
+        edges = []
+        nodes = {}
+
+        edges_added = set([])
+
+        nodes[self.format_name] = {
+            "data": {
+                "name": self.display_name,
+                "id": self.format_name,
+                "link": self.obj_url,
+                "type": "BIOENTITY",
+                "sub_type": "FOCUS"
+            }
+        }
+        
+        min_cutoff = 99999999
+        max_cutoff = 0
+        
+        i = 0
+        while i < len(list_genes_to_go) and len(nodes) <= 20 and len(edges) <= 50:
+            dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=list_genes_to_go[i][0]).one_or_none()
+
+            go_ids = list_genes_to_go[i][1]
+
+            if len(go_ids) > max_cutoff:
+                max_cutoff = len(go_ids)
+
+            if len(go_ids) < min_cutoff:
+                min_cutoff = len(go_ids)
+            
+            if dbentity[1] not in nodes:
+                nodes[dbentity[1]] = {
+                    "data": {
+                        "name": dbentity[0],
+                        "id": dbentity[1],
+                        "link": dbentity[2],
+                        "type": "BIOENTITY",
+                        "gene_count": len(go_ids)
+                    }
+                }                    
+                
+            for go_id in go_ids:
+                go = DBSession.query(Go).filter_by(go_id=go_id).one_or_none()
+
+                if go.format_name not in nodes:
+                    nodes[go.format_name] = {
+                        "data": {
+                            "name": go.display_name,
+                            "id": go.format_name,
+                            "type": "GO",
+                            "gene_count": len(go_ids)
+                        }
+                    }
+                
+                if (go.format_name + " " + dbentity[1]) not in edges_added:
+                    edges.append({
+                        "data": {
+                            "source": go.format_name,
+                            "target": dbentity[1]
+                        }
+                    })
+                    edges_added.add(go.format_name + " " + dbentity[1])
+
+                if (go.format_name + " " + self.format_name) not in edges_added:
+                    edges.append({
+                        "data": {
+                            "source": go.format_name,
+                            "target": self.format_name
+                        }
+                    })
+                    edges_added.add(go.format_name + " " + self.format_name)
+
+            i += 1
+
+        nodes[self.format_name]["data"]["gene_count"] = max_cutoff
+
+        if len(list_genes_to_go) == 0:
+            min_cutoff = max_cutoff
+            
+        return {
+            "min_cutoff": min_cutoff,
+            "max_cutoff": max_cutoff,
+            "nodes": [nodes[n] for n in nodes],
+            "edges": edges
+        }
+
+    
     def phenotype_graph(self):
         main_gene_phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
         main_gene_phenotype_ids = [a.phenotype_id for a in main_gene_phenotype_annotations]
