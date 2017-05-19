@@ -30,13 +30,13 @@ class CacheBase(object):
         return url_segment + self.sgdid
 
     # list all dependent urls to ping, like secondary requests
-    def get_secondary_cache_urls(self):
+    def get_secondary_cache_urls(self, is_quick=False):
         return []
 
-    def get_all_cache_urls(self):
+    def get_all_cache_urls(self, is_quick=False):
         base_target_url = self.get_base_url()
         target_urls = [base_target_url]
-        details_urls = self.get_secondary_cache_urls()
+        details_urls = self.get_secondary_cache_urls(is_quick)
         target_urls = target_urls + details_urls
         urls = []
         for relative_url in target_urls:
@@ -279,7 +279,7 @@ class Apo(Base):
     def get_base_url(self):
         return '/observable/' + self.format_name
 
-    def get_secondary_cache_urls(self):
+    def get_secondary_cache_urls(self, is_quick=False):
         url1 = '/backend/observable/' + str(self.apo_id) + '/locus_details'
         return [url1]
 
@@ -1731,7 +1731,7 @@ class Referencedbentity(Dbentity):
         
         return [regulation.to_dict(self) for regulation in regulations]
 
-    def get_secondary_cache_urls(self):
+    def get_secondary_cache_urls(self, is_quick=False):
         base_url = self.get_base_url()
         url1 = base_url + '/literature_details'
         return [url1]
@@ -3182,6 +3182,23 @@ class Locusdbentity(Dbentity):
             obj["paragraph"] = go_summary[0]
 
         return obj
+
+    def get_go_count(self):
+        return DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id).count()
+
+    def get_phenotype_count(self):
+        return DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).count()
+
+    def get_interaction_count(self):
+        phys = DBSession.query(Physinteractionannotation).filter(or_(Physinteractionannotation.dbentity1_id == self.dbentity_id, Physinteractionannotation.dbentity2_id == self.dbentity_id)).count()
+        genetic = DBSession.query(Geninteractionannotation).filter(or_(Geninteractionannotation.dbentity1_id == self.dbentity_id, Geninteractionannotation.dbentity2_id == self.dbentity_id)).count()
+        return phys + genetic
+
+    def get_expression_count(self):
+        return DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).count()
+
+    def get_lit_count(self):
+        return DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id)).count()
     
     def tabs(self):
         return {
@@ -3202,9 +3219,9 @@ class Locusdbentity(Dbentity):
         }
 
     # clears the URLs for all tabbed pages and secondary XHR requests on tabbed pages
-    def get_secondary_cache_urls(self):
+    def get_secondary_cache_urls(self, is_quick=False):
         backend_urls_by_tab = {
-            'protein_tab': ['sequence_details', 'posttranslational_details', 'ecnumber_details', 'protein_experiment_details', 'protein_domain_details', 'protein_domain_details'],
+            'protein_tab': [],
             'interaction_tab': ['interaction_details', 'interaction_graph'],
             'summary_tab': ['expression_details'],
             'go_tab': ['go_details', 'go_graph'],
@@ -4245,7 +4262,7 @@ class Go(Base):
     def get_base_url(self):
         return self.obj_url
 
-    def get_secondary_cache_urls(self):
+    def get_secondary_cache_urls(self, is_quick=False):
         url1 = '/backend/go/' + str(self.go_id) + '/locus_details'
         return [url1]
 
@@ -5232,7 +5249,7 @@ class Phenotype(Base):
     def get_base_url(self):
         return '/phenotype/' + self.format_name
 
-    def get_secondary_cache_urls(self):
+    def get_secondary_cache_urls(self, is_quick=False):
         url1 = '/backend/phenotype/' + str(self.phenotype_id) + '/locus_details'
         return [url1]
 
