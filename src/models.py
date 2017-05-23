@@ -39,13 +39,19 @@ class CacheBase(object):
     # gets base URLs that can be used to purge, which varnish uses to purge all other URLs by ~ match
     def get_cache_base_urls(self):
         base_url = self.get_base_url()
+        direct_base_url = '/webservice' + base_url
         secondary_base_url = self.get_secondary_base_url()
+        direct_secondary_base_url = secondary_base_url.replace('backend', 'webservice')
         urls = []
         for cache_base_url in cache_urls:
             url = cache_base_url + base_url
+            direct_url = cache_base_url + direct_base_url
             secondary_url = cache_base_url + secondary_base_url
+            direct_secondary_url = cache_base_url + direct_secondary_base_url
             urls.append(url)
+            urls.append(direct_url)
             urls.append(secondary_url)
+            urls.append(direct_secondary_url)
         return urls
 
     def get_all_cache_urls(self, is_quick=False):
@@ -3286,9 +3292,6 @@ class Locusdbentity(Dbentity):
                 continue
             # if the tab is present, append all the needed urls to urls
             elif tabs[key]:
-                tab_name = key.replace('_tab', '')
-                tab_url = base_url + tab_name
-                urls.append(tab_url)
                 for d in backend_urls_by_tab[key]:
                     secondary_url = backend_base_segment + d
                     urls.append(secondary_url)
