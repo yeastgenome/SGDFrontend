@@ -3296,6 +3296,9 @@ class Locusdbentity(Dbentity):
                     secondary_url = backend_base_segment + d
                     urls.append(secondary_url)
         target_urls = list(set(urls))
+        # filter out graph URLs if is_quick
+        if is_quick:
+            target_urls = [x for x in target_urls if 'graph' not in x]
         return target_urls
 
     def get_secondary_base_url(self):

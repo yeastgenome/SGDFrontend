@@ -32,11 +32,12 @@ class BaseSpider(scrapy.Spider):
             if (index % 100 == 0):
                 percent_done = str(float(index) / float(len(entities)) * 100)
                 self.log('CHECKIN STATS: ' + percent_done + '% of current index complete')
+            # TEMP don't purge
             # Get a small subset of URLs which are purged and matched via ~ in varnish.
             # For example /locus/:sgdid will purge /locus/:sgdid, /locus/:sgdid/sequence, etc...
-            base_urls = entity.get_cache_base_urls()
-            for url in base_urls:
-                yield scrapy.Request(url=url, headers=HEADER_OBJ, method='PURGE')
+            # base_urls = entity.get_cache_base_urls()
+            # for url in base_urls:
+            #     yield scrapy.Request(url=url, headers=HEADER_OBJ, method='PURGE')
             # Get a longer list of URLs to GET, and prime the cache.
             urls = entity.get_all_cache_urls(True)
             for url in urls:
