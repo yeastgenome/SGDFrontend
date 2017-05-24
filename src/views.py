@@ -4,12 +4,8 @@ from pyramid.view import view_config
 from pyramid.compat import escape
 from pyramid.session import check_csrf_token
 
-<<<<<<< HEAD
 from sqlalchemy import func, distinct
-=======
-from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
->>>>>>> slight triage changes clip to 100
 
 from oauth2client import client, crypt
 import os
