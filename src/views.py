@@ -53,9 +53,10 @@ def home_view(request):
     }
    
 @view_config(route_name='get_recent_annotations', request_method='GET', renderer='json')
+@authenticate
 def get_recent_annotations(request):
     annotations = []
-    recent_summaries = DBSession.query(Locussummary).order_by(Locussummary.date_created.desc()).limit(10).all()
+    recent_summaries = DBSession.query(Locussummary).order_by(Locussummary.date_created.desc()).limit(50).all()
     for d in recent_summaries:
         annotations.append(d.to_dict())
     return annotations
