@@ -12,12 +12,12 @@ export const allTags = [
   {
     name: 'htp_phenotype',
     label: 'HTP phenotype Data (Omics)',
-    hasGenes: false
+    hasGenes: true
   },
   {
     name: 'non_phenotype_htp',
     label: 'Non-phenotype HTP',
-    hasGenes: false
+    hasGenes: true
   },
   {
     name: 'homology_disease',

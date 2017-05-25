@@ -1,66 +1,44 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import Select from 'react-select';
 
-import EditableList from '../../components/editableList/authorList';
-import StringField from '../../components/forms/stringField';
-import { selectActiveLitEntry } from '../../selectors/litSelectors';
+import Tags from './tags';
+import LitBasicInfo from '../../components/litBasicInfo';
+import { selectActiveLitEntry, selectHasData } from '../../selectors/litSelectors';
 
 class CurateLitBasic extends Component {
-  renderSelectors() {
-    // let _options = [
-    //   { name: 'Alpha' },
-    //   { name: 'Beta' },
-    //   { name: 'Gamma' }
-    // ];
-    // return (
-    //   <div>
-    //     <Select
-    //       labelKey='name' multi
-    //       options={_options} valueKey='name'
-    //     />
-    //   </div>
-    // );
-  }
-
   render() {
+    if (!this.props.hasData) return null;
     let d = this.props.data;
+    let _abstract = d.abstract ? d.abstract.text : { text: '' };
     return (
       <div>
-        {this.renderSelectors()}
-        <StringField defaultValue={d.title} displayName='Title' paramName='title' />
-        <div className='row'>
-          <div className='columns small-3'>
-            <StringField defaultValue={d.journal} displayName='Journal' paramName='journal' />
+        <div className='callout'>
+          <div className='text-right'>
+            <a><i className='fa fa-edit' /> Edit</a>
           </div>
-          <div className='columns small-2'>
-            <StringField defaultValue={d.pmid} displayName='PMID' paramName='pmid' />
-          </div>
-          <div className='columns small-2'>
-            <StringField defaultValue={d.doi} displayName='DOI' paramName='doi' />
-          </div>
-          <div className='columns small-1'>
-            <StringField defaultValue={d.year} displayName='Year' paramName='year' />
-          </div>
-          <div className='columns small-4'>
-            <StringField defaultValue={d.full_text_url} displayName='Full Text URL' paramName='full_text_url' />
-          </div>
+          <LitBasicInfo
+            abstract={_abstract}
+            citation={d.citation}
+            hideGeneList
+            fulltextUrl={''}
+            pmid={d.pubmed_id.toString()}
+          />
         </div>
-        <StringField defaultValue={d.citation} displayName='Citation' paramName='citation' />
-        <label>Authors</label>
-        <EditableList />
+        <Tags id={d.sgdid} />
       </div>
     );
   }
 }
 
 CurateLitBasic.propTypes = {
-  data: React.PropTypes.object
+  data: React.PropTypes.object,
+  hasData: React.PropTypes.bool
 };
 
 function mapStateToProps(state) {
   return {
     data: selectActiveLitEntry(state),
+    hasData: selectHasData(state)
   };
 }
 

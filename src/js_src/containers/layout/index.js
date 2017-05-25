@@ -7,20 +7,61 @@ import style from './style.css';
 import SearchBar from './searchBar';
 import curateLogo from './curateLogo.png';
 import Loader from './loader/index';
-import LoadingPage from '../../components/loadingPage';
 import { clearError, clearMessage } from '../../actions/metaActions';
 
 class LayoutComponent extends Component {
+  renderSearch () {
+    if (this.props.isAuthenticated) {
+      return (
+        <div>
+          <ul className={`menu ${style.authMenu}`}>
+            <li><SearchBar /></li>
+          </ul>
+        </div>
+      );
+    }
+    return null;
+  }
+
+  renderPublicMenu() {
+    return (
+      <ul className={`menu ${style.topMenu}`}>
+        <li>
+          <Link className={style.indexLink} to='curate'>
+            <img className={style.imgLogo} src={curateLogo} />
+          </Link>
+        </li>
+        <li>
+          <Link to='help'>
+            <span><i className='fa fa-question-circle' /> Help</span>
+          </Link>
+        </li>
+      </ul>
+    );
+  }
+
   renderAuthedMenu() {
     return (
-      <div>
-        <ul className={`menu ${style.authMenu}`}>
-          <li><a className={style.navLink} href='/'>
-            <i className='fa fa-sign-out' /> Logout</a>
-          </li>
-          <li><SearchBar /></li>
-        </ul>
-      </div>
+      <ul className={`menu ${style.topMenu}`}>
+        <li>
+          <Link className={style.indexLink} to='curate'>
+            <img className={style.imgLogo} src={curateLogo} />
+          </Link>
+        </li>
+        <li>
+          <Link to='curate'>
+            <span><i className='fa fa-home' /> Curation Home</span>
+          </Link>
+        </li>
+        <li>
+          <Link to='help'>
+            <span><i className='fa fa-question-circle' /> Help</span>
+          </Link>
+        </li>
+        <li>
+          <a className={style.navLink} href='/'><i className='fa fa-sign-out' /> Logout</a>
+        </li>
+      </ul>
     );
   }
   
@@ -53,41 +94,22 @@ class LayoutComponent extends Component {
   }
 
   renderBody() {
-    if (!this.props.isReady) return <LoadingPage />;
     return this.props.children;
   }
 
   render() {
     // init auth nodes, either login or logout links
-    let authNodes = this.props.isAuthenticated ? this.renderAuthedMenu() : null;
+    let menuNode = this.props.isAuthenticated ? this.renderAuthedMenu() : this.renderPublicMenu();
     return (
       <div>
         {this.renderMessage()}
         {this.renderError()}
-        <div className='row'>
-          <div className='columns small-12'>
-            <Link className={style.indexLink} to='curate'>
-              <img className={style.imgLogo} src={curateLogo} /><i>Saccharomyces</i> Genome Database <span className='label'>Curator</span>
-            </Link>
-          </div>
-        </div>
         <nav className={`top-bar ${style.navWrapper}`}>
           <div className='top-bar-left'>
-            <ul className={`menu ${style.topMenu}`}>
-              <li>
-                <Link to='curate'>
-                  <span><i className='fa fa-home' /> Home</span>
-                </Link>
-              </li>
-              <li>
-                <Link to='help'>
-                  <span><i className='fa fa-question-circle' /> Help</span>
-                </Link>
-              </li>
-            </ul>
+            {menuNode}
           </div>
           <div className='top-bar-right'>
-            {authNodes}
+            {this.renderSearch()}
           </div>
         </nav>
         <div className={`row ${style.contentRow}`}>
@@ -107,7 +129,6 @@ LayoutComponent.propTypes = {
   message: React.PropTypes.string,
   dispatch: React.PropTypes.func,
   isAuthenticated: React.PropTypes.bool,
-  isReady: React.PropTypes.bool,
 };
 
 function mapStateToProps(state) {
@@ -115,7 +136,6 @@ function mapStateToProps(state) {
     error: state.meta.get('error'),
     message: state.meta.get('message'),
     isAuthenticated: state.auth.get('isAuthenticated'),
-    isReady: state.meta.get('isReady')
   };
 }
 
