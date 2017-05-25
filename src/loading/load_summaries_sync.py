@@ -87,7 +87,7 @@ def validate_file_content(file_content, nex_session, username):
                 'category': 'locus', 
                 'href': preview_url, 
                 'name': gene.display_name, 
-                'type': file_summary_type + ' summary', 
+                'type': file_summary_type, 
                 'value': file_summary_val 
             })
             transaction.commit()
