@@ -50,12 +50,14 @@ def validate_file_content(file_content, nex_session):
     is_correct_match_num = matching_genes == len(file_gene_ids)
     if not is_correct_match_num:
         raise ValueError('Invalid gene identifier in ', str(file_gene_ids))
-    # update 
+    # update
+    receipt_object = []
     for i, val in enumerate(copied):
         if i != 0:
             file_id = val[0]
             gene = nex_session.query(Locusdbentity).filter(Locusdbentity.format_name.match(file_id)).all()[0]
             summaries = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=gene.dbentity_id, summary_type='Gene').all()
+            new_summary_type = val[1]
             new_summary_val = val[2]
             # update
             if len(summaries):
@@ -64,18 +66,18 @@ def validate_file_content(file_content, nex_session):
                 # nex_session.query(summary.update({ 'text': new_summary_val, 'html': new_summary_val }))
             # TODO create
             # else:
+            # add receipt
+            receipt_object.append({
+                'category': 'locus', 
+                'href': gene.object_url, 
+                'name': gene.display_name, 
+                'type': 'Phenotype summary', 
+                'value': new_summary_val 
+            })
+    return receipt_object
 
 def load_summaries(nex_session, file_content, username, summary_type=None):
-    print str(enumerate(file_content))
-    # print val
-    # # update each gene summary
-    # file_id = val[0]
-    # gene = nex_session.query(Locusdbentity).filter(Locusdbentity.format_name.match(file_id))
-    # print gene
-    # summary = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type="Gene").all()
-
-    # nex_session.query(Locussummary).filter_by(summary_id=key_to_summary[key].summary_id).update({'text': x['text'], 'html': x['html']})
-    annotation_summary = []
+    annotation_summary = validate_file_content(file_content, nex_session)
     return annotation_summary
 
 if __name__ == '__main__':
@@ -83,4 +85,5 @@ if __name__ == '__main__':
     DBSession.configure(bind=engine)
     with open('test/example_files/example_summary_upload.tsv') as tsvfile:
         tsvreader = csv.reader(tsvfile, delimiter="\t")
-        validate_file_content(tsvreader, DBSession)
+        load_summaries(DBSession, tsvreader, 'USER')
+        
