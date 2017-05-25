@@ -13,7 +13,7 @@ class CurateLayout extends Component {
   }
 
   render() {
-    let location = this.props.location.pathname;
+    let location = this.props.location ? this.props.location.pathname : '';
     return (
       <div className='row'>
         <div className={SMALL_COL_CLASS}>
