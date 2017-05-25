@@ -74,6 +74,7 @@ def validate_file_content(file_content, nex_session):
                 'type': 'Phenotype summary', 
                 'value': new_summary_val 
             })
+    transaction.commit()
     return receipt_object
 
 def load_summaries(nex_session, file_content, username, summary_type=None):
