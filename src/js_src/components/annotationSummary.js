@@ -9,16 +9,25 @@ class AnnotationSummary extends Component {
     return null;
   }
 
+  renderBlock(d) {
+    if (d.value) {
+      return (
+        <blockquote>
+          {d.value}
+        </blockquote>
+      );
+    }
+    return null;
+  }
+
   renderAnnotations() {
     let nodes = this.props.annotations.map( (d, i) => {
       return (
         <div key={'note' + i}>
           <p>
-            <CategoryLabel category={d.category} hideLabel /> {d.type} for <a href={d.href} target='_new'>{d.name}</a> {this.renderUpdatedBy(d)}
+            <CategoryLabel category={d.category} hideLabel /> <a href={d.href} target='_new'>{d.name}</a> {d.type} {this.renderUpdatedBy(d)}
           </p>
-          <blockquote>
-            {d.value}
-          </blockquote>
+          {this.renderBlock(d)}
         </div>
       );
     });
