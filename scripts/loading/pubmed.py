@@ -3,7 +3,8 @@ from urllib import urlopen
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
-from config import EMAIL
+# from config import EMAIL
+EMAIL = 'sgd-helpdesk@lists.stanford.edu'
 
 __author__ = 'sweng66'
 

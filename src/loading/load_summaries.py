@@ -23,25 +23,31 @@ __author__ = 'sweng66'
          LOCUSSUMMARY_REFERENCE table
 '''  
 
-def load_summaries(nex_session, summary_file_reader, summary_type=None):
-    
+all_Locusdbentity = None
+def load_summaries(nex_session, summary_file_reader, username, summary_type=None, ):
+    CREATED_BY = username
     if summary_type is None:
         summary_type = "Phenotype_Regulation"
-
-    [data, data_to_return] = read_summary_file(nex_session, summary_type, summary_file_reader)
-
+    # load lots of data into memory, perhaps could be filtered
+    global all_Locusdbentity
+    all_Locusdbentity = nex_session.query(Locusdbentity).all()
+    all_Referencedbentity = nex_session.query(Referencedbentity).all()
+    all_locus_summary_reference = nex_session.query(LocussummaryReference).all()
+    all_Locussummary = nex_session.query(Locussummary).all()
+    all_Source = nex_session.query(Source).all()
+    # done with large requests, parse the file
+    [data, data_to_return] = read_summary_file(nex_session, summary_type, summary_file_reader, all_Locusdbentity, all_Referencedbentity)
     # not sure if need to write to file?
     # fw.write(str(datetime.now()) + "\n")
     # fw.write("retriveing data from database and store the data in dictionary...\n")
-    
-    key_to_summary = dict([((x.locus_id, x.summary_type, x.summary_order), x) for x in nex_session.query(Locussummary).all()])
-    key_to_summaryref = dict([((x.summary_id, x.reference_id, x.reference_order), x) for x in nex_session.query(LocussummaryReference).all()])
-    
-    source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
+    key_to_summary = dict([((x.locus_id, x.summary_type, x.summary_order), x) for x in all_Locussummary])
+    key_to_summaryref = dict([((x.summary_id, x.reference_id, x.reference_order), x) for x in all_locus_summary_reference])
+    source_to_id = dict([(x.display_name, x.source_id) for x in all_Source])
     source_id = source_to_id.get('SGD')
 
     summary_id_to_references = {}
-    for x in nex_session.query(LocussummaryReference).all():
+
+    for x in all_locus_summary_reference:
         references = []
         if x.summary_id in summary_id_to_references:
             references = summary_id_to_references[x.summary_id]
@@ -52,17 +58,17 @@ def load_summaries(nex_session, summary_file_reader, summary_type=None):
                             "summary_updated": 0,
                             "summary_reference_added": 0 }
 
+    # update entries
     # fw.write(str(datetime.now()) + "\n")
     # fw.write("updating the database...\n")
-
     for x in data:
         key = (x['locus_id'], x['summary_type'], x['summary_order'])
         summary_id = None
         if key in key_to_summary:
-            if x['text'] != key_to_summary[key].text.strip():
+            if x['text'] != key_to_summary[key].text.strip() and x['html'] != key_to_summary[key].html.strip():
                 # fw.write("OLD:" + key_to_summary[key].text + ":\n")
                 # fw.write("NEW:" + x['text'] + ":\n")
-                nex_session.query(Locussummary).filter_by(summary_id=key_to_summary[key].summary_id).update({'text': x['text']})
+                nex_session.query(Locussummary).filter_by(summary_id=key_to_summary[key].summary_id).update({'text': x['text'], 'html': x['html']})
                 load_summary_holder['summary_updated'] = load_summary_holder['summary_updated'] + 1
             else:
                 # fw.write("SUMMARY is in DB\n")
@@ -74,34 +80,34 @@ def load_summaries(nex_session, summary_file_reader, summary_type=None):
                                   summary_id_to_references.get(summary_id), 
                                   x.get('references'))
         else:
-            summary_id = insert_summary(nex_session, load_summary_holder, source_id, x)
+            summary_id = insert_summary(nex_session, load_summary_holder, source_id, x, CREATED_BY)
             if x.get('references'):
                 for y in x['references']:
-                    insert_summary_reference(nex_session, load_summary_holder, source_id, summary_id, y)
+                    insert_summary_reference(nex_session, load_summary_holder, source_id, summary_id, y, CREATED_BY)
 
     transaction.commit()
     return data_to_return
 
-def insert_summary_reference(nex_session, load_summary_holder, source_id, summary_id, y):
+def insert_summary_reference(nex_session, load_summary_holder, source_id, summary_id, y, created_by):
     x = LocussummaryReference(summary_id = summary_id, 
                               reference_id = y['reference_id'], 
                               reference_order = y['reference_order'], 
                               source_id = source_id, 
-                              created_by = CREATED_BY)
+                              created_by = created_by)
     nex_session.add(x)
     
     load_summary_holder['summary_reference_added'] = load_summary_holder['summary_reference_added'] + 1
 
     # fw.write("insert new summary reference:" + str(summary_id) + ", " + str(y['reference_id']) + ", " + str(y['reference_order']))
 
-def insert_summary(nex_session, load_summary_holder, source_id, x):
+def insert_summary(nex_session, load_summary_holder, source_id, x, created_by):
     x = Locussummary(locus_id = x['locus_id'], 
                      summary_type = x['summary_type'], 
                      summary_order = x['summary_order'], 
                      text = x['text'], 
                      html = x['html'], 
                      source_id = source_id, 
-                     created_by = CREATED_BY)
+                     created_by = created_by)
     nex_session.add(x)
     nex_session.commit()
 
@@ -146,10 +152,10 @@ def update_references(nex_session, load_summary_holder, source_id, summary_id, o
         #    # nex_session.delete(x)
         #    # print "The LOCUSSUMMARY_REFERENCE row for summary_id=", summary_id, " and reference_id=", x.reference_id, " has been deleted from the database."
 
-def read_summary_file(nex_session, summary_type, summary_file_reader):
-    name_to_dbentity = dict([(x.systematic_name, x) for x in nex_session.query(Locusdbentity).all()])
-    sgdid_to_dbentity_id = dict([(x.sgdid, x.dbentity_id) for x in nex_session.query(Locusdbentity).all()])
-    pmid_to_reference_id = dict([(x.pmid, x.dbentity_id) for x in nex_session.query(Referencedbentity).all()]) 
+def read_summary_file(nex_session, summary_type, summary_file_reader, all_Locusdbentity, all_Referencedbentity):
+    name_to_dbentity = dict([(x.systematic_name, x) for x in all_Locusdbentity])
+    sgdid_to_dbentity_id = dict([(x.sgdid, x.dbentity_id) for x in all_Locusdbentity])
+    pmid_to_reference_id = dict([(x.pmid, x.dbentity_id) for x in all_Referencedbentity]) 
     
     data = []
     data_to_return = []
@@ -269,9 +275,10 @@ word_to_dbentity_id = None
 
 def get_word_to_dbentity_id(word, nex_session):
     global word_to_dbentity_id
+    global all_Locusdbentity
     if word_to_dbentity_id is None:
         word_to_dbentity_id = {}
-        for locus in nex_session.query(Locusdbentity).all():
+        for locus in all_Locusdbentity:
             word_to_dbentity_id[locus.format_name.lower()] = locus.dbentity_id
             word_to_dbentity_id[locus.display_name.lower()] = locus.dbentity_id
             word_to_dbentity_id[locus.format_name.lower() + 'p'] = locus.dbentity_id

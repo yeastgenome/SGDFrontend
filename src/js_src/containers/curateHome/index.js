@@ -4,7 +4,7 @@ class CurateHome extends Component {
   render() {
     return (
       <div>
-        <h1>Curate Home</h1>
+        <h1>Curation Home</h1>
       </div>
     );
   }
