@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig, Proteindomain, Ec
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Locussummary
 
 from .celery_tasks import upload_to_s3
 
@@ -51,7 +51,15 @@ def home_view(request):
         'google_client_id': os.environ['GOOGLE_CLIENT_ID'],
         'pusher_key': os.environ['PUSHER_KEY']
     }
-    
+   
+@view_config(route_name='get_recent_annotations', request_method='GET', renderer='json')
+def get_recent_annotations(request):
+    annotations = []
+    recent_summaries = DBSession.query(Locussummary).order_by(Locussummary.date_created.desc()).limit(10).all()
+    for d in recent_summaries:
+        annotations.append(d.to_dict())
+    return annotations
+
 @view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')
 @authenticate
 def upload_spreadsheet(request):
