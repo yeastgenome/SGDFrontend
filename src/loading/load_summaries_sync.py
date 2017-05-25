@@ -25,12 +25,15 @@ __author__ = 'tshepp'
        * check to see if there is any referenceupdate, if yes, updatethe 
          LOCUSSUMMARY_REFERENCE table
 '''
+PREVIEW_HOST = 'https://curate.qa.yeastgenome.org'
+SGD_SOURCE_ID = 834
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.INFO)
 # has correct columns in header
 # checks IDs to make sure real IDs
-def validate_file_content(file_content, nex_session):
+def validate_file_content(file_content, nex_session, username):
     header_literal = ['# Feature', 'Summary Type (phenotype, regulation, protein, or sequence)', 'Summary', 'PMIDs']
+    accepted_summary_types = ['Gene', 'Phenotype', 'Regulation']
     file_gene_ids = []
     copied = []
     for i, val in enumerate(file_content):
@@ -41,6 +44,9 @@ def validate_file_content(file_content, nex_session):
                 raise ValueError('File header does not match expected format.') 
         else:
             file_gene_ids.append(val[0])
+            # match summary types
+            if val[1] not in accepted_summary_types:
+                raise ValueError('Unaccepted summary type. Must be one of ' + str(accepted_summary_types))
         # match length of each row
         if len(val) != len(header_literal):
             raise ValueError('Row has incorrect number of columns.')
@@ -55,30 +61,40 @@ def validate_file_content(file_content, nex_session):
     for i, val in enumerate(copied):
         if i != 0:
             file_id = val[0]
+            file_summary_type = val[1]
+            file_summary_val = val[2]
             gene = nex_session.query(Locusdbentity).filter(Locusdbentity.format_name.match(file_id)).all()[0]
-            summaries = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=gene.dbentity_id, summary_type='Gene').all()
-            new_summary_type = val[1]
-            new_summary_val = val[2]
+            summaries = DBSession.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=gene.dbentity_id, summary_type=file_summary_type).all()
             # update
             if len(summaries):
                 summary = summaries[0]
-                nex_session.query(Locussummary).filter_by(summary_id=summary.summary_id).update({ 'text': new_summary_val, 'html': new_summary_val })
-                # nex_session.query(summary.update({ 'text': new_summary_val, 'html': new_summary_val }))
+                nex_session.query(Locussummary).filter_by(summary_id=summary.summary_id).update({ 'text': file_summary_val, 'html': file_summary_val })
             # TODO create
-            # else:
+            else:
+                new_summary = Locussummary(
+                    locus_id = gene.dbentity_id, 
+                    summary_type = file_summary_type, 
+                    text = file_summary_val, 
+                    html = file_summary_val, 
+                    created_by = username,
+                    source_id = SGD_SOURCE_ID
+                )
+                nex_session.add(new_summary)
             # add receipt
+            summary_type_url_segment = file_summary_type.lower()
+            preview_url = PREVIEW_HOST + '/locus/' + gene.sgdid + '/' + summary_type_url_segment
             receipt_object.append({
                 'category': 'locus', 
-                'href': '/locus/' + gene.sgdid, 
+                'href': preview_url, 
                 'name': gene.display_name, 
-                'type': 'Phenotype summary', 
-                'value': new_summary_val 
+                'type': file_summary_type + ' summary', 
+                'value': file_summary_val 
             })
-    transaction.commit()
+            transaction.commit()
     return receipt_object
 
 def load_summaries(nex_session, file_content, username, summary_type=None):
-    annotation_summary = validate_file_content(file_content, nex_session)
+    annotation_summary = validate_file_content(file_content, nex_session, username)
     return annotation_summary
 
 if __name__ == '__main__':
@@ -87,4 +103,3 @@ if __name__ == '__main__':
     with open('test/example_files/example_summary_upload.tsv') as tsvfile:
         tsvreader = csv.reader(tsvfile, delimiter="\t")
         load_summaries(DBSession, tsvreader, 'USER')
-        

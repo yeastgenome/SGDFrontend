@@ -55,10 +55,15 @@ def home_view(request):
 @view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')
 @authenticate
 def upload_spreadsheet(request):
-    tsv_file = request.POST['file'].file
-    template_type = request.POST['template']
-    annotations = parse_tsv_annotations(DBSession, tsv_file, template_type, request.session['username'])
-    return {'annotations': annotations}
+    try: 
+        tsv_file = request.POST['file'].file
+        template_type = request.POST['template']
+        annotations = parse_tsv_annotations(DBSession, tsv_file, template_type, request.session['username'])
+        return {'annotations': annotations}
+    except ValueError as e:
+        return HTTPBadRequest(body=json.dumps( {'error': str(e) }), content_type='text/json')
+    except:
+        return HTTPBadRequest(body=json.dumps( {'error': 'Unable to process file upload.' }), content_type='text/json')
 
 @view_config(route_name='upload', request_method='POST', renderer='json')
 @authenticate
