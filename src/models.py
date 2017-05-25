@@ -1719,6 +1719,20 @@ class Referencedbentity(Dbentity):
         
         return obj
 
+    def annotations_summary_to_dict(self):
+        preview_url = PREVIEW_HOST + '/reference/' + self.sgdid
+        date_created = None
+        if self.date_revised:
+            date_created = self.date_revised.strftime("%Y-%m-%d")
+        return {
+            'category': 'reference',
+            'created_by' : self.created_by,
+            'href': preview_url, 
+            'date_created': date_created,
+            'name': self.citation, 
+            'type': 'added'
+        }
+
     def interactions_to_dict(self):
         obj = []
 
@@ -5361,7 +5375,7 @@ class Locussummary(Base):
             'href': preview_url, 
             'date_created': self.date_created.strftime("%Y-%m-%d"),
             'name': self.locus.display_name, 
-            'type': self.summary_type, 
+            'type': self.summary_type + ' summary', 
             'value': self.html 
         }
 

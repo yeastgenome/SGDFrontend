@@ -55,10 +55,15 @@ def home_view(request):
 @view_config(route_name='get_recent_annotations', request_method='GET', renderer='json')
 @authenticate
 def get_recent_annotations(request):
+    limit = 25
     annotations = []
-    recent_summaries = DBSession.query(Locussummary).order_by(Locussummary.date_created.desc()).limit(50).all()
+    recent_summaries = DBSession.query(Locussummary).order_by(Locussummary.date_created.desc()).limit(limit).all()
+    recent_literature = DBSession.query(Referencedbentity).order_by(Referencedbentity.date_published.desc()).limit(limit * 2).all()
+    for d in recent_literature:
+        annotations.append(d.annotations_summary_to_dict())
     for d in recent_summaries:
         annotations.append(d.to_dict())
+    annotations = sorted(annotations, key=lambda r: r['date_created'], reverse=True)
     return annotations
 
 @view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')

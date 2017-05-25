@@ -37,6 +37,7 @@ class CurateLayout extends Component {
 
 CurateLayout.propTypes = {
   children: React.PropTypes.object,
+  location: React.PropTypes.object,
   numColleagues: React.PropTypes.number,
   numGeneReg: React.PropTypes.number,
   numLit: React.PropTypes.number
