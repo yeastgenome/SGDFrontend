@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 
 import fetchData from '../../lib/fetchData';
+import getPusherClient from '../../lib/getPusherClient';
 import AnnotationSummary from '../../components/annotationSummary';
 import LoadingPage from '../../components/loadingPage';
 
 const ANNOTATION_URL = '/annotations';
+const CHANNEL = 'sgd';
+const EVENT = 'curateHomeUpdate';
 
 class CurateHome extends Component {
   constructor(props) {
@@ -17,6 +20,19 @@ class CurateHome extends Component {
 
   componentDidMount() {
     this.fetchData();
+    this.listenForUpdates();
+  }
+
+  componentWillUnmount() {
+    this.channel.unbind(EVENT);
+  }
+
+  listenForUpdates() {
+    let pusher = getPusherClient();
+    this.channel = pusher.subscribe(CHANNEL);
+    this.channel.bind(EVENT, () => {
+      this.fetchData();
+    });
   }
 
   fetchData() {
@@ -29,7 +45,7 @@ class CurateHome extends Component {
     if (this.state.isPending) return <LoadingPage />;
     return (
       <div>
-        <AnnotationSummary annotations={this.state.annotationData} />
+        <AnnotationSummary annotations={this.state.annotationData} message='recent annotations.' />
       </div>
     );
   }

@@ -19,9 +19,10 @@ class AnnotationSummary extends Component {
   }
 
   render() {
+    let message = this.props.message || 'annotations successfully uploaded.';
     return (
       <div>
-        <p>{this.props.annotations.length.toLocaleString()} annotations successfully uploaded.</p>
+        <p>{this.props.annotations.length.toLocaleString()} {message}</p>
         {this.renderAnnotations()}
       </div>
     );
@@ -29,7 +30,8 @@ class AnnotationSummary extends Component {
 }
 
 AnnotationSummary.propTypes = {
-  annotations: React.PropTypes.array
+  annotations: React.PropTypes.array,
+  message: React.PropTypes.string
 };
 
 export default AnnotationSummary;
