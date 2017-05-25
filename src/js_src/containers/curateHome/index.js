@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import style from './style.css';
 import fetchData from '../../lib/fetchData';
 import getPusherClient from '../../lib/getPusherClient';
 import AnnotationSummary from '../../components/annotationSummary';
@@ -44,7 +45,7 @@ class CurateHome extends Component {
   render() {
     if (this.state.isPending) return <LoadingPage />;
     return (
-      <div>
+      <div className={style.annotationContainer}>
         <AnnotationSummary annotations={this.state.annotationData} message='recent annotations.' />
       </div>
     );

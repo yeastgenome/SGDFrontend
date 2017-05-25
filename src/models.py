@@ -5356,8 +5356,10 @@ class Locussummary(Base):
         summary_type_url_segment = self.summary_type.lower()
         preview_url = PREVIEW_HOST + '/locus/' + self.locus.sgdid + '/' + summary_type_url_segment
         return {
-            'category': 'locus', 
+            'category': 'locus',
+            'created_by' : self.created_by,
             'href': preview_url, 
+            'date_created': self.date_created.strftime("%Y-%m-%d"),
             'name': self.locus.display_name, 
             'type': self.summary_type, 
             'value': self.html 
