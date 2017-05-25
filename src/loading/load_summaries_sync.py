@@ -69,7 +69,7 @@ def validate_file_content(file_content, nex_session):
             # add receipt
             receipt_object.append({
                 'category': 'locus', 
-                'href': gene.object_url, 
+                'href': '/locus/' + gene.sgdid, 
                 'name': gene.display_name, 
                 'type': 'Phenotype summary', 
                 'value': new_summary_val 
