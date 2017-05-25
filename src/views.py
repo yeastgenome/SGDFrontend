@@ -68,6 +68,8 @@ def upload_spreadsheet(request):
         tsv_file = request.POST['file'].file
         template_type = request.POST['template']
         annotations = parse_tsv_annotations(DBSession, tsv_file, template_type, request.session['username'])
+        pusher = get_pusher_client()
+        pusher.trigger('sgd', 'curateHomeUpdate', {})
         return {'annotations': annotations}
     except ValueError as e:
         return HTTPBadRequest(body=json.dumps( {'error': str(e) }), content_type='text/json')
