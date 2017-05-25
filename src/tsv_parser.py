@@ -1,9 +1,8 @@
 import csv
-
-from loading.load_summaries import load_summaries
+from loading.load_summaries_sync import load_summaries_sync
 
 # takes a TSV file and returns an array of annotations
 def parse_tsv_annotations(db_session, tsv_file, template_type, username):
     raw_file_content = csv.reader(tsv_file, delimiter='\t')
-    annotations = load_summaries(db_session, raw_file_content, username)
+    annotations = load_summaries_sync(db_session, raw_file_content, username)
     return annotations
