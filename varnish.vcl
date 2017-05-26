@@ -18,14 +18,12 @@ sub vcl_recv {
       if (!client.ip ~ purgers) {
         return (synth(405));
       }
-      ban("req.url ~ "+req.url);
-      error 200 "Ban added";
+      return (purge)
     }
 
     if (vsthrottle.is_denied(client.identity, 100, 10s)) {
        return (synth(429, "Too Many Requests"));
     }
-    req.http.host = 'www.yeastgenome.org';
     unset req.http.Cookie;
 }
 
@@ -46,4 +44,9 @@ sub vcl_deliver {
     unset resp.http.Server;
     unset resp.http.Via;
     unset resp.http.X-Varnish;
+}
+
+sub vcl_purge {
+    set req.method = "GET";
+    return (restart);
 }
