@@ -131,7 +131,7 @@ class TriageControls extends Component {
   renderTags() {
     return (
       <div ref='tagList'>
-        <TagList entry={this.props.entry} onUpdate={this.saveUpdatedEntry.bind(this)} />
+        <TagList entry={this.props.entry} onUpdate={this.saveUpdatedEntry.bind(this)} isTriage />
       </div>
     );
   }

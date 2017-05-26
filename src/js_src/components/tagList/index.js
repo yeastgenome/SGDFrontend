@@ -18,7 +18,9 @@ class TagList extends Component {
 
   getData() {
     let tagData = this.getTagData();
-    let tags = allTags.map( (d) => {
+    let _allTags = allTags;
+    if (this.props.isTriage) _allTags = _.filter(allTags, d => d.inTriage );
+    let tags = _allTags.map( (d) => {
       let existing = _.findWhere(tagData, { name: d.name });
       if (existing) {
         d = _.extend(d, existing);
@@ -127,7 +129,8 @@ class TagList extends Component {
 TagList.propTypes = {
   entry: React.PropTypes.object,
   onUpdate: React.PropTypes.func,
-  isReadOnly: React.PropTypes.bool
+  isReadOnly: React.PropTypes.bool,
+  isTriage: React.PropTypes.bool
 };
 
 export default TagList;
