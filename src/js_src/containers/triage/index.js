@@ -59,7 +59,10 @@ class LitTriageIndex extends Component {
   }
 
   renderEntries() {
-    let triageEntries = this.props.triageEntries.slice(0, MAX_TRIAGE_NODES);
+    let all = this.props.triageEntries;
+    let triageEntries = all.slice(0, MAX_TRIAGE_NODES);
+    let topMsgNode = (triageEntries.length) ? <p>{all.length.toLocaleString()} triage entries</p> : null;
+    let msgNode = (triageEntries.length) ? <p>Showing {MAX_TRIAGE_NODES} of {all.length}. To show more, remove some items from above.</p> : null;
     let nodes = triageEntries.map( (d) => {
       return (
         <div className={`callout ${style.triageEntryContiner}`} key={'te' + d.curation_id}>
@@ -72,8 +75,9 @@ class LitTriageIndex extends Component {
     });
     return (
       <div>
+        {topMsgNode}
         {nodes}
-        <p>Showing {MAX_TRIAGE_NODES} of {this.props.triageEntries.length}. To show more, remove some items from above.</p>
+        {msgNode}
       </div>
     );
   }
@@ -98,7 +102,6 @@ class LitTriageIndex extends Component {
   render() {
     return (
       <div>
-        <h1>Literature Triage</h1>
         {this.renderMessage()}
         <div className={style.litTableContainer}>
           {this.renderEntries()}
