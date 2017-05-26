@@ -46,7 +46,8 @@ def load_ontology():
 
     ####################################
     fw = open(log_file, "w")
-
+    
+    is_sgd_term = {}
     data = read_owl(ontology_file, ontology)
     
     [update_log, to_delete_list] = load_new_data(nex_session, data, 
