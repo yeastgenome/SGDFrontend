@@ -6,7 +6,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Strainsummary, StrainsummaryReference, Dataset, DatasetReference, DatasetKeyword, Referencetype, ReferenceRelation, ReferenceUrl, Referenceauthor, \
     Physinteractionannotation, Geninteractionannotation, Goannotation, Regulationannotation, Literatureannotation, Contig, EcoAlias, EcoUrl, Goextension, \
     Gosupportingevidence, Eco, Ro, Go, GoRelation, GoUrl, GoAlias, ApoRelation, Referencetriage, Proteinsequenceannotation, ProteinsequenceDetail, \
-    Goslimannotation, Expressionannotation, Datasetsample
+    Goslimannotation, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -61,18 +61,20 @@ class ColleagueFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
-class DatasetReferenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+class KeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
-        model = DatasetReference
+        model = Keyword
         sqlalchemy_session = DBSession
 
-    dataset_reference_id = 1
-    reference_id = 1
-    dataset_id = 1
+    keyword_id = 1
+    format_name = factory.Sequence(lambda n: 'protein_{0}'.format(n))
+    #display_name = factory.Sequence(lambda n: 'protein traffcking {0}'.format(n))
+    display_name = "protein trafficking 7"
+    obj_url = "/keyword/protein_trafficking,_localization_and_degradation"
     source_id = 1
+    description = "my description"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
-
 
 class DatasetKeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -85,6 +87,7 @@ class DatasetKeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
     source_id = 1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
+    keyword = factory.SubFactory(KeywordFactory)
 
 
 class DatasetFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -186,22 +189,6 @@ class ColleagueKeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
     created_by = "TOTO"
 
 
-class KeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = Keyword
-        sqlalchemy_session = DBSession
-
-    keyword_id = 1
-    format_name = factory.Sequence(lambda n: 'protein_{0}'.format(n))
-    #display_name = factory.Sequence(lambda n: 'protein traffcking {0}'.format(n))
-    display_name = "protein trafficking 7"
-    obj_url = "/keyword/protein_trafficking,_localization_and_degradation"
-    source_id = 1
-    description = "my description"
-    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "TOTO"
-
-
 class EdamFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Edam
@@ -251,6 +238,20 @@ class ReferencedbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     dbentity_status = "Active"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
+
+class DatasetReferenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = DatasetReference
+        sqlalchemy_session = DBSession
+
+    dataset_reference_id = 1
+    reference_id = 1
+    dataset_id = 1
+    source_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+    reference = factory.SubFactory(ReferencedbentityFactory)
+
 
 class ReferenceUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -321,7 +322,6 @@ class FiledbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     is_public = True
     is_in_spell = True
     is_in_browser = True
-    filepath_id = 1
     file_extension = "txt"
     data_id = 1
     s3_url = "http://example.org/s3"
@@ -1120,20 +1120,6 @@ class GoFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
-class ExpressionannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = Expressionannotation
-        sqlalchemy_session = DBSession
-
-    annotation_id = 1
-    dbentity_id = 1
-    source_id =  1
-    taxonomy_id = 1
-    reference_id = 1
-    datasetsample_id = 1
-    expression_value = 0.1
-    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "TOTO"
 
 class DatasetsampleFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -1153,5 +1139,49 @@ class DatasetsampleFactory(factory.alchemy.SQLAlchemyModelFactory):
     biosample = "biosample"
     strain_name = "strain name"
     description = "description"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class ExpressionannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Expressionannotation
+        sqlalchemy_session = DBSession
+
+    annotation_id = 1
+    dbentity_id = 1
+    source_id = 1
+    taxonomy_id = 1
+    reference_id = 1
+    datasetsample_id = 1
+    expression_value = 0.1
+    datasetsample = factory.SubFactory(DatasetsampleFactory)
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class DatasetUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = DatasetUrl
+        sqlalchemy_session = DBSession
+
+
+    url_id = 1
+    display_name = "name"
+    obj_url = "/obj_url"
+    source_id = 1
+    dataset_id = 1
+    url_type = "url type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class DatasetFileFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = DatasetFile
+        sqlalchemy_session = DBSession
+
+    dataset_file_id = 1
+    dataset_id = 1
+    file_id = 1
+    source_id = 1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"

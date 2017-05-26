@@ -27,6 +27,10 @@
 	display: inline-block;
 }
 
+.linkContainer {
+  margin-bottom: 1rem;
+}
+
 .sgdLoaderContainer {
 	display: flex;
 	min-height: 250px;

@@ -3,9 +3,7 @@ import { fromJS } from 'immutable';
 import _ from 'underscore';
 
 const DEFAULT_STATE = fromJS({
-  activeLitEntry: {
-    lastUpdated: (new Date())
-  },
+  activeLitEntry: {},
   activeTagData: {
     data: { tags: [] }
   },
@@ -54,5 +52,6 @@ function replaceTriage(oldEntries, newEntries, currentUsername) {
       oldEntries[i] = d;
     }
   });
+  // TODO remove items from old if not in new
   return oldEntries;
 }
