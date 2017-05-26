@@ -103,6 +103,7 @@ class Apo(Base):
     apo_namespace = Column(String(20), nullable=False)
     namespace_group = Column(String(40))
     description = Column(String(1000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -694,6 +695,7 @@ class Chebi(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     chebiid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -1467,6 +1469,7 @@ class Datasetsample(Base):
     sample_order = Column(Integer, nullable=False)
     dbxref_id = Column(String(40))
     dbxref_type = Column(String(40))
+    dbxref_url = Column(String(500))
     biosample = Column(String(500))
     strain_name = Column(String(500))
     description = Column(String(500))
@@ -3911,6 +3914,7 @@ class Disease(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     doid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -4214,6 +4218,7 @@ class Ec(Base):
     obj_url = Column(String(500), nullable=False)
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     ecid = Column(String(20), nullable=False, unique=True)
+    is_obsolete = Column(Boolean, nullable=False)
     description = Column(String(1000))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
@@ -4309,6 +4314,7 @@ class Eco(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     ecoid = Column(String(20), nullable=False, unique=True)
     description = Column(String(1000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -4387,6 +4393,7 @@ class Edam(Base):
     edamid = Column(String(20), nullable=False, unique=True)
     edam_namespace = Column(String(20), nullable=False)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -4655,6 +4662,7 @@ class Go(Base):
     goid = Column(String(20), nullable=False, unique=True)
     go_namespace = Column(String(20), nullable=False)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -5717,6 +5725,7 @@ class Obi(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     obiid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -6831,6 +6840,7 @@ class Psimod(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     psimodid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -7261,6 +7271,7 @@ class Ro(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     roid = Column(String(20), nullable=False, unique=True)
     description = Column(String(1000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -7337,6 +7348,7 @@ class So(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     soid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -7496,6 +7508,7 @@ class Taxonomy(Base):
     taxid = Column(String(20), nullable=False, unique=True)
     common_name = Column(String(100))
     rank = Column(String(40), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
