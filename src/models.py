@@ -2068,6 +2068,252 @@ class Locusdbentity(Dbentity):
             "edges": edges
         }
 
+    def interaction_graph(self):
+        phys_graph = self.interaction_graph_builder(Physinteractionannotation, "PHYSICAL")
+        gen_graph = self.interaction_graph_builder(Geninteractionannotation, "GENETIC")
+
+        nodes = {}
+
+        for node in phys_graph["nodes"]:
+            nodes[node] = phys_graph["nodes"][node]
+            nodes[node]["data"]["physical"] = phys_graph["nodes"][node]["data"]["evidence"]
+
+        for node in gen_graph["nodes"].keys():
+            if node not in nodes:
+                nodes[node] = gen_graph["nodes"][node]
+                nodes[node]["data"]["genetic"] = gen_graph["nodes"][node]["data"]["evidence"]
+            else:
+                nodes[node]["data"]["genetic"] = gen_graph["nodes"][node]["data"]["evidence"]
+                nodes[node]["data"]["evidence"] = max(nodes[node]["data"]["genetic"], nodes[node]["data"]["physical"])
+
+        # limiting cutoffs by 10. The interface converts > 10 to '+10' to save space
+                
+        return {
+            "nodes": [nodes[n] for n in nodes],
+            "edges": phys_graph["edges"] + gen_graph["edges"],
+            "max_phys_cutoff": min(phys_graph["max_evidence_cutoff"], 10),
+            "max_gen_cutoff": min(gen_graph["max_evidence_cutoff"], 10),
+            "min_evidence_cutoff": min(min(phys_graph["min_evidence_cutoff"], gen_graph["min_evidence_cutoff"]), 10),
+            "max_evidence_cutoff": min(max(phys_graph["max_evidence_cutoff"], gen_graph["max_evidence_cutoff"]), 10),
+        }
+        
+
+    def interaction_graph_builder(self, Interaction, edge_type):
+        main_gene_annotations = DBSession.query(Interaction).filter(or_(Interaction.dbentity1_id == self.dbentity_id, Interaction.dbentity2_id == self.dbentity_id)).all()
+
+        genes_to_interactions = {}
+        for annotation in main_gene_annotations:
+            if annotation.dbentity1_id == self.dbentity_id:
+                add = annotation.dbentity2_id
+            else:
+                add = annotation.dbentity1_id
+
+            if add in genes_to_interactions:
+                genes_to_interactions[add].add(annotation.reference_id)
+            else:
+                genes_to_interactions[add] = set([annotation.reference_id])
+
+        list_genes_to_interactions = sorted([(g, genes_to_interactions[g]) for g in genes_to_interactions], key=lambda x: len(x[1]), reverse=True)
+
+        nodes = {}
+        edges = []
+
+        edges_added = set([])
+
+        nodes[self.dbentity_id] = {
+            "data": {
+                "name": self.display_name,
+                "id": self.format_name,
+                "link": self.obj_url,
+                "type": "BIOENTITY",
+                "sub_type": "FOCUS",
+                "evidence": 0
+            }
+        }
+
+        min_cutoff = 99999999
+        max_cutoff = 0
+
+        i = 0
+        while i < len(list_genes_to_interactions) and len(nodes) <= 20 and len(edges) <= 50:
+            dbentity_id = list_genes_to_interactions[i][0]
+            dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=dbentity_id).one_or_none()
+
+            if len(list_genes_to_interactions[i][1]) > max_cutoff:
+                max_cutoff = len(list_genes_to_interactions[i][1])
+
+            if len(list_genes_to_interactions[i][1]) < min_cutoff:
+                min_cutoff = len(list_genes_to_interactions[i][1])
+
+            if dbentity_id not in nodes:
+                nodes[dbentity_id] = {
+                    "data": {
+                        "name": dbentity.display_name,
+                        "id": dbentity.format_name,
+                        "link": dbentity.obj_url,
+                        "type": "BIOENTITY",
+                        "evidence": len(list_genes_to_interactions[i][1])
+                    }
+                }
+
+            if (self.format_name + " " + dbentity.format_name) not in edges_added or (dbentity.format_name + " " + self.format_name) not in edges_added:
+                edges.append({
+                    "data": {
+                        "source": self.format_name,
+                        "target": dbentity.format_name,
+                        "class_type": edge_type,
+                        "evidence": len(list_genes_to_interactions[i][1])
+                    }
+                })
+                edges_added.add(self.format_name + " " + dbentity.format_name)
+
+            i += 1
+
+        nodes[self.dbentity_id]["data"]["gene_count"] = max_cutoff
+            
+        reference_ids = set([a.reference_id for a in main_gene_annotations])
+        other_interactions = DBSession.query(Interaction).filter(and_(Interaction.reference_id.in_(reference_ids), and_(Interaction.dbentity1_id != self.dbentity_id, Interaction.dbentity2_id != self.dbentity_id))).all()
+        
+        other_valid_interactions = []
+        for interaction in other_interactions:
+            if interaction.dbentity1_id in nodes and interaction.dbentity2_id in nodes:
+                other_valid_interactions.append(interaction)
+
+        i = 0
+        while i < len(other_valid_interactions) and len(edges) <= 50:
+            source = nodes[other_valid_interactions[i].dbentity1_id]["data"]["id"]
+            target = nodes[other_valid_interactions[i].dbentity2_id]["data"]["id"]
+            evidence = nodes[other_valid_interactions[i].dbentity1_id]["data"]["evidence"]
+            if nodes[other_valid_interactions[i].dbentity2_id]["data"]["evidence"] > evidence:
+                evidence = nodes[other_valid_interactions[i].dbentity2_id]["data"]["evidence"]
+                
+            if (source + " " + target) not in edges_added and (target + " " + source) not in edges_added:
+                edges.append({
+                    "data": {
+                        "source": source,
+                        "target": target,
+                        "class_type": edge_type,
+                        "evidence": evidence
+                        
+                    }
+                })
+                edges_added.add(source + " " + target)
+            i += 1
+
+        return {
+            "nodes": nodes,
+            "edges": edges,
+            "min_evidence_cutoff": min_cutoff,
+            "max_evidence_cutoff": max_cutoff
+        }
+
+    def expression_graph(self):
+        main_gene_expression_annotations = DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        main_gene_datasetsample_ids = [a.datasetsample_id for a in main_gene_expression_annotations]
+        main_genes_dataset_ids = DBSession.query(Datasetsample.datset_id).filter(Datasetsample.datasetsample_id.in_(main_gene_datasetsample_ids)).all()
+
+        # QUESTION: genes sharing datasets via same datasetsample or any datasetsample within the same dataset is valid?
+
+        ##########################################
+        
+        genes_sharing_datasets = DBSession.query(Goannotation).filter((Goannotation.go_id.in_(main_gene_go_ids)) & (Goannotation.dbentity_id != self.dbentity_id)).all()
+        genes_to_go = {}
+        for annotation in genes_sharing_go:
+            gene = annotation.dbentity_id
+            go = annotation.go_id
+            if gene in genes_to_go:
+                genes_to_go[gene].add(go)
+            else:
+                genes_to_go[gene] = set([go])
+        
+        list_genes_to_go = sorted([(g, genes_to_go[g]) for g in genes_to_go], key=lambda x: len(x[1]), reverse=True)
+        
+        edges = []
+        nodes = {}
+
+        edges_added = set([])
+
+        nodes[self.format_name] = {
+            "data": {
+                "name": self.display_name,
+                "id": self.format_name,
+                "link": self.obj_url,
+                "type": "BIOENTITY",
+                "sub_type": "FOCUS"
+            }
+        }
+        
+        min_cutoff = 99999999
+        max_cutoff = 0
+        
+        i = 0
+        while i < len(list_genes_to_go) and len(nodes) <= 20 and len(edges) <= 50:
+            dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=list_genes_to_go[i][0]).one_or_none()
+
+            go_ids = list_genes_to_go[i][1]
+
+            if len(go_ids) > max_cutoff:
+                max_cutoff = len(go_ids)
+
+            if len(go_ids) < min_cutoff:
+                min_cutoff = len(go_ids)
+            
+            if dbentity[1] not in nodes:
+                nodes[dbentity[1]] = {
+                    "data": {
+                        "name": dbentity[0],
+                        "id": dbentity[1],
+                        "link": dbentity[2],
+                        "type": "BIOENTITY",
+                        "gene_count": len(go_ids)
+                    }
+                }                    
+                
+            for go_id in go_ids:
+                go = DBSession.query(Go).filter_by(go_id=go_id).one_or_none()
+
+                if go.format_name not in nodes:
+                    nodes[go.format_name] = {
+                        "data": {
+                            "name": go.display_name,
+                            "id": go.format_name,
+                            "type": "GO",
+                            "gene_count": len(go_ids)
+                        }
+                    }
+                
+                if (go.format_name + " " + dbentity[1]) not in edges_added:
+                    edges.append({
+                        "data": {
+                            "source": go.format_name,
+                            "target": dbentity[1]
+                        }
+                    })
+                    edges_added.add(go.format_name + " " + dbentity[1])
+
+                if (go.format_name + " " + self.format_name) not in edges_added:
+                    edges.append({
+                        "data": {
+                            "source": go.format_name,
+                            "target": self.format_name
+                        }
+                    })
+                    edges_added.add(go.format_name + " " + self.format_name)
+
+            i += 1
+
+        nodes[self.format_name]["data"]["gene_count"] = max_cutoff
+
+        if len(list_genes_to_go) == 0:
+            min_cutoff = max_cutoff
+            
+        return {
+            "min_cutoff": min_cutoff,
+            "max_cutoff": max_cutoff,
+            "nodes": [nodes[n] for n in nodes],
+            "edges": edges
+        }
+
     
     def phenotype_graph(self):
         main_gene_phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
