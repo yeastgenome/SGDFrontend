@@ -68,9 +68,12 @@ dev_aws_variables.sh
 
 #temp files
 logs
-zz_logs
 backup
 data
+zz_*
+tmo_*
+tmp_*
+template*
 
 Gemfile.lock
 
