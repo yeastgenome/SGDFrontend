@@ -36,25 +36,12 @@ class CacheBase(object):
     def get_secondary_cache_urls(self, is_quick=False):
         return []
 
-    # gets base URLs that can be used to purge, which varnish uses to purge all other URLs by ~ match
-    def get_cache_base_urls(self):
-        base_url = self.get_base_url()
-        direct_base_url = '/webservice' + base_url
-        secondary_base_url = self.get_secondary_base_url()
-        direct_secondary_base_url = secondary_base_url.replace('backend', 'webservice')
-        urls = []
-        for cache_base_url in cache_urls:
-            url = cache_base_url + base_url
-            direct_url = cache_base_url + direct_base_url
-            secondary_url = cache_base_url + secondary_base_url
-            direct_secondary_url = cache_base_url + direct_secondary_base_url
-            urls.append(url)
-            urls.append(direct_url)
-            urls.append(secondary_url)
-            urls.append(direct_secondary_url)
-        return urls
+    def can_skip_cache(self):
+        return False
 
     def get_all_cache_urls(self, is_quick=False):
+        if is_quick and self.can_skip_cache():
+            return []
         base_target_url = self.get_base_url()
         target_urls = [base_target_url]
         details_urls = self.get_secondary_cache_urls(is_quick)
@@ -68,12 +55,10 @@ class CacheBase(object):
 
     def refresh_cache(self):
         urls = self.get_all_cache_urls()
-        for url in urls:            
+        for url in urls:
             try:
                 # purge
-                requests.request('PURGE', url)
-                # prime
-                response = requests.get(url)
+                response = requests.request('PURGE', url)
                 if (response.status_code != 200):
                     raise('Error fetching ')
             except Exception, e:
@@ -4317,6 +4302,10 @@ class Go(Base):
         url1 = self.get_secondary_base_url() + '/locus_details'
         return [url1]
 
+    def can_skip_cache(self):
+        annotation_count = annotations = DBSession.query(Goannotation).filter_by(go_id=self.go_id).count()
+        return annotation_count < 100
+
     def get_secondary_base_url(self):
         return '/backend/go/' + str(self.go_id)
 
@@ -5302,6 +5291,10 @@ class Phenotype(Base):
 
     def get_base_url(self):
         return '/phenotype/' + self.format_name
+
+    def can_skip_cache(self):
+        annotation_count = annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).count()
+        return annotation_count < 100
 
     def get_secondary_cache_urls(self, is_quick=False):
         url1 = self.get_secondary_base_url() + '/locus_details'
