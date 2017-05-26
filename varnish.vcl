@@ -25,6 +25,7 @@ sub vcl_recv {
        return (synth(429, "Too Many Requests"));
     }
     unset req.http.Cookie;
+    set req.http.host = "www.yeastgenome.org";
 }
 
 sub vcl_backend_response {
