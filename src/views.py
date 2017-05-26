@@ -786,6 +786,16 @@ def locus_interaction_graph(request):
         return locus.interaction_graph()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='locus_regulation_graph', renderer='json', request_method='GET')
+def locus_regulation_graph(request):
+    id = request.matchdict['id'].upper()
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    if locus:
+        return locus.regulation_graph()
+    else:
+        return HTTPNotFound()
     
 @view_config(route_name='locus_go_details', renderer='json', request_method='GET')
 def locus_go_details(request):
