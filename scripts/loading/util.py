@@ -404,6 +404,7 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
 
         ## reference_id                                                                                     
         reference_id = None
+        pmid = None
         if field[4].startswith('PMID:'):
             pmid = field[4][5:]    # PMID:1234567; need to be 1234567                                       
             reference_id = pmid_to_reference_id.get(int(pmid))
@@ -416,6 +417,9 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
                 continue
             reference_id = sgdid_to_reference_id.get(ref_sgdid)
         if reference_id is None:
+            if pmid is None:
+                print "NO REFERENCE: line=", line
+                continue
             print "The PMID = " + str(pmid) + " is not in the REFERENCEDBENTITY table."
             if new_pmids is not None:
                 if pmid not in new_pmids:
@@ -863,7 +867,7 @@ def get_relation_to_ro_id(relation_type, nex_session=None):
             nex_session = nex_session_maker()
         relation_to_ro_id = {}
         for relation in nex_session.query(Ro).all():
-            relation_to_ro_id[relation.display_name] = relation.id
+            relation_to_ro_id[relation.display_name] = relation.ro_id
     return None if relation_type not in relation_to_ro_id else relation_to_ro_id[relation_type]
 
 
