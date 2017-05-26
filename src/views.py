@@ -58,7 +58,7 @@ def get_recent_annotations(request):
     limit = 25
     annotations = []
     recent_summaries = DBSession.query(Locussummary).order_by(Locussummary.date_created.desc()).limit(limit).all()
-    recent_literature = DBSession.query(Referencedbentity).order_by(Referencedbentity.date_published.desc()).limit(limit * 2).all()
+    recent_literature = DBSession.query(Referencedbentity).order_by(Referencedbentity.dbentity_id.desc()).limit(limit * 2).all()
     for d in recent_literature:
         annotations.append(d.annotations_summary_to_dict())
     for d in recent_summaries:
@@ -530,6 +530,7 @@ def reference_triage_promote(request):
         
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
+        pusher.trigger('sgd', 'curateHomeUpdate', {})
         
         return {
             "sgdid": sgdid

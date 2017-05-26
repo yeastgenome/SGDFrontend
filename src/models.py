@@ -3,6 +3,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
 from elasticsearch import Elasticsearch
+from dateutil.parser import parse
 import os
 from math import floor, log
 import json
@@ -1721,9 +1722,12 @@ class Referencedbentity(Dbentity):
 
     def annotations_summary_to_dict(self):
         preview_url = PREVIEW_HOST + '/reference/' + self.sgdid
-        date_created = None
-        if self.date_revised:
+        # attempt to reformat date
+        try:
+            parsed = parse(self.date_published)
             date_created = self.date_revised.strftime("%Y-%m-%d")
+        except:
+            date_created = None
         return {
             'category': 'reference',
             'created_by' : self.created_by,
