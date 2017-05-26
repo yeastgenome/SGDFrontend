@@ -32,16 +32,9 @@ class BaseSpider(scrapy.Spider):
             if (index % 100 == 0):
                 percent_done = str(float(index) / float(len(entities)) * 100)
                 self.log('CHECKIN STATS: ' + percent_done + '% of current index complete')
-            # TEMP don't purge
-            # Get a small subset of URLs which are purged and matched via ~ in varnish.
-            # For example /locus/:sgdid will purge /locus/:sgdid, /locus/:sgdid/sequence, etc...
-            # base_urls = entity.get_cache_base_urls()
-            # for url in base_urls:
-            #     yield scrapy.Request(url=url, headers=HEADER_OBJ, method='PURGE')
-            # Get a longer list of URLs to GET, and prime the cache.
             urls = entity.get_all_cache_urls(True)
             for url in urls:
-                yield scrapy.Request(url=url, headers=HEADER_OBJ, callback=self.parse)
+                yield scrapy.Request(url=url, headers=HEADER_OBJ, method='PURGE', callback=self.parse)
 
     def parse(self, response):
         if response.status != 200:
@@ -67,7 +60,7 @@ class GoSpider(BaseSpider):
     name = 'go'
     def get_entities(self):
         self.log('getting gos')
-        return DBSession.query(Go).limit(10).all()
+        return DBSession.query(Go).all()
 
 class ObservableSpider(BaseSpider):
     name = 'observable'
@@ -86,9 +79,9 @@ runner = CrawlerRunner(get_project_settings())
 
 @defer.inlineCallbacks
 def crawl():
-    # yield runner.crawl(GoSpider)
-    # yield runner.crawl(ObservableSpider)
-    # yield runner.crawl(PhenotypeSpider)
+    yield runner.crawl(GoSpider)
+    yield runner.crawl(ObservableSpider)
+    yield runner.crawl(PhenotypeSpider)
     yield runner.crawl(GenesSpider)
     reactor.stop()
 
