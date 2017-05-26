@@ -290,7 +290,7 @@ class Apo(Base):
         return [url1]
 
     def get_secondary_base_url(self):
-        return '/backend/observable/' + str(self.apo_id)
+        return '/webservice/observable/' + str(self.apo_id)
 
 class ApoAlia(Base):
     __tablename__ = 'apo_alias'
@@ -3287,7 +3287,7 @@ class Locusdbentity(Dbentity):
         return target_urls
 
     def get_secondary_base_url(self):
-        return '/backend/locus/' + str(self.dbentity_id)
+        return '/webservice/locus/' + str(self.dbentity_id)
 
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
@@ -4307,7 +4307,7 @@ class Go(Base):
         return annotation_count < 100
 
     def get_secondary_base_url(self):
-        return '/backend/go/' + str(self.go_id)
+        return '/webservice/go/' + str(self.go_id)
 
 class GoAlias(Base):
     __tablename__ = 'go_alias'
@@ -5301,7 +5301,7 @@ class Phenotype(Base):
         return [url1]
 
     def get_secondary_base_url(self):
-        return '/backend/phenotype/' + str(self.phenotype_id)
+        return '/webservice/phenotype/' + str(self.phenotype_id)
 
 class Phenotypeannotation(Base):
     __tablename__ = 'phenotypeannotation'
