@@ -749,6 +749,16 @@ def locus_go_graph(request):
         return locus.go_graph()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='locus_expression_graph', renderer='json', request_method='GET')
+def locus_expression_graph(request):
+    id = request.matchdict['id'].upper()
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    if locus:
+        return locus.expression_graph()
+    else:
+        return HTTPNotFound()
     
 @view_config(route_name='locus_literature_details', renderer='json', request_method='GET')
 def locus_literature_details(request):
@@ -770,6 +780,16 @@ def locus_literature_graph(request):
     else:
         return HTTPNotFound()
 
+@view_config(route_name='locus_interaction_graph', renderer='json', request_method='GET')
+def locus_interaction_graph(request):
+    id = request.matchdict['id'].upper()
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    if locus:
+        return locus.interaction_graph()
+    else:
+        return HTTPNotFound()
+    
 @view_config(route_name='locus_go_details', renderer='json', request_method='GET')
 def locus_go_details(request):
     id = request.matchdict['id'].upper()
