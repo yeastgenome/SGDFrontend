@@ -2097,7 +2097,6 @@ class Locusdbentity(Dbentity):
             "max_evidence_cutoff": min(max(phys_graph["max_evidence_cutoff"], gen_graph["max_evidence_cutoff"]), 10),
         }
         
-
     def interaction_graph_builder(self, Interaction, edge_type):
         main_gene_annotations = DBSession.query(Interaction).filter(or_(Interaction.dbentity1_id == self.dbentity_id, Interaction.dbentity2_id == self.dbentity_id)).all()
 
@@ -2178,7 +2177,7 @@ class Locusdbentity(Dbentity):
             
         reference_ids = set([a.reference_id for a in main_gene_annotations])
         other_interactions = DBSession.query(Interaction).filter(and_(Interaction.reference_id.in_(reference_ids), and_(Interaction.dbentity1_id != self.dbentity_id, Interaction.dbentity2_id != self.dbentity_id))).all()
-        
+
         other_valid_interactions = []
         for interaction in other_interactions:
             if interaction.dbentity1_id in nodes and interaction.dbentity2_id in nodes:
@@ -2210,6 +2209,117 @@ class Locusdbentity(Dbentity):
             "edges": edges,
             "min_evidence_cutoff": min_cutoff,
             "max_evidence_cutoff": max_cutoff
+        }
+
+    def regulation_graph(self):
+        main_gene_annotations = DBSession.query(Regulationannotation).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
+
+        genes_to_regulations = {}
+        for annotation in main_gene_annotations:
+            if annotation.target_id == self.dbentity_id:
+                add = annotation.regulator_id
+            else:
+                add = annotation.target_id
+
+            if add in genes_to_regulations:
+                genes_to_regulations[add].append(annotation)
+            else:
+                genes_to_regulations[add] = [annotation]
+
+        list_genes_to_regulations = sorted([(g, genes_to_regulations[g]) for g in genes_to_regulations], key=lambda x: len(x[1]), reverse=True)
+
+        nodes = {}
+        edges = []
+
+        edges_added = set([])
+
+        nodes[self.dbentity_id] = {
+            "data": {
+                "name": self.display_name,
+                "id": self.format_name,
+                "link": self.obj_url,
+                "type": "BIOENTITY",
+                "sub_type": "FOCUS"
+            }
+        }
+
+        min_cutoff = 99999999
+
+        genes_cache_query = DBSession.query(Dbentity.dbentity_id, Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter(Dbentity.dbentity_id.in_(genes_to_regulations.keys())).all()
+        genes_cache = {}
+        for gene in genes_cache_query:
+            genes_cache[gene.dbentity_id] = gene
+
+        i = 0
+        while i < len(list_genes_to_regulations) and len(nodes) <= 20 and len(edges) <= 50:
+            dbentity_id = list_genes_to_regulations[i][0]
+            dbentity = genes_cache[dbentity_id]
+
+            evidences = set([])
+            for annotation in list_genes_to_regulations[i][1]:
+                evidences.add(annotation.reference_id)
+
+            min_cutoff = min(min_cutoff, len(evidences))
+
+            sub_type = "TARGET"
+            if dbentity_id == list_genes_to_regulations[i][1][0].regulator_id:
+                sub_type = "REGULATOR"
+            
+            if dbentity_id not in nodes:                
+                nodes[dbentity_id] = {
+                    "data": {
+                        "name": dbentity.display_name,
+                        "id": dbentity.format_name,
+                        "link": dbentity.obj_url,
+                        "type": "BIOENTITY",
+                        "sub_type": sub_type,
+                        "evidence": len(evidences)
+                    }
+                }
+                
+                edges.append({
+                    "data": {
+                        "source": self.format_name,
+                        "target": dbentity.format_name,
+                        "evidence": len(evidences)
+                    }
+                })
+                edges_added.add(self.format_name + " " + dbentity.format_name)
+
+            i += 1
+
+        reference_ids = set([a.reference_id for a in main_gene_annotations])
+        other_regulations = DBSession.query(Regulationannotation).filter(and_(Regulationannotation.reference_id.in_(reference_ids), and_(Regulationannotation.target_id != self.dbentity_id, Regulationannotation.regulator_id != self.dbentity_id))).all()
+
+        other_valid_regulations = []
+        for regulation in other_regulations:
+            if regulation.target_id in nodes and regulation.regulator_id in nodes:
+                other_valid_regulations.append(regulation)
+
+        i = 0
+        while i < len(other_valid_regulations) and len(edges) <= 50:
+            source = nodes[other_valid_regulations[i].regulator_id]["data"]["id"]
+            target = nodes[other_valid_regulations[i].target_id]["data"]["id"]
+            evidence = nodes[other_valid_regulations[i].target_id]["data"]["evidence"]
+            if nodes[other_valid_regulations[i].regulator_id]["data"]["evidence"] > evidence:
+                evidence = nodes[other_valid_regulations[i].regulator_id]["data"]["evidence"]
+                
+            if (source + " " + target) not in edges_added and (target + " " + source) not in edges_added:
+                edges.append({
+                    "data": {
+                        "source": source,
+                        "target": target,
+                        "evidence": evidence
+                        
+                    }
+                })
+                edges_added.add(source + " " + target)
+            i += 1
+
+        return {
+            "nodes": [nodes[n] for n in nodes],
+            "edges": edges,
+            "min_evidence_count": min_cutoff
         }
 
     def expression_graph(self):
