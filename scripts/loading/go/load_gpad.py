@@ -173,8 +173,9 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
                 ## but no need to update created_by and date_created
                 #####  date_assigned_in_db = str(getattr(thisAnnot, 'date_assigned'))
                 date_assigned_in_db = thisAnnot.date_assigned
-                if str(date_assigned_in_db) != str(x['date_assigned']):
-                    fw.write("UPDATE GOANNOTATION: key=" + str(key) + " OLD date_assignedd=" + str(date_assigned_in_db) + ", NEW date_assigned=" + str(x['date_assigned']) + "\n")
+                date_assigned_db = str(date_assigned_in_db).split(" ")[0]
+                if date_assigned_db != str(x['date_assigned']):
+                    fw.write("UPDATE GOANNOTATION: key=" + str(key) + " OLD date_assigned=" + date_assigned_db + ", NEW date_assigned=" + str(x['date_assigned']) + "\n")
                     # nex_session.query(Goannotation).filter_by(id=thisAnnot.annotation_id).update({"date_assigned": x['date_assigned']})
                     thisAnnot.date_assigned = x['date_assigned']
                     nex_session.add(thisAnnot)
@@ -515,13 +516,17 @@ def write_summary_and_send_email(annotation_update_log, new_pmids, bad_ref, fw):
 
 
 if __name__ == "__main__":
-    
-    log_file = "logs/GPAD_loading.log"
-    
+        
     if len(sys.argv) >= 2:
         annotation_type = sys.argv[1]
     else:
-        annotation_type = "manually curated"
+        # annotation_type = "manually curated"
+        print "Usage:         python load_gpad.py annotation_type[manually curated|computational]"
+        print "Usage example: python load_gpad.py 'manually curated'"
+        print "Usage example: python load_gpad.py computational"
+        exit()
+    
+    log_file = "logs/GPAD_loading_" + annotation_type.replace(" ", "-") + ".log"
 
     load_go_annotations(annotation_type, log_file)
 
