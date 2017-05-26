@@ -2134,10 +2134,15 @@ class Locusdbentity(Dbentity):
         min_cutoff = 99999999
         max_cutoff = 0
 
+        genes_cache_query = DBSession.query(Dbentity.dbentity_id, Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter(Dbentity.dbentity_id.in_(genes_to_interactions.keys())).all()
+        genes_cache = {}
+        for gene in genes_cache_query:
+            genes_cache[gene.dbentity_id] = gene
+        
         i = 0
         while i < len(list_genes_to_interactions) and len(nodes) <= 20 and len(edges) <= 50:
             dbentity_id = list_genes_to_interactions[i][0]
-            dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=dbentity_id).one_or_none()
+            dbentity = genes_cache[dbentity_id]
 
             if len(list_genes_to_interactions[i][1]) > max_cutoff:
                 max_cutoff = len(list_genes_to_interactions[i][1])
