@@ -5,6 +5,7 @@ from pyramid.compat import escape
 from pyramid.session import check_csrf_token
 
 from sqlalchemy import func, distinct
+from sqlalchemy.exc import IntegrityError
 
 from oauth2client import client, crypt
 import os
@@ -30,15 +31,9 @@ log = logging.getLogger(__name__)
 
 @view_config(route_name='home', request_method='GET', renderer='home.jinja2')
 def home_view(request):
-    # only provide pusher key if authenticated
-    if 'email' not in request.session or 'username' not in request.session:
-        pusher_key = ''
-    else:
-        pusher_key = os.environ['PUSHER_KEY']
-
     return {
         'google_client_id': os.environ['GOOGLE_CLIENT_ID'],
-        'pusher_key': pusher_key
+        'pusher_key': os.environ['PUSHER_KEY']
     }
     
 @view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')
@@ -46,7 +41,7 @@ def home_view(request):
 def upload_spreadsheet(request):
     tsv_file = request.POST['file'].file
     template_type = request.POST['template']
-    annotations = parse_tsv_annotations(DBSession, tsv_file, template_type)
+    annotations = parse_tsv_annotations(DBSession, tsv_file, template_type, request.session['username'])
     return {'annotations': annotations}
 
 @view_config(route_name='upload', request_method='POST', renderer='json')
@@ -459,6 +454,9 @@ def reference_triage_promote(request):
 
         try:
             reference_id, sgdid = add_paper(triage.pmid, request.json['data']['assignee'])
+        except IntegrityError:
+            traceback.print_exc()
+            return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
         except:
             traceback.print_exc()
             return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
@@ -499,7 +497,6 @@ def reference_triage_promote(request):
 @view_config(route_name='reference_triage_id_delete', renderer='json', request_method='DELETE')
 def reference_triage_id_delete(request):
     id = request.matchdict['id'].upper()
-
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
         reason = None
@@ -510,9 +507,9 @@ def reference_triage_id_delete(request):
             except ValueError:
                 return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
 
-        reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=reason, created_by="OTTO")
-        
-        DBSession.add(reference_deleted)
+        # Do we need this? travis
+        # reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=reason, created_by="OTTO")
+        # DBSession.add(reference_deleted)
         DBSession.delete(triage)
         
         transaction.commit()

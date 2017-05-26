@@ -58,8 +58,6 @@ class MockFileStorage(object):
 
 
 def go_side_effect(*args, **kwargs):
-    # import pdb;
-    # pdb.set_trace()
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Go'>":
         go = factory.GoFactory()
         return MockQuery(go)
@@ -120,17 +118,11 @@ def go_side_effect(*args, **kwargs):
         return MockQuery(goevd)
 
 def locus_expression_side_effect(*args, **kwargs):
-    import pdb;
-    pdb.set_trace()
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Locusdbentity'>":
         locus = factory.LocusdbentityFactory()
         return MockQuery(locus)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Expressionannotation'>":
-        #dataset = factory.DatasetFactory()
-        dss = factory.DatasetsampleFactory()
-        #dss.dataset = dataset
         expannot = factory.ExpressionannotationFactory()
-        expannot.datasample = dss
         return MockQuery(expannot)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Dataset'>":
         dataset = factory.DatasetFactory()
@@ -142,6 +134,28 @@ def locus_expression_side_effect(*args, **kwargs):
         refdbentity = factory.ReferencedbentityFactory()
         refdbentity.journal = journal
         return MockQuery(refdbentity)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.DatasetKeyword'>":
+        dskw = factory.DatasetKeywordFactory()
+        return MockQuery(dskw)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.DatasetReference'>":
+        source = factory.SourceFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        refdbentity = factory.ReferencedbentityFactory()
+        dsref = factory.DatasetReferenceFactory()
+        dsref.reference = refdbentity
+        ds = factory.DatasetFactory()
+        dsref.dataset = ds
+        return MockQuery((dsref,))
+    elif len(args) == 1 and str(args[0]) == 'Referencedocument.html':
+        refdoc = factory.ReferencedocumentFactory()
+        return MockQuery(refdoc.html)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Datasetsample'>":
+        dss = factory.DatasetsampleFactory()
+        return MockQuery(dss)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.DatasetUrl'>":
+        dsurl = factory.DatasetUrlFactory()
+        return MockQuery(dsurl)
 
 
 def locus_side_effect(*args, **kwargs):
@@ -235,7 +249,6 @@ def phenotype_side_effect(*args, **kwargs):
         return MockQuery(goannot)
 
 def observable_side_effect(*args, **kwargs):
-
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Apo'>":
         apo = factory.ApoFactory()
         return MockQuery(apo)
@@ -339,8 +352,6 @@ def chemical_side_effect(*args, **kwargs):
         return MockQuery(apo)
 
 def author_side_effect(*args, **kwargs):
-    # import pdb;
-    # pdb.set_trace()
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Referenceauthor'>":
         source = factory.SourceFactory()
         journal = factory.JournalFactory()
@@ -364,10 +375,43 @@ def author_side_effect(*args, **kwargs):
         reftype = factory.ReferencetypeFactory()
         return MockQuery((reftype.display_name))
 
+def keywords_side_effect(*args, **kwargs):
+    if len(args) == 1 and str(args[0]) == "<class 'src.models.Keyword'>":
+        kw = factory.KeywordFactory()
+        return MockQuery([kw])
+
+def dataset_side_effect(*args, **kwargs):
+    if len(args) == 1 and str(args[0]) == "<class 'src.models.Dataset'>":
+        ds_name = factory.DatasetFactory()
+        return MockQuery(ds_name)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.DatasetKeyword'>":
+        dskw = factory.DatasetKeywordFactory()
+        kw = factory.KeywordFactory()
+        dskw.keyword = kw
+        return MockQuery(dskw)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Keyword'>":
+        kw = factory.KeywordFactory()
+        return MockQuery(kw)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.DatasetReference'>":
+        dsref = factory.DatasetReferenceFactory()
+        return MockQuery((dsref),)
+    elif len(args) == 1 and str(args[0]) == 'Referencedocument.html':
+        refdoc = factory.ReferencedocumentFactory()
+        return MockQuery(refdoc.html)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Datasetsample'>":
+        dss = factory.DatasetsampleFactory()
+        return MockQuery(dss)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.DatasetUrl'>":
+        dsurl = factory.DatasetUrlFactory()
+        return MockQuery(dsurl)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.DatasetFile'>":
+        dsf = factory.DatasetFileFactory()
+        f = factory.FiledbentityFactory()
+        dsf.file = f
+        return MockQuery(dsf)
+
 
 def side_effect(*args, **kwargs):
-    #import pdb;
-    #pdb.set_trace()
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Straindbentity'>":
         s_name = factory.StraindbentityFactory()
         return MockQuery(s_name)
@@ -600,19 +644,6 @@ def reference_side_effect(*args, **kwargs):
                 litannot.dbentity = dbentity
                 litannot.reference = refdbentity
                 return MockQuery(litannot)
-            # elif len(args) == 1 and str(args[0]) == "<class 'src.models.Literatureannotation.reference_id'>":
-            #     source = factory.SourceFactory()
-            #     journal = factory.JournalFactory()
-            #     book = factory.BookFactory()
-            #     refdbentity = factory.ReferencedbentityFactory()
-            #     refdbentity.journal = journal
-            #     locus = factory.LocusdbentityFactory()
-            #     litannot = factory.LiteratureannotationFactory()
-            #     db = factory.DbentityFactory()
-            #     litannot.reference = refdbentity
-            #     litannot.dbentity = db
-            #     locus.dbentity = db
-            #     return MockQuery((litannot.reference_id,))
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.Straindbentity'>":
                 s_name = factory.StraindbentityFactory()
                 return MockQuery(s_name)

@@ -2,12 +2,15 @@ from datetime import datetime
 from database_session import get_dev_session
 from Bio import Entrez
 from urllib import urlopen
+from sqlalchemy import create_engine
 import sys
+import os
+import transaction
 reload(sys)  # Reload does the trick!
 sys.path.insert(0, '../../src/')
 sys.setdefaultencoding('UTF8')
-from config import CREATED_BY
-from models import Referencedbentity, Referencetriage
+# from config import CREATED_BY
+from models import Referencedbentity, Referencetriage, DBSession
 from pubmed import get_pmid_list, get_pubmed_record, set_cite, get_abstract
 
 __author__ = 'sweng66'
@@ -16,18 +19,19 @@ TERMS = ['yeast', 'cerevisiae']
 URL = 'http://www.ncbi.nlm.nih.gov/pubmed/'
 DAY = 14
 RETMAX = 10000
-
+CREATED_BY = 'tshepp'
 def load_references(log_file):
- 
-    nex_session = get_dev_session()
+    engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
+    DBSession.configure(bind=engine)
+    nex_session = DBSession
 
     pmid_to_reference_id =  dict([(x.pmid, x.dbentity_id) for x in nex_session.query(Referencedbentity).all()])
     pmid_to_curation_id =  dict([(x.pmid, x.curation_id) for x in nex_session.query(Referencetriage).all()])
 
-    fw = open(log_file,"w")
+    # fw = open(log_file,"w")
 
-    fw.write(str(datetime.now()) + "\n")
-    fw.write("Getting PMID list...\n")
+    # fw.write(str(datetime.now()) + "\n")
+    # fw.write("Getting PMID list...\n")
 
     pmid_list = get_pmid_list(TERMS, RETMAX, DAY)
 
@@ -44,11 +48,11 @@ def load_references(log_file):
         pmids.append(pmid)
 
     if len(pmids) == 0:
-        fw.write("No new papers\n")
+        # fw.write("No new papers\n")
         return
 
-    fw.write(str(datetime.now()) + "\n")
-    fw.write("Getting Pubmed records...\n")
+    # fw.write(str(datetime.now()) + "\n")
+    # fw.write("Getting Pubmed records...\n")
 
     records = get_pubmed_record(','.join(pmids))
 
@@ -84,10 +88,10 @@ def load_references(log_file):
 
             print abstract
 
-
+        fw = None
         insert_reference(nex_session, fw, pmid, citation, doi_url, abstract)
 
-    fw.close()
+    # fw.close()
 
 
 def insert_reference(nex_session, fw, pmid, citation, doi_url, abstract):
@@ -114,9 +118,9 @@ def insert_reference(nex_session, fw, pmid, citation, doi_url, abstract):
                             citation = citation,
                             created_by = CREATED_BY)
     nex_session.add(x)
-    nex_session.commit()
+    transaction.commit()
 
-    fw.write("Insert new reference: " + citation + "\n")
+    # fw.write("Insert new reference: " + citation + "\n")
 
 
 if __name__ == '__main__':

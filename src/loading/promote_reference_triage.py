@@ -30,7 +30,7 @@ def add_paper(pmid, created_by="OTTO"):
     insert_authors(reference_id, authors, source_id, created_by)
     insert_pubtypes(pmid, reference_id, record.get('PT', []), source_id, created_by)
     insert_urls(pmid, reference_id, doi_url, pmc_url, source_id, created_by)
-    insert_relations(pmid, reference_id, record)
+    insert_relations(pmid, reference_id, record, created_by)
     
     return (reference_id, sgdid)
 
