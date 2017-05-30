@@ -71,8 +71,9 @@ def get_recent_annotations(request):
 def upload_spreadsheet(request):
     try: 
         tsv_file = request.POST['file'].file
+        filename = request.POST['file'].filename
         template_type = request.POST['template']
-        annotations = parse_tsv_annotations(DBSession, tsv_file, template_type, request.session['username'])
+        annotations = parse_tsv_annotations(DBSession, tsv_file, filename, template_type, request.session['username'])
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'curateHomeUpdate', {})
         return {'annotations': annotations}
