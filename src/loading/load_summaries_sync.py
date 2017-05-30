@@ -71,13 +71,18 @@ def validate_file_content(file_content, nex_session, username):
 
     # update
     receipt_object = []
+    locus_names_ids = nex_session.query(Locusdbentity.display_name, Locusdbentity.sgdid).all()
+    locus_names_object = {}
+    for d in locus_names_ids:
+        display_name = d[0]
+        sgdid = d[1]
+        locus_names_object[display_name] = sgdid
     for i, val in enumerate(copied):
         if i != 0:
             file_id = val[0]
             file_summary_type = val[1]
             file_summary_val = val[2]
-            # TODO, update the HTML
-            file_summy_html = file_summary_val
+            file_summy_html = link_gene_names(file_summary_val, locus_names_object)
             gene = nex_session.query(Locusdbentity).filter(Locusdbentity.format_name.match(file_id)).all()[0]
             summaries = nex_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=gene.dbentity_id, summary_type=file_summary_type).all()
             # update
@@ -85,7 +90,6 @@ def validate_file_content(file_content, nex_session, username):
             if len(summaries):
                 summary = summaries[0]
                 nex_session.query(Locussummary).filter_by(summary_id=summary.summary_id).update({ 'text': file_summary_val, 'html': file_summy_html })
-            # TODO create
             else:
                 new_summary = Locussummary(
                     locus_id = gene.dbentity_id, 
@@ -132,6 +136,18 @@ def validate_file_content(file_content, nex_session, username):
             })
             transaction.commit()
     return receipt_object
+
+def link_gene_names(raw, all_display_names):
+    processed = raw
+    words = raw.split(' ')
+    for original_word in words:
+        wupper = original_word.upper()
+        if wupper in all_display_names.keys():
+            sgdid = all_display_names[wupper]
+            url = '/locus/'  + sgdid
+            new_str = '<a href="' + url + '">' + wupper + '</a>'
+            processed = processed.replace(original_word, new_str)
+    return processed
 
 def load_summaries(nex_session, file_content, username, summary_type=None):
     annotation_summary = validate_file_content(file_content, nex_session, username)
