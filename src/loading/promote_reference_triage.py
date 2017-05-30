@@ -159,13 +159,13 @@ def insert_authors(reference_id, authors, source_id, created_by):
 def insert_referencedbentity(pmid, source_id, record, created_by):
     pubstatus, date_revised = get_pubstatus_date_revised(record)
     journal_id, journal, journal_title, issn_print = get_journal_id(record, created_by)
-    pubdate = record.get('DP', '')
+    pubdate = record.get('DP', None)
     year = pubdate.split(' ')[0]
-    title = record.get('TI', '')
+    title = record.get('TI', None)
     authors = record.get('AU', [])
-    volume = record.get('VI', '')
-    issue = record.get('IP', '')
-    pages = record.get('PG', '')
+    volume = record.get('VI', None)
+    issue = record.get('IP', None)
+    pages = record.get('PG', None)
     citation = set_cite(title, authors, year, journal, volume, issue, pages)
     doi, doi_url = get_doi(record)
     pmcid = record.get('PMC', None)
