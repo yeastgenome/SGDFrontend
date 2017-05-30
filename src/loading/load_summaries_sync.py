@@ -35,6 +35,7 @@ def validate_file_content(file_content, nex_session, username):
     header_literal = ['# Feature', 'Summary Type (phenotype, regulation, protein, or sequence)', 'Summary', 'PMIDs']
     accepted_summary_types = ['Gene', 'Phenotype', 'Regulation']
     file_gene_ids = []
+    file_pmids = []
     copied = []
     for i, val in enumerate(file_content):
         # match header
@@ -47,15 +48,27 @@ def validate_file_content(file_content, nex_session, username):
             # match summary types
             if val[1] not in accepted_summary_types:
                 raise ValueError('Unaccepted summary type. Must be one of ' + str(accepted_summary_types))
+            # collect PMIDs
+            pmids = val[3].replace(' ', '')
+            if len(pmids):
+                pmids = pmids.split(',')
+                for d in pmids:
+                    file_pmids.append(str(d)) 
         # match length of each row
         if len(val) != len(header_literal):
             raise ValueError('Row has incorrect number of columns.')
         copied.append(val)
     # check that gene names are valid
     matching_genes = nex_session.query(Locusdbentity).filter(Locusdbentity.format_name.in_(file_gene_ids)).count()
-    is_correct_match_num = matching_genes == len(file_gene_ids)
-    if not is_correct_match_num:
+    is_correct_gene_match_num = matching_genes == len(file_gene_ids)
+    if not is_correct_gene_match_num:
         raise ValueError('Invalid gene identifier in ', str(file_gene_ids))
+    # must be valid PMIDs in last column or nothing
+    matching_refs = nex_session.query(Referencedbentity).filter(Referencedbentity.pmid.in_(file_pmids)).all()
+    is_correct_ref_match_num = len(matching_refs) == len(file_pmids)
+    if not is_correct_ref_match_num:
+        raise ValueError('PMIDs must be a comma-separated list of valid PMIDs from SGD.')
+
     # update
     receipt_object = []
     for i, val in enumerate(copied):
@@ -63,23 +76,50 @@ def validate_file_content(file_content, nex_session, username):
             file_id = val[0]
             file_summary_type = val[1]
             file_summary_val = val[2]
+            # TODO, update the HTML
+            file_summy_html = file_summary_val
             gene = nex_session.query(Locusdbentity).filter(Locusdbentity.format_name.match(file_id)).all()[0]
-            summaries = DBSession.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=gene.dbentity_id, summary_type=file_summary_type).all()
+            summaries = nex_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=gene.dbentity_id, summary_type=file_summary_type).all()
             # update
+            summary = None
             if len(summaries):
                 summary = summaries[0]
-                nex_session.query(Locussummary).filter_by(summary_id=summary.summary_id).update({ 'text': file_summary_val, 'html': file_summary_val })
+                nex_session.query(Locussummary).filter_by(summary_id=summary.summary_id).update({ 'text': file_summary_val, 'html': file_summy_html })
             # TODO create
             else:
                 new_summary = Locussummary(
                     locus_id = gene.dbentity_id, 
                     summary_type = file_summary_type, 
                     text = file_summary_val, 
-                    html = file_summary_val, 
+                    html = file_summy_html, 
                     created_by = username,
                     source_id = SGD_SOURCE_ID
                 )
                 nex_session.add(new_summary)
+            summary = nex_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=gene.dbentity_id, summary_type=file_summary_type).all()[0]
+            # add LocussummaryReference(s)
+            pmids = val[3].replace(' ', '')
+            if len(pmids):
+                pmids = pmids.split(',')
+                for _i, p in enumerate(pmids):
+                    matching_ref = [x for x in matching_refs if x.pmid == int(p)][0]
+                    summary_id = summary.summary_id
+                    reference_id = matching_ref.dbentity_id
+                    order = _i
+                    # look for matching LocussummaryReference
+                    matching_locussummary_refs = nex_session.query(LocussummaryReference).filter_by(summary_id=summary_id, reference_id=reference_id).all()
+                    if len(matching_locussummary_refs):
+                        nex_session.query(LocussummaryReference).filter_by(summary_id=summary_id,reference_id=reference_id).update({ 'reference_order': order })
+                    else:
+                        new_locussummaryref = LocussummaryReference(
+                            summary_id = summary_id, 
+                            reference_id = reference_id, 
+                            reference_order = order, 
+                            source_id = SGD_SOURCE_ID, 
+                            created_by = username
+                        )
+                        nex_session.add(new_locussummaryref)
+
             # add receipt
             summary_type_url_segment = file_summary_type.lower()
             preview_url = PREVIEW_HOST + '/locus/' + gene.sgdid + '/' + summary_type_url_segment
