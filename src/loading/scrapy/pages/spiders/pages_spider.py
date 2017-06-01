@@ -22,6 +22,11 @@ logger.setLevel(level=logging.INFO)
 
 # init spiders
 class BaseSpider(scrapy.Spider):
+    custom_settings = {
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 4,
+        'CONCURRENT_REQUESTS': 8
+    }
+    
     def get_entities(self):
         return []
 
@@ -75,7 +80,7 @@ class PhenotypeSpider(BaseSpider):
         return DBSession.query(Phenotype).all()
 
 configure_logging()
-runner = CrawlerRunner(get_project_settings())
+runner = CrawlerRunner()
 
 @defer.inlineCallbacks
 def crawl():
