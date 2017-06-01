@@ -4,7 +4,7 @@ from pyramid.view import view_config
 from pyramid.compat import escape
 from pyramid.session import check_csrf_token
 
-from sqlalchemy import func, distinct, and_
+from sqlalchemy import func, distinct, and_, or_
 from sqlalchemy.exc import IntegrityError
 
 from oauth2client import client, crypt
@@ -19,7 +19,7 @@ from .helpers import allowed_file, secure_save_file, curator_or_none, authentica
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .tsv_parser import parse_tsv_annotations
 
-from .loading.promote_reference_triage import add_paper, get_dbentity_by_name
+from .loading.promote_reference_triage import add_paper
 
 import transaction
 
@@ -478,6 +478,7 @@ def reference_triage_id_update(request):
         return HTTPNotFound()
 
 @view_config(route_name='reference_triage_promote', renderer='json', request_method='PUT')
+@authenticate
 def reference_triage_promote(request):
     id = request.matchdict['id'].upper()
     
@@ -489,7 +490,8 @@ def reference_triage_promote(request):
             if tag.get('genes'):
                 genes = tag.get('genes').split(',')
                 for g in genes:
-                    locus = get_dbentity_by_name(g.strip())
+                    uppername = g.upper().strip()
+                    locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.display_name==uppername, Locusdbentity.format_name==uppername)).one_or_none()
                     if locus is None:
                         return HTTPBadRequest(body=json.dumps({'error': 'Invalid gene name ' + g}))
                     tags.append((tag['name'], tag['comment'], locus.dbentity_id))
