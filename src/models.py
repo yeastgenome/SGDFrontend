@@ -1722,17 +1722,11 @@ class Referencedbentity(Dbentity):
 
     def annotations_summary_to_dict(self):
         preview_url = PREVIEW_HOST + '/reference/' + self.sgdid
-        # attempt to reformat date
-        try:
-            parsed = parse(self.date_published)
-            date_created = self.date_revised.strftime("%Y-%m-%d")
-        except:
-            date_created = None
         return {
             'category': 'reference',
             'created_by' : self.created_by,
             'href': preview_url, 
-            'date_created': date_created,
+            'date_created': self.date_created.strftime("%Y-%m-%d"),
             'name': self.citation, 
             'type': 'added'
         }
