@@ -542,23 +542,14 @@ def reference_triage_promote(request):
         return HTTPNotFound()
     
 @view_config(route_name='reference_triage_id_delete', renderer='json', request_method='DELETE')
+@authenticate
 def reference_triage_id_delete(request):
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
-        reason = None
-
-        if request.body != '':
-            try:
-                reason = request.json.get('reason')
-            except ValueError:
-                return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
-
-        # Do we need this? travis
-        # reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=reason, created_by="OTTO")
-        # DBSession.add(reference_deleted)
-        DBSession.delete(triage)
-        
+        reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=None, created_by=request.session['username'])
+        DBSession.add(reference_deleted)
+        DBSession.delete(triage)        
         transaction.commit()
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
