@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import CategoryLabel from './categoryLabel';
+import { Link } from 'react-router';
+
+const PREVIEW_URL = 'https://curate.qa.yeastgenome.org';
 
 class AnnotationSummary extends Component {
   renderUpdatedBy(d) {
@@ -22,10 +25,16 @@ class AnnotationSummary extends Component {
 
   renderAnnotations() {
     let nodes = this.props.annotations.map( (d, i) => {
+      let previewUrl = `${PREVIEW_URL}${d.href}`;
+      let curateNode = null;
+      if (d.category === 'reference') {
+        let curateUrl = `/curate${d.href}`;
+        curateNode = <Link to={curateUrl}><i className='fa fa-edit' /> Curate</Link>;
+      }
       return (
         <div key={'note' + i}>
           <p>
-            <CategoryLabel category={d.category} hideLabel /> <a href={d.href} target='_new'>{d.name}</a> {d.type} {this.renderUpdatedBy(d)}
+            <CategoryLabel category={d.category} hideLabel /> <a href={previewUrl} target='_new'>{d.name}</a> {d.type} {this.renderUpdatedBy(d)} {curateNode}
           </p>
           {this.renderBlock(d)}
         </div>

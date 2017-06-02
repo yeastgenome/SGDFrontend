@@ -108,7 +108,8 @@ class TriageControls extends Component {
       // scroll to top of page
       window.scrollTo(0, 0);
     }).catch( (data) => {
-      this.props.dispatch(setError(data.error));
+      let errorMessage = data ? data.error : 'There was an error adding the reference.';
+      this.props.dispatch(setError(errorMessage));
       this.setState({ isPending: false });
       // scroll to top of page
       window.scrollTo(0, 0);

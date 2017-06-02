@@ -15,7 +15,6 @@ DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
 QUERY_LIMIT = 25000
-PREVIEW_HOST = 'https://curate.qa.yeastgenome.org'
 
 # get list of URLs to visit from comma-separated ENV variable cache_urls 'url1, url2'
 cache_urls = None
@@ -1721,7 +1720,7 @@ class Referencedbentity(Dbentity):
         return obj
 
     def annotations_summary_to_dict(self):
-        preview_url = PREVIEW_HOST + '/reference/' + self.sgdid
+        preview_url = '/reference/' + self.sgdid
         return {
             'category': 'reference',
             'created_by' : self.created_by,
@@ -5366,7 +5365,7 @@ class Locussummary(Base):
 
     def to_dict(self):
         summary_type_url_segment = self.summary_type.lower()
-        preview_url = PREVIEW_HOST + '/locus/' + self.locus.sgdid + '/' + summary_type_url_segment
+        preview_url = '/locus/' + self.locus.sgdid + '/' + summary_type_url_segment
         return {
             'category': 'locus',
             'created_by' : self.created_by,
