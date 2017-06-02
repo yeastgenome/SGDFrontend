@@ -22,10 +22,12 @@ class CurateHome extends Component {
   componentDidMount() {
     this.fetchData();
     this.listenForUpdates();
+    this._isMounted = true;
   }
 
   componentWillUnmount() {
     this.channel.unbind(EVENT);
+    this._isMounted = false;
   }
 
   listenForUpdates() {
@@ -38,7 +40,7 @@ class CurateHome extends Component {
 
   fetchData() {
     fetchData(ANNOTATION_URL).then( (data) => {
-      this.setState({ annotationData: data, isPending: false });
+      if (this._isMounted) this.setState({ annotationData: data, isPending: false });
     });
   }
 

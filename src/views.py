@@ -79,8 +79,8 @@ def upload_spreadsheet(request):
         return {'annotations': annotations}
     except ValueError as e:
         return HTTPBadRequest(body=json.dumps( {'error': str(e) }), content_type='text/json')
-    except:
-        return HTTPBadRequest(body=json.dumps( {'error': 'Unable to process file upload.' }), content_type='text/json')
+    # except:
+    #     return HTTPBadRequest(body=json.dumps( {'error': 'Unable to process file upload.' }), content_type='text/json')
 
 @view_config(route_name='upload', request_method='POST', renderer='json')
 @authenticate
