@@ -19,6 +19,7 @@ FILE_EXTENSIONS = ['bed', 'bedgraph', 'bw', 'cdt', 'chain', 'cod', 'csv', 'cusp'
 S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
 S3_SECRET_KEY = os.environ['S3_SECRET_KEY']
 S3_BUCKET = os.environ['S3_BUCKET']
+S3_BASE_URL = 'https://s3-us-west-2.amazonaws.com/' + S3_BUCKET + '/'
 
 def md5(fname):
     hash = hashlib.md5()
@@ -214,11 +215,11 @@ def upload_file(username, file, **kwargs):
     DBSession.flush()
     DBSession.refresh(fdb)
     # get s3_url and upload
-    s3_url = fdb.sgdid + '/' + filename
+    s3_path = fdb.sgdid + '/' + filename
     conn = tinys3.Connection(S3_ACCESS_KEY,S3_SECRET_KEY,tls=True)
-    conn.upload(s3_url, file, S3_BUCKET)
+    conn.upload(s3_path, file, S3_BUCKET)
     # update s3 url
-    fdb.s3_url = s3_url
+    fdb.s3_url = S3_BASE_URL + s3_path
     DBSession.flush()
     transaction.commit()
     
