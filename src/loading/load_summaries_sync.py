@@ -26,7 +26,6 @@ __author__ = 'tshepp'
        * check to see if there is any referenceupdate, if yes, updatethe 
          LOCUSSUMMARY_REFERENCE table
 '''
-PREVIEW_HOST = 'https://curate.qa.yeastgenome.org'
 SGD_SOURCE_ID = 834
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.INFO)
@@ -122,7 +121,7 @@ def validate_file_content(file_content, nex_session, username):
 
             # add receipt
             summary_type_url_segment = file_summary_type.lower()
-            preview_url = PREVIEW_HOST + '/locus/' + gene.sgdid + '/' + summary_type_url_segment
+            preview_url = '/locus/' + gene.sgdid + '/' + summary_type_url_segment
             receipt_object.append({
                 'category': 'locus', 
                 'href': preview_url, 

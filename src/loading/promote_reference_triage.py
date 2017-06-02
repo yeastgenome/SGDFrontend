@@ -28,7 +28,6 @@ def add_paper(pmid, created_by="OTTO"):
 
     ## insert into DBENTITY/REFERENCEDBENTITY/REFERENCEDOCUMENT
     [reference_id, authors, doi_url, pmc_url, sgdid] = insert_referencedbentity(pmid, source_id, record, created_by)
-    
     insert_authors(reference_id, authors, source_id, created_by)
     insert_pubtypes(pmid, reference_id, record.get('PT', []), source_id, created_by)
     insert_urls(pmid, reference_id, doi_url, pmc_url, source_id, created_by)
@@ -204,7 +203,6 @@ def insert_referencedbentity(pmid, source_id, record, created_by):
     DBSession.flush()
     DBSession.refresh(x)
     dbentity_id = x.dbentity_id
-
     ## insert into REFERENCEDOCUMENT
     insert_abstract(pmid, dbentity_id, record,
                     source_id, journal, journal_title, issn_print, created_by)
