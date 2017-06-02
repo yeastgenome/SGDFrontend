@@ -12,11 +12,12 @@ class CurateLayout extends Component {
       <div className='row'>
         <div className={SMALL_COL_CLASS}>
           <ul className='vertical menu'>
-            <li><Link className={(location === '/curate') ? style.activeLink : null} to='curate'><i className='fa fa-home' /> Home</Link></li>
-            <li><Link className={(location === '/curate/triage') ? style.activeLink : null} to='curate/triage'><i className='fa fa-book' /> Lit Triage</Link></li>
-            <li><Link className={style.disabledLink}><i className='fa fa-users' /> Colleague Updates</Link></li>
-            <li><Link className={style.disabledLink}><i className='fa fa-sticky-note' /> Gene Name Registrations</Link></li>
-            <li><Link className={(location === '/curate/spreadsheet_upload') ? style.activeLink : null} to='curate/spreadsheet_upload'><i className='fa fa-upload' /> Spreadsheet Upload</Link></li>
+            {/* spans added of Link to address https://stackoverflow.com/questions/38796376/cannot-read-property-gethostnode-of-null */}
+            <li><Link className={(location === '/curate') ? style.activeLink : null} to='curate'><span><i className='fa fa-home' /> Home</span></Link></li>
+            <li><Link className={(location === '/curate/triage') ? style.activeLink : null} to='curate/triage'><span><i className='fa fa-book' /> Lit Triage</span></Link></li>
+            <li><Link className={style.disabledLink}><span><i className='fa fa-users' /> Colleague Updates</span></Link></li>
+            <li><Link className={style.disabledLink}><span><i className='fa fa-sticky-note' /> Gene Name Registrations</span></Link></li>
+            <li><Link className={(location === '/curate/spreadsheet_upload') ? style.activeLink : null} to='curate/spreadsheet_upload'><span><i className='fa fa-upload' /> Spreadsheet Upload</span></Link></li>
           </ul>
         </div>
         <div className={LARGE_COL_CLASS}>
