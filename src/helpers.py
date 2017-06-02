@@ -4,6 +4,7 @@ import werkzeug
 import os
 import pusher
 import shutil
+import string
 import tempfile
 from pyramid.httpexceptions import HTTPForbidden, HTTPBadRequest
 from .models import DBSession, Dbuser, Referencedbentity, Keyword, Filepath, Edam, Filedbentity, FileKeyword, ReferenceFile
@@ -161,6 +162,37 @@ def binary_search(value, f, lower, upper, e, max_iter=None):
         return binary_search(value, f, lower, midpoint, e, max_iter)
     else:
         return binary_search(value, f, midpoint, upper, e, max_iter)
+
+def upload_file(username, file, **kwargs):
+    filename = kwargs.get('filename')
+    edam_id = kwargs.get('edam_id')
+    topic_id = kwargs.get('topic_id')
+    is_public = kwargs.get('is_public')
+    is_in_spell = kwargs.get('is_in_spell')
+    is_in_browser = kwargs.get('is_in_browser')
+    filepath_id = kwargs.get('filepath_id')
+    
+    fdb = Filedbentity(
+        # Filedbentity params
+        md5sum=None,
+        previous_file_name=filename,
+        topic_id=topic.edam_id,
+        format_id=format.edam_id,
+        file_date=datetime.datetime.strptime(request.POST.get('file_date'), '%Y-%m-%d %H:%M:%S'),
+        is_public=request.POST.get('is_public', 0),
+        is_in_spell=request.POST.get('for_spell', 0),
+        is_in_browser=request.POST.get('for_browser', 0),
+        filepath_id=filepath.filepath_id,
+        file_extension=request.POST.get('extension'),        
+        s3_url=None,
+        source_id=339,
+        dbentity_status=request.POST.get('status')
+    )
+
+    DBSession.add(fdb)
+    DBSession.flush()
+    DBSession.refresh(fdb)
+    print kwargs
     
 def area_of_intersection(r, s, x):
     if x <= abs(r-s):
@@ -169,3 +201,22 @@ def area_of_intersection(r, s, x):
         return 0
     else:
         return pow(r,2)*acos(1.0*(pow(x,2) + pow(r,2) - pow(s,2))/(2*x*r)) + pow(s,2)*acos(1.0*(pow(x,2) + pow(s,2) - pow(r,2))/(2*x*s)) - .5*sqrt((-x+r+s)*(x+r-s)*(x-r+s)*(x+r+s))
+
+def link_gene_names(raw, locus_names_ids):
+    # first create an object with display_name as key and sgdid as value
+    locus_names_object = {}
+    for d in locus_names_ids:
+        display_name = d[0]
+        sgdid = d[1]
+        locus_names_object[display_name] = sgdid
+    processed = raw
+    words = raw.split(' ')
+    for p_original_word in words:
+        original_word = p_original_word.translate(None, string.punctuation)
+        wupper = original_word.upper()
+        if wupper in locus_names_object.keys():
+            sgdid = locus_names_object[wupper]
+            url = '/locus/'  + sgdid
+            new_str = '<a href="' + url + '">' + wupper + '</a>'
+            processed = processed.replace(original_word, new_str)
+    return processed

@@ -500,9 +500,10 @@ def reference_triage_promote(request):
 
         try:
             reference_id, sgdid = add_paper(triage.pmid, request.json['data']['assignee'])
-        except IntegrityError:
+        except IntegrityError as e:
             traceback.print_exc()
-            return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
+            DBSession.rollback()
+            return HTTPBadRequest(body=json.dumps({'error': str(e) }))
         except:
             traceback.print_exc()
             return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
@@ -513,7 +514,7 @@ def reference_triage_promote(request):
         try:
             transaction.commit()
         except:
-            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify if pmid is valid and not already present.'}))
+            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))
         
         DBSession.delete(triage)
 
@@ -547,13 +548,17 @@ def reference_triage_id_delete(request):
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
-        reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=None, created_by=request.session['username'])
-        DBSession.add(reference_deleted)
-        DBSession.delete(triage)        
-        transaction.commit()
-        pusher = get_pusher_client()
-        pusher.trigger('sgd', 'triageUpdate', {})
-        return HTTPOk()
+        try:
+            reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=None, created_by=request.session['username'])
+            DBSession.add(reference_deleted)
+            DBSession.delete(triage)        
+            transaction.commit()
+            pusher = get_pusher_client()
+            pusher.trigger('sgd', 'triageUpdate', {})
+            return HTTPOk()
+        except:
+            DBSession.rollback()
+            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))
     else:
         return HTTPNotFound()
 
