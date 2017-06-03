@@ -45,7 +45,7 @@ export default function litReducer(state = DEFAULT_STATE, action) {
 function replaceTriage(oldEntries, newEntries, currentUsername) {
   newEntries.forEach( (d, i) => {
     let oldEntry = _.findWhere(oldEntries, { curation_id: d.curation_id });
-    // replace with old version if claimed by currentUserif assignee changes and current version not claimed to self
+    // replace with old version if claimed by current user
     let oldAssignee = oldEntry ? oldEntry.data.assignee : null;
     if (oldAssignee === currentUsername) {
       newEntries[i] = oldEntry;
