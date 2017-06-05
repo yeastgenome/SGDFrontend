@@ -8,7 +8,7 @@ import style from './style.css';
 import fetchData from '../../lib/fetchData';
 import AnnotationSummary from '../../components/annotationSummary';
 import Loader from '../../components/loader';
-import { setError } from '../../actions/metaActions';
+import { clearError, setError } from '../../actions/metaActions';
 
 const UPLOAD_URL = '/upload_spreadsheet';
 const UPLOAD_TIMEOUT = 120000;
@@ -62,6 +62,7 @@ class SpreadsheetUpload extends Component {
         isPending: false,
         annotationData: data.annotations
       });
+      this.props.dispatch(clearError());
     }).catch( (data) => {
       let errorMessage = data ? data.error : 'There was an error processing the upload. Please try again.';
       this.props.dispatch(setError(errorMessage));

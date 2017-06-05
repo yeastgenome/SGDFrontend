@@ -69,7 +69,7 @@ def get_recent_annotations(request):
 @view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')
 @authenticate
 def upload_spreadsheet(request):
-    try: 
+    try:
         tsv_file = request.POST['file'].file
         filename = request.POST['file'].filename
         template_type = request.POST['template']
@@ -78,9 +78,11 @@ def upload_spreadsheet(request):
         pusher.trigger('sgd', 'curateHomeUpdate', {})
         return {'annotations': annotations}
     except ValueError as e:
-        return HTTPBadRequest(body=json.dumps( {'error': str(e) }), content_type='text/json')
-    # except:
-    #     return HTTPBadRequest(body=json.dumps( {'error': 'Unable to process file upload.' }), content_type='text/json')
+        return HTTPBadRequest(body=json.dumps({ 'error': str(e) }), content_type='text/json')
+    except AttributeError:
+        return HTTPBadRequest(body=json.dumps({ 'error': 'Please attach a valid TSV file.' }), content_type='text/json')
+    except:
+        return HTTPBadRequest(body=json.dumps({ 'error': 'Unable to process file upload.' }), content_type='text/json')
 
 @view_config(route_name='upload', request_method='POST', renderer='json')
 @authenticate
