@@ -5,6 +5,7 @@ import csv
 import sys
 import transaction
 import os
+import re
 from sqlalchemy import create_engine, and_
 from src.models import DBSession, Locussummary, LocussummaryReference, Locusdbentity, Referencedbentity, Source
 from src.helpers import link_gene_names
@@ -51,7 +52,7 @@ def validate_file_content(file_content, nex_session, username):
             # collect PMIDs
             pmids = val[3].replace(' ', '')
             if len(pmids):
-                pmids = pmids.split(',')
+                pmids = re.split('\||,', pmids)
                 for d in pmids:
                     file_pmids.append(str(d)) 
         # match length of each row
@@ -67,7 +68,7 @@ def validate_file_content(file_content, nex_session, username):
     matching_refs = nex_session.query(Referencedbentity).filter(Referencedbentity.pmid.in_(file_pmids)).all()
     is_correct_ref_match_num = len(matching_refs) == len(file_pmids)
     if not is_correct_ref_match_num:
-        raise ValueError('PMIDs must be a comma-separated list of valid PMIDs from SGD.')
+        raise ValueError('PMIDs must be a pipe-separated list of valid PMIDs from SGD.')
 
     # update
     receipt_object = []
@@ -99,7 +100,7 @@ def validate_file_content(file_content, nex_session, username):
             # add LocussummaryReference(s)
             pmids = val[3].replace(' ', '')
             if len(pmids):
-                pmids = pmids.split(',')
+                pmids = re.split('\||,', pmids)
                 for _i, p in enumerate(pmids):
                     matching_ref = [x for x in matching_refs if x.pmid == int(p)][0]
                     summary_id = summary.summary_id

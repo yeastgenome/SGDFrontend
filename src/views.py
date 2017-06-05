@@ -82,6 +82,7 @@ def upload_spreadsheet(request):
     except AttributeError:
         return HTTPBadRequest(body=json.dumps({ 'error': 'Please attach a valid TSV file.' }), content_type='text/json')
     except:
+        traceback.print_exc()
         return HTTPBadRequest(body=json.dumps({ 'error': 'Unable to process file upload.' }), content_type='text/json')
 
 @view_config(route_name='upload', request_method='POST', renderer='json')
