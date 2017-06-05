@@ -63,7 +63,8 @@ class SpreadsheetUpload extends Component {
         annotationData: data.annotations
       });
     }).catch( (data) => {
-      this.props.dispatch(setError(data.error));
+      let errorMessage = data ? data.error : 'There was an error processing the upload. Please try again.';
+      this.props.dispatch(setError(errorMessage));
       this.setState({ isPending: false });
     });
   }
