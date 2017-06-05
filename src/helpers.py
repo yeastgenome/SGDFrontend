@@ -181,6 +181,7 @@ def upload_file(username, file, **kwargs):
     is_in_spell = kwargs.get('is_in_spell', False)
     is_in_browser = kwargs.get('is_in_browser', False)
     file_date = kwargs.get('file_date', datetime.datetime.now())
+    json = kwargs.get('json', None)
     year = kwargs.get('year', file_date.year)
     file_extension = kwargs.get('file_extension')
     display_name = kwargs.get('display_name')
@@ -197,6 +198,7 @@ def upload_file(username, file, **kwargs):
         topic_id=topic_id,
         format_id=format_id,
         file_date=file_date,
+        json=json,
         year=year,
         is_public=is_public,
         is_in_spell=is_in_spell,
