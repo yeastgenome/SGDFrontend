@@ -53,7 +53,6 @@ singledispatch==3.4.0.3
 six==1.10.0
 sqlacodegen==1.1.6
 SQLAlchemy==1.0.10
-tinys3==0.1.12
 tornado==4.3
 transaction==1.4.4
 translationstring==1.3

@@ -1,4 +1,6 @@
 from math import pi, sqrt, acos
+import boto
+from boto.s3.key import Key
 import datetime
 import hashlib
 import werkzeug
@@ -7,9 +9,9 @@ import pusher
 import shutil
 import string
 import tempfile
-import tinys3
 import transaction
 from pyramid.httpexceptions import HTTPForbidden, HTTPBadRequest
+
 from .models import DBSession, Dbuser, Referencedbentity, Keyword, Filepath, Edam, Filedbentity, FileKeyword, ReferenceFile
 
 import logging
@@ -216,13 +218,20 @@ def upload_file(username, file, **kwargs):
     DBSession.refresh(fdb)
     # get s3_url and upload
     s3_path = fdb.sgdid + '/' + filename
-    conn = tinys3.Connection(S3_ACCESS_KEY,S3_SECRET_KEY,tls=True)
-    conn.upload(s3_path, file, S3_BUCKET)
-    # update s3 url
-    fdb.s3_url = S3_BASE_URL + s3_path
-    DBSession.flush()
-    transaction.commit()
-    
+    conn = boto.connect_s3(S3_ACCESS_KEY, S3_SECRET_KEY)
+    bucket = conn.get_bucket(S3_BUCKET)
+    k = Key(bucket)
+    k.key = s3_path
+    k.set_contents_from_file(file, rewind=True)
+    file_s3 = bucket.get_key(k.key)
+    etag_md5_s3 = file_s3.etag.strip('"').strip("'")
+    if (md5sum == etag_md5_s3):
+        fdb.s3_url = file_s3.generate_url(expires_in=0, query_auth=False)
+        DBSession.flush()
+        transaction.commit()
+    else:
+        raise Exception('MD5sum check failed.')
+        
 def area_of_intersection(r, s, x):
     if x <= abs(r-s):
         return min(pi*pow(r, 2), pi*pow(s, 2))
