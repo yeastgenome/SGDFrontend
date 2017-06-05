@@ -1701,6 +1701,14 @@ BEGIN
         PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION'::text, 'EXPERIMENT_COMMENT'::text, OLD.annotation_id, OLD.experiment_comment, NEW.experiment_comment, USER);
     END IF;
 
+    IF  (((OLD.allele_comment IS NULL) AND (NEW.allele_comment IS NOT NULL)) OR ((OLD.allele_comment IS NOT NULL) AND (NEW.allele_comment IS NULL)) OR (OLD.allele_comment != NEW.allele_comment)) THEN
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION'::text, 'ALLELE_COMMENT'::text, OLD.annotation_id, OLD.allele_comment, NEW.allele_comment, USER);
+    END IF;
+
+    IF  (((OLD.reporter_comment IS NULL) AND (NEW.reporter_comment IS NOT NULL)) OR ((OLD.reporter_comment IS NOT NULL) AND (NEW.reporter_comment IS NULL)) OR (OLD.reporter_comment != NEW.reporter_comment)) THEN
+        PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION'::text, 'REPORTER_COMMENT'::text, OLD.annotation_id, OLD.reporter_comment, NEW.reporter_comment, USER);
+    END IF;
+
     IF  (((OLD.details IS NULL) AND (NEW.details IS NOT NULL)) OR ((OLD.details IS NOT NULL) AND (NEW.details IS NULL)) OR (OLD.details != NEW.details)) THEN
         PERFORM nex.insertupdatelog('PHENOTYPEANNOTATION'::text, 'DETAILS'::text, OLD.annotation_id, OLD.details, NEW.details, USER);
     END IF;
@@ -1716,6 +1724,7 @@ BEGIN
              OLD.mutant_id || '[:]' || coalesce(OLD.allele_id,0) || '[:]' ||
              coalesce(OLD.reporter_id,0) || '[:]' || coalesce(OLD.assay_id,0) || '[:]' ||
              coalesce(OLD.strain_name,'') || '[:]' || coalesce(OLD.experiment_comment,'') || '[:]' ||
+             coalesce(OLD.allele_comment,'') || '[:]' || coalesce(OLD.reporter_comment,'') || '[:]' ||
              coalesce(OLD.details,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
