@@ -21,7 +21,6 @@ FILE_EXTENSIONS = ['bed', 'bedgraph', 'bw', 'cdt', 'chain', 'cod', 'csv', 'cusp'
 S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
 S3_SECRET_KEY = os.environ['S3_SECRET_KEY']
 S3_BUCKET = os.environ['S3_BUCKET']
-S3_BASE_URL = 'https://s3-us-west-2.amazonaws.com/' + S3_BUCKET + '/'
 
 def md5(fname):
     hash = hashlib.md5()
@@ -223,15 +222,17 @@ def upload_file(username, file, **kwargs):
     k = Key(bucket)
     k.key = s3_path
     k.set_contents_from_file(file, rewind=True)
+    k.make_public()
     file_s3 = bucket.get_key(k.key)
     etag_md5_s3 = file_s3.etag.strip('"').strip("'")
+    # if md5 checksum matches, save s3 URL to db
     if (md5sum == etag_md5_s3):
         fdb.s3_url = file_s3.generate_url(expires_in=0, query_auth=False)
         DBSession.flush()
         transaction.commit()
     else:
         raise Exception('MD5sum check failed.')
-        
+
 def area_of_intersection(r, s, x):
     if x <= abs(r-s):
         return min(pi*pow(r, 2), pi*pow(s, 2))
