@@ -2336,7 +2336,6 @@ class Locusdbentity(Dbentity):
                         "source": source,
                         "target": target,
                         "evidence": evidence
-                        
                     }
                 })
                 edges_added.add(source + " " + target)
@@ -4936,6 +4935,8 @@ class Phenotypeannotation(Base):
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
     experiment_comment = Column(String(200))
+    allele_comment = Column(String(200))
+    reporter_comment = Column(String(200))
 
     allele = relationship(u'Allele')
     assay = relationship(u'Obi')
@@ -5094,9 +5095,14 @@ class Phenotypeannotation(Base):
                 "role": "Allele"
             })
 
-        strain = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
-        strain_obj = None
 
+        if self.taxonomy_id == 275338:
+            strain = [DBSession.query(Straindbentity).filter_by(dbentity_id=1364595).one_or_none()]
+        else:
+            strain = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
+            
+        strain_obj = None
+        
         if len(strain) == 0 or len(strain) > 1:
             strain_obj = {
                 "display_name": "Other",
