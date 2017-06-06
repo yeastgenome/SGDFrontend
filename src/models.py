@@ -2183,22 +2183,38 @@ class Locusdbentity(Dbentity):
             if interaction.dbentity1_id in nodes and interaction.dbentity2_id in nodes:
                 other_valid_interactions.append(interaction)
 
+        edges_to_annotations = {}
+        for annotation in other_valid_interactions:
+            if annotation.dbentity1_id < annotation.dbentity2_id:
+                add = str(annotation.dbentity1_id) + "_" + str(annotation.dbentity2_id)
+            else:
+                add = str(annotation.dbentity2_id) + "_" + str(annotation.dbentity1_id)
+                
+            if add in edges_to_annotations:
+                edges_to_annotations[add].add(annotation)
+            else:
+                edges_to_annotations[add] = set([annotation])
+
         i = 0
         while i < len(other_valid_interactions) and len(edges) <= 50:
-            source = nodes[other_valid_interactions[i].dbentity1_id]["data"]["id"]
-            target = nodes[other_valid_interactions[i].dbentity2_id]["data"]["id"]
-            evidence = nodes[other_valid_interactions[i].dbentity1_id]["data"]["evidence"]
-            if nodes[other_valid_interactions[i].dbentity2_id]["data"]["evidence"] > evidence:
-                evidence = nodes[other_valid_interactions[i].dbentity2_id]["data"]["evidence"]
-                
+            dbentity1_id = other_valid_interactions[i].dbentity1_id
+            dbentity2_id = other_valid_interactions[i].dbentity2_id
+            
+            source = nodes[dbentity1_id]["data"]["id"]
+            target = nodes[dbentity2_id]["data"]["id"]
+
+            if dbentity1_id < dbentity2_id:
+                key = str(dbentity1_id) + "_" + str(dbentity2_id)
+            else:
+                key = str(dbentity2_id) + "_" + str(dbentity1_id)
+            
             if (source + " " + target) not in edges_added and (target + " " + source) not in edges_added:
                 edges.append({
                     "data": {
                         "source": source,
                         "target": target,
                         "class_type": edge_type,
-                        "evidence": evidence
-                        
+                        "evidence": len(edges_to_annotations[key])
                     }
                 })
                 edges_added.add(source + " " + target)
