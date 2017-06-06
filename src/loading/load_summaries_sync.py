@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.INFO)
 # has correct columns in header
 # checks IDs to make sure real IDs
-def validate_file_content(file_content, nex_session, username):
+def validate_file_content_and_process(file_content, nex_session, username):
     header_literal = ['# Feature', 'Summary Type (phenotype, regulation, protein, or sequence)', 'Summary', 'PMIDs']
     accepted_summary_types = ['Gene', 'Phenotype', 'Regulation']
     file_gene_ids = []
@@ -71,8 +71,10 @@ def validate_file_content(file_content, nex_session, username):
         raise ValueError('PMIDs must be a pipe-separated list of valid PMIDs from SGD.')
 
     # update
-    receipt_object = []
+    receipt_entries = []
     locus_names_ids = nex_session.query(Locusdbentity.display_name, Locusdbentity.sgdid).all()
+    inserts = 0
+    updates = 0
     for i, val in enumerate(copied):
         if i != 0:
             file_id = val[0]
@@ -86,6 +88,7 @@ def validate_file_content(file_content, nex_session, username):
             if len(summaries):
                 summary = summaries[0]
                 nex_session.query(Locussummary).filter_by(summary_id=summary.summary_id).update({ 'text': file_summary_val, 'html': file_summy_html })
+                updates += 1
             else:
                 new_summary = Locussummary(
                     locus_id = gene.dbentity_id, 
@@ -96,6 +99,7 @@ def validate_file_content(file_content, nex_session, username):
                     source_id = SGD_SOURCE_ID
                 )
                 nex_session.add(new_summary)
+                inserts += 1
             summary = nex_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=gene.dbentity_id, summary_type=file_summary_type).all()[0]
             # add LocussummaryReference(s)
             pmids = val[3].replace(' ', '')
@@ -105,7 +109,7 @@ def validate_file_content(file_content, nex_session, username):
                     matching_ref = [x for x in matching_refs if x.pmid == int(p)][0]
                     summary_id = summary.summary_id
                     reference_id = matching_ref.dbentity_id
-                    order = _i
+                    order = _i + 1
                     # look for matching LocussummaryReference
                     matching_locussummary_refs = nex_session.query(LocussummaryReference).filter_by(summary_id=summary_id, reference_id=reference_id).all()
                     if len(matching_locussummary_refs):
@@ -123,7 +127,7 @@ def validate_file_content(file_content, nex_session, username):
             # add receipt
             summary_type_url_segment = file_summary_type.lower()
             preview_url = '/locus/' + gene.sgdid + '/' + summary_type_url_segment
-            receipt_object.append({
+            receipt_entries.append({
                 'category': 'locus', 
                 'href': preview_url, 
                 'name': gene.display_name, 
@@ -131,10 +135,14 @@ def validate_file_content(file_content, nex_session, username):
                 'value': file_summary_val 
             })
             transaction.commit()
-    return receipt_object
-
+    return {
+        'inserts': inserts,
+        'updates': updates,
+        'entries': receipt_entries
+    }
+    
 def load_summaries(nex_session, file_content, username, summary_type=None):
-    annotation_summary = validate_file_content(file_content, nex_session, username)
+    annotation_summary = validate_file_content_and_process(file_content, nex_session, username)
     return annotation_summary
 
 if __name__ == '__main__':
