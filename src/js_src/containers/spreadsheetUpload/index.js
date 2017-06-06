@@ -126,9 +126,11 @@ class SpreadsheetUpload extends Component {
     if (state.isPending) {
       node = <Loader />;
     } else if (state.annotationData) {
+      let d = state.annotationData;
       node = (
         <div>
-          <AnnotationSummary annotations={state.annotationData} />
+          <p>{d.inserts.toLocaleString()} inserts and {d.updates.toLocaleString()} updates</p>
+          <AnnotationSummary annotations={d.entries} />
           <a onClick={this.handleClear.bind(this)}>Upload More</a>
         </div>
       );
