@@ -5069,29 +5069,22 @@ class Phenotypeannotation(Base):
         properties = []
         
         if self.reporter:
-            note = None
-            if self.reporter.description and len(self.reporter.description) > 0:
-                note = self.reporter.description
             properties.append({
                 "class_type": "BIOITEM",
                 "bioitem": {
                     "display_name": self.reporter.display_name
                 },
-                "note": note,
+                "note": self.reporter_comment,
                 "role": "Reporter"
             })
 
         if self.allele:
-            note = None
-            if self.allele.description and len(self.allele.description) > 0:
-                note = self.allele.description
-
             properties.append({
                 "class_type": "BIOITEM",
                 "bioitem": {
                     "display_name": self.allele.display_name
                 },
-                "note": note,
+                "note": self.allele_comment,
                 "role": "Allele"
             })
 
@@ -5127,7 +5120,8 @@ class Phenotypeannotation(Base):
             experiment_obj = {
                 "display_name": experiment.display_name,
                 "link": None, # self.experiment.obj_url -> no page yet
-                "category": experiment.namespace_group
+                "category": experiment.namespace_group,
+                "note": self.experiment_comment
             }
 
         obj = {
