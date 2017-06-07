@@ -4377,6 +4377,8 @@ class Gosupportingevidence(Base):
 
     def to_dict(self):
         source_id = self.dbxref_id.split(":")
+
+        # the frontend expects a capitalized "role" to place the evidence in the right column of the annotation table
         
         if source_id[0] == "SGD":
             sgdid = source_id[1]
@@ -4387,7 +4389,7 @@ class Gosupportingevidence(Base):
                     "link": dbentity.obj_url,
                     "class_type": dbentity.subclass
                 },
-                "role": self.evidence_type
+                "role": self.evidence_type.capitalize()
             }
         elif source_id[0] == "GO":
             go_evidence = DBSession.query(Go).filter_by(goid=self.dbxref_id).one_or_none()
@@ -4397,7 +4399,7 @@ class Gosupportingevidence(Base):
                         "display_name": go_evidence.display_name,
                         "link": go_evidence.obj_url
                     },
-                    "role": self.evidence_type
+                    "role": self.evidence_type.capitalize()
                 }
         elif source_id[0] == "CHEBI":
             chebi = DBSession.query(Chebi).filter_by(chebiid=self.dbxref_id).one_or_none()
@@ -4407,7 +4409,7 @@ class Gosupportingevidence(Base):
                         "display_name": chebi.display_name,
                         "link": chebi.obj_url
                     },
-                    "role": self.evidence_type
+                    "role": self.evidence_type.capitalize()
                 }
         else:
             return {
@@ -4415,7 +4417,7 @@ class Gosupportingevidence(Base):
                     "display_name": source_id[1],
                     "link": self.obj_url
                 },
-                "role": self.evidence_type
+                "role": self.evidence_type.capitalize()
             }
         
         return None
