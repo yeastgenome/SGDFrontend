@@ -6,7 +6,6 @@ backports.ssl-match-hostname==3.4.0.2
 beautifulsoup4==4.4.1
 billiard==3.3.0.22
 boto==2.38.0
-celery==3.1.19
 certifi==2015.11.20.1
 cffi==1.4.2
 cryptography==1.8.1
@@ -38,7 +37,6 @@ pyasn1-modules==0.0.8
 pycparser==2.14
 pyOpenSSL==17.0.0
 pyramid==1.7.3
-pyramid-celery==2.0.0
 pyramid-jinja2==2.5
 pyramid-redis-sessions==1.0.1
 pyramid-webpack==0.1.1
