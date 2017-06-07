@@ -1576,7 +1576,12 @@ class Referencedbentity(Dbentity):
 
         annotations = DBSession.query(Literatureannotation).filter_by(reference_id=self.dbentity_id).all()
 
-        return [annotation.to_dict() for annotation in annotations]
+        for annotation in annotations:
+            annotation_dict = annotation.to_dict()
+            if annotation_dict["locus"] is not None:
+                obj.append(annotation.to_dict())
+        
+        return obj
 
     def interactions_to_dict(self):
         obj = []
