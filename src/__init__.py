@@ -121,7 +121,5 @@ def main(global_config, **settings):
 
     config.scan()
     config.add_static_view(name='assets', path='./build')
-
-    config.configure_celery(global_config['__file__'])
-
+    
     return config.make_wsgi_app()
