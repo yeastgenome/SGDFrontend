@@ -13,12 +13,6 @@ prod-build:
 run:
 	source dev_variables.sh && pserve development.ini --reload
 
-celery:
-	source dev_variables.sh && celery worker -A pyramid_celery.celery_app --ini development.ini
-
-flower:
-	source dev_variables.sh && celery flower -A pyramid_celery.celery_app --address=127.0.0.1 --port=5555 --ini development.ini
-
 tests:
 	npm test
 	source test_variables.sh && nosetests -s
