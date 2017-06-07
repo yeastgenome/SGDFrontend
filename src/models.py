@@ -1951,13 +1951,14 @@ class Locusdbentity(Dbentity):
         for lit in regulation_lit:
             obj["regulation"].append(lit.to_dict_citation())
 
-        phenotype_ids = DBSession.query(Phenotypeannotation.reference_id).filter_by(dbentity_id= self.dbentity_id).all()
+        apo_ids = DBSession.query(Apo.apo_id).filter_by(namespace_group="classical genetics").all()
+        phenotype_ids = DBSession.query(Phenotypeannotation.reference_id).filter(and_(Phenotypeannotation.dbentity_id == self.dbentity_id, Phenotypeannotation.experiment_id.in_(apo_ids))).all()
         phenotype_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(phenotype_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
 
         for lit in phenotype_lit:
             obj["phenotype"].append(lit.to_dict_citation())
 
-        go_ids = DBSession.query(Goannotation.reference_id).filter_by(dbentity_id=self.dbentity_id).all()
+        go_ids = DBSession.query(Goannotation.reference_id).filter(and_(Goannotation.dbentity_id == self.dbentity_id, Goannotation.annotation_type != "high-throughput")).all()
         go_ids = set(go_ids) - set(Referencedbentity.get_go_blacklist_ids())
         go_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(go_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
 
