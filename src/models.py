@@ -1217,10 +1217,11 @@ class Dataset(Base):
 
             files = DBSession.query(DatasetFile).filter_by(dataset_id=self.dataset_id).all()
             for f in files:
-                obj["urls"].append({
-                    "link": f.file.s3_url,
-                    "display_name": "Download data"
-                })
+                if f.file.s3_url is not None:
+                    obj["urls"].append({
+                        "link": f.file.s3_url,
+                        "display_name": "Download data"
+                    })
             
             for url in urls:
                 url_obj = {
