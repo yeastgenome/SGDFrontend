@@ -2068,6 +2068,50 @@ class Locusdbentity(Dbentity):
             "edges": edges
         }
 
+    def interaction_graph_secondary_edges(self, Interaction, edge_type, nodes, edges):
+        secondary_nodes = set(nodes.keys()) - set([self.dbentity_id])
+
+        interactions = DBSession.query(Interaction).filter(and_(Interaction.dbentity1_id.in_(secondary_nodes), Interaction.dbentity2_id.in_(secondary_nodes))).all()
+
+        edges_to_annotations = {}
+        for annotation in interactions:
+            if annotation.dbentity1_id < annotation.dbentity2_id:
+                add = str(annotation.dbentity1_id) + "_" + str(annotation.dbentity2_id)
+            else:
+                add = str(annotation.dbentity2_id) + "_" + str(annotation.dbentity1_id)
+
+            if add in edges_to_annotations:
+                edges_to_annotations[add].add(annotation)
+            else:
+                edges_to_annotations[add] = set([annotation])
+
+        edges_added = set([])
+
+        i = 0
+        while i < len(interactions) and len(edges_added) <= 50:
+            dbentity1_id = interactions[i].dbentity1_id
+            dbentity2_id = interactions[i].dbentity2_id
+            
+            source = nodes[dbentity1_id]["data"]["id"]
+            target = nodes[dbentity2_id]["data"]["id"]
+
+            if dbentity1_id < dbentity2_id:
+                key = str(dbentity1_id) + "_" + str(dbentity2_id)
+            else:
+                key = str(dbentity2_id) + "_" + str(dbentity1_id)
+            
+            if (source + " " + target) not in edges_added and (target + " " + source) not in edges_added:
+                edges.append({
+                    "data": {
+                        "source": source,
+                        "target": target,
+                        "class_type": edge_type,
+                        "evidence": len(edges_to_annotations[key])
+                    }
+                })
+                edges_added.add(source + " " + target)
+            i += 1
+    
     def interaction_graph(self):
         phys_graph = self.interaction_graph_builder(Physinteractionannotation, "PHYSICAL")
         gen_graph = self.interaction_graph_builder(Geninteractionannotation, "GENETIC")
@@ -2078,7 +2122,7 @@ class Locusdbentity(Dbentity):
             nodes[node] = phys_graph["nodes"][node]
             nodes[node]["data"]["physical"] = phys_graph["nodes"][node]["data"]["evidence"]
 
-        for node in gen_graph["nodes"].keys():
+        for node in gen_graph["nodes"]:
             if node not in nodes:
                 nodes[node] = gen_graph["nodes"][node]
                 nodes[node]["data"]["genetic"] = gen_graph["nodes"][node]["data"]["evidence"]
@@ -2086,11 +2130,16 @@ class Locusdbentity(Dbentity):
                 nodes[node]["data"]["genetic"] = gen_graph["nodes"][node]["data"]["evidence"]
                 nodes[node]["data"]["evidence"] = max(nodes[node]["data"]["genetic"], nodes[node]["data"]["physical"])
 
+        edges = phys_graph["edges"] + gen_graph["edges"]
+
+        self.interaction_graph_secondary_edges(Physinteractionannotation, "PHYSICAL", nodes, edges)
+        self.interaction_graph_secondary_edges(Geninteractionannotation, "GENETIC", nodes, edges)
+
         # limiting cutoffs by 10. The interface converts > 10 to '+10' to save space
-                
+
         return {
             "nodes": [nodes[n] for n in nodes],
-            "edges": phys_graph["edges"] + gen_graph["edges"],
+            "edges": edges,
             "max_phys_cutoff": min(phys_graph["max_evidence_cutoff"], 10),
             "max_gen_cutoff": min(gen_graph["max_evidence_cutoff"], 10),
             "min_evidence_cutoff": min(min(phys_graph["min_evidence_cutoff"], gen_graph["min_evidence_cutoff"]), 10),
@@ -2139,7 +2188,7 @@ class Locusdbentity(Dbentity):
             genes_cache[gene.dbentity_id] = gene
         
         i = 0
-        while i < len(list_genes_to_interactions) and len(nodes) <= 20 and len(edges) <= 50:
+        while i < len(list_genes_to_interactions) and len(nodes) <= 20:
             dbentity_id = list_genes_to_interactions[i][0]
             dbentity = genes_cache[dbentity_id]
 
@@ -2174,58 +2223,13 @@ class Locusdbentity(Dbentity):
             i += 1
 
         nodes[self.dbentity_id]["data"]["gene_count"] = max_cutoff
-            
-        reference_ids = set([a.reference_id for a in main_gene_annotations])
-        other_interactions = DBSession.query(Interaction).filter(and_(Interaction.reference_id.in_(reference_ids), and_(Interaction.dbentity1_id != self.dbentity_id, Interaction.dbentity2_id != self.dbentity_id))).all()
-
-        other_valid_interactions = []
-        for interaction in other_interactions:
-            if interaction.dbentity1_id in nodes and interaction.dbentity2_id in nodes:
-                other_valid_interactions.append(interaction)
-
-        edges_to_annotations = {}
-        for annotation in other_valid_interactions:
-            if annotation.dbentity1_id < annotation.dbentity2_id:
-                add = str(annotation.dbentity1_id) + "_" + str(annotation.dbentity2_id)
-            else:
-                add = str(annotation.dbentity2_id) + "_" + str(annotation.dbentity1_id)
-                
-            if add in edges_to_annotations:
-                edges_to_annotations[add].add(annotation)
-            else:
-                edges_to_annotations[add] = set([annotation])
-
-        i = 0
-        while i < len(other_valid_interactions) and len(edges) <= 50:
-            dbentity1_id = other_valid_interactions[i].dbentity1_id
-            dbentity2_id = other_valid_interactions[i].dbentity2_id
-            
-            source = nodes[dbentity1_id]["data"]["id"]
-            target = nodes[dbentity2_id]["data"]["id"]
-
-            if dbentity1_id < dbentity2_id:
-                key = str(dbentity1_id) + "_" + str(dbentity2_id)
-            else:
-                key = str(dbentity2_id) + "_" + str(dbentity1_id)
-            
-            if (source + " " + target) not in edges_added and (target + " " + source) not in edges_added:
-                edges.append({
-                    "data": {
-                        "source": source,
-                        "target": target,
-                        "class_type": edge_type,
-                        "evidence": len(edges_to_annotations[key])
-                    }
-                })
-                edges_added.add(source + " " + target)
-            i += 1
 
         return {
             "nodes": nodes,
             "edges": edges,
             "min_evidence_cutoff": min_cutoff,
             "max_evidence_cutoff": max_cutoff
-        }
+        }        
 
     def regulation_graph(self):
         main_gene_annotations = DBSession.query(Regulationannotation).filter(and_((Regulationannotation.direction != None), or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id))).all()
@@ -5088,11 +5092,7 @@ class Phenotypeannotation(Base):
                 "role": "Allele"
             })
 
-
-        if self.taxonomy_id == 275338:
-            strain = [DBSession.query(Straindbentity).filter_by(dbentity_id=1364595).one_or_none()]
-        else:
-            strain = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
+        strain = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
             
         strain_obj = None
         
