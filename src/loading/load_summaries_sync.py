@@ -50,13 +50,14 @@ def validate_file_content_and_process(file_content, nex_session, username):
             if val[1] not in accepted_summary_types:
                 raise ValueError('Unaccepted summary type. Must be one of ' + str(accepted_summary_types))
             # collect PMIDs
-            pmids = val[3].replace(' ', '')
-            if len(pmids):
-                pmids = re.split('\||,', pmids)
-                for d in pmids:
-                    file_pmids.append(str(d)) 
+            if len(val) == 4:
+                pmids = val[3].replace(' ', '')
+                if len(pmids):
+                    pmids = re.split('\||,', pmids)
+                    for d in pmids:
+                        file_pmids.append(str(d))
         # match length of each row
-        if len(val) != len(header_literal):
+        if (len(val) != len(header_literal) and len(val) != len(header_literal) - 1):
             raise ValueError('Row has incorrect number of columns.')
         copied.append(val)
     # check that gene names are valid
@@ -102,27 +103,28 @@ def validate_file_content_and_process(file_content, nex_session, username):
                 inserts += 1
             summary = nex_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=gene.dbentity_id, summary_type=file_summary_type).all()[0]
             # add LocussummaryReference(s)
-            pmids = val[3].replace(' ', '')
-            if len(pmids):
-                pmids = re.split('\||,', pmids)
-                for _i, p in enumerate(pmids):
-                    matching_ref = [x for x in matching_refs if x.pmid == int(p)][0]
-                    summary_id = summary.summary_id
-                    reference_id = matching_ref.dbentity_id
-                    order = _i + 1
-                    # look for matching LocussummaryReference
-                    matching_locussummary_refs = nex_session.query(LocussummaryReference).filter_by(summary_id=summary_id, reference_id=reference_id).all()
-                    if len(matching_locussummary_refs):
-                        nex_session.query(LocussummaryReference).filter_by(summary_id=summary_id,reference_id=reference_id).update({ 'reference_order': order })
-                    else:
-                        new_locussummaryref = LocussummaryReference(
-                            summary_id = summary_id, 
-                            reference_id = reference_id, 
-                            reference_order = order, 
-                            source_id = SGD_SOURCE_ID, 
-                            created_by = username
-                        )
-                        nex_session.add(new_locussummaryref)
+            if len(val) == 4:
+                pmids = val[3].replace(' ', '')
+                if len(pmids):
+                    pmids = re.split('\||,', pmids)
+                    for _i, p in enumerate(pmids):
+                        matching_ref = [x for x in matching_refs if x.pmid == int(p)][0]
+                        summary_id = summary.summary_id
+                        reference_id = matching_ref.dbentity_id
+                        order = _i + 1
+                        # look for matching LocussummaryReference
+                        matching_locussummary_refs = nex_session.query(LocussummaryReference).filter_by(summary_id=summary_id, reference_id=reference_id).all()
+                        if len(matching_locussummary_refs):
+                            nex_session.query(LocussummaryReference).filter_by(summary_id=summary_id,reference_id=reference_id).update({ 'reference_order': order })
+                        else:
+                            new_locussummaryref = LocussummaryReference(
+                                summary_id = summary_id, 
+                                reference_id = reference_id, 
+                                reference_order = order, 
+                                source_id = SGD_SOURCE_ID, 
+                                created_by = username
+                            )
+                            nex_session.add(new_locussummaryref)
 
             # add receipt
             summary_type_url_segment = file_summary_type.lower()
