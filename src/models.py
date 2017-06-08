@@ -1448,6 +1448,52 @@ class Referencedbentity(Dbentity):
 
         return Referencedbentity.go_blacklist
 
+    def to_bibentry(self):
+        entries = []
+
+        data = [("PMID", self.pmid),
+                ("STAT", self.publication_status),
+                ("DP", self.date_published),
+                ("TI", self.title),
+                ("SO", self.method_obtained),
+                ("LR", self.date_revised),
+                ("IP", self.issue),
+                ("PG", self.page),
+                ("VI", self.volume),
+                ("SO", "SGD")
+        ]
+
+        authors = DBSession.query(Referenceauthor.display_name).filter_by(reference_id=self.dbentity_id).all()
+        for author in authors:
+            data.append(("AU", author[0]))
+
+        ref_types = DBSession.query(Referencetype.display_name).filter_by(reference_id=self.dbentity_id).all()
+        for ref_type in ref_types:
+            data.append(("PT", ref_type[0]))
+
+        paragraphs = DBSession.query(Referencedocument.text).filter(and_(Referencedocument.reference_id==self.dbentity_id, Referencedocument.document_type=="Abstract")).all()
+        for paragraph in paragraphs:
+            data.append(("AB", paragraph[0]))
+
+        if self.journal is not None:
+            data.append(("TA", self.journal.med_abbr))
+            data.append(("JT", self.journal.title))
+            data.append(("IS", self.journal.issn_print))
+
+        if self.book is not None:
+            data.append(("BTI", self.book.title))
+            data.append(("VTI", self.book.volume_title))
+            data.append(("ISBN", self.book.isbn))
+
+        for d in data:
+            if d[1] is not None:
+                entries.append(d[0] + " - " + str(d[1]))
+            
+        return {
+            "id": self.dbentity_id,
+            "text": '\n'.join(entries)
+        }
+
     def to_dict_citation(self):
         obj = {
             "id": self.dbentity_id,
