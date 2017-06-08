@@ -82,7 +82,7 @@ def validate_file_content_and_process(file_content, nex_session, username):
             file_summary_type = val[1]
             file_summary_val = val[2]
             file_summy_html = link_gene_names(file_summary_val, locus_names_ids)
-            gene = nex_session.query(Locusdbentity).filter(Locusdbentity.format_name.match(file_id)).all()[0]
+            gene = nex_session.query(Locusdbentity).filter_by(format_name=file_id).one_or_none()
             summaries = nex_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=gene.dbentity_id, summary_type=file_summary_type).all()
             # update
             summary = None
