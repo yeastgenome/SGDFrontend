@@ -12,7 +12,8 @@ import requests
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 
 def get_locus_obj(identifier):
-    backend_locus_url = config.backend_url + '/locus/' + identifier
+    #temp addition: overview
+    backend_locus_url = config.backend_url + '/locus/' + identifier + '/overview'
     locus_response = requests.get(backend_locus_url)
     if locus_response.status_code != 200:
         return None

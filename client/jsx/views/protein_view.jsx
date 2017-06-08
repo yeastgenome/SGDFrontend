@@ -1,13 +1,29 @@
 "use strict";
-var React = require("react");
-var ReactDOM = require("react-dom");
-var ProteinViewer = require("sgd_visualization").ProteinViewerComponent;
-var _ = require("underscore");
+
+const React = require("react");
+const ReactDOM = require("react-dom");
+const ProteinViewer = require("sgd_visualization").ProteinViewerComponent;
+const _ = require("underscore");
+const NavBar = require("../components/widgets/navbar.jsx");
+const TabsModel = require("../models/tabs_model.jsx");
 
 var proteinView = {};
 proteinView.render = function (rawDomainData, locusLength, colorScale) {
-
   var rawLocusData = rawDomainData[0].locus;
+  var _tabModel = new TabsModel();
+
+  let _elements =[
+    {'name':'Protein Overview', 'target':'overview'},
+    {'name':'Experimental Data', 'target':'experiment'},
+    {'name':'Domains and Classification', 'target':'domain'},
+    {'name':'Sequence', 'target':'sequence'},
+    {'name':'External Identifiers', 'target':'external_ids'},
+    {'name':'Resources', 'target':'resources'}
+  ] ;
+  var _navTitletext = _tabModel.getNavTitle(locus.display_name,locus.format_name);
+  ReactDOM.render(<NavBar title={_navTitletext} elements={_elements} />, document.getElementById("navbar-container"));
+
+  
   var locusData = _.extend(rawLocusData, {
     name: rawLocusData.display_name,
     href: rawDomainData.link,
@@ -23,8 +39,10 @@ proteinView.render = function (rawDomainData, locusLength, colorScale) {
     return d;
   });
 
-  ReactDOM.render(<ProteinViewer data={domainData} locusData={locusData} colorScale={colorScale}/>
-  , document.getElementById("domain_chart"));
+
+ /* ReactDOM.render(<ProteinViewer data={domainData} locusData={locusData} colorScale={colorScale}/>
+  , document.getElementById("domain_chart"));*/
+  
 
 };
 
