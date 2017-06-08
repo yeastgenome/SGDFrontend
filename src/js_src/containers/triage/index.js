@@ -25,10 +25,12 @@ class LitTriageIndex extends Component {
     this.props.dispatch(setPending());
     this.fetchData();
     this.listenForUpdates();
+    this._isMounted = true;
   }
 
   componentWillUnmount() {
     this.channel.unbind(EVENT);
+    this._isMounted = false;
   }
 
   listenForUpdates() {
@@ -41,8 +43,10 @@ class LitTriageIndex extends Component {
 
   fetchData() {
     fetchData(TRIAGE_URL).then( (data) => {
-      this.props.dispatch(updateTriageEntries(data.entries, this.props.username));
-      this.props.dispatch(finishPending());
+      if (this._isMounted) {
+        this.props.dispatch(updateTriageEntries(data.entries, this.props.username));
+        this.props.dispatch(finishPending());
+      }
     });
   }
 

@@ -4,7 +4,7 @@ import style from './style.css';
 import fetchData from '../../lib/fetchData';
 import getPusherClient from '../../lib/getPusherClient';
 import AnnotationSummary from '../../components/annotationSummary';
-import LoadingPage from '../../components/loadingPage';
+import Loader from '../../components/loader';
 
 const ANNOTATION_URL = '/annotations';
 const CHANNEL = 'sgd';
@@ -45,7 +45,7 @@ class CurateHome extends Component {
   }
 
   render() {
-    if (this.state.isPending) return <LoadingPage />;
+    if (this.state.isPending) return <Loader />;
     return (
       <div className={style.annotationContainer}>
         <AnnotationSummary annotations={this.state.annotationData} message='recent annotations.' />
