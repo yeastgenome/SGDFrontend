@@ -48,7 +48,6 @@ def validate_file_content_and_process(file_content, nex_session, username):
             else:
                 file_gene_ids.append(val[0])
                 # match summary types
-                print val
                 if val[1] not in accepted_summary_types:
                     raise ValueError('Unaccepted summary type. Must be one of ' + str(accepted_summary_types))
                 # collect PMIDs
@@ -63,7 +62,7 @@ def validate_file_content_and_process(file_content, nex_session, username):
                 raise ValueError('Row has incorrect number of columns.')
             copied.append(val)
     except IndexError:
-        raise ValueError('The file is not a valid TSV. Check the file and try again.')
+        raise ValueError('The file is not a valid TSV with the correct number of columns. Check the file and try again.')
     # check that gene names are valid
     matching_genes = nex_session.query(Locusdbentity).filter(Locusdbentity.format_name.in_(file_gene_ids)).count()
     is_correct_gene_match_num = matching_genes == len(file_gene_ids)
