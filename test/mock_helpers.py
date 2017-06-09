@@ -68,10 +68,12 @@ def go_side_effect(*args, **kwargs):
         return MockQuery(goannot)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.GoRelation'>":
         gochild = factory.GoFactory()
-        goparent = factory.GoFactory
+        goparent = factory.GoFactory()
         gorel = factory.GoRelationFactory()
+        ro = factory.RoFactory()
         gorel.child = gochild
         gorel.parent = goparent
+        gorel.ro = ro
         return MockQuery(gorel)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.GoUrl'>":
         gourl = factory.GoUrlFactory()
@@ -188,21 +190,39 @@ def locus_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.PhenotypeannotationCond'>":
         phenocond = factory.PhenotypeannotationCondFactory()
         return MockQuery(phenocond)
-    elif len(args) == 1 and str(args[0]) == 'Chebi.obj_url':
+    elif len(args) == 2 and str(args[0]) == 'Chebi.display_name' and str(args[1]) == 'Chebi.obj_url':
         chebi = factory.ChebiFactory()
-        return MockQuery(chebi.obj_url)
+        return MockQuery((chebi.display_name, chebi.obj_url))
     elif len(args) == 2 and str(args[0]) == 'Dbentity.display_name' and str(args[1]) == 'Dbentity.format_name':
         db = factory.DbentityFactory()
         return MockQuery(db.format_name)
     elif len(args) == 1 and str(args[0]) == 'Proteinsequenceannotation.annotation_id':
         prtseq = factory.ProteinsequenceannotationFactory()
         return MockQuery((prtseq.annotation_id,))
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Proteinsequenceannotation'>":
+        prtseq = factory.ProteinsequenceannotationFactory()
+        return MockQuery(prtseq)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.ProteinsequenceDetail'>":
+        prtseq = factory.ProteinsequenceannotationFactory()
         prtseqdetail = factory.ProteinsequenceDetailFactory()
+        prtseqdetail.annotation = prtseq
         return MockQuery(prtseqdetail)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Goslimannotation'>":
         goslimannot = factory.GoslimannotationFactory()
+        goslim = factory.GoslimFactory()
+        goslimannot.goslim = goslim
         return MockQuery(goslimannot)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Goannotation'>":
+        go = factory.GoFactory()
+        goannot = factory.GoannotationFactory()
+        goannot.go = go
+        return MockQuery(goannot)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.EcoAlias'>":
+        ecoalias = factory.EcoAliasFactory()
+        return MockQuery(ecoalias)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.EcoUrl'>":
+        ecourl = factory.EcoUrlFactory()
+        return MockQuery(ecourl)
 
 
 def phenotype_side_effect(*args, **kwargs):
@@ -218,6 +238,17 @@ def phenotype_side_effect(*args, **kwargs):
         phenoannot = factory.PhenotypeannotationFactory()
         phenoannot.phenotype = pheno
         return MockQuery((phenoannot.taxonomy_id, 20))
+    elif len(args) == 2 and str(args[0]) == 'Phenotypeannotation.taxonomy_id' and str(args[1]) == 'Phenotypeannotation.annotation_id':
+        pheno = factory.PhenotypeFactory()
+        phenoannot = factory.PhenotypeannotationFactory()
+        phenoannot.phenotype = pheno
+        return MockQuery(phenoannot)
+    elif len(args) == 2 and str(args[0]) == 'PhenotypeannotationCond.annotation_id' and str(args[1]) == 'count(DISTINCT nex.phenotypeannotation_cond.group_id)':
+        phenocond = factory.PhenotypeannotationCondFactory()
+        return MockQuery((phenocond.annotation_id, 20))
+    elif len(args) == 2 and str(args[0]) == 'PhenotypeannotationCond.annotation_id' and str(args[1]) == ' func.count(distinct(PhenotypeannotationCond.group_id))':
+        phenocond = factory.PhenotypeannotationCondFactory()
+        return MockQuery((phenocond.annotation_id, 20))
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Straindbentity'>":
         s_name = factory.StraindbentityFactory()
         return MockQuery(s_name)
@@ -241,12 +272,15 @@ def phenotype_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.PhenotypeannotationCond'>":
         phenocond = factory.PhenotypeannotationCondFactory()
         return MockQuery(phenocond)
-    elif len(args) == 1 and str(args[0]) == 'Chebi.obj_url':
+    elif len(args) == 2 and str(args[0]) == 'Chebi.display_name' and str(args[1]) == 'Chebi.obj_url':
         chebi = factory.ChebiFactory()
-        return MockQuery(chebi.obj_url)
+        return MockQuery((chebi.display_name, chebi.obj_url))
     elif len(args) == 2 and str(args[0]) == 'Goannotation.dbentity_id' and str(args[1]) == 'count(nex.goannotation.dbentity_id)':
         goannot = factory.GoannotationFactory()
         return MockQuery(goannot)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Apo'>":
+        apo = factory.ApoFactory()
+        return MockQuery(apo)
 
 def observable_side_effect(*args, **kwargs):
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Apo'>":
@@ -280,6 +314,17 @@ def observable_side_effect(*args, **kwargs):
         phenoannot = factory.PhenotypeannotationFactory()
         phenoannot.phenotype = pheno
         return MockQuery((phenoannot.taxonomy_id, 20))
+    elif len(args) == 2 and str(args[0]) == 'Phenotypeannotation.taxonomy_id' and str(args[1]) == 'Phenotypeannotation.annotation_id':
+        pheno = factory.PhenotypeFactory()
+        phenoannot = factory.PhenotypeannotationFactory()
+        phenoannot.phenotype = pheno
+        return MockQuery((phenoannot),)
+    elif len(args) == 2 and str(args[0]) == 'PhenotypeannotationCond.annotation_id' and str(args[1]) == 'count(DISTINCT nex.phenotypeannotation_cond.group_id)':
+        phenocond = factory.PhenotypeannotationCondFactory()
+        return MockQuery((phenocond.annotation_id, 20))
+    elif len(args) == 1 and str(args[0]) == 'Chebi.obj_url':
+        chebi = factory.ChebiFactory()
+        return MockQuery(chebi.obj_url)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Straindbentity'>":
         s_name = factory.StraindbentityFactory()
         return MockQuery(s_name)
@@ -306,14 +351,16 @@ def observable_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.PhenotypeannotationCond'>":
         phenocond = factory.PhenotypeannotationCondFactory()
         return MockQuery(phenocond)
-    elif len(args) == 1 and str(args[0]) == 'Chebi.obj_url':
+    elif len(args) == 2 and str(args[0]) == 'Chebi.display_name' and str(args[1]) == 'Chebi.obj_url':
         chebi = factory.ChebiFactory()
-        return MockQuery(chebi.obj_url)
+        return MockQuery((chebi.display_name, chebi.obj_url))
     elif len(args) == 2 and str(args[0]) == 'Goannotation.dbentity_id' and str(args[1]) == 'count(nex.goannotation.dbentity_id)':
         goannot = factory.GoannotationFactory()
         return MockQuery(goannot)
-
-
+    else:
+        print "the problem is the condition!!!!"
+        print args[0]
+        print args[1]
 
 def chemical_side_effect(*args, **kwargs):
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Chebi'>":
@@ -376,7 +423,13 @@ def author_side_effect(*args, **kwargs):
         return MockQuery((reftype.display_name))
 
 def keywords_side_effect(*args, **kwargs):
-    if len(args) == 1 and str(args[0]) == "<class 'src.models.Keyword'>":
+    import pdb; pdb.set_trace();
+    if len(args) == 1 and str(args[0]) == 'DISTINCT nex.dataset_keyword.keyword_id':
+        dskw = factory.DatasetKeywordFactory()
+        kw = factory.KeywordFactory()
+        dskw.keyword = kw
+        return MockQuery((dskw.keyword_id))
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Keyword'>":
         kw = factory.KeywordFactory()
         return MockQuery([kw])
 
@@ -475,6 +528,9 @@ def locus_reference_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "Goannotation.reference_id":
         go = factory.GoannotationFactory()
         return MockQuery((go.reference_id,))
+    elif len(args) == 1 and str(args[0]) == "ReferenceAlias.reference_id":
+        refalias = factory.ReferenceAliasFactory()
+        return MockQuery(refalias.reference_id)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Referencedbentity'>":
         source = factory.SourceFactory()
         journal = factory.JournalFactory()
@@ -544,13 +600,13 @@ def reference_side_effect(*args, **kwargs):
                 book = factory.BookFactory()
                 refdbentity = factory.ReferencedbentityFactory()
                 refdbentity.journal = journal
-                db1 = factory.DbentityFactory(dbentity_id=1)
-                db2 = factory.DbentityFactory(dbentity_id=2)
                 intannot = factory.PhysinteractionannotationFactory()
-                intannot.dbentity1 = db1
-                intannot.dbentity2= db2
                 intannot.reference = refdbentity
                 intannot.source = source
+                db1 = factory.DbentityFactory(dbentity_id=1)
+                db2 = factory.DbentityFactory(dbentity_id=2)
+                intannot.dbentity1 = db1
+                intannot.dbentity2= db2
                 return MockQuery((intannot))
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.Geninteractionannotation'>":
                 source = factory.SourceFactory()
@@ -647,3 +703,39 @@ def reference_side_effect(*args, **kwargs):
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.Straindbentity'>":
                 s_name = factory.StraindbentityFactory()
                 return MockQuery(s_name)
+
+
+def reference_phenotype_side_effect(*args, **kwargs):
+    #import pdb; pdb.set_trace();
+    if len(args) == 1 and str(args[0]) == "<class 'src.models.Referencedbentity'>":
+        source = factory.SourceFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        refdbentity = factory.ReferencedbentityFactory()
+        refdbentity.journal = journal
+        return MockQuery(refdbentity)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Phenotypeannotation'>":
+        source = factory.SourceFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        refdbentity = factory.ReferencedbentityFactory()
+        refdbentity.journal = journal
+        #pheno = factory.PhenotypeFactory()
+        db = factory.DbentityFactory()
+        phenoannot = factory.PhenotypeannotationFactory()
+        phenoannot.reference = refdbentity
+        #phenoannot.phenotype = pheno
+        phenoannot.dbentity = db
+        return MockQuery(phenoannot)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.PhenotypeannotationCond'>":
+        cond = factory.PhenotypeannotationCondFactory()
+        return MockQuery(cond)
+    elif len(args) == 1 and str(args[0]) == 'Chebi.obj_url':
+        chebi = factory.ChebiFactory()
+        return MockQuery(chebi.obj_url)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Straindbentity'>":
+        s_name = factory.StraindbentityFactory()
+        return MockQuery(s_name)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Apo'>":
+        apo = factory.ApoFactory()
+        return MockQuery(apo)
