@@ -38,28 +38,32 @@ def validate_file_content_and_process(file_content, nex_session, username):
     file_gene_ids = []
     file_pmids = []
     copied = []
-    for i, val in enumerate(file_content):
-        # match header
-        if i is 0:
-            is_header_match = header_literal == val
-            if not is_header_match:
-                raise ValueError('File header does not match expected format.') 
-        else:
-            file_gene_ids.append(val[0])
-            # match summary types
-            if val[1] not in accepted_summary_types:
-                raise ValueError('Unaccepted summary type. Must be one of ' + str(accepted_summary_types))
-            # collect PMIDs
-            if len(val) == 4:
-                pmids = val[3].replace(' ', '')
-                if len(pmids):
-                    pmids = re.split('\||,', pmids)
-                    for d in pmids:
-                        file_pmids.append(str(d))
-        # match length of each row
-        if (len(val) != len(header_literal) and len(val) != len(header_literal) - 1):
-            raise ValueError('Row has incorrect number of columns.')
-        copied.append(val)
+    try:
+        for i, val in enumerate(file_content):
+            # match header
+            if i is 0:
+                is_header_match = header_literal == val
+                if not is_header_match:
+                    raise ValueError('File header does not match expected format.') 
+            else:
+                file_gene_ids.append(val[0])
+                # match summary types
+                print val
+                if val[1] not in accepted_summary_types:
+                    raise ValueError('Unaccepted summary type. Must be one of ' + str(accepted_summary_types))
+                # collect PMIDs
+                if len(val) == 4:
+                    pmids = val[3].replace(' ', '')
+                    if len(pmids):
+                        pmids = re.split('\||,', pmids)
+                        for d in pmids:
+                            file_pmids.append(str(d))
+            # match length of each row
+            if (len(val) != len(header_literal) and len(val) != len(header_literal) - 1):
+                raise ValueError('Row has incorrect number of columns.')
+            copied.append(val)
+    except IndexError:
+        raise ValueError('The file is not a valid TSV. Check the file and try again.')
     # check that gene names are valid
     matching_genes = nex_session.query(Locusdbentity).filter(Locusdbentity.format_name.in_(file_gene_ids)).count()
     is_correct_gene_match_num = matching_genes == len(file_gene_ids)
