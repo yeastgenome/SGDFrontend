@@ -40,7 +40,7 @@ function post_to_yeastmine(bioent_ids) {
     var cinp = document.createElement("input");
     cinp.setAttribute("type", "hidden");
     cinp.setAttribute("name", "class");
-    cinp.setAttribute("value", "ORF");
+    cinp.setAttribute("value", "Gene");
     form.appendChild(cinp);
 
     var hiddenField = document.createElement("input");
