@@ -1663,6 +1663,10 @@ BEGIN
         PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'IS_IN_BROWSER'::text, OLD.dbentity_id, OLD.is_in_browser::text, NEW.is_in_browser::text, USER);
     END IF;
 
+     IF (((OLD.file_size IS NULL) AND (NEW.file_size IS NOT NULL)) OR ((OLD.file_size IS NOT NULL) AND (NEW.file_size IS NULL)) OR (OLD.file_size != NEW.file_size)) THEN
+        PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'FILE_SIZE'::text, OLD.dbentity_id, OLD.file_size, NEW.file_size, USER);
+    END IF;
+
      IF (((OLD.md5sum IS NULL) AND (NEW.md5sum IS NOT NULL)) OR ((OLD.md5sum IS NOT NULL) AND (NEW.md5sum IS NULL)) OR (OLD.md5sum != NEW.md5sum)) THEN
         PERFORM nex.insertupdatelog('FILEDBENTITY'::text, 'MD5SUM'::text, OLD.dbentity_id, OLD.md5sum, NEW.md5sum, USER);
     END IF;
@@ -1703,8 +1707,8 @@ BEGIN
              OLD.file_extension || '[:]' || OLD.file_date || '[:]' ||
              OLD.year || '[:]' ||
              OLD.is_public || '[:]' || OLD.is_in_spell || '[:]' ||
-             OLD.is_in_browser || '[:]' || coalesce(OLD.md5sum,'') || '[:]' ||
-             coalesce(OLD.readme_file_id,0) || '[:]' ||
+             OLD.is_in_browser || '[:]' || coalesce(OLD.file_size,'') || '[:]' ||
+             coalesce(OLD.md5sum,'') || '[:]' || coalesce(OLD.readme_file_id,0) || '[:]' ||
              coalesce(OLD.previous_file_name,'') || '[:]' || coalesce(OLD.s3_url,'') || '[:]' ||
              coalesce(OLD.description,'') || '[:]' || coalesce(OLD.json,'');
 

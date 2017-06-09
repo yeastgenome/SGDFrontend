@@ -16,7 +16,7 @@ class LocusTest(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-
+    #
     # @mock.patch('src.models.DBSession.query')
     # def test_should_return_valid_locus(self, mock_search):
     #     mock_search.side_effect = locus_side_effect
@@ -28,16 +28,16 @@ class LocusTest(unittest.TestCase):
     #     request.matchdict['sgdid'] = "S000114259"
     #     response = locus(request)
     #     self.assertEqual(response, loc.to_dict())
-    # #
-    # @mock.patch('src.models.DBSession.query')
-    # def test_should_return_non_existent_locus(self, mock_search):
-    #     mock_search.return_value = MockQuery(None)
-    #
-    #     request = testing.DummyRequest()
-    #     request.context = testing.DummyResource()
-    #     request.matchdict['id'] = 'nonexistent_id'
-    #     response = locus(request)
-    #     self.assertEqual(response.status_code, 404)
+
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_non_existent_locus(self, mock_search):
+        mock_search.return_value = MockQuery(None)
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        request.matchdict['sgdid'] = 'nonexistent_id'
+        response = locus(request)
+        self.assertEqual(response.status_code, 404)
 
 
     @mock.patch('src.models.DBSession.query')

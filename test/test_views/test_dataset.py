@@ -43,18 +43,18 @@ class DatasetTest(unittest.TestCase):
 
         self.assertEqual(response, kw.to_dict())
 
-    @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_keywords(self, mock_search):
-        mock_search.side_effect = keywords_side_effect
-
-        kw = factory.KeywordFactory()
-
-        request = testing.DummyRequest()
-        request.context = testing.DummyResource()
-        request.matchdict['id'] = "S000203483"
-        response = keywords(request)
-
-        self.assertEqual(response, [kw.to_simple_dict()])
+    # @mock.patch('src.models.DBSession.query')
+    # def test_should_return_valid_keywords(self, mock_search):
+    #     mock_search.side_effect = keywords_side_effect
+    #
+    #     kw = factory.KeywordFactory()
+    #
+    #     request = testing.DummyRequest()
+    #     request.context = testing.DummyResource()
+    #     request.matchdict['id'] = "S000203483"
+    #     response = keywords(request)
+    #
+    #     self.assertEqual(response, [kw.to_simple_dict()])
 
 
     @mock.patch('src.models.DBSession.query')
