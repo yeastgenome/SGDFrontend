@@ -1707,7 +1707,7 @@ BEGIN
              OLD.file_extension || '[:]' || OLD.file_date || '[:]' ||
              OLD.year || '[:]' ||
              OLD.is_public || '[:]' || OLD.is_in_spell || '[:]' ||
-             OLD.is_in_browser || '[:]' || coalesce(OLD.file_size,'') || '[:]'
+             OLD.is_in_browser || '[:]' || coalesce(OLD.file_size,'') || '[:]' ||
              coalesce(OLD.md5sum,'') || '[:]' || coalesce(OLD.readme_file_id,0) || '[:]' ||
              coalesce(OLD.previous_file_name,'') || '[:]' || coalesce(OLD.s3_url,'') || '[:]' ||
              coalesce(OLD.description,'') || '[:]' || coalesce(OLD.json,'');
