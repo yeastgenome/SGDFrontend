@@ -1748,7 +1748,7 @@ class Locusdbentity(Dbentity):
 
         return obj
     
-    def neighbor_sequence_details(self):
+    def neighbor_sequence_details_v1(self):
         dnas = DBSession.query(Dnasequenceannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
         obj = {}
@@ -1766,7 +1766,7 @@ class Locusdbentity(Dbentity):
             start = max(1, midpoint - 5000)
             end = min(len(dna.contig.residues), start + 10000)
 
-            neighbors = DBSession.query(Dnasequenceannotation).filter_by(dna_type='GENOMIC').filter_by(contig_id=dna.contig_id).filter(Dnasequenceannotation.end_index >= start).filter(Dnasequenceannotation.start_index <= end).all()
+            neighbors = DBSession.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.dna_type == 'GENOMIC', Dnasequenceannotation.contig_id == dna.contig_id, Dnasequenceannotation.end_index >= start, Dnasequenceannotation.start_index <= end)).all()
 
             obj[strain[0].display_name] = {
                 "start": start,
@@ -1775,6 +1775,71 @@ class Locusdbentity(Dbentity):
             }
 
         return obj
+
+    def neighbor_sequence_details(self):
+        dnas = DBSession.query(Dnasequenceannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
+        obj = {}
+
+        locus_ids = set([dna.dbentity_id for dna in dnas])
+        neighbors_annotation_ids = []
+
+        neighbors_list = {}
+            
+        for dna in dnas:
+            strain = Straindbentity.get_strains_by_taxon_id(dna.taxonomy_id)
+
+            if len(strain) < 1:
+                continue
+
+            start = dna.start_index
+            end = dna.end_index
+            
+            midpoint = int(round((start + (end - start)/2)/1000))*1000
+            start = max(1, midpoint - 5000)
+            end = min(len(dna.contig.residues), start + 10000)
+
+            neighbors = DBSession.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.dna_type == 'GENOMIC', Dnasequenceannotation.contig_id == dna.contig_id, Dnasequenceannotation.end_index >= start, Dnasequenceannotation.start_index <= end)).all()
+
+            for neighbor in neighbors:
+                locus_ids.add(neighbor.dbentity_id)
+                neighbors_annotation_ids.append(neighbor.annotation_id)
+
+            neighbors_list[(dna.annotation_id, dna.taxonomy_id)] = neighbors
+
+        loci_list = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(locus_ids)).all()
+        
+        loci = {}
+        for locus in loci_list:
+            loci[locus.dbentity_id] = locus
+
+        dnasubsequences = {}
+        tags_list = DBSession.query(Dnasubsequence).filter(Dnasubsequence.annotation_id.in_(neighbors_annotation_ids)).all()
+        for tag in tags_list:
+            if tag.annotation_id in dnasubsequences:
+                dnasubsequences[tag.annotation_id].append(tag)
+            else:
+                dnasubsequences[tag.annotation_id] = [tag]
+
+        for annotation_id in neighbors_annotation_ids:
+            if annotation_id not in dnasubsequences:
+                dnasubsequences[annotation_id] = []
+
+        for annotation in neighbors_list:
+            strain = Straindbentity.get_strains_by_taxon_id(annotation[1])
+
+            if len(strain) < 1:
+                continue
+            
+            neighbors = neighbors_list[annotation]
+            
+            obj[strain[0].display_name] = {
+                "start": start,
+                "end": end,
+                "neighbors": [n.to_dict(loci=loci, dnasubsequences=dnasubsequences) for n in neighbors]
+            }
+
+        return obj    
 
     def expression_to_dict(self):
         expression_annotations = DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).all()
@@ -2654,11 +2719,18 @@ class Locusdbentity(Dbentity):
             "headline": self.headline,
             "link": self.obj_url
         }
-        
-        sos = DBSession.query(Dnasequenceannotation.so_id).filter_by(dbentity_id=self.dbentity_id).group_by(Dnasequenceannotation.so_id).all()
-        locus_type = DBSession.query(So.display_name).filter(So.so_id.in_([so[0] for so in sos])).all()
-        obj["locus_type"] = ",".join([l[0] for l in locus_type])
 
+        # TODO: convert this query into a sqlalchemy format. I tried but it was still going to the DB twice.
+        query = "SELECT display_name FROM nex.so where so_id IN (SELECT so_id FROM nex.dnasequenceannotation WHERE dbentity_id = " + str(self.dbentity_id) + " GROUP BY so_id)"
+        
+        locus_type = []
+        
+        so_display_names = DBSession.execute(query)
+        for so_display_name in so_display_names:
+            locus_type.append(so_display_name[0])
+            
+        obj["locus_type"] = ",".join(locus_type)
+        
         return obj
         
     
@@ -3364,15 +3436,21 @@ class Dnasequenceannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
-    def to_dict(self):
+    def to_dict(self, loci=None, dnasubsequences=None):
         strains = Straindbentity.get_strains_by_taxon_id(self.contig.taxonomy_id)
 
         if len(strains) == 0:
             return None
 
-        locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=self.dbentity_id).one_or_none()
+        if loci:
+            locus = loci[self.dbentity_id]
+        else:
+            locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=self.dbentity_id).one_or_none()
 
-        tags = DBSession.query(Dnasubsequence).filter_by(annotation_id=self.annotation_id).all()
+        if dnasubsequences:
+            tags = dnasubsequences[self.annotation_id]
+        else:
+            tags = DBSession.query(Dnasubsequence).filter_by(annotation_id=self.annotation_id).all()
 
         return {
             "start": self.start_index,
@@ -3383,7 +3461,9 @@ class Dnasequenceannotation(Base):
             "strain": {
                 "display_name": strains[0].display_name,
                 "status": strains[0].strain_type,
-                "format_name": strains[0].format_name
+                "format_name": strains[0].format_name,
+                "id": strains[0].dbentity_id,
+                "link": strains[0].obj_url
             },
             "locus": locus.to_dict_sequence_widget(),
             "strand": self.strand,
