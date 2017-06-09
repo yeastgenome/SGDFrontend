@@ -21,8 +21,9 @@ _all_genes = None
 
 def add_paper(pmid, created_by="OTTO"):
     record = Medline.read(Entrez.efetch(db="pubmed", id=str(pmid), rettype='medline'))
-    
-    source_id = 799 # 'NCBI'
+
+    ncbi = DBSession.query(Source).filter_by(format_name='NCBI').one_or_none()
+    source_id = ncbi.source_id
 
     ## insert into DBENTITY/REFERENCEDBENTITY/REFERENCEDOCUMENT
     [reference_id, authors, doi_url, pmc_url, sgdid] = insert_referencedbentity(pmid, source_id, record, created_by)

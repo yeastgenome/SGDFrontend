@@ -1217,10 +1217,11 @@ class Dataset(Base):
 
             files = DBSession.query(DatasetFile).filter_by(dataset_id=self.dataset_id).all()
             for f in files:
-                obj["urls"].append({
-                    "link": f.file.s3_url,
-                    "display_name": "Download data"
-                })
+                if f.file.s3_url is not None:
+                    obj["urls"].append({
+                        "link": f.file.s3_url,
+                        "display_name": "Download data"
+                    })
             
             for url in urls:
                 url_obj = {
@@ -1447,6 +1448,52 @@ class Referencedbentity(Dbentity):
 
         return Referencedbentity.go_blacklist
 
+    def to_bibentry(self):
+        entries = []
+
+        data = [("PMID", self.pmid),
+                ("STAT", self.publication_status),
+                ("DP", self.date_published),
+                ("TI", self.title),
+                ("SO", self.method_obtained),
+                ("LR", self.date_revised),
+                ("IP", self.issue),
+                ("PG", self.page),
+                ("VI", self.volume),
+                ("SO", "SGD")
+        ]
+
+        authors = DBSession.query(Referenceauthor.display_name).filter_by(reference_id=self.dbentity_id).all()
+        for author in authors:
+            data.append(("AU", author[0]))
+
+        ref_types = DBSession.query(Referencetype.display_name).filter_by(reference_id=self.dbentity_id).all()
+        for ref_type in ref_types:
+            data.append(("PT", ref_type[0]))
+
+        paragraphs = DBSession.query(Referencedocument.text).filter(and_(Referencedocument.reference_id==self.dbentity_id, Referencedocument.document_type=="Abstract")).all()
+        for paragraph in paragraphs:
+            data.append(("AB", paragraph[0]))
+
+        if self.journal is not None:
+            data.append(("TA", self.journal.med_abbr))
+            data.append(("JT", self.journal.title))
+            data.append(("IS", self.journal.issn_print))
+
+        if self.book is not None:
+            data.append(("BTI", self.book.title))
+            data.append(("VTI", self.book.volume_title))
+            data.append(("ISBN", self.book.isbn))
+
+        for d in data:
+            if d[1] is not None:
+                entries.append(d[0] + " - " + str(d[1]))
+            
+        return {
+            "id": self.dbentity_id,
+            "text": '\n'.join(entries)
+        }
+
     def to_dict_citation(self):
         obj = {
             "id": self.dbentity_id,
@@ -1576,7 +1623,12 @@ class Referencedbentity(Dbentity):
 
         annotations = DBSession.query(Literatureannotation).filter_by(reference_id=self.dbentity_id).all()
 
-        return [annotation.to_dict() for annotation in annotations]
+        for annotation in annotations:
+            annotation_dict = annotation.to_dict()
+            if annotation_dict["locus"] is not None:
+                obj.append(annotation.to_dict())
+        
+        return obj
 
     def interactions_to_dict(self):
         obj = []
@@ -1951,13 +2003,14 @@ class Locusdbentity(Dbentity):
         for lit in regulation_lit:
             obj["regulation"].append(lit.to_dict_citation())
 
-        phenotype_ids = DBSession.query(Phenotypeannotation.reference_id).filter_by(dbentity_id= self.dbentity_id).all()
+        apo_ids = DBSession.query(Apo.apo_id).filter_by(namespace_group="classical genetics").all()
+        phenotype_ids = DBSession.query(Phenotypeannotation.reference_id).filter(and_(Phenotypeannotation.dbentity_id == self.dbentity_id, Phenotypeannotation.experiment_id.in_(apo_ids))).all()
         phenotype_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(phenotype_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
 
         for lit in phenotype_lit:
             obj["phenotype"].append(lit.to_dict_citation())
 
-        go_ids = DBSession.query(Goannotation.reference_id).filter_by(dbentity_id=self.dbentity_id).all()
+        go_ids = DBSession.query(Goannotation.reference_id).filter(and_(Goannotation.dbentity_id == self.dbentity_id, Goannotation.annotation_type != "high-throughput")).all()
         go_ids = set(go_ids) - set(Referencedbentity.get_go_blacklist_ids())
         go_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(go_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
 
@@ -2068,6 +2121,50 @@ class Locusdbentity(Dbentity):
             "edges": edges
         }
 
+    def interaction_graph_secondary_edges(self, Interaction, edge_type, nodes, edges):
+        secondary_nodes = set(nodes.keys()) - set([self.dbentity_id])
+
+        interactions = DBSession.query(Interaction).filter(and_(Interaction.dbentity1_id.in_(secondary_nodes), Interaction.dbentity2_id.in_(secondary_nodes))).all()
+
+        edges_to_annotations = {}
+        for annotation in interactions:
+            if annotation.dbentity1_id < annotation.dbentity2_id:
+                add = str(annotation.dbentity1_id) + "_" + str(annotation.dbentity2_id)
+            else:
+                add = str(annotation.dbentity2_id) + "_" + str(annotation.dbentity1_id)
+
+            if add in edges_to_annotations:
+                edges_to_annotations[add].add(annotation)
+            else:
+                edges_to_annotations[add] = set([annotation])
+
+        edges_added = set([])
+
+        i = 0
+        while i < len(interactions) and len(edges_added) <= 50:
+            dbentity1_id = interactions[i].dbentity1_id
+            dbentity2_id = interactions[i].dbentity2_id
+            
+            source = nodes[dbentity1_id]["data"]["id"]
+            target = nodes[dbentity2_id]["data"]["id"]
+
+            if dbentity1_id < dbentity2_id:
+                key = str(dbentity1_id) + "_" + str(dbentity2_id)
+            else:
+                key = str(dbentity2_id) + "_" + str(dbentity1_id)
+            
+            if (source + " " + target) not in edges_added and (target + " " + source) not in edges_added:
+                edges.append({
+                    "data": {
+                        "source": source,
+                        "target": target,
+                        "class_type": edge_type,
+                        "evidence": len(edges_to_annotations[key])
+                    }
+                })
+                edges_added.add(source + " " + target)
+            i += 1
+    
     def interaction_graph(self):
         phys_graph = self.interaction_graph_builder(Physinteractionannotation, "PHYSICAL")
         gen_graph = self.interaction_graph_builder(Geninteractionannotation, "GENETIC")
@@ -2078,7 +2175,7 @@ class Locusdbentity(Dbentity):
             nodes[node] = phys_graph["nodes"][node]
             nodes[node]["data"]["physical"] = phys_graph["nodes"][node]["data"]["evidence"]
 
-        for node in gen_graph["nodes"].keys():
+        for node in gen_graph["nodes"]:
             if node not in nodes:
                 nodes[node] = gen_graph["nodes"][node]
                 nodes[node]["data"]["genetic"] = gen_graph["nodes"][node]["data"]["evidence"]
@@ -2086,11 +2183,16 @@ class Locusdbentity(Dbentity):
                 nodes[node]["data"]["genetic"] = gen_graph["nodes"][node]["data"]["evidence"]
                 nodes[node]["data"]["evidence"] = max(nodes[node]["data"]["genetic"], nodes[node]["data"]["physical"])
 
+        edges = phys_graph["edges"] + gen_graph["edges"]
+
+        self.interaction_graph_secondary_edges(Physinteractionannotation, "PHYSICAL", nodes, edges)
+        self.interaction_graph_secondary_edges(Geninteractionannotation, "GENETIC", nodes, edges)
+
         # limiting cutoffs by 10. The interface converts > 10 to '+10' to save space
-                
+
         return {
             "nodes": [nodes[n] for n in nodes],
-            "edges": phys_graph["edges"] + gen_graph["edges"],
+            "edges": edges,
             "max_phys_cutoff": min(phys_graph["max_evidence_cutoff"], 10),
             "max_gen_cutoff": min(gen_graph["max_evidence_cutoff"], 10),
             "min_evidence_cutoff": min(min(phys_graph["min_evidence_cutoff"], gen_graph["min_evidence_cutoff"]), 10),
@@ -2139,7 +2241,7 @@ class Locusdbentity(Dbentity):
             genes_cache[gene.dbentity_id] = gene
         
         i = 0
-        while i < len(list_genes_to_interactions) and len(nodes) <= 20 and len(edges) <= 50:
+        while i < len(list_genes_to_interactions) and len(nodes) <= 20:
             dbentity_id = list_genes_to_interactions[i][0]
             dbentity = genes_cache[dbentity_id]
 
@@ -2174,45 +2276,16 @@ class Locusdbentity(Dbentity):
             i += 1
 
         nodes[self.dbentity_id]["data"]["gene_count"] = max_cutoff
-            
-        reference_ids = set([a.reference_id for a in main_gene_annotations])
-        other_interactions = DBSession.query(Interaction).filter(and_(Interaction.reference_id.in_(reference_ids), and_(Interaction.dbentity1_id != self.dbentity_id, Interaction.dbentity2_id != self.dbentity_id))).all()
-
-        other_valid_interactions = []
-        for interaction in other_interactions:
-            if interaction.dbentity1_id in nodes and interaction.dbentity2_id in nodes:
-                other_valid_interactions.append(interaction)
-
-        i = 0
-        while i < len(other_valid_interactions) and len(edges) <= 50:
-            source = nodes[other_valid_interactions[i].dbentity1_id]["data"]["id"]
-            target = nodes[other_valid_interactions[i].dbentity2_id]["data"]["id"]
-            evidence = nodes[other_valid_interactions[i].dbentity1_id]["data"]["evidence"]
-            if nodes[other_valid_interactions[i].dbentity2_id]["data"]["evidence"] > evidence:
-                evidence = nodes[other_valid_interactions[i].dbentity2_id]["data"]["evidence"]
-                
-            if (source + " " + target) not in edges_added and (target + " " + source) not in edges_added:
-                edges.append({
-                    "data": {
-                        "source": source,
-                        "target": target,
-                        "class_type": edge_type,
-                        "evidence": evidence
-                        
-                    }
-                })
-                edges_added.add(source + " " + target)
-            i += 1
 
         return {
             "nodes": nodes,
             "edges": edges,
             "min_evidence_cutoff": min_cutoff,
             "max_evidence_cutoff": max_cutoff
-        }
+        }        
 
     def regulation_graph(self):
-        main_gene_annotations = DBSession.query(Regulationannotation).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
+        main_gene_annotations = DBSession.query(Regulationannotation).filter(and_((Regulationannotation.direction != None), or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id))).all()
 
         genes_to_regulations = {}
         for annotation in main_gene_annotations:
@@ -2276,9 +2349,14 @@ class Locusdbentity(Dbentity):
                         "evidence": len(evidences)
                     }
                 }
+
+                action = "expression repressed"
+                if list_genes_to_regulations[i][1][0].direction == "positive":
+                    action = "expression activated"
                 
                 edges.append({
                     "data": {
+                        "action": action,
                         "source": self.format_name,
                         "target": dbentity.format_name,
                         "evidence": len(evidences)
@@ -2305,12 +2383,16 @@ class Locusdbentity(Dbentity):
                 evidence = nodes[other_valid_regulations[i].regulator_id]["data"]["evidence"]
                 
             if (source + " " + target) not in edges_added and (target + " " + source) not in edges_added:
+                action = "expression repressed"
+                if other_valid_regulations[i].direction == "positive":
+                    action = "expression activated"
+                
                 edges.append({
                     "data": {
+                        "action": action,
                         "source": source,
                         "target": target,
                         "evidence": evidence
-                        
                     }
                 })
                 edges_added.add(source + " " + target)
@@ -2751,9 +2833,10 @@ class Locusdbentity(Dbentity):
 
         regulation_ids = DBSession.query(Regulationannotation.reference_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
 
-        phenotype_ids = DBSession.query(Phenotypeannotation.reference_id).filter_by(dbentity_id= self.dbentity_id).all()
+        apo_ids = DBSession.query(Apo.apo_id).filter_by(namespace_group="classical genetics").all()
+        phenotype_ids = DBSession.query(Phenotypeannotation.reference_id).filter(and_(Phenotypeannotation.dbentity_id == self.dbentity_id, Phenotypeannotation.experiment_id.in_(apo_ids))).all()
         
-        go_ids = DBSession.query(Goannotation.reference_id).filter_by(dbentity_id=self.dbentity_id).all()
+        go_ids = DBSession.query(Goannotation.reference_id).filter(and_(Goannotation.dbentity_id == self.dbentity_id, Goannotation.annotation_type != "high-throughput")).all()
         go_ids = set(go_ids) - set(Referencedbentity.get_go_blacklist_ids())
             
         obj["total_count"] = len(set(literature_ids + interaction_ids + regulation_ids + phenotype_ids + list(go_ids)))
@@ -4347,6 +4430,8 @@ class Gosupportingevidence(Base):
 
     def to_dict(self):
         source_id = self.dbxref_id.split(":")
+
+        # the frontend expects a capitalized "role" to place the evidence in the right column of the annotation table
         
         if source_id[0] == "SGD":
             sgdid = source_id[1]
@@ -4357,7 +4442,7 @@ class Gosupportingevidence(Base):
                     "link": dbentity.obj_url,
                     "class_type": dbentity.subclass
                 },
-                "role": self.evidence_type
+                "role": self.evidence_type.capitalize()
             }
         elif source_id[0] == "GO":
             go_evidence = DBSession.query(Go).filter_by(goid=self.dbxref_id).one_or_none()
@@ -4367,7 +4452,7 @@ class Gosupportingevidence(Base):
                         "display_name": go_evidence.display_name,
                         "link": go_evidence.obj_url
                     },
-                    "role": self.evidence_type
+                    "role": self.evidence_type.capitalize()
                 }
         elif source_id[0] == "CHEBI":
             chebi = DBSession.query(Chebi).filter_by(chebiid=self.dbxref_id).one_or_none()
@@ -4377,7 +4462,7 @@ class Gosupportingevidence(Base):
                         "display_name": chebi.display_name,
                         "link": chebi.obj_url
                     },
-                    "role": self.evidence_type
+                    "role": self.evidence_type.capitalize()
                 }
         else:
             return {
@@ -4385,7 +4470,7 @@ class Gosupportingevidence(Base):
                     "display_name": source_id[1],
                     "link": self.obj_url
                 },
-                "role": self.evidence_type
+                "role": self.evidence_type.capitalize()
             }
         
         return None
@@ -4910,6 +4995,8 @@ class Phenotypeannotation(Base):
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
     experiment_comment = Column(String(200))
+    allele_comment = Column(String(200))
+    reporter_comment = Column(String(200))
 
     allele = relationship(u'Allele')
     assay = relationship(u'Obi')
@@ -5042,35 +5129,29 @@ class Phenotypeannotation(Base):
         properties = []
         
         if self.reporter:
-            note = None
-            if self.reporter.description and len(self.reporter.description) > 0:
-                note = self.reporter.description
             properties.append({
                 "class_type": "BIOITEM",
                 "bioitem": {
                     "display_name": self.reporter.display_name
                 },
-                "note": note,
+                "note": self.reporter_comment,
                 "role": "Reporter"
             })
 
         if self.allele:
-            note = None
-            if self.allele.description and len(self.allele.description) > 0:
-                note = self.allele.description
-
             properties.append({
                 "class_type": "BIOITEM",
                 "bioitem": {
                     "display_name": self.allele.display_name
                 },
-                "note": note,
+                "note": self.allele_comment,
                 "role": "Allele"
             })
 
         strain = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
+            
         strain_obj = None
-
+        
         if len(strain) == 0 or len(strain) > 1:
             strain_obj = {
                 "display_name": "Other",
@@ -5095,7 +5176,8 @@ class Phenotypeannotation(Base):
             experiment_obj = {
                 "display_name": experiment.display_name,
                 "link": None, # self.experiment.obj_url -> no page yet
-                "category": experiment.namespace_group
+                "category": experiment.namespace_group,
+                "note": self.experiment_comment
             }
 
         obj = {

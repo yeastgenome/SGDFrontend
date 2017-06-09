@@ -236,12 +236,12 @@ def reference_list(request):
     else:
         try:
             reference_ids = [int(r) for r in reference_ids]
-            references = DBSession.query(Referencedocument.reference_id, Referencedocument.text).filter(Referencedocument.reference_id.in_(reference_ids), Referencedocument.document_type == 'Medline').all()
+            references = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reference_ids)).all()
 
             if len(references) == 0:
                 return HTTPNotFound(body=json.dumps({'error': "Reference_ids do not exist."}))
             
-            return [{'id': r.reference_id, 'text': r.text} for r in references]
+            return [r.to_bibentry() for r in references]
         except ValueError:
             return HTTPBadRequest(body=json.dumps({'error': "IDs must be string format of integers. Example JSON object expected: {\"reference_ids\": [\"1\", \"2\"]}"}))
 
