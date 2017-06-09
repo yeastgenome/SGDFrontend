@@ -42,6 +42,9 @@ class BaseSpider(scrapy.Spider):
                 yield scrapy.Request(url=url, headers=HEADER_OBJ, method='PURGE', callback=self.parse)
 
     def parse(self, response):
+        url = response.request.url
+        latency = response.request.meta['download_latency']
+        self.log(url + ': ' + str(latency) + 'sec')
         if response.status != 200:
             self.log('error on ' + response.url)
 
