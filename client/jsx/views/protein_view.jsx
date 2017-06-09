@@ -9,6 +9,7 @@ const TabsModel = require("../models/tabs_model.jsx");
 
 var proteinView = {};
 proteinView.render = function (rawDomainData, locusLength, colorScale) {
+  debugger
   var rawLocusData = rawDomainData[0].locus;
   var _tabModel = new TabsModel();
 
@@ -20,8 +21,8 @@ proteinView.render = function (rawDomainData, locusLength, colorScale) {
     {'name':'External Identifiers', 'target':'external_ids'},
     {'name':'Resources', 'target':'resources'}
   ] ;
-  var _navTitletext = _tabModel.getNavTitle(locus.display_name,locus.format_name);
-  ReactDOM.render(<NavBar title={_navTitletext} elements={_elements} />, document.getElementById("navbar-container"));
+  var _navTitleText = _tabModel.getNavTitle(locus.display_name,locus.format_name);
+  ReactDOM.render(<NavBar title={_navTitleText} elements={_elements} />, document.getElementById("navbar-container"));
 
   
   var locusData = _.extend(rawLocusData, {

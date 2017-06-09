@@ -77,6 +77,7 @@ $(document).ready(function() {
 
         //Get domain info
         $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_details', function(protein_domain_data) {
+            debugger
             var domain_table = create_domain_table(protein_domain_data);
             create_download_button("domain_table_download", domain_table, locus['display_name'] + "_domains");
             
