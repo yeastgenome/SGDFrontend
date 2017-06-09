@@ -492,6 +492,7 @@ CREATE TABLE nex.filedbentity (
 	is_public boolean NOT NULL,
 	is_in_spell boolean NOT NULL,
 	is_in_browser boolean NOT NULL,
+    file_size bigint,
 	md5sum varchar(32),
     readme_file_id bigint,
 	previous_file_name varchar(100),
@@ -517,11 +518,12 @@ COMMENT ON COLUMN nex.filedbentity.is_in_spell IS 'Whether the file was loaded i
 COMMENT ON COLUMN nex.filedbentity.is_in_browser IS 'Whether the file was loaded into a genome browser, such as JBrowse.';
 COMMENT ON COLUMN nex.filedbentity.json IS 'JSON object of the data and file metadata.';
 COMMENT ON COLUMN nex.filedbentity.year IS 'Year the file was created for filtering purposes.';
+COMMENT ON COLUMN nex.filedbentity.file_Size IS 'Size of the file in bytes.';
 CREATE INDEX filedbentity_format_fk_index ON nex.filedbentity (format_id);
 CREATE INDEX filedbentity_topic_fk_index ON nex.filedbentity (topic_id);
 CREATE INDEX filedbentity_data_fk_index ON nex.filedbentity (data_id);
 CREATE INDEX filedbentity_file_fk_index ON nex.filedbentity (readme_file_id);
-CREATE INDEX filedbentity_md5sum_index ON nex.filedbentity (md5sum);
+CREATE UNIQUE INDEX filedbentity_md5sum_uk_index ON nex.filedbentity (md5sum) where md5sum is NOT NULL;
 
 DROP TABLE IF EXISTS nex.path CASCADE; 
 CREATE TABLE nex.path (
