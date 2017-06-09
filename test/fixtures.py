@@ -6,7 +6,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Strainsummary, StrainsummaryReference, Dataset, DatasetReference, DatasetKeyword, Referencetype, ReferenceRelation, ReferenceUrl, Referenceauthor, \
     Physinteractionannotation, Geninteractionannotation, Goannotation, Regulationannotation, Literatureannotation, Contig, EcoAlias, EcoUrl, Goextension, \
     Gosupportingevidence, Eco, Ro, Go, GoRelation, GoUrl, GoAlias, ApoRelation, Referencetriage, Proteinsequenceannotation, ProteinsequenceDetail, \
-    Goslimannotation, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile
+    Goslimannotation, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -334,6 +334,7 @@ class FiledbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     sgdid = "S000001"
     dbentity_status = "Active"
     subclass = "FILE"
+    year = 1990
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
@@ -406,6 +407,19 @@ class ReferenceauthorFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+class ReferenceAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ReferenceAlias
+        sqlalchemy_session = DBSession
+
+    alias_id = 1
+    display_name = "name"
+    source_id = 1
+    bud_id = 1
+    reference_id = 1
+    alias_type = "alias"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
 
 class ReferenceRelationFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -506,6 +520,24 @@ class ProteinsequenceDetailFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+class GoslimFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Goslim
+        sqlalchemy_session = DBSession
+
+    goslim_id = 1
+    format_name = "format name"
+    display_name = "display name"
+    obj_url = "/obj_url"
+    source_id = 1
+    bud_id = 1
+    go_id = 1
+    slim_name = "slim name"
+    genome_count = 100
+    description = "description"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
 class GoslimannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Goslimannotation
@@ -585,6 +617,23 @@ class LocusdbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+class PhenotypeFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Phenotype
+        sqlalchemy_session = DBSession
+
+    phenotype_id = 1
+    format_name = "pheno"
+    display_name = "Pheno"
+    obj_url = "/obj/pheno"
+    source_id = 1
+    bud_id = None
+    observable_id = 1
+    qualifier_id = 1
+    description = "phenoo"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
 
 class PhenotypeannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -605,6 +654,7 @@ class PhenotypeannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     assay_id = 1
     strain_name = "my strain"
     details = "no details"
+    phenotype = factory.SubFactory(PhenotypeFactory)
     experiment_comment = "experiment comment"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
@@ -640,25 +690,6 @@ class TaxonomyFactory(factory.alchemy.SQLAlchemyModelFactory):
     rank = "1"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
-    
-
-class PhenotypeFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = Phenotype
-        sqlalchemy_session = DBSession
-
-    phenotype_id = 1
-    format_name = "pheno"
-    display_name = "Pheno"
-    obj_url = "/obj/pheno"
-    source_id = 1
-    bud_id = None
-    observable_id = 1
-    qualifier_id = 1
-    description = "phenoo"
-    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "TOTO"
-
 
 class ApoFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -668,6 +699,7 @@ class ApoFactory(factory.alchemy.SQLAlchemyModelFactory):
     apo_id = 1
     format_name = "appo"
     display_name = "APPo"
+    namespace_group = "large-scale survey"
     obj_url = "/obj/apo"
     source_id = 1
     apoid = 1
@@ -1139,6 +1171,7 @@ class DatasetsampleFactory(factory.alchemy.SQLAlchemyModelFactory):
     biosample = "biosample"
     strain_name = "strain name"
     description = "description"
+    dataset = factory.SubFactory(DatasetFactory)
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 

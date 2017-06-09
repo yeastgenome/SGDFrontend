@@ -34,9 +34,8 @@ class ReferenceauthorTest(unittest.TestCase):
         request.matchdict['format_name'] = "Ninzima_S"
 
         response = author(request)
-        #self.assertEqual(response, a_name.display_name)
+        self.assertEqual(response, {'references': [{'display_name': 'My entity', 'urls': [{'link': 'obj url', 'display_name': 'ref url'}], 'pubmed_id': 1, 'year': 2016, 'link': 'http://example.org/entity', 'abstract': {'text': '<'}, 'citation': 1, 'id': 1, 'reftypes': [{'display_name': 'd'}]}], 'display_name': 'Ninzima_S'})
 
-        #self.assertEqual(response, {'references': [ {'display_name': 'My entity', 'urls': [{'link': 'obj url', 'display_name': 'ref url'}], 'pubmed_id': 1,'year': 2016, 'link': 'http://example.org/entity', 'abstract': {'text': '<'}, 'citation': 1, 'id': 1,'reftypes': [{'display_name': 'd'}]}], 'display_name': 'Ninzima_S'}){'references': [{'display_name': 'My entity', 'urls': [{'link': 'obj url', 'display_name': 'ref url'}], 'pubmed_id': 1,'year': 2016, 'link': 'http://example.org/entity', 'abstract': {'text': '<'}, 'citation': 1, 'id': 1,'reftypes': [{'display_name': 'd'}]}], 'display_name': 'Ninzima_S'})
 
     @mock.patch('src.models.DBSession.query')
     def test_should_return_non_existent_author_name(self, mock_search):
