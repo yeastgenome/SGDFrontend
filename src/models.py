@@ -5139,11 +5139,14 @@ class Literatureannotation(Base):
     taxonomy = relationship(u'Taxonomy')
 
     acceptable_tags = {
+        'classical_phenotype': 'Primary Literature',
+        'go': 'Primary Literature',
+        'headline_information': 'Primary Literature',
+        'other_primary': 'Primary Literature',
+        'additional_literature': 'Additional Literature',
         'htp_phenotype': 'Omics',
         'non_phenotype_htp': 'Omics',
-        'other_primary': 'Primary Literature',
-        'Reviews': 'Reviews',
-        'additional_literature': 'Additional Literature'
+        'Reviews': 'Reviews'
     }
 
     @staticmethod

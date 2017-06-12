@@ -519,16 +519,13 @@ def reference_triage_promote(request):
         DBSession.delete(triage)
 
         for i in xrange(len(tags)):
-            curation = CurationReference.factory(reference_id, tags[i][0], tags[i][1], tags[i][2], request.json['data']['assignee'])
-            if curation is None:
-                tags[i] = Literatureannotation.factory(reference_id, tags[i][0], tags[i][2], request.json['data']['assignee'])
-            else:
-                tags[i] = curation
-
-        for tag in tags:
-            if tag:
-                DBSession.add(tag)
-
+            curation_ref = CurationReference.factory(reference_id, tags[i][0], tags[i][1], tags[i][2], request.json['data']['assignee'])
+            if curation_ref:
+                DBSession.add(curation_ref)
+            lit_annotation = Literatureannotation.factory(reference_id, tags[i][0], tags[i][2], request.json['data']['assignee'])
+            if lit_annotation:
+                DBSession.add(lit_annotation)
+                
         DBSession.flush()                
         transaction.commit()
         
