@@ -3465,15 +3465,15 @@ class Dnasequenceannotation(Base):
             "start": self.start_index,
             "end": self.end_index,
             "residues": self.residues,
-            "reference": None, # so far, all references in the DB are NULL
             "contig": self.contig.to_dict_sequence_widget(),
-            "tags": [t.to_dict() for t in tags],
+            "tags": [t.to_dict(self.strand) for t in tags],
             "strain": {
                 "display_name": strains[0].display_name,
                 "status": strains[0].strain_type,
                 "format_name": strains[0].format_name,
                 "id": strains[0].dbentity_id,
-                "link": strains[0].obj_url
+                "link": strains[0].obj_url,
+                "description": strains[0].headline
             },
             "locus": locus.to_dict_sequence_widget(),
             "strand": self.strand,
@@ -3513,7 +3513,7 @@ class Dnasubsequence(Base):
     genomerelease = relationship(u'Genomerelease')
     so = relationship(u'So')
 
-    def to_dict(self):
+    def to_dict(self, strand):
         seq_version = self.seq_version
         if seq_version:
             seq_version = seq_version.strftime("%Y-%m-%d")
@@ -3521,13 +3521,18 @@ class Dnasubsequence(Base):
         coord_version = self.coord_version
         if coord_version:
             coord_version = coord_version.strftime("%Y-%m-%d")
+
+        start = self.contig_start_index
+        end = self.contig_end_index
+        if strand == "-":
+            start, end = end, start
         
         return {
             "relative_end": self.relative_end_index,
             "relative_start": self.relative_start_index,
             "display_name": self.display_name,
-            "chromosomal_start": self.contig_start_index,
-            "chromosomal_end": self.contig_end_index,
+            "chromosomal_start": start,
+            "chromosomal_end": end,
             "seq_version": seq_version,
             "class_type": self.display_name.upper(),
             "coord_version": coord_version,
