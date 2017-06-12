@@ -930,7 +930,13 @@ class Contig(Base):
         return {
             "display_name": self.display_name,
             "format_name": self.format_name,
-            "is_chromosome": self.so_id == 264265 # soid = SO:0000340 = Chromosome
+            "is_chromosome": self.so_id == 264265, # soid = SO:0000340 = Chromosome
+            "centromere_start": self.centromere_start,
+            "centromere_end": self.centromere_end,
+            "link": self.obj_url,
+            "id": self.contig_id,
+            "length": self.reference_alignment_length,
+            "format_name": self.format_name
         }
     
     def to_dict(self, chromosome_cache):
@@ -1807,6 +1813,8 @@ class Locusdbentity(Dbentity):
 
             neighbors_list[(dna.annotation_id, dna.taxonomy_id)] = neighbors
 
+
+        # Caching the queries to fetch Locus and Dnasubsequences
         loci_list = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(locus_ids)).all()
         
         loci = {}
@@ -1839,7 +1847,8 @@ class Locusdbentity(Dbentity):
                 "neighbors": [n.to_dict(loci=loci, dnasubsequences=dnasubsequences) for n in neighbors]
             }
 
-        return obj    
+        return obj
+
 
     def expression_to_dict(self):
         expression_annotations = DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).all()
@@ -3456,6 +3465,7 @@ class Dnasequenceannotation(Base):
             "start": self.start_index,
             "end": self.end_index,
             "residues": self.residues,
+            "reference": None, # so far, all references in the DB are NULL
             "contig": self.contig.to_dict_sequence_widget(),
             "tags": [t.to_dict() for t in tags],
             "strain": {
@@ -3507,6 +3517,10 @@ class Dnasubsequence(Base):
         seq_version = self.seq_version
         if seq_version:
             seq_version = seq_version.strftime("%Y-%m-%d")
+
+        coord_version = self.coord_version
+        if coord_version:
+            coord_version = coord_version.strftime("%Y-%m-%d")
         
         return {
             "relative_end": self.relative_end_index,
@@ -3515,7 +3529,10 @@ class Dnasubsequence(Base):
             "chromosomal_start": self.contig_start_index,
             "chromosomal_end": self.contig_end_index,
             "seq_version": seq_version,
-            "class_type": self.display_name.upper()
+            "class_type": self.display_name.upper(),
+            "coord_version": coord_version,
+            "date_created": self.date_created.strftime("%Y-%m-%d"),
+            "bioentity": self.dbentity_id
         }
 
 
