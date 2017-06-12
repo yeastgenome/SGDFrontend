@@ -549,7 +549,7 @@ def reference_triage_id_delete(request):
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
         try:
-            reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=None, created_by=request.session['username'])
+            reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted='This paper was deleted because the content is not relevant to S. cerevisiae.', created_by=request.session['username'])
             DBSession.add(reference_deleted)
             DBSession.delete(triage)        
             transaction.commit()
