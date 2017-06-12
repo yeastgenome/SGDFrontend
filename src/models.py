@@ -2785,19 +2785,40 @@ class Locusdbentity(Dbentity):
             "literature_overview": self.literature_overview_to_dict()
         }
 
-        aliases = DBSession.query(LocusAlias.display_name, LocusAlias.alias_type).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type.in_(["Uniform", "Non-uniform", "NCBI protein name"])).all()
+        
+
+        aliases = DBSession.query(LocusAlias).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type.in_(["Uniform", "Non-uniform", "NCBI protein name", "EC number"])).all()
         for alias in aliases:
             category = ""
+
+            if alias.alias_type == "EC number":
+                ecnumber = {
+                    "display_name": alias.display_name,
+                    "obj_url": alias.obj_url
+                }
+
+                if "ecnumbers" in obj:
+                    obj["ecnumbers"].append(ecnumber)
+                else:
+                    obj["ecnumbers"] = [ecnumber]
+
+                continue
             
-            if alias[1] == "Uniform" or alias[1] == "Non-uniform":
+            if alias.alias_type == "Uniform" or alias.alias_type == "Non-uniform":
                 category = "Alias"
-            elif alias[1] == "NCBI protein name":
-                category = "Gene product"
+            elif alias.alias_type == "NCBI protein name":
+                category = "NCBI protein name"
+
+            references_alias = DBSession.query(LocusAliasReferences).filter_by(alias_id=alias.alias_id).all()
+            if len(references_alias) > 0:
+                references = [r.reference.to_dict_citation() for r in references_alias]
+            else:
+                references = []
                 
             obj["aliases"].append({
-                "display_name": alias[0],
+                "display_name": alias.display_name,
                 "category": category,
-                "references": []
+                "references": references
             })
 
         sos = DBSession.query(Dnasequenceannotation.so_id).filter_by(dbentity_id=self.dbentity_id).group_by(Dnasequenceannotation.so_id).all()
@@ -4704,6 +4725,25 @@ class LocusAlias(Base):
     created_by = Column(String(12), nullable=False)
 
     locus = relationship(u'Locusdbentity')
+    source = relationship(u'Source')
+
+
+class LocusAliasReferences(Base):
+    __tablename__ = 'locusalias_reference'
+    __table_args__ = (
+        UniqueConstraint('alias_id', 'reference_id', 'source_id'),
+        {u'schema': 'nex'}
+    )
+
+    locusalias_reference_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
+    alias_id = Column(ForeignKey(u'nex.locus_alias.alias_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    alias = relationship(u'LocusAlias')
+    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
     source = relationship(u'Source')
 
 
