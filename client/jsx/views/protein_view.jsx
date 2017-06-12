@@ -9,7 +9,6 @@ const TabsModel = require("../models/tabs_model.jsx");
 
 var proteinView = {};
 proteinView.render = function (rawDomainData, locusLength, colorScale) {
-  debugger
   var rawLocusData = rawDomainData[0].locus;
   var _tabModel = new TabsModel();
 
