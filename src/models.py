@@ -3532,7 +3532,8 @@ class Dnasubsequence(Base):
             "class_type": self.display_name.upper(),
             "coord_version": coord_version,
             "date_created": self.date_created.strftime("%Y-%m-%d"),
-            "bioentity": self.dbentity_id
+            "format_name": self.display_name,
+            "id": self.dnasubsequence_id
         }
 
 
