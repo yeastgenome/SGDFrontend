@@ -3478,7 +3478,7 @@ class Dnasequenceannotation(Base):
             "strain": {
                 "display_name": strains[0].display_name,
                 "status": strains[0].strain_type,
-                "format_name": strains[0].format_name,
+                "format_name": "CEN.PK" if strains[0].format_name == "CENPK" else strains[0].format_name,
                 "id": strains[0].dbentity_id,
                 "link": strains[0].obj_url,
                 "description": strains[0].headline
