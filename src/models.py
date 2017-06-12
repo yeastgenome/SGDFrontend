@@ -4789,8 +4789,10 @@ class Locusnoteannotation(Base):
 
     def to_dict(self):
         return {
+            "history_type": self.note_type.upper(),
             "note": self.note,
-            "date_created": self.date_created.strftime("%Y-%m-%d")
+            "date_created": self.date_created.strftime("%Y-%m-%d"),
+            "references": [self.reference.to_dict_citation()]
         }
     
 
