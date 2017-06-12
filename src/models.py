@@ -935,7 +935,7 @@ class Contig(Base):
             "centromere_end": self.centromere_end,
             "link": self.obj_url,
             "id": self.contig_id,
-            "length": self.reference_alignment_length,
+            "length": len(self.residues),
             "format_name": self.format_name
         }
     
@@ -948,7 +948,7 @@ class Contig(Base):
             "reference_alignment": None,
             "centromere_end": self.centromere_end,
             "centromere_start": self.centromere_start,
-            "length": self.reference_alignment_length,
+            "length": len(self.residues),
             "id": self.contig_id,
             "refseq_id": self.refseq_id
         }
@@ -1813,7 +1813,6 @@ class Locusdbentity(Dbentity):
 
             neighbors_list[(dna.annotation_id, dna.taxonomy_id)] = neighbors
 
-
         # Caching the queries to fetch Locus and Dnasubsequences
         loci_list = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(locus_ids)).all()
         
@@ -1848,7 +1847,6 @@ class Locusdbentity(Dbentity):
             }
 
         return obj
-
 
     def expression_to_dict(self):
         expression_annotations = DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).all()
@@ -2584,7 +2582,6 @@ class Locusdbentity(Dbentity):
             "nodes": [nodes[n] for n in nodes],
             "edges": edges
         }
-
     
     def phenotype_graph(self):
         main_gene_phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
@@ -2824,18 +2821,8 @@ class Locusdbentity(Dbentity):
         obj["urls"] = [u.to_dict() for u in urls]
 
         locus_notes = DBSession.query(Locusnoteannotation).filter_by(dbentity_id=self.dbentity_id).all()
-        if len(locus_notes) > 0:
-            obj["history"] = []
-        for note in locus_notes:
-            obj["history"].append({
-                "note": note.note,
-                "date_created": note.date_created.strftime("%Y-%m-%d"),
-#                "references": [{
-#                    "display_name": note.reference.display_name,
-#                    "link": note.reference.obj_url,
-#                    "pubmed_id": note.reference.pmid
-#                }]
-            })
+
+        obj["history"] = [h.to_dict() for h in locus_notes]
         
         return obj
 
@@ -4799,6 +4786,13 @@ class Locusnoteannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+
+    def to_dict(self):
+        return {
+            "note": self.note,
+            "date_created": self.date_created.strftime("%Y-%m-%d")
+        }
+    
 
 class Locussummary(Base):
     __tablename__ = 'locussummary'
