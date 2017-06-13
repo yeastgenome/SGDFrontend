@@ -2811,6 +2811,8 @@ class Locusdbentity(Dbentity):
                 "text": text,
                 "date_edited": summary[-1][2].strftime("%Y-%m-%d")
             }
+        else:
+            obj["paragraph"] = None
 
         references_obj = self.references_overview_to_dict([s[0] for s in summary])
         obj["qualities"] = references_obj["qualities"]
