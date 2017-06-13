@@ -2872,11 +2872,14 @@ class Locusdbentity(Dbentity):
         summary_references = DBSession.query(LocussummaryReference).filter(LocussummaryReference.summary_id.in_(summary_ids)).order_by(LocussummaryReference.reference_order).all()
         
         obj["references"] = [s.reference.to_dict_citation() for s in summary_references]
+        reference_ids = set([s.reference_id for s in summary_references])
 
         for ref in references:
             ref_dict = ref.reference.to_dict_citation()
-            
-            obj["references"].append(ref_dict)
+
+            if ref.reference_id not in reference_ids:
+                obj["references"].append(ref_dict)
+                reference_ids.add(ref.reference_id)
             
             if ref.reference_class == "description":
                 obj["qualities"]["description"]["references"].append(ref_dict)
