@@ -4927,10 +4927,10 @@ class Locusnoteannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
-
     def to_dict(self):
         return {
-            "history_type": self.note_type.upper(),
+            "category": self.display_name,
+            "history_type": "LSP" if self.note_type.upper() == "LOCUS" else self.note_type.upper(),
             "note": self.note,
             "date_created": self.date_created.strftime("%Y-%m-%d"),
             "references": [self.reference.to_dict_citation()]
