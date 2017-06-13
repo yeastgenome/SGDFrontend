@@ -68,12 +68,14 @@
 
 
                 <dl class="key-value">
+		    {% if reftype|length > 0 %}
                     <dt>Reference Type</dt>
                     <dd>
                         {% for reftype in reference.reftypes %}
                         <span>{{ reftype.display_name }}</span>{% if not loop.last %} | {% endif %}
                     {% endfor %}
                     </dd>
+		    {% endif %}
 
                     <dt>Authors</dt>
                     <dd>
