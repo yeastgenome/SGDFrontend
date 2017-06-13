@@ -2785,8 +2785,6 @@ class Locusdbentity(Dbentity):
             "literature_overview": self.literature_overview_to_dict()
         }
 
-        
-
         aliases = DBSession.query(LocusAlias).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type.in_(["Uniform", "Non-uniform", "NCBI protein name", "EC number"])).all()
         for alias in aliases:
             category = ""
@@ -2840,6 +2838,24 @@ class Locusdbentity(Dbentity):
         
         urls = DBSession.query(LocusUrl).filter_by(locus_id=self.dbentity_id).all()
         obj["urls"] = [u.to_dict() for u in urls]
+        
+        obj["urls"].append({
+            "category": "LOCUS_SEQUENCE",
+            "link": "/cgi-bin/seqTools?back=1&seqname=" + self.systematic_name,
+            "display_name": "Gene/Sequence Resources"
+        })
+        
+        obj["urls"].append({
+            "category": "LOCUS_SEQUENCE",
+            "link": "/browse/?loc=" + self.systematic_name,
+            "display_name": "JBrowse"
+        })
+
+        obj["urls"].append({
+            "category": "LOCUS_SEQUENCE",
+            "link": "/cgi-bin/ORFMAP/ORFmap?dbid=" + self.sgdid,
+            "display_name": "ORF Map"
+        })
 
         locus_notes = DBSession.query(Locusnoteannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
