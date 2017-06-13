@@ -2768,11 +2768,6 @@ class Locusdbentity(Dbentity):
             },
             "literature_overview": self.literature_overview_to_dict()
         }
-
-        references_obj = self.references_overview_to_dict()
-        obj["qualities"] = references_obj["qualities"]
-        obj["references"] = references_obj["references"]
-        obj["reference_mapping"] = references_obj["reference_mapping"]
         
         aliases = DBSession.query(LocusAlias).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type.in_(["Uniform", "Non-uniform", "NCBI protein name", "EC number"])).all()
         for alias in aliases:
@@ -2817,9 +2812,11 @@ class Locusdbentity(Dbentity):
                 "date_edited": summary[-1][2].strftime("%Y-%m-%d")
             }
 
-#        summary_references = DBSession.query(LocussummaryReference).filter(LocussummaryReference.summary_id.in_([s[0] for s in summary])).order_by(LocussummaryReference.reference_order).all()
-#        obj["references"] = [s.reference.to_dict_citation() for s in summary_references]
-        
+        references_obj = self.references_overview_to_dict([s[0] for s in summary])
+        obj["qualities"] = references_obj["qualities"]
+        obj["references"] = references_obj["references"]
+        obj["reference_mapping"] = references_obj["reference_mapping"]
+
         urls = DBSession.query(LocusUrl).filter_by(locus_id=self.dbentity_id).all()
         obj["urls"] = [u.to_dict() for u in urls]
         
@@ -2847,7 +2844,7 @@ class Locusdbentity(Dbentity):
         
         return obj
 
-    def references_overview_to_dict(self):
+    def references_overview_to_dict(self, summary_ids):
         references = DBSession.query(LocusReferences).filter_by(locus_id=self.dbentity_id).all()
 
         obj = {}
@@ -2870,7 +2867,9 @@ class Locusdbentity(Dbentity):
             }
         }
 
-        obj["references"] = []
+        summary_references = DBSession.query(LocussummaryReference).filter(LocussummaryReference.summary_id.in_(summary_ids)).order_by(LocussummaryReference.reference_order).all()
+        
+        obj["references"] = [s.reference.to_dict_citation() for s in summary_references]
 
         for ref in references:
             ref_dict = ref.reference.to_dict_citation()
