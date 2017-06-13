@@ -8,6 +8,7 @@ from math import floor, log
 import json
 import copy
 import requests
+import re
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -2802,7 +2803,7 @@ class Locusdbentity(Dbentity):
         locus_type = DBSession.query(So.display_name).filter(So.so_id.in_([so[0] for so in sos])).all()
         obj["locus_type"] = ",".join([l[0] for l in locus_type])
         
-        summary = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type="Gene").all()
+        summary = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter(and_(Locussummary.locus_id==self.dbentity_id, Locussummary.summary_type == "Gene")).order_by(Locussummary.summary_order).all()
         if len(summary) > 0:
             text = ""
             for s in summary:
@@ -2818,6 +2819,9 @@ class Locusdbentity(Dbentity):
         obj["qualities"] = references_obj["qualities"]
         obj["references"] = references_obj["references"]
         obj["reference_mapping"] = references_obj["reference_mapping"]
+
+        if obj["paragraph"] is not None:
+            obj["paragraph"]["text"] = self.format_paragraph(obj["paragraph"]["text"], references_obj)
 
         urls = DBSession.query(LocusUrl).filter_by(locus_id=self.dbentity_id).all()
         obj["urls"] = [u.to_dict() for u in urls]
@@ -2846,6 +2850,20 @@ class Locusdbentity(Dbentity):
         
         return obj
 
+    def format_paragraph(self, text, references_obj):
+        sgdid_pattern = re.compile(r'<reference:(S\d\d\d\d\d\d\d\d\d)>')
+        
+        formatted_text = ""
+
+        last_cursor = 0
+        for match in sgdid_pattern.finditer(text):
+            reference = references_obj["sgdid_ref"].get(match.group(1))
+            if reference:
+                formatted_text += text[last_cursor:match.start()] + "<span data-tooltip aria-haspopup=\"true\" class=\"has-tip\" title=\"" + reference.display_name + "\"><a href=\"" + reference.obj_url + "\">" + str(references_obj["reference_mapping"][reference.dbentity_id]) + "</a></span>"
+                last_cursor = match.end()
+
+        return formatted_text + text[last_cursor:]
+    
     def references_overview_to_dict(self, summary_ids):
         references = DBSession.query(LocusReferences).filter_by(locus_id=self.dbentity_id).all()
 
@@ -2869,9 +2887,15 @@ class Locusdbentity(Dbentity):
             }
         }
 
-        summary_references = DBSession.query(LocussummaryReference).filter(LocussummaryReference.summary_id.in_(summary_ids)).order_by(LocussummaryReference.reference_order).all()
+        obj["sgdid_ref"] = {}
         
-        obj["references"] = [s.reference.to_dict_citation() for s in summary_references]
+        summary_references = DBSession.query(LocussummaryReference).filter(LocussummaryReference.summary_id.in_(summary_ids)).order_by(LocussummaryReference.reference_order).all()
+
+        obj["references"] = []
+        for s in summary_references:
+            obj["references"].append(s.reference.to_dict_citation())
+            obj["sgdid_ref"][s.reference.sgdid] = s.reference
+            
         reference_ids = set([s.reference_id for s in summary_references])
 
         for ref in references:
@@ -2879,6 +2903,7 @@ class Locusdbentity(Dbentity):
 
             if ref.reference_id not in reference_ids:
                 obj["references"].append(ref_dict)
+                obj["sgdid_ref"][ref.reference.sgdid] = ref.reference
                 reference_ids.add(ref.reference_id)
             
             if ref.reference_class == "description":
