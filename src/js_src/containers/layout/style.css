@@ -55,7 +55,10 @@
   margin-top: 1rem;
 }
 .errorContainer {
-  margin-bottom: 0;
+  position: fixed;
+  top: 0;
+  z-index: 5;
+  width: 100%;
 }
 .closeIcon {
   float: right;
