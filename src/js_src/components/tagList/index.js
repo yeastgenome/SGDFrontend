@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import Select from 'react-select';
 import _ from 'underscore';
 
 import style from './style.css';
@@ -53,7 +52,12 @@ class TagList extends Component {
     if (this.props.isReadOnly) {
       return <span>{value}</span>;
     } else {
-      return <input className='sgd-geneList' data-type={name} type='text' defaultValue={value} />;
+      return (
+        <div>
+          <label>Genes (comma-separated)</label>
+          <input className='sgd-geneList' data-type={name} type='text' defaultValue={value} />
+        </div>
+      );
     }
   }
 
@@ -61,7 +65,12 @@ class TagList extends Component {
     if (this.props.isReadOnly) {
       return <span>{value}</span>;
     } else {
-      return <input className='sgd-comment' data-type={name} type='text' defaultValue={value} />;
+      return (
+        <div>
+           <label>Comment</label>
+          <input className='sgd-comment' data-type={name} type='text' defaultValue={value} />
+        </div>
+      );
     }
   }
 
@@ -72,25 +81,21 @@ class TagList extends Component {
       let suffixNode = (d.isSelected && !this.props.isReadOnly) ? <span> <i className='fa fa-close' /></span> : null;
       let geneSuffixNode = (d.isSelected && d.hasGenes) ? this.renderGenes(d.name, d.genes) : null;
       let commentSuffixNode = d.isSelected ? this.renderComments(d.name, d.comment) : null;
-      let sectionLabelNode = d.sectionLabel ? <h5>{d.sectionLabel}</h5> : null;
       let _onClick = (e) => {
         e.preventDefault();
         this.toggleSelected(d.name);
       };
       return (
         <div key={`sTag${i}`}>
-          {sectionLabelNode}
-          <div className='row'>
-            <div className='columns small-4'>
-              <a className={`button small ${style.tagButton} ${classSuffix}`} onClick={_onClick}>
-                {d.label}
-                {suffixNode}
-              </a>
-            </div>
-            <div className='columns small-4'>
+          <a className={`button small ${style.tagButton} ${classSuffix}`} onClick={_onClick}>
+            {d.label}
+            {suffixNode}
+          </a>
+          <div className={`row ${style.tagInner}`}>
+            <div className='columns small-6'>
               {geneSuffixNode}
             </div>
-            <div className='columns small-4'>
+            <div className='columns small-6'>
               {commentSuffixNode}
             </div>
           </div>
@@ -99,20 +104,7 @@ class TagList extends Component {
     });
     return (
       <div>
-        <div className='row'>
-          <div className='columns small-4'>
-            Tag
-          </div>
-          <div className='columns small-4'>
-            Genes
-          </div>
-          <div className='columns small-4'>
-            Comment
-          </div>
-        </div>
-        <div>
-          {nodes}
-        </div>
+        {nodes}
       </div>
     );
   }
