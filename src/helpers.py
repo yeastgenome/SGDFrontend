@@ -255,7 +255,7 @@ def link_gene_names(raw, locus_names_ids):
     for p_original_word in words:
         original_word = p_original_word.translate(None, string.punctuation)
         wupper = original_word.upper()
-        if wupper in locus_names_object.keys():
+        if wupper in locus_names_object.keys() and len(wupper) > 3:
             sgdid = locus_names_object[wupper]
             url = '/locus/'  + sgdid
             new_str = '<a href="' + url + '">' + wupper + '</a>'
