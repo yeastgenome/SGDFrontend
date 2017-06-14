@@ -543,6 +543,16 @@ class ArchLocuschange(Base):
     changed_by = Column(String(12), nullable=False)
     date_archived = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
 
+    def to_dict(self):
+        return {
+            "category": self.display_name,
+            "history_type": "LSP" if self.note_type.upper() == "LOCUS" else self.note_type.upper(),
+            "note": self.note,
+            "date_created": self.date_created.strftime("%Y-%m-%d"),
+            "references": [self.reference.to_dict_citation()]
+        }
+
+
 
 class ArchProteinsequenceannotation(Base):
     __tablename__ = 'arch_proteinsequenceannotation'
@@ -940,7 +950,7 @@ class Contig(Base):
             "format_name": self.format_name
         }
     
-    def to_dict(self, chromosome_cache):
+    def to_dict_strain_table(self, chromosome_cache={}):
         obj = {
             "display_name": self.display_name,
             "format_name": self.format_name,
@@ -975,6 +985,45 @@ class Contig(Base):
 
         return obj
 
+    def to_dict(self):
+        strains = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
+
+        urls = DBSession.query(ContigUrl).filter_by(contig_id=self.contig_id).all()
+
+        overview = DBSession.query(Dnasequenceannotation.so_id, func.count(Dnasequenceannotation.annotation_id)).filter(and_(Dnasequenceannotation.contig_id==self.contig_id, Dnasequenceannotation.dna_type=="GENOMIC")).group_by(Dnasequenceannotation.so_id).all()
+
+        so_ids = set([ov[0] for ov in overview])
+        so = DBSession.query(So).filter(So.so_id.in_(list(so_ids))).all()
+        sos = {}
+        for s in so:
+            sos[s.so_id] = s.display_name
+
+        obj = {
+            "display_name": self.display_name,
+            "strain": {
+                "link": strains[0].obj_url,
+                "display_name": strains[0].display_name
+            },
+            "residues": self.residues,
+            "urls": [u.to_dict() for u in urls],
+            "header": self.file_header,
+            "genbank_accession": self.genbank_accession,
+            "id": self.contig_id,
+            "overview": [["Feature Type", "Count"]] + [(sos[ov[0]], ov[1]) for ov in sorted(overview, key=lambda k: k[1], reverse=True)]
+        }
+
+        if self.download_filename:
+            obj["filename"] = self.download_filename
+        
+        return obj
+
+    def sequence_details(self):
+        dnas = DBSession.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.contig_id==self.contig_id, Dnasequenceannotation.dna_type=="GENOMIC")).all()
+
+        return {
+            "genomic_dna": [dna.to_dict() for dna in dnas]
+        }
+
 
 class ContigUrl(Base):
     __tablename__ = 'contig_url'
@@ -994,6 +1043,12 @@ class ContigUrl(Base):
 
     contig = relationship(u'Contig')
     source = relationship(u'Source')
+
+    def to_dict(self):
+        return {
+            "link": self.obj_url,
+            "display_name": self.display_name
+        }
 
 
 class Contignoteannotation(Base):
@@ -1756,34 +1811,6 @@ class Locusdbentity(Dbentity):
 
         return obj
     
-    def neighbor_sequence_details_v1(self):
-        dnas = DBSession.query(Dnasequenceannotation).filter_by(dbentity_id=self.dbentity_id).all()
-
-        obj = {}
-        
-        for dna in dnas:
-            strain = Straindbentity.get_strains_by_taxon_id(dna.taxonomy_id)
-
-            if len(strain) < 1:
-                continue
-
-            start = dna.start_index
-            end = dna.end_index
-            
-            midpoint = int(round((start + (end - start)/2)/1000))*1000
-            start = max(1, midpoint - 5000)
-            end = min(len(dna.contig.residues), start + 10000)
-
-            neighbors = DBSession.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.dna_type == 'GENOMIC', Dnasequenceannotation.contig_id == dna.contig_id, Dnasequenceannotation.end_index >= start, Dnasequenceannotation.start_index <= end)).all()
-
-            obj[strain[0].display_name] = {
-                "start": start,
-                "end": end,
-                "neighbors": [n.to_dict() for n in neighbors]
-            }
-
-        return obj
-
     def neighbor_sequence_details(self):
         dnas = DBSession.query(Dnasequenceannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
@@ -3297,7 +3324,7 @@ class Straindbentity(Dbentity):
         chromosome_cache = {}
         for co in contigs:
             if co.display_name != "2-micron plasmid":
-                obj["contigs"].append(co.to_dict(chromosome_cache))
+                obj["contigs"].append(co.to_dict_strain_table(chromosome_cache))
 
         return obj
 
@@ -3549,6 +3576,8 @@ class Dnasequenceannotation(Base):
             tags = dnasubsequences[self.annotation_id]
         else:
             tags = DBSession.query(Dnasubsequence).filter_by(annotation_id=self.annotation_id).all()
+
+        tags = sorted(tags, key=lambda t: t.contig_end_index, reverse=(self.strand == "-"))
 
         return {
             "start": self.start_index,
