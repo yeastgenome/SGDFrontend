@@ -6,7 +6,7 @@ import sys
 import transaction
 import os
 import re
-from sqlalchemy import create_engine, and_
+from sqlalchemy import create_engine, and_, not_
 from src.models import DBSession, Locussummary, LocussummaryReference, Locusdbentity, Referencedbentity, Source
 from src.helpers import link_gene_names
                              
@@ -64,16 +64,17 @@ def validate_file_content_and_process(file_content, nex_session, username):
     except IndexError:
         raise ValueError('The file is not a valid TSV with the correct number of columns. Check the file and try again.')
     # check that gene names are valid
-    matching_genes = nex_session.query(Locusdbentity).filter(Locusdbentity.format_name.in_(file_gene_ids)).count()
-    is_correct_gene_match_num = matching_genes == len(file_gene_ids)
-    if not is_correct_gene_match_num:
-        raise ValueError('Invalid gene identifier in ', str(file_gene_ids))
+    valid_genes = nex_session.query(Locusdbentity.format_name).filter(Locusdbentity.format_name.in_(file_gene_ids)).all()
+    valid_genes = [ str(d[0]) for d in valid_genes ]
+    invalid_genes = [d for d in file_gene_ids if d not in valid_genes]
+    if len(invalid_genes):
+        raise ValueError('Invalid gene identifier: ' + ', '.join(invalid_genes))
     # must be valid PMIDs in last column or nothing
     matching_refs = nex_session.query(Referencedbentity).filter(Referencedbentity.pmid.in_(file_pmids)).all()
-    is_correct_ref_match_num = len(matching_refs) == len(file_pmids)
-    if not is_correct_ref_match_num:
-        raise ValueError('PMIDs must be a pipe-separated list of valid PMIDs from SGD.')
-
+    temp_matching_refs = [ str(d.pmid) for d in matching_refs ]
+    invalid_refs = [d for d in file_pmids if d not in temp_matching_refs]
+    if len(invalid_refs):
+        raise ValueError('Invalid PMID: ' + ', '.join(invalid_refs) + '. Must be a pipe-separated list of PMIDs.')
     # update
     receipt_entries = []
     locus_names_ids = nex_session.query(Locusdbentity.display_name, Locusdbentity.sgdid).all()

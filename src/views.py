@@ -78,6 +78,7 @@ def upload_spreadsheet(request):
     except ValueError as e:
         return HTTPBadRequest(body=json.dumps({ 'error': str(e) }), content_type='text/json')
     except AttributeError:
+        traceback.print_exc()
         return HTTPBadRequest(body=json.dumps({ 'error': 'Please attach a valid TSV file.' }), content_type='text/json')
     except:
         traceback.print_exc()
