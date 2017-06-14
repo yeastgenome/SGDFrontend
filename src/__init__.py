@@ -74,6 +74,9 @@ def main(global_config, **settings):
     config.add_route('locus_neighbor_sequence_details', '/locus/{id}/neighbor_sequence_details', request_method='GET')
     config.add_route('locus_sequence_details', '/locus/{id}/sequence_details', request_method='GET')
 
+    config.add_route('contig', '/contig/{format_name}', request_method='GET')
+    config.add_route('contig_sequence_details', '/contig/{id}/sequence_details', request_method='GET')
+
     config.add_route('bioentity_list', '/bioentity_list', request_method='POST')
 
     config.add_route('dataset', '/dataset/{id}', request_method='GET')

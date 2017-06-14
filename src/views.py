@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig
 
 from .celery_tasks import upload_to_s3
 
@@ -29,15 +29,15 @@ import logging
 import json
 log = logging.getLogger(__name__)
 
-#import redis
-#disambiguation_table = redis.Redis()
+import redis
+disambiguation_table = redis.Redis()
 
-#def _disambiguate_id(id):
-#    dbentity_id = disambiguation_table.get(id.upper())
-#    if dbentity_id is None:
-#        return None
-#    else:
-#        return int(dbentity_id)
+def _disambiguate_id(id):
+    dbentity_id = disambiguation_table.get(id.upper())
+    if dbentity_id is None:
+        return None
+    else:
+        return int(dbentity_id)
 
 @view_config(route_name='home', request_method='GET', renderer='home.jinja2')
 def home_view(request):
@@ -709,15 +709,15 @@ def go_locus_details_all(request):
 
 @view_config(route_name='locus', renderer='json', request_method='GET')
 def locus(request):
-#    dbentity_id = _disambiguate_id(request.matchdict['sgdid'])
+    dbentity_id = _disambiguate_id(request.matchdict['sgdid'])
 
-#    if dbentity_id is None:
-#        return HTTPNotFound()
+    if dbentity_id is None:
+        return HTTPNotFound()
     
-    sgdid = request.matchdict['sgdid'].upper()
+#    sgdid = request.matchdict['sgdid'].upper()
 
-#    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=dbentity_id).one_or_none()
-    locus = DBSession.query(Locusdbentity).filter_by(sgdid=sgdid).one_or_none()
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=dbentity_id).one_or_none()
+#    locus = DBSession.query(Locusdbentity).filter_by(sgdid=sgdid).one_or_none()
     if locus:
         return locus.to_dict()
     else:
@@ -905,3 +905,25 @@ def keywords(request):
     keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(keyword_ids)).all()
 
     return [k.to_simple_dict() for k in keywords]
+
+@view_config(route_name='contig', renderer='json', request_method='GET')
+def contig(request):
+    format_name = request.matchdict['format_name']
+
+    contig = DBSession.query(Contig).filter(func.lower(Contig.format_name) == func.lower(format_name)).one_or_none()
+
+    if contig:
+        return contig.to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='contig_sequence_details', renderer='json', request_method='GET')
+def contig_sequence_details(request):
+    id = request.matchdict['id']
+
+    contig = DBSession.query(Contig).filter_by(contig_id=id).one_or_none()
+
+    if contig:
+        return contig.sequence_details()
+    else:
+        return HTTPNotFound()
