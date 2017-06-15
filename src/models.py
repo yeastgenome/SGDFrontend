@@ -2090,45 +2090,45 @@ class Locusdbentity(Dbentity):
         }
         
         primary_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Primary Literature")).all()
-        primary_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(primary_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        primary_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(primary_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in primary_lit:
             obj["primary"].append(lit.to_dict_citation())
 
         additional_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Additional Literature")).all()
-        additional_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(additional_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        additional_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(additional_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
         
         for lit in additional_lit:
             obj["additional"].append(lit.to_dict_citation())
 
         reviews_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Reviews")).all()
-        reviews_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reviews_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        reviews_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reviews_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in reviews_lit:
             obj["review"].append(lit.to_dict_citation())
 
         interaction_ids = DBSession.query(Geninteractionannotation.reference_id).filter(or_(Geninteractionannotation.dbentity1_id == self.dbentity_id, Geninteractionannotation.dbentity2_id == self.dbentity_id)).all() + DBSession.query(Physinteractionannotation.reference_id).filter(or_(Physinteractionannotation.dbentity1_id == self.dbentity_id, Physinteractionannotation.dbentity2_id == self.dbentity_id)).all()
-        interaction_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(interaction_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        interaction_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(interaction_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in interaction_lit:
             obj["interaction"].append(lit.to_dict_citation())
 
         regulation_ids = DBSession.query(Regulationannotation.reference_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
-        regulation_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(regulation_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        regulation_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(regulation_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in regulation_lit:
             obj["regulation"].append(lit.to_dict_citation())
 
         apo_ids = DBSession.query(Apo.apo_id).filter_by(namespace_group="classical genetics").all()
         phenotype_ids = DBSession.query(Phenotypeannotation.reference_id).filter(and_(Phenotypeannotation.dbentity_id == self.dbentity_id, Phenotypeannotation.experiment_id.in_(apo_ids))).all()
-        phenotype_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(phenotype_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        phenotype_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(phenotype_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in phenotype_lit:
             obj["phenotype"].append(lit.to_dict_citation())
 
         go_ids = DBSession.query(Goannotation.reference_id).filter(and_(Goannotation.dbentity_id == self.dbentity_id, Goannotation.annotation_type != "high-throughput")).all()
         go_ids = set(go_ids) - set(Referencedbentity.get_go_blacklist_ids())
-        go_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(go_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        go_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(go_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in go_lit:
             obj["go"].append(lit.to_dict_citation())
