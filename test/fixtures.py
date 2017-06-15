@@ -2,11 +2,11 @@ import datetime
 import factory
 from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Dbentity, Edam, \
     Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, \
-    PhenotypeannotationCond, Locusdbentity, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity, StrainUrl, \
+    PhenotypeannotationCond, Locusdbentity, Locussummary, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity, StrainUrl, \
     Strainsummary, StrainsummaryReference, Dataset, DatasetReference, DatasetKeyword, Referencetype, ReferenceRelation, ReferenceUrl, Referenceauthor, \
     Physinteractionannotation, Geninteractionannotation, Goannotation, Regulationannotation, Literatureannotation, Contig, EcoAlias, EcoUrl, Goextension, \
     Gosupportingevidence, Eco, Ro, Go, GoRelation, GoUrl, GoAlias, ApoRelation, Referencetriage, Proteinsequenceannotation, ProteinsequenceDetail, \
-    Goslimannotation, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias
+    Goslimannotation, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence, So
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -446,7 +446,7 @@ class ReferencetriageFactory(factory.alchemy.SQLAlchemyModelFactory):
     abstract = "this is abstract"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
-    json = "this is json"
+    json = "{}"
     abstract_genes = "abstract genes"
 
 class ProteinsequenceannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -904,7 +904,7 @@ class PhysinteractionannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     taxonomy_id = 1
     psimod_id = 1
     biogrid_experimental_system = "experiment"
-    annotation_type = "annot type"
+    annotation_type = "manually curated"
     bait_hit = "bait"
     description = "description"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
@@ -1147,7 +1147,7 @@ class GoFactory(factory.alchemy.SQLAlchemyModelFactory):
     obj_url = "obj url"
     source_id = 1
     goid = 1
-    go_namespace = "namepsace"
+    go_namespace = "biological process"
     description = "description"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
@@ -1216,5 +1216,88 @@ class DatasetFileFactory(factory.alchemy.SQLAlchemyModelFactory):
     dataset_id = 1
     file_id = 1
     source_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class LocussummaryFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Locussummary
+        sqlalchemy_session = DBSession
+
+    summary_id = 1
+    source_id = 1
+    bud_id = 1
+    locus_id = 1
+    summary_type = "phenotype"
+    summary_order = "1"
+    text = "some text"
+    html = "some/html"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class DnasequenceannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Dnasequenceannotation
+        sqlalchemy_session = DBSession
+
+    annotation_id = 1
+    dbentity_id = 1
+    source_id = 1
+    taxonomy_id = 1
+    reference_id = 1
+    bud_id = 1
+    so_id = 1
+    dna_type = "GENOMIC"
+    contig_id = 1
+    seq_version = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    coord_version = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    genomerelease_id = 1
+    start_index = 1
+    end_index = 10
+    strand = "+"
+    file_header = "file header"
+    download_filename = "download file name"
+    file_id = 1
+    residues = "ATCGCGT"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class DnasubsequenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Dnasubsequence
+        sqlalchemy_session = DBSession
+
+    dnasubsequence_id = 1
+    annotation_id = 1
+    dbentity_id = 1
+    display_name = "display name"
+    bud_id = 1
+    so_id = 1
+    relative_start_index = 1
+    relative_end_index = 10
+    contig_start_index = 1
+    contig_end_index = 10
+    seq_version = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    coord_version = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    genomerelease_id = 1
+    file_header = "file header"
+    download_filename = "download file name"
+    file_id = 1
+    residues = "CTVCTCTCT"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class SoFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = So
+        sqlalchemy_session = DBSession
+
+    so_id = 1
+    format_name = "format name"
+    display_name = "display name"
+    obj_url = "obj url"
+    source_id = 1
+    soid = 264265
+    description = "description"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
