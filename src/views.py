@@ -29,8 +29,8 @@ import logging
 import json
 log = logging.getLogger(__name__)
 
-import redis
-disambiguation_table = redis.Redis()
+#import redis
+#disambiguation_table = redis.Redis()
 
 def _disambiguate_id(id):
     dbentity_id = disambiguation_table.get(id.upper())
@@ -709,15 +709,15 @@ def go_locus_details_all(request):
 
 @view_config(route_name='locus', renderer='json', request_method='GET')
 def locus(request):
-    dbentity_id = _disambiguate_id(request.matchdict['sgdid'])
+#    dbentity_id = _disambiguate_id(request.matchdict['sgdid'])
 
-    if dbentity_id is None:
-        return HTTPNotFound()
+#    if dbentity_id is None:
+#        return HTTPNotFound()
     
-#    sgdid = request.matchdict['sgdid'].upper()
+    sgdid = request.matchdict['sgdid'].upper()
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=dbentity_id).one_or_none()
-#    locus = DBSession.query(Locusdbentity).filter_by(sgdid=sgdid).one_or_none()
+#    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=dbentity_id).one_or_none()
+    locus = DBSession.query(Locusdbentity).filter_by(sgdid=sgdid).one_or_none()
     if locus:
         return locus.to_dict()
     else:
