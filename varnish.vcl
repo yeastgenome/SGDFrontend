@@ -9,6 +9,8 @@ acl purgers {
 backend default {
     .host = "127.0.0.1";
     .port = "8080";
+    .connect_timeout = 30s;
+    .first_byte_timeout = 300s;
 }
 
 sub vcl_recv {
@@ -16,14 +18,14 @@ sub vcl_recv {
       if (!client.ip ~ purgers) {
         return (synth(405));
       }
-      return (purge);
+      return (purge)
     }
 
     if (vsthrottle.is_denied(client.identity, 100, 10s)) {
        return (synth(429, "Too Many Requests"));
     }
-
     unset req.http.Cookie;
+    set req.http.host = "www.yeastgenome.org";
 }
 
 sub vcl_backend_response {
@@ -43,4 +45,9 @@ sub vcl_deliver {
     unset resp.http.Server;
     unset resp.http.Via;
     unset resp.http.X-Varnish;
+}
+
+sub vcl_purge {
+    set req.method = "GET";
+    return (restart);
 }
