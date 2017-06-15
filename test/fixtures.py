@@ -6,7 +6,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Strainsummary, StrainsummaryReference, Dataset, DatasetReference, DatasetKeyword, Referencetype, ReferenceRelation, ReferenceUrl, Referenceauthor, \
     Physinteractionannotation, Geninteractionannotation, Goannotation, Regulationannotation, Literatureannotation, Contig, EcoAlias, EcoUrl, Goextension, \
     Gosupportingevidence, Eco, Ro, Go, GoRelation, GoUrl, GoAlias, ApoRelation, Referencetriage, Proteinsequenceannotation, ProteinsequenceDetail, \
-    Goslimannotation, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence, So
+    Goslimannotation, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence, So, ContigUrl
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -888,6 +888,21 @@ class ContigFactory(factory.alchemy.SQLAlchemyModelFactory):
     residues = "ATGC"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
+
+class ContigUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ContigUrl
+        sqlalchemy_session = DBSession
+
+    url_id = 1
+    display_name = "display_name"
+    obj_url = "/obj_url"
+    source_id = 1
+    contig_id = 1
+    url_type = "url type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
 
 
 class PhysinteractionannotationFactory(factory.alchemy.SQLAlchemyModelFactory):

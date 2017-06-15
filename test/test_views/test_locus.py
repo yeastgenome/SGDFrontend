@@ -156,8 +156,10 @@ class LocusTest(unittest.TestCase):
          self.assertEqual(response.status_code, 404)
 
 
+
+    @mock.patch('src.models.DBSession.execute')
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_sequence_details(self, mock_search):
+    def test_should_return_valid_locus_sequence_details(self, mock_search, mock_execute):
         mock_search.side_effect = sequence_side_effect
 
         locus = factory.LocusdbentityFactory()
@@ -180,8 +182,9 @@ class LocusTest(unittest.TestCase):
          self.assertEqual(response.status_code, 404)
 
 
+    @mock.patch('src.models.DBSession.execute')
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_neighbor_sequence_details(self, mock_search):
+    def test_should_return_valid_locus_neighbor_sequence_details(self, mock_search, mock_execute):
         mock_search.side_effect = sequence_side_effect
 
         locus = factory.LocusdbentityFactory()
@@ -191,14 +194,14 @@ class LocusTest(unittest.TestCase):
         request.matchdict['id'] = "S000114259"
         response = locus_neighbor_sequence_details(request)
         self.assertEqual(response, locus.neighbor_sequence_details())
-    #
-    #
-    # @mock.patch('src.models.DBSession.query')
-    # def test_should_return_non_existent_locus_neighbor_sequence_details(self, mock_search):
-    #      mock_search.return_value = MockQuery(None)
-    #
-    #      request = testing.DummyRequest()
-    #      request.context = testing.DummyResource()
-    #      request.matchdict['id'] = 'nonexistent_id'
-    #      response = locus_neighbor_sequence_details(request)
-    #      self.assertEqual(response.status_code, 404)
+
+
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_non_existent_locus_neighbor_sequence_details(self, mock_search):
+         mock_search.return_value = MockQuery(None)
+
+         request = testing.DummyRequest()
+         request.context = testing.DummyResource()
+         request.matchdict['id'] = 'nonexistent_id'
+         response = locus_neighbor_sequence_details(request)
+         self.assertEqual(response.status_code, 404)
