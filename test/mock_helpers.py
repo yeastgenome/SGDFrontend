@@ -658,6 +658,18 @@ def sequence_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Straindbentity'>":
         s_name = factory.StraindbentityFactory()
         return MockQuery(s_name)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Contig'>":
+        c_name = factory.ContigFactory()
+        return MockQuery(c_name)
+    elif len(args) == 2 and str(args[0]) == 'Dnasequenceannotation.so_id' and str(args[1]) == 'count(nex.dnasequenceannotation.annotation_id)':
+        dnaseq = factory.DnasequenceannotationFactory()
+        return MockQuery((dnaseq.so_id, 20))
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.So'>":
+        so = factory.SoFactory()
+        return MockQuery(so)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.ContigUrl'>":
+        ctgurl = factory.ContigUrlFactory()
+        return MockQuery(ctgurl)
 
 
 def reference_side_effect(*args, **kwargs):
