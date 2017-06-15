@@ -30,5 +30,5 @@ def parse_tsv_annotations(db_session, tsv_file, filename, template_type, usernam
         )
     except IntegrityError:
         db_session.rollback()
-    	raise ValueError('That file has already been uploaded and cannot be reused.')
+    	raise ValueError('That file has already been uploaded and cannot be reused. Please change the file contents and try again.')
     return annotations
