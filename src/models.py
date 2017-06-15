@@ -29,27 +29,40 @@ class CacheBase(object):
             url_segment = self.__url_segment__
         return url_segment + self.sgdid
 
+    def get_secondary_base_url(self):
+        return ''
+
     # list all dependent urls to ping, like secondary requests
-    def get_secondary_cache_urls(self):
+    def get_secondary_cache_urls(self, is_quick=False):
         return []
 
-    def refresh_cache(self):
+    def can_skip_cache(self):
+        return False
+
+    def get_all_cache_urls(self, is_quick=False):
+        if is_quick and self.can_skip_cache():
+            return []
         base_target_url = self.get_base_url()
         target_urls = [base_target_url]
-        details_urls = self.get_secondary_cache_urls()
+        details_urls = self.get_secondary_cache_urls(is_quick)
         target_urls = target_urls + details_urls
+        urls = []
         for relative_url in target_urls:
             for base_url in cache_urls:
                 url = base_url + relative_url
-                try:
-                    # purge
-                    requests.request('PURGE', url)
-                    # prime
-                    response = requests.get(url)
-                    if (response.status_code != 200):
-                        raise('Error fetching ')
-                except Exception, e:
-                    print 'error fetching ' + self.display_name
+                urls.append(url)
+        return urls
+
+    def refresh_cache(self):
+        urls = self.get_all_cache_urls()
+        for url in urls:
+            try:
+                # purge
+                response = requests.request('PURGE', url)
+                if (response.status_code != 200):
+                    raise('Error fetching ')
+            except Exception, e:
+                print 'error fetching ' + self.display_name
 
 Base = declarative_base(cls=CacheBase)
 
@@ -272,10 +285,12 @@ class Apo(Base):
     def get_base_url(self):
         return '/observable/' + self.format_name
 
-    def get_secondary_cache_urls(self):
-        base_url = self.get_base_url()
-        url1 = '/backend' + base_url + '/' + str(self.apo_id) + '/locus_details'
+    def get_secondary_cache_urls(self, is_quick=False):
+        url1 = self.get_secondary_base_url() + '/locus_details'
         return [url1]
+
+    def get_secondary_base_url(self):
+        return '/webservice/observable/' + str(self.apo_id)
 
 class ApoAlia(Base):
     __tablename__ = 'apo_alias'
@@ -1725,7 +1740,7 @@ class Referencedbentity(Dbentity):
         
         return [regulation.to_dict(self) for regulation in regulations]
 
-    def get_secondary_cache_urls(self):
+    def get_secondary_cache_urls(self, is_quick=False):
         base_url = self.get_base_url()
         url1 = base_url + '/literature_details'
         return [url1]
@@ -2075,45 +2090,45 @@ class Locusdbentity(Dbentity):
         }
         
         primary_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Primary Literature")).all()
-        primary_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(primary_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        primary_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(primary_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in primary_lit:
             obj["primary"].append(lit.to_dict_citation())
 
         additional_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Additional Literature")).all()
-        additional_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(additional_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        additional_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(additional_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
         
         for lit in additional_lit:
             obj["additional"].append(lit.to_dict_citation())
 
         reviews_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Reviews")).all()
-        reviews_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reviews_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        reviews_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reviews_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in reviews_lit:
             obj["review"].append(lit.to_dict_citation())
 
         interaction_ids = DBSession.query(Geninteractionannotation.reference_id).filter(or_(Geninteractionannotation.dbentity1_id == self.dbentity_id, Geninteractionannotation.dbentity2_id == self.dbentity_id)).all() + DBSession.query(Physinteractionannotation.reference_id).filter(or_(Physinteractionannotation.dbentity1_id == self.dbentity_id, Physinteractionannotation.dbentity2_id == self.dbentity_id)).all()
-        interaction_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(interaction_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        interaction_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(interaction_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in interaction_lit:
             obj["interaction"].append(lit.to_dict_citation())
 
         regulation_ids = DBSession.query(Regulationannotation.reference_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
-        regulation_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(regulation_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        regulation_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(regulation_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in regulation_lit:
             obj["regulation"].append(lit.to_dict_citation())
 
         apo_ids = DBSession.query(Apo.apo_id).filter_by(namespace_group="classical genetics").all()
         phenotype_ids = DBSession.query(Phenotypeannotation.reference_id).filter(and_(Phenotypeannotation.dbentity_id == self.dbentity_id, Phenotypeannotation.experiment_id.in_(apo_ids))).all()
-        phenotype_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(phenotype_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        phenotype_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(phenotype_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in phenotype_lit:
             obj["phenotype"].append(lit.to_dict_citation())
 
         go_ids = DBSession.query(Goannotation.reference_id).filter(and_(Goannotation.dbentity_id == self.dbentity_id, Goannotation.annotation_type != "high-throughput")).all()
         go_ids = set(go_ids) - set(Referencedbentity.get_go_blacklist_ids())
-        go_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(go_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.citation.asc()).all()
+        go_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(go_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in go_lit:
             obj["go"].append(lit.to_dict_citation())
@@ -2916,23 +2931,13 @@ class Locusdbentity(Dbentity):
 
         obj["sgdid_ref"] = {}
         
-        summary_references = DBSession.query(LocussummaryReference).filter(LocussummaryReference.summary_id.in_(summary_ids)).order_by(LocussummaryReference.reference_order).all()
-
         obj["references"] = []
-        for s in summary_references:
-            obj["references"].append(s.reference.to_dict_citation())
-            obj["sgdid_ref"][s.reference.sgdid] = s.reference
             
-        reference_ids = set([s.reference_id for s in summary_references])
+        reference_ids = set([])
 
         for ref in references:
             ref_dict = ref.reference.to_dict_citation()
 
-            if ref.reference_id not in reference_ids:
-                obj["references"].append(ref_dict)
-                obj["sgdid_ref"][ref.reference.sgdid] = ref.reference
-                reference_ids.add(ref.reference_id)
-            
             if ref.reference_class == "description":
                 obj["qualities"]["description"]["references"].append(ref_dict)
             elif ref.reference_class == "name_description":
@@ -2943,6 +2948,18 @@ class Locusdbentity(Dbentity):
                 obj["qualities"]["qualifier"]["references"].append(ref_dict)
             elif ref.reference_class == "feature_type":
                 obj["qualities"]["feature_type"]["references"].append(ref_dict)
+
+            if ref.reference_id not in reference_ids:
+                obj["references"].append(ref_dict)
+                obj["sgdid_ref"][ref.reference.sgdid] = ref.reference
+                
+            reference_ids.add(ref.reference_id)
+
+        summary_references = DBSession.query(LocussummaryReference).filter(LocussummaryReference.summary_id.in_(summary_ids)).order_by(LocussummaryReference.reference_order).all()
+        for s in summary_references:
+            if s.reference_id not in reference_ids:
+                obj["references"].append(s.reference.to_dict_citation())
+                obj["sgdid_ref"][s.reference.sgdid] = s.reference
 
         obj["references"] = sorted(obj["references"], key=lambda r: (r["year"], r["citation"]), reverse=True)
 
@@ -3176,6 +3193,20 @@ class Locusdbentity(Dbentity):
             obj["paragraph"] = go_summary[0]
 
         return obj
+
+    def get_go_count(self):
+        return DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id).count()
+
+    def get_phenotype_count(self):
+        return DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).count()
+
+    def get_interaction_count(self):
+        phys = DBSession.query(Physinteractionannotation).filter(or_(Physinteractionannotation.dbentity1_id == self.dbentity_id, Physinteractionannotation.dbentity2_id == self.dbentity_id)).count()
+        genetic = DBSession.query(Geninteractionannotation).filter(or_(Geninteractionannotation.dbentity1_id == self.dbentity_id, Geninteractionannotation.dbentity2_id == self.dbentity_id)).count()
+        return phys + genetic
+
+    def get_literature_count(self):
+        return DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id)).count()
     
     def tabs(self):
         return {
@@ -3195,48 +3226,70 @@ class Locusdbentity(Dbentity):
             "protein_tab": self.has_protein
         }
 
+    # make some tabs false if the data is small, to return a smaller set of URLs for tab priming
+    def get_quick_tabs(self):
+        tabs = self.tabs()
+        if tabs['go_tab']:
+            gos = self.get_go_count()
+            if (gos < 15):
+                tabs['go_tab'] = False
+        if tabs['interaction_tab']:
+            interactions = self.get_interaction_count()
+            if (interactions < 100):
+                tabs['interaction_tab'] = False
+        if tabs['literature_tab']:
+            literatures = self.get_literature_count()
+            if (literatures < 30):
+                tabs['literature_tab'] = False
+        return tabs
+
     # clears the URLs for all tabbed pages and secondary XHR requests on tabbed pages
-    def refresh_tabbed_page_cache(self):
+    def get_secondary_cache_urls(self, is_quick=False):
+        phenotype_items = ['phenotype_details', 'phenotype_graph']
+        if is_quick:
+            tabs = self.get_quick_tabs()
+            protein_items = []
+            if tabs['phenotype_tab']:
+                phenotype_count = self.get_phenotype_count()
+                if (phenotype_count < 15):
+                    phenotype_items = []
+        else:
+            tabs = self.tabs()
+            protein_items = ['sequence_details', 'posttranslational_details', 'ecnumber_details', 'protein_experiment_details', 'protein_domain_details', 'protein_domain_details']
         backend_urls_by_tab = {
-            'protein_tab': ['sequence_details', 'posttranslational_details', 'ecnumber_details', 'protein_experiment_details', 'protein_domain_details', 'protein_domain_details'],
+            'protein_tab': protein_items,
             'interaction_tab': ['interaction_details', 'interaction_graph'],
             'summary_tab': ['expression_details'],
             'go_tab': ['go_details', 'go_graph'],
             'sequence_section': ['neighbor_sequence_details', 'sequence_details'],
             'expression_tab': ['expression_details', 'expression_graph'],
-            'phenotype_tab': ['phenotype_details', 'phenotype_graph'],
+            'phenotype_tab': phenotype_items,
             'literature_tab': ['literature_details', 'literature_graph'],
             'regulation_tab': ['regulation_details', 'regulation_graph'],
             'sequence_tab': ['neighbor_sequence_details', 'sequence_details'],
             'history_tab':[],
         }
         base_url = self.get_base_url() + '/'
-        backend_base_segment = '/backend/locus/' + str(self.dbentity_id) + '/'
+        backend_base_segment = self.get_secondary_base_url() + '/'
         urls = []
-        tabs = self.tabs()
+        
         # get all the urls
         for key in tabs:
-            if key is 'sequence_section' or key is 'id':
+            if key in ['sequence_section', 'id', 'summary_tab']:
                 continue
             # if the tab is present, append all the needed urls to urls
-            if tabs[key]:
-                tab_name = key.replace('_tab', '')
-                tab_url = base_url + tab_name
-                urls.append(tab_url)
+            elif tabs[key]:
                 for d in backend_urls_by_tab[key]:
                     secondary_url = backend_base_segment + d
                     urls.append(secondary_url)
         target_urls = list(set(urls))
-        for relative_url in target_urls:
-            for base_url in cache_urls:
-                url = base_url + relative_url
-                try:
-                    # purge
-                    requests.request('PURGE', url)
-                    # prime
-                    response = requests.get(url)
-                except Exception, e:
-                    print 'error fetching ' + self.display_name
+        # filter out graph URLs if is_quick
+        if is_quick:
+            target_urls = [x for x in target_urls if 'graph' not in x]
+        return target_urls
+
+    def get_secondary_base_url(self):
+        return '/webservice/locus/' + str(self.dbentity_id)
 
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
@@ -4247,10 +4300,16 @@ class Go(Base):
     def get_base_url(self):
         return self.obj_url
 
-    def get_secondary_cache_urls(self):
-        base_url = self.get_base_url()
-        url1 = '/backend' + base_url + '/' + str(self.go_id) + '/locus_details'
+    def get_secondary_cache_urls(self, is_quick=False):
+        url1 = self.get_secondary_base_url() + '/locus_details'
         return [url1]
+
+    def can_skip_cache(self):
+        annotation_count = annotations = DBSession.query(Goannotation).filter_by(go_id=self.go_id).count()
+        return annotation_count < 100
+
+    def get_secondary_base_url(self):
+        return '/webservice/go/' + str(self.go_id)
 
 class GoAlias(Base):
     __tablename__ = 'go_alias'
@@ -4957,12 +5016,14 @@ class Locusnoteannotation(Base):
     taxonomy = relationship(u'Taxonomy')
 
     def to_dict(self):
+        
+        
         return {
             "category": self.display_name,
             "history_type": "LSP" if self.note_type.upper() == "LOCUS" else self.note_type.upper(),
             "note": self.note,
             "date_created": self.date_created.strftime("%Y-%m-%d"),
-            "references": [self.reference.to_dict_citation()]
+            "references": [self.reference.to_dict_citation()] if self.reference else []
         }
     
 
@@ -5235,10 +5296,16 @@ class Phenotype(Base):
     def get_base_url(self):
         return '/phenotype/' + self.format_name
 
-    def get_secondary_cache_urls(self):
-        base_url = self.get_base_url()
-        url1 = '/backend' + base_url + '/' + str(self.phenotype_id) + '/locus_details'
+    def can_skip_cache(self):
+        annotation_count = annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).count()
+        return annotation_count < 100
+
+    def get_secondary_cache_urls(self, is_quick=False):
+        url1 = self.get_secondary_base_url() + '/locus_details'
         return [url1]
+
+    def get_secondary_base_url(self):
+        return '/webservice/phenotype/' + str(self.phenotype_id)
 
 class Phenotypeannotation(Base):
     __tablename__ = 'phenotypeannotation'
