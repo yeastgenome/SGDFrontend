@@ -927,3 +927,14 @@ def contig_sequence_details(request):
         return contig.sequence_details()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='locus_posttranslational_details', renderer='json', request_method='GET')
+def locus_posttranslational_details(request):
+    id = request.matchdict['id']
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+
+    if locus:
+        return locus.posttranslational_details()
+    else:
+        return HTTPNotFound()

@@ -1797,6 +1797,18 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def posttranslational_details(self):
+        annotations = DBSession.query(Posttranslationannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
+        reference_ids = [a.reference_id for a in annotations]
+        references = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reference_ids)).all()
+        
+        ids_to_references = {}
+        for r in references:
+            ids_to_references[r.dbentity_id] = r
+        
+        return [a.to_dict(references=ids_to_references) for a in annotations]
+    
     def sequence_details(self):
         dnas = DBSession.query(Dnasequenceannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
@@ -5748,6 +5760,46 @@ class Posttranslationannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict(self, references=None):
+        if references:
+            reference = references[self.reference_id]
+        else:
+            reference = self.reference
+
+        properties = []
+        if self.modifier:
+            properties.append({
+                "bioentity": {
+                    "display_name": self.modifier.display_name,
+                    "link": self.modifier.obj_url
+                },
+                "role": "Kinase",
+                "note": None
+            })
+            
+        return {
+            "site_index": self.site_index,
+            "site_residue": self.site_residue,
+            "locus": {
+                "id": self.dbentity_id,
+                "display_name": self.dbentity.display_name,
+                "format_name": self.dbentity.format_name,
+                "link": self.dbentity.obj_url
+            },
+            "reference": {
+                "display_name": reference.display_name,
+                "link": reference.obj_url,
+                "pubmed_id": reference.pmid
+            },
+            "properties": properties,
+            "source": {
+                "display_name": self.source.display_name
+            },
+            "aliases": [],
+            "type": self.psimod.display_name,
+            "id": self.annotation_id,
+
+        }
 
 class Proteindomain(Base):
     __tablename__ = 'proteindomain'
