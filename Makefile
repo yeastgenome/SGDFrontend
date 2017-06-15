@@ -64,3 +64,6 @@ refresh-prod-cache:
 
 index-es:
 	source dev_variables.sh && python scripts/search/index_elastic_search.py
+
+create-disambiguation:
+	source dev_variables.sh && python scripts/disambiguation/create_disambiguation.py
