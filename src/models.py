@@ -1797,6 +1797,36 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def protein_domain_details(self):
+        annotations = DBSession.query(Proteindomainannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
+        return [a.to_dict(locus=self) for a in annotations]
+    
+    def protein_experiment_details(self):
+        annotations = DBSession.query(Proteinexptannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
+        reference_ids = [a.reference_id for a in annotations]
+        references = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reference_ids)).all()
+        
+        ids_to_references = {}
+        for r in references:
+            ids_to_references[r.dbentity_id] = r
+        
+        return [a.to_dict(locus=self, references=ids_to_references) for a in annotations]
+    
+    def ecnumber_details(self):
+        aliases = DBSession.query(LocusAlias).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type == "EC number").all()
+
+        obj = []
+        for alias in aliases:
+            obj.append({
+                "ecnumber": {
+                    "display_name": alias.display_name,
+                    "link": alias.obj_url
+                }
+            })
+        return obj
+    
     def posttranslational_details(self):
         annotations = DBSession.query(Posttranslationannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
@@ -1807,7 +1837,7 @@ class Locusdbentity(Dbentity):
         for r in references:
             ids_to_references[r.dbentity_id] = r
         
-        return [a.to_dict(references=ids_to_references) for a in annotations]
+        return [a.to_dict(locus=self, references=ids_to_references) for a in annotations]
     
     def sequence_details(self):
         dnas = DBSession.query(Dnasequenceannotation).filter_by(dbentity_id=self.dbentity_id).all()
@@ -5760,11 +5790,14 @@ class Posttranslationannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
-    def to_dict(self, references=None):
+    def to_dict(self, locus=None, references=None):
         if references:
             reference = references[self.reference_id]
         else:
             reference = self.reference
+
+        if locus is None:
+            locus = self.dbentity
 
         properties = []
         if self.modifier:
@@ -5782,9 +5815,9 @@ class Posttranslationannotation(Base):
             "site_residue": self.site_residue,
             "locus": {
                 "id": self.dbentity_id,
-                "display_name": self.dbentity.display_name,
-                "format_name": self.dbentity.format_name,
-                "link": self.dbentity.obj_url
+                "display_name": locus.display_name,
+                "format_name": locus.format_name,
+                "link": locus.obj_url
             },
             "reference": {
                 "display_name": reference.display_name,
@@ -5863,6 +5896,34 @@ class Proteindomainannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict(self, locus=None):
+        if locus is None:
+            locus = self.dbentity
+
+        count = DBSession.query(Proteindomainannotation).distinct(Proteindomainannotation.dbentity_id).filter_by(proteindomain_id=self.proteindomain_id).count()
+
+        return {
+            "id": self.annotation_id,
+            "domain": {
+                "link": self.proteindomain.obj_url,
+                "display_name": self.proteindomain.display_name,
+                "count": count,
+                "description": self.proteindomain.description
+            },
+            "start": self.start_index,
+            "end": self.end_index,
+            "locus": {
+                "id": self.dbentity_id,
+                "display_name": locus.display_name,
+                "format_name": locus.format_name,
+                "link": locus.obj_url
+            },
+            "source": {
+                "display_name": self.source.display_name
+            }
+        }
+    
+
 
 class Proteinexptannotation(Base):
     __tablename__ = 'proteinexptannotation'
@@ -5888,6 +5949,35 @@ class Proteinexptannotation(Base):
     reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
+
+    def to_dict(self, locus=None, references=None):
+        if references:
+            reference = references[self.reference_id]
+        else:
+            reference = self.reference
+
+        if locus is None:
+            locus = self.dbentity
+
+        return {
+            "id": self.annotation_id,
+            "experiment": {
+                "display_name": self.experiment_type,
+                "link": None
+            },
+            "reference": {
+                "display_name": reference.display_name,
+                "link":  reference.obj_url
+            },
+            "locus": {
+                "id": self.dbentity_id,
+                "display_name": locus.display_name,
+                "format_name": locus.format_name,
+                "link": locus.obj_url
+            },
+            "data_value": self.data_value,
+            "data_unit": self.data_unit
+        }
 
 
 class ProteinexptannotationCond(Base):
