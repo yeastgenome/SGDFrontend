@@ -57,10 +57,10 @@ lint:
 	eslint src/client/js/
 
 refresh-cache:
-	source dev_variables.sh && python src/loading/refresh.py
+	source dev_variables.sh && python src/loading/scrapy/pages/spiders/pages_spider.py
 
 refresh-prod-cache:
-	source /data/envs/sgd/bin/activate && source prod_variables.sh && python src/loading/refresh.py
+	source /data/envs/sgd/bin/activate && source prod_variables.sh && python src/loading/scrapy/pages/spiders/pages_spider.py
 
 index-es:
 	source dev_variables.sh && python scripts/search/index_elastic_search.py

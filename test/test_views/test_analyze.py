@@ -24,7 +24,7 @@
 #
 #         request = testing.DummyRequest(post={'bioent_ids': [locus.dbentity_id, locus2.dbentity_id]}, headers={'content_type': 'application/json'})
 #         request.context = testing.DummyResource()
-#         #request.json_body = {'bioent_ids': [locus.dbentity_id, locus2.dbentity_id]}
+#         request.json_body = {'bioent_ids': [locus.dbentity_id, locus2.dbentity_id]}
 #         response = analyze(request)
 #
 #         self.assertEqual(response, [{'id': locus.dbentity_id, 'display_name': locus.display_name, 'link': locus.obj_url, 'description': locus.description, 'format_name': locus.format_name},
