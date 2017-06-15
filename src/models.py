@@ -2916,23 +2916,13 @@ class Locusdbentity(Dbentity):
 
         obj["sgdid_ref"] = {}
         
-        summary_references = DBSession.query(LocussummaryReference).filter(LocussummaryReference.summary_id.in_(summary_ids)).order_by(LocussummaryReference.reference_order).all()
-
         obj["references"] = []
-        for s in summary_references:
-            obj["references"].append(s.reference.to_dict_citation())
-            obj["sgdid_ref"][s.reference.sgdid] = s.reference
             
-        reference_ids = set([s.reference_id for s in summary_references])
+        reference_ids = set([])
 
         for ref in references:
             ref_dict = ref.reference.to_dict_citation()
 
-            if ref.reference_id not in reference_ids:
-                obj["references"].append(ref_dict)
-                obj["sgdid_ref"][ref.reference.sgdid] = ref.reference
-                reference_ids.add(ref.reference_id)
-            
             if ref.reference_class == "description":
                 obj["qualities"]["description"]["references"].append(ref_dict)
             elif ref.reference_class == "name_description":
@@ -2943,6 +2933,18 @@ class Locusdbentity(Dbentity):
                 obj["qualities"]["qualifier"]["references"].append(ref_dict)
             elif ref.reference_class == "feature_type":
                 obj["qualities"]["feature_type"]["references"].append(ref_dict)
+
+            if ref.reference_id not in reference_ids:
+                obj["references"].append(ref_dict)
+                obj["sgdid_ref"][ref.reference.sgdid] = ref.reference
+                
+            reference_ids.add(ref.reference_id)
+
+        summary_references = DBSession.query(LocussummaryReference).filter(LocussummaryReference.summary_id.in_(summary_ids)).order_by(LocussummaryReference.reference_order).all()
+        for s in summary_references:
+            if s.reference_id not in reference_ids:
+                obj["references"].append(s.reference.to_dict_citation())
+                obj["sgdid_ref"][s.reference.sgdid] = s.reference
 
         obj["references"] = sorted(obj["references"], key=lambda r: (r["year"], r["citation"]), reverse=True)
 
@@ -4957,12 +4959,14 @@ class Locusnoteannotation(Base):
     taxonomy = relationship(u'Taxonomy')
 
     def to_dict(self):
+        
+        
         return {
             "category": self.display_name,
             "history_type": "LSP" if self.note_type.upper() == "LOCUS" else self.note_type.upper(),
             "note": self.note,
             "date_created": self.date_created.strftime("%Y-%m-%d"),
-            "references": [self.reference.to_dict_citation()]
+            "references": [self.reference.to_dict_citation()] if self.reference else []
         }
     
 
