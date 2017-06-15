@@ -1950,19 +1950,19 @@ BEGIN
     IF (TG_OP = 'UPDATE') THEN
 
       IF (OLD.display_name != NEW.display_name)THEN
-          PERFORM insertupdatelog('GO_ALIAS'::text, 'DISPLAY_NAME'::text, OLD.alias_id, OLD.display_name, NEW.display_name, USER);
+          PERFORM nex.insertupdatelog('GO_ALIAS'::text, 'DISPLAY_NAME'::text, OLD.alias_id, OLD.display_name, NEW.display_name, USER);
       END IF;
 
       IF (OLD.source_id != NEW.source_id) THEN
-	  PERFORM insertupdatelog('GO_ALIAS'::text, 'SOURCE_ID'::text, OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
+	  PERFORM nex.insertupdatelog('GO_ALIAS'::text, 'SOURCE_ID'::text, OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
      END IF;
 
       IF (OLD.go_id != NEW.go_id) THEN
-	 PERFORM insertupdatelog('GO_ALIAS'::text, 'GO_ID'::text, OLD.alias_id, OLD.go_id::text, NEW.go_id::text, USER);
+	 PERFORM nex.insertupdatelog('GO_ALIAS'::text, 'GO_ID'::text, OLD.alias_id, OLD.go_id::text, NEW.go_id::text, USER);
       END IF;
 
      IF (OLD.alias_type != NEW.alias_type) THEN
- 	 PERFORM insertupdatelog('GO_ALIAS'::text, 'ALIAS_TYPE'::text, OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
+ 	 PERFORM nex.insertupdatelog('GO_ALIAS'::text, 'ALIAS_TYPE'::text, OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
      END IF;
 
      RETURN NEW;
@@ -1970,11 +1970,11 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
      v_row := OLD.alias_id || '[:]' || OLD.display_name || '[:]' ||
-              OLD.source_id || '[:]' || OLD.go_id || '[:]' ||
+              OLD.source_id || '[:]' || OLD.go_id || '[:]' || 
               OLD.alias_type || '[:]' ||
               OLD.date_created || '[:]' || OLD.created_by;
 
-              PERFORM insertdeletelog('GO_ALIAS'::text, OLD.alias_id, v_row, USER);
+              PERFORM nex.insertdeletelog('GO_ALIAS'::text, OLD.alias_id, v_row, USER);
 
      RETURN OLD;
   END IF;
