@@ -2964,7 +2964,7 @@ class Locusdbentity(Dbentity):
             if ref.reference_id not in reference_ids:
                 obj["references"].append(ref_dict)
                 obj["sgdid_ref"][ref.reference.sgdid] = ref.reference
-                
+
             reference_ids.add(ref.reference_id)
 
         summary_references = DBSession.query(LocussummaryReference).filter(LocussummaryReference.summary_id.in_(summary_ids)).order_by(LocussummaryReference.reference_order).all()
@@ -2972,6 +2972,7 @@ class Locusdbentity(Dbentity):
             if s.reference_id not in reference_ids:
                 obj["references"].append(s.reference.to_dict_citation())
                 obj["sgdid_ref"][s.reference.sgdid] = s.reference
+                reference_ids.add(s.reference_id)
 
         obj["references"] = sorted(obj["references"], key=lambda r: (r["year"], r["citation"]), reverse=True)
 
