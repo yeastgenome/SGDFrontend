@@ -5,8 +5,10 @@ import mock
 import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
-from test.mock_helpers import go_side_effect, phenotype_side_effect, locus_side_effect, reference_side_effect, locus_reference_side_effect, locus_expression_side_effect
-from src.views import locus, locus_go_details, locus_phenotype_details, locus_phenotype_graph, locus_literature_details, locus_interaction_details, locus_expression_details
+from test.mock_helpers import go_side_effect, phenotype_side_effect, locus_side_effect, reference_side_effect,\
+    locus_reference_side_effect, locus_expression_side_effect, sequence_side_effect
+from src.views import locus, locus_go_details, locus_phenotype_details, locus_phenotype_graph, locus_literature_details, locus_interaction_details, \
+    locus_expression_details, locus_sequence_details, locus_neighbor_sequence_details
 
 
 class LocusTest(unittest.TestCase):
@@ -16,7 +18,7 @@ class LocusTest(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    #
+
     # @mock.patch('src.models.DBSession.query')
     # def test_should_return_valid_locus(self, mock_search):
     #     mock_search.side_effect = locus_side_effect
@@ -152,3 +154,51 @@ class LocusTest(unittest.TestCase):
          request.matchdict['id'] = 'nonexistent_id'
          response = locus_expression_details(request)
          self.assertEqual(response.status_code, 404)
+
+
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_locus_sequence_details(self, mock_search):
+        mock_search.side_effect = sequence_side_effect
+
+        locus = factory.LocusdbentityFactory()
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        request.matchdict['id'] = "S000114259"
+        response = locus_sequence_details(request)
+        self.assertEqual(response, locus.sequence_details())
+
+
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_non_existent_locus_sequence_details(self, mock_search):
+         mock_search.return_value = MockQuery(None)
+
+         request = testing.DummyRequest()
+         request.context = testing.DummyResource()
+         request.matchdict['id'] = 'nonexistent_id'
+         response = locus_sequence_details(request)
+         self.assertEqual(response.status_code, 404)
+
+
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_locus_neighbor_sequence_details(self, mock_search):
+        mock_search.side_effect = sequence_side_effect
+
+        locus = factory.LocusdbentityFactory()
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        request.matchdict['id'] = "S000114259"
+        response = locus_neighbor_sequence_details(request)
+        self.assertEqual(response, locus.neighbor_sequence_details())
+    #
+    #
+    # @mock.patch('src.models.DBSession.query')
+    # def test_should_return_non_existent_locus_neighbor_sequence_details(self, mock_search):
+    #      mock_search.return_value = MockQuery(None)
+    #
+    #      request = testing.DummyRequest()
+    #      request.context = testing.DummyResource()
+    #      request.matchdict['id'] = 'nonexistent_id'
+    #      response = locus_neighbor_sequence_details(request)
+    #      self.assertEqual(response.status_code, 404)
