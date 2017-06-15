@@ -938,3 +938,36 @@ def locus_posttranslational_details(request):
         return locus.posttranslational_details()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='locus_ecnumber_details', renderer='json', request_method='GET')
+def locus_ecnumber_details(request):
+    id = request.matchdict['id']
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+
+    if locus:
+        return locus.ecnumber_details()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='locus_protein_experiment_details', renderer='json', request_method='GET')
+def locus_protein_experiment_details(request):
+    id = request.matchdict['id']
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+
+    if locus:
+        return locus.protein_experiment_details()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='locus_protein_domain_details', renderer='json', request_method='GET')
+def locus_protein_domain_details(request):
+    id = request.matchdict['id']
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+
+    if locus:
+        return locus.protein_domain_details()
+    else:
+        return HTTPNotFound()
