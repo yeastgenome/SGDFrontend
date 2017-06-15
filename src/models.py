@@ -3531,7 +3531,6 @@ class Locusdbentity(Dbentity):
                     secondary_url = backend_base_segment + d
                     urls.append(secondary_url)
         target_urls = list(set(urls))
-<<<<<<< HEAD
         # filter out graph URLs if is_quick
         if is_quick:
             target_urls = [x for x in target_urls if 'graph' not in x]
@@ -3539,18 +3538,6 @@ class Locusdbentity(Dbentity):
 
     def get_secondary_base_url(self):
         return '/webservice/locus/' + str(self.dbentity_id)
-=======
-        for relative_url in target_urls:
-            for base_url in cache_urls:
-                url = base_url + relative_url
-                try:
-                    # purge
-                    requests.request('PURGE', url)
-                    # prime
-                    response = requests.get(url)
-                except Exception, e:
-                    log('error fetching ' + self.display_name)
->>>>>>> get recent annotations
 
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
