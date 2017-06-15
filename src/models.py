@@ -2820,6 +2820,9 @@ class Locusdbentity(Dbentity):
             },
             "literature_overview": self.literature_overview_to_dict()
         }
+
+        if self.genetic_position:
+            obj["genetic_position"] = self.genetic_position
         
         aliases = DBSession.query(LocusAlias).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type.in_(["Uniform", "Non-uniform", "NCBI protein name", "EC number"])).all()
         for alias in aliases:
