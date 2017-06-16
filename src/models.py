@@ -1797,6 +1797,9 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def protein_domain_graph(self):            
+        return {}
+    
     def protein_domain_details(self):
         annotations = DBSession.query(Proteindomainannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
@@ -1862,7 +1865,7 @@ class Locusdbentity(Dbentity):
 
         protein_dnas = DBSession.query(Proteinsequenceannotation).filter_by(dbentity_id=self.dbentity_id).all()
         for protein_dna in protein_dnas:
-            protein_dna_dict = protein_dna.to_dict()
+            protein_dna_dict = protein_dna.to_dict(locus=self)
             if protein_dna_dict:
                 obj["protein"].append(protein_dna_dict)
 
@@ -6056,6 +6059,49 @@ class ProteinsequenceDetail(Base):
             "pi": float(self.pi)
         }
 
+    def to_dict(self):
+        return {
+            "molecular_weight": float(self.molecular_weight),
+            "protein_length": self.protein_length,
+            "n_term_seq": self.n_term_seq,
+            "c_term_seq": self.c_term_seq,
+            "pi": float(self.pi),
+            "cai": float(self.cai),
+            "codon_bias": float(self.codon_bias),
+            "fop_score": float(self.fop_score),
+            "gravy_score": float(self.gravy_score),
+            "aromaticity_score": float(self.aromaticity_score),
+            "aliphatic_index": float(self.aliphatic_index),
+            "instability_index": float(self.instability_index),
+            "ala": self.ala,
+            "arg": self.arg,
+            "asn": self.asn,
+            "asp": self.asp,
+            "cys": self.cys,
+            "gln": self.gln,
+            "glu": self.glu,
+            "gly": self.gly,
+            "his": self.his,
+            "ile": self.ile,
+            "leu": self.leu,
+            "lys": self.lys,
+            "met": self.met,
+            "phe": self.phe,
+            "pro": self.pro,
+            "ser": self.ser,
+            "thr": self.thr,
+            "trp": self.trp,
+            "tyr": self.tyr,
+            "val": self.val,
+            "hydrogen": self.hydrogen,
+            "sulfur": self.sulfur,
+            "nitrogen": self.nitrogen,
+            "oxygen": self.oxygen,
+            "carbon": self.carbon,
+            "no_cys_ext_coeff": float(self.no_cys_ext_coeff),
+            "all_cys_ext_coeff": float(self.all_cys_ext_coeff)
+        }
+
 class Proteinsequenceannotation(Base):
     __tablename__ = 'proteinsequenceannotation'
     __table_args__ = (
@@ -6086,22 +6132,30 @@ class Proteinsequenceannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
-    def to_dict(self):
-        locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=self.dbentity_id).one_or_none()
+    def to_dict(self, locus=None):
+        if locus is None:
+            locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=self.dbentity_id).one_or_none()
+            
         strains = Straindbentity.get_strains_by_taxon_id(self.contig.taxonomy_id)
 
         if len(strains) == 0:
             return None
-        
-        return {
-            "residues": self.residues,
-            "locus": locus.to_dict_sequence_widget(),
-            "strain": {
+
+        details = DBSession.query(ProteinsequenceDetail).filter_by(annotation_id=self.annotation_id).one_or_none()
+        if details:
+            obj = details.to_dict()
+        else:
+            obj = {}
+
+        obj["residues"] = self.residues
+        obj["locus"] = locus.to_dict_sequence_widget()
+        obj["strain"] = {
                 "display_name": strains[0].display_name,
                 "status": strains[0].strain_type,
                 "format_name": strains[0].format_name
             }
-        }
+        
+        return obj
 
 class Psimod(Base):
     __tablename__ = 'psimod'

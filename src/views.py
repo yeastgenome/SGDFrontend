@@ -971,3 +971,14 @@ def locus_protein_domain_details(request):
         return locus.protein_domain_details()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='locus_protein_domain_graph', renderer='json', request_method='GET')
+def locus_protein_domain_graph(request):
+    id = request.matchdict['id']
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+
+    if locus:
+        return locus.protein_domain_graph()
+    else:
+        return HTTPNotFound()
