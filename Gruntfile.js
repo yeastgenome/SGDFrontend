@@ -217,7 +217,6 @@ module.exports = function(grunt) {
     grunt.registerTask("compileDev", ["static", "concurrent:dev"]);
 
     // compile dev, then watch and trigger live reload
-    
     grunt.registerTask("dev", ["compileDev", "watch"]);
     
     grunt.registerTask("default", ["static", "concurrent:production"]);
