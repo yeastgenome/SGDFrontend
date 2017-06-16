@@ -216,11 +216,8 @@ module.exports = function(grunt) {
     // dev helper task
     grunt.registerTask("compileDev", ["static", "concurrent:dev"]);
 
-    /* compile dev, then watch and trigger live reload
-     * test production build in dev:
-     * -change dev:option:transform with production parameters 
-     * -change grunt.registerTask("dev", ["compileDev","uglify:dynamicJs", "watch"]);
-    */
+    // compile dev, then watch and trigger live reload
+    
     grunt.registerTask("dev", ["compileDev", "watch"]);
     
     grunt.registerTask("default", ["static", "concurrent:production"]);
