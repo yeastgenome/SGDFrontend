@@ -1797,9 +1797,92 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
-    def protein_domain_graph(self):            
-        return {}
-    
+    def protein_domain_graph(self):
+        main_gene_proteindomain_annotations = DBSession.query(Proteindomainannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        main_gene_proteindomain_ids = [a.proteindomain_id for a in main_gene_proteindomain_annotations]
+
+        genes_sharing_proteindomain = DBSession.query(Proteindomainannotation).filter((Proteindomainannotation.proteindomain_id.in_(main_gene_proteindomain_ids)) & (Proteindomainannotation.dbentity_id != self.dbentity_id)).all()
+        genes_to_proteindomain = {}
+        for annotation in genes_sharing_proteindomain:
+            gene = annotation.dbentity_id
+            proteindomain = annotation.proteindomain_id
+            if gene in genes_to_proteindomain:
+                genes_to_proteindomain[gene].add(proteindomain)
+            else:
+                genes_to_proteindomain[gene] = set([proteindomain])
+        
+        list_genes_to_proteindomain = sorted([(g, genes_to_proteindomain[g]) for g in genes_to_proteindomain], key=lambda x: len(x[1]), reverse=True)
+        
+        edges = []
+        nodes = {}
+
+        edges_added = set([])
+
+        nodes[self.format_name] = {
+            "data": {
+                "name": self.display_name,
+                "id": self.format_name,
+                "link": self.obj_url,
+                "type": "BIOENTITY",
+                "sub_type": "FOCUS"
+            }
+        }
+        
+        i = 0
+        while i < len(list_genes_to_proteindomain) and len(nodes) <= 30 and len(edges) <= 50:
+            dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=list_genes_to_proteindomain[i][0]).one_or_none()
+
+            proteindomain_ids = list_genes_to_proteindomain[i][1]
+
+            if dbentity[1] not in nodes:
+                nodes[dbentity[1]] = {
+                    "data": {
+                        "name": dbentity[0],
+                        "id": dbentity[1],
+                        "link": dbentity[2],
+                        "type": "BIOENTITY"
+                    }
+                }                    
+                
+            for proteindomain_id in proteindomain_ids:
+                proteindomain = DBSession.query(Proteindomain).filter_by(proteindomain_id=proteindomain_id).one_or_none()
+
+                if proteindomain.format_name not in nodes:
+                    nodes[proteindomain.format_name] = {
+                        "data": {
+                            "name": proteindomain.display_name,
+                            "id": proteindomain.format_name,
+                            "type": "DOMAIN",
+                            "source": proteindomain.source.display_name
+                        }
+                    }
+                
+                if (proteindomain.format_name + " " + dbentity[1]) not in edges_added:
+                    edges.append({
+                        "data": {
+                            "source": proteindomain.format_name,
+                            "target": dbentity[1]
+                        }
+                    })
+                    edges_added.add(proteindomain.format_name + " " + dbentity[1])
+
+                if (proteindomain.format_name + " " + self.format_name) not in edges_added:
+                    edges.append({
+                        "data": {
+                            "source": proteindomain.format_name,
+                            "target": self.format_name
+                        }
+                    })
+                    edges_added.add(proteindomain.format_name + " " + self.format_name)
+
+            i += 1
+
+        return {
+            "nodes": [nodes[n] for n in nodes],
+            "edges": edges
+        }
+
+
     def protein_domain_details(self):
         annotations = DBSession.query(Proteindomainannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
