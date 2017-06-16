@@ -2952,10 +2952,9 @@ class Locusdbentity(Dbentity):
         if self.genetic_position:
             obj["genetic_position"] = self.genetic_position
         
-        aliases = DBSession.query(LocusAlias).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type.in_(["Uniform", "Non-uniform", "NCBI protein name", "EC number"])).all()
+#        aliases = DBSession.query(LocusAlias).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type.in_(["Uniform", "Non-uniform", "NCBI protein name", "EC number", "Protein GI", "PDB ID Chain", "UniProtKB/Swiss-Prot ID"])).all()
+        aliases = DBSession.query(LocusAlias).filter_by(locus_id=self.dbentity_id).all()
         for alias in aliases:
-            category = ""
-
             if alias.alias_type == "EC number":
                 ecnumber = {
                     "display_name": alias.display_name,
@@ -2968,17 +2967,26 @@ class Locusdbentity(Dbentity):
                     obj["ecnumbers"] = [ecnumber]
 
                 continue
-            
+
+            category = ""
             if alias.alias_type == "Uniform" or alias.alias_type == "Non-uniform":
                 category = "Alias"
             elif alias.alias_type == "NCBI protein name":
                 category = "NCBI protein name"
+            else:
+                category = alias.alias_type
 
             references_alias = DBSession.query(LocusAliasReferences).filter_by(alias_id=alias.alias_id).all()
             obj["aliases"].append({
+                "id": alias.alias_id,
                 "display_name": alias.display_name,
+                "link": alias.obj_url,
                 "category": category,
-                "references": [r.reference.to_dict_citation() for r in references_alias]
+                "references": [r.reference.to_dict_citation() for r in references_alias],
+                "source": {
+                    "display_name": alias.source.display_name
+                },
+                "protein": True
             })
 
         sos = DBSession.query(Dnasequenceannotation.so_id).filter_by(dbentity_id=self.dbentity_id).group_by(Dnasequenceannotation.so_id).all()
@@ -5122,9 +5130,15 @@ class LocusUrl(Base):
 
     def to_dict(self):
         placement = self.placement
-        if placement.endswith('INTERACTION_RESOURCES') or placement.endswith('EXPRESSION_RESOURCES'):
+        if placement.endswith('INTERACTION_RESOURCES') or placement.endswith('EXPRESSION_RESOURCES') or placement.startswith('LOCUS_PROTEIN'):
             placement = self.placement.replace("_RESOURCES", "", 1)
-        
+
+        if placement == "LOCUS_PROTEIN_LOCALIZATION": # yes, this typo is propagated in the frontend, so it needs to be 'adjusted' here
+            placement = "LOCUS_PROEIN_LOCALIZATION"
+
+        if placement == "LOCUS_PROTEIN_PTM":
+            placement = "LOCUS_PROTEIN_MODIFICATIONS"
+
         return {
             "category": placement,
             "link": self.obj_url,
