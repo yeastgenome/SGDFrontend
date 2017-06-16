@@ -83,19 +83,9 @@
     "htmltidy": "0.0.6",
     "loose-envify": "^1.2.0",
     "mocha": "^2.3.4",
-<<<<<<< HEAD
-    "react": "^15.4.0",
-    "react-dom": "^15.4.0",
     "uglify-js": "^3.0.15",
     "uglifyify": "^3.0.4",
     "webpack": "^2.6.1",
-=======
-    "react": "^0.14.9",
-    "react-dom": "^0.14.9",
-    "uglify-js": "^3.0.15",
-    "uglifyify": "^3.0.4",
-    "webpack": "^1.14.0",
->>>>>>> added plugins to help react prod-build
     "webworkify": "^1.0.2"
   }
 }
