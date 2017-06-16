@@ -208,5 +208,5 @@ def get_redirect_url_from_results(results):
 
 # needed to force https redirects on reverse proxy LB
 def get_https_url(url, request):
-    host = request.host_url.replace('http', 'https')
+    host = request.host_url.replace('http', 'https').replace(':8080', '')
     return host + url
