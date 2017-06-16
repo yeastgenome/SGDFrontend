@@ -78,6 +78,10 @@ def main(global_config, **settings):
     config.add_route('locus_protein_experiment_details', '/locus/{id}/protein_experiment_details', request_method='GET')
     config.add_route('locus_protein_domain_details', '/locus/{id}/protein_domain_details', request_method='GET')
     config.add_route('locus_protein_domain_graph', '/locus/{id}/protein_domain_graph', request_method='GET')
+
+    config.add_route('domain','/domain/{format_name}', request_method='GET')
+    config.add_route('domain_locus_details','/domain/{id}/locus_details', request_method='GET')
+    config.add_route('domain_enrichment','/domain/{id}/enrichment', request_method='GET')
     
     config.add_route('contig', '/contig/{format_name}', request_method='GET')
     config.add_route('contig_sequence_details', '/contig/{id}/sequence_details', request_method='GET')

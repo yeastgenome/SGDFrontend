@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig, Proteindomain
 
 from .celery_tasks import upload_to_s3
 
@@ -980,5 +980,38 @@ def locus_protein_domain_graph(request):
 
     if locus:
         return locus.protein_domain_graph()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='domain', renderer='json', request_method='GET')
+def domain(request):
+    format_name = request.matchdict['format_name']
+
+    proteindomain = DBSession.query(Proteindomain).filter(func.lower(Proteindomain.format_name) == func.lower(format_name)).one_or_none()
+
+    if proteindomain:
+        return proteindomain.to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='domain_locus_details', renderer='json', request_method='GET')
+def domain_locus_details(request):
+    id = request.matchdict['id']
+
+    proteindomain = DBSession.query(Proteindomain).filter_by(proteindomain_id=id).one_or_none()
+
+    if proteindomain:
+        return proteindomain.locus_details()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='domain_enrichment', renderer='json', request_method='GET')
+def domain_enrichment(request):
+    id = request.matchdict['id']
+
+    proteindomain = DBSession.query(Proteindomain).filter_by(proteindomain_id=id).one_or_none()
+
+    if proteindomain:
+        return proteindomain.enrichment()
     else:
         return HTTPNotFound()

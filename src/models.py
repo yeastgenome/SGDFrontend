@@ -5950,6 +5950,58 @@ class Proteindomain(Base):
 
     source = relationship(u'Source')
 
+    def to_dict(self):
+        urls = DBSession.query(ProteindomainUrl).filter_by(proteindomain_id=self.proteindomain_id).all()
+        
+        obj = {
+            "id": self.proteindomain_id,
+            "link": self.obj_url,
+            "display_name": self.display_name,
+            "urls": [u.to_dict() for u in urls],
+            "source": {
+                "display_name": self.source.display_name
+            },
+            "description": None
+        }
+
+        if self.description and len(self.description) > 0:
+            obj["description"] = self.description
+
+        return obj
+
+    def locus_details(self):
+        annotations = DBSession.query(Proteindomainannotation).filter_by(proteindomain_id=self.proteindomain_id).all()
+        return [a.to_dict(proteindomain=self) for a in annotations]
+
+    def enrichment(self):
+        dbentity_ids = DBSession.query(Proteindomainannotation.dbentity_id).distinct(Proteindomainannotation.dbentity_id).filter_by(proteindomain_id=self.proteindomain_id).all()
+        format_names = DBSession.query(Dbentity.format_name).filter(Dbentity.dbentity_id.in_(dbentity_ids)).all()
+
+        data = {
+            "genes": ",".join([f[0] for f in format_names]),
+            "aspect": "P"
+        }
+        headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
+        
+        try:
+            response = requests.post(os.environ['BATTER_URI'], data=json.dumps(data), headers=headers).text
+            
+            response_json = json.loads(response.split('\n')[1])
+        except:
+            return []
+
+        obj = []
+        for row in response_json:
+            obj.append({
+                "go": {
+                    "display_name": row["term"],
+                    "link": '/go/' + row["goid"],
+                    "id": row["goid"]
+                },
+                "match_count": row["num_gene_annotated"],
+                "pvalue": row["pvalue"]
+            })
+        return obj
 
 class ProteindomainUrl(Base):
     __tablename__ = 'proteindomain_url'
@@ -5970,6 +6022,12 @@ class ProteindomainUrl(Base):
     proteindomain = relationship(u'Proteindomain')
     source = relationship(u'Source')
 
+    def to_dict(self):
+        return {
+            "link": self.obj_url,
+            "display_name": self.display_name
+        }
+    
 
 class Proteindomainannotation(Base):
     __tablename__ = 'proteindomainannotation'
@@ -5996,19 +6054,22 @@ class Proteindomainannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
-    def to_dict(self, locus=None):
+    def to_dict(self, locus=None, proteindomain=None):
         if locus is None:
             locus = self.dbentity
+
+        if proteindomain is None:
+            proteindomain = self.proteindomain
 
         count = DBSession.query(Proteindomainannotation).distinct(Proteindomainannotation.dbentity_id).filter_by(proteindomain_id=self.proteindomain_id).count()
 
         return {
             "id": self.annotation_id,
             "domain": {
-                "link": self.proteindomain.obj_url,
-                "display_name": self.proteindomain.display_name,
+                "link": proteindomain.obj_url,
+                "display_name": proteindomain.display_name,
                 "count": count,
-                "description": self.proteindomain.description
+                "description": proteindomain.description
             },
             "start": self.start_index,
             "end": self.end_index,
@@ -6019,9 +6080,9 @@ class Proteindomainannotation(Base):
                 "link": locus.obj_url
             },
             "source": {
-                "id": self.proteindomain.source_id,
-                "format_name": self.proteindomain.source.format_name,
-                "display_name": self.proteindomain.source.display_name
+                "id": proteindomain.source_id,
+                "format_name": proteindomain.source.format_name,
+                "display_name": proteindomain.source.display_name
             }
         }
 
