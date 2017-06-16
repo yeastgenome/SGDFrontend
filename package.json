@@ -26,6 +26,7 @@
     }
   },
   "dependencies": {
+    "axios": "^0.16.1",
     "body-parser": "^1.13.2",
     "bootstrap": "~3.3.1",
     "browserify-shim": "~3.8.3",
@@ -37,15 +38,17 @@
     "isomorphic-fetch": "^2.1.1",
     "pluralize": "^1.2.1",
     "radium": "^0.17.1",
-    "react": "^0.14.2",
-    "react-dom": "^0.14.2",
+    "react": "^0.14.9",
+    "react-dom": "^0.14.9",
     "react-redux": "^2.1.2",
     "react-router": "^1.0.2",
     "react-router-redux": "^2.1.0",
     "react-select": "^0.9.1",
     "redux": "^3.5.2",
+    "redux-promise": "^0.5.3",
     "redux-thunk": "^1.0.0",
     "sgd_visualization": "^1.0.12",
+    "string": "^3.3.3",
     "tcomb-form": "^0.8.0",
     "tcomb-json-schema": "^0.2.3",
     "underscore": "~1.6.0"
@@ -61,6 +64,9 @@
     "babel-preset-react": "^6.5.0",
     "babelify": "^7.2.0",
     "bower": "~1.3.3",
+    "browserify-css": "^0.10.0",
+    "bundle-collapser": "^1.2.1",
+    "envify": "^4.0.0",
     "fastclick": "~1.0.3",
     "grunt": "~0.4.5",
     "grunt-aws": "~0.5.0",
@@ -77,6 +83,11 @@
     "htmltidy": "0.0.6",
     "loose-envify": "^1.2.0",
     "mocha": "^2.3.4",
+    "react": "^0.14.9",
+    "react-dom": "^0.14.9",
+    "uglify-js": "^3.0.15",
+    "uglifyify": "^3.0.4",
+    "webpack": "^1.14.0",
     "webworkify": "^1.0.2"
   }
 }
