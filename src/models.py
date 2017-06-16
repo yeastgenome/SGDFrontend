@@ -5922,10 +5922,11 @@ class Proteindomainannotation(Base):
                 "link": locus.obj_url
             },
             "source": {
-                "display_name": self.source.display_name
+                "id": self.proteindomain.source_id,
+                "format_name": self.proteindomain.source.format_name,
+                "display_name": self.proteindomain.source.display_name
             }
         }
-    
 
 
 class Proteinexptannotation(Base):
