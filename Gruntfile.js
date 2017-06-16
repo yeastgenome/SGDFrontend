@@ -132,7 +132,10 @@ module.exports = function(grunt) {
                     browserifyOptions: {
                         debug: true
                     },
-                    transform: ["babelify", ["loose-envify", { "NODE_ENV": "development" }]]
+                    transform: [
+                        "babelify",
+                        ["envify",{global:true,NODE_ENV:"development"}]
+                        ]
                 }
             },
             production: {
@@ -142,7 +145,11 @@ module.exports = function(grunt) {
                     browserifyOptions: {
                         debug: false
                     },
-                    transform: ["babelify", ["loose-envify", { "NODE_ENV": "production" }]]
+                    transform: [
+                        "babelify",
+                        ["uglifyify",{global:true}],
+                        ["envify",{global:true,NODE_ENV:"production"}]
+                        ]
                 }
             }
         },
@@ -209,7 +216,11 @@ module.exports = function(grunt) {
     // dev helper task
     grunt.registerTask("compileDev", ["static", "concurrent:dev"]);
 
-    // compile dev, then watch and trigger live reload
+    /* compile dev, then watch and trigger live reload
+     * test production build in dev:
+     * -change dev:option:transform with production parameters 
+     * -change grunt.registerTask("dev", ["compileDev","uglify:dynamicJs", "watch"]);
+    */
     grunt.registerTask("dev", ["compileDev", "watch"]);
     
     grunt.registerTask("default", ["static", "concurrent:production"]);
