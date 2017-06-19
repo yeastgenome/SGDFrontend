@@ -6309,10 +6309,11 @@ class Proteinsequenceannotation(Base):
         obj["residues"] = self.residues
         obj["locus"] = locus.to_dict_sequence_widget()
         obj["strain"] = {
-                "display_name": strains[0].display_name,
-                "status": strains[0].strain_type,
-                "format_name": strains[0].format_name
-            }
+            "display_name": strains[0].display_name,
+            "status": strains[0].strain_type,
+            "format_name": strains[0].format_name,
+            "description": strains[0].headline
+        }
         
         return obj
 
