@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import ColleagueFormShow from './colleagues/colleagueFormShow';
+import ColleagueFormShow from './colleagueFormShow';
 
 class ColleaguesEdit extends Component {
   render() {
