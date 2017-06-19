@@ -132,7 +132,10 @@ module.exports = function(grunt) {
                     browserifyOptions: {
                         debug: true
                     },
-                    transform: ["babelify", ["loose-envify", { "NODE_ENV": "development" }]]
+                    transform: [
+                        "babelify",
+                        ["envify",{global:true,NODE_ENV:"development"}]
+                        ]
                 }
             },
             production: {
@@ -142,7 +145,11 @@ module.exports = function(grunt) {
                     browserifyOptions: {
                         debug: false
                     },
-                    transform: ["babelify", ["loose-envify", { "NODE_ENV": "production" }]]
+                    transform: [
+                        "babelify",
+                        ["uglifyify",{global:true}],
+                        ["envify",{global:true,NODE_ENV:"production"}]
+                        ]
                 }
             }
         },
@@ -210,6 +217,7 @@ module.exports = function(grunt) {
     grunt.registerTask("compileDev", ["static", "concurrent:dev"]);
 
     // compile dev, then watch and trigger live reload
+    
     grunt.registerTask("dev", ["compileDev", "watch"]);
     
     grunt.registerTask("default", ["static", "concurrent:production"]);

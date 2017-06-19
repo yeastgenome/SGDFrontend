@@ -47,6 +47,10 @@ $warning-color: #e6df67 !default;
 button.small, .button.small {
     padding: 0.675rem 1.6rem 0.7375rem;  
 }
+a[href^="http"].hide-external-link-icon:after, td a[href^="http"].hide-external-link-icon:after{
+    content:none !important;
+   
+}
 
 // show offsite icon for offsite links
 a[href^="http"]:after, td a[href^="http"]:after        {

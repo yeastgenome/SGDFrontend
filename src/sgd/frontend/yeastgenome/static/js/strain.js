@@ -8,7 +8,9 @@ $(document).ready(function() {
         set_up_references(strain['paragraph']['references'], "summary_paragraph_reference_list");
     }
     var contig_table = create_contig_table(strain['contigs']);
-    create_download_button("contig_table_download", contig_table, strain['display_name'] + "_contigs");
+    if (strain['contigs'].length > 0) {
+	create_download_button("contig_table_download", contig_table, strain['display_name'] + "_contigs");
+    }
     $("#contig_table_analyze").hide();
 });
 

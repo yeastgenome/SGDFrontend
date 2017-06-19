@@ -43,7 +43,7 @@
                             <dt>GEO ID</dt>
                             <dd>
                                 {% for url in dataset.urls if url.category == 'External' %}
-                                   <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>
+                                   <a href="{{ url.link }}" target="_blank">{{ dataset.geo_id }}</a>
                                 {% endfor %}
                                 {% if dataset.urls|length == 0 %}
                                    {{ dataset.geo_id }}

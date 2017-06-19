@@ -1,58 +1,6 @@
-// styles applied to pages created by wordpress
 .orbit-container .orbit-slides-container>* .orbit-caption {
 	font-size: 0.75rem;
 	padding: 0.4rem 0.5rem;
-}
-
-ul.subblog {
-	list-style-type: none;
-}
-
-.content-wp p {
-	font-size: 14px;
-}
-
-.blog-bottom-header {
-	margin-bottom: 0;
-}
-
-.blog-bottom-header.blog-meetings-header {
-	margin-bottom: 1rem;
-}
-
-#upcoming-events {
-	margin-left: 0;
-}
-
-#upcoming-events li {
-	list-style-type: none;
-}
-
-#upcoming-events .future-event h4 a {
-	font-family: Lato, sans-serif;
-	font-size: 1rem;
-}
-
-#leftnav {
-	margin-top: 1.5rem;
-}
-
-.news-container p, ul.advanced-recent-posts li {
-	font-size: 14px;
-}
-
-ul.advanced-recent-posts li a:first-child {
-	font-size: 16px;
-}
-
-.advanced-recent-posts .date {
-	display: block;
-	margin: 0;
-	font-size: 16px;
-}
-
-.advanced-recent-posts br {
-	display: none;
 }
 
 #content .wp-caption.alignleft {
@@ -63,4 +11,25 @@ ul.advanced-recent-posts li a:first-child {
 #content .wp-caption.alignright {
 	float: right;
 	margin-left: 1.5rem;
+}
+
+.homepage-blog-entry {
+	margin-bottom: 1.5rem;
+}
+
+.homepage-blog-entry p {
+	margin-bottom: 0;
+}
+
+.homepage-blog-title {
+	font-weight: bold;
+}
+
+.simple-list > p {
+	margin-top: 0.4rem;
+	margin-bottom: 0;
+}
+
+.simple-list > ul {
+	list-style-type: none;
 }

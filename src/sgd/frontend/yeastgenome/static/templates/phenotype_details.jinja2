@@ -36,7 +36,7 @@
 <!-- Overview
 ================================================== -->
 <section id="overview" data-magellan-destination="overview">
-    <a href="/help/PhenoHelp.html" name="top" class="documentation-link">Phenotype Help <i class="fa fa-question-circle"></i></a>
+    <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/function-help/phenotypes" name="top" class="documentation-link">Phenotype Help <i class="fa fa-question-circle"></i></a>
     <h1>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %} Phenotype
         <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
 
@@ -109,19 +109,19 @@
         <div class="panel">
             <h3>Mutant Strains</h3>
                 <p id="mutant_resources_list">
-                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_MUTANT_STRAINS'%}
+                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_MUTANT_STRAINS'%}
                         <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                     {% endfor %}
                 </p>
             <h3>Phenotype Resources</h3>
                 <p id="phenotype_resources_list">
-                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_PHENOTYPE_RESOURCES'%}
+                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_PHENOTYPE_RESOURCES'%}
                         <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                     {% endfor %}
                 </p>
             <h3>Ontology</h3>
                 <p id="ontology_resources_list">
-                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_ONTOLOGY'%}
+                    {% for url in locus.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_ONTOLOGY'%}
                         <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                     {% endfor %}
                 </p>

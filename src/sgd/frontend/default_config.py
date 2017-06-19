@@ -1,5 +1,5 @@
 heritage_url = None
-backend_url = 'http://www.yeastgenome.org/webservice'
+backend_url = 'https://www.qa.yeastgenome.org/webservice'
 secret_key = 'secret key here'
 sender = 'email address here'
 author_response_file = 'file with full path here'

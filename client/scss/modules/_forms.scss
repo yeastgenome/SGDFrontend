@@ -57,3 +57,20 @@ input.form-pad, button.form-pad, textarea.form-pad {
 .button-bar.bottom-space {
     margin-bottom: 1rem;
 }
+
+.form-read-field {
+    padding: 0.5rem 0.25rem 0 0.25rem;
+    border-bottom: 1px solid #E2E2E2;
+}
+
+.form-read-field:nth-child(1) {
+    border-top: 1px solid #E2E2E2;
+}
+
+.form-read-field:nth-child(odd) {
+    background: #F7F7F7;
+}
+
+.form-read-field .key-value {
+    margin-bottom: 0.25rem;
+}

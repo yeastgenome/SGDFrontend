@@ -1,7 +1,7 @@
 import unittest
 from pyramid import testing
 
-EXAMPLE_IDENTIFIER = 'rad54'
+EXAMPLE_IDENTIFIER = 'S000003131'
 
 class SGDViewTests(unittest.TestCase):
     def setUp(self):

@@ -43,7 +43,7 @@
                         {% set references = [locus.reserved_name.reference] %}
                         {% include "biblio_references.jinja2" %}
                         <i>This name is reserved with SGD according to the
-                        <a href="http://www.yeastgenome.org/help/community/gene-registry">Gene Naming Guidelines</a>
+                        <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/community-help/gene-registry">Gene Naming Guidelines</a>
                         agreed upon by the yeast community.</i></dd>
                 {% endif %}
 
@@ -675,13 +675,13 @@
 
     <!-- Resources
 ================================================== -->
-    {% for url in locus.urls if url.category == 'LOCUS_LSP' %}{% if loop.first %}
+    {% for url in locus.urls if url.category == 'LOCUS_LSP_RESOURCES' %}{% if loop.first %}
     <section id="resources">
         <h2>Resources</h2>
         <hr />
         <div class="panel">
             <p>
-                {% for url in locus.urls if url.category == 'LOCUS_LSP'%}
+                {% for url in locus.urls if url.category == 'LOCUS_LSP_RESOURCES'%}
                     <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                 {% endfor %}
             </p>

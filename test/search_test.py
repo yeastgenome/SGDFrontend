@@ -36,9 +36,9 @@ class SGDViewTests(unittest.TestCase):
         res = get_response_with_query('act1p')
         self.assertEqual(res.status_code, 302)
 
-    def test_alias_redirect(self):
-        res = get_response_with_query('end7')
-        self.assertEqual(res.status_code, 302)
+    # def test_alias_redirect(self):
+    #     res = get_response_with_query('end7')
+    #     self.assertEqual(res.status_code, 302)
 
     def test_multi_alias_not_redirect(self):
         res = get_response_with_query('acr1')
