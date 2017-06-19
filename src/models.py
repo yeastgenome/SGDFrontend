@@ -801,13 +801,24 @@ class Colleague(Base):
 
     source = relationship(u'Source')
 
-    def _include_keywords_to_dict(self, colleague_dict):
+    def to_dict(self):
+        _dict = {
+            "colleague_id": self.colleague_id,
+            "orcid": self.orcid,
+            "first_name": self.first_name,
+            "middle_name": self.middle_name,
+            "last_name": self.last_name,
+            "suffix": self.suffix,
+            "institution": self.institution,
+            "email": self.email,
+            "link": self.obj_url
+        }
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
         if len(keyword_ids) > 0:
             ids_query = [k[0] for k in keyword_ids]
             keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(ids_query)).all()
-            colleague_dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
-    
+            _dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
+        return _dict    
 
 class ColleagueKeyword(Base):
     __tablename__ = 'colleague_keyword'
