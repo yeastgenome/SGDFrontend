@@ -6,8 +6,6 @@ import Layout from './containers/layout';
 import PublicHome from './containers/publicHome';
 // import ColleaguesIndex from './containers/colleagues/index';
 // import ColleaguesShow from './containers/colleagues/show';
-import NewColleague from './containers/colleagues/new';
-import EditColleague from './containers/colleagues/edit';
 import Help from './containers/help';
 import Login from './containers/login';
 // authenticated curate inputs
@@ -17,6 +15,7 @@ import CurateHome from './containers/curateHome';
 import Search from './containers/search';
 import LocusShow from './containers/locus/show';
 import TriageIndex from './containers/triage';
+import SpreadsheetUpload from './containers/spreadsheetUpload/index';
 // curate lit biz
 import Blank from './components/blank';
 import CurateLit from './containers/curateLit/layout';
@@ -24,8 +23,10 @@ import CurateLitBasic from './containers/curateLit/basic';
 import CurateLitPhenotype from './containers/curateLit/phenotype';
 // import CurateLitOverview from './containers/curateLit/index';
 // public interfaces with no layout
+import PublicLayout from './containers/layout/PublicLayout';
 import AuthorResponse from './containers/authorResponse/index';
-import SpreadsheetUpload from './containers/spreadsheetUpload/index';
+import NewColleague from './containers/colleagues/new';
+import EditColleague from './containers/colleagues/edit';
 
 // <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
 export default (
