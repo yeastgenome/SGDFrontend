@@ -108,7 +108,7 @@ def colleague_by_format_name(request):
     colleague = DBSession.query(Colleague).filter(Colleague.format_name == format_name).one_or_none()
     
     if colleague:
-        return colleague.to_info_dict()
+        return colleague.to_dict()
     else:
         return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
 
