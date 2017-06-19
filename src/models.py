@@ -926,7 +926,7 @@ class Colleaguetriage(Base):
     curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.curation_seq'::regclass)"))
     triage_type = Column(String(10), nullable=False)
     colleague_id = Column(BigInteger)
-    colleague_data = Column(Text, nullable=False)
+    json = Column(Text, nullable=False)
     curator_comment = Column(String(500))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
