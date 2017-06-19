@@ -34,7 +34,7 @@ sub vcl_backend_response {
       return (deliver);
     }
 
-    set beresp.ttl = 1d;
+    set beresp.ttl = 23.75h;
     set beresp.grace = 30s;
 
     unset beresp.http.Server;
