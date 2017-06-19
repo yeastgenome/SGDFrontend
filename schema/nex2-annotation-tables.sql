@@ -269,7 +269,8 @@ CREATE TABLE nex.expressionannotation (
 	taxonomy_id bigint NOT NULL,
 	reference_id bigint,
 	datasetsample_id bigint NOT NULL,
-	expression_value double precision NOT NULL,
+	normalized_expression_value double precision NOT NULL,
+    log_ratio_value double precision NOT NULL,
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
 	CONSTRAINT expressionannotation_pk PRIMARY KEY (annotation_id)
@@ -279,7 +280,8 @@ COMMENT ON COLUMN nex.expressionannotation.datasetsample_id IS 'FK to DATASAMPLE
 COMMENT ON COLUMN nex.expressionannotation.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.expressionannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.expressionannotation.created_by IS 'Username of the person who entered the record into the database.';
-COMMENT ON COLUMN nex.expressionannotation.expression_value IS 'Numerical value of the expression annotation.';
+COMMENT ON COLUMN nex.expressionannotation.normalized_expression_value IS 'Expression value from SPELL where only 2 channel values are normalized.';
+COMMENT ON COLUMN nex.expressionannotation.log_ratio_value IS 'Both 1 channel and 2 channel expression values are log2 normalized.';
 COMMENT ON COLUMN nex.expressionannotation.annotation_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.expressionannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
 COMMENT ON COLUMN nex.expressionannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
