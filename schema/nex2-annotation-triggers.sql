@@ -753,8 +753,12 @@ BEGIN
         PERFORM nex.insertupdatelog('EXPRESSIONANNOTATION'::text, 'DATASETSAMPLE_ID'::text, OLD.annotation_id, OLD.datasetsample_id::text, NEW.datasetsample_id::text, USER);
     END IF;
 
-    IF (OLD.expression_value != NEW.expression_value) THEN
-        PERFORM nex.insertupdatelog('EXPRESSIONANNOTATION'::text, 'EXPRESSION_VALUE'::text, OLD.annotation_id, OLD.expression_value::text, NEW.expression_value::text, USER);
+    IF (OLD.normalized_expression_value != NEW.normalized_expression_value) THEN
+        PERFORM nex.insertupdatelog('EXPRESSIONANNOTATION'::text, 'NORMALIZED_EXPRESSION_VALUE'::text, OLD.annotation_id, OLD.normalized_expression_value::text, NEW.normalized_expression_value::text, USER);
+    END IF;
+
+    IF (OLD.log_ratio_value != NEW.log_ratio_value) THEN
+        PERFORM nex.insertupdatelog('EXPRESSIONANNOTATION'::text, 'LOG_RATIO_VALUE'::text, OLD.annotation_id, OLD.log_ratio_value::text, NEW.log_ratio_value::text, USER);
     END IF;
 
     RETURN NEW;
@@ -764,7 +768,8 @@ BEGIN
     v_row := OLD.annotation_id || '[:]' || OLD.dbentity_id || '[:]' ||
              OLD.source_id || '[:]' || OLD.taxonomy_id || '[:]' ||
              coalesce(OLD.reference_id,0) || '[:]' || 
-             OLD.datasetsample_id || '[:]' || OLD.expression_value || '[:]' ||
+             OLD.datasetsample_id || '[:]' || OLD.normalized_expression_value || '[:]' ||
+             OLD.log_ratio_value || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
             PERFORM nex.insertdeletelog('EXPRESSIONANNOTATION'::text, OLD.annotation_id, v_row, USER);
