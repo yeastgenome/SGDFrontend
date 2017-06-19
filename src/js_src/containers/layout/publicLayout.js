@@ -36,7 +36,6 @@ class PublicLayout extends Component {
   render() {
     return (
       <div>
-        <ErrorContainer />
         <div className={`${style.publicContainer} callout row`}>
           <div className='columns small-12'>
             {this.props.children}
