@@ -1914,7 +1914,7 @@ class Locusdbentity(Dbentity):
         return obj
     
     def posttranslational_details(self):
-        annotations = DBSession.query(Posttranslationannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        annotations = DBSession.query(Posttranslationannotation).filter_by(dbentity_id=self.dbentity_id).order_by(Posttranslationannotation.site_index).all()
 
         reference_ids = [a.reference_id for a in annotations]
         references = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reference_ids)).all()
@@ -6218,20 +6218,20 @@ class ProteinsequenceDetail(Base):
             "pi": float(self.pi)
         }
 
-    def to_dict(self):
+    def to_dict(self): # I followed the NEX endpoint to convert floats to strings
         return {
-            "molecular_weight": float(self.molecular_weight),
+            "molecular_weight": str(float(self.molecular_weight)),
             "protein_length": self.protein_length,
             "n_term_seq": self.n_term_seq,
             "c_term_seq": self.c_term_seq,
-            "pi": float(self.pi),
-            "cai": float(self.cai),
-            "codon_bias": float(self.codon_bias),
-            "fop_score": float(self.fop_score),
-            "gravy_score": float(self.gravy_score),
-            "aromaticity_score": float(self.aromaticity_score),
-            "aliphatic_index": float(self.aliphatic_index),
-            "instability_index": float(self.instability_index),
+            "pi": str(float(self.pi)),
+            "cai": str(float(self.cai)),
+            "codon_bias": str(float(self.codon_bias)),
+            "fop_score": str(float(self.fop_score)),
+            "gravy_score": str(float(self.gravy_score)),
+            "aromaticity_score": str(float(self.aromaticity_score)),
+            "aliphatic_index": str(float(self.aliphatic_index)),
+            "instability_index": str(float(self.instability_index)),
             "ala": self.ala,
             "arg": self.arg,
             "asn": self.asn,
@@ -6257,8 +6257,8 @@ class ProteinsequenceDetail(Base):
             "nitrogen": self.nitrogen,
             "oxygen": self.oxygen,
             "carbon": self.carbon,
-            "no_cys_ext_coeff": float(self.no_cys_ext_coeff),
-            "all_cys_ext_coeff": float(self.all_cys_ext_coeff)
+            "no_cys_ext_coeff": str(float(self.no_cys_ext_coeff)),
+            "all_cys_ext_coeff": str(float(self.all_cys_ext_coeff))
         }
 
 class Proteinsequenceannotation(Base):
