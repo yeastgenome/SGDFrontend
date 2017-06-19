@@ -4,6 +4,10 @@ import { IndexRoute, Route  } from 'react-router';
 // unauthenticated routes and layout
 import Layout from './containers/layout';
 import PublicHome from './containers/publicHome';
+// import ColleaguesIndex from './containers/colleagues/index';
+// import ColleaguesShow from './containers/colleagues/show';
+import NewColleague from './containers/colleagues/new';
+import EditColleague from './containers/colleagues/edit';
 import Help from './containers/help';
 import Login from './containers/login';
 // authenticated curate inputs
@@ -25,26 +29,33 @@ import SpreadsheetUpload from './containers/spreadsheetUpload/index';
 
 // <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
 export default (
-  <Route component={Layout} path='/'>
-    <IndexRoute component={PublicHome} />
-    <Route component={Help} path='help' />
-    <Route component={requireAuthentication(Search)} path='search' />
-    <Route component={Login} path='login' />
-    <Route component={CurateLayout} path='curate'>
-      <IndexRoute component={requireAuthentication(CurateHome)} />
-      <Route component={requireAuthentication(TriageIndex)} path='triage' />
-      <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
+  <Route>
+    <Route component={Layout} path='/'>
+      <IndexRoute component={PublicHome} />
+      <Route component={Help} path='help' />
+      <Route component={requireAuthentication(Search)} path='search' />
+      <Route component={Login} path='login' />
+      <Route component={CurateLayout} path='curate'>
+        <IndexRoute component={requireAuthentication(CurateHome)} />
+        <Route component={requireAuthentication(TriageIndex)} path='triage' />
+        <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
+      </Route>
+      <Route component={requireAuthentication(LocusShow)} path='curate/locus/:id' />
+      <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
+        <IndexRoute component={requireAuthentication(CurateLitBasic)} />
+        <Route component={requireAuthentication(Blank)} path='protein' />
+        <Route component={requireAuthentication(CurateLitPhenotype)} path='phenotypes' />
+        <Route component={requireAuthentication(Blank)} path='go' />
+        <Route component={requireAuthentication(Blank)} path='datasets' />
+        <Route component={requireAuthentication(Blank)} path='regulation' />
+        <Route component={requireAuthentication(Blank)} path='interaction' />
+      </Route>
     </Route>
-    <Route component={requireAuthentication(LocusShow)} path='curate/locus/:id' />
-    <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
-      <IndexRoute component={requireAuthentication(CurateLitBasic)} />
-      <Route component={requireAuthentication(Blank)} path='protein' />
-      <Route component={requireAuthentication(CurateLitPhenotype)} path='phenotypes' />
-      <Route component={requireAuthentication(Blank)} path='go' />
-      <Route component={requireAuthentication(Blank)} path='datasets' />
-      <Route component={requireAuthentication(Blank)} path='regulation' />
-      <Route component={requireAuthentication(Blank)} path='interaction' />
-    </Route>
-    <Route component={requireAuthentication(AuthorResponse)} path='author_response' />
+    <Route component={PublicLayout}>
+        <Route component={AuthorResponse} path='author_response' />
+        <Route component={NewColleague} path='new_colleague' />
+        <Route component={EditColleague} path='colleague/:formatName/edit' />
+        { /* <Route component={NewGeneNameReservation} path='new_reservation' /> */}
+      </Route>
   </Route>
 );
