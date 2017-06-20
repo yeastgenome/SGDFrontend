@@ -319,7 +319,7 @@ CREATE TABLE nex.contignote (
     note_id bigint NOT NULL DEFAULT nextval('note_seq'),
     source_id bigint NOT NULL,
     bud_id integer,
-    locus_id bigint NOT NULL,
+    contig_id bigint NOT NULL,
     note_class varchar(40) NOT NULL,
     note_type varchar(40) NOT NULL,
     note varchar(2000) NOT NULL,
