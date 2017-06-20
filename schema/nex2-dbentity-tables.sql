@@ -269,6 +269,56 @@ ALTER TABLE nex.locussummary_reference ADD CONSTRAINT locussummary_reference_uk 
 CREATE INDEX locussummaryreference_source_fk_index ON nex.locussummary_reference (source_id);
 CREATE INDEX locussummaryreference_ref_fk_index ON nex.locussummary_reference (reference_id);
 
+DROP TABLE IF EXISTS nex.locusnote CASCADE;
+CREATE TABLE nex.locusnote (
+    note_id bigint NOT NULL DEFAULT nextval('note_seq'),
+    source_id bigint NOT NULL,
+    bud_id integer,
+    locus_id bigint NOT NULL,
+    note_class varchar(40) NOT NULL,
+    note_type varchar(40) NOT NULL,
+    note varchar(2000) NOT NULL,
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    created_by varchar(12) NOT NULL,
+    CONSTRAINT locusnote_pk PRIMARY KEY (note_id)
+) ;
+COMMENT ON TABLE nex.locusnote IS 'Historical and informative notes about loci and their sequences.';
+COMMENT ON COLUMN nex.locusnote.bud_id IS 'From BUD.NOTE.NOTE_NO.';
+COMMENT ON COLUMN nex.locusnote.note_type IS 'Type of note (Nomenclature history,Nomenclature conflict,Alternative processing,Annotation change,Mapping,Proposed annotation change,Proposed sequence change,Sequence change).';
+COMMENT ON COLUMN nex.locusnote.locus_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.locusnote.note_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.locusnote.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.locusnote.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.locusnote.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.locusnote.note_class IS 'The class of the note (Locus, Sequence).';
+COMMENT ON COLUMN nex.locusnote.note IS 'Note or comment.';
+ALTER TABLE nex.locusnote ADD CONSTRAINT locusnote_uk UNIQUE (locus_id,note_class, note_type, note);
+ALTER TABLE nex.locusnote ADD CONSTRAINT locusnote_noteclass_ck CHECK (NOTE_CLASS IN ('Locus','Sequence'));
+ALTER TABLE nex.locusnote ADD CONSTRAINT locusnote_type_ck CHECK (NOTE_TYPE IN ('Nomenclature history','Nomenclature conflict','Alternative processing','Annotation change','Mapping','Proposed annotation change','Proposed sequence change','Sequence change'));
+CREATE INDEX locusnote_source_fk_index ON nex.locusnote (source_id);
+
+DROP TABLE IF EXISTS nex.locusnote_reference CASCADE;
+CREATE TABLE nex.locusnote_reference (
+    note_reference_id bigint NOT NULL DEFAULT nextval('link_seq'),
+    note_id bigint NOT NULL,
+    reference_id bigint NOT NULL,
+    source_id bigint NOT NULL,
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    created_by varchar(12) NOT NULL,
+    CONSTRAINT locusnote_reference_pk PRIMARY KEY (note_reference_id)
+) ;
+COMMENT ON TABLE nex.locusnote_reference IS 'References associated with a locus note.';
+COMMENT ON COLUMN nex.locusnote_reference.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.locusnote_reference.note_id IS 'FK to LOCUSNOTE.NOTE_ID.';
+COMMENT ON COLUMN nex.locusnote_reference.note_reference_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.locusnote_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.locusnote_reference.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.locusnote_reference.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.locusnote_reference ADD CONSTRAINT locusnote_reference_uk UNIQUE (note_id,reference_id);
+CREATE INDEX locusnotereference_source_fk_index ON nex.locusnote_reference (source_id);
+CREATE INDEX locusnotereference_ref_fk_index ON nex.locusnote_reference (reference_id);
+
+
 DROP TABLE IF EXISTS nex.straindbentity CASCADE; 
 CREATE TABLE nex.straindbentity (
 	dbentity_id bigint NOT NULL DEFAULT nextval('object_seq'),

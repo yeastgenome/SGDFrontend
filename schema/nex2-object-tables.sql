@@ -314,6 +314,56 @@ ALTER TABLE nex.contig_url ADD CONSTRAINT contig_url_uk UNIQUE (contig_id,displa
 ALTER TABLE nex.contig_url ADD CONSTRAINT contig_url_type_ck CHECK (URL_TYPE IN ('GenBank'));
 CREATE INDEX contig_url_source_fk_index ON nex.contig_url (source_id);
 
+DROP TABLE IF EXISTS nex.contignote CASCADE;
+CREATE TABLE nex.contignote (
+    note_id bigint NOT NULL DEFAULT nextval('note_seq'),
+    source_id bigint NOT NULL,
+    bud_id integer,
+    locus_id bigint NOT NULL,
+    note_class varchar(40) NOT NULL,
+    note_type varchar(40) NOT NULL,
+    note varchar(2000) NOT NULL,
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    created_by varchar(12) NOT NULL,
+    CONSTRAINT contignote_pk PRIMARY KEY (note_id)
+) ;
+COMMENT ON TABLE nex.contignote IS 'Historical and informative notes about chromosomes.';
+COMMENT ON COLUMN nex.contignote.bud_id IS 'From BUD.NOTE.NOTE_NO.';
+COMMENT ON COLUMN nex.contignote.note_type IS 'Type of note (Sequence change).';
+COMMENT ON COLUMN nex.contignote.contig_id IS 'FK to CONTIG.CONTIG_ID.';
+COMMENT ON COLUMN nex.contignote.note_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.contignote.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.contignote.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.contignote.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.contignote.note_class IS 'The class of the note (Chromosome).';
+COMMENT ON COLUMN nex.contignote.note IS 'Note or comment.';
+ALTER TABLE nex.contignote ADD CONSTRAINT contignote_uk UNIQUE (contig_id,note_class, note_type, note);
+ALTER TABLE nex.contignote ADD CONSTRAINT contignote_noteclass_ck CHECK (NOTE_CLASS IN ('Chromosome'));
+ALTER TABLE nex.contignote ADD CONSTRAINT contignote_type_ck CHECK (NOTE_TYPE IN ('Sequence change'));
+CREATE INDEX contignote_source_fk_index ON nex.contignote (source_id);
+
+DROP TABLE IF EXISTS nex.contignote_reference CASCADE;
+CREATE TABLE nex.contignote_reference (
+    note_reference_id bigint NOT NULL DEFAULT nextval('link_seq'),
+    note_id bigint NOT NULL,
+    reference_id bigint NOT NULL,
+    source_id bigint NOT NULL,
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    created_by varchar(12) NOT NULL,
+    CONSTRAINT contignote_reference_pk PRIMARY KEY (note_reference_id)
+) ;
+COMMENT ON TABLE nex.contignote_reference IS 'References associated with a contig note.';
+COMMENT ON COLUMN nex.contignote_reference.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.contignote_reference.note_id IS 'FK to CONTIGNOTE.NOTE_ID.';
+COMMENT ON COLUMN nex.contignote_reference.note_reference_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.contignote_reference.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.contignote_reference.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.contignote_reference.reference_id IS 'FK to REFERENCEDBENTITY.DBENTITY_ID.';
+ALTER TABLE nex.contignote_reference ADD CONSTRAINT contignote_reference_uk UNIQUE (note_id,reference_id);
+CREATE INDEX contignotereference_source_fk_index ON nex.contignote_reference (source_id);
+CREATE INDEX contignotereference_ref_fk_index ON nex.contignote_reference (reference_id);
+
+
 DROP TABLE IF EXISTS nex.dataset CASCADE;
 CREATE TABLE nex.dataset (
 	dataset_id bigint NOT NULL DEFAULT nextval('object_seq'),
