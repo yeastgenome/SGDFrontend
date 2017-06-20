@@ -16,11 +16,9 @@ def colleague_triage_new_colleague(request):
     colleague_data = {}
     for p in request.params:
         colleague_data[p] = request.params[p]
-
-    ct = Colleaguetriage(triage_type='New', colleague_data=json.dumps(colleague_data), colleague_id=None, created_by="OTTO")
+    ct = Colleaguetriage(triage_type='New', json=json.dumps(colleague_data), colleague_id=None, created_by="OTTO")
     DBSession.add(ct)
     transaction.commit()
-
     return {'sucess': True}
 
 @view_config(route_name='colleague_update', renderer='json', request_method='PUT')
@@ -28,26 +26,22 @@ def colleague_triage_update_colleague(request):
     format_name = request.matchdict['format_name']
     if format_name is None:
         return HTTPBadRequest(body=json.dumps({'error': 'No format name provided'}))
-    
     colleague = DBSession.query(Colleague).filter(Colleague.format_name == format_name).one_or_none()
-    
     if colleague:
         colleague_data = {}
         for p in request.params:
             colleague_data[p] = request.params[p]
-
         ct = Colleaguetriage(triage_type='Update', colleague_data=json.dumps(colleague_data), colleague_id=int(colleague.colleague_id), created_by="OTTO")
         DBSession.add(ct)
         transaction.commit()
     else:
         return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
-
     return {'sucess': True}
 
 @view_config(route_name='colleague_triage_all', renderer='json', request_method='GET')
 def colleague_triage_get_all(request):
     colleague_triage = DBSession.query(Colleaguetriage).all()
-    return [triage.to_json() for triage in colleague_triage]
+    return [triage.json for triage in colleague_triage]
 
 @view_config(route_name='colleague_triage_accept', renderer='json', request_method='POST')
 def colleague_triage_accept(request):

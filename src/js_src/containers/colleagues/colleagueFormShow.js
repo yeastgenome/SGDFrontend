@@ -1,3 +1,4 @@
+/*eslint-disable no-undef */
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
@@ -18,7 +19,7 @@ const KEYWORDS_AUTOCOMPLETE_URL = '/keywords?q=';
 
 const TRIAGED_COLLEAGUE_URL = '/colleagues/triage';
 const COLLEAGUE_GET_URL = '/colleagues';
-const USER_COLLEAGUE_UPDATE_URL = '/backend/colleagues';
+const USER_COLLEAGUE_UPDATE_URL = '/colleagues';
 const CURATOR_COLLEAGUE_UPDATE_URL = TRIAGED_COLLEAGUE_URL;
 
 class ColleaguesFormShow extends Component {
@@ -235,17 +236,17 @@ class ColleaguesFormShow extends Component {
   
   _renderControls () {
     if (this.props.isReadOnly) return null;
-    // let classSuffix = this.state.isUpdatePending ? ' disabled ' : '';
-    // let label = this.state.isUpdatePending ? 'Saving...' : 'Send Update';
-    // let saveIconNode = this.state.isUpdatePending ? null : <span><i className='fa fa-upload' /> </span>;
-    // let _onClick = e => {
-    //   e.preventDefault();
-    //   this.handleSubmitData();
-    // };
+    let classSuffix = this.state.isUpdatePending ? ' disabled ' : '';
+    let label = this.state.isUpdatePending ? 'Saving...' : 'Send Update';
+    let _onClick = e => {
+      e.preventDefault();
+      this.handleSubmitData();
+    };
     return (
       <div>
         <div className='button-group'>
-          <a className='button'>Submit Update</a>
+          <label>{label}</label>
+          <a className={`button${classSuffix}`} onClick={_onClick.bind(this)}>Submit Update</a>
         </div>
       </div>
     );
@@ -263,8 +264,8 @@ class ColleaguesFormShow extends Component {
   // saves form data to server, if new makes POST
   handleSubmitData (e) {
     if (e) e.preventDefault();
-    let _data = new FormData(this.refs.form);
-    let _method = this.props.isUpdate ? 'PUT' : 'POST';
+    let _data = $(this.refs.form).serialize();
+    let method = this.props.isUpdate ? 'PUT' : 'POST';
     let url;
     if (this.props.isCurator) {
       url = `${CURATOR_COLLEAGUE_UPDATE_URL}/${this.props.colleagueDisplayName}`;
@@ -273,7 +274,7 @@ class ColleaguesFormShow extends Component {
     }
     let options = {
       data: _data,
-      method: _method
+      type: method
     };
     fetchData(url, options).then( () => {
       // is complete
@@ -284,9 +285,9 @@ class ColleaguesFormShow extends Component {
       } else {
         this.setState({ isComplete: true });
       }
-    }).catch( e => {
-      this.setState({ error: e.message });
-    });
+    });//.catch( e => {
+    //   this.setState({ error: e.message });
+    // });
   }
 
   _renderError () {
