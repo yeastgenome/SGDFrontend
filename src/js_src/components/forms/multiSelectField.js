@@ -43,7 +43,7 @@ class MultiSelectField extends Component {
           name={this.props.paramName} value={this.state.value}
           loadOptions={this.getAsyncOptions.bind(this)}
           labelKey='name' valueKey='name'
-          allowCreate filterOption={() => true}
+          allowCreate
           cache={false}
         />
       </div>
