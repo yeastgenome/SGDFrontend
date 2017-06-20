@@ -25,10 +25,6 @@ class MultiSelectField extends Component {
           options: response.results,
           complete: true
         };
-        // add defaultOptions to results and remove duplicated
-        // let defaultOptions = this.props.defaultOptions || [];
-        // optionsObj.options = _.uniq(optionsObj.results.concat(defaultOptions));
-        // if (!this.isMounted()) return;
         return cb(null, optionsObj);
       });
   }

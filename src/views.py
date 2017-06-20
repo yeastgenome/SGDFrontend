@@ -908,8 +908,10 @@ def keywords(request):
     keyword_ids = DBSession.query(distinct(DatasetKeyword.keyword_id)).all()
     
     keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(keyword_ids)).all()
-
-    return [k.to_simple_dict() for k in keywords]
+    simple_keywords = [k.to_simple_dict() for k in keywords]
+    for k in simple_keywords:
+        k['name'] = k['display_name']
+    return { 'results': simple_keywords }
 
 @view_config(route_name='contig', renderer='json', request_method='GET')
 def contig(request):
