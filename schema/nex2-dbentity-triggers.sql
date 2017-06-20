@@ -840,19 +840,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.summary_id != NEW.summary_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'SUMMARY_ID'::text, OLD.summary_reference_id, OLD.summary_id::text, NEW.summary_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY_REFERENCE'::text, 'SUMMARY_ID'::text, OLD.summary_reference_id, OLD.summary_id::text, NEW.summary_id::text, USER);
     END IF;
 
      IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'REFERENCE_ID'::text, OLD.summary_reference_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY_REFERENCE'::text, 'REFERENCE_ID'::text, OLD.summary_reference_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
      IF (OLD.reference_order != NEW.reference_order) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'REFERENCE_ORDER'::text, OLD.summary_reference_id, OLD.reference_order::text, NEW.reference_order::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY_REFERENCE'::text, 'REFERENCE_ORDER'::text, OLD.summary_reference_id, OLD.reference_order::text, NEW.reference_order::text, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'SOURCE_ID'::text, OLD.summary_reference_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('LOCUSSUMMARY_REFERENCE'::text, 'SOURCE_ID'::text, OLD.summary_reference_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -864,7 +864,7 @@ BEGIN
              OLD.source_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-             PERFORM nex.insertdeletelog('SUMMARY_REFERENCE'::text, OLD.summary_reference_id, v_row, USER);
+             PERFORM nex.insertdeletelog('LOCUSSUMMARY_REFERENCE'::text, OLD.summary_reference_id, v_row, USER);
 
      RETURN OLD;
   END IF;
@@ -1174,19 +1174,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.summary_id != NEW.summary_id)    THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'SUMMARY_ID'::text, OLD.summary_reference_id, OLD.summary_id::text, NEW.summary_id::text, USER);
+        PERFORM nex.insertupdatelog('STRAINSSUMMARY_REFERENCE'::text, 'SUMMARY_ID'::text, OLD.summary_reference_id, OLD.summary_id::text, NEW.summary_id::text, USER);
     END IF;
 
      IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'REFERENCE_ID'::text, OLD.summary_reference_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+        PERFORM nex.insertupdatelog('STRAINSSUMMARY_REFERENCE'::text, 'REFERENCE_ID'::text, OLD.summary_reference_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
      IF (OLD.reference_order != NEW.reference_order) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'REFERENCE_ORDER'::text, OLD.summary_reference_id, OLD.reference_order::text, NEW.reference_order::text, USER);
+        PERFORM nex.insertupdatelog('STRAINSSUMMARY_REFERENCE'::text, 'REFERENCE_ORDER'::text, OLD.summary_reference_id, OLD.reference_order::text, NEW.reference_order::text, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'SOURCE_ID'::text, OLD.summary_reference_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('STRAINSSUMMARY_REFERENCE'::text, 'SOURCE_ID'::text, OLD.summary_reference_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -1198,7 +1198,7 @@ BEGIN
              OLD.source_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-             PERFORM nex.insertdeletelog('SUMMARY_REFERENCE'::text, OLD.summary_reference_id, v_row, USER);
+             PERFORM nex.insertdeletelog('STRAINSSUMMARY_REFERENCE'::text, OLD.summary_reference_id, v_row, USER);
 
     RETURN OLD;
   END IF;
@@ -1547,19 +1547,19 @@ BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.summary_id != NEW.summary_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'SUMMARY_ID'::text, OLD.summary_reference_id, OLD.summary_id::text, NEW.summary_id::text, USER);
+        PERFORM nex.insertupdatelog('PATHWAYSUMMARY_REFERENCE'::text, 'SUMMARY_ID'::text, OLD.summary_reference_id, OLD.summary_id::text, NEW.summary_id::text, USER);
     END IF;
 
      IF (OLD.reference_id != NEW.reference_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'REFERENCE_ID'::text, OLD.summary_reference_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+        PERFORM nex.insertupdatelog('PATHWAYSUMMARY_REFERENCE'::text, 'REFERENCE_ID'::text, OLD.summary_reference_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
      IF (OLD.reference_order != NEW.reference_order) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'REFERENCE_ORDER'::text, OLD.summary_reference_id, OLD.reference_order::text, NEW.reference_order::text, USER);
+        PERFORM nex.insertupdatelog('PATHWAYSUMMARY_REFERENCE'::text, 'REFERENCE_ORDER'::text, OLD.summary_reference_id, OLD.reference_order::text, NEW.reference_order::text, USER);
     END IF;
 
      IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('SUMMARY_REFERENCE'::text, 'SOURCE_ID'::text, OLD.summary_reference_id, OLD.source_id::text, NEW.source_id::text, USER);
+        PERFORM nex.insertupdatelog('PATHWAYSUMMARY_REFERENCE'::text, 'SOURCE_ID'::text, OLD.summary_reference_id, OLD.source_id::text, NEW.source_id::text, USER);
     END IF;
 
     RETURN NEW;
@@ -1571,7 +1571,7 @@ BEGIN
              OLD.source_id || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
-            PERFORM nex.insertdeletelog('SUMMARY_REFERENCE'::text, OLD.summary_reference_id, v_row, USER);
+            PERFORM nex.insertdeletelog('PATHWAYSUMMARY_REFERENCE'::text, OLD.summary_reference_id, v_row, USER);
 
      RETURN OLD;
   END IF;
