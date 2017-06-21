@@ -190,6 +190,13 @@ ALTER TABLE nex.locussummary_reference ADD CONSTRAINT locussummaryreference_ref_
 ALTER TABLE nex.locussummary_reference ADD CONSTRAINT locussummaryreference_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.locussummary_reference ADD CONSTRAINT locussummaryreference_sum_fk FOREIGN KEY (summary_id) REFERENCES locussummary(summary_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 
+ALTER TABLE nex.locusnote ADD CONSTRAINT locusnote_locus_fk FOREIGN KEY (locus_id) REFERENCES locusdbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.locusnote ADD CONSTRAINT locusnote_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+ALTER TABLE nex.locusnote_reference ADD CONSTRAINT locusnotereference_ref_fk FOREIGN KEY (reference_id) REFERENCES referencedbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.locusnote_reference ADD CONSTRAINT locusnotereference_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.locusnote_reference ADD CONSTRAINT locusnotereference_note_fk FOREIGN KEY (note_id) REFERENCES locusnote(note_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+
 
 ALTER TABLE nex.straindbentity ADD CONSTRAINT straindbentity_tax_fk FOREIGN KEY (taxonomy_id) REFERENCES taxonomy(taxonomy_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.straindbentity ADD CONSTRAINT straindbentity_dbentity_fk FOREIGN KEY (dbentity_id) REFERENCES dbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
@@ -307,6 +314,13 @@ ALTER TABLE nex.contig ADD CONSTRAINT contig_source_fk FOREIGN KEY (source_id) R
 
 ALTER TABLE nex.contig_url ADD CONSTRAINT contigurl_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.contig_url ADD CONSTRAINT contigurl_contig_fk FOREIGN KEY (contig_id) REFERENCES contig(contig_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+ALTER TABLE nex.contignote ADD CONSTRAINT contignote_contig_fk FOREIGN KEY (contig_id) REFERENCES contig(contig_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.contignote ADD CONSTRAINT contignote_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+ALTER TABLE nex.contignote_reference ADD CONSTRAINT contignotereference_ref_fk FOREIGN KEY (reference_id) REFERENCES referencedbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.contignote_reference ADD CONSTRAINT contignotereference_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.contignote_reference ADD CONSTRAINT contignotereference_note_fk FOREIGN KEY (note_id) REFERENCES contignote(note_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 
 ALTER TABLE nex.dataset ADD CONSTRAINT dataset_parent_fk FOREIGN KEY (parent_dataset_id) REFERENCES dataset(dataset_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;

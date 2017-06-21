@@ -976,7 +976,7 @@ COMMENT ON COLUMN nex.regulationannotation.target_id IS 'FK to DBENTITY.DBENTITY
 COMMENT ON COLUMN nex.regulationannotation.regulation_type IS 'Type of regulation (transcription, RNA stability, protein activity, protein stability).';
 COMMENT ON COLUMN nex.regulationannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
 COMMENT ON COLUMN nex.regulationannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-COMMENT ON COLUMN nex.regulationannotation.happens_during IS 'Cell cycle phase of the regulation using Gene Ontology biological process terms.';
+COMMENT ON COLUMN nex.regulationannotation.happens_during IS 'FK to GO.GO_ID. Cell cycle phase of the regulation using Gene Ontology biological process terms.';
 COMMENT ON COLUMN nex.regulationannotation.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.regulationannotation.direction IS 'Direction (positive or negative) of the regulation.';
 COMMENT ON COLUMN nex.regulationannotation.regulator_type IS 'Type of regulator (transcription factor, chromatin modifier, protein modifier, RNA binder, RNA modifier, protein binder).';
