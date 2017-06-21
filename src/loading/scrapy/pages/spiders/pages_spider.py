@@ -23,7 +23,7 @@ logger.setLevel(level=logging.INFO)
 # init spiders
 class BaseSpider(scrapy.Spider):
     custom_settings = {
-        'CONCURRENT_REQUESTS_PER_DOMAIN': 4,
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 8,
         'CONCURRENT_REQUESTS': 16
     }
     
