@@ -195,6 +195,20 @@ REVOKE ALL ON nex.contignoteannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.contignoteannotation TO curator;
 GRANT SELECT ON nex.contignoteannotation TO PUBLIC;
 
+-- Set privilege on TABLE CONTIGNOTE
+ALTER TABLE nex.contignote OWNER TO nex;
+GRANT ALL ON nex.contignote TO nex;
+REVOKE ALL ON nex.contignote FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.contignote TO curator;
+GRANT SELECT ON nex.contignote TO PUBLIC;
+
+-- Set privilege on TABLE CONTIGNOTE_REFERENCE
+ALTER TABLE nex.contignote_reference OWNER TO nex;
+GRANT ALL ON nex.contignote_reference TO nex;
+REVOKE ALL ON nex.contignote_reference FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.contignote_reference TO curator;
+GRANT SELECT ON nex.contignote_reference TO PUBLIC;
+
 -- Set privilege on TABLE CONTIG_URL
 ALTER TABLE nex.contig_url OWNER TO nex;
 GRANT ALL ON nex.contig_url TO nex;
@@ -209,7 +223,7 @@ REVOKE ALL ON nex.curation_locus FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.curation_locus TO curator;
 GRANT SELECT ON nex.curation_locus TO PUBLIC;
 
--- Set privilege on TABLE CURATION_REFERENCE                                                                                                                                                                    
+-- Set privilege on TABLE CURATION_REFERENCE
 ALTER TABLE nex.curation_reference OWNER TO nex;
 GRANT ALL ON nex.curation_reference TO nex;
 REVOKE ALL ON nex.curation_reference FROM PUBLIC;
@@ -600,6 +614,20 @@ GRANT ALL ON nex.locusnoteannotation TO nex;
 REVOKE ALL ON nex.locusnoteannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locusnoteannotation TO curator;
 GRANT SELECT ON nex.locusnoteannotation TO PUBLIC;
+
+-- Set privilege on TABLE LOCUSNOTE
+ALTER TABLE nex.locusnote OWNER TO nex;
+GRANT ALL ON nex.locusnote TO nex;
+REVOKE ALL ON nex.locusnote FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locusnote TO curator;
+GRANT SELECT ON nex.locusnote TO PUBLIC;
+
+-- Set privilege on TABLE LOCUSNOTE_REFERENCE
+ALTER TABLE nex.locusnote_reference OWNER TO nex;
+GRANT ALL ON nex.locusnote_reference TO nex;
+REVOKE ALL ON nex.locusnote_reference FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locusnote_reference TO curator;
+GRANT SELECT ON nex.locusnote_reference TO PUBLIC;
 
 -- Set privilege on TABLE LOCUS_ALIAS
 ALTER TABLE nex.locus_alias OWNER TO nex;

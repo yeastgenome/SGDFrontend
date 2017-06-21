@@ -952,6 +952,166 @@ CREATE TRIGGER contigurl_biur
 BEFORE INSERT OR UPDATE ON nex.contig_url FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_contigurl_biur();
 
+DROP TRIGGER IF EXISTS contignote_audr ON nex.contignote CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_contignote_audr() RETURNS trigger AS $BODY$
+DECLARE
+    v_row       nex.deletelog.deleted_row%TYPE;
+BEGIN
+  IF (TG_OP = 'UPDATE') THEN
+
+     IF (OLD.source_id != NEW.source_id) THEN
+        PERFORM nex.insertupdatelog('CONTIGNOTE'::text, 'SOURCE_ID'::text, OLD.note_id, OLD.source_id::text, NEW.source_id::text, USER);
+    END IF;
+
+    IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
+        PERFORM nex.insertupdatelog('CONTIGNOTE'::text, 'BUD_ID'::text, OLD.note_id, OLD.bud_id::text, NEW.bud_id::text, USER);
+    END IF;
+
+    IF (OLD.contig_id != NEW.contig_id) THEN
+	PERFORM nex.insertupdatelog('CONTIGNOTE'::text, 'CONTIG_ID'::text, OLD.note_id, OLD.contig_id::text, NEW.contig_id::text, USER);
+    END IF;
+
+    IF (OLD.note_class != NEW.note_class) THEN
+        PERFORM nex.insertupdatelog('CONTIGNOTE'::text, 'NOTE_CLASS'::text, OLD.note_id, OLD.note_class, NEW.note_class, USER);
+    END IF;
+
+    IF (OLD.note_type != NEW.note_type) THEN
+        PERFORM nex.insertupdatelog('CONTIGNOTE'::text, 'NOTE_TYPE'::text, OLD.note_id, OLD.note_type::text, NEW.note_type::text, USER);
+    END IF;
+
+    IF (OLD.note != NEW.note) THEN
+        PERFORM nex.insertupdatelog('CONTIGNOTE'::text, 'NOTE'::text, OLD.note_id, OLD.note, NEW.note, USER);
+    END IF;
+
+    RETURN NEW;
+
+  ELSIF (TG_OP = 'DELETE') THEN
+
+    v_row := OLD.note_id || '[:]' || OLD.source_id || '[:]' ||
+             coalesce(OLD.bud_id,0) || '[:]' || OLD.contig_id || '[:]' ||
+             OLD.note_class || '[:]' || OLD.note_type || '[:]' ||
+             OLD.note || '[:]' ||
+             OLD.date_created || '[:]' || OLD.created_by;
+
+             PERFORM nex.insertdeletelog('CONTIGNOTE'::text, OLD.note_id, v_row, USER);
+
+     RETURN OLD;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER contignote_audr
+AFTER UPDATE OR DELETE ON nex.contignote FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_contignote_audr();
+
+DROP TRIGGER IF EXISTS contignote_biur ON nex.contignote CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_contignote_biur() RETURNS trigger AS $BODY$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+
+       NEW.created_by := upper(NEW.created_by);
+       PERFORM nex.checkuser(NEW.created_by);
+
+       RETURN NEW;
+
+  ELSIF (TG_OP = 'UPDATE') THEN
+
+    IF (NEW.note_id != OLD.note_id) THEN
+	RAISE EXCEPTION 'Primary key cannot be updated';
+    END IF;
+
+    IF (NEW.date_created != OLD.date_created) THEN
+	RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    IF (NEW.created_by != OLD.created_by) THEN
+	RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    RETURN NEW;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER contignote_biur
+BEFORE INSERT OR UPDATE ON nex.contignote FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_contignote_biur();
+
+DROP TRIGGER IF EXISTS contignotereference_audr ON nex.contignote_reference CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_contignotereference_audr() RETURNS trigger AS $BODY$
+DECLARE
+    v_row       nex.deletelog.deleted_row%TYPE;
+BEGIN
+  IF (TG_OP = 'UPDATE') THEN
+
+    IF (OLD.note_id != NEW.note_id) THEN
+        PERFORM nex.insertupdatelog('CONTIGNOTE_REFERENCE'::text, 'NOTE_ID'::text, OLD.note_reference_id, OLD.note_id::text, NEW.note_id::text, USER);
+    END IF;
+
+     IF (OLD.reference_id != NEW.reference_id) THEN
+        PERFORM nex.insertupdatelog('CONTIGNOTE_REFERENCE'::text, 'REFERENCE_ID'::text, OLD.note_reference_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+    END IF;
+
+     IF (OLD.source_id != NEW.source_id) THEN
+        PERFORM nex.insertupdatelog('CONTIGNOTE_REFERENCE'::text, 'SOURCE_ID'::text, OLD.note_reference_id, OLD.source_id::text, NEW.source_id::text, USER);
+    END IF;
+
+    RETURN NEW;
+
+  ELSIF (TG_OP = 'DELETE') THEN
+
+    v_row := OLD.note_reference_id || '[:]' || OLD.note_id || '[:]' ||
+             OLD.reference_id || '[:]' || OLD.source_id || '[:]' ||
+             OLD.date_created || '[:]' || OLD.created_by;
+
+             PERFORM nex.insertdeletelog('CONTIGNOTE_REFERENCE'::text, OLD.note_reference_id, v_row, USER);
+
+     RETURN OLD;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER contignotereference_audr
+AFTER UPDATE OR DELETE ON nex.contignote_reference FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_contignotereference_audr();
+
+DROP TRIGGER IF EXISTS contignotereference_biur ON nex.contignote_reference CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_contignotereference_biur() RETURNS trigger AS $BODY$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+
+       NEW.created_by := upper(NEW.created_by);
+       PERFORM nex.checkuser(NEW.created_by);
+
+       RETURN NEW;
+
+  ELSIF (TG_OP = 'UPDATE') THEN
+
+    IF (NEW.note_reference_id != OLD.note_reference_id) THEN
+        RAISE EXCEPTION 'Primary key cannot be updated';
+    END IF;
+
+    IF (NEW.date_created != OLD.date_created) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    IF (NEW.created_by != OLD.created_by) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    RETURN NEW;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER contignotereference_biur
+BEFORE INSERT OR UPDATE ON nex.contignote_reference FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_contignotereference_biur();
+
 
 DROP TRIGGER IF EXISTS dataset_audr ON nex.dataset CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_dataset_audr() RETURNS trigger AS $BODY$
