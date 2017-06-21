@@ -20,9 +20,6 @@ class MockQueryFilter(object):
     def asc(self, *args, **kwargs):
         return self
 
-    def distinct(self, *args, **kwargs):
-        return self
-
     def all(self):
         if self._return is None:
             return []
@@ -53,6 +50,10 @@ class MockQuery(object):
         return self._query_filter
 
     def all(self):
+        return self._query_result
+
+    def distinct(self, *query_params):
+        self._query_filter = MockQueryFilter(query_params[0], self._query_result)
         return self._query_result
 
 
@@ -281,8 +282,6 @@ def locus_side_effect(*args, **kwargs):
         apo = factory.ApoFactory()
         return MockQuery(apo)
     elif len(args) == 2 and str(args[0]) == 'Physinteractionannotation.biogrid_experimental_system' and str(args[1]) == 'count(nex.physinteractionannotation.annotation_id)':
-        import pdb;
-        pdb.set_trace();
         physannot = factory.PhysinteractionannotationFactory()
         return MockQuery((physannot.biogrid_experimental_system, 20))
     elif len(args) == 2 and str(args[0]) == 'Geninteractionannotation.biogrid_experimental_system' and str(args[1]) == 'count(nex.geninteractionannotation.annotation_id)':
@@ -300,10 +299,80 @@ def locus_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == 'Geninteractionannotation.dbentity1_id':
         genannot = factory.GeninteractionannotationFactory()
         return MockQuery(genannot.dbentity1_id)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Regulationannotation'>":
+        regannot = factory.RegulationannotationFactory()
+        return MockQuery(regannot)
+    elif len(args) == 2 and str(args[0]) == 'Literatureannotation.topic' and str(args[1]) == 'count(nex.literatureannotation.annotation_id)':
+        litannot = factory.LiteratureannotationFactory()
+        return MockQuery((litannot.topic, 20))
+    elif len(args) == 1 and str(args[0]) == 'Literatureannotation.reference_id':
+        litannot = factory.LiteratureannotationFactory()
+        return MockQuery(litannot.reference_id)
+    elif len(args) == 1 and str(args[0]) == 'Geninteractionannotation.reference_id':
+        genannot = factory.GeninteractionannotationFactory()
+        return MockQuery(genannot.reference_id)
+    elif len(args) == 1 and str(args[0]) == 'Physinteractionannotation.reference_id':
+        physannot = factory.PhysinteractionannotationFactory()
+        return MockQuery(physannot.reference_id)
+    elif len(args) == 1 and str(args[0]) == 'Regulationannotation.reference_id':
+        regannot = factory.RegulationannotationFactory()
+        return MockQuery(regannot.reference_id)
+    elif len(args) == 1 and str(args[0]) == 'Literatureannotation.reference_id':
+        litannot = factory.LiteratureannotationFactory()
+        return MockQuery(litannot.reference_id)
+    elif len(args) == 1 and str(args[0]) == 'Phenotypeannotation.reference_id':
+        phenannot = factory.PhenotypeannotationFactory()
+        return MockQuery(phenannot.reference_id)
+    elif len(args) == 1 and str(args[0]) == 'Goannotation.reference_id':
+        goannot = factory.GoannotationFactory()
+        return MockQuery(goannot.reference_id)
+    elif len(args) == 1 and str(args[0]) == 'ReferenceAlias.reference_id':
+        refalias = factory.ReferenceAliasFactory()
+        return MockQuery(refalias.reference_id)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.LocusAlias'>":
+        localias = factory.LocusAliasFactory()
+        source = factory.SourceFactory()
+        localias.source = source
+        return MockQuery(localias)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.LocusAliasReferences'>":
+        localiasref = factory.LocusAliasReferencesFactory()
+        source = factory.SourceFactory()
+        ref = factory.ReferencedbentityFactory()
+        localiasref.reference = ref
+        localiasref.source = source
+        return MockQuery(localiasref)
+    elif len(args) == 1 and str(args[0]) == 'Apo.apo_id':
+        apo = factory.ApoFactory()
+        return MockQuery(apo.apo_id)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.ReferenceUrl'>":
+        refurl = factory.ReferenceUrlFactory()
+        return MockQuery(refurl)
+    elif len(args) == 1 and str(args[0]) == 'Dnasequenceannotation.so_id':
+        dnaseq = factory.DnasequenceannotationFactory()
+        return MockQuery((dnaseq.so_id,))
+    elif len(args) == 1 and str(args[0]) == 'So.display_name':
+        so = factory.SoFactory()
+        return MockQuery(so.display_name)
+    elif len(args) == 3 and str(args[0]) == 'Locussummary.summary_id' and str(args[1]) == 'Locussummary.html' and str(args[2]) == 'Locussummary.date_created':
+        ls = factory.LocussummaryFactory()
+        return MockQuery((ls.summary_id, ls.html, ls.date_created))
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.LocusReferences'>":
+        lref = factory.LocusReferencesFactory
+        ref = factory.ReferencedbentityFactory()
+        lref.reference = ref
+        return MockQuery(lref)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.LocussummaryReference'>":
+        lsref = factory.LocussummaryReferenceFactory()
+        return MockQuery(lsref)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.LocusUrl'>":
+        lurl = factory.LocusUrlFactory()
+        return MockQuery(lurl)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Locusnoteannotation'>":
+        laf = factory.LocusnoteannotationFactory()
+        return MockQuery(laf)
     else:
         print "the problem is the condition!!!!"
         print args[0]
-        print args[1]
 
 
 
@@ -627,9 +696,13 @@ def locus_reference_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "Apo.apo_id":
         apo = factory.ApoFactory()
         return MockQuery(apo.apo_id)
+    elif len(args) == 2 and str(args[0]) == "Phenotypeannotation.reference_id" and str(args[1]) == "Phenotypeannotation.experiment_id":
+        phen = factory.PhenotypeannotationFactory()
+        return MockQuery((phen.reference_id, phen.experiment_id))
     else:
         print "the problem is the condition!!!!"
-        import pdb; pdb.set_trace()
+        print args[0]
+        print args[1]
 
 
 def sequence_side_effect(*args, **kwargs):
@@ -670,6 +743,9 @@ def sequence_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.ContigUrl'>":
         ctgurl = factory.ContigUrlFactory()
         return MockQuery(ctgurl)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.ProteinsequenceDetail'>":
+        prtseq = factory.ProteinsequenceDetailFactory()
+        return MockQuery(prtseq)
 
 
 def reference_side_effect(*args, **kwargs):
