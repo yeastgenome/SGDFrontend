@@ -227,7 +227,7 @@ class ColleaguesFormShow extends Component {
         this.setState({ data: _data, isLoadPending: false });
       });
     } else {
-      let url = `/${COLLEAGUE_GET_URL}/${this.props.colleagueDisplayName}`;
+      let url = `${COLLEAGUE_GET_URL}/${this.props.colleagueDisplayName}`;
       fetchData(url).then( json => {
         this.setState({ data: json, isLoadPending: false });
       });
