@@ -12,5 +12,5 @@ if start_url is None:
 	start_url = DEFAULT_START_URL
 
 # construct ghost API url and ping to run test
-ghost_url = 'https://api.ghostinspector.com/v1/suites/' + ghost_suite_id + '/execute/?apiKey=' + ghost_key + '&immediate=1&startUrl=' + start_url
+ghost_url = 'https://api.ghostinspector.com/v1/suites/' + ghost_suite_id + '/execute/?apiKey=' + ghost_key + '&immediate=1&startUrl=' + start_url + '&startURL=' + start_url
 requests.get(ghost_url)
