@@ -85,7 +85,7 @@
     "mocha": "^2.3.4",
     "uglify-js": "^3.0.15",
     "uglifyify": "^3.0.4",
-    "webpack": "^2.6.1",
+    "webpack": "^1.14.0",
     "webworkify": "^1.0.2"
   }
 }
