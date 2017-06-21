@@ -192,3 +192,17 @@ $top-header-font-color: #CCC;
 		width: $large-search-width;
 	}
 }
+
+.sgd-announcment {
+	color: #fff;
+	margin-left: 1rem;
+	max-height: 2rem;
+	max-height: 2rem;
+	display: inline-block;
+	overflow: hidden;
+}
+
+.sgd-announcment a {
+	color: #fff;
+	text-decoration: underline;
+}

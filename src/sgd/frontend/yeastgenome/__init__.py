@@ -294,7 +294,11 @@ class YeastgenomeFrontend(FrontendInterface):
         if args is not None and len(args) > 0:
             full_url += '?' + request.query_string
         self.log.info(full_url)
-        return json.dumps(get_json(full_url))
+        try:
+            return get_json(full_url)
+        # prevent from returning 200 for failed backend requests
+        except ValueError:
+            return Response('null', status=404)
     
 def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
     chosen_frontend = YeastgenomeFrontend(backend_url, heritage_url, log_directory)
@@ -333,6 +337,10 @@ def get_json(url, data=None):
     else:
         r = requests.get(url)
 
+    if r.status_code == 404:
+        raise ValueError('404')
+    elif r.status_code == 500:
+        raise ValueError('500')
     try:
         return r.json()
     except:
