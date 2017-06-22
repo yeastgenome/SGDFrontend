@@ -6,7 +6,8 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Strainsummary, StrainsummaryReference, Dataset, DatasetReference, DatasetKeyword, Referencetype, ReferenceRelation, ReferenceUrl, Referenceauthor, \
     Physinteractionannotation, Geninteractionannotation, Goannotation, Regulationannotation, Literatureannotation, Contig, EcoAlias, EcoUrl, Goextension, \
     Gosupportingevidence, Eco, Ro, Go, GoRelation, GoUrl, GoAlias, ApoRelation, Referencetriage, Proteinsequenceannotation, ProteinsequenceDetail, \
-    Goslimannotation, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence, So, ContigUrl
+    Goslimannotation, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence,\
+    So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Locusnoteannotation
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -699,7 +700,7 @@ class ApoFactory(factory.alchemy.SQLAlchemyModelFactory):
     apo_id = 1
     format_name = "appo"
     display_name = "APPo"
-    namespace_group = "large-scale survey"
+    namespace_group = "classical genetics"
     obj_url = "/obj/apo"
     source_id = 1
     apoid = 1
@@ -1243,10 +1244,101 @@ class LocussummaryFactory(factory.alchemy.SQLAlchemyModelFactory):
     source_id = 1
     bud_id = 1
     locus_id = 1
-    summary_type = "phenotype"
+    summary_type = "Gene"
     summary_order = "1"
     text = "some text"
     html = "some/html"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class LocussummaryReferenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = LocussummaryReference
+        sqlalchemy_session = DBSession
+
+    summary_reference_id = 1
+    summary_id = 1
+    reference_id = 1
+    reference_order = 1
+    source_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class LocusReferencesFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = LocusReferences
+        sqlalchemy_session = DBSession
+
+    locus_reference_id = 1
+    locus_id = 1
+    reference_id = 1
+    reference_class = "ref class"
+    source_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class LocusAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = LocusAlias
+        sqlalchemy_session = DBSession
+
+    alias_id = 1
+    display_name = "display name"
+    obj_url = "/obj_url"
+    source_id = 1
+    bud_id = 1
+    locus_id = 1
+    has_external_id_section = "False"
+    alias_type = "alias type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class LocusAliasReferencesFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = LocusAliasReferences
+        sqlalchemy_session = DBSession
+
+    locusalias_reference_id = 1
+    alias_id = 1
+    reference_id = 1
+    source_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class LocusUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = LocusUrl
+        sqlalchemy_session = DBSession
+
+    url_id = 1
+    display_name = "display_name"
+    obj_url = "/obj_url"
+    source_id = 1
+    bud_id = 1
+    locus_id = 1
+    url_type = "url type"
+    placement = "placement"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class LocusnoteannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Locusnoteannotation
+        sqlalchemy_session = DBSession
+
+    annotation_id = 1
+    dbentity_id = 1
+    source_id = 1
+    taxonomy_id = 1
+    reference_id = 1
+    bud_id = 1
+    note_type = "note_type"
+    display_name = "display_name"
+    note = "note"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
