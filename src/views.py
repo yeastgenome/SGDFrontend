@@ -972,6 +972,17 @@ def locus_protein_domain_details(request):
     else:
         return HTTPNotFound()
 
+@view_config(route_name='locus_binding_site_details', renderer='json', request_method='GET')
+def locus_binding_site_details(request):
+    id = request.matchdict['id']
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+
+    if locus:
+        return locus.binding_site_details()
+    else:
+        return HTTPNotFound()
+
 @view_config(route_name='locus_protein_domain_graph', renderer='json', request_method='GET')
 def locus_protein_domain_graph(request):
     id = request.matchdict['id']
