@@ -646,6 +646,11 @@ class Bindingmotifannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict(self):
+        return {
+            "motif_id": self.motif_id,
+            "link": self.logo_url
+        }
 
 class Book(Base):
     __tablename__ = 'book'
@@ -1797,6 +1802,11 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def binding_site_details(self):
+        motifs = DBSession.query(Bindingmotifannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
+        return [m.to_dict() for m in motifs]
+    
     def protein_domain_graph(self):
         main_gene_proteindomain_annotations = DBSession.query(Proteindomainannotation).filter_by(dbentity_id=self.dbentity_id).all()
         main_gene_proteindomain_ids = [a.proteindomain_id for a in main_gene_proteindomain_annotations]
