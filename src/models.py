@@ -1802,6 +1802,11 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def regulation_details(self):
+        annotations = DBSession.query(Regulationannotation).filter(or_(Regulationannotation.target_id==self.dbentity_id, Regulationannotation.regulator_id==self.dbentity_id)).all()
+        
+        return [a.to_dict() for a in annotations]
+
     def binding_site_details(self):
         motifs = DBSession.query(Bindingmotifannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
@@ -6674,6 +6679,7 @@ class Regulationannotation(Base):
     happens_during = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), index=True)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    annotation_type = Column(String(40), nullable=False)
 
     eco = relationship(u'Eco')
     go = relationship(u'Go')
@@ -6683,12 +6689,14 @@ class Regulationannotation(Base):
     target = relationship(u'Dbentity', primaryjoin='Regulationannotation.target_id == Dbentity.dbentity_id')
     taxonomy = relationship(u'Taxonomy')
 
-    def to_dict(self, reference):
+    def to_dict(self, reference=None):
+        if reference is None:
+            reference = self.reference
+        
         experiment = None
         if self.eco:
             experiment = {
-                "display_name": self.eco.display_name,
-                "link": self.eco.obj_url
+                "display_name": self.eco.display_name
             }
 
         strain = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
@@ -6707,28 +6715,25 @@ class Regulationannotation(Base):
         
         return {
             "id": self.annotation_id,
-            "locus2": {
+            "target": {
                 "display_name": self.target.display_name,
                 "link": self.target.obj_url,
                 "id": self.target.dbentity_id,
                 "format_name": self.target.format_name                
             },
-            "locus1": {
+            "direction": {
                 "display_name": self.regulator.display_name,
                 "link": self.regulator.obj_url,
                 "id": self.regulator.dbentity_id,
                 "format_name": self.regulator.format_name
             },
-            "reference": {
-                "display_name": reference.display_name,
-                "link": reference.obj_url,
-                "pubmed_id": reference.pmid
-            },
+            "evidence": experiment,
+            "regulation_of": self.regulation_type,
+            "happens_during": self.happens_during,
+            "reference": reference.to_dict_citation(),
             "strain": strain_obj,
             "experiment": experiment,
-            "properties": [], #dropped
-            "assay": None, #dropped
-            "construct": None #dropped
+            "annotation_type": self.annotation_type
         }
 
 class Reporter(Base):
