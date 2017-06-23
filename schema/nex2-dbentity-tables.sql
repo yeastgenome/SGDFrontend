@@ -284,7 +284,7 @@ CREATE TABLE nex.locusnote (
 ) ;
 COMMENT ON TABLE nex.locusnote IS 'Historical and informative notes about loci and their sequences.';
 COMMENT ON COLUMN nex.locusnote.bud_id IS 'From BUD.NOTE.NOTE_NO.';
-COMMENT ON COLUMN nex.locusnote.note_type IS 'Type of note (Nomenclature history,Nomenclature conflict,Alternative processing,Annotation change,Mapping,Proposed annotation change,Proposed sequence change,Sequence change).';
+COMMENT ON COLUMN nex.locusnote.note_type IS 'Type of note (Nomenclature history,Nomenclature conflict,Locus history,Alternative processing,Annotation change,Mapping,Proposed annotation change,Proposed sequence change,Sequence change).';
 COMMENT ON COLUMN nex.locusnote.locus_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
 COMMENT ON COLUMN nex.locusnote.note_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.locusnote.source_id IS 'FK to SOURCE.SOURCE_ID.';
@@ -294,7 +294,7 @@ COMMENT ON COLUMN nex.locusnote.note_class IS 'The class of the note (Locus, Seq
 COMMENT ON COLUMN nex.locusnote.note IS 'Note or comment.';
 ALTER TABLE nex.locusnote ADD CONSTRAINT locusnote_uk UNIQUE (locus_id,note_class, note_type, note);
 ALTER TABLE nex.locusnote ADD CONSTRAINT locusnote_noteclass_ck CHECK (NOTE_CLASS IN ('Locus','Sequence'));
-ALTER TABLE nex.locusnote ADD CONSTRAINT locusnote_type_ck CHECK (NOTE_TYPE IN ('Nomenclature history','Nomenclature conflict','Alternative processing','Annotation change','Mapping','Proposed annotation change','Proposed sequence change','Sequence change'));
+ALTER TABLE nex.locusnote ADD CONSTRAINT locusnote_type_ck CHECK (NOTE_TYPE IN ('Nomenclature history','Nomenclature conflict','Locus history','Alternative processing','Annotation change','Mapping','Proposed annotation change','Proposed sequence change','Sequence change'));
 CREATE INDEX locusnote_source_fk_index ON nex.locusnote (source_id);
 
 DROP TABLE IF EXISTS nex.locusnote_reference CASCADE;
