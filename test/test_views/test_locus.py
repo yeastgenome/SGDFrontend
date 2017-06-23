@@ -6,9 +6,10 @@ import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
 from test.mock_helpers import go_side_effect, phenotype_side_effect, locus_side_effect, reference_side_effect,\
-    locus_reference_side_effect, locus_expression_side_effect, sequence_side_effect
+    locus_reference_side_effect, locus_expression_side_effect, sequence_side_effect, protein_side_effect
 from src.views import locus, locus_go_details, locus_phenotype_details, locus_phenotype_graph, locus_literature_details, locus_interaction_details, \
-    locus_expression_details, locus_sequence_details, locus_neighbor_sequence_details
+    locus_expression_details, locus_sequence_details, locus_neighbor_sequence_details, locus_posttranslational_details, locus_ecnumber_details, \
+    locus_protein_experiment_details, locus_protein_domain_details, locus_protein_domain_graph
 
 
 class LocusTest(unittest.TestCase):
@@ -182,26 +183,66 @@ class LocusTest(unittest.TestCase):
          self.assertEqual(response.status_code, 404)
 
 
-    @mock.patch('src.models.DBSession.execute')
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_neighbor_sequence_details(self, mock_search, mock_execute):
-        mock_search.side_effect = sequence_side_effect
+    def test_should_return_valid_locus_posttranslational_details(self, mock_search):
+        mock_search.side_effect = locus_side_effect
 
         locus = factory.LocusdbentityFactory()
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
         request.matchdict['id'] = "S000114259"
-        response = locus_neighbor_sequence_details(request)
-        self.assertEqual(response, locus.neighbor_sequence_details())
+        response = locus_posttranslational_details(request)
+        self.assertEqual(response, locus.posttranslational_details())
 
 
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_non_existent_locus_neighbor_sequence_details(self, mock_search):
-         mock_search.return_value = MockQuery(None)
+    def test_should_return_valid_locus_ecnumber_details(self, mock_search):
+        mock_search.side_effect = locus_side_effect
 
-         request = testing.DummyRequest()
-         request.context = testing.DummyResource()
-         request.matchdict['id'] = 'nonexistent_id'
-         response = locus_neighbor_sequence_details(request)
-         self.assertEqual(response.status_code, 404)
+        locus = factory.LocusdbentityFactory()
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        request.matchdict['id'] = "S000114259"
+        response = locus_ecnumber_details(request)
+        self.assertEqual(response, locus.ecnumber_details())
+
+
+
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_locus_protein_experiment_details(self, mock_search):
+        mock_search.side_effect = locus_side_effect
+
+        locus = factory.LocusdbentityFactory()
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        request.matchdict['id'] = "S000114259"
+        response = locus_protein_experiment_details(request)
+        self.assertEqual(response, locus.protein_experiment_details())
+
+
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_locus_protein_domain_details(self, mock_search):
+        mock_search.side_effect = locus_side_effect
+
+        locus = factory.LocusdbentityFactory()
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        request.matchdict['id'] = "S000114259"
+        response = locus_protein_domain_details(request)
+        self.assertEqual(response, locus.protein_domain_details())
+
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_locus_protein_domain_graph(self, mock_search):
+        mock_search.side_effect = locus_side_effect
+
+        locus = factory.LocusdbentityFactory()
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        request.matchdict['id'] = "S000114259"
+        response = locus_protein_domain_graph(request)
+        self.assertEqual(response, locus.protein_domain_graph())
