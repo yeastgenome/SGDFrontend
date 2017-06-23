@@ -646,6 +646,11 @@ class Bindingmotifannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
 
+    def to_dict(self):
+        return {
+            "motif_id": self.motif_id,
+            "link": self.logo_url
+        }
 
 class Book(Base):
     __tablename__ = 'book'
@@ -1797,6 +1802,16 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def regulation_details(self):
+        annotations = DBSession.query(Regulationannotation).filter(or_(Regulationannotation.target_id==self.dbentity_id, Regulationannotation.regulator_id==self.dbentity_id)).all()
+        
+        return [a.to_dict() for a in annotations]
+
+    def binding_site_details(self):
+        motifs = DBSession.query(Bindingmotifannotation).filter_by(dbentity_id=self.dbentity_id).all()
+
+        return [m.to_dict() for m in motifs]
+    
     def protein_domain_graph(self):
         main_gene_proteindomain_annotations = DBSession.query(Proteindomainannotation).filter_by(dbentity_id=self.dbentity_id).all()
         main_gene_proteindomain_ids = [a.proteindomain_id for a in main_gene_proteindomain_annotations]
@@ -2038,6 +2053,8 @@ class Locusdbentity(Dbentity):
             dataset_ids.add(dataset.dataset_id)
             reference_ids[dataset.dataset_id] = annotation.reference_id
 
+            # value = annotation.log_ratio_value
+            
             if dataset.channel_count == 1:
                 try:
                     value = log(annotation.expression_value, 2)
@@ -2214,9 +2231,26 @@ class Locusdbentity(Dbentity):
             "primary": [],
             "regulation": [],
             "phenotype": [],
-            "go": []
+            "go": [],
+            'htp': []
         }
+
+        lit_ids = DBSession.query(Literatureannotation.reference_id, Literatureannotation.topic).filter(Literatureannotation.dbentity_id == self.dbentity_id).all()
+
+        reference_ids = list(set([l[0] for l in lit_ids]))
+        references = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reference_ids)).all()
+
+        references_dict = {}
+        for r in references:
+            references_dict[r.dbentity_id] = r
         
+        topic = {}
+        for lit in lit_ids:
+            if lit[1] in topic:
+                topic[lit[1]].append(references_dict[lit[0]])
+            else:
+                topic[lit[1]] = [references_dict[lit[0]]]
+
         primary_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Primary Literature")).all()
         primary_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(primary_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
@@ -2942,7 +2976,6 @@ class Locusdbentity(Dbentity):
             "pathways": [],
             "phenotype_overview": self.phenotype_overview_to_dict(),
             "interaction_overview": self.interaction_overview_to_dict(),
-            "regulation_overview": self.regulation_overview_to_dict(),
             "paragraph": {
                 "date_edited": None
             },
@@ -2952,7 +2985,7 @@ class Locusdbentity(Dbentity):
         if self.genetic_position:
             obj["genetic_position"] = self.genetic_position
         
-        aliases = DBSession.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, ~LocusAlias.alias_type.in_(['Non-uniform', 'Pathway ID', 'Retired name', 'SGDID Secondary', 'Uniform']))).all()
+        aliases = DBSession.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, ~LocusAlias.alias_type.in_(['Pathway ID', 'Retired name', 'SGDID Secondary']))).all()
         for alias in aliases:
             if alias.alias_type == "EC number":
                 ecnumber = {
@@ -2976,7 +3009,8 @@ class Locusdbentity(Dbentity):
                 category = alias.alias_type
 
             references_alias = DBSession.query(LocusAliasReferences).filter_by(alias_id=alias.alias_id).all()
-            obj["aliases"].append({
+
+            alias_obj = {
                 "id": alias.alias_id,
                 "display_name": alias.display_name,
                 "link": alias.obj_url,
@@ -2984,27 +3018,43 @@ class Locusdbentity(Dbentity):
                 "references": [r.reference.to_dict_citation() for r in references_alias],
                 "source": {
                     "display_name": alias.source.display_name
-                },
-                "protein": True
-            })
+                }
+            }
+
+            if not alias.alias_type in ("Uniform", "Non-uniform"):
+                alias_obj["protein"] = True
+
+            obj["aliases"].append(alias_obj)
 
         sos = DBSession.query(Dnasequenceannotation.so_id).filter_by(dbentity_id=self.dbentity_id).group_by(Dnasequenceannotation.so_id).all()
         locus_type = DBSession.query(So.display_name).filter(So.so_id.in_([so[0] for so in sos])).all()
         obj["locus_type"] = ",".join([l[0] for l in locus_type])
+
+        summaries = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created, Locussummary.summary_order, Locussummary.summary_type).filter_by(locus_id=self.dbentity_id).all()
+        summary_types = {}
+        for s in summaries:
+            if s[4] in summary_types:
+                summary_types[s[4]].append(s)
+            else:
+                summary_types[s[4]] = [s]
+
+        summary_gene = sorted(summary_types.get("Gene", []), key=lambda s: s.summary_order)
+        summary_regulation = sorted(summary_types.get("Regulation", []), key=lambda s: s.summary_order)
+
+        obj["regulation_overview"] = self.regulation_overview_to_dict(summary_regulation)
         
-        summary = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter(and_(Locussummary.locus_id==self.dbentity_id, Locussummary.summary_type == "Gene")).order_by(Locussummary.summary_order).all()
-        if len(summary) > 0:
+        if len(summary_gene) > 0:
             text = ""
-            for s in summary:
+            for s in summary_gene:
                 text += s[1]
             obj["paragraph"] = {
                 "text": text,
-                "date_edited": summary[-1][2].strftime("%Y-%m-%d")
+                "date_edited": summary_gene[-1][2].strftime("%Y-%m-%d")
             }
         else:
             obj["paragraph"] = None
 
-        references_obj = self.references_overview_to_dict([s[0] for s in summary])
+        references_obj = self.references_overview_to_dict([s[0] for s in summary_gene])
         obj["qualities"] = references_obj["qualities"]
         obj["references"] = references_obj["references"]
         obj["reference_mapping"] = references_obj["reference_mapping"]
@@ -3054,7 +3104,9 @@ class Locusdbentity(Dbentity):
         return formatted_text + text[last_cursor:]
     
     def references_overview_to_dict(self, summary_ids):
-        references = DBSession.query(LocusReferences).filter_by(locus_id=self.dbentity_id).all()
+        blacklist = (551590,)
+        
+        references = DBSession.query(LocusReferences).filter(and_(LocusReferences.locus_id==self.dbentity_id, ~LocusReferences.reference_id.in_(blacklist))).all()
 
         obj = {}
         
@@ -3095,6 +3147,8 @@ class Locusdbentity(Dbentity):
                 obj["qualities"]["qualifier"]["references"].append(ref_dict)
             elif ref.reference_class == "feature_type":
                 obj["qualities"]["feature_type"]["references"].append(ref_dict)
+            else:
+                continue
 
             if ref.reference_id not in reference_ids:
                 obj["references"].append(ref_dict)
@@ -3102,14 +3156,12 @@ class Locusdbentity(Dbentity):
 
             reference_ids.add(ref.reference_id)
 
-        summary_references = DBSession.query(LocussummaryReference).filter(LocussummaryReference.summary_id.in_(summary_ids)).order_by(LocussummaryReference.reference_order).all()
+        summary_references = DBSession.query(LocussummaryReference).filter(and_(LocussummaryReference.summary_id.in_(summary_ids), ~LocussummaryReference.reference_id.in_(blacklist))).order_by(LocussummaryReference.reference_order).all()
         for s in summary_references:
             if s.reference_id not in reference_ids:
                 obj["references"].append(s.reference.to_dict_citation())
                 obj["sgdid_ref"][s.reference.sgdid] = s.reference
                 reference_ids.add(s.reference_id)
-
-        obj["references"] = sorted(obj["references"], key=lambda r: (r["year"], r["citation"]), reverse=True)
 
         obj["reference_mapping"] = {}
         
@@ -3120,11 +3172,30 @@ class Locusdbentity(Dbentity):
 
         return obj
     
-    def regulation_overview_to_dict(self):
-        return {
+    def regulation_overview_to_dict(self, summary_regulation):
+        blacklist = (551590,)
+        
+        obj = {
             "regulator_count": DBSession.query(Regulationannotation).filter_by(target_id=self.dbentity_id).count(),
             "target_count": DBSession.query(Regulationannotation).filter_by(regulator_id=self.dbentity_id).count()
         }
+        
+        if len(summary_regulation) > 0:
+            text = ""
+            summary_ids = []
+            for s in summary_regulation:
+                text += s[1]
+                summary_ids.append(s[0])
+
+            summary_references = DBSession.query(LocussummaryReference).filter(and_(LocussummaryReference.summary_id.in_(summary_ids), ~LocussummaryReference.reference_id.in_(blacklist))).order_by(LocussummaryReference.reference_order).all()
+                
+            obj["paragraph"] = {
+                "text": text,
+                "date_edited": summary_regulation[-1][2].strftime("%Y-%m-%d"),
+                "references": [r.reference.to_dict_citation() for r in summary_references]
+            }
+        
+        return obj
 
     def protein_overview_to_dict(self):
         obj = {
@@ -6608,6 +6679,7 @@ class Regulationannotation(Base):
     happens_during = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), index=True)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    annotation_type = Column(String(40), nullable=False)
 
     eco = relationship(u'Eco')
     go = relationship(u'Go')
@@ -6617,12 +6689,14 @@ class Regulationannotation(Base):
     target = relationship(u'Dbentity', primaryjoin='Regulationannotation.target_id == Dbentity.dbentity_id')
     taxonomy = relationship(u'Taxonomy')
 
-    def to_dict(self, reference):
+    def to_dict(self, reference=None):
+        if reference is None:
+            reference = self.reference
+        
         experiment = None
         if self.eco:
             experiment = {
-                "display_name": self.eco.display_name,
-                "link": self.eco.obj_url
+                "display_name": self.eco.display_name
             }
 
         strain = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
@@ -6641,28 +6715,25 @@ class Regulationannotation(Base):
         
         return {
             "id": self.annotation_id,
-            "locus2": {
+            "target": {
                 "display_name": self.target.display_name,
                 "link": self.target.obj_url,
                 "id": self.target.dbentity_id,
                 "format_name": self.target.format_name                
             },
-            "locus1": {
+            "direction": {
                 "display_name": self.regulator.display_name,
                 "link": self.regulator.obj_url,
                 "id": self.regulator.dbentity_id,
                 "format_name": self.regulator.format_name
             },
-            "reference": {
-                "display_name": reference.display_name,
-                "link": reference.obj_url,
-                "pubmed_id": reference.pmid
-            },
+            "evidence": experiment,
+            "regulation_of": self.regulation_type,
+            "happens_during": self.happens_during,
+            "reference": reference.to_dict_citation(),
             "strain": strain_obj,
             "experiment": experiment,
-            "properties": [], #dropped
-            "assay": None, #dropped
-            "construct": None #dropped
+            "annotation_type": self.annotation_type
         }
 
 class Reporter(Base):
