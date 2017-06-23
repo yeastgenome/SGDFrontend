@@ -16,7 +16,7 @@ from .celery_tasks import upload_to_s3
 
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, get_pusher_client, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
-from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results
+from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .tsv_parser import parse_tsv_annotations
 
 from .loading.promote_reference_triage import add_paper, get_dbentity_by_name
@@ -969,6 +969,28 @@ def locus_protein_domain_details(request):
 
     if locus:
         return locus.protein_domain_details()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='locus_binding_site_details', renderer='json', request_method='GET')
+def locus_binding_site_details(request):
+    id = request.matchdict['id']
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+
+    if locus:
+        return locus.binding_site_details()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='locus_regulation_details', renderer='json', request_method='GET')
+def locus_regulation_details(request):
+    id = request.matchdict['id']
+
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+
+    if locus:
+        return locus.regulation_details()
     else:
         return HTTPNotFound()
 
