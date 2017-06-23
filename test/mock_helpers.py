@@ -52,9 +52,11 @@ class MockQuery(object):
     def all(self):
         return self._query_result
 
-    def distinct(self, *query_params):
-        self._query_filter = MockQueryFilter(query_params[0], self._query_result)
-        return self._query_result
+    # def distinct(self):
+    #     return self._query_result
+
+    def distinct(self, query_params):
+        return self
 
 
 class MockFileStorage(object):
@@ -370,6 +372,50 @@ def locus_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Locusnoteannotation'>":
         laf = factory.LocusnoteannotationFactory()
         return MockQuery(laf)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Posttranslationannotation'>":
+        pta = factory.PosttranslationannotationFactory()
+        source = factory.SourceFactory()
+        psi = factory.PsimodFactory()
+        pta.source = source
+        pta.psimod = psi
+        return MockQuery(pta)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Referencedbentity'>":
+        refdb = factory.ReferencedbentityFactory()
+        return MockQuery(refdb)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Proteinexptannotation'>":
+        prt = factory.ProteinexptannotationFactory()
+        return MockQuery(prt)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Proteindomainannotation'>":
+        pda = factory.ProteindomainannotationFactory()
+        pd = factory.ProteindomainFactory()
+        source = factory.SourceFactory()
+        db = factory.DbentityFactory()
+        pd.source = source
+        pda.proteindomain = pd
+        pda.dbentity = db
+        return MockQuery(pda)
+    elif len(args) == 3 and str(args[0]) == 'Dbentity.display_name' and str(args[1]) == 'Dbentity.format_name' and str(args[2]) == 'Dbentity.obj_url':
+        db = factory.DbentityFactory()
+        return MockQuery((db.display_name, db.format_name, db.obj_url))
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Proteindomain'>":
+        pd = factory.ProteindomainFactory()
+        source = factory.SourceFactory()
+        pd.source = source
+        return MockQuery(pd)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.ProteindomainUrl'>":
+        pdurl = factory.ProteindomainUrlFactory()
+        pd = factory.ProteindomainFactory()
+        source = factory.SourceFactory()
+        pd.source = source
+        return MockQuery(pdurl)
+    elif len(args) == 1 and str(args[0]) == 'Proteindomainannotation.dbentity_id':
+        pda = factory.ProteindomainannotationFactory()
+        return MockQuery((pda.dbentity_id),)
+        return MockQuery(db.format_name)
+    elif len(args) == 1 and str(args[0]) == 'Dbentity.format_name':
+        db = factory.DbentityFactory()
+        return MockQuery((db.format_name,))
+
     else:
         print "the problem is the condition!!!!"
         print args[0]
@@ -581,6 +627,12 @@ def keywords_side_effect(*args, **kwargs):
         kw = factory.KeywordFactory()
         dskw.keyword = kw
         return MockQuery((dskw.keyword_id))
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.DatasetKeyword'>":
+        dskw = factory.DatasetKeywordFactory()
+        return MockQuery([dskw])
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Dataset'>":
+        ds = factory.DatasetFactory()
+        return MockQuery([ds])
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Keyword'>":
         kw = factory.KeywordFactory()
         return MockQuery([kw])
@@ -704,6 +756,14 @@ def locus_reference_side_effect(*args, **kwargs):
         print args[0]
         print args[1]
 
+
+def protein_side_effect(*args, **kwargs):
+    if len(args) == 1 and str(args[0]) == "<class 'src.models.Posttranslationannotation'>":
+        pta = factory.PosttranslationannotationFactory()
+        return MockQuery(pta)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Referencedbentity'>":
+        refdb = factory.ReferencedbentityFactory()
+        return MockQuery(refdb)
 
 def sequence_side_effect(*args, **kwargs):
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Locusdbentity'>":
