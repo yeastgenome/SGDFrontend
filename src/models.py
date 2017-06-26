@@ -3021,51 +3021,6 @@ class Locusdbentity(Dbentity):
 
         if self.genetic_position:
             obj["genetic_position"] = self.genetic_position
-        
-        aliases = DBSession.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, ~LocusAlias.alias_type.in_(['Pathway ID', 'Retired name', 'SGDID Secondary']))).all()
-        for alias in aliases:
-            if alias.alias_type == "EC number":
-                ecnumber = {
-                    "display_name": alias.display_name,
-                    "obj_url": alias.obj_url
-                }
-
-                if "ecnumbers" in obj:
-                    obj["ecnumbers"].append(ecnumber)
-                else:
-                    obj["ecnumbers"] = [ecnumber]
-
-                continue
-
-            category = ""
-            if alias.alias_type == "Uniform" or alias.alias_type == "Non-uniform":
-                category = "Alias"
-            elif alias.alias_type == "NCBI protein name":
-                category = "NCBI protein name"
-            else:
-                category = alias.alias_type
-
-            references_alias = DBSession.query(LocusAliasReferences).filter_by(alias_id=alias.alias_id).all()
-
-            alias_obj = {
-                "id": alias.alias_id,
-                "display_name": alias.display_name,
-                "link": alias.obj_url,
-                "category": category,
-                "references": [r.reference.to_dict_citation() for r in references_alias],
-                "source": {
-                    "display_name": alias.source.display_name
-                }
-            }
-
-            if not alias.alias_type in ("Uniform", "Non-uniform"):
-                alias_obj["protein"] = True
-
-            obj["aliases"].append(alias_obj)
-
-        sos = DBSession.query(Dnasequenceannotation.so_id).filter_by(dbentity_id=self.dbentity_id).group_by(Dnasequenceannotation.so_id).all()
-        locus_type = DBSession.query(So.display_name).filter(So.so_id.in_([so[0] for so in sos])).all()
-        obj["locus_type"] = ",".join([l[0] for l in locus_type])
 
         summaries = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created, Locussummary.summary_order, Locussummary.summary_type).filter_by(locus_id=self.dbentity_id).all()
         summary_types = {}
@@ -3098,6 +3053,62 @@ class Locusdbentity(Dbentity):
 
         if obj["paragraph"] is not None:
             obj["paragraph"]["text"] = self.format_paragraph(obj["paragraph"]["text"], references_obj)
+        
+        aliases = DBSession.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, ~LocusAlias.alias_type.in_(['Pathway ID', 'Retired name', 'SGDID Secondary']))).all()
+        for alias in aliases:
+            if alias.alias_type == "EC number":
+                ecnumber = {
+                    "display_name": alias.display_name,
+                    "obj_url": alias.obj_url
+                }
+
+                if "ecnumbers" in obj:
+                    obj["ecnumbers"].append(ecnumber)
+                else:
+                    obj["ecnumbers"] = [ecnumber]
+
+                continue
+
+            category = ""
+            if alias.alias_type == "Uniform" or alias.alias_type == "Non-uniform":
+                category = "Alias"
+            elif alias.alias_type == "NCBI protein name":
+                category = "NCBI protein name"
+            else:
+                category = alias.alias_type
+
+            references_alias = DBSession.query(LocusAliasReferences).filter_by(alias_id=alias.alias_id).all()
+
+            reference_alias_dict = []
+            for r in references_alias:
+                reference_dict = r.reference.to_dict_citation()
+                reference_alias_dict.append(reference_dict)
+
+                obj["references"].append(reference_dict)
+
+                order = len(obj["reference_mapping"].keys())
+                if r.reference_id not in obj["reference_mapping"]:
+                    obj["reference_mapping"][r.reference_id] = order + 1
+            
+            alias_obj = {
+                "id": alias.alias_id,
+                "display_name": alias.display_name,
+                "link": alias.obj_url,
+                "category": category,
+                "references": reference_alias_dict,
+                "source": {
+                    "display_name": alias.source.display_name
+                }
+            }
+
+            if not alias.alias_type in ("Uniform", "Non-uniform"):
+                alias_obj["protein"] = True
+
+            obj["aliases"].append(alias_obj)
+
+        sos = DBSession.query(Dnasequenceannotation.so_id).filter_by(dbentity_id=self.dbentity_id).group_by(Dnasequenceannotation.so_id).all()
+        locus_type = DBSession.query(So.display_name).filter(So.so_id.in_([so[0] for so in sos])).all()
+        obj["locus_type"] = ",".join([l[0] for l in locus_type])
 
         urls = DBSession.query(LocusUrl).filter_by(locus_id=self.dbentity_id).all()
         obj["urls"] = [u.to_dict() for u in urls]
@@ -3141,7 +3152,7 @@ class Locusdbentity(Dbentity):
     
     def references_overview_to_dict(self, summary_ids):
         blacklist = (551590,)
-        
+
         references = DBSession.query(LocusReferences).filter(and_(LocusReferences.locus_id==self.dbentity_id, ~LocusReferences.reference_id.in_(blacklist))).all()
 
         obj = {}
