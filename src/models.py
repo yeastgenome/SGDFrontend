@@ -2083,17 +2083,15 @@ class Locusdbentity(Dbentity):
             dataset_ids.add(dataset.dataset_id)
             reference_ids[dataset.dataset_id] = annotation.reference_id
 
-            # value = annotation.log_ratio_value
-            
-            if dataset.channel_count == 1:
-                try:
-                    value = log(annotation.expression_value, 2)
-                except ValueError:
-                    value = float(annotation.expression_value) # THIS EXCEPTION SHOULD'T HAPPEN!
-            else:
-                value = float(annotation.expression_value)
+            value = annotation.log_ratio_value
+            if value is None:
+                value = annotation.normalized_expression_value
+                if value < 0:
+                    value = 0
+                else:
+                    value = log(value, 2)
 
-            rounded = floor(value)
+            rounded = floor(float(value))
             if value - rounded >= .5:
                 rounded += .5
 
@@ -4224,9 +4222,10 @@ class Expressionannotation(Base):
     taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
     reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
     datasetsample_id = Column(ForeignKey(u'nex.datasetsample.datasetsample_id', ondelete=u'CASCADE'), nullable=False)
-    expression_value = Column(Float(53), nullable=False)
+    normalized_expression_value = Column(Float(53), nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    log_ratio_value = Column(Float(53), nullable=False)
 
     datasetsample = relationship(u'Datasetsample')
     dbentity = relationship(u'Dbentity')
