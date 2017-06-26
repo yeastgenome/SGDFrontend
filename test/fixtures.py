@@ -7,7 +7,8 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Physinteractionannotation, Geninteractionannotation, Goannotation, Regulationannotation, Literatureannotation, Contig, EcoAlias, EcoUrl, Goextension, \
     Gosupportingevidence, Eco, Ro, Go, GoRelation, GoUrl, GoAlias, ApoRelation, Referencetriage, Proteinsequenceannotation, ProteinsequenceDetail, \
     Goslimannotation, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence,\
-    So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Locusnoteannotation
+    So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Locusnoteannotation, Posttranslationannotation,\
+    Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -1321,6 +1322,103 @@ class LocusUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     locus_id = 1
     url_type = "url type"
     placement = "placement"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class ProteindomainannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Proteindomainannotation
+        sqlalchemy_session = DBSession
+
+    annotation_id = 1
+    dbentity_id = 1
+    source_id = 1
+    taxonomy_id = 1
+    reference_id = 1
+    proteindomain_id = 1
+    start_index = 1
+    end_index = 10
+    date_of_run = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class ProteindomainFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Proteindomain
+        sqlalchemy_session = DBSession
+
+    proteindomain_id = 1
+    format_name = "format name"
+    display_name = "display name"
+    obj_url = "/obj_url"
+    source_id = 1
+    interpro_id = 1
+    description = "description"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by =  "TOTO"
+
+
+class ProteindomainUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ProteindomainUrl
+        sqlalchemy_session = DBSession
+
+    url_id = 1
+    display_name = "display name"
+    obj_url = "/obj_url"
+    source_id = 1
+    proteindomain_id = 1
+    url_type = "url_type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by =  "TOTO"
+
+
+class PosttranslationannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Posttranslationannotation
+        sqlalchemy_session = DBSession
+
+    annotation_id = 1
+    dbentity_id = 1
+    source_id = 1
+    taxonomy_id = 1
+    reference_id = 1
+    site_index = 1
+    site_residue = "residue"
+    psimod_id = 1
+    modifier_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class PsimodFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Psimod
+        sqlalchemy_session = DBSession
+
+    psimod_id = 1
+    format_name = "format_name"
+    display_name = "display_name"
+    obj_url = "/obj_url"
+    source_id = 1
+    psimodid = 1
+    description = "description"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class ProteinexptannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Proteinexptannotation
+        sqlalchemy_session = DBSession
+
+    annotation_id = 1
+    dbentity_id = 1
+    source_id = 1
+    reference_id = 1
+    taxonomy_id = 1
+    experiment_type = "exp type"
+    data_value = "data value"
+    data_unit = "data unit"
+    assay_id = 1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
