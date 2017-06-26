@@ -3120,8 +3120,7 @@ class Locusdbentity(Dbentity):
             "display_name": "ORF Map"
         })
 
-        locus_notes = DBSession.query(Locusnoteannotation).filter_by(dbentity_id=self.dbentity_id).all()
-
+        locus_notes = DBSession.query(Locusnote).filter_by(locus_id=self.dbentity_id).all()
         obj["history"] = [h.to_dict() for h in locus_notes]
         
         return obj
@@ -5254,42 +5253,50 @@ class LocusUrl(Base):
         }
 
 
-class Locusnoteannotation(Base):
-    __tablename__ = 'locusnoteannotation'
-    __table_args__ = (
-        UniqueConstraint('dbentity_id', 'note_type', 'display_name', 'note'),
-        {u'schema': 'nex'}
-    )
+class Locusnote(Base):
+    __tablename__ = 'locusnote'
+    __table_args__ = {u'schema': 'nex'}
 
-    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
-    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    note_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.note_seq'::regclass)"))
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
     bud_id = Column(Integer)
+    locus_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    note_class = Column(String(40), nullable=False)
     note_type = Column(String(40), nullable=False)
-    display_name = Column(String(500), nullable=False)
     note = Column(String(2000), nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
-    dbentity = relationship(u'Dbentity')
-    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
     source = relationship(u'Source')
-    taxonomy = relationship(u'Taxonomy')
 
     def to_dict(self):
-        
+        reference = DBSession.query(LocusnoteReference).filter_by(note_id=self.note_id).all()
         
         return {
-            "category": self.display_name,
-            "history_type": "LSP" if self.note_type.upper() == "LOCUS" else self.note_type.upper(),
+            "category": self.note_type,
+            "history_type": "LSP" if self.note_class.upper() == "LOCUS" else self.note_class.upper(),
             "note": self.note,
             "date_created": self.date_created.strftime("%Y-%m-%d"),
-            "references": [self.reference.to_dict_citation()] if self.reference else []
-        }
-    
+            "references": [reference[0].reference.to_dict_citation()] if len(reference) > 0 else []
+        }        
 
+
+class LocusnoteReference(Base):
+    __tablename__ = 'locusnote_reference'
+    __table_args__ = {u'schema': 'nex'}
+
+    note_reference_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    note_id = Column(ForeignKey(u'nex.locusnote.note_id', ondelete=u'CASCADE'), index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    note = relationship(u'Locusnote')
+    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    source = relationship(u'Source')
+
+    
 class Locussummary(Base):
     __tablename__ = 'locussummary'
     __table_args__ = (
