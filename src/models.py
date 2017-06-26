@@ -1802,6 +1802,36 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
 
+    def regulation_target_enrichment(self):
+        target_ids = DBSession.query(Regulationannotation.target_id).filter_by(regulator_id=self.dbentity_id).all()
+        format_names = DBSession.query(Dbentity.format_name).filter(Dbentity.dbentity_id.in_(target_ids)).all()
+
+        data = {
+            "genes": ",".join([f[0] for f in format_names]),
+            "aspect": "P"
+        }
+        headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
+
+        try:
+            response = requests.post(os.environ['BATTER_URI'], data=json.dumps(data), headers=headers).text
+            
+            response_json = json.loads(response.split('\n')[1])
+        except:
+            return []
+
+        obj = []
+        for row in response_json:
+            obj.append({
+                "go": {
+                    "display_name": row["term"],
+                    "link": '/go/' + row["goid"],
+                    "id": row["goid"]
+                },
+                "match_count": row["num_gene_annotated"],
+                "pvalue": row["pvalue"]
+            })
+        return obj
+    
     def regulation_details(self):
         annotations = DBSession.query(Regulationannotation).filter(or_(Regulationannotation.target_id==self.dbentity_id, Regulationannotation.regulator_id==self.dbentity_id)).all()
         
@@ -2573,6 +2603,15 @@ class Locusdbentity(Dbentity):
 
     def regulation_graph(self):
         main_gene_annotations = DBSession.query(Regulationannotation).filter(and_((Regulationannotation.direction != None), or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id))).all()
+
+        regulations = {}
+        
+        for annotation in main_gene_annotations:
+            key = (annotation.target_id, annotation.regulator_id, annotation.direction)
+            if pair in regulations:
+                regulations[pair].append(annotation.reference_id)
+            else:
+                regulations[pair] = [reference_id]
 
         genes_to_regulations = {}
         for annotation in main_gene_annotations:
@@ -6052,7 +6091,7 @@ class Proteindomain(Base):
             "aspect": "P"
         }
         headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
-        
+
         try:
             response = requests.post(os.environ['BATTER_URI'], data=json.dumps(data), headers=headers).text
             
@@ -6072,6 +6111,7 @@ class Proteindomain(Base):
                 "pvalue": row["pvalue"]
             })
         return obj
+
 
 class ProteindomainUrl(Base):
     __tablename__ = 'proteindomain_url'
