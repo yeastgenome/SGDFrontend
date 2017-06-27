@@ -28,7 +28,7 @@ namespace :deploy do
   desc 'Index redis'
   task :redis do
     on roles(:app), in: :sequence do
-      execute "cd #{current_path} && export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && workon sgd && . prod_variables.sh && make index-redis && sleep 4"
+      execute "cd #{current_path} && export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && workon sgd && . prod_variables.sh && python scripts/disambiguation/create_disambiguation.py && sleep 4"
     end
   end
 
