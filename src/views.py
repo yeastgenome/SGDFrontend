@@ -29,15 +29,18 @@ import logging
 import json
 log = logging.getLogger(__name__)
 
-#import redis
-#disambiguation_table = redis.Redis()
+import redis
+disambiguation_table = redis.Redis()
 
-def _disambiguate_id(id):
-    dbentity_id = disambiguation_table.get(id.upper())
-    if dbentity_id is None:
-        return None
+def extract_id_request(request, prefix, param_name='id'):
+    id = str(request.matchdict[param_name])
+
+    db_id = disambiguation_table.get(("/" + prefix + "/" + id).upper())
+    
+    if db_id is None:
+        raise HTTPNotFound()
     else:
-        return int(dbentity_id)
+        return int(db_id)
 
 @view_config(route_name='home', request_method='GET', renderer='home.jinja2')
 def home_view(request):
@@ -328,9 +331,9 @@ def get_sequence_object(request):
 
 @view_config(route_name='reserved_name', renderer='json', request_method='GET')
 def reserved_name(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, "reservedname")
 
-    reserved_name = DBSession.query(Reservedname).filter_by(format_name=id).one_or_none()
+    reserved_name = DBSession.query(Reservedname).filter_by(reservedname_id=id).one_or_none()
     
     if reserved_name:
         return reserved_name.to_dict()
@@ -339,9 +342,9 @@ def reserved_name(request):
 
 @view_config(route_name='strain', renderer='json', request_method='GET')
 def strain(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'strain')
 
-    strain = DBSession.query(Straindbentity).filter_by(sgdid=id).one_or_none()
+    strain = DBSession.query(Straindbentity).filter_by(dbentity_id=id).one_or_none()
     
     if strain:
         return strain.to_dict()
@@ -350,9 +353,10 @@ def strain(request):
 
 @view_config(route_name='reference', renderer='json', request_method='GET')
 def reference(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'reference')
 
-    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+    
     if reference:
         return reference.to_dict()
     else:
@@ -360,9 +364,10 @@ def reference(request):
 
 @view_config(route_name='reference_literature_details', renderer='json', request_method='GET')
 def reference_literature_details(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'reference')
 
-    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+
     if reference:
         return reference.annotations_to_dict()
     else:
@@ -370,9 +375,10 @@ def reference_literature_details(request):
 
 @view_config(route_name='reference_interaction_details', renderer='json', request_method='GET')
 def reference_interaction_details(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'reference')
 
-    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+
     if reference:
         return reference.interactions_to_dict()
     else:
@@ -380,9 +386,10 @@ def reference_interaction_details(request):
 
 @view_config(route_name='reference_go_details', renderer='json', request_method='GET')
 def reference_go_details(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'reference')
 
-    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+    
     if reference:
         return reference.go_to_dict()
     else:
@@ -390,9 +397,10 @@ def reference_go_details(request):
 
 @view_config(route_name='reference_phenotype_details', renderer='json', request_method='GET')
 def reference_phenotype_details(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'reference')
 
-    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+
     if reference:
         return reference.phenotype_to_dict()
     else:
@@ -400,9 +408,10 @@ def reference_phenotype_details(request):
 
 @view_config(route_name='reference_regulation_details', renderer='json', request_method='GET')
 def reference_regulation_details(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'reference')
 
-    reference = DBSession.query(Referencedbentity).filter_by(sgdid=id).one_or_none()
+    reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+
     if reference:
         return reference.regulation_to_dict()
     else:
@@ -566,9 +575,9 @@ def author(request):
 
 @view_config(route_name='chemical', renderer='json', request_method='GET')
 def chemical(request):
-    format_name = request.matchdict['format_name'].upper()
+    id = extract_id_request(request, 'chebi', param_name="format_name")
     
-    chebi = DBSession.query(Chebi).filter_by(format_name=format_name).one_or_none()
+    chebi = DBSession.query(Chebi).filter_by(chebi_id=id).one_or_none()
     if chebi:
         return chebi.to_dict()
     else:
@@ -576,8 +585,8 @@ def chemical(request):
 
 @view_config(route_name='chemical_phenotype_details', renderer='json', request_method='GET')
 def chemical_phenotype_details(request):
-    id = request.matchdict['id'].upper()
-
+    id = extract_id_request(request, 'chebi')
+    
     chebi = DBSession.query(Chebi).filter_by(chebi_id=id).one_or_none()
     if chebi:
         return chebi.phenotype_to_dict()
@@ -586,9 +595,9 @@ def chemical_phenotype_details(request):
 
 @view_config(route_name='phenotype', renderer='json', request_method='GET')
 def phenotype(request):
-    format_name = request.matchdict['format_name']
+    id = extract_id_request(request, 'phenotype', param_name="format_name")
 
-    phenotype = DBSession.query(Phenotype).filter(func.lower(Phenotype.format_name) == func.lower(format_name)).one_or_none()
+    phenotype = DBSession.query(Phenotype).filter_by(phenotype_id=id).one_or_none()
     if phenotype:
         return phenotype.to_dict()
     else:
@@ -596,12 +605,7 @@ def phenotype(request):
 
 @view_config(route_name='phenotype_locus_details', renderer='json', request_method='GET')
 def phenotype_locus_details(request):
-    id = request.matchdict['id']
-
-    try:
-        id = int(id)
-    except ValueError:
-        return HTTPNotFound(body=json.dumps({'error': 'This endpoint expects a DB ID'}))
+    id = extract_id_request(request, 'phenotype')
 
     phenotype = DBSession.query(Phenotype).filter_by(phenotype_id=id).one_or_none()
     if phenotype:
@@ -613,10 +617,10 @@ def phenotype_locus_details(request):
 def observable(request):
     if request.matchdict['format_name'].upper() == "YPO": # /ontology/phenotype/ypo -> root of APOs
         return Apo.root_to_dict()
-    
-    format_name = request.matchdict['format_name'].upper()
 
-    observable = DBSession.query(Apo).filter_by(format_name=format_name).one_or_none()
+    id = extract_id_request(request, 'apo', param_name="format_name")
+
+    observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
     if observable:
         return observable.to_dict()
     else:
@@ -624,9 +628,10 @@ def observable(request):
 
 @view_config(route_name='observable_locus_details', renderer='json', request_method='GET')
 def observable_locus_details(request):
-    id = request.matchdict['id']
+    id = extract_id_request(request, 'apo')
 
     observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
+
     if observable:
         return observable.annotations_to_dict()
     else:
@@ -634,7 +639,7 @@ def observable_locus_details(request):
 
 @view_config(route_name='observable_ontology_graph', renderer='json', request_method='GET')
 def observable_ontology_graph(request):
-    id = request.matchdict['id']
+    id = extract_id_request(request, 'apo')
 
     observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
     if observable:
@@ -644,7 +649,7 @@ def observable_ontology_graph(request):
 
 @view_config(route_name='observable_locus_details_all', renderer='json', request_method='GET')
 def observable_locus_details_all(request):
-    id = request.matchdict['id']
+    id = extract_id_request(request, 'apo')
 
     observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
     if observable:
@@ -654,9 +659,9 @@ def observable_locus_details_all(request):
 
 @view_config(route_name='go', renderer='json', request_method='GET')
 def go(request):
-    format_name = request.matchdict['format_name'].upper()
+    id = extract_id_request(request, 'go', param_name="format_name")
 
-    go = DBSession.query(Go).filter_by(format_name=format_name).one_or_none()
+    go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
     if go:
         return go.to_dict()
     else:
@@ -664,13 +669,8 @@ def go(request):
 
 @view_config(route_name='go_ontology_graph', renderer='json', request_method='GET')
 def go_ontology_graph(request):
-    id = request.matchdict['id']
-
-    try:
-        id = int(id)
-    except ValueError:
-        return HTTPNotFound(body=json.dumps({'error': 'This endpoint expects a DB ID'}))
-
+    id = extract_id_request(request, 'go')
+        
     go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
     if go:
         return go.ontology_graph()
@@ -679,12 +679,7 @@ def go_ontology_graph(request):
 
 @view_config(route_name='go_locus_details', renderer='json', request_method='GET')
 def go_locus_details(request):
-    id = request.matchdict['id']
-
-    try:
-        id = int(id)
-    except ValueError:
-        return HTTPNotFound(body=json.dumps({'error': 'This endpoint expects a DB ID'}))
+    id = extract_id_request(request, 'go')
         
     go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
     if go:
@@ -694,13 +689,8 @@ def go_locus_details(request):
 
 @view_config(route_name='go_locus_details_all', renderer='json', request_method='GET')
 def go_locus_details_all(request):
-    id = request.matchdict['id']
-
-    try:
-        id = int(id)
-    except ValueError:
-        return HTTPNotFound(body=json.dumps({'error': 'This endpoint expects a DB ID'}))
-
+    id = extract_id_request(request, 'go')
+        
     go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
     if go:
         return go.annotations_and_children_to_dict()
@@ -709,15 +699,9 @@ def go_locus_details_all(request):
 
 @view_config(route_name='locus', renderer='json', request_method='GET')
 def locus(request):
-#    dbentity_id = _disambiguate_id(request.matchdict['sgdid'])
+    id = extract_id_request(request, 'locus', param_name="sgdid")
 
-#    if dbentity_id is None:
-#        return HTTPNotFound()
-    
-    sgdid = request.matchdict['sgdid'].upper()
-
-#    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=dbentity_id).one_or_none()
-    locus = DBSession.query(Locusdbentity).filter_by(sgdid=sgdid).one_or_none()
+    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
         return locus.to_dict()
     else:
@@ -725,7 +709,7 @@ def locus(request):
 
 @view_config(route_name='locus_tabs', renderer='json', request_method='GET')
 def locus_tabs(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
@@ -735,7 +719,7 @@ def locus_tabs(request):
 
 @view_config(route_name='locus_phenotype_details', renderer='json', request_method='GET')
 def locus_phenotype_details(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
@@ -745,7 +729,7 @@ def locus_phenotype_details(request):
 
 @view_config(route_name='locus_phenotype_graph', renderer='json', request_method='GET')
 def locus_phenotype_graph(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
@@ -755,7 +739,7 @@ def locus_phenotype_graph(request):
 
 @view_config(route_name='locus_go_graph', renderer='json', request_method='GET')
 def locus_go_graph(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
@@ -765,7 +749,7 @@ def locus_go_graph(request):
 
 @view_config(route_name='locus_expression_graph', renderer='json', request_method='GET')
 def locus_expression_graph(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
@@ -775,7 +759,7 @@ def locus_expression_graph(request):
     
 @view_config(route_name='locus_literature_details', renderer='json', request_method='GET')
 def locus_literature_details(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
@@ -785,7 +769,7 @@ def locus_literature_details(request):
 
 @view_config(route_name='locus_literature_graph', renderer='json', request_method='GET')
 def locus_literature_graph(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
@@ -795,7 +779,7 @@ def locus_literature_graph(request):
 
 @view_config(route_name='locus_interaction_graph', renderer='json', request_method='GET')
 def locus_interaction_graph(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
@@ -805,7 +789,7 @@ def locus_interaction_graph(request):
 
 @view_config(route_name='locus_regulation_graph', renderer='json', request_method='GET')
 def locus_regulation_graph(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
@@ -815,7 +799,7 @@ def locus_regulation_graph(request):
     
 @view_config(route_name='locus_go_details', renderer='json', request_method='GET')
 def locus_go_details(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
@@ -825,7 +809,7 @@ def locus_go_details(request):
     
 @view_config(route_name='locus_interaction_details', renderer='json', request_method='GET')
 def locus_interaction_details(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
@@ -835,7 +819,7 @@ def locus_interaction_details(request):
 
 @view_config(route_name='locus_expression_details', renderer='json', request_method='GET')
 def locus_expression_details(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
@@ -845,7 +829,7 @@ def locus_expression_details(request):
 
 @view_config(route_name='locus_neighbor_sequence_details', renderer='json', request_method='GET')
 def locus_neighbor_sequence_details(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
@@ -855,7 +839,7 @@ def locus_neighbor_sequence_details(request):
 
 @view_config(route_name='locus_sequence_details', renderer='json', request_method='GET')
 def locus_sequence_details(request):
-    id = request.matchdict['id'].upper()
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
     if locus:
@@ -879,9 +863,9 @@ def analyze(request):
 
 @view_config(route_name='dataset', renderer='json', request_method='GET')
 def dataset(request):
-    format_name = request.matchdict['id']
-
-    dataset = DBSession.query(Dataset).filter(func.lower(Dataset.format_name) == func.lower(format_name)).one_or_none()
+    id = extract_id_request(request, 'dataset')
+    
+    dataset = DBSession.query(Dataset).filter_by(dataset_id=id).one_or_none()
     if dataset:
         return dataset.to_dict(add_conditions=True, add_resources=True)
     else:
@@ -889,10 +873,9 @@ def dataset(request):
 
 @view_config(route_name='keyword', renderer='json', request_method='GET')
 def keyword(request):
-    format_name = request.matchdict['id']
-
-    keyword = DBSession.query(Keyword).filter(func.lower(Keyword.format_name) == func.lower(format_name)).one_or_none()
+    id = extract_id_request(request, 'keyword')
     
+    keyword = DBSession.query(Keyword).filter_by(keyword_id=id).one_or_none()
     if keyword:
         return keyword.to_dict()
     else:
@@ -908,10 +891,9 @@ def keywords(request):
 
 @view_config(route_name='contig', renderer='json', request_method='GET')
 def contig(request):
-    format_name = request.matchdict['format_name']
+    id = extract_id_request(request, 'contig', param_name="format_name")
 
-    contig = DBSession.query(Contig).filter(func.lower(Contig.format_name) == func.lower(format_name)).one_or_none()
-
+    contig = DBSession.query(Contig).filter_by(contig_id=id).one_or_none()
     if contig:
         return contig.to_dict()
     else:
@@ -919,10 +901,9 @@ def contig(request):
 
 @view_config(route_name='contig_sequence_details', renderer='json', request_method='GET')
 def contig_sequence_details(request):
-    id = request.matchdict['id']
+    id = extract_id_request(request, 'contig')
 
     contig = DBSession.query(Contig).filter_by(contig_id=id).one_or_none()
-
     if contig:
         return contig.sequence_details()
     else:
@@ -930,10 +911,9 @@ def contig_sequence_details(request):
 
 @view_config(route_name='locus_posttranslational_details', renderer='json', request_method='GET')
 def locus_posttranslational_details(request):
-    id = request.matchdict['id']
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
-
     if locus:
         return locus.posttranslational_details()
     else:
@@ -941,10 +921,9 @@ def locus_posttranslational_details(request):
 
 @view_config(route_name='locus_ecnumber_details', renderer='json', request_method='GET')
 def locus_ecnumber_details(request):
-    id = request.matchdict['id']
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
-
     if locus:
         return locus.ecnumber_details()
     else:
@@ -952,10 +931,9 @@ def locus_ecnumber_details(request):
 
 @view_config(route_name='locus_protein_experiment_details', renderer='json', request_method='GET')
 def locus_protein_experiment_details(request):
-    id = request.matchdict['id']
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
-
     if locus:
         return locus.protein_experiment_details()
     else:
@@ -963,10 +941,9 @@ def locus_protein_experiment_details(request):
 
 @view_config(route_name='locus_protein_domain_details', renderer='json', request_method='GET')
 def locus_protein_domain_details(request):
-    id = request.matchdict['id']
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
-
     if locus:
         return locus.protein_domain_details()
     else:
@@ -974,10 +951,9 @@ def locus_protein_domain_details(request):
 
 @view_config(route_name='locus_binding_site_details', renderer='json', request_method='GET')
 def locus_binding_site_details(request):
-    id = request.matchdict['id']
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
-
     if locus:
         return locus.binding_site_details()
     else:
@@ -986,11 +962,10 @@ def locus_binding_site_details(request):
 @view_config(route_name='locus_regulation_details', renderer='json', request_method='GET')
 def locus_regulation_details(request):
     return [] # TODO: remove this after changes in FE
-    
-    id = request.matchdict['id']
+
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
-
     if locus:
         return locus.regulation_details()
     else:
@@ -998,10 +973,9 @@ def locus_regulation_details(request):
 
 @view_config(route_name='locus_regulation_target_enrichment', renderer='json', request_method='GET')
 def locus_regulation_target_enrichment(request):
-    id = request.matchdict['id']
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
-
     if locus:
         return locus.regulation_target_enrichment()
     else:
@@ -1009,10 +983,9 @@ def locus_regulation_target_enrichment(request):
 
 @view_config(route_name='locus_protein_domain_graph', renderer='json', request_method='GET')
 def locus_protein_domain_graph(request):
-    id = request.matchdict['id']
+    id = extract_id_request(request, 'locus')
 
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
-
     if locus:
         return locus.protein_domain_graph()
     else:
@@ -1020,10 +993,9 @@ def locus_protein_domain_graph(request):
 
 @view_config(route_name='domain', renderer='json', request_method='GET')
 def domain(request):
-    format_name = request.matchdict['format_name']
+    id = extract_id_request(request, 'proteindomain', param_name="format_name")
 
-    proteindomain = DBSession.query(Proteindomain).filter(func.lower(Proteindomain.format_name) == func.lower(format_name)).one_or_none()
-
+    proteindomain = DBSession.query(Proteindomain).filter_by(proteindomain_id=id).one_or_none()
     if proteindomain:
         return proteindomain.to_dict()
     else:
@@ -1031,10 +1003,9 @@ def domain(request):
 
 @view_config(route_name='domain_locus_details', renderer='json', request_method='GET')
 def domain_locus_details(request):
-    id = request.matchdict['id']
+    id = extract_id_request(request, 'proteindomain')
 
     proteindomain = DBSession.query(Proteindomain).filter_by(proteindomain_id=id).one_or_none()
-
     if proteindomain:
         return proteindomain.locus_details()
     else:
@@ -1042,10 +1013,9 @@ def domain_locus_details(request):
 
 @view_config(route_name='domain_enrichment', renderer='json', request_method='GET')
 def domain_enrichment(request):
-    id = request.matchdict['id']
-
+    id = extract_id_request(request, 'proteindomain')
+        
     proteindomain = DBSession.query(Proteindomain).filter_by(proteindomain_id=id).one_or_none()
-
     if proteindomain:
         return proteindomain.enrichment()
     else:
