@@ -2803,6 +2803,22 @@ BEGIN
        NEW.created_by := UPPER(NEW.created_by);
        PERFORM nex.checkuser(NEW.created_by);
 
+       IF (NEW.direction is NOT NULL) THEN
+          IF (NEW.direction != 'positive') OR (NEW.direction != 'negative') THEN
+             RAISE EXCEPTION 'Allowable values are positive, negataive, or null.';
+          END IF;
+       END IF;
+
+      IF (NEW.regulator_type = 'transcription factor') OR (NEW.regulator_type = 'chromatin modifier') THEN
+         IF (NEW.regulation_type = 'protein activity') THEN
+             RAISE EXCEPTION 'That regulation_type is not allowed with that regulator_type.';
+         END IF;
+      ELSIF (NEW.regulator_type = 'protein modifier') THEN
+         IF (NEW.regulation_type = 'transcription') THEN
+             RAISE EXCEPTION 'That regulation_type is not allowed with that regulator_type.';
+         END IF;
+      END IF;
+
        RETURN NEW;
 
   ELSIF (TG_OP = 'UPDATE') THEN
@@ -2818,6 +2834,22 @@ BEGIN
     IF (NEW.created_by != OLD.created_by) THEN
         RAISE EXCEPTION 'Audit columns cannot be updated.';
     END IF;
+
+       IF (NEW.direction is NOT NULL) THEN
+          IF (NEW.direction != 'positive') OR (NEW.direction != 'negative') THEN
+      	       RAISE EXCEPTION 'Allowable values are positive, negataive, or null.';
+      		     END IF;
+       END IF;
+
+      IF (NEW.regulator_type = 'transcription factor') OR (NEW.regulator_type = 'chromatin modifier') THEN
+         IF (NEW.regulation_type = 'protein activity') THEN
+             RAISE EXCEPTION 'That regulation_type is not allowed with that regulator_type.';
+         END IF;
+      ELSIF (NEW.regulator_type = 'protein modifier') THEN
+         IF (NEW.regulation_type = 'transcription') THEN
+             RAISE EXCEPTION 'That regulation_type is not allowed with that regulator_type.';
+         END IF;
+      END IF;
 
     RETURN NEW;
   END IF;
