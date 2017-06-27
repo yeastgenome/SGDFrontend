@@ -3605,7 +3605,7 @@ class Straindbentity(Dbentity):
             "paragraph": None
         }
 
-        if obj["genotype"] == '':
+        if obj["genotype"] == '' or obj["genotype"] == None:
             obj["genotype"] = None
         elif (len(obj["genotype"]) > 1 and obj["genotype"][0] == "\"" and obj["genotype"][-1] == "\""):
             obj["genotype"] = obj["genotype"][1:len(obj["genotype"])-1]
