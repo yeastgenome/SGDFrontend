@@ -25,6 +25,13 @@ namespace :deploy do
     end
   end
 
+  desc 'Index redis'
+  task :redis do
+    on roles(:app), in: :sequence do
+      execute "cd #{current_path} && export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && workon sgd && . prod_variables.sh && make index-redis && sleep 4"
+    end
+  end
+
   desc 'Copy js build'
   task :copy_js do
     on roles(:app), in: :sequence do
