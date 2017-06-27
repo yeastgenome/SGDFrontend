@@ -23,6 +23,9 @@ tests:
 	npm test
 	source test_variables.sh && nosetests -s
 
+qa-index-redis:
+	source dev_variables.sh && NEX2_URI=$$QA_NEX2_URI && cap qa deploy:redis
+
 qa-deploy:
 	source dev_variables.sh && NEX2_URI=$$QA_NEX2_URI && cap qa deploy
 
