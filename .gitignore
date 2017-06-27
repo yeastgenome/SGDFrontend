@@ -84,3 +84,7 @@ static/js/application.js.map
 
 dump.rdb
 .tmp
+
+# vscode editor stuff
+.idea/*
+.vscode/*
