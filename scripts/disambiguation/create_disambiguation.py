@@ -82,8 +82,8 @@ def load_author():
         format_name = author.obj_url.split("/")[2]
 
         try:
-            table_set(format_name.upper(), author.referenceauthor_id, "author")
-            table_set(str(author.referenceauthor_id), author.referenceauthor_id, "author")
+            table_set(format_name.upper(), format_name, "author")
+            table_set(str(author.referenceauthor_id), format_name, "author")
         except UnicodeEncodeError:
             ignoring.append(format_name)
 
