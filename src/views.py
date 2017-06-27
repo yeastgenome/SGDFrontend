@@ -40,7 +40,10 @@ def extract_id_request(request, prefix, param_name='id'):
     if db_id is None:
         raise HTTPNotFound()
     else:
-        return int(db_id)
+        if prefix == 'author':
+            return db_id
+        else:
+            return int(db_id)
 
 @view_config(route_name='home', request_method='GET', renderer='home.jinja2')
 def home_view(request):
@@ -557,9 +560,9 @@ def reference_triage_tags(request):
     
 @view_config(route_name='author', renderer='json', request_method='GET')
 def author(request):
-    format_name = request.matchdict['format_name']
+    format_name = extract_id_request(request, 'author', param_name="format_name")
 
-    key = "/author/"+format_name
+    key = "/author/" + format_name
     
     authors_ref = DBSession.query(Referenceauthor).filter_by(obj_url=key).all()
 
