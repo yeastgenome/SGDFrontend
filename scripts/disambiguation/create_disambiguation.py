@@ -68,6 +68,7 @@ def load_references():
     references = DBSession.query(Referencedbentity).all()
 
     for ref in references:
+        table_set(ref.dbentity_id, ref.dbentity_id, "reference")
         table_set(ref.sgdid, ref.dbentity_id, "reference")
         table_set(ref.pmid, ref.dbentity_id, "reference")
 
