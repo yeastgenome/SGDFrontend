@@ -5281,14 +5281,14 @@ class Locusnote(Base):
     source = relationship(u'Source')
 
     def to_dict(self):
-        reference = DBSession.query(LocusnoteReference).filter_by(note_id=self.note_id).all()
+        references = DBSession.query(LocusnoteReference).filter_by(note_id=self.note_id).all()
         
         return {
             "category": self.note_type,
             "history_type": "LSP" if self.note_class.upper() == "LOCUS" else self.note_class.upper(),
             "note": self.note,
             "date_created": self.date_created.strftime("%Y-%m-%d"),
-            "references": [reference[0].reference.to_dict_citation()] if len(reference) > 0 else []
+            "references": [ref.reference.to_dict_citation() for ref in references]
         }        
 
 
