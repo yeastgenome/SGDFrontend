@@ -132,9 +132,12 @@ def load_go():
     gos = DBSession.query(Go).all()
 
     for go in gos:
+        numerical_id = go.goid.split(":")
+        
         table_set(go.format_name.upper(), go.go_id, "go")
         table_set(go.go_id, go.go_id, "go")
         table_set(go.display_name.replace(" ", "_").upper(), go.go_id, "go")
+        table_set(str(int(numerical_id[1])), go.go_id, "go")
 
 def load_protein_domain():
     print("Loading protein domains into Redis...")
@@ -183,8 +186,8 @@ def load_strains():
         table_set(strain.display_name.replace(" ", "_"), strain.dbentity_id, "strain")
         
 
-load_locus()
 load_references()
+load_locus()
 load_reserved_names()
 load_author()
 load_chemical()
