@@ -1,4 +1,4 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Proteindomain, Contig, Dataset, Keyword
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Proteindomain, Contig, Dataset, Keyword, Ec
 
 from sqlalchemy import create_engine, and_
 import os
@@ -184,7 +184,16 @@ def load_strains():
         table_set(strain.dbentity_id, strain.dbentity_id, "strain")
         table_set(strain.sgdid, strain.dbentity_id, "strain")
         table_set(strain.display_name.replace(" ", "_"), strain.dbentity_id, "strain")
-        
+
+def load_ec_numbers():
+    print("Loading ec numbers into Redis...")
+
+    ecnumbers = DBSession.query(Ec).all()
+
+    for ecnumber in ecnumbers:
+        table_set(ecnumber.display_name.replace("EC:", ""), ecnumber.ec_id, "ec")
+        table_set(ecnumber.format_name, ecnumber.ec_id, "ec")
+        table_set(ecnumber.ec_id, ecnumber.ec_id, "ec")
 
 load_references()
 load_locus()
@@ -199,3 +208,4 @@ load_contigs()
 load_dataset()
 load_keyword()
 load_strains()
+load_ec_numbers()

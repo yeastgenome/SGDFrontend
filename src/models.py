@@ -3995,8 +3995,40 @@ class Ec(Base):
 
     source = relationship(u'Source')
 
+    def locus_details(self):
+        loci = DBSession.query(LocusAlias.locus_id).filter(and_(LocusAlias.display_name == self.display_name.replace("EC:", ""), LocusAlias.alias_type == "EC number")).all()
+        
+        loci = set(l[0] for l in loci)
 
-class EcAlia(Base):
+        loci_obj = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(loci)).all()
+
+        return [{
+            "locus": {
+                "id": locus.dbentity_id,
+                "display_name": locus.display_name,
+                "format_name": locus.format_name,
+                "link": locus.obj_url,
+                "description": locus.description
+            },
+            "id": None
+        } for locus in loci_obj]
+    
+
+    
+    def to_dict(self):
+        urls = DBSession.query(EcUrl).filter_by(ec_id=self.ec_id).all()
+
+        return {
+            "id": self.ec_id,
+            "display_name": self.display_name.replace("EC:", ""),
+            "description": self.description,
+            "urls": [u.to_dict() for u in urls],
+            "link": self.obj_url,
+            "format_name": self.format_name
+        }
+
+
+class EcAlias(Base):
     __tablename__ = 'ec_alias'
     __table_args__ = (
         UniqueConstraint('ec_id', 'display_name', 'alias_type'),
@@ -4033,6 +4065,12 @@ class EcUrl(Base):
 
     ec = relationship(u'Ec')
     source = relationship(u'Source')
+
+    def to_dict(self):
+        return {
+            "display_name": self.display_name,
+            "url": self.obj_url
+        }
 
 
 class Eco(Base):
