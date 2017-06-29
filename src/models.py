@@ -1550,7 +1550,7 @@ class Referencedbentity(Dbentity):
                 ("SO", "SGD")
         ]
 
-        authors = DBSession.query(Referenceauthor.display_name).filter_by(reference_id=self.dbentity_id).all()
+        authors = DBSession.query(Referenceauthor.display_name).filter_by(reference_id=self.dbentity_id).order_by(Referenceauthor.author_order).all()
         for author in authors:
             data.append(("AU", author[0]))
 
@@ -5738,7 +5738,8 @@ class Phenotypeannotation(Base):
 
             if number_conditions.get(annotation.annotation_id, 0) > 1:
                 add = number_conditions.get(annotation.annotation_id, 0)
-                
+
+            ### TODO: CDC25 breaks here because annotation.experiment.namespace_group is null
             mt[annotation.mutant.display_name][annotation.experiment.namespace_group] += add
                 
         experiment_categories = []
