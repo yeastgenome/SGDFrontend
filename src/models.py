@@ -1040,8 +1040,13 @@ class Contig(Base):
     def sequence_details(self):
         dnas = DBSession.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.contig_id==self.contig_id, Dnasequenceannotation.dna_type=="GENOMIC")).all()
 
+        active_genomic_dna = []
+        for dna in dnas:
+            if dna.dbentity.dbentity_status == "Active":
+                active_genomic_dna.append(dna.to_dict())
+        
         return {
-            "genomic_dna": [dna.to_dict() for dna in dnas]
+            "genomic_dna": active_genomic_dna
         }
 
 
@@ -3914,7 +3919,8 @@ class Dnasequenceannotation(Base):
             },
             "locus": locus.to_dict_sequence_widget(),
             "strand": self.strand,
-            "dna_type": self.dna_type
+            "dna_type": self.dna_type,
+            "feature_status": locus.dbentity_status
         }
 
 class Dnasubsequence(Base):
