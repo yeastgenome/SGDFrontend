@@ -62,7 +62,7 @@ ghost:
 	. dev_deploy_variables.sh && python lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
 
 ghost-dev:
-	. dev_deploy_variables.sh  && START_URL=http://$$SERVER python lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
+	. dev_deploy_variables.sh  && START_URL=http://$$DEV_SERVER python lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL
 
 ghost-with-alert:
 	. prod_deploy_variables.sh && python lib/ghost/run_remote_ghost.py && open $$GHOST_SUITE_BROWSER_URL

@@ -265,9 +265,11 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 	_formatDownloadData(strainDisplayName, response) {
 		var _strain = _.filter(response.genomic_dna, s => { return s.strain.display_name === strainDisplayName; })[0];
 		var _headers = ["Evidence ID", "Analyze ID", "Feature", "Feature Systematic Name", "Feature Type", "Relative Coordinates", "Coordinates", "Strand", "Coord. Version", "Seq. Version"];
+		var _contigSeg = _strain.contig.format_name.split('_')[1];
+		if (_contigSeg === 'Mito') _contigSeg = 'mt';
 		var _data = _.map(_strain.tags, t => {
 			var _relativeCoordinates = `${t.relative_start}..${t.relative_end}`;
-			var _coordinates = `${t.chromosomal_start}..${t.chromosomal_end}`;
+			var _coordinates = `chr${_contigSeg}:${t.chromosomal_start}..${t.chromosomal_end}`;
 			return [t.evidence_id, _strain.locus.id, _strain.locus.display_name, _strain.locus.format_name, t.class_type, _relativeCoordinates, _coordinates, _strain.strand, t.coord_version, t.seq_version];
 		});
 		return {

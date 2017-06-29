@@ -11,6 +11,7 @@ const Header = React.createClass({
           <div className="top-header">
             <div>
               {/* put announcements here */}
+              <span className="sgd-announcment">Thanks for trying SGD Beta. <a href="/suggestion">Send us comments or questions</a>.</span>
             </div>
             <div className="site-links">
               <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/about" className="hide-external-link-icon">About</a>
