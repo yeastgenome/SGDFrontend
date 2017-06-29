@@ -66,9 +66,8 @@
                     </ul>
                 </div>
 
-
                 <dl class="key-value">
-		    {% if reftype|length > 0 %}
+		    {% if reference.reftypes|length > 0 %}
                     <dt>Reference Type</dt>
                     <dd>
                         {% for reftype in reference.reftypes %}
