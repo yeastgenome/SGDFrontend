@@ -2276,7 +2276,7 @@ BEGIN
     v_row := OLD.proteindomain_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || 
-             coalesce(OLD.interpro_id,0) || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             coalesce(OLD.interpro_id,'') || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
         PERFORM nex.insertdeletelog('PROTEINDOMAIN'::text, OLD.proteindomain_id, v_row, USER);
