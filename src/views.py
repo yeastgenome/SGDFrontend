@@ -4,13 +4,13 @@ from pyramid.view import view_config
 from pyramid.compat import escape
 from pyramid.session import check_csrf_token
 
-from sqlalchemy import func, distinct
+from sqlalchemy import func, distinct, and_
 from sqlalchemy.exc import IntegrityError
 
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig, Proteindomain
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig, Proteindomain, Ec
 
 from .celery_tasks import upload_to_s3
 
@@ -1021,5 +1021,27 @@ def domain_enrichment(request):
     proteindomain = DBSession.query(Proteindomain).filter_by(proteindomain_id=id).one_or_none()
     if proteindomain:
         return proteindomain.enrichment()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='ecnumber', renderer='json', request_method='GET')
+def ecnumber(request):
+    id = extract_id_request(request, 'ec')
+
+    ec = DBSession.query(Ec).filter_by(ec_id=id).one_or_none()
+
+    if ec:
+        return ec.to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='ecnumber_locus_details', renderer='json', request_method='GET')
+def ecnumber_locus_details(request):
+    id = extract_id_request(request, 'ec')
+
+    ec = DBSession.query(Ec).filter_by(ec_id=id).one_or_none()
+
+    if ec:
+        return ec.locus_details()
     else:
         return HTTPNotFound()

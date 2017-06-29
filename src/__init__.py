@@ -94,6 +94,9 @@ def main(global_config, **settings):
     config.add_route('dataset', '/dataset/{id}', request_method='GET')
     config.add_route('keyword', '/keyword/{id}', request_method='GET')
     config.add_route('keywords', '/keywords', request_method='GET')
+
+    config.add_route('ecnumber', '/ecnumber/{id}', request_method='GET')
+    config.add_route('ecnumber_locus_details', '/ecnumber/{id}/locus_details', request_method='GET')
     
     # curator interfaces
     config.add_route('colleague_triage_all', '/colleagues/triage', request_method='GET')
