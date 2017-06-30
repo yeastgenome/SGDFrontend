@@ -2607,18 +2607,11 @@ class Locusdbentity(Dbentity):
         }        
 
     def regulation_graph(self):
-        main_gene_annotations = DBSession.query(Regulationannotation).filter(and_((Regulationannotation.direction != None), or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id))).all()
+        main_gene_annotations = DBSession.query(Regulationannotation).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
 
-        regulations = {}
         genes_to_regulations = {}
         
         for annotation in main_gene_annotations:
-            key = (annotation.target_id, annotation.regulator_id, annotation.direction)
-            if key in regulations:
-                regulations[key].append(annotation.reference_id)
-            else:
-                regulations[key] = [annotation.reference_id]
-
             if annotation.target_id == self.dbentity_id:
                 add = annotation.regulator_id
             else:
@@ -2680,10 +2673,12 @@ class Locusdbentity(Dbentity):
                     }
                 }
 
-                action = "expression repressed"
+                action = "expression null"
                 if list_genes_to_regulations[i][1][0].direction == "positive":
                     action = "expression activated"
-                
+                elif list_genes_to_regulations[i][1][0].direction == "negative":
+                    action = "expression repressed"
+
                 edges.append({
                     "data": {
                         "action": action,
