@@ -1730,8 +1730,10 @@ class Referencedbentity(Dbentity):
 
         gos = DBSession.query(Goannotation).filter_by(reference_id=self.dbentity_id).all()
 
-        for go in gos:
-            obj += go.to_dict()
+        for go_annotation in gos:
+            for annotation in go_annotation.to_dict():
+                if annotation not in obj:
+                    obj.append(annotation)
             
         return obj
 
@@ -2608,16 +2610,15 @@ class Locusdbentity(Dbentity):
         main_gene_annotations = DBSession.query(Regulationannotation).filter(and_((Regulationannotation.direction != None), or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id))).all()
 
         regulations = {}
+        genes_to_regulations = {}
         
         for annotation in main_gene_annotations:
             key = (annotation.target_id, annotation.regulator_id, annotation.direction)
-            if pair in regulations:
-                regulations[pair].append(annotation.reference_id)
+            if key in regulations:
+                regulations[key].append(annotation.reference_id)
             else:
-                regulations[pair] = [reference_id]
+                regulations[key] = [annotation.reference_id]
 
-        genes_to_regulations = {}
-        for annotation in main_gene_annotations:
             if annotation.target_id == self.dbentity_id:
                 add = annotation.regulator_id
             else:
@@ -2627,6 +2628,7 @@ class Locusdbentity(Dbentity):
                 genes_to_regulations[add].append(annotation)
             else:
                 genes_to_regulations[add] = [annotation]
+        
 
         list_genes_to_regulations = sorted([(g, genes_to_regulations[g]) for g in genes_to_regulations], key=lambda x: len(x[1]), reverse=True)
 
@@ -2674,8 +2676,7 @@ class Locusdbentity(Dbentity):
                         "id": dbentity.format_name,
                         "link": dbentity.obj_url,
                         "type": "BIOENTITY",
-                        "sub_type": sub_type,
-                        "evidence": len(evidences)
+                        "sub_type": sub_type
                     }
                 }
 
@@ -2693,38 +2694,6 @@ class Locusdbentity(Dbentity):
                 })
                 edges_added.add(self.format_name + " " + dbentity.format_name)
 
-            i += 1
-
-        reference_ids = set([a.reference_id for a in main_gene_annotations])
-        other_regulations = DBSession.query(Regulationannotation).filter(and_(Regulationannotation.reference_id.in_(reference_ids), and_(Regulationannotation.target_id != self.dbentity_id, Regulationannotation.regulator_id != self.dbentity_id))).all()
-
-        other_valid_regulations = []
-        for regulation in other_regulations:
-            if regulation.target_id in nodes and regulation.regulator_id in nodes:
-                other_valid_regulations.append(regulation)
-
-        i = 0
-        while i < len(other_valid_regulations) and len(edges) <= 50:
-            source = nodes[other_valid_regulations[i].regulator_id]["data"]["id"]
-            target = nodes[other_valid_regulations[i].target_id]["data"]["id"]
-            evidence = nodes[other_valid_regulations[i].target_id]["data"]["evidence"]
-            if nodes[other_valid_regulations[i].regulator_id]["data"]["evidence"] > evidence:
-                evidence = nodes[other_valid_regulations[i].regulator_id]["data"]["evidence"]
-                
-            if (source + " " + target) not in edges_added and (target + " " + source) not in edges_added:
-                action = "expression repressed"
-                if other_valid_regulations[i].direction == "positive":
-                    action = "expression activated"
-                
-                edges.append({
-                    "data": {
-                        "action": action,
-                        "source": source,
-                        "target": target,
-                        "evidence": evidence
-                    }
-                })
-                edges_added.add(source + " " + target)
             i += 1
 
         return {
