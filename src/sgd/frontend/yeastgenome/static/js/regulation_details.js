@@ -74,7 +74,6 @@ $(document).ready(function() {
             create_discrete_filter("all_radio", graph, null, function(){return "node, edge"}, 1);
             create_discrete_filter("positive_radio", graph, null, function(){return "node, edge[action = 'expression activated']"}, 1);
             create_discrete_filter("negative_radio", graph, null, function(){return "node, edge[action = 'expression repressed']"}, 1);
-
         }
         else {
             hide_section("network");
@@ -227,6 +226,10 @@ var graph_style = cytoscape.stylesheet()
     .selector("edge[action='expression repressed']")
 	.css({
 		'target-arrow-shape': 'tee'
+	})
+    .selector("edge[action='expression null']")
+	.css({
+		'target-arrow-shape': 'none'
     });
 
 var layout = {
