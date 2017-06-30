@@ -2406,6 +2406,7 @@ class Locusdbentity(Dbentity):
                         "data": {
                             "name": go.display_name,
                             "id": go.format_name,
+                            "link": go.obj_url,
                             "type": "GO",
                             "gene_count": len(go_ids)
                         }
@@ -3357,7 +3358,7 @@ class Locusdbentity(Dbentity):
             go_slim_dict = go_slim.to_dict()
             if go_slim_dict:
                 obj["go_slim"].append(go_slim_dict)
-        
+
         go = {
             "cellular component": {},
             "molecular function": {},
