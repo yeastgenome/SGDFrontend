@@ -468,13 +468,12 @@ COMMENT ON COLUMN nex.eco_url.date_created IS 'Date the record was entered into 
 COMMENT ON COLUMN nex.eco_url.eco_id IS 'FK to ECO.ECO_ID.';
 COMMENT ON COLUMN nex.eco_url.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.eco_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN nex.eco_url.url_type IS 'Type of URL (BioPortal, OLS, Ontobee).';
+COMMENT ON COLUMN nex.eco_url.url_type IS 'Type of URL (BioPortal, OLS, Ontobee, GO).';
 COMMENT ON COLUMN nex.eco_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
 COMMENT ON COLUMN nex.eco_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN nex.eco_url.display_name IS 'Public display name (BioPortal, OLS, Ontobee).';
+COMMENT ON COLUMN nex.eco_url.display_name IS 'Public display name.';
 ALTER TABLE nex.eco_url ADD CONSTRAINT eco_url_uk UNIQUE (eco_id,display_name,obj_url);
-ALTER TABLE nex.eco_url ADD CONSTRAINT ecourl_display_name_ck CHECK (DISPLAY_NAME IN ('BioPortal','OLS', 'Ontobee'));
-ALTER TABLE nex.eco_url ADD CONSTRAINT ecourl_type_ck CHECK (URL_TYPE IN ('BioPortal','OLS', 'Ontobee'));
+ALTER TABLE nex.eco_url ADD CONSTRAINT ecourl_type_ck CHECK (URL_TYPE IN ('BioPortal','OLS', 'Ontobee', 'GO'));
 CREATE INDEX ecourl_source_fk_index ON nex.eco_url (source_id);
 
 DROP TABLE IF EXISTS nex.edam CASCADE;
