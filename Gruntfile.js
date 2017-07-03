@@ -135,7 +135,7 @@ module.exports = function(grunt) {
                     transform: [
                         "babelify",
                         ["envify",{global:true,NODE_ENV:"development"}]
-                        ]
+                    ]
                 }
             },
             production: {
@@ -149,7 +149,7 @@ module.exports = function(grunt) {
                         "babelify",
                         ["uglifyify",{global:true}],
                         ["envify",{global:true,NODE_ENV:"production"}]
-                        ]
+                    ]
                 }
             }
         },
