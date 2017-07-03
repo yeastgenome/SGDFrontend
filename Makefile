@@ -29,8 +29,8 @@ qa-restart:
 curate-deploy:
 	npm run build && source dev_variables.sh && NEX2_URI=$$CURATE_NEX2_URI && cap curate_dev deploy
 
-curate-qa-deploy:
-	source dev_variables.sh && NEX2_URI=$$CURATE_NEX2_URI && cap curate_qa deploy
+preview-deploy:
+	source dev_variables.sh && NEX2_URI=$$CURATE_NEX2_URI && cap preview deploy
 
 deploy:
 	npm run build && source dev_variables.sh && cap dev deploy
