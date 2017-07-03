@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import CategoryLabel from './categoryLabel';
 import { Link } from 'react-router';
 
-const PREVIEW_URL = 'https://curate.qa.yeastgenome.org';
+const PREVIEW_URL = 'https://preview.qa.yeastgenome.org';
 
 class AnnotationSummary extends Component {
   renderUpdatedBy(d) {

@@ -132,6 +132,8 @@ def validate_file_content_and_process(file_content, nex_session, username):
 
             # add receipt
             summary_type_url_segment = file_summary_type.lower()
+            if summary_type_url_segment not in ['phenotype', 'regulation']:
+                summary_type_url_segment = ''
             preview_url = '/locus/' + gene.sgdid + '/' + summary_type_url_segment
             receipt_entries.append({
                 'category': 'locus', 

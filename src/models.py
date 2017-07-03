@@ -5366,6 +5366,8 @@ class Locussummary(Base):
 
     def to_dict(self):
         summary_type_url_segment = self.summary_type.lower()
+        if summary_type_url_segment not in ['phenotype', 'regulation']:
+            summary_type_url_segment = ''
         preview_url = '/locus/' + self.locus.sgdid + '/' + summary_type_url_segment
         return {
             'category': 'locus',
