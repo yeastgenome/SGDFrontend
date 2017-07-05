@@ -919,7 +919,7 @@ def keywords(request):
     simple_keywords = [k.to_simple_dict() for k in keywords]
     for k in simple_keywords:
         k['name'] = k['display_name']
-    return { 'results': simple_keywords }
+    return simple_keywords
 
 @view_config(route_name='contig', renderer='json', request_method='GET')
 def contig(request):
