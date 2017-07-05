@@ -18,7 +18,7 @@ const CHANNEL = 'sgd';
 const EVENT = 'triageUpdate';
 const MAX_TRIAGE_NODES = 100;
 
-const PREVIEW_BASE_URL = 'https://curate.qa.yeastgenome.org';
+const PREVIEW_BASE_URL = 'https://preview.qa.yeastgenome.org';
 
 class LitTriageIndex extends Component {
   componentDidMount() {
