@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 
+import style from './style.css';
 import fetchData from '../../lib/fetchData';
 import { updateTriageEntry, updateActiveTags, removeEntry } from './triageActions';
-import { setMessage, setError } from '../../actions/metaActions';
+import { setMessage, setError, clearError } from '../../actions/metaActions';
 import TagList from '../../components/tagList';
 import Loader from '../../components/loader';
 
@@ -103,13 +104,13 @@ class TriageControls extends Component {
       tempEntry.sgdid = data.sgdid;
       this.props.dispatch(removeEntry(id));
       this.props.dispatch(updateActiveTags(tempEntry));
+      this.props.dispatch(clearError());
       // scroll to top of page
       window.scrollTo(0, 0);
-    }).catch( () => {
-      this.props.dispatch(setError('There was an error adding the reference.'));
+    }).catch( (data) => {
+      let errorMessage = data ? data.error : 'There was an error adding the reference.';
+      this.props.dispatch(setError(errorMessage));
       this.setState({ isPending: false });
-      // scroll to top of page
-      window.scrollTo(0, 0);
     });
   }
 
@@ -131,7 +132,7 @@ class TriageControls extends Component {
   renderTags() {
     return (
       <div ref='tagList'>
-        <TagList entry={this.props.entry} onUpdate={this.saveUpdatedEntry.bind(this)} />
+        <TagList entry={this.props.entry} onUpdate={this.saveUpdatedEntry.bind(this)} isTriage />
       </div>
     );
   }
@@ -152,8 +153,9 @@ class TriageControls extends Component {
     };
     return (
       <div>
+        {this.renderTags()}
         <div className='row'>
-          <div className='columns small-6'>
+          <div className={`columns small-6 ${style.triageControls}`}>
             <p>You have claimed this reference. <a onClick={handleUnclaim}>Unclaim</a></p>
           </div>
           <div className='columns small-6 text-right'>
@@ -161,7 +163,6 @@ class TriageControls extends Component {
             <a className='button secondary' onClick={this.handleDiscardEntry.bind(this)}><i className='fa fa-trash' /> Discard</a>
           </div>
         </div>
-        {this.renderTags()}
       </div>
     );
   }

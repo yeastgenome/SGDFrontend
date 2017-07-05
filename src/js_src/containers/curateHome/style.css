@@ -3,3 +3,12 @@
 	cursor: not-allowed;
 	color: #c2c2c2;
 }
+
+.activeLink {
+	background: #0581C2;
+	color: white !important;
+}
+
+.annotationContainer {
+	margin-top: -0.34rem;
+}
