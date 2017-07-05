@@ -22,11 +22,11 @@ export default function fetchData(_url, options={}) {
       success: data => {
         resolve(data);
       },
-      error: (request, e) => {
+      error: (response, e) => {
         if (e === 'abort') {
           return;
         }
-        reject(e);
+        reject(response.responseJSON);
       }
     });
   });

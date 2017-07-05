@@ -1,17 +1,6 @@
-export const TextField = React.createClass({
-  propTypes: {
-    displayName: React.PropTypes.string,
-    paramName: React.PropTypes.string,
-    defaultValue: React.PropTypes.string,
-    iconClass: React.PropTypes.string,
-    placeholder: React.PropTypes.string,
-    isReadOnly: React.PropTypes.bool
-  },
+import React, { Component } from 'react';
 
-  render () {
-    return this.props.isReadOnly ? this._renderReadOnly() : this._renderEdit();
-  },
-
+class TextField extends Component {
   _renderReadOnly () {
     return (
       <div className='form-read-field'>
@@ -21,7 +10,7 @@ export const TextField = React.createClass({
         </dl>
       </div>
     );
-  },
+  }
 
   _renderEdit () {
     return (
@@ -30,10 +19,24 @@ export const TextField = React.createClass({
         <textarea type='text' name={this.props.paramName} placeholder={this.props.placeholder}>{this.props.defaultValue}</textarea>
       </div>
     );
-  },
+  }
 
   _renderIcon () {
     return this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
   }
-});
 
+  render () {
+    return this.props.isReadOnly ? this._renderReadOnly() : this._renderEdit();
+  }
+}
+
+TextField.propTypes = {
+  displayName: React.PropTypes.string,
+  paramName: React.PropTypes.string,
+  defaultValue: React.PropTypes.string,
+  iconClass: React.PropTypes.string,
+  placeholder: React.PropTypes.string,
+  isReadOnly: React.PropTypes.bool
+};
+
+export default TextField;
