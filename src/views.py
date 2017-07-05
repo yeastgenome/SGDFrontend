@@ -30,12 +30,15 @@ log = logging.getLogger(__name__)
 import redis
 disambiguation_table = redis.Redis()
 
-def extract_id_request(request, prefix, param_name='id'):
+# safe return returns None if not found instead of 404 exception
+def extract_id_request(request, prefix, param_name='id', safe_return=False):
     id = str(request.matchdict[param_name])
 
     db_id = disambiguation_table.get(("/" + prefix + "/" + id).upper())
     
-    if db_id is None:
+    if db_id is None and safe_return:
+        return None
+    elif db_id is None:
         raise HTTPNotFound()
     else:
         if prefix == 'author':
@@ -379,9 +382,14 @@ def strain(request):
 
 @view_config(route_name='reference', renderer='json', request_method='GET')
 def reference(request):
-    id = extract_id_request(request, 'reference')
+    id = extract_id_request(request, 'reference', 'id', True)
 
-    reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+    # allow reference to be accessed by sgdid even if not in disambig table
+    if id:
+        reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+    else:
+        reference = DBSession.query(Referencedbentity).filter_by(sgdid=request.matchdict['id']).one_or_none()
+
     
     if reference:
         return reference.to_dict()
