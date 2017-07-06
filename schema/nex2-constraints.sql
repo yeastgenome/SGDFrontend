@@ -482,17 +482,6 @@ ALTER TABLE nex.literatureannotation ADD CONSTRAINT literatureanno_ref_fk FOREIG
 ALTER TABLE nex.literatureannotation ADD CONSTRAINT literatureanno_dbentity_fk FOREIGN KEY (dbentity_id) REFERENCES dbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 
-ALTER TABLE nex.contignoteannotation ADD CONSTRAINT contignoteanno_tax_fk FOREIGN KEY (taxonomy_id) REFERENCES taxonomy(taxonomy_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
-ALTER TABLE nex.contignoteannotation ADD CONSTRAINT contignoteanno_ref_fk FOREIGN KEY (reference_id) REFERENCES referencedbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
-ALTER TABLE nex.contignoteannotation ADD CONSTRAINT contignoteanno_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
-ALTER TABLE nex.contignoteannotation ADD CONSTRAINT contignoteanno_contig_fk FOREIGN KEY (contig_id) REFERENCES contig(contig_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
-
-ALTER TABLE nex.locusnoteannotation ADD CONSTRAINT locusnoteanno_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
-ALTER TABLE nex.locusnoteannotation ADD CONSTRAINT locusnoteanno_ref_fk FOREIGN KEY (reference_id) REFERENCES referencedbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
-ALTER TABLE nex.locusnoteannotation ADD CONSTRAINT locusnoteanno_dbentity_fk FOREIGN KEY (dbentity_id) REFERENCES dbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
-ALTER TABLE nex.locusnoteannotation ADD CONSTRAINT locusnoteanno_tax_fk FOREIGN KEY (taxonomy_id) REFERENCES taxonomy(taxonomy_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
-
-
 ALTER TABLE nex.pathwayannotation ADD CONSTRAINT pathwayanno_tax_fk FOREIGN KEY (taxonomy_id) REFERENCES taxonomy(taxonomy_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.pathwayannotation ADD CONSTRAINT pathwayanno_pathway_fk FOREIGN KEY (pathway_id) REFERENCES pathwaydbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.pathwayannotation ADD CONSTRAINT pathwayanno_ec_fk FOREIGN KEY (ec_id) REFERENCES ec(ec_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
