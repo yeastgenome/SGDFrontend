@@ -8,7 +8,6 @@ const TabsModel = require("../models/tabs_model.jsx");
 
 var regulationView = {};
 regulationView.render = function(){
-    debugger
     var _tabModel = new TabsModel();
     let _elements = [];
     _elements.push({"name":"Regulation Overview", "target":"overview"});
