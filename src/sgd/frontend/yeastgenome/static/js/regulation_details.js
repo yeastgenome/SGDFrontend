@@ -1,6 +1,6 @@
 
 $(document).ready(function() {
-
+    views.regulation.render();
     $("#enrichment_table_analyze").hide();
     if(locus['regulation_overview']['paragraph'] != null) {
         document.getElementById("summary_paragraph").innerHTML = locus['regulation_overview']['paragraph']['text'];
@@ -47,10 +47,7 @@ $(document).ready(function() {
   		}
 
   		var regulator_table = create_regulator_table(data);
-		if(data.length > 0){
-			views.regulation.render();
-		}
-
+        
         if(locus['regulation_overview']['target_count'] + locus['regulation_overview']['regulator_count'] > 0) {
   		    create_analyze_button("regulator_table_analyze", regulator_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> regulators", true);
   	        create_analyze_button("analyze_regulators", regulator_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> regulators", false);
