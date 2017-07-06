@@ -28,6 +28,7 @@ $(document).ready(function() {
 	}
 
 	$.getJSON('/backend/locus/' + locus['id'] + '/regulation_details', function(data) {
+		
   		if(locus['regulation_overview']['target_count'] > 0) {
   		    var target_table = create_target_table(data);
   		    create_analyze_button("target_table_analyze", target_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> targets", true);
@@ -46,6 +47,9 @@ $(document).ready(function() {
   		}
 
   		var regulator_table = create_regulator_table(data);
+		if(data.length > 0){
+			views.regulation.render();
+		}
 
         if(locus['regulation_overview']['target_count'] + locus['regulation_overview']['regulator_count'] > 0) {
   		    create_analyze_button("regulator_table_analyze", regulator_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> regulators", true);
