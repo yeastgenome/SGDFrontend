@@ -76,7 +76,7 @@
             <span id="domain_table_header" class="round secondary label"></span>
         </h2>
         <hr />
-        <div class="panel">
+        <div>
             <!-- Includes domain_table into template -->
             {% set table_id = "domain_table" %}
             {% include "domain_table.jinja2" %}
@@ -119,9 +119,17 @@
         </h2>
         <hr />
 
-        <div class="panel">
+        <div>
+            <h3>Manually Curated</h3>
             <!-- Includes regulation_table into template -->
-            {% set table_id = "target_table" %}
+            {% set table_id = "manual_target_table" %}
+            {% include "regulation_table.jinja2" %}
+        </div>
+        <p>&nbsp;</p>
+        <div>
+            <h3>High-throughput</h3>
+            <!-- Includes regulation_table into template -->
+            {% set table_id = "htp_target_table" %}
             {% include "regulation_table.jinja2" %}
         </div>
     </section>

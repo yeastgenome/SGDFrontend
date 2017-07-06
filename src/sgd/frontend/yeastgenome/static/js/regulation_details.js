@@ -143,26 +143,35 @@ function create_target_table(data) {
         options["aaData"] = [];
     }
     else {
-        var datatable = [];
-        var genes = {};
+        var manualDatatable = [];
+        var htpDatatable = [];
+        var manualGenes = {};
+        var htpGenes = {};
         var target_entry_count = 0;
         for (var i=0; i < data.length; i++) {
             if(data[i]["locus1"]["id"] == locus['id']) {
-                datatable.push(regulation_data_to_table(data[i], false));
-                genes[data[i]["locus2"]["id"]] = true;
+                // TODO separate manual and HTP
+                manualDatatable.push(regulation_data_to_table(data[i], false));
+                manualGenes[data[i]["locus2"]["id"]] = true;
                 target_entry_count = target_entry_count + 1;
             }
         }
-        set_up_header('target_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
+        set_up_header('manual_target_table', manualDatatable.length, 'entry', 'entries', Object.keys(manualGenes).length, 'gene', 'genes');
+        set_up_header('htp_target_table', htpDatatable.length, 'entry', 'entries', Object.keys(htpGenes).length, 'gene', 'genes');
 
-        var options = {};
-        options["bPaginate"] = true;
-        options["aaSorting"] = [[4, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null]
-        options["aaData"] = datatable;
+        var manualOptions = {};
+        manualOptions["bPaginate"] = true;
+        manualOptions["aaSorting"] = [[4, "asc"]];
+        manualOptions["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null]
+        manualOptions["aaData"] = manualDatatable;
+        var htpOptions = {};
+        htpOptions["bPaginate"] = true;
+        htpOptions["aaSorting"] = [[4, "asc"]];
+        htpOptions["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null]
+        htpOptions["aaData"] = htpDatatable;
     }
-
-	return create_table("target_table", options);
+    create_table("manual_target_table", manualOptions);
+	return create_table("htp_target_table", htpOptions);
 }
 
 function create_regulator_table(data) {
