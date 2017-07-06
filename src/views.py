@@ -383,14 +383,12 @@ def strain(request):
 @view_config(route_name='reference', renderer='json', request_method='GET')
 def reference(request):
     id = extract_id_request(request, 'reference', 'id', True)
-
     # allow reference to be accessed by sgdid even if not in disambig table
     if id:
         reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
     else:
         reference = DBSession.query(Referencedbentity).filter_by(sgdid=request.matchdict['id']).one_or_none()
 
-    
     if reference:
         return reference.to_dict()
     else:
@@ -398,9 +396,12 @@ def reference(request):
 
 @view_config(route_name='reference_literature_details', renderer='json', request_method='GET')
 def reference_literature_details(request):
-    id = extract_id_request(request, 'reference')
-
-    reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+    id = extract_id_request(request, 'reference', 'id', True)
+    # allow reference to be accessed by sgdid even if not in disambig table
+    if id:
+        reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+    else:
+        reference = DBSession.query(Referencedbentity).filter_by(sgdid=request.matchdict['id']).one_or_none()
 
     if reference:
         return reference.annotations_to_dict()
@@ -467,6 +468,7 @@ def reference_triage_id(request):
         return HTTPNotFound()
 
 @view_config(route_name='reference_triage_id_update', renderer='json', request_method='PUT')
+@authenticate
 def reference_triage_id_update(request):
     id = request.matchdict['id'].upper()
 
