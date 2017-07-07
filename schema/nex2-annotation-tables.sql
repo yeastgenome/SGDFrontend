@@ -924,7 +924,7 @@ COMMENT ON COLUMN nex.regulationannotation.annotation_type IS 'Type of regulatio
 ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationanno_regulator_type_ck CHECK (REGULATOR_TYPE in ('transcription factor','chromatin modifier','protein modifier','RNA binder','RNA modifier','protein binder'));
 ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationanno_regulation_type_ck CHECK (REGULATION_TYPE in ('transcription','RNA stability','protein activity','protein stability'));
 ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationanno_annotation_type CHECK (ANNOTATION_TYPE IN ('high-throughput','manually curated','computational'));
-CREATE UNIQUE INDEX regulationannotation_uk_index on nex.regulationannotation(target_id,regulator_id,taxonomy_id,reference_id,eco_id,regulator_type,regulation_type,annotation_type,coalesce(direction,'0'),coalesce(happens_during,'0'));
+CREATE UNIQUE INDEX regulationannotation_uk_index on nex.regulationannotation(target_id,regulator_id,taxonomy_id,reference_id,eco_id,regulator_type,regulation_type,annotation_type,coalesce(direction,'0'),coalesce(happens_during,0));
 CREATE INDEX regulationanno_source_fk_index ON nex.regulationannotation (source_id);
 CREATE INDEX regulationanno_tax_fk_index ON nex.regulationannotation (taxonomy_id);
 CREATE INDEX regulationanno_regulator_fk_index ON nex.regulationannotation (regulator_id);
