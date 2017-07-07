@@ -1,9 +1,7 @@
 #! /bin/sh
 
 cd /data/www/SGDBackend-NEX2/current
-export WORKON_HOME=/data/envs/
-source virtualenvwrapper.sh
-workon sgd
+source /data/envs/sgd/bin/activate
 . prod_variables.sh
 /usr/bin/make stop-prod
 /usr/bin/make run-prod
