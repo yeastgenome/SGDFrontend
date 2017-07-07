@@ -2611,8 +2611,8 @@ BEGIN
        PERFORM nex.checkuser(NEW.created_by);
 
        IF (NEW.direction is NOT NULL) THEN
-          IF ((NEW.direction != 'positive') THEN
-             IF (NEW.direction != 'negative')) THEN
+          IF (NEW.direction != 'positive') THEN
+             IF (NEW.direction != 'negative') THEN
                 RAISE EXCEPTION 'Allowable values are positive, negative, or null.';
              END IF;
           END IF;
@@ -2645,8 +2645,8 @@ BEGIN
     END IF;
 
        IF (NEW.direction is NOT NULL) THEN
-          IF ((NEW.direction != 'positive') THEN
-             IF (NEW.direction != 'negative')) THEN
+          IF (NEW.direction != 'positive') THEN
+             IF (NEW.direction != 'negative') THEN
                 RAISE EXCEPTION 'Allowable values are positive, negative, or null.';
              END IF;
           END IF;
