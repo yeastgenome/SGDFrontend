@@ -131,11 +131,13 @@ function create_binding_site_table(data) {
 }
 
 function create_target_table(data) {
+    // table column options
+    var targetTableColOptions = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null];
     if("Error" in data) {
         var options = {};
         options["bPaginate"] = true;
         options["aaSorting"] = [[4, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null]
+        options["aoColumns"] = targetTableColOptions;
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
         options["aaData"] = [];
     }
@@ -159,12 +161,12 @@ function create_target_table(data) {
         var manualOptions = {};
         manualOptions["bPaginate"] = true;
         manualOptions["aaSorting"] = [[4, "asc"]];
-        manualOptions["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null]
+        manualOptions["aoColumns"] = targetTableColOptions;
         manualOptions["aaData"] = manualDatatable;
         var htpOptions = {};
         htpOptions["bPaginate"] = true;
         htpOptions["aaSorting"] = [[4, "asc"]];
-        htpOptions["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null]
+        htpOptions["aoColumns"] = targetTableColOptions;
         htpOptions["aaData"] = htpDatatable;
     }
     create_table("manual_target_table", manualOptions);
@@ -172,6 +174,7 @@ function create_target_table(data) {
 }
 
 function create_regulator_table(data) {
+    var regulatorTableColOptions = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null];
     var datatable = [];
 	var genes = {};
     var regulation_entry_count = 0;
@@ -187,7 +190,7 @@ function create_regulator_table(data) {
   	var options = {};
     options["bPaginate"] = true;
 	options["aaSorting"] = [[2, "asc"]];
-	options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null]
+	options["aoColumns"] = regulatorTableColOptions;
 	options["oLanguage"] = {"sEmptyTable": "No regulation data for " + locus['display_name']};
 	options["aaData"] = datatable;
 

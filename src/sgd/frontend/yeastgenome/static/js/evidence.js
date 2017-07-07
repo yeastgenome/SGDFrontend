@@ -195,7 +195,9 @@ function regulation_data_to_table(evidence, is_regulator) {
 	else {
 	    analyze_value = evidence['locus2']['id'];
 	}
-  	return [evidence['id'], analyze_value, bioent1, evidence['locus1']['format_name'], bioent2, evidence['locus2']['format_name'], experiment, evidence['assay'], evidence['construct'], conditions, strain, reference];
+    // Evidence ID, Analyze ID, Regulator, Regulator Systematic Name, Target, Target Systematic Name, Direction, Regulation of, Happens During, Reulator type, direction, regulation of, happens during,  Evidence, Strain Background, Reference
+    return [evidence['id'], analyze_value, bioent1, evidence['locus1']['format_name'], bioent2, evidence['locus2']['format_name'], experiment, evidence['assay'], evidence['construct'], conditions, strain, reference];
+  	
 }
 
 function interaction_data_to_table(evidence, index) {
