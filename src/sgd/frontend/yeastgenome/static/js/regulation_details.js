@@ -149,9 +149,15 @@ function create_target_table(data) {
         var target_entry_count = 0;
         for (var i=0; i < data.length; i++) {
             if(data[i]["locus1"]["id"] == locus['id']) {
-                // TODO separate manual and HTP
-                manualDatatable.push(regulation_data_to_table(data[i], false));
-                manualGenes[data[i]["locus2"]["id"]] = true;
+                // TODO, identify if manual or HTP
+                var isManual = true;
+                if (isManual) {
+                    manualDatatable.push(regulation_data_to_table(data[i], false));
+                    manualGenes[data[i]["locus2"]["id"]] = true;
+                } else {
+                    htpDatatable.push(regulation_data_to_table(data[i], false));
+                    htpGenes[data[i]["locus2"]["id"]] = true;
+                }
                 target_entry_count = target_entry_count + 1;
             }
         }
@@ -175,26 +181,43 @@ function create_target_table(data) {
 
 function create_regulator_table(data) {
     var regulatorTableColOptions = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null];
-    var datatable = [];
-	var genes = {};
+    var manualDatatable = [];
+    var htpDatatable = [];
+    var manualGenes = {};
+    var htpGenes = {};
     var regulation_entry_count = 0;
 	for (var i=0; i < data.length; i++) {
 	    if(data[i]["locus2"]["id"] == locus['id']) {
-            datatable.push(regulation_data_to_table(data[i], true));
-		    genes[data[i]["locus1"]["id"]] = true;
+            // TODO, identify if manual or HTP
+            var isManual = true;
+            if (isManual) {
+                manualDatatable.push(regulation_data_to_table(data[i], false));
+                manualGenes[data[i]["locus1"]["id"]] = true;
+            } else {
+                htpDatatable.push(regulation_data_to_table(data[i], false));
+                htpGenes[data[i]["locus1"]["id"]] = true;
+            }
             regulation_entry_count = regulation_entry_count+1;
 		}
   	}
-    set_up_header('regulator_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
+    set_up_header('manual_regulator_table', manualDatatable.length, 'entry', 'entries', Object.keys(manualGenes).length, 'gene', 'genes');
+    set_up_header('htp_regulator_table', htpDatatable.length, 'entry', 'entries', Object.keys(htpGenes).length, 'gene', 'genes');
 
-  	var options = {};
-    options["bPaginate"] = true;
-	options["aaSorting"] = [[2, "asc"]];
-	options["aoColumns"] = regulatorTableColOptions;
-	options["oLanguage"] = {"sEmptyTable": "No regulation data for " + locus['display_name']};
-	options["aaData"] = datatable;
+  	var manualOptions = {};
+    manualOptions["bPaginate"] = true;
+	manualOptions["aaSorting"] = [[2, "asc"]];
+	manualOptions["aoColumns"] = regulatorTableColOptions;
+	manualOptions["oLanguage"] = {"sEmptyTable": "No regulation data for " + locus['display_name']};
+	manualOptions["aaData"] = manualDatatable;
+    var htpOptions = {};
+    htpOptions["bPaginate"] = true;
+    htpOptions["aaSorting"] = [[2, "asc"]];
+    htpOptions["aoColumns"] = regulatorTableColOptions;
+    htpOptions["oLanguage"] = {"sEmptyTable": "No regulation data for " + locus['display_name']};
+    htpOptions["aaData"] = htpDatatable;
 
-    return create_table("regulator_table", options);
+    create_table("manual_regulator_table", manualOptions);
+    return create_table("htp_regulator_table", htpDatatable);
 }
 
 var graph_style = cytoscape.stylesheet()

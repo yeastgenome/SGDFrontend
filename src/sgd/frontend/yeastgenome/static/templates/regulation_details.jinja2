@@ -172,9 +172,16 @@
             <span id="regulator_table_header" class="round secondary label"></span>
         </h2>
         <hr />
-        <div class="">
-            <!-- Includes regulation_table into template -->
-            {% set table_id = "regulator_table" %}
+
+        <div>
+            <h3>Manually Curated</h3>
+            {% set table_id = "manual_regulator_table" %}
+            {% include "regulation_regulator_table.jinja2" %}
+        </div>
+        <p>&nbsp;</p>
+        <div>
+            <h3>High-throughput</h3>
+            {% set table_id = "htp_regulator_table" %}
             {% include "regulation_regulator_table.jinja2" %}
         </div>
     </section>
