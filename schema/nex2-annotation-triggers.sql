@@ -2611,12 +2611,12 @@ BEGIN
        PERFORM nex.checkuser(NEW.created_by);
 
        IF (NEW.direction is NOT NULL) THEN
-          IF (NEW.direction != 'positive') OR (NEW.direction != 'negative') THEN
-             RAISE EXCEPTION 'Allowable values are positive, negataive, or null.';
+          IF ((NEW.direction != 'positive') OR (NEW.direction != 'negative')) THEN
+             RAISE EXCEPTION 'Allowable values are positive, negative, or null.';
           END IF;
        END IF;
 
-      IF (NEW.regulator_type = 'transcription factor') OR (NEW.regulator_type = 'chromatin modifier') THEN
+      IF ((NEW.regulator_type = 'transcription factor') OR (NEW.regulator_type = 'chromatin modifier')) THEN
          IF (NEW.regulation_type = 'protein activity') THEN
              RAISE EXCEPTION 'That regulation_type is not allowed with that regulator_type.';
          END IF;
