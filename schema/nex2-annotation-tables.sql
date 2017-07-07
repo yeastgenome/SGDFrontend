@@ -920,7 +920,7 @@ COMMENT ON COLUMN nex.regulationannotation.eco_id IS 'FK to ECO.ECO_ID.';
 COMMENT ON COLUMN nex.regulationannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.regulationannotation.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.regulationannotation.annotation_type IS 'Type of regulation annotation (high-throughput, manually curated, computational).';
-ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationannotation_uk UNIQUE (target_id,regulator_id,eco_id,reference_id);
+ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationannotation_uk UNIQUE (target_id, regulator_id, taxonomy_id, reference_id, eco_id, regulator_type, regulation_type, annotation_type);
 ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationanno_regulator_type_ck CHECK (REGULATOR_TYPE in ('transcription factor', 'chromatin modifier', 'protein modifier', 'RNA binder', 'RNA modifier', 'protein binder'));
 ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationanno_regulation_type_ck CHECK (REGULATION_TYPE in ('transcription', 'RNA stability', 'protein activity', 'protein stability'));
 ALTER TABLE nex.regulationannotation ADD CONSTRAINT regulationanno_annotation_type CHECK (ANNOTATION_TYPE IN ('high-throughput', 'manually curated', 'computational'));
