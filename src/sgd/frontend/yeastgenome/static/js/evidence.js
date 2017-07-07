@@ -174,10 +174,6 @@ function regulation_data_to_table(evidence, is_regulator) {
 	if(evidence['strain'] != null) {
 	    strain = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
 	}
-	var conditions = '';
-	if(evidence['properties'].length> 0) {
-	    conditions = evidence['properties'][0]['note'];
-	}
 	var reference = '';
 	if(evidence['reference'] != null) {
 	    reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
