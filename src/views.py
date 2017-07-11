@@ -529,16 +529,32 @@ def reference_triage_promote(request):
         
         DBSession.delete(triage)
 
+        # HANDLE TAGS
+        # track which loci have primary annotations for this reference to only have one primary per reference
+        primary_obj = {}
         for i in xrange(len(tags)):
-            curation_ref = CurationReference.factory(reference_id, tags[i][0], tags[i][1], tags[i][2], request.json['data']['assignee'])
+            tag_slug = tags[i][0]
+            comment = tags[i][1]
+            locus_dbentity_id = tags[i][2]
+            curation_ref = CurationReference.factory(reference_id, tag_slug, comment, locus_dbentity_id, request.json['data']['assignee'])
             if curation_ref:
                 DBSession.add(curation_ref)
-            lit_annotation = Literatureannotation.factory(reference_id, tags[i][0], tags[i][2], request.json['data']['assignee'])
+            lit_annotation = Literatureannotation.factory(reference_id, tag_slug, locus_dbentity_id, request.json['data']['assignee'])
             if lit_annotation:
+                # prevent multiple primary lit tags
+                if lit_annotation.topic == 'Primary Literature':
+                    if locus_dbentity_id in primary_obj.keys():
+                        continue
+                    else:
+                        primary_obj[locus_dbentity_id] = True
                 DBSession.add(lit_annotation)
-                
-        DBSession.flush()                
-        transaction.commit()
+
+        try:
+            DBSession.flush()
+            transaction.commit()
+        except:
+            traceback.print_exc()
+            DBSession.rollback()
         
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
