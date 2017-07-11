@@ -1,10 +1,10 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Locusnoteannotation, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Locusdbentity, LocusAlias, Locusnote, LocusnoteReference, Dbentity, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias
 from sqlalchemy import create_engine, and_
 from elasticsearch import Elasticsearch
 from mapping import mapping
 import os
 import requests
-
+import pdb
 from threading import Thread
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
@@ -15,13 +15,15 @@ INDEX_NAME = 'searchable_items_aws'
 DOC_TYPE = 'searchable_item'
 es = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
+
 def delete_mapping():
     print "Deleting mapping..."
     response = requests.delete(os.environ['ES_URI'] + INDEX_NAME + "/")
     if response.status_code != 200:
         print "ERROR: " + str(response.json())
     else:
-        print "SUCCESS"        
+        print "SUCCESS"
+
 
 def put_mapping():
     print "Putting mapping... "
@@ -30,6 +32,7 @@ def put_mapping():
         print "ERROR: " + str(response.json())
     else:
         print "SUCCESS"
+
 
 def index_toolbar_links():
     links = [("Gene List", "http://yeastmine.yeastgenome.org/yeastmine/bag.do",  []),
@@ -97,11 +100,12 @@ def index_toolbar_links():
         }
         es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=obj, id=l[1])
 
+
 def index_colleagues():
     colleagues = DBSession.query(Colleague).all()
 
     print "Indexing " + str(len(colleagues)) + " colleagues"
-    
+
     bulk_data = []
     for c in colleagues:
         description_fields = []
@@ -109,7 +113,7 @@ def index_colleagues():
             if field:
                 description_fields.append(field)
         description = ", ".join(description_fields)
-                        
+
         position = "Lab Member"
         if c.is_pi == 1:
             position = "Head of Lab"
@@ -124,13 +128,13 @@ def index_colleagues():
                     locus.add(l[0])
                 if l[1]:
                     locus.add(l[1])
-        
+
         obj = {
             'name': c.last_name + ", " + c.first_name,
             'category': 'colleague',
             'href': '/colleague/' + c.format_name,
             'description': description,
-            
+
             'first_name': c.first_name,
             'last_name': c.last_name,
             'institution': c.institution,
@@ -154,11 +158,12 @@ def index_colleagues():
 
         if len(bulk_data) == 1000:
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-            bulk_data = [];
+            bulk_data = []
 
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-        
+
+
 def index_genes():
     # Indexing just the S228C genes
     # dbentity: 1364643 (id) -> straindbentity -> 274901 (taxonomy_id)
@@ -174,14 +179,18 @@ def index_genes():
         dbentity_ids.add(gis[0])
         so_ids.add(gis[1])
         dbentity_ids_to_so[gis[0]] = gis[1]
-        
+
+    not_s288c = DBSession.query(Locusdbentity.dbentity_id).filter(Locusdbentity.not_in_s288c==True).all()
+    for id in not_s288c:
+        dbentity_ids.add(id[0])
+
     all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').all()
 
     feature_types_db = DBSession.query(So.so_id, So.display_name).filter(So.so_id.in_(list(so_ids))).all()
     feature_types = {}
     for ft in feature_types_db:
         feature_types[ft[0]] = ft[1]
-    
+
     tc_numbers_db = DBSession.query(LocusAlias).filter_by(alias_type="TC number").all()
     tc_numbers = {}
     for tc in tc_numbers_db:
@@ -199,6 +208,7 @@ def index_genes():
             ec_numbers[ec.locus_id] = [ec.display_name]
 
     secondary_db = DBSession.query(LocusAlias).filter_by(alias_type="SGDID Secondary").all()
+
     secondary_sgdids = {}
     for sid in secondary_db:
         if sid.locus_id in secondary_sgdids:
@@ -223,8 +233,9 @@ def index_genes():
         if protein:
             protein = protein[0]
 
-        sequence_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Sequence").all()
-        gene_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Locus").all()
+        sequence_history = DBSession.query(Locusnote.note).filter_by(locus_id=gene.dbentity_id, note_type="Sequence").all()
+        gene_history = DBSession.query(Locusnote.note).filter_by(
+            locus_id=gene.dbentity_id, note_type="Locus").all()
 
         phenotype_ids = DBSession.query(Phenotypeannotation.phenotype_id).filter_by(dbentity_id=gene.dbentity_id).all()
         if phenotype_ids:
@@ -246,7 +257,7 @@ def index_genes():
         if len(go_slim_ids) > 0:
             go_slim_ids = [g[0] for g in go_slim_ids]
             go_slim = DBSession.query(Goslim.go_id, Goslim.display_name).filter(Goslim.goslim_id.in_(go_slim_ids)).all()
-            
+
             go_ids = [g[0] for g in go_slim]
             go = DBSession.query(Go.go_id, Go.go_namespace).filter(Go.go_id.in_(go_ids)).all()
 
@@ -254,30 +265,30 @@ def index_genes():
                 for gs in go_slim:
                     if (gs[0] == g[0]):
                         go_annotations[g[1]].add(gs[1])
-            
+
         uniprotids = DBSession.query(LocusAlias.display_name).filter_by(locus_id=gene.dbentity_id, alias_type="UniProtKB ID").all()
 
         uniprotid = [u[0] for u in uniprotids]
-            
+
         key_values = [gene.gene_name, gene.systematic_name, gene.sgdid] + uniprotid
         keys = set([])
         for k in key_values:
             if k:
                 keys.add(k.lower())
-            
+
         obj = {
             'name': _name,
             'href': gene.obj_url,
             'description': gene.description,
             'category': 'locus',
-            
+
             'feature_type': feature_types[dbentity_ids_to_so[gene.dbentity_id]],
 
             'name_description': gene.name_description,
             'summary': [s[0] for s in summary],
-                
+
             'phenotypes': [p[0] for p in phenotypes],
-            
+
             'cellular_component': list(go_annotations["cellular component"] - set(["cellular component", "cellular component (direct)", "cellular_component", "cellular_component (direct)"])),
             'biological_process': list(go_annotations["biological process"] - set(["biological process (direct)", "biological process", "biological_process (direct)", "biological_process"])),
             'molecular_function': list(go_annotations["molecular function"] - set(["molecular function (direct)", "molecular function", "molecular_function (direct)", "molecular_function"])),
@@ -286,7 +297,7 @@ def index_genes():
             'protein': protein,
             'tc_number': tc_numbers.get(gene.dbentity_id),
             'secondary_sgdid': secondary_sgdids.get(gene.dbentity_id),
-            
+
             'sequence_history': [s[0] for s in sequence_history],
             'gene_history': [g[0] for g in gene_history],
 
@@ -312,13 +323,14 @@ def index_genes():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
+
 def index_phenotypes():
     phenotypes = DBSession.query(Phenotype).all()
 
     bulk_data = []
 
     print "Indexing " + str(len(phenotypes)) + " phenotypes"
-    
+
     for phenotype in phenotypes:
         annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=phenotype.phenotype_id).all()
 
@@ -338,7 +350,7 @@ def index_phenotypes():
         qualifier = None
         if phenotype.qualifier:
             qualifier = phenotype.qualifier.display_name
-            
+
         obj = {
             'name': phenotype.display_name,
             'href': phenotype.obj_url,
@@ -374,6 +386,7 @@ def index_phenotypes():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
+
 def index_observables():
     observables = DBSession.query(Apo).filter_by(apo_namespace="observable").all()
 
@@ -406,6 +419,7 @@ def index_observables():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
+
 def index_strains():
     strains = DBSession.query(Straindbentity).all()
 
@@ -433,6 +447,7 @@ def index_strains():
 
         es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=obj, id="strain_" + str(strain.dbentity_id))
 
+
 def index_reserved_names():
     reserved_names = DBSession.query(Reservedname).all()
 
@@ -447,24 +462,26 @@ def index_reserved_names():
         }
         es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=obj, id="reserved_" + reserved_name.format_name)
 
+
 def load_go_id_blacklist(list_filename):
     go_id_blacklist = set()
     for l in open(list_filename, 'r'):
         go_id_blacklist.add(l[:-1])
     return go_id_blacklist
-        
+
+
 def index_go_terms():
     go_id_blacklist = load_go_id_blacklist('scripts/search/go_id_blacklist.lst')
-    
+
     gos = DBSession.query(Go).all()
 
     print "Indexing " + str(len(gos) - len(go_id_blacklist)) + " GO terms"
-    
+
     bulk_data = []
     for go in gos:
         if go.goid in go_id_blacklist:
             continue
-        
+
         synonyms = DBSession.query(GoAlias.display_name).filter_by(go_id=go.go_id).all()
 
         references = set([])
@@ -474,7 +491,7 @@ def index_go_terms():
             if annotation.go_qualifier != 'NOT':
                 go_loci.add(annotation.dbentity.display_name)
             references.add(annotation.reference.display_name)
-        
+
         numerical_id = go.goid.split(':')[1]
         key_values = [go.goid, 'GO:' + str(int(numerical_id)), numerical_id, str(int(numerical_id))]
 
@@ -482,7 +499,7 @@ def index_go_terms():
         for k in key_values:
             if k is not None:
                 keys.add(k.lower())
-        
+
         obj = {
             "name": go.display_name,
             "href": go.obj_url,
@@ -490,11 +507,11 @@ def index_go_terms():
 
             "synonyms": [s[0] for s in synonyms],
             "go_id": go.goid,
-            
+
             "go_loci": sorted(list(go_loci)),
             "number_annotations": len(annotations),
             "references": list(references),
-            
+
             "category": go.go_namespace.replace(' ', '_'),
             "keys": list(keys)
         }
@@ -516,6 +533,7 @@ def index_go_terms():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
+
 def index_references():
     references = DBSession.query(Referencedbentity).all()
 
@@ -528,10 +546,11 @@ def index_references():
 
         authors = DBSession.query(Referenceauthor.display_name).filter_by(reference_id=reference.dbentity_id).all()
 
-        reference_loci_db = DBSession.query(Locusnoteannotation).filter_by(reference_id=reference.dbentity_id).all()
+        reference_loci_db = DBSession.query(LocusnoteReference).filter_by(reference_id=reference.dbentity_id).all()
 
         reference_loci = []
         if len(reference_loci_db) > 0:
+
             reference_loci = [r.dbentity.display_name for r in reference_loci_db]
 
         sec_sgdid = DBSession.query(ReferenceAlias.display_name).filter_by(reference_id=reference.dbentity_id, alias_type="Secondary SGDID").one_or_none()
@@ -541,14 +560,14 @@ def index_references():
         journal = reference.journal
         if journal:
             journal = journal.display_name
-            
+
         key_values = [reference.pmcid, reference.pmid, "pmid: " + str(reference.pmid), "pmid:" + str(reference.pmid), "pmid " + str(reference.pmid), reference.sgdid]
 
         keys = set([])
         for k in key_values:
             if k is not None:
                 keys.add(str(k).lower())
-        
+
         obj = {
             'name': reference.citation,
             'href': reference.obj_url,
@@ -559,10 +578,11 @@ def index_references():
             'year': reference.year,
             'reference_loci': reference_loci,
             'secondary_sgdid': sec_sgdid,
-            
+
             'category': 'reference',
             'keys': list(keys)
         }
+
 
         bulk_data.append({
             'index': {
@@ -581,29 +601,30 @@ def index_references():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
-        
 #delete_mapping()
 #put_mapping()
+# index_observables()
+# index_references()
+#index_genes()
+# index_not_in_S288C()
 
-index_observables()
-
-#def index_part_1():
+# def index_part_1():
 #    pass
 #    index_strains()
-#    index_genes()
+
 #    index_colleagues()
 #    index_phenotypes()
 
-def index_part_2():
-    pass
+# def index_part_2():
+#    index_go_terms()
+#  pass
 #    index_reserved_names()
 #    index_toolbar_links()
 #    index_observables()
-#    index_go_terms()
 #    index_references()
 
-#t1 = Thread(target=index_part_1)
-#t2 = Thread(target=index_part_2)
+# t1 = Thread(target=index_part_1)
+# t2 = Thread(target=index_part_2)
 
-#t1.start()
-#t2.start()
+# t1.start()
+# t2.start()
