@@ -523,11 +523,10 @@ def reference_triage_promote(request):
             return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
 
         try:
+            DBSession.delete(triage)
             transaction.commit()
         except:
-            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))
-        
-        DBSession.delete(triage)
+            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))  
 
         # HANDLE TAGS
         # track which loci have primary annotations for this reference to only have one primary per reference
