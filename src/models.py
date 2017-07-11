@@ -2091,12 +2091,6 @@ class Locusdbentity(Dbentity):
             reference_ids[dataset.dataset_id] = annotation.reference_id
 
             value = annotation.log_ratio_value
-            if value is None:
-                value = annotation.normalized_expression_value
-                if value < 0:
-                    value = 0
-                else:
-                    value = log(value, 2)
 
             rounded = floor(float(value))
             if value - rounded >= .5:
@@ -2699,32 +2693,35 @@ class Locusdbentity(Dbentity):
         }
 
     def expression_graph(self):
-        main_gene_expression_annotations = DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).all()
-        main_gene_datasetsample_ids = [a.datasetsample_id for a in main_gene_expression_annotations]
-        main_genes_dataset_ids = DBSession.query(Datasetsample.datset_id).filter(Datasetsample.datasetsample_id.in_(main_gene_datasetsample_ids)).all()
-
-        # QUESTION: genes sharing datasets via same datasetsample or any datasetsample within the same dataset is valid?
-
-        ##########################################
+        annotations = DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).all()
         
-        genes_sharing_datasets = DBSession.query(Goannotation).filter((Goannotation.go_id.in_(main_gene_go_ids)) & (Goannotation.dbentity_id != self.dbentity_id)).all()
-        genes_to_go = {}
-        for annotation in genes_sharing_go:
-            gene = annotation.dbentity_id
-            go = annotation.go_id
-            if gene in genes_to_go:
-                genes_to_go[gene].add(go)
+        datasetsample_to_exp_value = {}
+        datasetsample_ids = []
+        for a in annotations:
+            datasetsample_ids.append(a.datasetsample_id)
+            datasetsample_to_exp_value[a.datasetsample_id] = a.normalized_expression_value
+
+        same_datasetsamples = DBSession.query(Expressionannotation.dbentity_id, Expressionannotation.datasetsample_id, Expressionannotation.normalized_expression_value).filter(and_(Expressionannotation.datasetsample_id.in_(datasetsample_ids), Expressionannotation.dbentity_id != self.dbentity_id)).all()
+
+        gene_datasetsamples = {}
+        gene_d = []
+        
+        for d in same_datasetsamples:
+            gene_d.append((d.dbentity_id, d.datasetsample_id, d.normalized_expression_value * datasetsample_to_exp_value[d.datasetsample_id]))
+            
+            if d.datasetsample_id in gene_datasetsamples:
+                gene_datasetsamples[d.datasetsample_id].append((d.dbentity_id, d.normalized_expression_value * datasetsample_to_exp_value[d.datasetsample_id]))
             else:
-                genes_to_go[gene] = set([go])
-        
-        list_genes_to_go = sorted([(g, genes_to_go[g]) for g in genes_to_go], key=lambda x: len(x[1]), reverse=True)
+                gene_datasetsamples[d.datasetsample_id] = [(d.dbentity_id, d.normalized_expression_value * datasetsample_to_exp_value[d.datasetsample_id])]
+
+        list_genes_to_datasetsamples = sorted(gene_d, key=lambda x: x[2], reverse=True)
         
         edges = []
         nodes = {}
 
         edges_added = set([])
 
-        nodes[self.format_name] = {
+        nodes[self.dbentity_id] = {
             "data": {
                 "name": self.display_name,
                 "id": self.format_name,
@@ -2734,73 +2731,41 @@ class Locusdbentity(Dbentity):
             }
         }
         
-        min_cutoff = 99999999
-        max_cutoff = 0
-        
         i = 0
-        while i < len(list_genes_to_go) and len(nodes) <= 20 and len(edges) <= 50:
-            dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=list_genes_to_go[i][0]).one_or_none()
+        while i < len(list_genes_to_datasetsamples) and len(nodes) <= 20 and len(edges) <= 50:
+            gene = list_genes_to_datasetsamples[i][0]
 
-            go_ids = list_genes_to_go[i][1]
+            if gene not in nodes:
+                dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=gene).one_or_none()
 
-            if len(go_ids) > max_cutoff:
-                max_cutoff = len(go_ids)
-
-            if len(go_ids) < min_cutoff:
-                min_cutoff = len(go_ids)
-            
-            if dbentity[1] not in nodes:
-                nodes[dbentity[1]] = {
+                nodes[gene] = {
                     "data": {
                         "name": dbentity[0],
                         "id": dbentity[1],
                         "link": dbentity[2],
                         "type": "BIOENTITY",
-                        "gene_count": len(go_ids)
+                        "sub_type": None
                     }
-                }                    
-                
-            for go_id in go_ids:
-                go = DBSession.query(Go).filter_by(go_id=go_id).one_or_none()
+                }
 
-                if go.format_name not in nodes:
-                    nodes[go.format_name] = {
-                        "data": {
-                            "name": go.display_name,
-                            "id": go.format_name,
-                            "type": "GO",
-                            "gene_count": len(go_ids)
-                        }
-                    }
-                
-                if (go.format_name + " " + dbentity[1]) not in edges_added:
+                if (dbentity[1] + " " + self.format_name) not in edges_added:
                     edges.append({
                         "data": {
-                            "source": go.format_name,
-                            "target": dbentity[1]
+                            "source": dbentity[1],
+                            "target": self.format_name,
+                            "score": list_genes_to_datasetsamples[i][2] / list_genes_to_datasetsamples[0][2] / 10, # normalizing
+                            "class_type": "EXPRESSION",
+                            "direction": "positive"
                         }
                     })
-                    edges_added.add(go.format_name + " " + dbentity[1])
-
-                if (go.format_name + " " + self.format_name) not in edges_added:
-                    edges.append({
-                        "data": {
-                            "source": go.format_name,
-                            "target": self.format_name
-                        }
-                    })
-                    edges_added.add(go.format_name + " " + self.format_name)
 
             i += 1
 
-        nodes[self.format_name]["data"]["gene_count"] = max_cutoff
-
-        if len(list_genes_to_go) == 0:
-            min_cutoff = max_cutoff
+        
             
         return {
-            "min_cutoff": min_cutoff,
-            "max_cutoff": max_cutoff,
+            "min_coeff": 14,
+            "max_coeff": 16,
             "nodes": [nodes[n] for n in nodes],
             "edges": edges
         }
