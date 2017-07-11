@@ -490,13 +490,6 @@ def reference_triage_id_update(request):
 @view_config(route_name='reference_triage_promote', renderer='json', request_method='PUT')
 @authenticate
 def reference_triage_promote(request):
-    # try to clean out previous bad transactions
-    try:
-        DBSession.flush()
-    except:
-        print 'CLEAR OUT'
-        DBSession.rollback()
-
     id = request.matchdict['id'].upper()
     
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
