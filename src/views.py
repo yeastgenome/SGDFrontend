@@ -476,11 +476,10 @@ def reference_triage_id_update(request):
     if triage:
         try:
             triage.update_from_json(request.json)
-        except ValueError:
-            return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
-        try:
             transaction.commit()
         except:
+            traceback.print_exc()
+            DBSession.rollback()
             return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify if pmid is valid and not already present.'}))
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
@@ -491,6 +490,13 @@ def reference_triage_id_update(request):
 @view_config(route_name='reference_triage_promote', renderer='json', request_method='PUT')
 @authenticate
 def reference_triage_promote(request):
+    # try to clean out previous bad transactions
+    try:
+        DBSession.flush()
+    except:
+        print 'CLEAR OUT'
+        DBSession.rollback()
+
     id = request.matchdict['id'].upper()
     
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
@@ -526,6 +532,8 @@ def reference_triage_promote(request):
             DBSession.delete(triage)
             transaction.commit()
         except:
+            DBSession.rollback()
+            traceback.print_exc()
             return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))  
 
         # HANDLE TAGS
@@ -580,6 +588,7 @@ def reference_triage_id_delete(request):
             pusher.trigger('sgd', 'triageUpdate', {})
             return HTTPOk()
         except:
+            traceback.print_exc()
             DBSession.rollback()
             return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))
     else:
