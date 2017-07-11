@@ -601,11 +601,11 @@ def index_references():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
-delete_mapping()
-put_mapping()
+#delete_mapping()
+#put_mapping()
 # index_observables()
 # index_references()
-index_genes()
+#index_genes()
 # index_not_in_S288C()
 
 # def index_part_1():
