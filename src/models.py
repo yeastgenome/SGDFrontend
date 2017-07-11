@@ -6789,16 +6789,16 @@ class Regulationannotation(Base):
         return {
             "id": self.annotation_id,
             "locus1": {
-                "display_name": self.target.display_name,
-                "link": self.target.obj_url,
-                "id": self.target.dbentity_id,
-                "format_name": self.target.format_name                
-            },
-            "locus2": {
                 "display_name": self.regulator.display_name,
                 "link": self.regulator.obj_url,
                 "id": self.regulator.dbentity_id,
                 "format_name": self.regulator.format_name
+            },
+            "locus2": {
+                "display_name": self.target.display_name,
+                "link": self.target.obj_url,
+                "id": self.target.dbentity_id,
+                "format_name": self.target.format_name                
             },
             "evidence": experiment,
             "regulation_of": self.regulation_type,
