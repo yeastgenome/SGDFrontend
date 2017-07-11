@@ -3,7 +3,6 @@ from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
 from elasticsearch import Elasticsearch
-from dateutil.parser import parse
 import os
 from math import floor, log
 import json
@@ -6808,6 +6807,8 @@ class Regulationannotation(Base):
             "strain": strain_obj,
             "experiment": experiment,
             "annotation_type": self.annotation_type,
+            "regulation_type": self.regulation_type,
+            "regulator_type": self.regulator_type,
             "properties":[],
             "assay": "",
             "construct": ""
