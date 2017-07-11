@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import style from './style.css';
+
 const GENE_COLOR = '#1f77b4';
 const ALIAS_COLOR = '#d62728';
 const ALIAS_CHAR = '=';
@@ -60,6 +62,16 @@ class Abstract extends Component {
     return <textarea defaultValue={this.props.geneList} />;
   }
 
+  renderLinks() {
+    let pubmedUrl = `https://www.ncbi.nlm.nih.gov/pubmed/${this.props.pmid}`;
+    return (
+      <div className={style.linkContainer}>
+        <span><a href={this.props.fulltextUrl} target='_new'>Full Text</a> PubMed: <a href={pubmedUrl} target='_new'>{this.props.pmid}</a></span>
+      </div>
+    );
+  }
+
+
   renderCheck() {
     if (this.props.hideGeneList || this.props.geneList === '') return null;
     return (
@@ -73,10 +85,15 @@ class Abstract extends Component {
   render() {
     let abstract = this.getHighlightedAbstract();
     return (
-      <div>
-        <p dangerouslySetInnerHTML={{ __html: abstract }} />
-        {this.renderGenesText()}
-        {this.renderCheck()}
+      <div className='row'>
+        <div className='columns small-9'>
+          <p dangerouslySetInnerHTML={{ __html: abstract }} />
+        </div>
+        <div className='columns small-3'>
+          {this.renderLinks()}
+          {this.renderGenesText()}
+          {this.renderCheck()}
+        </div>
       </div>
     );
   }
@@ -84,8 +101,10 @@ class Abstract extends Component {
 
 Abstract.propTypes = {
   abstract: React.PropTypes.string,
+  fulltextUrl: React.PropTypes.string,
   geneList: React.PropTypes.string,
-  hideGeneList: React.PropTypes.bool
+  hideGeneList: React.PropTypes.bool,
+  pmid: React.PropTypes.string
 };
 
 export default Abstract;

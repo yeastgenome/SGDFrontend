@@ -8,6 +8,7 @@ sys.setdefaultencoding('UTF8')
 from ..models import DBSession, Dbentity, Referencedbentity, Referencedocument, Referenceauthor,\
                    Referencetype, ReferenceUrl, ReferenceRelation, Source, \
                    Journal, Locusdbentity
+from src.helpers import link_gene_names
 
 doi_root = 'http://dx.doi.org/'
 pubmed_root = 'http://www.ncbi.nlm.nih.gov/pubmed/'
@@ -27,7 +28,6 @@ def add_paper(pmid, created_by="OTTO"):
 
     ## insert into DBENTITY/REFERENCEDBENTITY/REFERENCEDOCUMENT
     [reference_id, authors, doi_url, pmc_url, sgdid] = insert_referencedbentity(pmid, source_id, record, created_by)
-    
     insert_authors(reference_id, authors, source_id, created_by)
     insert_pubtypes(pmid, reference_id, record.get('PT', []), source_id, created_by)
     insert_urls(pmid, reference_id, doi_url, pmc_url, source_id, created_by)
@@ -78,12 +78,13 @@ def insert_abstract(pmid, reference_id, record, source_id, journal_abbrev, journ
 
     if text == '':
         return
-    
+    locus_names_ids = DBSession.query(Locusdbentity.display_name, Locusdbentity.sgdid).all()
+    html = link_gene_names(text, locus_names_ids)
     x = Referencedocument(document_type = 'Abstract',
                           source_id = source_id,
                           reference_id = reference_id,
                           text = text,
-                          html = link_gene_names(text),
+                          html = html,
                           created_by = created_by)
     DBSession.add(x)
     
@@ -159,16 +160,16 @@ def insert_authors(reference_id, authors, source_id, created_by):
 def insert_referencedbentity(pmid, source_id, record, created_by):
     pubstatus, date_revised = get_pubstatus_date_revised(record)
     journal_id, journal, journal_title, issn_print = get_journal_id(record, created_by)
-    pubdate = record.get('DP', '')
+    pubdate = record.get('DP', None)
     year = pubdate.split(' ')[0]
-    title = record.get('TI', '')
+    title = record.get('TI', None)
     authors = record.get('AU', [])
-    volume = record.get('VI', '')
-    issue = record.get('IP', '')
-    pages = record.get('PG', '')
+    volume = record.get('VI', None)
+    issue = record.get('IP', None)
+    pages = record.get('PG', None)
     citation = set_cite(title, authors, year, journal, volume, issue, pages)
     doi, doi_url = get_doi(record)
-    pmcid = record.get('PMC', '')
+    pmcid = record.get('PMC', None)
     pmc_url = pmc_root + pmcid + '/' if pmcid else ''
 
     publication_status = status
@@ -202,7 +203,6 @@ def insert_referencedbentity(pmid, source_id, record, created_by):
     DBSession.flush()
     DBSession.refresh(x)
     dbentity_id = x.dbentity_id
-
     ## insert into REFERENCEDOCUMENT
     insert_abstract(pmid, dbentity_id, record,
                     source_id, journal, journal_title, issn_print, created_by)
@@ -348,41 +348,6 @@ def get_pubstatus_date_revised(record):
     if date_revised:
         date_revised = date_revised[0:4] + "-" + date_revised[4:6] + "-" + date_revised[6:8]        
     return pubstatus, date_revised
-
-def link_gene_names(text):
-    words = text.split(' ')
-    new_chunks = []
-    chunk_start = 0
-    i = 0
-    for word in words:
-        dbentity_name = word
-        if dbentity_name.endswith('.') or dbentity_name.endswith(',') or dbentity_name.endswith('?') or dbentity_name.endswith('-'):
-            dbentity_name = dbentity_name[:-1]
-        if dbentity_name.endswith(')'):
-            dbentity_name = dbentity_name[:-1]
-        if dbentity_name.startswith('('):
-            dbentity_name = dbentity_name[1:]
-
-        dbentity = get_dbentity_by_name(dbentity_name.upper())
-
-        if dbentity is not None:
-            new_chunks.append(text[chunk_start: i])
-            chunk_start = i + len(word) + 1
-
-            new_chunk = "<a href='" + dbentity.obj_url + "'>" + dbentity_name + "</a>"
-            if len(word) > 1 and word[-2] == ')':
-                new_chunk = new_chunk + word[-2]
-            if word.endswith('.') or word.endswith(',') or word.endswith('?') or word.endswith('-') or word.endswith(')'):
-                new_chunk = new_chunk + word[-1]
-            if word.startswith('('):
-                new_chunk = word[0] + new_chunk
-            new_chunks.append(new_chunk)
-        i = i + len(word) + 1
-    new_chunks.append(text[chunk_start: i])
-    try:
-        return ' '.join(new_chunks)
-    except:
-        return text
 
 def get_dbentity_by_name(dbentity_name):
     global _all_genes

@@ -3,6 +3,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
 from elasticsearch import Elasticsearch
+from dateutil.parser import parse
 import os
 from math import floor, log
 import json
@@ -800,13 +801,24 @@ class Colleague(Base):
 
     source = relationship(u'Source')
 
-    def _include_keywords_to_dict(self, colleague_dict):
+    def to_dict(self):
+        _dict = {
+            "colleague_id": self.colleague_id,
+            "orcid": self.orcid,
+            "first_name": self.first_name,
+            "middle_name": self.middle_name,
+            "last_name": self.last_name,
+            "suffix": self.suffix,
+            "institution": self.institution,
+            "email": self.email,
+            "link": self.obj_url
+        }
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
         if len(keyword_ids) > 0:
             ids_query = [k[0] for k in keyword_ids]
             keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(ids_query)).all()
-            colleague_dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
-    
+            _dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
+        return _dict    
 
 class ColleagueKeyword(Base):
     __tablename__ = 'colleague_keyword'
@@ -914,7 +926,7 @@ class Colleaguetriage(Base):
     curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.curation_seq'::regclass)"))
     triage_type = Column(String(10), nullable=False)
     colleague_id = Column(BigInteger)
-    colleague_data = Column(Text, nullable=False)
+    json = Column(Text, nullable=False)
     curator_comment = Column(String(500))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
@@ -1717,6 +1729,17 @@ class Referencedbentity(Dbentity):
                 obj.append(annotation.to_dict())
         
         return obj
+
+    def annotations_summary_to_dict(self):
+        preview_url = '/reference/' + self.sgdid
+        return {
+            'category': 'reference',
+            'created_by' : self.created_by,
+            'href': preview_url, 
+            'date_created': self.date_created.strftime("%Y-%m-%d"),
+            'name': self.citation, 
+            'type': 'added'
+        }
 
     def interactions_to_dict(self):
         obj = []
@@ -5115,11 +5138,14 @@ class Literatureannotation(Base):
     taxonomy = relationship(u'Taxonomy')
 
     acceptable_tags = {
+        'classical_phenotype': 'Primary Literature',
+        'go': 'Primary Literature',
+        'headline_information': 'Primary Literature',
+        'other_primary': 'Primary Literature',
+        'additional_literature': 'Additional Literature',
         'htp_phenotype': 'Omics',
         'non_phenotype_htp': 'Omics',
-        'other_primary': 'Primary Literature',
-        'Reviews': 'Reviews',
-        'additional_literature': 'Additional Literature'
+        'Reviews': 'Reviews'
     }
 
     @staticmethod
@@ -5339,6 +5365,20 @@ class Locussummary(Base):
     locus = relationship(u'Locusdbentity')
     source = relationship(u'Source')
 
+    def to_dict(self):
+        summary_type_url_segment = self.summary_type.lower()
+        if summary_type_url_segment not in ['phenotype', 'regulation']:
+            summary_type_url_segment = ''
+        preview_url = '/locus/' + self.locus.sgdid + '/' + summary_type_url_segment
+        return {
+            'category': 'locus',
+            'created_by' : self.created_by,
+            'href': preview_url, 
+            'date_created': self.date_created.strftime("%Y-%m-%d"),
+            'name': self.locus.display_name, 
+            'type': self.summary_type + ' summary', 
+            'value': self.html 
+        }
 
 class LocussummaryReference(Base):
     __tablename__ = 'locussummary_reference'
