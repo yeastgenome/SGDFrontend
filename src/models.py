@@ -1808,6 +1808,7 @@ class Locusdbentity(Dbentity):
     has_regulation = Column(Boolean, nullable=False)
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
+    not_in_s288c = Column(Boolean, nullable=False)
 
     def regulation_target_enrichment(self):
         target_ids = DBSession.query(Regulationannotation.target_id).filter_by(regulator_id=self.dbentity_id).all()
@@ -1841,7 +1842,7 @@ class Locusdbentity(Dbentity):
     
     def regulation_details(self):
         annotations = DBSession.query(Regulationannotation).filter(or_(Regulationannotation.target_id==self.dbentity_id, Regulationannotation.regulator_id==self.dbentity_id)).all()
-        
+
         return [a.to_dict() for a in annotations]
 
     def binding_site_details(self):
@@ -6763,7 +6764,8 @@ class Regulationannotation(Base):
         experiment = None
         if self.eco:
             experiment = {
-                "display_name": self.eco.display_name
+                "display_name": self.eco.display_name,
+                "link": None
             }
 
         strain = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
@@ -6782,13 +6784,13 @@ class Regulationannotation(Base):
         
         return {
             "id": self.annotation_id,
-            "target": {
+            "locus1": {
                 "display_name": self.target.display_name,
                 "link": self.target.obj_url,
                 "id": self.target.dbentity_id,
                 "format_name": self.target.format_name                
             },
-            "direction": {
+            "locus2": {
                 "display_name": self.regulator.display_name,
                 "link": self.regulator.obj_url,
                 "id": self.regulator.dbentity_id,
@@ -6800,7 +6802,10 @@ class Regulationannotation(Base):
             "reference": reference.to_dict_citation(),
             "strain": strain_obj,
             "experiment": experiment,
-            "annotation_type": self.annotation_type
+            "annotation_type": self.annotation_type,
+            "properties":[],
+            "assay": "",
+            "construct": ""
         }
 
 class Reporter(Base):

@@ -964,11 +964,9 @@ def locus_binding_site_details(request):
 
 @view_config(route_name='locus_regulation_details', renderer='json', request_method='GET')
 def locus_regulation_details(request):
-    return [] # TODO: remove this after changes in FE
-
     id = extract_id_request(request, 'locus')
-
     locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+
     if locus:
         return locus.regulation_details()
     else:
