@@ -13,6 +13,7 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
 
     config.add_route('home', '/')
+    config.add_route('get_recent_annotations', '/annotations')
     #search
     config.add_route('search', '/get_search_results')
     config.add_route('autocomplete_results', '/autocomplete_results')
@@ -120,7 +121,5 @@ def main(global_config, **settings):
 
     config.scan()
     config.add_static_view(name='assets', path='./build')
-
-    config.configure_celery(global_config['__file__'])
-
+    
     return config.make_wsgi_app()

@@ -4,22 +4,20 @@ from pyramid.view import view_config
 from pyramid.compat import escape
 from pyramid.session import check_csrf_token
 
-from sqlalchemy import func, distinct, and_
+from sqlalchemy import func, distinct, and_, or_
 from sqlalchemy.exc import IntegrityError
 
 from oauth2client import client, crypt
 import os
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig, Proteindomain, Ec
-
-from .celery_tasks import upload_to_s3
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Locussummary
 
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, get_pusher_client, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
 
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .tsv_parser import parse_tsv_annotations
 
-from .loading.promote_reference_triage import add_paper, get_dbentity_by_name
+from .loading.promote_reference_triage import add_paper
 
 import transaction
 
@@ -32,12 +30,15 @@ log = logging.getLogger(__name__)
 import redis
 disambiguation_table = redis.Redis()
 
-def extract_id_request(request, prefix, param_name='id'):
+# safe return returns None if not found instead of 404 exception
+def extract_id_request(request, prefix, param_name='id', safe_return=False):
     id = str(request.matchdict[param_name])
 
     db_id = disambiguation_table.get(("/" + prefix + "/" + id).upper())
     
-    if db_id is None:
+    if db_id is None and safe_return:
+        return None
+    elif db_id is None:
         raise HTTPNotFound()
     else:
         if prefix == 'author':
@@ -51,14 +52,40 @@ def home_view(request):
         'google_client_id': os.environ['GOOGLE_CLIENT_ID'],
         'pusher_key': os.environ['PUSHER_KEY']
     }
-    
+   
+@view_config(route_name='get_recent_annotations', request_method='GET', renderer='json')
+@authenticate
+def get_recent_annotations(request):
+    limit = 25
+    annotations = []
+    recent_summaries = DBSession.query(Locussummary).order_by(Locussummary.date_created.desc()).limit(limit).all()
+    recent_literature = DBSession.query(Referencedbentity).order_by(Referencedbentity.dbentity_id.desc()).limit(limit * 2).all()
+    for d in recent_literature:
+        annotations.append(d.annotations_summary_to_dict())
+    for d in recent_summaries:
+        annotations.append(d.to_dict())
+    annotations = sorted(annotations, key=lambda r: r['date_created'], reverse=True)
+    return annotations
+
 @view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')
 @authenticate
 def upload_spreadsheet(request):
-    tsv_file = request.POST['file'].file
-    template_type = request.POST['template']
-    annotations = parse_tsv_annotations(DBSession, tsv_file, template_type, request.session['username'])
-    return {'annotations': annotations}
+    try:
+        tsv_file = request.POST['file'].file
+        filename = request.POST['file'].filename
+        template_type = request.POST['template']
+        annotations = parse_tsv_annotations(DBSession, tsv_file, filename, template_type, request.session['username'])
+        pusher = get_pusher_client()
+        pusher.trigger('sgd', 'curateHomeUpdate', {})
+        return {'annotations': annotations}
+    except ValueError as e:
+        return HTTPBadRequest(body=json.dumps({ 'error': str(e) }), content_type='text/json')
+    except AttributeError:
+        traceback.print_exc()
+        return HTTPBadRequest(body=json.dumps({ 'error': 'Please attach a valid TSV file.' }), content_type='text/json')
+    except:
+        traceback.print_exc()
+        return HTTPBadRequest(body=json.dumps({ 'error': 'Unable to process file upload. Please try again.' }), content_type='text/json')
 
 @view_config(route_name='upload', request_method='POST', renderer='json')
 @authenticate
@@ -128,8 +155,7 @@ def upload_file(request):
     
     transaction.commit() # this commit must be synchronous because the upload_to_s3 task expects the row in the DB
 
-    temp_file_path = secure_save_file(file, filename)
-    upload_to_s3.delay(temp_file_path, fdb_sgdid, fdb_file_extension, os.environ['S3_ACCESS_KEY'], os.environ['S3_SECRET_KEY'], os.environ['S3_BUCKET'])
+    # NO s3 upload, removed with celery
 
     log.info('File ' + request.POST.get('display_name') + ' was successfully uploaded.')
     return Response({'success': True})
@@ -356,9 +382,14 @@ def strain(request):
 
 @view_config(route_name='reference', renderer='json', request_method='GET')
 def reference(request):
-    id = extract_id_request(request, 'reference')
+    id = extract_id_request(request, 'reference', 'id', True)
 
-    reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+    # allow reference to be accessed by sgdid even if not in disambig table
+    if id:
+        reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+    else:
+        reference = DBSession.query(Referencedbentity).filter_by(sgdid=request.matchdict['id']).one_or_none()
+
     
     if reference:
         return reference.to_dict()
@@ -456,6 +487,7 @@ def reference_triage_id_update(request):
         return HTTPNotFound()
 
 @view_config(route_name='reference_triage_promote', renderer='json', request_method='PUT')
+@authenticate
 def reference_triage_promote(request):
     id = request.matchdict['id'].upper()
     
@@ -467,7 +499,8 @@ def reference_triage_promote(request):
             if tag.get('genes'):
                 genes = tag.get('genes').split(',')
                 for g in genes:
-                    locus = get_dbentity_by_name(g.strip())
+                    uppername = g.upper().strip()
+                    locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.display_name==uppername, Locusdbentity.format_name==uppername)).one_or_none()
                     if locus is None:
                         return HTTPBadRequest(body=json.dumps({'error': 'Invalid gene name ' + g}))
                     tags.append((tag['name'], tag['comment'], locus.dbentity_id))
@@ -476,9 +509,10 @@ def reference_triage_promote(request):
 
         try:
             reference_id, sgdid = add_paper(triage.pmid, request.json['data']['assignee'])
-        except IntegrityError:
+        except IntegrityError as e:
             traceback.print_exc()
-            return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
+            DBSession.rollback()
+            return HTTPBadRequest(body=json.dumps({'error': str(e) }))
         except:
             traceback.print_exc()
             return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
@@ -489,26 +523,24 @@ def reference_triage_promote(request):
         try:
             transaction.commit()
         except:
-            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify if pmid is valid and not already present.'}))
+            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))
         
         DBSession.delete(triage)
 
         for i in xrange(len(tags)):
-            curation = CurationReference.factory(reference_id, tags[i][0], tags[i][1], tags[i][2], request.json['data']['assignee'])
-            if curation is None:
-                tags[i] = Literatureannotation.factory(reference_id, tags[i][0], tags[i][2], request.json['data']['assignee'])
-            else:
-                tags[i] = curation
-
-        for tag in tags:
-            if tag:
-                DBSession.add(tag)
-
+            curation_ref = CurationReference.factory(reference_id, tags[i][0], tags[i][1], tags[i][2], request.json['data']['assignee'])
+            if curation_ref:
+                DBSession.add(curation_ref)
+            lit_annotation = Literatureannotation.factory(reference_id, tags[i][0], tags[i][2], request.json['data']['assignee'])
+            if lit_annotation:
+                DBSession.add(lit_annotation)
+                
         DBSession.flush()                
         transaction.commit()
         
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
+        pusher.trigger('sgd', 'curateHomeUpdate', {})
         
         return {
             "sgdid": sgdid
@@ -517,27 +549,22 @@ def reference_triage_promote(request):
         return HTTPNotFound()
     
 @view_config(route_name='reference_triage_id_delete', renderer='json', request_method='DELETE')
+@authenticate
 def reference_triage_id_delete(request):
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
-        reason = None
-
-        if request.body != '':
-            try:
-                reason = request.json.get('reason')
-            except ValueError:
-                return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
-
-        # Do we need this? travis
-        # reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted=reason, created_by="OTTO")
-        # DBSession.add(reference_deleted)
-        DBSession.delete(triage)
-        
-        transaction.commit()
-        pusher = get_pusher_client()
-        pusher.trigger('sgd', 'triageUpdate', {})
-        return HTTPOk()
+        try:
+            reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted='This paper was deleted because the content is not relevant to S. cerevisiae.', created_by=request.session['username'])
+            DBSession.add(reference_deleted)
+            DBSession.delete(triage)        
+            transaction.commit()
+            pusher = get_pusher_client()
+            pusher.trigger('sgd', 'triageUpdate', {})
+            return HTTPOk()
+        except:
+            DBSession.rollback()
+            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))
     else:
         return HTTPNotFound()
 
@@ -889,8 +916,10 @@ def keywords(request):
     keyword_ids = DBSession.query(distinct(DatasetKeyword.keyword_id)).all()
     
     keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(keyword_ids)).all()
-
-    return [k.to_simple_dict() for k in keywords]
+    simple_keywords = [k.to_simple_dict() for k in keywords]
+    for k in simple_keywords:
+        k['name'] = k['display_name']
+    return simple_keywords
 
 @view_config(route_name='contig', renderer='json', request_method='GET')
 def contig(request):
