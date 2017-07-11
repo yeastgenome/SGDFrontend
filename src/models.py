@@ -3,6 +3,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
 from elasticsearch import Elasticsearch
+from dateutil.parser import parse
 import os
 from math import floor, log
 import json
@@ -800,13 +801,24 @@ class Colleague(Base):
 
     source = relationship(u'Source')
 
-    def _include_keywords_to_dict(self, colleague_dict):
+    def to_dict(self):
+        _dict = {
+            "colleague_id": self.colleague_id,
+            "orcid": self.orcid,
+            "first_name": self.first_name,
+            "middle_name": self.middle_name,
+            "last_name": self.last_name,
+            "suffix": self.suffix,
+            "institution": self.institution,
+            "email": self.email,
+            "link": self.obj_url
+        }
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
         if len(keyword_ids) > 0:
             ids_query = [k[0] for k in keyword_ids]
             keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(ids_query)).all()
-            colleague_dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
-    
+            _dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
+        return _dict    
 
 class ColleagueKeyword(Base):
     __tablename__ = 'colleague_keyword'
@@ -914,7 +926,7 @@ class Colleaguetriage(Base):
     curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.curation_seq'::regclass)"))
     triage_type = Column(String(10), nullable=False)
     colleague_id = Column(BigInteger)
-    colleague_data = Column(Text, nullable=False)
+    json = Column(Text, nullable=False)
     curator_comment = Column(String(500))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
@@ -1718,6 +1730,17 @@ class Referencedbentity(Dbentity):
         
         return obj
 
+    def annotations_summary_to_dict(self):
+        preview_url = '/reference/' + self.sgdid
+        return {
+            'category': 'reference',
+            'created_by' : self.created_by,
+            'href': preview_url, 
+            'date_created': self.date_created.strftime("%Y-%m-%d"),
+            'name': self.citation, 
+            'type': 'added'
+        }
+
     def interactions_to_dict(self):
         obj = []
 
@@ -1808,6 +1831,7 @@ class Locusdbentity(Dbentity):
     has_regulation = Column(Boolean, nullable=False)
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
+    not_in_s288c = Column(Boolean, nullable=False)
 
     def regulation_target_enrichment(self):
         target_ids = DBSession.query(Regulationannotation.target_id).filter_by(regulator_id=self.dbentity_id).all()
@@ -1841,7 +1865,7 @@ class Locusdbentity(Dbentity):
     
     def regulation_details(self):
         annotations = DBSession.query(Regulationannotation).filter(or_(Regulationannotation.target_id==self.dbentity_id, Regulationannotation.regulator_id==self.dbentity_id)).all()
-        
+
         return [a.to_dict() for a in annotations]
 
     def binding_site_details(self):
@@ -5079,11 +5103,14 @@ class Literatureannotation(Base):
     taxonomy = relationship(u'Taxonomy')
 
     acceptable_tags = {
+        'classical_phenotype': 'Primary Literature',
+        'go': 'Primary Literature',
+        'headline_information': 'Primary Literature',
+        'other_primary': 'Primary Literature',
+        'additional_literature': 'Additional Literature',
         'htp_phenotype': 'Omics',
         'non_phenotype_htp': 'Omics',
-        'other_primary': 'Primary Literature',
-        'Reviews': 'Reviews',
-        'additional_literature': 'Additional Literature'
+        'Reviews': 'Reviews'
     }
 
     @staticmethod
@@ -5303,6 +5330,20 @@ class Locussummary(Base):
     locus = relationship(u'Locusdbentity')
     source = relationship(u'Source')
 
+    def to_dict(self):
+        summary_type_url_segment = self.summary_type.lower()
+        if summary_type_url_segment not in ['phenotype', 'regulation']:
+            summary_type_url_segment = ''
+        preview_url = '/locus/' + self.locus.sgdid + '/' + summary_type_url_segment
+        return {
+            'category': 'locus',
+            'created_by' : self.created_by,
+            'href': preview_url, 
+            'date_created': self.date_created.strftime("%Y-%m-%d"),
+            'name': self.locus.display_name, 
+            'type': self.summary_type + ' summary', 
+            'value': self.html 
+        }
 
 class LocussummaryReference(Base):
     __tablename__ = 'locussummary_reference'
@@ -6728,7 +6769,8 @@ class Regulationannotation(Base):
         experiment = None
         if self.eco:
             experiment = {
-                "display_name": self.eco.display_name
+                "display_name": self.eco.display_name,
+                "link": None
             }
 
         strain = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
@@ -6747,13 +6789,13 @@ class Regulationannotation(Base):
         
         return {
             "id": self.annotation_id,
-            "target": {
+            "locus1": {
                 "display_name": self.target.display_name,
                 "link": self.target.obj_url,
                 "id": self.target.dbentity_id,
                 "format_name": self.target.format_name                
             },
-            "direction": {
+            "locus2": {
                 "display_name": self.regulator.display_name,
                 "link": self.regulator.obj_url,
                 "id": self.regulator.dbentity_id,
@@ -6765,7 +6807,10 @@ class Regulationannotation(Base):
             "reference": reference.to_dict_citation(),
             "strain": strain_obj,
             "experiment": experiment,
-            "annotation_type": self.annotation_type
+            "annotation_type": self.annotation_type,
+            "properties":[],
+            "assay": "",
+            "construct": ""
         }
 
 class Reporter(Base):

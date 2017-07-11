@@ -8,6 +8,7 @@ import style from './style.css';
 import fetchData from '../../lib/fetchData';
 import AnnotationSummary from '../../components/annotationSummary';
 import Loader from '../../components/loader';
+import { clearError, setError } from '../../actions/metaActions';
 
 const UPLOAD_URL = '/upload_spreadsheet';
 const UPLOAD_TIMEOUT = 120000;
@@ -21,6 +22,10 @@ class SpreadsheetUpload extends Component {
       annotationData: null,
       templateValue: DEFAULT_VALUE
     };
+  }
+
+  handleClear() {
+    this.setState({ files: [], templateValue: DEFAULT_VALUE, annotationData: null });
   }
 
   handleDrop (_files) {
@@ -52,12 +57,15 @@ class SpreadsheetUpload extends Component {
       processData: false,
       contentType: false,
       timeout: UPLOAD_TIMEOUT,
-    }).then( data => {
+    }).then( (data) => {
       this.setState({
         isPending: false,
         annotationData: data.annotations
       });
-    }).catch( () => {
+      this.props.dispatch(clearError());
+    }).catch( (data) => {
+      let errorMessage = data ? data.error : 'There was an error processing the upload. Please try again.';
+      this.props.dispatch(setError(errorMessage));
       this.setState({ isPending: false });
     });
   }
@@ -72,6 +80,7 @@ class SpreadsheetUpload extends Component {
       return (
         <div className={style.fileContainer}>
           <p>{fileName}</p>
+          <a onClick={this.handleClear.bind(this)}>Clear Files</a>
         </div>
       );
     }
@@ -117,7 +126,14 @@ class SpreadsheetUpload extends Component {
     if (state.isPending) {
       node = <Loader />;
     } else if (state.annotationData) {
-      node = <AnnotationSummary annotations={state.annotationData} />;
+      let d = state.annotationData;
+      node = (
+        <div>
+          <p>{d.inserts.toLocaleString()} inserts and {d.updates.toLocaleString()} updates</p>
+          <AnnotationSummary annotations={d.entries} />
+          <a onClick={this.handleClear.bind(this)}>Upload More</a>
+        </div>
+      );
     } else {
       node = this.renderForm();
     }
@@ -131,7 +147,8 @@ class SpreadsheetUpload extends Component {
 }
 
 SpreadsheetUpload.propTypes = {
-  csrfToken: React.PropTypes.string
+  csrfToken: React.PropTypes.string,
+  dispatch: React.PropTypes.func
 };
 
 function mapStateToProps(state) {
