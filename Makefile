@@ -20,8 +20,8 @@ staging-deploy:
 aws-dev-deploy:
 	. dev_deploy_variables.sh && cap aws_dev deploy
 
-curate-qa-deploy:
-	. dev_deploy_variables.sh && cap aws_curate_qa deploy
+preview-deploy:
+	. dev_deploy_variables.sh && cap preview deploy
 
 run-prod:
 	pserve sgdfrontend_aws.ini --daemon --pid-file=/var/run/pyramid/frontend.pid
