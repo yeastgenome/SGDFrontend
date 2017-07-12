@@ -1366,199 +1366,6 @@ BEFORE INSERT OR UPDATE ON nex.literatureannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_literatureannotation_biur();
 
 
-DROP TRIGGER IF EXISTS contignoteannotation_audr ON nex.contignoteannotation CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_contignoteannotation_audr() RETURNS trigger AS $BODY$
-DECLARE
-    v_row       nex.deletelog.deleted_row%TYPE;
-BEGIN
-  IF (TG_OP = 'UPDATE') THEN
-
-    IF (OLD.contig_id != NEW.contig_id) THEN
-        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION'::text, 'CONTIG_ID'::text, OLD.annotation_id, OLD.contig_id::text, NEW.contig_id::text, USER);
-    END IF;
-
-     IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION'::text, 'SOURCE_ID'::text, OLD.annotation_id, OLD.source_id::text, NEW.source_id::text, USER);
-    END IF;
-
-    IF  (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION'::text, 'TAXONOMY_ID'::text, OLD.annotation_id, OLD.taxonomy_id::text, NEW.taxonomy_id::text, USER);
-    END IF;
-
-    IF (((OLD.reference_id IS NULL) AND (NEW.reference_id IS NOT NULL)) OR ((OLD.reference_id IS NOT NULL) AND (NEW.reference_id IS NULL)) OR (OLD.reference_id != NEW.reference_id)) THEN
-        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION'::text, 'REFERENCE_ID'::text, OLD.annotation_id, OLD.reference_id::text, NEW.reference_id::text, USER);
-    END IF;
-
-    IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION'::text, 'BUD_ID'::text, OLD.annotation_id, OLD.bud_id::text, NEW.bud_id::text, USER);
-    END IF;
-
-    IF (OLD.note_type != NEW.note_type) THEN
-        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION'::text, 'NOTE_TYPE'::text, OLD.annotation_id, OLD.note_type, NEW.note_type, USER);
-    END IF;
-
-    IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION'::text, 'DISPLAY_NAME'::text, OLD.annotation_id, OLD.display_name, NEW.display_name, USER);
-    END IF;
-
-    IF (OLD.note != NEW.note) THEN
-        PERFORM nex.insertupdatelog('CONTIGNOTEANNOTATION'::text, 'NOTE'::text, OLD.annotation_id, OLD.note, NEW.note, USER);
-    END IF;
-
-    RETURN NEW;
-
-  ELSIF (TG_OP = 'DELETE') THEN
-
-    v_row := OLD.annotation_id || '[:]' || OLD.contig_id || '[:]' ||
-             OLD.source_id || '[:]' || OLD.taxonomy_id || '[:]' ||
-             coalesce(OLD.reference_id,0) || '[:]' ||
-             coalesce(OLD.bud_id,0) || '[:]' || OLD.note_type || '[:]' ||
-             OLD.display_name || '[:]' || OLD.note || '[:]' ||
-             OLD.date_created || '[:]' || OLD.created_by;
-
-        PERFORM nex.insertdeletelog('CONTIGNOTEANNOTATION'::text, OLD.annotation_id, v_row, USER);
-
-    RETURN OLD;
-  END IF;
-
-END;
-$BODY$ LANGUAGE 'plpgsql';
-
-CREATE TRIGGER contignoteannotation_audr
-AFTER UPDATE OR DELETE ON nex.contignoteannotation FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_contignoteannotation_audr();
-
-DROP TRIGGER IF EXISTS contignoteannotation_biur ON nex.contignoteannotation CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_contignoteannotation_biur() RETURNS trigger AS $BODY$
-BEGIN
-  IF (TG_OP = 'INSERT') THEN
-
-       NEW.created_by := UPPER(NEW.created_by);
-       PERFORM nex.checkuser(NEW.created_by);
-
-       RETURN NEW;
-
-  ELSIF (TG_OP = 'UPDATE') THEN
-
-    IF (NEW.annotation_id != OLD.annotation_id) THEN
-        RAISE EXCEPTION 'Primary key cannot be updated';
-    END IF;
-
-    IF (NEW.date_created != OLD.date_created) THEN
-        RAISE EXCEPTION 'Audit columns cannot be updated.';
-    END IF;
-
-    IF (NEW.created_by != OLD.created_by) THEN
-        RAISE EXCEPTION 'Audit columns cannot be updated.';
-    END IF;
-
-    RETURN NEW;
-  END IF;
-
-END;
-$BODY$ LANGUAGE 'plpgsql';
-
-CREATE TRIGGER contignoteannotation_biur
-BEFORE INSERT OR UPDATE ON nex.contignoteannotation FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_contignoteannotation_biur();
-
-DROP TRIGGER IF EXISTS locusnoteannotation_audr ON nex.locusnoteannotation CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_locusnoteannotation_audr() RETURNS trigger AS $BODY$
-DECLARE
-    v_row       nex.deletelog.deleted_row%TYPE;
-BEGIN
-  IF (TG_OP = 'UPDATE') THEN
-
-    IF (OLD.dbentity_id != NEW.dbentity_id) THEN
-        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION'::text, 'DBENTITY_ID'::text, OLD.annotation_id, OLD.dbentity_id::text, NEW.dbentity_id::text, USER);
-    END IF;
-
-     IF (OLD.source_id != NEW.source_id) THEN
-        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION'::text, 'SOURCE_ID'::text, OLD.annotation_id, OLD.source_id::text, NEW.source_id::text, USER);
-    END IF;
-
-    IF  (OLD.taxonomy_id != NEW.taxonomy_id) THEN
-        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION'::text, 'TAXONOMY_ID'::text, OLD.annotation_id, OLD.taxonomy_id::text, NEW.taxonomy_id::text, USER);
-    END IF;
-
-    IF (((OLD.reference_id IS NULL) AND (NEW.reference_id IS NOT NULL)) OR ((OLD.reference_id IS NOT NULL) AND (NEW.reference_id IS NULL)) OR (OLD.reference_id != NEW.reference_id)) THEN
-        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION'::text, 'REFERENCE_ID'::text, OLD.annotation_id, OLD.reference_id::text, NEW.reference_id::text, USER);
-    END IF;
-
-    IF (((OLD.bud_id IS NULL) AND (NEW.bud_id IS NOT NULL)) OR ((OLD.bud_id IS NOT NULL) AND (NEW.bud_id IS NULL)) OR (OLD.bud_id != NEW.bud_id)) THEN
-        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION'::text, 'BUD_ID'::text, OLD.annotation_id, OLD.bud_id::text, NEW.bud_id::text, USER);
-    END IF;
-
-    IF (OLD.note_type != NEW.note_type) THEN
-        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION'::text, 'NOTE_TYPE'::text, OLD.annotation_id, OLD.note_type, NEW.note_type, USER);
-    END IF;
-
-    IF (OLD.display_name != NEW.display_name) THEN
-        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION'::text, 'DISPLAY_NAME'::text, OLD.annotation_id, OLD.display_name, NEW.display_name, USER);
-    END IF;
-
-    IF (OLD.note != NEW.note) THEN
-        PERFORM nex.insertupdatelog('LOCUSNOTEANNOTATION'::text, 'NOTE'::text, OLD.annotation_id, OLD.note, NEW.note, USER);
-    END IF;
-
-    RETURN NEW;
-    
-  ELSIF (TG_OP = 'DELETE') THEN
-
-    v_row := OLD.annotation_id || '[:]' || OLD.dbentity_id || '[:]' ||
-             OLD.source_id || '[:]' || OLD.taxonomy_id || '[:]' ||
-             coalesce(OLD.reference_id,0) || '[:]' ||
-             coalesce(OLD.bud_id,0) || '[:]' || OLD.note_type || '[:]' ||
-             OLD.display_name || '[:]' || OLD.note || '[:]' ||
-             OLD.date_created || '[:]' || OLD.created_by;
-
-         PERFORM nex.insertdeletelog('LOCUSNOTEANNOTATION'::text, OLD.annotation_id, v_row, USER);
-
-     RETURN OLD;
-  END IF;
-
-END;
-$BODY$ LANGUAGE 'plpgsql';
-
-CREATE TRIGGER locusnoteannotation_audr
-AFTER UPDATE OR DELETE ON nex.locusnoteannotation FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_locusnoteannotation_audr();
-
-DROP TRIGGER IF EXISTS locusnoteannotation_biur ON nex.locusnoteannotation CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_locusnoteannotation_biur() RETURNS trigger AS $BODY$
-BEGIN
-  IF (TG_OP = 'INSERT') THEN
-
-       NEW.created_by := UPPER(NEW.created_by);
-       PERFORM nex.checkuser(NEW.created_by);
-
-       RETURN NEW;
-
-  ELSIF (TG_OP = 'UPDATE') THEN
-
-    IF (NEW.annotation_id != OLD.annotation_id) THEN
-        RAISE EXCEPTION 'Primary key cannot be updated';
-    END IF;
-
-    IF (NEW.date_created != OLD.date_created) THEN
-        RAISE EXCEPTION 'Audit columns cannot be updated.';
-    END IF;
-
-    IF (NEW.created_by != OLD.created_by) THEN
-        RAISE EXCEPTION 'Audit columns cannot be updated.';
-    END IF;
-
-    RETURN NEW;
-  END IF;
-
-END;
-$BODY$ LANGUAGE 'plpgsql';
-
-CREATE TRIGGER locusnoteannotation_biur
-BEFORE INSERT OR UPDATE ON nex.locusnoteannotation FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_locusnoteannotation_biur();
-
-
 DROP TRIGGER IF EXISTS pathwayannotation_audr ON nex.pathwayannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_pathwayannotation_audr() RETURNS trigger AS $BODY$
 DECLARE
@@ -2804,12 +2611,14 @@ BEGIN
        PERFORM nex.checkuser(NEW.created_by);
 
        IF (NEW.direction is NOT NULL) THEN
-          IF (NEW.direction != 'positive') OR (NEW.direction != 'negative') THEN
-             RAISE EXCEPTION 'Allowable values are positive, negataive, or null.';
+          IF (NEW.direction != 'positive') THEN
+             IF (NEW.direction != 'negative') THEN
+                RAISE EXCEPTION 'Allowable values are positive, negative, or null.';
+             END IF;
           END IF;
        END IF;
 
-      IF (NEW.regulator_type = 'transcription factor') OR (NEW.regulator_type = 'chromatin modifier') THEN
+      IF ((NEW.regulator_type = 'transcription factor') OR (NEW.regulator_type = 'chromatin modifier')) THEN
          IF (NEW.regulation_type = 'protein activity') THEN
              RAISE EXCEPTION 'That regulation_type is not allowed with that regulator_type.';
          END IF;
@@ -2836,12 +2645,14 @@ BEGIN
     END IF;
 
        IF (NEW.direction is NOT NULL) THEN
-          IF (NEW.direction != 'positive') OR (NEW.direction != 'negative') THEN
-      	       RAISE EXCEPTION 'Allowable values are positive, negataive, or null.';
-      		     END IF;
+          IF (NEW.direction != 'positive') THEN
+             IF (NEW.direction != 'negative') THEN
+                RAISE EXCEPTION 'Allowable values are positive, negative, or null.';
+             END IF;
+          END IF;
        END IF;
 
-      IF (NEW.regulator_type = 'transcription factor') OR (NEW.regulator_type = 'chromatin modifier') THEN
+      IF ((NEW.regulator_type = 'transcription factor') OR (NEW.regulator_type = 'chromatin modifier')) THEN
          IF (NEW.regulation_type = 'protein activity') THEN
              RAISE EXCEPTION 'That regulation_type is not allowed with that regulator_type.';
          END IF;

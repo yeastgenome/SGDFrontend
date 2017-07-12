@@ -13,6 +13,7 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
 
     config.add_route('home', '/')
+    config.add_route('get_recent_annotations', '/annotations')
     #search
     config.add_route('search', '/get_search_results')
     config.add_route('autocomplete_results', '/autocomplete_results')
@@ -39,6 +40,7 @@ def main(global_config, **settings):
     config.add_route('reference_go_details', '/reference/{id}/go_details', request_method='GET')
     config.add_route('reference_phenotype_details', '/reference/{id}/phenotype_details', request_method='GET')
     config.add_route('reference_regulation_details', '/reference/{id}/regulation_details', request_method='GET')
+    config.add_route('reference_list', '/reference_list')
 
     config.add_route('author', '/author/{format_name}', request_method='GET')
 
@@ -116,13 +118,8 @@ def main(global_config, **settings):
     
     config.add_route('sign_in', '/signin')
     config.add_route('sign_out', '/signout')
-    
-    #NEX endpoints
-    config.add_route('reference_list', '/reference_list')
 
     config.scan()
     config.add_static_view(name='assets', path='./build')
-
-    config.configure_celery(global_config['__file__'])
-
+    
     return config.make_wsgi_app()

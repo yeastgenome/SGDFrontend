@@ -45,13 +45,11 @@ export default function litReducer(state = DEFAULT_STATE, action) {
 function replaceTriage(oldEntries, newEntries, currentUsername) {
   newEntries.forEach( (d, i) => {
     let oldEntry = _.findWhere(oldEntries, { curation_id: d.curation_id });
-    if (!oldEntry) {
-      oldEntries.push(d);
-    // replace if assignee changes and current version not claimed to self
-    } else if (oldEntry.data.assignee !== d.data.assignee && oldEntry.data.assignee !== currentUsername) {
-      oldEntries[i] = d;
+    // replace with old version if claimed by current user
+    let oldAssignee = oldEntry ? oldEntry.data.assignee : null;
+    if (oldAssignee === currentUsername) {
+      newEntries[i] = oldEntry;
     }
   });
-  // TODO remove items from old if not in new
-  return oldEntries;
+  return newEntries;
 }
